@@ -475,7 +475,7 @@ endif ( )
 if ( INSIDE_SUITESPARSE )
     # also install in SuiteSparse/lib and SuiteSparse/include;
     # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include," )
+    message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS graphblas
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}

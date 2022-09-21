@@ -21,16 +21,12 @@ FIXME: new output files
     (look for more)
 
 FIXME: update metis cmake to use SuiteSparsePolicy
-
-FIXME: determine how my metis-5.1.0 differs from the original.
+    determine how my metis-5.1.0 differs from the original.
     Rename mine as suitesparse_metis-5.1.0
 
 FIXME: Mongoose 'make test' fails: unable to download test files
 
-FIXME: cmake CUDA for:
-    todo: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
-
-FIXME: cmake and Find*.cmake for
-    SuiteSparse_GPURuntime, GPUQREngine
-    (but needs CUDA to work first)
+FIXME: CUDA
+    cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
+    Find*.cmake for: SuiteSparse_GPURuntime, GPUQREngine
 

@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CHOLMOD_DATE "Oct 1, 2022" )  # FIXME
+set ( CHOLMOD_DATE "Oct 31, 2022" )  # FIXME
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   0 )

@@ -45,17 +45,21 @@ function SuiteSparse_install (do_demo)
 % If you get errors building or using METIS, just remove the metis-5.1.0
 % folder.  This often occurs on Windows.
 %
-% Before using SuiteSparse_install, you must compile the GraphBLAS library.
-% In the system shell while in the SuiteSparse folder, type "make gbinstall" if
-% you have MATLAB R2020b or earlier, or type "make gbrenamed" if you have
-% MATLAB 9.10 (R2021a) or later.
+% Before using SuiteSparse_install, you must compile the GraphBLAS library for
+% use in MATLAB.  In the system shell while in the SuiteSparse folder, type
+% "make gbmatlab".  If you do not have permission for a system-wide
+% installation of the compiled GraphBLAS library, add the
+% SuiteSparse/GraphBLAS/GraphBLAS/build folder to your LD_LIBRARY_PATH
+% and restart MATLAB.
 %
 % Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
+%
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
 % Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff, Les Foster, William Hager,
 % Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick Moreno-Centeno,
 % Ekanathan Palamadai, Sivasankaran Rajamanickam, Sanjay Ranka, Wissam
 % Sid-Lakhdar, Nuri Yeralan.
+%
 % See each package for its license.
 
 %-------------------------------------------------------------------------------
@@ -294,17 +298,6 @@ catch me
     failed {end+1} = 'spok' ;
 end
 
-%{
-% compile and install PIRO_BAND
-try
-    paths = add_to_path (paths, [SuiteSparse '/PIRO_BAND/MATLAB']) ;
-    piro_band_make ;
-catch me
-    disp (me.message) ;
-    fprintf ('PIRO_BAND not installed\n') ;
-end
-%}
-
 % compile and install sparsinv
 try
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/sparseinv']) ;
@@ -327,7 +320,7 @@ end
 
 % compile and install GraphBLAS
 try
-    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/build']) ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
     cd ('@GrB/private') ;

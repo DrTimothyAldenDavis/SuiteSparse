@@ -76,6 +76,8 @@ paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/dimacs10']) ;
 paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/spok']) ;
 paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/sparseinv']) ;
 paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
+paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
+paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
 paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
 

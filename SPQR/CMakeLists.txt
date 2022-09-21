@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SPQR_DATE "Oct 1, 2022" )  # FIXME
+set ( SPQR_DATE "Oct 31, 2022" )  # FIXME
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
 set ( SPQR_VERSION_SUB   0 )

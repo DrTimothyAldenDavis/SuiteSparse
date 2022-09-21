@@ -374,7 +374,7 @@ SUITESPARSE_PUBLIC void amd_l_info     (double Info [ ]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "Oct 1, 2022"
+#define AMD_DATE "Oct 31, 2022"
 #define AMD_MAIN_VERSION   3
 #define AMD_SUB_VERSION    0
 #define AMD_SUBSUB_VERSION 0

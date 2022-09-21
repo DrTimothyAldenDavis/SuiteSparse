@@ -97,7 +97,7 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "Oct 1, 2022"
+#define CHOLMOD_DATE "Oct 31, 2022"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    0
 #define CHOLMOD_SUBSUB_VERSION 0

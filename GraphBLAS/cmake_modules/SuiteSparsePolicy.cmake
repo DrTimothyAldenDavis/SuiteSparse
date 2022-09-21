@@ -38,16 +38,33 @@ set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 
 # determine if this package is inside the top-level SuiteSparse folder
 # (if ../lib and ../include exist, relative to the source directory)
-set ( INSIDE_SUITESPARSE 
-        ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND 
-        (   EXISTS ${CMAKE_SOURCE_DIR}/../include ) ) )
+
+if ( SUITESPARSE_SECOND_LEVEL )
+    # the package is normally located at the 2nd level inside SuiteSparse
+    # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
+    set ( INSIDE_SUITESPARSE 
+            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND 
+            (   EXISTS ${CMAKE_SOURCE_DIR}/../../include ) ) )
+else ( )
+    # typical case, the package is at the 1st level inside SuiteSparse
+    # (SuiteSparse/AMD for example)
+    set ( INSIDE_SUITESPARSE 
+            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND 
+            (   EXISTS ${CMAKE_SOURCE_DIR}/../include ) ) )
+endif ( )
 
 if ( INSIDE_SUITESPARSE )
     # ../lib and ../include exist: the package is inside SuiteSparse.
     # find ( REAL_PATH ...) requires cmake 3.19.
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     SUITESPARSE_LIBDIR )
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include SUITESPARSE_INCLUDEDIR )
-    file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     SUITESPARSE_BINDIR )
+    if ( SUITESPARSE_SECOND_LEVEL )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../lib     SUITESPARSE_LIBDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../include SUITESPARSE_INCLUDEDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../bin     SUITESPARSE_BINDIR )
+    else ( )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     SUITESPARSE_LIBDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include SUITESPARSE_INCLUDEDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     SUITESPARSE_BINDIR )
+    endif ( )
     message ( STATUS "Local install: ${SUITESPARSE_LIBDIR} ")
     message ( STATUS "Local include: ${SUITESPARSE_INCLUDEDIR} ")
     message ( STATUS "Local bin:     ${SUITESPARSE_BINDIR} ")

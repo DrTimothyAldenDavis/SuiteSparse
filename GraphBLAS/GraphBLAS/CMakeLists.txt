@@ -14,7 +14,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.13 )
+cmake_minimum_required ( VERSION 3.19 )
 
 message ( STATUS "CMake version: " ${CMAKE_VERSION} )
 
@@ -29,25 +29,36 @@ set ( GraphBLAS_VERSION_SUB   0 )
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
 
 # GraphBLAS C API Specification version, at graphblas.org
-if ( GraphBLAS_VERSION_MAJOR GREATER_EQUAL 6 )
-    # SuiteSparse:GraphBLAS v6.0.0 and later fully implement the v2 spec
-    set ( GraphBLAS_API_DATE "Nov 15, 2021" )
-    set ( GraphBLAS_API_VERSION_MAJOR 2 )
-    set ( GraphBLAS_API_VERSION_MINOR 0 )
-    set ( GraphBLAS_API_VERSION_SUB   0 )
-else ( )
-    # SuiteSparse:GraphBLAS v5.2.0 has much of the v2 spec but not all.
-    # It is backward compatible with all v5.x which have little of the new
-    # features of the v2 C API Specification.
-    set ( GraphBLAS_API_DATE "Sept 25, 2019" )
-    set ( GraphBLAS_API_VERSION_MAJOR 1 )
-    set ( GraphBLAS_API_VERSION_MINOR 3 )
-    set ( GraphBLAS_API_VERSION_SUB   0 )
-endif ( )
+
+# SuiteSparse:GraphBLAS v6.0.0 and later fully implement the v2 spec
+set ( GraphBLAS_API_DATE "Nov 15, 2021" )
+set ( GraphBLAS_API_VERSION_MAJOR 2 )
+set ( GraphBLAS_API_VERSION_MINOR 0 )
+set ( GraphBLAS_API_VERSION_SUB   0 )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    )
+
+set ( SUITESPARSE_SECOND_LEVEL true )
+include ( SuiteSparsePolicy )
+
+# CUDA is under development for now, and not deployed in production:
+set ( SUITESPARSE_CUDA off )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
 
 message ( STATUS "GraphBLAS C API: v" "${GraphBLAS_API_VERSION_MAJOR}.${GraphBLAS_API_VERSION_MINOR}, date: ${GraphBLAS_API_DATE}" )
 
-project ( graphblas_renamed
+project ( graphblas_matlab
     VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" LANGUAGES C )
 
 # enable this only for development
@@ -197,7 +208,7 @@ else ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# dynamic graphblas_renamed library properties
+# dynamic graphblas_matlab library properties
 #-------------------------------------------------------------------------------
 
 if ( CMAKE_CUDA_DEV )
@@ -207,13 +218,13 @@ else ( )
     file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" "../Source/Generated1/*.c" "../Source/Generated2/*.c" )
 endif ( )
 
-add_library ( graphblas_renamed SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas_renamed PROPERTIES
+add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
+SET_TARGET_PROPERTIES ( graphblas_matlab PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
     PUBLIC_HEADER "../Include/GraphBLAS.h" )
-set_property ( TARGET graphblas_renamed PROPERTY C_STANDARD 11 )
+set_property ( TARGET graphblas_matlab PROPERTY C_STANDARD 11 )
 
 #-------------------------------------------------------------------------------
 # select the threading library
@@ -233,16 +244,16 @@ else ( )
     set ( M_LIB "m" )
 endif ( )
 
-target_link_libraries ( graphblas_renamed PUBLIC ${M_LIB} )
+target_link_libraries ( graphblas_matlab PUBLIC ${M_LIB} )
 
 #-------------------------------------------------------------------------------
-# add the OpenMP, CUDA, BLAS, ... libraries
+# add library dependencies
 #-------------------------------------------------------------------------------
 
 if ( USE_OPENMP )
     message ( STATUS "CMAKE OpenMP libraries:    " ${OpenMP_C_LIBRARIES} )
     message ( STATUS "CMAKE OpenMP include:      " ${OpenMP_C_INCLUDE_DIRS} )
-    target_link_libraries ( graphblas_renamed PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( graphblas_matlab PUBLIC ${OpenMP_C_LIBRARIES} )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
@@ -258,17 +269,11 @@ if ( NOT GBNCPUFEAT )
         include ( CheckSymbolExists )
         check_include_file ( dlfcn.h HAVE_DLFCN_H )
         if ( HAVE_DLFCN_H )
-            target_compile_definitions ( graphblas_renamed PRIVATE HAVE_DLFCN_H )
-            if ( BUILD_GRB_STATIC_LIBRARY )
-                target_compile_definitions ( graphblas_static PRIVATE HAVE_DLFCN_H )
-            endif ( )
+            target_compile_definitions ( graphblas_matlab PRIVATE HAVE_DLFCN_H )
         endif ( )
         check_symbol_exists ( getauxval "sys/auxv.h" HAVE_STRONG_GETAUXVAL )
         if ( HAVE_STRONG_GETAUXVAL )
-            target_compile_definitions ( graphblas_renamed PRIVATE HAVE_STRONG_GETAUXVAL )
-            if ( BUILD_GRB_STATIC_LIBRARY )
-                target_compile_definitions ( graphblas_static PRIVATE HAVE_STRONG_GETAUXVAL )
-            endif ( )
+            target_compile_definitions ( graphblas_matlab PRIVATE HAVE_STRONG_GETAUXVAL )
         endif ( )
     endif ( )
 endif ( )
@@ -280,11 +285,41 @@ endif ( )
 message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 
 #-------------------------------------------------------------------------------
-# graphblas_renamed installation
+# graphblas_matlab installation
 #-------------------------------------------------------------------------------
 
-install ( TARGETS graphblas_renamed
+install ( TARGETS graphblas_matlab
      LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
      ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
+#-------------------------------------------------------------------------------
+# installation location
+#-------------------------------------------------------------------------------
+
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
+# ../include.  
+
+message ( STATUS "System install libdir: ${CMAKE_INSTALL_LIBDIR}" )
+message ( STATUS "System install incdir: ${CMAKE_INSTALL_INCLUDEDIR}" )
+message ( STATUS "Local  install libdir: ${SUITESPARSE_LIBDIR}" )
+message ( STATUS "Local  install incdir: ${SUITESPARSE_INCLUDEDIR}" )
+
+if ( NOT SUITESPARSE_LOCAL )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
+    install ( TARGETS graphblas_matlab
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+endif ( )
+
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../../lib and ../../include," )
+    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
+    install ( TARGETS graphblas_matlab
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )

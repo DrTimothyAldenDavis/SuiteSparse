@@ -1,4 +1,6 @@
-# CMakeLists.txt: instructions for building Mongoose with cmake
+#-------------------------------------------------------------------------------
+# Mongoose/CMakeLists.txt: instructions for building Mongoose with cmake
+#-------------------------------------------------------------------------------
 #
 # Mongoose, Copyright (c) 2018, All Rights Reserved.
 #   Nuri Yeralan, Microsoft Research
@@ -27,8 +29,7 @@
 #
 #   make distclean
 
-# cmake 3.17 is required
-cmake_minimum_required ( VERSION 3.17 )
+cmake_minimum_required ( VERSION 3.19 )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -44,8 +45,8 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Oct 1 2022") # FIXME
-set(Mongoose_NUMERIC_DATE "2022-10-01") # FIXME
+set(Mongoose_DATE "Oct 31, 2022") # FIXME
+set(Mongoose_NUMERIC_DATE "2022-10-31") # FIXME
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
 set(Mongoose_VERSION_PATCH 0)

@@ -41,7 +41,7 @@ extern "C" {
  *	#endif
  */
 
-#define CCOLAMD_DATE "Oct 1, 2022"
+#define CCOLAMD_DATE "Oct 31, 2022"
 #define CCOLAMD_MAIN_VERSION   3
 #define CCOLAMD_SUB_VERSION    0
 #define CCOLAMD_SUBSUB_VERSION 0

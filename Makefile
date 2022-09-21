@@ -7,6 +7,7 @@ export SUITESPARSE
 
 default: go
 
+# FIXME: remove *.mk here:
 include SuiteSparse_config/SuiteSparse_config.mk
 
 # Compile the default rules for each package.
@@ -255,7 +256,7 @@ gbinstall: gb
 	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 
 # compile and install GraphBLAS libgraphblas_renamed, for MATLAB
-gbrenamed:
+gbmatlab:
 	echo $(CMAKE_OPTIONS)
 	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
