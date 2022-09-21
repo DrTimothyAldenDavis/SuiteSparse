@@ -1,14 +1,13 @@
 #-------------------------------------------------------------------------------
-# GraphBLAS/GraphBLAS/CMakeLists.txt:  alternative cmake script for GraphBLAS
+# GraphBLAS/GraphBLAS/CMakeLists.txt:  build GraphBLAS for use in MATLAB
 #-------------------------------------------------------------------------------
 
 # SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0.
 
-# CMakeLists.txt: instructions for cmake to build GraphBLAS for use in MATLAB
-# R2021a and following, includes v3.3.3 of GraphBLAS, used by the built-in
-# C=A*B.  Using this version of GraphBLAS causes a naming conflict, which this
-# cmake handles.
+# CMakeLists.txt: instructions for cmake to build GraphBLAS for use in MATLAB.
+# GraphBLAS is built into MATLAB as libmwgraphblas.  Using another version
+# of GraphBLAS causes a naming conflict, which this cmake handles.
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -23,9 +22,9 @@ set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
 set ( GraphBLAS_VERSION_SUB   0 )
 
-message ( STATUS "Building SuiteSparse:GraphBLAS version: v" ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}  " date: " ${GraphBLAS_DATE} )
-
-# GraphBLAS C API Specification version, at graphblas.org
+message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
+    ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    " date: " ${GraphBLAS_DATE} )
 
 # SuiteSparse:GraphBLAS v6.0.0 and later fully implement the v2 spec
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )
@@ -52,8 +51,6 @@ set ( SUITESPARSE_CUDA off )
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
-
-message ( STATUS "GraphBLAS C API: v" "${GraphBLAS_API_VERSION_MAJOR}.${GraphBLAS_API_VERSION_MINOR}, date: ${GraphBLAS_API_DATE}" )
 
 project ( graphblas_matlab
     VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" LANGUAGES C )
@@ -111,15 +108,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 # determine build type
 #-------------------------------------------------------------------------------
-
-include ( GNUInstallDirs )
-
-# Edit these lines for code development only, not for end-users:
-# set ( CMAKE_BUILD_TYPE Debug )
-
-if ( NOT CMAKE_BUILD_TYPE )
-    set ( CMAKE_BUILD_TYPE Release )
-endif ( )
 
 set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBRENAME=1 " )
 
@@ -285,8 +273,8 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
-# ../include.  
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../../lib and
+# ../../include.
 
 message ( STATUS "System install libdir: ${CMAKE_INSTALL_LIBDIR}" )
 message ( STATUS "System install incdir: ${CMAKE_INSTALL_INCLUDEDIR}" )
@@ -311,3 +299,4 @@ if ( INSIDE_SUITESPARSE )
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
+
