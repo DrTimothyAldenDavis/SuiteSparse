@@ -11,8 +11,11 @@ revised version is required.
 
 (1) In metis-5.1.0/include/metis.h, the default integer size has been changed
     from 32 bits to 64 (IDXTYPEWIDTH).  METIS 5.1.0 gives this flexility to the
-    user, asking the user to modify this file.  That has been done here,
-    and as a result, this file is renamed to suitesparse_metis.h.
+    user, asking the user to modify this file.  That has been done here, and as
+    a result, this file is renamed to suitesparse_metis.h.  Getting the
+    unmodified libmetis.so in a Linux distro (likely with 32-bit integers)
+    combined with a modified metis.h (with 64-bit integers) breaks things
+    badly.  So the safest thing is to rename this file as suitesparse_metis.h.
 
 (3) The files metis-5.1.0/GKlib/GKLib.h and metis-5.1.0/GKlib/memory.c have
     been modified to disable the signal-handing in METIS when used via the
@@ -29,7 +32,9 @@ revised version is required.
     misleading indentation (getopt.c, csr.c)
 
 (6) The malloc/calloc/realloc/free functions have been replaced with
-    SuiteSparse_config.(malloc/calloc/realloc/free) throughout.
+    SuiteSparse_config.(malloc/calloc/realloc/free) throughout.  The gkmcore
+    feature is disabled since it can conflict with the use of mxMalloc
+    in the MATLAB interface to SuiteSparse.  See GKlib/memory.c.
 
 Tim Davis, Oct 31, 2022, Texas A&M University
 Any changes made by Tim Davis are released to the original copyright holder,
