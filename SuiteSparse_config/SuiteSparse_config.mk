@@ -83,10 +83,8 @@ SUITESPARSE_VERSION = 6.0.0
     # parallel make
     #---------------------------------------------------------------------------
 
-    # use 8 jobs by default FIXME
-    JOBS ?= 40
-
-    CMAKE_OPTIONS ?= -DCMAKE_INSTALL_PREFIX=$(INSTALL)
+    # use 8 jobs by default
+    JOBS ?= 8
 
     #---------------------------------------------------------------------------
     # optimization level
@@ -278,7 +276,6 @@ SUITESPARSE_VERSION = 6.0.0
     # -DNBLAS       do not use the BLAS.  UMFPACK will be very slow.
     # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by
     #               LAPACK and the BLAS (defaults to 'int')
-    # -DNSUNPERF    do not use the Sun Perf. Library on Solaris
     # -DNRECIPROCAL do not multiply by the reciprocal
     # -DNO_DIVIDE_BY_ZERO   do not divide by zero
     # -DNCHOLMOD    do not use CHOLMOD as a ordering method.  If -DNCHOLMOD is
@@ -324,8 +321,6 @@ SUITESPARSE_VERSION = 6.0.0
     # -DNPRINT      do not print anything.
     # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by
     #               LAPACK and the BLAS (defaults to 'int')
-    # -DNSUNPERF    for Solaris only.  If defined, do not use the Sun
-    #               Performance Library
     # -DGPU_BLAS    enable the use of the CUDA BLAS
 
     CHOLMOD_CONFIG ?= $(GPU_CONFIG)
@@ -370,39 +365,6 @@ SUITESPARSE_VERSION = 6.0.0
         # OpenMP is not yet supported by default in clang
         CFOPENMP =
         LDLIBS += -rpath $(INSTALL_LIB)
-    endif
-
-    #---------------------------------------------------------------------------
-    # Solaris
-    #---------------------------------------------------------------------------
-
-    ifeq ($(UNAME), SunOS)
-        # Using the Sun compiler and the Sun Performance Library
-        # This hasn't been tested recently.
-        # I leave it here in case you need it.  It likely needs updating.
-        CF += -fast -KPIC -xc99=%none -xlibmieee -xlibmil -m64 -Xc
-        F77FLAGS = -O -fast -KPIC -dalign -xlibmil -m64
-        BLAS ?= -xlic_lib=sunperf
-        LAPACK ?=
-        # Using the GCC compiler and the reference BLAS
-        ## CC = gcc
-        ## CXX = g++
-        ## MAKE = gmake
-        ## BLAS = -lrefblas -lgfortran
-        ## LAPACK = -llapack
-    endif
-
-    #---------------------------------------------------------------------------
-    # IBM AIX
-    #---------------------------------------------------------------------------
-
-    ifeq ($(UNAME), AIX)
-        # hasn't been tested for a very long time...
-        # I leave it here in case you need it.  It likely needs updating.
-        CF += -O4 -qipa -qmaxmem=16384 -q64 -qproto -DBLAS_NO_UNDERSCORE
-        F77FLAGS ?=  -O4 -qipa -qmaxmem=16384 -q64
-        BLAS ?= -lessl
-        LAPACK ?=
     endif
 
 #===============================================================================

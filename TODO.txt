@@ -18,10 +18,8 @@ FIXME: new output files
     SPQR/Demo/*out*
     (look for more)
 
-FIXME: add the metis programs to the new CMakeLists.txt
-    of suitesparse_metis
-
 FIXME: Mongoose 'make test' fails: unable to download test files
+    Mongoose docs need sourcecodeproto.sty
 
 FIXME: CUDA
     cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine

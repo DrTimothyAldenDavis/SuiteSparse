@@ -339,16 +339,12 @@ static int gk_getopt_internal(int argc, char **argv, char *optstring,
 
   gk_optarg = NULL;
 
-  // Revised for SuiteSparse, to fix misleading indentation:
-  if (gk_optind == 0 || !gk_getopt_initialized)
-  {
+  if (gk_optind == 0 || !gk_getopt_initialized) {
     if (gk_optind == 0)
-    {
       gk_optind = 1;	/* Don't scan ARGV[0], the program name.  */
+      optstring = gk_getopt_initialize (argc, argv, optstring);
+      gk_getopt_initialized = 1;
     }
-    optstring = gk_getopt_initialize (argc, argv, optstring);
-    gk_getopt_initialized = 1;
-  }
 
   /* Test whether ARGV[gk_optind] points to a non-option argument.
      Either it does not have option syntax, or there is an environment flag
@@ -672,7 +668,6 @@ static int gk_getopt_internal(int argc, char **argv, char *optstring,
       return 'W';	/* Let the application handle it.   */
     }
 
-    // Revised for SuiteSparse, to fix misleading indentation:
     if (temp[1] == ':') {
       if (temp[2] == ':') {
 	/* This is an option that accepts an argument optionally.  */
@@ -703,11 +698,9 @@ static int gk_getopt_internal(int argc, char **argv, char *optstring,
 	    c = '?';
 	}
 	else
-        {
 	  /* We already incremented `gk_optind' once; increment it again when taking next ARGV-elt as argument.  */
 	  gk_optarg = argv[gk_optind++];
-        }
-	nextchar = NULL;
+	  nextchar = NULL;
       }
     }
     return c;

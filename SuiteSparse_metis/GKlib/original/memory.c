@@ -98,10 +98,6 @@ void gk_FreeMatrix(void ***r_matrix, size_t ndim1, size_t ndim2)
 /*************************************************************************/
 int gk_malloc_init()
 {
-#if 1
-  // Revised for SuiteSparse: do not create gkmcore:
-  gkmcore = NULL ;
-#else
   if (gkmcore == NULL)
     gkmcore = gk_gkmcoreCreate();
 
@@ -109,7 +105,6 @@ int gk_malloc_init()
     return 0;
 
   gk_gkmcorePush(gkmcore);
-#endif
 
   return 1;
 }

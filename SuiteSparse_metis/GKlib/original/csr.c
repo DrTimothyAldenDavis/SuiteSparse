@@ -1338,19 +1338,14 @@ void gk_csr_Normalize(gk_csr_t *mat, int what, int norm)
   	else if (norm == 1)
   	  sum += val[j]; /* assume val[j] > 0 */ 
         }
-        // Revised for SuiteSparse, to fix misleading indentation:
-        if (sum > 0)
-        {
-            if (norm == 2)
-            {
-                sum=1.0/sqrt(sum); 
-            }
-            else if (norm == 1)
-            {
-                sum=1.0/sum; 
-            }
-            for (j=ptr[i]; j<ptr[i+1]; j++)
-                val[j] *= sum;
+        if (sum > 0) {
+  	if (norm == 2)
+  	  sum=1.0/sqrt(sum); 
+  	else if (norm == 1)
+  	  sum=1.0/sum; 
+          for (j=ptr[i]; j<ptr[i+1]; j++)
+            val[j] *= sum;
+  	
         }
       }
     }
@@ -1370,19 +1365,13 @@ void gk_csr_Normalize(gk_csr_t *mat, int what, int norm)
   	  sum += val[j]*val[j];
   	else if (norm == 1)
   	  sum += val[j]; 
-        // Revised for SuiteSparse, to fix misleading indentation:
-        if (sum > 0)
-        {
-            if (norm == 2)
-            {
-              sum=1.0/sqrt(sum); 
-            }
-            else if (norm == 1)
-            {
-              sum=1.0/sum; 
-            }
-            for (j=ptr[i]; j<ptr[i+1]; j++)
-              val[j] *= sum;
+        if (sum > 0) {
+  	if (norm == 2)
+  	  sum=1.0/sqrt(sum); 
+  	else if (norm == 1)
+  	  sum=1.0/sum; 
+          for (j=ptr[i]; j<ptr[i+1]; j++)
+            val[j] *= sum;
         }
       }
     }

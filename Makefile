@@ -2,21 +2,33 @@
 # Makefile for all SuiteSparse packages
 #-------------------------------------------------------------------------------
 
-SUITESPARSE = $(CURDIR)
-export SUITESPARSE
+# edit this variable to pass options to cmake:
+export CMAKE_OPTIONS ?=
 
-default: go
+# edit this variable to control parallel make:
+export JOBS ?= 8
 
-# FIXME: remove *.mk here:
-include SuiteSparse_config/SuiteSparse_config.mk
+# use "CUDA = no" to disable CUDA:
+export CUDA ?= auto
+ifneq ($(CUDA),no)
+    CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
+else
+    CUDA_PATH =
+endif
+export CUDA_PATH
+
+# do not modify this variable
+export SUITESPARSE = $(CURDIR)
+
+#-------------------------------------------------------------------------------
 
 # Compile the default rules for each package.
 # "make install" will install all libraries in /usr/local/lib
 # and include files in /usr/local/include.
-go:
+default:
 	( cd SuiteSparse_config && $(MAKE) )
 	- ( cd SuiteSparse_metis && $(MAKE) )
-	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd Mongoose && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
 	( cd CAMD && $(MAKE) )
@@ -29,19 +41,19 @@ go:
 	( cd KLU && $(MAKE) )
 	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd GraphBLAS && $(MAKE) )
 	( cd SPQR && $(MAKE) )
-ifneq ($(GPU_CONFIG),)
+	( cd SLIP_LU && $(MAKE) )
+ifneq ($(CUDA_PATH),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
-	( cd SLIP_LU && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
 	- ( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
-	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
+	( cd Mongoose && $(MAKE) local && $(MAKE) install )
 	( cd AMD && $(MAKE) local && $(MAKE) install )
 	( cd BTF && $(MAKE) local && $(MAKE) install )
 	( cd CAMD && $(MAKE) local && $(MAKE) install )
@@ -50,45 +62,44 @@ local:
 	( cd CHOLMOD && $(MAKE) local && $(MAKE) install )
 	( cd CSparse && $(MAKE) )
 	( cd CXSparse && $(MAKE) local && $(MAKE) install )
+	( cd CSparse && $(MAKE) )           # CSparse is compiled but not installed
+	( cd CXSparse && $(MAKE) local && $(MAKE) install )  # CXSparse is installed instead
 	( cd LDL && $(MAKE) local && $(MAKE) install )
 	( cd KLU && $(MAKE) local && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SPQR && $(MAKE) local && $(MAKE) install )
-ifneq ($(GPU_CONFIG),)
+	( cd SLIP_LU && $(MAKE) )
+ifneq ($(CUDA_PATH),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 endif
-	( cd SLIP_LU && $(MAKE) )
 
-# install all packages in SuiteSparse/lib and SuiteSparse/include.  Use the
-# following command to install in /usr/local/lib and /usr/local/include:
-#       sudo make install INSTALL=/usr/local
-# See SuiteSparse/README.md for more details.
-# (note that CSparse is not installed; CXSparse is installed instead)
+# install all packages in SuiteSparse/lib and SuiteSparse/include
 install: gbinstall moninstall
 	( cd SuiteSparse_config && $(MAKE) install )
 	- ( cd SuiteSparse_metis && $(MAKE) install )
-	# ( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	# ( cd Mongoose  && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
 	( cd CAMD && $(MAKE) install )
 	( cd CCOLAMD && $(MAKE) install )
 	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
-	( cd CXSparse && $(MAKE) install )
+	( cd CSparse && $(MAKE) )           # CSparse is compiled but not installed
+	( cd CXSparse && $(MAKE) install )  # CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	( cd GraphBLAS && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
-ifneq (,$(GPU_CONFIG))
+	( cd SLIP_LU && $(MAKE) install )
+ifneq (,$(CUDA_PATH))
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
 	( cd GPUQREngine && $(MAKE) install )
 endif
-	( cd SLIP_LU && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
@@ -113,12 +124,11 @@ uninstall:
 	( cd SPQR && $(MAKE) uninstall )
 	( cd SLIP_LU && $(MAKE) uninstall )
 
-# compile the dynamic libraries.  For GraphBLAS and Mongoose, this also builds
-# the static library
+# compile the libraries
 library:
 	( cd SuiteSparse_config && $(MAKE) )
 	- ( cd SuiteSparse_metis && $(MAKE) library )
-	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
+	( cd Mongoose  && $(MAKE) library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
 	( cd CAMD && $(MAKE) library )
@@ -131,13 +141,13 @@ library:
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
+	( cd GraphBLAS && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
-ifneq (,$(GPU_CONFIG))
+	( cd SLIP_LU && $(MAKE) library )
+ifneq (,$(CUDA_PATH))
 	( cd SuiteSparse_GPURuntime && $(MAKE) library )
 	( cd GPUQREngine && $(MAKE) library )
 endif
-	( cd SLIP_LU && $(MAKE) library )
 
 # Remove all files not in the original distribution
 purge:
@@ -215,25 +225,22 @@ cov: purge
 
 # just compile GraphBLAS
 gb:
-	echo $(CMAKE_OPTIONS)
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd GraphBLAS && $(MAKE) )
 
 # compile and install GraphBLAS
 gbinstall: gb
-	echo $(CMAKE_OPTIONS)
-	( cd GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	( cd GraphBLAS && $(MAKE) install )
 
 # compile and install GraphBLAS libgraphblas_renamed, for MATLAB
 gbmatlab:
-	echo $(CMAKE_OPTIONS)
-	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
-	( cd GraphBLAS/GraphBLAS && $(MAKE) JOBS=$(JOBS) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	( cd GraphBLAS/GraphBLAS && $(MAKE) )
+	( cd GraphBLAS/GraphBLAS && $(MAKE) install )
 
 # just compile Mongoose
 mon:
-	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
+	( cd Mongoose && $(MAKE) )
 
 # compile and install Mongoose
 moninstall: mon
-	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
+	( cd Mongoose  && $(MAKE) install )
 

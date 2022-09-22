@@ -64,6 +64,10 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 file ( REAL_PATH ${CMAKE_SOURCE_DIR}/GKlib GKLIB_PATH )
 include ( ${GKLIB_PATH}/GKlibSystem.cmake )
 
+if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wunused-result" )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # report status and set compile flags
 #-------------------------------------------------------------------------------

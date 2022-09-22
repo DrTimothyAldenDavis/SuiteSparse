@@ -60,17 +60,11 @@ typedef ptrdiff_t ssize_t;
 
 #ifdef __MSC__
 /* MSC does not have rint() function */
-// Revised for SuiteSparse: conflicts with later version of MS compiler:
-#if(_MSC_VER < 1900)
 #define rint(x) ((int)((x)+0.5))  
-#endif
 
 /* MSC does not have INFINITY defined */
 #ifndef INFINITY
-#if(_MSC_VER < 1900)
-// Revised for SuiteSparse: conflicts with later version of MS compiler:
 #define INFINITY FLT_MAX
-#endif
 #endif
 #endif
 
