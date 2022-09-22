@@ -28,7 +28,8 @@ revised version is required.
 (5) Minor formatting changes have been made to avoid compiler warnings of
     misleading indentation (getopt.c, csr.c)
 
-(6) FIXME: use SuiteSparse_malloc/calloc/realloc/free throughout.
+(6) The malloc/calloc/realloc/free functions have been replaced with
+    SuiteSparse_config.(malloc/calloc/realloc/free) throughout.
 
 Tim Davis, Oct 31, 2022, Texas A&M University
 Any changes made by Tim Davis are released to the original copyright holder,
