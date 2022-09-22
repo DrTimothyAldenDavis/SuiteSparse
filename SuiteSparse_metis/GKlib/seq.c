@@ -168,6 +168,7 @@ void gk_seq_free(gk_seq_t *seq)
     gk_iFreeMatrix(&seq->pssm, seq->len, seq->nsymbols);
     gk_iFreeMatrix(&seq->psfm, seq->len, seq->nsymbols);
     gk_free((void **)&seq->name, &seq->sequence, LTERM);
+    //gk_free((void **)&seq, LTERM);
     gk_free((void **) &seq, LTERM);
 
 }

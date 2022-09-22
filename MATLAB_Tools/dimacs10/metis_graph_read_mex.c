@@ -151,7 +151,7 @@ void mexFunction
 {
 
     FILE *f ;
-    char s [LEN+1], msg [LEN+1] ;
+    char s [LEN+1], msg [LEN+120] ;
     Int n, nzmax, fmt, ncon, nz, has_ew, i, j, k, status, t ;
     double e = 1, x, *Ti, *Tj, *Tx, *W, x1 = 0, x2 = 0, x3 = 0, x4 = 0 ;
 

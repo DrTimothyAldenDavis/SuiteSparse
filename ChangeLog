@@ -9,6 +9,10 @@ Oct FIXME, 2022: SuiteSparse 6.0.0
         uses SuiteSparse v6.0.0 or later.
     * UMFPACK: new options to support ParU.  Single umfpack.h include file.
     * CHOLMOD: Single cholmod.h include file.
+    * SuiteSparse/metis-5.1.0: renamed SuiteSparse_metis, to avoid confusion
+        with the unmodified metis-5.1.0.  The compiled library is named
+        libsuitesparse_metis.so.  The unmodified libmetis.so cannot be used
+        with SuiteSparse.
 
 Aug 25, 2022, SuiteSparse 5.13.0
 

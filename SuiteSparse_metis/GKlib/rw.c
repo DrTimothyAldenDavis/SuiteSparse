@@ -85,6 +85,8 @@ int gk_rw_PageRank(gk_csr_t *mat, float lamda, float eps, int max_niter, float *
     for (error=0.0, i=0; i<nrows; i++) 
       error = (fabs(prnew[i]-prold[i]) > error ? fabs(prnew[i]-prold[i]) : error);
 
+    //printf("nrm1: %le  maxfabserr: %le\n", gk_dsum(nrows, prnew, 1), error);
+
     if (error < eps)
       break;
   }

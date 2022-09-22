@@ -11,11 +11,11 @@ UMFPACK :  a set of routines solving sparse linear systems via LU
     2.0 or later.
 
     Unless you compile with -DNCHOLMOD, addtional packages are required:
-    CHOLMOD, CAMD, CCOLAMD, COLAMD, and metis-5.1.0.
+    CHOLMOD, CAMD, CCOLAMD, COLAMD, and SuiteSparse_metis.
 
 The AMD, SuiteSparse_config, and UMFPACK directories must all reside in the
 same parent directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD,
-CCOLAMD, COLAMD, and metis-5.1.0 also also exist in the same parent.
+CCOLAMD, COLAMD, and SuiteSparse_metis also also exist in the same parent.
 
 Quick start:
 

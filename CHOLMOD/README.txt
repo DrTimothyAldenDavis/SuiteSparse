@@ -32,7 +32,9 @@ LAPACK and the BLAS are authored by Jack Dongarra and many others.
 LAPACK is available at http://www.netlib.org/lapack
 
 METIS 5.1.0 is authored by George Karypis, Univ. of Minnesota.  Its use in
-CHOLMOD is optional.  A copy is in SuiteSparse/metis-5.1.0.
+CHOLMOD is optional.  A copy is in SuiteSparse/SuiteSparse_metis, and it is
+slightly modified from the original METIS 5.1.0 to incorporate it into
+SuiteSparse.
 
 If you do not wish to use METIS, you must edit SuiteSparse_config and change
 the line:

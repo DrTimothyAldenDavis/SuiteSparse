@@ -9,7 +9,7 @@ function umfpack_make
 % UMFPACK relies on AMD and its own built-in version of COLAMD for its ordering
 % options.  The default is for UMFPACK to also use CHOLMOD, CCOLAMD, CAMD, and
 % METIS for more ordering options as well.  This results in lower fill-in and
-% higher performance.  METIS 5.1.0 should appear in ../../metis-5.1.0.
+% higher performance.  METIS 5.1.0 should appear in ../../SuiteSparse_metis.
 % METIS is optional; if not present, it is not used.
 %
 % See also: umfpack, umfpack_details, umfpack_report, umfpack_demo,
@@ -18,7 +18,7 @@ function umfpack_make
 % UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
-metis_path = '../../metis-5.1.0' ;
+metis_path = '../../SuiteSparse_metis' ;
 with_cholmod = exist (metis_path, 'dir') ;
 
 details = 0 ;   % set to 1 to print out each mex command as it's executed

@@ -585,6 +585,8 @@ void MoveGroupMinConnForVol(ctrl_t *ctrl, graph_t *graph, idx_t to, idx_t nind,
 
     xgain = (myrinfo->nid == 0 && myrinfo->ned > 0 ? vsize[i] : 0);
 
+    //printf("Moving %"PRIDX" from %"PRIDX" to %"PRIDX" [vsize: %"PRIDX"] [xgain: %"PRIDX"]\n", 
+    //    i, from, to, vsize[i], xgain);
     
     /* find the location of 'to' in myrinfo or create it if it is not there */
     for (k=0; k<myrinfo->nnbrs; k++) {
@@ -593,6 +595,7 @@ void MoveGroupMinConnForVol(ctrl_t *ctrl, graph_t *graph, idx_t to, idx_t nind,
     }
 
     if (k == myrinfo->nnbrs) {
+      //printf("Missing neighbor\n");
 
       if (myrinfo->nid > 0)
         xgain -= vsize[i];
@@ -605,6 +608,7 @@ void MoveGroupMinConnForVol(ctrl_t *ctrl, graph_t *graph, idx_t to, idx_t nind,
         onbrs  = ctrl->vnbrpool + orinfo->inbr;
         ASSERT(other != to)
 
+        //printf("  %8d %8d %3d\n", (int)ii, (int)vsize[ii], (int)other);
 
         if (from == other) {
           /* Same subdomain vertex: Decrease the gain if 'to' is a new neighbor. */

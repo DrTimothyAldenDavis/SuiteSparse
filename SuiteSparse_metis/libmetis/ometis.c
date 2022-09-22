@@ -109,6 +109,7 @@ int METIS_NodeND(idx_t *nvtxs, idx_t *xadj, idx_t *adjncy, idx_t *vwgt,
       ctrl->cfactor = 1.0*(*nvtxs)/nnvtxs;
       if (ctrl->cfactor > 1.5 && ctrl->nseps == 1)
         ctrl->nseps = 2;
+      //ctrl->nseps = (idx_t)(ctrl->cfactor*ctrl->nseps);
     }
   }
 

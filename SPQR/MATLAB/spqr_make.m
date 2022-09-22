@@ -9,8 +9,8 @@ function spqr_make (opt1)
 %
 %   spqr_make
 %
-% in the MATLAB command window.  If METIS is not present in ../../metis-5.1.0,
-% then it is not used.
+% in the MATLAB command window.  If METIS is not present in
+% ../../SuiteSparse_metis, then it is not used.
 %
 % You must type the spqr_make command while in the SuiteSparseQR/MATLAB
 % directory.
@@ -48,7 +48,7 @@ end
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
 % Determine if METIS is available
-metis_path = '../../metis-5.1.0' ;
+metis_path = '../../SuiteSparse_metis' ;
 have_metis = exist (metis_path, 'dir') ;
 
 % fix the METIS 4.0.1 rename.h file

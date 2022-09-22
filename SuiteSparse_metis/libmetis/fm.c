@@ -288,10 +288,8 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
       i = bndind[perm[ii]];
       ASSERT(ed[i] > 0 || id[i] == 0);
       ASSERT(bndptr[i] != -1);
-      /*
-      rgain = 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1);
-      rgain = (ed[i]-id[i] > 0 ? 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1) : ed[i]-id[i]);
-      */
+      //rgain = 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1);
+      //rgain = (ed[i]-id[i] > 0 ? 1.0*(ed[i]-id[i])/sqrt(vwgt[i*ncon+qnum[i]]+1) : ed[i]-id[i]);
       rgain = ed[i]-id[i];
       rpqInsert(queues[2*qnum[i]+where[i]], i, rgain);
     }
@@ -362,11 +360,9 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
           }
           else { /* If it has not been moved, update its position in the queue */
             if (moved[k] == -1) {
-              /*
-              rgain = 1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1);
-              rgain = (ed[k]-id[k] > 0 ? 
-                            1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1) : ed[k]-id[k]);
-              */
+              //rgain = 1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1);
+              //rgain = (ed[k]-id[k] > 0 ? 
+              //              1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1) : ed[k]-id[k]);
               rgain = ed[k]-id[k];
               rpqUpdate(queues[2*qnum[k]+where[k]], k, rgain);
             }
@@ -376,11 +372,9 @@ void FM_Mc2WayCutRefine(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts, idx_t nit
           if (ed[k] > 0) {  /* It will now become a boundary vertex */
             BNDInsert(nbnd, bndind, bndptr, k);
             if (moved[k] == -1) {
-              /*
-              rgain = 1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1);
-              rgain = (ed[k]-id[k] > 0 ? 
-                            1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1) : ed[k]-id[k]);
-              */
+              //rgain = 1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1);
+              //rgain = (ed[k]-id[k] > 0 ? 
+              //              1.0*(ed[k]-id[k])/sqrt(vwgt[k*ncon+qnum[k]]+1) : ed[k]-id[k]);
               rgain = ed[k]-id[k];
               rpqInsert(queues[2*qnum[k]+where[k]], k, rgain);
             }

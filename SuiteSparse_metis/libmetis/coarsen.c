@@ -237,6 +237,7 @@ idx_t Match_RM(ctrl_t *ctrl, graph_t *graph)
     }
   }
 
+  //printf("nunmatched: %zu\n", nunmatched);
 
   /* see if a 2-hop matching is required/allowed */
   if (!ctrl->no2hop && nunmatched > UNMATCHEDFOR2HOP*nvtxs) 
@@ -377,6 +378,7 @@ idx_t Match_SHEM(ctrl_t *ctrl, graph_t *graph)
     }
   }
 
+  //printf("nunmatched: %zu\n", nunmatched);
 
   /* see if a 2-hop matching is required/allowed */
   if (!ctrl->no2hop && nunmatched > UNMATCHEDFOR2HOP*nvtxs) 

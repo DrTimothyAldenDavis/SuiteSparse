@@ -483,21 +483,10 @@ endif
 # Configure CHOLMOD/Partition module with METIS, CAMD, and CCOLAMD
 #===============================================================================
 
-# By default, SuiteSparse uses METIS 5.1.0 in the SuiteSparse/metis-5.1.0
+# By default, SuiteSparse uses METIS 5.1.0 in the SuiteSparse/SuiteSparse_metis
 # directory.  SuiteSparse's interface to METIS is only through the
 # SuiteSparse/CHOLMOD/Partition module, which also requires SuiteSparse/CAMD
 # and SuiteSparse/CCOLAMD.
-#
-# If you wish to use your own pre-installed copy of METIS, use the MY_METIS_LIB
-# and MY_METIS_INC options passed to 'make'.  For example:
-#       make MY_METIS_LIB=-lmetis
-#       make MY_METIS_LIB=/home/myself/mylibraries/libmetis.so
-#       make MY_METIS_LIB='-L/home/myself/mylibraries -lmetis'
-# If you need to tell the compiler where to find the metis.h include file,
-# then add MY_METIS_INC=/home/myself/metis-5.1.0/include as well, which points
-# to the directory containing metis.h.  If metis.h is already installed in
-# a location known to the compiler (/usr/local/include/metis.h for example)
-# then you do not need to add MY_METIS_INC.
 
 I_WITH_PARTITION =
 LIB_WITH_PARTITION =
@@ -515,31 +504,16 @@ ifeq (,$(findstring -DNCAMD, $(CHOLMOD_CONFIG)))
             # check if METIS is requested and available
             ifeq (,$(findstring -DNPARTITION, $(CHOLMOD_CONFIG)))
                 # METIS is requested.  See if it is available.
-                ifneq (,$(MY_METIS_LIB))
-                    # METIS 5.1.0 is provided elsewhere, and we are not using
-                    # SuiteSparse/metis-5.1.0. To do so, we link with
-                    # $(MY_METIS_LIB) and add the -I$(MY_METIS_INC) option for
-                    # the compiler.  The latter can be empty if you have METIS
-                    # installed in a place where the compiler can find the
-                    # metis.h include file by itself without any -I option
-                    # (/usr/local/include/metis.h for example). 
-                    LIB_WITH_PARTITION += $(MY_METIS_LIB)
-                    ifneq (,$(MY_METIS_INC))
-                        I_WITH_PARTITION += -I$(MY_METIS_INC)
+                # see if METIS is in SuiteSparse/SuiteSparse_metis
+                ifneq (, $(wildcard $(SUITESPARSE)/SuiteSparse_metis))
+                    # SuiteSparse/metis5.1.0 is available
+                    ifeq ($(UNAME), Darwin)
+                        LIB_WITH_PARTITION += $(SUITESPARSE)/lib/libmetis.dylib
+                    else
+                        LIB_WITH_PARTITION += -lmetis
                     endif
+                    I_WITH_PARTITION += -I$(SUITESPARSE)/SuiteSparse_metis/include
                     CONFIG_PARTITION =
-                else
-                    # see if METIS is in SuiteSparse/metis-5.1.0
-                    ifneq (, $(wildcard $(SUITESPARSE)/metis-5.1.0))
-                        # SuiteSparse/metis5.1.0 is available
-                        ifeq ($(UNAME), Darwin)
-                            LIB_WITH_PARTITION += $(SUITESPARSE)/lib/libmetis.dylib
-                        else
-                            LIB_WITH_PARTITION += -lmetis
-                        endif
-                        I_WITH_PARTITION += -I$(SUITESPARSE)/metis-5.1.0/include
-                        CONFIG_PARTITION =
-                    endif
                 endif
             endif
         endif
@@ -608,8 +582,6 @@ config:
 	@echo 'CUDA library:             CUDART_LIB=     ' '$(CUDART_LIB)'
 	@echo 'CUBLAS library:           CUBLAS_LIB=     ' '$(CUBLAS_LIB)'
 	@echo 'METIS and CHOLMOD/Partition configuration:'
-	@echo 'Your METIS library:       MY_METIS_LIB=   ' '$(MY_METIS_LIB)'
-	@echo 'Your metis.h is in:       MY_METIS_INC=   ' '$(MY_METIS_INC)'
 	@echo 'METIS is used via the CHOLMOD/Partition module, configured as follows.'
 	@echo 'If the next line has -DNPARTITION then METIS will not be used:'
 	@echo 'CHOLMOD Partition config: ' '$(CONFIG_PARTITION)'

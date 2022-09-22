@@ -1,30 +1,18 @@
-/*!
-\file metis.h 
-\brief This file contains function prototypes and constant definitions for METIS
- *
-\author George
-\date   Started 8/9/02
-\version\verbatim $Id$\endverbatim
+//------------------------------------------------------------------------------
+// SuiteSparse/SuiteSparse_metis/include/suitesparse_metis.h
+//------------------------------------------------------------------------------
 
+/*
 --------------------------------------------------------------------------------
-This file appears as SuiteSparse/metis-5.1.0/include/metis.h.  This copy of
-SuiteSparse/metis-5.1.0 is changed from the original metis-5.1.0 distribution:
+This file appears as SuiteSparse/SuiteSparse_metis/include/suitesparse_metis.h.
+This copy of METIS is slightly changed from the original METIS v5.1.0
+distribution.  The use of METIS in SuiteSparse is optional, but if used, this
+revised version is required.
 
 (1) In metis-5.1.0/include/metis.h, the default integer size has been changed
     from 32 bits to 64 (IDXTYPEWIDTH).  METIS 5.1.0 gives this flexility to the
-    user, asking the user to modify this file.  That has been done here.  You
-    may instead use the original METIS 5.1.0, with 32-bit integers.  When
-    compiled, SuiteSparse will properly detect the size of the METIS idx_t, and
-    it will work gracefully with both versions.  The only constraint is that
-    SuiteSparse will not be able to use METIS on the largest problems, if you
-    limit its version of METIS to 32-bit integers.
-
-(2) The files b64.c, rw.c, seq.c, timers.c, in metis-5.1.0/GKlib, and the files
-    coarsen.c, fm.c, macros.h, mcutil.c, mincon.c, ometis.c, in
-    metis-5.1.0/libmetis had C++ style comments (//) which break some C
-    compilers (the MATLAB mex command on Linux, in particular).  They have been
-    removed.  If your compiler is OK with //-style comments, then this fix
-    is optional.
+    user, asking the user to modify this file.  That has been done here,
+    and as a result, this file is renamed to suitesparse_metis.h.
 
 (3) The files metis-5.1.0/GKlib/GKLib.h and metis-5.1.0/GKlib/memory.c have
     been modified to disable the signal-handing in METIS when used via the
@@ -37,10 +25,30 @@ SuiteSparse/metis-5.1.0 is changed from the original metis-5.1.0 distribution:
     is 64, so they have been replaced with a type-agnostic macro, ABS.  This is
     just a compiler warning, so the fix is optional.
 
-If these changes do not affect you then you can use the original METIS 5.1.0.
+(5) Minor formatting changes have been made to avoid compiler warnings of
+    misleading indentation (getopt.c, csr.c)
 
-Tim Davis, Feb 1, 2016, Texas A&M University
+(6) FIXME: use SuiteSparse_malloc/calloc/realloc/free throughout.
+
+Tim Davis, Oct 31, 2022, Texas A&M University
+Any changes made by Tim Davis are released to the original copyright holder,
+under the original Apache-2.0 license of METIS.
+
+METIS, Copyright 1995-2013, Regents of the University of Minnesota.
+Author: George Karypis
+SPDX-License-identifier: Apache-2.0
+
 --------------------------------------------------------------------------------
+*/
+
+/*!
+\file metis.h 
+\brief This file contains function prototypes and constant definitions for METIS
+ *
+\author George
+\date   Started 8/9/02
+\version\verbatim $Id$\endverbatim
+
 */
 
 #ifndef _METIS_H_

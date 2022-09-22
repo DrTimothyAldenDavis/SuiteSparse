@@ -22,6 +22,7 @@
 #define OR(a, b) ((a) < 0 ? -((-(a))|(b)) : ((a)|(b)))
 #define XOR(a, b) ((a) < 0 ? -((-(a))^(b)) : ((a)^(b)))
 
+//#define icopy(n, a, b) (idx_t *)memcpy((void *)(b), (void *)(a), sizeof(idx_t)*(n)) 
 
 #define HASHFCT(key, size) ((key)%(size))
 #define SWAP gk_SWAP

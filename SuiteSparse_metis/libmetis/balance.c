@@ -28,17 +28,16 @@ void Balance2Way(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
   if (graph->ncon == 1) {
     /* return right away if the balance is OK */
 
-    /* [
-    old:
+    #if 0
+    // metis-5.1.0 original:
     if (iabs(ntpwgts[0]*graph->tvwgt[0]-graph->pwgts[0]) < 3*graph->tvwgt[0]/graph->nvtxs)
       return;
-    modified for SuiteSparse: */
-    real_t t =
-            (ntpwgts[0]*graph->tvwgt[0]-graph->pwgts[0]) ;
+    #else
+    // modified for SuiteSparse:
+    real_t t = (ntpwgts[0]*graph->tvwgt[0]-graph->pwgts[0]) ;
     t = ABS (t) ;
-    if (t                                                < 3*graph->tvwgt[0]/graph->nvtxs)
-      return;
-    /* ] */
+    if (t < 3*graph->tvwgt[0]/graph->nvtxs) return;
+    #endif
 
     if (graph->nbnd > 0)
       Bnd2WayBalance(ctrl, graph, ntpwgts);
@@ -85,14 +84,14 @@ void Bnd2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
   tpwgts[0] = graph->tvwgt[0]*ntpwgts[0];
   tpwgts[1] = graph->tvwgt[0] - tpwgts[0];
 
-  /* [
-  old:
+  #if 0
+  // metis-5.1.0 original:
   mindiff   = iabs(tpwgts[0]-pwgts[0]);
-  modified for SuiteSparse:
-  */
+  #else
+  // modified for SuiteSparse:
   mindiff   =     (tpwgts[0]-pwgts[0]);
   mindiff   =  ABS(mindiff) ;
-  /* ] */
+  #endif
 
   from      = (pwgts[0] < tpwgts[0] ? 1 : 0);
   to        = (from+1)%2;
@@ -222,14 +221,14 @@ void General2WayBalance(ctrl_t *ctrl, graph_t *graph, real_t *ntpwgts)
   tpwgts[0] = graph->tvwgt[0]*ntpwgts[0];
   tpwgts[1] = graph->tvwgt[0] - tpwgts[0];
 
-  /* [
-  old:
+  #if 0
+  // metis-5.1.0 original:
   mindiff   = iabs(tpwgts[0]-pwgts[0]);
-  modified for SuiteSparse:
-  */
+  #else
+  // modified for SuiteSparse:
   mindiff   =     (tpwgts[0]-pwgts[0]);
   mindiff   =  ABS(mindiff) ;
-  /* ] */
+  #endif
 
   from      = (pwgts[0] < tpwgts[0] ? 1 : 0);
   to        = (from+1)%2;

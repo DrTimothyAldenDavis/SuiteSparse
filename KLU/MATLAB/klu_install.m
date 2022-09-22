@@ -17,7 +17,7 @@ function klu_install (metis_path)
 % SPDX-License-Identifier: LGPL-2.1+
 
 if (nargin < 1)
-    metis_path = ['../../metis-5.1.0'] ;
+    metis_path = ['../../SuiteSparse_metis'] ;
 end
 
 % compile KLU and add to the path

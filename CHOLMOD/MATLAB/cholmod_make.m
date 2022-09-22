@@ -58,12 +58,12 @@ end
 
  % Determine if METIS is available
 if (nargin < 1)
-    metis_path = '../../metis-5.1.0' ;
+    metis_path = '../../SuiteSparse_metis' ;
 end
 have_metis = exist (metis_path, 'dir') ;
 
 if (have_metis)
-    fprintf ('Compiling CHOLMOD with METIS 5.1.0 for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling CHOLMOD with SuiteSparse_metis for MATLAB Version %s\n', v) ;
     include = [include ' -I' metis_path '/include'] ;
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;

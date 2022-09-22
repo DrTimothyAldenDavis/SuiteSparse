@@ -315,14 +315,15 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
     *******************************************************/
     mptr[0] = nmind = nbad = 0;
 
-    /* [
-    old:
+    #if 0
+    // metis-5.1.0 original:
     mindiff = abs(pwgts[0]-pwgts[1]);
     modified for SuiteSparse:
-    */
-    mindiff =    (pwgts[0]-pwgts[1]);
-    mindiff = ABS(mindiff) ;
-    /* ] */
+    #else
+    // modified for SuiteSparse:
+    mindiff = (pwgts[0]-pwgts[1]);
+    mindiff = ABS (mindiff) ;
+    #endif
 
     for (nswaps=0; nswaps<nvtxs; nswaps++) {
       if ((higain = rpqGetTop(queue)) == -1) 
@@ -348,14 +349,15 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
 
       pwgts[2] -= (vwgt[higain]-rinfo[higain].edegrees[from]);
 
-      /* [
-      old:
+      #if 0
+      // metis-5.1.0 original:
       newdiff = abs(pwgts[to]+vwgt[higain] - (pwgts[from]-rinfo[higain].edegrees[from]));
-      modified for SuiteSparse:
       */
-      newdiff =    (pwgts[to]+vwgt[higain] - (pwgts[from]-rinfo[higain].edegrees[from]));
-      newdiff = ABS(newdiff) ;
-      /* ] */
+      #else
+      // modified for SuiteSparse:
+      newdiff = (pwgts[to]+vwgt[higain] - (pwgts[from]-rinfo[higain].edegrees[from]));
+      newdiff = ABS (newdiff) ;
+      #endif
 
       if (pwgts[2] < mincut || (pwgts[2] == mincut && newdiff < mindiff)) {
         mincut      = pwgts[2];
@@ -561,14 +563,14 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
     *******************************************************/
     mptr[0] = nmind = 0;
 
-    /* [
-    old:
+    #if 0
+    // metis-5.1.0 original:
     mindiff = abs(pwgts[0]-pwgts[1]);
-    modified for SuiteSparse:
-    */
-    mindiff =    (pwgts[0]-pwgts[1]);
-    mindiff = ABS(mindiff) ;
-    /* ] */
+    #else
+    // modified for SuiteSparse:
+    mindiff = (pwgts[0]-pwgts[1]) ;
+    mindiff = ABS (mindiff) ;
+    #endif
 
     to = (pwgts[0] < pwgts[1] ? 0 : 1);
     for (nswaps=0; nswaps<nvtxs; nswaps++) {
@@ -612,14 +614,14 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
 
       pwgts[2] -= (vwgt[higain]-rinfo[higain].edegrees[other]);
 
-      /* [
-      old:
+      #if 0
+      // metis-5.1.0 original:
       newdiff = abs(pwgts[to]+vwgt[higain] - (pwgts[other]-rinfo[higain].edegrees[other]));
-      modified for SuiteSparse:
-      */
-      newdiff =    (pwgts[to]+vwgt[higain] - (pwgts[other]-rinfo[higain].edegrees[other]));
-      newdiff = ABS(newdiff) ;
-      /* ] */
+      #else
+       // modified for SuiteSparse:
+      newdiff = (pwgts[to]+vwgt[higain] - (pwgts[other]-rinfo[higain].edegrees[other]));
+      newdiff = ABS (newdiff) ;
+      #endif
 
       if (pwgts[2] < mincut || (pwgts[2] == mincut && newdiff < mindiff)) {
         mincut      = pwgts[2];

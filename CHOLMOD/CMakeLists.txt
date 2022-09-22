@@ -65,7 +65,7 @@ find_package ( BLAS REQUIRED )
 find_package ( LAPACK REQUIRED )
 find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
-find_package ( METIS )
+find_package ( SuiteSparse_metis 5.1.0 )
 
 #-------------------------------------------------------------------------------
 # configure files

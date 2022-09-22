@@ -13,8 +13,9 @@ include SuiteSparse_config/SuiteSparse_config.mk
 # Compile the default rules for each package.
 # "make install" will install all libraries in /usr/local/lib
 # and include files in /usr/local/include.
-go: metis
+go:
 	( cd SuiteSparse_config && $(MAKE) )
+	- ( cd SuiteSparse_metis && $(MAKE) )
 	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
@@ -37,8 +38,9 @@ endif
 	( cd SLIP_LU && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
-local: metis
+local:
 	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
+	- ( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
 	( cd Mongoose && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' local && $(MAKE) install )
 	( cd AMD && $(MAKE) local && $(MAKE) install )
 	( cd BTF && $(MAKE) local && $(MAKE) install )
@@ -65,8 +67,9 @@ endif
 #       sudo make install INSTALL=/usr/local
 # See SuiteSparse/README.md for more details.
 # (note that CSparse is not installed; CXSparse is installed instead)
-install: metisinstall gbinstall moninstall
+install: gbinstall moninstall
 	( cd SuiteSparse_config && $(MAKE) install )
+	- ( cd SuiteSparse_metis && $(MAKE) install )
 	# ( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
@@ -87,23 +90,10 @@ ifneq (,$(GPU_CONFIG))
 endif
 	( cd SLIP_LU && $(MAKE) install )
 
-metisinstall: metis
-ifeq (,$(MY_METIS_LIB))
-        # install METIS from SuiteSparse/metis-5.1.0
-	@mkdir -p $(INSTALL_LIB)
-	@mkdir -p $(INSTALL_INCLUDE)
-	- $(CP) lib/libmetis.* $(INSTALL_LIB)
-        # the following is needed only on the Mac, so *.dylib is hardcoded:
-	$(SO_INSTALL_NAME) $(INSTALL_LIB)/libmetis.dylib $(INSTALL_LIB)/libmetis.dylib
-	- $(CP) include/metis.h $(INSTALL_INCLUDE)
-	chmod 755 $(INSTALL_LIB)/libmetis.*
-	chmod 644 $(INSTALL_INCLUDE)/metis.h
-endif
-
 # uninstall all packages
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
-	- ( cd metis-5.1.0 && $(MAKE) uninstall )
+	- ( cd SuiteSparse_metis && $(MAKE) uninstall )
 	- ( cd GraphBLAS && $(MAKE) uninstall )
 	- ( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
@@ -122,16 +112,12 @@ uninstall:
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 	( cd SLIP_LU && $(MAKE) uninstall )
-ifeq (,$(MY_METIS_LIB))
-        # uninstall METIS, which came from SuiteSparse/metis-5.1.0
-	$(RM) $(INSTALL_LIB)/libmetis.*
-	$(RM) $(INSTALL_INCLUDE)/metis.h
-endif
 
 # compile the dynamic libraries.  For GraphBLAS and Mongoose, this also builds
 # the static library
-library: metis
+library:
 	( cd SuiteSparse_config && $(MAKE) )
+	- ( cd SuiteSparse_metis && $(MAKE) library )
 	( cd Mongoose  && $(MAKE) CMAKE_OPTIONS='$(CMAKE_OPTIONS)' library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
@@ -156,7 +142,7 @@ endif
 # Remove all files not in the original distribution
 purge:
 	- ( cd SuiteSparse_config && $(MAKE) purge )
-	- ( cd metis-5.1.0 && $(MAKE) distclean )
+	- ( cd SuiteSparse_metis && $(MAKE) purge )
 	- ( cd AMD && $(MAKE) purge )
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd Mongoose  && $(MAKE) purge )
@@ -182,7 +168,7 @@ purge:
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	- ( cd SuiteSparse_config && $(MAKE) clean )
-	- ( cd metis-5.1.0 && $(MAKE) clean )
+	- ( cd SuiteSparse_metis && $(MAKE) clean )
 	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd Mongoose  && $(MAKE) clean )
 	- ( cd AMD && $(MAKE) clean )
@@ -226,24 +212,6 @@ cov: purge
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
 	( cd SLIP_LU && $(MAKE) cov )
-
-# configure and compile METIS, placing the libmetis.* library in
-# SuiteSparse/lib and the metis.h include file in SuiteSparse/include.
-metis: include/metis.h
-
-# Install the shared version of METIS in SuiteSparse/lib.
-# The SO_INSTALL_NAME commmand is only needed on the Mac, so *.dylib is
-# hardcoded below.
-include/metis.h:
-ifeq (,$(MY_METIS_LIB))
-	- ( cd metis-5.1.0 && $(MAKE) config shared=1 prefix=$(SUITESPARSE) cc=$(CC) )
-	- ( cd metis-5.1.0 && $(MAKE) )
-	- ( cd metis-5.1.0 && $(MAKE) install )
-	- $(SO_INSTALL_NAME) $(SUITESPARSE)/lib/libmetis.dylib \
-                             $(SUITESPARSE)/lib/libmetis.dylib
-else
-	@echo 'Using pre-installed METIS 5.1.0 library at ' '[$(MY_METIS_LIB)]'
-endif
 
 # just compile GraphBLAS
 gb:

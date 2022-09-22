@@ -16,7 +16,7 @@ function klu_make (metis_path)
 % SPDX-License-Identifier: LGPL-2.1+
 
 if (nargin < 1)
-    metis_path = '../../metis-5.1.0' ;
+    metis_path = '../../SuiteSparse_metis' ;
 end
 with_cholmod = exist (metis_path, 'dir') ;
 

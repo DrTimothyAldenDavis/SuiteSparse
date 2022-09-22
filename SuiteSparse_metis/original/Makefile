@@ -16,10 +16,10 @@ cc         = not-set
 cputype = $(shell uname -m | sed "s/\\ /_/g")
 systype = $(shell uname -s)
 
-BUILDDIR = build
+BUILDDIR = build/$(systype)-$(cputype)
 
 # Process configuration options.
-CONFIG_FLAGS = 
+CONFIG_FLAGS = -DCMAKE_VERBOSE_MAKEFILE=1
 ifeq ($(gklib_path), not-set)
     gklib_path = GKlib
 endif
@@ -55,8 +55,6 @@ endif
 VERNUM=5.1.0
 PKGNAME=metis-$(VERNUM)
 
-JOBS ?= 8
-
 define run-config
 mkdir -p $(BUILDDIR)
 cd $(BUILDDIR) && cmake $(CURDIR) $(CONFIG_FLAGS)
@@ -66,7 +64,7 @@ all clean install:
 	@if [ ! -f $(BUILDDIR)/Makefile ]; then \
 		more BUILD.txt; \
 	else \
-	  	make --jobs=$(JOBS) -C $(BUILDDIR) $@ ; \
+	  	make -C $(BUILDDIR) $@ $(MAKEFLAGS); \
 	fi
 
 uninstall:

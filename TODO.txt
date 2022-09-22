@@ -21,8 +21,6 @@ FIXME: new output files
     (look for more)
 
 FIXME: update metis cmake to use SuiteSparsePolicy
-    determine how my metis-5.1.0 differs from the original.
-    Rename mine as suitesparse_metis-5.1.0
 
 FIXME: Mongoose 'make test' fails: unable to download test files
 

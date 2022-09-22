@@ -235,7 +235,7 @@ Packages in SuiteSparse, and files in this directory:
                 function in MATLAB.
                 authors: Tim Davis, Patrick Amestoy, Iain Duff
 
-    bin         where the metis-5.1.0 programs are placed when METIS is compiled
+    bin         where programs are placed when compiled
 
     BTF         permutation to block triangular form
                 authors: Tim Davis, Ekanathan Palamadai
@@ -357,12 +357,11 @@ Packages in SuiteSparse, and files in this directory:
     Mongoose    graph partitioning.
                 authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
 
-    metis-5.1.0 a modified version of METIS.  See the README.txt files for
-                details.
-                author: George Karypis; not an integral component of
-                SuiteSparse, however.  This is just a copy included with
-                SuiteSparse via the open-source license provided by
-                George Karypis
+    SuiteSparse_metis: a modified version of METIS.  See the README.txt files
+                for details.  author: George Karypis; not an integral component
+                of SuiteSparse, however.  This is a slightly modified copy
+                included with SuiteSparse via the open-source license provided
+                by George Karypis.
 
     RBio        read/write sparse matrices in Rutherford/Boeing format
                 author: Tim Davis
@@ -401,18 +400,10 @@ Packages in SuiteSparse, and files in this directory:
                 algorithm design collaboration: Iain Duff
 
 Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
-in the metis-5.1.0 directory.  Its use is optional, so you can remove it before
-compiling SuiteSparse, if you desire.  The use of METIS will improve the
+in the SuiteSparse_metis directory.  Its use is optional, so you can remove it
+before compiling SuiteSparse, if you desire.  The use of METIS will improve the
 ordering quality.  METIS has been slightly modified for use in SuiteSparse; see
-the metis-5.1.0/README.txt file for details.  SuiteSparse can use the
-unmodified METIS 5.1.0, however.  To use your own copy of METIS, or a
-pre-installed copy of METIS use 'make MY_METIS_LIB=-lmymetis' or
-'make MY_METIS_LIB=/my/stuff/metis-5.1.0/whereeveritis/libmetis.so 
-      MY_METIS_INC=/my/stuff/metis-5.1.0/include'.
-If you want to use METIS in MATLAB, however, you MUST use the version provided
-here, in SuiteSparse/metis-5.1.0.  The MATLAB interface to METIS required some
-small changes in METIS itself to get it to work.  The original METIS 5.1.0
-will segfault MATLAB.
+the SuiteSparse_metis/README.txt file for details.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.

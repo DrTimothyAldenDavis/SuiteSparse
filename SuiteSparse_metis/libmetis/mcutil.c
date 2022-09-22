@@ -195,14 +195,21 @@ int BetterBalanceKWay(idx_t ncon, idx_t *vwgt, real_t *ubvec,
 
   for (i=0; i<ncon; i++) {
     tmp = bm1[i]*(pt1[i]+a1*vwgt[i]) - ubvec[i];
+    //printf("BB: %d %+.4f ", (int)i, (float)tmp);
     nrm1 += tmp*tmp;
     max1 = (tmp > max1 ? tmp : max1);
 
     tmp = bm2[i]*(pt2[i]+a2*vwgt[i]) - ubvec[i];
+    //printf("%+.4f ", (float)tmp);
     nrm2 += tmp*tmp;
     max2 = (tmp > max2 ? tmp : max2);
 
+    //printf("%4d %4d %4d %4d %4d %4d %4d %.2f\n", 
+    //    (int)vwgt[i],
+    //    (int)a1, (int)pt1[i], (int)tpt1[i],
+    //    (int)a2, (int)pt2[i], (int)tpt2[i], ubvec[i]);
   }
+  //printf("   %.3f %.3f %.3f %.3f\n", (float)max1, (float)nrm1, (float)max2, (float)nrm2);
 
   if (max2 < max1)
     return 1;
