@@ -74,7 +74,6 @@ find_package ( OpenMP )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
-    message ( STATUS "CUDA: enabled" )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBCUDA" )
     add_subdirectory ( CUDA )
     set ( GB_CUDA graphblascuda  ${CUDA_LIBRARIES} )
@@ -84,7 +83,6 @@ if ( SUITESPARSE_CUDA )
     link_directories ( "CUDA" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "rmm_wrap" "/usr/local/cuda/lib64" )
 else ( )
     # without CUDA and RMM
-    message ( STATUS "CUDA: not enabled" )
     set ( CMAKE_RMM_FLAG " " )
     set ( GB_CUDA )
     set ( GB_RMM )
