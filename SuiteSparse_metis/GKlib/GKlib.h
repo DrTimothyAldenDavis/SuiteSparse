@@ -76,20 +76,21 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Added for SuiteSparse, for incorporation into MATLAB, using MATLAB's
-   version of malloc, calloc, realloc, free, and printf.
-   Tim Davis, Jan 30, 2016, Texas A&M University. */
-#ifdef MATLAB_MEX_FILE
-#define malloc mxMalloc
-#define calloc mxCalloc
-#define free(p) { \
-    if ((p) == NULL) mexErrMsgTxt ("double mxFree!") ; \
-    mxFree (p) ; \
-    (p) = NULL ; \
-    }
-#define realloc mxRealloc
-#define printf mexPrintf
-#endif
+/* Added for incorporation into SuiteSparse.
+   Tim Davis, Oct 31, 2022, Texas A&M University. */
+#include "SuiteSparse_config.h"
+#define malloc  SuiteSparse_config.malloc_func
+#define calloc  SuiteSparse_config.calloc_func
+#define realloc SuiteSparse_config.realloc_func
+#define free(p)                                 \
+{                                               \
+    if ((p) != NULL)                            \
+    {                                           \
+        SuiteSparse_config.free_func (p) ;      \
+        (p) = NULL ;                            \
+    }                                           \
+}
+
 /* -------------------------------------------------------------------------- */
 
 

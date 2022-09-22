@@ -59,6 +59,8 @@ configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_vers
 # report status and set compile flags
 #-------------------------------------------------------------------------------
 
+message ( STATUS "CMAKE C flags:   ${CMAKE_C_FLAGS}" )
+# message ( STATUS "CMAKE C++ flags: ${CMAKE_CXX_FLAGS}" )
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
     message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
 #   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
@@ -66,9 +68,7 @@ else ( )
     message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
 #   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif ( )
-
 message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------

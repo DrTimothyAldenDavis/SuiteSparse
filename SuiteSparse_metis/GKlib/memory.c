@@ -98,10 +98,8 @@ void gk_FreeMatrix(void ***r_matrix, size_t ndim1, size_t ndim2)
 /*************************************************************************/
 int gk_malloc_init()
 {
-#ifdef MATLAB_MEX_FILE
-  /* do not create the gkmcore when METIS is incorporated into a MATLAB
-   * mexFunction.  Instead, allow the MATLAB memory manager to gracefully
-   * handle mxMalloc failures. */
+#if 1
+  /* do not create the gkmcore when METIS is incorporated into SuiteSparse. */
   gkmcore = NULL ;
 #else
   if (gkmcore == NULL)

@@ -67,6 +67,11 @@ find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
 find_package ( SuiteSparse_metis 5.1.0 )
 
+if ( NOT SUITESPARSE_METIS_FOUND )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DNPARTITION " )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPARTITION " )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
@@ -83,17 +88,16 @@ configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/chol
 # report status and set compile flags
 #-------------------------------------------------------------------------------
 
+message ( STATUS "CMAKE C flags:   ${CMAKE_C_FLAGS}" )
+# message ( STATUS "CMAKE C++ flags: ${CMAKE_CXX_FLAGS}" )
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     ${CMAKE_C_FLAGS_DEBUG} ")
-#   message ( STATUS "CMAKE C++ Flags debug:   ${CMAKE_CXX_FLAGS_DEBUG} ")
+    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
+#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
 else ( )
-    message ( STATUS "CMAKE C Flags release:   ${CMAKE_C_FLAGS_RELEASE} ")
-#   message ( STATUS "CMAKE C++ Flags release: ${CMAKE_CXX_FLAGS_RELEASE} ")
+    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
+#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
 endif ( )
-
-message ( STATUS "CMAKE C compiler:        ${CMAKE_C_COMPILER_ID} ")
-message ( STATUS "CMAKE have OpenMP:       ${OPENMP_FOUND} ")
-
+message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
 # message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------
@@ -103,7 +107,7 @@ message ( STATUS "CMAKE have OpenMP:       ${OPENMP_FOUND} ")
 include_directories ( Check Cholesky Core MatrixOps Modify Partition
     Supernodal Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} ${AMD_INCLUDE_DIR}
     ${COLAMD_INCLUDE_DIR} ${CAMD_INCLUDE_DIR} ${CCOLAMD_INCLUDE_DIR}
-    ${METIS_INCLUDE_DIR} )
+    ${SUITESPARSE_METIS_INCLUDE_DIR} )
 
 if ( SUITESPARSE_CUDA )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
@@ -215,9 +219,9 @@ if ( CCOLAMD_FOUND )
 endif ( )
 
 # metis:
-if ( METIS_FOUND )
-    target_link_libraries ( cholmod PUBLIC ${METIS_LIBRARIES} )
-    target_link_libraries ( cholmod_static PUBLIC ${METIS_LIBRARIES} )
+if ( SUITESPARSE_METIS_FOUND )
+    target_link_libraries ( cholmod PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
+    target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
 endif ( )
 
 # CUDA: cudart and cublas libraries
@@ -297,3 +301,4 @@ endif ( )
 
 message ( STATUS "Final CMAKE C flags :     ${CMAKE_C_FLAGS} ")
 message ( STATUS "Final CMAKE C++ flags :   ${CMAKE_CXX_FLAGS} ")
+

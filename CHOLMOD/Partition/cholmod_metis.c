@@ -54,7 +54,7 @@
 
 #ifndef NPARTITION
 
-#include "metis.h"
+#include "suitesparse_metis.h"
 
 #if (IDXTYPEWIDTH != 64)
 #error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
