@@ -1,7 +1,5 @@
 FIXME: date for all packages
 
-FIXME test/update SuiteSparse_install.m, SuiteSparse_demo.m
-
 FIXME: new output files
     AMD/MATLAB/amd_demo.m.out (diary)
     AMD/Demo/*.out
@@ -20,7 +18,8 @@ FIXME: new output files
     SPQR/Demo/*out*
     (look for more)
 
-FIXME: update metis cmake to use SuiteSparsePolicy
+FIXME: add the metis programs to the new CMakeLists.txt
+    of suitesparse_metis
 
 FIXME: Mongoose 'make test' fails: unable to download test files
 
