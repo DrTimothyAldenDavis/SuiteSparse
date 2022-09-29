@@ -341,7 +341,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
     cholmod_l_free (zsize,  sizeof (Entry), Z,  cc) ;
     cholmod_l_free (wisize, sizeof (int64_t), Wi, cc) ;
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         cholmod_l_free_dense (&Ydense, cc) ;
@@ -693,7 +693,7 @@ template <typename Entry> cholmod_sparse *SuiteSparseQR_qmult
     cholmod_l_free (wisize,  sizeof (int64_t),  Wi,  cc) ;
     cholmod_l_reallocate_sparse (cholmod_l_nnz (Ysparse,cc), Ysparse, cc) ;
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         cholmod_l_free_sparse (&Ysparse, cc) ;

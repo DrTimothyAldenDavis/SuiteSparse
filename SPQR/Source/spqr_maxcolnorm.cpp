@@ -13,31 +13,15 @@
 
 inline double spqr_private_nrm2 (int64_t n, double *X, cholmod_common *cc)
 {
-    double norm = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        norm = BLAS_DNRM2 (&N, X, &one) ;
-    }
+    double norm ;
+    SUITESPARSE_BLAS_dnrm2 (norm, n, X, 1, cc->blas_ok) ;
     return (norm) ;
 }
 
 inline double spqr_private_nrm2 (int64_t n, Complex *X, cholmod_common *cc)
 {
-    double norm = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        norm = BLAS_DZNRM2 (&N, X, &one) ;
-    }
+    double norm ;
+    SUITESPARSE_BLAS_dznrm2 (norm, n, X, 1, cc->blas_ok) ;
     return (norm) ;
 }
 
@@ -76,7 +60,7 @@ template <typename Entry> double spqr_maxcolnorm
         maxnorm = MAX (maxnorm, norm) ;
     }
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (EMPTY) ;

@@ -17,6 +17,7 @@
 
 default: go
 
+# FIXME: remove dependency on SuiteSparse_config.mk:
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # uncomment this to disable the GPU
@@ -88,7 +89,6 @@ TEST = cm.c test_ops.c null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
 LTEST = cl.c amdtest_l.c camdtest_l.c huge_l.c
 
 INC =   ../Include/cholmod.h \
-	../Include/cholmod_blas.h \
 	../Include/cholmod_internal.h \
 	../Include/cholmod_template.h
 

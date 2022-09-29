@@ -140,7 +140,7 @@ GLOBAL void UMFPACK_report_info
     PRINTF (("none.  UMFPACK will be slow.\n")) ;
 #else
     PRINTF (("Fortran BLAS.  size of BLAS integer: "ID"\n",
-	(Int) (sizeof (BLAS_INT)))) ;
+	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
 #endif
 
     PRINTF (("    MATLAB:                           ")) ;

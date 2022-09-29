@@ -85,22 +85,6 @@ configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h"
 configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
 
 #-------------------------------------------------------------------------------
-# report status and set compile flags
-#-------------------------------------------------------------------------------
-
-message ( STATUS "CMAKE C flags:   ${CMAKE_C_FLAGS}" )
-# message ( STATUS "CMAKE C++ flags: ${CMAKE_CXX_FLAGS}" )
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
-#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
-#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
-endif ( )
-message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
-
-#-------------------------------------------------------------------------------
 # include directories
 #-------------------------------------------------------------------------------
 
@@ -199,6 +183,7 @@ message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( cholmod PUBLIC ${BLAS_LIBRARIES} )
 target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
+include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # LAPACK:
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
@@ -299,6 +284,10 @@ else ( )
 
 endif ( )
 
-message ( STATUS "Final CMAKE C flags :     ${CMAKE_C_FLAGS} ")
-message ( STATUS "Final CMAKE C++ flags :   ${CMAKE_CXX_FLAGS} ")
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
+
 

@@ -76,8 +76,6 @@
 #define UMFPACK_ARCHITECTURE "HP 700 Unix"
 
 #else
-/* If the architecture is unknown, and you call the BLAS, you may need to */
-/* define BLAS_BY_VALUE, BLAS_NO_UNDERSCORE, and/or BLAS_CHAR_ARG yourself. */
 #define UMFPACK_ARCHITECTURE "unknown"
 #endif
 

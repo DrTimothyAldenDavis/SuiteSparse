@@ -54,31 +54,13 @@ message ( STATUS "Build type:    " ${CMAKE_BUILD_TYPE} )
 
 project ( csparse
     VERSION "${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+    LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/cs.h.in" "${PROJECT_SOURCE_DIR}/Include/cs.h" )
-
-#-------------------------------------------------------------------------------
-# report status and set compile flags
-#-------------------------------------------------------------------------------
-
-message ( STATUS "CMAKE build type:        " ${CMAKE_BUILD_TYPE} )
-
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
-#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
-#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
-endif ( )
-
-message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------
 # include directories

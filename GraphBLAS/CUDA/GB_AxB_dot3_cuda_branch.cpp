@@ -34,8 +34,9 @@ bool GB_AxB_dot3_cuda_branch
         if (ngpus_to_use > 0
             // FIXME: FUTURE: user-defined and complex types and operators
             // FIXME: guard against user-defined ADD and MULT
-            && (A->type->code < GB_FC32_code)
-            && (B->type->code < GB_FC32_code))
+//          && (A->type->code < GB_FC32_code)
+ //         && (B->type->code < GB_FC32_code)
+            )
         {
             return true;
         }

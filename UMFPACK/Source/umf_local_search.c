@@ -135,8 +135,6 @@ GLOBAL Int UMF_local_search
 
 #ifndef NBLAS
     Int blas_ok = TRUE ;
-#else
-#define blas_ok FALSE
 #endif
 
 #ifndef NDEBUG
@@ -475,9 +473,9 @@ GLOBAL Int UMF_local_search
 	    /* solve Lx=b, where b = U (:,k), stored in the LU block */
 
 #ifndef NBLAS
-	    BLAS_TRSV (fnpiv, Flublock, Flu, nb) ;
+	    BLAS_TRSV (fnpiv, Flublock, Flu, nb, blas_ok) ;
+	    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !blas_ok)
 #endif
-	    if (!blas_ok)
 	    {
 		/* use plain C code if no BLAS, or on integer overflow */
 		Entry *Flub = Flublock ;
@@ -510,28 +508,31 @@ GLOBAL Int UMF_local_search
 
 	/* this work will be discarded if the pivcol [OUT] is chosen instead */
 
-#ifdef NBLAS
-	/* no BLAS available - use plain C code instead */
-	for (j = 0 ; j < fnpiv ; j++)
-	{
-	    Entry Fuj, *Flub = Flblock + j * fnr_curr ;
-	    Fuj = Flu [j] ;
-	    if (IS_NONZERO (Fuj))
-	    {
-#pragma ivdep
-		for (i = 0 ; i < fnrows ; i++)
-		{
-		    /* Wy [i] -= Flblock [i+j*fnr_curr] * Fuj ; */
-		    MULT_SUB (Wy [i], Flub [i], Fuj) ;
-		}
-	    }
-	    /* Flblock += fnr_curr ; */
-	}
-#else
 	/* Using 1-based notation:
 	 * Wy (1:fnrows) -= Flblock (1:fnrows,1:fnpiv) * Flu (1:fnpiv) */
-	BLAS_GEMV (fnrows, fnpiv, Flblock, Flu, Wy, fnr_curr) ;
+
+#ifndef NBLAS
+	BLAS_GEMV (fnrows, fnpiv, Flblock, Flu, Wy, fnr_curr, blas_ok) ;
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !blas_ok)
 #endif
+        {
+            /* no BLAS, or BLAS int overflow - use plain C code instead */
+            for (j = 0 ; j < fnpiv ; j++)
+            {
+                Entry Fuj, *Flub = Flblock + j * fnr_curr ;
+                Fuj = Flu [j] ;
+                if (IS_NONZERO (Fuj))
+                {
+                    #pragma ivdep
+                    for (i = 0 ; i < fnrows ; i++)
+                    {
+                        /* Wy [i] -= Flblock [i+j*fnr_curr] * Fuj ; */
+                        MULT_SUB (Wy [i], Flub [i], Fuj) ;
+                    }
+                }
+                /* Flblock += fnr_curr ; */
+            }
+        }
 
 	/* ------------------------------------------------------------------ */
 

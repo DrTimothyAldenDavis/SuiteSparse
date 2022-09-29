@@ -497,8 +497,51 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 /* === Architecture and BLAS ================================================ */
 /* ========================================================================== */
 
-#define BLAS_OK Common->blas_ok
-#include "cholmod_blas.h"
+#if defined (__sun) || defined (MSOL2) || defined (ARCH_SOL2)
+#define CHOLMOD_SOL2
+#define CHOLMOD_ARCHITECTURE "Sun Solaris"
+
+#elif defined (__sgi) || defined (MSGI) || defined (ARCH_SGI)
+#define CHOLMOD_SGI
+#define CHOLMOD_ARCHITECTURE "SGI Irix"
+
+#elif defined (__linux) || defined (MGLNX86) || defined (ARCH_GLNX86)
+#define CHOLMOD_LINUX
+#define CHOLMOD_ARCHITECTURE "Linux"
+
+#elif defined (__APPLE__)
+#define CHOLMOD_MAC
+#define CHOLMOD_ARCHITECTURE "Mac"
+
+#elif defined (_AIX) || defined (MIBM_RS) || defined (ARCH_IBM_RS)
+#define CHOLMOD_AIX
+#define CHOLMOD_ARCHITECTURE "IBM AIX"
+
+#elif defined (__alpha) || defined (MALPHA) || defined (ARCH_ALPHA)
+#define CHOLMOD_ALPHA
+#define CHOLMOD_ARCHITECTURE "Compaq Alpha"
+
+#elif defined (_WIN32) || defined (WIN32) || defined (_WIN64) || defined (WIN64)
+#if defined (__MINGW32__) || defined (__MINGW32__)
+#define CHOLMOD_MINGW
+#elif defined (__CYGWIN32__) || defined (__CYGWIN32__)
+#define CHOLMOD_CYGWIN
+#else
+#define CHOLMOD_WINDOWS
+#endif
+#define CHOLMOD_ARCHITECTURE "Microsoft Windows"
+
+#elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)
+#define CHOLMOD_HP
+#define CHOLMOD_ARCHITECTURE "HP Unix"
+
+#elif defined (__hp700) || defined (MHP700) || defined (ARCH_HP700)
+#define CHOLMOD_HP
+#define CHOLMOD_ARCHITECTURE "HP 700 Unix"
+
+#else
+#define CHOLMOD_ARCHITECTURE "unknown"
+#endif
 
 /* ========================================================================== */
 /* === debugging definitions ================================================ */

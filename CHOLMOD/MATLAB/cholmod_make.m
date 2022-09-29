@@ -68,7 +68,7 @@ if (have_metis)
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;
 else
-    fprintf ('Compiling CHOLMOD without METIS for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling CHOLMOD without SuiteSparse_metis for MATLAB Version %s\n', v) ;
     include = ['-DNPARTITION ' include] ;
 end
 
@@ -81,6 +81,8 @@ end
  % fine the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
+    % BLAS/LAPACK functions have no underscore on Windows
+    flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = 'libmwlapack.lib' ;
     elseif (verLessThan ('matlab', '9.5'))
@@ -89,6 +91,8 @@ if (pc)
         lapack = '-lmwlapack -lmwblas' ;
     end
 else
+    % BLAS/LAPACK functions have an underscore suffix
+    flags = [flags ' -DBLAS_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = '-lmwlapack' ;
     else
@@ -96,7 +100,7 @@ else
     end
 end
 
-if (is64 && ~verLessThan ('matlab', '7.8'))
+if (~verLessThan ('matlab', '7.8'))
     % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
     fprintf ('with 64-bit BLAS\n') ;
     flags = [flags ' -DBLAS64'] ;

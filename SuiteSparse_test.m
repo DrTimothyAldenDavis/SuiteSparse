@@ -111,7 +111,6 @@ try
     package = package + 1 ;
     waitbar (package/(npackages+1), h, 'SuiteSparse test: LDL') ;
     cd ([SuiteSparse '/LDL/MATLAB']) ;
-    ldlmain2 ;
     ldltest ;
 
     %---------------------------------------------------------------------------

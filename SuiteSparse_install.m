@@ -309,8 +309,10 @@ end
 
 % compile and install Mongoose
 try
+    fprintf ('\nCompiling Mongoose\n') ;
     paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
     mongoose_make (0) ;
+    fprintf ('\n') ;
 catch me
     disp (me.message) ;
     fprintf ('Mongoose not installed\n') ;
@@ -319,6 +321,7 @@ end
 
 % compile and install GraphBLAS
 try
+    fprintf ('\nCompiling GraphBLAS\n') ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
@@ -330,9 +333,10 @@ catch me
     failed {end+1} = 'GraphBLAS' ;
 end
 
-% compile and install SLIP_LU
+% compile and install SLIP_LU : FIXME install SPEX instead
+%{
 try
-    fprintf ('try to install SLIP_LU (requires GMP and MPFR)') ;
+    fprintf ('try to install SLIP_LU (requires GMP and MPFR)\n') ;
     paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
     SLIP_install (do_demo) ;
 catch me
@@ -340,6 +344,7 @@ catch me
     fprintf ('SLIP_LU not installed\n') ;
     failed {end+1} = 'SLIP_LU' ;
 end
+%}
 
 %-------------------------------------------------------------------------------
 % post-install wrapup

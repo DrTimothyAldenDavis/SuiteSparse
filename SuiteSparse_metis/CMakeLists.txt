@@ -8,7 +8,7 @@
 
 # This CMakeLists.txt script was added by Tim Davis, Oct 2022,
 # to build SuiteSparse_metis for use in SuiteSparse.  See
-# include/suitesparse_metis.h for a description of the changes made in this
+# include/SuiteSparse_metis.h for a description of the changes made in this
 # version, as compared to the original METIS v5.1.0.  This cmake script builds
 # libsuitesparse_metis.so.
 
@@ -49,7 +49,7 @@ include ( SuiteSparsePolicy )
 
 project ( suitesparse_metis
     VERSION "${SUITESPARSE_METIS_VERSION_MAJOR}.${SUITESPARSE_METIS_VERSION_MINOR}.${SUITESPARSE_METIS_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+    LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -69,22 +69,6 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# report status and set compile flags
-#-------------------------------------------------------------------------------
-
-message ( STATUS "CMAKE C flags:   ${CMAKE_C_FLAGS}" )
-# message ( STATUS "CMAKE C++ flags: ${CMAKE_CXX_FLAGS}" )
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
-#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
-#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
-endif ( )
-message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
-
-#-------------------------------------------------------------------------------
 # include directories
 #-------------------------------------------------------------------------------
 
@@ -102,7 +86,7 @@ SET_TARGET_PROPERTIES ( suitesparse_metis PROPERTIES
     VERSION ${SUITESPARSE_METIS_VERSION_MAJOR}.${SUITESPARSE_METIS_VERSION_MINOR}.${SUITESPARSE_METIS_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${SUITESPARSE_METIS_VERSION_MAJOR}
-    PUBLIC_HEADER "include/suitesparse_metis.h" )
+    PUBLIC_HEADER "include/SuiteSparse_metis.h" )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_metis library properties
@@ -159,4 +143,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS suitesparse_metis_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
 

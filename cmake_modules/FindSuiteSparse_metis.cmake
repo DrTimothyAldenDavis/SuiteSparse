@@ -31,7 +31,7 @@
 
 # include files for SuiteSparse_metis
 find_path ( SUITESPARSE_METIS_INCLUDE_DIR
-    NAMES suitesparse_metis.h
+    NAMES SuiteSparse_metis.h
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_metis
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis

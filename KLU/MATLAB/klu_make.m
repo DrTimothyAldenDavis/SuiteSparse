@@ -5,7 +5,7 @@ function klu_make (metis_path)
 %   klu_make
 %
 % KLU relies on AMD, COLAMD, and BTF for its ordering options, and can
-% optionally use CHOLMOD, CCOLAMD, CAMD, and METIS as well.
+% optionally use CHOLMOD, CCOLAMD, CAMD, and SuiteSparse_metis as well.
 %
 % You must type the klu_make command while in the KLU/MATLAB directory.
 %
@@ -39,14 +39,14 @@ kk = 0 ;
 include = '-I. -I../../AMD/Include -I../../COLAMD/Include -I../Include -I../../SuiteSparse_config -I../../BTF/Include' ;
 
 if (with_cholmod)
-    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../User'] ;
     include = [include ' -I' metis_path '/include'] ;
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;
     include = ['-DNSUPERNODAL -DNMODIFY -DNMATRIXOPS -DNCHECK ' include] ;
 else
-    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     include = ['-DNCHOLMOD ' include] ;
 end
 

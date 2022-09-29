@@ -35,7 +35,7 @@ extern "C" {
 #else
 #ifndef NCOMPLEX
 #include <complex.h>
-#define cs_complex_t double _Complex
+#define cs_complex_t double complex
 #endif
 #endif
 

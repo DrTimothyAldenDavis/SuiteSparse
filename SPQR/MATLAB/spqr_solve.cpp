@@ -285,8 +285,8 @@ void mexFunction
     {
         // snprintf would be safer, but Windows is oblivious to safety ...
         // (Visual Studio C++ 2008 does not recognize snprintf!)
-        sprintf (msg, "rank deficient. rank = %ld tol = %g\n", rank,
-            cc->SPQR_tol_used) ;
+        sprintf (msg, "rank deficient. rank = %" PRId64 " tol = %g\n",
+            rank, cc->SPQR_tol_used) ;
         mexWarnMsgIdAndTxt ("MATLAB:rankDeficientMatrix", msg) ;
     }
 

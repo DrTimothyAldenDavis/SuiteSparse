@@ -462,9 +462,9 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
         return (NULL) ;
     }
 
-    // At this point, the factorization is guaranteed to succeed, unless
-    // sizeof (BLAS_INT) < sizeof (int64_t), in which case, you really should get
-    // a 64-bit BLAS.
+    // At this point, the factorization is guaranteed to succeed, unless sizeof
+    // (SUITESPARSE_BLAS_INT) < sizeof (int64_t), in which case, you really
+    // should get a 64-bit BLAS.
 
     // -------------------------------------------------------------------------
     // create the Blob : everything the numeric factorization kernel needs
@@ -525,10 +525,10 @@ template <typename Entry> spqr_numeric <Entry> *spqr_factorize
     {
         // On the CPU, this case can only occur if the problem is too large for
         // the BLAS.  This can only occur if, for example you're on a 64-bit
-        // platform (with sizeof (int64_t) = 8) and using a 32-bit BLAS (with
-        // sizeof (BLAS_INT) = 4).  On the GPU, this case can more easily
-        // occur, if we run out of memory in spqrgpu_kernel, or if we fail to
-        // communicate with the GPU.
+        // platform (with sizeof (int64_t) == 8) and using a 32-bit BLAS (with
+        // sizeof (SUITESPARSE_BLAS_INT) == 4).  On the GPU, this case can more
+        // easily occur, if we run out of memory in spqrgpu_kernel, or if we
+        // fail to communicate with the GPU.
         spqr_freenum (&QRnum, cc) ;
         FREE_WORK ;
         return (NULL) ;

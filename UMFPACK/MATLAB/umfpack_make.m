@@ -63,6 +63,8 @@ kk = 0 ;
 % find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
+    % BLAS/LAPACK functions have no underscore on Windows
+    flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = 'libmwlapack.lib' ;
     elseif (verLessThan ('matlab', '9.5'))
@@ -71,6 +73,8 @@ if (pc)
         lapack = '-lmwlapack -lmwblas' ;
     end
 else
+    % BLAS/LAPACK functions have an underscore suffix
+    flags = [flags ' -DBLAS_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = '-lmwlapack' ;
     else
@@ -82,6 +86,9 @@ if (is64 && ~verLessThan ('matlab', '7.8'))
     % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
     fprintf ('with 64-bit BLAS\n') ;
     flags = [flags ' -DBLAS64'] ;
+else
+    % other versions of MATLAB use a 32-bit BLAS
+    flags = [flags ' -DBLAS32'] ;
 end
 
 if (~(pc || mac))
@@ -110,10 +117,10 @@ end
 %-------------------------------------------------------------------------------
 
 if (with_cholmod)
-    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     flags = [' -DNSUPERNODAL -DNMODIFY -DNMATRIXOPS ' flags] ;
 else
-    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     flags = [' -DNCHOLMOD ' flags] ;
 end
 

@@ -1,10 +1,10 @@
 //------------------------------------------------------------------------------
-// SuiteSparse/SuiteSparse_metis/include/suitesparse_metis.h
+// SuiteSparse/SuiteSparse_metis/include/SuiteSparse_metis.h
 //------------------------------------------------------------------------------
 
 /*
 --------------------------------------------------------------------------------
-This file appears as SuiteSparse/SuiteSparse_metis/include/suitesparse_metis.h.
+This file appears as SuiteSparse/SuiteSparse_metis/include/SuiteSparse_metis.h.
 This copy of METIS is slightly changed from the original METIS v5.1.0
 distribution.  The use of METIS in SuiteSparse is optional, but if used, this
 revised version is required.
@@ -12,10 +12,10 @@ revised version is required.
 (1) In metis-5.1.0/include/metis.h, the default integer size has been changed
     from 32 bits to 64 (IDXTYPEWIDTH).  METIS 5.1.0 gives this flexility to the
     user, asking the user to modify this file.  That has been done here, and as
-    a result, this file is renamed to suitesparse_metis.h.  Getting the
+    a result, this file is renamed to SuiteSparse_metis.h.  Getting the
     unmodified libmetis.so in a Linux distro (likely with 32-bit integers)
     combined with a modified metis.h (with 64-bit integers) breaks things
-    badly.  So the safest thing is to rename this file as suitesparse_metis.h,
+    badly.  So the safest thing is to rename this file as SuiteSparse_metis.h,
     and to rename the compiled library as libsuitesparse_metis.so, to ensure
     the right library is linked.
 

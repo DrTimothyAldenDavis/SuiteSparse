@@ -1,7 +1,9 @@
 //------------------------------------------------------------------------------
-// templates/GB_jit_AxB_phase1.cuh: symbolic load balancing and data partition
-// to assign work to different 'buckets' for later compute
+// template/GB_jit_AxB_dot3_phase1.cuh: build nanobuckets, hunt for pre-zombies
 //------------------------------------------------------------------------------
+
+// dot3, phase1: symbolic load balancing and data partition
+// to assign work to different 'buckets' for later compute
 
 //  This kernel scans the non-zero pattern in A and B, takes into account the
 //  mask and computes total work required to form C. Then it classifies each
@@ -36,7 +38,7 @@
 using namespace cooperative_groups;
 
 //------------------------------------------------------------------------------
-// GB_AxB_cuda_phase1: build nanobuckets, hunt for pre-zombies
+// GB_jit_AxB_dot3_phase1: build nanobuckets, hunt for pre-zombies
 //------------------------------------------------------------------------------
 
 // GB_AxB_cuda_dot3_phase1 is a CUDA kernel that scans all entries in C and
@@ -61,7 +63,7 @@ using namespace cooperative_groups;
 // can we skip the bucket creation?
 
 template<typename T_M, uint64_t srcode, int chunk_size = 128>
-__global__ void AxB_phase1
+__global__ void GB_jit_AxB_dot3_phase1
 (
     // outputs, preallocated in global memory:
     int64_t *nanobuckets,   // array of size NBUCKETS-blockDim.x-by-gridDim.x
@@ -82,7 +84,9 @@ __global__ void AxB_phase1
     const int64_t *__restrict__ Mh = M->h ;
     const int64_t *__restrict__ Mp = M->p ;
     const int64_t *__restrict__ Mi = M->i ;
+    #if !GB_MASK_STRUCT
     const T_M *__restrict__ Mx = (T_M*) M->x ; // not accessed if M structural
+    #endif
     const int64_t mnvec = M->nvec ;
     const int64_t mvlen = M->vlen ;
     const int64_t mnz = GB_nnz(M) ;

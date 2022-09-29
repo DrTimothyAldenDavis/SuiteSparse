@@ -19,7 +19,9 @@ function gbmake (what)
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
-help gbmake
+fprintf ('Note: the libgraphblas_matlab dynamic library must already be\n') ;
+fprintf ('compiled prior to running this script.\n') ;
+
 have_octave = (exist ('OCTAVE_VERSION', 'builtin') == 5) ;
 
 if (have_octave)

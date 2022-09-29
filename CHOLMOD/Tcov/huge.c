@@ -17,15 +17,11 @@
 #endif
 
 #undef  ERROR
-#undef  BLAS_OK
 #include "cholmod_internal.h"
 
 #undef  ERROR
 #define ERROR(status,message) \
     CHOLMOD(error) (status, __FILE__, __LINE__, message, cm)
-
-#undef  BLAS_OK
-#define BLAS_OK cm->blas_ok
 
 /* ========================================================================== */
 /* === huge ================================================================= */

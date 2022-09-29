@@ -105,24 +105,10 @@ obj_files = mex_compile(config_src, 'c', flags, include, details);
 obj_list = [obj_list obj_files];
 
 % Build Mongoose
-% Check if library is built already
-% fprintf('\n\nSearching for Mongoose...');
-location = fileparts(mfilename('fullpath'));
-if (exist([location '/../Lib/libmongoose.a'], 'file') == 2)
-    % fprintf('\nMongoose static library found! Using static linking.\n');
-    lib = [lib ' -L../Lib -lmongoose'];
-else
-    % fprintf('\nMongoose static library not found! Compiling Mongoose using mex.\n');
+obj_files = mex_compile(mongoose_src, 'cpp', [cpp_flags flags], include, details);
+obj_list = [obj_list obj_files];
 
-    % Compile Mongoose
-    % fprintf('\n\nBuilding Mongoose');
-    obj_files = mex_compile(mongoose_src, 'cpp', [cpp_flags flags], include, details);
-    obj_list = [obj_list obj_files];
-end
-    
-
-% fprintf('\nBuilding MEX Utilities') ;
-
+% build MEX utilities
 obj_files = mex_compile(mex_util_src, 'cpp', [cpp_flags flags], include, details);
 obj_list = [obj_list obj_files];
 

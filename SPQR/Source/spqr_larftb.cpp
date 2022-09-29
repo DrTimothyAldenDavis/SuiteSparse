@@ -40,75 +40,40 @@
 #include "spqr.hpp"
 
 inline void spqr_private_larft (char direct, char storev, int64_t n, int64_t k,
-    double *V, int64_t ldv, double *Tau, double *T, int64_t ldt, cholmod_common *cc)
+    double *V, int64_t ldv, double *Tau, double *T, int64_t ldt,
+    cholmod_common *cc)
 {
-    BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
-    if (CHECK_BLAS_INT &&
-        !(EQ (N,n) && EQ (K,k) && EQ (LDV,ldv) && EQ (LDT,ldt)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARFT (&direct, &storev, &N, &K, V, &LDV, Tau, T, &LDT) ;
-    }
+    SUITESPARSE_LAPACK_dlarft (&direct, &storev, n, k, V, ldv, Tau, T, ldt,
+        cc->blas_ok) ;
 }
 
 inline void spqr_private_larft (char direct, char storev, int64_t n, int64_t k,
     Complex *V, int64_t ldv, Complex *Tau, Complex *T, int64_t ldt,
     cholmod_common *cc)
 {
-    BLAS_INT N = n, K = k, LDV = ldv, LDT = ldt ;
-    if (CHECK_BLAS_INT &&
-        !(EQ (N,n) && EQ (K,k) && EQ (LDV,ldv) && EQ (LDT,ldt)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARFT (&direct, &storev, &N, &K, V, &LDV, Tau, T, &LDT) ;
-    }
+    SUITESPARSE_LAPACK_zlarft (&direct, &storev, n, k, V, ldv, Tau, T, ldt,
+        cc->blas_ok) ;
 }
 
 
 inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    int64_t m, int64_t n, int64_t k, double *V, int64_t ldv, double *T, int64_t ldt, double *C,
-    int64_t ldc, double *Work, int64_t ldwork, cholmod_common *cc)
+    int64_t m, int64_t n, int64_t k, double *V, int64_t ldv, double *T,
+    int64_t ldt, double *C, int64_t ldc, double *Work, int64_t ldwork,
+    cholmod_common *cc)
 {
-    BLAS_INT M = m, N = n, K = k, LDV = ldv, LDT = ldt, LDC = ldc,
-        LDWORK = ldwork ;
-    if (CHECK_BLAS_INT &&
-        !(EQ (M,m) && EQ (N,n) && EQ (K,k) && EQ (LDV,ldv) &&
-          EQ (LDT,ldt) && EQ (LDV,ldv) && EQ (LDWORK,ldwork)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARFB (&side, &trans, &direct, &storev, &M, &N, &K, V, &LDV,
-            T, &LDT, C, &LDC, Work, &LDWORK) ;
-    }
+    SUITESPARSE_LAPACK_dlarfb (&side, &trans, &direct, &storev, m, n, k,
+        V, ldv, T, ldt, C, ldc, Work, ldwork, cc->blas_ok) ;
 }
 
 
 inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    int64_t m, int64_t n, int64_t k, Complex *V, int64_t ldv, Complex *T, int64_t ldt,
-    Complex *C, int64_t ldc, Complex *Work, int64_t ldwork, cholmod_common *cc)
+    int64_t m, int64_t n, int64_t k, Complex *V, int64_t ldv, Complex *T,
+    int64_t ldt, Complex *C, int64_t ldc, Complex *Work, int64_t ldwork,
+    cholmod_common *cc)
 {
     char tr = (trans == 'T') ? 'C' : 'N' ;      // change T to C
-    BLAS_INT M = m, N = n, K = k, LDV = ldv, LDT = ldt, LDC = ldc,
-        LDWORK = ldwork ;
-    if (CHECK_BLAS_INT &&
-        !(EQ (M,m) && EQ (N,n) && EQ (K,k) && EQ (LDV,ldv) &&
-          EQ (LDT,ldt) && EQ (LDV,ldv) && EQ (LDWORK,ldwork)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARFB (&side, &tr, &direct, &storev, &M, &N, &K, V, &LDV,
-            T, &LDT, C, &LDC, Work, &LDWORK) ;
-    }
+    SUITESPARSE_LAPACK_zlarfb (&side, &tr, &direct, &storev, m, n, k,
+        V, ldv, T, ldt, C, ldc, Work, ldwork, cc->blas_ok) ;
 }
 
 

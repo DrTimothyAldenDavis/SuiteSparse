@@ -56,8 +56,7 @@
 
 /* -------------------------------------------------------------------------- */
 
-#define BLAS_OK cm->blas_ok
-#include "cholmod_blas.h"
+#include "cholmod_internal.h"
 
 #define EMPTY (-1)
 #define TRUE 1

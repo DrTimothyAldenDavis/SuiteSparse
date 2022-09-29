@@ -3,6 +3,7 @@ Oct FIXME, 2022: version 4.0.0
     * using CMake build system
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
         with int32_t and int64_t.  cs_long_t changed to int64_t.
+    * double _Complex: changed to "double complex".  ANSI C11 required.
 
 Sept 12, 2017: version 3.2.0
 

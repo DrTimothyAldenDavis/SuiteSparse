@@ -59,7 +59,7 @@ T GB_reduce_sum(thread_block_tile<warp_sz> g, T val)
     for (int i = warp_sz >> 1; i > 0; i >>= 1)
     {
         T next = g.shfl_down( val, i);
-        val = GB_ADD( val, next ) ;
+        GB_ADD( val, val, next ); 
     }
     return val;
 }

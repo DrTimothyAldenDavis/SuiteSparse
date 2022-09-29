@@ -1,6 +1,17 @@
+FIXME: retest all Tcov (Linux)
+
+FIXME: should GraphBLAS depend on SuiteSparse_config?
+
+FIXME: Mongoose 'make test' fails: unable to download test files
+    Mongoose docs need sourcecodeproto.sty
+
+FIXME: CUDA (requires hypersparse)
+    cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
+    Find*.cmake for: SuiteSparse_GPURuntime, GPUQREngine
+
 FIXME: date for all packages
 
-FIXME: new output files
+FIXME: new output files, when date is fixed
     AMD/MATLAB/amd_demo.m.out (diary)
     AMD/Demo/*.out
     CAMD/MATLAB/camd_demo.m.out (diary)
@@ -17,11 +28,3 @@ FIXME: new output files
     UMFPACK/MATLAB/*out
     SPQR/Demo/*out*
     (look for more)
-
-FIXME: Mongoose 'make test' fails: unable to download test files
-    Mongoose docs need sourcecodeproto.sty
-
-FIXME: CUDA
-    cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
-    Find*.cmake for: SuiteSparse_GPURuntime, GPUQREngine
-

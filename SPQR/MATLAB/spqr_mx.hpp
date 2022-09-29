@@ -13,9 +13,6 @@
 #include "mex.h"
 #include "SuiteSparseQR.hpp"
 
-// get the BLAS_INT definition from CHOLMOD (this is for spumoni output only)
-#include "cholmod_blas.h"
-
 #include <complex>
 typedef std::complex<double> Complex ;
 

@@ -425,3 +425,9 @@ if ( INSIDE_SUITESPARSE )
         RUNTIME       DESTINATION ${SUITESPARSE_BINDIR} )
 endif ( )
 
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
+

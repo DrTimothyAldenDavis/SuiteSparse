@@ -303,7 +303,6 @@ found in the lists below.
             contains definitions and prototypes:
 
             Include/cholmod.h               LGPL
-            Include/cholmod_blas.h          LGPL
             Include/cholmod_camd.h          part of Partition module
             Include/cholmod_check.h         part of Check module
             Include/cholmod_cholesky.h      part of Cholesky module

@@ -70,9 +70,20 @@ GrB_Info GxB_IndexUnaryOp_new       // create a new user-defined index_unary op
     (*op)->selop_function = NULL ;
 
     (*op)->opcode = GB_USER_idxunop_code ;
+
+    //--------------------------------------------------------------------------
     // get the index_unary op name and defn
-    GB_op_name_and_defn ((*op)->name, &((*op)->defn), idxop_name, idxop_defn,
+    //--------------------------------------------------------------------------
+
+    GrB_Info info = GB_op_name_and_defn ((*op)->name, &((*op)->defn),
+        &((*op)->defn_size), idxop_name, idxop_defn,
         "GxB_index_unary_function", 24) ;
+    if (info != GrB_SUCCESS)
+    { 
+        // out of memory
+        GB_FREE (op, header_size) ;
+        return (info) ;
+    }
 
     //--------------------------------------------------------------------------
     // return result

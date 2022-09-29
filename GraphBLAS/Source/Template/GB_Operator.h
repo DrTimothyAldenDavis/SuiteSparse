@@ -26,5 +26,6 @@
 
     char name [GxB_MAX_NAME_LEN] ;       // name of the unary operator
     GB_Opcode opcode ;      // operator opcode
-    char *defn ;            // function definition (currently unused)
+    char *defn ;            // function definition
+    size_t defn_size ;      // size of the definition
 

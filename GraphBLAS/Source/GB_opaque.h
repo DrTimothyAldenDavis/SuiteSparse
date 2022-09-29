@@ -391,6 +391,7 @@ struct GB_Type_opaque       // content of GrB_Type
     GB_Type_code code ;     // the type code
     char name [GxB_MAX_NAME_LEN] ;       // name of the type
     char *defn ;            // type definition (currently unused)
+    size_t defn_size ;      // size of the definition
 } ;
 
 struct GB_UnaryOp_opaque    // content of GrB_UnaryOp

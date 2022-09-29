@@ -39,7 +39,7 @@ include ( SuiteSparsePolicy )
 
 project ( rbio
     VERSION "${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+    LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -52,22 +52,6 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/RBio.h.in" "${PROJECT_SOURCE_DIR}/Include/RBio.h")
-
-#-------------------------------------------------------------------------------
-# report status and set compile flags
-#-------------------------------------------------------------------------------
-
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
-#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
-#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
-endif ( )
-
-message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -171,3 +155,10 @@ else ( )
     message ( STATUS "Skipping the demos in RBio/Demo" )
 
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
+

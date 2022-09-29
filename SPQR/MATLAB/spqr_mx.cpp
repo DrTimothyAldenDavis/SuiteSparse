@@ -90,7 +90,7 @@ void spqr_mx_spumoni
             "    size of mwIndex:  %d bytes\n"
             "    size of int:      %d bytes\n"
             "    size of BLAS int: %d bytes\n",
-            sizeof (mwIndex), sizeof (int), sizeof (BLAS_INT)) ;
+            sizeof (mwIndex), sizeof (int), sizeof (SUITESPARSE_BLAS_INT)) ;
 #ifndef NEXPERT
         mexPrintf ("    compiled with opts.solution='min2norm' option\n") ;
 #endif

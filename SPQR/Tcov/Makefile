@@ -16,6 +16,8 @@ valgrind: vgo
 ccode: all
 
 CUDA = no
+
+# FIXME: remove dependency on SuiteSparse_config.mk:
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # this test requires gcc
@@ -26,8 +28,7 @@ CXX= g++
 GPU_CONFIG = 
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
-CF = -pg \
-	-O0 -g -fprofile-arcs -ftest-coverage \
+CF = -pg -g --coverage -fprofile-abs-path -std=c11 -O0 \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
 	-fexceptions -fopenmp

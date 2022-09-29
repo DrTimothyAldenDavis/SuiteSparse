@@ -84,6 +84,11 @@ GrB_Info GB_IndexUnaryOp_check  // check a GraphBLAS index_unary operator
         return (GrB_INVALID_OBJECT) ;
     }
 
+    if (op->defn != NULL)
+    { 
+        GBPR0 ("%s\n", op->defn) ;
+    }
+
     return (GrB_SUCCESS) ;
 }
 

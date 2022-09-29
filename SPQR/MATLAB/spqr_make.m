@@ -38,6 +38,8 @@ is64 = (~isempty (strfind (computer, '64'))) ;
 if (is64)
     % 64-bit MATLAB
     flags = '-largeArrayDims' ;
+else
+    error ('32-bit version no longer supported') ;
 end
 
 % MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
@@ -53,13 +55,13 @@ have_metis = exist (metis_path, 'dir') ;
 
 % fix the METIS 4.0.1 rename.h file
 if (have_metis)
-    fprintf ('Compiling SuiteSparseQR with METIS for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling SuiteSparseQR with SuiteSparse_metis for MATLAB Version %s\n', v) ;
     include = [include ' -I' metis_path '/include'] ;
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;
     include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include' ] ;
 else
-    fprintf ('Compiling SuiteSparseQR without METIS on MATLAB Version %s\n', v);
+    fprintf ('Compiling SuiteSparseQR without SuiteSparse_metis on MATLAB Version %s\n', v);
     include = ['-DNPARTITION ' include ] ;
 end
 
@@ -72,6 +74,8 @@ end
 % The correct option is highly variable and depends on the MATLAB version.
 
 if (pc)
+    % BLAS/LAPACK functions have no underscore on Windows
+    flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '6.5'))
         % MATLAB 6.1 and earlier: use the version supplied in CHOLMOD
         lib = '../../CHOLMOD/MATLAB/lcc_lib/libmwlapack.lib' ;
@@ -84,6 +88,8 @@ if (pc)
         lib = '-lmwlapack -lmwblas' ;
     end
 else
+    % BLAS/LAPACK functions have an underscore suffix
+    flags = [flags ' -DBLAS_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         % MATLAB 7.5 and earlier, use the LAPACK lib (including the BLAS)
         lib = '-lmwlapack' ;
@@ -93,7 +99,7 @@ else
     end
 end
 
-if (is64 && ~verLessThan ('matlab', '7.8'))
+if (~verLessThan ('matlab', '7.8'))
     % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
     fprintf ('with 64-bit BLAS\n') ;
     flags = [flags ' -DBLAS64'] ;

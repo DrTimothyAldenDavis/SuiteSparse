@@ -112,7 +112,7 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !Common->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
@@ -205,7 +205,7 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !Common->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }

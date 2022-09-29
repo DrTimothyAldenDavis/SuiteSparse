@@ -5191,15 +5191,15 @@ Arguments:
         If Xz is (double *) NULL, then Xx holds both real and imaginary parts,
         where Xx [2*i] is the real part of X (i) and Xx [2*i+1] is the imaginary
         part of X (i).  Xx is of length 2*n doubles.  If you have an ANSI C99
-        compiler with the intrinsic double _Complex type, then Xx can be of
-        type double _Complex in the calling routine and typecast to (double *)
+        compiler with the intrinsic double complex type, then Xx can be of
+        type double complex in the calling routine and typecast to (double *)
         when passed to umfpack_*_report_vector (this is untested, however).
         This is the "merged" form of the complex vector X.
 
         Note that all complex routines in UMFPACK V4.4 and later use this same
         strategy for their complex arguments.  The split format is useful for
         MATLAB, which holds its real and imaginary parts in seperate arrays.
-        The packed format is compatible with the intrinsic double _Complex
+        The packed format is compatible with the intrinsic double complex
         type in ANSI C99, and is also compatible with SuperLU's method of
         storing complex matrices.  In Version 4.3, this routine was the only
         one that allowed for packed complex arguments.

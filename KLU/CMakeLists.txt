@@ -40,7 +40,7 @@ include ( SuiteSparsePolicy )
 
 project ( klu
     VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+    LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -59,22 +59,6 @@ find_package ( CHOLMOD 4.0.0 )
 
 configure_file ( "Config/klu.h.in" "${PROJECT_SOURCE_DIR}/Include/klu.h")
 configure_file ( "Config/klu_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex")
-
-#-------------------------------------------------------------------------------
-# report status and set compile flags
-#-------------------------------------------------------------------------------
-
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     ${CMAKE_C_FLAGS_DEBUG} ")
-#   message ( STATUS "CMAKE C++ Flags debug:   ${CMAKE_CXX_FLAGS_DEBUG} ")
-else ( )
-    message ( STATUS "CMAKE C Flags release:   ${CMAKE_C_FLAGS_RELEASE} ")
-#   message ( STATUS "CMAKE C++ Flags release: ${CMAKE_CXX_FLAGS_RELEASE} ")
-endif ( )
-
-message ( STATUS "CMAKE C compiler:        ${CMAKE_C_COMPILER_ID} ")
-
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -254,4 +238,10 @@ else ( )
     message ( STATUS "Skipping the demos in KLU/Demo" )
 
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
 

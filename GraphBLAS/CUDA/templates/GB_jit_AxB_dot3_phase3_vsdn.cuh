@@ -130,6 +130,8 @@ __global__ void AxB_dot3_phase3_vsdn
 
         int64_t pair_id = all_in_one ? kk : Bucket[ kk ];
         int64_t i = Mi[pair_id];  // cols from mask
+
+        // FIXME: use another variable, not "k" here:
         int64_t k = Ci[pair_id] >> 4;  // vector of C encoded in phase1
 
         // j = k or j = Mh [k] if C and M are hypersparse
@@ -188,20 +190,15 @@ __global__ void AxB_dot3_phase3_vsdn
                 // A is full and B is sparse/hyper
                 //--------------------------------------------------------------
 
-                int64_t k = Bi [pB] ;               // first row index of B(:,j)
-                // cij = A(k,i) * B(k,j)
-                GB_GETA ( aki, Ax, pA+k ) ;         // aki = A(k,i)
-                GB_GETB ( bkj, Bx, pB ) ;           // bkj = B(k,j)
-                GB_C_MULT ( cij, aki, bkj ) ;           // cij = aki * bkj
                 cij_exists = true ;
-                for (int64_t p = pB+1 ; p < pB_end ; ++p)
+                for (int64_t p = pB ; p < pB_end ; ++p)
                 {
-                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                     int64_t k = Bi [p] ;        // next row index of B(:,j)
                     // cij += A(k,i) * B(k,j)
                     GB_GETA ( aki, Ax, pA+k ) ;           // aki = A(k,i)
                     GB_GETB ( bkj, Bx, p ) ;              // bkj = B(k,j)
-                    GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+                    GB_MULTADD ( cij, aki, bkj, i, k, j) ;        // cij += aki * bkj
+                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
         }
@@ -232,20 +229,15 @@ __global__ void AxB_dot3_phase3_vsdn
                 // A is sparse/hyper and B is full
                 //--------------------------------------------------------------
 
-                int64_t k = Ai [pA] ;       // first col index of A(i, :)
-                // cij = A(i,k) * B(j,k)
-                GB_GETA ( aki, Ax, pA ) ;   // aki = A(i,k)
-                GB_GETB ( bkj, Bx, pB+k ) ; // bkj = B(k,j)
-                GB_C_MULT ( cij, aki, bkj) ;           // cij = aki * bkj
                 cij_exists = true ;
-                for (int64_t p = pA+1 ; p < pA_end ; ++p)
+                for (int64_t p = pA ; p < pA_end ; ++p)
                 {
-                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                     int64_t k = Ai [p] ;        // next row index of A(:,i)
                     // cij += A(k,i) * B(k,j)
                     GB_GETA ( aki, Ax, p ) ;              // aki = A(i,k)
                     GB_GETB ( bkj, Bx, pB+k) ;            // bkj = B(j,k)
-                    GB_MULTADD ( cij, aki, bkj) ;         // cij += aik * bjk
+                    GB_MULTADD ( cij, aki, bkj, i, k, j) ;         // cij += aik * bjk
+                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
         }

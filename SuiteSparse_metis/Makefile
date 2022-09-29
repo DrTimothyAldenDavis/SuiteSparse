@@ -8,7 +8,7 @@
 
 # This Makefile was added by Tim Davis, Oct 2022,
 # to build SuiteSparse_metis for use in SuiteSparse.  See
-# include/suitesparse_metis.h for a description of the changes made in this
+# include/SuiteSparse_metis.h for a description of the changes made in this
 # version, as compared to the original METIS v5.1.0.
 
 # The original METIS v5.1.0 Makefile has been moved to original/Makefile.

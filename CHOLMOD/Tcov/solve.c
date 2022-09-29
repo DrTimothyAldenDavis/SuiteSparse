@@ -488,13 +488,13 @@ double solve (cholmod_sparse *A)
 		/* E3 = A3*C3-I */
 		if (isreal)
 		{
-		    BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
-			minusone, E3->x, n) ;
+		    SUITESPARSE_BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n,
+                        C3->x, n, minusone, E3->x, n, cm->blas_ok) ;
 		}
 		else
 		{
-		    BLAS_zgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
-			minusone, E3->x, n) ;
+		    SUITESPARSE_BLAS_zgemm ("N", "N", n, n, n, one, A3->x, n,
+                        C3->x, n, minusone, E3->x, n, cm->blas_ok) ;
 		}
 		OK (cm->blas_ok) ;
 	    }

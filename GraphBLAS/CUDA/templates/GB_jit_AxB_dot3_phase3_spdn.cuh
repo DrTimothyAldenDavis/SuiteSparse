@@ -50,7 +50,7 @@ T GB_reduce_sum(thread_block_tile<warp_sz> g, T val)
     for (int i = warp_sz >> 1; i > 0; i >>= 1)
     {
         T next = g.shfl_down( val, i);
-        val = GB_ADD( val, next ) ;
+        GB_ADD( val, val, next ); 
     }
     return val;
 }
@@ -169,7 +169,7 @@ __global__ void AxB_dot3_phase3_spdn
         #else
         // A is bitmap or full
         pA = A->vlen * i ;
-        pA_end   = pA + i ;
+        pA_end = pA + i ;
         #endif
 
         GB_DECLAREA (aki) ;
@@ -208,22 +208,15 @@ __global__ void AxB_dot3_phase3_spdn
                 // A is full and B is sparse/hyper
                 //--------------------------------------------------------------
 
-                pB += threadIdx.x ;
-                int64_t k = Bi [pB] ;   // my first row index of B(:,j)
-                // cij = A(k,i) * B(k,j)
-                GB_GETA ( aki, Ax, pA+k ) ;         // aki = A(k,i)
-                GB_GETB ( bkj, Bx, pB) ;            // bkj = B(k,j)
-                GB_C_MULT ( cij, aki, bkj ) ;       // cij = aki * bkj
                 cij_exists = true ;
-                pB += blockDim.x ;
-                for (int64_t p = pB ; p < pB_end ; p += blockDim.x)
+                for (int64_t p = pB + threadIdx.x ; p < pB_end ; p += blockDim.x)
                 {
-                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                     int64_t k = Bi [p] ;        // next row index of B(:,j)
                     // cij += A(k,i) * B(k,j)
                     GB_GETA ( aki, Ax, pA+k ) ;           // aki = A(k,i)
                     GB_GETB ( bkj, Bx, p ) ;              // bkj = B(k,j)
-                    GB_MULTADD ( cij, aki, bkj ) ;        // cij += aki * bkj
+                    GB_MULTADD ( cij, aki, bkj, i, k, j ) ;        // cij += aki * bkj
+                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
         }
@@ -233,7 +226,7 @@ __global__ void AxB_dot3_phase3_spdn
             // A is bitmap and B is sparse/hyper
             //------------------------------------------------------------------
 
-            for (int64_t p = pB_start ; p < pB_end ; p += blockDim.x)
+            for (int64_t p = pB + threadIdx.x ; p < pB_end ; p += blockDim.x)
             {
                 int64_t k = Bi [p] ;        // next row index of B(:,j)
                 if (Ab [pA+k])              // check if A(k,i) exists
@@ -254,22 +247,15 @@ __global__ void AxB_dot3_phase3_spdn
                 // A is sparse/hyper and B is full
                 //--------------------------------------------------------------
 
-                pA += threadIdx.x ;
-                int64_t k = Ai [pA] ;       // my first col index of A(i, :)
-                // cij = A(i,k) * B(j,k)
-                GB_GETA ( aki, Ax, pA ) ;   // aki = A(i,k)
-                GB_GETB ( bkj, Bx, pB+k ) ; // bkj = B(k,j)
-                GB_C_MULT ( cij, aki, bkj) ;           // cij = aki * bkj
                 cij_exists = true ;
-                pA += blockDim.x ;
-                for (int64_t p = pA ; p < pA_end ; p += blockDim.x)
+                for (int64_t p = pA + threadIdx.x ; p < pA_end ; p += blockDim.x)
                 {
-                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                     int64_t k = Ai [p] ;        // next row index of A(:,i)
                     // cij += A(k,i) * B(k,j)
                     GB_GETA ( aki, Ax, p ) ;              // aki = A(i,k)
                     GB_GETB ( bkj, Bx, pB+k) ;            // bkj = B(j,k)
-                    GB_MULTADD ( cij, aki, bkj) ;         // cij += aik * bjk
+                    GB_MULTADD ( cij, aki, bkj, i, k, j) ;         // cij += aik * bjk
+                    GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
         }
@@ -280,7 +266,7 @@ __global__ void AxB_dot3_phase3_spdn
             // A is sparse/hyper and B is bitmap
             //------------------------------------------------------------------
 
-            for (int64_t p = pA ; p < pA_end ; p += blockDim.x)
+            for (int64_t p = pA + threadIdx.x ; p < pA_end ; p += blockDim.x)
             {
                 int64_t k = Ai [p] ;        // next row index of A(:,i)
                 if (Bb [pB+k])              // check if B(k,j) exists

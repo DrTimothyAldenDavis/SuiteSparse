@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
 set ( SUITESPARSE_DATE "Oct 31, 2022" )  # FIXME
@@ -41,23 +41,55 @@ include ( SuiteSparsePolicy )
 
 project ( suitesparseconfig
     VERSION "${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}"
-    LANGUAGES C ) # <-- add CXX here for packages that use C++
+    LANGUAGES C )
 
 #-------------------------------------------------------------------------------
-# report status and set compile flags
+# find library dependencies
 #-------------------------------------------------------------------------------
 
-# FIXME: move this to cmake_modules/SuiteSparseReport.cmake
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:     " ${CMAKE_C_FLAGS_DEBUG} )
-#   message ( STATUS "CMAKE C++ Flags debug:   " ${CMAKE_CXX_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:   " ${CMAKE_C_FLAGS_RELEASE} )
-#   message ( STATUS "CMAKE C++ Flags release: " ${CMAKE_CXX_FLAGS_RELEASE} )
-endif ( )
+enable_language ( C Fortran )
+message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
+find_package ( OpenMP )
 
-message ( STATUS "CMAKE C compiler:        " ${CMAKE_C_COMPILER_ID} )
-# message ( STATUS "CMAKE C++ compiler:      " ${CMAKE_CXX_COMPILER_ID} )
+# SuiteSparse interface to the BLAS and LAPACK libraries
+message ( STATUS "BLAS64_suffix:   ${BLAS64_SUFFIX}" )
+message ( STATUS "Looking for 64-bit BLAS" )
+set ( BLA_SIZEOF_INTEGER 8 )
+find_package ( BLAS )
+if ( BLAS_FOUND )
+    # 64-bit BLAS found
+    message ( STATUS "Found 64-bit BLAS" )
+    add_compile_definitions ( BLAS64 ) 
+    set ( SuiteSparse_BLAS_integer "int64_t" )
+    if (NOT ${BLAS64_SUFFIX} STREQUAL "")
+        # append BLAS64_SUFFIX to each BLAS and LAPACK name
+        string ( FIND ${BLAS64_SUFFIX} "_" HAS_UNDERSCORE )
+        if ( HAS_UNDERSCORE EQUAL -1 )
+            message ( STATUS " BLAS64 suffix has an underscore" )
+            add_compile_definitions ( BLAS64__SUFFIX=${BLAS64_SUFFIX} ) 
+        else ( )
+            message ( STATUS " BLAS64 suffix has no underscore" )
+            add_compile_definitions ( BLAS64_SUFFIX=${BLAS64_SUFFIX} ) 
+        endif ( )
+    endif ( )
+else ( ) 
+    # look for 32-bit BLAS
+    message ( STATUS "Looking for 32-bit BLAS" )
+    set ( BLA_SIZEOF_INTEGER 4 )
+    find_package ( BLAS )
+    if ( BLAS_FOUND )
+        message ( STATUS "Found 32-bit BLAS" )
+    endif ( )
+    set ( SuiteSparse_BLAS_integer "int32_t" )
+endif ( ) 
+include ( FortranCInterface )
+
+#-------------------------------------------------------------------------------
+# configure files
+#-------------------------------------------------------------------------------
+
+configure_file ( "Config/SuiteSparse_config.h.in"
+    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h" )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparseconfig library properties
@@ -86,12 +118,6 @@ SET_TARGET_PROPERTIES ( suitesparseconfig_static PROPERTIES
     SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
-# configure files
-#-------------------------------------------------------------------------------
-
-configure_file ( "Config/SuiteSparse_config.h.in" "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h" )
-
-#-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
@@ -100,6 +126,28 @@ if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     target_link_libraries ( suitesparseconfig_static PUBLIC m )
 endif ( )
+
+# OpenMP:
+if ( OPENMP_FOUND )
+    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
+    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
+    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
+    target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( suitesparseconfig_static PUBLIC
+        ${OpenMP_C_LIBRARIES} )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
+    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
+endif ( )
+
+# BLAS:
+# if ( BLAS_FOUND )
+#   message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+#   message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+#   message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
+#   target_link_libraries ( suitesparseconfig PUBLIC ${BLAS_LIBRARIES} )
+#   target_link_libraries ( suitesparseconfig_static PUBLIC ${BLAS_LIBRARIES} )
+#   include_directories ( ${BLAS_INCLUDE_DIRS} )
+# endif ( )
 
 #-------------------------------------------------------------------------------
 # suitesparseconfig installation location
@@ -131,3 +179,4 @@ if ( INSIDE_SUITESPARSE )
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
+include ( SuiteSparseReport )

@@ -41,8 +41,8 @@ default:
 	( cd KLU && $(MAKE) )
 	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) )
 	( cd SPQR && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) )
 	( cd SLIP_LU && $(MAKE) )
 ifneq ($(CUDA_PATH),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
@@ -68,8 +68,8 @@ local:
 	( cd KLU && $(MAKE) local && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SPQR && $(MAKE) local && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) )
 ifneq ($(CUDA_PATH),)
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
@@ -93,8 +93,8 @@ install: gbinstall moninstall
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) install )
 ifneq (,$(CUDA_PATH))
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
@@ -105,7 +105,6 @@ endif
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
 	- ( cd SuiteSparse_metis && $(MAKE) uninstall )
-	- ( cd GraphBLAS && $(MAKE) uninstall )
 	- ( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
 	( cd CAMD && $(MAKE) uninstall )
@@ -122,6 +121,7 @@ uninstall:
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
+	- ( cd GraphBLAS && $(MAKE) uninstall )
 	( cd SLIP_LU && $(MAKE) uninstall )
 
 # compile the libraries
@@ -141,8 +141,8 @@ library:
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
-	( cd GraphBLAS && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
+	( cd GraphBLAS && $(MAKE) library )
 	( cd SLIP_LU && $(MAKE) library )
 ifneq (,$(CUDA_PATH))
 	( cd SuiteSparse_GPURuntime && $(MAKE) library )
@@ -154,7 +154,6 @@ purge:
 	- ( cd SuiteSparse_config && $(MAKE) purge )
 	- ( cd SuiteSparse_metis && $(MAKE) purge )
 	- ( cd AMD && $(MAKE) purge )
-	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd Mongoose  && $(MAKE) purge )
 	- ( cd CAMD && $(MAKE) purge )
 	- ( cd COLAMD && $(MAKE) purge )
@@ -170,16 +169,16 @@ purge:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) purge )
 	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
-	- ( cd SLIP_LU && $(MAKE) purge )
+	- ( cd GraphBLAS && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
 	- $(RM) -r include/* bin/* lib/* share/*
+	- ( cd SLIP_LU && $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	- ( cd SuiteSparse_config && $(MAKE) clean )
 	- ( cd SuiteSparse_metis && $(MAKE) clean )
-	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd Mongoose  && $(MAKE) clean )
 	- ( cd AMD && $(MAKE) clean )
 	- ( cd CAMD && $(MAKE) clean )
@@ -196,6 +195,7 @@ clean:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) clean )
 	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
+	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd SLIP_LU && $(MAKE) clean )
 
 # Create the PDF documentation

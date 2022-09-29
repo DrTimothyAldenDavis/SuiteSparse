@@ -146,15 +146,7 @@
 inline double spqr_private_larfg (int64_t n, double *X, cholmod_common *cc)
 {
     double tau = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARFG (&N, X, X + 1, &one, &tau) ;
-    }
+    SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
 
@@ -162,15 +154,7 @@ inline double spqr_private_larfg (int64_t n, double *X, cholmod_common *cc)
 inline Complex spqr_private_larfg (int64_t n, Complex *X, cholmod_common *cc)
 {
     Complex tau = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARFG (&N, X, X + 1, &one, &tau) ;
-    }
+    SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
 
@@ -212,33 +196,17 @@ template <typename Entry> Entry spqr_private_house  // returns tau
 inline void spqr_private_larf (int64_t m, int64_t n, double *V, double tau,
     double *C, int64_t ldc, double *W, cholmod_common *cc)
 {
-    BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
-    if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDC,ldc)))
-    {
-        cc->blas_ok = FALSE ;
-        
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARF (&left, &M, &N, V, &one, &tau, C, &LDC, W) ;
-    }
+    SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
 }
 
 inline void spqr_private_larf (int64_t m, int64_t n, Complex *V, Complex tau,
     Complex *C, int64_t ldc, Complex *W, cholmod_common *cc)
 {
-    BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
     Complex conj_tau = spqr_conj (tau) ;
-    if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDC,ldc)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARF (&left, &M, &N, V, &one, &conj_tau, C, &LDC, W) ;
-    }
+    SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
+        cc->blas_ok) ;
 }
 
 
@@ -574,11 +542,10 @@ template <typename Entry> int64_t spqr_front
         }
     }
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
-        // This cannot occur if the BLAS_INT and the int64_t are the same integer.
-        // In that case, CHECK_BLAS_INT is FALSE at compile-time, and the
-        // compiler will then remove this as dead code.
+        // This cannot occur if the SUITESPARSE_BLAS_INT and the int64_t are
+        // the same integer.
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (0) ;
     }

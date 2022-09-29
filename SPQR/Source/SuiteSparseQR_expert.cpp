@@ -1464,7 +1464,7 @@ template <typename Entry> cholmod_dense *SuiteSparseQR_qmult
 
     FREE_WORK ;
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         cholmod_l_free_dense (&Ydense, cc) ;

@@ -268,8 +268,8 @@ static int check_common
     P3 ("    sizeof(void *):   %d\n", (int) sizeof (void *)) ;
     P3 ("    sizeof(double):   %d\n", (int) sizeof (double)) ;
     P3 ("    sizeof(Int):      %d (CHOLMOD's basic integer)\n", (int) sizeof (Int)) ;
-    P3 ("    sizeof(BLAS_INT): %d (integer used in the BLAS)\n",
-	    (int) sizeof (BLAS_INT)) ;
+    P3 ("    sizeof(SUITESPARSE_BLAS_INT): %d (integer used in the BLAS)\n",
+	    (int) sizeof (SUITESPARSE_BLAS_INT)) ;
 
     if (Common->fl != EMPTY)
     {

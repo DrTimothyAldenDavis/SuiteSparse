@@ -43,11 +43,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
     )
 
-include ( SuiteSparsePolicy )
-
 # CUDA is under development for now, and not deployed in production:
-# FIXME:
-# set ( SUITESPARSE_CUDA off )
+  set ( ENABLE_CUDA false )
+# set ( ENABLE_CUDA true )
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -154,19 +153,6 @@ configure_file ( "Config/GraphBLAS_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/Gr
 configure_file ( "Config/GraphBLAS_API_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex" )
 configure_file ( "Config/README.md.in" "${PROJECT_SOURCE_DIR}/README.md" )
-
-#-------------------------------------------------------------------------------
-# report status
-#-------------------------------------------------------------------------------
-
-if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "CMAKE C Flags debug:       " ${CMAKE_C_FLAGS_DEBUG} )
-else ( )
-    message ( STATUS "CMAKE C Flags release:     " ${CMAKE_C_FLAGS_RELEASE} )
-endif ( )
-
-message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
 
 #-------------------------------------------------------------------------------
 # include directories for both graphblas and graphblasdemo libraries
@@ -504,4 +490,10 @@ if ( DUMP )
     message("End dumping all CMake variables in alphabetic order")
     message("====")
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
 

@@ -1087,7 +1087,8 @@ typedef struct cholmod_common_struct
 
     int called_nd ;	    /* TRUE if the last call to
 			     * cholmod_analyze called NESDIS or METIS. */
-    int blas_ok ;           /* FALSE if BLAS int overflow; TRUE otherwise */
+    int blas_ok ;           /* FALSE if SUITESPARSE_BLAS_INT overflow; 
+                               TRUE otherwise */
 
     /* ---------------------------------------------------------------------- */
     /* SuiteSparseQR control parameters: */

@@ -147,7 +147,7 @@ GB_DESC (RSCT0T1, GrB_REPLACE, GrB_STRUCTURE + GrB_COMP, GrB_TRAN, GrB_TRAN )
         (GxB_unary_function) (& GB_FUNC_T (op, xtype)), NULL, NULL, NULL,   \
         str,                                                                \
         GB_ ## op ## _unop_code,                                            \
-        NULL                                                                \
+        NULL, 0                                                             \
     }
 
 #define GRB_OP1z(op,str,z_t,ztype)                                          \
@@ -180,7 +180,7 @@ GB_DESC (RSCT0T1, GrB_REPLACE, GrB_STRUCTURE + GrB_COMP, GrB_TRAN, GrB_TRAN )
         NULL, NULL, (GxB_binary_function) (& GB_FUNC_T (op, xtype)), NULL,  \
         str,                                                                \
         GB_ ## op ## _binop_code,                                           \
-        NULL                                                                \
+        NULL, 0                                                             \
     }
 
 #define GRB_OP2z(op,str,z_t,ztype)                                          \
@@ -218,7 +218,7 @@ GB_DESC (RSCT0T1, GrB_REPLACE, GrB_STRUCTURE + GrB_COMP, GrB_TRAN, GrB_TRAN )
         NULL, NULL, NULL, NULL,                                             \
         str,                                                                \
         GB_ ## op ## _unop_code,                                            \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_UnaryOp GXB (op ## _ ## type) = & GB_OPAQUE (op ## _ ## type)
 
@@ -233,7 +233,7 @@ GB_DESC (RSCT0T1, GrB_REPLACE, GrB_STRUCTURE + GrB_COMP, GrB_TRAN, GrB_TRAN )
         NULL, NULL, NULL, NULL,                                             \
         str,                                                                \
         GB_ ## op ## _binop_code,                                           \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_BinaryOp GXB (op ## _ ## type) = & GB_OPAQUE (op ## _ ## type)
 
@@ -283,7 +283,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
             NULL, NULL,                                                     \
         str,                                                                \
         GB_ ## op ## _idxunop_code,                                         \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_IndexUnaryOp GRB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
@@ -302,7 +302,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
             NULL, NULL,                                                     \
         str,                                                                \
         GB_ ## op ## _idxunop_code,                                         \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_IndexUnaryOp GXB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
@@ -321,7 +321,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
             NULL, NULL,                                                     \
         str,                                                                \
         GB_ ## op ## _idxunop_code,                                         \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_IndexUnaryOp GRB (op) = & GB_OPAQUE (GB_OP (op))
 
@@ -339,7 +339,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
             NULL, NULL,                                                     \
         str,                                                                \
         GB_ ## op ## _idxunop_code,                                         \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_IndexUnaryOp GRB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
@@ -357,7 +357,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
             NULL, NULL,                                                     \
         str,                                                                \
         GB_ ## op ## _idxunop_code,                                         \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GrB_IndexUnaryOp GXB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
@@ -375,7 +375,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
         NULL, NULL, NULL, NULL,                                             \
         str,                                                                \
         GB_ ## op ## _selop_code,                                           \
-        NULL                                                                \
+        NULL, 0                                                             \
     } ;                                                                     \
     GxB_SelectOp GXB (op) = & GB_OPAQUE (op)
 
@@ -495,7 +495,7 @@ struct GB_BinaryOp_opaque GB_OPAQUE (IGNORE_DUP) =
     GB_MAGIC2, 0,
     NULL, NULL, NULL,
     NULL, NULL, NULL, NULL,
-    "ignore_dup", GB_NOP_code, NULL
+    "ignore_dup", GB_NOP_code, NULL, 0
 } ;
 GrB_BinaryOp GxB_IGNORE_DUP = & GB_OPAQUE (IGNORE_DUP) ;
 

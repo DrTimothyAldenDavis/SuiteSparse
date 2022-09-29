@@ -175,8 +175,6 @@ Files and directories in the UMFPACK distribution:
     Source directory:
     ----------------------------------------------------------------------------
 
-    cholmod_blas.h		an exact copy of CHOLMOD/Include/cholmod_blas.h
-
     umfpack_col_to_triplet.c	convert col form to triplet
     umfpack_defaults.c		set Control defaults
     umfpack_free_numeric.c	free Numeric object

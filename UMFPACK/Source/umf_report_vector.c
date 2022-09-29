@@ -24,7 +24,7 @@ PRIVATE void print_value
 {
     Entry xi ;
     /* if Xz is null, then X is in "merged" format (compatible with Entry, */
-    /* and ANSI C99 double _Complex type). */
+    /* and ANSI C11 double complex type). */
     PRINTF (("    "ID" :", INDEX (i))) ;
     if (scalar)
     {

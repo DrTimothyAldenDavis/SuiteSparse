@@ -8,22 +8,25 @@
 
 //------------------------------------------------------------------------------
 
-/* Configuration file for SuiteSparse: a Suite of Sparse matrix packages (AMD,
- * COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, SuiteSparseQR, ...).
- *
- * This file also defines the SUITESPARSE_VERSION and related definitions.
- */
+// Configuration file for SuiteSparse: a Suite of Sparse matrix packages (AMD,
+// COLAMD, CCOLAMD, CAMD, CHOLMOD, UMFPACK, CXSparse, SuiteSparseQR, ...).
+
+// This file is configured by CMake to be specific to the C/C++ compiler and
+// BLAS library being used for SuiteSparse.  The original file is
+// SuiteSparse_config/SuiteSparse_config.h.in.  Do not edit the
+// SuiteSparse_config.h file directly.
 
 #ifndef SUITESPARSE_CONFIG_H
 #define SUITESPARSE_CONFIG_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* SuiteSparse-wide ANSI C11 #include files */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// SuiteSparse-wide ANSI C11 #include files
+//------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include <errno.h>
@@ -55,9 +58,9 @@ extern "C" {
 #define SuiteSparse_long_idd PRId64
 #define SuiteSparse_long_id "%" SuiteSparse_long_idd
 
-/* -------------------------------------------------------------------------- */
-/* OpenMP */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// OpenMP
+//------------------------------------------------------------------------------
 
 #if defined ( _OPENMP )
 
@@ -69,7 +72,7 @@ extern "C" {
 
 #else
 
-    /* OpenMP not available */
+    // OpenMP not available
     #define SUITESPARSE_OPENMP_MAX_THREADS       (1)
     #define SUITESPARSE_OPENMP_GET_NUM_THREADS   (1)
     #define SUITESPARSE_OPENMP_GET_WTIME         (0)
@@ -77,30 +80,34 @@ extern "C" {
 
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* MATLAB/Octave */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// MATLAB/Octave
+//------------------------------------------------------------------------------
 
 #if defined ( MATLAB_MEX_FILE )
 #include "mex.h"
 #include "matrix.h"
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* string handling macros */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// string and token handling macros
+//------------------------------------------------------------------------------
 
-/* SUITESPARSE_STR: convert the content of x into a string "x" */
+// SUITESPARSE_STR: convert the content of x into a string "x"
 #define SUITESPARSE_XSTR(x) SUITESPARSE_STR(x)
 #define SUITESPARSE_STR(x) #x
 
-/* -------------------------------------------------------------------------- */
-/* determine which compiler is in use */
-/* -------------------------------------------------------------------------- */
+// SUITESPARSE_CAT(x,y): concatenate two tokens
+#define SUITESPARSE_CAT2(x,y) x ## y
+#define SUITESPARSE_CAT(x,y) SUITESPARSE_CAT2(x,y)
+
+//------------------------------------------------------------------------------
+// determine which compiler is in use
+//------------------------------------------------------------------------------
 
 #if defined ( __NVCC__ )
 
-    /* NVIDIA nvcc compiler */
+    // NVIDIA nvcc compiler
     #define SUITESPARSE_COMPILER_NVCC    1
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -117,7 +124,7 @@ extern "C" {
 
 #elif defined ( __INTEL_CLANG_COMPILER )
 
-    /* Intel icx compiler, 2022.0.0 based on clang/llvm 14.0.0 */
+    // Intel icx compiler, 2022.0.0 based on clang/llvm 14.0.0
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     1
     #define SUITESPARSE_COMPILER_ICC     0
@@ -134,7 +141,7 @@ extern "C" {
 
 #elif defined ( __INTEL_COMPILER )
 
-    /* Intel icc compiler: 2021.5.0 uses "gcc 7.5 mode" */
+    // Intel icc compiler: 2021.5.0 uses "gcc 7.5 mode"
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     1
@@ -151,7 +158,7 @@ extern "C" {
 
 #elif defined ( __clang__ )
 
-    /* clang */
+    // clang
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -168,7 +175,7 @@ extern "C" {
 
 #elif defined ( __xlC__ )
 
-    /* xlc */
+    // xlc
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -186,7 +193,7 @@ extern "C" {
 
 #elif defined ( __GNUC__ )
 
-    /* gcc */
+    // gcc
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -206,7 +213,7 @@ extern "C" {
 
 #elif defined ( _MSC_VER )
 
-    /* Microsoft Visual Studio */
+    // Microsoft Visual Studio
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -225,7 +232,7 @@ extern "C" {
 
 #elif defined ( __MINGW32__ ) || defined ( __MINGW64__ )
 
-    /* MinGW (32-bit or 64-bit) */
+    // MinGW (32-bit or 64-bit)
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -247,7 +254,7 @@ extern "C" {
 
 #else
 
-    /* other compiler */
+    // other compiler
     #define SUITESPARSE_COMPILER_NVCC    0
     #define SUITESPARSE_COMPILER_ICX     0
     #define SUITESPARSE_COMPILER_ICC     0
@@ -264,175 +271,179 @@ extern "C" {
 
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* malloc.h: required include file for Microsoft Visual Studio */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// malloc.h: required include file for Microsoft Visual Studio
+//------------------------------------------------------------------------------
 
 #if SUITESPARSE_COMPILER_MSC
     #include <malloc.h>
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* Exporting/importing symbols for Microsoft Visual Studio */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// importing/exporting symbols for Microsoft Visual Studio
+//------------------------------------------------------------------------------
 
 #if SUITESPARSE_COMPILER_MSC
-#ifdef SUITESPARSE_LIBRARY
-/* compiling SuiteSparse itself, exporting symbols to user apps */
-#define SUITESPARSE_PUBLIC extern __declspec ( dllexport )
+
+    // import/export for MS Visual Studio
+    #ifdef SUITESPARSE_LIBRARY
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define SUITESPARSE_PUBLIC extern __declspec ( dllexport )
+    #else
+        // compiling the user application, importing symbols from SuiteSparse
+        #define SUITESPARSE_PUBLIC extern __declspec ( dllimport )
+    #endif
+
 #else
-/* compiling the user application, importing symbols from SuiteSparse */
-#define SUITESPARSE_PUBLIC extern __declspec ( dllimport )
-#endif
-#else
-/* for other compilers */
-#define SUITESPARSE_PUBLIC extern
+
+    // for other compilers
+    #define SUITESPARSE_PUBLIC extern
+
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* determine the ANSI C version */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// determine the ANSI C version
+//------------------------------------------------------------------------------
 
 #ifdef __STDC_VERSION__
-/* ANSI C17: 201710L */
-/* ANSI C11: 201112L */
-/* ANSI C99: 199901L */
-/* ANSI C95: 199409L */
+// ANSI C17: 201710L
+// ANSI C11: 201112L
+// ANSI C99: 199901L
+// ANSI C95: 199409L
 #define SUITESPARSE_STDC_VERSION __STDC_VERSION__
 #else
-/* assume ANSI C90 / C89 */
+// assume ANSI C90 / C89
 #define SUITESPARSE_STDC_VERSION 199001L
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* handle the restrict keyword */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// handle the restrict keyword
+//------------------------------------------------------------------------------
 
 #if defined ( __cplusplus )
 
-    /* C++ does not have the "restrict" keyword */
+    // C++ does not have the "restrict" keyword
     #define SUITESPARSE_RESTRICT
 
 #elif SUITESPARSE_COMPILER_MSC
 
-    /* MS Visual Studio */
+    // MS Visual Studio
     #define SUITESPARSE_RESTRICT __restrict
 
 #elif SUITESPARSE_COMPILER_NCSS
 
-    /* NVIDIA nvcc */
+    // NVIDIA nvcc
     #define SUITESPARSE_RESTRICT __restrict__
 
 #elif SUITESPARSE_STDC_VERSION >= 199901L
 
-    /* ANSI C99 or later */
+    // ANSI C99 or later
     #define SUITESPARSE_RESTRICT restrict
 
 #else
 
-    /* ANSI C95 and earlier: no restrict keyword */
+    // ANSI C95 and earlier: no restrict keyword
     #define SUITESPARSE_RESTRICT
 
 #endif
 
-/* ========================================================================== */
-/* SuiteSparse_config parameters and functions */
-/* ========================================================================== */
+//==============================================================================
+// SuiteSparse_config parameters and functions
+//==============================================================================
 
-/* SuiteSparse-wide parameters are placed in this struct.  It is meant to be
-   an extern, globally-accessible struct.  It is not meant to be updated
-   frequently by multiple threads.  Rather, if an application needs to modify
-   SuiteSparse_config, it should do it once at the beginning of the application,
-   before multiple threads are launched.
+// SuiteSparse-wide parameters are placed in this struct.  It is meant to be an
+// extern, globally-accessible struct.  It is not meant to be updated
+// frequently by multiple threads.  Rather, if an application needs to modify
+// SuiteSparse_config, it should do it once at the beginning of the
+// application, before multiple threads are launched.
 
-   The intent of these function pointers is that they not be used in your
-   application directly, except to assign them to the desired user-provided
-   functions.  Rather, you should use the SuiteSparse_malloc/calloc, etc
-   wrappers defined below to access them.
- */
+// The intent of these function pointers is that they not be used in your
+// application directly, except to assign them to the desired user-provided
+// functions.  Rather, you should use the SuiteSparse_malloc/calloc, etc
+// wrappers defined below to access them.
 
 struct SuiteSparse_config_struct
 {
-    void *(*malloc_func) (size_t) ;             /* pointer to malloc */
-    void *(*calloc_func) (size_t, size_t) ;     /* pointer to calloc */
-    void *(*realloc_func) (void *, size_t) ;    /* pointer to realloc */
-    void (*free_func) (void *) ;                /* pointer to free */
-    int (*printf_func) (const char *, ...) ;    /* pointer to printf */
-    double (*hypot_func) (double, double) ;     /* pointer to hypot */
+    void *(*malloc_func) (size_t) ;             // pointer to malloc
+    void *(*calloc_func) (size_t, size_t) ;     // pointer to calloc
+    void *(*realloc_func) (void *, size_t) ;    // pointer to realloc
+    void (*free_func) (void *) ;                // pointer to free
+    int (*printf_func) (const char *, ...) ;    // pointer to printf
+    double (*hypot_func) (double, double) ;     // pointer to hypot
     int (*divcomplex_func) (double, double, double, double, double *, double *);
 } ;
 
 SUITESPARSE_PUBLIC struct SuiteSparse_config_struct SuiteSparse_config ;
 
 SUITESPARSE_PUBLIC
-void SuiteSparse_start ( void ) ;   /* called to start SuiteSparse */
+void SuiteSparse_start ( void ) ;   // called to start SuiteSparse
 
 SUITESPARSE_PUBLIC
-void SuiteSparse_finish ( void ) ;  /* called to finish SuiteSparse */
+void SuiteSparse_finish ( void ) ;  // called to finish SuiteSparse
 
 SUITESPARSE_PUBLIC
-void *SuiteSparse_malloc    /* pointer to allocated block of memory */
+void *SuiteSparse_malloc    // pointer to allocated block of memory
 (
-    size_t nitems,          /* number of items to malloc (>=1 is enforced) */
-    size_t size_of_item     /* sizeof each item */
+    size_t nitems,          // number of items to malloc (>=1 is enforced)
+    size_t size_of_item     // sizeof each item
 ) ;
 
 SUITESPARSE_PUBLIC
-void *SuiteSparse_calloc    /* pointer to allocated block of memory */
+void *SuiteSparse_calloc    // pointer to allocated block of memory
 (
-    size_t nitems,          /* number of items to calloc (>=1 is enforced) */
-    size_t size_of_item     /* sizeof each item */
+    size_t nitems,          // number of items to calloc (>=1 is enforced)
+    size_t size_of_item     // sizeof each item
 ) ;
 
 SUITESPARSE_PUBLIC
-void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
-                               to original block if the realloc failed. */
+void *SuiteSparse_realloc   // pointer to reallocated block of memory, or
+                            ///to original block if the realloc failed.
 (
-    size_t nitems_new,      /* new number of items in the object */
-    size_t nitems_old,      /* old number of items in the object */
-    size_t size_of_item,    /* sizeof each item */
-    void *p,                /* old object to reallocate */
-    int *ok                 /* 1 if successful, 0 otherwise */
+    size_t nitems_new,      // new number of items in the object
+    size_t nitems_old,      // old number of items in the object
+    size_t size_of_item,    // sizeof each item
+    void *p,                // old object to reallocate
+    int *ok                 // 1 if successful, 0 otherwise
 ) ;
 
 SUITESPARSE_PUBLIC
-void *SuiteSparse_free      /* always returns NULL */
+void *SuiteSparse_free      // always returns NULL
 (
-    void *p                 /* block to free */
+    void *p                 // block to free
 ) ;
 
 SUITESPARSE_PUBLIC
-void SuiteSparse_tic    /* start the timer */
+void SuiteSparse_tic    // start the timer
 (
-    double tic [2]      /* output, contents undefined on input */
+    double tic [2]      // output, contents undefined on input
 ) ;
 
 SUITESPARSE_PUBLIC
-double SuiteSparse_toc  /* return time in seconds since last tic */
+double SuiteSparse_toc  // return time in seconds since last tic
 (
-    double tic [2]      /* input: from last call to SuiteSparse_tic */
+    double tic [2]      // input: from last call to SuiteSparse_tic
 ) ;
 
 SUITESPARSE_PUBLIC
-double SuiteSparse_time  /* returns current wall clock time in seconds */
+double SuiteSparse_time  // returns current wall clock time in seconds
 (
     void
 ) ;
 
-/* returns sqrt (x^2 + y^2), computed reliably */
+// returns sqrt (x^2 + y^2), computed reliably
 SUITESPARSE_PUBLIC
 double SuiteSparse_hypot (double x, double y) ;
 
-/* complex division of c = a/b */
+// complex division of c = a/b
 SUITESPARSE_PUBLIC
 int SuiteSparse_divcomplex
 (
-    double ar, double ai,       /* real and imaginary parts of a */
-    double br, double bi,       /* real and imaginary parts of b */
-    double *cr, double *ci      /* real and imaginary parts of c */
+    double ar, double ai,       // real and imaginary parts of a
+    double br, double bi,       // real and imaginary parts of b
+    double *cr, double *ci      // real and imaginary parts of c
 ) ;
 
-/* determine which timer to use, if any */
+// determine which timer to use, if any
 #ifndef NTIMER
     #if defined ( _OPENMP )
         #define SUITESPARSE_TIMER_ENABLED
@@ -443,7 +454,7 @@ int SuiteSparse_divcomplex
     #endif
 #endif
 
-/* SuiteSparse printf macro */
+// SuiteSparse printf macro
 #define SUITESPARSE_PRINTF(params)                          \
 {                                                           \
     if (SuiteSparse_config.printf_func != NULL)             \
@@ -452,37 +463,25 @@ int SuiteSparse_divcomplex
     }                                                       \
 }
 
-/* ========================================================================== */
-/* SuiteSparse version */
-/* ========================================================================== */
+//==============================================================================
+// SuiteSparse version
+//==============================================================================
 
-/* SuiteSparse is not a package itself, but a collection of packages, some of
- * which must be used together (UMFPACK requires AMD, CHOLMOD requires AMD,
- * COLAMD, CAMD, and CCOLAMD, etc).  A version number is provided here for the
- * collection itself, which is also the version number of SuiteSparse_config.
- */
+// SuiteSparse is not a package itself, but a collection of packages, some of
+// which must be used together (UMFPACK requires AMD, CHOLMOD requires AMD,
+// COLAMD, CAMD, and CCOLAMD, etc).  A version number is provided here for the
+// collection itself, which is also the version number of SuiteSparse_config.
 
 SUITESPARSE_PUBLIC
-int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
+int SuiteSparse_version     // returns SUITESPARSE_VERSION
 (
-    /* output, not defined on input.  Not used if NULL.  Returns
-       the three version codes in version [0..2]:
-       version [0] is SUITESPARSE_MAIN_VERSION
-       version [1] is SUITESPARSE_SUB_VERSION
-       version [2] is SUITESPARSE_SUBSUB_VERSION
-       */
+    // output, not defined on input.  Not used if NULL.  Returns
+    // the three version codes in version [0..2]:
+    // version [0] is SUITESPARSE_MAIN_VERSION
+    // version [1] is SUITESPARSE_SUB_VERSION
+    // version [2] is SUITESPARSE_SUBSUB_VERSION
     int version [3]
 ) ;
-
-/* Versions prior to 4.2.0 do not have the above function.  The following
-   code fragment will work with any version of SuiteSparse:
-
-   #ifdef SUITESPARSE_HAS_VERSION_FUNCTION
-   v = SuiteSparse_version (NULL) ;
-   #else
-   v = SUITESPARSE_VERSION ;
-   #endif
-*/
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
@@ -494,6 +493,945 @@ int SuiteSparse_version     /* returns SUITESPARSE_VERSION */
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_VERSION \
     SUITESPARSE_VER_CODE(SUITESPARSE_MAIN_VERSION,SUITESPARSE_SUB_VERSION)
+
+//==============================================================================
+// SuiteSparse interface to the BLAS and LAPACK libraries
+//==============================================================================
+
+// Several SuiteSparse packages rely on the BLAS/LAPACK libraries (UMFPACK
+// CHOLMOD, and SPQR, and likely GraphBLAS in the future).  All of these
+// packages are written in C/C++, but rely on the Fortran interface to
+// BLAS/LAPACK.  SuiteSparse does not use the cblas / lapacke interfaces to
+// these libraries, mainly because FindBLAS.cmake does not locate them (or at
+// least does not locate their respective cblas.h and lapacke.h files).  In
+// addition, the original definition of these files do not include a different
+// name space for 64-bit integer versions.  Finally, Intel renames cblas.h as
+// mkl_cblas.h.  As a result of these many portability issues, different
+// implementations of those libraries extend them in different ways.  Thus,
+// SuiteSparse simply calls the Fortran functions directly.
+
+// However, the method for how C/C++ calling Fortran depends on the compilers
+// involved.  This connection is handled by the FortranCInterface.cmake module
+// of CMake.
+
+// On typical systems (Linux with the GCC compiler for example, or on the Mac
+// with clang) the Fortan name "dgemm" is called by C as "dgemm_",  Other
+// systems do not append the underscore.
+
+//------------------------------------------------------------------------------
+// SUITESPARSE_FORTRAN: macros created by CMake describing how C calls Fortran
+//------------------------------------------------------------------------------
+
+// SUITESPARSE_FORTAN: for Fortran routines with no "_" in their names
+// SUITESPARSE__FORTAN: for Fortran routines with "_" in their names
+
+// The decision on which of these macros to use is based on the presence of
+// underscores in the original Fortran names, not the (commonly) appended
+// underscore needed for C to all the corresponding Fortran routine.
+
+// These two macros are created by the CMake module, FortranCInterface.cmake,
+// which is then used by CMake to configure this file.
+
+// The CMAKE decision can be superceded by setting -DBLAS_NO_UNDERSCORE, so
+// that "dgemm" remains "dgemm" (for MS Visual Studio for example).  Setting
+// -DBLAS_UNDERSCORE changes "dgemm" to "dgemm_", the common case for Mac and
+// Linux.
+
+#if defined ( BLAS_NO_UNDERSCORE )
+
+    // no name mangling, use lower case
+    #define SUITESPARSE_FORTRAN(name,NAME)  name
+    #define SUITESPARSE__FORTRAN(name,NAME) name
+
+#elif defined ( BLAS_UNDERSCORE )
+
+    // append an undescore, use lower case 
+    #define SUITESPARSE_FORTRAN(name,NAME)  name ## _
+    #define SUITESPARSE__FORTRAN(name,NAME) name ## _
+
+#else
+
+    // let CMake decide how C calls Fortran
+    #define SUITESPARSE_FORTRAN@FortranCInterface_GLOBAL_MACRO@
+    #define SUITESPARSE__FORTRAN@FortranCInterface_GLOBAL__MACRO@
+
+#endif
+
+//------------------------------------------------------------------------------
+// SUITESPARSE_BLAS_INT: the BLAS/LAPACK integer (int32_t or int64_t)
+//------------------------------------------------------------------------------
+
+// CMake 3.22 and later allow the selection of the BLAS/LAPACK integer size.
+// This information is then used to configure this file with the definition of
+// this integer: int32_t or int64_t.
+
+// When compiling SuiteSparse for a MATLAB mexFunction, the MATLAB libmwblas is
+// used, which is a 64-bit integer version of the BLAS.  CMake is not used to
+// configure SuiteSparse in this case.  The flag -DBLAS64 can be used to ensure
+// a 64-bit BLAS is used.  Likewise, -DBLAS32 ensures a 32-bit BLAS is used.
+
+#if defined ( BLAS64 )
+
+    // override the BLAS found by CMake, and force a 64-bit interface
+    #define SUITESPARSE_BLAS_INT int64_t
+
+#elif defined ( BLAS32 )
+
+    // override the BLAS found by CMake, and force a 32-bit interface
+    #define SUITESPARSE_BLAS_INT int32_t
+
+#else
+
+    // let CMake determine the size of the integer in the Fortran BLAS
+    #define SUITESPARSE_BLAS_INT @SuiteSparse_BLAS_integer@
+
+#endif
+
+// SUITESPARSE_TO_BLAS_INT: convert an integer k to a BLAS integer K and set ok
+// to false if the conversion changes its value.  This is implemented as a
+// macro so that can work with any type of the integer k.
+#define SUITESPARSE_TO_BLAS_INT(K,k,ok)         \
+    SUITESPARSE_BLAS_INT K = (k) ;              \
+    ok = ok && ((sizeof (K) >= sizeof (k)) || ((int64_t)(K) == (int64_t)(k))) ;
+
+//------------------------------------------------------------------------------
+// SUITESPARSE_BLAS_SUFFIX: modify the name of a Fortran BLAS/LAPACK routine
+//------------------------------------------------------------------------------
+
+// OpenBLAS can be compiled by appending a suffix to each routine, so that the
+// Fortan routine dgemm becomes dgemm_64, which denotes a version of dgemm with
+// 64-bit integer parameters.  The Sun Performance library does the same thing.
+
+// If the suffix does not contain "_", use (for example):
+
+//      -DBLAS64_SUFFIX="64"
+
+// If the suffix contains "_", use the following:
+
+//      -DBLAS64__SUFFIX="_64"
+
+//      This setting should be used by the spack packaging of SuiteSparse when
+//      linked with the spack-installed OpenBLAS with 64-bit integers.  See
+//      https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/suite-sparse/package.py
+
+#if defined ( BLAS64__SUFFIX )
+
+    // The suffix includes an undersore (such as "_64"), so the Fortran name
+    // must be processed with the SUITESPARSE__FORTRAN macro.
+    #define SUITESPARSE_G(name,NAME) SUITESPARSE__FORTRAN(name,NAME)
+    #define SUITESPARSE_F(name,NAME)                            \
+        SUITESPARSE_G (SUITESPARSE_CAT (name, BLAS64__SUFFIX),  \
+                       SUITESPARSE_CAT (NAME, BLAS64__SUFFIX))
+    #define SUITESPARSE_BLAS(name,NAME) SUITESPARSE_F(name,NAME)
+
+#elif defined ( BLAS64_SUFFIX )
+
+    // The suffix does not include an undersore, and neither do the original
+    // names of the BLAS and LAPACK routines.  Thus, the Fortran name must be
+    // processed with the SUITESPARSE_FORTRAN macro.
+    #define SUITESPARSE_G(name,NAME) SUITESPARSE_FORTRAN(name,NAME)
+    #define SUITESPARSE_F(name,NAME)                            \
+        SUITESPARSE_G (SUITESPARSE_CAT (name, BLAS64_SUFFIX),  \
+                       SUITESPARSE_CAT (NAME, BLAS64_SUFFIX))
+    #define SUITESPARSE_BLAS(name,NAME) SUITESPARSE_F(name,NAME)
+
+#else
+
+    // No suffix is need, so the final Fortran name includes no suffix.
+    #define SUITESPARSE_BLAS(name,NAME) SUITESPARSE_FORTRAN(name,NAME)
+
+#endif
+
+//------------------------------------------------------------------------------
+// C names of Fortan BLAS and LAPACK functions used by SuiteSparse
+//------------------------------------------------------------------------------
+
+#define SUITESPARSE_BLAS_DTRSV      SUITESPARSE_BLAS ( dtrsv  , DTRSV  )
+#define SUITESPARSE_BLAS_DGEMV      SUITESPARSE_BLAS ( dgemv  , DGEMV  )
+#define SUITESPARSE_BLAS_DTRSM      SUITESPARSE_BLAS ( dtrsm  , DTRSM  )
+#define SUITESPARSE_BLAS_DGEMM      SUITESPARSE_BLAS ( dgemm  , DGEMM  )
+#define SUITESPARSE_BLAS_DSYRK      SUITESPARSE_BLAS ( dsyrk  , DSYRK  )
+#define SUITESPARSE_BLAS_DGER       SUITESPARSE_BLAS ( dger   , DGER   )
+#define SUITESPARSE_BLAS_DSCAL      SUITESPARSE_BLAS ( dscal  , DSCAL  )
+#define SUITESPARSE_LAPACK_DPOTRF   SUITESPARSE_BLAS ( dpotrf , DPOTRF )
+
+#define SUITESPARSE_BLAS_ZTRSV      SUITESPARSE_BLAS ( ztrsv  , ZTRSV  )
+#define SUITESPARSE_BLAS_ZGEMV      SUITESPARSE_BLAS ( zgemv  , ZGEMV  )
+#define SUITESPARSE_BLAS_ZTRSM      SUITESPARSE_BLAS ( ztrsm  , ZTRSM  )
+#define SUITESPARSE_BLAS_ZGEMM      SUITESPARSE_BLAS ( zgemm  , ZGEMM  )
+#define SUITESPARSE_BLAS_ZHERK      SUITESPARSE_BLAS ( zherk  , ZHERK  )
+#define SUITESPARSE_BLAS_ZGERU      SUITESPARSE_BLAS ( zgeru  , ZGERU  )
+#define SUITESPARSE_BLAS_ZSCAL      SUITESPARSE_BLAS ( zscal  , ZSCAL  )
+#define SUITESPARSE_LAPACK_ZPOTRF   SUITESPARSE_BLAS ( zpotrf , ZPOTRF )
+
+#define SUITESPARSE_BLAS_DNRM2      SUITESPARSE_BLAS ( dnrm2  , DNRM2  )
+#define SUITESPARSE_LAPACK_DLARF    SUITESPARSE_BLAS ( dlarf  , DLARF  )
+#define SUITESPARSE_LAPACK_DLARFG   SUITESPARSE_BLAS ( dlarfg , DLARFG )
+#define SUITESPARSE_LAPACK_DLARFT   SUITESPARSE_BLAS ( dlarft , DLARFT )
+#define SUITESPARSE_LAPACK_DLARFB   SUITESPARSE_BLAS ( dlarfb , DLARFB )
+
+#define SUITESPARSE_BLAS_DZNRM2     SUITESPARSE_BLAS ( dznrm2 , DZNRM2 )
+#define SUITESPARSE_LAPACK_ZLARF    SUITESPARSE_BLAS ( zlarf  , ZLAR   )
+#define SUITESPARSE_LAPACK_ZLARFG   SUITESPARSE_BLAS ( zlarfg , ZLARFG )
+#define SUITESPARSE_LAPACK_ZLARFT   SUITESPARSE_BLAS ( zlarft , ZLARFT )
+#define SUITESPARSE_LAPACK_ZLARFB   SUITESPARSE_BLAS ( zlarfb , ZLARFB )
+
+//------------------------------------------------------------------------------
+// prototypes of BLAS and SUITESPARSE_LAPACK functions
+//------------------------------------------------------------------------------
+
+// For complex functions, the (void *) parameters are actually pointers to
+// arrays of complex values.  They are prototyped here as (void *) to allow
+// them to be called from both C and C++.
+
+// See https://netlib.org/blas/ and https://netlib.org/lapack/ for the
+// definitions of the inputs/outputs of these functions.
+
+void SUITESPARSE_BLAS_DGEMV         // Y = alpha*A*x + beta*Y
+(
+    // input:
+    const char *trans,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const double *alpha,
+    const double *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const double *X,
+    const SUITESPARSE_BLAS_INT *incx,
+    const double *beta,
+    // input/output:
+    double *Y,
+    // input:
+    const SUITESPARSE_BLAS_INT *incy
+) ;
+
+#define SUITESPARSE_BLAS_dgemv(trans,m,n,alpha,A,lda,X,incx,beta,Y,incy,ok)   \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX,      \
+            beta, Y, &INCY) ;                                                 \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZGEMV         // Y = alpha*A*X + beta*Y
+(
+    // input:
+    const char *trans,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const void *alpha,
+    const void *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const void *X,
+    const SUITESPARSE_BLAS_INT *incx,
+    const void *beta,
+    // input/output:
+    void *Y,
+    // input:
+    const SUITESPARSE_BLAS_INT *incy
+) ;
+
+#define SUITESPARSE_BLAS_zgemv(trans,m,n,alpha,A,lda,X,incx,beta,Y,incy,ok)   \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX,      \
+            beta, Y, &INCY) ;                                                 \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DTRSV         // solve Lx=b, Ux=b, L'x=b, or U'x=b
+(
+    // input:
+    const char *uplo,
+    const char *trans,
+    const char *diag,
+    const SUITESPARSE_BLAS_INT *n,
+    const double *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    // input/output:
+    double *X,
+    // input:
+    const SUITESPARSE_BLAS_INT *incx
+) ;
+
+#define SUITESPARSE_BLAS_dtrsv(uplo,trans,diag,n,A,lda,X,incx,ok)             \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ;   \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZTRSV         // solve (L, L', L^H, U, U', or U^H)x=b
+(
+    // input:
+    const char *uplo,
+    const char *trans,
+    const char *diag,
+    const SUITESPARSE_BLAS_INT *n,
+    const void *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    // input/output:
+    void *X,
+    // input:
+    const SUITESPARSE_BLAS_INT *incx
+) ;
+
+#define SUITESPARSE_BLAS_ztrsv(uplo,trans,diag,n,A,lda,X,incx,ok)             \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ;   \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DTRSM         // solve LX=B, UX=B, L'X=B, or U'X=B
+(
+    // input:
+    const char *side,
+    const char *uplo,
+    const char *transa,
+    const char *diag,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const double *alpha,
+    const double *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    // input/output:
+    double *B,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldb
+) ;
+
+#define SUITESPARSE_BLAS_dtrsm(side,uplo,transa,diag,m,n,alpha,A,lda,B,ldb,ok)\
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DTRSM (side, uplo, transa, diag, &M, &N, alpha, A,   \
+            &LDA, B, &LDB) ;                                                  \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZTRSM         // solve (L, L', L^H, U, U', or U^H)X=B
+(
+    // input:
+    const char *side,
+    const char *uplo,
+    const char *transa,
+    const char *diag,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const void *alpha,
+    const void *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    // input/output:
+    void *B,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldb
+) ;
+
+#define SUITESPARSE_BLAS_ztrsm(side,uplo,transa,diag,m,n,alpha,A,lda,B,ldb,ok)\
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZTRSM (side, uplo, transa, diag, &M, &N, alpha, A,   \
+            &LDA, B, &LDB) ;                                                  \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DGEMM         // C = alpha*A*B + beta*C
+(
+    // input:
+    const char *transa,
+    const char *transb,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const double *alpha,
+    const double *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const double *B,
+    const SUITESPARSE_BLAS_INT *ldb,
+    const double *beta,
+    // input/output:
+    double *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc
+) ;
+
+#define SUITESPARSE_BLAS_dgemm(transa,transb,m,n,k,alpha,A,lda,B,ldb,beta,    \
+    C,ldc,ok)                                                                 \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA,   \
+            B, &LDB, beta, C, &LDC) ;                                         \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZGEMM         // C = alpha*A*B + beta*C
+(
+    // input:
+    const char *transa,
+    const char *transb,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const void *alpha,
+    const void *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const void *B,
+    const SUITESPARSE_BLAS_INT *ldb,
+    const void *beta,
+    // input/output:
+    void *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc
+) ;
+
+#define SUITESPARSE_BLAS_zgemm(transa,transb,m,n,k,alpha,A,lda,B,ldb,beta,    \
+    C,ldc,ok)                                                                 \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA,   \
+            B, &LDB, beta, C, &LDC) ;                                         \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DSYRK         // C = alpha*A*A' + beta*C, or A'A
+(
+    // input:
+    const char *uplo,
+    const char *trans,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const double *alpha,
+    const double *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const double *beta,
+    // input/output:
+    double *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc
+) ;
+
+#define SUITESPARSE_BLAS_dsyrk(uplo,trans,n,k,alpha,A,lda,beta,C,ldc,ok)      \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DSYRK (uplo, trans, &N, &K, alpha, A, &LDA,          \
+            beta, C, &LDC) ;                                                  \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZHERK         // C = alpha*A*A^H + beta*C, or A^H*A
+(
+    // input:
+    const char *uplo,
+    const char *trans,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const void *alpha,
+    const void *A,
+    const SUITESPARSE_BLAS_INT *lda,
+    const void *beta,
+    // input/output:
+    void *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc
+) ;
+
+#define SUITESPARSE_BLAS_zherk(uplo,trans,n,k,alpha,A,lda,beta,C,ldc,ok)      \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZHERK (uplo, trans, &N, &K, alpha, A, &LDA,          \
+            beta, C, &LDC) ;                                                  \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_DPOTRF      // Cholesky factorization
+(
+    // input:
+    const char *uplo,
+    const SUITESPARSE_BLAS_INT *n,
+    // input/output:
+    double *A,
+    // input:
+    const SUITESPARSE_BLAS_INT *lda,
+    // output:
+    SUITESPARSE_BLAS_INT *info
+) ;
+
+#define SUITESPARSE_LAPACK_dpotrf(uplo,n,A,lda,info,ok)                       \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    info = 1 ;                                                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_INT INFO ;                                           \
+        SUITESPARSE_LAPACK_DPOTRF (uplo, &N, A, &LDA, &INFO) ;                \
+        info = INFO ;                                                         \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_ZPOTRF      // Cholesky factorization
+(
+    // input:
+    const char *uplo,
+    const SUITESPARSE_BLAS_INT *n,
+    // input/output:
+    void *A,
+    // input:
+    const SUITESPARSE_BLAS_INT *lda,
+    // output:
+    SUITESPARSE_BLAS_INT *info
+) ;
+
+#define SUITESPARSE_LAPACK_zpotrf(uplo,n,A,lda,info,ok)                       \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    info = 1 ;                                                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_INT INFO ;                                           \
+        SUITESPARSE_LAPACK_ZPOTRF (uplo, &N, A, &LDA, &INFO) ;                \
+        info = INFO ;                                                         \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DSCAL         // Y = alpha*Y
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    const double *alpha,
+    // input/output:
+    double *Y,
+    // input:
+    const SUITESPARSE_BLAS_INT *incy
+) ;
+
+#define SUITESPARSE_BLAS_dscal(n,alpha,Y,incy,ok)                             \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DSCAL (&N, alpha, Y, &INCY) ;                        \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZSCAL         // Y = alpha*Y
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    const void *alpha,
+    // input/output:
+    void *Y,
+    // input:
+    const SUITESPARSE_BLAS_INT *incy
+) ;
+
+#define SUITESPARSE_BLAS_zscal(n,alpha,Y,incy,ok)                             \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZSCAL (&N, alpha, Y, &INCY) ;                        \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_DGER          // A = alpha*x*y' + A
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const double *alpha,
+    const double *X,
+    const SUITESPARSE_BLAS_INT *incx,
+    const double *Y,
+    const SUITESPARSE_BLAS_INT *incy,
+    // input/output:
+    double *A,
+    // input:
+    const SUITESPARSE_BLAS_INT *lda
+) ;
+
+#define SUITESPARSE_BLAS_dger(m,n,alpha,X,incx,Y,incy,A,lda,ok)               \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_DGER (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ;  \
+    }                                                                         \
+}
+
+void SUITESPARSE_BLAS_ZGERU         // A = alpha*x*y' + A
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const void *alpha,
+    const void *X,
+    const SUITESPARSE_BLAS_INT *incx,
+    const void *Y,
+    const SUITESPARSE_BLAS_INT *incy,
+    // input/output:
+    void *A,
+    // input:
+    const SUITESPARSE_BLAS_INT *lda
+) ;
+
+#define SUITESPARSE_BLAS_zgeru(m,n,alpha,X,incx,Y,incy,A,lda,ok)              \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_BLAS_ZGERU (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ; \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_DLARFT      // T = block Householder factor
+(
+    // input:
+    const char *direct,
+    const char *storev,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const double *V,
+    const SUITESPARSE_BLAS_INT *ldv,
+    const double *Tau,
+    // output:
+    double *T,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldt
+) ;
+
+#define SUITESPARSE_LAPACK_dlarft(direct,storev,n,k,V,ldv,Tau,T,ldt,ok)       \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_DLARFT (direct, storev, &N, &K, V, &LDV, Tau,      \
+            T, &LDT) ;                                                        \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_ZLARFT      // T = block Householder factor
+(
+    // input:
+    const char *direct,
+    const char *storev,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const void *V,
+    const SUITESPARSE_BLAS_INT *ldv,
+    const void *Tau,
+    // output:
+    void *T,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldt
+) ;
+
+#define SUITESPARSE_LAPACK_zlarft(direct,storev,n,k,V,ldv,Tau,T,ldt,ok)       \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_ZLARFT (direct, storev, &N, &K, V, &LDV, Tau,      \
+            T, &LDT) ;                                                        \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_DLARFB      // apply block Householder reflector
+(
+    // input:
+    const char *side,
+    const char *trans,
+    const char *direct,
+    const char *storev,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const double *V,
+    const SUITESPARSE_BLAS_INT *ldv,
+    const double *T,
+    const SUITESPARSE_BLAS_INT *ldt,
+    // input/output:
+    double *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc,
+    // workspace:
+    double *Work,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldwork
+) ;
+
+#define SUITESPARSE_LAPACK_dlarfb(side,trans,direct,storev,m,n,k,V,ldv,T,ldt, \
+    C,ldc,Work,ldwork,ok)                                                     \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDWORK, ldwork, ok) ;                            \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_DLARFB (side, trans, direct, storev, &M, &N, &K,   \
+            V, &LDV, T, &LDT, C, &LDC, Work, &LDWORK) ;                       \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_ZLARFB      // apply block Householder reflector
+(
+    // input:
+    const char *side,
+    const char *trans,
+    const char *direct,
+    const char *storev,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const SUITESPARSE_BLAS_INT *k,
+    const void *V,
+    const SUITESPARSE_BLAS_INT *ldv,
+    const void *T,
+    const SUITESPARSE_BLAS_INT *ldt,
+    // input/output:
+    void *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc,
+    // workspace:
+    void *Work,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldwork
+) ;
+
+#define SUITESPARSE_LAPACK_zlarfb(side,trans,direct,storev,m,n,k,V,ldv,T,ldt, \
+    C,ldc,Work,ldwork,ok)                                                     \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDWORK, ldwork, ok) ;                            \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_ZLARFB (side, trans, direct, storev, &M, &N, &K,   \
+            V, &LDV, T, &LDT, C, &LDC, Work, &LDWORK) ;                       \
+    }                                                                         \
+}
+
+double SUITESPARSE_BLAS_DNRM2       // vector 2-norm
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    const double *X,
+    const SUITESPARSE_BLAS_INT *incx
+) ;
+
+#define SUITESPARSE_BLAS_dnrm2(result,n,X,incx,ok)                            \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    result = 0 ;                                                              \
+    if (ok)                                                                   \
+    {                                                                         \
+        result = SUITESPARSE_BLAS_DNRM2 (&N, X, &INCX) ;                      \
+    }                                                                         \
+}
+
+double SUITESPARSE_BLAS_DZNRM2      // vector 2-norm
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    const void *X,
+    const SUITESPARSE_BLAS_INT *incx
+) ;
+
+#define SUITESPARSE_BLAS_dznrm2(result,n,X,incx,ok)                           \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    result = 0 ;                                                              \
+    if (ok)                                                                   \
+    {                                                                         \
+        result = SUITESPARSE_BLAS_DZNRM2 (&N, X, &INCX) ;                     \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_DLARFG      // generate Householder reflector
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    // input/output:
+    double *alpha,
+    double *X,
+    // input:
+    const SUITESPARSE_BLAS_INT *incx,
+    // output:
+    double *tau
+) ;
+
+#define SUITESPARSE_LAPACK_dlarfg(n,alpha,X,incx,tau,ok)                      \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_DLARFG (&N, alpha, X, &INCX, tau) ;                \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_ZLARFG      // generate Householder reflector
+(
+    // input:
+    const SUITESPARSE_BLAS_INT *n,
+    // input/output:
+    void *alpha,
+    void *X,
+    // input:
+    const SUITESPARSE_BLAS_INT *incx,
+    // output:
+    void *tau
+) ;
+
+#define SUITESPARSE_LAPACK_zlarfg(n,alpha,X,incx,tau,ok)                      \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_ZLARFG (&N, alpha, X, &INCX, tau) ;                \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_DLARF       // apply Householder reflector
+(
+    // input:
+    const char *side,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const double *V,
+    const SUITESPARSE_BLAS_INT *incv,
+    const double *tau,
+    // input/output:
+    double *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc,
+    // workspace:
+    double *Work
+) ;
+
+#define SUITESPARSE_LAPACK_dlarf(side,m,n,V,incv,tau,C,ldc,Work,ok)           \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCV, incv, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_DLARF (side, &M, &N, V, &INCV, tau, C, &LDC,       \
+            Work) ;                                                           \
+    }                                                                         \
+}
+
+void SUITESPARSE_LAPACK_ZLARF       // apply Householder reflector
+(
+    // input:
+    const char *side,
+    const SUITESPARSE_BLAS_INT *m,
+    const SUITESPARSE_BLAS_INT *n,
+    const void *V,
+    const SUITESPARSE_BLAS_INT *incv,
+    const void *tau,
+    // input/output:
+    void *C,
+    // input:
+    const SUITESPARSE_BLAS_INT *ldc,
+    // workspace:
+    void *Work
+) ;
+
+#define SUITESPARSE_LAPACK_zlarf(side,m,n,V,incv,tau,C,ldc,Work,ok)           \
+{                                                                             \
+    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCV, incv, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    if (ok)                                                                   \
+    {                                                                         \
+        SUITESPARSE_LAPACK_ZLARF (side, &M, &N, V, &INCV, tau, C, &LDC,       \
+            Work) ;                                                           \
+    }                                                                         \
+}
 
 #ifdef __cplusplus
 }

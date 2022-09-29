@@ -78,6 +78,11 @@ GrB_Info GB_SelectOp_check  // check a GraphBLAS select operator
         }
     }
 
+    if (op->defn != NULL)
+    { 
+        GBPR0 ("%s\n", op->defn) ;
+    }
+
     return (GrB_SUCCESS) ;
 }
 

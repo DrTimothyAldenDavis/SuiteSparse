@@ -679,21 +679,25 @@ static int TEMPLATE (cholmod_super_numeric)
                 Common->CHOLMOD_CPU_SYRK_CALLS++ ;
                 tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                BLAS_dsyrk ("L", "N",
+                SUITESPARSE_BLAS_dsyrk ("L", "N",
                     ndrow1, ndcol,              /* N, K: L1 is ndrow1-by-ndcol*/
                     one,                        /* ALPHA:  1 */
                     Lx + L_ENTRY*pdx1, ndrow,   /* A, LDA: L1, ndrow */
                     zero,                       /* BETA:   0 */
-                    C, ndrow2) ;                /* C, LDC: C1 */
+                    C, ndrow2,                  /* C, LDC: C1 */
+                    Common->blas_ok) ;
 #else
-                BLAS_zherk ("L", "N",
+                SUITESPARSE_BLAS_zherk ("L", "N",
                     ndrow1, ndcol,              /* N, K: L1 is ndrow1-by-ndcol*/
                     one,                        /* ALPHA:  1 */
                     Lx + L_ENTRY*pdx1, ndrow,   /* A, LDA: L1, ndrow */
                     zero,                       /* BETA:   0 */
-                    C, ndrow2) ;                /* C, LDC: C1 */
+                    C, ndrow2,                  /* C, LDC: C1 */
+                    Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_SYRK_TIME += SuiteSparse_time () - tstart ;
 #endif
@@ -705,8 +709,9 @@ static int TEMPLATE (cholmod_super_numeric)
                     Common->CHOLMOD_CPU_GEMM_CALLS++ ;
                     tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                    BLAS_dgemm ("N", "C",
+                    SUITESPARSE_BLAS_dgemm ("N", "C",
                         ndrow3, ndrow1, ndcol,          /* M, N, K */
                         one,                            /* ALPHA:  1 */
                         Lx + L_ENTRY*(pdx1 + ndrow1),   /* A, LDA: L2 */
@@ -715,9 +720,10 @@ static int TEMPLATE (cholmod_super_numeric)
                         ndrow,                          /* ndrow */
                         zero,                           /* BETA:   0 */
                         C + L_ENTRY*ndrow1,             /* C, LDC: C2 */
-                        ndrow2) ;
+                        ndrow2,   
+                        Common->blas_ok) ;
 #else
-                    BLAS_zgemm ("N", "C",
+                    SUITESPARSE_BLAS_zgemm ("N", "C",
                         ndrow3, ndrow1, ndcol,          /* M, N, K */
                         one,                            /* ALPHA:  1 */
                         Lx + L_ENTRY*(pdx1 + ndrow1),   /* A, LDA: L2 */
@@ -726,8 +732,10 @@ static int TEMPLATE (cholmod_super_numeric)
                         ndrow,
                         zero,                           /* BETA:   0 */
                         C + L_ENTRY*ndrow1,             /* C, LDC: C2 */
-                        ndrow2) ;
+                        ndrow2,
+                        Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                     Common->CHOLMOD_CPU_GEMM_TIME +=
                         SuiteSparse_time () - tstart ;
@@ -862,15 +870,17 @@ static int TEMPLATE (cholmod_super_numeric)
             tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
-            LAPACK_dpotrf ("L",
+            SUITESPARSE_LAPACK_dpotrf ("L",
                 nscol2,                     /* N: nscol2 */
                 Lx + L_ENTRY*psx, nsrow,    /* A, LDA: S1, nsrow */
-                info) ;                     /* INFO */
+                info,                       /* INFO */
+                Common->blas_ok) ;
 #else
-            LAPACK_zpotrf ("L",
+            SUITESPARSE_LAPACK_zpotrf ("L",
                 nscol2,                     /* N: nscol2 */
                 Lx + L_ENTRY*psx, nsrow,    /* A, LDA: S1, nsrow */
-                info) ;                     /* INFO */
+                info,                       /* INFO */
+                Common->blas_ok) ;
 #endif
 #ifndef NTIMER
             Common->CHOLMOD_CPU_POTRF_TIME += SuiteSparse_time ()- tstart ;
@@ -896,9 +906,10 @@ static int TEMPLATE (cholmod_super_numeric)
             }
         }
 
-        /* info is set to one in LAPACK_*potrf if blas_ok is FALSE.  It is
-         * set to zero in dpotrf/zpotrf if the factorization was successful. */
-        if (CHECK_BLAS_INT && !Common->blas_ok)
+        /* info is set to one in SUITESPARSE_LAPACK_*potrf if blas_ok is FALSE.
+         * It is set to zero in dpotrf/zpotrf if the factorization was
+         * successful. */
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
         {
             ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
         }
@@ -994,27 +1005,31 @@ static int TEMPLATE (cholmod_super_numeric)
                 Common->CHOLMOD_CPU_TRSM_CALLS++ ;
                 tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                BLAS_dtrsm ("R", "L", "C", "N",
+                SUITESPARSE_BLAS_dtrsm ("R", "L", "C", "N",
                     nsrow2, nscol2,                 /* M, N */
                     one,                            /* ALPHA: 1 */
                     Lx + L_ENTRY*psx, nsrow,        /* A, LDA: L1, nsrow */
                     Lx + L_ENTRY*(psx + nscol2),    /* B, LDB, L2, nsrow */
-                    nsrow) ;
+                    nsrow,
+                    Common->blas_ok) ;
 #else
-                BLAS_ztrsm ("R", "L", "C", "N",
+                SUITESPARSE_BLAS_ztrsm ("R", "L", "C", "N",
                     nsrow2, nscol2,                 /* M, N */
                     one,                            /* ALPHA: 1 */
                     Lx + L_ENTRY*psx, nsrow,        /* A, LDA: L1, nsrow */
                     Lx + L_ENTRY*(psx + nscol2),    /* B, LDB, L2, nsrow */
-                    nsrow) ;
+                    nsrow,
+                    Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_TRSM_TIME += SuiteSparse_time () - tstart ;
 #endif
             }
 
-            if (CHECK_BLAS_INT && !Common->blas_ok)
+            if (!Common->blas_ok)
             {
                 ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
             }

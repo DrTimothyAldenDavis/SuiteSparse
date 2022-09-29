@@ -1575,15 +1575,13 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
 
 	iperm (Y, Perm, 0, nrhs, X) ;			    /* X = P'*Y */
 
-	if (CHECK_BLAS_INT && !Common->blas_ok)
+	if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
 	{
 	    /* Integer overflow in the BLAS.  This is probably impossible,
 	     * since the BLAS were used to create the supernodal factorization.
 	     * It might be possible for the calls to the BLAS to differ between
 	     * factorization and forward/backsolves, however.  This statement
-	     * is untested; it does not appear in the compiled code if
-             * CHECK_BLAS_INT is true (when the same integer is used in
-             * CHOLMOD and the BLAS. */
+	     * cannot be tested. */
 	    return (FALSE) ;
 	}
 

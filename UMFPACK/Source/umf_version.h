@@ -159,10 +159,10 @@ SCALAR_IS_LTZERO(x):
     that possibility.  ANSI C *does* guarantee that an array of structs has
     the same size as n times the size of one struct.
 
-    The ANSI C99 version of the C language includes a "double _Complex" type.
+    The ANSI C11 version of the C language includes a "double complex" type.
     It should be possible in that case to do the following:
 
-    #define Entry double _Complex
+    #define Entry double complex
 
     and remove the DoubleComplex struct.  The macros, below, could then be
     replaced with instrinsic operators.  Note that the #define Real and
@@ -210,7 +210,7 @@ typedef struct
 /* -------------------------------------------------------------------------- */
 
 /* c = (s1) + (s2)*i, if s2 is null, then X is in "packed" format (compatible
- * with Entry and ANSI C99 double _Complex type).  */
+ * with Entry and ANSI C11 double complex type).  */
 #define ASSIGN(c,s1,s2,p,split)	\
 { \
     if (split) \

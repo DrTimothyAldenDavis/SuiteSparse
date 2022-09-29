@@ -143,7 +143,7 @@ int CHOLMOD(start)
     /* Common->called_nd is TRUE if cholmod_analyze called or NESDIS */
     Common->called_nd = FALSE ;
 
-    Common->blas_ok = TRUE ;    /* false if BLAS int overflow occurs */
+    Common->blas_ok = TRUE ;    /* false if SUITESPARSE_BLAS_INT overflows */
 
     /* ---------------------------------------------------------------------- */
     /* default SuiteSparseQR knobs and statististics */

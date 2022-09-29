@@ -20,7 +20,9 @@ extern "C"
 
 #include "GB_cuda.h"
 #include "GB_jit_cache.h"
-#include "jitFactory.hpp"
+#include "GB_cuda_common_jitFactory.hpp"
+#include "GB_cuda_reduce_jitFactory.hpp"
+#include "GB_cuda_mxm_dot3_jitFactory.hpp"
 #include "GB_cuda_type_wrap.hpp"
 #include "test/GpuTimer.h"
 
