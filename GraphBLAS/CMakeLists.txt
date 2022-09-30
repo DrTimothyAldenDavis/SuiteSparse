@@ -39,8 +39,8 @@ message ( STATUS "GraphBLAS C API: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
     )
 
 # CUDA is under development for now, and not deployed in production:

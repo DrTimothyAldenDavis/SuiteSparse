@@ -1,11 +1,8 @@
-FIXME: move SuiteSparse/cmake_modules to SuiteSparse_config
-
 FIXME: retest all Tcov (Linux)
 
-FIXME: should GraphBLAS depend on SuiteSparse_config?
+FIXME: test GraphBLAS/alternative/Makefile
 
 FIXME: Mongoose 'make test' fails: unable to download test files
-    Mongoose docs need sourcecodeproto.sty
 
 FIXME: CUDA (requires hypersparse)
     cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine

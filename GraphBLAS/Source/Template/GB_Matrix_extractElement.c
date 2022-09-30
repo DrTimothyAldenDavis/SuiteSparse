@@ -90,11 +90,12 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         // A is sparse or hypersparse
         if (A->h != NULL)
         {
+// FIXME: if A->Y is not null, use GB_hyper_hash_lookup
             // A is hypersparse: look for j in hyperlist A->h [0 ... A->nvec-1]
             const int64_t *restrict Ah = A->h ;
             int64_t k = 0 ;
             pright = A->nvec-1 ;
-            GB_BINARY_SEARCH (j, Ah, k, pright, found) ;
+            GB_BINARY_SEARCH (j, Ah, k, pright, found) ;    // FIXME
             if (!found)
             { 
                 // vector j is empty

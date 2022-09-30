@@ -268,17 +268,17 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
 // built-in index_unary operators
 //------------------------------------------------------------------------------
 
-// IndexUnaryOps that depend on i,j,thunk but not A(i,j), and result has
-// the same type as the thunk: ROWINDEX, COLINDEX, DIAGINDEX
+// IndexUnaryOps that depend on i,j,y but not A(i,j), and result has
+// the same type as the scalar y: ROWINDEX, COLINDEX, DIAGINDEX
 #define GRB_IDXOP_POSITIONAL(op,str)                                        \
     extern void GB_FUNC_T(op,GB_XTYPE) (GB_TYPE *z, const void *unused,     \
-        GrB_Index i, GrB_Index j, const GB_TYPE *thunk) ;                   \
+        GrB_Index i, GrB_Index j, const GB_TYPE *y) ;                       \
     struct GB_IndexUnaryOp_opaque GB_OPAQUE (GB_OP (op)) =                  \
     {                                                                       \
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (GB_XTYPE), /* ztype */                                 \
         NULL,                   /* xtype */                                 \
-        & GB_OPAQUE (GB_XTYPE), /* thunk type */                            \
+        & GB_OPAQUE (GB_XTYPE), /* ytype */                                 \
         NULL, (GxB_index_unary_function) (& GB_FUNC_T (op, GB_XTYPE)),      \
             NULL, NULL,                                                     \
         str,                                                                \
@@ -287,17 +287,17 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
     } ;                                                                     \
     GrB_IndexUnaryOp GRB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
-// GxB_IndexUnaryOps that depend on i,j,thunk but not A(i,j), and result has
-// the same type as the thunk: FLIPDIAGINDEX
+// GxB_IndexUnaryOps that depend on i,j,y but not A(i,j), and result has
+// the same type as the scalar y: FLIPDIAGINDEX
 #define GXB_IDXOP_POSITIONAL(op,str)                                        \
     extern void GB_FUNC_T(op,GB_XTYPE) (GB_TYPE *z, const void *unused,     \
-        GrB_Index i, GrB_Index j, const GB_TYPE *thunk) ;                   \
+        GrB_Index i, GrB_Index j, const GB_TYPE *y) ;                       \
     struct GB_IndexUnaryOp_opaque GB_OPAQUE (GB_OP (op)) =                  \
     {                                                                       \
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (GB_XTYPE), /* ztype */                                 \
         NULL,                   /* xtype */                                 \
-        & GB_OPAQUE (GB_XTYPE), /* thunk type */                            \
+        & GB_OPAQUE (GB_XTYPE), /* ytype */                                 \
         NULL, (GxB_index_unary_function) (& GB_FUNC_T (op, GB_XTYPE)),      \
             NULL, NULL,                                                     \
         str,                                                                \
@@ -306,17 +306,17 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
     } ;                                                                     \
     GrB_IndexUnaryOp GXB (GB_OP (op)) = & GB_OPAQUE (GB_OP (op))
 
-// IndexUnaryOps that depend on i,j, and thunk but not A(i,j), and result is
+// IndexUnaryOps that depend on i,j, and y but not A(i,j), and result is
 // bool: TRIL, TRIU, DIAG, OFFDIAG, COLLE, COLGT, ROWLE, ROWGT
 #define GRB_IDXOP_POSITIONAL_BOOL(op,str)                                   \
     extern void GB_FUNC_T(op,GB_XTYPE) (bool *z, const void *unused,        \
-        GrB_Index i, GrB_Index j, const GB_TYPE *thunk) ;                   \
+        GrB_Index i, GrB_Index j, const GB_TYPE *y) ;                       \
     struct GB_IndexUnaryOp_opaque GB_OPAQUE (GB_OP (op)) =                  \
     {                                                                       \
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (BOOL),     /* ztype */                                 \
         NULL,                   /* xtype */                                 \
-        & GB_OPAQUE (GB_XTYPE), /* thunk type */                            \
+        & GB_OPAQUE (GB_XTYPE), /* ytype */                                 \
         NULL, (GxB_index_unary_function) (& GB_FUNC_T (op, GB_XTYPE)),      \
             NULL, NULL,                                                     \
         str,                                                                \
@@ -328,13 +328,13 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
 // GrB_IndexUnaryOps that depend on A(i,j), and result is bool: VALUE* ops
 #define GRB_IDXOP_VALUE(op,str)                                             \
     extern void GB_FUNC_T(op,GB_XTYPE) (bool *z, const GB_TYPE *x,          \
-        GrB_Index i_unused, GrB_Index j_unused, const GB_TYPE *thunk) ;     \
+        GrB_Index i_unused, GrB_Index j_unused, const GB_TYPE *y) ;         \
     struct GB_IndexUnaryOp_opaque GB_OPAQUE (GB_OP (op)) =                  \
     {                                                                       \
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (BOOL),     /* ztype */                                 \
         & GB_OPAQUE (GB_XTYPE), /* xtype */                                 \
-        & GB_OPAQUE (GB_XTYPE), /* thunk type */                            \
+        & GB_OPAQUE (GB_XTYPE), /* ytype */                                 \
         NULL, (GxB_index_unary_function) (& GB_FUNC_T (op, GB_XTYPE)),      \
             NULL, NULL,                                                     \
         str,                                                                \
@@ -346,13 +346,13 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
 // GrB_IndexUnaryOps that depend on A(i,j), result is bool: VALUE* complex ops
 #define GXB_IDXOP_VALUE(op,str)                                             \
     extern void GB_FUNC_T(op,GB_XTYPE) (bool *z, const GB_TYPE *x,          \
-        GrB_Index i_unused, GrB_Index j_unused, const GB_TYPE *thunk) ;     \
+        GrB_Index i_unused, GrB_Index j_unused, const GB_TYPE *y) ;         \
     struct GB_IndexUnaryOp_opaque GB_OPAQUE (GB_OP (op)) =                  \
     {                                                                       \
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (BOOL),     /* ztype */                                 \
         & GB_OPAQUE (GB_XTYPE), /* xtype */                                 \
-        & GB_OPAQUE (GB_XTYPE), /* thunk type */                            \
+        & GB_OPAQUE (GB_XTYPE), /* ytype */                                 \
         NULL, (GxB_index_unary_function) (& GB_FUNC_T (op, GB_XTYPE)),      \
             NULL, NULL,                                                     \
         str,                                                                \
@@ -371,7 +371,7 @@ GXB_OP2_POS (SECONDJ1  , "secondj1"  , INT64) ;
         GB_MAGIC, 0,                                                        \
         & GB_OPAQUE (BOOL),     /* ztype */                                 \
         NULL,                   /* xtype */                                 \
-        NULL,                   /* thunk type */                            \
+        NULL,                   /* thunk type for GxB_SelectOp */           \
         NULL, NULL, NULL, NULL,                                             \
         str,                                                                \
         GB_ ## op ## _selop_code,                                           \

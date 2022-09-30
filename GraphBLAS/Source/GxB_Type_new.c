@@ -143,7 +143,7 @@ GrB_Info GxB_Type_new
         if (t->defn == NULL)
         { 
             // out of memory
-            GB_FREE (t, header_size) ;
+            GB_FREE (&t, header_size) ;
             return (GrB_OUT_OF_MEMORY) ;
         }
 

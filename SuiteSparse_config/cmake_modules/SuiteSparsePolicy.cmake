@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/cmake_modules/SuiteSparsePolicy.cmake
+# SuiteSparse/SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.

@@ -24,7 +24,7 @@ Files in SuiteSparse_config:
 
 For packages that use cmake and require SuiteSparse_config, see:
 
-    ../cmake_modules/FindSuiteSparse_config.cmake
+    ../SuiteSparse_config/cmake_modules/FindSuiteSparse_config.cmake
 
 To compile/install SuiteSparse_config on Linux/MacOS, in this directory do:
 

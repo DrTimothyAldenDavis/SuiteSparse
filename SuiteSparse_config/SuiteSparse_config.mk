@@ -14,7 +14,7 @@
 
 # The configuration settings for GraphBLAS, and for the production libraries
 # of SuiteSparse packages are determined by their respective CMakeLists.txt
-# file, and by SuiteSparse/cmake_modules/SuiteSparsePolicy.cmake.
+# file, and by SuiteSparse/SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake.
 
 SUITESPARSE_VERSION = 6.0.0
 

@@ -533,7 +533,8 @@ you have the Intel compilers or not, and whether or not you have CUDA.
 
 NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
 result in severe performance degradation, in CHOLMOD in particular.
-See cmake_modules/SuiteSparsePolicy.cmake to select your BLAS.
+See SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake to select your
+BLAS.
 
 If you do "make install" by itself, then the packages are all installed in
 SuiteSparse/lib (libraries), SuiteSparse/include (include .h files).

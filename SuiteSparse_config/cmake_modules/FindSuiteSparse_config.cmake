@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/cmake_modules/FindSuiteSparse_config.cmake
+# SuiteSparse/SuiteSparse_config/cmake_modules/FindSuiteSparse_config.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
@@ -24,7 +24,7 @@
 # or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
 # can leave this file in place and use this command (revise as needed):
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules")
+#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
 
 #-------------------------------------------------------------------------------
 

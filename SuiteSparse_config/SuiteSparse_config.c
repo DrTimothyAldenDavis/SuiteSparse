@@ -67,7 +67,7 @@ struct SuiteSparse_config_struct SuiteSparse_config =
         NULL,
     #endif
 
-    SuiteSparse_hypot,
+    hypot, // was SuiteSparse_hypot in v5 and earlier
     SuiteSparse_divcomplex
 
 } ;
@@ -131,7 +131,7 @@ void SuiteSparse_start ( void )
     #endif
 
     /* math functions */
-    SuiteSparse_config.hypot_func = SuiteSparse_hypot ;
+    SuiteSparse_config.hypot_func = hypot ; // was SuiteSparse_hypot in v5
     SuiteSparse_config.divcomplex_func = SuiteSparse_divcomplex ;
 }
 
@@ -448,26 +448,22 @@ int SuiteSparse_version
     return (SUITESPARSE_VERSION) ;
 }
 
-/* -------------------------------------------------------------------------- */
-/* SuiteSparse_hypot */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// SuiteSparse_hypot
+//------------------------------------------------------------------------------
 
-/* There is an equivalent routine called hypot in <math.h>, which conforms
- * to ANSI C99.  However, SuiteSparse does not assume that ANSI C99 is
- * available.  You can use the ANSI C99 hypot routine with:
- *
- *      #include <math.h>
- *i     SuiteSparse_config.hypot_func = hypot ;
- *
- * Default value of the SuiteSparse_config.hypot_func pointer is
- * SuiteSparse_hypot, defined below.
- *
- * s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
- * The NaN cases for the double relops x >= y and x+y == x are safely ignored.
- * 
- * Source: Algorithm 312, "Absolute value and square root of a complex number,"
- * P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
- */
+// SuiteSparse_config v5 and earlier used SuiteSparse_hypot, defined below.
+// SuiteSparse_config v6 now uses the hypot method in <math.h>, by default.
+// The hypot function appears in ANSI C99 and later, and SuiteSparse now
+// assumes ANSI C11.
+
+// s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
+// The NaN cases for the double relops x >= y and x+y == x are safely ignored.
+
+// Source: Algorithm 312, "Absolute value and square root of a complex number,"
+// P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
+
+// This method below is kept for historical purposes.
 
 SUITESPARSE_PUBLIC
 double SuiteSparse_hypot (double x, double y)
@@ -502,49 +498,99 @@ double SuiteSparse_hypot (double x, double y)
     return (s) ;
 }
 
-/* -------------------------------------------------------------------------- */
-/* SuiteSparse_divcomplex */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// SuiteSparse_divcomplex
+//------------------------------------------------------------------------------
 
-/* c = a/b where c, a, and b are complex.  The real and imaginary parts are
- * passed as separate arguments to this routine.  The NaN case is ignored
- * for the double relop br >= bi.  Returns 1 if the denominator is zero,
- * 0 otherwise.
- *
- * This uses ACM Algo 116, by R. L. Smith, 1962, which tries to avoid
- * underflow and overflow.
- *
- * c can be the same variable as a or b.
- *
- * Default value of the SuiteSparse_config.divcomplex_func pointer is
- * SuiteSparse_divcomplex.
- */
+// z = x/y where z, x, and y are complex.  The real and imaginary parts are
+// passed as separate arguments to this routine.  The NaN case is ignored
+// for the double relop yr >= yi.  Returns 1 if the denominator is zero,
+// 0 otherwise.
+//
+// This uses ACM Algo 116, by R. L. Smith, 1962, which tries to avoid
+// underflow and overflow.
+//
+// z can be the same variable as x or y.
+//
+// Default value of the SuiteSparse_config.divcomplex_func pointer is
+// SuiteSparse_divcomplex.
+//
+// This function is identical to GB_divcomplex in GraphBLAS/Source/GB_math.h.
+// The only difference is the name of the function.
 
-SUITESPARSE_PUBLIC
-int SuiteSparse_divcomplex
+SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
 (
-    double ar, double ai,       /* real and imaginary parts of a */
-    double br, double bi,       /* real and imaginary parts of b */
-    double *cr, double *ci      /* real and imaginary parts of c */
+    double xr, double xi,       // real and imaginary parts of x
+    double yr, double yi,       // real and imaginary parts of y
+    double *zr, double *zi      // real and imaginary parts of z
 )
 {
     double tr, ti, r, den ;
-    if (fabs (br) >= fabs (bi))
+
+    int yr_class = fpclassify (yr) ;
+    int yi_class = fpclassify (yi) ;
+
+    if (yi_class == FP_ZERO)
     {
-        r = bi / br ;
-        den = br + r * bi ;
-        tr = (ar + ai * r) / den ;
-        ti = (ai - ar * r) / den ;
+        den = yr ;
+        if (xi == 0)
+        {
+            tr = xr / den ;
+            ti = 0 ;
+        }
+        else if (xr == 0)
+        {
+            tr = 0 ;
+            ti = xi / den ;
+        }
+        else
+        {
+            tr = xr / den ;
+            ti = xi / den ;
+        }
+    }
+    else if (yr_class == FP_ZERO)
+    {
+        den = yi ;
+        if (xr == 0)
+        {
+            tr = xi / den ;
+            ti = 0 ;
+        }
+        else if (xi == 0)
+        {
+            tr = 0 ;
+            ti = -xr / den ;
+        }
+        else
+        {
+            tr = xi / den ;
+            ti = -xr / den ;
+        }
+    }
+    else if (yi_class == FP_INFINITE && yr_class == FP_INFINITE)
+    {
+        r = (signbit (yr) == signbit (yi)) ? (1) : (-1) ;
+        den = yr + r * yi ;
+        tr = (xr + xi * r) / den ;
+        ti = (xi - xr * r) / den ;
+    }
+    else if (fabs (yr) >= fabs (yi))
+    {
+        r = yi / yr ;
+        den = yr + r * yi ;
+        tr = (xr + xi * r) / den ;
+        ti = (xi - xr * r) / den ;
     }
     else
     {
-        r = br / bi ;
-        den = r * br + bi ;
-        tr = (ar * r + ai) / den ;
-        ti = (ai * r - ar) / den ;
+        r = yr / yi ;
+        den = r * yr + yi ;
+        tr = (xr * r + xi) / den ;
+        ti = (xi * r - xr) / den ;
     }
-    *cr = tr ;
-    *ci = ti ;
-    return (den == 0.) ;
+    (*zr) = tr ;
+    (*zi) = ti ;
+    return (den == 0) ;
 }
 

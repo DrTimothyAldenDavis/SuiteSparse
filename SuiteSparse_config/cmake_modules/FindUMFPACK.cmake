@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/cmake_modules/FindUMFPACK.cmake
+# SuiteSparse/SuiteSparse_config/cmake_modules/FindUMFPACK.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
@@ -25,7 +25,7 @@
 # can leave this file in place and use this command (revise as needed):
 #
 #   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules")
+#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
 
 #-------------------------------------------------------------------------------
 
