@@ -16,9 +16,6 @@
 #define GB_DEVELOPER 0
 #endif
 
-#undef  GB_DEVELOPER
-#define GB_DEVELOPER 1
-
 #include "GB_Pending.h"
 #include "GB.h"
 #include "GB_hash.h"
