@@ -96,7 +96,11 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         const int64_t *restrict Ah = A->h ;
         if (Ah != NULL)
         {
+
+            //------------------------------------------------------------------
             // A is hypersparse: look for j in hyperlist A->h [0 ... A->nvec-1]
+            //------------------------------------------------------------------
+
             int64_t k ;
             if (A->Y == NULL)
             { 
@@ -121,7 +125,11 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
         }
         else
         { 
+
+            //------------------------------------------------------------------
             // A is sparse: look in the jth vector
+            //------------------------------------------------------------------
+
             pA_start = Ap [j] ;
             pA_end   = Ap [j+1] ;
         }
