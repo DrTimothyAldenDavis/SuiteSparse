@@ -76,7 +76,7 @@ static inline bool GB_removeElement     // return true if found
             // look for vector j in hyperlist C->h [0 ... C->nvec-1]
             int64_t pleft = 0 ;
             int64_t pright = C->nvec-1 ;
-            GB_BINARY_SEARCH (j, Ch, pleft, pright, found) ;
+            GB_BINARY_SEARCH (j, Ch, pleft, pright, found) ;    // FIXME use hyper_hash
             if (!found)
             { 
                 // vector j is empty

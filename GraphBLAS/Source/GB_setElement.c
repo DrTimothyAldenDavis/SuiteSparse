@@ -157,8 +157,8 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         }
 
     }
-    else if (GB_nnz (C) == 0 && !C_is_full && C->Pending == NULL &&
-        accum == NULL)
+    else if (GB_nnz (C) == 0 && !C_is_full && C->Pending == NULL
+        && accum == NULL)
     {
 
         //----------------------------------------------------------------------
@@ -218,7 +218,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
     {
 
         //----------------------------------------------------------------------
-        // hyper_hash search in C->Y for vector j, or O(1)-time lookup if sparse
+        // C is sparse or hypersparse
         //----------------------------------------------------------------------
 
         int64_t pC_start, pC_end ;
@@ -229,31 +229,19 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
             found = false ;
         }
         else if (Ch != NULL)
-        { 
+        {
             // C is hypersparse, with at least one entry
-            int64_t k, cnvec = C->nvec ;
-            if (cnvec <= 64 && C->Y == NULL)
-            {
-                // C is hypersparse but does not yet have a hyper_hash.  It has
-                // very few vectors so far, so just use a simple linear-time
-                // search.
-                for (k = 0 ; k < cnvec ; k++)
-                {
-                    found = (j == Ch [k]) ;
-                    if (found)
-                    { 
-                        pC_start = C->p [k] ;
-                        pC_end   = C->p [k+1] ;
-                        break ;
-                    }
-                }
+            int64_t k ;
+            if (C->Y == NULL)
+            { 
+                // C is hypersparse but does not yet have a hyper_hash
+                k = 0 ;
+                found = GB_lookup (true, Ch, C->p, C->vlen, &k,
+                    C->nvec-1, j, &pC_start, &pC_end) ;
             }
             else
             { 
-                // C is hypersparse, with either many vectors or with a
-                // hyper_has that is already built.  If the hyper_hash is not
-                // yet built, create it now.
-                GB_OK (GB_hyper_hash_build (C, Context)) ;
+                // C is hypersparse, with a hyper_hash that is already built
                 k = GB_hyper_hash_lookup (C->p, C->Y->p, C->Y->i, C->Y->x,
                     C->Y->vdim-1, j, &pC_start, &pC_end) ;
                 found = (k >= 0) ;
@@ -280,8 +268,8 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
 
             // Time taken for this step is at most O(log(nnz(C(:,j))).
             const int64_t *restrict Ci = C->i ;
-            GB_BINARY_SEARCH_ZOMBIE (i, Ci, pleft, pright, found, C->nzombies,
-                is_zombie) ;
+            GB_BINARY_SEARCH_ZOMBIE (i, Ci, pleft, pright, found,
+                C->nzombies, is_zombie) ;
         }
     }
 

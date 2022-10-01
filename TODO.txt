@@ -1,3 +1,5 @@
+FIXME: use hyper_hash in GrB_Matrix_removeElement
+
 FIXME: retest all Tcov (Linux)
 
 FIXME: test GraphBLAS/alternative/Makefile
