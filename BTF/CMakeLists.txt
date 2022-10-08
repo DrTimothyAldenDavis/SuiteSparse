@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( BTF_DATE "Oct 31, 2022" )  # FIXME
 set ( BTF_VERSION_MAJOR 2 )

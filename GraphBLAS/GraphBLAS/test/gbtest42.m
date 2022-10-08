@@ -28,6 +28,7 @@ for k1 = 1:length(types)
             xtype = types {k2} ;
             xnan = gbtest_cast (nan, xtype) ;
 
+save gunk A xnan A_nan
             G = GrB.select (A, '==', xnan) ;
             X1 = full (double (G)) ;
             X2 = double (A_nan) ;

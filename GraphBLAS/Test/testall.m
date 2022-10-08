@@ -76,6 +76,7 @@ GB_mex_hack (hack) ;
 %----------------------------------------
 
 logstat ('test01' ,t) ; % error handling
+logstat ('test245',t) ; % test complex row/col scale
 logstat ('test199',t) ; % test dot2 with hypersparse
 logstat ('test83' ,t) ; % GrB_assign with C_replace and empty J
 logstat ('test210',t) ; % test iso assign25: C<M,struct>=A, C empty, A dense
@@ -254,7 +255,6 @@ logstat ('test173',t) ; % test GrB_assign C<A>=A
 logstat ('test200',t) ; % test iso full matrix multiply
 logstat ('test197',t) ; % test large sparse split
 
-logstat ('test158',t) ; % test colscale and rowscale
 logstat ('test84' ,t) ; % GrB_assign (row and column with C in CSR/CSC format)
 logstat ('test19b',t) ; % GrB_assign, many pending operators
 logstat ('test19b',s) ; % GrB_assign, many pending operators
@@ -452,6 +452,8 @@ logstat ('test143',t) ;    %   37 % mxm, special cases
 logstat ('test146',t) ;    %   .1 % expand scalar
 logstat ('test147',t) ;           % C<M>=A*B with very sparse M
 logstat ('test149',t) ;           % test fine hash tasks for C<!M>=A*B
+
+logstat ('test158',t) ;    %  10  % test colscale and rowscale
 
 logstat ('test161',t) ;    %      % test A*B*E
 logstat ('test163',t) ;    %   .6 % test C<!M>=A'*B where C and M are sparse

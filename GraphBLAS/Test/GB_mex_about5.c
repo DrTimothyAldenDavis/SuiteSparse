@@ -223,15 +223,15 @@ void mexFunction
     CHECK (type == GrB_BOOL) ;
 
     OK (GxB_BinaryOp_xtype_name (type_name, GxB_PLUS_FC32)) ;
-    CHECK (MATCH (type_name, "float complex")) ;
+    CHECK (MATCH (type_name, "GxB_FC32_t")) ;
     OK (GxB_Type_from_name (&type, type_name)) ;
     CHECK (type == GxB_FC32) ;
     OK (GxB_BinaryOp_ytype_name (type_name, GxB_PLUS_FC64)) ;
-    CHECK (MATCH (type_name, "double complex")) ;
+    CHECK (MATCH (type_name, "GxB_FC64_t")) ;
     OK (GxB_Type_from_name (&type, type_name)) ;
     CHECK (type == GxB_FC64) ;
     OK (GxB_BinaryOp_ztype_name (type_name, GxB_PLUS_FC32)) ;
-    CHECK (MATCH (type_name, "float complex")) ;
+    CHECK (MATCH (type_name, "GxB_FC32_t")) ;
     OK (GxB_Type_from_name (&type, type_name)) ;
     CHECK (type == GxB_FC32) ;
 
@@ -312,9 +312,9 @@ void mexFunction
     CHECK (MATCH (type_name, "double")) ;
 
     OK (GxB_Type_name (type_name, GxB_FC32)) ;
-    CHECK (MATCH (type_name, "float complex")) ;
+    CHECK (MATCH (type_name, "GxB_FC32_t")) ;
     OK (GxB_Type_name (type_name, GxB_FC64)) ;
-    CHECK (MATCH (type_name, "double complex")) ;
+    CHECK (MATCH (type_name, "GxB_FC64_t")) ;
 
     OK (GrB_Matrix_new (&A, GrB_FP32, 5, 5)) ;
     ERR (GxB_Matrix_type_name (NULL, A)) ;

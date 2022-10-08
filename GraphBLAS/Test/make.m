@@ -50,7 +50,7 @@ end
 
 make_all = (isequal (what, 'all')) ;
 
-flags = '-g -R2018a -DGBNCPUFEAT' ;
+flags = '-g -R2018a -DGBNCPUFEAT -DGB_DEBUGIFY_DEFN=1' ;
 
 if (~have_octave)
     try

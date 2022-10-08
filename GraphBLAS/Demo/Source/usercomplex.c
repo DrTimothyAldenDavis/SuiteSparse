@@ -7,6 +7,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME: add strings for types and ops
+
 #include "GraphBLAS.h"
 #undef GB_PUBLIC
 #define GB_LIBRARY
