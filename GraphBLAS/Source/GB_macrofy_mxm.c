@@ -72,7 +72,7 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
         scode, addop->name, mult->name, flipxy ? " (flipped)" : "") ;
 
     //--------------------------------------------------------------------------
-    // construct the typedefs (not macros)
+    // construct the typedefs
     //--------------------------------------------------------------------------
 
     GB_macrofy_types (fp, ctype->defn, atype->defn, btype->defn,
@@ -159,7 +159,7 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
     GB_macrofy_sparsity (fp, "M", msparsity) ;
 
     //--------------------------------------------------------------------------
-    // construct macros to load scalars from A and B (and typecast) them
+    // construct the macros for A and B
     //--------------------------------------------------------------------------
 
     // if flipxy false:  A is typecasted to x, and B is typecasted to y.

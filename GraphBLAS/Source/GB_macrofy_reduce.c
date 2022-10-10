@@ -46,6 +46,17 @@ void GB_macrofy_reduce      // construct all macros for GrB_reduce to scalar
     fprintf (fp, "// GB_reduce_%016" PRIX64 ".h (%s %s A: %s)\n", rcode,
         monoid->op->name, monoid->op->ztype->name, atype->name) ;
 
+    //--------------------------------------------------------------------------
+    // construct the typedefs
+    //--------------------------------------------------------------------------
+
+    GB_macrofy_types (fp, NULL, atype->defn, NULL,
+        NULL, NULL, monoid->op->ztype->defn) ;
+
+    //--------------------------------------------------------------------------
+    // construct the macros for the type names
+    //--------------------------------------------------------------------------
+
     fprintf (fp, "\n// monoid type:\n") ;
     fprintf (fp, "#define GB_Z_TYPENAME %s\n", monoid->op->ztype->name) ;
 
@@ -57,7 +68,7 @@ void GB_macrofy_reduce      // construct all macros for GrB_reduce to scalar
     GB_macrofy_monoid (fp, red_ecode, id_ecode, term_ecode, monoid, false) ;
 
     //--------------------------------------------------------------------------
-    // determine the sparsity format of A
+    // construct the macros for A
     //--------------------------------------------------------------------------
 
     fprintf (fp, "\n// A matrix:\n") ;

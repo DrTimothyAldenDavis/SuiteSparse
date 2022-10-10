@@ -18,7 +18,7 @@ void GB_macrofy_binop
     bool flipxy,                // if true: op is f(y,x), multipicative only
     bool is_monoid,             // if true: additive operator for monoid
     int ecode,
-    GrB_BinaryOp op,
+    GrB_BinaryOp op,            // may be NULL (for GB_wait)
     bool skip_defn
 )
 {
@@ -301,6 +301,12 @@ void GB_macrofy_binop
             case 137 : f = "z = (i) + 1"                     ; break ;
             case 138 : f = "z = (k) + 1"                     ; break ;
             case 139 : f = "z = (j) + 1"                     ; break ;
+
+            //------------------------------------------------------------------
+            // no-op for GB_wait (an implicit 2nd operator)
+            //------------------------------------------------------------------
+
+            case 140 : f = "z = y"                           ; break ;
 
             default  : f = "" ;                              ; break ;
         }

@@ -73,7 +73,7 @@ GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
         (A != NULL) ? GB_NROWS (A) : 0,
         (A != NULL) ? GB_NCOLS (A) : 0) ;
 
-    if (A != NULL && A->type != NULL && A->type->name != NULL)
+    if (A != NULL && A->type != NULL)
     {
         if (A->type == GxB_FC32)
         { 

@@ -1,3 +1,7 @@
+FIXME: performance of setElement (RedisGraph)
+
+FIXME: performance of S*S (mperf.m for MATLAB)
+
 FIXME: retest all Tcov (Linux)
 
 FIXME: test GraphBLAS/alternative/Makefile

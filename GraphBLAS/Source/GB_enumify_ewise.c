@@ -21,7 +21,7 @@ void GB_enumify_ewise         // enumerate a GrB_eWise problem
     uint64_t *scode,        // unique encoding of the entire operation
     // input:
     // C matrix:
-    bool C_iso,             // if true, operator is ignored
+    bool C_iso,             // if true, C is iso and the operator is ignored
     int C_sparsity,         // sparse, hyper, bitmap, or full
     GrB_Type ctype,         // C=((ctype) T) is the final typecast
     // M matrix:
@@ -29,7 +29,7 @@ void GB_enumify_ewise         // enumerate a GrB_eWise problem
     bool Mask_struct,       // mask is structural
     bool Mask_comp,         // mask is complemented
     // operator:
-    GrB_BinaryOp binaryop,  // the binary operator to enumify
+    GrB_BinaryOp binaryop,  // the binary operator to enumify (can be NULL)
     bool flipxy,            // multiplier is: op(a,b) or op(b,a)
     // A and B:
     GrB_Matrix A,
@@ -38,28 +38,45 @@ void GB_enumify_ewise         // enumerate a GrB_eWise problem
 {
 
     //--------------------------------------------------------------------------
-    // handle the C_iso case
-    //--------------------------------------------------------------------------
-
-    if (C_iso || binaryop == NULL)
-    {
-        // values of C are not computed by the kernel
-        binaryop = GxB_PAIR_BOOL ;
-    }
-
-    //--------------------------------------------------------------------------
-    // get the types
+    // get the types of A, B, and M
     //--------------------------------------------------------------------------
 
     GrB_Type atype = A->type ;
     GrB_Type btype = B->type ;
     GrB_Type mtype = (M == NULL) ? NULL : M->type ;
 
-    GrB_Type xtype = binaryop->xtype ;
-    GrB_Type ytype = binaryop->ytype ;
-    GrB_Type ztype = binaryop->ztype ;
+    //--------------------------------------------------------------------------
+    // get the types of X, Y, and Z, and handle the C_iso case, and GB_wait
+    //--------------------------------------------------------------------------
 
-    GB_Opcode binaryop_opcode = binaryop->opcode ;
+    GB_Opcode binaryop_opcode ;
+    GrB_Type xtype, ytype, ztype ;
+    if (C_iso)
+    {
+        // values of C are not computed by the kernel
+        binaryop_opcode = GB_PAIR_binop_code ;
+        xtype = GrB_BOOL ;
+        ytype = GrB_BOOL ;
+        ztype = GrB_BOOL ;
+    }
+    else if (binaryop == NULL)
+    {
+        // GB_wait: A and B are disjoint and the operator is not applied
+        binaryop_opcode = GB_NOP_code ;
+        ASSERT (atype == btype) ;
+        ASSERT (ctype == btype) ;
+        xtype = atype ;
+        ytype = atype ;
+        ztype = atype ;
+    }
+    else
+    {
+        // normal case
+        binaryop_opcode = binaryop->opcode ;
+        xtype = binaryop->xtype ;
+        ytype = binaryop->ytype ;
+        ztype = binaryop->ztype ;
+    }
 
     GB_Type_code xcode = xtype->code ;
     GB_Type_code ycode = ytype->code ;
@@ -157,7 +174,7 @@ void GB_enumify_ewise         // enumerate a GrB_eWise problem
                 GB_LSHIFT (flipxy     , 44) |  // 0 or 1       1
 
                 // binaryop, z = f(x,y) (5 hex digits)
-                GB_LSHIFT (binop_ecode, 36) |  // 0 to 139     8
+                GB_LSHIFT (binop_ecode, 36) |  // 0 to 140     8
                 GB_LSHIFT (zcode      , 32) |  // 0 to 14      4
                 GB_LSHIFT (xcode      , 28) |  // 0 to 14      4
                 GB_LSHIFT (ycode      , 24) |  // 0 to 14      4

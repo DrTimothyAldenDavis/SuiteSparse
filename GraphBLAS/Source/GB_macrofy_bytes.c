@@ -29,7 +29,7 @@ void GB_macrofy_bytes
         "        const uint8_t bytes [%d] =                          \\\n"
         "        {                                                   \\\n"
         "            ",
-        Name, type_name, nbytes) ;
+        Name, type_name, (int) nbytes) ;
     for (int k = 0 ; k < nbytes ; k++)
     {
         fprintf (fp, "0x%02x", (int) (value [k])) ;
@@ -45,6 +45,6 @@ void GB_macrofy_bytes
         "        } ;                                                 \\\n"
         "        memcpy (z, bytes, %d) ;                             \\\n"
         "    }\n",
-        nbytes) ;
+        (int) nbytes) ;
 }
 

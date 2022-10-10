@@ -169,7 +169,7 @@ GrB_Info GB_add_phase2      // C=A+B, C<M>=A+B, or C<!M>=A+B
 
     if (op == NULL)
     { 
-        // implicit GB_SECOND_[type] operator with no typecasting
+        // GB_wait: implicit GB_SECOND_[type] operator with no typecasting
         ASSERT (!is_eWiseUnion) ;
         fadd = NULL ;               // the operator is not called
         asize = csize ;
@@ -385,7 +385,7 @@ GrB_Info GB_add_phase2      // C=A+B, C<M>=A+B, or C<!M>=A+B
     if (!done)
     {
         GB_BURBLE_MATRIX (C, "(generic add: %s) ",
-            (op == NULL) ? "second" : op->name) ;
+            (op == NULL) ? "2nd" : op->name) ;
 
         // C(i,j) = (ctype) A(i,j), located in Ax [pA]
         #undef  GB_COPY_A_TO_C 

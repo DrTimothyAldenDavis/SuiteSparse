@@ -470,6 +470,10 @@ void GB_enumify_binop
 
             e = 139 ; break ;
 
+        case GB_NOP_code :              // no operator for GB_wait
+
+            e = 140 ; break ;
+
         default: ;
     }
 

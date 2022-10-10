@@ -16,7 +16,7 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     FILE *fp,                   // target file to write, already open
     // input:
     uint64_t scode,
-    GrB_BinaryOp binaryop,      // binaryop to macrofy
+    GrB_BinaryOp binaryop,      // binaryop to macrofy (NULL for GB_wait)
     GrB_Type ctype,
     GrB_Type atype,
     GrB_Type btype
@@ -47,6 +47,8 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     int acode       = GB_RSHIFT (scode, 12, 4) ;   // if 0: A is pattern
     int bcode       = GB_RSHIFT (scode,  8, 4) ;   // if 0: B is pattern
 
+    bool C_iso = (ccode == 0) ;
+
     // formats of C, M, A, and B (2 hex digits)
     int csparsity   = GB_RSHIFT (scode,  6, 2) ;
     int msparsity   = GB_RSHIFT (scode,  4, 2) ;
@@ -57,30 +59,53 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     // construct the ewise name
     //--------------------------------------------------------------------------
 
+    fprintf (fp, "// GB_ewise_%016" PRIX64 ".h ", scode) ;
     if (binaryop == NULL)
+    {  
+        // GB_wait: A and B are disjoint and the operator is not applied
+        fprintf (fp, " (implicit 2nd)\n") ;
+    }
+    else
     { 
-        binaryop = GxB_PAIR_BOOL ;
+        // normal case
+        fprintf (fp, " (%s %s%s)\n", binaryop->name, binaryop->xtype->name, 
+            flipxy ? " (flipped)" : "") ;
     }
 
-    fprintf (fp, "// GB_ewise_%016" PRIX64 ".h (%s %s%s)\n",
-        scode, binaryop->name, binaryop->xtype->name, 
-        flipxy ? " (flipped)" : "") ;
-
     //--------------------------------------------------------------------------
-    // construct the typedefs (not macros)
+    // construct the typedefs
     //--------------------------------------------------------------------------
 
-    GB_macrofy_types (fp, ctype->defn, atype->defn, btype->defn,
-        binaryop->xtype->defn, binaryop->ytype->defn, binaryop->ztype->defn) ;
+    if (binaryop == NULL)
+    { 
+        // GB_wait: all types must be the same
+        GB_macrofy_types (fp, ctype->defn, NULL, NULL, NULL, NULL, NULL) ;
+    }
+    else
+    { 
+        GB_macrofy_types (fp, ctype->defn, atype->defn, btype->defn,
+            binaryop->xtype->defn, binaryop->ytype->defn,
+            binaryop->ztype->defn) ;
+    }
 
     //--------------------------------------------------------------------------
     // construct the macros for the type names
     //--------------------------------------------------------------------------
 
     fprintf (fp, "// binary operator types:\n") ;
-    fprintf (fp, "#define GB_X_TYPENAME %s\n", binaryop->xtype->name) ;
-    fprintf (fp, "#define GB_Y_TYPENAME %s\n", binaryop->ytype->name) ;
-    fprintf (fp, "#define GB_Z_TYPENAME %s\n", binaryop->ztype->name) ;
+    if (binaryop == NULL)
+    {
+        // GB_wait: implicit SECOND operator
+        fprintf (fp, "#define GB_X_TYPENAME %s\n", ctype->name) ;
+        fprintf (fp, "#define GB_Y_TYPENAME %s\n", ctype->name) ;
+        fprintf (fp, "#define GB_Z_TYPENAME %s\n", ctype->name) ;
+    }
+    else
+    {
+        fprintf (fp, "#define GB_X_TYPENAME %s\n", binaryop->xtype->name) ;
+        fprintf (fp, "#define GB_Y_TYPENAME %s\n", binaryop->ytype->name) ;
+        fprintf (fp, "#define GB_Z_TYPENAME %s\n", binaryop->ztype->name) ;
+    }
 
     //--------------------------------------------------------------------------
     // construct macros for the multiply
@@ -96,7 +121,6 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     //--------------------------------------------------------------------------
 
     fprintf (fp, "// C matrix:\n") ;
-    bool C_iso = (ccode == 0) ;
     if (C_iso)
     {
         fprintf (fp, "#define GB_PUTC(blob)\n") ;
@@ -118,7 +142,7 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     GB_macrofy_sparsity (fp, "M", msparsity) ;
 
     //--------------------------------------------------------------------------
-    // construct macros to load scalars from A and B (and typecast) them
+    // construct the macros for A and B
     //--------------------------------------------------------------------------
 
     // if flipxy false:  A is typecasted to x, and B is typecasted to y.
