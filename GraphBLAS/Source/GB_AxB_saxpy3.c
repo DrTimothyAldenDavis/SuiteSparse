@@ -133,7 +133,10 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     GB_Context Context
 )
 {
-// double ttt = omp_get_wtime ( ) ;
+
+    #ifdef GB_TIMING
+    double ttt = omp_get_wtime ( ) ;
+    #endif
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -268,9 +271,11 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         ASSERT (C_sparsity == GxB_SPARSE) ;
     }
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (3, ttt) ;
-// ttt = omp_get_wtime ( ) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (3, ttt) ;
+    ttt = omp_get_wtime ( ) ;
+    #endif
 
     //==========================================================================
     // phase0: create parallel tasks and allocate workspace
@@ -280,11 +285,11 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     bool M_in_place = false ;
 
     if (nthreads_max == 1 && M == NULL && (AxB_method != GxB_AxB_HASH) &&
-        GB_IMIN (GB_nnz (A), GB_nnz (B)) > cvlen)
+        GB_IMIN (GB_nnz (A), GB_nnz (B)) > cvlen/16)
     { 
         // Skip the flopcount analysis if only a single thread is being used,
-        // no mask is present, the min # of entries in A and B is > cvlen, and
-        // the Hash method is not explicitly selected.  In this case, use a
+        // no mask is present, the min # of entries in A and B is > cvlen/16,
+        // and the Hash method is not explicitly selected.  In this case, use a
         // single Gustavson task only (fine task if B has one vector, coarse
         // otherwise).  In this case, the flop count analysis is not needed.
         GBURBLE ("(single-threaded Gustavson) ") ;
@@ -302,9 +307,11 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
             &ntasks, &nfine, &nthreads, Context) ;
     }
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (4, ttt) ;
-// ttt = omp_get_wtime ( ) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (4, ttt) ;
+    ttt = omp_get_wtime ( ) ;
+    #endif
 
     if (info == GrB_NO_VALUE)
     { 
@@ -596,18 +603,22 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     // a total of 5.9 second for phase 7 (the numerical work below).
     // Figure out a faster method.
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (5, ttt) ;
-// ttt = omp_get_wtime ( ) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (5, ttt) ;
+    ttt = omp_get_wtime ( ) ;
+    #endif
 
     GB_AxB_saxpy3_symbolic (C, M, Mask_comp, Mask_struct, M_in_place,
         A, B, SaxpyTasks, ntasks, nfine, nthreads) ;
 
 // the above phase takes 1.6 seconds for 64 trials of the web graph.
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (6, ttt) ;
-// ttt = omp_get_wtime ( ) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (6, ttt) ;
+    ttt = omp_get_wtime ( ) ;
+    #endif
 
     //==========================================================================
     // C = A*B, via saxpy3 method, phases 2 to 5
@@ -695,9 +706,11 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     // prune empty vectors, free workspace, and return result
     //--------------------------------------------------------------------------
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (7, ttt) ;
-// ttt = omp_get_wtime ( ) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (7, ttt) ;
+    ttt = omp_get_wtime ( ) ;
+    #endif
 
     C->magic = GB_MAGIC ;
     GB_FREE_WORKSPACE ;
@@ -707,8 +720,10 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     ASSERT (!GB_PENDING (C)) ;
     (*mask_applied) = apply_mask ;
 
-// ttt = omp_get_wtime ( ) - ttt ;
-// GB_Global_timing_add (8, ttt) ;
+    #ifdef GB_TIMING
+    ttt = omp_get_wtime ( ) - ttt ;
+    GB_Global_timing_add (8, ttt) ;
+    #endif
 
     return (info) ;
 }

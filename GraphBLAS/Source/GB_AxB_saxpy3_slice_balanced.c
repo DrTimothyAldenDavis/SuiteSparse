@@ -16,6 +16,7 @@
 // control parameters for generating parallel tasks
 #define GB_NTASKS_PER_THREAD 2
 #define GB_COSTLY 1.2
+#define GB_VERY_COSTLY (8 * GB_COSTLY)
 #define GB_FINE_WORK 2
 #define GB_MWORK_ALPHA 0.01
 #define GB_MWORK_BETA 0.10
@@ -240,6 +241,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     //--------------------------------------------------------------------------
 
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    chunk = chunk * 8 ;
 
     //--------------------------------------------------------------------------
     // define result and workspace
@@ -444,7 +446,8 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     // determine target task size
     //--------------------------------------------------------------------------
 
-    double target_task_size = ((double) total_flops) / ntasks_initial ;
+    double target_task_size =
+        ((double) total_flops) / ((double) ntasks_initial) ;
     target_task_size = GB_IMAX (target_task_size, chunk) ;
     double target_fine_size = target_task_size / GB_FINE_WORK ;
     target_fine_size = GB_IMAX (target_fine_size, chunk) ;
@@ -484,14 +487,14 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
             int64_t kfirst = Coarse_initial [taskid] ;
             int64_t klast  = Coarse_initial [taskid+1] ;
             int64_t task_ncols = klast - kfirst ;
-            int64_t task_flops = Bflops [klast] - Bflops [kfirst] ;
+            double task_flops = (double) (Bflops [klast] - Bflops [kfirst]) ;
 
             if (task_ncols == 0)
             { 
                 // This coarse task is empty, having been squeezed out by
                 // costly vectors in adjacent coarse tasks.
             }
-            else if (task_flops > 2 * GB_COSTLY * target_task_size)
+            else if (task_flops > GB_VERY_COSTLY * target_task_size)
             {
                 // This coarse task is too costly, because it contains one or
                 // more costly vectors.  Split its vectors into a mixture of
@@ -551,6 +554,12 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
         // entire computation in a single fine or coarse task
         //----------------------------------------------------------------------
 
+        // use a single coarse task for now, but convert it later to a single
+        // fine hash task if the hash method is used
+        (*nfine) = 0 ;
+        ncoarse = 1 ;
+
+#if 0
         if (bnvec == 1)
         { 
             // If B is a single vector, and is computed by a single thread,
@@ -564,6 +573,8 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
             (*nfine) = 0 ;
             ncoarse = 1 ;
         }
+#endif
+
     }
 
     (*ntasks) = ncoarse + (*nfine) ;
@@ -616,14 +627,14 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
             int64_t kfirst = Coarse_initial [taskid] ;
             int64_t klast  = Coarse_initial [taskid+1] ;
             int64_t task_ncols = klast - kfirst ;
-            int64_t task_flops = Bflops [klast] - Bflops [kfirst] ;
+            double task_flops = (double) (Bflops [klast] - Bflops [kfirst]) ;
 
             if (task_ncols == 0)
             { 
                 // This coarse task is empty, having been squeezed out by
                 // costly vectors in adjacent coarse tasks.
             }
-            else if (task_flops > 2 * GB_COSTLY * target_task_size)
+            else if (task_flops > GB_VERY_COSTLY * target_task_size)
             {
                 // This coarse task is too costly, because it contains one or
                 // more costly vectors.  Split its vectors into a mixture of
@@ -674,9 +685,9 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                             int64_t pA, pA_end ;
                             if (A_is_hyper)
                             {
-                                // A is hypersparse: find A(:,k) in the A->Y hyper_hash
-                                GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx, A_hash_bits,
-                                    k, &pA, &pA_end) ;
+                                // A is hypersparse: find A(:,k) in hyper_hash
+                                GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx,
+                                    A_hash_bits, k, &pA, &pA_end) ;
                             }
                             else
                             {
@@ -755,12 +766,15 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
         GB_create_coarse_task (0, bnvec-1, SaxpyTasks, 0, Bflops, cvlen, 1, 1,
             Coarse_Work, AxB_method) ;
 
-        if (bnvec == 1)
+        int64_t hash_size = SaxpyTasks [0].hsize ;
+        bool use_Gustavson = (hash_size == cvlen) ;
+        if (bnvec == 1 && !use_Gustavson)
         { 
-            // convert the single coarse task into a single fine task
+            // convert the single coarse hash task into a single fine hash task
             SaxpyTasks [0].start  = 0 ;           // first entry in B(:,0)
             SaxpyTasks [0].end = bnz - 1 ;        // last entry in B(:,0)
             SaxpyTasks [0].vector = 0 ;
+            (*nfine) = 1 ;
         }
     }
 
