@@ -191,11 +191,8 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
     // construct the hyper hashes for M and A
     //--------------------------------------------------------------------------
 
-// double t = omp_get_wtime ( ) ;
     GB_OK (GB_hyper_hash_build (M, Context)) ;    // does nothing if M is NULL
     GB_OK (GB_hyper_hash_build (A, Context)) ;
-// t = omp_get_wtime ( ) - t ;
-// printf ("Hyper time: %g\n", t) ;
 
     //--------------------------------------------------------------------------
     // get the semiring operators
@@ -288,10 +285,10 @@ GrB_Info GB_AxB_saxpy3              // C = A*B using Gustavson+Hash
         GB_IMIN (GB_nnz (A), GB_nnz (B)) > cvlen/16)
     { 
         // Skip the flopcount analysis if only a single thread is being used,
-        // no mask is present, the min # of entries in A and B is > cvlen/16,
-        // and the Hash method is not explicitly selected.  In this case, use a
-        // single Gustavson task only (fine task if B has one vector, coarse
-        // otherwise).  In this case, the flop count analysis is not needed.
+        // no mask is present, the Hash method is not explicitly selected, and
+        // the problem is not extremely sparse.  In this case, use a single
+        // coarse Gustavson task only.  In this case, the flop count analysis
+        // is not needed.
         GBURBLE ("(single-threaded Gustavson) ") ;
         info = GB_AxB_saxpy3_slice_quick (C, A, B,
             &SaxpyTasks, &SaxpyTasks_size, &ntasks, &nfine, &nthreads,

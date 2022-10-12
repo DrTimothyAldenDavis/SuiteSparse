@@ -75,6 +75,7 @@ GB_mex_hack (hack) ;
 % tests with high rates (over 100/sec)
 %----------------------------------------
 
+logstat ('test246',t) ; % GrB_mxm with different kinds of parallelism
 logstat ('test01' ,t) ; % error handling
 logstat ('test245',t) ; % test complex row/col scale
 logstat ('test199',t) ; % test dot2 with hypersparse

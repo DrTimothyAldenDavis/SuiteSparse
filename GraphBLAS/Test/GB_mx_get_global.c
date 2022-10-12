@@ -65,6 +65,8 @@ bool GB_mx_get_global       // true if doing malloc_debug
     GxB_Global_Option_set_(GxB_BURBLE, burble) ;        // restore the burble
     GxB_Global_Option_set_(GxB_PRINTF, mexPrintf) ;
 
+    GB_Global_hack_set (0, 2) ; // FIXME: move to a test*.m script
+
     //--------------------------------------------------------------------------
     // get nthreads
     //--------------------------------------------------------------------------

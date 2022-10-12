@@ -24,6 +24,10 @@ typedef struct
 }
 bigtype ;
 
+ void f1 (void *z, const void *x) ;
+ void f2 (void *z, const void *x, const void *y) ;
+ void i1 (void *z, const void *x, GrB_Index i, GrB_Index j, const void *thunk) ;
+
 #define F1                                                              \
 "void f1 (void *z, const void *x) "                                     \
 "{ (*((double *)z)) = 2*(*(double *)x) ; } "
@@ -40,8 +44,7 @@ bigtype ;
 "void i1 (void *z, const void *x, GrB_Index i, GrB_Index j, "       \
 " const void *thunk) "                                              \
 "{ (*((bool *)z)) = (i == j) ; }"
- void i1 (void *z, const void *x, GrB_Index i, GrB_Index j,
-  const void *thunk)
+ void i1 (void *z, const void *x, GrB_Index i, GrB_Index j, const void *thunk)
  { (*((bool *)z)) = (i == j) ; }
 
 #define GET_DEEP_COPY ;

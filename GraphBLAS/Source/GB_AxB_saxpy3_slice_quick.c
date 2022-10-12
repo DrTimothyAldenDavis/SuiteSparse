@@ -69,16 +69,6 @@ GrB_Info GB_AxB_saxpy3_slice_quick
     SaxpyTasks [0].leader  = 0 ;
     SaxpyTasks [0].team_size = 1 ;
 
-    int64_t bnz = GB_nnz_held (B) ;
-    if (bnvec == 1 && bnz < cvlen / 16)
-    { 
-        // convert the single coarse task into a single fine task
-        SaxpyTasks [0].start  = 0 ;                   // first entry in B(:,0)
-        SaxpyTasks [0].end = bnz - 1 ;                // last entry in B(:,0)
-        SaxpyTasks [0].vector = 0 ;
-        (*nfine) = 1 ;
-    }
-
     //--------------------------------------------------------------------------
     // return result
     //--------------------------------------------------------------------------

@@ -16,7 +16,6 @@
 // control parameters for generating parallel tasks
 #define GB_NTASKS_PER_THREAD 2
 #define GB_COSTLY 1.2
-#define GB_VERY_COSTLY (8 * GB_COSTLY)
 #define GB_FINE_WORK 2
 #define GB_MWORK_ALPHA 0.01
 #define GB_MWORK_BETA 0.10
@@ -62,7 +61,7 @@ static inline int64_t GB_hash_table_size
     int64_t hash_size ;
 
     if (AxB_method == GxB_AxB_GUSTAVSON || flmax >= cvlen/2)
-    {
+    { 
 
         //----------------------------------------------------------------------
         // use Gustavson if selected explicitly or if flmax is large
@@ -269,7 +268,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     const int64_t *restrict A_Yx = NULL ;
     int64_t A_hash_bits = 0 ;
     if (A_is_hyper)
-    {
+    { 
         ASSERT_MATRIX_OK (A->Y, "A->Y hyper_hash", GB0) ;
         A_Yp = A->Y->p ;
         A_Yi = A->Y->i ;
@@ -298,7 +297,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     int64_t *restrict Bflops = C->p ;    // use C->p as workspace for Bflops
     GB_OK (GB_AxB_saxpy3_flopcount (&Mwork, Bflops, M, Mask_comp, A, B,
         Context)) ;
-    int64_t total_flops = Bflops [bnvec] ;
+    double total_flops = (double) Bflops [bnvec] ;
     double axbflops = total_flops - Mwork ;
     GBURBLE ("axbwork %g ", axbflops) ;
     if (Mwork > 0) GBURBLE ("mwork %g ", (double) Mwork) ;
@@ -370,7 +369,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
             { 
                 Bflops [kk] += cvlen * (kk+1) ;
             }
-            total_flops = Bflops [bnvec] ;
+            total_flops = (double) Bflops [bnvec] ;
             GBURBLE ("(use mask) ") ;
         }
 
@@ -407,7 +406,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     // determine # of threads and # of initial coarse tasks
     //--------------------------------------------------------------------------
 
-    (*nthreads) = GB_nthreads ((double) total_flops, chunk, nthreads_max) ;
+    (*nthreads) = GB_nthreads (total_flops, chunk, nthreads_max) ;
     int ntasks_initial = ((*nthreads) == 1) ? 1 :
         (GB_NTASKS_PER_THREAD * (*nthreads)) ;
 
@@ -415,8 +414,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     // give preference to Gustavson when using few threads
     //--------------------------------------------------------------------------
 
-    if (/* (*nthreads) <= 8 && */
-        (!(AxB_method == GxB_AxB_HASH || AxB_method == GxB_AxB_GUSTAVSON)))
+    if (!(AxB_method == GxB_AxB_HASH || AxB_method == GxB_AxB_GUSTAVSON))
     {
         // Unless a specific method has been explicitly requested, see if
         // Gustavson should be used.
@@ -446,11 +444,12 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     // determine target task size
     //--------------------------------------------------------------------------
 
-    double target_task_size =
-        ((double) total_flops) / ((double) ntasks_initial) ;
+    double target_task_size = total_flops / ((double) ntasks_initial) ;
     target_task_size = GB_IMAX (target_task_size, chunk) ;
     double target_fine_size = target_task_size / GB_FINE_WORK ;
     target_fine_size = GB_IMAX (target_fine_size, chunk) ;
+    double very_costly = GB_Global_hack_get (0) ;
+    if (very_costly <= GxB_DEFAULT) very_costly = 8 ;   // default is 8
 
     //--------------------------------------------------------------------------
     // determine # of parallel tasks
@@ -494,7 +493,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                 // This coarse task is empty, having been squeezed out by
                 // costly vectors in adjacent coarse tasks.
             }
-            else if (task_flops > GB_VERY_COSTLY * target_task_size)
+            else if (task_flops > very_costly * GB_COSTLY * target_task_size)
             {
                 // This coarse task is too costly, because it contains one or
                 // more costly vectors.  Split its vectors into a mixture of
@@ -534,6 +533,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                 // flush the last coarse task, if any
                 if (kcoarse_start < klast)
                 { 
+GB_GOTCHA ;
                     // vectors kcoarse_start to klast-1 form a single
                     // coarse task
                     ncoarse++ ;
@@ -548,7 +548,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
         }
     }
     else
-    {
+    { 
 
         //----------------------------------------------------------------------
         // entire computation in a single fine or coarse task
@@ -558,23 +558,6 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
         // fine hash task if the hash method is used
         (*nfine) = 0 ;
         ncoarse = 1 ;
-
-#if 0
-        if (bnvec == 1)
-        { 
-            // If B is a single vector, and is computed by a single thread,
-            // then a single fine task is used.
-            (*nfine) = 1 ;
-            ncoarse = 0 ;
-        }
-        else
-        { 
-            // One thread uses a single coarse task if B is not a vector.
-            (*nfine) = 0 ;
-            ncoarse = 1 ;
-        }
-#endif
-
     }
 
     (*ntasks) = ncoarse + (*nfine) ;
@@ -634,7 +617,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                 // This coarse task is empty, having been squeezed out by
                 // costly vectors in adjacent coarse tasks.
             }
-            else if (task_flops > GB_VERY_COSTLY * target_task_size)
+            else if (task_flops > very_costly * GB_COSTLY * target_task_size)
             {
                 // This coarse task is too costly, because it contains one or
                 // more costly vectors.  Split its vectors into a mixture of
@@ -684,13 +667,13 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                             // find A(:,k)
                             int64_t pA, pA_end ;
                             if (A_is_hyper)
-                            {
+                            { 
                                 // A is hypersparse: find A(:,k) in hyper_hash
                                 GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx,
                                     A_hash_bits, k, &pA, &pA_end) ;
                             }
                             else
-                            {
+                            { 
                                 // A is sparse, bitmap, or full
                                 pA     = GBP (Ap, k  , avlen) ;
                                 pA_end = GBP (Ap, k+1, avlen) ;
@@ -738,6 +721,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                 // flush the last coarse task, if any
                 if (kcoarse_start < klast)
                 { 
+GB_GOTCHA ;
                     // kcoarse_start:klast-1 form a single coarse task
                     GB_create_coarse_task (kcoarse_start, klast-1, SaxpyTasks,
                         nc++, Bflops, cvlen, chunk, nthreads_max,
@@ -783,6 +767,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     //--------------------------------------------------------------------------
 
     GB_FREE_WORKSPACE ;
+    (*nthreads) = GB_IMIN (*nthreads, *ntasks) ;
     (*SaxpyTasks_handle) = SaxpyTasks ;
     (*SaxpyTasks_size_handle) = SaxpyTasks_size ;
     return (GrB_SUCCESS) ;
