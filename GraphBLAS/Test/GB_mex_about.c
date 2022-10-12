@@ -153,7 +153,8 @@ void mexFunction
     void *save_identity = m->identity ;
     m->identity = NULL ;
     GrB_Info expected = GrB_INVALID_OBJECT ;
-    ERR (GB_Monoid_check (m, "mangled monoid, no identity", GxB_COMPLETE, stdout)) ;
+    ERR (GB_Monoid_check (m, "mangled monoid, no identity", GxB_COMPLETE,
+        stdout)) ;
     m->identity = save_identity ;
 
     GrB_Monoid_free_(&m) ;
@@ -600,8 +601,6 @@ void mexFunction
     GB_Global_hack_set (0, hack0) ; CHECK (GB_Global_hack_get (0) == hack0) ;
     GB_Global_hack_set (1, 99123) ; CHECK (GB_Global_hack_get (1) == 99123) ;
     GB_Global_hack_set (1, hack1) ; CHECK (GB_Global_hack_get (1) == hack1) ;
-
-    expected = GrB_INVALID_VALUE ;
 
     //--------------------------------------------------------------------------
     // GB_pslice

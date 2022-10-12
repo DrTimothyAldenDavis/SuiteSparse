@@ -10,18 +10,19 @@ n = 1000 ;
 
 A = sprand (n, n, 0.5) ;
 
-% save current global settings, then modify them
-save = GB_mx_hack ;
+% save current global settings
+save = GB_mex_hack ;
+[nthreads_save chunk_save] = nthreads_get ;
+
+% modify the global settings
 hack = save ;
 hack (1) = 2 ;          % modify "very_costly" in GxB_AxB_saxpy3_slice_balanced
-GB_mx_hack (hack) ;
+GB_mex_hack (hack) ;
 GrB.burble (0) ;
 
 semiring.multiply = 'times' ;
 semiring.add = 'plus' ;
 semiring.class = 'double' ;
-
-[nthreads_save chunk_save] = nthreads_get ;
 
 for k = [1 2 4 16 128]
     S = sparse (n, k) ;
@@ -82,7 +83,7 @@ end
 % restore global settings
 GrB.burble (0) ;
 nthreads_set (nthreads_save, chunk_save) ;
-GB_mx_hack (save) ;
+GB_mex_hack (save) ;
 
 fprintf ('\ntest246: all tests passed\n') ;
 

@@ -448,7 +448,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     target_task_size = GB_IMAX (target_task_size, chunk) ;
     double target_fine_size = target_task_size / GB_FINE_WORK ;
     target_fine_size = GB_IMAX (target_fine_size, chunk) ;
-    double very_costly = GB_Global_hack_get (0) ;
+    double very_costly = GB_Global_hack_get (0) ;       // modified for testing
     if (very_costly <= GxB_DEFAULT) very_costly = 8 ;   // default is 8
 
     //--------------------------------------------------------------------------
@@ -533,7 +533,6 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
                 // flush the last coarse task, if any
                 if (kcoarse_start < klast)
                 { 
-GB_GOTCHA ;
                     // vectors kcoarse_start to klast-1 form a single
                     // coarse task
                     ncoarse++ ;
@@ -721,7 +720,6 @@ GB_GOTCHA ;
                 // flush the last coarse task, if any
                 if (kcoarse_start < klast)
                 { 
-GB_GOTCHA ;
                     // kcoarse_start:klast-1 form a single coarse task
                     GB_create_coarse_task (kcoarse_start, klast-1, SaxpyTasks,
                         nc++, Bflops, cvlen, chunk, nthreads_max,
