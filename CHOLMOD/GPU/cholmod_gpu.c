@@ -22,8 +22,6 @@
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
- 
-// #define HACK
 
 #define MINSIZE (64 * 1024 * 1024)
 
@@ -110,10 +108,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
     {
         /* printf ("quick %lu\n", s) ; */
         *available_mem = s;
-#ifdef HACK
-        *total_mem     /= 2;
-        *available_mem /= 2;
-#endif
         return (0) ;  /* no error */
     }
 
@@ -144,10 +138,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 
 #endif
 
-#ifdef HACK
-        *total_mem     /= 2;
-        *available_mem /= 2;
-#endif
     return (0) ; /* no error */
 }
 
