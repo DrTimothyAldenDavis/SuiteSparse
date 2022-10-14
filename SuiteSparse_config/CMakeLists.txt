@@ -10,6 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
+# cmake 3.22 is required to find the BLAS
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
@@ -50,39 +51,7 @@ project ( suitesparseconfig
 enable_language ( C Fortran )
 message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
 find_package ( OpenMP )
-
-# SuiteSparse interface to the BLAS and LAPACK libraries
-message ( STATUS "BLAS64_suffix:   ${BLAS64_SUFFIX}" )
-message ( STATUS "Looking for 64-bit BLAS" )
-set ( BLA_SIZEOF_INTEGER 8 )
-find_package ( BLAS )
-if ( BLAS_FOUND )
-    # 64-bit BLAS found
-    message ( STATUS "Found 64-bit BLAS" )
-    add_compile_definitions ( BLAS64 ) 
-    set ( SuiteSparse_BLAS_integer "int64_t" )
-    if (NOT ${BLAS64_SUFFIX} STREQUAL "")
-        # append BLAS64_SUFFIX to each BLAS and LAPACK name
-        string ( FIND ${BLAS64_SUFFIX} "_" HAS_UNDERSCORE )
-        if ( HAS_UNDERSCORE EQUAL -1 )
-            message ( STATUS " BLAS64 suffix has an underscore" )
-            add_compile_definitions ( BLAS64__SUFFIX=${BLAS64_SUFFIX} ) 
-        else ( )
-            message ( STATUS " BLAS64 suffix has no underscore" )
-            add_compile_definitions ( BLAS64_SUFFIX=${BLAS64_SUFFIX} ) 
-        endif ( )
-    endif ( )
-else ( ) 
-    # look for 32-bit BLAS
-    message ( STATUS "Looking for 32-bit BLAS" )
-    set ( BLA_SIZEOF_INTEGER 4 )
-    find_package ( BLAS )
-    if ( BLAS_FOUND )
-        message ( STATUS "Found 32-bit BLAS" )
-    endif ( )
-    set ( SuiteSparse_BLAS_integer "int32_t" )
-endif ( ) 
-include ( FortranCInterface )
+include ( SuiteSparseBLAS )
 
 #-------------------------------------------------------------------------------
 # configure files

@@ -9,6 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
+# cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( CHOLMOD_DATE "Oct 31, 2022" )  # FIXME
@@ -61,11 +62,11 @@ find_package ( OpenMP )
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( BLAS REQUIRED )
-find_package ( LAPACK REQUIRED )
 find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
 find_package ( SuiteSparse_metis 5.1.0 )
+
+include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 if ( NOT SUITESPARSE_METIS_FOUND )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DNPARTITION " )

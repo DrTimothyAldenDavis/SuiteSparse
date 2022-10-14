@@ -9,6 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
+# cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( UMFPACK_DATE "Oct 31, 2022" )  # FIXME
@@ -50,7 +51,7 @@ message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ")
 find_package ( OpenMP )
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( BLAS REQUIRED )
+include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 find_package ( CHOLMOD 4.0.0 )
 if ( CHOLMOD_FOUND )

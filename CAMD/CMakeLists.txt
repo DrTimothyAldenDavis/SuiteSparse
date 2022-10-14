@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.22 )
+cmake_minimum_required ( VERSION 3.19 )
 
 set ( CAMD_DATE "Oct 31, 2022" ) # FIXME
 set ( CAMD_VERSION_MAJOR 3 )

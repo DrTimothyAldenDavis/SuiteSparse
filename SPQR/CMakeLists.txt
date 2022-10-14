@@ -10,6 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
+# cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( SPQR_DATE "Oct 31, 2022" )  # FIXME
@@ -56,7 +57,8 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( CHOLMOD 4.0.0 REQUIRED )
-find_package ( BLAS REQUIRED )
+
+include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 #-------------------------------------------------------------------------------
 # configure files
