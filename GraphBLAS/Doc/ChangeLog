@@ -1,4 +1,4 @@
-Version 7.3.0, Oct 11, 2022
+Version 7.3.0, Oct 14, 2022
 
     * GrB_Matrix: changes to the internal data structure
         * minor internal changes: A->nvals for sparse/hypersparse
