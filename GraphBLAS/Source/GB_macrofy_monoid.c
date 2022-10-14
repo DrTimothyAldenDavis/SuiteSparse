@@ -83,10 +83,10 @@ void GB_macrofy_monoid  // construct the macros for a monoid
             monoid->terminal, monoid->op->ztype->size) ;
         fprintf (fp, "#define GB_TERMINAL_CONDITION(cij,z)"
             " (memcmp (&(cij), &(z), %d) == 0)\n",
-            monoid->op->ztype->size) ;
+            (int) monoid->op->ztype->size) ;
         fprintf (fp, "#define GB_IF_TERMINAL_BREAK(cij,z) "
             " if (memcmp (&(cij), &(z), %d) == 0) break\n",
-            monoid->op->ztype->size) ;
+            (int) monoid->op->ztype->size) ;
     }
 }
 
