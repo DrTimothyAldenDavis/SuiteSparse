@@ -522,8 +522,8 @@ GLOBAL Int UMF_kernel_init
 	/* out of memory, which can only mean that the pattern has changed */
 	return (FALSE) ;	/* pattern changed */
     }
-    Rpi = (Int   **) (Memory + rpx) ;
-    Rpx = (Entry **) (Memory + rpi) ;
+    Rpi = (Int   **) (Memory + rpi) ;
+    Rpx = (Entry **) (Memory + rpx) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate the LU factors for the columns of the singletons */
