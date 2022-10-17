@@ -881,7 +881,7 @@ GLOBAL Int UMF_kernel_init
     /* prune zeros and small entries from the singleton rows and columns */
     /* ---------------------------------------------------------------------- */
 
-    if (n1 > 0)
+    if (n1 > 0 && drop)
     {
 	pnew = Lip [0] ;
 	ASSERT (pnew == 1) ;
