@@ -1,3 +1,6 @@
+// CSparse/Source/cs_scatter: scatter a scaled sparse vector into a dense vector
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* x = x + beta * A(:,j), where x is a dense vector and A(:,j) is sparse */
 csi cs_scatter (const cs *A, csi j, double beta, csi *w, double *x, csi mark,

@@ -1,3 +1,6 @@
+// CSparse/Source/cs_utsolve: x=U'\b where x and b are dense
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* solve U'x=b where x and b are dense.  x=b on input, solution on output. */
 csi cs_utsolve (const cs *U, double *x)

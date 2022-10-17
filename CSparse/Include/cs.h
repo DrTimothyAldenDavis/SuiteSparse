@@ -1,3 +1,6 @@
+// CSparse/cs.h: include file for CSparse
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #ifndef _CS_H
 #define _CS_H
 #include <stdlib.h>
