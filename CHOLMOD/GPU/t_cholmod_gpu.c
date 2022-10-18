@@ -1006,12 +1006,18 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
 
         ilda = (int) lda ;
         ijb  = jb ;
+        bool ok = true ;
 #ifdef REAL
-        LAPACK_DPOTRF ("L", &ijb, A + L_ENTRY * (j + j*lda), &ilda, &iinfo) ;
+        SUITESPARSE_LAPACK_dpotrf ("L", ijb, A + L_ENTRY * (j + j*lda), ilda, iinfo, ok) ;
 #else
-        LAPACK_ZPOTRF ("L", &ijb, A + L_ENTRY * (j + j*lda), &ilda, &iinfo) ;
+        SUITESPARSE_LAPACK_zpotrf ("L", ijb, A + L_ENTRY * (j + j*lda), ilda, iinfo, ok) ;
 #endif
         *info = iinfo ;
+
+        if (!ok)
+        {
+            ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
+        }
 
         if (*info != 0)
         {

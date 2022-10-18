@@ -33,7 +33,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     )
 
 # FIXME: CUDA doesn't work yet with this cmake script
-set ( ENABLE_CUDA false )
+set ( ENABLE_CUDA true )
 
 include ( SuiteSparsePolicy )
 
@@ -73,6 +73,19 @@ if ( NOT SUITESPARSE_METIS_FOUND )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPARTITION " )
 endif ( )
 
+if ( SUITESPARSE_CUDA )
+    # with CUDA
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DGPU_BLAS " )
+    add_subdirectory ( GPU )
+    set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
+    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
+    link_directories ( "CUDA" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
+else ( )
+    # without CUDA and RMM
+    set ( CHOLMOD_CUDA )
+endif ( )
+
+
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
@@ -94,24 +107,13 @@ include_directories ( Check Cholesky Core MatrixOps Modify Partition
     ${COLAMD_INCLUDE_DIR} ${CAMD_INCLUDE_DIR} ${CCOLAMD_INCLUDE_DIR}
     ${SUITESPARSE_METIS_INCLUDE_DIR} )
 
-if ( SUITESPARSE_CUDA )
-    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # dynamic cholmod library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
-    file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
-        "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
-        "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" "GPU/cholmod_*.c"
-        "GPU/cholmod_*.cu" )
-else ( )
-    file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
-        "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
-        "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" )
-endif ( )
+file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
+    "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
+    "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" )
 
 add_library ( cholmod SHARED ${CHOLMOD_SOURCES} )
 
@@ -210,15 +212,11 @@ if ( SUITESPARSE_METIS_FOUND )
     target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
 endif ( )
 
-# CUDA: cudart and cublas libraries
+# CUDA
 if ( SUITESPARSE_CUDA )
-    link_directories ( ${CUDA_LIBRARIES} ${CUDAToolkit_LIBRARY_DIR} )
-    target_link_libraries ( cholmod PUBLIC ${CUDA_LIBRARIES}
-        CUDA::cudart CUDA::cublas CUDA::nvrtc CUDA::nvToolsExt )
-    target_link_libraries ( cholmod_static PUBLIC ${CUDA_LIBRARIES}
-        CUDA::cudart_static CUDA::cublas CUDA::nvrtc CUDA::nvToolsExt )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DGPU_BLAS " )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGPU_BLAS --std=c++17 -fPIC" )
+    message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod PUBLIC ${CHOLMOD_CUDA} ${CUDA_LIBRARIES} )
+    target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA} ${CUDA_LIBRARIES} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -275,9 +273,9 @@ if ( DEMO )
     add_executable ( reade          "Demo/reade.f" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cholmod_demo   PUBLIC cholmod )
-    target_link_libraries ( cholmod_l_demo PUBLIC cholmod )
-    target_link_libraries ( cholmod_simple PUBLIC cholmod )
+    target_link_libraries ( cholmod_demo   PUBLIC cholmod ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod_l_demo PUBLIC cholmod ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod_simple PUBLIC cholmod ${CHOLMOD_CUDA} )
 
 else ( )
 

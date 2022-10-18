@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 //------------------------------------------------------------------------------
 
-#ifdef GPU_BLAS
+// #ifdef GPU_BLAS
 
 #include <stdio.h>
 #include "SuiteSparse_config.h"
@@ -195,4 +195,4 @@ extern "C" {
 
 }
 
-#endif
+// #endif
