@@ -12,8 +12,8 @@
 // various sizes.  This is the demo for this 'dense' usage case.
 // The 'sparse' case is exercised by SuiteSparseQR.
 
-#ifndef GPU_BLAS
-#define GPU_BLAS
+#ifndef SUITESPARSE_CUDA
+#define SUITESPARSE_CUDA
 #endif
 
 #include "GPUQREngine.hpp"

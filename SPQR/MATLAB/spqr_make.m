@@ -110,7 +110,7 @@ end
 %-------------------------------------------------------------------------------
 
 % GPU not yet supported for the spqr MATLAB mexFunction
-% flags = [flags ' -DGPU_BLAS'] ;
+% flags = [flags ' -DSUITESPARSE_CUDA'] ;
 
 if (~(pc || mac))
     % for POSIX timing routine

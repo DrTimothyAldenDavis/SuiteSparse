@@ -249,12 +249,12 @@ SUITESPARSE_VERSION = 6.0.0
     else
         # with CUDA for CHOLMOD and SPQR
         GPU_BLAS_PATH = $(CUDA_PATH)
-        # GPU_CONFIG must include -DGPU_BLAS to compile SuiteSparse for the
+        # GPU_CONFIG must include -DSUITESPARSE_CUDA to compile SuiteSparse for the
         # GPU.  You can add additional GPU-related flags to it as well.
         # with 4 cores (default):
-        GPU_CONFIG    = -DGPU_BLAS
+        GPU_CONFIG    = -DSUITESPARSE_CUDA
         # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
-        # GPU_CONFIG  = -DGPU_BLAS -DCHOLMOD_OMP_NUM_THREADS=10
+        # GPU_CONFIG  = -DSUITESPARSE_CUDA -DCHOLMOD_OMP_NUM_THREADS=10
         CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/
@@ -321,7 +321,7 @@ SUITESPARSE_VERSION = 6.0.0
     # -DNPRINT      do not print anything.
     # -D'LONGBLAS=long' or -DLONGBLAS='long long' defines the integers used by
     #               LAPACK and the BLAS (defaults to 'int')
-    # -DGPU_BLAS    enable the use of the CUDA BLAS
+    # -DSUITESPARSE_CUDA    enable the use of the CUDA BLAS
 
     CHOLMOD_CONFIG ?= $(GPU_CONFIG)
 
@@ -333,7 +333,7 @@ SUITESPARSE_VERSION = 6.0.0
     #
     # -DNPARTITION      do not include the CHOLMOD partition module
     # -DNEXPERT         do not include the functions in SuiteSparseQR_expert.cpp
-    # -DGPU_BLAS        enable the use of the CUDA BLAS
+    # -DSUITESPARSE_CUDA        enable the use of the CUDA BLAS
 
     SPQR_CONFIG ?= $(GPU_CONFIG)
 

@@ -918,7 +918,7 @@ template <typename Entry> int spqr_rmap
 // === spqrgpu features ========================================================
 // =============================================================================
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 #include "spqrgpu.hpp"
 #endif
 

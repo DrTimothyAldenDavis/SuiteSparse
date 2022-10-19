@@ -455,7 +455,7 @@ extern "C" {
 
 /* Define buffering parameters for GPU processing */
 #ifndef SUITESPARSE_GPU_EXTERN_ON
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 #include <cublas_v2.h>
 #endif
 #endif
@@ -1144,7 +1144,7 @@ typedef struct cholmod_common_struct
        the CHOLMOD Common, regardless of whether or not they are compiled
        with the GPU libraries or not */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     /* in CUDA, these three types are pointers */
     #define CHOLMOD_CUBLAS_HANDLE cublasHandle_t
     #define CHOLMOD_CUDASTREAM    cudaStream_t
@@ -4891,7 +4891,7 @@ int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
 /* CHOLMOD GPU module
  */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 
 #include "omp.h"
 #include <fenv.h>

@@ -582,7 +582,7 @@ int CHOLMOD(free_work)
     Common->iworksize = 0 ;
     Common->xworksize = 0 ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     CHOLMOD(gpu_deallocate) (Common) ;
 #endif
     return (TRUE) ;

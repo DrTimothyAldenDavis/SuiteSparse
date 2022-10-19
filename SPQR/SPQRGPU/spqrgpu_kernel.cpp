@@ -12,7 +12,7 @@
 // matrices (R is OK, but will not be 'squeezed').  Does not handle complex
 // matrices.  Does not return the Householder vectors.
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 #include "spqr.hpp"
 
 #ifdef SUITESPARSE_TIMER_ENABLED

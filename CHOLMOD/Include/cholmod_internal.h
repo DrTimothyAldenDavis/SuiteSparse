@@ -222,7 +222,7 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 #define ID "%d"
 
 /* GPU acceleration is not available for the int version of CHOLMOD */
-#undef GPU_BLAS
+#undef SUITESPARSE_CUDA
 
 #endif
 

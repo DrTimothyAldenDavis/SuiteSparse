@@ -122,7 +122,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
     /* these variables are not used if the GPU module is not installed */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     Int ndescendants, mapCreatedOnGpu, supernodeUsedGPU,
         idescendant, dlarge, dsmall, skips ;
     int iHostBuff, iDevBuff, useGPU, GPUavailable ;
@@ -179,7 +179,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
     Lx = L->x ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     /* local copy of useGPU */
     if ( (Common->useGPU == 1) && L->useGPU)
     {
@@ -264,7 +264,7 @@ static int TEMPLATE (cholmod_super_numeric)
      * Once supernode s is repeated, the factorization is terminated. */
     repeat_supernode = FALSE ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     if ( useGPU )
     {
         /* Case of GPU, zero all supernodes at one time for better performance*/
@@ -303,7 +303,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         pend = psx + nsrow * nscol ;        /* s is nsrow-by-nscol */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( !useGPU )
 #endif
         {
@@ -338,7 +338,7 @@ static int TEMPLATE (cholmod_super_numeric)
         /* (all supernodes in a level are independent) */
         /* ------------------------------------------------------------------ */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( useGPU )
         {
             TEMPLATE2 (CHOLMOD (gpu_reorder_descendants))
@@ -474,7 +474,7 @@ static int TEMPLATE (cholmod_super_numeric)
         PRINT1 (("\nNow factorizing supernode "ID":\n", s)) ;
 #endif
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         /* initialize the buffer counter */
         if ( useGPU ) {
             Common->ibuffer = 0;
@@ -498,7 +498,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         while
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             ( (!useGPU && (dnext != EMPTY))
                || (useGPU && (idescendant < ndescendants)))
 #else
@@ -507,7 +507,7 @@ static int TEMPLATE (cholmod_super_numeric)
 #endif
         {
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 
             if ( useGPU ) {
 
@@ -645,7 +645,7 @@ static int TEMPLATE (cholmod_super_numeric)
             ASSERT (ndrow3 >= 0) ;
 
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( useGPU ) {
                 /* set up GPU to assemble new supernode */
                 if ( GPUavailable == 1) {
@@ -666,7 +666,7 @@ static int TEMPLATE (cholmod_super_numeric)
             }
 #endif
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( !useGPU
                 || GPUavailable!=1
                 || !TEMPLATE2 (CHOLMOD (gpu_updateC)) (ndrow1, ndrow2, ndrow,
@@ -781,7 +781,7 @@ static int TEMPLATE (cholmod_super_numeric)
                 }
 
             }
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             else
             {
                 supernodeUsedGPU = 1;   /* GPU was used for this supernode*/
@@ -818,7 +818,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         }  /* end of descendant supernode loop */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( useGPU ) {
             iHostBuff = (Common->ibuffer)%CHOLMOD_HOST_SUPERNODE_BUFFERS;
             iDevBuff = (Common->ibuffer)%CHOLMOD_DEVICE_STREAMS;
@@ -854,7 +854,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         nscol2 = (repeat_supernode) ? (nscol_new) : (nscol) ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( !useGPU
             || !supernodeUsedGPU
             || !TEMPLATE2 (CHOLMOD (gpu_lower_potrf))(nscol2, nsrow, psx, Lx,
@@ -862,7 +862,7 @@ static int TEMPLATE (cholmod_super_numeric)
 #endif
         {
             /* Note that the GPU will not be used for the triangular solve */
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             supernodeUsedGPU = 0;
 #endif
 #ifndef NTIMER
@@ -960,7 +960,7 @@ static int TEMPLATE (cholmod_super_numeric)
                  * zero.  Also, info will be 1 if integer overflow occured in
                  * the BLAS. */
                 Head [s] = EMPTY ;
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
                 if ( useGPU ) {
                     CHOLMOD (gpu_end) (Common) ;
                 }
@@ -994,7 +994,7 @@ static int TEMPLATE (cholmod_super_numeric)
              * notation.
              */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( !useGPU
                 || !supernodeUsedGPU
                 || !TEMPLATE2 (CHOLMOD(gpu_triangular_solve))
@@ -1051,7 +1051,7 @@ static int TEMPLATE (cholmod_super_numeric)
         }
         else
         {
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             TEMPLATE2 ( CHOLMOD (gpu_copy_supernode) )
                 ( Common, Lx, psx, nscol, nscol2, nsrow,
                   supernodeUsedGPU, iHostBuff, gpu_p);
@@ -1070,7 +1070,7 @@ static int TEMPLATE (cholmod_super_numeric)
             /* matrix is not positive definite; finished clean-up for supernode
              * containing negative diagonal */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( useGPU )
             {
                 CHOLMOD (gpu_end) (Common) ;
@@ -1083,7 +1083,7 @@ static int TEMPLATE (cholmod_super_numeric)
     /* success; matrix is positive definite */
     L->minor = n ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     if ( useGPU )
     {
         CHOLMOD (gpu_end) (Common) ;

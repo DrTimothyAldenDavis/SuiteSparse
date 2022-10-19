@@ -12,7 +12,7 @@
 // A front staging is infeasible if a front and its children do not fit on
 // the GPU at the same time.
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 #include "spqr.hpp"
 #include "GPUQREngine_Scheduler.hpp"
 

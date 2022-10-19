@@ -32,8 +32,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
     )
 
-# FIXME: CUDA doesn't work yet with this cmake script
-set ( ENABLE_CUDA true )
+if ( NOT DEFINED ENABLE_CUDA )
+    # default is to use CUDA, if available
+    set ( ENABLE_CUDA true )
+endif ( )
 
 include ( SuiteSparsePolicy )
 
@@ -75,7 +77,7 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DGPU_BLAS " )
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
     add_subdirectory ( GPU )
     set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )

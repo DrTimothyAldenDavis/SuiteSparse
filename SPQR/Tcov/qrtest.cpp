@@ -2656,7 +2656,7 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     printf ("\nCPU tests done ]\n") ;
 
     // test the GPU, if installed
-    #ifdef GPU_BLAS
+    #ifdef SUITESPARSE_CUDA
     cc->useGPU = TRUE ;
     // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
     size_t totmem, availmem ;

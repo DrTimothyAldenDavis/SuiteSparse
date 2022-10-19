@@ -14,7 +14,7 @@
 /* === include files and definitions ======================================== */
 /* ========================================================================== */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 
 #include <string.h>
 #include "cholmod_template.h"

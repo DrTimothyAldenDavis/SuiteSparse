@@ -1,21 +1,36 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/CHOLMOD/GPU/CMakeLists.txt:  cmake for CHOLMOD/GPU module
+#-------------------------------------------------------------------------------
+
+# CHOLMOD/GPU Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
+#-------------------------------------------------------------------------------
+# get the version
+#-------------------------------------------------------------------------------
+
+# cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
+cmake_policy ( SET CMP0104 NEW )
 
 message ( STATUS "Building CHOLMOD_CUDA version: v"
     ${CHOLMOD_VERSION_MAJOR}.
     ${CHOLMOD_VERSION_MINOR}.
     ${CHOLMOD_VERSION_SUB} " (" ${CHOLMOD_DATE} ")" )
 
-# FIXME: use CHOLMOD_VERSION_*
 project ( cholmod_cuda 
     VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
     LANGUAGES C CXX CUDA )
 
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo " )
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
 set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC -DGPU_BLAS" )
+# set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC -DSUITESPARSE_CUDA" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
 set ( CMAKE_C_STANDARD 11 )
 
-message ( STATUS "C++ flags for CUDA:" "${CMAKE_CXX_FLAGS}" )
+message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 
 file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_gpu_kernels.cu" "cholmod_l_gpu.c" )
 

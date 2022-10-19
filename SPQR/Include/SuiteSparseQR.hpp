@@ -14,7 +14,7 @@
 // include files
 // -----------------------------------------------------------------------------
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 #include <cublas_v2.h>
 #endif
 #define SUITESPARSE_GPU_EXTERN_ON
@@ -204,7 +204,7 @@ struct spqr_symbolic
     // -------------------------------------------------------------------------
 
     // This is NULL if the GPU is not in use.  The GPU must be enabled at
-    // compile time (-DGPU_BLAS enables the GPU).  If the Householder vectors
+    // compile time (-DSUITESPARSE_CUDA enables the GPU).  If the Householder vectors
     // are requested or if rank detection is requested, then the GPU is
     // disabled.
 
