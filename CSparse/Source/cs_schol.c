@@ -1,3 +1,6 @@
+// CSparse/Source/cs_schol: ordering and symbolic analysis for sparse Cholesky
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* ordering and symbolic analysis for a Cholesky factorization */
 css *cs_schol (csi order, const cs *A)

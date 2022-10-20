@@ -1,3 +1,6 @@
+// CSparse/Source/cs_sqr: ordering and symbolic analysis for sparse QR
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* compute nnz(V) = S->lnz, S->pinv, S->leftmost, S->m2 from A and S->parent */
 static csi cs_vcount (const cs *A, css *S)

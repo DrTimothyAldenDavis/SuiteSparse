@@ -1,3 +1,6 @@
+// CSparse/Source/cs_updown: sparse Cholesky update/downdate
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* sparse Cholesky update/downdate, L*L' + sigma*w*w' (sigma = +1 or -1) */
 csi cs_updown (cs *L, csi sigma, const cs *C, const csi *parent)

@@ -1,3 +1,6 @@
+// CSparse/Source/cs_dupl: remove duplicates from a sparse matrix
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* remove duplicate entries from A */
 csi cs_dupl (cs *A)

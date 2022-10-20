@@ -1,3 +1,6 @@
+// CSparse/Source/cs_dmperm: Dulmage-Mendelsohn permutation
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* breadth-first search for coarse decomposition (C0,C1,R1 or R0,R3,C3) */
 static csi cs_bfs (const cs *A, csi n, csi *wi, csi *wj, csi *queue,

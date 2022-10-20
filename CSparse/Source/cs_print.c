@@ -1,3 +1,6 @@
+// CSparse/Source/cs_print: print a sparse matrix
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* print a sparse matrix; use %g for integers to avoid differences with csi */
 csi cs_print (const cs *A, csi brief)

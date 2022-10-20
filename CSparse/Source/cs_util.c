@@ -1,3 +1,6 @@
+// CSparse/Source/cs_util: sparse matrix utilities
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* allocate a sparse matrix (triplet form or compressed-column form) */
 cs *cs_spalloc (csi m, csi n, csi nzmax, csi values, csi triplet)

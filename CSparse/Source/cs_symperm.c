@@ -1,3 +1,6 @@
+// CSparse/Source/cs_symperm: symmetric permutation of a sparse matrix
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* C = A(p,p) where A and C are symmetric the upper part stored; pinv not p */
 cs *cs_symperm (const cs *A, const csi *pinv, csi values)
