@@ -570,24 +570,41 @@ SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
     }
     else if (yi_class == FP_INFINITE && yr_class == FP_INFINITE)
     {
-        r = (signbit (yr) == signbit (yi)) ? (1) : (-1) ;
-        den = yr + r * yi ;
-        tr = (xr + xi * r) / den ;
-        ti = (xi - xr * r) / den ;
-    }
-    else if (fabs (yr) >= fabs (yi))
-    {
-        r = yi / yr ;
-        den = yr + r * yi ;
-        tr = (xr + xi * r) / den ;
-        ti = (xi - xr * r) / den ;
+
+        if (signbit (yr) == signbit (yi))
+        {
+            // r = 1
+            den = yr + yi ;
+            tr = (xr + xi) / den ;
+            ti = (xi - xr) / den ;
+        }
+        else
+        {
+            // r = -1
+            den = yr - yi ;
+            tr = (xr - xi) / den ;
+            ti = (xi + xr) / den ;
+        }
+
     }
     else
     {
-        r = yr / yi ;
-        den = r * yr + yi ;
-        tr = (xr * r + xi) / den ;
-        ti = (xi * r - xr) / den ;
+
+        if (fabs (yr) >= fabs (yi))
+        {
+            r = yi / yr ;
+            den = yr + r * yi ;
+            tr = (xr + xi * r) / den ;
+            ti = (xi - xr * r) / den ;
+        }
+        else
+        {
+            r = yr / yi ;
+            den = r * yr + yi ;
+            tr = (xr * r + xi) / den ;
+            ti = (xi * r - xr) / den ;
+        }
+
     }
     (*zr) = tr ;
     (*zi) = ti ;

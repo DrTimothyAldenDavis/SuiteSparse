@@ -17,6 +17,7 @@
 #endif
 
 #include "GPUQREngine.hpp"
+#include <cublas_v2.h>
 #include "cholmod.h"
 #include <time.h>
 #include <stdio.h>

@@ -4,8 +4,8 @@ FIXME: test GraphBLAS/alternative/Makefile
 
 FIXME: Mongoose 'make test' fails: unable to download test files
 
-FIXME: CUDA (requires hypersparse)
-    cmake CUDA for: CHOLMOD, SPQR, SuiteSparse_GPURuntime, GPUQREngine
+FIXME: CUDA
+    cmake CUDA for: SPQR, SuiteSparse_GPURuntime, GPUQREngine
     Find*.cmake for: SuiteSparse_GPURuntime, GPUQREngine
 
 FIXME: date for all packages

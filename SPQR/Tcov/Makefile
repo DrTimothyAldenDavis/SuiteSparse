@@ -359,9 +359,7 @@ GPURUNSRC = $(GPURUNTIME)/Source
 GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
 
 RUNH = \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_Workspace.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_debug.hpp \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_macros.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_workspace_macros.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_Runtime.hpp
 #        Makefile
