@@ -1,49 +1,69 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse_GPURuntime Makefile
+# SuiteSparse/SuiteSparse_GPURuntime/Makefile
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+# SuiteSparse_GPURuntime, Copyright (c) 2013-2022, Timothy A Davis,
 # Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
 
-SUITESPARSE ?= $(realpath $(CURDIR)/..)
-export SUITESPARSE
+# A simple Makefile for SuiteSparse_GPURuntime, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
 
-default: all
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
+JOBS ?= 8
 
-# Compile the C-callable libraries only (there is no Demo for this package)
-all: library
+default: library
 
-# Compile the C-callable libraries only.
 library:
-	( cd Lib ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static libraries only
-static:
-	( cd Lib    ; $(MAKE) static )
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-# Remove all files not in the original distribution
-purge:
-	( cd Lib ; $(MAKE) purge )
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
-# Remove all files not in the original distribution, except keep the 
-# compiled libraries.
-clean:
-	( cd Lib ; $(MAKE) clean )
-
-distclean: purge
-
-ccode: all
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd Lib ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
+# remove any installed libraries and #include files
 uninstall:
-	( cd Lib ; $(MAKE) uninstall )
+	- xargs rm < build/install_manifest.txt
+
+# remove all files not in the distribution
+clean:
+	- $(RM) -rf build/* 
+
+purge: clean
+
+distclean: clean
 
 docs:
+
 

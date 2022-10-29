@@ -38,14 +38,14 @@ file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_gpu_kernels.cu" "cholm
 
 add_library ( cholmod_cuda SHARED ${CHOLMOD_CUDA_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cholmod_cuda PROPERTIES
+set_target_properties ( cholmod_cuda PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
 add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cholmod_cuda_static PROPERTIES
+set_target_properties ( cholmod_cuda_static PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
@@ -61,8 +61,8 @@ set ( CHOLMOD_CUDA_INCLUDES
 
 include_directories ( ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-message ( STATUS "CHOLMOD CUDA includes: ${CHOLMOD_CUDA_INCLUDES}" )
-message ( STATUS "CUDA Toolkit includes: ${CUDAToolkit_INCLUDE_DIRS}" )
+# message ( STATUS "CHOLMOD CUDA includes: ${CHOLMOD_CUDA_INCLUDES}" )
+# message ( STATUS "CUDA Toolkit includes: ${CUDAToolkit_INCLUDE_DIRS}" )
 
 target_include_directories ( cholmod_cuda PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
@@ -99,7 +99,7 @@ if ( NOT SUITESPARSE_LOCAL )
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( TARGETS cholmod_cuda_static
-       ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )

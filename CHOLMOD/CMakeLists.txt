@@ -119,7 +119,7 @@ file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
 
 add_library ( cholmod SHARED ${CHOLMOD_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cholmod PROPERTIES
+set_target_properties ( cholmod PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR}
@@ -137,7 +137,7 @@ endif ( )
 
 add_library ( cholmod_static STATIC ${CHOLMOD_SOURCES} )
 
-SET_TARGET_PROPERTIES ( cholmod_static PROPERTIES
+set_target_properties ( cholmod_static PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME cholmod

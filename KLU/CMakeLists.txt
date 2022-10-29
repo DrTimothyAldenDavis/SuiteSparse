@@ -75,7 +75,7 @@ file ( GLOB KLU_SOURCES "Source/*.c" )
 
 add_library ( klu SHARED ${KLU_SOURCES} )
 
-SET_TARGET_PROPERTIES ( klu PROPERTIES
+set_target_properties ( klu PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${KLU_VERSION_MAJOR}
@@ -87,7 +87,7 @@ SET_TARGET_PROPERTIES ( klu PROPERTIES
 
 add_library ( klu_static STATIC ${KLU_SOURCES} )
 
-SET_TARGET_PROPERTIES ( klu_static PROPERTIES
+set_target_properties ( klu_static PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME klu
@@ -104,7 +104,7 @@ if ( CHOLMOD_FOUND )
     add_library ( klu_cholmod SHARED ${KLU_CHOLMOD_SOURCES} )
     include_directories ( ${CHOLMOD_INCLUDE_DIR} )
 
-    SET_TARGET_PROPERTIES ( klu_cholmod PROPERTIES
+    set_target_properties ( klu_cholmod PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
         C_STANDARD_REQUIRED 11
         SOVERSION ${KLU_VERSION_MAJOR}
@@ -112,7 +112,7 @@ if ( CHOLMOD_FOUND )
 
     add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
-    SET_TARGET_PROPERTIES ( klu_cholmod_static PROPERTIES
+    set_target_properties ( klu_cholmod_static PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME klu_cholmod

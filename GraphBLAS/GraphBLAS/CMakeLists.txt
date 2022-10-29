@@ -205,7 +205,7 @@ else ( )
 endif ( )
 
 add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas_matlab PROPERTIES
+set_target_properties ( graphblas_matlab PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11

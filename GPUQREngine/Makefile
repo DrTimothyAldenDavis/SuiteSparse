@@ -1,50 +1,73 @@
 #-------------------------------------------------------------------------------
-# GPUQREngine Makefile
+# SuiteSparse/GPUQREngine/Makefile
 #-------------------------------------------------------------------------------
 
-# GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
-# and Sanjay Ranka.  All Rights Reserved.
+# GPUQREngine, Copyright (c) 2013-2022, Timothy A Davis,
+# Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
 
-SUITESPARSE ?= $(realpath $(CURDIR)/..)
-export SUITESPARSE
+# A simple Makefile for GPUQREngine, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
 
-# default is 'library' since there is no demo program
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
+
+JOBS ?= 8
+
 default: library
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
-
-# Compile the C-callable libraries
-all: library
-
-# Compile the C-callable libraries only.
 library:
-	( cd Lib ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static libraries only
-static:
-	( cd Lib    ; $(MAKE) static )
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-# Remove all files not in the original distribution
-purge:
-	( cd Lib ; $(MAKE) purge )
-	( cd Demo ; $(MAKE) purge )
+demo: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && ./gpuqrengine_demo )
 
-# Remove all files not in the original distribution, except keep the 
-# compiled libraries.
-clean:
-	( cd Lib ; $(MAKE) clean )
-	( cd Demo ; $(MAKE) clean )
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
-distclean: purge
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
-ccode: all
-
-# install GPUQREngine.  Note that the include files are not installed.
 install:
-	( cd Lib ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
+# remove any installed libraries and #include files
 uninstall:
-	( cd Lib ; $(MAKE) uninstall )
+	- xargs rm < build/install_manifest.txt
+
+# remove all files not in the distribution
+clean:
+	- $(RM) -rf build/* 
+
+purge: clean
+
+distclean: clean
+
+docs:
+
+
