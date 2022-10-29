@@ -1,3 +1,12 @@
+Version 7.3.1, Oct 21, 2022
+
+    * workaround for Microsoft Visual Studio bug :  MSC 19.2x (in vs2019)
+        encounters a compiler bug when compiling the FIRST_FC32 and SECOND_FC32
+        binary operators.  This version adds a flag that disables those
+        methods.  The operators still work, they are just handled by the
+        slower generic methods. Thanks to Erik Welch, H. Vetinari, and others
+        in the conda-forge community for tracking this down.
+
 Version 7.3.0, Oct 14, 2022
 
     * GrB_Matrix: changes to the internal data structure

@@ -14,7 +14,7 @@ void GB_macrofy_sparsity    // construct macros for sparsity structure
 (
     // input:
     FILE *fp,
-    char *matrix_name,      // "C", "M", "A", or "B"
+    const char *matrix_name,    // "C", "M", "A", or "B"
     int ecode
 )
 {

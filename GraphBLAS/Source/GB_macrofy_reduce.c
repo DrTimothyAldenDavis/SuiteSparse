@@ -40,24 +40,24 @@ void GB_macrofy_reduce      // construct all macros for GrB_reduce to scalar
     int asparsity   = GB_RSHIFT (rcode, 0, 2) ;
 
     //--------------------------------------------------------------------------
-    // construct the macros for the type name
+    // copyright, license, and describe monoid
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "// GB_reduce_%016" PRIX64 ".h (%s %s A: %s)\n", rcode,
-        monoid->op->name, monoid->op->ztype->name, atype->name) ;
+    GB_macrofy_copyright (fp) ;
+    fprintf (fp, "// monoid: %s type: %s\n\n",
+        monoid->op->name, monoid->op->ztype->name) ;
 
     //--------------------------------------------------------------------------
     // construct the typedefs
     //--------------------------------------------------------------------------
 
-    GB_macrofy_types (fp, NULL, atype->defn, NULL,
-        NULL, NULL, monoid->op->ztype->defn) ;
+    GB_macrofy_types (fp, NULL, atype, NULL, NULL, NULL, monoid->op->ztype) ;
 
     //--------------------------------------------------------------------------
     // construct the macros for the type names
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "\n// monoid type:\n") ;
+    fprintf (fp, "// monoid type:\n") ;
     fprintf (fp, "#define GB_Z_TYPENAME %s\n", monoid->op->ztype->name) ;
 
     //--------------------------------------------------------------------------
@@ -65,14 +65,19 @@ void GB_macrofy_reduce      // construct all macros for GrB_reduce to scalar
     //--------------------------------------------------------------------------
 
     fprintf (fp, "\n// reduction monoid:\n") ;
-    GB_macrofy_monoid (fp, red_ecode, id_ecode, term_ecode, monoid, false) ;
+    GB_macrofy_monoid (fp, red_ecode, id_ecode, term_ecode, monoid) ;
 
     //--------------------------------------------------------------------------
     // construct the macros for A
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "\n// A matrix:\n") ;
-    GB_macrofy_sparsity (fp, "A", asparsity) ;
-    fprintf (fp, "#define GB_A_TYPENAME %s\n", atype->name) ;
+    // iso reduction is handled by GB_iso_reduce_to_scalar, which takes
+    // O(log(nvals(A))) for any monoid and uses the function pointer of the
+    // monoid operator.  No JIT kernel is ever required to reduce an iso matrix
+    // to a scalar, even for user-defined types and monoids.
+
+    GB_macrofy_input (fp, "a", "A", monoid->op->ztype,
+        atype, asparsity, acode, false) ;
+
 }
 

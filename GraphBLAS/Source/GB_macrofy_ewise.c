@@ -56,20 +56,20 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     int bsparsity   = GB_RSHIFT (scode,  0, 2) ;
 
     //--------------------------------------------------------------------------
-    // construct the ewise name
+    // describe the operator
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "// GB_ewise_%016" PRIX64 ".h ", scode) ;
+    GB_macrofy_copyright (fp) ;
     if (binaryop == NULL)
     {  
         // GB_wait: A and B are disjoint and the operator is not applied
-        fprintf (fp, " (implicit 2nd)\n") ;
+        fprintf (fp, "// op: none, type: %s\n\n", ctype->name) ;
     }
     else
     { 
         // normal case
-        fprintf (fp, " (%s %s%s)\n", binaryop->name, binaryop->xtype->name, 
-            flipxy ? " (flipped)" : "") ;
+        fprintf (fp, "// op: %s%s, xtype: %s\n\n", binaryop->name,
+            flipxy ? " (flipped)" : "", binaryop->xtype->name) ;
     }
 
     //--------------------------------------------------------------------------
@@ -79,13 +79,12 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     if (binaryop == NULL)
     { 
         // GB_wait: all types must be the same
-        GB_macrofy_types (fp, ctype->defn, NULL, NULL, NULL, NULL, NULL) ;
+        GB_macrofy_types (fp, ctype, NULL, NULL, NULL, NULL, NULL) ;
     }
     else
     { 
-        GB_macrofy_types (fp, ctype->defn, atype->defn, btype->defn,
-            binaryop->xtype->defn, binaryop->ytype->defn,
-            binaryop->ztype->defn) ;
+        GB_macrofy_types (fp, ctype, atype, btype,
+            binaryop->xtype, binaryop->ytype, binaryop->ztype) ;
     }
 
     //--------------------------------------------------------------------------
@@ -111,16 +110,14 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     // construct macros for the multiply
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "\n// binary operator:\n") ;
-    GB_macrofy_binop (fp, "GB_BINOP", flipxy, false, binop_ecode, binaryop,
-        false) ;
-    fprintf (fp, "#define GB_FLIPXY %d\n\n", flipxy ? 1 : 0) ;
+    fprintf (fp, "\n// binary operator%s:\n", flipxy ? " (flipped)" : "") ;
+    GB_macrofy_binop (fp, "GB_BINOP", flipxy, false, binop_ecode, binaryop) ;
 
     //--------------------------------------------------------------------------
     // macros for the C matrix
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "// C matrix:\n") ;
+    fprintf (fp, "\n// C matrix:\n") ;
     if (C_iso)
     {
         fprintf (fp, "#define GB_PUTC(blob)\n") ;
@@ -148,19 +145,13 @@ void GB_macrofy_ewise           // construct all macros for GrB_eWise
     // if flipxy false:  A is typecasted to x, and B is typecasted to y.
     // if flipxy true:   A is typecasted to y, and B is typecasted to x.
 
-    fprintf (fp, "\n// A matrix:\n") ;
-    int A_is_pattern = (acode == 0) ? 1 : 0 ;
-    int B_is_pattern = (bcode == 0) ? 1 : 0 ;
-    fprintf (fp, "#define GB_A_IS_PATTERN %d\n", A_is_pattern) ;
-    fprintf (fp, "#define GB_A_ISO %d\n", A_iso_code) ;
-    GB_macrofy_sparsity (fp, "A", asparsity) ;
-    fprintf (fp, "#define GB_A_TYPENAME %s\n", atype->name) ;
+    GB_macrofy_input (fp, "a", "A", (binaryop == NULL) ? ctype :
+        (flipxy ? binaryop->ytype : binaryop->xtype),
+        atype, asparsity, acode, A_iso_code) ;
 
-    fprintf (fp, "\n// B matrix:\n") ;
-    fprintf (fp, "#define GB_B_IS_PATTERN %d\n", B_is_pattern) ;
-    fprintf (fp, "#define GB_B_ISO %d\n", B_iso_code) ;
-    GB_macrofy_sparsity (fp, "B", bsparsity) ;
-    fprintf (fp, "#define GB_B_TYPENAME %s\n", btype->name) ;
+    GB_macrofy_input (fp, "b", "B", (binaryop == NULL) ? ctype :
+        (flipxy ? binaryop->xtype : binaryop->ytype),
+        btype, bsparsity, bcode, B_iso_code) ;
 
 }
 

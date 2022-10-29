@@ -45,7 +45,7 @@
 // B type:     uint64_t
 // B pattern?  0
 
-// BinaryOp:   cij = GB_BITSET (aij, bij, uint64_t, 64)
+// BinaryOp:   cij = GB_bitset_uint64 (aij, bij)
 
 #define GB_ATYPE \
     uint64_t
@@ -100,7 +100,7 @@
 
 // binary operator
 #define GB_BINOP(z,x,y,i,j) \
-    z = GB_BITSET (x, y, uint64_t, 64) ;
+    z = GB_bitset_uint64 (x, y) ;
 
 // true if the binop must be flipped
 #define GB_BINOP_FLIP \
@@ -472,7 +472,7 @@ GrB_Info GB (_bind1st__bset_uint64)
     {
         if (!GBB (Bb, p)) continue ;
         uint64_t bij = GBX (Bx, p, false) ;
-        Cx [p] = GB_BITSET (x, bij, uint64_t, 64) ;
+        Cx [p] = GB_bitset_uint64 (x, bij) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -508,7 +508,7 @@ GrB_Info GB (_bind2nd__bset_uint64)
     {
         if (!GBB (Ab, p)) continue ;
         uint64_t aij = GBX (Ax, p, false) ;
-        Cx [p] = GB_BITSET (aij, y, uint64_t, 64) ;
+        Cx [p] = GB_bitset_uint64 (aij, y) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -527,7 +527,7 @@ GrB_Info GB (_bind2nd__bset_uint64)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     uint64_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITSET (x, aij, uint64_t, 64) ;        \
+    Cx [pC] = GB_bitset_uint64 (x, aij) ;        \
 }
 
 GrB_Info GB (_bind1st_tran__bset_uint64)
@@ -571,7 +571,7 @@ GrB_Info GB (_bind1st_tran__bset_uint64)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     uint64_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITSET (aij, y, uint64_t, 64) ;        \
+    Cx [pC] = GB_bitset_uint64 (aij, y) ;        \
 }
 
 GrB_Info GB (_bind2nd_tran__bset_uint64)

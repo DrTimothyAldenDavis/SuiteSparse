@@ -121,8 +121,9 @@ void GB_enumify_mxm         // enumerate a GrB_mxm problem
     bool op_is_first  = (mult_opcode == GB_FIRST_binop_code ) ;
     bool op_is_second = (mult_opcode == GB_SECOND_binop_code) ;
     bool op_is_pair   = (mult_opcode == GB_PAIR_binop_code) ;
-    bool A_is_pattern = op_is_second || op_is_pair ;
-    bool B_is_pattern = op_is_first  || op_is_pair ;
+    bool op_is_positional = GB_OPCODE_IS_POSITIONAL (mult_opcode) ;
+    bool A_is_pattern = op_is_second || op_is_pair || op_is_positional ;
+    bool B_is_pattern = op_is_first  || op_is_pair || op_is_positional ;
 
     //--------------------------------------------------------------------------
     // enumify the multiplier

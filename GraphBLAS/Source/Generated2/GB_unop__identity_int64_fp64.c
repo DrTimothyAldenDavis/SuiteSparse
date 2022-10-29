@@ -33,7 +33,7 @@
     int64_t
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA) \
+#define GB_GETA(aij,Ax,pA,A_iso) \
     double aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
@@ -50,7 +50,7 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    double aij = Ax [pA] ;          \
+    double aij = Ax [pA] ;   \
     /* Cx [pC] = op (cast (aij)) */ \
     int64_t z = GB_cast_to_int64_t ((double) (aij)) ;               \
     Cx [pC] = z ;        \
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__identity_int64_fp64)
 (
-    int64_t *Cx,       // Cx and Ax may be aliased
-    const double *Ax,
-    const int8_t *restrict Ab,   // A->b if A is bitmap
+    int64_t *Cx,               // Cx and Ax may be aliased
+    const double *Ax,         // A is always non-iso for this kernel
+    const int8_t *restrict Ab,  // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )

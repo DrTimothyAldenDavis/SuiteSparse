@@ -600,19 +600,21 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 // OpenBLAS can be compiled by appending a suffix to each routine, so that the
 // Fortan routine dgemm becomes dgemm_64, which denotes a version of dgemm with
-// 64-bit integer parameters.  The Sun Performance library does the same thing.
+// 64-bit integer parameters.  The Sun Performance library does the same thing,
+// but without the internal underscore, as dgemm64.
 
-// If the suffix does not contain "_", use (for example):
+// If the suffix does not contain "_", use (Sun Perf., for example):
 
-//      -DBLAS64_SUFFIX="64"
+//     cd build ; cmake -DBLAS64_SUFFIX="64" ..
 
-// If the suffix contains "_", use the following:
+// If the suffix contains "_" (OpenBLAS in spack for example), use the
+// following:
 
-//      -DBLAS64__SUFFIX="_64"
+//     cd build ; cmake -DBLAS64_SUFFIX="_64" ..
 
-//      This setting should be used by the spack packaging of SuiteSparse when
-//      linked with the spack-installed OpenBLAS with 64-bit integers.  See
-//      https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/suite-sparse/package.py
+// This setting could be used by the spack packaging of SuiteSparse when linked
+// with the spack-installed OpenBLAS with 64-bit integers.  See
+// https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/suite-sparse/package.py
 
 #if defined ( BLAS64__SUFFIX )
 

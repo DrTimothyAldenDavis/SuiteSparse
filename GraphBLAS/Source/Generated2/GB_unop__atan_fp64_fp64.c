@@ -33,7 +33,7 @@
     double
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA) \
+#define GB_GETA(aij,Ax,pA,A_iso) \
     double aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
@@ -50,7 +50,7 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    double aij = Ax [pA] ;          \
+    double aij = Ax [pA] ;   \
     /* Cx [pC] = op (cast (aij)) */ \
     double z = aij ;               \
     Cx [pC] = atan (z) ;        \
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__atan_fp64_fp64)
 (
-    double *Cx,       // Cx and Ax may be aliased
-    const double *Ax,
-    const int8_t *restrict Ab,   // A->b if A is bitmap
+    double *Cx,               // Cx and Ax may be aliased
+    const double *Ax,         // A is always non-iso for this kernel
+    const int8_t *restrict Ab,  // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )

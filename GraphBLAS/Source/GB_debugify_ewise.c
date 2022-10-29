@@ -41,7 +41,7 @@ void GB_debugify_ewise
     // namify the ewise problem
     char ewise_name [256 + 8*GxB_MAX_NAME_LEN] ;
     GB_namify_problem (ewise_name, scode,
-        (binaryop == NULL) ? "nop" : binaryop->name,
+        (binaryop == NULL) ? "none" : binaryop->name,
         NULL,
         (binaryop == NULL) ? NULL : binaryop->xtype->name,
         (binaryop == NULL) ? NULL : binaryop->ytype->name,
@@ -54,6 +54,9 @@ void GB_debugify_ewise
     char filename [512 + 8*GxB_MAX_NAME_LEN] ;
     sprintf (filename, "/tmp/GB_ewise_%s.h", ewise_name);
     FILE *fp = fopen (filename, "w") ;
+
+    // FIXME: pass this to GB_macrofy_ewise
+    fprintf (fp, "// GB_ewise_%s.h\n", ewise_name) ;
 
     // macrofy the ewise problem
     GB_macrofy_ewise (fp, scode, binaryop, ctype, atype, btype) ;

@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Oct 14, 2022" )
+set ( GraphBLAS_DATE "Oct 25, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
-set ( GraphBLAS_VERSION_SUB   0 )
+set ( GraphBLAS_VERSION_SUB   2 )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )
@@ -266,7 +266,7 @@ endif ( )
 
 add_library ( graphblas SHARED ${GRAPHBLAS_SOURCES} )
 
-SET_TARGET_PROPERTIES ( graphblas PROPERTIES
+set_target_properties ( graphblas PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
@@ -286,7 +286,7 @@ if ( BUILD_GRB_STATIC_LIBRARY )
 
     add_library ( graphblas_static STATIC ${GRAPHBLAS_SOURCES} )
 
-    SET_TARGET_PROPERTIES ( graphblas_static PROPERTIES
+    set_target_properties ( graphblas_static PROPERTIES
        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
        OUTPUT_NAME graphblas
        SOVERSION ${GraphBLAS_VERSION_MAJOR}
@@ -391,7 +391,7 @@ if ( DEMO )
     file ( GLOB DEMO_SOURCES "Demo/Source/*.c" )
     add_library ( graphblasdemo SHARED ${DEMO_SOURCES} )
 
-    SET_TARGET_PROPERTIES ( graphblasdemo PROPERTIES
+    set_target_properties ( graphblasdemo PROPERTIES
         VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
         SOVERSION ${GraphBLAS_VERSION_MAJOR}
         C_STANDARD_REQUIRED 11 )
@@ -400,7 +400,7 @@ if ( DEMO )
 
     if ( BUILD_GRB_STATIC_LIBRARY )
         add_library ( graphblasdemo_static STATIC ${DEMO_SOURCES} )
-        SET_TARGET_PROPERTIES ( graphblasdemo_static PROPERTIES
+        set_target_properties ( graphblasdemo_static PROPERTIES
             VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
             C_STANDARD_REQUIRED 11 )
         set_property ( TARGET graphblasdemo_static PROPERTY C_STANDARD 11 )

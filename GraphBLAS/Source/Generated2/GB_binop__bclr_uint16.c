@@ -45,7 +45,7 @@
 // B type:     uint16_t
 // B pattern?  0
 
-// BinaryOp:   cij = GB_BITCLR (aij, bij, uint16_t, 16)
+// BinaryOp:   cij = GB_bitclr_uint16 (aij, bij)
 
 #define GB_ATYPE \
     uint16_t
@@ -100,7 +100,7 @@
 
 // binary operator
 #define GB_BINOP(z,x,y,i,j) \
-    z = GB_BITCLR (x, y, uint16_t, 16) ;
+    z = GB_bitclr_uint16 (x, y) ;
 
 // true if the binop must be flipped
 #define GB_BINOP_FLIP \
@@ -472,7 +472,7 @@ GrB_Info GB (_bind1st__bclr_uint16)
     {
         if (!GBB (Bb, p)) continue ;
         uint16_t bij = GBX (Bx, p, false) ;
-        Cx [p] = GB_BITCLR (x, bij, uint16_t, 16) ;
+        Cx [p] = GB_bitclr_uint16 (x, bij) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -508,7 +508,7 @@ GrB_Info GB (_bind2nd__bclr_uint16)
     {
         if (!GBB (Ab, p)) continue ;
         uint16_t aij = GBX (Ax, p, false) ;
-        Cx [p] = GB_BITCLR (aij, y, uint16_t, 16) ;
+        Cx [p] = GB_bitclr_uint16 (aij, y) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -527,7 +527,7 @@ GrB_Info GB (_bind2nd__bclr_uint16)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     uint16_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITCLR (x, aij, uint16_t, 16) ;        \
+    Cx [pC] = GB_bitclr_uint16 (x, aij) ;        \
 }
 
 GrB_Info GB (_bind1st_tran__bclr_uint16)
@@ -571,7 +571,7 @@ GrB_Info GB (_bind1st_tran__bclr_uint16)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     uint16_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITCLR (aij, y, uint16_t, 16) ;        \
+    Cx [pC] = GB_bitclr_uint16 (aij, y) ;        \
 }
 
 GrB_Info GB (_bind2nd_tran__bclr_uint16)

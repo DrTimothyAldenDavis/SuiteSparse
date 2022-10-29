@@ -43,7 +43,7 @@ include_directories(${CMAKE_CURRENT_BINARY_DIR}/external_includes/rmm/include)
 
 add_library(rmm_wrap rmm_wrap.cpp rmm_wrap.hpp rmm_wrap.h)
 
-SET_TARGET_PROPERTIES (rmm_wrap PROPERTIES
+set_target_properties (rmm_wrap PROPERTIES
 		VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
 		SOVERSION ${GraphBLAS_VERSION_MAJOR}
 		C_STANDARD_REQUIRED 11

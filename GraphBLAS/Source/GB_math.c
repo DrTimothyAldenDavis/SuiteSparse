@@ -20,8 +20,6 @@ extern uint32_t GB_idiv_uint32 (uint32_t x, uint32_t y) ;
 extern uint64_t GB_idiv_uint64 (uint64_t x, uint64_t y) ;
 
 // complex division
-extern int GB_divcomplex (double xr, double xi, double yr, double yi,
-    double *zr, double *zi) ;
 extern GxB_FC32_t GB_FC32_div (GxB_FC32_t x, GxB_FC32_t y) ;
 extern GxB_FC64_t GB_FC64_div (GxB_FC64_t x, GxB_FC64_t y) ;
 

@@ -45,7 +45,7 @@
 // B type:     int8_t
 // B pattern?  0
 
-// BinaryOp:   cij = GB_BITSET (aij, bij, int8_t, 8)
+// BinaryOp:   cij = GB_bitset_int8 (aij, bij)
 
 #define GB_ATYPE \
     int8_t
@@ -100,7 +100,7 @@
 
 // binary operator
 #define GB_BINOP(z,x,y,i,j) \
-    z = GB_BITSET (x, y, int8_t, 8) ;
+    z = GB_bitset_int8 (x, y) ;
 
 // true if the binop must be flipped
 #define GB_BINOP_FLIP \
@@ -472,7 +472,7 @@ GrB_Info GB (_bind1st__bset_int8)
     {
         if (!GBB (Bb, p)) continue ;
         int8_t bij = GBX (Bx, p, false) ;
-        Cx [p] = GB_BITSET (x, bij, int8_t, 8) ;
+        Cx [p] = GB_bitset_int8 (x, bij) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -508,7 +508,7 @@ GrB_Info GB (_bind2nd__bset_int8)
     {
         if (!GBB (Ab, p)) continue ;
         int8_t aij = GBX (Ax, p, false) ;
-        Cx [p] = GB_BITSET (aij, y, int8_t, 8) ;
+        Cx [p] = GB_bitset_int8 (aij, y) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -527,7 +527,7 @@ GrB_Info GB (_bind2nd__bset_int8)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     int8_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITSET (x, aij, int8_t, 8) ;        \
+    Cx [pC] = GB_bitset_int8 (x, aij) ;        \
 }
 
 GrB_Info GB (_bind1st_tran__bset_int8)
@@ -571,7 +571,7 @@ GrB_Info GB (_bind1st_tran__bset_int8)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     int8_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_BITSET (aij, y, int8_t, 8) ;        \
+    Cx [pC] = GB_bitset_int8 (aij, y) ;        \
 }
 
 GrB_Info GB (_bind2nd_tran__bset_int8)
