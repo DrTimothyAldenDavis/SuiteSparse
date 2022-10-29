@@ -22,9 +22,8 @@ void GB_macrofy_copyright (FILE *fp) ;
 
 // uncomment this line to dump GB*.h files to /tmp, or compile with
 // -DGB_DEBUGIFY_DEFN=1
-// FIXME
-   #undef  GB_DEBUGIFY_DEFN
-   #define GB_DEBUGIFY_DEFN 1
+// #undef  GB_DEBUGIFY_DEFN
+// #define GB_DEBUGIFY_DEFN 1
 
 //------------------------------------------------------------------------------
 // for GB_boolean_rename and related methods
