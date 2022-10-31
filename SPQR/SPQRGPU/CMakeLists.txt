@@ -62,14 +62,14 @@ target_include_directories ( spqr_cuda PUBLIC
         ${SPQR_CUDA_INCLUDES} )
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-set_target_properties ( spqr_cuda PROPERTIES CUDA_ARCHITECTURES "75" )
+set_target_properties ( spqr_cuda PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_include_directories ( spqr_cuda_static PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES} )
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-set_target_properties ( spqr_cuda_static PROPERTIES CUDA_ARCHITECTURES "75" )
+set_target_properties ( spqr_cuda_static PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_link_libraries ( spqr_cuda CUDA::nvrtc CUDA::cudart_static
     CUDA::nvToolsExt CUDA::cublas )

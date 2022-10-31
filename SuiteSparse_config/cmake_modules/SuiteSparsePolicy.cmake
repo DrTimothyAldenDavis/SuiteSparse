@@ -102,7 +102,8 @@ if ( ENABLE_CUDA )
         message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
         message ( STATUS "CUDA toolkit include: " ${CUDAToolkit_INCLUDE_DIRS} )
         message ( STATUS "CUDA toolkit lib dir: " ${CUDAToolkit_LIBRARY_DIR} )
-        if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
+#       if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )  FIXME
+        if ( CUDAToolkit_VERSION VERSION_LESS "10.0" )
             # CUDA is present but too old
             message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
             set ( SUITESPARSE_CUDA off )

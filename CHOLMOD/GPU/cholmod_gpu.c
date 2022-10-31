@@ -46,20 +46,20 @@ static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
-    /* double t = SuiteSparse_time ( ) ; */
+double t = SuiteSparse_time ( ) ;   // FIXME
     if (s == 0)
     {
         return (FALSE) ;
     }
     if (cudaMalloc (&p, s) != cudaSuccess)
     {
-        /* t = SuiteSparse_time ( ) - t ; */
-        /* printf ("s %lu failed, time %g\n", s, t) ; */
+t = SuiteSparse_time ( ) - t ;  // FIXME
+printf ("poll s %lu failed, time %g\n", s, t) ; // FIXME
         return (FALSE) ;
     }
     cudaFree (p) ;
-    /* t = SuiteSparse_time ( ) - t ; */
-    /* printf ("s %lu OK time %g\n", s, t) ; */
+t = SuiteSparse_time ( ) - t ;  // FIXME
+printf ("poll s %lu OK time %g\n", s, t) ;  // FIXME
     return (TRUE) ;
 }
 
@@ -93,7 +93,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
     t = SuiteSparse_time ( ) ;
     cudaMemGetInfo (&total_free, &total_memory) ;
     t = SuiteSparse_time ( ) - t ;
-    /* printf ("free %lu tot %lu time %g\n", total_free, total_memory, t) ; */
+printf ("free %lu tot %lu time %g\n", total_free, total_memory, t) ;    // FIXME
 
     *total_mem = total_memory;
 
@@ -106,7 +106,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
     s = MAX (MINSIZE, total_free*0.98) ;
     if (poll_gpu (s))
     {
-        /* printf ("quick %lu\n", s) ; */
+printf ("quick %lu\n", s) ; // FIXME
         *available_mem = s;
         return (0) ;  /* no error */
     }
@@ -133,7 +133,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
         }
     }
 
-    /* printf ("final %lu\n", good) ; */
+printf ("final %lu\n", good) ;  // FIXME
     *available_mem = good;
 
 #endif
@@ -170,6 +170,7 @@ int CHOLMOD(gpu_probe) ( cholmod_common *Common )
     }
 
     cudaGetDeviceCount(&ngpus);
+    printf ("# gpus: %d\n", ngpus) ;    // FIXME
 
     if ( ngpus ) {
         cudaGetDevice ( &idevice );

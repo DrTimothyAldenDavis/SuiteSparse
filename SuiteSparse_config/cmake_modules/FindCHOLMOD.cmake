@@ -49,16 +49,6 @@ find_library ( CHOLMOD_LIBRARY
     PATH_SUFFIXES lib build alternative
 )
 
-# compiled libraries CHOLMOD for CUDA
-find_library ( CHOLMOD_CUDA_LIBRARY
-    NAMES cholmod_cuda
-    HINTS ${CMAKE_SOURCE_DIR}/..
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
-    HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
-    PATHS CHOLMOD_ROOT ENV CHOLMOD_ROOT
-    PATH_SUFFIXES lib build alternative
-)
-
 # get version of the library
 get_filename_component (CHOLMOD_LIBRARY ${CHOLMOD_LIBRARY} REALPATH)
 string (
@@ -66,12 +56,12 @@ string (
     CHOLMOD_VERSION
     ${CHOLMOD_LIBRARY}
 )
-set (CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} ${CHOLMOD_CUDA_LIBRARY})
+set (CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CHOLMOD
-    REQUIRED_VARS CHOLMOD_LIBRARIES CHOLMOD_INCLUDE_DIR
+    REQUIRED_VARS CHOLMOD_LIBRARY CHOLMOD_INCLUDE_DIR
     VERSION_VAR CHOLMOD_VERSION
 )
 

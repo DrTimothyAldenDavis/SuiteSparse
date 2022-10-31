@@ -71,6 +71,7 @@ find_package ( CHOLMOD 4.0.0 REQUIRED )
 if ( SUITESPARSE_CUDA )
     find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
     find_package ( GPUQREngine 2.0.0 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.0 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -79,7 +80,7 @@ if ( SUITESPARSE_CUDA )
     # with CUDA
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
     add_subdirectory ( SPQRGPU )
-    set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
+    set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES} )
     include_directories ( SPQRGPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "SPQRGPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 else ( )

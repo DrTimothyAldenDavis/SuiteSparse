@@ -139,7 +139,7 @@ target_include_directories ( gpuqrengine PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( gpuqrengine PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( gpuqrengine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    set_target_properties ( gpuqrengine PROPERTIES CUDA_ARCHITECTURES "75" )
+    set_target_properties ( gpuqrengine PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( gpuqrengine CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
@@ -162,7 +162,7 @@ target_include_directories ( gpuqrengine_static PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_ARCHITECTURES "75" )
+    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )

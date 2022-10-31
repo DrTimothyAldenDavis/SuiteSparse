@@ -128,7 +128,7 @@ set_target_properties ( cholmod PROPERTIES
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( cholmod PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( cholmod PROPERTIES CUDA_ARCHITECTURES "75" )
+    set_target_properties ( cholmod PROPERTIES CUDA_ARCHITECTURES "all" )   # cmake 3.23 FIXME
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ set_target_properties ( cholmod_static PROPERTIES
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( cholmod_static PROPERTIES CUDA_ARCHITECTURES "75" )
+    set_target_properties ( cholmod_static PROPERTIES CUDA_ARCHITECTURES "all" )
 endif ( )
 
 #-------------------------------------------------------------------------------
