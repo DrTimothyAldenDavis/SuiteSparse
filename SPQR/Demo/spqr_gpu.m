@@ -17,9 +17,9 @@ end
 
 setenv('LD_LIBRARY_PATH', '/usr/local/cuda/lib64:/usr/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/lib64')
 if (ordering == 1)
-    system ('tcsh demo_colamd.sh') ;
+    system ('./demo_colamd.sh') ;
 else
-    system ('tcsh demo_metis.sh') ;
+    system ('./demo_metis.sh') ;
 end
 
 load ('gpu_results.txt') ;

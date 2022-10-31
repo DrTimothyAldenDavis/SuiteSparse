@@ -8,6 +8,18 @@
 
 //------------------------------------------------------------------------------
 
+
+#if 1
+
+// Update for GPUQREngine v2.0.0: See SPQR for a demo instead.
+#include <stdio.h>
+int main(int argn, char **argv)
+{
+    printf ("Update for GPUQREngine v2.x: See SPQR for a demo instead.\n") ;
+}
+
+#else
+
 // GPUQREngine can be used to factorize a set of dense matrices of
 // various sizes.  This is the demo for this 'dense' usage case.
 // The 'sparse' case is exercised by SuiteSparseQR.
@@ -342,3 +354,4 @@ int main(int argn, char **argv)
 #endif
 }
 
+#endif

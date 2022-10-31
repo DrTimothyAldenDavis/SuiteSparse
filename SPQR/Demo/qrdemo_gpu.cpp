@@ -28,6 +28,7 @@ int main (int argc, char **argv)
     cholmod_common *cc, Common ;
     cc = &Common ;
     cholmod_l_start (cc) ;
+    cc->print = 5 ;
 
     // warmup the GPU.  This can take some time, but only needs
     // to be done once
@@ -63,6 +64,7 @@ int main (int argc, char **argv)
 #if 1
     printf ("Matrix %6ld-by-%-6ld nnz: %6ld\n",
         m, n, cholmod_l_nnz (A, cc)) ;
+    cholmod_l_print_sparse (A, "A", cc) ;
 #endif
 
     // anorm = norm (A,1) ;
@@ -70,6 +72,7 @@ int main (int argc, char **argv)
 
     // B = ones (m,1), a dense right-hand-side of the same type as A
     B = cholmod_l_ones (m, 1, A->xtype, cc) ;
+    cholmod_l_print_dense (B, "B", cc) ;
 
     // X = A\B ; with default ordering and default column 2-norm tolerance
     if (A->xtype == CHOLMOD_REAL)
@@ -87,6 +90,7 @@ int main (int argc, char **argv)
         printf("Code doesn't support std::complex<?> types.\n");
 #endif
     }
+    cholmod_l_print_dense (X, "X", cc) ;
 
     // get the rank(A) estimate
     rnk = cc->SPQR_istat [4] ;

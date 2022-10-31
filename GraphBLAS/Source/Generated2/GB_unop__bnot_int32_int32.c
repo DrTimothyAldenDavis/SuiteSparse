@@ -33,7 +33,7 @@
     int32_t
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA,A_iso) \
+#define GB_GETA(aij,Ax,pA) \
     int32_t aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
@@ -50,7 +50,7 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    int32_t aij = Ax [pA] ;   \
+    int32_t aij = Ax [pA] ;          \
     /* Cx [pC] = op (cast (aij)) */ \
     int32_t z = aij ;               \
     Cx [pC] = ~(z) ;        \
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__bnot_int32_int32)
 (
-    int32_t *Cx,               // Cx and Ax may be aliased
-    const int32_t *Ax,         // A is always non-iso for this kernel
-    const int8_t *restrict Ab,  // A->b if A is bitmap
+    int32_t *Cx,       // Cx and Ax may be aliased
+    const int32_t *Ax,
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )

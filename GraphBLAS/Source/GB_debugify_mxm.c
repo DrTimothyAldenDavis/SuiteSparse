@@ -55,9 +55,6 @@ void GB_debugify_mxm
     sprintf (filename, "/tmp/GB_mxm_%s.h", mxm_name);
     FILE *fp = fopen (filename, "w") ;
 
-    // FIXME: pass this to GB_macrofy_mxm
-    fprintf (fp, "// GB_mxm_%s.h\n", mxm_name) ;
-
     // macrofy the mxm problem
     GB_macrofy_mxm (fp, scode, semiring, ctype, atype, btype) ;
     fclose (fp) ;

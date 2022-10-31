@@ -10,7 +10,6 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 cmake_policy ( SET CMP0104 NEW )
 
@@ -45,9 +44,17 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( suitesparse_gpuruntime 
-    VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
-    LANGUAGES C CXX CUDA )
+if ( SUITESPARSE_CUDA )
+    project ( suitesparse_gpuruntime 
+        VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
+        LANGUAGES C CXX CUDA )
+else ( )
+    # CUDA not available
+    project ( suitesparse_gpuruntime 
+        VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
+        LANGUAGES C CXX )
+    message ( STATUS "CUDA not enabled:  library will be empty" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -63,28 +70,22 @@ configure_file ( "Config/SuiteSparseGPU_Runtime.hpp.in" "${PROJECT_SOURCE_DIR}/I
 
 #-------------------------------------------------------------------------------
 
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+if ( SUITESPARSE_CUDA )
+    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
+endif ( )
+
 set ( CMAKE_CXX_STANDARD 17 )
-# set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC -DSUITESPARSE_CUDA" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
 set ( CMAKE_C_STANDARD 11 )
 
-message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
-file ( GLOB SUITESPARSE_GPURUNTIME_HEADERS "Include/*.hpp" )
-# message ( STATUS "Sources: ${SUITESPARSE_GPURUNTIME_SOURCES}" )
 
 set ( SUITESPARSE_GPURUNTIME_INCLUDES Include 
     ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
-
-# message ( STATUS "SUITESPARSE_GPURUNTIME CUDA includes:
-#     ${SUITESPARSE_GPURUNTIME_INCLUDES}" )
-
-# message ( STATUS "CUDA Toolkit includes: ${CUDAToolkit_INCLUDE_DIRS}" )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparse_gpuruntime library properties
@@ -95,18 +96,19 @@ add_library ( suitesparse_gpuruntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 set_target_properties ( suitesparse_gpuruntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
-    SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
-    PUBLIC_HEADER "${SUITESPARSE_GPURUNTIME_HEADERS}" )
+    SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
 
 target_include_directories ( suitesparse_gpuruntime PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
-set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_ARCHITECTURES "75" )
 
-target_link_libraries ( suitesparse_gpuruntime CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_ARCHITECTURES "75" )
+    target_link_libraries ( suitesparse_gpuruntime CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_gpuruntime library properties
@@ -118,17 +120,18 @@ set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
-#   PUBLIC_HEADER "${SUITESPARSE_GPURUNTIME_HEADERS}" )
 
 target_include_directories ( suitesparse_gpuruntime_static PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
-set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_ARCHITECTURES "75" )
 
-target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_ARCHITECTURES "75" )
+    target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
@@ -142,8 +145,7 @@ if ( NOT SUITESPARSE_LOCAL )
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparse_gpuruntime
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 endif ( )
@@ -154,9 +156,14 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparse_gpuruntime
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
 

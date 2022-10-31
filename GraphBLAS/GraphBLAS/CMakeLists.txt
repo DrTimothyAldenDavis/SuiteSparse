@@ -17,10 +17,10 @@ cmake_minimum_required ( VERSION 3.19 )
 
 # date version must match ../CMakeLists.txt:
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Oct 25, 2022" )
+set ( GraphBLAS_DATE "Oct 21, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
-set ( GraphBLAS_VERSION_SUB   2 )
+set ( GraphBLAS_VERSION_SUB   1 )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
     ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
@@ -205,7 +205,7 @@ else ( )
 endif ( )
 
 add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
-set_target_properties ( graphblas_matlab PROPERTIES
+SET_TARGET_PROPERTIES ( graphblas_matlab PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11

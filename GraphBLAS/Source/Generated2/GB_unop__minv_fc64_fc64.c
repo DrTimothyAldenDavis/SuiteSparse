@@ -24,7 +24,7 @@
 // C type:   GxB_FC64_t
 // A type:   GxB_FC64_t
 // cast:     GxB_FC64_t cij = aij
-// unaryop:  cij = GB_FC64_div (GxB_CMPLX  (1,0), aij)
+// unaryop:  cij = GB_FC64_minv (aij)
 
 #define GB_ATYPE \
     GxB_FC64_t
@@ -33,14 +33,14 @@
     GxB_FC64_t
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA,A_iso) \
+#define GB_GETA(aij,Ax,pA) \
     GxB_FC64_t aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
 
 // unary operator
 #define GB_OP(z, x) \
-    z = GB_FC64_div (GxB_CMPLX  (1,0), x) ;
+    z = GB_FC64_minv (x) ;
 
 // casting
 #define GB_CAST(z, aij) \
@@ -50,10 +50,10 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    GxB_FC64_t aij = Ax [pA] ;   \
+    GxB_FC64_t aij = Ax [pA] ;          \
     /* Cx [pC] = op (cast (aij)) */ \
     GxB_FC64_t z = aij ;               \
-    Cx [pC] = GB_FC64_div (GxB_CMPLX  (1,0), z) ;        \
+    Cx [pC] = GB_FC64_minv (z) ;        \
 }
 
 // disable this operator and use the generic case if these conditions hold
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__minv_fc64_fc64)
 (
-    GxB_FC64_t *Cx,               // Cx and Ax may be aliased
-    const GxB_FC64_t *Ax,         // A is always non-iso for this kernel
-    const int8_t *restrict Ab,  // A->b if A is bitmap
+    GxB_FC64_t *Cx,       // Cx and Ax may be aliased
+    const GxB_FC64_t *Ax,
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )
@@ -85,7 +85,7 @@ GrB_Info GB (_unop_apply__minv_fc64_fc64)
         {
             GxB_FC64_t aij = Ax [p] ;
             GxB_FC64_t z = aij ;
-            Cx [p] = GB_FC64_div (GxB_CMPLX  (1,0), z) ;
+            Cx [p] = GB_FC64_minv (z) ;
         }
     }
     else
@@ -97,7 +97,7 @@ GrB_Info GB (_unop_apply__minv_fc64_fc64)
             if (!Ab [p]) continue ;
             GxB_FC64_t aij = Ax [p] ;
             GxB_FC64_t z = aij ;
-            Cx [p] = GB_FC64_div (GxB_CMPLX  (1,0), z) ;
+            Cx [p] = GB_FC64_minv (z) ;
         }
     }
     return (GrB_SUCCESS) ;

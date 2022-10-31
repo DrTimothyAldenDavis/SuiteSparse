@@ -5,9 +5,8 @@
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
-# Finds the SuiteSparse_GPURuntime include file and compiled library and sets:
+# Finds the SuiteSparse_GPURuntime compiled library and sets:
 
-# SUITESPARSE_GPURUNTIME_INCLUDE_DIR - where to find SuiteSparseGPU_Runtime.h
 # SUITESPARSE_GPURUNTIME_LIBRARY     - compiled SuiteSparse_GPURuntime library
 # SUITESPARSE_GPURUNTIME_LIBRARIES   - libraries when using SuiteSparse_GPURuntime
 # SUITESPARSE_GPURUNTIME_FOUND       - true if SuiteSparse_GPURuntime found
@@ -27,16 +26,6 @@
 #   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
 
 #-------------------------------------------------------------------------------
-
-# include files for SuiteSparse_GPURuntime
-find_path ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR
-    NAMES SuiteSparseGPU_Runtime.hpp
-    HINTS ${CMAKE_SOURCE_DIR}/..
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_GPURuntime
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime
-    PATHS SUITESPARSE_GPURUNTIME_ROOT ENV SUITESPARSE_GPURUNTIME_ROOT
-    PATH_SUFFIXES include Include
-)
 
 # compiled libraries SuiteSparse_GPURuntime
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
@@ -62,18 +51,16 @@ set (SUITESPARSE_GPURUNTIME_LIBRARIES ${SUITESPARSE_GPURUNTIME_LIBRARY})
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SuiteSparse_GPURuntime
-    REQUIRED_VARS SUITESPARSE_GPURUNTIME_LIBRARIES SUITESPARSE_GPURUNTIME_INCLUDE_DIR
+    REQUIRED_VARS SUITESPARSE_GPURUNTIME_LIBRARIES
     VERSION_VAR SUITESPARSE_GPURUNTIME_VERSION
 )
 
 mark_as_advanced (
-    SUITESPARSE_GPURUNTIME_INCLUDE_DIR
     SUITESPARSE_GPURUNTIME_LIBRARY
     SUITESPARSE_GPURUNTIME_LIBRARIES
 )
 
 if ( SUITESPARSE_GPURUNTIME_FOUND )
-    message ( STATUS "SuiteSparse_GPURuntime include dir: ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR} ")
     message ( STATUS "SuiteSparse_GPURuntime version:     ${SUITESPARSE_GPURUNTIME_VERSION} ")
     message ( STATUS "SuiteSparse_GPURuntime libraries:   ${SUITESPARSE_GPURUNTIME_LIBRARIES} ")
 else ( )

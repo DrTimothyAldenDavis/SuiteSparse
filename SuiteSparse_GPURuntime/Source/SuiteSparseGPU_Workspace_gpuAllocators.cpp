@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 #include <stdio.h>
 
@@ -96,4 +98,6 @@ void *Workspace::gpu_free(void *address)
 //     cudaError_t result = cudaMemset(gpuReference, value, totalSize);
 //     return (result == cudaSuccess) ;
 // }
+
+#endif
 

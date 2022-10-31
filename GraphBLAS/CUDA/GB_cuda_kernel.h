@@ -7,7 +7,7 @@
 //------------------------------------------------------------------------------
 
 // This file is #include'd into all CUDA kernels for GraphBLAS.  It provides
-// a subset of GraphBLAS.h and GB.h, plus other definitions.
+// a
 
 #pragma once
 #undef  ASSERT
@@ -18,10 +18,87 @@
 #define chunksize 128 
 
 //------------------------------------------------------------------------------
-// for user-defined operations
+// GETA, GETB: get entries from input matrices A and B
 //------------------------------------------------------------------------------
 
-#define GB_STATIC_INLINE static __device__ __inline__
+// The entries are typecasted to the type of the inputs to the operator f(x,y),
+// which is either the multiplicative operator of a semiring, or a binary
+// operator for eWise operations.  GETA and GETB can also be used for loading
+// values to be passed to the binary accumulator operator.
+
+#if GB_FLIPXY
+
+    // The operator is "flipped", so that f(b,a) is to be computed.
+    // In this case, aval must be typecasted to the ytype of f, which is
+    // T_Y, and bval to the xtype of f (that is, T_X).
+
+    // aval = (T_Y) A (i,j)
+    #if GB_A_IS_PATTERN
+        #define GB_DECLAREA(aval)
+        #define GB_SHAREDA(aval)
+        #define GB_GETA( aval, ax, p)
+    #else
+        #define GB_DECLAREA(aval) T_Y aval
+        #define GB_SHAREDA(aval) __shared__ T_Y aval
+        #if GB_A_ISO
+            #define GB_GETA( aval, ax, p) aval = (T_Y) (ax [0]) ;
+        #else
+            #define GB_GETA( aval, ax, p) aval = (T_Y) (ax [p]) ;
+        #endif
+    #endif
+
+    // bval = (T_X) B (i,j)
+    #if GB_B_IS_PATTERN
+        #define GB_DECLAREB(bval)
+        #define GB_SHAREDB(bval)
+        #define GB_GETB( bval, bx, p)
+    #else
+        #define GB_DECLAREB(bval) T_X bval
+        #define GB_SHAREDB(bval) __shared__ T_X bval
+        #if GB_B_ISO
+            #define GB_GETB( bval, bx, p) bval = (T_X) (bx [0]) ;
+        #else
+            #define GB_GETB( bval, bx, p) bval = (T_X) (bx [p]) ;
+        #endif
+    #endif
+
+#else
+
+    // The operator is not "flipped", so that f(a,b) is to be computed.
+    // In this case, aval must be typecasted to the xtype of f, which is
+    // T_X, and bval to the xtype of f (that is, T_Y).
+
+    // aval = (T_X) A (i,j)
+    #if GB_A_IS_PATTERN
+        #define GB_DECLAREA(aval)
+        #define GB_SHAREDA(aval)
+        #define GB_GETA( aval, ax, p)
+    #else
+        #define GB_DECLAREA(aval) T_X aval
+        #define GB_SHAREDA(aval) __shared__ T_X aval
+        #if GB_A_ISO
+            #define GB_GETA( aval, ax, p) aval = (T_X) (ax [0]) ;
+        #else
+            #define GB_GETA( aval, ax, p) aval = (T_X) (ax [p]) ;
+        #endif
+    #endif
+
+    // bval = (T_Y) B (i,j)
+    #if GB_B_IS_PATTERN
+        #define GB_DECLAREB(bval)
+        #define GB_SHAREDB(bval)
+        #define GB_GETB( bval, bx, p)
+    #else
+        #define GB_DECLAREB(bval) T_Y bval
+        #define GB_SHAREDB(bval) __shared__ T_Y bval
+        #if GB_B_ISO
+            #define GB_GETB( bval, bx, p) bval = (T_Y) (bx [0]) ;
+        #else
+            #define GB_GETB( bval, bx, p) bval = (T_Y) (bx [p]) ;
+        #endif
+    #endif
+
+#endif
 
 //------------------------------------------------------------------------------
 // operators
@@ -39,11 +116,12 @@
 
 #else
 
+    // the result the multiply must be typecast to ztype of the add.
     #define GB_MULTADD( c, a, b, i, k, j )                              \
     {                                                                   \
         T_Z x_op_y ;                                                    \
-        GB_MULT ( x_op_y, a, b, i, k, j ) ; /* x_op_y = a*b */          \
-        GB_ADD ( c, c, x_op_y ) ;           /* c += x_op_y  */          \
+        GB_MULT (x_op_y, a, b, i, k, j) ;   /* x_op_y = a*b */          \
+        GB_ADD (c, c, x_op_y) ;             /* c += x_op_y  */          \
     }
 
     #define GB_DOT_TERMINAL( c ) GB_IF_TERMINAL_BREAK ( c, z )
@@ -70,10 +148,10 @@
         // cij += A(k,i) * B(k,j), for merge operation (general case)
         #define GB_DOT_MERGE(pA,pB)                                         \
         {                                                                   \
-            GB_GETA ( aki, Ax, pA, ) ;      /* aki = A(k,i) */              \
-            GB_GETB ( bkj, Bx, pB, ) ;      /* bkj = B(k,j) */              \
+            GB_GETA (aki, Ax, pA) ;         /* aki = A(k,i) */              \
+            GB_GETB (bkj, Bx, pB) ;         /* bkj = B(k,j) */              \
             cij_exists = true ;                                             \
-            GB_MULTADD ( cij, aki, bkj, i, k, j ) ;  /* cij += aki * bkj */ \
+            GB_MULTADD (cij, aki, bkj, i, k, j) ;  /* cij += aki * bkj */   \
         }
         #define GB_CIJ_EXIST_POSTCHECK
 
@@ -239,7 +317,8 @@ GrB_Desc_Value ;
     }                                                                       \
 }
 
-GB_STATIC_INLINE int64_t GB_search_for_vector_device
+__device__
+static inline int64_t GB_search_for_vector_device
 (
     const int64_t p,                // search for vector k that contains p
     const int64_t *restrict Ap,  // vector pointers to search

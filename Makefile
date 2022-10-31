@@ -41,13 +41,11 @@ default:
 	( cd KLU && $(MAKE) )
 	( cd UMFPACK && $(MAKE) )
 	( cd RBio && $(MAKE) )
+	( cd SuiteSparse_GPURuntime && $(MAKE) )
+	( cd GPUQREngine && $(MAKE) )
 	( cd SPQR && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) )
 	( cd SLIP_LU && $(MAKE) )
-ifneq ($(CUDA_PATH),)
-	( cd SuiteSparse_GPURuntime && $(MAKE) )
-	( cd GPUQREngine && $(MAKE) )
-endif
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local:
@@ -60,21 +58,17 @@ local:
 	( cd CCOLAMD && $(MAKE) local && $(MAKE) install )
 	( cd COLAMD && $(MAKE) local && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) local && $(MAKE) install )
-	( cd CSparse && $(MAKE) )
+	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) local && $(MAKE) install )
-	( cd CSparse && $(MAKE) )           # CSparse is compiled but not installed
-	( cd CXSparse && $(MAKE) local && $(MAKE) install )  # CXSparse is installed instead
 	( cd LDL && $(MAKE) local && $(MAKE) install )
 	( cd KLU && $(MAKE) local && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
 	( cd RBio && $(MAKE) local && $(MAKE) install )
+	( cd SuiteSparse_GPURuntime && $(MAKE) local && $(MAKE) install )
+	( cd GPUQREngine && $(MAKE) local && $(MAKE) install )
 	( cd SPQR && $(MAKE) local && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) )
-ifneq ($(CUDA_PATH),)
-	( cd SuiteSparse_GPURuntime && $(MAKE) )
-	( cd GPUQREngine && $(MAKE) )
-endif
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install: gbinstall moninstall
@@ -87,19 +81,17 @@ install: gbinstall moninstall
 	( cd CCOLAMD && $(MAKE) install )
 	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
-	( cd CSparse && $(MAKE) )           # CSparse is compiled but not installed
-	( cd CXSparse && $(MAKE) install )  # CXSparse is installed instead
+	( cd CSparse && $(MAKE) ) # CSparse is compiled but not installed
+	( cd CXSparse && $(MAKE) install ) # CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
+	( cd SuiteSparse_GPURuntime && $(MAKE) install )
+	( cd GPUQREngine && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) install )
-ifneq (,$(CUDA_PATH))
-	( cd SuiteSparse_GPURuntime && $(MAKE) install )
-	( cd GPUQREngine && $(MAKE) install )
-endif
 
 # uninstall all packages
 uninstall:
@@ -141,13 +133,11 @@ library:
 	( cd CSparse && $(MAKE) library )
 	( cd CXSparse && $(MAKE) library )
 	( cd RBio && $(MAKE) library )
+	( cd SuiteSparse_GPURuntime && $(MAKE) library )
+	( cd GPUQREngine && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
 	( cd GraphBLAS && $(MAKE) library )
 	( cd SLIP_LU && $(MAKE) library )
-ifneq (,$(CUDA_PATH))
-	( cd SuiteSparse_GPURuntime && $(MAKE) library )
-	( cd GPUQREngine && $(MAKE) library )
-endif
 
 # Remove all files not in the original distribution
 purge:

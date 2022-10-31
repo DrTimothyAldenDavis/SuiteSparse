@@ -33,8 +33,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
     )
 
-# FIXME: CUDA doesn't work yet with this cmake script
-set ( ENABLE_CUDA false )
+if ( NOT DEFINED ENABLE_CUDA )
+    # default is to use CUDA, if available
+    set ( ENABLE_CUDA true )
+endif ( )
 
 include ( SuiteSparsePolicy )
 
@@ -42,9 +44,17 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( spqr
-    VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-    LANGUAGES C CXX )
+if ( SUITESPARSE_CUDA )
+    # SPQR with CUDA
+    project ( spqr
+        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
+        LANGUAGES C CXX CUDA )
+else ( )
+    # SPQR without CUDA
+    project ( spqr
+        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
+        LANGUAGES C CXX )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -58,7 +68,24 @@ find_package ( AMD 3.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( CHOLMOD 4.0.0 REQUIRED )
 
+if ( SUITESPARSE_CUDA )
+    find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
+    find_package ( GPUQREngine 2.0.0 REQUIRED )
+endif ( )
+
 include ( SuiteSparseBLAS )     # requires cmake 3.22
+
+if ( SUITESPARSE_CUDA )
+    # with CUDA
+    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
+    add_subdirectory ( SPQRGPU )
+    set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
+    include_directories ( SPQRGPU ${CUDAToolkit_INCLUDE_DIRS} )
+    link_directories ( "SPQRGPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
+else ( )
+    # without CUDA and RMM
+    set ( SPQR_CUDA )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -76,6 +103,12 @@ configure_file ( "Config/spqr_version.tex.in"
 include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include )
+
+if ( SUITESPARSE_CUDA )
+    include_directories ( 
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/Include
+    ${CMAKE_SOURCE_DIR}/../GPUQREngine/Include )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # dynamic spqr library properties
@@ -148,6 +181,21 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )
 target_link_libraries ( spqr_static PUBLIC ${CHOLMOD_LIBRARIES} )
 
+# CUDA
+if ( SUITESPARSE_CUDA )
+    message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
+    target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+
+#   # GPUQREngine
+#   target_link_libraries ( spqr PUBLIC ${GPUQRENGINE_LIBRARIES} )
+#   target_link_libraries ( spqr_static PUBLIC ${GPUQRENGINE_LIBRARIES} )
+
+#   # SuiteSparse_GPURuntime
+#   target_link_libraries ( spqr PUBLIC ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
+#   target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # SPQR installation location
 #---------------------------------------------------------------Z--------------
@@ -203,11 +251,23 @@ if ( DEMO )
     add_executable ( qrdemo    "Demo/qrdemo.cpp" )
     add_executable ( qrdemoc   "Demo/qrdemoc.c" )
 
+    if ( SUITESPARSE_CUDA )
+        add_executable ( qrdemo_gpu  "Demo/qrdemo_gpu.cpp" )
+        add_executable ( qrdemo_gpu2 "Demo/qrdemo_gpu2.cpp" )
+        add_executable ( qrdemo_gpu3 "Demo/qrdemo_gpu3.cpp" )
+    endif ( )
+
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr )
-    target_link_libraries ( qrsimplec PUBLIC spqr )
-    target_link_libraries ( qrdemo    PUBLIC spqr )
-    target_link_libraries ( qrdemoc   PUBLIC spqr )
+    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} )
+
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA} )
+        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA} )
+        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA} )
+    endif ( )
 
 else ( )
 

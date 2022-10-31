@@ -33,7 +33,7 @@
     GxB_FC32_t
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA,A_iso) \
+#define GB_GETA(aij,Ax,pA) \
     GxB_FC32_t aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
@@ -50,7 +50,7 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    GxB_FC32_t aij = Ax [pA] ;   \
+    GxB_FC32_t aij = Ax [pA] ;          \
     /* Cx [pC] = op (cast (aij)) */ \
     GxB_FC32_t z = aij ;               \
     Cx [pC] = GB_clog10f (z) ;        \
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__log10_fc32_fc32)
 (
-    GxB_FC32_t *Cx,               // Cx and Ax may be aliased
-    const GxB_FC32_t *Ax,         // A is always non-iso for this kernel
-    const int8_t *restrict Ab,  // A->b if A is bitmap
+    GxB_FC32_t *Cx,       // Cx and Ax may be aliased
+    const GxB_FC32_t *Ax,
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )

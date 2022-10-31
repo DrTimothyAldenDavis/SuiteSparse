@@ -49,13 +49,14 @@ else
     fprintf (f, 'define(`GB_geta'', `%s $1 = $2 [$3]'')\n', xtype) ;
 end
 
-% type-specific iminv
-if (~isempty (strfind (op, 'iminv')))
+% type-specific IMINV
+if (~isempty (strfind (op, 'IMINV')))
     if (zunsigned)
-        op = strrep (op, 'iminv (', sprintf ('idiv_uint%d (1, ', zbits)) ;
+        op = strrep (op, 'IMINV', 'IMINV_UNSIGNED') ;
     else
-        op = strrep (op, 'iminv (', sprintf ('idiv_int%d (1, ', zbits)) ;
+        op = strrep (op, 'IMINV', 'IMINV_SIGNED') ;
     end
+    op = strrep (op, ')', sprintf (', %d)', zbits)) ;
 end
 
 % create the unary operator

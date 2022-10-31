@@ -11,20 +11,24 @@
 #ifndef SUITESPARSEGPU_RUNTIME_HPP
 #define SUITESPARSEGPU_RUNTIME_HPP
 
-#include "cuda_runtime.h"
-#include "SuiteSparse_config.h"
+#ifdef SUITESPARSE_CUDA
 
-#include <stdlib.h>
+    #include "cuda_runtime.h"
+    #include "SuiteSparse_config.h"
 
-#include "SuiteSparseGPU_macros.hpp"
+    #include <stdlib.h>
 
-#if DEBUG_ATLEAST_ERRORONLY
-#include <stdio.h>
+    #include "SuiteSparseGPU_macros.hpp"
+
+    #if DEBUG_ATLEAST_ERRORONLY
+    #include <stdio.h>
+    #endif
+
+    class Workspace;
+
+    #include "SuiteSparseGPU_Workspace.hpp"
+
 #endif
-
-class Workspace;
-
-#include "SuiteSparseGPU_Workspace.hpp"
 
 // Version information:
 #define SUITESPARSE_GPURUNTIME_DATE "@SUITESPARSE_GPURUNTIME_DATE@"

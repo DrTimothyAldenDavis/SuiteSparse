@@ -81,7 +81,7 @@ if ( SUITESPARSE_CUDA )
     add_subdirectory ( GPU )
     set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
-    link_directories ( "CUDA" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
+    link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 else ( )
     # without CUDA and RMM
     set ( CHOLMOD_CUDA )

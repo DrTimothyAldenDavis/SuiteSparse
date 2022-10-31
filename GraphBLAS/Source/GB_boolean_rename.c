@@ -22,16 +22,7 @@
 
 // Those 6 names are in GraphBLAS but the pairs of names are equivalent.
 
-// GraphBLAS includes a built-in GrB_DIV_BOOL operator, so boolean division
-// must be defined.  ANSI C11 does not provide a definition either, and
-// dividing by zero (boolean false) will typically terminate an application.
-// In this GraphBLAS implementation, boolean division is treated as if it were
-// int1, where 1/1 = 1, 0/1 = 0, 0/0 = integer NaN = 0, 1/0 = +infinity = 1.
-// (see Source/GB_math.h for a discussion on integer division).  Thus z=x/y is
-// z=x.  This is arbitrary, but it allows all operators to work on all types
-// without causing run time exceptions.  It also means that GrB_DIV(x,y) is the
-// same as GrB_FIRST(x,y) for boolean x and y.  Similarly, GrB_MINV_BOOL, which
-// is 1/x, is simply 'true' for all x.
+// See discussion on Source/GB.h on boolean and integer division
 
 #include "GB.h"
 #include "GB_binop.h"

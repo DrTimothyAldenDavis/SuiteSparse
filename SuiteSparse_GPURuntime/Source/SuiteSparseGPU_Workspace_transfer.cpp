@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 
 // -----------------------------------------------------------------------------
@@ -64,3 +66,6 @@ bool Workspace::transfer(cudaMemcpyKind direction, bool synchronous,
 
     return true;            // success
 }
+
+#endif
+

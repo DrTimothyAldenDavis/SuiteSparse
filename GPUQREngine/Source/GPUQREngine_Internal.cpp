@@ -14,6 +14,8 @@
 //
 // =============================================================================
 
+#ifdef SUITESPARSE_CUDA
+
 #include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_Stats.hpp"
@@ -92,3 +94,6 @@ QREngineResultCode GPUQREngine_Internal
 
     return QRENGINE_SUCCESS;
 }
+
+#endif
+

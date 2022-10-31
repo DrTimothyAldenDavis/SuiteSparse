@@ -13,6 +13,8 @@
 //
 // =============================================================================
 
+#ifdef SUITESPARSE_CUDA
+
 #include "GPUQREngine_Internal.hpp"
 
 
@@ -34,3 +36,6 @@ QREngineResultCode GPUQREngine
     return (GPUQREngine_Internal (gpuMemorySize, userFronts, numFronts, Parent,
         Childp, Child, stats)) ;
 }
+
+#endif
+

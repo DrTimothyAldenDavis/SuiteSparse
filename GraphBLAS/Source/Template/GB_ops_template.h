@@ -75,33 +75,17 @@ inline void GB_FUNC (MINV) (GB_TYPE *z, const GB_TYPE *x)
     #if defined ( GB_BOOLEAN )
         (*z) = true ;
     #elif defined ( GB_SIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_int8 (1, (*x)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_int16 (1, (*x)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_int32 (1, (*x)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_int64 (1, (*x)) ;
-        #endif
+        (*z) = GB_IMINV_SIGNED ((*x), GB_BITS) ;
     #elif defined ( GB_UNSIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_uint8 (1, (*x)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_uint16 (1, (*x)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_uint32 (1, (*x)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_uint64 (1, (*x)) ;
-        #endif
+        (*z) = GB_IMINV_UNSIGNED ((*x), GB_BITS) ;
     #elif defined ( GB_FLOAT )
         (*z) = 1 / (*x) ;
     #elif defined ( GB_DOUBLE )
         (*z) = 1 / (*x) ;
     #elif defined ( GB_FLOAT_COMPLEX )
-        (*z) = GB_FC32_div (GxB_CMPLXF (1,0), *x) ;
+        (*z) = GB_FC32_minv (*x) ;
     #elif defined ( GB_DOUBLE_COMPLEX )
-        (*z) = GB_FC64_div (GxB_CMPLX  (1,0), *x) ;
+        (*z) = GB_FC64_minv (*x) ;
     #endif
 }
 
@@ -543,25 +527,9 @@ inline void GB_FUNC (DIV) (GB_Z_X_Y_ARGS)
         // boolean div (== first)
         (*z) = (*x) ;
     #elif defined ( GB_SIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_int8 ((*x), (*y)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_int16 ((*x), (*y)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_int32 ((*x), (*y)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_int64 ((*x), (*y)) ;
-        #endif
+        (*z) = GB_IDIV_SIGNED ((*x), (*y), GB_BITS) ;
     #elif defined ( GB_UNSIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_uint8 ((*x), (*y)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_uint16 ((*x), (*y)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_uint32 ((*x), (*y)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_uint64 ((*x), (*y)) ;
-        #endif
+        (*z) = GB_IDIV_UNSIGNED ((*x), (*y), GB_BITS) ;
     #elif defined ( GB_FLOAT ) || defined ( GB_DOUBLE )
         (*z) = (*x) / (*y) ;
     #elif defined ( GB_FLOAT_COMPLEX )
@@ -578,25 +546,9 @@ inline void GB_FUNC (RDIV) (GB_Z_X_Y_ARGS)
         // boolean rdiv (== second)
         (*z) = (*y) ;
     #elif defined ( GB_SIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_int8 ((*y), (*x)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_int16 ((*y), (*x)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_int32 ((*y), (*x)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_int64 ((*y), (*x)) ;
-        #endif
+        (*z) = GB_IDIV_SIGNED ((*y), (*x), GB_BITS) ;
     #elif defined ( GB_UNSIGNED_INT )
-        #if ( GB_BITS == 8)
-            (*z) = GB_idiv_uint8 ((*y), (*x)) ;
-        #elif ( GB_BITS == 16)
-            (*z) = GB_idiv_uint16 ((*y), (*x)) ;
-        #elif ( GB_BITS == 32)
-            (*z) = GB_idiv_uint32 ((*y), (*x)) ;
-        #elif ( GB_BITS == 64)
-            (*z) = GB_idiv_uint64 ((*y), (*x)) ;
-        #endif
+        (*z) = GB_IDIV_UNSIGNED ((*y), (*x), GB_BITS) ;
     #elif defined ( GB_FLOAT ) || defined ( GB_DOUBLE )
         (*z) = (*y) / (*x) ;
     #elif defined ( GB_FLOAT_COMPLEX )
@@ -701,29 +653,30 @@ inline void GB_FUNC (POW) (GB_Z_X_Y_ARGS)
         // is given by y.  y = 1 is the least significant bit, and y = GB_BITS
         // (64 for uint64) is the most significant bit. If y is outside this
         // range, the result is zero.
+        GB_TYPE k = (*y) ;
 
         #if defined ( GB_SIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitget_int8 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, int8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitget_int16 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, int16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitget_int32 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, int32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitget_int64 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, int64_t, 64) ;
             #endif
 
         #elif defined ( GB_UNSIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitget_uint8 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, uint8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitget_uint16 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, uint16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitget_uint32 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, uint32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitget_uint64 ((*x), (*y)) ;
+                (*z) = GB_BITGET ((*x), k, uint64_t, 64) ;
             #endif
 
         #endif
@@ -736,29 +689,30 @@ inline void GB_FUNC (POW) (GB_Z_X_Y_ARGS)
         // position is given by y.  If y is in the range 1 to GB_BITS, then y
         // gives the position of the bit to set.  If y is outside the range 1
         // to GB_BITS, then z = x is returned, unmodified.
+        GB_TYPE k = (*y) ;
 
         #if defined ( GB_SIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitset_int8  ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, int8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitset_int16 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, int16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitset_int32 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, int32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitset_int64 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, int64_t, 64) ;
             #endif
 
         #elif defined ( GB_UNSIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitset_uint8  ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, uint8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitset_uint16 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, uint16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitset_uint32 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, uint32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitset_uint64 ((*x), (*y)) ;
+                (*z) = GB_BITSET ((*x), k, uint64_t, 64) ;
             #endif
 
         #endif
@@ -771,29 +725,30 @@ inline void GB_FUNC (POW) (GB_Z_X_Y_ARGS)
         // position is given by y.  If y is in the range 1 to GB_BITS, then y
         // gives the position of the bit to clear.  If y is outside the range 1
         // to GB_BITS, then z = x is returned, unmodified.
+        GB_TYPE k = (*y) ;
 
         #if defined ( GB_SIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitclr_int8  ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, int8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitclr_int16 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, int16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitclr_int32 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, int32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitclr_int64 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, int64_t, 64) ;
             #endif
 
         #elif defined ( GB_UNSIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitclr_uint8  ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, uint8_t,   8) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitclr_uint16 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, uint16_t, 16) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitclr_uint32 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, uint32_t, 32) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitclr_uint64 ((*x), (*y)) ;
+                (*z) = GB_BITCLR ((*x), k, uint64_t, 64) ;
             #endif
 
         #endif
@@ -806,29 +761,30 @@ inline void GB_FUNC (POW) (GB_Z_X_Y_ARGS)
     {
         // bitshift (x,k) shifts x to the left by k bits if k > 0, and the
         // right by -k bits if k < 0.
+        int8_t k = (int8_t) (*y) ;
 
         #if defined ( GB_SIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitshift_int8 ((*x), (*y)) ;
+                (*z) = GB_bitshift_int8 ((*x), k) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitshift_int16 ((*x), (*y)) ;
+                (*z) = GB_bitshift_int16 ((*x), k) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitshift_int32 ((*x), (*y)) ;
+                (*z) = GB_bitshift_int32 ((*x), k) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitshift_int64 ((*x), (*y)) ;
+                (*z) = GB_bitshift_int64 ((*x), k) ;
             #endif
 
         #elif defined ( GB_UNSIGNED_INT )
 
             #if ( GB_BITS == 8)
-                (*z) = GB_bitshift_uint8 ((*x), (*y)) ;
+                (*z) = GB_bitshift_uint8 ((*x), k) ;
             #elif ( GB_BITS == 16)
-                (*z) = GB_bitshift_uint16 ((*x), (*y)) ;
+                (*z) = GB_bitshift_uint16 ((*x), k) ;
             #elif ( GB_BITS == 32)
-                (*z) = GB_bitshift_uint32 ((*x), (*y)) ;
+                (*z) = GB_bitshift_uint32 ((*x), k) ;
             #elif ( GB_BITS == 64)
-                (*z) = GB_bitshift_uint64 ((*x), (*y)) ;
+                (*z) = GB_bitshift_uint64 ((*x), k) ;
             #endif
 
         #endif

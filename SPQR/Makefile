@@ -36,6 +36,14 @@ default: library
 library:
 	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
+# enable CUDA (this is the default, if CUDA is available)
+cuda:
+	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && $(MAKE) --jobs=$(JOBS) )
+
+# disable CUDA
+nocuda:
+	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=0 .. && $(MAKE) --jobs=$(JOBS) )
+
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )

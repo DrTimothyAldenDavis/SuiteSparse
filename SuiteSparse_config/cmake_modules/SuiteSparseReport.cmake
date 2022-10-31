@@ -11,7 +11,7 @@
 
 message ( STATUS
 "----------------------------------------------------------------------------" )
-message ( STATUS "SuiteSparse CMAKE report:" )
+message ( STATUS "SuiteSparse CMAKE report for: ${CMAKE_PROJECT_NAME}" )
 message ( STATUS
 "----------------------------------------------------------------------------" )
 message ( STATUS "build type:          ${CMAKE_BUILD_TYPE}" )

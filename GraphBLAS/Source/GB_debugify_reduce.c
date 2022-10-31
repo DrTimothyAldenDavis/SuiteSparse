@@ -37,9 +37,6 @@ void GB_debugify_reduce     // enumerate and macrofy a GrB_reduce problem
     sprintf (filename, "/tmp/GB_reduce_%s.h", reduce_name) ;
     FILE *fp = fopen (filename, "w") ;
 
-    // FIXME: pass this to GB_macrofy_reduce
-    fprintf (fp, "// GB_reduce_%s.h\n", reduce_name) ;
-
     GB_macrofy_reduce (fp, rcode, monoid, A->type) ;
     fclose (fp) ;
 } 

@@ -38,7 +38,6 @@ JOBS ?= 8
 default: library
 
 library:
-	echo "CMake options: " $(CMAKE_OPTIONS)
 	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
 # enable CUDA (this is the default, if CUDA is available)

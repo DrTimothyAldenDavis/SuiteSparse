@@ -9,29 +9,17 @@
 # report status and compile flags
 #-------------------------------------------------------------------------------
 
-message ( STATUS
-"----------------------------------------------------------------------------" )
-message ( STATUS "SuiteSparse CMAKE report:" )
-message ( STATUS
-"----------------------------------------------------------------------------" )
-message ( STATUS "build type:          ${CMAKE_BUILD_TYPE}" )
-message ( STATUS "have OpenMP:         ${OPENMP_FOUND} ")
-message ( STATUS "C compiler:          ${CMAKE_C_COMPILER_ID} ")
-message ( STATUS "C flags:             ${CMAKE_C_FLAGS}" )
-message ( STATUS "C++ compiler:        ${CMAKE_CXX_COMPILER_ID}" )
-message ( STATUS "C++ flags:           ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "CMAKE C flags:     ${CMAKE_C_FLAGS}" )
+message ( STATUS "CMAKE C++ flags:   ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "CMAKE build type:  ${CMAKE_BUILD_TYPE}" )
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
-    message ( STATUS "C Flags debug:       ${CMAKE_C_FLAGS_DEBUG} ")
-    message ( STATUS "C++ Flags debug:     ${CMAKE_CXX_FLAGS_DEBUG} ")
+    message ( STATUS "CMAKE C Flags debug:     ${CMAKE_C_FLAGS_DEBUG} ")
+    message ( STATUS "CMAKE C++ Flags debug:   ${CMAKE_CXX_FLAGS_DEBUG} ")
 else ( )
-    message ( STATUS "C Flags release:     ${CMAKE_C_FLAGS_RELEASE} ")
-    message ( STATUS "C++ Flags release:   ${CMAKE_CXX_FLAGS_RELEASE} ")
+    message ( STATUS "CMAKE C Flags release:   ${CMAKE_C_FLAGS_RELEASE} ")
+    message ( STATUS "CMAKE C++ Flags release: ${CMAKE_CXX_FLAGS_RELEASE} ")
 endif ( )
-get_property ( CDEFN DIRECTORY PROPERTY COMPILE_DEFINITIONS )
-message ( STATUS "compile definitions: ${CDEFN}")
-if ( DEFINED SuiteSparse_BLAS_integer )
-    message ( STATUS "BLAS integer:        ${SuiteSparse_BLAS_integer}" )
-endif ( )
-message ( STATUS
-"----------------------------------------------------------------------------" )
+message ( STATUS "CMAKE C compiler:        ${CMAKE_C_COMPILER_ID} ")
+message ( STATUS "CMAKE C++ compiler:      ${CMAKE_CXX_COMPILER_ID}" )
+message ( STATUS "CMAKE have OpenMP:       ${OPENMP_FOUND} ")
 

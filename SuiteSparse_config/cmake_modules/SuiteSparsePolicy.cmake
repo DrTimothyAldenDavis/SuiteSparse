@@ -126,6 +126,7 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CUDA: enabled" )
+    add_compile_definitions ( SUITESPARSE_CUDA )
 else ( )
     message ( STATUS "CUDA: not enabled" )
 endif ( )

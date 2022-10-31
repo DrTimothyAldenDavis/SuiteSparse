@@ -49,12 +49,12 @@ codegen_unop_template ('abs', ...
 
 codegen_unop_template ('minv', ...
     'true',                     ... % bool
-    'GB_iminv (xarg)',          ... % int
-    'GB_iminv (xarg)',          ... % uint
+    'GB_IMINV (xarg)',          ... % int
+    'GB_IMINV (xarg)',          ... % uint
     '(1.0F)/xarg',              ... % float
     '1./xarg',                  ... % double
-    'GB_FC32_div (GxB_CMPLXF (1,0), xarg)', ... % GxB_FC32_t
-    'GB_FC64_div (GxB_CMPLX  (1,0), xarg)') ;   % GxB_FC64_t
+    'GB_FC32_minv (xarg)',      ... % GxB_FC32_t
+    'GB_FC64_minv (xarg)') ;    ... % GxB_FC64_t
 
 codegen_unop_template ('lnot',  ...
     '!xarg',                    ... % bool

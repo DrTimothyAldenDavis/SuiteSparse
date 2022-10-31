@@ -117,87 +117,80 @@
 #endif
 
 //------------------------------------------------------------------------------
-// definitions for complex types
+// definitions for complex types, and restrict keyword
 //------------------------------------------------------------------------------
+
+#undef GB_restrict
 
 // See:
 // https://www.drdobbs.com/complex-arithmetic-in-the-intersection-o/184401628#
 
-#ifndef GB_COMPLEX_H
-#define GB_COMPLEX_H
-
-    #if defined ( __cplusplus )
-
-        extern "C++"
-        {
-            // C++ complex types
-            #include <cmath>
-            #include <complex>
-            #undef I
-            typedef std::complex<float>  GxB_FC32_t ;
-            typedef std::complex<double> GxB_FC64_t ;
-        }
-
-        #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
-        #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
-
-    #elif ( _MSC_VER && !(__INTEL_COMPILER || __INTEL_CLANG_COMPILER) )
-
-        // Microsoft Windows complex types
-        #include <complex.h>
-        #undef I
-        typedef _Fcomplex GxB_FC32_t ;
-        typedef _Dcomplex GxB_FC64_t ;
-        #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
-        #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
-
-    #else
-
-        // ANSI C11 complex types
-        #include <complex.h>
-        #undef I
-        typedef float  complex GxB_FC32_t ;
-        typedef double complex GxB_FC64_t ;
-
-        #ifndef CMPLX
-            // gcc 6.2 on the the Mac doesn't #define CMPLX
-            #define GxB_CMPLX(r,i) \
-            ((GxB_FC64_t)((double)(r)) + (GxB_FC64_t)((double)(i) * _Complex_I))
-        #else
-            // use the ANSI C11 CMPLX macro
-            #define GxB_CMPLX(r,i) CMPLX (r,i)
-        #endif
-
-        #ifndef CMPLXF
-            // gcc 6.2 on the the Mac doesn't #define CMPLXF
-            #define GxB_CMPLXF(r,i) \
-            ((GxB_FC32_t)((float)(r)) + (GxB_FC32_t)((float)(i) * _Complex_I))
-        #else
-            // use the ANSI C11 CMPLXF macro
-            #define GxB_CMPLXF(r,i) CMPLXF (r,i)
-        #endif
-
-    #endif
-#endif
-
-//------------------------------------------------------------------------------
-// restrict keyword
-//------------------------------------------------------------------------------
-
-#undef GB_restrict
 #if defined ( __cplusplus )
+
+    extern "C++"
+    {
+        // C++ complex types
+        #include <cmath>
+        #include <complex>
+        #undef I
+        typedef std::complex<float>  GxB_FC32_t ;
+        typedef std::complex<double> GxB_FC64_t ;
+    }
+
+    #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
+    #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
     #define GB_restrict
+
 #elif ( _MSC_VER && !(__INTEL_COMPILER || __INTEL_CLANG_COMPILER) )
+
+    // Microsoft Windows complex types
+    #include <complex.h>
+    #undef I
+    typedef _Fcomplex GxB_FC32_t ;
+    typedef _Dcomplex GxB_FC64_t ;
+
+    #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
+    #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
     #define GB_restrict __restrict
-#elif defined ( __NVCC__ )
-    // NVIDIA nvcc
-    #define GB_restrict __restrict__
-#elif GxB_STDC_VERSION >= 199901L
-    // ANSI C99 or later
-    #define GB_restrict restrict
+
 #else
-    // ANSI C95 and earlier: no restrict keyword
-    #define GB_restrict
+
+    // ANSI C11 complex types
+    #include <complex.h>
+    #undef I
+    typedef float  complex GxB_FC32_t ;
+    typedef double complex GxB_FC64_t ;
+
+    #ifndef CMPLX
+        // gcc 6.2 on the the Mac doesn't #define CMPLX
+        #define GxB_CMPLX(r,i) \
+        ((GxB_FC64_t)((double)(r)) + (GxB_FC64_t)((double)(i) * _Complex_I))
+    #else
+        // use the ANSI C11 CMPLX macro
+        #define GxB_CMPLX(r,i) CMPLX (r,i)
+    #endif
+
+    #ifndef CMPLXF
+        // gcc 6.2 on the the Mac doesn't #define CMPLXF
+        #define GxB_CMPLXF(r,i) \
+        ((GxB_FC32_t)((float)(r)) + (GxB_FC32_t)((float)(i) * _Complex_I))
+    #else
+        // use the ANSI C11 CMPLXF macro
+        #define GxB_CMPLXF(r,i) CMPLXF (r,i)
+    #endif
+
+    // restrict keyword
+    #if defined ( __NVCC__ )
+        // NVIDIA nvcc
+        #define GB_restrict __restrict__
+    #elif GxB_STDC_VERSION >= 199901L
+        // ANSI C99 or later
+        #define GB_restrict restrict
+    #else
+        // ANSI C95 and earlier: no restrict keyword
+        #define GB_restrict
+    #endif
+
 #endif
 
 //==============================================================================

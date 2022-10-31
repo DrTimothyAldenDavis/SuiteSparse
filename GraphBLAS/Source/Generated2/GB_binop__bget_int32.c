@@ -45,7 +45,7 @@
 // B type:     int32_t
 // B pattern?  0
 
-// BinaryOp:   cij = GB_bitget_int32 (aij, bij)
+// BinaryOp:   cij = GB_BITGET (aij, bij, int32_t, 32)
 
 #define GB_ATYPE \
     int32_t
@@ -100,7 +100,7 @@
 
 // binary operator
 #define GB_BINOP(z,x,y,i,j) \
-    z = GB_bitget_int32 (x, y) ;
+    z = GB_BITGET (x, y, int32_t, 32) ;
 
 // true if the binop must be flipped
 #define GB_BINOP_FLIP \
@@ -472,7 +472,7 @@ GrB_Info GB (_bind1st__bget_int32)
     {
         if (!GBB (Bb, p)) continue ;
         int32_t bij = GBX (Bx, p, false) ;
-        Cx [p] = GB_bitget_int32 (x, bij) ;
+        Cx [p] = GB_BITGET (x, bij, int32_t, 32) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -508,7 +508,7 @@ GrB_Info GB (_bind2nd__bget_int32)
     {
         if (!GBB (Ab, p)) continue ;
         int32_t aij = GBX (Ax, p, false) ;
-        Cx [p] = GB_bitget_int32 (aij, y) ;
+        Cx [p] = GB_BITGET (aij, y, int32_t, 32) ;
     }
     return (GrB_SUCCESS) ;
     #endif
@@ -527,7 +527,7 @@ GrB_Info GB (_bind2nd__bget_int32)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     int32_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_bitget_int32 (x, aij) ;        \
+    Cx [pC] = GB_BITGET (x, aij, int32_t, 32) ;        \
 }
 
 GrB_Info GB (_bind1st_tran__bget_int32)
@@ -571,7 +571,7 @@ GrB_Info GB (_bind1st_tran__bget_int32)
 #define GB_CAST_OP(pC,pA)                       \
 {                                               \
     int32_t aij = GBX (Ax, pA, false) ;               \
-    Cx [pC] = GB_bitget_int32 (aij, y) ;        \
+    Cx [pC] = GB_BITGET (aij, y, int32_t, 32) ;        \
 }
 
 GrB_Info GB (_bind2nd_tran__bget_int32)

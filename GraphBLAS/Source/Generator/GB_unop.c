@@ -33,8 +33,8 @@
     GB_ctype
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA,A_iso) \
-    GB_geta(aij,Ax,pA,false)
+#define GB_GETA(aij,Ax,pA) \
+    GB_geta(aij,Ax,pA)
 
 #define GB_CX(p) Cx [p]
 
@@ -50,7 +50,7 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    GB_geta(aij, Ax, pA, false) ;   \
+    GB_geta(aij, Ax, pA) ;          \
     /* Cx [pC] = op (cast (aij)) */ \
     GB_cast(z, aij) ;               \
     GB_unaryop(Cx [pC], z) ;        \
@@ -67,9 +67,9 @@
 if_unop_apply_enabled
 GrB_Info GB (_unop_apply)
 (
-    GB_ctype *Cx,               // Cx and Ax may be aliased
-    const GB_atype *Ax,         // A is always non-iso for this kernel
-    const int8_t *restrict Ab,  // A->b if A is bitmap
+    GB_ctype *Cx,       // Cx and Ax may be aliased
+    const GB_atype *Ax,
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )
@@ -83,7 +83,7 @@ GrB_Info GB (_unop_apply)
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (p = 0 ; p < anz ; p++)
         {
-            GB_geta(aij, Ax, p, false) ;
+            GB_geta(aij, Ax, p) ;
             GB_cast(z, aij) ;
             GB_unaryop(Cx [p], z) ;
         }
@@ -95,7 +95,7 @@ GrB_Info GB (_unop_apply)
         for (p = 0 ; p < anz ; p++)
         {
             if (!Ab [p]) continue ;
-            GB_geta(aij, Ax, p, false) ;
+            GB_geta(aij, Ax, p) ;
             GB_cast(z, aij) ;
             GB_unaryop(Cx [p], z) ;
         }

@@ -19,6 +19,9 @@
 //                               the staircase as an Int* list
 // =============================================================================
 
+
+#ifdef SUITESPARSE_CUDA
+
 #include "GPUQREngine_Internal.hpp"
 
 
@@ -221,3 +224,6 @@ Int *GPUQREngine_FindStaircase
 
     return Stair;
 }
+
+#endif
+

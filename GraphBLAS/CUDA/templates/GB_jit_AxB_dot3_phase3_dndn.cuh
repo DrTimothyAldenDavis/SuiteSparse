@@ -185,8 +185,8 @@ __global__ void AxB_dot3_phase3_dndn
                 for ( k = threadIdx.x ; k < nnzA ; k += s)
                 { 
                     // cij += A(k,i) * B(k,j)
-                    GB_GETA (aki, Ax, pA+k, ) ;           // aki = A(k,i)
-                    GB_GETB (bkj, Bx, pB+k, ) ;           // bkj = B(k,j)
+                    GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+                    GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
                     GB_MULTADD ( cij, aki, bkj, i, k, j ) ; // cij += aki * bkj
                 }
             }
@@ -194,8 +194,8 @@ __global__ void AxB_dot3_phase3_dndn
             {
                 for ( int64_t k = threadIdx.x ; k < nnzA ; k += s)
                 { 
-                    GB_GETA (aki, Ax, pA+k, ) ;           // aki = A(k,i)
-                    GB_GETB (bkj, Bx, pB+k, ) ;           // bkj = B(k,j)
+                    GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+                    GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
                     int8_t b = (Ab [pA+k] && Bb [pB+k]) ;
                     cij_exists |= b ;
                     if (b)
@@ -210,8 +210,8 @@ __global__ void AxB_dot3_phase3_dndn
                 { 
                     if (Bb [pB+k])
                     {
-                        GB_GETA (aki, Ax, pA+k, ) ;           // aki = A(k,i)
-                        GB_GETB (bkj, Bx, pB+k, ) ;           // bkj = B(k,j)
+                        GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+                        GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
                         GB_MULTADD ( cij, aki, bkj, i, k, j ) ;        // cij += aki * bkj
                         cij_exists = true ;
                     }
@@ -223,8 +223,8 @@ __global__ void AxB_dot3_phase3_dndn
                 { 
                     if (Ab [pB+k])
                     {
-                        GB_GETA (aki, Ax, pA+k, ) ;           // aki = A(k,i)
-                        GB_GETB (bkj, Bx, pB+k, ) ;           // bkj = B(k,j)
+                        GB_GETA (aki, Ax, pA+k) ;           // aki = A(k,i)
+                        GB_GETB (bkj, Bx, pB+k) ;           // bkj = B(k,j)
                         GB_MULTADD ( cij, aki, bkj, i, k, j ) ;        // cij += aki * bkj
                         cij_exists = true ;
                     }

@@ -1,0 +1,7 @@
+# Ignore these files:
+o_*
+A.mtx
+
+# Do not ignore this file
+!.gitignore
+

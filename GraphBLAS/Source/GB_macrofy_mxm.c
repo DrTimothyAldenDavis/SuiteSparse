@@ -68,17 +68,15 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
     GrB_BinaryOp mult = semiring->multiply ;
     GrB_BinaryOp addop = add->op ;
 
-    GB_macrofy_copyright (fp) ;
-    fprintf (fp, "// semiring: (%s, %s%s, %s)\n\n",
-        addop->name, mult->name, flipxy ? " (flipped)" : "",
-        mult->xtype->name) ;
+    fprintf (fp, "// GB_mxm_%016" PRIx64 ".h, semiring: (%s, %s%s)\n\n",
+        scode, addop->name, mult->name, flipxy ? " (flipped)" : "") ;
 
     //--------------------------------------------------------------------------
     // construct the typedefs
     //--------------------------------------------------------------------------
 
-    GB_macrofy_types (fp, ctype, atype, btype,
-        mult->xtype, mult->ytype, mult->ztype) ;
+    GB_macrofy_types (fp, ctype->defn, atype->defn, btype->defn,
+        mult->xtype->defn, mult->ytype->defn, mult->ztype->defn) ;
 
     //--------------------------------------------------------------------------
     // construct the macros for the type names
@@ -94,7 +92,7 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
     //--------------------------------------------------------------------------
 
     fprintf (fp, "\n// additive monoid:\n") ;
-    GB_macrofy_monoid (fp, add_ecode, id_ecode, term_ecode, add) ;
+    GB_macrofy_monoid (fp, add_ecode, id_ecode, term_ecode, add, false) ;
 
     //--------------------------------------------------------------------------
     // construct macros for the multiply
@@ -102,15 +100,18 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
 
     // do not print the user-defined multiplicative function if it is identical
     // to the user-defined additive function.
-    fprintf (fp, "\n// multiplicative operator%s:\n",
-        flipxy ? " (flipped)" : "") ;
-    GB_macrofy_binop (fp, "GB_MULT", flipxy, false, mult_ecode, mult) ;
+    fprintf (fp, "\n// multiplicative operator:\n") ;
+    bool skip_defn = (mult->defn != NULL && addop->defn != NULL
+        && strcmp (mult->defn, addop->defn) == 0) ;
+    GB_macrofy_binop (fp, "GB_MULT", flipxy, false, mult_ecode, mult,
+        skip_defn) ;
+    fprintf (fp, "#define GB_FLIPXY %d\n\n", flipxy ? 1 : 0) ;
 
     //--------------------------------------------------------------------------
     // special cases
     //--------------------------------------------------------------------------
 
-    fprintf (fp, "\n// special cases:\n") ;
+    fprintf (fp, "// special cases:\n") ;
 
     // semiring is plus_pair_real
     bool is_plus_pair_real =
@@ -164,11 +165,19 @@ void GB_macrofy_mxm        // construct all macros for GrB_mxm
     // if flipxy false:  A is typecasted to x, and B is typecasted to y.
     // if flipxy true:   A is typecasted to y, and B is typecasted to x.
 
-    GB_macrofy_input (fp, "a", "A", flipxy ? mult->ytype : mult->xtype,
-        atype, asparsity, acode, A_iso_code) ;
+    fprintf (fp, "\n// A matrix:\n") ;
+    int A_is_pattern = (acode == 0) ? 1 : 0 ;
+    int B_is_pattern = (bcode == 0) ? 1 : 0 ;
+    fprintf (fp, "#define GB_A_IS_PATTERN %d\n", A_is_pattern) ;
+    fprintf (fp, "#define GB_A_ISO %d\n", A_iso_code) ;
+    GB_macrofy_sparsity (fp, "A", asparsity) ;
+    fprintf (fp, "#define GB_A_TYPENAME %s\n", atype->name) ;
 
-    GB_macrofy_input (fp, "b", "B", flipxy ? mult->xtype : mult->ytype,
-        btype, bsparsity, bcode, B_iso_code) ;
+    fprintf (fp, "\n// B matrix:\n") ;
+    fprintf (fp, "#define GB_B_IS_PATTERN %d\n", B_is_pattern) ;
+    fprintf (fp, "#define GB_B_ISO %d\n", B_iso_code) ;
+    GB_macrofy_sparsity (fp, "B", bsparsity) ;
+    fprintf (fp, "#define GB_B_TYPENAME %s\n", btype->name) ;
 
 }
 

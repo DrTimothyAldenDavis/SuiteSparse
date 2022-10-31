@@ -16,6 +16,8 @@
 // 
 // =============================================================================
 
+#ifdef SUITESPARSE_CUDA
+
 #define CUDA_INCLUDE
 #include "Kernel/uberKernel.cu"
 
@@ -34,3 +36,6 @@ void GPUQREngine_UberKernel
     /* Launch the kernel */
     qrKernel<<<grid, threads, 0, kernelStream>>>(gpuWorkQueue, numTasks);    
 }
+
+#endif
+

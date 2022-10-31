@@ -24,7 +24,7 @@
 // C type:   int8_t
 // A type:   int8_t
 // cast:     int8_t cij = aij
-// unaryop:  cij = GB_idiv_int8 (1, aij)
+// unaryop:  cij = GB_IMINV_SIGNED (aij, 8)
 
 #define GB_ATYPE \
     int8_t
@@ -33,14 +33,14 @@
     int8_t
 
 // aij = Ax [pA]
-#define GB_GETA(aij,Ax,pA,A_iso) \
+#define GB_GETA(aij,Ax,pA) \
     int8_t aij = Ax [pA]
 
 #define GB_CX(p) Cx [p]
 
 // unary operator
 #define GB_OP(z, x) \
-    z = GB_idiv_int8 (1, x) ;
+    z = GB_IMINV_SIGNED (x, 8) ;
 
 // casting
 #define GB_CAST(z, aij) \
@@ -50,10 +50,10 @@
 #define GB_CAST_OP(pC,pA)           \
 {                                   \
     /* aij = Ax [pA] */             \
-    int8_t aij = Ax [pA] ;   \
+    int8_t aij = Ax [pA] ;          \
     /* Cx [pC] = op (cast (aij)) */ \
     int8_t z = aij ;               \
-    Cx [pC] = GB_idiv_int8 (1, z) ;        \
+    Cx [pC] = GB_IMINV_SIGNED (z, 8) ;        \
 }
 
 // disable this operator and use the generic case if these conditions hold
@@ -67,9 +67,9 @@
 
 GrB_Info GB (_unop_apply__minv_int8_int8)
 (
-    int8_t *Cx,               // Cx and Ax may be aliased
-    const int8_t *Ax,         // A is always non-iso for this kernel
-    const int8_t *restrict Ab,  // A->b if A is bitmap
+    int8_t *Cx,       // Cx and Ax may be aliased
+    const int8_t *Ax,
+    const int8_t *restrict Ab,   // A->b if A is bitmap
     int64_t anz,
     int nthreads
 )
@@ -85,7 +85,7 @@ GrB_Info GB (_unop_apply__minv_int8_int8)
         {
             int8_t aij = Ax [p] ;
             int8_t z = aij ;
-            Cx [p] = GB_idiv_int8 (1, z) ;
+            Cx [p] = GB_IMINV_SIGNED (z, 8) ;
         }
     }
     else
@@ -97,7 +97,7 @@ GrB_Info GB (_unop_apply__minv_int8_int8)
             if (!Ab [p]) continue ;
             int8_t aij = Ax [p] ;
             int8_t z = aij ;
-            Cx [p] = GB_idiv_int8 (1, z) ;
+            Cx [p] = GB_IMINV_SIGNED (z, 8) ;
         }
     }
     return (GrB_SUCCESS) ;

@@ -47,9 +47,17 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( gpuqrengine 
-    VERSION "${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}"
-    LANGUAGES C CXX CUDA )
+if ( SUITESPARSE_CUDA )
+    project ( gpuqrengine 
+        VERSION "${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}"
+        LANGUAGES C CXX CUDA )
+else ( )
+    # CUDA not available
+    project ( gpuqrengine 
+        VERSION "${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}"
+        LANGUAGES C CXX )
+    message ( STATUS "CUDA not enabled:  library will be empty" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -57,15 +65,23 @@ project ( gpuqrengine
 
 # for the library itself
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
 
-# for the demo only:
-find_package ( CHOLMOD 4.0.0 )
-find_package ( COLAMD 3.0.0 )
-find_package ( AMD 3.0.0 )
-find_package ( CAMD 3.0.0 )
-find_package ( CCOLAMD 3.0.0 )
-find_package ( SuiteSparse_metis 5.1.0 )
+if ( SUITESPARSE_CUDA )
+    find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
+endif ( )
+
+# Demo disabled for GPUQREngine v2.x
+set ( DEMO_OK false )
+
+if ( DEMO AND DEMO_OK )
+    # for the demo only:
+    find_package ( CHOLMOD 4.0.0 )
+    find_package ( COLAMD 3.0.0 )
+    find_package ( AMD 3.0.0 )
+    find_package ( CAMD 3.0.0 )
+    find_package ( CCOLAMD 3.0.0 )
+    find_package ( SuiteSparse_metis 5.1.0 )
+endif ( )
 
 if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND AND AMD_FOUND AND COLAMD_FOUND AND 
     CAMD_FOUND AND CCOLAMD_FOUND AND SUITESPARSE_METIS_FOUND )
@@ -82,30 +98,28 @@ configure_file ( "Config/GPUQREngine.hpp.in" "${PROJECT_SOURCE_DIR}/Include/GPUQ
 
 #-------------------------------------------------------------------------------
 
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+if ( SUITESPARSE_CUDA )
+    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
+endif ( )
+
 set ( CMAKE_CXX_STANDARD 17 )
-# set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC -DSUITESPARSE_CUDA" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
 set ( CMAKE_C_STANDARD 11 )
 
-message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-
-file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp" "Source/*.cu" "Source/*/*.cpp" )
-file ( GLOB GPUQRENGINE_HEADERS "Include/GPUQREngine.hpp" )
-# message ( STATUS "Sources: ${GPUQRENGINE_SOURCES}" )
+if ( SUITESPARSE_CUDA )
+    file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp" "Source/*.cu" "Source/*/*.cpp" )
+else ( )
+    file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp" )
+endif ( )
 
 set ( GPUQRENGINE_INCLUDES Include Include/Kernel
     Include/Kernel/Apply Include/Kernel/Assemble Include/Kernel/Factorize
-    ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR} 
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/Include
     ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
 include_directories ( ${GPUQRENGINE_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
-
-# message ( STATUS "GPUQRENGINE CUDA includes:
-#     ${GPUQRENGINE_INCLUDES}" )
-
-# message ( STATUS "CUDA Toolkit includes: ${CUDAToolkit_INCLUDE_DIRS}" )
 
 #-------------------------------------------------------------------------------
 # dynamic gpuqrengine library properties
@@ -116,18 +130,19 @@ add_library ( gpuqrengine SHARED ${GPUQRENGINE_SOURCES} )
 set_target_properties ( gpuqrengine PROPERTIES
     VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
-    SOVERSION ${GPUQRENGINE_VERSION_MAJOR}
-    PUBLIC_HEADER "${GPUQRENGINE_HEADERS}" )
+    SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
 
 target_include_directories ( gpuqrengine PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES} )
-set_target_properties ( gpuqrengine PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( gpuqrengine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-set_target_properties ( gpuqrengine PROPERTIES CUDA_ARCHITECTURES "75" )
 
-target_link_libraries ( gpuqrengine CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( gpuqrengine PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( gpuqrengine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    set_target_properties ( gpuqrengine PROPERTIES CUDA_ARCHITECTURES "75" )
+    target_link_libraries ( gpuqrengine CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static gpuqrengine library properties
@@ -139,17 +154,18 @@ set_target_properties ( gpuqrengine_static PROPERTIES
     VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
-#   PUBLIC_HEADER "${GPUQRENGINE_HEADERS}" )
 
 target_include_directories ( gpuqrengine_static PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES} )
-set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-set_target_properties ( gpuqrengine_static PROPERTIES CUDA_ARCHITECTURES "75" )
 
-target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+if ( SUITESPARSE_CUDA )
+    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_ARCHITECTURES "75" )
+    target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
@@ -163,8 +179,7 @@ if ( NOT SUITESPARSE_LOCAL )
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS gpuqrengine
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 endif ( )
@@ -175,8 +190,7 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS gpuqrengine
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -216,6 +230,4 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )
-
-
 

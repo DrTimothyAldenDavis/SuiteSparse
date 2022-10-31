@@ -322,36 +322,36 @@ codegen_binop_template ('bxnor',        ...
 
 % bget
 fprintf ('\nbget     ') ;
-codegen_binop_method ('bget', 'GB_bitget_int8 (xarg, yarg)'  , 'int8_t'  ) ;
-codegen_binop_method ('bget', 'GB_bitget_int16 (xarg, yarg)' , 'int16_t' ) ;
-codegen_binop_method ('bget', 'GB_bitget_int32 (xarg, yarg)' , 'int32_t' ) ;
-codegen_binop_method ('bget', 'GB_bitget_int64 (xarg, yarg)' , 'int64_t' ) ;
-codegen_binop_method ('bget', 'GB_bitget_uint8 (xarg, yarg)' , 'uint8_t' ) ;
-codegen_binop_method ('bget', 'GB_bitget_uint16 (xarg, yarg)', 'uint16_t') ;
-codegen_binop_method ('bget', 'GB_bitget_uint32 (xarg, yarg)', 'uint32_t') ;
-codegen_binop_method ('bget', 'GB_bitget_uint64 (xarg, yarg)', 'uint64_t') ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, int8_t, 8)'   , 'int8_t'  ) ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, int16_t, 16)' , 'int16_t' ) ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, int32_t, 32)' , 'int32_t' ) ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, int64_t, 64)' , 'int64_t' ) ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, uint8_t, 8)'  , 'uint8_t' ) ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, uint16_t, 16)', 'uint16_t') ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, uint32_t, 32)', 'uint32_t') ;
+codegen_binop_method ('bget', 'GB_BITGET (xarg, yarg, uint64_t, 64)', 'uint64_t') ;
 
 % bset
 fprintf ('\nbset     ') ;
-codegen_binop_method ('bset', 'GB_bitset_int8 (xarg, yarg)'  , 'int8_t'  ) ;
-codegen_binop_method ('bset', 'GB_bitset_int16 (xarg, yarg)' , 'int16_t' ) ;
-codegen_binop_method ('bset', 'GB_bitset_int32 (xarg, yarg)' , 'int32_t' ) ;
-codegen_binop_method ('bset', 'GB_bitset_int64 (xarg, yarg)' , 'int64_t' ) ;
-codegen_binop_method ('bset', 'GB_bitset_uint8 (xarg, yarg)' , 'uint8_t' ) ;
-codegen_binop_method ('bset', 'GB_bitset_uint16 (xarg, yarg)', 'uint16_t') ;
-codegen_binop_method ('bset', 'GB_bitset_uint32 (xarg, yarg)', 'uint32_t') ;
-codegen_binop_method ('bset', 'GB_bitset_uint64 (xarg, yarg)', 'uint64_t') ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, int8_t, 8)'   , 'int8_t'  ) ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, int16_t, 16)' , 'int16_t' ) ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, int32_t, 32)' , 'int32_t' ) ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, int64_t, 64)' , 'int64_t' ) ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, uint8_t, 8)'  , 'uint8_t' ) ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, uint16_t, 16)', 'uint16_t') ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, uint32_t, 32)', 'uint32_t') ;
+codegen_binop_method ('bset', 'GB_BITSET (xarg, yarg, uint64_t, 64)', 'uint64_t') ;
 
 % bclr
 fprintf ('\nbclr     ') ;
-codegen_binop_method ('bclr', 'GB_bitclr_int8 (xarg, yarg)'  , 'int8_t'  ) ;
-codegen_binop_method ('bclr', 'GB_bitclr_int16 (xarg, yarg)' , 'int16_t' ) ;
-codegen_binop_method ('bclr', 'GB_bitclr_int32 (xarg, yarg)' , 'int32_t' ) ;
-codegen_binop_method ('bclr', 'GB_bitclr_int64 (xarg, yarg)' , 'int64_t' ) ;
-codegen_binop_method ('bclr', 'GB_bitclr_uint8 (xarg, yarg)' , 'uint8_t' ) ;
-codegen_binop_method ('bclr', 'GB_bitclr_uint16 (xarg, yarg)', 'uint16_t') ;
-codegen_binop_method ('bclr', 'GB_bitclr_uint32 (xarg, yarg)', 'uint32_t') ;
-codegen_binop_method ('bclr', 'GB_bitclr_uint64 (xarg, yarg)', 'uint64_t') ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, int8_t, 8)'   , 'int8_t'  ) ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, int16_t, 16)' , 'int16_t' ) ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, int32_t, 32)' , 'int32_t' ) ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, int64_t, 64)' , 'int64_t' ) ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, uint8_t, 8)'  , 'uint8_t' ) ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, uint16_t, 16)', 'uint16_t') ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, uint32_t, 32)', 'uint32_t') ;
+codegen_binop_method ('bclr', 'GB_BITCLR (xarg, yarg, uint64_t, 64)', 'uint64_t') ;
 
 % bshift
 fprintf ('\nbshift   ') ;

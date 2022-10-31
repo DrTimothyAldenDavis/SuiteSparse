@@ -12,6 +12,8 @@
 // and free memory on the CPU and/or GPU, and to transfer data between the
 // CPU and GPU.
 
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 
 // -----------------------------------------------------------------------------
@@ -157,3 +159,5 @@ void Workspace::ws_free(bool cpuFree, bool gpuFree)
     if(cpuFree) Workspace::cpu_free(cpuReference, pageLocked);
     if(gpuFree) Workspace::gpu_free(gpuReference);
 }
+
+#endif

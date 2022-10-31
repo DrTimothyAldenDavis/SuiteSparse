@@ -17,7 +17,8 @@ void GB_macrofy_monoid  // construct the macros for a monoid
     int add_ecode,      // binary op as an enum
     int id_ecode,       // identity value as an enum
     int term_ecode,     // terminal value as an enum (<= 28 is terminal)
-    GrB_Monoid monoid   // monoid to macrofy
+    GrB_Monoid monoid,  // monoid to macrofy
+    bool skip_defn      // if true, do not include the user-defined add function
 )
 {
     const char *ztype_name = monoid->op->ztype->name ;
@@ -26,7 +27,8 @@ void GB_macrofy_monoid  // construct the macros for a monoid
     // create macros for the additive operator
     //--------------------------------------------------------------------------
 
-    GB_macrofy_binop (fp, "GB_ADD", false, true, add_ecode, monoid->op) ;
+    GB_macrofy_binop (fp, "GB_ADD", false, true, add_ecode, monoid->op,
+        skip_defn) ;
 
     //--------------------------------------------------------------------------
     // create macros for the identity value

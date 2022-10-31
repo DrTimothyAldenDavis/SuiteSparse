@@ -188,9 +188,6 @@
 #define GB_COMPILER_MSC_2019 ( GB_COMPILER_MSC && (GB_COMPILER_MAJOR == 19) \
     && (GB_COMPILER_MINOR >= 20) && (GB_COMPILER_MINOR <= 29) )
 
-// GB_WINDOWS is true for Windows, false for all other systems
-#define GB_WINDOWS (defined (_WIN64) || defined (_WIN32))
-
 //------------------------------------------------------------------------------
 // malloc.h: required include file for Microsoft Visual Studio
 //------------------------------------------------------------------------------
@@ -334,7 +331,8 @@
 
 // prefix for function with target avx512f
 #if GB_COMPILER_SUPPORTS_AVX512F
-    #if GB_WINDOWS && (GB_COMPILER_ICC || GB_COMPILER_ICX)
+    #if (defined (_WIN64) || defined (_WIN32)) && \
+        (GB_COMPILER_ICC || GB_COMPILER_ICX)
         // the Intel compilers on Windows support this feature:
         #define GB_TARGET_AVX512F __declspec (target ("avx512f"))
     #else
@@ -346,7 +344,8 @@
 
 // prefix for function with target avx2
 #if GB_COMPILER_SUPPORTS_AVX2
-    #if GB_WINDOWS && (GB_COMPILER_ICC || GB_COMPILER_ICX)
+    #if (defined (_WIN64) || defined (_WIN32)) && \
+        (GB_COMPILER_ICC || GB_COMPILER_ICX)
         // the Intel compilers on Windows support this feature:
         #define GB_TARGET_AVX2 __declspec (target ("avx2"))
     #else

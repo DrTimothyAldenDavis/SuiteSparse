@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 #include <string.h>
 
@@ -132,4 +134,6 @@ void *Workspace::cpu_free(void *address, bool pageLocked)
 //     memset(cpuReference, value, totalSize);
 //     return true;
 // }
+
+#endif
 

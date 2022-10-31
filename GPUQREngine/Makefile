@@ -42,8 +42,7 @@ local:
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
 demo: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
-	( cd build && ./gpuqrengine_demo )
+	echo 'GPUQREngine v2.x demo not compiled; use SPQR demo instead'
 
 # just compile after running cmake; do not run cmake again
 remake:

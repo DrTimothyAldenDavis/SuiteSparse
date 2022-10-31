@@ -16,7 +16,8 @@
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
 #
-# To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file.
+# To select a specific BLAS library, edit this file and uncomment one of:
+# set ( BLA_VENDOR ... )
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -41,14 +42,14 @@ set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 if ( SUITESPARSE_SECOND_LEVEL )
     # the package is normally located at the 2nd level inside SuiteSparse
     # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
-    set ( INSIDE_SUITESPARSE
-            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND
+    set ( INSIDE_SUITESPARSE 
+            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND 
             (   EXISTS ${CMAKE_SOURCE_DIR}/../../include ) ) )
 else ( )
     # typical case, the package is at the 1st level inside SuiteSparse
     # (SuiteSparse/AMD for example)
-    set ( INSIDE_SUITESPARSE
-            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND
+    set ( INSIDE_SUITESPARSE 
+            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND 
             (   EXISTS ${CMAKE_SOURCE_DIR}/../include ) ) )
 endif ( )
 
@@ -67,7 +68,7 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Local install: ${SUITESPARSE_LIBDIR} ")
     message ( STATUS "Local include: ${SUITESPARSE_INCLUDEDIR} ")
     message ( STATUS "Local bin:     ${SUITESPARSE_BINDIR} ")
-    # append ../lib to the install and build runpaths
+    # append ../lib to the install and build runpaths 
     set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${SUITESPARSE_LIBDIR} )
     set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -82,6 +83,23 @@ endif ( )
 message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
+
+#-------------------------------------------------------------------------------
+# BLAS library
+#-------------------------------------------------------------------------------
+
+# Uncomment one of the lines below to select OpenBLAS or the Intel MKL.
+# Be sure to use a parallel BLAS library for best results in UMFPACK,
+# CHOLMOD, SPQR, and ParU.  All SuiteSparse packages should use the same
+# BLAS and the same OpenMP library.
+
+# set ( BLA_VENDOR OpenBLAS )       # OpenBLAS with 32-bit integers
+# set ( BLA_VENDOR Intel10_64ilp )  # MKL BLAS with 64-bit integers
+# set ( BLA_VENDOR Intel10_64lp )   # MKL BLAS with 32-bit integers
+
+# The Intel MKL BLAS is recommended.  It is free to download (but be sure to
+# check their license to make sure you accept it).   See:
+# https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
 
 #-------------------------------------------------------------------------------
 # find CUDA

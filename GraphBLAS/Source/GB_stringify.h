@@ -11,18 +11,11 @@
 #define GB_STRINGIFY_H
 
 //------------------------------------------------------------------------------
-// print copyright and license
-//------------------------------------------------------------------------------
-
-void GB_macrofy_copyright (FILE *fp) ;
-
-//------------------------------------------------------------------------------
 // dump definitions (for debugging and test coverage only)
 //------------------------------------------------------------------------------
 
 // uncomment this line to dump GB*.h files to /tmp, or compile with
 // -DGB_DEBUGIFY_DEFN=1
-// #undef  GB_DEBUGIFY_DEFN
 // #define GB_DEBUGIFY_DEFN 1
 
 //------------------------------------------------------------------------------
@@ -180,7 +173,8 @@ void GB_macrofy_monoid  // construct the macros for a monoid
     int add_ecode,      // binary op as an enum
     int id_ecode,       // identity value as an enum
     int term_ecode,     // terminal value as an enum (< 30 is terminal)
-    GrB_Monoid monoid   // monoid to macrofy
+    GrB_Monoid monoid,  // monoid to macrofy
+    bool skip_defn      // if true, do not include the user-defined add function
 ) ;
 
 //------------------------------------------------------------------------------
@@ -205,44 +199,8 @@ void GB_macrofy_binop
     bool flipxy,                // if true: op is f(y,x), multipicative only
     bool is_monoid,             // if true: additive operator for monoid
     int ecode,
-    GrB_BinaryOp op
-) ;
-
-//------------------------------------------------------------------------------
-// operator definitions and typecasting
-//------------------------------------------------------------------------------
-
-void GB_macrofy_defn
-(
-    FILE *fp,
-    int kind,
-    const char *name,
-    const char *defn
-) ;
-
-void GB_macrofy_cast
-(
-    FILE *fp,
-    // input:
-    const char *macro_name,     // name of the macro: #define macro(z,x...)
-    const char *zarg,           // name of the z argument of the macro
-    const char *xargs,          // one or more x arguments
-    const char *xexpr,          // an expression based on xargs
-    const GrB_Type ztype,       // the type of the z output
-    const GrB_Type xtype        // the type of the x input
-) ;
-
-void GB_macrofy_input
-(
-    FILE *fp,
-    // input:
-    const char *aname,      // name of the scalar aij = ...
-    const char *Aname,      // name of the input matrix
-    GrB_Type xtype,         // type of aij
-    GrB_Type atype,         // type of the input matrix
-    int asparsity,          // sparsity format of the input matrix
-    int acode,              // type code of the input (0 if iso)
-    int A_iso_code          // 1 if A is iso
+    GrB_BinaryOp op,
+    bool skip_defn
 ) ;
 
 //------------------------------------------------------------------------------
@@ -299,7 +257,7 @@ void GB_macrofy_sparsity    // construct macros for sparsity structure
 (
     // input:
     FILE *fp,
-    const char *matrix_name,    // "C", "M", "A", or "B"
+    char *matrix_name,      // "C", "M", "A", or "B"
     int ecode
 ) ;
 
@@ -311,20 +269,12 @@ void GB_macrofy_types
 (
     FILE *fp,
     // input:
-    GrB_Type ctype,
-    GrB_Type atype,
-    GrB_Type btype,
-    GrB_Type xtype,
-    GrB_Type ytype,
-    GrB_Type ztype
-#if 0
     const char *ctype_defn,
     const char *atype_defn,
     const char *btype_defn,
     const char *xtype_defn,
     const char *ytype_defn,
     const char *ztype_defn
-#endif
 ) ;
 
 //------------------------------------------------------------------------------

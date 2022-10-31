@@ -22,6 +22,8 @@
 //
 // =============================================================================
 
+#ifdef SUITESPARSE_CUDA
+
 #include "GPUQREngine_Internal.hpp"
 
 #ifdef GPUQRENGINE_RENDER
@@ -219,4 +221,6 @@ void GraphVizHelper_ComputeBundleLabel
         strcat(label, temp);
     }
 }
+#endif
+
 #endif
