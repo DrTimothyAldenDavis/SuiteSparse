@@ -179,6 +179,29 @@ clean:
 	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd SLIP_LU && $(MAKE) clean )
 
+# Run all demos
+demo:
+	- ( cd SuiteSparse_config && $(MAKE) demo )
+	- ( cd SuiteSparse_metis && $(MAKE) demo )
+	- ( cd Mongoose  && $(MAKE) demo )
+	- ( cd AMD && $(MAKE) demo )
+	- ( cd CAMD && $(MAKE) demo )
+	- ( cd COLAMD && $(MAKE) demo )
+	- ( cd BTF && $(MAKE) demo )
+	- ( cd KLU && $(MAKE) demo )
+	- ( cd LDL && $(MAKE) demo )
+	- ( cd CCOLAMD && $(MAKE) demo )
+	- ( cd UMFPACK && $(MAKE) demo )
+	- ( cd CHOLMOD && $(MAKE) demo )
+	- ( cd CSparse && $(MAKE) demo )
+	- ( cd CXSparse && $(MAKE) demo )
+	- ( cd RBio && $(MAKE) demo )
+	- ( cd SuiteSparse_GPURuntime && $(MAKE) demo )
+	- ( cd GPUQREngine && $(MAKE) demo )
+	- ( cd SPQR && $(MAKE) demo )
+	- ( cd GraphBLAS && $(MAKE) demo )
+	- ( cd SLIP_LU && $(MAKE) C )
+
 # Create the PDF documentation
 docs:
 	( cd GraphBLAS && $(MAKE) docs )

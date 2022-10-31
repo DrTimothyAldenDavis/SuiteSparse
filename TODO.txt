@@ -10,6 +10,3 @@ FIXME: Mongoose 'make test' fails: unable to download test files
 
 FIXME: Mongoose docs on Mac or laptop
 
-FIXME: new output files, when date is fixed
-    (look for more)
-
