@@ -12,9 +12,8 @@
 
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
-cmake_policy ( SET CMP0104 NEW )
 
-set ( GPUQRENGINE_DATE "Oct 31, 2022" )  # FIXME
+set ( GPUQRENGINE_DATE "Nov 4, 2022" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
 set ( GPUQRENGINE_VERSION_SUB   0 )
@@ -40,8 +39,6 @@ if ( NOT DEFINED ENABLE_CUDA )
 endif ( )
 
 include ( SuiteSparsePolicy )
-
-# FIXME: handle the case when CUDA is not available
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -139,7 +136,6 @@ target_include_directories ( gpuqrengine PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( gpuqrengine PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( gpuqrengine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    set_target_properties ( gpuqrengine PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( gpuqrengine CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
@@ -162,7 +158,6 @@ target_include_directories ( gpuqrengine_static PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )

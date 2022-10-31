@@ -45,8 +45,8 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Oct 31, 2022") # FIXME
-set(Mongoose_NUMERIC_DATE "2022-10-31") # FIXME
+set(Mongoose_DATE "Nov 4, 2022")
+set(Mongoose_NUMERIC_DATE "2022-11-04")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
 set(Mongoose_VERSION_PATCH 0)

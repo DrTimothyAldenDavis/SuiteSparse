@@ -1,4 +1,4 @@
-Oct FIXME, 2022: version 4.0.0
+Nov 4, 2022: version 4.0.0
 
     * using CMake build system
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
@@ -6,6 +6,7 @@ Oct FIXME, 2022: version 4.0.0
     * cholmod.h: single include file for all Modules
     * BLAS/LAPACK: relying on SuiteSparse_config and CMake to find and link
         with the BLAS and LAPACK libraries
+    * libcholmod_cuda.so: CUDA support split into a separate library.
 
 June 30, 2020: no change to version number
 

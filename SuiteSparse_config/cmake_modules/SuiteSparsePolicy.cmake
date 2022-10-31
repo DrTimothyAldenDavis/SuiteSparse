@@ -16,6 +16,12 @@
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
 #
+#   SUITESPARSE_CUDA_ARCHITECTURES  a string, such as "all" or
+#                       "35;50;75;80" that lists the CUDA architectures to use
+#                       when compiling CUDA kernels with nvcc.  Default, if not
+#                       set is "52;75;80".  The "all" option requires cmake
+#                       3.23 or later.
+#
 # To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file.
 
 cmake_minimum_required ( VERSION 3.19 )
@@ -26,6 +32,7 @@ message ( STATUS "Build:         ${CMAKE_BINARY_DIR} ")
 cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
+cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
@@ -102,8 +109,7 @@ if ( ENABLE_CUDA )
         message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
         message ( STATUS "CUDA toolkit include: " ${CUDAToolkit_INCLUDE_DIRS} )
         message ( STATUS "CUDA toolkit lib dir: " ${CUDAToolkit_LIBRARY_DIR} )
-#       if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )  FIXME
-        if ( CUDAToolkit_VERSION VERSION_LESS "10.0" )
+        if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
             message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
             set ( SUITESPARSE_CUDA off )
@@ -128,6 +134,12 @@ endif ( )
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CUDA: enabled" )
     add_compile_definitions ( SUITESPARSE_CUDA )
+    if ( NOT DEFINED SUITESPARSE_CUDA_ARCHITECTURES )
+        # default architectures
+        set ( CMAKE_CUDA_ARCHITECTURES "52;75;80" )
+    else ( )
+        set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
+    endif ( )
 else ( )
     message ( STATUS "CUDA: not enabled" )
 endif ( )

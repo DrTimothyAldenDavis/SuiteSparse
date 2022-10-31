@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Oct 31, 2022" )  # FIXME
+set ( CHOLMOD_DATE "Nov 4, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   0 )
@@ -128,7 +128,6 @@ set_target_properties ( cholmod PROPERTIES
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( cholmod PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( cholmod PROPERTIES CUDA_ARCHITECTURES "all" )   # cmake 3.23 FIXME
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -146,7 +145,6 @@ set_target_properties ( cholmod_static PROPERTIES
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( cholmod_static PROPERTIES CUDA_ARCHITECTURES "all" )
 endif ( )
 
 #-------------------------------------------------------------------------------

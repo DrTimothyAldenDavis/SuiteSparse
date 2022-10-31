@@ -17,7 +17,6 @@ ccode: all
 
 CUDA = no
 
-# FIXME: remove dependency on SuiteSparse_config.mk:
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # this test requires gcc

@@ -12,12 +12,13 @@
 
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
-cmake_policy ( SET CMP0104 NEW )
 
 message ( STATUS "Building CHOLMOD_CUDA version: v"
     ${CHOLMOD_VERSION_MAJOR}.
     ${CHOLMOD_VERSION_MINOR}.
     ${CHOLMOD_VERSION_SUB} " (" ${CHOLMOD_DATE} ")" )
+
+include ( SuiteSparsePolicy )
 
 project ( cholmod_cuda 
     VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
@@ -69,14 +70,12 @@ target_include_directories ( cholmod_cuda PUBLIC
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( cholmod_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( cholmod_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-set_target_properties ( cholmod_cuda PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_include_directories ( cholmod_cuda_static PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_link_libraries ( cholmod_cuda CUDA::nvrtc CUDA::cudart_static
     CUDA::nvToolsExt CUDA::cublas )

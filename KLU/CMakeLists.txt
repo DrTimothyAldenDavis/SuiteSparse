@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Oct 31, 2022" )  # FIXME
+set ( KLU_DATE "Nov 4, 2022" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
 set ( KLU_VERSION_SUB   0 )

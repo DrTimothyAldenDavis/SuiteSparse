@@ -485,7 +485,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Oct 31, 2022"
+#define SUITESPARSE_DATE "Nov 4, 2022"
 #define SUITESPARSE_MAIN_VERSION    6
 #define SUITESPARSE_SUB_VERSION     0
 #define SUITESPARSE_SUBSUB_VERSION  0
@@ -583,7 +583,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 #else
 
     // let CMake determine the size of the integer in the Fortran BLAS
-    #define SUITESPARSE_BLAS_INT int32_t
+    #define SUITESPARSE_BLAS_INT int64_t
 
 #endif
 

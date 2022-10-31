@@ -12,12 +12,13 @@
 
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
-cmake_policy ( SET CMP0104 NEW )
 
 message ( STATUS "Building SPQR_CUDA version: v"
     ${SPQR_VERSION_MAJOR}.
     ${SPQR_VERSION_MINOR}.
     ${SPQR_VERSION_SUB} " (" ${SPQR_DATE} ")" )
+
+include ( SuiteSparsePolicy )
 
 project ( spqr_cuda 
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
@@ -62,14 +63,12 @@ target_include_directories ( spqr_cuda PUBLIC
         ${SPQR_CUDA_INCLUDES} )
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-set_target_properties ( spqr_cuda PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_include_directories ( spqr_cuda_static PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES} )
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-set_target_properties ( spqr_cuda_static PROPERTIES CUDA_ARCHITECTURES "all" )
 
 target_link_libraries ( spqr_cuda CUDA::nvrtc CUDA::cudart_static
     CUDA::nvToolsExt CUDA::cublas )

@@ -6,7 +6,7 @@
 # Author: George Karypis
 # SPDX-License-identifier: Apache-2.0
 
-# This CMakeLists.txt script was added by Tim Davis, Oct 2022,
+# This CMakeLists.txt script was added by Tim Davis, Nov 2022,
 # to build SuiteSparse_metis for use in SuiteSparse.  See
 # include/SuiteSparse_metis.h for a description of the changes made in this
 # version, as compared to the original METIS v5.1.0.  This cmake script builds
@@ -21,7 +21,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SUITESPARSE_METIS_DATE "Oct 31, 2022" )  # FIXME
+set ( SUITESPARSE_METIS_DATE "Nov 4, 2022" )
 set ( SUITESPARSE_METIS_VERSION_MAJOR 5 )
 set ( SUITESPARSE_METIS_VERSION_MINOR 1 )
 set ( SUITESPARSE_METIS_VERSION_SUB   0 )

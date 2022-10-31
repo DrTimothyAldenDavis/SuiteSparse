@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CCOLAMD_DATE "Oct 31, 2022" )  # FIXME
+set ( CCOLAMD_DATE "Nov 4, 2022" )
 set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 0 )
 set ( CCOLAMD_VERSION_SUB   0 )
@@ -154,7 +154,7 @@ if ( DEMO )
 
 else ( )
 
-    message ( STATUS "Skipping the demos in CCCOLAMD/Demo" )
+    message ( STATUS "Skipping the demos in CCOLAMD/Demo" )
 
 endif ( )
 

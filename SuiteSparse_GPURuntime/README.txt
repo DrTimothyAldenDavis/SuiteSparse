@@ -16,7 +16,7 @@ To install locally in SuiteSparse/lib instead, do:
     make local
     make install
 
-FIXME: The include files are not copied into /usr/local/include, since this
+The include files are not copied into /usr/local/include, since this
 library is currently not meant to be user-callable.  It is used only
 by SuiteSparseQR.
 

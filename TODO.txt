@@ -1,16 +1,14 @@
+FIXME: test on Backslash, Mac, slash laptop, ...
+
 FIXME: retest all Tcov (Linux)
 
 FIXME: test GraphBLAS/alternative/Makefile
 
-FIXME: test all MATLAB interfaces, including
+FIXME: test all MATLAB interfaces
 
 FIXME: Mongoose 'make test' fails: unable to download test files
 
-FIXME: CUDA
-    cmake CUDA for: SPQR, SuiteSparse_GPURuntime, GPUQREngine
-    Find*.cmake for: SuiteSparse_GPURuntime, GPUQREngine
-
-FIXME: date for all packages (see */Doc/Changelog too)
+FIXME: Mongoose docs on Mac or laptop
 
 FIXME: new output files, when date is fixed
     AMD/MATLAB/amd_demo.m.out (diary)
@@ -29,3 +27,4 @@ FIXME: new output files, when date is fixed
     UMFPACK/MATLAB/*out
     SPQR/Demo/*out*
     (look for more)
+

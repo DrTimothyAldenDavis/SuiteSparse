@@ -333,7 +333,7 @@ catch me
     failed {end+1} = 'GraphBLAS' ;
 end
 
-% compile and install SLIP_LU : FIXME install SPEX instead
+% compile and install SLIP_LU : FUTURE install SPEX instead
 %{
 try
     fprintf ('try to install SLIP_LU (requires GMP and MPFR)\n') ;

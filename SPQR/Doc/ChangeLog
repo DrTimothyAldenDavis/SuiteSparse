@@ -1,10 +1,11 @@
-Oct FIXME, 2022: version 3.0.0
+Nov 4, 2022: version 3.0.0
 
     * using CMake build system
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
         with int32_t and int64_t.
     * BLAS/LAPACK: relying on SuiteSparse_config and CMake to find and link
         with the BLAS and LAPACK libraries
+    * CUDA support: moved to libspqr_cuda.so library.
 
 Mar 6, 2022: version 2.1.0
 

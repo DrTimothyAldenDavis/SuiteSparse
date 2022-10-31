@@ -28,7 +28,7 @@ int main (int argc, char **argv)
     cholmod_common *cc, Common ;
     cc = &Common ;
     cholmod_l_start (cc) ;
-    cc->print = 5 ;
+    cc->print = 2 ;
 
     // warmup the GPU.  This can take some time, but only needs
     // to be done once

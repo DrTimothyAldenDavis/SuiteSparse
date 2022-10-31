@@ -32,6 +32,9 @@ message ( STATUS "compile definitions: ${CDEFN}")
 if ( DEFINED SuiteSparse_BLAS_integer )
     message ( STATUS "BLAS integer:        ${SuiteSparse_BLAS_integer}" )
 endif ( )
+if ( DEFINED CMAKE_CUDA_ARCHITECTURES )
+    message ( STATUS "CUDA architectures:  ${CMAKE_CUDA_ARCHITECTURES}" )
+endif ( )
 message ( STATUS
 "----------------------------------------------------------------------------" )
 

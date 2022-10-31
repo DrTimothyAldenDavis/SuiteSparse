@@ -11,9 +11,8 @@
 #-------------------------------------------------------------------------------
 
 cmake_minimum_required ( VERSION 3.19 )
-cmake_policy ( SET CMP0104 NEW )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Oct 31, 2022" )  # FIXME
+set ( SUITESPARSE_GPURUNTIME_DATE "Nov 4, 2022" )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   0 )
@@ -105,7 +104,6 @@ target_include_directories ( suitesparse_gpuruntime PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( suitesparse_gpuruntime CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
@@ -128,7 +126,6 @@ target_include_directories ( suitesparse_gpuruntime_static PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_ARCHITECTURES "all" )
     target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )

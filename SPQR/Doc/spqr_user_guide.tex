@@ -121,55 +121,16 @@ to ensure your functions have been installed correctly.  Next type the command
 and examine your MATLAB path.  The various SuiteSparse directories have been
 placed in your path.  Click ``save'' to save this path for future MATLAB
 sessions.  If this fails, you do not have permission to modify the
-\verb'pathdef.m' file (it is shared by all users).  An alternative is to type
-the command:
+\verb'pathdef.m' file (it is shared by all users).
+
+SuiteSparse now has a \verb'SuiteSparse_paths.m' that you can add to
+your \verb'startup.m'.
+An alternative is to type the command:
 \begin{verbatim}
     path
 \end{verbatim}
 and cut-and-paste the paths displayed there into your own \verb'startup.m'
-file, prepending the command \verb'addpath' to each line.  For example, if I
-installed SuiteSparse into my home directory (\verb'/home/davis') then my
-\verb'startup.m' file should look like this:
-
-% FIXME: update this list of paths:
-{\footnotesize
-\begin{verbatim}
-    addpath  /home/davis/SuiteSparse/SPQR/MATLAB
-    addpath  /home/davis/SuiteSparse/RBio
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/spok
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/waitmex
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/shellgui
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/GEE
-    addpath  /home/davis/SuiteSparse/LINFACTOR
-    addpath  /home/davis/SuiteSparse/MESHND
-    addpath  /home/davis/SuiteSparse/UFcollection
-    addpath  /home/davis/SuiteSparse/SSMULT
-    addpath  /home/davis/SuiteSparse/KLU/MATLAB
-    addpath  /home/davis/SuiteSparse/BTF/MATLAB
-    addpath  /home/davis/SuiteSparse/LDL/MATLAB
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/ssget
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/Demo
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/CSparse
-    addpath  /home/davis/SuiteSparse/CAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/CCOLAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/COLAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/AMD/MATLAB
-    addpath  /home/davis/SuiteSparse/CHOLMOD/MATLAB
-    addpath  /home/davis/SuiteSparse/UMFPACK/MATLAB
-    addpath  /home/davis/SuiteSparse
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools
-\end{verbatim}
-}
-
-On a Windows system, I might see paths like this instead in my \verb'startup.m'
-file:
-
-{\footnotesize
-\begin{verbatim}
-    addpath C:\Documents and Settings\davis\My Documents\SuiteSparse\SPQR\MATLAB
-    ...
-\end{verbatim}
-}
+file, prepending the command \verb'addpath' to each line.
 
 Your \verb'startup.m' file should appear in the directory in which MATLAB
 starts.  Failing that, every time you start MATLAB, find your \verb'startup.m'
@@ -236,7 +197,7 @@ which is far sparser than returning \verb'Q' as a sparse matrix.
 \verb'x = spqr_solve (A,B)'     & \verb'x=A\B' \\
 \verb'[x,info] = spqr_solve (A,B,opts)' & as above, with statistics and non-default parameters \\
 \hline
-\verb'Y = spqr_qmult (Q,X,k)'   & computes \verb"Q'*X", \verb"Q*X", \verb"X*Q'", or \verb"X*Q" 
+\verb'Y = spqr_qmult (Q,X,k)'   & computes \verb"Q'*X", \verb"Q*X", \verb"X*Q'", or \verb"X*Q"
 (selected with \verb'k') \\
 \hline
 \end{tabular}
@@ -262,7 +223,7 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     the ``rank-sized'' factorization, where \verb'size(R,1)==nnz(diag(R))==r'.
 
     \item \verb'opts.ordering': a string describing which column ordering
-    method to use.  Let \newline 
+    method to use.  Let \newline
     \verb'[m2 n2]=size(S)' where \verb'S' is obtained by
     removing singletons from \verb'A'.  The singleton permutation places
     \verb'A*P' in the form \verb'[A11 A12 ; 0 S]' where \verb'A11' is upper
@@ -306,7 +267,7 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     sparse matrix where \verb'A=Q*R' or \verb"A*P=Q*R".  Using
     \verb"opts.Q='Householder'" returns \verb'Q' as a struct containing the
     Householder reflections applied to \verb'A' to obtain \verb'R', resulting
-    in a far sparser \verb'Q' than the \verb"'matrix'" option.  
+    in a far sparser \verb'Q' than the \verb"'matrix'" option.
 
     \item \verb'opts.permutation': a string describing how \verb'P' is to be
     returned.  The default is \verb"'matrix'", so that \verb"A*P=Q*R".  Using
@@ -684,7 +645,7 @@ It can exploit a single NVIDIA GPU, via CUDA.  To enable GPU acceleration,
 you must compile SuiteSparseQR with non-default options.  See the
 \verb'SuiteSparse_config_GPU_gcc.mk' file in the \verb'SuiteSparse_config'
 directory for details.  The packages SuiteSparse\_GPURuntime and
-GPUQREngine are also required (they should appear in the SuiteSparse 
+GPUQREngine are also required (they should appear in the SuiteSparse
 directory, along with SPQR).
 
 At run time, you must also enable the GPU by setting \verb'Common->useGPU'
@@ -711,7 +672,7 @@ that initializes CHOLMOD and then polls the GPU for use in SuiteSparseQR.
 See \verb'Demo/qrdemo_gpu.cpp' for an extended example, which can be
 compiled via \verb'make gpu' in the \verb'Demo' directory.
 
-GPU acceleration is not yet available via the MATLAB mexFunction interface. 
+GPU acceleration is not yet available via the MATLAB mexFunction interface.
 We expect to include this in a future release.
 
 For a detailed technical report on the GPU-accelerated algorithm,

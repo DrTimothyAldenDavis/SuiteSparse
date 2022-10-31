@@ -8,15 +8,6 @@ export CMAKE_OPTIONS ?=
 # edit this variable to control parallel make:
 export JOBS ?= 8
 
-# use "CUDA = no" to disable CUDA:
-export CUDA ?= auto
-ifneq ($(CUDA),no)
-    CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
-else
-    CUDA_PATH =
-endif
-export CUDA_PATH
-
 # do not modify this variable
 export SUITESPARSE = $(CURDIR)
 

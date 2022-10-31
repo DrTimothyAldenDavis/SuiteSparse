@@ -20,7 +20,7 @@ include ../SuiteSparse_config/SuiteSparse_config.mk
 demos: all
 
 # compile the dynamic library only, and then run the demos
-C:
+C: deps
 	( cd Lib ; $(MAKE) )
 	( cd Demo ; $(MAKE) )
 
@@ -28,11 +28,11 @@ C:
 all: C cov
 
 # compile the dynamic library only
-library:
+library: deps
 	( cd Lib ; $(MAKE) )
 
 # compile the static library only
-static:
+static: deps
 	( cd Lib ; $(MAKE) static )
 
 # statement coverage test
@@ -60,6 +60,12 @@ purge:
 	- ( cd MATLAB/Source ; $(RM) *.o *.mex* )
 	- ( cd MATLAB    ; $(RM) *.o *.mex* )
 	( cd Doc ; $(MAKE) clean )
+
+# compile and install dependencies in SuiteSparse/lib and SuiteSparse/include
+deps:
+	( cd ../SuiteSparse_config/build && cmake -DSUITESPARSE_LOCAL=1 .. && $(MAKE) install )
+	( cd ../AMD/build && cmake -DSUITESPARSE_LOCAL=1 .. && $(MAKE) install )
+	( cd ../COLAMD/build && cmake -DSUITESPARSE_LOCAL=1 .. && $(MAKE) install )
 
 distclean: purge
 

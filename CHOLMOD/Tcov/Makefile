@@ -17,7 +17,6 @@
 
 default: go
 
-# FIXME: remove dependency on SuiteSparse_config.mk:
 include ../../SuiteSparse_config/SuiteSparse_config.mk
 
 # uncomment this to disable the GPU
