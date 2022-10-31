@@ -11,20 +11,5 @@ FIXME: Mongoose 'make test' fails: unable to download test files
 FIXME: Mongoose docs on Mac or laptop
 
 FIXME: new output files, when date is fixed
-    AMD/MATLAB/amd_demo.m.out (diary)
-    AMD/Demo/*.out
-    CAMD/MATLAB/camd_demo.m.out (diary)
-    CAMD/Demo/*.out
-    CCOLAMD/Demo/*out
-    COLAMD/Demo/*out
-    CSparse/Demo/*out
-    CXSparse/Demo/*out
-    LDL/MATLAB/*out
-    LDL/Demo/*out
-    KLU/MATLAB/*out
-    KLU/Demo/*out
-    UMFPACK/Demo/*out
-    UMFPACK/MATLAB/*out
-    SPQR/Demo/*out*
     (look for more)
 

@@ -135,6 +135,7 @@ uninstall:
 clean:
 	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex* timelog.m
 	- $(RM) -rf MATLAB/*/*.o MATLAB/*/*.mex*
+	- $(RM) -rf Demo/o_* Demo/A.mtx  Demo/X.mtx Demo/gpu_results.txt
 	( cd Tcov && $(MAKE) purge )
 
 purge: clean

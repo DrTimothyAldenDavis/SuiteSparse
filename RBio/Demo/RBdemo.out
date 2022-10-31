@@ -1,4 +1,4 @@
-./RBdemo < ../RBio/private/west0479.rua
+./build/RBdemo < ./RBio/private/west0479.rua
 
 ===========================================================
 title: [1U 8 STAGE COLUMN SECTION, ALL SECTIONS RIGOROUS ( CHEM. ENG. )]

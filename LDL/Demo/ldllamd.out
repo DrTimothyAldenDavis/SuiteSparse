@@ -1,12 +1,12 @@
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A01
+Input file: Matrix/A01
 name: Dense/0  n: 0 entries: 0
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -14,7 +14,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  0
 
@@ -32,12 +32,12 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A02
+Input file: Matrix/A02
 name: Dense/0  n: 0 entries: 0  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -45,7 +45,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  0
 
@@ -63,12 +63,12 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A03
+Input file: Matrix/A03
 name: Dense/1  n: 1 entries: 1
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -76,7 +76,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  1
     nz, number of nonzeros in A:                        1
@@ -114,12 +114,12 @@ relative maxnorm of residual: 0
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A04
+Input file: Matrix/A04
 name: Dense/1  n: 1 entries: 2  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -127,7 +127,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  1
     nz, number of nonzeros in A:                        1
@@ -165,12 +165,12 @@ relative maxnorm of residual: 8.32667e-17
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A05
+Input file: Matrix/A05
 name: Dense/2  n: 2 entries: 4
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -178,7 +178,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  2
     nz, number of nonzeros in A:                        4
@@ -216,12 +216,12 @@ relative maxnorm of residual: 5.55112e-17
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A06
+Input file: Matrix/A06
 name: Dense/2  n: 2 entries: 5  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -229,7 +229,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  2
     nz, number of nonzeros in A:                        4
@@ -267,12 +267,12 @@ relative maxnorm of residual: 1.11022e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A07
+Input file: Matrix/A07
 name: Dense/3  n: 3 entries: 9
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -280,7 +280,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  3
     nz, number of nonzeros in A:                        9
@@ -318,12 +318,12 @@ relative maxnorm of residual: 1.11022e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A08
+Input file: Matrix/A08
 name: Dense/3  n: 3 entries: 11  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -331,7 +331,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  3
     nz, number of nonzeros in A:                        9
@@ -369,12 +369,12 @@ relative maxnorm of residual: 1.38778e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A09
+Input file: Matrix/A09
 name: HB/can_24  n: 24 entries: 160
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -382,7 +382,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -420,12 +420,12 @@ Ax=b not solved since D(5,5) is zero.
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A10
+Input file: Matrix/A10
 name: HB/can_24  n: 24 entries: 188  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -433,7 +433,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -471,12 +471,12 @@ Ax=b not solved since D(5,5) is zero.
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A11
+Input file: Matrix/A11
 name: FIDAP/ex5  n: 27 entries: 279
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -484,7 +484,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  27
     nz, number of nonzeros in A:                        279
@@ -522,12 +522,12 @@ relative maxnorm of residual: 2.72848e-10
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A12
+Input file: Matrix/A12
 name: FIDAP/ex5  n: 27 entries: 325  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -535,7 +535,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  27
     nz, number of nonzeros in A:                        279
@@ -573,12 +573,12 @@ relative maxnorm of residual: 2.32376e-10
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A13
+Input file: Matrix/A13
 name: HB/bcsstk01  n: 48 entries: 400
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -586,7 +586,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        400
@@ -624,12 +624,12 @@ relative maxnorm of residual: 2.27374e-13
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A14
+Input file: Matrix/A14
 name: HB/bcsstk01  n: 48 entries: 472  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -637,7 +637,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        400
@@ -675,12 +675,12 @@ relative maxnorm of residual: 3.83693e-13
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A15
+Input file: Matrix/A15
 name: HB/bcsstm01  n: 48 entries: 24
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -688,7 +688,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        24
@@ -726,12 +726,12 @@ Ax=b not solved since D(3,3) is zero.
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A16
+Input file: Matrix/A16
 name: HB/bcsstm01  n: 48 entries: 26  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -739,7 +739,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        24
@@ -777,12 +777,12 @@ Ax=b not solved since D(3,3) is zero.
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A17
+Input file: Matrix/A17
 name: Pothen/mesh1e1  n: 48 entries: 306
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -790,7 +790,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        306
@@ -828,12 +828,12 @@ relative maxnorm of residual: 6.93889e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A18
+Input file: Matrix/A18
 name: Pothen/mesh1e1  n: 48 entries: 359  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -841,7 +841,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        306
@@ -879,12 +879,12 @@ relative maxnorm of residual: 5.55112e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A19
+Input file: Matrix/A19
 name: Bai/bfwb62  n: 62 entries: 342
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -892,7 +892,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  62
     nz, number of nonzeros in A:                        342
@@ -930,12 +930,12 @@ relative maxnorm of residual: 1.11022e-15
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A20
+Input file: Matrix/A20
 name: Bai/bfwb62  n: 62 entries: 407  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -943,7 +943,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  62
     nz, number of nonzeros in A:                        342
@@ -981,12 +981,12 @@ relative maxnorm of residual: 2.15827e-12
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A21
+Input file: Matrix/A21
 name: HB/bcsstk02  n: 66 entries: 4356
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -994,7 +994,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        4356
@@ -1032,12 +1032,12 @@ relative maxnorm of residual: 7.50219e-13
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A22
+Input file: Matrix/A22
 name: HB/bcsstk02  n: 66 entries: 5175  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1045,7 +1045,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        4356
@@ -1083,12 +1083,12 @@ relative maxnorm of residual: 8.59759e-13
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A23
+Input file: Matrix/A23
 name: HB/bcsstm02  n: 66 entries: 66
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1096,7 +1096,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        66
@@ -1134,12 +1134,12 @@ relative maxnorm of residual: 2.22045e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A24
+Input file: Matrix/A24
 name: HB/bcsstm02  n: 66 entries: 72  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1147,7 +1147,7 @@ AMD version 2.4.6, May 4, 2016: approximate minimum degree ordering
     size of AMD integer: 8
 
 
-AMD version 2.4.6, May 4, 2016, results:
+AMD version 3.0.0, Nov 4, 2022, results:
     status: OK, but jumbled
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        66
@@ -1185,7 +1185,7 @@ relative maxnorm of residual: 2.22045e-16
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A25
+Input file: Matrix/A25
 name: Dense/0  n: 0 entries: 0 (invalid matrix, Ap [0] = 1)
 --------------------------------------------------------
 
@@ -1193,7 +1193,7 @@ ldlamd: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A26
+Input file: Matrix/A26
 name: Dense/2  n: 2 entries: 4 (invalid perm, P[1]=99)
 --------------------------------------------------------
 
@@ -1201,7 +1201,7 @@ ldlamd: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A27
+Input file: Matrix/A27
 name: Dense/3  n: 3 entries: 9 (invalid perm)
 --------------------------------------------------------
 
@@ -1209,7 +1209,7 @@ ldlamd: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A28
+Input file: Matrix/A28
 name: Dense/3  n: 3 entries: 9 (invalid Ap)
 --------------------------------------------------------
 
@@ -1217,7 +1217,7 @@ ldlamd: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A29
+Input file: Matrix/A29
 name: Dense/3  n: 3 entries: 9 (invalid Ai)
 --------------------------------------------------------
 
@@ -1225,7 +1225,7 @@ ldlamd: invalid matrix and/or permutation
 
 
 --------------------------------------------------------
-Input file: ../Matrix/A30
+Input file: Matrix/A30
 name: Dense/3  n: 3 entries: 9 (invalid Ai)
 --------------------------------------------------------
 
