@@ -36,7 +36,7 @@ default:
 	( cd GPUQREngine && $(MAKE) )
 	( cd SPQR && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) )
-	( cd SLIP_LU && $(MAKE) )
+	- ( cd SLIP_LU && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local:
@@ -59,7 +59,7 @@ local:
 	( cd GPUQREngine && $(MAKE) local && $(MAKE) install )
 	( cd SPQR && $(MAKE) local && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
-	( cd SLIP_LU && $(MAKE) )
+	- ( cd SLIP_LU && $(MAKE) )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install:
@@ -82,7 +82,7 @@ install:
 	( cd GPUQREngine && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) install )
-	( cd SLIP_LU && $(MAKE) install )
+	- ( cd SLIP_LU && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
@@ -105,7 +105,7 @@ uninstall:
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 	( cd GraphBLAS && $(MAKE) uninstall )
-	( cd SLIP_LU && $(MAKE) uninstall )
+	- ( cd SLIP_LU && $(MAKE) uninstall )
 
 # compile the libraries
 library:
@@ -128,7 +128,7 @@ library:
 	( cd GPUQREngine && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
 	( cd GraphBLAS && $(MAKE) library )
-	( cd SLIP_LU && $(MAKE) library )
+	- ( cd SLIP_LU && $(MAKE) library )
 
 # Remove all files not in the original distribution
 purge:
@@ -213,7 +213,7 @@ docs:
 	( cd UMFPACK && $(MAKE) docs )
 	( cd CHOLMOD && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
-	( cd SLIP_LU && $(MAKE) docs )
+	- ( cd SLIP_LU && $(MAKE) docs )
 
 distclean: purge
 
@@ -225,5 +225,5 @@ cov: local
 	( cd KLU && $(MAKE) cov )
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
-	( cd SLIP_LU && $(MAKE) cov )
+	- ( cd SLIP_LU && $(MAKE) cov )
 
