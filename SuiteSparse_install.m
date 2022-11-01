@@ -47,9 +47,10 @@ function SuiteSparse_install (do_demo)
 %
 % Before using SuiteSparse_install, you must compile the GraphBLAS library for
 % use in MATLAB.  In the system shell while in the SuiteSparse folder, type
-% "make gbmatlab".  If you do not have permission for a system-wide
-% installation of the compiled GraphBLAS library, add the SuiteSparse/lib
-% folder to your LD_LIBRARY_PATH and restart MATLAB.
+% "make gbmatlab".  You must then either install the libgraphblas_matlab.so
+% library system-wide ( cd GraphBLAS/GraphBLAS ; sudo make install), or install
+% your own copy ( make gblocal ) and then add the SuiteSparse/lib folder to
+% your LD_LIBRARY_PATH.  Restart MATLAB after compiling libgraphblas_matlab.so.
 %
 % Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
 %

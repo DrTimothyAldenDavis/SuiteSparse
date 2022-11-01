@@ -27,16 +27,6 @@ if (nargin < 2)
 end
 
 if (dopause)
-    input ('Hit enter to run the GraphBLAS demo: ', 's') ;
-end
-try
-    gbdemo
-catch me
-    disp (me.message) ;
-    fprintf ('GraphBLAS demo failed\n' )
-end
-
-if (dopause)
     input ('Hit enter to run the CXSparse demo: ', 's') ;
 end
 try
@@ -206,6 +196,16 @@ try
 catch me
     disp (me.message) ;
     fprintf ('Mongoose demo failed\n' )
+end
+
+if (dopause)
+    input ('Hit enter to run the GraphBLAS demo: ', 's') ;
+end
+try
+    gbdemo
+catch me
+    disp (me.message) ;
+    fprintf ('GraphBLAS demo failed\n' )
 end
 
 fprintf ('\n\n---- SuiteSparse demos complete\n') ;

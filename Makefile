@@ -227,3 +227,9 @@ cov: local
 	( cd UMFPACK && $(MAKE) cov )
 	( cd SLIP_LU && $(MAKE) cov )
 
+gbmatlab:
+	( cd GraphBLAS/GraphBLAS && $(MAKE) )
+
+gblocal:
+	( cd GraphBLAS/GraphBLAS && $(MAKE) local && $(MAKE) install )
+
