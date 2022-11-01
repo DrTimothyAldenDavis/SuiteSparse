@@ -62,6 +62,9 @@ demo: library
 	- ./build/cs_demo3 < ./Matrix/bcsstk01
 	- ./build/cs_demo3 < ./Matrix/bcsstk16
 
+install:
+	- echo 'CSparse is not installed; use CXSparse instead'
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && $(MAKE) --jobs=${JOBS} )

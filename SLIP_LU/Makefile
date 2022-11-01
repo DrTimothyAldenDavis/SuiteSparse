@@ -72,7 +72,7 @@ deps:
 distclean: purge
 
 # install the library
-install: library
+install:
 	( cd Lib ; $(MAKE) install )
 
 # uninstall the library
