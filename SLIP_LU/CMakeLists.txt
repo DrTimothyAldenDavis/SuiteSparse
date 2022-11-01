@@ -63,7 +63,7 @@ configure_file ( "Config/SLIP_LU_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/SLIP
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} 
+include_directories ( Source Include Demo ${SUITESPARSE_CONFIG_INCLUDE_DIR} 
     ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR}
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
 
@@ -177,10 +177,6 @@ if ( DEMO )
     target_link_libraries ( SLIPLU   PUBLIC sliplu )
     target_link_libraries ( example  PUBLIC sliplu )
     target_link_libraries ( example2 PUBLIC sliplu )
-
-    target_include_directories ( SLIPLU   PRIVATE ${CMAKE_SOURCE_DIR}/Demo )
-    target_include_directories ( example  PRIVATE ${CMAKE_SOURCE_DIR}/Demo )
-    target_include_directories ( example2 PRIVATE ${CMAKE_SOURCE_DIR}/Demo )
 
 else ( )
 
