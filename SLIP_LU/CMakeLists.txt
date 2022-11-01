@@ -169,12 +169,12 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( SLIPLU   "Demo/SLIPLU.c" "Demo/demos.c" )
+    add_executable ( example1 "Demo/SLIPLU.c" "Demo/demos.c" )
     add_executable ( example  "Demo/example.c" )
     add_executable ( example2 "Demo/example2.c" "Demo/demos.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( SLIPLU   PUBLIC sliplu )
+    target_link_libraries ( example1 PUBLIC sliplu )
     target_link_libraries ( example  PUBLIC sliplu )
     target_link_libraries ( example2 PUBLIC sliplu )
 

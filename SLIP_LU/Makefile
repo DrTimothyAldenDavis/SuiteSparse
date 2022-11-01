@@ -50,7 +50,7 @@ demo: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	( cd Demo && ../build/example  )
 	( cd Demo && ../build/example2 )
-	( cd Demo && ../build/SLIPLU   )
+	( cd Demo && ../build/example1 )
 
 cov:
 	( cd Tcov && $(MAKE) )
