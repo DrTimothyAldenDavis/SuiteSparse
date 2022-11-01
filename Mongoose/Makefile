@@ -62,6 +62,7 @@ uninstall:
 	- xargs rm < build/install_manifest.txt
 
 # run the extensive tests
+# FIXME: Mongoose 'make test' fails: unable to download test files
 test:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
 

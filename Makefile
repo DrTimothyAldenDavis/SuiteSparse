@@ -18,7 +18,7 @@ export SUITESPARSE = $(CURDIR)
 # and include files in /usr/local/include.
 default:
 	( cd SuiteSparse_config && $(MAKE) )
-	- ( cd SuiteSparse_metis && $(MAKE) )
+	( cd SuiteSparse_metis && $(MAKE) )
 	( cd Mongoose && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
@@ -41,7 +41,7 @@ default:
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
-	- ( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
+	( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
 	( cd Mongoose && $(MAKE) local && $(MAKE) install )
 	( cd AMD && $(MAKE) local && $(MAKE) install )
 	( cd BTF && $(MAKE) local && $(MAKE) install )
@@ -62,10 +62,10 @@ local:
 	( cd SLIP_LU && $(MAKE) )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
-install: gbinstall moninstall
+install:
 	( cd SuiteSparse_config && $(MAKE) install )
-	- ( cd SuiteSparse_metis && $(MAKE) install )
-	# ( cd Mongoose  && $(MAKE) install )
+	( cd SuiteSparse_metis && $(MAKE) install )
+	( cd Mongoose  && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
 	( cd CAMD && $(MAKE) install )
@@ -87,8 +87,8 @@ install: gbinstall moninstall
 # uninstall all packages
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
-	- ( cd SuiteSparse_metis && $(MAKE) uninstall )
-	- ( cd Mongoose  && $(MAKE) uninstall )
+	( cd SuiteSparse_metis && $(MAKE) uninstall )
+	( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
 	( cd CAMD && $(MAKE) uninstall )
 	( cd COLAMD && $(MAKE) uninstall )
@@ -104,13 +104,13 @@ uninstall:
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
-	- ( cd GraphBLAS && $(MAKE) uninstall )
+	( cd GraphBLAS && $(MAKE) uninstall )
 	( cd SLIP_LU && $(MAKE) uninstall )
 
 # compile the libraries
 library:
 	( cd SuiteSparse_config && $(MAKE) )
-	- ( cd SuiteSparse_metis && $(MAKE) library )
+	( cd SuiteSparse_metis && $(MAKE) library )
 	( cd Mongoose  && $(MAKE) library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
@@ -183,7 +183,7 @@ clean:
 demo:
 	- ( cd SuiteSparse_config && $(MAKE) demo )
 	- ( cd SuiteSparse_metis && $(MAKE) demo )
-	- ( cd Mongoose  && $(MAKE) demo )
+	- ( cd Mongoose && $(MAKE) demo )
 	- ( cd AMD && $(MAKE) demo )
 	- ( cd CAMD && $(MAKE) demo )
 	- ( cd COLAMD && $(MAKE) demo )
@@ -218,7 +218,7 @@ docs:
 distclean: purge
 
 # statement coverage (Linux only); this requires a lot of time.
-cov: purge
+cov: local 
 	( cd CXSparse && $(MAKE) cov )
 	( cd CSparse && $(MAKE) cov )
 	( cd CHOLMOD && $(MAKE) cov )
@@ -226,25 +226,4 @@ cov: purge
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
 	( cd SLIP_LU && $(MAKE) cov )
-
-# just compile GraphBLAS
-gb:
-	( cd GraphBLAS && $(MAKE) )
-
-# compile and install GraphBLAS
-gbinstall: gb
-	( cd GraphBLAS && $(MAKE) install )
-
-# compile and install GraphBLAS libgraphblas_renamed, for MATLAB
-gbmatlab:
-	( cd GraphBLAS/GraphBLAS && $(MAKE) )
-	( cd GraphBLAS/GraphBLAS && $(MAKE) install )
-
-# just compile Mongoose
-mon:
-	( cd Mongoose && $(MAKE) )
-
-# compile and install Mongoose
-moninstall: mon
-	( cd Mongoose  && $(MAKE) install )
 
