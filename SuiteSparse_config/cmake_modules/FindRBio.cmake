@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/cmake_modules/FindAMD.cmake
+# SuiteSparse/SuiteSparse_config/cmake_modules/FindRBio.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.

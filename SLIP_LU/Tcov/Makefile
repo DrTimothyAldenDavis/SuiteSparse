@@ -10,7 +10,26 @@
 
 default: run
 
-include ../SuiteSparse_config.mk
+################################################################################
+
+    SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+    INSTALL_LIB ?= $(SUITESPARSE)/lib
+
+    # use 8 jobs by default
+    JOBS ?= 8
+
+    LDFLAGS = --coverage
+    LDFLAGS += -L$(INSTALL_LIB)
+    LDFLAGS += -Wl,-rpath=$(INSTALL_LIB)
+
+    # remove object files, but keep compiled libraries via 'make clean'
+    CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
+        *.gcda *.gcno *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
+
+    # also remove compiled libraries, via 'make distclean'
+    PURGE = *.so* *.a *.dll *.dylib *.dSYM
+
+################################################################################
 
 # Linux test coverage
 CC = gcc
@@ -21,7 +40,7 @@ CFLAGS = -g -fprofile-arcs -ftest-coverage \
         -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include \
         -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV
 
-LDLIBS += -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig
+LDLIBS = -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig -lrt
 
 # run all statement coverage tests, and then check for 100% coverage
 run: runtests
