@@ -1,12 +1,8 @@
 Nov 4, 2022: SuiteSparse 6.0.0
 
-    * using CMake build system for (nearly) all packages:
-        SLIP_LU has not been modified.  It will soon be replaced with a major
-        update in a package with a new name (SPEX) in a future release of
-        SuiteSparse.
+    * using CMake build system for all packages
     * CMake Find*: all packages now have a Find*.cmake.  See
         SuiteSparse_config/cmake_modules.
-    * SuiteSparse_config.mk: removed (moved to SLIP_LU).
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
         with int32_t and int64_t.  The SuiteSparse_long #define has been
         deprecated and removed.  Replace its use with int64_t in any code that
