@@ -116,6 +116,9 @@ demo: library
 	- ./build/qrdemoc < Matrix/young1c.mtx
 	- ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
 
+cov:
+	( cd Tcov && $(MAKE) )
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && $(MAKE) --jobs=${JOBS} )
