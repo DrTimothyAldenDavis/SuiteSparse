@@ -1,6 +1,6 @@
 Nov 4, 2022: SuiteSparse 6.0.0
 
-    * using CMake build system for all packages
+    * major update: using CMake build system for all packages
     * CMake Find*: all packages now have a Find*.cmake.  See
         SuiteSparse_config/cmake_modules.
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
@@ -17,7 +17,8 @@ Nov 4, 2022: SuiteSparse 6.0.0
         libsuitesparse_metis.so.  The unmodified libmetis.so cannot be used
         with SuiteSparse.
     * SPDX License Identifier: added to each file.  No change in license.
-    * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK.
+    * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK, with
+        either 32-bit (default) or 64-bit integers.
 
 Aug 25, 2022, SuiteSparse 5.13.0
 
