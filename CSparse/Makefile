@@ -43,6 +43,8 @@ library:
 
 local: library
 
+global: library
+
 debug:
 	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
 

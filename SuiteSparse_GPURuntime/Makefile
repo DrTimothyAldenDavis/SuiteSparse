@@ -41,6 +41,10 @@ library:
 local:
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
+# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
+global:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && $(MAKE) --jobs=${JOBS} )

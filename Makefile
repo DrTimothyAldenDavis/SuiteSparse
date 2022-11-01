@@ -61,6 +61,29 @@ local:
 	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SLIP_LU && $(MAKE) local && $(MAKE) install )
 
+# compile and install in SuiteSparse/lib and SuiteSparse/include
+global:
+	( cd SuiteSparse_config && $(MAKE) global && $(MAKE) install )
+	( cd SuiteSparse_metis && $(MAKE) global && $(MAKE) install )
+	( cd Mongoose && $(MAKE) global && $(MAKE) install )
+	( cd AMD && $(MAKE) global && $(MAKE) install )
+	( cd BTF && $(MAKE) global && $(MAKE) install )
+	( cd CAMD && $(MAKE) global && $(MAKE) install )
+	( cd CCOLAMD && $(MAKE) global && $(MAKE) install )
+	( cd COLAMD && $(MAKE) global && $(MAKE) install )
+	( cd CHOLMOD && $(MAKE) global && $(MAKE) install )
+	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
+	( cd CXSparse && $(MAKE) global && $(MAKE) install )
+	( cd LDL && $(MAKE) global && $(MAKE) install )
+	( cd KLU && $(MAKE) global && $(MAKE) install )
+	( cd UMFPACK && $(MAKE) global && $(MAKE) install )
+	( cd RBio && $(MAKE) global && $(MAKE) install )
+	( cd SuiteSparse_GPURuntime && $(MAKE) global && $(MAKE) install )
+	( cd GPUQREngine && $(MAKE) global && $(MAKE) install )
+	( cd SPQR && $(MAKE) global && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) global && $(MAKE) install )
+	( cd SLIP_LU && $(MAKE) global && $(MAKE) install )
+
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install:
 	( cd SuiteSparse_config && $(MAKE) install )
