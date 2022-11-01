@@ -4,7 +4,7 @@ UMFPACK V6.0 (Nov 4, 2022) demo: _dl_ version
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
 
-UMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.
+UMFPACK License: SPDX-License-Identifier: GPL-2.0+
    UMFPACK is available under alternate licenses,
    contact T. Davis for details.
 
@@ -337,7 +337,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.11e-16
+    sparse backward error omega1:                  1.18e-16
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -357,7 +357,7 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.77636e-15
+maxnorm of residual: 1.06581e-14
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -374,7 +374,7 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.77636e-15
+maxnorm of residual: 1.06581e-14
 
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double

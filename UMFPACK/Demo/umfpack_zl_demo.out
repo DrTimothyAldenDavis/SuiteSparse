@@ -4,7 +4,7 @@ UMFPACK V6.0 (Nov 4, 2022) demo: _zl_ version
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
 
-UMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.
+UMFPACK License: SPDX-License-Identifier: GPL-2.0+
    UMFPACK is available under alternate licenses,
    contact T. Davis for details.
 
@@ -334,14 +334,14 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     numeric factorization wallclock time (sec):    0.00
     numeric factorization mflops (wallclock):      0.01
 
-    solve flops:                                   5.23000e+02
-    iterative refinement steps taken:              0
-    iterative refinement steps attempted:          0
-    sparse backward error omega1:                  2.02e-16
+    solve flops:                                   1.02800e+03
+    iterative refinement steps taken:              1
+    iterative refinement steps attempted:          1
+    sparse backward error omega1:                  5.28e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
-    total symbolic + numeric + solve flops:        5.57000e+02
+    total symbolic + numeric + solve flops:        1.06200e+03
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -357,7 +357,7 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (2.3876 - 3.04245i)
     dense vector OK
 
-maxnorm of residual: 1.77636e-14
+maxnorm of residual: 1.77636e-15
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -456,7 +456,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  7.40e-17
+    sparse backward error omega1:                  7.82e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -471,7 +471,7 @@ x (solution of A'x=b): dense vector, n = 5.
     4 : (9.04015 - 0.613724i)
     dense vector OK
 
-maxnorm of residual: 5.44009e-15
+maxnorm of residual: 4.52416e-15
 
 
 changing A (1,4) to zero
@@ -684,7 +684,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   5.15000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.47e-16
+    sparse backward error omega1:                  6.01e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -699,7 +699,7 @@ x (with modified A): dense vector, n = 5.
     4 : (32.7361 - 2.90097i)
     dense vector OK
 
-maxnorm of residual: 8.88178e-15
+maxnorm of residual: 4.66294e-15
 
 changing real part of A (0,0) from 2 to 2
 changing real part of A (1,0) from 3 to 2
@@ -1322,7 +1322,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.19e-16
+    sparse backward error omega1:                  9.42e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -1337,7 +1337,7 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 1.28786e-14
+maxnorm of residual: 4.88498e-15
 
 
 Solving C'x=b again, using umfpack_zl_wsolve instead:
@@ -1420,7 +1420,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.19e-16
+    sparse backward error omega1:                  9.42e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -1435,7 +1435,7 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 1.28786e-14
+maxnorm of residual: 4.88498e-15
 
 
 umfpack_zl_demo complete.
