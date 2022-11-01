@@ -14,10 +14,12 @@ export SUITESPARSE
 # default: compile the dynamic library, and run the demos
 default: C
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
+include SuiteSparse_config.mk
 
-# compile the dynamic library, and then run the demos and statement coverage
-demos: all
+# compile the dynamic library, and then run the demos
+demos: C
+
+demo: C
 
 # compile the dynamic library only, and then run the demos
 C: deps

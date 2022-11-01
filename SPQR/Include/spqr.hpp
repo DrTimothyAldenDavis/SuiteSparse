@@ -1007,4 +1007,54 @@ inline int64_t spqr_mult (int64_t a, int64_t b, int *ok)
     return (c) ;
 }
 
+//------------------------------------------------------------------------------
+// test coverage
+//------------------------------------------------------------------------------
+
+// SuiteSparse_metis has been modified from the original METIS 5.1.0.  It uses
+// the SuiteSparse_config function pointers for malloc/calloc/realloc/free, so
+// that it can use the same memory manager functions as the rest of
+// SuiteSparse.  However, during test coverage in SPQR/Tcov, the call to
+// malloc inside SuiteSparse_metis pretends to fail, to test SPQR's memory
+// handling.  This causes METIS to terminate the program.  To avoid this, METIS
+// is allowed to use the standard ANSI C11 malloc/calloc/realloc/free functions
+// during testing.
+
+#ifdef TEST_COVERAGE
+
+    //--------------------------------------------------------------------------
+    // SPQR during test coverage in SPQR/Tcov.
+    //--------------------------------------------------------------------------
+
+    void normal_memory_handler (cholmod_common *cc, bool free_work) ;
+    void test_memory_handler (cholmod_common *cc, bool free_work) ;
+    extern int64_t my_tries, my_punt, save_my_tries, save_my_punt ;
+
+    #define TEST_COVERAGE_PAUSE                                     \
+    {                                                               \
+        save_my_tries = my_tries ;                                  \
+        save_my_punt  = my_punt  ;                                  \
+        normal_memory_handler (cc, false) ;                         \
+    }
+
+    #define TEST_COVERAGE_RESUME                                    \
+    {                                                               \
+        test_memory_handler (cc, false) ;                           \
+        my_tries = save_my_tries ;                                  \
+        my_punt  = save_my_punt  ;                                  \
+    }
+
+#else
+
+    //--------------------------------------------------------------------------
+    // SPQR in production: no change to SuiteSparse_config
+    //--------------------------------------------------------------------------
+
+
+    #define TEST_COVERAGE_PAUSE
+    #define TEST_COVERAGE_RESUME
+
 #endif
+
+#endif
+

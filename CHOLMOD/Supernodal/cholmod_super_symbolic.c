@@ -570,7 +570,7 @@ int CHOLMOD(super_symbolic2)
 		merge = ((ns <= nrelax1 && z < zrelax0) ||
 			 (ns <= nrelax2 && z < zrelax1) ||
 					  (z < zrelax2)) &&
-			(xtotsize < Int_max / sizeof (double)) ;
+			(xtotsize < ((double) Int_max) / sizeof (double)) ;
 
 	    }
 	}
@@ -669,7 +669,7 @@ int CHOLMOD(super_symbolic2)
             /* also compute xsize in double to guard against Int overflow */
             xxsize += ((double) nscol) * ((double) nsrow) ;
         }
-	if (ssize < 0 ||(find_xsize && xxsize > Int_max))
+	if (ssize < 0 ||(find_xsize && xxsize > (double) Int_max))
 	{
 	    /* Int overflow, clear workspace and return.
                QR factorization will not use xxsize, so that error is ignored.

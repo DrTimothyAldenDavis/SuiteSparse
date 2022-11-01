@@ -22,7 +22,7 @@
 /* === my_tries ============================================================= */
 /* ========================================================================== */
 
-Int my_tries = -1 ; /* a global variable */
+int64_t my_tries = -1 ; /* a global variable */
 
 
 /* ========================================================================== */
@@ -35,7 +35,7 @@ void *my_malloc2 (size_t size)
     if (my_tries == 0)
     {
 	/* pretend to fail */
-	/* printf ("p 0 (pretend to fail)\n") ; */
+	// printf ("(my_malloc2 pretend to fail)\n") ;
 	return (NULL) ;
     }
     if (my_tries > 0)
@@ -58,7 +58,7 @@ void *my_calloc2 (size_t n, size_t size)
     if (my_tries == 0)
     {
 	/* pretend to fail */
-	/* printf ("p 0 (pretend to fail)\n") ; */
+	// printf ("(my_calloc2 pretend to fail)\n") ;
 	return (NULL) ;
     }
     if (my_tries > 0)
@@ -81,7 +81,7 @@ void *my_realloc2 (void *p, size_t size)
     if (my_tries == 0)
     {
 	/* pretend to fail */
-	/* printf ("p2 0 (pretend to fail)\n") ; */
+	// printf ("(my_realloc2 pretend to fail)\n") ;
 	return (NULL) ;
     }
     if (my_tries > 0)

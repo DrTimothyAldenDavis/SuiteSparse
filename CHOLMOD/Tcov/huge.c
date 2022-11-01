@@ -39,7 +39,7 @@ void huge ( )
     FILE *f ;
     double beta [2] ;
 
-    n = Size_max ;
+    n = SIZE_MAX ;
     CHOLMOD (free_work) (cm) ;
     CHOLMOD (allocate_work) (n, 0, 0, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
@@ -49,14 +49,14 @@ void huge ( )
 
     /* create a fake zero sparse matrix, with huge dimensions */
     A = CHOLMOD (spzeros) (1, 1, 0, CHOLMOD_REAL, cm) ;
-    A->nrow = Size_max ;
-    A->ncol = Size_max ;
+    A->nrow = SIZE_MAX ;
+    A->ncol = SIZE_MAX ;
     A->stype = 0 ;
 
     /* create a fake factor, with huge dimensions.  */
     L = CHOLMOD (allocate_factor)  (1, cm) ;
     OKP (L) ;
-    L->n = Size_max ;
+    L->n = SIZE_MAX ;
     CHOLMOD (factorize) (A, L, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
@@ -72,9 +72,9 @@ void huge ( )
     CHOLMOD (factorize) (C, L, cm) ;
     ok = CHOLMOD (resymbol) (C, NULL, 0, 0, L, cm) ;
     OK (ok) ;
-    C->nrow = Size_max ;
-    C->ncol = Size_max ;
-    L->n = Size_max ;
+    C->nrow = SIZE_MAX ;
+    C->ncol = SIZE_MAX ;
+    L->n = SIZE_MAX ;
 
     ok = CHOLMOD (resymbol) (C, NULL, 0, 0, L, cm) ;
     NOT (ok) ;
@@ -114,7 +114,7 @@ void huge ( )
     CHOLMOD (free_sparse) (&C, cm) ;
     CHOLMOD (free_factor) (&L, cm) ;
 
-    C = CHOLMOD (allocate_sparse) (Size_max, Size_max, Size_max, 0, 0, 0, 0, cm);
+    C = CHOLMOD (allocate_sparse) (SIZE_MAX, SIZE_MAX, SIZE_MAX, 0, 0, 0, 0, cm);
     NOP (C) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
@@ -122,11 +122,11 @@ void huge ( )
 	&junk, &junk, &junk, &junk, &junk, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
-    C = CHOLMOD (submatrix) (A, &junk, Size_max/2, &junk, Size_max/2, 0, 0, cm) ;
+    C = CHOLMOD (submatrix) (A, &junk, SIZE_MAX/2, &junk, SIZE_MAX/2, 0, 0, cm) ;
     NOP (C) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
-    ok = CHOLMOD (transpose_unsym) (A, 0, &junk, &junk, Size_max, A, cm) ;
+    ok = CHOLMOD (transpose_unsym) (A, 0, &junk, &junk, SIZE_MAX, A, cm) ;
     NOT (ok) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
@@ -165,7 +165,7 @@ void huge ( )
     CHOLMOD (etree) (A, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
-    L = CHOLMOD (allocate_factor) (Size_max, cm) ;
+    L = CHOLMOD (allocate_factor) (SIZE_MAX, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
     NOP (L) ;
 
@@ -180,7 +180,7 @@ void huge ( )
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 #endif
 
-    CHOLMOD (postorder) (&junk, Size_max, &junk, &junk, cm) ;
+    CHOLMOD (postorder) (&junk, SIZE_MAX, &junk, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
 
     /* causes overflow in 32-bit version, but not 64-bit */
@@ -194,7 +194,7 @@ void huge ( )
     CHOLMOD (free_triplet) (&T, cm) ;
     fclose (f) ;
 
-    n = Size_max ;
+    n = SIZE_MAX ;
     X = CHOLMOD (allocate_dense) (n, 1, n, CHOLMOD_REAL, cm) ;
     NOP (X) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
@@ -207,9 +207,9 @@ void huge ( )
     L = CHOLMOD (analyze) (C, cm) ;
     OKP (L) ;
     junk = 0 ;
-    C->nrow = Size_max ;
-    C->ncol = Size_max ;
-    L->n = Size_max ;
+    C->nrow = SIZE_MAX ;
+    C->ncol = SIZE_MAX ;
+    L->n = SIZE_MAX ;
     CHOLMOD (super_symbolic) (C, C, &junk, L, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE) ;
     cm->supernodal = save ;
@@ -227,9 +227,9 @@ void huge ( )
     L = CHOLMOD (analyze) (C, cm) ;
     OKP (L) ;
     OK (cm->status == CHOLMOD_OK) ;
-    C->nrow = Size_max ;
-    C->ncol = Size_max ;
-    L->n = Size_max ;
+    C->nrow = SIZE_MAX ;
+    C->ncol = SIZE_MAX ;
+    L->n = SIZE_MAX ;
     CHOLMOD (super_numeric) (C, C, beta, L, cm) ;
     cm->supernodal = save ;
     C->nrow = 1 ;

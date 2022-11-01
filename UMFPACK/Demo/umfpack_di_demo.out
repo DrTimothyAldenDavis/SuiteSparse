@@ -45,7 +45,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 8
+    8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 4
     compiled for ANSI C
     POSIX C clock_getttime.
     compiled with CHOLMOD ordering options
@@ -260,7 +260,7 @@ diagonal of U: dense vector, n = 5.
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -337,7 +337,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.18e-16
+    sparse backward error omega1:                  1.11e-16
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -357,7 +357,7 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.06581e-14
+maxnorm of residual: 1.77636e-15
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -374,12 +374,12 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.06581e-14
+maxnorm of residual: 1.77636e-15
 
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -608,7 +608,7 @@ diagonal of U: dense vector, n = 5.
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -855,7 +855,7 @@ diagonal of U: dense vector, n = 5.
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1246,7 +1246,7 @@ Done loading numeric object
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1344,7 +1344,7 @@ Solving C'x=b again, using umfpack_di_wsolve instead:
 UMFPACK V6.0.0 (Nov 4, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 8
+    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5

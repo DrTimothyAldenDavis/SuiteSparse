@@ -431,7 +431,8 @@ static int read_header	/* returns TRUE if successful, FALSE on error */
 	    l3 = 0 ;
 	    l4 = 0 ;
 	    nitems = sscanf (buf, "%lg %lg %lg %lg\n", &l1, &l2, &l3, &l4) ;
-	    if (nitems < 2 || nitems > 4 || l1 > Int_max || l2 > Int_max)
+	    if (nitems < 2 || nitems > 4 ||
+                l1 > (double) Int_max || l2 > (double) Int_max)
 	    {
 		/* invalid matrix */
 		return (FALSE) ;

@@ -653,7 +653,7 @@ size_t CHOLMOD(maxrank)	/* returns validated value of Common->maxrank */
 	 * overflow, and CHOLMOD will run out of memory or safely detect integer
 	 * overflow elsewhere.
 	 */
-	maxrank = MIN (maxrank, Size_max / (n * sizeof (double))) ;
+	maxrank = MIN (maxrank, SIZE_MAX / (n * sizeof (double))) ;
     }
     if (maxrank <= 2)
     {

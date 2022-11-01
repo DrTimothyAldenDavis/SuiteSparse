@@ -104,8 +104,7 @@ Int getFlops(TaskDescriptor *task)
         case TASKTYPE_Apply2_Factorize1: return flopsApplyFactorize(2, 1);
         #endif
 
-        case TASKTYPE_SAssembly:         return 0;
-        case TASKTYPE_PackAssembly:      return 0;
+        default: break ;
     }
     return (0) ;
 }
@@ -140,8 +139,7 @@ Int getWeightedFlops(TaskDescriptor *task)
         case TASKTYPE_Apply2_Factorize1: flops *= 10; break;
         #endif
 
-        case TASKTYPE_SAssembly:         break;
-        case TASKTYPE_PackAssembly:      break;
+        default: break ;
     }
     return flops;
 }

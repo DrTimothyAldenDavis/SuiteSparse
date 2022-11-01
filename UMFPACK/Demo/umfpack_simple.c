@@ -19,6 +19,13 @@ double x [5] ;
 
 int main (void)
 {
+    printf ("%s\n", UMFPACK_VERSION) ;
+    printf ("%s", UMFPACK_COPYRIGHT) ;
+    printf ("%s", UMFPACK_LICENSE_PART1) ;
+    printf ("BLAS used: %s\n", SuiteSparse_BLAS_library ( )) ;
+    printf ("BLAS integer size: %d bytes\n",
+        (int) sizeof (SUITESPARSE_BLAS_INT)) ;
+
     double *null = (double *) NULL ;
     int i ;
     void *Symbolic, *Numeric ;

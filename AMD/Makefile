@@ -48,14 +48,14 @@ all: library
 
 demo: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
-	./build/amd_demo > build/my_amd_demo.out
-	- diff Demo/amd_demo.out build/my_amd_demo.out
-	./build/amd_l_demo > build/my_amd_l_demo.out
-	- diff Demo/amd_l_demo.out build/my_amd_l_demo.out
-	./build/amd_demo2 > build/my_amd_demo2.out
-	- diff Demo/amd_demo2.out build/my_amd_demo2.out
-	./build/amd_simple > build/my_amd_simple.out
-	- diff Demo/amd_simple.out build/my_amd_simple.out
+	./build/amd_demo > build/amd_demo.out
+	- diff Demo/amd_demo.out build/amd_demo.out
+	./build/amd_l_demo > build/amd_l_demo.out
+	- diff Demo/amd_l_demo.out build/amd_l_demo.out
+	./build/amd_demo2 > build/amd_demo2.out
+	- diff Demo/amd_demo2.out build/amd_demo2.out
+	./build/amd_simple > build/amd_simple.out
+	- diff Demo/amd_simple.out build/amd_simple.out
 
 # just compile after running cmake; do not run cmake again
 remake:

@@ -522,7 +522,7 @@ static void simplicial_symbolic_to_simplicial_numeric
 		/* add extra space */
 		xlnz = (double) lnz ;
 		xlnz *= grow0 ;
-		xlnz = MIN (xlnz, Size_max) ;
+		xlnz = MIN (xlnz, (double) SIZE_MAX) ;
 		xlnz = MIN (xlnz, ((double) n * (double) n + (double) n) / 2) ;
 		lnz = (Int) xlnz ;
 	    }
@@ -754,7 +754,7 @@ static void change_simplicial_numeric
 	{
 	    xlnz = (double) lnz ;
 	    xlnz *= grow0 ;
-	    xlnz = MIN (xlnz, Size_max) ;
+	    xlnz = MIN (xlnz, (double) SIZE_MAX) ;
 	    xlnz = MIN (xlnz, ((double) n * (double) n + (double) n) / 2) ;
 	    lnz = (Int) xlnz ;
 	}

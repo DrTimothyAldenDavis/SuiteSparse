@@ -196,7 +196,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     ok = CHOLMOD(super_symbolic) (A, NULL, Parent, L, cm) ;
 
     /* super_symbolic should fail if lnz is too large */
-    if (cm->lnz > Size_max / 2)
+    if (cm->lnz > SIZE_MAX / 2)
     {
 	printf ("raw_factor: problem is huge\n") ;
 	NOT (ok) ;

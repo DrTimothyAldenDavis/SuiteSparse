@@ -10,9 +10,11 @@
 
 /* Test for amd v2.0 */
 
-#include "cm.h"
 #include "amd.h"
 #include "amd_internal.h"
+#undef FLIP
+#undef UNFLIP
+#include "cm.h"
 
 
 /* ========================================================================== */
@@ -233,7 +235,7 @@ void amdtest (cholmod_sparse *A)
 	    ok = AMD_order (n, Cp, Ci, P, Control, Info) ;
 	    OK (ok == AMD_INVALID) ;
 
-	    if (Size_max/2 == Int_max)
+	    if (SIZE_MAX/2 == Int_max)
 	    {
 		Cp [n] = Int_max ;
 		ok = AMD_order (n, Cp, Ci, P, Control, Info) ;

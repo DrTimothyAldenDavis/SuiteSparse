@@ -173,12 +173,9 @@
  */
 
 /* -------------------------------------------------------------------------- */
-/* Size_max: the largest value of size_t */
+/* routines for doing arithmetic on size_t, and checking for overflow */
 /* -------------------------------------------------------------------------- */
 
-#define Size_max ((size_t) (-1))
-
-/* routines for doing arithmetic on size_t, and checking for overflow */
 size_t cholmod_add_size_t (size_t a, size_t b, int *ok) ;
 size_t cholmod_mult_size_t (size_t a, size_t k, int *ok) ;
 size_t cholmod_l_add_size_t (size_t a, size_t b, int *ok) ;

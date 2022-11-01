@@ -572,8 +572,10 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         else if (ordering == SPQR_ORDERING_METIS)
         {
             // use CHOLMOD's interface to METIS to order A'*A (if installed)
+            TEST_COVERAGE_PAUSE ;
             cholmod_l_metis (AT, NULL, 0, TRUE,
                 (int64_t *) (Q1fill + n1cols), cc) ;
+            TEST_COVERAGE_RESUME ;
         }
 #endif
         else if (ordering == SPQR_ORDERING_CHOLMOD)
@@ -583,7 +585,9 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             cc->supernodal = CHOLMOD_SIMPLICIAL ;
             cc->postorder = TRUE ;
             cholmod_factor *Sc ;
+            TEST_COVERAGE_PAUSE ;
             Sc = cholmod_l_analyze_p2 (FALSE, AT, NULL, NULL, 0, cc) ;
+            TEST_COVERAGE_RESUME ;
             if (Sc != NULL)
             {
                 // copy perm from Sc->Perm [0:n2cols-1] to Q1fill (n1cols:n)

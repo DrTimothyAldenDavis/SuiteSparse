@@ -115,6 +115,7 @@ static int TEMPLATE (cholmod_super_numeric)
         ndrow1, ndrow2, px, dancestor, sparent, dnext, nsrow2, ndrow3, pk, pf,
         pfend, stype, Apacked, Fpacked, q, imap, repeat_supernode, nscol2, ss,
         tail, nscol_new = 0;
+    info = 0 ;
 
     /* ---------------------------------------------------------------------- */
     /* declarations for the GPU */

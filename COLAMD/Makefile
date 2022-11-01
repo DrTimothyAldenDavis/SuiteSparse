@@ -47,10 +47,10 @@ all: library
 
 demo: library
 	( cd build ; cmake $(CMAKE_OPTIONS) -DDEMO=1 .. ; $(MAKE) --jobs=${JOBS} )
-	- ./build/colamd_example > ./build/my_colamd_example.out
-	- diff ./Demo/colamd_example.out ./build/my_colamd_example.out
-	- ./build/colamd_l_example > ./build/my_colamd_l_example.out
-	- diff ./Demo/colamd_l_example.out ./build/my_colamd_l_example.out
+	- ./build/colamd_example > ./build/colamd_example.out
+	- diff ./Demo/colamd_example.out ./build/colamd_example.out
+	- ./build/colamd_l_example > ./build/colamd_l_example.out
+	- diff ./Demo/colamd_l_example.out ./build/colamd_l_example.out
 
 # just compile after running cmake; do not run cmake again
 remake:

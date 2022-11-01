@@ -6,9 +6,7 @@ Nov 4, 2022: SuiteSparse 6.0.0
         SuiteSparse.
     * CMake Find*: all packages now have a Find*.cmake.  See
         SuiteSparse_config/cmake_modules.
-    * SuiteSparse_config.mk: replaced with CMake modules in
-        SuiteSparse_config/cmake_modules/SuiteSparse*.cmake.  Now only used by
-        SLIP_LU, and the test coverage suites for each package.
+    * SuiteSparse_config.mk: removed (moved to SLIP_LU).
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
         with int32_t and int64_t.  The SuiteSparse_long #define has been
         deprecated and removed.  Replace its use with int64_t in any code that

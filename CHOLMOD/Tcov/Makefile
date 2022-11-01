@@ -8,20 +8,72 @@
 # SPDX-License-Identifier: GPL-2.0+
 # ------------------------------------------------------------------------------
 
-# If you compile CHOLMOD with -DNPARTITION, then you do not need METIS,
-# CCOLAMD, or the Partition module, but by default this test requres METIS.
-#
 # To compile and run: use "make".
-#
 # This test only works in Linux.
 
 default: go
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+################################################################################
 
-# uncomment this to disable the GPU
-# GPU_CONFIG =
-# CHOLMOD_CONFIG =
+    # SuiteSparse root directory
+    SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+
+    BLAS = -lblas
+    LAPACK = -llapack
+
+    #---------------------------------------------------------------------------
+    # NVIDIA CUDA configuration for CHOLMOD and SPQR
+    #---------------------------------------------------------------------------
+
+#   ifneq ($(CUDA),no)
+#       CUDA_PATH = $(shell which nvcc 2>/dev/null | sed "s/\/bin\/nvcc//")
+#   else
+        CUDA_PATH =
+#   endif
+
+    ifeq ($(wildcard $(CUDA_PATH)),)
+        # CUDA is not present
+        CUDA_PATH     =
+        GPU_BLAS_PATH =
+        GPU_CONFIG    =
+        CUDART_LIB    =
+        CUBLAS_LIB    =
+        CUDA_INC_PATH =
+        CUDA_INC      =
+        NVCC          = echo
+        NVCCFLAGS     =
+    else
+        # with CUDA for CHOLMOD and SPQR
+        GPU_BLAS_PATH = $(CUDA_PATH)
+        # GPU_CONFIG must include -DSUITESPARSE_CUDA to compile SuiteSparse for the
+        # GPU.  You can add additional GPU-related flags to it as well.
+        # with 4 cores (default):
+        GPU_CONFIG    = -DSUITESPARSE_CUDA
+        # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
+        # GPU_CONFIG  = -DSUITESPARSE_CUDA -DCHOLMOD_OMP_NUM_THREADS=10
+        CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
+        CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
+        CUDA_INC_PATH = $(CUDA_PATH)/include/
+        CUDA_INC      = -I$(CUDA_INC_PATH)
+        NVCC          = $(CUDA_PATH)/bin/nvcc
+        NVCCFLAGS     = -Xcompiler -fPIC -O3 \
+                            -gencode=arch=compute_53,code=sm_53 \
+                            -gencode=arch=compute_60,code=compute_60
+    endif
+
+    CHOLMOD_CONFIG ?= $(GPU_CONFIG)
+
+    # remove object files, but keep compiled libraries via 'make clean'
+    CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
+        *.gcda *.gcno *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
+
+    # also remove compiled libraries, via 'make distclean'
+    PURGE = *.so* *.a *.dll *.dylib *.dSYM
+
+    # location of TCOV test output
+    TCOV_TMP ?= ../build
+
+################################################################################
 
 # valgrind is not used
 V =
@@ -29,16 +81,14 @@ V =
 # covall is used
 COVER = ./covall
 
-# with test coverage
-CF = -O0 -g --coverage -fprofile-abs-path
+# with test coverage and 32-bit BLAS
+CF = -O0 -g --coverage -fprofile-abs-path -DTEST_COVERAGE -DBLAS32 -fopenmp
 
 # Temp directory
 T = $(TCOV_TMP)/CHOLMOD_TCOV_TMP
 
 # Tcov requires gcc
 CC = gcc
-# BLAS = -lrefblas -lgfortran
-# LAPACK = -llapack
 
 # to test Tcov without METIS, but with CAMD, CCOLAMD, and CSYMAMD:
 # C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS) -DNPARTITION
@@ -46,9 +96,8 @@ CC = gcc
 # to test with everthing
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 
-# default LAPACK and BLAS from SuiteSparse_config.mk:
-  LDLIBS = -L../../lib \
-  	-lmetis -lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
+LDLIBS = -L$(SUITESPARSE)/lib -lsuitesparseconfig \
+  	-lsuitesparse_metis -lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
 
 # LAPACK and the Fortran reference BLAS, compiled with gfortran -g -O:
 # LDLIBS = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
@@ -333,31 +382,32 @@ else
     LGPU = 
 endif
 
-CONFIG = zz_SuiteSparse_config.o
+# CONFIG = zz_SuiteSparse_config.o
+CONFIG =
 
 IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG) $(IGPU)
 
 LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG) $(LGPU)
 
 
-cm: metis $(IALL) $(TEST) cm.h Makefile
+cm: $(IALL) $(TEST) cm.h Makefile
 	$(C) $(I) $(TEST) -o cm $(IALL) $(LDLIBS)
 
-cl: metis $(LALL) $(LTEST) cm.h Makefile
+cl: $(LALL) $(LTEST) cm.h Makefile
 	$(C) $(I) $(LTEST) -o cl $(LALL) $(LDLIBS)
 
-cmread: metis $(IALL) cmread.c Makefile
+cmread: $(IALL) cmread.c Makefile
 	$(C) $(I) cmread.c -o cmread $(IALL) $(LDLIBS)
 
-clread: metis $(LALL) clread.c Makefile
+clread: $(LALL) clread.c Makefile
 	$(C) $(I) clread.c -o clread $(LALL) $(LDLIBS)
 
-zdemo: metis $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
+zdemo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_demo.c zdemo.c
 	$(C) $(I) -I../Demo zdemo.c -o zdemo $(IALL) $(LDLIBS)
 
-ldemo: metis $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+ldemo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_l_demo.c ldemo.c
 	$(C) $(I) -I../Demo ldemo.c -o ldemo $(LALL) $(LDLIBS)
@@ -1264,6 +1314,3 @@ l_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
 	$(NVCC) $(CHOLMOD_CONFIG) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
 
 #-------------------------------------------------------------------------------
-
-metis:
-	( cd ../.. && $(MAKE) metis )

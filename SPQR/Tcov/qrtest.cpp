@@ -56,6 +56,8 @@ void qrtest_C
 
 int64_t my_tries = -2 ;     // number of mallocs to allow (-2 means allow all)
 int64_t my_punt = FALSE ;   // if true, then my_malloc will fail just once
+int64_t save_my_tries = -2 ;
+int64_t save_my_punt = FALSE ;
 
 void set_tries (int64_t tries)
 {
@@ -110,7 +112,7 @@ void my_handler (int status, const char *file, int line, const char *msg)
     printf ("ERROR: %d in %s line %d : %s\n", status, file, line, msg) ;
 }
 
-void normal_memory_handler (cholmod_common *cc)
+void normal_memory_handler (cholmod_common *cc, bool free_work)
 {
     SuiteSparse_config.printf_func = printf ;
     SuiteSparse_config.malloc_func = malloc ;
@@ -119,12 +121,12 @@ void normal_memory_handler (cholmod_common *cc)
     SuiteSparse_config.free_func = free ;
 
     cc->error_handler = my_handler ;
-    cholmod_l_free_work (cc) ;
+    if (free_work) cholmod_l_free_work (cc) ;
     my_tries = -2 ;
     my_punt = FALSE ;
 }
 
-void test_memory_handler (cholmod_common *cc)
+void test_memory_handler (cholmod_common *cc, bool free_work)
 {
     SuiteSparse_config.printf_func = NULL ;
     SuiteSparse_config.malloc_func = my_malloc ;
@@ -133,7 +135,7 @@ void test_memory_handler (cholmod_common *cc)
     SuiteSparse_config.free_func = my_free ;
 
     cc->error_handler = NULL ;
-    cholmod_l_free_work (cc) ;
+    if (free_work) cholmod_l_free_work (cc) ;
     my_tries = -2 ;
     my_punt = FALSE ;
 }
@@ -170,7 +172,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -178,7 +180,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, H, Tau, HPinv, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -215,7 +217,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -223,7 +225,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, H, Tau, HPinv, X, cc);
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -259,7 +261,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -267,7 +269,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, QR, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -301,7 +303,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -309,7 +311,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, QR, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -344,7 +346,7 @@ template <typename Entry> cholmod_dense *SPQR_solve
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -352,7 +354,7 @@ template <typename Entry> cholmod_dense *SPQR_solve
             X = SuiteSparseQR_solve (system, QR, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -387,7 +389,7 @@ template <typename Entry> cholmod_sparse *SPQR_solve
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -395,7 +397,7 @@ template <typename Entry> cholmod_sparse *SPQR_solve
             X = SuiteSparseQR_solve (system, QR, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -431,7 +433,7 @@ template <typename Entry> cholmod_dense *SPQR_min2norm
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -439,7 +441,7 @@ template <typename Entry> cholmod_dense *SPQR_min2norm
             X = SuiteSparseQR_min2norm <Entry> (ordering, tol, A, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -474,7 +476,7 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -482,7 +484,7 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
             X = SuiteSparseQR_min2norm <Entry> (ordering, tol, A, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -596,7 +598,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -674,7 +676,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
 
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
 
     if (QR == NULL) printf ("huh?? split: %d ordering %d tol %g\n", split,
@@ -737,7 +739,7 @@ template <typename Entry> int64_t SPQR_qr
     {
         // test malloc error handling
         int64_t tries ;
-        test_memory_handler (cc) ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -757,7 +759,7 @@ template <typename Entry> int64_t SPQR_qr
                 break ;
             }
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (rank) ;
 }
@@ -2785,7 +2787,7 @@ int main (int argc, char **argv)
 
     cc = &Common ;
     cholmod_l_start (cc) ;
-    normal_memory_handler (cc) ;
+    normal_memory_handler (cc, true) ;
 
     if (argc == 1)
     {

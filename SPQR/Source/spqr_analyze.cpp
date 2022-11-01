@@ -287,9 +287,11 @@ spqr_symbolic *spqr_analyze
 
     // multifrontal QR ordering and analysis.
     // The GPU-accelerated SPQR requires additional supernodal analysis.
+    TEST_COVERAGE_PAUSE ;
     Sc = cholmod_l_analyze_p2 (
         useGPU ? CHOLMOD_ANALYZE_FOR_SPQRGPU : CHOLMOD_ANALYZE_FOR_SPQR,
         AT, (int64_t *) Quser, NULL, 0, cc) ;
+    TEST_COVERAGE_RESUME ;
 
     // record the actual ordering used
     if (Sc != NULL)

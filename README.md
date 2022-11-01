@@ -35,7 +35,7 @@ list; if you want a shorter list, just cite the most recent "Algorithm XXX:"
 papers in ACM TOMS, for each package.
 
     * For the MATLAB x=A\b, see below for AMD, COLAMD, CHOLMOD, UMFPACK,
-        and SuiteSparseQR.
+        and SuiteSparseQR (SPQR).
 
     * for GraphBLAS, and `C=A*B` in MATLAB (sparse-times-sparse):
 
@@ -56,7 +56,7 @@ papers in ACM TOMS, for each package.
         the Fundamentals of Algorithms, SIAM, Philadelphia, PA, 2006.
         https://doi.org/10.1137/1.9780898718881
 
-    * for SuiteSparseQR: (also cite AMD, COLAMD):
+    * for SuiteSparseQR (SPQR): (also cite AMD, COLAMD):
 
         T. A. Davis, Algorithm 915: SuiteSparseQR: Multifrontal multithreaded
         rank-revealing sparse QR factorization, ACM Trans. on Mathematical
@@ -216,7 +216,20 @@ can result in severe performance degradation.  The reason for this is being
 investigated, and this may be resolved in the near future.
 
 To select your BLAS/LAPACK, see the SuiteSparseBLAS.cmake in
-`SuiteSparse_config/cmake_modules`.
+`SuiteSparse_config/cmake_modules`.  If `SuiteSparse_config` finds a BLAS with
+64-bit integers (such as the Intel MKL ilp64 BLAS), it configures
+`SuiteSparse_config.h` with the `SUITESPARSE_BLAS_INT` defined as `int64_t`.
+Otherwise, if a 32-bit BLAS is found, this type is defined as `int32_t`.  If
+later on, UMFPACK, CHOLMOD, or SPQR are compiled and linked  with a BLAS that
+has a different integer size, you must override the definition with -DBLAS64
+(to assert the use of 64-bit integers in the BLAS) or -DBLAS32, (to assert the
+use of 32-bit integers in the BLAS).
+
+When distributed in a binary form (such as a Debian, Ubuntu, Spack, or Brew
+package), SuiteSparse should probably be compiled to expect a 32-bit BLAS,
+since this is the most common case.  The default is to use a 32-bit BLAS, but
+this can be changed in SuiteSparseBLAS.cmake or by compiling with
+`-DALLOW_64BIT_BLAS`.
 
 ------------------
 SuiteSparse/README
@@ -371,7 +384,7 @@ Packages in SuiteSparse, and files in this directory:
     README.txt  this file
 
     SPQR        sparse QR factorization.  This the built-in qr and x=A\b in
-                MATLAB.
+                MATLAB.  Also called SuiteSparseQR.
                 author of the CPU code: Tim Davis
                 author of GPU modules: Tim Davis, Nuri Yeralan,
                     Wissam Sid-Lakhdar, Sanjay Ranka
@@ -414,33 +427,6 @@ email: davis@tamu.edu
 Licenses for each package are located in the following files, all in
 PACKAGENAME/Doc/License.txt, and these files are also concatenated into
 the top-level LICENSE.txt file.
-
-    AMD/Doc/License.txt
-    BTF/Doc/License.txt
-    CAMD/Doc/License.txt
-    CCOLAMD/Doc/License.txt
-    CHOLMOD/Doc/License.txt
-    COLAMD/Doc/License.txt
-    CSparse/Doc/License.txt
-    CXSparse/Doc/License.txt
-    GPUQREngine/Doc/License.txt
-    KLU/Doc/License.txt
-    LDL/Doc/License.txt
-    MATLAB_Tools/Doc/License.txt
-    Mongoose/Doc/License.txt
-    RBio/Doc/License.txt
-    SPQR/Doc/License.txt
-    SuiteSparse_GPURuntime/Doc/License.txt
-    ssget/Doc/License.txt
-    UMFPACK/Doc/License.txt
-    GraphBLAS/Doc/License.txt
-    SLIP_LU/License/License.txt
-
-These files are also present, but they are simply copies of the above license
-files for CXSparse and ssget:
-
-    CSparse/MATLAB/ssget/Doc/License.txt
-    CXSparse/MATLAB/ssget/Doc/License.txt
 
 METIS 5.1.0 is distributed with SuiteSparse (slightly modified for use in
 SuiteSparse, with all modifications marked), and is Copyright (c) by George

@@ -285,9 +285,9 @@ void null_test2 (void)
     /* Test Core Common */
     /* ---------------------------------------------------------------------- */
 
-    ok = CHOLMOD(allocate_work)(Size_max, 1, 1, cm) ;		NOT (ok) ;
-    ok = CHOLMOD(allocate_work)(1, Size_max, 1, cm) ;		NOT (ok) ;
-    ok = CHOLMOD(allocate_work)(1, 1, Size_max, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(SIZE_MAX, 1, 1, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(1, SIZE_MAX, 1, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(1, 1, SIZE_MAX, cm) ;		NOT (ok) ;
 
     /* free a NULL pointer */
     CHOLMOD(free)(42, sizeof (char), NULL, cm) ;

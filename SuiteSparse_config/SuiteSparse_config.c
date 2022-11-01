@@ -611,3 +611,46 @@ SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
     return (den == 0) ;
 }
 
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_library: return name of BLAS library found
+//------------------------------------------------------------------------------
+
+// Returns the name of the BLAS library found by SuiteSparse_config
+
+const char *SuiteSparse_BLAS_library ( void )
+{
+
+    #if defined ( BLAS_INTEL_64ILP )
+        return ("Intel MKL 64ilp BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_INTEL_64LP )
+        return ("Intel MKL 64lp BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_APPLE )
+        return ("Apple Accelerate Framework BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_ARM_MP )
+        return ("ARM MP BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_ARM_ILP64_MP )
+        return ("ARM MP BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_IBMESSL_SMP_64 )
+        return ("IBM ESSL SMP BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_IBMESSL_SMP_32 )
+        return ("IBM ESSL SMP BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_OPENBLAS_64 )
+        return ("OpenBLAS (64-bit integers)") ;
+    #elif defined ( BLAS_OPENBLAS )
+        return ("OpenBLAS (32-bit integers)") ;
+    #else
+        return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
+            "Other BLAS (64-bit integers)" :
+            "Other BLAS (32-bit integers)") ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_integer: return size of BLAS integer
+//------------------------------------------------------------------------------
+
+size_t SuiteSparse_BLAS_integer_size ( void )
+{
+    return (sizeof (SUITESPARSE_BLAS_INT)) ;
+}
+

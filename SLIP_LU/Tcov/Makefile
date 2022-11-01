@@ -10,7 +10,7 @@
 
 default: run
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+include ../SuiteSparse_config.mk
 
 # Linux test coverage
 CC = gcc

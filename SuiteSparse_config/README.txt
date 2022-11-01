@@ -17,8 +17,6 @@ Files in SuiteSparse_config:
     SuiteSparse_config.h        SuiteSparse-wide include file
                                 (created from Config/SuiteSparse_config.h)
 
-    SuiteSparse_config.mk       for old-style Makefiles in SuiteSparse
-                                (see comments below)
     build/      where SuiteSparse_config is compiled
     Config/SuiteSparse_config.h.in      source for SuiteSparse_config.h
 
@@ -69,15 +67,7 @@ SuiteSparse_config is not required by these packages:
   MATLAB_Tools  toolboxes for use in MATLAB
   GraphBLAS     graph algorithms in the language of linear algebra
 
-This directory contains a default SuiteSparse_config.mk file for SuiteSparse
-packages that still use an old-style Makefile instead of CMakeLists.txt.  It
-tries to detect your system (Linux, SunOS, or Mac), which compiler to use (icc
-or cc), which BLAS and LAPACK library to use (Intel MKL is strongly preferred),
-and whether or not to compile with CUDA.  For alternatives, see the comments in
-the SuiteSparse_config.mk file.  The SuiteSparse build system is transitioning
-to cmake so SuiteSparse_config.mk file will eventually be deprecated.
-
-If you edit this directory (SuiteSparse_config.mk in particular) then you
-must do "make purge ; make" in the parent directory to recompile all of
-SuiteSparse.  Otherwise, the changes will not necessarily be applied.
+If you edit this directory then you should do "make purge ; make" in the parent
+directory to recompile all of SuiteSparse.  Otherwise, the changes will not
+necessarily be applied.
 

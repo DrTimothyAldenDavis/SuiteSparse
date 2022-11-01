@@ -1019,9 +1019,9 @@ void SUITESPARSE_LAPACK_DPOTRF      // Cholesky factorization
     info = 1 ;                                                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_INT INFO ;                                           \
-        SUITESPARSE_LAPACK_DPOTRF (uplo, &N, A, &LDA, &INFO) ;                \
-        info = INFO ;                                                         \
+        SUITESPARSE_BLAS_INT LAPACK_Info = -999 ;                             \
+        SUITESPARSE_LAPACK_DPOTRF (uplo, &N, A, &LDA, &LAPACK_Info) ;         \
+        info = (Int) LAPACK_Info ;                                            \
     }                                                                         \
 }
 
@@ -1045,9 +1045,9 @@ void SUITESPARSE_LAPACK_ZPOTRF      // Cholesky factorization
     info = 1 ;                                                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_INT INFO ;                                           \
-        SUITESPARSE_LAPACK_ZPOTRF (uplo, &N, A, &LDA, &INFO) ;                \
-        info = INFO ;                                                         \
+        SUITESPARSE_BLAS_INT LAPACK_Info = -999 ;                             \
+        SUITESPARSE_LAPACK_ZPOTRF (uplo, &N, A, &LDA, &LAPACK_Info) ;         \
+        info = LAPACK_Info ;                                                  \
     }                                                                         \
 }
 
@@ -1434,6 +1434,20 @@ void SUITESPARSE_LAPACK_ZLARF       // apply Householder reflector
             Work) ;                                                           \
     }                                                                         \
 }
+
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_library: return name of BLAS library found
+//------------------------------------------------------------------------------
+
+// Returns the name of the BLAS library found by SuiteSparse_config
+
+const char *SuiteSparse_BLAS_library ( void ) ;
+
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_integer_size: return sizeof (SUITESPARSE_BLAS_INT)
+//------------------------------------------------------------------------------
+
+size_t SuiteSparse_BLAS_integer_size ( void ) ;
 
 #ifdef __cplusplus
 }

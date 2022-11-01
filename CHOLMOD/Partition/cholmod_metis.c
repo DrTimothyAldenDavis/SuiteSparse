@@ -60,6 +60,61 @@
 #error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
 #endif
 
+//------------------------------------------------------------------------------
+// test coverage
+//------------------------------------------------------------------------------
+
+// SuiteSparse_metis has been modified from the original METIS 5.1.0.  It uses
+// the SuiteSparse_config function pointers for malloc/calloc/realloc/free, so
+// that it can use the same memory manager functions as the rest of
+// SuiteSparse.  However, during test coverage in CHOLMOD/Tcov, the call to
+// malloc inside SuiteSparse_metis pretends to fail, to test CHOLMOD's memory
+// handling.  This causes METIS to terminate the program.  To avoid this, METIS
+// is allowed to use the standard ANSI C11 malloc/calloc/realloc/free functions
+// during testing.
+
+#ifdef TEST_COVERAGE
+
+    //--------------------------------------------------------------------------
+    // CHOLMOD during test coverage in CHOLMOD/Tcov.
+    //--------------------------------------------------------------------------
+
+    void *(*save_malloc_func) (size_t) ;             // pointer to malloc
+    void *(*save_calloc_func) (size_t, size_t) ;     // pointer to calloc
+    void *(*save_realloc_func) (void *, size_t) ;    // pointer to realloc
+    void (*save_free_func) (void *) ;                // pointer to free
+
+    #define TEST_COVERAGE_PAUSE                                     \
+    {                                                               \
+        save_malloc_func  = SuiteSparse_config.malloc_func  ;       \
+        save_calloc_func  = SuiteSparse_config.calloc_func  ;       \
+        save_realloc_func = SuiteSparse_config.realloc_func ;       \
+        save_free_func    = SuiteSparse_config.free_func    ;       \
+        SuiteSparse_config.malloc_func  = malloc ;                  \
+        SuiteSparse_config.calloc_func  = calloc ;                  \
+        SuiteSparse_config.realloc_func = realloc ;                 \
+        SuiteSparse_config.free_func    = free ;                    \
+    }
+
+    #define TEST_COVERAGE_RESUME                                    \
+    {                                                               \
+        SuiteSparse_config.malloc_func  = save_malloc_func ;        \
+        SuiteSparse_config.calloc_func  = save_calloc_func ;        \
+        SuiteSparse_config.realloc_func = save_realloc_func ;       \
+        SuiteSparse_config.free_func    = save_free_func ;          \
+    }
+
+#else
+
+    //--------------------------------------------------------------------------
+    // CHOLMOD in production: no change to SuiteSparse_config
+    //--------------------------------------------------------------------------
+
+    #define TEST_COVERAGE_PAUSE
+    #define TEST_COVERAGE_RESUME
+
+#endif
+
 /* ========================================================================== */
 /* === dumpgraph ============================================================ */
 /* ========================================================================== */
@@ -148,7 +203,7 @@ static int metis_memory_ok
     s = GUESS ((double) nz, (double) n) ;
     s *= Common->metis_memory ;
 
-    if (s * sizeof (idx_t) >= ((double) Size_max))
+    if (s * sizeof (idx_t) >= ((double) SIZE_MAX))
     {
 	/* don't even attempt to malloc such a large block */
 	return (FALSE) ;
@@ -342,8 +397,11 @@ int64_t CHOLMOD(metis_bisector)	/* returns separator size */
                                 0:left, 1:right, 2:separator
     */
 
+
     nn = n ;
+    TEST_COVERAGE_PAUSE ;
     ok = METIS_ComputeVertexSeparator (&nn, Mp, Mi, Mnw, NULL, &csp, Mpart) ;
+    TEST_COVERAGE_RESUME ;
     csep = csp ;
 
     PRINT1 (("METIS csep "ID"\n", csep)) ;
@@ -718,7 +776,9 @@ int CHOLMOD(metis)
         */
 
 	nn = n ;
+        TEST_COVERAGE_PAUSE ;
 	METIS_NodeND (&nn, Mp, Mi, NULL, NULL, Mperm, Miperm) ;
+        TEST_COVERAGE_RESUME ;
 
 	PRINT0 (("METIS_NodeND done\n")) ;
     }

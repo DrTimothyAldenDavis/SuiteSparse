@@ -51,7 +51,7 @@ extern "C" {
 "UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.\n"
 
 #define UMFPACK_LICENSE_PART1 \
-"\nUMFPACK License:  refer to UMFPACK/Doc/License.txt for the license.\n" \
+"\nUMFPACK License: SPDX-License-Identifier: GPL-2.0+\n" \
 "   UMFPACK is available under alternate licenses,\n" \
 "   contact T. Davis for details.\n" 
 
@@ -96,9 +96,9 @@ extern "C" {
 #define GB_STR(x) #x
 
 #define UMFPACK_VERSION "UMFPACK V"                                 \
-    GB_STR(UMFPACK_MAIN_VERSION) "."                                \
-    GB_STR(UMFPACK_SUB_VERSION) "."                                 \
-    GB_STR(UMFPACK_SUBSUB_VERSION) " (" GB_STR(UMFPACK_DATE) ")"
+    GB_XSTR(UMFPACK_MAIN_VERSION) "."                               \
+    GB_XSTR(UMFPACK_SUB_VERSION) "."                                \
+    GB_XSTR(UMFPACK_SUBSUB_VERSION) " (" UMFPACK_DATE ")"
 
 /* -------------------------------------------------------------------------- */
 /* contents of Info */

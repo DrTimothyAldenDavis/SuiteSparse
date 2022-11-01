@@ -15,8 +15,6 @@
 #include <math.h>
 #include <signal.h>
 
-#define Size_max ((size_t) (-1))
-
 /* -------------------------------------------------------------------------- */
 /* double, int64_t */
 /* -------------------------------------------------------------------------- */
@@ -104,6 +102,7 @@
 #define NSMALL 200
 #define NLARGE 1000
 
+#undef  ERROR
 #define ERROR(status,message) \
     CHOLMOD(error) (status, __FILE__, __LINE__, message, cm)
 
@@ -118,7 +117,7 @@
 EXTERN double zero [2], one [2], minusone [2] ;
 EXTERN cholmod_common Common, *cm ;
 EXTERN cholmod_dense *M1 ;
-EXTERN Int my_tries ;
+EXTERN int64_t my_tries ;
 EXTERN double Zero [2] ;
 
 /* -------------------------------------------------------------------------- */

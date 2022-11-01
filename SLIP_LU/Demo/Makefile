@@ -10,7 +10,7 @@
 
 default: all
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+include ../SuiteSparse_config.mk
 
 # uncomment for extra error checking:
 # CFLAGS += -Wall -Wextra -Wpedantic -Werror

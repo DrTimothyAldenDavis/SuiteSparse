@@ -11,6 +11,8 @@
 /* Test for camd v2.0 */
 
 #include "cm.h"
+#undef FLIP
+#undef UNFLIP
 
 #ifndef NCAMD
 #include "camd.h"
@@ -257,7 +259,7 @@ void camdtest (cholmod_sparse *A)
 	    ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;
 	    OK (ok == CAMD_INVALID) ;
 
-	    if (Size_max/2 == Int_max)
+	    if (SIZE_MAX/2 == Int_max)
 	    {
 		Cp [n] = Int_max ;
 		ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;

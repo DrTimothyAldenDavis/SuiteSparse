@@ -200,7 +200,7 @@ demo:
 	- ( cd GPUQREngine && $(MAKE) demo )
 	- ( cd SPQR && $(MAKE) demo )
 	- ( cd GraphBLAS && $(MAKE) demo )
-	- ( cd SLIP_LU && $(MAKE) C )
+	- ( cd SLIP_LU && $(MAKE) demo )
 
 # Create the PDF documentation
 docs:

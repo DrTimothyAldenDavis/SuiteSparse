@@ -381,7 +381,7 @@ int CHOLMOD(reallocate_column)
 	{
 	    xneed = Common->grow0 * (((double) L->nzmax) + xneed + 1) ;
 	}
-	if (xneed > Size_max ||
+	if (xneed > (double) SIZE_MAX ||
 		!CHOLMOD(reallocate_factor) ((Int) xneed, L, Common))
 	{
 	    /* out of memory, convert to simplicial symbolic */

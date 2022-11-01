@@ -787,7 +787,8 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
     cudaError_t cudaStat ;
     cublasStatus_t cublasStatus ;
     int64_t j, nsrow2, nb, n, gpu_lda, lda, gpu_ldb ;
-    int ilda, ijb, iinfo ;
+    int ilda, ijb ;
+    int64_t iinfo ;
 #ifndef NTIMER
     double tstart ;
 #endif

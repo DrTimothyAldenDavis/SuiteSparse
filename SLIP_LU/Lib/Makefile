@@ -14,7 +14,7 @@ SO_VERSION = 1
 
 default: library
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+include ../SuiteSparse_config.mk
 
 # uncomment for extra error checking:
 # CFLAGS += -Wall -Wextra -Wpedantic -Werror

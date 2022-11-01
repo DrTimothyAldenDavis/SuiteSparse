@@ -43,7 +43,7 @@ void *Workspace::cpu_malloc(size_t nitems, size_t size_of_item, bool pageLocked)
         }
 
         cudaError_t result = cudaMallocHost(&returner, requestSize);
-        if (!result == cudaSuccess)
+        if (result != cudaSuccess)
         {
             return (NULL) ;     // failed to malloc pagelocked memory
         }
@@ -86,7 +86,7 @@ void *Workspace::cpu_calloc(size_t nitems, size_t size_of_item, bool pageLocked)
         }
 
         cudaError_t result = cudaMallocHost(&returner, requestSize);
-        if (!result == cudaSuccess)
+        if (result != cudaSuccess)
         { 
             return (NULL) ;     // failed to malloc pagelocked memory
         }

@@ -49,6 +49,8 @@ default: $(OBJ) ut.c
 	./ut_zl > ut_zl.out
 	- ./gcovs umf*.c
 	- ./cover umf*v > cover.out
+	- echo -n "statments not yet tested: "
+	- grep -c "#####" cover.out
 
 ut.c:
 	- ln -s Source/ut.c

@@ -62,6 +62,9 @@ demo:
 	- ./build/kluldemo < ./Matrix/w156.mtx
 	- ./build/kluldemo < ./Matrix/ctina.mtx
 
+cov:
+	( cd Tcov && $(MAKE) )
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && $(MAKE) --jobs=${JOBS} )

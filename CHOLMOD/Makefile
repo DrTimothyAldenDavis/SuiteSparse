@@ -71,6 +71,9 @@ demo: library
 	./build/cholmod_simple < ./Demo/Matrix/can___24.mtx
 	./build/cholmod_simple < ./Demo/Matrix/bcsstk01.tri
 
+cov:
+	( cd Tcov && $(MAKE) )
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && $(MAKE) --jobs=${JOBS} )
