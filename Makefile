@@ -72,7 +72,7 @@ install:
 	( cd CCOLAMD && $(MAKE) install )
 	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
-	( cd CSparse && $(MAKE) ) # CSparse is compiled but not installed
+	# ( cd CSparse && $(MAKE) ) # CSparse is not installed
 	( cd CXSparse && $(MAKE) install ) # CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
