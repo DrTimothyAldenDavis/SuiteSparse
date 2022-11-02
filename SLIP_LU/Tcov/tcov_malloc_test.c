@@ -74,7 +74,7 @@ void tcov_free
     free (p) ;
 }
 
-jmp_buf slip_gmp_environment ;  // for setjmp and longjmp
+extern jmp_buf slip_gmp_environment ;  // for setjmp and longjmp
 
 int slip_gmp_realloc_test
 (
