@@ -1,4 +1,4 @@
-*.c
+umf*.c
 *.out
 ut_??
 *.umf
