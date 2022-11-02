@@ -1,2 +1,0 @@
-FIXME: retest all Tcov (Linux)
-FIXME: test all MATLAB interfaces
