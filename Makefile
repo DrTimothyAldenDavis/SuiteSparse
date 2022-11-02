@@ -18,7 +18,7 @@ export SUITESPARSE = $(CURDIR)
 # and include files in /usr/local/include.
 default:
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd SuiteSparse_metis && $(MAKE) )
+	- ( cd SuiteSparse_metis && $(MAKE) )
 	( cd Mongoose && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
@@ -36,12 +36,12 @@ default:
 	( cd GPUQREngine && $(MAKE) )
 	( cd SPQR && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) )
-	( cd SLIP_LU && $(MAKE) )
+	( cd SPEX && $(MAKE) )
 
 # compile and install in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
-	( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
+	- ( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
 	( cd Mongoose && $(MAKE) local && $(MAKE) install )
 	( cd AMD && $(MAKE) local && $(MAKE) install )
 	( cd BTF && $(MAKE) local && $(MAKE) install )
@@ -59,12 +59,12 @@ local:
 	( cd GPUQREngine && $(MAKE) local && $(MAKE) install )
 	( cd SPQR && $(MAKE) local && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
-	( cd SLIP_LU && $(MAKE) local && $(MAKE) install )
+	( cd SPEX && $(MAKE) local && $(MAKE) install )
 
-# compile and install in SuiteSparse/lib and SuiteSparse/include
+# compile and install in SuiteSparse/[lib,include] and /usr/local/[lib,include]
 global:
 	( cd SuiteSparse_config && $(MAKE) global && $(MAKE) install )
-	( cd SuiteSparse_metis && $(MAKE) global && $(MAKE) install )
+	- ( cd SuiteSparse_metis && $(MAKE) global && $(MAKE) install )
 	( cd Mongoose && $(MAKE) global && $(MAKE) install )
 	( cd AMD && $(MAKE) global && $(MAKE) install )
 	( cd BTF && $(MAKE) global && $(MAKE) install )
@@ -82,12 +82,12 @@ global:
 	( cd GPUQREngine && $(MAKE) global && $(MAKE) install )
 	( cd SPQR && $(MAKE) global && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) global && $(MAKE) install )
-	( cd SLIP_LU && $(MAKE) global && $(MAKE) install )
+	( cd SPEX && $(MAKE) global && $(MAKE) install )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install:
 	( cd SuiteSparse_config && $(MAKE) install )
-	( cd SuiteSparse_metis && $(MAKE) install )
+	- ( cd SuiteSparse_metis && $(MAKE) install )
 	( cd Mongoose  && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
@@ -105,12 +105,12 @@ install:
 	( cd GPUQREngine && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) install )
-	( cd SLIP_LU && $(MAKE) install )
+	( cd SPEX && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
-	( cd SuiteSparse_metis && $(MAKE) uninstall )
+	- ( cd SuiteSparse_metis && $(MAKE) uninstall )
 	( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
 	( cd CAMD && $(MAKE) uninstall )
@@ -128,12 +128,12 @@ uninstall:
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
 	( cd GraphBLAS && $(MAKE) uninstall )
-	( cd SLIP_LU && $(MAKE) uninstall )
+	( cd SPEX && $(MAKE) uninstall )
 
 # compile the libraries
 library:
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd SuiteSparse_metis && $(MAKE) library )
+	- ( cd SuiteSparse_metis && $(MAKE) library )
 	( cd Mongoose  && $(MAKE) library )
 	( cd AMD && $(MAKE) library )
 	( cd BTF && $(MAKE) library )
@@ -151,7 +151,7 @@ library:
 	( cd GPUQREngine && $(MAKE) library )
 	( cd SPQR && $(MAKE) library )
 	( cd GraphBLAS && $(MAKE) library )
-	( cd SLIP_LU && $(MAKE) library )
+	( cd SPEX && $(MAKE) library )
 
 # Remove all files not in the original distribution
 purge:
@@ -177,7 +177,7 @@ purge:
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
 	- $(RM) -r include/* bin/* lib/* share/*
-	( cd SLIP_LU && $(MAKE) purge )
+	( cd SPEX && $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
@@ -200,12 +200,12 @@ clean:
 	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
 	- ( cd GraphBLAS && $(MAKE) clean )
-	- ( cd SLIP_LU && $(MAKE) clean )
+	- ( cd SPEX && $(MAKE) clean )
 
 # Run all demos
 demo:
 	- ( cd SuiteSparse_config && $(MAKE) demo )
-	- ( cd SuiteSparse_metis && $(MAKE) demo )
+	- - ( cd SuiteSparse_metis && $(MAKE) demo )
 	- ( cd Mongoose && $(MAKE) demo )
 	- ( cd AMD && $(MAKE) demo )
 	- ( cd CAMD && $(MAKE) demo )
@@ -223,7 +223,7 @@ demo:
 	- ( cd GPUQREngine && $(MAKE) demo )
 	- ( cd SPQR && $(MAKE) demo )
 	- ( cd GraphBLAS && $(MAKE) demo )
-	- ( cd SLIP_LU && $(MAKE) demo )
+	- ( cd SPEX && $(MAKE) demo )
 
 # Create the PDF documentation
 docs:
@@ -236,7 +236,7 @@ docs:
 	( cd UMFPACK && $(MAKE) docs )
 	( cd CHOLMOD && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
-	( cd SLIP_LU && $(MAKE) docs )
+	( cd SPEX && $(MAKE) docs )
 
 distclean: purge
 
@@ -248,7 +248,7 @@ cov: local
 	( cd KLU && $(MAKE) cov )
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
-	( cd SLIP_LU && $(MAKE) cov )
+	( cd SPEX && $(MAKE) cov )
 
 gbmatlab:
 	( cd GraphBLAS/GraphBLAS && $(MAKE) )

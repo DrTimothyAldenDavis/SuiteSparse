@@ -164,7 +164,7 @@
 // #define SLIP_LU_VERSION_MINOR 0
 // #define SLIP_LU_VERSION_SUB   2
 
-#define SLIP_LU_VERSION "2.0.2"
+#define SLIP_LU_VERSION "2.0.0"
 #define SLIP_LU_SUB_VERSION    0
 #define SLIP_LU_SUBSUB_VERSION 0
 

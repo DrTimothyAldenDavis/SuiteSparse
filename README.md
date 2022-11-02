@@ -199,12 +199,12 @@ papers in ACM TOMS, for each package.
         pages. 
         https://doi.org/10.1145/3337792
 
-    * for `SLIP_LU` and SPEX:
+    * for SPEX:
 
         Christopher Lourenco, Jinhao Chen, Erick Moreno-Centeno, and T. A.
-        Davis. 2022. Algorithm 1XXX: SPEX Left LU, Exactly Solving Sparse
+        Davis. 2022. Algorithm 1021: SPEX Left LU, Exactly Solving Sparse
         Linear Systems via a Sparse Left-Looking Integer-Preserving LU
-        Factorization. ACM Trans. Math. Softw. Just Accepted (February 2022).
+        Factorization. ACM Trans. Math. Softw. June 2022.
         https://doi.org/10.1145/3519024
 
 -----------------------------------------------------------------------------
@@ -239,16 +239,14 @@ Packages in SuiteSparse, and files in this directory:
 
     GraphBLAS   graph algorithms in the language of linear algebra.
                 https://graphblas.org
-                A stand-alone package that uses cmake to compile; see
-                GraphBLAS/README.txt.  The rest of SuiteSparse still uses
-                'make'.  A cmake setup for all of SuiteSparse is in progress.
                 author: Tim Davis
 
-    SLIP_LU     solves sparse linear systems in exact arithmetic.
+    SPEX        solves sparse linear systems in exact arithmetic.
                 Requires the GNU GMP and MPRF libraries.
-                This will be soon replaced by a more general package, SPEX,
-                than includes this method (exact sparse LU) and others (sparse
-                exact Cholesky, and sparse exact update/downdate).
+                This will be soon replaced by a more general package, SPEX v3
+                that includes this method (exact sparse LU) and others (sparse
+                exact Cholesky, and sparse exact update/downdate).  The API
+                of v3 will be changing significantly.
 
     AMD         approximate minimum degree ordering.  This is the built-in AMD
                 function in MATLAB.
@@ -286,10 +284,9 @@ Packages in SuiteSparse, and files in this directory:
     CSparse     a concise sparse matrix package, developed for my
                 book, "Direct Methods for Sparse Linear Systems",
                 published by SIAM.  Intended primarily for teaching.
-                It does have a 'make install' but I recommend using
-                CXSparse instead.  In particular, both CSparse and CXSparse
-                have the same include filename: cs.h.
-
+                Note that the code is (c) Tim Davis, as stated in the book.
+                For production, use CXSparse instead.  In particular, both
+                CSparse and CXSparse have the same include filename: cs.h.
                 This package is used for the built-in DMPERM in MATLAB.
                 author: Tim Davis
 
@@ -316,11 +313,13 @@ Packages in SuiteSparse, and files in this directory:
     lib         'make' places shared libraries for each package here
 
     Makefile    to compile all of SuiteSparse
-                make            compiles SuiteSparse libraries and runs demos
+                make            compiles SuiteSparse libraries
                 make install    compiles SuiteSparse and installs in the
                                 current directory (./lib, ./include).
-                                Use "sudo make INSTALL=/usr/local" to install
+                                Use "sudo make install" to install
                                 in /usr/local/lib and /usr/local/include.
+                make local      compiles SuiteSparse and installs in
+                                (./lib, ./include) only.  No sudo required.
                 make uninstall  undoes 'make install'
                 make library    compiles SuiteSparse libraries (not demos)
                 make distclean  removes all files not in distribution, including
@@ -334,10 +333,8 @@ Packages in SuiteSparse, and files in this directory:
                 targets.
 
                 Things you don't need to do:
-                make cx         creates CXSparse from CSparse
                 make docs       creates user guides from LaTeX files
                 make cov        runs statement coverage tests (Linux only)
-                make metis      compiles METIS (also done by 'make')
 
     MATLAB_Tools    various m-files for use in MATLAB
                 author: Tim Davis (all parts)
@@ -484,16 +481,18 @@ SuiteSparse are copied into SuiteSparse/include and into /usr/local/include.
 For Windows, import each `*/CMakeLists.txt` file into MS Visual Studio.
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
-CHOLMOD, and SPQR, and GMP and MPFR for SLIP_LU.  Be sure to use the latest
-libraries; SLIP_LU requires MPFR 4.0 for example.
+CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
+libraries; SPEX requires MPFR 4.0.2 and GMP 6.1.2 (these version numbers
+do NOT correspond to the X.Y.Z suffix of libgmp.so.X.Y.Z and libmpfr.so.X.Y.Z;
+see the SPEX user guide for details).
 
 To compile the libraries and install them only in SuiteSparse/lib (not
 /usr/local/lib), do this instead in the top-level of SuiteSparse:
 
     make local
 
-If you add /home/me/SuiteSparse/lib to your library search patch, you can do
-the following (for example):
+If you add /home/me/SuiteSparse/lib to your library search path
+(`LD_LIBRARY_PATH` in Linux), you can do the following (for example):
 
     S = /home/me/SuiteSparse
     cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
