@@ -37,7 +37,6 @@ SPEX_matrix_nnz.c
 SPEX_realloc.c
 spex_sparse_collapse.c
 spex_sparse_realloc.c
-tcov_malloc_test.c
 SPEX_Left_LU_analyze.c
 SPEX_Left_LU_backslash.c
 spex_left_lu_back_sub.c
