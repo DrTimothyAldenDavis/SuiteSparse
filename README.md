@@ -370,10 +370,9 @@ Packages in SuiteSparse, and files in this directory:
                 authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
 
     SuiteSparse_metis: a modified version of METIS.  See the README.txt files
-                for details.  author: George Karypis; not an integral component
-                of SuiteSparse, however.  This is a slightly modified copy
-                included with SuiteSparse via the open-source license provided
-                by George Karypis.
+                for details.  author: George Karypis.  This is a slightly
+                modified copy included with SuiteSparse via the open-source
+                license provided by George Karypis.
 
     RBio        read/write sparse matrices in Rutherford/Boeing format
                 author: Tim Davis
@@ -412,10 +411,11 @@ Packages in SuiteSparse, and files in this directory:
                 algorithm design collaboration: Iain Duff
 
 Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
-in the `SuiteSparse_metis` directory.  Its use is optional, so you can remove it
-before compiling SuiteSparse, if you desire.  The use of METIS will improve the
-ordering quality.  METIS has been slightly modified for use in SuiteSparse; see
-the `SuiteSparse_metis/README.txt` file for details.
+in the `SuiteSparse_metis` directory.  Its use is optional, so you can delete
+or rename that directory before compiling SuiteSparse, if you desire.  The use
+of METIS will improve the ordering quality.  METIS has been slightly modified
+for use in SuiteSparse; see the `SuiteSparse_metis/README.txt` file for
+details.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis.
@@ -450,7 +450,9 @@ SuiteSparse in /Users/me/SuiteSparse:
     DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/me/SuiteSparse/lib
     export DYLD_LIBRARY_PATH
 
-Next, compile the GraphBLAS library.  In the system shell while in the
+Compile all of SuiteSparse with "make local".
+
+Next, compile the GraphBLAS MATLAB library.  In the system shell while in the
 SuiteSparse folder, type "make gbinstall" if you have MATLAB R2020b or earlier,
 or type "make gbrenamed" if you have MATLAB 9.10 (R2021a) or later.
 

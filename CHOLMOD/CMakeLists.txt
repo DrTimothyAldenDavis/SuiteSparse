@@ -106,8 +106,7 @@ configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/chol
 
 include_directories ( Check Cholesky Core MatrixOps Modify Partition
     Supernodal Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} ${AMD_INCLUDE_DIR}
-    ${COLAMD_INCLUDE_DIR} ${CAMD_INCLUDE_DIR} ${CCOLAMD_INCLUDE_DIR}
-    ${SUITESPARSE_METIS_INCLUDE_DIR} )
+    ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic cholmod library properties
@@ -196,18 +195,21 @@ target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
 
 # camd:
 if ( CAMD_FOUND )
+    include_directories ( ${CAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CAMD_LIBRARIES} )
     target_link_libraries ( cholmod_static PUBLIC ${CAMD_LIBRARIES} )
 endif ( )
 
 # ccolamd:
 if ( CCOLAMD_FOUND )
+    include_directories ( ${CCOLAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CCOLAMD_LIBRARIES} )
     target_link_libraries ( cholmod_static PUBLIC ${CCOLAMD_LIBRARIES} )
 endif ( )
 
 # metis:
 if ( SUITESPARSE_METIS_FOUND )
+    include_directories ( ${SUITESPARSE_METIS_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
     target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
 endif ( )
