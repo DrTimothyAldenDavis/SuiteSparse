@@ -673,12 +673,9 @@ SLIP_info SLIP_mpz_set_ui
     const uint64_t y
 )
 {
-    printf ("start wrapper mpz_set_ui, x: %p\n", x) ;
     SLIP_GMPZ_WRAPPER_START (x) ;
-    printf ("start mpz_set_ui, x: %p\n", x) ;
     mpz_set_ui (x, (unsigned long int) y) ;
     SLIP_GMP_WRAPPER_FINISH ;
-    printf ("done mpz_set_ui, x: %p\n", x) ;
     return (SLIP_OK) ;
 }
 

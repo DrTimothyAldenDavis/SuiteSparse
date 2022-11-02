@@ -38,7 +38,7 @@ CFLAGS = -g -O0 -pg -fprofile-arcs -ftest-coverage \
         -Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c99 \
         -Wno-unused-parameter -I../Include -I../Source -I../Demo \
         -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include \
-        -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV
+        -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV -g
 
 LDLIBS = -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig -lrt
 
@@ -110,19 +110,19 @@ demos.c:
 	- ln -s ../Demo/$@
 
 test: $(CS) tcov_test.c demos.c
-	$(CC) $(LDFLAGS) tcov_test.c demos.c $(CFLAGS) -o tcov_test $(CS) $(LDLIBS)
+	$(CC) -g $(LDFLAGS) tcov_test.c demos.c $(CFLAGS) -o tcov_test $(CS) $(LDLIBS)
 
 SLIPLU: $(CS) SLIPLU.c demos.c
-	$(CC) $(LDFLAGS) SLIPLU.c demos.c $(CFLAGS) -o SLIPLU $(CS) $(LDLIBS)
+	$(CC) -g $(LDFLAGS) SLIPLU.c demos.c $(CFLAGS) -o SLIPLU $(CS) $(LDLIBS)
 
 # run all statement coverage tests
 runtests: all
-	# - ./SLIPLU p 2 q 0
-	# - ./SLIPLU p 3 q 1 o 1
-	# - ./SLIPLU p 4 q 2 o 1 f ../ExampleMats/test_mat.txt ../ExampleMats/test_rhs.txt
-	# - ./SLIPLU p 5
+	- ./SLIPLU p 2 q 0
+	- ./SLIPLU p 3 q 1 o 1
+	- ./SLIPLU p 4 q 2 o 1 f ../ExampleMats/test_mat.txt ../ExampleMats/test_rhs.txt
+	- ./SLIPLU p 5
 	- ./tcov_test
-	# - ./tcov_test 0 1 1
+	- ./tcov_test 0 1 1
 
 # To run with valgrind:
 V = valgrind #--leak-check=full
