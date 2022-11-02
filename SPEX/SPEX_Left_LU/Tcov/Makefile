@@ -37,7 +37,7 @@ CC = gcc
 CFLAGS = -g -fprofile-arcs -ftest-coverage \
         -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
         -Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c99 \
-        -Wno-unused-parameter -I../Include -I../Source -I../Demo \
+        -Wno-unused-parameter -I../../Include -I../Source -I../Demo \
 	-I../../SPEX_Util/Include/ -I../../SPEX_Util/Source/ \
         -I../../../SuiteSparse_config -I../../../COLAMD/Include \
 	-I../../../AMD/Include \
