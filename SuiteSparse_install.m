@@ -334,18 +334,15 @@ catch me
     failed {end+1} = 'GraphBLAS' ;
 end
 
-% compile and install SLIP_LU : FUTURE install SPEX instead
-%{
 try
-    fprintf ('try to install SLIP_LU (requires GMP and MPFR)\n') ;
-    paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
-    SLIP_install (do_demo) ;
+    fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
+    SPEX_Left_LU_install (0) ;
 catch me
     disp (me.message) ;
-    fprintf ('SLIP_LU not installed\n') ;
-    failed {end+1} = 'SLIP_LU' ;
+    fprintf ('SPEX not installed\n') ;
+    failed {end+1} = 'SPEX' ;
 end
-%}
 
 %-------------------------------------------------------------------------------
 % post-install wrapup

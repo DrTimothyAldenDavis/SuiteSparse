@@ -7,13 +7,16 @@ function SPEX_Left_LU_install(run_demo)
 %
 % Required Libraries: GMP, MPFR, AMD, COLAMD.  If -lamd and -lcolamd are not
 % available, install them with 'make install' first, in the top-level
-% SuiteSparse folder.
+% SuiteSparse/lib folder, and add SuiteSparse/lib to your LD_LIBRARY_PATH
+% and restart MATLAB.
 %
 % See also SPEX_Left_LU_backslash, SPEX_Left_LU_test, SPEX_Left_LU_demo.
 
 % SPEX_Left_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,
 % Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
+
+help SPEX_Left_LU_install
 
 if (nargin < 1)
     run_demo = true ;
@@ -52,7 +55,7 @@ flags = 'CFLAGS=''-std=c99 -fPIC''';
 libs = '-L../../../lib -lgmp -lmpfr -lamd -lcolamd -lsuitesparseconfig' ;
 
 % Path to headers
-includes = '-ISource/ -I../Source/ -I../Include/ -I../../SPEX_Util/Include -I../../../SuiteSparse_config -I../../../COLAMD/Include -I../../../AMD/Include -I../../SPEX_Util/Source';
+includes = '-ISource/ -I../Source/ -I../../Include -I../../../SuiteSparse_config -I../../../COLAMD/Include -I../../../AMD/Include -I../../SPEX_Util/Source';
 
 % verbose = ' -v '
 verbose = '' ;
