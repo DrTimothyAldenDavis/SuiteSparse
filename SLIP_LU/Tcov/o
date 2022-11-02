@@ -1,0 +1,110 @@
+gcc --coverage -L/home/faculty/d/davis/dev2/SuiteSparse/lib -Wl,-rpath=/home/faculty/d/davis/dev2/SuiteSparse/lib tcov_test.c demos.c -g -fprofile-arcs -ftest-coverage -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes -Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c99 -Wno-unused-parameter -I../Include -I../Source -I../Demo -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV -o tcov_test slip_matrix_div.o slip_matrix_mul.o slip_back_sub.o SLIP_backslash.o slip_cast_array.o slip_cast_matrix.o slip_check_solution.o SLIP_create_default_options.o slip_create_mpfr_array.o slip_create_mpq_array.o slip_create_mpz_array.o slip_cumsum.o slip_dfs.o slip_expand_double_array.o slip_expand_mpfr_array.o slip_expand_mpq_array.o SLIP_finalize.o slip_forward_sub.o SLIP_malloc.o SLIP_calloc.o SLIP_realloc.o SLIP_free.o slip_get_largest_pivot.o slip_get_nonzero_pivot.o slip_get_pivot.o slip_get_smallest_pivot.o SLIP_gmp.o SLIP_initialize.o SLIP_initialize_expert.o SLIP_LU_analysis_free.o SLIP_LU_analyze.o SLIP_LU_factorize.o SLIP_LU_solve.o SLIP_matrix_allocate.o SLIP_matrix_check.o SLIP_matrix_copy.o SLIP_matrix_free.o SLIP_matrix_nnz.o slip_permute_b.o slip_permute_x.o slip_reach.o slip_ref_triangular_solve.o slip_sparse_collapse.o slip_sparse_realloc.o tcov_malloc_test.o -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig -lrt
+./SLIPLU p 2 q 0
+
+Number of L+U nonzeros: 		9381
+Symbolic analysis time: 		0.000005
+SLIP LU Factorization time: 		0.019427
+FB Substitution time: 			0.001325
+
+
+SLIPLU.c: all tests passed
+
+./SLIPLU p 3 q 1 o 1
+
+****Column Ordering Information****
+
+colamd version 3.0.0, Nov 4, 2022: OK.  
+colamd: number of dense or empty rows ignored:           0
+colamd: number of dense or empty columns ignored:        0
+colamd: number of garbage collections performed:         2
+
+Estimated L and U nonzeros: 8850
+
+
+****COMMAND PARAMETERS****
+Using the COLAMD ordering and selecting the diagonal small tolerance pivot
+Tolerance used: 1.000000
+Solution is verified to be exact.
+
+Number of L+U nonzeros: 		10421
+Symbolic analysis time: 		0.000315
+SLIP LU Factorization time: 		0.034968
+FB Substitution time: 			0.001527
+
+
+SLIPLU.c: all tests passed
+
+./SLIPLU p 4 q 2 o 1 f ../ExampleMats/test_mat.txt ../ExampleMats/test_rhs.txt
+
+****Column Ordering Information****
+
+AMD version 3.0.0, Nov 4, 2022: approximate minimum degree ordering
+    dense row parameter: 10
+    (rows with more than max (10 * sqrt (n), 16) entries are
+    considered "dense", and placed last in output permutation)
+    aggressive absorption:  yes
+    size of AMD integer: 8
+
+
+AMD version 3.0.0, Nov 4, 2022, results:
+    status: OK
+    n, dimension of A:                                  2
+    nz, number of nonzeros in A:                        4
+    symmetry of A:                                      1.0000
+    number of nonzeros on diagonal:                     2
+    nonzeros in pattern of A+A' (excl. diagonal):       2
+    # dense rows/columns of A+A':                       0
+    memory used, in bytes:                              160
+    # of memory compactions:                            0
+
+    The following approximate statistics are for a subsequent
+    factorization of A(P,P) + A(P,P)'.  They are slight upper
+    bounds if there are no dense rows/columns in A+A', and become
+    looser if dense rows/columns exist.
+
+    nonzeros in L (excluding diagonal):                 1
+    nonzeros in L (including diagonal):                 3
+    # divide operations for LDL' or LU:                 1
+    # multiply-subtract operations for LDL':            1
+    # multiply-subtract operations for LU:              1
+    max nz. in any column of L (incl. diagonal):        2
+
+    chol flop count for real A, sqrt counted as 1 flop: 5
+    LDL' flop count for real A:                         3
+    LDL' flop count for complex A:                      17
+    LU flop count for real A (with no pivoting):        3
+    LU flop count for complex A (with no pivoting):     17
+
+
+
+****COMMAND PARAMETERS****
+Using the AMD ordering and selecting the diagonal large tolerance pivot
+Tolerance used: 1.000000
+Solution is verified to be exact.
+
+Number of L+U nonzeros: 		4
+Symbolic analysis time: 		0.000038
+SLIP LU Factorization time: 		0.000033
+FB Substitution time: 			0.000028
+
+
+SLIPLU.c: all tests passed
+
+./SLIPLU p 5
+
+Number of L+U nonzeros: 		10812
+Symbolic analysis time: 		0.000441
+SLIP LU Factorization time: 		0.047946
+FB Substitution time: 			0.001771
+
+
+SLIPLU.c: all tests passed
+
+./tcov_test
+./tcov_test 0 1 1
+initial slip_gmp_ntrials=1
+0 out of 1, initial malloc_count=1000
+file tcov_test.c line 293: OUT OF MEMORY
+tests finished
+./covall
+statments not yet tested: 1004
