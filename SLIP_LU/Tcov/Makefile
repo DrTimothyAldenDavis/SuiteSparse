@@ -33,7 +33,7 @@ default: run
 
 # Linux test coverage
 CC = gcc
-CFLAGS = -g -fprofile-arcs -ftest-coverage \
+CFLAGS = -g -O0 -pg -fprofile-arcs -ftest-coverage \
         -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
         -Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c99 \
         -Wno-unused-parameter -I../Include -I../Source -I../Demo \
@@ -117,12 +117,12 @@ SLIPLU: $(CS) SLIPLU.c demos.c
 
 # run all statement coverage tests
 runtests: all
-	- ./SLIPLU p 2 q 0
-	- ./SLIPLU p 3 q 1 o 1
-	- ./SLIPLU p 4 q 2 o 1 f ../ExampleMats/test_mat.txt ../ExampleMats/test_rhs.txt
-	- ./SLIPLU p 5
+	# - ./SLIPLU p 2 q 0
+	# - ./SLIPLU p 3 q 1 o 1
+	# - ./SLIPLU p 4 q 2 o 1 f ../ExampleMats/test_mat.txt ../ExampleMats/test_rhs.txt
+	# - ./SLIPLU p 5
 	- ./tcov_test
-	- ./tcov_test 0 1 1
+	# - ./tcov_test 0 1 1
 
 # To run with valgrind:
 V = valgrind #--leak-check=full

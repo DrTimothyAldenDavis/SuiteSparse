@@ -59,6 +59,7 @@
     info = (method) ;                            \
     if (info != SLIP_OK)                         \
     {                                            \
+        printf ("die\n") ; \
         SLIP_PRINT_INFO (info) ;                 \
         SLIP_FREE_ALL;                           \
         continue;                                \
@@ -375,8 +376,11 @@ int main( int argc, char* argv[])
                 {
                     if (Ab_type == 0) //MPZ
                     {
+                        printf ("[[[[[[[[[[[[[[[[[ start here: %p\n", SLIP_2D(B, j, 0, mpz)) ;
+                        printf ("bxnum3 j %ld %ld\n", j, bxnum3 [j]) ;
                         TEST_CHECK(SLIP_mpz_set_ui(SLIP_2D(B, j, 0, mpz),
                             bxnum3[j]));
+                        printf ("did here]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n") ;
                     }
                     else if (Ab_type == 1)// MPQ
                     {
