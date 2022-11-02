@@ -643,9 +643,9 @@ int main( int argc, char* argv[])
                     SLIP_matrix_free (&b, option) ;
 
                     //test coverage for slip_gmp_reallocate()
-                    void *p_new = NULL;
-                    TEST_CHECK(slip_gmp_realloc_test(&p_new, NULL,0,1));
-                    TEST_CHECK(slip_gmp_realloc_test(&p_new,p_new,1,0));
+//                  void *p_new = NULL;
+//                  TEST_CHECK(slip_gmp_realloc_test(&p_new, NULL,0,1));
+//                  TEST_CHECK(slip_gmp_realloc_test(&p_new,p_new,1,0));
                 }
 
                 //--------------------------------------------------------------
