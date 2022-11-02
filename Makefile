@@ -83,7 +83,7 @@ global:
 	( cd GPUQREngine && $(MAKE) global )
 	( cd SPQR && $(MAKE) global )
 	( cd GraphBLAS && $(MAKE) global )
-	( cd SPEX && $(MAKE) global 
+	( cd SPEX && $(MAKE) global )
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install:
