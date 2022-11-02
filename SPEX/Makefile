@@ -57,7 +57,7 @@ demo: library
 	( cd SPEX_Left_LU/Demo && ../../build/spexlu_demo )
 
 cov:
-	( cd Tcov && $(MAKE) )
+	( cd SPEX_Left_LU/Tcov && $(MAKE) )
 
 # just compile after running cmake; do not run cmake again
 remake:

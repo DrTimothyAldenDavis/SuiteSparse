@@ -43,7 +43,7 @@ CFLAGS = -g -fprofile-arcs -ftest-coverage \
 	-I../../../AMD/Include \
         -DSPEX_GMP_LIST_INIT=2
 
-LDLIBS += -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig
+LDLIBS += -lmpfr -lgmp -lcolamd -lamd -lsuitesparseconfig -lm 
 
 # run all statement coverage tests, and then check for 100% coverage
 run: runtests
