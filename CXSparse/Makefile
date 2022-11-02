@@ -2,7 +2,7 @@
 # CXSparse/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2009-2022, Timothy A. Davis, All Rights Reserved.
+# CXSparse: Copyright (c) 2009-2022, Timothy A. Davis, All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------

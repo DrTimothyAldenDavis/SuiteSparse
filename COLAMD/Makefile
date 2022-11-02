@@ -2,7 +2,8 @@
 # SuiteSparse/COLAMD/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1998-2022, Timothy A. Davis, All Rights Reserved.
+# COLAMD: Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+# All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------

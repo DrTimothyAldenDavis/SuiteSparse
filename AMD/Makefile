@@ -2,7 +2,7 @@
 # SuiteSparse/AMD/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2009-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
+# AMD: Copyright (c) 2009-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 

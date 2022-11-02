@@ -2,9 +2,9 @@
 # SuiteSparse/SLIP_LU/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2009-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
-# All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# SLIP_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,
+# Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 #-------------------------------------------------------------------------------
 

@@ -2,7 +2,7 @@
 # SuiteSparse/GPUQREngine/Makefile
 #-------------------------------------------------------------------------------
 
-# GPUQREngine, Copyright (c) 2013-2022, Timothy A Davis,
+# GPUQREngine: Copyright (c) 2013-2022, Timothy A Davis,
 # Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 

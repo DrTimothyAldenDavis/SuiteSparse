@@ -2,7 +2,7 @@
 # SuiteSparse/CAMD/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2009-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff,
+# CAMD: Copyright (c) 2009-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff,
 # Yanqing Chen.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 

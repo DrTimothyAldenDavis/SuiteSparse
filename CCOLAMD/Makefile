@@ -2,7 +2,7 @@
 # SuiteSparse/CCOLAMD/Makefile
 #-------------------------------------------------------------------------------
 
-# Copyright (C) 2005-2016.  Authors: Timothy A. Davis,
+# CCOLAMD: Copyright (c) 2005-2016.  Authors: Timothy A. Davis,
 # Sivasankaran Rajamanickam, and Stefan Larimore.
 # SPDX-License-Identifier: BSD-3-clause
 

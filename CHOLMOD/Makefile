@@ -2,12 +2,12 @@
 # SuiteSparse/CHOLOMD/Makefile
 #-------------------------------------------------------------------------------
 
-# CHOLMOD: Copyright (c) 2005-2022, Timothy A. Davis.
-# Copyright and license varies by module.
+# This CHOLMOD/Makefile: Copyright (c) 2005-2022, Timothy A. Davis.
+# CHOLMOD: Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
 
-# A simple Makefile for CHOLOMD, which relies on cmake to do the
+# A simple Makefile for CHOLMOD, which relies on cmake to do the
 # actual build.  All the work is done in cmake so this Makefile is just for
 # convenience.
 
