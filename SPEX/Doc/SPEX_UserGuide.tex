@@ -80,6 +80,7 @@ linear algebra routines. It currently is comprised of the following:
     \item GNU GMP \cite{granlund2015gnu} and MPFR
 \cite{fousse2007mpfr} libraries. Distributed under the LGPL3 and GPL2 and can be acquired and installed
 from \url{https://gmplib.org/} and \url{http://www.mpfr.org/}, respectively.
+
     \end{itemize}
 
 Within a Debian/Ubuntu based Linux system, a compatible version of GMP and MPFR can be installed with the following terminal commands:
@@ -90,6 +91,15 @@ Within a Debian/Ubuntu based Linux system, a compatible version of GMP and MPFR 
     sudo apt-get install libmpfr-dev libmpfr-doc
 \end{verbatim} }
 
+SPEX requires GMP 6.1.2 or later, and MPFR 4.0.2 or later.
+Be aware that the Debian package versions differ.
+The Debian \verb'libgmp.so.10.3.2' corresponds to GMP 6.1.2,
+and \verb'libmpfr.so.6.0.2' corresponds to MPFR 4.0.2.
+The same is true for the spack package manager.
+Do not rely on the suffix \verb'X.Y.Z' in the \verb'lib*.so.X.Y.Z' to
+determine the version.  The CMake script will display the correct
+version numbers of GMP and MPFR, and report an error if they are not
+recent enough.
 
 \chapter{SPEX Utilities} \label{ch:Util}
 
