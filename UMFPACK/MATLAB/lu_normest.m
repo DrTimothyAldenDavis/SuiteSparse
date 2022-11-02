@@ -31,6 +31,7 @@ function rho = lu_normest (A, L, U)
 % The three places that the matrix-vector multiply E*x is used are highlighted.
 % Note that E is never formed explicity.
 
+% This file is Copyright (c), William W. Hager and Timothy A. Davis.
 % UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
