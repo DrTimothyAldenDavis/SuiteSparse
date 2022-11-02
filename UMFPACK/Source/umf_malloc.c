@@ -32,9 +32,12 @@ Int UMF_malloc_count = 0 ;
 #endif
 
 #ifdef UMF_TCOV_TEST
+#ifdef DINT
 /* For exhaustive statement coverage testing only! */
+// define these global values just once, in umf_i_malloc.c
 int umf_fail, umf_fail_lo, umf_fail_hi ;
 int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+#endif
 #endif
 
 GLOBAL void *UMF_malloc

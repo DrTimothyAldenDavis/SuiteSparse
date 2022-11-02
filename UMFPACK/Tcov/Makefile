@@ -52,9 +52,6 @@ default: $(OBJ) ut.c
 	- echo -n "statments not yet tested: "
 	- grep -c "#####" cover.out
 
-ut.c:
-	- ln -s Source/ut.c
-
 purge:
-	$(RM) *.c *.o ut_?? *.gcno *.gcda *.gcov debug.amd *.umf A500 *.out
+	$(RM) umf*.c *.o ut_?? *.gcno *.gcda *.gcov debug.amd *.umf A500 *.out
 
