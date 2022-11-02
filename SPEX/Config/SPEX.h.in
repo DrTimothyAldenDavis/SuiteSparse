@@ -15,10 +15,10 @@
 // using the SPEX Left LU factorization. This code accompanies the paper (submitted
 // to ACM Transactions on Mathematical Software):
 
-//    "Algorithm 1xxx: SPEX Left LU: Exactly Solving Sparse Linear Systems via
-//    A Sparse Left-Looking Integer-Preserving LU Factorization",
-//    C. Lourenco, J. Chen, E. Moreno-Centeno, T. Davis, under submission,
-//    ACM Trans. Mathematical Software.
+//    "Algorithm 1021: SPEX Left LU: Exactly Solving Sparse Linear Systems via
+//    A Sparse Left-Looking Integer-Preserving LU Factorization", C. Lourenco,
+//    J. Chen, E. Moreno-Centeno, T. Davis, ACM Trans. Mathematical Software,
+//    June 2022. https://doi.org/10.1145/3519024
 
 //    The theory associated with this software can be found in the paper
 //    (published in SIAM journal on matrix analysis and applications):
