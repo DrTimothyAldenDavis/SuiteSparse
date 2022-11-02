@@ -61,28 +61,29 @@ local:
 	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
 	( cd SPEX && $(MAKE) local && $(MAKE) install )
 
-# compile and install in SuiteSparse/[lib,include] and /usr/local/[lib,include]
+# compile for install in SuiteSparse/[lib,include] and /usr/local/[lib,include];
+# follow this with 'sudo make install'
 global:
-	( cd SuiteSparse_config && $(MAKE) global && $(MAKE) install )
-	- ( cd SuiteSparse_metis && $(MAKE) global && $(MAKE) install )
-	( cd Mongoose && $(MAKE) global && $(MAKE) install )
-	( cd AMD && $(MAKE) global && $(MAKE) install )
-	( cd BTF && $(MAKE) global && $(MAKE) install )
-	( cd CAMD && $(MAKE) global && $(MAKE) install )
-	( cd CCOLAMD && $(MAKE) global && $(MAKE) install )
-	( cd COLAMD && $(MAKE) global && $(MAKE) install )
-	( cd CHOLMOD && $(MAKE) global && $(MAKE) install )
+	( cd SuiteSparse_config && $(MAKE) global )
+	- ( cd SuiteSparse_metis && $(MAKE) global )
+	( cd Mongoose && $(MAKE) global )
+	( cd AMD && $(MAKE) global )
+	( cd BTF && $(MAKE) global )
+	( cd CAMD && $(MAKE) global )
+	( cd CCOLAMD && $(MAKE) global )
+	( cd COLAMD && $(MAKE) global )
+	( cd CHOLMOD && $(MAKE) global )
 	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
-	( cd CXSparse && $(MAKE) global && $(MAKE) install )
-	( cd LDL && $(MAKE) global && $(MAKE) install )
-	( cd KLU && $(MAKE) global && $(MAKE) install )
-	( cd UMFPACK && $(MAKE) global && $(MAKE) install )
-	( cd RBio && $(MAKE) global && $(MAKE) install )
-	( cd SuiteSparse_GPURuntime && $(MAKE) global && $(MAKE) install )
-	( cd GPUQREngine && $(MAKE) global && $(MAKE) install )
-	( cd SPQR && $(MAKE) global && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) global && $(MAKE) install )
-	( cd SPEX && $(MAKE) global && $(MAKE) install )
+	( cd CXSparse && $(MAKE) global )
+	( cd LDL && $(MAKE) global )
+	( cd KLU && $(MAKE) global )
+	( cd UMFPACK && $(MAKE) global )
+	( cd RBio && $(MAKE) global )
+	( cd SuiteSparse_GPURuntime && $(MAKE) global )
+	( cd GPUQREngine && $(MAKE) global )
+	( cd SPQR && $(MAKE) global )
+	( cd GraphBLAS && $(MAKE) global )
+	( cd SPEX && $(MAKE) global 
 
 # install all packages in SuiteSparse/lib and SuiteSparse/include
 install:
