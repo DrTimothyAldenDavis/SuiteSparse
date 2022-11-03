@@ -29,8 +29,15 @@ To compile/install SuiteSparse_config on Linux/MacOS, in this directory do:
     make
     sudo make install
 
-To compile for installation in ../lib and ../include instead:
+To compile all of SuiteSparse for installation only in ../lib
+and ../include instead:
 
+    make local
+
+Within each package, to install only in ../lib and ../include,
+for example for UMFPACK:
+
+    cd UMFPACK
     make local
     make install
 
@@ -59,7 +66,7 @@ SuiteSparse packages:
   LPDASA   LP Dual Active Set Algorithm
   RBio     read/write files in Rutherford/Boeing format
   SPQR     sparse QR factorization (full name: SuiteSparseQR)
-  SLIP_LU  sparse left-looking integer-preserving LU factorization
+  SPEX     sparse left-looking integer-preserving LU factorization
 
 SuiteSparse_config is not required by these packages:
 

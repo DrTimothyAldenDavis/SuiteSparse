@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SPEX/SPEX/SPEX_Left_LU/Tcov/Makefile: compile and run SLIP_LU test coverage
+# SPEX/SPEX/SPEX_Left_LU/Tcov/Makefile: compile and run SPEX test coverage
 #-------------------------------------------------------------------------------
 
 # SPEX_Left_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,

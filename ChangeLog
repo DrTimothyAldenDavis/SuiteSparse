@@ -19,6 +19,7 @@ Nov 4, 2022: SuiteSparse 6.0.0
     * SPDX License Identifier: added to each file. No change in license.
     * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK, with
         either 32-bit (default) or 64-bit integers.
+    * SPEX: replaces SLIP_LU
 
 Aug 25, 2022, SuiteSparse 5.13.0
 
