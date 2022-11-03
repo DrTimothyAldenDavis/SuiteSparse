@@ -11,15 +11,11 @@ function C = reshape (G, varargin)
 % See also GrB/numel, squeeze.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 if (isobject (G))
     G = G.opaque ;
 end
-
-[mold, nold, ~] = gbsize (G) ;
-mold = int64 (mold) ;
-nold = int64 (nold) ;
 
 % the third output of gb_parse_args is not actually a type, but 'by row', 'by
 % col', or 'double' if not present on input.

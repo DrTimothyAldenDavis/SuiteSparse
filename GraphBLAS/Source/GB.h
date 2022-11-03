@@ -88,6 +88,7 @@
 #include "GB_Descriptor_get.h"
 #include "GB_Element.h"
 #include "GB_op.h"
+#include "GB_hash.h"
 #include "GB_hyper.h"
 #include "GB_ok.h"
 #include "GB_cast.h"

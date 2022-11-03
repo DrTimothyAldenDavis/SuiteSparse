@@ -1,6 +1,6 @@
 SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-The following Apache-2.0 applies to all of SuiteSparse:GraphBLAS except for the
-@GrB interface:
+The following Apache-2.0 applies to all of SuiteSparse:GraphBLAS,
+including the @GrB interface:
 
     SPDX-License-Identifier: Apache-2.0
 
@@ -15,26 +15,6 @@ The following Apache-2.0 applies to all of SuiteSparse:GraphBLAS except for the
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
-
-No files that are compiled and packaged as part of the libgraphblas.so or
-libgraphblas.a libraries are licensed under the GNU GPLv3.  All of those files
-are licensed under the Apache-2.0 license.
-
-================================================================================
-
-The @GrB interface, including its test suite and demos (all files in the
-GraphBLAS/GraphBLAS folder) are not under the above Apache-2.0 license, but
-under the GNU GPLv3 (or later) license instead.  Refer to the file
-GraphBLAS/GraphBLAS/@GrB/LICENSE for details.
-
-All files throughout this package and the @GrB interface are tagged
-with an SPDX license identifier, file by file.  Either:
-
-    SPDX-License-Identifier: Apache-2.0
-
-or, for the @GrB interface, its test suite, and demos:
-
-    SPDX-License-Identifier: GPL-3.0-or-later
 
 ================================================================================
 Dependencies:

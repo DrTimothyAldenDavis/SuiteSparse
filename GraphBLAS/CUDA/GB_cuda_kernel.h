@@ -21,8 +21,18 @@
 // GETA, GETB: get entries from input matrices A and B
 //------------------------------------------------------------------------------
 
+// The entries are typecasted to the type of the inputs to the operator f(x,y),
+// which is either the multiplicative operator of a semiring, or a binary
+// operator for eWise operations.  GETA and GETB can also be used for loading
+// values to be passed to the binary accumulator operator.
+
 #if GB_FLIPXY
 
+    // The operator is "flipped", so that f(b,a) is to be computed.
+    // In this case, aval must be typecasted to the ytype of f, which is
+    // T_Y, and bval to the xtype of f (that is, T_X).
+
+    // aval = (T_Y) A (i,j)
     #if GB_A_IS_PATTERN
         #define GB_DECLAREA(aval)
         #define GB_SHAREDA(aval)
@@ -37,6 +47,7 @@
         #endif
     #endif
 
+    // bval = (T_X) B (i,j)
     #if GB_B_IS_PATTERN
         #define GB_DECLAREB(bval)
         #define GB_SHAREDB(bval)
@@ -53,6 +64,11 @@
 
 #else
 
+    // The operator is not "flipped", so that f(a,b) is to be computed.
+    // In this case, aval must be typecasted to the xtype of f, which is
+    // T_X, and bval to the xtype of f (that is, T_Y).
+
+    // aval = (T_X) A (i,j)
     #if GB_A_IS_PATTERN
         #define GB_DECLAREA(aval)
         #define GB_SHAREDA(aval)
@@ -67,6 +83,7 @@
         #endif
     #endif
 
+    // bval = (T_Y) B (i,j)
     #if GB_B_IS_PATTERN
         #define GB_DECLAREB(bval)
         #define GB_SHAREDB(bval)
@@ -89,10 +106,8 @@
 
 #if GB_C_ISO
 
-    #define GB_ADD_F( f , s)
-    #define GB_C_MULT( c, a, b)
-    #define GB_MULTADD( c, a ,b )
-    #define GB_DOT_TERMINAL ( c )   
+    #define GB_MULTADD( c, a ,b, i, k, j)
+    #define GB_DOT_TERMINAL( c ) break
     #define GB_DOT_MERGE(pA,pB)                                         \
     {                                                                   \
         cij_exists = true ;                                             \
@@ -101,11 +116,15 @@
 
 #else
 
-    #define GB_ADD_F( f , s)  f = GB_ADD ( f, s ) 
-    #define GB_C_MULT( c, a, b)  c = GB_MULT( (a), (b) )
-    #define GB_MULTADD( c, a ,b ) GB_ADD_F( (c), GB_MULT( (a),(b) ) )
-    #define GB_DOT_TERMINAL ( c )
-    //# if ( c == TERMINAL_VALUE) break;
+    // the result the multiply must be typecast to ztype of the add.
+    #define GB_MULTADD( c, a, b, i, k, j )                              \
+    {                                                                   \
+        T_Z x_op_y ;                                                    \
+        GB_MULT (x_op_y, a, b, i, k, j) ;   /* x_op_y = a*b */          \
+        GB_ADD (c, c, x_op_y) ;             /* c += x_op_y  */          \
+    }
+
+    #define GB_DOT_TERMINAL( c ) GB_IF_TERMINAL_BREAK ( c, z )
 
     #if GB_IS_PLUS_PAIR_REAL_SEMIRING
 
@@ -132,7 +151,7 @@
             GB_GETA (aki, Ax, pA) ;         /* aki = A(k,i) */              \
             GB_GETB (bkj, Bx, pB) ;         /* bkj = B(k,j) */              \
             cij_exists = true ;                                             \
-            GB_MULTADD (cij, aki, bkj) ;    /* cij += aki * bkj */          \
+            GB_MULTADD (cij, aki, bkj, i, k, j) ;  /* cij += aki * bkj */   \
         }
         #define GB_CIJ_EXIST_POSTCHECK
 
@@ -242,6 +261,7 @@ GrB_Desc_Value ;
 //------------------------------------------------------------------------------
 // subset of GB.h
 //------------------------------------------------------------------------------
+
 //#include GB_iceil.h
 #define GB_ICEIL(a,b) (((a) + (b) - 1) / (b))
 //#include GB_imin.h
@@ -258,7 +278,7 @@ GrB_Desc_Value ;
 
 #include "GB_nnz.h"
 #include "GB_partition.h"
-//#include "GB_binary_search.h"
+
 // version for the GPU, with fewer branches
 #define GB_TRIM_BINARY_SEARCH(i,X,pleft,pright)                             \
 {                                                                           \
@@ -274,11 +294,13 @@ GrB_Desc_Value ;
     /* or it has found the list is empty */                                 \
     ASSERT (pleft == pright || pleft == pright + 1) ;                       \
 }
+
 #define GB_BINARY_SEARCH(i,X,pleft,pright,found)                            \
 {                                                                           \
     GB_TRIM_BINARY_SEARCH (i, X, pleft, pright) ;                           \
     found = (pleft == pright && X [pleft] == i) ;                           \
 }
+
 #define GB_SPLIT_BINARY_SEARCH(i,X,pleft,pright,found)                      \
 {                                                                           \
     GB_BINARY_SEARCH (i, X, pleft, pright, found)                           \
@@ -295,7 +317,6 @@ GrB_Desc_Value ;
     }                                                                       \
 }
 
-//#include "GB_search_for_vector_template.c"
 __device__
 static inline int64_t GB_search_for_vector_device
 (
@@ -359,3 +380,4 @@ static inline int64_t GB_search_for_vector_device
 
     return (k) ;
 }
+

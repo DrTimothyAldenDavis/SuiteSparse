@@ -531,6 +531,7 @@ GrB_Info GB_assign_prep
                     { 
                         GB_ENSURE_SPARSE (C) ;
                         GBURBLE ("C(:,j)=zombie ") ;
+                        GB_OK (GB_hyper_hash_build (C, Context)) ;
                         GB_assign_zombie1 (C, J [0], Context) ;
                     }
                 }

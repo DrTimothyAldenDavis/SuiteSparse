@@ -29,6 +29,7 @@ class GB_cuda_mxm_factory: public jit::File_Desc {
     public:
         uint64_t sr_code;
         GrB_Semiring semiring ;
+        GrB_Type ctype, atype, btype ;
 
         // file ptr
         FILE *fp;
@@ -102,8 +103,12 @@ class GB_cuda_mxm_factory: public jit::File_Desc {
        this->sr_code = scode;
 
        this->semiring = semiring ;
+       this->atype = A->type ;
+       this->btype = B->type ;
+       this->ctype = ctype ;
 
        std::stringstream ss;
+       // FIXME: use GB_namify_problem here:
        ss << "GB_mxm_" << this->sr_code << ".h";
 
        std::string new_filename = ss.str();
@@ -125,7 +130,11 @@ class GB_cuda_mxm_factory: public jit::File_Desc {
 	    // output to file :
 	    fp, 
 	    // input:
-	    this->sr_code  
+	    this->sr_code,
+	    this->semiring,
+	    this->ctype,
+	    this->atype,
+	    this->btype
        ) ;
 //       std::cout<<" returned from  macrofy mxm"<< std::endl;
 

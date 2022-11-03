@@ -28,12 +28,15 @@
 #include <stdio.h>
 #include <cooperative_groups.h>
 #include "GB_cuda_kernel.h"
+#include "GB_hash.h"
+#include "GB_hyper_hash_lookup.h"
 
 using namespace cooperative_groups;
 
+// FIXME: move this out into its own *.cuh
 template< typename T, int tile_sz>
 __inline__ __device__ 
-T warp_ReduceSumPlus( thread_block_tile<tile_sz> g, T val)
+T GB_warp_ReduceSumPlus( thread_block_tile<tile_sz> g, T val)
 {
     // Each iteration halves the number of active threads
     // Each thread adds its partial sum[i] to sum[lane+i]
@@ -50,25 +53,10 @@ T warp_ReduceSumPlus( thread_block_tile<tile_sz> g, T val)
     val +=  g.shfl_down( val, 1);
     return val; // note: only thread 0 will return full sum
 }
-/*
-template< typename T, int tile_sz>
-__inline__ __device__ 
-T warp_Reduce( thread_block_tile<tile_sz> g, T val)
-{
-    // Each iteration halves the number of active threads
-    // Each thread adds its partial sum[i] to sum[lane+i]
-    #pragma unroll
-    for (int i = tile_sz >> 1; i > 0; i >>= 1) {
-        T next = g.shfl_down( val, i) ;
-        val = GB_ADD( val, next ) ; 
-    }
-    return val; // note: only thread 0 will return full sum
-}
-*/
 
 template<typename T, int warpSize>
 __inline__ __device__
-T block_ReduceSum(thread_block g, T val)
+T GB_block_ReduceSum(thread_block g, T val)
 {
   static __shared__ T shared[warpSize]; // Shared mem for 32 partial sums
 
@@ -77,7 +65,7 @@ T block_ReduceSum(thread_block g, T val)
   thread_block_tile<warpSize> tile = tiled_partition<warpSize>( g );
 
   // Each warp performs partial reduction
-  val = warp_ReduceSumPlus<T, warpSize>( tile, val);    
+  val = GB_warp_ReduceSumPlus<T, warpSize>( tile, val);    
 
   // Wait for all partial reductions
   if (lane==0) shared[wid]=val; // Write reduced value to shared memory
@@ -88,10 +76,12 @@ T block_ReduceSum(thread_block g, T val)
   //read from shared memory only if that warp existed
   val = (threadIdx.x <  (blockDim.x / warpSize ) ) ? shared[lane] : 0;
 
-  if (wid==0) val = warp_ReduceSumPlus<T, warpSize>( tile, val); //Final reduce within first warp
+  if (wid==0) val = GB_warp_ReduceSumPlus<T, warpSize>( tile, val); //Final reduce within first warp
 
   return val;
 }
+
+//------------------------------------------------------------------------------
 
 template<
     typename T_C, typename T_A, typename T_B,
@@ -123,15 +113,38 @@ __global__ void AxB_dot3_phase3_vsvs
 //
 //   int dots = (nvecs +m -1)/m;
 //   */
-   const T_A *__restrict__ Ax = (T_A *)A->x  ;
-   const T_B *__restrict__ Bx = (T_B *)B->x  ;
-         T_C *__restrict__ Cx = (T_C *)C->x  ;
-         int64_t *__restrict__ Ci = C->i ;
-   const int64_t *__restrict__ Mi = M->i ;
-   const int64_t *__restrict__ Ai = A->i ;
-   const int64_t *__restrict__ Bi = B->i ;
-   const int64_t *__restrict__ Ap = A->p ;
-   const int64_t *__restrict__ Bp = B->p ;
+    const T_A *__restrict__ Ax = (T_A *)A->x  ;
+    const T_B *__restrict__ Bx = (T_B *)B->x  ;
+          T_C *__restrict__ Cx = (T_C *)C->x  ;
+          int64_t *__restrict__ Ci = C->i ;
+    const int64_t *__restrict__ Mi = M->i ;
+    #if GB_M_IS_HYPER
+    const int64_t *__restrict__ Mh = M->h ;
+    #endif
+
+    #if GB_A_IS_HYPER || GB_A_IS_SPARSE
+    const int64_t *__restrict__ Ai = A->i ;
+    const int64_t *__restrict__ Ap = A->p ;
+    #endif
+
+    #if GB_B_IS_HYPER || GB_B_IS_SPARSE
+    const int64_t *__restrict__ Bi = B->i ;
+    const int64_t *__restrict__ Bp = B->p ;
+    #endif
+
+    #if GB_A_IS_HYPER
+    const int64_t *__restrict__ A_Yp = A->Y->p ;
+    const int64_t *__restrict__ A_Yi = A->Y->i ;
+    const int64_t *__restrict__ A_Yx = (int64_t *) A->Y->x ;
+    const int64_t A_hash_bits = A->Y->vdim - 1 ;
+    #endif
+
+    #if GB_B_IS_HYPER
+    const int64_t *__restrict__ B_Yp = B->Y->p ;
+    const int64_t *__restrict__ B_Yi = B->Y->i ;
+    const int64_t *__restrict__ B_Yx = (int64_t *) B->Y->x ;
+    const int64_t B_hash_bits = B->Y->vdim - 1 ;
+    #endif
 
     //int64_t pfirst, plast;
 
@@ -148,30 +161,49 @@ __global__ void AxB_dot3_phase3_vsvs
                   kk < end;
                   kk += blockDim.x*gridDim.x )
     {
-         int64_t pair_id = all_in_one ? kk : Bucket[ kk ];
+        int64_t pair_id = all_in_one ? kk : Bucket[ kk ];
 
-         // HACK: assumes C and M are sparse, not hypersparse
-         int64_t i = Mi [pair_id] ;
-         int64_t j = Ci [pair_id]>>4 ;      // this is "k", not "j"
-         // C, M hypersparse, we do: j = Mh [k].
-         // Note Ch == Mh, even with zombies in C.
+        int64_t i = Mi [pair_id] ;
+        int64_t k = Ci [pair_id]>>4 ;
 
-         // HACK: assumes A is sparse, not hypersparse
-         int64_t pA       = Ap[i] ;
-         int64_t pA_end   = Ap[i+1] ;
+        // j = k or j = Mh [k] if C and M are hypersparse
+        #if GB_M_IS_HYPER
+        int64_t j = Mh [k] ;
+        #else
+        int64_t j = k ;
+        #endif
 
-         // HACK: assumes B is sparse, not hypersparse
-         int64_t pB       = Bp[j] ;
-         int64_t pB_end   = Bp[j+1] ;
+        // find A(:,i):  A is always sparse or hypersparse
+        int64_t pA, pA_end ;
+        #if GB_A_IS_HYPER
+        GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx, A_hash_bits,
+           i, &pA, &pA_end) ;
+        #else
+        pA       = Ap[i] ;
+        pA_end   = Ap[i+1] ;
+        #endif
 
-         GB_DECLAREA (aki) ;
-         GB_DECLAREB (bkj) ;
-         T_Z cij = GB_IDENTITY ;
+        // find B(:,j):  B is always sparse or hypersparse
+        int64_t pB, pB_end ;
+        #if GB_B_IS_HYPER
+        GB_hyper_hash_lookup (Bp, B_Yp, B_Yi, B_Yx, B_hash_bits,
+           j, &pB, &pB_end) ;
+        #else
+        pB       = Bp[j] ;
+        pB_end   = Bp[j+1] ;
+        #endif
 
-         bool cij_exists = false;
+        GB_DECLAREA (aki) ;
+        GB_DECLAREB (bkj) ;
+        #if !GB_C_ISO
+//      T_Z cij = GB_IDENTITY ;
+        GB_DECLARE_MONOID_IDENTITY (cij) ;
+        #endif
 
-         while (pA < pA_end && pB < pB_end )
-         {
+        bool cij_exists = false;
+
+        while (pA < pA_end && pB < pB_end )
+        {
             int64_t ia = Ai [pA] ;
             int64_t ib = Bi [pB] ;
             #if GB_IS_PLUS_PAIR_REAL_SEMIRING && GB_ZTYPE_IGNORE_OVERFLOW
@@ -181,29 +213,35 @@ __global__ void AxB_dot3_phase3_vsvs
                 { 
                     // A(k,i) and B(k,j) are the next entries to merge
                     GB_DOT_MERGE (pA, pB) ;
-                    //GB_DOT_TERMINAL (cij) ;   // break if cij == terminal
+                    GB_DOT_TERMINAL (cij) ;   // break if cij == terminal
                 }
             #endif
             pA += ( ia <= ib);  // incr pA if A(ia,i) at or before B(ib,j)
             pB += ( ib <= ia);  // incr pB if B(ib,j) at or before A(ia,i)
-         }
-         GB_CIJ_EXIST_POSTCHECK ;
-         if (cij_exists){
+        }
+
+        GB_CIJ_EXIST_POSTCHECK ;
+        if (cij_exists)
+        {
             Ci[pair_id] = i ;
             GB_PUTC ( Cx[pair_id] = (T_C)cij ) ;
-         }
-         else{
+        }
+        else
+        {
             my_nzombies++;
             Ci[pair_id] = GB_FLIP( i ) ;
-         }
-   }
-   this_thread_block().sync(); 
+        }
+    }
 
-   my_nzombies = block_ReduceSum<int64_t , 32>( this_thread_block(), my_nzombies);
-   this_thread_block().sync(); 
+    // FIXME: use this in spdn and vsdn:
+    this_thread_block().sync(); 
 
-   if( threadIdx.x == 0 && my_nzombies > 0) {
-      atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)my_nzombies);
-   }
+    my_nzombies = GB_block_ReduceSum<int64_t , 32>( this_thread_block(), my_nzombies);
+    this_thread_block().sync(); 
+
+    if( threadIdx.x == 0 && my_nzombies > 0)
+    {
+        atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)my_nzombies);
+    }
 }
 

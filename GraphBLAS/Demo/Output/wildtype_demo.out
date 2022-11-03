@@ -1,5 +1,8 @@
+    GraphBLAS type: WildType user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
 WildType size: 128
     GraphBLAS type: WildType user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
 
 a wildtype scalar: scalar1 [this is from scalar1]
        0.0        1.0        2.0        3.0 
@@ -12,6 +15,50 @@ a wildtype scalar: got scalar2 = C(7,2) [this is A(2,7)]
      100.0      101.0      102.0      103.0 
      200.0      201.0      202.0      203.0 
      300.0      301.0      302.0      303.0 
+
+    GraphBLAS BinaryOp: WildAdd (user-defined) z=wildtype_add(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildtype_add (wildtype *z, const wildtype *x, const wildtype *y) 
+{ 
+   for (int i = 0 ; i < 4 ; i++) 
+   { 
+       for (int j = 0 ; j < 4 ; j++) 
+       { 
+           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ; 
+       } 
+   } 
+   strcpy (z->whatstuff, "this was added") ; 
+} 
+
+
+    GraphBLAS BinaryOp: WildMult (user-defined) z=wildtype_mult(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildtype_mult (wildtype *z, const wildtype *x, const wildtype *y) 
+{ 
+   for (int i = 0 ; i < 4 ; i++) 
+   { 
+       for (int j = 0 ; j < 4 ; j++) 
+       { 
+           z->stuff [i][j] = 0 ; 
+           for (int k = 0 ; k < 4 ; k++) 
+           { 
+               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ; 
+           } 
+       } 
+   } 
+   strcpy (z->whatstuff, "this was multiplied") ; 
+} 
+
 
 a wildtype scalar: scalar2 [here is scalar2]
        0.5        1.5        2.5        3.5 
@@ -29,14 +76,48 @@ a wildtype scalar: scalar_identity for the monoid [identity]
     GraphBLAS Monoid: semiring->add (user-defined)
     GraphBLAS BinaryOp: monoid->op (user-defined) z=wildtype_add(x,y)
     GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     GraphBLAS type: ytype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildtype_add (wildtype *z, const wildtype *x, const wildtype *y) 
+{ 
+   for (int i = 0 ; i < 4 ; i++) 
+   { 
+       for (int j = 0 ; j < 4 ; j++) 
+       { 
+           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ; 
+       } 
+   } 
+   strcpy (z->whatstuff, "this was added") ; 
+} 
+
     identity: [ [user-defined value] ] 
 
     GraphBLAS BinaryOp: semiring->multiply (user-defined) z=wildtype_mult(x,y)
     GraphBLAS type: ztype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     GraphBLAS type: xtype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     GraphBLAS type: ytype user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildtype_mult (wildtype *z, const wildtype *x, const wildtype *y) 
+{ 
+   for (int i = 0 ; i < 4 ; i++) 
+   { 
+       for (int j = 0 ; j < 4 ; j++) 
+       { 
+           z->stuff [i][j] = 0 ; 
+           for (int k = 0 ; k < 4 ; k++) 
+           { 
+               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ; 
+           } 
+       } 
+   } 
+   strcpy (z->whatstuff, "this was multiplied") ; 
+} 
+
 
 multiplication C=A*B InTheWild semiring:
 
@@ -87,6 +168,7 @@ Printing the matrix with GxB_Matrix_fprint:
     (7,2) [user-defined value]
   pending tuples:
     GraphBLAS type:  user-defined: [wildtype] size: 128
+    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     row: 7 col: 5 [user-defined value]
     row: 4 col: 2 [user-defined value]
   pending operator: implicit 2nd
@@ -119,132 +201,6 @@ a wildtype scalar:  [here is B(7,5)]
       -2.5       -1.5       -0.5        0.5 
 
 ============= that was the WildType matrix input B
-
-a wildtype scalar: x for multiply: [this is A(2,4)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      909.0 
-     300.0      301.0      302.0       42.0 
-
-a wildtype scalar: y for multiply: [finally, B(4,2)]
-      -1.0        1.5        2.5       77.0 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(2,4)] * [finally, B(4,2)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0     8157.0 
-   -2876.0    -1064.0      448.0    16660.0 
-   -1008.5      386.5     1331.5    24326.5 
-
-a wildtype scalar: x for multiply: [this is A(2,7)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      203.0 
-     300.0      301.0      302.0      303.0 
-
-a wildtype scalar: y for multiply: [this is B(7,2)]
-       0.5        1.5        2.5        3.5 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(2,7)] * [this is B(7,2)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -411.0       -5.0      401.0      807.0 
-    -811.0       -5.0      801.0     1607.0 
-   -1211.0       -5.0     1201.0     2407.0 
-
-a wildtype scalar: x for add: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0     8157.0 
-   -2876.0    -1064.0      448.0    16660.0 
-   -1008.5      386.5     1331.5    24326.5 
-
-a wildtype scalar: y for add: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -411.0       -5.0      401.0      807.0 
-    -811.0       -5.0      801.0     1607.0 
-   -1211.0       -5.0     1201.0     2407.0 
-
-do the add:
-    [this was added] = [this was added] + [this was multiplied]
-
-a wildtype scalar: z = x+y: [this was added]
-     -22.0      -10.0        2.0       14.0 
-    -972.0      -10.0      802.0     8964.0 
-   -3687.0    -1069.0     1249.0    18267.0 
-   -2219.5      381.5     2532.5    26733.5 
-
-a wildtype scalar: x for multiply: [this is A(2,7)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      203.0 
-     300.0      301.0      302.0      303.0 
-
-a wildtype scalar: y for multiply: [here is B(7,5)]
-      -1.0        1.5        2.5        3.5 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(2,7)] * [here is B(7,5)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0      807.0 
-   -1111.0       -5.0      801.0     1607.0 
-   -1661.0       -5.0     1201.0     2407.0 
-
-a wildtype scalar: x for multiply: [this is A(3,7)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      909.0 
-     300.0      301.0      302.0      303.0 
-
-a wildtype scalar: y for multiply: [this is B(7,2)]
-       0.5        1.5        2.5        3.5 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(3,7)] * [this is B(7,2)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -411.0       -5.0      401.0      807.0 
-   -2576.0    -1064.0      448.0     1960.0 
-   -1211.0       -5.0     1201.0     2407.0 
-
-a wildtype scalar: x for multiply: [this is A(3,7)]
-       0.0        1.0        2.0        3.0 
-     100.0      101.0      102.0      103.0 
-     200.0      201.0      202.0      909.0 
-     300.0      301.0      302.0      303.0 
-
-a wildtype scalar: y for multiply: [here is B(7,5)]
-      -1.0        1.5        2.5        3.5 
-      -0.5        0.5        1.5        2.5 
-      -1.5       -0.5        0.5        1.5 
-      -2.5       -1.5       -0.5        0.5 
-
-do the multiply:
-   [this was multiplied] = [this is A(3,7)] * [here is B(7,5)]
-
-a wildtype scalar: z = x*y: [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0      807.0 
-   -2876.0    -1064.0      448.0     1960.0 
-   -1661.0       -5.0     1201.0     2407.0 
 
 Printing the matrix with GxB_Matrix_fprint:
 
@@ -293,6 +249,78 @@ a wildtype scalar:  [this was multiplied]
 
 ============= that was the WildType matrix output C
 
+------ C<M>=C*C'----------------------------------------
+
+The mask matrix M:
+
+  10x10 GraphBLAS bool matrix, hypersparse by row
+  M, no entries, memory: 4.4 KB
+  iso value:   1
+  pending tuples: 4 max pending: 256 zombies: 0
+  pending tuples:
+    GraphBLAS type:  int32_t size: 4
+    row: 2 col: 2 
+    row: 2 col: 3 
+    row: 3 col: 2 
+    row: 3 col: 3 
+  pending operator: implicit 2nd
+
+ [ GrB_mxm (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = S'*S) nthreads 1 ntasks 1 (generic C<M>=A'*B) 
+   0.000168 sec ]
+
+Printing the matrix with GxB_Matrix_fprint:
+
+  10x10 GraphBLAS wildtype matrix, sparse by row
+  output C, 4 entries, memory: 1.4 KB
+
+    (2,2) [user-defined value]
+    (2,3) [user-defined value]
+    (3,2) [user-defined value]
+    (3,3) [user-defined value]
+
+
+============= printing the WildType matrix: output C (10-by-10 with 4 entries)
+
+----------- output C(2,2):
+
+a wildtype scalar:  [this was added]
+  -38055.0     3563.0    37081.0   335199.0 
+-24598430.0  2569038.0 24980906.0 256764864.0 
+-47572600.0  5674779.5 49524956.0 506665632.0 
+-74305584.0  7500257.5 75016352.0 772037824.0 
+
+----------- output C(2,3):
+
+a wildtype scalar:  [this was added]
+  -29331.0    -3057.0    20517.0    44091.0 
+-15391281.0 -1321107.0 12266367.0 25853840.0 
+-29816720.0 -2251210.0 24351604.0 50954412.0 
+-46461396.0 -4100626.5 36817444.0 77735512.0 
+
+----------- output C(3,2):
+
+a wildtype scalar:  [this was added]
+  -23933.5     1801.5    22136.5   174771.5 
+-5032683.5  -119848.5  3827586.5 31427322.0 
+-8035864.0   312888.0  6948040.0 55566392.0 
+-15050184.0  -363148.5 11438486.0 93932424.0 
+
+----------- output C(3,3):
+
+a wildtype scalar:  [this was added]
+  -20454.0    -2038.0    13678.0    29394.0 
+-4488404.0  -856488.0  2292728.0  5441944.0 
+-6977436.0  -935044.0  4250548.0  9436140.0 
+-13424304.0 -2565388.0  6850828.0 16267044.0 
+
+============= that was the WildType matrix output C
+
+a wildtype scalar: sum [this was added]
+ -111773.5      269.5    93412.5   583455.5 
+-49510800.0   271594.5 43367588.0 319487968.0 
+-92402624.0  2801413.5 85075152.0 622622592.0 
+-149241456.0   471094.5 130123104.0 959972800.0 
+
 C is now stored by column, but it looks just the same to the
 GraphBLAS user application.  The difference is opaque, in the
 internal data structure.
@@ -304,8 +332,8 @@ Printing the matrix with GxB_Matrix_fprint:
 
     (2,2) [user-defined value]
     (3,2) [user-defined value]
-    (2,5) [user-defined value]
-    (3,5) [user-defined value]
+    (2,3) [user-defined value]
+    (3,3) [user-defined value]
 
 
 ============= printing the WildType matrix: output C (10-by-10 with 4 entries)
@@ -313,34 +341,34 @@ Printing the matrix with GxB_Matrix_fprint:
 ----------- output C(2,2):
 
 a wildtype scalar:  [this was added]
-     -22.0      -10.0        2.0       14.0 
-    -972.0      -10.0      802.0     8964.0 
-   -3687.0    -1069.0     1249.0    18267.0 
-   -2219.5      381.5     2532.5    26733.5 
+  -38055.0     3563.0    37081.0   335199.0 
+-24598430.0  2569038.0 24980906.0 256764864.0 
+-47572600.0  5674779.5 49524956.0 506665632.0 
+-74305584.0  7500257.5 75016352.0 772037824.0 
 
------------ output C(2,5):
+----------- output C(2,3):
 
-a wildtype scalar:  [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0      807.0 
-   -1111.0       -5.0      801.0     1607.0 
-   -1661.0       -5.0     1201.0     2407.0 
+a wildtype scalar:  [this was added]
+  -29331.0    -3057.0    20517.0    44091.0 
+-15391281.0 -1321107.0 12266367.0 25853840.0 
+-29816720.0 -2251210.0 24351604.0 50954412.0 
+-46461396.0 -4100626.5 36817444.0 77735512.0 
 
 ----------- output C(3,2):
 
-a wildtype scalar:  [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -411.0       -5.0      401.0      807.0 
-   -2576.0    -1064.0      448.0     1960.0 
-   -1211.0       -5.0     1201.0     2407.0 
+a wildtype scalar:  [this was added]
+  -23933.5     1801.5    22136.5   174771.5 
+-5032683.5  -119848.5  3827586.5 31427322.0 
+-8035864.0   312888.0  6948040.0 55566392.0 
+-15050184.0  -363148.5 11438486.0 93932424.0 
 
------------ output C(3,5):
+----------- output C(3,3):
 
-a wildtype scalar:  [this was multiplied]
-     -11.0       -5.0        1.0        7.0 
-    -561.0       -5.0      401.0      807.0 
-   -2876.0    -1064.0      448.0     1960.0 
-   -1661.0       -5.0     1201.0     2407.0 
+a wildtype scalar:  [this was added]
+  -20454.0    -2038.0    13678.0    29394.0 
+-4488404.0  -856488.0  2292728.0  5441944.0 
+-6977436.0  -935044.0  4250548.0  9436140.0 
+-13424304.0 -2565388.0  6850828.0 16267044.0 
 
 ============= that was the WildType matrix output C
 

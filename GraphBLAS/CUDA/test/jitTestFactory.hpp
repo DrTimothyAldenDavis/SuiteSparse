@@ -7,7 +7,6 @@
 #include <random>
 #include <algorithm>
 #include <iostream>
-//#include "GB_binary_search.h"
 #include "GB_cuda_reduce_factory.hpp"
 #include "GpuTimer.h"
 #include "GB_cuda_buckets.h"

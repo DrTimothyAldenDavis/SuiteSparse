@@ -1,3 +1,27 @@
+Version 7.3.1, Oct 21, 2022
+
+    * workaround for Microsoft Visual Studio bug :  MSC 19.2x (in vs2019)
+        encounters a compiler bug when compiling the FIRST_FC32 and SECOND_FC32
+        binary operators.  This version adds a flag that disables those
+        methods.  The operators still work, they are just handled by the
+        slower generic methods. Thanks to Erik Welch, H. Vetinari, and others
+        in the conda-forge community for tracking this down.
+
+Version 7.3.0, Oct 14, 2022
+
+    * GrB_Matrix: changes to the internal data structure
+        * minor internal changes: A->nvals for sparse/hypersparse
+        * more significant changes: added A->Y hyper_hash for hypersparse case,
+            speeds up GrB_mxm (C=A*B, C<M>=A*B' (for CSR A'*B for CSC)),
+            C<M>=A+B (eWiseAdd), C<M>A.*B (eWiseMult), some cases for
+            GrB_assign, for hypersparse matrices.
+        * added GxB_unpack_HyperHash and GxB_pack_HyperHash: to pack/unpack
+            the A->Y hyper_hash
+    * @GrB MATLAB/Octave interface: changed license to Apache-2.0
+    * MATLAB library: renamed to libgraphblas_matlab.so
+    * performance: faster C=A*B when using a single thread and B is a
+        sparse vector with many entries
+
 Version 7.2.0, Aug 8, 2022
 
     * added ZSTD as a compression option for serialize/deserialize:
@@ -13,7 +37,7 @@ Version 7.1.2, July 8, 2022
 
     * MATLAB interface: linear indexing added for C(:)=A, C=A(:), and
         single-output I=find(C).  Faster bandwidth, istriu, istril,
-        isbanded, isdiag.  C(I,J)=A can now grow the size of A.
+        isbanded, isdiag.  C(I,J)=A can now grow the size of C.
 
 Version 7.1.1, June 17, 2022
 
@@ -527,7 +551,7 @@ Version 3.0.1, July 26, 2019
     * new operators and semirings: RDIV (f(x,y)=y/x) and RMINUS (y-x)
         binary operators.
 
-Version 2.3.5, Oct 20, 2019
+Version 2.3.5, July 20, 2019
 
     * minor update: fix for tests in R2019b
 

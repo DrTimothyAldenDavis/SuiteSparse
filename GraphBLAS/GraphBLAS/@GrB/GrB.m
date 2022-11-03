@@ -569,7 +569,7 @@ classdef GrB
 % See also sparse.
 %
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 properties (SetAccess = private, GetAccess = private)
     % The struct contains the entire opaque content of a GraphBLAS
@@ -1040,6 +1040,8 @@ methods (Static)
     v = version ;
     v = ver ;
     C = vreduce (Cin, M, accum, monoid, A, desc) ;
+
+    t = timing (c) ; % timing for diagnositics only, requires -DGB_TIMING
 
     % these were formerly overloaded methods, now Static methods
     C = false (varargin) ;

@@ -54,7 +54,7 @@ GrB_Info GB_init            // start up GraphBLAS
     //--------------------------------------------------------------------------
 
     #ifdef GBCUDA_DEV
-    printf ("GBCUDA_DEV enabled: for development only!\n") ;
+    printf ("\n==== GBCUDA_DEV enabled: for CUDA development only! ====\n") ;
     #endif
 
     if (GB_Global_GrB_init_called_get ( ))

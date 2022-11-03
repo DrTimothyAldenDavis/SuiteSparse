@@ -198,8 +198,8 @@
 #define GB_FREE_ALL                         \
 {                                           \
     GB_FREE_WORKSPACE ;                     \
-    if (!C_is_NULL) GB_phbix_free (C) ;     \
-    GB_phbix_free (P) ;                     \
+    if (!C_is_NULL) GB_phybix_free (C) ;    \
+    GB_phybix_free (P) ;                    \
 }
 
 // redefine to use the revised GB_FREE_ALL above:
@@ -266,10 +266,10 @@ GrB_Info GB_sort
     bool sort_in_place = (A == C) ;
 
     // free any prior content of C and P
-    GB_phbix_free (P) ;
+    GB_phybix_free (P) ;
     if (!sort_in_place)
     { 
-        GB_phbix_free (C) ;
+        GB_phybix_free (C) ;
     }
 
     //--------------------------------------------------------------------------
@@ -510,13 +510,14 @@ GrB_Info GB_sort
             // C is required on output.  The indices of C are copied and
             // become the values of P.  Cp is copied to Pp, and Ch (if present)
             // is copied to Ph.
-            P->plen = cnvec ;
+            int64_t pplen = GB_IMAX (1, cnvec) ;
+            P->plen = pplen ;
             P->x = GB_MALLOC (cnz, int64_t, &(P->x_size)) ; // x:OK
-            P->p = GB_MALLOC (cnvec+1, int64_t, &(P->p_size)) ;
+            P->p = GB_MALLOC (pplen+1, int64_t, &(P->p_size)) ;
             P->h = NULL ;
             if (C_is_hyper)
             { 
-                P->h = GB_MALLOC (cnvec, int64_t, &(P->h_size)) ;
+                P->h = GB_MALLOC (pplen, int64_t, &(P->h_size)) ;
             }
             if (P->x == NULL || P->p == NULL || (C_is_hyper && P->h == NULL))
             { 
@@ -534,6 +535,7 @@ GrB_Info GB_sort
             }
         }
 
+        P->nvals = cnz ;
         P->magic = GB_MAGIC ;
     }
 

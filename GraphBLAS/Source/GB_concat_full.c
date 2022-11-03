@@ -12,7 +12,7 @@
 
 #define GB_FREE_ALL         \
     GB_FREE_WORKSPACE ;     \
-    GB_phbix_free (C) ;
+    GB_phybix_free (C) ;
 
 #include "GB_concat.h"
 
@@ -48,7 +48,7 @@ GrB_Info GB_concat_full             // concatenate into a full matrix
     if (!GB_IS_FULL (C))
     { 
         // set C->iso = C_iso   OK
-        GB_phbix_free (C) ;
+        GB_phybix_free (C) ;
         GB_OK (GB_bix_alloc (C, GB_nnz_full (C), GxB_FULL, false, true, C_iso,
             Context)) ;
         C->plen = -1 ;

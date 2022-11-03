@@ -56,7 +56,7 @@ function C = cell2mat (A)
 % See also GrB/horzcat, GrB/vertcat, GrB/cat, GrB/mat2cell, GrB/num2cell.
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-% SPDX-License-Identifier: GPL-3.0-or-later
+% SPDX-License-Identifier: Apache-2.0
 
 if (~iscell (A))
     error ('GrB:error', 'input must be a cell array') ;

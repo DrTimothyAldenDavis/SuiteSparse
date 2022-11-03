@@ -34,7 +34,7 @@
     GB_FREE_WORKSPACE ;                         \
     if (Chandle == NULL)                        \
     {                                           \
-        GB_phbix_free (A) ;                     \
+        GB_phybix_free (A) ;                    \
     }                                           \
     else                                        \
     {                                           \
@@ -331,7 +331,7 @@ GrB_Info GB_reshape         // reshape a GrB_Matrix into another GrB_Matrix
 
         if (in_place)
         { 
-            GB_phbix_free (C) ;
+            GB_phybix_free (C) ;
         }
 
         //----------------------------------------------------------------------
@@ -361,6 +361,7 @@ GrB_Info GB_reshape         // reshape a GrB_Matrix into another GrB_Matrix
             nvals,          // number of entries in T and C 
             NULL,           // no dup operator
             type,           // type of S_work and S_input
+            true,           // burble is allowed
             Context
         )) ;
 

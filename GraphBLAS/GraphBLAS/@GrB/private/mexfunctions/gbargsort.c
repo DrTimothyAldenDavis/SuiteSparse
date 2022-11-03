@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
-// SPDX-License-Identifier: GPL-3.0-or-later
+// SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
@@ -116,8 +116,7 @@ void mexFunction
     // sort the matrix
     //--------------------------------------------------------------------------
 
-    GrB_Info info = (GxB_Matrix_sort (C, P, op, A, desc)) ;
-    OK (info) ;
+    OK (GxB_Matrix_sort (C, P, op, A, desc)) ;
 
     //--------------------------------------------------------------------------
     // add 1 to the entries in P, to convert to 1-based indexing
@@ -133,6 +132,7 @@ void mexFunction
     // return result
     //--------------------------------------------------------------------------
 
+    OK (GrB_Matrix_free (&A)) ;
     pargout [0] = gb_export (&C, KIND_GRB) ;
     if (nargout > 1)
     { 

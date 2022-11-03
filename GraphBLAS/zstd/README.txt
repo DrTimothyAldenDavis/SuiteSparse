@@ -10,7 +10,8 @@ See ./LICENSE and ./README_zstd.md for more details.
 Files in this folder:
 
     LICENSE         BSD 3-clause, Copyright (c) 2016-present, Facebook, Inc.
-    FIXME           ... list all the files/folders here
+    zstd_subset     a subset of zstd (common, compress, decompress),
+                    and their include files
     README_zstd.md  zstd/README.md
     README.txt      this file
 

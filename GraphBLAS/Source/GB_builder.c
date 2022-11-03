@@ -155,6 +155,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
                                     // if NULL use the SECOND operator to
                                     // keep the most recent duplicate.
     const GrB_Type stype,           // the type of S_work or S_input
+    bool do_burble,                 // if true, then burble is allowed
     GB_Context Context
 )
 {
@@ -205,7 +206,6 @@ GrB_Info GB_builder                 // build a matrix from tuples
     int64_t *restrict I_work = (*I_work_handle) ;
     int64_t *restrict J_work = (*J_work_handle) ;
     int64_t *restrict K_work = NULL ; size_t K_work_size = 0 ;
-//  ASSERT (*J_work_size_handle == GB_Global_memtable_size (J_work)) ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads to use
@@ -819,7 +819,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
     ASSERT (T->x == NULL) ;
 
     T->iso = S_iso ;                // OK: T is iso if and only if Sx is iso
-    bool do_burble = (vlen > 1 || vdim > 1) && (nvals > 1) ;
+    do_burble = do_burble && (vlen > 1 || vdim > 1) && (nvals > 1) ;
     if (do_burble)
     {
         if (S_iso)
@@ -933,7 +933,8 @@ GrB_Info GB_builder                 // build a matrix from tuples
     T->nvec_nonempty = tnvec ;
     T->nvec = tnvec ;
     Tp [tnvec] = tnz ;
-    ASSERT (T->nvec == T->plen) ;
+    T->nvals = tnz ;
+    ASSERT (T->nvec == T->plen || (T->plen == 1 && T->nvec == 0)) ;
     T->magic = GB_MAGIC ;
 
     //--------------------------------------------------------------------------
@@ -971,7 +972,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
         if (T->i == NULL)
         { 
             // out of memory
-            GB_phbix_free (T) ;
+            GB_phybix_free (T) ;
             GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }
@@ -1159,7 +1160,7 @@ GrB_Info GB_builder                 // build a matrix from tuples
         if (T->x == NULL)
         { 
             // out of memory
-            GB_phbix_free (T) ;
+            GB_phybix_free (T) ;
             GB_FREE_WORKSPACE ;
             return (GrB_OUT_OF_MEMORY) ;
         }

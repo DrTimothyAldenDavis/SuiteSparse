@@ -70,7 +70,7 @@ static inline int GB_ngpus_to_use
     else if (gpu_control == GxB_GPU_ALWAYS)
     {
         // always use all available GPU(s)
-        // FIXME: allow 1 to gpu_count to be requested
+        // fixme for CUDA: allow 1 to gpu_count to be requested
         printf ("(using the GPU: %d) ", gpu_count) ;
         return (gpu_count) ;
     }
@@ -149,13 +149,6 @@ bool GB_AxB_dot3_cuda_branch
     const bool flipxy,              // if true, do z=fmult(b,a) vs fmult(a,b)
     GB_Context Context
 );
-
-#ifdef GBCUDA
-#include <nvToolsExt.h>
-#define GB_NVTX { nvtxMark ("nvtx:" __FILE__ ":" GB_XSTR(__LINE__)) ; }
-#else
-#define GB_NVTX
-#endif
 
 #endif
 
