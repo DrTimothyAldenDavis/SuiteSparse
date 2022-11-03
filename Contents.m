@@ -128,10 +128,11 @@
 %   GrB - the GraphBLAS matrix object; 100s of overloaded functions.
 %
 %-------------------------------------------------------------------------------
-% SLIP_LU: solves sparse Ax=b exactly, with no roundoff error
+% SPEX: solves sparse Ax=b exactly, with no roundoff error
 %-------------------------------------------------------------------------------
 %
-%   SLIP_backslash - solve Ax=b via sparse left-looking integer-preserving LU
+%   SPEX_Left_LU_backslash - solve Ax=b via sparse left-looking
+%                       integer-preserving LU
 %
 %-------------------------------------------------------------------------------
 % Other packages:

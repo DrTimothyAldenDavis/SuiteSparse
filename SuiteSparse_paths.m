@@ -6,7 +6,7 @@ function SuiteSparse_paths
 %
 % GraphBLAS      graph algorithms via sparse linear algebra (graphblas.org)
 % Mongoose       graph partitioner
-% SLIP_LU        solve sparse Ax=b exactly
+% SPEX           solve sparse Ax=b exactly
 % UMFPACK        sparse LU factorization (multifrontal)
 % CHOLMOD        sparse Cholesky factorization, and many other operations
 % AMD            sparse symmetric approximate minimum degree ordering
@@ -79,7 +79,7 @@ paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
-paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
+paths = add_to_path (paths, [SuiteSparse '/SPEX/MATLAB']) ;
 
 cd (SuiteSparse)
 

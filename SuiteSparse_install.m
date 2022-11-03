@@ -6,7 +6,7 @@ function SuiteSparse_install (do_demo)
 %
 % GraphBLAS      graph algorithms via sparse linear algebra (graphblas.org)
 % Mongoose       graph partitioner
-% SLIP_LU        solve sparse Ax=b exactly
+% SPEX           solve sparse Ax=b exactly
 % UMFPACK        sparse LU factorization (multifrontal)
 % CHOLMOD        sparse Cholesky factorization, and many other operations
 % AMD            sparse symmetric approximate minimum degree ordering
@@ -38,7 +38,7 @@ function SuiteSparse_install (do_demo)
 % See also AMD, COLAMD, CAMD, CCOLAMD, CHOLMOD, UMFPACK, CSPARSE, CXSPARSE,
 %      ssget, RBio, SuiteSparseCollection, KLU, BTF, MESHND, SSMULT, LINFACTOR,
 %      SPOK, SPQR_RANK, SuiteSparse, SPQR, PATHTOOL, PATH, FACTORIZE,
-%      SPARSEINV, Mongoose, GraphBLAS, SLIP_LU.
+%      SPARSEINV, Mongoose, GraphBLAS, SPEX.
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
