@@ -77,6 +77,7 @@ uninstall:
 # remove all files not in the distribution
 clean:
 	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
+	( cd SPEX_Left_LU/Tcov && $(MAKE) clean )
 
 purge: clean
 
