@@ -16,7 +16,7 @@ Nov 4, 2022: SuiteSparse 6.0.0
         with the unmodified metis-5.1.0.  The compiled library is named
         libsuitesparse_metis.so.  The unmodified libmetis.so cannot be used
         with SuiteSparse.
-    * SPDX License Identifier: added to each file.  No change in license.
+    * SPDX License Identifier: added to each file. No change in license.
     * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK, with
         either 32-bit (default) or 64-bit integers.
 
