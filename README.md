@@ -453,8 +453,9 @@ SuiteSparse in /Users/me/SuiteSparse:
 Compile all of SuiteSparse with "make local".
 
 Next, compile the GraphBLAS MATLAB library.  In the system shell while in the
-SuiteSparse folder, type "make gbinstall" if you have MATLAB R2020b or earlier,
-or type "make gbrenamed" if you have MATLAB 9.10 (R2021a) or later.
+SuiteSparse folder, type "make gbmatlab" if you want to install it system- wide
+with "sudo make install", or "make gblocal" if you want to use the library in
+your own SuiteSparse/lib.
 
 Then in the MATLAB Command Window, cd to the SuiteSparse directory and type
 `SuiteSparse_install`.  All packages will be compiled, and several demos will be
