@@ -31,8 +31,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
     and direct sparse LU factorization.  It is written in ANSI/ISO C, with a
     MATLAB interface.  UMFPACK relies on the Level-3 Basic
     Linear Algebra Subprograms (dense matrix multiply) for its performance.
-    This code works on Windows and many versions of Unix (Sun Solaris,
-    Red Hat Linux, IBM AIX, SGI IRIX, and Compaq Alpha).
+    This code works on Windows and many versions of Linux/Unix.
 \end{abstract}
 %-------------------------------------------------------------------------------
 
@@ -736,22 +735,7 @@ for the real double precision and {\tt int} integer case.  The notation
 
 The {\tt umfpack\_di\_*} and {\tt umfpack\_zi\_*} routines use {\tt int} integer
 arguments; those starting with {\tt umfpack\_dl\_} or {\tt umfpack\_zl\_}
-use \verb'int64_t' integer arguments.  If you compile UMFPACK in the standard
-ILP32 mode (32-bit {\tt int}'s, {\tt long}'s, and pointers) then the versions
-are essentially identical.  You will be able to solve problems using up to 2GB
-of memory.  If you compile UMFPACK in the standard LP64 mode, the size of an
-{\tt int} remains 32-bits, but the size of a {\tt long} and a pointer both get
-promoted to 64-bits.  In the LP64 mode, the {\tt umfpack\_dl\_*}
-and {\tt umfpack\_zl\_*} routines can solve huge
-problems (not limited to 2GB), limited of course by the amount of available
-memory.  The only drawback to the 64-bit mode is that not all BLAS libraries
-support 64-bit integers.  This limits the performance you will obtain.
-Those that do support 64-bit integers are specific to particular
-architectures, and are not portable.  UMFPACK and AMD should be compiled
-in the same mode.
-If you compile UMFPACK and AMD in the LP64 mode,
-be sure to add {\tt -DLP64} to the compilation command.  See the examples in
-the {\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
+use \verb'int64_t' integer arguments.
 
 %-------------------------------------------------------------------------------
 \subsection{Real and complex floating-point}

@@ -283,41 +283,7 @@ Three other packages are required for optimal performance:
 \end{itemize}
 
 You must first obtain and install LAPACK, and the BLAS.
-METIS 5.1.0 is optional; a copy of it is in {\tt SuiteSparse}.
-System-dependent configurations in the
-{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
-This file has been changed in CHOLMOD version 3.0.7;
-it now automatically detects your system, your BLAS, and whether or not
-you have CUDA installed, and whether or not you have METIS 5.1.0.
-You still may need to edit it to refine the
-compilation parameters for your particular system, but it is likely it
-will work unmodified.
-
-\noindent
-Here are some of the various parameters that you can control in your
-{\tt SuiteSparse\_config/SuiteSparse\_config.mk} file.
-You can set them without editing that file, simply by including
-them on your {\tt make} command.  For example, to {\tt -lmyblas},
-use {\tt make BLAS=-lmyblas}.  For a complete list, including
-their default values, do {\tt make config}.
-\begin{itemize}
-\item {\tt CC = } your C compiler, such as {\tt cc}.
-\item {\tt CF = } optimization flags, such as {\tt -O}.
-\item {\tt RANLIB = } your system's {\tt ranlib} program, if needed.
-\item {\tt ARCHIVE =} the command to create a library (such as {\tt ar}).
-\item {\tt RM =} the command to delete a file.
-\item {\tt MV =} the command to rename a file.
-\item {\tt F77 =} the command to compile a Fortran program (optional).
-\item {\tt F77FLAGS =} the Fortran compiler flags (optional).
-\item {\tt F77LIB =} the Fortran libraries (optional).
-\item {\tt LDLIBS = } basic libraries, such as {\tt -lm}.
-\item {\tt BLAS =} your BLAS library.
-\item {\tt LAPACK =} your LAPACK library.
-\item {\tt METIS\_PATH =} the path to your copy of the METIS 5.1.0 source code.
-\item {\tt METIS =} your METIS library.
-\item {\tt GPU\_CONFIG = } configuration settings specific to the CUDA BLAS.
-\item {\tt CHOLMOD\_CONFIG = } configuration settings specific to CHOLMOD.
-\end{itemize}
+METIS 5.1.0 is optional; a copy of it is in {\tt SuiteSparse\_metis}.
 
 \noindent
 CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
@@ -333,20 +299,6 @@ CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
 \item {\tt -DNMODIFY}:	    do not include the Modify module.
 \item {\tt -DNSUPERNODAL}:  do not include the Supernodal module.
 \item {\tt -DNPRINT}:	    do not print anything.
-\item {\tt -D'LONGBLAS=long'} or {\tt -DLONGBLAS='long long'}
-			    defines the integers used by LAPACK
-                            and the BLAS (defaults to {\tt int}).
-\item {\tt -DNSUNPERF}:	    for Solaris only.  If defined, do not use the
-                            Sun Performance Library.
-\item {\tt -DNLARGEFILE}:   CHOLMOD now assumes support for large files (2GB or
-                            larger).  If this causes problems, you can compile
-                            CHOLMOD with -DNLARGEFILE.  To use large files, you
-                            should {\tt \#include "cholmod.h"} (or at least
-                            {\tt \#include "cholmod\_io64.h"}) before any other
-                            {\tt \#include} statements, in your application
-                            that uses CHOLMOD.  You may need to use {\tt
-                            fopen64} to create a file pointer to pass to
-                            CHOLMOD, if you are using a non-gcc compiler.
 \end{itemize}
 
 Type {\tt make} in the {\tt CHOLMOD} directory.  The AMD,
@@ -505,14 +457,8 @@ Only the {\tt long} integer version of CHOLMOD can leverage GPU acceleration.
 %-------------------------------------------------------------------------------
 
 In order to support GPU processing, CHOLMOD must be compiled with the
-preprocessor macro {\tt GPU\_BLAS} defined.  All GPU code is conditional upon
-this macro.  As well, the environment variable {\tt CUDA\_ROOT} must be defined
-and point to the installation of the CUDA toolkit to be used for compilation of
-CHOLMOD.  Typically this would be {\tt /usr/local/cuda}.
-
-The {\tt SuiteSparse\_config.mk} should automatically detect if you have
-CUDA installed on your system.  If so, then it will do everything for you
-without the need to edit the {\tt SuiteSparse\_config.mk} file.
+preprocessor macro \verb'ENABLE_CUDA' defined.  It is enabled by default
+but can be disabled by setting this to false when using cmake.
 
 %-------------------------------------------------------------------------------
 \subsection{Enabling GPU acceleration in CHOLMOD}
