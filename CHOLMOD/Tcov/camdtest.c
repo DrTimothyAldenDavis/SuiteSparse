@@ -1,18 +1,22 @@
-/* ========================================================================== */
-/* === Tcov/camdtest ======================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/camdtest: test of CAMD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Test for camd v2.0 */
 
 #include "cm.h"
+#undef FLIP
+#undef UNFLIP
 
 #ifndef NCAMD
 #include "camd.h"
+#include "camd_internal.h"
 
 /* ========================================================================== */
 /* === camdtest ============================================================= */
@@ -255,7 +259,7 @@ void camdtest (cholmod_sparse *A)
 	    ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;
 	    OK (ok == CAMD_INVALID) ;
 
-	    if (Size_max/2 == Int_max)
+	    if (SIZE_MAX/2 == Int_max)
 	    {
 		Cp [n] = Int_max ;
 		ok = CAMD_order (n, Cp, Ci, P, Control, Info, NULL) ;

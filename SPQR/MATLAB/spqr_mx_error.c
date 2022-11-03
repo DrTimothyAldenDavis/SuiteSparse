@@ -2,6 +2,9 @@
 /* === spqr_mx_error ======================================================== */
 /* ========================================================================== */
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 /* Compile with gcc, not g++.  This is called by the CHOLMOD error handler,
  * which is itself in C.  A global variable is used for spumoni because the
  * parameter signature of this function cannot be changed; it is passed as

@@ -1,17 +1,17 @@
-/* ========================================================================== */
-/* === UMFPACK_triplet_to_col =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_triplet_to_col: convert triplets to CSC sparse matrix
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User callable.  Converts triplet input to column-oriented form.  Duplicate
     entries may exist (they are summed in the output).  The columns of the
     column-oriented form are in sorted order.  The input is not modified.
-    Returns 1 if OK, 0 if an error occurred.  See umfpack_triplet_to_col.h for
+    Returns 1 if OK, 0 if an error occurred.  See umfpack.h for
     details.
 
     If Map is present (a non-NULL pointer to an Int array of size nz), then on
@@ -44,7 +44,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_triplet_to_col
+GLOBAL int UMFPACK_triplet_to_col
 (
     Int n_row,
     Int n_col,
@@ -69,7 +69,8 @@ GLOBAL Int UMFPACK_triplet_to_col
     /* local variables */
     /* ---------------------------------------------------------------------- */
 
-    Int *RowCount, *Rp, *Rj, *W, nn, do_values, do_map, *Map2, status ;
+    Int *RowCount, *Rp, *Rj, *W, nn, do_values, do_map, *Map2 ;
+    int status ;
     double *Rx ;
 #ifdef COMPLEX
     double *Rz ;

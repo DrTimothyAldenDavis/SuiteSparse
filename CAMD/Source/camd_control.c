@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD_control ======================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_control: print control parameters for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* User-callable.  Prints the control parameters for CAMD.  See camd.h
  * for details.  If the Control array is not present, the defaults are
@@ -35,9 +35,9 @@ GLOBAL void CAMD_control
     }
 
     SUITESPARSE_PRINTF ((
-        "\ncamd version %d.%d, %s:  approximate minimum degree ordering:\n"
+        "\ncamd version %d.%d.%d, %s:  approximate minimum degree ordering:\n"
 	"    dense row parameter: %g\n", CAMD_MAIN_VERSION, CAMD_SUB_VERSION,
-	CAMD_DATE, alpha)) ;
+        CAMD_SUBSUB_VERSION, CAMD_DATE, alpha)) ;
 
     if (alpha < 0)
     {

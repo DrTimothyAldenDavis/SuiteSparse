@@ -6,7 +6,9 @@ function amd_make
 %
 % See also amd, amd2.
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, and Iain S. Duff. 
+% AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+% Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
@@ -21,11 +23,11 @@ if (~verLessThan ('matlab', '8.3.0'))
 end
 
 i = sprintf ('-I../Include -I../../SuiteSparse_config') ;
-cmd = sprintf ('mex -O %s -DDLONG -output amd2 %s amd_mex.c %s', d, i, ...
+cmd = sprintf ('mex -O %s -output amd2 %s amd_mex.c %s', d, i, ...
     '../../SuiteSparse_config/SuiteSparse_config.c') ;
-files = {'amd_order', 'amd_dump', 'amd_postorder', 'amd_post_tree', ...
-    'amd_aat', 'amd_2', 'amd_1', 'amd_defaults', 'amd_control', ...
-    'amd_info', 'amd_valid', 'amd_preprocess' } ;
+files = {'amd_l_order', 'amd_l_dump', 'amd_l_postorder', 'amd_l_post_tree', ...
+    'amd_l_aat', 'amd_l2', 'amd_l1', 'amd_l_defaults', 'amd_l_control', ...
+    'amd_l_info', 'amd_l_valid', 'amd_l_preprocess' } ;
 for i = 1 : length (files)
     cmd = sprintf ('%s ../Source/%s.c', cmd, files {i}) ;
 end

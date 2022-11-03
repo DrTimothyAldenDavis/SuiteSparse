@@ -13,5 +13,6 @@ function A_safe = sanitize (A)  %#ok
 %   See also SAFE_EDGECUT, SAFE_COARSEN.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 error ('sanitize mexFunction not found') ;

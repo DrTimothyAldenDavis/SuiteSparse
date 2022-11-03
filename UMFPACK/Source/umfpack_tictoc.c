@@ -1,22 +1,16 @@
-/* ========================================================================== */
-/* === umfpack_tictoc ======================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_tictoc: timing routines
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Returns the current wall clock time.  BE CAREFUL:  if you
     compare the run time of UMFPACK with other sparse matrix packages, be sure
-    to use the same timer.  See umfpack_tictoc.h for details.
-
-    These routines conform to the POSIX standard.  See umf_config.h for
-    more details.
-
-    In a prior version, two timings were returned: wall clock and cpu time.
-    In the current version, both times are set to the wall clock time.
+    to use the same timer.  See umfpack.h for details.
 */
 
 #include "umf_internal.h"

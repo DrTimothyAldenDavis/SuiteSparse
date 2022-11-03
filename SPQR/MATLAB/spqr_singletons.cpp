@@ -2,6 +2,9 @@
 // === spqr_singletons mexFunction =============================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 #include "spqr_mx.hpp"
 #include "spqr.hpp"
 
@@ -23,9 +26,9 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long *P, *Q, *Rp, *Pinv ;
+    int64_t *P, *Q, *Rp, *Pinv ;
     double *Ax, dummy, tol ;
-    Long m, n, anz, is_complex, n1rows, n1cols, i, k ;
+    int64_t m, n, anz, is_complex, n1rows, n1cols, i, k ;
     cholmod_sparse *A, Amatrix, *Y ;
     cholmod_common Common, *cc ;
 
@@ -108,7 +111,7 @@ void mexFunction
     // free unused outputs from spqr_1colamd, and the merged-complex copy of A
     // -------------------------------------------------------------------------
 
-    cholmod_l_free (n1rows+1, sizeof (Long), Rp, cc) ;
+    cholmod_l_free (n1rows+1, sizeof (int64_t), Rp, cc) ;
     cholmod_l_free_sparse (&Y, cc) ;
     if (is_complex)
     {
@@ -120,22 +123,22 @@ void mexFunction
     // find P from Pinv
     // -------------------------------------------------------------------------
 
-    P = (Long *) cholmod_l_malloc (m, sizeof (Long), cc) ;
+    P = (int64_t *) cholmod_l_malloc (m, sizeof (int64_t), cc) ;
     for (i = 0 ; i < m ; i++)
     {
         k = Pinv ? Pinv [i] : i ;
         P [k] = i ;
     }
-    cholmod_l_free (m, sizeof (Long), Pinv, cc) ;
+    cholmod_l_free (m, sizeof (int64_t), Pinv, cc) ;
 
     // -------------------------------------------------------------------------
     // return results
     // -------------------------------------------------------------------------
 
     pargout [0] = spqr_mx_put_permutation (P, m, TRUE, cc) ;
-    cholmod_l_free (m, sizeof (Long), P, cc) ;
+    cholmod_l_free (m, sizeof (int64_t), P, cc) ;
     if (nargout > 1) pargout [1] = spqr_mx_put_permutation (Q, n, TRUE, cc) ;
-    cholmod_l_free (n, sizeof (Long), Q, cc) ;
+    cholmod_l_free (n, sizeof (int64_t), Q, cc) ;
     if (nargout > 2) pargout [2] = mxCreateDoubleScalar ((double) n1rows) ;
     if (nargout > 3) pargout [3] = mxCreateDoubleScalar ((double) n1cols) ;
     if (nargout > 4) pargout [4] = mxCreateDoubleScalar (tol) ;

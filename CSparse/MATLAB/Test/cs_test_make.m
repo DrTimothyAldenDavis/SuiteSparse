@@ -6,7 +6,8 @@ function cs_test_make (force)
 %   cs_test_make
 % See also: testall
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 try
     % ispc does not appear in MATLAB 5.3

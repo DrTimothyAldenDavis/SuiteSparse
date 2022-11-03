@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_lusol: x=A\b using a sparse LU factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* x=A\b where A is unsymmetric; b overwritten with solution */
 CS_INT cs_lusol (CS_INT order, const cs *A, CS_ENTRY *b, double tol)

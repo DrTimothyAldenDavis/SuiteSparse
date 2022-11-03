@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD mexFunction ==================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/MATLAB/camd_mex.c: MATLAB interface for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  * Usage:
@@ -29,7 +29,6 @@
 #include "camd.h"
 #include "mex.h"
 #include "matrix.h"
-#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -39,9 +38,10 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full, *C, Clen ;
+    int64_t i, m, n, *Ap, *Ai, *P, nc, *C, Clen ;
     double *Pout, *InfoOut, Control [CAMD_CONTROL], Info [CAMD_INFO],
 	*ControlIn, *Cin ;
+    int result, spumoni, full ;
     mxArray *A ;
 
     /* --------------------------------------------------------------------- */
@@ -96,11 +96,11 @@ void mexFunction
 	Clen = mxGetNumberOfElements (pargin [2]) ;
 	if (Clen != 0)
 	{
-	    C = (Long *) mxCalloc (Clen, sizeof (Long)) ;
+	    C = (int64_t *) mxCalloc (Clen, sizeof (int64_t)) ;
 	    for (i = 0 ; i < Clen ; i++)
 	    {
 		/* convert c from 1-based to 0-based */
-		C [i] = (Long) Cin [i] - 1 ;
+		C [i] = (int64_t) Cin [i] - 1 ;
 	    }
 	}
     }
@@ -126,7 +126,7 @@ void mexFunction
     /* allocate workspace for output permutation */
     /* --------------------------------------------------------------------- */
 
-    P = mxMalloc ((n+1) * sizeof (Long)) ;
+    P = mxMalloc ((n+1) * sizeof (int64_t)) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, convert to a sparse matrix */
@@ -142,8 +142,8 @@ void mexFunction
 	}
 	mexCallMATLAB (1, &A, 1, (mxArray **) pargin, "sparse") ;
     }
-    Ap = (Long *) mxGetJc (A) ;
-    Ai = (Long *) mxGetIr (A) ;
+    Ap = (int64_t *) mxGetJc (A) ;
+    Ai = (int64_t *) mxGetIr (A) ;
     if (spumoni > 0)
     {
 	mexPrintf ("    input matrix A has %d nonzero entries\n", Ap [n]) ;

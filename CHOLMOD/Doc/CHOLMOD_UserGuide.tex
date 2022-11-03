@@ -3,6 +3,7 @@
 %-------------------------------------------------------------------------------
 
 \documentclass[11pt]{article}
+\batchmode
 
 \newcommand{\m}[1]{{\bf{#1}}}       % for matrices and vectors
 \newcommand{\tr}{^{\sf T}}          % transpose
@@ -21,7 +22,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com }
 \title{User Guide for CHOLMOD: a sparse Cholesky factorization and
 modification package}
 
-\date{VERSION 3.0.14, Oct 22, 2019}
+\input{cholmod_version.tex}
 \maketitle
 
 %-------------------------------------------------------------------------------
@@ -47,7 +48,7 @@ modification package}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-CHOLMOD Copyright\copyright 2005-2015 by Timothy A. Davis.  Portions are also
+CHOLMOD Copyright\copyright 2005-2022 by Timothy A. Davis.  Portions are also
 copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
 All Rights Reserved.
@@ -255,8 +256,7 @@ along with CHOLMOD, but three of which are not.  Those included with CHOLMOD are
     {\tt -DNCAMD} flag.
 \item {\tt SuiteSparse\_config}:
     a single place where all sparse matrix packages authored
-    or co-authored by Davis are configured.  Also includes a version of the
-    {\tt xerbla} routine for the BLAS.
+    or co-authored by Davis are configured.
 \end{itemize}
 
 Three other packages are required for optimal performance:
@@ -350,8 +350,7 @@ CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
 \end{itemize}
 
 Type {\tt make} in the {\tt CHOLMOD} directory.  The AMD,
-COLAMD, CAMD, CCOLAMD, and {\tt CHOLMOD} libraries will be compiled,
-as will the C version of the null-output {\tt xerbla} routine in case you need it.
+COLAMD, CAMD, CCOLAMD, and {\tt CHOLMOD} libraries will be compiled.
 No Fortran compiler is required in this case.  A short demo program will
 be compiled and tested on a few matrices.  The residuals should all be small.
 Compare your output with the {\tt CHOLMOD/Demo/make.out} file.
@@ -363,11 +362,7 @@ your programs with the
 {\tt libcolamd.*},
 LAPACK,
 and
-BLAS libraries,
-as well as the {\tt xerbla} library if you need it
-({\tt SuiteSparse\_config/xerbla/libcerbla.*} for the C version or
-\newline
- {\tt SuiteSparse\_config/xerbla/libxerbla.*} for the Fortran version).
+BLAS libraries.
 Unless you use {\tt -DNPARTITION}, you must also link with the METIS 5.1.0
 library.
 Unless {\tt -DNCAMD} is present at compile time,
@@ -3393,7 +3388,7 @@ option should be 1.
 If option is 2, this function can be used to compute the numerical and
 pattern symmetry, where 0 is a completely unsymmetric matrix, and 1 is a
 perfectly symmetric matrix.  This option is used when computing the following
-statistics for the matrices in the UF Sparse Matrix Collection.
+statistics for the matrices in the SuiteSparse Matrix Collection.
 
 	numerical symmetry: number of matched off-diagonal nonzeros over
 	the total number of off-diagonal entries.  A real entry $a_{ij}$,  $i \ne j$,

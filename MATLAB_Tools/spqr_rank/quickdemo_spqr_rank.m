@@ -6,7 +6,9 @@ function quickdemo_spqr_rank
 %
 % See also spqr_basic, spqr_cod, spqr_null, spqr_pinv, spqr.
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 A = sparse(gallery('kahan',100));
 B = randn(100,1); B = B / norm(B);

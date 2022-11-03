@@ -18,7 +18,8 @@ function Y = cod_qmult (Q, X, method)
 %
 % See also cod_sparse, spqr, spqr_qmult
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (nargin < 3)
     method = 0 ;

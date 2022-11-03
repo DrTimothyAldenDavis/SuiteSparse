@@ -6,7 +6,9 @@ function camd_make
 %
 % See also camd.
 
-% Copyright 1994-2007, Tim Davis, Patrick R. Amestoy, Iain S. Duff, and Y. Chen.
+% CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+% Amestoy, and Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 details = 0 ;	    % 1 if details of each command are to be printed
 
@@ -21,11 +23,11 @@ if (~verLessThan ('matlab', '8.3.0'))
 end
 
 i = sprintf ('-I../Include -I../../SuiteSparse_config') ;
-cmd = sprintf ('mex -O %s -DDLONG -output camd %s camd_mex.c %s', d, i, ...
+cmd = sprintf ('mex -O %s -output camd %s camd_mex.c %s', d, i, ...
     '../../SuiteSparse_config/SuiteSparse_config.c') ;
-files = {'camd_order', 'camd_dump', 'camd_postorder', ...
-    'camd_aat', 'camd_2', 'camd_1', 'camd_defaults', 'camd_control', ...
-    'camd_info', 'camd_valid', 'camd_preprocess' } ;
+files = {'camd_l_order', 'camd_l_dump', 'camd_l_postorder', ...
+    'camd_l_aat', 'camd_l2', 'camd_l1', 'camd_l_defaults', 'camd_l_control', ...
+    'camd_l_info', 'camd_l_valid', 'camd_l_preprocess' } ;
 for i = 1 : length (files)
     cmd = sprintf ('%s ../Source/%s.c', cmd, files {i}) ;
 end

@@ -1,3 +1,13 @@
+%-------------------------------------------------------------------------------
+% CHOLMOD/Demo/lperf:  test performance of x=A\b in CHOLMOD
+%-------------------------------------------------------------------------------
+
+% CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
+%-------------------------------------------------------------------------------
+
 % test the performance of the sparse subset Ax=b solver
 
 clear

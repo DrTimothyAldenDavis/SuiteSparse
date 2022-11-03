@@ -25,6 +25,7 @@
     if (slip_gmp_status != 0)                                           \
     {                                                                   \
         /* failure from longjmp */                                      \
+        printf ("caught fail\n") ; \
         slip_gmp_failure (slip_gmp_status) ;                            \
         return (SLIP_OUT_OF_MEMORY) ;                                   \
     }                                                                   \

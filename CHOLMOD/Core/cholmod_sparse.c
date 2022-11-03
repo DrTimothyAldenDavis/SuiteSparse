@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_sparse ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_sparse: core methods for the cholmod_sparse object
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Core utility routines for the cholmod_sparse object:
  *
@@ -33,8 +34,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
 
 /* ========================================================================== */
 /* === cholmod_allocate_sparse ============================================== */
@@ -410,7 +409,7 @@ cholmod_sparse *CHOLMOD(spzeros)
  * integer overflow cannot occur, since the matrix is already allocated.
  */
 
-SuiteSparse_long CHOLMOD(nnz)
+int64_t CHOLMOD(nnz)
 (
     /* ---- input ---- */
     cholmod_sparse *A,

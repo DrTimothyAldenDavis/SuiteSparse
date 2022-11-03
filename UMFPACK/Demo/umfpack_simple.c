@@ -1,8 +1,11 @@
-/* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.                           */
-/* See ../Doc/License.txt for License.                                        */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// UMFPACK/Demo/umfpack_simple: simple demo for UMFPACK
+//------------------------------------------------------------------------------
+
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #include <stdio.h>
 #include "umfpack.h"
@@ -16,6 +19,13 @@ double x [5] ;
 
 int main (void)
 {
+    printf ("%s\n", UMFPACK_VERSION) ;
+    printf ("%s", UMFPACK_COPYRIGHT) ;
+    printf ("%s", UMFPACK_LICENSE_PART1) ;
+    printf ("BLAS used: %s\n", SuiteSparse_BLAS_library ( )) ;
+    printf ("BLAS integer size: %d bytes\n",
+        (int) sizeof (SUITESPARSE_BLAS_INT)) ;
+
     double *null = (double *) NULL ;
     int i ;
     void *Symbolic, *Numeric ;

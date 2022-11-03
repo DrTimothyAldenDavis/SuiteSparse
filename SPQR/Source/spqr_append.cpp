@@ -2,6 +2,11 @@
 // === spqr_append =============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Appends a dense column X onto a sparse matrix A, increasing nnzmax(A) as
 // needed.  The column pointer array is not modified; it must be large enough
 // to accomodate the new column.
@@ -12,20 +17,20 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
 (
     // inputs, not modified
     Entry *X,           // size m-by-1
-    Long *P,            // size m, or NULL; permutation to apply to X.
+    int64_t *P,            // size m, or NULL; permutation to apply to X.
                         // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    Long *p_n,          // n = # of columns of A so far; increased one
+    int64_t *p_n,          // n = # of columns of A so far; increased one
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
     Entry *Ax ;
-    Long *Ai, *Ap ;
-    Long nzmax, nz, i, k, nznew, n, m, nz2 ;
+    int64_t *Ai, *Ap ;
+    int64_t nzmax, nz, i, k, nznew, n, m, nz2 ;
     int ok = TRUE ;
 
     // -------------------------------------------------------------------------
@@ -34,7 +39,7 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
 
     m = A->nrow ;
     n = *p_n ;
-    Ap = (Long *) A->p ;
+    Ap = (int64_t *) A->p ;
 
     if (m == 0)
     {
@@ -45,7 +50,7 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
         return (TRUE) ;
     }
 
-    Ai = (Long *) A->i ;
+    Ai = (int64_t *) A->i ;
     Ax = (Entry *) A->x ;
     nzmax = A->nzmax ;      // current nzmax(A)
     nz = Ap [n] ;           // current nnz(A)
@@ -102,7 +107,7 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
                         return (FALSE) ;
                     }
                     // Ai and Ax have moved, reaquire the pointers
-                    Ai = (Long *) A->i ;
+                    Ai = (int64_t *) A->i ;
                     Ax = (Entry *) A->x ;
                     PR (("reallocated from %ld to %ld\n", nzmax, nznew)) ;
                     nzmax = nznew ;
@@ -136,12 +141,12 @@ template int spqr_append <double>
 (
     // inputs, not modified
     double *X,      // size m-by-1
-    Long *P,        // size m, or NULL; permutation to apply to X.
+    int64_t *P,        // size m, or NULL; permutation to apply to X.
                     // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,    // size m-by-n2 where n2 > n
-    Long *p_n,       // number of columns of A; increased by one
+    int64_t *p_n,       // number of columns of A; increased by one
 
     // workspace and parameters
     cholmod_common *cc
@@ -153,12 +158,12 @@ template int spqr_append <Complex>
 (
     // inputs, not modified
     Complex *X,     // size m-by-1
-    Long *P,        // size m, or NULL; permutation to apply to X.
+    int64_t *P,        // size m, or NULL; permutation to apply to X.
                     // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,    // size m-by-n2 where n2 > n
-    Long *p_n,      // number of columns of A; increased by one
+    int64_t *p_n,      // number of columns of A; increased by one
 
     // workspace and parameters
     cholmod_common *cc

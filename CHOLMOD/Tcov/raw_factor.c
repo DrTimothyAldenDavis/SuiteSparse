@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/raw_factor ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/raw_factor: test CHOLMOD factorization and solvers
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Factorize A using cholmod_rowfac for the simplicial case, and the 
  * cholmod_super_* routines for the supernodal case, and test the solution to
@@ -127,9 +128,9 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 	prefer_zomplex, Bxtype ;
     Int *Parent, *Post, *First, *Level, *Ri, *Rp, *LTp = NULL, *LTi = NULL, *P,
 	*mask, *RLinkUp ;
-    SuiteSparse_long lr ;
+    int64_t lr ;
     double beta [2] ;
-    unsigned SuiteSparse_long save ;
+    uint64_t save ;
 
     /* ---------------------------------------------------------------------- */
     /* create the problem */
@@ -195,7 +196,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     ok = CHOLMOD(super_symbolic) (A, NULL, Parent, L, cm) ;
 
     /* super_symbolic should fail if lnz is too large */
-    if (cm->lnz > Size_max / 2)
+    if (cm->lnz > SIZE_MAX / 2)
     {
 	printf ("raw_factor: problem is huge\n") ;
 	NOT (ok) ;

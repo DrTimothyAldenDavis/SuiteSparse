@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/cm ============================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/cm: CHOLMOD test program
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* A program for exhaustive statement-coverage for CHOLMOD, AMD, COLAMD, and
  * CCOLAMD.  It tests every line of code in all three packages.
@@ -1432,16 +1433,16 @@ int main (int argc, char **argv)
     OKP (p) ;
     p [0] = 'a' ;
     SuiteSparse_free (p) ;
-    p = SuiteSparse_malloc (SuiteSparse_long_max, 1024) ;
+    p = SuiteSparse_malloc (INT64_MAX, 1024) ;
     NOP (p) ;
-    p = SuiteSparse_calloc (SuiteSparse_long_max, 1024) ;
+    p = SuiteSparse_calloc (INT64_MAX, 1024) ;
     NOP (p) ;
     p = SuiteSparse_realloc (0, 0, 0, NULL, &ok) ;
     OK (ok) ;
     OKP (p) ;
     p [0] = 'a' ;
     SuiteSparse_free (p) ;
-    p = SuiteSparse_realloc (SuiteSparse_long_max, 0, 1024, NULL, &ok) ;
+    p = SuiteSparse_realloc (INT64_MAX, 0, 1024, NULL, &ok) ;
     NOP (p) ;
     NOT (ok) ;
 

@@ -42,7 +42,8 @@ function [p, stats] = csymamd (S, knobs, cmember)			    %#ok
 %
 %    See also AMD, CCOLAMD, COLAMD, SYMAMD, SYMRCM.
 
-% Copyright 1998-2007, Timothy A. Davis, Stefan Larimore, and Siva Rajamanickam
-% Developed in collaboration with J. Gilbert and E. Ng.
+% CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+% Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+% SPDX-License-Identifier: BSD-3-clause
 
 error ('csymamd: mexFunction not found') ;

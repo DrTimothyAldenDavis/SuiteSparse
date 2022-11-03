@@ -1,13 +1,15 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/bisect mexFunction ==================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/bisect: MATLAB interface to CHOLMOD graph bisection
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS is Copyrighted by G. Karypis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
+// METIS is Copyrighted by G. Karypis
 
 /* Find an node separator of an undirected graph, using
  * METIS_ComputeVertexSeparator.
@@ -39,10 +41,10 @@ void mexFunction
 #ifndef NPARTITION
 
     double dummy = 0 ;
-    Long *Partition ;
+    int64_t *Partition ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Long n, transpose, c ;
+    int64_t n, transpose, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -131,7 +133,7 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    Partition = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    Partition = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's interface to METIS_NodeND */ 
@@ -152,7 +154,7 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Long), Partition, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Partition, cm) ;
     cholmod_l_free_sparse (&C, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;

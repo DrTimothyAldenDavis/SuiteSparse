@@ -1,63 +1,92 @@
-#------------------------------------------------------------------------------
-# LDL Makefile
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# SuiteSparse/LDL/Makefile
+#-------------------------------------------------------------------------------
 
-SUITESPARSE ?= $(realpath $(CURDIR)/..)
-export SUITESPARSE
+# LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
-default: all
+#-------------------------------------------------------------------------------
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
+# A simple Makefile for LDL, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
 
-demos: all
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
 
-# Compile all C code, including the C-callable routine.
-all:
-	( cd Lib    ; $(MAKE) )
-	( cd Demo   ; $(MAKE) )
+JOBS ?= 8
 
-# compile just the C-callable libraries (not Demos)
+default: library
+
 library:
-	( cd Lib    ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static libraries only
-static:
-	( cd Lib    ; $(MAKE) static )
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-# remove object files, but keep the compiled programs and library archives
-clean:
-	( cd Lib    ; $(MAKE) clean )
-	( cd Demo   ; $(MAKE) clean )
-	( cd Doc    ; $(MAKE) clean )
-	( cd MATLAB ; $(RM) $(CLEAN) )
+# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
+global:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
 
-# clean, and then remove compiled programs and library archives
-purge:
-	( cd Lib    ; $(MAKE) purge )
-	( cd Demo   ; $(MAKE) purge )
-	( cd Doc    ; $(MAKE) purge )
-	( cd MATLAB ; $(RM) $(CLEAN) *.mex* )
+debug:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
 
-distclean: purge
+all: library
 
-# create PDF documents for the original distribution
-docs:
-	( cd Doc    ; $(MAKE) )
+demo: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	./build/ldlsimple > ./build/ldlsimple.out
+	- diff ./Demo/ldlsimple.out ./build/ldlsimple.out
+	./build/ldllsimple > ./build/ldllsimple.out
+	- diff ./Demo/ldlsimple.out ./build/ldllsimple.out
+	./build/ldlmain > ./build/ldlmain.out
+	- diff ./Demo/ldlmain.out ./build/ldlmain.out
+	./build/ldllmain > ./build/ldllmain.out
+	- diff ./Demo/ldlmain.out ./build/ldllmain.out
+	./build/ldlamd  > ./build/ldlamd.out
+	- diff ./Demo/ldlamd.out  ./build/ldlamd.out
+	./build/ldllamd  > ./build/ldllamd.out
+	- diff ./Demo/ldllamd.out  ./build/ldllamd.out
 
-# get ready for distribution
-dist: purge
-	( cd Demo   ; $(MAKE) dist )
-	( cd Doc    ; $(MAKE) )
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
-ccode: library
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
-lib: library
-
-# install LDL
 install:
-	( cd Lib ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
-# uninstall LDL
+# remove any installed libraries and #include files
 uninstall:
-	( cd Lib ; $(MAKE) uninstall )
+	- xargs rm < build/install_manifest.txt
+
+# remove all files not in the distribution
+clean:
+	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
+
+purge: clean
+
+distclean: clean
+
+docs:
+	( cd Doc && $(MAKE) )
 

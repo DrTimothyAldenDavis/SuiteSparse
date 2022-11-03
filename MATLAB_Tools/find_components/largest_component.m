@@ -22,7 +22,8 @@ function C = largest_component (A)
 %
 % See also FIND_COMPONENTS, FIND_COMPONENTS_EXAMPLE, DMPERM
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% find_components, Copyright (c) 2008, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % return the new binary image with just the largest component
 C = zeros (size (A), class (A)) ;

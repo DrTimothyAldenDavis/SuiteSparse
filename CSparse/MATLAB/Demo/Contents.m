@@ -8,4 +8,5 @@
 % Example:
 %   help cs_demo
 
-%   Copyright 2006-2007, Timothy A. Davis
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+

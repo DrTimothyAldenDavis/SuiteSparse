@@ -1,4 +1,8 @@
 #
+# CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+# Amestoy, and Iain S. Duff.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
 echo diff $1 $2
 sed -f camd.sed < $1 > camd_temp
-diff camd_temp $2
+diff -w camd_temp $2
+rm -f camd_temp

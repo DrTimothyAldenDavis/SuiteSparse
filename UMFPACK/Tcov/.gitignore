@@ -1,0 +1,6 @@
+umf*.c
+*.out
+ut_??
+*.umf
+*.amd
+A500

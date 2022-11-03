@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/null2 =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/null2: test CHOLMOD with NULL and erroneous inputs
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Null and error tests, continued. */
 
@@ -40,7 +41,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	*R2p, *R2i ;
     double *Xwork, *Cx, *x, *Lx, *Tx, *Az, *R2x ;
     size_t size, nznew, gsave2 ;
-    SuiteSparse_long lr ;
+    int64_t lr ;
     void *pp, *ii, *jj, *xx ;
     Int p, i, j, d, nrhs, nrow, ncol, stype, fsizeok, nz, ok, n2, trial, anz,
 	nzmax, cset [CSETSIZE], Axbad_type, isreal, xtype, enz, Lxtype, Cxtype,
@@ -2479,14 +2480,14 @@ if (do_nantests)
     nznew = 10 + T->nzmax ;
     pp = NULL ;
 
-    ok = CHOLMOD(realloc_multiple)(Size_max/2, 2, T->xtype, &(T->i),
+    ok = CHOLMOD(realloc_multiple)(SIZE_MAX/2, 2, T->xtype, &(T->i),
 	&(T->j), &(T->x), &(T->z), &(T->nzmax), cm) ;		    NOT (ok) ;
 
     size = 0 ;
     ii = NULL ;
     jj = NULL ;
     xx = NULL ;
-    ok = CHOLMOD(realloc_multiple)(Size_max, 2, CHOLMOD_REAL, &ii, &jj, &xx,
+    ok = CHOLMOD(realloc_multiple)(SIZE_MAX, 2, CHOLMOD_REAL, &ii, &jj, &xx,
 	    NULL, &size, cm) ;					    NOT (ok) ;
 
     ok = CHOLMOD(realloc_multiple)(0, 0, CHOLMOD_PATTERN, &ii, &jj, &xx, NULL,
@@ -2502,7 +2503,7 @@ if (do_nantests)
 
     ok = CHOLMOD(free_triplet)(&T, cm) ;    /* ] */		    OK (ok) ;
 
-    T = CHOLMOD(allocate_triplet)(nrow, ncol, Size_max, 0, CHOLMOD_REAL, cm);
+    T = CHOLMOD(allocate_triplet)(nrow, ncol, SIZE_MAX, 0, CHOLMOD_REAL, cm);
 								    NOP (T) ;
 
     T2 = CHOLMOD(allocate_triplet)(4, 4, 8, 0, CHOLMOD_REAL, cm);   OKP (T2) ;
@@ -2640,7 +2641,7 @@ if (do_nantests)
     if (A->stype == 0)
     {
 	nzmax = A->nzmax ;
-	A->nzmax = Size_max/2 ;
+	A->nzmax = SIZE_MAX/2 ;
 	ok = CHOLMOD(colamd)(A, fsetok, fsizeok, TRUE, Pok, cm) ;    NOT (ok) ;
 	A->nzmax = nzmax ;
     }
@@ -2679,7 +2680,7 @@ if (do_nantests)
     if (A->stype == 0)
     {
 	nzmax = A->nzmax ;
-	A->nzmax = Size_max/2 ;
+	A->nzmax = SIZE_MAX/2 ;
 	ok = CHOLMOD(ccolamd)(A, fsetok, fsizeok, NULL, Pok, cm) ;    NOT (ok) ;
 	A->nzmax = nzmax ;
     }
@@ -2719,7 +2720,7 @@ if (do_nantests)
 	{
 	    double density ;
 
-	    cm->metis_memory = Size_max ;
+	    cm->metis_memory = SIZE_MAX ;
 	    ok = CHOLMOD(metis)(A, NULL, 0, FALSE, Pok, cm) ;
 	    OK (ok) ;
 	    /* Pok should be identity */
@@ -3179,7 +3180,7 @@ if (do_nantests)
 	for (trial = 0 ; !ok && trial < 20 ; trial++)
 	{
 	    my_tries = trial ;
-	    printf ("--------------------- trial "ID"\n", my_tries) ;
+	    printf ("--------------------- trial %"PRId64"\n", my_tries) ;
 	    ok = CHOLMOD(colamd)(A, NULL, 0, TRUE, Pok, cm) ;
 	}
 	OK (ok) ;
@@ -3230,11 +3231,11 @@ if (do_nantests)
 
     pp = CHOLMOD(malloc)(4, 0, cm) ;				    NOP (pp) ;
     pp = CHOLMOD(calloc)(4, 0, cm) ;				    NOP (pp) ;
-    pp = CHOLMOD(calloc)(Size_max, 1, cm) ;			    NOP (pp) ;
+    pp = CHOLMOD(calloc)(SIZE_MAX, 1, cm) ;			    NOP (pp) ;
     pp = NULL ;
     size = 0 ;
     pp = CHOLMOD(realloc)(4, 0, pp, &size, cm) ;		    NOP (pp) ;
-    pp = CHOLMOD(realloc)(Size_max, 1, pp, &size, cm) ;		    NOP (pp) ;
+    pp = CHOLMOD(realloc)(SIZE_MAX, 1, pp, &size, cm) ;		    NOP (pp) ;
 
     normal_memory_handler ( ) ;
     OK (CHOLMOD(print_sparse)(A, "A ok", cm)) ;

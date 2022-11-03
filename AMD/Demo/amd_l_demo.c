@@ -1,28 +1,26 @@
-/* ========================================================================= */
-/* === AMD demo main program (long integer version) ======================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_l_demo: demo program for AMD, int64_t version
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to AMD.
  */
 
 #include "amd.h"
-#include <stdio.h>
-#include <stdlib.h>
-#define Long SuiteSparse_long
+#define ID PRId64
 
 int main (void)
 {
     /* The symmetric can_24 Harwell/Boeing matrix, including upper and lower
      * triangular parts, and the diagonal entries.  Note that this matrix is
      * 0-based, with row and column indices in the range 0 to n-1. */
-    Long n = 24, nz,
+    int64_t n = 24, nz,
     Ap [ ] = { 0, 9, 15, 21, 27, 33, 39, 48, 57, 61, 70, 76, 82, 88, 94, 100,
 	106, 110, 119, 128, 137, 143, 152, 156, 160 },
     Ai [ ] = {
@@ -51,7 +49,7 @@ int main (void)
 	/* column 22: */    2, 20, 21, 22,
 	/* column 23: */    6, 11, 12, 23 } ;
 
-    Long P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int64_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
     char A [24][24] ;
 
@@ -72,7 +70,7 @@ int main (void)
 
     /* print the input matrix */
     nz = Ap [n] ;
-    printf ("\nInput matrix:  %ld-by-%ld, with %ld entries.\n"
+    printf ("\nInput matrix:  %"ID"-by-%"ID", with %"ID" entries.\n"
 	   "   Note that for a symmetric matrix such as this one, only the\n"
 	   "   strictly lower or upper triangular parts would need to be\n"
 	   "   passed to AMD, since AMD computes the ordering of A+A'.  The\n"
@@ -80,13 +78,13 @@ int main (void)
 	   , n, n, nz) ;
     for (j = 0 ; j < n ; j++)
     {
-	printf ("\nColumn: %ld, number of entries: %ld, with row indices in"
-		" Ai [%ld ... %ld]:\n    row indices:",
+	printf ("\nColumn: %"ID", number of entries: %"ID", with row indices in"
+		" Ai [%"ID" ... %"ID"]:\n    row indices:",
 		j, Ap [j+1] - Ap [j], Ap [j], Ap [j+1]-1) ;
 	for (p = Ap [j] ; p < Ap [j+1] ; p++)
 	{
 	    i = Ai [p] ;
-	    printf (" %ld", i) ;
+	    printf (" %"ID"", i) ;
 	}
 	printf ("\n") ;
     }
@@ -104,11 +102,11 @@ int main (void)
 	}
     }
     printf ("    ") ;
-    for (j = 0 ; j < n ; j++) printf (" %1ld", j % 10) ;
+    for (j = 0 ; j < n ; j++) printf (" %1"ID"", j % 10) ;
     printf ("\n") ;
     for (i = 0 ; i < n ; i++)
     {
-	printf ("%2ld: ", i) ;
+	printf ("%2"ID": ", i) ;
 	for (j = 0 ; j < n ; j++)
 	{
 	    printf (" %c", A [i][j]) ;
@@ -118,7 +116,7 @@ int main (void)
 
     /* order the matrix */
     result = amd_l_order (n, Ap, Ai, P, Control, Info) ;
-    printf ("return value from amd_l_order: %ld (should be %d)\n",
+    printf ("return value from amd_l_order: %"ID" (should be %d)\n",
 	result, AMD_OK) ;
 
     /* print the statistics */
@@ -137,7 +135,7 @@ int main (void)
 	/* row/column j is the kth row/column in the permuted matrix */
 	j = P [k] ;
 	Pinv [j] = k ;
-	printf (" %2ld", j) ;
+	printf (" %2"ID"", j) ;
     }
     printf ("\n\n") ;
 
@@ -145,7 +143,7 @@ int main (void)
     for (j = 0 ; j < n ; j++)
     {
 	k = Pinv [j] ;
-	printf (" %2ld", k) ;
+	printf (" %2"ID"", k) ;
     }
     printf ("\n\n") ;
 
@@ -162,11 +160,11 @@ int main (void)
 	}
     }
     printf ("    ") ;
-    for (j = 0 ; j < n ; j++) printf (" %1ld", j % 10) ;
+    for (j = 0 ; j < n ; j++) printf (" %1"ID"", j % 10) ;
     printf ("\n") ;
     for (i = 0 ; i < n ; i++)
     {
-	printf ("%2ld: ", i) ;
+	printf ("%2"ID": ", i) ;
 	for (j = 0 ; j < n ; j++)
 	{
 	    printf (" %c", A [i][j]) ;

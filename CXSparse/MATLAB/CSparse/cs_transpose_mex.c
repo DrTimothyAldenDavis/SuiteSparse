@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_transpose_mex: transpose a sparse matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* C = cs_transpose (A), computes C=A', where A must be sparse.
    C = cs_transpose (A,kind) computes C=A.' if kind <= 0, C=A' if kind > 0 */
@@ -9,7 +12,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT values ;
+    int64_t values ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: C = cs_transpose(A,kind)") ;

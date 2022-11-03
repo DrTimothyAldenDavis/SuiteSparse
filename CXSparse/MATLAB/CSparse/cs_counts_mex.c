@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_counts_mex: column counts for sparse Cholesky
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_counts: column counts for sparse Cholesky factor L. */
 void mexFunction
@@ -9,7 +12,7 @@ void mexFunction
 )
 {
     cs_dl Amatrix, *A ;
-    CS_INT n, ata, *parent, *post, *c ;
+    int64_t n, ata, *parent, *post, *c ;
     char mode [20] ;
     if (nargout > 2 || nargin < 1 || nargin > 2)
     {
@@ -27,6 +30,6 @@ void mexFunction
     post = cs_dl_post (parent, n) ;                     /* postorder the etree*/
     c = cs_dl_counts (A, parent, post, ata) ;           /* get column counts */
     pargout [0] = cs_dl_mex_put_int (c, n, 0, 1) ;              /* return counts */
-    cs_free (parent) ;
-    cs_free (post) ;
+    cs_dl_free (parent) ;
+    cs_dl_free (post) ;
 }

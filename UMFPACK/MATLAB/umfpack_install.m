@@ -7,7 +7,8 @@ function umfpack_install
 %
 % See also umfpack, amd2.
 
-% Copyright 1995-2007 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 % compile and install UMFPACK
 umfpack_path = pwd ;

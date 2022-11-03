@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_symperm_mex: symmetric permutation
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_symperm: symmetric permutation of a symmetric sparse matrix. */
 void mexFunction
@@ -8,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT ignore, n, *P, *Pinv ;
+    int64_t ignore, n, *P, *Pinv ;
     if (nargout > 1 || nargin != 2)
     {
         mexErrMsgTxt ("Usage: C = cs_symperm(A,p)") ;
@@ -27,8 +30,6 @@ void mexFunction
         C = cs_cl_transpose (D, 1) ;
         cs_cl_spfree (D) ;
         pargout [0] = cs_cl_mex_put_sparse (&C) ;               /* return C */
-        cs_free (P) ;
-        cs_free (Pinv) ;
 #else
         mexErrMsgTxt ("complex matrices not supported") ;
 #endif
@@ -46,7 +47,7 @@ void mexFunction
         C = cs_dl_transpose (D, 1) ;
         cs_dl_spfree (D) ;
         pargout [0] = cs_dl_mex_put_sparse (&C) ;               /* return C */
-        cs_free (P) ;
-        cs_free (Pinv) ;
     }
+    cs_dl_free (P) ;
+    cs_dl_free (Pinv) ;
 }

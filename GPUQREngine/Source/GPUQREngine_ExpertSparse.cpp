@@ -1,11 +1,19 @@
 // =============================================================================
 // === GPUQREngine/Source/GPUQREngine_ExpertSparse.cpp =========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains the sparse GPUQREngine wrapper that simply calls down into
 // the Internal GPUQREngine factorization routine.
 //
 // =============================================================================
+
+#ifdef SUITESPARSE_CUDA
 
 #include "GPUQREngine_Internal.hpp"
 
@@ -28,3 +36,6 @@ QREngineResultCode GPUQREngine
     return (GPUQREngine_Internal (gpuMemorySize, userFronts, numFronts, Parent,
         Childp, Child, stats)) ;
 }
+
+#endif
+

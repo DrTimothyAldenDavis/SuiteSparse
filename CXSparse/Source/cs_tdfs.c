@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_tdfs: depth-first search of a tree
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* depth-first search and postorder of a tree rooted at node j */
 CS_INT cs_tdfs (CS_INT j, CS_INT k, CS_INT *head, const CS_INT *next, CS_INT *post, CS_INT *stack)

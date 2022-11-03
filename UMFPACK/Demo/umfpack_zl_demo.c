@@ -1,13 +1,12 @@
-/* ========================================================================== */
-/* === umfpack_zl_demo ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Demo/umfpack_zl_demo: C demo for UMFPACK
+//------------------------------------------------------------------------------
 
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
 
-/* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.                           */
-/* See ../Doc/License.txt for License.                                        */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+
 
 /*
   A demo of UMFPACK:   umfpack_zl_* version.
@@ -58,9 +57,9 @@
 /* triplet form of the matrix.  The triplets can be in any order. */
 /* -------------------------------------------------------------------------- */
 
-static SuiteSparse_long n = 5, nz = 12 ;
-static SuiteSparse_long Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
-static SuiteSparse_long Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
+static int64_t n = 5, nz = 12 ;
+static int64_t Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
+static int64_t Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
 static double Aval [ ] = {2., 1., 3., 4., -1., -3., 3., 6., 2., 1., 4., 2.} ;
 static double Avalz[ ] = {1., .4, .1, .2, -1., -.2, 0., 6., 3., 0., .3, .3} ;
 static double b [ ] = {8., 45., -3., 3., 19.}, x [5], r [5] ;
@@ -89,14 +88,14 @@ static void error
 
 static double resid
 (
-    SuiteSparse_long transpose,
-    SuiteSparse_long Ap [ ],
-    SuiteSparse_long Ai [ ],
+    int transpose,
+    int64_t Ap [ ],
+    int64_t Ai [ ],
     double Ax [ ]
     , double Az [ ]
 )
 {
-    SuiteSparse_long i, j, p ;
+    int64_t i, j, p ;
     double norm ;
 
     for (i = 0 ; i < n ; i++)
@@ -151,11 +150,11 @@ int main (int argc, char **argv)
     double Info [UMFPACK_INFO], Control [UMFPACK_CONTROL], *Ax, *Cx, *Lx, *Ux,
 	*W, t [2], *Dx, rnorm, *Rb, *y, *Rs ;
     double *Az, *Lz, *Uz, *Dz, *Cz, *Rbz, *yz ;
-    SuiteSparse_long *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
+    int64_t *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
-	nzud, do_recip ;
+	nzud, do_recip, *Dmap ;
     void *Symbolic, *Numeric ;
 
     /* ---------------------------------------------------------------------- */
@@ -196,8 +195,8 @@ int main (int argc, char **argv)
 
     /* convert to column form */
     nz1 = MAX (nz,1) ;	/* ensure arrays are not of size zero. */
-    Ap = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Ai = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
+    Ap = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Ai = (int64_t *) malloc (nz1 * sizeof (int64_t)) ;
     Ax = (double *) malloc (nz1 * sizeof (double)) ;
     Az = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Ap || !Ai || !Ax || !Az)
@@ -206,7 +205,7 @@ int main (int argc, char **argv)
     }
 
     status = umfpack_zl_triplet_to_col (n, n, nz, Arow, Acol, Aval, Avalz,
-	Ap, Ai, Ax, Az, (SuiteSparse_long *) NULL) ;
+	Ap, Ai, Ax, Az, (int64_t *) NULL) ;
 
     if (status < 0)
     {
@@ -479,8 +478,8 @@ int main (int argc, char **argv)
     /* C = transpose of A */
     /* ---------------------------------------------------------------------- */
 
-    Cp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Ci = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
+    Cp = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Ci = (int64_t *) malloc (nz1 * sizeof (int64_t)) ;
     Cx = (double *) malloc (nz1 * sizeof (double)) ;
     Cz = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Cp || !Ci || !Cx || !Cz)
@@ -488,7 +487,7 @@ int main (int argc, char **argv)
 	error ("out of memory") ;
     }
     status = umfpack_zl_transpose (n, n, Ap, Ai, Ax, Az,
-	(SuiteSparse_long *) NULL, (SuiteSparse_long *) NULL, Cp, Ci, Cx, Cz, TRUE) ;
+	(int64_t *) NULL, (int64_t *) NULL, Cp, Ci, Cx, Cz, TRUE) ;
     if (status < 0)
     {
 	umfpack_zl_report_status (Control, status) ;
@@ -518,17 +517,18 @@ int main (int argc, char **argv)
 
     printf ("\nGet the contents of the Symbolic object for C:\n") ;
     printf ("(compare with umfpack_zl_report_symbolic output, above)\n") ;
-    Pinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Qinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Front_npivcol = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Front_1strow = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Front_leftmostdesc = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Front_parent = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Chain_start = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Chain_maxrows = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Chain_maxcols = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Pinit = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Qinit = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Front_npivcol = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Front_1strow = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Front_leftmostdesc = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Front_parent = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Chain_start = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Chain_maxrows = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Chain_maxcols = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Dmap = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
-	!Chain_maxrows || !Chain_maxcols || !Front_1strow ||
+	!Chain_maxrows || !Chain_maxcols || !Front_1strow || !Dmap ||
 	!Front_leftmostdesc)
     {
 	error ("out of memory") ;
@@ -537,7 +537,7 @@ int main (int argc, char **argv)
     status = umfpack_zl_get_symbolic (&nr, &nc, &n1, &anz, &nfr, &nchains,
 	Pinit, Qinit, Front_npivcol, Front_parent, Front_1strow,
 	Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
-	Symbolic) ;
+	Dmap, Symbolic) ;
 
     if (status < 0)
     {
@@ -604,16 +604,16 @@ int main (int argc, char **argv)
     /* ensure arrays are not of zero size */
     lnz1 = MAX (lnz,1) ;
     unz1 = MAX (unz,1) ;
-    Lp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Lj = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
+    Lp = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Lj = (int64_t *) malloc (lnz1 * sizeof (int64_t)) ;
     Lx = (double *) malloc (lnz1 * sizeof (double)) ;
     Lz = (double *) malloc (lnz1 * sizeof (double)) ;
-    Up = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
-    Ui = (SuiteSparse_long *) malloc (unz1 * sizeof (SuiteSparse_long)) ;
+    Up = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Ui = (int64_t *) malloc (unz1 * sizeof (int64_t)) ;
     Ux = (double *) malloc (unz1 * sizeof (double)) ;
     Uz = (double *) malloc (unz1 * sizeof (double)) ;
-    P = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
-    Q = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
+    P = (int64_t *) malloc (n * sizeof (int64_t)) ;
+    Q = (int64_t *) malloc (n * sizeof (int64_t)) ;
     Dx = (double *) NULL ;	/* D vector not requested */
     Dz = (double *) NULL ;
     Rs  = (double *) malloc (n * sizeof (double)) ;
@@ -655,7 +655,7 @@ int main (int argc, char **argv)
     /* by umfpack_zl_col_to_triplet. */
 
     printf ("\nConverting L to triplet form, and printing it:\n") ;
-    Li = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
+    Li = (int64_t *) malloc (lnz1 * sizeof (int64_t)) ;
     if (!Li)
     {
 	error ("out of memory") ;
@@ -712,7 +712,7 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     printf ("\nSolving C'x=b again, using umfpack_zl_wsolve instead:\n") ;
-    Wi = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
+    Wi = (int64_t *) malloc (n * sizeof (int64_t)) ;
     W = (double *) malloc (10*n * sizeof (double)) ;
     if (!Wi || !W)
     {
@@ -760,6 +760,7 @@ int main (int argc, char **argv)
     free (Chain_start) ;
     free (Chain_maxrows) ;
     free (Chain_maxcols) ;
+    free (Dmap) ;
 
     free (Lp) ;
     free (Lj) ;

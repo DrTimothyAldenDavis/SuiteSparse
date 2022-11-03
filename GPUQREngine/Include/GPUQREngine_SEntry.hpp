@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Include/GPUQREngine_Sentry.hpp ==============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // The SEntry struct is a tuple which is used to place the numeric values from
 // the input problem into the dense representation of the fronts on the GPU.

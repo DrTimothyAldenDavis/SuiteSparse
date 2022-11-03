@@ -2,6 +2,11 @@
 // === spqr_assemble ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 /* Assemble the children into the current front.
 
     Example:  Suppose there are 3 pivot columns in F (5, 6, 7), and 4
@@ -227,43 +232,43 @@
 template <typename Entry> void spqr_assemble
 (
     /* inputs, not modified */
-    Long f,                 /* front to assemble F */
-    Long fm,                /* number of rows of F */
+    int64_t f,                 /* front to assemble F */
+    int64_t fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Long *Super,
-    Long *Rp,
-    Long *Rj,
-    Long *Sp,
-    Long *Sj,
-    Long *Sleft,
-    Long *Child,
-    Long *Childp,
+    int64_t *Super,
+    int64_t *Rp,
+    int64_t *Rj,
+    int64_t *Sp,
+    int64_t *Sj,
+    int64_t *Sleft,
+    int64_t *Child,
+    int64_t *Childp,
     Entry *Sx,
-    Long *Fmap,
-    Long *Cm,
+    int64_t *Fmap,
+    int64_t *Cm,
     Entry **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Long *Hr,
+    int64_t *Hr,
 
     /* input/output */
-    Long *Stair,
-    Long *Hii,              /* if keepH, construct list of row indices for F */
+    int64_t *Stair,
+    int64_t *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Long *Hip,
+    int64_t *Hip,
 
     /* outputs, not defined on input */
     Entry *F,
 
     /* workspace, not defined on input or output */
-    Long *Cmap
+    int64_t *Cmap
 )
 {
     Entry *Fi, *Fj, *C ;
-    Long k, fsize, fn, col1, col2, p, p1, p2, fp, j, leftcol, row, col, i,
+    int64_t k, fsize, fn, col1, col2, p, p1, p2, fp, j, leftcol, row, col, i,
         cm, cn, ci, cj, c, pc, fnc, fpc, rmc ;
-    Long *Hi = NULL, *Hichild = NULL ;
+    int64_t *Hi = NULL, *Hichild = NULL ;
 
     /* ---------------------------------------------------------------------- */
     /* get the front F */
@@ -360,7 +365,7 @@ template <typename Entry> void spqr_assemble
             rmc = Hr [c] ;
 #ifndef NDEBUG
             {
-                Long rmc2 = 0 ;
+                int64_t rmc2 = 0 ;
                 for (j = Super [c] ; j < Super [c+1] ; j++)
                 {
                     if (!Rdead [j])
@@ -447,37 +452,37 @@ template <typename Entry> void spqr_assemble
 template void spqr_assemble <double>
 (
     /* inputs, not modified */
-    Long f,                 /* front to assemble F */
-    Long fm,                /* number of rows of F */
+    int64_t f,                 /* front to assemble F */
+    int64_t fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Long *Super,
-    Long *Rp,
-    Long *Rj,
-    Long *Sp,
-    Long *Sj,
-    Long *Sleft,
-    Long *Child,
-    Long *Childp,
+    int64_t *Super,
+    int64_t *Rp,
+    int64_t *Rj,
+    int64_t *Sp,
+    int64_t *Sj,
+    int64_t *Sleft,
+    int64_t *Child,
+    int64_t *Childp,
     double *Sx,
-    Long *Fmap,
-    Long *Cm,
+    int64_t *Fmap,
+    int64_t *Cm,
     double **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Long *Hr,
+    int64_t *Hr,
 
     /* input/output */
-    Long *Stair,
-    Long *Hii,              /* if keepH, construct list of row indices for F */
+    int64_t *Stair,
+    int64_t *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Long *Hip,
+    int64_t *Hip,
 
     /* outputs, not defined on input */
     double *F,
 
     /* workspace, not defined on input or output */
-    Long *Cmap
+    int64_t *Cmap
 ) ;
 
 /* ========================================================================== */
@@ -485,35 +490,35 @@ template void spqr_assemble <double>
 template void spqr_assemble <Complex>
 (
     /* inputs, not modified */
-    Long f,                 /* front to assemble F */
-    Long fm,                /* number of rows of F */
+    int64_t f,                 /* front to assemble F */
+    int64_t fm,                /* number of rows of F */
     int keepH,              /* if TRUE, then construct row pattern of H */
-    Long *Super,
-    Long *Rp,
-    Long *Rj,
-    Long *Sp,
-    Long *Sj,
-    Long *Sleft,
-    Long *Child,
-    Long *Childp,
+    int64_t *Super,
+    int64_t *Rp,
+    int64_t *Rj,
+    int64_t *Sp,
+    int64_t *Sj,
+    int64_t *Sleft,
+    int64_t *Child,
+    int64_t *Childp,
     Complex *Sx,
-    Long *Fmap,
-    Long *Cm,
+    int64_t *Fmap,
+    int64_t *Cm,
     Complex **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
-    Long *Hr,
+    int64_t *Hr,
 
     /* input/output */
-    Long *Stair,
-    Long *Hii,              /* if keepH, construct list of row indices for F */
+    int64_t *Stair,
+    int64_t *Hii,              /* if keepH, construct list of row indices for F */
     // input only
-    Long *Hip,
+    int64_t *Hip,
 
     /* outputs, not defined on input */
     Complex *F,
 
     /* workspace, not defined on input or output */
-    Long *Cmap
+    int64_t *Cmap
 ) ;

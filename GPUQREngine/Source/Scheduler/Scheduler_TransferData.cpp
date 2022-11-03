@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/Scheduler_TransferData.cpp ===========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file wraps logic surrounding the asynchronous transfer of data between
 // the host and device. We transfer the workspace "surgically" meaning that

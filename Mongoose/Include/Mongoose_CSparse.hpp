@@ -3,10 +3,11 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * Mongoose Graph Partitioning Library  Copyright (C) 2017-2018,
+ * Mongoose Graph Partitioning Libraryb Copyright (C) 2017-2018,
  * Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
  * Mongoose is licensed under Version 3 of the GNU General Public License.
  * Mongoose is also available under other licenses; contact authors for details.
+ * SPDX-License-Identifier: GPL-3.0-only
  * -------------------------------------------------------------------------- */
 
 /**
@@ -15,7 +16,7 @@
  * A subset of the CSparse library is used for its sparse matrix data
  * structure and efficient fundamental matrix operations, such as adding,
  * transposing, and converting from triplet to CSC form.  This version
- * uses the same integer (csi or SuiteSparse_long) as the Int in Mongoose.
+ * uses the same integer (csi or int64_t) as the Int in Mongoose.
  */
 
 // #pragma once
@@ -33,7 +34,7 @@
 #endif
 
 /* same as Int in Mongoose */
-typedef SuiteSparse_long csi;
+typedef int64_t csi;
 
 /* CSparse Macros */
 #ifndef CS_CSC

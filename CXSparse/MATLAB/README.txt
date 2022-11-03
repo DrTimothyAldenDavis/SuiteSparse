@@ -23,4 +23,5 @@ supports the ANSI C99 complex type.  If it does not support the ANSI C99
 complex type, the tests in the Test directory will fail, since the codes there
 test both the real and complex cases in CXSparse.
 
-Timothy A. Davis, http://www.suitesparse.com
+CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+

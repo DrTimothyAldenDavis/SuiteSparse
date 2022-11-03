@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_solve =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_solve: solve a linear system
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Solve one of the following systems.  D is identity for an LL' factorization,
  * in which the D operation is skipped:
@@ -45,15 +47,9 @@
  * exist on output.
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
-#ifndef NSUPERNODAL
-#include "cholmod_supernodal.h"
-#endif
-
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === TEMPLATE ============================================================= */
@@ -1579,15 +1575,13 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
 
 	iperm (Y, Perm, 0, nrhs, X) ;			    /* X = P'*Y */
 
-	if (CHECK_BLAS_INT && !Common->blas_ok)
+	if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
 	{
 	    /* Integer overflow in the BLAS.  This is probably impossible,
 	     * since the BLAS were used to create the supernodal factorization.
 	     * It might be possible for the calls to the BLAS to differ between
 	     * factorization and forward/backsolves, however.  This statement
-	     * is untested; it does not appear in the compiled code if
-             * CHECK_BLAS_INT is true (when the same integer is used in
-             * CHOLMOD and the BLAS. */
+	     * cannot be tested. */
 	    return (FALSE) ;
 	}
 

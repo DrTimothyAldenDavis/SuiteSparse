@@ -2,6 +2,14 @@
 // === SuiteSparse_GPURuntime/Source/SuiteSparseGPU_Workspace_cpuAllocators.cpp
 // =============================================================================
 
+// SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+// Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 #include <string.h>
 
@@ -35,7 +43,7 @@ void *Workspace::cpu_malloc(size_t nitems, size_t size_of_item, bool pageLocked)
         }
 
         cudaError_t result = cudaMallocHost(&returner, requestSize);
-        if (!result == cudaSuccess)
+        if (result != cudaSuccess)
         {
             return (NULL) ;     // failed to malloc pagelocked memory
         }
@@ -78,7 +86,7 @@ void *Workspace::cpu_calloc(size_t nitems, size_t size_of_item, bool pageLocked)
         }
 
         cudaError_t result = cudaMallocHost(&returner, requestSize);
-        if (!result == cudaSuccess)
+        if (result != cudaSuccess)
         { 
             return (NULL) ;     // failed to malloc pagelocked memory
         }
@@ -126,4 +134,6 @@ void *Workspace::cpu_free(void *address, bool pageLocked)
 //     memset(cpuReference, value, totalSize);
 //     return true;
 // }
+
+#endif
 

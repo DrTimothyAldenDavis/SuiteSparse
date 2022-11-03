@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_change_factor =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_change_factor: change format of a Cholesky factorization
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Change the numeric/symbolic, LL/LDL, simplicial/super, packed/unpacked,
  * monotonic/non-monotonic status of a cholmod_factor object.
@@ -101,7 +102,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 static void natural_list (cholmod_factor *L) ;
 
@@ -522,7 +522,7 @@ static void simplicial_symbolic_to_simplicial_numeric
 		/* add extra space */
 		xlnz = (double) lnz ;
 		xlnz *= grow0 ;
-		xlnz = MIN (xlnz, Size_max) ;
+		xlnz = MIN (xlnz, (double) SIZE_MAX) ;
 		xlnz = MIN (xlnz, ((double) n * (double) n + (double) n) / 2) ;
 		lnz = (Int) xlnz ;
 	    }
@@ -754,7 +754,7 @@ static void change_simplicial_numeric
 	{
 	    xlnz = (double) lnz ;
 	    xlnz *= grow0 ;
-	    xlnz = MIN (xlnz, Size_max) ;
+	    xlnz = MIN (xlnz, (double) SIZE_MAX) ;
 	    xlnz = MIN (xlnz, ((double) n * (double) n + (double) n) / 2) ;
 	    lnz = (Int) xlnz ;
 	}

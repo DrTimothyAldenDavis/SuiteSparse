@@ -1,3 +1,8 @@
+Nov 4, 2022: version 4.0.0
+
+    * using CMake build system
+    * integers: csi integer changed from ptrdiff_t to int64_t.
+
 Sept 12, 2017: version 3.2.0
 
     * replaced UFget with ssget

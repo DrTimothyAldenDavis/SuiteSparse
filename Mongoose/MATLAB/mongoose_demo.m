@@ -10,6 +10,7 @@ function mongoose_demo
 % See also mongoose_test, mongoose_make
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 % Obtain the adjacency matrix
 matfile_data = matfile('494_bus.mat');

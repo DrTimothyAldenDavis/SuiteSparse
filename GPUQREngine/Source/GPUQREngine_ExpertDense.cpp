@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/GPUQREngine_ExpertDense.cpp ==========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains the dense GPUQREngine wrapper that finds the staircase,
 // makes a copy of the user's front data, then calls down into the Internal
@@ -12,6 +18,9 @@
 //  - GPUQREngine_FindStaircase: Finds the staircase for a front and returns
 //                               the staircase as an Int* list
 // =============================================================================
+
+
+#ifdef SUITESPARSE_CUDA
 
 #include "GPUQREngine_Internal.hpp"
 
@@ -215,3 +224,6 @@ Int *GPUQREngine_FindStaircase
 
     return Stair;
 }
+
+#endif
+

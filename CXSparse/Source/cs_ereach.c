@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_ereach: find reach of a set of nodes in graph of L
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* find nonzero pattern of Cholesky L(k,1:k-1) using etree and triu(A(:,k)) */
 CS_INT cs_ereach (const cs *A, CS_INT k, const CS_INT *parent, CS_INT *s, CS_INT *w)

@@ -43,7 +43,9 @@ function [B,opts,stats,start_tic,ok] = spqr_rank_get_inputs (A,method,varargin)
 % Note that the defaults are different for spqr_ssp than for the other
 % functions.
 
-% Copyright 2012, Leslie Foster and Timothy A. Davis
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 B = [ ] ;
 opts = struct ;

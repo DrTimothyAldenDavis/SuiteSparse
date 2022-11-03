@@ -107,6 +107,7 @@ function [Q,R,P,info] = spqr (A,arg2,arg3)                                  %#ok
 % See also SPQR_QMULT, SPQR_SOLVE, LU, NULL, ORTH, QRDELETE, QRINSERT,
 % QRUPDATE, SPQR_SINGLETONS.
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('spqr mexFunction not found') ;

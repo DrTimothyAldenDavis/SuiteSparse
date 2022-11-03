@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD_2 ============================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_2: CAMD ordering
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* CAMD_2:  performs the CAMD ordering on a symmetric sparse matrix A, followed
  * by a postordering (via depth-first search) of the assembly tree using the
@@ -504,7 +504,7 @@ GLOBAL void CAMD_2
 	nvi, nvj, nvpiv, slenme, wbig, we, wflg, wnvi, ok, ndense, ncmpa, nnull,
 	dense, aggressive ;
 
-    unsigned Int hash ;	    /* unsigned, so that hash % n is well defined.*/
+    UInt hash ;	    /* unsigned, so that hash % n is well defined.*/
 
 /*
  * deg:		the degree of a variable or element

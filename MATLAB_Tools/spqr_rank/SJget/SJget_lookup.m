@@ -11,8 +11,9 @@ function [group, name, id] = SJget_lookup (matrix, SJ_Index)
 %
 %   See also SJget.
 
-%   Derived from the ssget toolbox on March 18, 2008.
-%   Copyright 2007, Tim Davis, University of Florida.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (isnumeric (matrix))
 

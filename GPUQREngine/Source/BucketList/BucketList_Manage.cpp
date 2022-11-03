@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/BucketList_Manage.cpp ================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains management logic for the BucketList data structure.
 // Constant time insertions and removals are possible because of the

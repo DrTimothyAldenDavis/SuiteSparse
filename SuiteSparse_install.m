@@ -42,20 +42,25 @@ function SuiteSparse_install (do_demo)
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% If you get errors building or using METIS, just remove the metis-5.1.0
+% If you get errors building or using METIS, just remove the SuiteSparse_metis
 % folder.  This often occurs on Windows.
 %
-% Before using SuiteSparse_install, you must compile the GraphBLAS library.
-% In the system shell while in the SuiteSparse folder, type "make gbinstall" if
-% you have MATLAB R2020b or earlier, or type "make gbrenamed" if you have
-% MATLAB 9.10 (R2021a) or later.
+% Before using SuiteSparse_install, you must compile the GraphBLAS library for
+% use in MATLAB.  In the system shell while in the SuiteSparse folder, type
+% "make gbmatlab".  You must then either install the libgraphblas_matlab.so
+% library system-wide ( cd GraphBLAS/GraphBLAS ; sudo make install), or install
+% your own copy ( make gblocal ) and then add the SuiteSparse/lib folder to
+% your LD_LIBRARY_PATH.  Restart MATLAB after compiling libgraphblas_matlab.so.
 %
-% Copyright 1990-2022, Timothy A. Davis, http://suitesparse.com.
+% Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
+%
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
 % Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff, Les Foster, William Hager,
 % Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick Moreno-Centeno,
 % Ekanathan Palamadai, Sivasankaran Rajamanickam, Sanjay Ranka, Wissam
 % Sid-Lakhdar, Nuri Yeralan.
+%
+% See each package for its license.
 
 %-------------------------------------------------------------------------------
 % initializations
@@ -293,17 +298,6 @@ catch me
     failed {end+1} = 'spok' ;
 end
 
-%{
-% compile and install PIRO_BAND
-try
-    paths = add_to_path (paths, [SuiteSparse '/PIRO_BAND/MATLAB']) ;
-    piro_band_make ;
-catch me
-    disp (me.message) ;
-    fprintf ('PIRO_BAND not installed\n') ;
-end
-%}
-
 % compile and install sparsinv
 try
     paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/sparseinv']) ;
@@ -316,8 +310,10 @@ end
 
 % compile and install Mongoose
 try
+    fprintf ('\nCompiling Mongoose\n') ;
     paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
     mongoose_make (0) ;
+    fprintf ('\n') ;
 catch me
     disp (me.message) ;
     fprintf ('Mongoose not installed\n') ;
@@ -326,7 +322,8 @@ end
 
 % compile and install GraphBLAS
 try
-    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/build']) ;
+    fprintf ('\nCompiling GraphBLAS\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
     paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
     cd ('@GrB/private') ;
@@ -337,15 +334,14 @@ catch me
     failed {end+1} = 'GraphBLAS' ;
 end
 
-% compile and install SLIP_LU
 try
-    fprintf ('try to install SLIP_LU (requires GMP and MPFR)') ;
-    paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
-    SLIP_install (do_demo) ;
+    fprintf ('try to install SPEX (requires GMP and MPFR)\n') ;
+    paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
+    SPEX_Left_LU_install (0) ;
 catch me
     disp (me.message) ;
-    fprintf ('SLIP_LU not installed\n') ;
-    failed {end+1} = 'SLIP_LU' ;
+    fprintf ('SPEX not installed\n') ;
+    failed {end+1} = 'SPEX' ;
 end
 
 %-------------------------------------------------------------------------------

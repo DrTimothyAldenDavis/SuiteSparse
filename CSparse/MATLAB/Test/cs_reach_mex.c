@@ -1,3 +1,6 @@
+// CSparse/MATLAB/Test/cs_reach_mex: reach of b in the graph of L
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* find nonzero pattern of x=L\sparse(b).  L must be sparse, real, and lower
  * triangular.  b must be a real sparse vector. */

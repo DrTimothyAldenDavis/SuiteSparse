@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Partition/cholmod_csymamd ============================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_csymamd: CHOLMOD interface to CSYMAMD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Partition Module.
- * Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved.  Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the CSYMAMD ordering routine.  Finds a permutation
  * p such that the Cholesky factorization of PAP' is sparser than A.
@@ -18,12 +19,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCAMD
 
-#include "cholmod_internal.h"
 #include "ccolamd.h"
-#include "cholmod_camd.h"
-
 #if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (2,5))
 #error "CCOLAMD v2.0 or later is required"
 #endif

@@ -6,7 +6,8 @@ function err = test_accuracy
 %
 % See also test_all, test_factorize.
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 fprintf ('\nTesting accuracy:\n') ;
 reset_rand ;

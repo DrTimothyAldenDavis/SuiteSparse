@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/cmread ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/cmread: test program that reads in a sparse matrix 
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Read in a matrix from a file and print it out.
  *
@@ -18,10 +19,12 @@
 
 #ifdef DLONG
 #define CHOLMOD(routine) cholmod_l_ ## routine
-#define Int SuiteSparse_long
+#define Int int64_t
+#define UInt uint64_t
 #else
 #define CHOLMOD(routine) cholmod_ ## routine
-#define Int int
+#define Int int32_t
+#define UInt uint32_t
 #endif
 
 int main (int argc, char **argv)

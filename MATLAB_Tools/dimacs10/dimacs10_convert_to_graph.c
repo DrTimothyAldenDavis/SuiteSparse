@@ -1,3 +1,12 @@
+//------------------------------------------------------------------------------
+// dimacs10/dimacs10_convert_to_graph.c
+//------------------------------------------------------------------------------
+
+// DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
+
 #include "mex.h"
 /* convert_to_graph mexFunction
 
@@ -11,6 +20,7 @@
     end
 
 Ignores the imaginary part of a complex matrix A.
+
  */
 
 void mexFunction

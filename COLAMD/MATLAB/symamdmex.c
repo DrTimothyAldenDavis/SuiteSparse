@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === symamd mexFunction =================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// COLAMD/MATLAB/symamdmex.c: MATLAB interface for SYMAMD
+//------------------------------------------------------------------------------
+
+// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* SYMAMD mexFunction
 
@@ -23,11 +29,6 @@
 	This work was supported by the National Science Foundation, under
 	grants DMS-9504974 and DMS-9803599.
 
-    Notice:
-
-	Copyright (c) 1998-2007, Timothy A. Davis.  All Rights Reserved.
-	See COLAMD/Doc/License.txt for the License.
-
     Availability:
 
 	The colamd/symamd library is available at http://www.suitesparse.com
@@ -42,7 +43,6 @@
 #include "mex.h"
 #include "matrix.h"
 #include <stdlib.h>
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === symamd mexFunction =================================================== */
@@ -60,20 +60,20 @@ void mexFunction
 {
     /* === Local variables ================================================== */
 
-    Long *perm ;                /* column ordering of M and ordering of A */
-    Long *A ;                   /* row indices of input matrix A */
-    Long *p ;                   /* column pointers of input matrix A */
-    Long n_col ;                /* number of columns of A */
-    Long n_row ;                /* number of rows of A */
-    Long full ;                 /* TRUE if input matrix full, FALSE if sparse */
+    int64_t *perm ;         /* column ordering of M and ordering of A */
+    int64_t *A ;            /* row indices of input matrix A */
+    int64_t *p ;            /* column pointers of input matrix A */
+    int64_t n_col ;         /* number of columns of A */
+    int64_t n_row ;         /* number of rows of A */
+    int full ;              /* TRUE if input matrix full, FALSE if sparse */
     double knobs [COLAMD_KNOBS] ; /* colamd user-controllable parameters */
-    double *out_perm ;          /* output permutation vector */
-    double *out_stats ;         /* output stats vector */
-    double *in_knobs ;          /* input knobs vector */
-    Long i ;                    /* loop counter */
-    mxArray *Ainput ;           /* input matrix handle */
-    Long spumoni ;              /* verbosity variable */
-    Long stats [COLAMD_STATS] ; /* stats for symamd */
+    double *out_perm ;      /* output permutation vector */
+    double *out_stats ;     /* output stats vector */
+    double *in_knobs ;      /* input knobs vector */
+    int64_t i ;             /* loop counter */
+    mxArray *Ainput ;       /* input matrix handle */
+    int spumoni ;           /* verbosity variable */
+    int64_t stats [COLAMD_STATS] ; /* stats for symamd */
 
     /* === Check inputs ===================================================== */
 
@@ -94,7 +94,7 @@ void mexFunction
 	in_knobs = mxGetPr (prhs [1]) ;
 	i = mxGetNumberOfElements (prhs [1]) ;
 	if (i > 0) knobs [COLAMD_DENSE_ROW] = in_knobs [0] ;
-	if (i > 1) spumoni = (Long) (in_knobs [1] != 0) ;
+	if (i > 1) spumoni = (int) (in_knobs [1] != 0) ;
     }
 
     /* print knob settings if spumoni is set */
@@ -139,9 +139,9 @@ void mexFunction
 	mexErrMsgTxt ("symamd: matrix must be square.") ;
     }
 
-    A = (Long *) mxGetIr (Ainput) ;
-    p = (Long *) mxGetJc (Ainput) ;
-    perm = (Long *) mxCalloc (n_col+1, sizeof (Long)) ;
+    A = (int64_t *) mxGetIr (Ainput) ;
+    p = (int64_t *) mxGetJc (Ainput) ;
+    perm = (int64_t *) mxCalloc (n_col+1, sizeof (int64_t)) ;
 
     /* === Order the rows and columns of A (does not destroy A) ============= */
 

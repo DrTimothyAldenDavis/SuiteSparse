@@ -8,6 +8,10 @@ function [C, len] = sstextread (filename, as_cell)
 % If as_cell is not present it defaults to true.  The length of the longest
 % line is returned in len.
 
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 if (nargin < 2)
     as_cell = true ;
 end

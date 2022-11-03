@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_ci_demo: demo utilities for CXSparse (complex int32_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_ci_demo.h"
 #include <time.h>
 /* 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise */
@@ -202,7 +205,8 @@ int demo3 (problem *Prob)
     double t, t1 ;
     cs_cis *S = NULL ;
     cs_cin *N = NULL ;
-    if (!Prob || !Prob->sym || Prob->A->n == 0) return (0) ;
+    if (!Prob) return (0) ;
+    if (!Prob->sym || Prob->A->n == 0) return (1) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     n = A->n ;
     if (!Prob->sym || n == 0) return (1) ;

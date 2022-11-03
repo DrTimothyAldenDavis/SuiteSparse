@@ -1,12 +1,18 @@
-/* ========================================================================== */
-/* === KLU_defaults ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_defaults: default parameters for KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Sets default parameters for KLU */
 
 #include "klu_internal.h"
 
-Int KLU_defaults
+int KLU_defaults
 (
     KLU_common *Common
 )

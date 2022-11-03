@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === stongcomp mexFunction ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/strongcomp.c: MATLAB interface for btf_strongcomp
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* STRONGCOMP: Find a symmetric permutation to upper block triangular form of
  * a sparse square matrix.
@@ -47,9 +53,6 @@
  * diagonal that is above the main diagonal; btf always returns the matching as
  * the main diagonal (which will thus contain zeros).
  *
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
- *
  * See also maxtrans, btf, dmperm
  */
 
@@ -57,7 +60,6 @@
 
 #include "mex.h"
 #include "btf.h"
-#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -67,7 +69,7 @@ void mexFunction
     const mxArray *pargin[]
 )
 {
-    Long b, n, i, k, j, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, jj ;
+    int64_t b, n, i, k, j, *Ap, *Ai, *P, *R, nblocks, *Work, *Q, jj ;
     double *Px, *Rx, *Qx ;
 
     /* ---------------------------------------------------------------------- */
@@ -86,15 +88,15 @@ void mexFunction
     }
 
     /* get sparse matrix A */
-    Ap = (Long *) mxGetJc (pargin [0]) ;
-    Ai = (Long *) mxGetIr (pargin [0]) ;
+    Ap = (int64_t *) mxGetJc (pargin [0]) ;
+    Ai = (int64_t *) mxGetIr (pargin [0]) ;
 
     /* get output arrays */
-    P = mxMalloc (n * sizeof (Long)) ;
-    R = mxMalloc ((n+1) * sizeof (Long)) ;
+    P = mxMalloc (n * sizeof (int64_t)) ;
+    R = mxMalloc ((n+1) * sizeof (int64_t)) ;
 
     /* get workspace of size 4n (recursive code only needs 2n) */
-    Work = mxMalloc (4*n * sizeof (Long)) ;
+    Work = mxMalloc (4*n * sizeof (int64_t)) ;
 
     /* get the input column permutation Q */
     if (nargin == 2)
@@ -105,7 +107,7 @@ void mexFunction
                 ("strongcomp: qin must be a permutation vector of size n") ;
         }
         Qx = mxGetPr (pargin [1]) ;
-        Q = mxMalloc (n * sizeof (Long)) ;
+        Q = mxMalloc (n * sizeof (int64_t)) ;
         /* connvert Qin to 0-based and check validity */
         for (i = 0 ; i < n ; i++)
         {
@@ -127,7 +129,7 @@ void mexFunction
     else
     {
         /* no input column permutation */
-        Q = (Long *) NULL ;
+        Q = (int64_t *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */

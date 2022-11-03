@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK_get_lunz ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_get_lunz: determine # of nonzeros in L and U
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Determines the number of nonzeros in L and U, and the size
@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_valid_numeric.h"
 
-GLOBAL Int UMFPACK_get_lunz
+GLOBAL int UMFPACK_get_lunz
 (
     Int *lnz,
     Int *unz,

@@ -1,4 +1,17 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
+
+#-------------------------------------------------------------------------------
+# Mongoose/Tests/runTests
+#-------------------------------------------------------------------------------
+
+# Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+# Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
+# Mongoose is licensed under Version 3 of the GNU General Public License.
+# Mongoose is also available under other licenses; contact authors for details.
+# SPDX-License-Identifier: GPL-3.0-only
+
+#-------------------------------------------------------------------------------
+
 from __future__ import absolute_import, print_function, unicode_literals
 from subprocess import call, check_output
 import os       # For filesystem access
@@ -29,6 +42,7 @@ def main():
 def runTests(args):
     # Create or locate matrix temporary storage directory
     matrix_dir = getMatrixDirectory(args)
+    print("Matrix directory: " + matrix_dir)
 
     # Download the matrix stats csv file
     stats_file = downloadStatsFile(matrix_dir)
@@ -144,11 +158,12 @@ def getMatrixDirectory(args):
     return matrix_dir
 
 def downloadStatsFile(matrix_dir):
-    sslcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-    downloader = urllib.URLopener(context=sslcontext)
-    downloader.retrieve(
-        "https://sparse.tamu.edu/files/ssstats.csv",
-        matrix_dir + "/ssstats.csv")
+#   sslcontext = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+#   downloader = urllib.URLopener(context=sslcontext)
+#   print ("downloading: ssstats.csv to " + matrix_dir)
+#   downloader.retrieve(
+#       "https://sparse.tamu.edu/files/ssstats.csv",
+#       matrix_dir + "/ssstats.csv")
 
     stats_file = matrix_dir + "/ssstats.csv"
     return stats_file

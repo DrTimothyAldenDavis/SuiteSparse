@@ -1,3 +1,12 @@
+//------------------------------------------------------------------------------
+// GPUQREngine/Source/Scheduler/ssgpu_maxQueueSize.cpp
+//------------------------------------------------------------------------------
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #include "GPUQREngine_Scheduler.hpp"
 

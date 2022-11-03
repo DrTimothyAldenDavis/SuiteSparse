@@ -4,7 +4,8 @@ function test3
 %   test3
 % See also cholmod_test
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
 fprintf ('test3: test sparse on int8, int16, and logical\n') ;

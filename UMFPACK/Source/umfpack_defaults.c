@@ -1,14 +1,14 @@
-/* ========================================================================== */
-/* === UMFPACK_defaults ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_defaults: set default control parameters
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
-    User-callable.  Sets default control parameters.  See umfpack_defaults.h
+    User-callable.  Sets default control parameters.  See umfpack.h
     for details.
 */
 
@@ -52,6 +52,12 @@ GLOBAL void UMFPACK_defaults
     Control [UMFPACK_ALLOC_INIT] = UMFPACK_DEFAULT_ALLOC_INIT ;
     Control [UMFPACK_FRONT_ALLOC_INIT] = UMFPACK_DEFAULT_FRONT_ALLOC_INIT ;
     Control [UMFPACK_SCALE] = UMFPACK_DEFAULT_SCALE ;
+
+    // added for v6.0.0:
+    Control [UMFPACK_STRATEGY_THRESH_SYM] =
+     UMFPACK_DEFAULT_STRATEGY_THRESH_SYM;
+    Control [UMFPACK_STRATEGY_THRESH_NNZDIAG] =
+     UMFPACK_DEFAULT_STRATEGY_THRESH_NNZDIAG ;
 
     /* used in UMFPACK_*solve: */
     Control [UMFPACK_IRSTEP] = UMFPACK_DEFAULT_IRSTEP ;

@@ -1,13 +1,15 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/septree mexFunction =================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/septree: MATLAB interface to CHOLMOD prune of separator tree
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS is Copyrighted by G. Karypis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
+// METIS is Copyrighted by G. Karypis
 
 /* Prune a separator tree.
  *
@@ -43,10 +45,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double *p ;
-    Long *Cmember, *CParent ;
+    int64_t *Cmember, *CParent ;
     cholmod_common Common, *cm ;
     double nd_oksep ;
-    Long nd_small, nc, n, c, j, nc_new ;
+    int64_t nd_small, nc, n, c, j, nc_new ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set defaults */
@@ -76,8 +78,8 @@ void mexFunction
 	mexErrMsgTxt ("invalid inputs") ;
     }
 
-    CParent = cholmod_l_malloc (nc, sizeof (Long), cm) ;
-    Cmember = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    CParent = cholmod_l_malloc (nc, sizeof (int64_t), cm) ;
+    Cmember = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     p = mxGetPr (pargin [0]) ;
     for (c = 0 ; c < nc ; c++)
@@ -125,8 +127,8 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (nc, sizeof (Long), CParent, cm) ;
-    cholmod_l_free (n, sizeof (Long), Cmember, cm) ;
+    cholmod_l_free (nc, sizeof (int64_t), CParent, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Cmember, cm) ;
     cholmod_l_finish (cm) ;
     cholmod_l_print_common (" ", cm) ;
     /*

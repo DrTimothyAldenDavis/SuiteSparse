@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === MatrixOps/cholmod_horzcat ============================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps/cholmod_horzcat: horizontal concatenation, C=[A B]
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Horizontal concatenation, C = [A , B] in MATLAB notation.
  *
@@ -20,12 +21,10 @@
  * A and B cannot be complex or zomplex, unless values is FALSE.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMATRIXOPS
-
-#include "cholmod_internal.h"
-#include "cholmod_matrixops.h"
-
 
 /* ========================================================================== */
 /* === cholmod_horzcat ====================================================== */

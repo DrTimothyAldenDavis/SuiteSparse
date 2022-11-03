@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_lu_mex: sparse LU factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_lu: sparse LU factorization, with optional fill-reducing ordering */
 void mexFunction
@@ -8,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, order, *p ;
+    int64_t n, order, *p ;
     double tol ;
     if (nargout > 4 || nargin > 3 || nargin < 1)
     {

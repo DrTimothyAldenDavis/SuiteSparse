@@ -55,7 +55,9 @@ function [U, S, V, stats] = spqr_ssi (R, varargin)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod.
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % Outline of algorithm:
 %    let b = initial block size

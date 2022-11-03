@@ -159,10 +159,14 @@
 //------------------------------------------------------------------------------
 
 // Current version of the code
-#define SLIP_LU_VERSION "1.0.2"
-#define SLIP_LU_VERSION_MAJOR 1
-#define SLIP_LU_VERSION_MINOR 0
-#define SLIP_LU_VERSION_SUB   2
+// #define SLIP_LU_VERSION "1.0.2"
+// #define SLIP_LU_VERSION_MAJOR 1
+// #define SLIP_LU_VERSION_MINOR 0
+// #define SLIP_LU_VERSION_SUB   2
+
+#define SLIP_LU_VERSION "2.0.0"
+#define SLIP_LU_SUB_VERSION    0
+#define SLIP_LU_SUBSUB_VERSION 0
 
 //------------------------------------------------------------------------------
 // Error codes

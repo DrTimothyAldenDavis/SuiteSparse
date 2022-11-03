@@ -1,0 +1,12 @@
+klutest
+klultest
+*.out
+klu_*.c
+user_*.c
+btf_*.c
+*.gcda
+klu.c
+*.gcno
+*.gcov
+gmon.out
+

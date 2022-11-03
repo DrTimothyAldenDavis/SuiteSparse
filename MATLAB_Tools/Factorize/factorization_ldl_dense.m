@@ -1,7 +1,8 @@
 classdef factorization_ldl_dense < factorization
 %FACTORIZATION_LDL_DENSE P'*A*P = L*D*L' where A is full and symmetric
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
     methods
 

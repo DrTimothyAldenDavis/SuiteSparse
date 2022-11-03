@@ -30,7 +30,9 @@ function [nfailures SJid_failures] = demo_spqr_rank (ids,args)
 %
 % See also spqr_basic, spqr_null, spqr_pinv, spqr_cod, SJget.
 
-% Copyright 2012, Leslie Foster and Timothy A Davis.
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % Potential run times:
 %        demo_spqr_rank can require 20 seconds

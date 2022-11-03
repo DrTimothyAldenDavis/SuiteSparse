@@ -1,0 +1,247 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/KLU/CMakeLists.txt:  cmake for KLU
+#-------------------------------------------------------------------------------
+
+# KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+# Authors: Timothy A. Davis and Ekanathan Palamadai.
+# SPDX-License-Identifier: LGPL-2.1+
+
+#-------------------------------------------------------------------------------
+# get the version
+#-------------------------------------------------------------------------------
+
+cmake_minimum_required ( VERSION 3.19 )
+
+set ( KLU_DATE "Nov 4, 2022" )
+set ( KLU_VERSION_MAJOR 2 )
+set ( KLU_VERSION_MINOR 0 )
+set ( KLU_VERSION_SUB   0 )
+
+message ( STATUS "Building KLU version: v"
+    ${KLU_VERSION_MAJOR}.
+    ${KLU_VERSION_MINOR}.
+    ${KLU_VERSION_SUB} " (" ${KLU_DATE} ")" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( klu
+    VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
+    LANGUAGES C )
+
+#-------------------------------------------------------------------------------
+# find library dependencies
+#-------------------------------------------------------------------------------
+
+enable_language ( C Fortran )
+find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( BTF 2.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
+find_package ( COLAMD 3.0.0 REQUIRED )
+find_package ( CHOLMOD 4.0.0 )
+
+#-------------------------------------------------------------------------------
+# configure files
+#-------------------------------------------------------------------------------
+
+configure_file ( "Config/klu.h.in" "${PROJECT_SOURCE_DIR}/Include/klu.h")
+configure_file ( "Config/klu_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex")
+
+#-------------------------------------------------------------------------------
+# include directories
+#-------------------------------------------------------------------------------
+
+include_directories ( Source Include User ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} ${BTF_INCLUDE_DIR} )
+
+#-------------------------------------------------------------------------------
+# dynamic klu library properties
+#-------------------------------------------------------------------------------
+
+file ( GLOB KLU_SOURCES "Source/*.c" )
+
+add_library ( klu SHARED ${KLU_SOURCES} )
+
+set_target_properties ( klu PROPERTIES
+    VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+    C_STANDARD_REQUIRED 11
+    SOVERSION ${KLU_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/klu.h" )
+
+#-------------------------------------------------------------------------------
+# static klu library properties
+#-------------------------------------------------------------------------------
+
+add_library ( klu_static STATIC ${KLU_SOURCES} )
+
+set_target_properties ( klu_static PROPERTIES
+    VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+    C_STANDARD_REQUIRED 11
+    OUTPUT_NAME klu
+    SOVERSION ${KLU_VERSION_MAJOR} )
+
+#-------------------------------------------------------------------------------
+# klu_cholmod library properties
+#-------------------------------------------------------------------------------
+
+if ( CHOLMOD_FOUND )
+
+    file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
+
+    add_library ( klu_cholmod SHARED ${KLU_CHOLMOD_SOURCES} )
+    include_directories ( ${CHOLMOD_INCLUDE_DIR} )
+
+    set_target_properties ( klu_cholmod PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${KLU_VERSION_MAJOR}
+        PUBLIC_HEADER "User/klu_cholmod.h" )
+
+    add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
+
+    set_target_properties ( klu_cholmod_static PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME klu_cholmod
+        SOVERSION ${KLU_VERSION_MAJOR} )
+
+endif ( )
+
+#-------------------------------------------------------------------------------
+# add the library dependencies
+#-------------------------------------------------------------------------------
+
+# suitesparseconfig:
+target_link_libraries ( klu PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( klu_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+
+# libm:
+if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+    target_link_libraries ( klu PUBLIC m )
+    target_link_libraries ( klu_static PUBLIC m )
+endif ( )
+
+# amd:
+target_link_libraries ( klu PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( klu_static PUBLIC ${AMD_LIBRARIES} )
+
+# colamd:
+target_link_libraries ( klu PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( klu_static PUBLIC ${COLAMD_LIBRARIES} )
+
+# btf:
+target_link_libraries ( klu PUBLIC ${BTF_LIBRARIES} )
+target_link_libraries ( klu_static PUBLIC ${BTF_LIBRARIES} )
+
+if ( CHOLMOD_FOUND )
+
+    # klu:
+    target_link_libraries ( klu_cholmod PUBLIC klu )
+    target_link_libraries ( klu_cholmod_static PUBLIC klu )
+
+    # cholmod:
+    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
+
+endif ( )
+
+#-------------------------------------------------------------------------------
+# KLU installation location
+#---------------------------------------------------------------Z--------------
+
+# use "cmake -DSUITESPARSE_LOCAL=1" to install only in SuiteSparse/lib and
+# SuiteSparse/include.  
+
+if ( NOT SUITESPARSE_LOCAL )
+    # install in /usr/local/lib and /usr/local/include.
+    # requires "sudo make install"
+    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
+    install ( TARGETS klu
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    install ( TARGETS klu_static
+        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+
+    if ( CHOLMOD_FOUND )
+        install ( TARGETS klu_cholmod
+            LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        install ( TARGETS klu_cholmod_static
+            ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
+endif ( )
+
+if ( INSIDE_SUITESPARSE )
+    # also install in SuiteSparse/lib and SuiteSparse/include;
+    # does not require "sudo make install", just "make install"
+    message ( STATUS "Installation in ../lib and ../include only," )
+    message ( STATUS "  with 'make install'. No 'sudo' required." )
+    install ( TARGETS klu
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( TARGETS klu_static
+        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+
+    if ( CHOLMOD_FOUND )
+        install ( TARGETS klu_cholmod
+            LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+            PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+        install ( TARGETS klu_cholmod_static
+            ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# Demo library and programs
+#-------------------------------------------------------------------------------
+
+if ( DEMO )
+
+    #---------------------------------------------------------------------------
+    # demo library
+    #---------------------------------------------------------------------------
+
+    message ( STATUS "Also compiling the demos in KLU/Demo" )
+
+    #---------------------------------------------------------------------------
+    # Demo programs
+    #---------------------------------------------------------------------------
+
+    add_executable ( klu_simple  "Demo/klu_simple.c" )
+    if ( CHOLMOD_FOUND )
+        add_executable ( kludemo     "Demo/kludemo.c" )
+        add_executable ( kluldemo    "Demo/kluldemo.c" )
+    endif ( )
+
+    # Libraries required for Demo programs
+    target_link_libraries ( klu_simple  PUBLIC klu )
+    if ( CHOLMOD_FOUND )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod )
+    endif ( )
+
+else ( )
+
+    message ( STATUS "Skipping the demos in KLU/Demo" )
+
+endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
+

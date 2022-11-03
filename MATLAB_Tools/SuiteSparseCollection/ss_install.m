@@ -6,7 +6,9 @@ function ss_install (nlargefile)
 %
 % See also ssget.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
     % try with large-file I/O

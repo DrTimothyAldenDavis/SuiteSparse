@@ -2,6 +2,9 @@
 # SuiteSparseQR/Tcov/Makefile
 #===============================================================================
 
+# SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+
 # This test requires METIS, and it only works on Linux.
 
 # run statement-coverage test without Valgrind
@@ -12,20 +15,34 @@ valgrind: vgo
 
 ccode: all
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+CUDA = no
+
+################################################################################
+
+    SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+    GPU_CONFIG =
+
+    # remove object files, but keep compiled libraries via 'make clean'
+    CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
+        *.gcda *.gcno *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
+
+    # also remove compiled libraries, via 'make distclean'
+    PURGE = *.so* *.a *.dll *.dylib *.dSYM
+
+################################################################################
+
+BLAS = -lblas
+LAPACK = -llapack
 
 # this test requires gcc
 CC = gcc
 CXX= g++
-# BLAS = -lrefblas
-# LAPACK = -llapack
 
 # for statement coverage (with gcov; see go) and picky compiler warnings
-CF = -pg \
-	-O0 -g -fprofile-arcs -ftest-coverage \
+CF = -pg -g --coverage -fprofile-abs-path -O0 \
 	-Wall -W -Wshadow -Winline -Wno-unused-parameter \
 	-Wredundant-decls -Wdisabled-optimization \
-	-fexceptions -fopenmp
+	-fexceptions -fopenmp -DTEST_COVERAGE -DBLAS32
 
 # Using an optimized BLAS can cause problems in Valgrind
 # FLIB = -llapack_plain -lblas_plain -lgfortran
@@ -41,7 +58,8 @@ NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
 
 #-------------------------------------------------------------------------------
 
-CLIB = -L../../lib -lcholmod -lamd -lcolamd -lccolamd -lcamd -lmetis -lsuitesparseconfig
+CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd \
+    -lsuitesparse_metis
 
 all: qrtest gpudemo qrdemo_gpu
 
@@ -152,14 +170,15 @@ ifneq ($(GPU_CONFIG),)
         -I../../GPUQREngine/Include $(CUDA_INC)
 endif
 
-C = $(CXX) $(CF) $(I) $(SPQR_CONFIG)
+C = $(CXX) $(CF) $(I) $(GPU_CONFIG)
 
-LIBS = $(CLIB) $(FLIB) $(LDLIBS) $(CUDA_LIB)
+LIBS = -L../../lib $(FLIB) $(CLIB) $(CUDA_LIB) \
+    -Wl,--rpath=$(SUITESPARSE)/lib -lm -lrt
 
 qrtestc.o: qrtestc.c $(INC)
-	$(CC) $(CF) $(I) -c $<
+	$(CC) $(CF) -std=c11 $(I) -c $<
 
-qrtest: libraries qrtest.cpp $(INC) $(OBJ)
+qrtest: qrtest.cpp $(INC) $(OBJ)
 	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS) -lm
 
 ifneq ($(GPU_CONFIG),)
@@ -174,7 +193,7 @@ else
 gpu:
 endif
 
-gpuqrengine_demo: libraries \
+gpuqrengine_demo: \
         ../../GPUQREngine/Demo/gpuqrengine_demo.cpp $(INC) $(OBJ)
 	$(C) $(GPUQRDEMO)/gpuqrengine_demo.cpp -o gpuqrengine_demo \
                 $(OBJ) $(LIBS) -lm
@@ -331,19 +350,6 @@ spqrgpu_computeFrontStaging.o: ../SPQRGPU/spqrgpu_computeFrontStaging.cpp
 	$(C) -c $<
 
 #-------------------------------------------------------------------------------
-# libraries compiled without test coverage
-#-------------------------------------------------------------------------------
-
-libraries:
-	( cd ../.. && $(MAKE) metis )
-	( cd ../../SuiteSparse_config ; $(MAKE) library TCOV=yes )
-	( cd ../../AMD && $(MAKE) library TCOV=yes )
-	( cd ../../COLAMD && $(MAKE) library TCOV=yes )
-	( cd ../../CCOLAMD && $(MAKE) library TCOV=yes )
-	( cd ../../CAMD && $(MAKE) library TCOV=yes )
-	( cd ../../CHOLMOD && $(MAKE) library TCOV=yes )
-
-#-------------------------------------------------------------------------------
 # SuiteSparse_GPURuntime
 #-------------------------------------------------------------------------------
 
@@ -352,9 +358,7 @@ GPURUNSRC = $(GPURUNTIME)/Source
 GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
 
 RUNH = \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_Workspace.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_debug.hpp \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_macros.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_workspace_macros.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_Runtime.hpp
 #        Makefile

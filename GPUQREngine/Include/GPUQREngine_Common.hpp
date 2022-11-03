@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Include/GPUQREngine_Common.hpp ==============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This include file contains
 //    - Thread geometry and related manifest constants
@@ -60,7 +66,7 @@
 #endif
 
 #define EMPTY       (-1)
-#define Int         SuiteSparse_long
+#define Int         int64_t
 
 // To render the buckets for visualization in graphvis, uncomment this next
 // line, or compile the code with -DGPUQRENGINE_RENDER

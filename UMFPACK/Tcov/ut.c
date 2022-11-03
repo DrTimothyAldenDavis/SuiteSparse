@@ -1,13 +1,13 @@
-/* ========================================================================== */
-/* === umfpack tcov ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Tcov/ut.c: exhaustive test for UMFPACK
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
 
-/* (Nearly) exhaustive statement-coverage testing for UMFPACK.  */
+//------------------------------------------------------------------------------
+
+/* (Nearly) exhaustive statement-coverage testing for UMFPACK. */
 
 /* #define DEBUGGING */
 
@@ -1640,9 +1640,9 @@ static double do_symnum
     void *Symbolic, *Numeric ;
     double *Lx, *Ux, *Lz, *Uz, rnorm, *Rs ;
     Int *noP = INULL, *noQ = INULL, *Li, *Ui, n, n_inner, n1, do_recip ;
-    Int lnz, unz, nz, nn, nfr, nchains, nsparse_col, status ;
+    Int lnz, unz, nz, nfr, nchains, nsparse_col, status ;
     Int *Front_npivots, *Front_parent, *Chain_start, *Chain_maxrows ;
-    Int *Chain_maxcols, *Lrowi, *Lrowp, is_singular ;
+    Int *Chain_maxcols, *Lrowi, *Lrowp, is_singular, *Dmap ;
     double Info [UMFPACK_INFO], *Lrowx, *Lrowz, *Dx, *Dz ;
     Int nnrow, nncol, nzud, *Front_1strow, *Front_leftmostdesc, prl, i ;
     double mind, maxd, rcond ;
@@ -1826,14 +1826,15 @@ static double do_symnum
     Chain_start = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
     Chain_maxrows = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
     Chain_maxcols = (Int *) malloc ((n+1) * sizeof (Int)) ;		/* [ */
+    Dmap = (Int *) malloc ((n+1) * sizeof (Int)) ;		        /* [ */
 
     if (!Front_npivots || !Front_parent || !Chain_start || !Chain_maxrows
-	|| !Front_leftmostdesc || !Front_1strow
+	|| !Front_leftmostdesc || !Front_1strow || !Dmap
 	|| !Chain_maxcols || !Qtree || !Ptree) error ("out of memory (1)",0.) ;
 
     status = UMFPACK_get_symbolic (&nnrow, &nncol, &n1, &nz, &nfr, &nchains,
 	Ptree, Qtree, Front_npivots, Front_parent, Front_1strow, Front_leftmostdesc,
-	Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 
     if (status != UMFPACK_OK)
     {
@@ -1841,6 +1842,7 @@ static double do_symnum
 	error ("get symbolic failed\n", 0.) ;
     }
 
+    free (Dmap) ;               /* ] */
     free (Chain_maxcols) ;	/* ] */
     free (Chain_maxrows) ;	/* ] */
     free (Chain_start) ;	/* ] */
@@ -2646,7 +2648,7 @@ static double do_matrix
     if (n < 15) Control [UMFPACK_PRL] = 4 ;
     for (singletons = 0 ; singletons <= 1 ; singletons++)
     {
-        for (ordering = EMPTY ; ordering <= UMFPACK_ORDERING_USER ; ordering++)
+        for (ordering = EMPTY ; ordering <= UMFPACK_ORDERING_METIS_GUARD ; ordering++)
         {
             Control [UMFPACK_ORDERING] = ordering ;
             Control [UMFPACK_SINGLETONS] = singletons ;
@@ -3521,8 +3523,8 @@ static void matgen_compaction
     Int nz, *Bp, *Bi, *Ti, *Tj, k, i, j, prl, status ;
     double *Bx, *Tx, *Bz, *Tz, Control [UMFPACK_INFO] ;
 
-    prl = Control ? Control [UMFPACK_PRL] : UMFPACK_DEFAULT_PRL ; 
     UMFPACK_defaults (Control) ;
+    prl = Control ? Control [UMFPACK_PRL] : UMFPACK_DEFAULT_PRL ; 
 
     UMFPACK_report_control (Control) ;
 
@@ -4542,9 +4544,9 @@ int main (int argc, char **argv)
 	rnorm_omega2, maxrnorm_arc130, det_x, det_z, Mx, Mz, Exp ;
     Int Ncontrols [UMFPACK_CONTROL], c, i, n, prl, *Qinit, *Qinit2, n1,
 	*Ap, *Ai, *Aj, nz, *Ap2, *Ai2, p, j, d, s, s2, *Pinit, k, n2, *Map,
-	*Lp, *Li, *P, *Q, *Up, *Ui, lnz, unz, nn, *Cp, *Ci, *Cj, *Bi, *Bp, *Bj,
+	*Lp, *Li, *P, *Q, *Up, *Ui, lnz, unz, *Cp, *Ci, *Cj, *Bi, *Bp, *Bj,
 	*Pa, *Front_npivots, *Front_parent, *Chain_start, *Chain_maxrows, *ip,
-	*Chain_maxcols, nfr, nchains, nsparse_col, *Qtree, *Ptree, nnz,
+	*Chain_maxcols, nfr, nchains, nsparse_col, *Qtree, *Ptree, nnz, *Dmap,
 	MemOK [6], MemBad [6], nnrow, nncol, nzud, n_row, n_col, n_row2,
 	n_col2, scale, *Front_1strow, *Front_leftmostdesc, strategy,
 	t, aggressive, *Pamd, mem1, mem2, do_recip ;
@@ -6090,8 +6092,8 @@ int main (int argc, char **argv)
 	    /* ------------------------------------------------------------------ */
 
 	    s = UMFPACK_get_lunz (&lnz, &unz, &nnrow, &nncol, &nzud, Numeric) ;
-	    printf ("lnz "ID" unz "ID" nn "ID"\n", lnz, unz, nn) ;
 	    if (s != UMFPACK_OK) error ("58",0.) ;
+	    printf ("lnz "ID" unz "ID" nn "ID" "ID"\n", lnz, unz, nnrow, nncol) ;
 
 	    /* ------------------------------------------------------------------ */
 
@@ -6619,14 +6621,16 @@ int main (int argc, char **argv)
 	Chain_maxcols = (Int *) malloc (n * sizeof (Int)) ;		/* [ */
 	Qtree = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
 	Ptree = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
+	Dmap = (Int *) malloc (n * sizeof (Int)) ;			/* [ */
 	if (!Front_npivots || !Front_parent || !Chain_start || !Chain_maxrows
 	    || !Chain_maxcols || !Qtree) error ("out of memory (22)",0.) ;
 
 	s = UMFPACK_get_symbolic (&nnrow, &nncol, &n1, &nnz, &nfr, &nchains,
 	    Ptree, Qtree, Front_npivots, Front_parent, Front_1strow, Front_leftmostdesc,
-	    Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	    Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 	if (s != UMFPACK_ERROR_invalid_Symbolic_object) error ("93", 0.) ;
 
+	free (Dmap) ;           /* ] */
 	free (Ptree) ;		/* ] */
 	free (Qtree) ;		/* ] */
 	free (Chain_maxcols) ;	/* ] */
@@ -7204,7 +7208,7 @@ int main (int argc, char **argv)
 	free (Cj) ;	/* ] */
 	free (Cp) ;	/* ] */
 
-	for (i = 1 ; i <= 24 ; i++)
+	for (i = 1 ; i <= 100 ; i++)
 	{
 	    umf_fail = i ;
 	    printf ("umf_fail starts at %d\n", umf_fail) ;
@@ -7216,15 +7220,32 @@ int main (int argc, char **argv)
 	    if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
 	    UMFPACK_report_status (Control, s) ;
 	    UMFPACK_report_info (Control, Info) ;
-	    if (Symbolic || Info [UMFPACK_STATUS] != UMFPACK_ERROR_out_of_memory) error ("104", (double) i) ;
+
+            if (s == UMFPACK_ERROR_out_of_memory)
+            {
+                // keep testing ...
+	        if (Symbolic) error ("104", (double) i) ;
+            }
+            else if (s == UMFPACK_OK)
+            {
+                // done
+	        if (!Symbolic) error ("105", 0.) ;
+	        UMFPACK_report_status (Control, s) ;
+	        UMFPACK_report_info (Control, Info) ;
+                UMFPACK_free_symbolic (&Symbolic) ;
+            }
+            else
+            {
+	        error ("121", 0.) ;
+            }
 	}
 
-	umf_fail = 25 ;
-	s = UMFPACK_qsymbolic (n, n, Ap, Ai, CARG(Ax,Az), Qinit, &Symbolic, Control, Info) ;	/* [ */
+	umf_fail = 1000 ;
+        s = UMFPACK_qsymbolic (n, n, Ap, Ai, CARG(Ax,Az), Qinit, &Symbolic, Control, Info) ;	/* [ */
 	if (s != Info [UMFPACK_STATUS]) error ("huh", (double) __LINE__)  ;
 	UMFPACK_report_status (Control, s) ;
 	UMFPACK_report_info (Control, Info) ;
-	if (!Symbolic || s != UMFPACK_OK) error ("105", 0.) ;
+        if (!Symbolic || s != UMFPACK_OK) error ("105", 0.) ;
 
 	umf_fail = 1 ;
 	if (prl > 2) printf ("\nMemfail Symbolic: ") ;

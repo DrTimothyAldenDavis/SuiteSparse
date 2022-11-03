@@ -26,7 +26,8 @@ function params = ssget_defaults
 %
 %   See also ssget.
 
-% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
+% ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % decode the current directory for this M-file
 s = which (mfilename) ;

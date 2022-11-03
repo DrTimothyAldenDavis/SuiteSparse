@@ -1,6 +1,11 @@
+#!/bin/bash
 # usage: gcovs files
+# CXSparse/Tcov/gcovs
+# CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 echo '================================================================='
-foreach file ($argv[1-])
-        gcov -f $file
+for file in $@
+do
+        gcov -fl $file
         echo '================================================================='
-        end
+done

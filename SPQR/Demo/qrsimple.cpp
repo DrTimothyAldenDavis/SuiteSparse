@@ -2,6 +2,9 @@
 // === qrsimple.cpp ============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 // A very simple example of the use of SuiteSparseQR by a C++ main program.
 // Usage:  qrsimple < Matrix_in_MatrixMarket_format
 

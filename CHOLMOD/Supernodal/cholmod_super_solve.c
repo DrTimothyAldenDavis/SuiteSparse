@@ -1,22 +1,22 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_solve ======================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_solve: solve using supernodal factorization
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Solve Lx=b or L'x=b for a supernodal factorization.  These routines do not
  * apply the permutation L->Perm.  See cholmod_solve for a more general
  * interface that performs that operation.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NSUPERNODAL
-
-#include "cholmod_internal.h"
-#include "cholmod_supernodal.h"
 
 /* ========================================================================== */
 /* === TEMPLATE ============================================================= */
@@ -112,7 +112,7 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !Common->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
@@ -205,7 +205,7 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
 	    break ;
     }
 
-    if (CHECK_BLAS_INT && !Common->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }

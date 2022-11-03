@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/BucketList_AdvanceBundles.cpp ========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // AdvanceBundles advances existing bundles, leaving the First tile behind
 // and keeping a Shadow copy to support subsequent Apply tasks.

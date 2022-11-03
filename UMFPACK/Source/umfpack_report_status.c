@@ -1,15 +1,15 @@
-/* ========================================================================== */
-/* === UMFPACK_report_status ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_status: print the UMFPACK return status
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Prints the return value from other UMFPACK_* routines.
-    See umfpack_report_status.h for details.
+    See umfpack.h for details.
 */
 
 #include "umf_internal.h"
@@ -17,7 +17,7 @@
 GLOBAL void UMFPACK_report_status
 (
     const double Control [UMFPACK_CONTROL],
-    Int status
+    int status
 )
 {
     Int prl ;
@@ -116,7 +116,7 @@ GLOBAL void UMFPACK_report_status
 	    break ;
 
 	default:
-	    PRINTF (("ERROR: Unrecognized error code: "ID"\n", status)) ;
+	    PRINTF (("ERROR: Unrecognized error code: %d\n", status)) ;
 
     }
     PRINTF  (("\n")) ;

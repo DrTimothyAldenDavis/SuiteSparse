@@ -1,7 +1,8 @@
-LDL Copyright (c) 2005-2013 by Timothy A. Davis. http://www.suitesparse.com
-
 LDL: a sparse LDL' factorization and solve package.
     Written in C, with both a C and MATLAB mexFunction interface. 
+
+LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+
 
 These routines are not terrifically fast (they do not use dense matrix kernels),
 but the code is very short and concise.  The purpose is to illustrate the
@@ -21,7 +22,7 @@ Quick start (Unix, or Windows with Cygwin):
     will compile the LDL library and three demo main programs (one of which
     requires AMD).  It will also compile the LDL MATLAB mexFunction (if you
     have MATLAB).  Typing "make clean" will remove non-essential files.
-    AMD v2.4 or later is required.  Its use is optional.
+    AMD v3.0 or later is required.  Its use is optional.
 
 Quick start (for MATLAB users);
 
@@ -94,8 +95,6 @@ Files and directories in this distribution:
 	ldltest.out	diary output of ldltest
 	ldlmex.c	the LDL mexFunction for MATLAB
 	ldlrow.m	the numerical algorithm that LDL is based on
-	ldlmain2.m	compiles and runs ldlmain.c as a MATLAB mexFunction
-	ldlmain2.out	output of ldlmain2.m
 	ldlsymbolmex.c	symbolic factorization using LDL (see SYMBFACT, ETREE)
 	ldlsymbol.m	help file for the LDLSYMBOL mexFunction
 

@@ -1,6 +1,11 @@
-/* ========================================================================== */
-/* === ldlsymbolmex.c:  LDLSYMBOL mexFunction =============================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// LDL/MATLAB/ldlsymbolmex.c: MATLAB interface for LDL symbolic analysis
+//------------------------------------------------------------------------------
+
+// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* MATLAB interface for symbolic LDL' factorization using the LDL sparse matrix
  * package.  This mexFunction is not required by the LDL mexFunction.
@@ -32,18 +37,10 @@
  * This code is faster than the above MATLAB statements, typically by a factor
  * of 4 to 40 (median speedup of 9) in MATLAB 6.5 on a Pentium 4 Linux laptop
  * (excluding the B=A(P,P) time), on a wide range of symmetric sparse matrices.
- *
- * Copyright (c) 2006 by Timothy A Davis, http://www.suitesparse.com.
- * All Rights Reserved.  See LDL/Doc/License.txt for the License.
  */
-
-#ifndef LDL_LONG
-#define LDL_LONG
-#endif
 
 #include "ldl.h"
 #include "mex.h"
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === LDLSYMBOL mexFunction ================================================ */
@@ -57,8 +54,9 @@ void mexFunction
     const mxArray *pargin[ ]
 )
 {
-    Long i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
-	*P, *Pinv, nn, k, j, permute ;
+    int64_t i, n, *Pattern, *Flag, *Lp, *Ap, *Ai, *Lnz, *Parent,
+	*P, *Pinv, nn, k, j ;
+    int permute ;
     double flops, *p ;
 
     /* ---------------------------------------------------------------------- */
@@ -81,8 +79,8 @@ void mexFunction
     nn = (n == 0) ? 1 : n ;
 
     /* get sparse matrix A */
-    Ap = (Long *) mxGetJc (pargin [0]) ;
-    Ai = (Long *) mxGetIr (pargin [0]) ;
+    Ap = (int64_t *) mxGetJc (pargin [0]) ;
+    Ai = (int64_t *) mxGetIr (pargin [0]) ;
 
     /* get fill-reducing ordering, if present */
     permute = ((nargin > 1) && !mxIsEmpty (pargin [1])) ;
@@ -93,8 +91,8 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("ldlsymbol: invalid input permutation\n") ;
 	}
-	P    = (Long *) mxMalloc (nn * sizeof (Long)) ;
-	Pinv = (Long *) mxMalloc (nn * sizeof (Long)) ;
+	P    = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+	Pinv = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 	p = mxGetPr (pargin [1]) ;
 	for (k = 0 ; k < n ; k++)
 	{
@@ -103,18 +101,18 @@ void mexFunction
     }
     else
     {
-	P    = (Long *) NULL ;
-	Pinv = (Long *) NULL ;
+	P    = (int64_t *) NULL ;
+	Pinv = (int64_t *) NULL ;
     }
 
     /* allocate first part of L */
-    Lp      = (Long *) mxMalloc ((n+1) * sizeof (Long)) ;
-    Parent  = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Lp      = (int64_t *) mxMalloc ((n+1) * sizeof (int64_t)) ;
+    Parent  = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 
     /* get workspace */
-    Flag    = (Long *) mxMalloc (nn * sizeof (Long)) ;
-    Pattern = (Long *) mxMalloc (nn * sizeof (Long)) ;
-    Lnz     = (Long *) mxMalloc (nn * sizeof (Long)) ;
+    Flag    = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+    Pattern = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
+    Lnz     = (int64_t *) mxMalloc (nn * sizeof (int64_t)) ;
 
     /* make sure the input P is valid */
     if (permute && !ldl_l_valid_perm (n, P, Flag))

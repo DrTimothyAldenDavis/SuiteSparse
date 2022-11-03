@@ -28,6 +28,7 @@ function mongoose_plot (G, x_vec, y_vec, plot_name, colorstyles, bgcolor, grad) 
 % See also spy, mongoose_test.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 fprintf ('Using graphvis by Yifan Hu to draw the graph\n') ;
 fprintf ('(ignore any error message about "remove_overlap")\n') ;

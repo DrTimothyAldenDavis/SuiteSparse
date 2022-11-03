@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_chol_mex: sparse Cholesky factorization
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_chol: sparse Cholesky factorization */
 void mexFunction (int nargout, mxArray *pargout [ ], int nargin,

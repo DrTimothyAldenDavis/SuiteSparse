@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Demo/cholmod_demo ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Demo/cholmod_demo:  demo program for CHOLMOD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Demo Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
  * symmetric, or (AA'+beta*I)x=b otherwise.  The file format is a simple
@@ -28,7 +30,7 @@
  * See cholmod_simple.c for a simpler demo program.
  *
  * cholmod_demo is the same as cholmod_l_demo, except for the size of the
- * basic integer (int vs SuiteSparse_long)
+ * basic integer (int vs int64_t)
  */
 
 #include "cholmod_demo.h"
@@ -94,7 +96,6 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_start (cm) ;
-    CHOLMOD_FUNCTION_DEFAULTS ;     /* just for testing (not required) */
 
     /* use default parameter settings, except for the error handler.  This
      * demo program terminates if an error occurs (out of memory, not positive
@@ -519,8 +520,18 @@ int main (int argc, char **argv)
     {
 	cholmod_dense *R2 ;
 
+        // x = A\b
+        cholmod_free_dense (&X, cm) ;
+        X = cholmod_solve (CHOLMOD_A, L, B, cm) ;
+
+        // R = B-A*X
+        cholmod_free_dense (&R, cm) ;
+        R = cholmod_copy_dense (B, cm) ;
+        cholmod_sdmult (A, 0, minusone, one, X, R, cm) ;
+
 	/* R2 = A\(B-A*X) */
 	R2 = cholmod_solve (CHOLMOD_A, L, R, cm) ;
+
 	/* compute X = X + A\(B-A*X) */
 	Xx = X->x ;
 	Rx = R2->x ;
@@ -529,7 +540,6 @@ int main (int argc, char **argv)
 	    Xx [i] = Xx [i] + Rx [i] ;
 	}
 	cholmod_free_dense (&R2, cm) ;
-	cholmod_free_dense (&R, cm) ;
 
 	/* compute the new residual, R = B-A*X */
         cholmod_free_dense (&R, cm) ;

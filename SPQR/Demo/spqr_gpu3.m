@@ -3,6 +3,9 @@ function [C,R,E,B,X, err] = spqr_gpu3 (ordering, A)
 %   ordering: 1 colamd
 %   ordering: 2 metis
 
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 % write the matrix to a file
 mwrite ('A.mtx', A) ;
 

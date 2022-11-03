@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/BucketList_GrowBundles.cpp ===========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // GrowBundles looks for row tiles (or bundles) involved in a factorization
 // and attempts to add those bundles or row tiles to a task currently set

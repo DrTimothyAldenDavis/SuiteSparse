@@ -1,13 +1,15 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/nesdis mexFunction ==================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/nesdis: MATLAB interface for CHOLMOD+METIS+CAMD+CCOLAMD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * METIS is Copyrighted by G. Karypis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+// MATLAB(tm) is a Trademark of The MathWorks, Inc.
+// METIS is Copyrighted by G. Karypis
 
 /* CHOLMOD's nested dissection, based on METIS_ComputeVertexSeparator, CAMD, and
  * CCOLAMD.
@@ -60,10 +62,10 @@ void mexFunction
 {
 #ifndef NPARTITION
     double dummy = 0 ;
-    Long *Perm, *Cmember, *CParent ;
+    int64_t *Perm, *Cmember, *CParent ;
     cholmod_sparse *A, Amatrix, *C, *S ;
     cholmod_common Common, *cm ;
-    Long n, transpose, c, ncomp ;
+    int64_t n, transpose, c, ncomp ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -161,9 +163,9 @@ void mexFunction
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    CParent = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    Cmember = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    CParent = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    Cmember = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* order the matrix with CHOLMOD's nested dissection */
@@ -194,9 +196,9 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
-    cholmod_l_free (n, sizeof (Long), CParent, cm) ;
-    cholmod_l_free (n, sizeof (Long), Cmember, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), CParent, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Cmember, cm) ;
     cholmod_l_free_sparse (&C, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;

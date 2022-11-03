@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_colamd ============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_colamd: COLAMD interface for CHOLMOD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the COLAMD ordering routine (version 2.4 or later).
  * Finds a permutation p such that the Cholesky factorization of PAA'P' is
@@ -22,12 +24,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCHOLESKY
 
-#include "cholmod_internal.h"
 #include "colamd.h"
-#include "cholmod_cholesky.h"
-
 #if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (2,5)))
 #error "COLAMD v2.5 or later is required"
 #endif

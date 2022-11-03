@@ -2,6 +2,9 @@ function umfpack_test2
 %UMFPACK_TEST2 try all UMFPACK strategies and orderings.
 % Requires ssget, CHOLMOD, CAMD, CCOLAMD, COLAMD, METIS.
 
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 Prob = ssget (45) ;
 A = Prob.A ;
 n = size (A,1) ;

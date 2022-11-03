@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_colamd =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_colamd: UMFPACK version of COLAMD
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
 UMF_colamd:  an approximate minimum degree column ordering algorithm,
@@ -51,8 +51,6 @@ Acknowledgements:
 
     This work was supported by the National Science Foundation, under
     grants DMS-9504974, DMS-9803599, and CCR-0203270.
-
-UMFPACK:  Copyright (c) 2003 by Timothy A. Davis.  All Rights Reserved.
 
 See the UMFPACK README file for the License for your use of this code.
 
@@ -1697,7 +1695,7 @@ PRIVATE Int find_ordering	/* return the number of garbage collections */
     Int col ;			/* a column index */
     Int max_score ;		/* maximum possible score */
     Int cur_score ;		/* score of current column */
-    unsigned Int hash ;		/* hash value for supernode detection */
+    UInt hash ;		/* hash value for supernode detection */
     Int head_column ;		/* head of hash bucket */
     Int first_col ;		/* first column in hash bucket */
     Int tag_mark ;		/* marker value for mark array */
@@ -2187,7 +2185,7 @@ PRIVATE Int find_ordering	/* return the number of garbage collections */
 		Col [col].shared2.score = cur_score ;
 
 		/* add column to hash table, for supercolumn detection */
-		/* NOTE: hash is an unsigned Int to avoid a problem in ANSI C.
+		/* NOTE: hash is an UInt to avoid a problem in ANSI C.
 		 * The sign of the expression a % b is not defined when a and/or
 		 * b are negative.  Since hash is unsigned and n_col >= 0,
 		 * this problem is avoided. */

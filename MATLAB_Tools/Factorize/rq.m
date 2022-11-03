@@ -35,7 +35,8 @@ function [R, Q] = rq (A, m, n)
 %
 % See also qr.
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (issparse (A))
     % RQ would actually work, but it would be very inefficient since no fill

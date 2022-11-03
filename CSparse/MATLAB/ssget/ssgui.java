@@ -1,4 +1,12 @@
 //------------------------------------------------------------------------------
+// ssget/ssgui.java: Java GUI interface to the SuiteSparse Matrix Collection
+//------------------------------------------------------------------------------
+
+// ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
+
 // ssgui: a Java GUI interface for viewing, selecting, and downloading matrices
 // from the SuiteSparse Matrix Collection.  To compile this program, type the
 // following in your OS command window:
@@ -39,8 +47,9 @@
 //
 //      proxy port: default is 80 if left blank
 //
-// Copyright (c) 2009-2019, Timothy A. Davis.  See sshelp.html for the license,
-// and for help on how to use this program, or click "Help" in the GUI.
+// See sshelp.html for the license, and for help on how to use this program, or
+// click "Help" in the GUI.
+
 //------------------------------------------------------------------------------
 
 import java.io.* ;

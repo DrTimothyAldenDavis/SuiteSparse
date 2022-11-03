@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === luflop  mexFunction ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/MATLAB/luflop.c: MATLAB mexFunction for computing # flops for LU
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     f = luflop (L, U) ;
@@ -21,7 +21,6 @@
 
 #include "mex.h"
 #include "SuiteSparse_config.h"
-#define Long SuiteSparse_long
 
 #ifndef TRUE
 #define TRUE (1)
@@ -45,7 +44,7 @@ void mexFunction
 
     double flop_count ;
     double *pflop ;
-    Long *Lp, *Li, *Up, *Ui, *Unz, n, k, row, col, p, Lnz_k, Unz_k ;
+    int64_t *Lp, *Li, *Up, *Ui, *Unz, n, k, row, col, p, Lnz_k, Unz_k ;
     mxArray *Lmatrix, *Umatrix ;
 
     /* ---------------------------------------------------------------------- */
@@ -71,13 +70,13 @@ void mexFunction
 	mexErrMsgTxt ("Usage:  f = luflop (L, U) ;  L and U must be sparse") ;
     }
 
-    Lp = (Long *) mxGetJc (Lmatrix) ;
-    Li = (Long *) mxGetIr (Lmatrix) ;
+    Lp = (int64_t *) mxGetJc (Lmatrix) ;
+    Li = (int64_t *) mxGetIr (Lmatrix) ;
 
-    Up = (Long *) mxGetJc (Umatrix) ;
-    Ui = (Long *) mxGetIr (Umatrix) ;
+    Up = (int64_t *) mxGetJc (Umatrix) ;
+    Ui = (int64_t *) mxGetIr (Umatrix) ;
 
-    Unz = (Long *) mxMalloc (n * sizeof (Long)) ;
+    Unz = (int64_t *) mxMalloc (n * sizeof (int64_t)) ;
 
     /* ---------------------------------------------------------------------- */
     /* count the nonzeros in each row of U */

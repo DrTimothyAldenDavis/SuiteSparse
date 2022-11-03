@@ -1,10 +1,13 @@
+// CXSparse/MATLAB/Test/cs_maxtransr_mex: maximum transversal
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* find an augmenting path starting at column j and extend the match if found */
 static
-CS_INT augment (CS_INT k, cs_dl *A, CS_INT *jmatch, CS_INT *cheap, CS_INT *w,
-    CS_INT j)
+int64_t augment (int64_t k, cs_dl *A, int64_t *jmatch, int64_t *cheap, int64_t *w,
+    int64_t j)
 {
-    CS_INT found = 0, p, i = -1, *Ap = A->p, *Ai = A->i ;
+    int64_t found = 0, p, i = -1, *Ap = A->p, *Ai = A->i ;
     /* --- Start depth-first-search at node j ------------------------------- */
     w [j] = k ;                             /* mark j as visited for kth path */
     for (p = cheap [j] ; p < Ap [j+1] && !found ; p++)
@@ -26,13 +29,13 @@ CS_INT augment (CS_INT k, cs_dl *A, CS_INT *jmatch, CS_INT *cheap, CS_INT *w,
 
 /* find a maximum transveral */
 static
-CS_INT *maxtrans (cs_dl *A)   /* returns jmatch [0..m-1] */
+int64_t *maxtrans (cs_dl *A)   /* returns jmatch [0..m-1] */
 {
-    CS_INT i, j, k, n, m, *Ap, *jmatch, *w, *cheap ;
+    int64_t i, j, k, n, m, *Ap, *jmatch, *w, *cheap ;
     if (!A) return (NULL) ;                         /* check inputs */
     n = A->n ; m = A->m ; Ap = A->p ;
-    jmatch = cs_dl_malloc (m, sizeof (CS_INT)) ;    /* allocate result */
-    w = cs_dl_malloc (2*n, sizeof (CS_INT)) ;       /* allocate workspace */
+    jmatch = cs_dl_malloc (m, sizeof (int64_t)) ;    /* allocate result */
+    w = cs_dl_malloc (2*n, sizeof (int64_t)) ;       /* allocate workspace */
     if (!w || !jmatch) return (cs_dl_idone (jmatch, NULL, w, 0)) ;
     cheap = w + n ;
     for (j = 0 ; j < n ; j++) cheap [j] = Ap [j] ;  /* for cheap assignment */
@@ -43,11 +46,11 @@ CS_INT *maxtrans (cs_dl *A)   /* returns jmatch [0..m-1] */
 }
 
 /* invert a maximum matching */
-static CS_INT *invmatch (CS_INT *jmatch, CS_INT m, CS_INT n)
+static int64_t *invmatch (int64_t *jmatch, int64_t m, int64_t n)
 {
-    CS_INT i, j, *imatch ;
+    int64_t i, j, *imatch ;
     if (!jmatch) return (NULL) ;
-    imatch = cs_dl_malloc (n, sizeof (CS_INT)) ;
+    imatch = cs_dl_malloc (n, sizeof (int64_t)) ;
     if (!imatch) return (NULL) ;
     for (j = 0 ; j < n ; j++) imatch [j] = -1 ;
     for (i = 0 ; i < m ; i++) if (jmatch [i] >= 0) imatch [jmatch [i]] = i ;
@@ -64,7 +67,7 @@ void mexFunction
 {
     cs_dl *A, Amatrix ;
     double *x ;
-    CS_INT i, m, n, *imatch, *jmatch ;
+    int64_t i, m, n, *imatch, *jmatch ;
 
     if (nargout > 1 || nargin != 1)
     {
@@ -83,6 +86,6 @@ void mexFunction
     x = mxGetPr (pargout [0]) ;
     for (i = 0 ; i < n ; i++) x [i] = imatch [i] + 1 ;
 
-    cs_free (jmatch) ;
-    cs_free (imatch) ;
+    cs_dl_free (jmatch) ;
+    cs_dl_free (imatch) ;
 }

@@ -2,6 +2,11 @@
 // === spqr_happly_work ========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Determines the workspace workspace needed by spqr-happly
 
 #include "spqr.hpp"
@@ -11,21 +16,21 @@ int spqr_happly_work
     // input
     int method,     // 0,1,2,3 
 
-    Long m,         // X is m-by-n
-    Long n,
+    int64_t m,         // X is m-by-n
+    int64_t n,
 
     // FUTURE : make H cholmod_sparse:
-    Long nh,        // number of Householder vectors
-    Long *Hp,       // size nh+1, column pointers for H
-    Long hchunk,
+    int64_t nh,        // number of Householder vectors
+    int64_t *Hp,       // size nh+1, column pointers for H
+    int64_t hchunk,
 
     // outputs; sizes of workspaces needed
-    Long *p_vmax, 
-    Long *p_vsize, 
-    Long *p_csize
+    int64_t *p_vmax, 
+    int64_t *p_vsize, 
+    int64_t *p_csize
 )
 {
-    Long maxhlen, h, hlen, vmax, mh, vsize, csize, vsize1, vsize2 ;
+    int64_t maxhlen, h, hlen, vmax, mh, vsize, csize, vsize1, vsize2 ;
     int ok = TRUE ;
 
     // -------------------------------------------------------------------------
@@ -60,7 +65,7 @@ int spqr_happly_work
     // determine workspace sizes
     // -------------------------------------------------------------------------
 
-    // Long overflow cannot occur with vmax since H is already allocated
+    // int64_t overflow cannot occur with vmax since H is already allocated
     if (method == 0 || method == 3)
     {
         // apply H in the forward direction; H(0) first, H(nh-1) last

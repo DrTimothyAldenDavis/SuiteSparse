@@ -2,6 +2,11 @@
 // === spqr_rmap ===============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // R is squeezed, find the mapping that permutes it to trapezoidal form
 
 // Rmap is a permutation that converts R from squeezed to upper trapezoidal.
@@ -34,8 +39,8 @@ template <typename Entry> int spqr_rmap
     cholmod_common *cc
 )
 {
-    Long n, j, i, p, n1rows, n1cols ;
-    Long *Rmap, *RmapInv, *R1p, *R1j ;
+    int64_t n, j, i, p, n1rows, n1cols ;
+    int64_t *Rmap, *RmapInv, *R1p, *R1j ;
 
     n = QR->nacols ;
     Rmap = QR->Rmap ;
@@ -44,8 +49,8 @@ template <typename Entry> int spqr_rmap
     if (Rmap == NULL)
     {
         ASSERT (RmapInv == NULL) ;
-        QR->Rmap    = Rmap    = (Long *) cholmod_l_malloc (n, sizeof(Long), cc);
-        QR->RmapInv = RmapInv = (Long *) cholmod_l_malloc (n, sizeof(Long), cc);
+        QR->Rmap    = Rmap    = (int64_t *) cholmod_l_malloc (n, sizeof(int64_t), cc);
+        QR->RmapInv = RmapInv = (int64_t *) cholmod_l_malloc (n, sizeof(int64_t), cc);
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory

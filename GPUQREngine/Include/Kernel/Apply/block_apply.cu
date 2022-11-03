@@ -2,6 +2,10 @@
 // === GPUQREngine/Include/Kernel/Apply/block_apply.cu =========================
 // =============================================================================
 
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 //------------------------------------------------------------------------------
 // block_apply.cu: generic device function to apply a block Householder
 //------------------------------------------------------------------------------

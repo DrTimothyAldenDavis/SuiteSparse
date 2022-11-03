@@ -6,7 +6,8 @@ function spok_test
 %
 % See also sparse, spok, spok_install
 
-% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
+% SPOK, Copyright (c) 2008-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 % compile and install spok
 help spok ;

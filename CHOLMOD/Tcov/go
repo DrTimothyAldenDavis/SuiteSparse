@@ -1,15 +1,25 @@
+#!/bin/bash
 
-setenv CHOLMOD_USE_GPU 1
-printenv
-make
-make gpu
+# ------------------------------------------------------------------------------
+# CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+# ------------------------------------------------------------------------------
 
-unsetenv CHOLMOD_USE_GPU
-printenv
-make
-make gpu
+# test coverage with the GPU enabled
 
-setenv CHOLMOD_USE_GPU 0
-printenv
-make
-make gpu
+make purge
+make -j40
+
+export CHOLMOD_USE_GPU=1
+./ldemo ../../../Matrix/nd6k.mtx
+./ldemo ../../../Matrix/nd6k_complex.mtx
+./ldemo ../../../Matrix/nd6k_complex.mtx 1
+./covall
+
+export CHOLMOD_USE_GPU=0
+./ldemo ../../../Matrix/nd6k.mtx
+./ldemo ../../../Matrix/nd6k_complex.mtx
+./ldemo ../../../Matrix/nd6k_complex.mtx 1
+./covall
+

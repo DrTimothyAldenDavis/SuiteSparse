@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/cholmod mexFunction =================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/cholmod2: MATLAB interface to CHOLMOD x=A\b
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Supernodal sparse Cholesky backslash, x = A\b.  Factorizes PAP' in LL' then
  * solves a sparse linear system.  Uses the diagonal and upper triangular part
@@ -59,7 +59,7 @@ void mexFunction
     cholmod_dense Bmatrix, *X, *B ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long n, B_is_sparse, ordering, k, *Perm ;
+    int64_t n, B_is_sparse, ordering, k, *Perm ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -190,7 +190,7 @@ void mexFunction
 	}
 	/* copy from double to integer, and convert to 0-based */
 	p = mxGetPr (pargin [2]) ;
-	Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
+	Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 	for (k = 0 ; k < n ; k++)
 	{
 	    Perm [k] = p [k] - 1 ;
@@ -215,7 +215,7 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
-    cholmod_l_free (n, sizeof (Long), Perm, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
     cholmod_l_factorize (A, L, cm) ;
 
     rcond = cholmod_l_rcond (L, cm) ;

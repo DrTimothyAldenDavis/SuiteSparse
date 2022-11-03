@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/ldlupdate mexFunction ================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/ldlupdate: MATLAB interface to CHOLMOD update/downdate
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis.
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Multiple-rank update or downdate of a sparse LDL' factorization.
  *
@@ -34,11 +34,11 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *Lx2 ;
-    Long *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
+    int64_t *Li, *Lp, *Li2, *Lp2, *Lnz2, *ColCount ;
     cholmod_sparse Cmatrix, *C, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long j, k, s, update, n, lnz ;
+    int64_t j, k, s, update, n, lnz ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -98,8 +98,8 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     /* get the MATLAB L */
-    Lp = (Long *) mxGetJc (pargin [0]) ;
-    Li = (Long *) mxGetIr (pargin [0]) ;
+    Lp = (int64_t *) mxGetJc (pargin [0]) ;
+    Li = (int64_t *) mxGetIr (pargin [0]) ;
     Lx = mxGetPr (pargin [0]) ;
 
     /* allocate the CHOLMOD symbolic L */

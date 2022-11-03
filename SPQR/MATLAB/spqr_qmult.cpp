@@ -2,6 +2,9 @@
 // === spqr_qmult mexFunction ==================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 #include "spqr_mx.hpp"
 
 //  Multiply Q times X, where Q is stored as a struct, in Householder form.
@@ -32,9 +35,9 @@ void mexFunction
 )
 {
     mxArray *Hmatlab, *Tau, *P ;
-    Long *HPinv, *Yp, *Yi ;
+    int64_t *HPinv, *Yp, *Yi ;
     double *Hx, *Xx, *Tx, *Px, dummy ;
-    Long m, n, k, nh, nb, p, i, method, mh, gotP, X_is_sparse, is_complex, hnz,
+    int64_t m, n, k, nh, nb, p, i, method, mh, gotP, X_is_sparse, is_complex, hnz,
         tnz, xnz, inuse, count ;
     cholmod_sparse *Ysparse, *H, Hmatrix, *Xsparse, Xsmatrix ;
     cholmod_dense *Ydense, *Xdense, Xdmatrix, *HTau, HTau_matrix ;
@@ -142,7 +145,7 @@ void mexFunction
     }
     else
     {
-        method = (Long) mxGetScalar (pargin [2]) ;
+        method = (int64_t) mxGetScalar (pargin [2]) ;
         if (method < 0 || method > 3)
         {
             mexErrMsgIdAndTxt ("QR:invalidInput", "invalid method") ;
@@ -215,11 +218,11 @@ void mexFunction
             mexErrMsgIdAndTxt ("QR:invalidInput",
                 "P must be a vector of length equal to # rows of H") ;
         }
-        HPinv = (Long *) cholmod_l_malloc (mh, sizeof (Long), cc) ;
+        HPinv = (int64_t *) cholmod_l_malloc (mh, sizeof (int64_t), cc) ;
         Px = mxGetPr (P) ;
         for (i = 0 ; i < mh ; i++)
         {
-            HPinv [i] = (Long) (Px [i] - 1) ;
+            HPinv [i] = (int64_t) (Px [i] - 1) ;
             if (HPinv [i] < 0 || HPinv [i] >= mh)
             {
                 mexErrMsgIdAndTxt ("QR:invalidInput", "invalid permutation") ;
@@ -266,7 +269,7 @@ void mexFunction
     // free workspace
     // -------------------------------------------------------------------------
 
-    cholmod_l_free (mh, sizeof (Long), HPinv, cc) ;
+    cholmod_l_free (mh, sizeof (int64_t), HPinv, cc) ;
 
     if (is_complex)
     {

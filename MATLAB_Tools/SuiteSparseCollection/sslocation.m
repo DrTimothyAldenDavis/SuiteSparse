@@ -6,7 +6,9 @@ function topdir = sslocation
 %
 % See also ssget.
 
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 % on backslash.cse.tamu.edu:
 topdir = '/archive/davis/SuiteSparseCollection/' ;

@@ -15,4 +15,5 @@
 % Example:
 %   help ssget
 
-% Copyright 2019, Timothy A. Davis
+% ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/test_ops ======================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/test_ops: test CHOLMOD matrix operators
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Test CHOLMOD matrix operators. */
 
@@ -839,7 +840,7 @@ double test_ops (cholmod_sparse *A)
 #ifndef NPARTITION
     if (A != NULL && A->nrow == A->ncol)
     {
-	SuiteSparse_long nc, nc_new ;
+	int64_t nc, nc_new ;
 	Int cnz, csep, save2 ;
 	Int *Cnw, *Cew, *Cmember, *CParent, *Perm ;
 	double save1 ;

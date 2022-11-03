@@ -1,7 +1,11 @@
-#!/bin/csh
+#!/bin/bash
+# CXSparse/Tcov/covs
+# CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 echo '================================================================='
-foreach file (*.?cov)
+for file in $@
+do
         echo $file
         grep "#####" $file
         echo '================================================================='
-        end
+done

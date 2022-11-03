@@ -12,4 +12,5 @@ without SPQR; in this case, the COD for sparse matrices is not used.  This has
 no effect on the use of this method for full-rank matrices, since COD is used
 only for rank-deficient matrices.
 
-Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+SPDX-License-Identifier: BSD-3-clause

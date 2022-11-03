@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_updown_mex: sparse Cholesky update/downdate
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_updown: sparse Cholesky update/downdate (rank-1 or multiple rank) */
 void mexFunction
@@ -8,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT ignore, j, k, n, lnz, *parent, sigma = 1, cp [2], ok ;
+    int64_t ignore, j, k, n, lnz, *parent, sigma = 1, cp [2], ok ;
     char sigma_string [20] ;
     if (nargout > 1 || nargin < 3 || nargin > 4)
     {
@@ -63,7 +66,7 @@ void mexFunction
         /* return new L */ 
         pargout [0] = cs_cl_mex_put_sparse (&L) ;
 
-        cs_free (C->x) ;        /* free complex copy of C */
+        cs_cl_free (C->x) ;        /* free complex copy of C */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;
 #endif

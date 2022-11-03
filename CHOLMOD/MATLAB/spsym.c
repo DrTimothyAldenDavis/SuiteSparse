@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/spsym mexFunction ===================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/spsym: MATLAB interface to CHOLMOD sparse symmetry metrics
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* [result xmatched pmatched nzoffdiag nzdiag] = spsym (A, quick).
  * See the spsym.m file for a description of what it computes.
@@ -25,7 +25,7 @@ void mexFunction
     double dummy = 0 ;
     cholmod_sparse Amatrix, *A ;
     cholmod_common Common, *cm ;
-    Long result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
+    int64_t result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 

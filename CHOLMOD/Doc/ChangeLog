@@ -1,3 +1,13 @@
+Nov 4, 2022: version 4.0.0
+
+    * using CMake build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.
+    * cholmod.h: single include file for all Modules
+    * BLAS/LAPACK: relying on SuiteSparse_config and CMake to find and link
+        with the BLAS and LAPACK libraries
+    * libcholmod_cuda.so: CUDA support split into a separate library.
+
 June 30, 2020: no change to version number
 
     * minor update to MATLAB tests: no change to compiled library,
@@ -82,8 +92,8 @@ July 18, 2014: version 3.0.1
         CHOLMOD is compiled on the GPU
     * added cholmod_rowfac_mask2 function for LPDASA
     * to test the GPU, use 'make big' in CHOLMOD/Demo.  You will need to first
-        download the GHS_psdef/audikw_1.mtx from the UF collection:
-        http://www.cise.ufl.edu/research/sparse/matrices/GHS_psdef/audikw_1.html
+        download the GHS_psdef/audikw_1.mtx:
+        http://sparse.tamu.edu/GHS_psdef/audikw_1
 
 March 26, 2014: version 3.0.0 (beta)
 

@@ -1,9 +1,11 @@
-/* ========================================================================== */
-/* === RBio/RBio/RBread.c: MATLAB mexFunction for reading R/B file ========== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/RBio/RBread.c: MATLAB mexFunction for reading R/B file
+//------------------------------------------------------------------------------
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
-   Refer to RBio/Doc/license.txt for the RBio license. */
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
    [A Z title key mtype] = RBread (filename)
@@ -21,7 +23,6 @@
 #define LEN 1024
 #define TRUE (1)
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -31,10 +32,10 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long *Ap, *Ai, *Zp, *Zi ;
+    int64_t *Ap, *Ai, *Zp, *Zi ;
     double *Ax, *Az, *Zx ;
-    Long p, j, build_upper, zero_handling, nrow, ncol, mkind, skind, asize, znz,
-        status ;
+    int64_t p, j, build_upper, zero_handling, nrow, ncol, mkind, skind, asize,
+        znz, status ;
     char filename [LEN+1], title [73], key [9], mtype [4] ;
 
     /* ---------------------------------------------------------------------- */

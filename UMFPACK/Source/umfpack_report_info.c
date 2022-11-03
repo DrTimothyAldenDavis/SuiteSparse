@@ -1,14 +1,14 @@
-/* ========================================================================== */
-/* === UMFPACK_report_info ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_info: print Info array
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
-    User-callable.  Prints the Info array.  See umfpack_report_info.h for
+    User-callable.  Prints the Info array.  See umfpack.h for
     details.
 */
 
@@ -115,19 +115,19 @@ GLOBAL void UMFPACK_report_info
 
 #ifdef DINT
     PRINTF (("    matrix entry defined as:          double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef DLONG
     PRINTF (("    matrix entry defined as:          double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef ZLONG
     PRINTF (("    matrix entry defined as:          double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -140,7 +140,7 @@ GLOBAL void UMFPACK_report_info
     PRINTF (("none.  UMFPACK will be slow.\n")) ;
 #else
     PRINTF (("Fortran BLAS.  size of BLAS integer: "ID"\n",
-	(Int) (sizeof (BLAS_INT)))) ;
+	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
 #endif
 
     PRINTF (("    MATLAB:                           ")) ;
@@ -176,9 +176,9 @@ GLOBAL void UMFPACK_report_info
     PRINT_INFO ("    memory usage reported in:         "ID"-byte Units\n",
 	(Int) Info [UMFPACK_SIZE_OF_UNIT]) ;
 
-    PRINT_INFO ("    size of int:                      "ID" bytes\n",
+    PRINT_INFO ("    size of int32_t:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_INT]) ;
-    PRINT_INFO ("    size of SuiteSparse_long:         "ID" bytes\n",
+    PRINT_INFO ("    size of int64_t:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_LONG]) ;
     PRINT_INFO ("    size of pointer:                  "ID" bytes\n",
 	(Int) Info [UMFPACK_SIZE_OF_POINTER]) ;
@@ -321,7 +321,7 @@ GLOBAL void UMFPACK_report_info
         Info [UMFPACK_ORDERING_USED] != UMFPACK_ORDERING_GIVEN)
     {
 	double dmax = Info [UMFPACK_SYMMETRIC_DMAX] ;
-	PRINTF (("    AMD statistics, for strict diagonal pivoting:\n")) ;
+	PRINTF (("    ordering statistics, for strict diagonal pivoting:\n")) ;
 	PRINT_INFO ("        est. flops for LU factorization:           %.5e\n",
 	    Info [UMFPACK_SYMMETRIC_FLOPS]) ;
 	PRINT_INFO ("        est. nz in L+U (incl. diagonal):           %.0f\n",

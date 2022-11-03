@@ -1,22 +1,22 @@
-/* ========================================================================== */
-/* === UMFPACK_col_to_triplet =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_col_to_triplet: convert CSC sparse to triplet
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User callable.  Converts a column-oriented input matrix to triplet form by
     constructing the column indices Tj from the column pointers Ap.  The matrix
-    may be singular.  See umfpack_col_to_triplet.h for details.
+    may be singular.  See umfpack.h for details.
 
 */
 
 #include "umf_internal.h"
 
-GLOBAL Int UMFPACK_col_to_triplet
+GLOBAL int UMFPACK_col_to_triplet
 (
     Int n_col,
     const Int Ap [ ],

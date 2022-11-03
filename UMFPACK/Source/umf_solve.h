@@ -1,11 +1,16 @@
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_solve.h
+//------------------------------------------------------------------------------
+
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 
 GLOBAL Int UMF_solve
 (
-    Int sys,
+    int sys,
     const Int Ap [ ],
     const Int Ai [ ],
     const double Ax [ ],

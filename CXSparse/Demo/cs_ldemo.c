@@ -1,5 +1,9 @@
+// CSparse/Demo/cs_idemo: demo program for CXSparse (int64_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+#define CS_LONG
 #include "cs.h"
-/* test real/complex conversion routines (cs_long_t version) */
+/* test real/complex conversion routines (int64_t version) */
 int main (void)
 {
     cs_cl *T, *A, *A1, *A2, *B ;

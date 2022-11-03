@@ -1,9 +1,12 @@
+// CSparse/Demo/cs_cl_demo: demo utilities for CXSparse (complex int64_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_cl_demo.h"
 #include <time.h>
 /* 1 if A is square & upper tri., -1 if square & lower tri., 0 otherwise */
-static cs_long_t is_sym (cs_cl *A)
+static int64_t is_sym (cs_cl *A)
 {
-    cs_long_t is_upper, is_lower, j, p, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i ;
+    int64_t is_upper, is_lower, j, p, n = A->n, m = A->m, *Ap = A->p, *Ai = A->i ;
     if (m != n) return (0) ;
     is_upper = 1 ;
     is_lower = 1 ;
@@ -19,7 +22,7 @@ static cs_long_t is_sym (cs_cl *A)
 }
 
 /* true for off-diagonal entries */
-static cs_long_t dropdiag (cs_long_t i, cs_long_t j, cs_complex_t aij, void *other) { return (i != j) ;}
+static int64_t dropdiag (int64_t i, int64_t j, cs_complex_t aij, void *other) { return (i != j) ;}
 
 /* C = A + triu(A,1)' */
 static cs_cl *make_sym (cs_cl *A)
@@ -33,26 +36,26 @@ static cs_cl *make_sym (cs_cl *A)
 }
 
 /* create a right-hand side */
-static void rhs (cs_complex_t *x, cs_complex_t *b, cs_long_t m)
+static void rhs (cs_complex_t *x, cs_complex_t *b, int64_t m)
 {
-    cs_long_t i ;
+    int64_t i ;
     for (i = 0 ; i < m ; i++) b [i] = 1 + ((double) i) / m ;
     for (i = 0 ; i < m ; i++) x [i] = b [i] ;
 }
 
 /* infinity-norm of x */
-static double norm (cs_complex_t *x, cs_long_t n)
+static double norm (cs_complex_t *x, int64_t n)
 {
-    cs_long_t i ;
+    int64_t i ;
     double normx = 0 ;
     for (i = 0 ; i < n ; i++) normx = CS_MAX (normx, cabs (x [i])) ;
     return (normx) ;
 }
 
 /* compute residual, norm(A*x-b,inf) / (norm(A,1)*norm(x,inf) + norm(b,inf)) */
-static void print_resid (cs_long_t ok, cs_cl *A, cs_complex_t *x, cs_complex_t *b, cs_complex_t *resid)
+static void print_resid (int64_t ok, cs_cl *A, cs_complex_t *x, cs_complex_t *b, cs_complex_t *resid)
 {
-    cs_long_t i, m, n ;
+    int64_t i, m, n ;
     if (!ok) { printf ("    (failed)\n") ; return ; }
     m = A->m ; n = A->n ;
     for (i = 0 ; i < m ; i++) resid [i] = -b [i] ;  /* resid = -b */
@@ -64,7 +67,7 @@ static void print_resid (cs_long_t ok, cs_cl *A, cs_complex_t *x, cs_complex_t *
 static double tic (void) { return (clock () / (double) CLOCKS_PER_SEC) ; }
 static double toc (double t) { double s = tic () ; return (CS_MAX (0, s-t)) ; }
 
-static void print_order (cs_long_t order)
+static void print_order (int64_t order)
 {
     switch (order)
     {
@@ -75,11 +78,11 @@ static void print_order (cs_long_t order)
     }
 }
 
-/* read a problem from a file; use %g for integers to avoid cs_long_t conflicts */
+/* read a problem from a file; use %g for integers to avoid int64_t conflicts */
 problem *get_problem (FILE *f, double tol)
 {
     cs_cl *T, *A, *C ;
-    cs_long_t sym, m, n, mn, nz1, nz2 ;
+    int64_t sym, m, n, mn, nz1, nz2 ;
     problem *Prob ;
     Prob = cs_cl_calloc (1, sizeof (problem)) ;
     if (!Prob) return (NULL) ;
@@ -121,12 +124,12 @@ problem *free_problem (problem *Prob)
 }
 
 /* solve a linear system using Cholesky, LU, and QR, with various orderings */
-cs_long_t demo2 (problem *Prob)
+int64_t demo2 (problem *Prob)
 {
     cs_cl *A, *C ;
     cs_complex_t *b, *x, *resid ;
     double t, tol ;
-    cs_long_t k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
+    int64_t k, m, n, ok, order, nb, ns, *r, *s, *rr, sprank ;
     cs_cld *D ;
     if (!Prob) return (0) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
@@ -182,7 +185,7 @@ cs_long_t demo2 (problem *Prob)
 } 
 
 /* free workspace for demo3 */
-static cs_long_t done3 (cs_long_t ok, cs_cls *S, cs_cln *N, cs_complex_t *y, cs_cl *W, cs_cl *E, cs_long_t *p)
+static int64_t done3 (int64_t ok, cs_cls *S, cs_cln *N, cs_complex_t *y, cs_cl *W, cs_cl *E, int64_t *p)
 {
     cs_cl_sfree (S) ;
     cs_cl_nfree (N) ;
@@ -194,15 +197,16 @@ static cs_long_t done3 (cs_long_t ok, cs_cls *S, cs_cln *N, cs_complex_t *y, cs_
 }
 
 /* Cholesky update/downdate */
-cs_long_t demo3 (problem *Prob)
+int64_t demo3 (problem *Prob)
 {
     cs_cl *A, *C, *W = NULL, *WW, *WT, *E = NULL, *W2 ;
-    cs_long_t n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
+    int64_t n, k, *Li, *Lp, *Wi, *Wp, p1, p2, *p = NULL, ok ;
     cs_complex_t *b, *x, *resid, *y = NULL, *Lx, *Wx, s ;
     double t, t1 ;
     cs_cls *S = NULL ;
     cs_cln *N = NULL ;
-    if (!Prob || !Prob->sym || Prob->A->n == 0) return (0) ;
+    if (!Prob) return (0) ;
+    if (!Prob->sym || Prob->A->n == 0) return (1) ;
     A = Prob->A ; C = Prob->C ; b = Prob->b ; x = Prob->x ; resid = Prob->resid;
     n = A->n ;
     if (!Prob->sym || n == 0) return (1) ;

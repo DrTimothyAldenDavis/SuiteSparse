@@ -1,3 +1,13 @@
+//------------------------------------------------------------------------------
+// KLU/Demo/klu_simple: simple demo program for KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
+
 /* klu_simple: a simple KLU demo; solution is x = (1,2,3,4,5) */
 
 #include <stdio.h>

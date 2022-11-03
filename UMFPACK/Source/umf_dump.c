@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_dump ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_dump.c: debug routines for UMFPACK
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* These routines, and external variables, are used only when debugging. */
 /* If debugging is disabled (for normal operation) then this entire file */
@@ -1086,14 +1086,14 @@ GLOBAL void UMF_dump_start
     DEBUG2 (("sizeof: (bytes / int / Units) \n")) ;
     DEBUG2 (("sizeof (Int)           %u %u %u\n",
     sizeof (Int), sizeof (Int) / sizeof (int), UNITS (Int, 1) )) ;
-    DEBUG2 (("sizeof (int)           %u %u %u\n",
-    sizeof (int), sizeof (int) / sizeof (int), UNITS (int, 1) )) ;
+    DEBUG2 (("sizeof (int32_t)       %u %u %u\n",
+    sizeof (int32_t), sizeof (int32_t) / sizeof (int32_t), UNITS (int32_t, 1) )) ;
     DEBUG2 (("sizeof (size_t)        %u %u %u\n",
     sizeof (size_t), sizeof (size_t) / sizeof (size_t), UNITS (size_t, 1) )) ;
-    DEBUG2 (("sizeof (SuiteSparse_long)       %u %u %u\n",
-    sizeof (SuiteSparse_long),
-    sizeof (SuiteSparse_long) / sizeof (SuiteSparse_long),
-    UNITS (SuiteSparse_long, 1)));
+    DEBUG2 (("sizeof (int64_t)       %u %u %u\n",
+    sizeof (int64_t),
+    sizeof (int64_t) / sizeof (int64_t),
+    UNITS (int64_t, 1)));
     DEBUG2 (("sizeof (double)        %u %u %u\n",
     sizeof (double), sizeof (double) / sizeof (int), UNITS (double, 1) )) ;
     DEBUG2 (("sizeof (Unit)          %u %u %u\n",

@@ -11,8 +11,9 @@ function ssexport (list, check, tmp)
 %
 % See also ssget, sswrite, RBio, mwrite.
 
-
-% Copyright 2006-2019, Timothy A. Davis
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 %-------------------------------------------------------------------------------
 % get the input arguments

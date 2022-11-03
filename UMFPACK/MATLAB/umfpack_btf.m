@@ -12,7 +12,8 @@ function [x, info] = umfpack_btf (A, b, Control)
 %
 % See also umfpack, umfpack_details, dmperm
 
-% Copyright 1995-2009 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 2)
     help umfpack_btf

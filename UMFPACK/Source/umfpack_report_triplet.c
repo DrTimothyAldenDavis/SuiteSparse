@@ -1,20 +1,20 @@
-/* ========================================================================== */
-/* === UMFPACK_report_triplet =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_triplet: print a sparse matrix in triplet form
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Prints a matrix in triplet form.  See
-    umfpack_report_triplet.h for details.
+    umfpack.h for details.
 */
 
 #include "umf_internal.h"
 
-GLOBAL Int UMFPACK_report_triplet
+GLOBAL int UMFPACK_report_triplet
 (
     Int n_row,
     Int n_col,

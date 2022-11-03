@@ -63,9 +63,10 @@ function [p, Info] = amd2 (A, Control)					    %#ok
 %
 % See also AMD, COLMMD, COLAMD, COLPERM, SYMAMD, SYMMMD, SYMRCM.
 
-% Copyright 1994-2012, Timothy A. Davis, http://www.suitesparse.com,
-% Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.
-%
+% AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+% Iain S. Duff.  All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
+
 %    Acknowledgements: This work was supported by the National Science
 %       Foundation, under grants ASC-9111263, DMS-9223088, and CCR-0203270.
 

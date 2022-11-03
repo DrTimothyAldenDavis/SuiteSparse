@@ -1,3 +1,7 @@
+// CSparse/MATLAB/Test/cs_rowcnt_mex: row counts for sparse Cholesky
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
 /* Compute the row counts of the Cholesky factor L of the matrix A.  Uses
  * the lower triangular part of A. */
 

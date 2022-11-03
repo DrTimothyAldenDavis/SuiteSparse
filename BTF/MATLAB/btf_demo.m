@@ -5,7 +5,9 @@
 %
 % See also btf, dmperm, strongcomp, maxtrans
 
-% Copyright 2004-2007, University of Florida
+% BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Author: Timothy A. Davis.
+% SPDX-License-Identifier: LGPL-2.1+
 
 load west0479 ;
 A = west0479 ;

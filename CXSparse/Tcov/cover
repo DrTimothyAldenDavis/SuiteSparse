@@ -1,9 +1,13 @@
-#!/bin/csh
+#!/bin/bash
 # usage: cover files
+# CXSparse/Tcov/cover
+# CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 echo '================================================================='
-foreach file ($argv[1-])
+for file in $@
+do
         echo $file
         echo '================================================================='
         grep "#####" -A5 -B5 $file
         echo '================================================================='
-        end
+done

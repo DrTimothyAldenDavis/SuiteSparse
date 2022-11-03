@@ -1,18 +1,18 @@
-/* ========================================================================== */
-/* === UMFPACK_get_determinant ============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_get_determinant: compute determinant
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* UMFPACK_get_determinant contributed by David Bateman, Motorola, Paris. */
 
 /*
     User-callable.  From the LU factors, scale factor, and permutation vectors
     held in the Numeric object, calculates the determinant of the matrix A.
-    See umfpack_get_determinant.h for a more detailed description.
+    See umfpack.h for a more detailed description.
 
     Dynamic memory usage:  calls UMF_malloc once, for a total space of
     n integers, and then frees all of it via UMF_free when done.
@@ -32,7 +32,7 @@
 
 /* If the mantissa is too big or too small, rescale it and change exponent */
 
-PRIVATE Int rescale_determinant
+PRIVATE int rescale_determinant
 (
     Entry *d_mantissa,
     double *d_exponent
@@ -76,7 +76,7 @@ PRIVATE Int rescale_determinant
 /* === UMFPACK_get_determinant ============================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_get_determinant
+GLOBAL int UMFPACK_get_determinant
 (
     double *Mx,
 #ifdef COMPLEX

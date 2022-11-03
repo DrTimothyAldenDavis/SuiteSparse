@@ -2,18 +2,14 @@
 // === qrdemo.cpp ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 // A simple C++ demo of SuiteSparseQR.  The comments give the MATLAB equivalent
 // statements.  See also qrdemo.m
 
 #include "SuiteSparseQR.hpp"
 #include <complex>
-
-// SuiteSparseQR uses an integer defined in SuiteSparse_config.h called
-// SuiteSparse_long.  It is a 32-bit integer on a 32-bit platform, and a 64-bit
-// integer on a 64-bit platform.  For most platforms (except Windows),
-// SuiteSparse_long is just "long".
-
-#define Long SuiteSparse_long
 
 // =============================================================================
 // check_residual:  print the relative residual, norm (A*x-b)/norm(x)
@@ -27,9 +23,9 @@ void check_residual
     cholmod_common *cc
 )
 {
-    Long m = A->nrow ;
-    Long n = A->ncol ;
-    Long rnk ;
+    int64_t m = A->nrow ;
+    int64_t n = A->ncol ;
+    int64_t rnk ;
     double rnorm, anorm, xnorm, atrnorm ;
     double one [2] = {1,0}, minusone [2] = {-1,0}, zero [2] = {0,0} ;
     cholmod_dense *r, *atr ;
@@ -78,7 +74,7 @@ int main (int argc, char **argv)
     cholmod_sparse *A ;
     cholmod_dense *X, *B ;
     int mtype ;
-    Long m, n ;
+    int64_t m, n ;
 
     // start CHOLMOD
     cc = &Common ;
@@ -127,7 +123,7 @@ int main (int argc, char **argv)
     {
         SuiteSparseQR_factorization <double> *QR ;
         cholmod_dense *Y ;
-        Long i ;
+        int64_t i ;
         double *Bx ;
 
         // factorize once

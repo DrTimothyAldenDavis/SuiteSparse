@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_amd_mex: approximate minimum degree ordering
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_amd: approximate minimum degree ordering */
 void mexFunction
@@ -9,7 +12,7 @@ void mexFunction
 )
 {
     cs_dl Amatrix, *A ;
-    CS_INT *P, order ;
+    int64_t *P, order ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: p = cs_amd(A,order)") ;

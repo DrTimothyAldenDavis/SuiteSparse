@@ -65,6 +65,15 @@
     }                                            \
 }
 
+#define TEST_CHECK_INNER(method)                 \
+{                                                \
+    info = (method) ;                            \
+    if (info != SLIP_OK)                         \
+    {                                            \
+        break ;                                  \
+    }                                            \
+}
+
 #define TEST_CHECK_FAILURE(method)               \
 {                                                \
     info = (method) ;                            \
@@ -336,9 +345,10 @@ int main( int argc, char* argv[])
                     double pow2_17 = pow(2,17);
                     for (j = 0; j < n; j++)                             // Get B
                     {
-                        TEST_CHECK(SLIP_mpfr_set_d(SLIP_2D(B,j,0,mpfr),
+                        TEST_CHECK_INNER(SLIP_mpfr_set_d(SLIP_2D(B,j,0,mpfr),
                             bxnum[j]/pow2_17, MPFR_RNDN));
                     }
+                    TEST_CHECK (info) ;
                     TEST_CHECK(SLIP_matrix_copy(&b, SLIP_DENSE, SLIP_MPZ,B,
                         option));
                     SLIP_matrix_free (&b, option) ;
@@ -375,19 +385,19 @@ int main( int argc, char* argv[])
                 {
                     if (Ab_type == 0) //MPZ
                     {
-                        TEST_CHECK(SLIP_mpz_set_ui(SLIP_2D(B, j, 0, mpz),
+                        TEST_CHECK_INNER(SLIP_mpz_set_ui(SLIP_2D(B, j, 0, mpz),
                             bxnum3[j]));
                     }
                     else if (Ab_type == 1)// MPQ
                     {
-                        TEST_CHECK(SLIP_mpq_set_ui(SLIP_2D(B,j,0,mpq),
+                        TEST_CHECK_INNER(SLIP_mpq_set_ui(SLIP_2D(B,j,0,mpq),
                             bxnum3[j], bxden3[j]));
                     }
                     else if (Ab_type == 2)// MPFR
                     {
-                        TEST_CHECK(SLIP_mpfr_set_d(SLIP_2D(B,j,0,mpfr),bxnum[j],
+                        TEST_CHECK_INNER(SLIP_mpfr_set_d(SLIP_2D(B,j,0,mpfr),bxnum[j],
                             MPFR_RNDN));
-                        TEST_CHECK(SLIP_mpfr_div_d(SLIP_2D(B,j,0,mpfr),
+                        TEST_CHECK_INNER(SLIP_mpfr_div_d(SLIP_2D(B,j,0,mpfr),
                             SLIP_2D(B,j,0,mpfr), bxden[j], MPFR_RNDN));
                     }
                     else if (Ab_type == 3)// INT64
@@ -399,22 +409,24 @@ int main( int argc, char* argv[])
                         SLIP_2D(B,j,0,fp64) = bxnum[j];
                     }
                 }
+                TEST_CHECK (info) ;
+
                 for (j = 0; j < nz; j++)                          // Get Ax
                 {
                     if (Ab_type == 0)
                     {
-                        TEST_CHECK(SLIP_mpz_set_ui(Ax->x.mpz[j],Axnum3[j]));
+                        TEST_CHECK_INNER(SLIP_mpz_set_ui(Ax->x.mpz[j],Axnum3[j]));
                     }
                     else if (Ab_type == 1)
                     {
-                        TEST_CHECK(SLIP_mpq_set_ui(Ax->x.mpq[j],Axnum3[j],
+                        TEST_CHECK_INNER(SLIP_mpq_set_ui(Ax->x.mpq[j],Axnum3[j],
                             Axden3[j]));
                     }
                     else if (Ab_type == 2)
                     {
-                        TEST_CHECK(SLIP_mpfr_set_d(Ax->x.mpfr[j], Axnum[j],
+                        TEST_CHECK_INNER(SLIP_mpfr_set_d(Ax->x.mpfr[j], Axnum[j],
                             MPFR_RNDN));
-                        TEST_CHECK(SLIP_mpfr_div_d(Ax->x.mpfr[j], Ax->x.mpfr[j],
+                        TEST_CHECK_INNER(SLIP_mpfr_div_d(Ax->x.mpfr[j], Ax->x.mpfr[j],
                             Axden[j], MPFR_RNDN))
                     }
                     else if (Ab_type == 3)
@@ -426,6 +438,7 @@ int main( int argc, char* argv[])
                         Ax->x.fp64[j] = Axnum[j]/Axden[j];
                     }
                 }
+                TEST_CHECK (info) ;
 
                 // successful case
                 TEST_CHECK(SLIP_matrix_copy(&A, SLIP_CSC, SLIP_MPZ, Ax,option));
@@ -485,46 +498,34 @@ int main( int argc, char* argv[])
                     if (kind != 2) {Ax->i[j] = I[j];}
                     // triplet
                     if (kind == 1){  Ax->j[j] = J[j];}
-                    switch (type)
+
+                    if (type == 0) // MPZ
                     {
-                        case 0: // MPZ
-                        {
-                            TEST_CHECK(SLIP_mpz_set_si(Ax->x.mpz[j],
-                                x_int64[j]));
-                        }
-                        break;
-
-                        case 1: // MPQ
-                        {
-                            TEST_CHECK(SLIP_mpq_set_ui(Ax->x.mpq[j],
-                                2*x_int64[j],2));
-                        }
-                        break;
-
-                        case 2: // MPFR
-                        {
-                            TEST_CHECK(SLIP_mpfr_set_d(Ax->x.mpfr[j],
-                                x_doub2[j], MPFR_RNDN));
-                            TEST_CHECK(SLIP_mpfr_div_d(Ax->x.mpfr[j],
-                                Ax->x.mpfr[j], 1, MPFR_RNDN));
-                        }
-                        break;
-
-                        case 3: // INT64
-                        {
-                            Ax->x.int64[j] = x_int64[j];
-                        }
-                        break;
-
-                        case 4: // double
-                        {
-                            Ax->x.fp64[j] = x_doub2[j];
-                        }
-                        break;
-
-                        default: break;
+                        TEST_CHECK_INNER(SLIP_mpz_set_si(Ax->x.mpz[j],
+                            x_int64[j]));
+                    }
+                    else if (type == 1) // MPQ
+                    {
+                        TEST_CHECK_INNER(SLIP_mpq_set_ui(Ax->x.mpq[j],
+                            2*x_int64[j],2));
+                    }
+                    else if (type == 2) // MPFR
+                    {
+                        TEST_CHECK_INNER(SLIP_mpfr_set_d(Ax->x.mpfr[j],
+                            x_doub2[j], MPFR_RNDN));
+                        TEST_CHECK_INNER(SLIP_mpfr_div_d(Ax->x.mpfr[j],
+                            Ax->x.mpfr[j], 1, MPFR_RNDN));
+                    }
+                    else if (type == 3) // INT64
+                    {
+                        Ax->x.int64[j] = x_int64[j];
+                    }
+                    else if (type == 4) // double
+                    {
+                        Ax->x.fp64[j] = x_doub2[j];
                     }
                 }
+                TEST_CHECK (info) ;
                 TEST_CHECK (SLIP_matrix_check (Ax, option));
 
                 // convert to all different type of matrix
@@ -542,18 +543,18 @@ int main( int argc, char* argv[])
                         type1 < 2 ? "MPQ" : type1 < 3 ?  "MPFR" : type1 < 4
                         ? "int64" : "double",type1) ;
 
-                    TEST_CHECK(SLIP_matrix_copy(&A, (SLIP_kind)kind1,
+                    TEST_CHECK_INNER (SLIP_matrix_copy(&A, (SLIP_kind)kind1,
                         (SLIP_type) type1, Ax, option));
 
-                    TEST_CHECK (SLIP_matrix_check (A, NULL));
+                    TEST_CHECK_INNER  (SLIP_matrix_check (A, NULL));
 
                     // just perform once to try some failure cases
                     if (tk == 0 && tk1 == 0)
                     {
                         // fail SLIP_LU_solve
-                        TEST_CHECK(SLIP_matrix_allocate(&b, SLIP_DENSE,
+                        TEST_CHECK_INNER (SLIP_matrix_allocate(&b, SLIP_DENSE,
                             SLIP_MPZ, 1, 1, 1, true, true, option));
-                        TEST_CHECK_FAILURE(SLIP_LU_solve(NULL, b, A, A, A,
+                        TEST_CHECK_INNER (SLIP_LU_solve(NULL, b, A, A, A,
                             b, NULL, NULL, option));
                         SLIP_matrix_free (&b, option) ;
                     }
@@ -561,10 +562,10 @@ int main( int argc, char* argv[])
                     {
                         // test SLIP_matrix_copy with scale
                         SLIP_matrix_free (&A, option) ;
-                        TEST_CHECK (SLIP_mpq_set_ui (Ax->scale, 2, 5)) ;
-                        TEST_CHECK(SLIP_matrix_copy(&A, (SLIP_kind)kind1,
+                        TEST_CHECK_INNER  (SLIP_mpq_set_ui (Ax->scale, 2, 5)) ;
+                        TEST_CHECK_INNER (SLIP_matrix_copy(&A, (SLIP_kind)kind1,
                             (SLIP_type) type1, Ax, option));
-                        TEST_CHECK (SLIP_mpq_set_ui (Ax->scale, 1, 1)) ;
+                        TEST_CHECK_INNER  (SLIP_mpq_set_ui (Ax->scale, 1, 1)) ;
                     }
                     else if (tk == 0 && tk1 == 3)//A = CSC int64
                     {
@@ -591,10 +592,10 @@ int main( int argc, char* argv[])
 
                         // test SLIP_matrix_copy with scale
                         SLIP_matrix_free (&A, option) ;
-                        TEST_CHECK (SLIP_mpq_set_ui (Ax->scale, 5, 2)) ;
-                        TEST_CHECK(SLIP_matrix_copy(&A, (SLIP_kind)kind1,
+                        TEST_CHECK_INNER (SLIP_mpq_set_ui (Ax->scale, 5, 2)) ;
+                        TEST_CHECK_INNER (SLIP_matrix_copy(&A, (SLIP_kind)kind1,
                             (SLIP_type) type1, Ax, option));
-                        TEST_CHECK (SLIP_mpq_set_ui (Ax->scale, 1, 1)) ;
+                        TEST_CHECK_INNER  (SLIP_mpq_set_ui (Ax->scale, 1, 1)) ;
                     }
                     else if (tk == 0 && tk1 == 8) // A= Triplet int64
                     {
@@ -615,7 +616,8 @@ int main( int argc, char* argv[])
                     info = SLIP_OK;
 
                 }
-                TEST_CHECK(info);
+                TEST_CHECK (info) ;
+
                 if (tk == 3)
                 {
                     // fail SLIP_matrix_copy

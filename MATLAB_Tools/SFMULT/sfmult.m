@@ -25,4 +25,7 @@ function y = sfmult (A,x, at,ac, xt,xc, yt,yc)
 % a row or column vector.  At most 2*size(A,1) workspace is required if
 % min(size(x)) is 2.
 
+% SFMULT, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
+
 error ('sfmult mexFunction not found') ;

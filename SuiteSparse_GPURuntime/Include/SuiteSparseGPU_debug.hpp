@@ -2,6 +2,12 @@
 // === SuiteSparse_GPURuntime/Include/SuiteSparseGPU_debug.hpp =================
 // =============================================================================
 
+// SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+// Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 #ifndef SUITESPARSE_GPURUNTIME_DEBUG_HPP
 #define SUITESPARSE_GPURUNTIME_DEBUG_HPP
 

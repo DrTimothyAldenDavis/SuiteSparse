@@ -106,6 +106,14 @@ Mongoose is a graph partitioning library that can quickly compute edge cuts in a
 
 Finding high quality edge cuts quickly is an important part of circuit simulation, parallel and distributed computing, and sparse matrix algorithms.
 
+
+ Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+ Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
+ Mongoose is licensed under Version 3 of the GNU General Public License.
+ Mongoose is also available under other licenses; contact authors for details.
+
+SPDX-License-Identifier: GPL-3.0-only
+
 \subsection{Coarsening and Refinement Framework}
 
 Mongoose uses a coarsening and refinement framework (sometimes referred to as a multilevel framework \cite{HendricksonLeland1995, KarypisKumar1995}). Rather than attempt to compute an edge cut on the input graph directly, Mongoose first coarsens the graph by computing a vertex matching and contracting the graph to form a smaller, but structurally similar, graph.
@@ -165,7 +173,7 @@ Alternatively, Mongoose can be downloaded as a zip archive from the following UR
 Mongoose also appears as a component package of SuiteSparse, \url{http://suitesparse.com}.
 
 \subsection{Prerequisites}
-Mongoose requires CMake 2.8 and any ISO/IEC 14882:1998 compliant C++ compiler. Mongoose has been tested to work with GNU GCC 4.4+ and LLVM Clang 3.5+ on Linux, and Apple Xcode 6.4+ on macOS.
+Mongoose requires CMake 3.18 and any ISO/IEC 14882:1998 compliant C++ compiler. Mongoose has been tested to work with GNU GCC 4.4+ and LLVM Clang 3.5+ on Linux, and Apple Xcode 6.4+ on macOS.
 
 \subsection{Compilation}
 Once downloaded, Mongoose can be compiled using the following commands:\\
@@ -433,7 +441,8 @@ is represented by the following components:
         If \texttt{w} is \texttt{NULL}, then the vertices all have weight 1.
     \end{itemize}
     
-Note that the \texttt{Int} type is generally a 64-bit (long) integer type. It is defined as \texttt{typedef SuiteSparse\_long Int;} which is further defined as \texttt{\#define SuiteSparse\_long long} in SuiteSparse\_config.
+Note that the \texttt{Int} type is generally a 64-bit (long) integer type. It
+is defined as \verb'typedef int64_t Int;'.
 
 \subsubsection{Creating a Graph Manually}
 

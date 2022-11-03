@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_amd: approximate minimum degree
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* clear w */
 static CS_INT cs_wclear (CS_INT mark, CS_INT lemax, CS_INT *w, CS_INT n)

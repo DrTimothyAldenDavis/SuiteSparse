@@ -92,6 +92,7 @@ function result = spsym (A, quick)					    %#ok
 %   returned as zero).  Note that a matched pair, A(i,j) and A(j,i) for i != j,
 %   is counted twice (once per entry).
 
-%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('spsym mexFunction not found') ;

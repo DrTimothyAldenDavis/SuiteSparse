@@ -6,7 +6,8 @@ function ldl_make
 %
 % See also ldlsparse, ldlsymbol
 
-% Copyright 2006-2007 by Timothy A. Davis, http://www.suitesparse.com
+% LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 d = '' ;
 if (~isempty (strfind (computer, '64')))
@@ -18,7 +19,7 @@ if (~verLessThan ('matlab', '8.3.0'))
     d = ['-silent ' d] ;
 end
 
-eval (sprintf ('mex -O %s -DLDL_LONG -I../../SuiteSparse_config -I../Include -output ldlsparse ../Source/ldl.c ldlmex.c', d)) ;
-eval (sprintf ('mex -O %s -DLDL_LONG -I../../SuiteSparse_config -I../Include -output ldlsymbol ../Source/ldl.c ldlsymbolmex.c', d)) ;
+eval (sprintf ('mex -O %s -I../../SuiteSparse_config -I../Include -output ldlsparse ../Source/ldll.c ldlmex.c', d)) ;
+eval (sprintf ('mex -O %s -I../../SuiteSparse_config -I../Include -output ldlsymbol ../Source/ldll.c ldlsymbolmex.c', d)) ;
 fprintf ('LDL successfully compiled.\n') ;
 

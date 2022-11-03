@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_complex ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_complex: complex functions
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* If you convert a matrix that contains uninitialized data, valgrind will
  * complain.  This can occur in a factor L which has gaps (a partial
@@ -15,7 +16,6 @@
  * than is used.  You can safely ignore any of these complaints by valgrind. */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 /* ========================================================================== */
 /* === cholmod_hypot ======================================================== */

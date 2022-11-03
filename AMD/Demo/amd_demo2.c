@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD demo main program (jumbled matrix version) ====================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_demo2: demo program for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com                 */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to AMD.
@@ -16,8 +16,6 @@
  */
 
 #include "amd.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int main (void)
 {
@@ -25,7 +23,7 @@ int main (void)
      * Since AMD operates on A+A', only A(i,j) or A(j,i) need to be specified,
      * or both.  The diagonal entries are optional (some are missing).
      * There are many duplicate entries, which must be removed. */
-    int n = 24, nz,
+    int32_t n = 24, nz,
     Ap [ ] = { 0, 9, 14, 20, 28, 33, 37, 44, 53, 58, 63, 63, 66, 69, 72, 75,
 	      78, 82, 86, 91, 97, 101, 112, 112, 116 },
     Ai [ ] = {
@@ -54,7 +52,7 @@ int main (void)
 	/* column 22: */
 	/* column 23: */    12, 11, 12, 23 } ;
 
-    int P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int32_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
     char A [24][24] ;
 

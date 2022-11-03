@@ -2,6 +2,9 @@
 // === spqr_solve mexFunction ==================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 #include "spqr_mx.hpp"
 
 /*  x = A\b using a sparse QR factorization.
@@ -57,9 +60,9 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long *Bp, *Bi ;
+    int64_t *Bp, *Bi ;
     double *Ax, *Bx, dummy ;
-    Long m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
+    int64_t m, n, k, bncols, p, i, rank, A_complex, B_complex, is_complex,
         anz, bnz ;
     spqr_mx_options opts ;
     cholmod_sparse *A, Amatrix, *Xsparse ; 
@@ -282,8 +285,8 @@ void mexFunction
     {
         // snprintf would be safer, but Windows is oblivious to safety ...
         // (Visual Studio C++ 2008 does not recognize snprintf!)
-        sprintf (msg, "rank deficient. rank = %ld tol = %g\n", rank,
-            cc->SPQR_tol_used) ;
+        sprintf (msg, "rank deficient. rank = %" PRId64 " tol = %g\n",
+            rank, cc->SPQR_tol_used) ;
         mexWarnMsgIdAndTxt ("MATLAB:rankDeficientMatrix", msg) ;
     }
 

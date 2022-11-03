@@ -1,22 +1,21 @@
-/* ========================================================================== */
-/* === umfpack_xx_demo ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Demo/umfpack_xx_demo: C demo for UMFPACK
+//------------------------------------------------------------------------------
+
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :: Do not attempt to compile this file!  It is processed via sed scripts into
 :: four different C demo programs:
 ::
-:: umfpack_di_demo.c:  double precision, int integers
-:: umfpack_dl_demo.c:  double precision, SuiteSparse_long integers
-:: umfpack_zi_demo.c:  complex double precision, int integers
-:: umfpack_zl_demo.c:  complex double precision, SuiteSparse_long integers
+:: umfpack_di_demo.c:  double precision, int32_t integers
+:: umfpack_dl_demo.c:  double precision, int64_t integers
+:: umfpack_zi_demo.c:  complex double precision, int32_t integers
+:: umfpack_zl_demo.c:  complex double precision, int64_t integers
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-/* -------------------------------------------------------------------------- */
-/* UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,                       */
-/* http://www.suitesparse.com. All Rights Reserved.                           */
-/* See ../Doc/License.txt for License.                                        */
-/* -------------------------------------------------------------------------- */
 
 /*
   A demo of UMFPACK:   umfpack_xx_* version.
@@ -71,7 +70,7 @@
 /* -------------------------------------------------------------------------- */
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Int is either int or SuiteSparse_long:
+:: Int is either int32_t or int64_t:
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 static Int n = 5, nz = 12 ;
 static Int Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
@@ -104,7 +103,7 @@ static void error
 
 static double resid
 (
-    Int transpose,
+    int transpose,
     Int Ap [ ],
     Int Ai [ ],
     double Ax [ ]
@@ -170,7 +169,7 @@ int main (int argc, char **argv)
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
-	nzud, do_recip ;
+	nzud, do_recip, *Dmap ;
     void *Symbolic, *Numeric ;
 
     /* ---------------------------------------------------------------------- */
@@ -542,8 +541,9 @@ int main (int argc, char **argv)
     Chain_start = (Int *) malloc ((n+1) * sizeof (Int)) ;
     Chain_maxrows = (Int *) malloc ((n+1) * sizeof (Int)) ;
     Chain_maxcols = (Int *) malloc ((n+1) * sizeof (Int)) ;
+    Dmap = (Int *) malloc ((n+1) * sizeof (Int)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
-	!Chain_maxrows || !Chain_maxcols || !Front_1strow ||
+	!Chain_maxrows || !Chain_maxcols || !Front_1strow || !Dmap ||
 	!Front_leftmostdesc)
     {
 	error ("out of memory") ;
@@ -552,7 +552,7 @@ int main (int argc, char **argv)
     status = umfpack_xx_get_symbolic (&nr, &nc, &n1, &anz, &nfr, &nchains,
 	Pinit, Qinit, Front_npivcol, Front_parent, Front_1strow,
 	Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
-	Symbolic) ;
+	Dmap, Symbolic) ;
 
     if (status < 0)
     {
@@ -778,6 +778,7 @@ int main (int argc, char **argv)
     free (Chain_start) ;
     free (Chain_maxrows) ;
     free (Chain_maxcols) ;
+    free (Dmap) ;
 
     free (Lp) ;
     free (Lj) ;

@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/lsubsolve mexFunction ================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/lsubsolve: MATLAB interface to CHOLMOD solver
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* [x xset] = lsubsolve (L,kind,P,b,system)
  *
@@ -54,12 +54,12 @@ void mexFunction
 )
 {
     double dummy = 0, *Px, *Xsetx ;
-    Long *Lp, *Lnz, *Xp, *Xi, xnz, *Perm, *Lprev, *Lnext, *Xsetp ;
+    int64_t *Lp, *Lnz, *Xp, *Xi, xnz, *Perm, *Lprev, *Lnext, *Xsetp ;
     cholmod_sparse *Bset, Bmatrix, *Xset ;
     cholmod_dense *Bdense, *X, *Y, *E ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long k, j, n, head, tail, xsetlen ;
+    int64_t k, j, n, head, tail, xsetlen ;
     int sys, kind ;
 
     /* ---------------------------------------------------------------------- */
@@ -143,7 +143,7 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
@@ -152,8 +152,8 @@ void mexFunction
     }
 
     /* these pointers are not accessed in cholmod_solve2 */
-    L->prev = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
-    L->next = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
+    L->prev = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
+    L->next = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
     Lprev = L->prev ;
     Lnext = L->next ;
 
@@ -182,12 +182,12 @@ void mexFunction
     else
     {
         L->ordering = CHOLMOD_GIVEN ;
-        L->Perm = cholmod_l_malloc (n, sizeof (Long), cm) ;
+        L->Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
         Perm = L->Perm ;
         Px = mxGetPr (pargin [2]) ;
         for (k = 0 ; k < n ; k++)
         {
-            Perm [k] = ((Long) Px [k]) - 1 ;
+            Perm [k] = ((int64_t) Px [k]) - 1 ;
         }
     }
 

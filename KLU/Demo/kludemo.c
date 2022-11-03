@@ -1,12 +1,17 @@
-/* ========================================================================== */
-/* === KLU DEMO ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Demo/kludemo.c:  demo for KLU (int32_t version)
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Read in a Matrix Market matrix (using CHOLMOD) and solve a linear system. */
 
-#include <math.h>
-#include <stdio.h>
 #include "klu.h"
+#include "klu_cholmod.h"
 
 /* for handling complex matrices */
 #define REAL(X,i) (X [2*(i)])
@@ -207,7 +212,8 @@ static int klu_backslash    /* return 1 if successful, 0 otherwise */
 
 /* Given a sparse matrix A, set up a right-hand-side and solve X = A\b */
 
-static void klu_demo (int n, int *Ap, int *Ai, double *Ax, int isreal)
+static void klu_demo (int n, int *Ap, int *Ai, double *Ax, int isreal,
+    int cholmod_ordering)
 {
     double rnorm ;
     klu_common Common ;
@@ -222,6 +228,15 @@ static void klu_demo (int n, int *Ap, int *Ai, double *Ax, int isreal)
     /* ---------------------------------------------------------------------- */
 
     klu_defaults (&Common) ;
+    int64_t user_data [2] ;
+    if (cholmod_ordering >= 0)
+    {
+        Common.ordering = 3 ;
+        Common.user_order = klu_cholmod ;
+        user_data [0] = 1 ; // symmetric
+        user_data [1] = cholmod_ordering ;
+        Common.user_data = user_data ;
+    }
 
     /* ---------------------------------------------------------------------- */
     /* create a right-hand-side */
@@ -289,7 +304,7 @@ static void klu_demo (int n, int *Ap, int *Ai, double *Ax, int isreal)
         klu_free (X, 2*n, sizeof (double), &Common) ;
         klu_free (R, 2*n, sizeof (double), &Common) ;
     }
-    printf ("peak memory usage: %g bytes\n\n", (double) (Common.mempeak)) ;
+    printf ("peak memory usage: %g bytes\n", (double) (Common.mempeak)) ;
 }
 
 
@@ -317,7 +332,12 @@ int main (void)
         }
         else
         {
-            klu_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL) ;
+            printf ("\ndefault ordering:\n") ;
+            klu_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, -1) ;
+            printf ("\nCHOLMOD AMD ordering:\n") ;
+            klu_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, CHOLMOD_AMD) ;
+            printf ("\nCHOLMOD METIS ordering:\n") ;
+            klu_demo (A->nrow, A->p, A->i, A->x, A->xtype == CHOLMOD_REAL, CHOLMOD_METIS) ;
         }
         cholmod_free_sparse (&A, &ch) ;
     }

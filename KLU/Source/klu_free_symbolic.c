@@ -1,12 +1,18 @@
-/* ========================================================================== */
-/* === KLU_free_symbolic ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_free_symbolic: free the KLU symbolic analysis
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Free the KLU Symbolic object. */
 
 #include "klu_internal.h"
 
-Int KLU_free_symbolic
+int KLU_free_symbolic
 (
     KLU_symbolic **SymbolicHandle,
     KLU_common   *Common

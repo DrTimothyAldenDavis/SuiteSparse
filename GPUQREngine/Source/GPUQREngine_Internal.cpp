@@ -1,12 +1,20 @@
 // =============================================================================
 // === GPUQREngine/Source/GPUQREngine_Internal.cpp =============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // GPUQREngine_Internal is the call-down from the dense and sparse polymorphic
 // wrappers. This code is responsible for maintaining the Scheduler and
 // coordinating the factorization in a main loop.
 //
 // =============================================================================
+
+#ifdef SUITESPARSE_CUDA
 
 #include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Scheduler.hpp"
@@ -86,3 +94,6 @@ QREngineResultCode GPUQREngine_Internal
 
     return QRENGINE_SUCCESS;
 }
+
+#endif
+

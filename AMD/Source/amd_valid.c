@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD_valid =========================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Source/amd_valid: check if a matrix is valid for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* Check if a column-form matrix is valid or not.  The matrix A is
  * n_row-by-n_col.  The row indices of entries in column j are in
@@ -35,7 +35,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL Int AMD_valid
+GLOBAL int AMD_valid
 (
     /* inputs, not modified on output: */
     Int n_row,		/* A is n_row-by-n_col */
@@ -44,7 +44,8 @@ GLOBAL Int AMD_valid
     const Int Ai [ ]	/* row indices of A, of size nz = Ap [n_col] */
 )
 {
-    Int nz, j, p1, p2, ilast, i, p, result = AMD_OK ;
+    Int nz, j, p1, p2, ilast, i, p ;
+    int result = AMD_OK ;
 
     if (n_row < 0 || n_col < 0 || Ap == NULL || Ai == NULL)
     {

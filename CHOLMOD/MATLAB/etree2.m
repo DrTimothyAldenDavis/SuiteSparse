@@ -36,6 +36,7 @@ function [parent, post] = etree2 (A, mode)				    %#ok
 %
 %   See also TREELAYOUT, TREEPLOT, ETREEPLOT, ETREE
 
-%   Copyright 2006-2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('etree2 mexFunction not found') ;

@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_copy ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_copy: copy a matrix
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* C = A, which allocates C and copies A into C, with possible change of
  * stype.  The diagonal can optionally be removed.  The numerical entries
@@ -46,8 +47,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
 
 /* ========================================================================== */
 /* === copy_sym_to_unsym ==================================================== */

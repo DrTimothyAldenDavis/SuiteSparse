@@ -28,6 +28,7 @@ function [G_coarse, A_coarse, map] = safe_coarsen(G, O, A)
 %   See also COARSEN, EDGECUT_OPTIONS.
 
 %   Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
+%   SPDX-License-Identifier: GPL-3.0-only
 
 G_safe = sanitize(G);
 

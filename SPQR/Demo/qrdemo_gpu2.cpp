@@ -2,6 +2,9 @@
 // === qrdemo_gpu2.cpp =========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 // A simple C++ demo of SuiteSparseQR.  The comments give the MATLAB equivalent
 // statements.  See also qrdemo.m
 //
@@ -16,7 +19,7 @@ int main (int argc, char **argv)
 {
     cholmod_sparse *A, *R ;
     cholmod_dense *B, *C ;
-    SuiteSparse_long *E ;
+    int64_t *E ;
     int mtype ;
     long m, n, rnk ;
     size_t total_mem, available_mem ;

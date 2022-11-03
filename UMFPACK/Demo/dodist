@@ -1,0 +1,10 @@
+#!/bin/bash
+# UMFPACK/Demo/dodist
+# UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+#
+# create the umfpack_*_demo.c files from umfpack_xx_demo.c
+sed -f umfpack_di_demo.sed < umfpack_xx_demo.c > umfpack_di_demo.c
+sed -f umfpack_dl_demo.sed < umfpack_xx_demo.c > umfpack_dl_demo.c
+sed -f umfpack_zi_demo.sed < umfpack_xx_demo.c > umfpack_zi_demo.c
+sed -f umfpack_zl_demo.sed < umfpack_xx_demo.c > umfpack_zl_demo.c

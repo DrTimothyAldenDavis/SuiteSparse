@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD_valid ========================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Source/camd_valid: check if a matrix is valid for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* Check if a column-form matrix is valid or not.  The matrix A is
  * n_row-by-n_col.  The row indices of entries in column j are in
@@ -31,7 +31,7 @@
 
 #include "camd_internal.h"
 
-GLOBAL Int CAMD_valid
+GLOBAL int CAMD_valid
 (
     /* inputs, not modified on output: */
     Int n_row,		/* A is n_row-by-n_col */
@@ -40,7 +40,8 @@ GLOBAL Int CAMD_valid
     const Int Ai [ ]	/* row indices of A, of size nz = Ap [n_col] */
 )
 {
-    Int nz, j, p1, p2, ilast, i, p, result = CAMD_OK ;
+    Int nz, j, p1, p2, ilast, i, p ;
+    int result = CAMD_OK ;
     if (n_row < 0 || n_col < 0 || Ap == NULL || Ai == NULL)
     {
 	return (CAMD_INVALID) ;
@@ -87,7 +88,7 @@ GLOBAL Int CAMD_valid
 }
 
 
-GLOBAL Int CAMD_cvalid	/* return TRUE if the Constraint set is valid,
+GLOBAL int CAMD_cvalid	/* return TRUE if the Constraint set is valid,
 			 * FALSE otherwise */
 (
     /* inputs, not modified on output: */

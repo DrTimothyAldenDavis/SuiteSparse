@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_numeric ===================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_numeric: supernodal Cholesky factorization
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Computes the Cholesky factorization of A+beta*I or A*F+beta*I.  Only the
  * the lower triangular part of A+beta*I or A*F+beta*I is accessed.  The
@@ -53,22 +54,18 @@
  * must match.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NSUPERNODAL
-
-#include "cholmod_internal.h"
-#include "cholmod_supernodal.h"
-
-#ifdef GPU_BLAS
-#include "cholmod_gpu.h"
-#endif
 
 /* ========================================================================== */
 /* === TEMPLATE codes for GPU and regular numeric factorization ============= */
 /* ========================================================================== */
 
 #ifdef DLONG
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
+#include "cholmod_gpu_kernels.h"
 #define REAL
 #include "../GPU/t_cholmod_gpu.c"
 #define COMPLEX

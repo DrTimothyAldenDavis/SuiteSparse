@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/solve =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/solve: test CHOLMOD solvers
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Test CHOLMOD for solving various systems of linear equations. */
 
@@ -487,13 +488,13 @@ double solve (cholmod_sparse *A)
 		/* E3 = A3*C3-I */
 		if (isreal)
 		{
-		    BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
-			minusone, E3->x, n) ;
+		    SUITESPARSE_BLAS_dgemm ("N", "N", n, n, n, one, A3->x, n,
+                        C3->x, n, minusone, E3->x, n, cm->blas_ok) ;
 		}
 		else
 		{
-		    BLAS_zgemm ("N", "N", n, n, n, one, A3->x, n, C3->x, n,
-			minusone, E3->x, n) ;
+		    SUITESPARSE_BLAS_zgemm ("N", "N", n, n, n, one, A3->x, n,
+                        C3->x, n, minusone, E3->x, n, cm->blas_ok) ;
 		}
 		OK (cm->blas_ok) ;
 	    }

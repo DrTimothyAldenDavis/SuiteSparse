@@ -4,7 +4,8 @@ function test21
 %   test21
 % See also cholmod_test
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
 fprintf ('test21: test cholmod2 on diagonal or ill-conditioned matrices\n') ;

@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_extract ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_extract: extract the KLU factorization
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Extract KLU factorization into conventional compressed-column matrices.
  * If any output array is NULL, that part of the LU factorization is not
@@ -11,7 +17,7 @@
 
 #include "klu_internal.h"
 
-Int KLU_extract     /* returns TRUE if successful, FALSE otherwise */
+int KLU_extract     /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs: */
     KLU_numeric *Numeric,

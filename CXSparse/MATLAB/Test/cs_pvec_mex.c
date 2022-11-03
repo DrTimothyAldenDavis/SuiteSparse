@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/Test/cs_pvec_mex: permute a dense vector
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* x = b(p) */
 void mexFunction
@@ -8,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, k, *p ;
+    int64_t n, k, *p ;
     double *xx ;
     if (nargout > 1 || nargin != 2)
     {
@@ -21,7 +24,7 @@ void mexFunction
     }
 
     xx = mxGetPr (pargin [1]) ;
-    p = cs_dl_malloc (n, sizeof (CS_INT)) ;
+    p = cs_dl_malloc (n, sizeof (int64_t)) ;
     for (k = 0 ; k < n ; k++) p [k] = xx [k] - 1 ;
 
     if (mxIsComplex (pargin [0]))
@@ -34,7 +37,7 @@ void mexFunction
         x = cs_dl_malloc (n, sizeof (cs_complex_t)) ;
         cs_cl_pvec (p, b, x, n) ;
         pargout [0] = cs_cl_mex_put_double (n, x) ;
-        cs_free (b) ;       /* free copy of complex values */
+        cs_cl_free (b) ;       /* free copy of complex values */
 #endif
     }
     else
@@ -45,5 +48,5 @@ void mexFunction
         x = mxGetPr (pargout [0]) ;
         cs_dl_pvec (p, b, x, n) ;
     }
-    cs_free (p) ;
+    cs_dl_free (p) ;
 }

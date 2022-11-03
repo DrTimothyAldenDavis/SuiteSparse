@@ -1,0 +1,9 @@
+z_*.c
+zz_*.c
+zl_*.c
+l_*.c
+l_*.cu
+*.gcda
+*.gcno
+*.gcov
+timelog.m

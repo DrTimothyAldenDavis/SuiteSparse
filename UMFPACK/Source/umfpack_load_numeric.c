@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK_load_numeric ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_load_numeric: load Numeric object from a a file
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Loads a Numeric object from a file created by
@@ -44,7 +44,7 @@
 /* === UMFPACK_load_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_load_numeric
+GLOBAL int UMFPACK_load_numeric
 (
     void **NumericHandle,
     char *user_filename

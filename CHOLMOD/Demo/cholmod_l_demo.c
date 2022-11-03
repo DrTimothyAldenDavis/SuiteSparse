@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Demo/cholmod_l_demo ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Demo/cholmod_l_demo: demo program for CHOLMOD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Demo Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Read in a matrix from a file, and use CHOLMOD to solve Ax=b if A is
  * symmetric, or (AA'+beta*I)x=b otherwise.  The file format is a simple
@@ -26,8 +28,6 @@
  * Does not use the Modify Module.
  *
  * See cholmod_simple.c for a simpler demo program.
- *
- * SuiteSparse_long is normally defined as long, except for WIN64.
  */
 
 #include "cholmod_demo.h"
@@ -60,7 +60,7 @@ int main (int argc, char **argv)
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
     double *Bx, *Rx, *Xx, *Bz, *Xz, *Rz ;
-    SuiteSparse_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
+    int64_t i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
     int trial, method, L_is_super ;
     int ver [3] ;
     int prefer_zomplex, nmethods ;
@@ -96,7 +96,6 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    CHOLMOD_FUNCTION_DEFAULTS ;     /* just for testing (not required) */
 
     /* cm->useGPU = 1; */
     cm->prefer_zomplex = prefer_zomplex ;
@@ -152,7 +151,7 @@ int main (int argc, char **argv)
            the real and imaginary parts are in separate arrays.  MATLAB
            uses zomplex matrix exclusively. */
         double *Ax = A->x ;
-        SuiteSparse_long nz = cholmod_l_nnz (A, cm) ;
+        int64_t nz = cholmod_l_nnz (A, cm) ;
         printf ("nz: %ld\n", nz) ;
         double *Ax2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         double *Az2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
@@ -400,7 +399,7 @@ int main (int argc, char **argv)
             cholmod_dense *Ywork = NULL, *Ework = NULL ;
             cholmod_dense *X2 = NULL, *B2 = NULL ;
             cholmod_sparse *Bset, *Xset = NULL ;
-            SuiteSparse_long *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
+            int64_t *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
             double *X1x, *X2x, *B2x, err ;
             FILE *timelog = fopen ("timelog.m", "w") ;
             if (timelog) fprintf (timelog, "results = [\n") ;
@@ -610,6 +609,15 @@ int main (int argc, char **argv)
     {
 	cholmod_dense *R2 ;
 
+        // x = A\b
+        cholmod_l_free_dense (&X, cm) ;
+        X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
+
+        // R = B-A*X
+        cholmod_l_free_dense (&R, cm) ;
+        R = cholmod_l_copy_dense (B, cm) ;
+        cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
+
 	/* R2 = A\(B-A*X) */
 	R2 = cholmod_l_solve (CHOLMOD_A, L, R, cm) ;
 	/* compute X = X + A\(B-A*X) */
@@ -620,7 +628,6 @@ int main (int argc, char **argv)
 	    Xx [i] = Xx [i] + Rx [i] ;
 	}
 	cholmod_l_free_dense (&R2, cm) ;
-	cholmod_l_free_dense (&R, cm) ;
 
 	/* compute the new residual, R = B-A*X */
         cholmod_l_free_dense (&R, cm) ;

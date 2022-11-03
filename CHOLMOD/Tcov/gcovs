@@ -1,5 +1,13 @@
-#!/bin/csh
+#!/bin/bash
+
+# ------------------------------------------------------------------------------
+# CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0+
+# ------------------------------------------------------------------------------
+
 # usage: gcovs files
-foreach file ($argv[1-])
-	gcov $file > /dev/null
-	end
+for file in $@
+do
+	gcov -fl $file > /dev/null
+done

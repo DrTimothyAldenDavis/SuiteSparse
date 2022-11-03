@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/Test/lxbpattern mexFunction =========================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/lxbpattern: MATLAB interface for CHOLMOD symbolic x=L\b solve
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Find the nonzero pattern of x=L\b for a sparse vector b.  If numerical
  * cancellation has caused entries to drop in L, then this function may
@@ -33,11 +33,11 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    Long *Lp, *Lnz, *Xp, *Xi, xnz ;
+    int64_t *Lp, *Lnz, *Xp, *Xi, xnz ;
     cholmod_sparse *B, Bmatrix, *X ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long j, n ;
+    int64_t j, n ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -95,7 +95,7 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
@@ -127,8 +127,8 @@ void mexFunction
     /* return result, converting to 1-based */ 
     /* ---------------------------------------------------------------------- */
 
-    Xp = (Long *) X->p ;
-    Xi = (Long *) X->i ;
+    Xp = (int64_t *) X->p ;
+    Xi = (int64_t *) X->i ;
     xnz = Xp [1] ;
     pargout [0] = sputil_put_int (Xi, xnz, 1) ;
 

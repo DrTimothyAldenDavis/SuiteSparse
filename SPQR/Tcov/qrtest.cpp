@@ -2,6 +2,11 @@
 // === qrtest ==================================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // This is an exhaustive test for SuiteSparseQR.  With the right input matrices,
 // it tests each and every line of code in the package.  A malloc wrapper is
 // used that can pretend to run out of memory, to test the out-of-memory
@@ -49,15 +54,17 @@ void qrtest_C
 // === memory testing ==========================================================
 // =============================================================================
 
-Long my_tries = -2 ;     // number of mallocs to allow (-2 means allow all)
-Long my_punt = FALSE ;   // if true, then my_malloc will fail just once
+int64_t my_tries = -2 ;     // number of mallocs to allow (-2 means allow all)
+int64_t my_punt = FALSE ;   // if true, then my_malloc will fail just once
+int64_t save_my_tries = -2 ;
+int64_t save_my_punt = FALSE ;
 
-void set_tries (Long tries)
+void set_tries (int64_t tries)
 {
     my_tries = tries ;
 }
 
-void set_punt (Long punt)
+void set_punt (int64_t punt)
 {
     my_punt = punt ;
 }
@@ -105,7 +112,7 @@ void my_handler (int status, const char *file, int line, const char *msg)
     printf ("ERROR: %d in %s line %d : %s\n", status, file, line, msg) ;
 }
 
-void normal_memory_handler (cholmod_common *cc)
+void normal_memory_handler (cholmod_common *cc, bool free_work)
 {
     SuiteSparse_config.printf_func = printf ;
     SuiteSparse_config.malloc_func = malloc ;
@@ -114,12 +121,12 @@ void normal_memory_handler (cholmod_common *cc)
     SuiteSparse_config.free_func = free ;
 
     cc->error_handler = my_handler ;
-    cholmod_l_free_work (cc) ;
+    if (free_work) cholmod_l_free_work (cc) ;
     my_tries = -2 ;
     my_punt = FALSE ;
 }
 
-void test_memory_handler (cholmod_common *cc)
+void test_memory_handler (cholmod_common *cc, bool free_work)
 {
     SuiteSparse_config.printf_func = NULL ;
     SuiteSparse_config.malloc_func = my_malloc ;
@@ -128,7 +135,7 @@ void test_memory_handler (cholmod_common *cc)
     SuiteSparse_config.free_func = my_free ;
 
     cc->error_handler = NULL ;
-    cholmod_l_free_work (cc) ;
+    if (free_work) cholmod_l_free_work (cc) ;
     my_tries = -2 ;
     my_punt = FALSE ;
 }
@@ -143,16 +150,16 @@ void test_memory_handler (cholmod_common *cc)
 template <typename Entry> cholmod_dense *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
-    Long method,
+    int64_t method,
     cholmod_sparse *H,
     cholmod_dense *Tau,
-    Long *HPinv,
+    int64_t *HPinv,
     cholmod_dense *X,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_dense *Y = NULL ;
@@ -164,8 +171,8 @@ template <typename Entry> cholmod_dense *SPQR_qmult
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -173,7 +180,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, H, Tau, HPinv, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -188,16 +195,16 @@ template <typename Entry> cholmod_dense *SPQR_qmult
 template <typename Entry> cholmod_sparse *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
-    Long method,
+    int64_t method,
     cholmod_sparse *H,
     cholmod_dense *Tau,
-    Long *HPinv,
+    int64_t *HPinv,
     cholmod_sparse *X,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_sparse *Y = NULL ;
@@ -209,8 +216,8 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -218,7 +225,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, H, Tau, HPinv, X, cc);
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -234,14 +241,14 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
 template <typename Entry> cholmod_dense *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
-    Long method,
+    int64_t method,
     SuiteSparseQR_factorization <Entry> *QR,
     cholmod_dense *X,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_dense *Y = NULL ;
@@ -253,8 +260,8 @@ template <typename Entry> cholmod_dense *SPQR_qmult
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -262,7 +269,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, QR, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -276,14 +283,14 @@ template <typename Entry> cholmod_dense *SPQR_qmult
 template <typename Entry> cholmod_sparse *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
-    Long method,
+    int64_t method,
     SuiteSparseQR_factorization <Entry> *QR,
     cholmod_sparse *X,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_sparse *Y = NULL ;
@@ -295,8 +302,8 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -304,7 +311,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
             Y = SuiteSparseQR_qmult <Entry> (method, QR, X, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (Y) ;
 }
@@ -319,14 +326,14 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
 template <typename Entry> cholmod_dense *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
-    Long system,
+    int64_t system,
     SuiteSparseQR_factorization <Entry> *QR,
     cholmod_dense *B,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_dense *X = NULL ;
@@ -338,8 +345,8 @@ template <typename Entry> cholmod_dense *SPQR_solve
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -347,7 +354,7 @@ template <typename Entry> cholmod_dense *SPQR_solve
             X = SuiteSparseQR_solve (system, QR, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -362,14 +369,14 @@ template <typename Entry> cholmod_dense *SPQR_solve
 template <typename Entry> cholmod_sparse *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
-    Long system,
+    int64_t system,
     SuiteSparseQR_factorization <Entry> *QR,
     cholmod_sparse *B,
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_sparse *X = NULL ;
@@ -381,8 +388,8 @@ template <typename Entry> cholmod_sparse *SPQR_solve
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -390,7 +397,7 @@ template <typename Entry> cholmod_sparse *SPQR_solve
             X = SuiteSparseQR_solve (system, QR, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -412,8 +419,8 @@ template <typename Entry> cholmod_dense *SPQR_min2norm
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_dense *X = NULL ;
@@ -425,8 +432,8 @@ template <typename Entry> cholmod_dense *SPQR_min2norm
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -434,7 +441,7 @@ template <typename Entry> cholmod_dense *SPQR_min2norm
             X = SuiteSparseQR_min2norm <Entry> (ordering, tol, A, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -455,8 +462,8 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
     cholmod_common *cc,
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     cholmod_sparse *X = NULL ;
@@ -468,8 +475,8 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -477,7 +484,7 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
             X = SuiteSparseQR_min2norm <Entry> (ordering, tol, A, B, cc) ;
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (X) ;
 }
@@ -506,8 +513,8 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
                             // if 3 use SuiteSparseQR_C_symbolic / _C_numeric
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
     SuiteSparseQR_factorization <Entry> *QR ;
@@ -590,8 +597,8 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -669,7 +676,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
 
             if (cc->status == CHOLMOD_OK) break ;
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
 
     if (QR == NULL) printf ("huh?? split: %d ordering %d tol %g\n", split,
@@ -686,22 +693,22 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
 
 // wrapper for SuiteSparseQR, optionally testing memory allocation
 
-template <typename Entry> Long SPQR_qr
+template <typename Entry> int64_t SPQR_qr
 (
     // arguments for SuiteSparseQR: 
     int ordering,
     double tol,
-    Long econ,
-    Long getCTX,
+    int64_t econ,
+    int64_t getCTX,
     cholmod_sparse *A,
     cholmod_sparse *Bsparse,
     cholmod_dense *Bdense,
     cholmod_sparse **Zsparse,
     cholmod_dense  **Zdense,
     cholmod_sparse **R,
-    Long **E,
+    int64_t **E,
     cholmod_sparse **H,
-    Long **HPinv,
+    int64_t **HPinv,
     cholmod_dense **HTau,
     cholmod_common *cc,
 
@@ -709,11 +716,11 @@ template <typename Entry> Long SPQR_qr
     int use_c_version,      // if TRUE use C version, otherwise use C++
 
     // malloc control
-    Long memory_test,        // if TRUE, test malloc error handling
-    Long memory_punt         // if TRUE, test punt case
+    int64_t memory_test,        // if TRUE, test malloc error handling
+    int64_t memory_punt         // if TRUE, test punt case
 )
 {
-    Long rank ;
+    int64_t rank ;
     if (!memory_test)
     {
         // just call the method directly; no memory testing
@@ -731,8 +738,8 @@ template <typename Entry> Long SPQR_qr
     else
     {
         // test malloc error handling
-        Long tries ;
-        test_memory_handler (cc) ;
+        int64_t tries ;
+        test_memory_handler (cc, true) ;
         my_punt = memory_punt ;
         for (tries = 0 ; my_tries < 0 ; tries++)
         {
@@ -752,7 +759,7 @@ template <typename Entry> Long SPQR_qr
                 break ;
             }
         }
-        normal_memory_handler (cc) ;
+        normal_memory_handler (cc, true) ;
     }
     return (rank) ;
 }
@@ -770,7 +777,7 @@ static unsigned long next = 1 ;
 #define MY_RAND_MAX 32767
 
 // RAND_MAX assumed to be 32767
-Long my_rand (void)
+int64_t my_rand (void)
 {
    next = next * 1103515245 + 12345 ;
    return ((unsigned)(next/65536) % (MY_RAND_MAX + 1)) ;
@@ -786,7 +793,7 @@ unsigned long my_seed (void)
    return (next) ;
 }
 
-Long nrand (Long n)       // return a random Long between 0 and n-1
+int64_t nrand (int64_t n)       // return a random int64_t between 0 and n-1
 {
     return ((n <= 0) ? 0 : (my_rand ( ) % n)) ;
 }
@@ -856,8 +863,8 @@ inline double getimag (Complex x)
 template <typename Entry> cholmod_dense *dense_wrapper
 (
     cholmod_dense *X,
-    Long nrow,
-    Long ncol,
+    int64_t nrow,
+    int64_t ncol,
     Entry *Xx
 )
 {
@@ -881,7 +888,7 @@ template <typename Entry> cholmod_dense *dense_wrapper
 cholmod_sparse *sparse_split
 (
     cholmod_sparse *A,
-    Long part,
+    int64_t part,
     cholmod_common *cc
 )
 {
@@ -889,31 +896,31 @@ cholmod_sparse *sparse_split
     if (!A || A->xtype != CHOLMOD_COMPLEX || A->nz != NULL) return (NULL) ;
     if (! (part == 0 || part == 1)) return (NULL) ;
 
-    Long nz = cholmod_l_nnz (A, cc) ;
+    int64_t nz = cholmod_l_nnz (A, cc) ;
     C = cholmod_l_allocate_sparse (A->nrow, A->ncol, nz, TRUE, TRUE, 0,
         CHOLMOD_REAL, cc) ;
 
-    Long *Ap = (Long *) A->p ;
-    Long *Ai = (Long *) A->i ;
+    int64_t *Ap = (int64_t *) A->p ;
+    int64_t *Ai = (int64_t *) A->i ;
     double *Ax = (double *) A->x ;
 
-    Long *Cp = (Long *) C->p ;
-    Long *Ci = (Long *) C->i ;
+    int64_t *Cp = (int64_t *) C->p ;
+    int64_t *Ci = (int64_t *) C->i ;
     double *Cx = (double *) C->x ;
 
-    Long n = A->ncol ;
+    int64_t n = A->ncol ;
 
-    for (Long k = 0 ; k < n+1 ; k++)
+    for (int64_t k = 0 ; k < n+1 ; k++)
     {
         Cp [k] = Ap [k] ;
     }
 
-    for (Long k = 0 ; k < nz ; k++)
+    for (int64_t k = 0 ; k < nz ; k++)
     {
         Ci [k] = Ai [k] ;
     }
 
-    for (Long k = 0 ; k < nz ; k++)
+    for (int64_t k = 0 ; k < nz ; k++)
     {
         Cx [k] = Ax [2*k + part] ;
     }
@@ -952,8 +959,8 @@ int sparse_merge
     {
         return (FALSE) ;
     }
-    Long nz1 = cholmod_l_nnz (A, cc) ;
-    Long nz2 = cholmod_l_nnz (A_imag, cc) ;
+    int64_t nz1 = cholmod_l_nnz (A, cc) ;
+    int64_t nz2 = cholmod_l_nnz (A_imag, cc) ;
     if (A->xtype != CHOLMOD_REAL || A_imag->xtype != CHOLMOD_REAL || nz1 != nz2)
     {
         return (FALSE) ;
@@ -966,7 +973,7 @@ int sparse_merge
     double *Az = (double *) A_imag->x ;
 
     // merge in the imaginary part from A_imag into A
-    for (Long k = 0 ; k < nz1 ; k++)
+    for (int64_t k = 0 ; k < nz1 ; k++)
     {
         Ax [2*k+1] = Az [k] ;
     }
@@ -1034,43 +1041,43 @@ template <typename Entry> cholmod_sparse *sparse_diff
 template <typename Entry> cholmod_sparse *permute_columns
 (
     cholmod_sparse *A,
-    Long *P,
+    int64_t *P,
     cholmod_common *cc
 ) 
 {
-    Long m = A->nrow ;
-    Long n = A->ncol ;
-    Long nz = cholmod_l_nnz (A, cc) ;
-    Long xtype = spqr_type <Entry> ( ) ;
-    Long *Ap = (Long *) A->p ;
-    Long *Ai = (Long *) A->i ;
+    int64_t m = A->nrow ;
+    int64_t n = A->ncol ;
+    int64_t nz = cholmod_l_nnz (A, cc) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
+    int64_t *Ap = (int64_t *) A->p ;
+    int64_t *Ai = (int64_t *) A->i ;
     Entry *Ax = (Entry *) A->x ;
     cholmod_sparse *C ;
 
     // allocate empty matrix C with space for nz entries
     C = cholmod_l_allocate_sparse (m, n, nz, TRUE, TRUE, 0, xtype, cc) ;
-    Long *Cp = (Long *) C->p ;
-    Long *Ci = (Long *) C->i ;
+    int64_t *Cp = (int64_t *) C->p ;
+    int64_t *Ci = (int64_t *) C->i ;
     Entry *Cx = (Entry *) C->x ;
 
     // construct column pointers for C
-    for (Long k = 0 ; k < n ; k++)
+    for (int64_t k = 0 ; k < n ; k++)
     {
         // column j of A becomes column k of C
-        Long j = P ? P [k] : k ;
+        int64_t j = P ? P [k] : k ;
         Cp [k] = Ap [j+1] - Ap [j] ;
     }
     spqr_cumsum (n, Cp) ;
 
     // copy columns from A to C
-    for (Long k = 0 ; k < n ; k++)
+    for (int64_t k = 0 ; k < n ; k++)
     {
         // copy column k of A into column j of C
-        Long j = P ? P [k] : k ;
-        Long pdest = Cp [k] ;
-        Long psrc = Ap [j] ;
-        Long len = Ap [j+1] - Ap [j] ;
-        for (Long t = 0 ; t < len ; t++)
+        int64_t j = P ? P [k] : k ;
+        int64_t pdest = Cp [k] ;
+        int64_t psrc = Ap [j] ;
+        int64_t len = Ap [j+1] - Ap [j] ;
+        for (int64_t t = 0 ; t < len ; t++)
         {
             Ci [pdest + t] = Ai [psrc + t] ;
             Cx [pdest + t] = Ax [psrc + t] ;
@@ -1181,7 +1188,7 @@ template <typename Entry> double dense_resid
     cholmod_sparse *A,
     double anorm,
     cholmod_dense *X,
-    Long nb,
+    int64_t nb,
     Entry *Bx,
     cholmod_common *cc
 )
@@ -1213,7 +1220,7 @@ template <typename Entry> double check_r_factor
 (
     cholmod_sparse *R,
     cholmod_sparse *A,
-    Long *P,
+    int64_t *P,
     cholmod_common *cc
 )
 {
@@ -1262,7 +1269,7 @@ template <typename Entry> double check_qr
     cholmod_sparse *Q,
     cholmod_sparse *R,
     cholmod_sparse *A,
-    Long *P,
+    int64_t *P,
     double anorm,
     cholmod_common *cc
 )
@@ -1296,20 +1303,20 @@ template <typename Entry> double check_qr
 template <typename Entry> int Rsolve
 (
     // R is n-by-n, upper triangular with zero-free diagonal
-    Long n,
+    int64_t n,
     cholmod_sparse *R,
     Entry *X,       // X is n-by-nx, leading dimension n, overwritten with soln
-    Long nx,
+    int64_t nx,
     cholmod_common *cc
 )
 {
-    // Long n = R->n ;
-    Long *Rp = (Long *) R->p ; 
-    Long *Ri = (Long *) R->i ; 
+    // int64_t n = R->n ;
+    int64_t *Rp = (int64_t *) R->p ; 
+    int64_t *Ri = (int64_t *) R->i ; 
     Entry *Rx = (Entry *) R->x ; 
 
     // check the diagonal
-    for (Long j = 0 ; j < n ; j++)
+    for (int64_t j = 0 ; j < n ; j++)
     {
         if (Rp [j] == Rp [j+1] || Ri [Rp [j+1]-1] != j)
         {
@@ -1319,9 +1326,9 @@ template <typename Entry> int Rsolve
     }
 
     // do the backsolve
-    for (Long k = 0 ; k < nx ; k++)
+    for (int64_t k = 0 ; k < nx ; k++)
     {
-        for (Long j = n-1 ; j >= 0 ; j--)
+        for (int64_t j = n-1 ; j >= 0 ; j--)
         {
             Entry rjj = Rx [Rp [j+1]-1] ;
             if (rjj == (Entry) 0)
@@ -1330,7 +1337,7 @@ template <typename Entry> int Rsolve
                 return (FALSE) ;
             }
             X [j] /= rjj ;
-            for (Long p = Rp [j] ; p < Rp [j+1]-1 ; p++)
+            for (int64_t p = Rp [j] ; p < Rp [j+1]-1 ; p++)
             {
                 X [Ri [p]] -= Rx [p] * X [j] ;
             }
@@ -1351,13 +1358,13 @@ template <typename Entry> cholmod_sparse *create_Q
 (
     cholmod_sparse *H,
     cholmod_dense *HTau,
-    Long *HPinv,
+    int64_t *HPinv,
     cholmod_common *cc
 )
 {
     cholmod_sparse *Q, *I ;
-    Long m = H->nrow ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t m = H->nrow ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     I = cholmod_l_speye (m, m, xtype, cc) ;
     Q = SPQR_qmult <Entry> (1, H, HTau, HPinv, I, cc, m<300, nrand (2)) ;
     cholmod_l_free_sparse (&I, cc) ;
@@ -1375,22 +1382,22 @@ template <typename Entry> double QRsolve
 (
     cholmod_sparse *A,
     double anorm,
-    Long rank,
-    Long method,
+    int64_t rank,
+    int64_t method,
     cholmod_sparse *H,
     cholmod_dense *HTau,
-    Long *HPinv,
+    int64_t *HPinv,
     cholmod_sparse *R,
-    Long *Qfill,
+    int64_t *Qfill,
     cholmod_dense *Bdense,
     cholmod_common *cc
 )
 {
     double one [2] = {1,0}, zero [2] = {0,0}, resid = EMPTY ;
-    Long xtype = spqr_type <Entry> ( ) ;
-    Long n = A->ncol ;
-    Long m = A->nrow ;
-    Long nrhs = Bdense->ncol ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
+    int64_t n = A->ncol ;
+    int64_t m = A->nrow ;
+    int64_t nrhs = Bdense->ncol ;
     Entry *X, *Y = NULL, *B ;
     cholmod_dense *Ydense = NULL ;
     cholmod_dense *Xdense ;
@@ -1421,15 +1428,15 @@ template <typename Entry> double QRsolve
 
     // Y (1:rank) = R (1:rank,1:rank) \ Y (1:rank)
     Y = (Entry *) Ydense->x ;
-    Long ok = Rsolve (rank, R, Y, nrhs, cc) ;
+    int64_t ok = Rsolve (rank, R, Y, nrhs, cc) ;
     // X = E*Y
     if (ok)
     {
-        for (Long kk = 0 ; kk < nrhs ; kk++)
+        for (int64_t kk = 0 ; kk < nrhs ; kk++)
         {
-            for (Long k = 0 ; k < rank ; k++)
+            for (int64_t k = 0 ; k < rank ; k++)
             {
-                Long j = Qfill ? Qfill [k] : k ;
+                int64_t j = Qfill ? Qfill [k] : k ;
                 X [j] = Y [k] ;
             }
             X += n ;
@@ -1455,30 +1462,30 @@ template <typename Entry> double check_qmult
 (
     cholmod_sparse *H,
     cholmod_dense *HTau,
-    Long *HPinv,
-    Long test_errors,
+    int64_t *HPinv,
+    int64_t test_errors,
     cholmod_common *cc
 )
 {
     cholmod_sparse *Q, *QT, *Xsparse, *Ssparse, *Zsparse ;
     cholmod_dense *Xdense, *Zdense, *Sdense, *Ydense ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     Entry *X, *Y, *Z, *S ;
     double err, maxerr = 0 ;
     double one [2] = {1,0}, zero [2] = {0,0} ;
     Entry range = (Entry) 1.0 ;
-    Long k ;
+    int64_t k ;
 
-    Long m = H->nrow ;
+    int64_t m = H->nrow ;
     Q = create_Q <Entry> (H, HTau, HPinv, cc) ;     // construct Q from H
 
     QT = cholmod_l_transpose (Q, 2, cc) ;           // QT = Q'
 
     // compare Q with qmult for sparse and dense X
-    for (Long nx = 0 ; nx < 5 ; nx++)                // # of columns of X
+    for (int64_t nx = 0 ; nx < 5 ; nx++)                // # of columns of X
     {
-        Long xsize = m * nx ;                        // size of X
-        for (Long nz = 1 ; nz <= xsize+1 ; nz *= 16) // # of nonzeros in X
+        int64_t xsize = m * nx ;                        // size of X
+        for (int64_t nz = 1 ; nz <= xsize+1 ; nz *= 16) // # of nonzeros in X
         {
 
             // -----------------------------------------------------------------
@@ -1663,21 +1670,21 @@ template <typename Entry> double check_qmult
 
 template <typename Entry> double check_rc
 (
-    Long rank,
+    int64_t rank,
     cholmod_sparse *R,
     cholmod_sparse *A,
     Entry *B,
     cholmod_dense *X,
-    Long nrhs,
+    int64_t nrhs,
     double anorm,
-    Long *Qfill,
+    int64_t *Qfill,
     cholmod_common *cc
 )
 {
     double resid = EMPTY ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     cholmod_dense *W ;
-    Long n, ok ;
+    int64_t n, ok ;
     Entry *W1, *X1 ;
     if (!R || !X)
     {
@@ -1696,12 +1703,12 @@ template <typename Entry> double check_rc
         // W = (Entry *) cholmod_l_calloc (A->ncol * nrhs, sizeof (Entry), cc) ;
         W = cholmod_l_zeros (A->ncol, nrhs, xtype, cc) ;
         W1 = (Entry *) W->x ;
-        for (Long col = 0 ; col < nrhs ; col++)
+        for (int64_t col = 0 ; col < nrhs ; col++)
         {
-            for (Long k = 0 ; k < rank ; k++)
+            for (int64_t k = 0 ; k < rank ; k++)
             {
-                Long j = Qfill ? Qfill [k] : k ;
-                if (j < (Long) A->ncol) W1 [j] = X1 [k] ;
+                int64_t j = Qfill ? Qfill [k] : k ;
+                if (j < (int64_t) A->ncol) W1 [j] = X1 [k] ;
             }
             W1 += A->ncol ;
             X1 += n ;
@@ -1734,16 +1741,16 @@ template <typename Entry> cholmod_dense *transpose
         printf ("transpose failed!\n") ;
         return (NULL) ;
     }
-    Long m = Xdense->nrow ;
-    Long n = Xdense->ncol ;
-    Long ldx = Xdense->d ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t m = Xdense->nrow ;
+    int64_t n = Xdense->ncol ;
+    int64_t ldx = Xdense->d ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     Ydense = cholmod_l_allocate_dense (n, m, n, xtype, cc) ;
     X = (Entry *) Xdense->x ;
     Y = (Entry *) Ydense->x ;
-    for (Long i = 0 ; i < m ; i++)
+    for (int64_t i = 0 ; i < m ; i++)
     {
-        for (Long j = 0 ; j < n ; j++)
+        for (int64_t j = 0 ; j < n ; j++)
         {
             Y [j+i*n] = spqr_conj (X [i+j*ldx]) ;
         }
@@ -1766,10 +1773,10 @@ template <typename Entry> void qrtest
     cholmod_dense *Cdense, *Xdense, *Bdense, *HTau ; ;
     double tol = DBL_EPSILON, err, resid, maxerr, maxresid [2][2] ;
     double tols [ ] = { SPQR_DEFAULT_TOL, -1, 0, DBL_EPSILON } ;
-    Long n, m, nz, *HPinv, ntol, *Ai, *Ap, k, *Qfill, rank, nb, *Cp, *Ci, econ,
+    int64_t n, m, nz, *HPinv, ntol, *Ai, *Ap, k, *Qfill, rank, nb, *Cp, *Ci, econ,
         which ;
     Entry *B, *Ax, *Cx ;
-    Long xtype = spqr_type <Entry> ( ) ;
+    int64_t xtype = spqr_type <Entry> ( ) ;
     int ordering ;
     Entry range = (Entry) 1.0 ;
 
@@ -1786,8 +1793,8 @@ template <typename Entry> void qrtest
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (Long *) A->p ;
-    Ai = (Long *) A->i ;
+    Ap = (int64_t *) A->p ;
+    Ai = (int64_t *) A->i ;
     Ax = (Entry *) A->x ;
     double anorm = cholmod_l_norm_sparse (A, 1, cc) ;
     anorm = CHECK_NAN (anorm) ;
@@ -1902,7 +1909,7 @@ template <typename Entry> void qrtest
             if (cc->useGPU)
             {
                 // error testing for infeasible GPU memory
-                Long save = cc->gpuMemorySize ;
+                int64_t save = cc->gpuMemorySize ;
                 cc->gpuMemorySize = 1 ;
                 printf ("[ Pretend GPU memory is too small:\n") ;
                 Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
@@ -1955,7 +1962,7 @@ template <typename Entry> void qrtest
             printf ("Resid1 %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
 
             cholmod_l_free_sparse (&Xsparse, cc) ;
-            cholmod_l_free (n+n, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+n, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // X = qrsolve (A,B) where X and B are dense, with memory test
@@ -1981,7 +1988,7 @@ template <typename Entry> void qrtest
             printf ("Resid2 %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
 
             cholmod_l_free_dense (&Xdense, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // X = qrsolve (A,B) where X and B are full and H is kept
@@ -1995,7 +2002,7 @@ template <typename Entry> void qrtest
             cc->SPQR_shrink = 1 ;         // restore default shrink = 1 ;
 
             cholmod_l_free_dense (&HTau, cc) ;
-            cholmod_l_free (m, sizeof (Long), HPinv, cc) ;
+            cholmod_l_free (m, sizeof (int64_t), HPinv, cc) ;
             cholmod_l_free_sparse (&H, cc) ;
 
             // check norm (A*x-b), x and b dense
@@ -2004,7 +2011,7 @@ template <typename Entry> void qrtest
             printf ("Resid3 %d %ld %d : %g\n", m>n, ntol, ordering, resid) ;
 
             cholmod_l_free_dense (&Xdense, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [C,R,E] = qr (A,B) where C is sparse and B is full
@@ -2031,7 +2038,7 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_sparse (&Csparse, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [C,R,E] = qr (A,B) where C and B are full
@@ -2051,7 +2058,7 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_dense (&Cdense, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [C,R,E] = qr (A,B) where C and B are full, simple wrapper
@@ -2067,7 +2074,7 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_dense (&Cdense, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [C,R,E] = qr (A,B) where C and B are sparse, simple wrapper
@@ -2086,7 +2093,7 @@ template <typename Entry> void qrtest
             cholmod_l_free_sparse (&Csparse, cc) ;
             cholmod_l_free_sparse (&Bsparse, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [CT,R,E] = qr (A,B), but do not return R
@@ -2098,7 +2105,7 @@ template <typename Entry> void qrtest
                 cc, FALSE, m < 300, nrand (2)) ;
 
             cholmod_l_free_sparse (&Csparse, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [Q,R,E] = qr (A), Q in Householder form
@@ -2128,8 +2135,8 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_dense (&HTau, cc) ;
             cholmod_l_free_sparse (&H, cc) ;
-            cholmod_l_free (m, sizeof (Long), HPinv, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (m, sizeof (int64_t), HPinv, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qfill, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
 
             // -----------------------------------------------------------------
@@ -2152,7 +2159,7 @@ template <typename Entry> void qrtest
             cholmod_l_free_sparse (&I, cc) ;
             cholmod_l_free_sparse (&R, cc) ;
             cholmod_l_free_sparse (&Q, cc) ;
-            cholmod_l_free (n+m, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+m, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [Q,R,E] = qr (A), non-economy, using simple wrapper
@@ -2176,7 +2183,7 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_sparse (&R, cc) ;
             cholmod_l_free_sparse (&Q, cc) ;
-            cholmod_l_free (n+m, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n+m, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [R,E] = qr (A)
@@ -2191,10 +2198,10 @@ template <typename Entry> void qrtest
             err = check_r_factor <Entry> (R, A, Qfill, cc) ;
             printf ("order %d : R'R-(A*E)'*(A*E), Err8:  %g\n", ordering, err) ;
             maxerr = MAX (maxerr, err) ;
-            Long rank1 = rank ;
+            int64_t rank1 = rank ;
 
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [R,E] = qr (A) using simple wrapper
@@ -2208,7 +2215,7 @@ template <typename Entry> void qrtest
             maxerr = MAX (maxerr, err) ;
 
             cholmod_l_free_sparse (&R, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qfill, cc) ;
 
             // -----------------------------------------------------------------
             // [ ] = qr (A)
@@ -2259,8 +2266,8 @@ template <typename Entry> void qrtest
 
             cholmod_l_free_dense (&HTau, cc) ;
             cholmod_l_free_sparse (&H, cc) ;
-            cholmod_l_free (m, sizeof (Long), HPinv, cc) ;
-            cholmod_l_free (n+nb, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (m, sizeof (int64_t), HPinv, cc) ;
+            cholmod_l_free (n+nb, sizeof (int64_t), Qfill, cc) ;
             cholmod_l_free_dense (&Bdense, cc) ;
 
             // -----------------------------------------------------------------
@@ -2283,8 +2290,8 @@ template <typename Entry> void qrtest
             cholmod_l_free_sparse (&R, cc) ;
             cholmod_l_free_dense (&HTau, cc) ;
             cholmod_l_free_sparse (&H, cc) ;
-            cholmod_l_free (m, sizeof (Long), HPinv, cc) ;
-            cholmod_l_free (n, sizeof (Long), Qfill, cc) ;
+            cholmod_l_free (m, sizeof (int64_t), HPinv, cc) ;
+            cholmod_l_free (n, sizeof (int64_t), Qfill, cc) ;
 
 #ifndef NEXPERT
 
@@ -2568,17 +2575,17 @@ template <typename Entry> void qrtest
     // -------------------------------------------------------------------------
 
     // attempt to permute A to upper triangular form
-    Long *Qtrap ;
+    int64_t *Qtrap ;
     rank = spqr_trapezoidal (n, Ap, Ai, Ax, 0, NULL, FALSE, &Cp, &Ci, &Cx,
         &Qtrap, cc) ;
     printf ("Rank of A, if A*P permutable to upper trapezoidal: %ld\n", rank) ;
     if (Cp != NULL)
     {
         nz = Cp [n] ;
-        cholmod_l_free (n+1, sizeof (Long), Cp, cc) ;
-        cholmod_l_free (nz, sizeof (Long), Ci, cc) ;
+        cholmod_l_free (n+1, sizeof (int64_t), Cp, cc) ;
+        cholmod_l_free (nz, sizeof (int64_t), Ci, cc) ;
         cholmod_l_free (nz, sizeof (Entry), Cx, cc) ;
-        cholmod_l_free (n, sizeof (Long), Qtrap, cc) ;
+        cholmod_l_free (n, sizeof (int64_t), Qtrap, cc) ;
     }
     cholmod_l_free_sparse (&AT, cc) ;
 
@@ -2628,10 +2635,10 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
         fprintf (stderr, "Unable to read matrix\n") ;
         return (1) ;
     }
-    Long m = A->nrow ;
-    Long n = A->ncol ;
+    int64_t m = A->nrow ;
+    int64_t n = A->ncol ;
     fprintf (stderr, "%5ld by %5ld : ", m, n) ;
-    if (sizeof (Long) > sizeof (int) && (m > 10000 || n > 10000))
+    if (sizeof (int64_t) > sizeof (int) && (m > 10000 || n > 10000))
     {
         fprintf (stderr, "(test skipped on 64-bit systems)\n") ;
         cholmod_l_free_sparse (&A, cc) ;
@@ -2651,7 +2658,7 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     printf ("\nCPU tests done ]\n") ;
 
     // test the GPU, if installed
-    #ifdef GPU_BLAS
+    #ifdef SUITESPARSE_CUDA
     cc->useGPU = TRUE ;
     // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
     size_t totmem, availmem ;
@@ -2689,8 +2696,8 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
 int do_matrix2 (int kind, cholmod_sparse *A, cholmod_common *cc)
 {
     double errs [5] = {0,0,0,0,0} ;
-    Long m = A->nrow ;
-    Long n = A->ncol ;
+    int64_t m = A->nrow ;
+    int64_t n = A->ncol ;
 
     // -------------------------------------------------------------------------
     // use it to test SuiteSparseQR
@@ -2780,7 +2787,7 @@ int main (int argc, char **argv)
 
     cc = &Common ;
     cholmod_l_start (cc) ;
-    normal_memory_handler (cc) ;
+    normal_memory_handler (cc, true) ;
 
     if (argc == 1)
     {
@@ -2838,12 +2845,12 @@ int main (int argc, char **argv)
     if (cc->malloc_count != 0)
     {
         nfail++ ;
-        fprintf (stderr, "memory leak: %ld objects\n", (Long) cc->malloc_count);
+        fprintf (stderr, "memory leak: %ld objects\n", (int64_t) cc->malloc_count);
     }
     if (cc->memory_inuse != 0)
     {
         nfail++ ;
-        fprintf (stderr, "memory leak: %ld bytes\n", (Long) cc->memory_inuse) ;
+        fprintf (stderr, "memory leak: %ld bytes\n", (int64_t) cc->memory_inuse) ;
     }
 
     if (nfail == 0)

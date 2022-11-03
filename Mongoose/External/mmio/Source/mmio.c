@@ -11,6 +11,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <inttypes.h>
+#define ID PRId64
 
 #include "mmio.h"
 
@@ -99,7 +101,7 @@ int mm_read_banner(FILE *f, MM_typecode *matcode)
     return 0;
 }
 
-int mm_read_mtx_crd_size(FILE *f, long *M, long *N, long *nz )
+int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz )
 {
     char line[MM_MAX_LINE_LENGTH];
     int num_items_read;
@@ -115,13 +117,13 @@ int mm_read_mtx_crd_size(FILE *f, long *M, long *N, long *nz )
     } while (line[0] == '%');
 
     /* line[] is either blank or has M,N, nz */
-    if (sscanf(line, "%ld %ld %ld", M, N, nz) == 3)
+    if (sscanf(line, "%"ID" %"ID" %"ID"", M, N, nz) == 3)
         return 0;
         
     else
     do
     { 
-        num_items_read = fscanf(f, "%ld %ld %ld", M, N, nz); 
+        num_items_read = fscanf(f, "%"ID" %"ID" %"ID"", M, N, nz); 
         if (num_items_read == EOF) return MM_PREMATURE_EOF;
     }
     while (num_items_read != 3);
@@ -135,24 +137,24 @@ int mm_read_mtx_crd_size(FILE *f, long *M, long *N, long *nz )
 /* use when I[], J[], and val[]J, and val[] are already allocated */
 /******************************************************************/
 
-int mm_read_mtx_crd_data(FILE *f, long M, long N, long nz, long I[], long J[],
+int mm_read_mtx_crd_data(FILE *f, int64_t M, int64_t N, int64_t nz, int64_t I[], int64_t J[],
         double val[], MM_typecode matcode)
 {
     (void)M; // Unused variable
     (void)N; // Unused variable
 
-    long i;
+    int64_t i;
     if (mm_is_complex(matcode))
     {
         for (i=0; i<nz; i++)
-            if (fscanf(f, "%ld %ld %lg %lg", &I[i], &J[i], &val[2*i], &val[2*i+1])
+            if (fscanf(f, "%"ID" %"ID" %lg %lg", &I[i], &J[i], &val[2*i], &val[2*i+1])
                 != 4) return MM_PREMATURE_EOF;
     }
     else if (mm_is_real(matcode) || mm_is_integer(matcode))
     {
         for (i=0; i<nz; i++)
         {
-            if (fscanf(f, "%ld %ld %lg\n", &I[i], &J[i], &val[i])
+            if (fscanf(f, "%"ID" %"ID" %lg\n", &I[i], &J[i], &val[i])
                 != 3) return MM_PREMATURE_EOF;
 
         }
@@ -160,7 +162,7 @@ int mm_read_mtx_crd_data(FILE *f, long M, long N, long nz, long I[], long J[],
     else if (mm_is_pattern(matcode))
     {
         for (i=0; i<nz; i++)
-            if (fscanf(f, "%ld %ld", &I[i], &J[i])
+            if (fscanf(f, "%"ID" %"ID"", &I[i], &J[i])
                 != 2) return MM_PREMATURE_EOF;
     }
     else

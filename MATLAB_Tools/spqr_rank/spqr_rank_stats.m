@@ -23,7 +23,9 @@ function spqr_rank_stats (stats, print_opts)
 %
 % See also spqr_basic, spqr_cod, spqr_pinv, spqr_ssi, spqr_ssp
 
-% Copyright 2012, Leslie Foster and Timothy A Davis
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (nargin == 0)
     stats = 0 ;

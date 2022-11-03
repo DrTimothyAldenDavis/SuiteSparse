@@ -11,15 +11,43 @@
 # simple Makefile for Mongoose, relies on cmake to do the actual build.  Use
 # the CMAKE_OPTIONS argument to this Makefile to pass options to cmake.
 
-JOBS ?= 1
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
+
+JOBS ?= 8
+
+default: library
 
 # build the Mongoose library (static and dynamic) and run a quick test
-default:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; ./bin/demo )
+demo: library
+	( cd build ; ./bin/demo )
 
 # just build the static and dynamic libraries; do not run the demo
 library:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
+
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build ; cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. ; $(MAKE) --jobs=${JOBS} )
+
+# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
+global:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
 
 # the same as "make library"
 static: library
@@ -27,7 +55,7 @@ static: library
 # installs Mongoose to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
 install:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) ; $(MAKE) install )
+	( cd build && $(MAKE) install )
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:
@@ -38,6 +66,8 @@ uninstall:
 	- xargs rm < build/install_manifest.txt
 
 # run the extensive tests
+# FIXME: Mongoose 'make test' fails: unable to download test files
+# because of a change in python.
 test:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
 
@@ -47,6 +77,5 @@ purge: distclean
 
 # remove all files not in the distribution
 distclean:
-	rm -rf build/* Lib/* MATLAB/*.mex*
-	rm -rf SuiteSparse_config/*.o SuiteSparse_config/*.a
+	- $(RM) -rf build/* Version/*.tmp MATLAB/*.o MATLAB/*.mex*
 

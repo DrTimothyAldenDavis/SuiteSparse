@@ -1,5 +1,7 @@
-KLU, Copyright (C) 2004-2013, University of Florida
-by Timothy A. Davis and Ekanathan Palamadai.
+KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+Authors: Timothy A. Davis and Ekanathan Palamadai.
+SPDX-License-Identifier: LGPL-2.1+
+
 KLU is also available under other licenses; contact authors for details.
 http://www.suitesparse.com
 

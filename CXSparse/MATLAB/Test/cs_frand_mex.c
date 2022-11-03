@@ -1,15 +1,18 @@
+// CXSparse/MATLAB/Test/cs_frand_mex: random sparse finite-element matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* A = cs_frand (n,nel,s) creates an n-by-n sparse matrix consisting of nel
  * finite elements, each of which are of size s-by-s with random symmetric
  * nonzero pattern, plus the identity matrix.
  * See also MATLAB/Demo/private/frand.m */
 
-cs_dl *cs_dl_frand (CS_INT n, CS_INT nel, CS_INT s)
+cs_dl *cs_dl_frand (int64_t n, int64_t nel, int64_t s)
 {
-    CS_INT ss = s*s, nz = nel*ss, e, i, j, *P ;
-    cs *A, *T = cs_dl_spalloc (n, n, nz, 1, 1) ;
+    int64_t ss = s*s, nz = nel*ss, e, i, j, *P ;
+    cs_dl *A, *T = cs_dl_spalloc (n, n, nz, 1, 1) ;
     if (!T) return (NULL) ;
-    P = cs_dl_malloc (s, sizeof (CS_INT)) ;
+    P = cs_dl_malloc (s, sizeof (int64_t)) ;
     if (!P) return (cs_dl_spfree (T)) ;
     for (e = 0 ; e < nel ; e++)
     {
@@ -36,8 +39,8 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT n, nel, s ;
-    cs *A, *AT ;
+    int64_t n, nel, s ;
+    cs_dl *A, *AT ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: C = cs_frand(n,nel,s)") ;

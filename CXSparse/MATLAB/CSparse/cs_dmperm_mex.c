@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_dmperm_mex: Dulmage-Mendelsohn permutation
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_dmperm: maximum matching or Dulmage-Mendelsohn permutation. */
 void mexFunction
@@ -11,7 +14,7 @@ void mexFunction
     double seed ;
     cs_dl *A, Amatrix ;
     cs_dld *D ;
-    CS_INT m, n, *jmatch, iseed ;
+    int64_t m, n, *jmatch, iseed ;
     if (nargin < 1 || nargin > 2 || nargout > 6)
     {
         mexErrMsgTxt ("Usage: [p,q,r,s,cc,rr] = cs_dmperm (A,seed)") ;
@@ -25,7 +28,7 @@ void mexFunction
     {
         jmatch = cs_dl_maxtrans (A, iseed) ;                /* max. matching */
         pargout [0] = cs_dl_mex_put_int (jmatch+m, n, 1, 0) ;  /* return imatch */
-        cs_free (jmatch) ;
+        cs_dl_free (jmatch) ;
     }
     else
     {

@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Tcov/null ============================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Tcov/null: test CHOLMOD with NULL and erroneous inputs
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Tcov Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Test CHOLMOD with NULL pointers, and other error cases. */
 
@@ -48,7 +49,7 @@ void null_test (cholmod_common *cn)
 	to_xtype = 0, to_ll = 0, to_super = 0, to_packed = 0, to_monotonic = 0,
 	scale = 0, transpose = 0, option = 0, ordering = 0, prefer = 0,
 	mtype = 0, asym = 0 ;
-    SuiteSparse_long lr = 0, k1 = 0, k2 = 0 ;
+    int64_t lr = 0, k1 = 0, k2 = 0 ;
     size_t j = 0, need = 0, n = 0, mr = 0, nrow = 0, ncol = 0, iworksize = 0,
 	newsize = 0, fsize = 0, d = 0, nzmax = 0, nnew = 0, size = 0,
 	nold = 0, xwork = 0, kstart = 0, kend = 0, nr = 0, nc = 0, len = 0,
@@ -284,9 +285,9 @@ void null_test2 (void)
     /* Test Core Common */
     /* ---------------------------------------------------------------------- */
 
-    ok = CHOLMOD(allocate_work)(Size_max, 1, 1, cm) ;		NOT (ok) ;
-    ok = CHOLMOD(allocate_work)(1, Size_max, 1, cm) ;		NOT (ok) ;
-    ok = CHOLMOD(allocate_work)(1, 1, Size_max, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(SIZE_MAX, 1, 1, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(1, SIZE_MAX, 1, cm) ;		NOT (ok) ;
+    ok = CHOLMOD(allocate_work)(1, 1, SIZE_MAX, cm) ;		NOT (ok) ;
 
     /* free a NULL pointer */
     CHOLMOD(free)(42, sizeof (char), NULL, cm) ;

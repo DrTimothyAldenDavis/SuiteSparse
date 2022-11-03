@@ -1,15 +1,18 @@
+// CXSparse/Source/cs_qr: sparse QR factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* sparse QR factorization [V,beta,pinv,R] = qr (A) */
 csn *cs_qr (const cs *A, const css *S)
 {
     CS_ENTRY *Rx, *Vx, *Ax, *x ;
     double *Beta ;
-    CS_INT i, k, p, m, n, vnz, p1, top, m2, len, col, rnz, *s, *leftmost, *Ap, *Ai,
+    CS_INT i, k, p, n, vnz, p1, top, m2, len, col, rnz, *s, *leftmost, *Ap, *Ai,
         *parent, *Rp, *Ri, *Vp, *Vi, *w, *pinv, *q ;
     cs *R, *V ;
     csn *N ;
     if (!CS_CSC (A) || !S) return (NULL) ;
-    m = A->m ; n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
+    n = A->n ; Ap = A->p ; Ai = A->i ; Ax = A->x ;
     q = S->q ; parent = S->parent ; pinv = S->pinv ; m2 = S->m2 ;
     vnz = S->lnz ; rnz = S->unz ; leftmost = S->leftmost ;
     w = cs_malloc (m2+n, sizeof (CS_INT)) ;            /* get CS_INT workspace */

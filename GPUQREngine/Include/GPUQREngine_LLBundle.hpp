@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Include/GPUQREngine_LLBundle.hpp ============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // LLBundle is a principal class in the GPUQREngine.
 //

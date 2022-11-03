@@ -8,7 +8,8 @@ function spok_install
 %
 % See also sparse, spok, spok_test
 
-% Copyright 2008-2011, Timothy A. Davis, http://www.suitesparse.com
+% SPOK, Copyright (c) 2008-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)

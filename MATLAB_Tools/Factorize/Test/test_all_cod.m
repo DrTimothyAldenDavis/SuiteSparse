@@ -6,7 +6,8 @@ function err = test_all_cod
 %
 % See also test_cod
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 err = 0 ;
 for m = 0:10

@@ -2,6 +2,11 @@
 // === spqr_front ==============================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 /* Given an m-by-n frontal matrix, use Householder reflections to reduce it
    to upper trapezoidal form.  Columns 0:npiv-1 are checked against tol.
 
@@ -138,34 +143,18 @@
 //
 //  This function performs about 3*n+2 flops
 
-inline double spqr_private_larfg (Long n, double *X, cholmod_common *cc)
+inline double spqr_private_larfg (int64_t n, double *X, cholmod_common *cc)
 {
     double tau = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARFG (&N, X, X + 1, &one, &tau) ;
-    }
+    SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
 
 
-inline Complex spqr_private_larfg (Long n, Complex *X, cholmod_common *cc)
+inline Complex spqr_private_larfg (int64_t n, Complex *X, cholmod_common *cc)
 {
     Complex tau = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARFG (&N, X, X + 1, &one, &tau) ;
-    }
+    SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
 
@@ -173,7 +162,7 @@ inline Complex spqr_private_larfg (Long n, Complex *X, cholmod_common *cc)
 template <typename Entry> Entry spqr_private_house  // returns tau
 (
     // inputs, not modified
-    Long n,
+    int64_t n,
 
     // input/output
     Entry *X,           // size n
@@ -204,45 +193,29 @@ template <typename Entry> Entry spqr_private_house  // returns tau
 //  If applied to a single column, this function performs 2*n-1 flops to
 //  compute w, and 2*n+1 to apply it to C, for a total of 4*n flops.
 
-inline void spqr_private_larf (Long m, Long n, double *V, double tau,
-    double *C, Long ldc, double *W, cholmod_common *cc)
+inline void spqr_private_larf (int64_t m, int64_t n, double *V, double tau,
+    double *C, int64_t ldc, double *W, cholmod_common *cc)
 {
-    BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
-    if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDC,ldc)))
-    {
-        cc->blas_ok = FALSE ;
-        
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_DLARF (&left, &M, &N, V, &one, &tau, C, &LDC, W) ;
-    }
+    SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
 }
 
-inline void spqr_private_larf (Long m, Long n, Complex *V, Complex tau,
-    Complex *C, Long ldc, Complex *W, cholmod_common *cc)
+inline void spqr_private_larf (int64_t m, int64_t n, Complex *V, Complex tau,
+    Complex *C, int64_t ldc, Complex *W, cholmod_common *cc)
 {
-    BLAS_INT M = m, N = n, LDC = ldc, one = 1 ;
     char left = 'L' ;
     Complex conj_tau = spqr_conj (tau) ;
-    if (CHECK_BLAS_INT && !(EQ (M,m) && EQ (N,n) && EQ (LDC,ldc)))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        LAPACK_ZLARF (&left, &M, &N, V, &one, &conj_tau, C, &LDC, W) ;
-    }
+    SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
+        cc->blas_ok) ;
 }
 
 
 template <typename Entry> void spqr_private_apply1
 (
     // inputs, not modified
-    Long m,             // C is m-by-n
-    Long n,
-    Long ldc,           // leading dimension of C
+    int64_t m,             // C is m-by-n
+    int64_t n,
+    int64_t ldc,           // leading dimension of C
     Entry *V,           // size m, Householder vector V
     Entry tau,          // Householder coefficient
 
@@ -277,20 +250,20 @@ template <typename Entry> void spqr_private_apply1
 // rank that indicates the first entry in C, which is F (rank,npiv), or 0
 // on error.
 
-template <typename Entry> Long spqr_front
+template <typename Entry> int64_t spqr_front
 (
     // input, not modified
-    Long m,             // F is m-by-n with leading dimension m
-    Long n,
-    Long npiv,          // number of pivot columns
+    int64_t m,             // F is m-by-n with leading dimension m
+    int64_t n,
+    int64_t npiv,          // number of pivot columns
     double tol,         // a column is flagged as dead if its norm is <= tol
-    Long ntol,          // apply tol only to first ntol pivot columns
-    Long fchunk,        // block size for compact WY Householder reflections,
+    int64_t ntol,          // apply tol only to first ntol pivot columns
+    int64_t fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1
 
     // input/output
     Entry *F,           // frontal matrix F of size m-by-n
-    Long *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // for each k = 0:n-1, and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1
@@ -311,7 +284,7 @@ template <typename Entry> Long spqr_front
     Entry tau ;
     double wk ;
     Entry *V ;
-    Long k, t, g, g1, nv, k1, k2, i, t0, vzeros, mleft, nleft, vsize, minchunk,
+    int64_t k, t, g, g1, nv, k1, k2, i, t0, vzeros, mleft, nleft, vsize, minchunk,
         rank ;
 
     // NOTE: inputs are not checked for NULL (except if debugging enabled)
@@ -569,11 +542,10 @@ template <typename Entry> Long spqr_front
         }
     }
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
-        // This cannot occur if the BLAS_INT and the Long are the same integer.
-        // In that case, CHECK_BLAS_INT is FALSE at compile-time, and the
-        // compiler will then remove this as dead code.
+        // This cannot occur if the SUITESPARSE_BLAS_INT and the int64_t are
+        // the same integer.
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (0) ;
     }
@@ -584,21 +556,21 @@ template <typename Entry> Long spqr_front
 
 // =============================================================================
 
-template Long spqr_front <double>
+template int64_t spqr_front <double>
 (
     // input, not modified
-    Long m,             // F is m-by-n with leading dimension m
-    Long n,
-    Long npiv,          // number of pivot columns
+    int64_t m,             // F is m-by-n with leading dimension m
+    int64_t n,
+    int64_t npiv,          // number of pivot columns
     double tol,         // a column is flagged as dead if its norm is <= tol
-    Long ntol,          // apply tol only to first ntol pivot columns
-    Long fchunk,        // block size for compact WY Householder reflections,
+    int64_t ntol,          // apply tol only to first ntol pivot columns
+    int64_t fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1 (in which case the
                         // unblocked code is used).
 
     // input/output
     double *F,          // frontal matrix F of size m-by-n
-    Long *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1
@@ -618,21 +590,21 @@ template Long spqr_front <double>
 
 // =============================================================================
 
-template Long spqr_front <Complex>
+template int64_t spqr_front <Complex>
 (
     // input, not modified
-    Long m,             // F is m-by-n with leading dimension m
-    Long n,
-    Long npiv,          // number of pivot columns
+    int64_t m,             // F is m-by-n with leading dimension m
+    int64_t n,
+    int64_t npiv,          // number of pivot columns
     double tol,         // a column is flagged as dead if its norm is <= tol
-    Long ntol,          // apply tol only to first ntol pivot columns
-    Long fchunk,        // block size for compact WY Householder reflections,
+    int64_t ntol,          // apply tol only to first ntol pivot columns
+    int64_t fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1 (in which case the
                         // unblocked code is used). 
 
     // input/output
     Complex *F,         // frontal matrix F of size m-by-n
-    Long *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1

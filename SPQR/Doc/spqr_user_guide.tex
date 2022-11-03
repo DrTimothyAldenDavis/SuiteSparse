@@ -1,4 +1,5 @@
 \documentclass[12pt]{article}
+\batchmode
 \usepackage{hyperref}
 
 \topmargin -0.5in
@@ -29,7 +30,7 @@ Portions of this work were supported by the National
 Science Foundation, under grants 0203270, 0620286, and 0619080.},
 Sencer Nuri Yeralan, Sanjay Ranka, Wissam Sid-Lakhdar}
 
-\date{VERSION 2.1.0, Mar 6, 2022}
+\input{spqr_version.tex}
 
 %-------------------------------------------------------------------------------
 \begin{document}
@@ -60,6 +61,15 @@ The algorithms used in SuiteSparseQR are discussed in a companion paper,
 \cite{Davis08b}.  This document gives detailed information on the installation
 and use of SuiteSparseQR.
 
+SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+
+SPDX-License-Identifier: GPL-2.0+
+
+The GPU modules in SPQRGPU are under a different copyright:
+
+    SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+    Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
+
 %-------------------------------------------------------------------------------
 \section{Using SuiteSparseQR in MATLAB}
 %-------------------------------------------------------------------------------
@@ -86,23 +96,12 @@ these.  Below are step-by-step instructions for compiling all of SuiteSparse
 (including SuiteSparseQR), and optional instructions on using METIS.
 
 %-------------------------------------------------------------------------------
-\subsubsection{Required instructions for Windows}
-%-------------------------------------------------------------------------------
-
-For Windows, you cannot use the \verb'lcc' compiler that ships with MATLAB; it
-is not a C++ compiler.  To compile SuiteSparseQR, you must obtain a C++
-compiler; Microsoft Visual Studio C++ Express Edition will work fine.  Install
-this compiler from \newline
-\htmladdnormallink{http://www.microsoft.com/express/vc/}{http://www.microsoft.com/express/vc/}
-and then type \verb'mex -setup' in the MATLAB Command Window.
-
-%-------------------------------------------------------------------------------
 \subsubsection{Optional instructions on using METIS for any operating system}
 %-------------------------------------------------------------------------------
 
 SuiteSparse now relies on METIS 5.1.0, which is distributed along with
 SuiteSparse itself.  Its use is optional, however.  If you compile with
-{\tt -DNPARTITION}, or if you delete or move the {\tt SuiteSparse/metis-5.1.0}
+{\tt -DNPARTITION}, or if you delete or move the \verb'SuiteSparse_metis'
 folder, then SuiteSparse will be compiled without it.
 
 %-------------------------------------------------------------------------------
@@ -122,54 +121,16 @@ to ensure your functions have been installed correctly.  Next type the command
 and examine your MATLAB path.  The various SuiteSparse directories have been
 placed in your path.  Click ``save'' to save this path for future MATLAB
 sessions.  If this fails, you do not have permission to modify the
-\verb'pathdef.m' file (it is shared by all users).  An alternative is to type
-the command:
+\verb'pathdef.m' file (it is shared by all users).
+
+SuiteSparse now has a \verb'SuiteSparse_paths.m' that you can add to
+your \verb'startup.m'.
+An alternative is to type the command:
 \begin{verbatim}
     path
 \end{verbatim}
 and cut-and-paste the paths displayed there into your own \verb'startup.m'
-file, prepending the command \verb'addpath' to each line.  For example, if I
-installed SuiteSparse into my home directory (\verb'/home/davis') then my
-\verb'startup.m' file should look like this:
-
-{\footnotesize
-\begin{verbatim}
-    addpath  /home/davis/SuiteSparse/SPQR/MATLAB
-    addpath  /home/davis/SuiteSparse/RBio
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/spok
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/waitmex
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/shellgui
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools/GEE
-    addpath  /home/davis/SuiteSparse/LINFACTOR
-    addpath  /home/davis/SuiteSparse/MESHND
-    addpath  /home/davis/SuiteSparse/UFcollection
-    addpath  /home/davis/SuiteSparse/SSMULT
-    addpath  /home/davis/SuiteSparse/KLU/MATLAB
-    addpath  /home/davis/SuiteSparse/BTF/MATLAB
-    addpath  /home/davis/SuiteSparse/LDL/MATLAB
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/UFget
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/Demo
-    addpath  /home/davis/SuiteSparse/CXSparse/MATLAB/CSparse
-    addpath  /home/davis/SuiteSparse/CAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/CCOLAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/COLAMD/MATLAB
-    addpath  /home/davis/SuiteSparse/AMD/MATLAB
-    addpath  /home/davis/SuiteSparse/CHOLMOD/MATLAB
-    addpath  /home/davis/SuiteSparse/UMFPACK/MATLAB
-    addpath  /home/davis/SuiteSparse
-    addpath  /home/davis/SuiteSparse/MATLAB_Tools
-\end{verbatim}
-}
-
-On a Windows system, I might see paths like this instead in my \verb'startup.m'
-file:
-
-{\footnotesize
-\begin{verbatim}
-    addpath C:\Documents and Settings\davis\My Documents\SuiteSparse\SPQR\MATLAB
-    ...
-\end{verbatim}
-}
+file, prepending the command \verb'addpath' to each line.
 
 Your \verb'startup.m' file should appear in the directory in which MATLAB
 starts.  Failing that, every time you start MATLAB, find your \verb'startup.m'
@@ -236,7 +197,7 @@ which is far sparser than returning \verb'Q' as a sparse matrix.
 \verb'x = spqr_solve (A,B)'     & \verb'x=A\B' \\
 \verb'[x,info] = spqr_solve (A,B,opts)' & as above, with statistics and non-default parameters \\
 \hline
-\verb'Y = spqr_qmult (Q,X,k)'   & computes \verb"Q'*X", \verb"Q*X", \verb"X*Q'", or \verb"X*Q" 
+\verb'Y = spqr_qmult (Q,X,k)'   & computes \verb"Q'*X", \verb"Q*X", \verb"X*Q'", or \verb"X*Q"
 (selected with \verb'k') \\
 \hline
 \end{tabular}
@@ -262,7 +223,7 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     the ``rank-sized'' factorization, where \verb'size(R,1)==nnz(diag(R))==r'.
 
     \item \verb'opts.ordering': a string describing which column ordering
-    method to use.  Let \newline 
+    method to use.  Let \newline
     \verb'[m2 n2]=size(S)' where \verb'S' is obtained by
     removing singletons from \verb'A'.  The singleton permutation places
     \verb'A*P' in the form \verb'[A11 A12 ; 0 S]' where \verb'A11' is upper
@@ -306,7 +267,7 @@ SuiteSparseQR.  Entries not present in \verb'opts' are set to their defaults.
     sparse matrix where \verb'A=Q*R' or \verb"A*P=Q*R".  Using
     \verb"opts.Q='Householder'" returns \verb'Q' as a struct containing the
     Householder reflections applied to \verb'A' to obtain \verb'R', resulting
-    in a far sparser \verb'Q' than the \verb"'matrix'" option.  
+    in a far sparser \verb'Q' than the \verb"'matrix'" option.
 
     \item \verb'opts.permutation': a string describing how \verb'P' is to be
     returned.  The default is \verb"'matrix'", so that \verb"A*P=Q*R".  Using
@@ -433,35 +394,22 @@ reading a matrix from a file, writing a matrix to a file, and many other
 functions.
 
 %-------------------------------------------------------------------------------
-\subsection{Installing the C/C++ library on Linux/Unix}
+\subsection{Installing the C/C++ library}
 %-------------------------------------------------------------------------------
 
-Before you compile the SuiteSparseQR library and demo programs, you may wish to
-edit the \verb'SuiteSparse/SuiteSparse_config/SuiteSparse_config.mk' configuration file.  The
-defaults should be fine on most Linux/Unix systems and on the Mac.
-It automatically detects what system you have and sets compile parameters
-accordingly.
-
-Next, type \verb'make' at
-the Linux/Unix command line, in either the \verb'SuiteSparse' directory (which
+In Linux/MacOs, type \verb'make' at
+the command line, in either the \verb'SuiteSparse' directory (which
 compiles all of SuiteSparse) or in the \verb'SuiteSparse/SPQR' directory (which
 just compiles SuiteSparseQR and the libraries it requires).  SuiteSparseQR will
 be compiled, and a set of simple demos will be run (including the one in the
 next section).
 
-The configuration file defines where the LAPACK and BLAS libraries are to be
-found.  Selecting the right BLAS is critical.  There is no standard naming
-scheme for the name and location of these libraries.  The defaults in the
-\verb'SuiteSparse_config.mk' file use \verb'-llapack' and \verb'-lblas'; the latter may
-link against the standard Fortran reference BLAS, which will not provide
-optimal performance.  For best results, you should use a
-high-performance vendor-supplied BLAS such as the
-Intel MKL.  Selection of LAPACK and
-the BLAS is done with the \verb'LAPACK=' and \verb'BLAS=' lines in the
-\verb'SuiteSparse_config.mk' file.
+The use of \verb'make' is optional.  The top-level \verb'SPQR/Makefile' is
+a simple wrapper that uses \verb'cmake' to do the actual build.
+The \verb'CMakeLists.txt' file can be imported into MS Visual Studio,
+for example.
 
-Four compile-time options can be used to modify how SuiteSparseQR is compiled.
-Select these via the \verb'SPQR_CONFIG=' line in the \verb'SuiteSparse_config.mk' file.
+Two compile-time options can be used to modify how SuiteSparseQR is compiled.
 
 \begin{itemize}
 
@@ -629,23 +577,14 @@ the C-callable functions.
 \end{enumerate}
 
 Most of the packages in SuiteSparse come in multiple versions with different
-sized integers.  The first is the plain C/C++ \verb'int'.  The second the
-\verb'SuiteSparse_long' integer, defined in the
-\verb'SuiteSparse/SuiteSparse_config/SuiteSparse_config.h'
-file.  This integer is \verb'long' except on a Windows-64 platform for which it
-is the  \verb'__int64' type.  The intent of \verb'SuiteSparse_long'
-is that it should be
-32-bits on a 32-bit platform, and 64-bits on a 64-bit platform.  
-
-By contrast, SuiteSparseQR only provides a \verb'SuiteSparse_long' version.
-Most users (except Windows-64) can simply use \verb'long' as the basic integer
-type passed to and returned from SuiteSparseQR.
+sized integers:  \verb'int32_t' and \verb'int64_t'.
+By contrast, SuiteSparseQR only provides a \verb'int64_t' version.
 
 The C/C++ options corresponding to the MATLAB \verb'opts' parameters and the
 contents of the optional \verb'info' output of \verb'spqr_solve' are described
 below.  Let \verb'cc' be the CHOLMOD \verb'Common' object, containing parameter
 settings and statistics.  All are of type \verb'double', except for
-\verb'SPQR_istat' which is \verb'SuiteSparse_long',
+\verb'SPQR_istat' which is \verb'inte64_t',
 \verb'cc->memory_usage' which is
 \verb'size_t', and \verb'cc->SPQR_nthreads' which is \verb'int'.  Parameters
 include:
@@ -706,7 +645,7 @@ It can exploit a single NVIDIA GPU, via CUDA.  To enable GPU acceleration,
 you must compile SuiteSparseQR with non-default options.  See the
 \verb'SuiteSparse_config_GPU_gcc.mk' file in the \verb'SuiteSparse_config'
 directory for details.  The packages SuiteSparse\_GPURuntime and
-GPUQREngine are also required (they should appear in the SuiteSparse 
+GPUQREngine are also required (they should appear in the SuiteSparse
 directory, along with SPQR).
 
 At run time, you must also enable the GPU by setting \verb'Common->useGPU'
@@ -733,7 +672,7 @@ that initializes CHOLMOD and then polls the GPU for use in SuiteSparseQR.
 See \verb'Demo/qrdemo_gpu.cpp' for an extended example, which can be
 compiled via \verb'make gpu' in the \verb'Demo' directory.
 
-GPU acceleration is not yet available via the MATLAB mexFunction interface. 
+GPU acceleration is not yet available via the MATLAB mexFunction interface.
 We expect to include this in a future release.
 
 For a detailed technical report on the GPU-accelerated algorithm,

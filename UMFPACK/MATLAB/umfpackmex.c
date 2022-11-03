@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK mexFunction ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/MATLAB/umfpack.c: MATLAB interface for UMFPACK
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     MATLAB interface for umfpack.
@@ -67,7 +67,6 @@
 #ifndef FALSE
 #define FALSE (0)
 #endif
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === error ================================================================ */
@@ -78,15 +77,14 @@
 static void error
 (
     char *s,
-    Long A_is_complex,
+    int A_is_complex,
     int nargout,
     mxArray *pargout [ ],
     double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    Long status
+    int status
 )
 {
-    Long i ;
     double *Out_Info ;
     if (A_is_complex)
     {
@@ -117,12 +115,12 @@ static int get_option
 
     /* outputs: */
     double *x,                  /* double value of the field, if present */
-    Long *x_present,            /* true if double x is present */
+    int *x_present,             /* true if double x is present */
     char **s                    /* char value of the field, if present; */
                                 /* must be mxFree'd by caller when done */
 )
 {
-    Long f ;
+    int64_t f ;
     mxArray *p ;
 
     /* find the field number */
@@ -212,14 +210,14 @@ int get_all_options
 {
     double x ;
     char *s ;
-    Long x_present, i, info_details ;
+    int x_present, info_details ;
 
     /* ---------------------------------------------------------------------- */
     /* prl: an integer, default 1 */
     /* ---------------------------------------------------------------------- */
 
     get_option (mxopts, "prl", &x, &x_present, NULL) ;
-    Control [UMFPACK_PRL] = x_present ? ((Long) x) : UMFPACK_DEFAULT_PRL ;
+    Control [UMFPACK_PRL] = x_present ? ((int64_t) x) : UMFPACK_DEFAULT_PRL ;
     if (mxIsNaN (Control [UMFPACK_PRL]))
     {
 	Control [UMFPACK_PRL] = UMFPACK_DEFAULT_PRL ;
@@ -274,6 +272,10 @@ int get_all_options
         else if (MATCH (s, "metis"))
         {
             Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS ;
+        }
+        else if (MATCH (s, "metis_guard"))
+        {
+            Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_METIS_GUARD ;
         }
         else if (MATCH (s, "cholmod"))
         {
@@ -400,9 +402,9 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
     double *Info
 )
 {
-    Long k = 0 ;
+    int64_t k = 0 ;
     mxArray *info ;
-    Long sizeof_unit = (Long) Info [UMFPACK_SIZE_OF_UNIT] ;
+    int64_t sizeof_unit = (int64_t) Info [UMFPACK_SIZE_OF_UNIT] ;
 
     const char *info_struct [ ] =
     {
@@ -432,8 +434,8 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         "anz",
 
         "sizeof_unit",
-        "sizeof_int",
-        "sizeof_long",
+        "sizeof_int32_t",
+        "sizeof_int64_t",
         "sizeof_pointer",
         "sizeof_entry",
         "number_of_dense_rows",
@@ -517,10 +519,13 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         "omega2",
         "solve_flops",
         "solve_time",
-        "solve_walltime"
+        "solve_walltime",
+
+        "control_tsym",
+        "control_tdiag",
     } ;
 
-    info = mxCreateStructMatrix (1, 1, 100, info_struct) ;
+    info = mxCreateStructMatrix (1, 1, 102, info_struct) ;
 
     XFIELD (Control [UMFPACK_PRL]) ;
     XFIELD (Control [UMFPACK_DENSE_ROW]) ;
@@ -545,6 +550,7 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
         case UMFPACK_ORDERING_NONE:     SFIELD ("none") ;    break ;
         case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
         case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
+        case UMFPACK_ORDERING_METIS_GUARD: SFIELD ("metis_guard") ; break ;
         default:
         case UMFPACK_ORDERING_CHOLMOD:  SFIELD ("cholmod") ; break ;
         case UMFPACK_ORDERING_BEST:     SFIELD ("best") ;    break ;
@@ -651,16 +657,26 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
     switch ((int) Info [UMFPACK_STRATEGY_USED])
     {
         default:
-        case UMFPACK_STRATEGY_UNSYMMETRIC: SFIELD ("unsymmetric") ;  break ;
-        case UMFPACK_STRATEGY_SYMMETRIC:   SFIELD ("symmetric") ;    break ;
-    }
-
-    switch ((int) Info [UMFPACK_ORDERING_USED])
-    {
-        case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
-        case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
-        case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ;   break ;
-        default:                        SFIELD ("none") ;    break ;
+        case UMFPACK_STRATEGY_UNSYMMETRIC:
+            SFIELD ("unsymmetric") ;
+            switch ((int) Info [UMFPACK_ORDERING_USED])
+            {
+                case UMFPACK_ORDERING_AMD:      SFIELD ("colamd") ;   break ;
+                case UMFPACK_ORDERING_METIS:    SFIELD ("metis(A'A)") ; break ;
+                case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ; break ;
+                default:                        SFIELD ("none") ;  break ;
+            }
+            break ;
+        case UMFPACK_STRATEGY_SYMMETRIC:
+            SFIELD ("symmetric") ;
+            switch ((int) Info [UMFPACK_ORDERING_USED])
+            {
+                case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;   break ;
+                case UMFPACK_ORDERING_METIS:    SFIELD ("metis(A+A')") ; break ;
+                case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ; break ;
+                default:                        SFIELD ("none") ;  break ;
+            }
+            break ;
     }
 
     SFIELD (YESNO (Info [UMFPACK_QFIXED])) ;
@@ -742,6 +758,8 @@ mxArray *umfpack_mx_info_details    /* return a struct with info statistics */
     XFIELD (Info [UMFPACK_SOLVE_TIME]) ;
     XFIELD (Info [UMFPACK_SOLVE_WALLTIME]) ;
 
+    XFIELD (Control [UMFPACK_STRATEGY_THRESH_SYM]) ;
+    XFIELD (Control [UMFPACK_STRATEGY_THRESH_NNZDIAG]) ;
     return (info) ;
 }
 
@@ -756,12 +774,12 @@ mxArray *umfpack_mx_info_user    /* return a struct with info statistics */
 (
     double *Control,
     double *Info,
-    Long do_solve
+    int64_t do_solve
 )
 {
-    Long k = 0 ;
+    int64_t k = 0 ;
     mxArray *info ;
-    Long sizeof_unit = (Long) Info [UMFPACK_SIZE_OF_UNIT] ;
+    int64_t sizeof_unit = (int64_t) Info [UMFPACK_SIZE_OF_UNIT] ;
 
     const char *info_struct [ ] =
     {
@@ -786,16 +804,26 @@ mxArray *umfpack_mx_info_user    /* return a struct with info statistics */
     switch ((int) Info [UMFPACK_STRATEGY_USED])
     {
         default:
-        case UMFPACK_STRATEGY_UNSYMMETRIC: SFIELD ("unsymmetric") ;  break ;
-        case UMFPACK_STRATEGY_SYMMETRIC:   SFIELD ("symmetric") ;    break ;
-    }
-
-    switch ((int) Info [UMFPACK_ORDERING_USED])
-    {
-        case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;     break ;
-        case UMFPACK_ORDERING_METIS:    SFIELD ("metis") ;   break ;
-        case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ;   break ;
-        default:                        SFIELD ("none") ;    break ;
+        case UMFPACK_STRATEGY_UNSYMMETRIC:
+            SFIELD ("unsymmetric") ;
+            switch ((int) Info [UMFPACK_ORDERING_USED])
+            {
+                case UMFPACK_ORDERING_AMD:      SFIELD ("colamd") ;   break ;
+                case UMFPACK_ORDERING_METIS:    SFIELD ("metis(A'A)") ; break ;
+                case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ; break ;
+                default:                        SFIELD ("none") ;  break ;
+            }
+            break ;
+        case UMFPACK_STRATEGY_SYMMETRIC:
+            SFIELD ("symmetric") ;
+            switch ((int) Info [UMFPACK_ORDERING_USED])
+            {
+                case UMFPACK_ORDERING_AMD:      SFIELD ("amd") ;   break ;
+                case UMFPACK_ORDERING_METIS:    SFIELD ("metis(A+A')") ; break ;
+                case UMFPACK_ORDERING_GIVEN:    SFIELD ("given") ; break ;
+                default:                        SFIELD ("none") ;  break ;
+            }
+            break ;
     }
 
     XFIELD (Info [UMFPACK_PEAK_MEMORY] * sizeof_unit) ;
@@ -873,13 +901,14 @@ void mexFunction
     double *Lx, *Lz, *Ux, *Uz, *Ax, *Az, *Bx, *Bz, *Xx, *Xz, *User_Control,
 	*p, *q, *Out_Info, *p1, *p2, *p3, *p4, *Ltx, *Ltz, *Rs, *Px, *Qx ;
     void *Symbolic, *Numeric ;
-    Long *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
+    int64_t *Lp, *Li, *Up, *Ui, *Ap, *Ai, *P, *Q, do_solve, lnz, unz, nn, i,
 	transpose, size, do_info, do_numeric, *Front_npivcol, op, k, *Rp, *Ri,
 	*Front_parent, *Chain_start, *Chain_maxrows, *Chain_maxcols, nz, status,
 	nfronts, nchains, *Ltp, *Ltj, *Qinit, print_level, status2, no_scale,
 	*Front_1strow, *Front_leftmostdesc, n_row, n_col, n_inner, sys,
-	ignore1, ignore2, ignore3, A_is_complex, B_is_complex, X_is_complex,
+	ignore1, ignore2, ignore3,
 	*Pp, *Pi, *Qp, *Qi, do_recip, do_det ;
+    int A_is_complex, B_is_complex, X_is_complex ;
     mxArray *Amatrix, *Bmatrix, *User_Control_struct, *User_Qinit ;
     char *operator, *operation ;
     mxComplexity Atype, Xtype ;
@@ -1143,8 +1172,8 @@ void mexFunction
     /* (umfpack_dl_* or umfpack_zl_*). */
     A_is_complex = mxIsComplex (Amatrix) ;
     Atype = A_is_complex ? mxCOMPLEX : mxREAL ;
-    Ap = (Long *) mxGetJc (Amatrix) ;
-    Ai = (Long *) mxGetIr (Amatrix) ;
+    Ap = (int64_t *) mxGetJc (Amatrix) ;
+    Ai = (int64_t *) mxGetIr (Amatrix) ;
     Ax = mxGetPr (Amatrix) ;
     Az = mxGetPi (Amatrix) ;
 
@@ -1217,7 +1246,7 @@ void mexFunction
 	Control [UMFPACK_SCALE] = UMFPACK_SCALE_NONE ;
     }
 
-    print_level = (Long) Control [UMFPACK_PRL] ;
+    print_level = (int64_t) Control [UMFPACK_PRL] ;
 
     /* ---------------------------------------------------------------------- */
     /* get Qinit, if present */
@@ -1245,12 +1274,12 @@ void mexFunction
 	{
 	    mexErrMsgTxt ("input Qinit must be dense") ;
 	}
-	Qinit = (Long *) mxMalloc (n_col * sizeof (Long)) ;
+	Qinit = (int64_t *) mxMalloc (n_col * sizeof (int64_t)) ;
 	p = mxGetPr (User_Qinit) ;
 	for (k = 0 ; k < n_col ; k++)
 	{
 	    /* convert from 1-based to 0-based */
-	    Qinit [k] = ((Long) (p [k])) - 1 ;
+	    Qinit [k] = ((int64_t) (p [k])) - 1 ;
 	}
         Control [UMFPACK_ORDERING] = UMFPACK_ORDERING_GIVEN ;
     }
@@ -1258,7 +1287,7 @@ void mexFunction
     {
 	/* umfpack_*_qsymbolic will call colamd to get Qinit. This is the */
 	/* same as calling umfpack_*_symbolic with Qinit set to NULL*/
-	Qinit = (Long *) NULL ;
+	Qinit = (int64_t *) NULL ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -1635,8 +1664,8 @@ void mexFunction
 	    unz = MAX (unz, 1) ;
 
 	    /* get temporary space, for the *** ROW *** form of L */
-	    Ltp = (Long *) mxMalloc ((n_row+1) * sizeof (Long)) ;
-	    Ltj = (Long *) mxMalloc (lnz * sizeof (Long)) ;
+	    Ltp = (int64_t *) mxMalloc ((n_row+1) * sizeof (int64_t)) ;
+	    Ltj = (int64_t *) mxMalloc (lnz * sizeof (int64_t)) ;
 	    Ltx = (double *) mxMalloc (lnz * sizeof (double)) ;
 	    if (A_is_complex)
 	    {
@@ -1649,14 +1678,14 @@ void mexFunction
 
 	    /* create permanent copy of the output matrix U */
 	    pargout [1] = mxCreateSparse (n_inner, n_col, unz, Atype) ;
-	    Up = (Long *) mxGetJc (pargout [1]) ;
-	    Ui = (Long *) mxGetIr (pargout [1]) ;
+	    Up = (int64_t *) mxGetJc (pargout [1]) ;
+	    Ui = (int64_t *) mxGetIr (pargout [1]) ;
 	    Ux = mxGetPr (pargout [1]) ;
 	    Uz = mxGetPi (pargout [1]) ;
 
 	    /* temporary space for the integer permutation vectors */
-	    P = (Long *) mxMalloc (n_row * sizeof (Long)) ;
-	    Q = (Long *) mxMalloc (n_col * sizeof (Long)) ;
+	    P = (int64_t *) mxMalloc (n_row * sizeof (int64_t)) ;
+	    Q = (int64_t *) mxMalloc (n_col * sizeof (int64_t)) ;
 
 	    /* get scale factors, if requested */
 	    status2 = UMFPACK_OK ;
@@ -1664,8 +1693,8 @@ void mexFunction
 	    {
 		/* create a diagonal sparse matrix for the scale factors */
 		pargout [4] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-		Rp = (Long *) mxGetJc (pargout [4]) ;
-		Ri = (Long *) mxGetIr (pargout [4]) ;
+		Rp = (int64_t *) mxGetJc (pargout [4]) ;
+		Ri = (int64_t *) mxGetIr (pargout [4]) ;
 		for (i = 0 ; i < n_row ; i++)
 		{
 		    Rp [i] = i ;
@@ -1714,8 +1743,8 @@ void mexFunction
 
 	    /* create sparse permutation matrix for P */
 	    pargout [2] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	    Pp = (Long *) mxGetJc (pargout [2]) ;
-	    Pi = (Long *) mxGetIr (pargout [2]) ;
+	    Pp = (int64_t *) mxGetJc (pargout [2]) ;
+	    Pi = (int64_t *) mxGetIr (pargout [2]) ;
 	    Px = mxGetPr (pargout [2]) ;
 	    for (k = 0 ; k < n_row ; k++)
 	    {
@@ -1727,8 +1756,8 @@ void mexFunction
 
 	    /* create sparse permutation matrix for Q */
 	    pargout [3] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	    Qp = (Long *) mxGetJc (pargout [3]) ;
-	    Qi = (Long *) mxGetIr (pargout [3]) ;
+	    Qp = (int64_t *) mxGetJc (pargout [3]) ;
+	    Qi = (int64_t *) mxGetIr (pargout [3]) ;
 	    Qx = mxGetPr (pargout [3]) ;
 	    for (k = 0 ; k < n_col ; k++)
 	    {
@@ -1740,8 +1769,8 @@ void mexFunction
 
 	    /* permanent copy of L */
 	    pargout [0] = mxCreateSparse (n_row, n_inner, lnz, Atype) ;
-	    Lp = (Long *) mxGetJc (pargout [0]) ;
-	    Li = (Long *) mxGetIr (pargout [0]) ;
+	    Lp = (int64_t *) mxGetJc (pargout [0]) ;
+	    Li = (int64_t *) mxGetIr (pargout [0]) ;
 	    Lx = mxGetPr (pargout [0]) ;
 	    Lz = mxGetPi (pargout [0]) ;
 
@@ -1750,13 +1779,13 @@ void mexFunction
 	    {
 		/* non-conjugate array transpose */
 	        status = umfpack_zl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    Ltz, (Long *) NULL, (Long *) NULL, Lp, Li, Lx, Lz,
+		    Ltz, (int64_t *) NULL, (int64_t *) NULL, Lp, Li, Lx, Lz,
 		    FALSE) ;
 	    }
 	    else
 	    {
 	        status = umfpack_dl_transpose (n_inner, n_row, Ltp, Ltj, Ltx,
-		    (Long *) NULL, (Long *) NULL, Lp, Li, Lx) ;
+		    (int64_t *) NULL, (int64_t *) NULL, Lp, Li, Lx) ;
 	    }
 
 	    mxFree (Ltp) ;
@@ -1821,22 +1850,22 @@ void mexFunction
 	/* return the symbolic factorization */
 	/* ------------------------------------------------------------------ */
 
-	Q = (Long *) mxMalloc (n_col * sizeof (Long)) ;
-	P = (Long *) mxMalloc (n_row * sizeof (Long)) ;
-	Front_npivcol = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Front_parent = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Front_1strow = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Front_leftmostdesc = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Chain_start = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Chain_maxrows = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
-	Chain_maxcols = (Long *) mxMalloc ((nn+1) * sizeof (Long)) ;
+	Q = (int64_t *) mxMalloc (n_col * sizeof (int64_t)) ;
+	P = (int64_t *) mxMalloc (n_row * sizeof (int64_t)) ;
+	Front_npivcol = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Front_parent = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Front_1strow = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Front_leftmostdesc = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Chain_start = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Chain_maxrows = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
+	Chain_maxcols = (int64_t *) mxMalloc ((nn+1) * sizeof (int64_t)) ;
 
 	if (A_is_complex)
 	{
 	    status = umfpack_zl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
-	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	        Chain_start, Chain_maxrows, Chain_maxcols, NULL, Symbolic) ;
 	    umfpack_zl_free_symbolic (&Symbolic) ;
 	}
 	else
@@ -1844,7 +1873,7 @@ void mexFunction
 	    status = umfpack_dl_get_symbolic (&ignore1, &ignore2, &ignore3,
 	        &nz, &nfronts, &nchains, P, Q, Front_npivcol,
 	        Front_parent, Front_1strow, Front_leftmostdesc,
-	        Chain_start, Chain_maxrows, Chain_maxcols, Symbolic) ;
+	        Chain_start, Chain_maxrows, Chain_maxcols, NULL, Symbolic) ;
 	    umfpack_dl_free_symbolic (&Symbolic) ;
 	}
 
@@ -1866,8 +1895,8 @@ void mexFunction
 
 	/* create sparse permutation matrix for P */
 	pargout [0] = mxCreateSparse (n_row, n_row, n_row, mxREAL) ;
-	Pp = (Long *) mxGetJc (pargout [0]) ;
-	Pi = (Long *) mxGetIr (pargout [0]) ;
+	Pp = (int64_t *) mxGetJc (pargout [0]) ;
+	Pi = (int64_t *) mxGetIr (pargout [0]) ;
 	Px = mxGetPr (pargout [0]) ;
 	for (k = 0 ; k < n_row ; k++)
 	{
@@ -1879,8 +1908,8 @@ void mexFunction
 
 	/* create sparse permutation matrix for Q */
 	pargout [1] = mxCreateSparse (n_col, n_col, n_col, mxREAL) ;
-	Qp = (Long *) mxGetJc (pargout [1]) ;
-	Qi = (Long *) mxGetIr (pargout [1]) ;
+	Qp = (int64_t *) mxGetJc (pargout [1]) ;
+	Qi = (int64_t *) mxGetIr (pargout [1]) ;
 	Qx = mxGetPr (pargout [1]) ;
 	for (k = 0 ; k < n_col ; k++)
 	{

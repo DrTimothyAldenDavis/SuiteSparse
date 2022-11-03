@@ -47,7 +47,8 @@
 % Example:
 %   help cs_add
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 % helper function:
 %   cs_must_compile - return 1 if source code f must be compiled, 0 otherwise

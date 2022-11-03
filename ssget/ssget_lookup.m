@@ -9,7 +9,8 @@ function [group, name, id] = ssget_lookup (matrix, ss_index)
 %
 %   See also ssget.
 
-% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
+% ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (isnumeric (matrix))
 

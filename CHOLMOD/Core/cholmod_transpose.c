@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_transpose =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_tranpose: transpose a matrix
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Core utility routines for the cholmod_sparse object to
  * compute the transpose or permuted transpose of a matrix:
@@ -110,8 +111,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
 
 /* ========================================================================== */
 /* === TEMPLATE ============================================================= */
@@ -131,7 +130,6 @@
 #define ZOMPLEX
 #define NCONJUGATE
 #include "t_cholmod_transpose.c"
-
 
 /* ========================================================================== */
 /* === cholmod_transpose_unsym ============================================== */

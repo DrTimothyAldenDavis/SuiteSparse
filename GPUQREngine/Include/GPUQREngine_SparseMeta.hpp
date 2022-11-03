@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Include/GPUQREngine_SparseMeta.hpp ==========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // The SparseMeta class further wraps metadata required to perform a sparse
 // factorization. SparseMeta sits within the Front class.

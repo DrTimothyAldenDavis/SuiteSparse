@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_scale ============================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_scale: scale a sparse matrix
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Scale a matrix and check to see if it is valid.  Can be called by the user.
  * This is called by KLU_factor and KLU_refactor.  Returns TRUE if the input
@@ -16,10 +22,10 @@
 
 #include "klu_internal.h"
 
-Int KLU_scale           /* return TRUE if successful, FALSE otherwise */
+int KLU_scale           /* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
-    Int scale,          /* 0: none, 1: sum, 2: max */
+    int scale,          /* 0: none, 1: sum, 2: max */
     Int n,
     Int Ap [ ],         /* size n+1, column pointers */
     Int Ai [ ],         /* size nz, row indices */

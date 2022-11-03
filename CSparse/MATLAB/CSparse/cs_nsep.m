@@ -11,7 +11,8 @@ function [s,a,b] = cs_nsep (A)
 %
 %   See also CS_SEP, CS_ESEP, CS_ND.
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 [a b] = cs_esep (A) ;
 [s a b] = cs_sep (A, a, b) ;

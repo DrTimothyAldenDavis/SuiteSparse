@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_demo.h: include file for CSparse demo programs
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 typedef struct problem_struct
 {

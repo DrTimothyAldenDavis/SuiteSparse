@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/Scheduler_Front.cpp ==================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains code to manage fronts within the scheduler.
 //
@@ -202,7 +208,7 @@ void Scheduler::debugDumpFront(Front *front)
         printf ("\n") ;
     }
 
-    printf("----------\n", front->fidg);
+    printf("----------\n");
     wsFront->assign(wsFront->cpu(), NULL);
     wsFront = Workspace::destroy(wsFront);
 }

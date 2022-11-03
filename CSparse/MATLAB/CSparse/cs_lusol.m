@@ -17,6 +17,7 @@ function x = cs_lusol (A,b,order,tol)                                       %#ok
 %
 %   See also CS_LU, CS_AMD, CS_CHOLSOL, CS_QRSOL, MLDIVIDE.
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_lusol mexFunction not found') ;

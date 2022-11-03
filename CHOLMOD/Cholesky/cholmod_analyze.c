@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_analyze ============================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_analyze: order and analyze a matrix
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2013, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Order and analyze a matrix (either simplicial or supernodal), in prepartion
  * for numerical factorization via cholmod_factorize or via the "expert"
@@ -106,19 +108,9 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
-#ifndef NSUPERNODAL
-#include "cholmod_supernodal.h"
-#endif
-
-#ifndef NPARTITION
-#include "cholmod_partition.h"
-#endif
-
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === cholmod_analyze ====================================================== */
@@ -795,8 +787,8 @@ cholmod_factor *CHOLMOD(analyze_p2)
 		 * L, or one with a fill-in ratio (nnz(L)/nnz(A)) of less than
 		 * 5.  This is pretty good, and it's unlikely that METIS will do
 		 * better (this heuristic is based on tests on all symmetric
-		 * positive definite matrices in the UF sparse matrix
-		 * collection, and it works well across a wide range of
+		 * positive definite matrices in the SuiteSparse Matrix
+		 * Collection, and it works well across a wide range of
 		 * problems).  METIS can take much more time than AMD. */
 		break ;
 	    }

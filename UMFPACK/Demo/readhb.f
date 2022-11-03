@@ -1,11 +1,10 @@
-c=======================================================================
-c== readhb =============================================================
-c=======================================================================
-
 c-----------------------------------------------------------------------
-c UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,
-c http://www.suitesparse.com.  All Rights Reserved.
-c See ../Doc/License.txt for License.
+c UMFPACK/Demo/readhb.f: read a sparse matrix in Harwell/Boeing format
+c-----------------------------------------------------------------------
+
+c UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+c SPDX-License-Identifier: GPL-2.0+
+
 c-----------------------------------------------------------------------
 
 c readhb:
@@ -15,10 +14,10 @@ c
 c usage (for example):
 c
 c       in a Unix shell:
-c       readhb < HB/arc130.rua > tmp/A
+c       readhb < HB/arc130.rua > tmp_A
 c
 c       Then, in MATLAB, you can do the following:
-c       >> load tmp/A
+c       >> load tmp_A
 c       >> A = spconvert (A) ;
 c       >> spy (A)
 

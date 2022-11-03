@@ -1,14 +1,14 @@
-/* ========================================================================== */
-/* === UMFPACK_free_symbolic ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_free_symbolic: free Symbolic object
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
-    User-callable.  See umfpack_free_symbolic.h for details.
+    User-callable.  See umfpack.h for details.
     All 10 objects comprising the Symbolic object are free'd via UMF_free.
 */
 

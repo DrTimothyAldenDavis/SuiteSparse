@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/mread mexFunction ===================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/mread: read a matrix in Matrix Market format
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* [A Z] = mread (filename, prefer_binary)
  *
@@ -40,10 +40,10 @@ void mexFunction
     cholmod_dense *X = NULL ;
     cholmod_sparse *A = NULL, *Z = NULL ;
     cholmod_common Common, *cm ;
-    Long *Ap = NULL, *Ai ;
+    int64_t *Ap = NULL, *Ai ;
     double *Ax, *Az = NULL ;
     char filename [MAXLEN] ;
-    Long nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
+    int64_t nz, k, is_complex = FALSE, nrow = 0, ncol = 0, allzero ;
     int mtype ;
 
     /* ---------------------------------------------------------------------- */

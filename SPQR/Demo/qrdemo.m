@@ -10,7 +10,8 @@ function qrdemo (matrix_name)
 %
 % See also spqr, spqr_solve, mldivide
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 if (nargin == 0)
 

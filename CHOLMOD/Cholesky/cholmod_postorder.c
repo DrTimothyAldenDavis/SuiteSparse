@@ -1,18 +1,18 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_postorder =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_postorder: postordering of a tree
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Compute the postorder of a tree. */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
 
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === dfs ================================================================== */
@@ -135,7 +135,7 @@ static Int dfs		/* return the new value of k */
  * workspace: Head (n), Iwork (2*n)
  */
 
-SuiteSparse_long CHOLMOD(postorder)	/* return # of nodes postordered */
+Int CHOLMOD(postorder)	/* return # of nodes postordered */
 (
     /* ---- input ---- */
     Int *Parent,	/* size n. Parent [j] = p if p is the parent of j */

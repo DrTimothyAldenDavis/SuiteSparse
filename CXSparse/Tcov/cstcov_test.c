@@ -1,3 +1,6 @@
+// CXSparse/Tcov/cstcov_test: test program
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_demo.h"
 /* cs_test: read a matrix and run cs_demo2 and cs_demo3, using malloc tests. */
 
@@ -20,6 +23,7 @@ int main (int argc, char **argv)
             if (!f) return (-1) ;
             Prob = get_problem (f, (demo == 2) ? 1e-14 : 0) ;
             fclose (f) ;
+            ok = 1 ;
             if (Prob) ok = (demo == 2) ? demo2 (Prob) : demo3 (Prob) ;
             free_problem (Prob) ;
             if (malloc_count > 0) break ;

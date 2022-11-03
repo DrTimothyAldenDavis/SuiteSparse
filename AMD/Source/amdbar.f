@@ -1,5 +1,11 @@
 C-----------------------------------------------------------------------
-C AMDBAR:  approximate minimum degree, without aggressive absorption
+C AMD/Source/amdbar.f: Fortran version of AMD, no aggress absorption
+C-----------------------------------------------------------------------
+
+C AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy,
+C and C Iain S. Duff.  All Rights Reserved.
+C SPDX-License-Identifier: BSD-3-clause
+
 C-----------------------------------------------------------------------
 
         SUBROUTINE AMDBAR

@@ -1,3 +1,6 @@
+// CXSparse/Tcov/cstcov_malloc_test: memory manager for testing
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cstcov_malloc_test.h"
 int malloc_count = INT_MAX ;
 

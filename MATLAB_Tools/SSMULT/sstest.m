@@ -6,7 +6,8 @@ function sstest
 %
 % See also ssmult, ssmultsym, ssmult_install, sstest2, mtimes.
 
-% Copyright 2007-2009, Timothy A. Davis, http://www.suitesparse.com
+% SSMULT, Copyright (c) 2007-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 N = [500:50:1000 1100:100:3000 3200:200:5000 ] ;
 
@@ -37,9 +38,10 @@ fprintf ('C=A*B is in blue, C=B*A is in red.  A and B are both real in the\n') ;
 fprintf ('first column of plots, B is complex in the 2nd, A in the 3rd, and\n');
 fprintf ('both are complex in the 4th column of plots.  You will want to\n') ;
 fprintf ('maximize the figure; otherwise the text is too hard to read.\n') ; 
-fprintf ('\nBe aware that in MATLAB 7.6 and later, C=A*B in MATLAB uses\n') ;
-fprintf('SSMULT (but with some additional MathWorks-specific optimizations)\n');
-fprintf ('so you are comparing nearly identical codes.\n');
+fprintf ('\nBe aware that in MATLAB 7.6 to R2020b, C=A*B in MATLAB uses\n') ;
+fprintf ('SSMULT.  In R2021a and later, MATLAB uses GraphBLAS GrB_mxm,\n') ;
+fprintf ('which is parallel and much faster (up to 30x) than SSMULT.\n') ;
+fprintf ('for large problems.\n') ;
 % input ('Hit enter to continue: ', 's') ;
 
 tlim = 0.1 ;

@@ -2,6 +2,9 @@
 // === spqr_mx_matlab.hpp ======================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 // utility functions and definitions solely for use in a MATLAB mexFunction
 
 #ifndef SPQR_MX_MATLAB_H
@@ -9,14 +12,6 @@
 
 #include "mex.h"
 #include "SuiteSparseQR.hpp"
-
-// SuiteSparse_long is defined in SuiteSparse_config.h, included by
-// SuiteSparseQR.hpp:
-
-#define Long SuiteSparse_long
-
-// get the BLAS_INT definition from CHOLMOD (this is for spumoni output only)
-#include "cholmod_blas.h"
 
 #include <complex>
 typedef std::complex<double> Complex ;
@@ -36,7 +31,7 @@ typedef std::complex<double> Complex ;
 typedef struct spqr_mx_options_struct
 {
     double tol ;            // <= -2 means to use default tol
-    Long econ ;
+    int64_t econ ;
     int ordering ;
     int permvector ;
     int Qformat ;
@@ -61,7 +56,7 @@ int spqr_mx_get_options
 (
     const mxArray *mxopts,
     spqr_mx_options *opts,
-    Long m,
+    int64_t m,
     int nargout,
 
     // workspace and parameters
@@ -76,8 +71,8 @@ mxArray *spqr_mx_put_sparse
 
 mxArray *spqr_mx_put_dense2
 (
-    Long m,
-    Long n,
+    int64_t m,
+    int64_t n,
     double *Ax,         // size nz if real; size 2*nz if complex (and freed)
     int is_complex,
 
@@ -93,8 +88,8 @@ mxArray *spqr_mx_put_dense
 
 mxArray *spqr_mx_put_permutation
 (
-    Long *P,
-    Long n,
+    int64_t *P,
+    int64_t n,
     int vector,
 
     // workspace and parameters
@@ -108,13 +103,13 @@ double *spqr_mx_merge_if_complex
     int make_complex,
 
     // output
-    Long *p_nz,              // number of entries in A
+    int64_t *p_nz,              // number of entries in A
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
 
-int spqr_mx_config (Long spumoni, cholmod_common *cc) ;
+int spqr_mx_config (int64_t spumoni, cholmod_common *cc) ;
 
 cholmod_sparse *spqr_mx_get_sparse
 (
@@ -134,8 +129,8 @@ void spqr_mx_get_usage
 (
     mxArray *A,         // mxArray to check
     int tight,          // if true, then nnz(A) must equal nzmax(A)
-    Long *p_usage,      // bytes used
-    Long *p_count,      // # of malloc'd blocks
+    int64_t *p_usage,      // bytes used
+    int64_t *p_count,      // # of malloc'd blocks
     cholmod_common *cc
 ) ;
 

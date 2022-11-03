@@ -25,6 +25,8 @@ function q = maxtrans (A)                                                   %#ok
 %
 % See also: btf, strongcomp, dmperm, sprank
 
-% Copyright 2004-2007, University of Florida
+% BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Author: Timothy A. Davis.
+% SPDX-License-Identifier: LGPL-2.1+
 
 error ('maxtrans mexfunction not found') ;

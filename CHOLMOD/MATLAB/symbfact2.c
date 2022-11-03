@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/symbfact2 mexFunction ================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/symbfact2: MATLAB interface to CHOLMOD symbolic analysis
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Usage:
  *
@@ -48,10 +48,10 @@ void mexFunction
 {
     double dummy = 0 ;
     double *Lx, *px ;
-    Long *Parent, *Post, *ColCount, *First, *Level, *Rp, *Ri, *Lp, *Li, *W ;
+    int64_t *Parent, *Post, *ColCount, *First, *Level, *Rp, *Ri, *Lp, *Li, *W ;
     cholmod_sparse *A, Amatrix, *F, *Aup, *Alo, *R, *A1, *A2, *L, *S ;
     cholmod_common Common, *cm ;
-    Long n, i, coletree, j, lnz, p, k, height, c ;
+    int64_t n, i, coletree, j, lnz, p, k, height, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -131,11 +131,11 @@ void mexFunction
     /* compute the etree, its postorder, and the row/column counts */
     /* ---------------------------------------------------------------------- */
 
-    Parent = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    Post = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    ColCount = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    First = cholmod_l_malloc (n, sizeof (Long), cm) ;
-    Level = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    Parent = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    Post = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    ColCount = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    First = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+    Level = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
     /* F = A' */
     F = cholmod_l_transpose (A, 0, cm) ;
@@ -318,11 +318,11 @@ void mexFunction
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Long), Parent, cm) ;
-    cholmod_l_free (n, sizeof (Long), Post, cm) ;
-    cholmod_l_free (n, sizeof (Long), ColCount, cm) ;
-    cholmod_l_free (n, sizeof (Long), First, cm) ;
-    cholmod_l_free (n, sizeof (Long), Level, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Parent, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Post, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), ColCount, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), First, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Level, cm) ;
     cholmod_l_free_sparse (&F, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;

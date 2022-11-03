@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_randperm_mex: random permutation
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_randperm: random permutation.  p=cs_randperm(n,0) is 1:n,
  * p=cs_randperm(n,-1) is n:-1:1.  p = cs_randperm (n,seed) is a random
@@ -14,7 +17,7 @@ void mexFunction
 )
 {
     double seed ;
-    CS_INT iseed, n, *p ;
+    int64_t iseed, n, *p ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
         mexErrMsgTxt ("Usage: p = cs_randperm(n,seed)") ;

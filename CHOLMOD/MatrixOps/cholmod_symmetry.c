@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === MatrixOps/cholmod_symmetry =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MatrixOps/cholmod_symmetry: determine symmetry status of a matrix
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Determines if a sparse matrix is rectangular, unsymmetric, symmetric,
  * skew-symmetric, or Hermitian.  It does so by looking at its numerical values
@@ -43,7 +44,7 @@
  * If option is 2, this function can be used to compute the numerical and
  * pattern symmetry, where 0 is a completely unsymmetric matrix, and 1 is a
  * perfectly symmetric matrix.  This option is used when computing the following
- * statistics for the matrices in the UF Sparse Matrix Collection.
+ * statistics for the matrices in the SuiteSparse Matrix Collection.
  *
  *	numerical symmetry: number of matched offdiagonal nonzeros over
  *	the total number of offdiagonal entries.  A real entry A(i,j), i ~= j,
@@ -84,12 +85,10 @@
  * regardless of the value of the option parameter.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMATRIXOPS
-
-#include "cholmod_internal.h"
-#include "cholmod_matrixops.h"
-
 
 /* ========================================================================== */
 /* === get_value ============================================================ */

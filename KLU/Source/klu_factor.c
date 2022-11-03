@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_factor =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_factor: sparse LU factorization
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Factor the matrix, after ordering and analyzing it with KLU_analyze
  * or KLU_analyze_given.
@@ -341,14 +347,14 @@ static void factor2
 
 #ifndef NDEBUG
     {
-        PRINTF (("\n ############# KLU_BTF_FACTOR done, nblocks %d\n",nblocks));
+        PRINTF (("\n ------------ KLU_BTF_FACTOR done, nblocks %d\n",nblocks));
         Entry ss, *Udiag = Numeric->Udiag ;
         for (block = 0 ; block < nblocks && Common->status == KLU_OK ; block++)
         {
             k1 = R [block] ;
             k2 = R [block+1] ;
             nk = k2 - k1 ;
-            PRINTF (("\n======================KLU_factor output: k1 %d k2 %d nk %d\n",k1,k2,nk)) ;
+            PRINTF (("\n== KLU_factor output: k1 %d k2 %d nk %d\n",k1,k2,nk)) ;
             if (nk == 1)
             {
                 PRINTF (("singleton  ")) ;

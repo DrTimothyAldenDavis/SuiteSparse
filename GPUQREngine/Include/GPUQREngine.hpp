@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Include/GPUQREngine.hpp =====================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This is the main user-level include file.
 //
@@ -47,11 +53,12 @@ Int *GPUQREngine_FindStaircase
 );
 
 // Version information:
-#define GPUQRENGINE_DATE "May 4, 2016"
+#define GPUQRENGINE_DATE "Nov 4, 2022"
+#define GPUQRENGINE_MAIN_VERSION   2
+#define GPUQRENGINE_SUB_VERSION    0
+#define GPUQRENGINE_SUBSUB_VERSION 0
+
 #define GPUQRENGINE_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define GPUQRENGINE_MAIN_VERSION 1
-#define GPUQRENGINE_SUB_VERSION 0
-#define GPUQRENGINE_SUBSUB_VERSION 5
 #define GPUQRENGINE_VERSION \
     GPUQRENGINE_VER_CODE(GPUQRENGINE_MAIN_VERSION,GPUQRENGINE_SUB_VERSION)
 

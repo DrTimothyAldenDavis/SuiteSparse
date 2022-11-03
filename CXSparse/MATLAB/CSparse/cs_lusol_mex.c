@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_lusol_mex: x=A\b using sparse LU factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_lusol: solve A*x=b using a sparse LU factorization */
 void mexFunction
@@ -9,7 +12,7 @@ void mexFunction
 )
 {
     double tol ;
-    CS_INT order ;
+    int64_t order ;
     if (nargout > 1 || nargin < 2 || nargin > 4)
     {
         mexErrMsgTxt ("Usage: x = cs_lusol(A,b,order,tol)") ;

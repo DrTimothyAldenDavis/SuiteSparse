@@ -1,14 +1,14 @@
-/* ========================================================================== */
-/* === UMFPACK_report_symbolic ============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_symbolic: print the Symbolic object
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
-    User-callable.  Prints the Symbolic object. See umfpack_report_symbolic.h
+    User-callable.  Prints the Symbolic object. See umfpack.h
     for details.  Not all of the object is printed.
 
     Dynamic memory usage:  Allocates a size MAX (n_row,n_col)*sizeof(Int)
@@ -23,7 +23,7 @@
 #include "umf_malloc.h"
 #include "umf_free.h"
 
-GLOBAL Int UMFPACK_report_symbolic
+GLOBAL int UMFPACK_report_symbolic
 (
     void *SymbolicHandle,
     const double Control [UMFPACK_CONTROL]
@@ -100,6 +100,10 @@ GLOBAL Int UMFPACK_report_symbolic
             {
                 PRINTF (("metis on A")) ;
             }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_NONE)
+            {
+                PRINTF (("none")) ;
+            }
 	}
 	else /* if (Symbolic->strategy == UMFPACK_STRATEGY_UNSYMMETRIC) */
 	{
@@ -120,6 +124,10 @@ GLOBAL Int UMFPACK_report_symbolic
             else if (Symbolic->ordering == UMFPACK_ORDERING_METIS)
             {
                 PRINTF (("metis on A'A")) ;
+            }
+            else if (Symbolic->ordering == UMFPACK_ORDERING_NONE)
+            {
+                PRINTF (("none")) ;
             }
 	}
 	PRINTF (("\n")) ;

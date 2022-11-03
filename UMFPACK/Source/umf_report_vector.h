@@ -1,9 +1,13 @@
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_report_vector.h
+//------------------------------------------------------------------------------
 
-GLOBAL Int UMF_report_vector
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+GLOBAL int UMF_report_vector
 (
     Int n,
     const double Xx [ ],

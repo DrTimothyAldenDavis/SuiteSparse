@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_sqr_mex: symbolic sparse QR factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_sqr: symbolic sparse QR factorization */
 void mexFunction
@@ -11,7 +14,7 @@ void mexFunction
     double s ;
     cs_dls *S ;
     cs_dl Amatrix, *A ;
-    CS_INT m, n, order, *p ;
+    int64_t m, n, order, *p ;
     if (nargout > 7 || nargin != 1)
     {
         mexErrMsgTxt ("Usage: [vnz,rnz,parent,c,leftmost,p,q] = cs_sqr(A)") ;

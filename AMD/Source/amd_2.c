@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD_2 =============================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Source/amd_2: AMD ordering
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* AMD_2:  performs the AMD ordering on a symmetric sparse matrix A, followed
  * by a postordering (via depth-first search) of the assembly tree using the
@@ -119,8 +119,8 @@ GLOBAL void AMD_2
  *	ouput.  Many of these functions are also provided by the Fortran
  *	Harwell Subroutine Library routine MC47A.
  *
- * (6) both int and SuiteSparse_long versions are provided.  In the
- *      descriptions below and integer is and int or SuiteSparse_long depending
+ * (6) both int32_t and int64_t versions are provided.  In the
+ *      descriptions below an integer is int32_t or int64_t depending
  *      on which version is being used.
 
  **********************************************************************
@@ -462,7 +462,7 @@ GLOBAL void AMD_2
 	nvi, nvj, nvpiv, slenme, wbig, we, wflg, wnvi, ok, ndense, ncmpa,
 	dense, aggressive ;
 
-    unsigned Int hash ;	    /* unsigned, so that hash % n is well defined.*/
+    UInt hash ;	    /* unsigned, so that hash % n is well defined.*/
 
 /*
  * deg:		the degree of a variable or element
@@ -494,8 +494,8 @@ GLOBAL void AMD_2
  * nvj:		the number of variables in a supervariable j (= Nv [j])
  * nvpiv:	number of pivots in current element
  * slenme:	number of variables in variable list of pivotal variable
- * wbig:	= (INT_MAX - n) for the int version, (SuiteSparse_long_max - n)
- *                  for the SuiteSparse_long version.  wflg is not allowed to
+ * wbig:	= (INT32_MAX - n) for the int32_t version, (INT64_MAX - n)
+ *                  for the int64_t version.  wflg is not allowed to
  *                  be >= wbig.
  * we:		W [e]
  * wflg:	used for flagging the W array.  See description of Iw.

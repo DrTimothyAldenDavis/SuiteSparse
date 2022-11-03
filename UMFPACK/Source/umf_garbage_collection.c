@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_garbage_collection =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_garbage_collection: compress elements in Numeric->Memory
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     Compress the elements at the tail of Numeric->Memory, and delete the tuples.
@@ -386,7 +386,7 @@ GLOBAL void UMF_garbage_collection
 	    pdest -= (size + 1) ;
 	    F2 = (Entry *) (pdest + 1) ;
 
-	    ASSERT ((unsigned Int) psrc + 1 + size <= (unsigned Int) pnext) ;
+	    ASSERT ((UInt) psrc + 1 + size <= (UInt) pnext) ;
 	    ASSERT (psrc <= pdest) ;
 	    ASSERT (F1 <= F2) ;
 
@@ -538,7 +538,7 @@ GLOBAL void UMF_garbage_collection
 	    pdest -= (size2 + 1) ;
 
 	    ASSERT (size2 <= size) ;
-	    ASSERT ((unsigned Int) psrc + 1 + size <= (unsigned Int) pnext) ;
+	    ASSERT ((UInt) psrc + 1 + size <= (UInt) pnext) ;
 	    ASSERT (psrc <= pdest) ;
 
 	    p = pdest + 1 ;

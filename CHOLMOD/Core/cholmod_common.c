@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_common ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_common: core methods for cholmod_common object
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Core utility routines for the cholmod_common object:
  *
@@ -31,11 +32,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
-#ifdef GPU_BLAS
-#include "cholmod_gpu.h"
-#endif
 
 /* ========================================================================== */
 /* === cholmod_start ======================================================== */
@@ -147,7 +143,7 @@ int CHOLMOD(start)
     /* Common->called_nd is TRUE if cholmod_analyze called or NESDIS */
     Common->called_nd = FALSE ;
 
-    Common->blas_ok = TRUE ;    /* false if BLAS int overflow occurs */
+    Common->blas_ok = TRUE ;    /* false if SUITESPARSE_BLAS_INT overflows */
 
     /* ---------------------------------------------------------------------- */
     /* default SuiteSparseQR knobs and statististics */
@@ -586,7 +582,7 @@ int CHOLMOD(free_work)
     Common->iworksize = 0 ;
     Common->xworksize = 0 ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     CHOLMOD(gpu_deallocate) (Common) ;
 #endif
     return (TRUE) ;
@@ -604,7 +600,7 @@ int CHOLMOD(free_work)
  * workspace: Flag (nrow).  Does not modify Flag if nrow is zero.
  */
 
-SuiteSparse_long CHOLMOD(clear_flag)
+int64_t CHOLMOD(clear_flag)
 (
     cholmod_common *Common
 )
@@ -657,7 +653,7 @@ size_t CHOLMOD(maxrank)	/* returns validated value of Common->maxrank */
 	 * overflow, and CHOLMOD will run out of memory or safely detect integer
 	 * overflow elsewhere.
 	 */
-	maxrank = MIN (maxrank, Size_max / (n * sizeof (double))) ;
+	maxrank = MIN (maxrank, SIZE_MAX / (n * sizeof (double))) ;
     }
     if (maxrank <= 2)
     {

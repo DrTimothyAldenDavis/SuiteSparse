@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Supernodal/t_cholmod_super_numeric =================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/t_cholmod_super_numeric: cholmod_super_numeric template
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2012, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Template routine for cholmod_super_numeric.  All xtypes supported, except
  * that a zomplex A and F result in a complex L (there is no supernodal
@@ -114,6 +115,7 @@ static int TEMPLATE (cholmod_super_numeric)
         ndrow1, ndrow2, px, dancestor, sparent, dnext, nsrow2, ndrow3, pk, pf,
         pfend, stype, Apacked, Fpacked, q, imap, repeat_supernode, nscol2, ss,
         tail, nscol_new = 0;
+    info = 0 ;
 
     /* ---------------------------------------------------------------------- */
     /* declarations for the GPU */
@@ -121,7 +123,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
     /* these variables are not used if the GPU module is not installed */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     Int ndescendants, mapCreatedOnGpu, supernodeUsedGPU,
         idescendant, dlarge, dsmall, skips ;
     int iHostBuff, iDevBuff, useGPU, GPUavailable ;
@@ -178,7 +180,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
     Lx = L->x ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     /* local copy of useGPU */
     if ( (Common->useGPU == 1) && L->useGPU)
     {
@@ -263,7 +265,7 @@ static int TEMPLATE (cholmod_super_numeric)
      * Once supernode s is repeated, the factorization is terminated. */
     repeat_supernode = FALSE ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     if ( useGPU )
     {
         /* Case of GPU, zero all supernodes at one time for better performance*/
@@ -302,7 +304,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         pend = psx + nsrow * nscol ;        /* s is nsrow-by-nscol */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( !useGPU )
 #endif
         {
@@ -337,7 +339,7 @@ static int TEMPLATE (cholmod_super_numeric)
         /* (all supernodes in a level are independent) */
         /* ------------------------------------------------------------------ */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( useGPU )
         {
             TEMPLATE2 (CHOLMOD (gpu_reorder_descendants))
@@ -473,7 +475,7 @@ static int TEMPLATE (cholmod_super_numeric)
         PRINT1 (("\nNow factorizing supernode "ID":\n", s)) ;
 #endif
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         /* initialize the buffer counter */
         if ( useGPU ) {
             Common->ibuffer = 0;
@@ -497,7 +499,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         while
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             ( (!useGPU && (dnext != EMPTY))
                || (useGPU && (idescendant < ndescendants)))
 #else
@@ -506,7 +508,7 @@ static int TEMPLATE (cholmod_super_numeric)
 #endif
         {
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 
             if ( useGPU ) {
 
@@ -644,7 +646,7 @@ static int TEMPLATE (cholmod_super_numeric)
             ASSERT (ndrow3 >= 0) ;
 
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( useGPU ) {
                 /* set up GPU to assemble new supernode */
                 if ( GPUavailable == 1) {
@@ -665,7 +667,7 @@ static int TEMPLATE (cholmod_super_numeric)
             }
 #endif
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( !useGPU
                 || GPUavailable!=1
                 || !TEMPLATE2 (CHOLMOD (gpu_updateC)) (ndrow1, ndrow2, ndrow,
@@ -678,21 +680,25 @@ static int TEMPLATE (cholmod_super_numeric)
                 Common->CHOLMOD_CPU_SYRK_CALLS++ ;
                 tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                BLAS_dsyrk ("L", "N",
+                SUITESPARSE_BLAS_dsyrk ("L", "N",
                     ndrow1, ndcol,              /* N, K: L1 is ndrow1-by-ndcol*/
                     one,                        /* ALPHA:  1 */
                     Lx + L_ENTRY*pdx1, ndrow,   /* A, LDA: L1, ndrow */
                     zero,                       /* BETA:   0 */
-                    C, ndrow2) ;                /* C, LDC: C1 */
+                    C, ndrow2,                  /* C, LDC: C1 */
+                    Common->blas_ok) ;
 #else
-                BLAS_zherk ("L", "N",
+                SUITESPARSE_BLAS_zherk ("L", "N",
                     ndrow1, ndcol,              /* N, K: L1 is ndrow1-by-ndcol*/
                     one,                        /* ALPHA:  1 */
                     Lx + L_ENTRY*pdx1, ndrow,   /* A, LDA: L1, ndrow */
                     zero,                       /* BETA:   0 */
-                    C, ndrow2) ;                /* C, LDC: C1 */
+                    C, ndrow2,                  /* C, LDC: C1 */
+                    Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_SYRK_TIME += SuiteSparse_time () - tstart ;
 #endif
@@ -704,8 +710,9 @@ static int TEMPLATE (cholmod_super_numeric)
                     Common->CHOLMOD_CPU_GEMM_CALLS++ ;
                     tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                    BLAS_dgemm ("N", "C",
+                    SUITESPARSE_BLAS_dgemm ("N", "C",
                         ndrow3, ndrow1, ndcol,          /* M, N, K */
                         one,                            /* ALPHA:  1 */
                         Lx + L_ENTRY*(pdx1 + ndrow1),   /* A, LDA: L2 */
@@ -714,9 +721,10 @@ static int TEMPLATE (cholmod_super_numeric)
                         ndrow,                          /* ndrow */
                         zero,                           /* BETA:   0 */
                         C + L_ENTRY*ndrow1,             /* C, LDC: C2 */
-                        ndrow2) ;
+                        ndrow2,   
+                        Common->blas_ok) ;
 #else
-                    BLAS_zgemm ("N", "C",
+                    SUITESPARSE_BLAS_zgemm ("N", "C",
                         ndrow3, ndrow1, ndcol,          /* M, N, K */
                         one,                            /* ALPHA:  1 */
                         Lx + L_ENTRY*(pdx1 + ndrow1),   /* A, LDA: L2 */
@@ -725,8 +733,10 @@ static int TEMPLATE (cholmod_super_numeric)
                         ndrow,
                         zero,                           /* BETA:   0 */
                         C + L_ENTRY*ndrow1,             /* C, LDC: C2 */
-                        ndrow2) ;
+                        ndrow2,
+                        Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                     Common->CHOLMOD_CPU_GEMM_TIME +=
                         SuiteSparse_time () - tstart ;
@@ -772,7 +782,7 @@ static int TEMPLATE (cholmod_super_numeric)
                 }
 
             }
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             else
             {
                 supernodeUsedGPU = 1;   /* GPU was used for this supernode*/
@@ -809,7 +819,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         }  /* end of descendant supernode loop */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( useGPU ) {
             iHostBuff = (Common->ibuffer)%CHOLMOD_HOST_SUPERNODE_BUFFERS;
             iDevBuff = (Common->ibuffer)%CHOLMOD_DEVICE_STREAMS;
@@ -845,7 +855,7 @@ static int TEMPLATE (cholmod_super_numeric)
 
         nscol2 = (repeat_supernode) ? (nscol_new) : (nscol) ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
         if ( !useGPU
             || !supernodeUsedGPU
             || !TEMPLATE2 (CHOLMOD (gpu_lower_potrf))(nscol2, nsrow, psx, Lx,
@@ -853,7 +863,7 @@ static int TEMPLATE (cholmod_super_numeric)
 #endif
         {
             /* Note that the GPU will not be used for the triangular solve */
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             supernodeUsedGPU = 0;
 #endif
 #ifndef NTIMER
@@ -861,15 +871,17 @@ static int TEMPLATE (cholmod_super_numeric)
             tstart = SuiteSparse_time () ;
 #endif
 #ifdef REAL
-            LAPACK_dpotrf ("L",
+            SUITESPARSE_LAPACK_dpotrf ("L",
                 nscol2,                     /* N: nscol2 */
                 Lx + L_ENTRY*psx, nsrow,    /* A, LDA: S1, nsrow */
-                info) ;                     /* INFO */
+                info,                       /* INFO */
+                Common->blas_ok) ;
 #else
-            LAPACK_zpotrf ("L",
+            SUITESPARSE_LAPACK_zpotrf ("L",
                 nscol2,                     /* N: nscol2 */
                 Lx + L_ENTRY*psx, nsrow,    /* A, LDA: S1, nsrow */
-                info) ;                     /* INFO */
+                info,                       /* INFO */
+                Common->blas_ok) ;
 #endif
 #ifndef NTIMER
             Common->CHOLMOD_CPU_POTRF_TIME += SuiteSparse_time ()- tstart ;
@@ -895,9 +907,10 @@ static int TEMPLATE (cholmod_super_numeric)
             }
         }
 
-        /* info is set to one in LAPACK_*potrf if blas_ok is FALSE.  It is
-         * set to zero in dpotrf/zpotrf if the factorization was successful. */
-        if (CHECK_BLAS_INT && !Common->blas_ok)
+        /* info is set to one in SUITESPARSE_LAPACK_*potrf if blas_ok is FALSE.
+         * It is set to zero in dpotrf/zpotrf if the factorization was
+         * successful. */
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
         {
             ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
         }
@@ -948,7 +961,7 @@ static int TEMPLATE (cholmod_super_numeric)
                  * zero.  Also, info will be 1 if integer overflow occured in
                  * the BLAS. */
                 Head [s] = EMPTY ;
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
                 if ( useGPU ) {
                     CHOLMOD (gpu_end) (Common) ;
                 }
@@ -982,7 +995,7 @@ static int TEMPLATE (cholmod_super_numeric)
              * notation.
              */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( !useGPU
                 || !supernodeUsedGPU
                 || !TEMPLATE2 (CHOLMOD(gpu_triangular_solve))
@@ -993,27 +1006,31 @@ static int TEMPLATE (cholmod_super_numeric)
                 Common->CHOLMOD_CPU_TRSM_CALLS++ ;
                 tstart = SuiteSparse_time () ;
 #endif
+
 #ifdef REAL
-                BLAS_dtrsm ("R", "L", "C", "N",
+                SUITESPARSE_BLAS_dtrsm ("R", "L", "C", "N",
                     nsrow2, nscol2,                 /* M, N */
                     one,                            /* ALPHA: 1 */
                     Lx + L_ENTRY*psx, nsrow,        /* A, LDA: L1, nsrow */
                     Lx + L_ENTRY*(psx + nscol2),    /* B, LDB, L2, nsrow */
-                    nsrow) ;
+                    nsrow,
+                    Common->blas_ok) ;
 #else
-                BLAS_ztrsm ("R", "L", "C", "N",
+                SUITESPARSE_BLAS_ztrsm ("R", "L", "C", "N",
                     nsrow2, nscol2,                 /* M, N */
                     one,                            /* ALPHA: 1 */
                     Lx + L_ENTRY*psx, nsrow,        /* A, LDA: L1, nsrow */
                     Lx + L_ENTRY*(psx + nscol2),    /* B, LDB, L2, nsrow */
-                    nsrow) ;
+                    nsrow,
+                    Common->blas_ok) ;
 #endif
+
 #ifndef NTIMER
                 Common->CHOLMOD_CPU_TRSM_TIME += SuiteSparse_time () - tstart ;
 #endif
             }
 
-            if (CHECK_BLAS_INT && !Common->blas_ok)
+            if (!Common->blas_ok)
             {
                 ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
             }
@@ -1035,7 +1052,7 @@ static int TEMPLATE (cholmod_super_numeric)
         }
         else
         {
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             TEMPLATE2 ( CHOLMOD (gpu_copy_supernode) )
                 ( Common, Lx, psx, nscol, nscol2, nsrow,
                   supernodeUsedGPU, iHostBuff, gpu_p);
@@ -1054,7 +1071,7 @@ static int TEMPLATE (cholmod_super_numeric)
             /* matrix is not positive definite; finished clean-up for supernode
              * containing negative diagonal */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
             if ( useGPU )
             {
                 CHOLMOD (gpu_end) (Common) ;
@@ -1067,7 +1084,7 @@ static int TEMPLATE (cholmod_super_numeric)
     /* success; matrix is positive definite */
     L->minor = n ;
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
     if ( useGPU )
     {
         CHOLMOD (gpu_end) (Common) ;

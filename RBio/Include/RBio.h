@@ -1,11 +1,14 @@
-/* ========================================================================== */
-/* === RBio/Include/RBio.h: include file for RBio =========================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// RBio/Include/RBio.h: include file for RBio
+//------------------------------------------------------------------------------
 
-/* Copyright 2009, Timothy A. Davis, All Rights Reserved.
-   Refer to RBio/Doc/license.txt for the RBio license. */
+// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #ifndef _RBIO_H
+#define _RBIO_H
 
 /* -------------------------------------------------------------------------- */
 /* large file I/O support */
@@ -44,21 +47,11 @@
 /* include files */
 /* -------------------------------------------------------------------------- */
 
-#include "SuiteSparse_config.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#include <stddef.h>
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <ctype.h>
-
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#endif
+#include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
 /* error codes */
@@ -86,11 +79,12 @@ extern "C" {
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "May 4, 2016"
+#define RBIO_DATE "Nov 4, 2022"
+#define RBIO_MAIN_VERSION   3
+#define RBIO_SUB_VERSION    0
+#define RBIO_SUBSUB_VERSION 0
+
 #define RBIO_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define RBIO_MAIN_VERSION 2
-#define RBIO_SUB_VERSION 2
-#define RBIO_SUBSUB_VERSION 6
 #define RBIO_VERSION RBIO_VER_CODE(RBIO_MAIN_VERSION,RBIO_SUB_VERSION)
 
 
@@ -112,76 +106,79 @@ extern "C" {
     RBfree:         free-wrapper for RBio
     RBok:           test the validity of a sparse matrix
 
-    Each function comes in two versions: one with "int" integers, the other
-    with "SuiteSparse_long" integers.  SuiteSparse_long is "long", except for
-    Windows (for which it is __int64).  The default type is SuiteSparse_long.
-    Functions for "int" integers have the _i suffix appended to their names.
+    Each function comes in two versions: one with int32_t integers, the other
+    with int64_t integers.  The default type is int64_t.  Functions for int32_t
+    integers have the _i suffix appended to their names.
 */
 
+SUITESPARSE_PUBLIC 
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
-    int nrow,       /* A is nrow-by-ncol */
-    int ncol,
-    int *Ap,        /* Ap [0...ncol]: column pointers */
-    int *Ai,        /* Ai [0...nnz-1]: row indices */
+    int32_t nrow,   /* A is nrow-by-ncol */
+    int32_t ncol,
+    int32_t *Ap,    /* Ap [0...ncol]: column pointers */
+    int32_t *Ai,    /* Ai [0...nnz-1]: row indices */
     double *Ax,     /* Ax [0...nnz-1]: real values.  Az holds imaginary part */
     double *Az,     /* if real, Az is NULL. if complex, Az is non-NULL */
-    int mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
+    int32_t mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
-    int *mkind,     /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
-    int *skind,     /* r: -1 (rectangular), u: 0 (unsymmetric), s: 1 symmetric,
+    int32_t *mkind, /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
+    int32_t *skind, /* r: -1 (rectangular), u: 0 (unsymmetric), s: 1 symmetric,
                        h: 2 (Hermitian), z: 3 (skew symmetric) */
     char mtype [4], /* rua, psa, rra, cha, etc */
     double *xmin,   /* smallest value */
     double *xmax,   /* largest value */
 
     /* workspace: allocated internally if NULL */
-    int *cp         /* workspace of size ncol+1, undefined on input and output*/
+    int32_t *cp     /* workspace of size ncol+1, undefined on input and output*/
 ) ;
 
-SuiteSparse_long RBkind (SuiteSparse_long nrow, SuiteSparse_long ncol,
-    SuiteSparse_long *Ap, SuiteSparse_long *Ai, double *Ax, double *Az,
-    SuiteSparse_long mkind_in, SuiteSparse_long *mkind, SuiteSparse_long *skind,
-    char mtype [4], double *xmin, double *xmax, SuiteSparse_long *cp) ;
+SUITESPARSE_PUBLIC 
+int RBkind (int64_t nrow, int64_t ncol,
+    int64_t *Ap, int64_t *Ai, double *Ax, double *Az,
+    int64_t mkind_in, int64_t *mkind, int64_t *skind,
+    char mtype [4], double *xmin, double *xmax, int64_t *cp) ;
 
-
+SUITESPARSE_PUBLIC 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
     char *filename,     /* file to read from */
-    int build_upper,    /* if true, construct upper part for sym. matrices */
-    int zero_handling,  /* 0: do nothing, 1: prune zeros, 2: extract zeros */
+    int32_t build_upper,    /* if true, construct upper part for sym. matrices */
+    int32_t zero_handling,  /* 0: do nothing, 1: prune zeros, 2: extract zeros */
 
     /* output */
     char title [73],
     char key [9],
     char mtype [4],     /* RUA, RSA, PUA, PSA, RRA, etc */
-    int *nrow,          /* A is nrow-by-ncol */
-    int *ncol,
-    int *mkind,         /* R: 0, P: 1, C: 2, I: 3 */
-    int *skind,         /* R: -1, U: 0, S: 1, H: 2, Z: 3 */
-    int *asize,         /* Ai array has size asize*sizeof(double) */
-    int *znz,           /* number of explicit zeros removed from A */
+    int32_t *nrow,      /* A is nrow-by-ncol */
+    int32_t *ncol,
+    int32_t *mkind,     /* R: 0, P: 1, C: 2, I: 3 */
+    int32_t *skind,     /* R: -1, U: 0, S: 1, H: 2, Z: 3 */
+    int32_t *asize,     /* Ai array has size asize*sizeof(double) */
+    int32_t *znz,       /* number of explicit zeros removed from A */
 
     /* output: these are malloc'ed below and must be freed by the caller */
-    int **Ap,           /* column pointers of A */
-    int **Ai,           /* row indices of A */
+    int32_t **Ap,       /* column pointers of A */
+    int32_t **Ai,       /* row indices of A */
     double **Ax,        /* real values (ignored if NULL) of A */
     double **Az,        /* imaginary values (ignored if NULL) of A */
-    int **Zp,           /* column pointers of Z */
-    int **Zi            /* row indices of Z */
+    int32_t **Zp,       /* column pointers of Z */
+    int32_t **Zi        /* row indices of Z */
 ) ;
 
-SuiteSparse_long RBread (char *filename, SuiteSparse_long build_upper,
-    SuiteSparse_long zero_handling, char title [73], char key [9],
-    char mtype [4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
-    SuiteSparse_long *mkind, SuiteSparse_long *skind, SuiteSparse_long *asize,
-    SuiteSparse_long *znz, SuiteSparse_long **Ap, SuiteSparse_long **Ai,
-    double **Ax, double **Az, SuiteSparse_long **Zp, SuiteSparse_long **Zi) ;
+SUITESPARSE_PUBLIC 
+int RBread (char *filename, int64_t build_upper,
+    int64_t zero_handling, char title [73], char key [9],
+    char mtype [4], int64_t *nrow, int64_t *ncol,
+    int64_t *mkind, int64_t *skind, int64_t *asize,
+    int64_t *znz, int64_t **Ap, int64_t **Ai,
+    double **Ax, double **Az, int64_t **Zp, int64_t **Zi) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
@@ -191,108 +188,118 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
     char title [73],
     char key [9],
     char mtype [4],     /* RUA, RSA, PUA, PSA, RRA, etc */
-    int *nrow,          /* A is nrow-by-ncol */
-    int *ncol,
-    int *nnz,           /* size of Ai */
-    int *nelnz,
-    int *mkind,         /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
-    int *skind,         /* R: -1, U: 0, S: 1, H: 2, Z: 3 */
-    int *fem,           /* 0:__A, 1:__E */
-    int *xsize,         /* size of Ax */
+    int32_t *nrow,      /* A is nrow-by-ncol */
+    int32_t *ncol,
+    int32_t *nnz,       /* size of Ai */
+    int32_t *nelnz,
+    int32_t *mkind,     /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
+    int32_t *skind,     /* R: -1, U: 0, S: 1, H: 2, Z: 3 */
+    int32_t *fem,       /* 0:__A, 1:__E */
+    int32_t *xsize,     /* size of Ax */
 
     /* output: these are malloc'ed below and must be freed by the caller */
-    int **p_Ap,         /* size ncol+1, column pointers of A */
-    int **p_Ai,         /* size nnz, row indices of A */
+    int32_t **p_Ap,     /* size ncol+1, column pointers of A */
+    int32_t **p_Ai,     /* size nnz, row indices of A */
     double **p_Ax       /* size xsize, numerical values of A */
 ) ;
 
 
-SuiteSparse_long RBreadraw (char *filename, char title [73], char key [9],
-    char mtype[4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
-    SuiteSparse_long *nnz, SuiteSparse_long *nelnz, SuiteSparse_long *mkind,
-    SuiteSparse_long *skind, SuiteSparse_long *fem, SuiteSparse_long *xsize,
-    SuiteSparse_long **p_Ap, SuiteSparse_long **p_Ai, double **p_Ax) ;
+SUITESPARSE_PUBLIC 
+int RBreadraw (char *filename, char title [73], char key [9],
+    char mtype[4], int64_t *nrow, int64_t *ncol,
+    int64_t *nnz, int64_t *nelnz, int64_t *mkind,
+    int64_t *skind, int64_t *fem, int64_t *xsize,
+    int64_t **p_Ap, int64_t **p_Ai, double **p_Ax) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
 (
     /* input */
     char *filename, /* filename to write to (stdout if NULL) */
     char *title,    /* title (72 char max), may be NULL */
     char *key,      /* key (8 char max), may be NULL */
-    int nrow,       /* A is nrow-by-ncol */
-    int ncol,
-    int *Ap,        /* size ncol+1, column pointers */
-    int *Ai,        /* size anz=Ap[ncol], row indices (sorted) */
+    int32_t nrow,   /* A is nrow-by-ncol */
+    int32_t ncol,
+    int32_t *Ap,    /* size ncol+1, column pointers */
+    int32_t *Ai,    /* size anz=Ap[ncol], row indices (sorted) */
     double *Ax,     /* size anz or 2*anz, numerical values (binary if NULL) */
     double *Az,     /* size anz, imaginary part (real if NULL) */
-    int *Zp,        /* size ncol+1, column pointers for Z (or NULL) */
-    int *Zi,        /* size znz=Zp[ncol], row indices for Z (or NULL) */
-    int mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
+    int32_t *Zp,    /* size ncol+1, column pointers for Z (or NULL) */
+    int32_t *Zi,    /* size znz=Zp[ncol], row indices for Z (or NULL) */
+    int32_t mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
     char mtype [4]  /* matrix type (RUA, RSA, etc), may be NULL */
 ) ;
 
-SuiteSparse_long RBwrite (char *filename, char *title, char *key,
-    SuiteSparse_long nrow, SuiteSparse_long ncol, SuiteSparse_long *Ap,
-    SuiteSparse_long *Ai, double *Ax, double *Az, SuiteSparse_long *Zp,
-    SuiteSparse_long *Zi, SuiteSparse_long mkind_in, char mtype [4]) ;
+SUITESPARSE_PUBLIC 
+int RBwrite (char *filename, char *title, char *key,
+    int64_t nrow, int64_t ncol, int64_t *Ap,
+    int64_t *Ai, double *Ax, double *Az, int64_t *Zp,
+    int64_t *Zi, int64_t mkind_in, char mtype [4]) ;
 
 
+SUITESPARSE_PUBLIC 
 void RBget_entry_i
 (
-    int mkind,          /* R: 0, P: 1, C: 2, I: 3 */
+    int32_t mkind,      /* R: 0, P: 1, C: 2, I: 3 */
     double *Ax,         /* real part, or both if merged-complex */
     double *Az,         /* imaginary part if split-complex */
-    int p,              /* index of the entry */
+    int32_t p,          /* index of the entry */
     double *xr,         /* real part */
     double *xz          /* imaginary part */
 ) ;
 
-void RBget_entry (SuiteSparse_long mkind, double *Ax, double *Az,
-    SuiteSparse_long p, double *xr, double *xz) ;
+SUITESPARSE_PUBLIC 
+void RBget_entry (int64_t mkind, double *Ax, double *Az,
+    int64_t p, double *xr, double *xz) ;
 
 
+SUITESPARSE_PUBLIC 
 void RBput_entry_i
 (
-    int mkind,          /* R: 0, P: 1, C: 2, I: 3 */
+    int32_t mkind,      /* R: 0, P: 1, C: 2, I: 3 */
     double *Ax,         /* real part, or both if merged-complex */
     double *Az,         /* imaginary part if split-complex */
-    int p,              /* index of the entry */
+    int32_t p,          /* index of the entry */
     double xr,          /* real part */
     double xz           /* imaginary part */
 ) ;
 
-void RBput_entry (SuiteSparse_long mkind, double *Ax, double *Az,
-    SuiteSparse_long p, double xr, double xz) ;
+SUITESPARSE_PUBLIC 
+void RBput_entry (int64_t mkind, double *Ax, double *Az,
+    int64_t p, double xr, double xz) ;
 
 
+SUITESPARSE_PUBLIC 
 int RBok_i          /* 0:OK, < 0: error, > 0: warning */
 (
     /* inputs, not modified */
-    int nrow,       /* number of rows */
-    int ncol,       /* number of columns */
-    int nzmax,      /* max # of entries */
-    int *Ap,        /* size ncol+1, column pointers */
-    int *Ai,        /* size nz = Ap [ncol], row indices */
+    int32_t nrow,   /* number of rows */
+    int32_t ncol,   /* number of columns */
+    int32_t nzmax,  /* max # of entries */
+    int32_t *Ap,    /* size ncol+1, column pointers */
+    int32_t *Ai,    /* size nz = Ap [ncol], row indices */
     double *Ax,     /* real part, or both if merged-complex */
     double *Az,     /* imaginary part for split-complex */
     char *As,       /* logical matrices (useful for MATLAB caller only) */
-    int mkind,      /* 0:real, 1:logical/pattern, 2:split-complex, 3:integer,
+    int32_t mkind,  /* 0:real, 1:logical/pattern, 2:split-complex, 3:integer,
                        4:merged-complex */
 
     /* outputs, not defined on input */
-    int *p_njumbled,   /* # of jumbled row indices (-1 if not computed) */
-    int *p_nzeros      /* number of explicit zeros (-1 if not computed) */
+    int32_t *p_njumbled,   /* # of jumbled row indices (-1 if not computed) */
+    int32_t *p_nzeros      /* number of explicit zeros (-1 if not computed) */
 ) ;
 
-SuiteSparse_long RBok (SuiteSparse_long nrow, SuiteSparse_long ncol,
-    SuiteSparse_long nzmax, SuiteSparse_long *Ap, SuiteSparse_long *Ai,
-    double *Ax, double *Az, char *As, SuiteSparse_long mkind,
-    SuiteSparse_long *p_njumbled, SuiteSparse_long *p_nzeros) ;
+SUITESPARSE_PUBLIC 
+int RBok (int64_t nrow, int64_t ncol,
+    int64_t nzmax, int64_t *Ap, int64_t *Ai,
+    double *Ax, double *Az, char *As, int64_t mkind,
+    int64_t *p_njumbled, int64_t *p_nzeros) ;
 
 #ifdef MATLAB_MEX_FILE
+SUITESPARSE_PUBLIC 
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */
 #endif
 

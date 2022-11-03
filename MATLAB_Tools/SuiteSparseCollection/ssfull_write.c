@@ -2,11 +2,13 @@
 /* === SuiteSparseCollection/ssfull_write.c ================================= */
 /* ========================================================================== */
 
+// SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
 /* SuiteSparseCollection: a MATLAB toolbox for managing the SuiteSparse Matrix
  * Collection.
  */
-
-/* Copyright 2007-2019, Timothy A. Davis, http://www.suitesparse.com */
 
 /* ========================================================================== */
 

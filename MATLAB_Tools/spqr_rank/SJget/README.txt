@@ -82,3 +82,7 @@ To open the web page for one matrix, use either of these formats:
 For more information on how some of the index entries were created, see
 http://www.math.sjsu.edu/singular/matrices/SJsingular.html
 and http://www.suitesparse.com.
+
+spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+SPDX-License-Identifier: BSD-3-clause

@@ -33,7 +33,8 @@ function stats = ssweb (matrix, opts)
 %
 %   See also web, ssget, ssget_defaults.
 
-% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
+% ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 params = ssget_defaults ;
 ss_index = ssget ;

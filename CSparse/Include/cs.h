@@ -8,21 +8,18 @@
 #include <math.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <inttypes.h>
 #ifdef MATLAB_MEX_FILE
 #include "mex.h"
 #endif
-#define CS_VER 3                    /* CSparse Version */
-#define CS_SUBVER 2
+#define CS_VER 4  /* CSparse Version */
+#define CS_SUBVER 0
 #define CS_SUBSUB 0
-#define CS_DATE "Sept 12, 2017"       /* CSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2016"
+#define CS_DATE "Nov 4, 2022"        /* CSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 
-#ifdef MATLAB_MEX_FILE
-#undef csi
-#define csi mwSignedIndex
-#endif
 #ifndef csi
-#define csi ptrdiff_t
+#define csi int64_t
 #endif
 
 /* --- primary CSparse routines and data structures ------------------------- */

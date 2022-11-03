@@ -30,7 +30,8 @@ function [U, R, V, r] = cod (A, tol)
 %
 % See also qr, svd, rq, spqr, cod_sparse.
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 if (issparse (A))
     error ('FACTORIZE:cod:sparse', ...

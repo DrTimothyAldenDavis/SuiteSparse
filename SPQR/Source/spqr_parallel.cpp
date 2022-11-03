@@ -2,6 +2,11 @@
 // === spqr_parallel ===========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Factorize all the tasks in parallel with TBB.
 // The GPU is not used.
 
@@ -24,14 +29,14 @@ template <typename Entry> class spqr_zippy: public task
     // spqr_zippy state
     // -------------------------------------------------------------------------
 
-    const Long id ;
+    const int64_t id ;
     spqr_blob <Entry> *Blob ;
 
     // -------------------------------------------------------------------------
     // spqr_zippy constructor
     // -------------------------------------------------------------------------
 
-    spqr_zippy (Long id_, spqr_blob <Entry> *Blob_) : id (id_), Blob (Blob_) { }
+    spqr_zippy (int64_t id_, spqr_blob <Entry> *Blob_) : id (id_), Blob (Blob_) { }
 
     // -------------------------------------------------------------------------
     // spqr_zippy task
@@ -44,19 +49,19 @@ template <typename Entry> class spqr_zippy: public task
         // spawn my children
         // ---------------------------------------------------------------------
 
-        Long *TaskChildp = Blob->QRsym->TaskChildp ;
-        Long *TaskChild  = Blob->QRsym->TaskChild ;
-        Long pfirst = TaskChildp [id] ;
-        Long plast  = TaskChildp [id+1] ;
-        Long nchildren = plast - pfirst ;
+        int64_t *TaskChildp = Blob->QRsym->TaskChildp ;
+        int64_t *TaskChild  = Blob->QRsym->TaskChild ;
+        int64_t pfirst = TaskChildp [id] ;
+        int64_t plast  = TaskChildp [id+1] ;
+        int64_t nchildren = plast - pfirst ;
 
         if (nchildren > 0)
         {
             // create a list of TBB tasks, one for each child
             task_list TasksToDo ;
-            for (Long i = 0 ; i < nchildren ; i++)
+            for (int64_t i = 0 ; i < nchildren ; i++)
             {
-                Long child = TaskChild [pfirst+i] ;
+                int64_t child = TaskChild [pfirst+i] ;
                 TasksToDo.push_back (*new (allocate_child ( ))
                     spqr_zippy (child, Blob)) ;
             }
@@ -82,7 +87,7 @@ template <typename Entry> class spqr_zippy: public task
 
 template <typename Entry> void spqr_parallel
 (
-    Long ntasks,
+    int64_t ntasks,
     int nthreads,
     spqr_blob <Entry> *Blob
 )
@@ -99,14 +104,14 @@ template <typename Entry> void spqr_parallel
 
 template void spqr_parallel <double>
 (
-    Long ntasks,
+    int64_t ntasks,
     int nthreads,
     spqr_blob <double> *Blob
 ) ;
 
 template void spqr_parallel <Complex>
 (
-    Long ntasks,
+    int64_t ntasks,
     int nthreads,
     spqr_blob <Complex> *Blob
 ) ;

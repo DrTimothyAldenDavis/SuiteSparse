@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_ltsolve_mex: x=L'\b where x,b are dense
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_ltsolve: solve an upper triangular system L'*x=b */
 void mexFunction

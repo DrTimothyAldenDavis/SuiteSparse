@@ -1,3 +1,6 @@
+// CSparse/Demo/cs_ci_demo2: demo program for CXSparse (complex int32_t)
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_ci_demo.h"
 /* cs_ci_demo2: read a matrix and solve a linear system */
 int main (void)

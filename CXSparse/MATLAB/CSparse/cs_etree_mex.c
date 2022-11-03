@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_etree_mex: elimination tree
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_etree: elimination tree of A or A'*A */
 void mexFunction
@@ -9,7 +12,7 @@ void mexFunction
 )
 {
     cs_dl Amatrix, *A ;
-    CS_INT n, *parent, *post ;
+    int64_t n, *parent, *post ;
     int ata ;
     char mode [20] ;
     if (nargout > 2 || nargin < 1 || nargin > 2)

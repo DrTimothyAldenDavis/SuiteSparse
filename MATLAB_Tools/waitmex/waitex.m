@@ -10,7 +10,8 @@ function result = waitex
 %
 % See also waitbar, waitexample.
 
-% Copyright 2007, T. Davis
+% waitmex, Copyright (c) 2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 x = 0 ;
 h = waitbar (0, 'Please wait...') ;

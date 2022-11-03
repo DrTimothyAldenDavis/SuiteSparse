@@ -4,7 +4,8 @@ function test20
 %   test20
 % See also cholmod_test
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
 fprintf ('test20: test symbfact2, cholmod2, and lu on a few large matrices\n') ;

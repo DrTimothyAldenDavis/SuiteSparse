@@ -1,3 +1,7 @@
+Sept 18, 2022:
+
+    * added SPDX license identifiers to each file
+
 Jan 16, 2019:
 
     * added "# entries" column to ssstats.csv and nentries to ss_index.mat

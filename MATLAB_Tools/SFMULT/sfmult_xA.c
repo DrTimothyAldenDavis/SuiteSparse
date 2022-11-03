@@ -2,6 +2,9 @@
 // sfmult_xA: Y = X*A, unblocked
 //==============================================================================
 
+// SFMULT, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 // This kernel is unique; it operates on all of X and Y, not just a few rows or
 // columns.  It is used only when A is very sparse and X is large since it can
 // be very slow otherwise.

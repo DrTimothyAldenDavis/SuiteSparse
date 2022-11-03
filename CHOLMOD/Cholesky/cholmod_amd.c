@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_amd ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_amd: AMD interface for CHOLMOD
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* CHOLMOD interface to the AMD ordering routine.  Orders A if the matrix is
  * symmetric.  On output, Perm [k] = i if row/column i of A is the kth
@@ -27,12 +29,11 @@
  * Supports any xtype (pattern, real, complex, or zomplex)
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NCHOLESKY
 
-#include "cholmod_internal.h"
 #include "amd.h"
-#include "cholmod_cholesky.h"
-
 #if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (2,0)))
 #error "AMD v2.0 or later is required"
 #endif

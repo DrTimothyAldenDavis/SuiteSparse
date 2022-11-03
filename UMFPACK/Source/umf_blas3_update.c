@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_blas3_update ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_blas3_update: apply updates via BLAS3
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #include "umf_internal.h"
 #include "umf_blas3_update.h"
@@ -21,11 +21,9 @@ GLOBAL void UMF_blas3_update
 
     Entry *L, *U, *C, *LU ;
     Int i, j, s, k, m, n, d, nb, dc ;
-    
+
 #ifndef NBLAS
     Int blas_ok = TRUE ;
-#else
-#define blas_ok FALSE
 #endif
 
     DEBUG5 (("In UMF_blas3_update "ID" "ID" "ID"\n",
@@ -63,10 +61,9 @@ GLOBAL void UMF_blas3_update
     {
 
 #ifndef NBLAS
-	BLAS_GER (m, n, L, U, C, d) ;
+	BLAS_GER (m, n, L, U, C, d, blas_ok) ;
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !blas_ok)
 #endif
-
-	if (!blas_ok)
 	{
 	    /* rank-1 outer product to update the C block */
 	    for (j = 0 ; j < n ; j++)
@@ -77,7 +74,7 @@ GLOBAL void UMF_blas3_update
 		    Entry *c_ij, *l_is ;
 		    c_ij = & C [j*d] ;
 		    l_is = & L [0] ;
-#pragma ivdep
+                    #pragma ivdep
 		    for (i = 0 ; i < m ; i++)
 		    {
 			/* C [i+j*d]-= L [i] * U [j] */
@@ -96,10 +93,9 @@ GLOBAL void UMF_blas3_update
 	/* triangular solve to update the U block */
 
 #ifndef NBLAS
-	BLAS_TRSM_RIGHT (n, k, LU, nb, U, dc) ;
+	BLAS_TRSM_RIGHT (n, k, LU, nb, U, dc, blas_ok) ;
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !blas_ok)
 #endif
-
-	if (!blas_ok)
 	{
 	    /* use plain C code if no BLAS at compile time, or if integer
 	     * overflow has occurred */
@@ -113,7 +109,7 @@ GLOBAL void UMF_blas3_update
 			Entry *u_ij, *u_sj ;
 			u_ij = & U [i*dc] ;
 			u_sj = & U [s*dc] ;
-#pragma ivdep
+                        #pragma ivdep
 			for (j = 0 ; j < n ; j++)
 			{
 			    /* U [i*dc+j] -= LU [i+s*nb] * U [s*dc+j] ; */
@@ -130,14 +126,12 @@ GLOBAL void UMF_blas3_update
 	/* C = C - L*U' (U is stored by rows, not columns) */
 
 #ifndef NBLAS
-	BLAS_GEMM (m, n, k, L, U, dc, C, d) ;
+	BLAS_GEMM (m, n, k, L, U, dc, C, d, blas_ok) ;
+        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !blas_ok)
 #endif
-
-	if (!blas_ok)
 	{
 	    /* use plain C code if no BLAS at compile time, or if integer
 	     * overflow has occurred */
-
 	    for (s = 0 ; s < k ; s++)
 	    {
 		for (j = 0 ; j < n ; j++)
@@ -148,7 +142,7 @@ GLOBAL void UMF_blas3_update
 			Entry *c_ij, *l_is ;
 			c_ij = & C [j*d] ;
 			l_is = & L [s*d] ;
-#pragma ivdep
+                        #pragma ivdep
 			for (i = 0 ; i < m ; i++)
 			{
 			    /* C [i+j*d]-= L [i+s*d] * U [s*dc+j] */

@@ -1,23 +1,24 @@
-/* ========================================================================== */
-/* === btf_internal include file ============================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// BTF/Include/btf_internsl.h: internal include file for BTF
+//------------------------------------------------------------------------------
+
+// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 #ifndef _BTF_INTERNAL_H
 #define _BTF_INTERNAL_H
 
-/*
- * By Tim Davis.  Copyright (c) 2004-2007, University of Florida.
- * with support from Sandia National Laboratories.  All Rights Reserved.
- */
-
 /* Not to be included in any user program. */
 
 #ifdef DLONG
-#define Int SuiteSparse_long
-#define Int_id SuiteSparse_long_id
+#define Int int64_t
+#define Int_id "%" PRId64
 #define BTF(name) btf_l_ ## name
 #else
-#define Int int
+#define Int int32_t
 #define Int_id "%d"
 #define BTF(name) btf_ ## name
 #endif

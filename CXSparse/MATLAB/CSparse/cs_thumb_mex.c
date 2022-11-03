@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_thumb_mex: 2D dense thumbnail of a sparse matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_thumb: convert a sparse matrix to a dense 2D thumbnail matrix of size
  * at most k-by-k.  k defaults to 256.  A helper mexFunction for cspy. */
@@ -18,7 +21,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT m, n, mn, m2, n2, k, s, j, ij, sj, si, p, *Ap, *Ai ;
+    int64_t m, n, mn, m2, n2, k, s, j, ij, sj, si, p, *Ap, *Ai ;
     double aij, ax, az, *S, *Ax, *Az ;
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
@@ -30,14 +33,14 @@ void mexFunction
     mn = CS_MAX (m,n) ;
     k = (nargin == 1) ? 256 : mxGetScalar (pargin [1]) ;    /* get k */
     /* s = size of each submatrix; A(1:s,1:s) maps to S(1,1) */
-    s = (mn < k) ? 1 : (CS_INT) ceil ((double) mn / (double) k) ;
-    m2 = (CS_INT) ceil ((double) m / (double) s) ;
-    n2 = (CS_INT) ceil ((double) n / (double) s) ;
+    s = (mn < k) ? 1 : (int64_t) ceil ((double) mn / (double) k) ;
+    m2 = (int64_t) ceil ((double) m / (double) s) ;
+    n2 = (int64_t) ceil ((double) n / (double) s) ;
     /* create S */
     pargout [0] = mxCreateDoubleMatrix (m2, n2, mxREAL) ;
     S = mxGetPr (pargout [0]) ;
-    Ap = (CS_INT *) mxGetJc (pargin [0]) ;
-    Ai = (CS_INT *) mxGetIr (pargin [0]) ;
+    Ap = (int64_t *) mxGetJc (pargin [0]) ;
+    Ai = (int64_t *) mxGetIr (pargin [0]) ;
     Ax = mxGetPr (pargin [0]) ;
     Az = (mxIsComplex (pargin [0])) ? mxGetPi (pargin [0]) : NULL ;
     for (j = 0 ; j < n ; j++)

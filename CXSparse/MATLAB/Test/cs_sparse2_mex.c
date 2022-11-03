@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/Test/cs_sparse2_mex: convert triplet to CSC sparse
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* A = cs_sparse2 (i,j,x), removing duplicates and numerically zero entries,
  * and returning A sorted (test cs_entry) */
@@ -9,7 +12,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT k, m, n, nz, *Ti, *Tj ;
+    int64_t k, m, n, nz, *Ti, *Tj ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: A = cs_sparse2(i,j,x)") ;
@@ -38,7 +41,7 @@ void mexFunction
         A = cs_cl_transpose (C, -1) ;
         cs_cl_spfree (C) ;
         pargout [0] = cs_cl_mex_put_sparse (&A) ;
-        cs_free (Tx) ;
+        cs_cl_free (Tx) ;
 #endif
     }
     else
@@ -59,6 +62,6 @@ void mexFunction
         cs_dl_spfree (C) ;
         pargout [0] = cs_dl_mex_put_sparse (&A) ;
     }
-    cs_free (Ti) ;
-    cs_free (Tj) ;
+    cs_dl_free (Ti) ;
+    cs_dl_free (Tj) ;
 }

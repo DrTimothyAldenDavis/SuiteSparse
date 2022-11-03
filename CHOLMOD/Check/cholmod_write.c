@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === Check/cholmod_write ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Check/cholmod_write: write a matrix to a file in Matrix Market format
+//------------------------------------------------------------------------------
+
+// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Write a matrix to a file in Matrix Market form.
  *
@@ -22,12 +28,7 @@
 
 #ifndef NCHECK
 
-#include "cholmod_config.h"
 #include "cholmod_internal.h"
-#include "cholmod_check.h"
-#include "cholmod_matrixops.h"
-#include <string.h>
-#include <ctype.h>
 
 #define MMLEN 1024
 #define MAXLINE MMLEN+6

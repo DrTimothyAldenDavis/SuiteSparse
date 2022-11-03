@@ -1,11 +1,10 @@
-c=======================================================================
-c== umf4zhb ============================================================
-c=======================================================================
-
 c-----------------------------------------------------------------------
-c UMFPACK Copyright (c) 2005-2012 by Timothy A. Davis,
-c http://www.suitesparse.com.  All Rights Reserved.
-c See ../Doc/License.txt for License.
+c UMFPACK/Demo/umf4zhb: Fortran demo program for UMFPACK
+c-----------------------------------------------------------------------
+
+c UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+c SPDX-License-Identifier: GPL-2.0+
+
 c-----------------------------------------------------------------------
 
 c umf4zhb:

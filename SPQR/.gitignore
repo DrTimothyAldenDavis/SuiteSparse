@@ -1,0 +1,9 @@
+# Ignore these files:
+o_*
+A.mtx
+X.mtx
+gpu_results.txt
+
+# Do not ignore this file
+!.gitignore
+

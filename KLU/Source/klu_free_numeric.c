@@ -1,12 +1,18 @@
-/* ========================================================================== */
-/* === KLU_free_numeric ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_free_numeric: free the KLU numeric factorization
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Free the KLU Numeric object. */
 
 #include "klu_internal.h"
 
-Int KLU_free_numeric
+int KLU_free_numeric
 (
     KLU_numeric **NumericHandle,
     KLU_common  *Common

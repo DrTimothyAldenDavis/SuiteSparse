@@ -2,6 +2,9 @@
 //=== sfmult_AT_XN_YT ==========================================================
 //==============================================================================
 
+// SFMULT, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 // y = (A'*x)'	    A is m-by-n, x is m-by-k, y is k-by-n
 
 // compare with sfmult_AT_XT_YT for kernel usage

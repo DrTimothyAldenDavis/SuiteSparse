@@ -1,5 +1,14 @@
 SPQR/Doc directory for SuiteSparseQR
 
+SPQR (SuiteSparseQR), Copyright (c) 2008-2022, Timothy A Davis.
+All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
+
+The GPU modules in SPQRGPU are under a different copyright:
+
+    SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+    Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
+
 Please read the spqr_user_guide.pdf first.
 
 For additional documentation of the MATLAB user interface, type:
@@ -27,7 +36,3 @@ spqr_user_guide.tex
 
 README.txt                  this file
 
-Timothy A. Davis, http://www.suitesparse.com
-
-GPU acceleration in collaboration with Nuri Yeralan,
-Sanjay Ranka, and Wissam Sid-Lakhdar.

@@ -39,7 +39,8 @@ function SuiteSparse_paths
 % You must run this m-file while in the SuiteSparse folder containing this
 % m-file.
 %
-% Copyright 1990-2022, Timothy A. Davis, http://suitesparse.com.
+% Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
+% See each package for its license.
 
 paths = { } ;
 SuiteSparse = pwd ;
@@ -75,6 +76,8 @@ paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/dimacs10']) ;
 paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/spok']) ;
 paths = add_to_path (paths, [SuiteSparse '/MATLAB_Tools/sparseinv']) ;
 paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
+paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
+paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
 paths = add_to_path (paths, [SuiteSparse '/SLIP_LU/MATLAB']) ;
 

@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_malloc =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_malloc: allocate a block of memory
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     Allocate a block of n objects, each of a given size.  This routine does not
@@ -27,14 +27,17 @@
     defined, and thus UMFPACK has no global variables.
 */
 
-GLOBAL Int UMF_malloc_count = 0 ;
+Int UMF_malloc_count = 0 ;
 
 #endif
 
 #ifdef UMF_TCOV_TEST
+#ifdef DINT
 /* For exhaustive statement coverage testing only! */
-GLOBAL int umf_fail, umf_fail_lo, umf_fail_hi ;
-GLOBAL int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+// define these global values just once, in umf_i_malloc.c
+int umf_fail, umf_fail_lo, umf_fail_hi ;
+int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+#endif
 #endif
 
 GLOBAL void *UMF_malloc

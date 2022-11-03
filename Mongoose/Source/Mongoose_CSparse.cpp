@@ -3,10 +3,11 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * Mongoose Graph Partitioning Library  Copyright (C) 2017-2018,
+ * Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
  * Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
  * Mongoose is licensed under Version 3 of the GNU General Public License.
  * Mongoose is also available under other licenses; contact authors for details.
+ * SPDX-License-Identifier: GPL-3.0-only
  * -------------------------------------------------------------------------- */
 
 /**
@@ -266,7 +267,8 @@ cs *cs_spalloc(csi m, csi n, csi nzmax, csi values, csi triplet)
         return (NULL); /* out of memory */
     A->m     = m;      /* define dimensions and nzmax */
     A->n     = n;
-    A->nzmax = nzmax = std::max(nzmax, 1L);
+    if (nzmax < 1) nzmax = 1 ;
+    A->nzmax = nzmax ; // = std::max(nzmax, 1L);
     A->nz            = triplet ? 0 : -1; /* allocate triplet or comp.col */
     A->p             = (csi *)SuiteSparse_malloc(
         static_cast<size_t>(triplet ? nzmax : n + 1), sizeof(csi));

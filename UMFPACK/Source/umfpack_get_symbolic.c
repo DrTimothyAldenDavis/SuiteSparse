@@ -1,21 +1,21 @@
-/* ========================================================================== */
-/* === UMFPACK_get_symbolic ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_get_symbolic: extract contents of Symbolic object
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Gets the symbolic information held in the Symbolic object.
-    See umfpack_get_symbolic.h for a more detailed description.
+    See umfpack.h for a more detailed description.
 */
 
 #include "umf_internal.h"
 #include "umf_valid_symbolic.h"
 
-GLOBAL Int UMFPACK_get_symbolic
+GLOBAL int UMFPACK_get_symbolic
 (
     Int *p_n_row,
     Int *p_n_col,
@@ -32,6 +32,7 @@ GLOBAL Int UMFPACK_get_symbolic
     Int Chain_start [ ],
     Int Chain_maxrows [ ],
     Int Chain_maxcols [ ],
+    Int Dmap [ ],               // added for v6.0.0
     void *SymbolicHandle
 )
 {
@@ -90,26 +91,32 @@ GLOBAL Int UMFPACK_get_symbolic
 
     if (P != (Int *) NULL)
     {
-	Int *Rperm_init, *Diagonal_map ;
-	Rperm_init = Symbolic->Rperm_init ;
-	Diagonal_map = Symbolic->Diagonal_map ;
-	if (Diagonal_map != (Int *) NULL)
-	{
-	    ASSERT (n_row == n_col) ;
-	    /* next pivot rows are found in the diagonal map */
-	    for (k = 0 ; k < n_row ; k++)
-	    {
-		P [k] = Rperm_init [Diagonal_map [k]] ;
-	    }
-	}
-	else
-	{
-	    /* there is no diagonal map.  */
-	    for (k = 0 ; k < n_row ; k++)
-	    {
-		P [k] = Rperm_init [k] ;
-	    }
-	}
+        // changes for v6.0.0: Diagonal_map not included in the row
+        // permutation, and Rperm_init is now returned as-is.  In v5.7.9 and
+        // earlier, P was constructed from Rperm_init and the Diagonal_map, but
+        // this is not useful.
+        Int *Rperm_init ;
+        Rperm_init = Symbolic->Rperm_init ;
+        for (k = 0 ; k < n_row ; k++)
+        {
+            P [k] = Rperm_init [k] ;
+        }
+    }
+
+    if (Dmap != NULL)
+    {
+        if (Symbolic->Diagonal_map == NULL)
+        {
+            // Diagonal_Map wasn't constructed (implicit identity)
+            for (k = 0 ; k < n_col ; k++)
+            {
+                Dmap [k] = k ;
+            }
+        }
+        else
+        {
+            memcpy (Dmap, Symbolic->Diagonal_map, n_col * sizeof (Int)) ;
+        }
     }
 
     if (Q != (Int *) NULL)

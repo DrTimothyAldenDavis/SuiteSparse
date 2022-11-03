@@ -3,6 +3,9 @@ function info = spqr_gpu (ordering, A)
 %   ordering: 1 colamd
 %   ordering: 2 metis
 
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 if (nargin > 1)
     % write the matrix to a file
     mwrite ('A.mtx', A) ;
@@ -14,9 +17,9 @@ end
 
 setenv('LD_LIBRARY_PATH', '/usr/local/cuda/lib64:/usr/lib:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/lib64')
 if (ordering == 1)
-    system ('tcsh demo_colamd.sh') ;
+    system ('./demo_colamd.sh') ;
 else
-    system ('tcsh demo_metis.sh') ;
+    system ('./demo_metis.sh') ;
 end
 
 load ('gpu_results.txt') ;

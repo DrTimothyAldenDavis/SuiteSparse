@@ -1,7 +1,10 @@
 function SJget_install
 % SJget_install - Install SJget toolbox.
 %
-% Copyright 2008, Leslie Foster
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
+
 % Created Nikolay Botev March 2008
 % 5/2/2008:  modified by L. Foster
 

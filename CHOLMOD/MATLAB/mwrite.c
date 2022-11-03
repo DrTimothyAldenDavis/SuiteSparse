@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/mwrite mexFunction ==================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/mwrite: write a matrix in Matrix Market format
+//------------------------------------------------------------------------------
+
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Write a matrix to a file in Matrix Market form.
  *
@@ -39,7 +45,7 @@ void mexFunction
     cholmod_sparse Amatrix, Zmatrix, *A, *Z ;
     cholmod_dense Xmatrix, *X ;
     cholmod_common Common, *cm ;
-    Long arg_z, arg_comments, sym ;
+    int64_t arg_z, arg_comments, sym ;
     char filename [MAXLEN], comments [MAXLEN] ;
 
     /* ---------------------------------------------------------------------- */

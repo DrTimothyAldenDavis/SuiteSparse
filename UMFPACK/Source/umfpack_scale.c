@@ -1,15 +1,15 @@
-/* ========================================================================== */
-/* === UMFPACK_scale ======================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_scale: apply scale factors
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Applies the scale factors computed during numerical
-    factorization to a vector. See umfpack_scale.h for more details.
+    factorization to a vector. See umfpack.h for more details.
 
     The LU factorization is L*U = P*R*A*Q, where P and Q are permutation
     matrices, and R is diagonal.  This routine computes X = R * B using the
@@ -24,7 +24,7 @@
 #include "umf_internal.h"
 #include "umf_valid_numeric.h"
 
-GLOBAL Int UMFPACK_scale
+GLOBAL int UMFPACK_scale
 (
     double Xx [ ],
 #ifdef COMPLEX

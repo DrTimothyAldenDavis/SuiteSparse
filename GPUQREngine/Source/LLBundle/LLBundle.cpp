@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/LLBundle.cpp =========================================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains the constructor and destructor for the LLBundle class.
 // The constructor will attempt to reserve a VT tile automatically, since newly

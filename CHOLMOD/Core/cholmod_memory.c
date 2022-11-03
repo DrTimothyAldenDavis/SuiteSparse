@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_memory ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_memory: memory management routines
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2013,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Core memory management routines:
  *
@@ -45,7 +46,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 /* ========================================================================== */
 /* === cholmod_add_size_t =================================================== */
@@ -129,7 +129,7 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0")  ;
 	p = NULL ;
     }
-    else if (n >= (Size_max / size) || n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -241,7 +241,7 @@ void *CHOLMOD(calloc)	/* returns pointer to the newly calloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0") ;
 	p = NULL ;
     }
-    else if (n >= (Size_max / size) || n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -329,7 +329,7 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	/* Nothing to do.  Do not change p or n. */
 	PRINT1 (("realloc nothing: %d %d\n", nnew, size)) ;
     }
-    else if (nnew >= (Size_max / size) || nnew >= Int_max)
+    else if (nnew >= (SIZE_MAX / size) || nnew >= Int_max)
     {
 	/* failure: nnew is too big.  Do not change p or n. */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -381,11 +381,11 @@ int CHOLMOD(realloc_multiple)
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated blocks */
-    int nint,		/* number of int/SuiteSparse_long blocks */
+    int nint,		/* number of int/int64_t blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **Iblock,	/* int or SuiteSparse_long block */
-    void **Jblock,	/* int or SuiteSparse_long block */
+    void **Iblock,	/* int or int64_t block */
+    void **Jblock,	/* int or int64_t block */
     void **Xblock,	/* complex or double block */
     void **Zblock,	/* zomplex case only: double block */
     size_t *nold_p,	/* current size of the I,J,X,Z blocks on input,

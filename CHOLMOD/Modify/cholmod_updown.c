@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === Modify/cholmod_updown ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Modify/cholmod_updown: sparse Cholesky update/downdate
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Modify Module.
- * Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager.
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// and William W. Hager. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Updates/downdates the LDL' factorization (symbolic, then numeric), by
  * computing a new factorization of
@@ -58,12 +58,10 @@
  * numeric identity matrix.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMODIFY
-
-#include "cholmod_internal.h"
-#include "cholmod_modify.h"
-
 
 /* ========================================================================== */
 /* === cholmod_updown ======================================================= */

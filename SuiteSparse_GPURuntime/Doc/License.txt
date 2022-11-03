@@ -1,5 +1,6 @@
-SuiteSparse_GPURuntime Copyright (c) 2013-2016, Timothy A. Davis,
-Sencer Nuri Yeralan, and Sanjay Ranka.  http://www.suitesparse.com
+SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
 
 --------------------------------------------------------------------------------
 

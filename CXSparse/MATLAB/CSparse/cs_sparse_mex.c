@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_sparse_mex: triplet to compressed-col form
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_sparse: convert triplet form into compress-column form sparse matrix */
 void mexFunction
@@ -29,9 +32,9 @@ void mexFunction
         A = cs_cl_transpose (C, -1) ;           /* A=C.' */
         cs_cl_spfree (C) ;
         pargout [0] = cs_cl_mex_put_sparse (&A) ;       /* return A */
-        cs_free (T->p) ;
-        cs_free (T->i) ;
-        cs_free (T->x) ;                        /* free copy of complex values*/
+        cs_dl_free (T->p) ;
+        cs_dl_free (T->i) ;
+        cs_cl_free (T->x) ;                     /* free copy of complex values*/
 #else
         mexErrMsgTxt ("complex matrices not supported") ;
 #endif
@@ -52,7 +55,7 @@ void mexFunction
         A = cs_dl_transpose (C, 1) ;            /* A=C' */
         cs_dl_spfree (C) ;
         pargout [0] = cs_dl_mex_put_sparse (&A) ;       /* return A */
-        cs_free (T->p) ;
-        cs_free (T->i) ;
+        cs_dl_free (T->p) ;
+        cs_dl_free (T->i) ;
     }
 }

@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === CCOLAMD/ccolamd.h ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CCOLAMD/Include/ccolamd.h:  constrained column approx. min. degree ordering
+//------------------------------------------------------------------------------
 
-/* ----------------------------------------------------------------------------
- * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
- * Sivasankaran Rajamanickam, and Stefan Larimore
- * -------------------------------------------------------------------------- */
+// CCOLAMD, Copyright (c) 1996-2022, Timothy A. Davis, Sivasankaran
+// Rajamanickam, and Stefan Larimore.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  *  You must include this file (ccolamd.h) in any routine that uses ccolamd,
@@ -20,8 +21,7 @@
 extern "C" {
 #endif
 
-/* for size_t definition: */
-#include <stdlib.h>
+#include "SuiteSparse_config.h"
 
 /* ========================================================================== */
 /* === CCOLAMD version ====================================================== */
@@ -41,11 +41,12 @@ extern "C" {
  *	#endif
  */
 
-#define CCOLAMD_DATE "May 4, 2016"
+#define CCOLAMD_DATE "Nov 4, 2022"
+#define CCOLAMD_MAIN_VERSION   3
+#define CCOLAMD_SUB_VERSION    0
+#define CCOLAMD_SUBSUB_VERSION 0
+
 #define CCOLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
-#define CCOLAMD_MAIN_VERSION 2
-#define CCOLAMD_SUB_VERSION 9
-#define CCOLAMD_SUBSUB_VERSION 6
 #define CCOLAMD_VERSION \
 	CCOLAMD_VERSION_CODE(CCOLAMD_MAIN_VERSION,CCOLAMD_SUB_VERSION)
 
@@ -111,8 +112,7 @@ extern "C" {
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
 
-#include "SuiteSparse_config.h"
-
+SUITESPARSE_PUBLIC 
 size_t ccolamd_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
 (
@@ -121,24 +121,28 @@ size_t ccolamd_recommended	/* returns recommended value of Alen, */
     int n_col			/* number of columns in A */
 ) ;
 
+SUITESPARSE_PUBLIC 
 size_t ccolamd_l_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
 (
-    SuiteSparse_long nnz,		/* nonzeros in A */
-    SuiteSparse_long n_row,		/* number of rows in A */
-    SuiteSparse_long n_col		/* number of columns in A */
+    int64_t nnz,		/* nonzeros in A */
+    int64_t n_row,		/* number of rows in A */
+    int64_t n_col		/* number of columns in A */
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_set_defaults	/* sets default parameters */
 (				/* knobs argument is modified on output */
     double knobs [CCOLAMD_KNOBS]	/* parameter settings for ccolamd */
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_l_set_defaults	/* sets default parameters */
 (				/* knobs argument is modified on output */
     double knobs [CCOLAMD_KNOBS]	/* parameter settings for ccolamd */
 ) ;
 
+SUITESPARSE_PUBLIC 
 int ccolamd			/* returns (1) if successful, (0) otherwise*/
 (				/* A and p arguments are modified on output */
     int n_row,			/* number of rows in A */
@@ -151,18 +155,20 @@ int ccolamd			/* returns (1) if successful, (0) otherwise*/
     int cmember [ ]		/* Constraint set of A, of size n_col */
 ) ;
 
-SuiteSparse_long ccolamd_l      /* as ccolamd w/ SuiteSparse_long integers */
+SUITESPARSE_PUBLIC 
+int ccolamd_l      /* as ccolamd w/ int64_t integers */
 (
-    SuiteSparse_long n_row,
-    SuiteSparse_long n_col,
-    SuiteSparse_long Alen,
-    SuiteSparse_long A [ ],
-    SuiteSparse_long p [ ],
+    int64_t n_row,
+    int64_t n_col,
+    int64_t Alen,
+    int64_t A [ ],
+    int64_t p [ ],
     double knobs [CCOLAMD_KNOBS],
-    SuiteSparse_long stats [CCOLAMD_STATS],
-    SuiteSparse_long cmember [ ]
+    int64_t stats [CCOLAMD_STATS],
+    int64_t cmember [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 int csymamd			/* return (1) if OK, (0) otherwise */
 (
     int n,			/* number of rows and columns of A */
@@ -179,38 +185,43 @@ int csymamd			/* return (1) if OK, (0) otherwise */
     int stype			/* 0: use both parts, >0: upper, <0: lower */
 ) ;
 
-SuiteSparse_long csymamd_l      /* as csymamd, w/ SuiteSparse_long integers */
+SUITESPARSE_PUBLIC 
+int csymamd_l      /* as csymamd, w/ int64_t integers */
 (
-    SuiteSparse_long n,
-    SuiteSparse_long A [ ],
-    SuiteSparse_long p [ ],
-    SuiteSparse_long perm [ ],
+    int64_t n,
+    int64_t A [ ],
+    int64_t p [ ],
+    int64_t perm [ ],
     double knobs [CCOLAMD_KNOBS],
-    SuiteSparse_long stats [CCOLAMD_STATS],
+    int64_t stats [CCOLAMD_STATS],
     void * (*allocate) (size_t, size_t),
     void (*release) (void *),
-    SuiteSparse_long cmember [ ],
-    SuiteSparse_long stype
+    int64_t cmember [ ],
+    int64_t stype
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_report
 (
     int stats [CCOLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_l_report
 (
-    SuiteSparse_long stats [CCOLAMD_STATS]
+    int64_t stats [CCOLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void csymamd_report
 (
     int stats [CCOLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void csymamd_l_report
 (
-    SuiteSparse_long stats [CCOLAMD_STATS]
+    int64_t stats [CCOLAMD_STATS]
 ) ;
 
 
@@ -223,6 +234,7 @@ void csymamd_l_report
  * be called directly by the user.
  */
 
+SUITESPARSE_PUBLIC 
 int ccolamd2
 (				/* A and p arguments are modified on output */
     int n_row,			/* number of rows in A */
@@ -243,25 +255,27 @@ int ccolamd2
     int cmember [ ]		/* Constraint set of A */
 ) ;
 
-SuiteSparse_long ccolamd2_l     /* as ccolamd2, w/ SuiteSparse_long integers */
+SUITESPARSE_PUBLIC 
+int ccolamd2_l     /* as ccolamd2, w/ int64_t integers */
 (
-    SuiteSparse_long n_row,
-    SuiteSparse_long n_col,
-    SuiteSparse_long Alen,
-    SuiteSparse_long A [ ],
-    SuiteSparse_long p [ ],
+    int64_t n_row,
+    int64_t n_col,
+    int64_t Alen,
+    int64_t A [ ],
+    int64_t p [ ],
     double knobs [CCOLAMD_KNOBS],
-    SuiteSparse_long stats [CCOLAMD_STATS],
-    SuiteSparse_long Front_npivcol [ ],
-    SuiteSparse_long Front_nrows [ ],
-    SuiteSparse_long Front_ncols [ ],
-    SuiteSparse_long Front_parent [ ],
-    SuiteSparse_long Front_cols [ ],
-    SuiteSparse_long *p_nfr,
-    SuiteSparse_long InFront [ ],
-    SuiteSparse_long cmember [ ]
+    int64_t stats [CCOLAMD_STATS],
+    int64_t Front_npivcol [ ],
+    int64_t Front_nrows [ ],
+    int64_t Front_ncols [ ],
+    int64_t Front_parent [ ],
+    int64_t Front_cols [ ],
+    int64_t *p_nfr,
+    int64_t InFront [ ],
+    int64_t cmember [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_apply_order
 (
     int Front [ ],
@@ -271,16 +285,17 @@ void ccolamd_apply_order
     int nfr
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_l_apply_order
 (
-    SuiteSparse_long Front [ ],
-    const SuiteSparse_long Order [ ],
-    SuiteSparse_long Temp [ ],
-    SuiteSparse_long nn,
-    SuiteSparse_long nfr
+    int64_t Front [ ],
+    const int64_t Order [ ],
+    int64_t Temp [ ],
+    int64_t nn,
+    int64_t nfr
 ) ;
 
-
+SUITESPARSE_PUBLIC 
 void ccolamd_fsize
 (
     int nn,
@@ -291,16 +306,18 @@ void ccolamd_fsize
     int Npiv [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_l_fsize
 (
-    SuiteSparse_long nn,
-    SuiteSparse_long MaxFsize [ ],
-    SuiteSparse_long Fnrows [ ],
-    SuiteSparse_long Fncols [ ],
-    SuiteSparse_long Parent [ ],
-    SuiteSparse_long Npiv [ ]
+    int64_t nn,
+    int64_t MaxFsize [ ],
+    int64_t Fnrows [ ],
+    int64_t Fncols [ ],
+    int64_t Parent [ ],
+    int64_t Npiv [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_postorder
 (
     int nn,
@@ -315,20 +332,22 @@ void ccolamd_postorder
     int cmember [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void ccolamd_l_postorder
 (
-    SuiteSparse_long nn,
-    SuiteSparse_long Parent [ ],
-    SuiteSparse_long Npiv [ ],
-    SuiteSparse_long Fsize [ ],
-    SuiteSparse_long Order [ ],
-    SuiteSparse_long Child [ ],
-    SuiteSparse_long Sibling [ ],
-    SuiteSparse_long Stack [ ],
-    SuiteSparse_long Front_cols [ ],
-    SuiteSparse_long cmember [ ]
+    int64_t nn,
+    int64_t Parent [ ],
+    int64_t Npiv [ ],
+    int64_t Fsize [ ],
+    int64_t Order [ ],
+    int64_t Child [ ],
+    int64_t Sibling [ ],
+    int64_t Stack [ ],
+    int64_t Front_cols [ ],
+    int64_t cmember [ ]
 ) ;
 
+SUITESPARSE_PUBLIC 
 int ccolamd_post_tree
 (
     int root,
@@ -339,14 +358,15 @@ int ccolamd_post_tree
     int Stack [ ]
 ) ;
 
-SuiteSparse_long ccolamd_l_post_tree
+SUITESPARSE_PUBLIC 
+int64_t ccolamd_l_post_tree
 (
-    SuiteSparse_long root,
-    SuiteSparse_long k,
-    SuiteSparse_long Child [ ],
-    const SuiteSparse_long Sibling [ ],
-    SuiteSparse_long Order [ ],
-    SuiteSparse_long Stack [ ]
+    int64_t root,
+    int64_t k,
+    int64_t Child [ ],
+    const int64_t Sibling [ ],
+    int64_t Order [ ],
+    int64_t Stack [ ]
 ) ;
 
 #ifdef __cplusplus

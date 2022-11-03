@@ -74,7 +74,7 @@ void tcov_free
     free (p) ;
 }
 
-jmp_buf slip_gmp_environment ;  // for setjmp and longjmp
+extern jmp_buf slip_gmp_environment ;  // for setjmp and longjmp
 
 int slip_gmp_realloc_test
 (
@@ -92,3 +92,4 @@ int slip_gmp_realloc_test
     *p_new = slip_gmp_reallocate(p_old, old_size, new_size);
     return SLIP_OK;
 }
+

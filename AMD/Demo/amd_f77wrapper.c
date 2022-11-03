@@ -1,14 +1,14 @@
-/* ========================================================================= */
-/* === amd_f77wrapper ====================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_f77wrapper: Fortran interface for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
 
-/* Fortran interface for the C-callable AMD library (int version only).  This
+//------------------------------------------------------------------------------
+
+/* Fortran interface for the C-callable AMD library (int32_t only).  This
  * is HIGHLY non-portable.  You will need to modify this depending on how your
  * Fortran and C compilers behave.  Two examples are provided.
  *
@@ -24,16 +24,15 @@
  */
 
 #include "amd.h"
-#include <stdio.h>
 
 /* ------------------------------------------------------------------------- */
 /* Linux, Solaris, SGI */
 /* ------------------------------------------------------------------------- */
 
-void amdorder_ (int *n, const int *Ap, const int *Ai, int *P,
+void amdorder_ (int32_t *n, const int32_t *Ap, const int32_t *Ai, int32_t *P,
     double *Control, double *Info)
 {
-    int result = amd_order (*n, Ap, Ai, P, Control, Info) ;
+    int32_t result = amd_order (*n, Ap, Ai, P, Control, Info) ;
     if (result != AMD_OK && P) P [0] = result ;
 }
 
@@ -60,10 +59,10 @@ void amdinfo_ (double *Info)
 /* IBM AIX.  Probably Windows, Compaq Alpha, and HP Unix as well. */
 /* ------------------------------------------------------------------------- */
 
-void amdorder (int *n, const int *Ap, const int *Ai, int *P,
+void amdorder (int32_t *n, const int32_t *Ap, const int32_t *Ai, int32_t *P,
     double *Control, double *Info)
 {
-    int result = amd_order (*n, Ap, Ai, P, Control, Info) ;
+    int32_t result = amd_order (*n, Ap, Ai, P, Control, Info) ;
     if (result != AMD_OK && P) P [0] = result ;
 }
 

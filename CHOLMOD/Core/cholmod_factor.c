@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_factor ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_factor: core methods for cholmod_factor object
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2013,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Core utility routines for the cholmod_factor object:
  *
@@ -43,8 +44,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
-
 
 /* ========================================================================== */
 /* === cholmod_allocate_factor ============================================== */
@@ -382,7 +381,7 @@ int CHOLMOD(reallocate_column)
 	{
 	    xneed = Common->grow0 * (((double) L->nzmax) + xneed + 1) ;
 	}
-	if (xneed > Size_max ||
+	if (xneed > (double) SIZE_MAX ||
 		!CHOLMOD(reallocate_factor) ((Int) xneed, L, Common))
 	{
 	    /* out of memory, convert to simplicial symbolic */

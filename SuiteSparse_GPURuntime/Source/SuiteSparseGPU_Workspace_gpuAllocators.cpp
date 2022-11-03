@@ -2,6 +2,14 @@
 // === SuiteSparse_GPURuntime/Source/SuiteSparseGPU_Workspace_gpuAllocators.cpp
 // =============================================================================
 
+// SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
+// Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
+#ifdef SUITESPARSE_CUDA
+
 #include "SuiteSparseGPU_Runtime.hpp"
 #include <stdio.h>
 
@@ -90,4 +98,6 @@ void *Workspace::gpu_free(void *address)
 //     cudaError_t result = cudaMemset(gpuReference, value, totalSize);
 //     return (result == cudaSuccess) ;
 // }
+
+#endif
 

@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Cholesky/cholmod_spsolve ============================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Cholesky/cholmod_spsolve: solve a linear system with sparse x and b
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Cholesky Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Given an LL' or LDL' factorization of A, solve one of the following systems:
  *
@@ -23,10 +25,9 @@
  * All xtypes of x and b are supported (real, complex, and zomplex).
  */
 
-#ifndef NCHOLESKY
-
 #include "cholmod_internal.h"
-#include "cholmod_cholesky.h"
+
+#ifndef NCHOLESKY
 
 /* ========================================================================== */
 /* === EXPAND_AS_NEEDED ===================================================== */

@@ -35,4 +35,5 @@ qrdemo_gpu.out      output of qrdemo_gpu.cpp
 
 --------------------------------------------------------------------------------
 
-Timothy A. Davis, http://www.suitesparse.com
+SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+

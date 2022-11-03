@@ -1,9 +1,12 @@
+// CXSparse/MATLAB/CSparse/cs_mex: utility functions for MATLAB interface
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* check MATLAB input argument */
-void cs_mex_check (CS_INT nel, CS_INT m, CS_INT n, int square, int sparse,
+void cs_mex_check (int64_t nel, int64_t m, int64_t n, int square, int sparse,
     int values, const mxArray *A)
 {
-    CS_INT nnel, mm = mxGetM (A), nn = mxGetN (A) ;
+    int64_t nnel, mm = mxGetM (A), nn = mxGetN (A) ;
 #ifdef NCOMPLEX
     if (values)
     {
@@ -38,8 +41,8 @@ cs_dl *cs_dl_mex_get_sparse (cs_dl *A, int square, int values,
     cs_mex_check (0, -1, -1, square, 1, values, Amatlab) ;
     A->m = mxGetM (Amatlab) ;
     A->n = mxGetN (Amatlab) ;
-    A->p = (CS_INT *) mxGetJc (Amatlab) ;
-    A->i = (CS_INT *) mxGetIr (Amatlab) ;
+    A->p = (int64_t *) mxGetJc (Amatlab) ;
+    A->i = (int64_t *) mxGetIr (Amatlab) ;
     A->x = values ? mxGetPr (Amatlab) : NULL ;
     A->nzmax = mxGetNzmax (Amatlab) ;
     A->nz = -1 ;    /* denotes a compressed-col matrix, instead of triplet */
@@ -58,15 +61,15 @@ mxArray *cs_dl_mex_put_sparse (cs_dl **Ahandle)
     mxSetM (Amatlab, A->m) ;
     mxSetN (Amatlab, A->n) ;
     mxSetNzmax (Amatlab, A->nzmax) ;
-    cs_free (mxGetJc (Amatlab)) ;
-    cs_free (mxGetIr (Amatlab)) ;
-    cs_free (mxGetPr (Amatlab)) ;
+    cs_dl_free (mxGetJc (Amatlab)) ;
+    cs_dl_free (mxGetIr (Amatlab)) ;
+    cs_dl_free (mxGetPr (Amatlab)) ;
     mxSetJc (Amatlab, (void *) (A->p)) ; /* assign A->p pointer to MATLAB A */
     mxSetIr (Amatlab, (void *) (A->i)) ;
     if (A->x == NULL)
     {
         /* A is a pattern only matrix; return all 1's to MATLAB */
-        CS_INT i, nz ;
+        int64_t i, nz ;
         nz = A->p [A->n] ;
         A->x = cs_dl_malloc (CS_MAX (nz,1), sizeof (double)) ;
         for (i = 0 ; i < nz ; i++)
@@ -75,35 +78,35 @@ mxArray *cs_dl_mex_put_sparse (cs_dl **Ahandle)
         }
     }
     mxSetPr (Amatlab, A->x) ;
-    cs_free (A) ;                       /* frees A struct only, not A->p, etc */
+    cs_dl_free (A) ;                   /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;
     return (Amatlab) ;
 }
 
 /* get a real MATLAB dense column vector */
-double *cs_dl_mex_get_double (CS_INT n, const mxArray *X)
+double *cs_dl_mex_get_double (int64_t n, const mxArray *X)
 {
     cs_mex_check (0, n, 1, 0, 0, 1, X) ;
     return (mxGetPr (X)) ;
 }
 
 /* return a double vector to MATLAB */
-double *cs_dl_mex_put_double (CS_INT n, const double *b, mxArray **X)
+double *cs_dl_mex_put_double (int64_t n, const double *b, mxArray **X)
 {
     double *x ;
-    CS_INT k ;
+    int64_t k ;
     *X = mxCreateDoubleMatrix (n, 1, mxREAL) ;      /* create x */
     x = mxGetPr (*X) ;
     for (k = 0 ; k < n ; k++) x [k] = b [k] ;       /* copy x = b */
     return (x) ;
 }
 
-/* get a MATLAB flint array and convert to CS_INT */
-CS_INT *cs_dl_mex_get_int (CS_INT n, const mxArray *Imatlab, CS_INT *imax,
+/* get a MATLAB flint array and convert to int64_t */
+int64_t *cs_dl_mex_get_int (int64_t n, const mxArray *Imatlab, int64_t *imax,
     int lo)
 {
     double *p ;
-    CS_INT i, k, *C = cs_dl_malloc (n, sizeof (CS_INT)) ;
+    int64_t i, k, *C = cs_dl_malloc (n, sizeof (int64_t)) ;
     cs_mex_check (1, n, 1, 0, 0, 1, Imatlab) ;
     if (mxIsComplex (Imatlab))
     {
@@ -121,24 +124,24 @@ CS_INT *cs_dl_mex_get_int (CS_INT n, const mxArray *Imatlab, CS_INT *imax,
     return (C) ;
 }
 
-/* return an CS_INT array to MATLAB as a flint row vector */
-mxArray *cs_dl_mex_put_int (CS_INT *p, CS_INT n, CS_INT offset, int do_free)
+/* return an int64_t array to MATLAB as a flint row vector */
+mxArray *cs_dl_mex_put_int (int64_t *p, int64_t n, int64_t offset, int do_free)
 {
     mxArray *X = mxCreateDoubleMatrix (1, n, mxREAL) ;
     double *x = mxGetPr (X) ;
-    CS_INT k ;
+    int64_t k ;
     for (k = 0 ; k < n ; k++) x [k] = (p ? p [k] : k) + offset ;
-    if (do_free) cs_free (p) ;
+    if (do_free) cs_dl_free (p) ;
     return (X) ;
 }
 
 #ifndef NCOMPLEX
 
 /* copy a MATLAB real or complex vector into a cs_cl complex vector */
-static cs_complex_t *cs_cl_get_vector (CS_INT n, CS_INT size,
+static cs_complex_t *cs_cl_get_vector (int64_t n, int64_t size,
     const mxArray *Xmatlab)
 {
-    CS_INT p ;
+    int64_t p ;
     double *X, *Z ;
     cs_complex_t *Y ;
     X = mxGetPr (Xmatlab) ;
@@ -157,8 +160,8 @@ cs_cl *cs_cl_mex_get_sparse (cs_cl *A, int square, const mxArray *Amatlab)
     cs_mex_check (0, -1, -1, square, 1, 1, Amatlab) ;
     A->m = mxGetM (Amatlab) ;
     A->n = mxGetN (Amatlab) ;
-    A->p = (CS_INT *) mxGetJc (Amatlab) ;
-    A->i = (CS_INT *) mxGetIr (Amatlab) ;
+    A->p = (int64_t *) mxGetJc (Amatlab) ;
+    A->i = (int64_t *) mxGetIr (Amatlab) ;
     A->nzmax = mxGetNzmax (Amatlab) ;
     A->x = cs_cl_get_vector (A->p [A->n], A->nzmax, Amatlab) ;
     A->nz = -1 ;    /* denotes a compressed-col matrix, instead of triplet */
@@ -171,7 +174,7 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
     cs_cl *A ;
     double *x, *z ;
     mxArray *Amatlab ;
-    CS_INT k ;
+    int64_t k ;
     if (!Ahandle || !CS_CSC ((*Ahandle))) mexErrMsgTxt ("invalid sparse matrix") ;
     A = *Ahandle ;
     if (A->x == NULL) mexErrMsgTxt ("invalid complex sparse matrix") ;
@@ -179,10 +182,10 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
     mxSetM (Amatlab, A->m) ;
     mxSetN (Amatlab, A->n) ;
     mxSetNzmax (Amatlab, A->nzmax) ;
-    cs_cl_free (mxGetJc (Amatlab)) ;
-    cs_cl_free (mxGetIr (Amatlab)) ;
-    cs_cl_free (mxGetPr (Amatlab)) ;
-    cs_cl_free (mxGetPi (Amatlab)) ;
+    cs_dl_free (mxGetJc (Amatlab)) ;
+    cs_dl_free (mxGetIr (Amatlab)) ;
+    cs_dl_free (mxGetPr (Amatlab)) ;
+    cs_dl_free (mxGetPi (Amatlab)) ;
     mxSetJc (Amatlab, (void *) (A->p)) ; /* assign A->p pointer to MATLAB A */
     mxSetIr (Amatlab, (void *) (A->i)) ;
     x = cs_dl_malloc (A->nzmax, sizeof (double)) ;
@@ -195,24 +198,24 @@ mxArray *cs_cl_mex_put_sparse (cs_cl **Ahandle)
     cs_cl_free (A->x) ;                 /* free copy of complex values */
     mxSetPr (Amatlab, x) ;              /* x and z will not be NULL, even if nz==0 */
     mxSetPi (Amatlab, z) ;
-    cs_cl_free (A) ;                    /* frees A struct only, not A->p, etc */
+    cs_dl_free (A) ;                    /* frees A struct only, not A->p, etc */
     *Ahandle = NULL ;
     return (Amatlab) ;
 }
 
 /* get a real or complex MATLAB dense column vector, and copy to cs_complex_t */
-cs_complex_t *cs_cl_mex_get_double (CS_INT n, const mxArray *X)
+cs_complex_t *cs_cl_mex_get_double (int64_t n, const mxArray *X)
 {
     cs_mex_check (0, n, 1, 0, 0, 1, X) ;
     return (cs_cl_get_vector (n, n, X)) ;
 }
 
 /* copy a complex vector back to MATLAB and free it */
-mxArray *cs_cl_mex_put_double (CS_INT n, cs_complex_t *b)
+mxArray *cs_cl_mex_put_double (int64_t n, cs_complex_t *b)
 {
     double *x, *z ;
     mxArray *X ;
-    CS_INT k ;
+    int64_t k ;
     X = mxCreateDoubleMatrix (n, 1, mxCOMPLEX) ;    /* create x */
     x = mxGetPr (X) ;
     z = mxGetPi (X) ;

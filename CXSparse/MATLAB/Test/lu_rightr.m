@@ -4,7 +4,8 @@ function [L,U] = lu_rightr (A)
 %   [L,U] = lu_rightr (A)
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 n = size (A,1) ;
 if (n == 1)

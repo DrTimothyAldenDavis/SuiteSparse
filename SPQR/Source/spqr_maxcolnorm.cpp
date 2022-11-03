@@ -2,37 +2,26 @@
 // === spqr_maxcolnorm =========================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Given an m-by-n sparse matrix A, compute the max 2-norm of its columns.
 
 #include "spqr.hpp"
 
-inline double spqr_private_nrm2 (Long n, double *X, cholmod_common *cc)
+inline double spqr_private_nrm2 (int64_t n, double *X, cholmod_common *cc)
 {
-    double norm = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        norm = BLAS_DNRM2 (&N, X, &one) ;
-    }
+    double norm ;
+    SUITESPARSE_BLAS_dnrm2 (norm, n, X, 1, cc->blas_ok) ;
     return (norm) ;
 }
 
-inline double spqr_private_nrm2 (Long n, Complex *X, cholmod_common *cc)
+inline double spqr_private_nrm2 (int64_t n, Complex *X, cholmod_common *cc)
 {
-    double norm = 0 ;
-    BLAS_INT N = n, one = 1 ;
-    if (CHECK_BLAS_INT && !EQ (N,n))
-    {
-        cc->blas_ok = FALSE ;
-    }
-    if (!CHECK_BLAS_INT || cc->blas_ok)
-    {
-        norm = BLAS_DZNRM2 (&N, X, &one) ;
-    }
+    double norm ;
+    SUITESPARSE_BLAS_dznrm2 (norm, n, X, 1, cc->blas_ok) ;
     return (norm) ;
 }
 
@@ -51,7 +40,7 @@ template <typename Entry> double spqr_maxcolnorm
 )
 {
     double norm, maxnorm ;
-    Long j, p, len, n, *Ap ;
+    int64_t j, p, len, n, *Ap ;
     Entry *Ax ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
@@ -59,7 +48,7 @@ template <typename Entry> double spqr_maxcolnorm
 
     cc->blas_ok = TRUE ;
     n = A->ncol ;
-    Ap = (Long *) A->p ;
+    Ap = (int64_t *) A->p ;
     Ax = (Entry *) A->x ;
 
     maxnorm = 0 ;
@@ -71,7 +60,7 @@ template <typename Entry> double spqr_maxcolnorm
         maxnorm = MAX (maxnorm, norm) ;
     }
 
-    if (CHECK_BLAS_INT && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (EMPTY) ;

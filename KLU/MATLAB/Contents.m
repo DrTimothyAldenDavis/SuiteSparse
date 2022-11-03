@@ -10,7 +10,8 @@
 %   LU = klu (A) ;
 %   x = klu (A, '\', b) ;
 %   x = klu (LU, '\', b) ;
-%
-% Copyright 2004-2009, Univ. of Florida
-% KLU Version 1.0.
+
+% KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+% Authors: Timothy A. Davis and Ekanathan Palamadai.
+% SPDX-License-Identifier: LGPL-2.1+
 

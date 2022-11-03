@@ -9,15 +9,16 @@ function umfpack_make
 % UMFPACK relies on AMD and its own built-in version of COLAMD for its ordering
 % options.  The default is for UMFPACK to also use CHOLMOD, CCOLAMD, CAMD, and
 % METIS for more ordering options as well.  This results in lower fill-in and
-% higher performance.  METIS 5.1.0 should appear in ../../metis-5.1.0.
+% higher performance.  METIS 5.1.0 should appear in ../../SuiteSparse_metis.
 % METIS is optional; if not present, it is not used.
 %
 % See also: umfpack, umfpack_details, umfpack_report, umfpack_demo,
 % and umfpack_simple.
 
-% Copyright 1995-2016 by Timothy A. Davis.
+% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
-metis_path = '../../metis-5.1.0' ;
+metis_path = '../../SuiteSparse_metis' ;
 with_cholmod = exist (metis_path, 'dir') ;
 
 details = 0 ;   % set to 1 to print out each mex command as it's executed
@@ -62,6 +63,8 @@ kk = 0 ;
 % find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
+    % BLAS/LAPACK functions have no underscore on Windows
+    flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = 'libmwlapack.lib' ;
     elseif (verLessThan ('matlab', '9.5'))
@@ -70,6 +73,8 @@ if (pc)
         lapack = '-lmwlapack -lmwblas' ;
     end
 else
+    % BLAS/LAPACK functions have an underscore suffix
+    flags = [flags ' -DBLAS_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
         lapack = '-lmwlapack' ;
     else
@@ -81,6 +86,9 @@ if (is64 && ~verLessThan ('matlab', '7.8'))
     % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
     fprintf ('with 64-bit BLAS\n') ;
     flags = [flags ' -DBLAS64'] ;
+else
+    % other versions of MATLAB use a 32-bit BLAS
+    flags = [flags ' -DBLAS32'] ;
 end
 
 if (~(pc || mac))
@@ -109,10 +117,10 @@ end
 %-------------------------------------------------------------------------------
 
 if (with_cholmod)
-    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     flags = [' -DNSUPERNODAL -DNMODIFY -DNMATRIXOPS ' flags] ;
 else
-    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
     flags = [' -DNCHOLMOD ' flags] ;
 end
 
@@ -143,7 +151,7 @@ umfint = { 'analyze', 'apply_order', 'colamd', 'free', 'fsize', ...
 
 % non-user-callable and user-callable amd_*.[ch] files (int versions only):
 amdsrc = { 'aat', '1', '2', 'dump', 'postorder', 'post_tree', 'defaults', ...
-        'order', 'control', 'info', 'valid', 'preprocess', 'global' } ;
+        'order', 'control', 'info', 'valid', 'preprocess' } ;
 
 % user-callable umfpack_*.[ch] files (real/complex):
 user = { 'col_to_triplet', 'defaults', 'free_numeric', ...
@@ -157,7 +165,7 @@ user = { 'col_to_triplet', 'defaults', 'free_numeric', ...
 	'load_numeric', 'save_numeric', 'load_symbolic', 'save_symbolic' } ;
 
 % user-callable umfpack_*.[ch], only one version
-generic = { 'timer', 'tictoc', 'global' } ;
+generic = { 'timer', 'tictoc' } ;
 
 M = cell (0) ;
 
@@ -174,7 +182,6 @@ if (with_cholmod)
         '../../CAMD/Source/camd_control', ...
         '../../CAMD/Source/camd_defaults', ...
         '../../CAMD/Source/camd_dump', ...
-        '../../CAMD/Source/camd_global', ...
         '../../CAMD/Source/camd_info', ...
         '../../CAMD/Source/camd_order', ...
         '../../CAMD/Source/camd_postorder', ...
@@ -182,7 +189,6 @@ if (with_cholmod)
         '../../CAMD/Source/camd_valid', ...
         '../../COLAMD/Source/colamd', ...
         '../../CCOLAMD/Source/ccolamd' } ;
-
 
     metis_src = {
         'GKlib/b64', ...
@@ -298,7 +304,7 @@ end
 % with optimization:
 mx = sprintf ('mex -O%s%s ', incdir, flags) ;
 % no optimization:
-%% mx = sprintf ('mex -g %s%s%s ', incdir, flags) ;
+% mx = sprintf ('mex -g %s%s%s ', incdir, flags) ;
 
 %-------------------------------------------------------------------------------
 % CHOLMOD, CAMD, C*OLAMD, METIS, SuiteSparse_config, and rand48 for Windows

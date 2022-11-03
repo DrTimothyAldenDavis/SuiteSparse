@@ -1,42 +1,91 @@
-#------------------------------------------------------------------------------
-# CSparse Makefile
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# CSparse/Makefile
+#-------------------------------------------------------------------------------
 
-C:
-	( cd Lib ; $(MAKE) )
-	( cd Demo ; $(MAKE) )
+# CSparse: Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
 
-all: C cov
+#-------------------------------------------------------------------------------
+
+# A simple Makefile for CSparse, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
+
+# Note that there is no "make install" target.  For production use, CXSparse
+# should be installed instead.
+
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile:
+#
+#       make
+#
+# To clean up the files:
+#
+#       make clean
+#
+# To run the demos
+#
+#       make demo
+#
+# To run test coverage:
+#
+#       make cov
+
+JOBS ?= 8
+
+default: library
 
 library:
-	( cd Lib ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static libraries only
-static:
-	( cd Lib    ; $(MAKE) static )
+local: library
 
-cov:
-	( cd Tcov ; $(MAKE) )
+global: library
 
+debug:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
+
+all: library
+
+demo: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	- ./build/cs_demo1 < ./Matrix/t1
+	- ./build/cs_demo2 < ./Matrix/t1
+	- ./build/cs_demo2 < ./Matrix/ash219
+	- ./build/cs_demo2 < ./Matrix/bcsstk01
+	- ./build/cs_demo2 < ./Matrix/fs_183_1
+	- ./build/cs_demo2 < ./Matrix/mbeacxc
+	- ./build/cs_demo2 < ./Matrix/west0067
+	- ./build/cs_demo2 < ./Matrix/lp_afiro
+	- ./build/cs_demo2 < ./Matrix/bcsstk16
+	- ./build/cs_demo3 < ./Matrix/bcsstk01
+	- ./build/cs_demo3 < ./Matrix/bcsstk16
+
+install:
+	- echo 'CSparse is not installed; use CXSparse instead'
+
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
+
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
+
+# remove all files not in the distribution
 clean:
-	( cd Lib ; $(MAKE) clean )
-	( cd Demo ; $(MAKE) clean )
-	( cd Tcov ; $(MAKE) clean )
-	( cd MATLAB/CSparse ; $(RM) *.o )
-	( cd MATLAB/Test    ; $(RM) *.o )
+	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex* timelog.m
+	- $(RM) -rf MATLAB/*/*.o MATLAB/*/*.mex*
+	( cd Tcov && $(MAKE) purge )
 
-purge:
-	( cd Lib ; $(MAKE) purge )
-	( cd Demo ; $(MAKE) purge )
-	( cd Tcov ; $(MAKE) purge )
-	( cd MATLAB/CSparse ; $(RM) *.o *.mex* )
-	( cd MATLAB/Test    ; $(RM) *.o *.mex* )
+purge: clean
 
-distclean: purge
+distclean: clean
 
-install: library
-	( cd Lib ; $(MAKE) install )
-
-uninstall:
-	( cd Lib ; $(MAKE) uninstall )
+# test coverage
+cov:
+	( cd Tcov && $(MAKE) )
 

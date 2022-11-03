@@ -14,3 +14,4 @@
 %
 %  Copyright (c) 2018, N. Yeralan, S. Kolodziej, T. Davis, W. Hager
 %  http://suitesparse.com
+%  SPDX-License-Identifier: GPL-3.0-only

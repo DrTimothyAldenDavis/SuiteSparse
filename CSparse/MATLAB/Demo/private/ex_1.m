@@ -6,7 +6,8 @@ function ex_1
 %   ex_1
 % See also: cs_demo
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 n = 1000 ;
 nz = 1e5 ;

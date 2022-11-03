@@ -156,6 +156,7 @@
 % For help on compiling SuiteSparse or the demos, testing functions, etc.,
 % please see the help for each individual package.
 %
-% Copyright 2020, Timothy A. Davis, http://suitesparse.com.
+% Copyright (c) 2022, Timothy A. Davis, http://suitesparse.com.
+% See each package for its license.
 
 help SuiteSparse

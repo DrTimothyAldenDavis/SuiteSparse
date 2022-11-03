@@ -1,12 +1,17 @@
+# CSparse/Tcov/Makefile
+# Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1+
+
 # To run with valgrind:
 V =
 # V = valgrind -q
 
 # Linux test coverage
 CC = gcc
-CFLAGS = -O -g -fprofile-arcs -ftest-coverage \
+CFLAGS = -O -g --coverage -fprofile-abs-path \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
-    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -ansi \
+    	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c11 \
+        -Wno-unused-but-set-variable \
 	-Wno-unused-parameter -I../Include -I../Demo
 
 run: all run1 runbook run3 runtest
@@ -85,12 +90,6 @@ runtest: all
 	- $(V) ./cstcov_test ../Matrix/ash219 > test_ash.out
 	- $(V) ./cstcov_test ../Matrix/lp_afiro > test_afiro.out
 
-readhb: readhb.f
-	f77 -o readhb readhb.f
-
-readhb.f:
-	- ln -s readhb.f
-
 clean:
 	- $(RM) *.o *.bbg *.da *.gcov *.gcda *.gcno
 
@@ -98,5 +97,5 @@ purge: distclean
 
 # remove everything for distribution, including all symbolic links
 distclean: clean
-	- $(RM) cs_demo1 cs_demo2 readhb *.out *.a cs_demo3 cstcov_test cov.sort
+	- $(RM) cs_demo1 cs_demo2 *.out *.a cs_demo3 cstcov_test cov.sort
 	- $(RM) -r cs_*.c *.dSYM

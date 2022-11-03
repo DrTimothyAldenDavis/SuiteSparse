@@ -1,6 +1,7 @@
-SSMULT, Copyright (c) 2007-2011, Timothy A. Davis, http://www.suitesparse.com.
+SuiteSparse/MATLAB_Tools/SSMULT/
+SSMULT, Copyright (c) 2007-2011, Timothy A Davis. All Rights Reserved.
+SPDX-License-Identifier: GPL-2.0+
 
-See MATLAB_Tools/Doc/License.txt for the license.
 SSMULT is also available under other licenses; contact the author for details.
 
 SSMULT is a MATLAB toolbox for multiplying two sparse matrices, C = A*B.  It

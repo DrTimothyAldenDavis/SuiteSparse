@@ -1,21 +1,21 @@
-/* ========================================================================== */
-/* === UMFPACK_report_vector ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_vector: print a dense vector
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Prints a real or complex vector.
-    See umfpack_report_vector.h for details.
+    See umfpack.h for details.
 */
 
 #include "umf_internal.h"
 #include "umf_report_vector.h"
 
-GLOBAL Int UMFPACK_report_vector
+GLOBAL int UMFPACK_report_vector
 (
     Int n,
     const double Xx [ ],

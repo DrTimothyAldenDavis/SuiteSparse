@@ -1,15 +1,15 @@
-/* ========================================================================== */
-/* === UMFPACK_transpose ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_transpose: transpose/permute a sparse matrix
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User callable.  Computes a permuted transpose, R = (A (P,Q))' in MATLAB
-    notation.  See umfpack_transpose.h for details.  A and R can be rectangular.
+    notation.  See umfpack.h for details.  A and R can be rectangular.
     The matrix A may be singular.
     The complex version can do transpose (') or array transpose (.').
 
@@ -29,7 +29,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_transpose
+GLOBAL int UMFPACK_transpose
 (
     Int n_row,
     Int n_col,
@@ -53,7 +53,7 @@ GLOBAL Int UMFPACK_transpose
     double Rx [ ]	/* size nz, if present */
 #ifdef COMPLEX
     , double Rz [ ]	/* size nz, if present */
-    , Int do_conjugate	/* if true, then to conjugate transpose */
+    , int do_conjugate	/* if true, then to conjugate transpose */
 			/* otherwise, do array transpose */
 #endif
 )
@@ -63,7 +63,8 @@ GLOBAL Int UMFPACK_transpose
     /* local variables */
     /* ---------------------------------------------------------------------- */
 
-    Int status, *W, nn ;
+    Int *W, nn ;
+    int status ;
 
 #ifndef NDEBUG
     init_count = UMF_malloc_count ;

@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_counts: column counts for sparse Cholesky
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* column counts of LL'=A or LL'=A'A, given parent & post ordering */
 #define HEAD(k,j) (ata ? head [k] : j)

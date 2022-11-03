@@ -14,3 +14,7 @@
 %   spqr_repeatable        - ensure repeatable results, or use the default random stream.
 %   spqr_wrapper           - wrapper around spqr to get additional statistics
 %   tol_is_default         - return true if tol is default, false otherwise
+
+% spqr_rank, Copyright (c) 2012, Leslie Foster and Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

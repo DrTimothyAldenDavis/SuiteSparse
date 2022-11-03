@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === colamd/symamd prototypes and definitions ============================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// COLAMD/Source/colamd.h: include file for COLAMD
+//------------------------------------------------------------------------------
+
+// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* COLAMD / SYMAMD include file
 
@@ -9,27 +15,22 @@
 
     Authors:
 
-	The authors of the code itself are Stefan I. Larimore and Timothy A.
-	Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
-	developed in collaboration with John Gilbert, Xerox PARC, and Esmond
-	Ng, Oak Ridge National Laboratory.
+        The authors of the code itself are Stefan I. Larimore and Timothy A.
+        Davis (DrTimothyAldenDavis@gmail.com).  The algorithm was
+        developed in collaboration with John Gilbert, Xerox PARC, and Esmond
+        Ng, Oak Ridge National Laboratory.
 
     Acknowledgements:
 
-	This work was supported by the National Science Foundation, under
-	grants DMS-9504974 and DMS-9803599.
-
-    Notice:
-
-	Copyright (c) 1998-2007, Timothy A. Davis, All Rights Reserved.
-        See COLAMD/Doc/License.txt for the license.
+        This work was supported by the National Science Foundation, under
+        grants DMS-9504974 and DMS-9803599.
 
     Availability:
 
-	The colamd/symamd library is available at http://www.suitesparse.com
-	This file is required by the colamd.c, colamdmex.c, and symamdmex.c
-	files, and by any C code that calls the routines whose prototypes are
-	listed below, or that uses the colamd/symamd definitions listed below.
+        The colamd/symamd library is available at http://www.suitesparse.com
+        This file is required by the colamd.c, colamdmex.c, and symamdmex.c
+        files, and by any C code that calls the routines whose prototypes are
+        listed below, or that uses the colamd/symamd definitions listed below.
 
 */
 
@@ -45,7 +46,7 @@ extern "C" {
 /* === Include files ======================================================== */
 /* ========================================================================== */
 
-#include <stdlib.h>
+#include "SuiteSparse_config.h"
 
 /* ========================================================================== */
 /* === COLAMD version ======================================================= */
@@ -55,7 +56,7 @@ extern "C" {
  * As an example, to test if the version you are using is 2.4 or later:
  *
  * #ifdef COLAMD_VERSION
- *	if (COLAMD_VERSION >= COLAMD_VERSION_CODE (2,4)) ...
+ *     if (COLAMD_VERSION >= COLAMD_VERSION_CODE (2,4)) ...
  * #endif
  *
  * This also works during compile-time:
@@ -69,13 +70,14 @@ extern "C" {
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "May 4, 2016"
+#define COLAMD_DATE "Nov 4, 2022"
+#define COLAMD_MAIN_VERSION   3
+#define COLAMD_SUB_VERSION    0
+#define COLAMD_SUBSUB_VERSION 0
+
 #define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
-#define COLAMD_MAIN_VERSION 2
-#define COLAMD_SUB_VERSION 9
-#define COLAMD_SUBSUB_VERSION 6
 #define COLAMD_VERSION \
-	COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
+        COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
 
 /* ========================================================================== */
 /* === Knob and statistics definitions ====================================== */
@@ -108,126 +110,135 @@ extern "C" {
 #define COLAMD_INFO3 6
 
 /* error codes returned in stats [3]: */
-#define COLAMD_OK				(0)
-#define COLAMD_OK_BUT_JUMBLED			(1)
-#define COLAMD_ERROR_A_not_present		(-1)
-#define COLAMD_ERROR_p_not_present		(-2)
-#define COLAMD_ERROR_nrow_negative		(-3)
-#define COLAMD_ERROR_ncol_negative		(-4)
-#define COLAMD_ERROR_nnz_negative		(-5)
-#define COLAMD_ERROR_p0_nonzero			(-6)
-#define COLAMD_ERROR_A_too_small		(-7)
-#define COLAMD_ERROR_col_length_negative	(-8)
-#define COLAMD_ERROR_row_index_out_of_bounds	(-9)
-#define COLAMD_ERROR_out_of_memory		(-10)
-#define COLAMD_ERROR_internal_error		(-999)
+#define COLAMD_OK                               (0)
+#define COLAMD_OK_BUT_JUMBLED                   (1)
+#define COLAMD_ERROR_A_not_present              (-1)
+#define COLAMD_ERROR_p_not_present              (-2)
+#define COLAMD_ERROR_nrow_negative              (-3)
+#define COLAMD_ERROR_ncol_negative              (-4)
+#define COLAMD_ERROR_nnz_negative               (-5)
+#define COLAMD_ERROR_p0_nonzero                 (-6)
+#define COLAMD_ERROR_A_too_small                (-7)
+#define COLAMD_ERROR_col_length_negative        (-8)
+#define COLAMD_ERROR_row_index_out_of_bounds    (-9)
+#define COLAMD_ERROR_out_of_memory              (-10)
+#define COLAMD_ERROR_internal_error             (-999)
 
 
 /* ========================================================================== */
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
 
-#include "SuiteSparse_config.h"
-
-size_t colamd_recommended	/* returns recommended value of Alen, */
-				/* or 0 if input arguments are erroneous */
+SUITESPARSE_PUBLIC 
+size_t colamd_recommended       /* returns recommended value of Alen, */
+                                /* or 0 if input arguments are erroneous */
 (
-    int nnz,			/* nonzeros in A */
-    int n_row,			/* number of rows in A */
-    int n_col			/* number of columns in A */
+    int32_t nnz,                /* nonzeros in A */
+    int32_t n_row,              /* number of rows in A */
+    int32_t n_col               /* number of columns in A */
 ) ;
 
-size_t colamd_l_recommended	/* returns recommended value of Alen, */
-				/* or 0 if input arguments are erroneous */
+SUITESPARSE_PUBLIC 
+size_t colamd_l_recommended     /* returns recommended value of Alen, */
+                                /* or 0 if input arguments are erroneous */
 (
-    SuiteSparse_long nnz,       /* nonzeros in A */
-    SuiteSparse_long n_row,     /* number of rows in A */
-    SuiteSparse_long n_col      /* number of columns in A */
+    int64_t nnz,                /* nonzeros in A */
+    int64_t n_row,              /* number of rows in A */
+    int64_t n_col               /* number of columns in A */
 ) ;
 
-void colamd_set_defaults	/* sets default parameters */
-(				/* knobs argument is modified on output */
-    double knobs [COLAMD_KNOBS]	/* parameter settings for colamd */
+SUITESPARSE_PUBLIC 
+void colamd_set_defaults        /* sets default parameters */
+(                               /* knobs argument is modified on output */
+    double knobs [COLAMD_KNOBS] /* parameter settings for colamd */
 ) ;
 
-void colamd_l_set_defaults	/* sets default parameters */
-(				/* knobs argument is modified on output */
-    double knobs [COLAMD_KNOBS]	/* parameter settings for colamd */
+SUITESPARSE_PUBLIC 
+void colamd_l_set_defaults      /* sets default parameters */
+(                               /* knobs argument is modified on output */
+    double knobs [COLAMD_KNOBS] /* parameter settings for colamd */
 ) ;
 
-int colamd			/* returns (1) if successful, (0) otherwise*/
-(				/* A and p arguments are modified on output */
-    int n_row,			/* number of rows in A */
-    int n_col,			/* number of columns in A */
-    int Alen,			/* size of the array A */
-    int A [],			/* row indices of A, of size Alen */
-    int p [],			/* column pointers of A, of size n_col+1 */
-    double knobs [COLAMD_KNOBS],/* parameter settings for colamd */
-    int stats [COLAMD_STATS]	/* colamd output statistics and error codes */
+SUITESPARSE_PUBLIC 
+int colamd                      /* returns (1) if successful, (0) otherwise*/
+(                               /* A and p arguments are modified on output */
+    int32_t n_row,              /* number of rows in A */
+    int32_t n_col,              /* number of columns in A */
+    int32_t Alen,               /* size of the array A */
+    int32_t A [],               /* row indices of A, of size Alen */
+    int32_t p [],               /* column pointers of A, of size n_col+1 */
+    double knobs [COLAMD_KNOBS],    /* parameter settings for colamd */
+    int32_t stats [COLAMD_STATS]    /* colamd output stats and error codes */
 ) ;
 
-SuiteSparse_long colamd_l       /* returns (1) if successful, (0) otherwise*/
-(				/* A and p arguments are modified on output */
-    SuiteSparse_long n_row,     /* number of rows in A */
-    SuiteSparse_long n_col,     /* number of columns in A */
-    SuiteSparse_long Alen,      /* size of the array A */
-    SuiteSparse_long A [],      /* row indices of A, of size Alen */
-    SuiteSparse_long p [],      /* column pointers of A, of size n_col+1 */
-    double knobs [COLAMD_KNOBS],/* parameter settings for colamd */
-    SuiteSparse_long stats [COLAMD_STATS]   /* colamd output statistics
-                                             * and error codes */
+SUITESPARSE_PUBLIC 
+int colamd_l                    /* returns (1) if successful, (0) otherwise*/
+(                               /* A and p arguments are modified on output */
+    int64_t n_row,              /* number of rows in A */
+    int64_t n_col,              /* number of columns in A */
+    int64_t Alen,               /* size of the array A */
+    int64_t A [],               /* row indices of A, of size Alen */
+    int64_t p [],               /* column pointers of A, of size n_col+1 */
+    double knobs [COLAMD_KNOBS],    /* parameter settings for colamd */
+    int64_t stats [COLAMD_STATS]    /* colamd output stats and error codes */
 ) ;
 
-int symamd				/* return (1) if OK, (0) otherwise */
+SUITESPARSE_PUBLIC 
+int symamd                              /* return (1) if OK, (0) otherwise */
 (
-    int n,				/* number of rows and columns of A */
-    int A [],				/* row indices of A */
-    int p [],				/* column pointers of A */
-    int perm [],			/* output permutation, size n_col+1 */
-    double knobs [COLAMD_KNOBS],	/* parameters (uses defaults if NULL) */
-    int stats [COLAMD_STATS],		/* output statistics and error codes */
+    int32_t n,                          /* number of rows and columns of A */
+    int32_t A [],                       /* row indices of A */
+    int32_t p [],                       /* column pointers of A */
+    int32_t perm [],                    /* output permutation, size n_col+1 */
+    double knobs [COLAMD_KNOBS],        /* parameters (uses defaults if NULL) */
+    int32_t stats [COLAMD_STATS],       /* output stats and error codes */
     void * (*allocate) (size_t, size_t),
-    					/* pointer to calloc (ANSI C) or */
-					/* mxCalloc (for MATLAB mexFunction) */
+                                        /* pointer to calloc (ANSI C) or */
+                                        /* mxCalloc (for MATLAB mexFunction) */
     void (*release) (void *)
-    					/* pointer to free (ANSI C) or */
-    					/* mxFree (for MATLAB mexFunction) */
+                                        /* pointer to free (ANSI C) or */
+                                        /* mxFree (for MATLAB mexFunction) */
 ) ;
 
-SuiteSparse_long symamd_l               /* return (1) if OK, (0) otherwise */
+SUITESPARSE_PUBLIC 
+int symamd_l                            /* return (1) if OK, (0) otherwise */
 (
-    SuiteSparse_long n,                 /* number of rows and columns of A */
-    SuiteSparse_long A [],              /* row indices of A */
-    SuiteSparse_long p [],              /* column pointers of A */
-    SuiteSparse_long perm [],           /* output permutation, size n_col+1 */
-    double knobs [COLAMD_KNOBS],	/* parameters (uses defaults if NULL) */
-    SuiteSparse_long stats [COLAMD_STATS],  /* output stats and error codes */
+    int64_t n,                          /* number of rows and columns of A */
+    int64_t A [],                       /* row indices of A */
+    int64_t p [],                       /* column pointers of A */
+    int64_t perm [],                    /* output permutation, size n_col+1 */
+    double knobs [COLAMD_KNOBS],        /* parameters (uses defaults if NULL) */
+    int64_t stats [COLAMD_STATS],       /* output stats and error codes */
     void * (*allocate) (size_t, size_t),
-    					/* pointer to calloc (ANSI C) or */
-					/* mxCalloc (for MATLAB mexFunction) */
+                                        /* pointer to calloc (ANSI C) or */
+                                        /* mxCalloc (for MATLAB mexFunction) */
     void (*release) (void *)
-    					/* pointer to free (ANSI C) or */
-    					/* mxFree (for MATLAB mexFunction) */
+                                        /* pointer to free (ANSI C) or */
+                                        /* mxFree (for MATLAB mexFunction) */
 ) ;
 
+SUITESPARSE_PUBLIC 
 void colamd_report
 (
-    int stats [COLAMD_STATS]
+    int32_t stats [COLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void colamd_l_report
 (
-    SuiteSparse_long stats [COLAMD_STATS]
+    int64_t stats [COLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void symamd_report
 (
-    int stats [COLAMD_STATS]
+    int32_t stats [COLAMD_STATS]
 ) ;
 
+SUITESPARSE_PUBLIC 
 void symamd_l_report
 (
-    SuiteSparse_long stats [COLAMD_STATS]
+    int64_t stats [COLAMD_STATS]
 ) ;
 
 #ifdef __cplusplus

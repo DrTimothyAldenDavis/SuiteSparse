@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/Scheduler_LaunchKernel.cpp ===========================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file wraps logic to launch the GPU kernel on alternating kernel streams
 // coordinated by the Scheduler. The work lists also alternate to facilitate

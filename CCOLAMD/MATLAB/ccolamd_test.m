@@ -6,8 +6,9 @@ function ccolamd_test
 %
 % See also csymamd, ccolamd, ccolamd_make.
 
-% Copyright 1998-2007, Timothy A. Davis, Stefan Larimore, and Siva Rajamanickam
-% Developed in collaboration with J. Gilbert and E. Ng.
+% CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+% Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+% SPDX-License-Identifier: BSD-3-clause
 
 help ccolamd_test
 
@@ -23,8 +24,8 @@ csymamd_default_knobs = [10 1 0] ;
 	d = '-largeArrayDims' ;
     end
     cmd = sprintf ( ...
-        'mex -DDLONG -O %s -I../../SuiteSparse_config -I../Include ', d) ;
-    src = '../Source/ccolamd.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
+        'mex -O %s -I../../SuiteSparse_config -I../Include ', d) ;
+    src = '../Source/ccolamd_l.c ../../SuiteSparse_config/SuiteSparse_config.c' ;
     if (~(ispc || ismac))
         % for POSIX timing routine
         src = [src ' -lrt'] ;
@@ -93,6 +94,7 @@ for trial = 1:20
 
     for tol = [0:.1:2 3:20 1e6]
 	B = A + A' ;
+        fprintf ('.') ;
 
 	p = ccolamd (A, [ ]) ;		  check_perm (p, A) ;
 	p = ccolamd (A, [1 tol tol 1]) ;  check_perm (p, A) ;
@@ -140,6 +142,7 @@ fprintf ('General matrices\n') ;
 for trial = 1:400
 
     waitbar (trial/400, h, 'CCOLAMD: with dense rows/cols') ;
+    fprintf ('.') ;
 
     % matrix of random mtype
     mtype = irand (3) ;
@@ -167,6 +170,7 @@ for trial = 1:30
     A = rand_matrix (1000, 1000, 2, 0, 0) ;
 
     for err = 1:13
+        fprintf ('.') ;
 
         p = Tcolamd (A, [ccolamd_default_knobs 1 err], [ ]) ;
         if (p(1) ~= -1)							    %#ok
@@ -240,6 +244,7 @@ fprintf ('Matrices with a few empty rows and columns\n') ;
 for trial = 1:400
 
     waitbar (trial/400, h, 'CCOLAMD: with empty rows/cols') ;
+    fprintf ('.') ;
 
     % symmetric matrices
     n = 0 ;
@@ -276,6 +281,7 @@ fprintf ('Matrices with a few empty rows\n') ;
 for trial = 1:400
 
     waitbar (trial/400, h, 'CCOLAMD: with null rows') ;
+    fprintf ('.') ;
     m = 0 ;
     while (m < 5)
 	A = rand_matrix (1000, 1000, 2, 0, 0) ;

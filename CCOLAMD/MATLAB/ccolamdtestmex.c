@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === ccolamdtest mexFunction ============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CCOLAMD/MATLAB/ccolamdtestmex.c: MATLAB test for CCOLAMD
+//------------------------------------------------------------------------------
 
-/* ----------------------------------------------------------------------------
- * CCOLAMD Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
- * Sivasankaran Rajamanickam, and Stefan Larimore
- * -------------------------------------------------------------------------- */
+// CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+// Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  *  This MATLAB mexFunction is for testing only.  It is not meant for
@@ -41,7 +42,6 @@
 #include "matrix.h"
 #include <stdlib.h>
 #include <string.h>
-#define Long SuiteSparse_long
 
 /* Here only for testing */
 #undef MIN
@@ -59,15 +59,15 @@
 
 static void dump_matrix
 (
-    Long A [ ],
-    Long p [ ],
-    Long n_row,
-    Long n_col,
-    Long Alen,
-    Long limit
+    int64_t A [ ],
+    int64_t p [ ],
+    int64_t n_row,
+    int64_t n_col,
+    int64_t Alen,
+    int64_t limit
 )
 {
-    Long col, k, row ;
+    int64_t col, k, row ;
 
     mexPrintf ("dump matrix: nrow %d ncol %d Alen %d\n", n_row, n_col, Alen) ;
 
@@ -100,24 +100,25 @@ void mexFunction
 {
     /* === Local variables ================================================== */
 
-    Long *A ;                   /* ccolamd's copy of the matrix and workspace */
-    Long *p ;                   /* ccolamd's copy of the column pointers */
-    Long Alen ;                 /* size of A */
-    Long n_col ;                /* number of columns of A */
-    Long n_row ;                /* number of rows of A */
-    Long nnz ;                  /* number of entries in A */
-    Long full ;                 /* TRUE if input matrix full, FALSE if sparse */
+    int64_t *A ;            /* ccolamd's copy of the matrix and workspace */
+    int64_t *p ;            /* ccolamd's copy of the column pointers */
+    int64_t Alen ;          /* size of A */
+    int64_t n_col ;         /* number of columns of A */
+    int64_t n_row ;         /* number of rows of A */
+    int64_t nnz ;           /* number of entries in A */
+    int full ;              /* TRUE if input matrix full, FALSE if sparse */
     double knobs [CCOLAMD_KNOBS] ; /* ccolamd user-controllable parameters */
-    double *out_perm ;          /* output permutation vector */
-    double *out_stats ;         /* output stats vector */
-    double *in_knobs ;          /* input knobs vector */
-    Long i ;                    /* loop counter */
-    mxArray *Ainput ;           /* input matrix handle */
-    Long spumoni ;              /* verbosity variable */
-    Long stats2 [CCOLAMD_STATS] ; /* stats for ccolamd */
+    double *out_perm ;      /* output permutation vector */
+    double *out_stats ;     /* output stats vector */
+    double *in_knobs ;      /* input knobs vector */
+    int64_t i ;             /* loop counter */
+    mxArray *Ainput ;       /* input matrix handle */
+    int spumoni ;           /* verbosity variable */
+    int64_t stats2 [CCOLAMD_STATS] ; /* stats for ccolamd */
 
-    Long *cp, *cp_end, result, col, length, ok ;
-    Long *stats ;
+    int64_t *cp, *cp_end, col, length ;
+    int64_t *stats ;
+    int result, ok ;
     stats = stats2 ;
 
     /* === Check inputs ===================================================== */
@@ -197,10 +198,10 @@ void mexFunction
     n_col = mxGetN (Ainput) ;
 
     /* get column pointer vector so we can find nnz */
-    p = (Long *) mxCalloc (n_col+1, sizeof (Long)) ;
-    (void) memcpy (p, mxGetJc (Ainput), (n_col+1)*sizeof (Long)) ;
+    p = (int64_t *) mxCalloc (n_col+1, sizeof (int64_t)) ;
+    (void) memcpy (p, mxGetJc (Ainput), (n_col+1)*sizeof (int64_t)) ;
     nnz = p [n_col] ;
-    Alen = (Long) ccolamd_l_recommended (nnz, n_row, n_col) ;
+    Alen = (int64_t) ccolamd_l_recommended (nnz, n_row, n_col) ;
     if (Alen == 0)
     {
     	mexErrMsgTxt ("ccolamd: problem too large") ;
@@ -228,8 +229,8 @@ void mexFunction
 
     /* === Copy input matrix into workspace ================================= */
 
-    A = (Long *) mxCalloc (Alen, sizeof (Long)) ;
-    (void) memcpy (A, mxGetIr (Ainput), nnz*sizeof (Long)) ;
+    A = (int64_t *) mxCalloc (Alen, sizeof (int64_t)) ;
+    (void) memcpy (A, mxGetIr (Ainput), nnz*sizeof (int64_t)) ;
 
     if (full)
     {
@@ -259,7 +260,7 @@ void mexFunction
     */
 
     /* jumble appropriately */
-    switch ((Long) in_knobs [6])
+    switch ((int) in_knobs [6])
     {
 
 	case 0 :
@@ -357,7 +358,7 @@ void mexFunction
 		mexPrintf ("ccolamdtest: A not present\n") ;
 	    }
 	    result = 0 ;		/* A not present */
-	    A = (Long *) NULL ;
+	    A = (int64_t *) NULL ;
 	    break ;
 
 	case 8 :
@@ -366,7 +367,7 @@ void mexFunction
 		mexPrintf ("ccolamdtest: p not present\n") ;
 	    }
 	    result = 0 ;		/* p not present */
-	    p = (Long *) NULL ;
+	    p = (int64_t *) NULL ;
 	    break ;
 
 	case 9 :
@@ -454,7 +455,7 @@ void mexFunction
 		mexPrintf ("ccolamdtest: stats not present\n") ;
 	    }
 	    result = 0 ;		/* stats not present */
-	    stats = (Long *) NULL ;
+	    stats = (int64_t *) NULL ;
 	    break ;
 
 	case 13 :

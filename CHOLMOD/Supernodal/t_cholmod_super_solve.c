@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Supernodal/t_cholmod_super_solve ===================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/t_cholmod_super_solve: template for cholmod_super_solve
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Template routine for cholmod_super_solve.  Supports real or complex L. */
 
@@ -86,38 +87,42 @@ static void TEMPLATE (cholmod_super_lsolve)
 #ifdef REAL
 
 	    /* solve L1*x1 (that is, x1 = L1\x1) */
-	    BLAS_dtrsv ("L", "N", "N",
+	    SUITESPARSE_BLAS_dtrsv ("L", "N", "N",
 		nscol,			    /* N:       L1 is nscol-by-nscol */
 		Lx + ENTRY_SIZE*psx, nsrow, /* A, LDA:  L1 */
-		Xx + ENTRY_SIZE*k1, 1) ;    /* X, INCX: x1 */
+		Xx + ENTRY_SIZE*k1, 1,      /* X, INCX: x1 */
+                Common->blas_ok) ;
 
 	    /* E = E - L2*x1 */
-	    BLAS_dgemv ("N",
+	    SUITESPARSE_BLAS_dgemv ("N",
 		nsrow2, nscol,		    /* M, N:    L2 is nsrow2-by-nscol */
 		minus_one,		    /* ALPHA:   -1 */
 		Lx + ENTRY_SIZE*(psx + nscol),   /* A, LDA:  L2 */
 		nsrow,
 		Xx + ENTRY_SIZE*k1, 1,	    /* X, INCX: x1 */
 		one,			    /* BETA:    1 */
-		Ex, 1) ;		    /* Y, INCY: E */
+		Ex, 1,                      /* Y, INCY: E */
+                Common->blas_ok) ;
 
 #else
 
 	    /* solve L1*x1 (that is, x1 = L1\x1) */
-	    BLAS_ztrsv ("L", "N", "N",
+	    SUITESPARSE_BLAS_ztrsv ("L", "N", "N",
 		nscol,			    /* N:       L1 is nscol-by-nscol */
 		Lx + ENTRY_SIZE*psx, nsrow, /* A, LDA:  L1 */
-		Xx + ENTRY_SIZE*k1, 1) ;    /* X, INCX: x1 */
+		Xx + ENTRY_SIZE*k1, 1,      /* X, INCX: x1 */
+                Common->blas_ok) ;
 
 	    /* E = E - L2*x1 */
-	    BLAS_zgemv ("N",
+	    SUITESPARSE_BLAS_zgemv ("N",
 		nsrow2, nscol,		    /* M, N:    L2 is nsrow2-by-nscol */
 		minus_one,		    /* ALPHA:   -1 */
 		Lx + ENTRY_SIZE*(psx + nscol),   /* A, LDA:  L2 */
 		nsrow,
 		Xx + ENTRY_SIZE*k1, 1,	    /* X, INCX: x1 */
 		one,			    /* BETA:    1 */
-		Ex, 1) ;		    /* Y, INCY: E */
+		Ex, 1,                      /* Y, INCY: E */
+                Common->blas_ok) ;
 
 #endif
 
@@ -161,45 +166,49 @@ static void TEMPLATE (cholmod_super_lsolve)
 #ifdef REAL
 
 	    /* solve L1*x1 */
-	    BLAS_dtrsm ("L", "L", "N", "N",
+	    SUITESPARSE_BLAS_dtrsm ("L", "L", "N", "N",
 		nscol, nrhs,			/* M, N: x1 is nscol-by-nrhs */
 		one,				/* ALPHA:  1 */
 		Lx + ENTRY_SIZE*psx, nsrow,	/* A, LDA: L1 */
-		Xx + ENTRY_SIZE*k1, d) ;	/* B, LDB: x1 */
+		Xx + ENTRY_SIZE*k1, d,          /* B, LDB: x1 */
+                Common->blas_ok) ;
 
 	    /* E = E - L2*x1 */
 	    if (nsrow2 > 0)
 	    {
-		BLAS_dgemm ("N", "N",
+		SUITESPARSE_BLAS_dgemm ("N", "N",
 		    nsrow2, nrhs, nscol,	    /* M, N, K */
 		    minus_one,			    /* ALPHA:  -1 */
 		    Lx + ENTRY_SIZE*(psx + nscol),  /* A, LDA: L2 */
 		    nsrow,
 		    Xx + ENTRY_SIZE*k1, d,	    /* B, LDB: X1 */
 		    one,			    /* BETA:   1 */
-		    Ex, nsrow2) ;		    /* C, LDC: E */
+		    Ex, nsrow2,                     /* C, LDC: E */
+                    Common->blas_ok) ;
 	    }
 
 #else
 
 	    /* solve L1*x1 */
-	    BLAS_ztrsm ("L", "L", "N", "N",
+	    SUITESPARSE_BLAS_ztrsm ("L", "L", "N", "N",
 		nscol, nrhs,			/* M, N: x1 is nscol-by-nrhs */
 		one,				/* ALPHA:  1 */
 		Lx + ENTRY_SIZE*psx, nsrow,	/* A, LDA: L1 */
-		Xx + ENTRY_SIZE*k1, d) ;	/* B, LDB: x1 */
+		Xx + ENTRY_SIZE*k1, d,          /* B, LDB: x1 */
+                Common->blas_ok) ;
 
 	    /* E = E - L2*x1 */
 	    if (nsrow2 > 0)
 	    {
-		BLAS_zgemm ("N", "N",
+		SUITESPARSE_BLAS_zgemm ("N", "N",
 		    nsrow2, nrhs, nscol,	    /* M, N, K */
 		    minus_one,			    /* ALPHA:  -1 */
 		    Lx + ENTRY_SIZE*(psx + nscol),  /* A, LDA: L2 */
 		    nsrow,
 		    Xx + ENTRY_SIZE*k1, d,	    /* B, LDB: X1 */
 		    one,			    /* BETA:   1 */
-		    Ex, nsrow2) ;		    /* C, LDC: E */
+		    Ex, nsrow2,                     /* C, LDC: E */
+                    Common->blas_ok) ;
 	    }
 
 #endif
@@ -294,38 +303,42 @@ static void TEMPLATE (cholmod_super_ltsolve)
 #ifdef REAL
 
 	    /* x1 = x1 - L2'*E */
-	    BLAS_dgemv ("C",
+	    SUITESPARSE_BLAS_dgemv ("C",
 		nsrow2, nscol,		    /* M, N: L2 is nsrow2-by-nscol */
 		minus_one,		    /* ALPHA:   -1 */
 		Lx + ENTRY_SIZE*(psx + nscol),   /* A, LDA:  L2 */
 		nsrow,
 		Ex, 1,			    /* X, INCX: Ex */
 		one,			    /* BETA:    1 */
-		Xx + ENTRY_SIZE*k1, 1) ;    /* Y, INCY: x1 */
+		Xx + ENTRY_SIZE*k1, 1,      /* Y, INCY: x1 */
+                Common->blas_ok) ;
 
 	    /* solve L1'*x1 */
-	    BLAS_dtrsv ("L", "C", "N",
+	    SUITESPARSE_BLAS_dtrsv ("L", "C", "N",
 		nscol,			    /* N:	L1 is nscol-by-nscol */
 		Lx + ENTRY_SIZE*psx, nsrow,	    /* A, LDA:  L1 */
-		Xx + ENTRY_SIZE*k1, 1) ;	    /* X, INCX: x1 */
+		Xx + ENTRY_SIZE*k1, 1,              /* X, INCX: x1 */
+                Common->blas_ok) ;
 
 #else
 
 	    /* x1 = x1 - L2'*E */
-	    BLAS_zgemv ("C",
+	    SUITESPARSE_BLAS_zgemv ("C",
 		nsrow2, nscol,		    /* M, N: L2 is nsrow2-by-nscol */
 		minus_one,		    /* ALPHA:   -1 */
 		Lx + ENTRY_SIZE*(psx + nscol),   /* A, LDA:  L2 */
 		nsrow,
 		Ex, 1,			    /* X, INCX: Ex */
 		one,			    /* BETA:    1 */
-		Xx + ENTRY_SIZE*k1, 1) ;    /* Y, INCY: x1 */
+		Xx + ENTRY_SIZE*k1, 1,      /* Y, INCY: x1 */
+                Common->blas_ok) ;
 
 	    /* solve L1'*x1 */
-	    BLAS_ztrsv ("L", "C", "N",
+	    SUITESPARSE_BLAS_ztrsv ("L", "C", "N",
 		nscol,			    /* N:	L1 is nscol-by-nscol */
 		Lx + ENTRY_SIZE*psx, nsrow,	    /* A, LDA:  L1 */
-		Xx + ENTRY_SIZE*k1, 1) ;	    /* X, INCX: x1 */
+		Xx + ENTRY_SIZE*k1, 1,              /* X, INCX: x1 */
+                Common->blas_ok) ;
 
 #endif
 
@@ -365,44 +378,48 @@ static void TEMPLATE (cholmod_super_ltsolve)
 	    /* x1 = x1 - L2'*E */
 	    if (nsrow2 > 0)
 	    {
-		BLAS_dgemm ("C", "N",
+		SUITESPARSE_BLAS_dgemm ("C", "N",
 		    nscol, nrhs, nsrow2,	/* M, N, K */
 		    minus_one,			/* ALPHA:  -1 */
 		    Lx + ENTRY_SIZE*(psx + nscol),  /* A, LDA: L2 */
 		    nsrow,
 		    Ex, nsrow2,			/* B, LDB: E */
 		    one,			/* BETA:   1 */
-		    Xx + ENTRY_SIZE*k1, d) ;	/* C, LDC: x1 */
+		    Xx + ENTRY_SIZE*k1, d,      /* C, LDC: x1 */
+                    Common->blas_ok) ;
 	    }
 
 	    /* solve L1'*x1 */
-	    BLAS_dtrsm ("L", "L", "C", "N",
+	    SUITESPARSE_BLAS_dtrsm ("L", "L", "C", "N",
 		nscol,	nrhs,			/* M, N: x1 is nscol-by-nrhs */
 		one,				/* ALPHA:  1 */
 		Lx + ENTRY_SIZE*psx, nsrow,	/* A, LDA: L1 */
-		Xx + ENTRY_SIZE*k1, d) ;	/* B, LDB: x1 */
+		Xx + ENTRY_SIZE*k1, d,          /* B, LDB: x1 */
+                Common->blas_ok) ;
 
 #else
 
 	    /* x1 = x1 - L2'*E */
 	    if (nsrow2 > 0)
 	    {
-		BLAS_zgemm ("C", "N",
+		SUITESPARSE_BLAS_zgemm ("C", "N",
 		    nscol, nrhs, nsrow2,	/* M, N, K */
 		    minus_one,			/* ALPHA:  -1 */
 		    Lx + ENTRY_SIZE*(psx + nscol),  /* A, LDA: L2 */
 		    nsrow,
 		    Ex, nsrow2,			/* B, LDB: E */
 		    one,			/* BETA:   1 */
-		    Xx + ENTRY_SIZE*k1, d) ;	/* C, LDC: x1 */
+		    Xx + ENTRY_SIZE*k1, d,      /* C, LDC: x1 */
+                    Common->blas_ok) ;
 	    }
 
 	    /* solve L1'*x1 */
-	    BLAS_ztrsm ("L", "L", "C", "N",
+	    SUITESPARSE_BLAS_ztrsm ("L", "L", "C", "N",
 		nscol,	nrhs,			/* M, N: x1 is nscol-by-nrhs */
 		one,				/* ALPHA:  1 */
 		Lx + ENTRY_SIZE*psx, nsrow,	/* A, LDA: L1 */
-		Xx + ENTRY_SIZE*k1, d) ;	/* B, LDB: x1 */
+		Xx + ENTRY_SIZE*k1, d,          /* B, LDB: x1 */
+                Common->blas_ok) ;
 
 #endif
 

@@ -4,6 +4,10 @@ function s = sscellstring (C)
 % Return true if C is a cell array of size *-by-1 where each component is a
 % 1-by-* string.  See also iscellstr.
 
+% SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 [m n] = size (C) ;
 
 if (n ~= 1)

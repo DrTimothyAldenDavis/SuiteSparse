@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/etree2 mexFunction ==================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/etree2: MATLAB interface to CHOLMOD etree
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Usage:
  *
@@ -34,10 +34,10 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    Long *Parent ;
+    int64_t *Parent ;
     cholmod_sparse *A, Amatrix, *S ;
     cholmod_common Common, *cm ;
-    Long n, coletree, c ;
+    int64_t n, coletree, c ;
     char buf [LEN] ;
 
     /* ---------------------------------------------------------------------- */
@@ -116,7 +116,7 @@ void mexFunction
     /* compute the etree */
     /* ---------------------------------------------------------------------- */
 
-    Parent = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    Parent = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     if (A->stype == 1 || coletree)
     {
 	/* symmetric case: find etree of A, using triu(A) */
@@ -152,22 +152,22 @@ void mexFunction
 
     if (nargout > 1)
     {
-	Long *Post ;
-	Post = cholmod_l_malloc (n, sizeof (Long), cm) ;
+	int64_t *Post ;
+	Post = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 	if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
 	{
 	    /* out of memory or Parent invalid */
 	    mexErrMsgTxt ("etree2 postorder failed!") ;
 	}
 	pargout [1] = sputil_put_int (Post, n, 1) ;
-	cholmod_l_free (n, sizeof (Long), Post, cm) ;
+	cholmod_l_free (n, sizeof (int64_t), Post, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* free workspace */
     /* ---------------------------------------------------------------------- */
 
-    cholmod_l_free (n, sizeof (Long), Parent, cm) ;
+    cholmod_l_free (n, sizeof (int64_t), Parent, cm) ;
     cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;
     cholmod_l_print_common (" ", cm) ;

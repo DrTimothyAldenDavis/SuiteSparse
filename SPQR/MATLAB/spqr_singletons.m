@@ -32,6 +32,7 @@ function [p q m1 n1 tol] = spqr_singletons (A,tol)                          %#ok
 %
 % See also DMPERM, SPQR, SPQR_SOLVE.
 
-% Copyright 2008, Timothy A. Davis, http://www.suitesparse.com
+% SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
 
 error ('spqr_singletons mexFunction not found') ;

@@ -1,7 +1,8 @@
 classdef factorization_qrt_sparse < factorization
 %FACTORIZATION_QRT_SPARSE (P*A)*(P*A)'=R'*R where A is sparse.
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
     methods
 

@@ -1,14 +1,14 @@
-/* ========================================================================== */
-/* === UMFPACK_report_control =============================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_report_control: print control settings
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
-    User-callable.  Prints the control settings.  See umfpack_report_control.h
+    User-callable.  Prints the control settings.  See umfpack.h
     for details.
 */
 
@@ -44,19 +44,19 @@ GLOBAL void UMFPACK_report_control
 
 #ifdef DINT
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef DLONG
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int32_t\n")) ;
 #endif
 #ifdef ZLONG
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
+    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -130,7 +130,23 @@ GLOBAL void UMFPACK_report_control
     else /* auto strategy */
     {
 	strategy = UMFPACK_STRATEGY_AUTO ;
-	PRINTF ((" (auto)\n")) ;
+	PRINTF ((" (auto)\n"
+	"        Use symmetric strategy if symmetry > tsym and fraction of\n"
+	"        entries on diagonal >= tnnzdiag. Otherwise use unsymmetric\n"
+        "        strategy.\n")) ;
+        // auto strategy control for v6.0.0
+        double strategy_thresh_sym =
+            GET_CONTROL (UMFPACK_STRATEGY_THRESH_SYM,
+                 UMFPACK_DEFAULT_STRATEGY_THRESH_SYM) ;
+        double strategy_thresh_nnzdiag = 
+            GET_CONTROL (UMFPACK_STRATEGY_THRESH_NNZDIAG,
+                 UMFPACK_DEFAULT_STRATEGY_THRESH_NNZDIAG) ;
+        PRINTF (("    "ID": tsym: %g\n", 
+            (Int) INDEX (UMFPACK_STRATEGY_THRESH_SYM),
+            strategy_thresh_sym)) ;
+        PRINTF (("    "ID": tnnzdiag: %g\n", 
+            (Int) INDEX (UMFPACK_STRATEGY_THRESH_NNZDIAG),
+            strategy_thresh_nnzdiag)) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -138,7 +154,7 @@ GLOBAL void UMFPACK_report_control
     /* ---------------------------------------------------------------------- */
 
     ordering_option = GET_CONTROL (UMFPACK_ORDERING, UMFPACK_DEFAULT_ORDERING) ;
-    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_USER)
+    if (ordering_option < 0 || ordering_option > UMFPACK_ORDERING_METIS_GUARD)
     {
         ordering_option = UMFPACK_DEFAULT_ORDERING ;
     }
@@ -163,6 +179,10 @@ GLOBAL void UMFPACK_report_control
     else if (ordering_option == UMFPACK_ORDERING_METIS)
     {
         PRINTF ((" METIS\n")) ;
+    }
+    else if (ordering_option == UMFPACK_ORDERING_METIS_GUARD)
+    {
+        PRINTF ((" METIS_GUARD: METIS, or COLAMD if A'A is costly to form\n")) ;
     }
     else if (ordering_option == UMFPACK_ORDERING_BEST)
     {
@@ -346,7 +366,7 @@ GLOBAL void UMFPACK_report_control
     PRINTF (("none.  UMFPACK will be slow.\n")) ;
 #else
     PRINTF (("Fortran BLAS.  size of BLAS integer: "ID"\n",
-	(Int) (sizeof (BLAS_INT)))) ;
+	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
 #endif
 
 #ifdef MATLAB_MEX_FILE
@@ -361,10 +381,16 @@ GLOBAL void UMFPACK_report_control
     PRINTF (("    no timer used.\n")) ;
 #endif
 
+#ifdef NCHOLMOD
+    PRINTF (("    compiled without CHOLMOD's ordering options\n")) ;
+#else
+    PRINTF (("    compiled with CHOLMOD ordering options\n")) ;
+#endif
+
     PRINTF (("    computer/operating system: %s\n", UMFPACK_ARCHITECTURE)) ;
-    PRINTF (("    size of int: %g SuiteSparse_long: %g Int: %g pointer: %g"
-	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int),
-	(double) sizeof (SuiteSparse_long), (double) sizeof (Int),
+    PRINTF (("    size of int32_t: %g int64_t: %g Int: %g pointer: %g"
+	" double: %g Entry: %g (in bytes)\n\n", (double) sizeof (int32_t),
+	(double) sizeof (int64_t), (double) sizeof (Int),
 	(double) sizeof (void *), (double) sizeof (double),
 	(double) sizeof (Entry))) ;
 }

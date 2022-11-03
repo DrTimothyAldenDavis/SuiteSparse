@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_usolve: x=U\b, where x,b are sparse or dense
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_usolve: x=U\b.  U must be sparse, real, and upper triangular.  b must be a
  * real full or sparse vector.  x is full or sparse, depending on b.

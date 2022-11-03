@@ -7,9 +7,10 @@
 % terms.  This version is restricted to real sparse matrices.  A complex
 % version is left for future work.
 %
-% Copyright (c) 2011, Timothy A. Davis
-%
 % Files
 %   sparseinv         - computes the sparse inverse subset of a real sparse square matrix A.
 %   sparseinv_install - compiles and installs the sparseinv function.
 %   sparseinv_test    - tests the sparseinv function.
+%
+% SPARSEINV, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

@@ -1,6 +1,6 @@
 CSparse: a Concise Sparse Matrix package.
-Copyright (c) 2006-2017, Timothy A. Davis.
-http://www.suitesparse.com
+CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+
 
 Refer to "Direct Methods for Sparse Linear Systems," Timothy A. Davis,
 SIAM, Philadelphia, 2006.  No detailed user guide is included in this
@@ -34,18 +34,17 @@ See http://www.suitesparse.com for CSparse and the AMD ordering
 package.  See the Doc/License.txt file for the license.
 
 To compile the C-library (./Source) and C demo programs (./Demo) just type
-"make" in this directory.  This should work on any system with the "make"
-command.  To run the exhaustive tests, type "make" in the Tcov directory
-(Linux is assumed).  To compile the MATLAB mexFunctions type "make mex" in
-this directory, or just "make" in the MATLAB directory.  To remove all files
-not in the original distribution, type "make distclean".  I recommend that you
-use a different level of optimization than "cc -O", which was chosen so that
-the Makefile is portable.  See Source/Makefile.
+"make" in this directory, or import the CMakeLists.txt into your build system
+(such as Microsoft Visual Studio).  To install, use "sudo make install".
+Run the demos with "make demo".  To clean up, do "make clean".
 
-You can simply type "cs_install" while in the CSparse/MATLAB directory to
-compile and install CSparse for use in MATLAB.  This is especially useful for
-a typical Microsoft Windows system, which does not include "make".  For more
-details, see CSparse/MATLAB/README.txt.
+To run the exhaustive tests, type "make" in the Tcov directory (Linux is
+assumed).  To remove all files not in the original distribution, type "make
+distclean".
+
+While in MATLAB, type "cs_install" while in the CSparse/MATLAB directory to
+compile and install CSparse for use in MATLAB.  For more details, see
+CSparse/MATLAB/README.txt.
 
 --------------------------------------------------------------------------------
 Contents:
@@ -59,6 +58,8 @@ Matrix/         sample matrices
 README.txt      this file
 Source/         primary CSparse source files (C only, no MATLAB)
 Tcov/           CSparse tests
+Config/         source for Include/cs.h
+build/          compiled files
 
 --------------------------------------------------------------------------------
 ./Doc:          license and change log
@@ -123,9 +124,13 @@ cs_updown.c     sparse rank-1 Cholesky update/downate
 cs_usolve.c     x=U\b
 cs_util.c       various utilities (allocate/free matrices, workspace, etc)
 cs_utsolve.c    x=U'\b
-Makefile        Makefile for CSparse
 README.txt      README file for CSparse
 
+--------------------------------------------------------------------------------
+./Config:
+--------------------------------------------------------------------------------
+
+cs.h.in         source for cs.h
 
 --------------------------------------------------------------------------------
 ./Demo:         C program demos
@@ -137,10 +142,7 @@ cs_demo3.c      read a matrix, solve a linear system, update/downdate
 cs_demo.c       support routines for cs_demo*.c
 cs_demo.h       include file for demo programs
 cs_demo.out     output of "make", which runs the demos on some matrices
-Makefile        Makefile for Demo programs
-readhb.f        read a Rutherford-Boeing matrix
 README.txt      Demo README file
-
 
 --------------------------------------------------------------------------------
 ./MATLAB:       MATLAB interface, demos, and tests
@@ -393,14 +395,11 @@ mbeacxc             US economy, 1972.  Dan Szyld, while at NYU
 t1                  small example used in Chapter 2
 west0067            Cavett problem with 5 components (chemical eng., Westerberg)
 
-
 --------------------------------------------------------------------------------
 ./Tcov:             Exhaustive test coverage of CSparse
 --------------------------------------------------------------------------------
 
-covall              same as covall.linux
-covall.linux        find coverage (Linux)
-covall.sol          find coverage (Solaris)
+covall              run test coverage (requires Linux)
 cov.awk             coverage summary
 cover               print uncovered lines
 covs                print uncovered lines

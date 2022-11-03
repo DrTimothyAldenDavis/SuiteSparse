@@ -1,5 +1,4 @@
 CXSparse/Source directory: primary ANSI C source code files for CXSparse.
-To compile the libcxsparse.a C-callable library, just type "make" in this
-directory.
 
-Timothy A. Davis, http://www.suitesparse.com
+CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+SPDX-License-Identifier: LGPL-2.1+

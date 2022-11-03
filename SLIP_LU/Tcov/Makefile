@@ -10,18 +10,37 @@
 
 default: run
 
-include ../../SuiteSparse_config/SuiteSparse_config.mk
+################################################################################
+
+    SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+    INSTALL_LIB ?= $(SUITESPARSE)/lib
+
+    # use 8 jobs by default
+    JOBS ?= 8
+
+    LDFLAGS = --coverage
+    LDFLAGS += -L$(INSTALL_LIB)
+    LDFLAGS += -Wl,-rpath=$(INSTALL_LIB)
+
+    # remove object files, but keep compiled libraries via 'make clean'
+    CLEAN = *.o *.obj *.ln *.bb *.bbg *.da *.tcov *.gcov gmon.out *.bak *.d \
+        *.gcda *.gcno *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
+
+    # also remove compiled libraries, via 'make distclean'
+    PURGE = *.so* *.a *.dll *.dylib *.dSYM
+
+################################################################################
 
 # Linux test coverage
 CC = gcc
-CFLAGS = -g -fprofile-arcs -ftest-coverage \
+CFLAGS = -g -O0 -pg -fprofile-arcs -ftest-coverage \
         -Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
         -Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c99 \
         -Wno-unused-parameter -I../Include -I../Source -I../Demo \
         -I../../SuiteSparse_config -I../../COLAMD/Include -I../../AMD/Include \
-        -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV
+        -DSLIP_GMP_LIST_INIT=2 -DSLIP_LU_TCOV -g
 
-LDLIBS += -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig
+LDLIBS = -lm -lgmp -lmpfr -lcolamd -lamd -lsuitesparseconfig -lrt
 
 # run all statement coverage tests, and then check for 100% coverage
 run: runtests
@@ -91,10 +110,10 @@ demos.c:
 	- ln -s ../Demo/$@
 
 test: $(CS) tcov_test.c demos.c
-	$(CC) $(LDFLAGS) tcov_test.c demos.c $(CFLAGS) -o tcov_test $(CS) $(LDLIBS)
+	$(CC) -g $(LDFLAGS) tcov_test.c demos.c $(CFLAGS) -o tcov_test $(CS) $(LDLIBS)
 
 SLIPLU: $(CS) SLIPLU.c demos.c
-	$(CC) $(LDFLAGS) SLIPLU.c demos.c $(CFLAGS) -o SLIPLU $(CS) $(LDLIBS)
+	$(CC) -g $(LDFLAGS) SLIPLU.c demos.c $(CFLAGS) -o SLIPLU $(CS) $(LDLIBS)
 
 # run all statement coverage tests
 runtests: all

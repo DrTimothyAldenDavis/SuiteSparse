@@ -1,10 +1,12 @@
-/* ========================================================================== */
-/* === Check/cholmod_read =================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Check/cholmod_read: read a sparse matrix from a file
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Check Module.  Copyright (C) 2005-2006, Timothy A. Davis.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Read a sparse matrix in triplet or dense form.  A triplet matrix can be
  * returned as compressed-column sparse matrix.  The file format is compatible
@@ -145,9 +147,6 @@
 #ifndef NCHECK
 
 #include "cholmod_internal.h"
-#include "cholmod_check.h"
-#include <string.h>
-#include <ctype.h>
 
 /* The MatrixMarket format specificies a maximum line length of 1024 */
 #define MAXLINE 1030
@@ -432,7 +431,8 @@ static int read_header	/* returns TRUE if successful, FALSE on error */
 	    l3 = 0 ;
 	    l4 = 0 ;
 	    nitems = sscanf (buf, "%lg %lg %lg %lg\n", &l1, &l2, &l3, &l4) ;
-	    if (nitems < 2 || nitems > 4 || l1 > Int_max || l2 > Int_max)
+	    if (nitems < 2 || nitems > 4 ||
+                l1 > (double) Int_max || l2 > (double) Int_max)
 	    {
 		/* invalid matrix */
 		return (FALSE) ;

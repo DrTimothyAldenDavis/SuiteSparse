@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU_refactor ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Source/klu_refactor: factor another matrix (no pivoting)
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* Factor the matrix, after ordering and analyzing it with KLU_analyze, and
  * factoring it once with KLU_factor.  This routine cannot do any numerical
@@ -15,7 +21,7 @@
 /* === KLU_refactor ========================================================= */
 /* ========================================================================== */
 
-Int KLU_refactor        /* returns TRUE if successful, FALSE otherwise */
+int KLU_refactor        /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
     Int Ap [ ],         /* size n+1, column pointers */
@@ -440,14 +446,14 @@ Int KLU_refactor        /* returns TRUE if successful, FALSE otherwise */
     ASSERT (KLU_valid (n, Numeric->Offp, Numeric->Offi, Offx)) ;
     if (Common->status == KLU_OK)
     {
-        PRINTF (("\n ########### KLU_BTF_REFACTOR done, nblocks %d\n",nblocks));
+        PRINTF (("\n ----------- KLU_BTF_REFACTOR done, nblocks %d\n",nblocks));
         for (block = 0 ; block < nblocks ; block++)
         {
             k1 = R [block] ;
             k2 = R [block+1] ;
             nk = k2 - k1 ;
             PRINTF ((
-                "\n================KLU_refactor output: k1 %d k2 %d nk %d\n",
+                "\n--------------- KLU_refactor output: k1 %d k2 %d nk %d\n",
                 k1, k2, nk)) ;
             if (nk == 1)
             {

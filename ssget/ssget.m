@@ -23,7 +23,8 @@ function Problem = ssget (matrix, ss_index)
 %
 %   See also ssgrep, ssweb, ssget_example, ssget_defaults, websave.
 
-% Copyright 2009-2019, Timothy A. Davis, http://www.suitesparse.com
+% ssget, Copyright (c) 2009-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 %-------------------------------------------------------------------------------
 % get the parameter settings

@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Core/cholmod_add ===================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Core/cholmod_add: compute alpha*A + beta*B
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Core Module.  Copyright (C) 2005-2006,
- * Univ. of Florida.  Author: Timothy A. Davis
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved. Author:  Timothy A. Davis
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* C = alpha*A + beta*B, or spones(A+B).  Result is packed, with sorted or
  * unsorted columns.  This routine is much faster and takes less memory if C
@@ -24,7 +25,6 @@
  */
 
 #include "cholmod_internal.h"
-#include "cholmod_core.h"
 
 cholmod_sparse *CHOLMOD(add)
 (

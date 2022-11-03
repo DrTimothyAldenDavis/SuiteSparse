@@ -1,3 +1,7 @@
+% SuiteSparse/MATLAB_Tools/SSMULT/Results/s2.m
+% SSMULT, Copyright (c) 2007-2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: GPL-2.0+
+
 load sstest2_results.mat % TM T1 TU f
 whos
 

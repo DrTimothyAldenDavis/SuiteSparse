@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === AMD mexFunction ===================================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/MATLAB/amd_mex: MATLAB interface for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD, Copyright (c) Timothy A. Davis,					     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /*
  * Usage:
@@ -29,7 +29,6 @@
 #include "amd.h"
 #include "mex.h"
 #include "matrix.h"
-#define Long SuiteSparse_long
 
 void mexFunction
 (
@@ -39,7 +38,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    Long i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full ;
+    int64_t i, m, n, *Ap, *Ai, *P, nc, result, spumoni, full ;
     double *Pout, *InfoOut, Control [AMD_CONTROL], Info [AMD_INFO], *ControlIn ;
     mxArray *A ;
 
@@ -106,7 +105,7 @@ void mexFunction
     /* allocate workspace for output permutation */
     /* --------------------------------------------------------------------- */
 
-    P = mxMalloc ((n+1) * sizeof (Long)) ;
+    P = mxMalloc ((n+1) * sizeof (int64_t)) ;
 
     /* --------------------------------------------------------------------- */
     /* if A is full, convert to a sparse matrix */
@@ -122,8 +121,8 @@ void mexFunction
 	}
 	mexCallMATLAB (1, &A, 1, (mxArray **) pargin, "sparse") ;
     }
-    Ap = (Long *) mxGetJc (A) ;
-    Ai = (Long *) mxGetIr (A) ;
+    Ap = (int64_t *) mxGetJc (A) ;
+    Ai = (int64_t *) mxGetIr (A) ;
     if (spumoni > 0)
     {
 	mexPrintf ("    input matrix A has %d nonzero entries\n", Ap [n]) ;

@@ -11,6 +11,7 @@ function x = cs_cholsol (A,b,order)                                         %#ok
 %
 %   See also CS_CHOL, CS_AMD, CS_LUSOL, CS_QRSOL, MLDIVIDE.
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 error ('cs_cholsol mexFunction not found') ;

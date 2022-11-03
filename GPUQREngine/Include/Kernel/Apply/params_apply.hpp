@@ -1,3 +1,12 @@
+//------------------------------------------------------------------------------
+// GPUQREngine/Kernel/Apply/params_apply.hpp
+//------------------------------------------------------------------------------
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #ifndef PARAMS_APPLY_HPP_
 #define PARAMS_APPLY_HPP_

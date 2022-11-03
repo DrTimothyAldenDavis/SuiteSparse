@@ -138,10 +138,6 @@ CXSparse/Tcov/cov.sort
 CXSparse/Tcov/cover.out
 CXSparse/Tcov/covs.out
 CXSparse/Tcov/cs_*.c
-CXSparse/Tcov/cs*_ci.c
-CXSparse/Tcov/cs*_cl.c
-CXSparse/Tcov/cs*_di.c
-CXSparse/Tcov/cs*_dl.c
 CXSparse/Tcov/*.out
 CXSparse/Tcov/cs_demo1_ci
 CXSparse/Tcov/cs_demo1_cl

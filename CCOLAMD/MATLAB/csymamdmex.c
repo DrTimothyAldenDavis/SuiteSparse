@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === csymamd mexFunction ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CCOLAMD/MATLAB/csymamdmex.c: MATLAB interface for CSYMAMD
+//------------------------------------------------------------------------------
 
-/* ----------------------------------------------------------------------------
- * CCOLAMD, Copyright (C), Univ. of Florida.  Authors: Timothy A. Davis,
- * Sivasankaran Rajamanickam, and Stefan Larimore
- * -------------------------------------------------------------------------- */
+// CCOLAMD, Copyright (c) 2005-2022, Univ. of Florida, All Rights Reserved.
+// Authors: Timothy A. Davis, Sivasankaran Rajamanickam, and Stefan Larimore.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* 
  * Usage:
@@ -23,7 +24,6 @@
 #include "mex.h"
 #include "matrix.h"
 #include <stdlib.h>
-#define Long SuiteSparse_long
 
 /* ========================================================================== */
 /* === csymamd mexFunction ================================================== */
@@ -41,23 +41,23 @@ void mexFunction
 {
     /* === Local variables ================================================== */
 
-    Long *A ;                   /* row indices of input matrix A */
-    Long *perm ;                /* column ordering of M and ordering of A */
-    Long *cmember ;             /* csymamd's copy of the constraint set */
-    double *in_cmember ;        /* input constraint set */
-    Long *p ;                   /* column pointers of input matrix A */
-    Long cslen ;                /* size of constraint set */
-    Long n_col ;                /* number of columns of A */
-    Long n_row ;                /* number of rows of A */
-    Long full ;                 /* TRUE if input matrix full, FALSE if sparse */
+    int64_t *A ;            /* row indices of input matrix A */
+    int64_t *perm ;         /* column ordering of M and ordering of A */
+    int64_t *cmember ;      /* csymamd's copy of the constraint set */
+    double *in_cmember ;    /* input constraint set */
+    int64_t *p ;            /* column pointers of input matrix A */
+    int64_t cslen ;         /* size of constraint set */
+    int64_t n_col ;         /* number of columns of A */
+    int64_t n_row ;         /* number of rows of A */
+    int full ;              /* TRUE if input matrix full, FALSE if sparse */
     double knobs [CCOLAMD_KNOBS] ; /* csymamd user-controllable parameters */
-    double *out_perm ;          /* output permutation vector */
-    double *out_stats ;         /* output stats vector */
-    double *in_knobs ;          /* input knobs vector */
-    Long i ;                    /* loop counter */
-    mxArray *Ainput ;           /* input matrix handle */
-    Long spumoni ;              /* verbosity variable */
-    Long stats [CCOLAMD_STATS] ;/* stats for symamd */
+    double *out_perm ;      /* output permutation vector */
+    double *out_stats ;     /* output stats vector */
+    double *in_knobs ;      /* input knobs vector */
+    int64_t i ;             /* loop counter */
+    mxArray *Ainput ;       /* input matrix handle */
+    int spumoni ;           /* verbosity variable */
+    int64_t stats [CCOLAMD_STATS] ; /* stats for symamd */
 
     /* === Check inputs ===================================================== */
 
@@ -76,11 +76,11 @@ void mexFunction
 	cslen = mxGetNumberOfElements (pargin [2]) ;
 	if (cslen != 0)
 	{
-	    cmember = (Long *) mxCalloc (cslen, sizeof (Long)) ;
+	    cmember = (int64_t *) mxCalloc (cslen, sizeof (int64_t)) ;
 	    for (i = 0 ; i < cslen ; i++)
 	    {
 		/* convert cmember from 1-based to 0-based */
-		cmember[i] = ((Long) in_cmember [i] - 1) ;
+		cmember[i] = ((int64_t) in_cmember [i] - 1) ;
 	    }
 	}
     }
@@ -151,9 +151,9 @@ void mexFunction
     	mexErrMsgTxt ("csymamd: cmember must be of length equal to #cols of A");
     }
 
-    A = (Long *) mxGetIr (Ainput) ;
-    p = (Long *) mxGetJc (Ainput) ;
-    perm = (Long *) mxCalloc (n_col+1, sizeof (Long)) ;
+    A = (int64_t *) mxGetIr (Ainput) ;
+    p = (int64_t *) mxGetJc (Ainput) ;
+    perm = (int64_t *) mxCalloc (n_col+1, sizeof (int64_t)) ;
 
     /* === Order the rows and columns of A (does not destroy A) ============= */
 

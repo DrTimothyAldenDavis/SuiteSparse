@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_ltsolve_mex: x=L'\b where x,b are dense
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_ltsolve: solve an upper triangular system L'*x=b */
 void mexFunction
@@ -20,7 +23,7 @@ void mexFunction
         L = cs_cl_mex_get_sparse (&Lmatrix, 1, pargin [0]) ;    /* get L */
         x = cs_cl_mex_get_double (L->n, pargin [1]) ;           /* x = b */
         cs_cl_ltsolve (L, x) ;                                  /* x = L'\x */
-        cs_free (L->x) ;
+        cs_cl_free (L->x) ;
         pargout [0] = cs_cl_mex_put_double (L->n, x) ;          /* return x */
 #else
         mexErrMsgTxt ("complex matrices not supported") ;

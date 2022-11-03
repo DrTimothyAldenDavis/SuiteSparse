@@ -2,6 +2,9 @@
 //=== sfmult_vector_k =========================================================
 //==============================================================================
 
+// SFMULT, Copyright (c) 2009, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
 // y = A*x or A'*x where x is a vector (x or y non-unit stride)
 
 // sfmult_AN_xk_1   y = A*x	x is n-by-1, y is m-by-1 (x non-unit stride)

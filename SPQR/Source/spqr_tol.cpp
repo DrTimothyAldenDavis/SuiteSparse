@@ -2,6 +2,11 @@
 // === spqr_tol ================================================================
 // =============================================================================
 
+// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 // Return the default column 2-norm tolerance
 
 #include "spqr.hpp"

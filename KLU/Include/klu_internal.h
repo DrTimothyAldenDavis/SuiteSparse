@@ -1,6 +1,12 @@
-/* ========================================================================== */
-/* === KLU/Include/klu_internal.h =========================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// KLU/Include/klu_internal.h: internal include file for KLU
+//------------------------------------------------------------------------------
+
+// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// Authors: Timothy A. Davis and Ekanathan Palamadai.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 /* For internal use in KLU routines only, not for user programs */
 
@@ -31,11 +37,7 @@
 
 /* ========================================================================== */
 
-#include <stdio.h>
 #include <assert.h>
-#include <limits.h>
-#include <stdlib.h>
-#include <math.h>
 
 #undef ASSERT
 #ifndef NDEBUG

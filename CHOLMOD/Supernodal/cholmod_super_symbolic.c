@@ -1,11 +1,12 @@
-/* ========================================================================== */
-/* === Supernodal/cholmod_super_symbolic ==================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Supernodal/cholmod_super_symbolic: symbolic supernodal analysis
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Supernodal Module. Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Supernodal symbolic analysis of the LL' factorization of A, A*A',
  * A(:,f)*A(:,f)'.
@@ -37,15 +38,10 @@
  * Supports any xtype (pattern, real, complex, or zomplex).
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NSUPERNODAL
-
-#include "cholmod_internal.h"
-#include "cholmod_supernodal.h"
-
-#ifdef GPU_BLAS
-#include "cholmod_gpu.h"
-#endif
 
 /* ========================================================================== */
 /* === subtree ============================================================== */
@@ -242,7 +238,7 @@ int CHOLMOD(super_symbolic2)
 
     L->useGPU = 0 ;     /* only used for Cholesky factorization, not QR */
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 
     /* GPU module is installed */
     if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY )
@@ -419,7 +415,7 @@ int CHOLMOD(super_symbolic2)
 	if (Parent [j-1] != j	    /* parent of j-1 is not j */
 	    || (ColCount [j-1] != ColCount [j] + 1) /* j-1 not subset of j*/
 	    || Wi [j] > 1	    /* j has more than one child */
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 	    /* Ensure that the supernode will fit in the GPU buffers */
 	    /* Data size of 16 bytes must be assumed for case of PATTERN */
 	    || (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU && 
@@ -574,12 +570,12 @@ int CHOLMOD(super_symbolic2)
 		merge = ((ns <= nrelax1 && z < zrelax0) ||
 			 (ns <= nrelax2 && z < zrelax1) ||
 					  (z < zrelax2)) &&
-			(xtotsize < Int_max / sizeof (double)) ;
+			(xtotsize < ((double) Int_max) / sizeof (double)) ;
 
 	    }
 	}
 
-#ifdef GPU_BLAS
+#ifdef SUITESPARSE_CUDA
 	if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && L->useGPU ) {
 	  /* Ensure that the aggregated supernode fits in the device 
 	     supernode buffers */
@@ -673,7 +669,7 @@ int CHOLMOD(super_symbolic2)
             /* also compute xsize in double to guard against Int overflow */
             xxsize += ((double) nscol) * ((double) nsrow) ;
         }
-	if (ssize < 0 ||(find_xsize && xxsize > Int_max))
+	if (ssize < 0 ||(find_xsize && xxsize > (double) Int_max))
 	{
 	    /* Int overflow, clear workspace and return.
                QR factorization will not use xxsize, so that error is ignored.

@@ -1,3 +1,6 @@
+// CXSparse/Source/cs_qrsol: x=A\b using a sparse QR factorization
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 /* x=A\b where A can be rectangular; b overwritten with solution */
 CS_INT cs_qrsol (CS_INT order, const cs *A, CS_ENTRY *b)

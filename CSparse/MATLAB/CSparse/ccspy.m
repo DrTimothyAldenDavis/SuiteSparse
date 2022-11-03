@@ -20,7 +20,8 @@ function [p, q, r, s] = ccspy (A, bipartite, res)
 %
 %   See also CSPY, CS_DMPERM, DMPERM, CS_SCC, CS_SCC2, CS_DMSPY.
 
-% Copyright 2006-2012, Timothy A. Davis, http://www.suitesparse.com
+% CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+% SPDX-License-Identifier: LGPL-2.1+
 
 if (~issparse (A))
     A = sparse (A) ;

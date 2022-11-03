@@ -1,9 +1,9 @@
 function testRB3
-% Exhaustive test of RBio.  Requires UFget.  This is a very extensive test;
-% it tests all matrices in the UF collection, and runs until it runs out of
-% memory.
+% Exhaustive test of RBio.  Requires ssget.  This is a very extensive test;
+% it tests all matrices in the SuiteSparse Matrix Collection, and runs until it
+% runs out of memory.
 
-index = UFget ;
+index = ssget ;
 [ignore f] = sort (index.nnz) ;
 title = 'test file' ;
 key = 'key' ;
@@ -14,7 +14,7 @@ for k = 1:length (f)
 
     try
         id = f (k) ;
-        Prob = UFget (id, index) ;
+        Prob = ssget (id, index) ;
         A = Prob.A ;
         [m n] = size (A) ;
         if (isfield (Prob, 'Z'))

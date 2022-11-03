@@ -10,7 +10,8 @@ function dimacs10_demo (arg)
 %
 % See also dimacs10, ssget
 
-% Copyright 2011, Timothy A Davis
+% DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 lastwarn ('') ;
 index = dimacs10 ;

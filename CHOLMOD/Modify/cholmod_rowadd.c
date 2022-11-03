@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === Modify/cholmod_rowadd ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/Modify/cholmod_rowadd: add row/column to an LDL' factorization
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Modify Module.
- * Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager.
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+// CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// and William W. Hager. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Adds a row and column to an LDL' factorization, and optionally updates the
  * solution to Lx=b.
@@ -17,12 +17,10 @@
  * numeric identity matrix before the row is added.
  */
 
+#include "cholmod_internal.h"
+
 #ifndef NGPL
 #ifndef NMODIFY
-
-#include "cholmod_internal.h"
-#include "cholmod_modify.h"
-
 
 /* ========================================================================== */
 /* === cholmod_rowadd ======================================================= */

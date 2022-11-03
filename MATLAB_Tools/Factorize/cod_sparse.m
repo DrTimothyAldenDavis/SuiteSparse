@@ -57,7 +57,8 @@ function [U, R, V, r] = cod_sparse (A, arg)
 %
 % See also qr, cod, cod_qmult, spqr, spqr_qmult.
 
-% Copyright 2011-2012, Timothy A. Davis, http://www.suitesparse.com
+% Factorize, Copyright (c) 2011-2012, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 %-------------------------------------------------------------------------------
 % get the inputs

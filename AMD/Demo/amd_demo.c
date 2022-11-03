@@ -1,27 +1,25 @@
-/* ========================================================================= */
-/* === AMD demo main program =============================================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// AMD/Demo/amd_demo: demo program for AMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* AMD Copyright (c) by Timothy A. Davis,				     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com                 */
-/* ------------------------------------------------------------------------- */
+// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to AMD.
  */
 
 #include "amd.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int main (void)
 {
     /* The symmetric can_24 Harwell/Boeing matrix, including upper and lower
      * triangular parts, and the diagonal entries.  Note that this matrix is
      * 0-based, with row and column indices in the range 0 to n-1. */
-    int n = 24, nz,
+    int32_t n = 24, nz,
     Ap [ ] = { 0, 9, 15, 21, 27, 33, 39, 48, 57, 61, 70, 76, 82, 88, 94, 100,
 	106, 110, 119, 128, 137, 143, 152, 156, 160 },
     Ai [ ] = {
@@ -50,7 +48,7 @@ int main (void)
 	/* column 22: */    2, 20, 21, 22,
 	/* column 23: */    6, 11, 12, 23 } ;
 
-    int P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int32_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
     char A [24][24] ;
 

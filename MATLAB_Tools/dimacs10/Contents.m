@@ -6,3 +6,6 @@
 %   dimacs10_demo    - reads in all 138 DIMACS10 graphs.
 %   dimacs10_install - compiles and installs dimacs10 for use in MATLAB.
 %   metis_graph_read - reads a graph file in METIS format into a MATLAB sparse matrix.
+
+% DIMACS10, Copyright (c) 2011, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause

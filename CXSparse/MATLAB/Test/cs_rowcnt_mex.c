@@ -1,13 +1,17 @@
+// CXSparse/MATLAB/Test/cs_rowcnt_mex: row counts for sparse Cholesky
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
+
 /* Compute the row counts of the Cholesky factor L of the matrix A.  Uses
  * the lower triangular part of A. */
 
 #include "cs_mex.h"
 
 static
-void firstdesc (CS_INT n, CS_INT *parent, CS_INT *post, CS_INT *first,
-    CS_INT *level)
+void firstdesc (int64_t n, int64_t *parent, int64_t *post, int64_t *first,
+    int64_t *level)
 {
-    CS_INT len, i, k, r, s ;
+    int64_t len, i, k, r, s ;
     for (i = 0 ; i < n ; i++) first [i] = -1 ;
     for (k = 0 ; k < n ; k++)
     {
@@ -22,15 +26,15 @@ void firstdesc (CS_INT n, CS_INT *parent, CS_INT *post, CS_INT *first,
 
 /* return rowcount [0..n-1] */
 static
-CS_INT *rowcnt (cs_dl *A, CS_INT *parent, CS_INT *post)
+int64_t *rowcnt (cs_dl *A, int64_t *parent, int64_t *post)
 {
-    CS_INT i, j, k, len, s, p, jprev, q, n, sparent, jleaf, *Ap, *Ai, *maxfirst,
+    int64_t i, j, k, len, s, p, jprev, q, n, sparent, jleaf, *Ap, *Ai, *maxfirst,
         *ancestor, *prevleaf, *w, *first, *level, *rowcount ;
     n = A->n ; Ap = A->p ; Ai = A->i ;                  /* get A */
-    w = cs_dl_malloc (5*n, sizeof (CS_INT)) ;           /* get workspace */
+    w = cs_dl_malloc (5*n, sizeof (int64_t)) ;           /* get workspace */
     ancestor = w ; maxfirst = w+n ; prevleaf = w+2*n ; first = w+3*n ;
     level = w+4*n ;
-    rowcount = cs_dl_malloc (n, sizeof (CS_INT)) ;      /* allocate result */
+    rowcount = cs_dl_malloc (n, sizeof (int64_t)) ;      /* allocate result */
     firstdesc (n, parent, post, first, level) ; /* find first and level */
     for (i = 0 ; i < n ; i++)
     {
@@ -64,7 +68,7 @@ void mexFunction
 {
     cs_dl *A, Amatrix ;
     double *x ;
-    CS_INT i, m, n, *parent, *post, *rowcount ;
+    int64_t i, m, n, *parent, *post, *rowcount ;
 
     if (nargout > 1 || nargin != 3)
     {

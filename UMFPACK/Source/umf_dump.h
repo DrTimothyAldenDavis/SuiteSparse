@@ -1,7 +1,11 @@
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_dump.h: debug definitions for UMFPACK
+//------------------------------------------------------------------------------
+
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* umf_dump.h: debugging definitions. */
 
@@ -107,13 +111,9 @@ GLOBAL void UMF_dump_diagonal_map
 
 #define UMF_DBMAX 50000
 
-#ifndef EXTERN
-#define EXTERN extern
-#endif
-
-GLOBAL EXTERN Int UMF_debug ;
-GLOBAL EXTERN Int UMF_allocfail ;
-GLOBAL EXTERN double UMF_gprob ;
+GLOBAL Int UMF_debug ;
+GLOBAL Int UMF_allocfail ;
+GLOBAL double UMF_gprob ;
 
 #define DEBUGk(k,params) { if (UMF_debug >= (k)) { PRINTF (params) ; } }
 

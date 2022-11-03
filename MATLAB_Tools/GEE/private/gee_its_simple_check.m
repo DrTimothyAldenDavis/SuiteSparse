@@ -8,7 +8,8 @@ function gee_its_simple_check (A, name, b)
 %
 % See also: gee_its_simple
 
-% Copyright 2007, Timothy A. Davis, http://www.suitesparse.com
+% GEE, Copyright (c) 2006-2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 [m n] = size (A) ;
 if (m ~= n)

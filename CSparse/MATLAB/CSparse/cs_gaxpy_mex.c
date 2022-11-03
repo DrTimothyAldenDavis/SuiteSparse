@@ -1,3 +1,6 @@
+// CSparse/MATLAB/CSparse/cs_gaxpy: sparse matrix times dense vector
+// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* z = cs_gaxpy (A,x,y) computes z = A*x+y */
 void mexFunction

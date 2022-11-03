@@ -1,6 +1,12 @@
 // =============================================================================
 // === GPUQREngine/Source/TaskDescriptor_flops.cpp =============================
 // =============================================================================
+
+// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// and Sanjay Ranka.  All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 //
 // This file contains functions that are responsible for computing the actual
 // flops performed by various GPU tasks in the GPUQREngine.
@@ -98,9 +104,9 @@ Int getFlops(TaskDescriptor *task)
         case TASKTYPE_Apply2_Factorize1: return flopsApplyFactorize(2, 1);
         #endif
 
-        case TASKTYPE_SAssembly:         return 0;
-        case TASKTYPE_PackAssembly:      return 0;
+        default: break ;
     }
+    return (0) ;
 }
 
 // -----------------------------------------------------------------------------
@@ -133,8 +139,7 @@ Int getWeightedFlops(TaskDescriptor *task)
         case TASKTYPE_Apply2_Factorize1: flops *= 10; break;
         #endif
 
-        case TASKTYPE_SAssembly:         break;
-        case TASKTYPE_PackAssembly:      break;
+        default: break ;
     }
     return flops;
 }

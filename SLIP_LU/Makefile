@@ -1,73 +1,86 @@
-#------------------------------------------------------------------------------
-# SLIP_LU/Makefile: compile, install, and run SLIP_LU demo and tests
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
+# SuiteSparse/SLIP_LU/Makefile
+#-------------------------------------------------------------------------------
 
-# SLIP_LU: (c) 2019-2020, Chris Lourenco, Jinhao Chen, Erick Moreno-Centeno,
-# Timothy A. Davis, Texas A&M University.  All Rights Reserved.  See
-# SLIP_LU/License for the license.
+# SLIP_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,
+# Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
-#------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
-SUITESPARSE ?= $(realpath $(CURDIR)/..)
-export SUITESPARSE
+# A simple Makefile for SLIP_LU, which relies on cmake to do the
+# actual build.  All the work is done in cmake so this Makefile is just for
+# convenience.
 
-# default: compile the dynamic library, and run the demos
-default: C
+# To compile with an alternate compiler:
+#
+#       make CC=gcc CXX=g++
+#
+# To compile/install for system-wide usage:
+#
+#       make
+#       sudo make install
+#
+# To compile/install for local usage (SuiteSparse/lib and SuiteSparse/include):
+#
+#       make local
+#       make install
+#
+# To clean up the files:
+#
+#       make clean
 
-include ../SuiteSparse_config/SuiteSparse_config.mk
+JOBS ?= 8
 
-# compile the dynamic library, and then run the demos and statement coverage
-demos: all
+default: library
 
-# compile the dynamic library only, and then run the demos
-C:
-	( cd Lib ; $(MAKE) )
-	( cd Demo ; $(MAKE) )
-
-# compile the dynamic library, and then run the demos and statement coverage
-all: C cov
-
-# compile the dynamic library only
 library:
-	( cd Lib ; $(MAKE) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
-# compile the static library only
-static:
-	( cd Lib ; $(MAKE) static )
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-# statement coverage test
+# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
+global:
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
+
+debug:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
+
+all: library
+
+demo: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd Demo && ../build/example  )
+	( cd Demo && ../build/example2 )
+	( cd Demo && ../build/example1 )
+
 cov:
-	( cd Tcov ; $(MAKE) )
+	( cd Tcov && $(MAKE) )
 
-# user guide
-docs:
-	( cd Doc ; $(MAKE) )
+# just compile after running cmake; do not run cmake again
+remake:
+	( cd build && $(MAKE) --jobs=${JOBS} )
 
-# remove files not in the distribution, but keep compiled libraries
-clean:
-	( cd Lib ; $(MAKE) clean )
-	( cd Demo ; $(MAKE) clean )
-	( cd Tcov ; $(MAKE) clean )
-	- ( cd MATLAB/Source ; $(RM) *.o )
-	- ( cd MATLAB    ; $(RM) *.o )
-	( cd Doc ; $(MAKE) clean )
+# just run cmake to set things up
+setup:
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
+
+install:
+	( cd build && $(MAKE) install )
+
+# remove any installed libraries and #include files
+uninstall:
+	- xargs rm < build/install_manifest.txt
 
 # remove all files not in the distribution
-purge:
-	( cd Lib ; $(MAKE) purge )
-	( cd Demo ; $(MAKE) purge )
-	( cd Tcov ; $(MAKE) purge )
-	- ( cd MATLAB/Source ; $(RM) *.o *.mex* )
-	- ( cd MATLAB    ; $(RM) *.o *.mex* )
-	( cd Doc ; $(MAKE) clean )
+clean:
+	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
 
-distclean: purge
+purge: clean
 
-# install the library
-install: library
-	( cd Lib ; $(MAKE) install )
+distclean: clean
 
-# uninstall the library
-uninstall:
-	( cd Lib ; $(MAKE) uninstall )
-
+docs:
+	( cd Doc && $(MAKE) )

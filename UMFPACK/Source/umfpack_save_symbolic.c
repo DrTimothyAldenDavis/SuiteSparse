@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK_save_symbolic ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_save_symbolic: save a Symbolic object to a file
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Saves a Symbolic object to a file.  It can later be read
@@ -30,7 +30,7 @@
 /* === UMFPACK_save_symbolic ================================================ */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_save_symbolic
+GLOBAL int UMFPACK_save_symbolic
 (
     void *SymbolicHandle,
     char *user_filename

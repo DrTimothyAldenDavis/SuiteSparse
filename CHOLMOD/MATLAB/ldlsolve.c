@@ -1,12 +1,12 @@
-/* ========================================================================== */
-/* === CHOLMOD/MATLAB/ldlsolve mexFunction ================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// CHOLMOD/MATLAB/ldlsolve: MATLAB interface to CHOLMOD LDL' solve
+//------------------------------------------------------------------------------
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/MATLAB Module.  Copyright (C) 2005-2006, Timothy A. Davis
- * http://www.suitesparse.com
- * MATLAB(tm) is a Trademark of The MathWorks, Inc.
- * -------------------------------------------------------------------------- */
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /* Solve LDL'x=b given an LDL' factorization computed by ldlchol.
  *
@@ -28,12 +28,12 @@ void mexFunction
 )
 {
     double dummy = 0, rcond ;
-    Long *Lp, *Lnz, *Lprev, *Lnext ;
+    int64_t *Lp, *Lnz, *Lprev, *Lnext ;
     cholmod_sparse *Bs, Bspmatrix, *Xs ;
     cholmod_dense *B, Bmatrix, *X ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
-    Long j, k, n, B_is_sparse, head, tail ;
+    int64_t j, k, n, B_is_sparse, head, tail ;
 
     /* ---------------------------------------------------------------------- */
     /* start CHOLMOD and set parameters */ 
@@ -100,15 +100,15 @@ void mexFunction
     L->z = mxGetPi (pargin [0]) ;
 
     /* allocate and initialize the rest of L */
-    L->nz = cholmod_l_malloc (n, sizeof (Long), cm) ;
+    L->nz = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     Lp = L->p ;
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
 	Lnz [j] = Lp [j+1] - Lp [j] ;
     }
-    L->prev = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
-    L->next = cholmod_l_malloc (n+2, sizeof (Long), cm) ;
+    L->prev = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
+    L->next = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
     Lprev = L->prev ;
     Lnext = L->next ;
 

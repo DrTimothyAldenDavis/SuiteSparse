@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMF_report_vector ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umf_report_vector: print a vector
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 #include "umf_internal.h"
 #include "umf_report_vector.h"
@@ -24,7 +24,7 @@ PRIVATE void print_value
 {
     Entry xi ;
     /* if Xz is null, then X is in "merged" format (compatible with Entry, */
-    /* and ANSI C99 double _Complex type). */
+    /* and ANSI C11 double complex type). */
     PRINTF (("    "ID" :", INDEX (i))) ;
     if (scalar)
     {
@@ -42,7 +42,7 @@ PRIVATE void print_value
 /* === UMF_report_vector ==================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_report_vector
+GLOBAL int UMF_report_vector
 (
     Int n,
     const double Xx [ ],

@@ -1,12 +1,12 @@
-/* ========================================================================= */
-/* === CAMD demo main program (jumbled matrix version) ===================== */
-/* ========================================================================= */
+//------------------------------------------------------------------------------
+// CAMD/Demo/camd_demo2.c: demo program for CAMD
+//------------------------------------------------------------------------------
 
-/* ------------------------------------------------------------------------- */
-/* CAMD, Copyright (c) Timothy A. Davis, Yanqing Chen,			     */
-/* Patrick R. Amestoy, and Iain S. Duff.  See ../README.txt for License.     */
-/* email: DrTimothyAldenDavis@gmail.com                                      */
-/* ------------------------------------------------------------------------- */
+// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// Amestoy, and Iain S. Duff.  All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
 
 /* A simple C main program that illustrates the use of the ANSI C interface
  * to CAMD.
@@ -16,8 +16,6 @@
  */
 
 #include "camd.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 int main (void)
 {
@@ -25,7 +23,7 @@ int main (void)
      * Since CAMD operates on A+A', only A(i,j) or A(j,i) need to be specified,
      * or both.  The diagonal entries are optional (some are missing).
      * There are many duplicate entries, which must be removed. */
-    int n = 24, nz,
+    int32_t n = 24, nz,
     Ap [ ] = { 0, 9, 14, 20, 28, 33, 37, 44, 53, 58, 63, 63, 66, 69, 72, 75,
 	      78, 82, 86, 91, 97, 101, 112, 112, 116 },
     Ai [ ] = {
@@ -54,10 +52,10 @@ int main (void)
 	/* column 22: */
 	/* column 23: */    12, 11, 12, 23 } ;
 
-    int P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
+    int32_t P [24], Pinv [24], i, j, k, jnew, p, inew, result ;
     double Control [CAMD_CONTROL], Info [CAMD_INFO] ;
     char A [24][24] ;
-    int C [ ] = { 3, 0, 4, 0, 1, 1, 2, 2, 2, 2, 3, 4, 5, 5, 3, 4, 5, 2,
+    int32_t C [ ] = { 3, 0, 4, 0, 1, 1, 2, 2, 2, 2, 3, 4, 5, 5, 3, 4, 5, 2,
 		    8, 10, 4, 2, 2, 0 } ;
 
     printf ("CAMD demo, with a jumbled version of the 24-by-24\n") ;

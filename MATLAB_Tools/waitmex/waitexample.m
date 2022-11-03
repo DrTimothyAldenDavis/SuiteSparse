@@ -8,6 +8,7 @@ function waitexample
 %
 % See also waitbar, waitex.
 
-% Copyright 2007, T. Davis
+% waitmex, Copyright (c) 2007, Timothy A Davis. All Rights Reserved.
+% SPDX-License-Identifier: BSD-3-clause
 
 error ('waitexample mexFunction not found ... it must be compiled first') ;

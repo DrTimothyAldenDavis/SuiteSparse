@@ -1,3 +1,6 @@
+// CXSparse/MATLAB/CSparse/cs_permute_mex: permute a sparse matrix
+// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// SPDX-License-Identifier: LGPL-2.1+
 #include "cs_mex.h"
 /* cs_permute: permute a sparse matrix */
 void mexFunction
@@ -8,7 +11,7 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    CS_INT ignore, *P, *Q, *Pinv, m, n ;
+    int64_t ignore, *P, *Q, *Pinv, m, n ;
     if (nargout > 1 || nargin != 3)
     {
         mexErrMsgTxt ("Usage: C = cs_permute(A,p,q)") ;
@@ -17,7 +20,7 @@ void mexFunction
     n = mxGetN (pargin [0]) ;
     P = cs_dl_mex_get_int (m, pargin [1], &ignore, 1) ; /* get P */
     Q = cs_dl_mex_get_int (n, pargin [2], &ignore, 1) ; /* get Q */
-    Pinv = cs_pinv (P, m) ;                 /* P = Pinv' */
+    Pinv = cs_dl_pinv (P, m) ;                 /* P = Pinv' */
     if (mxIsComplex (pargin [0]))
     {
 #ifndef NCOMPLEX
@@ -45,7 +48,7 @@ void mexFunction
         cs_dl_spfree (D) ;
         pargout [0] = cs_dl_mex_put_sparse (&C) ;           /* return C */
     }
-    cs_free (Pinv) ;
-    cs_free (P) ;
-    cs_free (Q) ;
+    cs_dl_free (Pinv) ;
+    cs_dl_free (P) ;
+    cs_dl_free (Q) ;
 }
