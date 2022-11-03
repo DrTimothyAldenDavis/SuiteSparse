@@ -485,10 +485,10 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Nov 4, 2022"
-#define SUITESPARSE_MAIN_VERSION    6
-#define SUITESPARSE_SUB_VERSION     0
-#define SUITESPARSE_SUBSUB_VERSION  0
+#define SUITESPARSE_DATE "@SUITESPARSE_DATE@"
+#define SUITESPARSE_MAIN_VERSION    @SUITESPARSE_VERSION_MAJOR@
+#define SUITESPARSE_SUB_VERSION     @SUITESPARSE_VERSION_MINOR@
+#define SUITESPARSE_SUBSUB_VERSION  @SUITESPARSE_VERSION_SUB@
 
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_VERSION \
@@ -552,8 +552,8 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 #else
 
     // let CMake decide how C calls Fortran
-    #define SUITESPARSE_FORTRAN(name,NAME) name##_
-    #define SUITESPARSE__FORTRAN(name,NAME) name##_
+    #define SUITESPARSE_FORTRAN@FortranCInterface_GLOBAL_MACRO@
+    #define SUITESPARSE__FORTRAN@FortranCInterface_GLOBAL__MACRO@
 
 #endif
 
@@ -583,7 +583,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 #else
 
     // let CMake determine the size of the integer in the Fortran BLAS
-    #define SUITESPARSE_BLAS_INT int32_t
+    #define SUITESPARSE_BLAS_INT @SuiteSparse_BLAS_integer@
 
 #endif
 

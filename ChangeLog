@@ -1,3 +1,25 @@
+Nov 4, 2022: SuiteSparse 6.0.0
+
+    * major update: using CMake build system for all packages
+    * CMake Find*: all packages now have a Find*.cmake.  See
+        SuiteSparse_config/cmake_modules.
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.  The SuiteSparse_long #define has been
+        deprecated and removed.  Replace its use with int64_t in any code that
+        uses SuiteSparse v6.0.0 or later.  This is unlikely to change any
+        use of any SuiteSparse package, but since it's possible that
+        SuiteSparse_long was 32-bits on some platforms, the SO_VERSIION of
+        all packages has been increased by one.
+    * UMFPACK: new options to support ParU.  Single umfpack.h include file.
+    * CHOLMOD: Single cholmod.h include file.
+    * SuiteSparse/metis-5.1.0: renamed SuiteSparse_metis, to avoid confusion
+        with the unmodified metis-5.1.0.  The compiled library is named
+        libsuitesparse_metis.so.  The unmodified libmetis.so cannot be used
+        with SuiteSparse.
+    * SPDX License Identifier: added to each file.  No change in license.
+    * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK, with
+        either 32-bit (default) or 64-bit integers.
+
 Aug 25, 2022, SuiteSparse 5.13.0
 
     * GraphBLAS v7.2.0:  see GraphBLAS/Doc/ChangeLog for details.

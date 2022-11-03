@@ -1,30 +1,17 @@
-/* ========================================================================== */
-/* === SuiteSparse_config =================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// SuiteSparse_config/SuiteSparse_config.c: common utilites for SuiteSparse
+//------------------------------------------------------------------------------
 
-/* SuiteSparse configuration : memory manager and printf functions. */
+// SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+// All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
 
-/* Copyright (c) 2013-2018, Timothy A. Davis.  No licensing restrictions
- * apply to this file or to the SuiteSparse_config directory.
- * Author: Timothy A. Davis.
+//------------------------------------------------------------------------------
+
+/* SuiteSparse configuration : memory manager and printf functions.
  */
 
-#include <math.h>
-#include <stdlib.h>
-
-#ifndef NPRINT
-#include <stdio.h>
-#endif
-
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#include "matrix.h"
-#endif
-
-#ifndef NULL
-#define NULL ((void *) 0)
-#endif
-
+#define SUITESPARSE_LIBRARY
 #include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
@@ -80,7 +67,7 @@ struct SuiteSparse_config_struct SuiteSparse_config =
         NULL,
     #endif
 
-    SuiteSparse_hypot,
+    hypot, // was SuiteSparse_hypot in v5 and earlier
     SuiteSparse_divcomplex
 
 } ;
@@ -101,6 +88,7 @@ struct SuiteSparse_config_struct SuiteSparse_config =
    SuiteSparse_start be called prior to calling any SuiteSparse function.
  */
 
+SUITESPARSE_PUBLIC
 void SuiteSparse_start ( void )
 {
 
@@ -143,7 +131,7 @@ void SuiteSparse_start ( void )
     #endif
 
     /* math functions */
-    SuiteSparse_config.hypot_func = SuiteSparse_hypot ;
+    SuiteSparse_config.hypot_func = hypot ; // was SuiteSparse_hypot in v5
     SuiteSparse_config.divcomplex_func = SuiteSparse_divcomplex ;
 }
 
@@ -161,6 +149,7 @@ void SuiteSparse_start ( void )
    SuiteSparse-wide cleanup operations or finalization of statistics.
  */
 
+SUITESPARSE_PUBLIC
 void SuiteSparse_finish ( void )
 {
     /* do nothing */ ;
@@ -170,6 +159,7 @@ void SuiteSparse_finish ( void )
 /* SuiteSparse_malloc: malloc wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_malloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to malloc */
@@ -194,11 +184,11 @@ void *SuiteSparse_malloc    /* pointer to allocated block of memory */
     return (p) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_calloc: calloc wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_calloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to calloc */
@@ -235,6 +225,7 @@ void *SuiteSparse_calloc    /* pointer to allocated block of memory */
    pointer to the old (unmodified) object is returned.
  */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
                                to original block if the realloc failed. */
 (
@@ -300,6 +291,7 @@ void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
 /* SuiteSparse_free: free wrapper */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 void *SuiteSparse_free      /* always returns NULL */
 (
     void *p                 /* block to free */
@@ -311,7 +303,6 @@ void *SuiteSparse_free      /* always returns NULL */
     }
     return (NULL) ;
 }
-
 
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_tic: return current wall clock time */
@@ -344,36 +335,60 @@ void *SuiteSparse_free      /* always returns NULL */
  * <time.h> include file.
  */
 
-#ifdef SUITESPARSE_TIMER_ENABLED
+#if !defined ( SUITESPARSE_TIMER_ENABLED )
 
-#include <time.h>
+    /* ---------------------------------------------------------------------- */
+    /* no timer */
+    /* ---------------------------------------------------------------------- */
 
-void SuiteSparse_tic
-(
-    double tic [2]      /* output, contents undefined on input */
-)
-{
-    /* POSIX C 1993 timer, requires -librt */
-    struct timespec t ;
-    clock_gettime (CLOCK_MONOTONIC, &t) ;
-    tic [0] = (double) (t.tv_sec) ;
-    tic [1] = (double) (t.tv_nsec) ;
-}
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        /* no timer installed */
+        tic [0] = 0 ;
+        tic [1] = 0 ;
+    }
 
-#else
+#elif defined ( _OPENMP )
 
-void SuiteSparse_tic
-(
-    double tic [2]      /* output, contents undefined on input */
-)
-{
-    /* no timer installed */
-    tic [0] = 0 ;
-    tic [1] = 0 ;
-}
+    /* ---------------------------------------------------------------------- */
+    /* OpenMP timer */
+    /* ---------------------------------------------------------------------- */
+
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        tic [0] = omp_get_wtime ( ) ;
+        tic [1] = 0 ;
+    }
+
+#else 
+
+    /* ---------------------------------------------------------------------- */
+    /* POSIX timer */
+    /* ---------------------------------------------------------------------- */
+
+    #include <time.h>
+    SUITESPARSE_PUBLIC
+    void SuiteSparse_tic
+    (
+        double tic [2]      /* output, contents undefined on input */
+    )
+    {
+        /* POSIX C 1993 timer, requires -lrt */
+        struct timespec t ;
+        clock_gettime (CLOCK_MONOTONIC, &t) ;
+        tic [0] = (double) (t.tv_sec) ;
+        tic [1] = (double) (t.tv_nsec) ;
+    }
 
 #endif
-
 
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_toc: return time since last tic */
@@ -386,6 +401,7 @@ void SuiteSparse_tic
  * SuiteSparse_tic and do the calculations differently.
  */
 
+SUITESPARSE_PUBLIC
 double SuiteSparse_toc  /* returns time in seconds since last tic */
 (
     double tic [2]  /* input, not modified from last call to SuiteSparse_tic */
@@ -396,13 +412,13 @@ double SuiteSparse_toc  /* returns time in seconds since last tic */
     return ((toc [0] - tic [0]) + 1e-9 * (toc [1] - tic [1])) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_time: return current wallclock time in seconds */
 /* -------------------------------------------------------------------------- */
 
 /* This function might not be accurate down to the nanosecond. */
 
+SUITESPARSE_PUBLIC
 double SuiteSparse_time  /* returns current wall clock time in seconds */
 (
     void
@@ -413,11 +429,11 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
     return (toc [0] + 1e-9 * toc [1]) ;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_version: return the current version of SuiteSparse */
 /* -------------------------------------------------------------------------- */
 
+SUITESPARSE_PUBLIC
 int SuiteSparse_version
 (
     int version [3]
@@ -432,27 +448,24 @@ int SuiteSparse_version
     return (SUITESPARSE_VERSION) ;
 }
 
-/* -------------------------------------------------------------------------- */
-/* SuiteSparse_hypot */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// SuiteSparse_hypot
+//------------------------------------------------------------------------------
 
-/* There is an equivalent routine called hypot in <math.h>, which conforms
- * to ANSI C99.  However, SuiteSparse does not assume that ANSI C99 is
- * available.  You can use the ANSI C99 hypot routine with:
- *
- *      #include <math.h>
- *i     SuiteSparse_config.hypot_func = hypot ;
- *
- * Default value of the SuiteSparse_config.hypot_func pointer is
- * SuiteSparse_hypot, defined below.
- *
- * s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
- * The NaN cases for the double relops x >= y and x+y == x are safely ignored.
- * 
- * Source: Algorithm 312, "Absolute value and square root of a complex number,"
- * P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
- */
+// SuiteSparse_config v5 and earlier used SuiteSparse_hypot, defined below.
+// SuiteSparse_config v6 now uses the hypot method in <math.h>, by default.
+// The hypot function appears in ANSI C99 and later, and SuiteSparse now
+// assumes ANSI C11.
 
+// s = hypot (x,y) computes s = sqrt (x*x + y*y) but does so more accurately.
+// The NaN cases for the double relops x >= y and x+y == x are safely ignored.
+
+// Source: Algorithm 312, "Absolute value and square root of a complex number,"
+// P. Friedland, Comm. ACM, vol 10, no 10, October 1967, page 665.
+
+// This method below is kept for historical purposes.
+
+SUITESPARSE_PUBLIC
 double SuiteSparse_hypot (double x, double y)
 {
     double s, r ;
@@ -485,47 +498,159 @@ double SuiteSparse_hypot (double x, double y)
     return (s) ;
 }
 
-/* -------------------------------------------------------------------------- */
-/* SuiteSparse_divcomplex */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// SuiteSparse_divcomplex
+//------------------------------------------------------------------------------
 
-/* c = a/b where c, a, and b are complex.  The real and imaginary parts are
- * passed as separate arguments to this routine.  The NaN case is ignored
- * for the double relop br >= bi.  Returns 1 if the denominator is zero,
- * 0 otherwise.
- *
- * This uses ACM Algo 116, by R. L. Smith, 1962, which tries to avoid
- * underflow and overflow.
- *
- * c can be the same variable as a or b.
- *
- * Default value of the SuiteSparse_config.divcomplex_func pointer is
- * SuiteSparse_divcomplex.
- */
+// z = x/y where z, x, and y are complex.  The real and imaginary parts are
+// passed as separate arguments to this routine.  The NaN case is ignored
+// for the double relop yr >= yi.  Returns 1 if the denominator is zero,
+// 0 otherwise.
+//
+// This uses ACM Algo 116, by R. L. Smith, 1962, which tries to avoid
+// underflow and overflow.
+//
+// z can be the same variable as x or y.
+//
+// Default value of the SuiteSparse_config.divcomplex_func pointer is
+// SuiteSparse_divcomplex.
+//
+// This function is identical to GB_divcomplex in GraphBLAS/Source/GB_math.h.
+// The only difference is the name of the function.
 
-int SuiteSparse_divcomplex
+SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
 (
-    double ar, double ai,       /* real and imaginary parts of a */
-    double br, double bi,       /* real and imaginary parts of b */
-    double *cr, double *ci      /* real and imaginary parts of c */
+    double xr, double xi,       // real and imaginary parts of x
+    double yr, double yi,       // real and imaginary parts of y
+    double *zr, double *zi      // real and imaginary parts of z
 )
 {
     double tr, ti, r, den ;
-    if (fabs (br) >= fabs (bi))
+
+    int yr_class = fpclassify (yr) ;
+    int yi_class = fpclassify (yi) ;
+
+    if (yi_class == FP_ZERO)
     {
-        r = bi / br ;
-        den = br + r * bi ;
-        tr = (ar + ai * r) / den ;
-        ti = (ai - ar * r) / den ;
+        den = yr ;
+        if (xi == 0)
+        {
+            tr = xr / den ;
+            ti = 0 ;
+        }
+        else if (xr == 0)
+        {
+            tr = 0 ;
+            ti = xi / den ;
+        }
+        else
+        {
+            tr = xr / den ;
+            ti = xi / den ;
+        }
+    }
+    else if (yr_class == FP_ZERO)
+    {
+        den = yi ;
+        if (xr == 0)
+        {
+            tr = xi / den ;
+            ti = 0 ;
+        }
+        else if (xi == 0)
+        {
+            tr = 0 ;
+            ti = -xr / den ;
+        }
+        else
+        {
+            tr = xi / den ;
+            ti = -xr / den ;
+        }
+    }
+    else if (yi_class == FP_INFINITE && yr_class == FP_INFINITE)
+    {
+
+        if (signbit (yr) == signbit (yi))
+        {
+            // r = 1
+            den = yr + yi ;
+            tr = (xr + xi) / den ;
+            ti = (xi - xr) / den ;
+        }
+        else
+        {
+            // r = -1
+            den = yr - yi ;
+            tr = (xr - xi) / den ;
+            ti = (xi + xr) / den ;
+        }
+
     }
     else
     {
-        r = br / bi ;
-        den = r * br + bi ;
-        tr = (ar * r + ai) / den ;
-        ti = (ai * r - ar) / den ;
+
+        if (fabs (yr) >= fabs (yi))
+        {
+            r = yi / yr ;
+            den = yr + r * yi ;
+            tr = (xr + xi * r) / den ;
+            ti = (xi - xr * r) / den ;
+        }
+        else
+        {
+            r = yr / yi ;
+            den = r * yr + yi ;
+            tr = (xr * r + xi) / den ;
+            ti = (xi * r - xr) / den ;
+        }
+
     }
-    *cr = tr ;
-    *ci = ti ;
-    return (den == 0.) ;
+    (*zr) = tr ;
+    (*zi) = ti ;
+    return (den == 0) ;
 }
+
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_library: return name of BLAS library found
+//------------------------------------------------------------------------------
+
+// Returns the name of the BLAS library found by SuiteSparse_config
+
+const char *SuiteSparse_BLAS_library ( void )
+{
+
+    #if defined ( BLAS_INTEL_64ILP )
+        return ("Intel MKL 64ilp BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_INTEL_64LP )
+        return ("Intel MKL 64lp BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_APPLE )
+        return ("Apple Accelerate Framework BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_ARM_MP )
+        return ("ARM MP BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_ARM_ILP64_MP )
+        return ("ARM MP BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_IBMESSL_SMP_64 )
+        return ("IBM ESSL SMP BLAS (64-bit integers)") ;
+    #elif defined ( BLAS_IBMESSL_SMP_32 )
+        return ("IBM ESSL SMP BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_OPENBLAS_64 )
+        return ("OpenBLAS (64-bit integers)") ;
+    #elif defined ( BLAS_OPENBLAS )
+        return ("OpenBLAS (32-bit integers)") ;
+    #else
+        return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
+            "Other BLAS (64-bit integers)" :
+            "Other BLAS (32-bit integers)") ;
+    #endif
+}
+
+//------------------------------------------------------------------------------
+// SuiteSparse_BLAS_integer: return size of BLAS integer
+//------------------------------------------------------------------------------
+
+size_t SuiteSparse_BLAS_integer_size ( void )
+{
+    return (sizeof (SUITESPARSE_BLAS_INT)) ;
+}
+
