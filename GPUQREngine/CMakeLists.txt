@@ -144,6 +144,7 @@ endif ( )
 # static gpuqrengine library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( gpuqrengine_static STATIC ${GPUQRENGINE_SOURCES} )
 
 set_target_properties ( gpuqrengine_static PROPERTIES
@@ -161,6 +162,7 @@ if ( SUITESPARSE_CUDA )
     target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
@@ -172,8 +174,10 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS gpuqrengine
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -183,8 +187,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS gpuqrengine
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

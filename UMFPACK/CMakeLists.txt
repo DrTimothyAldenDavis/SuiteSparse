@@ -95,6 +95,7 @@ set_target_properties ( umfpack PROPERTIES
 # static umfpack library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( umfpack_static STATIC ${UMFPACK_SOURCES} )
 
 set_target_properties ( umfpack_static PROPERTIES
@@ -102,6 +103,7 @@ set_target_properties ( umfpack_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME umfpack
     SOVERSION ${UMFPACK_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -109,7 +111,9 @@ set_target_properties ( umfpack_static PROPERTIES
 
 # suitesparseconfig:
 target_link_libraries ( umfpack PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # OpenMP:
 if ( OPENMP_FOUND )
@@ -117,7 +121,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( umfpack PUBLIC ${OpenMP_C_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( umfpack_static PUBLIC ${OpenMP_C_LIBRARIES} )
+    endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
@@ -125,24 +131,32 @@ endif ( )
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( umfpack PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( umfpack_static PUBLIC m )
+    endif ( )
 endif ( )
 
 # amd:
 target_link_libraries ( umfpack PUBLIC ${AMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( umfpack_static PUBLIC ${AMD_LIBRARIES} )
+endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( umfpack_static PUBLIC ${BLAS_LIBRARIES} )
+endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # cholmod:
 if ( CHOLMOD_FOUND )
     target_link_libraries ( umfpack PUBLIC ${CHOLMOD_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( umfpack_static PUBLIC ${CHOLMOD_LIBRARIES} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -156,8 +170,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS umfpack
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS umfpack_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -168,8 +184,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS umfpack
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS umfpack_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

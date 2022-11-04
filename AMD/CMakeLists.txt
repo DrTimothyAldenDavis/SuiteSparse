@@ -79,6 +79,7 @@ set_target_properties ( amd PROPERTIES
 # static amd library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( amd_static STATIC ${AMD_SOURCES} )
 
 set_target_properties ( amd_static PROPERTIES
@@ -86,6 +87,7 @@ set_target_properties ( amd_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME amd
     SOVERSION ${AMD_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -93,12 +95,16 @@ set_target_properties ( amd_static PROPERTIES
 
 # suitesparseconfig:
 target_link_libraries ( amd PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( amd PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( amd_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -112,8 +118,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS amd
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS amd_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -124,8 +132,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS amd
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS amd_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

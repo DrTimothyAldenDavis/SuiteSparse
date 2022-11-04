@@ -78,6 +78,7 @@ set_target_properties ( camd PROPERTIES
 # static camd library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( camd_static STATIC ${CAMD_SOURCES} )
 
 set_target_properties ( camd_static PROPERTIES
@@ -85,18 +86,23 @@ set_target_properties ( camd_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME camd
     SOVERSION ${CAMD_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
 target_link_libraries ( camd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+if ( NOT NSTATIC )
 target_link_libraries ( camd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( camd PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( camd_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -110,8 +116,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS camd
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS camd_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -122,8 +130,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS camd
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS camd_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

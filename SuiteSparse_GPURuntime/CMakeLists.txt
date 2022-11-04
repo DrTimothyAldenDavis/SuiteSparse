@@ -112,6 +112,7 @@ endif ( )
 # static suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( suitesparse_gpuruntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
 set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
@@ -129,6 +130,7 @@ if ( SUITESPARSE_CUDA )
     target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
@@ -140,8 +142,10 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparse_gpuruntime
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -151,8 +155,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparse_gpuruntime
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

@@ -85,6 +85,7 @@ set_target_properties ( klu PROPERTIES
 # static klu library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( klu_static STATIC ${KLU_SOURCES} )
 
 set_target_properties ( klu_static PROPERTIES
@@ -92,6 +93,7 @@ set_target_properties ( klu_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME klu
     SOVERSION ${KLU_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # klu_cholmod library properties
@@ -110,6 +112,7 @@ if ( CHOLMOD_FOUND )
         SOVERSION ${KLU_VERSION_MAJOR}
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
+    if ( NOT NSTATIC )
     add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
     set_target_properties ( klu_cholmod_static PROPERTIES
@@ -117,6 +120,7 @@ if ( CHOLMOD_FOUND )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME klu_cholmod
         SOVERSION ${KLU_VERSION_MAJOR} )
+    endif ( )
 
 endif ( )
 
@@ -126,35 +130,49 @@ endif ( )
 
 # suitesparseconfig:
 target_link_libraries ( klu PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( klu_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( klu PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( klu_static PUBLIC m )
+    endif ( )
 endif ( )
 
 # amd:
 target_link_libraries ( klu PUBLIC ${AMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( klu_static PUBLIC ${AMD_LIBRARIES} )
+endif ( )
 
 # colamd:
 target_link_libraries ( klu PUBLIC ${COLAMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( klu_static PUBLIC ${COLAMD_LIBRARIES} )
+endif ( )
 
 # btf:
 target_link_libraries ( klu PUBLIC ${BTF_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( klu_static PUBLIC ${BTF_LIBRARIES} )
+endif ( )
 
 if ( CHOLMOD_FOUND )
 
     # klu:
     target_link_libraries ( klu_cholmod PUBLIC klu )
+    if ( NOT NSTATIC )
     target_link_libraries ( klu_cholmod_static PUBLIC klu )
+    endif ( )
 
     # cholmod:
     target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
+    endif ( )
 
 endif ( )
 
@@ -169,15 +187,19 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS klu
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 
     if ( CHOLMOD_FOUND )
         install ( TARGETS klu_cholmod
             LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
             PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        if ( NOT NSTATIC )
         install ( TARGETS klu_cholmod_static
             ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        endif ( )
     endif ( )
 endif ( )
 
@@ -189,15 +211,19 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS klu
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 
     if ( CHOLMOD_FOUND )
         install ( TARGETS klu_cholmod
             LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
             PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+        if ( NOT NSTATIC )
         install ( TARGETS klu_cholmod_static
             ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+        endif ( )
     endif ( )
 endif ( )
 

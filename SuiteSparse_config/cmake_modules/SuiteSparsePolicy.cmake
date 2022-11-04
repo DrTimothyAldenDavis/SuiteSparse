@@ -25,6 +25,13 @@
 #                       but these folders must also already exist.
 #                       default: false
 #
+#   NSTATIC:            if true, static libraries are not built.
+#                       Default is false, except for GraphBLAS, which
+#                       takes a long time to compile so the default for
+#                       GraphBLAS is true.  For Mongoose, the NSTATIC setting
+#                       is treated as if it always false, since the mongoose
+#                       program is built with the static library.
+#
 #   SUITESPARSE_CUDA_ARCHITECTURES  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
 #                       when compiling CUDA kernels with nvcc.  Default, if not
@@ -50,6 +57,12 @@ include ( GNUInstallDirs )
 # add the ./build folder to the runpath so other SuiteSparse packages can
 # find this one without "make install"
 set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
+
+if ( NOT DEFINED NSTATIC )
+    # default for all SuiteSparse packages (except GraphBLAS)
+    # is to build the static libraries.
+    set ( NSTATIC false )
+endif ( )
 
 # determine if this package is inside the top-level SuiteSparse folder
 # (if ../lib and ../include exist, relative to the source directory)

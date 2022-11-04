@@ -81,6 +81,7 @@ set_target_properties ( ldl PROPERTIES
 # static ldl library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( ldl_static STATIC ${LDL_SOURCES} )
 
 set_target_properties ( ldl_static PROPERTIES
@@ -88,6 +89,7 @@ set_target_properties ( ldl_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME ldl
     SOVERSION ${LDL_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -103,8 +105,10 @@ endif ( )
 target_link_libraries ( ldl PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
+if ( NOT NSTATIC )
 target_link_libraries ( ldl_static PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
+endif ( )
 
 include_directories ( ${AMD_INCLUDE_DIR} )
 
@@ -119,8 +123,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS ldl
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS ldl_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -131,8 +137,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS ldl
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS ldl_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
