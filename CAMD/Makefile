@@ -55,7 +55,7 @@ debug:
 
 all: library
 
-demo: library
+demos: librarys
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	./build/camd_demo > build/camd_demo.out
 	- diff Demo/camd_demo.out build/camd_demo.out

@@ -21,7 +21,7 @@ package; the user guide is the book itself.
 To compile the C-library (./Source) and C demo programs (./Demo) just type
 "make" in this directory, or import the CMakeLists.txt into your build system
 (such as Microsoft Visual Studio).  To install, use "sudo make install".
-Run the demos with "make demo".  To clean up, do "make clean".
+Run the demos with "make demos".  To clean up, do "make clean".
 
 To run the exhaustive tests, type "make" in the Tcov directory (Linux is
 assumed).  To remove all files not in the original distribution, type "make

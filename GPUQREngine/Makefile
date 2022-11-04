@@ -50,7 +50,7 @@ global:
 both:
 	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-demo: library
+demos: library
 	echo 'GPUQREngine v2.x demo not compiled; use SPQR demo instead'
 
 # just compile after running cmake; do not run cmake again

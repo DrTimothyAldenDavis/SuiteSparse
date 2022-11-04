@@ -31,7 +31,7 @@ Quick start:
 
     To run the demos
 
-        make demo
+        make demos
 
 Quick start (for MATLAB users);
 

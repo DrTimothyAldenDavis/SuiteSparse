@@ -39,9 +39,7 @@ message ( STATUS "GraphBLAS C API: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED NSTATIC )
     # default for GraphBLAS: do not build the static libraries
@@ -51,6 +49,7 @@ endif ( )
 # CUDA is under development for now, and not deployed in production:
   set ( ENABLE_CUDA false )
 # set ( ENABLE_CUDA true )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
@@ -453,6 +452,9 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS graphblas
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGraphBLAS.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
         install ( TARGETS graphblas_static
             ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -467,6 +469,9 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS graphblas
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGraphBLAS.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
         install ( TARGETS graphblas_static
             ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

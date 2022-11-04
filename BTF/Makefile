@@ -56,7 +56,7 @@ debug:
 all: library
 
 # there is no BTF demo
-demo: library
+demos: library
 
 # just compile after running cmake; do not run cmake again
 remake:

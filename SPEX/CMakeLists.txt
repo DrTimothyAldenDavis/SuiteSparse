@@ -28,9 +28,9 @@ message ( STATUS "Building SPEX version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
@@ -49,8 +49,8 @@ project ( spex
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( GMP 6.1.2 REQUIRED )
-find_package ( MPFR 4.0.2 REQUIRED )
+find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
+find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -68,6 +68,16 @@ include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include
     ${SUITESPARSE_CONFIG_INCLUDE_DIR} 
     ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR}
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
+
+#-------------------------------------------------------------------------------
+# compiler flags
+#-------------------------------------------------------------------------------
+
+# gcc -O3 complains about SPEX_mpq_init
+
+if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
+    set ( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # dynamic spex library properties
@@ -150,6 +160,9 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS spex
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPEX.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS spex_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -164,6 +177,9 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS spex
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPEX.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS spex_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

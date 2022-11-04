@@ -50,11 +50,12 @@ find_library ( CAMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component (CAMD_LIBRARY ${CAMD_LIBRARY} REALPATH)
+get_filename_component ( CAMD_LIBRARY  ${CAMD_LIBRARY} REALPATH )
+get_filename_component ( CAMD_FILENAME ${CAMD_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     CAMD_VERSION
-    ${CAMD_LIBRARY}
+    ${CAMD_FILENAME}
 )
 set (CAMD_LIBRARIES ${CAMD_LIBRARY})
 

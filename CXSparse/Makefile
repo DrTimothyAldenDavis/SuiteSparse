@@ -58,7 +58,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/cs_idemo < Matrix/t2
 	- ./build/cs_ldemo < Matrix/t2

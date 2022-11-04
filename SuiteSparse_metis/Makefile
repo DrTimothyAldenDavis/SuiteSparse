@@ -63,7 +63,7 @@ debug:
 all: library
 
 # metis comes with itws own programs, but this Makefile doesn't build them 
-demo: library
+demos: library
 
 # just compile after running cmake; do not run cmake again
 remake:

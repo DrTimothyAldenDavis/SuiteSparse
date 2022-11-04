@@ -50,11 +50,12 @@ find_library ( MONGOOSE_LIBRARY
 )
 
 # get version of the library
-get_filename_component (MONGOOSE_LIBRARY ${MONGOOSE_LIBRARY} REALPATH)
+get_filename_component ( MONGOOSE_LIBRARY  ${MONGOOSE_LIBRARY} REALPATH )
+get_filename_component ( MONGOOSE_FILENAME ${MONGOOSE_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     MONGOOSE_VERSION
-    ${MONGOOSE_LIBRARY}
+    ${MONGOOSE_FILENAME}
 )
 set (MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY})
 

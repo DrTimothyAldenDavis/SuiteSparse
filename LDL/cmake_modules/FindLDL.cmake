@@ -50,11 +50,12 @@ find_library ( LDL_LIBRARY
 )
 
 # get version of the library
-get_filename_component (LDL_LIBRARY ${LDL_LIBRARY} REALPATH)
+get_filename_component ( LDL_LIBRARY  ${LDL_LIBRARY} REALPATH )
+get_filename_component ( LDL_FILENAME ${LDL_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     LDL_VERSION
-    ${LDL_LIBRARY}
+    ${LDL_FILENAME}
 )
 set (LDL_LIBRARIES ${LDL_LIBRARY})
 

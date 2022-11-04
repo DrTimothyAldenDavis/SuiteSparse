@@ -50,11 +50,12 @@ find_library ( KLU_LIBRARY
 )
 
 # get version of the library
-get_filename_component (KLU_LIBRARY ${KLU_LIBRARY} REALPATH)
+get_filename_component ( KLU_LIBRARY  ${KLU_LIBRARY} REALPATH )
+get_filename_component ( KLU_FILENAME ${KLU_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     KLU_VERSION
-    ${KLU_LIBRARY}
+    ${KLU_FILENAME}
 )
 set (KLU_LIBRARIES ${KLU_LIBRARY})
 

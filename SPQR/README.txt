@@ -29,7 +29,7 @@ FOR LINUX/UNIX/Mac USERS who want to use the C++ callable library:
         the Unix shell:
 
         make
-        make demo
+        make demos
 
     If you have an NVIDIA GPU, this also compiles
         the GPU accelerated part of SPQR, in the libspqr_cuda.so library.

@@ -28,9 +28,7 @@ message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
     # default is to use CUDA, if available
@@ -133,7 +131,7 @@ endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# installation location
+# SuiteSparse_GPURuntime installation location
 #-------------------------------------------------------------------------------
 
 if ( GLOBAL_INSTALL )
@@ -142,6 +140,10 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparse_gpuruntime
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_GPURuntime.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -155,6 +157,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparse_gpuruntime
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_GPURuntime.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparse_gpuruntime_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

@@ -55,7 +55,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	./build/amd_demo > build/amd_demo.out
 	- diff Demo/amd_demo.out build/amd_demo.out

@@ -29,9 +29,12 @@ message ( STATUS "Building SPQR version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
     # default is to use CUDA, if available
@@ -217,7 +220,7 @@ endif ( )
 
 #-------------------------------------------------------------------------------
 # SPQR installation location
-#---------------------------------------------------------------Z--------------
+#-------------------------------------------------------------------------------
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
@@ -225,6 +228,11 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS spqr
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS spqr_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -241,6 +249,11 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make install'. No 'sudo' required." )
     install ( TARGETS spqr
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS spqr_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

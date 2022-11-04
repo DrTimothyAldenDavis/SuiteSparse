@@ -35,7 +35,7 @@ Default instalation locations:
     share
     
 To compile SPEX and its dependencies, just type "make" in this folder.
-To run a few short demos, type "make demo"
+To run a few short demos, type "make demos"
 To install the package system-wide, type "sudo make install".
 
 Primary Author: Chris Lourenco

@@ -66,7 +66,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	./build/cholmod_demo   < ./Demo/Matrix/bcsstk01.tri
 	./build/cholmod_l_demo < ./Demo/Matrix/bcsstk01.tri

@@ -28,9 +28,11 @@ message ( STATUS "Building KLU version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../BTF/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
@@ -49,8 +51,8 @@ project ( klu
 enable_language ( C Fortran )
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( BTF 2.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
+find_package ( AMD 3.0.0 REQUIRED )
 find_package ( CHOLMOD 4.0.0 )
 
 #-------------------------------------------------------------------------------
@@ -191,6 +193,11 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
     endif ( )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU.cmake
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU_CHOLMOD.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
 
     if ( CHOLMOD_FOUND )
         install ( TARGETS klu_cholmod
@@ -211,6 +218,12 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS klu
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( FILES
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU.cmake
+        ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU_CHOLMOD.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
+
     if ( NOT NSTATIC )
     install ( TARGETS klu_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

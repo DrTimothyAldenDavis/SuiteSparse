@@ -15,6 +15,8 @@ Code co-authors, in alphabetical order (not including METIS):
     Larimore, Erick Moreno-Centeno, Ekanathan Palamadai, Sivasankaran
     Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
 
+METIS is authored by George Karypys.
+
 Additional algorithm designers: Esmond Ng and John Gilbert.
 
 Refer to each package for license, copyright, and author information.
@@ -397,7 +399,8 @@ Packages in SuiteSparse, and files in this directory:
     SuiteSparse_metis: a modified version of METIS.  See the README.txt files
                 for details.  author: George Karypis.  This is a slightly
                 modified copy included with SuiteSparse via the open-source
-                license provided by George Karypis.
+                license provided by George Karypis.  SuiteSparse cannot use
+                an unmodified copy METIS.
 
     RBio        read/write sparse matrices in Rutherford/Boeing format
                 author: Tim Davis
@@ -562,4 +565,17 @@ See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
 https://github.com/scikit-sparse/scikit-sparse
 
 https://github.com/scikit-umfpack/scikit-umfpack
+
+-----------------------------------------------------------------------------
+Acknowledgements
+-----------------------------------------------------------------------------
+
+I would like to thank François Bissey, Sebastien Villemot, Erik Welch, and Jim
+Kitchen for their valuable feedback on the SuiteSparse build system and how it
+works with various Linux / Python distros and other package managers.  If you
+are a maintainer of a SuiteSparse packaging for a Linux distro, conda-forge, R,
+spack, brew, vcpkg, etc, please feel free to contact me if there's anything I
+can do to make your life easier.
+
+See also the various Acknowledgements within each package.
 

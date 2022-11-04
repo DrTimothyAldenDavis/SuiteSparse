@@ -40,11 +40,12 @@ find_library ( SPQR_CUDA_LIBRARY
 )
 
 # get version of the library
-get_filename_component (SPQR_CUDA_LIBRARY ${SPQR_CUDA_LIBRARY} REALPATH)
+get_filename_component ( SPQR_CUDA_LIBRARY  ${SPQR_CUDA_LIBRARY} REALPATH )
+get_filename_component ( SPQR_CUDA_FILENAME ${SPQR_CUDA_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     SPQR_CUDA_VERSION
-    ${SPQR_CUDA_LIBRARY}
+    ${SPQR_CUDA_FILENAME}
 )
 set (SPQR_CUDA_LIBRARIES ${SPQR_CUDA_LIBRARY})
 

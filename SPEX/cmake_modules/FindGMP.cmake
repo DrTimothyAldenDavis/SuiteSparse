@@ -71,7 +71,8 @@ if ( GMP_VERSION1 STREQUAL "" )
     message ( STATUS "patch from gmp.h: ${GMP_VER_PATCH_STRING}" )
     if ( GMP_VER_MAJOR_STRING STREQUAL "")
         # look at the end of the filename for the version number
-        string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]+$"
+        string (
+            REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
             GMP_VERSION ${GMP_LIBRARY} )
     else ( )
         # get the version number from inside the gmp.h file itself

@@ -55,7 +55,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build ; cmake $(CMAKE_OPTIONS) -DDEMO=1 .. ; $(MAKE) --jobs=${JOBS} )
 	- ./build/ccolamd_example > ./build/ccolamd_example.out
 	- diff ./Demo/ccolamd_example.out ./build/ccolamd_example.out

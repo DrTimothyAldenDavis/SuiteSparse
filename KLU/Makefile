@@ -55,7 +55,7 @@ debug:
 
 all: library
 
-demo:
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/klu_simple
 	- ./build/kludemo  < ./Matrix/1c.mtx
