@@ -87,6 +87,7 @@ set_target_properties ( csparse PROPERTIES
 # static csparse library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
 
 set_target_properties ( csparse_static PROPERTIES
@@ -94,6 +95,7 @@ set_target_properties ( csparse_static PROPERTIES
     OUTPUT_NAME csparse
     C_STANDARD_REQUIRED 11
     SOVERSION ${CSPARSE_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -102,7 +104,9 @@ set_target_properties ( csparse_static PROPERTIES
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( csparse PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( csparse_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

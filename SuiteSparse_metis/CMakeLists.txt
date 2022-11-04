@@ -92,6 +92,7 @@ set_target_properties ( suitesparse_metis PROPERTIES
 # static suitesparse_metis library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( suitesparse_metis_static STATIC ${SUITESPARSE_METIS_SOURCES} )
 
 set_target_properties ( suitesparse_metis_static PROPERTIES
@@ -99,6 +100,7 @@ set_target_properties ( suitesparse_metis_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME suitesparse_metis
     SOVERSION ${SUITESPARSE_METIS_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -106,12 +108,16 @@ set_target_properties ( suitesparse_metis_static PROPERTIES
 
 # suitesparseconfig:
 target_link_libraries ( suitesparse_metis PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( suitesparse_metis_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( suitesparse_metis PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( suitesparse_metis_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -125,8 +131,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS suitesparse_metis
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparse_metis_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -137,8 +145,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS suitesparse_metis
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparse_metis_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

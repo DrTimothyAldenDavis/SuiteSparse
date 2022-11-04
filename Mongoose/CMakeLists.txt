@@ -41,6 +41,9 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
     )
 
+# always build the static libraries (needed by the mongoose program)
+set ( NSTATIC false )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------

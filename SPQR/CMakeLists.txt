@@ -129,6 +129,7 @@ set_target_properties ( spqr PROPERTIES
 # static spqr library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( spqr_static STATIC ${SPQR_SOURCES} )
 
 set_target_properties ( spqr_static PROPERTIES
@@ -137,6 +138,7 @@ set_target_properties ( spqr_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME spqr
     SOVERSION ${SPQR_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -144,7 +146,9 @@ set_target_properties ( spqr_static PROPERTIES
 
 # suitesparseconfig:
 target_link_libraries ( spqr PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # OpenMP:
 if ( OPENMP_FOUND )
@@ -152,7 +156,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( spqr PUBLIC ${OpenMP_C_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
+    endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
@@ -160,33 +166,45 @@ endif ( )
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( spqr PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC m )
+    endif ( )
 endif ( )
 
 # amd:
 target_link_libraries ( spqr PUBLIC ${AMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${AMD_LIBRARIES} )
+endif ( )
 
 # colamd:
 target_link_libraries ( spqr PUBLIC ${COLAMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${COLAMD_LIBRARIES} )
+endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( spqr PUBLIC ${BLAS_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
+endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # cholmod:
 target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${CHOLMOD_LIBRARIES} )
+endif ( )
 
 # CUDA
 if ( SUITESPARSE_CUDA )
     message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
     target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+    endif ( )
 
 #   # GPUQREngine
 #   target_link_libraries ( spqr PUBLIC ${GPUQRENGINE_LIBRARIES} )
@@ -207,8 +225,10 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS spqr
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS spqr_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
     install ( FILES "Include/SuiteSparseQR_C.h"
         "Include/SuiteSparseQR_definitions.h"
         "Include/SuiteSparseQR.hpp" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
@@ -221,8 +241,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make install'. No 'sudo' required." )
     install ( TARGETS spqr
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS spqr_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
     install ( FILES "Include/SuiteSparseQR_C.h"
         "Include/SuiteSparseQR_definitions.h"
         "Include/SuiteSparseQR.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )

@@ -87,6 +87,7 @@ set_target_properties ( spex PROPERTIES
 # static spex library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( spex_static STATIC ${SPEX_SOURCES} )
 
 set_target_properties ( spex_static PROPERTIES
@@ -94,6 +95,7 @@ set_target_properties ( spex_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME spex
     SOVERSION ${SPEX_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -101,28 +103,40 @@ set_target_properties ( spex_static PROPERTIES
 
 # suitesparseconfig:
 target_link_libraries ( spex PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spex_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+endif ( )
 
 # AMD:
 target_link_libraries ( spex PUBLIC ${AMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spex_static PUBLIC ${AMD_LIBRARIES} )
+endif ( )
 
 # COLAMD:
 target_link_libraries ( spex PUBLIC ${COLAMD_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spex_static PUBLIC ${COLAMD_LIBRARIES} )
+endif ( )
 
 # GMP:
 target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spex_static PUBLIC ${GMP_LIBRARIES} )
+endif ( )
 
 # MPFR:
 target_link_libraries ( spex PUBLIC ${MPFR_LIBRARIES} )
+if ( NOT NSTATIC )
 target_link_libraries ( spex_static PUBLIC ${MPFR_LIBRARIES} )
+endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( spex PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -136,8 +150,10 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS spex
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS spex_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -148,8 +164,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS spex
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS spex_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

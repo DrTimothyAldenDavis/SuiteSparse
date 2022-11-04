@@ -78,6 +78,7 @@ set_target_properties ( suitesparseconfig PROPERTIES
 # static suitesparseconfig library properties
 #-------------------------------------------------------------------------------
 
+if ( NOT NSTATIC )
 add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
 set_target_properties ( suitesparseconfig_static PROPERTIES
@@ -85,6 +86,7 @@ set_target_properties ( suitesparseconfig_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME suitesparseconfig
     SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -93,7 +95,9 @@ set_target_properties ( suitesparseconfig_static PROPERTIES
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( suitesparseconfig PUBLIC m )
+    if ( NOT NSTATIC )
     target_link_libraries ( suitesparseconfig_static PUBLIC m )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -102,8 +106,10 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
+    if ( NOT NSTATIC )
     target_link_libraries ( suitesparseconfig_static PUBLIC
         ${OpenMP_C_LIBRARIES} )
+    endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
@@ -116,7 +122,9 @@ if ( BLAS_FOUND )
 #   SuiteSparse_config does not itself require the BLAS.  It just needs to
 #   know which BLAS is going to be used by the rest of SuiteSparse.
 #   target_link_libraries ( suitesparseconfig PUBLIC ${BLAS_LIBRARIES} )
+#   if ( NOT NSTATIC )
 #   target_link_libraries ( suitesparseconfig_static PUBLIC ${BLAS_LIBRARIES} )
+#   endif ( )
 #   include_directories ( ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
@@ -131,8 +139,14 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS suitesparseconfig
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    endif ( )
+    file ( GLOB SUITESPARSECONFIG_CMAKE_FILES "cmake_modules/*" )
+    install ( FILES ${SUITESPARSECONFIG_CMAKE_FILES}
+                      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
+                      COMPONENT Development )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -143,8 +157,10 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS suitesparseconfig
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+    endif ( )
 endif ( )
 
 include ( SuiteSparseReport )
