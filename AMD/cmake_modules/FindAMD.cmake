@@ -50,11 +50,12 @@ find_library ( AMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component (AMD_LIBRARY ${AMD_LIBRARY} REALPATH)
+get_filename_component ( AMD_LIBRARY  ${AMD_LIBRARY} REALPATH )
+get_filename_component ( AMD_FILENAME ${AMD_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     AMD_VERSION
-    ${AMD_LIBRARY}
+    ${AMD_FILENAME}
 )
 set (AMD_LIBRARIES ${AMD_LIBRARY})
 

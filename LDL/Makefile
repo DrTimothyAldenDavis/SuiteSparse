@@ -54,7 +54,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	./build/ldlsimple > ./build/ldlsimple.out
 	- diff ./Demo/ldlsimple.out ./build/ldlsimple.out

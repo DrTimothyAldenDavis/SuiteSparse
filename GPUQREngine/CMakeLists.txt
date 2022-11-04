@@ -29,9 +29,14 @@ message ( STATUS "Building GPUQRENGINE version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
     # default is to use CUDA, if available
@@ -174,6 +179,9 @@ if ( GLOBAL_INSTALL )
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS gpuqrengine
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGPUQREngine.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -187,6 +195,9 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS gpuqrengine
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGPUQREngine.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS gpuqrengine_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

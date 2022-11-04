@@ -63,16 +63,16 @@ if ( MPFR_VERSION1 STREQUAL "" )
     message ( STATUS "from mpfr.h file: ${MPFR_VER_STRING}" )
     if ( MPFR_VER_STRING STREQUAL "")
         # look at the end of the filename for the version number
-        string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]+$"
+        string (
+            REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
             MPFR_VERSION ${MPFR_LIBRARY} )
     else ( )
         # get the version number from inside the mpfr.h file itself
-        string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]"
-            MPFR_VERSION ${MPFR_VER_STRING} )
+        string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]+" MPFR_VERSION ${MPFR_VER_STRING} )
     endif ( )
 else ( )
     # look at mpfr-4.1.0 for the version number (spack library)
-    string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]" MPFR_VERSION ${MPFR_VERSION1} )
+    string ( REGEX MATCH "[0-9]+.[0-9]+.[0-9]+" MPFR_VERSION ${MPFR_VERSION1} )
 endif ( )
 
 set ( MPFR_LIBRARIES ${MPFR_LIBRARY} )

@@ -50,11 +50,12 @@ find_library ( CCOLAMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component (CCOLAMD_LIBRARY ${CCOLAMD_LIBRARY} REALPATH)
+get_filename_component ( CCOLAMD_LIBRARY  ${CCOLAMD_LIBRARY} REALPATH )
+get_filename_component ( CCOLAMD_FILENAME ${CCOLAMD_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     CCOLAMD_VERSION
-    ${CCOLAMD_LIBRARY}
+    ${CCOLAMD_FILENAME}
 )
 set (CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY})
 

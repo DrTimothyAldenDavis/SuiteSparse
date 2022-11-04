@@ -50,11 +50,12 @@ find_library ( SPQR_LIBRARY
 )
 
 # get version of the library
-get_filename_component (SPQR_LIBRARY ${SPQR_LIBRARY} REALPATH)
+get_filename_component ( SPQR_LIBRARY  ${SPQR_LIBRARY} REALPATH )
+get_filename_component ( SPQR_FILENAME ${SPQR_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     SPQR_VERSION
-    ${SPQR_LIBRARY}
+    ${SPQR_FILENAME}
 )
 set (SPQR_LIBRARIES ${SPQR_LIBRARY})
 

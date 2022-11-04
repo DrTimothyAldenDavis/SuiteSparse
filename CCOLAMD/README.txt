@@ -35,7 +35,7 @@ Visual Studio.
                             "make install" will install in /usr/local/lib,
                             /usr/local/include, SuiteSparse/lib, and
                             SuiteSparse/include
-    make demo           compiles and runs a few demos
+    make demos          compiles and runs a few demos
     make library	compiles a C-callable library containing colamd
     make clean		removes all files not in the distribution,
                             but keeps the compiled libraries.

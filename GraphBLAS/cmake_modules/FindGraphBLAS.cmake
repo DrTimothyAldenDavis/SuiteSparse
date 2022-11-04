@@ -72,11 +72,12 @@ find_library(
   )
 
 # get version of .so using REALPATH
-get_filename_component(GRAPHBLAS_LIBRARY ${GRAPHBLAS_LIBRARY} REALPATH)
-string(
-  REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-  GRAPHBLAS_VERSION
-  ${GRAPHBLAS_LIBRARY}
+get_filename_component ( GRAPHBLAS_LIBRARY  ${GRAPHBLAS_LIBRARY} REALPATH )
+get_filename_component ( GRAPHBLAS_FILENAME ${GRAPHBLAS_LIBRARY} NAME )
+string (
+    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
+    GRAPHBLAS_VERSION
+    ${GRAPHBLAS_FILENAME}
   )
 set(GRAPHBLAS_LIBRARIES ${GRAPHBLAS_LIBRARY})
 

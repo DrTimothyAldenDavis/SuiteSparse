@@ -28,9 +28,12 @@ message ( STATUS "Building CHOLMOD version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
     # default is to use CUDA, if available
@@ -245,7 +248,7 @@ endif ( )
 
 #-------------------------------------------------------------------------------
 # CHOLMOD installation location
-#---------------------------------------------------------------Z--------------
+#-------------------------------------------------------------------------------
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
@@ -254,6 +257,12 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS cholmod
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    file ( GLOB ${CMAKE_MODULES} "cmake_modules/FindCHOLMOD*.cmake" )
+    install ( FILES 
+        cmake_modules/FindCHOLMOD.cmake
+        cmake_modules/FindCHOLMOD_CUDA.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS cholmod_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -268,6 +277,11 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS cholmod
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( FILES 
+        cmake_modules/FindCHOLMOD.cmake
+        cmake_modules/FindCHOLMOD_CUDA.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS cholmod_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

@@ -12,6 +12,9 @@
 # version, as compared to the original METIS v5.1.0.  This cmake script builds
 # libsuitesparse_metis.so.
 
+# The package has no public header, since it's only meant to be called
+# by SuiteSparse/CHOLMOD/Partition/cholmod_metis.c
+
 # The original METIS v5.1.0 CMakeLists.txt has been moved to
 # original/CMakeLists.txt.
 
@@ -36,10 +39,7 @@ message ( STATUS "Building SuiteSparse_metis version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
@@ -85,8 +85,7 @@ add_library ( suitesparse_metis SHARED ${SUITESPARSE_METIS_SOURCES} )
 set_target_properties ( suitesparse_metis PROPERTIES
     VERSION ${SUITESPARSE_METIS_VERSION_MAJOR}.${SUITESPARSE_METIS_VERSION_MINOR}.${SUITESPARSE_METIS_VERSION_SUB}
     C_STANDARD_REQUIRED 11
-    SOVERSION ${SUITESPARSE_METIS_VERSION_MAJOR}
-    PUBLIC_HEADER "include/SuiteSparse_metis.h" )
+    SOVERSION ${SUITESPARSE_METIS_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_metis library properties
@@ -124,13 +123,18 @@ endif ( )
 # SuiteSparse_metis installation location
 #-------------------------------------------------------------------------------
 
+# The FindSuiteSparse_metis.cmake module is not installed.  It is intended only
+# for use by SuiteSparse packages (see for example FindCHOLMOD.cmake).
+
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparse_metis
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+#   install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_metis.cmake
+#       DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+#       COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparse_metis_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -143,8 +147,10 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../lib and ../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparse_metis
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+#   install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_metis.cmake
+#       DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+#       COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparse_metis_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

@@ -50,11 +50,12 @@ find_library ( RBIO_LIBRARY
 )
 
 # get version of the library
-get_filename_component (RBIO_LIBRARY ${RBIO_LIBRARY} REALPATH)
+get_filename_component ( RBIO_LIBRARY  ${RBIO_LIBRARY} REALPATH )
+get_filename_component ( RBIO_FILENAME ${SPEX_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     RBIO_VERSION
-    ${RBIO_LIBRARY}
+    ${RBIO_FILENAME}
 )
 set (RBIO_LIBRARIES ${RBIO_LIBRARY})
 

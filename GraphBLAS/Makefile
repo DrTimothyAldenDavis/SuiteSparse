@@ -55,7 +55,7 @@ all:
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=$(JOBS) )
 
 # run the demos
-demo: all
+demos: all
 	( cd Demo && ./demo )
 
 # just do 'make' in build; do not rerun the cmake script

@@ -50,11 +50,12 @@ find_library ( KLU_CHOLMOD_LIBRARY
 )
 
 # get version of the library
-get_filename_component (KLU_CHOLMOD_LIBRARY ${KLU_CHOLMOD_LIBRARY} REALPATH)
+get_filename_component ( KLU_CHOLMOD_LIBRARY  ${KLU_CHOLMOD_LIBRARY} REALPATH )
+get_filename_component ( KLU_CHOLMOD_FILENAME ${KLU_CHOLMOD_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     KLU_CHOLMOD_VERSION
-    ${KLU_CHOLMOD_LIBRARY}
+    ${KLU_CHOLMOD_FILENAME}
 )
 set (KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY})
 

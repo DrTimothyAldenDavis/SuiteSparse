@@ -37,9 +37,7 @@ cmake_minimum_required ( VERSION 3.19 )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 # always build the static libraries (needed by the mongoose program)
 set ( NSTATIC false )
@@ -409,6 +407,9 @@ if ( GLOBAL_INSTALL )
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
     install ( TARGETS mongoose_exe
         RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
@@ -423,6 +424,9 @@ if ( INSIDE_SUITESPARSE )
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
     install ( TARGETS mongoose_exe
         RUNTIME       DESTINATION ${SUITESPARSE_BINDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
 endif ( )
 
 #-------------------------------------------------------------------------------

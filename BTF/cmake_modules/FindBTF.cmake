@@ -50,11 +50,12 @@ find_library ( BTF_LIBRARY
 )
 
 # get version of the library
-get_filename_component (BTF_LIBRARY ${BTF_LIBRARY} REALPATH)
+get_filename_component ( BTF_LIBRARY  ${BTF_LIBRARY} REALPATH )
+get_filename_component ( BTF_FILENAME ${BTF_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     BTF_VERSION
-    ${BTF_LIBRARY}
+    ${BTF_FILENAME}
 )
 set (BTF_LIBRARIES ${BTF_LIBRARY})
 

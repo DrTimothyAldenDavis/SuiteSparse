@@ -50,11 +50,12 @@ find_library ( CXSPARSE_LIBRARY
 )
 
 # get version of the library
-get_filename_component (CXSPARSE_LIBRARY ${CXSPARSE_LIBRARY} REALPATH)
+get_filename_component ( CXSPARSE_LIBRARY  ${CXSPARSE_LIBRARY} REALPATH )
+get_filename_component ( CXSPARSE_FILENAME ${CXSPARSE_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     CXSPARSE_VERSION
-    ${CXSPARSE_LIBRARY}
+    ${CXSPARSE_FILENAME}
 )
 set (CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY})
 

@@ -38,11 +38,12 @@ find_library ( GPUQRENGINE_LIBRARY
 )
 
 # get version of the library
-get_filename_component (GPUQRENGINE_LIBRARY ${GPUQRENGINE_LIBRARY} REALPATH)
+get_filename_component ( GPUQRENGINE_LIBRARY  ${GPUQRENGINE_LIBRARY} REALPATH )
+get_filename_component ( GPUQRENGINE_FILENAME ${GPUQRENGINE_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     GPUQRENGINE_VERSION
-    ${GPUQRENGINE_LIBRARY}
+    ${GPUQRENGINE_FILENAME}
 )
 
 # libaries when using GPUQREngine

@@ -50,7 +50,7 @@ both:
 	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
 
 # build the Mongoose library (static and dynamic) and run a quick test
-demo: library
+demos: library
 	( cd build ; ./bin/demo )
 
 # the same as "make library"

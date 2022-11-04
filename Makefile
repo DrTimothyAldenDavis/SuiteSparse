@@ -125,7 +125,6 @@ install:
 	( cd CCOLAMD && $(MAKE) install )
 	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
-	# ( cd CSparse && $(MAKE) ) # CSparse is not installed
 	( cd CXSparse && $(MAKE) install ) # CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
@@ -151,7 +150,6 @@ uninstall:
 	( cd CCOLAMD && $(MAKE) uninstall )
 	( cd UMFPACK && $(MAKE) uninstall )
 	( cd CHOLMOD && $(MAKE) uninstall )
-	( cd CSparse && $(MAKE) uninstall )
 	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
@@ -186,7 +184,7 @@ purge:
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
-	- $(RM) -r include/* bin/* lib/* share/*
+	- $(RM) -r include/* bin/* lib/*.* lib/cmake/SuiteSparse/*
 	( cd SPEX && $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
@@ -213,27 +211,27 @@ clean:
 	- ( cd SPEX && $(MAKE) clean )
 
 # Run all demos
-demo:
-	- ( cd SuiteSparse_config && $(MAKE) demo )
-	- - ( cd SuiteSparse_metis && $(MAKE) demo )
-	- ( cd Mongoose && $(MAKE) demo )
-	- ( cd AMD && $(MAKE) demo )
-	- ( cd CAMD && $(MAKE) demo )
-	- ( cd COLAMD && $(MAKE) demo )
-	- ( cd BTF && $(MAKE) demo )
-	- ( cd KLU && $(MAKE) demo )
-	- ( cd LDL && $(MAKE) demo )
-	- ( cd CCOLAMD && $(MAKE) demo )
-	- ( cd UMFPACK && $(MAKE) demo )
-	- ( cd CHOLMOD && $(MAKE) demo )
-	- ( cd CSparse && $(MAKE) demo )
-	- ( cd CXSparse && $(MAKE) demo )
-	- ( cd RBio && $(MAKE) demo )
-	- ( cd SuiteSparse_GPURuntime && $(MAKE) demo )
-	- ( cd GPUQREngine && $(MAKE) demo )
-	- ( cd SPQR && $(MAKE) demo )
-	- ( cd GraphBLAS && $(MAKE) demo )
-	- ( cd SPEX && $(MAKE) demo )
+demos:
+	- ( cd SuiteSparse_config && $(MAKE) demos )
+	- - ( cd SuiteSparse_metis && $(MAKE) demos )
+	- ( cd Mongoose && $(MAKE) demos )
+	- ( cd AMD && $(MAKE) demos )
+	- ( cd CAMD && $(MAKE) demos )
+	- ( cd COLAMD && $(MAKE) demos )
+	- ( cd BTF && $(MAKE) demos )
+	- ( cd KLU && $(MAKE) demos )
+	- ( cd LDL && $(MAKE) demos )
+	- ( cd CCOLAMD && $(MAKE) demos )
+	- ( cd UMFPACK && $(MAKE) demos )
+	- ( cd CHOLMOD && $(MAKE) demos )
+	- ( cd CSparse && $(MAKE) demos )
+	- ( cd CXSparse && $(MAKE) demos )
+	- ( cd RBio && $(MAKE) demos )
+	- ( cd SuiteSparse_GPURuntime && $(MAKE) demos )
+	- ( cd GPUQREngine && $(MAKE) demos )
+	- ( cd SPQR && $(MAKE) demos )
+	- ( cd GraphBLAS && $(MAKE) demos )
+	- ( cd SPEX && $(MAKE) demos )
 
 # Create the PDF documentation
 docs:

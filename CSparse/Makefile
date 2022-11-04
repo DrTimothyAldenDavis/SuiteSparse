@@ -28,7 +28,7 @@
 #
 # To run the demos
 #
-#       make demo
+#       make demos
 #
 # To run test coverage:
 #
@@ -52,7 +52,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/cs_demo1 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/t1

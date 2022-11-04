@@ -9,11 +9,9 @@
 # report status and compile flags
 #-------------------------------------------------------------------------------
 
-message ( STATUS
-"----------------------------------------------------------------------------" )
+message ( STATUS "------------------------------------------------------------------------" )
 message ( STATUS "SuiteSparse CMAKE report for: ${CMAKE_PROJECT_NAME}" )
-message ( STATUS
-"----------------------------------------------------------------------------" )
+message ( STATUS "------------------------------------------------------------------------" )
 if ( GLOBAL_INSTALL )
     message ( STATUS "install in ${CMAKE_INSTALL_PREFIX}: true" )
 else ( )
@@ -46,6 +44,4 @@ endif ( )
 if ( DEFINED CMAKE_CUDA_ARCHITECTURES )
     message ( STATUS "CUDA architectures:   ${CMAKE_CUDA_ARCHITECTURES}" )
 endif ( )
-message ( STATUS
-"----------------------------------------------------------------------------" )
-
+message ( STATUS "------------------------------------------------------------------------" )

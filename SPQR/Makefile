@@ -62,7 +62,7 @@ debug:
 
 all: library
 
-demo: library
+demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
 	- ./build/qrsimple  < Matrix/ash219.mtx
 	- ./build/qrsimplec < Matrix/ash219.mtx

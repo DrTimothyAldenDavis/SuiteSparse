@@ -50,11 +50,12 @@ find_library ( UMFPACK_LIBRARY
 )
 
 # get version of the library
-get_filename_component (UMFPACK_LIBRARY ${UMFPACK_LIBRARY} REALPATH)
+get_filename_component ( UMFPACK_LIBRARY  ${UMFPACK_LIBRARY} REALPATH )
+get_filename_component ( UMFPACK_FILENAME ${UMFPACK_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     UMFPACK_VERSION
-    ${UMFPACK_LIBRARY}
+    ${UMFPACK_FILENAME}
 )
 set (UMFPACK_LIBRARIES ${UMFPACK_LIBRARY})
 

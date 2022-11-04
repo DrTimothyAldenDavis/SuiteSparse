@@ -28,9 +28,7 @@ message ( STATUS "Building AMD version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
@@ -118,6 +116,9 @@ if ( GLOBAL_INSTALL )
     install ( TARGETS amd
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindAMD.cmake
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS amd_static
         ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
@@ -132,6 +133,9 @@ if ( INSIDE_SUITESPARSE )
     install ( TARGETS amd
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindAMD.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS amd_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )

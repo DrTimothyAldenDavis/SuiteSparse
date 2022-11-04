@@ -50,11 +50,12 @@ find_library ( SPEX_LIBRARY
 )
 
 # get version of the library
-get_filename_component (SPEX_LIBRARY ${SPEX_LIBRARY} REALPATH)
+get_filename_component ( SPEX_LIBRARY  ${SPEX_LIBRARY} REALPATH )
+get_filename_component ( SPEX_FILENAME ${SPEX_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
     SPEX_VERSION
-    ${SPEX_LIBRARY}
+    ${SPEX_FILENAME}
 )
 set (SPEX_LIBRARIES ${SPEX_LIBRARY})
 
