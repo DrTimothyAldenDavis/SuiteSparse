@@ -17,10 +17,10 @@ cmake_minimum_required ( VERSION 3.19 )
 
 # date version must match ../CMakeLists.txt:
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Oct 21, 2022" )
+set ( GraphBLAS_DATE "Nov 3, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
-set ( GraphBLAS_VERSION_SUB   1 )
+set ( GraphBLAS_VERSION_SUB   2 )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
     ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
@@ -131,9 +131,12 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 if ( CMAKE_CUDA_DEV )
     # for CUDA development only; not for production use
-    include_directories ( ../Source/Template ../Source ../Include rename ../Source/Generated1 ../lz4 ../zstd ../zstd/zstd_subset ../rmm_wrap )
+    include_directories ( ../Source/Template ../Source ../Include rename
+        ../Source/Generated1 ../lz4 ../zstd ../zstd/zstd_subset ../rmm_wrap )
 else ( )
-    include_directories ( ../Source/Template ../Source ../Include rename ../Source/Generated1 ../lz4 ../zstd ../zstd/zstd_subset ../rmm_wrap ../Source/Generated2 )
+    include_directories ( ../Source/Template ../Source ../Include rename
+        ../Source/Generated1 ../lz4 ../zstd ../zstd/zstd_subset ../rmm_wrap
+        ../Source/Generated2 )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -205,7 +208,7 @@ else ( )
 endif ( )
 
 add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
-SET_TARGET_PROPERTIES ( graphblas_matlab PROPERTIES
+set_target_properties ( graphblas_matlab PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
@@ -274,18 +277,12 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../../lib and
-# ../../include.
-
-message ( STATUS "System install libdir: ${CMAKE_INSTALL_LIBDIR}" )
-message ( STATUS "System install incdir: ${CMAKE_INSTALL_INCLUDEDIR}" )
-message ( STATUS "Local  install libdir: ${SUITESPARSE_LIBDIR}" )
-message ( STATUS "Local  install incdir: ${SUITESPARSE_INCLUDEDIR}" )
-
-if ( NOT SUITESPARSE_LOCAL )
+if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
+    message ( STATUS "System install libdir: ${CMAKE_INSTALL_LIBDIR}" )
+    message ( STATUS "System install incdir: ${CMAKE_INSTALL_INCLUDEDIR}" )
     install ( TARGETS graphblas_matlab
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
@@ -296,6 +293,8 @@ if ( INSIDE_SUITESPARSE )
     # does not require "sudo make install", just "make install"
     message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
+    message ( STATUS "Local  install libdir: ${SUITESPARSE_LIBDIR}" )
+    message ( STATUS "Local  install incdir: ${SUITESPARSE_INCLUDEDIR}" )
     install ( TARGETS graphblas_matlab
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )

@@ -14,9 +14,14 @@ export SUITESPARSE = $(CURDIR)
 #-------------------------------------------------------------------------------
 
 # Compile the default rules for each package.
-# "make install" will install all libraries in /usr/local/lib
-# and include files in /usr/local/include.
-default:
+
+# default: "make install" will install all libraries in /usr/local/lib
+# and include files in /usr/local/include.  Not installed in SuiteSparse/lib.
+default: library
+
+# compile; "sudo make install" will install only in /usr/local
+# (or whatever your CMAKE_INSTALL_PREFIX is)
+library:
 	( cd SuiteSparse_config && $(MAKE) )
 	- ( cd SuiteSparse_metis && $(MAKE) )
 	( cd Mongoose && $(MAKE) )
@@ -38,31 +43,31 @@ default:
 	( cd GraphBLAS && $(MAKE) )
 	( cd SPEX && $(MAKE) )
 
-# compile and install in SuiteSparse/lib and SuiteSparse/include
+# compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd SuiteSparse_config && $(MAKE) local && $(MAKE) install )
-	- ( cd SuiteSparse_metis && $(MAKE) local && $(MAKE) install )
-	( cd Mongoose && $(MAKE) local && $(MAKE) install )
-	( cd AMD && $(MAKE) local && $(MAKE) install )
-	( cd BTF && $(MAKE) local && $(MAKE) install )
-	( cd CAMD && $(MAKE) local && $(MAKE) install )
-	( cd CCOLAMD && $(MAKE) local && $(MAKE) install )
-	( cd COLAMD && $(MAKE) local && $(MAKE) install )
-	( cd CHOLMOD && $(MAKE) local && $(MAKE) install )
+	( cd SuiteSparse_config && $(MAKE) local )
+	- ( cd SuiteSparse_metis && $(MAKE) local )
+	( cd Mongoose && $(MAKE) local )
+	( cd AMD && $(MAKE) local )
+	( cd BTF && $(MAKE) local )
+	( cd CAMD && $(MAKE) local )
+	( cd CCOLAMD && $(MAKE) local )
+	( cd COLAMD && $(MAKE) local )
+	( cd CHOLMOD && $(MAKE) local )
 	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
-	( cd CXSparse && $(MAKE) local && $(MAKE) install )
-	( cd LDL && $(MAKE) local && $(MAKE) install )
-	( cd KLU && $(MAKE) local && $(MAKE) install )
-	( cd UMFPACK && $(MAKE) local && $(MAKE) install )
-	( cd RBio && $(MAKE) local && $(MAKE) install )
-	( cd SuiteSparse_GPURuntime && $(MAKE) local && $(MAKE) install )
-	( cd GPUQREngine && $(MAKE) local && $(MAKE) install )
-	( cd SPQR && $(MAKE) local && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) local && $(MAKE) install )
-	( cd SPEX && $(MAKE) local && $(MAKE) install )
+	( cd CXSparse && $(MAKE) local )
+	( cd LDL && $(MAKE) local )
+	( cd KLU && $(MAKE) local )
+	( cd UMFPACK && $(MAKE) local )
+	( cd RBio && $(MAKE) local )
+	( cd SuiteSparse_GPURuntime && $(MAKE) local )
+	( cd GPUQREngine && $(MAKE) local )
+	( cd SPQR && $(MAKE) local )
+	( cd GraphBLAS && $(MAKE) local )
+	( cd SPEX && $(MAKE) local )
 
-# compile for install in SuiteSparse/[lib,include] and /usr/local/[lib,include];
-# follow this with 'sudo make install'
+# compile; "sudo make install" will install only in /usr/local
+# (or whatever your CMAKE_INSTALL_PREFIX is)
 global:
 	( cd SuiteSparse_config && $(MAKE) global )
 	- ( cd SuiteSparse_metis && $(MAKE) global )
@@ -85,7 +90,31 @@ global:
 	( cd GraphBLAS && $(MAKE) global )
 	( cd SPEX && $(MAKE) global )
 
-# install all packages in SuiteSparse/lib and SuiteSparse/include
+# compile; "sudo make install" will install only in /usr/local
+# (or whatever your CMAKE_INSTALL_PREFIX is)
+both:
+	( cd SuiteSparse_config && $(MAKE) both )
+	- ( cd SuiteSparse_metis && $(MAKE) both )
+	( cd Mongoose && $(MAKE) both )
+	( cd AMD && $(MAKE) both )
+	( cd BTF && $(MAKE) both )
+	( cd CAMD && $(MAKE) both )
+	( cd CCOLAMD && $(MAKE) both )
+	( cd COLAMD && $(MAKE) both )
+	( cd CHOLMOD && $(MAKE) both )
+	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
+	( cd CXSparse && $(MAKE) both )
+	( cd LDL && $(MAKE) both )
+	( cd KLU && $(MAKE) both )
+	( cd UMFPACK && $(MAKE) both )
+	( cd RBio && $(MAKE) both )
+	( cd SuiteSparse_GPURuntime && $(MAKE) both )
+	( cd GPUQREngine && $(MAKE) both )
+	( cd SPQR && $(MAKE) both )
+	( cd GraphBLAS && $(MAKE) both )
+	( cd SPEX && $(MAKE) both )
+
+# install all packages.  Location depends on prior "make", "make global" etc
 install:
 	( cd SuiteSparse_config && $(MAKE) install )
 	- ( cd SuiteSparse_metis && $(MAKE) install )
@@ -131,28 +160,8 @@ uninstall:
 	( cd GraphBLAS && $(MAKE) uninstall )
 	( cd SPEX && $(MAKE) uninstall )
 
-# compile the libraries
-library:
-	( cd SuiteSparse_config && $(MAKE) )
-	- ( cd SuiteSparse_metis && $(MAKE) library )
-	( cd Mongoose  && $(MAKE) library )
-	( cd AMD && $(MAKE) library )
-	( cd BTF && $(MAKE) library )
-	( cd CAMD && $(MAKE) library )
-	( cd CCOLAMD && $(MAKE) library )
-	( cd COLAMD && $(MAKE) library )
-	( cd CHOLMOD && $(MAKE) library )
-	( cd KLU && $(MAKE) library )
-	( cd LDL && $(MAKE) library )
-	( cd UMFPACK && $(MAKE) library )
-	( cd CSparse && $(MAKE) library )
-	( cd CXSparse && $(MAKE) library )
-	( cd RBio && $(MAKE) library )
-	( cd SuiteSparse_GPURuntime && $(MAKE) library )
-	( cd GPUQREngine && $(MAKE) library )
-	( cd SPQR && $(MAKE) library )
-	( cd GraphBLAS && $(MAKE) library )
-	( cd SPEX && $(MAKE) library )
+# Remove all files not in the original distribution
+distclean: purge
 
 # Remove all files not in the original distribution
 purge:
@@ -239,10 +248,8 @@ docs:
 	( cd SPQR && $(MAKE) docs )
 	( cd SPEX && $(MAKE) docs )
 
-distclean: purge
-
 # statement coverage (Linux only); this requires a lot of time.
-cov: local 
+cov: local install
 	( cd CXSparse && $(MAKE) cov )
 	( cd CSparse && $(MAKE) cov )
 	( cd CHOLMOD && $(MAKE) cov )

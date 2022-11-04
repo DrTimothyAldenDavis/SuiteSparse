@@ -5,7 +5,10 @@ cmake_minimum_required ( VERSION 3.19 )
 # specific parameters. The output of this build is an executable that can be used to
 # run the gtests.
 
-project(GRAPHBLAS_CUDA VERSION 0.1 LANGUAGES CXX CUDA)
+project ( GRAPHBLAS_CUDA
+    VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
+    LANGUAGES CXX CUDA )
+cmake_policy ( SET CMP0135 NEW )    # URL download timestamp policy
 
 set(CMAKE_CUDA_FLAGS "-cudart=static -lineinfo ")
 set(CMAKE_CXX_STANDARD 17)
@@ -22,13 +25,20 @@ add_library(graphblascuda SHARED
             ${GRAPHBLAS_CUDA_SOURCES}
 )
 
+set_target_properties ( graphblascuda PROPERTIES
+    VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    SOVERSION ${GraphBLAS_VERSION_MAJOR}
+    C_STANDARD_REQUIRED 11 )
+
 set(RMM_WRAP_INCLUDES "../rmm_wrap")
 
 message(STATUS "RMM_WRAP_INCLUDES: ${RMM_WRAP_INCLUDES}")
 set(GRAPHBLAS_CUDA_INCLUDES
         ${RMM_WRAP_INCLUDES}
         ../Source
+        ../Source/Shared
         ../Source/Template
+        ../Source/SharedTemplate
         ../Include
         ../CUDA)
 
@@ -54,7 +64,7 @@ target_include_directories(graphblascuda PUBLIC
         ${GRAPHBLAS_CUDA_INCLUDES})
 set_target_properties(graphblascuda PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-set_target_properties(graphblascuda PROPERTIES CUDA_ARCHITECTURES "75")
+set_target_properties(graphblascuda PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
 target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt )
 
@@ -62,10 +72,7 @@ target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static CUDA::nvTool
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
-# ../include.  
-
-if ( NOT SUITESPARSE_LOCAL )
+if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
@@ -189,7 +196,7 @@ add_executable(graphblascuda_test ${CUDA_TEST_CPP_FILES} ${CMAKE_CURRENT_SOURCE_
 
 set_target_properties(graphblascuda_test PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(graphblascuda_test PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
-set_target_properties(graphblascuda_test PROPERTIES CUDA_ARCHITECTURES "75")
+set_target_properties(graphblascuda_test PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
 include(GoogleTest)
 

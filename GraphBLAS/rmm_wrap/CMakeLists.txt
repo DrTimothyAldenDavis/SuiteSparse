@@ -66,10 +66,7 @@ target_include_directories(rmm_wrap_test PUBLIC "${RMM_WRAP_INCLUDES}")
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
-# ../include.  
-
-if ( NOT SUITESPARSE_LOCAL )
+if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
