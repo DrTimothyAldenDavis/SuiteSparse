@@ -184,7 +184,7 @@ purge:
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
-	- $(RM) -r include/* bin/* lib/*.* lib/cmake/SuiteSparse/*
+	- $(RM) -r include/* bin/* lib/*
 	( cd SPEX && $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
