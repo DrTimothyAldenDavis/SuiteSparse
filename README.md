@@ -316,12 +316,12 @@ Packages in SuiteSparse, and files in this directory:
 
                 make            compiles SuiteSparse libraries.
                                 Subsequent "make install" will install
-                                in both ./lib and /usr/local/lib.
+                                in just /usr/local/lib.
                                 Normally requires "sudu make install"
 
-                make both       Normally same as "make", but can
-                                be done after "make local" to enable
-                                installation in both ./lib and /usr/local/lib.
+                make both       compiles SuiteSparse, and then "make install"
+                                will instal in both ./lib and /usr/local/lib
+                                (the latter controlled by CMAKE_INSTALL_PATH).
                                 Normally requires "sudu make install"
 
                 make local      compiles SuiteSparse.
