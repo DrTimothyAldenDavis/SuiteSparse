@@ -298,9 +298,8 @@ Packages in SuiteSparse, and files in this directory:
                 also be able to link against CXSparse instead.
                 author: Tim Davis, David Bateman
 
-    share       'make' places documentation for each package here
-
-    include     'make' places user-visible include fomes for each package here
+    include     'make install' places user-visible include files for each
+                package here, after 'make local'
 
     KLU         sparse LU factorization, primarily for circuit simulation.
                 Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
@@ -310,7 +309,8 @@ Packages in SuiteSparse, and files in this directory:
     LDL         a very concise LDL' factorization package
                 author: Tim Davis
 
-    lib         'make' places shared libraries for each package here
+    lib         'make install' places shared libraries for each package
+                here, after 'make local'
 
     Makefile    to compile all of SuiteSparse
 
@@ -443,8 +443,8 @@ for use in SuiteSparse; see the `SuiteSparse_metis/README.txt` file for
 details.
 
 Refer to each package for license, copyright, and author information.  All
-codes are authored or co-authored by Timothy A. Davis.
-email: davis@tamu.edu
+codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
+except for METIS, which is by George Karypis.
 
 Licenses for each package are located in the following files, all in
 PACKAGENAME/Doc/License.txt, and these files are also concatenated into
