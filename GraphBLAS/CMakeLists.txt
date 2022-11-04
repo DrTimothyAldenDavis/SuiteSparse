@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Oct 21, 2022" )
+set ( GraphBLAS_DATE "Nov 3, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
-set ( GraphBLAS_VERSION_SUB   1 )
+set ( GraphBLAS_VERSION_SUB   2 )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )
@@ -160,9 +160,11 @@ configure_file ( "Config/README.md.in" "${PROJECT_SOURCE_DIR}/README.md" )
 
 if ( CMAKE_CUDA_DEV )
     # for CUDA development only; not for production use
-    include_directories ( Source/Template Source Include Source/Generated1 lz4 zstd zstd/zstd_subset Demo/Include rmm_wrap )
+    include_directories ( Source/Template Source Include Source/Generated1
+        lz4 zstd zstd/zstd_subset Demo/Include rmm_wrap )
 else ( )
-    include_directories ( Source/Template Source Include Source/Generated1 lz4 zstd zstd/zstd_subset Source/Generated2 Demo/Include rmm_wrap )
+    include_directories ( Source/Template Source Include Source/Generated1
+        lz4 zstd zstd/zstd_subset Source/Generated2 Demo/Include rmm_wrap )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -440,10 +442,7 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
-# use "cmake -DSUITESPARSE_LOCAL=1" to install only in ../lib and
-# ../include.  
-
-if ( NOT SUITESPARSE_LOCAL )
+if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )

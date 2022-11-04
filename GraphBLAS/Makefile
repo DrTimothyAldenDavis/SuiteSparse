@@ -26,21 +26,25 @@ JOBS ?= 8
 
 default: library
 
-# just build the dynamic library, but not the demos
+# default is to install only in /usr/local
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
+
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=0 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
+
+# install only in /usr/local (default)
+global:
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && $(MAKE) --jobs=${JOBS} )
+
+# install in SuiteSparse/lib both and SuiteSparse/include and /usr/local
+both:
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
 
 # enable CUDA (NOTE: not ready for production use)
 cuda:
 	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && $(MAKE) --jobs=$(JOBS) )
-
-# install only in SuiteSparse/lib and SuiteSparse/include
-local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. && $(MAKE) --jobs=${JOBS} )
-
-# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
-global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
 
 # compile with -g 
 debug:

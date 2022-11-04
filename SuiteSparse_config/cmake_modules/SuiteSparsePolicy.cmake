@@ -16,6 +16,15 @@
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
 #
+#   GLOBAL_INSTALL:     if true, "make install" will
+#                       into /usr/local/lib and /usr/local/include.
+#                       default: true
+#
+#   LOCAL_INSTALL:      if true, "make install" will
+#                       into SuiteSparse/lib and SuiteSparse/include,
+#                       but these folders must also already exist.
+#                       default: false
+#
 #   SUITESPARSE_CUDA_ARCHITECTURES  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
 #                       when compiling CUDA kernels with nvcc.  Default, if not
@@ -45,18 +54,42 @@ set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 # determine if this package is inside the top-level SuiteSparse folder
 # (if ../lib and ../include exist, relative to the source directory)
 
-if ( SUITESPARSE_SECOND_LEVEL )
-    # the package is normally located at the 2nd level inside SuiteSparse
-    # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
-    set ( INSIDE_SUITESPARSE
-            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND
-            (   EXISTS ${CMAKE_SOURCE_DIR}/../../include ) ) )
-else ( )
-    # typical case, the package is at the 1st level inside SuiteSparse
-    # (SuiteSparse/AMD for example)
-    set ( INSIDE_SUITESPARSE
-            ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND
-            (   EXISTS ${CMAKE_SOURCE_DIR}/../include ) ) )
+if ( NOT DEFINED GLOBAL_INSTALL )
+    # if not defined, GLOBAL_INSTALL is set to true.
+    # "make install" will install in CMAKE_INSTALL_PREFIX
+    set ( GLOBAL_INSTALL true )
+endif ( )
+
+if ( NOT DEFINED LOCAL_INSTALL )
+    # if not defined, LOCAL_INSTALL is set to false
+    # "make install" will install in SuiteSparse/[lib,include,bin],
+    # if they exist.
+    set ( LOCAL_INSTALL false )
+endif ( )
+
+set ( INSIDE_SUITESPARSE false )
+
+if ( LOCAL_INSTALL )
+    # if you do not want to install local copies of SuiteSparse
+    # packages in SuiteSparse/lib and SuiteSparse/, set
+    # LOCAL_INSTALL to false in your CMake options.
+    if ( SUITESPARSE_SECOND_LEVEL )
+        # the package is normally located at the 2nd level inside SuiteSparse
+        # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
+        if ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND
+           (   EXISTS ${CMAKE_SOURCE_DIR}/../../include ) AND
+           (   EXISTS ${CMAKE_SOURCE_DIR}/../../bin     ) )
+            set ( INSIDE_SUITESPARSE true )
+        endif ( )
+    else ( )
+        # typical case, the package is at the 1st level inside SuiteSparse
+        # (SuiteSparse/AMD for example)
+        if ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND
+             ( EXISTS ${CMAKE_SOURCE_DIR}/../include ) AND
+             ( EXISTS ${CMAKE_SOURCE_DIR}/../bin     ) )
+            set ( INSIDE_SUITESPARSE true )
+        endif ( )
+    endif ( )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )

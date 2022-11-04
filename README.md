@@ -313,18 +313,43 @@ Packages in SuiteSparse, and files in this directory:
     lib         'make' places shared libraries for each package here
 
     Makefile    to compile all of SuiteSparse
-                make            compiles SuiteSparse libraries
-                make install    compiles SuiteSparse and installs in the
-                                current directory (./lib, ./include).
-                                Use "sudo make install" to install
-                                in /usr/local/lib and /usr/local/include.
-                make local      compiles SuiteSparse and installs in
-                                (./lib, ./include) only.  No sudo required.
+
+                make            compiles SuiteSparse libraries.
+                                Subsequent "make install" will install
+                                in both ./lib and /usr/local/lib.
+                                Normally requires "sudu make install"
+
+                make both       Normally same as "make", but can
+                                be done after "make local" to enable
+                                installation in both ./lib and /usr/local/lib.
+                                Normally requires "sudu make install"
+
+                make local      compiles SuiteSparse.
+                                Subsequent "make install will install only
+                                in ./lib, ./include only.  No sudo required.
+                                Does not install in /usr/local/lib.
+
+                make global     compiles SuiteSparse libraries.
+                                Subsequent "make install" will install in
+                                just /usr/local/lib (or whatever your
+                                CMAKE_INSTALL_PREFIX is).
+                                Normally requires "sudu make install"
+                                Does not install in ./lib and ./include.
+
+                make install    installs in the current directory
+                                (./lib, ./include), and/or in
+                                /usr/local/lib and /usr/local/include,
+                                depending on whether "make", "make local",
+                                "make global", or "make both",
+                                etc has been done.
+
                 make uninstall  undoes 'make install'
-                make library    compiles SuiteSparse libraries (not demos)
+
                 make distclean  removes all files not in distribution, including
                                 ./bin, ./share, ./lib, and ./include.
+
                 make purge      same as 'make distclean'
+
                 make clean      removes all files not in distribution, but
                                 keeps compiled libraries and demoes, ./lib,
                                 ./share, and ./include.

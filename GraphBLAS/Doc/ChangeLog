@@ -1,3 +1,8 @@
+Version 7.3.2, Nov 3, 2022
+    
+    * cmake_modules: SuiteSparsePolicy.cmake did not correctly detect if
+        GraphBLAS was being compiled inside SuiteSparse or not.
+
 Version 7.3.1, Oct 21, 2022
 
     * workaround for Microsoft Visual Studio bug :  MSC 19.2x (in vs2019)

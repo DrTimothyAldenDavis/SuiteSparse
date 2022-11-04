@@ -33,21 +33,25 @@ JOBS ?= 8
 
 default: library
 
-# build the Mongoose library (static and dynamic) and run a quick test
-demo: library
-	( cd build ; ./bin/demo )
-
-# just build the static and dynamic libraries; do not run the demo
+# default is to install only in /usr/local
 library:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) --jobs=$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=1 .. ; $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=0 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
 
-# install in SuiteSparse/lib and SuiteSparse/include and /usr/local
+# install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_LOCAL=0 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && $(MAKE) --jobs=${JOBS} )
+
+# install in SuiteSparse/lib both and SuiteSparse/include and /usr/local
+both:
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
+
+# build the Mongoose library (static and dynamic) and run a quick test
+demo: library
+	( cd build ; ./bin/demo )
 
 # the same as "make library"
 static: library

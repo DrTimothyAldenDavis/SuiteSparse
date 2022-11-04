@@ -14,6 +14,12 @@ message ( STATUS
 message ( STATUS "SuiteSparse CMAKE report for: ${CMAKE_PROJECT_NAME}" )
 message ( STATUS
 "----------------------------------------------------------------------------" )
+if ( GLOBAL_INSTALL )
+    message ( STATUS "install in ${CMAKE_INSTALL_PREFIX}: true" )
+else ( )
+    message ( STATUS "install in ${CMAKE_INSTALL_PREFIX}: false" )
+endif ( )
+message ( STATUS "install in SuiteSparse/lib and SuiteSparse/include: ${INSIDE_SUITESPARSE}" )
 message ( STATUS "build type:          ${CMAKE_BUILD_TYPE}" )
 message ( STATUS "have OpenMP:         ${OPENMP_FOUND} ")
 message ( STATUS "C compiler:          ${CMAKE_C_COMPILER_ID} ")
