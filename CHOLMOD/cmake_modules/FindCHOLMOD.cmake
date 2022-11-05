@@ -70,35 +70,37 @@ find_package_handle_standard_args ( CHOLMOD
     VERSION_VAR CHOLMOD_VERSION
 )
 
-# compiled libraries used by CHOLMOD only (SuiteSparse_metis)
-find_library ( SUITESPARSE_METIS_LIBRARY
-    NAMES suitesparse_metis
-    HINTS ${CMAKE_SOURCE_DIR}/..
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_metis
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis
-    PATHS SUITESPARSE_METIS_ROOT ENV SUITESPARSE_METIS_ROOT
-    PATH_SUFFIXES lib build alternative
-)
+set ( SUITESPARSE_METIS_FOUND false )
 
-# message ( STATUS "SuiteSparse_metis: ${SUITESPARSE_METIS_LIBRARY}" )
+if ( NOT NPARTITION )
 
-string ( FIND ${SUITESPARSE_METIS_LIBRARY} "NOT FOUND" SMETIS )
-# message ( STATUS "SFOUND: ${SMETIS}" )
-if ( ${SMETIS} EQUAL -1 )
-    # get the SuiteSparse_metis library
-    set ( SUITESPARSE_METIS_FOUND true )
-    get_filename_component ( SUITESPARSE_METIS_LIBRARY  ${SUITESPARSE_METIS_LIBRARY} REALPATH )
-    # message ( STATUS "SuiteSparse_metis was found: ${SUITESPARSE_METIS_LIBRARY}" )
-else ( )
-    # SuiteSparse_metis not found
-    set ( SUITESPARSE_METIS_FOUND false )
-    # message ( STATUS "SuiteSparse_metis not found: ${SUITESPARSE_METIS_LIBRARY}" )
-endif ( )
+    # compiled libraries used by CHOLMOD only (SuiteSparse_metis)
+    find_library ( SUITESPARSE_METIS_LIBRARY
+        NAMES suitesparse_metis
+        HINTS ${CMAKE_SOURCE_DIR}/..
+        HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_metis
+        HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis
+        PATHS SUITESPARSE_METIS_ROOT ENV SUITESPARSE_METIS_ROOT
+        PATH_SUFFIXES lib build alternative
+    )
 
-if ( SUITESPARSE_METIS_FOUND )
-    message ( STATUS "SuiteSparse_metis: ${SUITESPARSE_METIS_LIBRARY}" )
-    set ( CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} ${SUITESPARSE_METIS_LIBRARY} )
-    # message ( STATUS "libs: ${CHOLMOD_LIBRARY}" )
+    string ( FIND ${SUITESPARSE_METIS_LIBRARY} "NOTFOUND" SMETIS )
+    if ( ${SMETIS} EQUAL -1 )
+        # get the SuiteSparse_metis library
+        set ( SUITESPARSE_METIS_FOUND true )
+        get_filename_component ( SUITESPARSE_METIS_LIBRARY  ${SUITESPARSE_METIS_LIBRARY} REALPATH )
+    else ( )
+        # SuiteSparse_metis not found
+        set ( SUITESPARSE_METIS_FOUND false )
+    endif ( )
+
+    if ( SUITESPARSE_METIS_FOUND )
+        message ( STATUS "SuiteSparse_metis: ${SUITESPARSE_METIS_LIBRARY}" )
+        set ( CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} ${SUITESPARSE_METIS_LIBRARY} )
+    else ( )
+        unset ( SUITESPARSE_METIS_LIBRARY )
+    endif ( )
+
 endif ( )
 
 mark_as_advanced (

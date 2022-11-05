@@ -43,6 +43,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
+if ( NPARTITION )
+    message ( STATUS "SuiteSparse_metis: skipped" )
+else ( )
+
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
@@ -162,4 +166,5 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )
+endif ( )
 

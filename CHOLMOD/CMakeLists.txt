@@ -32,7 +32,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
@@ -69,13 +68,28 @@ find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 find_package ( CAMD 3.0.0 )
 find_package ( CCOLAMD 3.0.0 )
-find_package ( SuiteSparse_metis 5.1.0 )
+
+if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis )
+    # default is to use SuiteSparse_metis.
+    # Compile with -DNPARTITION=1 or delete SuiteSparse_metis to not use it.
+    set ( NPARTITION true )
+endif ( )
+
+if ( NOT NPARTITION )
+    # look for SuiteSparse_metis
+    set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+        ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules )
+    find_package ( SuiteSparse_metis 5.1.0 )
+else ( )
+    set ( SUITESPARSE_METIS_FOUND false )
+endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 if ( NOT SUITESPARSE_METIS_FOUND )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DNPARTITION " )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPARTITION " )
+    # Compile with -DNPARTITION if SuiteSparse_metis is disabled
+    # or not found.
+    add_compile_definitions ( NPARTITION )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
@@ -89,7 +103,6 @@ else ( )
     # without CUDA and RMM
     set ( CHOLMOD_CUDA )
 endif ( )
-
 
 #-------------------------------------------------------------------------------
 # configure files
