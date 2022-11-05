@@ -79,7 +79,7 @@ paths = add_to_path (paths, [SuiteSparse '/Mongoose/MATLAB']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/build']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS/demo']) ;
 paths = add_to_path (paths, [SuiteSparse '/GraphBLAS/GraphBLAS']) ;
-paths = add_to_path (paths, [SuiteSparse '/SPEX/MATLAB']) ;
+paths = add_to_path (paths, [SuiteSparse '/SPEX/SPEX_Left_LU/MATLAB']) ;
 
 cd (SuiteSparse)
 
