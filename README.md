@@ -572,10 +572,11 @@ Compilation options
 
 You can set specific options for CMake with the command (for example):
 
-    CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1" make
+    CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1 -DCMAKE_BUILD_TYPE=Debug" make
 
 That command will compile all of SuiteSparse except for SuiteSparse_metis
-(NPARTITION is true), and will not build static libraries (NSTATIC is true).
+(NPARTITION is true) in Debug mode.  The static libraries will not be built
+(NSTATIC is true).
 
     CMAKE_BUILD_TYPE:   Default: "Release", use "Debug" for debugging.
 
