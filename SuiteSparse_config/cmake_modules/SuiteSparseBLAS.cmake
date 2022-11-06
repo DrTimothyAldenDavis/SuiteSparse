@@ -23,6 +23,22 @@ if ( NOT DEFINED ALLOW_64BIT_BLAS )
     set ( ALLOW_64BIT_BLAS false )
 endif ( )
 
+# Look for user specified BLAS - caller is responsible for setting appropriate
+# BLAS_* definition
+if ( BLA_VENDOR )
+    message ( STATUS "Looking for " ${BLA_VENDOR} )
+    find_package ( BLAS )
+    find_package ( LAPACK )
+    if ( BLAS_FOUND AND LAPACK_FOUND )
+        if ( BLA_SIZEOF_INTEGER STREQUAL "8" )
+            include ( SuiteSparseBLAS64 )
+        else ()
+            include ( SuiteSparseBLAS32 )
+        endif ()
+        return ( )
+    endif ( )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # these blocks of code can be rearranged to change the search order for the BLAS
 #-------------------------------------------------------------------------------
