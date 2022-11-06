@@ -54,11 +54,8 @@
 
 #ifndef NPARTITION
 
-#include "SuiteSparse_metis.h"
-
-#if (IDXTYPEWIDTH != 64)
-#error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
-#endif
+#include "cholmod_metis_wrapper.h"
+#include "SuiteSparse_metis/include/metis.h"
 
 //------------------------------------------------------------------------------
 // test coverage
@@ -400,7 +397,7 @@ int64_t CHOLMOD(metis_bisector)	/* returns separator size */
 
     nn = n ;
     TEST_COVERAGE_PAUSE ;
-    ok = METIS_ComputeVertexSeparator (&nn, Mp, Mi, Mnw, NULL, &csp, Mpart) ;
+    ok = SuiteSparse_metis_METIS_ComputeVertexSeparator (&nn, Mp, Mi, Mnw, NULL, &csp, Mpart) ;
     TEST_COVERAGE_RESUME ;
     csep = csp ;
 
@@ -777,7 +774,7 @@ int CHOLMOD(metis)
 
 	nn = n ;
         TEST_COVERAGE_PAUSE ;
-	METIS_NodeND (&nn, Mp, Mi, NULL, NULL, Mperm, Miperm) ;
+	SuiteSparse_metis_METIS_NodeND (&nn, Mp, Mi, NULL, NULL, Mperm, Miperm) ;
         TEST_COVERAGE_RESUME ;
 
 	PRINT0 (("METIS_NodeND done\n")) ;

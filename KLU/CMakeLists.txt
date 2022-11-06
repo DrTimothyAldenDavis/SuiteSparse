@@ -53,7 +53,7 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( BTF 2.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( CHOLMOD 4.0.0 )
+find_package ( CHOLMOD 4.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
