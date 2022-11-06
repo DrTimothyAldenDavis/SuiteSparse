@@ -10,7 +10,8 @@
 
 # actions taken when a 64-bit BLAS has been found
 
-message ( STATUS "Found 64-bit BLAS+LAPACK" )
+message ( STATUS "Found ${BLA_VENDOR} 64-bit BLAS+LAPACK" )
+add_compile_definitions ( BLAS_${BLA_VENDOR} )
 add_compile_definitions ( BLAS64 )
 set ( SuiteSparse_BLAS_integer "int64_t" )
 
