@@ -27,6 +27,10 @@
 #include "SuiteSparse_metis/GKlib/GKlib.h"
 #include "SuiteSparse_metis/include/metis.h"
 
+#if (IDXTYPEWIDTH != 64)
+#error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
+#endif
+
 #include "SuiteSparse_metis/GKlib/b64.c"
 #include "SuiteSparse_metis/GKlib/blas.c"
 #include "SuiteSparse_metis/GKlib/csr.c"
@@ -63,7 +67,7 @@
 #include "SuiteSparse_metis/libmetis/contig.c"
 #include "SuiteSparse_metis/libmetis/debug.c"
 #include "SuiteSparse_metis/libmetis/fm.c"
- #include "SuiteSparse_metis/libmetis/fortran.c"
+#include "SuiteSparse_metis/libmetis/fortran.c"
 // #include "SuiteSparse_metis/libmetis/frename.c"
 #include "SuiteSparse_metis/libmetis/gklib.c"
 #include "SuiteSparse_metis/libmetis/graph.c"
@@ -89,10 +93,6 @@
 #include "SuiteSparse_metis/libmetis/timing.c"
 #include "SuiteSparse_metis/libmetis/util.c"
 #include "SuiteSparse_metis/libmetis/wspace.c"
-
-#if (IDXTYPEWIDTH != 64)
-#error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
-#endif
 
 #endif
 
