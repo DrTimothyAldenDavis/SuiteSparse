@@ -39,6 +39,15 @@ if ( NOT DEFINED ENABLE_CUDA )
     set ( ENABLE_CUDA true )
 endif ( )
 
+if ( NGPL )
+    # NGPL: if true, do not include any GPL-licensed module
+    set ( NMATRIXOPS true )
+    set ( NMODIFY true )
+    set ( NSUPERNODAL true )
+    set ( ENABLE_CUDA false )
+    add_compile_definitions ( NGPL )
+endif ( )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
@@ -71,28 +80,40 @@ find_package ( AMD 3.0.0 REQUIRED )
 # find CHOLMOD modules
 #-------------------------------------------------------------------------------
 
-    #---------------------------------------------------------------------------
-    # NGPL: if true, do not include any GPL-licensed module
-    #---------------------------------------------------------------------------
+# CHOLMOD consists of a suite of modules which can be selected a la carte.  To
+# not build a module, simply delete or rename the entire folder before building
+# CHOLMOD, or pass the corresponding flag when using cmake:
 
-    if ( NGPL )
-        set ( NMATRIXOPS true )
-        set ( NMODIFY true )
-        set ( NSUPERNODAL true )
-        add_compile_definitions ( NGPL )
-    endif ( )
+#   -DNGL=1         if true: do not build any GPL-licensed module (MatrixOps,
+#                   Modify, Supernodal, and GPU modules). See above.
+#
+#   -DNCHECK=1      if true: do not build the Check module.
+#
+#   -DNMATRIXOPS=1  if true: do not build the MatrixOps module.
+#   -DNCHOLESKY=1   if true: do not build the Cholesky module.
+#                   This also disables the Supernodal and Modify modules.
+#   -DNMODIFY=1     if true: do not build the Modify module.
+#   -DNCAMD=1       if true: do not link against CAMD and CCOLAMD.
+#                   This also disables the Partition module.
+#   -DNPARTITION=1  if true: do not build the Partition module.
+#   -DNSUPERNODAL=1 if true: do not build the Supernodal module.
+
+# By default, all "N..." flags are false, if not defined explicitly.
 
     #---------------------------------------------------------------------------
     # Check module
     #---------------------------------------------------------------------------
 
     if ( NOT DEFINED NCHECK )
+        # by default, build the Check module
         set ( NCHECK false )
     endif ( )
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Check )
+        # Check module does not appear so don't use it
         set ( NCHECK true )
     endif ( )
     if ( NCHECK )
+        # if NCHECK is true: do not build the Check module
         add_compile_definitions ( NCHECK )
     endif ( )
 
@@ -101,12 +122,15 @@ find_package ( AMD 3.0.0 REQUIRED )
     #---------------------------------------------------------------------------
 
     if ( NOT DEFINED NMATRIXOPS )
+        # by default, build the MatrixOps module
         set ( NMATRIXOPS false )
     endif ( )
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/MatrixOps )
+        # MatrixOps module does not appear so don't use it
         set ( NMATRIXOPS true )
     endif ( )
     if ( NMATRIXOPS )
+        # if NMATRIXOPS is true: do not build the Check module
         add_compile_definitions ( NMATRIXOPS )
     endif ( )
 
@@ -115,12 +139,16 @@ find_package ( AMD 3.0.0 REQUIRED )
     #---------------------------------------------------------------------------
 
     if ( NOT DEFINED NCHOLESKY )
+        # by default, build the Cholesky module
         set ( NCHOLESKY false )
     endif ( )
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Cholesky )
+        # Cholesky module does not appear so don't use it
         set ( NCHOLESKY true )
     endif ( )
     if ( NCHOLESKY )
+        # if NCHOLESKY is true: do not build the Cholesky module, and do not
+        # build the Supernodal or Modify modules that depend on it.
         set ( NSUPERNODAL true )
         set ( NMODIFY true )
         add_compile_definitions ( NCHOLESKY )
@@ -131,45 +159,65 @@ find_package ( AMD 3.0.0 REQUIRED )
     #---------------------------------------------------------------------------
 
     if ( NOT DEFINED NMODIFY )
+        # by default, build the Modify module
         set ( NMODIFY false )
     endif ( )
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify )
+        # Modify module does not appear so don't use it
         set ( NMODIFY true )
     endif ( )
     if ( NMODIFY )
+        # if NMODIFY is true: do not build the Modify module
         add_compile_definitions ( NMODIFY )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # interfaces to CAMD and CCOLAMD
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NCAMD )
+        # by default, compile with CAMD and CCOLAMD
+        set ( NCAMD false )
+    endif ( )
+
+    if ( NOT NCAMD )
+        # find CAMD and CCOLAMD
+        find_package ( CAMD 3.0.0 )
+        find_package ( CCOLAMD 3.0.0 )
+        if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
+            # CAMD and/or CCOLAMD not found
+            set ( NCAMD true )
+        endif ( )
+    endif ( )
+
+    if ( NCAMD )
+        # Partition module requires CAMD and CCOLAMD, so if CAMD and CCOLAMD
+        # are disabled, then do not build the Partition module
+        set ( NPARTITION true )
     endif ( )
 
     #---------------------------------------------------------------------------
     # Partition module: requires Cholesky, CAMD, CCOLAMD, and METIS
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NCAMD )
-        set ( NCAMD false )
-    endif ( )
     if ( NOT DEFINED NPARTITION )
+        # by default, build the Partition module
         set ( NPARTITION false )
     endif ( )
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Partition )
+        # Partition module does not appear so don't use it
         set ( NPARTITION true )
     endif ( )
-
-    if ( NOT NPARTITION )
-        find_package ( CAMD 3.0.0 )
-        find_package ( CCOLAMD 3.0.0 )
-        if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
-            set ( NCAMD true )
-            set ( NPARTITION true )
-        endif ( )
-    else ( )
+    if ( NPARTITION )
+        # if NPARTITION is true: do not build the Partition module
+        add_compile_definitions ( NPARTITION )
+        # Partition module is not being built, so skip CAMD and CCOLAMD, since
+        # the Partition Module is CHOLMOD's only interface to CAMD and CCOLAMD.
         set ( NCAMD true )
     endif ( )
 
-    if ( NPARTITION )
-        add_compile_definitions ( NPARTITION )
-    endif ( )
-
     if ( NCAMD )
+        # if NCAMD is true: do not link against CAMD and CCOLAMD
         add_compile_definitions ( NCAMD )
     endif ( )
 
@@ -178,17 +226,21 @@ find_package ( AMD 3.0.0 REQUIRED )
     #---------------------------------------------------------------------------
 
     if ( NOT DEFINED NSUPERNODAL )
+        # by default, build the Supernodal module
         set ( NSUPERNODAL false )
     endif ( )
 
-    if ( NOT ( EXISTS ${CMAKE_SOURCE_DIR}/Supernodal ) )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Supernodal )
+        # Supernodal module does not appear so don't use it
         set ( NSUPERNODAL true )
     endif ( )
 
-    if ( NOT NSUPERNODAL )
-        include ( SuiteSparseBLAS )     # requires cmake 3.22
-    else ( )
+    if ( NSUPERNODAL )
+        # if NSUPERNODAL is true: do not link against CAMD and CCOLAMD
         add_compile_definitions ( NSUPERNODAL )
+    else ( )
+        # if NSUPERNODAL is false: build Supernodal, which needs the BLAS
+        include ( SuiteSparseBLAS )     # requires cmake 3.22
     endif ( )
 
 #-------------------------------------------------------------------------------
