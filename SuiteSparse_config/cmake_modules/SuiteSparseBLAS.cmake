@@ -31,46 +31,27 @@ endif ( )
 #
 #   CMAKE_OPTIONS="-DBLA_VENDOR=Apple" make
 #   cd build ; cmake -DBLA_VENDOR=Apple .. ; make
+#
+# Note that the ALLOW_64BIT_BLAS flag is ignored in this case.  If you want
+# to select a specific BLAS integer size, use -DBLA_SIZEOF_INTEGER=64 or 32.
 
 if ( DEFINED BLA_VENDOR )
     # only look for the BLAS from a single vendor
     message ( STATUS "============================================" )
     message ( STATUS "Looking for BLAS: "  ${BLA_VENDOR} )
-
-    if ( DEFINED BLA_SIZEOF_INTEGER )
-
-        # only look for the BLAS with a specific integer size
-        find_package ( BLAS REQUIRED )
-        find_package ( LAPACK REQUIRED )
-        if ( BLA_SIZEOF_INTEGER EQUAL 8 )
-            include ( SuiteSparseBLAS64 )
-        else ( )
-            include ( SuiteSparseBLAS32 )
-        endif ( )
-
-    else ( )
-
-        # look for 64-bit BLAS (optional)
-#       if ( ALLOW_64BIT_BLAS )
-            message ( STATUS "Looking for ${BLA_VENDOR} 64-bit BLAS+LAPACK" )
-            set ( BLA_SIZEOF_INTEGER 8 )
-            find_package ( BLAS )
-            find_package ( LAPACK )
-            if ( BLAS_FOUND AND LAPACK_FOUND )
-                include ( SuiteSparseBLAS64 )
-                return ( )
-            endif ( )
-#       endif ( )
-
-        # look 32-bit BLAS (now required)
-        message ( STATUS "Looking for ${BLA_VENDOR} 32-bit BLAS+LAPACK" )
-        set ( BLA_SIZEOF_INTEGER 4 )
-        find_package ( BLAS REQUIRED )
-        find_package ( LAPACK REQUIRED )
-        include ( SuiteSparseBLAS32 )
-
+    if ( NOT DEFINED BLA_SIZEOF_INTEGER )
+        message ( FATAL_ERROR "Both BLA_VENDOR and BLA_SIZEOF_INTEGER must be specified" )
     endif ( )
-
+    # only look for the BLAS with a specific integer size
+    find_package ( BLAS REQUIRED )
+    find_package ( LAPACK REQUIRED )
+    if ( BLA_SIZEOF_INTEGER EQUAL 8 )
+        include ( SuiteSparseBLAS64 )
+    elseif ( BLA_SIZEOF_INTEGER EQUAL 4 )
+        include ( SuiteSparseBLAS32 )
+    else ( )
+        message ( FATAL_ERROR "BLA_SIZEOF_INTEGER invalid (must be 4 or 8)" )
+    endif ( )
     return ( )
 endif ( )
 
