@@ -5,7 +5,6 @@
 \author George
 \date   Started 8/9/02
 \version\verbatim $Id$\endverbatim
-
 */
 
 #ifndef _METIS_H_

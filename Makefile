@@ -23,7 +23,6 @@ default: library
 # (or whatever your CMAKE_INSTALL_PREFIX is)
 library:
 	( cd SuiteSparse_config && $(MAKE) )
-	- ( cd SuiteSparse_metis && $(MAKE) )
 	( cd Mongoose && $(MAKE) )
 	( cd AMD && $(MAKE) )
 	( cd BTF && $(MAKE) )
@@ -46,7 +45,6 @@ library:
 # compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local )
-	- ( cd SuiteSparse_metis && $(MAKE) local )
 	( cd Mongoose && $(MAKE) local )
 	( cd AMD && $(MAKE) local )
 	( cd BTF && $(MAKE) local )
@@ -70,7 +68,6 @@ local:
 # (or whatever your CMAKE_INSTALL_PREFIX is)
 global:
 	( cd SuiteSparse_config && $(MAKE) global )
-	- ( cd SuiteSparse_metis && $(MAKE) global )
 	( cd Mongoose && $(MAKE) global )
 	( cd AMD && $(MAKE) global )
 	( cd BTF && $(MAKE) global )
@@ -94,7 +91,6 @@ global:
 # (or whatever your CMAKE_INSTALL_PREFIX is)
 both:
 	( cd SuiteSparse_config && $(MAKE) both )
-	- ( cd SuiteSparse_metis && $(MAKE) both )
 	( cd Mongoose && $(MAKE) both )
 	( cd AMD && $(MAKE) both )
 	( cd BTF && $(MAKE) both )
@@ -117,7 +113,6 @@ both:
 # install all packages.  Location depends on prior "make", "make global" etc
 install:
 	( cd SuiteSparse_config && $(MAKE) install )
-	- ( cd SuiteSparse_metis && $(MAKE) install )
 	( cd Mongoose  && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
@@ -139,7 +134,6 @@ install:
 # uninstall all packages
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
-	- ( cd SuiteSparse_metis && $(MAKE) uninstall )
 	( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
 	( cd CAMD && $(MAKE) uninstall )
@@ -164,7 +158,6 @@ distclean: purge
 # Remove all files not in the original distribution
 purge:
 	- ( cd SuiteSparse_config && $(MAKE) purge )
-	- ( cd SuiteSparse_metis && $(MAKE) purge )
 	- ( cd AMD && $(MAKE) purge )
 	- ( cd Mongoose  && $(MAKE) purge )
 	- ( cd CAMD && $(MAKE) purge )
@@ -190,7 +183,6 @@ purge:
 # Remove all files not in the original distribution, but keep the libraries
 clean:
 	- ( cd SuiteSparse_config && $(MAKE) clean )
-	- ( cd SuiteSparse_metis && $(MAKE) clean )
 	- ( cd Mongoose  && $(MAKE) clean )
 	- ( cd AMD && $(MAKE) clean )
 	- ( cd CAMD && $(MAKE) clean )
@@ -213,7 +205,6 @@ clean:
 # Run all demos
 demos:
 	- ( cd SuiteSparse_config && $(MAKE) demos )
-	- - ( cd SuiteSparse_metis && $(MAKE) demos )
 	- ( cd Mongoose && $(MAKE) demos )
 	- ( cd AMD && $(MAKE) demos )
 	- ( cd CAMD && $(MAKE) demos )

@@ -493,6 +493,7 @@ char *gk_time2str(time_t time)
 #endif
 
 
+
 #if 0
 #if !defined(WIN32) && !defined(__MINGW32__)
 /************************************************************************/
