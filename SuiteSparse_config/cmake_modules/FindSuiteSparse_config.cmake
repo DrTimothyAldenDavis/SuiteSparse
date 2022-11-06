@@ -74,9 +74,8 @@ mark_as_advanced (
 )
 
 if ( SUITESPARSE_CONFIG_FOUND )
-    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR} ")
-    message ( STATUS "SuiteSparse_config version:     ${SUITESPARSE_CONFIG_VERSION} ")
-    message ( STATUS "SuiteSparse_config libraries:   ${SUITESPARSE_CONFIG_LIBRARIES} ")
+    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
+    message ( STATUS "SuiteSparse_config version:     ${SUITESPARSE_CONFIG_VERSION}" )
 else ( )
     message ( STATUS "SuiteSparse_config not found" )
 endif ( )

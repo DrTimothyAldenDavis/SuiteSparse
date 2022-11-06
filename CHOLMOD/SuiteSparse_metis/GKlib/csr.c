@@ -346,6 +346,7 @@ gk_csr_t **gk_csr_Split(gk_csr_t *mat, int *color)
     \returns the matrix that was read.
 */
 /**************************************************************************/
+#if 0
 gk_csr_t *gk_csr_Read(char *filename, int format, int readvals, int numbering)
 {
   ssize_t i, k, l;
@@ -572,6 +573,7 @@ gk_csr_t *gk_csr_Read(char *filename, int format, int readvals, int numbering)
 
   return mat;
 }
+#endif
 
 
 /**************************************************************************/
@@ -588,6 +590,7 @@ gk_csr_t *gk_csr_Read(char *filename, int format, int readvals, int numbering)
            is only applicable when GK_CSR_FMT_CSR is used.
 */
 /**************************************************************************/
+#if 0
 void gk_csr_Write(gk_csr_t *mat, char *filename, int format, int writevals, int numbering)
 {
   ssize_t i, j;
@@ -647,7 +650,7 @@ void gk_csr_Write(gk_csr_t *mat, char *filename, int format, int writevals, int 
   if (filename)
     gk_fclose(fpout);
 }
-
+#endif
 
 /*************************************************************************/
 /*! Prunes certain rows/columns of the matrix. The prunning takes place 

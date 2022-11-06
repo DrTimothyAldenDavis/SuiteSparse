@@ -195,8 +195,11 @@ extern "C" {
  */
 
 #ifdef NGPL
+#undef  NMATRIXOPS
 #define NMATRIXOPS
+#undef  NMODIFY
 #define NMODIFY
+#undef  NSUPERNODAL
 #define NSUPERNODAL
 #endif
 

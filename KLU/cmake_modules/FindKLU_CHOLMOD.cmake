@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( KLU_CHOLMOD_FOUND )
-    message ( STATUS "KLU_CHOLMOD include dir: " ${KLU_CHOLMOD_INCLUDE_DIR} )
-    message ( STATUS "KLU_CHOLMOD library:     " ${KLU_CHOLMOD_LIBRARY} )
-    message ( STATUS "KLU_CHOLMOD version:     " ${KLU_CHOLMOD_VERSION} )
-    message ( STATUS "KLU_CHOLMOD libraries:   " ${KLU_CHOLMOD_LIBRARIES} )
+    message ( STATUS "KLU_CHOLMOD include dir: ${KLU_CHOLMOD_INCLUDE_DIR}" )
+    message ( STATUS "KLU_CHOLMOD library:     ${KLU_CHOLMOD_LIBRARY}" )
+    message ( STATUS "KLU_CHOLMOD version:     ${KLU_CHOLMOD_VERSION}" )
 else ( )
     message ( STATUS "KLU_CHOLMOD not found" )
 endif ( )

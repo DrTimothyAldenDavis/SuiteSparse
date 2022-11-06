@@ -102,10 +102,9 @@ mark_as_advanced (
 )
 
 if ( GMP_FOUND )
-    message ( STATUS "gmp include dir: " ${GMP_INCLUDE_DIR} )
-    message ( STATUS "gmp library:     " ${GMP_LIBRARY} )
-    message ( STATUS "gmp version:     " ${GMP_VERSION} )
-    message ( STATUS "gmp libraries:   " ${GMP_LIBRARIES} )
+    message ( STATUS "gmp include dir: ${GMP_INCLUDE_DIR}" )
+    message ( STATUS "gmp library:     ${GMP_LIBRARY}" )
+    message ( STATUS "gmp version:     ${GMP_VERSION}" )
 else ( )
     message ( STATUS "gmp not found" )
 endif ( )

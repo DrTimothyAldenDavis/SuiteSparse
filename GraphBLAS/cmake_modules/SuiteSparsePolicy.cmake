@@ -15,28 +15,32 @@
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
+#                       Default: true for CHOLMOD and SPQR
 #
 #   GLOBAL_INSTALL:     if true, "make install" will
 #                       into /usr/local/lib and /usr/local/include.
-#                       default: true
+#                       Default: true
 #
 #   LOCAL_INSTALL:      if true, "make install" will
 #                       into SuiteSparse/lib and SuiteSparse/include,
 #                       but these folders must also already exist.
-#                       default: false
+#                       Default: false
 #
 #   NSTATIC:            if true, static libraries are not built.
-#                       Default is false, except for GraphBLAS, which
+#                       Default: false, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
 #                       GraphBLAS is true.  For Mongoose, the NSTATIC setting
 #                       is treated as if it always false, since the mongoose
 #                       program is built with the static library.
 #
-#   SUITESPARSE_CUDA_ARCHITECTURES  a string, such as "all" or
+#   NPARTITION:         if true, SuiteSparse_metis will not be compiled or used.
+#                       Default: false
+#
+#   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
-#                       when compiling CUDA kernels with nvcc.  Default, if not
-#                       set is "52;75;80".  The "all" option requires cmake
-#                       3.23 or later.
+#                       when compiling CUDA kernels with nvcc.  The "all"
+#                       option requires cmake 3.23 or later.
+#                       Default: "52;75;80".
 #
 # To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file.
 
@@ -53,6 +57,13 @@ cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 # look for cmake modules installed by prior compilations of SuiteSparse packages
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
+
+if ( NOT DEFINED NPARTITION )
+    set ( NPARTITION false )
+endif ( )
+if ( NPARTITION )
+    add_compile_definitions ( NPARTITION )
+endif ( )
 
 if ( SUITESPARSE_SECOND_LEVEL )
     # some packages in SuiteSparse is in SuiteSparse/Package/Package

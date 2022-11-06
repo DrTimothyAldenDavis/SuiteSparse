@@ -88,7 +88,7 @@ papers in ACM TOMS, for each package.
 
         T. A. Davis and William W. Hager, Row Modifications of a Sparse
         Cholesky Factorization SIAM Journal on Matrix Analysis and Applications
-        2005 26:3, 621-639 
+        2005 26:3, 621-639
         https://doi.org/10.1137/S089547980343641X
 
         T. A. Davis and William W. Hager, Multiple-Rank Modifications of a
@@ -183,7 +183,7 @@ papers in ACM TOMS, for each package.
 
         Kolodziej et al., (2019). The SuiteSparse Matrix Collection Website
         Interface. Journal of Open Source Software, 4(35), 1244,
-        https://doi.org/10.21105/joss.01244        
+        https://doi.org/10.21105/joss.01244
 
     * for `spqr_rank`:
 
@@ -198,7 +198,7 @@ papers in ACM TOMS, for each package.
         T. A. Davis, William W. Hager, Scott P. Kolodziej, and S. Nuri Yeralan.
         2020. Algorithm 1003: Mongoose, a Graph Coarsening and Partitioning
         Library. ACM Trans. Math. Softw. 46, 1, Article 7 (March 2020), 18
-        pages. 
+        pages.
         https://doi.org/10.1145/3337792
 
     * for SPEX:
@@ -273,7 +273,7 @@ Packages in SuiteSparse, and files in this directory:
     CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
                 the BLAS, and LAPACK.  Optionally uses METIS.  This is chol and
                 x=A\b in MATLAB.
-                author for all modules: Tim Davis 
+                author for all modules: Tim Davis
                 CHOLMOD/Modify module authors: Tim Davis and William W. Hager
 
     COLAMD      column approximate minimum degree ordering.  This is the
@@ -565,6 +565,51 @@ See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
 https://github.com/scikit-sparse/scikit-sparse
 
 https://github.com/scikit-umfpack/scikit-umfpack
+
+-----------------------------------------------------------------------------
+Compilation options
+-----------------------------------------------------------------------------
+
+You can set specific options for CMake with the command (for example):
+
+    CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1 -DCMAKE_BUILD_TYPE=Debug" make
+
+That command will compile all of SuiteSparse except for SuiteSparse_metis
+(NPARTITION is true) in Debug mode.  The static libraries will not be built
+(NSTATIC is true).
+
+    CMAKE_BUILD_TYPE:   Default: "Release", use "Debug" for debugging.
+
+    ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
+                        Default: true for CHOLMOD and SPQR
+
+    GLOBAL_INSTALL:     if true, "make install" will
+                        into /usr/local/lib and /usr/local/include.
+                        Default: true
+
+    LOCAL_INSTALL:      if true, "make install" will
+                        into SuiteSparse/lib and SuiteSparse/include,
+                        but these folders must also already exist.
+                        Default: false
+
+    NSTATIC:            if true, static libraries are not built.
+                        Default: false, except for GraphBLAS, which
+                        takes a long time to compile so the default for
+                        GraphBLAS is true.  For Mongoose, the NSTATIC setting
+                        is treated as if it always false, since the mongoose
+                        program is built with the static library.
+
+    NPARTITION:         if true, SuiteSparse_metis will not be compiled or used.
+                        Default: false
+
+    SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
+                        "35;50;75;80" that lists the CUDA architectures to use
+                        when compiling CUDA kernels with nvcc.  The "all"
+                        option requires cmake 3.23 or later.
+                        Default: "52;75;80".
+
+To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file
+in SuiteSparse_config/cmake_modules.
 
 -----------------------------------------------------------------------------
 Acknowledgements

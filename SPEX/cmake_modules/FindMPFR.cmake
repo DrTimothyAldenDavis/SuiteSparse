@@ -91,10 +91,9 @@ mark_as_advanced (
 )
 
 if ( MPFR_FOUND )
-    message ( STATUS "mpfr include dir: " ${MPFR_INCLUDE_DIR} )
-    message ( STATUS "mpfr library:     " ${MPFR_LIBRARY} )
-    message ( STATUS "mpfr version:     " ${MPFR_VERSION} )
-    message ( STATUS "mpfr libraries:   " ${MPFR_LIBRARIES} )
+    message ( STATUS "mpfr include dir: ${MPFR_INCLUDE_DIR}" )
+    message ( STATUS "mpfr library:     ${MPFR_LIBRARY}" )
+    message ( STATUS "mpfr version:     ${MPFR_VERSION}" )
 else ( )
     message ( STATUS "mpfr not found" )
 endif ( )

@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( AMD_FOUND )
-    message ( STATUS "AMD include dir: " ${AMD_INCLUDE_DIR} )
-    message ( STATUS "AMD library:     " ${AMD_LIBRARY} )
-    message ( STATUS "AMD version:     " ${AMD_VERSION} )
-    message ( STATUS "AMD libraries:   " ${AMD_LIBRARIES} )
+    message ( STATUS "AMD include dir: ${AMD_INCLUDE_DIR}")
+    message ( STATUS "AMD library:     ${AMD_LIBRARY}")
+    message ( STATUS "AMD version:     ${AMD_VERSION}" )
 else ( )
     message ( STATUS "AMD not found" )
 endif ( )

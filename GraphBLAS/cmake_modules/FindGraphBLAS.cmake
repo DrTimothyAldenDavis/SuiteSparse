@@ -95,9 +95,9 @@ mark_as_advanced(
   )
 
 if ( GRAPHBLAS_FOUND )
-    message ( STATUS "GraphBLAS include dir: " ${GRAPHBLAS_INCLUDE_DIR} )
-    message ( STATUS "GraphBLAS library:     " ${GRAPHBLAS_LIBRARY} )
-    message ( STATUS "GraphBLAS version:     " ${GRAPHBLAS_VERSION} )
+    message ( STATUS "GraphBLAS include dir: ${GRAPHBLAS_INCLUDE_DIR}" )
+    message ( STATUS "GraphBLAS library:     ${GRAPHBLAS_LIBRARY}" )
+    message ( STATUS "GraphBLAS version:     ${GRAPHBLAS_VERSION}" )
 else ( )
     message ( STATUS "GraphBLAS not found" )
 endif ( )

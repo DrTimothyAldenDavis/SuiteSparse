@@ -38,7 +38,7 @@ include ( SuiteSparsePolicy )
 
 project ( amd
     VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
-    LANGUAGES C )
+    LANGUAGES C Fortran )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -63,7 +63,7 @@ include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 # dynamic amd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB AMD_SOURCES "Source/*.c" )
+file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
 
 add_library ( amd SHARED ${AMD_SOURCES} )
 
@@ -158,16 +158,20 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( amd_demo   "Demo/amd_demo.c" )
-    add_executable ( amd_l_demo "Demo/amd_l_demo.c" )
-    add_executable ( amd_demo2  "Demo/amd_demo2.c" )
-    add_executable ( amd_simple "Demo/amd_simple.c" )
+    add_executable ( amd_demo      "Demo/amd_demo.c" )
+    add_executable ( amd_l_demo    "Demo/amd_l_demo.c" )
+    add_executable ( amd_demo2     "Demo/amd_demo2.c" )
+    add_executable ( amd_simple    "Demo/amd_simple.c" )
+    add_executable ( amd_f77demo   "Demo/amd_f77demo.f" )
+    add_executable ( amd_f77simple "Demo/amd_f77simple.f" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( amd_demo   PUBLIC amd )
-    target_link_libraries ( amd_l_demo PUBLIC amd )
-    target_link_libraries ( amd_demo2  PUBLIC amd )
-    target_link_libraries ( amd_simple PUBLIC amd )
+    target_link_libraries ( amd_demo      PUBLIC amd )
+    target_link_libraries ( amd_l_demo    PUBLIC amd )
+    target_link_libraries ( amd_demo2     PUBLIC amd )
+    target_link_libraries ( amd_simple    PUBLIC amd )
+    target_link_libraries ( amd_f77demo   PUBLIC amd )
+    target_link_libraries ( amd_f77simple PUBLIC amd )
 
 else ( )
 

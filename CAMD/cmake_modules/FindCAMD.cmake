@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( CAMD_FOUND )
-    message ( STATUS "CAMD include dir: " ${CAMD_INCLUDE_DIR} )
-    message ( STATUS "CAMD library:     " ${CAMD_LIBRARY} )
-    message ( STATUS "CAMD version:     " ${CAMD_VERSION} )
-    message ( STATUS "CAMD libraries:   " ${CAMD_LIBRARIES} )
+    message ( STATUS "CAMD include dir: ${CAMD_INCLUDE_DIR}" )
+    message ( STATUS "CAMD library:     ${CAMD_LIBRARY}" )
+    message ( STATUS "CAMD version:     ${CAMD_VERSION}" )
 else ( )
     message ( STATUS "CAMD not found" )
 endif ( )

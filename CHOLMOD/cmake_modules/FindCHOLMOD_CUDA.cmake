@@ -62,9 +62,8 @@ mark_as_advanced (
 )
 
 if ( CHOLMOD_CUDA_FOUND )
-    message ( STATUS "CHOLMOD_CUDA library:     " ${CHOLMOD_CUDA_LIBRARY} )
-    message ( STATUS "CHOLMOD_CUDA version:     " ${CHOLMOD_CUDA_VERSION} )
-    message ( STATUS "CHOLMOD_CUDA libraries    " ${CHOLMOD_CUDA_LIBRARIES} )
+    message ( STATUS "CHOLMOD_CUDA library:     ${CHOLMOD_CUDA_LIBRARY}" )
+    message ( STATUS "CHOLMOD_CUDA version:     ${CHOLMOD_CUDA_VERSION}" )
 else ( )
     message ( STATUS "CHOLMOD_CUDA not found" )
 endif ( )

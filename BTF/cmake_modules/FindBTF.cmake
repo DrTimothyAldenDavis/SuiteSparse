@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( BTF_FOUND )
-    message ( STATUS "BTF include dir: " ${BTF_INCLUDE_DIR} )
-    message ( STATUS "BTF library:     " ${BTF_LIBRARY} )
-    message ( STATUS "BTF version:     " ${BTF_VERSION} )
-    message ( STATUS "BTF libraries:   " ${BTF_LIBRARIES} )
+    message ( STATUS "BTF include dir: ${BTF_INCLUDE_DIR}" )
+    message ( STATUS "BTF library:     ${BTF_LIBRARY}" )
+    message ( STATUS "BTF version:     ${BTF_VERSION}" )
 else ( )
     message ( STATUS "BTF not found" )
 endif ( )

@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( SPEX_FOUND )
-    message ( STATUS "SPEX include dir: " ${SPEX_INCLUDE_DIR} )
-    message ( STATUS "SPEX library:     " ${SPEX_LIBRARY} )
-    message ( STATUS "SPEX version:     " ${SPEX_VERSION} )
-    message ( STATUS "SPEX libraries:   " ${SPEX_LIBRARIES} )
+    message ( STATUS "SPEX include dir: ${SPEX_INCLUDE_DIR}" )
+    message ( STATUS "SPEX library:     ${SPEX_LIBRARY}" )
+    message ( STATUS "SPEX version:     ${SPEX_VERSION}" )
 else ( )
     message ( STATUS "SPEX not found" )
 endif ( )

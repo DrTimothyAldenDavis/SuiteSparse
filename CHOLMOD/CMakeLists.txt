@@ -32,7 +32,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 if ( NOT DEFINED ENABLE_CUDA )
@@ -67,16 +66,134 @@ find_package ( OpenMP )
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( CAMD 3.0.0 )
-find_package ( CCOLAMD 3.0.0 )
-find_package ( SuiteSparse_metis 5.1.0 )
 
-include ( SuiteSparseBLAS )     # requires cmake 3.22
+#-------------------------------------------------------------------------------
+# find CHOLMOD modules
+#-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_METIS_FOUND )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DNPARTITION " )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNPARTITION " )
-endif ( )
+    #---------------------------------------------------------------------------
+    # NGPL: if true, do not include any GPL-licensed module
+    #---------------------------------------------------------------------------
+
+    if ( NGPL )
+        set ( NMATRIXOPS true )
+        set ( NMODIFY true )
+        set ( NSUPERNODAL true )
+        add_compile_definitions ( NGPL )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # Check module
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NCHECK )
+        set ( NCHECK false )
+    endif ( )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Check )
+        set ( NCHECK true )
+    endif ( )
+    if ( NCHECK )
+        add_compile_definitions ( NCHECK )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # MatrixOps module
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NMATRIXOPS )
+        set ( NMATRIXOPS false )
+    endif ( )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/MatrixOps )
+        set ( NMATRIXOPS true )
+    endif ( )
+    if ( NMATRIXOPS )
+        add_compile_definitions ( NMATRIXOPS )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # Cholesky module: requires AMD, COLAMD
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NCHOLESKY )
+        set ( NCHOLESKY false )
+    endif ( )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Cholesky )
+        set ( NCHOLESKY true )
+    endif ( )
+    if ( NCHOLESKY )
+        set ( NSUPERNODAL true )
+        set ( NMODIFY true )
+        add_compile_definitions ( NCHOLESKY )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # Modify module: requires Cholesky
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NMODIFY )
+        set ( NMODIFY false )
+    endif ( )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify )
+        set ( NMODIFY true )
+    endif ( )
+    if ( NMODIFY )
+        add_compile_definitions ( NMODIFY )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # Partition module: requires Cholesky, CAMD, CCOLAMD, and METIS
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NCAMD )
+        set ( NCAMD false )
+    endif ( )
+    if ( NOT DEFINED NPARTITION )
+        set ( NPARTITION false )
+    endif ( )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Partition )
+        set ( NPARTITION true )
+    endif ( )
+
+    if ( NOT NPARTITION )
+        find_package ( CAMD 3.0.0 )
+        find_package ( CCOLAMD 3.0.0 )
+        if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
+            set ( NCAMD true )
+            set ( NPARTITION true )
+        endif ( )
+    else ( )
+        set ( NCAMD true )
+    endif ( )
+
+    if ( NPARTITION )
+        add_compile_definitions ( NPARTITION )
+    endif ( )
+
+    if ( NCAMD )
+        add_compile_definitions ( NCAMD )
+    endif ( )
+
+    #---------------------------------------------------------------------------
+    # Supernodal module: requires Cholesky, BLAS, and LAPACK
+    #---------------------------------------------------------------------------
+
+    if ( NOT DEFINED NSUPERNODAL )
+        set ( NSUPERNODAL false )
+    endif ( )
+
+    if ( NOT ( EXISTS ${CMAKE_SOURCE_DIR}/Supernodal ) )
+        set ( NSUPERNODAL true )
+    endif ( )
+
+    if ( NOT NSUPERNODAL )
+        include ( SuiteSparseBLAS )     # requires cmake 3.22
+    else ( )
+        add_compile_definitions ( NSUPERNODAL )
+    endif ( )
+
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
@@ -90,15 +207,9 @@ else ( )
     set ( CHOLMOD_CUDA )
 endif ( )
 
-
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
-
-# determine which modules of CHOLMOD to include in the library
-if ( NGPL )
-    add_compile_definitions ( NGPL )
-endif ( )
 
 configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
 configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
@@ -108,8 +219,8 @@ configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/chol
 #-------------------------------------------------------------------------------
 
 include_directories ( Check Cholesky Core MatrixOps Modify Partition
-    Supernodal Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} ${AMD_INCLUDE_DIR}
-    ${COLAMD_INCLUDE_DIR} )
+    Supernodal Include ${CMAKE_SOURCE_DIR} ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic cholmod library properties
@@ -195,34 +306,30 @@ if ( NOT NSTATIC )
 target_link_libraries ( cholmod_static PUBLIC ${COLAMD_LIBRARIES} )
 endif ( )
 
-# BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( cholmod PUBLIC ${BLAS_LIBRARIES} )
-if ( NOT NSTATIC )
-target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
+# BLAS and LAPACK:
+if ( NOT NSUPERNODAL )
+    message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+    message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+    target_link_libraries ( cholmod PUBLIC ${BLAS_LIBRARIES} )
+    if ( NOT NSTATIC )
+    target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
+    endif ( )
+    include_directories ( ${BLAS_INCLUDE_DIRS} )
+    message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
+    message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
+    target_link_libraries ( cholmod PUBLIC ${LAPACK_LIBRARIES} )
+    if ( NOT NSTATIC )
+    target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
+    endif ( )
 endif ( )
-include_directories ( ${BLAS_INCLUDE_DIRS} )
 
-# LAPACK:
-message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
-message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-target_link_libraries ( cholmod PUBLIC ${LAPACK_LIBRARIES} )
-if ( NOT NSTATIC )
-target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
-endif ( )
-
-# camd:
-if ( CAMD_FOUND )
+# camd and ccolamd:
+if ( NOT NCAMD )
     include_directories ( ${CAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CAMD_LIBRARIES} )
     if ( NOT NSTATIC )
     target_link_libraries ( cholmod_static PUBLIC ${CAMD_LIBRARIES} )
     endif ( )
-endif ( )
-
-# ccolamd:
-if ( CCOLAMD_FOUND )
     include_directories ( ${CCOLAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
@@ -230,13 +337,12 @@ if ( CCOLAMD_FOUND )
     endif ( )
 endif ( )
 
-# metis:
-if ( SUITESPARSE_METIS_FOUND )
-    include_directories ( ${SUITESPARSE_METIS_INCLUDE_DIR} )
-    target_link_libraries ( cholmod PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
-    if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_METIS_LIBRARIES} )
-    endif ( )
+# METIS and the Partition module:
+if ( NOT NPARTITION )
+      include_directories ( ${SUITESPARSE_METIS_INCLUDE_DIR} )
+      include_directories ( SuiteSparse_metis/GKlib )
+      include_directories ( SuiteSparse_metis/libmetis )
+      include_directories ( SuiteSparse_metis/include )
 endif ( )
 
 # CUDA

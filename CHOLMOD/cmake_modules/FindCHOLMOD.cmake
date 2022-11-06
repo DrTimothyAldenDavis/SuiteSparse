@@ -15,10 +15,6 @@
 # set ``CHOLMOD_ROOT`` to a CHOLMOD installation root to
 # tell this module where to look.
 
-# set ``SUITESPARSE_METIS_ROOT`` to a SuiteSparse_metis installation root to
-# tell this module where to look for SuiteSparse_metis, a library optionally
-# used by CHOLMOD.
-
 # To use this file in your application, copy this file into MyApp/cmake_modules
 # where MyApp is your application and add the following to your
 # MyApp/CMakeLists.txt file:
@@ -70,37 +66,6 @@ find_package_handle_standard_args ( CHOLMOD
     VERSION_VAR CHOLMOD_VERSION
 )
 
-# compiled libraries used by CHOLMOD only (SuiteSparse_metis)
-find_library ( SUITESPARSE_METIS_LIBRARY
-    NAMES suitesparse_metis
-    HINTS ${CMAKE_SOURCE_DIR}/..
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_metis
-    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis
-    PATHS SUITESPARSE_METIS_ROOT ENV SUITESPARSE_METIS_ROOT
-    PATH_SUFFIXES lib build alternative
-)
-
-# message ( STATUS "SuiteSparse_metis: ${SUITESPARSE_METIS_LIBRARY}" )
-
-string ( FIND ${SUITESPARSE_METIS_LIBRARY} "NOT FOUND" SMETIS )
-# message ( STATUS "SFOUND: ${SMETIS}" )
-if ( ${SMETIS} EQUAL -1 )
-    # get the SuiteSparse_metis library
-    set ( SUITESPARSE_METIS_FOUND true )
-    get_filename_component ( SUITESPARSE_METIS_LIBRARY  ${SUITESPARSE_METIS_LIBRARY} REALPATH )
-    # message ( STATUS "SuiteSparse_metis was found: ${SUITESPARSE_METIS_LIBRARY}" )
-else ( )
-    # SuiteSparse_metis not found
-    set ( SUITESPARSE_METIS_FOUND false )
-    # message ( STATUS "SuiteSparse_metis not found: ${SUITESPARSE_METIS_LIBRARY}" )
-endif ( )
-
-if ( SUITESPARSE_METIS_FOUND )
-    message ( STATUS "SuiteSparse_metis: ${SUITESPARSE_METIS_LIBRARY}" )
-    set ( CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} ${SUITESPARSE_METIS_LIBRARY} )
-    # message ( STATUS "libs: ${CHOLMOD_LIBRARY}" )
-endif ( )
-
 mark_as_advanced (
     CHOLMOD_INCLUDE_DIR
     CHOLMOD_LIBRARY
@@ -111,7 +76,6 @@ if ( CHOLMOD_FOUND )
     message ( STATUS "CHOLMOD include dir: ${CHOLMOD_INCLUDE_DIR}" )
     message ( STATUS "CHOLMOD library:     ${CHOLMOD_LIBRARY}" )
     message ( STATUS "CHOLMOD version:     ${CHOLMOD_VERSION}" )
-    message ( STATUS "CHOLMOD libraries:   ${CHOLMOD_LIBRARIES}" )
 else ( )
     message ( STATUS "CHOLMOD not found" )
 endif ( )
