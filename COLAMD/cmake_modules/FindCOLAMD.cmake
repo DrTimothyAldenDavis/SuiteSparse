@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( COLAMD_FOUND )
-    message ( STATUS "COLAMD include dir: " ${COLAMD_INCLUDE_DIR} )
-    message ( STATUS "COLAMD library:     " ${COLAMD_LIBRARY} )
-    message ( STATUS "COLAMD version:     " ${COLAMD_VERSION} )
-    message ( STATUS "COLAMD libraries:   " ${COLAMD_LIBRARIES} )
+    message ( STATUS "COLAMD include dir: ${COLAMD_INCLUDE_DIR}" )
+    message ( STATUS "COLAMD library:     ${COLAMD_LIBRARY}" )
+    message ( STATUS "COLAMD version:     ${COLAMD_VERSION}" )
 else ( )
     message ( STATUS "COLAMD not found" )
 endif ( )

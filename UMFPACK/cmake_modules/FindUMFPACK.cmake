@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( UMFPACK_FOUND )
-    message ( STATUS "UMFPACK include dir: " ${UMFPACK_INCLUDE_DIR} )
-    message ( STATUS "UMFPACK library:     " ${UMFPACK_LIBRARY} )
-    message ( STATUS "UMFPACK version:     " ${UMFPACK_VERSION} )
-    message ( STATUS "UMFPACK libraries:   " ${UMFPACK_LIBRARIES} )
+    message ( STATUS "UMFPACK include dir: ${UMFPACK_INCLUDE_DIR}" )
+    message ( STATUS "UMFPACK library:     ${UMFPACK_LIBRARY}" )
+    message ( STATUS "UMFPACK version:     ${UMFPACK_VERSION}" )
 else ( )
     message ( STATUS "UMFPACK not found" )
 endif ( )

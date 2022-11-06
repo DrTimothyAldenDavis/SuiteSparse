@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( CXSPARSE_FOUND )
-    message ( STATUS "CXSparse include dir: " ${CXSPARSE_INCLUDE_DIR} )
-    message ( STATUS "CXSparse library:     " ${CXSPARSE_LIBRARY} )
-    message ( STATUS "CXSparse version:     " ${CXSPARSE_VERSION} )
-    message ( STATUS "CXSparse libraries:   " ${CXSPARSE_LIBRARIES} )
+    message ( STATUS "CXSparse include dir: ${CXSPARSE_INCLUDE_DIR}" )
+    message ( STATUS "CXSparse library:     ${CXSPARSE_LIBRARY}" )
+    message ( STATUS "CXSparse version:     ${CXSPARSE_VERSION}" )
 else ( )
     message ( STATUS "CXSparse not found" )
 endif ( )

@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( LDL_FOUND )
-    message ( STATUS "LDL include dir: " ${LDL_INCLUDE_DIR} )
-    message ( STATUS "LDL library:     " ${LDL_LIBRARY} )
-    message ( STATUS "LDL version:     " ${LDL_VERSION} )
-    message ( STATUS "LDL libraries:   " ${LDL_LIBRARIES} )
+    message ( STATUS "LDL include dir: ${LDL_INCLUDE_DIR}" )
+    message ( STATUS "LDL library:     ${LDL_LIBRARY}" )
+    message ( STATUS "LDL version:     ${LDL_VERSION}" )
 else ( )
     message ( STATUS "LDL not found" )
 endif ( )

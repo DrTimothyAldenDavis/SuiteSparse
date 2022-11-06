@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( MONGOOSE_FOUND )
-    message ( STATUS "Mongoose include dir: " ${MONGOOSE_INCLUDE_DIR} )
-    message ( STATUS "Mongoose library:     " ${MONGOOSE_LIBRARY} )
-    message ( STATUS "Mongoose version:     " ${MONGOOSE_VERSION} )
-    message ( STATUS "Mongoose libraries:   " ${MONGOOSE_LIBRARIES} )
+    message ( STATUS "Mongoose include dir: ${MONGOOSE_INCLUDE_DIR}" )
+    message ( STATUS "Mongoose library:     ${MONGOOSE_LIBRARY}" )
+    message ( STATUS "Mongoose version:     ${MONGOOSE_VERSION}" )
 else ( )
     message ( STATUS "Mongoose not found" )
 endif ( )

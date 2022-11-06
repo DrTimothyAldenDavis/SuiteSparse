@@ -62,8 +62,8 @@ mark_as_advanced (
 )
 
 if ( SUITESPARSE_GPURUNTIME_FOUND )
-    message ( STATUS "SuiteSparse_GPURuntime version:     ${SUITESPARSE_GPURUNTIME_VERSION} ")
-    message ( STATUS "SuiteSparse_GPURuntime libraries:   ${SUITESPARSE_GPURUNTIME_LIBRARIES} ")
+    message ( STATUS "SuiteSparse_GPURuntime version: ${SUITESPARSE_GPURUNTIME_VERSION}" )
+    message ( STATUS "SuiteSparse_GPURuntime library: ${SUITESPARSE_GPURUNTIME_LIBRARY}" )
 else ( )
     message ( STATUS "SuiteSparse_GPURuntime not found" )
 endif ( )

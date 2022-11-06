@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( RBIO_FOUND )
-    message ( STATUS "RBio include dir: " ${RBIO_INCLUDE_DIR} )
-    message ( STATUS "RBio library:     " ${RBIO_LIBRARY} )
-    message ( STATUS "RBio version:     " ${RBIO_VERSION} )
-    message ( STATUS "RBio libraries:   " ${RBIO_LIBRARIES} )
+    message ( STATUS "RBio include dir: ${RBIO_INCLUDE_DIR}")
+    message ( STATUS "RBio library:     ${RBIO_LIBRARY}" )
+    message ( STATUS "RBio version:     ${RBIO_VERSION}" )
 else ( )
     message ( STATUS "RBio not found" )
 endif ( )

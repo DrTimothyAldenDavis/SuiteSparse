@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( SPQR_FOUND )
-    message ( STATUS "SPQR include dir: " ${SPQR_INCLUDE_DIR} )
-    message ( STATUS "SPQR library:     " ${SPQR_LIBRARY} )
-    message ( STATUS "SPQR version:     " ${SPQR_VERSION} )
-    message ( STATUS "SPQR libraries:   " ${SPQR_LIBRARIES} )
+    message ( STATUS "SPQR include dir: ${SPQR_INCLUDE_DIR}" )
+    message ( STATUS "SPQR library:     ${SPQR_LIBRARY}" )
+    message ( STATUS "SPQR version:     ${SPQR_VERSION}" )
 else ( )
     message ( STATUS "SPQR not found" )
 endif ( )

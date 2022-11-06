@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( CCOLAMD_FOUND )
-    message ( STATUS "CCOLAMD include dir: " ${CCOLAMD_INCLUDE_DIR} )
-    message ( STATUS "CCOLAMD library:     " ${CCOLAMD_LIBRARY} )
-    message ( STATUS "CCOLAMD version:     " ${CCOLAMD_VERSION} )
-    message ( STATUS "CCOLAMD libraries:   " ${CCOLAMD_LIBRARIES} )
+    message ( STATUS "CCOLAMD include dir: ${CCOLAMD_INCLUDE_DIR}" )
+    message ( STATUS "CCOLAMD library:     ${CCOLAMD_LIBRARY}" )
+    message ( STATUS "CCOLAMD version:     ${CCOLAMD_VERSION}" )
 else ( )
     message ( STATUS "CCOLAMD not found" )
 endif ( )

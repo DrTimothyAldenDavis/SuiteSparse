@@ -62,8 +62,8 @@ mark_as_advanced (
 )
 
 if ( GPUQRENGINE_FOUND )
-    message ( STATUS "GPUQREngine version:     ${GPUQRENGINE_VERSION} ")
-    message ( STATUS "GPUQREngine libraries:   ${GPUQRENGINE_LIBRARIES} ")
+    message ( STATUS "GPUQREngine version: ${GPUQRENGINE_VERSION}" )
+    message ( STATUS "GPUQREngine library: ${GPUQRENGINE_LIBRARY}" )
 else ( )
     message ( STATUS "GPUQREngine not found" )
 endif ( )

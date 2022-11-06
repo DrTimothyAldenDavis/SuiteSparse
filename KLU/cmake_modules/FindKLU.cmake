@@ -73,10 +73,9 @@ mark_as_advanced (
 )
 
 if ( KLU_FOUND )
-    message ( STATUS "KLU include dir: " ${KLU_INCLUDE_DIR} )
-    message ( STATUS "KLU library:     " ${KLU_LIBRARY} )
-    message ( STATUS "KLU version:     " ${KLU_VERSION} )
-    message ( STATUS "KLU libraries:   " ${KLU_LIBRARIES} )
+    message ( STATUS "KLU include dir: ${KLU_INCLUDE_DIR}" )
+    message ( STATUS "KLU library:     ${KLU_LIBRARY}" )
+    message ( STATUS "KLU version:     ${KLU_VERSION}" )
 else ( )
     message ( STATUS "KLU not found" )
 endif ( )

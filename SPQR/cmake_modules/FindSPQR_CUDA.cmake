@@ -62,9 +62,8 @@ mark_as_advanced (
 )
 
 if ( SPQR_CUDA_FOUND )
-    message ( STATUS "SPQR_CUDA library:     " ${SPQR_CUDA_LIBRARY} )
-    message ( STATUS "SPQR_CUDA version:     " ${SPQR_CUDA_VERSION} )
-    message ( STATUS "SPQR_CUDA libraries    " ${SPQR_CUDA_LIBRARIES} )
+    message ( STATUS "SPQR_CUDA library:     ${SPQR_CUDA_LIBRARY}" )
+    message ( STATUS "SPQR_CUDA version:     ${SPQR_CUDA_VERSION}" )
 else ( )
     message ( STATUS "SPQR_CUDA not found" )
 endif ( )
