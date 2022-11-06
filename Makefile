@@ -39,8 +39,8 @@ library:
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 	( cd SPQR && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) )
 	( cd SPEX && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) )
 
 # compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
 local:
@@ -61,8 +61,8 @@ local:
 	( cd SuiteSparse_GPURuntime && $(MAKE) local )
 	( cd GPUQREngine && $(MAKE) local )
 	( cd SPQR && $(MAKE) local )
-	( cd GraphBLAS && $(MAKE) local )
 	( cd SPEX && $(MAKE) local )
+	( cd GraphBLAS && $(MAKE) local )
 
 # compile; "sudo make install" will install only in /usr/local
 # (or whatever your CMAKE_INSTALL_PREFIX is)
@@ -84,8 +84,8 @@ global:
 	( cd SuiteSparse_GPURuntime && $(MAKE) global )
 	( cd GPUQREngine && $(MAKE) global )
 	( cd SPQR && $(MAKE) global )
-	( cd GraphBLAS && $(MAKE) global )
 	( cd SPEX && $(MAKE) global )
+	( cd GraphBLAS && $(MAKE) global )
 
 # compile; "sudo make install" will install only in /usr/local
 # (or whatever your CMAKE_INSTALL_PREFIX is)
@@ -107,8 +107,8 @@ both:
 	( cd SuiteSparse_GPURuntime && $(MAKE) both )
 	( cd GPUQREngine && $(MAKE) both )
 	( cd SPQR && $(MAKE) both )
-	( cd GraphBLAS && $(MAKE) both )
 	( cd SPEX && $(MAKE) both )
+	( cd GraphBLAS && $(MAKE) both )
 
 # install all packages.  Location depends on prior "make", "make global" etc
 install:
@@ -128,8 +128,8 @@ install:
 	( cd SuiteSparse_GPURuntime && $(MAKE) install )
 	( cd GPUQREngine && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) install )
 	( cd SPEX && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
@@ -149,8 +149,8 @@ uninstall:
 	( cd SuiteSparse_GPURuntime && $(MAKE) uninstall )
 	( cd GPUQREngine && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
-	( cd GraphBLAS && $(MAKE) uninstall )
 	( cd SPEX && $(MAKE) uninstall )
+	( cd GraphBLAS && $(MAKE) uninstall )
 
 # Remove all files not in the original distribution
 distclean: purge
@@ -174,11 +174,11 @@ purge:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) purge )
 	- ( cd GPUQREngine && $(MAKE) purge )
 	- ( cd SPQR && $(MAKE) purge )
-	- ( cd GraphBLAS && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
 	- $(RM) -r include/* bin/* lib/*
-	( cd SPEX && $(MAKE) purge )
+	- ( cd SPEX && $(MAKE) purge )
+	- ( cd GraphBLAS && $(MAKE) purge )
 
 # Remove all files not in the original distribution, but keep the libraries
 clean:
@@ -199,8 +199,8 @@ clean:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) clean )
 	- ( cd GPUQREngine && $(MAKE) clean )
 	- ( cd SPQR && $(MAKE) clean )
-	- ( cd GraphBLAS && $(MAKE) clean )
 	- ( cd SPEX && $(MAKE) clean )
+	- ( cd GraphBLAS && $(MAKE) clean )
 
 # Run all demos
 demos:
@@ -221,8 +221,8 @@ demos:
 	- ( cd SuiteSparse_GPURuntime && $(MAKE) demos )
 	- ( cd GPUQREngine && $(MAKE) demos )
 	- ( cd SPQR && $(MAKE) demos )
-	- ( cd GraphBLAS && $(MAKE) demos )
 	- ( cd SPEX && $(MAKE) demos )
+	- ( cd GraphBLAS && $(MAKE) demos )
 
 # Create the PDF documentation
 docs:
