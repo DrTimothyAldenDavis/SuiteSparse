@@ -396,7 +396,8 @@ Packages in SuiteSparse, and files in this directory:
     Mongoose    graph partitioning.
                 authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
 
-    SuiteSparse_metis: a modified version of METIS.  See the README.txt files
+    CHOLMOD/SuiteSparse_metis: a modified version of METIS, embedded into
+                the CHOLMOD library.  See the README.txt files
                 for details.  author: George Karypis.  This is a slightly
                 modified copy included with SuiteSparse via the open-source
                 license provided by George Karypis.  SuiteSparse cannot use
@@ -439,11 +440,11 @@ Packages in SuiteSparse, and files in this directory:
                 algorithm design collaboration: Iain Duff
 
 Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
-in the `SuiteSparse_metis` directory.  Its use is optional, so you can delete
-or rename that directory before compiling SuiteSparse, if you desire.  The use
-of METIS will improve the ordering quality.  METIS has been slightly modified
-for use in SuiteSparse; see the `SuiteSparse_metis/README.txt` file for
-details.
+in the `CHOLMOD/SuiteSparse_metis` directory.  Its use is optional.  To compile
+CHOLMOD without it, use the CMAKE_OPTIONS="-DNPARTITION=1" setting.  The use of
+METIS can improve ordering quality for some matrices, particularly large 3D
+discretizations.  METIS has been slightly modified for use in SuiteSparse; see
+the `CHOLMOD/SuiteSparse_metis/README.txt` file for details.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
@@ -574,9 +575,9 @@ You can set specific options for CMake with the command (for example):
 
     CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1 -DCMAKE_BUILD_TYPE=Debug" make
 
-That command will compile all of SuiteSparse except for SuiteSparse_metis
-(NPARTITION is true) in Debug mode.  The static libraries will not be built
-(NSTATIC is true).
+That command will compile all of SuiteSparse except for CHOLMOD/Partition
+Module, which relies on SuiteSparse_metis (NPARTITION is true).  Debug mode
+will be used.  The static libraries will not be built (NSTATIC is true).
 
     CMAKE_BUILD_TYPE:   Default: "Release", use "Debug" for debugging.
 
@@ -599,8 +600,8 @@ That command will compile all of SuiteSparse except for SuiteSparse_metis
                         is treated as if it always false, since the mongoose
                         program is built with the static library.
 
-    NPARTITION:         if true, SuiteSparse_metis will not be compiled or used.
-                        Default: false
+    NPARTITION:         if true, CHOLMOD/SuiteSparse_metis will not be compiled
+                        or used in CHOLMOD.  Default: false
 
     SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
                         "35;50;75;80" that lists the CUDA architectures to use
