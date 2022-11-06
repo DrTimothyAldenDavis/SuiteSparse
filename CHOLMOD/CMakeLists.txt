@@ -121,6 +121,8 @@ find_package ( AMD 3.0.0 REQUIRED )
         set ( NCHOLESKY true )
     endif ( )
     if ( NCHOLESKY )
+        set ( NSUPERNODAL true )
+        set ( NMODIFY true )
         add_compile_definitions ( NCHOLESKY )
     endif ( )
 
@@ -131,7 +133,7 @@ find_package ( AMD 3.0.0 REQUIRED )
     if ( NOT DEFINED NMODIFY )
         set ( NMODIFY false )
     endif ( )
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify OR NCHOLESKY )
+    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify )
         set ( NMODIFY true )
     endif ( )
     if ( NMODIFY )
@@ -179,12 +181,14 @@ find_package ( AMD 3.0.0 REQUIRED )
         set ( NSUPERNODAL false )
     endif ( )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Supernodal OR NCHOLESKY )
+    if ( NOT ( EXISTS ${CMAKE_SOURCE_DIR}/Supernodal ) )
         set ( NSUPERNODAL true )
     endif ( )
 
     if ( NOT NSUPERNODAL )
         include ( SuiteSparseBLAS )     # requires cmake 3.22
+    else ( )
+        add_compile_definitions ( NSUPERNODAL )
     endif ( )
 
 #-------------------------------------------------------------------------------
