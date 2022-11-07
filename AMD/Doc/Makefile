@@ -11,9 +11,9 @@ default:  AMD_UserGuide.pdf
 
 AMD_UserGuide.pdf: AMD_UserGuide.tex AMD_UserGuide.bib ../Include/amd.h \
     amd_version.tex
-	echo '\\begin{verbatim}' > amd_h.tex
+	printf '\\begin{verbatim}\n' > amd_h.tex
 	expand -8 ../Include/amd.h >> amd_h.tex
-	echo '\\end{verbatim}' >> amd_h.tex
+	printf '\\end{verbatim}\n' >> amd_h.tex
 	pdflatex AMD_UserGuide
 	bibtex AMD_UserGuide
 	pdflatex AMD_UserGuide
