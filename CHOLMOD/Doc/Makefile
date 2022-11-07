@@ -64,7 +64,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/size_t cholmod_maxrank/, /\*\) ;/' ../Include/cholmod.h > _maxrank.tex
 	./getproto '/int cholmod_allocate_work/, /\*\) ;/' ../Include/cholmod.h > _allocate_work.tex
 	./getproto '/int cholmod_free_work/, /\*\) ;/' ../Include/cholmod.h > _free_work.tex
-	./getproto '/long cholmod_clear_flag/, /\*\) ;/' ../Include/cholmod.h > _clear_flag.tex
+	./getproto '/int64_t cholmod_clear_flag/, /\*\) ;/' ../Include/cholmod.h > _clear_flag.tex
 	./getproto '/int cholmod_error/, /\*\) ;/' ../Include/cholmod.h > _error.tex
 	./getproto '/double cholmod_dbound/, /\*\) ;/' ../Include/cholmod.h > _dbound.tex
 	./getproto '/double cholmod_hypot/, /double\) ;/' ../Include/cholmod.h > _hypot.tex
@@ -73,7 +73,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/cholmod_sparse \*cholmod_allocate_sparse/, /\*\) ;/' ../Include/cholmod.h > _allocate_sparse.tex
 	./getproto '/int cholmod_free_sparse/, /\*\) ;/' ../Include/cholmod.h > _free_sparse.tex
 	./getproto '/int cholmod_reallocate_sparse/, /\*\) ;/' ../Include/cholmod.h > _reallocate_sparse.tex
-	./getproto '/long cholmod_nnz/, /\*\) ;/' ../Include/cholmod.h > _nnz.tex
+	./getproto '/int64_t cholmod_nnz/, /\*\) ;/' ../Include/cholmod.h > _nnz.tex
 	./getproto '/cholmod_sparse \*cholmod_speye/, /\*\) ;/' ../Include/cholmod.h > _speye.tex
 	./getproto '/cholmod_sparse \*cholmod_spzeros/, /\*\) ;/' ../Include/cholmod.h > _spzeros.tex
 	./getproto '/cholmod_sparse \*cholmod_transpose/, /\*\) ;/' ../Include/cholmod.h > _transpose.tex
@@ -85,7 +85,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/int cholmod_band_inplace/, /\*\) ;/' ../Include/cholmod.h > _band_inplace.tex
 	./getproto '/cholmod_sparse \*cholmod_aat/, /\*\) ;/' ../Include/cholmod.h > _aat.tex
 	./getproto '/cholmod_sparse \*cholmod_copy_sparse/, /\*\) ;/' ../Include/cholmod.h > _copy_sparse.tex
-	./getproto '/cholmod_sparse \*cholmod_copy /, /\*\) ;/' ../Include/cholmod.h > _copy.tex
+	./getproto '/cholmod_sparse \*cholmod_copy/, /\*\) ;/' ../Include/cholmod.h > _copy.tex
 	./getproto '/cholmod_sparse \*cholmod_add/, /\*\) ;/' ../Include/cholmod.h > _add.tex
 	./getproto '/int cholmod_sparse_xtype/, /\*\) ;/' ../Include/cholmod.h > _sparse_xtype.tex 
 	./getproto '/typedef struct cholmod_factor/, /^}/' ../Include/cholmod.h > _factor.tex 
@@ -167,7 +167,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/int cholmod_resymbol /, /\*\) ;/' ../Include/cholmod.h > _resymbol.tex
 	./getproto '/int cholmod_resymbol_noperm/, /\*\) ;/' ../Include/cholmod.h > _resymbol_noperm.tex 
 	./getproto '/double cholmod_rcond/, /\*\) ;/' ../Include/cholmod.h > _rcond.tex
-	./getproto '/long cholmod_postorder/, /\*\) ;/' ../Include/cholmod.h > _postorder.tex
+	./getproto '/int32_t cholmod_postorder/, /\*\) ;/' ../Include/cholmod.h > _postorder.tex
 	./getproto '/int cholmod_updown /, /\*\) ;/' ../Include/cholmod.h > _updown.tex
 	./getproto '/int cholmod_updown_solve/, /\*\) ;/' ../Include/cholmod.h > _updown_solve.tex
 	./getproto '/int cholmod_updown_mark/, /\*\) ;/' ../Include/cholmod.h > _updown_mark.tex
@@ -192,15 +192,15 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/int cholmod_super_numeric/, /\*\) ;/' ../Include/cholmod.h > _super_numeric.tex
 	./getproto '/int cholmod_super_lsolve/, /\*\) ;/' ../Include/cholmod.h > _super_lsolve.tex
 	./getproto '/int cholmod_super_ltsolve/, /\*\) ;/' ../Include/cholmod.h > _super_ltsolve.tex
-	./getproto '/long cholmod_nested_dissection/, /\*\) ;/' ../Include/cholmod.h > _nested_dissection.tex
+	./getproto '/int64_t cholmod_nested_dissection/, /\*\) ;/' ../Include/cholmod.h > _nested_dissection.tex
 	./getproto '/int cholmod_metis/, /\*\) ;/' ../Include/cholmod.h > _metis.tex
 	./getproto '/int cholmod_ccolamd/, /\*\) ;/' ../Include/cholmod.h > _ccolamd.tex
 	./getproto '/int cholmod_camd/, /\*\) ;/' ../Include/cholmod.h > _camd.tex
 	./getproto '/int cholmod_csymamd/, /\*\) ;/' ../Include/cholmod.h > _csymamd.tex
 	./getproto '/int cholmod_csymamd/, /\*\) ;/' ../Include/cholmod.h > _csymamd.tex
-	./getproto '/long cholmod_bisect/, /\*\) ;/' ../Include/cholmod.h > _bisect.tex
-	./getproto '/long cholmod_metis_bisector/, /\*\) ;/' ../Include/cholmod.h > _metis_bisector.tex
-	./getproto '/long cholmod_collapse_septree/, /\*\) ;/' ../Include/cholmod.h > _collapse_septree.tex
+	./getproto '/int64_t cholmod_bisect/, /\*\) ;/' ../Include/cholmod.h > _bisect.tex
+	./getproto '/int64_t cholmod_metis_bisector/, /\*\) ;/' ../Include/cholmod.h > _metis_bisector.tex
+	./getproto '/int64_t cholmod_collapse_septree/, /\*\) ;/' ../Include/cholmod.h > _collapse_septree.tex
 	pdflatex CHOLMOD_UserGuide
 	bibtex CHOLMOD_UserGuide
 	pdflatex CHOLMOD_UserGuide
