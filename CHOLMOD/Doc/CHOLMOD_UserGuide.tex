@@ -433,6 +433,23 @@ type {\tt cholmod\_make} in the MATLAB command window.  This will compile
 the MATLAB interfaces for AMD, COLAMD, CAMD, CCOLAMD, METIS, and CHOLMOD.
 
 %-------------------------------------------------------------------------------
+\newpage \section{Using CHOLMOD with OpenMP acceleration}
+%-------------------------------------------------------------------------------
+
+CHOLMOD includes OpenMP acceleration for some operations.
+In CHOLMOD versions prior to v6.0.0, the number of threads to use was controlled
+by a compile time parameter.  This is now replaced with run-time controls.
+
+\verb'Common->nthreads_max' defaults to \verb'omp_get_max_threads()', or 1 if
+OpenMP is not in use.  This value controls the maximum number of threads that
+CHOLMOD will use.  If zero or less, the default is used.  The
+\verb'Common->chunk' parameter controls how many threads are used when the work
+to do is low.  If $w$ is a count of operations to perform, $c$ =
+\verb'Common->chunk', and $m$ = \verb'Common->nthreads_max', then a parall
+region will use $\max (1, \min (\lfloor w/c \rfloor, m))$ threads.  These
+parameters can be revised by the user application at run time.
+
+%-------------------------------------------------------------------------------
 \newpage \section{Using CHOLMOD with GPU acceleration}
 %-------------------------------------------------------------------------------
 
