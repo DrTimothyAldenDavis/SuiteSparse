@@ -248,7 +248,11 @@ static int TEMPLATE (cholmod_super_numeric)
 
     /* clear the Map so that changes in the pattern of A can be detected */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS) \
+    #ifdef _OPENMP
+    int nthreads = cholmod_nthreads ((double) n, Common) ;
+    #endif
+
+#pragma omp parallel for num_threads(nthreads) \
     if ( n > 128 ) schedule (static)
 
     for (i = 0 ; i < n ; i++)
@@ -270,7 +274,7 @@ static int TEMPLATE (cholmod_super_numeric)
     {
         /* Case of GPU, zero all supernodes at one time for better performance*/
         TEMPLATE2 (CHOLMOD (gpu_clear_memory))(Lx, L->xsize,
-            CHOLMOD_OMP_NUM_THREADS);
+            Common->nthreads_max);
     }
 #endif
 
@@ -310,7 +314,12 @@ static int TEMPLATE (cholmod_super_numeric)
         {
             /* Case of no GPU, zero individual supernodes */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) (pend - psx) * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     schedule (static) if ( pend - psx > 1024 )
 
             for (p = psx ; p < pend ; p++) {
@@ -325,7 +334,11 @@ static int TEMPLATE (cholmod_super_numeric)
         /* If row i is the kth row in s, then Map [i] = k.  Similarly, if
          * column j is the kth column in s, then  Map [j] = k. */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+        #ifdef _OPENMP
+        int nthreads = cholmod_nthreads ((double) nsrow, Common) ;
+        #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     if ( nsrow > 128 )
 
         for (k = 0 ; k < nsrow ; k++)
@@ -354,8 +367,25 @@ static int TEMPLATE (cholmod_super_numeric)
 
         pk = psx ;
 
-#pragma omp parallel for private ( p, pend, pfend, pf, i, j, imap, q )  \
-    num_threads(CHOLMOD_OMP_NUM_THREADS) if ( k2-k1 > 64 )
+        #ifdef _OPENMP
+        double work ;
+        if (stype != 0)
+        {
+            Int pfirst = Ap [k1] ;
+            Int plast = (Apacked) ? (Ap [k2+1]) : (pfirst + Anz [k2]) ;
+            work = (double) (plast - pfirst) ;
+        }
+        else
+        {
+            Int pfirst = Fp [k1] ;
+            Int plast  = (Fpacked) ? (Fp [k2+1]) : (pfirst + Fnz [k2]) ;
+            work = (double) (plast - pfirst) ;
+        }
+        nthreads = cholmod_nthreads (work, Common) ;
+        #endif
+
+#pragma omp parallel for num_threads(nthreads) \
+    private ( p, pend, pfend, pf, i, j, imap, q ) if ( k2-k1 > 64 )
 
         for (k = k1 ; k < k2 ; k++)
         {
@@ -750,7 +780,11 @@ static int TEMPLATE (cholmod_super_numeric)
                 DEBUG (CHOLMOD(dump_real) ("C", C, ndrow2, ndrow1, TRUE,
                                            L_ENTRY, Common)) ;
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+                #ifdef _OPENMP
+                int nthreads = cholmod_nthreads ((double) ndrow2, Common) ;
+                #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     if ( ndrow2 > 64 )
 
                 for (i = 0 ; i < ndrow2 ; i++)
@@ -763,8 +797,13 @@ static int TEMPLATE (cholmod_super_numeric)
                 /* assemble C into supernode s using the relative map */
                 /* ---------------------------------------------------------- */
 
-#pragma omp parallel for private ( j, i, px, q )                \
-    num_threads(CHOLMOD_OMP_NUM_THREADS) if (ndrow1 > 64 )
+                #ifdef _OPENMP
+                double work = (double) ndcol * (double) ndrow2 * L_ENTRY ;
+                nthreads = cholmod_nthreads (work, Common) ;
+                #endif
+
+#pragma omp parallel for num_threads(nthreads) \
+    private ( j, i, px, q ) if (ndrow1 > 64 )
 
                 for (j = 0 ; j < ndrow1 ; j++)              /* cols k1:k2-1 */
                 {

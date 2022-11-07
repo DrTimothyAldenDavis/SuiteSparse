@@ -50,7 +50,7 @@ default: go
         # with 4 cores (default):
         GPU_CONFIG    = -DSUITESPARSE_CUDA
         # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
-        # GPU_CONFIG  = -DSUITESPARSE_CUDA -DCHOLMOD_OMP_NUM_THREADS=10
+        # GPU_CONFIG  = -DSUITESPARSE_CUDA
         CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/
@@ -96,20 +96,11 @@ CC = gcc
 # to test with everthing
 C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 
+# no test coverage
+CN = $(CC) -O0 -g -fopenmp $(CHOLMOD_CONFIG) $(NANTESTS)
+
 LDLIBS = -L$(SUITESPARSE)/lib -lsuitesparseconfig \
-  	-lsuitesparse_metis -lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
-
-# LAPACK and the Fortran reference BLAS, compiled with gfortran -g -O:
-# LDLIBS = $(METIS) -lm -llapack_plain -lblas_plain -lg2c
-# LDLIBS = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin
-# LDLIBS = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin
-# Linux:
-# LDLIBS = $(METIS) -lm -llapack_plain -lblas_plain -lgfortran -lgfortranbegin -lpthread -lrt
-# Mac:
-# LDLIBS = $(METIS) -lm -llapack -lblas -lgfortran -lgfortranbegin -lpthread
-
-# Solaris
-# LDLIBS = $(METIS) -xlic_lib=sunperf
+  	-lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
 
 #-------------------------------------------------------------------------------
 # With the CUDA BLAS:
@@ -118,12 +109,15 @@ LDLIBS += $(CUDART_LIB) $(CUBLAS_LIB)
 endif
 #-------------------------------------------------------------------------------
 
-I = -I../../AMD/Include -I../../COLAMD/Include \
+I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
 	-I../../SuiteSparse_metis/include -I../../CCOLAMD/Include \
 	-I../../CAMD/Include \
 	-I../Include -I../../SuiteSparse_config $(CUDA_INC) \
         -I../Core -I../Check -I../Cholesky -I../Demo -I../Supernodal \
         -I../Partition -I../Modify -I../MatrixOps -I../GPU \
+        -I../SuiteSparse_metis \
+        -I../SuiteSparse_metis/GKlib \
+        -I../SuiteSparse_metis/libmetis \
         -I../../AMD/Source -I../../CAMD/Source \
         -I../../COLAMD/Source -I../../CCOLAMD/Source
 
@@ -210,6 +204,7 @@ IPARTITION_OBJ = \
 	z_csymamd.o \
 	z_camd.o \
 	z_metis.o \
+	z_metis_wrapper.o \
 	z_nesdis.o
 
 LPARTITION_OBJ = \
@@ -217,6 +212,7 @@ LPARTITION_OBJ = \
 	l_csymamd.o \
 	l_camd.o \
 	l_metis.o \
+	z_metis_wrapper.o \
 	l_nesdis.o
 
 CAMDSRC = ../../CAMD/Source/camd_1.c \
@@ -1019,6 +1015,11 @@ z_metis.o: ../Partition/cholmod_metis.c
 z_nesdis.o: ../Partition/cholmod_nesdis.c
 	- ln -s $< z_nesdis.c
 	$(C) -c $(I) z_nesdis.c
+
+# do not use test coverage for this file:
+z_metis_wrapper.o: ../Partition/cholmod_metis_wrapper.c
+	- ln -s $< z_metis_wrapper.c
+	$(CN) -c $(I) z_metis_wrapper.c
 
 #-------------------------------------------------------------------------------
 

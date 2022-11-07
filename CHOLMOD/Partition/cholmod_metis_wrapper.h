@@ -25,7 +25,7 @@
 
 #define gk_AllocMatrix                            SuiteSparse_metis_gk_AllocMatrix
 #define gk_array2csr                              SuiteSparse_metis_gk_array2csr
-#define gk_CPUSeconds                             SuiteSparse_metis_gk_CPUSeconds
+// #define gk_CPUSeconds                             SuiteSparse_metis_gk_CPUSeconds
 
 #define gk_cargmax                                SuiteSparse_metis_gk_cargmax
 #define gk_cargmin                                SuiteSparse_metis_gk_cargmin
@@ -185,7 +185,7 @@
 #define gk_frandInRange                           SuiteSparse_metis_gk_frandInRange
 #define gk_frealloc                               SuiteSparse_metis_gk_frealloc
 #define gk_free                                   SuiteSparse_metis_gk_free
-#define gk_freetokenslist                         SuiteSparse_metis_gk_freetokenslist
+//#define gk_freetokenslist                         SuiteSparse_metis_gk_freetokenslist
 #define gk_fscale                                 SuiteSparse_metis_gk_fscale
 #define gk_fset                                   SuiteSparse_metis_gk_fset
 #define gk_fSetMatrix                             SuiteSparse_metis_gk_fSetMatrix
@@ -457,12 +457,12 @@
 #define gk_skvsorti                               SuiteSparse_metis_gk_skvsorti
 #define gk_strdup                                 SuiteSparse_metis_gk_strdup
 #define gk_strerror                               SuiteSparse_metis_gk_strerror
-#define gk_strtokenize                            SuiteSparse_metis_gk_strtokenize
-#define gk_strtolower                             SuiteSparse_metis_gk_strtolower
-#define gk_strtoupper                             SuiteSparse_metis_gk_strtoupper
-#define gk_strtprune                              SuiteSparse_metis_gk_strtprune
+// #define gk_strtokenize                            SuiteSparse_metis_gk_strtokenize
+// #define gk_strtolower                             SuiteSparse_metis_gk_strtolower
+// #define gk_strtoupper                             SuiteSparse_metis_gk_strtoupper
+// #define gk_strtprune                              SuiteSparse_metis_gk_strtprune
 #define gk_UnsetSignalHandlers                    SuiteSparse_metis_gk_UnsetSignalHandlers
-#define gk_WClockSeconds                          SuiteSparse_metis_gk_WClockSeconds
+// #define gk_WClockSeconds                          SuiteSparse_metis_gk_WClockSeconds
 
 #define gk_zAllocMatrix                           SuiteSparse_metis_gk_zAllocMatrix
 #define gk_zargmax_n                              SuiteSparse_metis_gk_zargmax_n

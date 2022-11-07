@@ -540,6 +540,34 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define CHOLMOD_ARCHITECTURE "unknown"
 #endif
 
+//==============================================================================
+//=== openmp support ===========================================================
+//==============================================================================
+
+static inline int cholmod_nthreads  // returns # of OpenMP threads to use
+(
+    double work,                    // total work to do
+    cholmod_common *Common
+)
+{ 
+    #ifdef _OPENMP
+    double chunk = Common->chunk ;  // give each thread at least this much work
+    int nthreads_max = Common->nthreads_max ;   // max # of threads to use
+    if (nthreads_max <= 0)
+    {
+        nthreads_max = SUITESPARSE_OPENMP_MAX_THREADS ;
+    }
+    work  = MAX (work, 1) ;
+    chunk = MAX (chunk, 1) ;
+    int64_t nthreads = (int64_t) floor (work / chunk) ;
+    nthreads = MIN (nthreads, nthreads_max) ;
+    nthreads = MAX (nthreads, 1) ;
+    return ((int) nthreads) ;
+    #else
+    return (1) ;
+    #endif
+}
+
 /* ========================================================================== */
 /* === debugging definitions ================================================ */
 /* ========================================================================== */

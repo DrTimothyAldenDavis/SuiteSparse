@@ -265,7 +265,6 @@ gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts,
 
   return graph;
 }
-#endif
 
 
 /**************************************************************************/
@@ -276,7 +275,6 @@ gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts,
            the format of the output file.
 */
 /**************************************************************************/
-#if 0
 void gk_graph_Write(gk_graph_t *graph, char *filename, int format)
 {
   ssize_t i, j;
