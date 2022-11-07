@@ -41,7 +41,7 @@ find_path ( COLAMD_INCLUDE_DIR
 
 # compiled libraries COLAMD
 find_library ( COLAMD_LIBRARY
-    NAMES colamd
+    NAMES colamd${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD

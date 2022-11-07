@@ -41,7 +41,7 @@ find_path ( SPEX_INCLUDE_DIR
 
 # compiled libraries SPEX
 find_library ( SPEX_LIBRARY
-    NAMES spex
+    NAMES spex${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX

@@ -41,7 +41,7 @@ find_path ( BTF_INCLUDE_DIR
 
 # compiled libraries BTF
 find_library ( BTF_LIBRARY
-    NAMES btf
+    NAMES btf${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF

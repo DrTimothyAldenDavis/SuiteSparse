@@ -41,7 +41,7 @@ find_path ( MONGOOSE_INCLUDE_DIR
 
 # compiled libraries Mongoose
 find_library ( MONGOOSE_LIBRARY
-    NAMES mongoose
+    NAMES mongoose${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose

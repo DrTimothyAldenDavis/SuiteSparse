@@ -63,7 +63,7 @@ find_path(
 # "build" for SuiteSparse:GraphBLAS
 find_library(
   GRAPHBLAS_LIBRARY
-  NAMES graphblas
+  NAMES graphblas${CMAKE_RELEASE_POSTFIX}
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS

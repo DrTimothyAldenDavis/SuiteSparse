@@ -41,7 +41,7 @@ find_path ( SPQR_INCLUDE_DIR
 
 # compiled libraries SPQR
 find_library ( SPQR_LIBRARY
-    NAMES spqr
+    NAMES spqr${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR

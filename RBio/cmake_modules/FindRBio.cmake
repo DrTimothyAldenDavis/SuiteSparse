@@ -41,7 +41,7 @@ find_path ( RBIO_INCLUDE_DIR
 
 # compiled libraries RBio
 find_library ( RBIO_LIBRARY
-    NAMES rbio
+    NAMES rbio${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio

@@ -40,7 +40,7 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
 
 # compiled libraries SuiteSparse_config
 find_library ( SUITESPARSE_CONFIG_LIBRARY
-    NAMES suitesparseconfig
+    NAMES suitesparseconfig${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config

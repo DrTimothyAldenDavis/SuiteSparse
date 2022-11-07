@@ -41,7 +41,7 @@ find_path ( KLU_CHOLMOD_INCLUDE_DIR
 
 # compiled libraries KLU_CHOLMOD
 find_library ( KLU_CHOLMOD_LIBRARY
-    NAMES klu_cholmod
+    NAMES klu_cholmod${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User

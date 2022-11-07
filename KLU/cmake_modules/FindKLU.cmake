@@ -41,7 +41,7 @@ find_path ( KLU_INCLUDE_DIR
 
 # compiled libraries KLU
 find_library ( KLU_LIBRARY
-    NAMES klu
+    NAMES klu${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU

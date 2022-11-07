@@ -41,7 +41,7 @@ find_path ( LDL_INCLUDE_DIR
 
 # compiled libraries LDL
 find_library ( LDL_LIBRARY
-    NAMES ldl
+    NAMES ldl${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/LDL
     HINTS ${CMAKE_SOURCE_DIR}/../LDL

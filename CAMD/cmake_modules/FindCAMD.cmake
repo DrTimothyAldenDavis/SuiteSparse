@@ -41,7 +41,7 @@ find_path ( CAMD_INCLUDE_DIR
 
 # compiled libraries CAMD
 find_library ( CAMD_LIBRARY
-    NAMES camd
+    NAMES camd${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD

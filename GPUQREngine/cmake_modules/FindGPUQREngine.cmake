@@ -29,7 +29,7 @@
 
 # compiled libraries GPUQREngine
 find_library ( GPUQRENGINE_LIBRARY
-    NAMES gpuqrengine
+    NAMES gpuqrengine${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine

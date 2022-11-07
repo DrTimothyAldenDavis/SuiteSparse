@@ -30,7 +30,7 @@
 
 # compiled libraries CHOLMOD_CUDA for CUDA
 find_library ( CHOLMOD_CUDA_LIBRARY
-    NAMES cholmod_cuda
+    NAMES cholmod_cuda${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/

@@ -41,7 +41,7 @@ find_path ( UMFPACK_INCLUDE_DIR
 
 # compiled libraries UMFPACK
 find_library ( UMFPACK_LIBRARY
-    NAMES umfpack
+    NAMES umfpack${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK

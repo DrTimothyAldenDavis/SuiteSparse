@@ -30,7 +30,7 @@
 
 # compiled libraries SPQR_CUDA for CUDA
 find_library ( SPQR_CUDA_LIBRARY
-    NAMES spqr_cuda
+    NAMES spqr_cuda${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/

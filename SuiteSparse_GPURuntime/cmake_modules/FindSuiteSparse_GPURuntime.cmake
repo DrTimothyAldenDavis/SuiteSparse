@@ -29,7 +29,7 @@
 
 # compiled libraries SuiteSparse_GPURuntime
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
-    NAMES suitesparse_gpuruntime
+    NAMES suitesparse_gpuruntime${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_GPURuntime
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime

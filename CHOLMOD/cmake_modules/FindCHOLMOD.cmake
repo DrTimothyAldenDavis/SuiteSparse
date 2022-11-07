@@ -41,7 +41,7 @@ find_path ( CHOLMOD_INCLUDE_DIR
 
 # compiled libraries CHOLMOD
 find_library ( CHOLMOD_LIBRARY
-    NAMES cholmod
+    NAMES cholmod${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD

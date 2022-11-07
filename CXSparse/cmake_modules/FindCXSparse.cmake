@@ -41,7 +41,7 @@ find_path ( CXSPARSE_INCLUDE_DIR
 
 # compiled libraries CXSPARSE
 find_library ( CXSPARSE_LIBRARY
-    NAMES cxsparse
+    NAMES cxsparse${CMAKE_RELEASE_POSTFIX}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
