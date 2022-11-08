@@ -11,9 +11,9 @@ default:  CAMD_UserGuide.pdf
 
 CAMD_UserGuide.pdf: CAMD_UserGuide.tex CAMD_UserGuide.bib ../Include/camd.h \
     camd_version.tex
-	echo '\\begin{verbatim}' > camd_h.tex
+	printf '\\begin{verbatim}\n' > camd_h.tex
 	expand -8 ../Include/camd.h >> camd_h.tex
-	echo '\\end{verbatim}' >> camd_h.tex
+	printf '\\end{verbatim}\n' >> camd_h.tex
 	pdflatex CAMD_UserGuide
 	bibtex CAMD_UserGuide
 	pdflatex CAMD_UserGuide
