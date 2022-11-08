@@ -8,15 +8,15 @@ dist:  KLU_UserGuide.pdf
 
 KLU_UserGuide.pdf: KLU_UserGuide.tex KLU_UserGuide.bib \
     ../Include/klu.h ../../BTF/Include/btf.h Makefile klu_version.tex
-	echo '\\begin{verbatim}' > klu_h.tex
+	printf '\\begin{verbatim}\n' > klu_h.tex
 	expand -8 ../Include/klu.h >> klu_h.tex
-	echo '\\end{verbatim}' >> klu_h.tex
-	echo '\\begin{verbatim}' > btf_h.tex
+	printf '\\end{verbatim}\n' >> klu_h.tex
+	printf '\\begin{verbatim}\n' > btf_h.tex
 	expand -8 ../../BTF/Include/btf.h >> btf_h.tex
-	echo '\\end{verbatim}' >> btf_h.tex
-	echo '\\begin{verbatim}' > klu_simple_c.tex
+	printf '\\end{verbatim}\n' >> btf_h.tex
+	printf '\\begin{verbatim}\n' > klu_simple_c.tex
 	expand -8 ../Demo/klu_simple.c >> klu_simple_c.tex
-	echo '\\end{verbatim}' >> klu_simple_c.tex
+	printf '\\end{verbatim}\n' >> klu_simple_c.tex
 	pdflatex KLU_UserGuide
 	bibtex KLU_UserGuide
 	pdflatex KLU_UserGuide
