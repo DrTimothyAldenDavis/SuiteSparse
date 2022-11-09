@@ -46,11 +46,12 @@ project ( suitesparseconfig
 #-------------------------------------------------------------------------------
 
 enable_language ( C Fortran )
-message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
+message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
 
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled
+    message ( STATUS "OpenMP disabled" )
     set ( OPENMP_FOUND false )
 else ( )
     find_package ( OpenMP )
@@ -146,7 +147,7 @@ if ( GLOBAL_INSTALL )
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES
         ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
@@ -164,7 +165,7 @@ if ( INSIDE_SUITESPARSE )
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES
         ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
