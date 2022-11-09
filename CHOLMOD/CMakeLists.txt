@@ -166,6 +166,13 @@ find_package ( AMD 3.0.0 REQUIRED )
 
     option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" off )
 
+    # The CHOLMOD interfaces to CAMD and CCOLAMD are in the Partition module
+    # (cholmod_camd, cholmod_ccolamd, cholmod_csymamd).  The Partition module
+    # has interfaces to METIS (cholmod_metis, cholmod_nesdis) that require
+    # them, but the CAMD and CCOLAMD interfaces do not require METIS.  In the
+    # future, the CAMD and CCOLAMD interfaces will be split into their own
+    # module to make this dependency more clear.
+
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
         find_package ( CAMD 3.0.0 )
@@ -189,10 +196,10 @@ find_package ( AMD 3.0.0 REQUIRED )
     option ( NPARTITION "ON: do not use METIS.  OFF (default): use METIS" off )
 
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Partition )
-        # Partition module does not appear so don't use it
+        # Partition module does not appear so don't use it.  Since this
+        # folder also includes the CAMD and CCOLAMD interfaces, NCAMD must
+        # be set true here as well.
         set ( NPARTITION true )
-        # The Partition module does not exist, so skip CAMD and CCOLAMD, since
-        # the Partition Module is CHOLMOD's only interface to CAMD and CCOLAMD.
         set ( NCAMD true )
     endif ( )
     if ( NPARTITION )
@@ -201,7 +208,7 @@ find_package ( AMD 3.0.0 REQUIRED )
     endif ( )
 
     if ( NCAMD )
-        # if NCAMD is true: do not link against CAMD and CCOLAMD
+        # if NCAMD is true: do not build the CAMD and CCOLAMD interfaces
         add_compile_definitions ( NCAMD )
     endif ( )
 

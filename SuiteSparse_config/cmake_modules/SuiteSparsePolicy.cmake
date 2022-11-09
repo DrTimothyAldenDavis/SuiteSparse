@@ -15,7 +15,9 @@
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
-#                       Default: true for CHOLMOD and SPQR
+#                       Default: true for CHOLMOD and SPQR, false for GraphBLAS
+#                       (for which CUDA is in progress and not ready for
+#                       production use).
 #
 #   GLOBAL_INSTALL:     if true, "make install" will
 #                       into /usr/local/lib and /usr/local/include.
@@ -39,7 +41,18 @@
 #                       option requires cmake 3.23 or later.
 #                       Default: "52;75;80".
 #
-# To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file.
+#   BLA_VENDOR and BLA_SIZEOF_INTEGER: By default, SuiteSparse searches for
+#                       the BLAS library in a specific order.  If you wish to
+#                       use a specific BLAS library, set both of these with
+#                       (for example):
+#                       -DBLA_VENDOR=Intel10_64lp -DBLA_SIZEOF_INTEGER=4
+#                       Both settings must appear, or neither.
+#                       Default: neither are defined.
+#
+#   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
+#                       64-bit BLAS.  If false, only 32-bit BLAS will be
+#                       searched for.  Ignored if BLA_VENDOR and
+#                       BLA_SIZEOF_INTEGER are defined.
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -64,7 +77,7 @@ option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
 option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
 
 if ( SUITESPARSE_SECOND_LEVEL )
-    # some packages in SuiteSparse is in SuiteSparse/Package/Package
+    # some packages in SuiteSparse are in SuiteSparse/Package/Package
     set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/../../lib/cmake )
 else ( )
@@ -81,8 +94,7 @@ include ( GNUInstallDirs )
 # find this one without "make install"
 set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 
-# determine if this package is inside the top-level SuiteSparse folder
-# (if ../lib and ../include exist, relative to the source directory)
+# determine if this Package is inside the SuiteSparse folder
 set ( INSIDE_SUITESPARSE false )
 if ( LOCAL_INSTALL )
     # if you do not want to install local copies of SuiteSparse
