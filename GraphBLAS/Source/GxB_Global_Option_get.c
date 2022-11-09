@@ -219,6 +219,21 @@ GrB_Info GxB_Global_Option_get      // gets the current global option
             }
             break ;
 
+        case GxB_LIBRARY_OPENMP : 
+
+            {
+                va_start (ap, field) ;
+                bool *have_openmp = va_arg (ap, bool *) ;
+                va_end (ap) ;
+                GB_RETURN_IF_NULL (have_openmp) ;
+                #ifdef _OPENMP
+                (*have_openmp) = true ;
+                #else
+                (*have_openmp) = false ;
+                #endif
+            }
+            break ;
+
         case GxB_LIBRARY_URL : 
 
             {

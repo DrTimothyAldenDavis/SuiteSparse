@@ -637,6 +637,10 @@ const char *SuiteSparse_BLAS_library ( void )
         return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
             "OpenBLAS (64-bit integers)" :
             "OpenBLAS (32-bit integers)") ;
+    #elif defined ( BLAS_Generic )
+        return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
+            "Reference BLAS (64-bit integers)" :
+            "Reference BLAS (32-bit integers)") ;
     #else
         return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
             "Other BLAS (64-bit integers)" :

@@ -363,6 +363,10 @@ void mexFunction
     OK (GxB_Global_Option_get_(GxB_LIBRARY_COMPILE_TIME, &compile_time)) ;
     printf ("compile time: %s\n", compile_time) ;
 
+    bool have_openmp ;
+    OK (GxB_Global_Option_get_(GxB_LIBRARY_OPENMP, &have_openmp)) ;
+    printf ("with OpenMP: %d\n", have_openmp) ;
+
     OK (GxB_Global_Option_get_(GxB_LIBRARY_URL, &url)) ;
     printf ("URL: %s\n", url) ;
 
