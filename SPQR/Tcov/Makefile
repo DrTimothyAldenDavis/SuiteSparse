@@ -58,8 +58,7 @@ NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
 
 #-------------------------------------------------------------------------------
 
-CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd \
-    -lsuitesparse_metis
+CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
 
 all: qrtest gpudemo qrdemo_gpu
 
