@@ -8587,6 +8587,14 @@ nothing.  If OpenMP is not available or \verb'-DNOPEMP=1' is used, then
 user applications need to ensure their own thread safety when one user thread
 computes a result that is then read by another thread.
 
+You can query GraphBLAS at run time to ask if it was compiled with OpenMP:
+
+\begin{verbatim}
+    bool have_openmp ;
+    GxB_get (GxB_LIBRARY_OPENMP, &have_openmp) ;
+    if (!have_openmp) printf ("GraphBLAS not compiled with OpenMP\n") :
+\end{verbatim}
+
 %-------------------------------------------------------------------------------
 \subsection{Storing a matrix by row or by column}
 %-------------------------------------------------------------------------------
