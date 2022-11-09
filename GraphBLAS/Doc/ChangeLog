@@ -2,6 +2,7 @@ Version 7.3.2, Nov 12, 2022
 
     * cmake_modules: minor revision to build system, to sync 
         with SuiteSparse v6.0.0
+    * Added option -DNOPENMP=1 to disable OpenMP parallelism
 
 Version 7.3.1, Oct 21, 2022
 

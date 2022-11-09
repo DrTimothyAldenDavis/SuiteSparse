@@ -3717,8 +3717,9 @@ With a \verb'mode' of \verb'GrB_MATERIALIZE',
 all pending computations are finished, and different user threads may
 simultaneously call GraphBLAS operations that use the scalar \verb's' as an
 input parameter.
+See Section~\ref{omp_parallelism}
+if GraphBLAS is compiled without OpenMP.
 
-\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Scalar\_dup:} copy a scalar}
 %-------------------------------------------------------------------------------
@@ -4030,6 +4031,8 @@ With a \verb'mode' of \verb'GrB_MATERIALIZE',
 all pending computations are finished, and different user threads may
 simultaneously call GraphBLAS operations that use the vector \verb'w' as an
 input parameter.
+See Section~\ref{omp_parallelism}
+if GraphBLAS is compiled without OpenMP.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -4623,8 +4626,11 @@ With a \verb'mode' of \verb'GrB_MATERIALIZE',
 all pending computations are finished, and different user threads may
 simultaneously call GraphBLAS operations that use the matrix \verb'C' as an
 input parameter.
+See Section~\ref{omp_parallelism}
+if GraphBLAS is compiled without OpenMP.
 
 %-------------------------------------------------------------------------------
+\newpage
 \subsubsection{{\sf GrB\_Matrix\_dup:}          copy a matrix}
 %-------------------------------------------------------------------------------
 \label{matrix_dup}
@@ -4663,7 +4669,6 @@ Then \verb'C' and \verb'A' are two different matrices that currently have the
 same set of values, but they do not depend on each other.  Modifying one has
 no effect on the other.
 
-\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_clear:}        clear a matrix of all entries}
 %-------------------------------------------------------------------------------
@@ -4685,7 +4690,7 @@ empty, just as if it were created fresh with \verb'GrB_Matrix_new'.  Analogous
 with \verb'A (:,:) = 0' in MATLAB.  The type and dimensions of \verb'A' do not
 change.  Any pending updates to the matrix are discarded.
 
-% \newpage
+\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_nrows:}        return the number of rows of a matrix}
 %-------------------------------------------------------------------------------
@@ -4869,7 +4874,7 @@ do.  In particular, the MATLAB \verb'sparse' function only provides one option
 for assembling duplicates (summation), and it can only build double, double
 complex, and logical sparse matrices.
 
-\newpage
+% \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_build\_Scalar:} build a matrix from a set of tuples}
 %-------------------------------------------------------------------------------
@@ -4898,6 +4903,7 @@ returned by \verb'GrB_Vector_nvals' after the matrix is constructed).  All
 entries in the sparsity pattern of \verb'C' are identical, and equal to the
 input scalar value.
 
+\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_setElement:}   add an entry to a matrix}
 %-------------------------------------------------------------------------------
@@ -8433,7 +8439,7 @@ field                       & value         & description \\
 \verb'GxB_LIBRARY_LICENSE'      & \verb'char *' & license \\
 \verb'GxB_LIBRARY_COMPILE_DATE' & \verb'char *' & date of compilation \\
 \verb'GxB_LIBRARY_COMPILE_TIME' & \verb'char *' & time of compilation \\
-\verb'GxB_LIBRARY_OPENMP'       & \verb'bool *' & true if compiled with OpenMP\\
+\verb'GxB_LIBRARY_OPENMP'       & \verb'bool'   & true if compiled with OpenMP\\
 \verb'GxB_LIBRARY_URL'          & \verb'char *' & url of library \\
 \verb'GxB_API_VERSION'          & \verb'int [3]' & C API version \\
 \verb'GxB_API_DATE'             & \verb'char *' & C API date \\
@@ -8571,6 +8577,15 @@ For example, suppose \verb'omp_get_max_threads' reports 8 threads.  If \newline
 threads, not eight.  If a descriptor is used but its \verb'GxB_NTHREADS' is not
 set, or set to \verb'GxB_DEFAULT', then any operation that uses this descriptor
 will use 4 threads.
+
+GraphBLAS may be compiled without OpenMP, by setting \verb'-DNOPENMP=1'.
+The library will be thread-safe, with one exception.  \verb'GrB_wait' is
+intended to provide thread-safety by flushing the cache of one user thread
+so the object can be safely read by another thread.  This is accomplished
+with \verb'pragma omp flush', but if OpenMP is not available, this does
+nothing.  If OpenMP is not available or \verb'-DNOPEMP=1' is used, then
+user applications need to ensure their own thread safety when one user thread
+computes a result that is then read by another thread.
 
 %-------------------------------------------------------------------------------
 \subsection{Storing a matrix by row or by column}
@@ -8817,6 +8832,7 @@ typedef enum
     GxB_LIBRARY_LICENSE = 13,       // license of the library (char *)
     GxB_LIBRARY_COMPILE_DATE = 14,  // date library was compiled (char *)
     GxB_LIBRARY_COMPILE_TIME = 15,  // time library was compiled (char *)
+    GxB_LIBRARY_OPENMP = 25,        // library compiled with OpenMP
     GxB_API_VERSION = 16,           // API version (3 int's)
     GxB_API_DATE = 17,              // date of the API (char *)
     GxB_API_ABOUT = 18,             // about the API (char *)
@@ -9167,6 +9183,7 @@ This usage of \verb'GxB_get' retrieves the value of a global option.  The
         \verb'GxB_LIBRARY_LICENSE'      & license for the library \\
         \verb'GxB_LIBRARY_COMPILE_DATE' & date of compilation \\
         \verb'GxB_LIBRARY_COMPILE_TIME' & time of compilation \\
+        \verb'GxB_LIBRARY_OPENMP'       & library compiled with OpenMP\\
         \verb'GxB_LIBRARY_URL'          & URL of the library \\
         \hline
         \verb'GxB_API_VERSION'  & GraphBLAS C API Specification Version \\
@@ -9364,6 +9381,7 @@ To get global options that can be queried but not modified:
     GxB_get (GxB_LIBRARY_LICENSE,      char **) ;
     GxB_get (GxB_LIBRARY_COMPILE_DATE, char **) ;
     GxB_get (GxB_LIBRARY_COMPILE_TIME, char **) ;
+    GxB_get (GxB_LIBRARY_OPENMP,       bool *) ;
     GxB_get (GxB_LIBRARY_URL,          char **) ;
     GxB_get (GxB_API_VERSION,          int *) ;
     GxB_get (GxB_API_DATE,             char **) ;
@@ -14792,7 +14810,10 @@ thread.
 
 GraphBLAS can also be combined with user applications that rely on MPI, the
 Intel TBB threading library, POSIX pthreads, Microsoft Windows threads, or any
-other threading library.  In all cases, GraphBLAS will be thread safe.
+other threading library.  If GraphBLAS itself is compiled with OpenMP,
+it will be thread safe when combined with other libraries.
+See Section~\ref{omp_parallelism} for thread-safety issues that can occur
+if GraphBLAS is compiled without OpenMP.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -15461,6 +15482,7 @@ GraphBLAS folder.
     \begin{packed_itemize}
     \item \verb'cmake_modules': minor revision to build system, to sync 
         with SuiteSparse v6.0.0
+    \item Added option \verb'-DNOPENMP=1' to disable OpenMP parallelism.
     \end{packed_itemize}
 
 \item Version 7.3.1 (Oct 21, 2022)
