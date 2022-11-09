@@ -3,10 +3,11 @@ C === AMD_cross ========================================================
 C ======================================================================
 
 C ----------------------------------------------------------------------
-C AMD, Copyright (c) by Timothy A. Davis, Patrick R.
-C Amestoy, and Iain S. Duff.  See ../README.txt for License.
-C email: DrTimothyAldenDavis@gmail.com
+C AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy,
+C and Iain S. Duff.  All Rights Reserved.
+C SPDX-License-Identifier: BSD-3-clause
 C ----------------------------------------------------------------------
+
 
 C This program provides an example of how to call the C version of AMD
 C from a Fortran program.  It is HIGHLY non-portable.
@@ -46,5 +47,6 @@ C       print the input matrix
             PRINT 50, K, PERM (K) + 1
 50          FORMAT ('PERM (',I2,') = ', I2)
 60      CONTINUE
+        CALL FLUSH (6)
         END
 

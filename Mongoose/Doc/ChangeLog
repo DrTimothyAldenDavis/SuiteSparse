@@ -1,4 +1,4 @@
-Nov 4, 2022: version 3.0.0
+Nov 12, 2022: version 3.0.0
 
     * minor change to the build system
     * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced

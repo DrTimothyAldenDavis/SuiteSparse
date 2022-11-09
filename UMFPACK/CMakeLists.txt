@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Nov 4, 2022" )
+set ( UMFPACK_DATE "Nov 12, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
 set ( UMFPACK_VERSION_SUB   0 )
@@ -53,10 +53,7 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
-if ( NOT DEFINED NCHOLMOD )
-    # use CHOLMOD by default
-    set ( NCHOLMOD false )
-endif ( )
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings for KLU)

@@ -3,9 +3,9 @@ C === Fortran AMD demo main program ====================================
 C ======================================================================
 
 C ----------------------------------------------------------------------
-C AMD, Copyright (c) by Timothy A. Davis, Patrick R.
-C Amestoy, and Iain S. Duff.  See ../README.txt for License.
-C email: DrTimothyAldenDavis@gmail.com
+C AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy,
+C and Iain S. Duff.  All Rights Reserved.
+C SPDX-License-Identifier: BSD-3-clause
 C ----------------------------------------------------------------------
 
 C A simple Fortran 77 main program that illustrates the use of the
@@ -157,4 +157,5 @@ C           print the permuted matrix, PERM*A*PERM'
 170             FORMAT ('    new row indices: ', 24I3)
 180         CONTINUE
 190     CONTINUE
+        CALL FLUSH (6)
         END

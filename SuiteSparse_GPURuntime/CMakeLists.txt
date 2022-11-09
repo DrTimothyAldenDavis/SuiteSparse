@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Nov 4, 2022" )
+set ( SUITESPARSE_GPURUNTIME_DATE "Nov 12, 2022" )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   0 )
@@ -30,10 +30,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-if ( NOT DEFINED ENABLE_CUDA )
-    # default is to use CUDA, if available
-    set ( ENABLE_CUDA true )
-endif ( )
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
 
 include ( SuiteSparsePolicy )
 

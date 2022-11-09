@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Nov 4, 2022" )
+set ( CHOLMOD_DATE "Nov 12, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   0 )
@@ -34,10 +34,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-if ( NOT DEFINED ENABLE_CUDA )
-    # default is to use CUDA, if available
-    set ( ENABLE_CUDA true )
-endif ( )
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
 
 if ( NGPL )
     # NGPL: if true, do not include any GPL-licensed module
@@ -104,10 +101,8 @@ find_package ( AMD 3.0.0 REQUIRED )
     # Check module
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NCHECK )
-        # by default, build the Check module
-        set ( NCHECK false )
-    endif ( )
+    option ( NCHECK "ON: do not use Check Module.  OFF (default): use Check Module" off )
+
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Check )
         # Check module does not appear so don't use it
         set ( NCHECK true )
@@ -121,10 +116,8 @@ find_package ( AMD 3.0.0 REQUIRED )
     # MatrixOps module
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NMATRIXOPS )
-        # by default, build the MatrixOps module
-        set ( NMATRIXOPS false )
-    endif ( )
+    option ( NMATRIXOPS "ON: do not use MatrixOps Module.  OFF (default): use MatrixOps Module" off )
+
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/MatrixOps )
         # MatrixOps module does not appear so don't use it
         set ( NMATRIXOPS true )
@@ -138,10 +131,8 @@ find_package ( AMD 3.0.0 REQUIRED )
     # Cholesky module: requires AMD, COLAMD
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NCHOLESKY )
-        # by default, build the Cholesky module
-        set ( NCHOLESKY false )
-    endif ( )
+    option ( NCHOLESKY "ON: do not use Cholesky Module.  OFF (default): use Cholesky Module" off )
+
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Cholesky )
         # Cholesky module does not appear so don't use it
         set ( NCHOLESKY true )
@@ -158,10 +149,8 @@ find_package ( AMD 3.0.0 REQUIRED )
     # Modify module: requires Cholesky
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NMODIFY )
-        # by default, build the Modify module
-        set ( NMODIFY false )
-    endif ( )
+    option ( NMODIFY "ON: do not use Modify Module.  OFF (default): use Modify Module" off )
+
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify )
         # Modify module does not appear so don't use it
         set ( NMODIFY true )
@@ -175,10 +164,7 @@ find_package ( AMD 3.0.0 REQUIRED )
     # interfaces to CAMD and CCOLAMD
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NCAMD )
-        # by default, compile with CAMD and CCOLAMD
-        set ( NCAMD false )
-    endif ( )
+    option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" off )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
@@ -200,20 +186,18 @@ find_package ( AMD 3.0.0 REQUIRED )
     # Partition module: requires Cholesky, CAMD, CCOLAMD, and METIS
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NPARTITION )
-        # by default, build the Partition module
-        set ( NPARTITION false )
-    endif ( )
+    option ( NPARTITION "ON: do not use METIS.  OFF (default): use METIS" off )
+
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Partition )
         # Partition module does not appear so don't use it
         set ( NPARTITION true )
+        # The Partition module does not exist, so skip CAMD and CCOLAMD, since
+        # the Partition Module is CHOLMOD's only interface to CAMD and CCOLAMD.
+        set ( NCAMD true )
     endif ( )
     if ( NPARTITION )
         # if NPARTITION is true: do not build the Partition module
         add_compile_definitions ( NPARTITION )
-        # Partition module is not being built, so skip CAMD and CCOLAMD, since
-        # the Partition Module is CHOLMOD's only interface to CAMD and CCOLAMD.
-        set ( NCAMD true )
     endif ( )
 
     if ( NCAMD )
@@ -225,10 +209,7 @@ find_package ( AMD 3.0.0 REQUIRED )
     # Supernodal module: requires Cholesky, BLAS, and LAPACK
     #---------------------------------------------------------------------------
 
-    if ( NOT DEFINED NSUPERNODAL )
-        # by default, build the Supernodal module
-        set ( NSUPERNODAL false )
-    endif ( )
+    option ( NSUPERNODAL "ON: do not use Supernodal Module.  OFF (default): use Supernodal Module" off )
 
     if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Supernodal )
         # Supernodal module does not appear so don't use it

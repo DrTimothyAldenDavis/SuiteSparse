@@ -18,10 +18,13 @@
 cmake_minimum_required ( VERSION 3.22 )
 include ( FortranCInterface )
 
+# To select a specific BLAS: set to the BLA_VENDOR options from FindBLAS.cmake
+set ( BLA_VENDOR "ANY" CACHE STRING
+    "if ANY (default): searches for any BLAS. Otherwise: search for a specific BLAS" )
+
 # To allow the use of a BLAS with 64-bit integers, set this to true
-if ( NOT DEFINED ALLOW_64BIT_BLAS )
-    set ( ALLOW_64BIT_BLAS false )
-endif ( )
+option ( ALLOW_64BIT_BLAS
+    "OFF (default): use only 32-bit BLAS.  ON: look for 32 or 64-bit BLAS" off )
 
 #-------------------------------------------------------------------------------
 # look for a specific BLAS library
@@ -32,25 +35,25 @@ endif ( )
 #   CMAKE_OPTIONS="-DBLA_VENDOR=Apple" make
 #   cd build ; cmake -DBLA_VENDOR=Apple .. ; make
 #
-# Note that the ALLOW_64BIT_BLAS flag is ignored in this case.  If you want
-# to select a specific BLAS integer size, use -DBLA_SIZEOF_INTEGER=64 or 32.
+# Use the ALLOW_64BIT_BLAS to select 64-bit or 32-bit BLAS
 
-if ( DEFINED BLA_VENDOR )
+if ( NOT (BLA_VENDOR STREQUAL "ANY" ) )
     # only look for the BLAS from a single vendor
-    message ( STATUS "============================================" )
-    message ( STATUS "Looking for BLAS: "  ${BLA_VENDOR} )
-    if ( NOT DEFINED BLA_SIZEOF_INTEGER )
-        message ( FATAL_ERROR "Both BLA_VENDOR and BLA_SIZEOF_INTEGER must be specified" )
+    if ( ALLOW_64BIT_BLAS )
+        set ( BLA_SIZEOF_INTEGER 8 )
+        message ( STATUS "Looking for 64-BLAS: "  ${BLA_VENDOR} )
+        # only look for 64-bit BLAS
+    else ( )
+        # only look for 32-bit BLAS
+        message ( STATUS "Looking for 32-BLAS: "  ${BLA_VENDOR} )
+        set ( BLA_SIZEOF_INTEGER 4 )
     endif ( )
-    # only look for the BLAS with a specific integer size
     find_package ( BLAS REQUIRED )
     find_package ( LAPACK REQUIRED )
     if ( BLA_SIZEOF_INTEGER EQUAL 8 )
         include ( SuiteSparseBLAS64 )
-    elseif ( BLA_SIZEOF_INTEGER EQUAL 4 )
+    else ( BLA_SIZEOF_INTEGER EQUAL 4 )
         include ( SuiteSparseBLAS32 )
-    else ( )
-        message ( FATAL_ERROR "BLA_SIZEOF_INTEGER invalid (must be 4 or 8)" )
     endif ( )
     return ( )
 endif ( )
@@ -97,7 +100,7 @@ endif ( )
 # Look for ARM BLAS with 64-bit integers
 if ( ALLOW_64BIT_BLAS )
     message ( STATUS "Looking for ARM 64-bit BLAS+LAPACK" )
-    set ( BLA_VENDOR Arm_mp )
+    set ( BLA_VENDOR Arm_ilp64_mp )
     set ( BLA_SIZEOF_INTEGER 8 )
     find_package ( BLAS )
     find_package ( LAPACK )
@@ -109,7 +112,7 @@ endif ( )
 
 # Look for ARM BLAS with 32-bit integers
 message ( STATUS "Looking for ARM 32-bit BLAS+LAPACK" )
-set ( BLA_VENDOR Arm_ilp64_mp )
+set ( BLA_VENDOR Arm_mp )
 set ( BLA_SIZEOF_INTEGER 4 )
 find_package ( BLAS )
 find_package ( LAPACK )

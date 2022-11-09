@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Nov 4, 2022" )
+set ( KLU_DATE "Nov 12, 2022" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
 set ( KLU_VERSION_SUB   0 )
@@ -54,10 +54,7 @@ find_package ( BTF 2.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 
-if ( NOT DEFINED NCHOLMOD )
-    # use CHOLMOD by default
-    set ( NCHOLMOD false )
-endif ( )
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings for UMFPACK)

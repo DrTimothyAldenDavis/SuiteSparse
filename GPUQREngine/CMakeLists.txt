@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( GPUQRENGINE_DATE "Nov 4, 2022" )
+set ( GPUQRENGINE_DATE "Nov 12, 2022" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
 set ( GPUQRENGINE_VERSION_SUB   0 )
@@ -38,10 +38,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-if ( NOT DEFINED ENABLE_CUDA )
-    # default is to use CUDA, if available
-    set ( ENABLE_CUDA true )
-endif ( )
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
 
 include ( SuiteSparsePolicy )
 

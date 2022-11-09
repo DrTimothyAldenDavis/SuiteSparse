@@ -33,9 +33,6 @@
 #                       is treated as if it always false, since the mongoose
 #                       program is built with the static library.
 #
-#   NPARTITION:         if true, SuiteSparse_metis will not be compiled or used.
-#                       Default: false
-#
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
 #                       when compiling CUDA kernels with nvcc.  The "all"
@@ -58,12 +55,13 @@ cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-if ( NOT DEFINED NPARTITION )
-    set ( NPARTITION false )
+if ( NSTATIC_DEFAULT_ON )
+    option ( NSTATIC "ON (default): do not built static libraries.  OFF: build static libraries" on )
+else ( )
+    option ( NSTATIC "ON: do not built static libraries.  OFF (default): build static libraries" off )
 endif ( )
-if ( NPARTITION )
-    add_compile_definitions ( NPARTITION )
-endif ( )
+option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
+option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
 
 if ( SUITESPARSE_SECOND_LEVEL )
     # some packages in SuiteSparse is in SuiteSparse/Package/Package
@@ -83,30 +81,9 @@ include ( GNUInstallDirs )
 # find this one without "make install"
 set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 
-if ( NOT DEFINED NSTATIC )
-    # default for all SuiteSparse packages (except GraphBLAS)
-    # is to build the static libraries.
-    set ( NSTATIC false )
-endif ( )
-
 # determine if this package is inside the top-level SuiteSparse folder
 # (if ../lib and ../include exist, relative to the source directory)
-
-if ( NOT DEFINED GLOBAL_INSTALL )
-    # if not defined, GLOBAL_INSTALL is set to true.
-    # "make install" will install in CMAKE_INSTALL_PREFIX
-    set ( GLOBAL_INSTALL true )
-endif ( )
-
-if ( NOT DEFINED LOCAL_INSTALL )
-    # if not defined, LOCAL_INSTALL is set to false
-    # "make install" will install in SuiteSparse/[lib,include,bin],
-    # if they exist.
-    set ( LOCAL_INSTALL false )
-endif ( )
-
 set ( INSIDE_SUITESPARSE false )
-
 if ( LOCAL_INSTALL )
     # if you do not want to install local copies of SuiteSparse
     # packages in SuiteSparse/lib and SuiteSparse/, set
@@ -205,12 +182,8 @@ endif ( )
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CUDA: enabled" )
     add_compile_definitions ( SUITESPARSE_CUDA )
-    if ( NOT DEFINED SUITESPARSE_CUDA_ARCHITECTURES )
-        # default architectures
-        set ( CMAKE_CUDA_ARCHITECTURES "52;75;80" )
-    else ( )
-        set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
-    endif ( )
+    set ( SUITESPARSE_CUDA_ARCHITECTURES "52:75:80" CACHE STRING "CUDA architectures" )
+    set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
     message ( STATUS "CUDA: not enabled" )
 endif ( )

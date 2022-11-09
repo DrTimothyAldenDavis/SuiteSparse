@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( RBIO_DATE "Nov 4, 2022" )
+set ( RBIO_DATE "Nov 12, 2022" )
 set ( RBIO_VERSION_MAJOR 3 )
 set ( RBIO_VERSION_MINOR 0 )
 set ( RBIO_VERSION_SUB   0 )

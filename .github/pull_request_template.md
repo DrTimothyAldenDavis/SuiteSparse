@@ -1,5 +1,8 @@
 # Pull request template for SuiteSparse
 
+ * Please do not submit a pull request to the default branch.  Use the
+    dev or dev2 branch instead.  If in doubt, please ask me first.
+
  * Please describe your pull request:
 
  * No pull request can be accepted unless you first sign the

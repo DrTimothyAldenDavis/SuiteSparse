@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Nov 4, 2022.  SuiteSparse VERSION 6.0.0
+Nov 12, 2022.  SuiteSparse VERSION 6.0.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -15,7 +15,7 @@ Code co-authors, in alphabetical order (not including METIS):
     Larimore, Erick Moreno-Centeno, Ekanathan Palamadai, Sivasankaran
     Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
 
-METIS is authored by George Karypys.
+METIS is authored by George Karypis.
 
 Additional algorithm designers: Esmond Ng and John Gilbert.
 

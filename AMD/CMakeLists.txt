@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( AMD_DATE "Nov 4, 2022" )
+set ( AMD_DATE "Nov 12, 2022" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 0 )
 set ( AMD_VERSION_SUB   0 )

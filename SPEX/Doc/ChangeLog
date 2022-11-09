@@ -1,4 +1,4 @@
-Nov 4, 2022: version 2.0.0
+Nov 12, 2022: version 2.0.0
 
     * using CMake build system
     * SuiteSparse_long: replaced with int64_t

@@ -1,7 +1,7 @@
 C ----------------------------------------------------------------------
-C AMD, Copyright (c) by Timothy A. Davis, Patrick R.
-C Amestoy, and Iain S. Duff.  See ../README.txt for License.
-C email: DrTimothyAldenDavis@gmail.com
+C AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy,
+C and Iain S. Duff.  All Rights Reserved.
+C SPDX-License-Identifier: BSD-3-clause
 C ----------------------------------------------------------------------
 
 C This program provides an example of how to call the Fortran version
@@ -34,4 +34,5 @@ C       order the matrix (destroys the copy of A in IW, PE, and LEN)
             PRINT 50, K, LAST (K)
 50          FORMAT ('P (',I2,') = ', I2)
 60      CONTINUE
+        CALL FLUSH (6)
         END

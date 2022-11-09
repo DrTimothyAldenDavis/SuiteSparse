@@ -19,7 +19,7 @@
 
 #include "cholmod_metis_wrapper.h"
 
-#if defined ( __GNUC__ )
+#if defined ( __GNUC__ ) && !defined ( __clang__ )
     // disable memcpy warnings:
     #pragma GCC diagnostic ignored "-Wstringop-overflow="
     // csr.c has misleading indentation:

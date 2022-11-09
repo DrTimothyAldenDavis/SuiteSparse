@@ -1,4 +1,4 @@
-Nov 4, 2022: SuiteSparse 6.0.0
+Nov 12, 2022: SuiteSparse 6.0.0
 
     * major update: using CMake build system for all packages
     * CMake Find*: all packages now have a Find*.cmake.  See
@@ -12,10 +12,8 @@ Nov 4, 2022: SuiteSparse 6.0.0
         all packages has been increased by one.
     * UMFPACK: new options to support ParU.  Single umfpack.h include file.
     * CHOLMOD: Single cholmod.h include file.
-    * SuiteSparse/metis-5.1.0: renamed SuiteSparse_metis, to avoid confusion
-        with the unmodified metis-5.1.0.  The compiled library is named
-        libsuitesparse_metis.so.  The unmodified libmetis.so cannot be used
-        with SuiteSparse.
+    * SuiteSparse/metis-5.1.0: now embedded into CHOLMOD, in a different
+        name space.  No longer an independent library.
     * SPDX License Identifier: added to each file. No change in license.
     * BLAS/LAPACK interface: now supports any Fortran BLAS/LAPACK, with
         either 32-bit (default) or 64-bit integers.
