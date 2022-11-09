@@ -4390,6 +4390,7 @@ typedef enum            // for global options or matrix options
     GxB_API_URL = 19,               // URL for the API (char *)
     GxB_COMPILER_VERSION = 23,      // compiler version (3 int's)
     GxB_COMPILER_NAME = 24,         // compiler name (char *)
+    GxB_LIBRARY_OPENMP = 25,        // library compiled with OpenMP
 
     //------------------------------------------------------------
     // for GxB_Global_Option_get/set only:
