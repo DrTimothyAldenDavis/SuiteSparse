@@ -13,3 +13,6 @@ and email it to me at DrTimothyAldenDavis@gmail.com.  Pull
 requests will only be included into SuiteSparse after I receive
 your email with the signed PDF.
 
+Do not submit a pull request to the default branch.
+Instead, use the dev or dev2 branches.
+

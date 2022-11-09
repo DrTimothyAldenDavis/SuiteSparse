@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Nov 4, 2022" )
+set ( UMFPACK_DATE "Nov 12, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
 set ( UMFPACK_VERSION_SUB   0 )
@@ -53,11 +53,23 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
-find_package ( CHOLMOD 4.0.0 )
-if ( CHOLMOD_FOUND )
-    message ( STATUS "Using CHOLMOD for additional ordering options.")
-else ( )
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
+
+if ( NOT NCHOLMOD )
+    # look for CHOLMOD (optional fill-reducing orderings for KLU)
+    find_package ( CHOLMOD 4.0.0 )
+    if ( NOT CHOLMOD_FOUND )
+        # CHOLMOD not found so disable it
+        set ( NCHOLMOD true )
+    endif ( )
+endif ( )
+
+if ( NCHOLMOD )
+    # tell KLU that CHOLMOD is not available
+    message ( STATUS "CHOLMOD not found or not requested" )
     add_compile_definitions ( NCHOLMOD )
+else ( )
+    message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -152,7 +164,7 @@ endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # cholmod:
-if ( CHOLMOD_FOUND )
+if ( NOT NCHOLMOD )
     target_link_libraries ( umfpack PUBLIC ${CHOLMOD_LIBRARIES} )
     if ( NOT NSTATIC )
     target_link_libraries ( umfpack_static PUBLIC ${CHOLMOD_LIBRARIES} )

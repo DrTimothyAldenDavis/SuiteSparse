@@ -43,13 +43,13 @@ modification package}
     that can factorize symmetric indefinite matrices if all of their
     leading submatrices are well-conditioned ($\m{D}$ is diagonal).
     CHOLMOD is written in ANSI/ISO C, with both
-    C and MATLAB interfaces.  This code works on Microsoft Windows and many versions
-    of Unix and Linux.
+    C and MATLAB interfaces.  This code works on Microsoft Windows and many
+    versions of Unix and Linux.
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-CHOLMOD Copyright\copyright 2005-2022 by Timothy A. Davis.  Portions are also
-copyrighted by William W. Hager (the {\tt Modify} Module),
+CHOLMOD Copyright\copyright 2005-2022 by Timothy A. Davis, All Rights Reserved.
+Portions are also copyrighted by William W. Hager (the {\tt Modify} Module),
 and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
 All Rights Reserved.
 
@@ -390,7 +390,7 @@ Each function is described in the next sections.
 \newpage
 \subsection{{\tt lchol}: $\m{LL}\tr$ factorization}				\input{_lchol_m.tex}
 \subsection{{\tt ldlchol}: $\m{LDL}\tr$ factorization}				\input{_ldlchol_m.tex}
-\newpage
+% \newpage
 \subsection{{\tt ldlsolve}: solve using an $\m{LDL}\tr$ factorization}		\input{_ldlsolve_m.tex}
 \subsection{{\tt ldlsplit}: split an $\m{LDL}\tr$ factorization}		\input{_ldlsplit_m.tex}
 \newpage
@@ -425,15 +425,30 @@ Each function is described in the next sections.
 This is the preferred method, since it allows METIS to be reconfigured to
 use the MATLAB memory-management functions instead of {\tt malloc} and {\tt free};
 this avoids the issue of METIS terminating MATLAB if it runs out of memory.
-It is also simpler for Windows users, who do not have the {\tt make}
-command (unless you obtain a copy of {\tt Cygwin}).
 
 Start MATLAB, {\tt cd} to the {\tt CHOLMOD/MATLAB} directory, and
 type {\tt cholmod\_make} in the MATLAB command window.  This will compile
 the MATLAB interfaces for AMD, COLAMD, CAMD, CCOLAMD, METIS, and CHOLMOD.
 
 %-------------------------------------------------------------------------------
-\newpage \section{Using CHOLMOD with GPU acceleration}
+\section{Using CHOLMOD with OpenMP acceleration}
+%-------------------------------------------------------------------------------
+
+CHOLMOD includes OpenMP acceleration for some operations.
+In CHOLMOD versions prior to v6.0.0, the number of threads to use was controlled
+by a compile time parameter.  This is now replaced with run-time controls.
+
+\verb'Common->nthreads_max' defaults to \verb'omp_get_max_threads()', or 1 if
+OpenMP is not in use.  This value controls the maximum number of threads that
+CHOLMOD will use.  If zero or less, the default is used.  The
+\verb'Common->chunk' parameter controls how many threads are used when the work
+to do is low.  If $w$ is a count of operations to perform, $c$ =
+\verb'Common->chunk', and $m$ = \verb'Common->nthreads_max', then a parallel
+region will use $\max (1, \min (\lfloor w/c \rfloor, m))$ threads.  These
+parameters can be revised by the user application at run time.
+
+%-------------------------------------------------------------------------------
+\section{Using CHOLMOD with GPU acceleration}
 %-------------------------------------------------------------------------------
 
 Starting with CHOLMOD v2.0.0, it is possible to accelerate the numerical
@@ -492,7 +507,7 @@ present, CHOLMOD will continue using the CPU only.  Consequently it is always
 safe to request GPU processing.
 
 %-------------------------------------------------------------------------------
-\newpage \subsection{Adjustable parameters}
+\subsection{Adjustable parameters}
 %-------------------------------------------------------------------------------
 
 There are a number of parameters that have been added to CHOLMOD to control GPU
@@ -703,22 +718,24 @@ sub-directory (a folder for Windows users) within the CHOLMOD directory
     \item {\tt Modify}: sparse Cholesky update/downdate and row-add/row-delete
     \item {\tt MatrixOps}: sparse matrix operators (add, multiply, norm, scale)
     \item {\tt Supernodal}: supernodal sparse Cholesky factorization
-    \item {\tt Partition}: graph-partitioning-based orderings
+    \item {\tt Partition}: graph-partitioning-based orderings,
+        which uses a slightly modified copy of METIS 5.1.0 in the
+        \verb'SuiteSparse_metis' folder.
     \end{enumerate}
 
-\noindent Two additional Modules are required to compile the CHOLMOD library:
+\noindent Additional directories provide
+    support functions and documentation:
     \begin{enumerate}
     \item {\tt Include}: include files for CHOLMOD and programs that use CHOLMOD
-    \item {\tt Lib}: where the CHOLMOD library is built
-    \end{enumerate}
-
-\noindent Five additional Modules provide support functions and documentation:
-    \begin{enumerate}
     \item {\tt Demo}: simple programs that illustrate the use of CHOLMOD
     \item {\tt Doc}: documentation (including this document)
     \item {\tt MATLAB}: CHOLMOD's interface to MATLAB
     \item {\tt Tcov}: an exhaustive test coverage (requires Linux or Solaris)
     \item {\tt Valgrind}: runs the {\tt Tcov} test under {\tt valgrind} (requires Linux)
+    \item \verb'cmake_modules':  how other packages can find CHOLMOD when
+        using cmake.
+    \item \verb'Config':  a folder containing the input files to create the
+        \verb'cholmod.h' include file, via cmake.
     \end{enumerate}
 
 %-------------------------------------------------------------------------------
@@ -1084,7 +1101,7 @@ In the descriptions below,
     \end{itemize}
 
 %-------------------------------------------------------------------------------
-\newpage \subsection{{\tt Supernodal} Module: supernodal sparse Cholesky factorization}
+\subsection{{\tt Supernodal} Module: supernodal sparse Cholesky factorization}
 %-------------------------------------------------------------------------------
 
 The {\tt Supernodal} Module performs
@@ -1208,7 +1225,7 @@ These definitions are used within the {\tt cholmod\_common} object,
 called {\tt Common} both here and throughout the code.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_common}: parameters, statistics, and workspace}
+\subsection{{\tt cholmod\_common}: parameters, statistics, and workspace}
 %---------------------------------------
 
 \input{_common.tex}

@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Nov 4, 2022" )
+set ( KLU_DATE "Nov 12, 2022" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
 set ( KLU_VERSION_SUB   0 )
@@ -53,7 +53,25 @@ find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( BTF 2.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
-find_package ( CHOLMOD 4.0.0 REQUIRED )
+
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
+
+if ( NOT NCHOLMOD )
+    # look for CHOLMOD (optional fill-reducing orderings for UMFPACK)
+    find_package ( CHOLMOD 4.0.0 )
+    if ( NOT CHOLMOD_FOUND )
+        # CHOLMOD not found so disable it
+        set ( NCHOLMOD true )
+    endif ( )
+endif ( )
+
+if ( NCHOLMOD )
+    # tell KLU that CHOLMOD is not available
+    message ( STATUS "CHOLMOD not found or not requested" )
+    add_compile_definitions ( NCHOLMOD )
+else ( )
+    message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -101,7 +119,7 @@ endif ( )
 # klu_cholmod library properties
 #-------------------------------------------------------------------------------
 
-if ( CHOLMOD_FOUND )
+if ( NOT NCHOLMOD )
 
     file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
 
@@ -162,7 +180,7 @@ if ( NOT NSTATIC )
 target_link_libraries ( klu_static PUBLIC ${BTF_LIBRARIES} )
 endif ( )
 
-if ( CHOLMOD_FOUND )
+if ( NOT NCHOLMOD )
 
     # klu:
     target_link_libraries ( klu_cholmod PUBLIC klu )
@@ -199,7 +217,7 @@ if ( GLOBAL_INSTALL )
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
         COMPONENT Development )
 
-    if ( CHOLMOD_FOUND )
+    if ( NOT NCHOLMOD )
         install ( TARGETS klu_cholmod
             LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
             PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
@@ -229,7 +247,7 @@ if ( INSIDE_SUITESPARSE )
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
     endif ( )
 
-    if ( CHOLMOD_FOUND )
+    if ( NOT NCHOLMOD )
         install ( TARGETS klu_cholmod
             LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
             PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
@@ -257,14 +275,14 @@ if ( DEMO )
     #---------------------------------------------------------------------------
 
     add_executable ( klu_simple  "Demo/klu_simple.c" )
-    if ( CHOLMOD_FOUND )
+    if ( NOT NCHOLMOD )
         add_executable ( kludemo     "Demo/kludemo.c" )
         add_executable ( kluldemo    "Demo/kluldemo.c" )
     endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
-    if ( CHOLMOD_FOUND )
+    if ( NOT NCHOLMOD )
         target_link_libraries ( kludemo  PUBLIC klu_cholmod )
         target_link_libraries ( kluldemo PUBLIC klu_cholmod )
     endif ( )

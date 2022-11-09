@@ -97,7 +97,7 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "Nov 4, 2022"
+#define CHOLMOD_DATE "Nov 12, 2022"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    0
 #define CHOLMOD_SUBSUB_VERSION 0
@@ -449,12 +449,6 @@ extern "C" {
 /* ========================================================================== */
 /* === CUDA BLAS for the GPU ================================================ */
 /* ========================================================================== */
-
-/* The number of OMP threads should typically be set to the number of cores   */
-/* per socket inthe machine being used.  This maximizes memory performance.   */
-#ifndef CHOLMOD_OMP_NUM_THREADS
-#define CHOLMOD_OMP_NUM_THREADS 4
-#endif
 
 /* Define buffering parameters for GPU processing */
 #ifndef SUITESPARSE_GPU_EXTERN_ON
@@ -1200,6 +1194,12 @@ typedef struct cholmod_common_struct
     size_t cholmod_gpu_syrk_calls ;
     size_t cholmod_gpu_trsm_calls ;
     size_t cholmod_gpu_potrf_calls ;
+
+    double chunk ;      // chunksize for computing # of threads to use.
+                        // Given nwork work to do, # of threads is
+                        // max (1, min (floor (work / chunk), nthreads_max))
+    int nthreads_max ;  // max # of threads to use in CHOLMOD.  Defaults to
+                        // SUITESPARSE_OPENMP_MAX_THREADS.
 
 } cholmod_common ;
 

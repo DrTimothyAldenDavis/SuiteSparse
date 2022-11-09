@@ -19,7 +19,6 @@ LDLIBS = -L../../lib \
     ../../lib/libcamd.so \
     ../../lib/libccolamd.so \
     ../../lib/libcholmod.so \
-    ../../lib/libsuitesparse_metis.so \
     -lm -lrt \
     -Wl,-rpath=../../lib -lstdc++
 

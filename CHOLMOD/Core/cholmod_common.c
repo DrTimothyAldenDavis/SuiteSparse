@@ -219,6 +219,17 @@ int CHOLMOD(start)
     Common->gpuFlops = 0 ;
     Common->gpuNumKernelLaunches = 0 ;
 
+    // -------------------------------------------------------------------------
+    // OpenMP initializations
+    // -------------------------------------------------------------------------
+
+    Common->chunk = 128000 ;
+    Common->nthreads_max = SUITESPARSE_OPENMP_MAX_THREADS ;
+
+    // -------------------------------------------------------------------------
+    // return result
+    // -------------------------------------------------------------------------
+
     DEBUG_INIT ("cholmod start", Common) ;
 
     return (TRUE) ;

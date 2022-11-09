@@ -619,25 +619,24 @@ SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
 
 const char *SuiteSparse_BLAS_library ( void )
 {
-
-    #if defined ( BLAS_INTEL_64ILP )
+    #if defined ( BLAS_Intel10_64ilp )
         return ("Intel MKL 64ilp BLAS (64-bit integers)") ;
-    #elif defined ( BLAS_INTEL_64LP )
+    #elif defined ( BLAS_Intel10_64lp )
         return ("Intel MKL 64lp BLAS (32-bit integers)") ;
-    #elif defined ( BLAS_APPLE )
+    #elif defined ( BLAS_Apple )
         return ("Apple Accelerate Framework BLAS (32-bit integers)") ;
-    #elif defined ( BLAS_ARM_MP )
+    #elif defined ( BLAS_Arm_ilp64_mp )
         return ("ARM MP BLAS (64-bit integers)") ;
-    #elif defined ( BLAS_ARM_ILP64_MP )
+    #elif defined ( BLAS_Arm_mp )
         return ("ARM MP BLAS (32-bit integers)") ;
-    #elif defined ( BLAS_IBMESSL_SMP_64 )
-        return ("IBM ESSL SMP BLAS (64-bit integers)") ;
-    #elif defined ( BLAS_IBMESSL_SMP_32 )
-        return ("IBM ESSL SMP BLAS (32-bit integers)") ;
-    #elif defined ( BLAS_OPENBLAS_64 )
-        return ("OpenBLAS (64-bit integers)") ;
-    #elif defined ( BLAS_OPENBLAS )
-        return ("OpenBLAS (32-bit integers)") ;
+    #elif defined ( BLAS_IBMESSL_SMP )
+        return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
+            "IBMESSL_SMP BLAS (64-bit integers)" :
+            "IBMESSL_SMP BLAS (32-bit integers)") ;
+    #elif defined ( BLAS_OpenBLAS )
+        return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
+            "OpenBLAS (64-bit integers)" :
+            "OpenBLAS (32-bit integers)") ;
     #else
         return ((sizeof (SUITESPARSE_BLAS_INT) == 8) ?
             "Other BLAS (64-bit integers)" :

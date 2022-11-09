@@ -59,11 +59,11 @@ demos: library
 	./build/ldlsimple > ./build/ldlsimple.out
 	- diff ./Demo/ldlsimple.out ./build/ldlsimple.out
 	./build/ldllsimple > ./build/ldllsimple.out
-	- diff ./Demo/ldlsimple.out ./build/ldllsimple.out
+	- diff ./Demo/ldllsimple.out ./build/ldllsimple.out
 	./build/ldlmain > ./build/ldlmain.out
 	- diff ./Demo/ldlmain.out ./build/ldlmain.out
 	./build/ldllmain > ./build/ldllmain.out
-	- diff ./Demo/ldlmain.out ./build/ldllmain.out
+	- diff ./Demo/ldllmain.out ./build/ldllmain.out
 	./build/ldlamd  > ./build/ldlamd.out
 	- diff ./Demo/ldlamd.out  ./build/ldlamd.out
 	./build/ldllamd  > ./build/ldllamd.out

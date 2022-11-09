@@ -1,5 +1,5 @@
 
-UMFPACK V6.0 (Nov 4, 2022) demo: _dl_ version
+UMFPACK V6.0 (Nov 12, 2022) demo: _dl_ version
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.0.0 (Nov 4, 2022): OK
+UMFPACK V6.0.0 (Nov 12, 2022): OK
 
-UMFPACK V6.0.0 (Nov 4, 2022), Control:
+UMFPACK V6.0.0 (Nov 12, 2022), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int64_t
 
@@ -45,7 +45,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Fortran BLAS.  size of BLAS integer: 4
+    8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
     POSIX C clock_getttime.
     compiled with CHOLMOD ordering options
@@ -257,10 +257,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -346,7 +346,7 @@ UMFPACK V6.0.0 (Nov 4, 2022), Info:
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.0 (Nov 4, 2022): OK
+UMFPACK V6.0.0 (Nov 12, 2022): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -362,7 +362,7 @@ maxnorm of residual: 1.06581e-14
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.0 (Nov 4, 2022): OK
+UMFPACK V6.0.0 (Nov 12, 2022): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -376,10 +376,10 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.06581e-14
 
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -605,10 +605,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -852,10 +852,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1243,10 +1243,10 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1341,10 +1341,10 @@ maxnorm of residual: 3.55271e-15
 
 
 Solving C'x=b again, using umfpack_dl_wsolve instead:
-UMFPACK V6.0.0 (Nov 4, 2022), Info:
+UMFPACK V6.0.0 (Nov 12, 2022), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
-    BLAS library used: Fortran BLAS.  size of BLAS integer: 4
+    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5

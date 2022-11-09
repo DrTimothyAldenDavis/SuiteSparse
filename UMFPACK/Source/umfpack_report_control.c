@@ -362,10 +362,14 @@ GLOBAL void UMFPACK_report_control
     PRINTF (("    "ID": BLAS library used:  ",
 	(Int) INDEX (UMFPACK_COMPILED_WITH_BLAS))) ;
 
-#ifdef NBLAS
+#if defined ( MATLAB_MEX_FILE )
+    PRINTF (("MATLAB built-in BLAS.  size of BLAS integer: "ID"\n",
+	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
+#elif defined ( NBLAS )
     PRINTF (("none.  UMFPACK will be slow.\n")) ;
 #else
-    PRINTF (("Fortran BLAS.  size of BLAS integer: "ID"\n",
+    PRINTF (("%s.  size of BLAS integer: "ID"\n",
+        SuiteSparse_BLAS_library ( ),
 	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
 #endif
 

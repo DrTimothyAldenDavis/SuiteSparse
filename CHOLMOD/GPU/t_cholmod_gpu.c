@@ -280,7 +280,11 @@ void TEMPLATE2 (CHOLMOD (gpu_reorder_descendants))
         Head[*locals] = scores[0].d;
         if ( n_descendant > 1 ) {
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            int nthreads = cholmod_nthreads ((double) n_descendant, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     if (n_descendant > 64)
 
             for ( k=1; k<n_descendant; k++ ) {
@@ -460,8 +464,13 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     /* copy Lx to the GPU */
     /* ---------------------------------------------------------------------- */
 
+    #ifdef _OPENMP
+    double work = (double) ndcol * (double) ndrow2 * L_ENTRY ;
+    int nthreads = cholmod_nthreads (work, Common) ;
+    #endif
+
     /* copy host data to pinned buffer first for better H2D bandwidth */
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS) if (ndcol > 32)
+#pragma omp parallel for num_threads(nthreads) if (ndcol > 32)
     for ( icol=0; icol<ndcol; icol++ ) {
         for ( irow=0; irow<ndrow2*L_ENTRY; irow++ ) {
             gpu_p->h_Lx[iHostBuff][icol*ndrow2*L_ENTRY+irow] =
@@ -672,7 +681,12 @@ void TEMPLATE2 (CHOLMOD (gpu_final_assembly))
 
             /* copy update assembled on CPU to a pinned buffer */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) nscol * (double) nsrow * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx) if (nscol>32)
 
             for ( j=0; j<nscol; j++ ) {
@@ -722,7 +736,12 @@ void TEMPLATE2 (CHOLMOD (gpu_final_assembly))
 
             /* place final assembled supernode in pinned buffer */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) nscol * (double) nscol * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx) if (nscol>32)
 
             for ( j=0; j<nscol; j++ ) {
@@ -740,7 +759,12 @@ void TEMPLATE2 (CHOLMOD (gpu_final_assembly))
             /* assemble with CPU updates */
             cudaDeviceSynchronize();
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) nscol * (double) nsrow * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx) if (nscol>32)
 
             for ( j=0; j<nscol; j++ ) {
@@ -1297,7 +1321,13 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
 
             if ( gpu_row_end > nsrow ) gpu_row_end = nsrow;
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) nscol2 *
+                (double) (gpu_row_end - gpu_row_start2) * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx) if ( nscol2 > 32 )
 
             for ( j=0; j<nscol2; j++ ) {
@@ -1311,7 +1341,12 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
 
     /* Convenient to copy the L1 block here */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+    #ifdef _OPENMP
+    double work = (double) nscol2 * (double) nscol2 * L_ENTRY ;
+    int nthreads = cholmod_nthreads (work, Common) ;
+    #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
 private ( iidx ) if ( nscol2 > 32 )
 
     for ( j=0; j<nscol2; j++ ) {
@@ -1337,7 +1372,13 @@ private ( iidx ) if ( nscol2 > 32 )
                                    [iblock%CHOLMOD_HOST_SUPERNODE_BUFFERS] );
             /* copy into Lx */
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+            #ifdef _OPENMP
+            double work = (double) nscol2 *
+                (double) (gpu_row_end - gpu_row_start2) * L_ENTRY ;
+            int nthreads = cholmod_nthreads (work, Common) ;
+            #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx) if ( nscol2 > 32 )
 
             for ( j=0; j<nscol2; j++ ) {
@@ -1386,7 +1427,12 @@ void TEMPLATE2 (CHOLMOD (gpu_copy_supernode))
     if ( supernodeUsedGPU && nscol2 * L_ENTRY >= CHOLMOD_POTRF_LIMIT ) {
         cudaDeviceSynchronize();
 
-#pragma omp parallel for num_threads(CHOLMOD_OMP_NUM_THREADS)   \
+        #ifdef _OPENMP
+        double work = (double) nscol * (double) nscol * L_ENTRY ;
+        int nthreads = cholmod_nthreads (work, Common) ;
+        #endif
+
+#pragma omp parallel for num_threads(nthreads)   \
     private(iidx,i,j) if (nscol>32)
 
         for ( j=0; j<nscol; j++ ) {

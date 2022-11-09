@@ -1,10 +1,8 @@
-function cholmod_install (metis_path)
+function cholmod_install
 %CHOLMOD_INSTALL compile and install CHOLMOD, AMD, COLAMD, CCOLAMD, CAMD
 %
 % Example:
 %   cholmod_install                 % compiles using METIS
-%   cholmod_install ('/my/metis')   % using non-default path to METIS
-%   cholmod_install ('no metis')    % do not use METIS at all
 %
 % CHOLMOD relies on AMD and COLAMD, for its ordering options, and can
 % optionally use CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD,
@@ -22,12 +20,8 @@ function cholmod_install (metis_path)
 % Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
-if (nargin < 1)
-    metis_path = '../../SuiteSparse_metis' ;
-end
-
 % compile CHOLMOD and add to the path
-cholmod_make (metis_path) ;
+cholmod_make ;
 cholmod_path = pwd ;
 addpath (cholmod_path)
 

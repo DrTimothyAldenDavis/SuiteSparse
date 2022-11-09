@@ -53,7 +53,7 @@ Int *GPUQREngine_FindStaircase
 );
 
 // Version information:
-#define GPUQRENGINE_DATE "Nov 4, 2022"
+#define GPUQRENGINE_DATE "Nov 12, 2022"
 #define GPUQRENGINE_MAIN_VERSION   2
 #define GPUQRENGINE_SUB_VERSION    0
 #define GPUQRENGINE_SUBSUB_VERSION 0

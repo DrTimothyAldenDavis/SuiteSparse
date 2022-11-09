@@ -12,7 +12,7 @@ default:
 
 # Remove all but the files in the original distribution
 distclean:
-	- $(RM) -r rename.h GKlib_util.c GKlib_graph.c *.o *.mex*
+	- $(RM) -r rename.h *.o *.mex*
 
 purge: distclean
 

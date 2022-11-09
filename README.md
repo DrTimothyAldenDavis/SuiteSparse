@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Nov 4, 2022.  SuiteSparse VERSION 6.0.0
+Nov 12, 2022.  SuiteSparse VERSION 6.0.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -15,7 +15,7 @@ Code co-authors, in alphabetical order (not including METIS):
     Larimore, Erick Moreno-Centeno, Ekanathan Palamadai, Sivasankaran
     Rajamanickam, Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
 
-METIS is authored by George Karypys.
+METIS is authored by George Karypis.
 
 Additional algorithm designers: Esmond Ng and John Gilbert.
 
@@ -213,11 +213,11 @@ papers in ACM TOMS, for each package.
 About the BLAS and LAPACK libraries
 -----------------------------------------------------------------------------
 
-NOTE: Use of the Intel MKL BLAS is strongly recommended.  A recent OpenBLAS
-can result in severe performance degradation.  The reason for this is being
-investigated, and this may be resolved in the near future.
+NOTE: Use of the Intel MKL BLAS is strongly recommended.  In a 2019 test,
+OpenBLAS caused result in severe performance degradation.  The reason for this
+is being investigated, and this may be resolved in the near future.
 
-To select your BLAS/LAPACK, see the SuiteSparseBLAS.cmake in
+To select your BLAS/LAPACK, see the instructions in SuiteSparseBLAS.cmake in
 `SuiteSparse_config/cmake_modules`.  If `SuiteSparse_config` finds a BLAS with
 64-bit integers (such as the Intel MKL ilp64 BLAS), it configures
 `SuiteSparse_config.h` with the `SUITESPARSE_BLAS_INT` defined as `int64_t`.
@@ -231,7 +231,23 @@ When distributed in a binary form (such as a Debian, Ubuntu, Spack, or Brew
 package), SuiteSparse should probably be compiled to expect a 32-bit BLAS,
 since this is the most common case.  The default is to use a 32-bit BLAS, but
 this can be changed in SuiteSparseBLAS.cmake or by compiling with
-`-DALLOW_64BIT_BLAS`.
+`-DALLOW_64BIT_BLAS=1`.
+
+By default, SuiteSparse hunts for a suitable BLAS library.  To enforce a
+particular BLAS library use either:
+
+    CMAKE_OPTIONS="-DBLA_VENDOR=OpenBLAS" make
+    cd Package ; cmake -DBLA_VENDOR=OpenBLAS .. make
+
+To use the default (hunt for a BLAS), do not set `BLA_VENDOR`, or set it to
+ANY.  In this case, if `ALLOW_64BIT_BLAS` is set, preference is given to a
+64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit library is
+found.
+
+When selecting a particular BLAS library, the `ALLOW_64BIT_BLAS` setting is
+strictly followed.  If set to true, only a 64-bit BLAS library will be used.
+If false (the default), only a 32-bit BLAS library will be used.  If no such
+BLAS is found, the build will fail.
 
 ------------------
 SuiteSparse/README
@@ -576,21 +592,20 @@ You can set specific options for CMake with the command (for example):
     CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1 -DCMAKE_BUILD_TYPE=Debug" make
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
-Module, which relies on SuiteSparse_metis (NPARTITION is true).  Debug mode
-will be used.  The static libraries will not be built (NSTATIC is true).
+Module.  Debug mode will be used.  The static libraries will not be built
+(NSTATIC is true).
 
     CMAKE_BUILD_TYPE:   Default: "Release", use "Debug" for debugging.
 
     ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
-                        Default: true for CHOLMOD and SPQR
+                        Default: true for CHOLMOD and SPQR; false otherwise
 
-    GLOBAL_INSTALL:     if true, "make install" will
+    GLOBAL_INSTALL:     if true, "make install" will install
                         into /usr/local/lib and /usr/local/include.
                         Default: true
 
-    LOCAL_INSTALL:      if true, "make install" will
-                        into SuiteSparse/lib and SuiteSparse/include,
-                        but these folders must also already exist.
+    LOCAL_INSTALL:      if true, "make install" will install
+                        into SuiteSparse/lib and SuiteSparse/include.
                         Default: false
 
     NSTATIC:            if true, static libraries are not built.
@@ -600,17 +615,38 @@ will be used.  The static libraries will not be built (NSTATIC is true).
                         is treated as if it always false, since the mongoose
                         program is built with the static library.
 
-    NPARTITION:         if true, CHOLMOD/SuiteSparse_metis will not be compiled
-                        or used in CHOLMOD.  Default: false
-
     SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
                         "35;50;75;80" that lists the CUDA architectures to use
                         when compiling CUDA kernels with nvcc.  The "all"
                         option requires cmake 3.23 or later.
                         Default: "52;75;80".
 
-To select a specific BLAS library, edit the SuiteSparseBLAS.cmake file
-in SuiteSparse_config/cmake_modules.
+    BLA_VENDOR          a string.  Leave unset, or use "ANY" to select any BLAS
+                        library (the default).  Or set to the name of a
+                        BLA_VENDOR defined by FindBLAS.cmake.
+
+    ALLOW_64BIT_BLAS    if true: look for a 64-bit BLAS.  If false: 32-bit only.
+                        Default: false.
+
+Additional options are available within specific packages:
+
+    NCHOLMOD            if true, UMFPACK and KLU do not use CHOLMOD for
+                        additional (optional) ordering options
+
+CHOLMOD is composed of a set of Modules that can be independently selected;
+all options default to false:
+
+    NGL                 if true: do not build any GPL-licensed module
+                        (MatrixOps, Modify, Supernodal, and GPU modules)
+    NCHECK              if true: do not build the Check module.
+    NMATRIXOPS          if true: do not build the MatrixOps module.
+    NCHOLESKY           if true: do not build the Cholesky module.
+                        This also disables the Supernodal and Modify modules.
+    NMODIFY             if true: do not build the Modify module.
+    NCAMD               if true: do not link against CAMD and CCOLAMD.
+                        This also disables the Partition module.
+    NPARTITION          if true: do not build the Partition module.
+    NSUPERNODAL         if true: do not build the Supernodal module.
 
 -----------------------------------------------------------------------------
 Acknowledgements

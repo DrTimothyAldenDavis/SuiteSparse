@@ -17,7 +17,7 @@ cmake_minimum_required ( VERSION 3.19 )
 
 # date version must match ../CMakeLists.txt:
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Nov 3, 2022" )
+set ( GraphBLAS_DATE "Nov 12, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
 set ( GraphBLAS_VERSION_SUB   2 )

@@ -59,7 +59,6 @@ char *gk_strchr_replace(char *str, char *fromlist, char *tolist)
 
   return str;
 }
-#endif
 
 
 
@@ -93,7 +92,6 @@ based substitution function.
   returned in <tt>newstr</tt>, which also needs to be freed afterwards.
 */
 /************************************************************************/
-#if 0
 int gk_strstr_replace(char *str, char *pattern, char *replacement, char *options,
       char **new_str)
 {
@@ -236,7 +234,6 @@ int gk_strstr_replace(char *str, char *pattern, char *replacement, char *options
   return nmatches + 1;
 
 }
-#endif
 
 
 
@@ -292,7 +289,6 @@ This is a distructive operation as it modifies the string.
 \sa gk_strtprune()
 */
 /*************************************************************************/
-#if 0
 char *gk_strhprune(char *str, char *rmlist)
 {
   gk_idx_t i, j;
@@ -317,7 +313,6 @@ char *gk_strhprune(char *str, char *rmlist)
 
   return str;
 }
-#endif
 
 
 /************************************************************************/
@@ -358,6 +353,7 @@ char *gk_strtolower(char *str)
   for (i=0; str[i]!='\0'; str[i]=tolower(str[i]), i++); 
   return str;
 }
+#endif
 
 
 /************************************************************************/
@@ -424,7 +420,6 @@ int gk_strcasecmp(char *s1, char *s2)
 
   return 1;
 }
-#endif
 
 
 /************************************************************************/
@@ -438,7 +433,6 @@ if the two strings were reversed.
 \retval -1, 0, 1, if the s1 < s2, s1 == s2, or s1 > s2.
 */
 /*************************************************************************/
-#if 0
 int gk_strrcmp(char *s1, char *s2)
 {
   int i1 = strlen(s1)-1;
@@ -459,7 +453,6 @@ int gk_strrcmp(char *s1, char *s2)
     return 1;
   return 0;
 }
-#endif
 
 
 
@@ -477,7 +470,6 @@ representation of the corresponding time. The format of the string is
 
 */
 /*************************************************************************/
-#if 0
 char *gk_time2str(time_t time)
 {
   static char datestr[128];
@@ -490,11 +482,9 @@ char *gk_time2str(time_t time)
   else
     return datestr;
 }
-#endif
 
 
 
-#if 0
 #if !defined(WIN32) && !defined(__MINGW32__)
 /************************************************************************/
 /*! \brief Converts a date/time string into its equivalent time_t value
@@ -523,14 +513,12 @@ time_t gk_str2time(char *str)
   return (rtime < 0 ? 0 : rtime);
 }
 #endif
-#endif
 
 
 /*************************************************************************
 * This function returns the ID of a particular string based on the 
 * supplied StringMap array
 **************************************************************************/
-#if 0
 int gk_GetStringID(gk_StringMap_t *strmap, char *key)
 {
   int i;

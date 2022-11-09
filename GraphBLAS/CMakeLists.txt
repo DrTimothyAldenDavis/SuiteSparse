@@ -14,7 +14,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Nov 3, 2022" )
+set ( GraphBLAS_DATE "Nov 12, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
 set ( GraphBLAS_VERSION_SUB   2 )
@@ -41,14 +41,14 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-if ( NOT DEFINED NSTATIC )
-    # default for GraphBLAS: do not build the static libraries
-    set ( NSTATIC true )
-endif ( )
-
 # CUDA is under development for now, and not deployed in production:
+# option ( ENABLE_CUDA "Enable CUDA acceleration" off )
   set ( ENABLE_CUDA false )
 # set ( ENABLE_CUDA true )
+
+# GraphBLAS takes a long time to build, so do not build the static library
+# by default
+set ( NSTATIC_DEFAULT_ON true )
 
 include ( SuiteSparsePolicy )
 
