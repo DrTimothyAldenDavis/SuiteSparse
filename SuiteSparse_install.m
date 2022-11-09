@@ -42,8 +42,8 @@ function SuiteSparse_install (do_demo)
 %
 % This script installs the full-featured CXSparse rather than CSparse.
 %
-% If you get errors building or using METIS, just remove the SuiteSparse_metis
-% folder.  This often occurs on Windows.
+% If you get errors building or using METIS, just remove the
+% CHOLMOD/SuiteSparse_metis folder.  This often occurs on Windows.
 %
 % Before using SuiteSparse_install, you must compile the GraphBLAS library for
 % use in MATLAB.  In the system shell while in the SuiteSparse folder, type
@@ -55,10 +55,10 @@ function SuiteSparse_install (do_demo)
 % Copyright (c) 1990-2022, Timothy A. Davis, http://suitesparse.com.
 %
 % In collaboration with (in alphabetical order): Patrick Amestoy, David
-% Bateman, Jinhao Chen.  Yanqing Chen, Iain Duff, Les Foster, William Hager,
-% Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick Moreno-Centeno,
-% Ekanathan Palamadai, Sivasankaran Rajamanickam, Sanjay Ranka, Wissam
-% Sid-Lakhdar, Nuri Yeralan.
+% Bateman, Jinhao Chen, Yanqing Chen, Iain Duff, Les Foster, John Gilbert,
+% William Hager, Scott Kolodziej, Chris Lourenco, Stefan Larimore, Erick
+% Moreno-Centeno, Esmond Ng, Ekanathan Palamadai, Sivasankaran Rajamanickam,
+% Sanjay Ranka, Wissam Sid-Lakhdar, Nuri Yeralan.
 %
 % See each package for its license.
 

@@ -6,7 +6,7 @@ function spqr_install
 %
 % SuiteSparseQR relies on CHOLMOD, AMD, and COLAMD, and can optionally use
 % CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD, and METIS are
-% used.  METIS is assumed to be in the ../../CHOLOD/SuiteSparse_metis
+% used.  METIS is assumed to be in the ../../CHOLMOD/SuiteSparse_metis
 % directory.  If not present there, it is not used.
 %
 % You can only use spqr_install while in the SuiteSparseQR/MATLAB directory.

@@ -117,10 +117,10 @@ end
 %-------------------------------------------------------------------------------
 
 if (with_cholmod)
-    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
+    fprintf ('with CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
     flags = [' -DNSUPERNODAL -DNMODIFY -DNMATRIXOPS ' flags] ;
 else
-    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and SuiteSparse_metis\n') ;
+    fprintf ('without CHOLMOD, CAMD, CCOLAMD, and METIS\n') ;
     flags = [' -DNCHOLMOD ' flags] ;
 end
 

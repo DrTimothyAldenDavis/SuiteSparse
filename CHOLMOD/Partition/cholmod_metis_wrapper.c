@@ -24,6 +24,8 @@
     #pragma GCC diagnostic ignored "-Wstringop-overflow="
     // csr.c has misleading indentation:
     #pragma GCC diagnostic ignored "-Wmisleading-indentation"
+    // GKlib/error.c:
+    #pragma GCC diagnostic ignored "-Wunused-result"
 #endif
 
 #include "SuiteSparse_metis/GKlib/GKlib.h"

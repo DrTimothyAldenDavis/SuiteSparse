@@ -60,12 +60,12 @@ end
 have_metis = exist ('../SuiteSparse_metis', 'dir') ;
 
 if (have_metis)
-    fprintf ('Compiling CHOLMOD with SuiteSparse_metis for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling CHOLMOD with METIS for MATLAB Version %s\n', v) ;
     include = [include ' -I../SuiteSparse_metis/include'] ;
     include = [include ' -I../SuiteSparse_metis/GKlib'] ;
     include = [include ' -I../SuiteSparse_metis/libmetis'] ;
 else
-    fprintf ('Compiling CHOLMOD without SuiteSparse_metis for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling CHOLMOD without METIS for MATLAB Version %s\n', v) ;
     include = ['-DNPARTITION ' include] ;
 end
 

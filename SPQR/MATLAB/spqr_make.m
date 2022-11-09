@@ -54,13 +54,13 @@ metis_path = '../../CHOLMOD/SuiteSparse_metis' ;
 have_metis = exist (metis_path, 'dir') ;
 
 if (have_metis)
-    fprintf ('Compiling SuiteSparseQR with SuiteSparse_metis for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling SuiteSparseQR with METIS for MATLAB Version %s\n', v) ;
     include = [include ' -I' metis_path '/include'] ;
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;
     include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD' ] ;
 else
-    fprintf ('Compiling SuiteSparseQR without SuiteSparse_metis on MATLAB Version %s\n', v);
+    fprintf ('Compiling SuiteSparseQR without METIS on MATLAB Version %s\n', v);
     include = ['-DNPARTITION ' include ] ;
 end
 
