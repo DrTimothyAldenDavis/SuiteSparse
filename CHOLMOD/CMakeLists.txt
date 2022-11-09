@@ -68,7 +68,15 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 enable_language ( C Fortran )
-find_package ( OpenMP )
+
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
+
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( COLAMD 3.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )

@@ -623,10 +623,17 @@ Module.  Debug mode will be used.  The static libraries will not be built
 
     BLA_VENDOR          a string.  Leave unset, or use "ANY" to select any BLAS
                         library (the default).  Or set to the name of a
-                        BLA_VENDOR defined by FindBLAS.cmake.
+                        BLA_VENDOR defined by FindBLAS.cmake.  See:
+                        https://cmake.org/cmake/help/latest/module/FindBLAS.html#blas-lapack-vendors
 
     ALLOW_64BIT_BLAS    if true: look for a 64-bit BLAS.  If false: 32-bit only.
                         Default: false.
+
+    NOPENMP             if true: OpenMP is not used.  Default: false.
+                        UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow.
+                        Note that BLAS and LAPACK may still use OpenMP
+                        internally; if you wish to disable OpenMP in an entire
+                        application, select a single-threaded BLAS/LAPACK.
 
 Additional options are available within specific packages:
 

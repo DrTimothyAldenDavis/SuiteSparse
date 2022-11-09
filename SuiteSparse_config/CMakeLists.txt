@@ -47,7 +47,15 @@ project ( suitesparseconfig
 
 enable_language ( C Fortran )
 message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
-find_package ( OpenMP )
+
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
+
 include ( SuiteSparseBLAS )
 
 #-------------------------------------------------------------------------------

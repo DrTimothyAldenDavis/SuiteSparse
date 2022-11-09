@@ -67,7 +67,13 @@ endif ( )
 # find OpenMP and cpu_features
 #-------------------------------------------------------------------------------
 
-find_package ( OpenMP )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
 
 if ( NOT GBNCPUFEAT )
     # default: enable Google's cpu_features package

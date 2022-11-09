@@ -73,7 +73,13 @@ endif ( )
 # find OpenMP, CUDA, RMM, and cpu_features
 #-------------------------------------------------------------------------------
 
-find_package ( OpenMP )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA and RMM

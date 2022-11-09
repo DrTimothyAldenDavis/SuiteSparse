@@ -47,8 +47,15 @@ project ( umfpack
 #-------------------------------------------------------------------------------
 
 enable_language ( C Fortran )
-message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
-find_package ( OpenMP )
+
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
+
 find_package ( SuiteSparse_config 6.0.0 REQUIRED )
 find_package ( AMD 3.0.0 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
