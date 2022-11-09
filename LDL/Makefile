@@ -63,7 +63,7 @@ demos: library
 	./build/ldlmain > ./build/ldlmain.out
 	- diff ./Demo/ldlmain.out ./build/ldlmain.out
 	./build/ldllmain > ./build/ldllmain.out
-	- diff ./Demo/ldlmain.out ./build/ldllmain.out
+	- diff ./Demo/ldllmain.out ./build/ldllmain.out
 	./build/ldlamd  > ./build/ldlamd.out
 	- diff ./Demo/ldlamd.out  ./build/ldlamd.out
 	./build/ldllamd  > ./build/ldllamd.out
