@@ -262,6 +262,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
 if ( DEMO )
 
     #---------------------------------------------------------------------------

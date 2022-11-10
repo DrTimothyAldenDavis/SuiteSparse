@@ -8595,6 +8595,9 @@ You can query GraphBLAS at run time to ask if it was compiled with OpenMP:
     if (!have_openmp) printf ("GraphBLAS not compiled with OpenMP\n") :
 \end{verbatim}
 
+Compiling GraphBLAS without OpenMP is not recommended for installation in a
+package manager (Linux, conda-forge, spack, brew, vcpkg, etc).
+
 %-------------------------------------------------------------------------------
 \subsection{Storing a matrix by row or by column}
 %-------------------------------------------------------------------------------
