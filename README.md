@@ -634,6 +634,11 @@ Module.  Debug mode will be used.  The static libraries will not be built
                         Note that BLAS and LAPACK may still use OpenMP
                         internally; if you wish to disable OpenMP in an entire
                         application, select a single-threaded BLAS/LAPACK.
+                        WARNING: GraphBLAS may not be thread-safe if built
+                        without OpenMP (see the User Guide for details).
+
+    DEMO                if true: build the demo programs for each package.
+                        Default: false.
 
 Additional options are available within specific packages:
 

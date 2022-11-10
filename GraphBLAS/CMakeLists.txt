@@ -75,7 +75,8 @@ endif ( )
 
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
-    # OpenMP has been disabled
+    # OpenMP has been disabled.
+
     set ( OPENMP_FOUND false )
 else ( )
     find_package ( OpenMP )
@@ -372,6 +373,17 @@ if ( OPENMP_FOUND )
     message ( STATUS "CMAKE OpenMP C flags:      " ${OpenMP_C_FLAGS} )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
+else ( )
+    message  ( WARNING
+    "WARNING:  OpenMP was not found (or was disabled with NOPENMP).  See the "
+    "GrapBLAS user guide on the consequences of compiling GraphBLAS without "
+    "OpenMP. GraphBLAS will work but may not be thread-safe, since it relies "
+    "on '#pragma omp flush' to ensure the work performed by one user thread is "
+    "available to another, in GrB_wait.  If OpenMP is not in use, the "
+    "thread-safety of GrB_wait becomes the responsibilty of the user "
+    "application (perhaps through a pthreads construct).  Compiling GraphBLAS "
+    "without OpenMP is not recommended for installation in a package manager "
+    "(Linux, conda-forge, spack, brew, vcpkg, etc). " )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
@@ -391,6 +403,7 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
 if ( DEMO )
 
     #---------------------------------------------------------------------------
