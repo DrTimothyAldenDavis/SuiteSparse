@@ -709,15 +709,15 @@ void SUITESPARSE_BLAS_DGEMV         // Y = alpha*A*x + beta*Y
 
 #define SUITESPARSE_BLAS_dgemv(trans,m,n,alpha,A,lda,X,incx,beta,Y,incy,ok)   \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX,      \
-            beta, Y, &INCY) ;                                                 \
+        SUITESPARSE_BLAS_DGEMV (trans, &M_blas_int, &N_blas_int, alpha, A, &LDA_blas_int, X, &INCX_blas_int,      \
+            beta, Y, &INCY_blas_int) ;                                                 \
     }                                                                         \
 }
 
@@ -741,15 +741,15 @@ void SUITESPARSE_BLAS_ZGEMV         // Y = alpha*A*X + beta*Y
 
 #define SUITESPARSE_BLAS_zgemv(trans,m,n,alpha,A,lda,X,incx,beta,Y,incy,ok)   \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZGEMV (trans, &M, &N, alpha, A, &LDA, X, &INCX,      \
-            beta, Y, &INCY) ;                                                 \
+        SUITESPARSE_BLAS_ZGEMV (trans, &M_blas_int, &N_blas_int, alpha, A, &LDA_blas_int, X, &INCX_blas_int,      \
+            beta, Y, &INCY_blas_int) ;                                                 \
     }                                                                         \
 }
 
@@ -770,12 +770,12 @@ void SUITESPARSE_BLAS_DTRSV         // solve Lx=b, Ux=b, L'x=b, or U'x=b
 
 #define SUITESPARSE_BLAS_dtrsv(uplo,trans,diag,n,A,lda,X,incx,ok)             \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ;   \
+        SUITESPARSE_BLAS_DTRSV (uplo, trans, diag, &N_blas_int, A, &LDA_blas_int, X, &INCX_blas_int) ;   \
     }                                                                         \
 }
 
@@ -796,12 +796,12 @@ void SUITESPARSE_BLAS_ZTRSV         // solve (L, L', L^H, U, U', or U^H)x=b
 
 #define SUITESPARSE_BLAS_ztrsv(uplo,trans,diag,n,A,lda,X,incx,ok)             \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZTRSV (uplo, trans, diag, &N, A, &LDA, X, &INCX) ;   \
+        SUITESPARSE_BLAS_ZTRSV (uplo, trans, diag, &N_blas_int, A, &LDA_blas_int, X, &INCX_blas_int) ;   \
     }                                                                         \
 }
 
@@ -825,14 +825,14 @@ void SUITESPARSE_BLAS_DTRSM         // solve LX=B, UX=B, L'X=B, or U'X=B
 
 #define SUITESPARSE_BLAS_dtrsm(side,uplo,transa,diag,m,n,alpha,A,lda,B,ldb,ok)\
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB_blas_int, ldb, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DTRSM (side, uplo, transa, diag, &M, &N, alpha, A,   \
-            &LDA, B, &LDB) ;                                                  \
+        SUITESPARSE_BLAS_DTRSM (side, uplo, transa, diag, &M_blas_int, &N_blas_int, alpha, A,   \
+            &LDA_blas_int, B, &LDB_blas_int) ;                                                  \
     }                                                                         \
 }
 
@@ -856,14 +856,14 @@ void SUITESPARSE_BLAS_ZTRSM         // solve (L, L', L^H, U, U', or U^H)X=B
 
 #define SUITESPARSE_BLAS_ztrsm(side,uplo,transa,diag,m,n,alpha,A,lda,B,ldb,ok)\
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB_blas_int, ldb, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZTRSM (side, uplo, transa, diag, &M, &N, alpha, A,   \
-            &LDA, B, &LDB) ;                                                  \
+        SUITESPARSE_BLAS_ZTRSM (side, uplo, transa, diag, &M_blas_int, &N_blas_int, alpha, A,   \
+            &LDA_blas_int, B, &LDB_blas_int) ;                                                  \
     }                                                                         \
 }
 
@@ -890,16 +890,16 @@ void SUITESPARSE_BLAS_DGEMM         // C = alpha*A*B + beta*C
 #define SUITESPARSE_BLAS_dgemm(transa,transb,m,n,k,alpha,A,lda,B,ldb,beta,    \
     C,ldc,ok)                                                                 \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB_blas_int, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA,   \
-            B, &LDB, beta, C, &LDC) ;                                         \
+        SUITESPARSE_BLAS_DGEMM (transa, transb, &M_blas_int, &N_blas_int, &K_blas_int, alpha, A, &LDA_blas_int,   \
+            B, &LDB_blas_int, beta, C, &LDC_blas_int) ;                                         \
     }                                                                         \
 }
 
@@ -926,16 +926,16 @@ void SUITESPARSE_BLAS_ZGEMM         // C = alpha*A*B + beta*C
 #define SUITESPARSE_BLAS_zgemm(transa,transb,m,n,k,alpha,A,lda,B,ldb,beta,    \
     C,ldc,ok)                                                                 \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDB, ldb, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDB_blas_int, ldb, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZGEMM (transa, transb, &M, &N, &K, alpha, A, &LDA,   \
-            B, &LDB, beta, C, &LDC) ;                                         \
+        SUITESPARSE_BLAS_ZGEMM (transa, transb, &M_blas_int, &N_blas_int, &K_blas_int, alpha, A, &LDA_blas_int,   \
+            B, &LDB_blas_int, beta, C, &LDC_blas_int) ;                                         \
     }                                                                         \
 }
 
@@ -958,14 +958,14 @@ void SUITESPARSE_BLAS_DSYRK         // C = alpha*A*A' + beta*C, or A'A
 
 #define SUITESPARSE_BLAS_dsyrk(uplo,trans,n,k,alpha,A,lda,beta,C,ldc,ok)      \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DSYRK (uplo, trans, &N, &K, alpha, A, &LDA,          \
-            beta, C, &LDC) ;                                                  \
+        SUITESPARSE_BLAS_DSYRK (uplo, trans, &N_blas_int, &K_blas_int, alpha, A, &LDA_blas_int,          \
+            beta, C, &LDC_blas_int) ;                                                  \
     }                                                                         \
 }
 
@@ -988,14 +988,14 @@ void SUITESPARSE_BLAS_ZHERK         // C = alpha*A*A^H + beta*C, or A^H*A
 
 #define SUITESPARSE_BLAS_zherk(uplo,trans,n,k,alpha,A,lda,beta,C,ldc,ok)      \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZHERK (uplo, trans, &N, &K, alpha, A, &LDA,          \
-            beta, C, &LDC) ;                                                  \
+        SUITESPARSE_BLAS_ZHERK (uplo, trans, &N_blas_int, &K_blas_int, alpha, A, &LDA_blas_int,          \
+            beta, C, &LDC_blas_int) ;                                                  \
     }                                                                         \
 }
 
@@ -1014,13 +1014,13 @@ void SUITESPARSE_LAPACK_DPOTRF      // Cholesky factorization
 
 #define SUITESPARSE_LAPACK_dpotrf(uplo,n,A,lda,info,ok)                       \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
     info = 1 ;                                                                \
     if (ok)                                                                   \
     {                                                                         \
         SUITESPARSE_BLAS_INT LAPACK_Info = -999 ;                             \
-        SUITESPARSE_LAPACK_DPOTRF (uplo, &N, A, &LDA, &LAPACK_Info) ;         \
+        SUITESPARSE_LAPACK_DPOTRF (uplo, &N_blas_int, A, &LDA_blas_int, &LAPACK_Info) ;         \
         info = (Int) LAPACK_Info ;                                            \
     }                                                                         \
 }
@@ -1040,13 +1040,13 @@ void SUITESPARSE_LAPACK_ZPOTRF      // Cholesky factorization
 
 #define SUITESPARSE_LAPACK_zpotrf(uplo,n,A,lda,info,ok)                       \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
     info = 1 ;                                                                \
     if (ok)                                                                   \
     {                                                                         \
         SUITESPARSE_BLAS_INT LAPACK_Info = -999 ;                             \
-        SUITESPARSE_LAPACK_ZPOTRF (uplo, &N, A, &LDA, &LAPACK_Info) ;         \
+        SUITESPARSE_LAPACK_ZPOTRF (uplo, &N_blas_int, A, &LDA_blas_int, &LAPACK_Info) ;         \
         info = LAPACK_Info ;                                                  \
     }                                                                         \
 }
@@ -1064,11 +1064,11 @@ void SUITESPARSE_BLAS_DSCAL         // Y = alpha*Y
 
 #define SUITESPARSE_BLAS_dscal(n,alpha,Y,incy,ok)                             \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DSCAL (&N, alpha, Y, &INCY) ;                        \
+        SUITESPARSE_BLAS_DSCAL (&N_blas_int, alpha, Y, &INCY_blas_int) ;                        \
     }                                                                         \
 }
 
@@ -1085,11 +1085,11 @@ void SUITESPARSE_BLAS_ZSCAL         // Y = alpha*Y
 
 #define SUITESPARSE_BLAS_zscal(n,alpha,Y,incy,ok)                             \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZSCAL (&N, alpha, Y, &INCY) ;                        \
+        SUITESPARSE_BLAS_ZSCAL (&N_blas_int, alpha, Y, &INCY_blas_int) ;                        \
     }                                                                         \
 }
 
@@ -1111,14 +1111,14 @@ void SUITESPARSE_BLAS_DGER          // A = alpha*x*y' + A
 
 #define SUITESPARSE_BLAS_dger(m,n,alpha,X,incx,Y,incy,A,lda,ok)               \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_DGER (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ;  \
+        SUITESPARSE_BLAS_DGER (&M_blas_int, &N_blas_int, alpha, X, &INCX_blas_int, Y, &INCY_blas_int, A, &LDA_blas_int) ;  \
     }                                                                         \
 }
 
@@ -1140,14 +1140,14 @@ void SUITESPARSE_BLAS_ZGERU         // A = alpha*x*y' + A
 
 #define SUITESPARSE_BLAS_zgeru(m,n,alpha,X,incx,Y,incy,A,lda,ok)              \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (INCY, incy, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (LDA, lda, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (INCY_blas_int, incy, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDA_blas_int, lda, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_BLAS_ZGERU (&M, &N, alpha, X, &INCX, Y, &INCY, A, &LDA) ; \
+        SUITESPARSE_BLAS_ZGERU (&M_blas_int, &N_blas_int, alpha, X, &INCX_blas_int, Y, &INCY_blas_int, A, &LDA_blas_int) ; \
     }                                                                         \
 }
 
@@ -1169,14 +1169,14 @@ void SUITESPARSE_LAPACK_DLARFT      // T = block Householder factor
 
 #define SUITESPARSE_LAPACK_dlarft(direct,storev,n,k,V,ldv,Tau,T,ldt,ok)       \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV_blas_int, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT_blas_int, ldt, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_DLARFT (direct, storev, &N, &K, V, &LDV, Tau,      \
-            T, &LDT) ;                                                        \
+        SUITESPARSE_LAPACK_DLARFT (direct, storev, &N_blas_int, &K_blas_int, V, &LDV_blas_int, Tau,      \
+            T, &LDT_blas_int) ;                                                        \
     }                                                                         \
 }
 
@@ -1198,14 +1198,14 @@ void SUITESPARSE_LAPACK_ZLARFT      // T = block Householder factor
 
 #define SUITESPARSE_LAPACK_zlarft(direct,storev,n,k,V,ldv,Tau,T,ldt,ok)       \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV_blas_int, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT_blas_int, ldt, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_ZLARFT (direct, storev, &N, &K, V, &LDV, Tau,      \
-            T, &LDT) ;                                                        \
+        SUITESPARSE_LAPACK_ZLARFT (direct, storev, &N_blas_int, &K_blas_int, V, &LDV_blas_int, Tau,      \
+            T, &LDT_blas_int) ;                                                        \
     }                                                                         \
 }
 
@@ -1236,17 +1236,17 @@ void SUITESPARSE_LAPACK_DLARFB      // apply block Householder reflector
 #define SUITESPARSE_LAPACK_dlarfb(side,trans,direct,storev,m,n,k,V,ldv,T,ldt, \
     C,ldc,Work,ldwork,ok)                                                     \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDWORK, ldwork, ok) ;                            \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV_blas_int, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT_blas_int, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDWORK_blas_int, ldwork, ok) ;                            \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_DLARFB (side, trans, direct, storev, &M, &N, &K,   \
-            V, &LDV, T, &LDT, C, &LDC, Work, &LDWORK) ;                       \
+        SUITESPARSE_LAPACK_DLARFB (side, trans, direct, storev, &M_blas_int, &N_blas_int, &K_blas_int,   \
+            V, &LDV_blas_int, T, &LDT_blas_int, C, &LDC_blas_int, Work, &LDWORK_blas_int) ;                       \
     }                                                                         \
 }
 
@@ -1277,17 +1277,17 @@ void SUITESPARSE_LAPACK_ZLARFB      // apply block Householder reflector
 #define SUITESPARSE_LAPACK_zlarfb(side,trans,direct,storev,m,n,k,V,ldv,T,ldt, \
     C,ldc,Work,ldwork,ok)                                                     \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (K, k, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (LDV, ldv, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDT, ldt, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
-    SUITESPARSE_TO_BLAS_INT (LDWORK, ldwork, ok) ;                            \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (K_blas_int, k, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (LDV_blas_int, ldv, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDT_blas_int, ldt, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (LDWORK_blas_int, ldwork, ok) ;                            \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_ZLARFB (side, trans, direct, storev, &M, &N, &K,   \
-            V, &LDV, T, &LDT, C, &LDC, Work, &LDWORK) ;                       \
+        SUITESPARSE_LAPACK_ZLARFB (side, trans, direct, storev, &M_blas_int, &N_blas_int, &K_blas_int,   \
+            V, &LDV_blas_int, T, &LDT_blas_int, C, &LDC_blas_int, Work, &LDWORK_blas_int) ;                       \
     }                                                                         \
 }
 
@@ -1301,12 +1301,12 @@ double SUITESPARSE_BLAS_DNRM2       // vector 2-norm
 
 #define SUITESPARSE_BLAS_dnrm2(result,n,X,incx,ok)                            \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     result = 0 ;                                                              \
     if (ok)                                                                   \
     {                                                                         \
-        result = SUITESPARSE_BLAS_DNRM2 (&N, X, &INCX) ;                      \
+        result = SUITESPARSE_BLAS_DNRM2 (&N_blas_int, X, &INCX_blas_int) ;                      \
     }                                                                         \
 }
 
@@ -1320,12 +1320,12 @@ double SUITESPARSE_BLAS_DZNRM2      // vector 2-norm
 
 #define SUITESPARSE_BLAS_dznrm2(result,n,X,incx,ok)                           \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     result = 0 ;                                                              \
     if (ok)                                                                   \
     {                                                                         \
-        result = SUITESPARSE_BLAS_DZNRM2 (&N, X, &INCX) ;                     \
+        result = SUITESPARSE_BLAS_DZNRM2 (&N_blas_int, X, &INCX_blas_int) ;                     \
     }                                                                         \
 }
 
@@ -1344,11 +1344,11 @@ void SUITESPARSE_LAPACK_DLARFG      // generate Householder reflector
 
 #define SUITESPARSE_LAPACK_dlarfg(n,alpha,X,incx,tau,ok)                      \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_DLARFG (&N, alpha, X, &INCX, tau) ;                \
+        SUITESPARSE_LAPACK_DLARFG (&N_blas_int, alpha, X, &INCX_blas_int, tau) ;                \
     }                                                                         \
 }
 
@@ -1367,11 +1367,11 @@ void SUITESPARSE_LAPACK_ZLARFG      // generate Householder reflector
 
 #define SUITESPARSE_LAPACK_zlarfg(n,alpha,X,incx,tau,ok)                      \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCX, incx, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCX_blas_int, incx, ok) ;                                \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_ZLARFG (&N, alpha, X, &INCX, tau) ;                \
+        SUITESPARSE_LAPACK_ZLARFG (&N_blas_int, alpha, X, &INCX_blas_int, tau) ;                \
     }                                                                         \
 }
 
@@ -1394,13 +1394,13 @@ void SUITESPARSE_LAPACK_DLARF       // apply Householder reflector
 
 #define SUITESPARSE_LAPACK_dlarf(side,m,n,V,incv,tau,C,ldc,Work,ok)           \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCV, incv, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCV_blas_int, incv, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_DLARF (side, &M, &N, V, &INCV, tau, C, &LDC,       \
+        SUITESPARSE_LAPACK_DLARF (side, &M_blas_int, &N_blas_int, V, &INCV_blas_int, tau, C, &LDC_blas_int,       \
             Work) ;                                                           \
     }                                                                         \
 }
@@ -1424,13 +1424,13 @@ void SUITESPARSE_LAPACK_ZLARF       // apply Householder reflector
 
 #define SUITESPARSE_LAPACK_zlarf(side,m,n,V,incv,tau,C,ldc,Work,ok)           \
 {                                                                             \
-    SUITESPARSE_TO_BLAS_INT (M, m, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (N, n, ok) ;                                      \
-    SUITESPARSE_TO_BLAS_INT (INCV, incv, ok) ;                                \
-    SUITESPARSE_TO_BLAS_INT (LDC, ldc, ok) ;                                  \
+    SUITESPARSE_TO_BLAS_INT (M_blas_int, m, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (N_blas_int, n, ok) ;                                      \
+    SUITESPARSE_TO_BLAS_INT (INCV_blas_int, incv, ok) ;                                \
+    SUITESPARSE_TO_BLAS_INT (LDC_blas_int, ldc, ok) ;                                  \
     if (ok)                                                                   \
     {                                                                         \
-        SUITESPARSE_LAPACK_ZLARF (side, &M, &N, V, &INCV, tau, C, &LDC,       \
+        SUITESPARSE_LAPACK_ZLARF (side, &M_blas_int, &N_blas_int, V, &INCV_blas_int, tau, C, &LDC_blas_int,       \
             Work) ;                                                           \
     }                                                                         \
 }
