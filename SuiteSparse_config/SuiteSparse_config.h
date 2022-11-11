@@ -488,7 +488,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 #define SUITESPARSE_DATE "Nov 12, 2022"
 #define SUITESPARSE_MAIN_VERSION    6
 #define SUITESPARSE_SUB_VERSION     0
-#define SUITESPARSE_SUBSUB_VERSION  0
+#define SUITESPARSE_SUBSUB_VERSION  1
 
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SUITESPARSE_VERSION \
@@ -688,6 +688,20 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 // See https://netlib.org/blas/ and https://netlib.org/lapack/ for the
 // definitions of the inputs/outputs of these functions.
+
+// These prototypes need to be found by UMFPACK, CHOLMOD, and SPQR, and to do
+// so, they need to appear in this public header to ensure the correct BLAS
+// library and integer size is used.  However, these definitions should not
+// (normally) be exposed to the user application.
+
+// If a user application wishes to use these definitions, simply add
+
+//      #define SUITESPARSE_BLAS_DEFINITIONS
+//      #include "SuiteSparse_config.h"
+
+// prior to #include'ing any SuiteSparse headers (amd.h, and so on).
+
+#if defined ( SUITESPARSE_BLAS_DEFINITIONS )
 
 void SUITESPARSE_BLAS_DGEMV         // Y = alpha*A*x + beta*Y
 (
@@ -1446,6 +1460,8 @@ void SUITESPARSE_LAPACK_ZLARF       // apply Householder reflector
             &INCV_blas_int, tau, C, &LDC_blas_int, Work) ;                    \
     }                                                                         \
 }
+
+#endif
 
 //------------------------------------------------------------------------------
 // SuiteSparse_BLAS_library: return name of BLAS library found

@@ -15,7 +15,7 @@ cmake_minimum_required ( VERSION 3.22 )
 set ( CHOLMOD_DATE "Nov 12, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   0 )
+set ( CHOLMOD_VERSION_SUB   1 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.

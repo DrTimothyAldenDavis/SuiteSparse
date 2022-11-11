@@ -17,7 +17,7 @@ cmake_minimum_required ( VERSION 3.22 )
 set ( SUITESPARSE_DATE "Nov 12, 2022" )
 set ( SUITESPARSE_VERSION_MAJOR 6 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   0 )
+set ( SUITESPARSE_VERSION_SUB   1 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.

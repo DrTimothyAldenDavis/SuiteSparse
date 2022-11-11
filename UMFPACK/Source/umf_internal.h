@@ -91,6 +91,7 @@
 /* -------------------------------------------------------------------------- */
 
 /* stdio.h, stdlib.h, limits.h, and math.h, NDEBUG definition, assert.h */
+#define SUITESPARSE_BLAS_DEFINITIONS
 #include "amd_internal.h"
 
 /* -------------------------------------------------------------------------- */

@@ -15,6 +15,7 @@
 // include files
 // -----------------------------------------------------------------------------
 
+#define SUITESPARSE_BLAS_DEFINITIONS
 #include "SuiteSparseQR.hpp"
 #include <stdlib.h>
 #include <math.h>
