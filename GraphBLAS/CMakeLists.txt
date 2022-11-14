@@ -76,7 +76,6 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled.
-
     set ( OPENMP_FOUND false )
 else ( )
     find_package ( OpenMP )

@@ -10,7 +10,6 @@
 /* Test the C wrapper functions. */
 
 #include "SuiteSparseQR_C.h"
-#define int64_t int64_t
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 

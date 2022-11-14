@@ -16,7 +16,7 @@ cmake_minimum_required ( VERSION 3.22 )
 set ( SPQR_DATE "Nov 12, 2022" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   0 )
+set ( SPQR_VERSION_SUB   1 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.

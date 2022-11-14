@@ -1,3 +1,9 @@
+Nov 12, 2022: SuiteSparse 6.0.1
+
+    * BLAS: C prototypes for the Fortan BLAS were unintentionally exposed to
+        the user application.  Removed.  If you want to use them, see the
+        instructions in SuiteSparse_config.h.
+
 Nov 12, 2022: SuiteSparse 6.0.0
 
     * major update: using CMake build system for all packages

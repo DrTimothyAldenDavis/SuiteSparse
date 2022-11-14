@@ -8,6 +8,7 @@
 
 //------------------------------------------------------------------------------
 
+#define SUITESPARSE_BLAS_DEFINITIONS
 #include "cholmod.h"
 #include <stdlib.h>
 #include <stdio.h>

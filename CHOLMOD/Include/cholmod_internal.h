@@ -30,6 +30,7 @@
 #ifndef CHOLMOD_INTERNAL_H
 #define CHOLMOD_INTERNAL_H
 
+#define SUITESPARSE_BLAS_DEFINITIONS
 #include "cholmod.h"
 
 /* ========================================================================== */
