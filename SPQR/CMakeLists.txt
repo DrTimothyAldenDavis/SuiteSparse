@@ -201,8 +201,14 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # cholmod:
 target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )
+if ( NPARTITION )
+target_compile_definitions ( spqr PRIVATE NPARTITION )
+endif()
 if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${CHOLMOD_LIBRARIES} )
+if ( NPARTITION )
+target_compile_definitions ( spqr_static PRIVATE NPARTITION )
+endif()
 endif ( )
 
 # CUDA
