@@ -1,3 +1,8 @@
+TODO, 2022: version 6.0.2
+
+    * Mongoose tests: fixed matrix download in python test scripts (no change to
+        the compiled library itself, other than the version/date)
+
 Nov 12, 2022: SuiteSparse 6.0.1
 
     * BLAS: C prototypes for the Fortan BLAS were unintentionally exposed to
