@@ -196,6 +196,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     const GrB_Matrix A,             // input matrix A
     const GrB_Matrix B,             // input matrix B
     GrB_Desc_Value AxB_method,      // Default, Gustavson, or Hash
+    bool builtin_semiring,          // if true, semiring is builtin
     // outputs
     GB_saxpy3task_struct **SaxpyTasks_handle,
     size_t *SaxpyTasks_size_handle,
@@ -240,7 +241,7 @@ GrB_Info GB_AxB_saxpy3_slice_balanced
     //--------------------------------------------------------------------------
 
     GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
-    chunk = chunk * 8 ;
+    if (builtin_semiring) chunk = chunk * 8 ;
 
     //--------------------------------------------------------------------------
     // define result and workspace

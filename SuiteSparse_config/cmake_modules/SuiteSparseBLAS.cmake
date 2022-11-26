@@ -16,7 +16,13 @@
 # https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
 
 cmake_minimum_required ( VERSION 3.22 )
-include ( FortranCInterface )
+if ( CMAKE_Fortran_COMPILER )
+    include ( FortranCInterface )
+else ( )
+    # No Fortran compiler available, configuration is not automatic.
+    set ( FortranCInterface_GLOBAL_MACRO  ${SUITESPARSE_C_TO_FORTRAN} )
+    set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
+endif ( )
 
 # To select a specific BLAS: set to the BLA_VENDOR options from FindBLAS.cmake
 set ( BLA_VENDOR "ANY" CACHE STRING

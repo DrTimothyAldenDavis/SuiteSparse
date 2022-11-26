@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Nov 12, 2022" )
+set ( CHOLMOD_DATE "Dec 1, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_SUB   2 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -66,8 +66,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
-
-enable_language ( C Fortran )
 
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
@@ -462,9 +460,12 @@ if ( DEMO )
     add_executable ( cholmod_demo   "Demo/cholmod_demo.c" )
     add_executable ( cholmod_l_demo "Demo/cholmod_l_demo.c" )
     add_executable ( cholmod_simple "Demo/cholmod_simple.c" )
-    add_executable ( readhb         "Demo/readhb.f" )
-    add_executable ( readhb2        "Demo/readhb2.f" )
-    add_executable ( reade          "Demo/reade.f" )
+
+    if ( CMAKE_Fortran_COMPILER )
+        add_executable ( readhb     "Demo/readhb.f" )
+        add_executable ( readhb2    "Demo/readhb2.f" )
+        add_executable ( reade      "Demo/reade.f" )
+    endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( cholmod_demo   PUBLIC cholmod ${CHOLMOD_CUDA} )

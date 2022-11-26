@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Nov 12, 2022" )
+set ( SPQR_DATE "Dec 1, 2022" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   1 )
+set ( SPQR_VERSION_SUB   2 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -60,7 +60,7 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C Fortran )
+enable_language ( C )
 
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )

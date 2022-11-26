@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Nov 12, 2022" )
+set ( SUITESPARSE_DATE "Dec 1, 2022" )
 set ( SUITESPARSE_VERSION_MAJOR 6 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   1 )
+set ( SUITESPARSE_VERSION_SUB   2 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.
@@ -44,9 +44,6 @@ project ( suitesparseconfig
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
-
-enable_language ( C Fortran )
-message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
 
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )

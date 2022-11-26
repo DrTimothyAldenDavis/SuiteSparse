@@ -1,7 +1,19 @@
-TODO, 2022: version 6.0.2
+Dec 1, 2022: SuiteSparse 6.0.2
 
-    * Mongoose tests: fixed matrix download in python test scripts (no change to
-        the compiled library itself, other than the version/date)
+    * SuiteSparse_config 6.0.2: override C-to-Fortran interface handling if
+        no Fortran compiler found
+    * AMD 3.0.2: Fortran no longer required (amd.f and amdbar.f skipped)
+    * UMFPACK 6.0.2: Fortran no longer required
+    * SPQR 3.0.2: Fortran no longer required
+    * KLU 2.0.2: Fortran no longer required
+    * CHOLMOD 4.0.2: Fortran no longer required
+    * Mongoose 3.0.2: fixed matrix download in python test scripts (no change
+        to the compiled library itself, other than the version/date)
+    * GraphBLAS 7.3.3: -latomic added if needed, using ANSI C11 atomic functions
+        for gcc (atomic_compare_exachange_weak instead of __atomic_* variants),
+        chunk factor revised for GrB_mxm (generic saxpy3 method).
+    * FIXME/TODO for SuiteSparse 6.0.2: update Demo output files for AMD,
+        UMFPACK, SPQR, KLU, CHOLMOD, Mongoose, GraphBLAS
 
 Nov 12, 2022: SuiteSparse 6.0.1
 

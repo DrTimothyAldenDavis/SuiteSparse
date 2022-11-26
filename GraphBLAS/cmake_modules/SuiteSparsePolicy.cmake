@@ -53,6 +53,14 @@
 #                       64-bit BLAS.  If false, only 32-bit BLAS will be
 #                       searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
+#
+#   SUITESPARSE_C_TO_FORTRAN:  a string that defines how C calls Fortran.
+#                       Defaults to "(name,NAME) name" for Windows (lower case,
+#                       no underscore appended to the name), which is the
+#                       system that is most likely not to have a Fortran
+#                       compiler.  Defaults to "(name,NAME) name##_" otherwise.
+#                       This setting is only used if no Fortran compiler is
+#                       found.
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -151,13 +159,36 @@ message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
+# check if Fortran is available
+#-------------------------------------------------------------------------------
+
+include ( CheckLanguage )
+check_language ( Fortran )
+if ( CMAKE_Fortran_COMPILER )
+    enable_language ( Fortran )
+    message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
+else()
+    message ( STATUS "Fortran: not available")
+endif()
+
+# default C-to-Fortran name mangling if Fortran compiler not found
+if ( WIN32 )
+    # Windows Fortran compilers do not typically mangle the Fortran name
+    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name"
+        CACHE STRING "C to Fortan name mangling" )
+else ( )
+    # Other systems (Linux, Mac) typically append an underscore
+    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name##_"
+        CACHE STRING "C to Fortan name mangling" )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # find CUDA
 #-------------------------------------------------------------------------------
 
 if ( ENABLE_CUDA )
 
     # try finding CUDA
-    include ( CheckLanguage )
     check_language ( CUDA )
     message ( STATUS "Looking for CUDA" )
     if ( CMAKE_CUDA_COMPILER )

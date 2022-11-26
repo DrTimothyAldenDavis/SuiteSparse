@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( AMD_DATE "Nov 12, 2022" )
+set ( AMD_DATE "Dec 1, 2022" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 0 )
-set ( AMD_VERSION_SUB   0 )
+set ( AMD_VERSION_SUB   2 )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
@@ -36,9 +36,17 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( amd
-    VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
-    LANGUAGES C Fortran )
+if ( CMAKE_Fortran_COMPILER )
+    # Fortan is available
+    project ( amd
+        VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
+        LANGUAGES C Fortran )
+else ( )
+    # no Fortran compiler available; do not compile Source/*.f or Demo/*.f
+    project ( amd
+        VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
+        LANGUAGES C )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -63,7 +71,11 @@ include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 # dynamic amd library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
+if ( CMAKE_Fortran_COMPILER )
+    file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
+else ( )
+    file ( GLOB AMD_SOURCES "Source/*.c" )
+endif ( )
 
 add_library ( amd SHARED ${AMD_SOURCES} )
 
@@ -163,16 +175,20 @@ if ( DEMO )
     add_executable ( amd_l_demo    "Demo/amd_l_demo.c" )
     add_executable ( amd_demo2     "Demo/amd_demo2.c" )
     add_executable ( amd_simple    "Demo/amd_simple.c" )
-    add_executable ( amd_f77demo   "Demo/amd_f77demo.f" )
-    add_executable ( amd_f77simple "Demo/amd_f77simple.f" )
+    if ( CMAKE_Fortran_COMPILER )
+        add_executable ( amd_f77demo   "Demo/amd_f77demo.f" )
+        add_executable ( amd_f77simple "Demo/amd_f77simple.f" )
+    endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( amd_demo      PUBLIC amd )
     target_link_libraries ( amd_l_demo    PUBLIC amd )
     target_link_libraries ( amd_demo2     PUBLIC amd )
     target_link_libraries ( amd_simple    PUBLIC amd )
-    target_link_libraries ( amd_f77demo   PUBLIC amd )
-    target_link_libraries ( amd_f77simple PUBLIC amd )
+    if ( CMAKE_Fortran_COMPILER )
+        target_link_libraries ( amd_f77demo   PUBLIC amd )
+        target_link_libraries ( amd_f77simple PUBLIC amd )
+    endif ( )
 
 else ( )
 

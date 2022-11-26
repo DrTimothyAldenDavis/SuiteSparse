@@ -218,8 +218,6 @@ demos:
 	- ( cd CSparse && $(MAKE) demos )
 	- ( cd CXSparse && $(MAKE) demos )
 	- ( cd RBio && $(MAKE) demos )
-	- ( cd SuiteSparse_GPURuntime && $(MAKE) demos )
-	- ( cd GPUQREngine && $(MAKE) demos )
 	- ( cd SPQR && $(MAKE) demos )
 	- ( cd SPEX && $(MAKE) demos )
 	- ( cd GraphBLAS && $(MAKE) demos )

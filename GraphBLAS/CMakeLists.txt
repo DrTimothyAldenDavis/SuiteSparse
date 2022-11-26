@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Nov 12, 2022" )
+set ( GraphBLAS_DATE "Dec 1, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
-set ( GraphBLAS_VERSION_SUB   2 )
+set ( GraphBLAS_VERSION_SUB   3 )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )
@@ -76,6 +76,7 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled.
+
     set ( OPENMP_FOUND false )
 else ( )
     find_package ( OpenMP )
@@ -356,6 +357,14 @@ endif ( )
 target_link_libraries ( graphblas PUBLIC ${M_LIB} )
 if ( NOT NSTATIC )
     target_link_libraries ( graphblas_static PUBLIC ${M_LIB} )
+endif ( )
+
+include ( SuiteSparseAtomic )
+if ( LIBATOMIC_REQUIRED )
+    target_link_libraries ( graphblas PUBLIC atomic )
+    if ( NOT NSTATIC )
+        target_link_libraries ( graphblas_static PUBLIC atomic )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
