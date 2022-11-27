@@ -15488,12 +15488,13 @@ GraphBLAS folder.
 
 \begin{itemize}
 
-\item Version 7.3.3 (Nov 18, 2022)
+\item Version 7.3.3 (Dec 1, 2022)
 
     \begin{itemize}
     \item \verb'stdatomic.h': using \verb'#include <stdatomic.h>' and
         \verb'atomic_compare_exchange_weak'
         instead of GCC/clang/icx \verb'__atomic_*' variants.
+        Added \verb'-latomic' if required.
     \item chunk factor for C=A*B (saxpy3 method):
         revised for non-builtin-semirings
     \end{itemize}
