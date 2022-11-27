@@ -163,7 +163,7 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 #-------------------------------------------------------------------------------
 
 include ( CheckLanguage )
-# check_language ( Fortran ) # FIXME
+check_language ( Fortran )
 if ( CMAKE_Fortran_COMPILER )
     enable_language ( Fortran )
     message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
