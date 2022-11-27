@@ -7,29 +7,29 @@ function test247
 rng ('default') ;
 
 n = 1000000 ;
-A = GrB (n, n) ;
-B = GrB (GrB.random (n, 1, 0.01), 'sparse') ;
-A (1:100, 1:100) = GrB.random (100, 100, 0.4) ;
-A = GrB (A, 'sparse') ;
+A.matrix = sparse (n, n) ;
+B.matrix = sprand (n, 1, 0.01) ;
+A.matrix (1:100, 1:100) = sprand (100, 100, 0.4) ;
+S = sparse (n, 1) ;
 
-nth = GrB.threads ;
-chk = GrB.chunk ;
+semiring.multiply = 'times' ;
+semiring.add = 'plus' ;
+semiring.class = 'double' ;
+
+[nth chk] = nthreads_get ;
+
 desc.axb = 'hash' ;
-GrB.threads (16) ;
-GrB.chunk (1) ;
+nthreads_set (16, 1) ;
 GrB.burble (1) ;
-C1 = GrB.mxm ('+.*', A, B, desc) ;
+C1 = GB_mex_mxm (S, [ ], [ ], semiring, A, B, desc) ;
 GrB.burble (0) ;
 
-A = double (A) ;
-B = double (B) ;
-C2 = A*B ;
-err = norm (C1 - C2, 1) ;
+C2 = A.matrix * B.matrix ;
+err = norm (C1.matrix - C2, 1) ;
 fprintf ('err: %g\n', err) ;
 assert (err < 1e-12) ;
 
-GrB.threads (nth) ;
-GrB.chunk (chk) ;
+nthreads_set (nth, chk) ;
 
 fprintf ('\ntest247: all tests passed\n') ;
 
