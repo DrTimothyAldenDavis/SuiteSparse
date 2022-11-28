@@ -111,7 +111,12 @@ typedef __int64 int64_t;
 #else
   #define strtoidx      strtoll
 #endif
-  #define iabs          labs
+  #define iabs          SuiteSparse_metis_abs64
+  static inline int64_t SuiteSparse_metis_abs64 (int64_t x)
+  {
+    return ((x < 0) ? (-x) : x) ;
+  }
+
 #else
   #error "Incorrect user-supplied value fo IDXTYPEWIDTH"
 #endif

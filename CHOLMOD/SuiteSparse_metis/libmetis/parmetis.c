@@ -14,12 +14,7 @@
 
 #include "metislib.h"
 
-/* -------------------------------------------------------------------------- */
-/* Added for SuiteSparse, to silence compiler warnings.
-   Tim Davis, Jan 12, 2016, Texas A&M University
-*/
-#define ABS(a) (((a) < 0) ? (-(a)) : (a))
-/* -------------------------------------------------------------------------- */
+#define abs SuiteSparse_metis_abs64
 
 /*************************************************************************/
 /*! This function is the entry point for the node ND code for ParMETIS.
@@ -314,17 +309,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
     * Get into the FM loop
     *******************************************************/
     mptr[0] = nmind = nbad = 0;
-
-    #if 0
-    // metis-5.1.0 original:
     mindiff = abs(pwgts[0]-pwgts[1]);
-    modified for SuiteSparse:
-    #else
-    // modified for SuiteSparse:
-    mindiff = (pwgts[0]-pwgts[1]);
-    mindiff = ABS (mindiff) ;
-    #endif
-
     for (nswaps=0; nswaps<nvtxs; nswaps++) {
       if ((higain = rpqGetTop(queue)) == -1) 
         break;
@@ -349,16 +334,7 @@ void FM_2WayNodeRefine1SidedP(ctrl_t *ctrl, graph_t *graph,
 
       pwgts[2] -= (vwgt[higain]-rinfo[higain].edegrees[from]);
 
-      #if 0
-      // metis-5.1.0 original:
       newdiff = abs(pwgts[to]+vwgt[higain] - (pwgts[from]-rinfo[higain].edegrees[from]));
-      */
-      #else
-      // modified for SuiteSparse:
-      newdiff = (pwgts[to]+vwgt[higain] - (pwgts[from]-rinfo[higain].edegrees[from]));
-      newdiff = ABS (newdiff) ;
-      #endif
-
       if (pwgts[2] < mincut || (pwgts[2] == mincut && newdiff < mindiff)) {
         mincut      = pwgts[2];
         mincutorder = nswaps;
@@ -562,16 +538,7 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
     * Get into the FM loop
     *******************************************************/
     mptr[0] = nmind = 0;
-
-    #if 0
-    // metis-5.1.0 original:
     mindiff = abs(pwgts[0]-pwgts[1]);
-    #else
-    // modified for SuiteSparse:
-    mindiff = (pwgts[0]-pwgts[1]) ;
-    mindiff = ABS (mindiff) ;
-    #endif
-
     to = (pwgts[0] < pwgts[1] ? 0 : 1);
     for (nswaps=0; nswaps<nvtxs; nswaps++) {
       u[0] = rpqSeeTopVal(queues[0]);  
@@ -614,15 +581,7 @@ void FM_2WayNodeRefine2SidedP(ctrl_t *ctrl, graph_t *graph,
 
       pwgts[2] -= (vwgt[higain]-rinfo[higain].edegrees[other]);
 
-      #if 0
-      // metis-5.1.0 original:
       newdiff = abs(pwgts[to]+vwgt[higain] - (pwgts[other]-rinfo[higain].edegrees[other]));
-      #else
-       // modified for SuiteSparse:
-      newdiff = (pwgts[to]+vwgt[higain] - (pwgts[other]-rinfo[higain].edegrees[other]));
-      newdiff = ABS (newdiff) ;
-      #endif
-
       if (pwgts[2] < mincut || (pwgts[2] == mincut && newdiff < mindiff)) {
         mincut      = pwgts[2];
         mincutorder = nswaps;

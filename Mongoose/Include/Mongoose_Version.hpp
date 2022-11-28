@@ -18,7 +18,7 @@
 #define Mongoose_VERSION_MAJOR 3
 #define Mongoose_VERSION_MINOR 0
 #define Mongoose_VERSION_PATCH 2
-#define Mongoose_DATE "Nov 26, 2022"
+#define Mongoose_DATE "Dec 1, 2022"
 
 namespace Mongoose
 {

@@ -16,16 +16,14 @@ revised version is required.
     the right library is linked.
 
 (3) The files metis-5.1.0/GKlib/GKLib.h and metis-5.1.0/GKlib/memory.c have
-    been modified to disable the signal-handing in METIS.  METIS runs out of
-    memory, but they break MATLAB (you will get a segfault).  This change is
-    essential if METIS is to be used in MATLAB.
+    been modified to disable the signal-handling in METIS, which is used when
+    METIS runs out of memory.
 
-(4) The abs and iabs functions in the original metis-5.1.0/libmetis/parmetis.c
-    and metis-5.1.0/libmetis/balance.c give compiler warnings when IDXTYPEWIDTH
-    is 64, so they have been replaced with a type-agnostic macro, ABS.  This is
-    just a compiler warning, so the fix is optional.
+(4) The abs and iabs functions in the original metis-5.1.0 give compiler
+    warnings when IDXTYPEWIDTH is 64, so they have been replaced with a static
+    inline function, SuiteSparse_metis_abs64.
 
-(5) Minor formatting changes have been made to avoid compiler warnings of
+(5) Warnings disabled to avoid compiler warnings of
     misleading indentation (getopt.c, csr.c).
 
 (6) The malloc/calloc/realloc/free functions have been replaced with
@@ -36,7 +34,7 @@ revised version is required.
 (7) All original files from metis-5.1.0 that have been modified here have been
     placed in ./include/original, ./libmetis/original, or ./GKlib/original
 
-Tim Davis, Oct 31, 2022, Texas A&M University Any changes made by Tim Davis are
+Tim Davis, Dec 1, 2022, Texas A&M University Any changes made by Tim Davis are
 released to the original copyright holder, under the original Apache-2.0
 license of METIS.
 
