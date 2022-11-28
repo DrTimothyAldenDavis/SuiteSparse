@@ -51,10 +51,13 @@
 #include "SuiteSparse_metis/GKlib/random.c"
 #include "SuiteSparse_metis/GKlib/sort.c"
 #include "SuiteSparse_metis/GKlib/string.c"
-#include "SuiteSparse_metis/GKlib/timers.c"
 #include "SuiteSparse_metis/GKlib/util.c"
 
 // unused by CHOLMOD:
+// #include "SuiteSparse_metis/GKlib/timers.c"
+// replace the timer functions from timers.c::
+double gk_WClockSeconds(void) { return (0) ; }
+double gk_CPUSeconds(void) { return (0) ; }
 // #include "SuiteSparse_metis/GKlib/fs.c"
 // #include "SuiteSparse_metis/GKlib/getopt.c"
 // #include "SuiteSparse_metis/GKlib/gkregex.c"
