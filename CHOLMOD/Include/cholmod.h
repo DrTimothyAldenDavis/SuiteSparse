@@ -4568,7 +4568,8 @@ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t,
  * idxtype.
  */
 
-#ifndef NPARTITION
+// These routines still exist if CHOLMOD is compiled with -DNPARTITION,
+// but they return Common->status = CHOLMOD_NOT_INSTALLED.
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_nested_dissection */
@@ -4707,8 +4708,6 @@ int64_t cholmod_collapse_septree
 SUITESPARSE_PUBLIC
 int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t,
     int64_t *, int64_t *, cholmod_common *) ;
-
-#endif
 
 /* ========================================================================== */
 /* === Include/cholmod_supernodal.h ========================================= */

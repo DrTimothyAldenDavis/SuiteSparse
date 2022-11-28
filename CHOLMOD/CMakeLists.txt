@@ -87,11 +87,9 @@ find_package ( AMD 3.0.0 REQUIRED )
 # not build a module, simply delete or rename the entire folder before building
 # CHOLMOD, or pass the corresponding flag when using cmake:
 
-#   -DNGL=1         if true: do not build any GPL-licensed module (MatrixOps,
+#   -DNGPL=1        if true: do not build any GPL-licensed module (MatrixOps,
 #                   Modify, Supernodal, and GPU modules). See above.
-#
 #   -DNCHECK=1      if true: do not build the Check module.
-#
 #   -DNMATRIXOPS=1  if true: do not build the MatrixOps module.
 #   -DNCHOLESKY=1   if true: do not build the Cholesky module.
 #                   This also disables the Supernodal and Modify modules.

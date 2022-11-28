@@ -508,13 +508,10 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
         if (ordering == SPQR_ORDERING_BEST)
         {
             ordering = SPQR_ORDERING_CHOLMOD ;
-            cc->nmethods = 2 ;
+            cc->nmethods = 3 ;
             cc->method [0].ordering = CHOLMOD_COLAMD ;
             cc->method [1].ordering = CHOLMOD_AMD ;
-#ifndef NPARTITION
-            cc->nmethods = 3 ;
             cc->method [2].ordering = CHOLMOD_METIS ;
-#endif
         }
 
         // 9:bestamd: best of COLAMD(A) and AMD(A'A)
@@ -527,40 +524,10 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             cc->method [1].ordering = CHOLMOD_AMD ;
         }
 
-#ifdef NPARTITION
-        if (ordering == SPQR_ORDERING_METIS)
-        {
-            // METIS not installed; use default ordering
-            ordering = SPQR_ORDERING_DEFAULT ;
-        }
-#endif
-
         if (ordering == SPQR_ORDERING_DEFAULT)
         {
             // Version 1.2.0:  just use COLAMD
             ordering = SPQR_ORDERING_COLAMD ;
-
-#if 0
-            // Version 1.1.2 and earlier:
-            if (n2rows <= 2*n2cols)
-            {
-                // just use COLAMD; do not try AMD or METIS
-                ordering = SPQR_ORDERING_COLAMD ;
-            }
-            else
-            {
-#ifndef NPARTITION
-                // use CHOLMOD's default ordering: try AMD and then METIS
-                // if AMD gives high fill-in, and take the best ordering found
-                ordering = SPQR_ORDERING_CHOLMOD ;
-                cc->nmethods = 0 ;
-#else
-                // METIS is not installed, so just use AMD
-                ordering = SPQR_ORDERING_AMD ;
-#endif
-            }
-#endif
-
         }
 
         if (ordering == SPQR_ORDERING_AMD)
@@ -568,7 +535,6 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
             // use CHOLMOD's interface to AMD to order A'*A
             cholmod_l_amd (AT, NULL, 0, (int64_t *) (Q1fill + n1cols), cc) ;
         }
-#ifndef NPARTITION
         else if (ordering == SPQR_ORDERING_METIS)
         {
             // use CHOLMOD's interface to METIS to order A'*A (if installed)
@@ -577,7 +543,6 @@ template <typename Entry> int spqr_1colamd  // TRUE if OK, FALSE otherwise
                 (int64_t *) (Q1fill + n1cols), cc) ;
             TEST_COVERAGE_RESUME ;
         }
-#endif
         else if (ordering == SPQR_ORDERING_CHOLMOD)
         {
             // use CHOLMOD's internal ordering (defined by cc) to order AT

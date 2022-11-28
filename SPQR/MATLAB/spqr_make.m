@@ -23,6 +23,8 @@ function spqr_make
 details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 
 v = version ;
+fprintf ('Compiling SuiteSparseQR on MATLAB Version %s\n', v);
+
 try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
@@ -49,20 +51,17 @@ end
 
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
-% Determine if METIS is available
+% Determine if METIS is available (not available on Windows)
 metis_path = '../../CHOLMOD/SuiteSparse_metis' ;
-have_metis = exist (metis_path, 'dir') ;
+have_metis = exist (metis_path, 'dir') && ~ispc ;
 
 if (have_metis)
-    fprintf ('Compiling SuiteSparseQR with METIS for MATLAB Version %s\n', v) ;
     include = [include ' -I' metis_path '/include'] ;
     include = [include ' -I' metis_path '/GKlib'] ;
     include = [include ' -I' metis_path '/libmetis'] ;
-    include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD' ] ;
-else
-    fprintf ('Compiling SuiteSparseQR without METIS on MATLAB Version %s\n', v);
-    include = ['-DNPARTITION ' include ] ;
 end
+
+include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD' ] ;
 
 %-------------------------------------------------------------------------------
 % BLAS option
@@ -277,10 +276,7 @@ end
 obj = '' ;
 
 c_source = [config_src amd_c_src colamd_c_src cholmod_c_src spqr_c_mx_src ] ;
-if (have_metis)
-    c_source = [c_source cholmod_c_partition_src ccolamd_c_src ] ;
-    c_source = [c_source camd_c_src ] ;
-end
+c_source = [c_source cholmod_c_partition_src ccolamd_c_src camd_c_src ] ;
 
 cpp_source = spqr_cpp_src ;
 

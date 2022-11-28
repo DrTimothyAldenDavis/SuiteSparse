@@ -96,15 +96,6 @@ these.  Below are step-by-step instructions for compiling all of SuiteSparse
 (including SuiteSparseQR), and optional instructions on using METIS.
 
 %-------------------------------------------------------------------------------
-\subsubsection{Optional instructions on using METIS for any operating system}
-%-------------------------------------------------------------------------------
-
-SuiteSparse now relies on METIS 5.1.0, which is distributed along with
-SuiteSparse itself.  Its use is optional, however.  If you compile with
-{\tt -DNPARTITION}, or if you delete or move the \verb'SuiteSparse_metis'
-folder, then SuiteSparse will be compiled without it.
-
-%-------------------------------------------------------------------------------
 \subsubsection{Now you're ready to compile (on any operating system)}
 %-------------------------------------------------------------------------------
 
@@ -409,18 +400,9 @@ a simple wrapper that uses \verb'cmake' to do the actual build.
 The \verb'CMakeLists.txt' file can be imported into MS Visual Studio,
 for example.
 
-Two compile-time options can be used to modify how SuiteSparseQR is compiled.
-
-\begin{itemize}
-
-    \item \verb'-DNPARTITION': do not compile with METIS, CAMD, or CCOLAMD.
-    These packages are included by default.
-
-    \item \verb'-DNEXPERT': do not compile with the ``expert'' routines in
-    \verb'SuiteSparseQR_expert.cpp'.  The expert routines are included by
-    default.
-
-\end{itemize}
+If SuiteSparseQR is compiled with \verb'-DNEXPERT', the ``expert'' routines in
+\verb'SuiteSparseQR_expert.cpp' are not compiled.  The expert routines are
+included by default.
 
 To fully test 100\% of the lines of SuiteSparseQR, go to the \verb'Tcov'
 directory and type \verb'make'.  This will work for Linux only.

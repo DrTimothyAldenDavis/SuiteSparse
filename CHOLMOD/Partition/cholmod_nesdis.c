@@ -822,6 +822,7 @@ static void find_components
     DEBUG (for (i = 0 ; i < n ; i++) ASSERT (Flag [i] < Common->mark)) ;
 }
 
+#endif
 
 /* ========================================================================== */
 /* === cholmod_bisect ======================================================= */
@@ -850,6 +851,9 @@ int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
     cholmod_common *Common
 )
 {
+
+#ifndef NPARTITION
+
     Int *Bp, *Bi, *Hash, *Cmap, *Bnw, *Bew, *Iwork ;
     cholmod_sparse *B ;
     UInt hash ;
@@ -1006,6 +1010,10 @@ int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
     CHOLMOD_CLEAR_FLAG (Common) ;
     CHOLMOD(free) (csize, sizeof (Int), Bew, Common) ;
     return (sepsize) ;
+#else
+    Common->status = CHOLMOD_NOT_INSTALLED ;
+    return (EMPTY) ;
+#endif
 }
 
 
@@ -1049,6 +1057,9 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     cholmod_common *Common
 )
 {
+
+#ifndef NPARTITION
+
     double prune_dense, nd_oksep ;
     Int *Bp, *Bi, *Bnz, *Cstack, *Imap, *Map, *Flag, *Head, *Next, *Bnw, *Iwork,
 	*Ipost, *NewParent, *Hash, *Cmap, *Cp, *Ci, *Cew, *Cnw, *Part, *Post,
@@ -1931,6 +1942,10 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     return (ncomponents) ;
+#else
+    Common->status = CHOLMOD_NOT_INSTALLED ;
+    return (EMPTY) ;
+#endif
 }
 
 /* ========================================================================== */
@@ -1965,6 +1980,9 @@ int64_t CHOLMOD(collapse_septree)
     cholmod_common *Common
 )
 {
+
+#ifndef NPARTITION
+
     Int *First, *Count, *Csubtree, *W, *Map ;
     Int c, j, k, nc, sepsize, total_weight, parent, nc_new, first ;
     int collapse = FALSE, ok = TRUE ;
@@ -2155,5 +2173,8 @@ int64_t CHOLMOD(collapse_septree)
     /* ---------------------------------------------------------------------- */
 
     return (nc_new) ;
-}
+#else
+    Common->status = CHOLMOD_NOT_INSTALLED ;
+    return (EMPTY) ;
 #endif
+}

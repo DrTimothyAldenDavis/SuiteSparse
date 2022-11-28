@@ -94,10 +94,6 @@ void spqr_mx_spumoni
 #ifndef NEXPERT
         mexPrintf ("    compiled with opts.solution='min2norm' option\n") ;
 #endif
-#ifndef NPARTITION
-        mexPrintf (
-            "    compiled with opts.ordering='metis' option\n") ;
-#endif
     }
 
     // -------------------------------------------------------------------------
@@ -144,9 +140,7 @@ void spqr_mx_spumoni
         case SPQR_ORDERING_GIVEN:   mexPrintf ("given'\n") ;   break ;
         case SPQR_ORDERING_CHOLMOD: mexPrintf ("best'\n") ;    break ;
         case SPQR_ORDERING_AMD:     mexPrintf ("amd'\n") ;     break ;
-#ifndef NPARTITION
         case SPQR_ORDERING_METIS:   mexPrintf ("metis'\n") ;   break ;
-#endif
         case SPQR_ORDERING_DEFAULT: mexPrintf ("default'\n") ; break ;
         default: mexPrintf ("undefined'\n") ; break ;
     }
@@ -179,7 +173,6 @@ void spqr_mx_spumoni
     mexPrintf ("    upper bound on nnz(R): %ld\n",        cc->SPQR_istat [0]) ;
     mexPrintf ("    upper bound on nnz(H): %ld\n",        cc->SPQR_istat [1]) ;
     mexPrintf ("    number of frontal matrices: %ld\n",   cc->SPQR_istat [2]) ;
-//  mexPrintf ("    # tasks in TBB task tree: %ld\n",     cc->SPQR_istat [3]) ;
     mexPrintf ("    rank(A) estimate: %ld\n",             cc->SPQR_istat [4]) ;
     mexPrintf ("    # of column singletons: %ld\n",       cc->SPQR_istat [5]) ;
     mexPrintf ("    # of singleton rows: %ld\n",          cc->SPQR_istat [6]) ;
@@ -397,12 +390,10 @@ int spqr_mx_get_options
             {
                 opts->ordering = SPQR_ORDERING_AMD ;
             }
-#ifndef NPARTITION
             else if (strcmp (s, "metis") == 0)
             {
                 opts->ordering = SPQR_ORDERING_METIS ;
             }
-#endif
             else if (strcmp (s, "best") == 0)
             {
                 opts->ordering = SPQR_ORDERING_BEST ;
@@ -1025,11 +1016,9 @@ mxArray *spqr_mx_info       // return a struct with info statistics
         case SPQR_ORDERING_AMD:
             ord = mxCreateString ("amd") ;
             break ;
-#ifndef NPARTITION
         case SPQR_ORDERING_METIS:
             ord = mxCreateString ("metis") ;
             break ;
-#endif
         default:
             ord = mxCreateString ("unknown") ;
             break ;
@@ -1054,17 +1043,11 @@ mxArray *spqr_mx_info       // return a struct with info statistics
 
     mxSetFieldByNumber (s, 0, 12, mxCreateDoubleScalar (cc->SPQR_norm_E_fro)) ;
 
-#if 0 /* ifdef HAVE_TBB (TBB removed) */
-    mxSetFieldByNumber (s, 0, 13, mxCreateString ("yes")) ;
-#else
+    // TBB removed
     mxSetFieldByNumber (s, 0, 13, mxCreateString ("no")) ;
-#endif
 
-#ifndef NPARTITION
-    mxSetFieldByNumber (s, 0, 14, mxCreateString ("yes")) ;
-#else
-    mxSetFieldByNumber (s, 0, 14, mxCreateString ("no")) ;
-#endif
+    // no need to ask if METIS is available
+    mxSetFieldByNumber (s, 0, 14, mxCreateString ("(not determined)")) ;
 
     if (flops >= 0)
     {

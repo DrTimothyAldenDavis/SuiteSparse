@@ -209,13 +209,10 @@ spqr_symbolic *spqr_analyze
     {
         ordering = SPQR_ORDERING_CHOLMOD ;
         cc->postorder = TRUE ;
-        cc->nmethods = 2 ;
+        cc->nmethods = 3 ;
         cc->method [0].ordering = CHOLMOD_COLAMD ;
         cc->method [1].ordering = CHOLMOD_AMD ;
-#ifndef NPARTITION
-        cc->nmethods = 3 ;
         cc->method [2].ordering = CHOLMOD_METIS ;
-#endif
     }
 
     // 9:best: best of COLAMD(A) and AMD(A'A),
@@ -262,7 +259,6 @@ spqr_symbolic *spqr_analyze
         cc->postorder = TRUE ;
         Quser = NULL ;
     }
-#ifndef NPARTITION
     else if (ordering == SPQR_ORDERING_METIS)
     {
         // METIS (A'*A), if installed
@@ -271,7 +267,6 @@ spqr_symbolic *spqr_analyze
         cc->postorder = TRUE ;
         Quser = NULL ;
     }
-#endif
     else // if (ordering == SPQR_ORDERING_COLAMD)
          // or ordering == SPQR_ORDERING_DEFAULT
          // or ordering == SPQR_ORDERING_METIS and METIS not installed

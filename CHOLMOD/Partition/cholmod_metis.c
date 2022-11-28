@@ -223,6 +223,7 @@ static int metis_memory_ok
     return (TRUE) ;
 }
 
+#endif
 
 /* ========================================================================== */
 /* === cholmod_metis_bisector =============================================== */
@@ -253,6 +254,9 @@ int64_t CHOLMOD(metis_bisector)	/* returns separator size */
     cholmod_common *Common
 )
 {
+
+#ifndef NPARTITION
+
     Int *Ap, *Ai ;
     idx_t *Mp, *Mi, *Mnw, *Mpart ;
     Int n, nleft, nright, j, p, csep, total_weight, lightest, nz ;
@@ -534,6 +538,10 @@ int64_t CHOLMOD(metis_bisector)	/* returns separator size */
     /* ---------------------------------------------------------------------- */
 
     return (csep) ;
+#else
+    Common->status = CHOLMOD_NOT_INSTALLED ;
+    return (EMPTY) ;
+#endif
 }
 
 
@@ -563,6 +571,9 @@ int CHOLMOD(metis)
     cholmod_common *Common
 )
 {
+
+#ifndef NPARTITION
+
     double d ;
     Int *Iperm, *Iwork, *Bp, *Bi ;
     idx_t *Mp, *Mi, *Mperm, *Miperm ;
@@ -831,5 +842,9 @@ int CHOLMOD(metis)
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     PRINT1 (("cholmod_metis done\n")) ;
     return (Common->status == CHOLMOD_OK) ;
-}
+#else
+    Common->status = CHOLMOD_NOT_INSTALLED ;
+    return (false) ;
 #endif
+}
+
