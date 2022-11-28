@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        msystem: [MINGW64, MINGW32]
+        msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
         include:
           - msystem: MINGW64
             target-prefix: mingw-w64-x86_64
@@ -26,6 +26,13 @@ jobs:
           - msystem: MINGW32
             target-prefix: mingw-w64-i686
             f77-package: mingw-w64-i686-fc
+          - msystem: CLANG64
+            target-prefix: mingw-w64-clang-x86_64
+            f77-package: mingw-w64-clang-x86_64-fc
+          - msystem: CLANG32
+            target-prefix: mingw-w64-clang-i686
+            # There's no Fortran compiler for this environment.
+            f77-package: mingw-w64-clang-i686-cc
 
     env:
       CHERE_INVOKING: 1
