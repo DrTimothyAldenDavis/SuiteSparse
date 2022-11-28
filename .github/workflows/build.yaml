@@ -1,0 +1,66 @@
+name: build
+on: [push]
+concurrency: ci-${{ github.ref }}
+
+jobs:
+
+  mingw:
+    # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        # Use MSYS2 as default shell
+        shell: msys2 {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        msystem: [MINGW64, MINGW32]
+        include:
+          - msystem: MINGW64
+            target-prefix: mingw-w64-x86_64
+            f77-package: mingw-w64-x86_64-fc
+          - msystem: MINGW32
+            target-prefix: mingw-w64-i686
+            f77-package: mingw-w64-i686-fc
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: install MSYS2 build environment
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          release: false
+
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-autotools
+            ${{ matrix.target-prefix }}-cmake
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.f77-package }}
+            ${{ matrix.target-prefix }}-openblas
+            ${{ matrix.target-prefix }}-omp
+            ${{ matrix.target-prefix }}-gmp
+            ${{ matrix.target-prefix }}-mpfr
+            ${{ matrix.target-prefix }}-metis
+
+          msystem: ${{ matrix.msystem }}
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: build
+        run: |
+          make CMAKE_OPTIONS="-G\"MSYS Makefiles\" -DCMAKE_BUILD_TYPE=Release -DENABLE_CUDA=OFF -DBLA_VENDOR=OpenBLAS -DGBNCPUFEAT=ON"
