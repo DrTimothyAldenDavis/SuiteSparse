@@ -50,13 +50,14 @@ find_library ( LDL_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( LDL_LIBRARY  ${LDL_LIBRARY} REALPATH )
-get_filename_component ( LDL_FILENAME ${LDL_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    LDL_VERSION
-    ${LDL_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${LDL_INCLUDE_DIR}/ldl.h _VERSION_LINE REGEX "define[ ]+LDL_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+LDL_${_VERSION}[ ]+([0-9]*).*" "\\1" _LDL_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (LDL_VERSION "${_LDL_MAIN_VERSION}.${_LDL_SUB_VERSION}.${_LDL_SUBSUB_VERSION}")
 set (LDL_LIBRARIES ${LDL_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

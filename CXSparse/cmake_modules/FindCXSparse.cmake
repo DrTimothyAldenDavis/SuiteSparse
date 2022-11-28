@@ -50,13 +50,14 @@ find_library ( CXSPARSE_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( CXSPARSE_LIBRARY  ${CXSPARSE_LIBRARY} REALPATH )
-get_filename_component ( CXSPARSE_FILENAME ${CXSPARSE_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    CXSPARSE_VERSION
-    ${CXSPARSE_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h _VERSION_LINE REGEX "define[ ]+CXSPARSE_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+CXSPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _CXSPARSE_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (CXSPARSE_VERSION "${_CXSPARSE_MAIN_VERSION}.${_CXSPARSE_SUB_VERSION}.${_CXSPARSE_SUBSUB_VERSION}")
 set (CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

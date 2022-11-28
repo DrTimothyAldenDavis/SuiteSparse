@@ -50,13 +50,14 @@ find_library ( SPEX_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( SPEX_LIBRARY  ${SPEX_LIBRARY} REALPATH )
-get_filename_component ( SPEX_FILENAME ${SPEX_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    SPEX_VERSION
-    ${SPEX_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h _VERSION_LINE REGEX "define[ ]+SPEX_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+SPEX_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPEX_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (SPEX_VERSION "${_SPEX_MAIN_VERSION}.${_SPEX_SUB_VERSION}.${_SPEX_SUBSUB_VERSION}")
 set (SPEX_LIBRARIES ${SPEX_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

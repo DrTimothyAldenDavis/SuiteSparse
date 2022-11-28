@@ -50,13 +50,14 @@ find_library ( UMFPACK_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( UMFPACK_LIBRARY  ${UMFPACK_LIBRARY} REALPATH )
-get_filename_component ( UMFPACK_FILENAME ${UMFPACK_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    UMFPACK_VERSION
-    ${UMFPACK_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h _VERSION_LINE REGEX "define[ ]+UMFPACK_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+UMFPACK_${_VERSION}[ ]+([0-9]*).*" "\\1" _UMFPACK_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (UMFPACK_VERSION "${_UMFPACK_MAIN_VERSION}.${_UMFPACK_SUB_VERSION}.${_UMFPACK_SUBSUB_VERSION}")
 set (UMFPACK_LIBRARIES ${UMFPACK_LIBRARY})
 
 include (FindPackageHandleStandardArgs)
