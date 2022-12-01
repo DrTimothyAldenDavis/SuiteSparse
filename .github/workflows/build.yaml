@@ -1,5 +1,9 @@
 name: build
-on: [push]
+on:
+  push:
+    branches-ignore:
+      - '**/dev2'
+
 concurrency: ci-${{ github.ref }}
 
 jobs:
