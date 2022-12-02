@@ -233,6 +233,7 @@ find_package ( AMD 3.0.2 REQUIRED )
     else ( )
         # if NSUPERNODAL is false: build Supernodal, which needs the BLAS
         include ( SuiteSparseBLAS )     # requires cmake 3.22
+        find_package ( LAPACK REQUIRED )
     endif ( )
 
 #-------------------------------------------------------------------------------
@@ -350,21 +351,27 @@ if ( NOT NSTATIC )
 target_link_libraries ( cholmod_static PUBLIC ${COLAMD_LIBRARIES} )
 endif ( )
 
-# BLAS and LAPACK:
+# BLAS and LAPACK: for the Supernodal Module
 if ( NOT NSUPERNODAL )
+    # BLAS:
     message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+    message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${BLAS_LIBRARIES} )
     if ( NOT NSTATIC )
     target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
     endif ( )
     include_directories ( ${BLAS_INCLUDE_DIRS} )
+
+    # LAPACK:
     message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
+    message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
     message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${LAPACK_LIBRARIES} )
     if ( NOT NSTATIC )
     target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
     endif ( )
+    include_directories ( ${LAPACK_INCLUDE_LIBRARIES} )
 endif ( )
 
 # camd and ccolamd:

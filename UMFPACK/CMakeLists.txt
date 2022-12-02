@@ -161,6 +161,7 @@ endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )

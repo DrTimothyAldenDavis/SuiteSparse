@@ -82,6 +82,7 @@ if ( SUITESPARSE_CUDA )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
+find_package ( LAPACK REQUIRED )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
@@ -192,12 +193,23 @@ endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( spqr PUBLIC ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
+
+# LAPACK:
+message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
+message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
+message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
+target_link_libraries ( spqr PUBLIC ${LAPACK_LIBRARIES} )
+if ( NOT NSTATIC )
+target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
+endif ( )
+include_directories ( ${LAPACK_INCLUDE_LIBRARIES} )
 
 # cholmod:
 target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )

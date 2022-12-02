@@ -51,6 +51,9 @@
 #                       Both settings must appear, or neither.
 #                       Default: neither are defined.
 #
+#   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
+#                       Default: false
+#
 #   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
 #                       64-bit BLAS.  If false, only 32-bit BLAS will be
 #                       searched for.  Ignored if BLA_VENDOR and
@@ -91,7 +94,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 option ( SUITESPARSE_STATIC "ON: use static linkage.  OFF (default): use dynamic linkage" )
 if ( SUITESPARSE_STATIC )
     # look for static libraries first
-    if ( WIN32 )
+    if ( MSVC )
         set ( CMAKE_FIND_LIBRARY_SUFFIXES .lib ${CMAKE_FIND_LIBRARY_SUFFIXES} )
     else ( )
         set ( CMAKE_FIND_LIBRARY_SUFFIXES .a   ${CMAKE_FIND_LIBRARY_SUFFIXES} )

@@ -125,12 +125,8 @@ if ( BLAS_FOUND )
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 #   SuiteSparse_config does not itself require the BLAS.  It just needs to
-#   know which BLAS is going to be used by the rest of SuiteSparse.
-#   target_link_libraries ( suitesparseconfig PUBLIC ${BLAS_LIBRARIES} )
-#   if ( NOT NSTATIC )
-#   target_link_libraries ( suitesparseconfig_static PUBLIC ${BLAS_LIBRARIES} )
-#   endif ( )
-#   include_directories ( ${BLAS_INCLUDE_DIRS} )
+#   know which BLAS is going to be used by the rest of SuiteSparse so it
+#   can configure SuiteSparse_config.h properly.
 endif ( )
 
 #-------------------------------------------------------------------------------
