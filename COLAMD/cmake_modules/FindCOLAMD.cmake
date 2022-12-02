@@ -35,7 +35,6 @@ find_path ( COLAMD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD
-    PATHS COLAMD_ROOT ENV COLAMD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( COLAMD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD
-    PATHS COLAMD_ROOT ENV COLAMD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

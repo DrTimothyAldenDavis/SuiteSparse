@@ -11,8 +11,8 @@
 # SUITESPARSE_GPURUNTIME_LIBRARIES   - libraries when using SuiteSparse_GPURuntime
 # SUITESPARSE_GPURUNTIME_FOUND       - true if SuiteSparse_GPURuntime found
 
-# set ``SUITESPARSE_GPURUNTIME_ROOT`` to a SuiteSparse_GPURuntime installation root to
-# tell this module where to look.
+# set ``SUITESPARSE_GPURUNTIME_ROOT`` or ``SuiteSparse_GPURuntime_ROOT`` to a
+# SuiteSparse_GPURuntime installation root to tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
 # where MyApp is your application and add the following to your
@@ -30,11 +30,12 @@
 # compiled libraries SuiteSparse_GPURuntime
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
     NAMES suitesparse_gpuruntime
+    HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
+    HINTS ENV SUITESPARSE_GPURUNTIME_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_GPURuntime
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime
-    PATHS SUITESPARSE_GPURUNTIME_ROOT ENV SUITESPARSE_GPURUNTIME_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

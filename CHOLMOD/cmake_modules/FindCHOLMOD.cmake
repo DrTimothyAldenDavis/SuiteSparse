@@ -35,7 +35,6 @@ find_path ( CHOLMOD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
-    PATHS CHOLMOD_ROOT ENV CHOLMOD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( CHOLMOD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
-    PATHS CHOLMOD_ROOT ENV CHOLMOD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

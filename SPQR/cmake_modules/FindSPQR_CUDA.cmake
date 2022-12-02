@@ -35,8 +35,7 @@ find_library ( SPQR_CUDA_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
-    PATHS SPQR_CUDA_ROOT ENV SPQR_CUDA_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

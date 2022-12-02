@@ -32,8 +32,8 @@ This module defines the following variables:
 Hints
 ^^^^^
 
-A user may set ``GRAPHBLAS_ROOT`` to a GraphBLAS installation root to tell this
-module where to look.
+A user may set ``GRAPHBLAS_ROOT`` or ``GraphBLAS_ROOT`` to a GraphBLAS
+installation root to tell this module where to look.
 
 Otherwise, the first place searched is in ../GraphBLAS, relative to the LAGraph
 source directory.  That is, if GraphBLAS and LAGraph reside in the same parent
@@ -53,10 +53,11 @@ LAGraph with their own copy of GraphBLAS, ignoring the system-wide version.
 find_path(
   GRAPHBLAS_INCLUDE_DIR
   NAMES GraphBLAS.h
+  HINTS ${GRAPHBLAS_ROOT}
+  HINTS ENV GRAPHBLAS_ROOT
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATHS GRAPHBLAS_ROOT ENV GRAPHBLAS_ROOT
   PATH_SUFFIXES include Include
   )
 
@@ -64,10 +65,11 @@ find_path(
 find_library(
   GRAPHBLAS_LIBRARY
   NAMES graphblas
+  HINTS ${GRAPHBLAS_ROOT}
+  HINTS ENV GRAPHBLAS_ROOT
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATHS GRAPHBLAS_ROOT ENV GRAPHBLAS_ROOT
   PATH_SUFFIXES lib build alternative
   )
 

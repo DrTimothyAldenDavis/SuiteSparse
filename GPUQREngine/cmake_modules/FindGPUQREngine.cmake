@@ -11,8 +11,8 @@
 # GPUQRENGINE_LIBRARIES   - libraries when using GPUQREngine
 # GPUQRENGINE_FOUND       - true if GPUQREngine found
 
-# set ``GPUQRENGINE_ROOT`` to a GPUQREngine installation root to
-# tell this module where to look.
+# set ``GPUQREngine_ROOT`` or ``GPUQRENGINE_ROOT`` to a GPUQREngine
+# installation root to tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
 # where MyApp is your application and add the following to your
@@ -30,11 +30,12 @@
 # compiled libraries GPUQREngine
 find_library ( GPUQRENGINE_LIBRARY
     NAMES gpuqrengine
+    HINTS ${GPUQRENGINE_ROOT}
+    HINTS ENV GPUQRENGINE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
-    PATHS GPUQRENGINE_ROOT ENV GPUQRENGINE_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

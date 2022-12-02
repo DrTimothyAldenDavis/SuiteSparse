@@ -35,8 +35,7 @@ find_library ( CHOLMOD_CUDA_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATHS CHOLMOD_CUDA_ROOT ENV CHOLMOD_CUDA_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

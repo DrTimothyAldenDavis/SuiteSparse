@@ -35,7 +35,6 @@ find_path ( KLU_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU
-    PATHS KLU_ROOT ENV KLU_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,7 +44,6 @@ find_library ( KLU_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU
-    PATHS KLU_ROOT ENV KLU_ROOT
     PATH_SUFFIXES lib build alternative
 )
 

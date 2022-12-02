@@ -35,7 +35,6 @@ find_path ( CCOLAMD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CCOLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CCOLAMD
-    PATHS CCOLAMD_ROOT ENV CCOLAMD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( CCOLAMD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CCOLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CCOLAMD
-    PATHS CCOLAMD_ROOT ENV CCOLAMD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

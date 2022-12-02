@@ -12,7 +12,7 @@
 # MONGOOSE_LIBRARIES   - libraries when using Mongoose
 # MONGOOSE_FOUND       - true if Mongoose found
 
-# set ``MONGOOSE_ROOT`` to a MONGOOSE installation root to
+# set ``MONGOOSE_ROOT`` or ``Mongoose_ROOT`` to a MONGOOSE installation root to
 # tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
@@ -32,21 +32,23 @@
 # include files for Mongoose
 find_path ( MONGOOSE_INCLUDE_DIR
     NAMES Mongoose.hpp
+    HINTS ${MONGOOSE_ROOT}
+    HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATHS MONGOOSE_ROOT ENV MONGOOSE_ROOT
     PATH_SUFFIXES include Include
 )
 
 # compiled libraries Mongoose
 find_library ( MONGOOSE_LIBRARY
     NAMES mongoose
+    HINTS ${MONGOOSE_ROOT}
+    HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATHS MONGOOSE_ROOT ENV MONGOOSE_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

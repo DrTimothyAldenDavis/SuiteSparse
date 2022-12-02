@@ -12,8 +12,8 @@
 # SUITESPARSE_CONFIG_LIBRARIES   - libraries when using SuiteSparse_config
 # SUITESPARSE_CONFIG_FOUND       - true if SuiteSparse_config found
 
-# set ``SUITESPARSE_CONFIG_ROOT`` to a SuiteSparse_config installation root to
-# tell this module where to look.
+# set ``SUITESPARSE_CONFIG_ROOT`` or ``SuiteSparse_config_ROOT`` to a
+# SuiteSparse_config installation root to tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
 # where MyApp is your application and add the following to your
@@ -31,21 +31,23 @@
 # include files for SuiteSparse_config
 find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     NAMES SuiteSparse_config.h
+    HINTS ${SUITESPARSE_CONFIG_ROOT}
+    HINTS ENV SUITESPARSE_CONFIG_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
-    PATHS SUITESPARSE_CONFIG_ROOT ENV SUITESPARSE_CONFIG_ROOT
     PATH_SUFFIXES include Include
 )
 
 # compiled libraries SuiteSparse_config
 find_library ( SUITESPARSE_CONFIG_LIBRARY
     NAMES suitesparseconfig
+    HINTS ${SUITESPARSE_CONFIG_ROOT}
+    HINTS ENV SUITESPARSE_CONFIG_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
-    PATHS SUITESPARSE_CONFIG_ROOT ENV SUITESPARSE_CONFIG_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

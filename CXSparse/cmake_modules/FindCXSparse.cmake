@@ -12,7 +12,7 @@
 # CXSPARSE_LIBRARIES   - libraries when using CXSPARSE
 # CXSPARSE_FOUND       - true if CXSPARSE found
 
-# set ``CXSPARSE_ROOT`` to a CXSPARSE installation root to
+# set ``CXSparse_ROOT`` or ``CXSPARSE_ROOT`` to a CXSPARSE installation root to
 # tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
@@ -32,21 +32,23 @@
 # include files for CXSPARSE
 find_path ( CXSPARSE_INCLUDE_DIR
     NAMES cs.h
+    HINTS ${CXSPARSE_ROOT}
+    HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATHS CXSPARSE_ROOT ENV CXSPARSE_ROOT
     PATH_SUFFIXES include Include
 )
 
 # compiled libraries CXSPARSE
 find_library ( CXSPARSE_LIBRARY
     NAMES cxsparse
+    HINTS ${CXSPARSE_ROOT}
+    HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATHS CXSPARSE_ROOT ENV CXSPARSE_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

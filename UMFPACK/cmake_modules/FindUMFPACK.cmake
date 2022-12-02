@@ -12,8 +12,9 @@
 # UMFPACK_LIBRARIES   - libraries when using UMFPACK
 # UMFPACK_FOUND       - true if UMFPACK found
 
-# set ``UMFPACK_ROOT`` to a UMFPACK installation root to
-# tell this module where to look.
+# set ``UMFPACK_ROOT`` to an UMFPACK installation root to tell this module
+# where to look (this can be done as a cmake variable or as an evironment
+# variable).
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
 # where MyApp is your application and add the following to your
@@ -35,7 +36,6 @@ find_path ( UMFPACK_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATHS UMFPACK_ROOT ENV UMFPACK_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +45,7 @@ find_library ( UMFPACK_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATHS UMFPACK_ROOT ENV UMFPACK_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

@@ -12,7 +12,7 @@
 # AMD_LIBRARIES   - libraries when using AMD
 # AMD_FOUND       - true if AMD found
 
-# set ``AMD_ROOT`` to a AMD installation root to
+# set ``AMD_ROOT`` to an AMD installation root to
 # tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
@@ -35,7 +35,6 @@ find_path ( AMD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/AMD
     HINTS ${CMAKE_SOURCE_DIR}/../AMD
-    PATHS AMD_ROOT ENV AMD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( AMD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/AMD
     HINTS ${CMAKE_SOURCE_DIR}/../AMD
-    PATHS AMD_ROOT ENV AMD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

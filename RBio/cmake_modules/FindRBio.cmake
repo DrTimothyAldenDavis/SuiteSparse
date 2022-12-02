@@ -12,7 +12,7 @@
 # RBIO_LIBRARIES   - libraries when using RBio
 # RBIO_FOUND       - true if RBio found
 
-# set ``RBIO_ROOT`` to a RBio installation root to
+# set ``RBIO_ROOT`` or ``RBio_ROOT`` to a RBio installation root to
 # tell this module where to look.
 
 # To use this file in your application, copy this file into MyApp/cmake_modules
@@ -32,20 +32,22 @@
 # include files for RBio
 find_path ( RBIO_INCLUDE_DIR
     NAMES RBio.h
+    HINTS ${RBIO_ROOT}
+    HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATHS RBIO_ROOT ENV RBIO_ROOT
     PATH_SUFFIXES include Include
 )
 
 # compiled libraries RBio
 find_library ( RBIO_LIBRARY
     NAMES rbio
+    HINTS ${RBIO_ROOT}
+    HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATHS RBIO_ROOT ENV RBIO_ROOT
     PATH_SUFFIXES lib build alternative
 )
 

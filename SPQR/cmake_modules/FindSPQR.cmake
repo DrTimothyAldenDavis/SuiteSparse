@@ -35,7 +35,6 @@ find_path ( SPQR_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR
-    PATHS SPQR_ROOT ENV SPQR_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( SPQR_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR
-    PATHS SPQR_ROOT ENV SPQR_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

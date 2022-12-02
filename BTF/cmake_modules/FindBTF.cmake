@@ -35,7 +35,6 @@ find_path ( BTF_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF
-    PATHS BTF_ROOT ENV BTF_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( BTF_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF
-    PATHS BTF_ROOT ENV BTF_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

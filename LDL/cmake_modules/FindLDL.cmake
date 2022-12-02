@@ -35,7 +35,6 @@ find_path ( LDL_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/LDL
     HINTS ${CMAKE_SOURCE_DIR}/../LDL
-    PATHS LDL_ROOT ENV LDL_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( LDL_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/LDL
     HINTS ${CMAKE_SOURCE_DIR}/../LDL
-    PATHS LDL_ROOT ENV LDL_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

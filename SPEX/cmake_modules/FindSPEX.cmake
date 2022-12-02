@@ -35,7 +35,6 @@ find_path ( SPEX_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATHS SPEX_ROOT ENV SPEX_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( SPEX_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATHS SPEX_ROOT ENV SPEX_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

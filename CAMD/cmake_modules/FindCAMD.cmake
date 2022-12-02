@@ -35,7 +35,6 @@ find_path ( CAMD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD
-    PATHS CAMD_ROOT ENV CAMD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( CAMD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD
-    PATHS CAMD_ROOT ENV CAMD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library

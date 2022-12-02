@@ -35,7 +35,6 @@ find_path ( KLU_CHOLMOD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
-    PATHS KLU_CHOLMOD_ROOT ENV KLU_CHOLMOD_ROOT
     PATH_SUFFIXES include Include
 )
 
@@ -45,8 +44,7 @@ find_library ( KLU_CHOLMOD_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
-    PATHS KLU_CHOLMOD_ROOT ENV KLU_CHOLMOD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 # get version of the library
