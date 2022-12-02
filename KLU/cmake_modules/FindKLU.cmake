@@ -50,13 +50,14 @@ find_library ( KLU_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( KLU_LIBRARY  ${KLU_LIBRARY} REALPATH )
-get_filename_component ( KLU_FILENAME ${KLU_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    KLU_VERSION
-    ${KLU_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${KLU_INCLUDE_DIR}/klu.h _VERSION_LINE REGEX "define[ ]+KLU_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+KLU_${_VERSION}[ ]+([0-9]*).*" "\\1" _KLU_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (KLU_VERSION "${_KLU_MAIN_VERSION}.${_KLU_SUB_VERSION}.${_KLU_SUBSUB_VERSION}")
 set (KLU_LIBRARIES ${KLU_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

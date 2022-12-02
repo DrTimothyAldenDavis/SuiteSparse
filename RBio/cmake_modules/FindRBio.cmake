@@ -50,13 +50,14 @@ find_library ( RBIO_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( RBIO_LIBRARY  ${RBIO_LIBRARY} REALPATH )
-get_filename_component ( RBIO_FILENAME ${SPEX_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    RBIO_VERSION
-    ${RBIO_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${RBIO_INCLUDE_DIR}/RBio.h _VERSION_LINE REGEX "define[ ]+RBIO_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+RBIO_${_VERSION}[ ]+([0-9]*).*" "\\1" _RBIO_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (RBIO_VERSION "${_RBIO_MAIN_VERSION}.${_RBIO_SUB_VERSION}.${_RBIO_SUBSUB_VERSION}")
 set (RBIO_LIBRARIES ${RBIO_LIBRARY})
 
 include (FindPackageHandleStandardArgs)
