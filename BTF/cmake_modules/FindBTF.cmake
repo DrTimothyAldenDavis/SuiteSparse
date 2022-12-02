@@ -50,13 +50,14 @@ find_library ( BTF_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( BTF_LIBRARY  ${BTF_LIBRARY} REALPATH )
-get_filename_component ( BTF_FILENAME ${BTF_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    BTF_VERSION
-    ${BTF_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${BTF_INCLUDE_DIR}/btf.h _VERSION_LINE REGEX "define[ ]+BTF_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+BTF_${_VERSION}[ ]+([0-9]*).*" "\\1" _BTF_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (BTF_VERSION "${_BTF_MAIN_VERSION}.${_BTF_SUB_VERSION}.${_BTF_SUBSUB_VERSION}")
 set (BTF_LIBRARIES ${BTF_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

@@ -50,13 +50,14 @@ find_library ( COLAMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( COLAMD_LIBRARY  ${COLAMD_LIBRARY} REALPATH )
-get_filename_component ( COLAMD_FILENAME ${COLAMD_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    COLAMD_VERSION
-    ${COLAMD_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h _VERSION_LINE REGEX "define[ ]+COLAMD_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+COLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _COLAMD_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (COLAMD_VERSION "${_COLAMD_MAIN_VERSION}.${_COLAMD_SUB_VERSION}.${_COLAMD_SUBSUB_VERSION}")
 set (COLAMD_LIBRARIES ${COLAMD_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

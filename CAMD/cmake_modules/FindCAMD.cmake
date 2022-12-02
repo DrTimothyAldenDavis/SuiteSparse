@@ -50,13 +50,14 @@ find_library ( CAMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( CAMD_LIBRARY  ${CAMD_LIBRARY} REALPATH )
-get_filename_component ( CAMD_FILENAME ${CAMD_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    CAMD_VERSION
-    ${CAMD_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${CAMD_INCLUDE_DIR}/camd.h _VERSION_LINE REGEX "define[ ]+CAMD_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+CAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CAMD_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (CAMD_VERSION "${_CAMD_MAIN_VERSION}.${_CAMD_SUB_VERSION}.${_CAMD_SUBSUB_VERSION}")
 set (CAMD_LIBRARIES ${CAMD_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

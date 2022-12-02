@@ -50,13 +50,14 @@ find_library ( SPQR_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( SPQR_LIBRARY  ${SPQR_LIBRARY} REALPATH )
-get_filename_component ( SPQR_FILENAME ${SPQR_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    SPQR_VERSION
-    ${SPQR_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h _VERSION_LINE REGEX "define[ ]+SPQR_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+SPQR_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPQR_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (SPQR_VERSION "${_SPQR_MAIN_VERSION}.${_SPQR_SUB_VERSION}.${_SPQR_SUBSUB_VERSION}")
 set (SPQR_LIBRARIES ${SPQR_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

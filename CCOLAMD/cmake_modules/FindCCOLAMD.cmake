@@ -50,13 +50,14 @@ find_library ( CCOLAMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( CCOLAMD_LIBRARY  ${CCOLAMD_LIBRARY} REALPATH )
-get_filename_component ( CCOLAMD_FILENAME ${CCOLAMD_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    CCOLAMD_VERSION
-    ${CCOLAMD_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h _VERSION_LINE REGEX "define[ ]+CCOLAMD_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+CCOLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CCOLAMD_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (CCOLAMD_VERSION "${_CCOLAMD_MAIN_VERSION}.${_CCOLAMD_SUB_VERSION}.${_CCOLAMD_SUBSUB_VERSION}")
 set (CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

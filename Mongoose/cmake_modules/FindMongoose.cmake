@@ -50,13 +50,14 @@ find_library ( MONGOOSE_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( MONGOOSE_LIBRARY  ${MONGOOSE_LIBRARY} REALPATH )
-get_filename_component ( MONGOOSE_FILENAME ${MONGOOSE_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    MONGOOSE_VERSION
-    ${MONGOOSE_FILENAME}
-)
+foreach(_VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
+  file (STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose_Version.hpp _VERSION_LINE REGEX "define[ ]+Mongoose_${_VERSION}")
+  if(_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+Mongoose_${_VERSION}[ ]+([0-9]*).*" "\\1" _MONGOOSE_${_VERSION} "${_VERSION_LINE}")
+  endif()
+  unset(_VERSION_LINE)
+endforeach()
+set (MONGOOSE_VERSION "${_MONGOOSE_VERSION_MAJOR}.${_MONGOOSE_VERSION_MINOR}.${_MONGOOSE_VERSION_PATCH}")
 set (MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

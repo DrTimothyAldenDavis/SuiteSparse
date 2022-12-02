@@ -50,13 +50,14 @@ find_library ( AMD_LIBRARY
 )
 
 # get version of the library
-get_filename_component ( AMD_LIBRARY  ${AMD_LIBRARY} REALPATH )
-get_filename_component ( AMD_FILENAME ${AMD_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    AMD_VERSION
-    ${AMD_FILENAME}
-)
+foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+  file (STRINGS ${AMD_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+AMD_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+AMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _AMD_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (AMD_VERSION "${_AMD_MAIN_VERSION}.${_AMD_SUB_VERSION}.${_AMD_SUBSUB_VERSION}")
 set (AMD_LIBRARIES ${AMD_LIBRARY})
 
 include (FindPackageHandleStandardArgs)

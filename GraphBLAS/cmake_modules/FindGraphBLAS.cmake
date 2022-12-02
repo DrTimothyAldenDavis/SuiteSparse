@@ -72,13 +72,14 @@ find_library(
   )
 
 # get version of .so using REALPATH
-get_filename_component ( GRAPHBLAS_LIBRARY  ${GRAPHBLAS_LIBRARY} REALPATH )
-get_filename_component ( GRAPHBLAS_FILENAME ${GRAPHBLAS_LIBRARY} NAME )
-string (
-    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    GRAPHBLAS_VERSION
-    ${GRAPHBLAS_FILENAME}
-  )
+foreach (_VERSION MAJOR MINOR SUB)
+  file (STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h _VERSION_LINE REGEX "define[ ]+GxB_IMPLEMENTATION_${_VERSION}")
+  if (_VERSION_LINE)
+    string (REGEX REPLACE ".*define[ ]+GxB_IMPLEMENTATION_${_VERSION}[ ]+([0-9]*).*" "\\1" _GRAPHBLAS_${_VERSION} "${_VERSION_LINE}")
+  endif ()
+  unset (_VERSION_LINE)
+endforeach ()
+set (CCOLAMD_VERSION "${_GRAPHBLAS_MAJOR}.${_GRAPHBLAS_MINOR}.${_GRAPHBLAS_SUB}")
 set(GRAPHBLAS_LIBRARIES ${GRAPHBLAS_LIBRARY})
 
 include(FindPackageHandleStandardArgs)
