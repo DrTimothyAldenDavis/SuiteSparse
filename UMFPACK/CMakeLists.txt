@@ -54,15 +54,15 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings for KLU)
-    find_package ( CHOLMOD 4.0.0 )
+    find_package ( CHOLMOD 4.0.2 )
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )

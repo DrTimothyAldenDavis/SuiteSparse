@@ -1,19 +1,34 @@
-Dec 1, 2022: SuiteSparse 6.0.2
+FIXME Dec 1, 2022: SuiteSparse 6.0.2
 
-    * SuiteSparse_config 6.0.2: override C-to-Fortran interface handling if
-        no Fortran compiler found
-    * AMD 3.0.2: Fortran no longer required (amd.f and amdbar.f skipped)
-    * UMFPACK 6.0.2: Fortran no longer required
-    * SPQR 3.0.2: Fortran no longer required
-    * KLU 2.0.2: Fortran no longer required
-    * CHOLMOD 4.0.2: Fortran no longer required
-    * Mongoose 3.0.2: fixed matrix download in python test scripts (no change
-        to the compiled library itself, other than the version/date)
+    * minor change to build system for nearly all packages: (except CSparse,
+        ssget, and MATLAB_Tools):  allows static linkage of all libraries.
+        Fortran no longer required.
+    * AMD 3.0.2: Fortran no longer required (amd.f and amdbar.f skipped);
+        minor change to build system
+    * BTF 2.0.2: minor change to build system
+    * CAMD 3.0,2: minor change to build system
+    * CCOLAMD 3.0.2: minor change to build system
+    * CHOLMOD 4.0.2: Fortran no longer required; minor change to build system
+    * CXSparse 4.0.2: minor change to build system
+    * GPUQREngine 2.0.2: minor change to build system
     * GraphBLAS 7.3.3: -latomic added if needed, using ANSI C11 atomic functions
         for gcc (atomic_compare_exachange_weak instead of __atomic_* variants),
-        chunk factor revised for GrB_mxm (generic saxpy3 method).
-    * FIXME/TODO for SuiteSparse 6.0.2: update Demo output files for AMD,
-        UMFPACK, SPQR, KLU, CHOLMOD, Mongoose, GraphBLAS
+        chunk factor revised for GrB_mxm (generic saxpy3 method);
+        minor change to build system
+    * KLU 2.0.2: Fortran no longer required; minor change to build system
+    * LDL 3.0.2: minor change to build system
+    * Mongoose 3.0.2: fixed matrix download in python test scripts (no change
+        to the compiled library itself, other than the version/date);
+        minor change to build system
+    * RBio 3.0.2: minor change to build system
+    * SPEX 2.0.2: minor change to build system
+    * SPQR 3.0.2: Fortran no longer required; minor change to build system
+    * SuiteSparse_GPURuntime 2.0.2: minor change to build system
+    * SuiteSparse_config 6.0.2: override C-to-Fortran interface handling if
+        no Fortran compiler found; minor change to build system
+    * UMFPACK 6.0.2: Fortran no longer required; minor change to build system
+    * not changed from SuiteSparse v6.0.1: ssget, CSparse, MATLAB_Tools
+    * FIXME/TODO for SuiteSparse 6.0.2: update Demo output files, Docs
 
 Nov 12, 2022: SuiteSparse 6.0.1
 

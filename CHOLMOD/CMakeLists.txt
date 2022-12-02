@@ -75,9 +75,9 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( COLAMD 3.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( COLAMD 3.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # find CHOLMOD modules
@@ -179,8 +179,8 @@ find_package ( AMD 3.0.0 REQUIRED )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.0 )
-        find_package ( CCOLAMD 3.0.0 )
+        find_package ( CAMD 3.0.2 )
+        find_package ( CCOLAMD 3.0.2 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )
@@ -383,7 +383,6 @@ endif ( )
 
 # METIS and the Partition module:
 if ( NOT NPARTITION )
-      include_directories ( ${SUITESPARSE_METIS_INCLUDE_DIR} )
       include_directories ( SuiteSparse_metis/GKlib )
       include_directories ( SuiteSparse_metis/libmetis )
       include_directories ( SuiteSparse_metis/include )

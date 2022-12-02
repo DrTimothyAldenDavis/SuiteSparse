@@ -31,7 +31,9 @@ message ( STATUS "Building SuiteSparse_config version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
+message ( STATUS "Here0 ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 include ( SuiteSparsePolicy )
+message ( STATUS "Here9 ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 
 #-------------------------------------------------------------------------------
 # define the project

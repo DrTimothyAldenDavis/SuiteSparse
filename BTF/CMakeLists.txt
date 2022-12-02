@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( BTF_DATE "Nov 12, 2022" )
+set ( BTF_DATE "Dec 1, 2022" )
 set ( BTF_VERSION_MAJOR 2 )
 set ( BTF_VERSION_MINOR 0 )
-set ( BTF_VERSION_SUB   0 )
+set ( BTF_VERSION_SUB   2 )
 
 message ( STATUS "Building BTF version: v"
     ${BTF_VERSION_MAJOR}.
@@ -44,7 +44,7 @@ project ( btf
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

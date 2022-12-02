@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Nov 12, 2022" )
+set ( CAMD_DATE "Dec 1, 2022" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
-set ( CAMD_VERSION_SUB   0 )
+set ( CAMD_VERSION_SUB   2 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( camd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

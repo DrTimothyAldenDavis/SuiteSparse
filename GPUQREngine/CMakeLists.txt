@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( GPUQRENGINE_DATE "Nov 12, 2022" )
+set ( GPUQRENGINE_DATE "Dec 1, 2022" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
-set ( GPUQRENGINE_VERSION_SUB   0 )
+set ( GPUQRENGINE_VERSION_SUB   2 )
 
 message ( STATUS "Building GPUQRENGINE version: v"
     ${GPUQRENGINE_VERSION_MAJOR}.
@@ -33,7 +33,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_metis/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
@@ -63,10 +62,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # for the library itself
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.2 REQUIRED )
 endif ( )
 
 # Demo disabled for GPUQREngine v2.x
@@ -74,16 +73,15 @@ set ( DEMO_OK false )
 
 if ( DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 4.0.0 )
-    find_package ( COLAMD 3.0.0 )
-    find_package ( AMD 3.0.0 )
-    find_package ( CAMD 3.0.0 )
-    find_package ( CCOLAMD 3.0.0 )
-    find_package ( SuiteSparse_metis 5.1.0 )
+    find_package ( CHOLMOD 4.0.2 )
+    find_package ( COLAMD 3.0.2 )
+    find_package ( AMD 3.0.2 )
+    find_package ( CAMD 3.0.2 )
+    find_package ( CCOLAMD 3.0.2 )
 endif ( )
 
 if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND AND AMD_FOUND AND COLAMD_FOUND AND 
-    CAMD_FOUND AND CCOLAMD_FOUND AND SUITESPARSE_METIS_FOUND )
+    CAMD_FOUND AND CCOLAMD_FOUND )
     set ( DEMO_OK true )
 else ( )
     set ( DEMO_OK false )
@@ -222,7 +220,7 @@ if ( DEMO AND DEMO_OK )
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         ${CHOLMOD_LIBRARIES} ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} ${SUITESPARSE_METIS_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES}
         ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
 
 else ( )

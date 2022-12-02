@@ -1,5 +1,6 @@
 Version 7.3.3, Dec 1, 2022
 
+    * minor change to build system
     * stdatomic.h: using #include <stdatomic.h> and atomic_compare_exchange_weak
         instead of GCC/clang/icx __atomic_* variants.
         Added -latomic if required.

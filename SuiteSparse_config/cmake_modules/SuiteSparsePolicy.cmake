@@ -34,6 +34,8 @@
 #                       GraphBLAS is true.  For Mongoose, the NSTATIC setting
 #                       is treated as if it always false, since the mongoose
 #                       program is built with the static library.
+#                       If SUITESPARSE_STATIC is true, this setting is set to
+#                       false for all libraries.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
@@ -61,6 +63,11 @@
 #                       compiler.  Defaults to "(name,NAME) name##_" otherwise.
 #                       This setting is only used if no Fortran compiler is
 #                       found.
+#
+#   SUITESPARSE_STATIC: if true, then only static libraries are searched for
+#                       when finding dependent libraries.  This sets BLA_STATIC
+#                       to true for BLAS/LAPACK, and NSTATIC is set false.
+#                       Default: false.
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -72,15 +79,37 @@ cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
-# look for cmake modules installed by prior compilations of SuiteSparse packages
+set ( CMAKE_MACOSX_RPATH TRUE )
+enable_language ( C )
+include ( GNUInstallDirs )
+
+# add the cmake_modules folder for this package to the module path
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-if ( NSTATIC_DEFAULT_ON )
-    option ( NSTATIC "ON (default): do not built static libraries.  OFF: build static libraries" on )
+# static vs dynamic libraries
+option ( SUITESPARSE_STATIC "ON: use static linkage.  OFF (default): use dynamic linkage" )
+if ( SUITESPARSE_STATIC )
+    # look for static libraries first
+    if ( WIN32 )
+        set ( CMAKE_FIND_LIBRARY_SUFFIXES .lib ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    else ( )
+        set ( CMAKE_FIND_LIBRARY_SUFFIXES .a   ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    endif ( )
+    # use static linkage for BLAS/LAPACK
+    set ( BLA_STATIC on )
+    # force NSTATIC off so that all SuiteSparse static libraries are built
+    set ( NSTATIC off )
 else ( )
-    option ( NSTATIC "ON: do not built static libraries.  OFF (default): build static libraries" off )
+    # NSTATIC option
+    if ( NSTATIC_DEFAULT_ON )
+        option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
+    else ( )
+        option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
+    endif ( )
 endif ( )
+
+# installation options
 option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
 option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
 
@@ -93,10 +122,6 @@ else ( )
     set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/../lib/cmake )
 endif ( )
-
-set ( CMAKE_MACOSX_RPATH TRUE )
-enable_language ( C )
-include ( GNUInstallDirs )
 
 # add the ./build folder to the runpath so other SuiteSparse packages can
 # find this one without "make install"

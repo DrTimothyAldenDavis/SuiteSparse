@@ -70,15 +70,15 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
-find_package ( COLAMD 3.0.0 REQUIRED )
-find_package ( CHOLMOD 4.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
+find_package ( COLAMD 3.0.2 REQUIRED )
+find_package ( CHOLMOD 4.0.2 REQUIRED )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.0 REQUIRED )
-    find_package ( GPUQREngine 2.0.0 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.0 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.2 REQUIRED )
+    find_package ( GPUQREngine 2.0.2 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.2 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22

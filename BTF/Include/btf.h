@@ -260,10 +260,10 @@ int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
  *      #endif
  */
 
-#define BTF_DATE "Nov 12, 2022"
+#define BTF_DATE "Dec 1, 2022"
 #define BTF_MAIN_VERSION   2
 #define BTF_SUB_VERSION    0
-#define BTF_SUBSUB_VERSION 0
+#define BTF_SUBSUB_VERSION 2
 
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)

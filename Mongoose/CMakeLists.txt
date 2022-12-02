@@ -73,7 +73,7 @@ configure_file (
         "${PROJECT_SOURCE_DIR}/codemeta.json"
 )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
