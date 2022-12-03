@@ -31,9 +31,7 @@ message ( STATUS "Building SuiteSparse_config version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-message ( STATUS "Here0 ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 include ( SuiteSparsePolicy )
-message ( STATUS "Here9 ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -72,7 +70,6 @@ configure_file ( "Config/SuiteSparse_config.h.in"
 file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
 add_library ( suitesparseconfig SHARED ${SUITESPARSECONFIG_SOURCES} )
-
 set_target_properties ( suitesparseconfig PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
@@ -84,13 +81,13 @@ set_target_properties ( suitesparseconfig PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
+    add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
-set_target_properties ( suitesparseconfig_static PROPERTIES
-    VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME suitesparseconfig
-    SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+    set_target_properties ( suitesparseconfig_static PROPERTIES
+        VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME suitesparseconfig
+        SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -101,7 +98,7 @@ endif ( )
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( suitesparseconfig_static PUBLIC m )
+        target_link_libraries ( suitesparseconfig_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -112,8 +109,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( suitesparseconfig_static PUBLIC
-        ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )

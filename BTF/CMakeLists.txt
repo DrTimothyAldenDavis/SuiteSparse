@@ -93,14 +93,14 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( btf PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( btf_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( btf_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( btf PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( btf_static PUBLIC m )
+        target_link_libraries ( btf_static PUBLIC m )
     endif ( )
 endif ( )
 

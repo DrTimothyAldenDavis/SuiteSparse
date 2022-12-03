@@ -91,14 +91,14 @@ endif ( )
 
 target_link_libraries ( colamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
-target_link_libraries ( colamd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+    target_link_libraries ( colamd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( colamd PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( colamd_static PUBLIC m )
+        target_link_libraries ( colamd_static PUBLIC m )
     endif ( )
 endif ( )
 

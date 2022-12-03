@@ -8,7 +8,8 @@
 # Finds the SuiteSparse_config include file and compiled library and sets:
 
 # SUITESPARSE_CONFIG_INCLUDE_DIR - where to find SuiteSparse_config.h
-# SUITESPARSE_CONFIG_LIBRARY     - compiled SuiteSparse_config library
+# SUITESPARSE_CONFIG_LIBRARY     - dynamic SuiteSparse_config library
+# SUITESPARSE_CONFIG_STATIC      - static SuiteSparse_config library
 # SUITESPARSE_CONFIG_LIBRARIES   - libraries when using SuiteSparse_config
 # SUITESPARSE_CONFIG_FOUND       - true if SuiteSparse_config found
 
@@ -39,7 +40,7 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# compiled libraries SuiteSparse_config
+# dynamic libraries for SuiteSparse_config
 find_library ( SUITESPARSE_CONFIG_LIBRARY
     NAMES suitesparseconfig
     HINTS ${SUITESPARSE_CONFIG_ROOT}
@@ -50,20 +51,46 @@ find_library ( SUITESPARSE_CONFIG_LIBRARY
     PATH_SUFFIXES lib build
 )
 
-# get version of the library
-foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-  file (STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h _VERSION_LINE REGEX "define[ ]+SUITESPARSE_${_VERSION}")
-  if (_VERSION_LINE)
-    string (REGEX REPLACE ".*define[ ]+SUITESPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _SP_${_VERSION} "${_VERSION_LINE}")
-  endif ()
-  unset (_VERSION_LINE)
-endforeach ()
-set (SUITESPARSE_CONFIG_VERSION "${_SP_MAIN_VERSION}.${_SP_SUB_VERSION}.${_SP_SUBSUB_VERSION}")
+# static libraries for SuiteSparse_config
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+find_library ( SUITESPARSE_CONFIG_STATIC
+    NAMES suitesparseconfig
+    HINTS ${SUITESPARSE_CONFIG_ROOT}
+    HINTS ENV SUITESPARSE_CONFIG_ROOT
+    HINTS ${CMAKE_SOURCE_DIR}/..
+    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
+    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
+    PATH_SUFFIXES lib build
+)
+set ( ${CMAKE_FIND_LIBRARY_SUFFIXES} save )
+
+# get version of the library from the dynamic library filename, if present
+get_filename_component ( SUITESPARSE_CONFIG_LIBRARY  ${SUITESPARSE_CONFIG_LIBRARY} REALPATH )
+get_filename_component ( SUITESPARSE_CONFIG_FILENAME ${SUITESPARSE_CONFIG_LIBRARY} NAME )
+string (
+    REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
+    SUITESPARSE_CONFIG_VERSION
+    ${SUITESPARSE_CONFIG_FILENAME}
+)
+
+if ( NOT SUITESPARSE_CONFIG_VERSION )
+    # version not found in the filename; get it from the include file
+    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
+        file ( STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h
+            _VERSION_LINE REGEX "define[ ]+SUITESPARSE_${_VERSION}")
+        if (_VERSION_LINE)
+            string ( REGEX REPLACE ".*define[ ]+SUITESPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _SP_${_VERSION} "${_VERSION_LINE}" )
+        endif ( )
+        unset ( _VERSION_LINE )
+    endforeach ( )
+    set (SUITESPARSE_CONFIG_VERSION "${_SP_MAIN_VERSION}.${_SP_SUB_VERSION}.${_SP_SUBSUB_VERSION}")
+endif ( )
 
 # libaries when using SuiteSparse_config
 set (SUITESPARSE_CONFIG_LIBRARIES ${SUITESPARSE_CONFIG_LIBRARY})
 
-include (FindPackageHandleStandardArgs)
+include ( FindPackageHandleStandardArgs )
 
 find_package_handle_standard_args ( SuiteSparse_config
     REQUIRED_VARS SUITESPARSE_CONFIG_LIBRARIES SUITESPARSE_CONFIG_INCLUDE_DIR
@@ -73,12 +100,15 @@ find_package_handle_standard_args ( SuiteSparse_config
 mark_as_advanced (
     SUITESPARSE_CONFIG_INCLUDE_DIR
     SUITESPARSE_CONFIG_LIBRARY
+    SUITESPARSE_CONFIG_STATIC
     SUITESPARSE_CONFIG_LIBRARIES
 )
 
 if ( SUITESPARSE_CONFIG_FOUND )
-    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
     message ( STATUS "SuiteSparse_config version:     ${SUITESPARSE_CONFIG_VERSION}" )
+    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
+    message ( STATUS "SuiteSparse_config dynamic:     ${SUITESPARSE_CONFIG_LIBRARY}" )
+    message ( STATUS "SuiteSparse_config static:      ${SUITESPARSE_CONFIG_STATIC}" )
 else ( )
     message ( STATUS "SuiteSparse_config not found" )
 endif ( )

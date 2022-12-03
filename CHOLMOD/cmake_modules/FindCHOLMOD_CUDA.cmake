@@ -7,7 +7,8 @@
 
 # Finds the CHOLMOD_CUDA compiled library and sets:
 
-# CHOLMOD_CUDA_LIBRARY     - compiled CHOLMOD_CUDA library
+# CHOLMOD_CUDA_LIBRARY     - dynamic CHOLMOD_CUDA library
+# CHOLMOD_CUDA_STATIC      - static CHOLMOD_CUDA library
 # CHOLMOD_CUDA_LIBRARIES   - libraries when using CHOLMOD_CUDA
 # CHOLMOD_CUDA_FOUND       - true if CHOLMOD_CUDA found
 

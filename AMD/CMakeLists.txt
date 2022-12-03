@@ -78,7 +78,6 @@ else ( )
 endif ( )
 
 add_library ( amd SHARED ${AMD_SOURCES} )
-
 set_target_properties ( amd PROPERTIES
     VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
@@ -90,13 +89,12 @@ set_target_properties ( amd PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( amd_static STATIC ${AMD_SOURCES} )
-
-set_target_properties ( amd_static PROPERTIES
-    VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME amd
-    SOVERSION ${AMD_VERSION_MAJOR} )
+    add_library ( amd_static STATIC ${AMD_SOURCES} )
+    set_target_properties ( amd_static PROPERTIES
+        VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME amd
+        SOVERSION ${AMD_VERSION_MAJOR} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -106,14 +104,14 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( amd PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     target_link_libraries ( amd PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( amd_static PUBLIC m )
+        target_link_libraries ( amd_static PUBLIC m )
     endif ( )
 endif ( )
 
