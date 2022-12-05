@@ -20,18 +20,22 @@ message ( STATUS "Building SPQR_CUDA version: v"
 
 include ( SuiteSparsePolicy )
 
-project ( spqr_cuda 
-    VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-    LANGUAGES C CXX CUDA )
+if ( SUITESPARSE_CUDA )
+    project ( spqr_cuda 
+        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
+        LANGUAGES C CXX CUDA )
+    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
+else ( )
+    project ( spqr_cuda 
+        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
+        LANGUAGES C CXX )
+endif ( )
 
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
 set ( CMAKE_CXX_STANDARD 17 )
-# set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC -DSUITESPARSE_CUDA" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
 set ( CMAKE_C_STANDARD 11 )
-
-message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
@@ -70,11 +74,14 @@ target_include_directories ( spqr_cuda_static PUBLIC
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-target_link_libraries ( spqr_cuda CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
-
-target_link_libraries ( spqr_cuda_static CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+target_link_libraries ( spqr_cuda ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( spqr_cuda_static ${CHOLMOD_LIBRARIES} )
+if ( SUITESPARSE_CUDA )
+    target_link_libraries ( spqr_cuda CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+    target_link_libraries ( spqr_cuda_static CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location

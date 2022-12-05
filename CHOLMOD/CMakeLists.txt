@@ -240,10 +240,9 @@ find_package ( AMD 3.0.2 REQUIRED )
 # find CUDA
 #-------------------------------------------------------------------------------
 
+add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
-    add_subdirectory ( GPU )
     set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
     set ( CHOLMOD_CUDA_STATIC cholmod_cuda_static ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )

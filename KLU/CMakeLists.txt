@@ -188,10 +188,10 @@ if ( NOT NCHOLMOD )
     endif ( )
 
     # cholmod:
-    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARY} )
     if ( NOT NSTATIC )
         # Note: linking with the dynamic CHOLMOD library
-        target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
+        target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARY} )
     endif ( )
 
 endif ( )

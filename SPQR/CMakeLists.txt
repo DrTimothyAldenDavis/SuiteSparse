@@ -84,16 +84,13 @@ endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 find_package ( LAPACK REQUIRED )
 
+add_subdirectory ( SPQRGPU )
+set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES} )
+
 if ( SUITESPARSE_CUDA )
     # with CUDA
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
-    add_subdirectory ( SPQRGPU )
-    set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES} )
     include_directories ( SPQRGPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "SPQRGPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
-else ( )
-    # without CUDA and RMM
-    set ( SPQR_CUDA )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -218,20 +215,10 @@ target_link_libraries ( spqr_static PUBLIC ${CHOLMOD_LIBRARIES} )
 endif ( )
 
 # CUDA
-if ( SUITESPARSE_CUDA )
-    message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
-    target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
-    if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
-    endif ( )
-
-#   # GPUQREngine
-#   target_link_libraries ( spqr PUBLIC ${GPUQRENGINE_LIBRARIES} )
-#   target_link_libraries ( spqr_static PUBLIC ${GPUQRENGINE_LIBRARIES} )
-
-#   # SuiteSparse_GPURuntime
-#   target_link_libraries ( spqr PUBLIC ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
-#   target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
+message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
+target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+if ( NOT NSTATIC )
+target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 endif ( )
 
 #-------------------------------------------------------------------------------
