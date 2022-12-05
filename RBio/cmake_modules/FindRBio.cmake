@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindRBio.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
