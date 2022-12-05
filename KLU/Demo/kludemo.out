@@ -7,153 +7,153 @@ x [4] = 5
 ./build/kludemo  < ./Matrix/1c.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 ./build/kludemo  < ./Matrix/arrowc.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 5.67084e-15
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 ./build/kludemo  < ./Matrix/arrow.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 ./build/kludemo  < ./Matrix/impcol_a.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 207 nnz(A) 572 nnz(L+U+F) 615 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
 peak memory usage: 34276 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 207 nnz(A) 572 nnz(L+U+F) 616 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 264
 peak memory usage: 34276 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 207 nnz(A) 572 nnz(L+U+F) 610 resid 4.65661e-10
 recip growth 0.00588235 condest 4.35093e+07 rcond 2.44261e-05 flops 231
 peak memory usage: 34548 bytes
 ./build/kludemo  < ./Matrix/w156.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 39516 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 39516 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 156 nnz(A) 362 nnz(L+U+F) 402 resid 5.08832e-10
 recip growth 0.00484701 condest 1.79787e+09 rcond 4.56786e-05 flops 191
 peak memory usage: 39868 bytes
 ./build/kludemo  < ./Matrix/ctina.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 4268 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 4268 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 11 nnz(A) 36 nnz(L+U+F) 41 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 49
 peak memory usage: 4268 bytes
 ./build/kluldemo < ./Matrix/1c.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 ./build/kluldemo < ./Matrix/arrowc.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 39000 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 39000 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 5.67084e-15
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
@@ -161,20 +161,20 @@ peak memory usage: 39000 bytes
 ./build/kluldemo < ./Matrix/arrow.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 29584 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 29584 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
@@ -182,13 +182,13 @@ peak memory usage: 29584 bytes
 ./build/kluldemo < ./Matrix/impcol_a.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 207 nnz(A) 572 nnz(L+U+F) 615 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
 peak memory usage: 44800 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 ------------------- KLU User
 n 207 nnz(A) 572 nnz(L+U+F) 616 resid 6.98492e-10
@@ -196,7 +196,7 @@ recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 264
 peak memory usage: 44800 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 ------------------- KLU User
 n 207 nnz(A) 572 nnz(L+U+F) 610 resid 4.65661e-10
@@ -205,20 +205,20 @@ peak memory usage: 45152 bytes
 ./build/kluldemo < ./Matrix/w156.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 47480 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 47480 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 156 nnz(A) 362 nnz(L+U+F) 402 resid 5.08832e-10
 recip growth 0.00484701 condest 1.79787e+09 rcond 4.56786e-05 flops 191
@@ -226,20 +226,20 @@ peak memory usage: 47928 bytes
 ./build/kluldemo < ./Matrix/ctina.mtx
 
 default ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 5144 bytes
 
 CHOLMOD AMD ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 5144 bytes
 
 CHOLMOD METIS ordering:
-KLU: Nov 12, 2022, version: 2.0.0
+KLU: Dec 9, 2022, version: 2.0.2
 ------------------- KLU User
 n 11 nnz(A) 36 nnz(L+U+F) 41 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 49
