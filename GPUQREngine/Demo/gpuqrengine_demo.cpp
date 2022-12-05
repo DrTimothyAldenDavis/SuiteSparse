@@ -28,7 +28,7 @@ int main(int argn, char **argv)
 #define SUITESPARSE_CUDA
 #endif
 
-#include "GPUQREngine.hpp"
+#include "GPUQREngine_SuiteSparse.hpp"
 #include <cublas_v2.h>
 #include "cholmod.h"
 #include <time.h>

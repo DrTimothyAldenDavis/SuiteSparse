@@ -83,13 +83,6 @@ include ( GNUInstallDirs )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-# determine the suffix for static libraries
-if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
-else ( )
-    set ( STATIC_SUFFIX .a   )
-endif ( )
-
 # NSTATIC option
 if ( NSTATIC_DEFAULT_ON )
     option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )

@@ -14,7 +14,7 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Dec 1, 2022" )
+set ( SUITESPARSE_DATE "Dec 9, 2022" )
 set ( SUITESPARSE_VERSION_MAJOR 6 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
 set ( SUITESPARSE_VERSION_SUB   2 )
@@ -95,7 +95,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( suitesparseconfig_static PUBLIC m )

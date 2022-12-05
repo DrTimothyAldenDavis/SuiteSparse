@@ -34,7 +34,7 @@ revised version is required.
 (7) All original files from metis-5.1.0 that have been modified here have been
     placed in ./include/original, ./libmetis/original, or ./GKlib/original
 
-Tim Davis, Dec 1, 2022, Texas A&M University Any changes made by Tim Davis are
+Tim Davis, Dec 9, 2022, Texas A&M University Any changes made by Tim Davis are
 released to the original copyright holder, under the original Apache-2.0
 license of METIS.
 

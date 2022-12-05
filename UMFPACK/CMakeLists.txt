@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Dec 1, 2022" )
+set ( UMFPACK_DATE "Dec 9, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
 set ( UMFPACK_VERSION_SUB   2 )
@@ -146,10 +146,10 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( umfpack PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC m )
+        target_link_libraries ( umfpack_static PUBLIC m )
     endif ( )
 endif ( )
 

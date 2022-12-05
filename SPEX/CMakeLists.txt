@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SPEX_DATE "Dec 1, 2022" )
+set ( SPEX_DATE "Dec 9, 2022" )
 set ( SPEX_VERSION_MAJOR 2 )
 set ( SPEX_VERSION_MINOR 0 )
 set ( SPEX_VERSION_SUB   2 )
@@ -120,32 +120,32 @@ endif ( )
 # AMD:
 target_link_libraries ( spex PUBLIC ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spex_static PUBLIC ${AMD_LIBRARIES} )
+    target_link_libraries ( spex_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # COLAMD:
 target_link_libraries ( spex PUBLIC ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spex_static PUBLIC ${COLAMD_LIBRARIES} )
+    target_link_libraries ( spex_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # GMP:
 target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spex_static PUBLIC ${GMP_LIBRARIES} )
+    target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
 # MPFR:
 target_link_libraries ( spex PUBLIC ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spex_static PUBLIC ${MPFR_LIBRARIES} )
+    target_link_libraries ( spex_static PUBLIC ${MPFR_STATIC} )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( spex PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( spex_static PUBLIC m )
+        target_link_libraries ( spex_static PUBLIC m )
     endif ( )
 endif ( )
 

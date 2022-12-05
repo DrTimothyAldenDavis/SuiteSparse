@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Dec 1, 2022" )
+set ( KLU_DATE "Dec 9, 2022" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
 set ( KLU_VERSION_SUB   2 )
@@ -150,33 +150,33 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( klu PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( klu_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( klu_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( klu PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( klu_static PUBLIC m )
+        target_link_libraries ( klu_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd:
 target_link_libraries ( klu PUBLIC ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( klu_static PUBLIC ${AMD_LIBRARIES} )
+    target_link_libraries ( klu_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
 target_link_libraries ( klu PUBLIC ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( klu_static PUBLIC ${COLAMD_LIBRARIES} )
+    target_link_libraries ( klu_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # btf:
 target_link_libraries ( klu PUBLIC ${BTF_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( klu_static PUBLIC ${BTF_LIBRARIES} )
+    target_link_libraries ( klu_static PUBLIC ${BTF_STATIC} )
 endif ( )
 
 if ( NOT NCHOLMOD )
@@ -184,13 +184,14 @@ if ( NOT NCHOLMOD )
     # klu:
     target_link_libraries ( klu_cholmod PUBLIC klu )
     if ( NOT NSTATIC )
-    target_link_libraries ( klu_cholmod_static PUBLIC klu )
+        target_link_libraries ( klu_cholmod_static PUBLIC klu_static )
     endif ( )
 
     # cholmod:
     target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
+        # Note: linking with the dynamic CHOLMOD library
+        target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARIES} )
     endif ( )
 
 endif ( )

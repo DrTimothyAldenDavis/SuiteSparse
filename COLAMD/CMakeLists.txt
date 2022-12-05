@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( COLAMD_DATE "Dec 1, 2022" )
+set ( COLAMD_DATE "Dec 9, 2022" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 0 )
 set ( COLAMD_VERSION_SUB   2 )
@@ -95,7 +95,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( colamd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( colamd_static PUBLIC m )

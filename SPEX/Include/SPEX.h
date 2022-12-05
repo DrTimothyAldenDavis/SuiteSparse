@@ -265,10 +265,10 @@
 // #define SPEX_UTIL_VERSION_MINOR 1
 // #define SPEX_UTIL_VERSION_SUB   1
 
-#define SPEX_DATE "Dec 1, 2022"
+#define SPEX_DATE "Dec 9, 2022"
 #define SPEX_VERSION "2.0.2"
 #define SPEX_VERSION_MAJOR 2
-#define SPEX_VERSION_MINOR 
+#define SPEX_VERSION_MINOR 0
 #define SPEX_VERSION_SUB   2
 
 //------------------------------------------------------------------------------

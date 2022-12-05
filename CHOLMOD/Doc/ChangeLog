@@ -1,4 +1,4 @@
-Dec 1, 2022: version 4.0.2
+Dec 9, 2022: version 4.0.2
 
     * minor change to build system
     * Fortran: no longer required to build CHOLMOD

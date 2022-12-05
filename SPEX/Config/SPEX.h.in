@@ -268,7 +268,7 @@
 #define SPEX_DATE "@SPEX_DATE@"
 #define SPEX_VERSION "@SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@"
 #define SPEX_VERSION_MAJOR @SPEX_VERSION_MAJOR@
-#define SPEX_VERSION_MINOR @SPEX_VERSION_MINUS@
+#define SPEX_VERSION_MINOR @SPEX_VERSION_MINOR@
 #define SPEX_VERSION_SUB   @SPEX_VERSION_SUB@
 
 //------------------------------------------------------------------------------

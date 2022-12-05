@@ -359,7 +359,8 @@ GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
 RUNH = \
         $(GPURUNTIME)/Include/SuiteSparseGPU_debug.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_workspace_macros.hpp \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_Runtime.hpp
+        $(GPURUNTIME)/Include/SuiteSparseGPU_internal.hpp
+        $(GPURUNTIME)/Include/SuiteSparse_GPURuntime.hpp
 #        Makefile
 
 SuiteSparseGPU_Workspace.o: $(GPURUNSRC)/SuiteSparseGPU_Workspace.cpp $(RUNH)
@@ -395,6 +396,7 @@ KERNELH = \
     $(GPUQR)/Include/GPUQREngine_BucketList.hpp \
     $(GPUQR)/Include/GPUQREngine_Front.hpp \
     $(GPUQR)/Include/GPUQREngine_FrontState.hpp \
+    $(GPUQR)/Include/GPUQREngine_SuiteSparse.hpp \
     $(GPUQR)/Include/GPUQREngine.hpp \
     $(GPUQR)/Include/GPUQREngine_Internal.hpp \
     $(GPUQR)/Include/GPUQREngine_GraphVizHelper.hpp \

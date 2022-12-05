@@ -384,7 +384,7 @@ SUITESPARSE_PUBLIC void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "Dec 1, 2022"
+#define CAMD_DATE "Dec 9, 2022"
 #define CAMD_MAIN_VERSION   3
 #define CAMD_SUB_VERSION    0
 #define CAMD_SUBSUB_VERSION 2

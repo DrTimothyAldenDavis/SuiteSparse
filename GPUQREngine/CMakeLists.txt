@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( GPUQRENGINE_DATE "Dec 1, 2022" )
+set ( GPUQRENGINE_DATE "Dec 9, 2022" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
 set ( GPUQRENGINE_VERSION_SUB   2 )
@@ -127,7 +127,8 @@ add_library ( gpuqrengine SHARED ${GPUQRENGINE_SOURCES} )
 set_target_properties ( gpuqrengine PROPERTIES
     VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
-    SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
+    SOVERSION ${GPUQRENGINE_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/GPUQREngine.hpp" )
 
 target_include_directories ( gpuqrengine PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
@@ -173,7 +174,8 @@ if ( GLOBAL_INSTALL )
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS gpuqrengine
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGPUQREngine.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
         COMPONENT Development )
@@ -189,7 +191,8 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS gpuqrengine
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGPUQREngine.cmake
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
         COMPONENT Development )

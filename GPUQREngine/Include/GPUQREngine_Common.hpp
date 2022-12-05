@@ -20,7 +20,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "SuiteSparseGPU_Runtime.hpp"
+#include "SuiteSparseGPU_internal.hpp"
 
 
 /*** GPU Parameters **********************************************************/

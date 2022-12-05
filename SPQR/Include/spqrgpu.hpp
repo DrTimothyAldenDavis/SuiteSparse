@@ -10,7 +10,7 @@
 #ifndef SPQRGPU_HPP_
 #define SPQRGPU_HPP_
 
-#include "GPUQREngine.hpp"
+#include "GPUQREngine_SuiteSparse.hpp"
 
 void spqrgpu_kernel
 (

@@ -12,8 +12,8 @@
 // qrdemo_gpu3 matrixfile orderingoption
 
 #include "SuiteSparseQR.hpp"
-#include "SuiteSparseGPU_Runtime.hpp"
 #include <complex>
+#include <stdio.h>
 
 int main (int argc, char **argv)
 {

@@ -14,7 +14,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Dec 1, 2022" )
+set ( GraphBLAS_DATE "Dec 9, 2022" )
 set ( GraphBLAS_VERSION_MAJOR 7 )
 set ( GraphBLAS_VERSION_MINOR 3 )
 set ( GraphBLAS_VERSION_SUB   3 )
@@ -229,7 +229,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" )
     if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 3.3 )
         message ( FATAL_ERROR "clang version must be at least 3.3" )
     endif ( )
-elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+elseif ( MSVC )
     # options for MicroSoft Visual Studio
     set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} /O2 -wd\"4244\" -wd\"4146\" -wd\"4018\" -wd\"4996\" -wd\"4047\" -wd\"4554\"" )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI" )
@@ -348,7 +348,7 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )

@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Dec 1, 2022" )
+set ( SPQR_DATE "Dec 9, 2022" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
 set ( SPQR_VERSION_SUB   2 )
@@ -172,10 +172,10 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( spqr PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC m )
+        target_link_libraries ( spqr_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -209,7 +209,7 @@ target_link_libraries ( spqr PUBLIC ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
-include_directories ( ${LAPACK_INCLUDE_LIBRARIES} )
+include_directories ( ${LAPACK_INCLUDE_DIR} )
 
 # cholmod:
 target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )

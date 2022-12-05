@@ -2,8 +2,12 @@
 # SuiteSparse/SuiteSparse_config/cmake_modules/FindSuiteSparse_config.cmake
 #-------------------------------------------------------------------------------
 
+# The following copyright and license applies to just this file only, not to
+# the library itself:
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # Finds the SuiteSparse_config include file and compiled library and sets:
 
@@ -16,16 +20,13 @@
 # set ``SUITESPARSE_CONFIG_ROOT`` or ``SuiteSparse_config_ROOT`` to a
 # SuiteSparse_config installation root to tell this module where to look.
 
-# To use this file in your application, copy this file into MyApp/cmake_modules
-# where MyApp is your application and add the following to your
-# MyApp/CMakeLists.txt file:
+# All the Find*.cmake files in SuiteSparse are installed by 'make install' into
+# /usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
+# ${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
+# in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules")
-#
-# or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
-# can leave this file in place and use this command (revise as needed):
-#
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
+#   set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+#       ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
 
@@ -51,6 +52,12 @@ find_library ( SUITESPARSE_CONFIG_LIBRARY
     PATH_SUFFIXES lib build
 )
 
+if ( MSVC )
+    set ( STATIC_SUFFIX .lib )
+else ( )
+    set ( STATIC_SUFFIX .a )
+endif ( )
+
 # static libraries for SuiteSparse_config
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
@@ -63,7 +70,7 @@ find_library ( SUITESPARSE_CONFIG_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
     PATH_SUFFIXES lib build
 )
-set ( ${CMAKE_FIND_LIBRARY_SUFFIXES} save )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library filename, if present
 get_filename_component ( SUITESPARSE_CONFIG_LIBRARY  ${SUITESPARSE_CONFIG_LIBRARY} REALPATH )
@@ -105,10 +112,10 @@ mark_as_advanced (
 )
 
 if ( SUITESPARSE_CONFIG_FOUND )
-    message ( STATUS "SuiteSparse_config version:     ${SUITESPARSE_CONFIG_VERSION}" )
-    message ( STATUS "SuiteSparse_config include dir: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
-    message ( STATUS "SuiteSparse_config dynamic:     ${SUITESPARSE_CONFIG_LIBRARY}" )
-    message ( STATUS "SuiteSparse_config static:      ${SUITESPARSE_CONFIG_STATIC}" )
+    message ( STATUS "SuiteSparse_config version: ${SUITESPARSE_CONFIG_VERSION}" )
+    message ( STATUS "SuiteSparse_config include: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
+    message ( STATUS "SuiteSparse_config library: ${SUITESPARSE_CONFIG_LIBRARY}" )
+    message ( STATUS "SuiteSparse_config static:  ${SUITESPARSE_CONFIG_STATIC}" )
 else ( )
     message ( STATUS "SuiteSparse_config not found" )
 endif ( )

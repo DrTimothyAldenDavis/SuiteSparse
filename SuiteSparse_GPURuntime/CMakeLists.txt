@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Dec 1, 2022" )
+set ( SUITESPARSE_GPURUNTIME_DATE "Dec 9, 2022" )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   2 )
@@ -60,7 +60,7 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/SuiteSparseGPU_Runtime.hpp.in" "${PROJECT_SOURCE_DIR}/Include/SuiteSparseGPU_Runtime.hpp")
+configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in" "${PROJECT_SOURCE_DIR}/Include/SuiteSparse_GPURuntime.hpp")
 
 #-------------------------------------------------------------------------------
 
@@ -90,7 +90,8 @@ add_library ( suitesparse_gpuruntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 set_target_properties ( suitesparse_gpuruntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
-    SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
+    SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp" )
 
 target_include_directories ( suitesparse_gpuruntime PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}
@@ -136,7 +137,8 @@ if ( GLOBAL_INSTALL )
     # requires "sudo make install"
     message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
     install ( TARGETS suitesparse_gpuruntime
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES
         ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_GPURuntime.cmake
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
@@ -153,7 +155,8 @@ if ( INSIDE_SUITESPARSE )
     message ( STATUS "Installation in ../../lib and ../../include," )
     message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
     install ( TARGETS suitesparse_gpuruntime
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
+        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES
         ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_GPURuntime.cmake
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 

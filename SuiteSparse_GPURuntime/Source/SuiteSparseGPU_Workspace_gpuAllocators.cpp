@@ -10,8 +10,7 @@
 
 #ifdef SUITESPARSE_CUDA
 
-#include "SuiteSparseGPU_Runtime.hpp"
-#include <stdio.h>
+#include "SuiteSparseGPU_internal.hpp"
 
 // -----------------------------------------------------------------------------
 // gpu_malloc: malloc memory on the GPU

@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Dec 1, 2022" )
+set ( CAMD_DATE "Dec 9, 2022" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
 set ( CAMD_VERSION_SUB   2 )
@@ -96,7 +96,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( camd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )

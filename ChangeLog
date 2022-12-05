@@ -1,4 +1,4 @@
-FIXME Dec 1, 2022: SuiteSparse 6.0.2
+Dec 9, 2022: SuiteSparse 6.0.2
 
     * minor change to build system for nearly all packages: (except CSparse,
         ssget, and MATLAB_Tools):  allows static linkage of all libraries.
@@ -27,6 +27,8 @@ FIXME Dec 1, 2022: SuiteSparse 6.0.2
     * SuiteSparse_config 6.0.2: override C-to-Fortran interface handling if
         no Fortran compiler found; minor change to build system
     * UMFPACK 6.0.2: Fortran no longer required; minor change to build system
+    * Example: simple package that illustrates how to use SuiteSparse
+        Find*.cmake modules in cmake.
     * not changed from SuiteSparse v6.0.1: ssget, CSparse, MATLAB_Tools
     * FIXME/TODO for SuiteSparse 6.0.2: update Demo output files, Docs
 

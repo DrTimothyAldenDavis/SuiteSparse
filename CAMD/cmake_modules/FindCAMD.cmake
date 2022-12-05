@@ -1,9 +1,13 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/cmake_modules/FindCAMD.cmake
+# SuiteSparse/CAMD/cmake_modules/FindCAMD.cmake
 #-------------------------------------------------------------------------------
 
+# The following copyright and license applies to just this file only, not to
+# the library itself:
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # Finds the CAMD include file and compiled library and sets:
 
@@ -16,17 +20,13 @@
 # set ``CAMD_ROOT`` to a CAMD installation root to
 # tell this module where to look.
 
-# To use this file in your application, copy this file into MyApp/cmake_modules
-# where MyApp is your application and add the following to your
-# MyApp/CMakeLists.txt file:
+# All the Find*.cmake files in SuiteSparse are installed by 'make install' into
+# /usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
+# ${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
+# in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules")
-#
-# or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
-# can leave this file in place and use this command (revise as needed):
-#
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
+#   set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+#       ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
 
@@ -48,17 +48,23 @@ find_library ( CAMD_LIBRARY
     PATH_SUFFIXES lib build
 )
 
+if ( MSVC )
+    set ( STATIC_SUFFIX .lib )
+else ( )
+    set ( STATIC_SUFFIX .a )
+endif ( )
+
 # static CAMD library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-find_library ( CAMD_LIBRARY
+find_library ( CAMD_STATIC
     NAMES camd
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD
     PATH_SUFFIXES lib build
 )
-set ( ${CMAKE_FIND_LIBRARY_SUFFIXES} save )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library filename
 get_filename_component ( CAMD_LIBRARY  ${CAMD_LIBRARY} REALPATH )
@@ -98,10 +104,10 @@ mark_as_advanced (
 )
 
 if ( CAMD_FOUND )
-    message ( STATUS "CAMD version:     ${CAMD_VERSION}" )
-    message ( STATUS "CAMD include dir: ${CAMD_INCLUDE_DIR}" )
-    message ( STATUS "CAMD dynamic:     ${CAMD_LIBRARY}" )
-    message ( STATUS "CAMD static:      ${CAMD_STATIC}" )
+    message ( STATUS "CAMD version: ${CAMD_VERSION}" )
+    message ( STATUS "CAMD include: ${CAMD_INCLUDE_DIR}" )
+    message ( STATUS "CAMD library: ${CAMD_LIBRARY}" )
+    message ( STATUS "CAMD static:  ${CAMD_STATIC}" )
 else ( )
     message ( STATUS "CAMD not found" )
 endif ( )

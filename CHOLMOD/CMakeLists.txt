@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Dec 1, 2022" )
+set ( CHOLMOD_DATE "Dec 9, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   2 )
@@ -334,7 +334,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC m )
@@ -373,7 +373,7 @@ if ( NOT NSUPERNODAL )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
     endif ( )
-    include_directories ( ${LAPACK_INCLUDE_LIBRARIES} )
+    include_directories ( ${LAPACK_INCLUDE_DIR} )
 endif ( )
 
 # camd and ccolamd:

@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Dec 1, 2022" )
+set ( CXSPARSE_DATE "Dec 9, 2022" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
 set ( CXSPARSE_VERSION_SUB   2 )
@@ -91,14 +91,14 @@ endif ( )
 
 target_link_libraries ( cxsparse PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
-target_link_libraries ( cxsparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+    target_link_libraries ( cxsparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( cxsparse PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( cxsparse_static PUBLIC m )
+        target_link_libraries ( cxsparse_static PUBLIC m )
     endif ( )
 endif ( )
 

@@ -2,7 +2,7 @@
 # Mongoose/CMakeLists.txt: instructions for building Mongoose with cmake
 #-------------------------------------------------------------------------------
 #
-# Mongoose, Copyright (c) 2018, All Rights Reserved.
+# Mongoose, Copyright (c) 2018-2022, All Rights Reserved.
 #   Nuri Yeralan, Microsoft Research
 #   Scott Kolodziej, Texas A&M University
 #   Tim Davis, Texas A&M University
@@ -46,8 +46,8 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Dec 1, 2022")
-set(Mongoose_NUMERIC_DATE "2022-11-04")
+set(Mongoose_DATE "Dec 9, 2022")
+set(Mongoose_NUMERIC_DATE "2022-12-09")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
 set(Mongoose_VERSION_PATCH 2)
@@ -331,7 +331,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # Debug flags for Intel
     SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv")
     SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
-    #elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+#elseif ( MSVC )
     # using Visual Studio C++
 endif ()
 

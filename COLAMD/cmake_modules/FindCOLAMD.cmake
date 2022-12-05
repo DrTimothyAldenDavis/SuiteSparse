@@ -1,9 +1,13 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/cmake_modules/FindCOLAMD.cmake
+# SuiteSparse/COLAMD/cmake_modules/FindCOLAMD.cmake
 #-------------------------------------------------------------------------------
 
+# The following copyright and license applies to just this file only, not to
+# the library itself:
 # Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # Finds the COLAMD include file and compiled library and sets:
 
@@ -16,17 +20,13 @@
 # set ``COLAMD_ROOT`` to a COLAMD installation root to
 # tell this module where to look.
 
-# To use this file in your application, copy this file into MyApp/cmake_modules
-# where MyApp is your application and add the following to your
-# MyApp/CMakeLists.txt file:
+# All the Find*.cmake files in SuiteSparse are installed by 'make install' into
+# /usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
+# ${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
+# in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules")
-#
-# or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
-# can leave this file in place and use this command (revise as needed):
-#
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
+#   set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+#       ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
 
@@ -48,17 +48,23 @@ find_library ( COLAMD_LIBRARY
     PATH_SUFFIXES lib build
 )
 
+if ( MSVC )
+    set ( STATIC_SUFFIX .lib )
+else ( )
+    set ( STATIC_SUFFIX .a )
+endif ( )
+
 # static COLAMD library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-find_library ( COLAMD_LIBRARY
+find_library ( COLAMD_STATIC
     NAMES colamd
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD
     PATH_SUFFIXES lib build
 )
-set ( ${CMAKE_FIND_LIBRARY_SUFFIXES} save )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
 get_filename_component ( COLAMD_LIBRARY  ${COLAMD_LIBRARY} REALPATH )
@@ -98,10 +104,10 @@ mark_as_advanced (
 )
 
 if ( COLAMD_FOUND )
-    message ( STATUS "COLAMD version:     ${COLAMD_VERSION}" )
-    message ( STATUS "COLAMD include dir: ${COLAMD_INCLUDE_DIR}" )
-    message ( STATUS "COLAMD dynamic:     ${COLAMD_LIBRARY}" )
-    message ( STATUS "COLAMD static:      ${COLAMD_STATIC}" )
+    message ( STATUS "COLAMD version: ${COLAMD_VERSION}" )
+    message ( STATUS "COLAMD include: ${COLAMD_INCLUDE_DIR}" )
+    message ( STATUS "COLAMD library: ${COLAMD_LIBRARY}" )
+    message ( STATUS "COLAMD static:  ${COLAMD_STATIC}" )
 else ( )
     message ( STATUS "COLAMD not found" )
 endif ( )

@@ -10,7 +10,7 @@
 
 #ifdef SUITESPARSE_CUDA
 
-#include "SuiteSparseGPU_Runtime.hpp"
+#include "SuiteSparseGPU_internal.hpp"
 
 // -----------------------------------------------------------------------------
 // transfer: synchronous/asynchronous transfer of memory to/from the CPU/GPU

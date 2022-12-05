@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Dec 1, 2022" )
+set ( LDL_DATE "Dec 9, 2022" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
 set ( LDL_VERSION_SUB   2 )
@@ -95,7 +95,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )
@@ -105,7 +105,7 @@ target_link_libraries ( ldl PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )
-target_link_libraries ( ldl_static PUBLIC ${M_LIB}
+    target_link_libraries ( ldl_static PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 endif ( )
 

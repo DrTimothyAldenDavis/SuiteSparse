@@ -11,7 +11,7 @@
 #ifndef SUITESPARSE_GPURUNTIME_WORKSPACE_HPP
 #define SUITESPARSE_GPURUNTIME_WORKSPACE_HPP
 
-#include "SuiteSparseGPU_Runtime.hpp"
+#include "SuiteSparseGPU_internal.hpp"
 
 class Workspace
 {
