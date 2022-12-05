@@ -38,6 +38,7 @@ include ( GNUInstallDirs )
 # set the module path for all Find*.cmake files.
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../lib/cmake/SuiteSparse
     ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
@@ -79,8 +80,8 @@ find_package ( UMFPACK 6.0.2 REQUIRED )
 find_package ( OpenMP REQUIRED )
 find_package ( GMP 6.1.2 REQUIRED )
 find_package ( MPFR 4.0.2 REQUIRED )
-find_package ( BLAS REQUIRED )
-find_package ( LAPACK REQUIRED )
+# find_package ( BLAS REQUIRED )
+# find_package ( LAPACK REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
