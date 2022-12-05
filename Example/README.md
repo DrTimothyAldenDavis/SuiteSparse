@@ -7,13 +7,14 @@ An example of how to use the SuiteSparse `Find*.cmake` files in cmake
 to build a library that depends on SuiteSparse libraries.
 
     README.md           this file
-    CMakeLists.txt
+    CMakeLists.txt      primary method for building the package
+    Makefile            optional; relies on cmake to do the work
     Include/my.h        created by cmake from Config/my.h.in
-    Config/my.h.in      
+    Config/my.h.in      input file for Include/my.h
     Demo/my_demo.c      demo program that uses 'my' package
+    Demo/my_demo.out    output of my_demo
     Source/my.c         library source code
     build               where the 'my' package is built
-    cmake_modules
     cmake_modules/FindGMP.cmake     how to find the GMP library
     cmake_modules/FindMPFR.cmake    how to find the MPFR library
 
@@ -34,10 +35,8 @@ To compile the `my` package and run a demo program:
 
     On Linux or Mac:
 
-        cd SuiteSparse/Example/build
-        cmake ..
         make
-        ./my_demo
+        make demos
         sudo make install
 
     On Windows: load Example/CMakeLists.txt into MS Visual Studio
@@ -45,6 +44,5 @@ To compile the `my` package and run a demo program:
 To remove all compiled files and folders, delete the contents of Example/build
 (but keep Example/build/.gitignore):
 
-    cd Example/build
-    rm -rf *
+        make clean
 
