@@ -348,7 +348,7 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( NOT MSVC )
+if ( MSVC )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )
