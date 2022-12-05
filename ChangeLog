@@ -30,7 +30,6 @@ Dec 9, 2022: SuiteSparse 6.0.2
     * Example: simple package that illustrates how to use SuiteSparse
         Find*.cmake modules in cmake.
     * not changed from SuiteSparse v6.0.1: ssget, CSparse, MATLAB_Tools
-    * FIXME/TODO for SuiteSparse 6.0.2: update Demo output files, Docs
 
 Nov 12, 2022: SuiteSparse 6.0.1
 
