@@ -49,6 +49,9 @@
 #                       Both settings must appear, or neither.
 #                       Default: neither are defined.
 #
+#   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
+#                       Default: false
+#
 #   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
 #                       64-bit BLAS.  If false, only 32-bit BLAS will be
 #                       searched for.  Ignored if BLA_VENDOR and
@@ -72,15 +75,22 @@ cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
-# look for cmake modules installed by prior compilations of SuiteSparse packages
+set ( CMAKE_MACOSX_RPATH TRUE )
+enable_language ( C )
+include ( GNUInstallDirs )
+
+# add the cmake_modules folder for this package to the module path
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
+# NSTATIC option
 if ( NSTATIC_DEFAULT_ON )
-    option ( NSTATIC "ON (default): do not built static libraries.  OFF: build static libraries" on )
+    option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
 else ( )
-    option ( NSTATIC "ON: do not built static libraries.  OFF (default): build static libraries" off )
+    option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
 endif ( )
+
+# installation options
 option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
 option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
 
@@ -93,10 +103,6 @@ else ( )
     set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/../lib/cmake )
 endif ( )
-
-set ( CMAKE_MACOSX_RPATH TRUE )
-enable_language ( C )
-include ( GNUInstallDirs )
 
 # add the ./build folder to the runpath so other SuiteSparse packages can
 # find this one without "make install"
