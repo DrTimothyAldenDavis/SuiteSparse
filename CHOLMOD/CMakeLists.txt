@@ -231,9 +231,9 @@ find_package ( AMD 3.0.2 REQUIRED )
         # if NSUPERNODAL is true: do not link against CAMD and CCOLAMD
         add_compile_definitions ( NSUPERNODAL )
     else ( )
-        # if NSUPERNODAL is false: build Supernodal, which needs the BLAS
+        # if NSUPERNODAL is false: build Supernodal, needs BLAS and LAPACK
         include ( SuiteSparseBLAS )     # requires cmake 3.22
-        find_package ( LAPACK REQUIRED )
+        include ( SuiteSparseLAPACK )   # requires cmake 3.22
     endif ( )
 
 #-------------------------------------------------------------------------------

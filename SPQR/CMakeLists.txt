@@ -82,7 +82,7 @@ if ( SUITESPARSE_CUDA )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
-find_package ( LAPACK REQUIRED )
+include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
 add_subdirectory ( SPQRGPU )
 set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES} )

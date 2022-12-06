@@ -25,6 +25,9 @@ else ( )
 endif ( )
 
 # To select a specific BLAS: set to the BLA_VENDOR options from FindBLAS.cmake
+if ( DEFINED ENV{BLA_VENDOR} )
+    set ( BLA_VENDOR $ENV{BLA_VENDOR} )
+endif ( )
 set ( BLA_VENDOR "ANY" CACHE STRING
     "if ANY (default): searches for any BLAS. Otherwise: search for a specific BLAS" )
 
@@ -79,6 +82,7 @@ if ( NOT (BLA_VENDOR STREQUAL "ANY" ) )
     else ( BLA_SIZEOF_INTEGER EQUAL 4 )
         include ( SuiteSparseBLAS32 )
     endif ( )
+    message ( STATUS "Specific BLAS: ${BLA_VENDOR} found: ${BLAS_FOUND}" )
     return ( )
 endif ( )
 
@@ -191,6 +195,16 @@ endif ( )
 # Look for OpenBLAS with 32-bit integers
 message ( STATUS "Looking for 32-bit OpenBLAS" )
 set ( BLA_VENDOR OpenBLAS )
+set ( BLA_SIZEOF_INTEGER 4 )
+find_package ( BLAS )
+if ( BLAS_FOUND )
+    include ( SuiteSparseBLAS32 )
+    return ( )
+endif ( )
+
+# Look for FLAME BLAS(32-bit only)
+message ( STATUS "Looking for 32-bit FLAME (BLIS) BLAS" )
+set ( BLA_VENDOR FLAME )
 set ( BLA_SIZEOF_INTEGER 4 )
 find_package ( BLAS )
 if ( BLAS_FOUND )
