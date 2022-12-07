@@ -335,12 +335,12 @@ Packages in SuiteSparse, and files in this directory:
                 make            compiles SuiteSparse libraries.
                                 Subsequent "make install" will install
                                 in just /usr/local/lib.
-                                Normally requires "sudu make install"
+                                Normally requires "sudo make install"
 
                 make both       compiles SuiteSparse, and then "make install"
                                 will instal in both ./lib and /usr/local/lib
                                 (the latter controlled by CMAKE_INSTALL_PATH).
-                                Normally requires "sudu make install"
+                                Normally requires "sudo make install"
 
                 make local      compiles SuiteSparse.
                                 Subsequent "make install will install only
@@ -351,7 +351,7 @@ Packages in SuiteSparse, and files in this directory:
                                 Subsequent "make install" will install in
                                 just /usr/local/lib (or whatever your
                                 CMAKE_INSTALL_PREFIX is).
-                                Normally requires "sudu make install"
+                                Normally requires "sudo make install"
                                 Does not install in ./lib and ./include.
 
                 make install    installs in the current directory
