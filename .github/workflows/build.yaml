@@ -48,7 +48,7 @@ jobs:
         run: |
           sudo apt -qq update
           sudo apt install -y ${COMPILER_PKGS} autoconf automake ccache cmake \
-            dvipng gfortran libgmp-dev liblapack-dev libmetis-dev libmpfr-dev \
+            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
             libopenblas-dev
 
       - name: prepare ccache
@@ -148,7 +148,6 @@ jobs:
             ${{ matrix.target-prefix }}-omp
             ${{ matrix.target-prefix }}-gmp
             ${{ matrix.target-prefix }}-mpfr
-            ${{ matrix.target-prefix }}-metis
 
           msystem: ${{ matrix.msystem }}
 
