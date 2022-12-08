@@ -298,7 +298,11 @@ GrB_Info GB_serialize               // serialize a matrix into a blob
     int32_t sparsity_iso_csc = (4 * sparsity) + (iso ? 2 : 0) +
         (A->is_csc ? 1 : 0) ;
 
-    GB_BLOB_WRITE (blob_size_required, size_t) ;
+    // size_t is 32 bits if GraphBLAS is compiled in ILP32 mode,
+    // so write a 64-bit blob size, regardless of the size of size_t
+    uint64_t blob_size_required64 = (uint64_t) blob_size_required ;
+    GB_BLOB_WRITE (blob_size_required64, uint64_t) ;
+
     GB_BLOB_WRITE (typecode, int32_t) ;
     GB_BLOB_WRITE (version, int32_t) ;
     GB_BLOB_WRITE (vlen, int64_t) ;
