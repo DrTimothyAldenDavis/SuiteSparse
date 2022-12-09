@@ -17,7 +17,6 @@
 #define GB_COMPILER_GCC     0
 #define GB_COMPILER_MSC     0
 #define GB_COMPILER_XLC     0
-#define GB_COMPILER_MINGW   0
 
 //------------------------------------------------------------------------------
 // determine which compiler is in use
@@ -78,22 +77,6 @@
     #define GB_COMPILER_SUB   0
     #define GB_COMPILER_NAME  "IBM xlc " GB_XSTR (__xlC__)
 
-#elif defined ( __MINGW32__ ) || defined ( __MINGW64__ )
-
-    // MinGW (32-bit or 64-bit)
-    #undef  GB_COMPILER_MINGW
-    #define GB_COMPILER_MINGW   1
-
-    #if defined ( __MINGW32__ )
-    #define GB_COMPILER_MAJOR ( __MINGW32_MAJOR_VERSION )
-    #define GB_COMPILER_MINOR ( __MINGW32_MINOR_VERSION )
-    #else
-    #define GB_COMPILER_MAJOR ( __MINGW64_MAJOR_VERSION )
-    #define GB_COMPILER_MINOR ( __MINGW64_MINOR_VERSION )
-    #endif
-    #define GB_COMPILER_SUB   0
-    #define GB_COMPILER_NAME  "MinGW"
-
 #elif defined ( __GNUC__ )
 
     // gcc
@@ -125,6 +108,17 @@
     #define GB_COMPILER_SUB   0
     #define GB_COMPILER_NAME  "other C compiler"
 
+#endif
+
+//------------------------------------------------------------------------------
+// MINGW system, for Windows
+//------------------------------------------------------------------------------
+
+#if defined ( __MINGW32__ )
+    // MinGW (32-bit or 64-bit): using gcc, clang, or other compilers.
+    #define GB_MINGW   1
+#else
+    #define GB_MINGW   0
 #endif
 
 //------------------------------------------------------------------------------
