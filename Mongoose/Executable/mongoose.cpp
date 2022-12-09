@@ -93,7 +93,7 @@ int main(int argn, const char **argv)
         LogError("Error computing edge separator");
         options->~EdgeCut_Options();
         graph->~Graph();
-        result->~EdgeCut();
+        // result->~EdgeCut();
         return EXIT_FAILURE;
     }
     else
