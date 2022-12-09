@@ -156,7 +156,7 @@ GrB_Info GB_serialize               // serialize a matrix into a blob
     ASSERT (A->nzombies == 0) ;
     ASSERT (!A->jumbled) ;
     GrB_Type atype = A->type ;
-    size_t typesize = atype->size ;
+    int64_t typesize = atype->size ;
     int32_t typecode = (int32_t) (atype->code) ;
     int64_t anz = GB_nnz (A) ;
     int64_t anz_held = GB_nnz_held (A) ;
