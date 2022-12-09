@@ -39,10 +39,9 @@
  *  Returns 1 if GPU requested but not available, 0 otherwise
  */
 
-#ifdef SUITESPARSE_CUDA
-
 static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
 {
+#ifdef SUITESPARSE_CUDA
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
@@ -61,9 +60,10 @@ static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
     // t = SuiteSparse_time ( ) - t ;
     // printf ("poll s %lu OK time %g\n", s, t) ;
     return (TRUE) ;
-}
-
+#else
+    return (FALSE) ;
 #endif
+}
 
 int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 (

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CCOLAMD_DATE "Nov 12, 2022" )
+set ( CCOLAMD_DATE "Dec 9, 2022" )
 set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 0 )
-set ( CCOLAMD_VERSION_SUB   0 )
+set ( CCOLAMD_VERSION_SUB   2 )
 
 message ( STATUS "Building CCOLAMD version: v"
     ${CCOLAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( ccolamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -92,14 +92,14 @@ endif ( )
 
 target_link_libraries ( ccolamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
-target_link_libraries ( ccolamd_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+    target_link_libraries ( ccolamd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( ccolamd PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( ccolamd_static PUBLIC m )
+        target_link_libraries ( ccolamd_static PUBLIC m )
     endif ( )
 endif ( )
 

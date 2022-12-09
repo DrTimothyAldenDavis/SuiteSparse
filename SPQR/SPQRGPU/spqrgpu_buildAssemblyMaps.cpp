@@ -9,8 +9,9 @@
 //------------------------------------------------------------------------------
 
 
-#ifdef SUITESPARSE_CUDA
 #include "spqr.hpp"
+
+#ifdef SUITESPARSE_CUDA
 
 void spqrgpu_buildAssemblyMaps
 (
@@ -37,6 +38,7 @@ void spqrgpu_buildAssemblyMaps
     SEntry *cpuS
 )
 {
+
     PR (("GPU: building assembly maps:\n")) ;
 
     /* Use Fmap and Stair to map a front's local rows to global rows. */

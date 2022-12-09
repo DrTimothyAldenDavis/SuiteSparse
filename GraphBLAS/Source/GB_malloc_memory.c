@@ -85,7 +85,8 @@ void *GB_malloc_memory      // pointer to allocated block of memory
     size_of_item = GB_IMAX (1, size_of_item) ;
 
     bool ok = GB_size_t_multiply (&size, nitems, size_of_item) ;
-    if (!ok || nitems > GB_NMAX || size_of_item > GB_NMAX)
+    if (!ok || (((uint64_t) nitems) > GB_NMAX)
+            || (((uint64_t) size_of_item) > GB_NMAX))
     { 
         // overflow
         (*size_allocated) = 0 ;

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( RBIO_DATE "Nov 12, 2022" )
+set ( RBIO_DATE "Dec 9, 2022" )
 set ( RBIO_VERSION_MAJOR 3 )
 set ( RBIO_VERSION_MINOR 0 )
-set ( RBIO_VERSION_SUB   0 )
+set ( RBIO_VERSION_SUB   2 )
 
 message ( STATUS "Building RBIO version: v"
     ${RBIO_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( rbio
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -96,7 +96,7 @@ target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( rbio PUBLIC m )
     if ( NOT NSTATIC )
     target_link_libraries ( rbio_static PUBLIC m )

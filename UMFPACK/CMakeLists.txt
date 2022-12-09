@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Nov 12, 2022" )
+set ( UMFPACK_DATE "Dec 9, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
-set ( UMFPACK_VERSION_SUB   1 )
+set ( UMFPACK_VERSION_SUB   2 )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -46,8 +46,6 @@ project ( umfpack
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C Fortran )
-
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled
@@ -56,15 +54,15 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings for KLU)
-    find_package ( CHOLMOD 4.0.0 )
+    find_package ( CHOLMOD 4.0.2 )
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
@@ -148,10 +146,10 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( umfpack PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC m )
+        target_link_libraries ( umfpack_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -163,6 +161,7 @@ endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
@@ -237,6 +236,10 @@ if ( DEMO )
     add_executable ( umfpack_dl_demo "Demo/umfpack_dl_demo.c" )
     add_executable ( umfpack_zi_demo "Demo/umfpack_zi_demo.c" )
     add_executable ( umfpack_zl_demo "Demo/umfpack_zl_demo.c" )
+
+    if ( NOT CMAKE_Fortran_COMPILER )
+        set ( FDEMO false )
+    endif ( )
 
     if ( FDEMO )
         # Fortran demos

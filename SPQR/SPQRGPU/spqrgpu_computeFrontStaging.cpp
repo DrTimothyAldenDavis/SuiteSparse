@@ -12,8 +12,9 @@
 // A front staging is infeasible if a front and its children do not fit on
 // the GPU at the same time.
 
-#ifdef SUITESPARSE_CUDA
 #include "spqr.hpp"
+
+#ifdef SUITESPARSE_CUDA
 #include "GPUQREngine_Scheduler.hpp"
 
 void spqrgpu_computeFrontStaging
@@ -234,4 +235,5 @@ void spqrgpu_computeFrontStaging
     *feasible = true;
     return;
 }
+
 #endif

@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Nov 12, 2022" )
+set ( SUITESPARSE_DATE "Dec 9, 2022" )
 set ( SUITESPARSE_VERSION_MAJOR 6 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   1 )
+set ( SUITESPARSE_VERSION_SUB   2 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.
@@ -45,9 +45,6 @@ project ( suitesparseconfig
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C Fortran )
-message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
-
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled
@@ -73,7 +70,6 @@ configure_file ( "Config/SuiteSparse_config.h.in"
 file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
 add_library ( suitesparseconfig SHARED ${SUITESPARSECONFIG_SOURCES} )
-
 set_target_properties ( suitesparseconfig PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
@@ -85,13 +81,13 @@ set_target_properties ( suitesparseconfig PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
+    add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
-set_target_properties ( suitesparseconfig_static PROPERTIES
-    VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME suitesparseconfig
-    SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+    set_target_properties ( suitesparseconfig_static PROPERTIES
+        VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME suitesparseconfig
+        SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -99,10 +95,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( suitesparseconfig_static PUBLIC m )
+        target_link_libraries ( suitesparseconfig_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -113,8 +109,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( suitesparseconfig_static PUBLIC
-        ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
@@ -126,12 +121,8 @@ if ( BLAS_FOUND )
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 #   SuiteSparse_config does not itself require the BLAS.  It just needs to
-#   know which BLAS is going to be used by the rest of SuiteSparse.
-#   target_link_libraries ( suitesparseconfig PUBLIC ${BLAS_LIBRARIES} )
-#   if ( NOT NSTATIC )
-#   target_link_libraries ( suitesparseconfig_static PUBLIC ${BLAS_LIBRARIES} )
-#   endif ( )
-#   include_directories ( ${BLAS_INCLUDE_DIRS} )
+#   know which BLAS is going to be used by the rest of SuiteSparse so it
+#   can configure SuiteSparse_config.h properly.
 endif ( )
 
 #-------------------------------------------------------------------------------

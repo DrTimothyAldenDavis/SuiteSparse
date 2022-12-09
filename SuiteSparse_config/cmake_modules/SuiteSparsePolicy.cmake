@@ -49,10 +49,21 @@
 #                       Both settings must appear, or neither.
 #                       Default: neither are defined.
 #
+#   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
+#                       Default: false
+#
 #   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
 #                       64-bit BLAS.  If false, only 32-bit BLAS will be
 #                       searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
+#
+#   SUITESPARSE_C_TO_FORTRAN:  a string that defines how C calls Fortran.
+#                       Defaults to "(name,NAME) name" for Windows (lower case,
+#                       no underscore appended to the name), which is the
+#                       system that is most likely not to have a Fortran
+#                       compiler.  Defaults to "(name,NAME) name##_" otherwise.
+#                       This setting is only used if no Fortran compiler is
+#                       found.
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -64,15 +75,22 @@ cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
-# look for cmake modules installed by prior compilations of SuiteSparse packages
+set ( CMAKE_MACOSX_RPATH TRUE )
+enable_language ( C )
+include ( GNUInstallDirs )
+
+# add the cmake_modules folder for this package to the module path
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
+# NSTATIC option
 if ( NSTATIC_DEFAULT_ON )
-    option ( NSTATIC "ON (default): do not built static libraries.  OFF: build static libraries" on )
+    option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
 else ( )
-    option ( NSTATIC "ON: do not built static libraries.  OFF (default): build static libraries" off )
+    option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
 endif ( )
+
+# installation options
 option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
 option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
 
@@ -85,10 +103,6 @@ else ( )
     set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/../lib/cmake )
 endif ( )
-
-set ( CMAKE_MACOSX_RPATH TRUE )
-enable_language ( C )
-include ( GNUInstallDirs )
 
 # add the ./build folder to the runpath so other SuiteSparse packages can
 # find this one without "make install"
@@ -151,13 +165,36 @@ message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
+# check if Fortran is available
+#-------------------------------------------------------------------------------
+
+include ( CheckLanguage )
+check_language ( Fortran )
+if ( CMAKE_Fortran_COMPILER )
+    enable_language ( Fortran )
+    message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
+else()
+    message ( STATUS "Fortran: not available")
+endif()
+
+# default C-to-Fortran name mangling if Fortran compiler not found
+if ( MSVC )
+    # MS Visual Studio Fortran compiler does not mangle the Fortran name
+    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name"
+        CACHE STRING "C to Fortan name mangling" )
+else ( )
+    # Other systems (Linux, Mac) typically append an underscore
+    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name##_"
+        CACHE STRING "C to Fortan name mangling" )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # find CUDA
 #-------------------------------------------------------------------------------
 
 if ( ENABLE_CUDA )
 
     # try finding CUDA
-    include ( CheckLanguage )
     check_language ( CUDA )
     message ( STATUS "Looking for CUDA" )
     if ( CMAKE_CUDA_COMPILER )

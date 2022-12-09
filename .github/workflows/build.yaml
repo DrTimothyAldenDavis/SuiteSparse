@@ -1,0 +1,196 @@
+name: build
+on:
+  push:
+    branches-ignore:
+      - '**/dev2'
+
+concurrency: ci-${{ github.ref }}
+
+jobs:
+
+  ubuntu:
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-latest
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        compiler: [gcc, clang]
+        include:
+          - compiler: gcc
+            compiler-pkgs: "g++ gcc"
+            cc: "gcc"
+            cxx: "g++"
+          - compiler: clang
+            compiler-pkgs: "clang"
+            cc: "clang"
+            cxx: "clang++"
+          # Clang seems to generally require less cache size (smaller object files?).
+          - compiler: gcc
+            ccache-max: 400M
+          - compiler: clang
+            ccache-max: 200M
+
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: install dependencies
+        env:
+          COMPILER_PKGS: ${{ matrix.compiler-pkgs }}
+        run: |
+          sudo apt -qq update
+          sudo apt install -y ${COMPILER_PKGS} autoconf automake ccache cmake \
+            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
+            libopenblas-dev
+
+      - name: prepare ccache
+        # create human readable timestamp
+        id: ccache_cache_timestamp
+        run: |
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the github cache used to maintain the ccache from one job to the next
+        uses: actions/cache@v3
+        with:
+          path: ~/.ccache
+          key: ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: |
+            ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}
+
+      - name: configure ccache
+        env:
+          CCACHE_MAX: ${{ matrix.ccache-max }}
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: build
+        run: |
+          make CMAKE_OPTIONS="-G\"Unix Makefiles\" \
+                              -DCMAKE_BUILD_TYPE=Release \
+                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
+                              -DBLA_VENDOR=OpenBLAS"
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+
+  mingw:
+    # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        # Use MSYS2 as default shell
+        shell: msys2 {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
+        include:
+          - msystem: MINGW64
+            target-prefix: mingw-w64-x86_64
+            f77-package: mingw-w64-x86_64-fc
+          - msystem: MINGW32
+            target-prefix: mingw-w64-i686
+            f77-package: mingw-w64-i686-fc
+          - msystem: CLANG64
+            target-prefix: mingw-w64-clang-x86_64
+            f77-package: mingw-w64-clang-x86_64-fc
+          - msystem: CLANG32
+            target-prefix: mingw-w64-clang-i686
+            # There's no Fortran compiler for this environment.
+            f77-package: mingw-w64-clang-i686-cc
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: install MSYS2 build environment
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          release: false
+
+          install: >-
+            base-devel
+            ${{ matrix.target-prefix }}-autotools
+            ${{ matrix.target-prefix }}-cmake
+            ${{ matrix.target-prefix }}-cc
+            ${{ matrix.f77-package }}
+            ${{ matrix.target-prefix }}-ccache
+            ${{ matrix.target-prefix }}-openblas
+            ${{ matrix.target-prefix }}-omp
+            ${{ matrix.target-prefix }}-gmp
+            ${{ matrix.target-prefix }}-mpfr
+
+          msystem: ${{ matrix.msystem }}
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: prepare ccache
+        # Create human readable timestamp
+        id: ccache_cache_timestamp
+        run: |
+          echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # Setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
+          key: ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: |
+            ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}
+
+      - name: configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          which ccache
+          test -d ${{ steps.ccache_cache_timestamp.outputs.ccachedir }} || mkdir -p ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          ccache -p
+          ccache -s
+
+      - name: build
+        run: |
+          make CMAKE_OPTIONS="-G\"MSYS Makefiles\" \
+                              -DCMAKE_BUILD_TYPE=Release \
+                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
+                              -DENABLE_CUDA=OFF \
+                              -DBLA_VENDOR=OpenBLAS \
+                              -DGBNCPUFEAT=ON"
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s

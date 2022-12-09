@@ -1,55 +1,78 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/cmake_modules/FindMongoose.cmake
+# SuiteSparse/Mongoose/cmake_modules/FindMongoose.cmake
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# FindMongoose.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # Finds the Mongoose include file and compiled library and sets:
 
 # MONGOOSE_INCLUDE_DIR - where to find Mongoose.hpp
-# MONGOOSE_LIBRARY     - compiled Mongoose library
+# MONGOOSE_LIBRARY     - dynamic Mongoose library
+# MONGOOSE_STATIC      - static Mongoose library
 # MONGOOSE_LIBRARIES   - libraries when using Mongoose
 # MONGOOSE_FOUND       - true if Mongoose found
 
-# set ``MONGOOSE_ROOT`` to a MONGOOSE installation root to
+# set ``MONGOOSE_ROOT`` or ``Mongoose_ROOT`` to a MONGOOSE installation root to
 # tell this module where to look.
 
-# To use this file in your application, copy this file into MyApp/cmake_modules
-# where MyApp is your application and add the following to your
-# MyApp/CMakeLists.txt file:
+# All the Find*.cmake files in SuiteSparse are installed by 'make install' into
+# /usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
+# ${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
+# in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules")
-#
-# or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
-# can leave this file in place and use this command (revise as needed):
-#
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
+#   set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+#       ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
 
 # include files for Mongoose
 find_path ( MONGOOSE_INCLUDE_DIR
     NAMES Mongoose.hpp
+    HINTS ${MONGOOSE_ROOT}
+    HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATHS MONGOOSE_ROOT ENV MONGOOSE_ROOT
     PATH_SUFFIXES include Include
 )
 
-# compiled libraries Mongoose
+# dynamic Mongoose library
 find_library ( MONGOOSE_LIBRARY
     NAMES mongoose
+    HINTS ${MONGOOSE_ROOT}
+    HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATHS MONGOOSE_ROOT ENV MONGOOSE_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
-# get version of the library
+if ( MSVC )
+    set ( STATIC_SUFFIX .lib )
+else ( )
+    set ( STATIC_SUFFIX .a )
+endif ( )
+
+# static Mongoose library
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+find_library ( MONGOOSE_STATIC
+    NAMES mongoose
+    HINTS ${MONGOOSE_ROOT}
+    HINTS ENV ${MONGOOSE_ROOT}
+    HINTS ${CMAKE_SOURCE_DIR}/..
+    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
+    HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
+    PATH_SUFFIXES lib build
+)
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+# get version of the library from the dynamic library name
 get_filename_component ( MONGOOSE_LIBRARY  ${MONGOOSE_LIBRARY} REALPATH )
 get_filename_component ( MONGOOSE_FILENAME ${MONGOOSE_LIBRARY} NAME )
 string (
@@ -57,7 +80,20 @@ string (
     MONGOOSE_VERSION
     ${MONGOOSE_FILENAME}
 )
-set (MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY})
+
+if ( NOT MONGOOSE_VERSION )
+    # if the version does not appear in the filename, read the include file
+    foreach ( _VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH )
+        file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose_Version.hpp _VERSION_LINE REGEX "define[ ]+Mongoose_${_VERSION}" )
+        if ( _VERSION_LINE )
+            string ( REGEX REPLACE ".*define[ ]+Mongoose_${_VERSION}[ ]+([0-9]*).*" "\\1" _MONGOOSE_${_VERSION} "${_VERSION_LINE}" )
+        endif ( )
+        unset ( _VERSION_LINE )
+    endforeach ( )
+    set ( MONGOOSE_VERSION "${_MONGOOSE_VERSION_MAJOR}.${_MONGOOSE_VERSION_MINOR}.${_MONGOOSE_VERSION_PATCH}" )
+endif ( )
+
+set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
@@ -69,13 +105,15 @@ find_package_handle_standard_args ( Mongoose
 mark_as_advanced (
     MONGOOSE_INCLUDE_DIR
     MONGOOSE_LIBRARY
+    MONGOOSE_STATIC
     MONGOOSE_LIBRARIES
 )
 
 if ( MONGOOSE_FOUND )
-    message ( STATUS "Mongoose include dir: ${MONGOOSE_INCLUDE_DIR}" )
-    message ( STATUS "Mongoose library:     ${MONGOOSE_LIBRARY}" )
-    message ( STATUS "Mongoose version:     ${MONGOOSE_VERSION}" )
+    message ( STATUS "Mongoose version: ${MONGOOSE_VERSION}" )
+    message ( STATUS "Mongoose include: ${MONGOOSE_INCLUDE_DIR}" )
+    message ( STATUS "Mongoose library: ${MONGOOSE_LIBRARY}" )
+    message ( STATUS "Mongoose static:  ${MONGOOSE_STATIC}" )
 else ( )
     message ( STATUS "Mongoose not found" )
 endif ( )

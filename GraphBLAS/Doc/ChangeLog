@@ -1,3 +1,11 @@
+Version 7.3.3, Dec 9, 2022
+
+    * minor change to build system
+    * stdatomic.h: using #include <stdatomic.h> and atomic_compare_exchange_weak
+        instead of GCC/clang/icx __atomic_* variants.
+        Added -latomic if required.
+    * chunk factor for C=A*B (saxpy3 method): revised for non-builtin-semirings
+
 Version 7.3.2, Nov 12, 2022
 
     * cmake_modules: minor revision to build system, to sync 

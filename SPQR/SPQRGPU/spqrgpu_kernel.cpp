@@ -12,10 +12,9 @@
 // matrices (R is OK, but will not be 'squeezed').  Does not handle complex
 // matrices.  Does not return the Householder vectors.
 
-#ifdef SUITESPARSE_CUDA
 #include "spqr.hpp"
 
-#ifdef SUITESPARSE_TIMER_ENABLED
+#ifdef SUITESPARSE_TIMER_ENANBLED
 #define INIT_TIME(x)    double x = 0.0; double time_ ## x;
 #define TIC(x)          time_ ## x = SuiteSparse_time();
 #define TOC(x)          x += SuiteSparse_time() - time_ ## x;
@@ -28,6 +27,8 @@
 // -----------------------------------------------------------------------------
 // numfronts_in_stage
 // -----------------------------------------------------------------------------
+
+#ifdef SUITESPARSE_CUDA
 
 void numfronts_in_stage
 (
@@ -64,6 +65,7 @@ void numfronts_in_stage
     *p_numFronts = numFronts ;
     *p_leftoverChildren = leftoverChildren ;
 }
+#endif
 
 
 // -----------------------------------------------------------------------------
@@ -75,6 +77,10 @@ void spqrgpu_kernel
     spqr_blob <double> *Blob
 )
 {
+
+    cholmod_common *cc = Blob->cc ;
+
+#ifdef SUITESPARSE_CUDA
 
     INIT_TIME(complete);
     TIC(complete);
@@ -88,7 +94,6 @@ void spqrgpu_kernel
     spqr_work <double> *Work = Blob->Work ;
     double *Sx = Blob->Sx ;
 //  int64_t ntol = Blob->ntol ;        // no rank detection on the GPU
-    cholmod_common *cc = Blob->cc ;
 
     // -------------------------------------------------------------------------
     // get the contents of the QR symbolic object
@@ -726,6 +731,9 @@ void spqrgpu_kernel
 
     TOC(complete) ;
     PR (("%f complete time\n", complete));
+#else
+    ERROR (CHOLMOD_NOT_INSTALLED, "cuda acceleration not enabled") ;
+#endif
 }
 
 // -------------------------------------------------------------------------
@@ -740,4 +748,4 @@ void spqrgpu_kernel
     ERROR (CHOLMOD_INVALID, "complex case not yet supported on the GPU") ;
     return ;
 }
-#endif
+

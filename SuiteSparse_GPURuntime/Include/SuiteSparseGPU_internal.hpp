@@ -1,5 +1,5 @@
 // =============================================================================
-// === SuiteSparse_GPURuntime/Include/SuiteSparse_GPURuntime.hpp ===============
+// SuiteSparse_GPURuntime/Include/SuiteSparseGPU_internal.hpp
 // =============================================================================
 
 // SuiteSparse_GPURuntime, Copyright (c) 2013-2016, Timothy A Davis,
@@ -8,8 +8,8 @@
 
 //------------------------------------------------------------------------------
 
-#ifndef SUITESPARSEGPU_RUNTIME_HPP
-#define SUITESPARSEGPU_RUNTIME_HPP
+#ifndef SUITESPARSEGPU_INTERNAL_HPP
+#define SUITESPARSEGPU_INTERNAL_HPP
 
 #ifdef SUITESPARSE_CUDA
 
@@ -30,14 +30,6 @@
 
 #endif
 
-// Version information:
-#define SUITESPARSE_GPURUNTIME_DATE "Nov 12, 2022"
-#define SUITESPARSE_GPURUNTIME_MAIN_VERSION   2
-#define SUITESPARSE_GPURUNTIME_SUB_VERSION    0
-#define SUITESPARSE_GPURUNTIME_SUBSUB_VERSION 0
-
-#define SUITESPARSE_GPURUNTIME_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define SUITESPARSE_GPURUNTIME_VERSION \
-    SUITESPARSE_GPURUNTIME_VER_CODE(SUITESPARSE_GPURUNTIME_MAIN_VERSION,SUITESPARSE_GPURUNTIME_SUB_VERSION)
+#include "SuiteSparse_GPURuntime.hpp"
 
 #endif

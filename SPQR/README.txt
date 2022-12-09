@@ -46,14 +46,8 @@ FOR LINUX/UNIX/Mac USERS who want to use the C++ callable library:
 
     Compilation options:
 
-        -DNPARTITION    to compile without METIS (default is to use METIS)
-
         -DNEXPERT       to compile without the min 2-norm solution option
                         (default is to include the Expert routines)
-
-        -DTIMING        to compile with timing and exact flop counts enabled
-                        (default is to not compile with timing and flop counts)
-
 
 See SPQR/Doc/License.txt for the license.
 

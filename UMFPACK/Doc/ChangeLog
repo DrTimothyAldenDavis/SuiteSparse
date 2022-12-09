@@ -1,3 +1,10 @@
+Dec 9, 2022: version 6.0.2
+
+    * minor change to build system
+    * Fortran compiler: no longer required to build UMFPACK.  Fortran is only
+        used in UMFPACK to determine how C calls the BLAS, and for a few
+        Fortran demo programs in Demo/*.f.
+
 Nov 12, 2022: version 6.0.1
 
     * BLAS definitions: no longer exposed to the user application

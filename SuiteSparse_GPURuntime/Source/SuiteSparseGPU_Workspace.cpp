@@ -14,7 +14,7 @@
 
 #ifdef SUITESPARSE_CUDA
 
-#include "SuiteSparseGPU_Runtime.hpp"
+#include "SuiteSparseGPU_internal.hpp"
 
 // -----------------------------------------------------------------------------
 // Workspace constructor

@@ -1,10 +1,15 @@
+//------------------------------------------------------------------------------
+// CHOLMOD/Partition/cholmod_metis_wrapper.h: METIS renaming for CHOLMOD
+//------------------------------------------------------------------------------
+
+// CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
+// All Rights Reserved.  Author: Timothy A. Davis.
+// SPDX-License-Identifier: LGPL-2.1+
+
+//------------------------------------------------------------------------------
 
 #ifndef CHOLMOD_METIS_WRAP_H
 #define CHOLMOD_METIS_WRAP_H
-
-
-
-
 
 #define CoarsenGraphNlevels                       SuiteSparse_metis_CoarsenGraphNlevels
 #define ComputeAccuracy                           SuiteSparse_metis_ComputeAccuracy
@@ -17,7 +22,9 @@
 #define decodeblock                               SuiteSparse_metis_decodeblock
 #define encodeblock                               SuiteSparse_metis_encodeblock
 #define errexit                                   SuiteSparse_metis_errexit
-// #define _fini                                     SuiteSparse_metis__fini
+
+#define gk_CPUSeconds                             SuiteSparse_metis_gk_CPUSeconds
+#define gk_WClockSeconds                          SuiteSparse_metis_gk_WClockSeconds
 
 #define gk_cur_jbufs                              SuiteSparse_metis_gk_cur_jbufs
 #define gk_jbuf                                   SuiteSparse_metis_gk_jbuf
@@ -25,7 +32,6 @@
 
 #define gk_AllocMatrix                            SuiteSparse_metis_gk_AllocMatrix
 #define gk_array2csr                              SuiteSparse_metis_gk_array2csr
-// #define gk_CPUSeconds                             SuiteSparse_metis_gk_CPUSeconds
 
 #define gk_cargmax                                SuiteSparse_metis_gk_cargmax
 #define gk_cargmin                                SuiteSparse_metis_gk_cargmin
@@ -185,7 +191,6 @@
 #define gk_frandInRange                           SuiteSparse_metis_gk_frandInRange
 #define gk_frealloc                               SuiteSparse_metis_gk_frealloc
 #define gk_free                                   SuiteSparse_metis_gk_free
-//#define gk_freetokenslist                         SuiteSparse_metis_gk_freetokenslist
 #define gk_fscale                                 SuiteSparse_metis_gk_fscale
 #define gk_fset                                   SuiteSparse_metis_gk_fset
 #define gk_fSetMatrix                             SuiteSparse_metis_gk_fSetMatrix
@@ -313,7 +318,6 @@
 #define gk_i64min                                 SuiteSparse_metis_gk_i64min
 #define gk_i64norm2                               SuiteSparse_metis_gk_i64norm2
 #define gk_i64sum                                 SuiteSparse_metis_gk_i64sum
-
 
 #define gk_idxAllocMatrix                         SuiteSparse_metis_gk_idxAllocMatrix
 #define gk_idxargmax_n                            SuiteSparse_metis_gk_idxargmax_n
@@ -457,12 +461,7 @@
 #define gk_skvsorti                               SuiteSparse_metis_gk_skvsorti
 #define gk_strdup                                 SuiteSparse_metis_gk_strdup
 #define gk_strerror                               SuiteSparse_metis_gk_strerror
-// #define gk_strtokenize                            SuiteSparse_metis_gk_strtokenize
-// #define gk_strtolower                             SuiteSparse_metis_gk_strtolower
-// #define gk_strtoupper                             SuiteSparse_metis_gk_strtoupper
-// #define gk_strtprune                              SuiteSparse_metis_gk_strtprune
 #define gk_UnsetSignalHandlers                    SuiteSparse_metis_gk_UnsetSignalHandlers
-// #define gk_WClockSeconds                          SuiteSparse_metis_gk_WClockSeconds
 
 #define gk_zAllocMatrix                           SuiteSparse_metis_gk_zAllocMatrix
 #define gk_zargmax_n                              SuiteSparse_metis_gk_zargmax_n
@@ -793,63 +792,17 @@
 #define libmetis__wspacepush                      SuiteSparse_metis_libmetis__wspacepush
 
 #define METIS_ComputeVertexSeparator              SuiteSparse_metis_METIS_ComputeVertexSeparator
-
-// #define metis_free                                SuiteSparse_metis_metis_free
-// #define metis_free_                               SuiteSparse_metis_metis_free_
-// #define metis_free__                              SuiteSparse_metis_metis_free__
 #define METIS_Free                                SuiteSparse_metis_METIS_Free
-// #define METIS_FREE                                SuiteSparse_metis_METIS_FREE
-
-//#define metis_meshtodual                          SuiteSparse_metis_metis_meshtodual
-//#define metis_meshtodual_                         SuiteSparse_metis_metis_meshtodual_
-//#define metis_meshtodual__                        SuiteSparse_metis_metis_meshtodual__
 #define METIS_MeshToDual                          SuiteSparse_metis_METIS_MeshToDual
-//#define METIS_MESHTODUAL                          SuiteSparse_metis_METIS_MESHTODUAL
-
-//#define metis_meshtonodal                         SuiteSparse_metis_metis_meshtonodal
-//#define metis_meshtonodal_                        SuiteSparse_metis_metis_meshtonodal_
-//#define metis_meshtonodal__                       SuiteSparse_metis_metis_meshtonodal__
 #define METIS_MeshToNodal                         SuiteSparse_metis_METIS_MeshToNodal
-//#define METIS_MESHTONODAL                         SuiteSparse_metis_METIS_MESHTONODAL
-
-//#define metis_nodend                              SuiteSparse_metis_metis_nodend
-//#define metis_nodend_                             SuiteSparse_metis_metis_nodend_
-//#define metis_nodend__                            SuiteSparse_metis_metis_nodend__
 #define METIS_NodeND                              SuiteSparse_metis_METIS_NodeND
-//#define METIS_NODEND                              SuiteSparse_metis_METIS_NODEND
-
 #define METIS_NodeNDP                             SuiteSparse_metis_METIS_NodeNDP
 #define METIS_NodeRefine                          SuiteSparse_metis_METIS_NodeRefine
-
-//#define metis_partgraphkway                       SuiteSparse_metis_metis_partgraphkway
-//#define metis_partgraphkway_                      SuiteSparse_metis_metis_partgraphkway_
-//#define metis_partgraphkway__                     SuiteSparse_metis_metis_partgraphkway__
 #define METIS_PartGraphKway                       SuiteSparse_metis_METIS_PartGraphKway
-//#define METIS_PARTGRAPHKWAY                       SuiteSparse_metis_METIS_PARTGRAPHKWAY
-
-//#define metis_partgraphrecursive                  SuiteSparse_metis_metis_partgraphrecursive
-//#define metis_partgraphrecursive_                 SuiteSparse_metis_metis_partgraphrecursive_
-//#define metis_partgraphrecursive__                SuiteSparse_metis_metis_partgraphrecursive__
 #define METIS_PartGraphRecursive                  SuiteSparse_metis_METIS_PartGraphRecursive
-//#define METIS_PARTGRAPHRECURSIVE                  SuiteSparse_metis_METIS_PARTGRAPHRECURSIVE
-
-// #define metis_partmeshdual                        SuiteSparse_metis_metis_partmeshdual
-// #define metis_partmeshdual_                       SuiteSparse_metis_metis_partmeshdual_
-// #define metis_partmeshdual__                      SuiteSparse_metis_metis_partmeshdual__
 #define METIS_PartMeshDual                        SuiteSparse_metis_METIS_PartMeshDual
-// #define METIS_PARTMESHDUAL                        SuiteSparse_metis_METIS_PARTMESHDUAL
-
-// #define metis_partmeshnodal                       SuiteSparse_metis_metis_partmeshnodal
-// #define metis_partmeshnodal_                      SuiteSparse_metis_metis_partmeshnodal_
-// #define metis_partmeshnodal__                     SuiteSparse_metis_metis_partmeshnodal__
 #define METIS_PartMeshNodal                       SuiteSparse_metis_METIS_PartMeshNodal
-// #define METIS_PARTMESHNODAL                       SuiteSparse_metis_METIS_PARTMESHNODAL
-
-// #define metis_setdefaultoptions                   SuiteSparse_metis_metis_setdefaultoptions
-// #define metis_setdefaultoptions_                  SuiteSparse_metis_metis_setdefaultoptions_
-// #define metis_setdefaultoptions__                 SuiteSparse_metis_metis_setdefaultoptions__
 #define METIS_SetDefaultOptions                   SuiteSparse_metis_METIS_SetDefaultOptions
-// #define METIS_SETDEFAULTOPTIONS                   SuiteSparse_metis_METIS_SETDEFAULTOPTIONS
 
 #define PrintBackTrace                            SuiteSparse_metis_PrintBackTrace
 

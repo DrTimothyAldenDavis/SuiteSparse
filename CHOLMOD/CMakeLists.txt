@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Nov 12, 2022" )
+set ( CHOLMOD_DATE "Dec 9, 2022" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_SUB   2 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -67,8 +67,6 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C Fortran )
-
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled
@@ -77,9 +75,9 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( COLAMD 3.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( COLAMD 3.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # find CHOLMOD modules
@@ -89,11 +87,9 @@ find_package ( AMD 3.0.0 REQUIRED )
 # not build a module, simply delete or rename the entire folder before building
 # CHOLMOD, or pass the corresponding flag when using cmake:
 
-#   -DNGL=1         if true: do not build any GPL-licensed module (MatrixOps,
+#   -DNGPL=1        if true: do not build any GPL-licensed module (MatrixOps,
 #                   Modify, Supernodal, and GPU modules). See above.
-#
 #   -DNCHECK=1      if true: do not build the Check module.
-#
 #   -DNMATRIXOPS=1  if true: do not build the MatrixOps module.
 #   -DNCHOLESKY=1   if true: do not build the Cholesky module.
 #                   This also disables the Supernodal and Modify modules.
@@ -183,8 +179,8 @@ find_package ( AMD 3.0.0 REQUIRED )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.0 )
-        find_package ( CCOLAMD 3.0.0 )
+        find_package ( CAMD 3.0.2 )
+        find_package ( CCOLAMD 3.0.2 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )
@@ -235,24 +231,26 @@ find_package ( AMD 3.0.0 REQUIRED )
         # if NSUPERNODAL is true: do not link against CAMD and CCOLAMD
         add_compile_definitions ( NSUPERNODAL )
     else ( )
-        # if NSUPERNODAL is false: build Supernodal, which needs the BLAS
+        # if NSUPERNODAL is false: build Supernodal, needs BLAS and LAPACK
         include ( SuiteSparseBLAS )     # requires cmake 3.22
+        include ( SuiteSparseLAPACK )   # requires cmake 3.22
     endif ( )
 
 #-------------------------------------------------------------------------------
 # find CUDA
 #-------------------------------------------------------------------------------
 
+add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   -DSUITESPARSE_CUDA " )
-    add_subdirectory ( GPU )
     set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
+    set ( CHOLMOD_CUDA_STATIC cholmod_cuda_static ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 else ( )
     # without CUDA and RMM
     set ( CHOLMOD_CUDA )
+    set ( CHOLMOD_CUDA_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -317,7 +315,7 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( cholmod PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( cholmod_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # OpenMP:
@@ -335,40 +333,46 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC m )
+        target_link_libraries ( cholmod_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd:
 target_link_libraries ( cholmod PUBLIC ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( cholmod_static PUBLIC ${AMD_LIBRARIES} )
+    target_link_libraries ( cholmod_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
 target_link_libraries ( cholmod PUBLIC ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( cholmod_static PUBLIC ${COLAMD_LIBRARIES} )
+    target_link_libraries ( cholmod_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
-# BLAS and LAPACK:
+# BLAS and LAPACK: for the Supernodal Module
 if ( NOT NSUPERNODAL )
+    # BLAS:
     message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+    message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${BLAS_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${BLAS_LIBRARIES} )
     endif ( )
     include_directories ( ${BLAS_INCLUDE_DIRS} )
+
+    # LAPACK:
     message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
+    message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
     message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${LAPACK_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${LAPACK_LIBRARIES} )
     endif ( )
+    include_directories ( ${LAPACK_INCLUDE_DIR} )
 endif ( )
 
 # camd and ccolamd:
@@ -376,18 +380,17 @@ if ( NOT NCAMD )
     include_directories ( ${CAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${CAMD_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${CAMD_STATIC} )
     endif ( )
     include_directories ( ${CCOLAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PUBLIC ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${CCOLAMD_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${CCOLAMD_STATIC} )
     endif ( )
 endif ( )
 
 # METIS and the Partition module:
 if ( NOT NPARTITION )
-      include_directories ( ${SUITESPARSE_METIS_INCLUDE_DIR} )
       include_directories ( SuiteSparse_metis/GKlib )
       include_directories ( SuiteSparse_metis/libmetis )
       include_directories ( SuiteSparse_metis/include )
@@ -396,8 +399,8 @@ endif ( )
 # CUDA
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( cholmod PUBLIC ${CHOLMOD_CUDA} ${CUDA_LIBRARIES} )
-    target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA} ${CUDA_LIBRARIES} )
+    target_link_libraries ( cholmod PUBLIC ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -462,9 +465,12 @@ if ( DEMO )
     add_executable ( cholmod_demo   "Demo/cholmod_demo.c" )
     add_executable ( cholmod_l_demo "Demo/cholmod_l_demo.c" )
     add_executable ( cholmod_simple "Demo/cholmod_simple.c" )
-    add_executable ( readhb         "Demo/readhb.f" )
-    add_executable ( readhb2        "Demo/readhb2.f" )
-    add_executable ( reade          "Demo/reade.f" )
+
+    if ( CMAKE_Fortran_COMPILER )
+        add_executable ( readhb     "Demo/readhb.f" )
+        add_executable ( readhb2    "Demo/readhb2.f" )
+        add_executable ( reade      "Demo/reade.f" )
+    endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( cholmod_demo   PUBLIC cholmod ${CHOLMOD_CUDA} )

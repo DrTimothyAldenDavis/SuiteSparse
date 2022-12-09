@@ -65,9 +65,10 @@ demos: library
 	- diff Demo/amd_demo2.out build/amd_demo2.out
 	./build/amd_simple > build/amd_simple.out
 	- diff Demo/amd_simple.out build/amd_simple.out
-	./build/amd_f77simple > build/amd_f77simple.out
+	# Fortran demos will fail if no Fortran compiler is available
+	- ./build/amd_f77simple > build/amd_f77simple.out
 	- diff Demo/amd_f77simple.out build/amd_f77simple.out
-	./build/amd_f77demo > build/amd_f77demo.out
+	- ./build/amd_f77demo > build/amd_f77demo.out
 	- diff Demo/amd_f77demo.out build/amd_f77demo.out
 
 # just compile after running cmake; do not run cmake again

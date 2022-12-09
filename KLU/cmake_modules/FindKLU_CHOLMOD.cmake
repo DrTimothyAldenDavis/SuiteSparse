@@ -1,9 +1,13 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/cmake_modules/FindKLU_CHOLMOD.cmake
+# SuiteSparse/KLU/cmake_modules/FindKLU_CHOLMOD.cmake
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# FindKLU_CHOLMOD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
 
 # Finds the KLU_CHOLMOD include file and compiled library and sets:
 
@@ -15,17 +19,13 @@
 # set ``KLU_CHOLMOD_ROOT`` to a KLU_CHOLMOD installation root to
 # tell this module where to look.
 
-# To use this file in your application, copy this file into MyApp/cmake_modules
-# where MyApp is your application and add the following to your
-# MyApp/CMakeLists.txt file:
+# All the Find*.cmake files in SuiteSparse are installed by 'make install' into
+# /usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
+# ${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
+# in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 #
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules")
-#
-# or, assuming MyApp and SuiteSparse sit side-by-side in a common folder, you
-# can leave this file in place and use this command (revise as needed):
-#
-#   set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-#       "${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules")
+#   set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+#       ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
 
 #-------------------------------------------------------------------------------
 
@@ -35,29 +35,52 @@ find_path ( KLU_CHOLMOD_INCLUDE_DIR
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
-    PATHS KLU_CHOLMOD_ROOT ENV KLU_CHOLMOD_ROOT
     PATH_SUFFIXES include Include
 )
 
-# compiled libraries KLU_CHOLMOD
+# dynamic KLU_CHOLMOD library
 find_library ( KLU_CHOLMOD_LIBRARY
     NAMES klu_cholmod
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
-    PATHS KLU_CHOLMOD_ROOT ENV KLU_CHOLMOD_ROOT
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
-# get version of the library
-get_filename_component ( KLU_CHOLMOD_LIBRARY  ${KLU_CHOLMOD_LIBRARY} REALPATH )
-get_filename_component ( KLU_CHOLMOD_FILENAME ${KLU_CHOLMOD_LIBRARY} NAME )
+if ( MSVC )
+    set ( STATIC_SUFFIX .lib )
+else ( )
+    set ( STATIC_SUFFIX .a )
+endif ( )
+
+# static KLU_CHOLMOD library
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+find_library ( KLU_CHOLMOD_STATIC
+    NAMES klu_cholmod
+    HINTS ${CMAKE_SOURCE_DIR}/..
+    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
+    HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
+    PATH_SUFFIXES lib build
+)
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+# get version of the library from the dynamic library name
+get_filename_component ( KLU_LIBRARY  ${KLU_LIBRARY} REALPATH )
+get_filename_component ( KLU_FILENAME ${KLU_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    KLU_CHOLMOD_VERSION
-    ${KLU_CHOLMOD_FILENAME}
+    KLU_VERSION
+    ${KLU_FILENAME}
 )
-set (KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY})
+
+if ( NOT KLU_VERSION )
+    # get version of the library from KLU
+    find_package ( KLU )
+    set ( KLU_CHOLMOD_VERSION "${KLU_VERSION}" )
+endif ( )
+
+set ( KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
@@ -69,13 +92,15 @@ find_package_handle_standard_args ( KLU_CHOLMOD
 mark_as_advanced (
     KLU_CHOLMOD_INCLUDE_DIR
     KLU_CHOLMOD_LIBRARY
+    KLU_CHOLMOD_STATIC
     KLU_CHOLMOD_LIBRARIES
 )
 
 if ( KLU_CHOLMOD_FOUND )
-    message ( STATUS "KLU_CHOLMOD include dir: ${KLU_CHOLMOD_INCLUDE_DIR}" )
-    message ( STATUS "KLU_CHOLMOD library:     ${KLU_CHOLMOD_LIBRARY}" )
-    message ( STATUS "KLU_CHOLMOD version:     ${KLU_CHOLMOD_VERSION}" )
+    message ( STATUS "KLU_CHOLMOD version: ${KLU_CHOLMOD_VERSION}" )
+    message ( STATUS "KLU_CHOLMOD include: ${KLU_CHOLMOD_INCLUDE_DIR}" )
+    message ( STATUS "KLU_CHOLMOD library: ${KLU_CHOLMOD_LIBRARY}" )
+    message ( STATUS "KLU_CHOLMOD static:  ${KLU_CHOLMOD_STATIC}" )
 else ( )
     message ( STATUS "KLU_CHOLMOD not found" )
 endif ( )

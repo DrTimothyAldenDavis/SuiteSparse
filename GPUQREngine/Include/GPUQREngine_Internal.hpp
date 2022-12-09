@@ -19,7 +19,7 @@
 #include "GPUQREngine_TaskDescriptor.hpp"
 #include "GPUQREngine_Front.hpp"
 #include "GPUQREngine_Stats.hpp"
-#include "GPUQREngine.hpp"
+#include "GPUQREngine_SuiteSparse.hpp"
 
 void GPUQREngine_UberKernel
 (

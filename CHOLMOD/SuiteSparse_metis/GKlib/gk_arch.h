@@ -13,6 +13,11 @@
 /*************************************************************************
 * Architecture-specific differences in header files
 **************************************************************************/
+
+#include <stdint.h>
+#include <inttypes.h>
+
+#if 0
 #ifdef LINUX
 #if !defined(__USE_XOPEN)
 #define __USE_XOPEN
@@ -44,6 +49,7 @@
   #include <sys/resource.h>
   #include <sys/time.h>
 #endif
+#endif
 
 
 /*************************************************************************
@@ -58,17 +64,13 @@ typedef ptrdiff_t ssize_t;
 #define PTRDIFF_MAX  INT64_MAX
 #endif
 
+#if 0
 #ifdef __MSC__
 /* MSC does not have rint() function */
-// Revised for SuiteSparse: conflicts with later version of MS compiler:
-#if(_MSC_VER < 1900)
 #define rint(x) ((int)((x)+0.5))  
-#endif
 
 /* MSC does not have INFINITY defined */
 #ifndef INFINITY
-#if(_MSC_VER < 1900)
-// Revised for SuiteSparse: conflicts with later version of MS compiler:
 #define INFINITY FLT_MAX
 #endif
 #endif

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Nov 12, 2022" )
+set ( LDL_DATE "Dec 9, 2022" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
-set ( LDL_VERSION_SUB   0 )
+set ( LDL_VERSION_SUB   2 )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -44,8 +44,8 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( AMD 3.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number
@@ -95,7 +95,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( NOT MSVC )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )
@@ -105,7 +105,7 @@ target_link_libraries ( ldl PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )
-target_link_libraries ( ldl_static PUBLIC ${M_LIB}
+    target_link_libraries ( ldl_static PUBLIC ${M_LIB}
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 endif ( )
 

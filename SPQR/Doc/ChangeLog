@@ -1,3 +1,12 @@
+Dec 9, 2022: version 3.0.2
+
+    * minor change to build system
+    * Fortan: no longer required to build SPQR
+    * CHOLMOD interface: CHOLMOD may be compiled with or without
+        -DNPARTITION.  This now has no effect on how SPQR is compiled.  CHOLMOD
+        will not be able to provide METIS orderings, and returns the error
+        code CHOLMOD_NOT_INSTALLED if METIS is used, at run-time.
+
 Nov 12, 2022: version 3.0.1
 
     * BLAS definitions: no longer exposed to the user application
