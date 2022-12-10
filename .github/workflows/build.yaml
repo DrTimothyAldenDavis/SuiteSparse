@@ -197,8 +197,7 @@ jobs:
                               -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
                               -DENABLE_CUDA=OFF \
-                              -DBLA_VENDOR=OpenBLAS \
-                              -DGBNCPUFEAT=ON"
+                              -DBLA_VENDOR=OpenBLAS"
 
       - name: ccache status
         continue-on-error: true
