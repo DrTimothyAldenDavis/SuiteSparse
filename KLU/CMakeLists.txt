@@ -48,7 +48,7 @@ project ( klu
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
+find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 find_package ( BTF 2.0.2 REQUIRED )
 find_package ( COLAMD 3.0.2 REQUIRED )
 find_package ( AMD 3.0.2 REQUIRED )
