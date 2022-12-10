@@ -180,6 +180,15 @@ jobs:
           ccache -p
           ccache -s
 
+      - name: disable SPEX
+        # SPEX currently doesn't link correctly with the mpfr library in MINGW64 and MINGW32.
+        # So, disable building it for the time being.
+        # Remove this step once the issue is fixed upstream.
+        # See also: https://github.com/msys2/MINGW-packages/pull/14146
+        if: startsWith(matrix.msystem, 'MINGW')
+        run: |
+          sed -i -E "s|(^.*\( cd SPEX)|#\1|g" Makefile
+
       - name: build
         run: |
           make CMAKE_OPTIONS="-G\"MSYS Makefiles\" \
