@@ -30,9 +30,9 @@ jobs:
             cxx: "clang++"
           # Clang seems to generally require less cache size (smaller object files?).
           - compiler: gcc
-            ccache-max: 400M
+            ccache-max: 600M
           - compiler: clang
-            ccache-max: 200M
+            ccache-max: 500M
 
     env:
       CC: ${{ matrix.cc }}
