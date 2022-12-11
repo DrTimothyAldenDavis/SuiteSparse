@@ -518,7 +518,7 @@ GLOBAL Int UMF_kernel_init
     rpi = UMF_mem_alloc_tail_block (Numeric, UNITS (Int   *, n_row+1)) ;
     if (!rpi || !rpx)
     {
-	/* :: pattern change (out of memory for Rpx, Rpx) :: */
+	/* :: pattern change (out of memory for Rpi, Rpx) :: */
 	/* out of memory, which can only mean that the pattern has changed */
 	return (FALSE) ;	/* pattern changed */
     }
