@@ -77,7 +77,6 @@ clean:
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
 	../Include/SuiteSparseQR.hpp
-# Makefile
 
 OBJ = \
     spqr_rmap.o                              \
@@ -359,9 +358,8 @@ GPURUNINC = -I$(GPURUNTIME)/Include -I../../SuiteSparse_config
 RUNH = \
         $(GPURUNTIME)/Include/SuiteSparseGPU_debug.hpp \
         $(GPURUNTIME)/Include/SuiteSparseGPU_workspace_macros.hpp \
-        $(GPURUNTIME)/Include/SuiteSparseGPU_internal.hpp
+        $(GPURUNTIME)/Include/SuiteSparseGPU_internal.hpp \
         $(GPURUNTIME)/Include/SuiteSparse_GPURuntime.hpp
-#        Makefile
 
 SuiteSparseGPU_Workspace.o: $(GPURUNSRC)/SuiteSparseGPU_Workspace.cpp $(RUNH)
 	$(NVCC) -c $(GPURUNINC) $<
@@ -430,7 +428,6 @@ KERNELH = \
     $(GPUQR)/Include/GPUQREngine_SparseMeta.hpp \
     $(GPUQR)/Include/GPUQREngine_TaskDescriptor.hpp \
     $(GPUQR)/Include/GPUQREngine_Timing.hpp
-#   Makefile
 
 GPUQREngine_GraphVizHelper.o: \
         $(GPUQRSRC)/GPUQREngine_GraphVizHelper.cpp $(KERNELH)
