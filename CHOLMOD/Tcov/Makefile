@@ -110,7 +110,7 @@ endif
 #-------------------------------------------------------------------------------
 
 I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
-	-I../../SuiteSparse_metis/include -I../../CCOLAMD/Include \
+	-I../SuiteSparse_metis/include -I../../CCOLAMD/Include \
 	-I../../CAMD/Include \
 	-I../Include -I../../SuiteSparse_config $(CUDA_INC) \
         -I../Core -I../Check -I../Cholesky -I../Demo -I../Supernodal \
