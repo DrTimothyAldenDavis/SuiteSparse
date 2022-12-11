@@ -21,28 +21,38 @@
   OPTION = -DNBLAS -DNRECIPROCAL -DTEST_FOR_INTEGER_OVERFLOW
 # OPTION = -DNBLAS -DNRECIPROCAL -DTEST_FOR_INTEGER_OVERFLOW -DNO_DIVIDE_BY_ZERO
 
-CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING
+SUITESPARSE ?= $(realpath $(CURDIR)/../..)
+
+CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
+    -DBLAS32
 I = -I../../include -I../Include -I../../UMFPACK/Source -I../../AMD/Include
-LIB = -Wl,--rpath=/home/faculty/d/davis/dev2/SuiteSparse/lib \
-                -L/home/faculty/d/davis/dev2/SuiteSparse/lib \
-      -lsuitesparseconfig -lamd -lcholmod -lblas -lm
+
+BLAS = -lblas
+CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
+FLIB = $(LAPACK) $(BLAS)
+
+# LIBS = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
+#     $(SUITESPARSE)/CHOLMOD/build/libcholmod.a \
+#     $(SUITESPARSE)/AMD/build/libamd.a \
+#     $(SUITESPARSE)/CAMD/build/libcamd.a \
+#     $(SUITESPARSE)/COLAMD/build/libcolamd.a \
+#     $(SUITESPARSE)/CCOLAMD/build/libccolamd.a \
+#     -lblas -lm
+
+LIBS = -L../../lib $(FLIB) $(CLIB) \
+    -Wl,--rpath=$(SUITESPARSE)/lib -lm -lrt
+
 SRC = ../Source2/*.c
 
 SRC2 = $(notdir $(wildcard $(SRC)))
 
 OBJ = $(SRC2:.c=.o)
 
-.PRECIOUS: %.c
-
-%.o: ../Source2/%.c
-	- ln -s $< $(basename $@).c
-	gcc $(CF) $(I) -c $(basename $@).c -o $(basename $@).o
-
 default: $(OBJ) ut.c
-	gcc -DDINT  ut.c $(CF) $(I) $(OBJ) $(LIB) -o ut_di
-	gcc -DDLONG ut.c $(CF) $(I) $(OBJ) $(LIB) -o ut_dl
-	gcc -DZINT  ut.c $(CF) $(I) $(OBJ) $(LIB) -o ut_zi
-	gcc -DZLONG ut.c $(CF) $(I) $(OBJ) $(LIB) -o ut_zl
+	gcc ut_di.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_di
+	gcc ut_dl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_dl
+	gcc ut_zi.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zi
+	gcc ut_zl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zl
 	./ut_di > ut_di.out
 	./ut_dl > ut_dl.out
 	./ut_zi > ut_zi.out
@@ -51,6 +61,12 @@ default: $(OBJ) ut.c
 	- ./cover umf*v > cover.out
 	- echo -n "statments not yet tested: "
 	- grep -c "#####" cover.out
+
+.PRECIOUS: %.c
+
+%.o: ../Source2/%.c
+	- ln -s $< $(basename $@).c
+	gcc $(CF) $(I) -c $(basename $@).c -o $(basename $@).o
 
 purge:
 	$(RM) umf*.c *.o ut_?? *.gcno *.gcda *.gcov debug.amd *.umf A500 *.out
