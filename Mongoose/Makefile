@@ -35,19 +35,19 @@ default: library
 
 # default is to install only in /usr/local
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=0 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=0 -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
 
 # install in SuiteSparse/lib both and SuiteSparse/include and /usr/local
 both:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
 
 # build the Mongoose library (static and dynamic) and run a quick test
 demos: library
@@ -59,11 +59,11 @@ static: library
 # installs Mongoose to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
 install:
-	( cd build && $(MAKE) install )
+	( cd build && cmake --install . )
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) userguide )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; cmake --build . --target userguide )
 
 # remove any installed libraries and #include files
 uninstall:

@@ -34,10 +34,10 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
 
 debug:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j${JOBS} )
 
 all: library
 
@@ -46,14 +46,14 @@ demos: library
 
 # just compile after running cmake; do not run cmake again
 remake:
-	( cd build && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake --build . -j${JOBS} )
 
 # just run cmake to set things up
 setup:
 	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build && $(MAKE) install )
+	( cd build && cmake --install . )
 
 # remove any installed libraries and #include files
 uninstall:
