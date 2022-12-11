@@ -39,7 +39,7 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
 
 local: library
 
@@ -48,12 +48,12 @@ global: library
 both: library
 
 debug:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j${JOBS} )
 
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
 	- ./build/cs_demo1 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/ash219
@@ -71,7 +71,7 @@ install:
 
 # just compile after running cmake; do not run cmake again
 remake:
-	( cd build && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake --build . -j${JOBS} )
 
 # just run cmake to set things up
 setup:
