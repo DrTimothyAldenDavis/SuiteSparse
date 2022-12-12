@@ -514,16 +514,16 @@ GLOBAL Int UMF_kernel_init
     /* allocate O (n_row) workspace at the tail end of Memory */
     /* ---------------------------------------------------------------------- */
 
+    rpi = UMF_mem_alloc_tail_block (Numeric, UNITS (Int *, n_row+1)) ;
     rpx = UMF_mem_alloc_tail_block (Numeric, UNITS (Entry *, n_row+1)) ;
-    rpi = UMF_mem_alloc_tail_block (Numeric, UNITS (Int   *, n_row+1)) ;
     if (!rpi || !rpx)
     {
-	/* :: pattern change (out of memory for Rpi, Rpx) :: */
+	/* :: pattern change (out of memory for Rpx, Rpx) :: */
 	/* out of memory, which can only mean that the pattern has changed */
 	return (FALSE) ;	/* pattern changed */
     }
-    Rpi = (Int   **) (Memory + rpi) ;
-    Rpx = (Entry **) (Memory + rpx) ;
+    Rpi = (Int   **) (Memory + rpx) ;
+    Rpx = (Entry **) (Memory + rpi) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate the LU factors for the columns of the singletons */
