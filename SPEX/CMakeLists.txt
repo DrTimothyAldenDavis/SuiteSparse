@@ -143,7 +143,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( spex PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( spex_static PUBLIC m )
