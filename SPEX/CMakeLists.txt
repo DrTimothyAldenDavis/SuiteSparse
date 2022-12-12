@@ -129,16 +129,17 @@ if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
-# GMP:
-target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
-endif ( )
-
 # MPFR:
 target_link_libraries ( spex PUBLIC ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${MPFR_STATIC} )
+endif ( )
+
+# GMP:
+# must occur after MPFR
+target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
+if ( NOT NSTATIC )
+    target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
 # libm:
