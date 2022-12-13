@@ -78,8 +78,7 @@ jobs:
 
       - name: build
         run: |
-          make CMAKE_OPTIONS="-G\"Unix Makefiles\" \
-                              -DCMAKE_BUILD_TYPE=Release \
+          make CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release \
                               -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
