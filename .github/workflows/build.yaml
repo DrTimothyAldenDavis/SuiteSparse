@@ -84,6 +84,10 @@ jobs:
                               -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
                               -DBLA_VENDOR=OpenBLAS"
 
+      - name: check
+        run: |
+          make demos
+
       - name: ccache status
         continue-on-error: true
         run: ccache -s
@@ -186,6 +190,12 @@ jobs:
                               -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
                               -DBLA_VENDOR=OpenBLAS"
+
+      - name: check
+        # Building the demos requires a Fortran compiler.
+        if: matrix.msystem != 'CLANG32'
+        run: |
+          make demos
 
       - name: ccache status
         continue-on-error: true
