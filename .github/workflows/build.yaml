@@ -185,7 +185,8 @@ jobs:
 
       - name: build
         run: |
-          make CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release \
+          make CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=\"${MINGW_PREFIX}\" \
+                              -DCMAKE_BUILD_TYPE=Release \
                               -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
                               -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
@@ -194,7 +195,9 @@ jobs:
       - name: check
         # Building the demos requires a Fortran compiler.
         if: matrix.msystem != 'CLANG32'
+        # Need to install the libraries for the tests
         run: |
+          make install
           make demos
 
       - name: ccache status
