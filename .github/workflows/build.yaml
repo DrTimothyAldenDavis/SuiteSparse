@@ -193,8 +193,6 @@ jobs:
                               -DBLA_VENDOR=OpenBLAS"
 
       - name: check
-        # Building the demos requires a Fortran compiler.
-        if: matrix.msystem != 'CLANG32'
         # Need to install the libraries for the tests
         run: |
           make install
