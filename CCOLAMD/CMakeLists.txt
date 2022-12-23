@@ -72,6 +72,8 @@ set_target_properties ( ccolamd PROPERTIES
     SOVERSION ${CCOLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/ccolamd.h" )
 
+target_compile_definitions ( ccolamd PRIVATE CCOLAMD_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static ccolamd library properties
 #-------------------------------------------------------------------------------
@@ -84,6 +86,8 @@ set_target_properties ( ccolamd_static PROPERTIES
     OUTPUT_NAME ccolamd
     C_STANDARD_REQUIRED 11
     SOVERSION ${CCOLAMD_VERSION_MAJOR} )
+
+target_compile_definitions ( ccolamd_static PUBLIC CCOLAMD_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( ccolamd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( ccolamd_static PUBLIC m )

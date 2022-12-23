@@ -703,7 +703,7 @@ typedef struct CColamd_Row_struct
     Int thickness ;     /* number of original rows represented by this row */
                         /* that are not yet pivotal */
     Int front ;         /* -1 if an original row */
-    			/* k if this row represents the kth frontal matrix */
+                        /* k if this row represents the kth frontal matrix */
                         /* where k goes from 0 to at most n_col-1 */
 
 } CColamd_Row ;
@@ -717,8 +717,8 @@ typedef struct CColamd_Row_struct
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 /* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL SUITESPARSE_PUBLIC
-#define PUBLIC SUITESPARSE_PUBLIC
+#define GLOBAL CCOLAMD_PUBLIC
+#define PUBLIC CCOLAMD_PUBLIC
 #define PRIVATE static 
 
 #define DENSE_DEGREE(alpha,n) \
