@@ -94,6 +94,11 @@
 #define SUITESPARSE_BLAS_DEFINITIONS
 #include "amd_internal.h"
 
+#if defined (GLOBAL)
+#undef GLOBAL
+#endif
+#define GLOBAL UMFPACK_PUBLIC
+
 /* -------------------------------------------------------------------------- */
 /* MATLAB include files */
 /* -------------------------------------------------------------------------- */

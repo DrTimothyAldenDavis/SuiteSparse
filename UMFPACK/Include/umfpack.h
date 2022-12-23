@@ -33,6 +33,32 @@ extern "C" {
 #include "SuiteSparse_config.h"
 #include "amd.h"
 
+//------------------------------------------------------------------------------
+// importing/exporting symbols on Windows
+//------------------------------------------------------------------------------
+
+#if defined ( _WIN32 )
+
+    // dllimport/dllexport on Windows
+    #if defined ( UMFPACK_LIBRARY )
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define UMFPACK_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( UMFPACK_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define UMFPACK_PUBLIC extern
+    #else
+#error "NO DEFINES"
+        // compiling the user application, importing symbols from SuiteSparse
+        #define UMFPACK_PUBLIC extern __declspec ( dllimport )
+    #endif
+
+#else
+
+    // for other platforms
+    #define UMFPACK_PUBLIC extern
+
+#endif
+
 /* -------------------------------------------------------------------------- */
 /* size of Info and Control arrays */
 /* -------------------------------------------------------------------------- */
@@ -53,7 +79,7 @@ extern "C" {
 #define UMFPACK_LICENSE_PART1 \
 "\nUMFPACK License: SPDX-License-Identifier: GPL-2.0+\n" \
 "   UMFPACK is available under alternate licenses,\n" \
-"   contact T. Davis for details.\n" 
+"   contact T. Davis for details.\n"
 
 #define UMFPACK_LICENSE_PART2 "\n"
 
@@ -385,7 +411,7 @@ extern "C" {
 // umfpack_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_symbolic
 (
     int32_t n_row,
@@ -398,7 +424,7 @@ int umfpack_di_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_symbolic
 (
     int64_t n_row,
@@ -411,7 +437,7 @@ int umfpack_dl_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_symbolic
 (
     int32_t n_row,
@@ -424,7 +450,7 @@ int umfpack_zi_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_symbolic
 (
     int64_t n_row,
@@ -924,7 +950,7 @@ Arguments:
 // umfpack_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_numeric
 (
     const int32_t Ap [ ],
@@ -936,7 +962,7 @@ int umfpack_di_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_numeric
 (
     const int64_t Ap [ ],
@@ -948,7 +974,7 @@ int umfpack_dl_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_numeric
 (
     const int32_t Ap [ ],
@@ -960,7 +986,7 @@ int umfpack_zi_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_numeric
 (
     const int64_t Ap [ ],
@@ -1468,7 +1494,7 @@ Arguments:
 // umfpack_solve
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_solve
 (
     int sys,
@@ -1482,7 +1508,7 @@ int umfpack_di_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_solve
 (
     int sys,
@@ -1496,7 +1522,7 @@ int umfpack_dl_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_solve
 (
     int sys,
@@ -1510,7 +1536,7 @@ int umfpack_zi_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_solve
 (
     int sys,
@@ -1774,25 +1800,25 @@ Arguments:
 // umfpack_free_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_free_symbolic
 (
     void **Symbolic
@@ -1840,25 +1866,25 @@ Arguments:
 // umfpack_free_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_free_numeric
 (
     void **Numeric
@@ -1910,25 +1936,25 @@ Arguments:
 // umfpack_defaults
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_defaults
 (
     double Control [UMFPACK_CONTROL]
@@ -1978,7 +2004,7 @@ Arguments:
 // umfpack_qsymbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_qsymbolic
 (
     int32_t n_row,
@@ -1992,7 +2018,7 @@ int umfpack_di_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_qsymbolic
 (
     int64_t n_row,
@@ -2006,7 +2032,7 @@ int umfpack_dl_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_qsymbolic
 (
     int32_t n_row,
@@ -2020,7 +2046,7 @@ int umfpack_zi_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_qsymbolic
 (
     int64_t n_row,
@@ -2034,7 +2060,7 @@ int umfpack_zl_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_fsymbolic
 (
     int32_t n_row,
@@ -2050,7 +2076,7 @@ int umfpack_di_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_fsymbolic
 (
     int64_t n_row,
@@ -2066,7 +2092,7 @@ int umfpack_dl_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_fsymbolic
 (
     int32_t n_row,
@@ -2082,7 +2108,7 @@ int umfpack_zi_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_fsymbolic
 (
     int64_t n_row,
@@ -2218,7 +2244,7 @@ to the user_ordering (user_params).  The arguments have the following syntax
 // umfpack_paru: support functions for ParU
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_paru_symbolic
 (
     int32_t n_row,
@@ -2236,7 +2262,7 @@ int umfpack_di_paru_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_paru_symbolic
 (
     int64_t n_row,
@@ -2254,7 +2280,7 @@ int umfpack_dl_paru_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_paru_symbolic
 (
     int32_t n_row,
@@ -2272,7 +2298,7 @@ int umfpack_zi_paru_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_paru_symbolic
 (
     int64_t n_row,
@@ -2290,25 +2316,25 @@ int umfpack_zl_paru_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_paru_free_sw
 (
     void **SW
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_paru_free_sw
 (
     void **SW
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_paru_free_sw
 (
     void **SW
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_paru_free_sw
 (
     void **SW
@@ -2319,7 +2345,7 @@ void umfpack_zl_paru_free_sw
 // umfpack_wsolve
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_wsolve
 (
     int sys,
@@ -2335,7 +2361,7 @@ int umfpack_di_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_wsolve
 (
     int sys,
@@ -2351,7 +2377,7 @@ int umfpack_dl_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_wsolve
 (
     int32_t sys,
@@ -2367,7 +2393,7 @@ int umfpack_zi_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_wsolve
 (
     int sys,
@@ -2408,7 +2434,7 @@ complex int32_t Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int32_t *Ap, *Ai, *Wi ; 
+    int32_t *Ap, *Ai, *Wi ;
     int sys ;
     double *Bx, *Bz, *Xx, *Xz, *Ax, *Az, *W,
         Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
@@ -2498,7 +2524,7 @@ Arguments:
 // umfpack_triplet_to_col
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_triplet_to_col
 (
     int32_t n_row,
@@ -2513,7 +2539,7 @@ int umfpack_di_triplet_to_col
     int32_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_triplet_to_col
 (
     int64_t n_row,
@@ -2528,7 +2554,7 @@ int umfpack_dl_triplet_to_col
     int64_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_triplet_to_col
 (
     int32_t n_row,
@@ -2543,7 +2569,7 @@ int umfpack_zi_triplet_to_col
     int32_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_triplet_to_col
 (
     int64_t n_row,
@@ -2760,7 +2786,7 @@ Arguments:
 // umfpack_col_to_triplet
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_col_to_triplet
 (
     int32_t n_col,
@@ -2768,7 +2794,7 @@ int umfpack_di_col_to_triplet
     int32_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_col_to_triplet
 (
     int64_t n_col,
@@ -2776,7 +2802,7 @@ int umfpack_dl_col_to_triplet
     int64_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_col_to_triplet
 (
     int32_t n_col,
@@ -2784,7 +2810,7 @@ int umfpack_zi_col_to_triplet
     int32_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_col_to_triplet
 (
     int64_t n_col,
@@ -2869,7 +2895,7 @@ Arguments:
 // umfpack_transpose
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_transpose
 (
     int32_t n_row,
@@ -2884,7 +2910,7 @@ int umfpack_di_transpose
     double Rx [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_transpose
 (
     int64_t n_row,
@@ -2899,7 +2925,7 @@ int umfpack_dl_transpose
     double Rx [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_transpose
 (
     int32_t n_row,
@@ -2915,7 +2941,7 @@ int umfpack_zi_transpose
     int do_conjugate
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_transpose
 (
     int64_t n_row,
@@ -3088,7 +3114,7 @@ Arguments:
 // umfpack_scale
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_scale
 (
     double X [ ],
@@ -3096,7 +3122,7 @@ int umfpack_di_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_scale
 (
     double X [ ],
@@ -3104,7 +3130,7 @@ int umfpack_dl_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_scale
 (
     double Xx [ ],       double Xz [ ],
@@ -3112,7 +3138,7 @@ int umfpack_zi_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_scale
 (
     double Xx [ ],       double Xz [ ],
@@ -3203,7 +3229,7 @@ Arguments:
 // umfpack_get_lunz
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_get_lunz
 (
     int32_t *lnz,
@@ -3214,7 +3240,7 @@ int umfpack_di_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_get_lunz
 (
     int64_t *lnz,
@@ -3225,7 +3251,7 @@ int umfpack_dl_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_get_lunz
 (
     int32_t *lnz,
@@ -3236,7 +3262,7 @@ int umfpack_zi_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_get_lunz
 (
     int64_t *lnz,
@@ -3339,7 +3365,7 @@ Arguments:
 // umfpack_get_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_get_numeric
 (
     int32_t Lp [ ],
@@ -3356,7 +3382,7 @@ int umfpack_di_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_get_numeric
 (
     int64_t Lp [ ],
@@ -3373,7 +3399,7 @@ int umfpack_dl_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_get_numeric
 (
     int32_t Lp [ ],
@@ -3390,7 +3416,7 @@ int umfpack_zi_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_get_numeric
 (
     int64_t Lp [ ],
@@ -3590,7 +3616,7 @@ Arguments:
 // umfpack_get_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_get_symbolic
 (
     int32_t *n_row,
@@ -3612,7 +3638,7 @@ int umfpack_di_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_get_symbolic
 (
     int64_t *n_row,
@@ -3634,7 +3660,7 @@ int umfpack_dl_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_get_symbolic
 (
     int32_t *n_row,
@@ -3656,7 +3682,7 @@ int umfpack_zi_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_get_symbolic
 (
     int64_t *n_row,
@@ -3940,28 +3966,28 @@ Arguments:
 // umfpack_save_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_save_numeric
 (
     void *Numeric,
@@ -4025,28 +4051,28 @@ Arguments:
 // umfpack_load_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_load_numeric
 (
     void **Numeric,
@@ -4115,28 +4141,28 @@ Arguments:
 // umfpack_save_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_save_symbolic
 (
     void *Symbolic,
@@ -4200,28 +4226,28 @@ Arguments:
 // umfpack_load_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_load_symbolic
 (
     void **Symbolic,
@@ -4290,7 +4316,7 @@ Arguments:
 // umfpack_get_determinant
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_get_determinant
 (
     double *Mx,
@@ -4299,7 +4325,7 @@ int umfpack_di_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_get_determinant
 (
     double *Mx,
@@ -4308,7 +4334,7 @@ int umfpack_dl_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_get_determinant
 (
     double *Mx,
@@ -4318,7 +4344,7 @@ int umfpack_zi_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_get_determinant
 (
     double *Mx,
@@ -4484,28 +4510,28 @@ Arguments:
 // umfpack_report_status
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_report_status
 (
     const double Control [UMFPACK_CONTROL],
@@ -4573,28 +4599,28 @@ Arguments:
 // umfpack_report_info
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_report_info
 (
     const double Control [UMFPACK_CONTROL],
@@ -4658,25 +4684,25 @@ Arguments:
 // umfpack_report_control
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_di_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_dl_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zi_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_zl_report_control
 (
     const double Control [UMFPACK_CONTROL]
@@ -4733,7 +4759,7 @@ Arguments:
 // umfpack_report_matrix
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_matrix
 (
     int32_t n_row,
@@ -4745,7 +4771,7 @@ int umfpack_di_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_matrix
 (
     int64_t n_row,
@@ -4757,7 +4783,7 @@ int umfpack_dl_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_matrix
 (
     int32_t n_row,
@@ -4769,7 +4795,7 @@ int umfpack_zi_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_matrix
 (
     int64_t n_row,
@@ -4939,7 +4965,7 @@ Arguments:
 // umfpack_report_triplet
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_triplet
 (
     int32_t n_row,
@@ -4951,7 +4977,7 @@ int umfpack_di_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_triplet
 (
     int64_t n_row,
@@ -4963,7 +4989,7 @@ int umfpack_dl_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_triplet
 (
     int32_t n_row,
@@ -4975,7 +5001,7 @@ int umfpack_zi_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_triplet
 (
     int64_t n_row,
@@ -5093,7 +5119,7 @@ Arguments:
 // umfpack_report_vector
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_vector
 (
     int32_t n,
@@ -5101,7 +5127,7 @@ int umfpack_di_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_vector
 (
     int64_t n,
@@ -5109,7 +5135,7 @@ int umfpack_dl_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_vector
 (
     int32_t n,
@@ -5117,7 +5143,7 @@ int umfpack_zi_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_vector
 (
     int64_t n,
@@ -5225,28 +5251,28 @@ Arguments:
 // umfpack_report_symbolic
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_symbolic
 (
     void *Symbolic,
@@ -5331,28 +5357,28 @@ Arguments:
 // umfpack_report_numeric
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_numeric
 (
     void *Numeric,
@@ -5438,7 +5464,7 @@ Arguments:
 // umfpack_report_perm
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_di_report_perm
 (
     int32_t np,
@@ -5446,7 +5472,7 @@ int umfpack_di_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_dl_report_perm
 (
     int64_t np,
@@ -5454,7 +5480,7 @@ int umfpack_dl_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zi_report_perm
 (
     int32_t np,
@@ -5462,7 +5488,7 @@ int umfpack_zi_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 int umfpack_zl_report_perm
 (
     int64_t np,
@@ -5575,10 +5601,10 @@ Arguments:
 // umfpack_tic and umfpack_toc
 //------------------------------------------------------------------------------
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_tic (double stats [2]) ;
 
-SUITESPARSE_PUBLIC
+UMFPACK_PUBLIC
 void umfpack_toc (double stats [2]) ;
 
 /*

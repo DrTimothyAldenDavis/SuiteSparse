@@ -108,6 +108,8 @@ set_target_properties ( umfpack PROPERTIES
     SOVERSION ${UMFPACK_VERSION_MAJOR}
     PUBLIC_HEADER "Include/umfpack.h" )
 
+target_compile_definitions ( umfpack PRIVATE UMFPACK_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static umfpack library properties
 #-------------------------------------------------------------------------------
@@ -120,6 +122,8 @@ set_target_properties ( umfpack_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME umfpack
     SOVERSION ${UMFPACK_VERSION_MAJOR} )
+
+target_compile_definitions ( umfpack_static PUBLIC UMFPACK_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -146,7 +150,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( umfpack PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC m )
