@@ -18,6 +18,33 @@
 extern "C" {
 #endif
 
+#include "SuiteSparse_config.h"
+
+//------------------------------------------------------------------------------
+// importing/exporting symbols on Windows
+//------------------------------------------------------------------------------
+
+#if defined ( _WIN32 )
+
+    // dllimport/dllexport on Windows
+    #if defined ( KLU_LIBRARY )
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define KLU_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( KLU_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define KLU_PUBLIC extern
+    #else
+        // compiling the user application, importing symbols from SuiteSparse
+        #define KLU_PUBLIC extern __declspec ( dllimport )
+    #endif
+
+#else
+
+    // for other compilers
+    #define KLU_PUBLIC extern
+
+#endif
+
 #include "amd.h"
 #include "colamd.h"
 #include "btf.h"
@@ -232,13 +259,13 @@ typedef struct klu_l_common_struct /* 64-bit version (otherwise same as above)*/
 /* klu_defaults: sets default control parameters */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_defaults
 (
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_defaults (klu_l_common *Common) ;
 
 /* -------------------------------------------------------------------------- */
@@ -248,7 +275,7 @@ int klu_l_defaults (klu_l_common *Common) ;
 /* Order the matrix with BTF (or not), then order each block with AMD, COLAMD,
  * a natural ordering, or with a user-provided ordering function */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_symbolic *klu_analyze
 (
     /* inputs, not modified */
@@ -258,7 +285,7 @@ klu_symbolic *klu_analyze
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_l_symbolic *klu_l_analyze (int64_t, int64_t *, int64_t *,
     klu_l_common *Common) ;
 
@@ -271,7 +298,7 @@ klu_l_symbolic *klu_l_analyze (int64_t, int64_t *, int64_t *,
  * P and Q on the blocks.  P and Q are interpretted as identity
  * if NULL. */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_symbolic *klu_analyze_given
 (
     /* inputs, not modified */
@@ -283,7 +310,7 @@ klu_symbolic *klu_analyze_given
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_l_symbolic *klu_l_analyze_given (int64_t, int64_t *, int64_t *, int64_t *,
     int64_t *, klu_l_common *) ;
 
@@ -292,7 +319,7 @@ klu_l_symbolic *klu_l_analyze_given (int64_t, int64_t *, int64_t *, int64_t *,
 /* klu_factor:  factors a matrix using the klu_analyze results */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_numeric *klu_factor /* returns KLU_OK if OK, < 0 if error */
 (
     /* inputs, not modified */
@@ -303,7 +330,7 @@ klu_numeric *klu_factor /* returns KLU_OK if OK, < 0 if error */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_numeric *klu_z_factor      /* returns KLU_OK if OK, < 0 if error */
 (
      /* inputs, not modified */
@@ -315,12 +342,12 @@ klu_numeric *klu_z_factor      /* returns KLU_OK if OK, < 0 if error */
 ) ;
 
 /* int64_t / real version */
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_l_numeric *klu_l_factor (int64_t *, int64_t *, double *,
     klu_l_symbolic *, klu_l_common *) ;
 
 /* int64_t / complex version */
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 klu_l_numeric *klu_zl_factor (int64_t *, int64_t *, double *,
     klu_l_symbolic *, klu_l_common *) ;
 
@@ -329,7 +356,7 @@ klu_l_numeric *klu_zl_factor (int64_t *, int64_t *, double *,
 /* klu_solve: solves Ax=b using the Symbolic and Numeric objects */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_solve
 (
     /* inputs, not modified */
@@ -343,7 +370,7 @@ int klu_solve
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_solve
 (
      /* inputs, not modified */
@@ -357,11 +384,11 @@ int klu_z_solve
      klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_solve (klu_l_symbolic *, klu_l_numeric *,
     int64_t, int64_t, double *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_solve (klu_l_symbolic *, klu_l_numeric *,
     int64_t, int64_t, double *, klu_l_common *) ;
 
@@ -370,7 +397,7 @@ int klu_zl_solve (klu_l_symbolic *, klu_l_numeric *,
 /* klu_tsolve: solves A'x=b using the Symbolic and Numeric objects */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_tsolve
 (
     /* inputs, not modified */
@@ -384,7 +411,7 @@ int klu_tsolve
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_tsolve
 (
     /* inputs, not modified */
@@ -400,11 +427,11 @@ int klu_z_tsolve
      
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_tsolve (klu_l_symbolic *, klu_l_numeric *,
     int64_t, int64_t, double *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_tsolve (klu_l_symbolic *, klu_l_numeric *,
     int64_t, int64_t, double *, int, klu_l_common * ) ;
 
@@ -413,7 +440,7 @@ int klu_zl_tsolve (klu_l_symbolic *, klu_l_numeric *,
 /* klu_refactor: refactorizes matrix with same ordering as klu_factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_refactor            /* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
@@ -426,7 +453,7 @@ int klu_refactor            /* return TRUE if successful, FALSE otherwise */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_refactor          /* return TRUE if successful, FALSE otherwise */
 (
      /* inputs, not modified */
@@ -439,11 +466,11 @@ int klu_z_refactor          /* return TRUE if successful, FALSE otherwise */
      klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_refactor (int64_t *, int64_t *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_refactor (int64_t *, int64_t *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
@@ -452,14 +479,14 @@ int klu_zl_refactor (int64_t *, int64_t *,
 /* klu_free_symbolic: destroys the Symbolic object */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_free_symbolic
 (
     klu_symbolic **Symbolic,
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_free_symbolic (klu_l_symbolic **, klu_l_common *) ;
 
 
@@ -470,23 +497,23 @@ int klu_l_free_symbolic (klu_l_symbolic **, klu_l_common *) ;
 /* Note that klu_free_numeric and klu_z_free_numeric are identical; each can
  * free both kinds of Numeric objects (real and complex) */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_free_numeric
 (
     klu_numeric **Numeric,
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_free_numeric
 (
      klu_numeric **Numeric,
      klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_free_numeric (klu_l_numeric **, klu_l_common *) ;
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_free_numeric (klu_l_numeric **, klu_l_common *) ;
 
 
@@ -496,7 +523,7 @@ int klu_zl_free_numeric (klu_l_numeric **, klu_l_common *) ;
 
 /* this is not needed except for the MATLAB interface */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_sort
 (
     /* inputs, not modified */
@@ -506,7 +533,7 @@ int klu_sort
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_sort
 (
     /* inputs, not modified */
@@ -516,9 +543,9 @@ int klu_z_sort
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_sort  (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_sort (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
 
@@ -526,7 +553,7 @@ int klu_zl_sort (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 /* klu_flops: determines # of flops performed in numeric factorzation */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_flops
 (
     /* inputs, not modified */
@@ -536,7 +563,7 @@ int klu_flops
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_flops
 (
     /* inputs, not modified */
@@ -546,9 +573,9 @@ int klu_z_flops
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_flops  (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_flops (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
 
@@ -569,7 +596,7 @@ int klu_zl_flops (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
  *
  * rgrowth = min (max (abs ((R \ A(p,q)) - F)) ./ max (abs (U))) */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_rgrowth
 (
     int32_t Ap [ ],
@@ -580,7 +607,7 @@ int klu_rgrowth
     klu_common *Common          /* Common->rgrowth = reciprocal pivot growth */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_rgrowth
 (
     int32_t Ap [ ],
@@ -591,11 +618,11 @@ int klu_z_rgrowth
     klu_common *Common          /* Common->rgrowth = reciprocal pivot growth */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_rgrowth (int64_t *, int64_t *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_rgrowth (int64_t *, int64_t *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
@@ -608,7 +635,7 @@ int klu_zl_rgrowth (int64_t *, int64_t *,
  * Hager's method, as modified by Higham and Tisseur (same method as used in
  * MATLAB's condest */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_condest
 (
     int32_t Ap [ ],         /* size n+1, column pointers, not modified */
@@ -618,7 +645,7 @@ int klu_condest
     klu_common *Common      /* result returned in Common->condest */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_condest
 (
     int32_t Ap [ ],
@@ -628,11 +655,11 @@ int klu_z_condest
     klu_common *Common      /* result returned in Common->condest */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_condest (int64_t *, double *, klu_l_symbolic *,
     klu_l_numeric *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_condest (int64_t *, double *, klu_l_symbolic *,
     klu_l_numeric *, klu_l_common *) ;
 
@@ -641,7 +668,7 @@ int klu_zl_condest (int64_t *, double *, klu_l_symbolic *,
 /* klu_rcond: compute min(abs(diag(U))) / max(abs(diag(U))) */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_rcond
 (
     klu_symbolic *Symbolic,         /* input, not modified */
@@ -649,7 +676,7 @@ int klu_rcond
     klu_common *Common              /* result in Common->rcond */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_rcond
 (
     klu_symbolic *Symbolic,         /* input, not modified */
@@ -657,10 +684,10 @@ int klu_z_rcond
     klu_common *Common              /* result in Common->rcond */
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_rcond  (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_rcond (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
 
@@ -668,7 +695,7 @@ int klu_zl_rcond (klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 /* klu_scale */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_scale           /* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
@@ -684,7 +711,7 @@ int klu_scale           /* return TRUE if successful, FALSE otherwise */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_scale         /* return TRUE if successful, FALSE otherwise */
 (
     /* inputs, not modified */
@@ -700,11 +727,11 @@ int klu_z_scale         /* return TRUE if successful, FALSE otherwise */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_scale (int, int64_t, int64_t *, int64_t *, double *,
     double *, int64_t *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_scale (int, int64_t, int64_t *, int64_t *, double *,
     double *, int64_t *, klu_l_common *) ;
 
@@ -713,7 +740,7 @@ int klu_zl_scale (int, int64_t, int64_t *, int64_t *, double *,
 /* klu_extract  */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_extract     /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs: */
@@ -753,7 +780,7 @@ int klu_extract     /* returns TRUE if successful, FALSE otherwise */
 ) ;
 
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_z_extract           /* returns TRUE if successful, FALSE otherwise */
 (
     /* inputs: */
@@ -795,7 +822,7 @@ int klu_z_extract           /* returns TRUE if successful, FALSE otherwise */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_l_extract (klu_l_numeric *, klu_l_symbolic *,
     int64_t *, int64_t *, double *,
     int64_t *, int64_t *, double *,
@@ -803,7 +830,7 @@ int klu_l_extract (klu_l_numeric *, klu_l_symbolic *,
     int64_t *, int64_t *, double *,
     int64_t *, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 int klu_zl_extract (klu_l_numeric *, klu_l_symbolic *,
     int64_t *, int64_t *, double *, double *,
     int64_t *, int64_t *, double *, double *,
@@ -816,7 +843,7 @@ int klu_zl_extract (klu_l_numeric *, klu_l_symbolic *,
 /* KLU memory management routines */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_malloc        /* returns pointer to the newly malloc'd block */
 (
     /* ---- input ---- */
@@ -826,7 +853,7 @@ void *klu_malloc        /* returns pointer to the newly malloc'd block */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_free          /* always returns NULL */
 (
     /* ---- in/out --- */
@@ -837,7 +864,7 @@ void *klu_free          /* always returns NULL */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_realloc       /* returns pointer to reallocated block */
 (
     /* ---- input ---- */
@@ -850,13 +877,13 @@ void *klu_realloc       /* returns pointer to reallocated block */
     klu_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_l_malloc (size_t, size_t, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_l_free (void *, size_t, size_t, klu_l_common *) ;
 
-SUITESPARSE_PUBLIC
+KLU_PUBLIC
 void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
 
 

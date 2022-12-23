@@ -100,6 +100,8 @@ set_target_properties ( klu PROPERTIES
     SOVERSION ${KLU_VERSION_MAJOR}
     PUBLIC_HEADER "Include/klu.h" )
 
+target_compile_definitions ( klu PRIVATE KLU_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static klu library properties
 #-------------------------------------------------------------------------------
@@ -112,6 +114,8 @@ set_target_properties ( klu_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME klu
     SOVERSION ${KLU_VERSION_MAJOR} )
+
+target_compile_definitions ( klu_static PUBLIC KLU_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -154,7 +158,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( klu PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC m )
