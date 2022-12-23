@@ -76,6 +76,8 @@ set_target_properties ( ldl PROPERTIES
     SOVERSION ${LDL_VERSION_MAJOR}
     PUBLIC_HEADER "Include/ldl.h" )
 
+target_compile_definitions ( ldl PRIVATE LDL_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static ldl library properties
 #-------------------------------------------------------------------------------
@@ -88,6 +90,8 @@ set_target_properties ( ldl_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME ldl
     SOVERSION ${LDL_VERSION_MAJOR} )
+
+target_compile_definitions ( ldl_static PUBLIC LDL_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )

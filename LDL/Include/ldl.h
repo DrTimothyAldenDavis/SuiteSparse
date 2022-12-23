@@ -9,6 +9,32 @@
 
 #include "SuiteSparse_config.h"
 
+//------------------------------------------------------------------------------
+// importing/exporting symbols on Windows
+//------------------------------------------------------------------------------
+
+#if defined ( _WIN32 )
+
+    // dllimport/dllexport on Windows
+    #if defined ( LDL_LIBRARY )
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define LDL_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( LDL_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define LDL_PUBLIC extern
+    #else
+        // compiling the user application, importing symbols from SuiteSparse
+        #define LDL_PUBLIC extern __declspec ( dllimport )
+    #endif
+
+#else
+
+    // for other platforms
+    #define LDL_PUBLIC extern
+
+#endif
+
+
 #ifdef LDL_LONG
 #define LDL_int int64_t
 #define LDL_ID  "%" PRId64
@@ -43,72 +69,74 @@
 /* === int32_t version ========================================================== */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_symbolic (int32_t n, int32_t Ap [ ], int32_t Ai [ ], int32_t Lp [ ],
     int32_t Parent [ ], int32_t Lnz [ ], int32_t Flag [ ], int32_t P [ ],
     int32_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int32_t ldl_numeric (int32_t n, int32_t Ap [ ], int32_t Ai [ ], double Ax [ ],
     int32_t Lp [ ], int32_t Parent [ ], int32_t Lnz [ ], int32_t Li [ ],
     double Lx [ ], double D [ ], double Y [ ], int32_t Pattern [ ],
     int32_t Flag [ ], int32_t P [ ], int32_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_lsolve (int32_t n, double X [ ], int32_t Lp [ ], int32_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_dsolve (int32_t n, double X [ ], double D [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_ltsolve (int32_t n, double X [ ], int32_t Lp [ ], int32_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_perm  (int32_t n, double X [ ], double B [ ], int32_t P [ ]) ;
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_permt (int32_t n, double X [ ], double B [ ], int32_t P [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int32_t ldl_valid_perm (int32_t n, int32_t P [ ], int32_t Flag [ ]) ;
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int32_t ldl_valid_matrix ( int32_t n, int32_t Ap [ ], int32_t Ai [ ]) ;
 
 /* ========================================================================== */
 /* === int64_t version ====================================================== */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_l_symbolic (int64_t n, int64_t Ap [ ], int64_t Ai [ ], int64_t Lp [ ],
     int64_t Parent [ ], int64_t Lnz [ ], int64_t Flag [ ], int64_t P [ ],
     int64_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int64_t ldl_l_numeric (int64_t n, int64_t Ap [ ], int64_t Ai [ ], double Ax [ ],
     int64_t Lp [ ], int64_t Parent [ ], int64_t Lnz [ ], int64_t Li [ ],
     double Lx [ ], double D [ ], double Y [ ], int64_t Pattern [ ],
     int64_t Flag [ ], int64_t P [ ], int64_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_l_lsolve (int64_t n, double X [ ], int64_t Lp [ ], int64_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_l_dsolve (int64_t n, double X [ ], double D [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_l_ltsolve (int64_t n, double X [ ], int64_t Lp [ ], int64_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 void ldl_l_perm  (int64_t n, double X [ ], double B [ ], int64_t P [ ]) ;
+
+LDL_PUBLIC
 void ldl_l_permt (int64_t n, double X [ ], double B [ ], int64_t P [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int64_t ldl_l_valid_perm (int64_t n, int64_t P [ ], int64_t Flag [ ]) ;
 
-SUITESPARSE_PUBLIC 
+LDL_PUBLIC
 int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 
 /* ========================================================================== */
