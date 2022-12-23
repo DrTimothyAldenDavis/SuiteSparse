@@ -71,6 +71,8 @@ set_target_properties ( cxsparse PROPERTIES
     SOVERSION ${CXSPARSE_VERSION_MAJOR}
     PUBLIC_HEADER "Include/cs.h" )
 
+target_compile_definitions ( cxsparse PRIVATE CS_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static cxsparse library properties
 #-------------------------------------------------------------------------------
@@ -83,6 +85,8 @@ set_target_properties ( cxsparse_static PROPERTIES
     OUTPUT_NAME cxsparse
     C_STANDARD_REQUIRED 11
     SOVERSION ${CXSPARSE_VERSION_MAJOR} )
+
+target_compile_definitions ( cxsparse_static PUBLIC CS_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cxsparse PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cxsparse_static PUBLIC m )
