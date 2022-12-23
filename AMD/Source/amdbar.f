@@ -11,6 +11,10 @@ C-----------------------------------------------------------------------
         SUBROUTINE AMDBAR
      $          (N, PE, IW, LEN, IWLEN, PFREE, NV, NEXT,
      $          LAST, HEAD, ELEN, DEGREE, NCMPA, W)
+#ifdef AMD_LIBRARY
+!DEC$ ATTRIBUTES DLLEXPORT :: AMDBAR
+!GCC$ ATTRIBUTES DLLEXPORT :: AMDBAR
+#endif
 
         INTEGER N, IWLEN, PFREE, NCMPA, IW (IWLEN), PE (N),
      $          DEGREE (N), NV (N), NEXT (N), LAST (N), HEAD (N),

@@ -84,6 +84,8 @@ set_target_properties ( amd PROPERTIES
     SOVERSION ${AMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/amd.h" )
 
+target_compile_definitions ( amd PRIVATE AMD_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static amd library properties
 #-------------------------------------------------------------------------------
@@ -95,6 +97,8 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR} )
+
+    target_compile_definitions ( amd_static PUBLIC AMD_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -108,7 +112,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( amd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( amd_static PUBLIC m )

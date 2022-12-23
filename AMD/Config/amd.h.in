@@ -42,7 +42,32 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-SUITESPARSE_PUBLIC int amd_order  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
+//------------------------------------------------------------------------------
+// importing/exporting symbols on Windows
+//------------------------------------------------------------------------------
+
+#if defined ( _WIN32 )
+
+    // dllimport/dllexport on Windows
+    #if defined ( AMD_LIBRARY )
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define AMD_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( AMD_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define AMD_PUBLIC extern
+    #else
+        // compiling the user application, importing symbols from SuiteSparse
+        #define AMD_PUBLIC extern __declspec ( dllimport )
+    #endif
+
+#else
+
+    // for other platforms
+    #define AMD_PUBLIC extern
+
+#endif
+
+AMD_PUBLIC int amd_order  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
                                     * AMD_INVALID, or AMD_OUT_OF_MEMORY */
 (
     int32_t n,                     /* A is n-by-n.  n must be >= 0. */
@@ -53,7 +78,7 @@ SUITESPARSE_PUBLIC int amd_order  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
     double Info [ ]         /* output Info statistics, of size AMD_INFO */
 ) ;
 
-SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
+AMD_PUBLIC int amd_l_order  /* see above for description */
 (
     int64_t n,
     const int64_t Ap [ ],
@@ -89,7 +114,7 @@ SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
  * terms of time and memory usage.  If this condition does not hold, a copy
  * of the matrix is created (where these conditions do hold), and the copy is
  * ordered.
- * 
+ *
  * Row indices must be in the range 0 to
  * n-1.  Ap [0] must be zero, and thus nz = Ap [n] is the number of nonzeros
  * in A.  The array Ap is of size n+1, and the array Ai is of size nz = Ap [n].
@@ -156,7 +181,7 @@ SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
  * The Info array provides statistics about the ordering on output.  If it is
  * not present, the statistics are not returned.  This is not an error
  * condition.
- * 
+ *
  *      Info [AMD_STATUS]:  the return value of AMD, either AMD_OK,
  *          AMD_OK_BUT_JUMBLED, AMD_OUT_OF_MEMORY, or AMD_INVALID.
  *
@@ -217,7 +242,7 @@ SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
  *
  *      Info [14..19] are not used in the current version, but may be used in
  *          future versions.
- */    
+ */
 
 /* ------------------------------------------------------------------------- */
 /* direct interface to AMD */
@@ -231,7 +256,7 @@ SUITESPARSE_PUBLIC int amd_l_order  /* see above for description */
  * of the matrix for AMD to destroy).  Refer to AMD/Source/amd_2.c for a
  * description of each parameter. */
 
-SUITESPARSE_PUBLIC void amd_2
+AMD_PUBLIC void amd_2
 (
     int32_t n,
     int32_t Pe [ ],
@@ -240,7 +265,7 @@ SUITESPARSE_PUBLIC void amd_2
     int32_t iwlen,
     int32_t pfree,
     int32_t Nv [ ],
-    int32_t Next [ ], 
+    int32_t Next [ ],
     int32_t Last [ ],
     int32_t Head [ ],
     int32_t Elen [ ],
@@ -250,7 +275,7 @@ SUITESPARSE_PUBLIC void amd_2
     double Info [ ]
 ) ;
 
-SUITESPARSE_PUBLIC void amd_l2
+AMD_PUBLIC void amd_l2
 (
     int64_t n,
     int64_t Pe [ ],
@@ -259,7 +284,7 @@ SUITESPARSE_PUBLIC void amd_l2
     int64_t iwlen,
     int64_t pfree,
     int64_t Nv [ ],
-    int64_t Next [ ], 
+    int64_t Next [ ],
     int64_t Last [ ],
     int64_t Head [ ],
     int64_t Elen [ ],
@@ -281,7 +306,7 @@ SUITESPARSE_PUBLIC void amd_l2
  * of columns of the matrix.  For its use in AMD, these must both equal n.
  */
 
-SUITESPARSE_PUBLIC int amd_valid
+AMD_PUBLIC int amd_valid
 (
     int32_t n_row,                 /* # of rows */
     int32_t n_col,                 /* # of columns */
@@ -289,7 +314,7 @@ SUITESPARSE_PUBLIC int amd_valid
     const int32_t Ai [ ]           /* row indices, of size Ap [n_col] */
 ) ;
 
-SUITESPARSE_PUBLIC int amd_l_valid
+AMD_PUBLIC int amd_l_valid
 (
     int64_t n_row,
     int64_t n_col,
@@ -302,16 +327,16 @@ SUITESPARSE_PUBLIC int amd_l_valid
 /* ------------------------------------------------------------------------- */
 
 /* amd_defaults:  sets the default control settings */
-SUITESPARSE_PUBLIC void amd_defaults   (double Control [ ]) ;
-SUITESPARSE_PUBLIC void amd_l_defaults (double Control [ ]) ;
+AMD_PUBLIC void amd_defaults   (double Control [ ]) ;
+AMD_PUBLIC void amd_l_defaults (double Control [ ]) ;
 
 /* amd_control: prints the control settings */
-SUITESPARSE_PUBLIC void amd_control    (double Control [ ]) ;
-SUITESPARSE_PUBLIC void amd_l_control  (double Control [ ]) ;
+AMD_PUBLIC void amd_control    (double Control [ ]) ;
+AMD_PUBLIC void amd_l_control  (double Control [ ]) ;
 
 /* amd_info: prints the statistics */
-SUITESPARSE_PUBLIC void amd_info       (double Info [ ]) ;
-SUITESPARSE_PUBLIC void amd_l_info     (double Info [ ]) ;
+AMD_PUBLIC void amd_info       (double Info [ ]) ;
+AMD_PUBLIC void amd_l_info     (double Info [ ]) ;
 
 #define AMD_CONTROL 5          /* size of Control array */
 #define AMD_INFO 20            /* size of Info array */
@@ -327,7 +352,7 @@ SUITESPARSE_PUBLIC void amd_l_info     (double Info [ ]) ;
 /* contents of Info */
 #define AMD_STATUS 0           /* return value of amd_order and amd_l_order */
 #define AMD_N 1                /* A is n-by-n */
-#define AMD_NZ 2      /* number of nonzeros in A */ 
+#define AMD_NZ 2      /* number of nonzeros in A */
 #define AMD_SYMMETRY 3         /* symmetry of pattern (1 is sym., 0 is unsym.) */
 #define AMD_NZDIAG 4           /* # of entries on diagonal */
 #define AMD_NZ_A_PLUS_AT 5  /* nz in A+A' */

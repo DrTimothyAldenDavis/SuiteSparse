@@ -42,7 +42,6 @@
 #undef NDEBUG
 */
 
-#define SUITESPARSE_LIBRARY
 #include "amd.h"
 
 /* ------------------------------------------------------------------------- */
@@ -65,7 +64,7 @@
 #undef EMPTY
 #endif
 
-#define GLOBAL SUITESPARSE_PUBLIC
+#define GLOBAL AMD_PUBLIC
 #define PRIVATE static
 
 /* FLIP is a "negation about -1", and is used to mark an integer i that is
