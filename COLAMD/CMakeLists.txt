@@ -71,6 +71,8 @@ set_target_properties ( colamd PROPERTIES
     SOVERSION ${COLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/colamd.h" )
 
+target_compile_definitions ( colamd PRIVATE COLAMD_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static colamd library properties
 #-------------------------------------------------------------------------------
@@ -83,6 +85,8 @@ set_target_properties ( colamd_static PROPERTIES
     OUTPUT_NAME colamd
     C_STANDARD_REQUIRED 11
     SOVERSION ${COLAMD_VERSION_MAJOR} )
+
+target_compile_definitions ( colamd_static PUBLIC COLAMD_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( colamd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( colamd_static PUBLIC m )
