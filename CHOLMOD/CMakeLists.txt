@@ -284,6 +284,8 @@ set_target_properties ( cholmod PROPERTIES
     SOVERSION ${CHOLMOD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/cholmod.h" )
 
+target_compile_definitions ( cholmod PRIVATE CHOLMOD_LIBRARY )
+
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( cholmod PROPERTIES POSITION_INDEPENDENT_CODE on )
@@ -301,6 +303,8 @@ set_target_properties ( cholmod_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME cholmod
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+
+target_compile_definitions ( cholmod_static PUBLIC CHOLMOD_STATIC )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
@@ -333,7 +337,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC m )
