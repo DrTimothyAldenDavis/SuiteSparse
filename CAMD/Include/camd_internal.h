@@ -62,7 +62,7 @@
 #undef EMPTY
 #endif
 
-#define GLOBAL SUITESPARSE_PUBLIC
+#define GLOBAL CAMD_PUBLIC
 #define PRIVATE static
 
 /* FLIP is a "negation about -1", and is used to mark an integer i that is
@@ -116,7 +116,6 @@
 /* integer type for CAMD: int32_t or int64_t */
 /* ------------------------------------------------------------------------- */
 
-#define SUITESPARSE_LIBRARY
 #include "camd.h"
 
 #if defined (DLONG) || defined (ZLONG)

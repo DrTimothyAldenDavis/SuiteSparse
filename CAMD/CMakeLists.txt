@@ -72,6 +72,8 @@ set_target_properties ( camd PROPERTIES
     SOVERSION ${CAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/camd.h" )
 
+target_compile_definitions ( camd PRIVATE CAMD_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static camd library properties
 #-------------------------------------------------------------------------------
@@ -84,6 +86,8 @@ set_target_properties ( camd_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME camd
     SOVERSION ${CAMD_VERSION_MAJOR} )
+
+target_compile_definitions ( camd_static PUBLIC CAMD_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( camd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )
