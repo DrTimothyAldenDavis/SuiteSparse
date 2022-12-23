@@ -740,8 +740,8 @@ typedef struct Colamd_Row_struct
 /* ========================================================================== */
 
 /* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL COLAMD_PUBLIC
-#define PUBLIC COLAMD_PUBLIC
+#define GLOBAL
+#define PUBLIC
 #define PRIVATE static 
 
 #define DENSE_DEGREE(alpha,n) \
