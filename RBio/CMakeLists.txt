@@ -71,6 +71,8 @@ set_target_properties ( rbio PROPERTIES
     SOVERSION ${RBIO_VERSION_MAJOR}
     PUBLIC_HEADER "Include/RBio.h" )
 
+target_compile_definitions ( rbio PRIVATE RBIO_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static rbio library properties
 #-------------------------------------------------------------------------------
@@ -83,6 +85,8 @@ set_target_properties ( rbio_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME rbio
     SOVERSION ${RBIO_VERSION_MAJOR} )
+
+target_compile_definitions ( rbio_static PUBLIC RBIO_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -96,7 +100,7 @@ target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( rbio PUBLIC m )
     if ( NOT NSTATIC )
     target_link_libraries ( rbio_static PUBLIC m )
@@ -115,7 +119,7 @@ if ( GLOBAL_INSTALL )
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindRBio.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS rbio_static
@@ -132,7 +136,7 @@ if ( INSIDE_SUITESPARSE )
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindRBio.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
     install ( TARGETS rbio_static
