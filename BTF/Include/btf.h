@@ -97,7 +97,32 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-SUITESPARSE_PUBLIC
+//------------------------------------------------------------------------------
+// importing/exporting symbols on Windows
+//------------------------------------------------------------------------------
+
+#if defined ( _WIN32 )
+
+    // dllimport/dllexport on Windows
+    #if defined ( BTF_LIBRARY )
+        // compiling SuiteSparse itself, exporting symbols to user apps
+        #define BTF_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( BTF_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define BTF_PUBLIC extern
+    #else
+        // compiling the user application, importing symbols from SuiteSparse
+        #define BTF_PUBLIC extern __declspec ( dllimport )
+    #endif
+
+#else
+
+    // for other platforms
+    #define BTF_PUBLIC extern
+
+#endif
+
+BTF_PUBLIC
 int32_t btf_maxtrans    /* returns # of columns matched */
 (
     /* --- input, not modified: --- */
@@ -121,7 +146,7 @@ int32_t btf_maxtrans    /* returns # of columns matched */
 ) ;
 
 /* int64_t integer version */
-SUITESPARSE_PUBLIC 
+BTF_PUBLIC
 int64_t btf_l_maxtrans (int64_t, int64_t,
     int64_t *, int64_t *, double, double *,
     int64_t *, int64_t *) ;
@@ -149,7 +174,7 @@ int64_t btf_l_maxtrans (int64_t, int64_t,
  * number of strongly connected components found.
  */
 
-SUITESPARSE_PUBLIC 
+BTF_PUBLIC
 int32_t btf_strongcomp  /* return # of strongly connected components */
 (
     /* input, not modified: */
@@ -170,7 +195,7 @@ int32_t btf_strongcomp  /* return # of strongly connected components */
     int32_t Work [ ]    /* size 4n */
 ) ;
 
-SUITESPARSE_PUBLIC 
+BTF_PUBLIC
 int64_t btf_l_strongcomp (int64_t, int64_t *,
     int64_t *, int64_t *, int64_t *,
     int64_t *, int64_t *) ;
@@ -199,7 +224,7 @@ int64_t btf_l_strongcomp (int64_t, int64_t *,
  * number of strongly connected components found.
  */
 
-SUITESPARSE_PUBLIC 
+BTF_PUBLIC
 int32_t btf_order       /* returns number of blocks found */
 (
     /* --- input, not modified: --- */
@@ -220,7 +245,7 @@ int32_t btf_order       /* returns number of blocks found */
     int32_t Work [ ] /* size 5n */
 ) ;
 
-SUITESPARSE_PUBLIC 
+BTF_PUBLIC
 int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
     int64_t *, int64_t *, int64_t *, int64_t *, int64_t *) ;
 

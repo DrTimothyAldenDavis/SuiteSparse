@@ -72,6 +72,8 @@ set_target_properties ( btf PROPERTIES
     SOVERSION ${BTF_VERSION_MAJOR}
     PUBLIC_HEADER "Include/btf.h" )
 
+target_compile_definitions ( btf PRIVATE BTF_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static btf library properties
 #-------------------------------------------------------------------------------
@@ -84,6 +86,8 @@ set_target_properties ( btf_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME btf
     SOVERSION ${BTF_VERSION_MAJOR} )
+
+target_compile_definitions ( btf_static PUBLIC BTF_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -97,7 +101,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( btf PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( btf_static PUBLIC m )
