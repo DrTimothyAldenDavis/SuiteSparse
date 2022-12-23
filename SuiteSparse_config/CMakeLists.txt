@@ -76,6 +76,8 @@ set_target_properties ( suitesparseconfig PROPERTIES
     SOVERSION ${SUITESPARSE_VERSION_MAJOR}
     PUBLIC_HEADER "SuiteSparse_config.h" )
 
+target_compile_definitions ( suitesparseconfig PRIVATE SUITESPARSE_LIBRARY )
+
 #-------------------------------------------------------------------------------
 # static suitesparseconfig library properties
 #-------------------------------------------------------------------------------
@@ -88,6 +90,8 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME suitesparseconfig
         SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+
+target_compile_definitions ( suitesparseconfig_static PUBLIC SUITESPARSE_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,7 +99,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( suitesparseconfig_static PUBLIC m )

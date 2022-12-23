@@ -115,7 +115,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR __CUDACC_VER_MAJOR__
     #define SUITESPARSE_COMPILER_MINOR __CUDACC_VER_MINOR__
@@ -132,7 +131,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR __INTEL_CLANG_COMPILER
     #define SUITESPARSE_COMPILER_MINOR 0
@@ -149,7 +147,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR __INTEL_COMPILER
     #define SUITESPARSE_COMPILER_MINOR __INTEL_COMPILER_UPDATE
@@ -166,7 +163,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR __clang_major__
     #define SUITESPARSE_COMPILER_MINOR __clang_minor__
@@ -183,7 +179,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     1
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR ( __xlC__ / 256 )
     #define SUITESPARSE_COMPILER_MINOR \
@@ -201,7 +196,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     1
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR __GNUC__
     #define SUITESPARSE_COMPILER_MINOR __GNUC_MINOR__
@@ -221,7 +215,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     1
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR ( _MSC_VER / 100 )
     #define SUITESPARSE_COMPILER_MINOR \
@@ -229,28 +222,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_SUB   0
     #define SUITESPARSE_COMPILER_NAME  \
         "Microsoft Visual Studio " SUITESPARSE_XSTR (_MSC_VER)
-
-#elif defined ( __MINGW32__ ) || defined ( __MINGW64__ )
-
-    // MinGW (32-bit or 64-bit)
-    #define SUITESPARSE_COMPILER_NVCC    0
-    #define SUITESPARSE_COMPILER_ICX     0
-    #define SUITESPARSE_COMPILER_ICC     0
-    #define SUITESPARSE_COMPILER_CLANG   0
-    #define SUITESPARSE_COMPILER_GCC     0
-    #define SUITESPARSE_COMPILER_MSC     0
-    #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   1
-
-    #if defined ( __MINGW32__ )
-    #define SUITESPARSE_COMPILER_MAJOR ( __MINGW32_MAJOR_VERSION )
-    #define SUITESPARSE_COMPILER_MINOR ( __MINGW32_MINOR_VERSION )
-    #else
-    #define SUITESPARSE_COMPILER_MAJOR ( __MINGW64_MAJOR_VERSION )
-    #define SUITESPARSE_COMPILER_MINOR ( __MINGW64_MINOR_VERSION )
-    #endif
-    #define SUITESPARSE_COMPILER_SUB   0
-    #define SUITESPARSE_COMPILER_NAME  "MinGW"
 
 #else
 
@@ -262,7 +233,6 @@ extern "C"
     #define SUITESPARSE_COMPILER_GCC     0
     #define SUITESPARSE_COMPILER_MSC     0
     #define SUITESPARSE_COMPILER_XLC     0
-    #define SUITESPARSE_COMPILER_MINGW   0
 
     #define SUITESPARSE_COMPILER_MAJOR 0
     #define SUITESPARSE_COMPILER_MINOR 0
@@ -280,15 +250,18 @@ extern "C"
 #endif
 
 //------------------------------------------------------------------------------
-// importing/exporting symbols for Microsoft Visual Studio
+// importing/exporting symbols on Windows
 //------------------------------------------------------------------------------
 
-#if SUITESPARSE_COMPILER_MSC
+#if defined ( _WIN32 )
 
-    // import/export for MS Visual Studio
-    #ifdef SUITESPARSE_LIBRARY
+    // dllimport/dllexport on Windows
+    #if defined ( SUITESPARSE_LIBRARY )
         // compiling SuiteSparse itself, exporting symbols to user apps
         #define SUITESPARSE_PUBLIC extern __declspec ( dllexport )
+    #elif defined ( SUITESPARSE_STATIC )
+        // compiling static library, no dllimport or dllexport
+        #define SUITESPARSE_PUBLIC extern
     #else
         // compiling the user application, importing symbols from SuiteSparse
         #define SUITESPARSE_PUBLIC extern __declspec ( dllimport )
@@ -296,7 +269,7 @@ extern "C"
 
 #else
 
-    // for other compilers
+    // for other platforms
     #define SUITESPARSE_PUBLIC extern
 
 #endif
@@ -1469,12 +1442,14 @@ void SUITESPARSE_LAPACK_ZLARF       // apply Householder reflector
 
 // Returns the name of the BLAS library found by SuiteSparse_config
 
+SUITESPARSE_PUBLIC
 const char *SuiteSparse_BLAS_library ( void ) ;
 
 //------------------------------------------------------------------------------
 // SuiteSparse_BLAS_integer_size: return sizeof (SUITESPARSE_BLAS_INT)
 //------------------------------------------------------------------------------
 
+SUITESPARSE_PUBLIC
 size_t SuiteSparse_BLAS_integer_size ( void ) ;
 
 #ifdef __cplusplus
