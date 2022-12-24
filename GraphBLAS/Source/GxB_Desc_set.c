@@ -12,7 +12,188 @@
 // in the spec, the type is the same as GrB_Descriptor_set (a scalar of
 // type GrB_Desc_Value).
 
+// GxB_Desc_set is a single va_arg-based method for any descriptor option,
+// of any type.  The following functions are alternative methods that do not
+// use va_arg (useful for compilers and interfaces that do not support va_arg):
+//
+//  GxB_Desc_set_INT32         int32_t scalars
+//  GxB_Desc_set_FP64          double scalars
+
 #include "GB.h"
+
+//------------------------------------------------------------------------------
+// GxB_Desc_set_INT32:  set a descriptor option (int32_t)
+//------------------------------------------------------------------------------
+
+GrB_Info GxB_Desc_set_INT32     // set a parameter in a descriptor
+(
+    GrB_Descriptor desc,        // descriptor to modify
+    GrB_Desc_Field field,       // parameter to change
+    int32_t value               // value to change it to
+)
+{
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
+    if (desc != NULL && desc->header_size == 0)
+    { 
+        // built-in descriptors may not be modified
+        return (GrB_INVALID_VALUE) ;
+    }
+
+    GB_WHERE (desc, "GxB_Desc_set_INT32 (desc, field, value)") ;
+    GB_RETURN_IF_NULL_OR_FAULTY (desc) ;
+    ASSERT_DESCRIPTOR_OK (desc, "desc to set", GB0) ;
+
+    //--------------------------------------------------------------------------
+    // set the parameter
+    //--------------------------------------------------------------------------
+
+    int mask = (int) desc->mask ;
+
+    switch (field)
+    {
+
+        case GrB_OUTP : 
+
+            if (! (value == GxB_DEFAULT || value == GrB_REPLACE))
+            { 
+                GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+            }
+            desc->out = (GrB_Desc_Value) value ;
+            break ;
+
+        case GrB_MASK : 
+
+            if (! (value == GxB_DEFAULT ||
+                   value == GrB_COMP ||
+                   value == GrB_STRUCTURE ||
+                   value == (GrB_COMP + GrB_STRUCTURE)))
+            { 
+                GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+            }
+            int mask = (int) desc->mask ;
+            switch (value)
+            {
+                case GrB_COMP      : mask |= GrB_COMP ;      break ;
+                case GrB_STRUCTURE : mask |= GrB_STRUCTURE ; break ;
+                default            : mask = value ;          break ;
+            }
+            desc->mask = (GrB_Desc_Value) mask ;
+            break ;
+
+        case GrB_INP0 : 
+
+            if (! (value == GxB_DEFAULT || value == GrB_TRAN))
+            { 
+                GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+            }
+            desc->in0 = (GrB_Desc_Value) value ;
+            break ;
+
+        case GrB_INP1 : 
+
+            if (! (value == GxB_DEFAULT || value == GrB_TRAN))
+            { 
+                GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+            }
+            desc->in1 = (GrB_Desc_Value) value ;
+            break ;
+
+        case GxB_DESCRIPTOR_NTHREADS :      // same as GxB_NTHREADS
+
+            desc->nthreads_max = value ;
+            break ;
+
+        case GxB_AxB_METHOD : 
+
+            if (! (value == GxB_DEFAULT  || value == GxB_AxB_GUSTAVSON
+                || value == GxB_AxB_DOT
+                || value == GxB_AxB_HASH || value == GxB_AxB_SAXPY))
+            { 
+                GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+            }
+            desc->axb = (GrB_Desc_Value) value ;
+            break ;
+
+        case GxB_SORT : 
+
+            desc->do_sort = value ;
+            break ;
+
+        case GxB_COMPRESSION : 
+
+            desc->compression = value ;
+            break ;
+
+        case GxB_IMPORT : 
+
+            // In case the user application does not check the return value
+            // of this method, an error condition is never returned.
+            desc->import =
+                (value == GxB_DEFAULT) ? GxB_FAST_IMPORT : GxB_SECURE_IMPORT ;
+            break ;
+
+        default : 
+
+            GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor value\n", 0) ;
+    }
+
+    return (GrB_SUCCESS) ;
+}
+
+//------------------------------------------------------------------------------
+// GxB_Desc_set_FP64: set a descriptor option (double scalar)
+//------------------------------------------------------------------------------
+
+GrB_Info GxB_Desc_set_FP64      // set a parameter in a descriptor
+(
+    GrB_Descriptor desc,        // descriptor to modify
+    GrB_Desc_Field field,       // parameter to change
+    double value                // value to change it to
+)
+{
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
+    if (desc != NULL && desc->header_size == 0)
+    { 
+        // built-in descriptors may not be modified
+        return (GrB_INVALID_VALUE) ;
+    }
+
+    GB_WHERE (desc, "GxB_Desc_set_FP64 (desc, field, value)") ;
+    GB_RETURN_IF_NULL_OR_FAULTY (desc) ;
+    ASSERT_DESCRIPTOR_OK (desc, "desc to set", GB0) ;
+
+    //--------------------------------------------------------------------------
+    // set the parameter
+    //--------------------------------------------------------------------------
+
+    switch (field)
+    {
+
+        case GxB_DESCRIPTOR_CHUNK :         // same as GxB_CHUNK
+
+            desc->chunk = value ;
+            break ;
+
+        default : 
+
+            GB_ERROR (GrB_INVALID_VALUE, "invalid descriptor field\n", 0) ;
+    }
+
+    return (GrB_SUCCESS) ;
+}
+
+
+//------------------------------------------------------------------------------
+// GxB_Desc_set: based on va_arg
+//------------------------------------------------------------------------------
 
 GrB_Info GxB_Desc_set           // set a parameter in a descriptor
 (
@@ -167,7 +348,7 @@ GrB_Info GxB_Desc_set           // set a parameter in a descriptor
             }
             break ;
 
-        case GxB_SORT :
+        case GxB_SORT : 
 
             {
                 va_start (ap, field) ;

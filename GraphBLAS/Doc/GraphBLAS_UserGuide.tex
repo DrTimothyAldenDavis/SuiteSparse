@@ -15488,6 +15488,20 @@ GraphBLAS folder.
 
 \begin{itemize}
 
+\item Version 7.4.0 (Dec 23, 2022)
+
+    \begin{itemize}
+    \item add non-\verb'va_arg' methods: \verb'va_arg'-based \verb'GxB_get/set'
+        methods are ANSI C11 but cause issues for cffi in Python.  As a
+        temporary workaround, new methods have been added that do not use
+        \verb'va_arg'.  The existing \verb'GxB_get/set' methods are not
+        changed.  The new methods are not in the user guide, since all of the
+        \verb'GxB_get/set' methods will be superceded with \verb'GrB_get/set'
+        in the v2.1 C API.  At that point, all \verb'GxB_get/set' methods will
+        become historical (kept, not deprecated, but removed from the user
+        guide).
+    \end{itemize}
+
 \item Version 7.3.3 (Dec 9, 2022)
 
     \begin{itemize}

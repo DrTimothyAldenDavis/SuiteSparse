@@ -1,3 +1,7 @@
+Dec 23, 2022: SuiteSparse 6.0.3
+
+    * GraphBLAS v7.4.0:  added non-va_arg get/set methods.
+
 Dec 9, 2022: SuiteSparse 6.0.2
 
     * minor change to build system for nearly all packages: (except CSparse,
