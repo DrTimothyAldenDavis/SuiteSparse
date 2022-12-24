@@ -10,10 +10,10 @@
 #include "SuiteSparse_config.h"
 
 //------------------------------------------------------------------------------
-// importing/exporting symbols on Windows
+// importing/exporting symbols for Microsoft Visual Studio
 //------------------------------------------------------------------------------
 
-#if defined ( _WIN32 )
+#if SUITESPARSE_COMPILER_MSC
 
     // dllimport/dllexport on Windows
     #if defined ( LDL_LIBRARY )
@@ -29,7 +29,7 @@
 
 #else
 
-    // for other platforms
+    // for other compilers
     #define LDL_PUBLIC extern
 
 #endif

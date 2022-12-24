@@ -34,10 +34,10 @@ extern "C" {
 #include "amd.h"
 
 //------------------------------------------------------------------------------
-// importing/exporting symbols on Windows
+// importing/exporting symbols for Microsoft Visual Studio
 //------------------------------------------------------------------------------
 
-#if defined ( _WIN32 )
+#if SUITESPARSE_COMPILER_MSC
 
     // dllimport/dllexport on Windows
     #if defined ( UMFPACK_LIBRARY )
@@ -47,14 +47,13 @@ extern "C" {
         // compiling static library, no dllimport or dllexport
         #define UMFPACK_PUBLIC extern
     #else
-#error "NO DEFINES"
         // compiling the user application, importing symbols from SuiteSparse
         #define UMFPACK_PUBLIC extern __declspec ( dllimport )
     #endif
 
 #else
 
-    // for other platforms
+    // for other compilers
     #define UMFPACK_PUBLIC extern
 
 #endif

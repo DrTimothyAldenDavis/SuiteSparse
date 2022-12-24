@@ -43,10 +43,10 @@ extern "C" {
 #include "SuiteSparse_config.h"
 
 //------------------------------------------------------------------------------
-// importing/exporting symbols on Windows
+// importing/exporting symbols for Microsoft Visual Studio
 //------------------------------------------------------------------------------
 
-#if defined ( _WIN32 )
+#if SUITESPARSE_COMPILER_MSC
 
     // dllimport/dllexport on Windows
     #if defined ( AMD_LIBRARY )
@@ -62,7 +62,7 @@ extern "C" {
 
 #else
 
-    // for other platforms
+    // for other compilers
     #define AMD_PUBLIC extern
 
 #endif

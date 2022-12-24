@@ -11,7 +11,7 @@ C-----------------------------------------------------------------------
         SUBROUTINE AMD
      $          (N, PE, IW, LEN, IWLEN, PFREE, NV, NEXT,
      $          LAST, HEAD, ELEN, DEGREE, NCMPA, W)
-#ifdef AMD_LIBRARY
+#if defined ( _MSC_VER ) && defined ( AMD_LIBRARY )
 !DEC$ ATTRIBUTES DLLEXPORT :: AMD
 !GCC$ ATTRIBUTES DLLEXPORT :: AMD
 #endif
