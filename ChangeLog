@@ -1,3 +1,8 @@
+Dec 23, 2022: SuiteSparse 6.0.3
+
+    * GraphBLAS v7.4.0:  added non-va_arg get/set methods.
+    * Mongoose v3.0.3:  change in build for test coverage
+
 Dec 9, 2022: SuiteSparse 6.0.2
 
     * minor change to build system for nearly all packages: (except CSparse,

@@ -1,3 +1,14 @@
+Version 7.4.0, Dec 23, 2022
+
+    * added non-va_arg methods: va_arg-based GxB_get/set methods are ANSI C11
+        but cause issues for cffi in Python.  As a temporary workaround, new
+        methods have been added that do not use va_arg.  The existing
+        GxB_get/set methods are not changed.  The new methods are not in the
+        user guide, since all of the GxB_get/set methods will be superceded
+        with GrB_get/set in the v2.1 C API.  At that point, all GxB_get/set
+        methods will become historical (kept, not deprecated, but removed from
+        the user guide).
+
 Version 7.3.3, Dec 9, 2022
 
     * minor change to build system

@@ -46,11 +46,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Dec 9, 2022")
+set(Mongoose_DATE "Dec 23, 2022")
 set(Mongoose_NUMERIC_DATE "2022-12-09")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 2)
+set(Mongoose_VERSION_PATCH 3)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -213,7 +213,7 @@ endif ()
 
 #-------------------------------------------------------------------------------
 
-# Build the Mongoose library and all tests with coverage flags
+# Build the Mongoose debug/test library
 add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
 set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
@@ -305,14 +305,28 @@ target_link_libraries(mongoose_unit_test_edgesep mongoose_lib_dbg)
 set_target_properties(mongoose_unit_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 add_test(Unit_Test_EdgeSep ./tests/mongoose_unit_test_edgesep)
 
+if ( $ENV{MONGOOSE_COVERAGE} )
+    set ( COV on )
+else ( )
+    set ( COV off )
+endif ( )
+
+option ( MONGOOSE_COVERAGE "OFF: do not compile debug library with test coverage.  ON: debug with test coverage" ${COV} )
+message ( STATUS "test coverage for debug library: ${MONGOOSE_COVERAGE}" )
+
 message(STATUS "CMAKE_CXX_COMPILER: " ${BoldBlue} ${CMAKE_CXX_COMPILER_ID} ${ColourReset})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # using Clang
     SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
     # Debug flags for Clang
-    SET(CMAKE_CXX_FLAGS_DEBUG "--coverage -g -fwrapv")
-    SET(CMAKE_C_FLAGS_DEBUG "--coverage -g")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "--coverage -g")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g -fwrapv")
+    SET(CMAKE_C_FLAGS_DEBUG "-g")
+    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
+    if ( MONGOOSE_COVERAGE )
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" ) 
+        SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} --coverage" )
+        SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} --coverage" )
+    endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using GCC
     SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
@@ -322,9 +336,14 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
         message(WARNING "${BoldRed} WARNING:${ColourReset} Your compiler does not support the C++11 ISO standard. Future versions of Mongoose will require a compiler with C++11 support. We recommend you upgrade to at least GCC 4.6.")
     endif ()
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -fprofile-arcs -ftest-coverage")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-fprofile-arcs -ftest-coverage")
+    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
+    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W ")
+    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
+    if ( MONGOOSE_COVERAGE )
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" ) 
+        SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
+        SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
+    endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # using Intel C++
     SET(CMAKE_CXX_FLAGS "-O3 -no-prec-div -xHOST -ipo -fwrapv")
