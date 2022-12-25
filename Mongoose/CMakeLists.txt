@@ -46,11 +46,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Dec 9, 2022")
+set(Mongoose_DATE "Dec 23, 2022")
 set(Mongoose_NUMERIC_DATE "2022-12-09")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 2)
+set(Mongoose_VERSION_PATCH 3)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
