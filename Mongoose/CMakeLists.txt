@@ -178,7 +178,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Build the Mongoose library
-add_library(mongoose_lib ${MONGOOSE_LIB_FILES})
+add_library(mongoose_lib STATIC ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_lib
         PROPERTIES OUTPUT_NAME mongoose)
@@ -217,7 +217,7 @@ endif ()
 #-------------------------------------------------------------------------------
 
 # Build the Mongoose debug/test library
-add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
+add_library(mongoose_lib_dbg STATIC ${MONGOOSE_LIB_FILES})
 set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
 
