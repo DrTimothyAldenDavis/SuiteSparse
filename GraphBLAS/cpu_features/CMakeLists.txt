@@ -177,6 +177,7 @@ if(BUILD_TESTING)
     configure_file(
       cmake/googletest.CMakeLists.txt.in
       googletest-download/CMakeLists.txt
+      NEWLINE_STYLE LF
     )
 
     execute_process(

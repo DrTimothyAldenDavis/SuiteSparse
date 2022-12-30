@@ -60,7 +60,9 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in" "${PROJECT_SOURCE_DIR}/Include/SuiteSparse_GPURuntime.hpp")
+configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in"
+    "${PROJECT_SOURCE_DIR}/Include/SuiteSparse_GPURuntime.hpp"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 

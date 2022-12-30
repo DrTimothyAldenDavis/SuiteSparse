@@ -49,7 +49,9 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # Configure cs.h with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cs.h.in" "${PROJECT_SOURCE_DIR}/Include/cs.h" )
+configure_file ( "Config/cs.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/cs.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

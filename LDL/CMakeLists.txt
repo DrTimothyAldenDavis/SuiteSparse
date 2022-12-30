@@ -52,9 +52,11 @@ find_package ( AMD 3.0.2 REQUIRED )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/ldl.h.in"
-                 "${PROJECT_SOURCE_DIR}/Include/ldl.h" )
+    "${PROJECT_SOURCE_DIR}/Include/ldl.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/ldl_version.tex.in"
-                 "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

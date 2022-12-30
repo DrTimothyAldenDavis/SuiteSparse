@@ -63,14 +63,17 @@ include ( GNUInstallDirs )
 configure_file (
         "Version/Mongoose_Version.hpp.in"
         "${PROJECT_SOURCE_DIR}/Include/Mongoose_Version.hpp"
+        NEWLINE_STYLE LF
 )
 configure_file (
         "Version/title-info.tex.in"
         "${PROJECT_SOURCE_DIR}/Doc/title-info.tex"
+        NEWLINE_STYLE LF
 )
 configure_file (
         "Version/codemeta.json.in"
         "${PROJECT_SOURCE_DIR}/codemeta.json"
+        NEWLINE_STYLE LF
 )
 
 find_package ( SuiteSparse_config 6.0.2 REQUIRED )

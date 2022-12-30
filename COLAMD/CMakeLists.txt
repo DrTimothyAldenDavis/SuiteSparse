@@ -49,7 +49,9 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/colamd.h.in" "${PROJECT_SOURCE_DIR}/Include/colamd.h" )
+configure_file ( "Config/colamd.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/colamd.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

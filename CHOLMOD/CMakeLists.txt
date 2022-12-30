@@ -257,8 +257,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
-configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
+configure_file ( "Config/cholmod.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/cholmod.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/cholmod_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

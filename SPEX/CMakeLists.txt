@@ -56,8 +56,12 @@ find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/SPEX.h.in" "${PROJECT_SOURCE_DIR}/Include/SPEX.h")
-configure_file ( "Config/SPEX_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/SPEX_version.tex")
+configure_file ( "Config/SPEX.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/SPEX.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/SPEX_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/SPEX_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

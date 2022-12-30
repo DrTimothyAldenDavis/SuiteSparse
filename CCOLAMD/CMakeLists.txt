@@ -50,7 +50,8 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/ccolamd.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/ccolamd.h" )
+    "${PROJECT_SOURCE_DIR}/Include/ccolamd.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

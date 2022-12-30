@@ -159,11 +159,18 @@ endif ( )
 # Configure Include/GraphBLAS.h and documentation with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/GraphBLAS.h.in" "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h" )
-configure_file ( "Config/GraphBLAS_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex" )
+configure_file ( "Config/GraphBLAS.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/GraphBLAS_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/GraphBLAS_API_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex" )
-configure_file ( "Config/README.md.in" "${PROJECT_SOURCE_DIR}/README.md" )
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/README.md.in"
+    "${PROJECT_SOURCE_DIR}/README.md"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories for both graphblas and graphblasdemo libraries
