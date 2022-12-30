@@ -1,3 +1,9 @@
+Dec 29, 2022: SuiteSparse 6.0.4
+
+    * NFORTRAN: option added to disable Fortran entirely
+    * GraphBLAS v7.4.1:  global free pool disabled, and GrB_mxm heuristics
+        revised.
+
 Dec 23, 2022: SuiteSparse 6.0.3
 
     * GraphBLAS v7.4.0:  added non-va_arg get/set methods.

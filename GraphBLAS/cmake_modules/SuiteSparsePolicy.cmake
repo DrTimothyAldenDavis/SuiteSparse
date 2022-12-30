@@ -64,6 +64,14 @@
 #                       compiler.  Defaults to "(name,NAME) name##_" otherwise.
 #                       This setting is only used if no Fortran compiler is
 #                       found.
+#
+#   NFORTRAN:           if true, no Fortan files are compiled, and the Fortran
+#                       language is not enabled in any cmake scripts.  The
+#                       built-in cmake script FortranCInterface is skipped.
+#                       This will require SUITESPARSE_C_TO_FORTRAN to be defined
+#                       explicitly, if the defaults are not appropriate for your
+#                       system.
+#                       Default: false
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -165,17 +173,25 @@ message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
-# check if Fortran is available
+# check if Fortran is available and enabled
 #-------------------------------------------------------------------------------
 
 include ( CheckLanguage )
-check_language ( Fortran )
-if ( CMAKE_Fortran_COMPILER )
-    enable_language ( Fortran )
-    message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
-else()
-    message ( STATUS "Fortran: not available")
-endif()
+
+option ( NFORTRAN "ON: do not try to use Fortran. OFF (default): try Fortran" off )
+if ( NFORTRAN )
+    message ( STATUS "Fortran: not enabled" )
+else ( )
+    check_language ( Fortran )
+    if ( CMAKE_Fortran_COMPILER )
+        enable_language ( Fortran )
+        message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
+    else ( )
+        # Fortran not available:
+        set ( NFORTRAN true )
+        message ( STATUS "Fortran: not available" )
+    endif ( )
+endif ( )
 
 # default C-to-Fortran name mangling if Fortran compiler not found
 if ( MSVC )

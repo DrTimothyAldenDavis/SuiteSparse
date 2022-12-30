@@ -15488,6 +15488,16 @@ GraphBLAS folder.
 
 \begin{itemize}
 
+\item Version 7.4.1 (Dec 29, 2022)
+
+    \begin{itemize}
+    \item global free pool: disabled.  Benefit for single-thread user
+        applications was modest, and it causes too much contention in a
+        critical section when the user application is multi-threaded.
+    \item \verb'GrB_mxm': revised task creation heuristics for
+        sparse-times-sparse for better performance.
+    \end{itemize}
+
 \item Version 7.4.0 (Dec 23, 2022)
 
     \begin{itemize}

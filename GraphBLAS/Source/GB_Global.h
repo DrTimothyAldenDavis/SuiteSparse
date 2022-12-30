@@ -128,7 +128,7 @@ GB_PUBLIC void    *GB_Global_free_pool_get (int k) ;
 GB_PUBLIC bool     GB_Global_free_pool_put (void *p, int k) ;
 GB_PUBLIC void     GB_Global_free_pool_dump (int pr) ;
 GB_PUBLIC int64_t  GB_Global_free_pool_limit_get (int k) ;
-GB_PUBLIC void     GB_Global_free_pool_limit_set (int k, int64_t nblocks) ;
+GB_PUBLIC void     GB_Global_free_pool_limit_set (int64_t *limit) ;
 GB_PUBLIC int64_t  GB_Global_free_pool_nblocks_total (void) ;
 
 typedef int (* GB_flush_function_t) (void) ;

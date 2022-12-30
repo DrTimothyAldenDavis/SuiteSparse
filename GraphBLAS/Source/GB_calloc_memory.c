@@ -29,9 +29,10 @@ static inline void *GB_calloc_helper
     // determine the next higher power of 2
     size_t size_requested = (*size) ;
     (*size) = GB_IMAX (*size, 8) ;
-    int k = GB_CEIL_LOG2 (*size) ;
 
+#if 0
     // if available, get the block from the pool
+    int k = GB_CEIL_LOG2 (*size) ;
     if (GB_Global_free_pool_limit_get (k) > 0)
     { 
         // round up the size to the nearest power of two
@@ -43,6 +44,7 @@ static inline void *GB_calloc_helper
     }
 
     if (p == NULL)
+#endif
     {
         // no block in the free_pool, so allocate it
         p = GB_Global_malloc_function (*size) ;
