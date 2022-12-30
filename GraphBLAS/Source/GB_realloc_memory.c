@@ -113,9 +113,9 @@ void *GB_realloc_memory     // pointer to reallocated block of memory, or
 
     void *pnew = NULL ;
     size_t newsize_allocated = GB_IMAX (newsize, 8) ;
-    int k = GB_CEIL_LOG2 (newsize_allocated) ;
-    if (!GB_Global_have_realloc_function ( ) ||
-        (GB_Global_free_pool_limit_get (k) > 0))
+//  int k = GB_CEIL_LOG2 (newsize_allocated) ;
+    if (!GB_Global_have_realloc_function ( ) /* ||
+        (GB_Global_free_pool_limit_get (k) > 0) */)
     {
 
         //----------------------------------------------------------------------

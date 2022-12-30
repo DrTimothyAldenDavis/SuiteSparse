@@ -16,10 +16,10 @@
 # https://www.intel.com/content/www/us/en/developer/tools/oneapi/onemkl.htm
 
 cmake_minimum_required ( VERSION 3.22 )
-if ( CMAKE_Fortran_COMPILER )
+if ( NOT NFORTRAN )
     include ( FortranCInterface )
 else ( )
-    # No Fortran compiler available, configuration is not automatic.
+    # No Fortran compiler available or enabled, configuration is not automatic.
     set ( FortranCInterface_GLOBAL_MACRO  ${SUITESPARSE_C_TO_FORTRAN} )
     set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
 endif ( )

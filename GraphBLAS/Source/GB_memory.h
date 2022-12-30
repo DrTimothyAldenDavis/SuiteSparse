@@ -19,7 +19,8 @@ void GB_memoryUsage         // count # allocated blocks and their sizes
     int64_t *nallocs,       // # of allocated memory blocks
     size_t *mem_deep,       // # of bytes in blocks owned by this matrix
     size_t *mem_shallow,    // # of bytes in blocks owned by another matrix
-    const GrB_Matrix A      // matrix to query
+    const GrB_Matrix A,     // matrix to query
+    bool count_hyper_hash   // if true, include A->Y
 ) ;
 
 GB_PUBLIC

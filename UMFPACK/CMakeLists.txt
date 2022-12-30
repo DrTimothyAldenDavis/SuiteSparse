@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Dec 9, 2022" )
+set ( UMFPACK_DATE "Dec 29, 2022" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 0 )
-set ( UMFPACK_VERSION_SUB   2 )
+set ( UMFPACK_VERSION_SUB   3 )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -237,11 +237,7 @@ if ( DEMO )
     add_executable ( umfpack_zi_demo "Demo/umfpack_zi_demo.c" )
     add_executable ( umfpack_zl_demo "Demo/umfpack_zl_demo.c" )
 
-    if ( NOT CMAKE_Fortran_COMPILER )
-        set ( FDEMO false )
-    endif ( )
-
-    if ( FDEMO )
+    if ( NOT NFORTRAN )
         # Fortran demos
         add_executable ( umf4            "Demo/umf4.c" )
         add_executable ( readhb          "Demo/readhb.f" )
@@ -261,7 +257,7 @@ if ( DEMO )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zl_demo PUBLIC umfpack )
-    if ( FDEMO )
+    if ( NOT NFORTRAN )
         # Fortran demos
         target_link_libraries ( umf4            PUBLIC umfpack )
         target_link_libraries ( umf4hb          PUBLIC umfpack )

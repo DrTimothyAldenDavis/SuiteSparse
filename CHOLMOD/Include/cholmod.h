@@ -97,10 +97,10 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "Dec 9, 2022"
+#define CHOLMOD_DATE "Dec 29, 2022"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    0
-#define CHOLMOD_SUBSUB_VERSION 2
+#define CHOLMOD_SUBSUB_VERSION 3
 
 /* make it easy for C++ programs to include CHOLMOD */
 #ifdef __cplusplus

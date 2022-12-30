@@ -1,3 +1,16 @@
+Version 7.4.1, Dec 26, 2022
+
+    * global free pool: disabled.  Benefit for single-thread user applications
+        was modest, and it causes too much contention in a critical section
+        when the user application is multi-threaded.
+    * GrB_mxm: revised task creation heuristics for sparse-times-sparse for
+        better performance.  "chunk" and "very_costly" had been tuned in v7.3.x
+        for sparse-times-dense but this slowed down sparse-times-sparse.  The
+        new heuristic keeps the chunk & very_costly parameters for
+        sparse-times-dense but restores the prior values for
+        sparse-times-sparse from v7.2.0 (Aug 8, 2022).  See
+        Source/GB_AxB_saxpy3_slice_balanced.c.
+
 Version 7.4.0, Dec 23, 2022
 
     * added non-va_arg methods: va_arg-based GxB_get/set methods are ANSI C11
