@@ -76,7 +76,8 @@ set_target_properties ( ldl PROPERTIES
     VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${LDL_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/ldl.h" )
+    PUBLIC_HEADER "Include/ldl.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static ldl library properties

@@ -108,7 +108,8 @@ set_target_properties ( umfpack PROPERTIES
     VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${UMFPACK_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/umfpack.h" )
+    PUBLIC_HEADER "Include/umfpack.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static umfpack library properties

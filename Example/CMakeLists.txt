@@ -107,7 +107,8 @@ set_target_properties ( my PROPERTIES
     VERSION ${MY_VERSION_MAJOR}.${MY_VERSION_MINOR}.${MY_VERSION_PATCH}
     C_STANDARD_REQUIRED 11
     SOVERSION ${MY_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/my.h" )
+    PUBLIC_HEADER "Include/my.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # my static library properties

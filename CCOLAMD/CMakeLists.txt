@@ -71,7 +71,8 @@ set_target_properties ( ccolamd PROPERTIES
     VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CCOLAMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/ccolamd.h" )
+    PUBLIC_HEADER "Include/ccolamd.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static ccolamd library properties
