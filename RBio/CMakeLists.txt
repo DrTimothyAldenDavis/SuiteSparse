@@ -49,7 +49,9 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/RBio.h.in" "${PROJECT_SOURCE_DIR}/Include/RBio.h")
+configure_file ( "Config/RBio.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/RBio.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

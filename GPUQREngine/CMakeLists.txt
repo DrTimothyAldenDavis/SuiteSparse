@@ -91,7 +91,9 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/GPUQREngine.hpp.in" "${PROJECT_SOURCE_DIR}/Include/GPUQREngine.hpp")
+configure_file ( "Config/GPUQREngine.hpp.in"
+    "${PROJECT_SOURCE_DIR}/Include/GPUQREngine.hpp"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 

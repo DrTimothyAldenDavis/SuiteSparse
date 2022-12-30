@@ -63,8 +63,10 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/amd.h.in" "${PROJECT_SOURCE_DIR}/Include/amd.h")
-configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_version.tex")
+configure_file ( "Config/amd.h.in" "${PROJECT_SOURCE_DIR}/Include/amd.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

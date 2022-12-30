@@ -61,7 +61,8 @@ include ( SuiteSparseBLAS )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/SuiteSparse_config.h.in"
-    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h" )
+    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparseconfig library properties

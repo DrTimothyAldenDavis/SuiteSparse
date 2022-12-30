@@ -76,8 +76,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/klu.h.in" "${PROJECT_SOURCE_DIR}/Include/klu.h")
-configure_file ( "Config/klu_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex")
+configure_file ( "Config/klu.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/klu.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/klu_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

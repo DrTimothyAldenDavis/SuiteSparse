@@ -50,7 +50,8 @@ find_package ( SuiteSparse_config 6.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/btf.h.in" "${PROJECT_SOURCE_DIR}/Include/btf.h")
+configure_file ( "Config/btf.h.in" "${PROJECT_SOURCE_DIR}/Include/btf.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

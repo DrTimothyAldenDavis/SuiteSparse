@@ -82,9 +82,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/umfpack.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/umfpack.h" )
+    "${PROJECT_SOURCE_DIR}/Include/umfpack.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/umfpack_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/umfpack_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/umfpack_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

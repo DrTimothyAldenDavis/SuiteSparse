@@ -87,7 +87,9 @@ find_package ( MPFR 4.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/my.h.in" "${PROJECT_SOURCE_DIR}/Include/my.h")
+configure_file ( "Config/my.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/my.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories

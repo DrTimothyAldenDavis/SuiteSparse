@@ -98,9 +98,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/SuiteSparseQR_definitions.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/SuiteSparseQR_definitions.h" )
+    "${PROJECT_SOURCE_DIR}/Include/SuiteSparseQR_definitions.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/spqr_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/spqr_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/spqr_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
