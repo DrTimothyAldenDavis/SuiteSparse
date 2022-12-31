@@ -87,7 +87,7 @@ PRIVATE void zero_front (
 /* === UMF_extend_front ===================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_extend_front
+Int UMF_extend_front
 (
     NumericType *Numeric,
     WorkType *Work

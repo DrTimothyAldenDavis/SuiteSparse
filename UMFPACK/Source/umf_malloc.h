@@ -11,10 +11,10 @@
 #define _UMF_MALLOC
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
-GLOBAL Int UMF_malloc_count ;
+extern Int UMF_malloc_count ;
 #endif
 
-GLOBAL void *UMF_malloc
+void *UMF_malloc
 (
     Int n_objects,
     size_t size_of_object

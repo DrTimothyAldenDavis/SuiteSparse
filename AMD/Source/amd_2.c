@@ -39,7 +39,7 @@ static Int clear_flag (Int wflg, Int wbig, Int W [ ], Int n)
 /* === AMD_2 =============================================================== */
 /* ========================================================================= */
 
-GLOBAL void AMD_2
+void AMD_2
 (
     Int n,		/* A is n-by-n, where n > 0 */
     Int Pe [ ],		/* Pe [0..n-1]: index in Iw of row i on input */

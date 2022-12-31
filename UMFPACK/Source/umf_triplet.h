@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_triplet_map_x
+Int UMF_triplet_map_x
 (
     Int n_row,
     Int n_col,
@@ -32,7 +32,7 @@ GLOBAL Int UMF_triplet_map_x
     , Int Map2 [ ]
 ) ;
 
-GLOBAL Int UMF_triplet_map_nox
+Int UMF_triplet_map_nox
 (
     Int n_row,
     Int n_col,
@@ -49,7 +49,7 @@ GLOBAL Int UMF_triplet_map_nox
     , Int Map2 [ ]
 ) ;
 
-GLOBAL Int UMF_triplet_nomap_x
+Int UMF_triplet_nomap_x
 (
     Int n_row,
     Int n_col,
@@ -72,7 +72,7 @@ GLOBAL Int UMF_triplet_nomap_x
 #endif
 ) ;
 
-GLOBAL Int UMF_triplet_nomap_nox
+Int UMF_triplet_nomap_nox
 (
     Int n_row,
     Int n_col,

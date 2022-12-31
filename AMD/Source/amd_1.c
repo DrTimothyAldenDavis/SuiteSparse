@@ -26,7 +26,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL void AMD_1
+void AMD_1
 (
     Int n,		/* n > 0 */
     const Int Ap [ ],	/* input of size n+1, not modified */

@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_scale_column
+void UMF_scale_column
 (
     NumericType *Numeric,
     WorkType *Work

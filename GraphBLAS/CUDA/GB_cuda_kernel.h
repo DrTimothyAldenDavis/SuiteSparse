@@ -184,8 +184,6 @@
 #define GB_XSTR(x) GB_STR(x)
 #define GB_STR(x) #x
 
-#undef  GB_PUBLIC
-#define GB_PUBLIC extern
 #undef  GxB_MAX_NAME_LEN
 #define GxB_MAX_NAME_LEN 128
 

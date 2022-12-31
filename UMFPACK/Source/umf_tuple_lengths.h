@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_tuple_lengths
+Int UMF_tuple_lengths
 (
     NumericType *Numeric,
     WorkType *Work,

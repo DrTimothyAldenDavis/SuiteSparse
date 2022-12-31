@@ -23,7 +23,7 @@
 
 double CHOLMOD(hypot) (double x, double y)
 {
-    return (SuiteSparse_config.hypot_func (x, y)) ;
+    return (SuiteSparse_config_hypot (x, y)) ;
 }
 
 
@@ -43,7 +43,7 @@ double CHOLMOD(hypot) (double x, double y)
  *
  * c can be the same variable as a or b.
  *
- * Default value of the SuiteSparse_config.divcomplex_func pointer is
+ * Default value of the SuiteSparse_config divcomplex_func pointer is
  * SuiteSparse_divcomplex, located in SuiteSparse_config.c.
  */
 
@@ -54,7 +54,7 @@ int CHOLMOD(divcomplex)
     double *cr, double *ci	/* real and imaginary parts of c */
 )
 {
-    return (SuiteSparse_config.divcomplex_func (ar, ai, br, bi, cr, ci)) ;
+    return (SuiteSparse_config_divcomplex (ar, ai, br, bi, cr, ci)) ;
 }
 
 

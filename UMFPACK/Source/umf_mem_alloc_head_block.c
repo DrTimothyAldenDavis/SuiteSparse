@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_mem_alloc_head_block.h"
 
-GLOBAL Int UMF_mem_alloc_head_block
+Int UMF_mem_alloc_head_block
 (
     NumericType *Numeric,
     Int nunits

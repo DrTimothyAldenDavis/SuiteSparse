@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_utsolve.h"
 
-GLOBAL double
+double
 #ifdef CONJUGATE_SOLVE
 UMF_uhsolve			/* solve U'x=b  (complex conjugate transpose) */
 #else

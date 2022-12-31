@@ -12,7 +12,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL Int AMD_post_tree
+Int AMD_post_tree
 (
     Int root,			/* root of the tree */
     Int k,			/* start numbering at k */

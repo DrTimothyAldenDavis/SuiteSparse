@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_mem_alloc_element
+Int UMF_mem_alloc_element
 (
     NumericType *Numeric,
     Int nrows,

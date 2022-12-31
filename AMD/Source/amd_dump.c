@@ -18,7 +18,7 @@
 #ifndef NDEBUG
 
 /* This global variable is present only when debugging */
-GLOBAL Int AMD_debug = -999 ;		/* default is no debug printing */
+Int AMD_debug = -999 ;		/* default is no debug printing */
 
 /* ========================================================================= */
 /* === AMD_debug_init ====================================================== */
@@ -26,7 +26,7 @@ GLOBAL Int AMD_debug = -999 ;		/* default is no debug printing */
 
 /* Sets the debug print level, by reading the file debug.amd (if it exists) */
 
-GLOBAL void AMD_debug_init ( char *s )
+void AMD_debug_init ( char *s )
 {
     FILE *f ;
     f = fopen ("debug.amd", "r") ;
@@ -53,7 +53,7 @@ GLOBAL void AMD_debug_init ( char *s )
  * cannot be called when the hash buckets are non-empty.
  */
 
-GLOBAL void AMD_dump (
+void AMD_dump (
     Int n,	    /* A is n-by-n */
     Int Pe [ ],	    /* pe [0..n-1]: index in iw of start of row i */
     Int Iw [ ],	    /* workspace of size iwlen, iwlen [0..pfree-1]

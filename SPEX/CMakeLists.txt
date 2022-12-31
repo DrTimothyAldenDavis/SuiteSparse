@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SPEX_DATE "Dec 9, 2022" )
+set ( SPEX_DATE "Jan 1, 2023" )
 set ( SPEX_VERSION_MAJOR 2 )
 set ( SPEX_VERSION_MINOR 0 )
-set ( SPEX_VERSION_SUB   2 )
+set ( SPEX_VERSION_SUB   3 )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -46,9 +46,9 @@ project ( spex
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
 find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 
@@ -56,8 +56,12 @@ find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/SPEX.h.in" "${PROJECT_SOURCE_DIR}/Include/SPEX.h")
-configure_file ( "Config/SPEX_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/SPEX_version.tex")
+configure_file ( "Config/SPEX.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/SPEX.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/SPEX_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/SPEX_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -91,7 +95,8 @@ set_target_properties ( spex PROPERTIES
     VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${SPEX_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/SPEX.h" )
+    PUBLIC_HEADER "Include/SPEX.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static spex library properties

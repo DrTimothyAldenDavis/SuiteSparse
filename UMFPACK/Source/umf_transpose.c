@@ -21,7 +21,7 @@
 #include "umf_transpose.h"
 #include "umf_is_permutation.h"
 
-GLOBAL Int UMF_transpose
+Int UMF_transpose
 (
     Int n_row,			/* A is n_row-by-n_col */
     Int n_col,

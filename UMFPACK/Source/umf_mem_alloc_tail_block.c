@@ -16,7 +16,7 @@
 /* (requires nunits+1, for header). */
 /* Returns the index into Numeric->Memory if successful, or 0 on failure. */
 
-GLOBAL Int UMF_mem_alloc_tail_block
+Int UMF_mem_alloc_tail_block
 (
     NumericType *Numeric,
     Int nunits

@@ -44,7 +44,7 @@ PRIVATE int report_U
 /* === UMFPACK_report_numeric =============================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_report_numeric
+int UMFPACK_report_numeric
 (
     void *NumericHandle,
     const double Control [UMFPACK_CONTROL]

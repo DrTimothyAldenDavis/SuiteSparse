@@ -47,7 +47,7 @@
 #include "umf_internal.h"
 #include "umf_garbage_collection.h"
 
-GLOBAL void UMF_garbage_collection
+void UMF_garbage_collection
 (
     NumericType *Numeric,
     WorkType *Work,

@@ -31,7 +31,7 @@
 
 #include "camd_internal.h"
 
-GLOBAL int CAMD_valid
+int CAMD_valid
 (
     /* inputs, not modified on output: */
     Int n_row,		/* A is n_row-by-n_col */
@@ -88,7 +88,7 @@ GLOBAL int CAMD_valid
 }
 
 
-GLOBAL int CAMD_cvalid	/* return TRUE if the Constraint set is valid,
+int CAMD_cvalid	/* return TRUE if the Constraint set is valid,
 			 * FALSE otherwise */
 (
     /* inputs, not modified on output: */

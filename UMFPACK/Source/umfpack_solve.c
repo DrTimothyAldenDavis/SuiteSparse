@@ -39,7 +39,7 @@ PRIVATE Int init_count ;
 #endif
 #endif
 
-GLOBAL int
+int
 #ifdef WSOLVE
 UMFPACK_wsolve
 #else

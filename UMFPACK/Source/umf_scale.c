@@ -12,7 +12,7 @@
 #include "umf_internal.h"
 #include "umf_scale.h"
 
-GLOBAL void UMF_scale
+void UMF_scale
 (
     Int n,
     Entry pivot,

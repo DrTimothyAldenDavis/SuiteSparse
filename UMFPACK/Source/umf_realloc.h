@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void *UMF_realloc
+void *UMF_realloc
 (
     void *p,
     Int n_objects,

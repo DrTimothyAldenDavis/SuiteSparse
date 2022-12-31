@@ -15,12 +15,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-# date version must match ../CMakeLists.txt:
-# version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Dec 29, 2022" )
-set ( GraphBLAS_VERSION_MAJOR 7 )
-set ( GraphBLAS_VERSION_MINOR 4 )
-set ( GraphBLAS_VERSION_SUB   1 )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/../cmake_modules )
+
+include ( GraphBLAS_version )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
     ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
@@ -35,13 +33,6 @@ set ( GraphBLAS_API_VERSION_SUB   0 )
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
 
 set ( SUITESPARSE_SECOND_LEVEL true )
 include ( SuiteSparsePolicy )
@@ -126,8 +117,8 @@ else ( )
     message ( STATUS "CMAKE C Flags release:     " ${CMAKE_C_FLAGS_RELEASE} )
 endif ( )
 
-message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
+message ( STATUS "C compiler:                 ${CMAKE_C_COMPILER} ")
+message ( STATUS "CMAKE have OpenMP:          ${OPENMP_FOUND}" )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -233,7 +224,7 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( WIN32 )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )

@@ -46,8 +46,8 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Dec 23, 2022")
-set(Mongoose_NUMERIC_DATE "2022-12-09")
+set(Mongoose_DATE "Jan 1, 2023")
+set(Mongoose_NUMERIC_DATE "2023-01-01")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
 set(Mongoose_VERSION_PATCH 3)
@@ -63,17 +63,20 @@ include ( GNUInstallDirs )
 configure_file (
         "Version/Mongoose_Version.hpp.in"
         "${PROJECT_SOURCE_DIR}/Include/Mongoose_Version.hpp"
+        NEWLINE_STYLE LF
 )
 configure_file (
         "Version/title-info.tex.in"
         "${PROJECT_SOURCE_DIR}/Doc/title-info.tex"
+        NEWLINE_STYLE LF
 )
 configure_file (
         "Version/codemeta.json.in"
         "${PROJECT_SOURCE_DIR}/codemeta.json"
+        NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -175,7 +178,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 # Build the Mongoose library
-add_library(mongoose_lib ${MONGOOSE_LIB_FILES})
+add_library(mongoose_lib STATIC ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_lib
         PROPERTIES OUTPUT_NAME mongoose)
@@ -190,7 +193,8 @@ endif ()
 add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_dylib
-        PROPERTIES OUTPUT_NAME mongoose)
+        PROPERTIES OUTPUT_NAME mongoose
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
 
@@ -214,7 +218,7 @@ endif ()
 #-------------------------------------------------------------------------------
 
 # Build the Mongoose debug/test library
-add_library(mongoose_lib_dbg ${MONGOOSE_LIB_FILES})
+add_library(mongoose_lib_dbg STATIC ${MONGOOSE_LIB_FILES})
 set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
 

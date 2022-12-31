@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_is_permutation
+Int UMF_is_permutation
 (
     const Int P [ ],
     Int W [ ],

@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_free.h"
 
-GLOBAL void UMFPACK_free_numeric
+void UMFPACK_free_numeric
 (
     void **NumericHandle
 )

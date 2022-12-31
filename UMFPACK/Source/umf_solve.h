@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 
-GLOBAL Int UMF_solve
+Int UMF_solve
 (
     int sys,
     const Int Ap [ ],

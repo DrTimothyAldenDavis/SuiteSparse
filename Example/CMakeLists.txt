@@ -12,10 +12,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Dec 9, 2022" )
+set ( MY_DATE "Jan 1, 2022" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 2 )
-set ( MY_VERSION_PATCH 3 )
+set ( MY_VERSION_PATCH 4 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -54,27 +54,27 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( AMD 3.0.2 REQUIRED )
-find_package ( BTF 2.0.2 REQUIRED )
-find_package ( CAMD 3.0.2 REQUIRED )
-find_package ( CCOLAMD 3.0.2 REQUIRED )
-find_package ( CHOLMOD 4.0.2 REQUIRED )
-find_package ( CHOLMOD_CUDA 4.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( CXSparse 4.0.2 REQUIRED )
-find_package ( GPUQREngine 2.0.2 REQUIRED )
-find_package ( GraphBLAS 7.3.3 REQUIRED )
-find_package ( KLU 2.0.2 REQUIRED )
-find_package ( KLU_CHOLMOD 2.0.2 REQUIRED )
-find_package ( LDL 2.0.2 REQUIRED )
-find_package ( Mongoose 3.0.2 REQUIRED )
-find_package ( RBio 3.0.2 REQUIRED )
-find_package ( SPEX 2.0.2 REQUIRED )
-find_package ( SPQR 3.0.2 REQUIRED )
-find_package ( SPQR_CUDA 3.0.2 REQUIRED )
-find_package ( SuiteSparse_GPURuntime 2.0.2 REQUIRED )
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( UMFPACK 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
+find_package ( BTF 2.0.3 REQUIRED )
+find_package ( CAMD 3.0.3 REQUIRED )
+find_package ( CCOLAMD 3.0.3 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( CHOLMOD 4.0.3 REQUIRED )
+find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
+find_package ( CXSparse 4.0.3 REQUIRED )
+find_package ( GPUQREngine 2.0.3 REQUIRED )
+find_package ( GraphBLAS 7.4.1 REQUIRED )
+find_package ( KLU_CHOLMOD 2.0.3 REQUIRED )
+find_package ( KLU 2.0.3 REQUIRED )
+find_package ( LDL 2.0.3 REQUIRED )
+find_package ( Mongoose 3.0.3 REQUIRED )
+find_package ( RBio 3.0.3 REQUIRED )
+find_package ( SPEX 2.0.3 REQUIRED )
+find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
+find_package ( SPQR 3.0.3 REQUIRED )
+find_package ( SPQR_CUDA 3.0.3 REQUIRED )
+find_package ( UMFPACK 6.0.3 REQUIRED )
 
 # look for all external libaries:
 find_package ( OpenMP REQUIRED )
@@ -87,7 +87,9 @@ find_package ( MPFR 4.0.2 REQUIRED )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/my.h.in" "${PROJECT_SOURCE_DIR}/Include/my.h")
+configure_file ( "Config/my.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/my.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -105,7 +107,8 @@ set_target_properties ( my PROPERTIES
     VERSION ${MY_VERSION_MAJOR}.${MY_VERSION_MINOR}.${MY_VERSION_PATCH}
     C_STANDARD_REQUIRED 11
     SOVERSION ${MY_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/my.h" )
+    PUBLIC_HEADER "Include/my.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # my static library properties
@@ -133,7 +136,7 @@ set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
 include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( my PUBLIC m )
     target_link_libraries ( my_static PUBLIC m )
 endif ( )

@@ -18,7 +18,6 @@
 
 default: library
 
-# This version info must match ../CMakeLists.txt 
 VER1 = 7
 VER2 = 4
 VER3 = 1

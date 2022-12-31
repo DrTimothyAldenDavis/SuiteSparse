@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL void UMFPACK_report_status
+void UMFPACK_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status

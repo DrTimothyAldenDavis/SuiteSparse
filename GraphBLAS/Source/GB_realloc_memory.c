@@ -40,7 +40,6 @@
 
 #include "GB.h"
 
-GB_PUBLIC
 void *GB_realloc_memory     // pointer to reallocated block of memory, or
                             // to original block if the reallocation failed.
 (

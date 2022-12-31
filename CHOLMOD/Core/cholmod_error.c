@@ -46,37 +46,39 @@ int CHOLMOD(error)
 
 #ifndef NPRINT
 	/* print a warning or error message */
-	if (SuiteSparse_config.printf_func != NULL)
+        int (*printf_func) (const char *, ...) ;
+        printf_func = SuiteSparse_config_printf_func_get ( ) ;
+        if (printf_func != NULL)
 	{
 	    if (status > 0 && Common->print > 1)
 	    {
-                SuiteSparse_config.printf_func ("CHOLMOD warning:") ;
+                printf_func ("CHOLMOD warning:") ;
                 if (message != NULL)
                 {
-                    SuiteSparse_config.printf_func (" %s.", message) ;
+                    printf_func (" %s.", message) ;
                 }
                 if (file != NULL)
                 {
-                    SuiteSparse_config.printf_func (" file: %s", file) ;
-                    SuiteSparse_config.printf_func (" line: %d", line) ;
+                    printf_func (" file: %s", file) ;
+                    printf_func (" line: %d", line) ;
                 }
-                SuiteSparse_config.printf_func ("\n") ;
+                printf_func ("\n") ;
 		fflush (stdout) ;
 		fflush (stderr) ;
 	    }
 	    else if (Common->print > 0)
 	    {
-                SuiteSparse_config.printf_func ("CHOLMOD error:") ;
+                printf_func ("CHOLMOD error:") ;
                 if (message != NULL)
                 {
-                    SuiteSparse_config.printf_func (" %s.", message) ;
+                    printf_func (" %s.", message) ;
                 }
                 if (file != NULL)
                 {
-                    SuiteSparse_config.printf_func (" file: %s", file) ;
-                    SuiteSparse_config.printf_func (" line: %d", line) ;
+                    printf_func (" file: %s", file) ;
+                    printf_func (" line: %d", line) ;
                 }
-                SuiteSparse_config.printf_func ("\n") ;
+                printf_func ("\n") ;
 		fflush (stdout) ;
 		fflush (stderr) ;
 	    }

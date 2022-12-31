@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_usolve.h"
 
-GLOBAL double UMF_usolve
+double UMF_usolve
 (
     NumericType *Numeric,
     Entry X [ ],		/* b on input, solution x on output */

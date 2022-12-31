@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Dec 9, 2022" )
+set ( CAMD_DATE "Jan 1, 2022" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
-set ( CAMD_VERSION_SUB   2 )
+set ( CAMD_VERSION_SUB   3 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,14 +43,18 @@ project ( camd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/camd.h.in" "${PROJECT_SOURCE_DIR}/Include/camd.h" )
-configure_file ( "Config/camd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/camd_version.tex" )
+configure_file ( "Config/camd.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/camd.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/camd_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/camd_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -70,7 +74,8 @@ set_target_properties ( camd PROPERTIES
     VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CAMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/camd.h" )
+    PUBLIC_HEADER "Include/camd.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static camd library properties
@@ -96,7 +101,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( camd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )

@@ -30,7 +30,7 @@
 /* === UMFPACK_save_symbolic ================================================ */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_save_symbolic
+int UMFPACK_save_symbolic
 (
     void *SymbolicHandle,
     char *user_filename

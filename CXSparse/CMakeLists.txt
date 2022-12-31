@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Dec 9, 2022" )
+set ( CXSPARSE_DATE "Jan 1, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
-set ( CXSPARSE_VERSION_SUB   2 )
+set ( CXSPARSE_VERSION_SUB   3 )
 
 message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_MAJOR}.
@@ -43,13 +43,15 @@ project ( cxsparse
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cs.h.in" "${PROJECT_SOURCE_DIR}/Include/cs.h" )
+configure_file ( "Config/cs.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/cs.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -69,7 +71,8 @@ set_target_properties ( cxsparse PROPERTIES
     VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CXSPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cs.h" )
+    PUBLIC_HEADER "Include/cs.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static cxsparse library properties
@@ -95,7 +98,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cxsparse PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cxsparse_static PUBLIC m )

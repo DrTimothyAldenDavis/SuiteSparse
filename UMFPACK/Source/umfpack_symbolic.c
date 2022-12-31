@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL int UMFPACK_symbolic
+int UMFPACK_symbolic
 (
     Int n_row,
     Int n_col,

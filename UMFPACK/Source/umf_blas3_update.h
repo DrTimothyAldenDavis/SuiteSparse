@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_blas3_update
+void UMF_blas3_update
 (
     WorkType *Work
 ) ;

@@ -22,15 +22,15 @@
 
 #ifdef DO_MAP
 #ifdef DO_VALUES
-GLOBAL Int UMF_triplet_map_x
+Int UMF_triplet_map_x
 #else
-GLOBAL Int UMF_triplet_map_nox
+Int UMF_triplet_map_nox
 #endif
 #else
 #ifdef DO_VALUES
-GLOBAL Int UMF_triplet_nomap_x
+Int UMF_triplet_nomap_x
 #else
-GLOBAL Int UMF_triplet_nomap_nox
+Int UMF_triplet_nomap_nox
 #endif
 #endif
 (

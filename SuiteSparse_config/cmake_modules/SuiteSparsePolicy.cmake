@@ -83,6 +83,10 @@ cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
+if ( WIN32 )
+    set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
+endif ( )
+
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
 include ( GNUInstallDirs )

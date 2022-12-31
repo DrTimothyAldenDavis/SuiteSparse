@@ -739,9 +739,7 @@ typedef struct Colamd_Row_struct
 /* === Definitions ========================================================== */
 /* ========================================================================== */
 
-/* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL SUITESPARSE_PUBLIC
-#define PUBLIC SUITESPARSE_PUBLIC
+/* Routines are either user-callable or PRIVATE (not user-callable) */
 #define PRIVATE static 
 
 #define DENSE_DEGREE(alpha,n) \
@@ -1023,7 +1021,7 @@ static size_t t_mult (size_t a, size_t k, int *ok)
     ((t_mult (t_add (n_row, 1, ok), sizeof (Colamd_Row), ok) / sizeof (Int)))
 
 
-PUBLIC size_t COLAMD_recommended	/* returns recommended value of Alen. */
+size_t COLAMD_recommended	/* returns recommended value of Alen. */
 (
     /* === Parameters ======================================================= */
 
@@ -1077,7 +1075,7 @@ PUBLIC size_t COLAMD_recommended	/* returns recommended value of Alen. */
 
 */
 
-PUBLIC void COLAMD_set_defaults
+void COLAMD_set_defaults
 (
     /* === Parameters ======================================================= */
 
@@ -1106,7 +1104,7 @@ PUBLIC void COLAMD_set_defaults
 /* === symamd =============================================================== */
 /* ========================================================================== */
 
-PUBLIC int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
+int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -1426,7 +1424,7 @@ PUBLIC int SYMAMD_MAIN			/* return TRUE if OK, FALSE otherwise */
     (AQ)'(AQ) = LL' remains sparse.
 */
 
-PUBLIC int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
+int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
 (
     /* === Parameters ======================================================= */
 
@@ -1595,7 +1593,7 @@ PUBLIC int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
 /* === colamd_report ======================================================== */
 /* ========================================================================== */
 
-PUBLIC void COLAMD_report
+void COLAMD_report
 (
     Int stats [COLAMD_STATS]
 )
@@ -1608,7 +1606,7 @@ PUBLIC void COLAMD_report
 /* === symamd_report ======================================================== */
 /* ========================================================================== */
 
-PUBLIC void SYMAMD_report
+void SYMAMD_report
 (
     Int stats [COLAMD_STATS]
 )

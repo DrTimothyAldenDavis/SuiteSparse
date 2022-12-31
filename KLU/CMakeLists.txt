@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Dec 9, 2022" )
+set ( KLU_DATE "Jan 1, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
-set ( KLU_VERSION_SUB   2 )
+set ( KLU_VERSION_SUB   3 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -48,10 +48,10 @@ project ( klu
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( BTF 2.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( BTF 2.0.3 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
@@ -76,8 +76,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/klu.h.in" "${PROJECT_SOURCE_DIR}/Include/klu.h")
-configure_file ( "Config/klu_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex")
+configure_file ( "Config/klu.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/klu.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/klu_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -98,7 +102,8 @@ set_target_properties ( klu PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${KLU_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/klu.h" )
+    PUBLIC_HEADER "Include/klu.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static klu library properties
@@ -154,7 +159,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( klu PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC m )

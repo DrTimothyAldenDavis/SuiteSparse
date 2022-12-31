@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_valid_numeric
+Int UMF_valid_numeric
 (
     NumericType *Numeric
 ) ;

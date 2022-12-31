@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Dec 9, 2022" )
+set ( SUITESPARSE_GPURUNTIME_DATE "Jan 1, 2023" )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   2 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   3 )
 
 message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
@@ -54,13 +54,15 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in" "${PROJECT_SOURCE_DIR}/Include/SuiteSparse_GPURuntime.hpp")
+configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in"
+    "${PROJECT_SOURCE_DIR}/Include/SuiteSparse_GPURuntime.hpp"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 
@@ -91,7 +93,8 @@ set_target_properties ( suitesparse_gpuruntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp" )
+    PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( suitesparse_gpuruntime PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}

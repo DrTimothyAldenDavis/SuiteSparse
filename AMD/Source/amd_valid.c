@@ -35,7 +35,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL int AMD_valid
+int AMD_valid
 (
     /* inputs, not modified on output: */
     Int n_row,		/* A is n_row-by-n_col */

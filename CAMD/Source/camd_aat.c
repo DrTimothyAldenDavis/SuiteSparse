@@ -17,7 +17,7 @@
 
 #include "camd_internal.h"
 
-GLOBAL size_t CAMD_aat	/* returns nz in A+A' */
+size_t CAMD_aat	/* returns nz in A+A' */
 (
     Int n,
     const Int Ap [ ],

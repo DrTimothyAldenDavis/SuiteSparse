@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Dec 29, 2022" )
+set ( CHOLMOD_DATE "Jan 1, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
 set ( CHOLMOD_VERSION_SUB   3 )
@@ -75,9 +75,9 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # find CHOLMOD modules
@@ -179,8 +179,8 @@ find_package ( AMD 3.0.2 REQUIRED )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.2 )
-        find_package ( CCOLAMD 3.0.2 )
+        find_package ( CAMD 3.0.3 )
+        find_package ( CCOLAMD 3.0.3 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )
@@ -257,8 +257,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
-configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
+configure_file ( "Config/cholmod.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/cholmod.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/cholmod_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -282,7 +286,8 @@ set_target_properties ( cholmod PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cholmod.h" )
+    PUBLIC_HEADER "Include/cholmod.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
@@ -333,7 +338,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC m )

@@ -1,5 +1,5 @@
 
-UMFPACK V6.0 (Dec 9, 2022) demo: _di_ version
+UMFPACK V6.0 (Jan 1, 2023) demo: _di_ version
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.0.2 (Dec 9, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
-UMFPACK V6.0.2 (Dec 9, 2022), Control:
+UMFPACK V6.0.3 (Jan 1, 2023), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int32_t
 
@@ -45,11 +45,11 @@ UMFPACK V6.0.2 (Dec 9, 2022), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    8: BLAS library used:  Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
     POSIX C clock_getttime.
     compiled with CHOLMOD ordering options
-    computer/operating system: Linux
+    computer/operating system: Mac
     size of int32_t: 4 int64_t: 8 Int: 4 pointer: 8 double: 8 Entry: 8 (in bytes)
 
 
@@ -257,10 +257,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -332,12 +332,11 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.00
 
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.18e-16
+    sparse backward error omega1:                  5.55e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -346,7 +345,7 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.2 (Dec 9, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -357,12 +356,12 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.06581e-14
+maxnorm of residual: 1.77636e-15
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.2 (Dec 9, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
 determinant: (1.14) * 10^(2)
 
@@ -374,12 +373,12 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
     4 : (5)
     dense vector OK
 
-maxnorm of residual: 1.06581e-14
+maxnorm of residual: 1.77636e-15
 
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -451,7 +450,6 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.00
 
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
@@ -518,7 +516,7 @@ Numeric factorization of modified A: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                1
+    costly memory reallocations:                0
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        4
     number of entries stored in L (excl diag):  2
@@ -605,10 +603,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -678,7 +676,7 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     numerical values stored in Numeric object:     8
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    1
+    costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.17000e+02
@@ -699,7 +697,7 @@ x (with modified A): dense vector, n = 5.
     4 : (31.6667)
     dense vector OK
 
-maxnorm of residual: 7.10543e-15
+maxnorm of residual: 5.32907e-15
 
 changing A (0,0) from 2 to 2
 changing A (1,0) from 3 to 2
@@ -764,7 +762,7 @@ Numeric factorization of completely modified A: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                1
+    costly memory reallocations:                0
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        4
     number of entries stored in L (excl diag):  2
@@ -852,10 +850,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -925,13 +923,13 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    1
+    costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.19000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.04e-16
+    sparse backward error omega1:                  1.01e-16
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -946,7 +944,7 @@ x (with completely modified A): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 3.55271e-15
+maxnorm of residual: 3.33067e-15
 
 
 C (transpose of A): column-form matrix, n_row 5 n_col 5, nz = 12. 
@@ -1243,10 +1241,10 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1322,7 +1320,7 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  8.07e-17
+    sparse backward error omega1:                  5.05e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -1337,14 +1335,14 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 3.55271e-15
+maxnorm of residual: 3.33067e-15
 
 
 Solving C'x=b again, using umfpack_di_wsolve instead:
-UMFPACK V6.0.2 (Dec 9, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int32_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1420,7 +1418,7 @@ UMFPACK V6.0.2 (Dec 9, 2022), Info:
     solve flops:                                   1.11000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  8.07e-17
+    sparse backward error omega1:                  5.05e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -1435,7 +1433,7 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.619594)
     dense vector OK
 
-maxnorm of residual: 3.55271e-15
+maxnorm of residual: 3.33067e-15
 
 
 umfpack_di_demo complete.

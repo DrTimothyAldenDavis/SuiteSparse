@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 
-GLOBAL Int UMF_start_front
+Int UMF_start_front
 (
     Int chain,
     NumericType *Numeric,

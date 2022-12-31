@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_singletons
+Int UMF_singletons
 (
     Int n_row,
     Int n_col,

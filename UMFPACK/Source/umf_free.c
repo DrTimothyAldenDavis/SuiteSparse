@@ -20,7 +20,7 @@
 #include "umf_malloc.h"
 #endif
 
-GLOBAL void *UMF_free
+void *UMF_free
 (
     void *p
 )

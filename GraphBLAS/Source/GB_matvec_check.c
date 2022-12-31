@@ -20,7 +20,6 @@
 #include "GB.h"
 #include "GB_hash.h"
 
-GB_PUBLIC
 GrB_Info GB_matvec_check    // check a GraphBLAS matrix or vector
 (
     const GrB_Matrix A,     // GraphBLAS matrix to print and check

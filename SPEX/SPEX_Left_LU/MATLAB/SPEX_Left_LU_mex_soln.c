@@ -32,7 +32,7 @@ void mexFunction
         SPEX_MEX_OK (SPEX_initialize_expert
             (mxMalloc, mxCalloc, mxRealloc, mxFree)) ;
     }
-    SuiteSparse_config.printf_func = mexPrintf ;
+    SuiteSparse_config_printf_func_set ((void *) mexPrintf) ;
 
     //--------------------------------------------------------------------------
     // Check inputs

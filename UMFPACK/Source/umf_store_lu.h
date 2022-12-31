@@ -7,13 +7,13 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_store_lu
+Int UMF_store_lu
 (
     NumericType *Numeric,
     WorkType *Work
 ) ;
 
-GLOBAL Int UMF_store_lu_drop
+Int UMF_store_lu_drop
 (
     NumericType *Numeric,
     WorkType *Work

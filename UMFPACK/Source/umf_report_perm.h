@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_report_perm
+Int UMF_report_perm
 (
     Int n,
     const Int P [ ],

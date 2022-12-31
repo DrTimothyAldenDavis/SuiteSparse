@@ -15,7 +15,7 @@
 #include "umf_start_front.h"
 #include "umf_grow_front.h"
 
-GLOBAL Int UMF_start_front    /* returns TRUE if successful, FALSE otherwise */
+Int UMF_start_front    /* returns TRUE if successful, FALSE otherwise */
 (
     Int chain,
     NumericType *Numeric,

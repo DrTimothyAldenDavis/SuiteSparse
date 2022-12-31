@@ -60,7 +60,7 @@ PRIVATE void error
 /* === UMFPACK_numeric ====================================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_numeric
+int UMFPACK_numeric
 (
     const Int Ap [ ],
     const Int Ai [ ],

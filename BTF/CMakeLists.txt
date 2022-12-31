@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( BTF_DATE "Dec 9, 2022" )
+set ( BTF_DATE "Jan 1, 2023" )
 set ( BTF_VERSION_MAJOR 2 )
 set ( BTF_VERSION_MINOR 0 )
-set ( BTF_VERSION_SUB   2 )
+set ( BTF_VERSION_SUB   3 )
 
 message ( STATUS "Building BTF version: v"
     ${BTF_VERSION_MAJOR}.
@@ -44,13 +44,14 @@ project ( btf
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/btf.h.in" "${PROJECT_SOURCE_DIR}/Include/btf.h")
+configure_file ( "Config/btf.h.in" "${PROJECT_SOURCE_DIR}/Include/btf.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -70,7 +71,8 @@ set_target_properties ( btf PROPERTIES
     VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${BTF_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/btf.h" )
+    PUBLIC_HEADER "Include/btf.h" 
+    WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 #-------------------------------------------------------------------------------
 # static btf library properties
@@ -97,7 +99,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( btf PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( btf_static PUBLIC m )

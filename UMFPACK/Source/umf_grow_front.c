@@ -15,7 +15,7 @@
 #include "umf_mem_alloc_tail_block.h"
 #include "umf_get_memory.h"
 
-GLOBAL Int UMF_grow_front
+Int UMF_grow_front
 (
     NumericType *Numeric,
     Int fnr2,		/* desired size is fnr2-by-fnc2 */

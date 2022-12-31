@@ -15,7 +15,6 @@
 
 #include "GB.h"
 
-GB_PUBLIC
 void GB_dealloc_memory      // free memory, return to free_pool or free it
 (
     // input/output

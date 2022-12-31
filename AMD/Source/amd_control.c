@@ -15,7 +15,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL void AMD_control
+void AMD_control
 (
     double Control [ ]
 )

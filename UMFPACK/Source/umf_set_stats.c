@@ -19,7 +19,7 @@
 #include "umf_set_stats.h"
 #include "umf_symbolic_usage.h"
 
-GLOBAL void UMF_set_stats
+void UMF_set_stats
 (
     double Info [ ],
     SymbolicType *Symbolic,

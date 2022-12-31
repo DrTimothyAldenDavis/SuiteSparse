@@ -23,7 +23,7 @@
 #include "umf_mem_free_tail_block.h"
 #include "umf_realloc.h"
 
-GLOBAL Int UMF_get_memory
+Int UMF_get_memory
 (
     NumericType *Numeric,
     WorkType *Work,

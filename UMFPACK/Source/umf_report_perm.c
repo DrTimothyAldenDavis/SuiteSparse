@@ -12,7 +12,7 @@
 
 #define PRINTF4U(params) { if (user || prl >= 4) PRINTF (params) ; }
 
-GLOBAL Int UMF_report_perm
+Int UMF_report_perm
 (
     Int n,
     const Int P [ ],

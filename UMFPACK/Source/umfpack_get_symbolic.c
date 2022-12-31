@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_valid_symbolic.h"
 
-GLOBAL int UMFPACK_get_symbolic
+int UMFPACK_get_symbolic
 (
     Int *p_n_row,
     Int *p_n_col,
