@@ -97,7 +97,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cxsparse PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cxsparse_static PUBLIC m )

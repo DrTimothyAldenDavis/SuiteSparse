@@ -17,10 +17,10 @@
 
 cmake_minimum_required ( VERSION 3.13 )
 
-set ( CSPARSE_DATE "Nov 12, 2022" )
+set ( CSPARSE_DATE "Jan 1, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 )
 set ( CSPARSE_VERSION_MINOR 0 )
-set ( CSPARSE_VERSION_SUB   0 )
+set ( CSPARSE_VERSION_SUB   1 )
 
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
@@ -37,6 +37,10 @@ message ( STATUS "Build:         " ${CMAKE_BINARY_DIR} )
 cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
+
+if ( WIN32 )
+    set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
+endif ( )
 
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
@@ -104,10 +108,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( WIN32 )
     target_link_libraries ( csparse PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( csparse_static PUBLIC m )
+        target_link_libraries ( csparse_static PUBLIC m )
     endif ( )
 endif ( )
 

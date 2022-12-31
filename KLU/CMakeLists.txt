@@ -158,7 +158,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( klu PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC m )

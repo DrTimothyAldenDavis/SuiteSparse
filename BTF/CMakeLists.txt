@@ -98,7 +98,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( btf PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( btf_static PUBLIC m )

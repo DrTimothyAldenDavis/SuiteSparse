@@ -100,7 +100,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( camd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )

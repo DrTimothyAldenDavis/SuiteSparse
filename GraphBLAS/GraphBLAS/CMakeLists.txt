@@ -16,8 +16,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${CMAKE_SOURCE_DIR}/../cmake_modules )
 
 include ( GraphBLAS_version )
 
@@ -34,13 +33,6 @@ set ( GraphBLAS_API_VERSION_SUB   0 )
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../../SuiteSparse/SuiteSparse_config/cmake_modules
-    )
 
 set ( SUITESPARSE_SECOND_LEVEL true )
 include ( SuiteSparsePolicy )
@@ -232,7 +224,7 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( WIN32 )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )

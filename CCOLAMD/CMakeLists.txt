@@ -97,7 +97,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( ccolamd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( ccolamd_static PUBLIC m )

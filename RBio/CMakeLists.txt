@@ -98,7 +98,7 @@ target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( rbio PUBLIC m )
     if ( NOT NSTATIC )
     target_link_libraries ( rbio_static PUBLIC m )

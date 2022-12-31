@@ -135,7 +135,7 @@ set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
 include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( my PUBLIC m )
     target_link_libraries ( my_static PUBLIC m )
 endif ( )

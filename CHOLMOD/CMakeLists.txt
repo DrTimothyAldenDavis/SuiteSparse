@@ -337,7 +337,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC m )

@@ -148,7 +148,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( umfpack PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC m )
