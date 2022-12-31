@@ -412,7 +412,8 @@ int main (void)
     GxB_Matrix_fprint (E, "E (positional j)", GxB_COMPLETE, NULL) ;
 
     // do something invalid
-    info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
+//  info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
+    info = GrB_eWiseAdd (C, NULL, NULL, WildAdd, A, D, NULL) ;
     if (info != GrB_SUCCESS)
     {
         const char *s ;

@@ -2,6 +2,10 @@ SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
 All Rights Reserved.
 SPDX-License-Identifier: BSD-3-clause
 
+The version of SuiteSparse_config always matches the version of the SuiteSparse
+meta-package.  See the top-level SuiteSparse/ChangeLog for changes to this
+package.
+
 --------------------------------------------------------------------------------
 
 SuiteSparse_config contains configuration settings for all many of the software
@@ -17,8 +21,19 @@ Files in SuiteSparse_config:
     SuiteSparse_config.h        SuiteSparse-wide include file
                                 (created from Config/SuiteSparse_config.h)
 
-    build/      where SuiteSparse_config is compiled
+    build/                      where SuiteSparse_config is compiled
+
     Config/SuiteSparse_config.h.in      source for SuiteSparse_config.h
+    Config/README.md.in                 README.md for all of SuiteSparse
+
+    cmake_modules/FindSuiteSparse_config.cmake  how to find SuiteSparse_config
+    cmake_modules/SuiteSparseAtomic.cmake       determine if -latomic is needed
+    cmake_modules/SuiteSparseBLAS.cmake         find BLAS for SuiteSparse
+    cmake_modules/SuiteSparseBLAS32.cmake       when a 32-bit BLAS is found
+    cmake_modules/SuiteSparseBLAS64.cmake       when a 64-bit BLAS is found
+    cmake_modules/SuiteSparseLAPACK.cmake       find LAPACK for SuiteSparse
+    cmake_modules/SuiteSparsePolicy.cmake       SuiteSparse-wide policies
+    cmake_modules/SuiteSparseReport.cmake       SuiteSparse-wide reporting
 
 For packages that use cmake and require SuiteSparse_config, see:
 
