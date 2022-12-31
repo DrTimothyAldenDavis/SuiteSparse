@@ -129,7 +129,7 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0")  ;
 	p = NULL ;
     }
-    else if (n >= (SIZE_MAX / size) || n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || (Int) n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -241,7 +241,7 @@ void *CHOLMOD(calloc)	/* returns pointer to the newly calloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0") ;
 	p = NULL ;
     }
-    else if (n >= (SIZE_MAX / size) || n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || (Int) n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -329,7 +329,7 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	/* Nothing to do.  Do not change p or n. */
 	PRINT1 (("realloc nothing: %d %d\n", nnew, size)) ;
     }
-    else if (nnew >= (SIZE_MAX / size) || nnew >= Int_max)
+    else if (nnew >= (SIZE_MAX / size) || (Int) nnew >= Int_max)
     {
 	/* failure: nnew is too big.  Do not change p or n. */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

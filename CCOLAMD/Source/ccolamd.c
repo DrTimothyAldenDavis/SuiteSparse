@@ -1084,7 +1084,6 @@ size_t CCOLAMD_recommended	/* returns recommended value of Alen. */
     }
     s = ccolamd_need (nnz, n_row, n_col, &ok) ;	/* bare minimum needed */
     s = t_add (s, nnz/5, &ok) ;			/* extra elbow room */
-    ok = ok && (s < Int_MAX) ;
     return (ok ? s : 0) ;
 }
 
@@ -1644,7 +1643,7 @@ int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
     */
     need = ccolamd_need (nnz, n_row, n_col, &ok) ;
 
-    if (!ok || need > (size_t) Alen || need > Int_MAX)
+    if (!ok || need > (size_t) Alen)
     {
 	/* not enough space in array A to perform the ordering */
 	stats [CCOLAMD_STATUS] = CCOLAMD_ERROR_A_too_small ;

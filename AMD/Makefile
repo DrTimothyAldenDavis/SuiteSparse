@@ -58,18 +58,18 @@ all: library
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
 	./build/amd_demo > build/amd_demo.out
-	- diff Demo/amd_demo.out build/amd_demo.out
+	- diff --strip-trailing-cr Demo/amd_demo.out build/amd_demo.out
 	./build/amd_l_demo > build/amd_l_demo.out
-	- diff Demo/amd_l_demo.out build/amd_l_demo.out
+	- diff --strip-trailing-cr Demo/amd_l_demo.out build/amd_l_demo.out
 	./build/amd_demo2 > build/amd_demo2.out
-	- diff Demo/amd_demo2.out build/amd_demo2.out
+	- diff --strip-trailing-cr Demo/amd_demo2.out build/amd_demo2.out
 	./build/amd_simple > build/amd_simple.out
-	- diff Demo/amd_simple.out build/amd_simple.out
+	- diff --strip-trailing-cr Demo/amd_simple.out build/amd_simple.out
 	# Fortran demos will fail if no Fortran compiler is available
 	- ./build/amd_f77simple > build/amd_f77simple.out
-	- diff Demo/amd_f77simple.out build/amd_f77simple.out
+	- diff --strip-trailing-cr Demo/amd_f77simple.out build/amd_f77simple.out
 	- ./build/amd_f77demo > build/amd_f77demo.out
-	- diff Demo/amd_f77demo.out build/amd_f77demo.out
+	- diff --strip-trailing-cr Demo/amd_f77demo.out build/amd_f77demo.out
 
 # just compile after running cmake; do not run cmake again
 remake:

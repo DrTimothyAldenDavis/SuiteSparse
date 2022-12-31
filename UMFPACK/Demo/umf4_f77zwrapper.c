@@ -78,7 +78,7 @@ static void make_filename (Int filenum, char *prefix, char *filename)
 {
     char *psrc, *pdst ;
 #ifdef ZLONG
-    sprintf (filename, "%s%ld.umf", prefix, filenum) ;
+    sprintf (filename, "%s%"PRId64".umf", prefix, filenum) ;
 #else
     sprintf (filename, "%s%d.umf", prefix, filenum) ;
 #endif

@@ -343,7 +343,7 @@ int main (int argc, char **argv)
     {
 	if (row == Ai [p])
 	{
-	    printf ("\nchanging A (%ld,%ld) to zero\n", row, col) ;
+	    printf ("\nchanging A (%"PRId64",%"PRId64") to zero\n", row, col) ;
 	    Ax [p] = 0.0 ;
 	    Az [p] = 0.0 ;
 	    break ;
@@ -403,7 +403,7 @@ int main (int argc, char **argv)
 	    row = Ai [p] ;
 	    printf ("changing ") ;
 	    /* complex: */ printf ("real part of ") ;
-	    printf ("A (%ld,%ld) from %g", row, col, Ax [p]) ;
+	    printf ("A (%"PRId64",%"PRId64") from %g", row, col, Ax [p]) ;
 	    Ax [p] = Ax [p] + col*10 - row ;
 	    printf (" to %g\n", Ax [p]) ;
 	}
@@ -544,23 +544,26 @@ int main (int argc, char **argv)
 	error ("symbolic factorization invalid") ;
     }
 
-    printf ("From the Symbolic object, C is of dimension %ld-by-%ld\n", nr, nc);
-    printf ("   with nz = %ld, number of fronts = %ld,\n", nz, nfr) ;
-    printf ("   number of frontal matrix chains = %ld\n", nchains) ;
+
+    printf ("From the Symbolic object, "
+        "C is of dimension %"PRId64"-by-%"PRId64"\n", nr, nc);
+    printf ("   with nz = %"PRId64", number of fronts = %"PRId64",\n",
+        nz, nfr) ;
+    printf ("   number of frontal matrix chains = %"PRId64"\n", nchains) ;
 
     printf ("\nPivot columns in each front, and parent of each front:\n") ;
     k = 0 ;
     for (i = 0 ; i < nfr ; i++)
     {
 	fnpiv = Front_npivcol [i] ;
-	printf ("    Front %ld: parent front: %ld number of pivot cols: %ld\n",
+	printf ("    Front %"PRId64": parent front: %"PRId64
+                " number of pivot cols: %"PRId64"\n",
 		i, Front_parent [i], fnpiv) ;
 	for (j = 0 ; j < fnpiv ; j++)
 	{
 	    col = Qinit [k] ;
-	    printf (
-	    "        %ld-th pivot column is column %ld in original matrix\n",
-		k, col) ;
+	    printf ("        %"PRId64"-th pivot column is column %"PRId64
+                " in original matrix\n", k, col) ;
 	    k++ ;
 	}
     }
@@ -569,14 +572,16 @@ int main (int argc, char **argv)
     printf ("in the numeric factorization below.  The assignment of pivot\n") ;
     printf ("columns to frontal matrices will always remain unchanged.\n") ;
 
-    printf ("\nTotal number of pivot columns in frontal matrices: %ld\n", k) ;
+    printf ("\nTotal number of pivot columns in frontal matrices: %"PRId64"\n",
+        k) ;
 
     printf ("\nFrontal matrix chains:\n") ;
     for (j = 0 ; j < nchains ; j++)
     {
-	printf ("   Frontal matrices %ld to %ld are factorized in a single\n",
+	printf ("   Frontal matrices %"PRId64" to %"PRId64
+            " are factorized in a single\n",
 	    Chain_start [j], Chain_start [j+1] - 1) ;
-	printf ("        working array of size %ld-by-%ld\n",
+	printf ("        working array of size %"PRId64"-by-%"PRId64"\n",
 	    Chain_maxrows [j], Chain_maxcols [j]) ;
     }
 
@@ -645,7 +650,7 @@ int main (int argc, char **argv)
     {
 	printf ("divided by the ith scale factor\n") ;
     }
-    for (i = 0 ; i < n ; i++) printf ("%ld: %g\n", i, Rs [i]) ;
+    for (i = 0 ; i < n ; i++) printf ("%"PRId64": %g\n", i, Rs [i]) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert L to triplet form and print it */

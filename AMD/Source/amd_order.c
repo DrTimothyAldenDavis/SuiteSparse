@@ -157,7 +157,6 @@ int AMD_order
     }
     mem += slen ;
     ok = ok && (slen < SIZE_T_MAX / sizeof (Int)) ; /* check for overflow */
-    ok = ok && (slen < Int_MAX) ;	/* S[i] for Int i must be OK */
     if (ok)
     {
 	S = SuiteSparse_malloc (slen, sizeof (Int)) ;
