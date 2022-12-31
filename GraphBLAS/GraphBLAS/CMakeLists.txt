@@ -117,8 +117,8 @@ else ( )
     message ( STATUS "CMAKE C Flags release:     " ${CMAKE_C_FLAGS_RELEASE} )
 endif ( )
 
-message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
-message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
+message ( STATUS "C compiler:                 ${CMAKE_C_COMPILER} ")
+message ( STATUS "CMAKE have OpenMP:          ${OPENMP_FOUND}" )
 
 #-------------------------------------------------------------------------------
 # include directories

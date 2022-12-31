@@ -14935,7 +14935,7 @@ to use 32 parallel jobs and the \verb'gcc' compiler, do the following:
 If you do not have \verb'cmake', refer to Section~\ref{altmake}.
 
 %----------------------------------------
-\subsection{More details on the Mac}
+\subsection{More details on the Mac (Intel-based)}
 %----------------------------------------
 
 SuiteSparse:GraphBLAS requires OpenMP for its internal parallelism, but
@@ -15019,6 +15019,53 @@ Finally, you can run the tests to see if your installation works:
     \begin{verbatim}
     cd ../../test
     gbtest \end{verbatim} }
+
+%----------------------------------------
+\subsection{More details for MATLAB on the Mac (Apple Silicon based)}
+%----------------------------------------
+
+MATLAB on the Apple-Silicon-based Mac (M1, M2) is not yet a native ARM64
+application (as of R2022b).
+
+For MATLAB on the M1 Mac, you must compile the x86 version of
+\verb'libgraphblas_matlab.so'.  This requires the x86 version of \verb'brew'.
+First, install it in \verb'/usr/local/bin/brew' with these 2 commands (the 2nd
+as a single line).
+
+\begin{verbatim}
+arch -x86_64 zsh
+arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com
+    /Homebrew/install/master/install.sh)"
+\end{verbatim}
+
+If you install the default arm64 \verb'brew', it is located in
+\verb'/opt/homebrew/bin/brew'.  I created these two aliases in my \verb'.zshrc'
+file:
+
+\begin{verbatim}
+alias brew_arm='arch -arm64 /opt/homebrew/bin/brew'
+alias brew_x86='arch -x86_64 /usr/local/bin/brew'
+\end{verbatim}
+
+Next, use \verb'brew_86' to install \verb'gcc-12' and \verb'libomp'.
+
+\begin{verbatim}
+brew_x86 install gcc
+brew_x86 install libomp
+\end{verbatim}
+
+In the \verb'GraphBLAS/GraphBLAS' folder, do the following to compile
+\verb'libgraphblas_matlab.so':
+
+\begin{verbatim}
+make CC=/usr/local/bin/gcc-12 CXX=/usr/local/bin/g++-12 JOBS=8
+sudo make install
+\end{verbatim}
+
+Ignore the \verb'"-arch option ignored' warnings.
+
+You can now start MATLAB and install the MATLAB interface with
+\verb'gbmake' as described in the previous section.
 
 %----------------------------------------
 \subsection{On the ARM64 architecture}
