@@ -39,7 +39,8 @@ int main (int argc, char **argv)
     /* anorm = norm (A,1) ; */
     anorm = cholmod_l_norm_sparse (A, 1, cc) ;
 
-    printf ("Matrix %6ld-by-%-6ld nnz: %6ld ", m, n, cholmod_l_nnz (A, cc)) ;
+    printf ("Matrix %6" PRId64 "-by-%-6" PRId64 " nnz: %6" PRId64 " ",
+        m, n, cholmod_l_nnz (A, cc)) ;
 
     /* B = ones (m,1), a dense right-hand-side of the same type as A */
     B = cholmod_l_ones (m, 1, A->xtype, cc) ;
@@ -64,7 +65,7 @@ int main (int argc, char **argv)
         /* find the relative residual, except for least-squares systems */
         rnorm /= (anorm * xnorm) ;
     }
-    printf ("residual: %8.1e rank: %6ld\n", rnorm, rnk) ;
+    printf ("residual: %8.1e rank: %6" PRId64 "\n", rnorm, rnk) ;
 
     /* free everything */
     cholmod_l_free_dense (&Residual, cc) ;
