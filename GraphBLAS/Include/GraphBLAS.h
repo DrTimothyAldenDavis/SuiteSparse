@@ -707,31 +707,18 @@ GB_GLOBAL GrB_Type
 
 #if GxB_STDC_VERSION >= 201112L
 #define GB_CASES(p,prefix,func)                                         \
-        const bool       p : GB_CONCAT ( prefix, _, func, _BOOL   ),    \
               bool       p : GB_CONCAT ( prefix, _, func, _BOOL   ),    \
-        const int8_t     p : GB_CONCAT ( prefix, _, func, _INT8   ),    \
               int8_t     p : GB_CONCAT ( prefix, _, func, _INT8   ),    \
-        const int16_t    p : GB_CONCAT ( prefix, _, func, _INT16  ),    \
               int16_t    p : GB_CONCAT ( prefix, _, func, _INT16  ),    \
-        const int32_t    p : GB_CONCAT ( prefix, _, func, _INT32  ),    \
               int32_t    p : GB_CONCAT ( prefix, _, func, _INT32  ),    \
-        const int64_t    p : GB_CONCAT ( prefix, _, func, _INT64  ),    \
               int64_t    p : GB_CONCAT ( prefix, _, func, _INT64  ),    \
-        const uint8_t    p : GB_CONCAT ( prefix, _, func, _UINT8  ),    \
               uint8_t    p : GB_CONCAT ( prefix, _, func, _UINT8  ),    \
-        const uint16_t   p : GB_CONCAT ( prefix, _, func, _UINT16 ),    \
               uint16_t   p : GB_CONCAT ( prefix, _, func, _UINT16 ),    \
-        const uint32_t   p : GB_CONCAT ( prefix, _, func, _UINT32 ),    \
               uint32_t   p : GB_CONCAT ( prefix, _, func, _UINT32 ),    \
-        const uint64_t   p : GB_CONCAT ( prefix, _, func, _UINT64 ),    \
               uint64_t   p : GB_CONCAT ( prefix, _, func, _UINT64 ),    \
-        const float      p : GB_CONCAT ( prefix, _, func, _FP32   ),    \
               float      p : GB_CONCAT ( prefix, _, func, _FP32   ),    \
-        const double     p : GB_CONCAT ( prefix, _, func, _FP64   ),    \
               double     p : GB_CONCAT ( prefix, _, func, _FP64   ),    \
-        const GxB_FC32_t p : GB_CONCAT ( GxB   , _, func, _FC32   ),    \
               GxB_FC32_t p : GB_CONCAT ( GxB   , _, func, _FC32   ),    \
-        const GxB_FC64_t p : GB_CONCAT ( GxB   , _, func, _FC64   ),    \
               GxB_FC64_t p : GB_CONCAT ( GxB   , _, func, _FC64   ),    \
         const void       * : GB_CONCAT ( prefix, _, func, _UDT    ),    \
               void       * : GB_CONCAT ( prefix, _, func, _UDT    )
@@ -4597,6 +4584,7 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
     )                                                           \
     (arg1, __VA_ARGS__)
 
+// FIXME: remove const?
 #define GxB_get(arg1,...)                                       \
     _Generic                                                    \
     (                                                           \
@@ -4718,6 +4706,7 @@ GrB_Info GxB_Scalar_error       (const char **error, const GrB_Scalar     s) ;
 
 // GrB_error (error,object) polymorphic function:
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_error(error,object)                                 \
     _Generic                                                    \
     (                                                           \
@@ -4863,6 +4852,7 @@ GrB_Info GrB_Matrix_eWiseMult_BinaryOp       // C<Mask> = accum (C, A.*B)
 // type-generic function, GrB_eWiseMult:
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_eWiseMult(C,Mask,accum,op,A,B,desc)                              \
     _Generic                                                                 \
     (                                                                        \
@@ -4967,6 +4957,7 @@ GrB_Info GrB_Matrix_eWiseAdd_BinaryOp       // C<Mask> = accum (C, A+B)
 ) ;
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_eWiseAdd(C,Mask,accum,op,A,B,desc)                              \
     _Generic                                                                \
     (                                                                       \
@@ -5050,6 +5041,7 @@ GrB_Info GxB_Matrix_eWiseUnion      // C<M> = accum (C, A+B)
 ) ;
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GxB_eWiseUnion(C,Mask,accum,op,A,alpha,B,beta,desc)                 \
     _Generic                                                                \
     (                                                                       \
@@ -5153,6 +5145,7 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
 // GrB_Matrix_extract (C,Mask,acc,A,I,ni,J,nj,d) // C<Mask> = acc (C, A(I,J))
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_extract(arg1,Mask,accum,arg4,...) \
     _Generic                                                    \
     (                                                           \
@@ -5657,6 +5650,7 @@ GrB_Info GxB_Matrix_subassign_Scalar   // C(I,J)<Mask> = accum (C(I,J),x)
 // GxB_Matrix_subassign_T (C,M,acc,x,I,ni,J,nj,d) // C(I,J)<M>  = acc(C(I,J),x)
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GxB_subassign(arg1,Mask,accum,arg4,arg5,...)                    \
     _Generic                                                            \
     (                                                                   \
@@ -6145,6 +6139,7 @@ GrB_Info GrB_Matrix_assign_Scalar   // C<Mask>(I,J) = accum (C(I,J),x)
 // GrB_Matrix_assign   (C,M,acc,A,I,ni,J,nj,d) // C<M>(I,J)  = acc(C(I,J),A)
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_assign(arg1,Mask,accum,arg4,arg5,...)                       \
     _Generic                                                            \
     (                                                                   \
@@ -7314,6 +7309,7 @@ GrB_Info GrB_Matrix_apply_IndexOp_UDT       // C<M>=accum(C,op(A))
 
 #if GxB_STDC_VERSION >= 201112L
 
+// FIXME: remove const?
 #define GB_BIND(kind,x,y,...)                                                \
     _Generic                                                                 \
     (                                                                        \
@@ -8132,6 +8128,7 @@ GrB_Info GrB_Matrix_reduce_BinaryOp_Scalar
 // GrB_Matrix_reduce_BinaryOp_Scalar (s,acc,op,A,d)     // s = acc (s,reduce(A))
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GB_REDUCE_TO_SCALAR(kind,c,op)                                         \
     _Generic                                                                   \
     (                                                                          \
@@ -8228,6 +8225,7 @@ GrB_Info GrB_Matrix_kronecker_Semiring  // C<M> = accum (C, kron(A,B))
 ) ;
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GrB_kronecker(C,Mask,accum,op,A,B,desc)                     \
     _Generic                                                        \
     (                                                               \
@@ -9379,6 +9377,7 @@ GrB_Info GxB_Scalar_fprint          // print and check a GrB_Scalar
 ) ;
 
 #if GxB_STDC_VERSION >= 201112L
+// FIXME: remove const?
 #define GxB_fprint(object,pr,f)                                 \
     _Generic                                                    \
     (                                                           \
