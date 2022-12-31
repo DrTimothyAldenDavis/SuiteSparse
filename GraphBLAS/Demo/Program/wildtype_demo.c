@@ -420,6 +420,10 @@ int main (void)
         printf ("\nThis is supposed to fail, as a demo of GrB_error:\n%s\n", s);
     }
 
+    // try GxB_get
+    GxB_get (GxB_MODE, &mode) ;
+    printf ("mode: %d\n", (int) mode) ;
+
     // free everyting
     GrB_Matrix_free (&C) ;
     GrB_Matrix_free (&A) ;
