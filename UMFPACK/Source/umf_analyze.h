@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_analyze
+Int UMF_analyze
 (
     Int n_row,		/* A is n_row-by-n_col */
     Int n_col,

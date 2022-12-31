@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_apply_order.h"
 
-GLOBAL void UMF_apply_order
+void UMF_apply_order
 (
     Int Front [ ],	    /* of size nn on input, size nfr on output */
     const Int Order [ ],    /* Order [i] = k, i in the range 0..nn-1,

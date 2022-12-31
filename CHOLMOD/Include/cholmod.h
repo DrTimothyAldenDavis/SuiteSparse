@@ -97,7 +97,7 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "Dec 29, 2022"
+#define CHOLMOD_DATE "Jan 1, 2023"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    0
 #define CHOLMOD_SUBSUB_VERSION 3
@@ -729,7 +729,7 @@ typedef struct cholmod_common_struct
     int print ;		/* print level. Default: 3 */
     int precise ;	/* if TRUE, print 16 digits.  Otherwise print 5 */
 
-    /* CHOLMOD print_function replaced with SuiteSparse_config.print_func */
+    /* CHOLMOD print_function replaced with SuiteSparse_config print_func */
 
     int try_catch ;	/* if TRUE, then ignore errors; CHOLMOD is in the middle
 			 * of a try/catch block.  No error message is printed
@@ -1234,39 +1234,33 @@ typedef struct cholmod_common_struct
 /* cholmod_start:  first call to CHOLMOD */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_start
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_start (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_finish:  last call to CHOLMOD */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_finish
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_finish (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_defaults:  restore default parameters */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_defaults
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_defaults (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -1287,7 +1281,6 @@ size_t cholmod_l_maxrank (size_t, cholmod_common *) ;
 /* cholmod_allocate_work:  allocate workspace in Common */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_allocate_work
 (
     /* ---- input ---- */
@@ -1298,20 +1291,17 @@ int cholmod_allocate_work
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_allocate_work (size_t, size_t, size_t, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_free_work:  free workspace in Common */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_free_work
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_free_work (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -1329,20 +1319,17 @@ int cholmod_l_free_work (cholmod_common *) ;
     } \
 }
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_clear_flag
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_clear_flag (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_error:  called when CHOLMOD encounters an error */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_error
 (
     /* ---- input ---- */
@@ -1354,14 +1341,12 @@ int cholmod_error
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_error (int, const char *, int, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_dbound:  for internal use in CHOLMOD only */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 double cholmod_dbound	/* returns modified diagonal entry of D or L */
 (
     /* ---- input ---- */
@@ -1370,28 +1355,24 @@ double cholmod_dbound	/* returns modified diagonal entry of D or L */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 double cholmod_l_dbound (double, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_hypot:  compute sqrt (x*x + y*y) accurately */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 double cholmod_hypot
 (
     /* ---- input ---- */
     double x, double y
 ) ;
 
-SUITESPARSE_PUBLIC
 double cholmod_l_hypot (double, double) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_divcomplex:  complex division, c = a/b */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_divcomplex		/* return 1 if divide-by-zero, 0 otherise */
 (
     /* ---- input ---- */
@@ -1401,7 +1382,6 @@ int cholmod_divcomplex		/* return 1 if divide-by-zero, 0 otherise */
     double *cr, double *ci	/* real and imaginary parts of c */
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_divcomplex (double, double, double, double, double *, double *) ;
 
 
@@ -1470,11 +1450,9 @@ typedef struct cholmod_descendant_score_t
 descendantScore ;
 
 /* For sorting descendant supernodes with qsort */
-SUITESPARSE_PUBLIC
 int cholmod_score_comp (struct cholmod_descendant_score_t *i,
 			struct cholmod_descendant_score_t *j) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
 			  struct cholmod_descendant_score_t *j) ;
 
@@ -1482,7 +1460,6 @@ int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
 /* cholmod_allocate_sparse:  allocate a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_allocate_sparse
 (
     /* ---- input ---- */
@@ -1497,7 +1474,6 @@ cholmod_sparse *cholmod_allocate_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_allocate_sparse (size_t, size_t, size_t, int, int,
     int, int, cholmod_common *) ;
 
@@ -1505,7 +1481,6 @@ cholmod_sparse *cholmod_l_allocate_sparse (size_t, size_t, size_t, int, int,
 /* cholmod_free_sparse:  free a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_free_sparse
 (
     /* ---- in/out --- */
@@ -1514,14 +1489,12 @@ int cholmod_free_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_free_sparse (cholmod_sparse **, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_reallocate_sparse:  change the size (# entries) of sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_reallocate_sparse
 (
     /* ---- input ---- */
@@ -1532,14 +1505,12 @@ int cholmod_reallocate_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_reallocate_sparse ( size_t, cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_nnz:  return number of nonzeros in a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_nnz
 (
     /* ---- input ---- */
@@ -1548,14 +1519,12 @@ int64_t cholmod_nnz
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_nnz (cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_speye:  sparse identity matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_speye
 (
     /* ---- input ---- */
@@ -1566,14 +1535,12 @@ cholmod_sparse *cholmod_speye
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_speye (size_t, size_t, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_spzeros:  sparse zero matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_spzeros
 (
     /* ---- input ---- */
@@ -1585,7 +1552,6 @@ cholmod_sparse *cholmod_spzeros
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_spzeros (size_t, size_t, size_t, int,
     cholmod_common *) ;
 
@@ -1598,7 +1564,6 @@ cholmod_sparse *cholmod_l_spzeros (size_t, size_t, size_t, int,
  * (A').
  */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_transpose
 (
     /* ---- input ---- */
@@ -1608,7 +1573,6 @@ cholmod_sparse *cholmod_transpose
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_transpose (cholmod_sparse *, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -1618,7 +1582,6 @@ cholmod_sparse *cholmod_l_transpose (cholmod_sparse *, int, cholmod_common *) ;
 /* Compute F = A', A (:,f)', or A (p,f)', where A is unsymmetric and F is
  * already allocated.  See cholmod_transpose for a simpler routine. */
 
-SUITESPARSE_PUBLIC
 int cholmod_transpose_unsym
 (
     /* ---- input ---- */
@@ -1633,7 +1596,6 @@ int cholmod_transpose_unsym
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_transpose_unsym (cholmod_sparse *, int, int64_t *,
     int64_t *, size_t, cholmod_sparse *, cholmod_common *) ;
 
@@ -1644,7 +1606,6 @@ int cholmod_l_transpose_unsym (cholmod_sparse *, int, int64_t *,
 /* Compute F = A' or A (p,p)', where A is symmetric and F is already allocated.
  * See cholmod_transpose for a simpler routine. */
 
-SUITESPARSE_PUBLIC
 int cholmod_transpose_sym
 (
     /* ---- input ---- */
@@ -1657,7 +1618,6 @@ int cholmod_transpose_sym
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_transpose_sym (cholmod_sparse *, int, int64_t *,
     cholmod_sparse *, cholmod_common *) ;
 
@@ -1668,7 +1628,6 @@ int cholmod_l_transpose_sym (cholmod_sparse *, int, int64_t *,
 /* Return A' or A(p,p)' if A is symmetric.  Return A', A(:,f)', or A(p,f)' if
  * A is unsymmetric. */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_ptranspose
 (
     /* ---- input ---- */
@@ -1681,7 +1640,6 @@ cholmod_sparse *cholmod_ptranspose
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_ptranspose (cholmod_sparse *, int, int64_t *,
     int64_t *, size_t, cholmod_common *) ;
 
@@ -1689,7 +1647,6 @@ cholmod_sparse *cholmod_l_ptranspose (cholmod_sparse *, int, int64_t *,
 /* cholmod_sort:  sort row indices in each column of sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_sort
 (
     /* ---- in/out --- */
@@ -1698,14 +1655,12 @@ int cholmod_sort
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_sort (cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_band:  C = tril (triu (A,k1), k2) */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_band
 (
     /* ---- input ---- */
@@ -1717,7 +1672,6 @@ cholmod_sparse *cholmod_band
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_band (cholmod_sparse *, int64_t,
     int64_t, int, cholmod_common *) ;
 
@@ -1725,7 +1679,6 @@ cholmod_sparse *cholmod_l_band (cholmod_sparse *, int64_t,
 /* cholmod_band_inplace:  A = tril (triu (A,k1), k2) */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_band_inplace
 (
     /* ---- input ---- */
@@ -1738,7 +1691,6 @@ int cholmod_band_inplace
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_band_inplace (int64_t, int64_t, int,
     cholmod_sparse *, cholmod_common *) ;
 
@@ -1746,7 +1698,6 @@ int cholmod_l_band_inplace (int64_t, int64_t, int,
 /* cholmod_aat:  C = A*A' or A(:,f)*A(:,f)' */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_aat
 (
     /* ---- input ---- */
@@ -1760,7 +1711,6 @@ cholmod_sparse *cholmod_aat
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_aat (cholmod_sparse *, int64_t *, size_t,
     int, cholmod_common *) ;
 
@@ -1768,7 +1718,6 @@ cholmod_sparse *cholmod_l_aat (cholmod_sparse *, int64_t *, size_t,
 /* cholmod_copy_sparse:  C = A, create an exact copy of a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_copy_sparse
 (
     /* ---- input ---- */
@@ -1777,14 +1726,12 @@ cholmod_sparse *cholmod_copy_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_copy_sparse (cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_copy:  C = A, with possible change of stype */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_copy
 (
     /* ---- input ---- */
@@ -1795,14 +1742,12 @@ cholmod_sparse *cholmod_copy
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_copy (cholmod_sparse *, int, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_add: C = alpha*A + beta*B */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_add
 (
     /* ---- input ---- */
@@ -1816,7 +1761,6 @@ cholmod_sparse *cholmod_add
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
     double *, int, int, cholmod_common *) ;
 
@@ -1824,7 +1768,6 @@ cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
 /* cholmod_sparse_xtype: change the xtype of a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_sparse_xtype
 (
     /* ---- input ---- */
@@ -1835,7 +1778,6 @@ int cholmod_sparse_xtype
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_sparse_xtype (int, cholmod_sparse *, cholmod_common *) ;
 
 
@@ -1978,7 +1920,6 @@ typedef struct cholmod_factor_struct
 /* cholmod_allocate_factor: allocate a factor (symbolic LL' or LDL') */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_allocate_factor
 (
     /* ---- input ---- */
@@ -1987,14 +1928,12 @@ cholmod_factor *cholmod_allocate_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_l_allocate_factor (size_t, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_free_factor:  free a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_free_factor
 (
     /* ---- in/out --- */
@@ -2003,14 +1942,12 @@ int cholmod_free_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_free_factor (cholmod_factor **, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_reallocate_factor:  change the # entries in a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_reallocate_factor
 (
     /* ---- input ---- */
@@ -2021,14 +1958,12 @@ int cholmod_reallocate_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_reallocate_factor (size_t, cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_change_factor:  change the type of factor (e.g., LDL' to LL') */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_change_factor
 (
     /* ---- input ---- */
@@ -2043,7 +1978,6 @@ int cholmod_change_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_change_factor ( int, int, int, int, int, cholmod_factor *,
     cholmod_common *) ;
 
@@ -2055,7 +1989,6 @@ int cholmod_l_change_factor ( int, int, int, int, int, cholmod_factor *,
  * it can pack the columns of a factor even if they are not stored in their
  * natural order (non-monotonic). */
 
-SUITESPARSE_PUBLIC
 int cholmod_pack_factor
 (
     /* ---- in/out --- */
@@ -2064,14 +1997,12 @@ int cholmod_pack_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_pack_factor (cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_reallocate_column:  resize a single column of a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_reallocate_column
 (
     /* ---- input ---- */
@@ -2083,7 +2014,6 @@ int cholmod_reallocate_column
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_reallocate_column (size_t, size_t, cholmod_factor *,
     cholmod_common *) ;
 
@@ -2093,7 +2023,6 @@ int cholmod_l_reallocate_column (size_t, size_t, cholmod_factor *,
 
 /* Only operates on numeric factors, not symbolic ones */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_factor_to_sparse
 (
     /* ---- in/out --- */
@@ -2102,7 +2031,6 @@ cholmod_sparse *cholmod_factor_to_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_factor_to_sparse (cholmod_factor *,
 	cholmod_common *) ;
 
@@ -2110,7 +2038,6 @@ cholmod_sparse *cholmod_l_factor_to_sparse (cholmod_factor *,
 /* cholmod_copy_factor:  create a copy of a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_copy_factor
 (
     /* ---- input ---- */
@@ -2119,14 +2046,12 @@ cholmod_factor *cholmod_copy_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_l_copy_factor (cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_factor_xtype: change the xtype of a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_factor_xtype
 (
     /* ---- input ---- */
@@ -2137,7 +2062,6 @@ int cholmod_factor_xtype
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_factor_xtype (int, cholmod_factor *, cholmod_common *) ;
 
 
@@ -2166,7 +2090,6 @@ typedef struct cholmod_dense_struct
 /* cholmod_allocate_dense:  allocate a dense matrix (contents uninitialized) */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_allocate_dense
 (
     /* ---- input ---- */
@@ -2178,7 +2101,6 @@ cholmod_dense *cholmod_allocate_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_allocate_dense (size_t, size_t, size_t, int,
     cholmod_common *) ;
 
@@ -2186,7 +2108,6 @@ cholmod_dense *cholmod_l_allocate_dense (size_t, size_t, size_t, int,
 /* cholmod_zeros: allocate a dense matrix and set it to zero */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_zeros
 (
     /* ---- input ---- */
@@ -2197,14 +2118,12 @@ cholmod_dense *cholmod_zeros
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_zeros (size_t, size_t, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_ones: allocate a dense matrix and set it to all ones */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_ones
 (
     /* ---- input ---- */
@@ -2215,14 +2134,12 @@ cholmod_dense *cholmod_ones
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_ones (size_t, size_t, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_eye: allocate a dense matrix and set it to the identity matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_eye
 (
     /* ---- input ---- */
@@ -2233,14 +2150,12 @@ cholmod_dense *cholmod_eye
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_eye (size_t, size_t, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_free_dense:  free a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_free_dense
 (
     /* ---- in/out --- */
@@ -2249,14 +2164,12 @@ int cholmod_free_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_free_dense (cholmod_dense **, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_ensure_dense:  ensure a dense matrix has a given size and type */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_ensure_dense
 (
     /* ---- input/output ---- */
@@ -2270,7 +2183,6 @@ cholmod_dense *cholmod_ensure_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_ensure_dense (cholmod_dense **, size_t, size_t, size_t,
     int, cholmod_common *) ;
 
@@ -2278,7 +2190,6 @@ cholmod_dense *cholmod_l_ensure_dense (cholmod_dense **, size_t, size_t, size_t,
 /* cholmod_sparse_to_dense:  create a dense matrix copy of a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_sparse_to_dense
 (
     /* ---- input ---- */
@@ -2287,7 +2198,6 @@ cholmod_dense *cholmod_sparse_to_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_sparse_to_dense (cholmod_sparse *,
     cholmod_common *) ;
 
@@ -2295,7 +2205,6 @@ cholmod_dense *cholmod_l_sparse_to_dense (cholmod_sparse *,
 /* cholmod_dense_to_sparse:  create a sparse matrix copy of a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_dense_to_sparse
 (
     /* ---- input ---- */
@@ -2305,7 +2214,6 @@ cholmod_sparse *cholmod_dense_to_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_dense_to_sparse (cholmod_dense *, int,
     cholmod_common *) ;
 
@@ -2313,7 +2221,6 @@ cholmod_sparse *cholmod_l_dense_to_sparse (cholmod_dense *, int,
 /* cholmod_copy_dense:  create a copy of a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_copy_dense
 (
     /* ---- input ---- */
@@ -2322,14 +2229,12 @@ cholmod_dense *cholmod_copy_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_copy_dense (cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_copy_dense2:  copy a dense matrix (pre-allocated) */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_copy_dense2
 (
     /* ---- input ---- */
@@ -2340,14 +2245,12 @@ int cholmod_copy_dense2
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_copy_dense2 (cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_dense_xtype: change the xtype of a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_dense_xtype
 (
     /* ---- input ---- */
@@ -2358,7 +2261,6 @@ int cholmod_dense_xtype
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_dense_xtype (int, cholmod_dense *, cholmod_common *) ;
 
 
@@ -2435,7 +2337,6 @@ typedef struct cholmod_triplet_struct
 /* cholmod_allocate_triplet:  allocate a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_allocate_triplet
 (
     /* ---- input ---- */
@@ -2448,7 +2349,6 @@ cholmod_triplet *cholmod_allocate_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_l_allocate_triplet (size_t, size_t, size_t, int, int,
     cholmod_common *) ;
 
@@ -2456,7 +2356,6 @@ cholmod_triplet *cholmod_l_allocate_triplet (size_t, size_t, size_t, int, int,
 /* cholmod_free_triplet:  free a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_free_triplet
 (
     /* ---- in/out --- */
@@ -2465,14 +2364,12 @@ int cholmod_free_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_free_triplet (cholmod_triplet **, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_reallocate_triplet:  change the # of entries in a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_reallocate_triplet
 (
     /* ---- input ---- */
@@ -2483,14 +2380,12 @@ int cholmod_reallocate_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_reallocate_triplet (size_t, cholmod_triplet *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_sparse_to_triplet:  create a triplet matrix copy of a sparse matrix*/
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_sparse_to_triplet
 (
     /* ---- input ---- */
@@ -2499,7 +2394,6 @@ cholmod_triplet *cholmod_sparse_to_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_l_sparse_to_triplet (cholmod_sparse *,
     cholmod_common *) ;
 
@@ -2507,7 +2401,6 @@ cholmod_triplet *cholmod_l_sparse_to_triplet (cholmod_sparse *,
 /* cholmod_triplet_to_sparse:  create a sparse matrix copy of a triplet matrix*/
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_triplet_to_sparse
 (
     /* ---- input ---- */
@@ -2517,7 +2410,6 @@ cholmod_sparse *cholmod_triplet_to_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_triplet_to_sparse (cholmod_triplet *, size_t,
     cholmod_common *) ;
 
@@ -2525,7 +2417,6 @@ cholmod_sparse *cholmod_l_triplet_to_sparse (cholmod_triplet *, size_t,
 /* cholmod_copy_triplet:  create a copy of a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_copy_triplet
 (
     /* ---- input ---- */
@@ -2534,14 +2425,12 @@ cholmod_triplet *cholmod_copy_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_l_copy_triplet (cholmod_triplet *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_triplet_xtype: change the xtype of a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_triplet_xtype
 (
     /* ---- input ---- */
@@ -2552,7 +2441,6 @@ int cholmod_triplet_xtype
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_triplet_xtype (int, cholmod_triplet *, cholmod_common *) ;
 
 
@@ -2576,7 +2464,6 @@ int cholmod_l_triplet_xtype (int, cholmod_triplet *, cholmod_common *) ;
  * corrupted.
  */
 
-SUITESPARSE_PUBLIC
 void *cholmod_malloc	/* returns pointer to the newly malloc'd block */
 (
     /* ---- input ---- */
@@ -2586,10 +2473,8 @@ void *cholmod_malloc	/* returns pointer to the newly malloc'd block */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_l_malloc (size_t, size_t, cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_calloc	/* returns pointer to the newly calloc'd block */
 (
     /* ---- input ---- */
@@ -2599,10 +2484,8 @@ void *cholmod_calloc	/* returns pointer to the newly calloc'd block */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_l_calloc (size_t, size_t, cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_free	/* always returns NULL */
 (
     /* ---- input ---- */
@@ -2614,10 +2497,8 @@ void *cholmod_free	/* always returns NULL */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_l_free (size_t, size_t, void *, cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_realloc	/* returns pointer to reallocated block */
 (
     /* ---- input ---- */
@@ -2630,10 +2511,8 @@ void *cholmod_realloc	/* returns pointer to reallocated block */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_l_realloc (size_t, size_t, void *, size_t *, cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_realloc_multiple
 (
     /* ---- input ---- */
@@ -2651,7 +2530,6 @@ int cholmod_realloc_multiple
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
     void **, size_t *, cholmod_common *) ;
 
@@ -2659,7 +2537,6 @@ int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
 /* === version control ====================================================== */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC
 int cholmod_version     /* returns CHOLMOD_VERSION */
 (
     /* output, contents not defined on input.  Not used if NULL.
@@ -2670,7 +2547,6 @@ int cholmod_version     /* returns CHOLMOD_VERSION */
     int version [3]
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_version (int version [3]) ;
 
 /* Versions prior to 2.1.1 do not have the above function.  The following
@@ -2821,20 +2697,17 @@ int cholmod_l_version (int version [3]) ;
 /* cholmod_check_common:  check the Common object */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_common
 (
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_common (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_common:  print the Common object */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_common
 (
     /* ---- input ---- */
@@ -2843,23 +2716,19 @@ int cholmod_print_common
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_common (const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_gpu_stats:  print the GPU / CPU statistics */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_gpu_stats   (cholmod_common *) ;
-SUITESPARSE_PUBLIC
 int cholmod_l_gpu_stats (cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_sparse:  check a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_sparse
 (
     /* ---- input ---- */
@@ -2868,14 +2737,12 @@ int cholmod_check_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_sparse (cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_sparse */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_sparse
 (
     /* ---- input ---- */
@@ -2885,14 +2752,12 @@ int cholmod_print_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_sparse (cholmod_sparse *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_dense:  check a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_dense
 (
     /* ---- input ---- */
@@ -2901,14 +2766,12 @@ int cholmod_check_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_dense (cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_dense:  print a dense matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_dense
 (
     /* ---- input ---- */
@@ -2918,14 +2781,12 @@ int cholmod_print_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_dense (cholmod_dense *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_factor:  check a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_factor
 (
     /* ---- input ---- */
@@ -2934,14 +2795,12 @@ int cholmod_check_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_factor (cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_factor:  print a factor */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_factor
 (
     /* ---- input ---- */
@@ -2951,14 +2810,12 @@ int cholmod_print_factor
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_factor (cholmod_factor *, const char *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_triplet:  check a sparse matrix in triplet form */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_triplet
 (
     /* ---- input ---- */
@@ -2967,14 +2824,12 @@ int cholmod_check_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_triplet (cholmod_triplet *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_triplet:  print a triplet matrix */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_triplet
 (
     /* ---- input ---- */
@@ -2984,14 +2839,12 @@ int cholmod_print_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_triplet (cholmod_triplet *, const char *, cholmod_common *);
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_check_subset:  check a subset */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_subset
 (
     /* ---- input ---- */
@@ -3002,7 +2855,6 @@ int cholmod_check_subset
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_subset (int64_t *, int64_t, size_t,
     cholmod_common *) ;
 
@@ -3010,7 +2862,6 @@ int cholmod_l_check_subset (int64_t *, int64_t, size_t,
 /* cholmod_print_subset:  print a subset */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_subset
 (
     /* ---- input ---- */
@@ -3022,7 +2873,6 @@ int cholmod_print_subset
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_subset (int64_t *, int64_t, size_t,
     const char *, cholmod_common *) ;
 
@@ -3030,7 +2880,6 @@ int cholmod_l_print_subset (int64_t *, int64_t, size_t,
 /* cholmod_check_perm:  check a permutation */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_perm
 (
     /* ---- input ---- */
@@ -3041,14 +2890,12 @@ int cholmod_check_perm
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_perm (int64_t *, size_t, size_t, cholmod_common *);
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_perm:  print a permutation vector */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_perm
 (
     /* ---- input ---- */
@@ -3060,7 +2907,6 @@ int cholmod_print_perm
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_perm (int64_t *, size_t, size_t, const char *,
     cholmod_common *) ;
 
@@ -3068,7 +2914,6 @@ int cholmod_l_print_perm (int64_t *, size_t, size_t, const char *,
 /* cholmod_check_parent:  check an elimination tree */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_check_parent
 (
     /* ---- input ---- */
@@ -3078,14 +2923,12 @@ int cholmod_check_parent
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_check_parent (int64_t *, size_t, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_print_parent */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_print_parent
 (
     /* ---- input ---- */
@@ -3096,7 +2939,6 @@ int cholmod_print_parent
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_print_parent (int64_t *, size_t, const char *,
     cholmod_common *) ;
 
@@ -3104,7 +2946,6 @@ int cholmod_l_print_parent (int64_t *, size_t, const char *,
 /* cholmod_read_sparse: read a sparse matrix from a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_read_sparse
 (
     /* ---- input ---- */
@@ -3113,14 +2954,12 @@ cholmod_sparse *cholmod_read_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_read_sparse (FILE *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_read_triplet: read a triplet matrix from a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_read_triplet
 (
     /* ---- input ---- */
@@ -3129,14 +2968,12 @@ cholmod_triplet *cholmod_read_triplet
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_triplet *cholmod_l_read_triplet (FILE *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_read_dense: read a dense matrix from a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_read_dense
 (
     /* ---- input ---- */
@@ -3145,14 +2982,12 @@ cholmod_dense *cholmod_read_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_read_dense (FILE *, cholmod_common *) ; 
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_read_matrix: read a sparse or dense matrix from a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 void *cholmod_read_matrix
 (
     /* ---- input ---- */
@@ -3177,14 +3012,12 @@ void *cholmod_read_matrix
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 void *cholmod_l_read_matrix (FILE *, int, int *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_write_sparse: write a sparse matrix to a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_write_sparse
 (
     /* ---- input ---- */
@@ -3196,7 +3029,6 @@ int cholmod_write_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
     const char *c, cholmod_common *) ;
 
@@ -3204,7 +3036,6 @@ int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
 /* cholmod_write_dense: write a dense matrix to a file */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_write_dense
 (
     /* ---- input ---- */
@@ -3215,7 +3046,6 @@ int cholmod_write_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
     cholmod_common *) ;
 #endif
@@ -3281,7 +3111,6 @@ int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
 /* Orders and analyzes A, AA', PAP', or PAA'P' and returns a symbolic factor
  * that can later be passed to cholmod_factorize. */
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_analyze 
 (
     /* ---- input ---- */
@@ -3290,7 +3119,6 @@ cholmod_factor *cholmod_analyze
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_l_analyze (cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -3302,7 +3130,6 @@ cholmod_factor *cholmod_l_analyze (cholmod_sparse *, cholmod_common *) ;
  * F = A(:,fset) if fset is not NULL and A->stype is zero.
  * UserPerm is tried if non-NULL.  */
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_analyze_p
 (
     /* ---- input ---- */
@@ -3314,7 +3141,6 @@ cholmod_factor *cholmod_analyze_p
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, int64_t *,
     int64_t *, size_t, cholmod_common *) ;
 
@@ -3322,7 +3148,6 @@ cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, int64_t *,
 /* cholmod_analyze_p2:  analyze for sparse Cholesky or sparse QR */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_analyze_p2
 (
     /* ---- input ---- */
@@ -3337,7 +3162,6 @@ cholmod_factor *cholmod_analyze_p2
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_factor *cholmod_l_analyze_p2 (int, cholmod_sparse *, int64_t *,
     int64_t *, size_t, cholmod_common *) ;
 
@@ -3350,7 +3174,6 @@ cholmod_factor *cholmod_l_analyze_p2 (int, cholmod_sparse *, int64_t *,
  * routine a second time with another matrix.  A must have the same nonzero
  * pattern as that passed to cholmod_analyze. */
 
-SUITESPARSE_PUBLIC
 int cholmod_factorize 
 (
     /* ---- input ---- */
@@ -3361,7 +3184,6 @@ int cholmod_factorize
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_factorize (cholmod_sparse *, cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -3370,7 +3192,6 @@ int cholmod_l_factorize (cholmod_sparse *, cholmod_factor *, cholmod_common *) ;
 
 /* Same as cholmod_factorize, but with more options. */
 
-SUITESPARSE_PUBLIC
 int cholmod_factorize_p
 (
     /* ---- input ---- */
@@ -3384,7 +3205,6 @@ int cholmod_factorize_p
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *,
     size_t, cholmod_factor *, cholmod_common *) ;
 
@@ -3406,7 +3226,6 @@ int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *,
 #define CHOLMOD_P    7		/* permute x=Px */
 #define CHOLMOD_Pt   8		/* permute x=P'x */
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_solve	/* returns the solution X */
 (
     /* ---- input ---- */
@@ -3417,7 +3236,6 @@ cholmod_dense *cholmod_solve	/* returns the solution X */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
     cholmod_common *) ;
 
@@ -3425,7 +3243,6 @@ cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
 /* cholmod_solve2:  like cholmod_solve, but with reusable workspace */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_solve2     /* returns TRUE on success, FALSE on failure */
 (
     /* ---- input ---- */
@@ -3443,7 +3260,6 @@ int cholmod_solve2     /* returns TRUE on success, FALSE on failure */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_solve2 (int, cholmod_factor *, cholmod_dense *, cholmod_sparse *,
     cholmod_dense **, cholmod_sparse **, cholmod_dense **, cholmod_dense **,
     cholmod_common *) ;
@@ -3452,7 +3268,6 @@ int cholmod_l_solve2 (int, cholmod_factor *, cholmod_dense *, cholmod_sparse *,
 /* cholmod_spsolve:  solve a linear system with a sparse right-hand-side */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_spsolve
 (
     /* ---- input ---- */
@@ -3463,7 +3278,6 @@ cholmod_sparse *cholmod_spsolve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_spsolve (int, cholmod_factor *, cholmod_sparse *,
     cholmod_common *) ;
 
@@ -3471,7 +3285,6 @@ cholmod_sparse *cholmod_l_spsolve (int, cholmod_factor *, cholmod_sparse *,
 /* cholmod_etree: find the elimination tree of A or A'*A */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_etree
 (
     /* ---- input ---- */
@@ -3482,14 +3295,12 @@ int cholmod_etree
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_etree (cholmod_sparse *, int64_t *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_rowcolcounts: compute the row/column counts of L */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowcolcounts
 (
     /* ---- input ---- */
@@ -3512,7 +3323,6 @@ int cholmod_rowcolcounts
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowcolcounts (cholmod_sparse *, int64_t *, size_t,
     int64_t *, int64_t *, int64_t *,
     int64_t *, int64_t *, int64_t *,
@@ -3522,7 +3332,6 @@ int cholmod_l_rowcolcounts (cholmod_sparse *, int64_t *, size_t,
 /* cholmod_analyze_ordering:  analyze a fill-reducing ordering */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_analyze_ordering
 (
     /* ---- input ---- */
@@ -3542,7 +3351,6 @@ int cholmod_analyze_ordering
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_analyze_ordering (cholmod_sparse *, int, int64_t *,
     int64_t *, size_t, int64_t *, int64_t *, int64_t *, int64_t *, int64_t *,
     cholmod_common *) ;
@@ -3554,7 +3362,6 @@ int cholmod_l_analyze_ordering (cholmod_sparse *, int, int64_t *,
 /* Finds a permutation P to reduce fill-in in the factorization of P*A*P'
  * or P*A*A'P' */
 
-SUITESPARSE_PUBLIC
 int cholmod_amd
 (
     /* ---- input ---- */
@@ -3567,7 +3374,6 @@ int cholmod_amd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_amd (cholmod_sparse *, int64_t *, size_t,
     int64_t *, cholmod_common *) ;
 
@@ -3578,7 +3384,6 @@ int cholmod_l_amd (cholmod_sparse *, int64_t *, size_t,
 /* Finds a permutation P to reduce fill-in in the factorization of P*A*A'*P'.
  * Orders F*F' where F = A (:,fset) if fset is not NULL */
 
-SUITESPARSE_PUBLIC
 int cholmod_colamd
 (
     /* ---- input ---- */
@@ -3592,7 +3397,6 @@ int cholmod_colamd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_colamd (cholmod_sparse *, int64_t *, size_t, int,
     int64_t *, cholmod_common *) ;
 
@@ -3605,7 +3409,6 @@ int cholmod_l_colamd (cholmod_sparse *, int64_t *, size_t, int,
  * identity matrix.   Row k can only be factorized if all descendants of node
  * k in the elimination tree have been factorized. */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowfac
 (
     /* ---- input ---- */
@@ -3620,7 +3423,6 @@ int cholmod_rowfac
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double *, size_t,
     size_t, cholmod_factor *, cholmod_common *) ;
 
@@ -3631,7 +3433,6 @@ int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double *, size_t,
 /* cholmod_rowfac_mask is a version of cholmod_rowfac that is specific to
  * LPDASA.  It is unlikely to be needed by any other application. */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowfac_mask
 (
     /* ---- input ---- */
@@ -3648,12 +3449,10 @@ int cholmod_rowfac_mask
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double *, size_t,
     size_t, int64_t *, int64_t *, cholmod_factor *,
     cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_rowfac_mask2
 (
     /* ---- input ---- */
@@ -3671,7 +3470,6 @@ int cholmod_rowfac_mask2
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double *,
     size_t, size_t, int64_t *, int64_t, int64_t *,
     cholmod_factor *, cholmod_common *) ;
@@ -3683,7 +3481,6 @@ int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double *,
 /* Find the nonzero pattern of x for the system Lx=b where L = (0:k-1,0:k-1)
  * and b = kth column of A or A*A' (rows 0 to k-1 only) */
 
-SUITESPARSE_PUBLIC
 int cholmod_row_subtree
 (
     /* ---- input ---- */
@@ -3697,7 +3494,6 @@ int cholmod_row_subtree
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_row_subtree (cholmod_sparse *, cholmod_sparse *, size_t,
     int64_t *, cholmod_sparse *, cholmod_common *) ;
 
@@ -3705,7 +3501,6 @@ int cholmod_l_row_subtree (cholmod_sparse *, cholmod_sparse *, size_t,
 /* cholmod_lsolve_pattern: find the nonzero pattern of x=L\b */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_lsolve_pattern
 (
     /* ---- input ---- */
@@ -3717,7 +3512,6 @@ int cholmod_lsolve_pattern
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_lsolve_pattern (cholmod_sparse *, cholmod_factor *,
     cholmod_sparse *, cholmod_common *) ;
 
@@ -3728,7 +3522,6 @@ int cholmod_l_lsolve_pattern (cholmod_sparse *, cholmod_factor *,
 /* Identical to cholmod_row_subtree, except that it finds the elimination tree
  * from L itself. */
 
-SUITESPARSE_PUBLIC
 int cholmod_row_lsubtree
 (
     /* ---- input ---- */
@@ -3743,7 +3536,6 @@ int cholmod_row_lsubtree
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_row_lsubtree (cholmod_sparse *, int64_t *, size_t,
     size_t, cholmod_factor *, cholmod_sparse *, cholmod_common *) ;
 
@@ -3758,7 +3550,6 @@ int cholmod_l_row_lsubtree (cholmod_sparse *, int64_t *, size_t,
  * first permutes A according to L->Perm.  A can be upper/lower/unsymmetric,
  * in contrast to cholmod_resymbol_noperm (which can be lower or unsym). */
 
-SUITESPARSE_PUBLIC
 int cholmod_resymbol 
 (
     /* ---- input ---- */
@@ -3772,7 +3563,6 @@ int cholmod_resymbol
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_resymbol (cholmod_sparse *, int64_t *, size_t, int,
     cholmod_factor *, cholmod_common *) ;
 
@@ -3783,7 +3573,6 @@ int cholmod_l_resymbol (cholmod_sparse *, int64_t *, size_t, int,
 /* Remove entries from L that are not in the factorization of A, A*A',
  * or F*F' (depending on A->stype and whether fset is NULL or not). */
 
-SUITESPARSE_PUBLIC
 int cholmod_resymbol_noperm
 (
     /* ---- input ---- */
@@ -3797,7 +3586,6 @@ int cholmod_resymbol_noperm
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_resymbol_noperm (cholmod_sparse *, int64_t *, size_t, int,
     cholmod_factor *, cholmod_common *) ;
 
@@ -3805,7 +3593,6 @@ int cholmod_l_resymbol_noperm (cholmod_sparse *, int64_t *, size_t, int,
 /* cholmod_rcond:  compute rough estimate of reciprocal of condition number */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 double cholmod_rcond	    /* return min(diag(L)) / max(diag(L)) */
 (
     /* ---- input ---- */
@@ -3814,14 +3601,12 @@ double cholmod_rcond	    /* return min(diag(L)) / max(diag(L)) */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 double cholmod_l_rcond (cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_postorder: Compute the postorder of a tree */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int32_t cholmod_postorder	/* return # of nodes postordered */
 (
     /* ---- input ---- */
@@ -3834,7 +3619,6 @@ int32_t cholmod_postorder	/* return # of nodes postordered */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_postorder (int64_t *, size_t,
     int64_t *, int64_t *, cholmod_common *) ;
 
@@ -3872,7 +3656,6 @@ int64_t cholmod_l_postorder (int64_t *, size_t,
 /* cholmod_drop:  drop entries with small absolute value */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_drop
 (
     /* ---- input ---- */
@@ -3883,14 +3666,12 @@ int cholmod_drop
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_drop (double, cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_norm_dense:  s = norm (X), 1-norm, inf-norm, or 2-norm */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 double cholmod_norm_dense
 (
     /* ---- input ---- */
@@ -3900,14 +3681,12 @@ double cholmod_norm_dense
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 double cholmod_l_norm_dense (cholmod_dense *, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_norm_sparse:  s = norm (A), 1-norm or inf-norm */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 double cholmod_norm_sparse
 (
     /* ---- input ---- */
@@ -3917,14 +3696,12 @@ double cholmod_norm_sparse
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 double cholmod_l_norm_sparse (cholmod_sparse *, int, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_horzcat:  C = [A,B] */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_horzcat
 (
     /* ---- input ---- */
@@ -3935,7 +3712,6 @@ cholmod_sparse *cholmod_horzcat
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_horzcat (cholmod_sparse *, cholmod_sparse *, int,
     cholmod_common *) ;
 
@@ -3949,7 +3725,6 @@ cholmod_sparse *cholmod_l_horzcat (cholmod_sparse *, cholmod_sparse *, int,
 #define CHOLMOD_COL 2		/* A = A*diag(s) */
 #define CHOLMOD_SYM 3		/* A = diag(s)*A*diag(s) */
 
-SUITESPARSE_PUBLIC
 int cholmod_scale
 (
     /* ---- input ---- */
@@ -3961,7 +3736,6 @@ int cholmod_scale
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_scale (cholmod_dense *, int, cholmod_sparse *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
@@ -3970,7 +3744,6 @@ int cholmod_l_scale (cholmod_dense *, int, cholmod_sparse *, cholmod_common *) ;
 
 /* Sparse matrix times dense matrix */
 
-SUITESPARSE_PUBLIC
 int cholmod_sdmult
 (
     /* ---- input ---- */
@@ -3985,7 +3758,6 @@ int cholmod_sdmult
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
     cholmod_dense *, cholmod_dense *Y, cholmod_common *) ;
 
@@ -3995,7 +3767,6 @@ int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
 
 /* Sparse matrix times sparse matrix */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_ssmult
 (
     /* ---- input ---- */
@@ -4008,7 +3779,6 @@ cholmod_sparse *cholmod_ssmult
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_ssmult (cholmod_sparse *, cholmod_sparse *, int, int,
     int, cholmod_common *) ;
 
@@ -4022,7 +3792,6 @@ cholmod_sparse *cholmod_l_ssmult (cholmod_sparse *, cholmod_sparse *, int, int,
  * Similar rules hold for csize.
  */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_submatrix
 (
     /* ---- input ---- */
@@ -4037,7 +3806,6 @@ cholmod_sparse *cholmod_submatrix
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, int64_t *,
     int64_t, int64_t *, int64_t, int, int,
     cholmod_common *) ;
@@ -4046,7 +3814,6 @@ cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, int64_t *,
 /* cholmod_vertcat:  C = [A ; B] */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_vertcat
 (
     /* ---- input ---- */
@@ -4057,7 +3824,6 @@ cholmod_sparse *cholmod_vertcat
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
     cholmod_common *) ;
 
@@ -4065,7 +3831,6 @@ cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
 /* cholmod_symmetry: determine if a sparse matrix is symmetric */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int cholmod_symmetry
 (
     /* ---- input ---- */
@@ -4080,7 +3845,6 @@ int cholmod_symmetry
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *,
     int64_t *, int64_t *, int64_t *,
     cholmod_common *) ;
@@ -4142,7 +3906,6 @@ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *,
  * (a downdate).  The factor object L need not be an LDL' factorization; it
  * is converted to one if it isn't. */
 
-SUITESPARSE_PUBLIC
 int cholmod_updown 
 (
     /* ---- input ---- */
@@ -4154,7 +3917,6 @@ int cholmod_updown
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_updown (int, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
@@ -4168,7 +3930,6 @@ int cholmod_l_updown (int, cholmod_sparse *, cholmod_factor *,
  * entries in DeltaB corresponding to columns modified in L are accessed; the
  * rest must be zero. */
 
-SUITESPARSE_PUBLIC
 int cholmod_updown_solve
 (
     /* ---- input ---- */
@@ -4182,7 +3943,6 @@ int cholmod_updown_solve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_updown_solve (int, cholmod_sparse *, cholmod_factor *,
     cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
@@ -4195,7 +3955,6 @@ int cholmod_l_updown_solve (int, cholmod_sparse *, cholmod_factor *,
  * routine.  It is meant for use in LPDASA only.  See cholmod_updown.c for
  * a description of colmark. */
 
-SUITESPARSE_PUBLIC
 int cholmod_updown_mark
 (
     /* ---- input ---- */
@@ -4210,7 +3969,6 @@ int cholmod_updown_mark
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_updown_mark (int, cholmod_sparse *, int64_t *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
@@ -4222,7 +3980,6 @@ int cholmod_l_updown_mark (int, cholmod_sparse *, int64_t *,
  * argument.  This routine is an "expert" routine.  It is meant for use in
  * LPDASA only.  See cholmod_updown.c for a description of mask. */
 
-SUITESPARSE_PUBLIC
 int cholmod_updown_mask
 (
     /* ---- input ---- */
@@ -4238,12 +3995,10 @@ int cholmod_updown_mask
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_updown_mask (int, cholmod_sparse *, int64_t *,
     int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_updown_mask2
 (
     /* ---- input ---- */
@@ -4260,7 +4015,6 @@ int cholmod_updown_mask2
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_updown_mask2 (int, cholmod_sparse *, int64_t *,
     int64_t *, int64_t, cholmod_factor *, cholmod_dense *,
     cholmod_dense *, cholmod_common *) ;
@@ -4276,7 +4030,6 @@ int cholmod_l_updown_mask2 (int, cholmod_sparse *, int64_t *,
  * computed as the factorization of the kth row/column of the matrix to
  * factorize, which is provided as a single n-by-1 sparse matrix R. */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowadd 
 (
     /* ---- input ---- */
@@ -4288,7 +4041,6 @@ int cholmod_rowadd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowadd (size_t, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
@@ -4300,7 +4052,6 @@ int cholmod_l_rowadd (size_t, cholmod_sparse *, cholmod_factor *,
  * See cholmod_updown for a description of how Lx=b is updated.  There is on
  * additional parameter:  bk specifies the new kth entry of b. */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowadd_solve
 (
     /* ---- input ---- */
@@ -4315,7 +4066,6 @@ int cholmod_rowadd_solve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
@@ -4327,7 +4077,6 @@ int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
  * the update/downdate of the solution to Lx=b.  This routine is an "expert"
  * routine.  It is meant for use in LPDASA only.  */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowadd_mark
 (
     /* ---- input ---- */
@@ -4343,7 +4092,6 @@ int cholmod_rowadd_mark
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *,
     int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
@@ -4360,7 +4108,6 @@ int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *,
  * a little more time.
  */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowdel 
 (
     /* ---- input ---- */
@@ -4372,7 +4119,6 @@ int cholmod_rowdel
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowdel (size_t, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
@@ -4385,7 +4131,6 @@ int cholmod_l_rowdel (size_t, cholmod_sparse *, cholmod_factor *,
  * a change to x, in addition to changes arising when L and b are modified.
  * If this is the case, the kth entry of y is required as input (yk) */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowdel_solve
 (
     /* ---- input ---- */
@@ -4400,7 +4145,6 @@ int cholmod_rowdel_solve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
@@ -4412,7 +4156,6 @@ int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
  * the update/downdate of the solution to Lx=b.  This routine is an "expert"
  * routine.  It is meant for use in LPDASA only.  */
 
-SUITESPARSE_PUBLIC
 int cholmod_rowdel_mark
 (
     /* ---- input ---- */
@@ -4428,7 +4171,6 @@ int cholmod_rowdel_mark
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *,
     int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
@@ -4465,7 +4207,6 @@ int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *,
 
 /* Order AA' or A(:,f)*A(:,f)' using CCOLAMD. */
 
-SUITESPARSE_PUBLIC
 int cholmod_ccolamd
 (
     /* ---- input ---- */
@@ -4483,7 +4224,6 @@ int cholmod_ccolamd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_ccolamd (cholmod_sparse *, int64_t *, size_t,
     int64_t *, int64_t *, cholmod_common *) ;
 
@@ -4493,7 +4233,6 @@ int cholmod_l_ccolamd (cholmod_sparse *, int64_t *, size_t,
 
 /* Order A using CSYMAMD. */
 
-SUITESPARSE_PUBLIC
 int cholmod_csymamd
 (
     /* ---- input ---- */
@@ -4505,7 +4244,6 @@ int cholmod_csymamd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_csymamd (cholmod_sparse *, int64_t *,
     int64_t *, cholmod_common *) ;
 
@@ -4515,7 +4253,6 @@ int cholmod_l_csymamd (cholmod_sparse *, int64_t *,
 
 /* Order A using CAMD. */
 
-SUITESPARSE_PUBLIC
 int cholmod_camd
 (
     /* ---- input ---- */
@@ -4529,7 +4266,6 @@ int cholmod_camd
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t,
     int64_t *, int64_t *, cholmod_common *) ;
 
@@ -4581,7 +4317,6 @@ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t,
  * finds better orderings than METIS_NodeND, but takes longer.
  */
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_nested_dissection	/* returns # of components */
 (
     /* ---- input ---- */
@@ -4599,7 +4334,6 @@ int64_t cholmod_nested_dissection	/* returns # of components */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_nested_dissection (cholmod_sparse *,
     int64_t *, size_t, int64_t *, int64_t *,
     int64_t *, cholmod_common *) ;
@@ -4610,7 +4344,6 @@ int64_t cholmod_l_nested_dissection (cholmod_sparse *,
 
 /* Order A, AA', or A(:,f)*A(:,f)' using METIS_NodeND. */
 
-SUITESPARSE_PUBLIC
 int cholmod_metis
 (
     /* ---- input ---- */
@@ -4624,7 +4357,6 @@ int cholmod_metis
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_metis (cholmod_sparse *, int64_t *, size_t, int,
     int64_t *, cholmod_common *) ;
 
@@ -4634,7 +4366,6 @@ int cholmod_l_metis (cholmod_sparse *, int64_t *, size_t, int,
 
 /* Finds a node bisector of A, A*A', A(:,f)*A(:,f)'. */
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_bisect	/* returns # of nodes in separator */
 (
     /* ---- input ---- */
@@ -4650,7 +4381,6 @@ int64_t cholmod_bisect	/* returns # of nodes in separator */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_bisect (cholmod_sparse *, int64_t *,
     size_t, int, int64_t *, cholmod_common *) ;
 
@@ -4661,7 +4391,6 @@ int64_t cholmod_l_bisect (cholmod_sparse *, int64_t *,
 /* Find a set of nodes that bisects the graph of A or AA' (direct interface
  * to METIS_ComputeVertexSeperator). */
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_metis_bisector	/* returns separator size */
 (
     /* ---- input ---- */
@@ -4679,7 +4408,6 @@ int64_t cholmod_metis_bisector	/* returns separator size */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_metis_bisector (cholmod_sparse *,
     int64_t *, int64_t *, int64_t *,
     cholmod_common *) ;
@@ -4690,7 +4418,6 @@ int64_t cholmod_l_metis_bisector (cholmod_sparse *,
 
 /* Collapse nodes in a separator tree. */
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_collapse_septree
 (
     /* ---- input ---- */
@@ -4705,7 +4432,6 @@ int64_t cholmod_collapse_septree
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t,
     int64_t *, int64_t *, cholmod_common *) ;
 
@@ -4757,7 +4483,6 @@ int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t,
  * a "simple" wrapper for this routine.
  */
 
-SUITESPARSE_PUBLIC
 int cholmod_super_symbolic
 (
     /* ---- input ---- */
@@ -4771,7 +4496,6 @@ int cholmod_super_symbolic
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *,
     int64_t *, cholmod_factor *, cholmod_common *) ;
 
@@ -4781,7 +4505,6 @@ int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *,
 
 /* Analyze for supernodal Cholesky or multifrontal QR */
 
-SUITESPARSE_PUBLIC
 int cholmod_super_symbolic2
 (
     /* ---- input ---- */
@@ -4798,7 +4521,6 @@ int cholmod_super_symbolic2
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
     int64_t *, cholmod_factor *, cholmod_common *) ;
 
@@ -4811,7 +4533,6 @@ int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
  * cholmod_factorize is a "simple" wrapper for this routine.
  */
 
-SUITESPARSE_PUBLIC
 int cholmod_super_numeric
 (
     /* ---- input ---- */
@@ -4824,7 +4545,6 @@ int cholmod_super_numeric
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_common *) ;
 
@@ -4836,7 +4556,6 @@ int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
  * need not call this routine directly.  cholmod_solve is a "simple" wrapper
  * for this routine. */
 
-SUITESPARSE_PUBLIC
 int cholmod_super_lsolve
 (
     /* ---- input ---- */
@@ -4849,7 +4568,6 @@ int cholmod_super_lsolve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
@@ -4861,7 +4579,6 @@ int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
  * need not call this routine directly.  cholmod_solve is a "simple" wrapper
  * for this routine. */
 
-SUITESPARSE_PUBLIC
 int cholmod_super_ltsolve
 (
     /* ---- input ---- */
@@ -4874,7 +4591,6 @@ int cholmod_super_ltsolve
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
@@ -4930,7 +4646,6 @@ typedef struct cholmod_gpu_pointers
 
 } cholmod_gpu_pointers ;
 
-SUITESPARSE_PUBLIC
 int cholmod_gpu_memorysize   /* GPU memory size available, 1 if no GPU */
 (
     size_t         *total_mem,
@@ -4938,7 +4653,6 @@ int cholmod_gpu_memorysize   /* GPU memory size available, 1 if no GPU */
     cholmod_common *Common
 ) ;
 
-SUITESPARSE_PUBLIC
 int cholmod_l_gpu_memorysize /* GPU memory size available, 1 if no GPU */
 (
     size_t         *total_mem,
@@ -4946,17 +4660,17 @@ int cholmod_l_gpu_memorysize /* GPU memory size available, 1 if no GPU */
     cholmod_common *Common
 ) ;
  
-SUITESPARSE_PUBLIC int cholmod_gpu_probe   ( cholmod_common *Common ) ;
-SUITESPARSE_PUBLIC int cholmod_l_gpu_probe ( cholmod_common *Common ) ;
+int cholmod_gpu_probe   ( cholmod_common *Common ) ;
+int cholmod_l_gpu_probe ( cholmod_common *Common ) ;
 
-SUITESPARSE_PUBLIC int cholmod_gpu_deallocate   ( cholmod_common *Common ) ;
-SUITESPARSE_PUBLIC int cholmod_l_gpu_deallocate ( cholmod_common *Common ) ;
+int cholmod_gpu_deallocate   ( cholmod_common *Common ) ;
+int cholmod_l_gpu_deallocate ( cholmod_common *Common ) ;
 
-SUITESPARSE_PUBLIC void cholmod_gpu_end   ( cholmod_common *Common ) ;
-SUITESPARSE_PUBLIC void cholmod_l_gpu_end ( cholmod_common *Common ) ;
+void cholmod_gpu_end   ( cholmod_common *Common ) ;
+void cholmod_l_gpu_end ( cholmod_common *Common ) ;
 
-SUITESPARSE_PUBLIC int cholmod_gpu_allocate   ( cholmod_common *Common ) ;
-SUITESPARSE_PUBLIC int cholmod_l_gpu_allocate ( cholmod_common *Common ) ;
+int cholmod_gpu_allocate   ( cholmod_common *Common ) ;
+int cholmod_l_gpu_allocate ( cholmod_common *Common ) ;
 
 #endif
 

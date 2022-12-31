@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_get_memory
+Int UMF_get_memory
 (
     NumericType *Numeric,
     WorkType *Work,

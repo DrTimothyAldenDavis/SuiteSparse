@@ -62,7 +62,6 @@
 #undef EMPTY
 #endif
 
-#define GLOBAL SUITESPARSE_PUBLIC
 #define PRIVATE static
 
 /* FLIP is a "negation about -1", and is used to mark an integer i that is
@@ -169,7 +168,7 @@
 /* CAMD routine definitions (not user-callable) */
 /* ------------------------------------------------------------------------- */
 
-GLOBAL size_t CAMD_aat
+size_t CAMD_aat
 (
     Int n,
     const Int Ap [ ],
@@ -179,7 +178,7 @@ GLOBAL size_t CAMD_aat
     double Info [ ]
 ) ;
 
-GLOBAL void CAMD_1
+void CAMD_1
 (
     Int n,
     const Int Ap [ ],
@@ -194,12 +193,12 @@ GLOBAL void CAMD_1
     const Int C [ ]
 ) ;
 
-GLOBAL Int CAMD_postorder
+Int CAMD_postorder
 (
     Int j, Int k, Int n, Int head [], Int next [], Int post [], Int stack []
 ) ;
 
-GLOBAL void CAMD_preprocess
+void CAMD_preprocess
 (
     Int n,
     const Int Ap [ ],
@@ -219,11 +218,11 @@ GLOBAL void CAMD_preprocess
 /* from assert.h:  assert macro */
 #include <assert.h>
 
-GLOBAL Int CAMD_debug ;
+extern Int CAMD_debug ;
 
-GLOBAL void CAMD_debug_init ( char *s ) ;
+void CAMD_debug_init ( char *s ) ;
 
-GLOBAL void CAMD_dump
+void CAMD_dump
 (
     Int n,
     Int Pe [ ],

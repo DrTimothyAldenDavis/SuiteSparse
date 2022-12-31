@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_free.h"
 
-GLOBAL void UMFPACK_free_symbolic
+void UMFPACK_free_symbolic
 (
     void **SymbolicHandle
 )

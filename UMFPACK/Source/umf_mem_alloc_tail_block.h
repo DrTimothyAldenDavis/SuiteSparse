@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_mem_alloc_tail_block
+Int UMF_mem_alloc_tail_block
 (
     NumericType *Numeric,
     Int nunits

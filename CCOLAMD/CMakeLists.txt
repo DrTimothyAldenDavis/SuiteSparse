@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CCOLAMD_DATE "Dec 9, 2022" )
+set ( CCOLAMD_DATE "Jan 1, 2022" )
 set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 0 )
-set ( CCOLAMD_VERSION_SUB   2 )
+set ( CCOLAMD_VERSION_SUB   3 )
 
 message ( STATUS "Building CCOLAMD version: v"
     ${CCOLAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( ccolamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

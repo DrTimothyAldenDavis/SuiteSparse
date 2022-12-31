@@ -27,7 +27,7 @@ int spqr_mx_config (int64_t spumoni, cholmod_common *cc)
     {
 	// do not print anything from within CHOLMOD
 	cc->print = -1 ;
-	SuiteSparse_config.printf_func = NULL ;
+	SuiteSparse_config_printf_func_set (NULL) ;
     }
     else
     {

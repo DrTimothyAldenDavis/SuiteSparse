@@ -72,7 +72,7 @@ PRIVATE void print_ratio
 /* === UMFPACK_report_info ================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMFPACK_report_info
+void UMFPACK_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]

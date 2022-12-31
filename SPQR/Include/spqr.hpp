@@ -949,7 +949,7 @@ inline double spqr_abs (double x, cholmod_common *cc)       // cc is unused
 
 inline double spqr_abs (Complex x, cholmod_common *cc)
 {
-    return (SuiteSparse_config.hypot_func (x.real ( ), x.imag ( ))) ;
+    return (SuiteSparse_config_hypot (x.real ( ), x.imag ( ))) ;
 }
 
 
@@ -965,7 +965,7 @@ inline double spqr_divide (double a, double b, cholmod_common *cc)  // cc unused
 inline Complex spqr_divide (Complex a, Complex b, cholmod_common *cc)
 {
     double creal, cimag ;
-    SuiteSparse_config.divcomplex_func
+    SuiteSparse_config_divcomplex
         (a.real(), a.imag(), b.real(), b.imag(), &creal, &cimag) ;
     return (Complex (creal, cimag)) ;
 }

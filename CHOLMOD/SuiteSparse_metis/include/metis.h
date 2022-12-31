@@ -174,13 +174,7 @@ typedef __int64 int64_t;
 * Function prototypes 
 *-------------------------------------------------------------------------*/
 
-#ifdef _WINDLL
-#define METIS_API(type) __declspec(dllexport) type __cdecl
-#elif defined(__cdecl)
-#define METIS_API(type) type __cdecl
-#else
 #define METIS_API(type) type
-#endif
 
 
 

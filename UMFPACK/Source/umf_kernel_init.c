@@ -136,7 +136,7 @@ PRIVATE Int packsp	/* returns new value of pnew */
 /* === UMF_kernel_init ====================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_kernel_init
+Int UMF_kernel_init
 (
     const Int Ap [ ],		/* user's input matrix (not modified) */
     const Int Ai [ ],

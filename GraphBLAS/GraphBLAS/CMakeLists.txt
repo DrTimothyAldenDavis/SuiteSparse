@@ -15,12 +15,11 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-# date version must match ../CMakeLists.txt:
-# version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Dec 29, 2022" )
-set ( GraphBLAS_VERSION_MAJOR 7 )
-set ( GraphBLAS_VERSION_MINOR 4 )
-set ( GraphBLAS_VERSION_SUB   1 )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( GraphBLAS_version )
 
 message ( STATUS "Building SuiteSparse:GraphBLAS version: v"
     ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}

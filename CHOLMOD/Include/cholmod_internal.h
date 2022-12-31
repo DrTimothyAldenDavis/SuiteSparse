@@ -355,7 +355,7 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 /* s = s / a */
 #define C_DIV(x,z,p,ax,az,q) \
-    SuiteSparse_config.divcomplex_func ( \
+    SuiteSparse_config_divcomplex ( \
 	      x [2*(p)],  x [2*(p)+1], \
 	     ax [2*(q)], ax [2*(q)+1], \
 	     &x [2*(p)], &x [2*(p)+1])
@@ -448,7 +448,7 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 /* s = s / a */
 #define Z_DIV(x,z,p,ax,az,q) \
-    SuiteSparse_config.divcomplex_func \
+    SuiteSparse_config_divcomplex \
         (x [p], z [p], ax [q], az [q], &x [p], &z [p])
 
 /* s -= conj(a)*a ; note that the result of conj(a)*a is real */
@@ -638,12 +638,17 @@ int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
 #define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
 #define ASSERT(expression) (assert (expression))
 
-#define PRK(k,params) \
-{ \
-    if (CHOLMOD(dump) >= (k) && SuiteSparse_config.printf_func != NULL) \
-    { \
-	(SuiteSparse_config.printf_func) params ; \
-    } \
+#define PRK(k,params)                                           \
+{                                                               \
+    if (CHOLMOD(dump) >= (k)                                    \
+    {                                                           \
+        int (*printf_func) (const char *, ...) ;                \
+        printf_func = SuiteSparse_config_printf_func_get ( ) ;  \
+        if (printf_func != NULL)                                \
+        {                                                       \
+            (void) (printf_func) params ;                       \
+        }                                                       \
+    }                                                           \
 }
 
 #define PRINT0(params) PRK (0, params)

@@ -106,7 +106,7 @@ PRIVATE void remove_candidate (Int jj, WorkType *Work, SymbolicType *Symbolic)
 /* === UMF_local_search ===================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_local_search
+Int UMF_local_search
 (
     NumericType *Numeric,
     WorkType *Work,

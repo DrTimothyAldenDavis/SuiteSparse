@@ -46,10 +46,10 @@ extern "C" {
 #include <omp.h>
 
 // version and date for example user library
-#define MY_DATE "Dec 9, 2022"
+#define MY_DATE "Jan 1, 2022"
 #define MY_MAJOR_VERSION 1
 #define MY_MINOR_VERSION 2
-#define MY_PATCH_VERSION 3
+#define MY_PATCH_VERSION 4
 
 void my_library (int version [3], char date [128]) ;
 void my_function (void) ;

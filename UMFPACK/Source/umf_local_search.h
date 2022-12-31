@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_local_search
+Int UMF_local_search
 (
     NumericType *Numeric,
     WorkType *Work,

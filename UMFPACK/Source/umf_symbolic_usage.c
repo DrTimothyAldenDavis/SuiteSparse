@@ -12,7 +12,7 @@
 #include "umf_internal.h"
 #include "umf_symbolic_usage.h"
 
-GLOBAL double UMF_symbolic_usage
+double UMF_symbolic_usage
 (
     Int n_row,
     Int n_col,

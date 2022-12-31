@@ -38,7 +38,7 @@ PRIVATE void copy_column (Int len, Entry *X, Entry *Y)
 /* === UMF_create_element =================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_create_element
+Int UMF_create_element
 (
     NumericType *Numeric,
     WorkType *Work,

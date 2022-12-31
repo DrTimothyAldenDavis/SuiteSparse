@@ -98,15 +98,20 @@ int CHOLMOD(csymamd)
 	knobs [CCOLAMD_AGGRESSIVE]=Common->method[Common->current].aggressive ;
     }
     {
+        void * (*calloc_func) (size_t, size_t) ;
+        void (*free_func) (void *) ;
+        calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+        free_func   = SuiteSparse_config_free_func_get ( ) ;
+
 #ifdef LONG
 	csymamd_l (nrow, A->i, A->p, perm, knobs, stats,
-                SuiteSparse_config.calloc_func,
-                SuiteSparse_config.free_func,
+                calloc_func,
+                free_func,
                 Cmember, A->stype) ;
 #else
 	csymamd (nrow, A->i, A->p, perm, knobs, stats,
-                SuiteSparse_config.calloc_func,
-                SuiteSparse_config.free_func,
+                calloc_func,
+                free_func,
                 Cmember, A->stype) ;
 #endif
 	ok = stats [CCOLAMD_STATUS] ;

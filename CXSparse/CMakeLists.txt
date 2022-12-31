@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Dec 9, 2022" )
+set ( CXSPARSE_DATE "Jan 1, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
-set ( CXSPARSE_VERSION_SUB   2 )
+set ( CXSPARSE_VERSION_SUB   3 )
 
 message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( cxsparse
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number

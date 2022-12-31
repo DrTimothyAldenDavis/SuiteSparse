@@ -42,7 +42,7 @@ void sputil_config (int64_t spumoni, cholmod_common *cm)
     {
 	/* do not print anything from within CHOLMOD */
 	cm->print = -1 ;
-        SuiteSparse_config.printf_func = NULL ;
+        SuiteSparse_config_printf_func_set (NULL) ;
     }
     else
     {
@@ -51,7 +51,7 @@ void sputil_config (int64_t spumoni, cholmod_common *cm)
 	 * spumoni = 2: also print a short summary of each object.
 	 */
 	cm->print = spumoni + 2 ;
-        /* SuiteSparse_config.printf_func = mexPrintf : */
+        /* SuiteSparse_config_printf_func_set ((void *) mexPrintf) ; */
     }
 
     /* error handler */

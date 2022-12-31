@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_grow_front
+Int UMF_grow_front
 (
     NumericType *Numeric,
     Int fnr2,

@@ -41,7 +41,7 @@ PRIVATE void shift_pivot_row (Entry *Fd, Entry *Fs, Entry *Fe, Int len, Int d)
 /* === UMF_scale_column ===================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_scale_column
+void UMF_scale_column
 (
     NumericType *Numeric,
     WorkType *Work

@@ -317,9 +317,9 @@ PRIVATE void col_assemble
 /* ========================================================================== */
 
 #ifndef FIXQ
-GLOBAL void UMF_assemble
+void UMF_assemble
 #else
-GLOBAL void UMF_assemble_fixq
+void UMF_assemble_fixq
 #endif
 (
     NumericType *Numeric,

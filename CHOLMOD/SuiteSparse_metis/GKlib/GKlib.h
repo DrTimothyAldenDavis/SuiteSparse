@@ -79,14 +79,14 @@
 /* Added for incorporation into SuiteSparse.
    Tim Davis, Oct 31, 2022, Texas A&M University. */
 #include "SuiteSparse_config.h"
-#define malloc  SuiteSparse_config.malloc_func
-#define calloc  SuiteSparse_config.calloc_func
-#define realloc SuiteSparse_config.realloc_func
+#define malloc  SuiteSparse_config_malloc
+#define calloc  SuiteSparse_config_calloc
+#define realloc SuiteSparse_config_realloc
 #define free(p)                                 \
 {                                               \
     if ((p) != NULL)                            \
     {                                           \
-        SuiteSparse_config.free_func (p) ;      \
+        SuiteSparse_config_free (p) ;           \
         (p) = NULL ;                            \
     }                                           \
 }

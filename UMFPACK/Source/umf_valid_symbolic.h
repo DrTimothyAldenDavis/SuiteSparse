@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_valid_symbolic
+Int UMF_valid_symbolic
 (
     SymbolicType *Symbolic
 ) ;

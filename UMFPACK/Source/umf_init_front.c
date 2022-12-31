@@ -38,7 +38,7 @@ PRIVATE void zero_init_front (Int m, Int n, Entry *Fcblock, Int d)
 /* === UMF_init_front ======================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMF_init_front
+Int UMF_init_front
 (
     NumericType *Numeric,
     WorkType *Work

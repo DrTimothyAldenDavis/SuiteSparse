@@ -12,7 +12,7 @@
 #include "umf_internal.h"
 #include "umf_kernel_wrapup.h"
 
-GLOBAL void UMF_kernel_wrapup
+void UMF_kernel_wrapup
 (
     NumericType *Numeric,
     SymbolicType *Symbolic,

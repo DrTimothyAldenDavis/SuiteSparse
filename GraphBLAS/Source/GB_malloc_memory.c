@@ -61,7 +61,6 @@ static inline void *GB_malloc_helper
 // GB_malloc_memory
 //------------------------------------------------------------------------------
 
-GB_PUBLIC
 void *GB_malloc_memory      // pointer to allocated block of memory
 (
     size_t nitems,          // number of items to allocate

@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_scale
+void UMF_scale
 (
     Int n,
     Entry alpha,

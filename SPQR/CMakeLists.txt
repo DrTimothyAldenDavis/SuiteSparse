@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Dec 9, 2022" )
+set ( SPQR_DATE "Jan 1, 2023" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   2 )
+set ( SPQR_VERSION_SUB   3 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -70,15 +70,15 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( CHOLMOD 4.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( CHOLMOD 4.0.3 REQUIRED )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.2 REQUIRED )
-    find_package ( GPUQREngine 2.0.2 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.2 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
+    find_package ( GPUQREngine 2.0.3 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22

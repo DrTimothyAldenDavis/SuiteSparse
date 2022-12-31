@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Dec 23, 2022" )
-set ( SUITESPARSE_VERSION_MAJOR 6 )
+set ( SUITESPARSE_DATE "Jan 1, 2023" )
+set ( SUITESPARSE_VERSION_MAJOR 7 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   3 )
+set ( SUITESPARSE_VERSION_SUB   0 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.
@@ -62,6 +62,10 @@ include ( SuiteSparseBLAS )
 
 configure_file ( "Config/SuiteSparse_config.h.in"
     "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h"
+    NEWLINE_STYLE LF )
+
+configure_file ( "Config/README.md.in"
+    "${PROJECT_SOURCE_DIR}/../README.md"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------

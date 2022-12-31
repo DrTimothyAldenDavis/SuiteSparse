@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL double UMF_usolve
+double UMF_usolve
 (
     NumericType *Numeric,
     Entry X [ ],

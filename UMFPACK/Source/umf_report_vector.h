@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL int UMF_report_vector
+int UMF_report_vector
 (
     Int n,
     const double Xx [ ],

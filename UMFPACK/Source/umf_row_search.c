@@ -20,7 +20,7 @@
 #include "umf_internal.h"
 #include "umf_row_search.h"
 
-GLOBAL Int UMF_row_search
+Int UMF_row_search
 (
     NumericType *Numeric,
     WorkType *Work,

@@ -13,7 +13,7 @@
 /* Returns TRUE if the Symbolic object is valid, FALSE otherwise. */
 /* The UMFPACK_report_symbolic routine does a more thorough check. */
 
-GLOBAL Int UMF_valid_symbolic
+Int UMF_valid_symbolic
 (
     SymbolicType *Symbolic
 )

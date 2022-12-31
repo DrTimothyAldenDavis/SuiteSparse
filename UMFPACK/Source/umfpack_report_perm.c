@@ -20,7 +20,7 @@
 #include "umf_malloc.h"
 #include "umf_free.h"
 
-GLOBAL int UMFPACK_report_perm
+int UMFPACK_report_perm
 (
     Int np,
     const Int Perm [ ],

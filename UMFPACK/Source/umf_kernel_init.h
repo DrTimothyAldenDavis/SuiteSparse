@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_kernel_init
+Int UMF_kernel_init
 (
     const Int Ap [ ],
     const Int Ai [ ],

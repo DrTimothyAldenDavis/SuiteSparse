@@ -7,13 +7,13 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_assemble
+void UMF_assemble
 (
     NumericType *Numeric,
     WorkType *Work
 ) ;
 
-GLOBAL void UMF_assemble_fixq
+void UMF_assemble_fixq
 (
     NumericType *Numeric,
     WorkType *Work

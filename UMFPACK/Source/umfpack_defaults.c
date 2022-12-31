@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL void UMFPACK_defaults
+void UMFPACK_defaults
 (
     double Control [UMFPACK_CONTROL]
 )

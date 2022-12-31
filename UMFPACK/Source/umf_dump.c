@@ -17,9 +17,9 @@
 
 /* These global debugging variables and arrays do not exist if debugging */
 /* is disabled at compile time (which is the default). */
-GLOBAL Int UMF_debug = -999 ;
-GLOBAL Int UMF_allocfail = FALSE ;
-GLOBAL double UMF_gprob = -1.0 ;
+Int UMF_debug = -999 ;
+Int UMF_allocfail = FALSE ;
+double UMF_gprob = -1.0 ;
 
 /* static debugging arrays used only in UMF_dump_rowcol */
 PRIVATE Int UMF_DBflag = 0 ;
@@ -60,7 +60,7 @@ PRIVATE void UMF_DBinit
 /* === UMF_dump_dense ======================================================= */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_dense
+void UMF_dump_dense
 (
     Entry *C,
     Int dim,
@@ -112,7 +112,7 @@ GLOBAL void UMF_dump_dense
 /* === UMF_dump_element ===================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_element
+void UMF_dump_element
 (
     NumericType *Numeric,
     WorkType *Work,
@@ -233,7 +233,7 @@ GLOBAL void UMF_dump_element
 /* dump a row or a column, from one or more memory spaces */
 /* return exact degree */
 
-GLOBAL void UMF_dump_rowcol
+void UMF_dump_rowcol
 (
     Int dumpwhich,		/* 0 for row, 1 for column */
     NumericType *Numeric,
@@ -459,7 +459,7 @@ GLOBAL void UMF_dump_rowcol
 /* === UMF_dump_matrix ====================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_matrix
+void UMF_dump_matrix
 (
     NumericType *Numeric,
     WorkType *Work,
@@ -540,7 +540,7 @@ GLOBAL void UMF_dump_matrix
 /* === UMF_dump_current_front =============================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_current_front
+void UMF_dump_current_front
 (
     NumericType *Numeric,
     WorkType *Work,
@@ -629,7 +629,7 @@ GLOBAL void UMF_dump_current_front
 /* === UMF_dump_lu ========================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_lu
+void UMF_dump_lu
 (
     NumericType *Numeric
 )
@@ -690,7 +690,7 @@ GLOBAL void UMF_dump_lu
 /* === UMF_dump_memory ====================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_memory
+void UMF_dump_memory
 (
     NumericType *Numeric
 )
@@ -787,7 +787,7 @@ GLOBAL void UMF_dump_memory
 /* === UMF_dump_packed_memory =============================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_packed_memory
+void UMF_dump_packed_memory
 (
     NumericType *Numeric,
     WorkType *Work
@@ -922,7 +922,7 @@ GLOBAL void UMF_dump_packed_memory
 
 /* This code is the same for real or complex matrices. */
 
-GLOBAL void UMF_dump_col_matrix
+void UMF_dump_col_matrix
 (
     const double Ax [ ],	/* Ax [0..nz-1]: real values, in column order */
 #ifdef COMPLEX
@@ -990,7 +990,7 @@ GLOBAL void UMF_dump_col_matrix
 /* === UMF_dump_chain ======================================================= */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_chain
+void UMF_dump_chain
 (
     Int frontid,
     Int Front_parent [ ],
@@ -1040,7 +1040,7 @@ GLOBAL void UMF_dump_chain
 /* === UMF_dump_start ======================================================= */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_start
+void UMF_dump_start
 (
     void
 )
@@ -1126,7 +1126,7 @@ GLOBAL void UMF_dump_start
 /* === UMF_dump_rowmerge ==================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_rowmerge
+void UMF_dump_rowmerge
 (
     NumericType *Numeric,
     SymbolicType *Symbolic,
@@ -1181,7 +1181,7 @@ GLOBAL void UMF_dump_rowmerge
 /* === UMF_dump_diagonal_map ================================================ */
 /* ========================================================================== */
 
-GLOBAL void UMF_dump_diagonal_map
+void UMF_dump_diagonal_map
 (
     Int Diagonal_map [ ],
     Int Diagonal_imap [ ],

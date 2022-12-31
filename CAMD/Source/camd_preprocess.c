@@ -26,7 +26,7 @@
  * On input, the condition (CAMD_valid (n,n,Ap,Ai) != CAMD_INVALID) must hold.
  */
 
-GLOBAL void CAMD_preprocess
+void CAMD_preprocess
 (
     Int n,		/* input matrix: A is n-by-n */
     const Int Ap [ ],	/* size n+1 */

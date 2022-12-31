@@ -9,7 +9,7 @@
 
 # determine if -latomic must be linked
 
-include ( CheckCSourceRuns )
+include ( CheckCSourceCompiles )
 
 set ( atomic_source
 "
@@ -42,17 +42,17 @@ set ( atomic_source
 #endif
 " )
 
-check_c_source_runs ( "${atomic_source}" TEST_FOR_STDATOMIC )
+check_c_source_compiles ( "${atomic_source}" TEST_FOR_STDATOMIC )
 
 if ( NOT TEST_FOR_STDATOMIC )
     # try with -latomic
     set ( CMAKE_REQUIRED_LIBRARIES "atomic" )
-    check_c_source_runs ( "${atomic_source}" TEST_FOR_STDATOMIC_WITH_LIBATOMIC )
+    check_c_source_compiles ( "${atomic_source}" TEST_FOR_STDATOMIC_WITH_LIBATOMIC )
     if ( NOT TEST_FOR_STDATOMIC_WITH_LIBATOMIC )
         # fails with -latomic
         message ( FATAL_ERROR "ANSI C11 atomics: failed" )
     endif ( )
-    # source compiles and runs but -latomic is required
+    # source compiles but -latomic is required
     set ( LIBATOMIC_REQUIRED true )
     message ( STATUS "ANSI C11 atomics: OK, but -latomic required" )
 else ( )

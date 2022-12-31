@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_transpose
+Int UMF_transpose
 (
     Int n_row,
     Int n_col,

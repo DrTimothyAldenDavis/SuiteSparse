@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_kernel_wrapup
+void UMF_kernel_wrapup
 (
     NumericType *Numeric,
     SymbolicType *Symbolic,

@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_garbage_collection
+void UMF_garbage_collection
 (
     NumericType *Numeric,
     WorkType *Work,

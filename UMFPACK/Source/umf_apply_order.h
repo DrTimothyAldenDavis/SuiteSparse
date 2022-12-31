@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_apply_order
+void UMF_apply_order
 (
     Int Front [ ],
     const Int Order [ ],

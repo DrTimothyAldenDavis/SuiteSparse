@@ -1,5 +1,5 @@
 
-UMFPACK V6.0 (Dec 29, 2022) demo: _zl_ version
+UMFPACK V6.0 (Jan 1, 2023) demo: _zl_ version
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.0.3 (Dec 29, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
-UMFPACK V6.0.3 (Dec 29, 2022), Control:
+UMFPACK V6.0.3 (Jan 1, 2023), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int64_t
 
@@ -45,11 +45,11 @@ UMFPACK V6.0.3 (Dec 29, 2022), Control:
     19: AMD and COLAMD aggressive absorption: 1 (yes)
 
     The following options can only be changed at compile-time:
-    8: BLAS library used:  Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    8: BLAS library used:  Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
     POSIX C clock_getttime.
     compiled with CHOLMOD ordering options
-    computer/operating system: Linux
+    computer/operating system: Mac
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 16 (in bytes)
 
 
@@ -169,7 +169,7 @@ Numeric factorization of A: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                0
+    costly memory reallocations:                1
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        4
     number of entries stored in L (excl diag):  2
@@ -257,10 +257,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -330,9 +330,8 @@ UMFPACK V6.0.3 (Dec 29, 2022), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    0
+    costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.01
 
     solve flops:                                   1.02800e+03
     iterative refinement steps taken:              1
@@ -346,7 +345,7 @@ UMFPACK V6.0.3 (Dec 29, 2022), Info:
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.3 (Dec 29, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -362,7 +361,7 @@ maxnorm of residual: 1.77636e-15
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.0.3 (Dec 29, 2022): OK
+UMFPACK V6.0.3 (Jan 1, 2023): OK
 
 determinant: (-1.7814+ (2.3784)i) * 10^(2)
 
@@ -376,10 +375,10 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.77636e-14
 
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -449,14 +448,13 @@ UMFPACK V6.0.3 (Dec 29, 2022), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    0
+    costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.01
 
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  7.82e-17
+    sparse backward error omega1:                  1.02e-16
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -471,7 +469,7 @@ x (solution of A'x=b): dense vector, n = 5.
     4 : (9.04015 - 0.613724i)
     dense vector OK
 
-maxnorm of residual: 4.52416e-15
+maxnorm of residual: 1.12867e-14
 
 
 changing A (1,4) to zero
@@ -605,10 +603,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -684,7 +682,7 @@ UMFPACK V6.0.3 (Dec 29, 2022), Info:
     solve flops:                                   5.15000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  6.01e-17
+    sparse backward error omega1:                  7.96e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -699,7 +697,7 @@ x (with modified A): dense vector, n = 5.
     4 : (32.7361 - 2.90097i)
     dense vector OK
 
-maxnorm of residual: 4.66294e-15
+maxnorm of residual: 7.16094e-15
 
 changing real part of A (0,0) from 2 to 2
 changing real part of A (1,0) from 3 to 2
@@ -852,10 +850,10 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -946,7 +944,7 @@ x (with completely modified A): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 9.10383e-15
+maxnorm of residual: 7.78544e-15
 
 
 C (transpose of A): column-form matrix, n_row 5 n_col 5, nz = 12. 
@@ -1243,10 +1241,10 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1337,14 +1335,14 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 4.88498e-15
+maxnorm of residual: 6.54338e-15
 
 
 Solving C'x=b again, using umfpack_zl_wsolve instead:
-UMFPACK V6.0.3 (Dec 29, 2022), Info:
+UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
-    BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
+    BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
     CPU timer:                        POSIX C clock_getttime ( ) routine.
     number of rows in matrix A:       5
@@ -1435,7 +1433,7 @@ x (solution of C'x=b): dense vector, n = 5.
     4 : (0.658245 + 0.0407649i)
     dense vector OK
 
-maxnorm of residual: 4.88498e-15
+maxnorm of residual: 6.54338e-15
 
 
 umfpack_zl_demo complete.

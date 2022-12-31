@@ -16,7 +16,7 @@
 #include "umf_mem_alloc_element.h"
 #include "umf_mem_alloc_tail_block.h"
 
-GLOBAL Int UMF_mem_alloc_element
+Int UMF_mem_alloc_element
 (
     NumericType *Numeric,
     Int nrows,

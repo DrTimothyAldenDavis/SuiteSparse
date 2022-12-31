@@ -33,7 +33,7 @@
 /* perform an action, and return if out of memory */
 #define DO(action) { if (! (action)) { return (UMFPACK_ERROR_out_of_memory) ; }}
 
-GLOBAL Int UMF_kernel
+Int UMF_kernel
 (
     const Int Ap [ ],
     const Int Ai [ ],

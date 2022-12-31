@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_fsize.h"
 
-GLOBAL void UMF_fsize
+void UMF_fsize
 (
     Int nn,
     Int Fsize [ ],

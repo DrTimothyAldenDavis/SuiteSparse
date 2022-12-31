@@ -620,7 +620,7 @@ PRIVATE void dump_super
 	knobs [3..19]	unused, but future versions might use this
 */
 
-GLOBAL void UMF_colamd_set_defaults
+void UMF_colamd_set_defaults
 (
     /* === Parameters ======================================================= */
 
@@ -668,7 +668,7 @@ GLOBAL void UMF_colamd_set_defaults
 
 /* For UMFPACK: colamd always returns TRUE */
 
-GLOBAL Int UMF_colamd		/* returns TRUE if successful, FALSE otherwise*/
+Int UMF_colamd		/* returns TRUE if successful, FALSE otherwise*/
 (
     /* === Parameters ======================================================= */
 

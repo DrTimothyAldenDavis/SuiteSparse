@@ -14,7 +14,7 @@
 
 /* initialize the LU and element workspace (Numeric->Memory) */
 
-GLOBAL void UMF_mem_init_memoryspace
+void UMF_mem_init_memoryspace
 (
     NumericType *Numeric
 )

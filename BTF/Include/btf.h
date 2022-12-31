@@ -97,7 +97,6 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-SUITESPARSE_PUBLIC
 int32_t btf_maxtrans    /* returns # of columns matched */
 (
     /* --- input, not modified: --- */
@@ -121,7 +120,6 @@ int32_t btf_maxtrans    /* returns # of columns matched */
 ) ;
 
 /* int64_t integer version */
-SUITESPARSE_PUBLIC 
 int64_t btf_l_maxtrans (int64_t, int64_t,
     int64_t *, int64_t *, double, double *,
     int64_t *, int64_t *) ;
@@ -149,7 +147,6 @@ int64_t btf_l_maxtrans (int64_t, int64_t,
  * number of strongly connected components found.
  */
 
-SUITESPARSE_PUBLIC 
 int32_t btf_strongcomp  /* return # of strongly connected components */
 (
     /* input, not modified: */
@@ -170,7 +167,6 @@ int32_t btf_strongcomp  /* return # of strongly connected components */
     int32_t Work [ ]    /* size 4n */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int64_t btf_l_strongcomp (int64_t, int64_t *,
     int64_t *, int64_t *, int64_t *,
     int64_t *, int64_t *) ;
@@ -199,7 +195,6 @@ int64_t btf_l_strongcomp (int64_t, int64_t *,
  * number of strongly connected components found.
  */
 
-SUITESPARSE_PUBLIC 
 int32_t btf_order       /* returns number of blocks found */
 (
     /* --- input, not modified: --- */
@@ -220,7 +215,6 @@ int32_t btf_order       /* returns number of blocks found */
     int32_t Work [ ] /* size 5n */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
     int64_t *, int64_t *, int64_t *, int64_t *, int64_t *) ;
 
@@ -260,10 +254,10 @@ int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
  *      #endif
  */
 
-#define BTF_DATE "Dec 9, 2022"
+#define BTF_DATE "Jan 1, 2023"
 #define BTF_MAIN_VERSION   2
 #define BTF_SUB_VERSION    0
-#define BTF_SUBSUB_VERSION 2
+#define BTF_SUBSUB_VERSION 3
 
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)

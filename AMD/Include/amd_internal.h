@@ -65,7 +65,6 @@
 #undef EMPTY
 #endif
 
-#define GLOBAL SUITESPARSE_PUBLIC
 #define PRIVATE static
 
 /* FLIP is a "negation about -1", and is used to mark an integer i that is
@@ -160,7 +159,7 @@
 /* AMD routine definitions (not user-callable) */
 /* ------------------------------------------------------------------------- */
 
-GLOBAL size_t AMD_aat
+size_t AMD_aat
 (
     Int n,
     const Int Ap [ ],
@@ -170,7 +169,7 @@ GLOBAL size_t AMD_aat
     double Info [ ]
 ) ;
 
-GLOBAL void AMD_1
+void AMD_1
 (
     Int n,
     const Int Ap [ ],
@@ -184,7 +183,7 @@ GLOBAL void AMD_1
     double Info [ ]
 ) ;
 
-GLOBAL void AMD_postorder
+void AMD_postorder
 (
     Int nn,
     Int Parent [ ],
@@ -196,7 +195,7 @@ GLOBAL void AMD_postorder
     Int Stack [ ]
 ) ;
 
-GLOBAL Int AMD_post_tree
+Int AMD_post_tree
 (
     Int root,
     Int k,
@@ -209,7 +208,7 @@ GLOBAL Int AMD_post_tree
 #endif
 ) ;
 
-GLOBAL void AMD_preprocess
+void AMD_preprocess
 (
     Int n,
     const Int Ap [ ],
@@ -229,11 +228,11 @@ GLOBAL void AMD_preprocess
 /* from assert.h:  assert macro */
 #include <assert.h>
 
-GLOBAL Int AMD_debug ;
+extern Int AMD_debug ;
 
-GLOBAL void AMD_debug_init ( char *s ) ;
+void AMD_debug_init ( char *s ) ;
 
-GLOBAL void AMD_dump
+void AMD_dump
 (
     Int n,
     Int Pe [ ],

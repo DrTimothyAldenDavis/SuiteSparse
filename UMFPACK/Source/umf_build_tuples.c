@@ -20,7 +20,7 @@
 #include "umf_build_tuples.h"
 #include "umf_mem_alloc_tail_block.h"
 
-GLOBAL Int UMF_build_tuples
+Int UMF_build_tuples
 (
     NumericType *Numeric,
     WorkType *Work

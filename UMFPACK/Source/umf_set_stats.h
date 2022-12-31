@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_set_stats
+void UMF_set_stats
 (
     double Info [ ],
     SymbolicType *Symbolic,

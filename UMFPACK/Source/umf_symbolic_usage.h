@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL double UMF_symbolic_usage
+double UMF_symbolic_usage
 (
     Int n_row,
     Int n_col,

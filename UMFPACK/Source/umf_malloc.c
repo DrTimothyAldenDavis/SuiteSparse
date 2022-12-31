@@ -40,7 +40,7 @@ int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
 #endif
 #endif
 
-GLOBAL void *UMF_malloc
+void *UMF_malloc
 (
     Int n_objects,
     size_t size_of_object

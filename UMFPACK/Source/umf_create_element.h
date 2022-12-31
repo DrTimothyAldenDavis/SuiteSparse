@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_create_element
+Int UMF_create_element
 (
     NumericType *Numeric,
     WorkType *Work,

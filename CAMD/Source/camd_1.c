@@ -26,7 +26,7 @@
 
 #include "camd_internal.h"
 
-GLOBAL void CAMD_1
+void CAMD_1
 (
     Int n,		/* n > 0 */
     const Int Ap [ ],	/* input of size n+1, not modified */

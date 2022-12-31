@@ -737,7 +737,7 @@ PRIVATE Int finish_permutation
 /* === UMF_singletons ======================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMF_singletons
+Int UMF_singletons
 (
 
     /* input, not modified: */

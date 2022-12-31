@@ -76,7 +76,7 @@ PRIVATE int rescale_determinant
 /* === UMFPACK_get_determinant ============================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_get_determinant
+int UMFPACK_get_determinant
 (
     double *Mx,
 #ifdef COMPLEX

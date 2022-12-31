@@ -20,9 +20,9 @@
 /* ========================================================================== */
 
 #ifdef DROP
-GLOBAL Int UMF_store_lu_drop
+Int UMF_store_lu_drop
 #else
-GLOBAL Int UMF_store_lu
+Int UMF_store_lu
 #endif
 (
     NumericType *Numeric,

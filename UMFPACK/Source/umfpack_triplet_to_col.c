@@ -44,7 +44,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_triplet_to_col
+int UMFPACK_triplet_to_col
 (
     Int n_row,
     Int n_col,

@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_fsize
+void UMF_fsize
 (
     Int nn,
     Int MaxFsize [ ],

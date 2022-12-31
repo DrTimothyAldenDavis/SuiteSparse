@@ -110,11 +110,10 @@ void my_free2 (void *p)
 
 void normal_memory_handler ( void )
 {
-
-    SuiteSparse_config.malloc_func = malloc ;
-    SuiteSparse_config.calloc_func = calloc ;
-    SuiteSparse_config.realloc_func = realloc ;
-    SuiteSparse_config.free_func = free ;
+    SuiteSparse_config_malloc_func_set ((void *) malloc) ;
+    SuiteSparse_config_calloc_func_set ((void *) calloc) ;
+    SuiteSparse_config_realloc_func_set ((void *) realloc) ;
+    SuiteSparse_config_free_func_set ((void *) free) ;
 
     cm->error_handler = my_handler ;
     CHOLMOD(free_work) (cm) ;
@@ -127,10 +126,10 @@ void normal_memory_handler ( void )
 
 void test_memory_handler ( void )
 {
-    SuiteSparse_config.malloc_func = my_malloc2 ;
-    SuiteSparse_config.calloc_func = my_calloc2 ;
-    SuiteSparse_config.realloc_func = my_realloc2 ;
-    SuiteSparse_config.free_func = my_free2 ;
+    SuiteSparse_config_malloc_func_set ((void *) my_malloc2) ;
+    SuiteSparse_config_calloc_func_set ((void *) my_calloc2) ;
+    SuiteSparse_config_realloc_func_set ((void *) my_realloc2) ;
+    SuiteSparse_config_free_func_set ((void *) my_free2) ;
 
     cm->error_handler = NULL ;
     CHOLMOD(free_work) (cm) ;

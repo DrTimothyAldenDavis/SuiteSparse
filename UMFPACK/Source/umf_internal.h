@@ -736,8 +736,8 @@ typedef struct	/* SWType */
 /* for testing out-of-memory conditions: */
 #define UMF_TCOV_TEST
 
-GLOBAL int umf_fail, umf_fail_lo, umf_fail_hi ;
-GLOBAL int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+extern int umf_fail, umf_fail_lo, umf_fail_hi ;
+extern int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
 
 /* for testing malloc count: */
 #define UMF_MALLOC_COUNT

@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( AMD_DATE "Dec 29, 2022" )
+set ( AMD_DATE "Jan 1, 2023" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 0 )
 set ( AMD_VERSION_SUB   3 )
@@ -57,7 +57,7 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

@@ -29,7 +29,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_transpose
+int UMFPACK_transpose
 (
     Int n_row,
     Int n_col,

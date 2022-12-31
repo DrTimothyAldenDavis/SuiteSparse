@@ -16,7 +16,7 @@
 
 #define PRI(format,x) { if (x >= 0) { SUITESPARSE_PRINTF ((format, x)) ; }}
 
-GLOBAL void AMD_info
+void AMD_info
 (
     double Info [ ]
 )

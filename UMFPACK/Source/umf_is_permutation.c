@@ -13,7 +13,7 @@
 #include "umf_internal.h"
 #include "umf_is_permutation.h"
 
-GLOBAL Int UMF_is_permutation
+Int UMF_is_permutation
 (
     const Int P [ ],	/* permutation of size r */
     Int W [ ],		/* workspace of size n */
