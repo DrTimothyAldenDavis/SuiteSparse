@@ -89,7 +89,8 @@ set_target_properties ( amd PROPERTIES
     VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${AMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/amd.h" )
+    PUBLIC_HEADER "Include/amd.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static amd library properties

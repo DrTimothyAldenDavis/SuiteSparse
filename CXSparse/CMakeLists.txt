@@ -71,7 +71,8 @@ set_target_properties ( cxsparse PROPERTIES
     VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CXSPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cs.h" )
+    PUBLIC_HEADER "Include/cs.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static cxsparse library properties

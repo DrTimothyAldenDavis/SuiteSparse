@@ -79,7 +79,8 @@ set_target_properties ( suitesparseconfig PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${SUITESPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "SuiteSparse_config.h" )
+    PUBLIC_HEADER "SuiteSparse_config.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static suitesparseconfig library properties

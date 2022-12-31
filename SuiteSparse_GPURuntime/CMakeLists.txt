@@ -93,7 +93,8 @@ set_target_properties ( suitesparse_gpuruntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp" )
+    PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( suitesparse_gpuruntime PUBLIC
         ${CUDAToolkit_INCLUDE_DIRS}

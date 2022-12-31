@@ -193,7 +193,8 @@ endif ()
 add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_dylib
-        PROPERTIES OUTPUT_NAME mongoose)
+        PROPERTIES OUTPUT_NAME mongoose
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
 

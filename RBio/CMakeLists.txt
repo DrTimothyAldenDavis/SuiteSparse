@@ -71,7 +71,8 @@ set_target_properties ( rbio PROPERTIES
     VERSION ${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${RBIO_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/RBio.h" )
+    PUBLIC_HEADER "Include/RBio.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static rbio library properties

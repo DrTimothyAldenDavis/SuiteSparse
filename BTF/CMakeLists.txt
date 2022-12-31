@@ -71,7 +71,8 @@ set_target_properties ( btf PROPERTIES
     VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${BTF_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/btf.h" )
+    PUBLIC_HEADER "Include/btf.h" 
+    WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 #-------------------------------------------------------------------------------
 # static btf library properties

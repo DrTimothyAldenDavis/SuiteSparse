@@ -87,7 +87,8 @@ set_target_properties ( csparse PROPERTIES
     VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CSPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cs.h" )
+    PUBLIC_HEADER "Include/cs.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static csparse library properties
@@ -108,7 +109,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( WIN32 )
+if ( NOT WIN32 )
     target_link_libraries ( csparse PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( csparse_static PUBLIC m )

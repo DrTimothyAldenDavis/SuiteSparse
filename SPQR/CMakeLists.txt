@@ -130,7 +130,8 @@ set_target_properties ( spqr PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
     CXX_STANDARD_REQUIRED 11
     C_STANDARD_REQUIRED 11
-    SOVERSION ${SPQR_VERSION_MAJOR} )
+    SOVERSION ${SPQR_VERSION_MAJOR}
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static spqr library properties

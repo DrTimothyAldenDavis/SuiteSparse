@@ -74,7 +74,8 @@ set_target_properties ( camd PROPERTIES
     VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CAMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/camd.h" )
+    PUBLIC_HEADER "Include/camd.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static camd library properties
