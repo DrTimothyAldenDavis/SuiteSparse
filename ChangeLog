@@ -1,3 +1,13 @@
+Jan 1, 2023: version 7.0.0
+
+    * SuiteSparse_config: now v7.0.0
+    * SuiteSparse_config struct: removed from external visibility to simplify
+        the Windows build, so that no global data is externally visible.
+        This requires a major version number increase from v6.x to v7.x).
+        Added get/set methods to access the contents of the struct.
+    * NFORTRAN: option added to ignore any Fortran methods, even if a Fortran
+        compiler is available.
+
 Dec 29, 2022: SuiteSparse 6.0.4
 
     * NFORTRAN: option added to disable Fortran entirely
