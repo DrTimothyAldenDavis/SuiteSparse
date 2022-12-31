@@ -57,10 +57,10 @@ all: library
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
 	( cd build && ./umfpack_simple )
-	- ( cd build && ./umfpack_di_demo > umfpack_di_demo.out && diff ../Demo/umfpack_di_demo.out umfpack_di_demo.out )
-	- ( cd build && ./umfpack_dl_demo > umfpack_dl_demo.out && diff ../Demo/umfpack_dl_demo.out umfpack_dl_demo.out )
-	- ( cd build && ./umfpack_zi_demo > umfpack_zi_demo.out && diff ../Demo/umfpack_zi_demo.out umfpack_zi_demo.out )
-	- ( cd build && ./umfpack_zl_demo > umfpack_zl_demo.out && diff ../Demo/umfpack_zl_demo.out umfpack_zl_demo.out )
+	- ( cd build && ./umfpack_di_demo > umfpack_di_demo.out && diff --strip-trailing-cr ../Demo/umfpack_di_demo.out umfpack_di_demo.out )
+	- ( cd build && ./umfpack_dl_demo > umfpack_dl_demo.out && diff --strip-trailing-cr ../Demo/umfpack_dl_demo.out umfpack_dl_demo.out )
+	- ( cd build && ./umfpack_zi_demo > umfpack_zi_demo.out && diff --strip-trailing-cr ../Demo/umfpack_zi_demo.out umfpack_zi_demo.out )
+	- ( cd build && ./umfpack_zl_demo > umfpack_zl_demo.out && diff --strip-trailing-cr ../Demo/umfpack_zl_demo.out umfpack_zl_demo.out )
 
 # demos requiring a Fortran compiler
 fdemos: demos
@@ -87,9 +87,9 @@ fdemos: demos
 	( cd build && ./readhb_size    < ../Demo/HB/arc130.rua > tmp_Asize      )
 	( cd build && ./umf4 a 1e-6                                             )
 	( cd build && ./umf4hb         < ../Demo/HB/west0067.rua > umf4hb.out   )
-	- diff ./Demo/umf4hb.out  ./build/umf4hb.out 
+	- diff --strip-trailing-cr ./Demo/umf4hb.out  ./build/umf4hb.out 
 	( cd build && ./umf4zhb        < ../Demo/HB/qc324.cua > umf4zhb.out     )
-	- diff ./Demo/umf4zhb.out ./build/umf4zhb.out
+	- diff --strip-trailing-cr ./Demo/umf4zhb.out ./build/umf4zhb.out
 
 cov:
 	( cd Tcov && $(MAKE) )

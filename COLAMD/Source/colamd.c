@@ -1043,7 +1043,6 @@ size_t COLAMD_recommended	/* returns recommended value of Alen. */
     s = t_add (s, r, &ok) ;
     s = t_add (s, n_col, &ok) ;	    /* elbow room */
     s = t_add (s, nnz/5, &ok) ;	    /* elbow room */
-    ok = ok && (s < Int_MAX) ;
     return (ok ? s : 0) ;
 }
 
@@ -1542,7 +1541,7 @@ int COLAMD_MAIN		/* returns TRUE if successful, FALSE otherwise*/
     need = t_add (need, Col_size, &ok) ;
     need = t_add (need, Row_size, &ok) ;
 
-    if (!ok || need > (size_t) Alen || need > Int_MAX)
+    if (!ok || need > (size_t) Alen)
     {
 	/* not enough space in array A to perform the ordering */
 	stats [COLAMD_STATUS] = COLAMD_ERROR_A_too_small ;

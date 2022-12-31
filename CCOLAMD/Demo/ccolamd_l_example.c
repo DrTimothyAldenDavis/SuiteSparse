@@ -107,11 +107,11 @@ int main (void)
     for (col = 0 ; col < A_NCOL ; col++)
     {
 	length = p [col+1] - p [col] ;
-    	printf ("Column %ld, with %ld entries:\n", col, length) ;
+    	printf ("Column %"PRId64", with %"PRId64" entries:\n", col, length) ;
 	for (pp = p [col] ; pp < p [col+1] ; pp++)
 	{
 	    row = A [pp] ;
-	    printf ("    row %ld\n", row) ;
+	    printf ("    row %"PRId64"\n", row) ;
 	}
     }
 
@@ -133,10 +133,10 @@ int main (void)
     /* ====================================================================== */
 
     printf ("ccolamd_l column ordering:\n") ;
-    printf ("1st column: %ld\n", p [0]) ;
-    printf ("2nd column: %ld\n", p [1]) ;
-    printf ("3rd column: %ld\n", p [2]) ;
-    printf ("4th column: %ld\n", p [3]) ;
+    printf ("1st column: %"PRId64"\n", p [0]) ;
+    printf ("2nd column: %"PRId64"\n", p [1]) ;
+    printf ("3rd column: %"PRId64"\n", p [2]) ;
+    printf ("4th column: %"PRId64"\n", p [3]) ;
 
     /* ====================================================================== */
     /* dump the strictly lower triangular part of symmetric input matrix B */
@@ -147,11 +147,11 @@ int main (void)
     for (col = 0 ; col < B_N ; col++)
     {
 	length = q [col+1] - q [col] ;
-    	printf ("Column %ld, with %ld entries:\n", col, length) ;
+    	printf ("Column %"PRId64", with %"PRId64" entries:\n", col, length) ;
 	for (pp = q [col] ; pp < q [col+1] ; pp++)
 	{
 	    row = B [pp] ;
-	    printf ("    row %ld\n", row) ;
+	    printf ("    row %"PRId64"\n", row) ;
 	}
     }
 
@@ -174,11 +174,11 @@ int main (void)
     /* ====================================================================== */
 
     printf ("csymamd_l column ordering:\n") ;
-    printf ("1st row/column: %ld\n", perm [0]) ;
-    printf ("2nd row/column: %ld\n", perm [1]) ;
-    printf ("3rd row/column: %ld\n", perm [2]) ;
-    printf ("4th row/column: %ld\n", perm [3]) ;
-    printf ("5th row/column: %ld\n", perm [4]) ;
+    printf ("1st row/column: %"PRId64"\n", perm [0]) ;
+    printf ("2nd row/column: %"PRId64"\n", perm [1]) ;
+    printf ("3rd row/column: %"PRId64"\n", perm [2]) ;
+    printf ("4th row/column: %"PRId64"\n", perm [3]) ;
+    printf ("5th row/column: %"PRId64"\n", perm [4]) ;
 
     return (0) ;
 }

@@ -283,7 +283,7 @@ static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
     }
     else
     {
-        printf ("n %ld nnz(A) %ld nnz(L+U+F) %ld resid %g\n"
+        printf ("n %"PRId64" nnz(A) %"PRId64" nnz(L+U+F) %"PRId64" resid %g\n"
             "recip growth %g condest %g rcond %g flops %g\n",
             n, Ap [n], lunz, rnorm, Common.rgrowth, Common.condest,
             Common.rcond, Common.flops) ;

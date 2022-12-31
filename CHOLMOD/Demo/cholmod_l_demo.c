@@ -152,7 +152,7 @@ int main (int argc, char **argv)
            uses zomplex matrix exclusively. */
         double *Ax = A->x ;
         int64_t nz = cholmod_l_nnz (A, cm) ;
-        printf ("nz: %ld\n", nz) ;
+        printf ("nz: %"PRId64"\n", nz) ;
         double *Ax2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         double *Az2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         for (i = 0 ; i < nz ; i++)
@@ -176,7 +176,7 @@ int main (int argc, char **argv)
       printf ("\n\n     SCALING DIAGONAL   \n\n");
       
       // create diagonal
-      printf ("%ld,%ld,%d\n", A->nrow, A->ncol, A->xtype );
+      printf ("%"PRId64",%"PRId64",%d\n", A->nrow, A->ncol, A->xtype );
 
       cholmod_sparse *D = cholmod_l_speye (A->nrow, A->ncol, A->xtype, cm );
       printf ("sparse done \n");

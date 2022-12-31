@@ -56,13 +56,13 @@ void check_residual
         // find the relative residual, except for least-squares systems
         rnorm /= (anorm * xnorm) ;
     }
-    printf ("relative norm(Ax-b): %8.1e rank: %6ld  "
+    printf ("relative norm(Ax-b): %8.1e rank: %6" PRId64 "  "
         "rel. norm(A'(Ax-b)) %8.1e\n", rnorm, rnk, atrnorm) ;
     cholmod_l_free_dense (&r, cc) ;
     cholmod_l_free_dense (&atr, cc) ;
 #else
     printf ("relative norm(Ax-b): not computed (requires CHOLMOD/MatrixOps)\n");
-    printf ("rank: %6ld\n", rnk) ;
+    printf ("rank: %6" PRId64 "\n", rnk) ;
 #endif
 }
 
@@ -92,7 +92,8 @@ int main (int argc, char **argv)
     m = A->nrow ;
     n = A->ncol ;
 
-    printf ("Matrix %6ld-by-%-6ld nnz: %6ld\n", m, n, cholmod_l_nnz (A, cc)) ;
+    printf ("Matrix %6" PRId64 "-by-%-6" PRId64 " nnz: %6" PRId64 "\n",
+        m, n, cholmod_l_nnz (A, cc)) ;
 
     // B = ones (m,1), a dense right-hand-side of the same type as A
     B = cholmod_l_ones (m, 1, A->xtype, cc) ;

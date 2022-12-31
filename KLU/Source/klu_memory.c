@@ -84,7 +84,7 @@ void *KLU_malloc        /* returns pointer to the newly malloc'd block */
         Common->status = KLU_INVALID ;
         p = NULL ;
     }
-    else if (n >= Int_MAX)
+    else if (sizeof (size_t) > sizeof (Int) && n >= Int_MAX)
     {
         /* object is too big to allocate; p[i] where i is an Int will not
          * be enough. */
@@ -195,7 +195,7 @@ void *KLU_realloc       /* returns pointer to reallocated block */
         /* A fresh object is being allocated. */
         p = KLU_malloc (nnew, size, Common) ;
     }
-    else if (nnew >= Int_MAX)
+    else if (sizeof (size_t) > sizeof (Int) && nnew >= Int_MAX)
     {
         /* failure: nnew is too big.  Do not change p */
         Common->status = KLU_TOO_LARGE ;

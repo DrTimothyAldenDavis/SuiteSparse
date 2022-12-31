@@ -435,11 +435,11 @@ static inline int64_t spex_cast_double_to_int64 (double x)
     {
         return (0) ;
     }
-    else if (x > INT64_MAX)
+    else if (x >= (double) INT64_MAX)
     {
         return (INT64_MAX) ;
     }
-    else if (x < INT64_MIN)
+    else if (x <= (double) INT64_MIN)
     {
         return (INT64_MIN) ;
     }
