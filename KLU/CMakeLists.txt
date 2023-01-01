@@ -204,11 +204,11 @@ if ( NOT NCHOLMOD )
         ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
         ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu PUBLIC
+        target_link_libraries ( klu_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
             ${AMD_STATIC} ${COLAMD_STATIC}
             ${CAMD_STATIC} ${CCOLAMD_STATIC} )
-        target_link_libraries ( klu_cholmod PUBLIC
+        target_link_libraries ( klu_cholmod_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
             ${AMD_STATIC} ${COLAMD_STATIC}
             ${CAMD_STATIC} ${CCOLAMD_STATIC} )
@@ -217,7 +217,8 @@ if ( NOT NCHOLMOD )
     # klu:
     target_link_libraries ( klu_cholmod PUBLIC klu ${BTF_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu_cholmod_static PUBLIC klu_static ${BTF_STATIC} )
+        target_link_libraries ( klu_cholmod_static PUBLIC
+            klu_static ${BTF_STATIC} )
     endif ( )
 
 endif ( )
