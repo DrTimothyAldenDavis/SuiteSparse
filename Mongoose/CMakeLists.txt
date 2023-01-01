@@ -50,7 +50,7 @@ set(Mongoose_DATE "Jan 1, 2023")
 set(Mongoose_NUMERIC_DATE "2023-01-01")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 3)
+set(Mongoose_VERSION_PATCH 4)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -61,8 +61,8 @@ include ( GNUInstallDirs )
 
 # Configure files to pass CMake information
 configure_file (
-        "Version/Mongoose_Version.hpp.in"
-        "${PROJECT_SOURCE_DIR}/Include/Mongoose_Version.hpp"
+        "Version/Mongoose.hpp.in"
+        "${PROJECT_SOURCE_DIR}/Include/Mongoose.hpp"
         NEWLINE_STYLE LF
 )
 configure_file (
@@ -100,7 +100,6 @@ set(MONGOOSE_FILES
         Include/Mongoose_Random.hpp
         Include/Mongoose_Refinement.hpp
         Include/Mongoose_Sanitize.hpp
-        Include/Mongoose_Version.hpp
         Include/Mongoose_Waterdance.hpp
         Source/Mongoose_BoundaryHeap.cpp
         Source/Mongoose_Coarsening.cpp

@@ -75,16 +75,22 @@ string (
     ${SPEX_FILENAME}
 )
 
-if ( NOT SPEX_VERSION )
+# set ( SPEX_VERSION "" )
+if ( EXISTS "${SPEX_INCLUDE_DIR}" AND NOT SPEX_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h _VERSION_LINE REGEX "define[ ]+SPEX_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+SPEX_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPEX_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( SPEX_VERSION "${_SPEX_MAIN_VERSION}.${_SPEX_SUB_VERSION}.${_SPEX_SUBSUB_VERSION}" )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_MAJOR_STR
+        REGEX "define SPEX_VERSION_MAJOR " )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_MINOR_STR
+        REGEX "define SPEX_VERSION_MINOR " )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_PATCH_STR
+        REGEX "define SPEX_VERSION_SUB " )
+    message ( STATUS "major: ${SPEX_MAJOR_STR}" )
+    message ( STATUS "minor: ${SPEX_MINOR_STR}" )
+    message ( STATUS "patch: ${SPEX_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SPEX_MAJOR ${SPEX_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPEX_MINOR ${SPEX_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPEX_PATCH ${SPEX_PATCH_STR} )
+    set (SPEX_VERSION "${SPEX_MAJOR}.${SPEX_MINOR}.${SPEX_PATCH}")
 endif ( )
 
 set ( SPEX_LIBRARIES ${SPEX_LIBRARY} )
@@ -110,5 +116,9 @@ if ( SPEX_FOUND )
     message ( STATUS "SPEX static:  ${SPEX_STATIC}" )
 else ( )
     message ( STATUS "SPEX not found" )
+    set ( SPEX_INCLUDE_DIR "" )
+    set ( SPEX_LIBRARIES "" )
+    set ( SPEX_LIBRARY "" )
+    set ( SPEX_STATIC "" )
 endif ( )
 

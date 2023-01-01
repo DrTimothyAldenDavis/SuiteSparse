@@ -74,16 +74,22 @@ string (
     ${CHOLMOD_FILENAME}
 )
 
-if ( NOT CHOLMOD_VERSION )
+# set ( CHOLMOD_VERSION "" )
+if ( EXISTS "${CHOLMOD_INCLUDE_DIR}" AND NOT CHOLMOD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h _VERSION_LINE REGEX "define[ ]+CHOLMOD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CHOLMOD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CHOLMOD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CHOLMOD_VERSION "${_CHOLMOD_MAIN_VERSION}.${_CHOLMOD_SUB_VERSION}.${_CHOLMOD_SUBSUB_VERSION}")
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_MAJOR_STR
+        REGEX "define CHOLMOD_MAIN_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_MINOR_STR
+        REGEX "define CHOLMOD_SUB_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_PATCH_STR
+        REGEX "define CHOLMOD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CHOLMOD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CHOLMOD_MINOR_STR}" )
+    message ( STATUS "patch: ${CHOLMOD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_MAJOR ${CHOLMOD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_MINOR ${CHOLMOD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_PATCH ${CHOLMOD_PATCH_STR} )
+    set (CHOLMOD_VERSION "${CHOLMOD_MAJOR}.${CHOLMOD_MINOR}.${CHOLMOD_PATCH}")
 endif ( )
 
 set (CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} )
@@ -109,5 +115,9 @@ if ( CHOLMOD_FOUND )
     message ( STATUS "CHOLMOD static:  ${CHOLMOD_STATIC}" )
 else ( )
     message ( STATUS "CHOLMOD not found" )
+    set ( CHOLMOD_INCLUDE_DIR "" )
+    set ( CHOLMOD_LIBRARIES "" )
+    set ( CHOLMOD_LIBRARY "" )
+    set ( CHOLMOD_STATIC "" )
 endif ( )
 

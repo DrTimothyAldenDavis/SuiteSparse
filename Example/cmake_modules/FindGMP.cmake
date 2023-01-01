@@ -75,9 +75,9 @@ if ( GMP_VERSION1 STREQUAL "" )
         REGEX "define __GNU_MP_VERSION_MINOR" )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_PATCH_STRING
         REGEX "define __GNU_MP_VERSION_PATCH" )
-    message ( STATUS "major from gmp.h: ${GMP_VER_MAJOR_STRING}" )
-    message ( STATUS "minor from gmp.h: ${GMP_VER_MINOR_STRING}" )
-    message ( STATUS "patch from gmp.h: ${GMP_VER_PATCH_STRING}" )
+    message ( STATUS "major: ${GMP_VER_MAJOR_STRING}" )
+    message ( STATUS "minor: ${GMP_VER_MINOR_STRING}" )
+    message ( STATUS "patch: ${GMP_VER_PATCH_STRING}" )
     if ( GMP_VER_MAJOR_STRING STREQUAL "")
         # look at the end of the filename for the version number
         string (
@@ -118,5 +118,9 @@ if ( GMP_FOUND )
     message ( STATUS "gmp static:  ${GMP_STATIC}" )
 else ( )
     message ( STATUS "gmp not found" )
+    set ( GMP_INCLUDE_DIR "" )
+    set ( GMP_LIBRARIES "" )
+    set ( GMP_LIBRARY "" )
+    set ( GMP_STATIC "" )
 endif ( )
 

@@ -75,16 +75,22 @@ string (
     ${COLAMD_FILENAME}
 )
 
-if ( NOT COLAMD_VERSION )
+# set ( COLAMD_VERSION "" )
+if ( EXISTS "${COLAMD_INCLUDE_DIR}" AND NOT COLAMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h _VERSION_LINE REGEX "define[ ]+COLAMD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+COLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _COLAMD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (COLAMD_VERSION "${_COLAMD_MAIN_VERSION}.${_COLAMD_SUB_VERSION}.${_COLAMD_SUBSUB_VERSION}")
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_MAJOR_STR
+        REGEX "define COLAMD_MAIN_VERSION" )
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_MINOR_STR
+        REGEX "define COLAMD_SUB_VERSION" )
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_PATCH_STR
+        REGEX "define COLAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${COLAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${COLAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${COLAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" COLAMD_MAJOR ${COLAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" COLAMD_MINOR ${COLAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" COLAMD_PATCH ${COLAMD_PATCH_STR} )
+    set (COLAMD_VERSION "${COLAMD_MAJOR}.${COLAMD_MINOR}.${COLAMD_PATCH}")
 endif ( )
 
 set (COLAMD_LIBRARIES ${COLAMD_LIBRARY})
@@ -110,5 +116,9 @@ if ( COLAMD_FOUND )
     message ( STATUS "COLAMD static:  ${COLAMD_STATIC}" )
 else ( )
     message ( STATUS "COLAMD not found" )
+    set ( COLAMD_INCLUDE_DIR "" )
+    set ( COLAMD_LIBRARIES "" )
+    set ( COLAMD_LIBRARY "" )
+    set ( COLAMD_STATIC "" )
 endif ( )
 

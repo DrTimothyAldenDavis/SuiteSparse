@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindMPFR.make, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
+# FindMPFR.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -69,7 +69,7 @@ if ( MPFR_VERSION1 STREQUAL "" )
     #       #define MPFR_VERSION_STRING "4.0.2"
     file ( STRINGS ${MPFR_INCLUDE_DIR}/mpfr.h MPFR_VER_STRING
         REGEX "MPFR_VERSION_STRING" )
-    message ( STATUS "from mpfr.h file: ${MPFR_VER_STRING}" )
+    message ( STATUS "major/minor/patch: ${MPFR_VER_STRING}" )
     if ( MPFR_VER_STRING STREQUAL "")
         # look at the end of the filename for the version number
         string (
@@ -107,5 +107,9 @@ if ( MPFR_FOUND )
     message ( STATUS "mpfr static:  ${MPFR_STATIC}" )
 else ( )
     message ( STATUS "mpfr not found" )
+    set ( MPFR_INCLUDE_DIR "" )
+    set ( MPFR_LIBRARIES "" )
+    set ( MPFR_LIBRARY "" )
+    set ( MPFR_STATIC "" )
 endif ( )
 

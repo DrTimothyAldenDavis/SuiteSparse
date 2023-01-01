@@ -81,16 +81,22 @@ string (
     ${CXSPARSE_FILENAME}
 )
 
-if ( NOT CXSPARSE_VERSION )
+# set ( CXSPARSE_VERSION "" )
+if ( EXISTS "${CXSPARSE_INCLUDE_DIR}" AND NOT CXSPARSE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h _VERSION_LINE REGEX "define[ ]+CXSPARSE_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CXSPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _CXSPARSE_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CXSPARSE_VERSION "${_CXSPARSE_MAIN_VERSION}.${_CXSPARSE_SUB_VERSION}.${_CXSPARSE_SUBSUB_VERSION}")
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_MAJOR_STR
+        REGEX "define CS_VER" )
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_MINOR_STR
+        REGEX "define CS_SUBVER" )
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_PATCH_STR
+        REGEX "define CS_SUBSUB" )
+    message ( STATUS "major: ${CXSPARSE_MAJOR_STR}" )
+    message ( STATUS "minor: ${CXSPARSE_MINOR_STR}" )
+    message ( STATUS "patch: ${CXSPARSE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_MAJOR ${CXSPARSE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_MINOR ${CXSPARSE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_PATCH ${CXSPARSE_PATCH_STR} )
+    set (CXSPARSE_VERSION "${CXSPARSE_MAJOR}.${CXSPARSE_MINOR}.${CXSPARSE_PATCH}")
 endif ( )
 
 set ( CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY} )
@@ -116,5 +122,9 @@ if ( CXSPARSE_FOUND )
     message ( STATUS "CXSparse static:  ${CXSPARSE_STATIC}" )
 else ( )
     message ( STATUS "CXSparse not found" )
+    set ( CXSPARSE_INCLUDE_DIR "" )
+    set ( CXSPARSE_LIBRARIES "" )
+    set ( CXSPARSE_LIBRARY "" )
+    set ( CXSPARSE_STATIC "" )
 endif ( )
 

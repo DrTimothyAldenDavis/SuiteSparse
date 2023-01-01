@@ -75,16 +75,22 @@ string (
     ${SPQR_FILENAME}
 )
 
-if ( NOT SPQR_VERSION )
+# set ( SPQR_VERSION "" )
+if ( EXISTS "${SPQR_INCLUDE_DIR}" AND NOT SPQR_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h _VERSION_LINE REGEX "define[ ]+SPQR_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+SPQR_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPQR_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( SPQR_VERSION "${_SPQR_MAIN_VERSION}.${_SPQR_SUB_VERSION}.${_SPQR_SUBSUB_VERSION}" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_MAJOR_STR
+        REGEX "define SPQR_MAIN_VERSION" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_MINOR_STR
+        REGEX "define SPQR_SUB_VERSION" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_PATCH_STR
+        REGEX "define SPQR_SUBSUB_VERSION" )
+    message ( STATUS "major: ${SPQR_MAJOR_STR}" )
+    message ( STATUS "minor: ${SPQR_MINOR_STR}" )
+    message ( STATUS "patch: ${SPQR_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SPQR_MAJOR ${SPQR_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPQR_MINOR ${SPQR_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPQR_PATCH ${SPQR_PATCH_STR} )
+    set (SPQR_VERSION "${SPQR_MAJOR}.${SPQR_MINOR}.${SPQR_PATCH}")
 endif ( )
 
 set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
@@ -110,5 +116,9 @@ if ( SPQR_FOUND )
     message ( STATUS "SPQR static:  ${SPQR_STATIC}" )
 else ( )
     message ( STATUS "SPQR not found" )
+    set ( SPQR_INCLUDE_DIR "" )
+    set ( SPQR_LIBRARIES "" )
+    set ( SPQR_LIBRARY "" )
+    set ( SPQR_STATIC "" )
 endif ( )
 
