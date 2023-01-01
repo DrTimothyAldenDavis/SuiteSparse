@@ -330,7 +330,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS} " )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
@@ -396,9 +396,9 @@ endif ( )
 
 # METIS and the Partition module:
 if ( NOT NPARTITION )
-      include_directories ( SuiteSparse_metis/GKlib )
-      include_directories ( SuiteSparse_metis/libmetis )
-      include_directories ( SuiteSparse_metis/include )
+    include_directories ( SuiteSparse_metis/GKlib )
+    include_directories ( SuiteSparse_metis/libmetis )
+    include_directories ( SuiteSparse_metis/include )
 endif ( )
 
 # CUDA

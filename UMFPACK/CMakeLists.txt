@@ -29,6 +29,9 @@ message ( STATUS "Building UMFPACK version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -61,16 +64,22 @@ include ( SuiteSparseBLAS )     # requires cmake 3.22
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
-    # look for CHOLMOD (optional fill-reducing orderings for KLU)
+    # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 4.0.3 )
-    if ( NOT CHOLMOD_FOUND )
+    find_package ( CHOLMOD_CUDA 4.0.3 )
+    # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
+    # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
+    find_package ( COLAMD 3.0.3 )
+    find_package ( CAMD 3.0.3 )
+    find_package ( CCOLAMD 3.0.3 )
+    if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
     endif ( )
 endif ( )
 
 if ( NCHOLMOD )
-    # tell KLU that CHOLMOD is not available
+    # tell UMFPACK that CHOLMOD is not available
     message ( STATUS "CHOLMOD not found or not requested" )
     add_compile_definitions ( NCHOLMOD )
 else ( )
@@ -132,7 +141,7 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( umfpack PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # OpenMP:
@@ -142,7 +151,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( umfpack PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( umfpack_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
@@ -159,7 +168,7 @@ endif ( )
 # amd:
 target_link_libraries ( umfpack PUBLIC ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( umfpack_static PUBLIC ${AMD_LIBRARIES} )
+    target_link_libraries ( umfpack_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # BLAS:
@@ -168,21 +177,28 @@ message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( umfpack PUBLIC ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( umfpack_static PUBLIC ${BLAS_LIBRARIES} )
+    target_link_libraries ( umfpack_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # cholmod:
 if ( NOT NCHOLMOD )
-    target_link_libraries ( umfpack PUBLIC ${CHOLMOD_LIBRARIES} )
+    # link with CHOLMOD and its dependencies, both required and optional
+    target_link_libraries ( umfpack PUBLIC
+        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${CHOLMOD_LIBRARIES} )
+        target_link_libraries ( umfpack_static PUBLIC
+            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
     endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # UMFPACK installation location
-#---------------------------------------------------------------Z--------------
+#-------------------------------------------------------------------------------
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
