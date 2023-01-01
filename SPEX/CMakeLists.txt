@@ -74,16 +74,6 @@ include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
-# compiler flags
-#-------------------------------------------------------------------------------
-
-# gcc -O3 complains about SPEX_mpq_init
-
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
-    set ( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O2" )
-endif ( )
-
-#-------------------------------------------------------------------------------
 # dynamic spex library properties
 #-------------------------------------------------------------------------------
 
@@ -119,7 +109,7 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( spex PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spex_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( spex_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # AMD:

@@ -36,6 +36,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
+include ( SuiteSparseFortran )
 
 #-------------------------------------------------------------------------------
 # define the project

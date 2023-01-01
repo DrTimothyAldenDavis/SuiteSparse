@@ -62,7 +62,8 @@ configure_file ( "Config/ldl_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic ldl library properties
@@ -99,20 +100,19 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
+    target_link_libraries ( ldl PUBLIC m )
+    if ( NOT NSTATIC )
+        target_link_libraries ( ldl_static PUBLIC m )
+    endif ( )
 endif ( )
 
-target_link_libraries ( ldl PUBLIC ${M_LIB}
+target_link_libraries ( ldl PUBLIC
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )
-    target_link_libraries ( ldl_static PUBLIC ${M_LIB}
-    ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
+    target_link_libraries ( ldl_static PUBLIC
+    ${SUITESPARSE_CONFIG_STATIC} ${AMD_STATIC} )
 endif ( )
-
-include_directories ( ${AMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # LDL installation location

@@ -2,7 +2,7 @@
 # SuiteSparse/COLAMD/CMakeLists.txt:  cmake for COLAMD
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 1998-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( COLAMD_DATE "Jan 1, 2022" )
+set ( COLAMD_DATE "Jan 1, 2023" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 0 )
 set ( COLAMD_VERSION_SUB   3 )

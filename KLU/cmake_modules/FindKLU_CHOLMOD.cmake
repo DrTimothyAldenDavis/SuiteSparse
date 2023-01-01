@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindKLU_CHOLMOD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindKLU_CHOLMOD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -66,18 +66,24 @@ find_library ( KLU_CHOLMOD_STATIC
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
-get_filename_component ( KLU_LIBRARY  ${KLU_LIBRARY} REALPATH )
-get_filename_component ( KLU_FILENAME ${KLU_LIBRARY} NAME )
+get_filename_component ( KLU_CHOLMOD_LIBRARY  ${KLU_CHOLMOD_LIBRARY} REALPATH )
+get_filename_component ( KLU_CHOLMOD_FILENAME ${KLU_CHOLMOD_LIBRARY} NAME )
 string (
     REGEX MATCH "[0-9]+.[0-9]+.[0-9]+"
-    KLU_VERSION
-    ${KLU_FILENAME}
+    KLU_CHOLMOD_VERSION
+    ${KLU_CHOLMOD_FILENAME}
 )
 
-if ( NOT KLU_VERSION )
-    # get version of the library from KLU
-    find_package ( KLU )
-    set ( KLU_CHOLMOD_VERSION "${KLU_VERSION}" )
+if ( NOT KLU_CHOLMOD_VERSION )
+    # if the version does not appear in the filename, read the include file
+    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
+        file (STRINGS ${KLU_CHOLMOD_INCLUDE_DIR}/klu.h _VERSION_LINE REGEX "define[ ]+KLU_${_VERSION}")
+        if (_VERSION_LINE)
+        string (REGEX REPLACE ".*define[ ]+KLU_${_VERSION}[ ]+([0-9]*).*" "\\1" _KLU_${_VERSION} "${_VERSION_LINE}")
+        endif ()
+        unset (_VERSION_LINE)
+    endforeach ()
+    set (KLU_CHOLMOD_VERSION "${_KLU_MAIN_VERSION}.${_KLU_SUB_VERSION}.${_KLU_SUBSUB_VERSION}")
 endif ( )
 
 set ( KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY} )

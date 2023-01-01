@@ -27,7 +27,6 @@ Files in SuiteSparse_config:
     Config/README.md.in                 README.md for all of SuiteSparse
 
     cmake_modules/FindSuiteSparse_config.cmake  how to find SuiteSparse_config
-    cmake_modules/SuiteSparseAtomic.cmake       determine if -latomic is needed
     cmake_modules/SuiteSparseBLAS.cmake         find BLAS for SuiteSparse
     cmake_modules/SuiteSparseBLAS32.cmake       when a 32-bit BLAS is found
     cmake_modules/SuiteSparseBLAS64.cmake       when a 64-bit BLAS is found

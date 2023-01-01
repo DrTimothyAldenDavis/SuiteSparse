@@ -224,13 +224,13 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( WIN32 )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
+# libm:
+if ( NOT WIN32 )
+    target_link_libraries ( graphblas PUBLIC m )
+    if ( NOT NSTATIC )
+        target_link_libraries ( graphblas_static PUBLIC m )
+    endif ( )
 endif ( )
-
-target_link_libraries ( graphblas_matlab PUBLIC ${M_LIB} )
 
 include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )

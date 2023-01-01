@@ -46,6 +46,7 @@ if ( NGPL )
 endif ( )
 
 include ( SuiteSparsePolicy )
+include ( SuiteSparseFortran )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -401,11 +402,13 @@ if ( NOT NPARTITION )
     include_directories ( SuiteSparse_metis/include )
 endif ( )
 
-# CUDA
+# cholmod_cuda
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
     target_link_libraries ( cholmod PUBLIC ${CHOLMOD_CUDA} )
-    target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
+    if ( NOT NSTATIC )
+        target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
