@@ -2,7 +2,7 @@
 # CXSparse/CMakeLists.txt:  cmake for CXSparse
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2006-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------

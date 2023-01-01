@@ -2,7 +2,7 @@
 # SuiteSparse/GPUQREngine/CMakeLists.txt
 #-------------------------------------------------------------------------------
 
-# GPUQREngine, Copyright (c) 2013-2022, Timothy A Davis, Sencer Nuri Yeralan,
+# GPUQREngine, Copyright (c) 2013-2023, Timothy A Davis, Sencer Nuri Yeralan,
 # and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( GPUQRENGINE_DATE "Jan 1, 2022" )
+set ( GPUQRENGINE_DATE "Jan 1, 2023" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
 set ( GPUQRENGINE_VERSION_SUB   3 )
@@ -73,11 +73,12 @@ set ( DEMO_OK false )
 
 if ( DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 4.0.2 )
-    find_package ( COLAMD 3.0.2 )
-    find_package ( AMD 3.0.2 )
-    find_package ( CAMD 3.0.2 )
-    find_package ( CCOLAMD 3.0.2 )
+    find_package ( AMD 3.0.3 )
+    find_package ( COLAMD 3.0.3 )
+    find_package ( CAMD 3.0.3 )
+    find_package ( CCOLAMD 3.0.3 )
+    find_package ( CHOLMOD 4.0.3 )
+    find_package ( CHOLMOD_CUDA 4.0.3 )
 endif ( )
 
 if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND AND AMD_FOUND AND COLAMD_FOUND AND 
@@ -226,7 +227,7 @@ if ( DEMO AND DEMO_OK )
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         ${CHOLMOD_LIBRARIES} ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} ${CHOLMOD_CUDA}
         ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
 
 else ( )

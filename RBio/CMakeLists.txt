@@ -95,14 +95,14 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( rbio PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( rbio PUBLIC m )
     if ( NOT NSTATIC )
-    target_link_libraries ( rbio_static PUBLIC m )
+        target_link_libraries ( rbio_static PUBLIC m )
     endif ( )
 endif ( )
 

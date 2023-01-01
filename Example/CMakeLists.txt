@@ -2,7 +2,7 @@
 # SuiteSparse/Example/CMakeLists.txt:  cmake for Example user library, "my"
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis, All Rights Reserved.
+# Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Jan 1, 2022" )
+set ( MY_DATE "Jan 1, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 2 )
 set ( MY_VERSION_PATCH 4 )
@@ -30,6 +30,10 @@ cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
+
+if ( WIN32 )
+    set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
+endif ( )
 
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C CXX )
@@ -65,8 +69,8 @@ find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
 find_package ( CXSparse 4.0.3 REQUIRED )
 find_package ( GPUQREngine 2.0.3 REQUIRED )
 find_package ( GraphBLAS 7.4.1 REQUIRED )
-find_package ( KLU_CHOLMOD 2.0.3 REQUIRED )
 find_package ( KLU 2.0.3 REQUIRED )
+find_package ( KLU_CHOLMOD 2.0.3 REQUIRED )
 find_package ( LDL 2.0.3 REQUIRED )
 find_package ( Mongoose 3.0.3 REQUIRED )
 find_package ( RBio 3.0.3 REQUIRED )
@@ -80,8 +84,7 @@ find_package ( UMFPACK 6.0.3 REQUIRED )
 find_package ( OpenMP REQUIRED )
 find_package ( GMP 6.1.2 REQUIRED )
 find_package ( MPFR 4.0.2 REQUIRED )
-# find_package ( BLAS REQUIRED )
-# find_package ( LAPACK REQUIRED )
+include ( SuiteSparseBLAS )
 
 #-------------------------------------------------------------------------------
 # configure files

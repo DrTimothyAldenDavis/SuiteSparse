@@ -2,7 +2,7 @@
 # SuiteSparse/CAMD/CMakeLists.txt:  cmake for CAMD
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2007-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Jan 1, 2022" )
+set ( CAMD_DATE "Jan 1, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
 set ( CAMD_VERSION_SUB   3 )

@@ -32,6 +32,15 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
 include ( SuiteSparsePolicy )
+include ( SuiteSparseFortran )
+
+if ( NOT NFORTRAN )
+    include ( FortranCInterface )
+else ( )
+    # No Fortran compiler available or enabled, configuration is not automatic.
+    set ( FortranCInterface_GLOBAL_MACRO  ${SUITESPARSE_C_TO_FORTRAN} )
+    set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -123,17 +132,19 @@ endif ( )
 
 # BLAS:
 if ( BLAS_FOUND )
+    # SuiteSparse_config does not itself require the BLAS.  It just needs to
+    # know which BLAS is going to be used by the rest of SuiteSparse so it
+    # can configure SuiteSparse_config.h properly.
     message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-#   SuiteSparse_config does not itself require the BLAS.  It just needs to
-#   know which BLAS is going to be used by the rest of SuiteSparse so it
-#   can configure SuiteSparse_config.h properly.
 endif ( )
 
 #-------------------------------------------------------------------------------
 # suitesparseconfig installation location
 #-------------------------------------------------------------------------------
+
+file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
@@ -143,7 +154,7 @@ if ( GLOBAL_INSTALL )
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
+        ${SUITESPARSE_CMAKE_MODULES}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
@@ -161,7 +172,7 @@ if ( INSIDE_SUITESPARSE )
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
+        ${SUITESPARSE_CMAKE_MODULES}
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
@@ -171,3 +182,4 @@ if ( INSIDE_SUITESPARSE )
 endif ( )
 
 include ( SuiteSparseReport )
+

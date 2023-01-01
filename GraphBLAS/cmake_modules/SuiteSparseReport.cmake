@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/SuiteSparseReport.cmake
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2012-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------

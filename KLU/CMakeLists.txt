@@ -29,8 +29,10 @@ message ( STATUS "Building KLU version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../BTF/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -56,9 +58,14 @@ find_package ( AMD 3.0.3 REQUIRED )
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
-    # look for CHOLMOD (optional fill-reducing orderings for UMFPACK)
-    find_package ( CHOLMOD 4.0.2 )
-    if ( NOT CHOLMOD_FOUND )
+    # look for CHOLMOD (optional fill-reducing orderings)
+    find_package ( CHOLMOD 4.0.3 )
+    find_package ( CHOLMOD_CUDA 4.0.3 )
+    # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
+    # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
+    find_package ( CAMD 3.0.3 )
+    find_package ( CCOLAMD 3.0.3 )
+    if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
     endif ( )
@@ -186,17 +193,31 @@ endif ( )
 
 if ( NOT NCHOLMOD )
 
-    # klu:
-    target_link_libraries ( klu_cholmod PUBLIC klu )
+    # cholmod:
+    # link with CHOLMOD and its dependencies, both required and optional
+    target_link_libraries ( klu PUBLIC
+        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+    target_link_libraries ( klu_cholmod PUBLIC
+        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu_cholmod_static PUBLIC klu_static )
+        target_link_libraries ( klu PUBLIC
+            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+        target_link_libraries ( klu_cholmod PUBLIC
+            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
     endif ( )
 
-    # cholmod:
-    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARY} )
+    # klu:
+    target_link_libraries ( klu_cholmod PUBLIC klu ${BTF_LIBRARIES} )
     if ( NOT NSTATIC )
-        # Note: linking with the dynamic CHOLMOD library
-        target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARY} )
+        target_link_libraries ( klu_cholmod_static PUBLIC klu_static ${BTF_STATIC} )
     endif ( )
 
 endif ( )

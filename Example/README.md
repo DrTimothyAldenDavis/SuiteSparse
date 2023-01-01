@@ -1,6 +1,6 @@
 SuiteSparse/Example: create a package that relies on SuiteSparse
 
-Copyright (c) 2022, Timothy A. Davis, All Rights Reserved.
+Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
 SPDX-License-Identifier: BSD-3-clause
 
 An example of how to use the SuiteSparse `Find*.cmake` files in cmake

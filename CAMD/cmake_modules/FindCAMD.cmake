@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCAMD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCAMD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------

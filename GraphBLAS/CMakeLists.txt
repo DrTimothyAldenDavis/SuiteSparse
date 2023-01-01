@@ -359,17 +359,15 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( WIN32 )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
+# libm:
+if ( NOT WIN32 )
+    target_link_libraries ( graphblas PUBLIC m )
+    if ( NOT NSTATIC )
+        target_link_libraries ( graphblas_static PUBLIC m )
+    endif ( )
 endif ( )
 
-target_link_libraries ( graphblas PUBLIC ${M_LIB} )
-if ( NOT NSTATIC )
-    target_link_libraries ( graphblas_static PUBLIC ${M_LIB} )
-endif ( )
-
+# atomic
 include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )
     target_link_libraries ( graphblas PUBLIC atomic )
@@ -439,7 +437,8 @@ if ( DEMO )
         SOVERSION ${GraphBLAS_VERSION_MAJOR}
         C_STANDARD_REQUIRED 11 )
     set_property ( TARGET graphblasdemo PROPERTY C_STANDARD 11 )
-    target_link_libraries ( graphblasdemo PUBLIC ${M_LIB} graphblas  ${GB_CUDA} ${GB_RMM} )
+    target_link_libraries ( graphblasdemo PUBLIC graphblas
+        ${GB_CUDA} ${GB_RMM} )
 
     if ( NOT NSTATIC )
         add_library ( graphblasdemo_static STATIC ${DEMO_SOURCES} )
@@ -447,7 +446,8 @@ if ( DEMO )
             VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
             C_STANDARD_REQUIRED 11 )
         set_property ( TARGET graphblasdemo_static PROPERTY C_STANDARD 11 )
-        target_link_libraries ( graphblasdemo_static PUBLIC  graphblas_static  ${GB_CUDA} ${GB_RMM} )
+        target_link_libraries ( graphblasdemo_static PUBLIC 
+            graphblas_static  ${GB_CUDA} ${GB_RMM} )
     endif ( )
 
     #---------------------------------------------------------------------------
