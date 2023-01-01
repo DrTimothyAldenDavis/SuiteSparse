@@ -58,7 +58,7 @@ jobs:
           echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
 
       - name: restore ccache
-        # setup the github cache used to maintain the ccache from one job to the next
+        # setup the GitHub cache used to maintain the ccache from one job to the next
         uses: actions/cache@v3
         with:
           path: ~/.ccache
@@ -93,8 +93,77 @@ jobs:
         run: ccache -s
 
 
+  macos:
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: macos-latest
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: install dependencies
+        # Homebrew's Python conflicts with the Python that comes pre-installed
+        # on the GitHub runners. Some of SuiteSparse's dependencies depend on
+        # different versions of Homebrew's Python. Enforce using the ones from
+        # Homebrew to avoid errors on updates.
+        # See: https://github.com/orgs/Homebrew/discussions/3928
+
+        # It looks like "gfortran" isn't working correctly unless "gcc" is
+        # re-installed.
+        run: |
+          brew update
+          brew install --overwrite python@3.10 python@3.11
+          brew reinstall gcc
+          brew install autoconf automake ccache cmake gmp lapack libomp mpfr openblas
+
+      - name: prepare ccache
+        # create human readable timestamp
+        id: ccache_cache_timestamp
+        run: |
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache@v3
+        with:
+          path: /Users/runner/Library/Caches/ccache
+          key: ccache:macos-latest:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          restore-keys: |
+            ccache:macos-latest:${{ github.ref }}
+
+      - name: configure ccache
+        # Limit the maximum size to avoid exceeding the total cache limits.
+        run: |
+          test -d /Users/runner/Library/Preferences/ccache || mkdir /Users/runner/Library/Preferences/ccache
+          echo "max_size = 300M" >> /Users/runner/Library/Preferences/ccache/ccache.conf
+          ccache -s
+
+      - name: build
+        run: |
+          make CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release \
+                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
+                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
+                              -DBLA_VENDOR=OpenBLAS \
+                              -DCMAKE_PREFIX_PATH='/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp'"
+
+      - name: check
+        run: |
+          make demos
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+
   mingw:
-    # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
     defaults:
