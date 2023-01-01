@@ -183,6 +183,11 @@ set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
 set_target_properties(mongoose_lib
         PROPERTIES OUTPUT_NAME mongoose)
 
+if ( MSVC )
+    set_target_properties ( mongoose_lib PROPERTIES
+        OUTPUT_NAME mongoose_static )
+endif ( )
+
 target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
 
 if (UNIX AND NOT APPLE)

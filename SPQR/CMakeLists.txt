@@ -144,14 +144,19 @@ set_target_properties ( spqr PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( spqr_static STATIC ${SPQR_SOURCES} )
+    add_library ( spqr_static STATIC ${SPQR_SOURCES} )
 
-set_target_properties ( spqr_static PROPERTIES
-    VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 11
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME spqr
-    SOVERSION ${SPQR_VERSION_MAJOR} )
+    set_target_properties ( spqr_static PROPERTIES
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 11
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME spqr
+        SOVERSION ${SPQR_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( spqr_static PROPERTIES
+            OUTPUT_NAME spqr_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

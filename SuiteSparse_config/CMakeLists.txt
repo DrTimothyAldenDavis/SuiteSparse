@@ -103,6 +103,11 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME suitesparseconfig
         SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( suitesparseconfig_static PROPERTIES
+            OUTPUT_NAME suitesparseconfig_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

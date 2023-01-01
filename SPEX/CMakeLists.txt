@@ -93,13 +93,18 @@ set_target_properties ( spex PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( spex_static STATIC ${SPEX_SOURCES} )
+    add_library ( spex_static STATIC ${SPEX_SOURCES} )
 
-set_target_properties ( spex_static PROPERTIES
-    VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME spex
-    SOVERSION ${SPEX_VERSION_MAJOR} )
+    set_target_properties ( spex_static PROPERTIES
+        VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME spex
+        SOVERSION ${SPEX_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( spex_static PROPERTIES
+            OUTPUT_NAME spex_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

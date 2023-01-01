@@ -117,13 +117,18 @@ set_target_properties ( klu PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( klu_static STATIC ${KLU_SOURCES} )
+    add_library ( klu_static STATIC ${KLU_SOURCES} )
 
-set_target_properties ( klu_static PROPERTIES
-    VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME klu
-    SOVERSION ${KLU_VERSION_MAJOR} )
+    set_target_properties ( klu_static PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME klu
+        SOVERSION ${KLU_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( klu_static PROPERTIES
+            OUTPUT_NAME klu_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

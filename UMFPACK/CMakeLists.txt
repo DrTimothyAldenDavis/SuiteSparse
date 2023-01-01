@@ -126,13 +126,18 @@ set_target_properties ( umfpack PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( umfpack_static STATIC ${UMFPACK_SOURCES} )
+    add_library ( umfpack_static STATIC ${UMFPACK_SOURCES} )
 
-set_target_properties ( umfpack_static PROPERTIES
-    VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME umfpack
-    SOVERSION ${UMFPACK_VERSION_MAJOR} )
+    set_target_properties ( umfpack_static PROPERTIES
+        VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME umfpack
+        SOVERSION ${UMFPACK_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( umfpack_static PROPERTIES
+            OUTPUT_NAME umfpack_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

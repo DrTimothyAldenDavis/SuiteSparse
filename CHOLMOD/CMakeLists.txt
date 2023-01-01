@@ -300,18 +300,23 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( cholmod_static STATIC ${CHOLMOD_SOURCES} )
+    add_library ( cholmod_static STATIC ${CHOLMOD_SOURCES} )
 
-set_target_properties ( cholmod_static PROPERTIES
-    VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME cholmod
-    SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+    set_target_properties ( cholmod_static PROPERTIES
+        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME cholmod
+        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
-if ( SUITESPARSE_CUDA )
-    set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-endif ( )
+    if ( MSVC )
+        set_target_properties ( cholmod_static PROPERTIES
+            OUTPUT_NAME cholmod_static )
+    endif ( )
+
+    if ( SUITESPARSE_CUDA )
+        set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

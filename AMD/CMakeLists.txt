@@ -104,6 +104,11 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( amd_static PROPERTIES
+            OUTPUT_NAME amd_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

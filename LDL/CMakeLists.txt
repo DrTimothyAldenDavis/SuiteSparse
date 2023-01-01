@@ -85,13 +85,18 @@ set_target_properties ( ldl PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( ldl_static STATIC ${LDL_SOURCES} )
+    add_library ( ldl_static STATIC ${LDL_SOURCES} )
 
-set_target_properties ( ldl_static PROPERTIES
-    VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME ldl
-    SOVERSION ${LDL_VERSION_MAJOR} )
+    set_target_properties ( ldl_static PROPERTIES
+        VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME ldl
+        SOVERSION ${LDL_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( ldl_static PROPERTIES
+            OUTPUT_NAME ldl_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

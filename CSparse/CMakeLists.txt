@@ -95,13 +95,18 @@ set_target_properties ( csparse PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
+    add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
 
-set_target_properties ( csparse_static PROPERTIES
-    VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
-    OUTPUT_NAME csparse
-    C_STANDARD_REQUIRED 11
-    SOVERSION ${CSPARSE_VERSION_MAJOR} )
+    set_target_properties ( csparse_static PROPERTIES
+        VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
+        OUTPUT_NAME csparse
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${CSPARSE_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( csparse_static PROPERTIES
+            OUTPUT_NAME csparse_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
