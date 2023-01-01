@@ -59,6 +59,7 @@
 #include <assert.h>
 #include <sys/stat.h>
 
+#if 0
 #if defined(__WITHPCRE__)
   #include <pcreposix.h>
 #else
@@ -68,6 +69,7 @@
     #include <regex.h>
   #endif /* defined(USE_GKREGEX) */
 #endif /* defined(__WITHPCRE__) */
+#endif
 
 
 
