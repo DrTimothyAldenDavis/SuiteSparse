@@ -69,7 +69,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:ubuntu:${{ matrix.compiler }}:refs/head/dev
+            ccache:ubuntu:${{ matrix.compiler }}
 
       - name: configure ccache
         env:
@@ -141,7 +141,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:macos-latest:${{ github.ref }}
-            ccache:macos-latest:refs/head/dev
+            ccache:macos-latest
 
       - name: configure ccache
         # Limit the maximum size to avoid exceeding the total cache limits.
@@ -249,7 +249,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}
-            ccache:mingw:${{ matrix.msystem }}:refs/head/dev
+            ccache:mingw:${{ matrix.msystem }}
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
