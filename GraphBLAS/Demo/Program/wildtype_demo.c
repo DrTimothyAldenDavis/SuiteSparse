@@ -412,18 +412,13 @@ int main (void)
     GxB_Matrix_fprint (E, "E (positional j)", GxB_COMPLETE, NULL) ;
 
     // do something invalid
-//  info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
-    info = GrB_eWiseAdd (C, NULL, NULL, WildAdd, A, D, NULL) ;
+    info = GrB_Matrix_eWiseAdd_BinaryOp (C, NULL, NULL, WildAdd, A, D, NULL) ;
     if (info != GrB_SUCCESS)
     {
         const char *s ;
-        GrB_error (&s, C) ;
+        GrB_Matrix_error (&s, C) ;
         printf ("\nThis is supposed to fail, as a demo of GrB_error:\n%s\n", s);
     }
-
-    // try GxB_get
-    GxB_get (GxB_MODE, &mode) ;
-    printf ("mode: %d\n", (int) mode) ;
 
     // free everyting
     GrB_Matrix_free (&C) ;
