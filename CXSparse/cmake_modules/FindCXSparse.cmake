@@ -54,15 +54,17 @@ find_library ( CXSPARSE_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME cxsparse_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME cxsparse )
 endif ( )
 
 # static CXSPARSE library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CXSPARSE_STATIC
-    NAMES cxsparse
+    NAMES ${STATIC_NAME}
     HINTS ${CXSPARSE_ROOT}
     HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

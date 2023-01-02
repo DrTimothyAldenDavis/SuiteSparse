@@ -54,15 +54,17 @@ find_library ( SUITESPARSE_CONFIG_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME suitesparseconfig_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME suitesparseconfig )
 endif ( )
 
 # static libraries for SuiteSparse_config
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SUITESPARSE_CONFIG_STATIC
-    NAMES suitesparseconfig
+    NAMES ${STATIC_NAME}
     HINTS ${SUITESPARSE_CONFIG_ROOT}
     HINTS ENV SUITESPARSE_CONFIG_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

@@ -49,15 +49,17 @@ find_library ( CHOLMOD_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME cholmod_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME cholmod )
 endif ( )
 
 # static CHOLMOD library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CHOLMOD_STATIC
-    NAMES cholmod
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
