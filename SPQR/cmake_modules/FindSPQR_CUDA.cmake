@@ -94,5 +94,8 @@ if ( SPQR_CUDA_FOUND )
     message ( STATUS "SPQR_CUDA static:  ${SPQR_CUDA_STATIC}" )
 else ( )
     message ( STATUS "SPQR_CUDA not found" )
+    set ( SPQR_CUDA_LIBRARIES "" )
+    set ( SPQR_CUDA_LIBRARY "" )
+    set ( SPQR_CUDA_STATIC "" )
 endif ( )
 

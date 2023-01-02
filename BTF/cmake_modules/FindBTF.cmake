@@ -74,19 +74,26 @@ string (
     BTF_VERSION
     ${BTF_FILENAME}
 )
-set ( BTF_LIBRARIES ${BTF_LIBRARY} )
 
-if ( NOT BTF_VERSION )
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        # if the version does not appear in the filename, read the include file
-        file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h _VERSION_LINE REGEX "define[ ]+BTF_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+BTF_${_VERSION}[ ]+([0-9]*).*" "\\1" _BTF_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( BTF_VERSION "${_BTF_MAIN_VERSION}.${_BTF_SUB_VERSION}.${_BTF_SUBSUB_VERSION}" )
+# set ( BTF_VERSION "" )
+if ( EXISTS "${BTF_INCLUDE_DIR}" AND NOT BTF_VERSION )
+    # if the version does not appear in the filename, read the include file
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_MAJOR_STR
+        REGEX "define BTF_MAIN_VERSION" )
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_MINOR_STR
+        REGEX "define BTF_SUB_VERSION" )
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_PATCH_STR
+        REGEX "define BTF_SUBSUB_VERSION" )
+    message ( STATUS "major: ${BTF_MAJOR_STR}" )
+    message ( STATUS "minor: ${BTF_MINOR_STR}" )
+    message ( STATUS "patch: ${BTF_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" BTF_MAJOR ${BTF_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" BTF_MINOR ${BTF_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" BTF_PATCH ${BTF_PATCH_STR} )
+    set (BTF_VERSION "${BTF_MAJOR}.${BTF_MINOR}.${BTF_PATCH}")
 endif ( )
+
+set ( BTF_LIBRARIES ${BTF_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
@@ -109,5 +116,9 @@ if ( BTF_FOUND )
     message ( STATUS "BTF static:  ${BTF_STATIC}" )
 else ( )
     message ( STATUS "BTF not found" )
+    set ( BTF_INCLUDE_DIR "" )
+    set ( BTF_LIBRARIES "" )
+    set ( BTF_LIBRARY "" )
+    set ( BTF_STATIC "" )
 endif ( )
 

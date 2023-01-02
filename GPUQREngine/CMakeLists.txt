@@ -150,23 +150,28 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( gpuqrengine_static STATIC ${GPUQRENGINE_SOURCES} )
+    add_library ( gpuqrengine_static STATIC ${GPUQRENGINE_SOURCES} )
 
-set_target_properties ( gpuqrengine_static PROPERTIES
-    VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
+    set_target_properties ( gpuqrengine_static PROPERTIES
+        VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 17
+        SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
 
-target_include_directories ( gpuqrengine_static PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${GPUQRENGINE_INCLUDES} )
+    if ( MSVC )
+        set_target_properties ( gpuqrengine_static PROPERTIES
+            OUTPUT_NAME gpuqrengine_static )
+    endif ( )
 
-if ( SUITESPARSE_CUDA )
-    set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
-endif ( )
+    target_include_directories ( gpuqrengine_static PUBLIC
+            ${CUDAToolkit_INCLUDE_DIRS}
+            ${GPUQRENGINE_INCLUDES} )
+
+    if ( SUITESPARSE_CUDA )
+        set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( gpuqrengine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+        target_link_libraries ( gpuqrengine_static CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

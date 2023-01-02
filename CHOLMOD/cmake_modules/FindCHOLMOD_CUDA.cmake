@@ -76,16 +76,22 @@ string (
     ${CHOLMOD_CUDA_FILENAME}
 )
 
-if ( NOT CHOLMOD_CUDA_VERSION )
+# set ( CHOLMOD_CUDA_VERSION "" )
+if ( EXISTS "${CHOLMOD_INCLUDE_DIR}" AND NOT CHOLMOD_CUDA_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h _VERSION_LINE REGEX "define[ ]+CHOLMOD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CHOLMOD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CHOLMOD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CHOLMOD_VERSION "${_CHOLMOD_MAIN_VERSION}.${_CHOLMOD_SUB_VERSION}.${_CHOLMOD_SUBSUB_VERSION}")
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_MAJOR_STR
+        REGEX "define CHOLMOD_MAIN_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_MINOR_STR
+        REGEX "define CHOLMOD_SUB_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_PATCH_STR
+        REGEX "define CHOLMOD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CHOLMOD_CUDA_MAJOR_STR}" )
+    message ( STATUS "minor: ${CHOLMOD_CUDA_MINOR_STR}" )
+    message ( STATUS "patch: ${CHOLMOD_CUDA_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_MAJOR ${CHOLMOD_CUDA_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_MINOR ${CHOLMOD_CUDA_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_PATCH ${CHOLMOD_CUDA_PATCH_STR} )
+    set (CHOLMOD_CUDA_VERSION "${CHOLMOD_CUDA_MAJOR}.${CHOLMOD_CUDA_MINOR}.${CHOLMOD_CUDA_PATCH}")
 endif ( )
 
 set (CHOLMOD_CUDA_LIBRARIES ${CHOLMOD_CUDA_LIBRARY})
@@ -109,5 +115,8 @@ if ( CHOLMOD_CUDA_FOUND )
     message ( STATUS "CHOLMOD_CUDA static:  ${CHOLMOD_CUDA_STATIC}" )
 else ( )
     message ( STATUS "CHOLMOD_CUDA not found" )
+    set ( CHOLMOD_CUDA_LIBRARIES "" )
+    set ( CHOLMOD_CUDA_LIBRARY "" )
+    set ( CHOLMOD_CUDA_STATIC "" )
 endif ( )
 

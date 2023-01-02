@@ -79,16 +79,22 @@ string (
     ${GPUQRENGINE_FILENAME}
 )
 
-if ( NOT GPUQRENGINE_VERSION )
+# set ( GPUQRENGINE_VERSION "" )
+if ( EXISTS "${GPUQRENGINE_INCLUDE_DIR}" AND NOT GPUQRENGINE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+GPUQRENGINE_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+GPUQRENGINE_${_VERSION}[ ]+([0-9]*).*" "\\1" _GPUQRENGINE_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( GPUQRENGINE_VERSION "${_GPUQRENGINE_MAIN_VERSION}.${_GPUQRENGINE_SUB_VERSION}.${_GPUQRENGINE_SUBSUB_VERSION}" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_MAJOR_STR
+        REGEX "define GPUQRENGINE_MAIN_VERSION" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_MINOR_STR
+        REGEX "define GPUQRENGINE_SUB_VERSION" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_PATCH_STR
+        REGEX "define GPUQRENGINE_SUBSUB_VERSION" )
+    message ( STATUS "major: ${GPUQRENGINE_MAJOR_STR}" )
+    message ( STATUS "minor: ${GPUQRENGINE_MINOR_STR}" )
+    message ( STATUS "patch: ${GPUQRENGINE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_MAJOR ${GPUQRENGINE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_MINOR ${GPUQRENGINE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_PATCH ${GPUQRENGINE_PATCH_STR} )
+    set (GPUQRENGINE_VERSION "${GPUQRENGINE_MAJOR}.${GPUQRENGINE_MINOR}.${GPUQRENGINE_PATCH}")
 endif ( )
 
 # libaries when using GPUQREngine
@@ -115,5 +121,9 @@ if ( GPUQRENGINE_FOUND )
     message ( STATUS "GPUQREngine static:  ${GPUQRENGINE_STATIC}" )
 else ( )
     message ( STATUS "GPUQREngine not found" )
+    set ( GPUQRENGINE_INCLUDE_DIR "" )
+    set ( GPUQRENGINE_LIBRARIES "" )
+    set ( GPUQRENGINE_LIBRARY "" )
+    set ( GPUQRENGINE_STATIC "" )
 endif ( )
 

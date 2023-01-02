@@ -81,18 +81,23 @@ string (
     ${RBIO_FILENAME}
 )
 
-if ( NOT RBIO_VERSION )
+# set ( RBIO_VERSION "" )
+if ( EXISTS "${RBIO_INCLUDE_DIR}" AND NOT RBIO_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h _VERSION_LINE REGEX "define[ ]+RBIO_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+RBIO_${_VERSION}[ ]+([0-9]*).*" "\\1" _RBIO_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( RBIO_VERSION "${_RBIO_MAIN_VERSION}.${_RBIO_SUB_VERSION}.${_RBIO_SUBSUB_VERSION}" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_MAJOR_STR
+        REGEX "define RBIO_MAIN_VERSION" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_MINOR_STR
+        REGEX "define RBIO_SUB_VERSION" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_PATCH_STR
+        REGEX "define RBIO_SUBSUB_VERSION" )
+    message ( STATUS "major: ${RBIO_MAJOR_STR}" )
+    message ( STATUS "minor: ${RBIO_MINOR_STR}" )
+    message ( STATUS "patch: ${RBIO_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" RBIO_MAJOR ${RBIO_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" RBIO_MINOR ${RBIO_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" RBIO_PATCH ${RBIO_PATCH_STR} )
+    set (RBIO_VERSION "${RBIO_MAJOR}.${RBIO_MINOR}.${RBIO_PATCH}")
 endif ( )
-
 set ( RBIO_LIBRARIES ${RBIO_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
@@ -116,5 +121,9 @@ if ( RBIO_FOUND )
     message ( STATUS "RBio static:  ${RBIO_STATIC}" )
 else ( )
     message ( STATUS "RBio not found" )
+    set ( RBIO_INCLUDE_DIR "" )
+    set ( RBIO_LIBRARIES "" )
+    set ( RBIO_LIBRARY "" )
+    set ( RBIO_STATIC "" )
 endif ( )
 

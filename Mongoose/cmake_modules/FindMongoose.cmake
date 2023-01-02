@@ -81,16 +81,22 @@ string (
     ${MONGOOSE_FILENAME}
 )
 
-if ( NOT MONGOOSE_VERSION )
+# set ( MONGOOSE_VERSION "" )
+if ( EXISTS "${MONGOOSE_INCLUDE_DIR}" AND NOT MONGOOSE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH )
-        file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose_Version.hpp _VERSION_LINE REGEX "define[ ]+Mongoose_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+Mongoose_${_VERSION}[ ]+([0-9]*).*" "\\1" _MONGOOSE_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( MONGOOSE_VERSION "${_MONGOOSE_VERSION_MAJOR}.${_MONGOOSE_VERSION_MINOR}.${_MONGOOSE_VERSION_PATCH}" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_MAJOR_STR
+        REGEX "define Mongoose_VERSION_MAJOR" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_MINOR_STR
+        REGEX "define Mongoose_VERSION_MINOR" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_PATCH_STR
+        REGEX "define Mongoose_VERSION_PATCH" )
+    message ( STATUS "major: ${MONGOOSE_MAJOR_STR}" )
+    message ( STATUS "minor: ${MONGOOSE_MINOR_STR}" )
+    message ( STATUS "patch: ${MONGOOSE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_MAJOR ${MONGOOSE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_MINOR ${MONGOOSE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_PATCH ${MONGOOSE_PATCH_STR} )
+    set (MONGOOSE_VERSION "${MONGOOSE_MAJOR}.${MONGOOSE_MINOR}.${MONGOOSE_PATCH}")
 endif ( )
 
 set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
@@ -116,5 +122,9 @@ if ( MONGOOSE_FOUND )
     message ( STATUS "Mongoose static:  ${MONGOOSE_STATIC}" )
 else ( )
     message ( STATUS "Mongoose not found" )
+    set ( MONGOOSE_INCLUDE_DIR "" )
+    set ( MONGOOSE_LIBRARIES "" )
+    set ( MONGOOSE_LIBRARY "" )
+    set ( MONGOOSE_STATIC "" )
 endif ( )
 

@@ -112,16 +112,22 @@ string (
     ${GRAPHBLAS_FILENAME}
   )
 
-if ( NOT GRAPHBLAS_VERSION )
+# set ( GRAPHBLAS_VERSION "" )
+if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAJOR MINOR SUB )
-        file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h _VERSION_LINE REGEX "define[ ]+GxB_IMPLEMENTATION_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string (REGEX REPLACE ".*define[ ]+GxB_IMPLEMENTATION_${_VERSION}[ ]+([0-9]*).*" "\\1" _GRAPHBLAS_${_VERSION} "${_VERSION_LINE}")
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set (GRAPHBLAS_VERSION "${_GRAPHBLAS_MAJOR}.${_GRAPHBLAS_MINOR}.${_GRAPHBLAS_SUB}")
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_MAJOR_STR
+        REGEX "define GxB_IMPLEMENTATION_MAJOR" )
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_MINOR_STR
+        REGEX "define GxB_IMPLEMENTATION_MINOR" )
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_PATCH_STR
+        REGEX "define GxB_IMPLEMENTATION_SUB" )
+    message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
+    message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
+    message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MAJOR ${GRAPHBLAS_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MINOR ${GRAPHBLAS_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_PATCH ${GRAPHBLAS_PATCH_STR} )
+    set (GRAPHBLAS_VERSION "${GRAPHBLAS_MAJOR}.${GRAPHBLAS_MINOR}.${GRAPHBLAS_PATCH}")
 endif ( )
 
 set ( GRAPHBLAS_LIBRARIES ${GRAPHBLAS_LIBRARY} )
@@ -148,5 +154,9 @@ if ( GRAPHBLAS_FOUND )
     message ( STATUS "GraphBLAS static:  ${GRAPHBLAS_STATIC}" )
 else ( )
     message ( STATUS "GraphBLAS not found" )
+    set ( GRAPHBLAS_INCLUDE_DIR "" )
+    set ( GRAPHBLAS_LIBRARIES "" )
+    set ( GRAPHBLAS_LIBRARY "" )
+    set ( GRAPHBLAS_STATIC "" )
 endif ( )
 

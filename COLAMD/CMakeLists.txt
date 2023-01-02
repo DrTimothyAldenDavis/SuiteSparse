@@ -79,13 +79,18 @@ set_target_properties ( colamd PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( colamd_static STATIC ${COLAMD_SOURCES} )
+    add_library ( colamd_static STATIC ${COLAMD_SOURCES} )
 
-set_target_properties ( colamd_static PROPERTIES
-    VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
-    OUTPUT_NAME colamd
-    C_STANDARD_REQUIRED 11
-    SOVERSION ${COLAMD_VERSION_MAJOR} )
+    set_target_properties ( colamd_static PROPERTIES
+        VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
+        OUTPUT_NAME colamd
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${COLAMD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( colamd_static PROPERTIES
+            OUTPUT_NAME colamd_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

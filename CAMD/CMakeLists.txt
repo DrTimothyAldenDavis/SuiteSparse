@@ -82,13 +82,18 @@ set_target_properties ( camd PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( camd_static STATIC ${CAMD_SOURCES} )
+    add_library ( camd_static STATIC ${CAMD_SOURCES} )
 
-set_target_properties ( camd_static PROPERTIES
-    VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME camd
-    SOVERSION ${CAMD_VERSION_MAJOR} )
+    set_target_properties ( camd_static PROPERTIES
+        VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME camd
+        SOVERSION ${CAMD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( camd_static PROPERTIES
+            OUTPUT_NAME camd_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

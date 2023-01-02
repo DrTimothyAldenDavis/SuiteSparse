@@ -75,16 +75,22 @@ string (
     ${CCOLAMD_FILENAME}
 )
 
-if ( NOT CCOLAMD_VERSION )
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        # if the version does not appear in the filename, read the include file
-        file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h _VERSION_LINE REGEX "define[ ]+CCOLAMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+CCOLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CCOLAMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-        endforeach ( )
-    set ( CCOLAMD_VERSION "${_CCOLAMD_MAIN_VERSION}.${_CCOLAMD_SUB_VERSION}.${_CCOLAMD_SUBSUB_VERSION}" )
+# set ( CCOLAMD_VERSION "" )
+if ( EXISTS "${CCOLAMD_INCLUDE_DIR}" AND NOT CCOLAMD_VERSION )
+    # if the version does not appear in the filename, read the include file
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_MAJOR_STR
+        REGEX "define CCOLAMD_MAIN_VERSION" )
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_MINOR_STR
+        REGEX "define CCOLAMD_SUB_VERSION" )
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_PATCH_STR
+        REGEX "define CCOLAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CCOLAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CCOLAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${CCOLAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_MAJOR ${CCOLAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_MINOR ${CCOLAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_PATCH ${CCOLAMD_PATCH_STR} )
+    set (CCOLAMD_VERSION "${CCOLAMD_MAJOR}.${CCOLAMD_MINOR}.${CCOLAMD_PATCH}")
 endif ( )
 
 set ( CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY} )
@@ -110,5 +116,9 @@ if ( CCOLAMD_FOUND )
     message ( STATUS "CCOLAMD static:  ${CCOLAMD_STATIC}" )
 else ( )
     message ( STATUS "CCOLAMD not found" )
+    set ( CCOLAMD_INCLUDE_DIR "" )
+    set ( CCOLAMD_LIBRARIES "" )
+    set ( CCOLAMD_LIBRARY "" )
+    set ( CCOLAMD_STATIC "" )
 endif ( )
 

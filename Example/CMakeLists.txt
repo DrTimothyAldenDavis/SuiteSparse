@@ -72,7 +72,7 @@ find_package ( GraphBLAS 7.4.1 REQUIRED )
 find_package ( KLU 2.0.3 REQUIRED )
 find_package ( KLU_CHOLMOD 2.0.3 REQUIRED )
 find_package ( LDL 2.0.3 REQUIRED )
-find_package ( Mongoose 3.0.3 REQUIRED )
+find_package ( Mongoose 3.0.4 REQUIRED )
 find_package ( RBio 3.0.3 REQUIRED )
 find_package ( SPEX 2.0.3 REQUIRED )
 find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
@@ -123,6 +123,11 @@ set_target_properties ( my_static PROPERTIES
     C_STANDARD_REQUIRED 11
     OUTPUT_NAME my
     SOVERSION ${MY_VERSION_MAJOR} )
+
+if ( MSVC )
+    set_target_properties ( my_static PROPERTIES
+        OUTPUT_NAME my_static )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies

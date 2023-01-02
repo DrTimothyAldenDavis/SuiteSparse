@@ -112,23 +112,28 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( suitesparse_gpuruntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
+    add_library ( suitesparse_gpuruntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
-set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
-    VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
+    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+        VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 17
+        SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
 
-target_include_directories ( suitesparse_gpuruntime_static PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+    if ( MSVC )
+        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+            OUTPUT_NAME suitesparse_gpuruntime_static )
+    endif ( )
 
-if ( SUITESPARSE_CUDA )
-    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
-endif ( )
+    target_include_directories ( suitesparse_gpuruntime_static PUBLIC
+            ${CUDAToolkit_INCLUDE_DIRS}
+            ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+
+    if ( SUITESPARSE_CUDA )
+        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+        target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

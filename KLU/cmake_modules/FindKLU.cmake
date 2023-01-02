@@ -75,16 +75,22 @@ string (
     ${KLU_FILENAME}
 )
 
-if ( NOT KLU_VERSION )
+# set ( KLU_VERSION "" )
+if ( EXISTS "${KLU_INCLUDE_DIR}" AND NOT KLU_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${KLU_INCLUDE_DIR}/klu.h _VERSION_LINE REGEX "define[ ]+KLU_${_VERSION}")
-        if (_VERSION_LINE)
-        string (REGEX REPLACE ".*define[ ]+KLU_${_VERSION}[ ]+([0-9]*).*" "\\1" _KLU_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (KLU_VERSION "${_KLU_MAIN_VERSION}.${_KLU_SUB_VERSION}.${_KLU_SUBSUB_VERSION}")
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_MAJOR_STR
+        REGEX "define KLU_MAIN_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_MINOR_STR
+        REGEX "define KLU_SUB_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_PATCH_STR
+        REGEX "define KLU_SUBSUB_VERSION" )
+    message ( STATUS "major: ${KLU_MAJOR_STR}" )
+    message ( STATUS "minor: ${KLU_MINOR_STR}" )
+    message ( STATUS "patch: ${KLU_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" KLU_MAJOR ${KLU_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_MINOR ${KLU_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_PATCH ${KLU_PATCH_STR} )
+    set (KLU_VERSION "${KLU_MAJOR}.${KLU_MINOR}.${KLU_PATCH}")
 endif ( )
 
 set ( KLU_LIBRARIES ${KLU_LIBRARY} )
@@ -110,5 +116,9 @@ if ( KLU_FOUND )
     message ( STATUS "KLU static:  ${KLU_STATIC}" )
 else ( )
     message ( STATUS "KLU not found" )
+    set ( KLU_INCLUDE_DIR "" )
+    set ( KLU_LIBRARIES "" )
+    set ( KLU_LIBRARY "" )
+    set ( KLU_STATIC "" )
 endif ( )
 

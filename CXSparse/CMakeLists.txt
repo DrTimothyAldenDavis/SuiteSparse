@@ -79,13 +79,18 @@ set_target_properties ( cxsparse PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( cxsparse_static STATIC ${CXSPARSE_SOURCES} )
+    add_library ( cxsparse_static STATIC ${CXSPARSE_SOURCES} )
 
-set_target_properties ( cxsparse_static PROPERTIES
-    VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
-    OUTPUT_NAME cxsparse
-    C_STANDARD_REQUIRED 11
-    SOVERSION ${CXSPARSE_VERSION_MAJOR} )
+    set_target_properties ( cxsparse_static PROPERTIES
+        VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
+        OUTPUT_NAME cxsparse
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${CXSPARSE_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( cxsparse_static PROPERTIES
+            OUTPUT_NAME cxsparse_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

@@ -75,16 +75,22 @@ string (
     ${AMD_FILENAME}
 )
 
-if ( NOT AMD_VERSION )
+# set ( AMD_VERSION "" )
+if ( EXISTS "${AMD_INCLUDE_DIR}" AND NOT AMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+AMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+AMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _AMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( AMD_VERSION "${_AMD_MAIN_VERSION}.${_AMD_SUB_VERSION}.${_AMD_SUBSUB_VERSION}" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_MAJOR_STR
+        REGEX "define AMD_MAIN_VERSION" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_MINOR_STR
+        REGEX "define AMD_SUB_VERSION" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_PATCH_STR
+        REGEX "define AMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${AMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${AMD_MINOR_STR}" )
+    message ( STATUS "patch: ${AMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" AMD_MAJOR ${AMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" AMD_MINOR ${AMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" AMD_PATCH ${AMD_PATCH_STR} )
+    set (AMD_VERSION "${AMD_MAJOR}.${AMD_MINOR}.${AMD_PATCH}")
 endif ( )
 
 set ( AMD_LIBRARIES ${AMD_LIBRARY} )
@@ -110,5 +116,9 @@ if ( AMD_FOUND )
     message ( STATUS "AMD static:  ${AMD_STATIC}")
 else ( )
     message ( STATUS "AMD not found" )
+    set ( AMD_INCLUDE_DIR "" )
+    set ( AMD_LIBRARIES "" )
+    set ( AMD_LIBRARY "" )
+    set ( AMD_STATIC "" )
 endif ( )
 

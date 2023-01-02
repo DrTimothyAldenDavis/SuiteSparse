@@ -79,13 +79,18 @@ set_target_properties ( rbio PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( rbio_static STATIC ${RBIO_SOURCES} )
+    add_library ( rbio_static STATIC ${RBIO_SOURCES} )
 
-set_target_properties ( rbio_static PROPERTIES
-    VERSION ${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME rbio
-    SOVERSION ${RBIO_VERSION_MAJOR} )
+    set_target_properties ( rbio_static PROPERTIES
+        VERSION ${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME rbio
+        SOVERSION ${RBIO_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( rbio_static PROPERTIES
+            OUTPUT_NAME rbio_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

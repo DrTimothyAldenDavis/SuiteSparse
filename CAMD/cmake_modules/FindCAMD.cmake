@@ -75,16 +75,22 @@ string (
     ${CAMD_FILENAME}
 )
 
-if ( NOT CAMD_VERSION )
+# set ( CAMD_VERSION "" )
+if ( EXISTS "${CAMD_INCLUDE_DIR}" AND NOT CAMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h _VERSION_LINE REGEX "define[ ]+CAMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+CAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CAMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( CAMD_VERSION "${_CAMD_MAIN_VERSION}.${_CAMD_SUB_VERSION}.${_CAMD_SUBSUB_VERSION}" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_MAJOR_STR
+        REGEX "define CAMD_MAIN_VERSION" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_MINOR_STR
+        REGEX "define CAMD_SUB_VERSION" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_PATCH_STR
+        REGEX "define CAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${CAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CAMD_MAJOR ${CAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CAMD_MINOR ${CAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CAMD_PATCH ${CAMD_PATCH_STR} )
+    set (CAMD_VERSION "${CAMD_MAJOR}.${CAMD_MINOR}.${CAMD_PATCH}")
 endif ( )
 
 set ( CAMD_LIBRARIES ${CAMD_LIBRARY} )
@@ -110,5 +116,9 @@ if ( CAMD_FOUND )
     message ( STATUS "CAMD static:  ${CAMD_STATIC}" )
 else ( )
     message ( STATUS "CAMD not found" )
+    set ( CAMD_INCLUDE_DIR "" )
+    set ( CAMD_LIBRARIES "" )
+    set ( CAMD_LIBRARY "" )
+    set ( CAMD_STATIC "" )
 endif ( )
 

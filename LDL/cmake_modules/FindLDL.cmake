@@ -75,16 +75,22 @@ string (
     ${LDL_FILENAME}
 )
 
-if ( NOT LDL_VERSION )
+# set ( LDL_VERSION "" )
+if ( EXISTS "${LDL_INCLUDE_DIR}" AND NOT LDL_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${LDL_INCLUDE_DIR}/ldl.h _VERSION_LINE REGEX "define[ ]+LDL_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+LDL_${_VERSION}[ ]+([0-9]*).*" "\\1" _LDL_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( LDL_VERSION "${_LDL_MAIN_VERSION}.${_LDL_SUB_VERSION}.${_LDL_SUBSUB_VERSION}" )
+    file ( STRINGS ${LDL_INCLUDE_DIR}/ldl.h LDL_MAJOR_STR
+        REGEX "define LDL_MAIN_VERSION" )
+    file ( STRINGS ${LDL_INCLUDE_DIR}/ldl.h LDL_MINOR_STR
+        REGEX "define LDL_SUB_VERSION" )
+    file ( STRINGS ${LDL_INCLUDE_DIR}/ldl.h LDL_PATCH_STR
+        REGEX "define LDL_SUBSUB_VERSION" )
+    message ( STATUS "major: ${LDL_MAJOR_STR}" )
+    message ( STATUS "minor: ${LDL_MINOR_STR}" )
+    message ( STATUS "patch: ${LDL_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" LDL_MAJOR ${LDL_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" LDL_MINOR ${LDL_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" LDL_PATCH ${LDL_PATCH_STR} )
+    set (LDL_VERSION "${LDL_MAJOR}.${LDL_MINOR}.${LDL_PATCH}")
 endif ( )
 
 set ( LDL_LIBRARIES ${LDL_LIBRARY} )
@@ -110,5 +116,9 @@ if ( LDL_FOUND )
     message ( STATUS "LDL static:  ${LDL_STATIC}" )
 else ( )
     message ( STATUS "LDL not found" )
+    set ( LDL_INCLUDE_DIR "" )
+    set ( LDL_LIBRARIES "" )
+    set ( LDL_LIBRARY "" )
+    set ( LDL_STATIC "" )
 endif ( )
 

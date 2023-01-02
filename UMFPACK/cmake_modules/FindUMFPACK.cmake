@@ -76,16 +76,22 @@ string (
     ${UMFPACK_FILENAME}
 )
 
-if ( NOT UMFPACK_VERISON )
+# set ( UMFPACK_VERSION "" )
+if ( EXISTS "${UMFPACK_INCLUDE_DIR}" AND NOT UMFPACK_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h _VERSION_LINE REGEX "define[ ]+UMFPACK_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+UMFPACK_${_VERSION}[ ]+([0-9]*).*" "\\1" _UMFPACK_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( UMFPACK_VERSION "${_UMFPACK_MAIN_VERSION}.${_UMFPACK_SUB_VERSION}.${_UMFPACK_SUBSUB_VERSION}" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_MAJOR_STR
+        REGEX "define UMFPACK_MAIN_VERSION" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_MINOR_STR
+        REGEX "define UMFPACK_SUB_VERSION" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_PATCH_STR
+        REGEX "define UMFPACK_SUBSUB_VERSION" )
+    message ( STATUS "major: ${UMFPACK_MAJOR_STR}" )
+    message ( STATUS "minor: ${UMFPACK_MINOR_STR}" )
+    message ( STATUS "patch: ${UMFPACK_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_MAJOR ${UMFPACK_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_MINOR ${UMFPACK_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_PATCH ${UMFPACK_PATCH_STR} )
+    set (UMFPACK_VERSION "${UMFPACK_MAJOR}.${UMFPACK_MINOR}.${UMFPACK_PATCH}")
 endif ( )
 
 set ( UMFPACK_LIBRARIES ${UMFPACK_LIBRARY} )
@@ -111,5 +117,9 @@ if ( UMFPACK_FOUND )
     message ( STATUS "UMFPACK static:  ${UMFPACK_STATIC}" )
 else ( )
     message ( STATUS "UMFPACK not found" )
+    set ( UMFPACK_INCLUDE_DIR "" )
+    set ( UMFPACK_LIBRARIES "" )
+    set ( UMFPACK_LIBRARY "" )
+    set ( UMFPACK_STATIC "" )
 endif ( )
 

@@ -81,17 +81,22 @@ string (
     ${SUITESPARSE_CONFIG_FILENAME}
 )
 
-if ( NOT SUITESPARSE_CONFIG_VERSION )
-    # version not found in the filename; get it from the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h
-            _VERSION_LINE REGEX "define[ ]+SUITESPARSE_${_VERSION}")
-        if (_VERSION_LINE)
-            string ( REGEX REPLACE ".*define[ ]+SUITESPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _SP_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set (SUITESPARSE_CONFIG_VERSION "${_SP_MAIN_VERSION}.${_SP_SUB_VERSION}.${_SP_SUBSUB_VERSION}")
+# set ( SUITESPARSE_CONFIG_VERSION "" )
+if ( EXISTS "${SUITESPARSE_CONFIG_INCLUDE_DIR}" AND NOT SUITESPARSE_CONFIG_VERSION )
+    # if the version does not appear in the filename, read the include file
+    file ( STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h SUITESPARSE_CONFIG_MAJOR_STR
+        REGEX "define SUITESPARSE_MAIN_VERSION" )
+    file ( STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h SUITESPARSE_CONFIG_MINOR_STR
+        REGEX "define SUITESPARSE_SUB_VERSION" )
+    file ( STRINGS ${SUITESPARSE_CONFIG_INCLUDE_DIR}/SuiteSparse_config.h SUITESPARSE_CONFIG_PATCH_STR
+        REGEX "define SUITESPARSE_SUBSUB_VERSION" )
+    message ( STATUS "major: ${SUITESPARSE_CONFIG_MAJOR_STR}" )
+    message ( STATUS "minor: ${SUITESPARSE_CONFIG_MINOR_STR}" )
+    message ( STATUS "patch: ${SUITESPARSE_CONFIG_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_CONFIG_MAJOR ${SUITESPARSE_CONFIG_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_CONFIG_MINOR ${SUITESPARSE_CONFIG_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_CONFIG_PATCH ${SUITESPARSE_CONFIG_PATCH_STR} )
+    set (SUITESPARSE_CONFIG_VERSION "${SUITESPARSE_CONFIG_MAJOR}.${SUITESPARSE_CONFIG_MINOR}.${SUITESPARSE_CONFIG_PATCH}")
 endif ( )
 
 # libaries when using SuiteSparse_config
@@ -118,5 +123,9 @@ if ( SUITESPARSE_CONFIG_FOUND )
     message ( STATUS "SuiteSparse_config static:  ${SUITESPARSE_CONFIG_STATIC}" )
 else ( )
     message ( STATUS "SuiteSparse_config not found" )
+    set ( SUITESPARSE_CONFIG_INCLUDE_DIR "" )
+    set ( SUITESPARSE_CONFIG_LIBRARIES "" )
+    set ( SUITESPARSE_CONFIG_LIBRARY "" )
+    set ( SUITESPARSE_CONFIG_STATIC "" )
 endif ( )
 

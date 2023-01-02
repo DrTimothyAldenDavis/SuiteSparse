@@ -38,6 +38,15 @@ find_path ( KLU_CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
+# include files for KLU
+find_path ( KLU_INCLUDE_DIR
+    NAMES klu.h
+    HINTS ${CMAKE_SOURCE_DIR}/..
+    HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
+    HINTS ${CMAKE_SOURCE_DIR}/../KLU
+    PATH_SUFFIXES include Include
+)
+
 # dynamic KLU_CHOLMOD library
 find_library ( KLU_CHOLMOD_LIBRARY
     NAMES klu_cholmod
@@ -74,16 +83,22 @@ string (
     ${KLU_CHOLMOD_FILENAME}
 )
 
-if ( NOT KLU_CHOLMOD_VERSION )
+# set ( KLU_CHOLMOD_VERSION "" )
+if ( EXISTS "${KLU_INCLUDE_DIR}" AND NOT KLU_CHOLMOD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${KLU_CHOLMOD_INCLUDE_DIR}/klu.h _VERSION_LINE REGEX "define[ ]+KLU_${_VERSION}")
-        if (_VERSION_LINE)
-        string (REGEX REPLACE ".*define[ ]+KLU_${_VERSION}[ ]+([0-9]*).*" "\\1" _KLU_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (KLU_CHOLMOD_VERSION "${_KLU_MAIN_VERSION}.${_KLU_SUB_VERSION}.${_KLU_SUBSUB_VERSION}")
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_CHOLMOD_MAJOR_STR
+        REGEX "define KLU_MAIN_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_CHOLMOD_MINOR_STR
+        REGEX "define KLU_SUB_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_CHOLMOD_PATCH_STR
+        REGEX "define KLU_SUBSUB_VERSION" )
+    message ( STATUS "major: ${KLU_CHOLMOD_MAJOR_STR}" )
+    message ( STATUS "minor: ${KLU_CHOLMOD_MINOR_STR}" )
+    message ( STATUS "patch: ${KLU_CHOLMOD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" KLU_CHOLMOD_MAJOR ${KLU_CHOLMOD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_CHOLMOD_MINOR ${KLU_CHOLMOD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_CHOLMOD_PATCH ${KLU_CHOLMOD_PATCH_STR} )
+    set (KLU_CHOLMOD_VERSION "${KLU_CHOLMOD_MAJOR}.${KLU_CHOLMOD_MINOR}.${KLU_CHOLMOD_PATCH}")
 endif ( )
 
 set ( KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY} )
@@ -109,5 +124,9 @@ if ( KLU_CHOLMOD_FOUND )
     message ( STATUS "KLU_CHOLMOD static:  ${KLU_CHOLMOD_STATIC}" )
 else ( )
     message ( STATUS "KLU_CHOLMOD not found" )
+    set ( KLU_CHOLMOD_INCLUDE_DIR "" )
+    set ( KLU_CHOLMOD_LIBRARIES "" )
+    set ( KLU_CHOLMOD_LIBRARY "" )
+    set ( KLU_CHOLMOD_STATIC "" )
 endif ( )
 
