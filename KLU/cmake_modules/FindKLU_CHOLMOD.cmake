@@ -66,7 +66,7 @@ endif ( )
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( KLU_CHOLMOD_STATIC
-    NAMES klu_cholmod
+    NAMES klu_cholmod_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User

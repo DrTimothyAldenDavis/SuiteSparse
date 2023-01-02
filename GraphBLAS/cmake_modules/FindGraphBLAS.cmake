@@ -85,15 +85,17 @@ find_library ( GRAPHBLAS_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME graphblas_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME graphblas )
 endif ( )
 
 # static SuiteSparse:GraphBLAS library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GRAPHBLAS_STATIC
-  NAMES graphblas
+  NAMES ${STATIC_NAME}
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${CMAKE_SOURCE_DIR}/..

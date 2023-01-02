@@ -50,15 +50,17 @@ find_library ( KLU_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME klu_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME klu )
 endif ( )
 
 # static KLU library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( KLU_STATIC
-    NAMES klu
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU

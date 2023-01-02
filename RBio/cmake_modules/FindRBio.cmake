@@ -54,15 +54,17 @@ find_library ( RBIO_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME rbio_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME rbio )
 endif ( )
 
 # static RBio library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( RBIO_STATIC
-    NAMES rbio
+    NAMES ${STATIC_NAME}
     HINTS ${RBIO_ROOT}
     HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
