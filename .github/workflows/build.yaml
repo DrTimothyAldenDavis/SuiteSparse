@@ -66,8 +66,10 @@ jobs:
         with:
           path: ~/.ccache
           key: ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}
+            ccache:ubuntu:${{ matrix.compiler }}:refs/head/dev
 
       - name: configure ccache
         env:
@@ -136,8 +138,10 @@ jobs:
         with:
           path: /Users/runner/Library/Caches/ccache
           key: ccache:macos-latest:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:macos-latest:${{ github.ref }}
+            ccache:macos-latest:refs/head/dev
 
       - name: configure ccache
         # Limit the maximum size to avoid exceeding the total cache limits.
@@ -242,8 +246,10 @@ jobs:
         with:
           path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
           key: ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}
+            ccache:mingw:${{ matrix.msystem }}:refs/head/dev
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
