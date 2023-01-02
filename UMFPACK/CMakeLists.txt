@@ -274,6 +274,8 @@ if ( DEMO )
                                          "Demo/umf4_f77zwrapper.c" )
         add_executable ( umf4hb64        "Demo/umf4hb64.f"
                                          "Demo/umf4_f77wrapper64.c" )
+        add_executable ( umf4zhb64       "Demo/umf4zhb64.f"
+                                         "Demo/umf4_f77zwrapper64.c" )
     endif ( )
 
     # Libraries required for Demo programs
@@ -288,6 +290,7 @@ if ( DEMO )
         target_link_libraries ( umf4hb          PUBLIC umfpack )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )
+        target_link_libraries ( umf4zhb64       PUBLIC umfpack )
     endif ( )
 
 else ( )

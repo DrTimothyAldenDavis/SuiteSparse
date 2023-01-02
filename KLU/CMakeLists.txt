@@ -149,13 +149,18 @@ if ( NOT NCHOLMOD )
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
     if ( NOT NSTATIC )
-    add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
+        add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
-    set_target_properties ( klu_cholmod_static PROPERTIES
-        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
-        OUTPUT_NAME klu_cholmod
-        SOVERSION ${KLU_VERSION_MAJOR} )
+        set_target_properties ( klu_cholmod_static PROPERTIES
+            VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+            C_STANDARD_REQUIRED 11
+            OUTPUT_NAME klu_cholmod
+            SOVERSION ${KLU_VERSION_MAJOR} )
+
+        if ( MSVC )
+            set_target_properties ( klu_cholmod_static PROPERTIES
+                OUTPUT_NAME klu_cholmod_static )
+        endif ( )
     endif ( )
 
 endif ( )

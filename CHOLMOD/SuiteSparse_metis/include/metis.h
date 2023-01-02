@@ -111,12 +111,16 @@ typedef __int64 int64_t;
 #else
   #define strtoidx      strtoll
 #endif
+  // iabs replaced with SuiteSparse_metis_abs, Dec 2022
+  #if 0
+  #define iabs          labs
+  #else
   #define iabs          SuiteSparse_metis_abs64
   static inline int64_t SuiteSparse_metis_abs64 (int64_t x)
   {
     return ((x < 0) ? (-x) : x) ;
   }
-
+  #endif
 #else
   #error "Incorrect user-supplied value fo IDXTYPEWIDTH"
 #endif
@@ -174,7 +178,18 @@ typedef __int64 int64_t;
 * Function prototypes 
 *-------------------------------------------------------------------------*/
 
+#if 0
+// Windows __declspec removed for SuiteSparse, Jan 2023
+#ifdef _WINDLL
+#define METIS_API(type) __declspec(dllexport) type __cdecl
+#elif defined(__cdecl)
+#define METIS_API(type) type __cdecl
+#else
 #define METIS_API(type) type
+#endif
+#else
+#define METIS_API(type) type
+#endif
 
 
 

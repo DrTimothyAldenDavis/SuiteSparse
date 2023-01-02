@@ -15104,6 +15104,9 @@ types are limited to 128 bytes in size.  This can be changed by editing
 SuiteSparse:GraphBLAS.
 
 \item AVX acceleration is not enabled.
+
+\item The ninja code generator does not work with MS Visual Studio to
+build GraphBLAS, because of a limitation in cmake.
 \end{itemize}
 
 If you use a recent \verb'gcc' or \verb'icx' compiler on Windows other than the
@@ -16275,6 +16278,10 @@ in Debian Linux.
 
 I would like to thank G{\'{a}}bor Sz{\'{a}}rnyas for porting the \verb'@GrB'
 interface to Octave 7 on Apple Silicon.
+
+I would like to thank Markus M\"{u}tzel
+for his help in porting the updates
+to GraphBLAS v7.4.1 and SuiteSparse v7.0.0 to Windows.
 
 I would like to thank Roi Lipman, Redis (\url{https://redislabs.com}), for
 our many discussions on GraphBLAS and for enabling its use in RedisGraph

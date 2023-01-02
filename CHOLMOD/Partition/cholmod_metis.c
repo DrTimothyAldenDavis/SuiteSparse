@@ -54,8 +54,15 @@
 
 #ifndef NPARTITION
 
+#undef ASSERT
 #include "cholmod_metis_wrapper.h"
 #include "SuiteSparse_metis/include/metis.h"
+#undef ASSERT
+#ifndef NDEBUG
+#define ASSERT(expr) assert (expr)
+#else
+#define ASSERT(expr)
+#endif
 
 //------------------------------------------------------------------------------
 // test coverage

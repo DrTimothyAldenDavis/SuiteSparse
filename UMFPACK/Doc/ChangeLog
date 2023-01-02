@@ -2,6 +2,8 @@ Jan 1, 2023: version 6.0.3
 
     * NFORTRAN: option added to disable Fortran entirely
     * SuiteSparse_config: now v7.0.0
+    * Fortran demos: extended to work on Windows, and complex with
+        64-bit integers
 
 Dec 9, 2022: version 6.0.2
 

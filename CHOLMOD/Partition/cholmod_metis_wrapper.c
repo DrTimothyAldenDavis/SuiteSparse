@@ -19,22 +19,6 @@
 
 #include "cholmod_metis_wrapper.h"
 
-#if defined ( __GNUC__ ) && !defined ( __clang__ )
-    // disable memcpy warnings:
-    #pragma GCC diagnostic ignored "-Wstringop-overflow="
-    // csr.c has misleading indentation:
-    #pragma GCC diagnostic ignored "-Wmisleading-indentation"
-    // GKlib/error.c:
-    #pragma GCC diagnostic ignored "-Wunused-result"
-#endif
-
-#include "SuiteSparse_metis/GKlib/GKlib.h"
-#include "SuiteSparse_metis/include/metis.h"
-
-#if (IDXTYPEWIDTH != 64)
-#error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
-#endif
-
 #include "SuiteSparse_metis/GKlib/b64.c"
 #include "SuiteSparse_metis/GKlib/blas.c"
 #include "SuiteSparse_metis/GKlib/csr.c"
@@ -50,7 +34,6 @@
 #include "SuiteSparse_metis/GKlib/pqueue.c"
 #include "SuiteSparse_metis/GKlib/random.c"
 #include "SuiteSparse_metis/GKlib/sort.c"
-#include "SuiteSparse_metis/GKlib/string.c"
 #include "SuiteSparse_metis/GKlib/util.c"
 
 // unused by CHOLMOD:
@@ -66,6 +49,10 @@ double gk_CPUSeconds(void) { return (0) ; }
 // #include "SuiteSparse_metis/GKlib/rw.c"
 // #include "SuiteSparse_metis/GKlib/seq.c"
 // #include "SuiteSparse_metis/GKlib/tokenizer.c"
+// #include "SuiteSparse_metis/GKlib/string.c"
+
+// for parmetis.c: replace abs with 64-bit version
+#define abs SuiteSparse_metis_abs64
 
 #include "SuiteSparse_metis/libmetis/auxapi.c"
 #include "SuiteSparse_metis/libmetis/balance.c"

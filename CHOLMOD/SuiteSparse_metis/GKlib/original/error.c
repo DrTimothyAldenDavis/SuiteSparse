@@ -172,8 +172,6 @@ void gk_NonLocalExit_Handler(int signum)
 /*************************************************************************/
 /*! \brief Thread-safe implementation of strerror() */
 /**************************************************************************/
-#if 0
-// gk_strerror disabled for SuiteSparse, Jan 2023
 char *gk_strerror(int errnum)
 {
 #if defined(WIN32) || defined(__MINGW32__)
@@ -191,7 +189,6 @@ char *gk_strerror(int errnum)
 #endif
 #endif
 }
-#endif
 
 
 

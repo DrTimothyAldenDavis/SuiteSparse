@@ -72,9 +72,9 @@ if ( GMP_VERSION1 STREQUAL "" )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_MAJOR_STRING
         REGEX "define __GNU_MP_VERSION " )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_MINOR_STRING
-        REGEX "define __GNU_MP_VERSION_MINOR" )
+        REGEX "define __GNU_MP_VERSION_MINOR " )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_PATCH_STRING
-        REGEX "define __GNU_MP_VERSION_PATCH" )
+        REGEX "define __GNU_MP_VERSION_PATCHLEVEL " )
     message ( STATUS "major: ${GMP_VER_MAJOR_STRING}" )
     message ( STATUS "minor: ${GMP_VER_MINOR_STRING}" )
     message ( STATUS "patch: ${GMP_VER_PATCH_STRING}" )

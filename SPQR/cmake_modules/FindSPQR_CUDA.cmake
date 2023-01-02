@@ -48,8 +48,8 @@ endif ( )
 # static SPQR_CUDA library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-find_library ( SPQR_CUDA_LIBRARY
-    NAMES spqr_cuda
+find_library ( SPQR_CUDA_STATIC
+    NAMES spqr_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
