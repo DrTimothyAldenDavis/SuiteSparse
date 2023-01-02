@@ -79,13 +79,18 @@ set_target_properties ( ccolamd PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( ccolamd_static STATIC ${CCOLAMD_SOURCES} )
+    add_library ( ccolamd_static STATIC ${CCOLAMD_SOURCES} )
 
-set_target_properties ( ccolamd_static PROPERTIES
-    VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
-    OUTPUT_NAME ccolamd
-    C_STANDARD_REQUIRED 11
-    SOVERSION ${CCOLAMD_VERSION_MAJOR} )
+    set_target_properties ( ccolamd_static PROPERTIES
+        VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
+        OUTPUT_NAME ccolamd
+        C_STANDARD_REQUIRED 11
+        SOVERSION ${CCOLAMD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( ccolamd_static PROPERTIES
+            OUTPUT_NAME ccolamd_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

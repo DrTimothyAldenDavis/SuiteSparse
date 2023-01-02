@@ -79,13 +79,18 @@ set_target_properties ( btf PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( btf_static STATIC ${BTF_SOURCES} )
+    add_library ( btf_static STATIC ${BTF_SOURCES} )
 
-set_target_properties ( btf_static PROPERTIES
-    VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME btf
-    SOVERSION ${BTF_VERSION_MAJOR} )
+    set_target_properties ( btf_static PROPERTIES
+        VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME btf
+        SOVERSION ${BTF_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( btf_static PROPERTIES
+            OUTPUT_NAME btf_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

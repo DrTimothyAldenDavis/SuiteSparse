@@ -315,6 +315,12 @@ if ( NOT NSTATIC )
        OUTPUT_NAME graphblas
        SOVERSION ${GraphBLAS_VERSION_MAJOR}
        C_STANDARD_REQUIRED 11 )
+
+    if ( MSVC )
+        set_target_properties ( graphblas_static PROPERTIES
+            OUTPUT_NAME graphblas_static )
+    endif ( )
+
     set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )
 
     if ( SUITESPARSE_CUDA )
