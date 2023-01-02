@@ -11,6 +11,11 @@
 #ifndef CHOLMOD_METIS_WRAP_H
 #define CHOLMOD_METIS_WRAP_H
 
+#if SUITESPARSE_COMPILER_MSC
+    #undef  __thread
+    #define __thread __declspec(thread)
+#endif
+
 #define CoarsenGraphNlevels                       SuiteSparse_metis_CoarsenGraphNlevels
 #define ComputeAccuracy                           SuiteSparse_metis_ComputeAccuracy
 #define ComputeBFSOrdering                        SuiteSparse_metis_ComputeBFSOrdering
