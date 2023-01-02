@@ -35,6 +35,7 @@ It tries to provide a functionality similar to Perl's \b tr// function.
 */
 /************************************************************************/
 #if 0
+// All gk_str* functions disabled for SuiteSparse, except for gk_strdup.
 char *gk_strchr_replace(char *str, char *fromlist, char *tolist)
 {
   gk_idx_t i, j, k; 

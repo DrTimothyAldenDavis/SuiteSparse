@@ -69,6 +69,7 @@ cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
 if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
+    add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )
 endif ( )
 
 set ( CMAKE_MACOSX_RPATH TRUE )

@@ -14,7 +14,6 @@
 
 #include "metislib.h"
 
-#define abs SuiteSparse_metis_abs64
 
 /*************************************************************************/
 /*! This function is the entry point for the node ND code for ParMETIS.

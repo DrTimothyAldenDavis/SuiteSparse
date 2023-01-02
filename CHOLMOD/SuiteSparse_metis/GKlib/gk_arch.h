@@ -14,6 +14,7 @@
 * Architecture-specific differences in header files
 **************************************************************************/
 
+// stdint.h, inttypes.h: added for SuiteSparse, Dec 2022
 #include <stdint.h>
 #include <inttypes.h>
 
@@ -65,6 +66,7 @@ typedef ptrdiff_t ssize_t;
 #endif
 
 #if 0
+// rint and INFINITY disabled for SuiteSparse, Dec 2022
 #ifdef __MSC__
 /* MSC does not have rint() function */
 #define rint(x) ((int)((x)+0.5))  
