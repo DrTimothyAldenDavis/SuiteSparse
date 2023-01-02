@@ -15104,6 +15104,9 @@ types are limited to 128 bytes in size.  This can be changed by editing
 SuiteSparse:GraphBLAS.
 
 \item AVX acceleration is not enabled.
+
+\item The ninja code generator does not work with MS Visual Studio to
+build GraphBLAS, because of a limitation in cmake.
 \end{itemize}
 
 If you use a recent \verb'gcc' or \verb'icx' compiler on Windows other than the

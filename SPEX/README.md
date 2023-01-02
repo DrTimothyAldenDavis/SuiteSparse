@@ -46,3 +46,8 @@ Coauthors (alphabetical order):
     Tim Davis    
     Erick Moreno-Centeno
 
+NOTE: The cmake build system for SPEX 2.0.3 in SuiteSparse v7.0.0
+works on Windows, but (so far) only when using the MSYS2 build
+system.  It doesn't yet work in MS Visual Studio, because the GMP
+library isn't available on Windows for MSVC (just msys2 and
+cygwin).  We hope to resolve this issue in the future.
