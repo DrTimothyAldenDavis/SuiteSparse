@@ -226,10 +226,7 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( graphblas PUBLIC m )
-    if ( NOT NSTATIC )
-        target_link_libraries ( graphblas_static PUBLIC m )
-    endif ( )
+    target_link_libraries ( graphblas_matlab PUBLIC m )
 endif ( )
 
 include ( SuiteSparseAtomic )
