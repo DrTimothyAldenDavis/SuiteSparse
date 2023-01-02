@@ -58,15 +58,17 @@ find_library ( KLU_CHOLMOD_LIBRARY
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME klu_cholmod_static )
 else ( )
     set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME klu_cholmod )
 endif ( )
 
 # static KLU_CHOLMOD library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( KLU_CHOLMOD_STATIC
-    NAMES klu_cholmod_static
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User
