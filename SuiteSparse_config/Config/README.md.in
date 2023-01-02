@@ -664,12 +664,12 @@ all options default to false:
 Acknowledgements
 -----------------------------------------------------------------------------
 
-I would like to thank François Bissey, Sebastien Villemot, Erik Welch, and Jim
-Kitchen for their valuable feedback on the SuiteSparse build system and how it
-works with various Linux / Python distros and other package managers.  If you
-are a maintainer of a SuiteSparse packaging for a Linux distro, conda-forge, R,
-spack, brew, vcpkg, etc, please feel free to contact me if there's anything I
-can do to make your life easier.
+I would like to thank François Bissey, Sebastien Villemot, Erik Welch, Jim
+Kitchen, Markus Mützel, and Fabian Wein for their valuable feedback on the
+SuiteSparse build system and how it works with various Linux / Python distros
+and other package managers.  If you are a maintainer of a SuiteSparse packaging
+for a Linux distro, conda-forge, R, spack, brew, vcpkg, etc, please feel free
+to contact me if there's anything I can do to make your life easier.
 
 See also the various Acknowledgements within each package.
 
