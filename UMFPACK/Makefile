@@ -64,7 +64,7 @@ demos: library
 
 # demos requiring a Fortran compiler
 fdemos: demos
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 -DFDEMO=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
 	( cd build && ./readhb_nozeros < ../Demo/HB/can_24.psa > tmp_A          )
 	( cd build && ./readhb_size    < ../Demo/HB/can_24.psa > tmp_Asize      )
 	( cd build && ./umf4                                                    )
@@ -88,8 +88,12 @@ fdemos: demos
 	( cd build && ./umf4 a 1e-6                                             )
 	( cd build && ./umf4hb         < ../Demo/HB/west0067.rua > umf4hb.out   )
 	- diff --strip-trailing-cr ./Demo/umf4hb.out  ./build/umf4hb.out 
+	( cd build && ./umf4hb64       < ../Demo/HB/west0067.rua > umf4hb64.out )
+	- diff --strip-trailing-cr ./Demo/umf4hb64.out  ./build/umf4hb64.out 
 	( cd build && ./umf4zhb        < ../Demo/HB/qc324.cua > umf4zhb.out     )
 	- diff --strip-trailing-cr ./Demo/umf4zhb.out ./build/umf4zhb.out
+	( cd build && ./umf4zhb64      < ../Demo/HB/qc324.cua > umf4zhb64.out   )
+	- diff --strip-trailing-cr ./Demo/umf4zhb64.out ./build/umf4zhb64.out
 
 cov:
 	( cd Tcov && $(MAKE) )
