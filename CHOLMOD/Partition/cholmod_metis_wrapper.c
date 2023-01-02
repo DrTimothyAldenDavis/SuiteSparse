@@ -34,7 +34,6 @@
 #include "SuiteSparse_metis/GKlib/pqueue.c"
 #include "SuiteSparse_metis/GKlib/random.c"
 #include "SuiteSparse_metis/GKlib/sort.c"
-#include "SuiteSparse_metis/GKlib/string.c"
 #include "SuiteSparse_metis/GKlib/util.c"
 
 // unused by CHOLMOD:
@@ -50,6 +49,7 @@ double gk_CPUSeconds(void) { return (0) ; }
 // #include "SuiteSparse_metis/GKlib/rw.c"
 // #include "SuiteSparse_metis/GKlib/seq.c"
 // #include "SuiteSparse_metis/GKlib/tokenizer.c"
+// #include "SuiteSparse_metis/GKlib/string.c"
 
 // for parmetis.c: replace abs with 64-bit version
 #define abs SuiteSparse_metis_abs64

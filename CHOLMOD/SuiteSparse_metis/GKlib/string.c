@@ -34,8 +34,6 @@ It tries to provide a functionality similar to Perl's \b tr// function.
 \returns A pointer to \c str itself.
 */
 /************************************************************************/
-#if 0
-// All gk_str* functions disabled for SuiteSparse, except for gk_strdup.
 char *gk_strchr_replace(char *str, char *fromlist, char *tolist)
 {
   gk_idx_t i, j, k; 
@@ -354,7 +352,6 @@ char *gk_strtolower(char *str)
   for (i=0; str[i]!='\0'; str[i]=tolower(str[i]), i++); 
   return str;
 }
-#endif
 
 
 /************************************************************************/
@@ -405,7 +402,6 @@ strings.
 \retval 0 otherwise.
 */
 /*************************************************************************/
-#if 0
 int gk_strcasecmp(char *s1, char *s2)
 {
   int i=0;
@@ -531,4 +527,3 @@ int gk_GetStringID(gk_StringMap_t *strmap, char *key)
 
   return -1;
 }
-#endif
