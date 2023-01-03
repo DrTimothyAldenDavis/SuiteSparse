@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for LDL
 find_path ( LDL_INCLUDE_DIR
     NAMES ldl.h
@@ -40,6 +43,8 @@ find_path ( LDL_INCLUDE_DIR
 )
 
 # dynamic LDL library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( LDL_LIBRARY
     NAMES ldl
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -49,16 +54,14 @@ find_library ( LDL_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME ldl_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME ldl )
 endif ( )
 
 # static LDL library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( LDL_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -66,6 +69,8 @@ find_library ( LDL_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../LDL
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
