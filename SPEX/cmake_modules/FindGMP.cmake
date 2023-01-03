@@ -25,6 +25,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
     set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
@@ -37,24 +40,22 @@ find_path ( GMP_INCLUDE_DIR
 )
 
 # dynamic gmp library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GMP_LIBRARY
     NAMES gmp
     PATH_SUFFIXES lib build
 )
 
-if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
-else ( )
-    set ( STATIC_SUFFIX .a )
-endif ( )
-
 # static gmp library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GMP_STATIC
     NAMES gmp
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the filename
@@ -100,7 +101,7 @@ set ( GMP_LIBRARIES ${GMP_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( GMP
-    REQUIRED_VARS GMP_LIBRARIES GMP_INCLUDE_DIR
+    REQUIRED_VARS GMP_LIBRARY GMP_INCLUDE_DIR
     VERSION_VAR GMP_VERSION
 )
 

@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for Mongoose
 find_path ( MONGOOSE_INCLUDE_DIR
     NAMES Mongoose.hpp
@@ -42,6 +45,8 @@ find_path ( MONGOOSE_INCLUDE_DIR
 )
 
 # dynamic Mongoose library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MONGOOSE_LIBRARY
     NAMES mongoose
     HINTS ${MONGOOSE_ROOT}
@@ -53,16 +58,14 @@ find_library ( MONGOOSE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME mongoose_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME mongoose )
 endif ( )
 
 # static Mongoose library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MONGOOSE_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${MONGOOSE_ROOT}
@@ -72,6 +75,8 @@ find_library ( MONGOOSE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -106,7 +111,7 @@ set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( Mongoose
-    REQUIRED_VARS MONGOOSE_LIBRARIES MONGOOSE_INCLUDE_DIR
+    REQUIRED_VARS MONGOOSE_LIBRARY MONGOOSE_INCLUDE_DIR
     VERSION_VAR MONGOOSE_VERSION
 )
 

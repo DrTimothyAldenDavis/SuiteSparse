@@ -29,7 +29,12 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # dynamic SPQR_CUDA library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPQR_CUDA_LIBRARY
     NAMES spqr_cuda
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -40,22 +45,24 @@ find_library ( SPQR_CUDA_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME spqr_cuda_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME spqr_cuda )
 endif ( )
 
 # static SPQR_CUDA library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPQR_CUDA_STATIC
-    NAMES spqr_cuda_static
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -78,7 +85,7 @@ set ( SPQR_CUDA_LIBRARIES ${SPQR_CUDA_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR_CUDA
-    REQUIRED_VARS SPQR_CUDA_LIBRARIES
+    REQUIRED_VARS SPQR_CUDA_LIBRARY
     VERSION_VAR SPQR_CUDA_VERSION
 )
 

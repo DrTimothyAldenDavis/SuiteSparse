@@ -46,7 +46,6 @@ if ( NGPL )
 endif ( )
 
 include ( SuiteSparsePolicy )
-include ( SuiteSparseFortran )
 
 #-------------------------------------------------------------------------------
 # define the project

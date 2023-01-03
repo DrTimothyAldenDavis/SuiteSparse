@@ -25,6 +25,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
     set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
@@ -37,24 +40,22 @@ find_path ( MPFR_INCLUDE_DIR
 )
 
 # dynamic mpfr library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MPFR_LIBRARY
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
 
-if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
-else ( )
-    set ( STATIC_SUFFIX .a )
-endif ( )
-
 # static mpfr library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MPFR_STATIC
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the filename
@@ -89,7 +90,7 @@ set ( MPFR_LIBRARIES ${MPFR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( MPFR
-    REQUIRED_VARS MPFR_LIBRARIES MPFR_INCLUDE_DIR
+    REQUIRED_VARS MPFR_LIBRARY MPFR_INCLUDE_DIR
     VERSION_VAR MPFR_VERSION
 )
 

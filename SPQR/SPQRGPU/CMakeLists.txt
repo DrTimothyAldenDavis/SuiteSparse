@@ -51,7 +51,13 @@ add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
 set_target_properties ( spqr_cuda_static PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
+    OUTPUT_NAME spqr_cuda
     SOVERSION ${SPQR_VERSION_MAJOR} )
+
+if ( MSVC )
+    set_target_properties ( spqr_cuda_static PROPERTIES
+        OUTPUT_NAME spqr_cuda_static )
+endif ( )
 
 set ( SPQR_CUDA_INCLUDES
         ../../GPUQREngine/Include

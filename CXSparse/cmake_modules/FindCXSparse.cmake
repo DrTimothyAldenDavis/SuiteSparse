@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for CXSPARSE
 find_path ( CXSPARSE_INCLUDE_DIR
     NAMES cs.h
@@ -42,6 +45,8 @@ find_path ( CXSPARSE_INCLUDE_DIR
 )
 
 # dynamic CXSPARSE library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CXSPARSE_LIBRARY
     NAMES cxsparse
     HINTS ${CXSPARSE_ROOT}
@@ -53,16 +58,14 @@ find_library ( CXSPARSE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME cxsparse_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME cxsparse )
 endif ( )
 
 # static CXSPARSE library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CXSPARSE_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CXSPARSE_ROOT}
@@ -72,6 +75,8 @@ find_library ( CXSPARSE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -106,7 +111,7 @@ set ( CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CXSparse
-    REQUIRED_VARS CXSPARSE_LIBRARIES CXSPARSE_INCLUDE_DIR
+    REQUIRED_VARS CXSPARSE_LIBRARY CXSPARSE_INCLUDE_DIR
     VERSION_VAR CXSPARSE_VERSION
 )
 

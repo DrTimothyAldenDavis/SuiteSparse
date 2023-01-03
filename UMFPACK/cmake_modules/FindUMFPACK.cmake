@@ -31,6 +31,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for UMFPACK
 find_path ( UMFPACK_INCLUDE_DIR
     NAMES umfpack.h
@@ -41,6 +44,8 @@ find_path ( UMFPACK_INCLUDE_DIR
 )
 
 # dynamic UMFPACK library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( UMFPACK_LIBRARY
     NAMES umfpack
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -50,16 +55,14 @@ find_library ( UMFPACK_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME umfpack_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME umfpack )
 endif ( )
 
 # static UMFPACK library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( UMFPACK_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -67,6 +70,8 @@ find_library ( UMFPACK_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -101,7 +106,7 @@ set ( UMFPACK_LIBRARIES ${UMFPACK_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( UMFPACK
-    REQUIRED_VARS UMFPACK_LIBRARIES UMFPACK_INCLUDE_DIR
+    REQUIRED_VARS UMFPACK_LIBRARY UMFPACK_INCLUDE_DIR
     VERSION_VAR UMFPACK_VERSION
 )
 

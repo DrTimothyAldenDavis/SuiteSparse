@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/CMakeLists.txt:  cmake for SuiteSparse_config
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -32,7 +32,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
 include ( SuiteSparsePolicy )
-include ( SuiteSparseFortran )
 
 if ( NOT NFORTRAN )
     include ( FortranCInterface )
@@ -187,4 +186,3 @@ if ( INSIDE_SUITESPARSE )
 endif ( )
 
 include ( SuiteSparseReport )
-

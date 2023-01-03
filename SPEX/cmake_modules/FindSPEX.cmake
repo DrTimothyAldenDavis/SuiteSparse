@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for SPEX
 find_path ( SPEX_INCLUDE_DIR
     NAMES SPEX.h
@@ -40,6 +43,8 @@ find_path ( SPEX_INCLUDE_DIR
 )
 
 # dynamic SPEX library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPEX_LIBRARY
     NAMES spex
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -49,16 +54,14 @@ find_library ( SPEX_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME spex_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME spex )
 endif ( )
 
 # static SPEX library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPEX_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -66,6 +69,8 @@ find_library ( SPEX_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -100,7 +105,7 @@ set ( SPEX_LIBRARIES ${SPEX_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPEX
-    REQUIRED_VARS SPEX_LIBRARIES SPEX_INCLUDE_DIR
+    REQUIRED_VARS SPEX_LIBRARY SPEX_INCLUDE_DIR
     VERSION_VAR SPEX_VERSION
 )
 

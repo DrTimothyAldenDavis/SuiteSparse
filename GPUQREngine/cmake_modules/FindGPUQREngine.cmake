@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for GPUQREngine
 find_path ( GPUQRENGINE_INCLUDE_DIR
     NAMES GPUQREngine.hpp
@@ -40,6 +43,8 @@ find_path ( GPUQRENGINE_INCLUDE_DIR
 )
 
 # dynamic GPUQREngine library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GPUQRENGINE_LIBRARY
     NAMES gpuqrengine
     HINTS ${GPUQRENGINE_ROOT}
@@ -51,16 +56,16 @@ find_library ( GPUQRENGINE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME gpuqrengine_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME gpuqrengine )
 endif ( )
 
 # static GPUQREngine library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GPUQRENGINE_STATIC
-    NAMES gpuqrengine_static
+    NAMES ${STATIC_NAME}
     HINTS ${GPUQRENGINE_ROOT}
     HINTS ENV GPUQRENGINE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -68,6 +73,8 @@ find_library ( GPUQRENGINE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -103,7 +110,7 @@ set (GPUQRENGINE_LIBRARIES ${GPUQRENGINE_LIBRARY})
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( GPUQREngine
-    REQUIRED_VARS GPUQRENGINE_LIBRARIES
+    REQUIRED_VARS GPUQRENGINE_LIBRARY
     VERSION_VAR GPUQRENGINE_VERSION
 )
 

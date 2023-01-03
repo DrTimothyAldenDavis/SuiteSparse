@@ -30,6 +30,9 @@
 
 #-------------------------------------------------------------------------------
 
+# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
+set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+
 # include files for SPQR
 find_path ( SPQR_INCLUDE_DIR
     NAMES SuiteSparseQR.hpp
@@ -40,6 +43,8 @@ find_path ( SPQR_INCLUDE_DIR
 )
 
 # dynamic SPQR library
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPQR_LIBRARY
     NAMES spqr
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -49,21 +54,23 @@ find_library ( SPQR_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME spqr_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME spqr )
 endif ( )
 
 # static SPQR library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES
+    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPQR_STATIC
-    NAMES spqr_static spqr
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR
     PATH_SUFFIXES lib build
 )
+
+# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
 # get version of the library from the dynamic library name
@@ -98,7 +105,7 @@ set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR
-    REQUIRED_VARS SPQR_LIBRARIES SPQR_INCLUDE_DIR
+    REQUIRED_VARS SPQR_LIBRARY SPQR_INCLUDE_DIR
     VERSION_VAR SPQR_VERSION
 )
 

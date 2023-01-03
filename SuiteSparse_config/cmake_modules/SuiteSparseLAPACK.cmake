@@ -49,7 +49,7 @@ if ( BLA_VENDOR STREQUAL "FLAME" )
     include (FindPackageHandleStandardArgs)
 
     find_package_handle_standard_args ( LAPACK
-        REQUIRED_VARS LAPACK_LIBRARIES
+        REQUIRED_VARS LAPACK_LIBRARY
     )
 
     mark_as_advanced (
