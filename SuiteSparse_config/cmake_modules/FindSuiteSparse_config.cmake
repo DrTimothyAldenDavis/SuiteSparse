@@ -30,6 +30,8 @@
 
 #-------------------------------------------------------------------------------
 
+message ( STATUS "library suffixes: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
+
 # include files for SuiteSparse_config
 find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     NAMES SuiteSparse_config.h
@@ -41,6 +43,8 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
+message ( STATUS "SuiteSparse_config include: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
+
 # dynamic libraries for SuiteSparse_config
 find_library ( SUITESPARSE_CONFIG_LIBRARY
     NAMES suitesparseconfig
@@ -51,6 +55,8 @@ find_library ( SUITESPARSE_CONFIG_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
     PATH_SUFFIXES lib build
 )
+
+message ( STATUS "SuiteSparse_config library: ${SUITESPARSE_CONFIG_LIBRARY}" )
 
 if ( MSVC )
     set ( STATIC_SUFFIX .lib )
@@ -74,6 +80,9 @@ find_library ( SUITESPARSE_CONFIG_STATIC
 )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 
+message ( STATUS "SuiteSparse_config library: ${SUITESPARSE_CONFIG_LIBRARY}" )
+message ( STATUS "SuiteSparse_config static:  ${SUITESPARSE_CONFIG_STATIC}" )
+
 # get version of the library from the dynamic library filename, if present
 get_filename_component ( SUITESPARSE_CONFIG_LIBRARY  ${SUITESPARSE_CONFIG_LIBRARY} REALPATH )
 get_filename_component ( SUITESPARSE_CONFIG_FILENAME ${SUITESPARSE_CONFIG_LIBRARY} NAME )
@@ -82,6 +91,8 @@ string (
     SUITESPARSE_CONFIG_VERSION
     ${SUITESPARSE_CONFIG_FILENAME}
 )
+
+message ( STATUS "version here : ${SUITESPARSE_CONFIG_VERSION}" )
 
 # set ( SUITESPARSE_CONFIG_VERSION "" )
 if ( EXISTS "${SUITESPARSE_CONFIG_INCLUDE_DIR}" AND NOT SUITESPARSE_CONFIG_VERSION )
@@ -101,7 +112,9 @@ if ( EXISTS "${SUITESPARSE_CONFIG_INCLUDE_DIR}" AND NOT SUITESPARSE_CONFIG_VERSI
     set (SUITESPARSE_CONFIG_VERSION "${SUITESPARSE_CONFIG_MAJOR}.${SUITESPARSE_CONFIG_MINOR}.${SUITESPARSE_CONFIG_PATCH}")
 endif ( )
 
-message (STATUS "version: ${SUITESPARSE_CONFIG_VERSION}")
+message ( STATUS "version again: ${SUITESPARSE_CONFIG_VERSION}")
+message ( STATUS "library again: ${SUITESPARSE_CONFIG_LIBRARY}" )
+message ( STATUS "static again:  ${SUITESPARSE_CONFIG_STATIC}" )
 
 # libaries when using SuiteSparse_config
 set (SUITESPARSE_CONFIG_LIBRARIES ${SUITESPARSE_CONFIG_LIBRARY})
