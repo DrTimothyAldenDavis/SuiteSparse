@@ -46,7 +46,7 @@ find_library ( CHOLMOD_CUDA_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -65,7 +65,7 @@ find_library ( CHOLMOD_CUDA_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

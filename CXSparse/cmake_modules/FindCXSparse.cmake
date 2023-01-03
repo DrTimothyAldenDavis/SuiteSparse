@@ -50,7 +50,7 @@ find_library ( CXSPARSE_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -70,7 +70,7 @@ find_library ( CXSPARSE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

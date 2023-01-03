@@ -46,7 +46,7 @@ find_library ( UMFPACK_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -64,7 +64,7 @@ find_library ( UMFPACK_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )
