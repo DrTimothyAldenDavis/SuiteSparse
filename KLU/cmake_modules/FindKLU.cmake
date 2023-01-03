@@ -100,7 +100,7 @@ set ( KLU_LIBRARIES ${KLU_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( KLU
-    REQUIRED_VARS KLU_LIBRARIES KLU_INCLUDE_DIR
+    REQUIRED_VARS KLU_LIBRARY KLU_INCLUDE_DIR
     VERSION_VAR KLU_VERSION
     )
 

@@ -189,7 +189,7 @@ void *SuiteSparse_config_realloc (void *p, size_t s)
 
 void SuiteSparse_config_free (void *p)
 {
-    return (SuiteSparse_config.free_func (p)) ;
+    SuiteSparse_config.free_func (p) ;
 }
 
 double SuiteSparse_config_hypot (double x, double y)

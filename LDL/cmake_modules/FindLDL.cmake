@@ -100,7 +100,7 @@ set ( LDL_LIBRARIES ${LDL_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( LDL
-    REQUIRED_VARS LDL_LIBRARIES LDL_INCLUDE_DIR
+    REQUIRED_VARS LDL_LIBRARY LDL_INCLUDE_DIR
     VERSION_VAR LDL_VERSION
 )
 

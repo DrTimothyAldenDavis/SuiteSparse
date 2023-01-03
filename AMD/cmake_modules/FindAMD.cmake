@@ -100,7 +100,7 @@ set ( AMD_LIBRARIES ${AMD_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( AMD
-    REQUIRED_VARS AMD_LIBRARIES AMD_INCLUDE_DIR
+    REQUIRED_VARS AMD_LIBRARY AMD_INCLUDE_DIR
     VERSION_VAR AMD_VERSION
 )
 

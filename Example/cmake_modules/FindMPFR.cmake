@@ -89,7 +89,7 @@ set ( MPFR_LIBRARIES ${MPFR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( MPFR
-    REQUIRED_VARS MPFR_LIBRARIES MPFR_INCLUDE_DIR
+    REQUIRED_VARS MPFR_LIBRARY MPFR_INCLUDE_DIR
     VERSION_VAR MPFR_VERSION
 )
 

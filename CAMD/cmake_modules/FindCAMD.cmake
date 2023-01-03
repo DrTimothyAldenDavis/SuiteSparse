@@ -100,7 +100,7 @@ set ( CAMD_LIBRARIES ${CAMD_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CAMD
-    REQUIRED_VARS CAMD_LIBRARIES CAMD_INCLUDE_DIR
+    REQUIRED_VARS CAMD_LIBRARY CAMD_INCLUDE_DIR
     VERSION_VAR CAMD_VERSION
 )
 

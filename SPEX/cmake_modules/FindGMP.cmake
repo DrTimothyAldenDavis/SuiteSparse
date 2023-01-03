@@ -100,7 +100,7 @@ set ( GMP_LIBRARIES ${GMP_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( GMP
-    REQUIRED_VARS GMP_LIBRARIES GMP_INCLUDE_DIR
+    REQUIRED_VARS GMP_LIBRARY GMP_INCLUDE_DIR
     VERSION_VAR GMP_VERSION
 )
 

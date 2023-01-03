@@ -78,7 +78,7 @@ set ( SPQR_CUDA_LIBRARIES ${SPQR_CUDA_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR_CUDA
-    REQUIRED_VARS SPQR_CUDA_LIBRARIES
+    REQUIRED_VARS SPQR_CUDA_LIBRARY
     VERSION_VAR SPQR_CUDA_VERSION
 )
 

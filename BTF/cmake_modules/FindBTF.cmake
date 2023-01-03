@@ -100,7 +100,7 @@ set ( BTF_LIBRARIES ${BTF_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( BTF
-    REQUIRED_VARS BTF_LIBRARIES BTF_INCLUDE_DIR
+    REQUIRED_VARS BTF_LIBRARY BTF_INCLUDE_DIR
     VERSION_VAR BTF_VERSION
 )
 

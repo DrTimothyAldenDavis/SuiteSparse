@@ -105,7 +105,7 @@ set ( RBIO_LIBRARIES ${RBIO_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( RBio
-    REQUIRED_VARS RBIO_LIBRARIES RBIO_INCLUDE_DIR
+    REQUIRED_VARS RBIO_LIBRARY RBIO_INCLUDE_DIR
     VERSION_VAR RBIO_VERSION
 )
 

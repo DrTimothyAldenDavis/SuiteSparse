@@ -100,7 +100,7 @@ set ( SPEX_LIBRARIES ${SPEX_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPEX
-    REQUIRED_VARS SPEX_LIBRARIES SPEX_INCLUDE_DIR
+    REQUIRED_VARS SPEX_LIBRARY SPEX_INCLUDE_DIR
     VERSION_VAR SPEX_VERSION
 )
 

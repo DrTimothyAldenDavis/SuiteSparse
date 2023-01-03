@@ -98,7 +98,7 @@ set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR
-    REQUIRED_VARS SPQR_LIBRARIES SPQR_INCLUDE_DIR
+    REQUIRED_VARS SPQR_LIBRARY SPQR_INCLUDE_DIR
     VERSION_VAR SPQR_VERSION
 )
 
