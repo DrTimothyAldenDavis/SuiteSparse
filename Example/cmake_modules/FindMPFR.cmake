@@ -17,6 +17,8 @@
 # MPFR_LIBRARIES   - libraries when using mpfr
 # MPFR_FOUND       - true if mpfr found
 
+# For MS Visual Studio, MPFR_LIBRARY and MPFR_STATIC are the same.
+
 # set ``MPFR_ROOT`` to a mpfr installation root to
 # tell this module where to look.
 
@@ -24,9 +26,6 @@
 # with 'make install' when installing SPEX.
 
 #-------------------------------------------------------------------------------
-
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
@@ -40,23 +39,26 @@ find_path ( MPFR_INCLUDE_DIR
 )
 
 # dynamic mpfr library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MPFR_LIBRARY
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
 
+if ( NOT MSVC )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+endif ( )
+
 # static mpfr library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MPFR_STATIC
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the filename
 get_filename_component ( MPFR_LIBRARY ${MPFR_LIBRARY} REALPATH )

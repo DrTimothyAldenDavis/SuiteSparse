@@ -30,9 +30,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-
 # include files for SuiteSparse_GPURuntime
 find_path ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR
     NAMES SuiteSparse_GPURuntime.hpp
@@ -43,8 +40,6 @@ find_path ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR
 )
 
 # dynamic SuiteSparse_GPURuntime library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
     NAMES suitesparse_gpuruntime
     HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
@@ -59,11 +54,12 @@ if ( MSVC )
     set ( STATIC_NAME suitesparse_gpuruntime_static )
 else ( )
     set ( STATIC_NAME suitesparse_gpuruntime )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SuiteSparse_GPURuntime library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SUITESPARSE_GPURUNTIME_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
@@ -74,8 +70,10 @@ find_library ( SUITESPARSE_GPURUNTIME_STATIC
     PATH_SUFFIXES lib build
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( SUITESPARSE_GPURUNTIME_LIBRARY  ${SUITESPARSE_GPURUNTIME_LIBRARY} REALPATH )

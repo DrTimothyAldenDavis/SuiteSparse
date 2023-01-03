@@ -30,9 +30,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-
 # include files for COLAMD
 find_path ( COLAMD_INCLUDE_DIR
     NAMES colamd.h
@@ -43,8 +40,6 @@ find_path ( COLAMD_INCLUDE_DIR
 )
 
 # dynamic COLAMD library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( COLAMD_LIBRARY
     NAMES colamd
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -57,11 +52,12 @@ if ( MSVC )
     set ( STATIC_NAME colamd_static )
 else ( )
     set ( STATIC_NAME colamd )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static COLAMD library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( COLAMD_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
@@ -70,8 +66,10 @@ find_library ( COLAMD_STATIC
     PATH_SUFFIXES lib build
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( COLAMD_LIBRARY  ${COLAMD_LIBRARY} REALPATH )

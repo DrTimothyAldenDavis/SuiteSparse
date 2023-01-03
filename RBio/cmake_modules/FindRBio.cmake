@@ -30,9 +30,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-
 # include files for RBio
 find_path ( RBIO_INCLUDE_DIR
     NAMES RBio.h
@@ -45,8 +42,6 @@ find_path ( RBIO_INCLUDE_DIR
 )
 
 # dynamic RBio library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( RBIO_LIBRARY
     NAMES rbio
     HINTS ${RBIO_ROOT}
@@ -54,18 +49,19 @@ find_library ( RBIO_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
 if ( MSVC )
     set ( STATIC_NAME rbio_static )
 else ( )
     set ( STATIC_NAME rbio )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static RBio library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( RBIO_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${RBIO_ROOT}
@@ -73,11 +69,13 @@ find_library ( RBIO_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( RBIO_LIBRARY  ${RBIO_LIBRARY} REALPATH )
