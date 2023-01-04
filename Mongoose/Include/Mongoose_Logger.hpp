@@ -25,7 +25,7 @@
 
 #include <iostream>
 #include <string>
-#include <time.h>
+#include <SuiteSparse_config.h>
 
 // Default Logging Levels
 #ifndef LOG_ERROR
@@ -98,7 +98,7 @@ class Logger
 private:
     static int debugLevel;
     static bool timingOn;
-    static clock_t clocks[6];
+    static double clocks[6];
     static float times[6];
 
 public:
@@ -129,7 +129,7 @@ inline void Logger::tic(TimingType timingType)
 {
     if (timingOn)
     {
-        clocks[timingType] = clock();
+        clocks[timingType] = SuiteSparse_time ();
     }
 }
 
@@ -152,7 +152,7 @@ inline void Logger::toc(TimingType timingType)
     if (timingOn)
     {
         times[timingType]
-            += ((float)(clock() - clocks[timingType])) / CLOCKS_PER_SEC;
+            += (float) (SuiteSparse_time () - clocks[timingType]) ;
     }
 }
 

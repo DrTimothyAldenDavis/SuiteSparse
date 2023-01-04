@@ -22,7 +22,7 @@ int runPerformanceTest(const std::string &inputFile, const std::string &outputFi
 {
     EdgeCut_Options *options;
     Graph *graph;
-    clock_t t;
+    double t;
     
     options = EdgeCut_Options::create();
 
@@ -43,9 +43,9 @@ int runPerformanceTest(const std::string &inputFile, const std::string &outputFi
     }
 
     // An edge separator should be computed with default options
-    t = clock();
+    t = SuiteSparse_time ();
     EdgeCut *result = edge_cut(graph, options);
-    t = clock() - t;
+    t = SuiteSparse_time () - t;
 
     if (!result)
     {
@@ -56,7 +56,7 @@ int runPerformanceTest(const std::string &inputFile, const std::string &outputFi
     }
     else
     {
-        double test_time = ((double) t)/CLOCKS_PER_SEC;
+        double test_time = t ;
         LogTest("Total Edge Separator Time: " << test_time << "s");
         Logger::printTimingInfo();
         LogTest("Cut Properties:");

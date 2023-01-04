@@ -189,10 +189,6 @@ endif ( )
 
 target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
 
-if (UNIX AND NOT APPLE)
-    target_link_libraries(mongoose_lib rt)
-endif ()
-
 # Build the Mongoose library for dynamic linking
 add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
 set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
@@ -215,10 +211,6 @@ target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
 set_target_properties(mongoose_dylib PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp)
 target_include_directories(mongoose_dylib PRIVATE .)
 
-if (UNIX AND NOT APPLE)
-    target_link_libraries(mongoose_dylib rt)
-endif ()
-
 #-------------------------------------------------------------------------------
 
 # Build the Mongoose debug/test library
@@ -227,10 +219,6 @@ set_target_properties(mongoose_lib_dbg
         PROPERTIES OUTPUT_NAME mongoose_dbg)
 
 target_link_libraries(mongoose_lib_dbg ${SUITESPARSE_CONFIG_LIBRARY})
-
-if (UNIX AND NOT APPLE)
-    target_link_libraries(mongoose_lib_dbg rt)
-endif ()
 
 # Build the Mongoose executable
 add_executable(mongoose_exe ${EXE_FILES})
