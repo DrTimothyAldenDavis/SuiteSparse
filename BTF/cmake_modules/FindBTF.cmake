@@ -39,9 +39,9 @@ find_path ( BTF_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic BTF library
+# dynamic BTF library (or static if no dynamic library was built)
 find_library ( BTF_LIBRARY
-    NAMES btf
+    NAMES btf btf_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF

@@ -38,7 +38,7 @@ find_path ( MPFR_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic mpfr library
+# dynamic mpfr library (or possibly static if no mpfr dynamic library exists)
 find_library ( MPFR_LIBRARY
     NAMES mpfr
     PATH_SUFFIXES lib build

@@ -39,9 +39,9 @@ find_path ( GPUQRENGINE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic GPUQREngine library
+# dynamic GPUQREngine library (or static if no dynamic library was built)
 find_library ( GPUQRENGINE_LIBRARY
-    NAMES gpuqrengine
+    NAMES gpuqrengine gpuqrengine_static
     HINTS ${GPUQRENGINE_ROOT}
     HINTS ENV GPUQRENGINE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

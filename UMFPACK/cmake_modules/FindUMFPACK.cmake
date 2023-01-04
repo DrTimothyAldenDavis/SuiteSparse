@@ -40,9 +40,9 @@ find_path ( UMFPACK_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic UMFPACK library
+# dynamic UMFPACK library (or static if no dynamic library was built)
 find_library ( UMFPACK_LIBRARY
-    NAMES umfpack
+    NAMES umfpack umfpack_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK

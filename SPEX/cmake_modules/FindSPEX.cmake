@@ -39,9 +39,9 @@ find_path ( SPEX_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SPEX library
+# dynamic SPEX library (or static if no dynamic library was built)
 find_library ( SPEX_LIBRARY
-    NAMES spex
+    NAMES spex spex_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX

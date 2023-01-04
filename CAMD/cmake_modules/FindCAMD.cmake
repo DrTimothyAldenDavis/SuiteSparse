@@ -39,9 +39,9 @@ find_path ( CAMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CAMD library
+# dynamic CAMD library (or static if no dynamic library was built)
 find_library ( CAMD_LIBRARY
-    NAMES camd
+    NAMES camd camd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD

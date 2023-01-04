@@ -39,9 +39,9 @@ find_path ( KLU_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic KLU library
+# dynamic KLU library (or static if no dynamic library was built)
 find_library ( KLU_LIBRARY
-    NAMES klu
+    NAMES klu klu_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU

@@ -38,7 +38,7 @@ find_path ( GMP_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic gmp library
+# dynamic gmp library (or possibly static if no GMP dynamic library exists)
 find_library ( GMP_LIBRARY
     NAMES gmp
     PATH_SUFFIXES lib build

@@ -39,9 +39,9 @@ find_path ( SPQR_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SPQR library
+# dynamic SPQR library (or static if no dynamic library was built)
 find_library ( SPQR_LIBRARY
-    NAMES spqr
+    NAMES spqr spqr_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR

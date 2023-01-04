@@ -42,9 +42,9 @@ find_path ( CXSPARSE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CXSPARSE library
+# dynamic CXSPARSE library (or static if no dynamic library was built)
 find_library ( CXSPARSE_LIBRARY
-    NAMES cxsparse
+    NAMES cxsparse cxsparse_static
     HINTS ${CXSPARSE_ROOT}
     HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

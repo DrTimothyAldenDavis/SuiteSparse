@@ -41,9 +41,9 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic libraries for SuiteSparse_config
+# dynamic SuiteSparse_config (or static if no dynamic library was built)
 find_library ( SUITESPARSE_CONFIG_LIBRARY
-    NAMES suitesparseconfig
+    NAMES suitesparseconfig suitesparseconfig_static
     HINTS ${SUITESPARSE_CONFIG_ROOT}
     HINTS ENV SUITESPARSE_CONFIG_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

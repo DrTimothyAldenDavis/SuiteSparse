@@ -39,9 +39,9 @@ find_path ( AMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic AMD library
+# dynamic AMD library (or static if no dynamic library was built)
 find_library ( AMD_LIBRARY
-    NAMES amd
+    NAMES amd amd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/AMD
     HINTS ${CMAKE_SOURCE_DIR}/../AMD

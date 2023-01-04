@@ -39,9 +39,9 @@ find_path ( CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CHOLMOD_CUDA library
+# dynamic CHOLMOD_CUDA library (or static if no dynamic library was built)
 find_library ( CHOLMOD_CUDA_LIBRARY
-    NAMES cholmod_cuda
+    NAMES cholmod_cuda cholmod_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/

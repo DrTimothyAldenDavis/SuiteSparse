@@ -29,9 +29,9 @@
 
 #-------------------------------------------------------------------------------
 
-# dynamic SPQR_CUDA library
+# dynamic SPQR_CUDA library (or static if no dynamic library was built)
 find_library ( SPQR_CUDA_LIBRARY
-    NAMES spqr_cuda
+    NAMES spqr_cuda spqr_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/

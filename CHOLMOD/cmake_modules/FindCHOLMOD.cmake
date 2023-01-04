@@ -38,9 +38,9 @@ find_path ( CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CHOLMOD library
+# dynamic CHOLMOD library (or static if no dynamic library was built)
 find_library ( CHOLMOD_LIBRARY
-    NAMES cholmod
+    NAMES cholmod cholmod_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD

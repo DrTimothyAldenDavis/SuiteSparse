@@ -39,9 +39,9 @@ find_path ( LDL_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic LDL library
+# dynamic LDL library (or static if no dynamic library was built)
 find_library ( LDL_LIBRARY
-    NAMES ldl
+    NAMES ldl ldl_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/LDL
     HINTS ${CMAKE_SOURCE_DIR}/../LDL

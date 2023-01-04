@@ -39,9 +39,9 @@ find_path ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SuiteSparse_GPURuntime library
+# dynamic SuiteSparse_GPURuntime library (or static if no dynamic library was built)
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
-    NAMES suitesparse_gpuruntime
+    NAMES suitesparse_gpuruntime suitesparse_gpuruntime_static
     HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
     HINTS ENV SUITESPARSE_GPURUNTIME_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..

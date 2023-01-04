@@ -47,9 +47,9 @@ find_path ( KLU_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic KLU_CHOLMOD library
+# dynamic KLU_CHOLMOD library (or static if no dynamic library was built)
 find_library ( KLU_CHOLMOD_LIBRARY
-    NAMES klu_cholmod
+    NAMES klu_cholmod klu_cholmod_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU/User
     HINTS ${CMAKE_SOURCE_DIR}/../KLU/User

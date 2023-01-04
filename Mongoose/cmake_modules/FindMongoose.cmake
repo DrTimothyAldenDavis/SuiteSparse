@@ -41,9 +41,9 @@ find_path ( MONGOOSE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic Mongoose library
+# dynamic Mongoose library (or static if no dynamic library was built)
 find_library ( MONGOOSE_LIBRARY
-    NAMES mongoose
+    NAMES mongoose mongoose_static
     HINTS ${MONGOOSE_ROOT}
     HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..

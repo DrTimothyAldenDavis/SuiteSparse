@@ -39,9 +39,9 @@ find_path ( COLAMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic COLAMD library
+# dynamic COLAMD library (or static if no dynamic library was built)
 find_library ( COLAMD_LIBRARY
-    NAMES colamd
+    NAMES colamd colamd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD

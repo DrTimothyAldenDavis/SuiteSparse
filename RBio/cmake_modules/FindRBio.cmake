@@ -41,9 +41,9 @@ find_path ( RBIO_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic RBio library
+# dynamic RBio library (or static if no dynamic library was built)
 find_library ( RBIO_LIBRARY
-    NAMES rbio
+    NAMES rbio rbio_static
     HINTS ${RBIO_ROOT}
     HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
