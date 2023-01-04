@@ -160,7 +160,7 @@ void UMFPACK_report_info
 
     PRINTF (("    CPU timer:                        ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (("POSIX C clock_getttime ( ) routine.\n")) ;
+    PRINTF (("SuiteSparse_time ( ) routine.\n")) ;
 #else
     PRINTF (("none.\n")) ;
 #endif

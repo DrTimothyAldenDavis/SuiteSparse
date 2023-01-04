@@ -33,7 +33,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Control:
     The following options can only be changed at compile-time:
     8: BLAS library used:  Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
-    POSIX C clock_getttime.
+    SuiteSparse_time ( )
     compiled with CHOLMOD ordering options
     computer/operating system: Mac
     size of int32_t: 4 int64_t: 8 Int: 4 pointer: 8 double: 8 Entry: 16 (in bytes)
@@ -43,7 +43,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int32_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       324
     number of columns in matrix A:    324
     entries in matrix A:              26730
@@ -120,7 +120,9 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      7463.30
+    numeric factorization mflops (wallclock):      3380.90
+    symbolic + numeric wall clock time (sec):      0.01
+    symbolic + numeric mflops (wall clock):        2683.11
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
@@ -132,7 +134,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
  Matrix key: QC324                         
 symbolic analysis:
    status:     0.
-   time:      0.64E-03 (sec)
+   time:      0.11E-02 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          1.17 (MB)
    memory needed:       2.40 (MB)
@@ -141,7 +143,7 @@ symbolic analysis:
    nnz (U):           39609.
 numeric factorization:
    status:     0.
-   time:      0.19E-02
+   time:      0.42E-02
    actual numeric LU statistics:
    size of LU:          0.72 (MB)
    memory needed:       1.14 (MB)
