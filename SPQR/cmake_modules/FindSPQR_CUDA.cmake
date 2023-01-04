@@ -36,7 +36,7 @@ find_library ( SPQR_CUDA_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -55,7 +55,7 @@ find_library ( SPQR_CUDA_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

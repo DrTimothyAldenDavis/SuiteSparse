@@ -47,7 +47,7 @@ find_library ( GPUQRENGINE_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -67,7 +67,7 @@ find_library ( GPUQRENGINE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

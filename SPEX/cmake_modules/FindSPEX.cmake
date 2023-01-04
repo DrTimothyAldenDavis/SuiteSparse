@@ -45,7 +45,7 @@ find_library ( SPEX_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -63,7 +63,7 @@ find_library ( SPEX_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

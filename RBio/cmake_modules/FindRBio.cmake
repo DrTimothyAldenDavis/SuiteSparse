@@ -49,7 +49,7 @@ find_library ( RBIO_LIBRARY
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
@@ -69,7 +69,7 @@ find_library ( RBIO_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( NOT MSVC )

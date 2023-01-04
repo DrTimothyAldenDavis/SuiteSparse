@@ -82,7 +82,7 @@ find_library ( GRAPHBLAS_LIBRARY
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATH_SUFFIXES lib build alternative
+  PATH_SUFFIXES lib build build/Release build/Debug alternative
   )
 
 if ( MSVC )
@@ -102,7 +102,7 @@ find_library ( GRAPHBLAS_STATIC
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATH_SUFFIXES lib build alternative
+  PATH_SUFFIXES lib build build/Release build/Debug alternative
   )
 
 if ( NOT MSVC )
