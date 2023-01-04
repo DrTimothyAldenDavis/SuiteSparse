@@ -334,24 +334,22 @@ Packages in SuiteSparse, and files in this directory:
 
                 make            compiles SuiteSparse libraries.
                                 Subsequent "make install" will install
-                                in just /usr/local/lib.
-                                Normally requires "sudu make install"
+                                in just CMAKE_INSTALL_PATH (defaults to
+                                /usr/local/lib on Linux or Mac).
 
                 make both       compiles SuiteSparse, and then "make install"
-                                will instal in both ./lib and /usr/local/lib
-                                (the latter controlled by CMAKE_INSTALL_PATH).
-                                Normally requires "sudu make install"
+                                will instal in both ./lib and
+                                CMAKE_INSTALL_PATH).
 
                 make local      compiles SuiteSparse.
                                 Subsequent "make install will install only
-                                in ./lib, ./include only.  No sudo required.
-                                Does not install in /usr/local/lib.
+                                in ./lib, ./include only.
+                                Does not install in CMAKE_INSTALL_PATH.
 
                 make global     compiles SuiteSparse libraries.
                                 Subsequent "make install" will install in
                                 just /usr/local/lib (or whatever your
                                 CMAKE_INSTALL_PREFIX is).
-                                Normally requires "sudu make install"
                                 Does not install in ./lib and ./include.
 
                 make install    installs in the current directory
@@ -498,8 +496,8 @@ SuiteSparse in /Users/me/SuiteSparse:
 Compile all of SuiteSparse with "make local".
 
 Next, compile the GraphBLAS MATLAB library.  In the system shell while in the
-SuiteSparse folder, type "make gbmatlab" if you want to install it system- wide
-with "sudo make install", or "make gblocal" if you want to use the library in
+SuiteSparse folder, type "make gbmatlab" if you want to install it system-wide
+with "make install", or "make gblocal" if you want to use the library in
 your own SuiteSparse/lib.
 
 Then in the MATLAB Command Window, cd to the SuiteSparse directory and type
