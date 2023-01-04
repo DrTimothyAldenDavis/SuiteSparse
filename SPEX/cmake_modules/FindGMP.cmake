@@ -17,8 +17,6 @@
 # GMP_LIBRARIES   - libraries when using gmp
 # GMP_FOUND       - true if gmp found
 
-# For MS Visual Studio, GMP_LIBRARY and GMP_STATIC are the same.
-
 # set ``GMP_ROOT`` to a gmp installation root to
 # tell this module where to look.
 
@@ -29,7 +27,7 @@
 
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
-    set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
+    list ( PREPEND CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
 endif ( )
 
 # include files for gmp
@@ -44,12 +42,12 @@ find_library ( GMP_LIBRARY
     PATH_SUFFIXES lib build
 )
 
+# static gmp library
 if ( NOT MSVC )
     set ( CMAKE_FIND_LIBRARY_SUFFIXES
         ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
-# static gmp library
 find_library ( GMP_STATIC
     NAMES gmp
     PATH_SUFFIXES lib build
