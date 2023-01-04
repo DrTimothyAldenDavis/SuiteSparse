@@ -279,3 +279,169 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+
+  msvc:
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        # Use bash as default shell
+        shell: bash -el {0}
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+
+      - name: cache conda packages
+        id: conda-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: conda:msvc
+
+      - name: install packages with conda
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        run: |
+          echo ${{ steps.conda-cache.outputs.cache-hit }}
+          conda info
+          conda list
+          conda install -y -c intel mkl-devel
+          conda install -y -c conda-forge --override-channels ccache
+
+      - name: save conda cache
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: ${{ steps.conda-cache.outputs.cache-primary-key }}
+
+      - name: install libraries from MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          release: false
+
+          install: >-
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr
+
+          msystem: UCRT64
+
+      - name: setup build environment
+        # get packages from MSYS2
+        # Copy only relevant parts to avoid picking up headers and libraries
+        # that are thought for MinGW only.
+        run: |
+          mkdir -p ./dependencies/{bin,lib,include}
+          # GMP
+          cp C:/msys64/ucrt64/bin/libgmp*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/include/gmp.h ./dependencies/include/
+          cp C:/msys64/ucrt64/lib/libgmp.dll.a ./dependencies/lib/gmp.lib
+          # MPFR
+          cp C:/msys64/ucrt64/bin/libmpfr*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/include/mpf2mpfr.h ./dependencies/include/
+          cp C:/msys64/ucrt64/include/mpfr.h ./dependencies/include/
+          cp C:/msys64/ucrt64/lib/libmpfr.dll.a ./dependencies/lib/mpfr.lib
+          # run-time dependencies
+          cp C:/msys64/ucrt64/bin/libgcc_s_seh*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/bin/libwinpthread*.dll ./dependencies/bin/
+          # create environment variable for easier access
+          echo "CCACHE=C:/Miniconda/envs/test/Library/bin/ccache.exe" >> ${GITHUB_ENV}
+
+      - name: prepare ccache
+        # Check path to cache directory
+        id: ccache-cache
+        shell: msys2 {0}
+        run: |
+          echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
+          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          cat $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # Setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ccache-cache.outputs.ccachedir }}
+          key: ccache:msvc:${{ github.ref }}:${{ steps.ccache-cache.outputs.timestamp }}:${{ github.sha }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
+          restore-keys: |
+            ccache:msvc:${{ github.ref }}
+            ccache:msvc
+
+      - name: configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          test -d ${{ steps.ccache-cache.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-cache.outputs.ccachedir }}
+          echo "max_size = 50M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
+          ${CCACHE} -p
+          ${CCACHE} -s
+
+      - name: setup MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: build
+        env:
+          CCACHE: C:/Miniconda/envs/test/Library/bin/ccache.exe
+        # The default generator doesn't use ccache. Use Ninja generator instead.
+        # Skip CXSparse for now because there are issues with "complex" in C code.
+        # Skip GraphBLAS for now because it doesn't link with Ninja.
+        run: |
+          libs=("SuiteSparse_config"
+                "Mongoose"
+                "AMD"
+                "BTF"
+                "CAMD"
+                "CCOLAMD"
+                "COLAMD"
+                "CHOLMOD"
+                "CSparse"
+                "LDL"
+                "KLU"
+                "UMFPACK"
+                "RBio"
+                "SuiteSparse_GPURuntime"
+                "GPUQREngine"
+                "SPQR"
+                "SPEX")
+          for lib in "${libs[@]}"; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -G"Ninja Multi-Config" \
+                  -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
+                  -DCMAKE_C_COMPILER_LAUNCHER=${CCACHE} \
+                  -DCMAKE_CXX_COMPILER_LAUNCHER=${CCACHE} \
+                  -DCMAKE_Fortran_COMPILER_LAUNCHER=${CCACHE} \
+                  -DNFORTRAN=ON \
+                  -DBLA_VENDOR="All" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
+
+      # FIXME: Run demos after building
+
+      - name: ccache status
+        continue-on-error: true
+        run: ${CCACHE} -s

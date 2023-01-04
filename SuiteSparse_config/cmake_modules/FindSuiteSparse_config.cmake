@@ -30,10 +30,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-message ( STATUS "library suffixes: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
-
 # include files for SuiteSparse_config
 find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     NAMES SuiteSparse_config.h
@@ -45,34 +41,29 @@ find_path ( SUITESPARSE_CONFIG_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-message ( STATUS "SuiteSparse_config inc: ${SUITESPARSE_CONFIG_INCLUDE_DIR}" )
-
-# dynamic libraries for SuiteSparse_config
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-message ( STATUS "suffixes for dynamic search: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
+# dynamic SuiteSparse_config (or static if no dynamic library was built)
 find_library ( SUITESPARSE_CONFIG_LIBRARY
-    NAMES suitesparseconfig
+    NAMES suitesparseconfig suitesparseconfig_static
     HINTS ${SUITESPARSE_CONFIG_ROOT}
     HINTS ENV SUITESPARSE_CONFIG_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-
-message ( STATUS "SuiteSparse_config library: ${SUITESPARSE_CONFIG_LIBRARY}" )
 
 if ( MSVC )
     set ( STATIC_NAME suitesparseconfig_static )
 else ( )
     set ( STATIC_NAME suitesparseconfig )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    message ( STATUS "original library suffixes: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    message ( STATUS "revised for static search: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 endif ( )
 
 # static libraries for SuiteSparse_config
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-message ( STATUS "suffixes for static search: ${CMAKE_FIND_LIBRARY_SUFFIXES}" )
 find_library ( SUITESPARSE_CONFIG_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${SUITESPARSE_CONFIG_ROOT}
@@ -80,14 +71,13 @@ find_library ( SUITESPARSE_CONFIG_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
-
-message ( STATUS "SuiteSparse_config library: ${SUITESPARSE_CONFIG_LIBRARY}" )
-message ( STATUS "SuiteSparse_config static:  ${SUITESPARSE_CONFIG_STATIC}" )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library filename, if present
 get_filename_component ( SUITESPARSE_CONFIG_LIBRARY  ${SUITESPARSE_CONFIG_LIBRARY} REALPATH )
@@ -97,8 +87,6 @@ string (
     SUITESPARSE_CONFIG_VERSION
     ${SUITESPARSE_CONFIG_FILENAME}
 )
-
-message ( STATUS "version here : ${SUITESPARSE_CONFIG_VERSION}" )
 
 # set ( SUITESPARSE_CONFIG_VERSION "" )
 if ( EXISTS "${SUITESPARSE_CONFIG_INCLUDE_DIR}" AND NOT SUITESPARSE_CONFIG_VERSION )
@@ -117,10 +105,6 @@ if ( EXISTS "${SUITESPARSE_CONFIG_INCLUDE_DIR}" AND NOT SUITESPARSE_CONFIG_VERSI
     string ( REGEX MATCH "[0-9]+" SUITESPARSE_CONFIG_PATCH ${SUITESPARSE_CONFIG_PATCH_STR} )
     set (SUITESPARSE_CONFIG_VERSION "${SUITESPARSE_CONFIG_MAJOR}.${SUITESPARSE_CONFIG_MINOR}.${SUITESPARSE_CONFIG_PATCH}")
 endif ( )
-
-message ( STATUS "version again: ${SUITESPARSE_CONFIG_VERSION}")
-message ( STATUS "library again: ${SUITESPARSE_CONFIG_LIBRARY}" )
-message ( STATUS "static again:  ${SUITESPARSE_CONFIG_STATIC}" )
 
 # libaries when using SuiteSparse_config
 set (SUITESPARSE_CONFIG_LIBRARIES ${SUITESPARSE_CONFIG_LIBRARY})

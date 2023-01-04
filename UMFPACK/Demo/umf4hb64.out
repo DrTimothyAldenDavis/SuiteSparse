@@ -33,7 +33,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Control:
     The following options can only be changed at compile-time:
     8: BLAS library used:  Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
-    POSIX C clock_getttime.
+    SuiteSparse_time ( )
     compiled with CHOLMOD ordering options
     computer/operating system: Mac
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 8 (in bytes)
@@ -43,7 +43,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       67
     number of columns in matrix A:    67
     entries in matrix A:              294
@@ -118,7 +118,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
  Matrix key: WEST0067                      
 symbolic analysis:
    status:     0.
-   time:      0.53E-04 (sec)
+   time:      0.10E-03 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          0.02 (MB)
    memory needed:       0.08 (MB)
@@ -127,7 +127,7 @@ symbolic analysis:
    nnz (U):             902.
 numeric factorization:
    status:     0.
-   time:      0.13E-03
+   time:      0.26E-03
    actual numeric LU statistics:
    size of LU:          0.01 (MB)
    memory needed:       0.06 (MB)

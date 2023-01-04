@@ -380,7 +380,7 @@ void UMFPACK_report_control
 #endif
 
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (("    POSIX C clock_getttime.\n")) ;
+    PRINTF (("    SuiteSparse_time ( )\n")) ;
 #else
     PRINTF (("    no timer used.\n")) ;
 #endif

@@ -47,7 +47,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Control:
     The following options can only be changed at compile-time:
     8: BLAS library used:  Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     compiled for ANSI C
-    POSIX C clock_getttime.
+    SuiteSparse_time ( )
     compiled with CHOLMOD ordering options
     computer/operating system: Mac
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 16 (in bytes)
@@ -262,7 +262,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -333,14 +333,14 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
 
-    solve flops:                                   1.02800e+03
-    iterative refinement steps taken:              1
-    iterative refinement steps attempted:          1
-    sparse backward error omega1:                  5.28e-17
+    solve flops:                                   5.23000e+02
+    iterative refinement steps taken:              0
+    iterative refinement steps attempted:          0
+    sparse backward error omega1:                  8.11e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
-    total symbolic + numeric + solve flops:        1.06200e+03
+    total symbolic + numeric + solve flops:        5.57000e+02
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -356,7 +356,7 @@ x (solution of Ax=b): dense vector, n = 5.
     4 : (2.3876 - 3.04245i)
     dense vector OK
 
-maxnorm of residual: 1.77636e-15
+maxnorm of residual: 1.06581e-14
 
 
 UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
@@ -373,14 +373,14 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
     4 : (2.3876 - 3.04245i)
     dense vector OK
 
-maxnorm of residual: 1.77636e-14
+maxnorm of residual: 1.06581e-14
 
 UMFPACK V6.0.3 (Jan 1, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -454,7 +454,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  1.02e-16
+    sparse backward error omega1:                  9.55e-17
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -469,7 +469,7 @@ x (solution of A'x=b): dense vector, n = 5.
     4 : (9.04015 - 0.613724i)
     dense vector OK
 
-maxnorm of residual: 1.12867e-14
+maxnorm of residual: 1.03985e-14
 
 
 changing A (1,4) to zero
@@ -608,7 +608,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -682,7 +682,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     solve flops:                                   5.15000e+02
     iterative refinement steps taken:              0
     iterative refinement steps attempted:          0
-    sparse backward error omega1:                  7.96e-17
+    sparse backward error omega1:                  1.21e-16
     sparse backward error omega2:                  0.00e+00
     solve wall clock time (sec):                   0.00
 
@@ -697,7 +697,7 @@ x (with modified A): dense vector, n = 5.
     4 : (32.7361 - 2.90097i)
     dense vector OK
 
-maxnorm of residual: 7.16094e-15
+maxnorm of residual: 8.49321e-15
 
 changing real part of A (0,0) from 2 to 2
 changing real part of A (1,0) from 3 to 2
@@ -855,7 +855,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -1246,7 +1246,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12
@@ -1344,7 +1344,7 @@ UMFPACK V6.0.3 (Jan 1, 2023), Info:
     Int (generic integer) defined as: int64_t
     BLAS library used: Apple Accelerate Framework BLAS (32-bit integers).  size of BLAS integer: 4
     MATLAB:                           no.
-    CPU timer:                        POSIX C clock_getttime ( ) routine.
+    CPU timer:                        SuiteSparse_time ( ) routine.
     number of rows in matrix A:       5
     number of columns in matrix A:    5
     entries in matrix A:              12

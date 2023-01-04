@@ -30,9 +30,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-
 # include files for Mongoose
 find_path ( MONGOOSE_INCLUDE_DIR
     NAMES Mongoose.hpp
@@ -44,28 +41,27 @@ find_path ( MONGOOSE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic Mongoose library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+# dynamic Mongoose library (or static if no dynamic library was built)
 find_library ( MONGOOSE_LIBRARY
-    NAMES mongoose
+    NAMES mongoose mongoose_static
     HINTS ${MONGOOSE_ROOT}
     HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
     set ( STATIC_NAME mongoose_static )
 else ( )
     set ( STATIC_NAME mongoose )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static Mongoose library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MONGOOSE_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${MONGOOSE_ROOT}
@@ -73,11 +69,13 @@ find_library ( MONGOOSE_STATIC
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( MONGOOSE_LIBRARY  ${MONGOOSE_LIBRARY} REALPATH )

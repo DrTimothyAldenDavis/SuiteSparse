@@ -29,8 +29,6 @@
 
 #-------------------------------------------------------------------------------
 
-# save the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 
 # include files for CHOLMOD
 find_path ( CHOLMOD_INCLUDE_DIR
@@ -41,38 +39,39 @@ find_path ( CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CHOLMOD_CUDA library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_SHARED_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+# dynamic CHOLMOD_CUDA library (or static if no dynamic library was built)
 find_library ( CHOLMOD_CUDA_LIBRARY
-    NAMES cholmod_cuda
+    NAMES cholmod_cuda cholmod_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
     set ( STATIC_NAME cholmod_cuda_static )
 else ( )
     set ( STATIC_NAME cholmod_cuda )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CHOLMOD_CUDA library
-set ( CMAKE_FIND_LIBRARY_SUFFIXES
-    ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CHOLMOD_CUDA_STATIC
     NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
-# restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( CHOLMOD_CUDA_LIBRARY  ${CHOLMOD_CUDA_LIBRARY} REALPATH )
