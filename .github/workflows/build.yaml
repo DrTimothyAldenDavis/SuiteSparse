@@ -445,7 +445,7 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           test -d ${{ steps.ccache-cache.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-cache.outputs.ccachedir }}
-          echo "max_size = 50M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
+          echo "max_size = 250M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
           echo "compression = true" >> ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
           ${CCACHE} -p
           ${CCACHE} -s
@@ -458,7 +458,6 @@ jobs:
           CCACHE: C:/Miniconda/envs/test/Library/bin/ccache.exe
         # The default generator doesn't use ccache. Use Ninja generator instead.
         # Skip CXSparse for now because there are issues with "complex" in C code.
-        # Skip GraphBLAS for now because it doesn't link with Ninja.
         run: |
           libs=("SuiteSparse_config"
                 "Mongoose"
@@ -476,6 +475,7 @@ jobs:
                 "SuiteSparse_GPURuntime"
                 "GPUQREngine"
                 "SPQR"
+                "GraphBLAS"
                 "SPEX")
           for lib in "${libs[@]}"; do
             printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
