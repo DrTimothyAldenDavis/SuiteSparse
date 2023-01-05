@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Jan 1, 2023" )
+set ( LDL_DATE "Jan 9, 2023" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
 set ( LDL_VERSION_SUB   3 )

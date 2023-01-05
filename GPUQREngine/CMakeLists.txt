@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( GPUQRENGINE_DATE "Jan 1, 2023" )
+set ( GPUQRENGINE_DATE "Jan 9, 2023" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
 set ( GPUQRENGINE_VERSION_MINOR 0 )
 set ( GPUQRENGINE_VERSION_SUB   3 )
