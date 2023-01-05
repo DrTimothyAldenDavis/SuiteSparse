@@ -428,7 +428,6 @@ jobs:
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
           echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
@@ -454,29 +453,9 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: build
-        env:
-          CCACHE: C:/Miniconda/envs/test/Library/bin/ccache.exe
-        # The default generator doesn't use ccache. Use Ninja generator instead.
-        # Skip CXSparse for now because there are issues with "complex" in C code.
+        # The default generator doesn't use ccache. Use "Ninja Multi-Config" generator instead.
         run: |
-          libs=("SuiteSparse_config"
-                "Mongoose"
-                "AMD"
-                "BTF"
-                "CAMD"
-                "CCOLAMD"
-                "COLAMD"
-                "CHOLMOD"
-                "CSparse"
-                "LDL"
-                "KLU"
-                "UMFPACK"
-                "RBio"
-                "SuiteSparse_GPURuntime"
-                "GPUQREngine"
-                "SPQR"
-                "GraphBLAS"
-                "SPEX")
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
           for lib in "${libs[@]}"; do
             printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
             echo "::group::Configure $lib"
