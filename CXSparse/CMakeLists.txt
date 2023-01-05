@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Jan 1, 2023" )
+set ( CXSPARSE_DATE "Jan 9, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
 set ( CXSPARSE_VERSION_SUB   3 )
@@ -30,6 +30,25 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# complex support
+#-------------------------------------------------------------------------------
+
+# MS Visual Studio does not support the complex type for ANSI C11.
+
+if ( MSVC )
+    option ( NCOMPLEX "ON: complex data type enabled.  OFF (default): complex data type disabled." off )
+else ( )
+    option ( NCOMPLEX "ON (default): complex data type enabled.  OFF: complex data type disabled." on )
+endif ( )
+
+if ( NCOMPLEX )
+    message ( STATUS "Complex data type: disabled" )
+    add_compile_definitions ( NCOMPLEX )
+else ( )
+    message ( STATUS "Complex data type: enabled" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
