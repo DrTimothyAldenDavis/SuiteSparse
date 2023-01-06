@@ -3,8 +3,6 @@ on:
   push:
     branches-ignore:
       - '**/dev2'
-      - '**/dev'
-      - '**/stable'
   pull_request:
 
 concurrency: ci-${{ github.ref }}
