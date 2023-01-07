@@ -381,11 +381,11 @@ int CHOLMOD(realloc_multiple)
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated blocks */
-    int nint,		/* number of int/int64_t blocks */
+    int nint,		/* number of int32_t/int64_t blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **Iblock,	/* int or int64_t block */
-    void **Jblock,	/* int or int64_t block */
+    void **Iblock,	/* int32_t or int64_t block */
+    void **Jblock,	/* int32_t or int64_t block */
     void **Xblock,	/* complex or double block */
     void **Zblock,	/* zomplex case only: double block */
     size_t *nold_p,	/* current size of the I,J,X,Z blocks on input,

@@ -1169,7 +1169,7 @@ int CHOLMOD(check_subset)
 (
     /* ---- input ---- */
     Int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len, /* size of Set (an integer array), or < 0 if 0:n-1 */
+    int64_t len,        /* size of Set (an integer array), or < 0 if 0:n-1 */
     size_t n,		/* 0:n-1 is valid range */
     /* --------------- */
     cholmod_common *Common
@@ -1185,7 +1185,7 @@ int CHOLMOD(print_subset)
 (
     /* ---- input ---- */
     Int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len, /* size of Set (an integer array), or < 0 if 0:n-1 */
+    int64_t len,        /* size of Set (an integer array), or < 0 if 0:n-1 */
     size_t n,		/* 0:n-1 is valid range */
     const char *name,	/* printed name of Set */
     /* --------------- */
