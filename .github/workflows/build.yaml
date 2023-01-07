@@ -3,11 +3,16 @@ on:
   push:
     branches-ignore:
       - '**/dev2'
-      - '**/dev'
-      - '**/stable'
   pull_request:
 
 concurrency: ci-${{ github.ref }}
+
+env:
+  # string with name of libraries to be built
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SuiteSparse_GPURuntime:GPUQREngine:SPQR:GraphBLAS:SPEX"
+  # string with name of libraries to be checked
+  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:GraphBLAS:SPEX"
+
 
 jobs:
 
@@ -83,15 +88,32 @@ jobs:
 
       - name: build
         run: |
-          make CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release \
-                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
-                              -DBLA_VENDOR=OpenBLAS"
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
 
       - name: check
         run: |
-          make demos
+          IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}
+            make demos
+            echo "::endgroup::"
+          done
 
       - name: ccache status
         continue-on-error: true
@@ -102,10 +124,6 @@ jobs:
     # For available GitHub-hosted runners, see:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: macos-latest
-
-    strategy:
-      # Allow other runners in the matrix to continue if some fail
-      fail-fast: false
 
     steps:
       - name: checkout repository
@@ -152,16 +170,33 @@ jobs:
 
       - name: build
         run: |
-          make CMAKE_OPTIONS="-DCMAKE_BUILD_TYPE=Release \
-                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
-                              -DBLA_VENDOR=OpenBLAS \
-                              -DCMAKE_PREFIX_PATH='/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp'"
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
 
       - name: check
         run: |
-          make demos
+          IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}
+            make demos
+            echo "::endgroup::"
+          done
 
       - name: ccache status
         continue-on-error: true
@@ -263,18 +298,37 @@ jobs:
 
       - name: build
         run: |
-          make CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=\"${MINGW_PREFIX}\" \
-                              -DCMAKE_BUILD_TYPE=Release \
-                              -DCMAKE_C_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_CXX_COMPILER_LAUNCHER='ccache' \
-                              -DCMAKE_Fortran_COMPILER_LAUNCHER='ccache' \
-                              -DBLA_VENDOR=OpenBLAS"
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
+                  -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
 
       - name: check
         # Need to install the libraries for the tests
         run: |
+          echo "::group::Install libraries"
           make install
-          make demos
+          echo "::endgroup::"
+          IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}
+            make demos
+            echo "::endgroup::"
+          done
 
       - name: ccache status
         continue-on-error: true
@@ -372,7 +426,6 @@ jobs:
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
           echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
-          cat $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
@@ -389,7 +442,7 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           test -d ${{ steps.ccache-cache.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-cache.outputs.ccachedir }}
-          echo "max_size = 50M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
+          echo "max_size = 250M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
           echo "compression = true" >> ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
           ${CCACHE} -p
           ${CCACHE} -s
@@ -398,29 +451,9 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: build
-        env:
-          CCACHE: C:/Miniconda/envs/test/Library/bin/ccache.exe
-        # The default generator doesn't use ccache. Use Ninja generator instead.
-        # Skip CXSparse for now because there are issues with "complex" in C code.
-        # Skip GraphBLAS for now because it doesn't link with Ninja.
+        # The default generator doesn't use ccache. Use "Ninja Multi-Config" generator instead.
         run: |
-          libs=("SuiteSparse_config"
-                "Mongoose"
-                "AMD"
-                "BTF"
-                "CAMD"
-                "CCOLAMD"
-                "COLAMD"
-                "CHOLMOD"
-                "CSparse"
-                "LDL"
-                "KLU"
-                "UMFPACK"
-                "RBio"
-                "SuiteSparse_GPURuntime"
-                "GPUQREngine"
-                "SPQR"
-                "SPEX")
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
           for lib in "${libs[@]}"; do
             printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
             echo "::group::Configure $lib"

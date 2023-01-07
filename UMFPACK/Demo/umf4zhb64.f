@@ -72,8 +72,8 @@ c       read the matrix (1-based)
         read (5, valfmt, err = 998) (AA (p), p = 1, nz)
 
 	do 15 p = 1, nz
-	    Ax (p) = dble (AA (p))
-	    Az (p) = imag (AA (p))
+	    Ax (p) = real (AA (p))
+	    Az (p) = aimag (AA (p))
 15	continue
 
 c       ----------------------------------------------------------------
@@ -98,8 +98,8 @@ c       b = A*x
 40          continue
 50      continue
         do 32 i = 1,n
-            b  (i) = dble (BB (i))
-            bz (i) = imag (BB (i))
+            b  (i) = real (BB (i))
+            bz (i) = aimag (BB (i))
 32      continue
 
 c       ----------------------------------------------------------------

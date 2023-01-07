@@ -2517,11 +2517,11 @@ int cholmod_realloc_multiple
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated blocks */
-    int nint,		/* number of int/int64_t blocks */
+    int nint,		/* number of int32_t/int64_t blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **Iblock,	/* int or int64_t block */
-    void **Jblock,	/* int or int64_t block */
+    void **Iblock,	/* int32_t or int64_t block */
+    void **Jblock,	/* int32_t or int64_t block */
     void **Xblock,	/* complex, double, or float block */
     void **Zblock,	/* zomplex case only: double or float block */
     size_t *n,		/* current size of the I,J,X,Z blocks on input,
@@ -2848,7 +2848,7 @@ int cholmod_l_print_triplet (cholmod_triplet *, const char *, cholmod_common *);
 int cholmod_check_subset
 (
     /* ---- input ---- */
-    int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
+    int32_t *Set,	/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
     int64_t len,        /* size of Set (an integer array) */
     size_t n,		/* 0:n-1 is valid range */
     /* --------------- */

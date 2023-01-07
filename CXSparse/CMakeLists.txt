@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Jan 1, 2023" )
+set ( CXSPARSE_DATE "Jan 9, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
 set ( CXSPARSE_VERSION_SUB   3 )
@@ -30,6 +30,25 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# complex support
+#-------------------------------------------------------------------------------
+
+# MS Visual Studio does not support the complex type for ANSI C11.
+
+if ( MSVC )
+    option ( NCOMPLEX "ON (default): complex data type disabled.  OFF: complex data type enabled." on )
+else ( )
+    option ( NCOMPLEX "ON: complex data type disabled.  OFF (default): complex data type enabled." off )
+endif ( )
+
+if ( NCOMPLEX )
+    message ( STATUS "complex data type: disabled" )
+    add_compile_definitions ( NCOMPLEX )
+else ( )
+    message ( STATUS "complex data type: enabled" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -63,7 +82,19 @@ include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 # dynamic cxsparse library properties
 #-------------------------------------------------------------------------------
 
-file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
+if ( NCOMPLEX )
+    # exclude functions that work on complex data types
+    file ( GLOB CXSPARSE_SOURCES
+        "Source/cs_a*.c"
+        "Source/cs_chol*.c"
+        "Source/cs_compress.c"
+        "Source/cs_counts.c"
+        "Source/cs_cumsum.c"
+        "Source/cs_[d-z]*.c"
+        )
+else ( )
+    file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
+endif ( )
 
 add_library ( cxsparse SHARED ${CXSPARSE_SOURCES} )
 
@@ -176,16 +207,18 @@ if ( DEMO )
     add_executable ( cs_dl_demo2 "Demo/cs_dl_demo2.c" "Demo/cs_dl_demo.c" )
     add_executable ( cs_dl_demo3 "Demo/cs_dl_demo3.c" "Demo/cs_dl_demo.c" )
 
-    add_executable ( cs_ci_demo1 "Demo/cs_ci_demo1.c" "Demo/cs_ci_demo.c" )
-    add_executable ( cs_ci_demo2 "Demo/cs_ci_demo2.c" "Demo/cs_ci_demo.c" )
-    add_executable ( cs_ci_demo3 "Demo/cs_ci_demo3.c" "Demo/cs_ci_demo.c" )
+    if ( NOT NCOMPLEX )
+        add_executable ( cs_ci_demo1 "Demo/cs_ci_demo1.c" "Demo/cs_ci_demo.c" )
+        add_executable ( cs_ci_demo2 "Demo/cs_ci_demo2.c" "Demo/cs_ci_demo.c" )
+        add_executable ( cs_ci_demo3 "Demo/cs_ci_demo3.c" "Demo/cs_ci_demo.c" )
 
-    add_executable ( cs_cl_demo1 "Demo/cs_cl_demo1.c" "Demo/cs_cl_demo.c" )
-    add_executable ( cs_cl_demo2 "Demo/cs_cl_demo2.c" "Demo/cs_cl_demo.c" )
-    add_executable ( cs_cl_demo3 "Demo/cs_cl_demo3.c" "Demo/cs_cl_demo.c" )
+        add_executable ( cs_cl_demo1 "Demo/cs_cl_demo1.c" "Demo/cs_cl_demo.c" )
+        add_executable ( cs_cl_demo2 "Demo/cs_cl_demo2.c" "Demo/cs_cl_demo.c" )
+        add_executable ( cs_cl_demo3 "Demo/cs_cl_demo3.c" "Demo/cs_cl_demo.c" )
 
-    add_executable ( cs_idemo "Demo/cs_idemo.c" )
-    add_executable ( cs_ldemo "Demo/cs_ldemo.c" )
+        add_executable ( cs_idemo "Demo/cs_idemo.c" )
+        add_executable ( cs_ldemo "Demo/cs_ldemo.c" )
+    endif ( )
 
     # Libraries required for Demo programs
     target_link_libraries ( cs_demo1 PUBLIC cxsparse )
@@ -200,16 +233,18 @@ if ( DEMO )
     target_link_libraries ( cs_dl_demo2 PUBLIC cxsparse )
     target_link_libraries ( cs_dl_demo3 PUBLIC cxsparse )
 
-    target_link_libraries ( cs_ci_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_ci_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_ci_demo3 PUBLIC cxsparse )
+    if ( NOT NCOMPLEX )
+        target_link_libraries ( cs_ci_demo1 PUBLIC cxsparse )
+        target_link_libraries ( cs_ci_demo2 PUBLIC cxsparse )
+        target_link_libraries ( cs_ci_demo3 PUBLIC cxsparse )
 
-    target_link_libraries ( cs_cl_demo1 PUBLIC cxsparse )
-    target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
-    target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
+        target_link_libraries ( cs_cl_demo1 PUBLIC cxsparse )
+        target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
+        target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
 
-    target_link_libraries ( cs_idemo PUBLIC cxsparse )
-    target_link_libraries ( cs_ldemo PUBLIC cxsparse )
+        target_link_libraries ( cs_idemo PUBLIC cxsparse )
+        target_link_libraries ( cs_ldemo PUBLIC cxsparse )
+    endif ( )
 
 else ( )
 
