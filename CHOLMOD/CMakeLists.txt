@@ -29,7 +29,6 @@ message ( STATUS "Building CHOLMOD version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
@@ -196,7 +195,12 @@ endif ( )
             find_package ( CAMD 3.0.4 )
         endif ( )
 
-        find_package ( CCOLAMD 3.0.4 )
+        find_package ( CCOLAMD 3.0.4
+            PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET ccolamd )
+            find_package ( CCOLAMD 3.0.4 )
+        endif ( )
+
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )
@@ -423,10 +427,13 @@ if ( NOT NCAMD )
         endif ( )
     endif ( )
 
-    include_directories ( ${CCOLAMD_INCLUDE_DIR} )
-    target_link_libraries ( cholmod PRIVATE ${CCOLAMD_LIBRARIES} )
+    target_link_libraries ( cholmod PRIVATE ccolamd )
     if ( NOT NSTATIC )
-        target_link_libraries ( cholmod_static PUBLIC ${CCOLAMD_STATIC} )
+        if ( TARGET ccolamd_static )
+            target_link_libraries ( cholmod_static PUBLIC ccolamd_static )
+        else ( )
+            target_link_libraries ( cholmod_static PUBLIC ccolamd )
+        endif ( )
     endif ( )
 endif ( )
 

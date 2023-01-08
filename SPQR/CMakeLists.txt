@@ -30,7 +30,6 @@ message ( STATUS "Building SPQR version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
@@ -90,6 +89,12 @@ if ( NOT TARGET camd )
     find_package ( CAMD 3.0.4 )
 endif ( )
 find_package ( CCOLAMD 3.0.4 )
+
+find_package ( CCOLAMD 3.0.3
+    PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET ccolamd )
+    find_package ( CCOLAMD 3.0.3 )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
@@ -249,12 +254,11 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 target_link_libraries ( spqr PRIVATE
     ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
     amd ${COLAMD_LIBRARIES}
-    camd ${CCOLAMD_LIBRARIES} )
+    camd ccolamd )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC
         ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
-        ${COLAMD_STATIC}
-        ${CCOLAMD_STATIC} )
+        ${COLAMD_STATIC} )
     if ( TARGET amd_static )
         target_link_libraries ( spqr_static PUBLIC amd_static )
     else ( )
@@ -264,6 +268,11 @@ if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC camd_static )
     else ( )
         target_link_libraries ( spqr_static PUBLIC camd )
+    endif ( )
+    if ( TARGET ccolamd_static )
+        target_link_libraries ( spqr_static PUBLIC ccolamd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC ccolamd )
     endif ( )
 endif ( )
 
