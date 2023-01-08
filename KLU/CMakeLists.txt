@@ -27,7 +27,6 @@ message ( STATUS "Building KLU version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -186,6 +185,10 @@ if ( NOT NCHOLMOD )
         SOVERSION ${KLU_VERSION_MAJOR}
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
+    target_include_directories ( klu_cholmod 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
     if ( NOT NSTATIC )
         add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
@@ -200,6 +203,11 @@ if ( NOT NCHOLMOD )
             set_target_properties ( klu_cholmod_static PROPERTIES
                 OUTPUT_NAME klu_cholmod_static )
         endif ( )
+
+        target_include_directories ( klu_cholmod_static 
+            INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
     endif ( )
 
 endif ( )
@@ -308,10 +316,6 @@ install ( TARGETS klu
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU_CHOLMOD.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 
 if ( NOT NSTATIC )
     install ( TARGETS klu_static
@@ -343,14 +347,39 @@ install ( FILES
 
 if ( NOT NCHOLMOD )
     install ( TARGETS klu_cholmod
+        EXPORT KLU_CHOLMODTargets
         LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     if ( NOT NSTATIC )
         install ( TARGETS klu_cholmod_static
+            EXPORT KLU_CHOLMODTargets
             ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
     endif ( )
+
+    # create (temporary) export target file during build
+    export ( EXPORT KLU_CHOLMODTargets
+        FILE ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODTargets.cmake )
+
+    # install export target, config and version files for find_package
+    install ( EXPORT KLU_CHOLMODTargets
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+
+    configure_package_config_file (
+        Config/KLU_CHOLMODConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfig.cmake
+        INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+
+    write_basic_package_version_file (
+        ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfigVersion.cmake
+        COMPATIBILITY SameMajorVersion )
+
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfig.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfigVersion.cmake
+        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+
 endif ( )
 
 #-------------------------------------------------------------------------------

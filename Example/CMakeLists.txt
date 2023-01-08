@@ -327,11 +327,15 @@ else ( )
 endif ( )
 
 # klu_cholmod:
-target_link_libraries ( my PRIVATE ${KLU_CHOLMOD_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${KLU_CHOLMOD_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${KLU_CHOLMOD_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${KLU_CHOLMOD_STATIC} )
-include_directories ( ${KLU_CHOLMOD_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE klu_cholmod )
+target_link_libraries ( my_cxx PRIVATE klu_cholmod )
+if ( TARGET klu_cholmod_static )
+    target_link_libraries ( my_static PUBLIC klu_cholmod_static )
+    target_link_libraries ( my_cxx_static PUBLIC klu_cholmod_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC klu_cholmod )
+    target_link_libraries ( my_cxx_static PUBLIC klu_cholmod )
+endif ( )
 
 # ldl:
 target_link_libraries ( my PRIVATE ${LDL_LIBRARIES} )
