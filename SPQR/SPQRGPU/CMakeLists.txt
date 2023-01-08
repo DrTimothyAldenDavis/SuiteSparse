@@ -60,11 +60,17 @@ if ( MSVC )
 endif ( )
 
 set ( SPQR_CUDA_INCLUDES
-        ../../GPUQREngine/Include
         ../../SuiteSparse_GPURuntime/Include
         ../Include )
 
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
+
+if ( TARGET gpuqrengine )
+    target_include_directories ( spqr_cuda PRIVATE
+        $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
+    target_include_directories ( spqr_cuda_static PRIVATE
+        $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
+endif ( )
 
 target_include_directories ( spqr_cuda PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}

@@ -28,7 +28,6 @@ message ( STATUS "Building GPUQRENGINE version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
@@ -159,7 +158,7 @@ set_target_properties ( gpuqrengine PROPERTIES
     PUBLIC_HEADER "Include/GPUQREngine.hpp"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( gpuqrengine PUBLIC
+target_include_directories ( gpuqrengine PRIVATE
     ${CUDAToolkit_INCLUDE_DIRS}
     ${GPUQRENGINE_INCLUDES}
     $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
@@ -170,6 +169,10 @@ if ( SUITESPARSE_CUDA )
     target_link_libraries ( gpuqrengine PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
+
+target_include_directories ( gpuqrengine
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
 #-------------------------------------------------------------------------------
 # static gpuqrengine library properties
@@ -190,7 +193,7 @@ if ( NOT NSTATIC )
             OUTPUT_NAME gpuqrengine_static )
     endif ( )
 
-    target_include_directories ( gpuqrengine_static PUBLIC
+    target_include_directories ( gpuqrengine_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES}
         $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
@@ -201,24 +204,51 @@ if ( NOT NSTATIC )
         target_link_libraries ( gpuqrengine_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
+
+    target_include_directories ( gpuqrengine_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS gpuqrengine
+    EXPORT GPUQREngineTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGPUQREngine.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS gpuqrengine_static
+        EXPORT GPUQREngineTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT GPUQREngineTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT GPUQREngineTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+
+configure_package_config_file (
+    Config/GPUQREngineConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
