@@ -305,11 +305,15 @@ target_link_libraries ( my_cxx_static PUBLIC ${LDL_STATIC} )
 include_directories ( ${LDL_INCLUDE_DIR} )
 
 # mongoose:
-target_link_libraries ( my PRIVATE ${MONGOOSE_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${MONGOSE_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${MONGOOSE_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${MONGOSE_STATIC} )
-include_directories ( ${MONGOOSE_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE mongoose )
+target_link_libraries ( my_cxx PRIVATE mongoose )
+if ( TARGET mongoose_static )
+    target_link_libraries ( my_static PUBLIC mongoose_static )
+    target_link_libraries ( my_cxx_static PUBLIC mongoose_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC mongoose )
+    target_link_libraries ( my_cxx_static PUBLIC mongoose )
+endif ( )
 
 # rbio:
 target_link_libraries ( my PRIVATE ${RBIO_LIBRARIES} )

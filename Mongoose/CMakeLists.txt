@@ -187,12 +187,15 @@ if ( NOT NSTATIC )
             OUTPUT_NAME mongoose_static )
     endif ( )
 
+    target_include_directories ( mongoose_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
     if ( TARGET suitesparseconfig_static )
         target_link_libraries ( mongoose_static PUBLIC suitesparseconfig_static )
     else ( )
         target_link_libraries ( mongoose_static PUBLIC suitesparseconfig )
     endif ( )
-
 endif ( )
 
 # Build the Mongoose library for dynamic linking
@@ -201,6 +204,10 @@ set_property ( TARGET mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( mongoose PROPERTIES
         OUTPUT_NAME mongoose
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+target_include_directories ( mongoose
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
 target_link_libraries ( mongoose PRIVATE suitesparseconfig )
 target_include_directories ( mongoose PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
@@ -225,9 +232,9 @@ set_target_properties ( mongoose_static_dbg PROPERTIES
         OUTPUT_NAME mongoose_dbg )
 
 if ( TARGET suitesparseconfig_static )
-    target_link_libraries ( mongoose_dbg suitesparseconfig_static )
+    target_link_libraries ( mongoose_static_dbg suitesparseconfig_static )
 else ( )
-    target_link_libraries ( mongoose_dbg suitesparseconfig )
+    target_link_libraries ( mongoose_static_dbg suitesparseconfig )
 endif ( )
 
 # Build the Mongoose executable
@@ -440,20 +447,43 @@ add_custom_target(userguide
 # Mongoose installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS mongoose
+    EXPORT MongooseTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
     install ( TARGETS mongoose_static
+        EXPORT MongooseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 install ( TARGETS mongoose_exe
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
+
+# create (temporary) export target file during build
+export ( EXPORT MongooseTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/MongooseTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT MongooseTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
+
+configure_package_config_file (
+    Config/MongooseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
 
 #-------------------------------------------------------------------------------
 # report status
