@@ -82,6 +82,10 @@ set_target_properties ( camd PROPERTIES
     PUBLIC_HEADER "Include/camd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( camd
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static camd library properties
 #-------------------------------------------------------------------------------
@@ -100,6 +104,11 @@ if ( NOT NSTATIC )
         set_target_properties ( camd_static PROPERTIES
             OUTPUT_NAME camd_static )
     endif ( )
+
+    target_include_directories ( camd_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -128,18 +137,41 @@ endif ( )
 # CAMD installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS camd
+    EXPORT CAMDTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindCAMD.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS camd_static
+        EXPORT CAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT CAMDTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/CAMDTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT CAMDTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
+
+configure_package_config_file (
+    Config/CAMDConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
