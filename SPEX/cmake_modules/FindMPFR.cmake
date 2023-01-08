@@ -53,6 +53,10 @@ find_library ( MPFR_STATIC
     PATH_SUFFIXES lib build
 )
 
+if ( NOT MPFR_STATIC )
+    set ( MPFR_STATIC ${MPFR_LIBRARY} )
+endif ( )
+
 if ( NOT MSVC )
     # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
     set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
