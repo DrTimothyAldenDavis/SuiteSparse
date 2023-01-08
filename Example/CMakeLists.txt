@@ -272,11 +272,15 @@ target_link_libraries ( my_cxx_static PUBLIC ${CHOLMOD_STATIC} )
 include_directories ( ${CHOLMOD_INCLUDE_DIR} )
 
 # colamd:
-target_link_libraries ( my PRIVATE ${COLAMD_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${COLAMD_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${COLAMD_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${COLAMD_STATIC} )
-include_directories ( ${COLAMD_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE colamd )
+target_link_libraries ( my_cxx PRIVATE colamd )
+if ( TARGET colamd_static )
+    target_link_libraries ( my_static PUBLIC colamd_static )
+    target_link_libraries ( my_cxx_static PUBLIC colamd_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC colamd )
+    target_link_libraries ( my_cxx_static PUBLIC colamd )
+endif ( )
 
 # cxsparse:
 target_link_libraries ( my PRIVATE ${CXSPARSE_LIBRARIES} )

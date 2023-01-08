@@ -29,7 +29,6 @@ message ( STATUS "Building SPQR version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
@@ -74,12 +73,19 @@ find_package ( SuiteSparse_config 7.1.0
 if ( NOT TARGET suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
+
 find_package ( AMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET amd )
     find_package ( AMD 3.0.4 REQUIRED )
 endif ( )
-find_package ( COLAMD 3.0.4 REQUIRED )
+
+find_package ( COLAMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET colamd )
+    find_package ( COLAMD 3.0.4 REQUIRED )
+endif ( )
+
 find_package ( CHOLMOD 4.0.4 REQUIRED )
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
@@ -130,7 +136,7 @@ configure_file ( "Config/spqr_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( Source Include
-    ${COLAMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
+    ${CHOLMOD_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include )
 
 if ( SUITESPARSE_CUDA )
@@ -224,9 +230,13 @@ if ( NOT NSTATIC )
 endif ( )
 
 # colamd:
-target_link_libraries ( spqr PRIVATE ${COLAMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE colamd )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${COLAMD_STATIC} )
+    if ( TARGET colamd_static )
+        target_link_libraries ( spqr_static PUBLIC colamd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC colamd )
+    endif ( )
 endif ( )
 
 # BLAS:
@@ -253,16 +263,19 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 # link with CHOLMOD and its dependencies, both required and optional
 target_link_libraries ( spqr PRIVATE
     ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-    amd ${COLAMD_LIBRARIES}
-    camd ccolamd )
+    amd colamd camd ccolamd )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC
-        ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
-        ${COLAMD_STATIC} )
+        ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC} )
     if ( TARGET amd_static )
         target_link_libraries ( spqr_static PUBLIC amd_static )
     else ( )
         target_link_libraries ( spqr_static PUBLIC amd )
+    endif ( )
+    if ( TARGET colamd_static )
+        target_link_libraries ( spqr_static PUBLIC colamd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC colamd )
     endif ( )
     if ( TARGET camd_static )
         target_link_libraries ( spqr_static PUBLIC camd_static )
