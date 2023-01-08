@@ -140,6 +140,10 @@ set_target_properties ( klu PROPERTIES
     PUBLIC_HEADER "Include/klu.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( klu 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static klu library properties
 #-------------------------------------------------------------------------------
@@ -158,6 +162,11 @@ if ( NOT NSTATIC )
         set_target_properties ( klu_static PROPERTIES
             OUTPUT_NAME klu_static )
     endif ( )
+
+    target_include_directories ( klu_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -291,21 +300,46 @@ endif ( )
 # KLU installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS klu
+    EXPORT KLUTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 install ( FILES
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU.cmake
     ${CMAKE_SOURCE_DIR}/cmake_modules/FindKLU_CHOLMOD.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
     COMPONENT Development )
 
 if ( NOT NSTATIC )
     install ( TARGETS klu_static
+        EXPORT KLUTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT KLUTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/KLUTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT KLUTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+
+configure_package_config_file (
+    Config/KLUConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
 
 if ( NOT NCHOLMOD )
     install ( TARGETS klu_cholmod

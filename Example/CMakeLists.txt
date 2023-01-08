@@ -316,11 +316,15 @@ target_link_libraries ( my_cxx_static PUBLIC ${GRAPHBLAS_STATIC} )
 include_directories ( ${GRAPHBLAS_INCLUDE_DIR} )
 
 # klu:
-target_link_libraries ( my PRIVATE ${KLU_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${KLU_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${KLU_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${KLU_STATIC} )
-include_directories ( ${KLU_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE klu )
+target_link_libraries ( my_cxx PRIVATE klu )
+if ( TARGET klu_static )
+    target_link_libraries ( my_static PUBLIC klu_static )
+    target_link_libraries ( my_cxx_static PUBLIC klu_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC klu )
+    target_link_libraries ( my_cxx_static PUBLIC klu )
+endif ( )
 
 # klu_cholmod:
 target_link_libraries ( my PRIVATE ${KLU_CHOLMOD_LIBRARIES} )
