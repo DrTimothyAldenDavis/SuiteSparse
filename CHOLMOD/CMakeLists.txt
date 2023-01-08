@@ -319,6 +319,10 @@ if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES POSITION_INDEPENDENT_CODE on )
 endif ( )
 
+target_include_directories ( cholmod
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static cholmod library properties
 #-------------------------------------------------------------------------------
@@ -342,6 +346,11 @@ if ( NOT NSTATIC )
         set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
     endif ( )
+
+    target_include_directories ( cholmod_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -465,20 +474,45 @@ endif ( )
 # CHOLMOD installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS cholmod
+    EXPORT CHOLMODTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 install ( FILES 
-    cmake_modules/FindCHOLMOD.cmake
     cmake_modules/FindCHOLMOD_CUDA.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
     COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS cholmod_static
+        EXPORT CHOLMODTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT CHOLMODTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT CHOLMODTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
+
+configure_package_config_file (
+    Config/CHOLMODConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
