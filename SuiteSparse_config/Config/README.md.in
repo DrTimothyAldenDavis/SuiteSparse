@@ -474,15 +474,14 @@ the `CHOLMOD/SuiteSparse_metis/README.txt` file for details.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
-except for METIS, which is by George Karypis.
+except for METIS (by George Karypis), GraphBLAS/cpu_features (by Google),
+GraphBLAS/lz4 and zstd (by Yann Collet, now at Facebook), and
+GraphBLAS/CUDA/jitify.hpp (by NVIDIA).  Parts of GraphBLAS/CUDA are
+Copyright (c) by NVIDIA. Please refer to each of these licenses.
 
 Licenses for each package are located in the following files, all in
 PACKAGENAME/Doc/License.txt, and these files are also concatenated into
 the top-level LICENSE.txt file.
-
-METIS 5.1.0 is distributed with SuiteSparse (slightly modified for use in
-SuiteSparse, with all modifications marked), and is Copyright (c) by George
-Karypis.  Please refer to that package for its License.
 
 -----------------------------------------------------------------------------
 QUICK START FOR MATLAB USERS (Linux or Mac):
