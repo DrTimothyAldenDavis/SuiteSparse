@@ -62,7 +62,6 @@ endif ( )
 set ( SPQR_CUDA_INCLUDES
         ../../GPUQREngine/Include
         ../../SuiteSparse_GPURuntime/Include
-        ../../CHOLMOD/Include
         ../Include )
 
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
@@ -81,8 +80,12 @@ target_include_directories ( spqr_cuda_static PRIVATE
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-target_link_libraries ( spqr_cuda PRIVATE ${CHOLMOD_LIBRARIES} )
-target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( spqr_cuda PRIVATE cholmod )
+if ( TARGET cholmod_static )
+    target_link_libraries ( spqr_cuda_static PUBLIC cholmod_static )
+else ( )
+    target_link_libraries ( spqr_cuda_static PUBLIC cholmod )
+endif ( )
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )

@@ -72,7 +72,12 @@ option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.4 )
+    find_package ( CHOLMOD 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod )
+        find_package ( CHOLMOD 4.0.4 )
+    endif ( )
+
     find_package ( CHOLMOD_CUDA 4.0.4 )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
@@ -164,7 +169,6 @@ if ( NOT NCHOLMOD )
     file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
 
     add_library ( klu_cholmod SHARED ${KLU_CHOLMOD_SOURCES} )
-    include_directories ( ${CHOLMOD_INCLUDE_DIR} )
 
     set_target_properties ( klu_cholmod PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
@@ -254,45 +258,20 @@ if ( NOT NCHOLMOD )
     # cholmod:
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( klu PRIVATE
-        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-        amd colamd
-        camd ccolamd )
+        cholmod ${CHOLMOD_CUDA_LIBRARIES} )
     target_link_libraries ( klu_cholmod PRIVATE
-        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-        amd colamd
-        camd ccolamd )
+        cholmod ${CHOLMOD_CUDA_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC
-            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC} )
+            ${CHOLMOD_CUDA_STATIC} )
         target_link_libraries ( klu_cholmod_static PUBLIC
-            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC} )
-        if ( TARGET amd_static )
-            target_link_libraries ( klu_static PUBLIC amd_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC amd_static )
+            ${CHOLMOD_CUDA_STATIC} )
+        if ( TARGET cholmod_static )
+            target_link_libraries ( klu_static PUBLIC cholmod_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC cholmod_static )
         else ( )
-            target_link_libraries ( klu_static PUBLIC amd )
-            target_link_libraries ( klu_cholmod_static PUBLIC amd )
-        endif ( )
-        if ( TARGET colamd_static )
-            target_link_libraries ( klu_static PUBLIC colamd_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC colamd_static )
-        else ( )
-            target_link_libraries ( klu_static PUBLIC colamd )
-            target_link_libraries ( klu_cholmod_static PUBLIC colamd )
-        endif ( )
-        if ( TARGET camd_static )
-            target_link_libraries ( klu_static PUBLIC camd_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC camd_static )
-        else ( )
-            target_link_libraries ( klu_static PUBLIC camd )
-            target_link_libraries ( klu_cholmod_static PUBLIC camd )
-        endif ( )
-        if ( TARGET ccolamd_static )
-            target_link_libraries ( klu_static PUBLIC ccolamd_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC ccolamd_static )
-        else ( )
-            target_link_libraries ( klu_static PUBLIC ccolamd )
-            target_link_libraries ( klu_cholmod_static PUBLIC ccolamd )
+            target_link_libraries ( klu_static PUBLIC cholmod )
+            target_link_libraries ( klu_cholmod_static PUBLIC cholmod )
         endif ( )
     endif ( )
 
@@ -366,8 +345,8 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
     if ( NOT NCHOLMOD )
-        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
-        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu cholmod )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu cholmod )
         if ( NOT WIN32 )
             target_link_libraries ( kludemo  PUBLIC m )
             target_link_libraries ( kluldemo PUBLIC m )
