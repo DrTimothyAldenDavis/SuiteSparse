@@ -232,11 +232,15 @@ else ( )
 endif ( )
 
 # btf:
-target_link_libraries ( my PRIVATE ${BTF_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${BTF_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${BTF_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${BTF_STATIC} )
-include_directories ( ${BTF_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE btf )
+target_link_libraries ( my_cxx PRIVATE btf )
+if ( TARGET btf_static )
+    target_link_libraries ( my_static PUBLIC btf_static )
+    target_link_libraries ( my_cxx_static PUBLIC btf_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC btf )
+    target_link_libraries ( my_cxx_static PUBLIC btf )
+endif ( )
 
 # camd:
 target_link_libraries ( my PRIVATE ${CAMD_LIBRARIES} )

@@ -28,7 +28,6 @@ message ( STATUS "Building KLU version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../BTF/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
@@ -54,7 +53,11 @@ find_package ( SuiteSparse_config 7.1.0
 if ( NOT TARGET suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
-find_package ( BTF 2.0.4 REQUIRED )
+find_package ( BTF 2.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
+if ( NOT TARGET btf )
+    find_package ( BTF 2.0.4 REQUIRED )
+endif ( )
 find_package ( COLAMD 3.0.4 REQUIRED )
 find_package ( AMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
@@ -102,7 +105,7 @@ configure_file ( "Config/klu_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( Source Include User
-    ${COLAMD_INCLUDE_DIR} ${BTF_INCLUDE_DIR} )
+    ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic klu library properties
@@ -217,9 +220,15 @@ if ( NOT NSTATIC )
 endif ( )
 
 # btf:
-target_link_libraries ( klu PRIVATE ${BTF_LIBRARIES} )
+target_link_libraries ( klu PRIVATE btf )
+target_include_directories ( klu PUBLIC
+    "$<TARGET_PROPERTY:btf,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( klu_static PUBLIC ${BTF_STATIC} )
+    if ( TARGET btf_static )
+        target_link_libraries ( klu_static PUBLIC btf_static )
+    else ( )
+        target_link_libraries ( klu_static PUBLIC btf )
+    endif ( )
 endif ( )
 
 if ( NOT NCHOLMOD )
@@ -253,10 +262,13 @@ if ( NOT NCHOLMOD )
     endif ( )
 
     # klu:
-    target_link_libraries ( klu_cholmod PRIVATE klu ${BTF_LIBRARIES} )
+    target_link_libraries ( klu_cholmod PRIVATE klu btf )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu_cholmod_static PUBLIC
-            klu_static ${BTF_STATIC} )
+        if ( TARGET btf_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC btf_static )
+        else ( )
+            target_link_libraries ( klu_cholmod_static PUBLIC btf )
+        endif ( )
     endif ( )
 
 endif ( )
