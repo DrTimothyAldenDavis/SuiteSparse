@@ -63,6 +63,10 @@
 #else
 #define ASSERT(expr)
 #endif
+#undef malloc
+#undef calloc
+#undef realloc
+#undef free
 
 //------------------------------------------------------------------------------
 // test coverage

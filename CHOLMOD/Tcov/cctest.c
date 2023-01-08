@@ -286,12 +286,17 @@ void cctest (cholmod_sparse *A)
 	    Si [1] = i ;
 
 	    test_memory_handler ( ) ;
+            calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+            free_func   = SuiteSparse_config_free_func_get ( ) ;
 	    ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
                 calloc_func,
                 free_func,
-		Cmember, A->stype) ;	       NOT(ok);
+		Cmember, A->stype) ;
+            NOT (ok) ;
 	    CSYMAMD_report (stats) ;
 	    normal_memory_handler ( ) ;
+            calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+            free_func   = SuiteSparse_config_free_func_get ( ) ;
 	}
     }
 
