@@ -287,11 +287,15 @@ else ( )
 endif ( )
 
 # cxsparse:
-target_link_libraries ( my PRIVATE ${CXSPARSE_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${CXSPARSE_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${CXSPARSE_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${CXSPARSE_STATIC} )
-include_directories ( ${CXSPARSE_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE cxsparse )
+target_link_libraries ( my_cxx PRIVATE cxsparse )
+if ( TARGET cxsparse_static )
+    target_link_libraries ( my_static PUBLIC cxsparse_static )
+    target_link_libraries ( my_cxx_static PUBLIC cxsparse_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC cxsparse )
+    target_link_libraries ( my_cxx_static PUBLIC cxsparse )
+endif ( )
 
 # gpuqrengine:
 target_link_libraries ( my PRIVATE ${GPUQRENGINE_LIBRARIES} )

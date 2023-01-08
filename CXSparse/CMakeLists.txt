@@ -26,7 +26,6 @@ message ( STATUS "Building CXSparse version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -112,6 +111,10 @@ set_target_properties ( cxsparse PROPERTIES
     PUBLIC_HEADER "Include/cs.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( cxsparse
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static cxsparse library properties
 #-------------------------------------------------------------------------------
@@ -130,6 +133,11 @@ if ( NOT NSTATIC )
         set_target_properties ( cxsparse_static PROPERTIES
             OUTPUT_NAME cxsparse_static )
     endif ( )
+
+    target_include_directories ( cxsparse_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -158,18 +166,41 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS cxsparse
+    EXPORT CXSparseTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindCXSparse.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS cxsparse_static
+        EXPORT CXSparseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT CXSparseTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/CXSparseTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT CXSparseTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
+
+configure_package_config_file (
+    Config/CXSparseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
