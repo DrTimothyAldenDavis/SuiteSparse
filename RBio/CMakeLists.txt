@@ -26,7 +26,6 @@ message ( STATUS "Building RBIO version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -79,6 +78,10 @@ set_target_properties ( rbio PROPERTIES
     PUBLIC_HEADER "Include/RBio.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( rbio 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static rbio library properties
 #-------------------------------------------------------------------------------
@@ -97,6 +100,11 @@ if ( NOT NSTATIC )
         set_target_properties ( rbio_static PROPERTIES
             OUTPUT_NAME rbio_static )
     endif ( )
+
+    target_include_directories ( rbio_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -126,18 +134,41 @@ endif ( )
 # RBIO installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS rbio
+    EXPORT RBioTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindRBio.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS rbio_static
+        EXPORT RBioTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT RBioTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/RBioTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT RBioTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+
+configure_package_config_file (
+    Config/RBioConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/RBioConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/RBioConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

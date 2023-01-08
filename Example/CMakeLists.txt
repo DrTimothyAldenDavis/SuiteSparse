@@ -360,11 +360,15 @@ else ( )
 endif ( )
 
 # rbio:
-target_link_libraries ( my PRIVATE ${RBIO_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${RBIO_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${RBIO_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${RBIO_STATIC} )
-include_directories ( ${RBIO_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE rbio )
+target_link_libraries ( my_cxx PRIVATE rbio )
+if ( TARGET rbio_static )
+    target_link_libraries ( my_static PUBLIC rbio_static )
+    target_link_libraries ( my_cxx_static PUBLIC rbio_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC rbio )
+    target_link_libraries ( my_cxx_static PUBLIC rbio )
+endif ( )
 
 # spex:
 target_link_libraries ( my PRIVATE ${SPEX_LIBRARIES} )
