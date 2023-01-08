@@ -22,6 +22,18 @@ Additional algorithm designers: Esmond Ng and John Gilbert.
 Refer to each package for license, copyright, and author information.
 
 -----------------------------------------------------------------------------
+SuiteSparse branches
+-----------------------------------------------------------------------------
+
+    * dev: the default branch, with recent updates of features to appear in
+        the next stable release.  The intent is to keep this branch in
+        fully working order at all times, but the features will not be
+        finalized at any given time.
+    * stable: the most recent stable release
+    * dev2: working branch.  All submitted PRs should made to this branch.
+        This branch might not always be in working order.
+
+-----------------------------------------------------------------------------
 How to cite the SuiteSparse meta-package and its component packages:
 -----------------------------------------------------------------------------
 
