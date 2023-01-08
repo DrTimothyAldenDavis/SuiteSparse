@@ -44,6 +44,9 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../lib/cmake/SuiteSparse
     ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
+# add path to cmake target files (if necessary)
+set ( CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
+    ${CMAKE_SOURCE_DIR}/../lib/cmake )
 
 #-------------------------------------------------------------------------------
 # define my project
@@ -330,11 +333,15 @@ target_link_libraries ( my_cxx_static PUBLIC ${SPQR_STATIC} )
 include_directories ( ${SPQR_INCLUDE_DIR} )
 
 # suitesparseconfig:
-target_link_libraries ( my PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
-include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE suitesparseconfig )
+target_link_libraries ( my_cxx PRIVATE suitesparseconfig )
+if ( TARGET suitesparseconfig_static )
+    target_link_libraries ( my_static PUBLIC suitesparseconfig_static )
+    target_link_libraries ( my_cxx_static PUBLIC suitesparseconfig_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC suitesparseconfig )
+    target_link_libraries ( my_cxx_static PUBLIC suitesparseconfig )
+endif ( )
 
 # suitesparse_gpuruntime:
 target_link_libraries ( my PRIVATE ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
