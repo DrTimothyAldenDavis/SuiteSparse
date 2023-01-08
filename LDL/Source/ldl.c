@@ -302,7 +302,7 @@ LDL_int LDL_numeric	/* returns n if successful, k if D (k,k) is zero */
 	Y [k] = 0.0 ;
 	for ( ; top < n ; top++)
 	{
-	    i = Pattern [top] ;	    /* Pattern [top:n-1] is pattern of L(:,k) */
+	    i = Pattern [top] ;	    /* Pattern [top:n-1] is pattern of L(k,:) */
 	    yi = Y [i] ;	    /* get and clear Y(i) */
 	    Y [i] = 0.0 ;
 	    p2 = Lp [i] + Lnz [i] ;
