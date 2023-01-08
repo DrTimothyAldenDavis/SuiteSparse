@@ -166,6 +166,8 @@ void ctest (cholmod_sparse *A)
 	/* ------------------------------------------------------------------ */
 
 	test_memory_handler ( ) ;
+        calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+        free_func   = SuiteSparse_config_free_func_get ( ) ;
 	for (trial = 0 ; trial < 3 ; trial++)
 	{
 	    my_tries = trial ;
@@ -180,6 +182,8 @@ void ctest (cholmod_sparse *A)
                 free_func) ;
 	OK (ok) ;
 	normal_memory_handler ( ) ;
+        calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+        free_func   = SuiteSparse_config_free_func_get ( ) ;
 
 	ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, NULL,
                 calloc_func,
@@ -256,12 +260,16 @@ void ctest (cholmod_sparse *A)
 	    Si [1] = i ;
 
 	    test_memory_handler ( ) ;
+            calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+            free_func   = SuiteSparse_config_free_func_get ( ) ;
 	    ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
                 calloc_func,
                 free_func) ;
 		NOT (ok);
 	    SYMAMD_report (stats) ;
 	    normal_memory_handler ( ) ;
+            calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
+            free_func   = SuiteSparse_config_free_func_get ( ) ;
 	}
     }
 

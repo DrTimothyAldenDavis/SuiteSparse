@@ -176,11 +176,14 @@ Mongoose also appears as a component package of SuiteSparse, \url{http://suitesp
 Mongoose requires CMake 3.18 and any ISO/IEC 14882:1998 compliant C++ compiler. Mongoose has been tested to work with GNU GCC 4.4+ and LLVM Clang 3.5+ on Linux, and Apple Xcode 6.4+ on macOS.
 
 \subsection{Compilation}
-Once downloaded, Mongoose can be compiled using the following commands:\\
+Once downloaded, Mongoose is built with \verb'cmake'
+An optional \verb'Makefile' can be used to simpilfy the use of
+\verb'cmake':
 
 \begin{lstlisting}[language=bash,numbers=none,xleftmargin=.2\textwidth, xrightmargin=.2\textwidth]
 cd Mongoose
 make
+sudo make install
 \end{lstlisting}
 
 % mkdir build # Create a build directory
@@ -188,10 +191,10 @@ make
 % cmake ..     # Use CMake to create the Makefiles
 % make         # Build Mongoose
 
-After compilation, the Mongoose demo can be run using \texttt{./bin/demo}:\\
+After compilation, the Mongoose demo can be run using \texttt{./build/demo}:\\
 
 \begin{lstlisting}[numbers=none,xleftmargin=.09\textwidth, xrightmargin=.09\textwidth,keywordstyle=\color{black}]
-./bin/demo
+./build/demo
 
 ********************************************************************************
 Mongoose Graph Partitioning Library, Version 2.0.2 July 5, 2018
@@ -294,7 +297,7 @@ To run the complete test suite, the command \texttt{make test} can be used. Note
 
 \section{Using Mongoose as an Executable}
 
-In addition to the demo executable, the \texttt{mongoose} executable is built at \texttt{./bin/mongoose}. This executable can be used to partition a graph given a Matrix Market file:
+In addition to the demo executable, the \texttt{mongoose} executable is built at \texttt{./build/mongoose}. This executable can be used to partition a graph given a Matrix Market file:
 
 \[\text{\texttt{mongoose <MM-input-file.mtx> [output-file]}}\]
 
@@ -304,7 +307,7 @@ For example, the following can be used to partition the \texttt{NotreDame\_www.m
 
 \begin{lstlisting}[numbers=none,xleftmargin=.09\textwidth, xrightmargin=.09\textwidth,keywordstyle=\color{black}]
 cd build
-./bin/mongoose ../Matrix/NotreDame_www.mtx NotreDame_www_out.mtx
+./mongoose ../Matrix/NotreDame_www.mtx NotreDame_www_out.mtx
 
 ********************************************************************************
 Mongoose Graph Partitioning Library, Version 2.0.2 July 5, 2018
@@ -490,7 +493,7 @@ For example, to read in the Matrix Market file \texttt{jagmesh7.mtx} located in 
 
 \subsection{C++ API}
 
-The following functions are available in the C++ API. After Mongoose is compiled, a static library version of Mongoose is built at \texttt{Mongoose/build/Lib/libmongoose.a}. Include the \texttt{Mongoose.hpp} header file located in \texttt{Mongoose/Include} and link with the static library to enable the following API functions.
+The following functions are available in the C++ API. After Mongoose is compiled, a static library version of Mongoose is built at \texttt{Mongoose/build/libmongoose.a}. Include the \texttt{Mongoose.hpp} header file located in \texttt{Mongoose/Include} and link with the static library to enable the following API functions.
 Both the static and dynamic libraries, and the include file can then be
 installed for system-wide use with \texttt{sudo make install} in the top-level
 \texttt{Mongoose} directory.

@@ -2017,7 +2017,7 @@ provided by Microsoft Visual Studio for computing $\sin^{-1}(x)$ and
 $\sinh^{-1}(x)$ when $x$ is complex do not compute the correct result.  Thus,
 the unary operators \verb'GxB_ASIN_FC32', \verb'GxB_ASIN_FC64'
 \verb'GxB_ASINH_FC32', and \verb'GxB_ASINH_FC64' do not work properly if the MS
-Visual Studio compiler is used.  These functions work properly if the gcc, icc,
+Visual Studio compiler is used.  These functions work properly if the gcc, icx, icc,
 or clang compilers are used on Linux or MacOS.
 
 Integer division by zero normally terminates an application, but this is
@@ -14873,7 +14873,7 @@ To use a non-default compiler with 4 threads:
 
     {\small
     \begin{verbatim}
-    make CC=icx CXX=icpx JOBS=4 \end{verbatim} }
+    make CC=icx JOBS=4 \end{verbatim} }
 
 GraphBLAS v6.1.3 and later use the \verb'cpu_features' package by Google to
 determine if the target architecture supports AVX2 and/or AVX512F (on Intel
@@ -14946,7 +14946,7 @@ in the top-level \verb'GraphBLAS' folder.  OpenMP will be found automatically:
 
     {\small
     \begin{verbatim}
-    make CC=icc CXX=icpc \end{verbatim} }
+    make CC=icx \end{verbatim} }
 
 The following instructions work on MacOS Big Sur (v11.3)
 and MacOS Monterey (12.1), using
@@ -15062,7 +15062,7 @@ make CC=/usr/local/bin/gcc-12 CXX=/usr/local/bin/g++-12 JOBS=8
 sudo make install
 \end{verbatim}
 
-Ignore the \verb'"-arch option ignored' warnings.
+Ignore the \verb'"-arch option ignored"' warnings.
 
 You can now start MATLAB and install the MATLAB interface with
 \verb'gbmake' as described in the previous section.
@@ -15112,12 +15112,12 @@ build GraphBLAS, because of a limitation in cmake.
 If you use a recent \verb'gcc' or \verb'icx' compiler on Windows other than the
 Microsoft Compiler (\verb'cl'), these limitations can be avoided.
 
-The following instructions apply to Windows 10, CMake 3.16, and
+The following instructions apply to Windows 10, CMake 3.19, and
 Visual Studio 2019, but may work for earlier versions.
 
 \begin{enumerate}
 
-\item Install CMake 3.16 or later, if not already installed.
+\item Install CMake 3.19 or later, if not already installed.
     See \url{https://cmake.org/} for details.
 
 \item Install Microsoft Visual Studio, if not already installed.

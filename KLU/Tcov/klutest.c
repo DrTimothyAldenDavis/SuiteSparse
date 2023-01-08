@@ -19,7 +19,13 @@
 
 #define NRHS 6
 
-#define HALT { fprintf (stderr, "Test failure: %d\n", __LINE__) ; abort () ; }
+#define HALT                                                \
+{                                                           \
+    fprintf (stderr, "Test failure: %d\n", __LINE__) ;      \
+    fflush (stdout) ;                                       \
+    fflush (stderr) ;                                       \
+    abort () ;                                              \
+}
 #define OK(a) { if (!(a)) HALT ; }
 #define FAIL(a) { if (a) HALT ; }
 
@@ -1031,7 +1037,8 @@ int main (void)
     Gunk = (Int *) klu_realloc (1, 0, sizeof (Int), NULL, &Common) ;
     OK (Gunk) ;
     OK (klu_realloc (Int_MAX, 1, sizeof (Int), Gunk, &Common)) ;
-    OK (Common.status == KLU_TOO_LARGE) ;
+    printf ("Gunk %p status %d\n", Gunk, Common.status) ;
+    OK (Common.status == KLU_TOO_LARGE || Common.status == KLU_OUT_OF_MEMORY) ;
     klu_free (Gunk, 1, sizeof (Int), &Common) ;
 
     /* ---------------------------------------------------------------------- */

@@ -301,11 +301,16 @@ CHOLMOD's specific settings are given by the {\tt CHOLMOD\_CONFIG} string:
 \item {\tt -DNPRINT}:	    do not print anything.
 \end{itemize}
 
-Type {\tt make} in the {\tt CHOLMOD} directory.  The AMD,
+SuiteSparse now has a complete \verb'cmake'-based build system.
+Each package (SuiteSparse\_congig, AMD, CAMD, CCOLAMD, CAMD, and CHOLMOD) has its own
+\verb'CMakeLists.txt'.  Use \verb'cmake' to build each package in
+that order.
+
+An optional \verb'Makefile' is provided at the top-level of \verb'SuiteSparse'
+Type {\tt make} in that directory.  The AMD,
 COLAMD, CAMD, CCOLAMD, and {\tt CHOLMOD} libraries will be compiled.
-No Fortran compiler is required in this case.  A short demo program will
-be compiled and tested on a few matrices.  The residuals should all be small.
-Compare your output with the {\tt CHOLMOD/Demo/make.out} file.
+To compile and run demo programs for each package,
+type \verb'make demos'.  For CHOLMOD, the residuals should all be small.
 
 CHOLMOD is now ready for use in your own applications.  You must link
 your programs with the
@@ -315,23 +320,14 @@ your programs with the
 LAPACK,
 and
 BLAS libraries.
-Unless you use {\tt -DNPARTITION}, you must also link with the METIS 5.1.0
-library.
 Unless {\tt -DNCAMD} is present at compile time,
 you must link with {\tt CAMD/libcamd.*}, and {\tt CCOLAMD/libccolamd.*}.
+Each library has its own \verb'Find*.cmake' script to use in
+the \verb'cmake'
+\verb'find_library' command.
 
-The {\tt make} command now copies all of these libraries and include files
-into a single place: {\tt SuiteSparse/lib} and {\tt SuiteSparse/include}.
-To tell your your compiler where to find them, use
-{\tt -LSuiteSparse/lib} and {\tt -ISuiteSparse/include}.
-
-To install CHOLMOD in /usr/local/lib and /usr/local/include, do
+To install CHOLMOD in default locations use
 {\tt make install}.
-If you do this, youdo not need the {\tt -L} and {\tt -I} option when compiling
-your program.
-Documentation is also installed in /usr/local/doc.
-The installation location can be changed at the {\tt make} command line; see the
-{\tt SuiteSparse/README.txt} file for details.
 To remove CHOLMOD, do {\tt make uninstall}.
 
 %-------------------------------------------------------------------------------
