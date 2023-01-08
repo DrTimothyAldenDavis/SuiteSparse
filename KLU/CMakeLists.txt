@@ -29,7 +29,6 @@ message ( STATUS "Building KLU version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
@@ -73,7 +72,12 @@ if ( NOT NCHOLMOD )
     find_package ( CHOLMOD_CUDA 4.0.4 )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( CAMD 3.0.4 )
+    find_package ( CAMD 3.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET camd )
+        find_package ( CAMD 3.0.4 )
+    endif ( )
+
     find_package ( CCOLAMD 3.0.4 )
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
@@ -238,26 +242,33 @@ if ( NOT NCHOLMOD )
     target_link_libraries ( klu PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
         amd ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        camd ${CCOLAMD_LIBRARIES} )
     target_link_libraries ( klu_cholmod PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
         amd ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        camd ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
             ${COLAMD_STATIC}
-            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+            ${CCOLAMD_STATIC} )
         target_link_libraries ( klu_cholmod_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
             ${COLAMD_STATIC}
-            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+            ${CCOLAMD_STATIC} )
         if ( TARGET amd_static )
             target_link_libraries ( klu_static PUBLIC amd_static )
             target_link_libraries ( klu_cholmod_static PUBLIC amd_static )
         else ( )
             target_link_libraries ( klu_static PUBLIC amd )
             target_link_libraries ( klu_cholmod_static PUBLIC amd )
+        endif ( )
+        if ( TARGET camd_static )
+            target_link_libraries ( klu_static PUBLIC camd_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC camd_static )
+        else ( )
+            target_link_libraries ( klu_static PUBLIC camd )
+            target_link_libraries ( klu_cholmod_static PUBLIC camd )
         endif ( )
     endif ( )
 

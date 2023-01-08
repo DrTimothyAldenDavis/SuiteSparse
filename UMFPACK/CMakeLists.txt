@@ -29,7 +29,6 @@ message ( STATUS "Building UMFPACK version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
@@ -77,7 +76,12 @@ if ( NOT NCHOLMOD )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( COLAMD 3.0.4 )
-    find_package ( CAMD 3.0.4 )
+    find_package ( CAMD 3.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET camd )
+        find_package ( CAMD 3.0.4 )
+    endif ( )
+
     find_package ( CCOLAMD 3.0.4 )
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
@@ -210,16 +214,21 @@ if ( NOT NCHOLMOD )
     target_link_libraries ( umfpack PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
         amd ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        camd ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
             ${COLAMD_STATIC}
-            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+            ${CCOLAMD_STATIC} )
         if ( TARGET amd_static )
             target_link_libraries ( umfpack_static PUBLIC amd_static )
         else ( )
             target_link_libraries ( umfpack_static PUBLIC amd )
+        endif ( )
+        if ( TARGET camd_static )
+            target_link_libraries ( umfpack_static PUBLIC camd_static )
+        else ( )
+            target_link_libraries ( umfpack_static PUBLIC camd )
         endif ( )
     endif ( )
 endif ( )
@@ -290,13 +299,13 @@ if ( DEMO )
         # This is only needed because the demos might be linked before those
         # libraries are installed. Would it be better to set the rpath instead?
         target_link_libraries ( umfpack_di_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
         target_link_libraries ( umfpack_dl_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
         target_link_libraries ( umfpack_zi_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
         target_link_libraries ( umfpack_zl_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
@@ -310,13 +319,13 @@ if ( DEMO )
             # those libraries are installed. Would it be better to set the
             # rpath instead?
             target_link_libraries ( umf4hb PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
             target_link_libraries ( umf4zhb PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
             target_link_libraries ( umf4hb64 PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
             target_link_libraries ( umf4zhb64 PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                ${COLAMD_LIBRARIES} camd ${CCOLAMD_LIBRARIES} )
         endif ( )
     endif ( )
 

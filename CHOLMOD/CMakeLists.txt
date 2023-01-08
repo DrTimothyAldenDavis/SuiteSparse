@@ -29,7 +29,6 @@ message ( STATUS "Building CHOLMOD version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -191,7 +190,12 @@ endif ( )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.4 )
+        find_package ( CAMD 3.0.4
+            PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET camd )
+            find_package ( CAMD 3.0.4 )
+        endif ( )
+
         find_package ( CCOLAMD 3.0.4 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
@@ -410,11 +414,15 @@ endif ( )
 
 # camd and ccolamd:
 if ( NOT NCAMD )
-    include_directories ( ${CAMD_INCLUDE_DIR} )
-    target_link_libraries ( cholmod PRIVATE ${CAMD_LIBRARIES} )
+    target_link_libraries ( cholmod PRIVATE camd )
     if ( NOT NSTATIC )
-        target_link_libraries ( cholmod_static PUBLIC ${CAMD_STATIC} )
+        if ( TARGET camd_static )
+            target_link_libraries ( cholmod_static PUBLIC camd_static )
+        else ( )
+            target_link_libraries ( cholmod_static PUBLIC camd )
+        endif ( )
     endif ( )
+
     include_directories ( ${CCOLAMD_INCLUDE_DIR} )
     target_link_libraries ( cholmod PRIVATE ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )

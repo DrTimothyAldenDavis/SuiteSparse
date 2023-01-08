@@ -30,7 +30,6 @@ message ( STATUS "Building GPUQRENGINE version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
@@ -83,7 +82,12 @@ if ( DEMO AND DEMO_OK )
     endif ( )
 
     find_package ( COLAMD 3.0.4 )
-    find_package ( CAMD 3.0.4 )
+    find_package ( CAMD 3.0.3
+        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET camd )
+        find_package ( CAMD 3.0.3 )
+    endif ( )
+
     find_package ( CCOLAMD 3.0.4 )
     find_package ( CHOLMOD 4.0.4 )
     find_package ( CHOLMOD_CUDA 4.0.4 )
@@ -224,7 +228,7 @@ if ( DEMO AND DEMO_OK )
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         ${CHOLMOD_LIBRARIES} amd ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} ${CHOLMOD_CUDA}
+        camd ${CCOLAMD_LIBRARIES} ${CHOLMOD_CUDA}
         ${SUITESPARSE_GPURUNTIME_LIBRARIES} suitesparseconfig )
 
 else ( )

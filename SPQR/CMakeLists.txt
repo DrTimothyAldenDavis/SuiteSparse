@@ -30,7 +30,6 @@ message ( STATUS "Building SPQR version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
@@ -85,7 +84,11 @@ find_package ( COLAMD 3.0.4 REQUIRED )
 find_package ( CHOLMOD 4.0.4 REQUIRED )
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-find_package ( CAMD 3.0.4 )
+find_package ( CAMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET camd )
+    find_package ( CAMD 3.0.4 )
+endif ( )
 find_package ( CCOLAMD 3.0.4 )
 
 if ( SUITESPARSE_CUDA )
@@ -246,16 +249,21 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 target_link_libraries ( spqr PRIVATE
     ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
     amd ${COLAMD_LIBRARIES}
-    ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+    camd ${CCOLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC
         ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
         ${COLAMD_STATIC}
-        ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+        ${CCOLAMD_STATIC} )
     if ( TARGET amd_static )
         target_link_libraries ( spqr_static PUBLIC amd_static )
     else ( )
         target_link_libraries ( spqr_static PUBLIC amd )
+    endif ( )
+    if ( TARGET camd_static )
+        target_link_libraries ( spqr_static PUBLIC camd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC camd )
     endif ( )
 endif ( )
 

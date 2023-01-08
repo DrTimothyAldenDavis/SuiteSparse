@@ -243,11 +243,15 @@ else ( )
 endif ( )
 
 # camd:
-target_link_libraries ( my PRIVATE ${CAMD_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${CAMD_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${CAMD_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${CAMD_STATIC} )
-include_directories ( ${CAMD_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE camd )
+target_link_libraries ( my_cxx PRIVATE camd )
+if ( TARGET camd_static )
+    target_link_libraries ( my_static PUBLIC camd_static )
+    target_link_libraries ( my_cxx_static PUBLIC camd_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC camd )
+    target_link_libraries ( my_cxx_static PUBLIC camd )
+endif ( )
 
 # ccolamd:
 target_link_libraries ( my PRIVATE ${CCOLAMD_LIBRARIES} )
