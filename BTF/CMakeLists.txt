@@ -79,6 +79,10 @@ set_target_properties ( btf PROPERTIES
     PUBLIC_HEADER "Include/btf.h" 
     WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+target_include_directories ( btf
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static btf library properties
 #-------------------------------------------------------------------------------
@@ -97,6 +101,11 @@ if ( NOT NSTATIC )
         set_target_properties ( btf_static PROPERTIES
             OUTPUT_NAME btf_static )
     endif ( )
+
+    target_include_directories ( btf_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -126,18 +135,41 @@ endif ( )
 # BTF installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS btf
+    EXPORT BTFTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindBTF.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS btf_static
+        EXPORT BTFTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT BTFTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/BTFTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT BTFTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+
+configure_package_config_file (
+    Config/BTFConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
 
 #-------------------------------------------------------------------------------
 # report status
