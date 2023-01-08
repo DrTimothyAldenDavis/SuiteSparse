@@ -44,7 +44,11 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 find_package ( AMD 3.0.4 REQUIRED )
 
 #-------------------------------------------------------------------------------
@@ -62,8 +66,7 @@ configure_file ( "Config/ldl_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR} )
+include_directories ( Source Include ${AMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic ldl library properties
@@ -114,12 +117,19 @@ if ( NOT WIN32 )
 endif ( )
 
 target_link_libraries ( ldl PRIVATE
-    ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
+    ${AMD_LIBRARIES} suitesparseconfig )
+target_include_directories ( ldl PUBLIC
+    "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( NOT NSTATIC )
-    target_link_libraries ( ldl_static PUBLIC
-    ${SUITESPARSE_CONFIG_STATIC} ${AMD_STATIC} )
+    target_link_libraries ( ldl_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( ldl_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( ldl_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
+
 
 #-------------------------------------------------------------------------------
 # LDL installation location
@@ -161,7 +171,7 @@ if ( DEMO )
     add_executable ( ldllmain       "Demo/ldllmain.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( ldlsimple   PUBLIC ldl ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( ldlsimple   PUBLIC ldl suitesparseconfig )
     target_link_libraries ( ldllsimple  PUBLIC ldl )
     target_link_libraries ( ldlmain     PUBLIC ldl )
     target_link_libraries ( ldllmain    PUBLIC ldl )

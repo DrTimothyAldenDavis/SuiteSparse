@@ -62,21 +62,22 @@ endif ( )
 set ( SPQR_CUDA_INCLUDES
         ../../GPUQREngine/Include
         ../../SuiteSparse_GPURuntime/Include
-        ../../SuiteSparse_config
         ../../CHOLMOD/Include
         ../Include )
 
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-target_include_directories ( spqr_cuda PUBLIC
+target_include_directories ( spqr_cuda PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SPQR_CUDA_INCLUDES} )
+        ${SPQR_CUDA_INCLUDES}
+        $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
-target_include_directories ( spqr_cuda_static PUBLIC
+target_include_directories ( spqr_cuda_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SPQR_CUDA_INCLUDES} )
+        ${SPQR_CUDA_INCLUDES}
+        $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 

@@ -57,7 +57,11 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 find_package ( AMD 3.0.4 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
@@ -101,7 +105,7 @@ configure_file ( "Config/umfpack_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+include_directories ( Source Include
     ${AMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/../AMD/Include )
 
@@ -146,9 +150,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( umfpack PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( umfpack PRIVATE suitesparseconfig )
+target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( umfpack_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( umfpack_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -260,7 +269,7 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( umfpack_simple  PUBLIC umfpack ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( umfpack_simple  PUBLIC umfpack suitesparseconfig )
     target_link_libraries ( umfpack_di_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )

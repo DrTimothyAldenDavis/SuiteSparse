@@ -73,7 +73,11 @@ configure_file (
         NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -166,8 +170,6 @@ include_directories(Include
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
-
 # set the output directories
 # set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -185,7 +187,12 @@ if ( NOT NSTATIC )
             OUTPUT_NAME mongoose_static )
     endif ( )
 
-    target_link_libraries ( mongoose_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( mongoose_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( mongoose_static PUBLIC suitesparseconfig )
+    endif ( )
+
 endif ( )
 
 # Build the Mongoose library for dynamic linking
@@ -195,7 +202,8 @@ set_target_properties ( mongoose PROPERTIES
         OUTPUT_NAME mongoose
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_link_libraries ( mongoose PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( mongoose PRIVATE suitesparseconfig )
+target_include_directories ( mongoose PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
 #     set_target_properties(mongoose PROPERTIES VERSION ${PROJECT_VERSION})
@@ -216,7 +224,11 @@ add_library ( mongoose_static_dbg STATIC ${MONGOOSE_LIB_FILES} )
 set_target_properties ( mongoose_static_dbg PROPERTIES
         OUTPUT_NAME mongoose_dbg )
 
-target_link_libraries ( mongoose_static_dbg ${SUITESPARSE_CONFIG_LIBRARY} )
+if ( TARGET suitesparseconfig_static )
+    target_link_libraries ( mongoose_dbg suitesparseconfig_static )
+else ( )
+    target_link_libraries ( mongoose_dbg suitesparseconfig )
+endif ( )
 
 # Build the Mongoose executable
 add_executable ( mongoose_exe ${EXE_FILES} )

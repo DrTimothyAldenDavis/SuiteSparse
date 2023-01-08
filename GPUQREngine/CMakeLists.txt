@@ -62,7 +62,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # for the library itself
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
@@ -116,8 +120,7 @@ endif ( )
 
 set ( GPUQRENGINE_INCLUDES Include Include/Kernel
     Include/Kernel/Apply Include/Kernel/Assemble Include/Kernel/Factorize
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/Include
-    ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/Include )
 
 include_directories ( ${GPUQRENGINE_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
@@ -136,8 +139,9 @@ set_target_properties ( gpuqrengine PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( gpuqrengine PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${GPUQRENGINE_INCLUDES} )
+    ${CUDAToolkit_INCLUDE_DIRS}
+    ${GPUQRENGINE_INCLUDES}
+    $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( gpuqrengine PROPERTIES POSITION_INDEPENDENT_CODE ON )
@@ -166,8 +170,9 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( gpuqrengine_static PUBLIC
-            ${CUDAToolkit_INCLUDE_DIRS}
-            ${GPUQRENGINE_INCLUDES} )
+        ${CUDAToolkit_INCLUDE_DIRS}
+        ${GPUQRENGINE_INCLUDES}
+        $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
     if ( SUITESPARSE_CUDA )
         set_target_properties ( gpuqrengine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
@@ -216,7 +221,7 @@ if ( DEMO AND DEMO_OK )
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         ${CHOLMOD_LIBRARIES} ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
         ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} ${CHOLMOD_CUDA}
-        ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+        ${SUITESPARSE_GPURUNTIME_LIBRARIES} suitesparseconfig )
 
 else ( )
 

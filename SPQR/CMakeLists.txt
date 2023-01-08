@@ -72,7 +72,11 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 find_package ( AMD 3.0.4 REQUIRED )
 find_package ( COLAMD 3.0.4 REQUIRED )
 find_package ( CHOLMOD 4.0.4 REQUIRED )
@@ -114,7 +118,7 @@ configure_file ( "Config/spqr_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+include_directories ( Source Include
     ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include )
 
@@ -168,9 +172,13 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spqr PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE suitesparseconfig )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( spqr_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -304,11 +312,11 @@ if ( DEMO )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            ${CHOLMOD_LIBRARIES} suitesparseconfig )
         target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            ${CHOLMOD_LIBRARIES} suitesparseconfig )
         target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            ${CHOLMOD_LIBRARIES} suitesparseconfig )
     endif ( )
 
 else ( )
