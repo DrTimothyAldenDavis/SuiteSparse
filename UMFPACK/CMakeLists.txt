@@ -28,7 +28,6 @@ message ( STATUS "Building UMFPACK version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
@@ -62,7 +61,11 @@ find_package ( SuiteSparse_config 7.1.0
 if ( NOT TARGET suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
-find_package ( AMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET amd )
+    find_package ( AMD 3.0.4 REQUIRED )
+endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
@@ -106,8 +109,7 @@ configure_file ( "Config/umfpack_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( Source Include
-    ${AMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/../AMD/Include )
+    ${CHOLMOD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic umfpack library properties
@@ -182,9 +184,14 @@ if ( NOT WIN32 )
 endif ( )
 
 # amd:
-target_link_libraries ( umfpack PRIVATE ${AMD_LIBRARIES} )
+target_link_libraries ( umfpack PRIVATE amd )
+target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:amd,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET amd_static )
+        target_link_libraries ( umfpack_static PUBLIC amd_static )
+    else ( )
+        target_link_libraries ( umfpack_static PUBLIC amd )
+    endif ( )
 endif ( )
 
 # BLAS:
@@ -202,13 +209,18 @@ if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( umfpack PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        amd ${COLAMD_LIBRARIES}
         ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC
             ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
-            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${COLAMD_STATIC}
             ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+        if ( TARGET amd_static )
+            target_link_libraries ( umfpack_static PUBLIC amd_static )
+        else ( )
+            target_link_libraries ( umfpack_static PUBLIC amd )
+        endif ( )
     endif ( )
 endif ( )
 
@@ -288,7 +300,7 @@ if ( DEMO )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
-        target_link_libraries ( umf4            PUBLIC umfpack ${AMD_LIBRARIES} )
+        target_link_libraries ( umf4            PUBLIC umfpack amd )
         target_link_libraries ( umf4hb          PUBLIC umfpack )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )

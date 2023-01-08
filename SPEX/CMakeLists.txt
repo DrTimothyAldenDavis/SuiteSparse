@@ -29,7 +29,6 @@ message ( STATUS "Building SPEX version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -52,7 +51,11 @@ if ( NOT TARGET suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 find_package ( COLAMD 3.0.4 REQUIRED )
-find_package ( AMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET amd )
+    find_package ( AMD 3.0.4 REQUIRED )
+endif ( )
 find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
 find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 
@@ -74,7 +77,7 @@ configure_file ( "Config/SPEX_version.tex.in"
 include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include 
     SPEX_Left_LU/Demo
     ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
+    ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic spex library properties
@@ -128,9 +131,13 @@ if ( NOT NSTATIC )
 endif ( )
 
 # AMD:
-target_link_libraries ( spex PRIVATE ${AMD_LIBRARIES} )
+target_link_libraries ( spex PRIVATE amd )
 if ( NOT NSTATIC )
-    target_link_libraries ( spex_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET amd_static )
+        target_link_libraries ( spex_static PUBLIC amd_static )
+    else ( )
+        target_link_libraries ( spex_static PUBLIC amd )
+    endif ( )
 endif ( )
 
 # COLAMD:

@@ -27,7 +27,6 @@ message ( STATUS "Building LDL version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -49,7 +48,11 @@ find_package ( SuiteSparse_config 7.1.0
 if ( NOT TARGET suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
-find_package ( AMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET amd )
+    find_package ( AMD 3.0.4 REQUIRED )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number
@@ -66,7 +69,7 @@ configure_file ( "Config/ldl_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${AMD_INCLUDE_DIR} )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic ldl library properties
@@ -117,12 +120,16 @@ if ( NOT WIN32 )
 endif ( )
 
 target_link_libraries ( ldl PRIVATE
-    ${AMD_LIBRARIES} suitesparseconfig )
+    amd suitesparseconfig )
 target_include_directories ( ldl PUBLIC
     "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( NOT NSTATIC )
-    target_link_libraries ( ldl_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET amd_static )
+        target_link_libraries ( ldl_static PUBLIC amd_static )
+    else ( )
+        target_link_libraries ( ldl_static PUBLIC amd )
+    endif ( )
     if ( TARGET suitesparseconfig_static )
         target_link_libraries ( ldl_static PUBLIC suitesparseconfig_static )
     else ( )
@@ -180,8 +187,8 @@ if ( DEMO )
         message ( STATUS "AMD found for ldlamd and ldllamd" )
         add_executable ( ldlamd     "Demo/ldlamd.c" )
         add_executable ( ldllamd    "Demo/ldllamd.c" )
-        target_link_libraries ( ldlamd  PUBLIC ldl ${AMD_LIBRARIES} )
-        target_link_libraries ( ldllamd PUBLIC ldl ${AMD_LIBRARIES} )
+        target_link_libraries ( ldlamd  PUBLIC ldl amd )
+        target_link_libraries ( ldllamd PUBLIC ldl amd )
     endif ( )
 
 else ( )
