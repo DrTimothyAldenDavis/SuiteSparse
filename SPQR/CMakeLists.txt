@@ -172,6 +172,10 @@ set_target_properties ( spqr PROPERTIES
     SOVERSION ${SPQR_VERSION_MAJOR}
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( spqr 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static spqr library properties
 #-------------------------------------------------------------------------------
@@ -192,6 +196,11 @@ if ( NOT NSTATIC )
         set_target_properties ( spqr_static PROPERTIES
             OUTPUT_NAME spqr_static )
     endif ( )
+
+    target_include_directories ( spqr_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -294,22 +303,48 @@ endif ( )
 # SPQR installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS spqr
+    EXPORT SPQRTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 install ( FILES
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
     ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
     COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS spqr_static
+        EXPORT SPQRTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
-    endif ( )
+endif ( )
+
 install ( FILES "Include/SuiteSparseQR_C.h"
     "Include/SuiteSparseQR_definitions.h"
     "Include/SuiteSparseQR.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+
+# create (temporary) export target file during build
+export ( EXPORT SPQRTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SPQRTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT SPQRTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
+
+configure_package_config_file (
+    Config/SPQRConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

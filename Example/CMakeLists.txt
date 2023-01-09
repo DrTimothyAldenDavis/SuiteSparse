@@ -382,11 +382,15 @@ else ( )
 endif ( )
 
 # spqr:
-target_link_libraries ( my PRIVATE ${SPQR_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${SPQR_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${SPQR_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${SPQR_STATIC} )
-include_directories ( ${SPQR_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE spqr )
+target_link_libraries ( my_cxx PRIVATE spqr )
+if ( TARGET spqr_static )
+    target_link_libraries ( my_static PUBLIC spqr_static )
+    target_link_libraries ( my_cxx_static PUBLIC spqr_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC spqr )
+    target_link_libraries ( my_cxx_static PUBLIC spqr )
+endif ( )
 
 # suitesparseconfig:
 target_link_libraries ( my PRIVATE suitesparseconfig )
