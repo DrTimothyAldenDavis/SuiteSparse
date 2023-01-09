@@ -27,7 +27,6 @@ message ( STATUS "Building UMFPACK version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -143,6 +142,10 @@ set_target_properties ( umfpack PROPERTIES
     PUBLIC_HEADER "Include/umfpack.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( umfpack 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static umfpack library properties
 #-------------------------------------------------------------------------------
@@ -161,6 +164,11 @@ if ( NOT NSTATIC )
         set_target_properties ( umfpack_static PROPERTIES
             OUTPUT_NAME umfpack_static )
     endif ( )
+
+    target_include_directories ( umfpack_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -240,18 +248,41 @@ endif ( )
 # UMFPACK installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS umfpack
+    EXPORT UMFPACKTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindUMFPACK.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS umfpack_static
+        EXPORT UMFPACKTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT UMFPACKTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT UMFPACKTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+
+configure_package_config_file (
+    Config/UMFPACKConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
