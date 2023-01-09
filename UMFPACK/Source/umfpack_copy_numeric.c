@@ -1,11 +1,11 @@
-/* ========================================================================== */
-/* === UMFPACK_copy_numeric ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// UMFPACK/Source/umfpack_copy_numeric: copy a Numeric object
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* Copyright (c) 2005-2012 by Timothy A. Davis, http://www.suitesparse.com.   */
-/* All Rights Reserved.  See ../Doc/License.txt for License.                  */
-/* -------------------------------------------------------------------------- */
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
 
 /*
     User-callable.  Copy a Numeric object.
@@ -16,52 +16,50 @@
 #include "umf_malloc.h"
 #include "umf_free.h"
 
-#define COPY(object,original,type,n) \
-{ \
-    object = (type *) UMF_malloc (n, sizeof (type)) ; \
-    if (object == (type *) NULL) \
-    { \
-	UMFPACK_free_numeric ((void **) &Numeric) ; \
-	return (UMFPACK_ERROR_out_of_memory) ; \
-    } \
-    memcpy(object, original, n * sizeof(type)) ; \
+#define COPY(component,type,n)                                              \
+{                                                                           \
+    Numeric->component = (type *) UMF_malloc (n, sizeof (type)) ;           \
+    if (Numeric->component == (type *) NULL)                                \
+    {                                                                       \
+        UMFPACK_free_numeric ((void **) &Numeric) ;                         \
+        return (UMFPACK_ERROR_out_of_memory) ;                              \
+    }                                                                       \
+    memcpy (Numeric->component, Original->component, (n) * sizeof(type)) ;  \
 }
 
 /* ========================================================================== */
 /* === UMFPACK_copy_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMFPACK_copy_numeric
+int UMFPACK_copy_numeric
 (
-    void **NumericHandle,
-    void *NumericOriginal
+    void **NumericHandle,   // output: new copy of the input object
+    void *NumericOriginal   // input: Numeric object to copy (not modified)
 )
 {
     NumericType *Numeric ;
     NumericType *Original = (NumericType *) NumericOriginal ;
     *NumericHandle = (void *) NULL ;
-    
-    /* ---------------------------------------------------------------------- */
-    /* read the Numeric header from the buffer, in binary */
-    /* ---------------------------------------------------------------------- */
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
+    if (!UMF_valid_numeric (Original))
+    {
+        return (UMFPACK_ERROR_invalid_Numeric_object) ;
+    }
+
+    //--------------------------------------------------------------------------
+    // allocate and copy the header of the new Numeric object
+    //--------------------------------------------------------------------------
 
     Numeric = (NumericType *) UMF_malloc (1, sizeof (NumericType)) ;
     if (Numeric == (NumericType *) NULL)
     {
-	return (UMFPACK_ERROR_out_of_memory) ;
+        return (UMFPACK_ERROR_out_of_memory) ;
     }
-    memcpy(Numeric, Original, sizeof(NumericType)) ;
-
-    /* @DrTimothyAldenDavis does this check need 
-    to be done in the case of memcpy? */
-    if (Numeric->valid != NUMERIC_VALID || Numeric->n_row <= 0 ||
-	Numeric->n_col <= 0 || Numeric->npiv < 0 || Numeric->ulen < 0 ||
-	Numeric->size < 0)
-    {
-	/* Numeric does not point to a Numeric object */
-	(void) UMF_free ((void *) Numeric) ;
-	return (UMFPACK_ERROR_invalid_Numeric_object) ;
-    }
+    memcpy (Numeric, Original, sizeof (NumericType)) ;
 
     Numeric->D        = (Entry *) NULL ;
     Numeric->Rperm    = (Int *) NULL ;
@@ -76,39 +74,37 @@ GLOBAL Int UMFPACK_copy_numeric
     Numeric->Memory   = (Unit *) NULL ;
     Numeric->Upattern = (Int *) NULL ;
 
-    /* umfpack_free_numeric can now be safely called if an error occurs */
+    // umfpack_free_numeric can now be safely called if an error occurs
 
-    /* ---------------------------------------------------------------------- */
-    /* read the rest of the Numeric object */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // copy the rest of the Numeric object
+    //--------------------------------------------------------------------------
 
-    COPY (Numeric->D,     Original->D,     Entry, 
-        MIN (Numeric->n_row, Numeric->n_col)+1) ;
-    COPY (Numeric->Rperm, Original->Rperm, Int,   Numeric->n_row+1) ;
-    COPY (Numeric->Cperm, Original->Cperm, Int,   Numeric->n_col+1) ;
-    COPY (Numeric->Lpos,  Original->Lpos,  Int,   Numeric->npiv+1) ;
-    COPY (Numeric->Lilen, Original->Lilen, Int,   Numeric->npiv+1) ;
-    COPY (Numeric->Lip,   Original->Lip,   Int,   Numeric->npiv+1) ;
-    COPY (Numeric->Upos,  Original->Upos,  Int,   Numeric->npiv+1) ;
-    COPY (Numeric->Uilen, Original->Uilen, Int,   Numeric->npiv+1) ;
-    COPY (Numeric->Uip,   Original->Uip,   Int,   Numeric->npiv+1) ;
+    Int n_inner = MIN (Numeric->n_row, Numeric->n_col) ;
+    COPY (D,     Entry, n_inner+1) ;
+    COPY (Rperm, Int,   Numeric->n_row+1) ;
+    COPY (Cperm, Int,   Numeric->n_col+1) ;
+    COPY (Lpos,  Int,   Numeric->npiv+1) ;
+    COPY (Lilen, Int,   Numeric->npiv+1) ;
+    COPY (Lip,   Int,   Numeric->npiv+1) ;
+    COPY (Upos,  Int,   Numeric->npiv+1) ;
+    COPY (Uilen, Int,   Numeric->npiv+1) ;
+    COPY (Uip,   Int,   Numeric->npiv+1) ;
     if (Numeric->scale != UMFPACK_SCALE_NONE)
     {
-	COPY (Numeric->Rs, Original->Rs, double, Numeric->n_row) ;
+        COPY (Rs, double, Numeric->n_row) ;
     }
     if (Numeric->ulen > 0)
     {
-	COPY (Numeric->Upattern, Original->Upattern, Int, Numeric->ulen+1) ;
+        COPY (Upattern, Int, Numeric->ulen+1) ;
     }
-    COPY (Numeric->Memory, Original->Memory, Unit, Numeric->size) ;
+    COPY (Memory, Unit, Numeric->size) ;
 
-    /* make sure the Numeric object is valid */
-    if (!UMF_valid_numeric (Numeric))
-    {
-	UMFPACK_free_numeric ((void **) &Numeric) ;
-	return (UMFPACK_ERROR_invalid_Numeric_object) ;
-    }
+    // make sure the Numeric object is valid
+    ASSERT (UMF_valid_numeric (Numeric)) ;
 
+    // return the new Numeric object
     *NumericHandle = (void *) Numeric ;
     return (UMFPACK_OK) ;
 }
+

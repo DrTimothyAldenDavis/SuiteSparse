@@ -2,7 +2,7 @@
 // UMFPACK/Demo/umfpack_xx_demo: C demo for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -595,6 +595,24 @@ int main (int argc, char **argv)
 	    Chain_maxrows [j], Chain_maxcols [j]) ;
     }
 
+    //--------------------------------------------------------------------------
+    // copy the Symbolic object
+    //--------------------------------------------------------------------------
+
+    void *Symbolic_copy = NULL ;
+    printf ("\nCopying symbolic object:\n") ;
+    status = umfpack_xx_copy_symbolic (&Symbolic_copy, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_copy_symbolic failed") ;
+    }
+    printf ("\nSymbolic factorization of C (copy): ") ;
+    (void) umfpack_xx_report_symbolic (Symbolic_copy, Control) ;
+    umfpack_xx_free_symbolic (&Symbolic) ;
+    Symbolic = Symbolic_copy ;
+    printf ("\nDone copying symbolic object\n") ;
+
     /* ---------------------------------------------------------------------- */
     /* numeric factorization of C */
     /* ---------------------------------------------------------------------- */
@@ -718,6 +736,41 @@ int main (int argc, char **argv)
 	error ("umfpack_xx_solve failed") ;
     }
     printf ("\nx (solution of C'x=b): ") ;
+    (void) umfpack_xx_report_vector (n, x, xz, Control) ;
+    rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
+    printf ("maxnorm of residual: %g\n\n", rnorm) ;
+
+    //--------------------------------------------------------------------------
+    // copy the Numeric object
+    //--------------------------------------------------------------------------
+
+    void *Numeric_copy = NULL ;
+    printf ("\nCopying numeric object:\n") ;
+    status = umfpack_xx_copy_numeric (&Numeric_copy, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_copy_numeric failed") ;
+    }
+    printf ("\nNumeric factorization of C (copy): ") ;
+    (void) umfpack_xx_report_numeric (Numeric_copy, Control) ;
+    umfpack_xx_free_numeric (&Numeric) ;
+    Numeric = Numeric_copy ;
+    printf ("\nDone copying numeric object\n") ;
+
+    //--------------------------------------------------------------------------
+    // solve C'x=b again, with the new copy
+    //--------------------------------------------------------------------------
+
+    status = umfpack_xx_solve (UMFPACK_At, Cp, Ci, Cx, Cz, x, xz, b, bz,
+	Numeric, Control, Info) ;
+    umfpack_xx_report_info (Control, Info) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_solve failed") ;
+    }
+    printf ("\nx (solution of C'x=b): (using the copy) ") ;
     (void) umfpack_xx_report_vector (n, x, xz, Control) ;
     rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
     printf ("maxnorm of residual: %g\n\n", rnorm) ;
