@@ -404,11 +404,15 @@ else ( )
 endif ( )
 
 # suitesparse_gpuruntime:
-target_link_libraries ( my PRIVATE ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${SUITESPARSE_GPURUNTIME_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${SUITESPARSE_GPURUNTIME_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${SUITESPARSE_GPURUNTIME_STATIC} )
-include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE suitesparse_gpuruntime )
+target_link_libraries ( my_cxx PRIVATE suitesparse_gpuruntime )
+if ( TARGET suitesparse_gpuruntime_static )
+    target_link_libraries ( my_static PUBLIC suitesparse_gpuruntime_static )
+    target_link_libraries ( my_cxx_static PUBLIC suitesparse_gpuruntime_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC suitesparse_gpuruntime )
+    target_link_libraries ( my_cxx_static PUBLIC suitesparse_gpuruntime )
+endif ( )
 
 # umfpack:
 target_link_libraries ( my PRIVATE ${UMFPACK_LIBRARIES} )

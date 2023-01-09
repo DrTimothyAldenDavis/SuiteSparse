@@ -59,9 +59,7 @@ if ( MSVC )
         OUTPUT_NAME spqr_cuda_static )
 endif ( )
 
-set ( SPQR_CUDA_INCLUDES
-        ../../SuiteSparse_GPURuntime/Include
-        ../Include )
+set ( SPQR_CUDA_INCLUDES ../Include )
 
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
@@ -70,6 +68,13 @@ if ( TARGET gpuqrengine )
         $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
     target_include_directories ( spqr_cuda_static PRIVATE
         $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
+endif ( )
+
+if ( TARGET suitesparse_gpuruntime )
+    target_include_directories ( spqr_cuda PRIVATE
+        $<TARGET_PROPERTY:suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
+    target_include_directories ( spqr_cuda_static PRIVATE
+        $<TARGET_PROPERTY:suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
 target_include_directories ( spqr_cuda PRIVATE
