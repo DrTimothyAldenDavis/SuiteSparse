@@ -1,6 +1,6 @@
 % UMFPACK/Source2/create_source2.m: construct all UMFPACK/Source2 files
 
-% UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis. All Rights Reserved.
+% UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis. All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 
@@ -43,8 +43,8 @@ UMFPACK = {
    'umfpack_report_status', 'umfpack_report_symbolic', 'umfpack_report_triplet', ...
    'umfpack_report_vector', 'umfpack_solve', 'umfpack_symbolic', ...
    'umfpack_transpose', 'umfpack_triplet_to_col', 'umfpack_scale', ...
-   'umfpack_load_numeric', 'umfpack_save_numeric', ...
-   'umfpack_load_symbolic', 'umfpack_save_symbolic'
+   'umfpack_load_numeric', 'umfpack_save_numeric', 'umfpack_copy_numeric', ...
+   'umfpack_load_symbolic', 'umfpack_save_symbolic', 'umfpack_copy_symbolic'
 }'
 
 UMFPACKW = { 'umfpack_wsolve' }'
@@ -81,7 +81,7 @@ for k = 1:length (U)
             newfile, what, file) ;
         fprintf (f, '//------------------------------------------------------------------------------\n') ;
         fprintf (f, '\n') ;
-        fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+        fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
         fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
         fprintf (f, '\n') ;
         fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -118,7 +118,7 @@ for kk = 1:length (kinds)
             newfile, what, file) ;
         fprintf (f, '//------------------------------------------------------------------------------\n') ;
         fprintf (f, '\n') ;
-        fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+        fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
         fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
         fprintf (f, '\n') ;
         fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -137,7 +137,7 @@ for kk = 1:length (kinds)
         newfile, what, file) ;
     fprintf (f, '//------------------------------------------------------------------------------\n') ;
     fprintf (f, '\n') ;
-    fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+    fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
     fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
     fprintf (f, '\n') ;
     fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -155,7 +155,7 @@ for kk = 1:length (kinds)
         newfile, what, file) ;
     fprintf (f, '//------------------------------------------------------------------------------\n') ;
     fprintf (f, '\n') ;
-    fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+    fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
     fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
     fprintf (f, '\n') ;
     fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -173,7 +173,7 @@ for kk = 1:length (kinds)
         newfile, what, file) ;
     fprintf (f, '//------------------------------------------------------------------------------\n') ;
     fprintf (f, '\n') ;
-    fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+    fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
     fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
     fprintf (f, '\n') ;
     fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -191,7 +191,7 @@ for kk = 1:length (kinds)
         newfile, what, file) ;
     fprintf (f, '//------------------------------------------------------------------------------\n') ;
     fprintf (f, '\n') ;
-    fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+    fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
     fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
     fprintf (f, '\n') ;
     fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -209,7 +209,7 @@ for kk = 1:length (kinds)
         newfile, what, file) ;
     fprintf (f, '//------------------------------------------------------------------------------\n') ;
     fprintf (f, '\n') ;
-    fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+    fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
     fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
     fprintf (f, '\n') ;
     fprintf (f, '#define %s\n', defs1 {kk}) ;
@@ -246,7 +246,7 @@ for k = 1:length (U)
             newfile, what, file) ;
         fprintf (f, '//------------------------------------------------------------------------------\n') ;
         fprintf (f, '\n') ;
-        fprintf (f, '// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.\n') ;
+        fprintf (f, '// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.\n') ;
         fprintf (f, '// SPDX-License-Identifier: GPL-2.0+\n') ;
         fprintf (f, '\n') ;
         fprintf (f, '#define %s\n', defs1 {kk}) ;

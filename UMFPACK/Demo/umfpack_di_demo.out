@@ -1,7 +1,7 @@
 
 UMFPACK V6.1 (Jan 9, 2023) demo: _di_ version
 
-UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
+UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
 
 UMFPACK License: SPDX-License-Identifier: GPL-2.0+
@@ -343,7 +343,7 @@ UMFPACK V6.1.0 (Jan 9, 2023), Info:
     total symbolic + numeric + solve flops:        1.25000e+02
 
 
-UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
+UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
 UMFPACK V6.1.0 (Jan 9, 2023): OK
 
@@ -359,7 +359,7 @@ x (solution of Ax=b): dense vector, n = 5.
 maxnorm of residual: 1.77636e-15
 
 
-UMFPACK:  Copyright (c) 2005-2022 by Timothy A. Davis.  All Rights Reserved.
+UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
 UMFPACK V6.1.0 (Jan 9, 2023): OK
 
@@ -1113,7 +1113,7 @@ Numeric factorization of C: Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                0
+    costly memory reallocations:                1
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        3
     number of entries stored in L (excl diag):  2
@@ -1367,7 +1367,7 @@ UMFPACK V6.1.0 (Jan 9, 2023), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    0
+    costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.11000e+02
@@ -1409,7 +1409,7 @@ Numeric factorization of C (copy): Numeric object:
     largest actual frontal matrix size:         4
     memory defragmentations:                    1
     memory reallocations:                       1
-    costly memory reallocations:                0
+    costly memory reallocations:                1
     entries in compressed pattern (L and U):    2
     number of nonzeros in L (excl diag):        3
     number of entries stored in L (excl diag):  2
@@ -1572,7 +1572,7 @@ UMFPACK V6.1.0 (Jan 9, 2023), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    0
+    costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.11000e+02
@@ -1670,7 +1670,7 @@ UMFPACK V6.1.0 (Jan 9, 2023), Info:
     numerical values stored in Numeric object:     9
     numeric factorization defragmentations:        1
     numeric factorization reallocations:           1
-    costly numeric factorization reallocations:    0
+    costly numeric factorization reallocations:    1
     numeric factorization wallclock time (sec):    0.00
 
     solve flops:                                   1.11000e+02
