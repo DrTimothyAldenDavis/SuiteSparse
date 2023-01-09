@@ -1970,97 +1970,193 @@ static double do_symnum
     }
 
     /* ---------------------------------------------------------------------- */
-    /* test save and load */
+    /* test save, load, and copy */
     /* ---------------------------------------------------------------------- */
 
-    status = UMFPACK_save_numeric (Numeric, "n.umf") ;
-    if (status != UMFPACK_OK)
+    // The Numeric object is recreated, either by save/load, or copy, and then
+    // the resulting object is used below in subsequent tests.
+
+#if 0
+    if (n % 2 == 0)
     {
-	error ("save numeric failed\n", 0.) ;
+
+        //----------------------------------------------------------------------
+        // test save and load
+        //----------------------------------------------------------------------
+
+        status = UMFPACK_save_numeric (Numeric, "n.umf") ;
+        if (status != UMFPACK_OK)
+        {
+            error ("save numeric failed\n", 0.) ;
+        }
+        UMFPACK_free_numeric (&Numeric) ;
+        status = UMFPACK_load_numeric (&Numeric, "n.umf") ;
+        if (status != UMFPACK_OK)
+        {
+            error ("load numeric failed\n", 0.) ;
+        }
+
+        if (n < 15)
+        {
+            int umf_fail_save [3], memcnt ;
+
+            status = UMFPACK_save_numeric (Numeric, (char *) NULL) ;
+            if (status != UMFPACK_OK)
+            {
+                error ("save numeric failed\n", 0.) ;
+            }
+            UMFPACK_free_numeric (&Numeric) ;
+            status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
+            if (status != UMFPACK_OK)
+            {
+                error ("load numeric failed\n", 0.) ;
+            }
+
+            /* test memory handling */
+            umf_fail_save [0] = umf_fail ;
+            umf_fail_save [1] = umf_fail_lo ;
+            umf_fail_save [2] = umf_fail_hi ;
+
+            umf_fail = -1 ;
+            umf_fail_lo = 0 ;
+            umf_fail_hi = 0 ;
+
+            UMFPACK_free_numeric (&Numeric) ;
+            status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
+            if (status != UMFPACK_OK)
+            {
+                error ("load numeric failed\n", 0.) ;
+            }
+
+            Num = (NumericType *) Numeric ;
+
+            memcnt = 11 ;
+            if (Num->scale != UMFPACK_SCALE_NONE)
+            {
+                memcnt++ ;
+            }
+            if (Num->ulen > 0)
+            {
+                memcnt++ ;
+            }
+
+            for (i = 1 ; i <= memcnt ; i++)
+            {
+                umf_fail = i ;
+                UMFPACK_free_numeric (&Numeric) ;
+                status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
+                if (status != UMFPACK_ERROR_out_of_memory)
+                {
+                    error ("load numeric should have failed\n", 0.) ;
+                }
+            }
+
+            umf_fail = memcnt + 1 ;
+
+            UMFPACK_free_numeric (&Numeric) ;
+            status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
+            if (status != UMFPACK_OK)
+            {
+                printf ("memcnt %d\n", memcnt) ;
+                error ("load numeric failed (edge)\n", 0.) ;
+            }
+
+            umf_fail    = umf_fail_save [0] ;
+            umf_fail_lo = umf_fail_save [1] ;
+            umf_fail_hi = umf_fail_save [2] ;
+
+            UMFPACK_free_numeric (&Numeric) ;
+            status = UMFPACK_load_numeric (&Numeric, "n.umf") ;
+            if (status != UMFPACK_OK)
+            {
+                error ("load numeric failed\n", 0.) ;
+            }
+        }
+
     }
-    UMFPACK_free_numeric (&Numeric) ;
-    status = UMFPACK_load_numeric (&Numeric, "n.umf") ;
-    if (status != UMFPACK_OK)
+    else
+#endif
     {
-	error ("load numeric failed\n", 0.) ;
-    }
 
-    if (n < 15)
-    {
-	int umf_fail_save [3], memcnt ;
+        //----------------------------------------------------------------------
+        // test copy
+        //----------------------------------------------------------------------
 
-	status = UMFPACK_save_numeric (Numeric, (char *) NULL) ;
-	if (status != UMFPACK_OK)
-	{
-	    error ("save numeric failed\n", 0.) ;
-	}
-	UMFPACK_free_numeric (&Numeric) ;
-	status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
-	if (status != UMFPACK_OK)
-	{
-	    error ("load numeric failed\n", 0.) ;
-	}
+        void *Numeric_copy = NULL ;
+        status = UMFPACK_copy_numeric (&Numeric_copy, Numeric) ;
+        if (status != UMFPACK_OK)
+        {
+            error ("copy numeric failed\n", 0.) ;
+        }
+        UMFPACK_free_numeric (&Numeric) ;
+        Numeric = Numeric_copy ;
 
-	/* test memory handling */
-	umf_fail_save [0] = umf_fail ;
-	umf_fail_save [1] = umf_fail_lo ;
-	umf_fail_save [2] = umf_fail_hi ;
+        if (n < 15)
+        {
+            int umf_fail_save [3], memcnt ;
 
-	umf_fail = -1 ;
-	umf_fail_lo = 0 ;
-	umf_fail_hi = 0 ;
+            /* test memory handling */
+            umf_fail_save [0] = umf_fail ;
+            umf_fail_save [1] = umf_fail_lo ;
+            umf_fail_save [2] = umf_fail_hi ;
 
-	UMFPACK_free_numeric (&Numeric) ;
-	status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
-	if (status != UMFPACK_OK)
-	{
-	    error ("load numeric failed\n", 0.) ;
-	}
+            umf_fail = -1 ;
+            umf_fail_lo = 0 ;
+            umf_fail_hi = 0 ;
 
-	Num = (NumericType *) Numeric ;
+            status = UMFPACK_copy_numeric (&Numeric_copy, Numeric) ;
+            if (status != UMFPACK_OK)
+            {
+                error ("copy numeric failed\n", 0.) ;
+            }
+            UMFPACK_free_numeric (&Numeric) ;
+            Numeric = Numeric_copy ;
 
-	memcnt = 11 ;
-	if (Num->scale != UMFPACK_SCALE_NONE)
-	{
-	    memcnt++ ;
-	}
-	if (Num->ulen > 0)
-	{
-	    memcnt++ ;
-	}
+            Num = (NumericType *) Numeric ;
 
-	for (i = 1 ; i <= memcnt ; i++)
-	{
-	    umf_fail = i ;
-	    UMFPACK_free_numeric (&Numeric) ;
-	    status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
-	    if (status != UMFPACK_ERROR_out_of_memory)
-	    {
-		error ("load numeric should have failed\n", 0.) ;
-	    }
-	}
+            memcnt = 11 ;
+            if (Num->scale != UMFPACK_SCALE_NONE)
+            {
+                memcnt++ ;
+            }
+            if (Num->ulen > 0)
+            {
+                memcnt++ ;
+            }
 
-	umf_fail = memcnt + 1 ;
+            for (i = 1 ; i <= memcnt ; i++)
+            {
+                umf_fail = i ;
+                status = UMFPACK_copy_numeric (&Numeric_copy, Numeric) ;
+                if (status != UMFPACK_ERROR_out_of_memory)
+                {
+                    error ("load numeric should have failed\n", 0.) ;
+                }
+            }
 
-	UMFPACK_free_numeric (&Numeric) ;
-	status = UMFPACK_load_numeric (&Numeric, (char *) NULL) ;
-	if (status != UMFPACK_OK)
-	{
-	    printf ("memcnt %d\n", memcnt) ;
-	    error ("load numeric failed (edge)\n", 0.) ;
-	}
+            umf_fail = memcnt + 1 ;
 
-	umf_fail    = umf_fail_save [0] ;
-	umf_fail_lo = umf_fail_save [1] ;
-	umf_fail_hi = umf_fail_save [2] ;
+            status = UMFPACK_copy_numeric (&Numeric_copy, Numeric) ;
+            if (status != UMFPACK_OK)
+            {
+                printf ("memcnt %d\n", memcnt) ;
+                error ("copy numeric failed (edge)\n", 0.) ;
+            }
+            UMFPACK_free_numeric (&Numeric) ;
+            Numeric = Numeric_copy ;
 
-	UMFPACK_free_numeric (&Numeric) ;
-	status = UMFPACK_load_numeric (&Numeric, "n.umf") ;
-	if (status != UMFPACK_OK)
-	{
-	    error ("load numeric failed\n", 0.) ;
-	}
+            umf_fail    = umf_fail_save [0] ;
+            umf_fail_lo = umf_fail_save [1] ;
+            umf_fail_hi = umf_fail_save [2] ;
 
+            status = UMFPACK_copy_numeric (&Numeric_copy, Numeric) ;
+            if (status != UMFPACK_OK)
+            {
+                error ("copy numeric failed\n", 0.) ;
+            }
+            UMFPACK_free_numeric (&Numeric) ;
+            Numeric = Numeric_copy ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */

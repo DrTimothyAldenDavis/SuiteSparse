@@ -21,6 +21,8 @@
   OPTION = -DNBLAS -DNRECIPROCAL -DTEST_FOR_INTEGER_OVERFLOW
 # OPTION = -DNBLAS -DNRECIPROCAL -DTEST_FOR_INTEGER_OVERFLOW -DNO_DIVIDE_BY_ZERO
 
+CC = gcc
+
 SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
 CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
@@ -49,10 +51,10 @@ SRC2 = $(notdir $(wildcard $(SRC)))
 OBJ = $(SRC2:.c=.o)
 
 default: $(OBJ) ut.c
-	gcc ut_di.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_di
-	gcc ut_dl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_dl
-	gcc ut_zi.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zi
-	gcc ut_zl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zl
+	$(CC) ut_di.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_di
+	$(CC) ut_dl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_dl
+	$(CC) ut_zi.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zi
+	$(CC) ut_zl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zl
 	./ut_di > ut_di.out
 	./ut_dl > ut_dl.out
 	./ut_zi > ut_zi.out
@@ -66,7 +68,7 @@ default: $(OBJ) ut.c
 
 %.o: ../Source2/%.c
 	- ln -s $< $(basename $@).c
-	gcc $(CF) $(I) -c $(basename $@).c -o $(basename $@).o
+	$(CC) $(CF) $(I) -c $(basename $@).c -o $(basename $@).o
 
 purge:
 	$(RM) umf*.c *.o ut_?? *.gcno *.gcda *.gcov debug.amd *.umf A500 *.out
