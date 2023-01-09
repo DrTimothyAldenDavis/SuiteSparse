@@ -99,6 +99,10 @@ set_target_properties ( spex PROPERTIES
     PUBLIC_HEADER "Include/SPEX.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( spex 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static spex library properties
 #-------------------------------------------------------------------------------
@@ -117,6 +121,11 @@ if ( NOT NSTATIC )
         set_target_properties ( spex_static PROPERTIES
             OUTPUT_NAME spex_static )
     endif ( )
+
+    target_include_directories ( spex_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -179,18 +188,41 @@ endif ( )
 # SPEX installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS spex
+    EXPORT SPEXTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPEX.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS spex_static
+        EXPORT SPEXTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT SPEXTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SPEXTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT SPEXTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+
+configure_package_config_file (
+    Config/SPEXConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

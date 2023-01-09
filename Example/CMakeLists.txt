@@ -371,11 +371,15 @@ else ( )
 endif ( )
 
 # spex:
-target_link_libraries ( my PRIVATE ${SPEX_LIBRARIES} )
-target_link_libraries ( my_static PUBLIC ${SPEX_STATIC} )
-target_link_libraries ( my_cxx PRIVATE ${SPEX_LIBRARIES} )
-target_link_libraries ( my_cxx_static PUBLIC ${SPEX_STATIC} )
-include_directories ( ${SPEX_INCLUDE_DIR} )
+target_link_libraries ( my PRIVATE spex )
+target_link_libraries ( my_cxx PRIVATE spex )
+if ( TARGET spex_static )
+    target_link_libraries ( my_static PUBLIC spex_static )
+    target_link_libraries ( my_cxx_static PUBLIC spex_static )
+else ( )
+    target_link_libraries ( my_static PUBLIC spex )
+    target_link_libraries ( my_cxx_static PUBLIC spex )
+endif ( )
 
 # spqr:
 target_link_libraries ( my PRIVATE ${SPQR_LIBRARIES} )
