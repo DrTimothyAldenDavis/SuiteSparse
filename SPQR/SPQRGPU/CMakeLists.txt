@@ -108,9 +108,35 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS spqr_cuda
+    EXPORT SPQR_CUDATargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 install ( TARGETS spqr_cuda_static
+    EXPORT SPQR_CUDATargets
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+
+# create (temporary) export target file during build
+export ( EXPORT SPQR_CUDATargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDATargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT SPQR_CUDATargets
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+
+configure_package_config_file (
+    ../Config/SPQR_CUDAConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfigVersion.cmake
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
