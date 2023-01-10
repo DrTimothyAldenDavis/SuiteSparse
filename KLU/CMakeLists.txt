@@ -27,7 +27,6 @@ message ( STATUS "Building KLU version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -77,7 +76,12 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 )
+    endif ( )
+
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( CAMD 3.0.4
@@ -275,20 +279,23 @@ if ( NOT NCHOLMOD )
     # cholmod:
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( klu PRIVATE
-        cholmod ${CHOLMOD_CUDA_LIBRARIES} )
+        cholmod cholmod_cuda )
     target_link_libraries ( klu_cholmod PRIVATE
-        cholmod ${CHOLMOD_CUDA_LIBRARIES} )
+        cholmod cholmod_cuda )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu_static PUBLIC
-            ${CHOLMOD_CUDA_STATIC} )
-        target_link_libraries ( klu_cholmod_static PUBLIC
-            ${CHOLMOD_CUDA_STATIC} )
-        if ( TARGET cholmod_static )
+       if ( TARGET cholmod_static )
             target_link_libraries ( klu_static PUBLIC cholmod_static )
             target_link_libraries ( klu_cholmod_static PUBLIC cholmod_static )
         else ( )
             target_link_libraries ( klu_static PUBLIC cholmod )
             target_link_libraries ( klu_cholmod_static PUBLIC cholmod )
+        endif ( )
+        if ( TARGET cholmod_cuda_static )
+            target_link_libraries ( klu_static PUBLIC cholmod_cuda_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC cholmod_cuda_static )
+        else ( )
+            target_link_libraries ( klu_static PUBLIC cholmod_cuda )
+            target_link_libraries ( klu_cholmod_static PUBLIC cholmod_cuda )
         endif ( )
     endif ( )
 

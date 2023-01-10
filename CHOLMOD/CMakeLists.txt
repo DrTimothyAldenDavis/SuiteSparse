@@ -464,9 +464,9 @@ endif ( )
 # cholmod_cuda
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( cholmod PRIVATE ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod PRIVATE cholmod_cuda )
     if ( NOT NSTATIC )
-        target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
+        target_link_libraries ( cholmod_static PUBLIC cholmod_cuda_static )
     endif ( )
 endif ( )
 
@@ -482,10 +482,6 @@ install ( TARGETS cholmod
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES 
-    cmake_modules/FindCHOLMOD_CUDA.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS cholmod_static
         EXPORT CHOLMODTargets

@@ -28,7 +28,6 @@ message ( STATUS "Building SPQR version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
@@ -117,7 +116,11 @@ if ( SUITESPARSE_CUDA )
         find_package ( GPUQREngine 2.0.4 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    endif ( )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -126,7 +129,7 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 add_subdirectory ( SPQRGPU )
 set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} )
 if ( SUITESPARSE_CUDA )
-    list ( APPEND SPQR_CUDA gpuqrengine suitesparse_gpuruntime ${CHOLMOD_CUDA_LIBRARIES} )
+    list ( APPEND SPQR_CUDA gpuqrengine suitesparse_gpuruntime cholmod_cuda )
 endif ( )
 
 if ( SUITESPARSE_CUDA )

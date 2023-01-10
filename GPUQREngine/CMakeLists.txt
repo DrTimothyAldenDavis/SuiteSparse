@@ -28,7 +28,6 @@ message ( STATUS "Building GPUQRENGINE version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
@@ -105,7 +104,11 @@ if ( DEMO AND DEMO_OK )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 )
+    endif ( )
 endif ( )
 
 if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND AND AMD_FOUND AND COLAMD_FOUND AND 
@@ -279,7 +282,7 @@ if ( DEMO AND DEMO_OK )
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         cholmod amd colamd
-        camd ccolamd ${CHOLMOD_CUDA}
+        camd ccolamd cholmod_cuda
         suitesparse_gpuruntime suitesparseconfig )
 
 else ( )

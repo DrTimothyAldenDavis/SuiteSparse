@@ -74,7 +74,12 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    endif ( )
+
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( COLAMD 3.0.4
