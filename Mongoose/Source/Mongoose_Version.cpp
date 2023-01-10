@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: GPL-3.0-only
  * -------------------------------------------------------------------------- */
 
-#include "Mongoose_Version.hpp"
+#include "Mongoose.hpp"
 #include <sstream>
 
 namespace Mongoose

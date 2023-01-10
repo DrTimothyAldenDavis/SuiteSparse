@@ -51,7 +51,7 @@ both:
 
 # build the Mongoose library (static and dynamic) and run a quick test
 demos: library
-	( cd build ; ./bin/demo )
+	( cd build ; ./demo )
 
 # the same as "make library"
 static: library

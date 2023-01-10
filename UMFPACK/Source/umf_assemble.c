@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_assemble: degree update and numeical assembly
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -317,9 +317,9 @@ PRIVATE void col_assemble
 /* ========================================================================== */
 
 #ifndef FIXQ
-GLOBAL void UMF_assemble
+void UMF_assemble
 #else
-GLOBAL void UMF_assemble_fixq
+void UMF_assemble_fixq
 #endif
 (
     NumericType *Numeric,

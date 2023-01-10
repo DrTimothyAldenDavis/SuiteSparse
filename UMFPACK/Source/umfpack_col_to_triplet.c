@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_col_to_triplet: convert CSC sparse to triplet
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -16,7 +16,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL int UMFPACK_col_to_triplet
+int UMFPACK_col_to_triplet
 (
     Int n_col,
     const Int Ap [ ],

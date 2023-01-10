@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindUMFPACK.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindUMFPACK.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -40,32 +40,37 @@ find_path ( UMFPACK_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic UMFPACK library
+# dynamic UMFPACK library (or static if no dynamic library was built)
 find_library ( UMFPACK_LIBRARY
-    NAMES umfpack
+    NAMES umfpack umfpack_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME umfpack_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME umfpack )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static UMFPACK library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( UMFPACK_STATIC
-    NAMES umfpack
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/UMFPACK
     HINTS ${CMAKE_SOURCE_DIR}/../UMFPACK
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( UMFPACK_LIBRARY  ${UMFPACK_LIBRARY} REALPATH )
@@ -76,16 +81,22 @@ string (
     ${UMFPACK_FILENAME}
 )
 
-if ( NOT UMFPACK_VERISON )
+# set ( UMFPACK_VERSION "" )
+if ( EXISTS "${UMFPACK_INCLUDE_DIR}" AND NOT UMFPACK_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h _VERSION_LINE REGEX "define[ ]+UMFPACK_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+UMFPACK_${_VERSION}[ ]+([0-9]*).*" "\\1" _UMFPACK_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( UMFPACK_VERSION "${_UMFPACK_MAIN_VERSION}.${_UMFPACK_SUB_VERSION}.${_UMFPACK_SUBSUB_VERSION}" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_MAJOR_STR
+        REGEX "define UMFPACK_MAIN_VERSION" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_MINOR_STR
+        REGEX "define UMFPACK_SUB_VERSION" )
+    file ( STRINGS ${UMFPACK_INCLUDE_DIR}/umfpack.h UMFPACK_PATCH_STR
+        REGEX "define UMFPACK_SUBSUB_VERSION" )
+    message ( STATUS "major: ${UMFPACK_MAJOR_STR}" )
+    message ( STATUS "minor: ${UMFPACK_MINOR_STR}" )
+    message ( STATUS "patch: ${UMFPACK_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_MAJOR ${UMFPACK_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_MINOR ${UMFPACK_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" UMFPACK_PATCH ${UMFPACK_PATCH_STR} )
+    set (UMFPACK_VERSION "${UMFPACK_MAJOR}.${UMFPACK_MINOR}.${UMFPACK_PATCH}")
 endif ( )
 
 set ( UMFPACK_LIBRARIES ${UMFPACK_LIBRARY} )
@@ -93,7 +104,7 @@ set ( UMFPACK_LIBRARIES ${UMFPACK_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( UMFPACK
-    REQUIRED_VARS UMFPACK_LIBRARIES UMFPACK_INCLUDE_DIR
+    REQUIRED_VARS UMFPACK_LIBRARY UMFPACK_INCLUDE_DIR
     VERSION_VAR UMFPACK_VERSION
 )
 
@@ -111,5 +122,9 @@ if ( UMFPACK_FOUND )
     message ( STATUS "UMFPACK static:  ${UMFPACK_STATIC}" )
 else ( )
     message ( STATUS "UMFPACK not found" )
+    set ( UMFPACK_INCLUDE_DIR "" )
+    set ( UMFPACK_LIBRARIES "" )
+    set ( UMFPACK_LIBRARY "" )
+    set ( UMFPACK_STATIC "" )
 endif ( )
 

@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCHOLMOD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCHOLMOD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -38,32 +38,37 @@ find_path ( CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CHOLMOD library
+# dynamic CHOLMOD library (or static if no dynamic library was built)
 find_library ( CHOLMOD_LIBRARY
-    NAMES cholmod
+    NAMES cholmod cholmod_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME cholmod_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME cholmod )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CHOLMOD library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CHOLMOD_STATIC
-    NAMES cholmod
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CHOLMOD
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( CHOLMOD_LIBRARY  ${CHOLMOD_LIBRARY} REALPATH )
@@ -74,16 +79,22 @@ string (
     ${CHOLMOD_FILENAME}
 )
 
-if ( NOT CHOLMOD_VERSION )
+# set ( CHOLMOD_VERSION "" )
+if ( EXISTS "${CHOLMOD_INCLUDE_DIR}" AND NOT CHOLMOD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h _VERSION_LINE REGEX "define[ ]+CHOLMOD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CHOLMOD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CHOLMOD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CHOLMOD_VERSION "${_CHOLMOD_MAIN_VERSION}.${_CHOLMOD_SUB_VERSION}.${_CHOLMOD_SUBSUB_VERSION}")
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_MAJOR_STR
+        REGEX "define CHOLMOD_MAIN_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_MINOR_STR
+        REGEX "define CHOLMOD_SUB_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_PATCH_STR
+        REGEX "define CHOLMOD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CHOLMOD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CHOLMOD_MINOR_STR}" )
+    message ( STATUS "patch: ${CHOLMOD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_MAJOR ${CHOLMOD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_MINOR ${CHOLMOD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_PATCH ${CHOLMOD_PATCH_STR} )
+    set (CHOLMOD_VERSION "${CHOLMOD_MAJOR}.${CHOLMOD_MINOR}.${CHOLMOD_PATCH}")
 endif ( )
 
 set (CHOLMOD_LIBRARIES ${CHOLMOD_LIBRARY} )
@@ -109,5 +120,9 @@ if ( CHOLMOD_FOUND )
     message ( STATUS "CHOLMOD static:  ${CHOLMOD_STATIC}" )
 else ( )
     message ( STATUS "CHOLMOD not found" )
+    set ( CHOLMOD_INCLUDE_DIR "" )
+    set ( CHOLMOD_LIBRARIES "" )
+    set ( CHOLMOD_LIBRARY "" )
+    set ( CHOLMOD_STATIC "" )
 endif ( )
 

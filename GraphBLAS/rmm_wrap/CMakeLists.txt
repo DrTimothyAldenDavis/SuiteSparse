@@ -41,7 +41,7 @@ endif()
 
 include_directories(${CMAKE_CURRENT_BINARY_DIR}/external_includes/rmm/include)
 
-add_library(rmm_wrap rmm_wrap.cpp rmm_wrap.hpp rmm_wrap.h)
+add_library(rmm_wrap STATIC rmm_wrap.cpp rmm_wrap.hpp rmm_wrap.h)
 
 set_target_properties (rmm_wrap PROPERTIES
 		VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}

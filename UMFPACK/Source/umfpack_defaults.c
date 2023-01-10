@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_defaults: set default control parameters
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 
 #include "umf_internal.h"
 
-GLOBAL void UMFPACK_defaults
+void UMFPACK_defaults
 (
     double Control [UMFPACK_CONTROL]
 )

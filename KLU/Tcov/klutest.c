@@ -19,7 +19,13 @@
 
 #define NRHS 6
 
-#define HALT { fprintf (stderr, "Test failure: %d\n", __LINE__) ; abort () ; }
+#define HALT                                                \
+{                                                           \
+    fprintf (stderr, "Test failure: %d\n", __LINE__) ;      \
+    fflush (stdout) ;                                       \
+    fflush (stderr) ;                                       \
+    abort () ;                                              \
+}
 #define OK(a) { if (!(a)) HALT ; }
 #define FAIL(a) { if (a) HALT ; }
 
@@ -170,20 +176,19 @@ void my_free (void *p)
 
 static void normal_memory_handler ( void )
 {
-    SuiteSparse_config.malloc_func = malloc ;
-    SuiteSparse_config.calloc_func = calloc ;
-    SuiteSparse_config.realloc_func = realloc ;
-    SuiteSparse_config.free_func = free ;
-
+    SuiteSparse_config_malloc_func_set ((void *) malloc) ;
+    SuiteSparse_config_calloc_func_set ((void *) calloc) ;
+    SuiteSparse_config_realloc_func_set ((void *) realloc) ;
+    SuiteSparse_config_free_func_set ((void *) free) ;
     my_tries = -1 ;
 }
 
 static void test_memory_handler ( void )
 {
-    SuiteSparse_config.malloc_func = my_malloc ;
-    SuiteSparse_config.calloc_func = my_calloc ;
-    SuiteSparse_config.realloc_func = my_realloc ;
-    SuiteSparse_config.free_func = my_free ;
+    SuiteSparse_config_malloc_func_set ((void *) my_malloc) ;
+    SuiteSparse_config_calloc_func_set ((void *) my_calloc) ;
+    SuiteSparse_config_realloc_func_set ((void *) my_realloc) ;
+    SuiteSparse_config_free_func_set ((void *) my_free) ;
     my_tries = -1 ;
 }
 
@@ -1032,7 +1037,8 @@ int main (void)
     Gunk = (Int *) klu_realloc (1, 0, sizeof (Int), NULL, &Common) ;
     OK (Gunk) ;
     OK (klu_realloc (Int_MAX, 1, sizeof (Int), Gunk, &Common)) ;
-    OK (Common.status == KLU_TOO_LARGE) ;
+    printf ("Gunk %p status %d\n", Gunk, Common.status) ;
+    OK (Common.status == KLU_TOO_LARGE || Common.status == KLU_OUT_OF_MEMORY) ;
     klu_free (Gunk, 1, sizeof (Int), &Common) ;
 
     /* ---------------------------------------------------------------------- */

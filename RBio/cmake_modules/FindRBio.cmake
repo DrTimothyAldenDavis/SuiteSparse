@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindRBio.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindRBio.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -41,36 +41,41 @@ find_path ( RBIO_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic RBio library
+# dynamic RBio library (or static if no dynamic library was built)
 find_library ( RBIO_LIBRARY
-    NAMES rbio
+    NAMES rbio rbio_static
     HINTS ${RBIO_ROOT}
     HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME rbio_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME rbio )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static RBio library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( RBIO_STATIC
-    NAMES rbio
+    NAMES ${STATIC_NAME}
     HINTS ${RBIO_ROOT}
     HINTS ENV RBIO_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/RBio
     HINTS ${CMAKE_SOURCE_DIR}/../RBio
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( RBIO_LIBRARY  ${RBIO_LIBRARY} REALPATH )
@@ -81,24 +86,29 @@ string (
     ${RBIO_FILENAME}
 )
 
-if ( NOT RBIO_VERSION )
+# set ( RBIO_VERSION "" )
+if ( EXISTS "${RBIO_INCLUDE_DIR}" AND NOT RBIO_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h _VERSION_LINE REGEX "define[ ]+RBIO_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+RBIO_${_VERSION}[ ]+([0-9]*).*" "\\1" _RBIO_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( RBIO_VERSION "${_RBIO_MAIN_VERSION}.${_RBIO_SUB_VERSION}.${_RBIO_SUBSUB_VERSION}" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_MAJOR_STR
+        REGEX "define RBIO_MAIN_VERSION" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_MINOR_STR
+        REGEX "define RBIO_SUB_VERSION" )
+    file ( STRINGS ${RBIO_INCLUDE_DIR}/RBio.h RBIO_PATCH_STR
+        REGEX "define RBIO_SUBSUB_VERSION" )
+    message ( STATUS "major: ${RBIO_MAJOR_STR}" )
+    message ( STATUS "minor: ${RBIO_MINOR_STR}" )
+    message ( STATUS "patch: ${RBIO_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" RBIO_MAJOR ${RBIO_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" RBIO_MINOR ${RBIO_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" RBIO_PATCH ${RBIO_PATCH_STR} )
+    set (RBIO_VERSION "${RBIO_MAJOR}.${RBIO_MINOR}.${RBIO_PATCH}")
 endif ( )
-
 set ( RBIO_LIBRARIES ${RBIO_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( RBio
-    REQUIRED_VARS RBIO_LIBRARIES RBIO_INCLUDE_DIR
+    REQUIRED_VARS RBIO_LIBRARY RBIO_INCLUDE_DIR
     VERSION_VAR RBIO_VERSION
 )
 
@@ -116,5 +126,9 @@ if ( RBIO_FOUND )
     message ( STATUS "RBio static:  ${RBIO_STATIC}" )
 else ( )
     message ( STATUS "RBio not found" )
+    set ( RBIO_INCLUDE_DIR "" )
+    set ( RBIO_LIBRARIES "" )
+    set ( RBIO_LIBRARY "" )
+    set ( RBIO_STATIC "" )
 endif ( )
 

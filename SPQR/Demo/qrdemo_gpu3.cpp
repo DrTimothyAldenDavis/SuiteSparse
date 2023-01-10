@@ -98,7 +98,7 @@ int main (int argc, char **argv)
     f = fopen ("E.txt", "w") ;
     for (long i = 0 ; i < n ; i++)
     {
-        fprintf (f, "%ld\n", 1 + E [i]) ;
+        fprintf (f, "%" PRId64 "\n", 1 + E [i]) ;
     }
     fclose (f) ;
 

@@ -1,3 +1,7 @@
+Jan 9, 2023: version 2.0.3
+
+    * SuiteSparse_config: now v7.0.0
+
 Dec 9, 2022: version 2.0.2
 
     * minor changes to build system

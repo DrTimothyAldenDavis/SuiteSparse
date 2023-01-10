@@ -54,8 +54,19 @@
 
 #ifndef NPARTITION
 
+#undef ASSERT
 #include "cholmod_metis_wrapper.h"
 #include "SuiteSparse_metis/include/metis.h"
+#undef ASSERT
+#ifndef NDEBUG
+#define ASSERT(expr) assert (expr)
+#else
+#define ASSERT(expr)
+#endif
+#undef malloc
+#undef calloc
+#undef realloc
+#undef free
 
 //------------------------------------------------------------------------------
 // test coverage
@@ -81,24 +92,24 @@
     void *(*save_realloc_func) (void *, size_t) ;    // pointer to realloc
     void (*save_free_func) (void *) ;                // pointer to free
 
-    #define TEST_COVERAGE_PAUSE                                     \
-    {                                                               \
-        save_malloc_func  = SuiteSparse_config.malloc_func  ;       \
-        save_calloc_func  = SuiteSparse_config.calloc_func  ;       \
-        save_realloc_func = SuiteSparse_config.realloc_func ;       \
-        save_free_func    = SuiteSparse_config.free_func    ;       \
-        SuiteSparse_config.malloc_func  = malloc ;                  \
-        SuiteSparse_config.calloc_func  = calloc ;                  \
-        SuiteSparse_config.realloc_func = realloc ;                 \
-        SuiteSparse_config.free_func    = free ;                    \
+    #define TEST_COVERAGE_PAUSE                                             \
+    {                                                                       \
+        save_malloc_func  = SuiteSparse_config_malloc_func_get ( ) ;        \
+        save_calloc_func  = SuiteSparse_config_calloc_func_get ( ) ;        \
+        save_realloc_func = SuiteSparse_config_realloc_func_get ( ) ;       \
+        save_free_func    = SuiteSparse_config_free_func_get ( ) ;          \
+        SuiteSparse_config_malloc_func_set ((void *) malloc) ;              \
+        SuiteSparse_config_calloc_func_set ((void *) calloc) ;              \
+        SuiteSparse_config_realloc_func_set ((void *) realloc) ;            \
+        SuiteSparse_config_free_func_set ((void *) free) ;                  \
     }
 
-    #define TEST_COVERAGE_RESUME                                    \
-    {                                                               \
-        SuiteSparse_config.malloc_func  = save_malloc_func ;        \
-        SuiteSparse_config.calloc_func  = save_calloc_func ;        \
-        SuiteSparse_config.realloc_func = save_realloc_func ;       \
-        SuiteSparse_config.free_func    = save_free_func ;          \
+    #define TEST_COVERAGE_RESUME                                            \
+    {                                                                       \
+        SuiteSparse_config_malloc_func_set ((void *) save_malloc_func) ;    \
+        SuiteSparse_config_calloc_func_set ((void *) save_calloc_func) ;    \
+        SuiteSparse_config_realloc_func_set ((void *) save_realloc_func) ;  \
+        SuiteSparse_config_free_func_set ((void *) save_free_func) ;        \
     }
 
 #else

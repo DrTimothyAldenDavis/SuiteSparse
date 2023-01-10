@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindSPQR_CUDA.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindSPQR_CUDA.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -29,34 +29,39 @@
 
 #-------------------------------------------------------------------------------
 
-# dynamic SPQR_CUDA library
+# dynamic SPQR_CUDA library (or static if no dynamic library was built)
 find_library ( SPQR_CUDA_LIBRARY
-    NAMES spqr_cuda
+    NAMES spqr_cuda spqr_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME spqr_cuda_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME spqr_cuda )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SPQR_CUDA library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-find_library ( SPQR_CUDA_LIBRARY
-    NAMES spqr_cuda
+find_library ( SPQR_CUDA_STATIC
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR/build/SPQRGPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( SPQR_CUDA_LIBRARY  ${SPQR_CUDA_LIBRARY} REALPATH )
@@ -78,7 +83,7 @@ set ( SPQR_CUDA_LIBRARIES ${SPQR_CUDA_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR_CUDA
-    REQUIRED_VARS SPQR_CUDA_LIBRARIES
+    REQUIRED_VARS SPQR_CUDA_LIBRARY
     VERSION_VAR SPQR_CUDA_VERSION
 )
 
@@ -94,5 +99,8 @@ if ( SPQR_CUDA_FOUND )
     message ( STATUS "SPQR_CUDA static:  ${SPQR_CUDA_STATIC}" )
 else ( )
     message ( STATUS "SPQR_CUDA not found" )
+    set ( SPQR_CUDA_LIBRARIES "" )
+    set ( SPQR_CUDA_LIBRARY "" )
+    set ( SPQR_CUDA_STATIC "" )
 endif ( )
 

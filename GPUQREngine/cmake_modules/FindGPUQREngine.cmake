@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindGPUQREngine.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindGPUQREngine.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,36 +39,41 @@ find_path ( GPUQRENGINE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic GPUQREngine library
+# dynamic GPUQREngine library (or static if no dynamic library was built)
 find_library ( GPUQRENGINE_LIBRARY
-    NAMES gpuqrengine
+    NAMES gpuqrengine gpuqrengine_static
     HINTS ${GPUQRENGINE_ROOT}
     HINTS ENV GPUQRENGINE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME gpuqrengine_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME gpuqrengine )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static GPUQREngine library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GPUQRENGINE_STATIC
-    NAMES gpuqrengine_static
+    NAMES ${STATIC_NAME}
     HINTS ${GPUQRENGINE_ROOT}
     HINTS ENV GPUQRENGINE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GPUQREngine
     HINTS ${CMAKE_SOURCE_DIR}/../GPUQREngine
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( GPUQRENGINE_LIBRARY  ${GPUQRENGINE_LIBRARY} REALPATH )
@@ -79,16 +84,22 @@ string (
     ${GPUQRENGINE_FILENAME}
 )
 
-if ( NOT GPUQRENGINE_VERSION )
+# set ( GPUQRENGINE_VERSION "" )
+if ( EXISTS "${GPUQRENGINE_INCLUDE_DIR}" AND NOT GPUQRENGINE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+GPUQRENGINE_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+GPUQRENGINE_${_VERSION}[ ]+([0-9]*).*" "\\1" _GPUQRENGINE_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( GPUQRENGINE_VERSION "${_GPUQRENGINE_MAIN_VERSION}.${_GPUQRENGINE_SUB_VERSION}.${_GPUQRENGINE_SUBSUB_VERSION}" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_MAJOR_STR
+        REGEX "define GPUQRENGINE_MAIN_VERSION" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_MINOR_STR
+        REGEX "define GPUQRENGINE_SUB_VERSION" )
+    file ( STRINGS ${GPUQRENGINE_INCLUDE_DIR}/GPUQREngine.hpp GPUQRENGINE_PATCH_STR
+        REGEX "define GPUQRENGINE_SUBSUB_VERSION" )
+    message ( STATUS "major: ${GPUQRENGINE_MAJOR_STR}" )
+    message ( STATUS "minor: ${GPUQRENGINE_MINOR_STR}" )
+    message ( STATUS "patch: ${GPUQRENGINE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_MAJOR ${GPUQRENGINE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_MINOR ${GPUQRENGINE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GPUQRENGINE_PATCH ${GPUQRENGINE_PATCH_STR} )
+    set (GPUQRENGINE_VERSION "${GPUQRENGINE_MAJOR}.${GPUQRENGINE_MINOR}.${GPUQRENGINE_PATCH}")
 endif ( )
 
 # libaries when using GPUQREngine
@@ -97,7 +108,7 @@ set (GPUQRENGINE_LIBRARIES ${GPUQRENGINE_LIBRARY})
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( GPUQREngine
-    REQUIRED_VARS GPUQRENGINE_LIBRARIES
+    REQUIRED_VARS GPUQRENGINE_LIBRARY
     VERSION_VAR GPUQRENGINE_VERSION
 )
 
@@ -115,5 +126,9 @@ if ( GPUQRENGINE_FOUND )
     message ( STATUS "GPUQREngine static:  ${GPUQRENGINE_STATIC}" )
 else ( )
     message ( STATUS "GPUQREngine not found" )
+    set ( GPUQRENGINE_INCLUDE_DIR "" )
+    set ( GPUQRENGINE_LIBRARIES "" )
+    set ( GPUQRENGINE_LIBRARY "" )
+    set ( GPUQRENGINE_STATIC "" )
 endif ( )
 

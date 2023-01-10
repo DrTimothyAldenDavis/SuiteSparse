@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Dec 9, 2022" )
+set ( CHOLMOD_DATE "Jan 9, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   2 )
+set ( CHOLMOD_VERSION_SUB   3 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -75,9 +75,9 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # find CHOLMOD modules
@@ -179,8 +179,8 @@ find_package ( AMD 3.0.2 REQUIRED )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.2 )
-        find_package ( CCOLAMD 3.0.2 )
+        find_package ( CAMD 3.0.3 )
+        find_package ( CCOLAMD 3.0.3 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )
@@ -257,8 +257,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/cholmod.h.in" "${PROJECT_SOURCE_DIR}/Include/cholmod.h")
-configure_file ( "Config/cholmod_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex")
+configure_file ( "Config/cholmod.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/cholmod.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/cholmod_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/cholmod_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -282,7 +286,8 @@ set_target_properties ( cholmod PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cholmod.h" )
+    PUBLIC_HEADER "Include/cholmod.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( cholmod PROPERTIES CUDA_SEPARABLE_COMPILATION on )
@@ -294,18 +299,23 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( cholmod_static STATIC ${CHOLMOD_SOURCES} )
+    add_library ( cholmod_static STATIC ${CHOLMOD_SOURCES} )
 
-set_target_properties ( cholmod_static PROPERTIES
-    VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME cholmod
-    SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+    set_target_properties ( cholmod_static PROPERTIES
+        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME cholmod
+        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
-if ( SUITESPARSE_CUDA )
-    set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-endif ( )
+    if ( MSVC )
+        set_target_properties ( cholmod_static PROPERTIES
+            OUTPUT_NAME cholmod_static )
+    endif ( )
+
+    if ( SUITESPARSE_CUDA )
+        set_target_properties ( cholmod_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( cholmod_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -325,7 +335,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( cholmod PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( cholmod_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( cholmod_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS} " )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
@@ -333,7 +343,7 @@ if ( OPENMP_FOUND )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( cholmod PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( cholmod_static PUBLIC m )
@@ -391,16 +401,18 @@ endif ( )
 
 # METIS and the Partition module:
 if ( NOT NPARTITION )
-      include_directories ( SuiteSparse_metis/GKlib )
-      include_directories ( SuiteSparse_metis/libmetis )
-      include_directories ( SuiteSparse_metis/include )
+    include_directories ( SuiteSparse_metis/GKlib )
+    include_directories ( SuiteSparse_metis/libmetis )
+    include_directories ( SuiteSparse_metis/include )
 endif ( )
 
-# CUDA
+# cholmod_cuda
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
     target_link_libraries ( cholmod PUBLIC ${CHOLMOD_CUDA} )
-    target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
+    if ( NOT NSTATIC )
+        target_link_libraries ( cholmod_static PUBLIC ${CHOLMOD_CUDA_STATIC} )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -466,7 +478,7 @@ if ( DEMO )
     add_executable ( cholmod_l_demo "Demo/cholmod_l_demo.c" )
     add_executable ( cholmod_simple "Demo/cholmod_simple.c" )
 
-    if ( CMAKE_Fortran_COMPILER )
+    if ( NOT NFORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
         add_executable ( readhb2    "Demo/readhb2.f" )
         add_executable ( reade      "Demo/reade.f" )

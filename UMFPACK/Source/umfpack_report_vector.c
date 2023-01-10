@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_report_vector: print a dense vector
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_report_vector.h"
 
-GLOBAL int UMFPACK_report_vector
+int UMFPACK_report_vector
 (
     Int n,
     const double Xx [ ],

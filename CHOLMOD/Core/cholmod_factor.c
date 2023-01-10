@@ -83,7 +83,7 @@ cholmod_factor *CHOLMOD(allocate_factor)
 
     /* ensure the dimension does not cause integer overflow */
     (void) CHOLMOD(add_size_t) (n, 2, &ok) ;
-    if (!ok || n > Int_max)
+    if (!ok || (int64_t) n >= Int_max)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
 	return (NULL) ;

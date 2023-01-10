@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_scale: apply scale factors
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -24,7 +24,7 @@
 #include "umf_internal.h"
 #include "umf_valid_numeric.h"
 
-GLOBAL int UMFPACK_scale
+int UMFPACK_scale
 (
     double Xx [ ],
 #ifdef COMPLEX

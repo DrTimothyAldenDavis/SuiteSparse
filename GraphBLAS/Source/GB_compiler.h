@@ -125,14 +125,14 @@
 // Workaround for compiler bug in Microsoft Visual Studio 2019
 //------------------------------------------------------------------------------
 
-// The GB_COMPILER_MSC_2019 flag disables the FIRST_FC32 and SECOND_FC32 binary
-// operators for the MS Visual Studio 2019 compiler (MSC versions 19.20 to
-// 19.29).  It's possible that the compiler bug appears in 19.30 and later (VS
-// 2022), but this hasn't been tested.  This macro optimistically assumes the
-// bug will be fixed in that version.
+// The GB_COMPILER_MSC_2019_OR_NEWER flag disables the FIRST_FC32 and
+// SECOND_FC32 binary operators for the MS Visual Studio 2019 or newer compilers
+// (MSC versions 19.20 or newer).  It's possible that the compiler bug will be
+// fixed in later versions of the MSC.  In that case, an upper version bound
+// should be added to this macro.
 
-#define GB_COMPILER_MSC_2019 ( GB_COMPILER_MSC && (GB_COMPILER_MAJOR == 19) \
-    && (GB_COMPILER_MINOR >= 20) && (GB_COMPILER_MINOR <= 29) )
+#define GB_COMPILER_MSC_2019_OR_NEWER ( GB_COMPILER_MSC \
+    && (GB_COMPILER_MAJOR == 19) && (GB_COMPILER_MINOR >= 20))
 
 //------------------------------------------------------------------------------
 // malloc.h: required include file for Microsoft Visual Studio

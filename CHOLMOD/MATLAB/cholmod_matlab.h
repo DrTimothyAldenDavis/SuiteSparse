@@ -12,11 +12,6 @@
 
 #include "SuiteSparse_config.h"
 
-#ifndef NPARTITION
-#include "metis.h"
-#endif
-#undef ASSERT
-
 #include "cholmod.h"
 #include <float.h>
 #include "mex.h"

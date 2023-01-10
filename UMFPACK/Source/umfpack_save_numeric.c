@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_save_numeric: save a Numeric object to a file
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -30,7 +30,7 @@
 /* === UMFPACK_save_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_save_numeric
+int UMFPACK_save_numeric
 (
     void *NumericHandle,
     char *user_filename

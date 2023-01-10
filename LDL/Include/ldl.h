@@ -7,6 +7,14 @@
 
 //------------------------------------------------------------------------------
 
+#ifndef LDL_H
+#define LDL_H
+
+/* make it easy for C++ programs to include LDL */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include "SuiteSparse_config.h"
 
 #ifdef LDL_LONG
@@ -40,86 +48,70 @@
 #endif
 
 /* ========================================================================== */
-/* === int32_t version ========================================================== */
+/* === int32_t version ====================================================== */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC 
 void ldl_symbolic (int32_t n, int32_t Ap [ ], int32_t Ai [ ], int32_t Lp [ ],
     int32_t Parent [ ], int32_t Lnz [ ], int32_t Flag [ ], int32_t P [ ],
     int32_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
 int32_t ldl_numeric (int32_t n, int32_t Ap [ ], int32_t Ai [ ], double Ax [ ],
     int32_t Lp [ ], int32_t Parent [ ], int32_t Lnz [ ], int32_t Li [ ],
     double Lx [ ], double D [ ], double Y [ ], int32_t Pattern [ ],
     int32_t Flag [ ], int32_t P [ ], int32_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_lsolve (int32_t n, double X [ ], int32_t Lp [ ], int32_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_dsolve (int32_t n, double X [ ], double D [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_ltsolve (int32_t n, double X [ ], int32_t Lp [ ], int32_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_perm  (int32_t n, double X [ ], double B [ ], int32_t P [ ]) ;
-SUITESPARSE_PUBLIC 
 void ldl_permt (int32_t n, double X [ ], double B [ ], int32_t P [ ]) ;
 
-SUITESPARSE_PUBLIC 
 int32_t ldl_valid_perm (int32_t n, int32_t P [ ], int32_t Flag [ ]) ;
-SUITESPARSE_PUBLIC 
 int32_t ldl_valid_matrix ( int32_t n, int32_t Ap [ ], int32_t Ai [ ]) ;
 
 /* ========================================================================== */
 /* === int64_t version ====================================================== */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC 
 void ldl_l_symbolic (int64_t n, int64_t Ap [ ], int64_t Ai [ ], int64_t Lp [ ],
     int64_t Parent [ ], int64_t Lnz [ ], int64_t Flag [ ], int64_t P [ ],
     int64_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
 int64_t ldl_l_numeric (int64_t n, int64_t Ap [ ], int64_t Ai [ ], double Ax [ ],
     int64_t Lp [ ], int64_t Parent [ ], int64_t Lnz [ ], int64_t Li [ ],
     double Lx [ ], double D [ ], double Y [ ], int64_t Pattern [ ],
     int64_t Flag [ ], int64_t P [ ], int64_t Pinv [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_l_lsolve (int64_t n, double X [ ], int64_t Lp [ ], int64_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_l_dsolve (int64_t n, double X [ ], double D [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_l_ltsolve (int64_t n, double X [ ], int64_t Lp [ ], int64_t Li [ ],
     double Lx [ ]) ;
 
-SUITESPARSE_PUBLIC 
 void ldl_l_perm  (int64_t n, double X [ ], double B [ ], int64_t P [ ]) ;
 void ldl_l_permt (int64_t n, double X [ ], double B [ ], int64_t P [ ]) ;
 
-SUITESPARSE_PUBLIC 
 int64_t ldl_l_valid_perm (int64_t n, int64_t P [ ], int64_t Flag [ ]) ;
 
-SUITESPARSE_PUBLIC 
 int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 
 /* ========================================================================== */
 /* === LDL version ========================================================== */
 /* ========================================================================== */
 
-#define LDL_DATE "Dec 9, 2022"
+#define LDL_DATE "Jan 9, 2023"
 #define LDL_MAIN_VERSION   3
 #define LDL_SUB_VERSION    0
-#define LDL_SUBSUB_VERSION 2
+#define LDL_SUBSUB_VERSION 3
 
 #define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 
+#endif

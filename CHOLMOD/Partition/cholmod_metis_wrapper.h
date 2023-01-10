@@ -11,6 +11,20 @@
 #ifndef CHOLMOD_METIS_WRAP_H
 #define CHOLMOD_METIS_WRAP_H
 
+#if defined ( __GNUC__ ) && !defined ( __clang__ )
+    // disable memcpy warnings:
+    #pragma GCC diagnostic ignored "-Wstringop-overflow="
+    // csr.c has misleading indentation:
+    #pragma GCC diagnostic ignored "-Wmisleading-indentation"
+    // GKlib/error.c:
+    #pragma GCC diagnostic ignored "-Wunused-result"
+#endif
+
+#if SUITESPARSE_COMPILER_MSC
+    #undef  __thread
+    #define __thread __declspec(thread)
+#endif
+
 #define CoarsenGraphNlevels                       SuiteSparse_metis_CoarsenGraphNlevels
 #define ComputeAccuracy                           SuiteSparse_metis_ComputeAccuracy
 #define ComputeBFSOrdering                        SuiteSparse_metis_ComputeBFSOrdering
@@ -460,7 +474,6 @@
 #define gk_skvsortd                               SuiteSparse_metis_gk_skvsortd
 #define gk_skvsorti                               SuiteSparse_metis_gk_skvsorti
 #define gk_strdup                                 SuiteSparse_metis_gk_strdup
-#define gk_strerror                               SuiteSparse_metis_gk_strerror
 #define gk_UnsetSignalHandlers                    SuiteSparse_metis_gk_UnsetSignalHandlers
 
 #define gk_zAllocMatrix                           SuiteSparse_metis_gk_zAllocMatrix
@@ -805,5 +818,12 @@
 #define METIS_SetDefaultOptions                   SuiteSparse_metis_METIS_SetDefaultOptions
 
 #define PrintBackTrace                            SuiteSparse_metis_PrintBackTrace
+
+#include "SuiteSparse_metis/GKlib/GKlib.h"
+#include "SuiteSparse_metis/include/metis.h"
+
+#if (IDXTYPEWIDTH != 64)
+#error "SuiteSparse requires the 64-bit version of METIS 5.1.0 (with IDXTYPEWIDTH set to 64)"
+#endif
 
 #endif

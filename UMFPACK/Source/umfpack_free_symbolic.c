@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_free_symbolic: free Symbolic object
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -15,7 +15,7 @@
 #include "umf_internal.h"
 #include "umf_free.h"
 
-GLOBAL void UMFPACK_free_symbolic
+void UMFPACK_free_symbolic
 (
     void **SymbolicHandle
 )

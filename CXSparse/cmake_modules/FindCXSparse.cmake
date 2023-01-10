@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCXSparse.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCXSparse.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -30,6 +30,7 @@
 
 #-------------------------------------------------------------------------------
 
+
 # include files for CXSPARSE
 find_path ( CXSPARSE_INCLUDE_DIR
     NAMES cs.h
@@ -41,36 +42,41 @@ find_path ( CXSPARSE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CXSPARSE library
+# dynamic CXSPARSE library (or static if no dynamic library was built)
 find_library ( CXSPARSE_LIBRARY
-    NAMES cxsparse
+    NAMES cxsparse cxsparse_static
     HINTS ${CXSPARSE_ROOT}
     HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME cxsparse_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME cxsparse )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CXSPARSE library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CXSPARSE_STATIC
-    NAMES cxsparse
+    NAMES ${STATIC_NAME}
     HINTS ${CXSPARSE_ROOT}
     HINTS ENV CXSPARSE_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CXSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CXSparse
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( CXSPARSE_LIBRARY  ${CXSPARSE_LIBRARY} REALPATH )
@@ -81,16 +87,22 @@ string (
     ${CXSPARSE_FILENAME}
 )
 
-if ( NOT CXSPARSE_VERSION )
+# set ( CXSPARSE_VERSION "" )
+if ( EXISTS "${CXSPARSE_INCLUDE_DIR}" AND NOT CXSPARSE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h _VERSION_LINE REGEX "define[ ]+CXSPARSE_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CXSPARSE_${_VERSION}[ ]+([0-9]*).*" "\\1" _CXSPARSE_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CXSPARSE_VERSION "${_CXSPARSE_MAIN_VERSION}.${_CXSPARSE_SUB_VERSION}.${_CXSPARSE_SUBSUB_VERSION}")
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_MAJOR_STR
+        REGEX "define CS_VER" )
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_MINOR_STR
+        REGEX "define CS_SUBVER" )
+    file ( STRINGS ${CXSPARSE_INCLUDE_DIR}/cs.h CXSPARSE_PATCH_STR
+        REGEX "define CS_SUBSUB" )
+    message ( STATUS "major: ${CXSPARSE_MAJOR_STR}" )
+    message ( STATUS "minor: ${CXSPARSE_MINOR_STR}" )
+    message ( STATUS "patch: ${CXSPARSE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_MAJOR ${CXSPARSE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_MINOR ${CXSPARSE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CXSPARSE_PATCH ${CXSPARSE_PATCH_STR} )
+    set (CXSPARSE_VERSION "${CXSPARSE_MAJOR}.${CXSPARSE_MINOR}.${CXSPARSE_PATCH}")
 endif ( )
 
 set ( CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY} )
@@ -98,7 +110,7 @@ set ( CXSPARSE_LIBRARIES ${CXSPARSE_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CXSparse
-    REQUIRED_VARS CXSPARSE_LIBRARIES CXSPARSE_INCLUDE_DIR
+    REQUIRED_VARS CXSPARSE_LIBRARY CXSPARSE_INCLUDE_DIR
     VERSION_VAR CXSPARSE_VERSION
 )
 
@@ -116,5 +128,9 @@ if ( CXSPARSE_FOUND )
     message ( STATUS "CXSparse static:  ${CXSPARSE_STATIC}" )
 else ( )
     message ( STATUS "CXSparse not found" )
+    set ( CXSPARSE_INCLUDE_DIR "" )
+    set ( CXSPARSE_LIBRARIES "" )
+    set ( CXSPARSE_LIBRARY "" )
+    set ( CXSPARSE_STATIC "" )
 endif ( )
 

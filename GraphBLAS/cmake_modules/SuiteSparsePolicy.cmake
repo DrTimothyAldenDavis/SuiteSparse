@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -56,14 +56,6 @@
 #                       64-bit BLAS.  If false, only 32-bit BLAS will be
 #                       searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
-#
-#   SUITESPARSE_C_TO_FORTRAN:  a string that defines how C calls Fortran.
-#                       Defaults to "(name,NAME) name" for Windows (lower case,
-#                       no underscore appended to the name), which is the
-#                       system that is most likely not to have a Fortran
-#                       compiler.  Defaults to "(name,NAME) name##_" otherwise.
-#                       This setting is only used if no Fortran compiler is
-#                       found.
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -74,6 +66,11 @@ cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
+
+if ( WIN32 )
+    set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
+    add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )
+endif ( )
 
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
@@ -165,36 +162,13 @@ message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
-# check if Fortran is available
-#-------------------------------------------------------------------------------
-
-include ( CheckLanguage )
-check_language ( Fortran )
-if ( CMAKE_Fortran_COMPILER )
-    enable_language ( Fortran )
-    message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID}" )
-else()
-    message ( STATUS "Fortran: not available")
-endif()
-
-# default C-to-Fortran name mangling if Fortran compiler not found
-if ( MSVC )
-    # MS Visual Studio Fortran compiler does not mangle the Fortran name
-    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name"
-        CACHE STRING "C to Fortan name mangling" )
-else ( )
-    # Other systems (Linux, Mac) typically append an underscore
-    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name##_"
-        CACHE STRING "C to Fortan name mangling" )
-endif ( )
-
-#-------------------------------------------------------------------------------
 # find CUDA
 #-------------------------------------------------------------------------------
 
 if ( ENABLE_CUDA )
 
     # try finding CUDA
+    include ( CheckLanguage )
     check_language ( CUDA )
     message ( STATUS "Looking for CUDA" )
     if ( CMAKE_CUDA_COMPILER )

@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_dump.h: debug definitions for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -11,7 +11,7 @@
 
 #ifndef NDEBUG
 
-GLOBAL void UMF_dump_dense
+void UMF_dump_dense
 (
     Entry *C,
     Int dim,
@@ -19,7 +19,7 @@ GLOBAL void UMF_dump_dense
     Int n
 ) ;
 
-GLOBAL void UMF_dump_element
+void UMF_dump_element
 (
     NumericType *Numeric,
     WorkType *Work,
@@ -27,7 +27,7 @@ GLOBAL void UMF_dump_element
     Int clean
 ) ;
 
-GLOBAL void UMF_dump_rowcol
+void UMF_dump_rowcol
 (
     Int dump_which,
     NumericType *Numeric,
@@ -36,37 +36,37 @@ GLOBAL void UMF_dump_rowcol
     Int check_degree
 ) ;
 
-GLOBAL void UMF_dump_matrix
+void UMF_dump_matrix
 (
     NumericType *Numeric,
     WorkType *Work,
     Int check_degree
 ) ;
 
-GLOBAL void UMF_dump_current_front
+void UMF_dump_current_front
 (
     NumericType *Numeric,
     WorkType *Work,
     Int check
 ) ;
 
-GLOBAL void UMF_dump_lu
+void UMF_dump_lu
 (
     NumericType *Numeric
 ) ;
 
-GLOBAL void UMF_dump_memory
+void UMF_dump_memory
 (
     NumericType *Numeric
 ) ;
 
-GLOBAL void UMF_dump_packed_memory
+void UMF_dump_packed_memory
 (
     NumericType *Numeric,
     WorkType *Work
 ) ;
 
-GLOBAL void UMF_dump_col_matrix
+void UMF_dump_col_matrix
 (
     const double Ax [ ],
 #ifdef COMPLEX
@@ -79,7 +79,7 @@ GLOBAL void UMF_dump_col_matrix
     Int nz
 ) ;
 
-GLOBAL void UMF_dump_chain
+void UMF_dump_chain
 (
     Int frontid,
     Int Front_parent [ ],
@@ -89,20 +89,20 @@ GLOBAL void UMF_dump_chain
     Int nfr
 ) ;
 
-GLOBAL void UMF_dump_rowmerge
+void UMF_dump_rowmerge
 (
     NumericType *Numeric,
     SymbolicType *Symbolic,
     WorkType *Work
 ) ;
 
-GLOBAL void UMF_dump_start
+void UMF_dump_start
 (
     void
 ) ;
 
 
-GLOBAL void UMF_dump_diagonal_map
+void UMF_dump_diagonal_map
 (
     Int Diagonal_map [ ],
     Int Diagonal_imap [ ],
@@ -111,9 +111,9 @@ GLOBAL void UMF_dump_diagonal_map
 
 #define UMF_DBMAX 50000
 
-GLOBAL Int UMF_debug ;
-GLOBAL Int UMF_allocfail ;
-GLOBAL double UMF_gprob ;
+extern Int UMF_debug ;
+extern Int UMF_allocfail ;
+extern double UMF_gprob ;
 
 #define DEBUGk(k,params) { if (UMF_debug >= (k)) { PRINTF (params) ; } }
 

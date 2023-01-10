@@ -2,12 +2,12 @@
 // UMFPACK/Source/umf_row_search.h
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_row_search
+Int UMF_row_search
 (
     NumericType *Numeric,
     WorkType *Work,

@@ -70,10 +70,10 @@ extern "C" {
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "Dec 9, 2022"
+#define COLAMD_DATE "Jan 9, 2023"
 #define COLAMD_MAIN_VERSION   3
 #define COLAMD_SUB_VERSION    0
-#define COLAMD_SUBSUB_VERSION 2
+#define COLAMD_SUBSUB_VERSION 3
 
 #define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define COLAMD_VERSION \
@@ -129,7 +129,6 @@ extern "C" {
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
 
-SUITESPARSE_PUBLIC 
 size_t colamd_recommended       /* returns recommended value of Alen, */
                                 /* or 0 if input arguments are erroneous */
 (
@@ -138,7 +137,6 @@ size_t colamd_recommended       /* returns recommended value of Alen, */
     int32_t n_col               /* number of columns in A */
 ) ;
 
-SUITESPARSE_PUBLIC 
 size_t colamd_l_recommended     /* returns recommended value of Alen, */
                                 /* or 0 if input arguments are erroneous */
 (
@@ -147,19 +145,16 @@ size_t colamd_l_recommended     /* returns recommended value of Alen, */
     int64_t n_col               /* number of columns in A */
 ) ;
 
-SUITESPARSE_PUBLIC 
 void colamd_set_defaults        /* sets default parameters */
 (                               /* knobs argument is modified on output */
     double knobs [COLAMD_KNOBS] /* parameter settings for colamd */
 ) ;
 
-SUITESPARSE_PUBLIC 
 void colamd_l_set_defaults      /* sets default parameters */
 (                               /* knobs argument is modified on output */
     double knobs [COLAMD_KNOBS] /* parameter settings for colamd */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int colamd                      /* returns (1) if successful, (0) otherwise*/
 (                               /* A and p arguments are modified on output */
     int32_t n_row,              /* number of rows in A */
@@ -171,7 +166,6 @@ int colamd                      /* returns (1) if successful, (0) otherwise*/
     int32_t stats [COLAMD_STATS]    /* colamd output stats and error codes */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int colamd_l                    /* returns (1) if successful, (0) otherwise*/
 (                               /* A and p arguments are modified on output */
     int64_t n_row,              /* number of rows in A */
@@ -183,7 +177,6 @@ int colamd_l                    /* returns (1) if successful, (0) otherwise*/
     int64_t stats [COLAMD_STATS]    /* colamd output stats and error codes */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int symamd                              /* return (1) if OK, (0) otherwise */
 (
     int32_t n,                          /* number of rows and columns of A */
@@ -200,7 +193,6 @@ int symamd                              /* return (1) if OK, (0) otherwise */
                                         /* mxFree (for MATLAB mexFunction) */
 ) ;
 
-SUITESPARSE_PUBLIC 
 int symamd_l                            /* return (1) if OK, (0) otherwise */
 (
     int64_t n,                          /* number of rows and columns of A */
@@ -217,25 +209,21 @@ int symamd_l                            /* return (1) if OK, (0) otherwise */
                                         /* mxFree (for MATLAB mexFunction) */
 ) ;
 
-SUITESPARSE_PUBLIC 
 void colamd_report
 (
     int32_t stats [COLAMD_STATS]
 ) ;
 
-SUITESPARSE_PUBLIC 
 void colamd_l_report
 (
     int64_t stats [COLAMD_STATS]
 ) ;
 
-SUITESPARSE_PUBLIC 
 void symamd_report
 (
     int32_t stats [COLAMD_STATS]
 ) ;
 
-SUITESPARSE_PUBLIC 
 void symamd_l_report
 (
     int64_t stats [COLAMD_STATS]

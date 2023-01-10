@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_kernel_init: initializations for umf_kernel
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ PRIVATE Int packsp	/* returns new value of pnew */
 /* === UMF_kernel_init ====================================================== */
 /* ========================================================================== */
 
-GLOBAL Int UMF_kernel_init
+Int UMF_kernel_init
 (
     const Int Ap [ ],		/* user's input matrix (not modified) */
     const Int Ai [ ],

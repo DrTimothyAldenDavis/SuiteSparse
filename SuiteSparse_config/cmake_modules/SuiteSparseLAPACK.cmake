@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/cmake_modules/SuiteSparseLAPACK.cmake
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -49,7 +49,7 @@ if ( BLA_VENDOR STREQUAL "FLAME" )
     include (FindPackageHandleStandardArgs)
 
     find_package_handle_standard_args ( LAPACK
-        REQUIRED_VARS LAPACK_LIBRARIES
+        REQUIRED_VARS LAPACK_LIBRARY
     )
 
     mark_as_advanced (

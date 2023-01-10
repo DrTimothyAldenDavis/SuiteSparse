@@ -124,7 +124,7 @@ multiplication C=A*B InTheWild semiring:
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  input A, 3 entries, memory: 928 bytes
+  input A, 3 entries, memory: 712 bytes
 
     (2,4) [user-defined value]
     (2,7) [user-defined value]
@@ -205,7 +205,7 @@ a wildtype scalar:  [here is B(7,5)]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  output C, 4 entries, memory: 928 bytes
+  output C, 4 entries, memory: 848 bytes
 
     (2,2) [user-defined value]
     (2,5) [user-defined value]
@@ -254,7 +254,7 @@ a wildtype scalar:  [this was multiplied]
 The mask matrix M:
 
   10x10 GraphBLAS bool matrix, hypersparse by row
-  M, no entries, memory: 4.4 KB
+  M, no entries, memory: 4.3 KB
   iso value:   1
   pending tuples: 4 max pending: 256 zombies: 0
   pending tuples:
@@ -266,12 +266,12 @@ The mask matrix M:
   pending operator: implicit 2nd
 
  [ GrB_mxm (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = S'*S) nthreads 1 ntasks 1 (generic C<M>=A'*B) 
-   0.000168 sec ]
+   8.71e-05 sec ]
 
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  output C, 4 entries, memory: 1.4 KB
+  output C, 4 entries, memory: 984 bytes
 
     (2,2) [user-defined value]
     (2,3) [user-defined value]
@@ -328,7 +328,7 @@ internal data structure.
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by col
-  output C, 4 entries, memory: 928 bytes
+  output C, 4 entries, memory: 848 bytes
 
     (2,2) [user-defined value]
     (3,2) [user-defined value]
@@ -375,13 +375,13 @@ a wildtype scalar:  [this was added]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS float matrix, hypersparse by row
-  D, no entries, memory: 280 bytes
+  D, no entries, memory: 240 bytes
 
 
 The matrix D is not wild enough to print.
 
   10x10 GraphBLAS int64_t matrix, sparse by row
-  E (positional i), 3 entries, memory: 448 bytes
+  E (positional i), 3 entries, memory: 352 bytes
 
     (2,4)   2
     (2,7)   2
@@ -389,7 +389,7 @@ The matrix D is not wild enough to print.
 
 
   10x10 GraphBLAS int64_t matrix, sparse by row
-  E (positional j), 3 entries, memory: 448 bytes
+  E (positional j), 3 entries, memory: 352 bytes
 
     (2,4)   4
     (2,7)   7

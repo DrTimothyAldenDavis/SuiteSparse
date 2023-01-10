@@ -5,10 +5,24 @@
 \documentclass[11pt]{article}
 \batchmode
 
+\usepackage{url}
+\urlstyle{sf}
+\usepackage[svgnames]{xcolor}
+\usepackage[colorlinks,linkcolor=Blue,citecolor=Blue,urlcolor=Blue]{hyperref}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{framed}
+\usepackage{mdframed}
+% \usepackage{geometry}
+% \usepackage{pdflscape}
+\newmdenv[backgroundcolor=yellow]{alert}
+\newmdenv[backgroundcolor=red]{note}
+\hyphenation{Suite-Sparse}
+
 \newcommand{\m}[1]{{\bf{#1}}}       % for matrices and vectors
 \newcommand{\tr}{^{\sf T}}          % transpose
 \newcommand{\he}{^{\sf H}}          % complex conjugate transpose
-\newcommand{\implies}{\rightarrow}
+% \newcommand{\implies}{\rightarrow}
 
 \topmargin 0in
 \textheight 8.5in
@@ -35,7 +49,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-UMFPACK, Copyright\copyright 2005-2022, Timothy A. Davis, All Rights Reserved.
+UMFPACK, Copyright\copyright 2005-2023, Timothy A. Davis, All Rights Reserved.
 
 SPDX-License-Identifier: GPL-2.0+
 
@@ -238,6 +252,18 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 %-------------------------------------------------------------------------------
 
 A detailed list of changes is in the {\tt ChangeLog} file.
+
+%-------------------------------------------------------------------------------
+\subsection{Version 6.1.0}
+%-------------------------------------------------------------------------------
+
+\begin{itemize}
+    \item more changes to the build system, including porting to Windows
+    \item abililty to disable Fortran
+    \item BLAS definitions: no longer exposed to the user application
+    \item copy/serialize/deserialize methods for Numeric and Symbolic objects,
+        by Will Kimmerer and T. Davis
+\end{itemize}
 
 %-------------------------------------------------------------------------------
 \subsection{Version 6.0.0}
@@ -1260,6 +1286,10 @@ They are fully described in Section~\ref{Get}:
     Creates a {\tt Numeric} object by loading it from a file created
     by {\tt umfpack\_*\_save\_numeric}.
 
+\item {\tt umfpack\_*\_copy\_numeric}:
+
+    Copies a {\tt Numeric} object.
+
 \item {\tt umfpack\_*\_save\_symbolic}:
 
     Saves a copy of the {\tt Symbolic} object to a file, in binary format.
@@ -1268,6 +1298,10 @@ They are fully described in Section~\ref{Get}:
 
     Creates a {\tt Symbolic} object by loading it from a file created
     by {\tt umfpack\_*\_save\_symbolic}.
+
+\item {\tt umfpack\_*\_copy\_symbolic}:
+
+    Copies a {\tt Symbolic} object.
 
 \end{itemize}
 
@@ -1779,6 +1813,8 @@ int nfr, nchains, P1 [m], Q1 [n], Front_npivcol [n+1], Front_parent [n+1], Front
     Front_leftmostdesc [n+1], Chain_start [n+1], Chain_maxrows [n+1], Chain_maxcols [n+1],
     Dmap [n+1] ;
 char filename [100] ;
+int8_t *blob ;
+int64_t blobsize ;
 
 status = umfpack_di_get_lunz (&lnz, &unz, &m, &n, &nz_udiag, Numeric) ;
 status = umfpack_di_get_numeric (Lp, Lj, Lx, Up, Ui, Ux, P, Q, D,
@@ -1788,8 +1824,16 @@ status = umfpack_di_get_symbolic (&m, &n, &n1, &nz, &nfr, &nchains, P1, Q1,
     Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 status = umfpack_di_load_numeric (&Numeric, filename) ;
 status = umfpack_di_save_numeric (Numeric, filename) ;
+status = umfpack_di_copy_numeric (&NumericCopy, NumericOriginal) ;
+status = umfpack_di_serialize_numeric_size (&blobsize, Numeric) ;
+status = umfpack_di_serialize_numeric (blob, blobsize, Numeric) ;
+status = umfpack_di_deserialize_numeric (&Numeric, blob, blobsize) ;
 status = umfpack_di_load_symbolic (&Symbolic, filename) ;
 status = umfpack_di_save_symbolic (Symbolic, filename) ;
+status = umfpack_di_copy_symbolic (&SymbolicCopy, SymbolicOriginal) ;
+status = umfpack_di_serialize_symbolic_size (&blobsize, Symbolic) ;
+status = umfpack_di_serialize_symbolic (blob, blobsize, Symbolic) ;
+status = umfpack_di_deserialize_symbolic (&Symbolic, blob, blobsize) ;
 status = umfapck_di_get_determinant (Mx, Ex, Numeric, Info) ;
 \end{verbatim}
 }
@@ -1889,8 +1933,16 @@ status = umfpack_zi_get_symbolic (&m, &n, &n1, &nz, &nfr, &nchains, P1, Q1,
     Chain_start, Chain_maxrows, Chain_maxcols, Dmap, Symbolic) ;
 status = umfpack_zi_load_numeric (&Numeric, filename) ;
 status = umfpack_zi_save_numeric (Numeric, filename) ;
+status = umfpack_zi_copy_numeric (&NumericCopy, NumericOriginal) ;
+status = umfpack_zi_serialize_numeric_size (&blobsize, Numeric) ;
+status = umfpack_zi_serialize_numeric (blob, blobsize, Numeric) ;
+status = umfpack_zi_deserialize_numeric (&Numeric, blob, blobsize) ;
 status = umfpack_zi_load_symbolic (&Symbolic, filename) ;
 status = umfpack_zi_save_symbolic (Symbolic, filename) ;
+status = umfpack_zi_copy_symbolic (&SymbolicCopy, SymbolicOriginal) ;
+status = umfpack_zi_serialize_symbolic_size (&blobsize, Symbolic) ;
+status = umfpack_zi_serialize_symbolic (blob, blobsize, Symbolic) ;
+status = umfpack_zi_deserialize_symbolic (&Symbolic, blob, blobsize) ;
 status = umfapck_zi_get_determinant (Mx, Mz, Ex, Numeric, Info) ;
 \end{verbatim}
 }
@@ -2280,9 +2332,6 @@ let me know and I could consider including them:
 
 \item A C++ interface.
 
-\item A parallel version using MPI.  This would require a large amount
-    of effort.
-
 \end{enumerate}
 
 
@@ -2303,7 +2352,6 @@ UMFPACK.  The generic integer type is {\tt Int}, which is an \verb'int32_t' or
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_symbolic
 (
     int32_t n_row,
@@ -2316,7 +2364,6 @@ int umfpack_di_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_symbolic
 (
     int64_t n_row,
@@ -2329,7 +2376,6 @@ int umfpack_dl_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_symbolic
 (
     int32_t n_row,
@@ -2342,7 +2388,6 @@ int umfpack_zi_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_symbolic
 (
     int64_t n_row,
@@ -2848,7 +2893,6 @@ Arguments:
 % INCLUDE umfpack_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_numeric
 (
     const int32_t Ap [ ],
@@ -2860,7 +2904,6 @@ int umfpack_di_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_numeric
 (
     const int64_t Ap [ ],
@@ -2872,7 +2915,6 @@ int umfpack_dl_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_numeric
 (
     const int32_t Ap [ ],
@@ -2884,7 +2926,6 @@ int umfpack_zi_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_numeric
 (
     const int64_t Ap [ ],
@@ -3398,7 +3439,6 @@ Arguments:
 % INCLUDE umfpack_solve
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_solve
 (
     int sys,
@@ -3412,7 +3452,6 @@ int umfpack_di_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_solve
 (
     int sys,
@@ -3426,7 +3465,6 @@ int umfpack_dl_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_solve
 (
     int sys,
@@ -3440,7 +3478,6 @@ int umfpack_zi_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_solve
 (
     int sys,
@@ -3709,25 +3746,21 @@ Arguments:
 % INCLUDE umfpack_free_symbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_free_symbolic
 (
     void **Symbolic
@@ -3780,25 +3813,21 @@ Arguments:
 % INCLUDE umfpack_free_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_free_numeric
 (
     void **Numeric
@@ -3856,25 +3885,21 @@ Arguments:
 % INCLUDE umfpack_defaults
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_defaults
 (
     double Control [UMFPACK_CONTROL]
@@ -3929,7 +3954,6 @@ Arguments:
 % INCLUDE umfpack_qsymbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_qsymbolic
 (
     int32_t n_row,
@@ -3943,7 +3967,6 @@ int umfpack_di_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_qsymbolic
 (
     int64_t n_row,
@@ -3957,7 +3980,6 @@ int umfpack_dl_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_qsymbolic
 (
     int32_t n_row,
@@ -3971,7 +3993,6 @@ int umfpack_zi_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_qsymbolic
 (
     int64_t n_row,
@@ -3985,7 +4006,6 @@ int umfpack_zl_qsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_di_fsymbolic
 (
     int32_t n_row,
@@ -4001,7 +4021,6 @@ int umfpack_di_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_fsymbolic
 (
     int64_t n_row,
@@ -4017,7 +4036,6 @@ int umfpack_dl_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_fsymbolic
 (
     int32_t n_row,
@@ -4033,7 +4051,6 @@ int umfpack_zi_fsymbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_fsymbolic
 (
     int64_t n_row,
@@ -4175,7 +4192,6 @@ to the user_ordering (user_params).  The arguments have the following syntax
 % INCLUDE umfpack_wsolve
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_wsolve
 (
     int sys,
@@ -4191,7 +4207,6 @@ int umfpack_di_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_wsolve
 (
     int sys,
@@ -4207,7 +4222,6 @@ int umfpack_dl_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_wsolve
 (
     int32_t sys,
@@ -4223,7 +4237,6 @@ int umfpack_zi_wsolve
     double W [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_wsolve
 (
     int sys,
@@ -4361,7 +4374,6 @@ Arguments:
 % INCLUDE umfpack_triplet_to_col
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_triplet_to_col
 (
     int32_t n_row,
@@ -4376,7 +4388,6 @@ int umfpack_di_triplet_to_col
     int32_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_triplet_to_col
 (
     int64_t n_row,
@@ -4391,7 +4402,6 @@ int umfpack_dl_triplet_to_col
     int64_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_triplet_to_col
 (
     int32_t n_row,
@@ -4406,7 +4416,6 @@ int umfpack_zi_triplet_to_col
     int32_t Map [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_triplet_to_col
 (
     int64_t n_row,
@@ -4628,7 +4637,6 @@ Arguments:
 % INCLUDE umfpack_col_to_triplet
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_col_to_triplet
 (
     int32_t n_col,
@@ -4636,7 +4644,6 @@ int umfpack_di_col_to_triplet
     int32_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_col_to_triplet
 (
     int64_t n_col,
@@ -4644,7 +4651,6 @@ int umfpack_dl_col_to_triplet
     int64_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_col_to_triplet
 (
     int32_t n_col,
@@ -4652,7 +4658,6 @@ int umfpack_zi_col_to_triplet
     int32_t Tj [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_col_to_triplet
 (
     int64_t n_col,
@@ -4742,7 +4747,6 @@ Arguments:
 % INCLUDE umfpack_transpose
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_transpose
 (
     int32_t n_row,
@@ -4757,7 +4761,6 @@ int umfpack_di_transpose
     double Rx [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_transpose
 (
     int64_t n_row,
@@ -4772,7 +4775,6 @@ int umfpack_dl_transpose
     double Rx [ ]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_transpose
 (
     int32_t n_row,
@@ -4788,7 +4790,6 @@ int umfpack_zi_transpose
     int do_conjugate
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_transpose
 (
     int64_t n_row,
@@ -4966,7 +4967,6 @@ Arguments:
 % INCLUDE umfpack_scale
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_scale
 (
     double X [ ],
@@ -4974,7 +4974,6 @@ int umfpack_di_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_scale
 (
     double X [ ],
@@ -4982,7 +4981,6 @@ int umfpack_dl_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_scale
 (
     double Xx [ ],       double Xz [ ],
@@ -4990,7 +4988,6 @@ int umfpack_zi_scale
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_scale
 (
     double Xx [ ],       double Xz [ ],
@@ -5087,7 +5084,6 @@ Arguments:
 % INCLUDE umfpack_get_lunz
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_get_lunz
 (
     int32_t *lnz,
@@ -5098,7 +5094,6 @@ int umfpack_di_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_get_lunz
 (
     int64_t *lnz,
@@ -5109,7 +5104,6 @@ int umfpack_dl_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_get_lunz
 (
     int32_t *lnz,
@@ -5120,7 +5114,6 @@ int umfpack_zi_get_lunz
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_get_lunz
 (
     int64_t *lnz,
@@ -5228,7 +5221,6 @@ Arguments:
 % INCLUDE umfpack_get_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_get_numeric
 (
     int32_t Lp [ ],
@@ -5245,7 +5237,6 @@ int umfpack_di_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_get_numeric
 (
     int64_t Lp [ ],
@@ -5262,7 +5253,6 @@ int umfpack_dl_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_get_numeric
 (
     int32_t Lp [ ],
@@ -5279,7 +5269,6 @@ int umfpack_zi_get_numeric
     void *Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_get_numeric
 (
     int64_t Lp [ ],
@@ -5484,7 +5473,6 @@ Arguments:
 % INCLUDE umfpack_get_symbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_get_symbolic
 (
     int32_t *n_row,
@@ -5506,7 +5494,6 @@ int umfpack_di_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_get_symbolic
 (
     int64_t *n_row,
@@ -5528,7 +5515,6 @@ int umfpack_dl_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_get_symbolic
 (
     int32_t *n_row,
@@ -5550,7 +5536,6 @@ int umfpack_zi_get_symbolic
     void *Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_get_symbolic
 (
     int64_t *n_row,
@@ -5839,28 +5824,24 @@ Arguments:
 % INCLUDE umfpack_save_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_save_numeric
 (
     void *Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_save_numeric
 (
     void *Numeric,
@@ -5929,28 +5910,24 @@ Arguments:
 % INCLUDE umfpack_load_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_load_numeric
 (
     void **Numeric,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_load_numeric
 (
     void **Numeric,
@@ -6018,34 +5995,403 @@ Arguments:
 }
 
 \newpage
+\subsection{umfpack\_*\_copy\_numeric}
+
+{\footnotesize
+% INCLUDE umfpack_copy_numericc
+\begin{verbatim}
+
+int umfpack_di_copy_numeric
+(
+    void **Numeric,
+    void *Original
+) ;
+
+int umfpack_dl_copy_numeric
+(
+    void **Numeric,
+    void *Original
+) ;
+
+int umfpack_zi_copy_numeric
+(
+    void **Numeric,
+    void *Original
+) ;
+
+int umfpack_zl_copy_numeric
+(
+    void **Numeric,
+    void *Original
+) ;
+
+/*
+double int Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Numeric ;
+    status = umfpack_di_copy_numeric (&Numeric, Original) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Numeric ;
+    int status = umfpack_dl_copy_numeric (&Numeric, Original) ;
+
+complex int Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Numeric ;
+    int status = umfpack_zi_copy_numeric (&Numeric, Original) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Numeric ;
+    int status = umfpack_zl_copy_numeric (&Numeric, Original) ;
+
+Purpose:
+
+    Copies a Numeric object.  The Numeric handle passed to this routine is
+    overwritten with the new object.  If that object exists prior to calling
+    this routine, a memory leak will occur.  The contents of numeric are
+    ignored on input.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Numeric ;        Output argument.
+
+        **Numeric is the address of a (void *) pointer variable in the user's
+        calling routine (see Syntax, above).  On input, the contents of this
+        variable are not defined.  On output, this variable holds a (void *)
+        pointer to the numeric object (if successful), or (void *) NULL if
+        a failure occurred.
+
+    void *Original ;        Input argument, not modified.
+
+        The Numeric object to be copied.
+*/
+\end{verbatim}
+}
+
+
+\newpage
+\subsection{umfpack\_*\_serialize\_numeric\_size}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_dl_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_zi_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_zl_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_di_serialize_numeric_size (&blobsize, Numeric) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_dl_serialize_numeric_size (&blobsize, Numeric) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_zi_serialize_numeric_size (&blobsize, Numeric) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_zl_serialize_numeric_size (&blobsize, Numeric) ;
+
+Purpose:
+
+    Determines the required size of the serialized "blob" for the input to
+    umfpack_*_serialize_numeric.  The Numeric object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_argument_missing if blobsize is NULL.
+
+Arguments:
+
+    int64_t *blobsize ;     Output argument.
+
+        Required size of the blob to hold the Numeric object, in bytes.
+
+    void *Numeric ;         Input argument, not modified.
+
+        Numeric must point to a valid Numeric object, computed by
+        umfpack_*_numeric or created by umfpack_*_deserialize_numeric,
+        umfpack_*_load_numeric, or umfpack_*_copy_numeric.
+*/
+\end{verbatim}
+
+\newpage
+\subsection{umfpack\_*\_serialize\_numeric}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_dl_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_zi_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_zl_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_di_serialize_numeric (blob, blobsize, Numeric) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_dl_serialize_numeric (blob, blobsize, Numeric) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zi_serialize_numeric (blob, blobsize, Numeric) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zl_serialize_numeric (blob, blobsize, Numeric) ;
+
+Purpose:
+
+    Copies the contents of a Numeric object into the serialized "blob".
+    Numeric object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Numeric are NULL.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+
+Arguments:
+
+    int8_t *blob ;          Output  argument.
+
+        A user-allocated array of size blobsize.  On output, it contains the
+        serialized blob created from the Numeric object.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.  Must be at least as large as the
+        value returned by umfpack_*_serialize_numeric_size.
+
+    void *Numeric ;         Input argument, not modified.
+
+        Numeric must point to a valid Numeric object, computed by
+        umfpack_*_numeric or created by umfpack_*_deserialize_numeric,
+        umfpack_*_load_numeric, or umfpack_*_copy_numeric.
+*/
+\end{verbatim}
+
+\newpage
+\subsection{umfpack\_*\_deserialize\_numeric}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_dl_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zi_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zl_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_di_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_dl_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zi_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zl_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+Purpose:
+
+    Constructs a new Numeric object from the serialized "blob".
+    The blob is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Numeric are NULL.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Numeric ;        Input argument, not modified.
+
+        On input, the contents of this variable are not defined.  On output,
+        this variable holds a (void *) pointer to the Numeric object (if
+        successful), or (void *) NULL if a failure occurred.
+
+    int8_t *blob ;          Input argument, not modified.
+
+        A user-allocated array of size blobsize containing a blob created
+        by umfpack_*_serialize_numeric.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.
+*/
+\end{verbatim}
+
+\newpage
 \subsection{umfpack\_*\_save\_symbolic}
 
 {\footnotesize
 % INCLUDE umfpack_save_symbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_save_symbolic
 (
     void *Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_save_symbolic
 (
     void *Symbolic,
@@ -6114,28 +6460,24 @@ Arguments:
 % INCLUDE umfpack_load_symbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_load_symbolic
 (
     void **Symbolic,
     char *filename
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_load_symbolic
 (
     void **Symbolic,
@@ -6203,13 +6545,384 @@ Arguments:
 }
 
 \newpage
+\subsection{umfpack\_*\_copy\_symbolic}
+
+{\footnotesize
+% INCLUDE umfpack_copy_symbolic
+\begin{verbatim}
+
+int umfpack_di_copy_symbolic
+(
+    void **Symbolic,
+    void *Original
+) ;
+
+int umfpack_dl_copy_symbolic
+(
+    void **Symbolic,
+    void *Original
+) ;
+
+int umfpack_zi_copy_symbolic
+(
+    void **Symbolic,
+    void *Original
+) ;
+
+int umfpack_zl_copy_symbolic
+(
+    void **Symbolic,
+    void *Original
+) ;
+
+/*
+double int Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Symbolic ;
+    int status = umfpack_di_copy_symbolic (&Symbolic, Original) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Symbolic ;
+    int status = umfpack_dl_copy_symbolic (&Symbolic, Original) ;
+
+complex int Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Symbolic ;
+    int status = umfpack_zi_copy_symbolic (&Symbolic, Original) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    void *Original ;
+    void *Symbolic ;
+    int status = umfpack_zl_copy_symbolic (&Symbolic, Original) ;
+
+Purpose:
+
+    Copies a Symbolic object.  The Symbolic handle passed to this routine is
+    overwritten with the new object.  If that object exists prior to calling
+    this routine, a memory leak will occur.  The contents of Symbolic are
+    ignored on input.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Symbolic ;       Output argument.
+
+        **Symbolic is the address of a (void *) pointer variable in the user's
+        calling routine (see Syntax, above).  On input, the contents of this
+        variable are not defined.  On output, this variable holds a (void *)
+        pointer to the Symbolic object (if successful), or (void *) NULL if
+        a failure occurred.
+
+    void *Original ;        Input argument, not modified.
+
+        The original Symbolic object to be copied.
+*/
+\end{verbatim}
+}
+
+\newpage
+\subsection{umfpack\_*\_serialize\_symbolic\_size}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_dl_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_zi_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_zl_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_di_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_dl_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_zi_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_zl_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+Purpose:
+
+    Determines the required size of the serialized "blob" for the input to
+    umfpack_*_serialize_symbolic.  The Symbolic object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_argument_missing if blobsize is NULL.
+
+Arguments:
+
+    int64_t *blobsize ;     Output argument.
+
+        Required size of the blob to hold the Symbolic object, in bytes.
+
+    void *Symbolic ;        Input argument, not modified.
+
+        Symbolic must point to a valid Symbolic object, computed by
+        umfpack_*_symbolic or created by umfpack_*_deserialize_symbolic,
+        umfpack_*_load_symbolic, or umfpack_*_copy_symbolic.
+*/
+\end{verbatim}
+
+\newpage
+\subsection{umfpack\_*\_serialize\_symbolic}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_dl_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_zi_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_zl_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_di_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_dl_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zi_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zl_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+Purpose:
+
+    Copies the contents of a Symbolic object into the serialized "blob".
+    Symbolic object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Symbolic are NULL.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+
+Arguments:
+
+    int8_t *blob ;          Output  argument.
+
+        A user-allocated array of size blobsize.  On output, it contains the
+        serialized blob created from the Symbolic object.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.  Must be at least as large as the
+        value returned by umfpack_*_serialize_symbolic_size.
+
+    void *Symbolic ;        Input argument, not modified.
+
+        Symbolic must point to a valid Symbolic object, computed by
+        umfpack_*_symbolic or created by umfpack_*_deserialize_symbolic,
+        umfpack_*_load_symbolic, or umfpack_*_copy_symbolic.
+*/
+\end{verbatim}
+
+\newpage
+\subsection{umfpack\_*\_deserialize\_symbolic}
+{\footnotesize
+\begin{verbatim}
+
+int umfpack_di_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_dl_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zi_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zl_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_di_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_dl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zi_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+Purpose:
+
+    Constructs a new Symbolic object from the serialized "blob".
+    The blob is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Symbolic are NULL.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Symbolic ;       Input argument, not modified.
+
+        On input, the contents of this variable are not defined.  On output,
+        this variable holds a (void *) pointer to the Symbolic object (if
+        successful), or (void *) NULL if a failure occurred.
+
+    int8_t *blob ;          Input argument, not modified.
+
+        A user-allocated array of size blobsize containing a blob created
+        by umfpack_*_serialize_symbolic.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.
+*/
+\end{verbatim}
+
+\newpage
 \subsection{umfpack\_*\_get\_determinant}
 
 {\footnotesize
 % INCLUDE umfpack_get_determinant
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_get_determinant
 (
     double *Mx,
@@ -6218,7 +6931,6 @@ int umfpack_di_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_get_determinant
 (
     double *Mx,
@@ -6227,7 +6939,6 @@ int umfpack_dl_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_get_determinant
 (
     double *Mx,
@@ -6237,7 +6948,6 @@ int umfpack_zi_get_determinant
     double User_Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_get_determinant
 (
     double *Mx,
@@ -6409,28 +7119,24 @@ Arguments:
 % INCLUDE umfpack_report_status
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_report_status
 (
     const double Control [UMFPACK_CONTROL],
     int status
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_report_status
 (
     const double Control [UMFPACK_CONTROL],
@@ -6503,28 +7209,24 @@ Arguments:
 % INCLUDE umfpack_report_info
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_report_info
 (
     const double Control [UMFPACK_CONTROL],
@@ -6593,25 +7295,21 @@ Arguments:
 % INCLUDE umfpack_report_control
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_report_control
 (
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_report_control
 (
     const double Control [UMFPACK_CONTROL]
@@ -6673,7 +7371,6 @@ Arguments:
 % INCLUDE umfpack_report_matrix
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_matrix
 (
     int32_t n_row,
@@ -6685,7 +7382,6 @@ int umfpack_di_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_matrix
 (
     int64_t n_row,
@@ -6697,7 +7393,6 @@ int umfpack_dl_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_matrix
 (
     int32_t n_row,
@@ -6709,7 +7404,6 @@ int umfpack_zi_report_matrix
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_matrix
 (
     int64_t n_row,
@@ -6885,7 +7579,6 @@ Arguments:
 % INCLUDE umfpack_report_triplet
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_triplet
 (
     int32_t n_row,
@@ -6897,7 +7590,6 @@ int umfpack_di_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_triplet
 (
     int64_t n_row,
@@ -6909,7 +7601,6 @@ int umfpack_dl_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_triplet
 (
     int32_t n_row,
@@ -6921,7 +7612,6 @@ int umfpack_zi_report_triplet
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_triplet
 (
     int64_t n_row,
@@ -7044,7 +7734,6 @@ Arguments:
 % INCLUDE umfpack_report_vector
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_vector
 (
     int32_t n,
@@ -7052,7 +7741,6 @@ int umfpack_di_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_vector
 (
     int64_t n,
@@ -7060,7 +7748,6 @@ int umfpack_dl_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_vector
 (
     int32_t n,
@@ -7068,7 +7755,6 @@ int umfpack_zi_report_vector
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_vector
 (
     int64_t n,
@@ -7181,28 +7867,24 @@ Arguments:
 % INCLUDE umfpack_report_symbolic
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_symbolic
 (
     void *Symbolic,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_symbolic
 (
     void *Symbolic,
@@ -7292,28 +7974,24 @@ Arguments:
 % INCLUDE umfpack_report_numeric
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_numeric
 (
     void *Numeric,
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_numeric
 (
     void *Numeric,
@@ -7404,7 +8082,6 @@ Arguments:
 % INCLUDE umfpack_report_perm
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_report_perm
 (
     int32_t np,
@@ -7412,7 +8089,6 @@ int umfpack_di_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_report_perm
 (
     int64_t np,
@@ -7420,7 +8096,6 @@ int umfpack_dl_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_report_perm
 (
     int32_t np,
@@ -7428,7 +8103,6 @@ int umfpack_zi_report_perm
     const double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_report_perm
 (
     int64_t np,
@@ -7552,10 +8226,8 @@ Arguments:
 % INCLUDE umfpack_tictoc
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_tic (double stats [2]) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_toc (double stats [2]) ;
 
 /*

@@ -13,11 +13,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-# version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Dec 23, 2022" )
-set ( GraphBLAS_VERSION_MAJOR 7 )
-set ( GraphBLAS_VERSION_MINOR 4 )
-set ( GraphBLAS_VERSION_SUB   0 )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/cmake_modules )
+
+include ( GraphBLAS_version )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )
@@ -36,10 +35,6 @@ message ( STATUS "GraphBLAS C API: v"
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 # CUDA is under development for now, and not deployed in production:
 # option ( ENABLE_CUDA "Enable CUDA acceleration" off )
@@ -159,11 +154,21 @@ endif ( )
 # Configure Include/GraphBLAS.h and documentation with version number
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/GraphBLAS.h.in" "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h" )
-configure_file ( "Config/GraphBLAS_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex" )
+configure_file ( "Config/GraphBLAS.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/GraphBLAS_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/GraphBLAS_API_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex" )
-configure_file ( "Config/README.md.in" "${PROJECT_SOURCE_DIR}/README.md" )
+    "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_API_version.tex"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/README.md.in"
+    "${PROJECT_SOURCE_DIR}/README.md"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/alternative_Makefile.in"
+    "${PROJECT_SOURCE_DIR}/alternative/Makefile"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories for both graphblas and graphblasdemo libraries
@@ -283,12 +288,18 @@ set_target_properties ( graphblas PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD_REQUIRED 11
-    PUBLIC_HEADER "Include/GraphBLAS.h" )
+    PUBLIC_HEADER "Include/GraphBLAS.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 set_property ( TARGET graphblas PROPERTY C_STANDARD 11 )
 
 if ( SUITESPARSE_CUDA )
     add_dependencies ( graphblas graphblascuda )
     add_dependencies ( graphblas rmm_wrap )
+endif ( )
+
+if ( WIN32 )
+    # Compiling the graphblas dll on Windows: export the dll symbols
+    target_compile_definitions ( graphblas PRIVATE GB_DLL_EXPORT )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -304,6 +315,12 @@ if ( NOT NSTATIC )
        OUTPUT_NAME graphblas
        SOVERSION ${GraphBLAS_VERSION_MAJOR}
        C_STANDARD_REQUIRED 11 )
+
+    if ( MSVC )
+        set_target_properties ( graphblas_static PROPERTIES
+            OUTPUT_NAME graphblas_static )
+    endif ( )
+
     set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )
 
     if ( SUITESPARSE_CUDA )
@@ -348,17 +365,15 @@ endif ( )
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
-if ( MSVC )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
+# libm:
+if ( NOT WIN32 )
+    target_link_libraries ( graphblas PUBLIC m )
+    if ( NOT NSTATIC )
+        target_link_libraries ( graphblas_static PUBLIC m )
+    endif ( )
 endif ( )
 
-target_link_libraries ( graphblas PUBLIC ${M_LIB} )
-if ( NOT NSTATIC )
-    target_link_libraries ( graphblas_static PUBLIC ${M_LIB} )
-endif ( )
-
+# atomic
 include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )
     target_link_libraries ( graphblas PUBLIC atomic )
@@ -428,7 +443,8 @@ if ( DEMO )
         SOVERSION ${GraphBLAS_VERSION_MAJOR}
         C_STANDARD_REQUIRED 11 )
     set_property ( TARGET graphblasdemo PROPERTY C_STANDARD 11 )
-    target_link_libraries ( graphblasdemo PUBLIC ${M_LIB} graphblas  ${GB_CUDA} ${GB_RMM} )
+    target_link_libraries ( graphblasdemo PUBLIC graphblas
+        ${GB_CUDA} ${GB_RMM} )
 
     if ( NOT NSTATIC )
         add_library ( graphblasdemo_static STATIC ${DEMO_SOURCES} )
@@ -436,7 +452,8 @@ if ( DEMO )
             VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
             C_STANDARD_REQUIRED 11 )
         set_property ( TARGET graphblasdemo_static PROPERTY C_STANDARD 11 )
-        target_link_libraries ( graphblasdemo_static PUBLIC  graphblas_static  ${GB_CUDA} ${GB_RMM} )
+        target_link_libraries ( graphblasdemo_static PUBLIC 
+            graphblas_static  ${GB_CUDA} ${GB_RMM} )
     endif ( )
 
     #---------------------------------------------------------------------------
@@ -444,6 +461,7 @@ if ( DEMO )
     #---------------------------------------------------------------------------
 
     add_executable ( openmp_demo   "Demo/Program/openmp_demo.c" )
+    add_executable ( openmp2_demo  "Demo/Program/openmp2_demo.c" )
     add_executable ( complex_demo  "Demo/Program/complex_demo.c" )
     add_executable ( kron_demo     "Demo/Program/kron_demo.c" )
     add_executable ( simple_demo   "Demo/Program/simple_demo.c" )
@@ -454,6 +472,7 @@ if ( DEMO )
 
     # Libraries required for Demo programs
     target_link_libraries ( openmp_demo   PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
+    target_link_libraries ( openmp2_demo  PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( complex_demo  PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( kron_demo     PUBLIC graphblas graphblasdemo ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( simple_demo   PUBLIC graphblasdemo ${GB_CUDA} ${GB_RMM} )

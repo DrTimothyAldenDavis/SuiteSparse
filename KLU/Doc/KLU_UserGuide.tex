@@ -1217,13 +1217,13 @@ kluldemo.c} programs.
 \label{Install}
 %------------------------------------------------------------------------------
 
-Installation of the C-callable interface requires the {\tt make} utility, in
-Linux/Unix.  Alternatively, you can use the Cygwin {\tt make} in Windows.
+Installation of the C-callable interface requires the {\tt cmake} utility.
 The MATLAB installation in any platform, including Windows is simple; just
 type {\tt klu\_install} to compile and install KLU, BTF, AMD, and COLAMD.
 
+An optional \verb'Makefile' is provided to simplify the use of \verb'cmake'.
 To compile and install the C-callable KLU, BTF, AMD, and COLAMD libraries, go
-to the {\tt KLU} directory and type {\tt make}.  The KLU and BTF libraries are
+to the {\tt SuiteSparse} directory and type {\tt make}.  The KLU and BTF libraries are
 placed in {\tt KLU/build/libklu.*} and {\tt BTF/build/libbtf.*}.
 Two KLU demo
 programs will be compiled and tested in the {\tt KLU/Demo} directory.  You can
@@ -1238,8 +1238,8 @@ When you compile your program that uses the C-callable KLU library, you need to
 add the {\tt KLU/build/libklu.*}, {\tt BTF/build/libbtf.*}, {\tt AMD/build/libamd.*},
 and {\tt COLAMD/build/libcolamd.*} libraries, and you need to tell your compiler to
 look in the {\tt KLU/Include} and {\tt BTF/Include} directory for include
-files.
-Alternatively, do {\tt make install}, and KLU will be installed in
+files.  If using \verb'cmake', each package includes scripts for \verb'find_library'.
+Alternatively, do {\tt make install}, and KLU will be installed (on Linux/Mac) in
 /usr/local/lib and /usr/local/include, and documentation is placed in
 /usr/local/doc.  These installation locations can be changed;
 see {\tt SuiteSparse/README.txt} for details.

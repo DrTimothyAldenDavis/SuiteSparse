@@ -2,12 +2,12 @@
 // UMFPACK/Source/umf_singletons.h
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_singletons
+Int UMF_singletons
 (
     Int n_row,
     Int n_col,

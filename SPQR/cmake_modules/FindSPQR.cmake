@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindSPQR.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindSPQR.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( SPQR_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SPQR library
+# dynamic SPQR library (or static if no dynamic library was built)
 find_library ( SPQR_LIBRARY
-    NAMES spqr
+    NAMES spqr spqr_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME spqr_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME spqr )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SPQR library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPQR_STATIC
-    NAMES spqr
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPQR
     HINTS ${CMAKE_SOURCE_DIR}/../SPQR
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( SPQR_LIBRARY  ${SPQR_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${SPQR_FILENAME}
 )
 
-if ( NOT SPQR_VERSION )
+# set ( SPQR_VERSION "" )
+if ( EXISTS "${SPQR_INCLUDE_DIR}" AND NOT SPQR_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h _VERSION_LINE REGEX "define[ ]+SPQR_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+SPQR_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPQR_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( SPQR_VERSION "${_SPQR_MAIN_VERSION}.${_SPQR_SUB_VERSION}.${_SPQR_SUBSUB_VERSION}" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_MAJOR_STR
+        REGEX "define SPQR_MAIN_VERSION" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_MINOR_STR
+        REGEX "define SPQR_SUB_VERSION" )
+    file ( STRINGS ${SPQR_INCLUDE_DIR}/SuiteSparseQR_definitions.h SPQR_PATCH_STR
+        REGEX "define SPQR_SUBSUB_VERSION" )
+    message ( STATUS "major: ${SPQR_MAJOR_STR}" )
+    message ( STATUS "minor: ${SPQR_MINOR_STR}" )
+    message ( STATUS "patch: ${SPQR_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SPQR_MAJOR ${SPQR_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPQR_MINOR ${SPQR_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPQR_PATCH ${SPQR_PATCH_STR} )
+    set (SPQR_VERSION "${SPQR_MAJOR}.${SPQR_MINOR}.${SPQR_PATCH}")
 endif ( )
 
 set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
@@ -92,7 +103,7 @@ set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPQR
-    REQUIRED_VARS SPQR_LIBRARIES SPQR_INCLUDE_DIR
+    REQUIRED_VARS SPQR_LIBRARY SPQR_INCLUDE_DIR
     VERSION_VAR SPQR_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( SPQR_FOUND )
     message ( STATUS "SPQR static:  ${SPQR_STATIC}" )
 else ( )
     message ( STATUS "SPQR not found" )
+    set ( SPQR_INCLUDE_DIR "" )
+    set ( SPQR_LIBRARIES "" )
+    set ( SPQR_LIBRARY "" )
+    set ( SPQR_STATIC "" )
 endif ( )
 

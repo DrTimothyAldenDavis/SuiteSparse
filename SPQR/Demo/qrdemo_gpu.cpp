@@ -117,25 +117,25 @@ int main (int argc, char **argv)
         rnorm /= (anorm * xnorm) ;
     }
     printf ("\nnorm(Ax-b): %8.1e\n", rnorm) ;
-    printf ("norm(A'(Ax-b))         %8.1e rank: %ld of %ld\n", 
+    printf ("norm(A'(Ax-b))         %8.1e rank: %" PRId64 " of %" PRId64 "\n", 
         atrnorm, rnk, (m < n) ? m:n) ;
 
     /* Write an info file. */
     FILE *info = fopen("gpu_results.txt", "w");
-    fprintf(info, "%ld\n", cc->SPQR_istat[7]);        // ordering method
-    fprintf(info, "%ld\n", cc->memory_usage);         // memory usage (bytes)
+    fprintf(info, "%" PRId64 "\n", cc->SPQR_istat[7]);// ordering method
+    fprintf(info, "%" PRId64 "\n", cc->memory_usage); // memory usage (bytes)
     fprintf(info, "%30.16e\n", cc->SPQR_flopcount);   // flop count
     fprintf(info, "%lf\n", cc->SPQR_analyze_time);    // analyze time
     fprintf(info, "%lf\n", cc->SPQR_factorize_time);  // factorize time
     fprintf(info, "-1\n") ;                           // cpu memory (bytes)
     fprintf(info, "-1\n") ;                           // gpu memory (bytes)
     fprintf(info, "%32.16e\n", rnorm);                // residual
-    fprintf(info, "%ld\n", cholmod_l_nnz (A, cc));    // nnz(A)
-    fprintf(info, "%ld\n", cc->SPQR_istat [0]);       // nnz(R)
-    fprintf(info, "%ld\n", cc->SPQR_istat [2]);       // # of frontal matrices
-    fprintf(info, "%ld\n", cc->SPQR_istat [3]);       // ntasks, for now
+    fprintf(info, "%" PRId64 "\n", cholmod_l_nnz (A, cc));  // nnz(A)
+    fprintf(info, "%" PRId64 "\n", cc->SPQR_istat [0]); // nnz(R)
+    fprintf(info, "%" PRId64 "\n", cc->SPQR_istat [2]); // # of frontal matrices
+    fprintf(info, "%" PRId64 "\n", cc->SPQR_istat [3]); // ntasks, for now
     fprintf(info, "%lf\n", cc->gpuKernelTime);        // kernel time (ms)
-    fprintf(info, "%ld\n", cc->gpuFlops);             // "actual" gpu flops
+    fprintf(info, "%" PRId64 "\n", cc->gpuFlops);     // "actual" gpu flops
     fprintf(info, "%d\n", cc->gpuNumKernelLaunches);  // # of kernel launches
     fprintf(info, "%32.16e\n", atrnorm) ;             // norm (A'*(Ax-b))
 

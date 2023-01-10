@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_realloc: reallocate a block of memory
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 #include "umf_malloc.h"
 #endif
 
-GLOBAL void *UMF_realloc
+void *UMF_realloc
 (
     void *p,
     Int n_objects,
@@ -56,7 +56,7 @@ GLOBAL void *UMF_realloc
     DEBUG0 (("UMF_realloc: "ID" n_objects "ID"  size_of_object "ID"\n",
 	(Int) p, n_objects, (Int) size_of_object)) ;
 
-    p2 = SuiteSparse_config.realloc_func (p, size) ;
+    p2 = SuiteSparse_config_realloc (p, size) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     /* If p didn't exist on input, and p2 exists, then a new object has been

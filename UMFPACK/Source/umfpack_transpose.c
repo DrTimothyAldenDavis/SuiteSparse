@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_transpose: transpose/permute a sparse matrix
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ PRIVATE Int init_count ;
 
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_transpose
+int UMFPACK_transpose
 (
     Int n_row,
     Int n_col,

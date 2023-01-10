@@ -47,11 +47,11 @@ static double abs_value
 	    break ;
 
 	case CHOLMOD_COMPLEX:
-	    s = SuiteSparse_config.hypot_func (Ax [2*p], Ax [2*p+1]) ;
+	    s = SuiteSparse_config_hypot (Ax [2*p], Ax [2*p+1]) ;
 	    break ;
 
 	case CHOLMOD_ZOMPLEX:
-	    s = SuiteSparse_config.hypot_func (Ax [p], Az [p]) ;
+	    s = SuiteSparse_config_hypot (Ax [p], Az [p]) ;
 	    break ;
     }
     return (s) ;

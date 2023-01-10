@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_triplet: convert triplet to CSC sparse matrix
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -22,15 +22,15 @@
 
 #ifdef DO_MAP
 #ifdef DO_VALUES
-GLOBAL Int UMF_triplet_map_x
+Int UMF_triplet_map_x
 #else
-GLOBAL Int UMF_triplet_map_nox
+Int UMF_triplet_map_nox
 #endif
 #else
 #ifdef DO_VALUES
-GLOBAL Int UMF_triplet_nomap_x
+Int UMF_triplet_nomap_x
 #else
-GLOBAL Int UMF_triplet_nomap_nox
+Int UMF_triplet_nomap_nox
 #endif
 #endif
 (

@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Dec 9, 2022" )
+set ( SPQR_DATE "Jan 9, 2023" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   2 )
+set ( SPQR_VERSION_SUB   3 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -31,6 +31,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
@@ -70,15 +72,19 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( CHOLMOD 4.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( CHOLMOD 4.0.3 REQUIRED )
+# look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
+# CCOLAMD are optional, but must be found if CHOLMOD was built with them.
+find_package ( CAMD 3.0.3 )
+find_package ( CCOLAMD 3.0.3 )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.2 REQUIRED )
-    find_package ( GPUQREngine 2.0.2 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.2 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
+    find_package ( GPUQREngine 2.0.3 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -98,9 +104,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/SuiteSparseQR_definitions.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/SuiteSparseQR_definitions.h" )
+    "${PROJECT_SOURCE_DIR}/Include/SuiteSparseQR_definitions.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/spqr_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/spqr_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/spqr_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -128,21 +136,27 @@ set_target_properties ( spqr PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
     CXX_STANDARD_REQUIRED 11
     C_STANDARD_REQUIRED 11
-    SOVERSION ${SPQR_VERSION_MAJOR} )
+    SOVERSION ${SPQR_VERSION_MAJOR}
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static spqr library properties
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( spqr_static STATIC ${SPQR_SOURCES} )
+    add_library ( spqr_static STATIC ${SPQR_SOURCES} )
 
-set_target_properties ( spqr_static PROPERTIES
-    VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 11
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME spqr
-    SOVERSION ${SPQR_VERSION_MAJOR} )
+    set_target_properties ( spqr_static PROPERTIES
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 11
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME spqr
+        SOVERSION ${SPQR_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( spqr_static PROPERTIES
+            OUTPUT_NAME spqr_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -152,7 +166,7 @@ endif ( )
 # suitesparseconfig:
 target_link_libraries ( spqr PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # OpenMP:
@@ -162,14 +176,14 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( spqr PUBLIC ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( spqr PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC m )
@@ -179,13 +193,13 @@ endif ( )
 # amd:
 target_link_libraries ( spqr PUBLIC ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${AMD_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
 target_link_libraries ( spqr PUBLIC ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${COLAMD_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # BLAS:
@@ -194,7 +208,7 @@ message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( spqr PUBLIC ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
@@ -204,14 +218,21 @@ message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
 target_link_libraries ( spqr PUBLIC ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
 include_directories ( ${LAPACK_INCLUDE_DIR} )
 
 # cholmod:
-target_link_libraries ( spqr PUBLIC ${CHOLMOD_LIBRARIES} )
+# link with CHOLMOD and its dependencies, both required and optional
+target_link_libraries ( spqr PUBLIC
+    ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+    ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+    ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( spqr_static PUBLIC
+        ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+        ${AMD_STATIC} ${COLAMD_STATIC}
+        ${CAMD_STATIC} ${CCOLAMD_STATIC} )
 endif ( )
 
 # CUDA

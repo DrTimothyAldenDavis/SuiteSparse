@@ -83,6 +83,7 @@ void gk_graph_FreeContents(gk_graph_t *graph)
 */
 /**************************************************************************/
 #if 0
+// gk_graph_Read, gk_graph_Write: disabled for SuiteSparse, Dec 2022
 gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts, 
                 int isfvwgts, int isfvsizes)
 {

@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCCOLAMD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCCOLAMD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( CCOLAMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CCOLAMD library
+# dynamic CCOLAMD library (or static if no dynamic library was built)
 find_library ( CCOLAMD_LIBRARY
-    NAMES ccolamd
+    NAMES ccolamd ccolamd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CCOLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CCOLAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME ccolamd_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME ccolamd )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CCOLAMD library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CCOLAMD_STATIC
-    NAMES ccolamd
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CCOLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CCOLAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( CCOLAMD_LIBRARY  ${CCOLAMD_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${CCOLAMD_FILENAME}
 )
 
-if ( NOT CCOLAMD_VERSION )
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        # if the version does not appear in the filename, read the include file
-        file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h _VERSION_LINE REGEX "define[ ]+CCOLAMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+CCOLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CCOLAMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-        endforeach ( )
-    set ( CCOLAMD_VERSION "${_CCOLAMD_MAIN_VERSION}.${_CCOLAMD_SUB_VERSION}.${_CCOLAMD_SUBSUB_VERSION}" )
+# set ( CCOLAMD_VERSION "" )
+if ( EXISTS "${CCOLAMD_INCLUDE_DIR}" AND NOT CCOLAMD_VERSION )
+    # if the version does not appear in the filename, read the include file
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_MAJOR_STR
+        REGEX "define CCOLAMD_MAIN_VERSION" )
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_MINOR_STR
+        REGEX "define CCOLAMD_SUB_VERSION" )
+    file ( STRINGS ${CCOLAMD_INCLUDE_DIR}/ccolamd.h CCOLAMD_PATCH_STR
+        REGEX "define CCOLAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CCOLAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CCOLAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${CCOLAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_MAJOR ${CCOLAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_MINOR ${CCOLAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CCOLAMD_PATCH ${CCOLAMD_PATCH_STR} )
+    set (CCOLAMD_VERSION "${CCOLAMD_MAJOR}.${CCOLAMD_MINOR}.${CCOLAMD_PATCH}")
 endif ( )
 
 set ( CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY} )
@@ -92,7 +103,7 @@ set ( CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CCOLAMD
-    REQUIRED_VARS CCOLAMD_LIBRARIES CCOLAMD_INCLUDE_DIR
+    REQUIRED_VARS CCOLAMD_LIBRARY CCOLAMD_INCLUDE_DIR
     VERSION_VAR CCOLAMD_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( CCOLAMD_FOUND )
     message ( STATUS "CCOLAMD static:  ${CCOLAMD_STATIC}" )
 else ( )
     message ( STATUS "CCOLAMD not found" )
+    set ( CCOLAMD_INCLUDE_DIR "" )
+    set ( CCOLAMD_LIBRARIES "" )
+    set ( CCOLAMD_LIBRARY "" )
+    set ( CCOLAMD_STATIC "" )
 endif ( )
 

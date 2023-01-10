@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Dec 23, 2022.  SuiteSparse VERSION 6.0.3
+Jan 9, 2023, SuiteSparse VERSION 7.0.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -20,6 +20,18 @@ METIS is authored by George Karypis.
 Additional algorithm designers: Esmond Ng and John Gilbert.
 
 Refer to each package for license, copyright, and author information.
+
+-----------------------------------------------------------------------------
+SuiteSparse branches
+-----------------------------------------------------------------------------
+
+    * dev: the default branch, with recent updates of features to appear in
+        the next stable release.  The intent is to keep this branch in
+        fully working order at all times, but the features will not be
+        finalized at any given time.
+    * stable: the most recent stable release.
+    * dev2: working branch.  All submitted PRs should made to this branch.
+        This branch might not always be in working order.
 
 -----------------------------------------------------------------------------
 How to cite the SuiteSparse meta-package and its component packages:
@@ -43,8 +55,7 @@ papers in ACM TOMS, for each package.
 
         T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
         algorithms in the language of sparse linear algebra, ACM Trans on
-        Mathematical Software, submitted, under revision, 2022.
-        In GraphBLAS/Doc v7.0.1, to appear here shortly.  See:
+        Mathematical Software, to appear, 2023.  See the pdf in
         https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc
 
         T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in
@@ -334,24 +345,22 @@ Packages in SuiteSparse, and files in this directory:
 
                 make            compiles SuiteSparse libraries.
                                 Subsequent "make install" will install
-                                in just /usr/local/lib.
-                                Normally requires "sudu make install"
+                                in just CMAKE_INSTALL_PATH (defaults to
+                                /usr/local/lib on Linux or Mac).
 
                 make both       compiles SuiteSparse, and then "make install"
-                                will instal in both ./lib and /usr/local/lib
-                                (the latter controlled by CMAKE_INSTALL_PATH).
-                                Normally requires "sudu make install"
+                                will instal in both ./lib and
+                                CMAKE_INSTALL_PATH).
 
                 make local      compiles SuiteSparse.
                                 Subsequent "make install will install only
-                                in ./lib, ./include only.  No sudo required.
-                                Does not install in /usr/local/lib.
+                                in ./lib, ./include only.
+                                Does not install in CMAKE_INSTALL_PATH.
 
                 make global     compiles SuiteSparse libraries.
                                 Subsequent "make install" will install in
                                 just /usr/local/lib (or whatever your
                                 CMAKE_INSTALL_PREFIX is).
-                                Normally requires "sudu make install"
                                 Does not install in ./lib and ./include.
 
                 make install    installs in the current directory
@@ -464,15 +473,14 @@ the `CHOLMOD/SuiteSparse_metis/README.txt` file for details.
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
-except for METIS, which is by George Karypis.
+except for METIS (by George Karypis), GraphBLAS/cpu_features (by Google),
+GraphBLAS/lz4 and zstd (by Yann Collet, now at Facebook), and
+GraphBLAS/CUDA/jitify.hpp (by NVIDIA).  Parts of GraphBLAS/CUDA are
+Copyright (c) by NVIDIA. Please refer to each of these licenses.
 
 Licenses for each package are located in the following files, all in
 PACKAGENAME/Doc/License.txt, and these files are also concatenated into
 the top-level LICENSE.txt file.
-
-METIS 5.1.0 is distributed with SuiteSparse (slightly modified for use in
-SuiteSparse, with all modifications marked), and is Copyright (c) by George
-Karypis.  Please refer to that package for its License.
 
 -----------------------------------------------------------------------------
 QUICK START FOR MATLAB USERS (Linux or Mac):
@@ -498,8 +506,8 @@ SuiteSparse in /Users/me/SuiteSparse:
 Compile all of SuiteSparse with "make local".
 
 Next, compile the GraphBLAS MATLAB library.  In the system shell while in the
-SuiteSparse folder, type "make gbmatlab" if you want to install it system- wide
-with "sudo make install", or "make gblocal" if you want to use the library in
+SuiteSparse folder, type "make gbmatlab" if you want to install it system-wide
+with "make install", or "make gblocal" if you want to use the library in
 your own SuiteSparse/lib.
 
 Then in the MATLAB Command Window, cd to the SuiteSparse directory and type
@@ -664,12 +672,12 @@ all options default to false:
 Acknowledgements
 -----------------------------------------------------------------------------
 
-I would like to thank François Bissey, Sebastien Villemot, Erik Welch, and Jim
-Kitchen for their valuable feedback on the SuiteSparse build system and how it
-works with various Linux / Python distros and other package managers.  If you
-are a maintainer of a SuiteSparse packaging for a Linux distro, conda-forge, R,
-spack, brew, vcpkg, etc, please feel free to contact me if there's anything I
-can do to make your life easier.
+I would like to thank François Bissey, Sebastien Villemot, Erik Welch, Jim
+Kitchen, Markus Mützel, and Fabian Wein for their valuable feedback on the
+SuiteSparse build system and how it works with various Linux / Python distros
+and other package managers.  If you are a maintainer of a SuiteSparse packaging
+for a Linux distro, conda-forge, R, spack, brew, vcpkg, etc, please feel free
+to contact me if there's anything I can do to make your life easier.
 
 See also the various Acknowledgements within each package.
 

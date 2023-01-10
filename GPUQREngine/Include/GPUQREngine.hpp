@@ -12,10 +12,10 @@
 #define GPUQRENGINE_HPP
 
 // Version information:
-#define GPUQRENGINE_DATE "Dec 9, 2022"
+#define GPUQRENGINE_DATE "Jan 9, 2023"
 #define GPUQRENGINE_MAIN_VERSION   2
 #define GPUQRENGINE_SUB_VERSION    0
-#define GPUQRENGINE_SUBSUB_VERSION 2
+#define GPUQRENGINE_SUBSUB_VERSION 3
 
 #define GPUQRENGINE_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define GPUQRENGINE_VERSION \

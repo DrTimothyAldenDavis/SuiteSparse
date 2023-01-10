@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_version.h: definitions that depend on entry/int types
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -352,7 +352,7 @@ typedef struct
 /* c = a/b, using function pointer */
 #define DIV(c,a,b) \
 { \
-    (void) SuiteSparse_config.divcomplex_func \
+    (void) SuiteSparse_config_divcomplex \
         ((a).Real, (a).Imag, (b).Real, (b).Imag, \
 	&((c).Real), &((c).Imag)) ; \
 }
@@ -362,7 +362,7 @@ typedef struct
 /* c = a/conjugate(b), using function pointer */
 #define DIV_CONJ(c,a,b) \
 { \
-    (void) SuiteSparse_config.divcomplex_func \
+    (void) SuiteSparse_config_divcomplex \
         ((a).Real, (a).Imag, (b).Real, (-(b).Imag), \
 	&((c).Real), &((c).Imag)) ; \
 }
@@ -380,7 +380,7 @@ typedef struct
 /* exact absolute value, s = sqrt (a.real^2 + a.imag^2) */
 #define ABS(s,a) \
 { \
-    (s) = SuiteSparse_config.hypot_func ((a).Real, (a).Imag) ; \
+    (s) = SuiteSparse_config_hypot ((a).Real, (a).Imag) ; \
 }
 
 /* -------------------------------------------------------------------------- */
@@ -490,7 +490,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_di_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_di_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_di_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_di_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_di_paru_free_sw
 #define UMFPACK_report_control	 umfpack_di_report_control
 #define UMFPACK_report_info	 umfpack_di_report_info
 #define UMFPACK_report_matrix	 umfpack_di_report_matrix
@@ -510,6 +510,16 @@ typedef struct
 #define UMFPACK_transpose	 umfpack_di_transpose
 #define UMFPACK_triplet_to_col	 umfpack_di_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_di_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_di_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_di_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_di_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_di_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_di_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_di_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_di_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_di_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_i_malloc_count
@@ -608,7 +618,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_dl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_dl_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_dl_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_dl_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_dl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_dl_report_control
 #define UMFPACK_report_info	 umfpack_dl_report_info
 #define UMFPACK_report_matrix	 umfpack_dl_report_matrix
@@ -628,6 +638,16 @@ typedef struct
 #define UMFPACK_transpose	 umfpack_dl_transpose
 #define UMFPACK_triplet_to_col	 umfpack_dl_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_dl_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_dl_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_dl_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_dl_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_dl_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_dl_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_dl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_dl_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_dl_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_l_malloc_count
@@ -726,7 +746,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_zi_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zi_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_zi_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_zi_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_zi_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zi_report_control
 #define UMFPACK_report_info	 umfpack_zi_report_info
 #define UMFPACK_report_matrix	 umfpack_zi_report_matrix
@@ -746,6 +766,16 @@ typedef struct
 #define UMFPACK_transpose	 umfpack_zi_transpose
 #define UMFPACK_triplet_to_col	 umfpack_zi_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_zi_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_zi_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_zi_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_zi_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_zi_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_zi_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_zi_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_zi_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_zi_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_i_malloc_count
@@ -844,7 +874,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_zl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zl_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_zl_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_zl_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_zl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zl_report_control
 #define UMFPACK_report_info	 umfpack_zl_report_info
 #define UMFPACK_report_matrix	 umfpack_zl_report_matrix
@@ -864,6 +894,16 @@ typedef struct
 #define UMFPACK_transpose	 umfpack_zl_transpose
 #define UMFPACK_triplet_to_col	 umfpack_zl_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_zl_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_zl_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_zl_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_zl_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_zl_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_zl_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_zl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_zl_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_zl_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_l_malloc_count

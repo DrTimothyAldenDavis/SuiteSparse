@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Dec 9, 2022" )
+set ( KLU_DATE "Jan 9, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
-set ( KLU_VERSION_SUB   2 )
+set ( KLU_VERSION_SUB   3 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -29,8 +29,10 @@ message ( STATUS "Building KLU version: v"
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../BTF/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -48,17 +50,22 @@ project ( klu
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( BTF 2.0.2 REQUIRED )
-find_package ( COLAMD 3.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( BTF 2.0.3 REQUIRED )
+find_package ( COLAMD 3.0.3 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
-    # look for CHOLMOD (optional fill-reducing orderings for UMFPACK)
-    find_package ( CHOLMOD 4.0.2 )
-    if ( NOT CHOLMOD_FOUND )
+    # look for CHOLMOD (optional fill-reducing orderings)
+    find_package ( CHOLMOD 4.0.3 )
+    find_package ( CHOLMOD_CUDA 4.0.3 )
+    # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
+    # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
+    find_package ( CAMD 3.0.3 )
+    find_package ( CCOLAMD 3.0.3 )
+    if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
     endif ( )
@@ -76,8 +83,12 @@ endif ( )
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/klu.h.in" "${PROJECT_SOURCE_DIR}/Include/klu.h")
-configure_file ( "Config/klu_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex")
+configure_file ( "Config/klu.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/klu.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/klu_version.tex.in"
+    "${PROJECT_SOURCE_DIR}/Doc/klu_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -98,20 +109,26 @@ set_target_properties ( klu PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${KLU_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/klu.h" )
+    PUBLIC_HEADER "Include/klu.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static klu library properties
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( klu_static STATIC ${KLU_SOURCES} )
+    add_library ( klu_static STATIC ${KLU_SOURCES} )
 
-set_target_properties ( klu_static PROPERTIES
-    VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME klu
-    SOVERSION ${KLU_VERSION_MAJOR} )
+    set_target_properties ( klu_static PROPERTIES
+        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME klu
+        SOVERSION ${KLU_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( klu_static PROPERTIES
+            OUTPUT_NAME klu_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -132,13 +149,18 @@ if ( NOT NCHOLMOD )
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
     if ( NOT NSTATIC )
-    add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
+        add_library ( klu_cholmod_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
-    set_target_properties ( klu_cholmod_static PROPERTIES
-        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
-        OUTPUT_NAME klu_cholmod
-        SOVERSION ${KLU_VERSION_MAJOR} )
+        set_target_properties ( klu_cholmod_static PROPERTIES
+            VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
+            C_STANDARD_REQUIRED 11
+            OUTPUT_NAME klu_cholmod
+            SOVERSION ${KLU_VERSION_MAJOR} )
+
+        if ( MSVC )
+            set_target_properties ( klu_cholmod_static PROPERTIES
+                OUTPUT_NAME klu_cholmod_static )
+        endif ( )
     endif ( )
 
 endif ( )
@@ -154,7 +176,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( klu PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC m )
@@ -181,17 +203,32 @@ endif ( )
 
 if ( NOT NCHOLMOD )
 
-    # klu:
-    target_link_libraries ( klu_cholmod PUBLIC klu )
+    # cholmod:
+    # link with CHOLMOD and its dependencies, both required and optional
+    target_link_libraries ( klu PUBLIC
+        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+    target_link_libraries ( klu_cholmod PUBLIC
+        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
+        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
+        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( klu_cholmod_static PUBLIC klu_static )
+        target_link_libraries ( klu_static PUBLIC
+            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+        target_link_libraries ( klu_cholmod_static PUBLIC
+            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
+            ${AMD_STATIC} ${COLAMD_STATIC}
+            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
     endif ( )
 
-    # cholmod:
-    target_link_libraries ( klu_cholmod PUBLIC ${CHOLMOD_LIBRARY} )
+    # klu:
+    target_link_libraries ( klu_cholmod PUBLIC klu ${BTF_LIBRARIES} )
     if ( NOT NSTATIC )
-        # Note: linking with the dynamic CHOLMOD library
-        target_link_libraries ( klu_cholmod_static PUBLIC ${CHOLMOD_LIBRARY} )
+        target_link_libraries ( klu_cholmod_static PUBLIC
+            klu_static ${BTF_STATIC} )
     endif ( )
 
 endif ( )

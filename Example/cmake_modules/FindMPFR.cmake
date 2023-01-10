@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindMPFR.make, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindMPFR.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -16,6 +16,8 @@
 # MPFR_STATIC      - static mpfr library
 # MPFR_LIBRARIES   - libraries when using mpfr
 # MPFR_FOUND       - true if mpfr found
+
+# For MS Visual Studio, MPFR_LIBRARY and MPFR_STATIC are the same.
 
 # set ``MPFR_ROOT`` to a mpfr installation root to
 # tell this module where to look.
@@ -36,26 +38,27 @@ find_path ( MPFR_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic mpfr library
+# dynamic mpfr library (or possibly static if no mpfr dynamic library exists)
 find_library ( MPFR_LIBRARY
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
 
-if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
-else ( )
-    set ( STATIC_SUFFIX .a )
+if ( NOT MSVC )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static mpfr library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MPFR_STATIC
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the filename
 get_filename_component ( MPFR_LIBRARY ${MPFR_LIBRARY} REALPATH )
@@ -69,7 +72,7 @@ if ( MPFR_VERSION1 STREQUAL "" )
     #       #define MPFR_VERSION_STRING "4.0.2"
     file ( STRINGS ${MPFR_INCLUDE_DIR}/mpfr.h MPFR_VER_STRING
         REGEX "MPFR_VERSION_STRING" )
-    message ( STATUS "from mpfr.h file: ${MPFR_VER_STRING}" )
+    message ( STATUS "major/minor/patch: ${MPFR_VER_STRING}" )
     if ( MPFR_VER_STRING STREQUAL "")
         # look at the end of the filename for the version number
         string (
@@ -89,7 +92,7 @@ set ( MPFR_LIBRARIES ${MPFR_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( MPFR
-    REQUIRED_VARS MPFR_LIBRARIES MPFR_INCLUDE_DIR
+    REQUIRED_VARS MPFR_LIBRARY MPFR_INCLUDE_DIR
     VERSION_VAR MPFR_VERSION
 )
 
@@ -107,5 +110,9 @@ if ( MPFR_FOUND )
     message ( STATUS "mpfr static:  ${MPFR_STATIC}" )
 else ( )
     message ( STATUS "mpfr not found" )
+    set ( MPFR_INCLUDE_DIR "" )
+    set ( MPFR_LIBRARIES "" )
+    set ( MPFR_LIBRARY "" )
+    set ( MPFR_STATIC "" )
 endif ( )
 

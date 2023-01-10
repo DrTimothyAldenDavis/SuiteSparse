@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindKLU.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindKLU.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( KLU_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic KLU library
+# dynamic KLU library (or static if no dynamic library was built)
 find_library ( KLU_LIBRARY
-    NAMES klu
+    NAMES klu klu_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME klu_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME klu )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static KLU library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( KLU_STATIC
-    NAMES klu
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/KLU
     HINTS ${CMAKE_SOURCE_DIR}/../KLU
-    PATH_SUFFIXES lib build alternative
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( KLU_LIBRARY  ${KLU_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${KLU_FILENAME}
 )
 
-if ( NOT KLU_VERSION )
+# set ( KLU_VERSION "" )
+if ( EXISTS "${KLU_INCLUDE_DIR}" AND NOT KLU_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${KLU_INCLUDE_DIR}/klu.h _VERSION_LINE REGEX "define[ ]+KLU_${_VERSION}")
-        if (_VERSION_LINE)
-        string (REGEX REPLACE ".*define[ ]+KLU_${_VERSION}[ ]+([0-9]*).*" "\\1" _KLU_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (KLU_VERSION "${_KLU_MAIN_VERSION}.${_KLU_SUB_VERSION}.${_KLU_SUBSUB_VERSION}")
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_MAJOR_STR
+        REGEX "define KLU_MAIN_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_MINOR_STR
+        REGEX "define KLU_SUB_VERSION" )
+    file ( STRINGS ${KLU_INCLUDE_DIR}/klu.h KLU_PATCH_STR
+        REGEX "define KLU_SUBSUB_VERSION" )
+    message ( STATUS "major: ${KLU_MAJOR_STR}" )
+    message ( STATUS "minor: ${KLU_MINOR_STR}" )
+    message ( STATUS "patch: ${KLU_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" KLU_MAJOR ${KLU_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_MINOR ${KLU_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" KLU_PATCH ${KLU_PATCH_STR} )
+    set (KLU_VERSION "${KLU_MAJOR}.${KLU_MINOR}.${KLU_PATCH}")
 endif ( )
 
 set ( KLU_LIBRARIES ${KLU_LIBRARY} )
@@ -92,7 +103,7 @@ set ( KLU_LIBRARIES ${KLU_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( KLU
-    REQUIRED_VARS KLU_LIBRARIES KLU_INCLUDE_DIR
+    REQUIRED_VARS KLU_LIBRARY KLU_INCLUDE_DIR
     VERSION_VAR KLU_VERSION
     )
 
@@ -110,5 +121,9 @@ if ( KLU_FOUND )
     message ( STATUS "KLU static:  ${KLU_STATIC}" )
 else ( )
     message ( STATUS "KLU not found" )
+    set ( KLU_INCLUDE_DIR "" )
+    set ( KLU_LIBRARIES "" )
+    set ( KLU_LIBRARY "" )
+    set ( KLU_STATIC "" )
 endif ( )
 

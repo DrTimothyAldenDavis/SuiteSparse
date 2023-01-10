@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_transpose: transpose/permute a sparse matrix
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -21,7 +21,7 @@
 #include "umf_transpose.h"
 #include "umf_is_permutation.h"
 
-GLOBAL Int UMF_transpose
+Int UMF_transpose
 (
     Int n_row,			/* A is n_row-by-n_col */
     Int n_col,

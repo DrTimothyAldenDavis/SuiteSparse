@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindGMP.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindGMP.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -27,7 +27,7 @@
 
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
-    set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
+    list ( PREPEND CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
 endif ( )
 
 # include files for gmp
@@ -36,26 +36,27 @@ find_path ( GMP_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic gmp library
+# dynamic gmp library (or possibly static if no GMP dynamic library exists)
 find_library ( GMP_LIBRARY
     NAMES gmp
     PATH_SUFFIXES lib build
 )
 
-if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
-else ( )
-    set ( STATIC_SUFFIX .a )
+# static gmp library
+if ( NOT MSVC )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
-# static gmp library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GMP_STATIC
     NAMES gmp
     PATH_SUFFIXES lib build
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the filename
 get_filename_component ( GMP_LIBRARY ${GMP_LIBRARY} REALPATH )
@@ -72,12 +73,12 @@ if ( GMP_VERSION1 STREQUAL "" )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_MAJOR_STRING
         REGEX "define __GNU_MP_VERSION " )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_MINOR_STRING
-        REGEX "define __GNU_MP_VERSION_MINOR" )
+        REGEX "define __GNU_MP_VERSION_MINOR " )
     file ( STRINGS ${GMP_INCLUDE_DIR}/gmp.h GMP_VER_PATCH_STRING
-        REGEX "define __GNU_MP_VERSION_PATCH" )
-    message ( STATUS "major from gmp.h: ${GMP_VER_MAJOR_STRING}" )
-    message ( STATUS "minor from gmp.h: ${GMP_VER_MINOR_STRING}" )
-    message ( STATUS "patch from gmp.h: ${GMP_VER_PATCH_STRING}" )
+        REGEX "define __GNU_MP_VERSION_PATCHLEVEL " )
+    message ( STATUS "major: ${GMP_VER_MAJOR_STRING}" )
+    message ( STATUS "minor: ${GMP_VER_MINOR_STRING}" )
+    message ( STATUS "patch: ${GMP_VER_PATCH_STRING}" )
     if ( GMP_VER_MAJOR_STRING STREQUAL "")
         # look at the end of the filename for the version number
         string (
@@ -100,7 +101,7 @@ set ( GMP_LIBRARIES ${GMP_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( GMP
-    REQUIRED_VARS GMP_LIBRARIES GMP_INCLUDE_DIR
+    REQUIRED_VARS GMP_LIBRARY GMP_INCLUDE_DIR
     VERSION_VAR GMP_VERSION
 )
 
@@ -118,5 +119,9 @@ if ( GMP_FOUND )
     message ( STATUS "gmp static:  ${GMP_STATIC}" )
 else ( )
     message ( STATUS "gmp not found" )
+    set ( GMP_INCLUDE_DIR "" )
+    set ( GMP_LIBRARIES "" )
+    set ( GMP_LIBRARY "" )
+    set ( GMP_STATIC "" )
 endif ( )
 

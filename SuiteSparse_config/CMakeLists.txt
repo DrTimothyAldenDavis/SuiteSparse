@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/CMakeLists.txt:  cmake for SuiteSparse_config
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Dec 23, 2022" )
-set ( SUITESPARSE_VERSION_MAJOR 6 )
+set ( SUITESPARSE_DATE "Jan 9, 2023" )
+set ( SUITESPARSE_VERSION_MAJOR 7 )
 set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   3 )
+set ( SUITESPARSE_VERSION_SUB   0 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.
@@ -32,6 +32,14 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
 include ( SuiteSparsePolicy )
+
+if ( NOT NFORTRAN )
+    include ( FortranCInterface )
+else ( )
+    # No Fortran compiler available or enabled, configuration is not automatic.
+    set ( FortranCInterface_GLOBAL_MACRO  ${SUITESPARSE_C_TO_FORTRAN} )
+    set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -61,7 +69,12 @@ include ( SuiteSparseBLAS )
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/SuiteSparse_config.h.in"
-    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h" )
+    "${PROJECT_SOURCE_DIR}/SuiteSparse_config.h"
+    NEWLINE_STYLE LF )
+
+configure_file ( "Config/README.md.in"
+    "${PROJECT_SOURCE_DIR}/../README.md"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # dynamic suitesparseconfig library properties
@@ -74,7 +87,8 @@ set_target_properties ( suitesparseconfig PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${SUITESPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "SuiteSparse_config.h" )
+    PUBLIC_HEADER "SuiteSparse_config.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static suitesparseconfig library properties
@@ -88,6 +102,11 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME suitesparseconfig
         SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( suitesparseconfig_static PROPERTIES
+            OUTPUT_NAME suitesparseconfig_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,7 +114,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( suitesparseconfig PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( suitesparseconfig_static PUBLIC m )
@@ -117,17 +136,19 @@ endif ( )
 
 # BLAS:
 if ( BLAS_FOUND )
+    # SuiteSparse_config does not itself require the BLAS.  It just needs to
+    # know which BLAS is going to be used by the rest of SuiteSparse so it
+    # can configure SuiteSparse_config.h properly.
     message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-#   SuiteSparse_config does not itself require the BLAS.  It just needs to
-#   know which BLAS is going to be used by the rest of SuiteSparse so it
-#   can configure SuiteSparse_config.h properly.
 endif ( )
 
 #-------------------------------------------------------------------------------
 # suitesparseconfig installation location
 #-------------------------------------------------------------------------------
+
+file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
@@ -137,7 +158,7 @@ if ( GLOBAL_INSTALL )
         LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
         PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
     install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
+        ${SUITESPARSE_CMAKE_MODULES}
         DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )
@@ -155,7 +176,7 @@ if ( INSIDE_SUITESPARSE )
         LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_config.cmake
+        ${SUITESPARSE_CMAKE_MODULES}
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
         COMPONENT Development )
     if ( NOT NSTATIC )

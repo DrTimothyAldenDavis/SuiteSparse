@@ -1,3 +1,7 @@
+Jan 9, 2023: version 4.0.1
+
+    * minor revision to cmake: for Windows DLL
+
 Nov 12, 2022: version 4.0.0
 
     * using CMake build system

@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindAMD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindAMD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( AMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic AMD library
+# dynamic AMD library (or static if no dynamic library was built)
 find_library ( AMD_LIBRARY
-    NAMES amd
+    NAMES amd amd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/AMD
     HINTS ${CMAKE_SOURCE_DIR}/../AMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME amd_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME amd )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static AMD library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( AMD_STATIC
-    NAMES amd
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/AMD
     HINTS ${CMAKE_SOURCE_DIR}/../AMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( AMD_LIBRARY  ${AMD_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${AMD_FILENAME}
 )
 
-if ( NOT AMD_VERSION )
+# set ( AMD_VERSION "" )
+if ( EXISTS "${AMD_INCLUDE_DIR}" AND NOT AMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+AMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+AMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _AMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( AMD_VERSION "${_AMD_MAIN_VERSION}.${_AMD_SUB_VERSION}.${_AMD_SUBSUB_VERSION}" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_MAJOR_STR
+        REGEX "define AMD_MAIN_VERSION" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_MINOR_STR
+        REGEX "define AMD_SUB_VERSION" )
+    file ( STRINGS ${AMD_INCLUDE_DIR}/amd.h AMD_PATCH_STR
+        REGEX "define AMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${AMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${AMD_MINOR_STR}" )
+    message ( STATUS "patch: ${AMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" AMD_MAJOR ${AMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" AMD_MINOR ${AMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" AMD_PATCH ${AMD_PATCH_STR} )
+    set (AMD_VERSION "${AMD_MAJOR}.${AMD_MINOR}.${AMD_PATCH}")
 endif ( )
 
 set ( AMD_LIBRARIES ${AMD_LIBRARY} )
@@ -92,7 +103,7 @@ set ( AMD_LIBRARIES ${AMD_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( AMD
-    REQUIRED_VARS AMD_LIBRARIES AMD_INCLUDE_DIR
+    REQUIRED_VARS AMD_LIBRARY AMD_INCLUDE_DIR
     VERSION_VAR AMD_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( AMD_FOUND )
     message ( STATUS "AMD static:  ${AMD_STATIC}")
 else ( )
     message ( STATUS "AMD not found" )
+    set ( AMD_INCLUDE_DIR "" )
+    set ( AMD_LIBRARIES "" )
+    set ( AMD_LIBRARY "" )
+    set ( AMD_STATIC "" )
 endif ( )
 

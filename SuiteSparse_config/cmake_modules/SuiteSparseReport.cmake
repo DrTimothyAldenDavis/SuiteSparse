@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/SuiteSparseReport.cmake
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2012-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -29,9 +29,9 @@ if ( OPENMP_FOUND )
 else ( )
     message ( STATUS "use OpenMP:           no ")
 endif ( )
-message ( STATUS "C compiler:           ${CMAKE_C_COMPILER_ID} ")
+message ( STATUS "C compiler:           ${CMAKE_C_COMPILER} ")
 message ( STATUS "C flags:              ${CMAKE_C_FLAGS}" )
-message ( STATUS "C++ compiler:         ${CMAKE_CXX_COMPILER_ID}" )
+message ( STATUS "C++ compiler:         ${CMAKE_CXX_COMPILER}" )
 message ( STATUS "C++ flags:            ${CMAKE_CXX_FLAGS}" )
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
     message ( STATUS "C Flags debug:        ${CMAKE_C_FLAGS_DEBUG} ")
@@ -39,6 +39,11 @@ if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug" )
 else ( )
     message ( STATUS "C Flags release:      ${CMAKE_C_FLAGS_RELEASE} ")
     message ( STATUS "C++ Flags release:    ${CMAKE_CXX_FLAGS_RELEASE} ")
+endif ( )
+if ( NFORTRAN )
+    message ( STATUS "Fortran compiler:     none" )
+else ( )
+    message ( STATUS "Fortran compiler:     ${CMAKE_Fortran_COMPILER} " )
 endif ( )
 get_property ( CDEFN DIRECTORY PROPERTY COMPILE_DEFINITIONS )
 message ( STATUS "compile definitions:  ${CDEFN}")

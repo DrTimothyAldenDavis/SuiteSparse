@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_report_info: print Info array
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -72,7 +72,7 @@ PRIVATE void print_ratio
 /* === UMFPACK_report_info ================================================== */
 /* ========================================================================== */
 
-GLOBAL void UMFPACK_report_info
+void UMFPACK_report_info
 (
     const double Control [UMFPACK_CONTROL],
     const double Info [UMFPACK_INFO]
@@ -160,7 +160,7 @@ GLOBAL void UMFPACK_report_info
 
     PRINTF (("    CPU timer:                        ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (("POSIX C clock_getttime ( ) routine.\n")) ;
+    PRINTF (("SuiteSparse_time ( ) routine.\n")) ;
 #else
     PRINTF (("none.\n")) ;
 #endif

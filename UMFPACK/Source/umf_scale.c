@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_scale: scale a vector by the pivot value
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 #include "umf_internal.h"
 #include "umf_scale.h"
 
-GLOBAL void UMF_scale
+void UMF_scale
 (
     Int n,
     Entry pivot,

@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_get_determinant: compute determinant
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -76,7 +76,7 @@ PRIVATE int rescale_determinant
 /* === UMFPACK_get_determinant ============================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_get_determinant
+int UMFPACK_get_determinant
 (
     double *Mx,
 #ifdef COMPLEX

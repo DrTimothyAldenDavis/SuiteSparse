@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_colamd: UMFPACK version of COLAMD
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -620,7 +620,7 @@ PRIVATE void dump_super
 	knobs [3..19]	unused, but future versions might use this
 */
 
-GLOBAL void UMF_colamd_set_defaults
+void UMF_colamd_set_defaults
 (
     /* === Parameters ======================================================= */
 
@@ -668,7 +668,7 @@ GLOBAL void UMF_colamd_set_defaults
 
 /* For UMFPACK: colamd always returns TRUE */
 
-GLOBAL Int UMF_colamd		/* returns TRUE if successful, FALSE otherwise*/
+Int UMF_colamd		/* returns TRUE if successful, FALSE otherwise*/
 (
     /* === Parameters ======================================================= */
 

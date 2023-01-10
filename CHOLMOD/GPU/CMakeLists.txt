@@ -52,7 +52,13 @@ add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
 set_target_properties ( cholmod_cuda_static PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
     CXX_STANDARD_REQUIRED 17
+    OUTPUT_NAME cholmod_cuda
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+
+if ( MSVC )
+    set_target_properties ( cholmod_cuda_static PROPERTIES
+        OUTPUT_NAME cholmod_cuda_static )
+endif ( )
 
 set ( CHOLMOD_CUDA_INCLUDES
         ../Check

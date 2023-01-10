@@ -58,9 +58,9 @@ all: library
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
 	- ./build/colamd_example > ./build/colamd_example.out
-	- diff ./Demo/colamd_example.out ./build/colamd_example.out
+	- diff --strip-trailing-cr ./Demo/colamd_example.out ./build/colamd_example.out
 	- ./build/colamd_l_example > ./build/colamd_l_example.out
-	- diff ./Demo/colamd_l_example.out ./build/colamd_l_example.out
+	- diff --strip-trailing-cr ./Demo/colamd_l_example.out ./build/colamd_l_example.out
 
 # just compile after running cmake; do not run cmake again
 remake:

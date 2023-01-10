@@ -177,15 +177,10 @@ For example, the last column appears in positions 8 to 10 of \verb|A->i| and \ve
 \section{Installation} \label{s:util:install}
 %-------------------------------------------------------------------------------
 
-Installation of SPEX Util requires the \verb|make| utility in Linux/MacOS, or
-\verb|Cygwin make| in Windows. With the proper compiler, typing \verb|make|
-under the main directory will compile AMD, COLAMD and SPEX Util to the respective
-\verb|SPEX/Lib| folder. To further install the libraries onto your computer,
-simply type \verb|make install|.  Thereafter, to use the code inside of your
-program, precede your code with \newline \verb|#include "SPEX.h"|. This is done
-by default in all SPEX factorization routines, thus a user should never have to
-directly include \verb|SPEX_Util|.
+Installation of SPEX requires cmake.  An optional top-level \verb'Makefile'
+is provided to simplify its use (just do \verb'make ; make install').
 
+\newpage
 %-------------------------------------------------------------------------------
 \section{Managing the SPEX environment} \label{s:user:setup}
 %-------------------------------------------------------------------------------
@@ -1623,14 +1618,10 @@ A key advantage of utilizing SPEX Left LU with floating-point output is that the
 \section{Installation} \label{s:install}
 %-------------------------------------------------------------------------------
 
-Installation of SPEX Left LU requires the \verb|make| utility in Linux/MacOS, or
-\verb|Cygwin make| in Windows. With the proper compiler, typing \verb|make|
-under the main directory will compile AMD, COLAMD and SPEX Left LU to the respective
-\verb|SPEX/Lib| folder. To further install the libraries onto your computer,
-simply type \verb|make install|.  Thereafter, to use the code inside of your
-program, precede your code with \newline \verb|#include "SPEX.h"|.
+Installation of SPEX requires cmake.  An optional top-level \verb'Makefile'
+is provided to simplify its use (just do \verb'make ; make install').
 
-To run the statement coverage tests, go to the \verb|Tcov| folder and
+To run the statement coverage tests (Linux required), go to the \verb|Tcov| folder and
 type \verb|make|.  The last line of output should read:
 
 \begin{verbatim}
@@ -1645,7 +1636,10 @@ the \verb|SPEX_Left_LU_backslash| function within MATLAB. Note that
 if you want to use \verb|SPEX_Left_LU_backslash| in future sessions, type
 \verb|pathtool| and save your path for future MATLAB sessions. If you cannot
 save your path because of file permissions, edit your \verb|startup.m| by
-adding \verb|addpath| commands (for more information on how this is done, please type \verb|doc startup| and \verb|doc addpath|).
+adding \verb|addpath| commands (for more information on how this is done,
+please type \verb|doc startup| and \verb|doc addpath|).
+
+\newpage
 
 %-------------------------------------------------------------------------------
 % \cprotect\section{\verb|SPEX_Left_LU_VERSION|: the software package version}

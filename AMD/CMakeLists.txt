@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( AMD_DATE "Dec 9, 2022" )
+set ( AMD_DATE "Jan 9, 2023" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 0 )
-set ( AMD_VERSION_SUB   2 )
+set ( AMD_VERSION_SUB   3 )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
@@ -36,8 +36,13 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-if ( CMAKE_Fortran_COMPILER )
-    # Fortan is available
+if ( WIN32 )
+    # disable Fortran in AMD when compiling on Windows
+    set ( NFORTRAN true )
+endif ( )
+
+if ( NOT NFORTRAN )
+    # Fortan is available and enabled
     project ( amd
         VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
         LANGUAGES C Fortran )
@@ -52,14 +57,16 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/amd.h.in" "${PROJECT_SOURCE_DIR}/Include/amd.h")
-configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_version.tex")
+configure_file ( "Config/amd.h.in" "${PROJECT_SOURCE_DIR}/Include/amd.h"
+    NEWLINE_STYLE LF )
+configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -71,7 +78,7 @@ include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 # dynamic amd library properties
 #-------------------------------------------------------------------------------
 
-if ( CMAKE_Fortran_COMPILER )
+if ( NOT NFORTRAN )
     file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
 else ( )
     file ( GLOB AMD_SOURCES "Source/*.c" )
@@ -82,7 +89,8 @@ set_target_properties ( amd PROPERTIES
     VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${AMD_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/amd.h" )
+    PUBLIC_HEADER "Include/amd.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static amd library properties
@@ -95,6 +103,11 @@ if ( NOT NSTATIC )
         C_STANDARD_REQUIRED 11
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( amd_static PROPERTIES
+            OUTPUT_NAME amd_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -108,7 +121,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( amd PUBLIC m )
     if ( NOT NSTATIC )
         target_link_libraries ( amd_static PUBLIC m )
@@ -173,7 +186,7 @@ if ( DEMO )
     add_executable ( amd_l_demo    "Demo/amd_l_demo.c" )
     add_executable ( amd_demo2     "Demo/amd_demo2.c" )
     add_executable ( amd_simple    "Demo/amd_simple.c" )
-    if ( CMAKE_Fortran_COMPILER )
+    if ( NOT NFORTRAN )
         add_executable ( amd_f77demo   "Demo/amd_f77demo.f" )
         add_executable ( amd_f77simple "Demo/amd_f77simple.f" )
     endif ( )
@@ -183,7 +196,7 @@ if ( DEMO )
     target_link_libraries ( amd_l_demo    PUBLIC amd )
     target_link_libraries ( amd_demo2     PUBLIC amd )
     target_link_libraries ( amd_simple    PUBLIC amd )
-    if ( CMAKE_Fortran_COMPILER )
+    if ( NOT NFORTRAN )
         target_link_libraries ( amd_f77demo   PUBLIC amd )
         target_link_libraries ( amd_f77simple PUBLIC amd )
     endif ( )

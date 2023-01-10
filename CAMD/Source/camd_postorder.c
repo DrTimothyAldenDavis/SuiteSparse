@@ -12,7 +12,7 @@
 
 #include "camd_internal.h"
 
-GLOBAL Int CAMD_postorder
+Int CAMD_postorder
 (
     Int j,	    /* start at node j, a root of the assembly tree */
     Int k,	    /* on input, next node is the kth node */

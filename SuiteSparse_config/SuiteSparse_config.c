@@ -2,7 +2,7 @@
 // SuiteSparse_config/SuiteSparse_config.c: common utilites for SuiteSparse
 //------------------------------------------------------------------------------
 
-// SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+// SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -15,17 +15,20 @@
 #include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
-/* SuiteSparse_config : a global extern struct */
+/* SuiteSparse_config : a static struct */
 /* -------------------------------------------------------------------------- */
 
-/* The SuiteSparse_config struct is available to all SuiteSparse functions and
-    to all applications that use those functions.  It must be modified with
-    care, particularly in a multithreaded context.  Normally, the application
-    will initialize this object once, via SuiteSparse_start, possibily followed
-    by application-specific modifications if the applications wants to use
-    alternative memory manager functions.
+/* The SuiteSparse_config struct is indirectly available to all SuiteSparse
+    functions and to all applications that use those functions.  In v6.x and
+    earlier, it was globally visible, but it is now hidden and accessible only
+    by functions in this file (SuiteSparse v7.0.0 and later).
 
-    The user can redefine these global pointers at run-time to change the
+    It must be modified with care, particularly in a multithreaded context.
+    Normally, the application will initialize this object once, via
+    SuiteSparse_start, possibily followed by application-specific modifications
+    if the applications wants to use alternative memory manager functions.
+
+    The user can redefine these pointers at run-time to change the
     memory manager and printf function used by SuiteSparse.
 
     If -DNMALLOC is defined at compile-time, then no memory-manager is
@@ -36,7 +39,18 @@
     SuiteSparse will not use printf.
  */
 
-struct SuiteSparse_config_struct SuiteSparse_config =
+struct SuiteSparse_config_struct
+{
+    void *(*malloc_func) (size_t) ;             // pointer to malloc
+    void *(*calloc_func) (size_t, size_t) ;     // pointer to calloc
+    void *(*realloc_func) (void *, size_t) ;    // pointer to realloc
+    void (*free_func) (void *) ;                // pointer to free
+    int (*printf_func) (const char *, ...) ;    // pointer to printf
+    double (*hypot_func) (double, double) ;     // pointer to hypot
+    int (*divcomplex_func) (double, double, double, double, double *, double *);
+} ;
+
+static struct SuiteSparse_config_struct SuiteSparse_config =
 {
 
     /* memory management functions */
@@ -72,6 +86,128 @@ struct SuiteSparse_config_struct SuiteSparse_config =
 
 } ;
 
+//------------------------------------------------------------------------------
+// SuiteSparse_config_*_get methods
+//------------------------------------------------------------------------------
+
+// Methods that return the contents of the SuiteSparse_config struct.
+
+void *SuiteSparse_config_malloc_func_get (void)
+{
+    return ((void *) SuiteSparse_config.malloc_func) ;
+}
+
+void *SuiteSparse_config_calloc_func_get (void)
+{
+    return ((void *) SuiteSparse_config.calloc_func) ;
+}
+
+void *SuiteSparse_config_realloc_func_get (void)
+{
+    return ((void *) SuiteSparse_config.realloc_func) ;
+}
+
+void *SuiteSparse_config_free_func_get (void)
+{
+    return ((void *) SuiteSparse_config.free_func) ;
+}
+
+void *SuiteSparse_config_printf_func_get (void)
+{
+    return ((void *) SuiteSparse_config.printf_func) ;
+}
+
+void *SuiteSparse_config_hypot_func_get (void)
+{
+    return ((void *) SuiteSparse_config.hypot_func) ;
+}
+
+void *SuiteSparse_config_divcomplex_func_get (void)
+{
+    return ((void *) SuiteSparse_config.divcomplex_func) ;
+}
+
+//------------------------------------------------------------------------------
+// SuiteSparse_config_*_set methods
+//------------------------------------------------------------------------------
+
+// Methods that set the contents of the SuiteSparse_config struct.
+
+void SuiteSparse_config_malloc_func_set (void *malloc_func)
+{
+    SuiteSparse_config.malloc_func = malloc_func ;
+}
+
+void SuiteSparse_config_calloc_func_set (void *calloc_func)
+{
+    SuiteSparse_config.calloc_func = calloc_func ;
+}
+
+void SuiteSparse_config_realloc_func_set (void *realloc_func)
+{
+    SuiteSparse_config.realloc_func = realloc_func ;
+}
+
+void SuiteSparse_config_free_func_set (void *free_func)
+{
+    SuiteSparse_config.free_func = free_func ;
+}
+
+void SuiteSparse_config_printf_func_set (void *printf_func)
+{
+    SuiteSparse_config.printf_func = printf_func ;
+}
+
+void SuiteSparse_config_hypot_func_set (void *hypot_func)
+{
+    SuiteSparse_config.hypot_func = hypot_func ;
+}
+
+void SuiteSparse_config_divcomplex_func_set (void *divcomplex_func)
+{
+    SuiteSparse_config.divcomplex_func = divcomplex_func ;
+}
+
+//------------------------------------------------------------------------------
+// SuiteSparse_config_*_call methods
+//------------------------------------------------------------------------------
+
+// Methods that directly call the functions in the SuiteSparse_config struct.
+// Note that there is no wrapper for the printf_func.
+
+void *SuiteSparse_config_malloc (size_t s)
+{
+    return (SuiteSparse_config.malloc_func (s)) ;
+}
+
+void *SuiteSparse_config_calloc (size_t n, size_t s)
+{
+    return (SuiteSparse_config.calloc_func (n, s)) ;
+}
+
+void *SuiteSparse_config_realloc (void *p, size_t s)
+{
+    return (SuiteSparse_config.realloc_func (p, s)) ;
+}
+
+void SuiteSparse_config_free (void *p)
+{
+    SuiteSparse_config.free_func (p) ;
+}
+
+double SuiteSparse_config_hypot (double x, double y)
+{
+    return (SuiteSparse_config.hypot_func (x, y)) ;
+}
+
+int SuiteSparse_config_divcomplex
+(
+    double xr, double xi, double yr, double yi, double *zr, double *zi
+)
+{
+    return (SuiteSparse_config.divcomplex_func (xr, xi, yr, yi, zr, zi)) ;
+}
+
 /* -------------------------------------------------------------------------- */
 /* SuiteSparse_start */
 /* -------------------------------------------------------------------------- */
@@ -88,7 +224,6 @@ struct SuiteSparse_config_struct SuiteSparse_config =
    SuiteSparse_start be called prior to calling any SuiteSparse function.
  */
 
-SUITESPARSE_PUBLIC
 void SuiteSparse_start ( void )
 {
 
@@ -149,7 +284,6 @@ void SuiteSparse_start ( void )
    SuiteSparse-wide cleanup operations or finalization of statistics.
  */
 
-SUITESPARSE_PUBLIC
 void SuiteSparse_finish ( void )
 {
     /* do nothing */ ;
@@ -159,7 +293,6 @@ void SuiteSparse_finish ( void )
 /* SuiteSparse_malloc: malloc wrapper */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 void *SuiteSparse_malloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to malloc */
@@ -188,7 +321,6 @@ void *SuiteSparse_malloc    /* pointer to allocated block of memory */
 /* SuiteSparse_calloc: calloc wrapper */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 void *SuiteSparse_calloc    /* pointer to allocated block of memory */
 (
     size_t nitems,          /* number of items to calloc */
@@ -225,7 +357,6 @@ void *SuiteSparse_calloc    /* pointer to allocated block of memory */
    pointer to the old (unmodified) object is returned.
  */
 
-SUITESPARSE_PUBLIC
 void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
                                to original block if the realloc failed. */
 (
@@ -291,7 +422,6 @@ void *SuiteSparse_realloc   /* pointer to reallocated block of memory, or
 /* SuiteSparse_free: free wrapper */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 void *SuiteSparse_free      /* always returns NULL */
 (
     void *p                 /* block to free */
@@ -341,7 +471,6 @@ void *SuiteSparse_free      /* always returns NULL */
     /* no timer */
     /* ---------------------------------------------------------------------- */
 
-    SUITESPARSE_PUBLIC
     void SuiteSparse_tic
     (
         double tic [2]      /* output, contents undefined on input */
@@ -358,7 +487,6 @@ void *SuiteSparse_free      /* always returns NULL */
     /* OpenMP timer */
     /* ---------------------------------------------------------------------- */
 
-    SUITESPARSE_PUBLIC
     void SuiteSparse_tic
     (
         double tic [2]      /* output, contents undefined on input */
@@ -375,7 +503,6 @@ void *SuiteSparse_free      /* always returns NULL */
     /* ---------------------------------------------------------------------- */
 
     #include <time.h>
-    SUITESPARSE_PUBLIC
     void SuiteSparse_tic
     (
         double tic [2]      /* output, contents undefined on input */
@@ -401,7 +528,6 @@ void *SuiteSparse_free      /* always returns NULL */
  * SuiteSparse_tic and do the calculations differently.
  */
 
-SUITESPARSE_PUBLIC
 double SuiteSparse_toc  /* returns time in seconds since last tic */
 (
     double tic [2]  /* input, not modified from last call to SuiteSparse_tic */
@@ -418,7 +544,6 @@ double SuiteSparse_toc  /* returns time in seconds since last tic */
 
 /* This function might not be accurate down to the nanosecond. */
 
-SUITESPARSE_PUBLIC
 double SuiteSparse_time  /* returns current wall clock time in seconds */
 (
     void
@@ -433,7 +558,6 @@ double SuiteSparse_time  /* returns current wall clock time in seconds */
 /* SuiteSparse_version: return the current version of SuiteSparse */
 /* -------------------------------------------------------------------------- */
 
-SUITESPARSE_PUBLIC
 int SuiteSparse_version
 (
     int version [3]
@@ -465,7 +589,6 @@ int SuiteSparse_version
 
 // This method below is kept for historical purposes.
 
-SUITESPARSE_PUBLIC
 double SuiteSparse_hypot (double x, double y)
 {
     double s, r ;
@@ -518,7 +641,7 @@ double SuiteSparse_hypot (double x, double y)
 // This function is identical to GB_divcomplex in GraphBLAS/Source/GB_math.h.
 // The only difference is the name of the function.
 
-SUITESPARSE_PUBLIC int SuiteSparse_divcomplex
+int SuiteSparse_divcomplex
 (
     double xr, double xi,       // real and imaginary parts of x
     double yr, double yi,       // real and imaginary parts of y

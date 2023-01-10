@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_qsymbolic: symbolic analysis
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -2676,7 +2676,7 @@ PRIVATE int symbolic_analysis
 /* === UMFPACK_paru_free_sw ================================================= */
 /* ========================================================================== */
 
-GLOBAL void UMFPACK_paru_free_sw
+void UMFPACK_paru_free_sw
 (
     void **SW_Handle
 )
@@ -2734,7 +2734,7 @@ PRIVATE void error
 /* === UMFPACK_qsymbolic ==================================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_qsymbolic
+int UMFPACK_qsymbolic
 (
     Int n_row,
     Int n_col,
@@ -2775,7 +2775,7 @@ GLOBAL int UMFPACK_qsymbolic
 /* === UMFPACK_fsymbolic ==================================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_fsymbolic
+int UMFPACK_fsymbolic
 (
     Int n_row,
     Int n_col,
@@ -2836,7 +2836,7 @@ GLOBAL int UMFPACK_fsymbolic
 /* === UMFPACK_paru_symbolic ================================================ */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_paru_symbolic
+int UMFPACK_paru_symbolic
 (
     Int n_row,
     Int n_col,

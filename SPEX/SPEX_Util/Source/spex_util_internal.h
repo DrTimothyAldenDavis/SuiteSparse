@@ -110,15 +110,17 @@
 // printing control
 //------------------------------------------------------------------------------
 
-// SPEX uses SuiteSparse_config.printf_func instead of a mere call to printf
-// (the default function is printf, or mexPrintf when in MATLAB).  If this
-// function pointer is NULL, no printing is done.
+// SPEX uses the SuiteSparse_config printf_func instead of a mere call to
+// printf (the default function is printf, or mexPrintf when in MATLAB).  If
+// this function pointer is NULL, no printing is done.
 
 #define SPEX_PRINTF(...)                                    \
 {                                                           \
-    if (SuiteSparse_config.printf_func != NULL)             \
+    int (*printf_func) (const char *, ...) ;                \
+    printf_func = SuiteSparse_config_printf_func_get ( ) ;  \
+    if (printf_func != NULL)                                \
     {                                                       \
-        SuiteSparse_config.printf_func (__VA_ARGS__) ;      \
+        (void) (printf_func) (__VA_ARGS__) ;                \
     }                                                       \
 }
 
@@ -433,11 +435,11 @@ static inline int64_t spex_cast_double_to_int64 (double x)
     {
         return (0) ;
     }
-    else if (x > INT64_MAX)
+    else if (x >= (double) INT64_MAX)
     {
         return (INT64_MAX) ;
     }
-    else if (x < INT64_MIN)
+    else if (x <= (double) INT64_MIN)
     {
         return (INT64_MIN) ;
     }

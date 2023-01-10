@@ -34,7 +34,7 @@ DrTimothyAldenDavis@gmail.com, http://www.suitesparse.com}
 \end{abstract}
 %-------------------------------------------------------------------------------
 
-UMFPACK, Copyright\copyright 2005-2022, Timothy A. Davis, All Rights Reserved.
+UMFPACK, Copyright\copyright 2005-2023, Timothy A. Davis, All Rights Reserved.
 
 SPDX-License-Identifier: GPL-2.0+
 
@@ -312,7 +312,6 @@ statement, as described in Section~\ref{Synopsis}.
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_symbolic
 (
     int32_t n_row,
@@ -325,7 +324,6 @@ int umfpack_di_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_symbolic
 (
     int64_t n_row,
@@ -338,7 +336,6 @@ int umfpack_dl_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_symbolic
 (
     int32_t n_row,
@@ -351,7 +348,6 @@ int umfpack_zi_symbolic
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_symbolic
 (
     int64_t n_row,
@@ -859,7 +855,6 @@ Arguments:
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_numeric
 (
     const int32_t Ap [ ],
@@ -871,7 +866,6 @@ int umfpack_di_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_numeric
 (
     const int64_t Ap [ ],
@@ -883,7 +877,6 @@ int umfpack_dl_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_numeric
 (
     const int32_t Ap [ ],
@@ -895,7 +888,6 @@ int umfpack_zi_numeric
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_numeric
 (
     const int64_t Ap [ ],
@@ -1410,7 +1402,6 @@ Arguments:
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 int umfpack_di_solve
 (
     int sys,
@@ -1424,7 +1415,6 @@ int umfpack_di_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_dl_solve
 (
     int sys,
@@ -1438,7 +1428,6 @@ int umfpack_dl_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zi_solve
 (
     int sys,
@@ -1452,7 +1441,6 @@ int umfpack_zi_solve
     double Info [UMFPACK_INFO]
 ) ;
 
-SUITESPARSE_PUBLIC
 int umfpack_zl_solve
 (
     int sys,
@@ -1723,25 +1711,21 @@ Arguments:
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_free_symbolic
 (
     void **Symbolic
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_free_symbolic
 (
     void **Symbolic
@@ -1794,25 +1778,21 @@ Arguments:
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_free_numeric
 (
     void **Numeric
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_free_numeric
 (
     void **Numeric
@@ -1867,25 +1847,21 @@ Arguments:
 {\footnotesize
 \begin{verbatim}
 
-SUITESPARSE_PUBLIC
 void umfpack_di_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_dl_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zi_defaults
 (
     double Control [UMFPACK_CONTROL]
 ) ;
 
-SUITESPARSE_PUBLIC
 void umfpack_zl_defaults
 (
     double Control [UMFPACK_CONTROL]

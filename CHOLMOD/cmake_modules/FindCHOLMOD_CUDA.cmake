@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCHOLMOD_CUDA.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCHOLMOD_CUDA.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -29,6 +29,7 @@
 
 #-------------------------------------------------------------------------------
 
+
 # include files for CHOLMOD
 find_path ( CHOLMOD_INCLUDE_DIR
     NAMES cholmod.h
@@ -38,34 +39,39 @@ find_path ( CHOLMOD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CHOLMOD_CUDA library
+# dynamic CHOLMOD_CUDA library (or static if no dynamic library was built)
 find_library ( CHOLMOD_CUDA_LIBRARY
-    NAMES cholmod_cuda
+    NAMES cholmod_cuda cholmod_cuda_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME cholmod_cuda_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME cholmod_cuda )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CHOLMOD_CUDA library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CHOLMOD_CUDA_STATIC
-    NAMES cholmod_cuda
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/
     HINTS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build/GPU
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( CHOLMOD_CUDA_LIBRARY  ${CHOLMOD_CUDA_LIBRARY} REALPATH )
@@ -76,16 +82,22 @@ string (
     ${CHOLMOD_CUDA_FILENAME}
 )
 
-if ( NOT CHOLMOD_CUDA_VERSION )
+# set ( CHOLMOD_CUDA_VERSION "" )
+if ( EXISTS "${CHOLMOD_INCLUDE_DIR}" AND NOT CHOLMOD_CUDA_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h _VERSION_LINE REGEX "define[ ]+CHOLMOD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+CHOLMOD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CHOLMOD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (CHOLMOD_VERSION "${_CHOLMOD_MAIN_VERSION}.${_CHOLMOD_SUB_VERSION}.${_CHOLMOD_SUBSUB_VERSION}")
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_MAJOR_STR
+        REGEX "define CHOLMOD_MAIN_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_MINOR_STR
+        REGEX "define CHOLMOD_SUB_VERSION" )
+    file ( STRINGS ${CHOLMOD_INCLUDE_DIR}/cholmod.h CHOLMOD_CUDA_PATCH_STR
+        REGEX "define CHOLMOD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CHOLMOD_CUDA_MAJOR_STR}" )
+    message ( STATUS "minor: ${CHOLMOD_CUDA_MINOR_STR}" )
+    message ( STATUS "patch: ${CHOLMOD_CUDA_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_MAJOR ${CHOLMOD_CUDA_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_MINOR ${CHOLMOD_CUDA_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CHOLMOD_CUDA_PATCH ${CHOLMOD_CUDA_PATCH_STR} )
+    set (CHOLMOD_CUDA_VERSION "${CHOLMOD_CUDA_MAJOR}.${CHOLMOD_CUDA_MINOR}.${CHOLMOD_CUDA_PATCH}")
 endif ( )
 
 set (CHOLMOD_CUDA_LIBRARIES ${CHOLMOD_CUDA_LIBRARY})
@@ -93,7 +105,7 @@ set (CHOLMOD_CUDA_LIBRARIES ${CHOLMOD_CUDA_LIBRARY})
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CHOLMOD_CUDA
-    REQUIRED_VARS CHOLMOD_CUDA_LIBRARIES
+    REQUIRED_VARS CHOLMOD_CUDA_LIBRARY
     VERSION_VAR CHOLMOD_CUDA_VERSION
 )
 
@@ -109,5 +121,8 @@ if ( CHOLMOD_CUDA_FOUND )
     message ( STATUS "CHOLMOD_CUDA static:  ${CHOLMOD_CUDA_STATIC}" )
 else ( )
     message ( STATUS "CHOLMOD_CUDA not found" )
+    set ( CHOLMOD_CUDA_LIBRARIES "" )
+    set ( CHOLMOD_CUDA_LIBRARY "" )
+    set ( CHOLMOD_CUDA_STATIC "" )
 endif ( )
 

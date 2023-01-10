@@ -2,12 +2,12 @@
 // UMFPACK/Source/umf_triplet.h
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-GLOBAL Int UMF_triplet_map_x
+Int UMF_triplet_map_x
 (
     Int n_row,
     Int n_col,
@@ -32,7 +32,7 @@ GLOBAL Int UMF_triplet_map_x
     , Int Map2 [ ]
 ) ;
 
-GLOBAL Int UMF_triplet_map_nox
+Int UMF_triplet_map_nox
 (
     Int n_row,
     Int n_col,
@@ -49,7 +49,7 @@ GLOBAL Int UMF_triplet_map_nox
     , Int Map2 [ ]
 ) ;
 
-GLOBAL Int UMF_triplet_nomap_x
+Int UMF_triplet_nomap_x
 (
     Int n_row,
     Int n_col,
@@ -72,7 +72,7 @@ GLOBAL Int UMF_triplet_nomap_x
 #endif
 ) ;
 
-GLOBAL Int UMF_triplet_nomap_nox
+Int UMF_triplet_nomap_nox
 (
     Int n_row,
     Int n_col,

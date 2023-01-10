@@ -23,7 +23,7 @@ int runReferenceTest(const std::string &inputFile)
     // Given a symmetric matrix
     EdgeCut_Options *options;
     Graph *graph;
-    clock_t t;
+    double t;
     
     options = EdgeCut_Options::create();
 
@@ -43,9 +43,9 @@ int runReferenceTest(const std::string &inputFile)
     }
 
     // An edge separator should be computed with default options
-    t = clock();
+    t = SuiteSparse_time ();
     EdgeCut *result = edge_cut(graph, options);
-    t = clock() - t;
+    t = SuiteSparse_time () - t;
 
     if (!result)
     {
@@ -55,7 +55,7 @@ int runReferenceTest(const std::string &inputFile)
     {
         std::ofstream ofs ((inputFile + "_result.txt").c_str(), std::ofstream::out);
         ofs << "InputFile: " << inputFile << std::endl;
-        ofs << "TotalTime: " << ((double) t)/CLOCKS_PER_SEC << std::endl;
+        ofs << "TotalTime: " << (t) << std::endl;
         ofs << "CutSize: " << result->cut_cost << std::endl;
         ofs << "Imbalance: " << result->imbalance << std::endl;
 
@@ -86,7 +86,7 @@ int runReferenceTest(const std::string &inputFile)
         ifs.ignore(200, ' ');
         ifs >> input;
         double ref_time = strtod(input.c_str(), NULL);
-        double test_time = ((double) t)/CLOCKS_PER_SEC;
+        double test_time = t ;
         std::cout << "Test Time:      " << test_time << std::endl;
         std::cout << "Reference Time: " <<  ref_time << std::endl;
         

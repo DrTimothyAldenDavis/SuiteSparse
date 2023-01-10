@@ -22,6 +22,7 @@
 
 #include "gk_arch.h" /*!< This should be here, prior to the includes */
 
+
 /*************************************************************************
 * Header file inclusion section
 **************************************************************************/
@@ -36,7 +37,6 @@
 #include <time.h>
 #include <string.h>
 #include <limits.h>
-
 /* -------------------------------------------------------------------------- */
 /* Added for SuiteSparse, to disable signal handling when incorporated into
  * a MATLAB mexFunction.  Tim Davis, Jan 30, 2016, Texas A&M University. */
@@ -55,10 +55,11 @@
 #include <setjmp.h>
 #endif
 /* -------------------------------------------------------------------------- */
-
 #include <assert.h>
 #include <sys/stat.h>
 
+#if 0
+// regex.h and gk_regex.h disabled for SuiteSparse, Jan 1, 2023.
 #if defined(__WITHPCRE__)
   #include <pcreposix.h>
 #else
@@ -68,6 +69,7 @@
     #include <regex.h>
   #endif /* defined(USE_GKREGEX) */
 #endif /* defined(__WITHPCRE__) */
+#endif
 
 
 
@@ -79,14 +81,14 @@
 /* Added for incorporation into SuiteSparse.
    Tim Davis, Oct 31, 2022, Texas A&M University. */
 #include "SuiteSparse_config.h"
-#define malloc  SuiteSparse_config.malloc_func
-#define calloc  SuiteSparse_config.calloc_func
-#define realloc SuiteSparse_config.realloc_func
+#define malloc  SuiteSparse_config_malloc
+#define calloc  SuiteSparse_config_calloc
+#define realloc SuiteSparse_config_realloc
 #define free(p)                                 \
 {                                               \
     if ((p) != NULL)                            \
     {                                           \
-        SuiteSparse_config.free_func (p) ;      \
+        SuiteSparse_config_free (p) ;           \
         (p) = NULL ;                            \
     }                                           \
 }

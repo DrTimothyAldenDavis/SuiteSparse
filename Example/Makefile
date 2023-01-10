@@ -2,7 +2,7 @@
 # SuiteSparse/Example/Makefile
 #-------------------------------------------------------------------------------
 
-# Example: Copyright (c) 2022, Timothy A. Davis, All Rights Reserved.
+# Example: Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------

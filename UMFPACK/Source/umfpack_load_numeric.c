@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_load_numeric: load Numeric object from a a file
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -44,7 +44,7 @@
 /* === UMFPACK_load_numeric ================================================= */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_load_numeric
+int UMFPACK_load_numeric
 (
     void **NumericHandle,
     char *user_filename

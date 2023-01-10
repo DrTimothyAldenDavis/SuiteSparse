@@ -2,12 +2,12 @@
 // UMFPACK/Source/umf_set_stats.h
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-GLOBAL void UMF_set_stats
+void UMF_set_stats
 (
     double Info [ ],
     SymbolicType *Symbolic,

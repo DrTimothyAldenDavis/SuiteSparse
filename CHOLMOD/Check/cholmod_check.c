@@ -53,7 +53,7 @@
  * Common->precise controls the # of digits printed for numerical entries
  * (5 if FALSE, 15 if TRUE).
  *
- * If SuiteSparse_config.printf_func is NULL, then no printing occurs.  The
+ * If the SuiteSparse_config printf_func is NULL, then no printing occurs.  The
  * cholmod_check_* and cholmod_print_* routines still check their inputs and
  * return TRUE/FALSE if the object is valid or not.
  *
@@ -77,12 +77,17 @@
 #define I_8 "%-8d"
 #endif
 
-#define PR(i,format,arg) \
-{ \
-    if (print >= i && SuiteSparse_config.printf_func != NULL) \
-    { \
-	SuiteSparse_config.printf_func (format, arg) ; \
-    } \
+#define PR(i,format,arg)                                        \
+{                                                               \
+    if ((print) >= (i))                                         \
+    {                                                           \
+        int (*printf_func) (const char *, ...) ;                \
+        printf_func = SuiteSparse_config_printf_func_get ( ) ;  \
+        if (printf_func != NULL)                                \
+        {                                                       \
+            (void) (printf_func) (format, arg) ;                \
+        }                                                       \
+    }                                                           \
 }
 
 #define P1(format,arg) PR(1,format,arg)
@@ -1164,7 +1169,7 @@ int CHOLMOD(check_subset)
 (
     /* ---- input ---- */
     Int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len, /* size of Set (an integer array), or < 0 if 0:n-1 */
+    int64_t len,        /* size of Set (an integer array), or < 0 if 0:n-1 */
     size_t n,		/* 0:n-1 is valid range */
     /* --------------- */
     cholmod_common *Common
@@ -1180,7 +1185,7 @@ int CHOLMOD(print_subset)
 (
     /* ---- input ---- */
     Int *Set,		/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len, /* size of Set (an integer array), or < 0 if 0:n-1 */
+    int64_t len,        /* size of Set (an integer array), or < 0 if 0:n-1 */
     size_t n,		/* 0:n-1 is valid range */
     const char *name,	/* printed name of Set */
     /* --------------- */

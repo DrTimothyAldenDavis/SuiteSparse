@@ -58,10 +58,11 @@ debug:
 
 all: library
 
-demos: library
+demos:  rdemos cdemos
+
+# demos for real data type
+rdemos:
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
-	- ./build/cs_idemo < Matrix/t2
-	- ./build/cs_ldemo < Matrix/t2
 	- ./build/cs_demo1 < Matrix/t1
 	- ./build/cs_demo2 < Matrix/t1
 	- ./build/cs_demo2 < Matrix/fs_183_1
@@ -95,6 +96,12 @@ demos: library
 	- ./build/cs_dl_demo3 < Matrix/bcsstk01
 	- ./build/cs_dl_demo2 < Matrix/bcsstk16
 	- ./build/cs_dl_demo3 < Matrix/bcsstk16
+
+# demos for complex data type
+cdemos:
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
+	- ./build/cs_idemo < Matrix/t2
+	- ./build/cs_ldemo < Matrix/t2
 	- ./build/cs_ci_demo1 < Matrix/t2
 	- ./build/cs_ci_demo2 < Matrix/t2
 	- ./build/cs_ci_demo2 < Matrix/t3

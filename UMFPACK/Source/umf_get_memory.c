@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_get_memory.c: reallocate Numeric->Memory
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -23,7 +23,7 @@
 #include "umf_mem_free_tail_block.h"
 #include "umf_realloc.h"
 
-GLOBAL Int UMF_get_memory
+Int UMF_get_memory
 (
     NumericType *Numeric,
     WorkType *Work,

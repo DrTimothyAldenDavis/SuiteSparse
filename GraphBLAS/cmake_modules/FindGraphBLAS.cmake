@@ -61,6 +61,8 @@ in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 # installation (SuiteSparse:GraphBLAS). As other installations become available
 # changes to this will likely be required.
 
+#-------------------------------------------------------------------------------
+
 # "Include" for SuiteSparse:GraphBLAS
 find_path ( GRAPHBLAS_INCLUDE_DIR
   NAMES GraphBLAS.h
@@ -72,36 +74,41 @@ find_path ( GRAPHBLAS_INCLUDE_DIR
   PATH_SUFFIXES include Include
   )
 
-# dynamic SuiteSparse:GraphBLAS library
+# dynamic SuiteSparse:GraphBLAS library (or static if no dynamic library was built)
 find_library ( GRAPHBLAS_LIBRARY
-  NAMES graphblas
+  NAMES graphblas graphblas_static
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATH_SUFFIXES lib build alternative
+  PATH_SUFFIXES lib build build/Release build/Debug alternative
   )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME graphblas_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME graphblas )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SuiteSparse:GraphBLAS library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( GRAPHBLAS_STATIC
-  NAMES graphblas
+  NAMES ${STATIC_NAME}
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${CMAKE_SOURCE_DIR}/..
   HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
   HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
-  PATH_SUFFIXES lib build alternative
+  PATH_SUFFIXES lib build build/Release build/Debug alternative
   )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( GRAPHBLAS_LIBRARY  ${GRAPHBLAS_LIBRARY} REALPATH )
@@ -112,16 +119,22 @@ string (
     ${GRAPHBLAS_FILENAME}
   )
 
-if ( NOT GRAPHBLAS_VERSION )
+# set ( GRAPHBLAS_VERSION "" )
+if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAJOR MINOR SUB )
-        file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h _VERSION_LINE REGEX "define[ ]+GxB_IMPLEMENTATION_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string (REGEX REPLACE ".*define[ ]+GxB_IMPLEMENTATION_${_VERSION}[ ]+([0-9]*).*" "\\1" _GRAPHBLAS_${_VERSION} "${_VERSION_LINE}")
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set (GRAPHBLAS_VERSION "${_GRAPHBLAS_MAJOR}.${_GRAPHBLAS_MINOR}.${_GRAPHBLAS_SUB}")
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_MAJOR_STR
+        REGEX "define GxB_IMPLEMENTATION_MAJOR" )
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_MINOR_STR
+        REGEX "define GxB_IMPLEMENTATION_MINOR" )
+    file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_PATCH_STR
+        REGEX "define GxB_IMPLEMENTATION_SUB" )
+    message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
+    message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
+    message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MAJOR ${GRAPHBLAS_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MINOR ${GRAPHBLAS_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_PATCH ${GRAPHBLAS_PATCH_STR} )
+    set (GRAPHBLAS_VERSION "${GRAPHBLAS_MAJOR}.${GRAPHBLAS_MINOR}.${GRAPHBLAS_PATCH}")
 endif ( )
 
 set ( GRAPHBLAS_LIBRARIES ${GRAPHBLAS_LIBRARY} )
@@ -130,7 +143,7 @@ include ( FindPackageHandleStandardArgs )
 
 find_package_handle_standard_args(
   GraphBLAS
-  REQUIRED_VARS GRAPHBLAS_LIBRARIES GRAPHBLAS_INCLUDE_DIR
+  REQUIRED_VARS GRAPHBLAS_LIBRARY GRAPHBLAS_INCLUDE_DIR
   VERSION_VAR GRAPHBLAS_VERSION
   )
 
@@ -148,5 +161,9 @@ if ( GRAPHBLAS_FOUND )
     message ( STATUS "GraphBLAS static:  ${GRAPHBLAS_STATIC}" )
 else ( )
     message ( STATUS "GraphBLAS not found" )
+    set ( GRAPHBLAS_INCLUDE_DIR "" )
+    set ( GRAPHBLAS_LIBRARIES "" )
+    set ( GRAPHBLAS_LIBRARY "" )
+    set ( GRAPHBLAS_STATIC "" )
 endif ( )
 

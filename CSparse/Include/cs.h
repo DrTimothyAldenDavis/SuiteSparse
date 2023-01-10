@@ -14,8 +14,8 @@
 #endif
 #define CS_VER 4  /* CSparse Version */
 #define CS_SUBVER 0
-#define CS_SUBSUB 0
-#define CS_DATE "Nov 12, 2022"        /* CSparse release date */
+#define CS_SUBSUB 1
+#define CS_DATE "Jan 9, 2023"        /* CSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 
 #ifndef csi

@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_report_perm: print a permutation
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -12,7 +12,7 @@
 
 #define PRINTF4U(params) { if (user || prl >= 4) PRINTF (params) ; }
 
-GLOBAL Int UMF_report_perm
+Int UMF_report_perm
 (
     Int n,
     const Int P [ ],

@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_lsolve: solve Lx=b
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -14,7 +14,7 @@
 #include "umf_internal.h"
 #include "umf_lsolve.h"
 
-GLOBAL double UMF_lsolve
+double UMF_lsolve
 (
     NumericType *Numeric,
     Entry X [ ],		/* b on input, solution x on output */

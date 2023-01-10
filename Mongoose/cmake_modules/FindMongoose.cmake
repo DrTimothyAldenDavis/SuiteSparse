@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindMongoose.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindMongoose.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -41,36 +41,41 @@ find_path ( MONGOOSE_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic Mongoose library
+# dynamic Mongoose library (or static if no dynamic library was built)
 find_library ( MONGOOSE_LIBRARY
-    NAMES mongoose
+    NAMES mongoose mongoose_static
     HINTS ${MONGOOSE_ROOT}
     HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME mongoose_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME mongoose )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static Mongoose library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( MONGOOSE_STATIC
-    NAMES mongoose
+    NAMES ${STATIC_NAME}
     HINTS ${MONGOOSE_ROOT}
     HINTS ENV ${MONGOOSE_ROOT}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/Mongoose
     HINTS ${CMAKE_SOURCE_DIR}/../Mongoose
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( MONGOOSE_LIBRARY  ${MONGOOSE_LIBRARY} REALPATH )
@@ -81,16 +86,22 @@ string (
     ${MONGOOSE_FILENAME}
 )
 
-if ( NOT MONGOOSE_VERSION )
+# set ( MONGOOSE_VERSION "" )
+if ( EXISTS "${MONGOOSE_INCLUDE_DIR}" AND NOT MONGOOSE_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION VERSION_MAJOR VERSION_MINOR VERSION_PATCH )
-        file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose_Version.hpp _VERSION_LINE REGEX "define[ ]+Mongoose_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+Mongoose_${_VERSION}[ ]+([0-9]*).*" "\\1" _MONGOOSE_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( MONGOOSE_VERSION "${_MONGOOSE_VERSION_MAJOR}.${_MONGOOSE_VERSION_MINOR}.${_MONGOOSE_VERSION_PATCH}" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_MAJOR_STR
+        REGEX "define Mongoose_VERSION_MAJOR" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_MINOR_STR
+        REGEX "define Mongoose_VERSION_MINOR" )
+    file ( STRINGS ${MONGOOSE_INCLUDE_DIR}/Mongoose.hpp MONGOOSE_PATCH_STR
+        REGEX "define Mongoose_VERSION_PATCH" )
+    message ( STATUS "major: ${MONGOOSE_MAJOR_STR}" )
+    message ( STATUS "minor: ${MONGOOSE_MINOR_STR}" )
+    message ( STATUS "patch: ${MONGOOSE_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_MAJOR ${MONGOOSE_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_MINOR ${MONGOOSE_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" MONGOOSE_PATCH ${MONGOOSE_PATCH_STR} )
+    set (MONGOOSE_VERSION "${MONGOOSE_MAJOR}.${MONGOOSE_MINOR}.${MONGOOSE_PATCH}")
 endif ( )
 
 set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
@@ -98,7 +109,7 @@ set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( Mongoose
-    REQUIRED_VARS MONGOOSE_LIBRARIES MONGOOSE_INCLUDE_DIR
+    REQUIRED_VARS MONGOOSE_LIBRARY MONGOOSE_INCLUDE_DIR
     VERSION_VAR MONGOOSE_VERSION
 )
 
@@ -116,5 +127,9 @@ if ( MONGOOSE_FOUND )
     message ( STATUS "Mongoose static:  ${MONGOOSE_STATIC}" )
 else ( )
     message ( STATUS "Mongoose not found" )
+    set ( MONGOOSE_INCLUDE_DIR "" )
+    set ( MONGOOSE_LIBRARIES "" )
+    set ( MONGOOSE_LIBRARY "" )
+    set ( MONGOOSE_STATIC "" )
 endif ( )
 

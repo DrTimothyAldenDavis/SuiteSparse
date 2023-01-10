@@ -30,7 +30,7 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-SUITESPARSE_PUBLIC int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
+int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
                              * CAMD_INVALID, or CAMD_OUT_OF_MEMORY */
 (
     int32_t n,                  /* A is n-by-n.  n must be >= 0. */
@@ -42,7 +42,7 @@ SUITESPARSE_PUBLIC int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
     const int32_t C [ ]         /* Constraint set of A, of size n; can be NULL */
 ) ;
 
-SUITESPARSE_PUBLIC int camd_l_order   /* see above for description */
+int camd_l_order   /* see above for description */
 (
     int64_t n,
     const int64_t Ap [ ],
@@ -221,7 +221,7 @@ SUITESPARSE_PUBLIC int camd_l_order   /* see above for description */
  * of the matrix for CAMD to destroy).  Refer to CAMD/Source/camd_2.c for a
  * description of each parameter. */
 
-SUITESPARSE_PUBLIC void camd_2
+void camd_2
 (
     int32_t n,
     int32_t Pe [ ],
@@ -242,7 +242,7 @@ SUITESPARSE_PUBLIC void camd_2
     int32_t BucketSet [ ] 
 ) ;
 
-SUITESPARSE_PUBLIC void camd_l2
+void camd_l2
 (
     int64_t n,
     int64_t Pe [ ],
@@ -276,7 +276,7 @@ SUITESPARSE_PUBLIC void camd_l2
  * of columns of the matrix.  For its use in CAMD, these must both equal n.
  */
 
-SUITESPARSE_PUBLIC int camd_valid
+int camd_valid
 (
     int32_t n_row,              /* # of rows */
     int32_t n_col,              /* # of columns */
@@ -284,7 +284,7 @@ SUITESPARSE_PUBLIC int camd_valid
     const int32_t Ai [ ]        /* row indices, of size Ap [n_col] */
 ) ;
 
-SUITESPARSE_PUBLIC int camd_l_valid
+int camd_l_valid
 (
     int64_t n_row,
     int64_t n_col,
@@ -299,13 +299,13 @@ SUITESPARSE_PUBLIC int camd_l_valid
 /* Returns TRUE if the constraint set is valid as input to camd_order,
  * FALSE otherwise. */
 
-SUITESPARSE_PUBLIC int camd_cvalid
+int camd_cvalid
 (
    int32_t n,
    const int32_t C [ ]
 ) ;
 
-SUITESPARSE_PUBLIC int camd_l_cvalid
+int camd_l_cvalid
 (
    int64_t n,
    const int64_t C [ ]
@@ -316,16 +316,16 @@ SUITESPARSE_PUBLIC int camd_l_cvalid
 /* ------------------------------------------------------------------------- */
 
 /* camd_defaults:  sets the default control settings */
-SUITESPARSE_PUBLIC void camd_defaults   (double Control [ ]) ;
-SUITESPARSE_PUBLIC void camd_l_defaults (double Control [ ]) ;
+void camd_defaults   (double Control [ ]) ;
+void camd_l_defaults (double Control [ ]) ;
 
 /* camd_control: prints the control settings */
-SUITESPARSE_PUBLIC void camd_control    (double Control [ ]) ;
-SUITESPARSE_PUBLIC void camd_l_control  (double Control [ ]) ;
+void camd_control    (double Control [ ]) ;
+void camd_l_control  (double Control [ ]) ;
 
 /* camd_info: prints the statistics */
-SUITESPARSE_PUBLIC void camd_info       (double Info [ ]) ;
-SUITESPARSE_PUBLIC void camd_l_info     (double Info [ ]) ;
+void camd_info       (double Info [ ]) ;
+void camd_l_info     (double Info [ ]) ;
 
 #define CAMD_CONTROL 5      /* size of Control array */
 #define CAMD_INFO 20        /* size of Info array */
@@ -384,10 +384,10 @@ SUITESPARSE_PUBLIC void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "Dec 9, 2022"
+#define CAMD_DATE "Jan 9, 2023"
 #define CAMD_MAIN_VERSION   3
 #define CAMD_SUB_VERSION    0
-#define CAMD_SUBSUB_VERSION 2
+#define CAMD_SUBSUB_VERSION 3
 
 #define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)

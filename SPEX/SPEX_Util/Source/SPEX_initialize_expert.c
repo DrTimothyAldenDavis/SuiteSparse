@@ -25,10 +25,10 @@
 
 SPEX_info SPEX_initialize_expert
 (
-    void* (*MyMalloc) (size_t),             // user-defined malloc
-    void* (*MyCalloc) (size_t, size_t),     // user-defined calloc
-    void* (*MyRealloc) (void *, size_t),    // user-defined realloc
-    void  (*MyFree) (void *)                // user-defined free
+    void* (*user_malloc) (size_t),             // user-defined malloc
+    void* (*user_calloc) (size_t, size_t),     // user-defined calloc
+    void* (*user_realloc) (void *, size_t),    // user-defined realloc
+    void  (*user_free) (void *)                // user-defined free
 )
 {
 
@@ -38,10 +38,10 @@ SPEX_info SPEX_initialize_expert
     // define the malloc/calloc/realloc/free functions 
     //--------------------------------------------------------------------------
 
-    SuiteSparse_config.malloc_func  = MyMalloc ;
-    SuiteSparse_config.calloc_func  = MyCalloc ;
-    SuiteSparse_config.realloc_func = MyRealloc ;
-    SuiteSparse_config.free_func    = MyFree ;
+    SuiteSparse_config_malloc_func_set ((void *) user_malloc) ;
+    SuiteSparse_config_calloc_func_set ((void *) user_calloc) ;
+    SuiteSparse_config_realloc_func_set ((void *) user_realloc) ;
+    SuiteSparse_config_free_func_set ((void *) user_free) ;
 
     //--------------------------------------------------------------------------
     // Set GMP memory functions

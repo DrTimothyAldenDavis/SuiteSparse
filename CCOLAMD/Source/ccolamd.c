@@ -716,9 +716,7 @@ typedef struct CColamd_Row_struct
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
-/* Routines are either PUBLIC (user-callable) or PRIVATE (not user-callable) */
-#define GLOBAL SUITESPARSE_PUBLIC
-#define PUBLIC SUITESPARSE_PUBLIC
+/* Routines are either public (user-callable) or PRIVATE (not user-callable) */
 #define PRIVATE static 
 
 #define DENSE_DEGREE(alpha,n) \
@@ -1069,7 +1067,7 @@ static size_t ccolamd_need (Int nnz, Int n_row, Int n_col, int *ok)
     return (ok ? s : 0) ;
 }
 
-PUBLIC size_t CCOLAMD_recommended	/* returns recommended value of Alen. */
+size_t CCOLAMD_recommended	/* returns recommended value of Alen. */
 (
     /* === Parameters ======================================================= */
 
@@ -1086,7 +1084,6 @@ PUBLIC size_t CCOLAMD_recommended	/* returns recommended value of Alen. */
     }
     s = ccolamd_need (nnz, n_row, n_col, &ok) ;	/* bare minimum needed */
     s = t_add (s, nnz/5, &ok) ;			/* extra elbow room */
-    ok = ok && (s < Int_MAX) ;
     return (ok ? s : 0) ;
 }
 
@@ -1100,7 +1097,7 @@ PUBLIC size_t CCOLAMD_recommended	/* returns recommended value of Alen. */
  *  controllable parameters for ccolamd.
  */
 
-PUBLIC void CCOLAMD_set_defaults
+void CCOLAMD_set_defaults
 (
     /* === Parameters ======================================================= */
 
@@ -1130,7 +1127,7 @@ PUBLIC void CCOLAMD_set_defaults
 /* === symamd =============================================================== */
 /* ========================================================================== */
 
-PUBLIC int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
+int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -1462,7 +1459,7 @@ PUBLIC int CSYMAMD_MAIN		/* return TRUE if OK, FALSE otherwise */
  *  (AQ)'(AQ) = LL' remains sparse.
  */
 
-PUBLIC int CCOLAMD_MAIN
+int CCOLAMD_MAIN
 (
     /* === Parameters ======================================================= */
 
@@ -1491,7 +1488,7 @@ PUBLIC int CCOLAMD_MAIN
  * the user.
  */
 
-PUBLIC int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
+int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
 (
     /* === Parameters ======================================================= */
 
@@ -1646,7 +1643,7 @@ PUBLIC int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
     */
     need = ccolamd_need (nnz, n_row, n_col, &ok) ;
 
-    if (!ok || need > (size_t) Alen || need > Int_MAX)
+    if (!ok || need > (size_t) Alen)
     {
 	/* not enough space in array A to perform the ordering */
 	stats [CCOLAMD_STATUS] = CCOLAMD_ERROR_A_too_small ;
@@ -1958,7 +1955,7 @@ PUBLIC int CCOLAMD_2	    /* returns TRUE if successful, FALSE otherwise */
 /* === colamd_report ======================================================== */
 /* ========================================================================== */
 
-PUBLIC void CCOLAMD_report
+void CCOLAMD_report
 (
     Int stats [CCOLAMD_STATS]
 )
@@ -1971,7 +1968,7 @@ PUBLIC void CCOLAMD_report
 /* === symamd_report ======================================================== */
 /* ========================================================================== */
 
-PUBLIC void CSYMAMD_report
+void CSYMAMD_report
 (
     Int stats [CCOLAMD_STATS]
 )
@@ -3859,7 +3856,7 @@ PRIVATE void print_report
  * Apply post-ordering of supernodal elimination tree.
  */
 
-GLOBAL void CCOLAMD_apply_order
+void CCOLAMD_apply_order
 (
     Int Front [ ],	    /* of size nn on input, size nfr on output */
     const Int Order [ ],    /* Order [i] = k, i in the range 0..nn-1,
@@ -3896,7 +3893,7 @@ GLOBAL void CCOLAMD_apply_order
  * Only required to sort the children of each
  * node prior to postordering the column elimination tree. */
 
-GLOBAL void CCOLAMD_fsize
+void CCOLAMD_fsize
 (
     Int nn,
     Int Fsize [ ],
@@ -3956,7 +3953,7 @@ GLOBAL void CCOLAMD_fsize
 
 /* Perform a postordering (via depth-first search) of an assembly tree. */
 
-GLOBAL void CCOLAMD_postorder
+void CCOLAMD_postorder
 (
     /* inputs, not modified on output: */
     Int nn,		/* nodes are in the range 0..nn-1 */
@@ -4143,7 +4140,7 @@ GLOBAL void CCOLAMD_postorder
 
 /* Post-ordering of a supernodal column elimination tree.  */
 
-GLOBAL Int CCOLAMD_post_tree
+Int CCOLAMD_post_tree
 (
     Int root,			/* root of the tree */
     Int k,			/* start numbering at k */

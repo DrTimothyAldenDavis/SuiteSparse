@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_report_perm: print a permutation
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 #include "umf_malloc.h"
 #include "umf_free.h"
 
-GLOBAL int UMFPACK_report_perm
+int UMFPACK_report_perm
 (
     Int np,
     const Int Perm [ ],

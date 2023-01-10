@@ -96,7 +96,9 @@ cholmod_dense *CHOLMOD(allocate_dense)
     nzmax = CHOLMOD(mult_size_t) (d, ncol, &ok) ;
     nzmax = MAX (1, nzmax) ;
 
-    if (!ok || nrow > Int_max || ncol > Int_max || nzmax > Int_max)
+    if (!ok || (int64_t) nrow  >= Int_max
+            || (int64_t) ncol  >= Int_max
+            || (int64_t) nzmax >= Int_max)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
 	return (NULL) ;

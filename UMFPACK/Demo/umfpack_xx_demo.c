@@ -2,7 +2,7 @@
 // UMFPACK/Demo/umfpack_xx_demo: C demo for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -595,6 +595,62 @@ int main (int argc, char **argv)
 	    Chain_maxrows [j], Chain_maxcols [j]) ;
     }
 
+    //--------------------------------------------------------------------------
+    // copy the Symbolic object
+    //--------------------------------------------------------------------------
+
+    void *Symbolic_copy = NULL ;
+    printf ("\nCopying symbolic object:\n") ;
+    status = umfpack_xx_copy_symbolic (&Symbolic_copy, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_copy_symbolic failed") ;
+    }
+    printf ("\nSymbolic factorization of C (copy): ") ;
+    (void) umfpack_xx_report_symbolic (Symbolic_copy, Control) ;
+    umfpack_xx_free_symbolic (&Symbolic) ;
+    Symbolic = Symbolic_copy ;
+    printf ("\nDone copying symbolic object\n") ;
+
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Symbolic object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t S_blobsize ;
+    status = umfpack_xx_serialize_symbolic_size (&S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_serialize_symbolic_size failed") ;
+    }
+    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    // allocate the blob
+    int8_t *S_blob = malloc (S_blobsize) ;
+    if (!S_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_xx_serialize_symbolic (S_blob, S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_serialize_symbolic failed") ;
+    }
+    // free the Symbolic object; its contents are preserved in the blob
+    umfpack_xx_free_symbolic (&Symbolic) ;
+    // deserialize the blob back into the Symbolic object
+    status = umfpack_xx_deserialize_symbolic (&Symbolic, S_blob, S_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_deserialize_symbolic failed") ;
+    }
+    printf ("\nDone serialize/deserialize of symbolic object\n") ;
+    free (S_blob) ;
+
     /* ---------------------------------------------------------------------- */
     /* numeric factorization of C */
     /* ---------------------------------------------------------------------- */
@@ -722,6 +778,80 @@ int main (int argc, char **argv)
     rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
     printf ("maxnorm of residual: %g\n\n", rnorm) ;
 
+    //--------------------------------------------------------------------------
+    // copy the Numeric object
+    //--------------------------------------------------------------------------
+
+    void *Numeric_copy = NULL ;
+    printf ("\nCopying numeric object:\n") ;
+    status = umfpack_xx_copy_numeric (&Numeric_copy, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_copy_numeric failed") ;
+    }
+    printf ("\nNumeric factorization of C (copy): ") ;
+    (void) umfpack_xx_report_numeric (Numeric_copy, Control) ;
+    umfpack_xx_free_numeric (&Numeric) ;
+    Numeric = Numeric_copy ;
+    Numeric_copy = NULL ;
+    printf ("\nDone copying numeric object\n") ;
+
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Numeric object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t N_blobsize ;
+    status = umfpack_xx_serialize_numeric_size (&N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_serialize_numeric_size failed") ;
+    }
+    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    // allocate the blob
+    int8_t *N_blob = malloc (N_blobsize) ;
+    if (!N_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_xx_serialize_numeric (N_blob, N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_serialize_numeric failed") ;
+    }
+    // free the Numeric object; its contents are preserved in the blob
+    umfpack_xx_free_numeric (&Numeric) ;
+    // deserialize the blob back into the Numeric object
+    status = umfpack_xx_deserialize_numeric (&Numeric, N_blob, N_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_deserialize_numeric failed") ;
+    }
+    printf ("\nDone serialize/deserialize of numeric object\n") ;
+    free (N_blob) ;
+
+    //--------------------------------------------------------------------------
+    // solve C'x=b again, with the new copy
+    //--------------------------------------------------------------------------
+
+    status = umfpack_xx_solve (UMFPACK_At, Cp, Ci, Cx, Cz, x, xz, b, bz,
+	Numeric, Control, Info) ;
+    umfpack_xx_report_info (Control, Info) ;
+    if (status < 0)
+    {
+	umfpack_xx_report_status (Control, status) ;
+	error ("umfpack_xx_solve failed") ;
+    }
+    printf ("\nx (solution of C'x=b): (using the copy) ") ;
+    (void) umfpack_xx_report_vector (n, x, xz, Control) ;
+    rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
+    printf ("maxnorm of residual: %g\n\n", rnorm) ;
+
     /* ---------------------------------------------------------------------- */
     /* solve C'x=b again, using umfpack_xx_wsolve instead */
     /* ---------------------------------------------------------------------- */
@@ -797,6 +927,7 @@ int main (int argc, char **argv)
 
     free (Wi) ;
     free (W) ;
+    free (Rs) ;
 
     umfpack_xx_free_symbolic (&Symbolic) ;
     umfpack_xx_free_numeric (&Numeric) ;

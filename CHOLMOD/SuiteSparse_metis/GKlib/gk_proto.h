@@ -268,6 +268,8 @@ uint32_t gk_randint32(void);
 /*-------------------------------------------------------------
  * OpenMP fake functions
  *-------------------------------------------------------------*/
+#if 0
+// disabled for SuiteSparse
 #if !defined(__OPENMP__)
 void omp_set_num_threads(int num_threads);
 int omp_get_num_threads(void);
@@ -280,6 +282,7 @@ int omp_get_dynamic(void);
 void omp_set_nested(int nested);
 int omp_get_nested(void);
 #endif /* __OPENMP__ */
+#endif
 
 
 /*-------------------------------------------------------------

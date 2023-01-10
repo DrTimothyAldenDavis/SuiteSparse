@@ -2017,7 +2017,7 @@ provided by Microsoft Visual Studio for computing $\sin^{-1}(x)$ and
 $\sinh^{-1}(x)$ when $x$ is complex do not compute the correct result.  Thus,
 the unary operators \verb'GxB_ASIN_FC32', \verb'GxB_ASIN_FC64'
 \verb'GxB_ASINH_FC32', and \verb'GxB_ASINH_FC64' do not work properly if the MS
-Visual Studio compiler is used.  These functions work properly if the gcc, icc,
+Visual Studio compiler is used.  These functions work properly if the gcc, icx, icc,
 or clang compilers are used on Linux or MacOS.
 
 Integer division by zero normally terminates an application, but this is
@@ -14873,7 +14873,7 @@ To use a non-default compiler with 4 threads:
 
     {\small
     \begin{verbatim}
-    make CC=icx CXX=icpx JOBS=4 \end{verbatim} }
+    make CC=icx JOBS=4 \end{verbatim} }
 
 GraphBLAS v6.1.3 and later use the \verb'cpu_features' package by Google to
 determine if the target architecture supports AVX2 and/or AVX512F (on Intel
@@ -14935,7 +14935,7 @@ to use 32 parallel jobs and the \verb'gcc' compiler, do the following:
 If you do not have \verb'cmake', refer to Section~\ref{altmake}.
 
 %----------------------------------------
-\subsection{More details on the Mac}
+\subsection{More details on the Mac (Intel-based)}
 %----------------------------------------
 
 SuiteSparse:GraphBLAS requires OpenMP for its internal parallelism, but
@@ -14946,7 +14946,7 @@ in the top-level \verb'GraphBLAS' folder.  OpenMP will be found automatically:
 
     {\small
     \begin{verbatim}
-    make CC=icc CXX=icpc \end{verbatim} }
+    make CC=icx \end{verbatim} }
 
 The following instructions work on MacOS Big Sur (v11.3)
 and MacOS Monterey (12.1), using
@@ -15021,6 +15021,53 @@ Finally, you can run the tests to see if your installation works:
     gbtest \end{verbatim} }
 
 %----------------------------------------
+\subsection{More details for MATLAB on the Mac (Apple Silicon based)}
+%----------------------------------------
+
+MATLAB on the Apple-Silicon-based Mac (M1, M2) is not yet a native ARM64
+application (as of R2022b).
+
+For MATLAB on the M1 Mac, you must compile the x86 version of
+\verb'libgraphblas_matlab.so'.  This requires the x86 version of \verb'brew'.
+First, install it in \verb'/usr/local/bin/brew' with these 2 commands (the 2nd
+as a single line).
+
+\begin{verbatim}
+arch -x86_64 zsh
+arch -x86_64 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com
+    /Homebrew/install/master/install.sh)"
+\end{verbatim}
+
+If you install the default arm64 \verb'brew', it is located in
+\verb'/opt/homebrew/bin/brew'.  I created these two aliases in my \verb'.zshrc'
+file:
+
+\begin{verbatim}
+alias brew_arm='arch -arm64 /opt/homebrew/bin/brew'
+alias brew_x86='arch -x86_64 /usr/local/bin/brew'
+\end{verbatim}
+
+Next, use \verb'brew_86' to install \verb'gcc-12' and \verb'libomp'.
+
+\begin{verbatim}
+brew_x86 install gcc
+brew_x86 install libomp
+\end{verbatim}
+
+In the \verb'GraphBLAS/GraphBLAS' folder, do the following to compile
+\verb'libgraphblas_matlab.so':
+
+\begin{verbatim}
+make CC=/usr/local/bin/gcc-12 CXX=/usr/local/bin/g++-12 JOBS=8
+sudo make install
+\end{verbatim}
+
+Ignore the \verb'"-arch option ignored"' warnings.
+
+You can now start MATLAB and install the MATLAB interface with
+\verb'gbmake' as described in the previous section.
+
+%----------------------------------------
 \subsection{On the ARM64 architecture}
 %----------------------------------------
 
@@ -15057,17 +15104,20 @@ types are limited to 128 bytes in size.  This can be changed by editing
 SuiteSparse:GraphBLAS.
 
 \item AVX acceleration is not enabled.
+
+\item The ninja code generator does not work with MS Visual Studio to
+build GraphBLAS, because of a limitation in cmake.
 \end{itemize}
 
 If you use a recent \verb'gcc' or \verb'icx' compiler on Windows other than the
 Microsoft Compiler (\verb'cl'), these limitations can be avoided.
 
-The following instructions apply to Windows 10, CMake 3.16, and
+The following instructions apply to Windows 10, CMake 3.19, and
 Visual Studio 2019, but may work for earlier versions.
 
 \begin{enumerate}
 
-\item Install CMake 3.16 or later, if not already installed.
+\item Install CMake 3.19 or later, if not already installed.
     See \url{https://cmake.org/} for details.
 
 \item Install Microsoft Visual Studio, if not already installed.
@@ -15487,6 +15537,16 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Version 7.4.1 (Dec 29, 2022)
+
+    \begin{itemize}
+    \item global free pool: disabled.  Benefit for single-thread user
+        applications was modest, and it causes too much contention in a
+        critical section when the user application is multi-threaded.
+    \item \verb'GrB_mxm': revised task creation heuristics for
+        sparse-times-sparse for better performance.
+    \end{itemize}
 
 \item Version 7.4.0 (Dec 23, 2022)
 
@@ -16218,6 +16278,10 @@ in Debian Linux.
 
 I would like to thank G{\'{a}}bor Sz{\'{a}}rnyas for porting the \verb'@GrB'
 interface to Octave 7 on Apple Silicon.
+
+I would like to thank Markus M\"{u}tzel
+for his help in porting the updates
+to GraphBLAS v7.4.1 and SuiteSparse v7.0.0 to Windows.
 
 I would like to thank Roi Lipman, Redis (\url{https://redislabs.com}), for
 our many discussions on GraphBLAS and for enabling its use in RedisGraph

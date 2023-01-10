@@ -2,7 +2,7 @@
 // UMFPACK/Source/umfpack_get_numeric: extract LU factors from Numeric object
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ PRIVATE void get_U
 /* === UMFPACK_get_numeric ================================================== */
 /* ========================================================================== */
 
-GLOBAL int UMFPACK_get_numeric
+int UMFPACK_get_numeric
 (
     Int Lp [ ],
     Int Lj [ ],

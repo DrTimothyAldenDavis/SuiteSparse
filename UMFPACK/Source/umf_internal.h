@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_internal.h: internal definitions for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -258,7 +258,7 @@ typedef union Unit_union Unit ;
     same version that created them (umfpack_di_*, umfpack_dl_*, umfpack_zi_*,
     or umfpack_zl_*).  The values have also been changed since prior releases of
     the code to ensure that all routines that operate on the objects are of the
-    same release.  The values themselves are purely arbitrary.  The are less
+    same release.  The values themselves are purely arbitrary.  They are less
     than the ANSI C required minimums of INT_MAX and LONG_MAX, respectively.
 */
 
@@ -736,8 +736,8 @@ typedef struct	/* SWType */
 /* for testing out-of-memory conditions: */
 #define UMF_TCOV_TEST
 
-GLOBAL int umf_fail, umf_fail_lo, umf_fail_hi ;
-GLOBAL int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
+extern int umf_fail, umf_fail_lo, umf_fail_hi ;
+extern int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
 
 /* for testing malloc count: */
 #define UMF_MALLOC_COUNT

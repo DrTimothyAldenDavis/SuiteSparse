@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindBTF.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindBTF.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( BTF_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic BTF library
+# dynamic BTF library (or static if no dynamic library was built)
 find_library ( BTF_LIBRARY
-    NAMES btf
+    NAMES btf btf_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME btf_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME btf )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static BTF library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( BTF_STATIC
-    NAMES btf
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/BTF
     HINTS ${CMAKE_SOURCE_DIR}/../BTF
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( BTF_LIBRARY  ${BTF_LIBRARY} REALPATH )
@@ -74,24 +79,31 @@ string (
     BTF_VERSION
     ${BTF_FILENAME}
 )
-set ( BTF_LIBRARIES ${BTF_LIBRARY} )
 
-if ( NOT BTF_VERSION )
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        # if the version does not appear in the filename, read the include file
-        file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h _VERSION_LINE REGEX "define[ ]+BTF_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+BTF_${_VERSION}[ ]+([0-9]*).*" "\\1" _BTF_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( BTF_VERSION "${_BTF_MAIN_VERSION}.${_BTF_SUB_VERSION}.${_BTF_SUBSUB_VERSION}" )
+# set ( BTF_VERSION "" )
+if ( EXISTS "${BTF_INCLUDE_DIR}" AND NOT BTF_VERSION )
+    # if the version does not appear in the filename, read the include file
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_MAJOR_STR
+        REGEX "define BTF_MAIN_VERSION" )
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_MINOR_STR
+        REGEX "define BTF_SUB_VERSION" )
+    file ( STRINGS ${BTF_INCLUDE_DIR}/btf.h BTF_PATCH_STR
+        REGEX "define BTF_SUBSUB_VERSION" )
+    message ( STATUS "major: ${BTF_MAJOR_STR}" )
+    message ( STATUS "minor: ${BTF_MINOR_STR}" )
+    message ( STATUS "patch: ${BTF_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" BTF_MAJOR ${BTF_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" BTF_MINOR ${BTF_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" BTF_PATCH ${BTF_PATCH_STR} )
+    set (BTF_VERSION "${BTF_MAJOR}.${BTF_MINOR}.${BTF_PATCH}")
 endif ( )
+
+set ( BTF_LIBRARIES ${BTF_LIBRARY} )
 
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( BTF
-    REQUIRED_VARS BTF_LIBRARIES BTF_INCLUDE_DIR
+    REQUIRED_VARS BTF_LIBRARY BTF_INCLUDE_DIR
     VERSION_VAR BTF_VERSION
 )
 
@@ -109,5 +121,9 @@ if ( BTF_FOUND )
     message ( STATUS "BTF static:  ${BTF_STATIC}" )
 else ( )
     message ( STATUS "BTF not found" )
+    set ( BTF_INCLUDE_DIR "" )
+    set ( BTF_LIBRARIES "" )
+    set ( BTF_LIBRARY "" )
+    set ( BTF_STATIC "" )
 endif ( )
 

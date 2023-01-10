@@ -347,6 +347,7 @@ gk_csr_t **gk_csr_Split(gk_csr_t *mat, int *color)
 */
 /**************************************************************************/
 #if 0
+// gk_csr_Read, gk_csr_Write disabled for SuiteSparse, Dec 2022
 gk_csr_t *gk_csr_Read(char *filename, int format, int readvals, int numbering)
 {
   ssize_t i, k, l;

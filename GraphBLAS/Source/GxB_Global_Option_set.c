@@ -210,10 +210,7 @@ GrB_Info GxB_Global_Option_set_INT64_ARRAY      // set a global default option
             }
             else
             {
-                for (int k = 3 ; k < 64 ; k++)
-                { 
-                    GB_Global_free_pool_limit_set (k, value [k]) ;
-                }
+                GB_Global_free_pool_limit_set (value) ;
             }
             break ;
 
@@ -386,10 +383,7 @@ GrB_Info GxB_Global_Option_set      // set a global default option
                 }
                 else
                 {
-                    for (int k = 3 ; k < 64 ; k++)
-                    { 
-                        GB_Global_free_pool_limit_set (k, free_pool_limit [k]) ;
-                    }
+                    GB_Global_free_pool_limit_set (free_pool_limit) ;
                 }
             }
             break ;

@@ -17,7 +17,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL size_t AMD_aat	/* returns nz in A+A' */
+size_t AMD_aat	/* returns nz in A+A' */
 (
     Int n,
     const Int Ap [ ],

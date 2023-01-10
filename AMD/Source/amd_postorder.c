@@ -12,7 +12,7 @@
 
 #include "amd_internal.h"
 
-GLOBAL void AMD_postorder
+void AMD_postorder
 (
     /* inputs, not modified on output: */
     Int nn,		/* nodes are in the range 0..nn-1 */

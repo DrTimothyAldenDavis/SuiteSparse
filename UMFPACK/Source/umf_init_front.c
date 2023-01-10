@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_init_front: initialize a new front
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -38,7 +38,7 @@ PRIVATE void zero_init_front (Int m, Int n, Entry *Fcblock, Int d)
 /* === UMF_init_front ======================================================= */
 /* ========================================================================== */
 
-GLOBAL Int UMF_init_front
+Int UMF_init_front
 (
     NumericType *Numeric,
     WorkType *Work

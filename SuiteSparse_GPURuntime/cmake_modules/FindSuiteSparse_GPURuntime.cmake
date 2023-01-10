@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindSuiteSparse_GPURuntime.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindSuiteSparse_GPURuntime.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,36 +39,41 @@ find_path ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SuiteSparse_GPURuntime library
+# dynamic SuiteSparse_GPURuntime library (or static if no dynamic library was built)
 find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
-    NAMES suitesparse_gpuruntime
+    NAMES suitesparse_gpuruntime suitesparse_gpuruntime_static
     HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
     HINTS ENV SUITESPARSE_GPURUNTIME_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_GPURuntime
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME suitesparse_gpuruntime_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME suitesparse_gpuruntime )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SuiteSparse_GPURuntime library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SUITESPARSE_GPURUNTIME_STATIC
-    NAMES suitesparse_gpuruntime_static
+    NAMES ${STATIC_NAME}
     HINTS ${SUITESPARSE_GPURUNTIME_ROOT}
     HINTS ENV SUITESPARSE_GPURUNTIME_ROOT
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_GPURuntime
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( SUITESPARSE_GPURUNTIME_LIBRARY  ${SUITESPARSE_GPURUNTIME_LIBRARY} REALPATH )
@@ -79,16 +84,22 @@ string (
     ${SUITESPARSE_GPURUNTIME_FILENAME}
 )
 
-if ( NOT SUITESPARSE_GPURUNTIME_VERSION )
+# set ( SUITESPARSE_GPURUNTIME_VERSION "" )
+if ( EXISTS "${SUITESPARSE_GPURUNTIME_INCLUDE_DIR}" AND NOT SUITESPARSE_GPURUNTIME_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR}/amd.h _VERSION_LINE REGEX "define[ ]+SUITESPARSE_GPURUNTIME_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+SUITESPARSE_GPURUNTIME_${_VERSION}[ ]+([0-9]*).*" "\\1" _SUITESPARSE_GPURUNTIME_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( SUITESPARSE_GPURUNTIME_VERSION "${_SUITESPARSE_GPURUNTIME_MAIN_VERSION}.${_SUITESPARSE_GPURUNTIME_SUB_VERSION}.${_SUITESPARSE_GPURUNTIME_SUBSUB_VERSION}" )
+    file ( STRINGS ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR}/SuiteSparse_GPURuntime.hpp SUITESPARSE_GPURUNTIME_MAJOR_STR
+        REGEX "define SUITESPARSE_GPURUNTIME_MAIN_VERSION" )
+    file ( STRINGS ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR}/SuiteSparse_GPURuntime.hpp SUITESPARSE_GPURUNTIME_MINOR_STR
+        REGEX "define SUITESPARSE_GPURUNTIME_SUB_VERSION" )
+    file ( STRINGS ${SUITESPARSE_GPURUNTIME_INCLUDE_DIR}/SuiteSparse_GPURuntime.hpp SUITESPARSE_GPURUNTIME_PATCH_STR
+        REGEX "define SUITESPARSE_GPURUNTIME_SUBSUB_VERSION" )
+    message ( STATUS "major: ${SUITESPARSE_GPURUNTIME_MAJOR_STR}" )
+    message ( STATUS "minor: ${SUITESPARSE_GPURUNTIME_MINOR_STR}" )
+    message ( STATUS "patch: ${SUITESPARSE_GPURUNTIME_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_GPURUNTIME_MAJOR ${SUITESPARSE_GPURUNTIME_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_GPURUNTIME_MINOR ${SUITESPARSE_GPURUNTIME_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SUITESPARSE_GPURUNTIME_PATCH ${SUITESPARSE_GPURUNTIME_PATCH_STR} )
+    set (SUITESPARSE_GPURUNTIME_VERSION "${SUITESPARSE_GPURUNTIME_MAJOR}.${SUITESPARSE_GPURUNTIME_MINOR}.${SUITESPARSE_GPURUNTIME_PATCH}")
 endif ( )
 
 set ( SUITESPARSE_GPURUNTIME_LIBRARIES ${SUITESPARSE_GPURUNTIME_LIBRARY} )
@@ -96,7 +107,7 @@ set ( SUITESPARSE_GPURUNTIME_LIBRARIES ${SUITESPARSE_GPURUNTIME_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SuiteSparse_GPURuntime
-    REQUIRED_VARS SUITESPARSE_GPURUNTIME_LIBRARIES
+    REQUIRED_VARS SUITESPARSE_GPURUNTIME_LIBRARY
     VERSION_VAR SUITESPARSE_GPURUNTIME_VERSION
 )
 
@@ -114,5 +125,9 @@ if ( SUITESPARSE_GPURUNTIME_FOUND )
     message ( STATUS "SuiteSparse_GPURuntime static:  ${SUITESPARSE_GPURUNTIME_STATIC}" )
 else ( )
     message ( STATUS "SuiteSparse_GPURuntime not found" )
+    set ( SUITESPARSE_GPURUNTIME_INCLUDE_DIR "" )
+    set ( SUITESPARSE_GPURUNTIME_LIBRARIES "" )
+    set ( SUITESPARSE_GPURUNTIME_LIBRARY "" )
+    set ( SUITESPARSE_GPURUNTIME_STATIC "" )
 endif ( )
 

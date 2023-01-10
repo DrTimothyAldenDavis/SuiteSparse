@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Dec 9, 2022" )
+set ( LDL_DATE "Jan 9, 2023" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
-set ( LDL_VERSION_SUB   2 )
+set ( LDL_VERSION_SUB   3 )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -44,23 +44,26 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 6.0.2 REQUIRED )
-find_package ( AMD 3.0.2 REQUIRED )
+find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( AMD 3.0.3 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/ldl.h.in"
-                 "${PROJECT_SOURCE_DIR}/Include/ldl.h" )
+    "${PROJECT_SOURCE_DIR}/Include/ldl.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/ldl_version.tex.in"
-                 "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/ldl_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic ldl library properties
@@ -74,20 +77,26 @@ set_target_properties ( ldl PROPERTIES
     VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
     C_STANDARD_REQUIRED 11
     SOVERSION ${LDL_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/ldl.h" )
+    PUBLIC_HEADER "Include/ldl.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static ldl library properties
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( ldl_static STATIC ${LDL_SOURCES} )
+    add_library ( ldl_static STATIC ${LDL_SOURCES} )
 
-set_target_properties ( ldl_static PROPERTIES
-    VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
-    OUTPUT_NAME ldl
-    SOVERSION ${LDL_VERSION_MAJOR} )
+    set_target_properties ( ldl_static PROPERTIES
+        VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
+        C_STANDARD_REQUIRED 11
+        OUTPUT_NAME ldl
+        SOVERSION ${LDL_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( ldl_static PROPERTIES
+            OUTPUT_NAME ldl_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -95,21 +104,20 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT MSVC )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
+if ( NOT WIN32 )
+    target_link_libraries ( ldl PUBLIC m )
+    if ( NOT NSTATIC )
+        target_link_libraries ( ldl_static PUBLIC m )
+    endif ( )
 endif ( )
 
-target_link_libraries ( ldl PUBLIC ${M_LIB}
+target_link_libraries ( ldl PUBLIC
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )
-    target_link_libraries ( ldl_static PUBLIC ${M_LIB}
-    ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
+    target_link_libraries ( ldl_static PUBLIC
+    ${SUITESPARSE_CONFIG_STATIC} ${AMD_STATIC} )
 endif ( )
-
-include_directories ( ${AMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # LDL installation location

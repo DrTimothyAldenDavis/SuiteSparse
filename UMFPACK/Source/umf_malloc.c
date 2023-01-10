@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_malloc: allocate a block of memory
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ int umf_realloc_fail, umf_realloc_lo, umf_realloc_hi ;
 #endif
 #endif
 
-GLOBAL void *UMF_malloc
+void *UMF_malloc
 (
     Int n_objects,
     size_t size_of_object

@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindSPEX.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindSPEX.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( SPEX_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic SPEX library
+# dynamic SPEX library (or static if no dynamic library was built)
 find_library ( SPEX_LIBRARY
-    NAMES spex
+    NAMES spex spex_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME spex_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME spex )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static SPEX library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( SPEX_STATIC
-    NAMES spex
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/SPEX
     HINTS ${CMAKE_SOURCE_DIR}/../SPEX
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( SPEX_LIBRARY  ${SPEX_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${SPEX_FILENAME}
 )
 
-if ( NOT SPEX_VERSION )
+# set ( SPEX_VERSION "" )
+if ( EXISTS "${SPEX_INCLUDE_DIR}" AND NOT SPEX_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h _VERSION_LINE REGEX "define[ ]+SPEX_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+SPEX_${_VERSION}[ ]+([0-9]*).*" "\\1" _SPEX_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( SPEX_VERSION "${_SPEX_MAIN_VERSION}.${_SPEX_SUB_VERSION}.${_SPEX_SUBSUB_VERSION}" )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_MAJOR_STR
+        REGEX "define SPEX_VERSION_MAJOR " )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_MINOR_STR
+        REGEX "define SPEX_VERSION_MINOR " )
+    file ( STRINGS ${SPEX_INCLUDE_DIR}/SPEX.h SPEX_PATCH_STR
+        REGEX "define SPEX_VERSION_SUB " )
+    message ( STATUS "major: ${SPEX_MAJOR_STR}" )
+    message ( STATUS "minor: ${SPEX_MINOR_STR}" )
+    message ( STATUS "patch: ${SPEX_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" SPEX_MAJOR ${SPEX_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPEX_MINOR ${SPEX_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" SPEX_PATCH ${SPEX_PATCH_STR} )
+    set (SPEX_VERSION "${SPEX_MAJOR}.${SPEX_MINOR}.${SPEX_PATCH}")
 endif ( )
 
 set ( SPEX_LIBRARIES ${SPEX_LIBRARY} )
@@ -92,7 +103,7 @@ set ( SPEX_LIBRARIES ${SPEX_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( SPEX
-    REQUIRED_VARS SPEX_LIBRARIES SPEX_INCLUDE_DIR
+    REQUIRED_VARS SPEX_LIBRARY SPEX_INCLUDE_DIR
     VERSION_VAR SPEX_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( SPEX_FOUND )
     message ( STATUS "SPEX static:  ${SPEX_STATIC}" )
 else ( )
     message ( STATUS "SPEX not found" )
+    set ( SPEX_INCLUDE_DIR "" )
+    set ( SPEX_LIBRARIES "" )
+    set ( SPEX_LIBRARY "" )
+    set ( SPEX_STATIC "" )
 endif ( )
 

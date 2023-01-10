@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_kernel: primary factorization routine in UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -33,7 +33,7 @@
 /* perform an action, and return if out of memory */
 #define DO(action) { if (! (action)) { return (UMFPACK_ERROR_out_of_memory) ; }}
 
-GLOBAL Int UMF_kernel
+Int UMF_kernel
 (
     const Int Ap [ ],
     const Int Ai [ ],

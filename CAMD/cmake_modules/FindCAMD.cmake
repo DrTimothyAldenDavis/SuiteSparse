@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCAMD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCAMD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( CAMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic CAMD library
+# dynamic CAMD library (or static if no dynamic library was built)
 find_library ( CAMD_LIBRARY
-    NAMES camd
+    NAMES camd camd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME camd_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME camd )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static CAMD library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( CAMD_STATIC
-    NAMES camd
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/CAMD
     HINTS ${CMAKE_SOURCE_DIR}/../CAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library filename
 get_filename_component ( CAMD_LIBRARY  ${CAMD_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${CAMD_FILENAME}
 )
 
-if ( NOT CAMD_VERSION )
+# set ( CAMD_VERSION "" )
+if ( EXISTS "${CAMD_INCLUDE_DIR}" AND NOT CAMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach ( _VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION )
-        file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h _VERSION_LINE REGEX "define[ ]+CAMD_${_VERSION}" )
-        if ( _VERSION_LINE )
-            string ( REGEX REPLACE ".*define[ ]+CAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _CAMD_${_VERSION} "${_VERSION_LINE}" )
-        endif ( )
-        unset ( _VERSION_LINE )
-    endforeach ( )
-    set ( CAMD_VERSION "${_CAMD_MAIN_VERSION}.${_CAMD_SUB_VERSION}.${_CAMD_SUBSUB_VERSION}" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_MAJOR_STR
+        REGEX "define CAMD_MAIN_VERSION" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_MINOR_STR
+        REGEX "define CAMD_SUB_VERSION" )
+    file ( STRINGS ${CAMD_INCLUDE_DIR}/camd.h CAMD_PATCH_STR
+        REGEX "define CAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${CAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${CAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${CAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" CAMD_MAJOR ${CAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CAMD_MINOR ${CAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" CAMD_PATCH ${CAMD_PATCH_STR} )
+    set (CAMD_VERSION "${CAMD_MAJOR}.${CAMD_MINOR}.${CAMD_PATCH}")
 endif ( )
 
 set ( CAMD_LIBRARIES ${CAMD_LIBRARY} )
@@ -92,7 +103,7 @@ set ( CAMD_LIBRARIES ${CAMD_LIBRARY} )
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( CAMD
-    REQUIRED_VARS CAMD_LIBRARIES CAMD_INCLUDE_DIR
+    REQUIRED_VARS CAMD_LIBRARY CAMD_INCLUDE_DIR
     VERSION_VAR CAMD_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( CAMD_FOUND )
     message ( STATUS "CAMD static:  ${CAMD_STATIC}" )
 else ( )
     message ( STATUS "CAMD not found" )
+    set ( CAMD_INCLUDE_DIR "" )
+    set ( CAMD_LIBRARIES "" )
+    set ( CAMD_LIBRARY "" )
+    set ( CAMD_STATIC "" )
 endif ( )
 

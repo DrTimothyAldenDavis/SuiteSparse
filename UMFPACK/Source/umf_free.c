@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_free: free a block of memory
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,7 @@
 #include "umf_malloc.h"
 #endif
 
-GLOBAL void *UMF_free
+void *UMF_free
 (
     void *p
 )

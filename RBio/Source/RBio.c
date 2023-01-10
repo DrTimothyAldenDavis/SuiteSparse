@@ -8,8 +8,8 @@
 //------------------------------------------------------------------------------
 
 /* This file contains functions for writing/reading a sparse matrix to/from a
-   file in Rutherford-Boeing format.  User-callable functions are declared
-   as PUBLIC.  PRIVATE functions are available only within this file.
+   file in Rutherford-Boeing format.
+   PRIVATE functions are available only within this file.
 */
 
 /* ========================================================================== */
@@ -39,7 +39,6 @@
 #define ISNAN(a) ((a) != (a))
 
 #define PRIVATE static
-#define PUBLIC SUITESPARSE_PUBLIC
 
 #define SLEN 4096
 #define FREE_WORK   { SuiteSparse_free (w) ; \
@@ -351,7 +350,7 @@ PRIVATE void RB(skipheader)
 /* RBget_entry: get numerical entry in the matrix at position p */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC void RB(get_entry)
+void RB(get_entry)
 (
     Int mkind,          /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
     double *Ax,         /* real part, or both if merged-complex */
@@ -392,7 +391,7 @@ PUBLIC void RB(get_entry)
 /* RBput_entry: put numerical entry in the matrix in position p */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC void RB(put_entry)
+void RB(put_entry)
 (
     Int mkind,          /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
     double *Ax,         /* real part, or both if merged-complex */
@@ -1345,7 +1344,7 @@ PRIVATE Int RB(xread)     /* TRUE if OK, FALSE otherwise */
     (__E) are not handled.
  */
 
-PUBLIC int RB(read)              /* 0: OK, < 0: error, > 0: warning */
+int RB(read)              /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
     char *filename,     /* filename to read from */
@@ -1571,7 +1570,7 @@ PUBLIC int RB(read)              /* 0: OK, < 0: error, > 0: warning */
 /* RBreadraw: read the raw contents of a Rutherford/Boeing file */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC int RB(readraw)           /* 0: OK, < 0: error, > 0: warning */
+int RB(readraw)           /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
     char *filename,     /* filename to read from */
@@ -1749,7 +1748,7 @@ PRIVATE Int RB(fix_mkind_in)      /* return revised mkind */
 /* RBwrite */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC int RB(write)         /* 0:OK, < 0: error, > 0: warning */
+int RB(write)         /* 0:OK, < 0: error, > 0: warning */
 (
     /* input */
     char *filename, /* filename to write to (stdout if NULL) */
@@ -2026,7 +2025,7 @@ PUBLIC int RB(write)         /* 0:OK, < 0: error, > 0: warning */
 /* RBkind: determine the type of a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC int RB(kind)          /* 0: OK, < 0: error, > 0: warning */
+int RB(kind)          /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
     Int nrow,       /* A is nrow-by-ncol */
@@ -2807,7 +2806,7 @@ PRIVATE void RB(fill)
 /* RBok: verify a sparse matrix */
 /* -------------------------------------------------------------------------- */
 
-PUBLIC int RB(ok)            /* 0:OK, < 0: error, > 0: warning */
+int RB(ok)            /* 0:OK, < 0: error, > 0: warning */
 (
     /* inputs, not modified */
     Int nrow,       /* number of rows */

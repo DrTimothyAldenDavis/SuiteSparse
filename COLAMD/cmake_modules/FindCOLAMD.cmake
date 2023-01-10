@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindCOLAMD.cmake, Copyright (c) 2022, Timothy A. Davis.  All Rights Reserved.
+# FindCOLAMD.cmake, Copyright (c) 2022-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -39,32 +39,37 @@ find_path ( COLAMD_INCLUDE_DIR
     PATH_SUFFIXES include Include
 )
 
-# dynamic COLAMD library
+# dynamic COLAMD library (or static if no dynamic library was built)
 find_library ( COLAMD_LIBRARY
-    NAMES colamd
+    NAMES colamd colamd_static
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
+    set ( STATIC_NAME colamd_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
+    set ( STATIC_NAME colamd )
+    set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES
+        ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # static COLAMD library
-set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 find_library ( COLAMD_STATIC
-    NAMES colamd
+    NAMES ${STATIC_NAME}
     HINTS ${CMAKE_SOURCE_DIR}/..
     HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/COLAMD
     HINTS ${CMAKE_SOURCE_DIR}/../COLAMD
-    PATH_SUFFIXES lib build
+    PATH_SUFFIXES lib build build/Release build/Debug
 )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+
+if ( NOT MSVC )
+    # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( COLAMD_LIBRARY  ${COLAMD_LIBRARY} REALPATH )
@@ -75,16 +80,22 @@ string (
     ${COLAMD_FILENAME}
 )
 
-if ( NOT COLAMD_VERSION )
+# set ( COLAMD_VERSION "" )
+if ( EXISTS "${COLAMD_INCLUDE_DIR}" AND NOT COLAMD_VERSION )
     # if the version does not appear in the filename, read the include file
-    foreach (_VERSION MAIN_VERSION SUB_VERSION SUBSUB_VERSION)
-        file (STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h _VERSION_LINE REGEX "define[ ]+COLAMD_${_VERSION}")
-        if (_VERSION_LINE)
-            string (REGEX REPLACE ".*define[ ]+COLAMD_${_VERSION}[ ]+([0-9]*).*" "\\1" _COLAMD_${_VERSION} "${_VERSION_LINE}")
-        endif ()
-        unset (_VERSION_LINE)
-    endforeach ()
-    set (COLAMD_VERSION "${_COLAMD_MAIN_VERSION}.${_COLAMD_SUB_VERSION}.${_COLAMD_SUBSUB_VERSION}")
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_MAJOR_STR
+        REGEX "define COLAMD_MAIN_VERSION" )
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_MINOR_STR
+        REGEX "define COLAMD_SUB_VERSION" )
+    file ( STRINGS ${COLAMD_INCLUDE_DIR}/colamd.h COLAMD_PATCH_STR
+        REGEX "define COLAMD_SUBSUB_VERSION" )
+    message ( STATUS "major: ${COLAMD_MAJOR_STR}" )
+    message ( STATUS "minor: ${COLAMD_MINOR_STR}" )
+    message ( STATUS "patch: ${COLAMD_PATCH_STR}" )
+    string ( REGEX MATCH "[0-9]+" COLAMD_MAJOR ${COLAMD_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" COLAMD_MINOR ${COLAMD_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" COLAMD_PATCH ${COLAMD_PATCH_STR} )
+    set (COLAMD_VERSION "${COLAMD_MAJOR}.${COLAMD_MINOR}.${COLAMD_PATCH}")
 endif ( )
 
 set (COLAMD_LIBRARIES ${COLAMD_LIBRARY})
@@ -92,7 +103,7 @@ set (COLAMD_LIBRARIES ${COLAMD_LIBRARY})
 include (FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args ( COLAMD
-    REQUIRED_VARS COLAMD_LIBRARIES COLAMD_INCLUDE_DIR
+    REQUIRED_VARS COLAMD_LIBRARY COLAMD_INCLUDE_DIR
     VERSION_VAR COLAMD_VERSION
 )
 
@@ -110,5 +121,9 @@ if ( COLAMD_FOUND )
     message ( STATUS "COLAMD static:  ${COLAMD_STATIC}" )
 else ( )
     message ( STATUS "COLAMD not found" )
+    set ( COLAMD_INCLUDE_DIR "" )
+    set ( COLAMD_LIBRARIES "" )
+    set ( COLAMD_LIBRARY "" )
+    set ( COLAMD_STATIC "" )
 endif ( )
 
