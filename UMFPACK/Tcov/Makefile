@@ -25,12 +25,12 @@ CC = gcc
 
 SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
-CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
+CF = $(OPTION) -g --coverage -std=c11 -DTESTING -fopenmp \
     -DBLAS32
 I = -I../../include -I../Include -I../../UMFPACK/Source -I../../AMD/Include
 
 BLAS = -lblas
-CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
+# CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
 FLIB = $(LAPACK) $(BLAS)
 
 # LIBS = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
@@ -41,8 +41,14 @@ FLIB = $(LAPACK) $(BLAS)
 #     $(SUITESPARSE)/CCOLAMD/build/libccolamd.a \
 #     -lblas -lm
 
-LIBS = -L../../lib $(FLIB) $(CLIB) \
-    -Wl,--rpath=$(SUITESPARSE)/lib -lm -lrt
+CLIB = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
+      $(SUITESPARSE)/CHOLMOD/build/libcholmod.a \
+      $(SUITESPARSE)/AMD/build/libamd.a \
+      $(SUITESPARSE)/CAMD/build/libcamd.a \
+      $(SUITESPARSE)/COLAMD/build/libcolamd.a \
+      $(SUITESPARSE)/CCOLAMD/build/libccolamd.a
+
+LIBS = $(FLIB) $(CLIB) -lm -lrt
 
 SRC = ../Source2/*.c
 
@@ -50,7 +56,9 @@ SRC2 = $(notdir $(wildcard $(SRC)))
 
 OBJ = $(SRC2:.c=.o)
 
-default: $(OBJ) ut.c
+default: run covs
+
+run: $(OBJ) ut.c
 	$(CC) ut_di.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_di
 	$(CC) ut_dl.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_dl
 	$(CC) ut_zi.c $(CF) $(I) $(OBJ) $(LIBS) -o ut_zi
@@ -59,6 +67,8 @@ default: $(OBJ) ut.c
 	./ut_dl > ut_dl.out
 	./ut_zi > ut_zi.out
 	./ut_zl > ut_zl.out
+
+covs:
 	- ./gcovs umf*.c
 	- ./cover umf*v > cover.out
 	- echo -n "statments not yet tested: "

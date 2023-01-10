@@ -55,8 +55,7 @@ papers in ACM TOMS, for each package.
 
         T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
         algorithms in the language of sparse linear algebra, ACM Trans on
-        Mathematical Software, submitted, under revision, 2022.
-        In GraphBLAS/Doc v7.0.1, to appear here shortly.  See:
+        Mathematical Software, to appear, 2023.  See the pdf in
         https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc
 
         T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in

@@ -9,6 +9,7 @@
 
 /*
     User-callable.  Copy a Numeric object.
+    Initial contribution by Will Kimmerer (MIT); revised by Tim Davis.
 */
 
 #include "umf_internal.h"
@@ -37,13 +38,19 @@ int UMFPACK_copy_numeric
     void *NumericOriginal   // input: Numeric object to copy (not modified)
 )
 {
-    NumericType *Numeric ;
-    NumericType *Original = (NumericType *) NumericOriginal ;
-    *NumericHandle = (void *) NULL ;
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
+
+    if (NumericHandle == NULL || NumericOriginal == NULL)
+    {
+        return (UMFPACK_ERROR_argument_missing) ;
+    }
+
+    NumericType *Numeric ;
+    NumericType *Original = (NumericType *) NumericOriginal ;
+    *NumericHandle = (void *) NULL ;
 
     if (!UMF_valid_numeric (Original))
     {

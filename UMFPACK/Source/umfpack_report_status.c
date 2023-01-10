@@ -103,6 +103,10 @@ void UMFPACK_report_status
 	    PRINTF (("ERROR: ordering failed\n")) ;
 	    break ;
 
+        case UMFPACK_ERROR_invalid_blob:
+	    PRINTF (("ERROR: blob has invalid contents or wrong size\n")) ;
+	    break ;
+
 	case UMFPACK_ERROR_internal_error:
 	    PRINTF (("INTERNAL ERROR!\n"
 	    "Input arguments might be corrupted or aliased, or an internal\n"

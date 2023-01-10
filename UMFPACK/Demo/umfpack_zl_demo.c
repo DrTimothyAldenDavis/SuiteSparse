@@ -598,6 +598,44 @@ int main (int argc, char **argv)
     Symbolic = Symbolic_copy ;
     printf ("\nDone copying symbolic object\n") ;
 
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Symbolic object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t S_blobsize ;
+    status = umfpack_zl_serialize_symbolic_size (&S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_symbolic_size failed") ;
+    }
+    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    // allocate the blob
+    void *S_blob = malloc (S_blobsize) ;
+    if (!S_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_zl_serialize_symbolic (S_blob, S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_symbolic failed") ;
+    }
+    // free the Symbolic object; its contents are preserved in the blob
+    umfpack_zl_free_symbolic (&Symbolic) ;
+    // deserialize the blob back into the Symbolic object
+    status = umfpack_zl_deserialize_symbolic (&Symbolic, S_blob, S_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_deserialize_symbolic failed") ;
+    }
+    printf ("\nDone serialize/deserialize of symbolic object\n") ;
+    free (S_blob) ;
+
     /* ---------------------------------------------------------------------- */
     /* numeric factorization of C */
     /* ---------------------------------------------------------------------- */
@@ -741,7 +779,46 @@ int main (int argc, char **argv)
     (void) umfpack_zl_report_numeric (Numeric_copy, Control) ;
     umfpack_zl_free_numeric (&Numeric) ;
     Numeric = Numeric_copy ;
+    Numeric_copy = NULL ;
     printf ("\nDone copying numeric object\n") ;
+
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Numeric object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t N_blobsize ;
+    status = umfpack_zl_serialize_numeric_size (&N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_numeric_size failed") ;
+    }
+    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    // allocate the blob
+    void *N_blob = malloc (N_blobsize) ;
+    if (!N_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_zl_serialize_numeric (N_blob, N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_numeric failed") ;
+    }
+    // free the Numeric object; its contents are preserved in the blob
+    umfpack_zl_free_numeric (&Numeric) ;
+    // deserialize the blob back into the Numeric object
+    status = umfpack_zl_deserialize_numeric (&Numeric, N_blob, N_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_deserialize_numeric failed") ;
+    }
+    printf ("\nDone serialize/deserialize of numeric object\n") ;
+    free (N_blob) ;
 
     //--------------------------------------------------------------------------
     // solve C'x=b again, with the new copy
@@ -832,6 +909,7 @@ int main (int argc, char **argv)
 
     free (Wi) ;
     free (W) ;
+    free (Rs) ;
 
     umfpack_zl_free_symbolic (&Symbolic) ;
     umfpack_zl_free_numeric (&Numeric) ;

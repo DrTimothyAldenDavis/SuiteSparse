@@ -9,6 +9,7 @@
 
 /*
     User-callable.  Copy a Symbolic object.
+    Initial contribution by Will Kimmerer (MIT); revised by Tim Davis.
 */
 
 #include "umf_internal.h"
@@ -37,13 +38,19 @@ int UMFPACK_copy_symbolic
     void *SymbolicOriginal  // input: Symbolic object to copy (not modified)
 )
 {
-    SymbolicType *Symbolic ;
-    SymbolicType *Original = (SymbolicType *) SymbolicOriginal ;
-    *SymbolicHandle = (void *) NULL ;
 
     //--------------------------------------------------------------------------
     // check inputs
     //--------------------------------------------------------------------------
+
+    if (SymbolicHandle == NULL || SymbolicOriginal == NULL)
+    {
+        return (UMFPACK_ERROR_argument_missing) ;
+    }
+
+    SymbolicType *Symbolic ;
+    SymbolicType *Original = (SymbolicType *) SymbolicOriginal ;
+    (*SymbolicHandle) = (void *) NULL ;
 
     if (!UMF_valid_symbolic (Original))
     {
@@ -107,6 +114,6 @@ int UMFPACK_copy_symbolic
     ASSERT (UMF_valid_symbolic (Symbolic)) ;
 
     // return the new Symbolic object
-    *SymbolicHandle = (void *) Symbolic ;
+    (*SymbolicHandle) = (void *) Symbolic ;
     return (UMFPACK_OK) ;
 }

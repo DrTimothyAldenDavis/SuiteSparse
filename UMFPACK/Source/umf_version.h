@@ -490,7 +490,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_di_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_di_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_di_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_di_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_di_paru_free_sw
 #define UMFPACK_report_control	 umfpack_di_report_control
 #define UMFPACK_report_info	 umfpack_di_report_info
 #define UMFPACK_report_matrix	 umfpack_di_report_matrix
@@ -504,20 +504,22 @@ typedef struct
 #define UMFPACK_save_symbolic	 umfpack_di_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_di_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_di_load_symbolic
-#define UMFPACK_serialize_symbolic  umfpack_di_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_di_deserialize_symbolic
-#define UMFPACK_serialize_symbolic_size umfpack_di_serialize_symbolic_size
-#define UMFPACK_serialize_numeric  umfpack_di_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_di_deserialize_numeric
-#define UMFPACK_serialize_numeric_size umfpack_di_serialize_numeric_size
-#define UMFPACK_copy_symbolic	 umfpack_di_copy_symbolic
-#define UMFPACK_copy_numeric	 umfpack_di_copy_numeric
 #define UMFPACK_scale		 umfpack_di_scale
 #define UMFPACK_solve		 umfpack_di_solve
 #define UMFPACK_symbolic	 umfpack_di_symbolic
 #define UMFPACK_transpose	 umfpack_di_transpose
 #define UMFPACK_triplet_to_col	 umfpack_di_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_di_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_di_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_di_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_di_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_di_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_di_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_di_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_di_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_di_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_i_malloc_count
@@ -616,7 +618,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_dl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_dl_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_dl_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_dl_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_dl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_dl_report_control
 #define UMFPACK_report_info	 umfpack_dl_report_info
 #define UMFPACK_report_matrix	 umfpack_dl_report_matrix
@@ -630,20 +632,22 @@ typedef struct
 #define UMFPACK_save_symbolic	 umfpack_dl_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_dl_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_dl_load_symbolic
-#define UMFPACK_serialize_symbolic  umfpack_dl_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_dl_deserialize_symbolic
-#define UMFPACK_serialize_symbolic_size umfpack_dl_serialize_symbolic_size
-#define UMFPACK_serialize_numeric  umfpack_dl_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_dl_deserialize_numeric
-#define UMFPACK_serialize_numeric_size umfpack_dl_serialize_numeric_size
-#define UMFPACK_copy_symbolic	 umfpack_dl_copy_symbolic
-#define UMFPACK_copy_numeric	 umfpack_dl_copy_numeric
 #define UMFPACK_scale		 umfpack_dl_scale
 #define UMFPACK_solve		 umfpack_dl_solve
 #define UMFPACK_symbolic	 umfpack_dl_symbolic
 #define UMFPACK_transpose	 umfpack_dl_transpose
 #define UMFPACK_triplet_to_col	 umfpack_dl_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_dl_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_dl_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_dl_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_dl_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_dl_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_dl_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_dl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_dl_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_dl_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_l_malloc_count
@@ -742,7 +746,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_zi_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zi_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_zi_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_zi_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_zi_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zi_report_control
 #define UMFPACK_report_info	 umfpack_zi_report_info
 #define UMFPACK_report_matrix	 umfpack_zi_report_matrix
@@ -756,20 +760,22 @@ typedef struct
 #define UMFPACK_save_symbolic	 umfpack_zi_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_zi_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_zi_load_symbolic
-#define UMFPACK_serialize_symbolic  umfpack_zi_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_zi_deserialize_symbolic
-#define UMFPACK_deserialize_symbolic_size    umfpack_zi_deserialize_symbolic_size
-#define UMFPACK_serialize_numeric  umfpack_zi_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_zi_deserialize_numeric
-#define UMFPACK_deserialize_numeric_size    umfpack_zi_deserialize_numeric_size
-#define UMFPACK_copy_symbolic	 umfpack_zi_copy_symbolic
-#define UMFPACK_copy_numeric	 umfpack_zi_copy_numeric
 #define UMFPACK_scale		 umfpack_zi_scale
 #define UMFPACK_solve		 umfpack_zi_solve
 #define UMFPACK_symbolic	 umfpack_zi_symbolic
 #define UMFPACK_transpose	 umfpack_zi_transpose
 #define UMFPACK_triplet_to_col	 umfpack_zi_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_zi_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_zi_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_zi_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_zi_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_zi_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_zi_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_zi_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_zi_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_zi_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_i_malloc_count
@@ -868,7 +874,7 @@ typedef struct
 #define UMFPACK_qsymbolic	 umfpack_zl_qsymbolic
 #define UMFPACK_fsymbolic	 umfpack_zl_fsymbolic
 #define UMFPACK_paru_symbolic	 umfpack_zl_paru_symbolic
-#define UMFPACK_paru_free_sw      umfpack_zl_paru_free_sw
+#define UMFPACK_paru_free_sw     umfpack_zl_paru_free_sw
 #define UMFPACK_report_control	 umfpack_zl_report_control
 #define UMFPACK_report_info	 umfpack_zl_report_info
 #define UMFPACK_report_matrix	 umfpack_zl_report_matrix
@@ -882,20 +888,22 @@ typedef struct
 #define UMFPACK_save_symbolic	 umfpack_zl_save_symbolic
 #define UMFPACK_load_numeric	 umfpack_zl_load_numeric
 #define UMFPACK_load_symbolic	 umfpack_zl_load_symbolic
-#define UMFPACK_serialize_symbolic  umfpack_zl_serialize_symbolic
-#define UMFPACK_deserialize_symbolic    umfpack_zl_deserialize_symbolic
-#define UMFPACK_serialize_symbolic_size umfpack_zl_serialize_symbolic_size
-#define UMFPACK_serialize_numeric  umfpack_zl_serialize_numeric
-#define UMFPACK_deserialize_numeric    umfpack_zl_deserialize_numeric
-#define UMFPACK_serialize_numeric_size umfpack_zl_serialize_numeric_size
-#define UMFPACK_copy_symbolic	 umfpack_zl_copy_symbolic
-#define UMFPACK_copy_numeric	 umfpack_zl_copy_numeric
 #define UMFPACK_scale		 umfpack_zl_scale
 #define UMFPACK_solve		 umfpack_zl_solve
 #define UMFPACK_symbolic	 umfpack_zl_symbolic
 #define UMFPACK_transpose	 umfpack_zl_transpose
 #define UMFPACK_triplet_to_col	 umfpack_zl_triplet_to_col
 #define UMFPACK_wsolve		 umfpack_zl_wsolve
+
+// added in v6.1.0
+#define UMFPACK_serialize_symbolic      umfpack_zl_serialize_symbolic
+#define UMFPACK_deserialize_symbolic    umfpack_zl_deserialize_symbolic
+#define UMFPACK_serialize_symbolic_size umfpack_zl_serialize_symbolic_size
+#define UMFPACK_serialize_numeric       umfpack_zl_serialize_numeric
+#define UMFPACK_deserialize_numeric     umfpack_zl_deserialize_numeric
+#define UMFPACK_serialize_numeric_size  umfpack_zl_serialize_numeric_size
+#define UMFPACK_copy_symbolic	        umfpack_zl_copy_symbolic
+#define UMFPACK_copy_numeric	        umfpack_zl_copy_numeric
 
 /* for debugging only: */
 #define UMF_malloc_count	 umf_l_malloc_count

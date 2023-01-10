@@ -258,7 +258,7 @@ typedef union Unit_union Unit ;
     same version that created them (umfpack_di_*, umfpack_dl_*, umfpack_zi_*,
     or umfpack_zl_*).  The values have also been changed since prior releases of
     the code to ensure that all routines that operate on the objects are of the
-    same release.  The values themselves are purely arbitrary.  The are less
+    same release.  The values themselves are purely arbitrary.  They are less
     than the ANSI C required minimums of INT_MAX and LONG_MAX, respectively.
 */
 

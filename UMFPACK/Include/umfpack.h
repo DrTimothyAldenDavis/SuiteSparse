@@ -340,6 +340,7 @@ extern "C" {
 #define UMFPACK_ERROR_file_IO (-17)
 
 #define UMFPACK_ERROR_ordering_failed (-18)
+#define UMFPACK_ERROR_invalid_blob (-19)
 
 /* -------------------------------------------------------------------------- */
 /* solve codes */
@@ -4102,17 +4103,294 @@ Returns:
 
 Arguments:
 
-    void **Numeric ;	    Output argument.
+    void **Numeric ;        Output argument.
 
-	**Numeric is the address of a (void *) pointer variable in the user's
-	calling routine (see Syntax, above).  On input, the contents of this
-	variable are not defined.  On output, this variable holds a (void *)
-	pointer to the numeric object (if successful), or (void *) NULL if
-	a failure occurred.
+        **Numeric is the address of a (void *) pointer variable in the user's
+        calling routine (see Syntax, above).  On input, the contents of this
+        variable are not defined.  On output, this variable holds a (void *)
+        pointer to the numeric object (if successful), or (void *) NULL if
+        a failure occurred.
 
-    void *Original ;	    Input argument, not modified.
+    void *Original ;        Input argument, not modified.
 
-	The Numeric object to be copied.
+        The Numeric object to be copied.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_serialize_numeric_size
+//------------------------------------------------------------------------------
+
+int umfpack_di_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_dl_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_zi_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+int umfpack_zl_serialize_numeric_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Numeric               // input: Numeric object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_di_serialize_numeric_size (&blobsize, Numeric) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_dl_serialize_numeric_size (&blobsize, Numeric) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_zi_serialize_numeric_size (&blobsize, Numeric) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Numeric ;
+    int status = umfpack_zl_serialize_numeric_size (&blobsize, Numeric) ;
+
+Purpose:
+
+    Determines the required size of the serialized "blob" for the input to
+    umfpack_*_serialize_numeric.  The Numeric object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_argument_missing if blobsize is NULL.
+
+Arguments:
+
+    int64_t *blobsize ;     Output argument.
+
+        Required size of the blob to hold the Numeric object, in bytes.
+
+    void *Numeric ;         Input argument, not modified.
+
+        Numeric must point to a valid Numeric object, computed by
+        umfpack_*_numeric or created by umfpack_*_deserialize_numeric,
+        umfpack_*_load_numeric, or umfpack_*_copy_numeric.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_serialize_numeric
+//------------------------------------------------------------------------------
+
+int umfpack_di_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_dl_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_zi_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+int umfpack_zl_serialize_numeric
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Numeric           // input: Numeric object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_di_serialize_numeric (blob, blobsize, Numeric) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_dl_serialize_numeric (blob, blobsize, Numeric) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zi_serialize_numeric (blob, blobsize, Numeric) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zl_serialize_numeric (blob, blobsize, Numeric) ;
+
+Purpose:
+
+    Copies the contents of a Numeric object into the serialized "blob".
+    Numeric object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Numeric are NULL.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+
+Arguments:
+
+    int8_t *blob ;          Output  argument.
+
+        A user-allocated array of size blobsize.  On output, it contains the
+        serialized blob created from the Numeric object.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.  Must be at least as large as the
+        value returned by umfpack_*_serialize_numeric_size.
+
+    void *Numeric ;         Input argument, not modified.
+
+        Numeric must point to a valid Numeric object, computed by
+        umfpack_*_numeric or created by umfpack_*_deserialize_numeric,
+        umfpack_*_load_numeric, or umfpack_*_copy_numeric.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_deserialize_numeric
+//------------------------------------------------------------------------------
+
+int umfpack_di_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_dl_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zi_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zl_deserialize_numeric
+(
+    void **Numeric,         // output: Numeric object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_di_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_dl_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zi_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Numeric ;
+    int status = umfpack_zl_deserialize_numeric (&Numeric, blob, blobsize) ;
+
+Purpose:
+
+    Constructs a new Numeric object from the serialized "blob".
+    The blob is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Numeric are NULL.
+    UMFPACK_ERROR_invalid_Numeric_object if Numeric is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Numeric ;        Input argument, not modified.
+
+        On input, the contents of this variable are not defined.  On output,
+        this variable holds a (void *) pointer to the Numeric object (if
+        successful), or (void *) NULL if a failure occurred.
+
+    int8_t *blob ;          Input argument, not modified.
+
+        A user-allocated array of size blobsize containing a blob created
+        by umfpack_*_serialize_numeric.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.
 */
 
 //------------------------------------------------------------------------------
@@ -4353,17 +4631,294 @@ Returns:
 
 Arguments:
 
-    void **Symbolic ;	    Output argument.
+    void **Symbolic ;       Output argument.
 
-	**Symbolic is the address of a (void *) pointer variable in the user's
-	calling routine (see Syntax, above).  On input, the contents of this
-	variable are not defined.  On output, this variable holds a (void *)
-	pointer to the Symbolic object (if successful), or (void *) NULL if
-	a failure occurred.
+        **Symbolic is the address of a (void *) pointer variable in the user's
+        calling routine (see Syntax, above).  On input, the contents of this
+        variable are not defined.  On output, this variable holds a (void *)
+        pointer to the Symbolic object (if successful), or (void *) NULL if
+        a failure occurred.
 
-    void *Original ;	    Input argument, not modified.
+    void *Original ;        Input argument, not modified.
 
-	The original Symbolic object to be copied.
+        The original Symbolic object to be copied.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_serialize_symbolic_size
+//------------------------------------------------------------------------------
+
+int umfpack_di_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_dl_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_zi_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+int umfpack_zl_serialize_symbolic_size
+(
+    int64_t *blobsize,          // output: required size of blob
+    void *Symbolic              // input: Symbolic object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_di_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_dl_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_zi_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    void *Symbolic ;
+    int status = umfpack_zl_serialize_symbolic_size (&blobsize, Symbolic) ;
+
+Purpose:
+
+    Determines the required size of the serialized "blob" for the input to
+    umfpack_*_serialize_symbolic.  The Symbolic object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_argument_missing if blobsize is NULL.
+
+Arguments:
+
+    int64_t *blobsize ;     Output argument.
+
+        Required size of the blob to hold the Symbolic object, in bytes.
+
+    void *Symbolic ;        Input argument, not modified.
+
+        Symbolic must point to a valid Symbolic object, computed by
+        umfpack_*_symbolic or created by umfpack_*_deserialize_symbolic,
+        umfpack_*_load_symbolic, or umfpack_*_copy_symbolic.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_serialize_symbolic
+//------------------------------------------------------------------------------
+
+int umfpack_di_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_dl_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_zi_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+int umfpack_zl_serialize_symbolic
+(
+    int8_t *blob,           // output: serialized blob of size blobsize,
+                            // allocated but unitialized on input.
+    int64_t blobsize,       // input: size of the blob
+    void *Symbolic          // input: Symbolic object to serialize
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_di_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_dl_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zi_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zl_serialize_symbolic (blob, blobsize, Symbolic) ;
+
+Purpose:
+
+    Copies the contents of a Symbolic object into the serialized "blob".
+    Symbolic object is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Symbolic are NULL.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+
+Arguments:
+
+    int8_t *blob ;          Output  argument.
+
+        A user-allocated array of size blobsize.  On output, it contains the
+        serialized blob created from the Symbolic object.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.  Must be at least as large as the
+        value returned by umfpack_*_serialize_symbolic_size.
+
+    void *Symbolic ;        Input argument, not modified.
+
+        Symbolic must point to a valid Symbolic object, computed by
+        umfpack_*_symbolic or created by umfpack_*_deserialize_symbolic,
+        umfpack_*_load_symbolic, or umfpack_*_copy_symbolic.
+*/
+
+//------------------------------------------------------------------------------
+// umfpack_deserialize_symbolic
+//------------------------------------------------------------------------------
+
+int umfpack_di_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_dl_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zi_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+int umfpack_zl_deserialize_symbolic
+(
+    void **Symbolic,        // output: Symbolic object created from the blob
+    int8_t *blob,           // input: serialized blob, not modified
+    int64_t blobsize        // size of the blob in bytes
+) ;
+
+/*
+double int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_di_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+double int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_dl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+complex int32_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zi_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+complex int64_t Syntax:
+
+    #include "umfpack.h"
+    int64_t blobsize ;
+    int8_t *blob ;
+    void *Symbolic ;
+    int status = umfpack_zl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
+
+Purpose:
+
+    Constructs a new Symbolic object from the serialized "blob".
+    The blob is not modified.
+
+Returns:
+
+    UMFPACK_OK if successful.
+    UMFPACK_ERROR_argument_missing if blob or Symbolic are NULL.
+    UMFPACK_ERROR_invalid_Symbolic_object if Symbolic is not valid.
+    UMFPACK_ERROR_invalid_blob if blob is too small.
+    UMFPACK_ERROR_out_of_memory if not enough memory is available.
+
+Arguments:
+
+    void **Symbolic ;       Input argument, not modified.
+
+        On input, the contents of this variable are not defined.  On output,
+        this variable holds a (void *) pointer to the Symbolic object (if
+        successful), or (void *) NULL if a failure occurred.
+
+    int8_t *blob ;          Input argument, not modified.
+
+        A user-allocated array of size blobsize containing a blob created
+        by umfpack_*_serialize_symbolic.
+
+    int64_t blobsize ;      Input argument, not modified.
+
+        Size of the blob, in bytes.
 */
 
 //------------------------------------------------------------------------------
@@ -4374,7 +4929,7 @@ int umfpack_di_get_determinant
 (
     double *Mx,
     double *Ex,
-    void *NumericHandle,
+    void *Numeric,
     double User_Info [UMFPACK_INFO]
 ) ;
 
@@ -4382,7 +4937,7 @@ int umfpack_dl_get_determinant
 (
     double *Mx,
     double *Ex,
-    void *NumericHandle,
+    void *Numeric,
     double User_Info [UMFPACK_INFO]
 ) ;
 
@@ -4391,7 +4946,7 @@ int umfpack_zi_get_determinant
     double *Mx,
     double *Mz,
     double *Ex,
-    void *NumericHandle,
+    void *Numeric,
     double User_Info [UMFPACK_INFO]
 ) ;
 
@@ -4400,7 +4955,7 @@ int umfpack_zl_get_determinant
     double *Mx,
     double *Mz,
     double *Ex,
-    void *NumericHandle,
+    void *Numeric,
     double User_Info [UMFPACK_INFO]
 ) ;
 
