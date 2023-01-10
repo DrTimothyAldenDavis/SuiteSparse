@@ -2,7 +2,7 @@
 // SuiteSparse_config/SuiteSparse_config.c: common utilites for SuiteSparse
 //------------------------------------------------------------------------------
 
-// SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+// SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -18,12 +18,15 @@
 /* SuiteSparse_config : a static struct */
 /* -------------------------------------------------------------------------- */
 
-/* The SuiteSparse_config struct is available to all SuiteSparse functions and
-    to all applications that use those functions.  It must be modified with
-    care, particularly in a multithreaded context.  Normally, the application
-    will initialize this object once, via SuiteSparse_start, possibily followed
-    by application-specific modifications if the applications wants to use
-    alternative memory manager functions.
+/* The SuiteSparse_config struct is indirectly available to all SuiteSparse
+    functions and to all applications that use those functions.  In v6.x and
+    earlier, it was globally visible, but it is now hidden and accessible only
+    by functions in this file (SuiteSparse v7.0.0 and later).
+
+    It must be modified with care, particularly in a multithreaded context.
+    Normally, the application will initialize this object once, via
+    SuiteSparse_start, possibily followed by application-specific modifications
+    if the applications wants to use alternative memory manager functions.
 
     The user can redefine these pointers at run-time to change the
     memory manager and printf function used by SuiteSparse.

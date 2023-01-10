@@ -78,7 +78,7 @@ find_package ( SPEX 2.0.3 REQUIRED )
 find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
 find_package ( SPQR 3.0.3 REQUIRED )
 find_package ( SPQR_CUDA 3.0.3 REQUIRED )
-find_package ( UMFPACK 6.0.3 REQUIRED )
+find_package ( UMFPACK 6.1.0 REQUIRED )
 
 # look for all external libaries:
 find_package ( OpenMP REQUIRED )

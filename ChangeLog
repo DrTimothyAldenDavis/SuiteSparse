@@ -10,6 +10,9 @@ Jan 9, 2023: version 7.0.0
     * NFORTRAN: option added to ignore any Fortran methods, even if a Fortran
         compiler is available.
     * port of new cmake-based build system to Windows
+    * UMFPACK 6.1.0: copy/serialize/deserialize methods: added new methods to
+        copy, serialize, and deserialize the Numeric and Symbolic objects.  By
+        Will Kimmerer, revised by T. Davis.
 
 Dec 29, 2022: SuiteSparse 6.0.4
 

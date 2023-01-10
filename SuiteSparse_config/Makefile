@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_config/Makefile
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_config, Copyright (c) 2012-2022, Timothy A. Davis.
+# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 

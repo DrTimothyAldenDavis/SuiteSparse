@@ -14,8 +14,8 @@ cmake_minimum_required ( VERSION 3.22 )
 
 set ( UMFPACK_DATE "Jan 9, 2023" )
 set ( UMFPACK_VERSION_MAJOR 6 )
-set ( UMFPACK_VERSION_MINOR 0 )
-set ( UMFPACK_VERSION_SUB   3 )
+set ( UMFPACK_VERSION_MINOR 1 )
+set ( UMFPACK_VERSION_SUB   0 )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.

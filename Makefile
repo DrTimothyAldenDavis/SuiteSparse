@@ -231,3 +231,24 @@ gbmatlab:
 gblocal:
 	( cd GraphBLAS/GraphBLAS && $(MAKE) local && $(MAKE) install )
 
+debug:
+	( cd SuiteSparse_config && $(MAKE) debug )
+	# ( cd Mongoose && $(MAKE) debug )
+	( cd AMD && $(MAKE) debug )
+	( cd BTF && $(MAKE) debug )
+	( cd CAMD && $(MAKE) debug )
+	( cd CCOLAMD && $(MAKE) debug )
+	( cd COLAMD && $(MAKE) debug )
+	( cd CHOLMOD && $(MAKE) debug )
+	( cd CSparse && $(MAKE) debug )
+	( cd CXSparse && $(MAKE) debug )
+	( cd LDL && $(MAKE) debug )
+	( cd KLU && $(MAKE) debug )
+	( cd UMFPACK && $(MAKE) debug )
+	( cd RBio && $(MAKE) debug )
+	( cd SuiteSparse_GPURuntime && $(MAKE) )
+	( cd GPUQREngine && $(MAKE) )
+	( cd SPQR && $(MAKE) debug )
+	( cd GraphBLAS && $(MAKE) debug )
+	( cd SPEX && $(MAKE) debug )
+

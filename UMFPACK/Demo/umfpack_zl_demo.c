@@ -2,7 +2,7 @@
 // UMFPACK/Demo/umfpack_zl_demo: C demo for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -544,11 +544,8 @@ int main (int argc, char **argv)
 	error ("symbolic factorization invalid") ;
     }
 
-
-    printf ("From the Symbolic object, "
-        "C is of dimension %"PRId64"-by-%"PRId64"\n", nr, nc);
-    printf ("   with nz = %"PRId64", number of fronts = %"PRId64",\n",
-        nz, nfr) ;
+    printf ("From the Symbolic object, C is of dimension %"PRId64"-by-%"PRId64"\n", nr, nc);
+    printf ("   with nz = %"PRId64", number of fronts = %"PRId64",\n", nz, nfr) ;
     printf ("   number of frontal matrix chains = %"PRId64"\n", nchains) ;
 
     printf ("\nPivot columns in each front, and parent of each front:\n") ;
@@ -556,14 +553,14 @@ int main (int argc, char **argv)
     for (i = 0 ; i < nfr ; i++)
     {
 	fnpiv = Front_npivcol [i] ;
-	printf ("    Front %"PRId64": parent front: %"PRId64
-                " number of pivot cols: %"PRId64"\n",
+	printf ("    Front %"PRId64": parent front: %"PRId64" number of pivot cols: %"PRId64"\n",
 		i, Front_parent [i], fnpiv) ;
 	for (j = 0 ; j < fnpiv ; j++)
 	{
 	    col = Qinit [k] ;
-	    printf ("        %"PRId64"-th pivot column is column %"PRId64
-                " in original matrix\n", k, col) ;
+	    printf (
+	    "        %"PRId64"-th pivot column is column %"PRId64" in original matrix\n",
+		k, col) ;
 	    k++ ;
 	}
     }
@@ -572,18 +569,72 @@ int main (int argc, char **argv)
     printf ("in the numeric factorization below.  The assignment of pivot\n") ;
     printf ("columns to frontal matrices will always remain unchanged.\n") ;
 
-    printf ("\nTotal number of pivot columns in frontal matrices: %"PRId64"\n",
-        k) ;
+    printf ("\nTotal number of pivot columns in frontal matrices: %"PRId64"\n", k) ;
 
     printf ("\nFrontal matrix chains:\n") ;
     for (j = 0 ; j < nchains ; j++)
     {
-	printf ("   Frontal matrices %"PRId64" to %"PRId64
-            " are factorized in a single\n",
+	printf ("   Frontal matrices %"PRId64" to %"PRId64" are factorized in a single\n",
 	    Chain_start [j], Chain_start [j+1] - 1) ;
 	printf ("        working array of size %"PRId64"-by-%"PRId64"\n",
 	    Chain_maxrows [j], Chain_maxcols [j]) ;
     }
+
+    //--------------------------------------------------------------------------
+    // copy the Symbolic object
+    //--------------------------------------------------------------------------
+
+    void *Symbolic_copy = NULL ;
+    printf ("\nCopying symbolic object:\n") ;
+    status = umfpack_zl_copy_symbolic (&Symbolic_copy, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_copy_symbolic failed") ;
+    }
+    printf ("\nSymbolic factorization of C (copy): ") ;
+    (void) umfpack_zl_report_symbolic (Symbolic_copy, Control) ;
+    umfpack_zl_free_symbolic (&Symbolic) ;
+    Symbolic = Symbolic_copy ;
+    printf ("\nDone copying symbolic object\n") ;
+
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Symbolic object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t S_blobsize ;
+    status = umfpack_zl_serialize_symbolic_size (&S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_symbolic_size failed") ;
+    }
+    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    // allocate the blob
+    void *S_blob = malloc (S_blobsize) ;
+    if (!S_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_zl_serialize_symbolic (S_blob, S_blobsize, Symbolic) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_symbolic failed") ;
+    }
+    // free the Symbolic object; its contents are preserved in the blob
+    umfpack_zl_free_symbolic (&Symbolic) ;
+    // deserialize the blob back into the Symbolic object
+    status = umfpack_zl_deserialize_symbolic (&Symbolic, S_blob, S_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_deserialize_symbolic failed") ;
+    }
+    printf ("\nDone serialize/deserialize of symbolic object\n") ;
+    free (S_blob) ;
 
     /* ---------------------------------------------------------------------- */
     /* numeric factorization of C */
@@ -712,6 +763,80 @@ int main (int argc, char **argv)
     rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
     printf ("maxnorm of residual: %g\n\n", rnorm) ;
 
+    //--------------------------------------------------------------------------
+    // copy the Numeric object
+    //--------------------------------------------------------------------------
+
+    void *Numeric_copy = NULL ;
+    printf ("\nCopying numeric object:\n") ;
+    status = umfpack_zl_copy_numeric (&Numeric_copy, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_copy_numeric failed") ;
+    }
+    printf ("\nNumeric factorization of C (copy): ") ;
+    (void) umfpack_zl_report_numeric (Numeric_copy, Control) ;
+    umfpack_zl_free_numeric (&Numeric) ;
+    Numeric = Numeric_copy ;
+    Numeric_copy = NULL ;
+    printf ("\nDone copying numeric object\n") ;
+
+    //--------------------------------------------------------------------------
+    // serialize/deserialize the Numeric object
+    //--------------------------------------------------------------------------
+
+    // determine the required blobsize
+    int64_t N_blobsize ;
+    status = umfpack_zl_serialize_numeric_size (&N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_numeric_size failed") ;
+    }
+    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    // allocate the blob
+    void *N_blob = malloc (N_blobsize) ;
+    if (!N_blob)
+    {
+	error ("out of memory") ;
+    }
+    // serialize the blob
+    status = umfpack_zl_serialize_numeric (N_blob, N_blobsize, Numeric) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_serialize_numeric failed") ;
+    }
+    // free the Numeric object; its contents are preserved in the blob
+    umfpack_zl_free_numeric (&Numeric) ;
+    // deserialize the blob back into the Numeric object
+    status = umfpack_zl_deserialize_numeric (&Numeric, N_blob, N_blobsize) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_deserialize_numeric failed") ;
+    }
+    printf ("\nDone serialize/deserialize of numeric object\n") ;
+    free (N_blob) ;
+
+    //--------------------------------------------------------------------------
+    // solve C'x=b again, with the new copy
+    //--------------------------------------------------------------------------
+
+    status = umfpack_zl_solve (UMFPACK_At, Cp, Ci, Cx, Cz, x, xz, b, bz,
+	Numeric, Control, Info) ;
+    umfpack_zl_report_info (Control, Info) ;
+    if (status < 0)
+    {
+	umfpack_zl_report_status (Control, status) ;
+	error ("umfpack_zl_solve failed") ;
+    }
+    printf ("\nx (solution of C'x=b): (using the copy) ") ;
+    (void) umfpack_zl_report_vector (n, x, xz, Control) ;
+    rnorm = resid (TRUE, Cp, Ci, Cx, Cz) ;
+    printf ("maxnorm of residual: %g\n\n", rnorm) ;
+
     /* ---------------------------------------------------------------------- */
     /* solve C'x=b again, using umfpack_zl_wsolve instead */
     /* ---------------------------------------------------------------------- */
@@ -784,6 +909,7 @@ int main (int argc, char **argv)
 
     free (Wi) ;
     free (W) ;
+    free (Rs) ;
 
     umfpack_zl_free_symbolic (&Symbolic) ;
     umfpack_zl_free_numeric (&Numeric) ;

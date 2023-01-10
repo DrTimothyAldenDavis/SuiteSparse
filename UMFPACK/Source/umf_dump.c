@@ -2,7 +2,7 @@
 // UMFPACK/Source/umf_dump.c: debug routines for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -1087,12 +1087,12 @@ void UMF_dump_start
     DEBUG2 (("sizeof (Int)           %u %u %u\n",
     sizeof (Int), sizeof (Int) / sizeof (int), UNITS (Int, 1) )) ;
     DEBUG2 (("sizeof (int32_t)       %u %u %u\n",
-    sizeof (int32_t), sizeof (int32_t) / sizeof (int32_t), UNITS (int32_t, 1) )) ;
+    sizeof (int32_t), sizeof (int32_t) / sizeof (int), UNITS (int32_t, 1) )) ;
     DEBUG2 (("sizeof (size_t)        %u %u %u\n",
-    sizeof (size_t), sizeof (size_t) / sizeof (size_t), UNITS (size_t, 1) )) ;
+    sizeof (size_t), sizeof (size_t) / sizeof (int), UNITS (size_t, 1) )) ;
     DEBUG2 (("sizeof (int64_t)       %u %u %u\n",
     sizeof (int64_t),
-    sizeof (int64_t) / sizeof (int64_t),
+    sizeof (int64_t) / sizeof (int),
     UNITS (int64_t, 1)));
     DEBUG2 (("sizeof (double)        %u %u %u\n",
     sizeof (double), sizeof (double) / sizeof (int), UNITS (double, 1) )) ;

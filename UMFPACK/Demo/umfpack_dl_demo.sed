@@ -2,6 +2,7 @@
 1,$s/_xx_/_dl_/g
 1,$s/Int/int64_t/g
 1,$s/WSIZE/5/
+1,$s/%ld/%"PRId64"/g
 /define ABS/ {
 	s/ABS/ABS(x) ((x) >= 0 ? (x) : -(x))/
 	}
