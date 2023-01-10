@@ -25,7 +25,7 @@ CC = gcc
 
 SUITESPARSE ?= $(realpath $(CURDIR)/../..)
 
-CF = $(OPTION) -g --coverage -std=c11 -DTESTING -fopenmp \
+CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
     -DBLAS32
 I = -I../../include -I../Include -I../../UMFPACK/Source -I../../AMD/Include
 
