@@ -30,23 +30,19 @@ CF = $(OPTION) -g --coverage -fprofile-abs-path -std=c11 -DTESTING -fopenmp \
 I = -I../../include -I../Include -I../../UMFPACK/Source -I../../AMD/Include
 
 BLAS = -lblas
-# CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
 FLIB = $(LAPACK) $(BLAS)
 
-# LIBS = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
-#     $(SUITESPARSE)/CHOLMOD/build/libcholmod.a \
-#     $(SUITESPARSE)/AMD/build/libamd.a \
-#     $(SUITESPARSE)/CAMD/build/libcamd.a \
-#     $(SUITESPARSE)/COLAMD/build/libcolamd.a \
-#     $(SUITESPARSE)/CCOLAMD/build/libccolamd.a \
-#     -lblas -lm
-
+# static libraries (OK on the Mac and Linux, if no CUDA libraries needed)
 CLIB = $(SUITESPARSE)/SuiteSparse_config/build/libsuitesparseconfig.a \
       $(SUITESPARSE)/CHOLMOD/build/libcholmod.a \
       $(SUITESPARSE)/AMD/build/libamd.a \
       $(SUITESPARSE)/CAMD/build/libcamd.a \
       $(SUITESPARSE)/COLAMD/build/libcolamd.a \
       $(SUITESPARSE)/CCOLAMD/build/libccolamd.a
+
+# dynamic libraries (if CUDA is needed for CHOLMOD): Linux only
+CLIB = -L../../lib -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd \
+    -Wl,--rpath=$(SUITESPARSE)/lib
 
 LIBS = $(FLIB) $(CLIB) -lm -lrt
 
