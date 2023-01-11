@@ -19,13 +19,11 @@
 #                       (for which CUDA is in progress and not ready for
 #                       production use).
 #
-#   GLOBAL_INSTALL:     if true, "make install" will
-#                       into /usr/local/lib and /usr/local/include.
-#                       Default: true
-#
-#   LOCAL_INSTALL:      if true, "make install" will
-#                       into SuiteSparse/lib and SuiteSparse/include,
-#                       but these folders must also already exist.
+#   LOCAL_INSTALL:      if true, "cmake --install" will install
+#                       into SuiteSparse/lib and SuiteSparse/include.
+#                       if false, "cmake --install" will install into the
+#                       default prefix (or the one configured with
+#                       CMAKE_INSTALL_PREFIX).
 #                       Default: false
 #
 #   NSTATIC:            if true, static libraries are not built.
@@ -104,8 +102,7 @@ else ( )
 endif ( )
 
 # installation options
-option ( GLOBAL_INSTALL "Install in CMAKE_INSTALL_PREFIX" on )
-option ( LOCAL_INSTALL  "Install in SuiteSparse/lib" off )
+option ( LOCAL_INSTALL "Install in SuiteSparse/lib" off )
 
 if ( SUITESPARSE_SECOND_LEVEL )
     # some packages in SuiteSparse are in SuiteSparse/Package/Package
@@ -130,44 +127,54 @@ if ( LOCAL_INSTALL )
     if ( SUITESPARSE_SECOND_LEVEL )
         # the package is normally located at the 2nd level inside SuiteSparse
         # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
-        if ( ( EXISTS ${CMAKE_SOURCE_DIR}/../../lib     ) AND
-           (   EXISTS ${CMAKE_SOURCE_DIR}/../../include ) AND
-           (   EXISTS ${CMAKE_SOURCE_DIR}/../../bin     ) )
+        if ( EXISTS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config )
             set ( INSIDE_SUITESPARSE true )
         endif ( )
     else ( )
         # typical case, the package is at the 1st level inside SuiteSparse
         # (SuiteSparse/AMD for example)
-        if ( ( EXISTS ${CMAKE_SOURCE_DIR}/../lib     ) AND
-             ( EXISTS ${CMAKE_SOURCE_DIR}/../include ) AND
-             ( EXISTS ${CMAKE_SOURCE_DIR}/../bin     ) )
+        if ( EXISTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config )
             set ( INSIDE_SUITESPARSE true )
         endif ( )
     endif ( )
+
+    if ( NOT INSIDE_SUITESPARSE )
+        message ( FATAL_ERROR "Unsupported layout for local installation. Correct the directory layout or unset LOCAL_INSTALL." )
+    endif ( )
+
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
     # ../lib and ../include exist: the package is inside SuiteSparse.
     # find ( REAL_PATH ...) requires cmake 3.19.
     if ( SUITESPARSE_SECOND_LEVEL )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../lib     SUITESPARSE_LIBDIR )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../include SUITESPARSE_INCLUDEDIR )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../../bin     SUITESPARSE_BINDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../.. SUITESPARSE_LOCAL_PREFIX )
     else ( )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../lib     SUITESPARSE_LIBDIR )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../include SUITESPARSE_INCLUDEDIR )
-        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/../bin     SUITESPARSE_BINDIR )
+        file ( REAL_PATH  ${CMAKE_SOURCE_DIR}/..    SUITESPARSE_LOCAL_PREFIX )
     endif ( )
-    message ( STATUS "Local install: ${SUITESPARSE_LIBDIR} ")
-    message ( STATUS "Local include: ${SUITESPARSE_INCLUDEDIR} ")
-    message ( STATUS "Local bin:     ${SUITESPARSE_BINDIR} ")
+endif ( )
+
+if ( LOCAL_INSTALL )
+    set ( SUITESPARSE_LIBDIR ${SUITESPARSE_LOCAL_PREFIX}/lib )
+    set ( SUITESPARSE_INCLUDEDIR ${SUITESPARSE_LOCAL_PREFIX}/include )
+    set ( SUITESPARSE_BINDIR ${SUITESPARSE_LOCAL_PREFIX}/bin )
+else ( )
+    set ( SUITESPARSE_LIBDIR ${CMAKE_INSTALL_LIBDIR} )
+    set ( SUITESPARSE_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR} )
+    set ( SUITESPARSE_BINDIR ${CMAKE_INSTALL_BINDIR} )
+endif ( )
+
+if ( INSIDE_SUITESPARSE )
     # append ../lib to the install and build runpaths
     set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${SUITESPARSE_LIBDIR} )
     set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
 endif ( )
 
-message ( STATUS "Install rpath: ${CMAKE_INSTALL_RPATH} ")
-message ( STATUS "Build   rpath: ${CMAKE_BUILD_RPATH} ")
+message ( STATUS "Install lib:     ${SUITESPARSE_LIBDIR}" )
+message ( STATUS "Install include: ${SUITESPARSE_INCLUDEDIR}" )
+message ( STATUS "Install bin:     ${SUITESPARSE_BINDIR}" )
+message ( STATUS "Install rpath:   ${CMAKE_INSTALL_RPATH}" )
+message ( STATUS "Build   rpath:   ${CMAKE_BUILD_RPATH}" )
 
 if ( NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
