@@ -114,11 +114,11 @@ void my_handler (int status, const char *file, int line, const char *msg)
 
 void normal_memory_handler (cholmod_common *cc, bool free_work)
 {
-    SuiteSparse_config_printf_func_set ((void *) printf) ;
-    SuiteSparse_config_malloc_func_set ((void *) malloc) ;
-    SuiteSparse_config_calloc_func_set ((void *) calloc) ;
-    SuiteSparse_config_realloc_func_set ((void *) realloc) ;
-    SuiteSparse_config_free_func_set ((void *) free) ;
+    SuiteSparse_config_printf_func_set (printf) ;
+    SuiteSparse_config_malloc_func_set (malloc) ;
+    SuiteSparse_config_calloc_func_set (calloc) ;
+    SuiteSparse_config_realloc_func_set (realloc) ;
+    SuiteSparse_config_free_func_set (free) ;
 
     cc->error_handler = my_handler ;
     if (free_work) cholmod_l_free_work (cc) ;
@@ -128,11 +128,11 @@ void normal_memory_handler (cholmod_common *cc, bool free_work)
 
 void test_memory_handler (cholmod_common *cc, bool free_work)
 {
-    SuiteSparse_config_printf_func_set ((void *) NULL) ;
-    SuiteSparse_config_malloc_func_set ((void *) my_malloc) ;
-    SuiteSparse_config_calloc_func_set ((void *) my_calloc) ;
-    SuiteSparse_config_realloc_func_set ((void *) my_realloc) ;
-    SuiteSparse_config_free_func_set ((void *) my_free) ;
+    SuiteSparse_config_printf_func_set (NULL) ;
+    SuiteSparse_config_malloc_func_set (my_malloc) ;
+    SuiteSparse_config_calloc_func_set (my_calloc) ;
+    SuiteSparse_config_realloc_func_set (my_realloc) ;
+    SuiteSparse_config_free_func_set (my_free) ;
 
     cc->error_handler = NULL ;
     if (free_work) cholmod_l_free_work (cc) ;
