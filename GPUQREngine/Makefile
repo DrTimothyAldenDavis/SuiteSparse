@@ -40,11 +40,11 @@ library:
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=0 -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
 
 demos: library
 	echo 'GPUQREngine v2.x demo not compiled; use SPQR demo instead'
