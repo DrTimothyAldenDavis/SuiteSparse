@@ -46,10 +46,6 @@ local:
 global:
 	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
 
-# install in SuiteSparse/lib both and SuiteSparse/include and /usr/local
-both:
-	( cd build && cmake $(CMAKE_OPTIONS) -DGLOBAL_INSTALL=1 -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
-
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && cmake --build . -j${JOBS} )
