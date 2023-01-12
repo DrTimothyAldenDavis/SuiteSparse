@@ -275,10 +275,12 @@ include_directories ( ${UMFPACK_INCLUDE_DIR} )
 #-------------------------------------------------------------------------------
 
 install ( TARGETS my
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 install ( TARGETS my_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 #-------------------------------------------------------------------------------
 # Demo program
