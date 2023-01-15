@@ -29,9 +29,7 @@
 #   NSTATIC:            if true, static libraries are not built.
 #                       Default: false, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
-#                       GraphBLAS is true.  For Mongoose, the NSTATIC setting
-#                       is treated as if it always false, since the mongoose
-#                       program is built with the static library.
+#                       GraphBLAS is true.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
