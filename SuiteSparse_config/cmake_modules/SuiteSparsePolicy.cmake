@@ -70,10 +70,6 @@
 #                       explicitly, if the defaults are not appropriate for your
 #                       system.
 #                       Default: false
-#
-#   NPIC                if true, do not use position independent code when
-#                       building static libraries.
-#                       Default: false
 
 cmake_minimum_required ( VERSION 3.19 )
 
@@ -103,14 +99,6 @@ if ( NSTATIC_DEFAULT_ON )
     option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
 else ( )
     option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
-endif ( )
-
-option ( NPIC "OFF (default): build static libraries with -fPIC.  ON: build static libraries without -fPIC" off )
-if ( NPIC )
-    set ( CMAKE_POSITION_INDEPENDENT_CODE false )
-else ( )
-    # default for SuiteSparse: build static libraries with -fPIC
-    set ( CMAKE_POSITION_INDEPENDENT_CODE true )
 endif ( )
 
 # installation options

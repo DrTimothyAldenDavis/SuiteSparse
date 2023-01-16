@@ -46,6 +46,11 @@ if ( NGPL )
 endif ( )
 
 include ( SuiteSparsePolicy )
+include ( SuiteSparse_ssize_t )
+if ( NOT HAVE_SSIZE_T )
+    # #include <sys/types.h> and ssize_t not defined (typically on Windows)
+    add_compile_definitions ( NO_SSIZE_T )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
