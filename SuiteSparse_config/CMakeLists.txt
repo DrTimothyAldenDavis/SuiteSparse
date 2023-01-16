@@ -150,39 +150,18 @@ endif ( )
 
 file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
-if ( GLOBAL_INSTALL )
-    # install in /usr/local/lib and /usr/local/include.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    install ( TARGETS suitesparseconfig
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-    install ( FILES
-        ${SUITESPARSE_CMAKE_MODULES}
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse
-        COMPONENT Development )
-    if ( NOT NSTATIC )
+install ( TARGETS suitesparseconfig
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+install ( FILES
+    ${SUITESPARSE_CMAKE_MODULES}
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
+    COMPONENT Development )
+if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-    endif ( )
-endif ( )
-
-if ( INSIDE_SUITESPARSE )
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include," )
-    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
-    install ( TARGETS suitesparseconfig
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-    install ( FILES
-        ${SUITESPARSE_CMAKE_MODULES}
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
-        COMPONENT Development )
-    if ( NOT NSTATIC )
-    install ( TARGETS suitesparseconfig_static
-        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
-    endif ( )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 include ( SuiteSparseReport )

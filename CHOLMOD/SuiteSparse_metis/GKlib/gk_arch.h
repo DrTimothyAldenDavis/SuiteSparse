@@ -56,8 +56,13 @@
 /*************************************************************************
 * Architecture-specific modifications
 **************************************************************************/
-#ifdef WIN32
+// revised for SuiteSparse, Jan 2023
+#if defined ( NO_SSIZE_T )
+// #ifdef WIN32
 typedef ptrdiff_t ssize_t;
+#else
+// POSIX: ssize_t is defined in sys/types.h
+#include <sys/types.h>
 #endif
 
 

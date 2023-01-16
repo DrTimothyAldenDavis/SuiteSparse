@@ -1,3 +1,7 @@
+Version 7.4.2, Jan 17, 2023
+
+    * minor change to build system: for SuiteSparse v7.0.0
+
 Version 7.4.1, Jan 9, 2023
 
     * global free pool: disabled.  Benefit for single-thread user applications

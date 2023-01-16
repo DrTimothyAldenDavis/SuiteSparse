@@ -98,18 +98,18 @@
         save_calloc_func  = SuiteSparse_config_calloc_func_get ( ) ;        \
         save_realloc_func = SuiteSparse_config_realloc_func_get ( ) ;       \
         save_free_func    = SuiteSparse_config_free_func_get ( ) ;          \
-        SuiteSparse_config_malloc_func_set ((void *) malloc) ;              \
-        SuiteSparse_config_calloc_func_set ((void *) calloc) ;              \
-        SuiteSparse_config_realloc_func_set ((void *) realloc) ;            \
-        SuiteSparse_config_free_func_set ((void *) free) ;                  \
+        SuiteSparse_config_malloc_func_set (malloc) ;                       \
+        SuiteSparse_config_calloc_func_set (calloc) ;                       \
+        SuiteSparse_config_realloc_func_set (realloc) ;                     \
+        SuiteSparse_config_free_func_set (free) ;                           \
     }
 
     #define TEST_COVERAGE_RESUME                                            \
     {                                                                       \
-        SuiteSparse_config_malloc_func_set ((void *) save_malloc_func) ;    \
-        SuiteSparse_config_calloc_func_set ((void *) save_calloc_func) ;    \
-        SuiteSparse_config_realloc_func_set ((void *) save_realloc_func) ;  \
-        SuiteSparse_config_free_func_set ((void *) save_free_func) ;        \
+        SuiteSparse_config_malloc_func_set (save_malloc_func) ;             \
+        SuiteSparse_config_calloc_func_set (save_calloc_func) ;             \
+        SuiteSparse_config_realloc_func_set (save_realloc_func) ;           \
+        SuiteSparse_config_free_func_set (save_free_func) ;                 \
     }
 
 #else

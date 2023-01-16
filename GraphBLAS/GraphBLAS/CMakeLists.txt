@@ -276,26 +276,8 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # installation location
 #-------------------------------------------------------------------------------
 
-if ( GLOBAL_INSTALL )
-    # install in /usr/local/lib and /usr/local/include.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    message ( STATUS "System install libdir: ${CMAKE_INSTALL_LIBDIR}" )
-    message ( STATUS "System install incdir: ${CMAKE_INSTALL_INCLUDEDIR}" )
-    install ( TARGETS graphblas_matlab
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-endif ( )
-
-if ( INSIDE_SUITESPARSE )
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../../lib and ../../include," )
-    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
-    message ( STATUS "Local  install libdir: ${SUITESPARSE_LIBDIR}" )
-    message ( STATUS "Local  install incdir: ${SUITESPARSE_INCLUDEDIR}" )
-    install ( TARGETS graphblas_matlab
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-endif ( )
-
+install ( TARGETS graphblas_matlab
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )

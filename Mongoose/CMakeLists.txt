@@ -410,39 +410,18 @@ add_custom_target(userguide
 # Mongoose installation location
 #-------------------------------------------------------------------------------
 
-if ( GLOBAL_INSTALL )
-    # install in /usr/local/lib, /usr/local/include, and /usr/local/bin.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')." )
-    message ( STATUS "If you do not have 'sudo' privilege, do 'make local' instead." )
-    install ( TARGETS mongoose_dylib
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-    install ( TARGETS mongoose_lib
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-    install ( TARGETS mongoose_exe
-        RUNTIME       DESTINATION ${CMAKE_INSTALL_BINDIR} )
-    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-endif ( )
-
-if ( INSIDE_SUITESPARSE )
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include," )
-    message ( STATUS "  with 'make local ; make install'. No 'sudo' required." )
-    install ( TARGETS mongoose_dylib
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-    install ( TARGETS mongoose_lib
-        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
-    install ( TARGETS mongoose_exe
-        RUNTIME       DESTINATION ${SUITESPARSE_BINDIR} )
-    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-endif ( )
+install ( TARGETS mongoose_dylib
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+install ( TARGETS mongoose_lib
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+install ( TARGETS mongoose_exe
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+    COMPONENT Development )
 
 #-------------------------------------------------------------------------------
 # report status
