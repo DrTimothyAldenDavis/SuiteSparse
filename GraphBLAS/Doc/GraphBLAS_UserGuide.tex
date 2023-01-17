@@ -5163,7 +5163,7 @@ GrB_Info GxB_Matrix_reshape     // reshape a GrB_Matrix in place
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // new number of rows of C
     GrB_Index ncols_new,        // new number of columns of C
-    const GrB_Descriptor desc   // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 \end{verbatim} } \end{mdframed}
 
@@ -5217,7 +5217,7 @@ GrB_Info GxB_Matrix_reshapeDup // reshape a GrB_Matrix into another GrB_Matrix
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // number of rows of C
     GrB_Index ncols_new,        // number of columns of C
-    const GrB_Descriptor desc   // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 \end{verbatim} } \end{mdframed}
 
@@ -5601,7 +5601,6 @@ GrB_Info GxB_Vector_serialize       // serialize a GrB_Vector to a blob
     // input:
     GrB_Vector u,                   // vector to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
-                                    // and to control # of threads used
 ) ;
 \end{verbatim}
 } \end{mdframed}
@@ -5656,7 +5655,7 @@ GrB_Info GxB_Vector_deserialize     // deserialize blob into a GrB_Vector
     GrB_Type type,      // type of the vector w.  See GxB_Matrix_deserialize.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc       // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 \end{verbatim}
 } \end{mdframed}
@@ -5748,7 +5747,6 @@ GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
     // input:
     GrB_Matrix A,                   // matrix to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
-                                    // and to control # of threads used
 ) ;
 \end{verbatim}
 } \end{mdframed}
@@ -5817,7 +5815,7 @@ GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
                         // type of C.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc       // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 \end{verbatim}
 } \end{mdframed}
@@ -7598,7 +7596,7 @@ by two \verb'enum' types, \verb'GrB_Desc_Field' and \verb'GrB_Desc_Value':
 \begin{mdframed}[userdefinedwidth=6in]
 {\footnotesize
 \begin{verbatim}
-#define GxB_NTHREADS 5  // for both GrB_Desc_field and GxB_Option_field
+#define GxB_NTHREADS 5  // for GxB_Option_field
 #define GxB_CHUNK 7
 typedef enum
 {
@@ -7606,8 +7604,6 @@ typedef enum
     GrB_MASK = 1,   // descriptor for the mask input of a method
     GrB_INP0 = 2,   // descriptor for the first input of a method
     GrB_INP1 = 3,   // descriptor for the second input of a method
-    GxB_DESCRIPTOR_NTHREADS = GxB_NTHREADS,   // number of threads to use
-    GxB_DESCRIPTOR_CHUNK = GxB_CHUNK,   // chunk size for small problems
     GxB_AxB_METHOD = 1000, // descriptor for selecting C=A*B algorithm
     GxB_SORT = 35   // control sort in GrB_mxm
     GxB_COMPRESSION = 36,   // select compression for serialize
@@ -7775,17 +7771,12 @@ GrB_Desc_Value ;
 
     \end{itemize}
 
-\item \verb'GxB_NTHREADS' controls how many threads a method uses.
-    By default (if set to zero, or \verb'GxB_DEFAULT'), all available threads
-    are used.  The maximum available threads is controlled by the global
-    setting, which is \verb'omp_get_max_threads ( )' by default.  If set to
-    some positive integer \verb'nthreads' less than this maximum, at most
-    \verb'nthreads' threads will be used.  See Section~\ref{omp_parallelism}
-    for details.
+\item \verb'GxB_NTHREADS' controls how many threads a method uses, via
+    the descriptor, but is deprecated.
+    It will be removed from the descriptor entirely in v8.0.0.
 
-\item \verb'GxB_CHUNK' is a \verb'double' value that controls how many threads
-    a method uses for small problems.  See Section~\ref{omp_parallelism} for
-    details.
+\item \verb'GxB_CHUNK' is deprecated as used in the descriptor.
+    It will be removed from the descriptor entirely in v8.0.0.
 
 \item \verb'GxB_SORT' provides a hint to \verb'GrB_mxm', \verb'GrB_mxv',
     \verb'GrB_vxm', and \verb'GrB_reduce' (to vector).  These methods can leave
@@ -7894,7 +7885,7 @@ GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
 \verb'GrB_Descriptor_set' sets a descriptor field (\verb'GrB_OUTP',
 \verb'GrB_MASK', \verb'GrB_INP0', \verb'GrB_INP1', or \verb'GxB_AxB_METHOD') to
 a particular value.  Use \verb'GxB_Dec_set' to set the value of
-\verb'GxB_NTHREADS', \verb'GxB_CHUNK', and \verb'GxB_SORT'.
+\verb'GxB_SORT'.
 If an error occurs, \verb'GrB_error(&err,desc)' returns details about the error.
 
 \vspace{0.2in}
@@ -8045,16 +8036,6 @@ Built-in descriptors are listed in the table below.  A dash in the table
 indicates the default.  These descriptors may not be modified or freed.
 Attempts to modify them result in an error (\verb'GrB_INVALID_VALUE'); attempts
 to free them are silently ignored. 
-
-% \verb'GrB_NULL' is the default descriptor, with all settings at their defaults:
-% \verb'OUTP': do not replace the output,
-% \verb'MASK': mask is valued and not complemented,
-% \verb'INP0': first input not transposed, and
-% \verb'INP1': second input not transposed.
-% For these pre-defined descriptors, the
-% \verb'GxB_NTHREADS',
-% \verb'GxB_CHUNK', and
-% \verb'GxB_SORT' settings are at their default values.
 
 \vspace{0.2in}
 \noindent
@@ -8394,10 +8375,6 @@ field                       & value         & description \\
 \verb'GrB_MASK'     & \verb'GrB_Desc_Value' & mask option \\
 \verb'GrB_INP0'     & \verb'GrB_Desc_Value' & transpose input 0 \\
 \verb'GrB_INP1'     & \verb'GrB_Desc_Value' & transpose input 1 \\
-\verb'GxB_DESCRIPTOR_NTHREADS'  & \verb'int' & number of threads to use \\
-\verb'GxB_NTHREADS'             & \verb'int' & number of threads to use \\
-\verb'GxB_DESCRIPTOR_CHUNK'     & \verb'double' & chunk size \\
-\verb'GxB_CHUNK'                & \verb'double' & chunk size \\
 \verb'GxB_AxB_METHOD'           & \verb'int' & method for matrix multiply \\
 \verb'GxB_SORT'                 & \verb'int' & lazy vs aggressive sort \\
 \verb'GxB_COMPRESSION'          & \verb'int' & compression for serialization \\
@@ -8495,10 +8472,6 @@ field                       & value         & description \\
 \verb'GrB_MASK'     & \verb'GrB_Desc_Value' & mask option \\
 \verb'GrB_INP0'     & \verb'GrB_Desc_Value' & transpose input 0 \\
 \verb'GrB_INP1'     & \verb'GrB_Desc_Value' & transpose input 1 \\
-\verb'GxB_DESCRIPTOR_NTHREADS'  & \verb'int' & number of threads to use \\
-\verb'GxB_NTHREADS'             & \verb'int' & number of threads to use \\
-\verb'GxB_DESCRIPTOR_CHUNK'     & \verb'double' & chunk size \\
-\verb'GxB_CHUNK'                & \verb'double' & chunk size \\
 \verb'GxB_AxB_METHOD'           & \verb'int' & method for matrix multiply \\
 \verb'GxB_SORT'                 & \verb'int' & lazy vs aggressive sort \\
 \verb'GxB_COMPRESSION'          & \verb'int' & compression for serialization \\
@@ -8544,19 +8517,9 @@ GraphBLAS operations will use these settings.  Note the typecast,
     GxB_set (GxB_NTHREADS, nthreads_max) ;
     GxB_set (GxB_CHUNK, (double) 20000) ; \end{verbatim} }
 
-\item Per operation:  Most GraphBLAS operations take a \verb'GrB_Descriptor'
-input, and this can be modified to set the number of threads and chunk
-size for the operation that uses this descriptor.  Note that \verb'chunk'
-is a \verb'double'.
-
-    {\footnotesize
-    \begin{verbatim}
-    GrB_Descriptor desc ;
-    GrB_Descriptor_new (&desc)
-    int nthreads_max = 40 ;
-    GxB_set (desc, GxB_NTHREADS, nthreads_max) ;
-    double chunk = 20000 ;
-    GxB_set (desc, GxB_CHUNK, chunk) ; \end{verbatim} }
+\item Per operation:   Setting the number of threads and the chunk 
+size in the descriptor is deprecated.
+It will be removed entirely in v8.0.0 from the descriptor.
 
 \end{itemize}
 
@@ -8568,15 +8531,9 @@ If either parameter is set to \verb'GxB_DEFAULT', then default values are used.
 The default for \verb'nthreads_max' is the return value from
 \verb'omp_get_max_threads', and the default chunk size is currently 65,536.
 
-If a descriptor value for either parameter is left at its default, or set to
-\verb'GxB_DEFAULT', then the global setting is used.  This global setting may
-have been modified from its default, and this modified value will be used.
-
 For example, suppose \verb'omp_get_max_threads' reports 8 threads.  If \newline
 \verb'GxB_set (GxB_NTHREADS, 4)' is used, then the global setting is four
-threads, not eight.  If a descriptor is used but its \verb'GxB_NTHREADS' is not
-set, or set to \verb'GxB_DEFAULT', then any operation that uses this descriptor
-will use 4 threads.
+threads, not eight.
 
 GraphBLAS may be compiled without OpenMP, by setting \verb'-DNOPENMP=1'.
 The library will be thread-safe, with one exception.  \verb'GrB_wait' is
@@ -9145,8 +9102,8 @@ GrB_Info GxB_set                // set a parameter in a descriptor
 
 This usage is similar to \verb'GrB_Descriptor_set', just with a name that is
 consistent with the other usages of this generic function.  Unlike
-\verb'GrB_Descriptor_set', the \verb'field' may also be \verb'GxB_NTHREADS',
-\verb'GxB_CHUNK', \verb'GxB_SORT', \verb'GxB_COMPRESSION', or
+\verb'GrB_Descriptor_set', the \verb'field' may also be
+\verb'GxB_SORT', \verb'GxB_COMPRESSION', or
 \verb'GxB_IMPORT'.  Refer to Sections~\ref{descriptor_set}~and~\ref{desc_set}
 for details.  If an error occurs, \verb'GrB_error(&err,desc)' returns details
 about the error.
@@ -9333,8 +9290,6 @@ GrB_Info GxB_get                // get a parameter from a descriptor
 This usage is the same as \verb'GxB_Desc_get'.  The \verb'field' parameter can
 be \verb'GrB_OUTP', \verb'GrB_MASK', \verb'GrB_INP0', \verb'GrB_INP1',
 \verb'GxB_AxB_METHOD',
-\verb'GxB_NTHREADS',
-\verb'GxB_CHUNK',
 \verb'GxB_SORT',
 \verb'GxB_COMPRESSION', or
 \verb'GxB_IMPORT'.
@@ -9458,10 +9413,6 @@ To set/get a descriptor field:
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_SAXPY) ;
     GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_DOT) ;
     GxB_get (GrB_Descriptor d, GrB_AxB_METHOD, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GxB_NTHREADS, int nthreads) ;
-    GxB_get (GrB_Descriptor d, GxB_NTHREADS, int *nthreads) ;
-    GxB_set (GrB_Descriptor d, GxB_CHUNK, double chunk) ;
-    GxB_get (GrB_Descriptor d, GxB_CHUNK, double *chunk) ;
     GxB_set (GrB_Descriptor d, GxB_SORT, sort) ;
     GxB_get (GrB_Descriptor d, GxB_SORT, int *sort) ;
     GxB_set (GrB_Descriptor d, GxB_COMPRESSION, GxB_FAST_IMPORT) ;
@@ -15542,6 +15493,10 @@ GraphBLAS folder.
 
     \begin{itemize}
     \item minor change to build system: for SuiteSparse v7.0.0.
+    \item deprecation notice:  in GraphBLAS v8.0.0, the ability to set the
+        number of threads, and chunk size, in the descriptor will be removed.
+        It still appears in v7.x, but will be replaced by a Context object
+        in v8.0.0.
     \end{itemize}
 
 \item Version 7.4.1 (Dec 29, 2022)

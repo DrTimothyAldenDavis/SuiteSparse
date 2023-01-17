@@ -425,16 +425,6 @@ GrB_Info GrB_getVersion         // runtime access to C API version number
 //
 // GrB_INP1: the same as GrB_INP0 but for the second input
 //
-// GxB_NTHREADS: the maximum number of threads to use in the current method.
-//      If <= GxB_DEFAULT (which is zero), then the number of threads is
-//      determined automatically.  This is the default value.
-//
-// GxB_CHUNK: an integer parameter that determines the number of threads to use
-//      for a small problem.  If w is the work to be performed, and chunk is
-//      the value of this parameter, then the # of threads is limited to floor
-//      (w/chunk).  The default chunk is currently 64K, but this may change in
-//      the future.  If chunk is set to <= GxB_DEFAULT (that is, zero), the
-//      default is used.
 //
 // GxB_AxB_METHOD: this is a hint to SuiteSparse:GraphBLAS on which algorithm
 //      it should use to compute C=A*B, in GrB_mxm, GrB_mxv, and GrB_vxm.
@@ -499,12 +489,9 @@ typedef enum
     GrB_INP0 = 2,   // descriptor for the first input of a method
     GrB_INP1 = 3,   // descriptor for the second input of a method
 
-    GxB_DESCRIPTOR_NTHREADS = GxB_NTHREADS,     // max number of threads to use.
-                    // If <= GxB_DEFAULT, then GraphBLAS selects the number
-                    // of threads automatically.
-
-    GxB_DESCRIPTOR_CHUNK = GxB_CHUNK,   // chunk size for small problems.
-                    // If <= GxB_DEFAULT, then the default is used.
+    // setting NTHREADS and CHUNK in the descriptor is deprecated
+    GxB_DESCRIPTOR_NTHREADS = GxB_NTHREADS,     // DEPRECATED
+    GxB_DESCRIPTOR_CHUNK = GxB_CHUNK,           // DEPRECATED
 
     // GPU control (DRAFT: in progress, do not use)
     GxB_DESCRIPTOR_GPU_CONTROL = GxB_GPU_CONTROL,
@@ -4089,7 +4076,7 @@ GrB_Info GxB_Matrix_diag    // construct a diagonal matrix from a vector
     GrB_Matrix C,                   // output matrix
     const GrB_Vector v,             // input vector
     int64_t k,
-    const GrB_Descriptor desc       // to specify # of threads
+    const GrB_Descriptor desc
 ) ;
 
 // GxB_Vector_diag extracts a vector v from an input matrix A, which may be
@@ -4481,8 +4468,7 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
 
 // GxB_set and GxB_get are generic methods that and set or query the options in
 // a GrB_Matrix, a GrB_Descriptor, or in the global options.  They can be used
-// with the following syntax.  Note that GxB_NTHREADS can be used for both the
-// global nthreads_max, and for the # of threads in the descriptor.
+// with the following syntax.
 
 // To set/get the global options:
 //
@@ -4585,12 +4571,6 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
 //      GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_SAXPY) ;
 //      GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_DOT) ;
 //      GxB_get (GrB_Descriptor d, GrB_AxB_METHOD, GrB_Desc_Value *v) ;
-//
-//      GxB_set (GrB_Descriptor d, GxB_NTHREADS, nthreads) ;
-//      GxB_get (GrB_Descriptor d, GxB_NTHREADS, int *nthreads) ;
-//
-//      GxB_set (GrB_Descriptor d, GxB_CHUNK, double chunk) ;
-//      GxB_get (GrB_Descriptor d, GxB_CHUNK, double *chunk) ;
 //
 //      GxB_set (GrB_Descriptor d, GxB_SORT, int sort) ;
 //      GxB_get (GrB_Descriptor d, GxB_SORT, int *sort) ;
@@ -10964,7 +10944,6 @@ GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
     // input:
     GrB_Matrix A,                   // matrix to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
-                                    // and to control # of threads used
 ) ;
 
 GrB_Info GrB_Matrix_serialize       // serialize a GrB_Matrix to a blob
@@ -10986,7 +10965,6 @@ GrB_Info GxB_Vector_serialize       // serialize a GrB_Vector to a blob
     // input:
     GrB_Vector u,                   // vector to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
-                                    // and to control # of threads used
 ) ;
 
 GrB_Info GrB_Matrix_serializeSize   // estimate the size of a blob
@@ -10999,8 +10977,7 @@ GrB_Info GrB_Matrix_serializeSize   // estimate the size of a blob
 ) ;
 
 // The GrB* and GxB* deserialize methods are nearly identical.  The GxB*
-// deserialize methods simply add the descriptor, which allows for optional
-// control of the # of threads used to deserialize the blob.
+// deserialize methods simply add the descriptor.
 
 GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
 (
@@ -11013,7 +10990,7 @@ GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
                         // type of C.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc       // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 
 GrB_Info GrB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
@@ -11040,7 +11017,7 @@ GrB_Info GxB_Vector_deserialize     // deserialize blob into a GrB_Vector
                         // type of w.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc       // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 
 // GxB_deserialize_type_name extracts the type_name of the GrB_Type of the
@@ -11131,7 +11108,7 @@ GrB_Info GxB_Matrix_reshape     // reshape a GrB_Matrix in place
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // new number of rows of C
     GrB_Index ncols_new,        // new number of columns of C
-    const GrB_Descriptor desc   // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 
 // GxB_Matrix_reshapeDup reshapes a matrix into another matrix.
@@ -11151,7 +11128,7 @@ GrB_Info GxB_Matrix_reshapeDup // reshape a GrB_Matrix into another GrB_Matrix
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // number of rows of C
     GrB_Index ncols_new,        // number of columns of C
-    const GrB_Descriptor desc   // to control # of threads used
+    const GrB_Descriptor desc
 ) ;
 
 //==============================================================================

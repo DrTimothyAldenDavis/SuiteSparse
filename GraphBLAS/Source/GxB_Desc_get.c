@@ -62,7 +62,7 @@ GrB_Info GxB_Desc_get_INT32     // get a parameter from a descriptor
             (*value) = (int32_t) ((desc == NULL) ? GxB_DEFAULT : desc->in1) ;
             break ;
 
-        case GxB_DESCRIPTOR_NTHREADS :  // same as GxB_NTHREADS
+        case GxB_DESCRIPTOR_NTHREADS :  // DEPRECATED
 
             (*value) = (int32_t) ((desc == NULL) ?
                     GxB_DEFAULT : desc->nthreads_max) ;
@@ -126,7 +126,7 @@ GrB_Info GxB_Desc_get_FP64      // get a parameter from a descriptor
     switch (field)
     {
 
-        case GxB_DESCRIPTOR_CHUNK :     // same as GxB_CHUNK
+        case GxB_DESCRIPTOR_CHUNK :     // DEPRECATED
 
             (*value) = (double) ((desc == NULL) ? GxB_DEFAULT : desc->chunk) ;
             break ;
@@ -211,7 +211,7 @@ GrB_Info GxB_Desc_get           // get a parameter from a descriptor
             }
             break ;
 
-        case GxB_DESCRIPTOR_NTHREADS :  // same as GxB_NTHREADS
+        case GxB_DESCRIPTOR_NTHREADS :  // DEPRECATED
 
             {
                 va_start (ap, field) ;
@@ -223,7 +223,7 @@ GrB_Info GxB_Desc_get           // get a parameter from a descriptor
             }
             break ;
 
-        case GxB_DESCRIPTOR_CHUNK :     // same as GxB_CHUNK
+        case GxB_DESCRIPTOR_CHUNK :     // DEPRECATED
 
             {
                 va_start (ap, field) ;
