@@ -87,29 +87,6 @@ global:
 	( cd GraphBLAS && $(MAKE) global )
 	( cd SPEX && $(MAKE) global )
 
-# compile; "sudo make install" will install only in /usr/local
-# (or whatever your CMAKE_INSTALL_PREFIX is)
-both:
-	( cd SuiteSparse_config && $(MAKE) both )
-	( cd Mongoose && $(MAKE) both )
-	( cd AMD && $(MAKE) both )
-	( cd BTF && $(MAKE) both )
-	( cd CAMD && $(MAKE) both )
-	( cd CCOLAMD && $(MAKE) both )
-	( cd COLAMD && $(MAKE) both )
-	( cd CHOLMOD && $(MAKE) both )
-	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
-	( cd CXSparse && $(MAKE) both )
-	( cd LDL && $(MAKE) both )
-	( cd KLU && $(MAKE) both )
-	( cd UMFPACK && $(MAKE) both )
-	( cd RBio && $(MAKE) both )
-	( cd SuiteSparse_GPURuntime && $(MAKE) both )
-	( cd GPUQREngine && $(MAKE) both )
-	( cd SPQR && $(MAKE) both )
-	( cd GraphBLAS && $(MAKE) both )
-	( cd SPEX && $(MAKE) both )
-
 # install all packages.  Location depends on prior "make", "make global" etc
 install:
 	( cd SuiteSparse_config && $(MAKE) install )

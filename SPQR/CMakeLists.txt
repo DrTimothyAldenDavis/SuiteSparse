@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Jan 9, 2023" )
+set ( SPQR_DATE "Jan 17, 2023" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
 set ( SPQR_VERSION_SUB   3 )
@@ -246,46 +246,22 @@ endif ( )
 # SPQR installation location
 #-------------------------------------------------------------------------------
 
-if ( GLOBAL_INSTALL )
-    # install in /usr/local/lib and /usr/local/include.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    install ( TARGETS spqr
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-    install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-    if ( NOT NSTATIC )
+install ( TARGETS spqr
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+install ( FILES
+    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
+    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+    COMPONENT Development )
+if ( NOT NSTATIC )
     install ( TARGETS spqr_static
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
     endif ( )
-    install ( FILES "Include/SuiteSparseQR_C.h"
-        "Include/SuiteSparseQR_definitions.h"
-        "Include/SuiteSparseQR.hpp" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-endif ( )
-
-if ( INSIDE_SUITESPARSE )
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
-    install ( TARGETS spqr
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR} )
-    install ( FILES
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
-        ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-    if ( NOT NSTATIC )
-    install ( TARGETS spqr_static
-        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
-    endif ( )
-    install ( FILES "Include/SuiteSparseQR_C.h"
-        "Include/SuiteSparseQR_definitions.h"
-        "Include/SuiteSparseQR.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-endif ( )
+install ( FILES "Include/SuiteSparseQR_C.h"
+    "Include/SuiteSparseQR_definitions.h"
+    "Include/SuiteSparseQR.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

@@ -4,7 +4,7 @@
 
 default: spqr_user_guide.pdf
 
-spqr_user_guide.pdf: spqr_user_guide.tex spqr_user_guide.bib Makefile
+spqr_user_guide.pdf: spqr_user_guide.tex spqr_user_guide.bib Makefile spqr_version.tex
 	pdflatex spqr_user_guide.tex
 	bibtex spqr_user_guide
 	pdflatex spqr_user_guide.tex

@@ -92,39 +92,39 @@ static struct SuiteSparse_config_struct SuiteSparse_config =
 
 // Methods that return the contents of the SuiteSparse_config struct.
 
-void *SuiteSparse_config_malloc_func_get (void)
+void *(*SuiteSparse_config_malloc_func_get (void)) (size_t)
 {
-    return ((void *) SuiteSparse_config.malloc_func) ;
+    return (SuiteSparse_config.malloc_func) ;
 }
 
-void *SuiteSparse_config_calloc_func_get (void)
+void *(*SuiteSparse_config_calloc_func_get (void)) (size_t, size_t)
 {
-    return ((void *) SuiteSparse_config.calloc_func) ;
+    return (SuiteSparse_config.calloc_func) ;
 }
 
-void *SuiteSparse_config_realloc_func_get (void)
+void *(*SuiteSparse_config_realloc_func_get (void)) (void *, size_t)
 {
-    return ((void *) SuiteSparse_config.realloc_func) ;
+    return (SuiteSparse_config.realloc_func) ;
 }
 
-void *SuiteSparse_config_free_func_get (void)
+void (*SuiteSparse_config_free_func_get (void)) (void *)
 {
-    return ((void *) SuiteSparse_config.free_func) ;
+    return (SuiteSparse_config.free_func) ;
 }
 
-void *SuiteSparse_config_printf_func_get (void)
+int (*SuiteSparse_config_printf_func_get (void)) (const char *, ...)
 {
-    return ((void *) SuiteSparse_config.printf_func) ;
+    return (SuiteSparse_config.printf_func) ;
 }
 
-void *SuiteSparse_config_hypot_func_get (void)
+double (*SuiteSparse_config_hypot_func_get (void)) (double, double)
 {
-    return ((void *) SuiteSparse_config.hypot_func) ;
+    return (SuiteSparse_config.hypot_func) ;
 }
 
-void *SuiteSparse_config_divcomplex_func_get (void)
+int (*SuiteSparse_config_divcomplex_func_get (void)) (double, double, double, double, double *, double *)
 {
-    return ((void *) SuiteSparse_config.divcomplex_func) ;
+    return (SuiteSparse_config.divcomplex_func) ;
 }
 
 //------------------------------------------------------------------------------
@@ -133,37 +133,37 @@ void *SuiteSparse_config_divcomplex_func_get (void)
 
 // Methods that set the contents of the SuiteSparse_config struct.
 
-void SuiteSparse_config_malloc_func_set (void *malloc_func)
+void SuiteSparse_config_malloc_func_set (void *(*malloc_func) (size_t))
 {
     SuiteSparse_config.malloc_func = malloc_func ;
 }
 
-void SuiteSparse_config_calloc_func_set (void *calloc_func)
+void SuiteSparse_config_calloc_func_set (void *(*calloc_func) (size_t, size_t))
 {
     SuiteSparse_config.calloc_func = calloc_func ;
 }
 
-void SuiteSparse_config_realloc_func_set (void *realloc_func)
+void SuiteSparse_config_realloc_func_set (void *(*realloc_func) (void *, size_t))
 {
     SuiteSparse_config.realloc_func = realloc_func ;
 }
 
-void SuiteSparse_config_free_func_set (void *free_func)
+void SuiteSparse_config_free_func_set (void (*free_func) (void *))
 {
     SuiteSparse_config.free_func = free_func ;
 }
 
-void SuiteSparse_config_printf_func_set (void *printf_func)
+void SuiteSparse_config_printf_func_set (int (*printf_func) (const char *, ...))
 {
     SuiteSparse_config.printf_func = printf_func ;
 }
 
-void SuiteSparse_config_hypot_func_set (void *hypot_func)
+void SuiteSparse_config_hypot_func_set (double (*hypot_func) (double, double))
 {
     SuiteSparse_config.hypot_func = hypot_func ;
 }
 
-void SuiteSparse_config_divcomplex_func_set (void *divcomplex_func)
+void SuiteSparse_config_divcomplex_func_set (int (*divcomplex_func) (double, double, double, double, double *, double *))
 {
     SuiteSparse_config.divcomplex_func = divcomplex_func ;
 }

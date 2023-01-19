@@ -1,4 +1,4 @@
-Jan 9, 2023: version 6.1.0
+Jan 17, 2023: version 6.1.0
 
     * NFORTRAN: option added to disable Fortran entirely
     * SuiteSparse_config: now v7.0.0

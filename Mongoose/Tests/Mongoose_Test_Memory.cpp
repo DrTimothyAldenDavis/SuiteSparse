@@ -62,10 +62,10 @@ int runMemoryTest(const std::string &inputFile)
     }
 
     /* Override SuiteSparse memory management with custom testers. */
-    SuiteSparse_config_malloc_func_set ((void *) myMalloc) ;
-    SuiteSparse_config_calloc_func_set ((void *) myCalloc) ;
-    SuiteSparse_config_realloc_func_set ((void *) myRealloc) ;
-    SuiteSparse_config_free_func_set ((void *) myFree) ;
+    SuiteSparse_config_malloc_func_set (myMalloc) ;
+    SuiteSparse_config_calloc_func_set (myCalloc) ;
+    SuiteSparse_config_realloc_func_set (myRealloc) ;
+    SuiteSparse_config_free_func_set (myFree) ;
 
     int status = RunAllTests(inputFile, options);
 

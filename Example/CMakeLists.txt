@@ -12,7 +12,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Jan 9, 2023" )
+set ( MY_DATE "Jan 17, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 2 )
 set ( MY_VERSION_PATCH 4 )
@@ -275,10 +275,12 @@ include_directories ( ${UMFPACK_INCLUDE_DIR} )
 #-------------------------------------------------------------------------------
 
 install ( TARGETS my
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
 install ( TARGETS my_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR} )
 
 #-------------------------------------------------------------------------------
 # Demo program

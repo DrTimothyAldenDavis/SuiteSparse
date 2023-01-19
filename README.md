@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Jan 9, 2023, SuiteSparse VERSION 7.0.0
+Jan 17, 2023, SuiteSparse VERSION 7.0.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -608,12 +608,11 @@ Module.  Debug mode will be used.  The static libraries will not be built
     ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
                         Default: true for CHOLMOD and SPQR; false otherwise
 
-    GLOBAL_INSTALL:     if true, "make install" will install
-                        into /usr/local/lib and /usr/local/include.
-                        Default: true
-
-    LOCAL_INSTALL:      if true, "make install" will install
+    LOCAL_INSTALL:      if true, "cmake --install" will install
                         into SuiteSparse/lib and SuiteSparse/include.
+                        if false, "cmake --install" will install into the
+                        default prefix (or the one configured with
+                        CMAKE_INSTALL_PREFIX).
                         Default: false
 
     NSTATIC:            if true, static libraries are not built.

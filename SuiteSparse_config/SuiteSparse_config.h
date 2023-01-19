@@ -279,22 +279,22 @@ extern "C"
 // wrappers defined below to access them.
 
 // The SuiteSparse_config_*_get methods return the contents of the struct:
-void *SuiteSparse_config_malloc_func_get (void) ;
-void *SuiteSparse_config_calloc_func_get (void) ;
-void *SuiteSparse_config_realloc_func_get (void) ;
-void *SuiteSparse_config_free_func_get (void) ;
-void *SuiteSparse_config_printf_func_get (void) ;
-void *SuiteSparse_config_hypot_func_get (void) ;
-void *SuiteSparse_config_divcomplex_func_get (void) ;
+void *(*SuiteSparse_config_malloc_func_get (void)) (size_t);
+void *(*SuiteSparse_config_calloc_func_get (void)) (size_t, size_t);
+void *(*SuiteSparse_config_realloc_func_get (void)) (void *, size_t);
+void (*SuiteSparse_config_free_func_get (void)) (void *);
+int (*SuiteSparse_config_printf_func_get (void)) (const char *, ...);
+double (*SuiteSparse_config_hypot_func_get (void)) (double, double);
+int (*SuiteSparse_config_divcomplex_func_get (void)) (double, double, double, double, double *, double *);
 
 // The SuiteSparse_config_*_set methods modify the contents of the struct:
-void SuiteSparse_config_malloc_func_set (void *malloc_func) ;
-void SuiteSparse_config_calloc_func_set (void *calloc_func) ;
-void SuiteSparse_config_realloc_func_set (void *realloc_func) ;
-void SuiteSparse_config_free_func_set (void *free_func) ;
-void SuiteSparse_config_printf_func_set (void *printf_func) ;
-void SuiteSparse_config_hypot_func_set (void *hypot_func) ;
-void SuiteSparse_config_divcomplex_func_set (void *divcomplex_func) ;
+void SuiteSparse_config_malloc_func_set (void *(*malloc_func) (size_t));
+void SuiteSparse_config_calloc_func_set (void *(*calloc_func) (size_t, size_t));
+void SuiteSparse_config_realloc_func_set (void *(*realloc_func) (void *, size_t));
+void SuiteSparse_config_free_func_set (void (*free_func) (void *));
+void SuiteSparse_config_printf_func_set (int (*printf_func) (const char *, ...));
+void SuiteSparse_config_hypot_func_set (double (*hypot_func) (double, double));
+void SuiteSparse_config_divcomplex_func_set (int (*divcomplex_func) (double, double, double, double, double *, double *));
 
 // The SuiteSparse_config_*_func methods are wrappers that call the function
 // pointers in the struct.  Note that there is no wrapper for the printf_func.
@@ -409,7 +409,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Jan 9, 2023"
+#define SUITESPARSE_DATE "Jan 17, 2023"
 #define SUITESPARSE_MAIN_VERSION    7
 #define SUITESPARSE_SUB_VERSION     0
 #define SUITESPARSE_SUBSUB_VERSION  0
