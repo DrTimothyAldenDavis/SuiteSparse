@@ -1,3 +1,7 @@
+Jan 20, 2023: version 7.0.1
+
+    * GraphBLAS v7.4.3: debug was left on in GrB_Matrix_removeElement
+
 Jan 17, 2023: version 7.0.0
 
     * SuiteSparse_config: now v7.0.0
