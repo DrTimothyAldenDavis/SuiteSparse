@@ -1,3 +1,7 @@
+Version 7.4.3, Jan 20, 2023
+
+    * debug: turned on in GrB_Matrix_removeElement by mistake.
+
 Version 7.4.2, Jan 17, 2023
 
     * minor change to build system: for SuiteSparse v7.0.0
