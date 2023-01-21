@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 project(METIS)
 
+# added for SuiteSparse:
+message ( FATAL "This copy of METIS (inside SuiteSparse) cannot be built as a stand-alone library.  Use the CHOLMOD/CMakeLists.txt to compile CHOLMOD with METIS." )
+
 set(GKLIB_PATH "GKlib" CACHE PATH "path to GKlib")
 set(SHARED FALSE CACHE BOOL "build a shared library")
 
