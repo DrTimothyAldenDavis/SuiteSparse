@@ -49,7 +49,7 @@ find_library ( SPEX_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME spex_static )
+    set ( STATIC_NAME spex_static spex )
 else ( )
     set ( STATIC_NAME spex )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

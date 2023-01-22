@@ -86,7 +86,7 @@ find_library ( GRAPHBLAS_LIBRARY
   )
 
 if ( MSVC )
-    set ( STATIC_NAME graphblas_static )
+    set ( STATIC_NAME graphblas_static graphblas )
 else ( )
     set ( STATIC_NAME graphblas )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

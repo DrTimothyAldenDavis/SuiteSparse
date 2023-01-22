@@ -49,7 +49,7 @@ find_library ( CCOLAMD_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME ccolamd_static )
+    set ( STATIC_NAME ccolamd_static ccolamd )
 else ( )
     set ( STATIC_NAME ccolamd )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

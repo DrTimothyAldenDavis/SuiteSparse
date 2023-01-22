@@ -49,7 +49,7 @@ find_library ( CAMD_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME camd_static )
+    set ( STATIC_NAME camd_static camd )
 else ( )
     set ( STATIC_NAME camd )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

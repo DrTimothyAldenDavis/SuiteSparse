@@ -57,7 +57,7 @@ find_library ( KLU_CHOLMOD_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME klu_cholmod_static )
+    set ( STATIC_NAME klu_cholmod_static klu_cholmod )
 else ( )
     set ( STATIC_NAME klu_cholmod )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
