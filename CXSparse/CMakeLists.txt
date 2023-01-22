@@ -46,8 +46,10 @@ endif ( )
 if ( NCOMPLEX )
     message ( STATUS "complex data type: disabled" )
     add_compile_definitions ( NCOMPLEX )
+    set ( CXSPARSE_USE_COMPLEX 0 )
 else ( )
     message ( STATUS "complex data type: enabled" )
+    set ( CXSPARSE_USE_COMPLEX 1 )
 endif ( )
 
 #-------------------------------------------------------------------------------
