@@ -53,7 +53,7 @@ find_library ( SUITESPARSE_CONFIG_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME suitesparseconfig_static )
+    set ( STATIC_NAME suitesparseconfig_static suitesparseconfig )
 else ( )
     set ( STATIC_NAME suitesparseconfig )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

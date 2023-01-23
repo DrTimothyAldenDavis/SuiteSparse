@@ -50,7 +50,7 @@ find_library ( UMFPACK_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME umfpack_static )
+    set ( STATIC_NAME umfpack_static umfpack )
 else ( )
     set ( STATIC_NAME umfpack )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

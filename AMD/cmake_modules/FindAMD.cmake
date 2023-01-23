@@ -49,7 +49,7 @@ find_library ( AMD_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME amd_static )
+    set ( STATIC_NAME amd_static amd )
 else ( )
     set ( STATIC_NAME amd )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

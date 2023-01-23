@@ -53,7 +53,7 @@ find_library ( MONGOOSE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME mongoose_static )
+    set ( STATIC_NAME mongoose_static mongoose )
 else ( )
     set ( STATIC_NAME mongoose )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

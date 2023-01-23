@@ -51,7 +51,7 @@ find_library ( SUITESPARSE_GPURUNTIME_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME suitesparse_gpuruntime_static )
+    set ( STATIC_NAME suitesparse_gpuruntime_static suitesparse_gpuruntime )
 else ( )
     set ( STATIC_NAME suitesparse_gpuruntime )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

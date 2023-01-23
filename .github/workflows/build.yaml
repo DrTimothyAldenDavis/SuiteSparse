@@ -33,7 +33,7 @@ jobs:
             cc: "gcc"
             cxx: "g++"
           - compiler: clang
-            compiler-pkgs: "clang"
+            compiler-pkgs: "clang libomp-dev"
             cc: "clang"
             cxx: "clang++"
           # Clang seems to generally require less cache size (smaller object files?).
@@ -60,17 +60,18 @@ jobs:
             libopenblas-dev
 
       - name: prepare ccache
-        # create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: ~/.ccache
-          key: ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}
@@ -94,6 +95,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX=../.. \
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
@@ -118,6 +120,37 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: install
+        run: |
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake --install .
+            echo "::endgroup::"
+          done
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          LD_LIBRARY_PATH=../lib ./my_demo
+          echo "::endgroup::"
 
 
   macos:
@@ -145,17 +178,18 @@ jobs:
           brew install autoconf automake ccache cmake gmp lapack libomp mpfr openblas
 
       - name: prepare ccache
-        # create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:macos-latest:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: /Users/runner/Library/Caches/ccache
-          key: ccache:macos-latest:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:macos-latest:${{ github.ref }}
@@ -176,6 +210,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX=../.. \
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
@@ -201,6 +236,39 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: /Users/runner/Library/Caches/ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: install
+        run: |
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake --install .
+            echo "::endgroup::"
+          done
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+            .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          ./my_demo
+          echo "::endgroup::"
 
 
   mingw:
@@ -269,18 +337,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: prepare ccache
-        # Create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
           echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
-          path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
-          key: ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:mingw:${{ matrix.msystem }}:${{ github.ref }}
@@ -333,6 +402,27 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake -DCMAKE_MODULE_PATH="${MINGW_PREFIX}/lib/cmake/SuiteSparse" .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          ./my_demo
+          echo "::endgroup::"
 
 
   msvc:
@@ -420,19 +510,20 @@ jobs:
           echo "CCACHE=C:/Miniconda/envs/test/Library/bin/ccache.exe" >> ${GITHUB_ENV}
 
       - name: prepare ccache
-        # Check path to cache directory
-        id: ccache-cache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         shell: msys2 {0}
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
-          path: ${{ steps.ccache-cache.outputs.ccachedir }}
-          key: ccache:msvc:${{ github.ref }}:${{ steps.ccache-cache.outputs.timestamp }}:${{ github.sha }}
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:msvc:${{ github.ref }}
@@ -441,9 +532,9 @@ jobs:
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
-          test -d ${{ steps.ccache-cache.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-cache.outputs.ccachedir }}
-          echo "max_size = 250M" > ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
-          echo "compression = true" >> ${{ steps.ccache-cache.outputs.ccachedir }}/ccache.conf
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
           ${CCACHE} -p
           ${CCACHE} -s
 
@@ -459,6 +550,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -G"Ninja Multi-Config" \
+                  -DCMAKE_INSTALL_PREFIX=../.. \
                   -DCMAKE_BUILD_TYPE="Release" \
                   -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
                   -DCMAKE_C_COMPILER_LAUNCHER=${CCACHE} \
@@ -478,3 +570,38 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ${CCACHE} -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: install
+        run: |
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake --install .
+            echo "::endgroup::"
+          done
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
+            -DCMAKE_C_FLAGS="-DNCOMPLEX" \
+            -DBLA_VENDOR="All" \
+            .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build . --config Release
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" ./Release/my_demo
+          echo "::endgroup::"
