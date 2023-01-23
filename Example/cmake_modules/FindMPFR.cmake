@@ -17,8 +17,6 @@
 # MPFR_LIBRARIES   - libraries when using mpfr
 # MPFR_FOUND       - true if mpfr found
 
-# For MS Visual Studio, MPFR_LIBRARY and MPFR_STATIC are the same.
-
 # set ``MPFR_ROOT`` to a mpfr installation root to
 # tell this module where to look.
 
@@ -29,7 +27,7 @@
 
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
-    set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
+    list ( PREPEND CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
 endif ( )
 
 # include files for mpfr
@@ -44,16 +42,20 @@ find_library ( MPFR_LIBRARY
     PATH_SUFFIXES lib build
 )
 
+# static mpfr library
 if ( NOT MSVC )
     set ( CMAKE_FIND_LIBRARY_SUFFIXES
         ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
-# static mpfr library
 find_library ( MPFR_STATIC
     NAMES mpfr
     PATH_SUFFIXES lib build
 )
+
+if ( NOT MPFR_STATIC )
+    set ( MPFR_STATIC ${MPFR_LIBRARY} )
+endif ( )
 
 if ( NOT MSVC )
     # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
