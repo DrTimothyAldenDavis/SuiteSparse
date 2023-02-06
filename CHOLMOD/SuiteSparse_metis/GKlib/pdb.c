@@ -21,7 +21,6 @@ This function takes a three letter \c * and converts it to a single \c
 \returns A \c representing the amino acid.
 */
 /************************************************************************/
-// gk_threetoone disabled for SuiteSparse, Jan 2023
 char gk_threetoone(char *res) { /* {{{ */
 	/* make sure the matching works */
 	res[0] = toupper(res[0]);
