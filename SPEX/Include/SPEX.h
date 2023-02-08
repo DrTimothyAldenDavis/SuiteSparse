@@ -271,6 +271,11 @@
 #define SPEX_VERSION_MINOR 0
 #define SPEX_VERSION_SUB   3
 
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
+
 //------------------------------------------------------------------------------
 // Error codes
 //------------------------------------------------------------------------------
@@ -952,5 +957,8 @@ SPEX_info SPEX_Left_LU_solve         // solves the linear system LD^(-1)U x = b
     const SPEX_options* option
 ) ;
 
+#if defined ( __cplusplus )
+}
 #endif
 
+#endif
