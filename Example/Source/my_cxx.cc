@@ -1,17 +1,16 @@
 // Example library that relies on SuiteSparse packages
 
-// ANSI C include files:
-#include <stdio.h>
-#include <string.h>
-#include <math.h>
+#include <iostream>
+#include <string>
+#include <cmath>
 
 #include "my.h"
 
-#define OK(result)                                      \
-    if (!(result))                                      \
-    {                                                   \
-        printf ("abort line %d\n", __LINE__) ;          \
-        abort ( ) ;                                     \
+#define OK(result)                                            \
+    if (!(result))                                            \
+    {                                                         \
+        std::cout << "abort line " << __LINE__ << std::endl ; \
+        abort ( ) ;                                           \
     }
 
 void my_library (int version [3], char date [128])
@@ -30,28 +29,36 @@ void my_function (void)
     // SuiteSparse_config
     //--------------------------------------------------------------------------
 
-    printf ("SuiteSparse: v%d.%d.%d (%s)\n",
-        SUITESPARSE_MAIN_VERSION, SUITESPARSE_SUB_VERSION,
-        SUITESPARSE_SUBSUB_VERSION, SUITESPARSE_DATE) ;
-    int version [3] ;
+    std::cout << "SuiteSparse: v"
+              << SUITESPARSE_MAIN_VERSION << "."
+              << SUITESPARSE_SUB_VERSION << "."
+              << SUITESPARSE_SUBSUB_VERSION << " "
+              << "(" << SUITESPARSE_DATE << ")" << std::endl;
+    int version[3];
     int v = SuiteSparse_version (version) ;
-    printf ("SuiteSparse: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    std::cout << "SuiteSparse: v"
+              << version[0] << "."
+              << version[1] << "."
+              << version[2] << " "
+              << "(in library)" << std::endl;
 
     //--------------------------------------------------------------------------
     // CXSparse
     //--------------------------------------------------------------------------
 
-    printf ("CXSparse: v%d.%d.%d (%s)\n",
-        CS_VER, CS_SUBVER, CS_SUBSUB, CS_DATE) ;
-    cs_dl *A = NULL ;
+    std::cout << "CXSparse: v"
+              << CS_VER << "."
+              << CS_SUBVER << "."
+              << CS_SUBSUB << " "
+              << "(" << CS_DATE << ")" << std::endl;
+    cs_dl *A = nullptr ;
 
     // create a dense 2-by-2 matrix
     #define N 2
     #define NNZ 4
     int64_t n = N, nzmax = NNZ ;
     A = cs_dl_spalloc (n, n, nzmax, true, false) ;
-    OK (A != NULL) ;
+    OK (A != nullptr) ;
     int64_t *Ap = A->p ;
     int64_t *Ai = A->i ;
     double  *Ax = A->x ;
@@ -68,79 +75,104 @@ void my_function (void)
     // AMD
     //--------------------------------------------------------------------------
 
-    printf ("AMD: v%d.%d.%d (%s)\n",
-        AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
+    std::cout << "AMD: v"
+              << AMD_MAIN_VERSION << "."
+              << AMD_SUB_VERSION << "."
+              << AMD_SUBSUB_VERSION << " "
+              << "(" << AMD_DATE << ")" << std::endl;
     int64_t P [N] ;
-    OK (amd_l_order (n, Ap, Ai, P, NULL, NULL) == AMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    OK (amd_l_order (n, Ap, Ai, P, nullptr, nullptr) == AMD_OK) ;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "P [" << k << "] = " << P [k] << std::endl;
 
     //--------------------------------------------------------------------------
     // BTF
     //--------------------------------------------------------------------------
 
-    printf ("BTF: v%d.%d.%d (%s)\n",
-        BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE) ;
+    std::cout << "BTF: v"
+              << BTF_MAIN_VERSION << "."
+              << BTF_SUB_VERSION << "."
+              << BTF_SUBSUB_VERSION << " "
+              << "(" << BTF_DATE << ")" << std::endl;
     double work ;
     int64_t nmatch ;
     int64_t Q [N], R [N+1], Work [5*N] ;
     int64_t nblocks = btf_l_order (n, Ap, Ai, -1, &work, P, Q, R, &nmatch,
         Work) ;
     OK (nblocks > 0) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
-    for (int k = 0 ; k < n ; k++) printf ("Q [%d] = %d\n", k, (int) Q [k]) ;
-    printf ("nblocks %d\n", (int) nblocks) ;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "P [" << k << "] = " << P [k] << std::endl;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "Q [" << k << "] = " << Q [k] << std::endl;
+    std::cout << "nblocks " << nblocks << std::endl;
 
     //--------------------------------------------------------------------------
     // CAMD
     //--------------------------------------------------------------------------
 
-    printf ("CAMD: v%d.%d.%d (%s)\n",
-        CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE) ;
+    std::cout << "CAMD: v"
+              << CAMD_MAIN_VERSION << "."
+              << CAMD_SUB_VERSION << "."
+              << CAMD_SUBSUB_VERSION << " "
+              << "(" << CAMD_DATE << ")" << std::endl;
     int64_t Cmem [N] ;
-    for (int k = 0 ; k < n ; k++) Cmem [k] = 0 ;
-    OK (camd_l_order (n, Ap, Ai, P, NULL, NULL, Cmem) == CAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++)
+      Cmem [k] = 0 ;
+    OK (camd_l_order (n, Ap, Ai, P, nullptr, nullptr, Cmem) == CAMD_OK) ;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "P [" << k << "] = " << P [k] << std::endl;
 
     //--------------------------------------------------------------------------
     // CCOLAMD
     //--------------------------------------------------------------------------
 
-    printf ("CCOLAMD: v%d.%d.%d (%s)\n",
-        CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
-        CCOLAMD_DATE) ;
+    std::cout << "CCOLAMD: v"
+              << CCOLAMD_MAIN_VERSION << "."
+              << CCOLAMD_SUB_VERSION << "."
+              << CCOLAMD_SUBSUB_VERSION << " "
+              << "(" << CCOLAMD_DATE << ")" << std::endl;
     int64_t Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    int64_t *Awork = malloc (Alen * sizeof (int64_t)) ;
-    OK (Awork != NULL) ;
+    int64_t *Awork = (int64_t *) malloc (Alen * sizeof (int64_t)) ;
+    OK (Awork != nullptr) ;
     memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
-    OK (ccolamd_l (n, n, Alen, Awork, P, NULL, NULL, Cmem) == CCOLAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    OK (ccolamd_l (n, n, Alen, Awork, P, nullptr, nullptr, Cmem) == CCOLAMD_OK) ;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "P [" << k << "] = " << P [k] << std::endl;
     free (Awork) ;
 
     //--------------------------------------------------------------------------
     // COLAMD
     //--------------------------------------------------------------------------
 
-    printf ("COLAMD: v%d.%d.%d (%s)\n",
-        COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
-        COLAMD_DATE) ;
+    std::cout << "COLAMD: v"
+              << COLAMD_MAIN_VERSION << "."
+              << COLAMD_SUB_VERSION << "."
+              << COLAMD_SUBSUB_VERSION << " "
+              << "(" << COLAMD_DATE << ")" << std::endl;
     Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    Awork = malloc (Alen * sizeof (int64_t)) ;
-    OK (Awork != NULL) ;
+    Awork = (int64_t *) malloc (Alen * sizeof (int64_t)) ;
+    OK (Awork != nullptr) ;
     memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
-    OK (colamd_l (n, n, Alen, Awork, P, NULL, NULL) == COLAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    OK (colamd_l (n, n, Alen, Awork, P, nullptr, nullptr) == COLAMD_OK) ;
+    for (int k = 0 ; k < n ; k++)
+      std::cout << "P [" << k << "] = " << P [k] << std::endl;
     free (Awork) ;
 
     //--------------------------------------------------------------------------
     // CHOLMOD
     //--------------------------------------------------------------------------
 
-    printf ("CHOLMOD: v%d.%d.%d (%s)\n",
-        CHOLMOD_MAIN_VERSION, CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION,
-        CHOLMOD_DATE) ;
+    std::cout << "CHOLMOD: v"
+              << CHOLMOD_MAIN_VERSION << "."
+              << CHOLMOD_SUB_VERSION << "."
+              << CHOLMOD_SUBSUB_VERSION << " "
+              << "(" << CHOLMOD_DATE << ")" << std::endl;
     v = cholmod_l_version (version) ;
-    printf ("CHOLMOD: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    std::cout << "CHOLMOD: v"
+              << version[0] << "."
+              << version[1] << "."
+              << version[2] << " "
+              << "(in library)" << std::endl;
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
 
@@ -148,21 +180,29 @@ void my_function (void)
     // GraphBLAS
     //--------------------------------------------------------------------------
 
+    std::cout << "GraphBLAS: v"
+              << GxB_IMPLEMENTATION_MAJOR << "."
+              << GxB_IMPLEMENTATION_MINOR << "."
+              << GxB_IMPLEMENTATION_SUB << " "
+              << "(" << GxB_IMPLEMENTATION_DATE << ")" << std::endl;
     OK (GrB_init (GrB_NONBLOCKING) == GrB_SUCCESS) ;
-    printf ("GraphBLAS: v%d.%d.%d (%s)\n",
-        GxB_IMPLEMENTATION_MAJOR, GxB_IMPLEMENTATION_MINOR,
-        GxB_IMPLEMENTATION_SUB, GxB_IMPLEMENTATION_DATE) ;
     OK (GxB_Global_Option_get (GxB_LIBRARY_VERSION, version) == GrB_SUCCESS) ;
-    printf ("GraphBLAS: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    std::cout << "GraphBLAS: v"
+              << version[0] << "."
+              << version[1] << "."
+              << version[2] << " "
+              << "(in library)" << std::endl;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
 
     //--------------------------------------------------------------------------
     // KLU
     //--------------------------------------------------------------------------
 
-    printf ("KLU: v%d.%d.%d (%s)\n",
-        KLU_MAIN_VERSION, KLU_SUB_VERSION, KLU_SUBSUB_VERSION, KLU_DATE) ;
+    std::cout << "KLU: v"
+              << KLU_MAIN_VERSION << "."
+              << KLU_SUB_VERSION << "."
+              << KLU_SUBSUB_VERSION << " "
+              << "(" << KLU_DATE << ")" << std::endl;
     double b [N] = {8., 45.} ;
     double xgood [N] = {36.4, -32.7} ;
     double x [N] ;
@@ -172,9 +212,9 @@ void my_function (void)
     klu_l_common Common ;
     OK (klu_l_defaults (&Common)) ;
     Symbolic = klu_l_analyze (n, Ap, Ai, &Common) ;
-    OK (Symbolic != NULL) ;
+    OK (Symbolic != nullptr) ;
     Numeric = klu_l_factor (Ap, Ai, Ax, Symbolic, &Common) ;
-    OK (Numeric != NULL) ;
+    OK (Numeric != nullptr) ;
     memcpy (x, b, N * sizeof (double)) ;
     OK (klu_l_solve (Symbolic, Numeric, 5, 1, x, &Common)) ;
     klu_l_free_symbolic (&Symbolic, &Common) ;
@@ -182,18 +222,21 @@ void my_function (void)
     double err = 0 ;
     for (int i = 0 ; i < n ; i++)
     {
-        printf ("x [%d] = %g\n", i, x [i]) ;
-        err = fmax (err, fabs (x [i] - xgood [i])) ;
+      std::cout << "x [" << i << "] = " << x [i] << std::endl;
+      err = fmax (err, fabs (x [i] - xgood [i])) ;
     }
-    printf ("error: %g\n", err) ;
+    std::cout << "error: " << err << std::endl;
     OK (err < 1e-12) ;
 
     //--------------------------------------------------------------------------
     // LDL
     //--------------------------------------------------------------------------
 
-    printf ("LDL: v%d.%d.%d (%s)\n",
-        LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION, LDL_DATE) ;
+    std::cout << "LDL: v"
+              << LDL_MAIN_VERSION << "."
+              << LDL_SUB_VERSION << "."
+              << LDL_SUBSUB_VERSION << " "
+              << "(" << LDL_DATE << ")" << std::endl;
     double x2 [N] ;
     P [0] = 0 ;
     P [1] = 1 ;
@@ -201,35 +244,39 @@ void my_function (void)
     err = 0 ;
     for (int i = 0 ; i < n ; i++)
     {
-        printf ("x2 [%d] = %g\n", i, b [i]) ;
-        err = fmax (err, fabs (x2 [i] - xgood [i])) ;
+      std::cout << "x2 [" << i << "] = " << x2 [i] << std::endl;
+      err = fmax (err, fabs (x2 [i] - xgood [i])) ;
     }
-    printf ("error: %g\n", err) ;
+    std::cout << "error: " << err << std::endl;
     OK (err == 0) ;
 
     //--------------------------------------------------------------------------
     // RBio
     //--------------------------------------------------------------------------
 
-    printf ("RBio: v%d.%d.%d (%s)\n",
-        RBIO_MAIN_VERSION, RBIO_SUB_VERSION, RBIO_SUBSUB_VERSION, RBIO_DATE) ;
-    char mtype [4], key [8], title [80] ;
-    strncpy (key, "simple", 8) ;
-    strncpy (title, "2-by-2 matrix", 80) ;
+    std::cout << "RBio: v"
+              << RBIO_MAIN_VERSION << "."
+              << RBIO_SUB_VERSION << "."
+              << RBIO_SUBSUB_VERSION << " "
+              << "(" << RBIO_DATE << ")" << std::endl;
+    char mtype [4];
+    std::string key {"simple"};
+    std::string title {"2-by-2 matrix"};
     mtype [0] = '\0' ;
     int64_t njumbled, nzeros ;
-    int result = RBok (n, n, NNZ, Ap, Ai, Ax, NULL, NULL, 0,
+    int result = RBok (n, n, NNZ, Ap, Ai, Ax, nullptr, nullptr, 0,
         &njumbled, &nzeros) ;
     OK (result == RBIO_OK) ;
-    printf ("njumbled %d, nzeros %d\n", (int) njumbled, (int) nzeros) ;
-    result = RBwrite ("temp.rb", title, key, n, n, Ap, Ai, Ax,
-        NULL, NULL, NULL, 0, mtype) ;
-    printf ("result %d\n", result) ;
-    printf ("mtype: %s\n", mtype) ;
+    std::cout << "njumbled " << njumbled << ", nzeros " << nzeros << std::endl;
+    std::string filename {"temp.rb"};
+    result = RBwrite (filename.data (), title.data (), key.data (), n, n,
+        Ap, Ai, Ax, nullptr, nullptr, nullptr, 0, mtype) ;
+    std::cout << "result " << result << std::endl;
+    std::cout << "mtype: " << mtype << std::endl;
 
     // dump out the file
     FILE *f = fopen ("temp.rb", "r") ;
-    OK (f != NULL) ;
+    OK (f != nullptr) ;
     int c ;
     while (1)
     {
@@ -243,8 +290,11 @@ void my_function (void)
     // SPEX
     //--------------------------------------------------------------------------
 
-    printf ("SPEX: v%d.%d.%d (%s)\n",
-        SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE) ;
+    std::cout << "SPEX: v"
+              << SPEX_VERSION_MAJOR << "."
+              << SPEX_VERSION_MINOR << "."
+              << SPEX_VERSION_SUB << " "
+              << "(" << SPEX_DATE << ")" << std::endl;
     OK (SPEX_initialize ( ) == SPEX_OK) ;
     OK (SPEX_finalize ( ) == SPEX_OK) ;
 
@@ -252,8 +302,11 @@ void my_function (void)
     // SPQR
     //--------------------------------------------------------------------------
 
-    printf ("SPQR: v%d.%d.%d (%s)\n",
-        SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE) ;
+    std::cout << "SPQR: v"
+              << SPQR_MAIN_VERSION << "."
+              << SPQR_SUB_VERSION << "."
+              << SPQR_SUBSUB_VERSION << " "
+              << "(" << SPQR_DATE << ")" << std::endl;
     cholmod_sparse *A2, A2_struct ;
     cholmod_dense  *B2, B2_struct ;
     cholmod_dense  *X2 ;
@@ -265,11 +318,11 @@ void my_function (void)
     A2->p = Ap ;
     A2->i = Ai ;
     A2->x = Ax ;
-    A2->z = NULL ;
+    A2->z = nullptr ;
     A2->nzmax = NNZ ;
     A2->packed = true ;
     A2->sorted = true ;
-    A2->nz = NULL ;
+    A2->nz = nullptr ;
     A2->itype = CHOLMOD_LONG ;
     A2->dtype = CHOLMOD_DOUBLE ;
     A2->xtype = CHOLMOD_REAL ;
@@ -280,14 +333,14 @@ void my_function (void)
     B2->nrow = n ;
     B2->ncol = 1 ;
     B2->x = b ;
-    B2->z = NULL ;
+    B2->z = nullptr ;
     B2->d = n ;
     B2->nzmax = n ;
     B2->dtype = CHOLMOD_DOUBLE ;
     B2->xtype = CHOLMOD_REAL ;
 
     X2 = SuiteSparseQR_C_backslash_default (A2, B2, &cc) ;
-    OK (X2 != NULL) ;
+    OK (X2 != nullptr) ;
     OK (cc.status == CHOLMOD_OK) ;
     cc.print = 5 ;
     OK (cholmod_l_print_dense (X2, "X from QR", &cc)) ;
@@ -296,16 +349,18 @@ void my_function (void)
     // UMFPACK
     //--------------------------------------------------------------------------
 
-    printf ("UMFPACK: v%d.%d.%d (%s)\n",
-        UMFPACK_MAIN_VERSION, UMFPACK_SUB_VERSION, UMFPACK_SUBSUB_VERSION,
-        UMFPACK_DATE) ;
+    std::cout << "UMFPACK: v"
+              << UMFPACK_MAIN_VERSION << "."
+              << UMFPACK_SUB_VERSION << "."
+              << UMFPACK_SUBSUB_VERSION << " "
+              << "(" << UMFPACK_DATE << ")" << std::endl;
 
-    printf ("%s\n", UMFPACK_VERSION) ;
-    printf ("%s", UMFPACK_COPYRIGHT) ;
-    printf ("%s", UMFPACK_LICENSE_PART1) ;
-    printf ("BLAS used: %s\n", SuiteSparse_BLAS_library ( )) ;
-    printf ("BLAS integer size: %d bytes\n",
-        (int) sizeof (SUITESPARSE_BLAS_INT)) ;
+    std::cout << UMFPACK_VERSION << std::endl;
+    std::cout << UMFPACK_COPYRIGHT;
+    std::cout << UMFPACK_LICENSE_PART1;
+    std::cout << "BLAS used: " << SuiteSparse_BLAS_library ( ) << std::endl;
+    std::cout << "BLAS integer size: "
+              << sizeof (SUITESPARSE_BLAS_INT) << " bytes" << std::endl;
 
     double Control [UMFPACK_CONTROL] ;
     double Info [UMFPACK_INFO] ;
@@ -318,13 +373,14 @@ void my_function (void)
     umfpack_dl_free_symbolic (&Sym) ;
     result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info) ;
     umfpack_dl_free_numeric (&Num) ;
-    for (int i = 0 ; i < n ; i++) printf ("x [%d] = %g\n", i, x [i]) ;
+    for (int i = 0 ; i < n ; i++)
+      std::cout << "x [" << i << "] = " << x [i] << std::endl;
     err = 0 ;
     for (int i = 0 ; i < n ; i++)
     {
         err = fmax (err, fabs (x [i] - xgood [i])) ;
     }
-    printf ("error: %g\n", err) ;
+    std::cout << "error: " << err << std::endl;
     OK (err < 1e-12) ;
     umfpack_dl_report_status (Control, result) ;
     umfpack_dl_report_info (Control, Info) ;
@@ -334,7 +390,7 @@ void my_function (void)
     //--------------------------------------------------------------------------
 
     cs_dl_spfree (A) ;
-    A = NULL ;
+    A = nullptr ;
     OK (cholmod_l_finish (&cc)) ;
 }
 

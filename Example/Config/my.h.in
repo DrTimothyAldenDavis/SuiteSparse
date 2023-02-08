@@ -10,31 +10,21 @@
 // Example include file for a user library.  Do not edit the Include/my.h
 // file, since it is constructed from Config/my.h.in by cmake.
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-    // SuiteSparse include files for C:
-    #include "amd.h"
-    #include "btf.h"
-    #include "camd.h"
-    #include "ccolamd.h"
-    #include "cholmod.h"
-    #include "colamd.h"
-    #include "cs.h"
-    #include "GraphBLAS.h"
-    #include "klu.h"
-    #include "ldl.h"
-    #include "RBio.h"
-    #include "SPEX.h"
-    #include "SuiteSparseQR_C.h"
-    #include "umfpack.h"
-    // ANSI C include files:
-    #include <stdio.h>
-    #include <string.h>
-    #include <math.h>
-#ifdef __cplusplus
-}
-#endif
+// SuiteSparse include files for C/C++:
+#include "amd.h"
+#include "btf.h"
+#include "camd.h"
+#include "ccolamd.h"
+#include "cholmod.h"
+#include "colamd.h"
+#include "cs.h"
+#include "GraphBLAS.h"
+#include "klu.h"
+#include "ldl.h"
+#include "RBio.h"
+#include "SPEX.h"
+#include "SuiteSparseQR_C.h"
+#include "umfpack.h"
 
 #ifdef __cplusplus
 // SuiteSparse include files for C++:
@@ -51,6 +41,13 @@ extern "C" {
 #define MY_MINOR_VERSION @MY_VERSION_MINOR@
 #define MY_PATCH_VERSION @MY_VERSION_PATCH@
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void my_library (int version [3], char date [128]) ;
 void my_function (void) ;
 
+#ifdef __cplusplus
+}
+#endif
