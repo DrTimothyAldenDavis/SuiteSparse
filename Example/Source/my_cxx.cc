@@ -269,8 +269,9 @@ void my_function (void)
     OK (result == RBIO_OK) ;
     std::cout << "njumbled " << njumbled << ", nzeros " << nzeros << std::endl;
     std::string filename {"temp.rb"};
-    result = RBwrite (filename.data (), title.data (), key.data (), n, n,
-        Ap, Ai, Ax, nullptr, nullptr, nullptr, 0, mtype) ;
+    result = RBwrite (const_cast<char *> (filename.c_str ()),
+        const_cast<char *> (title.c_str ()), const_cast<char *> (key.c_str ()),
+        n, n, Ap, Ai, Ax, nullptr, nullptr, nullptr, 0, mtype) ;
     std::cout << "result " << result << std::endl;
     std::cout << "mtype: " << mtype << std::endl;
 
