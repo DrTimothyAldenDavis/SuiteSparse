@@ -287,10 +287,10 @@ add_library ( graphblas SHARED ${GRAPHBLAS_SOURCES} )
 set_target_properties ( graphblas PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "Include/GraphBLAS.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
-set_property ( TARGET graphblas PROPERTY C_STANDARD 11 )
 
 if ( SUITESPARSE_CUDA )
     add_dependencies ( graphblas graphblascuda )
@@ -314,14 +314,13 @@ if ( NOT NSTATIC )
        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
        OUTPUT_NAME graphblas
        SOVERSION ${GraphBLAS_VERSION_MAJOR}
-       C_STANDARD_REQUIRED 11 )
+       C_STANDARD 11
+       C_STANDARD_REQUIRED ON )
 
     if ( MSVC )
         set_target_properties ( graphblas_static PROPERTIES
             OUTPUT_NAME graphblas_static )
     endif ( )
-
-    set_property ( TARGET graphblas_static PROPERTY C_STANDARD 11 )
 
     if ( SUITESPARSE_CUDA )
         add_dependencies ( graphblas_static graphblascuda )
@@ -441,8 +440,8 @@ if ( DEMO )
     set_target_properties ( graphblasdemo PROPERTIES
         VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
         SOVERSION ${GraphBLAS_VERSION_MAJOR}
-        C_STANDARD_REQUIRED 11 )
-    set_property ( TARGET graphblasdemo PROPERTY C_STANDARD 11 )
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON )
     target_link_libraries ( graphblasdemo PUBLIC graphblas
         ${GB_CUDA} ${GB_RMM} )
 
@@ -450,8 +449,8 @@ if ( DEMO )
         add_library ( graphblasdemo_static STATIC ${DEMO_SOURCES} )
         set_target_properties ( graphblasdemo_static PROPERTIES
             VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
-            C_STANDARD_REQUIRED 11 )
-        set_property ( TARGET graphblasdemo_static PROPERTY C_STANDARD 11 )
+            C_STANDARD 11
+            C_STANDARD_REQUIRED ON )
         target_link_libraries ( graphblasdemo_static PUBLIC 
             graphblas_static  ${GB_CUDA} ${GB_RMM} )
     endif ( )
