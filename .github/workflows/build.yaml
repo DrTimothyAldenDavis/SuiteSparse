@@ -595,7 +595,6 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
             -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
-            -DCMAKE_C_FLAGS="-DNCOMPLEX" \
             -DBLA_VENDOR="All" \
             .
           echo "::endgroup::"
