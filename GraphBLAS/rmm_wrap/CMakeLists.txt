@@ -46,7 +46,8 @@ add_library(rmm_wrap STATIC rmm_wrap.cpp rmm_wrap.hpp rmm_wrap.h)
 set_target_properties (rmm_wrap PROPERTIES
 		VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
 		SOVERSION ${GraphBLAS_VERSION_MAJOR}
-		C_STANDARD_REQUIRED 11
+		C_STANDARD 11
+		C_STANDARD_REQUIRED ON
 		PUBLIC_HEADER "rmm_wrap.h" )
 
 

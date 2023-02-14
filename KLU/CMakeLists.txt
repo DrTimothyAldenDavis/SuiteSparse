@@ -107,7 +107,8 @@ add_library ( klu SHARED ${KLU_SOURCES} )
 
 set_target_properties ( klu PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${KLU_VERSION_MAJOR}
     PUBLIC_HEADER "Include/klu.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -121,7 +122,8 @@ if ( NOT NSTATIC )
 
     set_target_properties ( klu_static PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME klu
         SOVERSION ${KLU_VERSION_MAJOR} )
 
@@ -144,7 +146,8 @@ if ( NOT NCHOLMOD )
 
     set_target_properties ( klu_cholmod PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         SOVERSION ${KLU_VERSION_MAJOR}
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
@@ -153,7 +156,8 @@ if ( NOT NCHOLMOD )
 
         set_target_properties ( klu_cholmod_static PROPERTIES
             VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-            C_STANDARD_REQUIRED 11
+            C_STANDARD 11
+            C_STANDARD_REQUIRED ON
             OUTPUT_NAME klu_cholmod
             SOVERSION ${KLU_VERSION_MAJOR} )
 

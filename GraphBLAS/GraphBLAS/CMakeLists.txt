@@ -208,9 +208,9 @@ add_library ( graphblas_matlab SHARED ${GRAPHBLAS_SOURCES} )
 set_target_properties ( graphblas_matlab PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     PUBLIC_HEADER "../Include/GraphBLAS.h" )
-set_property ( TARGET graphblas_matlab PROPERTY C_STANDARD 11 )
 
 #-------------------------------------------------------------------------------
 # select the threading library

@@ -87,7 +87,8 @@ endif ( )
 add_library ( amd SHARED ${AMD_SOURCES} )
 set_target_properties ( amd PROPERTIES
     VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${AMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/amd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -100,7 +101,8 @@ if ( NOT NSTATIC )
     add_library ( amd_static STATIC ${AMD_SOURCES} )
     set_target_properties ( amd_static PROPERTIES
         VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR} )
 
