@@ -95,7 +95,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -DCMAKE_BUILD_TYPE="Release" \
-                  -DCMAKE_INSTALL_PREFIX=../.. \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
@@ -212,7 +212,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -DCMAKE_BUILD_TYPE="Release" \
-                  -DCMAKE_INSTALL_PREFIX=../.. \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
@@ -375,7 +375,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -DCMAKE_BUILD_TYPE="Release" \
-                  -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
@@ -397,7 +397,8 @@ jobs:
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
-            make demos
+            PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
+              make demos
             echo "::endgroup::"
           done
 
@@ -425,7 +426,8 @@ jobs:
           cmake --build .
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Executing example\n"
-          ./my_demo
+          PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
+            ./my_demo
           echo "::endgroup::"
 
 
@@ -554,7 +556,7 @@ jobs:
             echo "::group::Configure $lib"
             cd ${GITHUB_WORKSPACE}/${lib}/build
             cmake -G"Ninja Multi-Config" \
-                  -DCMAKE_INSTALL_PREFIX=../.. \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
                   -DCMAKE_BUILD_TYPE="Release" \
                   -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
                   -DCMAKE_C_COMPILER_LAUNCHER=${CCACHE} \
