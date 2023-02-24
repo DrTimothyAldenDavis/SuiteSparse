@@ -117,14 +117,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( amd PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( amd PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( amd PUBLIC m )
+    target_link_libraries ( amd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( amd_static PUBLIC m )
     endif ( )

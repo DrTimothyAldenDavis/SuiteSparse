@@ -66,7 +66,7 @@ set_target_properties(graphblascuda PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
-target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt )
+target_link_libraries(graphblascuda PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt )
 
 #-------------------------------------------------------------------------------
 # installation location

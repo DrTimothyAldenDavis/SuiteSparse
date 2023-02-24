@@ -107,13 +107,13 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( ldl PUBLIC m )
+    target_link_libraries ( ldl PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( ldl_static PUBLIC m )
     endif ( )
 endif ( )
 
-target_link_libraries ( ldl PUBLIC
+target_link_libraries ( ldl PRIVATE
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )

@@ -168,7 +168,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spqr PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
@@ -178,7 +178,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( spqr PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( spqr PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
@@ -188,20 +188,20 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spqr PUBLIC m )
+    target_link_libraries ( spqr PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd:
-target_link_libraries ( spqr PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
-target_link_libraries ( spqr PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
@@ -210,7 +210,7 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( spqr PUBLIC ${BLAS_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
@@ -220,7 +220,7 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-target_link_libraries ( spqr PUBLIC ${LAPACK_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
@@ -228,7 +228,7 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 
 # cholmod:
 # link with CHOLMOD and its dependencies, both required and optional
-target_link_libraries ( spqr PUBLIC
+target_link_libraries ( spqr PRIVATE
     ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
     ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
     ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
@@ -241,7 +241,7 @@ endif ( )
 
 # CUDA
 message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
-target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 endif ( )

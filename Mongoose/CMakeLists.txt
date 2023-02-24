@@ -185,7 +185,7 @@ if ( NOT NSTATIC )
             OUTPUT_NAME mongoose_static )
     endif ( )
 
-    target_link_libraries ( mongoose_static ${SUITESPARSE_CONFIG_LIBRARY} )
+    target_link_libraries ( mongoose_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
 # Build the Mongoose library for dynamic linking
@@ -195,7 +195,7 @@ set_target_properties ( mongoose PROPERTIES
         OUTPUT_NAME mongoose
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_link_libraries ( mongoose ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( mongoose PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
 #     set_target_properties(mongoose PROPERTIES VERSION ${PROJECT_VERSION})

@@ -9,7 +9,7 @@ include(GKlibSystem.cmake)
 include_directories(".")
 add_library(GKlib STATIC ${GKlib_sources})
 if(UNIX)
-  target_link_libraries(GKlib m)
+  target_link_libraries(GKlib PUBLIC m)
 endif(UNIX)
 
 include_directories("test")
