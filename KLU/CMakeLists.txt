@@ -295,8 +295,8 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
     if ( NOT NCHOLMOD )
-        target_link_libraries ( kludemo  PUBLIC klu_cholmod )
-        target_link_libraries ( kluldemo PUBLIC klu_cholmod )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
     endif ( )
 
 else ( )

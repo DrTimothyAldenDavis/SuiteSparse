@@ -260,14 +260,14 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( umfpack_simple  PUBLIC umfpack )
+    target_link_libraries ( umfpack_simple  PUBLIC umfpack ${SUITESPARSE_CONFIG_LIBRARIES} )
     target_link_libraries ( umfpack_di_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zl_demo PUBLIC umfpack )
     if ( NOT NFORTRAN )
         # Fortran demos
-        target_link_libraries ( umf4            PUBLIC umfpack )
+        target_link_libraries ( umf4            PUBLIC umfpack ${AMD_LIBRARIES} )
         target_link_libraries ( umf4hb          PUBLIC umfpack )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )

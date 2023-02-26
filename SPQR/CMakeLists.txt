@@ -296,10 +296,10 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA} )

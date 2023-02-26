@@ -150,7 +150,7 @@ if ( DEMO )
     add_executable ( RBdemo "Demo/RBdemo.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( RBdemo PUBLIC rbio )
+    target_link_libraries ( RBdemo PUBLIC rbio ${SUITESPARSE_CONFIG_LIBRARIES} )
 
 else ( )
 
