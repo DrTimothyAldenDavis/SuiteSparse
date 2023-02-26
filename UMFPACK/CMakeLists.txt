@@ -265,6 +265,18 @@ if ( DEMO )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zl_demo PUBLIC umfpack )
+    if ( NOT WIN32 )
+        # This is only needed because the demos might be linked before those
+        # libraries are installed. Would it be better to set the rpath instead?
+        target_link_libraries ( umfpack_di_demo PUBLIC
+            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        target_link_libraries ( umfpack_dl_demo PUBLIC
+            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        target_link_libraries ( umfpack_zi_demo PUBLIC
+            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        target_link_libraries ( umfpack_zl_demo PUBLIC
+            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+    endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
         target_link_libraries ( umf4            PUBLIC umfpack ${AMD_LIBRARIES} )
@@ -272,6 +284,19 @@ if ( DEMO )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )
         target_link_libraries ( umf4zhb64       PUBLIC umfpack )
+        if ( NOT WIN32 )
+            # This is only needed because the demos might be linked before
+            # those libraries are installed. Would it be better to set the
+            # rpath instead?
+            target_link_libraries ( umf4hb PUBLIC
+                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            target_link_libraries ( umf4zhb PUBLIC
+                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            target_link_libraries ( umf4hb64 PUBLIC
+                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            target_link_libraries ( umf4zhb64 PUBLIC
+                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        endif ( )
     endif ( )
 
 else ( )

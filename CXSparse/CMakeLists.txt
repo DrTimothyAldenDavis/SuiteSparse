@@ -226,6 +226,16 @@ if ( DEMO )
         target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
         target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
 
+        if ( NOT WIN32 )
+            target_link_libraries ( cs_ci_demo1 PUBLIC m )
+            target_link_libraries ( cs_ci_demo2 PUBLIC m )
+            target_link_libraries ( cs_ci_demo3 PUBLIC m )
+
+            target_link_libraries ( cs_cl_demo1 PUBLIC m )
+            target_link_libraries ( cs_cl_demo2 PUBLIC m )
+            target_link_libraries ( cs_cl_demo3 PUBLIC m )
+        endif ( )
+
         target_link_libraries ( cs_idemo PUBLIC cxsparse )
         target_link_libraries ( cs_ldemo PUBLIC cxsparse )
     endif ( )
