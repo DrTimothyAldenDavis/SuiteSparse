@@ -44,6 +44,7 @@ find_library ( MPFR_LIBRARY
 
 # static mpfr library
 if ( NOT MSVC )
+    set ( save_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} )
     set ( CMAKE_FIND_LIBRARY_SUFFIXES
         ${CMAKE_STATIC_LIBRARY_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
@@ -59,7 +60,7 @@ endif ( )
 
 if ( NOT MSVC )
     # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
-    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+    set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save_CMAKE_FIND_LIBRARY_SUFFIXES} )
 endif ( )
 
 # get version of the library from the filename
