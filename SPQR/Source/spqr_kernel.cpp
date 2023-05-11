@@ -11,10 +11,10 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_kernel // _worker
+template <typename Entry, typename Int> void spqr_kernel // _worker
 (
-    int64_t task,
-    spqr_blob <Entry> *Blob
+    Int task,
+    spqr_blob <Entry, Int> *Blob
 )
 {
 
@@ -22,13 +22,13 @@ template <typename Entry> void spqr_kernel // _worker
     // get the Blob
     // -------------------------------------------------------------------------
 
-    spqr_symbolic *          QRsym = Blob->QRsym ;
-    spqr_numeric <Entry> *   QRnum = Blob->QRnum ;
+    spqr_symbolic <Int> *          QRsym = Blob->QRsym ;
+    spqr_numeric <Entry, Int> *   QRnum = Blob->QRnum ;
     double                   tol = Blob->tol ;
-    int64_t                     ntol = Blob->ntol ;
-    int64_t                     fchunk = Blob->fchunk ;
-    spqr_work <Entry> *      Work = Blob->Work ;
-    int64_t *                   Cm = Blob->Cm ;
+    Int                     ntol = Blob->ntol ;
+    Int                     fchunk = Blob->fchunk ;
+    spqr_work <Entry, Int> *      Work = Blob->Work ;
+    Int *                   Cm = Blob->Cm ;
     Entry **                 Cblock = Blob->Cblock ;
     Entry *                  Sx = Blob->Sx ;
     cholmod_common *         cc = Blob->cc ;
@@ -50,27 +50,27 @@ template <typename Entry> void spqr_kernel // _worker
     // get the contents of the QR symbolic object
     // -------------------------------------------------------------------------
 
-    int64_t *  Super = QRsym->Super ;      // size nf+1, gives pivot columns in F
-    int64_t *  Rp = QRsym->Rp ;            // size nf+1, pointers for pattern of R
-    int64_t *  Rj = QRsym->Rj ;            // size QRsym->rjsize, col indices of R
-    int64_t *  Sleft = QRsym->Sleft ;      // size n+2, leftmost column sets
-    int64_t *  Sp = QRsym->Sp ;            // size m+1, row pointers for S
-    int64_t *  Sj = QRsym->Sj ;            // size anz, column indices for S
-    int64_t *  Child = QRsym->Child ;      // size nf, for lists of children
-    int64_t *  Childp = QRsym->Childp ;    // size nf+1, for lists of children
-    int64_t    maxfn  = QRsym->maxfn ;     // max # of columns in any front
-    int64_t    nf = QRsym->nf ;            // number of fronts
+    Int *  Super = QRsym->Super ;      // size nf+1, gives pivot columns in F
+    Int *  Rp = QRsym->Rp ;            // size nf+1, pointers for pattern of R
+    Int *  Rj = QRsym->Rj ;            // size QRsym->rjsize, col indices of R
+    Int *  Sleft = QRsym->Sleft ;      // size n+2, leftmost column sets
+    Int *  Sp = QRsym->Sp ;            // size m+1, row pointers for S
+    Int *  Sj = QRsym->Sj ;            // size anz, column indices for S
+    Int *  Child = QRsym->Child ;      // size nf, for lists of children
+    Int *  Childp = QRsym->Childp ;    // size nf+1, for lists of children
+    Int    maxfn  = QRsym->maxfn ;     // max # of columns in any front
+    Int    nf = QRsym->nf ;            // number of fronts
 
-    int64_t *  Hip = QRsym->Hip ;          // only used if H is kept
+    Int *  Hip = QRsym->Hip ;          // only used if H is kept
 
     // these arrays are all NULL if QRsym->ntasks:
-    int64_t *  TaskFront = QRsym->TaskFront ;      // size nf+1
-    int64_t *  TaskFrontp = QRsym->TaskFrontp ;    // size ntasks+1
-    int64_t *  TaskStack = QRsym->TaskStack ;      // size ntasks+1
-    int64_t *  On_stack = QRsym->On_stack ;        // size nf+1
+    Int *  TaskFront = QRsym->TaskFront ;      // size nf+1
+    Int *  TaskFrontp = QRsym->TaskFrontp ;    // size ntasks+1
+    Int *  TaskStack = QRsym->TaskStack ;      // size ntasks+1
+    Int *  On_stack = QRsym->On_stack ;        // size nf+1
 
     // used for sequential case (when QRnum->ntasks == 1)
-    int64_t *  Post = QRsym->Post ;                // size nf
+    Int *  Post = QRsym->Post ;                // size nf
 
     // -------------------------------------------------------------------------
     // get the contents of the QR numeric object
@@ -78,19 +78,19 @@ template <typename Entry> void spqr_kernel // _worker
 
     Entry ** Rblock = QRnum->Rblock ;
     char *   Rdead = QRnum->Rdead ;
-    int64_t *   HStair = QRnum->HStair ;
+    Int *   HStair = QRnum->HStair ;
     Entry *  HTau = QRnum->HTau ;
-    int64_t *   Hii = QRnum->Hii ;          // only used if H is kept
-    int64_t *   Hm = QRnum->Hm ;
-    int64_t *   Hr = QRnum->Hr ;
-    int64_t     keepH = QRnum->keepH ;
-    int64_t     ntasks = QRnum->ntasks ;    // number of tasks
+    Int *   Hii = QRnum->Hii ;          // only used if H is kept
+    Int *   Hm = QRnum->Hm ;
+    Int *   Hr = QRnum->Hr ;
+    Int     keepH = QRnum->keepH ;
+    Int     ntasks = QRnum->ntasks ;    // number of tasks
 
     // -------------------------------------------------------------------------
     // get the stack for this task and the head/top pointers
     // -------------------------------------------------------------------------
 
-    int64_t stack, kfirst, klast ;
+    Int stack, kfirst, klast ;
 
     if (ntasks == 1)
     {
@@ -112,21 +112,21 @@ template <typename Entry> void spqr_kernel // _worker
 #ifndef NDEBUG
     Entry **Stacks = QRnum->Stacks ;
     Entry *Stack = Stacks [stack] ;    // stack being used
-    int64_t stacksize = (ntasks == 1) ?
+    Int stacksize = (ntasks == 1) ?
             QRsym->maxstack :
             QRsym->Stack_maxstack [stack] ;
 #endif
 
     // if H kept, Tau and Stair will point to permanent space in QRnum
     Entry * Tau = keepH ? NULL : Work [stack].WTwork ;
-    int64_t *  Stair = keepH ? NULL : Work [stack].Stair1 ;
+    Int *  Stair = keepH ? NULL : Work [stack].Stair1 ;
     Entry * W = Work [stack].WTwork + (keepH ? 0 : maxfn) ;
 
-    int64_t *  Fmap = Work [stack].Fmap ;
-    int64_t *  Cmap = Work [stack].Cmap ;
+    Int *  Fmap = Work [stack].Fmap ;
+    Int *  Cmap = Work [stack].Cmap ;
 
-    int64_t    sumfrank = Work [stack].sumfrank ;
-    int64_t    maxfrank = Work [stack].maxfrank ;
+    Int    sumfrank = Work [stack].sumfrank ;
+    Int    maxfrank = Work [stack].maxfrank ;
 
     // for keeping track of norm(w) for dead column 2-norms
     double wscale = Work [stack].wscale ;
@@ -136,18 +136,18 @@ template <typename Entry> void spqr_kernel // _worker
     // factorize all the fronts in this task
     // -------------------------------------------------------------------------
 
-    for (int64_t kf = kfirst ; kf < klast ; kf++)
+    for (Int kf = kfirst ; kf < klast ; kf++)
     {
 
         // ---------------------------------------------------------------------
         // factorize front F
         // ---------------------------------------------------------------------
 
-        int64_t f = (ntasks == 1) ? Post [kf] : TaskFront [kf] ;
+        Int f = (ntasks == 1) ? Post [kf] : TaskFront [kf] ;
 
 #ifndef NDEBUG
         ASSERT (f >= 0 && f < QRsym->nf) ;
-        for (int64_t col = 0 ; col < QRsym->n ; col++) Fmap [col] = EMPTY ;
+        for (Int col = 0 ; col < QRsym->n ; col++) Fmap [col] = EMPTY ;
 #endif
 
         if (keepH)
@@ -161,12 +161,12 @@ template <typename Entry> void spqr_kernel // _worker
         // determine the size of F, its staircase, and its Fmap
         // ---------------------------------------------------------------------
 
-        int64_t fm = spqr_fsize (f, Super, Rp, Rj, Sleft, Child, Childp, Cm,
+        Int fm = spqr_fsize (f, Super, Rp, Rj, Sleft, Child, Childp, Cm,
             Fmap, Stair) ;
-        int64_t fn = Rp [f+1] - Rp [f] ;        // F is fm-by-fn
-        int64_t col1 = Super [f] ;              // first global pivot column in F
-        int64_t fp = Super [f+1] - col1 ;       // with fp pivot columns
-        int64_t fsize = fm * fn ;
+        Int fn = Rp [f+1] - Rp [f] ;        // F is fm-by-fn
+        Int col1 = Super [f] ;              // first global pivot column in F
+        Int fp = Super [f+1] - col1 ;       // with fp pivot columns
+        Int fsize = fm * fn ;
         if (keepH)
         {
             Hm [f] = fm ;
@@ -188,8 +188,8 @@ template <typename Entry> void spqr_kernel // _worker
 
 #ifndef NDEBUG
         PR (("Stack head %ld top %ld total %ld stacksize %ld\n",
-            (int64_t) (Stack_head - Stack),
-            (int64_t) (Stack_top - Stack),
+            (Int) (Stack_head - Stack),
+            (Int) (Stack_top - Stack),
             (Stack_head - Stack) +
             stacksize - (Stack_top - Stack),
             stacksize)) ;
@@ -220,15 +220,15 @@ template <typename Entry> void spqr_kernel // _worker
         // free the C blocks of the children of F
         // ---------------------------------------------------------------------
 
-        for (int64_t p = Childp [f] ; p < Childp [f+1] ; p++)
+        for (Int p = Childp [f] ; p < Childp [f+1] ; p++)
         {
-            int64_t c = Child [p] ;
+            Int c = Child [p] ;
             ASSERT (c >= 0 && c < f) ;
             PR (("   child %ld on stack %ld\n", c,
                 (ntasks == 1) ? 0 : On_stack [c])) ;
             if (ntasks == 1 || On_stack [c] == stack)
             {
-                int64_t ccsize = spqr_csize (c, Rp, Cm, Super) ;
+                Int ccsize = spqr_csize <Int> (c, Rp, Cm, Super) ;
                 Stack_top = MAX (Stack_top, Cblock [c] + ccsize) ;
             }
         }
@@ -240,14 +240,14 @@ template <typename Entry> void spqr_kernel // _worker
         // factorize the front F
         // ---------------------------------------------------------------------
 
-        int64_t frank = spqr_front (fm, fn, fp, tol, ntol - col1,
+        Int frank = spqr_front (fm, fn, fp, tol, ntol - col1,
             fchunk, F, Stair, Rdead + col1, Tau, W,
             &wscale, &wssq, cc) ;
 
 #ifndef NDEBUG
 #ifndef NPRINT
         PR (("\n F factorized: f %ld fp %ld frank %ld \n", f, fp, frank)) ;
-        for (int64_t jj = col1 ; jj < Super [f+1] ; jj++)
+        for (Int jj = col1 ; jj < Super [f+1] ; jj++)
             PR (("Rdead [%ld] = %d\n", jj, Rdead [jj])) ;
         PR (("\n ::: Front factorized:\n")) ;
         spqrDebug_dumpdense (F, fm, fn, fm, cc) ;
@@ -265,14 +265,14 @@ template <typename Entry> void spqr_kernel // _worker
         // pack the C block of front F on stack
         // ---------------------------------------------------------------------
 
-        int64_t csize = spqr_fcsize (fm, fn, fp, frank) ;
+        Int csize = spqr_fcsize (fm, fn, fp, frank) ;
         Stack_top -= csize ;
 
 #ifndef NDEBUG
         PR (("Front f %ld csize %ld piv rank %ld\n", f, csize, frank)) ;
         PR (("Stack head %ld top %ld total %ld stacksize %ld\n",
-            (int64_t) (Stack_head - Stack),
-            (int64_t) (Stack_top - Stack),
+            (Int) (Stack_head - Stack),
+            (Int) (Stack_top - Stack),
             (Stack_head - Stack) +
             stacksize - (Stack_top - Stack),
             stacksize)) ;
@@ -286,8 +286,8 @@ template <typename Entry> void spqr_kernel // _worker
         // pack R or RH of front F in place
         // ---------------------------------------------------------------------
 
-        int64_t rm ;
-        int64_t rsize = spqr_rhpack (keepH, fm, fn, fp, Stair, F, F, &rm) ;
+        Int rm ;
+        Int rsize = spqr_rhpack (keepH, fm, fn, fp, Stair, F, F, &rm) ;
         if (keepH)
         {
             Hr [f] = rm ;
@@ -341,14 +341,23 @@ template <typename Entry> void spqr_kernel // _worker
 
 // =============================================================================
 
-template void spqr_kernel <double>
+template void spqr_kernel <double, int32_t>
 (
-    int64_t task,
-    spqr_blob <double> *Blob
+    int32_t task,
+    spqr_blob <double, int32_t> *Blob
 ) ;
-
-template void spqr_kernel <Complex>
+template void spqr_kernel <double, int64_t>
 (
     int64_t task,
-    spqr_blob <Complex> *Blob
+    spqr_blob <double, int64_t> *Blob
+) ;
+template void spqr_kernel <Complex, int32_t>
+(
+    int32_t task,
+    spqr_blob <Complex, int32_t> *Blob
+) ;
+template void spqr_kernel <Complex, int64_t>
+(
+    int64_t task,
+    spqr_blob <Complex, int64_t> *Blob
 ) ;

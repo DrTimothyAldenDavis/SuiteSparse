@@ -33,14 +33,14 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> int spqr_rmap
+template <typename Entry, typename Int> int spqr_rmap
 (
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, Int> *QR,
     cholmod_common *cc
 )
 {
-    int64_t n, j, i, p, n1rows, n1cols ;
-    int64_t *Rmap, *RmapInv, *R1p, *R1j ;
+    Int n, j, i, p, n1rows, n1cols ;
+    Int *Rmap, *RmapInv, *R1p, *R1j ;
 
     n = QR->nacols ;
     Rmap = QR->Rmap ;
@@ -49,8 +49,8 @@ template <typename Entry> int spqr_rmap
     if (Rmap == NULL)
     {
         ASSERT (RmapInv == NULL) ;
-        QR->Rmap    = Rmap    = (int64_t *) cholmod_l_malloc (n, sizeof(int64_t), cc);
-        QR->RmapInv = RmapInv = (int64_t *) cholmod_l_malloc (n, sizeof(int64_t), cc);
+        QR->Rmap    = Rmap    = (Int *) spqr_malloc <Int> (n, sizeof(Int), cc);
+        QR->RmapInv = RmapInv = (Int *) spqr_malloc <Int> (n, sizeof(Int), cc);
         if (cc->status < CHOLMOD_OK)
         {
             // out of memory
@@ -113,14 +113,26 @@ template <typename Entry> int spqr_rmap
     return (TRUE) ;
 }
 
-template int spqr_rmap <double>
+template int spqr_rmap <double, int32_t>
 (
-    SuiteSparseQR_factorization <double> *QR,
+    SuiteSparseQR_factorization <double, int32_t> *QR,
     cholmod_common *cc
 ) ;
 
-template int spqr_rmap <Complex>
+template int spqr_rmap <Complex, int32_t>
 (
-    SuiteSparseQR_factorization <Complex> *QR,
+    SuiteSparseQR_factorization <Complex, int32_t> *QR,
+    cholmod_common *cc
+) ;
+
+template int spqr_rmap <double, int64_t>
+(
+    SuiteSparseQR_factorization <double, int64_t> *QR,
+    cholmod_common *cc
+) ;
+
+template int spqr_rmap <Complex, int64_t>
+(
+    SuiteSparseQR_factorization <Complex, int64_t> *QR,
     cholmod_common *cc
 ) ;

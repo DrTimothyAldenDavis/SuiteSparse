@@ -20,21 +20,21 @@
 
 #include "spqr.hpp"
 
-void spqr_stranspose1
+template <typename Int> void spqr_stranspose1
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
-    int64_t *Qfill,        // size n, fill-reducing column permutation;
+    Int *Qfill,        // size n, fill-reducing column permutation;
                         // Qfill [k] = j
                         // if the kth column of S is the jth column of A.
                         // Identity permutation is used if Qfill is NULL.
 
     // output, contents not defined on input
     // FUTURE : make S cholmod_sparse
-    int64_t *Sp,           // size m+1, row pointers of S
-    int64_t *Sj,           // size nz, column indices of S
-    int64_t *PLinv,        // size m, inverse row permutation, PLinv [i] = k
-    int64_t *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
+    Int *Sp,           // size m+1, row pointers of S
+    Int *Sj,           // size nz, column indices of S
+    Int *PLinv,        // size m, inverse row permutation, PLinv [i] = k
+    Int *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
                         // rows of S whose leftmost column index is j.  The list
                         // can be empty (that is, Sleft [j] == Sleft [j+1]).
                         // Sleft [n] is the number of non-empty rows of S, and
@@ -42,10 +42,10 @@ void spqr_stranspose1
                         // Sleft [n+1]-1 gives the empty rows of S.
 
     // workspace, not defined on input or output
-    int64_t *W              // size m
+    Int *W              // size m
 )
 {
-    int64_t i, j, p, pend, t, k, row, col, kstart, s, m, n, *Ap, *Ai ;
+    Int i, j, p, pend, t, k, row, col, kstart, s, m, n, *Ap, *Ai ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -53,8 +53,8 @@ void spqr_stranspose1
 
     m = A->nrow ;
     n = A->ncol ;
-    Ap = (int64_t *) A->p ;
-    Ai = (int64_t *) A->i ;
+    Ap = (Int *) A->p ;
+    Ai = (Int *) A->i ;
 
     // -------------------------------------------------------------------------
     // clear the inverse permutation
@@ -163,3 +163,52 @@ void spqr_stranspose1
         }
     }
 }
+
+template void spqr_stranspose1
+(
+    // input, not modified
+    cholmod_sparse *A,  // m-by-n
+    int32_t *Qfill,        // size n, fill-reducing column permutation;
+                        // Qfill [k] = j
+                        // if the kth column of S is the jth column of A.
+                        // Identity permutation is used if Qfill is NULL.
+
+    // output, contents not defined on input
+    // FUTURE : make S cholmod_sparse
+    int32_t *Sp,           // size m+1, row pointers of S
+    int32_t *Sj,           // size nz, column indices of S
+    int32_t *PLinv,        // size m, inverse row permutation, PLinv [i] = k
+    int32_t *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
+                        // rows of S whose leftmost column index is j.  The list
+                        // can be empty (that is, Sleft [j] == Sleft [j+1]).
+                        // Sleft [n] is the number of non-empty rows of S, and
+                        // Sleft [n+1] is always m.  That is, Sleft [n] ...
+                        // Sleft [n+1]-1 gives the empty rows of S.
+
+    // workspace, not defined on input or output
+    int32_t *W              // size m
+) ;
+template void spqr_stranspose1
+(
+    // input, not modified
+    cholmod_sparse *A,  // m-by-n
+    int64_t *Qfill,        // size n, fill-reducing column permutation;
+                        // Qfill [k] = j
+                        // if the kth column of S is the jth column of A.
+                        // Identity permutation is used if Qfill is NULL.
+
+    // output, contents not defined on input
+    // FUTURE : make S cholmod_sparse
+    int64_t *Sp,           // size m+1, row pointers of S
+    int64_t *Sj,           // size nz, column indices of S
+    int64_t *PLinv,        // size m, inverse row permutation, PLinv [i] = k
+    int64_t *Sleft,        // size n+2, Sleft [j] ... Sleft [j+1]-1 is the list of
+                        // rows of S whose leftmost column index is j.  The list
+                        // can be empty (that is, Sleft [j] == Sleft [j+1]).
+                        // Sleft [n] is the number of non-empty rows of S, and
+                        // Sleft [n+1] is always m.  That is, Sleft [n] ...
+                        // Sleft [n+1]-1 gives the empty rows of S.
+
+    // workspace, not defined on input or output
+    int64_t *W              // size m
+) ;

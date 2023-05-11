@@ -39,16 +39,16 @@
 
 #include "spqr.hpp"
 
-inline void spqr_private_larft (char direct, char storev, int64_t n, int64_t k,
-    double *V, int64_t ldv, double *Tau, double *T, int64_t ldt,
+template <typename Int> inline void spqr_private_larft (char direct, char storev, Int n, Int k,
+    double *V, Int ldv, double *Tau, double *T, Int ldt,
     cholmod_common *cc)
 {
     SUITESPARSE_LAPACK_dlarft (&direct, &storev, n, k, V, ldv, Tau, T, ldt,
         cc->blas_ok) ;
 }
 
-inline void spqr_private_larft (char direct, char storev, int64_t n, int64_t k,
-    Complex *V, int64_t ldv, Complex *Tau, Complex *T, int64_t ldt,
+template <typename Int> inline void spqr_private_larft (char direct, char storev, Int n, Int k,
+    Complex *V, Int ldv, Complex *Tau, Complex *T, Int ldt,
     cholmod_common *cc)
 {
     SUITESPARSE_LAPACK_zlarft (&direct, &storev, n, k, V, ldv, Tau, T, ldt,
@@ -56,9 +56,9 @@ inline void spqr_private_larft (char direct, char storev, int64_t n, int64_t k,
 }
 
 
-inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    int64_t m, int64_t n, int64_t k, double *V, int64_t ldv, double *T,
-    int64_t ldt, double *C, int64_t ldc, double *Work, int64_t ldwork,
+template <typename Int> inline void spqr_private_larfb (char side, char trans, char direct, char storev,
+    Int m, Int n, Int k, double *V, Int ldv, double *T,
+    Int ldt, double *C, Int ldc, double *Work, Int ldwork,
     cholmod_common *cc)
 {
     SUITESPARSE_LAPACK_dlarfb (&side, &trans, &direct, &storev, m, n, k,
@@ -66,9 +66,9 @@ inline void spqr_private_larfb (char side, char trans, char direct, char storev,
 }
 
 
-inline void spqr_private_larfb (char side, char trans, char direct, char storev,
-    int64_t m, int64_t n, int64_t k, Complex *V, int64_t ldv, Complex *T,
-    int64_t ldt, Complex *C, int64_t ldc, Complex *Work, int64_t ldwork,
+template <typename Int> inline void spqr_private_larfb (char side, char trans, char direct, char storev,
+    Int m, Int n, Int k, Complex *V, Int ldv, Complex *T,
+    Int ldt, Complex *C, Int ldc, Complex *Work, Int ldwork,
     cholmod_common *cc)
 {
     char tr = (trans == 'T') ? 'C' : 'N' ;      // change T to C
@@ -79,17 +79,17 @@ inline void spqr_private_larfb (char side, char trans, char direct, char storev,
 
 // =============================================================================
 
-template <typename Entry> void spqr_larftb
+template <typename Entry, typename Int> void spqr_larftb
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
-    int64_t m,         // C is m-by-n
-    int64_t n,
-    int64_t k,         // V is v-by-k
+    Int m,         // C is m-by-n
+    Int n,
+    Int k,         // V is v-by-k
                     // for methods 0 and 1, v = m,
                     // for methods 2 and 3, v = n
-    int64_t ldc,       // leading dimension of C
-    int64_t ldv,       // leading dimension of V
+    Int ldc,       // leading dimension of C
+    Int ldv,       // leading dimension of V
     Entry *V,       // V is v-by-k, unit lower triangular (diag not stored)
     Entry *Tau,     // size k, the k Householder coefficients
 
@@ -158,7 +158,7 @@ template <typename Entry> void spqr_larftb
 
 // =============================================================================
 
-template void spqr_larftb <double>
+template void spqr_larftb <double, int64_t>
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
@@ -180,10 +180,32 @@ template void spqr_larftb <double>
                     // for methods 2,3: size k*k + m*k
     cholmod_common *cc
 ) ;
+template void spqr_larftb <double, int32_t>
+(
+    // inputs, not modified (V is modified and then restored on output)
+    int method,     // 0,1,2,3
+    int32_t m,         // C is m-by-n
+    int32_t n,
+    int32_t k,         // V is v-by-k
+                    // for methods 0 and 1, v = m,
+                    // for methods 2 and 3, v = n
+    int32_t ldc,       // leading dimension of C
+    int32_t ldv,       // leading dimension of V
+    double *V,      // V is v-by-k, unit lower triangular (diag not stored)
+    double *Tau,    // size k, the k Householder coefficients
+
+    // input/output
+    double *C,      // C is m-by-n, with leading dimension ldc
+
+    // workspace, not defined on input or output
+    double *W,      // for methods 0,1: size k*k + n*k
+                    // for methods 2,3: size k*k + m*k
+    cholmod_common *cc
+) ;
 
 // =============================================================================
 
-template void spqr_larftb <Complex>
+template void spqr_larftb <Complex, int64_t>
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
@@ -194,6 +216,28 @@ template void spqr_larftb <Complex>
                     // for methods 2 and 3, v = n
     int64_t ldc,       // leading dimension of C
     int64_t ldv,       // leading dimension of V
+    Complex *V,     // V is v-by-k, unit lower triangular (diag not stored)
+    Complex *Tau,   // size k, the k Householder coefficients
+
+    // input/output
+    Complex *C,     // C is m-by-n, with leading dimension ldc
+
+    // workspace, not defined on input or output
+    Complex *W,     // for methods 0,1: size k*k + n*k
+                    // for methods 2,3: size k*k + m*k
+    cholmod_common *cc
+) ;
+template void spqr_larftb <Complex, int32_t>
+(
+    // inputs, not modified (V is modified and then restored on output)
+    int method,     // 0,1,2,3
+    int32_t m,         // C is m-by-n
+    int32_t n,
+    int32_t k,         // V is v-by-k
+                    // for methods 0 and 1, v = m,
+                    // for methods 2 and 3, v = n
+    int32_t ldc,       // leading dimension of C
+    int32_t ldv,       // leading dimension of V
     Complex *V,     // V is v-by-k, unit lower triangular (diag not stored)
     Complex *Tau,   // size k, the k Householder coefficients
 

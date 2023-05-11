@@ -35,26 +35,26 @@
 
 // Loads V with a panel of Householder vectors and applies them to X
 
-template <typename Entry> void spqr_private_do_panel
+template <typename Entry, typename Int> void spqr_private_do_panel
 (
     // inputs, not modified
     int method,         // which method to use (0,1,2,3)
-    int64_t m,
-    int64_t n,
-    int64_t v,             // number of Householder vectors in the panel
-    int64_t *Wi,           // Wi [0:v-1] defines the pattern of the panel
-    int64_t h1,            // load H (h1) to H (h2-1) into V
-    int64_t h2,
+    Int m,
+    Int n,
+    Int v,             // number of Householder vectors in the panel
+    Int *Wi,           // Wi [0:v-1] defines the pattern of the panel
+    Int h1,            // load H (h1) to H (h2-1) into V
+    Int h2,
 
     // FUTURE : make H cholmod_sparse:
-    int64_t *Hp,           // Householder vectors: mh-by-nh sparse matrix
-    int64_t *Hi,
+    Int *Hp,           // Householder vectors: mh-by-nh sparse matrix
+    Int *Hi,
     Entry *Hx,
 
     Entry *Tau,         // Householder coefficients (size nh)
 
     // input/output
-    int64_t *Wmap,         // inverse of Wi on input, set to all EMPTY on output
+    Int *Wmap,         // inverse of Wi on input, set to all EMPTY on output
     Entry *X,           // m-by-n with leading dimension m
 
     // workspace, undefined on input and output
@@ -65,7 +65,7 @@ template <typename Entry> void spqr_private_do_panel
 )
 {
     Entry *V1 ;
-    int64_t h, k, p, i ;
+    Int h, k, p, i ;
 
     // -------------------------------------------------------------------------
     // load the panel with Householder vectors h1 ... h2-1
@@ -117,18 +117,18 @@ template <typename Entry> void spqr_private_do_panel
 // === spqr_happly =============================================================
 // =============================================================================
 
-template <typename Entry> void spqr_happly
+template <typename Entry, typename Int> void spqr_happly
 (
     // input
     int method,     // 0,1,2,3
 
-    int64_t m,         // X is m-by-n with leading dimension m
-    int64_t n,
+    Int m,         // X is m-by-n with leading dimension m
+    Int n,
 
     // FUTURE : make H cholmod_sparse:
-    int64_t nh,        // number of Householder vectors
-    int64_t *Hp,       // size nh+1, column pointers for H
-    int64_t *Hi,       // size hnz = Hp [nh], row indices of H
+    Int nh,        // number of Householder vectors
+    Int *Hp,       // size nh+1, column pointers for H
+    Int *Hi,       // size hnz = Hp [nh], row indices of H
     Entry *Hx,      // size hnz, Householder values.  Note that the first
                     // entry in each column must be equal to 1.0
 
@@ -138,17 +138,17 @@ template <typename Entry> void spqr_happly
     Entry *X,       // size m-by-n with leading dimension m
 
     // workspace
-    int64_t vmax,
-    int64_t hchunk,
-    int64_t *Wi,       // size vmax
-    int64_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
+    Int vmax,
+    Int hchunk,
+    Int *Wi,       // size vmax
+    Int *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
     Entry *C,       // size csize
     Entry *V,       // size vsize
     cholmod_common *cc
 )
 {
     Entry *W ;
-    int64_t h, h1, h2, i, k, hmax, hmin, v, v1, p, done, v2, mh ;
+    Int h, h1, h2, i, k, hmax, hmin, v, v1, p, done, v2, mh ;
 
     // -------------------------------------------------------------------------
     // get inputs
@@ -198,7 +198,7 @@ template <typename Entry> void spqr_happly
                 Wi [v] = i ;
                 v++ ;
             }
-            int64_t this_vmax = 2*v + 8 ;               // max # rows in this panel
+            Int this_vmax = 2*v + 8 ;               // max # rows in this panel
             this_vmax = MIN (this_vmax, mh) ;
             ASSERT (this_vmax <= vmax) ;
 
@@ -290,7 +290,7 @@ template <typename Entry> void spqr_happly
                 Wmap [i] = v ;              // this will be shifted later
                 Wi [v] = i ;
             }
-            int64_t this_vmin = v - 32 ;
+            Int this_vmin = v - 32 ;
             this_vmin = MAX (this_vmin, 0) ;
 
             // -----------------------------------------------------------------
@@ -308,7 +308,7 @@ template <typename Entry> void spqr_happly
                 p = Hp [h1] ;
 
                 // check to see that this vector fits in the lower triangle
-                int64_t hlen = Hp [h1+1] - p ;
+                Int hlen = Hp [h1+1] - p ;
                 if (hlen > 1 && Hi [p+1] != Wi [v])
                 {
                     // h1 will not be part of this panel
@@ -387,7 +387,35 @@ template <typename Entry> void spqr_happly
 
 // =============================================================================
 
-template void spqr_happly <double>
+template void spqr_happly <double, int32_t>
+(
+    // input
+    int method,     // 0,1,2,3
+
+    int32_t m,         // X is m-by-n
+    int32_t n,
+
+    int32_t nh,        // number of Householder vectors
+    int32_t *Hp,       // size nh+1, column pointers for H
+    int32_t *Hi,       // size hnz = Hp [nh], row indices of H
+    double *Hx,     // size hnz, Householder values.  Note that the first
+                    // entry in each column must be equal to 1.0
+
+    double *Tau,    // size nh
+
+    // input/output
+    double *X,      // size m-by-n with leading dimension m
+
+    // workspace
+    int32_t vmax,
+    int32_t hchunk,
+    int32_t *Wi,       // size vmax
+    int32_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh
+    double *C,      // size csize
+    double *V,      // size vsize
+    cholmod_common *cc
+) ;
+template void spqr_happly <double, int64_t>
 (
     // input
     int method,     // 0,1,2,3
@@ -418,7 +446,35 @@ template void spqr_happly <double>
 
 // =============================================================================
 
-template void spqr_happly <Complex>
+template void spqr_happly <Complex, int32_t>
+(
+    // input
+    int method,     // 0,1,2,3
+
+    int32_t m,         // X is m-by-n
+    int32_t n,
+
+    int32_t nh,        // number of Householder vectors
+    int32_t *Hp,       // size nh+1, column pointers for H
+    int32_t *Hi,       // size hnz = Hp [nh], row indices of H
+    Complex *Hx,    // size hnz, Householder values.  Note that the first
+                    // entry in each column must be equal to 1.0
+
+    Complex *Tau,   // size nh
+
+    // input/output
+    Complex *X,     // size m-by-n with leading dimension m
+
+    // workspace
+    int32_t vmax,
+    int32_t hchunk,
+    int32_t *Wi,       // size vmax
+    int32_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh
+    Complex *C,     // size csize
+    Complex *V,     // size vsize
+    cholmod_common *cc
+) ;
+template void spqr_happly <Complex, int64_t>
 (
     // input
     int method,     // 0,1,2,3

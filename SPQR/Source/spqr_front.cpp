@@ -149,7 +149,12 @@ inline double spqr_private_larfg (int64_t n, double *X, cholmod_common *cc)
     SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
-
+inline double spqr_private_larfg (int32_t n, double *X, cholmod_common *cc)
+{
+    double tau = 0 ;
+    SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
+    return (tau) ;
+}
 
 inline Complex spqr_private_larfg (int64_t n, Complex *X, cholmod_common *cc)
 {
@@ -157,12 +162,17 @@ inline Complex spqr_private_larfg (int64_t n, Complex *X, cholmod_common *cc)
     SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
+inline Complex spqr_private_larfg (int32_t n, Complex *X, cholmod_common *cc)
+{
+    Complex tau = 0 ;
+    SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
+    return (tau) ;
+}
 
-
-template <typename Entry> Entry spqr_private_house  // returns tau
+template <typename Entry, typename Int> Entry spqr_private_house  // returns tau
 (
     // inputs, not modified
-    int64_t n,
+    Int n,
 
     // input/output
     Entry *X,           // size n
@@ -199,6 +209,12 @@ inline void spqr_private_larf (int64_t m, int64_t n, double *V, double tau,
     char left = 'L' ;
     SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
 }
+inline void spqr_private_larf (int32_t m, int32_t n, double *V, double tau,
+    double *C, int32_t ldc, double *W, cholmod_common *cc)
+{
+    char left = 'L' ;
+    SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
+}
 
 inline void spqr_private_larf (int64_t m, int64_t n, Complex *V, Complex tau,
     Complex *C, int64_t ldc, Complex *W, cholmod_common *cc)
@@ -208,14 +224,21 @@ inline void spqr_private_larf (int64_t m, int64_t n, Complex *V, Complex tau,
     SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
         cc->blas_ok) ;
 }
+inline void spqr_private_larf (int32_t m, int32_t n, Complex *V, Complex tau,
+    Complex *C, int32_t ldc, Complex *W, cholmod_common *cc)
+{
+    char left = 'L' ;
+    Complex conj_tau = spqr_conj (tau) ;
+    SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
+        cc->blas_ok) ;
+}
 
-
-template <typename Entry> void spqr_private_apply1
+template <typename Entry, typename Int> void spqr_private_apply1
 (
     // inputs, not modified
-    int64_t m,             // C is m-by-n
-    int64_t n,
-    int64_t ldc,           // leading dimension of C
+    Int m,             // C is m-by-n
+    Int n,
+    Int ldc,           // leading dimension of C
     Entry *V,           // size m, Householder vector V
     Entry tau,          // Householder coefficient
 
@@ -250,20 +273,20 @@ template <typename Entry> void spqr_private_apply1
 // rank that indicates the first entry in C, which is F (rank,npiv), or 0
 // on error.
 
-template <typename Entry> int64_t spqr_front
+template <typename Entry, typename Int> Int spqr_front
 (
     // input, not modified
-    int64_t m,             // F is m-by-n with leading dimension m
-    int64_t n,
-    int64_t npiv,          // number of pivot columns
+    Int m,             // F is m-by-n with leading dimension m
+    Int n,
+    Int npiv,          // number of pivot columns
     double tol,         // a column is flagged as dead if its norm is <= tol
-    int64_t ntol,          // apply tol only to first ntol pivot columns
-    int64_t fchunk,        // block size for compact WY Householder reflections,
+    Int ntol,          // apply tol only to first ntol pivot columns
+    Int fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1
 
     // input/output
     Entry *F,           // frontal matrix F of size m-by-n
-    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+    Int *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // for each k = 0:n-1, and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1
@@ -284,7 +307,7 @@ template <typename Entry> int64_t spqr_front
     Entry tau ;
     double wk ;
     Entry *V ;
-    int64_t k, t, g, g1, nv, k1, k2, i, t0, vzeros, mleft, nleft, vsize, minchunk,
+    Int k, t, g, g1, nv, k1, k2, i, t0, vzeros, mleft, nleft, vsize, minchunk,
         rank ;
 
     // NOTE: inputs are not checked for NULL (except if debugging enabled)
@@ -556,7 +579,7 @@ template <typename Entry> int64_t spqr_front
 
 // =============================================================================
 
-template int64_t spqr_front <double>
+template int64_t spqr_front <double, int64_t>
 (
     // input, not modified
     int64_t m,             // F is m-by-n with leading dimension m
@@ -587,10 +610,41 @@ template int64_t spqr_front <double>
 
     cholmod_common *cc
 ) ;
+template int32_t spqr_front <double, int32_t>
+(
+    // input, not modified
+    int32_t m,             // F is m-by-n with leading dimension m
+    int32_t n,
+    int32_t npiv,          // number of pivot columns
+    double tol,         // a column is flagged as dead if its norm is <= tol
+    int32_t ntol,          // apply tol only to first ntol pivot columns
+    int32_t fchunk,        // block size for compact WY Householder reflections,
+                        // treated as 1 if fchunk <= 1 (in which case the
+                        // unblocked code is used).
+
+    // input/output
+    double *F,          // frontal matrix F of size m-by-n
+    int32_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+                        // and remain zero on output.
+    char *Rdead,        // size npiv; all zero on input.  If k is dead,
+                        // Rdead [k] is set to 1
+
+    // output, not defined on input
+    double *Tau,        // size n, Householder coefficients
+
+    // workspace, undefined on input and output
+    double *W,          // size b*n, where b = min (fchunk,n,m)
+
+    // input/output
+    double *wscale,
+    double *wssq,
+
+    cholmod_common *cc
+) ;
 
 // =============================================================================
 
-template int64_t spqr_front <Complex>
+template int64_t spqr_front <Complex, int64_t>
 (
     // input, not modified
     int64_t m,             // F is m-by-n with leading dimension m
@@ -600,20 +654,51 @@ template int64_t spqr_front <Complex>
     int64_t ntol,          // apply tol only to first ntol pivot columns
     int64_t fchunk,        // block size for compact WY Householder reflections,
                         // treated as 1 if fchunk <= 1 (in which case the
-                        // unblocked code is used). 
+                        // unblocked code is used).
 
     // input/output
-    Complex *F,         // frontal matrix F of size m-by-n
+    Complex *F,          // frontal matrix F of size m-by-n
     int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
                         // and remain zero on output.
     char *Rdead,        // size npiv; all zero on input.  If k is dead,
                         // Rdead [k] is set to 1
 
     // output, not defined on input
-    Complex *Tau,       // size n, Householder coefficients
+    Complex *Tau,        // size n, Householder coefficients
 
     // workspace, undefined on input and output
-    Complex *W,         // size b*n, where b = min (fchunk,n,m)
+    Complex *W,          // size b*n, where b = min (fchunk,n,m)
+
+    // input/output
+    double *wscale,
+    double *wssq,
+
+    cholmod_common *cc
+) ;
+template int32_t spqr_front <Complex, int32_t>
+(
+    // input, not modified
+    int32_t m,             // F is m-by-n with leading dimension m
+    int32_t n,
+    int32_t npiv,          // number of pivot columns
+    double tol,         // a column is flagged as dead if its norm is <= tol
+    int32_t ntol,          // apply tol only to first ntol pivot columns
+    int32_t fchunk,        // block size for compact WY Householder reflections,
+                        // treated as 1 if fchunk <= 1 (in which case the
+                        // unblocked code is used).
+
+    // input/output
+    Complex *F,          // frontal matrix F of size m-by-n
+    int32_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
+                        // and remain zero on output.
+    char *Rdead,        // size npiv; all zero on input.  If k is dead,
+                        // Rdead [k] is set to 1
+
+    // output, not defined on input
+    Complex *Tau,        // size n, Householder coefficients
+
+    // workspace, undefined on input and output
+    Complex *W,          // size b*n, where b = min (fchunk,n,m)
 
     // input/output
     double *wscale,

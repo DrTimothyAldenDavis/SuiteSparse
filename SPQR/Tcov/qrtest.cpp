@@ -242,7 +242,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
     int64_t method,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_dense *X,
     cholmod_common *cc,
 
@@ -284,7 +284,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
     int64_t method,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_sparse *X,
     cholmod_common *cc,
 
@@ -327,7 +327,7 @@ template <typename Entry> cholmod_dense *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
     int64_t system,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_dense *B,
     cholmod_common *cc,
 
@@ -370,7 +370,7 @@ template <typename Entry> cholmod_sparse *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
     int64_t system,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_sparse *B,
     cholmod_common *cc,
 
@@ -496,7 +496,7 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
 // Wrapper for testing SuiteSparseQR_factorize or
 // SuiteSparseQR_symbolic and SuiteSparseQR_numeric
 
-template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
+template <typename Entry> SuiteSparseQR_factorization <Entry, int64_t> *SPQR_factorize
 (
     // arguments for SuiteSparseQR_factorize: 
     int ordering,
@@ -517,7 +517,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
     int64_t memory_punt         // if TRUE, test punt case
 )
 {
-    SuiteSparseQR_factorization <Entry> *QR ;
+    SuiteSparseQR_factorization <Entry, int64_t> *QR ;
     SuiteSparseQR_C_factorization *C_QR ;
     if (!memory_test)
     {

@@ -74,7 +74,7 @@ void numfronts_in_stage
 
 void spqrgpu_kernel
 (
-    spqr_blob <double> *Blob
+    spqr_blob <double, int64_t> *Blob
 )
 {
 
@@ -89,9 +89,9 @@ void spqrgpu_kernel
     // get the Blob
     // -------------------------------------------------------------------------
 
-    spqr_symbolic *QRsym = Blob->QRsym ;
-    spqr_numeric <double> *QRnum = Blob->QRnum ;
-    spqr_work <double> *Work = Blob->Work ;
+    spqr_symbolic <int64_t *QRsym = Blob->QRsym ;
+    spqr_numeric <double, int64_t> *QRnum = Blob->QRnum ;
+    spqr_work <double, int64_t> *Work = Blob->Work ;
     double *Sx = Blob->Sx ;
 //  int64_t ntol = Blob->ntol ;        // no rank detection on the GPU
 
@@ -740,7 +740,7 @@ void spqrgpu_kernel
 
 void spqrgpu_kernel
 (
-    spqr_blob <Complex> *Blob
+    spqr_blob <Complex, int64_t> *Blob
 )
 {
     // complex case not yet supported on the GPU
@@ -748,4 +748,23 @@ void spqrgpu_kernel
     ERROR (CHOLMOD_INVALID, "complex case not yet supported on the GPU") ;
     return ;
 }
-
+void spqrgpu_kernel
+(
+    spqr_blob <Complex, int32_t> *Blob
+)
+{
+    // complex case not yet supported on the GPU
+    cholmod_common *cc = Blob->cc ;
+    ERROR (CHOLMOD_INVALID, "complex case not yet supported on the GPU") ;
+    return ;
+}
+void spqrgpu_kernel
+(
+    spqr_blob <double, int32_t> *Blob
+)
+{
+    // complex case not yet supported on the GPU
+    cholmod_common *cc = Blob->cc ;
+    ERROR (CHOLMOD_INVALID, "int32 case not yet supported on the GPU") ;
+    return ;
+}

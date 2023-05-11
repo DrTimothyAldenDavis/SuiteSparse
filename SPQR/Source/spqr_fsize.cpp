@@ -12,24 +12,24 @@
 
 #include "spqr.hpp"
 
-int64_t spqr_fsize     // returns # of rows of F
+template <typename Int> Int spqr_fsize     // returns # of rows of F
 (
     // inputs, not modified
-    int64_t f,
-    int64_t *Super,            // size nf, from QRsym
-    int64_t *Rp,               // size nf, from QRsym
-    int64_t *Rj,               // size rjsize, from QRsym
-    int64_t *Sleft,            // size n+2, from QRsym
-    int64_t *Child,            // size nf, from QRsym
-    int64_t *Childp,           // size nf+1, from QRsym
-    int64_t *Cm,               // size nf
+    Int f,
+    Int *Super,            // size nf, from QRsym
+    Int *Rp,               // size nf, from QRsym
+    Int *Rj,               // size rjsize, from QRsym
+    Int *Sleft,            // size n+2, from QRsym
+    Int *Child,            // size nf, from QRsym
+    Int *Childp,           // size nf+1, from QRsym
+    Int *Cm,               // size nf
 
     // outputs, not defined on input
-    int64_t *Fmap,             // size n
-    int64_t *Stair             // size fn
+    Int *Fmap,             // size n
+    Int *Stair             // size fn
 )
 {
-    int64_t col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc ;
+    Int col1, col2, p1, p2, fp, fn, fm, col, p, j, c, pc, cm, ci, t, fpc ;
 
     // -------------------------------------------------------------------------
     // get the front F
@@ -133,3 +133,37 @@ int64_t spqr_fsize     // returns # of rows of F
 
     return (fm) ;
 }
+
+template int64_t spqr_fsize <int64_t>    // returns # of rows of F
+(
+    // inputs, not modified
+    int64_t f,
+    int64_t *Super,            // size nf, from QRsym
+    int64_t *Rp,               // size nf, from QRsym
+    int64_t *Rj,               // size rjsize, from QRsym
+    int64_t *Sleft,            // size n+2, from QRsym
+    int64_t *Child,            // size nf, from QRsym
+    int64_t *Childp,           // size nf+1, from QRsym
+    int64_t *Cm,               // size nf
+
+    // outputs, not defined on input
+    int64_t *Fmap,             // size n
+    int64_t *Stair             // size fn
+) ;
+
+template int32_t spqr_fsize <int32_t>    // returns # of rows of F
+(
+    // inputs, not modified
+    int32_t f,
+    int32_t *Super,            // size nf, from QRsym
+    int32_t *Rp,               // size nf, from QRsym
+    int32_t *Rj,               // size rjsize, from QRsym
+    int32_t *Sleft,            // size n+2, from QRsym
+    int32_t *Child,            // size nf, from QRsym
+    int32_t *Childp,           // size nf+1, from QRsym
+    int32_t *Cm,               // size nf
+
+    // outputs, not defined on input
+    int32_t *Fmap,             // size n
+    int32_t *Stair             // size fn
+) ;

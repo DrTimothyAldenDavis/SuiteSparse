@@ -42,16 +42,16 @@ void spqrDebug_print
 // === spqrDebug_dumpdense =====================================================
 // =============================================================================
 
-template <typename Entry> void spqrDebug_dumpdense
+template <typename Entry, typename Int> void spqrDebug_dumpdense
 (
     Entry *A,
-    int64_t m,
-    int64_t n,
-    int64_t lda,
+    Int m,
+    Int n,
+    Int lda,
     cholmod_common *cc
 )
 {
-    int64_t i, j ;
+    Int i, j ;
     if (cc == NULL) return ;
     PR (("Dense: m %ld n %ld lda %ld p %p\n", m, n, lda, A)) ;
     if (m < 0 || n < 0 || lda < m || A == NULL)
@@ -96,7 +96,15 @@ template <typename Entry> void spqrDebug_dumpdense
 
 }
 
-template void spqrDebug_dumpdense <double>
+template void spqrDebug_dumpdense <double, int32_t>
+(
+    double *A,
+    int32_t m,
+    int32_t n,
+    int32_t lda,
+    cholmod_common *cc
+) ;
+template void spqrDebug_dumpdense <double, int64_t>
 (
     double *A,
     int64_t m,
@@ -105,7 +113,15 @@ template void spqrDebug_dumpdense <double>
     cholmod_common *cc
 ) ;
 
-template void spqrDebug_dumpdense <Complex>
+template void spqrDebug_dumpdense <Complex, int32_t>
+(
+    Complex *A,
+    int32_t m,
+    int32_t n,
+    int32_t lda,
+    cholmod_common *cc
+) ;
+template void spqrDebug_dumpdense <Complex, int64_t>
 (
     Complex *A,
     int64_t m,
@@ -113,22 +129,21 @@ template void spqrDebug_dumpdense <Complex>
     int64_t lda,
     cholmod_common *cc
 ) ;
-
 // =============================================================================
 // === spqrDebug_dumpsparse ====================================================
 // =============================================================================
 
-template <typename Entry> void spqrDebug_dumpsparse
+template <typename Entry, typename Int> void spqrDebug_dumpsparse
 (
-    int64_t *Ap,
-    int64_t *Ai,
+    Int *Ap,
+    Int *Ai,
     Entry *Ax,
-    int64_t m,
-    int64_t n,
+    Int m,
+    Int n,
     cholmod_common *cc
 )
 {
-    int64_t p, i, j ;
+    Int p, i, j ;
     if (cc == NULL) return ;
     PR (("\nSparse: m %ld n %ld nz %ld Ap %p Ai %p Ax %p\n",
         m, n, Ap [n], Ap, Ai,Ax)) ;
@@ -147,7 +162,17 @@ template <typename Entry> void spqrDebug_dumpsparse
     }
 }
 
-template void spqrDebug_dumpsparse <double>
+template void spqrDebug_dumpsparse <double, int32_t>
+(
+    int32_t *Ap,
+    int32_t *Ai,
+    double *Ax,
+    int32_t m,
+    int32_t n,
+    cholmod_common *cc
+) ;
+
+template void spqrDebug_dumpsparse <double, int64_t>
 (
     int64_t *Ap,
     int64_t *Ai,
@@ -157,7 +182,17 @@ template void spqrDebug_dumpsparse <double>
     cholmod_common *cc
 ) ;
 
-template void spqrDebug_dumpsparse <Complex>
+template void spqrDebug_dumpsparse <Complex, int32_t>
+(
+    int32_t *Ap,
+    int32_t *Ai,
+    Complex *Ax,
+    int32_t m,
+    int32_t n,
+    cholmod_common *cc
+) ;
+
+template void spqrDebug_dumpsparse <Complex, int64_t>
 (
     int64_t *Ap,
     int64_t *Ai,
@@ -176,13 +211,13 @@ template void spqrDebug_dumpsparse <Complex>
 #ifdef DEBUG_EXPENSIVE
 
 // returns # of times x is in the List [0..len-1]
-int64_t spqrDebug_listcount
+template <typename Int> Int spqrDebug_listcount
 (
-    int64_t x, int64_t *List, int64_t len, int64_t what,
+    Int x, Int *List, Int len, Int what,
     cholmod_common *cc
 )
 {
-    int64_t k, nfound = 0 ;
+    Int k, nfound = 0 ;
     if (cc == NULL) return (EMPTY) ;
     if (what == 0)
     {
@@ -210,18 +245,18 @@ int64_t spqrDebug_listcount
 
 // Count the number of entries in the R+H block for a single front.
 
-int64_t spqrDebug_rhsize       // returns # of entries in R+H
+template <typename Int> spqrDebug_rhsize       // returns # of entries in R+H
 (
     // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t *Stair,            // size n; column j is dead if Stair [j] == 0.
+    Int m,                 // # of rows in F
+    Int n,                 // # of columns in F
+    Int npiv,              // number of pivotal columns in F
+    Int *Stair,            // size n; column j is dead if Stair [j] == 0.
                             // Only the first npiv columns can be dead.
     cholmod_common *cc
 )
 {
-    int64_t k, h, t, rm, rhsize = 0 ;
+    Int k, h, t, rm, rhsize = 0 ;
 
     ASSERT (m >= 0 && n >= 0 && npiv <= n && npiv >= 0) ;
 
@@ -278,7 +313,7 @@ int64_t spqrDebug_rhsize       // returns # of entries in R+H
 // === spqrDebug_dump_Parent ===================================================
 // =============================================================================
 
-void spqrDebug_dump_Parent (int64_t n, int64_t *Parent, const char *filename)
+template <typename Int> void spqrDebug_dump_Parent <Int> (Int n, Int *Parent, const char *filename)
 {
     FILE *pfile = fopen (filename, "w") ;
     if (Parent == NULL)
@@ -287,7 +322,7 @@ void spqrDebug_dump_Parent (int64_t n, int64_t *Parent, const char *filename)
     }
     else
     {
-        for (int64_t f = 0 ; f < n ; f++)
+        for (Int f = 0 ; f < n ; f++)
         {
             fprintf (pfile, "%ld\n", 1+Parent [f]) ;
         }

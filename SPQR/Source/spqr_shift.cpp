@@ -12,16 +12,16 @@
 
 #include "spqr.hpp"
 
-void spqr_shift
+template <typename Int> void spqr_shift
 (
     // input, not modified
-    int64_t n,
+    Int n,
 
     // input/output
-    int64_t *X                     // size n+1
+    Int *X                     // size n+1
 )
 {
-    int64_t k ;
+    Int k ;
     if (X != NULL)
     {
         for (k = n ; k >= 1 ; k--)
@@ -31,3 +31,20 @@ void spqr_shift
         X [0] = 0 ;
     }
 }
+
+template void spqr_shift <int32_t>
+(
+    // input, not modified
+    int32_t n,
+
+    // input/output
+    int32_t *X                     // size n+1
+) ;
+template void spqr_shift <int64_t>
+(
+    // input, not modified
+    int64_t n,
+
+    // input/output
+    int64_t *X                     // size n+1
+) ;

@@ -12,14 +12,9 @@
 
 #include "GPUQREngine_SuiteSparse.hpp"
 
-void spqrgpu_kernel
+template <typename Entry, typename Int = int64_t> void spqrgpu_kernel
 (
-    spqr_blob <double> *Blob    // contains the entire problem input/output
-) ;
-
-void spqrgpu_kernel             // placeholder, since complex case not supported
-(
-    spqr_blob <Complex> *Blob
+    spqr_blob <Entry, Int> *Blob    // contains the entire problem input/output
 ) ;
 
 void spqrgpu_computeFrontStaging

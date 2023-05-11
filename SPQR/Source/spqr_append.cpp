@@ -13,24 +13,24 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
+template <typename Entry, typename Int> int spqr_append       // TRUE/FALSE if OK or not
 (
     // inputs, not modified
     Entry *X,           // size m-by-1
-    int64_t *P,            // size m, or NULL; permutation to apply to X.
+    Int *P,            // size m, or NULL; permutation to apply to X.
                         // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    int64_t *p_n,          // n = # of columns of A so far; increased one
+    Int *p_n,          // n = # of columns of A so far; increased one
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
     Entry *Ax ;
-    int64_t *Ai, *Ap ;
-    int64_t nzmax, nz, i, k, nznew, n, m, nz2 ;
+    Int *Ai, *Ap ;
+    Int nzmax, nz, i, k, nznew, n, m, nz2 ;
     int ok = TRUE ;
 
     // -------------------------------------------------------------------------
@@ -39,7 +39,7 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
 
     m = A->nrow ;
     n = *p_n ;
-    Ap = (int64_t *) A->p ;
+    Ap = (Int *) A->p ;
 
     if (m == 0)
     {
@@ -50,7 +50,7 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
         return (TRUE) ;
     }
 
-    Ai = (int64_t *) A->i ;
+    Ai = (Int *) A->i ;
     Ax = (Entry *) A->x ;
     nzmax = A->nzmax ;      // current nzmax(A)
     nz = Ap [n] ;           // current nnz(A)
@@ -98,16 +98,16 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
                 {
                     // Ai and Ax are not big enough; increase their size.
                     // nznew = 2*nzmax + m ;
-                    nznew = spqr_mult (2, nzmax, &ok) ;
+                    nznew = spqr_mult <Int> (2, nzmax, &ok) ;
                     nznew = spqr_add (nznew, m, &ok) ;
-                    if (!ok || !cholmod_l_reallocate_sparse (nznew, A, cc))
+                    if (!ok || !spqr_reallocate_sparse <Int> (nznew, A, cc))
                     {
                         // out of memory
                         ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory") ;
                         return (FALSE) ;
                     }
                     // Ai and Ax have moved, reaquire the pointers
-                    Ai = (int64_t *) A->i ;
+                    Ai = (Int *) A->i ;
                     Ax = (Entry *) A->x ;
                     PR (("reallocated from %ld to %ld\n", nzmax, nznew)) ;
                     nzmax = nznew ;
@@ -137,7 +137,21 @@ template <typename Entry> int spqr_append       // TRUE/FALSE if OK or not
 
 // =============================================================================
 
-template int spqr_append <double>
+template int spqr_append <double, int32_t>
+(
+    // inputs, not modified
+    double *X,      // size m-by-1
+    int32_t *P,        // size m, or NULL; permutation to apply to X.
+                    // P [k] = i if row k of A is row i of X
+
+    // input/output
+    cholmod_sparse *A,    // size m-by-n2 where n2 > n
+    int32_t *p_n,       // number of columns of A; increased by one
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template int spqr_append <double, int64_t>
 (
     // inputs, not modified
     double *X,      // size m-by-1
@@ -154,16 +168,30 @@ template int spqr_append <double>
 
 // =============================================================================
 
-template int spqr_append <Complex>
+template int spqr_append <Complex, int32_t>
 (
     // inputs, not modified
-    Complex *X,     // size m-by-1
+    Complex *X,      // size m-by-1
+    int32_t *P,        // size m, or NULL; permutation to apply to X.
+                    // P [k] = i if row k of A is row i of X
+
+    // input/output
+    cholmod_sparse *A,    // size m-by-n2 where n2 > n
+    int32_t *p_n,       // number of columns of A; increased by one
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template int spqr_append <Complex, int64_t>
+(
+    // inputs, not modified
+    Complex *X,      // size m-by-1
     int64_t *P,        // size m, or NULL; permutation to apply to X.
                     // P [k] = i if row k of A is row i of X
 
     // input/output
     cholmod_sparse *A,    // size m-by-n2 where n2 > n
-    int64_t *p_n,      // number of columns of A; increased by one
+    int64_t *p_n,       // number of columns of A; increased by one
 
     // workspace and parameters
     cholmod_common *cc
