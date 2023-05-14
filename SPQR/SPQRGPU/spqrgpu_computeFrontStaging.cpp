@@ -17,40 +17,41 @@
 #ifdef SUITESPARSE_CUDA
 #include "GPUQREngine_Scheduler.hpp"
 
+template <typename Int>
 void spqrgpu_computeFrontStaging
 (
     // inputs, not modified on output
-    int64_t numFronts,     // total number of fronts (nf in caller)
-    int64_t *Parent,       // size nf+1, assembly tree (f=nf is placeholder)
-    int64_t *Childp,       // size nf+2, children of f are
+    Int numFronts,     // total number of fronts (nf in caller)
+    Int *Parent,       // size nf+1, assembly tree (f=nf is placeholder)
+    Int *Childp,       // size nf+2, children of f are
                         //      Child [Childp [f] ... Childp [f+1]-1]
-    int64_t *Child,        // size nf+1.
+    Int *Child,        // size nf+1.
 
-    int64_t *Fm,           // size nf+1, front f has Fm [f] rows
-    int64_t *Cm,           // size nf+1, front f has Cm [f] rows in contrib
-    int64_t *Rp,           // size nf+1, Rj[Rp[f]...Rp[f+1]-1] are the cols in f
-    int64_t *Sp,           // size m+1, row pointers for sparse matrix S
-    int64_t *Sleft,        // size n+2, see spqr_stranspose for description
-    int64_t *Super,        // size nf+1, front f pivotal cols are
+    Int *Fm,           // size nf+1, front f has Fm [f] rows
+    Int *Cm,           // size nf+1, front f has Cm [f] rows in contrib
+    Int *Rp,           // size nf+1, Rj[Rp[f]...Rp[f+1]-1] are the cols in f
+    Int *Sp,           // size m+1, row pointers for sparse matrix S
+    Int *Sleft,        // size n+2, see spqr_stranspose for description
+    Int *Super,        // size nf+1, front f pivotal cols are
                         //      Super[f]..Super[f+1]-1
-    int64_t *Post,         // size nf+1, front f is kth, if f = Post [k]
+    Int *Post,         // size nf+1, front f is kth, if f = Post [k]
 
-    int64_t RimapSize,     // scalar, size of Rimap on the GPU (# of int's)
-    int64_t RjmapSize,     // scalar, size of Rimap on the GPU (# of int's)
+    Int RimapSize,     // scalar, size of Rimap on the GPU (# of int's)
+    Int RjmapSize,     // scalar, size of Rimap on the GPU (# of int's)
 
     // output, not defined on input:
     bool *feasible,     // scalar, true if feasible, false if GPU memory too low
-    int64_t *numStages,    // scalar, number of stages
-    int64_t *Stagingp,     // size nf+2, fronts are in the list
+    Int *numStages,    // scalar, number of stages
+    Int *Stagingp,     // size nf+2, fronts are in the list
                         //      Post [Stagingp [stage]...Stagingp[stage+1]-1]
-    int64_t *StageMap,     // size nf, front f is in stage StageMap [f]
+    Int *StageMap,     // size nf, front f is in stage StageMap [f]
 
     size_t *FSize,      // size nf+1, FSize[stage]: size in bytes of MongoF
     size_t *RSize,      // size nf+1, Rsize[stage]: size in bytes of MongoR
     size_t *SSize,      // size nf+1, Ssize[stage]: size in bytes of S
-    int64_t *FOffsets,     // size nf, front f in MondoF [FOffsets[f]...] on GPU
-    int64_t *ROffsets,     // size nf, R block in MondoR [Roffsets[f]...] on CPU
-    int64_t *SOffsets,     // size nf, S entries for front f are in
+    Int *FOffsets,     // size nf, front f in MondoF [FOffsets[f]...] on GPU
+    Int *ROffsets,     // size nf, R block in MondoR [Roffsets[f]...] on CPU
+    Int *SOffsets,     // size nf, S entries for front f are in
                         //      wsS [SOffsets[f]...]
 
     // input/output:
@@ -128,18 +129,18 @@ void spqrgpu_computeFrontStaging
     /* VTMem is the amount of memory required for the VT blocks. */
     size_t VTMem = 0;
 
-    int64_t stage = 0;
+    Int stage = 0;
     Stagingp[0] = 0;
-    for(int64_t p=0; p<numFronts; p++)
+    for(Int p=0; p<numFronts; p++)
     {
-        int64_t f = Post[p]; // The postordering ensures we visit children first
+        Int f = Post[p]; // The postordering ensures we visit children first
 
-        int64_t fm = Fm[f];
-        int64_t fn = Rp[f+1] - Rp[f];
-        int64_t fp = Super[f+1] - Super[f];
-        int64_t frank = MIN(fm, fp);
-        // int64_t cn = fn - fp ;
-        int64_t cm = Cm[f] ;
+        Int fm = Fm[f];
+        Int fn = Rp[f+1] - Rp[f];
+        Int fp = Super[f+1] - Super[f];
+        Int frank = MIN(fm, fp);
+        // Int cn = fn - fp ;
+        Int cm = Cm[f] ;
         size_t frontMem = fm * fn;          // F
         size_t rMem = (frank + cm) * fn;    // R + C
 
@@ -153,16 +154,16 @@ void spqrgpu_computeFrontStaging
         size_t childMemNew = 0;
 
         /* Add contribution block memory from children in earlier stages. */
-        for(int64_t cp=Childp[f]; cp<Childp[f+1]; cp++)
+        for(Int cp=Childp[f]; cp<Childp[f+1]; cp++)
         {
-            int64_t c = Child[cp];
+            Int c = Child[cp];
 
-            // int64_t cfm = Fm[c];
-            int64_t cfn = Rp[c+1] - Rp[c];
-            int64_t cfp = Super[c+1] - Super[c];
-            // int64_t crank = MIN(cfm, cfp);
-            int64_t ccn = cfn - cfp ;
-            int64_t ccm = Cm[c];
+            // Int cfm = Fm[c];
+            Int cfn = Rp[c+1] - Rp[c];
+            Int cfp = Super[c+1] - Super[c];
+            // Int crank = MIN(cfm, cfp);
+            Int ccn = cfn - cfp ;
+            Int ccm = Cm[c];
 
             if(StageMap[c] < stage)
             {

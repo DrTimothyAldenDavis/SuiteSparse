@@ -430,7 +430,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     if (useGPU)
     {
         // use calloc so that the pointers inside are all NULL
-        QRgpu = (spqr_gpu *) spqr_calloc <Int> (1, sizeof(spqr_gpu), cc) ;
+        QRgpu = (spqr_gpu *) spqr_calloc <Int> (1, sizeof(spqr_gpu_impl <Int>), cc) ;
         QRsym->QRgpu = QRgpu ;
         if(QRgpu)
         {

@@ -37,7 +37,8 @@
 // Scheduler::activateFront
 // -----------------------------------------------------------------------------
 
-void Scheduler::activateFront
+template <typename Int>
+void Scheduler <Int>::activateFront
 (
     Int f                                          // The front id to manipulate
 )
@@ -76,14 +77,14 @@ void Scheduler::activateFront
 // -----------------------------------------------------------------------------
 // Scheduler::pullFrontData
 // -----------------------------------------------------------------------------
-
-bool Scheduler::pullFrontData
+template <typename Int>
+bool Scheduler <Int>::pullFrontData
 (
     Int f                                          // The front id to manipulate
 )
 {
     /* Grab the front descriptor. */
-    Front *front = (&frontList[f]);
+    Front <Int> *front = (&frontList[f]);
 
     /* If we're only doing a push assembly then there's nothing to pull. */
     if(front->isPushOnly()) return true;
@@ -131,7 +132,8 @@ bool Scheduler::pullFrontData
 // Scheduler::finishFront
 // -----------------------------------------------------------------------------
 
-bool Scheduler::finishFront
+template <typename Int>
+bool Scheduler <Int>::finishFront
 (
     Int f                                          // The front id to manipulate
 )
@@ -139,7 +141,7 @@ bool Scheduler::finishFront
     /* If we've already freed the front, return early. */
     if(afPinv[f] == EMPTY) return true;
 
-    Front *front = (&frontList[f]);
+    Front <Int> *front = (&frontList[f]);
 
     /* If we're doing more than a push, we need to get the data off the GPU. */
     if(!front->isPushOnly())
@@ -173,7 +175,8 @@ bool Scheduler::finishFront
 // -----------------------------------------------------------------------------
 
 #if 1
-void Scheduler::debugDumpFront(Front *front)
+template <typename Int>
+void Scheduler <Int>::debugDumpFront(Front <Int> *front)
 {
     Workspace *wsFront =
         Workspace::allocate (front->getNumFrontValues(),     // CPU, DEBUG ONLY

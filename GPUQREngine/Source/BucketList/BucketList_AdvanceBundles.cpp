@@ -15,12 +15,12 @@
 
 
 #include "GPUQREngine_BucketList.hpp"
-
-void BucketList::AdvanceBundles()
+template <typename Int>
+void BucketList<Int>::AdvanceBundles()
 {
     for (int i = 0; i < numBundles; i++)
     {
-        LLBundle& bundle = Bundles[i];
+        LLBundle <Int>& bundle = Bundles[i];
 
         /* An advancing bundle is removed from its native bucket. */
         bundleCount[bundle.NativeBucket]--;

@@ -18,8 +18,8 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
-void BucketList::Insert
+template <typename Int>
+void BucketList<Int>::Insert
 (
     Int tile,
     Int bucket,
@@ -42,7 +42,8 @@ void BucketList::Insert
     LastBucket = MAX(LastBucket, bucket);
 }
 
-void BucketList::Remove
+template <typename Int>
+void BucketList<Int>::Remove
 (
     Int tile,
     Int bucket
@@ -67,7 +68,8 @@ void BucketList::Remove
 }
 
 #ifdef GPUQRENGINE_PIPELINING
-Int BucketList::RemoveHead
+template <typename Int>
+Int BucketList<Int>::RemoveHead
 (
     Int bucket                  // The bucket number
 )
@@ -78,7 +80,8 @@ Int BucketList::RemoveHead
 }
 #endif
 
-double *BucketList::allocateVT
+template <typename Int>
+double *BucketList<Int>::allocateVT
 (
     void
 )
@@ -86,7 +89,8 @@ double *BucketList::allocateVT
     return gpuVT[VThead++];
 }
 
-double *BucketList::freeVT
+template <typename Int>
+double *BucketList<Int>::freeVT
 (
     double *doneVT              // The GPU pointer of a released VT tile
 )

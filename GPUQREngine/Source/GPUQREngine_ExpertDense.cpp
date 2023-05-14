@@ -24,7 +24,7 @@
 
 #include "GPUQREngine_Internal.hpp"
 
-
+template <typename Int>
 QREngineResultCode GPUQREngine_Cleanup
 (
     QREngineResultCode code,    // The result code that we're exiting with
@@ -35,18 +35,19 @@ QREngineResultCode GPUQREngine_Cleanup
     Workspace *wsMongoR         // Pointer to the total CPU R workspace
 );
 
+template <typename Int>
 QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,   // The total available GPU memory size in bytes
-    Front *userFronts,      // The list of fronts to factorize
+    Front <Int> *userFronts,      // The list of fronts to factorize
     Int numFronts,          // The number of fronts to factorize
-    QREngineStats *stats    // An optional parameter. If present, statistics
+    QREngineStats <Int> *stats    // An optional parameter. If present, statistics
                             // are collected and passed back to the caller
                             // via this struct
 )
 {
     /* Allocate workspaces */
-    Front *fronts = (Front*) SuiteSparse_calloc(numFronts, sizeof(Front));
+    Front *fronts = (Front*) SuiteSparse_calloc(numFronts, sizeof(Front <Int>));
     if(!fronts)
     {
         return QRENGINE_OUTOFMEMORY;
@@ -57,10 +58,10 @@ QREngineResultCode GPUQREngine
     for(int f=0; f<numFronts; f++)
     {
         /* Configure the front */
-        Front *userFront = &(userFronts[f]);
+        Front <Int> *userFront = &(userFronts[f]);
         Int m = userFront->fm;
         Int n = userFront->fn;
-        Front *front = new (&fronts[f]) Front(f, EMPTY, m, n);
+        Front *front = new (&fronts[f]) Front <Int> (f, EMPTY, m, n);
         FSize += front->getNumFrontValues();
         RSize += front->getNumRValues();
     }
@@ -144,7 +145,7 @@ QREngineResultCode GPUQREngine
     /* COPY USER DATA (our R back to user's R) */
     for(int f=0; f<numFronts; f++)
     {
-        Front *userFront = &(userFronts[f]);
+        Front <Int> *userFront = &(userFronts[f]);
         double *R = (&fronts[f])->cpuR;
         double *userR = userFront->cpuR;
         Int m = userFront->fm;
@@ -166,11 +167,12 @@ QREngineResultCode GPUQREngine
         userFronts, fronts, numFronts, wsMongoF, wsMongoR);
 }
 
+template <typename Int>
 QREngineResultCode GPUQREngine_Cleanup
 (
     QREngineResultCode code,    // The result code that we're exiting with
-    Front *userFronts,          // The user-provided list of fronts
-    Front *fronts,              // The internal copy of the user's fronts
+    Front <Int> *userFronts,          // The user-provided list of fronts
+    Front <Int> *fronts,              // The internal copy of the user's fronts
     Int numFronts,              // The number of fronts to be factorized
     Workspace *wsMongoF,        // Pointer to the total GPU Front workspace
     Workspace *wsMongoR         // Pointer to the total CPU R workspace
@@ -179,8 +181,8 @@ QREngineResultCode GPUQREngine_Cleanup
     /* Cleanup fronts. */
     for(int f=0; f<numFronts; f++)
     {
-        Front *userFront = (&userFronts[f]);
-        Front *front = &(fronts[f]);
+        Front <Int> *userFront = (&userFronts[f]);
+        Front <Int> *front = &(fronts[f]);
         if(front != NULL)
         {
             /* If we had to attach our own stair, clean it up. */
@@ -202,9 +204,10 @@ QREngineResultCode GPUQREngine_Cleanup
     return code;
 }
 
+template <typename Int>
 Int *GPUQREngine_FindStaircase
 (
-    Front *front                // The front whose staircase we are computing
+    Front <Int> *front                // The front whose staircase we are computing
 )
 {
     Int fm = front->fm;

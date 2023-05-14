@@ -26,9 +26,10 @@
 #include "GPUQREngine_Front.hpp"
 
 struct TaskDescriptor;
+template <typename Int = int64_t>
 class LLBundle;
 
-class BucketList
+template <typename Int = int64_t> class BucketList
 {
 public:
     bool useFlag;            // A flag indicating whether to use this
@@ -60,7 +61,7 @@ public:
     Int ApplyGranularity;    // The desired granularity (in col tiles)
                              // for applies
 
-    LLBundle *Bundles;       // The bundles maintained by this scheduler
+    LLBundle <Int> *Bundles;       // The bundles maintained by this scheduler
     Int numBundles;          // Total # of bundles
 
     Workspace *wsMongoVT;    // The VT blocks this bucket list scheduler owns
@@ -68,11 +69,11 @@ public:
     int VThead;              // Index of the first available entry in VTlist
 
     // Constructors
-    void *operator new(long unsigned int, BucketList* p)
+    void *operator new(long unsigned int, BucketList <Int>* p)
     {
         return p;
     }
-    BucketList(Front *f, Int minApplyGranularity);
+    BucketList(Front <Int> *f, Int minApplyGranularity);
     ~BucketList();
 
     // Bundle management functions
@@ -157,7 +158,7 @@ public:
     // edge case kernels.
     bool IsInternal
     (
-        LLBundle& bundle,
+        LLBundle <Int>& bundle,
         int jLast
     );
 

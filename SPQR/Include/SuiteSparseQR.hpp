@@ -29,7 +29,7 @@ extern "C"
 // === spqr_gpu ================================================================
 // =============================================================================
 
-template <typename Int = int64_t> struct spqr_gpu
+template <typename Int = int64_t> struct spqr_gpu_impl
 {
     Int *RimapOffsets;      // Stores front offsets into Rimap
     Int RimapSize;          // Allocated space for in Rimap
@@ -47,6 +47,12 @@ template <typename Int = int64_t> struct spqr_gpu
     Int *ROffsets;          // R Offsets relative to a base
     Int *SOffsets;          // S Offsets relative to a base
 };
+
+extern template struct spqr_gpu_impl<int32_t> ;
+extern template struct spqr_gpu_impl<int64_t> ;
+
+typedef spqr_gpu_impl<int32_t> spqr_int_gpu ;
+typedef spqr_gpu_impl<int64_t> spqr_gpu ;
 
 // =============================================================================
 // === spqr_symbolic ===========================================================
@@ -208,7 +214,7 @@ template <typename Int = int64_t> struct spqr_symbolic
     // are requested or if rank detection is requested, then the GPU is
     // disabled.
 
-    spqr_gpu <Int> *QRgpu ;
+    spqr_gpu_impl <Int> *QRgpu ;
 
 } ;
 

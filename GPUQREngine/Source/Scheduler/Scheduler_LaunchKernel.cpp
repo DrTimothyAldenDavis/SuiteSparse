@@ -19,8 +19,8 @@
 #include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Timing.hpp"
 
-
-void Scheduler::launchKernel
+template <typename Int>
+void Scheduler <Int>::launchKernel
 (
     void
 )

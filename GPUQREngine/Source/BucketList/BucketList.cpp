@@ -35,9 +35,10 @@
     gpuVT = (double **) SuiteSparse_free(gpuVT); \
     wsMongoVT = Workspace::destroy(wsMongoVT);
 
-BucketList::BucketList
+template <typename Int>
+BucketList<Int>::BucketList
 (
-    Front *F,
+    Front <Int> *F,
     Int minApplyGranularity
 )
 {
@@ -68,7 +69,7 @@ BucketList::BucketList
     next = (Int*) SuiteSparse_calloc(numRowTiles, sizeof(Int));
     prev = (Int*) SuiteSparse_calloc(numRowTiles, sizeof(Int));
     triu = (bool*) SuiteSparse_calloc(numRowTiles, sizeof(bool));
-    Bundles = (LLBundle*) SuiteSparse_calloc(numRowTiles, sizeof(LLBundle));
+    Bundles = (LLBundle <Int>*) SuiteSparse_calloc(numRowTiles, sizeof(LLBundle <Int>));
     gpuVT = (double**) SuiteSparse_calloc(numRowTiles, sizeof(double*));
 
     // malloc wsMongoVT on the GPU
@@ -105,13 +106,15 @@ BucketList::BucketList
     }
 }
 
-BucketList::~BucketList()
+template <typename Int>
+BucketList<Int>::~BucketList()
 {
     FREE_EVERYTHING ;
 
 }
 
-void BucketList::Initialize()
+template <typename Int>
+void BucketList<Int>::Initialize()
 {
     int fm = front->fm;
     int fn = front->fn;
@@ -133,3 +136,6 @@ void BucketList::Initialize()
         }
     }
 }
+
+template class BucketList <int64_t> ;
+template class BucketList <int32_t> ;

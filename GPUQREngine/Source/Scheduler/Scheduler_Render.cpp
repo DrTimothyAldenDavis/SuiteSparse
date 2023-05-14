@@ -34,8 +34,8 @@
 #include <stdio.h>
 #include <string.h>
 
-
-void Scheduler::render
+template <typename Int>
+void Scheduler <Int>::render
 (
     void
 )

@@ -16,14 +16,15 @@
 #include "GPUQREngine_BucketList.hpp"
 
 
-void BucketList::PostProcess
+template <typename Int>
+void BucketList<Int>::PostProcess
 (
     void
 )
 {
     for(int b=0; b<numBundles; b++)
     {
-        LLBundle& bundle = Bundles[b];
+        LLBundle <Int>& bundle = Bundles[b];
 
         /* Get details about the task type. */
         TaskType type = bundle.CurrentTask;

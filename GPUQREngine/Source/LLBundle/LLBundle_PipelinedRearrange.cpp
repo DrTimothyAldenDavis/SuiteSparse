@@ -18,8 +18,8 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
-void LLBundle::PipelinedRearrange
+template <typename Int>
+void LLBundle <Int>::PipelinedRearrange
 (
     void
 )

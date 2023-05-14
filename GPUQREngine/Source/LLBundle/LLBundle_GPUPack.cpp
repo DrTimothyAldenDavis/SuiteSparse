@@ -15,8 +15,8 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
-void LLBundle::gpuPack
+template <typename Int>
+void LLBundle <Int>::gpuPack
 (
     TaskDescriptor* cpuTask
 )

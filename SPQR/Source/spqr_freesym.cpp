@@ -20,7 +20,7 @@ template <typename Int> void spqr_freesym
 )
 {
     spqr_symbolic <Int> *QRsym ;
-    spqr_gpu <Int> *QRgpu ;
+    spqr_gpu_impl <Int> *QRgpu ;
     Int m, n, anz, nf, rjsize, ns, ntasks ;
 
     if (QRsym_handle == NULL || *QRsym_handle == NULL)
@@ -71,7 +71,7 @@ template <typename Int> void spqr_freesym
         spqr_free <Int> (nf,   sizeof (Int),   QRgpu->ROffsets, cc) ;
         spqr_free <Int> (nf,   sizeof (Int),   QRgpu->SOffsets, cc) ;
 
-        spqr_free <Int> (1, sizeof (spqr_gpu <Int>), QRgpu, cc) ;
+        spqr_free <Int> (1, sizeof (spqr_gpu), QRgpu, cc) ;
     }
 
     // parallel analysis

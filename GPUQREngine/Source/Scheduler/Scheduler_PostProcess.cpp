@@ -66,8 +66,8 @@
 
 #include "GPUQREngine_Scheduler.hpp"
 
-
-bool Scheduler::postProcess
+template <typename Int>
+bool Scheduler <Int>::postProcess
 (
     void
 )
@@ -78,7 +78,7 @@ bool Scheduler::postProcess
         /* Get the front from the "active fronts" permutation. */
         Int f = afPerm[p];
 
-        Front *front = (&frontList[f]);
+        Front <Int> *front = (&frontList[f]);
         SparseMeta *meta = &(front->sparseMeta);
         bool isDense = front->isDense();
         bool isSparse = front->isSparse();

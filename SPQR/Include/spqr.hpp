@@ -1208,7 +1208,7 @@ template <typename Int = int64_t> inline Int spqr_mult (Int a, Int b, int *ok)
 
     void normal_memory_handler (cholmod_common *cc, bool free_work) ;
     void test_memory_handler (cholmod_common *cc, bool free_work) ;
-    extern Int my_tries, my_punt, save_my_tries, save_my_punt ;
+    extern int64_t my_tries, my_punt, save_my_tries, save_my_punt ;
 
     #define TEST_COVERAGE_PAUSE                                     \
     {                                                               \

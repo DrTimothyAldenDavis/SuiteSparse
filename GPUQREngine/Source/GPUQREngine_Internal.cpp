@@ -20,18 +20,18 @@
 #include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_Stats.hpp"
 
-
+template <typename Int>
 QREngineResultCode GPUQREngine_Internal
 (
     size_t gpuMemorySize,   // The total available GPU memory size in bytes
-    Front *fronts,          // The list of fronts to factorize
+    Front <Int> *fronts,          // The list of fronts to factorize
     Int numFronts,          // The number of fronts to factorize
     Int *Parent,            // The front-to-parent mapping
     Int *Childp,            // Front-to-child column pointers
     Int *Child,             // Child permutation
                             // (Child[Childp[f]] to Child[Childp[f+1]] are all
                             // the front identifiers for front "f"'s children.
-    QREngineStats *stats    // An optional parameter. If present, statistics
+    QREngineStats <Int> *stats    // An optional parameter. If present, statistics
                             // are collected and passed back to the caller
                             // via this struct
 )
@@ -39,7 +39,7 @@ QREngineResultCode GPUQREngine_Internal
     bool ok = true;
 
     /* Create the scheduler. */
-    Scheduler *scheduler = (Scheduler*) SuiteSparse_calloc(1,sizeof(Scheduler));
+    Scheduler <Int> *scheduler = (Scheduler <Int> *) SuiteSparse_calloc(1,sizeof(Scheduler <Int>));
     if (scheduler == NULL)
     {
         return QRENGINE_OUTOFMEMORY;
@@ -90,7 +90,7 @@ QREngineResultCode GPUQREngine_Internal
 
     /* Explicitly invoke the destructor */
     scheduler->~Scheduler();
-    scheduler = (Scheduler*) SuiteSparse_free(scheduler);
+    scheduler = (Scheduler <Int>*) SuiteSparse_free(scheduler);
 
     return QRENGINE_SUCCESS;
 }

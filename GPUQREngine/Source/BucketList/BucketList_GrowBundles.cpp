@@ -18,7 +18,8 @@
 #ifdef GPUQRENGINE_PIPELINING
 
 /* Grow existing bundles and advance the task type to APPLY_FACTORIZE. */
-void BucketList::GrowBundles
+template <typename Int>
+void BucketList<Int>::GrowBundles
 (
     void
 )
@@ -26,7 +27,7 @@ void BucketList::GrowBundles
     //Console.WriteLine("=== GrowBundles");
     for (int i = 0; i < numBundles; i++ )
     {
-        LLBundle& bundle = Bundles[i];
+        LLBundle <Int>& bundle = Bundles[i];
 
         /* The bundle is a phantom bundle if it only has a shadow entry.
          * In this case, we choose not to grow the bundle. */

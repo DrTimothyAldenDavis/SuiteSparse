@@ -28,12 +28,14 @@
 #include "GPUQREngine_TaskDescriptor.hpp"
 
 struct TaskDescriptor;
+template <typename Int = int64_t>
 class BucketList;
 
-class LLBundle
+
+template <typename Int = int64_t> class LLBundle
 {
 public:
-    BucketList *Buckets; // A back pointer to the hosting BucketList
+    BucketList <Int> *Buckets; // A back pointer to the hosting BucketList
 
     Int NativeBucket;   // The column bucket the bundle belongs "is native" to
 
@@ -74,8 +76,8 @@ public:
 
     TaskType CurrentTask;
 
-    void *operator new(long unsigned int, LLBundle* p){ return p; }
-    LLBundle(BucketList *buckets, Int panelSize, Int nativeBucket);
+    void *operator new(long unsigned int, LLBundle <Int>* p){ return p; }
+    LLBundle(BucketList <Int> *buckets, Int panelSize, Int nativeBucket);
 
     // empty LLBundle constructor (currently used, kept for possible future use
     // LLBundle();

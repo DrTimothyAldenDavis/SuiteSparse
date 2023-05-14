@@ -73,7 +73,7 @@ Int flopsApplyFactorize(int applyTiles, int factorizeTiles)
 // getFlops
 // -----------------------------------------------------------------------------
 
-Int getFlops(TaskDescriptor *task)
+int64_t getFlops(TaskDescriptor *task)
 {
     switch(task->Type)
     {
@@ -113,9 +113,9 @@ Int getFlops(TaskDescriptor *task)
 // getWeightedFlops
 // -----------------------------------------------------------------------------
 
-Int getWeightedFlops(TaskDescriptor *task)
+int64_t getWeightedFlops(TaskDescriptor *task)
 {
-    Int flops = getFlops(task);
+    int64_t flops = getFlops(task);
     switch(task->Type)
     {
         case TASKTYPE_FactorizeVT_3x1:

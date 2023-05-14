@@ -30,13 +30,14 @@ int compareTaskTime (const void * a, const void * b)
     TaskDescriptor *ta = (TaskDescriptor*) a;
     TaskDescriptor *tb = (TaskDescriptor*) b;
 
-    Int aFlops = getWeightedFlops(ta);
-    Int bFlops = getWeightedFlops(tb);
+    int64_t aFlops = getWeightedFlops(ta);
+    int64_t bFlops = getWeightedFlops(tb);
 
     return bFlops - aFlops;
 }
 
-void Scheduler::transferData
+template <typename Int>
+void Scheduler <Int>::transferData
 (
     void
 )

@@ -17,8 +17,8 @@
 
 
 #ifdef GPUQRENGINE_PIPELINING
-
-void LLBundle::AddTileToDelta
+template <typename Int>
+void LLBundle <Int>::AddTileToDelta
 (
     Int rowTile
 )
@@ -66,7 +66,8 @@ void LLBundle::AddTileToDelta
 
 #endif
 
-void LLBundle::AddTileToSlots
+template <typename Int>
+void LLBundle <Int>::AddTileToSlots
 (
     Int rowTile
 )

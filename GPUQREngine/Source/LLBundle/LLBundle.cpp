@@ -16,10 +16,10 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
-LLBundle::LLBundle
+template <typename Int>
+LLBundle <Int>::LLBundle
 (
-    BucketList *buckets,
+    BucketList <Int> *buckets,
     Int panelSize,
     Int nativeBucket
 )
@@ -36,6 +36,10 @@ LLBundle::LLBundle
     VT[0] = buckets->allocateVT();
 }
 
-LLBundle::~LLBundle()
+template <typename Int>
+LLBundle <Int>::~LLBundle()
 {
 }
+
+template class LLBundle <int64_t> ;
+template class LLBundle <int32_t> ;

@@ -20,7 +20,8 @@
 // LLBundle::UpdateSecondMinIndex
 // -----------------------------------------------------------------------------
 
-void LLBundle::UpdateSecondMinIndex
+template <typename Int>
+void LLBundle <Int>::UpdateSecondMinIndex
 (
     void
 )
@@ -42,8 +43,8 @@ void LLBundle::UpdateSecondMinIndex
 // -----------------------------------------------------------------------------
 // LLBundle::UpdateMax
 // -----------------------------------------------------------------------------
-
-void LLBundle::UpdateMax
+template <typename Int>
+void LLBundle <Int>::UpdateMax
 (
     void
 )

@@ -22,8 +22,8 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
-bool LLBundle::Advance
+template <typename Int>
+bool LLBundle <Int>::Advance
 (
     void
 )
