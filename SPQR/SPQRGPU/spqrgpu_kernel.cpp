@@ -72,7 +72,7 @@ void numfronts_in_stage
 // spqrgpu_kernel
 // -----------------------------------------------------------------------------
 template <typename Int>
-void spqrgpu_kernel_impl
+void spqrgpu_kernel
 (
     spqr_blob <double, Int> *Blob
 )
@@ -739,7 +739,7 @@ void spqrgpu_kernel_impl
 // -------------------------------------------------------------------------
 
 template <typename Int>
-void spqrgpu_kernel_error
+void spqrgpu_kernel
 (
     spqr_blob <Complex, Int> *Blob
 )
@@ -750,33 +750,8 @@ void spqrgpu_kernel_error
     return ;
 }
 
-template <> void spqrgpu_kernel
-(
-    spqr_blob <Complex, int32_t> *Blob
-)
-{
-    spqrgpu_kernel_error(Blob) ;
-}
-template <> void spqrgpu_kernel
-(
-    spqr_blob <Complex, int64_t> *Blob
-)
-{
-    spqrgpu_kernel_error(Blob) ;
-}
+template void spqrgpu_kernel (spqr_blob <Complex, int32_t> *Blob) ;
+template void spqrgpu_kernel (spqr_blob <Complex, int64_t> *Blob) ;
 
-template <> void spqrgpu_kernel <double, int32_t>
-(
-    spqr_blob <double, int32_t> *Blob
-)
-{
-    spqrgpu_kernel_impl (Blob) ;
-}
-
-template <> void spqrgpu_kernel <double, int64_t>
-(
-    spqr_blob <double, int64_t> *Blob
-)
-{
-    spqrgpu_kernel_impl (Blob) ;
-}
+template void spqrgpu_kernel (spqr_blob <double, int32_t> *Blob) ;
+template void spqrgpu_kernel (spqr_blob <double, int64_t> *Blob) ;
