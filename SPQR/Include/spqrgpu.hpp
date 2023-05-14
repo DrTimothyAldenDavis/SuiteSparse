@@ -12,9 +12,16 @@
 
 #include "GPUQREngine_SuiteSparse.hpp"
 
-template <typename Entry, typename Int = int64_t> void spqrgpu_kernel
+template <typename Int = int64_t> void spqrgpu_kernel
 (
-    spqr_blob <Entry, Int> *Blob    // contains the entire problem input/output
+    spqr_blob <double, Int> *Blob    // contains the entire problem input/output
+) ;
+
+
+template <typename Int = int64_t>
+void spqrgpu_kernel
+(
+    spqr_blob <Complex, Int> *Blob
 ) ;
 
 template <typename Int>
