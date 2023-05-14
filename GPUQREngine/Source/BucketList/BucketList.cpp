@@ -31,7 +31,7 @@
     prev = (Int *) SuiteSparse_free(prev); \
     next = (Int *) SuiteSparse_free(next); \
     triu = (bool *) SuiteSparse_free(triu); \
-    Bundles = (LLBundle *) SuiteSparse_free(Bundles); \
+    Bundles = (LLBundle <Int> *) SuiteSparse_free(Bundles); \
     gpuVT = (double **) SuiteSparse_free(gpuVT); \
     wsMongoVT = Workspace::destroy(wsMongoVT);
 
@@ -106,12 +106,28 @@ BucketList<Int>::BucketList
     }
 }
 
+template BucketList<int32_t>::BucketList
+(
+    Front <int32_t> *F,
+    int32_t minApplyGranularity
+) ;
+template BucketList<int64_t>::BucketList
+(
+    Front <int64_t> *F,
+    int64_t minApplyGranularity
+) ;
+
+
 template <typename Int>
 BucketList<Int>::~BucketList()
 {
     FREE_EVERYTHING ;
 
 }
+
+template BucketList<int32_t>::~BucketList() ;
+template BucketList<int64_t>::~BucketList() ;
+
 
 template <typename Int>
 void BucketList<Int>::Initialize()
@@ -137,5 +153,5 @@ void BucketList<Int>::Initialize()
     }
 }
 
-template class BucketList <int64_t> ;
-template class BucketList <int32_t> ;
+template void BucketList<int32_t>::Initialize() ;
+template void BucketList<int64_t>::Initialize() ;

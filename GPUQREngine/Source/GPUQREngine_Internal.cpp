@@ -45,7 +45,7 @@ QREngineResultCode GPUQREngine_Internal
         return QRENGINE_OUTOFMEMORY;
     }
 
-    new (scheduler) Scheduler(fronts, numFronts, gpuMemorySize);
+    new (scheduler) Scheduler <Int> (fronts, numFronts, gpuMemorySize);
     ok = scheduler->memory_ok && scheduler->cuda_ok;
 
     /* If we encountered problems initializing the scheduler: */
@@ -56,7 +56,7 @@ QREngineResultCode GPUQREngine_Internal
         if(scheduler)
         {
             scheduler->~Scheduler();
-            scheduler = (Scheduler*) SuiteSparse_free (scheduler) ;
+            scheduler = (Scheduler <Int> *) SuiteSparse_free (scheduler) ;
         }
         if(!memory_ok) return QRENGINE_OUTOFMEMORY;
         if(!cuda_ok) return QRENGINE_GPUERROR;
@@ -94,6 +94,35 @@ QREngineResultCode GPUQREngine_Internal
 
     return QRENGINE_SUCCESS;
 }
+
+template QREngineResultCode GPUQREngine_Internal
+(
+    size_t gpuMemorySize,   // The total available GPU memory size in bytes
+    Front <int32_t> *fronts,          // The list of fronts to factorize
+    int32_t numFronts,          // The number of fronts to factorize
+    int32_t *Parent,            // The front-to-parent mapping
+    int32_t *Childp,            // Front-to-child column pointers
+    int32_t *Child,             // Child permutation
+                            // (Child[Childp[f]] to Child[Childp[f+1]] are all
+                            // the front identifiers for front "f"'s children.
+    QREngineStats <int32_t> *stats    // An optional parameter. If present, statistics
+                            // are collected and passed back to the caller
+                            // via this struct
+) ;
+template QREngineResultCode GPUQREngine_Internal
+(
+    size_t gpuMemorySize,   // The total available GPU memory size in bytes
+    Front <int64_t> *fronts,          // The list of fronts to factorize
+    int64_t numFronts,          // The number of fronts to factorize
+    int64_t *Parent,            // The front-to-parent mapping
+    int64_t *Childp,            // Front-to-child column pointers
+    int64_t *Child,             // Child permutation
+                            // (Child[Childp[f]] to Child[Childp[f+1]] are all
+                            // the front identifiers for front "f"'s children.
+    QREngineStats <int64_t> *stats    // An optional parameter. If present, statistics
+                            // are collected and passed back to the caller
+                            // via this struct
+) ;
 
 #endif
 

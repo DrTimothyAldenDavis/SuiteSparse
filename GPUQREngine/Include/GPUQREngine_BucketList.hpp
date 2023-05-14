@@ -26,7 +26,7 @@
 #include "GPUQREngine_Front.hpp"
 
 struct TaskDescriptor;
-template <typename Int = int64_t>
+template <typename Int>
 class LLBundle;
 
 template <typename Int = int64_t> class BucketList
@@ -47,7 +47,7 @@ public:
     Int *bundleCount;        // The # of bundles native to bucket index
     Int *idleTileCount;      // The # of idle tiles in bucket index
 
-    Front *front;
+    Front <Int> *front;
     Int numRowTiles;         // # row tiles of F
     Int numColTiles;         // # col tiles of F
     Int numBuckets;          // min(numRowTiles, numColTiles)

@@ -84,3 +84,12 @@ bool LLBundle <Int>::Advance
 
     return stillAround;
 }
+
+template bool LLBundle <int32_t>::Advance
+(
+    void
+) ;
+template bool LLBundle <int64_t>::Advance
+(
+    void
+) ;

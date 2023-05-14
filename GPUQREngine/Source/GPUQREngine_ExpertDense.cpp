@@ -28,9 +28,28 @@ template <typename Int>
 QREngineResultCode GPUQREngine_Cleanup
 (
     QREngineResultCode code,    // The result code that we're exiting with
-    Front *userFronts,          // The user-provided list of fronts
-    Front *fronts,              // The internal copy of the user's fronts
+    Front <Int> *userFronts,          // The user-provided list of fronts
+    Front <Int> *fronts,              // The internal copy of the user's fronts
     Int numFronts,              // The number of fronts to be factorized
+    Workspace *wsMongoF,        // Pointer to the total GPU Front workspace
+    Workspace *wsMongoR         // Pointer to the total CPU R workspace
+);
+
+template QREngineResultCode GPUQREngine_Cleanup
+(
+    QREngineResultCode code,    // The result code that we're exiting with
+    Front <int32_t> *userFronts,          // The user-provided list of fronts
+    Front <int32_t> *fronts,              // The internal copy of the user's fronts
+    int32_t numFronts,              // The number of fronts to be factorized
+    Workspace *wsMongoF,        // Pointer to the total GPU Front workspace
+    Workspace *wsMongoR         // Pointer to the total CPU R workspace
+);
+template QREngineResultCode GPUQREngine_Cleanup
+(
+    QREngineResultCode code,    // The result code that we're exiting with
+    Front <int64_t> *userFronts,          // The user-provided list of fronts
+    Front <int64_t> *fronts,              // The internal copy of the user's fronts
+    int64_t numFronts,              // The number of fronts to be factorized
     Workspace *wsMongoF,        // Pointer to the total GPU Front workspace
     Workspace *wsMongoR         // Pointer to the total CPU R workspace
 );
@@ -47,7 +66,7 @@ QREngineResultCode GPUQREngine
 )
 {
     /* Allocate workspaces */
-    Front *fronts = (Front*) SuiteSparse_calloc(numFronts, sizeof(Front <Int>));
+    Front  <Int> *fronts = (Front <Int> *) SuiteSparse_calloc(numFronts, sizeof(Front <Int>));
     if(!fronts)
     {
         return QRENGINE_OUTOFMEMORY;
@@ -61,7 +80,7 @@ QREngineResultCode GPUQREngine
         Front <Int> *userFront = &(userFronts[f]);
         Int m = userFront->fm;
         Int n = userFront->fn;
-        Front *front = new (&fronts[f]) Front <Int> (f, EMPTY, m, n);
+        Front <Int> *front = new (&fronts[f]) Front <Int> (f, EMPTY, m, n);
         FSize += front->getNumFrontValues();
         RSize += front->getNumRValues();
     }
@@ -91,7 +110,7 @@ QREngineResultCode GPUQREngine
     for(int f=0; f<numFronts; f++)
     {
         // Set the front pointers; make the copy from user data into front data.
-        Front *front = &(fronts[f]);
+        Front <Int> *front = &(fronts[f]);
         front->F    = CPU_REFERENCE(wsMongoF, double*) + FOffset;
         front->gpuF = GPU_REFERENCE(wsMongoF, double*) + FOffset;
         front->cpuR = CPU_REFERENCE(wsMongoR, double*) + ROffset;
@@ -99,7 +118,7 @@ QREngineResultCode GPUQREngine
         ROffset += front->getNumRValues();
 
         /* COPY USER DATA (user's F to our F) */
-        Front *userFront = &(userFronts[f]);
+        Front <Int> *userFront = &(userFronts[f]);
         double *userF = userFront->F;
         double *F = front->F;
         Int m = userFront->fm;
@@ -134,7 +153,7 @@ QREngineResultCode GPUQREngine
     }
 
     /* Do the factorization for this set of fronts. */
-    QREngineResultCode result = GPUQREngine_Internal(gpuMemorySize, fronts,
+    QREngineResultCode result = GPUQREngine_Internal <Int>(gpuMemorySize, fronts,
         numFronts, NULL, NULL, NULL, stats);
     if(result != QRENGINE_SUCCESS)
     {
@@ -167,6 +186,25 @@ QREngineResultCode GPUQREngine
         userFronts, fronts, numFronts, wsMongoF, wsMongoR);
 }
 
+template QREngineResultCode GPUQREngine
+(
+    size_t gpuMemorySize,   // The total available GPU memory size in bytes
+    Front <int32_t> *userFronts,      // The list of fronts to factorize
+    int32_t numFronts,          // The number of fronts to factorize
+    QREngineStats <int32_t> *stats    // An optional parameter. If present, statistics
+                            // are collected and passed back to the caller
+                            // via this struct
+) ;
+template QREngineResultCode GPUQREngine
+(
+    size_t gpuMemorySize,   // The total available GPU memory size in bytes
+    Front <int64_t> *userFronts,      // The list of fronts to factorize
+    int64_t numFronts,          // The number of fronts to factorize
+    QREngineStats <int64_t> *stats    // An optional parameter. If present, statistics
+                            // are collected and passed back to the caller
+                            // via this struct
+) ;
+
 template <typename Int>
 QREngineResultCode GPUQREngine_Cleanup
 (
@@ -195,7 +233,7 @@ QREngineResultCode GPUQREngine_Cleanup
             front->F = NULL;
         }
     }
-    fronts = (Front *) SuiteSparse_free(fronts);
+    fronts = (Front <Int> *) SuiteSparse_free(fronts);
 
     /* Free the mongo structures. Note that Workspace checks for NULL. */
     wsMongoF = Workspace::destroy(wsMongoF);
@@ -228,5 +266,13 @@ Int *GPUQREngine_FindStaircase
     return Stair;
 }
 
+template int32_t *GPUQREngine_FindStaircase
+(
+    Front <int32_t> *front                // The front whose staircase we are computing
+) ;
+template int64_t *GPUQREngine_FindStaircase
+(
+    Front <int64_t> *front                // The front whose staircase we are computing
+) ;
 #endif
 

@@ -68,7 +68,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     Int *Sp, *Sj;
 
 #ifdef SUITESPARSE_CUDA
-    spqr_gpu *QRgpu ;
+    spqr_gpu_impl <Int> *QRgpu ;
     Int *RjmapOffsets, *RimapOffsets ;
     Int RjmapSize, RimapSize;
     Int numStages;             // staging
@@ -430,7 +430,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     if (useGPU)
     {
         // use calloc so that the pointers inside are all NULL
-        QRgpu = (spqr_gpu *) spqr_calloc <Int> (1, sizeof(spqr_gpu_impl <Int>), cc) ;
+        QRgpu = (spqr_gpu_impl <Int> *) spqr_calloc <Int> (1, sizeof(spqr_gpu_impl <Int>), cc) ;
         QRsym->QRgpu = QRgpu ;
         if(QRgpu)
         {

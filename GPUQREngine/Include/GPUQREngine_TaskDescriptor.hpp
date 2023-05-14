@@ -55,7 +55,7 @@ enum TaskType
     TASKTYPE_PackAssembly               // Push assembly (child to parent)
 };
 
-template <typename Int = int64_t>
+template <typename Int>
 class Scheduler;
 
 struct TaskDescriptor

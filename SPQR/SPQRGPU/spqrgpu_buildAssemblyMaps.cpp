@@ -198,4 +198,54 @@ void spqrgpu_buildAssemblyMaps
         }
     }
 }
+
+template void spqrgpu_buildAssemblyMaps
+(
+    int32_t numFronts,
+    int32_t n,
+    int32_t *Fmap,
+    int32_t *Post,
+    int32_t *Super,
+    int32_t *Rp,
+    int32_t *Rj,
+    int32_t *Sleft,
+    int32_t *Sp,
+    int32_t *Sj,
+    double *Sx,
+    int32_t *Fm,
+    int32_t *Cm,
+    int32_t *Childp,
+    int32_t *Child,
+    int32_t *CompleteStair,
+    int *CompleteRjmap,
+    int32_t *RjmapOffsets,
+    int *CompleteRimap,
+    int32_t *RimapOffsets,
+    SEntry *cpuS
+) ;
+
+template void spqrgpu_buildAssemblyMaps
+(
+    int64_t numFronts,
+    int64_t n,
+    int64_t *Fmap,
+    int64_t *Post,
+    int64_t *Super,
+    int64_t *Rp,
+    int64_t *Rj,
+    int64_t *Sleft,
+    int64_t *Sp,
+    int64_t *Sj,
+    double *Sx,
+    int64_t *Fm,
+    int64_t *Cm,
+    int64_t *Childp,
+    int64_t *Child,
+    int64_t *CompleteStair,
+    int *CompleteRjmap,
+    int64_t *RjmapOffsets,
+    int *CompleteRimap,
+    int64_t *RimapOffsets,
+    SEntry *cpuS
+) ;
 #endif

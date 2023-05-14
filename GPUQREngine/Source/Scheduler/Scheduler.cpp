@@ -34,11 +34,11 @@
     { \
         for(Int f=0; f<numFronts; f++) \
         { \
-            BucketList *dlbl = (&bucketLists[f]); \
+            BucketList <Int> *dlbl = (&bucketLists[f]); \
             dlbl->~BucketList(); \
         } \
     } \
-    bucketLists = (BucketList*) SuiteSparse_free(bucketLists); \
+    bucketLists = (BucketList <Int> *) SuiteSparse_free(bucketLists); \
     FrontDataPulled = (bool *) SuiteSparse_free(FrontDataPulled); \
     eventFrontDataReady =(cudaEvent_t*) SuiteSparse_free(eventFrontDataReady); \
     eventFrontDataPulled=(cudaEvent_t*) SuiteSparse_free(eventFrontDataPulled);\

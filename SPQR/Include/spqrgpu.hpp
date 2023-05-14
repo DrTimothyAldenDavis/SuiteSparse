@@ -12,9 +12,19 @@
 
 #include "GPUQREngine_SuiteSparse.hpp"
 
-template <typename Entry, typename Int = int64_t> void spqrgpu_kernel
+template <typename Entry, typename Int> void spqrgpu_kernel
 (
     spqr_blob <Entry, Int> *Blob    // contains the entire problem input/output
+) ;
+
+template <typename Int> void spqrgpu_kernel_impl
+(
+    spqr_blob <double, Int> *Blob
+) ;
+
+template <typename Int> void spqrgpu_kernel_error
+(
+    spqr_blob <Complex, Int> *Blob
 ) ;
 
 template <typename Int>
@@ -58,6 +68,7 @@ void spqrgpu_computeFrontStaging
     cholmod_common *cc
 );
 
+template <typename Int>
 void spqrgpu_buildAssemblyMaps
 (
     Int numFronts,

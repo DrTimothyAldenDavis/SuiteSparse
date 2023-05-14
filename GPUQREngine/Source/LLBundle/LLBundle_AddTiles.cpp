@@ -64,6 +64,15 @@ void LLBundle <Int>::AddTileToDelta
     SecondMin = (SecondMin == EMPTY ? Delta : MIN(SecondMin, Delta));
 }
 
+template void LLBundle <int32_t>::AddTileToDelta
+(
+    int32_t rowTile
+) ;
+template void LLBundle <int64_t>::AddTileToDelta
+(
+    int64_t rowTile
+) ;
+
 #endif
 
 template <typename Int>
@@ -119,3 +128,11 @@ void LLBundle <Int>::AddTileToSlots
     /* Update last, if needed. */
     if (next[Last] != EMPTY) Last = next[Last];
 }
+template void LLBundle <int32_t>::AddTileToSlots
+(
+    int32_t rowTile
+) ;
+template void LLBundle <int64_t>::AddTileToSlots
+(
+    int64_t rowTile
+) ;

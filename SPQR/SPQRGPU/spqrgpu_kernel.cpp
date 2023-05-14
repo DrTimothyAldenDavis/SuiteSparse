@@ -72,7 +72,7 @@ void numfronts_in_stage
 // spqrgpu_kernel
 // -----------------------------------------------------------------------------
 template <typename Int>
-void spqrgpu_kernel
+void spqrgpu_kernel_impl
 (
     spqr_blob <double, Int> *Blob
 )
@@ -89,7 +89,7 @@ void spqrgpu_kernel
     // get the Blob
     // -------------------------------------------------------------------------
 
-    spqr_symbolic <Int *QRsym = Blob->QRsym ;
+    spqr_symbolic <Int> *QRsym = Blob->QRsym ;
     spqr_numeric <double, Int> *QRnum = Blob->QRnum ;
     spqr_work <double, Int> *Work = Blob->Work ;
     double *Sx = Blob->Sx ;
@@ -739,7 +739,7 @@ void spqrgpu_kernel
 // -------------------------------------------------------------------------
 
 template <typename Int>
-void spqrgpu_kernel
+void spqrgpu_kernel_error
 (
     spqr_blob <Complex, Int> *Blob
 )
@@ -748,4 +748,35 @@ void spqrgpu_kernel
     cholmod_common *cc = Blob->cc ;
     ERROR (CHOLMOD_INVALID, "complex case not yet supported on the GPU") ;
     return ;
+}
+
+template <> void spqrgpu_kernel
+(
+    spqr_blob <Complex, int32_t> *Blob
+)
+{
+    spqrgpu_kernel_error(Blob) ;
+}
+template <> void spqrgpu_kernel
+(
+    spqr_blob <Complex, int64_t> *Blob
+)
+{
+    spqrgpu_kernel_error(Blob) ;
+}
+
+template <> void spqrgpu_kernel <double, int32_t>
+(
+    spqr_blob <double, int32_t> *Blob
+)
+{
+    spqrgpu_kernel_impl (Blob) ;
+}
+
+template <> void spqrgpu_kernel <double, int64_t>
+(
+    spqr_blob <double, int64_t> *Blob
+)
+{
+    spqrgpu_kernel_impl (Blob) ;
 }

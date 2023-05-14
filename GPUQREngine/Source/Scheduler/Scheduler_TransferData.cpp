@@ -64,3 +64,12 @@ void Scheduler <Int>::transferData
     wsQueueSurgical.transfer(cudaMemcpyHostToDevice, false, memoryStreamH2D);
     wsQueueSurgical.assign(NULL, NULL);
 }
+
+template void Scheduler <int32_t>::transferData
+(
+    void
+) ;
+template void Scheduler <int64_t>::transferData
+(
+    void
+) ;

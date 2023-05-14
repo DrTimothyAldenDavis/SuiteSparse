@@ -36,10 +36,22 @@ LLBundle <Int>::LLBundle
     VT[0] = buckets->allocateVT();
 }
 
+template LLBundle <int32_t>::LLBundle
+(
+    BucketList <int32_t> *buckets,
+    int32_t panelSize,
+    int32_t nativeBucket
+) ;
+template LLBundle <int64_t>::LLBundle
+(
+    BucketList <int64_t> *buckets,
+    int64_t panelSize,
+    int64_t nativeBucket
+) ;
+
 template <typename Int>
 LLBundle <Int>::~LLBundle()
 {
 }
-
-template class LLBundle <int64_t> ;
-template class LLBundle <int32_t> ;
+template LLBundle <int32_t>::~LLBundle() ;
+template LLBundle <int64_t>::~LLBundle() ;

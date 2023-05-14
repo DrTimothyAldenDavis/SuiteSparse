@@ -203,3 +203,14 @@ Int BucketList<Int>::FillWorkQueue
 
     return numTasks;
 }
+
+template int32_t BucketList<int32_t>::FillWorkQueue
+(
+    TaskDescriptor *queue,  // The list of work items for the GPU
+    int32_t *queueIndex         // The current index into the queue
+) ;
+template int64_t BucketList<int64_t>::FillWorkQueue
+(
+    TaskDescriptor *queue,  // The list of work items for the GPU
+    int64_t *queueIndex         // The current index into the queue
+) ;

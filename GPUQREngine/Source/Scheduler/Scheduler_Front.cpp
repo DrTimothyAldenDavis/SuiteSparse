@@ -46,7 +46,7 @@ void Scheduler <Int>::activateFront
     /* If the front has already been activated, exit early. */
     if(afPinv[f] != EMPTY) return;
 
-    Front *front = (&frontList[f]);
+    Front <Int> *front = (&frontList[f]);
 
     /* Add this front to the list of active fronts. */
     afPerm[numActiveFronts] = f;
@@ -74,6 +74,14 @@ void Scheduler <Int>::activateFront
     }
 }
 
+template void Scheduler <int32_t>::activateFront
+(
+    int32_t f                                          // The front id to manipulate
+) ;
+template void Scheduler <int64_t>::activateFront
+(
+    int64_t f                                          // The front id to manipulate
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::pullFrontData
 // -----------------------------------------------------------------------------
@@ -128,6 +136,14 @@ bool Scheduler <Int>::pullFrontData
     return (FrontDataPulled[f] = true);
 }
 
+template bool Scheduler <int32_t>::pullFrontData
+(
+    int32_t f                                          // The front id to manipulate
+) ;
+template bool Scheduler <int64_t>::pullFrontData
+(
+    int64_t f                                          // The front id to manipulate
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::finishFront
 // -----------------------------------------------------------------------------
@@ -170,6 +186,14 @@ bool Scheduler <Int>::finishFront
     return true;
 }
 
+template bool Scheduler <int32_t>::finishFront
+(
+    int32_t f                                          // The front id to manipulate
+) ;
+template bool Scheduler <int64_t>::finishFront
+(
+    int64_t f                                          // The front id to manipulate
+) ;
 // -----------------------------------------------------------------------------
 // debugDumpFront
 // -----------------------------------------------------------------------------

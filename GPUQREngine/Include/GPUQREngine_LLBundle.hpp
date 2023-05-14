@@ -28,7 +28,7 @@
 #include "GPUQREngine_TaskDescriptor.hpp"
 
 struct TaskDescriptor;
-template <typename Int = int64_t>
+template <typename Int>
 class BucketList;
 
 

@@ -175,6 +175,14 @@ void Scheduler <Int>::fillWorkQueue
 #endif
 }
 
+template void Scheduler <int32_t>::fillWorkQueue
+(
+    void
+) ;
+template void Scheduler <int64_t>::fillWorkQueue
+(
+    void
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::fillTasks
 // -----------------------------------------------------------------------------
@@ -394,6 +402,19 @@ void Scheduler <Int>::fillTasks
     *queueIndex = qindex;
 }
 
+template void Scheduler <int32_t>::fillTasks
+(
+    int32_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int32_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
+template void Scheduler <int64_t>::fillTasks
+(
+    int64_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int64_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
+
 // -----------------------------------------------------------------------------
 // buildSAssemblyTask
 // -----------------------------------------------------------------------------
@@ -420,6 +441,18 @@ TaskDescriptor buildSAssemblyTask
     return returner;
 }
 
+template TaskDescriptor buildSAssemblyTask
+(
+    Front <int32_t> *front,
+    int pstart,
+    int pend
+) ;
+template TaskDescriptor buildSAssemblyTask
+(
+    Front <int64_t> *front,
+    int pstart,
+    int pend
+) ;
 // -----------------------------------------------------------------------------
 // buildPackAssemblyTask
 // -----------------------------------------------------------------------------
@@ -457,6 +490,22 @@ TaskDescriptor buildPackAssemblyTask
     return returner;
 }
 
+template TaskDescriptor buildPackAssemblyTask
+(
+    Front <int32_t> *front,
+    int cistart,
+    int ciend,
+    int cjstart,
+    int cjend
+) ;
+template TaskDescriptor buildPackAssemblyTask
+(
+    Front <int64_t> *front,
+    int cistart,
+    int ciend,
+    int cjstart,
+    int cjend
+) ;
 // -----------------------------------------------------------------------------
 // buildSmallQRTask
 // -----------------------------------------------------------------------------
@@ -474,3 +523,12 @@ TaskDescriptor buildSmallQRTask
     returner.fn = (int) front->fn;
     return returner;
 }
+
+template TaskDescriptor buildSmallQRTask
+(
+    Front <int32_t> *front
+) ;
+template TaskDescriptor buildSmallQRTask
+(
+    Front <int64_t> *front
+) ;
