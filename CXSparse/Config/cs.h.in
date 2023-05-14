@@ -27,16 +27,11 @@
 #define _CXS_H
 
 #ifdef __cplusplus
-#if @CXSPARSE_USE_COMPLEX@
-#include <complex>
-typedef std::complex<double> cs_complex_t ;
-#endif
 extern "C" {
-#else
+#endif
 #if @CXSPARSE_USE_COMPLEX@
 #include <complex.h>
 #define cs_complex_t double complex
-#endif
 #endif
 
 #define CS_VER @CXSPARSE_VERSION_MAJOR@  /* CXSparse Version */
