@@ -224,7 +224,7 @@ template <> int spqr_free_factor <int64_t>
     cholmod_common *Common
 )
 {
-    return cholmod_free_factor (L, Common) ;
+    return cholmod_l_free_factor (L, Common) ;
 }
 
 template <> int spqr_allocate_work <int32_t>
