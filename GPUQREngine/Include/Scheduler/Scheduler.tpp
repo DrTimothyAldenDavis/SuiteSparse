@@ -21,13 +21,11 @@
 // the constructor is responsible for memory management AND initialization.
 // =============================================================================
 
-#include "GPUQREngine_Scheduler.hpp"
-
 // -----------------------------------------------------------------------------
 // Macro destructor
 // -----------------------------------------------------------------------------
 
-#define FREE_EVERYTHING \
+#define FREE_EVERYTHING_SCHEDULER \
     afPerm = (Int *) SuiteSparse_free(afPerm); \
     afPinv = (Int *) SuiteSparse_free(afPinv); \
     if(bucketLists) \
@@ -99,7 +97,7 @@ Scheduler <Int>::Scheduler
     if(!afPerm || !afPinv || !bucketLists || !FrontDataPulled
        || !eventFrontDataReady || !eventFrontDataPulled)
     {
-        FREE_EVERYTHING ;
+         ;
         memory_ok = false;
         return;
     }
@@ -112,7 +110,7 @@ Scheduler <Int>::Scheduler
        If this fails, we have either cuda_ok = false or memory_ok = false. */
     if(!initialize(gpuMemorySize))
     {
-        FREE_EVERYTHING;
+        ;
         // If cuda_ok is still true then we ran out of memory.
         // Else we had enough memory but failed the cuda calls.
         if(cuda_ok) memory_ok = false;
@@ -168,7 +166,7 @@ Scheduler <Int>::Scheduler
 template <typename Int>
 Scheduler <Int>::~Scheduler()
 {
-    FREE_EVERYTHING ;
+    FREE_EVERYTHING_SCHEDULER ;
 }
 
 // -----------------------------------------------------------------------------
@@ -260,6 +258,3 @@ bool Scheduler <Int>::initialize
 
     return cuda_ok;
 }
-
-template class Scheduler <int64_t> ;
-template class Scheduler <int32_t> ;

@@ -26,15 +26,14 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_Internal.hpp"
+#include "../GPUQREngine_Internal.hpp"
 
 #ifdef GPUQRENGINE_RENDER
 
-#include "GPUQREngine_Scheduler.hpp"
 #include <stdio.h>
 #include <string.h>
 
-template <typename Int>
+
 void Scheduler <Int>::render
 (
     void

@@ -12,9 +12,6 @@
 // and keeping a Shadow copy to support subsequent Apply tasks.
 //
 // =============================================================================
-
-
-#include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 void BucketList<Int>::AdvanceBundles()
 {
@@ -45,6 +42,3 @@ void BucketList<Int>::AdvanceBundles()
         }
     }
 }
-
-template void BucketList<int32_t>::AdvanceBundles() ;
-template void BucketList<int64_t>::AdvanceBundles() ;

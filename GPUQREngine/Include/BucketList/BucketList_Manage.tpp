@@ -15,9 +15,6 @@
 // pipelined factorization.
 //
 // =============================================================================
-
-#include "GPUQREngine_BucketList.hpp"
-
 template <typename Int>
 void BucketList<Int>::Insert
 (
@@ -41,20 +38,6 @@ void BucketList<Int>::Insert
     /* Keep track of the last bucket. */
     LastBucket = MAX(LastBucket, bucket);
 }
-
-template void BucketList <int32_t>::Insert
-(
-    int32_t tile,
-    int32_t bucket,
-    bool upperTriangular
-) ;
-
-template void BucketList <int64_t>::Insert
-(
-    int64_t tile,
-    int64_t bucket,
-    bool upperTriangular
-) ;
 
 template <typename Int>
 void BucketList<Int>::Remove
@@ -81,18 +64,6 @@ void BucketList<Int>::Remove
     numIdleTiles--;
 }
 
-template void BucketList<int32_t>::Remove
-(
-    int32_t tile,
-    int32_t bucket
-) ;
-
-template void BucketList<int64_t>::Remove
-(
-    int64_t tile,
-    int64_t bucket
-) ;
-
 #ifdef GPUQRENGINE_PIPELINING
 template <typename Int>
 Int BucketList<Int>::RemoveHead
@@ -104,15 +75,6 @@ Int BucketList<Int>::RemoveHead
     Remove(tile, bucket);
     return tile;
 }
-
-template int32_t BucketList <int32_t>::RemoveHead
-(
-    int32_t bucket                  // The bucket number
-) ;
-template int64_t BucketList <int64_t>::RemoveHead
-(
-    int64_t bucket                  // The bucket number
-) ;
 #endif
 
 template <typename Int>
@@ -124,15 +86,6 @@ double *BucketList<Int>::allocateVT
     return gpuVT[VThead++];
 }
 
-template double *BucketList<int32_t>::allocateVT
-(
-    void
-) ;
-template double *BucketList<int64_t>::allocateVT
-(
-    void
-) ;
-
 template <typename Int>
 double *BucketList<Int>::freeVT
 (
@@ -142,12 +95,3 @@ double *BucketList<Int>::freeVT
     gpuVT[--VThead] = doneVT;
     return NULL;
 }
-
-template double *BucketList<int64_t>::freeVT
-(
-    double *doneVT              // The GPU pointer of a released VT tile
-) ;
-template double *BucketList<int32_t>::freeVT
-(
-    double *doneVT              // The GPU pointer of a released VT tile
-) ;

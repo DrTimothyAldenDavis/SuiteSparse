@@ -30,13 +30,9 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_Scheduler.hpp"
-
-
 // -----------------------------------------------------------------------------
 // Scheduler::activateFront
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 void Scheduler <Int>::activateFront
 (
@@ -74,14 +70,6 @@ void Scheduler <Int>::activateFront
     }
 }
 
-template void Scheduler <int32_t>::activateFront
-(
-    int32_t f                                          // The front id to manipulate
-) ;
-template void Scheduler <int64_t>::activateFront
-(
-    int64_t f                                          // The front id to manipulate
-) ;
 // -----------------------------------------------------------------------------
 // Scheduler::pullFrontData
 // -----------------------------------------------------------------------------
@@ -136,18 +124,9 @@ bool Scheduler <Int>::pullFrontData
     return (FrontDataPulled[f] = true);
 }
 
-template bool Scheduler <int32_t>::pullFrontData
-(
-    int32_t f                                          // The front id to manipulate
-) ;
-template bool Scheduler <int64_t>::pullFrontData
-(
-    int64_t f                                          // The front id to manipulate
-) ;
 // -----------------------------------------------------------------------------
 // Scheduler::finishFront
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 bool Scheduler <Int>::finishFront
 (
@@ -186,14 +165,7 @@ bool Scheduler <Int>::finishFront
     return true;
 }
 
-template bool Scheduler <int32_t>::finishFront
-(
-    int32_t f                                          // The front id to manipulate
-) ;
-template bool Scheduler <int64_t>::finishFront
-(
-    int64_t f                                          // The front id to manipulate
-) ;
+#include "GPUQREngine.hpp"
 // -----------------------------------------------------------------------------
 // debugDumpFront
 // -----------------------------------------------------------------------------
@@ -221,10 +193,10 @@ void Scheduler <Int>::debugDumpFront(Front <Int> *front)
 //      printf("\n");
 //  }
 
-    for (Int j = 0 ; j < fn ; j++)
+    for (int64_t j = 0 ; j < fn ; j++)
     {
-        printf ("   --- column %ld of %ld\n", j, fn) ;
-        for (Int i = 0 ; i < fm ; i++)
+        printf ("   --- column %ld of %ld\n", (int64_t) j, (int64_t) fn) ;
+        for (int64_t i = 0 ; i < fm ; i++)
         {
             if (i == j) printf ("      [ diag:     ") ;
             else        printf ("      row %4ld    ", i) ;

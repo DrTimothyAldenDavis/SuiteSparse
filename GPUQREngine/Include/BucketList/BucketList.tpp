@@ -21,10 +21,7 @@
 // the constructor is responsible for memory management AND initialization.
 // =============================================================================
 
-#include "GPUQREngine_BucketList.hpp"
-
-
-#define FREE_EVERYTHING \
+#define FREE_EVERYTHING_BUCKET \
     head = (Int *) SuiteSparse_free(head); \
     idleTileCount = (Int *) SuiteSparse_free(idleTileCount); \
     bundleCount = (Int *) SuiteSparse_free(bundleCount); \
@@ -80,7 +77,7 @@ BucketList<Int>::BucketList
     if(!head || !idleTileCount || !bundleCount || !next || !prev || !triu
        || !Bundles || !gpuVT || !wsMongoVT)
     {
-        FREE_EVERYTHING ;
+        FREE_EVERYTHING_BUCKET ;
         memory_ok = false ;
         return;
     }
@@ -106,28 +103,12 @@ BucketList<Int>::BucketList
     }
 }
 
-template BucketList<int32_t>::BucketList
-(
-    Front <int32_t> *F,
-    int32_t minApplyGranularity
-) ;
-template BucketList<int64_t>::BucketList
-(
-    Front <int64_t> *F,
-    int64_t minApplyGranularity
-) ;
-
-
 template <typename Int>
 BucketList<Int>::~BucketList()
 {
-    FREE_EVERYTHING ;
+    FREE_EVERYTHING_BUCKET ;
 
 }
-
-template BucketList<int32_t>::~BucketList() ;
-template BucketList<int64_t>::~BucketList() ;
-
 
 template <typename Int>
 void BucketList<Int>::Initialize()
@@ -152,6 +133,3 @@ void BucketList<Int>::Initialize()
         }
     }
 }
-
-template void BucketList<int32_t>::Initialize() ;
-template void BucketList<int64_t>::Initialize() ;

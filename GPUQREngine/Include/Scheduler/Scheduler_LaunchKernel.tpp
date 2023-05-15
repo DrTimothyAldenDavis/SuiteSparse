@@ -15,7 +15,6 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Timing.hpp"
 
@@ -67,12 +66,3 @@ void Scheduler <Int>::launchKernel
     /* Clear the number of tasks. */
     numTasks[activeSet] = 0;
 }
-
-template void Scheduler <int32_t>::launchKernel
-(
-    void
-) ;
-template void Scheduler <int64_t>::launchKernel
-(
-    void
-) ;

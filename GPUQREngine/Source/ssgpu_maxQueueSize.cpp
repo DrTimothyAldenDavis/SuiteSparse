@@ -7,9 +7,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
-
 #include "GPUQREngine_Scheduler.hpp"
-
 #define MIN_QUEUE_SIZE 50000
 
 size_t ssgpu_maxQueueSize       // return size of scheduler queue

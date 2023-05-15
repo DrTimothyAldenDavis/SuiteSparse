@@ -14,9 +14,6 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_BucketList.hpp"
-#ifdef GPUQRENGINE_PIPELINING
-
 /* Grow existing bundles and advance the task type to APPLY_FACTORIZE. */
 template <typename Int>
 void BucketList<Int>::GrowBundles
@@ -73,5 +70,3 @@ void BucketList<Int>::GrowBundles
         }
     }
 }
-
-#endif

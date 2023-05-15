@@ -12,9 +12,6 @@
 // its state into a packet of metadata information that the GPU can act on.
 //
 // =============================================================================
-
-#include "GPUQREngine_BucketList.hpp"
-
 template <typename Int>
 void LLBundle <Int>::gpuPack
 (
@@ -60,12 +57,3 @@ void LLBundle <Int>::gpuPack
     cpuTask->AuxAddress[0] = VT[0];
     cpuTask->AuxAddress[1] = VT[1];
 }
-
-template void LLBundle <int32_t>::gpuPack
-(
-    TaskDescriptor* cpuTask
-) ;
-template void LLBundle <int64_t>::gpuPack
-(
-    TaskDescriptor* cpuTask
-) ;

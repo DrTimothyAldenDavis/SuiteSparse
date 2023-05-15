@@ -13,9 +13,6 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_BucketList.hpp"
-
-
 // CreateBundles selects rowtiles up to PANELSIZE and creates a new bundle
 // ready for factorization.
 template <typename Int>
@@ -59,15 +56,6 @@ void BucketList<Int>::CreateBundles
         }
     }
 }
-template void BucketList<int32_t>::CreateBundles
-(
-    void
-) ;
-template void BucketList<int64_t>::CreateBundles
-(
-    void
-) ;
-
 // SkipBundleCreation determines whether we should skip creating a new
 // bundle for the specified tile in the specified column bucket.
 template <typename Int>
@@ -123,14 +111,3 @@ bool BucketList<Int>::IsInternal
     Int iLast = TILESIZE * (iTile+1) - 1;
     return(iLast < front->fm && jLast < front->fn);
 }
-
-template bool BucketList<int32_t>::IsInternal
-(
-    LLBundle <int32_t>& Bundle,
-    int jLast
-) ;
-template bool BucketList<int64_t>::IsInternal
-(
-    LLBundle <int64_t>& Bundle,
-    int jLast
-) ;

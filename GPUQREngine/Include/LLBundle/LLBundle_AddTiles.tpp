@@ -13,9 +13,6 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_BucketList.hpp"
-
-
 #ifdef GPUQRENGINE_PIPELINING
 template <typename Int>
 void LLBundle <Int>::AddTileToDelta
@@ -63,15 +60,6 @@ void LLBundle <Int>::AddTileToDelta
     /* Keep track of SecondMin. */
     SecondMin = (SecondMin == EMPTY ? Delta : MIN(SecondMin, Delta));
 }
-
-template void LLBundle <int32_t>::AddTileToDelta
-(
-    int32_t rowTile
-) ;
-template void LLBundle <int64_t>::AddTileToDelta
-(
-    int64_t rowTile
-) ;
 
 #endif
 
@@ -128,11 +116,3 @@ void LLBundle <Int>::AddTileToSlots
     /* Update last, if needed. */
     if (next[Last] != EMPTY) Last = next[Last];
 }
-template void LLBundle <int32_t>::AddTileToSlots
-(
-    int32_t rowTile
-) ;
-template void LLBundle <int64_t>::AddTileToSlots
-(
-    int64_t rowTile
-) ;

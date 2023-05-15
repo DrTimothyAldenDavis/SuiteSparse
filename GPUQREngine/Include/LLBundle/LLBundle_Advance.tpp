@@ -19,9 +19,6 @@
 // front in it to begin with.
 //
 // =============================================================================
-
-#include "GPUQREngine_BucketList.hpp"
-
 template <typename Int>
 bool LLBundle <Int>::Advance
 (
@@ -84,12 +81,3 @@ bool LLBundle <Int>::Advance
 
     return stillAround;
 }
-
-template bool LLBundle <int32_t>::Advance
-(
-    void
-) ;
-template bool LLBundle <int64_t>::Advance
-(
-    void
-) ;

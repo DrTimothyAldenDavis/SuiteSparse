@@ -171,5 +171,14 @@ public:
         Int *queueIndex         // The current index into the queue
     );
 };
+#include "BucketList/BucketList_AdvanceBundles.tpp"
+#include "BucketList/BucketList_CreateBundles.tpp"
+#include "BucketList/BucketList_FillWorkQueue.tpp"
+#ifdef GPUQRENGINE_PIPELINING
+#include "BucketList/BucketList_GrowBundles.tpp"
+#endif
+#include "BucketList/BucketList_Manage.tpp"
+#include "BucketList/BucketList_PostProcessing.tpp"
+#include "BucketList/BucketList.tpp"
 
 #endif

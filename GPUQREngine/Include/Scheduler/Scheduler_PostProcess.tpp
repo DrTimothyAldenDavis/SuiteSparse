@@ -64,8 +64,6 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_Scheduler.hpp"
-
 template <typename Int>
 bool Scheduler <Int>::postProcess
 (
@@ -245,12 +243,3 @@ bool Scheduler <Int>::postProcess
     /* Return whether all the fronts are DONE. */
     return (numFronts == numFrontsCompleted);
 }
-
-template bool Scheduler <int32_t>::postProcess
-(
-    void
-) ;
-template bool Scheduler <int64_t>::postProcess
-(
-    void
-) ;

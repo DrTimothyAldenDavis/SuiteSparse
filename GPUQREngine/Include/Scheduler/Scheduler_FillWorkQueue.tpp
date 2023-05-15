@@ -69,15 +69,12 @@
 //     When all fronts are in the DONE state then the QREngine's work is done.
 //
 // =============================================================================
-
-#include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_GraphVizHelper.hpp"
 
 
 // -----------------------------------------------------------------------------
 // prototypes for local functions
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 TaskDescriptor buildSAssemblyTask
 (
@@ -105,7 +102,6 @@ TaskDescriptor buildSmallQRTask
 // -----------------------------------------------------------------------------
 // Scheduler::fillWorkQueue
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 void Scheduler <Int>::fillWorkQueue
 (
@@ -175,14 +171,6 @@ void Scheduler <Int>::fillWorkQueue
 #endif
 }
 
-template void Scheduler <int32_t>::fillWorkQueue
-(
-    void
-) ;
-template void Scheduler <int64_t>::fillWorkQueue
-(
-    void
-) ;
 // -----------------------------------------------------------------------------
 // Scheduler::fillTasks
 // -----------------------------------------------------------------------------
@@ -401,24 +389,9 @@ void Scheduler <Int>::fillTasks
     /* Copy-out the indexes. */
     *queueIndex = qindex;
 }
-
-template void Scheduler <int32_t>::fillTasks
-(
-    int32_t f,                      // INPUT: Current front
-    TaskDescriptor *queue,      // INPUT: CPU Task entries
-    int32_t *queueIndex             // IN/OUT: The index of the current entry
-) ;
-template void Scheduler <int64_t>::fillTasks
-(
-    int64_t f,                      // INPUT: Current front
-    TaskDescriptor *queue,      // INPUT: CPU Task entries
-    int64_t *queueIndex             // IN/OUT: The index of the current entry
-) ;
-
 // -----------------------------------------------------------------------------
 // buildSAssemblyTask
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 TaskDescriptor buildSAssemblyTask
 (
@@ -441,22 +414,9 @@ TaskDescriptor buildSAssemblyTask
     return returner;
 }
 
-template TaskDescriptor buildSAssemblyTask
-(
-    Front <int32_t> *front,
-    int pstart,
-    int pend
-) ;
-template TaskDescriptor buildSAssemblyTask
-(
-    Front <int64_t> *front,
-    int pstart,
-    int pend
-) ;
 // -----------------------------------------------------------------------------
 // buildPackAssemblyTask
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 TaskDescriptor buildPackAssemblyTask
 (
@@ -490,26 +450,9 @@ TaskDescriptor buildPackAssemblyTask
     return returner;
 }
 
-template TaskDescriptor buildPackAssemblyTask
-(
-    Front <int32_t> *front,
-    int cistart,
-    int ciend,
-    int cjstart,
-    int cjend
-) ;
-template TaskDescriptor buildPackAssemblyTask
-(
-    Front <int64_t> *front,
-    int cistart,
-    int ciend,
-    int cjstart,
-    int cjend
-) ;
 // -----------------------------------------------------------------------------
 // buildSmallQRTask
 // -----------------------------------------------------------------------------
-
 template <typename Int>
 TaskDescriptor buildSmallQRTask
 (
@@ -523,12 +466,3 @@ TaskDescriptor buildSmallQRTask
     returner.fn = (int) front->fn;
     return returner;
 }
-
-template TaskDescriptor buildSmallQRTask
-(
-    Front <int32_t> *front
-) ;
-template TaskDescriptor buildSmallQRTask
-(
-    Front <int64_t> *front
-) ;

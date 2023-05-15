@@ -12,10 +12,6 @@
 // including merging delta tiles with the main bundle and other fixups.
 //
 // =============================================================================
-
-#include "GPUQREngine_BucketList.hpp"
-
-
 template <typename Int>
 void BucketList<Int>::PostProcess
 (
@@ -49,12 +45,3 @@ void BucketList<Int>::PostProcess
         }
     }
 }
-
-template void BucketList<int32_t>::PostProcess
-(
-    void
-) ;
-template void BucketList<int64_t>::PostProcess
-(
-    void
-) ;

@@ -77,14 +77,36 @@ public:
     TaskType CurrentTask;
 
     void *operator new(long unsigned int, LLBundle <Int>* p){ return p; }
-    LLBundle(BucketList <Int> *buckets, Int panelSize, Int nativeBucket);
-
-    // empty LLBundle constructor (currently used, kept for possible future use
-    // LLBundle();
-
+    //------------------------------------------------------------------------------
+    //
+    // This file contains the constructor and destructor for the LLBundle class.
+    // The constructor will attempt to reserve a VT tile automatically, since newly
+    // created bundles are immediately slated for factorization.
+    //
+    // =============================================================================
+    LLBundle
+    (
+        BucketList <Int> *buckets,
+        Int panelSize,
+        Int nativeBucket
+    )
+    {
+        Buckets = buckets;
+        PanelSize = panelSize;
+        NativeBucket = nativeBucket;
+        SecondMin = Shadow = First = Delta = Max = EMPTY;
+        Count = ApplyCount = 0;
+        VT[0] = VT[1] = NULL;
+    
+        /* Create the factorize task and allocate a VT block. */
+        CurrentTask = TASKTYPE_GenericFactorize;
+        VT[0] = buckets->allocateVT();
+    }
     // LLBundle destructor:
-    ~LLBundle();
-
+    ~LLBundle()
+    {
+    }
+    
     #ifdef GPUQRENGINE_PIPELINING
     void AddTileToDelta(Int rowTile);
     #endif
@@ -95,10 +117,17 @@ public:
     bool Advance();
 
     void PipelinedRearrange();
+
     void UpdateSecondMinIndex();
     void UpdateMax();
+    
 
     void gpuPack(TaskDescriptor *cpuTask);
 };
 
+#include "LLBundle/LLBundle_AddTiles.tpp"
+#include "LLBundle/LLBundle_Advance.tpp"
+#include "LLBundle/LLBundle_PipelinedRearrange.tpp"
+#include "LLBundle/LLBundle_UpdateSecondMinIndex.tpp"
+#include "LLBundle/LLBundle_GPUPack.tpp"
 #endif
