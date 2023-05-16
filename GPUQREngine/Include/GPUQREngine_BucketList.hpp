@@ -24,6 +24,9 @@
 #include "GPUQREngine_TaskDescriptor.hpp"
 #include "GPUQREngine_LLBundle.hpp"
 #include "GPUQREngine_Front.hpp"
+#include "SuiteSparseGPU_internal.hpp"
+
+
 
 struct TaskDescriptor;
 template <typename Int>

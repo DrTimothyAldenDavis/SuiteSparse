@@ -26,7 +26,7 @@
 //
 // =============================================================================
 
-#include "../GPUQREngine_Internal.hpp"
+#include "GPUQREngine_Internal.hpp"
 
 #ifdef GPUQRENGINE_RENDER
 

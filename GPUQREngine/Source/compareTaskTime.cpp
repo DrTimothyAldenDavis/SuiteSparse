@@ -1,3 +1,4 @@
+#ifdef SUITESPARSE_CUDA
 #include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
 
@@ -11,3 +12,4 @@ int compareTaskTime (const void * a, const void * b)
 
     return bFlops - aFlops;
 }
+#endif

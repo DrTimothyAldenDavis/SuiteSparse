@@ -97,7 +97,7 @@ Scheduler <Int>::Scheduler
     if(!afPerm || !afPinv || !bucketLists || !FrontDataPulled
        || !eventFrontDataReady || !eventFrontDataPulled)
     {
-         ;
+        FREE_EVERYTHING_SCHEDULER ;
         memory_ok = false;
         return;
     }
@@ -110,7 +110,7 @@ Scheduler <Int>::Scheduler
        If this fails, we have either cuda_ok = false or memory_ok = false. */
     if(!initialize(gpuMemorySize))
     {
-        ;
+        FREE_EVERYTHING_SCHEDULER ;
         // If cuda_ok is still true then we ran out of memory.
         // Else we had enough memory but failed the cuda calls.
         if(cuda_ok) memory_ok = false;
