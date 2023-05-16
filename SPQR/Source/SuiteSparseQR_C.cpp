@@ -63,7 +63,7 @@ int64_t SuiteSparseQR_C             // returns rank(A) estimate, (-1) if failure
             Bdense, Zsparse, Zdense, R, E, H, HPinv, HTau, cc)) ;
 }
 
-int32_t SuiteSparseQR_int_C    // returns rank(A) estimate, (-1) if failure
+int32_t SuiteSparseQR_i_C    // returns rank(A) estimate, (-1) if failure
 (
     // inputs:
     int ordering,           // all, except 3:given treated as 0:fixed
@@ -124,7 +124,7 @@ int64_t SuiteSparseQR_C_QR          // returns rank(A) estimate, (-1) if failure
         SuiteSparseQR <Complex> (ordering, tol, econ, A, Q, R, E, cc)) ;
 }
 
-int32_t SuiteSparseQR_int_C_QR          // returns rank(A) estimate, (-1) if failure
+int32_t SuiteSparseQR_i_C_QR          // returns rank(A) estimate, (-1) if failure
 (
     // inputs:
     int ordering,           // all, except 3:given treated as 0:fixed
