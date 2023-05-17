@@ -341,7 +341,7 @@ extern template int spqr_1fixed <Complex, int64_t>
 
     int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    int32_t **p_P1inv,         // size m, singleton row inverse permutation.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 
@@ -394,7 +394,7 @@ extern template int spqr_1fixed <double, int64_t>
 
     int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
                             // row of R1.  NULL if n1cols == 0.
-    int32_t **p_P1inv,         // size m, singleton row inverse permutation.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
                             // If row i of A is the kth singleton row, then
                             // P1inv [i] = k.  NULL if n1cols is zero.
 

@@ -41,6 +41,225 @@
 
 #include "spqr.hpp"
 
+template SuiteSparseQR_factorization <Complex, int32_t> *spqr_1factor <Complex, int32_t>
+(
+    // inputs, not modified
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // only accept singletons above tol.  If tol <= -2,
+                            // then use the default tolerance
+    int32_t bncols,            // number of columns of B
+    int keepH,              // if TRUE, keep the Householder vectors
+    cholmod_sparse *A,      // m-by-n sparse matrix
+    int32_t ldb,               // if dense, the leading dimension of B
+    int32_t *Bp,               // size bncols+1, column pointers of B
+    int32_t *Bi,               // size bnz = Bp [bncols], row indices of B
+    Complex *Bx,              // size bnz, numerical values of B
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+
+template SuiteSparseQR_factorization <double, int32_t> *spqr_1factor <double, int32_t>
+(
+    // inputs, not modified
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // only accept singletons above tol.  If tol <= -2,
+                            // then use the default tolerance
+    int32_t bncols,            // number of columns of B
+    int keepH,              // if TRUE, keep the Householder vectors
+    cholmod_sparse *A,      // m-by-n sparse matrix
+    int32_t ldb,               // if dense, the leading dimension of B
+    int32_t *Bp,               // size bncols+1, column pointers of B
+    int32_t *Bi,               // size bnz = Bp [bncols], row indices of B
+    double *Bx,              // size bnz, numerical values of B
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template SuiteSparseQR_factorization <Complex, int64_t> *spqr_1factor <Complex, int64_t>
+(
+    // inputs, not modified
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // only accept singletons above tol.  If tol <= -2,
+                            // then use the default tolerance
+    int64_t bncols,            // number of columns of B
+    int keepH,              // if TRUE, keep the Householder vectors
+    cholmod_sparse *A,      // m-by-n sparse matrix
+    int64_t ldb,               // if dense, the leading dimension of B
+    int64_t *Bp,               // size bncols+1, column pointers of B
+    int64_t *Bi,               // size bnz = Bp [bncols], row indices of B
+    Complex *Bx,              // size bnz, numerical values of B
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template int spqr_1fixed <Complex, int32_t>
+(
+    // inputs, not modified
+    double tol,             // only accept singletons above tol
+    int32_t bncols,            // number of columns of B
+    cholmod_sparse *A,      // m-by-n sparse matrix
+
+    // output arrays, neither allocated nor defined on input.
+
+    int32_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+                            // row of R1.  NULL if n1cols == 0.
+    int32_t **p_P1inv,         // size m, singleton row inverse permutation.
+                            // If row i of A is the kth singleton row, then
+                            // P1inv [i] = k.  NULL if n1cols is zero.
+
+    cholmod_sparse **p_Y,   // on output, only the first n-n1cols+1 entries of
+                            // Y->p are defined (if Y is not NULL), where
+                            // Y = [A B] or Y = [A2 B2].  If B is empty and
+                            // there are no column singletons, Y is NULL
+
+    int32_t *p_n1cols,         // number of column singletons found
+    int32_t *p_n1rows,         // number of corresponding rows found
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template int spqr_1fixed <Complex, int64_t>
+(
+    // inputs, not modified
+    double tol,             // only accept singletons above tol
+    int64_t bncols,            // number of columns of B
+    cholmod_sparse *A,      // m-by-n sparse matrix
+
+    // output arrays, neither allocated nor defined on input.
+
+    int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+                            // row of R1.  NULL if n1cols == 0.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
+                            // If row i of A is the kth singleton row, then
+                            // P1inv [i] = k.  NULL if n1cols is zero.
+
+    cholmod_sparse **p_Y,   // on output, only the first n-n1cols+1 entries of
+                            // Y->p are defined (if Y is not NULL), where
+                            // Y = [A B] or Y = [A2 B2].  If B is empty and
+                            // there are no column singletons, Y is NULL
+
+    int64_t *p_n1cols,         // number of column singletons found
+    int64_t *p_n1rows,         // number of corresponding rows found
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template int spqr_1fixed <double, int32_t>
+(
+    // inputs, not modified
+    double tol,             // only accept singletons above tol
+    int32_t bncols,            // number of columns of B
+    cholmod_sparse *A,      // m-by-n sparse matrix
+
+    // output arrays, neither allocated nor defined on input.
+
+    int32_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+                            // row of R1.  NULL if n1cols == 0.
+    int32_t **p_P1inv,         // size m, singleton row inverse permutation.
+                            // If row i of A is the kth singleton row, then
+                            // P1inv [i] = k.  NULL if n1cols is zero.
+
+    cholmod_sparse **p_Y,   // on output, only the first n-n1cols+1 entries of
+                            // Y->p are defined (if Y is not NULL), where
+                            // Y = [A B] or Y = [A2 B2].  If B is empty and
+                            // there are no column singletons, Y is NULL
+
+    int32_t *p_n1cols,         // number of column singletons found
+    int32_t *p_n1rows,         // number of corresponding rows found
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template int spqr_1fixed <double, int64_t>
+(
+    // inputs, not modified
+    double tol,             // only accept singletons above tol
+    int64_t bncols,            // number of columns of B
+    cholmod_sparse *A,      // m-by-n sparse matrix
+
+    // output arrays, neither allocated nor defined on input.
+
+    int64_t **p_R1p,           // size n1rows+1, R1p [k] = # of nonzeros in kth
+                            // row of R1.  NULL if n1cols == 0.
+    int64_t **p_P1inv,         // size m, singleton row inverse permutation.
+                            // If row i of A is the kth singleton row, then
+                            // P1inv [i] = k.  NULL if n1cols is zero.
+
+    cholmod_sparse **p_Y,   // on output, only the first n-n1cols+1 entries of
+                            // Y->p are defined (if Y is not NULL), where
+                            // Y = [A B] or Y = [A2 B2].  If B is empty and
+                            // there are no column singletons, Y is NULL
+
+    int64_t *p_n1cols,         // number of column singletons found
+    int64_t *p_n1rows,         // number of corresponding rows found
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template SuiteSparseQR_factorization <double, int64_t> *spqr_1factor <double, int64_t>
+(
+    // inputs, not modified
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // only accept singletons above tol.  If tol <= -2,
+                            // then use the default tolerance
+    int64_t bncols,            // number of columns of B
+    int keepH,              // if TRUE, keep the Householder vectors
+    cholmod_sparse *A,      // m-by-n sparse matrix
+    int64_t ldb,               // if dense, the leading dimension of B
+    int64_t *Bp,               // size bncols+1, column pointers of B
+    int64_t *Bi,               // size bnz = Bp [bncols], row indices of B
+    double *Bx,              // size bnz, numerical values of B
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template spqr_symbolic <int32_t> *spqr_analyze <int32_t>
+(
+    // inputs, not modified
+    cholmod_sparse *A,
+    int ordering,           // all options available
+    int32_t *Quser,            // user provided ordering, if given (may be NULL)
+
+    int do_rank_detection,  // if TRUE, then rank deficient matrices may be
+                            // considered during numerical factorization,
+    // with tol >= 0 (tol < 0 is also allowed).  If FALSE, then the tol
+    // parameter is ignored by the numerical factorization, and no rank
+    // detection is performed.  Ignored when using GPU acceleration
+    // (no rank detection is performed in that case).
+
+    int keepH,              // if TRUE, keep the Householder vectors
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
+template spqr_symbolic <int64_t> *spqr_analyze <int64_t>
+(
+    // inputs, not modified
+    cholmod_sparse *A,
+    int ordering,           // all options available
+    int64_t *Quser,            // user provided ordering, if given (may be NULL)
+
+    int do_rank_detection,  // if TRUE, then rank deficient matrices may be
+                            // considered during numerical factorization,
+    // with tol >= 0 (tol < 0 is also allowed).  If FALSE, then the tol
+    // parameter is ignored by the numerical factorization, and no rank
+    // detection is performed.  Ignored when using GPU acceleration
+    // (no rank detection is performed in that case).
+
+    int keepH,              // if TRUE, keep the Householder vectors
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+
 template int32_t SuiteSparseQR <double, int32_t>
 (
     // inputs, not modified

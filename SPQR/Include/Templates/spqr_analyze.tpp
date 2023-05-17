@@ -1824,7 +1824,7 @@ extern template spqr_symbolic <int64_t> *spqr_analyze <int64_t>
     // inputs, not modified
     cholmod_sparse *A,
     int ordering,           // all options available
-    int32_t *Quser,            // user provided ordering, if given (may be NULL)
+    int64_t *Quser,            // user provided ordering, if given (may be NULL)
 
     int do_rank_detection,  // if TRUE, then rank deficient matrices may be
                             // considered during numerical factorization,
