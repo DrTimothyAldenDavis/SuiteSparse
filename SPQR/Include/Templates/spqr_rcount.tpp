@@ -10,7 +10,7 @@
 // Count the number of explicit nonzeros in each column of R.  Exact zero
 // entries are excluded.
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_rcount
 (

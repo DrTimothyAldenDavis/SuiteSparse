@@ -11,8 +11,6 @@
 // needed.  The column pointer array is not modified; it must be large enough
 // to accomodate the new column.
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> int spqr_append       // TRUE/FALSE if OK or not
 (
     // inputs, not modified
@@ -133,6 +131,3 @@ template <typename Entry, typename Int> int spqr_append       // TRUE/FALSE if O
     Ap [n] = nz ;
     return (TRUE) ;
 }
-
-
-// =============================================================================

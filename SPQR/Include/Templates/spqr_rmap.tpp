@@ -31,7 +31,7 @@
 // is 5, and thus columns 2 and 4 (with Rmap [2] = 5 and Rmap [4] = 6) are both
 // dead.
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> int spqr_rmap
 (

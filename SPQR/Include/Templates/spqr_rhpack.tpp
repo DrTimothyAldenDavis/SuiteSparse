@@ -35,7 +35,7 @@
     to zero to denote a dead column.
 */
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> Int spqr_rhpack   // returns # of entries in R+H
 (

@@ -37,7 +37,7 @@
     end
 */
 
-#include "spqr.hpp"
+
 
 template <typename Int> inline void spqr_private_larft (char direct, char storev, Int n, Int k,
     double *V, Int ldv, double *Tau, double *T, Int ldt,

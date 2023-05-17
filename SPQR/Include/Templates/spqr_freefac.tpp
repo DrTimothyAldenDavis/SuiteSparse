@@ -9,8 +9,6 @@
 
 // Frees the contents of the QR factor object.
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> void spqr_freefac
 (
     SuiteSparseQR_factorization <Entry, Int> **QR_handle,

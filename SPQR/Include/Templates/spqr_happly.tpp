@@ -27,7 +27,7 @@
 //  This function does not apply the row permutation vector (the Q.P part of
 //  the Q struct in the MATLAB interface).
 
-#include "spqr.hpp"
+
 
 // =============================================================================
 // === spqr_private_do_panel ===================================================

@@ -9,7 +9,7 @@
 
 // Given an m-by-n sparse matrix A, compute the max 2-norm of its columns.
 
-#include "spqr.hpp"
+
 
 template <typename Int> inline double spqr_private_nrm2 (Int n, double *X, cholmod_common *cc)
 {

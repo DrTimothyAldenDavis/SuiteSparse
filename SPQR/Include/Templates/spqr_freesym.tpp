@@ -9,8 +9,6 @@
 
 // Frees the contents of the QR Symbolic object
 
-#include "spqr.hpp"
-
 template <typename Int> void spqr_freesym
 (
     spqr_symbolic <Int> **QRsym_handle,

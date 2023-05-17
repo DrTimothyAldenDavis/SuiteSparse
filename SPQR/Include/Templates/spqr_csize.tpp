@@ -7,8 +7,6 @@
 
 //------------------------------------------------------------------------------
 
-#include "spqr.hpp"
-
 template <typename Int> Int spqr_csize     // returns # of entries in C of a child
 (
     // input, not modified

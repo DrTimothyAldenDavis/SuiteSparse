@@ -9,7 +9,7 @@
 
 // Factorize all the fronts in a single task
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_kernel // _worker
 (

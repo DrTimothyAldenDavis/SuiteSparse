@@ -179,6 +179,6 @@ public:
 #include "Scheduler/Scheduler_TransferData.tpp"
 #include "Scheduler/Scheduler.tpp"
 
-template class Scheduler<int32_t>;
-template class Scheduler<int64_t>;
+extern template class Scheduler<int32_t>;
+extern template class Scheduler<int64_t>;
 #endif

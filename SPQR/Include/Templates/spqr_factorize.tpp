@@ -35,8 +35,6 @@
 // === macros ==================================================================
 // =============================================================================
 
-#include "spqr.hpp"
-
 #define FCHUNK 32        // FUTURE: make a parameter; Householder block size
 
 // Free Sx, A, and all of Work except the Work [0:ns-1] array itself
@@ -746,6 +744,3 @@ template <typename Entry, typename Int> spqr_numeric <Entry, Int> *spqr_factoriz
     QRnum->rank1 = rank1 ;
     return (QRnum) ;
 }
-
-
-// =============================================================================

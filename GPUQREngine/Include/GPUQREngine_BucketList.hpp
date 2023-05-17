@@ -184,4 +184,7 @@ public:
 #include "BucketList/BucketList_PostProcessing.tpp"
 #include "BucketList/BucketList.tpp"
 
+extern template class BucketList<int32_t>;
+extern template class BucketList<int64_t>;
+
 #endif

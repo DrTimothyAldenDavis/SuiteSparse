@@ -9,7 +9,7 @@
 
 // Return the default column 2-norm tolerance
 
-#include "spqr.hpp"
+
 #include <limits>
 #include <algorithm>
 

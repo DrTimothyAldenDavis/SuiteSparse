@@ -33,7 +33,7 @@
 //  triangular with implicit unit diagonal (the unit need not be actually
 //  present).
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_panel
 (

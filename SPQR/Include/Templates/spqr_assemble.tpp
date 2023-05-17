@@ -227,8 +227,6 @@
     last column will always be fm.
  */
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> void spqr_assemble
 (
     /* inputs, not modified */

@@ -7,8 +7,6 @@
 
 //------------------------------------------------------------------------------
 
-#include "spqr.hpp"
-
 //  Overwrite a vector of length n with its cumulative sum of length n+1.
 //  On input, X [0:n-1] contains the counts.  On output, X [k] is replaced with
 //  the sum of the input counts X [0:k-1].  No work is done if n < 0 or if

@@ -109,7 +109,7 @@
     memory and passes NULL pointers, this function will segfault.
 */
 
-#include "spqr.hpp"
+
 
 #define SMALL 5000
 #define MINCHUNK 4

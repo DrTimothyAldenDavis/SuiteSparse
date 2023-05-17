@@ -7,8 +7,6 @@
 
 //------------------------------------------------------------------------------
 
-#include "spqr.hpp"
-
 template <typename Int> Int spqr_fcsize    // returns # of entries in C of current front F
 (
     // input, not modified

@@ -85,8 +85,6 @@
     that the rows of Y are permuted according to the singleton rows.
 */
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int> *spqr_1factor
 (
     // inputs, not modified
@@ -757,3 +755,21 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
 
 
 // =============================================================================
+
+extern template SuiteSparseQR_factorization <Complex, int32_t> *spqr_1factor <Complex, int32_t>
+(
+    // inputs, not modified
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // only accept singletons above tol.  If tol <= -2,
+                            // then use the default tolerance
+    Int bncols,            // number of columns of B
+    int keepH,              // if TRUE, keep the Householder vectors
+    cholmod_sparse *A,      // m-by-n sparse matrix
+    Int ldb,               // if dense, the leading dimension of B
+    Int *Bp,               // size bncols+1, column pointers of B
+    Int *Bi,               // size bnz = Bp [bncols], row indices of B
+    Entry *Bx,              // size bnz, numerical values of B
+
+    // workspace and parameters
+    cholmod_common *cc
+)

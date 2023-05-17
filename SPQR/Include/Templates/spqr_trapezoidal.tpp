@@ -15,7 +15,7 @@
 // and upper triangular (or upper trapezoidal), with nnz (diag (T1)) == rank.
 // On input, the row indices of the matrix R must be sorted.
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> Int spqr_trapezoidal // rank of R; EMPTY on failure
 (

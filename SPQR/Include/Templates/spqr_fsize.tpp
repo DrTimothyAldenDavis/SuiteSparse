@@ -10,7 +10,7 @@
 // Compute the number of rows in front F, initialize its staircase, and 
 // create its Fmap
 
-#include "spqr.hpp"
+
 
 template <typename Int> Int spqr_fsize     // returns # of rows of F
 (

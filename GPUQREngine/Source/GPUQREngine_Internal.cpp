@@ -25,6 +25,9 @@ template class BucketList<int64_t>;
 template class LLBundle<int32_t>;
 template class LLBundle<int64_t>;
 
+template class Scheduler<int32_t>;
+template class Scheduler<int64_t>;
+
 template <typename Int>
 QREngineResultCode GPUQREngine_Internal
 (

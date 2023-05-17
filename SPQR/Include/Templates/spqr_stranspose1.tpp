@@ -18,7 +18,7 @@
 // The time taken by this function is O(nnz(A)+m+n).  In practice, it takes
 // slightly more time than computing the transpose, S=A'.
 
-#include "spqr.hpp"
+
 
 template <typename Int> void spqr_stranspose1
 (

@@ -34,8 +34,6 @@
 //      . . . . . .
 //      . . . . . .
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> Int spqr_cpack     // returns # of rows in C
 (
     // input, not modified

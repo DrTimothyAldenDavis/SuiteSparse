@@ -9,8 +9,6 @@
 
 // Frees the contents of the QR Numeric object
 
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> void spqr_freenum
 (
     spqr_numeric <Entry, Int> **QRnum_handle,

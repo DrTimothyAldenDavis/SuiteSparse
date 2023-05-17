@@ -130,4 +130,7 @@ public:
 #include "LLBundle/LLBundle_PipelinedRearrange.tpp"
 #include "LLBundle/LLBundle_UpdateSecondMinIndex.tpp"
 #include "LLBundle/LLBundle_GPUPack.tpp"
+
+extern template class LLBundle<int32_t>;
+extern template class LLBundle<int64_t>;
 #endif

@@ -11,7 +11,7 @@
 // must be done sequentially, after all threads have finished factorizing the
 // matrix and finding all the dead columns.  Also determines QRnum->maxfm.
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_hpinv
 (

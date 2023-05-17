@@ -17,9 +17,6 @@
 //  but no values.  Y has n-n1cols+bncols columns, and m-n1rows rows.  B is
 //  empty and no singletons are found, Y is NULL.
 
-
-#include "spqr.hpp"
-
 template <typename Entry, typename Int> int spqr_1colamd  // TRUE if OK, FALSE otherwise
 (
     // inputs, not modified

@@ -9,7 +9,7 @@
 
 // Determines the workspace workspace needed by spqr-happly
 
-#include "spqr.hpp"
+
 
 template <typename Int> int spqr_happly_work
 (

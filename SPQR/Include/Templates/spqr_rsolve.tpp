@@ -59,7 +59,7 @@
     Note that in all cases, the number of rows of R22 is given by QRnum->rank1.
 */
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_rsolve
 (

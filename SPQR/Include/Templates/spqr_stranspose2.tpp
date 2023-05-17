@@ -9,7 +9,7 @@
 
 // Construct the numerical values of S = A (p,q) in compressed-row form
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_stranspose2
 (

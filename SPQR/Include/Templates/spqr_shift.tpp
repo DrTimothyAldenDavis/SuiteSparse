@@ -10,7 +10,7 @@
 // Insert a zero as the first entry in a vector, shifting all the other entries
 // down by one position.  Does nothing if X is NULL.
 
-#include "spqr.hpp"
+
 
 template <typename Int> void spqr_shift
 (

@@ -12,7 +12,7 @@
 // of R, and Rb is the last n-n2 columns of R.  The matrix Ra is not created
 // if any of its arrays (Rap, Rai, Rax) are NULL; likewise for Rb.
 
-#include "spqr.hpp"
+
 
 template <typename Entry, typename Int> void spqr_rconvert
 (
