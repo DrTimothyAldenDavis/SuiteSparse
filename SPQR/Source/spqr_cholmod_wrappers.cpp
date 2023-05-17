@@ -1,4 +1,4 @@
-#include "spqr_cholmod_wrappers.hpp"
+#include "spqr.hpp"
 template <> void *spqr_malloc <int64_t> (size_t n, size_t size, cholmod_common *Common)
 {
     return cholmod_l_malloc (n, size, Common) ;

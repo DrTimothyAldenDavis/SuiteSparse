@@ -181,5 +181,4 @@ public:
 
 template class Scheduler<int32_t>;
 template class Scheduler<int64_t>;
-#include "Scheduler/Scheduler_Front.hpp"
 #endif
