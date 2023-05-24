@@ -26,12 +26,13 @@
 #ifndef _CXS_H
 #define _CXS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
 #if 1
 #include <complex.h>
-#define cs_complex_t double complex
+#define cs_complex_t double _Complex
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #define CS_VER 4  /* CXSparse Version */
