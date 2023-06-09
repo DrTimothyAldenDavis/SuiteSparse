@@ -369,6 +369,11 @@ typedef enum
 }
 GrB_Mode ;
 
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
+
 GrB_Info GrB_init           // start up GraphBLAS
 (
     GrB_Mode mode           // blocking or non-blocking mode, no GPU
@@ -397,6 +402,10 @@ GrB_Info GrB_getVersion         // runtime access to C API version number
     unsigned int *version,      // returns GRB_VERSION
     unsigned int *subversion    // returns GRB_SUBVERSION
 ) ;
+
+#if defined ( __cplusplus )
+}
+#endif
 
 //==============================================================================
 // GrB_Descriptor: the GraphBLAS descriptor
@@ -752,6 +761,11 @@ GB_GLOBAL GrB_Type
 
 #undef GrB_Type_new
 #undef GrM_Type_new
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
 
 GrB_Info GRB (Type_new)         // create a new GraphBLAS type
 (
@@ -12067,6 +12081,10 @@ GxB_FC64_t GxB_Iterator_get_FC64   (GxB_Iterator iterator) ;
 void       GxB_Iterator_get_UDT    (GxB_Iterator iterator,
                                               void *value) ;
 
+#if defined ( __cplusplus )
+}
+#endif
+
 #define GB_Iterator_get(iterator, type)                                     \
 (                                                                           \
     (((type *) (iterator)->Ax) [(iterator)->iso ? 0 : (iterator)->p])       \
@@ -12146,4 +12164,3 @@ void  rmm_wrap_free (void *p) ;
 #endif
 
 #endif
-
