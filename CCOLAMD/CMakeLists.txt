@@ -99,14 +99,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( ccolamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( ccolamd PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( ccolamd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( ccolamd PUBLIC m )
+    target_link_libraries ( ccolamd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( ccolamd_static PUBLIC m )
     endif ( )

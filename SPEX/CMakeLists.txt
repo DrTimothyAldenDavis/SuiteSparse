@@ -114,39 +114,39 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spex PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # AMD:
-target_link_libraries ( spex PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # COLAMD:
-target_link_libraries ( spex PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # MPFR:
-target_link_libraries ( spex PUBLIC ${MPFR_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${MPFR_STATIC} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
-target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${GMP_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spex PUBLIC m )
+    target_link_libraries ( spex PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( spex_static PUBLIC m )
     endif ( )

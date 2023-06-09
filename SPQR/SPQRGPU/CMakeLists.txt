@@ -80,12 +80,12 @@ target_include_directories ( spqr_cuda_static PUBLIC
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-target_link_libraries ( spqr_cuda ${CHOLMOD_LIBRARIES} )
-target_link_libraries ( spqr_cuda_static ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( spqr_cuda PRIVATE ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
 if ( SUITESPARSE_CUDA )
-    target_link_libraries ( spqr_cuda CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( spqr_cuda_static CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
 

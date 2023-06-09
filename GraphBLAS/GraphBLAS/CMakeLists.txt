@@ -226,12 +226,12 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( graphblas_matlab PUBLIC m )
+    target_link_libraries ( graphblas_matlab PRIVATE m )
 endif ( )
 
 include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )
-    target_link_libraries ( graphblas_matlab PUBLIC atomic )
+    target_link_libraries ( graphblas_matlab PRIVATE atomic )
 endif ( )
 
 #-------------------------------------------------------------------------------

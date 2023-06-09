@@ -100,14 +100,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( rbio PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( rbio PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( rbio_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( rbio PUBLIC m )
+    target_link_libraries ( rbio PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( rbio_static PUBLIC m )
     endif ( )
@@ -150,7 +150,7 @@ if ( DEMO )
     add_executable ( RBdemo "Demo/RBdemo.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( RBdemo PUBLIC rbio )
+    target_link_libraries ( RBdemo PUBLIC rbio ${SUITESPARSE_CONFIG_LIBRARIES} )
 
 else ( )
 

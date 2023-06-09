@@ -132,14 +132,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( cxsparse PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( cxsparse PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( cxsparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( cxsparse PUBLIC m )
+    target_link_libraries ( cxsparse PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( cxsparse_static PUBLIC m )
     endif ( )
@@ -225,6 +225,16 @@ if ( DEMO )
         target_link_libraries ( cs_cl_demo1 PUBLIC cxsparse )
         target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
         target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
+
+        if ( NOT WIN32 )
+            target_link_libraries ( cs_ci_demo1 PUBLIC m )
+            target_link_libraries ( cs_ci_demo2 PUBLIC m )
+            target_link_libraries ( cs_ci_demo3 PUBLIC m )
+
+            target_link_libraries ( cs_cl_demo1 PUBLIC m )
+            target_link_libraries ( cs_cl_demo2 PUBLIC m )
+            target_link_libraries ( cs_cl_demo3 PUBLIC m )
+        endif ( )
 
         target_link_libraries ( cs_idemo PUBLIC cxsparse )
         target_link_libraries ( cs_ldemo PUBLIC cxsparse )

@@ -118,7 +118,7 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( csparse PUBLIC m )
+    target_link_libraries ( csparse PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( csparse_static PUBLIC m )
     endif ( )
