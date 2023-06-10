@@ -12,10 +12,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Jan 17, 2023" )
+set ( MY_DATE "June 9, 2023 (FIXME: date)" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 2 )
-set ( MY_VERSION_PATCH 4 )
+set ( MY_VERSION_PATCH 5 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -58,27 +58,27 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
-find_package ( BTF 2.0.3 REQUIRED )
-find_package ( CAMD 3.0.3 REQUIRED )
-find_package ( CCOLAMD 3.0.3 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( CHOLMOD 4.0.3 REQUIRED )
-find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
-find_package ( CXSparse 4.0.3 REQUIRED )
-find_package ( GPUQREngine 2.0.3 REQUIRED )
-find_package ( GraphBLAS 7.4.1 REQUIRED )
-find_package ( KLU 2.0.3 REQUIRED )
-find_package ( KLU_CHOLMOD 2.0.3 REQUIRED )
-find_package ( LDL 3.0.3 REQUIRED )
-find_package ( Mongoose 3.0.4 REQUIRED )
-find_package ( RBio 3.0.3 REQUIRED )
-find_package ( SPEX 2.0.3 REQUIRED )
-find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
-find_package ( SPQR 3.0.3 REQUIRED )
-find_package ( SPQR_CUDA 3.0.3 REQUIRED )
-find_package ( UMFPACK 6.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
+find_package ( BTF 2.0.4 REQUIRED )
+find_package ( CAMD 3.0.4 REQUIRED )
+find_package ( CCOLAMD 3.0.4 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( CHOLMOD 4.0.4 REQUIRED )
+find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+find_package ( CXSparse 4.0.4 REQUIRED )
+find_package ( GPUQREngine 2.0.4 REQUIRED )
+find_package ( GraphBLAS 8.0.2 REQUIRED )
+find_package ( KLU 2.0.4 REQUIRED )
+find_package ( KLU_CHOLMOD 2.0.4 REQUIRED )
+find_package ( LDL 3.0.4 REQUIRED )
+find_package ( Mongoose 3.0.5 REQUIRED )
+find_package ( RBio 4.0.0 REQUIRED )
+find_package ( SPEX 2.0.4 REQUIRED )
+find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
+find_package ( SPQR 3.0.4 REQUIRED )
+find_package ( SPQR_CUDA 3.0.4 REQUIRED )
+find_package ( UMFPACK 6.1.1 REQUIRED )
 
 # look for all external libaries:
 find_package ( OpenMP REQUIRED )

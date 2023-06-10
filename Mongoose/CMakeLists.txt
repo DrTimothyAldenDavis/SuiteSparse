@@ -43,11 +43,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Jan 17, 2023")
-set(Mongoose_NUMERIC_DATE "2023-01-17")
+set(Mongoose_DATE "June 9, 2023 (FIXME:date)")
+set(Mongoose_NUMERIC_DATE "2023-06-09") # FIXME: date
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 4)
+set(Mongoose_VERSION_PATCH 5)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -73,7 +73,7 @@ configure_file (
         NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 

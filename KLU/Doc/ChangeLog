@@ -1,3 +1,7 @@
+June 9, 2023: version 2.0.4 (FIXME: date)
+
+    * cmake build system updates: update by Markus Meutzel
+
 Jan 17, 2023: version 2.0.3
 
     * SuiteSparse_config: now v7.0.0

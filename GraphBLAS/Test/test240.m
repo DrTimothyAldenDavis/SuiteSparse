@@ -1,7 +1,7 @@
 function test240
-%TEST240 test GrB_mxm: all built-in semirings
+%TEST240 test GrB_mxm: dot4, saxpy4, saxpy5
 
-% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+% SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 % SPDX-License-Identifier: Apache-2.0
 
 [binops, ~, add_ops, types, ~, ~] = GB_spec_opsall ;
@@ -49,7 +49,6 @@ for k = 1:32
     GB_spec_compare (C1, C2, 0, 1e-12) ;
 end
 
-GrB.burble (1) ;
 % test saxpy5: A iso bitmap, B sparse
 A.sparsity = 4 ;    % A is bitmap
 A.iso = true ;      % A is bitmap
@@ -64,6 +63,6 @@ for k = 1:32
     GB_spec_compare (C1, C2, 0, 1e-12) ;
 end
 
-GrB.burble (0) ;
+% GB_mex_burble (0) ;
 fprintf ('\ntest240: all tests passed\n') ;
 

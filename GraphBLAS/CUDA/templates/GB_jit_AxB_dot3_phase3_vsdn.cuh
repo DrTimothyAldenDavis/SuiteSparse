@@ -13,26 +13,28 @@
 //******************************************************************************
 
 #pragma once
-
 #include <limits>
 #include <cstdint>
 #include <stdio.h>
 #include "GB_cuda_kernel.h"
+#include "GB_mxm_shared_definitions.h"
 #include "GB_hash.h"
 #include "GB_hyper_hash_lookup.h"
-
 #include <cooperative_groups.h>
-
 #define tile_sz 32
-
 //#include "local_cub/block/block_reduce.cuh"
-
+#include <cub/block/block_reduce.cuh>
+#include "GB_cuda_dot3_defn.h"
 
 using namespace cooperative_groups;
 
-// TODO: Put this in a shared location
-template< typename T, int warpSize >
-__device__ T reduce_sum(thread_block_tile<warpSize> g, T val)
+//------------------------------------------------------------------------------
+// reduce_sum_int64
+//------------------------------------------------------------------------------
+
+// for counting zombies only (always int64_t)
+template< int warpSize >
+__device__ int64_t reduce_sum_int64(thread_block_tile<warpSize> g, int64_t val)
 {
     // Each iteration halves the number of active threads
     // Each thread adds its partial sum[i] to sum[lane+i]
@@ -43,6 +45,9 @@ __device__ T reduce_sum(thread_block_tile<warpSize> g, T val)
     return val; // note: only thread 0 will return full sum
 }
 
+//------------------------------------------------------------------------------
+// AxB_dot3_phase3_vsdn
+//------------------------------------------------------------------------------
 
 template<
     typename T_C, typename T_A, typename T_B,
@@ -135,11 +140,7 @@ __global__ void AxB_dot3_phase3_vsdn
         int64_t k = Ci[pair_id] >> 4;  // vector of C encoded in phase1
 
         // j = k or j = Mh [k] if C and M are hypersparse
-        #if GB_M_IS_HYPER
-        int64_t j = Mh [k] ;
-        #else
-        int64_t j = k ;
-        #endif
+        int64_t j = GBH_M (Mh, k) ;
 
         // Prep row offsets for both A and B
 
@@ -173,10 +174,7 @@ __global__ void AxB_dot3_phase3_vsdn
 
         GB_DECLAREA (aki) ;
         GB_DECLAREB (bkj) ;
-        #if !GB_C_ISO
-//      T_Z cij = GB_IDENTITY ;
-        GB_DECLARE_MONOID_IDENTITY (cij) ;
-        #endif
+        GB_DECLARE_IDENTITY (cij) ;         // GB_Z_TYPE cij = identity
         bool cij_exists = false ;
 
         int64_t my_nzombies = 0;
@@ -196,9 +194,9 @@ __global__ void AxB_dot3_phase3_vsdn
                 {
                     int64_t k = Bi [p] ;        // next row index of B(:,j)
                     // cij += A(k,i) * B(k,j)
-                    GB_GETA ( aki, Ax, pA+k ) ;           // aki = A(k,i)
-                    GB_GETB ( bkj, Bx, p ) ;              // bkj = B(k,j)
-                    GB_MULTADD ( cij, aki, bkj, i, k, j) ;        // cij += aki * bkj
+                    GB_GETA ( aki, Ax, pA+k, ) ;           // aki = A(k,i)
+                    GB_GETB ( bkj, Bx, p, ) ;              // bkj = B(k,j)
+                    GB_MULTADD ( cij, aki, bkj, i, k, j) ; // cij += aki * bkj
                     GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
@@ -235,9 +233,9 @@ __global__ void AxB_dot3_phase3_vsdn
                 {
                     int64_t k = Ai [p] ;        // next row index of A(:,i)
                     // cij += A(k,i) * B(k,j)
-                    GB_GETA ( aki, Ax, p ) ;              // aki = A(i,k)
-                    GB_GETB ( bkj, Bx, pB+k) ;            // bkj = B(j,k)
-                    GB_MULTADD ( cij, aki, bkj, i, k, j) ;         // cij += aik * bjk
+                    GB_GETA ( aki, Ax, p, ) ;              // aki = A(i,k)
+                    GB_GETB ( bkj, Bx, pB+k, ) ;           // bkj = B(j,k)
+                    GB_MULTADD ( cij, aki, bkj, i, k, j) ; // cij += aik * bjk
                     GB_DOT_TERMINAL (cij) ;     // break if cij == terminal
                 }
             }
@@ -265,8 +263,8 @@ __global__ void AxB_dot3_phase3_vsdn
         GB_CIJ_EXIST_POSTCHECK
         if (cij_exists)
         {
+            GB_PUTC (cij, Cx, pair_id) ;        // Cx [pair_id] = (T_C) cij
             Ci [pair_id] = i ;
-            GB_PUTC ( Cx [pair_id] = (T_C) cij ) ;
         }
         else
         {
@@ -277,13 +275,14 @@ __global__ void AxB_dot3_phase3_vsdn
         // FIXME: use the same method as vsvs for counting zombies
         // sum up the zombie count:
         thread_block_tile<tile_sz> tile = tiled_partition<tile_sz>( this_thread_block());
-        zc += reduce_sum<int,tile_sz>(tile, my_nzombies);
+        zc += reduce_sum_int64<tile_sz>(tile, my_nzombies);
     }
 
     if(threadIdx.x == 0 && zc > 0)
     {
         // this threadblock accumulates its zombie count into the global
         // zombie count
-        atomicAdd(&(C->nzombies), zc);
+        GB_cuda_atomic_add <int64_t>( &(C->nzombies), zc) ;
     }
 }
+

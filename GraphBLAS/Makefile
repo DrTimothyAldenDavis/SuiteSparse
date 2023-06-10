@@ -2,7 +2,7 @@
 # GraphBLAS/Makefile
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 #-------------------------------------------------------------------------------
@@ -46,6 +46,14 @@ cuda:
 debug:
 	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
 
+# compile without FactoryKernels
+compact:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCOMPACT=1 .. && cmake --build . -j$(JOBS) )
+
+# compile with -g, and without FactoryKernels
+cdebug:
+	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DCOMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
+
 # build the dynamic library and the demos
 all:
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j$(JOBS) )
@@ -53,6 +61,14 @@ all:
 # run the demos
 demos: all
 	( cd Demo && ./demo )
+
+# diff the demo output
+demodiffs: demos
+	echo "Comparing demo output:"
+	- diff -w Demo/Output/simple_demo.out       Demo/simple_demo.out
+	- diff -w Demo/Output/complex_demo_out.m    Demo/complex_demo_out.m
+	- diff -w Demo/Output/wildtype_demo.out     Demo/wildtype_demo.out
+	- diff -w Demo/Output/gauss_demo.out        Demo/gauss_demo.out
 
 # just do 'make' in build; do not rerun the cmake script
 remake:
@@ -62,9 +78,9 @@ remake:
 setup:
 	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
-# build both the static and dynamic libraries; do not run the demo
+# build the static library
 static:
-	( cd build && cmake $(CMAKE_OPTIONS) -DBUILD_GRB_STATIC_LIBRARY=1 .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DNSTATIC=0 .. && cmake --build . -j$(JOBS) )
 
 # installs GraphBLAS to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
@@ -92,9 +108,9 @@ distclean:
 	- rm -rf build/* Demo/*.out Demo/complex_demo_out*.m Tcov/log.txt
 	- rm -rf Config/*.tmp Source/control.m4
 	- rm -rf Doc/html/* Doc/*.tmp
+	- rm -rf JITpackage/build/*
 	( cd GraphBLAS && $(MAKE) distclean )
 	( cd Test && $(MAKE) distclean )
 	( cd Tcov && $(MAKE) distclean )
 	( cd Doc  && $(MAKE) distclean )
-	( cd alternative && $(MAKE) distclean )
 

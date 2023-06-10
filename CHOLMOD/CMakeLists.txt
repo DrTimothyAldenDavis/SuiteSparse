@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Jan 17, 2023" )
+set ( CHOLMOD_DATE "June 9, 2023 (FIXME: date)" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   3 )
+set ( CHOLMOD_VERSION_SUB   4 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -80,9 +80,9 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # find CHOLMOD modules
@@ -184,8 +184,8 @@ find_package ( AMD 3.0.3 REQUIRED )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.0.3 )
-        find_package ( CCOLAMD 3.0.3 )
+        find_package ( CAMD 3.0.4 )
+        find_package ( CCOLAMD 3.0.4 )
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
             set ( NCAMD true )

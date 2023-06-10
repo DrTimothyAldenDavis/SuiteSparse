@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Jan 17, 2023" )
+set ( SPQR_DATE "June 9, 2023 (FIXME: draft)" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   3 )
+set ( SPQR_VERSION_SUB   4 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -72,7 +72,7 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 find_package ( AMD 3.0.3 REQUIRED )
 find_package ( COLAMD 3.0.3 REQUIRED )
 find_package ( CHOLMOD 4.0.3 REQUIRED )
@@ -301,10 +301,14 @@ if ( DEMO )
     target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
     target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
 
+
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA} )
-        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA} )
-        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA} )
+        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
     endif ( )
 
 else ( )

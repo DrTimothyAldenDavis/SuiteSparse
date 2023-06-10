@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Jan 17, 2023" )
+set ( LDL_DATE "June 9, 2023 (FIXME: date)" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
-set ( LDL_VERSION_SUB   3 )
+set ( LDL_VERSION_SUB   4 )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -44,8 +44,8 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number

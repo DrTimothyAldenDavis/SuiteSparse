@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( RBIO_DATE "Jan 17, 2023" )
-set ( RBIO_VERSION_MAJOR 3 )
+set ( RBIO_DATE "June 9, 2023 (FIXME: draft)" )
+set ( RBIO_VERSION_MAJOR 4 )
 set ( RBIO_VERSION_MINOR 0 )
-set ( RBIO_VERSION_SUB   3 )
+set ( RBIO_VERSION_SUB   0 )
 
 message ( STATUS "Building RBIO version: v"
     ${RBIO_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( rbio
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

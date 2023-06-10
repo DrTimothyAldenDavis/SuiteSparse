@@ -37,46 +37,42 @@
 #include <cstdint>
 #include <cooperative_groups.h>
 #include "GB_cuda_kernel.h"
+#include "GB_mxm_shared_definitions.h"
+#include "GB_cuda_atomics.cuh"
 #include "GB_hash.h"
 #include "GB_hyper_hash_lookup.h"
+#include "GB_cuda_dot3_defn.h"
 
 // Using tile size fixed at compile time, we don't need shared memory
 #define tile_sz 32 
 
 using namespace cooperative_groups;
 
-// FIXME: for the ANY monoid, GB_reduce_sum becomes trivial.
-// or, if terminal condition is hit.
+//------------------------------------------------------------------------------
+// GB_reduce_sum
+//------------------------------------------------------------------------------
 
-template< typename T, int warp_sz>
+template< typename T_Z, int warp_sz>
 __device__ __inline__ 
-T GB_reduce_sum(thread_block_tile<warp_sz> g, T val)
+T_Z GB_reduce_sum(thread_block_tile<warp_sz> g, T_Z val)
 {
     // Each iteration halves the number of active threads
     // Each thread adds its partial sum[i] to sum[lane+i]
-    // Temporary T is necessary to handle arbirary ops
+    // Temporary T_Z is necessary to handle arbirary ops
+    // FIXME: only works if sizeof(T_Z) <= 32 bytes
+    // FIXME: the ANY monoid needs the cij_exists for each thread
     #pragma unroll
     for (int i = warp_sz >> 1; i > 0; i >>= 1)
     {
-        T next = g.shfl_down( val, i);
+        T_Z next = g.shfl_down( val, i);
         GB_ADD( val, val, next ); 
     }
     return val;
 }
 
-template< typename T, int warp_sz>
-__device__ __inline__ 
-T reduce_plus(thread_block_tile<warp_sz> g, T val)
-{
-    // Each iteration halves the number of active threads
-    // Each thread adds its partial sum[i] to sum[lane+i]
-    #pragma unroll
-    for (int i = warp_sz >> 1; i > 0; i >>= 1)
-    {
-        val += g.shfl_down( val, i) ;
-    }
-    return val; // note: only thread 0 will return full sum and flag value
-} 
+//------------------------------------------------------------------------------
+// AxB_dot3_phase3_mp
+//------------------------------------------------------------------------------
 
 template<
     typename T_C, typename T_A, typename T_B,
@@ -161,11 +157,7 @@ __global__ void AxB_dot3_phase3_mp
         int64_t k = Ci[pair_id] >> 4;
 
         // j = k or j = Mh [k] if C and M are hypersparse
-        #if GB_M_IS_HYPER
-        int64_t j = Mh [k] ;
-        #else
-        int64_t j = k ;
-        #endif
+        int64_t j = GBH_M (Mh, k) ;
 
         // find A(:,i)
         int64_t pA_start, pA_end ;
@@ -181,10 +173,7 @@ __global__ void AxB_dot3_phase3_mp
 
         GB_DECLAREA (aki) ;
         GB_DECLAREB (bkj) ;
-        #if !GB_C_ISO
-//      T_Z cij = GB_IDENTITY ;
-        GB_DECLARE_MONOID_IDENTITY (cij) ;
-        #endif
+        GB_DECLARE_IDENTITY (cij) ;         // GB_Z_TYPE cij = identity
 
         int cij_exists = 0 ;       // FIXME: make a bool
 
@@ -337,7 +326,7 @@ __global__ void AxB_dot3_phase3_mp
             {
                 int64_t Aind = Ai_s[pA] ;
                 int64_t Bind = Bj_s[pB] ;
-                #if GB_IS_PLUS_PAIR_REAL_SEMIRING && GB_ZTYPE_IGNORE_OVERFLOW
+                #if GB_IS_PLUS_PAIR_REAL_SEMIRING && GB_Z_IGNORE_OVERFLOW
                     cij += (Aind == Bind) ;
                 #else
                     if (Aind == Bind)
@@ -431,6 +420,7 @@ __global__ void AxB_dot3_phase3_mp
         #if !GB_C_ISO
         if (cij_exists)
         {
+            // FIXME: the ANY monoid needs the cij_exists for each thread
            cij = GB_reduce_sum<T_Z, tile_sz>( tile, cij );
         }
         #endif
@@ -440,27 +430,26 @@ __global__ void AxB_dot3_phase3_mp
         {
             if (cij_exists)
             {
-               GB_PUTC ( Cx[pair_id]=(T_C)cij ) ;
-               Ci[pair_id] = i ;
+                GB_PUTC (cij, Cx, pair_id) ;        // Cx [pair_id] = (T_C) cij
+                Ci [pair_id] = i ;
             }
             else
             {
+               // cij is a zombie
                zc++;
-               Ci[pair_id]=GB_FLIP (i) ;
+               Ci [pair_id] = GB_FLIP (i) ;
             }
         }
         //__syncthreads(); 
     }
 
     //--------------------------------------------------------------------------
+    // sum up the global zombie count
+    //--------------------------------------------------------------------------
 
     if( tid ==0 && zc > 0)
     {
-        // printf("warp %d zombie count = %d, nzombies = %d\n", blockIdx.x, zc, C->nzombies);
-        atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)zc);
-        // printf(" Czombie = %lld\n",C->nzombies);
+        GB_cuda_atomic_add <uint64_t>( &(C->nzombies), (uint64_t) zc) ;
     }
-
-  //__syncthreads();
 }
 

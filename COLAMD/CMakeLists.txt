@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( COLAMD_DATE "Jan 17, 2023" )
+set ( COLAMD_DATE "June 9, 2023 (FIXME: date)" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 0 )
-set ( COLAMD_VERSION_SUB   3 )
+set ( COLAMD_VERSION_SUB   4 )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( colamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Jan 17, 2023" )
+set ( KLU_DATE "June 9, 2023 (FIXME: date)" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
-set ( KLU_VERSION_SUB   3 )
+set ( KLU_VERSION_SUB   4 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -50,21 +50,21 @@ project ( klu
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( BTF 2.0.3 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( BTF 2.0.4 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.3 )
-    find_package ( CHOLMOD_CUDA 4.0.3 )
+    find_package ( CHOLMOD 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4 )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( CAMD 3.0.3 )
-    find_package ( CCOLAMD 3.0.3 )
+    find_package ( CAMD 3.0.4 )
+    find_package ( CCOLAMD 3.0.4 )
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )

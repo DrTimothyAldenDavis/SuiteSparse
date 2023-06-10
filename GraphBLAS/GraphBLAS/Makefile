@@ -2,7 +2,7 @@
 # GraphBLAS/GraphBLAS/Makefile: compile libgraphblas_matlab for use in MATLAB
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 #-------------------------------------------------------------------------------
@@ -29,6 +29,14 @@ global:
 # compile with -g 
 debug:
 	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
+
+# compile without FactoryKernels
+compact:
+	( cd build && cmake $(CMAKE_OPTIONS) -DCOMPACT=1 .. && cmake --build . -j$(JOBS) )
+
+# compile with -g, and without FactoryKernels
+cdebug:
+	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DCOMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
 
 # just do 'make' in build; do not rerun the cmake script
 remake:

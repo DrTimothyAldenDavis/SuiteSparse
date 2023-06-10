@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Jan 17, 2023" )
+set ( UMFPACK_DATE "June 9, 2023 (FIXME: draft)" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 1 )
-set ( UMFPACK_VERSION_SUB   0 )
+set ( UMFPACK_VERSION_SUB   1 )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -57,21 +57,21 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.3 )
-    find_package ( CHOLMOD_CUDA 4.0.3 )
+    find_package ( CHOLMOD 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4 )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( COLAMD 3.0.3 )
-    find_package ( CAMD 3.0.3 )
-    find_package ( CCOLAMD 3.0.3 )
+    find_package ( COLAMD 3.0.4 )
+    find_package ( CAMD 3.0.4 )
+    find_package ( CCOLAMD 3.0.4 )
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )

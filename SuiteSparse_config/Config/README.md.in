@@ -348,10 +348,6 @@ Packages in SuiteSparse, and files in this directory:
                                 in just CMAKE_INSTALL_PATH (defaults to
                                 /usr/local/lib on Linux or Mac).
 
-                make both       compiles SuiteSparse, and then "make install"
-                                will instal in both ./lib and
-                                CMAKE_INSTALL_PATH).
-
                 make local      compiles SuiteSparse.
                                 Subsequent "make install will install only
                                 in ./lib, ./include only.
@@ -367,8 +363,7 @@ Packages in SuiteSparse, and files in this directory:
                                 (./lib, ./include), and/or in
                                 /usr/local/lib and /usr/local/include,
                                 depending on whether "make", "make local",
-                                "make global", or "make both",
-                                etc has been done.
+                                or "make global" has been done.
 
                 make uninstall  undoes 'make install'
 
