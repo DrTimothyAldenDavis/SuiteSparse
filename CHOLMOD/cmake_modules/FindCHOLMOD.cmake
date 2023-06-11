@@ -48,7 +48,7 @@ find_library ( CHOLMOD_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME cholmod_static )
+    set ( STATIC_NAME cholmod_static cholmod )
 else ( )
     set ( STATIC_NAME cholmod )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( KLU_DATE "Jan 17, 2023" )
+set ( KLU_DATE "June 12, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 0 )
-set ( KLU_VERSION_SUB   3 )
+set ( KLU_VERSION_SUB   4 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -50,21 +50,21 @@ project ( klu
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( BTF 2.0.3 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( BTF 2.0.4 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.3 )
-    find_package ( CHOLMOD_CUDA 4.0.3 )
+    find_package ( CHOLMOD 4.0.4 )
+    find_package ( CHOLMOD_CUDA 4.0.4 )
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( CAMD 3.0.3 )
-    find_package ( CCOLAMD 3.0.3 )
+    find_package ( CAMD 3.0.4 )
+    find_package ( CCOLAMD 3.0.4 )
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
@@ -107,7 +107,8 @@ add_library ( klu SHARED ${KLU_SOURCES} )
 
 set_target_properties ( klu PROPERTIES
     VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${KLU_VERSION_MAJOR}
     PUBLIC_HEADER "Include/klu.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -121,7 +122,8 @@ if ( NOT NSTATIC )
 
     set_target_properties ( klu_static PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME klu
         SOVERSION ${KLU_VERSION_MAJOR} )
 
@@ -144,7 +146,8 @@ if ( NOT NCHOLMOD )
 
     set_target_properties ( klu_cholmod PROPERTIES
         VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         SOVERSION ${KLU_VERSION_MAJOR}
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
@@ -153,7 +156,8 @@ if ( NOT NCHOLMOD )
 
         set_target_properties ( klu_cholmod_static PROPERTIES
             VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
-            C_STANDARD_REQUIRED 11
+            C_STANDARD 11
+            C_STANDARD_REQUIRED ON
             OUTPUT_NAME klu_cholmod
             SOVERSION ${KLU_VERSION_MAJOR} )
 
@@ -170,33 +174,33 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( klu PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( klu PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( klu_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( klu PUBLIC m )
+    target_link_libraries ( klu PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd:
-target_link_libraries ( klu PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( klu PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( klu_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
-target_link_libraries ( klu PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( klu PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( klu_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # btf:
-target_link_libraries ( klu PUBLIC ${BTF_LIBRARIES} )
+target_link_libraries ( klu PRIVATE ${BTF_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( klu_static PUBLIC ${BTF_STATIC} )
 endif ( )
@@ -205,11 +209,11 @@ if ( NOT NCHOLMOD )
 
     # cholmod:
     # link with CHOLMOD and its dependencies, both required and optional
-    target_link_libraries ( klu PUBLIC
+    target_link_libraries ( klu PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
         ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
         ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
-    target_link_libraries ( klu_cholmod PUBLIC
+    target_link_libraries ( klu_cholmod PRIVATE
         ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
         ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
         ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
@@ -225,7 +229,7 @@ if ( NOT NCHOLMOD )
     endif ( )
 
     # klu:
-    target_link_libraries ( klu_cholmod PUBLIC klu ${BTF_LIBRARIES} )
+    target_link_libraries ( klu_cholmod PRIVATE klu ${BTF_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( klu_cholmod_static PUBLIC
             klu_static ${BTF_STATIC} )
@@ -291,8 +295,12 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
     if ( NOT NCHOLMOD )
-        target_link_libraries ( kludemo  PUBLIC klu_cholmod )
-        target_link_libraries ( kluldemo PUBLIC klu_cholmod )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu ${CHOLMOD_LIBRARIES} )
+        if ( NOT WIN32 )
+            target_link_libraries ( kludemo  PUBLIC m )
+            target_link_libraries ( kluldemo PUBLIC m )
+        endif ( )
     endif ( )
 
 else ( )

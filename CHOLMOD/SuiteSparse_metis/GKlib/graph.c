@@ -82,8 +82,6 @@ void gk_graph_FreeContents(gk_graph_t *graph)
     \returns the graph that was read.
 */
 /**************************************************************************/
-#if 0
-// gk_graph_Read, gk_graph_Write: disabled for SuiteSparse, Dec 2022
 gk_graph_t *gk_graph_Read(char *filename, int format, int isfewgts, 
                 int isfvwgts, int isfvsizes)
 {
@@ -331,7 +329,6 @@ void gk_graph_Write(gk_graph_t *graph, char *filename, int format)
   if (filename)
     gk_fclose(fpout);
 }
-#endif
 
 
 /*************************************************************************/

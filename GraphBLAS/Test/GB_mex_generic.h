@@ -2,7 +2,7 @@
 // GB_mex_generic.h: testing _Generic methods
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -20,7 +20,6 @@
 #define GrB_Type_free_(...)                         GrB_free (__VA_ARGS__)
 #define GrB_UnaryOp_free_(...)                      GrB_free (__VA_ARGS__)
 #define GrB_BinaryOp_free_(...)                     GrB_free (__VA_ARGS__)
-#define GxB_SelectOp_free_(...)                     GrB_free (__VA_ARGS__)
 #define GrB_IndexUnaryOp_free_(...)                 GrB_free (__VA_ARGS__)
 #define GrB_Monoid_free_(...)                       GrB_free (__VA_ARGS__)
 #define GrB_Semiring_free_(...)                     GrB_free (__VA_ARGS__)
@@ -33,7 +32,6 @@
 #define GrB_Type_error_(...)                        GrB_error (__VA_ARGS__)
 #define GrB_UnaryOp_error_(...)                     GrB_error (__VA_ARGS__)
 #define GrB_BinaryOp_error_(...)                    GrB_error (__VA_ARGS__)
-#define GxB_SelectOp_error_(...)                    GrB_error (__VA_ARGS__)
 #define GrB_IndexUnaryOp_error_(...)                GrB_error (__VA_ARGS__)
 #define GrB_Monoid_error_(...)                      GrB_error (__VA_ARGS__)
 #define GrB_Semiring_error_(...)                    GrB_error (__VA_ARGS__)
@@ -289,7 +287,6 @@
 #define GrB_UnaryOp_wait_(...)                      GrB_wait (__VA_ARGS__)
 #define GrB_BinaryOp_wait_(...)                     GrB_wait (__VA_ARGS__)
 #define GrB_IndexUnaryOp_wait_(...)                 GrB_wait (__VA_ARGS__)
-#define GxB_SelectOp_wait_(...)                     GrB_wait (__VA_ARGS__)
 #define GrB_Monoid_wait_(...)                       GrB_wait (__VA_ARGS__)
 #define GrB_Semiring_wait_(...)                     GrB_wait (__VA_ARGS__)
 #define GrB_Descriptor_wait_(...)                   GrB_wait (__VA_ARGS__)
@@ -599,7 +596,6 @@
 #define GrB_Type_free_(...)                         GrB_Type_free (__VA_ARGS__)
 #define GrB_UnaryOp_free_(...)                      GrB_UnaryOp_free (__VA_ARGS__)
 #define GrB_BinaryOp_free_(...)                     GrB_BinaryOp_free (__VA_ARGS__)
-#define GxB_SelectOp_free_(...)                     GxB_SelectOp_free (__VA_ARGS__)
 #define GrB_IndexUnaryOp_free_(...)                 GrB_IndexUnaryOp_free (__VA_ARGS__)
 #define GrB_Monoid_free_(...)                       GrB_Monoid_free (__VA_ARGS__)
 #define GrB_Semiring_free_(...)                     GrB_Semiring_free (__VA_ARGS__)
@@ -612,7 +608,6 @@
 #define GrB_Type_error_(...)                        GrB_Type_error (__VA_ARGS__)
 #define GrB_UnaryOp_error_(...)                     GrB_UnaryOp_error (__VA_ARGS__)
 #define GrB_BinaryOp_error_(...)                    GrB_BinaryOp_error (__VA_ARGS__)
-#define GxB_SelectOp_error_(...)                    GxB_SelectOp_error (__VA_ARGS__)
 #define GrB_IndexUnaryOp_error_(...)                GrB_IndexUnaryOp_error (__VA_ARGS__)
 #define GrB_Monoid_error_(...)                      GrB_Monoid_error (__VA_ARGS__)
 #define GrB_Semiring_error_(...)                    GrB_Semiring_error (__VA_ARGS__)
@@ -866,7 +861,6 @@
 #define GrB_UnaryOp_wait_(...)                      GrB_UnaryOp_wait (__VA_ARGS__)
 #define GrB_BinaryOp_wait_(...)                     GrB_BinaryOp_wait (__VA_ARGS__)
 #define GrB_IndexUnaryOp_wait_(...)                 GrB_IndexUnaryOp_wait (__VA_ARGS__)
-#define GxB_SelectOp_wait_(...)                     GxB_SelectOp_wait (__VA_ARGS__)
 #define GrB_Monoid_wait_(...)                       GrB_Monoid_wait (__VA_ARGS__)
 #define GrB_Semiring_wait_(...)                     GrB_Semiring_wait (__VA_ARGS__)
 #define GrB_Descriptor_wait_(...)                   GrB_Descriptor_wait (__VA_ARGS__)

@@ -76,4 +76,5 @@ purge: distclean
 # remove all files not in the distribution
 distclean:
 	- $(RM) -rf build/* Version/*.tmp MATLAB/*.o MATLAB/*.mex*
+	- $(RM) -r Doc/*.out Doc/*.aux Doc/*.log Doc/*.bbl Doc/*.blg Doc/*.toc Doc/*.idx
 

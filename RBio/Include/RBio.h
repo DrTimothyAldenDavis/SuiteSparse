@@ -79,10 +79,10 @@ extern "C" {
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "Jan 17, 2023"
-#define RBIO_MAIN_VERSION   3
+#define RBIO_DATE "June 12, 2023"
+#define RBIO_MAIN_VERSION   4
 #define RBIO_SUB_VERSION    0
-#define RBIO_SUBSUB_VERSION 3
+#define RBIO_SUBSUB_VERSION 0
 
 #define RBIO_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define RBIO_VERSION RBIO_VER_CODE(RBIO_MAIN_VERSION,RBIO_SUB_VERSION)
@@ -114,12 +114,12 @@ extern "C" {
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
-    int32_t nrow,   /* A is nrow-by-ncol */
+    int32_t nrow,       /* A is nrow-by-ncol */
     int32_t ncol,
-    int32_t *Ap,    /* Ap [0...ncol]: column pointers */
-    int32_t *Ai,    /* Ai [0...nnz-1]: row indices */
-    double *Ax,     /* Ax [0...nnz-1]: real values.  Az holds imaginary part */
-    double *Az,     /* if real, Az is NULL. if complex, Az is non-NULL */
+    const int32_t *Ap,  /* Ap [0...ncol]: column pointers */
+    const int32_t *Ai,  /* Ai [0...nnz-1]: row indices */
+    const double *Ax,   /* Ax [0...nnz-1]: real values.  Az holds imaginary part */
+    const double *Az,   /* if real, Az is NULL. if complex, Az is non-NULL */
     int32_t mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
@@ -135,14 +135,14 @@ int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
 ) ;
 
 int RBkind (int64_t nrow, int64_t ncol,
-    int64_t *Ap, int64_t *Ai, double *Ax, double *Az,
+    const int64_t *Ap, const int64_t *Ai, const double *Ax, const double *Az,
     int64_t mkind_in, int64_t *mkind, int64_t *skind,
     char mtype [4], double *xmin, double *xmax, int64_t *cp) ;
 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
-    char *filename,     /* file to read from */
+    const char *filename,   /* file to read from */
     int32_t build_upper,    /* if true, construct upper part for sym. matrices */
     int32_t zero_handling,  /* 0: do nothing, 1: prune zeros, 2: extract zeros */
 
@@ -166,7 +166,7 @@ int RBread_i            /* 0: OK, < 0: error, > 0: warning */
     int32_t **Zi        /* row indices of Z */
 ) ;
 
-int RBread (char *filename, int64_t build_upper,
+int RBread (const char *filename, int64_t build_upper,
     int64_t zero_handling, char title [73], char key [9],
     char mtype [4], int64_t *nrow, int64_t *ncol,
     int64_t *mkind, int64_t *skind, int64_t *asize,
@@ -177,7 +177,7 @@ int RBread (char *filename, int64_t build_upper,
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 (
     /* input */
-    char *filename,     /* file to read from */
+    const char *filename, /* file to read from */
 
     /* output */
     char title [73],
@@ -199,7 +199,7 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 ) ;
 
 
-int RBreadraw (char *filename, char title [73], char key [9],
+int RBreadraw (const char *filename, char title [73], char key [9],
     char mtype[4], int64_t *nrow, int64_t *ncol,
     int64_t *nnz, int64_t *nelnz, int64_t *mkind,
     int64_t *skind, int64_t *fem, int64_t *xsize,
@@ -209,40 +209,40 @@ int RBreadraw (char *filename, char title [73], char key [9],
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
 (
     /* input */
-    char *filename, /* filename to write to (stdout if NULL) */
-    char *title,    /* title (72 char max), may be NULL */
-    char *key,      /* key (8 char max), may be NULL */
-    int32_t nrow,   /* A is nrow-by-ncol */
+    const char *filename, /* filename to write to (stdout if NULL) */
+    const char *title,    /* title (72 char max), may be NULL */
+    const char *key,      /* key (8 char max), may be NULL */
+    int32_t nrow,         /* A is nrow-by-ncol */
     int32_t ncol,
-    int32_t *Ap,    /* size ncol+1, column pointers */
-    int32_t *Ai,    /* size anz=Ap[ncol], row indices (sorted) */
-    double *Ax,     /* size anz or 2*anz, numerical values (binary if NULL) */
-    double *Az,     /* size anz, imaginary part (real if NULL) */
-    int32_t *Zp,    /* size ncol+1, column pointers for Z (or NULL) */
-    int32_t *Zi,    /* size znz=Zp[ncol], row indices for Z (or NULL) */
-    int32_t mkind_in,   /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
+    const int32_t *Ap,    /* size ncol+1, column pointers */
+    const int32_t *Ai,    /* size anz=Ap[ncol], row indices (sorted) */
+    const double *Ax,     /* size anz or 2*anz, numerical values (binary if NULL) */
+    const double *Az,     /* size anz, imaginary part (real if NULL) */
+    const int32_t *Zp,    /* size ncol+1, column pointers for Z (or NULL) */
+    const int32_t *Zi,    /* size znz=Zp[ncol], row indices for Z (or NULL) */
+    int32_t mkind_in,     /* 0:R, 1:P: 2:Csplit, 3:I, 4:Cmerged */
 
     /* output */
     char mtype [4]  /* matrix type (RUA, RSA, etc), may be NULL */
 ) ;
 
-int RBwrite (char *filename, char *title, char *key,
-    int64_t nrow, int64_t ncol, int64_t *Ap,
-    int64_t *Ai, double *Ax, double *Az, int64_t *Zp,
-    int64_t *Zi, int64_t mkind_in, char mtype [4]) ;
+int RBwrite (const char *filename, const char *title, const char *key,
+    int64_t nrow, int64_t ncol, const int64_t *Ap,
+    const int64_t *Ai, const double *Ax, const double *Az, const int64_t *Zp,
+    const int64_t *Zi, int64_t mkind_in, char mtype [4]) ;
 
 
 void RBget_entry_i
 (
     int32_t mkind,      /* R: 0, P: 1, C: 2, I: 3 */
-    double *Ax,         /* real part, or both if merged-complex */
-    double *Az,         /* imaginary part if split-complex */
+    const double *Ax,   /* real part, or both if merged-complex */
+    const double *Az,   /* imaginary part if split-complex */
     int32_t p,          /* index of the entry */
     double *xr,         /* real part */
     double *xz          /* imaginary part */
 ) ;
 
-void RBget_entry (int64_t mkind, double *Ax, double *Az,
+void RBget_entry (int64_t mkind, const double *Ax, const double *Az,
     int64_t p, double *xr, double *xz) ;
 
 
@@ -263,16 +263,16 @@ void RBput_entry (int64_t mkind, double *Ax, double *Az,
 int RBok_i          /* 0:OK, < 0: error, > 0: warning */
 (
     /* inputs, not modified */
-    int32_t nrow,   /* number of rows */
-    int32_t ncol,   /* number of columns */
-    int32_t nzmax,  /* max # of entries */
-    int32_t *Ap,    /* size ncol+1, column pointers */
-    int32_t *Ai,    /* size nz = Ap [ncol], row indices */
-    double *Ax,     /* real part, or both if merged-complex */
-    double *Az,     /* imaginary part for split-complex */
-    char *As,       /* logical matrices (useful for MATLAB caller only) */
-    int32_t mkind,  /* 0:real, 1:logical/pattern, 2:split-complex, 3:integer,
-                       4:merged-complex */
+    int32_t nrow,       /* number of rows */
+    int32_t ncol,       /* number of columns */
+    int32_t nzmax,      /* max # of entries */
+    const int32_t *Ap,  /* size ncol+1, column pointers */
+    const int32_t *Ai,  /* size nz = Ap [ncol], row indices */
+    const double *Ax,   /* real part, or both if merged-complex */
+    const double *Az,   /* imaginary part for split-complex */
+    const char *As,     /* logical matrices (useful for MATLAB caller only) */
+    int32_t mkind,      /* 0:real, 1:logical/pattern, 2:split-complex, 3:integer,
+                           4:merged-complex */
 
     /* outputs, not defined on input */
     int32_t *p_njumbled,   /* # of jumbled row indices (-1 if not computed) */
@@ -280,8 +280,8 @@ int RBok_i          /* 0:OK, < 0: error, > 0: warning */
 ) ;
 
 int RBok (int64_t nrow, int64_t ncol,
-    int64_t nzmax, int64_t *Ap, int64_t *Ai,
-    double *Ax, double *Az, char *As, int64_t mkind,
+    int64_t nzmax, const int64_t *Ap, const int64_t *Ai,
+    const double *Ax, const double *Az, const char *As, int64_t mkind,
     int64_t *p_njumbled, int64_t *p_nzeros) ;
 
 #ifdef MATLAB_MEX_FILE

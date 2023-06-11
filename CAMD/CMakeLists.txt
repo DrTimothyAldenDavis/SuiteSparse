@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Jan 17, 2023" )
+set ( CAMD_DATE "June 12, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
-set ( CAMD_VERSION_SUB   3 )
+set ( CAMD_VERSION_SUB   4 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( camd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -72,7 +72,8 @@ add_library ( camd SHARED ${CAMD_SOURCES} )
 
 set_target_properties ( camd PROPERTIES
     VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${CAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/camd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -86,7 +87,8 @@ if ( NOT NSTATIC )
 
     set_target_properties ( camd_static PROPERTIES
         VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME camd
         SOVERSION ${CAMD_VERSION_MAJOR} )
 
@@ -100,14 +102,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( camd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( camd PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( camd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( camd PUBLIC m )
+    target_link_libraries ( camd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )
     endif ( )

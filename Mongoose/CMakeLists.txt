@@ -2,7 +2,7 @@
 # Mongoose/CMakeLists.txt: instructions for building Mongoose with cmake
 #-------------------------------------------------------------------------------
 #
-# Mongoose, Copyright (c) 2018-2022, All Rights Reserved.
+# Mongoose, Copyright (c) 2018-2023, All Rights Reserved.
 #   Nuri Yeralan, Microsoft Research
 #   Scott Kolodziej, Texas A&M University
 #   Tim Davis, Texas A&M University
@@ -39,18 +39,15 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-# always build the static libraries (needed by the mongoose program)
-set ( NSTATIC false )
-
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Jan 17, 2023")
-set(Mongoose_NUMERIC_DATE "2023-01-17")
+set(Mongoose_DATE "June 12, 2023")
+set(Mongoose_NUMERIC_DATE "2023-06-12")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 4)
+set(Mongoose_VERSION_PATCH 5)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -76,7 +73,7 @@ configure_file (
         NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -165,9 +162,9 @@ include_directories(Include
         External/mmio/Include
         )
 
-# Require C++11... Someday.
+# Require C++11
 set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
@@ -176,61 +173,70 @@ include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-# Build the Mongoose library
-add_library(mongoose_lib STATIC ${MONGOOSE_LIB_FILES})
-set_property(TARGET mongoose_lib PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_target_properties(mongoose_lib
-        PROPERTIES OUTPUT_NAME mongoose)
+if ( NOT NSTATIC )
+    # Build the Mongoose library
+    add_library ( mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
+#   set_property ( TARGET mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( mongoose_static PROPERTIES
+            OUTPUT_NAME mongoose )
 
-if ( MSVC )
-    set_target_properties ( mongoose_lib PROPERTIES
-        OUTPUT_NAME mongoose_static )
+    if ( MSVC )
+        set_target_properties ( mongoose_static PROPERTIES
+            OUTPUT_NAME mongoose_static )
+    endif ( )
+
+    target_link_libraries ( mongoose_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
-target_link_libraries(mongoose_lib ${SUITESPARSE_CONFIG_LIBRARY})
-
 # Build the Mongoose library for dynamic linking
-add_library(mongoose_dylib SHARED ${MONGOOSE_LIB_FILES})
-set_property(TARGET mongoose_dylib PROPERTY POSITION_INDEPENDENT_CODE ON)
-set_target_properties(mongoose_dylib
-        PROPERTIES OUTPUT_NAME mongoose
+add_library ( mongoose SHARED ${MONGOOSE_LIB_FILES} )
+set_property ( TARGET mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
+set_target_properties ( mongoose PROPERTIES
+        OUTPUT_NAME mongoose
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_link_libraries(mongoose_dylib ${SUITESPARSE_CONFIG_LIBRARY})
+target_link_libraries ( mongoose PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
-#     set_target_properties(mongoose_dylib PROPERTIES VERSION ${PROJECT_VERSION})
-#     set_target_properties(mongoose_dylib PROPERTIES SOVERSION ${Mongoose_VERSION_MAJOR})
+#     set_target_properties(mongoose PROPERTIES VERSION ${PROJECT_VERSION})
+#     set_target_properties(mongoose PROPERTIES SOVERSION ${Mongoose_VERSION_MAJOR})
 # else()
-    set_target_properties(mongoose_dylib PROPERTIES VERSION 
-        ${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH})
-    set_target_properties(mongoose_dylib PROPERTIES SOVERSION
-        ${Mongoose_VERSION_MAJOR})
+    set_target_properties ( mongoose PROPERTIES
+        VERSION ${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}
+        SOVERSION ${Mongoose_VERSION_MAJOR} )
 # endif()
 
-set_target_properties(mongoose_dylib PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp)
-target_include_directories(mongoose_dylib PRIVATE .)
+set_target_properties ( mongoose PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp )
+target_include_directories ( mongoose PRIVATE . )
 
 #-------------------------------------------------------------------------------
 
 # Build the Mongoose debug/test library
-add_library(mongoose_lib_dbg STATIC ${MONGOOSE_LIB_FILES})
-set_target_properties(mongoose_lib_dbg
-        PROPERTIES OUTPUT_NAME mongoose_dbg)
+add_library ( mongoose_static_dbg STATIC ${MONGOOSE_LIB_FILES} )
+set_target_properties ( mongoose_static_dbg PROPERTIES
+        OUTPUT_NAME mongoose_dbg )
 
-target_link_libraries(mongoose_lib_dbg ${SUITESPARSE_CONFIG_LIBRARY})
+target_link_libraries ( mongoose_static_dbg ${SUITESPARSE_CONFIG_LIBRARY} )
 
 # Build the Mongoose executable
-add_executable(mongoose_exe ${EXE_FILES})
-set_target_properties(mongoose_exe
-        PROPERTIES OUTPUT_NAME mongoose)
-target_link_libraries(mongoose_exe mongoose_lib)
+add_executable ( mongoose_exe ${EXE_FILES} )
+set_target_properties ( mongoose_exe PROPERTIES
+        OUTPUT_NAME mongoose )
+if ( NSTATIC )
+    target_link_libraries ( mongoose_exe mongoose )
+else ( )
+    target_link_libraries ( mongoose_exe mongoose_static )
+endif ( )
 
 # Build the Demo executable
-add_executable(demo_exe ${DEMO_FILES})
-set_target_properties(demo_exe
-        PROPERTIES OUTPUT_NAME demo)
-target_link_libraries(demo_exe mongoose_lib)
+add_executable ( demo_exe ${DEMO_FILES} )
+set_target_properties ( demo_exe PROPERTIES
+        OUTPUT_NAME demo )
+if ( NSTATIC )
+    target_link_libraries ( demo_exe mongoose )
+else ( )
+    target_link_libraries ( demo_exe mongoose_static )
+endif ( )
 
 # Coverage and Unit Testing Setup
 enable_testing()
@@ -240,7 +246,7 @@ set(TESTING_OUTPUT_PATH ${CMAKE_BINARY_DIR}/tests)
 add_executable(mongoose_test_io
         Tests/Mongoose_Test_IO.cpp
         Tests/Mongoose_Test_IO_exe.cpp)
-target_link_libraries(mongoose_test_io mongoose_lib_dbg)
+target_link_libraries ( mongoose_test_io mongoose_static_dbg )
 set_target_properties(mongoose_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 
 add_test(IO_Test ./runTests -min 1 -max 15 -t io -k)
@@ -249,7 +255,7 @@ add_test(IO_Test ./runTests -min 1 -max 15 -t io -k)
 add_executable(mongoose_test_edgesep
         Tests/Mongoose_Test_EdgeSeparator.cpp
         Tests/Mongoose_Test_EdgeSeparator_exe.cpp)
-target_link_libraries(mongoose_test_edgesep mongoose_lib_dbg)
+target_link_libraries ( mongoose_test_edgesep mongoose_static_dbg )
 set_target_properties(mongoose_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 
 add_test(Edge_Separator_Test ./runTests -min 1 -max 15 -t edgesep)
@@ -261,7 +267,7 @@ add_test(Target_Split_Test ./runTests -min 1 -max 15 -t edgesep -s 0.3)
 add_executable(mongoose_test_memory
         Tests/Mongoose_Test_Memory.cpp
         Tests/Mongoose_Test_Memory_exe.cpp)
-target_link_libraries(mongoose_test_memory mongoose_lib_dbg)
+target_link_libraries ( mongoose_test_memory mongoose_static_dbg )
 set_target_properties(mongoose_test_memory PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 
 add_test(Memory_Test ./runTests -min 1 -max 15 -t memory)
@@ -270,7 +276,11 @@ add_test(Memory_Test ./runTests -min 1 -max 15 -t memory)
 add_executable(mongoose_test_performance
         Tests/Mongoose_Test_Performance.cpp
         Tests/Mongoose_Test_Performance_exe.cpp)
-target_link_libraries(mongoose_test_performance mongoose_lib)
+if ( NSTATIC )
+    target_link_libraries ( mongoose_test_performance mongoose )
+else ( )
+    target_link_libraries ( mongoose_test_performance mongoose_static )
+endif ( )
 set_target_properties(mongoose_test_performance PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 add_test(Performance_Test ./runTests -min 1 -max 15 -t performance -p)
 add_test(Performance_Test_2 ./runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p)
@@ -279,25 +289,29 @@ add_test(Performance_Test_2 ./runTests -t performance -i 21 39 1557 1562 353 246
 add_executable(mongoose_test_reference
         Tests/Mongoose_Test_Reference.cpp
         Tests/Mongoose_Test_Reference_exe.cpp)
-target_link_libraries(mongoose_test_reference mongoose_lib)
+if ( NSTATIC )
+    target_link_libraries ( mongoose_test_reference mongoose )
+else ( )
+    target_link_libraries ( mongoose_test_reference mongoose_static )
+endif ( )
 set_target_properties(mongoose_test_reference PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 
 # Unit Tests
 add_executable(mongoose_unit_test_io
         Tests/Mongoose_UnitTest_IO_exe.cpp)
-target_link_libraries(mongoose_unit_test_io mongoose_lib_dbg)
+target_link_libraries ( mongoose_unit_test_io mongoose_static_dbg )
 set_target_properties(mongoose_unit_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 add_test(Unit_Test_IO ./tests/mongoose_unit_test_io)
 
 add_executable(mongoose_unit_test_graph
         Tests/Mongoose_UnitTest_Graph_exe.cpp)
-target_link_libraries(mongoose_unit_test_graph mongoose_lib_dbg)
+target_link_libraries ( mongoose_unit_test_graph mongoose_static_dbg )
 set_target_properties(mongoose_unit_test_graph PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 add_test(Unit_Test_Graph ./tests/mongoose_unit_test_graph)
 
 add_executable(mongoose_unit_test_edgesep
         Tests/Mongoose_UnitTest_EdgeSep_exe.cpp)
-target_link_libraries(mongoose_unit_test_edgesep mongoose_lib_dbg)
+target_link_libraries ( mongoose_unit_test_edgesep mongoose_static_dbg )
 set_target_properties(mongoose_unit_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
 add_test(Unit_Test_EdgeSep ./tests/mongoose_unit_test_edgesep)
 
@@ -313,11 +327,11 @@ message ( STATUS "test coverage for debug library: ${MONGOOSE_COVERAGE}" )
 message(STATUS "CMAKE_CXX_COMPILER: " ${BoldBlue} ${CMAKE_CXX_COMPILER_ID} ${ColourReset})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # using Clang
-    SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
+#   SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
     # Debug flags for Clang
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -fwrapv")
-    SET(CMAKE_C_FLAGS_DEBUG "-g")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -fwrapv")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g")
+#   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
     if ( MONGOOSE_COVERAGE )
         SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" ) 
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} --coverage" )
@@ -325,33 +339,35 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
     endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using GCC
-    SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-variable" )
+#   SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-variable" )
     # Debug flags for GCC
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.6")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+#       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
         message(WARNING "${BoldRed} WARNING:${ColourReset} Your compiler does not support the C++11 ISO standard. Future versions of Mongoose will require a compiler with C++11 support. We recommend you upgrade to at least GCC 4.6.")
     endif ()
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
-    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W ")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W ")
+#   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -W ")
+#   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
     if ( MONGOOSE_COVERAGE )
+        SET (CMAKE_CXX_FLAGS_DEBUG " ${CMAKE_CXX_FLAGS_DEBUG} -Wall -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
         SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" ) 
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
     endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # using Intel C++
-    SET(CMAKE_CXX_FLAGS "-O3 -no-prec-div -xHOST -ipo -fwrapv")
+#   SET(CMAKE_CXX_FLAGS "-O3 -no-prec-div -xHOST -ipo -fwrapv")
     # Debug flags for Intel
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv")
-    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
 #elseif ( MSVC )
     # using Visual Studio C++
 endif ()
 
-set_target_properties(mongoose_lib_dbg PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_lib_dbg PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
+set_target_properties ( mongoose_static_dbg PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}" )
+set_target_properties ( mongoose_static_dbg PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 
 # Add debug compile/linker flags
 set_target_properties(mongoose_test_io PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
@@ -372,21 +388,23 @@ set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1) # Necessary for gcov - prevents file.c
 # Copy over runTest.py to build folder for ease of use
 file(COPY Tests/runTests DESTINATION ${CMAKE_BINARY_DIR})
 
-add_custom_command(TARGET mongoose_lib
-                   POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose_lib> ${PROJECT_SOURCE_DIR}/Lib
-                   COMMENT "Copying libmongoose (static) to root Lib directory"
-        )
+# if ( NOT NSTATIC )
+#   add_custom_command ( TARGET mongoose_static
+#           POST_BUILD
+#           COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose_static> ${PROJECT_SOURCE_DIR}/Lib
+#           COMMENT "Copying libmongoose (static) to root Lib directory"
+#           )
+# endif ( )
 
-add_custom_command(TARGET mongoose_dylib
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose_dylib> ${PROJECT_SOURCE_DIR}/Lib
-        COMMENT "Copying libmongoose (dynamic) to root Lib directory"
-        )
+# add_custom_command ( TARGET mongoose
+#       POST_BUILD
+#       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose> ${PROJECT_SOURCE_DIR}/Lib
+#       COMMENT "Copying libmongoose (dynamic) to root Lib directory"
+#       )
 
 add_custom_target(purge
         COMMAND rm -rf ${CMAKE_BINARY_DIR}/*
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
+#       COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex.aux
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.idx
@@ -410,13 +428,15 @@ add_custom_target(userguide
 # Mongoose installation location
 #-------------------------------------------------------------------------------
 
-install ( TARGETS mongoose_dylib
+install ( TARGETS mongoose
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( TARGETS mongoose_lib
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+if ( NOT NSTATIC )
+    install ( TARGETS mongoose_static
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )
 install ( TARGETS mongoose_exe
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindMongoose.cmake

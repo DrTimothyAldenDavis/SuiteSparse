@@ -49,7 +49,7 @@ find_library ( KLU_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME klu_static )
+    set ( STATIC_NAME klu_static klu )
 else ( )
     set ( STATIC_NAME klu )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

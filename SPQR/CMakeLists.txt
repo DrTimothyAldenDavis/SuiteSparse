@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Jan 17, 2023" )
+set ( SPQR_DATE "June 12, 2023" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   3 )
+set ( SPQR_VERSION_SUB   4 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -72,19 +72,19 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( CHOLMOD 4.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( CHOLMOD 4.0.4 REQUIRED )
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-find_package ( CAMD 3.0.3 )
-find_package ( CCOLAMD 3.0.3 )
+find_package ( CAMD 3.0.4 )
+find_package ( CCOLAMD 3.0.4 )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
-    find_package ( GPUQREngine 2.0.3 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
+    find_package ( GPUQREngine 2.0.4 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -134,8 +134,10 @@ add_library ( spqr SHARED ${SPQR_SOURCES} )
 
 set_target_properties ( spqr PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 11
-    C_STANDARD_REQUIRED 11
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${SPQR_VERSION_MAJOR}
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
@@ -148,8 +150,10 @@ if ( NOT NSTATIC )
 
     set_target_properties ( spqr_static PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-        CXX_STANDARD_REQUIRED 11
-        C_STANDARD_REQUIRED 11
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME spqr
         SOVERSION ${SPQR_VERSION_MAJOR} )
 
@@ -164,7 +168,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spqr PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
@@ -174,7 +178,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( spqr PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( spqr PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
@@ -184,20 +188,20 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spqr PUBLIC m )
+    target_link_libraries ( spqr PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd:
-target_link_libraries ( spqr PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # colamd:
-target_link_libraries ( spqr PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
@@ -206,7 +210,7 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( spqr PUBLIC ${BLAS_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
@@ -216,7 +220,7 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-target_link_libraries ( spqr PUBLIC ${LAPACK_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
@@ -224,7 +228,7 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 
 # cholmod:
 # link with CHOLMOD and its dependencies, both required and optional
-target_link_libraries ( spqr PUBLIC
+target_link_libraries ( spqr PRIVATE
     ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
     ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
     ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
@@ -237,7 +241,7 @@ endif ( )
 
 # CUDA
 message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
-target_link_libraries ( spqr PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
 target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 endif ( )
@@ -292,15 +296,19 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} )
-    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
+
 
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA} )
-        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA} )
-        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA} )
+        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
+            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
     endif ( )
 
 else ( )

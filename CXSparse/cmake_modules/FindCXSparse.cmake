@@ -54,7 +54,7 @@ find_library ( CXSPARSE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME cxsparse_static )
+    set ( STATIC_NAME cxsparse_static cxsparse )
 else ( )
     set ( STATIC_NAME cxsparse )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

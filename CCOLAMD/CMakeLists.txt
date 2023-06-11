@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CCOLAMD_DATE "Jan 17, 2023" )
+set ( CCOLAMD_DATE "June 12, 2023" )
 set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 0 )
-set ( CCOLAMD_VERSION_SUB   3 )
+set ( CCOLAMD_VERSION_SUB   4 )
 
 message ( STATUS "Building CCOLAMD version: v"
     ${CCOLAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( ccolamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -69,7 +69,8 @@ add_library ( ccolamd SHARED ${CCOLAMD_SOURCES} )
 
 set_target_properties ( ccolamd PROPERTIES
     VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${CCOLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/ccolamd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -84,7 +85,8 @@ if ( NOT NSTATIC )
     set_target_properties ( ccolamd_static PROPERTIES
         VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
         OUTPUT_NAME ccolamd
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         SOVERSION ${CCOLAMD_VERSION_MAJOR} )
 
     if ( MSVC )
@@ -97,14 +99,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( ccolamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( ccolamd PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( ccolamd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( ccolamd PUBLIC m )
+    target_link_libraries ( ccolamd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( ccolamd_static PUBLIC m )
     endif ( )

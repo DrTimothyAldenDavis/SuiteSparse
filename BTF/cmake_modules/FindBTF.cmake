@@ -49,7 +49,7 @@ find_library ( BTF_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME btf_static )
+    set ( STATIC_NAME btf_static btf )
 else ( )
     set ( STATIC_NAME btf )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

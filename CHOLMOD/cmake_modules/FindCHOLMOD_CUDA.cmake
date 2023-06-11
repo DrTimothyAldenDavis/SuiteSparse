@@ -50,7 +50,7 @@ find_library ( CHOLMOD_CUDA_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME cholmod_cuda_static )
+    set ( STATIC_NAME cholmod_cuda_static cholmod_cuda )
 else ( )
     set ( STATIC_NAME cholmod_cuda )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

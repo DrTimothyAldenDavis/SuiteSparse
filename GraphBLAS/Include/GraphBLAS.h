@@ -1,8 +1,9 @@
+// SuiteSparse:GraphBLAS 8.0.2
 //------------------------------------------------------------------------------
 // GraphBLAS.h: definitions for the GraphBLAS package
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -56,16 +57,18 @@
 #include <stdarg.h>
 
 //==============================================================================
-// renaming for use in R2021a or later
+// renaming for use in MATLAB R2021a or later
 //==============================================================================
 
 #define GB_CAT2(x,y) x ## y
 #define GB_EVAL2(x,y) GB_CAT2 (x,y)
 
-#ifdef GBRENAME
-    // All symbols must be renamed for the @GrB interface when using
-    // R2021a and following, since those versions include an earlier
-    // version of SuiteSparse:GraphBLAS.
+#if defined ( GBMATLAB ) && !defined ( GB_JIT_RUNTIME )
+    // All symbols must be renamed for the @GrB interface when using MATLAB
+    // R2021a and following, since those versions include an earlier version of
+    // SuiteSparse:GraphBLAS.  The renaming does not need to occur for the JIT
+    // kernels, however.  Those can be shared between MATLAB and non-MATLAB
+    // applications.
     #define GB(x)   GB_EVAL2 (GM_, x)
     #define GRB(x)  GB_EVAL2 (GrM_, x)
     #define GXB(x)  GB_EVAL2 (GxM_, x)
@@ -86,7 +89,7 @@
 // GB_GLOBAL: for declaring global variables visible to the user application.
 // These are not used for functions, just global variables like the predefined
 // operators (GrB_PLUS_FP32), types, monoids, semirings, and descriptors.
-#if ( _MSC_VER && !(__INTEL_COMPILER || __INTEL_CLANG_COMPILER) )
+#if defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
     #if defined ( GB_DLL_EXPORT )
         // Compiling SuiteSparse:GraphBLAS as a Windows DLL, exporting symbols
         // to user apps.
@@ -126,80 +129,67 @@
 #endif
 
 //------------------------------------------------------------------------------
-// definitions for complex types, and restrict keyword
+// definitions for complex types
+//------------------------------------------------------------------------------
+
+// This is a copy of GraphBLAS/Source/Shared/GxB_complex.h.  It is included
+// here as a full copy so that the GraphBLAS.h file can be self contained.
+
+#ifndef GXB_COMPLEX_H
+#define GXB_COMPLEX_H
+
+    #if defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
+
+        // Microsoft Windows complex types for C
+        #include <complex.h>
+        #undef I
+        typedef _Fcomplex GxB_FC32_t ;
+        typedef _Dcomplex GxB_FC64_t ;
+        #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
+        #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
+        #define GB_HAS_CMPLX_MACROS 1
+
+    #else
+
+        // ANSI C11 complex types
+        #include <complex.h>
+        #undef I
+        typedef float  _Complex GxB_FC32_t ;
+        typedef double _Complex GxB_FC64_t ;
+        #if (defined (CMPLX) && defined (CMPLXF))
+            // use the ANSI C11 CMPLX and CMPLXF macros
+            #define GxB_CMPLX(r,i) CMPLX (r,i)
+            #define GxB_CMPLXF(r,i) CMPLXF (r,i)
+            #define GB_HAS_CMPLX_MACROS 1
+        #else
+            // gcc 6.2 on the the Mac doesn't #define CMPLX
+            #define GB_HAS_CMPLX_MACROS 0
+            #define GxB_CMPLX(r,i) \
+            ((GxB_FC64_t)((double)(r)) + (GxB_FC64_t)((double)(i) * _Complex_I))
+            #define GxB_CMPLXF(r,i) \
+            ((GxB_FC32_t)((float)(r)) + (GxB_FC32_t)((float)(i) * _Complex_I))
+        #endif
+    #endif
+#endif
+
+//------------------------------------------------------------------------------
+// restrict keyword
 //------------------------------------------------------------------------------
 
 #undef GB_restrict
-
-// See:
-// https://www.drdobbs.com/complex-arithmetic-in-the-intersection-o/184401628#
-
 #if defined ( __cplusplus )
-
-    extern "C++"
-    {
-        // C++ complex types
-        #include <cmath>
-        #include <complex>
-        #undef I
-        typedef std::complex<float>  GxB_FC32_t ;
-        typedef std::complex<double> GxB_FC64_t ;
-    }
-
-    #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
-    #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
     #define GB_restrict
-
-#elif ( _MSC_VER && !(__INTEL_COMPILER || __INTEL_CLANG_COMPILER) )
-
-    // Microsoft Windows complex types
-    #include <complex.h>
-    #undef I
-    typedef _Fcomplex GxB_FC32_t ;
-    typedef _Dcomplex GxB_FC64_t ;
-
-    #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
-    #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
+#elif defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
     #define GB_restrict __restrict
-
+#elif defined ( __NVCC__ )
+    // NVIDIA nvcc
+    #define GB_restrict __restrict__
+#elif GxB_STDC_VERSION >= 199901L
+    // ANSI C99 or later
+    #define GB_restrict restrict
 #else
-
-    // ANSI C11 complex types
-    #include <complex.h>
-    #undef I
-    typedef float  complex GxB_FC32_t ;
-    typedef double complex GxB_FC64_t ;
-
-    #ifndef CMPLX
-        // gcc 6.2 on the the Mac doesn't #define CMPLX
-        #define GxB_CMPLX(r,i) \
-        ((GxB_FC64_t)((double)(r)) + (GxB_FC64_t)((double)(i) * _Complex_I))
-    #else
-        // use the ANSI C11 CMPLX macro
-        #define GxB_CMPLX(r,i) CMPLX (r,i)
-    #endif
-
-    #ifndef CMPLXF
-        // gcc 6.2 on the the Mac doesn't #define CMPLXF
-        #define GxB_CMPLXF(r,i) \
-        ((GxB_FC32_t)((float)(r)) + (GxB_FC32_t)((float)(i) * _Complex_I))
-    #else
-        // use the ANSI C11 CMPLXF macro
-        #define GxB_CMPLXF(r,i) CMPLXF (r,i)
-    #endif
-
-    // restrict keyword
-    #if defined ( __NVCC__ )
-        // NVIDIA nvcc
-        #define GB_restrict __restrict__
-    #elif GxB_STDC_VERSION >= 199901L
-        // ANSI C99 or later
-        #define GB_restrict restrict
-    #else
-        // ANSI C95 and earlier: no restrict keyword
-        #define GB_restrict
-    #endif
-
+    // ANSI C95 and earlier: no restrict keyword
+    #define GB_restrict
 #endif
 
 //==============================================================================
@@ -230,10 +220,10 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "Jan 20, 2023"
-#define GxB_IMPLEMENTATION_MAJOR 7
-#define GxB_IMPLEMENTATION_MINOR 4
-#define GxB_IMPLEMENTATION_SUB   3
+#define GxB_IMPLEMENTATION_DATE "June 12, 2023"
+#define GxB_IMPLEMENTATION_MAJOR 8
+#define GxB_IMPLEMENTATION_MINOR 0
+#define GxB_IMPLEMENTATION_SUB   2
 #define GxB_SPEC_DATE "Nov 15, 2021"
 #define GxB_SPEC_MAJOR 2
 #define GxB_SPEC_MINOR 0
@@ -250,12 +240,12 @@
 
 // The 'about' string the describes this particular implementation of GraphBLAS:
 #define GxB_IMPLEMENTATION_ABOUT \
-"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved." \
+"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved." \
 "\nhttp://suitesparse.com  Dept of Computer Sci. & Eng, Texas A&M University.\n"
 
 // The GraphBLAS license for this particular implementation of GraphBLAS:
 #define GxB_IMPLEMENTATION_LICENSE \
-"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved." \
+"SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved." \
 "\nLicensed under the Apache License, Version 2.0 (the \"License\"); you may\n"\
 "not use SuiteSparse:GraphBLAS except in compliance with the License.  You\n"  \
 "may obtain a copy of the License at\n\n"                                      \
@@ -320,7 +310,7 @@ typedef enum
     //--------------------------------------------------------------------------
 
     GrB_NO_VALUE = 1,           // A(i,j) requested but not there
-    GxB_EXHAUSTED = 2,          // iterator is exhausted
+    GxB_EXHAUSTED = 7089,       // iterator is exhausted
 
     //--------------------------------------------------------------------------
     // errors:
@@ -364,10 +354,15 @@ typedef enum
     GrB_NONBLOCKING = 0,        // methods may return with pending computations
     GrB_BLOCKING = 1,           // no computations are ever left pending
 //  DRAFT: in progress, do not use:
-    GxB_NONBLOCKING_GPU = 2,    // non-blocking mode, allow use of GPU(s)
-    GxB_BLOCKING_GPU = 3,       // blocking mode, allow use of GPU(s)
+    GxB_NONBLOCKING_GPU = 7099, // non-blocking mode, allow use of GPU(s)
+    GxB_BLOCKING_GPU = 7098,    // blocking mode, allow use of GPU(s)
 }
 GrB_Mode ;
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
 
 GrB_Info GrB_init           // start up GraphBLAS
 (
@@ -425,7 +420,6 @@ GrB_Info GrB_getVersion         // runtime access to C API version number
 //
 // GrB_INP1: the same as GrB_INP0 but for the second input
 //
-//
 // GxB_AxB_METHOD: this is a hint to SuiteSparse:GraphBLAS on which algorithm
 //      it should use to compute C=A*B, in GrB_mxm, GrB_mxv, and GrB_vxm.
 //      SuiteSparse:GraphBLAS has four different heuristics, and the default
@@ -475,12 +469,11 @@ GrB_Info GrB_getVersion         // runtime access to C API version number
 // The following are enumerated values in both the GrB_Desc_Field and the
 // GxB_Option_Field for global options.  They are defined with the same integer
 // value for both enums, so the user can use them for both.
-#define GxB_NTHREADS 5
-#define GxB_CHUNK 7
+#define GxB_NTHREADS 7086
+#define GxB_CHUNK 7087
 
 // GPU control (DRAFT: in progress, do not use)
-#define GxB_GPU_CONTROL 21
-#define GxB_GPU_CHUNK   22
+#define GxB_GPU_ID 7088
 
 typedef enum
 {
@@ -488,19 +481,10 @@ typedef enum
     GrB_MASK = 1,   // descriptor for the mask input of a method
     GrB_INP0 = 2,   // descriptor for the first input of a method
     GrB_INP1 = 3,   // descriptor for the second input of a method
-
-    // setting NTHREADS and CHUNK in the descriptor is deprecated
-    GxB_DESCRIPTOR_NTHREADS = GxB_NTHREADS,     // DEPRECATED
-    GxB_DESCRIPTOR_CHUNK = GxB_CHUNK,           // DEPRECATED
-
-    // GPU control (DRAFT: in progress, do not use)
-    GxB_DESCRIPTOR_GPU_CONTROL = GxB_GPU_CONTROL,
-    GxB_DESCRIPTOR_GPU_CHUNK   = GxB_GPU_CHUNK,
-
-    GxB_AxB_METHOD = 1000,  // descriptor for selecting C=A*B algorithm
-    GxB_SORT = 35,          // control sort in GrB_mxm
-    GxB_COMPRESSION = 36,   // select compression for serialize
-    GxB_IMPORT = 37,        // secure vs fast import
+    GxB_AxB_METHOD = 7090,  // descriptor for selecting C=A*B algorithm
+    GxB_SORT = 7091,          // control sort in GrB_mxm
+    GxB_COMPRESSION = 7092,   // select compression for serialize
+    GxB_IMPORT = 7093,        // secure vs fast import
 }
 GrB_Desc_Field ;
 
@@ -519,18 +503,14 @@ typedef enum
     // for GrB_INP0 and GrB_INP1 only:
     GrB_TRAN = 3,       // use the transpose of the input
 
-    // for GxB_GPU_CONTROL only (DRAFT: in progress, do not use)
-    GxB_GPU_ALWAYS  = 2001,
-    GxB_GPU_NEVER   = 2002,
-
     // for GxB_AxB_METHOD only:
-    GxB_AxB_GUSTAVSON = 1001,   // gather-scatter saxpy method
-    GxB_AxB_DOT       = 1003,   // dot product
-    GxB_AxB_HASH      = 1004,   // hash-based saxpy method
-    GxB_AxB_SAXPY     = 1005,   // saxpy method (any kind)
+    GxB_AxB_GUSTAVSON = 7081,   // gather-scatter saxpy method
+    GxB_AxB_DOT       = 7083,   // dot product
+    GxB_AxB_HASH      = 7084,   // hash-based saxpy method
+    GxB_AxB_SAXPY     = 7085,   // saxpy method (any kind)
 
     // for GxB_IMPORT only:
-    GxB_SECURE_IMPORT = 502     // GxB*_pack* methods trust their input data
+    GxB_SECURE_IMPORT = 7080    // GxB*_pack* methods trust their input data
 }
 GrB_Desc_Value ;
 
@@ -607,7 +587,7 @@ GrB_Info GrB_Descriptor_free    // free a descriptor
 
 // Predefined descriptors and their values:
 
-GB_GLOBAL GrB_Descriptor     
+GB_GLOBAL GrB_Descriptor
                    // OUTP         MASK           MASK       INP0      INP1
                    //              structural     complement
                    // ===========  ============== ========== ========  ========
@@ -783,10 +763,9 @@ GrB_Info GRB (Type_new)         // create a new GraphBLAS type
 //      GxB_Type_new (&MyQtype, sizeof (myquaternion), "myquaternion",
 //          "typedef struct { float x [4][4] ; int color ; } myquaternion ;") ;
 //
-// The type_name and type_defn are both null-terminated strings.  Currently,
-// type_defn is unused, but it will be required for best performance when a JIT
-// is implemented in SuiteSparse:GraphBLAS (both on the CPU and GPU).  User
-// defined types created by GrB_Type_new will not work with a JIT.
+// The type_name and type_defn are both null-terminated strings.  The two
+// strings are required for best performance in the JIT (both on the CPU and
+// GPU).  User defined types created by GrB_Type_new will not work with a JIT.
 //
 // At most GxB_MAX_NAME_LEN characters are accessed in type_name; characters
 // beyond that limit are silently ignored.
@@ -799,14 +778,6 @@ GrB_Info GxB_Type_new           // create a new named GraphBLAS type
     size_t sizeof_ctype,        // size = sizeof (ctype) of the C type
     const char *type_name,      // name of the type (max 128 characters)
     const char *type_defn       // typedef for the type (no max length)
-) ;
-
-// GB_Type_new is historical: use GxB_Type_new instead
-GrB_Info GB_Type_new            // not user-callable
-(
-    GrB_Type *type,             // handle of user type to create
-    size_t sizeof_ctype,        // size of the user type
-    const char *type_name       // name of the type, as "sizeof (ctype)"
 ) ;
 
 GrB_Info GxB_Type_name      // return the name of a GraphBLAS type
@@ -1054,16 +1025,6 @@ GrB_Info GxB_UnaryOp_new            // create a new user-defined unary operator
     GrB_Type xtype,                 // type of input x
     const char *unop_name,          // name of the user function
     const char *unop_defn           // definition of the user function
-) ;
-
-// GB_UnaryOp_new is historical: use GxB_UnaryOp_new instead
-GrB_Info GB_UnaryOp_new             // not user-callable
-(
-    GrB_UnaryOp *unaryop,           // handle for the new unary operator
-    GxB_unary_function function,    // pointer to the unary function
-    GrB_Type ztype,                 // type of output z
-    GrB_Type xtype,                 // type of input x
-    const char *unop_name           // name of the user function
 ) ;
 
 // GxB_UnaryOp_ztype is historical.  Use GxB_UnaryOp_ztype_name instead.
@@ -1529,17 +1490,6 @@ GrB_Info GxB_BinaryOp_new
     const char *binop_defn          // definition of the user function
 ) ;
 
-// GB_BinaryOp_new is historical: use GxB_BinaryOp_new instead
-GrB_Info GB_BinaryOp_new            // not user-callable
-(
-    GrB_BinaryOp *binaryop,         // handle for the new binary operator
-    GxB_binary_function function,   // pointer to the binary function
-    GrB_Type ztype,                 // type of output z
-    GrB_Type xtype,                 // type of input x
-    GrB_Type ytype,                 // type of input y
-    const char *binop_name          // name of the user function
-) ;
-
 // NOTE: GxB_BinaryOp_ztype is historical.  Use GxB_BinaryOp_ztype_name instead.
 GrB_Info GxB_BinaryOp_ztype         // return the type of z
 (
@@ -1582,145 +1532,17 @@ GrB_Info GrB_BinaryOp_free          // free a user-created binary operator
 ) ;
 
 //==============================================================================
-// GxB_SelectOp: select operators (historical)
+// GxB_SelectOp: select operators (DEPRECATED: do not use)
 //==============================================================================
 
-// GrB_IndexUnaryOp should be used instead of GxB_SelectOp.
-
-// GxB_SelectOp is an operator used by GxB_select to select entries from an
-// input matrix A that are kept in the output C.  If an entry A(i,j) in the
-// matrix A, of size nrows-by-ncols, has the value aij, then it calls the
-// select function as result = f (i, j, aij, thunk).  If the function returns
-// true, the entry is kept in the output C.  If f returns false, the entry is
-// not kept in C.  The type of x for the GxB_SelectOp operator may be any of
-// the 11 built-in types, or any user-defined type.  It may also be GrB_NULL,
-// to indicate that the function is type-generic and does not depend at all on
-// the value aij.  In this case, x is passed to f as a NULL pointer.
-
-// The optional Thunk parameter to GxB_select is a GrB_Scalar.  For built-in
-// select operators (TRIL, TRIU, DIAG, and OFFDIAG), Thunk must have any
-// built-in type, and thunk = (int64_t) Thunk is used to specify the diagonal
-// for these operators.  Thunk may be NULL, in which case its value is treated
-// as zero, if it has a built-in type. The value of Thunk (if present) is not
-// modified by any built-in select operator.
-
-// For user-defined select operators, Thunk is not typecasted at all.  If
-// the user operator is defined with a non-NULL Thunk input, then it must
-// be non-NULL and of the same type, when calling GxB_select.
-
-// GxB_SelectOp:  a function z=f(i,j,x,thunk) for the GxB_Select operation.
-// The function f must have the signature:
-
-//      bool f (GrB_Index i, GrB_Index j, const void *x, const void *thunk) ;
-
-// The values of i and j are guaranteed to be in the range 0 to
-// GrB_INDEX_MAX, and they can be safely typecasted to int64_t then negated,
-// if desired, without any risk of integer overflow.
+// GrB_select and GrB_IndexUnaryOp should be used instead of GxB_select.
 
 typedef struct GB_SelectOp_opaque *GxB_SelectOp ;
-
-//------------------------------------------------------------------------------
-// built-in select operators (historical)
-//------------------------------------------------------------------------------
-
-// GxB_select (C, Mask, accum, op, A, Thunk, desc) always returns a matrix C of
-// the same size as A (or A' if GrB_TRAN is in the descriptor).
-
-GB_GLOBAL GxB_SelectOp
-
-    GxB_TRIL,       // C=tril(A,thunk):   returns true if ((j-i) <= thunk)
-    GxB_TRIU,       // C=triu(A,thunk):   returns true if ((j-i) >= thunk)
-    GxB_DIAG,       // C=diag(A,thunk):   returns true if ((j-i) == thunk)
-    GxB_OFFDIAG,    // C=A-diag(A,thunk): returns true if ((j-i) != thunk)
-
-    GxB_NONZERO,    // C=A(A ~= 0)
-    GxB_EQ_ZERO,    // C=A(A == 0)
-    GxB_GT_ZERO,    // C=A(A >  0)
-    GxB_GE_ZERO,    // C=A(A >= 0)
-    GxB_LT_ZERO,    // C=A(A <  0)
-    GxB_LE_ZERO,    // C=A(A <= 0)
-
-    GxB_NE_THUNK,   // C=A(A ~= thunk)
-    GxB_EQ_THUNK,   // C=A(A == thunk)
-    GxB_GT_THUNK,   // C=A(A >  thunk)
-    GxB_GE_THUNK,   // C=A(A >= thunk)
-    GxB_LT_THUNK,   // C=A(A <  thunk)
-    GxB_LE_THUNK ;  // C=A(A <= thunk)
-
-// For GxB_TRIL, GxB_TRIU, GxB_DIAG, and GxB_OFFDIAG, the parameter Thunk is a
-// GrB_Scalar of any built-in type.  If GrB_NULL, or empty, Thunk is treated as
-// zero.  Otherwise, the single entry is typecasted as (int64_t) Thunk.
-// These select operators do not depend on the values of A, but just their
-// position, and they work on matrices of any type.
-
-// For GxB_*ZERO, the result depends only on the value of A(i,j).  The Thunk
-// parameter to GxB_select is ignored and may be GrB_NULL.
-
-// The operators GxB_TRIL, GxB_TRIU, GxB_DIAG, GxB_OFFDIAG, GxB_NONZERO,
-// GxB_EQ_ZERO, GxB_NE_THUNK, and GxB_EQ_THUNK work on all built-in types and
-// all user-defined types.
-
-// GxB_GT_*, GxB_GE_*, GxB_LT_*, and GxB_LE_* only work on the 11 built-in
-// types (not complex).  They cannot be used for user-defined types.
-
-//------------------------------------------------------------------------------
-// select operators: (historical)
-//------------------------------------------------------------------------------
-
-// User-defined GxB_SelectOps are historical.  New code should use
-// GrB_IndexUnaryOp_new instead.
-
-typedef bool (*GxB_select_function)      // return true if A(i,j) is kept
-(
-    GrB_Index i,                // row index of A(i,j)
-    GrB_Index j,                // column index of A(i,j)
-    const void *x,              // value of A(i,j)
-    const void *thunk           // optional input for select function
-) ;
-
-#undef GxB_SelectOp_new
-#undef GxM_SelectOp_new
-
-GrB_Info GXB (SelectOp_new)     // create a new user-defined select operator
-(
-    GxB_SelectOp *selectop,     // handle for the new select operator
-    GxB_select_function function,// pointer to the select function
-    GrB_Type xtype,             // type of input x, or NULL if type-generic
-    GrB_Type ttype              // type of thunk, or NULL if not used
-) ;
-
-#define GxB_SelectOp_new(op,f,x,t) GB_SelectOp_new (op,f,x,t, GB_STR(f))
-#define GxM_SelectOp_new(op,f,x,t) GM_SelectOp_new (op,f,x,t, GB_STR(f))
-
-// GB_SelectOp_new should not be called directly, but only through the
-// GxB_SelectOp_new macro (but use GrB_IndexUnaryOp_new instead).
-GrB_Info GB_SelectOp_new        // not user-callable
-(
-    GxB_SelectOp *selectop,     // handle for the new select operator
-    GxB_select_function function,// pointer to the select function
-    GrB_Type xtype,             // type of input x
-    GrB_Type ttype,             // type of thunk, or NULL if not used
-    const char *name            // name of the underlying function
-) ;
-
-// GxB_SelectOp_xtype is historical.  Use a GrB_IndexUnaryOp instead.
-GrB_Info GxB_SelectOp_xtype     // return the type of x
-(
-    GrB_Type *xtype,            // return type of input x
-    GxB_SelectOp selectop       // select operator
-) ;
-
-// GxB_SelectOp_ttype is historical.  Use a GrB_IndexUnaryOp instead.
-GrB_Info GxB_SelectOp_ttype     // return the type of thunk
-(
-    GrB_Type *ttype,            // return type of input thunk
-    GxB_SelectOp selectop       // select operator
-) ;
-
-GrB_Info GxB_SelectOp_free      // free a user-created select operator
-(
-    GxB_SelectOp *selectop      // handle of select operator to free
-) ;
+GB_GLOBAL GxB_SelectOp GxB_TRIL, GxB_TRIU, GxB_DIAG, GxB_OFFDIAG, GxB_NONZERO,
+GxB_EQ_ZERO, GxB_GT_ZERO, GxB_GE_ZERO, GxB_LT_ZERO, GxB_LE_ZERO, GxB_NE_THUNK,
+GxB_EQ_THUNK, GxB_GT_THUNK, GxB_GE_THUNK, GxB_LT_THUNK, GxB_LE_THUNK ;
+GrB_Info GxB_SelectOp_xtype (GrB_Type *xtype, GxB_SelectOp selectop) ;
+GrB_Info GxB_SelectOp_ttype (GrB_Type *ttype, GxB_SelectOp selectop) ;
 
 //==============================================================================
 // GrB_IndexUnaryOp: a unary operator that depends on the row/col indices
@@ -1813,14 +1635,9 @@ GB_GLOBAL GrB_IndexUnaryOp
 
     // These operators work on any data type, including user-defined.
 
-    // ROWINDEX: (i+y): row index plus y
-    GrB_ROWINDEX_INT32,  GrB_ROWINDEX_INT64,
-
-    // COLINDEX: (j+y): col index plus y
-    GrB_COLINDEX_INT32,  GrB_COLINDEX_INT64,
-
-    // DIAGINDEX: (j-(i+y)): diagonal index plus y
-    GrB_DIAGINDEX_INT32, GrB_DIAGINDEX_INT64,
+    GrB_ROWINDEX_INT32,  GrB_ROWINDEX_INT64,    // (i+y): row index plus y
+    GrB_COLINDEX_INT32,  GrB_COLINDEX_INT64,    // (j+y): col index plus y
+    GrB_DIAGINDEX_INT32, GrB_DIAGINDEX_INT64,   // (j-(i+y)): diag index plus y
 
     //--------------------------------------------------------------------------
     // Result is bool, depending only on the indices i,j, and y
@@ -1829,29 +1646,15 @@ GB_GLOBAL GrB_IndexUnaryOp
     // These operators work on any data type, including user-defined.
     // The scalar y is int64.
 
-    // TRIL: (j <= (i+y)): lower triangular part
-    GrB_TRIL,
+    GrB_TRIL,       // (j <= (i+y)): lower triangular part
+    GrB_TRIU,       // (j >= (i+y)): upper triangular part
+    GrB_DIAG,       // (j == (i+y)): diagonal
+    GrB_OFFDIAG,    // (j != (i+y)): offdiagonal
 
-    // TRIU: (j >= (i+y)): upper triangular part
-    GrB_TRIU,
-
-    // DIAG: (j == (i+y)): diagonal
-    GrB_DIAG,
-
-    // OFFDIAG: (j != (i+y)): offdiagonal
-    GrB_OFFDIAG,
-
-    // COLLE: (j <= y): columns 0:y
-    GrB_COLLE,
-
-    // COLGT: (j > y): columns y+1:ncols-1
-    GrB_COLGT,
-
-    // ROWLE: (i <= y): rows 0:y
-    GrB_ROWLE,
-
-    // ROWGT: (i > y): rows y+1:nrows-1
-    GrB_ROWGT,
+    GrB_COLLE,      // (j <= y): columns 0:y
+    GrB_COLGT,      // (j > y): columns y+1:ncols-1
+    GrB_ROWLE,      // (i <= y): rows 0:y
+    GrB_ROWGT,      // (i > y): rows y+1:nrows-1
 
     //--------------------------------------------------------------------------
     // Result is bool, depending only on the value aij
@@ -4076,7 +3879,7 @@ GrB_Info GxB_Matrix_diag    // construct a diagonal matrix from a vector
     GrB_Matrix C,                   // output matrix
     const GrB_Vector v,             // input vector
     int64_t k,
-    const GrB_Descriptor desc
+    const GrB_Descriptor desc       // to specify # of threads
 ) ;
 
 // GxB_Vector_diag extracts a vector v from an input matrix A, which may be
@@ -4121,8 +3924,6 @@ GrB_Info GxB_Vector_diag    // extract a diagonal from a matrix, as a vector
 //      GxB_Global_Option_set:  sets an option for all future matrices
 //      GxB_Global_Option_get:  queries current option for all future matrices
 
-#define GxB_HYPER 0     // (historical, use GxB_HYPER_SWITCH)
-
 typedef enum            // for global options or matrix options
 {
 
@@ -4130,69 +3931,90 @@ typedef enum            // for global options or matrix options
     // for GxB_Matrix_Option_get/set and GxB_Global_Option_get/set:
     //------------------------------------------------------------
 
-    GxB_HYPER_SWITCH = 0,   // defines switch to hypersparse (a double value)
-    GxB_BITMAP_SWITCH = 34, // defines switch to bitmap (a double value)
-    GxB_FORMAT = 1,         // defines CSR/CSC format: GxB_BY_ROW or GxB_BY_COL
+    GxB_HYPER_SWITCH = 7000,    // switch to hypersparse (double value)
+    GxB_BITMAP_SWITCH = 7001,   // switch to bitmap (double value)
+    GxB_FORMAT = 7002,          // CSR/CSC format: GxB_BY_ROW or GxB_BY_COL
 
     //------------------------------------------------------------
     // for GxB_Global_Option_get only:
     //------------------------------------------------------------
 
-    GxB_MODE = 2,       // mode passed to GrB_init (blocking or non-blocking)
-    GxB_LIBRARY_NAME = 8,           // name of the library (char *)
-    GxB_LIBRARY_VERSION = 9,        // library version (3 int's)
-    GxB_LIBRARY_DATE = 10,          // date of the library (char *)
-    GxB_LIBRARY_ABOUT = 11,         // about the library (char *)
-    GxB_LIBRARY_URL = 12,           // URL for the library (char *)
-    GxB_LIBRARY_LICENSE = 13,       // license of the library (char *)
-    GxB_LIBRARY_COMPILE_DATE = 14,  // date library was compiled (char *)
-    GxB_LIBRARY_COMPILE_TIME = 15,  // time library was compiled (char *)
-    GxB_API_VERSION = 16,           // API version (3 int's)
-    GxB_API_DATE = 17,              // date of the API (char *)
-    GxB_API_ABOUT = 18,             // about the API (char *)
-    GxB_API_URL = 19,               // URL for the API (char *)
-    GxB_COMPILER_VERSION = 23,      // compiler version (3 int's)
-    GxB_COMPILER_NAME = 24,         // compiler name (char *)
-    GxB_LIBRARY_OPENMP = 25,        // library compiled with OpenMP
+    GxB_MODE = 7003,                 // mode passed to GrB_init
+    GxB_LIBRARY_NAME = 7004,         // name of the library (char *)
+    GxB_LIBRARY_VERSION = 7005,      // library version (3 int's)
+    GxB_LIBRARY_DATE = 7006,         // date of the library (char *)
+    GxB_LIBRARY_ABOUT = 7007,        // about the library (char *)
+    GxB_LIBRARY_URL = 7008,          // URL for the library (char *)
+    GxB_LIBRARY_LICENSE = 7009,      // license of the library (char *)
+    GxB_LIBRARY_COMPILE_DATE = 7010, // date library was compiled (char *)
+    GxB_LIBRARY_COMPILE_TIME = 7011, // time library was compiled (char *)
+    GxB_API_VERSION = 7012,          // API version (3 int's)
+    GxB_API_DATE = 7013,             // date of the API (char *)
+    GxB_API_ABOUT = 7014,            // about the API (char *)
+    GxB_API_URL = 7015,              // URL for the API (char *)
+    GxB_COMPILER_VERSION = 7016,     // compiler version (3 int's)
+    GxB_COMPILER_NAME = 7017,        // compiler name (char *)
+    GxB_LIBRARY_OPENMP = 7018,       // library compiled with OpenMP
 
     //------------------------------------------------------------
     // for GxB_Global_Option_get/set only:
     //------------------------------------------------------------
 
     GxB_GLOBAL_NTHREADS = GxB_NTHREADS,  // max number of threads to use
-                        // If <= GxB_DEFAULT, then GraphBLAS selects the number
-                        // of threads automatically.
+    GxB_GLOBAL_CHUNK = GxB_CHUNK,        // chunk size for small problems.
+    GxB_GLOBAL_GPU_ID = GxB_GPU_ID,      // which GPU to use (DRAFT)
 
-    GxB_GLOBAL_CHUNK = GxB_CHUNK,       // chunk size for small problems.
-                        // If <= GxB_DEFAULT, then the default is used.
+    GxB_BURBLE = 7019,               // diagnostic output (bool *)
+    GxB_PRINTF = 7020,               // printf function diagnostic output
+    GxB_FLUSH = 7021,                // flush function diagnostic output
+    GxB_MEMORY_POOL = 7022,          // no longer used
+    GxB_PRINT_1BASED = 7023,         // print matrices as 0-based or 1-based
 
-    GxB_BURBLE = 99,    // diagnostic output (bool *)
-    GxB_PRINTF = 101,   // printf function diagnostic output
-    GxB_FLUSH = 102,    // flush function diagnostic output
-    GxB_MEMORY_POOL = 103,  // memory pool control
-    GxB_PRINT_1BASED = 104,   // print matrices as 0-based or 1-based
+    GxB_JIT_C_COMPILER_NAME = 7024,  // CPU JIT C compiler name
+    GxB_JIT_C_COMPILER_FLAGS = 7025, // CPU JIT C compiler flags
+    GxB_JIT_C_LINKER_FLAGS = 7026,   // CPU JIT C linker flags
+    GxB_JIT_C_LIBRARIES = 7027,      // CPU JIT C libraries
+    GxB_JIT_C_PREFACE = 7028,        // CPU JIT C preface
+    GxB_JIT_C_CONTROL = 7029,        // CPU JIT C control
+    GxB_JIT_CACHE_PATH = 7030,       // CPU/CUDA JIT path for compiled kernels
+    GxB_JIT_C_CMAKE_LIBS = 7031,     // CPU JIT C libraries when using cmake
+    GxB_JIT_USE_CMAKE = 7032,        // CPU JIT: use cmake or direct compile
+    GxB_JIT_ERROR_LOG = 7033,        // CPU JIT: error log file
 
     //------------------------------------------------------------
     // for GxB_Matrix_Option_get only:
     //------------------------------------------------------------
 
-    GxB_SPARSITY_STATUS = 33,       // hyper, sparse, bitmap or full (1,2,4,8)
-    GxB_IS_HYPER = 6,               // historical; use GxB_SPARSITY_STATUS
+    GxB_SPARSITY_STATUS = 7034,     // hyper, sparse, bitmap or full (1,2,4,8)
+    GxB_IS_HYPER = 7035,            // historical; use GxB_SPARSITY_STATUS
 
     //------------------------------------------------------------
     // for GxB_Matrix_Option_get/set only:
     //------------------------------------------------------------
 
-    GxB_SPARSITY_CONTROL = 32,      // sparsity control: 0 to 15; see below
+    GxB_SPARSITY_CONTROL = 7036,    // sparsity control: 0 to 15; see below
 
     //------------------------------------------------------------
-    // GPU and options (DRAFT: do not use)
+    // memory functions (GxB_Global_Option_get only):
     //------------------------------------------------------------
 
-    GxB_GLOBAL_GPU_CONTROL = GxB_GPU_CONTROL,
-    GxB_GLOBAL_GPU_CHUNK   = GxB_GPU_CHUNK,
+    GxB_MALLOC_FUNCTION = 7037,
+    GxB_CALLOC_FUNCTION = 7038,
+    GxB_REALLOC_FUNCTION = 7039,
+    GxB_FREE_FUNCTION = 7040,
 
 } GxB_Option_Field ;
+
+// for GxB_JIT_C_CONTROL:
+typedef enum
+{
+    GxB_JIT_OFF = 0,    // do not use the JIT: free all JIT kernels if loaded
+    GxB_JIT_PAUSE = 1,  // do not run JIT kernels but keep any loaded
+    GxB_JIT_RUN = 2,    // run JIT kernels if already loaded; no load/compile
+    GxB_JIT_LOAD = 3,   // able to load and run JIT kernels; may not compile
+    GxB_JIT_ON = 4,     // full JIT: able to compile, load, and run
+}
+GxB_JIT_Control ;
 
 // GxB_FORMAT can be by row or by column:
 typedef enum
@@ -4414,6 +4236,12 @@ GrB_Info GxB_Global_Option_set_INT64_ARRAY      // set a global default option
     int64_t *value                  // value to change it to
 ) ;
 
+GrB_Info GxB_Global_Option_set_CHAR      // set a global default option
+(
+    GxB_Option_Field field,         // option to change
+    const char *value               // value to change it to
+) ;
+
 GrB_Info GxB_Global_Option_set_FUNCTION      // set a global default option
 (
     GxB_Option_Field field,         // option to change
@@ -4447,7 +4275,7 @@ GrB_Info GxB_Global_Option_get_INT64        // gets the current global option
 GrB_Info GxB_Global_Option_get_CHAR         // gets the current global option
 (
     GxB_Option_Field field,         // option to query
-    char **value                    // return value of the global option
+    const char **value              // return value of the global option
 ) ;
 
 GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
@@ -4456,9 +4284,93 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
     void **value                    // return value of the global option
 ) ;
 
-//------------------------------------------------------------------------------
+//==============================================================================
+// GxB_Context: for managing computational resources
+//==============================================================================
+
+typedef struct GB_Context_opaque *GxB_Context ;
+
+// GxB_CONTEXT_WORLD is the default Context for all user threads.
+GB_GLOBAL GxB_Context GxB_CONTEXT_WORLD ;
+
+typedef enum
+{
+    GxB_CONTEXT_NTHREADS = GxB_NTHREADS,     // max number of threads to use.
+                    // If <= 0, then one thread is used.
+
+    GxB_CONTEXT_CHUNK = GxB_CHUNK,   // chunk size for small problems.
+                    // If < 1, then the default is used.
+
+    // GPU control (DRAFT: in progress, do not use)
+    GxB_CONTEXT_GPU_ID      = GxB_GPU_ID,
+}
+GxB_Context_Field ;
+
+GrB_Info GxB_Context_new            // create a new Context
+(
+    GxB_Context *Context            // handle of Context to create
+) ;
+
+GrB_Info GxB_Context_free           // free a Context
+(
+    GxB_Context *Context            // handle of Context to free
+) ;
+
+GrB_Info GxB_Context_set_INT32      // set a parameter in a Context
+(
+    GxB_Context Context,            // Context to modify
+    GxB_Context_Field field,        // parameter to change
+    int32_t value                   // value to change it to
+) ;
+
+GrB_Info GxB_Context_set_FP64       // set a parameter in a Context
+(
+    GxB_Context Context,            // Context to modify
+    GxB_Context_Field field,        // parameter to change
+    double value                    // value to change it to
+) ;
+
+GrB_Info GxB_Context_set            // set a parameter in a Context
+(
+    GxB_Context Context,            // Context to modify
+    GxB_Context_Field field,        // parameter to change
+    ...                             // value to change it to
+) ;
+
+GrB_Info GxB_Context_get_INT32      // get a parameter of a Context
+(
+    GxB_Context Context,            // Context to query
+    GxB_Context_Field field,        // parameter to query
+    int32_t *value                  // return value from the Context
+) ;
+
+GrB_Info GxB_Context_get_FP64       // get a parameter in a Context
+(
+    GxB_Context Context,            // Context to query
+    GxB_Context_Field field,        // parameter to query
+    double *value                   // return value from the Context
+) ;
+
+GrB_Info GxB_Context_get            // get a parameter in a Context
+(
+    GxB_Context Context,            // Context to query
+    GxB_Context_Field field,        // parameter to query
+    ...                             // return value of the descriptor
+) ;
+
+GrB_Info GxB_Context_engage         // engage a Context
+(
+    GxB_Context Context             // Context to engage
+) ;
+
+GrB_Info GxB_Context_disengage      // disengage a Context
+(
+    GxB_Context Context             // Context to disengage
+) ;
+
+//==============================================================================
 // GxB_set and GxB_get
-//------------------------------------------------------------------------------
+//==============================================================================
 
 // The simplest way to set/get a value of a GrB_Descriptor is with
 // the generic GxB_set and GxB_get functions:
@@ -4500,11 +4412,34 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
 //
 //      GxB_set (GxB_FLUSH, void *flush_function) ;
 //      GxB_get (GxB_FLUSH, void **flush_function) ;
+
+//      GxB_set (GxB_JIT_C_COMPILER_NAME, const char *compiler) ;
+//      GxB_get (GxB_JIT_C_COMPILER_NAME, const char **compiler) ;
+//      GxB_set (GxB_JIT_C_COMPILER_FLAGS, const char *flags) ;
+//      GxB_get (GxB_JIT_C_COMPILER_FLAGS, const char **flags) ;
+//      GxB_set (GxB_JIT_C_LINKER_FLAGS, const char *flags) ;
+//      GxB_get (GxB_JIT_C_LINKER_FLAGS, const char **flags) ;
+//      GxB_set (GxB_JIT_CACHE_PATH, const char *cache_path) ;
+//      GxB_get (GxB_JIT_CACHE_PATH, const char **cache_path) ;
+//      GxB_set (GxB_JIT_C_CONTROL, int control) ;
+//      GxB_get (GxB_JIT_C_CONTROL, int *control) ;
+
+// To set/get the GxB_CONTEXT_WORLD options:  These have the same effect as
+// the global set/get for NTHREADS and CHUNK, listed above.
 //
-//      int64_t free_pool_limit [64] ;
-//      GxB_set (GxB_MEMORY_POOL, free_pool_limit) ;
-//      GxB_set (GxB_MEMORY_POOL, NULL) ;     // set defaults
-//      GxB_get (GxB_MEMORY_POOL, free_pool_limit) ;
+//      GxB_set (GxB_CONTEXT_WORLD, GxB_NTHREADS, nthreads_max) ;
+//      GxB_get (GxB_CONTEXT_WORLD, GxB_NTHREADS, int *nthreads_max) ;
+//
+//      GxB_set (GxB_CONTEXT_WORLD, GxB_CHUNK, double chunk) ;
+//      GxB_get (GxB_CONTEXT_WORLD, GxB_CHUNK, double *chunk) ;
+
+// To set/get a Context option:
+//
+//      GxB_set (GxB_Context Context, GxB_NTHREADS, nthreads_max) ;
+//      GxB_get (GxB_Context Context, GxB_NTHREADS, int *nthreads_max) ;
+//
+//      GxB_set (GxB_Context Context, GxB_CHUNK, double chunk) ;
+//      GxB_get (GxB_Context Context, GxB_CHUNK, double *chunk) ;
 
 // To get global options that can be queried but not modified:
 //
@@ -4590,7 +4525,8 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
             GxB_Option_Field : GxB_Global_Option_set ,          \
             GrB_Vector       : GxB_Vector_Option_set ,          \
             GrB_Matrix       : GxB_Matrix_Option_set ,          \
-            GrB_Descriptor   : GxB_Desc_set                     \
+            GrB_Descriptor   : GxB_Desc_set          ,          \
+            GxB_Context      : GxB_Context_set                  \
     )                                                           \
     (arg1, __VA_ARGS__)
 
@@ -4602,7 +4538,8 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
             GxB_Option_Field : GxB_Global_Option_get ,          \
             GrB_Vector       : GxB_Vector_Option_get ,          \
             GrB_Matrix       : GxB_Matrix_Option_get ,          \
-            GrB_Descriptor   : GxB_Desc_get                     \
+            GrB_Descriptor   : GxB_Desc_get          ,          \
+            GxB_Context      : GxB_Context_get                  \
     )                                                           \
     (arg1, __VA_ARGS__)
 #endif
@@ -4623,7 +4560,6 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
             GrB_Type         *: GrB_Type_free         , \
             GrB_UnaryOp      *: GrB_UnaryOp_free      , \
             GrB_BinaryOp     *: GrB_BinaryOp_free     , \
-            GxB_SelectOp     *: GxB_SelectOp_free     , \
             GrB_IndexUnaryOp *: GrB_IndexUnaryOp_free , \
             GrB_Monoid       *: GrB_Monoid_free       , \
             GrB_Semiring     *: GrB_Semiring_free     , \
@@ -4631,6 +4567,7 @@ GrB_Info GxB_Global_Option_get_FUNCTION // gets the current global option
             GrB_Vector       *: GrB_Vector_free       , \
             GrB_Matrix       *: GrB_Matrix_free       , \
             GrB_Descriptor   *: GrB_Descriptor_free   , \
+            GxB_Context      *: GxB_Context_free      , \
             GxB_Iterator     *: GxB_Iterator_free       \
     )                                                   \
     (object)
@@ -4652,7 +4589,6 @@ GrB_WaitMode ;
 GrB_Info GrB_Type_wait         (GrB_Type       type    , GrB_WaitMode waitmode);
 GrB_Info GrB_UnaryOp_wait      (GrB_UnaryOp    op      , GrB_WaitMode waitmode);
 GrB_Info GrB_BinaryOp_wait     (GrB_BinaryOp   op      , GrB_WaitMode waitmode);
-GrB_Info GxB_SelectOp_wait     (GxB_SelectOp   op      , GrB_WaitMode waitmode);
 GrB_Info GrB_IndexUnaryOp_wait (GrB_IndexUnaryOp op    , GrB_WaitMode waitmode);
 GrB_Info GrB_Monoid_wait       (GrB_Monoid     monoid  , GrB_WaitMode waitmode);
 GrB_Info GrB_Semiring_wait     (GrB_Semiring   semiring, GrB_WaitMode waitmode);
@@ -4660,6 +4596,7 @@ GrB_Info GrB_Descriptor_wait   (GrB_Descriptor desc    , GrB_WaitMode waitmode);
 GrB_Info GrB_Scalar_wait       (GrB_Scalar     s       , GrB_WaitMode waitmode);
 GrB_Info GrB_Vector_wait       (GrB_Vector     v       , GrB_WaitMode waitmode);
 GrB_Info GrB_Matrix_wait       (GrB_Matrix     A       , GrB_WaitMode waitmode);
+GrB_Info GxB_Context_wait      (GxB_Context    Context , GrB_WaitMode waitmode);
 
 // GrB_wait (object,waitmode) polymorphic function:
 #if GxB_STDC_VERSION >= 201112L
@@ -4670,17 +4607,18 @@ GrB_Info GrB_Matrix_wait       (GrB_Matrix     A       , GrB_WaitMode waitmode);
             GrB_Type         : GrB_Type_wait         ,  \
             GrB_UnaryOp      : GrB_UnaryOp_wait      ,  \
             GrB_BinaryOp     : GrB_BinaryOp_wait     ,  \
-            GxB_SelectOp     : GxB_SelectOp_wait     ,  \
             GrB_IndexUnaryOp : GrB_IndexUnaryOp_wait ,  \
             GrB_Monoid       : GrB_Monoid_wait       ,  \
             GrB_Semiring     : GrB_Semiring_wait     ,  \
             GrB_Scalar       : GrB_Scalar_wait       ,  \
             GrB_Vector       : GrB_Vector_wait       ,  \
             GrB_Matrix       : GrB_Matrix_wait       ,  \
+            GxB_Context      : GxB_Context_wait      ,  \
             GrB_Descriptor   : GrB_Descriptor_wait      \
     )                                                   \
     (object, waitmode)
 #endif
+
 
 // NOTE: GxB_Scalar_wait is historical; use GrB_Scalar_wait instead
 GrB_Info GxB_Scalar_wait (GrB_Scalar *s) ;
@@ -4697,7 +4635,6 @@ GrB_Info GxB_Scalar_wait (GrB_Scalar *s) ;
 GrB_Info GrB_Type_error         (const char **error, const GrB_Type      type) ;
 GrB_Info GrB_UnaryOp_error      (const char **error, const GrB_UnaryOp     op) ;
 GrB_Info GrB_BinaryOp_error     (const char **error, const GrB_BinaryOp    op) ;
-GrB_Info GxB_SelectOp_error     (const char **error, const GxB_SelectOp    op) ;
 GrB_Info GrB_IndexUnaryOp_error (const char **error, const GrB_IndexUnaryOp op) ;
 GrB_Info GrB_Monoid_error       (const char **error, const GrB_Monoid monoid) ;
 GrB_Info GrB_Semiring_error     (const char **error, const GrB_Semiring semiring) ;
@@ -4707,6 +4644,7 @@ GrB_Info GrB_Matrix_error       (const char **error, const GrB_Matrix     A) ;
 GrB_Info GrB_Descriptor_error   (const char **error, const GrB_Descriptor d) ;
 // GxB_Scalar_error is historical: use GrB_Scalar_error instead
 GrB_Info GxB_Scalar_error       (const char **error, const GrB_Scalar     s) ;
+GrB_Info GxB_Context_error      (const char **error, const GxB_Context Context);
 
 // GrB_error (error,object) polymorphic function:
 #if GxB_STDC_VERSION >= 201112L
@@ -4717,13 +4655,13 @@ GrB_Info GxB_Scalar_error       (const char **error, const GrB_Scalar     s) ;
                   GrB_Type         : GrB_Type_error         ,   \
                   GrB_UnaryOp      : GrB_UnaryOp_error      ,   \
                   GrB_BinaryOp     : GrB_BinaryOp_error     ,   \
-                  GxB_SelectOp     : GxB_SelectOp_error     ,   \
                   GrB_IndexUnaryOp : GrB_IndexUnaryOp_error ,   \
                   GrB_Monoid       : GrB_Monoid_error       ,   \
                   GrB_Semiring     : GrB_Semiring_error     ,   \
                   GrB_Scalar       : GrB_Scalar_error       ,   \
                   GrB_Vector       : GrB_Vector_error       ,   \
                   GrB_Matrix       : GrB_Matrix_error       ,   \
+                  GxB_Context      : GxB_Context_error      ,   \
                   GrB_Descriptor   : GrB_Descriptor_error       \
     )                                                           \
     (error, object)
@@ -7678,42 +7616,19 @@ GrB_Info GrB_Matrix_select_UDT      // C<M>=accum(C,op(A))
 #endif
 
 //==============================================================================
-// GxB_select: matrix and vector selection (historical)
+// GxB_select: matrix and vector selection (DEPRECATED: use GrB_select instead)
 //==============================================================================
 
-// GrB_select and with the GrB_IndexUnaryOp operators should be used instead.
-
-GrB_Info GxB_Vector_select          // w<mask> = accum (w, op(u,k))
-(
-    GrB_Vector w,                   // input/output vector for results
-    const GrB_Vector mask,          // optional mask for w, unused if NULL
-    const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
-    const GxB_SelectOp op,          // operator to apply to the entries
-    const GrB_Vector u,             // first input:  vector u
-    const GrB_Scalar Thunk,         // optional input for the select operator
-    const GrB_Descriptor desc       // descriptor for w and mask
-) ;
-
-GrB_Info GxB_Matrix_select          // C<Mask> = accum (C, op(A,k)) or op(A',k)
-(
-    GrB_Matrix C,                   // input/output matrix for results
-    const GrB_Matrix Mask,          // optional mask for C, unused if NULL
-    const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
-    const GxB_SelectOp op,          // operator to apply to the entries
-    const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Scalar Thunk,         // optional input for the select operator
-    const GrB_Descriptor desc       // descriptor for C, mask, and A
-) ;
-
+GrB_Info GxB_Vector_select (GrB_Vector w, const GrB_Vector mask,
+const GrB_BinaryOp accum, const GxB_SelectOp op, const GrB_Vector u,
+const GrB_Scalar Thunk, const GrB_Descriptor desc) ;
+GrB_Info GxB_Matrix_select (GrB_Matrix C, const GrB_Matrix Mask,
+const GrB_BinaryOp accum, const GxB_SelectOp op, const GrB_Matrix A,
+const GrB_Scalar Thunk, const GrB_Descriptor desc) ;
 #if GxB_STDC_VERSION >= 201112L
-#define GxB_select(C,Mask,accum,op,A,Thunk,desc)    \
-    _Generic                                        \
-    (                                               \
-        (C),                                        \
-            GrB_Vector   : GxB_Vector_select ,      \
-            GrB_Matrix   : GxB_Matrix_select        \
-    )                                               \
-    (C, Mask, accum, op, A, Thunk, desc)
+#define GxB_select(C,Mask,accum,op,A,Thunk,desc) _Generic \
+((C), GrB_Vector:GxB_Vector_select , GrB_Matrix:GxB_Matrix_select ) \
+(C, Mask, accum, op, A, Thunk, desc)
 #endif
 
 //==============================================================================
@@ -8331,7 +8246,7 @@ GB_GLOBAL GrB_Monoid
     GxB_LAND_BOOL_MONOID,       // identity: true         terminal: false
     GxB_LXOR_BOOL_MONOID,       // identity: false
     GxB_LXNOR_BOOL_MONOID,      // identity: true
-    GxB_EQ_BOOL_MONOID,         // (alternative name for GrB_LXNOR_MONOID_BOOL)
+    GxB_EQ_BOOL_MONOID,         // (another name for GrB_LXNOR_MONOID_BOOL)
 
     // preferred names from the v1.3 spec:
     GrB_LOR_MONOID_BOOL,        // identity: false        terminal: true
@@ -9257,13 +9172,8 @@ GrB_Info GxB_IndexUnaryOp_fprint    // print and check a GrB_IndexUnaryOp
     FILE *f                         // file for output
 ) ;
 
-GrB_Info GxB_SelectOp_fprint        // print and check a GxB_SelectOp
-(
-    GxB_SelectOp selectop,          // object to print and check
-    const char *name,               // name of the object
-    GxB_Print_Level pr,             // print level
-    FILE *f                         // file for output
-) ;
+GrB_Info GxB_SelectOp_fprint (GxB_SelectOp op, const char *name,
+    GxB_Print_Level pr, FILE *f) ;
 
 GrB_Info GxB_Monoid_fprint          // print and check a GrB_Monoid
 (
@@ -9313,6 +9223,14 @@ GrB_Info GxB_Scalar_fprint          // print and check a GrB_Scalar
     FILE *f                         // file for output
 ) ;
 
+GrB_Info GxB_Context_fprint         // print and check a GxB_Context
+(
+    GxB_Context Context,            // object to print and check
+    const char *name,               // name of the object
+    GxB_Print_Level pr,             // print level
+    FILE *f                         // file for output
+) ;
+
 #if GxB_STDC_VERSION >= 201112L
 #define GxB_fprint(object,pr,f)                                 \
     _Generic                                                    \
@@ -9328,7 +9246,8 @@ GrB_Info GxB_Scalar_fprint          // print and check a GrB_Scalar
                   GrB_Scalar       : GxB_Scalar_fprint       ,  \
                   GrB_Vector       : GxB_Vector_fprint       ,  \
                   GrB_Matrix       : GxB_Matrix_fprint       ,  \
-                  GrB_Descriptor   : GxB_Descriptor_fprint      \
+                  GrB_Descriptor   : GxB_Descriptor_fprint   ,  \
+                  GxB_Context      : GxB_Context_fprint         \
     )                                                           \
     (object, GB_STR(object), pr, f)
 
@@ -10288,9 +10207,9 @@ GrB_Info GxB_Vector_unpack_Full   // unpack a full vector
 //
 //      // use the unpacked contents of A here, but do not change Ah or nvec.
 //      ...
-//      
+//
 //      // to pack the data back into A:
-//      GxB_Matrix_pack_HyperCSC (A, ...) ;     // pack most of A, except A->Y 
+//      GxB_Matrix_pack_HyperCSC (A, ...) ;     // pack most of A, except A->Y
 //      GxB_pack_HyperHash (A, &Y, desc) ;      // then pack A->Y
 
 // The same process is used with GxB_Matrix_unpack_HyperCSR,
@@ -10917,8 +10836,6 @@ GrB_Info GrB_Matrix_exportHint  // suggest the best export format
 #define GxB_COMPRESSION_LZ4HC 2000  // LZ4HC, with default level 9
 #define GxB_COMPRESSION_ZSTD  3000  // ZSTD, with default level 1
 
-#define GxB_COMPRESSION_INTEL   1000000 // not yet supported
-
 // Most of the above methods have a level parameter that controls the tradeoff
 // between run time and the amount of compression obtained.  Higher levels
 // result in a more compact result, at the cost of higher run time:
@@ -10944,6 +10861,7 @@ GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
     // input:
     GrB_Matrix A,                   // matrix to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
+                                    // and to control # of threads used
 ) ;
 
 GrB_Info GrB_Matrix_serialize       // serialize a GrB_Matrix to a blob
@@ -10965,6 +10883,7 @@ GrB_Info GxB_Vector_serialize       // serialize a GrB_Vector to a blob
     // input:
     GrB_Vector u,                   // vector to serialize
     const GrB_Descriptor desc       // descriptor to select compression method
+                                    // and to control # of threads used
 ) ;
 
 GrB_Info GrB_Matrix_serializeSize   // estimate the size of a blob
@@ -10977,7 +10896,8 @@ GrB_Info GrB_Matrix_serializeSize   // estimate the size of a blob
 ) ;
 
 // The GrB* and GxB* deserialize methods are nearly identical.  The GxB*
-// deserialize methods simply add the descriptor.
+// deserialize methods simply add the descriptor, which allows for optional
+// control of the # of threads used to deserialize the blob.
 
 GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
 (
@@ -10990,7 +10910,7 @@ GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
                         // type of C.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc
+    const GrB_Descriptor desc       // to control # of threads used
 ) ;
 
 GrB_Info GrB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
@@ -11017,7 +10937,7 @@ GrB_Info GxB_Vector_deserialize     // deserialize blob into a GrB_Vector
                         // type of w.
     const void *blob,       // the blob
     GrB_Index blob_size,    // size of the blob
-    const GrB_Descriptor desc
+    const GrB_Descriptor desc       // to control # of threads used
 ) ;
 
 // GxB_deserialize_type_name extracts the type_name of the GrB_Type of the
@@ -11108,7 +11028,7 @@ GrB_Info GxB_Matrix_reshape     // reshape a GrB_Matrix in place
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // new number of rows of C
     GrB_Index ncols_new,        // new number of columns of C
-    const GrB_Descriptor desc
+    const GrB_Descriptor desc   // to control # of threads used
 ) ;
 
 // GxB_Matrix_reshapeDup reshapes a matrix into another matrix.
@@ -11128,7 +11048,7 @@ GrB_Info GxB_Matrix_reshapeDup // reshape a GrB_Matrix into another GrB_Matrix
     bool by_col,                // true if reshape by column, false if by row
     GrB_Index nrows_new,        // number of rows of C
     GrB_Index ncols_new,        // number of columns of C
-    const GrB_Descriptor desc
+    const GrB_Descriptor desc   // to control # of threads used
 ) ;
 
 //==============================================================================
@@ -12093,56 +12013,8 @@ void       GxB_Iterator_get_UDT    (GxB_Iterator iterator,
         (iterator)->type_size)                                              \
 )
 
-//------------------------------------------------------------------------------
-// Rapids Memory Manager wrappers for SuiteSparse:GraphBLAS
-//------------------------------------------------------------------------------
-
-#ifndef RMM_WRAP_H
-#define RMM_WRAP_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// TODO describe the modes
-typedef enum
-{
-    rmm_wrap_host = 0,
-    rmm_wrap_host_pinned = 1,
-    rmm_wrap_device = 2,
-    rmm_wrap_managed = 3
-} RMM_MODE ;
-
-void rmm_wrap_finalize (void) ;
-
-int rmm_wrap_initialize
-(
-    RMM_MODE mode,
-    size_t init_pool_size,
-    size_t max_pool_size
-) ;
-
-// example usage:
-    //  rmm_wrap_initialize (rmm_wrap_managed, INT32_MAX, INT64_MAX) ;
-    //  GxB_init (GxB_NONBLOCKING_GPU, rmm_wrap_malloc, rmm_wrap_calloc,
-    //      rmm_wrap_realloc, rmm_wrap_free) ;
-    //  use GraphBLAS ... with the GPU
-    //  GrB_finalize ( ) ;
-    //  rmm_wrap_finalize ( ) ;
-
-// The two PMR-based allocate/deallocate signatures (C-style):
-void *rmm_wrap_allocate (size_t *size) ;
-void  rmm_wrap_deallocate (void *p, size_t size) ;
-
-// The four malloc/calloc/realloc/free signatures:
-void *rmm_wrap_malloc (size_t size) ;
-void *rmm_wrap_calloc (size_t n, size_t size) ;
-void *rmm_wrap_realloc (void *p, size_t newsize) ;
-void  rmm_wrap_free (void *p) ;
-
-#ifdef __cplusplus
+#if defined ( __cplusplus )
 }
-#endif
 #endif
 
 #endif

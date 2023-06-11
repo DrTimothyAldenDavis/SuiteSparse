@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( COLAMD_DATE "Jan 17, 2023" )
+set ( COLAMD_DATE "June 12, 2023" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 0 )
-set ( COLAMD_VERSION_SUB   3 )
+set ( COLAMD_VERSION_SUB   4 )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( colamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -69,7 +69,8 @@ add_library ( colamd SHARED ${COLAMD_SOURCES} )
 
 set_target_properties ( colamd PROPERTIES
     VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${COLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/colamd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -84,7 +85,8 @@ if ( NOT NSTATIC )
     set_target_properties ( colamd_static PROPERTIES
         VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
         OUTPUT_NAME colamd
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         SOVERSION ${COLAMD_VERSION_MAJOR} )
 
     if ( MSVC )
@@ -97,14 +99,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( colamd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( colamd PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( colamd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( colamd PUBLIC m )
+    target_link_libraries ( colamd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( colamd_static PUBLIC m )
     endif ( )

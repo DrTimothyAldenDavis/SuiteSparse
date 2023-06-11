@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( AMD_DATE "Jan 17, 2023" )
+set ( AMD_DATE "June 12, 2023" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 0 )
-set ( AMD_VERSION_SUB   3 )
+set ( AMD_VERSION_SUB   4 )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
@@ -57,7 +57,7 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -87,7 +87,8 @@ endif ( )
 add_library ( amd SHARED ${AMD_SOURCES} )
 set_target_properties ( amd PROPERTIES
     VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${AMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/amd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -100,7 +101,8 @@ if ( NOT NSTATIC )
     add_library ( amd_static STATIC ${AMD_SOURCES} )
     set_target_properties ( amd_static PROPERTIES
         VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME amd
         SOVERSION ${AMD_VERSION_MAJOR} )
 
@@ -115,14 +117,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( amd PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( amd PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( amd PUBLIC m )
+    target_link_libraries ( amd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( amd_static PUBLIC m )
     endif ( )

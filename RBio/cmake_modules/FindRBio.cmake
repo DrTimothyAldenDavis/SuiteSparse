@@ -53,7 +53,7 @@ find_library ( RBIO_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME rbio_static )
+    set ( STATIC_NAME rbio_static rbio )
 else ( )
     set ( STATIC_NAME rbio )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

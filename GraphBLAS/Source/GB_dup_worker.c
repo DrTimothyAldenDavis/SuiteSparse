@@ -2,7 +2,7 @@
 // GB_dup_worker: make a deep copy of a sparse matrix
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -25,8 +25,7 @@ GrB_Info GB_dup_worker      // make an exact copy of a matrix
     const bool numeric,     // if true, duplicate the numeric values; if A is
                             // iso, only the first entry is copied, regardless
                             // of C_iso on input
-    const GrB_Type ctype,   // type of C, if numeric is false
-    GB_Context Context
+    const GrB_Type ctype    // type of C, if numeric is false
 )
 {
 
@@ -45,7 +44,7 @@ GrB_Info GB_dup_worker      // make an exact copy of a matrix
     // determine the number of threads to use
     //--------------------------------------------------------------------------
 
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
 
     //--------------------------------------------------------------------------
     // get A
@@ -78,8 +77,7 @@ GrB_Info GB_dup_worker      // make an exact copy of a matrix
     // set C->iso = C_iso   OK: burble in the caller
     GB_OK (GB_new_bix (Chandle, // can be new or existing header
         numeric ? atype : ctype, A->vlen, A->vdim, GB_Ap_malloc, A->is_csc,
-        GB_sparsity (A), false, A->hyper_switch, A->plen, anz, true, C_iso,
-        Context)) ;
+        GB_sparsity (A), false, A->hyper_switch, A->plen, anz, true, C_iso)) ;
     C = (*Chandle) ;
 
     //--------------------------------------------------------------------------
@@ -106,7 +104,7 @@ GrB_Info GB_dup_worker      // make an exact copy of a matrix
         GB_memcpy (C->b, Ab, anz * sizeof (int8_t), nthreads_max) ;
     }
     if (Ai != NULL)
-    {
+    { 
         GB_memcpy (C->i, Ai, anz * sizeof (int64_t), nthreads_max) ;
     }
     if (numeric)

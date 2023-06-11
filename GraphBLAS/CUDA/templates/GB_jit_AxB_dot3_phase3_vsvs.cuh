@@ -21,22 +21,27 @@
 //******************************************************************************
 
 #pragma once
-#define GB_CUDA_KERNEL
 #include <limits>
 #include <cstdint>
 #include <cmath>
 #include <stdio.h>
 #include <cooperative_groups.h>
 #include "GB_cuda_kernel.h"
+#include "GB_mxm_shared_definitions.h"
+#include "GB_cuda_atomics.cuh"
 #include "GB_hash.h"
 #include "GB_hyper_hash_lookup.h"
+#include "GB_cuda_dot3_defn.h"
 
 using namespace cooperative_groups;
 
-// FIXME: move this out into its own *.cuh
-template< typename T, int tile_sz>
+//------------------------------------------------------------------------------
+// GB_warp_ReduceSumPlus_int64
+//------------------------------------------------------------------------------
+
+template< int tile_sz>
 __inline__ __device__ 
-T GB_warp_ReduceSumPlus( thread_block_tile<tile_sz> g, T val)
+int64_t GB_warp_ReduceSumPlus_int64( thread_block_tile<tile_sz> g, int64_t val)
 {
     // Each iteration halves the number of active threads
     // Each thread adds its partial sum[i] to sum[lane+i]
@@ -54,18 +59,22 @@ T GB_warp_ReduceSumPlus( thread_block_tile<tile_sz> g, T val)
     return val; // note: only thread 0 will return full sum
 }
 
-template<typename T, int warpSize>
+//------------------------------------------------------------------------------
+// GB_block_ReduceSum_int64
+//------------------------------------------------------------------------------
+
+template<int warpSize>
 __inline__ __device__
-T GB_block_ReduceSum(thread_block g, T val)
+int64_t GB_block_ReduceSum_int64(thread_block g, int64_t val)
 {
-  static __shared__ T shared[warpSize]; // Shared mem for 32 partial sums
+  static __shared__ int64_t shared[warpSize]; // Shared mem for 32 partial sums
 
   int lane = threadIdx.x & 31 ; // % warpSize;
   int wid  = threadIdx.x >> 5 ; // / warpSize;
   thread_block_tile<warpSize> tile = tiled_partition<warpSize>( g );
 
   // Each warp performs partial reduction
-  val = GB_warp_ReduceSumPlus<T, warpSize>( tile, val);    
+  val = GB_warp_ReduceSumPlus_int64<warpSize>( tile, val);    
 
   // Wait for all partial reductions
   if (lane==0) shared[wid]=val; // Write reduced value to shared memory
@@ -76,11 +85,14 @@ T GB_block_ReduceSum(thread_block g, T val)
   //read from shared memory only if that warp existed
   val = (threadIdx.x <  (blockDim.x / warpSize ) ) ? shared[lane] : 0;
 
-  if (wid==0) val = GB_warp_ReduceSumPlus<T, warpSize>( tile, val); //Final reduce within first warp
+  // Final reduce within first warp
+  if (wid==0) val = GB_warp_ReduceSumPlus_int64<warpSize>( tile, val);
 
   return val;
 }
 
+//------------------------------------------------------------------------------
+// AxB_dot3_phase3_vsvs
 //------------------------------------------------------------------------------
 
 template<
@@ -167,11 +179,7 @@ __global__ void AxB_dot3_phase3_vsvs
         int64_t k = Ci [pair_id]>>4 ;
 
         // j = k or j = Mh [k] if C and M are hypersparse
-        #if GB_M_IS_HYPER
-        int64_t j = Mh [k] ;
-        #else
-        int64_t j = k ;
-        #endif
+        int64_t j = GBH_M (Mh, k) ;
 
         // find A(:,i):  A is always sparse or hypersparse
         int64_t pA, pA_end ;
@@ -195,10 +203,7 @@ __global__ void AxB_dot3_phase3_vsvs
 
         GB_DECLAREA (aki) ;
         GB_DECLAREB (bkj) ;
-        #if !GB_C_ISO
-//      T_Z cij = GB_IDENTITY ;
-        GB_DECLARE_MONOID_IDENTITY (cij) ;
-        #endif
+        GB_DECLARE_IDENTITY (cij) ;         // GB_Z_TYPE cij = identity
 
         bool cij_exists = false;
 
@@ -206,7 +211,7 @@ __global__ void AxB_dot3_phase3_vsvs
         {
             int64_t ia = Ai [pA] ;
             int64_t ib = Bi [pB] ;
-            #if GB_IS_PLUS_PAIR_REAL_SEMIRING && GB_ZTYPE_IGNORE_OVERFLOW
+            #if GB_IS_PLUS_PAIR_REAL_SEMIRING && GB_Z_IGNORE_OVERFLOW
                 cij += (ia == ib) ;
             #else
                 if (ia == ib)
@@ -220,28 +225,30 @@ __global__ void AxB_dot3_phase3_vsvs
             pB += ( ib <= ia);  // incr pB if B(ib,j) at or before A(ia,i)
         }
 
+
         GB_CIJ_EXIST_POSTCHECK ;
         if (cij_exists)
         {
-            Ci[pair_id] = i ;
-            GB_PUTC ( Cx[pair_id] = (T_C)cij ) ;
+            GB_PUTC (cij, Cx, pair_id) ;        // Cx [pair_id] = (T_C) cij
+            Ci [pair_id] = i ;
         }
         else
         {
+            // cij is a zombie
             my_nzombies++;
-            Ci[pair_id] = GB_FLIP( i ) ;
+            Ci [pair_id] = GB_FLIP (i) ;
         }
     }
 
     // FIXME: use this in spdn and vsdn:
     this_thread_block().sync(); 
 
-    my_nzombies = GB_block_ReduceSum<int64_t , 32>( this_thread_block(), my_nzombies);
+    my_nzombies = GB_block_ReduceSum_int64<32>( this_thread_block(), my_nzombies);
     this_thread_block().sync(); 
 
     if( threadIdx.x == 0 && my_nzombies > 0)
     {
-        atomicAdd( (unsigned long long int*)&(C->nzombies), (unsigned long long int)my_nzombies);
+        GB_cuda_atomic_add <uint64_t>( &(C->nzombies), (uint64_t) my_nzombies) ;
     }
 }
 

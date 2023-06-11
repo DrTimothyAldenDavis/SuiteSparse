@@ -1,3 +1,7 @@
+June 12, 2023: version 3.0.4
+
+    * cmake build system updates: update by Markus Muetzel
+
 Jan 17, 2023: version 3.0.3
 
     * NFORTRAN: option added to disable Fortran entirely

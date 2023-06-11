@@ -265,11 +265,16 @@
 // #define SPEX_UTIL_VERSION_MINOR 1
 // #define SPEX_UTIL_VERSION_SUB   1
 
-#define SPEX_DATE "Jan 17, 2023"
-#define SPEX_VERSION "2.0.3"
+#define SPEX_DATE "June 12, 2023"
+#define SPEX_VERSION "2.0.4"
 #define SPEX_VERSION_MAJOR 2
 #define SPEX_VERSION_MINOR 0
-#define SPEX_VERSION_SUB   3
+#define SPEX_VERSION_SUB   4
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
 
 //------------------------------------------------------------------------------
 // Error codes
@@ -952,5 +957,8 @@ SPEX_info SPEX_Left_LU_solve         // solves the linear system LD^(-1)U x = b
     const SPEX_options* option
 ) ;
 
+#if defined ( __cplusplus )
+}
 #endif
 
+#endif

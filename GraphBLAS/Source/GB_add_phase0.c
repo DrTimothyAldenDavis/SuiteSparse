@@ -2,10 +2,12 @@
 // GB_add_phase0: find vectors of C to compute for C=A+B or C<M>=A+B
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// JIT: not needed.  Only one variant possible.
 
 // The eWise add of two matrices, C=A+B, C<M>=A+B, or C<!M>=A+B starts with
 // this phase, which determines which vectors of C need to be computed.
@@ -129,7 +131,7 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
     const GrB_Matrix M,         // optional mask, may be NULL; not complemented
     const GrB_Matrix A,         // first input matrix
     const GrB_Matrix B,         // second input matrix
-    GB_Context Context
+    GB_Werk Werk
 )
 {
 
@@ -201,7 +203,8 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
     // determine the number of threads to use
     //--------------------------------------------------------------------------
 
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
+    double chunk = GB_Context_chunk ( ) ;
     int nthreads = 1 ;      // nthreads depends on Cnvec, computed below
 
     //--------------------------------------------------------------------------
@@ -212,7 +215,6 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
 
     int64_t n = A->vdim ;
     int64_t Anvec = A->nvec ;
-    int64_t vlen = A->vlen ;
     const int64_t *restrict Ap = A->p ;
     const int64_t *restrict Ah = A->h ;
     bool A_is_hyper = (Ah != NULL) ;
@@ -273,8 +275,8 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
         {
 
             // create the A->Y and B->Y hyper_hashes
-            GB_OK (GB_hyper_hash_build (A, Context)) ;
-            GB_OK (GB_hyper_hash_build (B, Context)) ;
+            GB_OK (GB_hyper_hash_build (A, Werk)) ;
+            GB_OK (GB_hyper_hash_build (B, Werk)) ;
 
             const int64_t *restrict A_Yp = (A_is_hyper) ? A->Y->p : NULL ;
             const int64_t *restrict A_Yi = (A_is_hyper) ? A->Y->i : NULL ;
@@ -672,7 +674,7 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
             // C is hypersparse
 
             // create the M->Y hyper_hash
-            GB_OK (GB_hyper_hash_build (M, Context)) ;
+            GB_OK (GB_hyper_hash_build (M, Werk)) ;
 
             const int64_t *restrict M_Yp = M->Y->p ;
             const int64_t *restrict M_Yi = M->Y->i ;
