@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CCOLAMD_DATE "June 9, 2023 (FIXME:date)" )
+set ( CCOLAMD_DATE "June 12, 2023" )
 set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 0 )
 set ( CCOLAMD_VERSION_SUB   4 )

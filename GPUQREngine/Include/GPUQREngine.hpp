@@ -12,7 +12,7 @@
 #define GPUQRENGINE_HPP
 
 // Version information:
-#define GPUQRENGINE_DATE "June 9, 2023 (FIXME:date)"
+#define GPUQRENGINE_DATE "June 12, 2023"
 #define GPUQRENGINE_MAIN_VERSION   2
 #define GPUQRENGINE_SUB_VERSION    0
 #define GPUQRENGINE_SUBSUB_VERSION 4

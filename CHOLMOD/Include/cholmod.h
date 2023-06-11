@@ -97,7 +97,7 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "June 9, 2023 (FIXME: date)"
+#define CHOLMOD_DATE "June 12, 2023"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    0
 #define CHOLMOD_SUBSUB_VERSION 4

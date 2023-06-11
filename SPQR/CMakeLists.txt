@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "June 9, 2023 (FIXME: draft)" )
+set ( SPQR_DATE "June 12, 2023" )
 set ( SPQR_VERSION_MAJOR 3 )
 set ( SPQR_VERSION_MINOR 0 )
 set ( SPQR_VERSION_SUB   4 )
@@ -73,18 +73,18 @@ else ( )
 endif ( )
 
 find_package ( SuiteSparse_config 7.1.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( CHOLMOD 4.0.3 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( CHOLMOD 4.0.4 REQUIRED )
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-find_package ( CAMD 3.0.3 )
-find_package ( CCOLAMD 3.0.3 )
+find_package ( CAMD 3.0.4 )
+find_package ( CCOLAMD 3.0.4 )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.3 REQUIRED )
-    find_package ( GPUQREngine 2.0.3 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.3 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
+    find_package ( GPUQREngine 2.0.4 REQUIRED )
+    find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22

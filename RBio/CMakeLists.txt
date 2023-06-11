@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( RBIO_DATE "June 9, 2023 (FIXME: draft)" )
+set ( RBIO_DATE "June 12, 2023" )
 set ( RBIO_VERSION_MAJOR 4 )
 set ( RBIO_VERSION_MINOR 0 )
 set ( RBIO_VERSION_SUB   0 )

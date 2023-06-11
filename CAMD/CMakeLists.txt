@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "June 9, 2023 (FIXME: date)" )
+set ( CAMD_DATE "June 12, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
 set ( CAMD_VERSION_SUB   4 )

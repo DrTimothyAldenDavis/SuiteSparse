@@ -82,7 +82,7 @@ extern "C" {
  * below.
  */
 
-#define UMFPACK_DATE "June 9, 2023 (FIXME: draft)"
+#define UMFPACK_DATE "June 12, 2023"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    1
 #define UMFPACK_SUBSUB_VERSION 1
