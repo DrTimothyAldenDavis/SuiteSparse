@@ -90,10 +90,6 @@ if ( NOT MPFR_FOUND )
         PATH_SUFFIXES lib build
     )
 
-    message ( STATUS "mpfr include: ${MPFR_INCLUDE_DIR}" )
-    message ( STATUS "mpfr library: ${MPFR_LIBRARY}" )
-    message ( STATUS "mpfr static:  ${MPFR_STATIC}" )
-
     if ( NOT MSVC )
         # restore the CMAKE_FIND_LIBRARY_SUFFIXES variable
         set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save_CMAKE_FIND_LIBRARY_SUFFIXES} )
