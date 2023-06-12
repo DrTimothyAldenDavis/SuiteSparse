@@ -439,6 +439,7 @@ if ( DEMO )
         target_link_libraries ( openmp2_demo  PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( reduce_demo   PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( wathen_demo   PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( context_demo  PUBLIC OpenMP::OpenMP_C )
     endif ( )
 
 else ( )
