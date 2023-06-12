@@ -530,6 +530,13 @@ All libraries will be created and copied into SuiteSparse/lib and into
 SuiteSparse are copied into SuiteSparse/include and into /usr/local/include.
 
 For Windows, import each `*/CMakeLists.txt` file into MS Visual Studio.
+A single top-level CMake script is being considered as a feature in the
+future.  Be sure to specify the build type as Release; for example, to
+build `SuiteSparse_config` on Windows in the command window:
+
+    cd SuiteSparse_config/build
+    cmake ..
+    cmke --build . --config Release
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
