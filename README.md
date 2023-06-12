@@ -577,7 +577,7 @@ For the Mac, use this instead:
     export DYLD_LIBRARY_PATH
 
 -----------------------------------------------------------------------------
-Python interface
+Python and Rust interfaces
 -----------------------------------------------------------------------------
 
 See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
@@ -585,6 +585,10 @@ See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
 https://github.com/scikit-sparse/scikit-sparse
 
 https://github.com/scikit-umfpack/scikit-umfpack
+
+See russell for a Rust interface:
+
+https://github.com/cpmech/russell
 
 -----------------------------------------------------------------------------
 Compilation options
