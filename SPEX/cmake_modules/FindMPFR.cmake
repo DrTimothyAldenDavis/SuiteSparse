@@ -94,7 +94,11 @@ if ( NOT MPFR_FOUND )
     # look in the middle for 4.1.0 (/spackstuff/mpfr-4.1.0-morestuff/libmpfr.10.4.1)
     string ( REGEX MATCH "mpfr-[0-9]+.[0-9]+.[0-9]+" MPFR_VERSION1 ${MPFR_LIBRARY} )
 
-    if ( MPFR_VERSION1 STREQUAL "" )
+    if ( ( NOT ${MPFR_LIBRARY} ) OR ( NOT ${MPFR_INCLUDE_DIR} ) )
+        # mpfr has not been found
+        set ( MPFR_VERSION 0.0.0 )
+        message ( WARNING "MPFR not found")
+    elseif ( MPFR_VERSION1 STREQUAL "" )
         # mpfr has been found, but not a spack library.  Hunt for the version
         # number in mpfr.h.  The mpfr.h file includes the following line:
         #       #define MPFR_VERSION_STRING "4.0.2"

@@ -96,7 +96,11 @@ if ( NOT GMP_FOUND )
     # look in the middle for 6.2.1 (/spackstuff/gmp-6.2.1-morestuff/libgmp.10.4.1)
     string ( REGEX MATCH "gmp-[0-9]+.[0-9]+.[0-9]+" GMP_VERSION1 ${GMP_LIBRARY} )
 
-    if ( GMP_VERSION1 STREQUAL "" )
+    if ( ( NOT ${GMP_LIBRARY} ) OR ( NOT ${GMP_INCLUDE_DIR} ) )
+        # gmp has not been found
+        set ( GMP_VERSION 0.0.0 )
+        message ( WARNING "GMP not found")
+    elseif ( GMP_VERSION1 STREQUAL "" )
         # gmp has been found, but not as a spack library.  Hunt for the version
         # number in gmp.h.  The gmp.h file includes the following lines:
         #   #define __GNU_MP_VERSION            6
