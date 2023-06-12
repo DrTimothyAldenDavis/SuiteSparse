@@ -73,6 +73,13 @@ if ( NOT GMP_FOUND )
         PATH_SUFFIXES lib build
     )
 
+    # check if found
+    if ( GMP_LIBRARY MATCHES ".*NOTFOUND" OR GMP_INCLUDE_DIR MATCHES ".*NOTFOUND" )
+        set ( FOUND_IT false )
+    else ( )
+        set ( FOUND_IT true )
+    endif ( )
+
     # static gmp library
     if ( NOT MSVC )
         set ( save_CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_FIND_LIBRARY_SUFFIXES} )
@@ -91,12 +98,14 @@ if ( NOT GMP_FOUND )
     endif ( )
 
     # get version of the library from the filename
-    get_filename_component ( GMP_LIBRARY ${GMP_LIBRARY} REALPATH )
+    if ( GMP_LIBRARY )
+        get_filename_component ( GMP_LIBRARY ${GMP_LIBRARY} REALPATH )
+    endif ( )
 
     # look in the middle for 6.2.1 (/spackstuff/gmp-6.2.1-morestuff/libgmp.10.4.1)
     string ( REGEX MATCH "gmp-[0-9]+.[0-9]+.[0-9]+" GMP_VERSION1 ${GMP_LIBRARY} )
 
-    if ( ( NOT ${GMP_LIBRARY} ) OR ( NOT ${GMP_INCLUDE_DIR} ) )
+    if ( NOT FOUND_IT )
         # gmp has not been found
         set ( GMP_VERSION 0.0.0 )
         message ( WARNING "GMP not found")
