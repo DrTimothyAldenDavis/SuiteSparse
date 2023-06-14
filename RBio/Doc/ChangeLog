@@ -1,4 +1,4 @@
-June 12, 2023: version 4.0.0
+June 16, 2023: version 4.0.0
 
     * revised API: declaring many input parameters as const.  This is a minor
         change that might be both API and ABI compatible with v3.x, but is

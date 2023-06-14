@@ -28,35 +28,35 @@ default: library
 
 # default is to install only in /usr/local
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 # enable CUDA (NOTE: not ready for production use)
 cuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # compile with -g 
 debug:
-	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug $(CMAKE_OPTIONS) .. && cmake --build . --config Debug -j$(JOBS) )
 
 # compile without FactoryKernels
 compact:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCOMPACT=1 .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCOMPACT=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # compile with -g, and without FactoryKernels
 cdebug:
-	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DCOMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DCOMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . --config Debug -j$(JOBS) )
 
 # build the dynamic library and the demos
 all:
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # run the demos
 demos: all
@@ -80,7 +80,7 @@ setup:
 
 # build the static library
 static:
-	( cd build && cmake $(CMAKE_OPTIONS) -DNSTATIC=0 .. && cmake --build . -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DNSTATIC=0 .. && cmake --build . --config Release -j$(JOBS) )
 
 # installs GraphBLAS to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
@@ -93,7 +93,7 @@ docs:
 
 # compile the CUDA kernels
 gpu:
-	( cd CUDA && cmake --build . -j${JOBS} )
+	( cd CUDA && cmake --build . --config Release -j${JOBS} )
 
 # remove any installed libraries and #include files
 uninstall:

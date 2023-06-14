@@ -79,7 +79,7 @@ extern "C" {
 #define RBIO_VALUE_IOERROR (-94)  /* I/O error: numerical values */
 #define RBIO_FILE_IOERROR (-95)   /* I/O error: cannot read/write the file */
 
-#define RBIO_DATE "June 12, 2023"
+#define RBIO_DATE "June 16, 2023"
 #define RBIO_MAIN_VERSION   4
 #define RBIO_SUB_VERSION    0
 #define RBIO_SUBSUB_VERSION 0
