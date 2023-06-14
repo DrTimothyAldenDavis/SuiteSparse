@@ -39,19 +39,19 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . --config Release -j${JOBS} )
 
 local: library
 
 global: library
 
 debug:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . --config Debug -j${JOBS} )
 
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/cs_demo1 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/ash219

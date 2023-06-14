@@ -1,4 +1,4 @@
-June 12, 2023: version 7.1.0
+June 16, 2023: version 7.1.0
 
     * GraphBLAS v8.0.2: major update with a new JIT feature.
     * build system: many changes to build systems of all packages, contributed

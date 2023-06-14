@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( BTF_DATE "June 12, 2023" )
+set ( BTF_DATE "June 16, 2023" )
 set ( BTF_VERSION_MAJOR 2 )
 set ( BTF_VERSION_MINOR 0 )
 set ( BTF_VERSION_SUB   4 )
