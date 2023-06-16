@@ -1180,6 +1180,15 @@ struct XXH64_state_s {
 
 #ifndef XXH_NO_XXH3
 
+//--------------------------------------------------------------------------
+#if defined ( _MSC_VER ) /* GraphBLAS modification */
+    // MS Visual Studio is badly broken.  It states that it complies with
+    // ANSI C11, but it does not provide the required stdalign.h.
+    #define XXH_ALIGN(n)      __declspec(align(n))
+#else
+// unmodified rules from the original xxhash.h:
+//--------------------------------------------------------------------------
+
 #if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) /* >= C11 */
 #  include <stdalign.h>
 #  define XXH_ALIGN(n)      alignas(n)
@@ -1193,6 +1202,10 @@ struct XXH64_state_s {
 #else
 #  define XXH_ALIGN(n)   /* disabled */
 #endif
+
+//--------------------------------------------------------------------------
+#endif  /* GraphBLAS modification */
+//--------------------------------------------------------------------------
 
 /* Old GCC versions only accept the attribute after the type in structures. */
 #if !(defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L))   /* C11+ */ \
