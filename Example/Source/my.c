@@ -5,7 +5,7 @@
 #include <string.h>
 #include <math.h>
 
-#include "my.h"
+#include "my_internal.h"
 
 #define OK(result)                                      \
     if (!(result))                                      \

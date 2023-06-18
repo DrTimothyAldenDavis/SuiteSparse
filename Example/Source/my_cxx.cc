@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 
-#include "my.h"
+#include "my_internal.h"
 
 #define OK(result)                                            \
     if (!(result))                                            \
