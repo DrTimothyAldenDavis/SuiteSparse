@@ -1,6 +1,7 @@
 June 16, 2023: version 4.0.4
 
     * cmake build system updates: update by Markus Muetzel
+    * METIS: fixed non-standard prototypes in gk_proto.h and gk_mkrandom.h
 
 Jan 17, 2022: version 4.0.3
 
