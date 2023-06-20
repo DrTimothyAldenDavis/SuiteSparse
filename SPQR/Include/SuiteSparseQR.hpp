@@ -24,6 +24,7 @@ extern "C"
 #include "cholmod.h"
 }
 #undef SUITESPARSE_GPU_EXTERN_ON
+
 #include <complex>
 typedef std::complex<double> Complex ;
 
