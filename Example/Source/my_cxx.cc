@@ -4,7 +4,7 @@
 #include <string>
 #include <cmath>
 
-#include "my.h"
+#include "my_internal.h"
 
 #define OK(result)                                            \
     if (!(result))                                            \
@@ -269,9 +269,8 @@ void my_function (void)
     OK (result == RBIO_OK) ;
     std::cout << "njumbled " << njumbled << ", nzeros " << nzeros << std::endl;
     std::string filename {"temp.rb"};
-    result = RBwrite (const_cast<char *> (filename.c_str ()),
-        const_cast<char *> (title.c_str ()), const_cast<char *> (key.c_str ()),
-        n, n, Ap, Ai, Ax, nullptr, nullptr, nullptr, 0, mtype) ;
+    result = RBwrite (filename.c_str (), title.c_str (), key.c_str (), n, n,
+        Ap, Ai, Ax, nullptr, nullptr, nullptr, 0, mtype) ;
     std::cout << "result " << result << std::endl;
     std::cout << "mtype: " << mtype << std::endl;
 
@@ -394,4 +393,3 @@ void my_function (void)
     A = nullptr ;
     OK (cholmod_l_finish (&cc)) ;
 }
-
