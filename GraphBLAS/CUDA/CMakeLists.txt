@@ -1,28 +1,40 @@
+#-------------------------------------------------------------------------------
+# GraphBLAS/CUDA/CMakeLists.txt:  cmake script for GraphBLAS/CUDA
+#-------------------------------------------------------------------------------
+
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+
+# Some files in this folder are (c) NVIDIA or (c) Google.  Please refer
+# to their individual licenses (Apache, BSD, or others).
+# SPDX-License-Identifier: Apache-2.0
+
+#-------------------------------------------------------------------------------
+
 cmake_minimum_required ( VERSION 3.19 )
 
-# CMake build for generating googletest c++ files that can be compiled and executed in parallel.
-# Build can be customized to speed up development by allowing the targeting of specific
-# specific parameters. The output of this build is an executable that can be used to
-# run the gtests.
+# CMake build for generating googletest c++ files that can be compiled and
+# executed in parallel.  Build can be customized to speed up development by
+# allowing the targeting of specific specific parameters. The output of this
+# build is an executable that can be used to run the gtests.
 
 project ( GRAPHBLAS_CUDA
     VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
     LANGUAGES CXX CUDA )
+
 cmake_policy ( SET CMP0135 NEW )    # URL download timestamp policy
 
-set(CMAKE_CUDA_FLAGS "-cudart=static -lineinfo ")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC ")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DGBNCPUFEAT")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGBNCPUFEAT")
+set ( CMAKE_CXX_STANDARD 17 )
 
-message(STATUS "C++ flags for CUDA:" "${CMAKE_CXX_FLAGS}")
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo " )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --std=c++17 -fPIC " )
 
-file(GLOB GRAPHBLAS_CUDA_SOURCES "*.cu" "*.c" "*.cpp")
+add_compile_definitions ( GBNCPUFEAT )
 
-add_library(graphblascuda SHARED
-            ${GRAPHBLAS_CUDA_SOURCES}
-)
+message ( STATUS "C++ flags for CUDA: ${CMAKE_CXX_FLAGS}" )
+
+file ( GLOB GRAPHBLAS_CUDA_SOURCES "*.cu" "*.c" "*.cpp" )
+
+add_library ( graphblascuda SHARED ${GRAPHBLAS_CUDA_SOURCES} )
 
 set_target_properties ( graphblascuda PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
@@ -30,43 +42,35 @@ set_target_properties ( graphblascuda PROPERTIES
     C_STANDARD 11
     C_STANDARD_REQUIRED ON )
 
-set(RMM_WRAP_INCLUDES "../rmm_wrap")
+# find rmm_wrap, the malloc/calloc/realloc/free wrapper for the Rapids
+# memory manager
+set ( RMM_WRAP_INCLUDES "../rmm_wrap" )
 
-message(STATUS "RMM_WRAP_INCLUDES: ${RMM_WRAP_INCLUDES}")
-set(GRAPHBLAS_CUDA_INCLUDES
+message ( STATUS "RMM_WRAP_INCLUDES: ${RMM_WRAP_INCLUDES}" )
+set ( GRAPHBLAS_CUDA_INCLUDES
         ${RMM_WRAP_INCLUDES}
         ../Source
         ../Source/Shared
         ../Source/Template
-        ../Source/SharedTemplate
+        ../Source/Factories
         ../Include
-        ../CUDA)
+        ../CUDA )
 
-message(STATUS "GraphBLAS CUDA includes: " "${GRAPHBLAS_CUDA_INCLUDES}")
+message ( STATUS "GraphBLAS CUDA includes: ${GRAPHBLAS_CUDA_INCLUDES}" )
 
-set(EXTERNAL_INCLUDES_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_includes)
-
-IF(NOT EXISTS ${EXTERNAL_INCLUDES_DIRECTORY})
-    file(MAKE_DIRECTORY ${EXTERNAL_INCLUDES_DIRECTORY})
-endif()
-
-IF(NOT EXISTS ${EXTERNAL_INCLUDES_DIRECTORY}/cuco)
-    execute_process(
-            COMMAND git clone "https://github.com/NVIDIA/cuCollections.git" --branch main --recursive cuco
-            WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/external_includes)
-endif()
-
-include_directories(${CMAKE_CURRENT_BINARY_DIR}/external_includes/cuco/include)
+#-------------------------------------------------------------------------------
+# graphblascuda properties
+#-------------------------------------------------------------------------------
 
 target_include_directories(graphblascuda PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR}/external_includes/cuco/include
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GRAPHBLAS_CUDA_INCLUDES})
 set_target_properties(graphblascuda PROPERTIES POSITION_INDEPENDENT_CODE ON)
 set_target_properties(graphblascuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+# FIXME: use SUITESPARSE_CUDA_ARCHITECTURES
 set_target_properties(graphblascuda PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
-target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt )
+target_link_libraries(graphblascuda CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver CUDA::nvToolsExt )
 
 #-------------------------------------------------------------------------------
 # installation location
@@ -77,31 +81,29 @@ install ( TARGETS graphblascuda
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-# if ( BUILD_GRB_STATIC_LIBRARY )
-#     install ( TARGETS graphblas_static
-#         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
-# endif ( )
 
 #-------------------------------------------------------------------------------
+# test suite for the CUDA kernels
+#-------------------------------------------------------------------------------
 
-# 1. Execute enumify/stringify/jitify logic to compile ptx kernels and compile/link w/ relevant *.cu files.
+# 1. Execute enumify/stringify/jitify logic to compile ptx kernels and
+# compile/link w/ relevant *.cu files.
 
 # TODO: Need to do this piece in cmake
 
 # 2. Generate test .cu files named "{semiring_operation}_test_instances.hpp"
-set(CUDA_TEST_SUITES
+set ( CUDA_TEST_SUITES
     AxB_dot3
 #    reduce_to_scalar
 )
 
 #
-set(CUDA_TEST_MONOIDS PLUS MIN MAX) # TIMES ANY)
-set(CUDA_TEST_BINOPS TIMES PLUS MIN MAX DIV) #MINUS RDIV RMINUS FIRST SECOND PAIR)
-set(CUDA_TEST_SEMIRINGS PLUS_TIMES MIN_PLUS MAX_PLUS)
-set(CUDA_TEST_DATATYPES int32_t int64_t uint32_t uint64_t float double)
-set(CUDA_TEST_KERNELS vsvs) # mp vsvs dndn spdn vssp)
-set(CUDA_TEST_FORMATS sparse dense sparse_dense reduce)
-
+set ( CUDA_TEST_MONOIDS PLUS MIN MAX) # TIMES ANY )
+set ( CUDA_TEST_BINOPS TIMES PLUS MIN MAX DIV ) #MINUS RDIV RMINUS FIRST SECOND PAIR )
+set ( CUDA_TEST_SEMIRINGS PLUS_TIMES MIN_PLUS MAX_PLUS )
+set ( CUDA_TEST_DATATYPES int32_t int64_t uint32_t uint64_t float double )
+set ( CUDA_TEST_KERNELS vsvs) # mp vsvs dndn spdn vssp )
+set ( CUDA_TEST_FORMATS sparse dense sparse_dense reduce )
 
 # TODO: Update testGen.py to accept the above CUDA_TEST_* params as arguments
 
@@ -111,9 +113,9 @@ set(CUDA_TEST_FORMATS sparse dense sparse_dense reduce)
 # Separate individual kernels from larger "overview" test (e.g. 2-level testing structure)
 # We want to test all the *_cuda versions
 
-# FIXME
+# TODO: make this a shorter test
 set(CUDA_TEST_CPP_FILES "")
-if ( FALSE )
+if ( FALSE ) # TODO: use a cmake option
     foreach(var ${CUDA_TEST_SUITES})
         foreach(semiring ${CUDA_TEST_SEMIRINGS})
             foreach(kernel ${CUDA_TEST_KERNELS})
@@ -125,8 +127,8 @@ if ( FALSE )
                             OUTPUT
                             ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_${format}_test_instances.hpp
                             ${CMAKE_CURRENT_BINARY_DIR}/${var}_${semiring}_${format}_cuda_tests.cpp
-                            DEPENDS
-                            jitFactory.hpp
+#                            DEPENDS
+#                            jitFactory.hpp
                             COMMAND python3 ${CMAKE_CURRENT_SOURCE_DIR}/test/testGen_cmake.py "\"${CMAKE_CURRENT_SOURCE_DIR}\"" "\"${var}\"" "\"${CUDA_TEST_MONOIDS}\""
                                 "\"${CUDA_TEST_BINOPS}\"" "\"${semiring}\"" "\"${CUDA_TEST_DATATYPES}\""
                                 "\"${kernel}\""
@@ -187,6 +189,7 @@ target_link_libraries(graphblascuda_test
         PUBLIC
         graphblas
         graphblascuda
+        rmm_wrap
         CUDA::cudart_static
         CUDA::nvrtc
         ${ADDITIONAL_DEPS}
@@ -195,6 +198,7 @@ target_link_libraries(graphblascuda_test
 
 target_include_directories(graphblascuda_test
         PUBLIC
+        rmm_wrap
         ${ADDITIONAL_INCLUDES}
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GRAPHBLAS_CUDA_INCLUDES})

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( LDL_DATE "Jan 17, 2023" )
+set ( LDL_DATE "June 16, 2023" )
 set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 0 )
-set ( LDL_VERSION_SUB   3 )
+set ( LDL_VERSION_SUB   4 )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -44,8 +44,8 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure ldl.h with version number
@@ -107,13 +107,13 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( ldl PUBLIC m )
+    target_link_libraries ( ldl PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( ldl_static PUBLIC m )
     endif ( )
 endif ( )
 
-target_link_libraries ( ldl PUBLIC
+target_link_libraries ( ldl PRIVATE
     ${SUITESPARSE_CONFIG_LIBRARIES} ${AMD_LIBRARIES} )
 
 if ( NOT NSTATIC )
@@ -161,7 +161,7 @@ if ( DEMO )
     add_executable ( ldllmain       "Demo/ldllmain.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( ldlsimple   PUBLIC ldl )
+    target_link_libraries ( ldlsimple   PUBLIC ldl ${SUITESPARSE_CONFIG_LIBRARIES} )
     target_link_libraries ( ldllsimple  PUBLIC ldl )
     target_link_libraries ( ldlmain     PUBLIC ldl )
     target_link_libraries ( ldllmain    PUBLIC ldl )
@@ -170,8 +170,8 @@ if ( DEMO )
         message ( STATUS "AMD found for ldlamd and ldllamd" )
         add_executable ( ldlamd     "Demo/ldlamd.c" )
         add_executable ( ldllamd    "Demo/ldllamd.c" )
-        target_link_libraries ( ldlamd  PUBLIC ldl )
-        target_link_libraries ( ldllamd PUBLIC ldl )
+        target_link_libraries ( ldlamd  PUBLIC ldl ${AMD_LIBRARIES} )
+        target_link_libraries ( ldllamd PUBLIC ldl ${AMD_LIBRARIES} )
     endif ( )
 
 else ( )

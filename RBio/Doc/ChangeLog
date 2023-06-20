@@ -1,3 +1,11 @@
+June 16, 2023: version 4.0.0
+
+    * revised API: declaring many input parameters as const.  This is a minor
+        change that might be both API and ABI compatible with v3.x, but is
+        user-visible so the major version number is increased from 3.x to 4.x.
+        update by Markus Muetzel
+    * cmake build system updates: update by Markus Muetzel
+
 Jan 17, 2023: version 3.0.3
 
     * SuiteSparse_config: now v7.0.0

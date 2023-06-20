@@ -84,9 +84,11 @@ set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATIO
 set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
 if ( SUITESPARSE_CUDA )
-    target_link_libraries ( cholmod_cuda CUDA::nvrtc CUDA::cudart_static
+    # this must be a PUBLIC link, not PRIVATE, so the CHOLMOD library
+    # itself can link against these libraries
+    target_link_libraries ( cholmod_cuda PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( cholmod_cuda_static CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( cholmod_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
 

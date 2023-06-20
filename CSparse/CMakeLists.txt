@@ -17,10 +17,10 @@
 
 cmake_minimum_required ( VERSION 3.13 )
 
-set ( CSPARSE_DATE "Jan 17, 2023" )
+set ( CSPARSE_DATE "June 16, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 )
 set ( CSPARSE_VERSION_MINOR 0 )
-set ( CSPARSE_VERSION_SUB   1 )
+set ( CSPARSE_VERSION_SUB   4 )
 
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
@@ -118,7 +118,7 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( csparse PUBLIC m )
+    target_link_libraries ( csparse PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( csparse_static PUBLIC m )
     endif ( )

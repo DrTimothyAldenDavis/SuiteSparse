@@ -1,14 +1,18 @@
-    GraphBLAS type: WildType user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-WildType size: 128
-    GraphBLAS type: WildType user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+ [ GxB_Type_new 
+   9.86e-06 sec ]
+    GraphBLAS type: WildType user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+WildType size: 192
+    GraphBLAS type: WildType user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
 
 a wildtype scalar: scalar1 [this is from scalar1]
        0.0        1.0        2.0        3.0 
      100.0      101.0      102.0      103.0 
      200.0      201.0      202.0      203.0 
      300.0      301.0      302.0      303.0 
+(iso wait:C (setElement:to non-iso) 0 zombies, 1 pending)  [ GrB_transpose (wait:A 0 zombies, 2 pending) (build) (jit: load) add:(H<.>=H+H) (jit: load) (hyper to sparse) (transpose) (builder transpose) (jit: run) (hyper to sparse) 
+   0.000947 sec ]
 
 a wildtype scalar: got scalar2 = C(7,2) [this is A(2,7)]
        0.0        1.0        2.0        3.0 
@@ -16,120 +20,126 @@ a wildtype scalar: got scalar2 = C(7,2) [this is A(2,7)]
      200.0      201.0      202.0      203.0 
      300.0      301.0      302.0      303.0 
 
-    GraphBLAS BinaryOp: WildAdd (user-defined) z=wildtype_add(x,y)
-    GraphBLAS type: ztype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: xtype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: ytype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-void wildtype_add (wildtype *z, const wildtype *x, const wildtype *y) 
-{ 
-   for (int i = 0 ; i < 4 ; i++) 
-   { 
-       for (int j = 0 ; j < 4 ; j++) 
-       { 
-           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ; 
-       } 
-   } 
-   strcpy (z->whatstuff, "this was added") ; 
-} 
+    GraphBLAS BinaryOp: WildAdd (user-defined): z=wildadd(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildadd (wildtype *z, const wildtype *x, const wildtype *y)       
+{                                                                      
+   for (int i = 0 ; i < 4 ; i++)                                       
+   {                                                                   
+       for (int j = 0 ; j < 4 ; j++)                                   
+       {                                                               
+           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ;       
+       }                                                               
+   }                                                                   
+   const char *psrc = "this was added" ;                             
+   char *pdst = z->whatstuff ;                                         
+   while ((*pdst++ = *psrc++)) ;                                       
+}
 
-
-    GraphBLAS BinaryOp: WildMult (user-defined) z=wildtype_mult(x,y)
-    GraphBLAS type: ztype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: xtype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: ytype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-void wildtype_mult (wildtype *z, const wildtype *x, const wildtype *y) 
-{ 
-   for (int i = 0 ; i < 4 ; i++) 
-   { 
-       for (int j = 0 ; j < 4 ; j++) 
-       { 
-           z->stuff [i][j] = 0 ; 
-           for (int k = 0 ; k < 4 ; k++) 
-           { 
-               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ; 
-           } 
-       } 
-   } 
-   strcpy (z->whatstuff, "this was multiplied") ; 
-} 
-
+    GraphBLAS BinaryOp: WildMult (user-defined): z=wildmult(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildmult (wildtype *z, const wildtype *x, const wildtype *y)      
+{                                                                      
+   for (int i = 0 ; i < 4 ; i++)                                       
+   {                                                                   
+       for (int j = 0 ; j < 4 ; j++)                                   
+       {                                                               
+           z->stuff [i][j] = 0 ;                                       
+           for (int k = 0 ; k < 4 ; k++)                               
+           {                                                           
+               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ;
+           }                                                           
+       }                                                               
+   }                                                                   
+   const char *psrc = "this was multiplied" ;                        
+   char *pdst = z->whatstuff ;                                         
+   while ((*pdst++ = *psrc++)) ;                                       
+}
 
 a wildtype scalar: scalar2 [here is scalar2]
        0.5        1.5        2.5        3.5 
       -0.5        0.5        1.5        2.5 
       -1.5       -0.5        0.5        1.5 
       -2.5       -1.5       -0.5        0.5 
-
+(iso wait:C (setElement:to non-iso) 0 zombies, 1 pending) 
 a wildtype scalar: scalar_identity for the monoid [identity]
        0.0        0.0        0.0        0.0 
        0.0        0.0        0.0        0.0 
        0.0        0.0        0.0        0.0 
        0.0        0.0        0.0        0.0 
 
-    GraphBLAS Semiring: InTheWild (user-defined)
-    GraphBLAS Monoid: semiring->add (user-defined)
-    GraphBLAS BinaryOp: monoid->op (user-defined) z=wildtype_add(x,y)
-    GraphBLAS type: ztype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: xtype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: ytype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-void wildtype_add (wildtype *z, const wildtype *x, const wildtype *y) 
-{ 
-   for (int i = 0 ; i < 4 ; i++) 
-   { 
-       for (int j = 0 ; j < 4 ; j++) 
-       { 
-           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ; 
-       } 
-   } 
-   strcpy (z->whatstuff, "this was added") ; 
-} 
-
+    GraphBLAS Semiring: InTheWild (user-defined): (wildadd_wildmult)
+    GraphBLAS Monoid: semiring->add (user-defined):
+    GraphBLAS BinaryOp: monoid->op (user-defined): z=wildadd(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildadd (wildtype *z, const wildtype *x, const wildtype *y)       
+{                                                                      
+   for (int i = 0 ; i < 4 ; i++)                                       
+   {                                                                   
+       for (int j = 0 ; j < 4 ; j++)                                   
+       {                                                               
+           z->stuff [i][j] = x->stuff [i][j] + y->stuff [i][j] ;       
+       }                                                               
+   }                                                                   
+   const char *psrc = "this was added" ;                             
+   char *pdst = z->whatstuff ;                                         
+   while ((*pdst++ = *psrc++)) ;                                       
+}
     identity: [ [user-defined value] ] 
 
-    GraphBLAS BinaryOp: semiring->multiply (user-defined) z=wildtype_mult(x,y)
-    GraphBLAS type: ztype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: xtype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-    GraphBLAS type: ytype user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
-void wildtype_mult (wildtype *z, const wildtype *x, const wildtype *y) 
-{ 
-   for (int i = 0 ; i < 4 ; i++) 
-   { 
-       for (int j = 0 ; j < 4 ; j++) 
-       { 
-           z->stuff [i][j] = 0 ; 
-           for (int k = 0 ; k < 4 ; k++) 
-           { 
-               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ; 
-           } 
-       } 
-   } 
-   strcpy (z->whatstuff, "this was multiplied") ; 
-} 
-
+    GraphBLAS BinaryOp: semiring->multiply (user-defined): z=wildmult(x,y)
+    GraphBLAS type: ztype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: xtype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type: ytype user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+void wildmult (wildtype *z, const wildtype *x, const wildtype *y)      
+{                                                                      
+   for (int i = 0 ; i < 4 ; i++)                                       
+   {                                                                   
+       for (int j = 0 ; j < 4 ; j++)                                   
+       {                                                               
+           z->stuff [i][j] = 0 ;                                       
+           for (int k = 0 ; k < 4 ; k++)                               
+           {                                                           
+               z->stuff [i][j] += (x->stuff [i][k] * y->stuff [k][j]) ;
+           }                                                           
+       }                                                               
+   }                                                                   
+   const char *psrc = "this was multiplied" ;                        
+   char *pdst = z->whatstuff ;                                         
+   while ((*pdst++ = *psrc++)) ;                                       
+}
 
 multiplication C=A*B InTheWild semiring:
 
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  input A, 3 entries, memory: 712 bytes
+  input A, 3 entries, memory: 904 bytes
 
     (2,4) [user-defined value]
     (2,7) [user-defined value]
     (3,7) [user-defined value]
 
+ [ GrB_Matrix_nvals 
+   7.73e-07 sec ]
 
 ============= printing the WildType matrix: input A (10-by-10 with 3 entries)
 
@@ -162,17 +172,19 @@ a wildtype scalar:  [this is A(3,7)]
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, hypersparse by row
-  input B, 1 entry, memory: 36.5 KB
+  input B, 1 entry, memory: 52.5 KB
   pending tuples: 2 max pending: 256 zombies: 0
 
     (7,2) [user-defined value]
   pending tuples:
-    GraphBLAS type:  user-defined: [wildtype] size: 128
-    typedef struct { float stuff [4][4] ; char whatstuff [64] ; } wildtype ;
+    GraphBLAS type:  user-defined: [wildtype] size: 192
+    typedef struct { double stuff [4][4] ; char whatstuff [64] ; } wildtype ;
     row: 7 col: 5 [user-defined value]
     row: 4 col: 2 [user-defined value]
   pending operator: implicit 2nd
 
+ [ GrB_Matrix_nvals (wait:A 0 zombies, 2 pending) (build) (jit: run) add:(H<.>=H+H) (jit: run) (hyper to sparse) 
+   3.68e-05 sec ]
 
 ============= printing the WildType matrix: input B (10-by-10 with 3 entries)
 
@@ -201,17 +213,21 @@ a wildtype scalar:  [here is B(7,5)]
       -2.5       -1.5       -0.5        0.5 
 
 ============= that was the WildType matrix input B
+ [ GrB_mxm C=A*B, saxpy (S = S*S, anz: 3 bnz: 3) axbwork 8 (intensity: 1.14 workspace/(nnz(A)+nnz(B)): 1.43) (nthreads 1 coarse: 1) (sparse saxpy) (jit: load) 
+   0.000114 sec ]
 
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  output C, 4 entries, memory: 848 bytes
+  output C, 4 entries, memory: 1.1 KB
 
     (2,2) [user-defined value]
     (2,5) [user-defined value]
     (3,2) [user-defined value]
     (3,5) [user-defined value]
 
+ [ GrB_Matrix_nvals 
+   8.48e-08 sec ]
 
 ============= printing the WildType matrix: output C (10-by-10 with 4 entries)
 
@@ -265,19 +281,21 @@ The mask matrix M:
     row: 3 col: 3 
   pending operator: implicit 2nd
 
- [ GrB_mxm (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = S'*S) nthreads 1 ntasks 1 (generic C<M>=A'*B) 
-   8.71e-05 sec ]
+ [ GrB_mxm (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = S'*S) nthreads 1 ntasks 1 (jit: load) 
+   9.23e-05 sec ]
 
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by row
-  output C, 4 entries, memory: 984 bytes
+  output C, 4 entries, memory: 1.3 KB
 
     (2,2) [user-defined value]
     (2,3) [user-defined value]
     (3,2) [user-defined value]
     (3,3) [user-defined value]
 
+ [ GrB_Matrix_nvals 
+   6.89e-08 sec ]
 
 ============= printing the WildType matrix: output C (10-by-10 with 4 entries)
 
@@ -285,25 +303,25 @@ Printing the matrix with GxB_Matrix_fprint:
 
 a wildtype scalar:  [this was added]
   -38055.0     3563.0    37081.0   335199.0 
--24598430.0  2569038.0 24980906.0 256764864.0 
--47572600.0  5674779.5 49524956.0 506665632.0 
--74305584.0  7500257.5 75016352.0 772037824.0 
+-24598430.0  2569038.0 24980906.0 256764874.0 
+-47572599.5  5674779.5 49524958.5 506665637.5 
+-74305581.8  7500257.8 75016347.2 772037886.8 
 
 ----------- output C(2,3):
 
 a wildtype scalar:  [this was added]
   -29331.0    -3057.0    20517.0    44091.0 
--15391281.0 -1321107.0 12266367.0 25853840.0 
--29816720.0 -2251210.0 24351604.0 50954412.0 
--46461396.0 -4100626.5 36817444.0 77735512.0 
+-15391281.0 -1321107.0 12266367.0 25853841.0 
+-29816722.0 -2251210.0 24351602.0 50954414.0 
+-46461397.5 -4100626.5 36817444.5 77735515.5 
 
 ----------- output C(3,2):
 
 a wildtype scalar:  [this was added]
   -23933.5     1801.5    22136.5   174771.5 
--5032683.5  -119848.5  3827586.5 31427322.0 
+-5032683.5  -119848.5  3827586.5 31427321.5 
 -8035864.0   312888.0  6948040.0 55566392.0 
--15050184.0  -363148.5 11438486.0 93932424.0 
+-15050183.5  -363148.5 11438486.5 93932421.5 
 
 ----------- output C(3,3):
 
@@ -314,12 +332,24 @@ a wildtype scalar:  [this was added]
 -13424304.0 -2565388.0  6850828.0 16267044.0 
 
 ============= that was the WildType matrix output C
+ [ GrB_reduce (jit: load) 
+   4.75e-05 sec ]
 
-a wildtype scalar: sum [this was added]
+a wildtype scalar: sum (first time) [this was added]
  -111773.5      269.5    93412.5   583455.5 
--49510800.0   271594.5 43367588.0 319487968.0 
--92402624.0  2801413.5 85075152.0 622622592.0 
--149241456.0   471094.5 130123104.0 959972800.0 
+-49510798.5   271594.5 43367587.5 319487980.5 
+-92402621.5  2801413.5 85075148.5 622622583.5 
+-149241466.8   471094.8 130123106.2 959972867.8 
+ [ GrB_reduce (jit: run) 
+   3.14e-06 sec ]
+
+a wildtype scalar: sum (again) [this was added]
+ -111773.5      269.5    93412.5   583455.5 
+-49510798.5   271594.5 43367587.5 319487980.5 
+-92402621.5  2801413.5 85075148.5 622622583.5 
+-149241466.8   471094.8 130123106.2 959972867.8 
+ [ GxB_set (transpose) (in-place transpose) (transpose) (1-thread bucket transpose) (jit: load) 
+   6.21e-05 sec ]
 
 C is now stored by column, but it looks just the same to the
 GraphBLAS user application.  The difference is opaque, in the
@@ -328,13 +358,15 @@ internal data structure.
 Printing the matrix with GxB_Matrix_fprint:
 
   10x10 GraphBLAS wildtype matrix, sparse by col
-  output C, 4 entries, memory: 848 bytes
+  output C, 4 entries, memory: 1.1 KB
 
     (2,2) [user-defined value]
     (3,2) [user-defined value]
     (2,3) [user-defined value]
     (3,3) [user-defined value]
 
+ [ GrB_Matrix_nvals 
+   5.63e-08 sec ]
 
 ============= printing the WildType matrix: output C (10-by-10 with 4 entries)
 
@@ -342,25 +374,25 @@ Printing the matrix with GxB_Matrix_fprint:
 
 a wildtype scalar:  [this was added]
   -38055.0     3563.0    37081.0   335199.0 
--24598430.0  2569038.0 24980906.0 256764864.0 
--47572600.0  5674779.5 49524956.0 506665632.0 
--74305584.0  7500257.5 75016352.0 772037824.0 
+-24598430.0  2569038.0 24980906.0 256764874.0 
+-47572599.5  5674779.5 49524958.5 506665637.5 
+-74305581.8  7500257.8 75016347.2 772037886.8 
 
 ----------- output C(2,3):
 
 a wildtype scalar:  [this was added]
   -29331.0    -3057.0    20517.0    44091.0 
--15391281.0 -1321107.0 12266367.0 25853840.0 
--29816720.0 -2251210.0 24351604.0 50954412.0 
--46461396.0 -4100626.5 36817444.0 77735512.0 
+-15391281.0 -1321107.0 12266367.0 25853841.0 
+-29816722.0 -2251210.0 24351602.0 50954414.0 
+-46461397.5 -4100626.5 36817444.5 77735515.5 
 
 ----------- output C(3,2):
 
 a wildtype scalar:  [this was added]
   -23933.5     1801.5    22136.5   174771.5 
--5032683.5  -119848.5  3827586.5 31427322.0 
+-5032683.5  -119848.5  3827586.5 31427321.5 
 -8035864.0   312888.0  6948040.0 55566392.0 
--15050184.0  -363148.5 11438486.0 93932424.0 
+-15050183.5  -363148.5 11438486.5 93932421.5 
 
 ----------- output C(3,3):
 
@@ -379,6 +411,8 @@ Printing the matrix with GxB_Matrix_fprint:
 
 
 The matrix D is not wild enough to print.
+ [ GrB_apply (shallow-op) 
+   1.25e-05 sec ]
 
   10x10 GraphBLAS int64_t matrix, sparse by row
   E (positional i), 3 entries, memory: 352 bytes
@@ -387,6 +421,8 @@ The matrix D is not wild enough to print.
     (2,7)   2
     (3,7)   3
 
+ [ GrB_apply (shallow-op) 
+   3.55e-06 sec ]
 
   10x10 GraphBLAS int64_t matrix, sparse by row
   E (positional j), 3 entries, memory: 352 bytes
@@ -395,10 +431,12 @@ The matrix D is not wild enough to print.
     (2,7)   7
     (3,7)   7
 
+ [ GrB_eWiseAdd 
+   3.09e-06 sec ]
 
 This is supposed to fail, as a demo of GrB_error:
 GraphBLAS error: GrB_DOMAIN_MISMATCH
 function: GrB_Matrix_eWiseAdd_BinaryOp (C, M, accum, add, A, B, desc)
-Incompatible type for z=wildtype_add(x,y):
+Incompatible type for z=wildadd(x,y):
 second input of type [float]
 cannot be typecast to y input of type [wildtype]

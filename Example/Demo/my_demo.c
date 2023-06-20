@@ -1,5 +1,8 @@
 // Example user program
 
+#include <stdio.h>
+#include <string.h>
+
 #include "my.h"
 
 int main (void)

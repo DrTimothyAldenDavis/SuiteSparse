@@ -43,11 +43,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Jan 17, 2023")
-set(Mongoose_NUMERIC_DATE "2023-01-17")
+set(Mongoose_DATE "June 16, 2023")
+set(Mongoose_NUMERIC_DATE "2023-06-16")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 4)
+set(Mongoose_VERSION_PATCH 5)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -73,7 +73,7 @@ configure_file (
         NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -162,9 +162,9 @@ include_directories(Include
         External/mmio/Include
         )
 
-# Require C++11... Someday.
+# Require C++11
 set(CMAKE_CXX_STANDARD 11)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 
@@ -176,7 +176,7 @@ include_directories ( ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
 if ( NOT NSTATIC )
     # Build the Mongoose library
     add_library ( mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
-    set_property ( TARGET mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
+#   set_property ( TARGET mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( mongoose_static PROPERTIES
             OUTPUT_NAME mongoose )
 
@@ -185,7 +185,7 @@ if ( NOT NSTATIC )
             OUTPUT_NAME mongoose_static )
     endif ( )
 
-    target_link_libraries ( mongoose_static ${SUITESPARSE_CONFIG_LIBRARY} )
+    target_link_libraries ( mongoose_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
 # Build the Mongoose library for dynamic linking
@@ -195,7 +195,7 @@ set_target_properties ( mongoose PROPERTIES
         OUTPUT_NAME mongoose
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_link_libraries ( mongoose ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( mongoose PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
 #     set_target_properties(mongoose PROPERTIES VERSION ${PROJECT_VERSION})
@@ -327,11 +327,11 @@ message ( STATUS "test coverage for debug library: ${MONGOOSE_COVERAGE}" )
 message(STATUS "CMAKE_CXX_COMPILER: " ${BoldBlue} ${CMAKE_CXX_COMPILER_ID} ${ColourReset})
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" STREQUAL "AppleClang")
     # using Clang
-    SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
+#   SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
     # Debug flags for Clang
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -fwrapv")
-    SET(CMAKE_C_FLAGS_DEBUG "-g")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -fwrapv")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g")
+#   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
     if ( MONGOOSE_COVERAGE )
         SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" ) 
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} --coverage" )
@@ -339,27 +339,29 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
     endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # using GCC
-    SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-variable" )
+#   SET(CMAKE_CXX_FLAGS "-O3 -fwrapv")
+#   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-but-set-variable -Wno-unused-variable" )
     # Debug flags for GCC
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS "4.6")
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
+#       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x")
         message(WARNING "${BoldRed} WARNING:${ColourReset} Your compiler does not support the C++11 ISO standard. Future versions of Mongoose will require a compiler with C++11 support. We recommend you upgrade to at least GCC 4.6.")
     endif ()
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
-    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W ")
-    SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall -fwrapv -W ")
+#   SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -W ")
+#   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
     if ( MONGOOSE_COVERAGE )
+        SET (CMAKE_CXX_FLAGS_DEBUG " ${CMAKE_CXX_FLAGS_DEBUG} -Wall -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
         SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" ) 
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
     endif ( )
 elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # using Intel C++
-    SET(CMAKE_CXX_FLAGS "-O3 -no-prec-div -xHOST -ipo -fwrapv")
+#   SET(CMAKE_CXX_FLAGS "-O3 -no-prec-div -xHOST -ipo -fwrapv")
     # Debug flags for Intel
-    SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv")
-    SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
+#   SET(CMAKE_CXX_FLAGS_DEBUG "-g -O0 -Wall -fwrapv")
+#   SET(CMAKE_C_FLAGS_DEBUG "-g -O0 -Wall")
 #elseif ( MSVC )
     # using Visual Studio C++
 endif ()
@@ -386,23 +388,23 @@ set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1) # Necessary for gcov - prevents file.c
 # Copy over runTest.py to build folder for ease of use
 file(COPY Tests/runTests DESTINATION ${CMAKE_BINARY_DIR})
 
-if ( NOT NSTATIC )
-    add_custom_command ( TARGET mongoose_static
-            POST_BUILD
-            COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose_static> ${PROJECT_SOURCE_DIR}/Lib
-            COMMENT "Copying libmongoose (static) to root Lib directory"
-            )
-endif ( )
+# if ( NOT NSTATIC )
+#   add_custom_command ( TARGET mongoose_static
+#           POST_BUILD
+#           COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose_static> ${PROJECT_SOURCE_DIR}/Lib
+#           COMMENT "Copying libmongoose (static) to root Lib directory"
+#           )
+# endif ( )
 
-add_custom_command ( TARGET mongoose
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose> ${PROJECT_SOURCE_DIR}/Lib
-        COMMENT "Copying libmongoose (dynamic) to root Lib directory"
-        )
+# add_custom_command ( TARGET mongoose
+#       POST_BUILD
+#       COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:mongoose> ${PROJECT_SOURCE_DIR}/Lib
+#       COMMENT "Copying libmongoose (dynamic) to root Lib directory"
+#       )
 
 add_custom_target(purge
         COMMAND rm -rf ${CMAKE_BINARY_DIR}/*
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
+#       COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex.aux
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.idx

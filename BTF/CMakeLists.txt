@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( BTF_DATE "Jan 17, 2023" )
+set ( BTF_DATE "June 16, 2023" )
 set ( BTF_VERSION_MAJOR 2 )
 set ( BTF_VERSION_MINOR 0 )
-set ( BTF_VERSION_SUB   3 )
+set ( BTF_VERSION_SUB   4 )
 
 message ( STATUS "Building BTF version: v"
     ${BTF_VERSION_MAJOR}.
@@ -44,7 +44,7 @@ project ( btf
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -100,14 +100,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( btf PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( btf PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( btf_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( btf PUBLIC m )
+    target_link_libraries ( btf PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( btf_static PUBLIC m )
     endif ( )

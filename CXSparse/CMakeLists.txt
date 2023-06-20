@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CXSPARSE_DATE "Jan 17, 2023" )
+set ( CXSPARSE_DATE "June 16, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 0 )
-set ( CXSPARSE_VERSION_SUB   3 )
+set ( CXSPARSE_VERSION_SUB   4 )
 
 message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_MAJOR}.
@@ -64,7 +64,7 @@ project ( cxsparse
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
@@ -132,14 +132,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( cxsparse PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( cxsparse PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( cxsparse_static PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( cxsparse PUBLIC m )
+    target_link_libraries ( cxsparse PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( cxsparse_static PUBLIC m )
     endif ( )
@@ -225,6 +225,16 @@ if ( DEMO )
         target_link_libraries ( cs_cl_demo1 PUBLIC cxsparse )
         target_link_libraries ( cs_cl_demo2 PUBLIC cxsparse )
         target_link_libraries ( cs_cl_demo3 PUBLIC cxsparse )
+
+        if ( NOT WIN32 )
+            target_link_libraries ( cs_ci_demo1 PUBLIC m )
+            target_link_libraries ( cs_ci_demo2 PUBLIC m )
+            target_link_libraries ( cs_ci_demo3 PUBLIC m )
+
+            target_link_libraries ( cs_cl_demo1 PUBLIC m )
+            target_link_libraries ( cs_cl_demo2 PUBLIC m )
+            target_link_libraries ( cs_cl_demo3 PUBLIC m )
+        endif ( )
 
         target_link_libraries ( cs_idemo PUBLIC cxsparse )
         target_link_libraries ( cs_ldemo PUBLIC cxsparse )

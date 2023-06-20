@@ -26,23 +26,19 @@
 #ifndef _CXS_H
 #define _CXS_H
 
-#ifdef __cplusplus
-#if 1
-#include <complex>
-typedef std::complex<double> cs_complex_t ;
-#endif
-extern "C" {
-#else
 #if 1
 #include <complex.h>
-#define cs_complex_t double complex
+#define cs_complex_t double _Complex
 #endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #define CS_VER 4  /* CXSparse Version */
 #define CS_SUBVER 0
-#define CS_SUBSUB 3
-#define CS_DATE "Jan 17, 2023"        /* CXSparse release date */
+#define CS_SUBSUB 4
+#define CS_DATE "June 16, 2023"        /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 #define CXSPARSE
 

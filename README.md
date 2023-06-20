@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Jan 20, 2023, SuiteSparse VERSION 7.0.1
+June 16, 2023, SuiteSparse VERSION 7.1.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -348,10 +348,6 @@ Packages in SuiteSparse, and files in this directory:
                                 in just CMAKE_INSTALL_PATH (defaults to
                                 /usr/local/lib on Linux or Mac).
 
-                make both       compiles SuiteSparse, and then "make install"
-                                will instal in both ./lib and
-                                CMAKE_INSTALL_PATH).
-
                 make local      compiles SuiteSparse.
                                 Subsequent "make install will install only
                                 in ./lib, ./include only.
@@ -367,8 +363,7 @@ Packages in SuiteSparse, and files in this directory:
                                 (./lib, ./include), and/or in
                                 /usr/local/lib and /usr/local/include,
                                 depending on whether "make", "make local",
-                                "make global", or "make both",
-                                etc has been done.
+                                or "make global" has been done.
 
                 make uninstall  undoes 'make install'
 
@@ -535,6 +530,13 @@ All libraries will be created and copied into SuiteSparse/lib and into
 SuiteSparse are copied into SuiteSparse/include and into /usr/local/include.
 
 For Windows, import each `*/CMakeLists.txt` file into MS Visual Studio.
+A single top-level CMake script is being considered as a feature in the
+future.  Be sure to specify the build type as Release; for example, to
+build `SuiteSparse_config` on Windows in the command window:
+
+    cd SuiteSparse_config/build
+    cmake ..
+    cmke --build . --config Release
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
@@ -582,7 +584,7 @@ For the Mac, use this instead:
     export DYLD_LIBRARY_PATH
 
 -----------------------------------------------------------------------------
-Python interface
+Python and Rust interfaces
 -----------------------------------------------------------------------------
 
 See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
@@ -590,6 +592,10 @@ See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
 https://github.com/scikit-sparse/scikit-sparse
 
 https://github.com/scikit-umfpack/scikit-umfpack
+
+See russell for a Rust interface:
+
+https://github.com/cpmech/russell
 
 -----------------------------------------------------------------------------
 Compilation options

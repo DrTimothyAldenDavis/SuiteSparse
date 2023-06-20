@@ -1,3 +1,8 @@
+June 16, 2023: version 2.0.4
+
+    * cmake build system updates: update by Markus Muetzel.
+        Includes changes to FindMPFR.cmake and FindGMP.cmake.
+
 Jan 17, 2023: version 2.0.3
 
     * SuiteSparse_config: now v7.0.0

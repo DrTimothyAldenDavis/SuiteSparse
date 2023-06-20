@@ -2,7 +2,7 @@
 // GxB_Matrix_serialize: copy a matrix into a serialized array of bytes
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ GrB_Info GxB_Matrix_serialize       // serialize a GrB_Matrix to a blob
     (*blob_handle) = NULL ;
     size_t blob_size = 0 ;
     info = GB_serialize ((GB_void **) blob_handle, &blob_size, A, method,
-        Context) ;
+        Werk) ;
     (*blob_size_handle) = (GrB_Index) blob_size ;
     GB_BURBLE_END ;
     #pragma omp flush

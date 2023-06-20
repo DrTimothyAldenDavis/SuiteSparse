@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( CAMD_DATE "Jan 17, 2023" )
+set ( CAMD_DATE "June 16, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 0 )
-set ( CAMD_VERSION_SUB   3 )
+set ( CAMD_VERSION_SUB   4 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,7 +43,7 @@ project ( camd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -102,14 +102,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( camd PUBLIC ${SUITESPARSE_CONFIG_LIBRARY} )
+target_link_libraries ( camd PRIVATE ${SUITESPARSE_CONFIG_LIBRARY} )
 if ( NOT NSTATIC )
     target_link_libraries ( camd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( camd PUBLIC m )
+    target_link_libraries ( camd PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( camd_static PUBLIC m )
     endif ( )

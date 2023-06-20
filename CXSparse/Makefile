@@ -39,18 +39,18 @@ default: library
 
 # default is to install only in /usr/local
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 debug:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . --config Debug -j${JOBS} )
 
 all: library
 
@@ -58,7 +58,7 @@ demos:  rdemos cdemos
 
 # demos for real data type
 rdemos:
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/cs_demo1 < Matrix/t1
 	- ./build/cs_demo2 < Matrix/t1
 	- ./build/cs_demo2 < Matrix/fs_183_1
@@ -95,7 +95,7 @@ rdemos:
 
 # demos for complex data type
 cdemos:
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/cs_idemo < Matrix/t2
 	- ./build/cs_ldemo < Matrix/t2
 	- ./build/cs_ci_demo1 < Matrix/t2

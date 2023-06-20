@@ -14,10 +14,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Jan 20, 2023" )
+set ( SUITESPARSE_DATE "June 16, 2023" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
-set ( SUITESPARSE_VERSION_MINOR 0 )
-set ( SUITESPARSE_VERSION_SUB   1 )
+set ( SUITESPARSE_VERSION_MINOR 1 )
+set ( SUITESPARSE_VERSION_SUB   0 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
     ${SUITESPARSE_VERSION_MAJOR}.
@@ -117,7 +117,7 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( suitesparseconfig PUBLIC m )
+    target_link_libraries ( suitesparseconfig PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( suitesparseconfig_static PUBLIC m )
     endif ( )
@@ -128,7 +128,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( suitesparseconfig PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( suitesparseconfig PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )

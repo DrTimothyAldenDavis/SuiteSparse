@@ -2,10 +2,12 @@
 // GB_subref_phase0: find vectors of C = A(I,J) and determine I,J properties
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
+
+// JIT: not needed.  Only one variant possible.
 
 #include "GB_subref.h"
 
@@ -175,7 +177,7 @@ GrB_Info GB_subref_phase0
     const GrB_Index *J,     // index list for C = A(I,J), or GrB_ALL, etc.
     const int64_t nj,       // length of J, or special
 //  const bool must_sort,   // true if C must be returned sorted
-    GB_Context Context
+    GB_Werk Werk
 )
 {
 
@@ -238,7 +240,7 @@ GrB_Info GB_subref_phase0
     int64_t imin, imax, jmin, jmax ;
 
     info = GB_ijproperties (I, ni, nI, avlen, &Ikind, Icolon,
-        &I_unsorted, &I_has_dupl, &I_contig, &imin, &imax, Context) ;
+        &I_unsorted, &I_has_dupl, &I_contig, &imin, &imax, Werk) ;
     if (info != GrB_SUCCESS)
     { 
         // I invalid or out of memory
@@ -246,7 +248,7 @@ GrB_Info GB_subref_phase0
     }
 
     info = GB_ijproperties (J, nj, nJ, avdim, &Jkind, Jcolon,
-        &J_unsorted, &J_has_dupl, &J_contig, &jmin, &jmax, Context) ;
+        &J_unsorted, &J_has_dupl, &J_contig, &jmin, &jmax, Werk) ;
     if (info != GrB_SUCCESS)
     { 
         // J invalid or out of memory
@@ -322,7 +324,7 @@ GrB_Info GB_subref_phase0
             (A->Y != NULL || nJ > anvec) ;
     if (use_hyper_hash)
     { 
-        GB_OK (GB_hyper_hash_build (A, Context)) ;
+        GB_OK (GB_hyper_hash_build (A, Werk)) ;
     }
 
     const int64_t *restrict A_Yp = (use_hyper_hash) ? A->Y->p : NULL ;
@@ -335,7 +337,8 @@ GrB_Info GB_subref_phase0
     //--------------------------------------------------------------------------
 
     #define NTASKS_PER_THREAD 8
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
+    double chunk = GB_Context_chunk ( ) ;
     int nthreads = 1, ntasks = 1 ;
     int ntasks_max = nthreads_max * NTASKS_PER_THREAD ;
 

@@ -2,7 +2,7 @@
 // GxB_Type_from_name: return a built-in GrB_Type from its name
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -41,7 +41,7 @@
     }
 */
 
-// The alternative to this approach is a single function:
+// Another approach is a single function:
 //
 //      GxB_Matrix_type (&type, A)
 //
