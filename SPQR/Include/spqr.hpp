@@ -24,9 +24,6 @@
 #include <stdio.h>
 #include <cstring>
 
-#include <complex>
-typedef std::complex<double> Complex ;
-
 // -----------------------------------------------------------------------------
 // debugging and printing control
 // -----------------------------------------------------------------------------
