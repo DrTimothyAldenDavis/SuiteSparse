@@ -171,13 +171,6 @@ public:
     void debugDumpFront(Front <Int> *front);
 #endif
 };
-#include "Scheduler/Scheduler_FillWorkQueue.tpp"
-#include "Scheduler/Scheduler_Front.tpp"
-#include "Scheduler/Scheduler_LaunchKernel.tpp"
-#include "Scheduler/Scheduler_PostProcess.tpp"
-#include "Scheduler/Scheduler_Render.tpp"
-#include "Scheduler/Scheduler_TransferData.tpp"
-#include "Scheduler/Scheduler.tpp"
 
 extern template class Scheduler<int32_t>;
 extern template class Scheduler<int64_t>;

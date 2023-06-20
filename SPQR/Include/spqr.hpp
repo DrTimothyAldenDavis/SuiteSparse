@@ -121,7 +121,7 @@ typedef std::complex<double> Complex ;
     { \
 	return (result) ; \
     } \
-    if (cc->itype != ITYPE || cc->dtype != DTYPE) \
+    if (cc->dtype != DTYPE) \
     { \
 	cc->status = CHOLMOD_INVALID ; \
 	return (result) ; \
@@ -1236,43 +1236,5 @@ template <typename Int = int64_t> inline Int spqr_mult (Int a, Int b, int *ok)
     #define TEST_COVERAGE_RESUME
 
 #endif
-
-#include "Templates/spqr_rmap.tpp"
-#include "Templates/spqr_parallel.tpp"
-#include "Templates/spqr_kernel.tpp"
-#include "Templates/spqr_analyze.tpp"
-#include "Templates/spqr_assemble.tpp"
-#include "Templates/spqr_cpack.tpp"
-#include "Templates/spqr_csize.tpp"
-#include "Templates/spqr_fcsize.tpp"
-#include "Templates/spqr_debug.tpp"
-#include "Templates/spqr_front.tpp"
-#include "Templates/spqr_factorize.tpp"
-#include "Templates/spqr_freenum.tpp"
-#include "Templates/spqr_freesym.tpp"
-#include "Templates/spqr_freefac.tpp"
-#include "Templates/spqr_fsize.tpp"
-#include "Templates/spqr_maxcolnorm.tpp"
-#include "Templates/spqr_rconvert.tpp"
-#include "Templates/spqr_rcount.tpp"
-#include "Templates/spqr_rhpack.tpp"
-#include "Templates/spqr_rsolve.tpp"
-#include "Templates/spqr_stranspose1.tpp"
-#include "Templates/spqr_stranspose2.tpp"
-#include "Templates/spqr_hpinv.tpp"
-#include "Templates/spqr_1fixed.tpp"
-#include "Templates/spqr_1colamd.tpp"
-#include "Templates/spqr_1factor.tpp"
-#include "Templates/spqr_cumsum.tpp"
-#include "Templates/spqr_shift.tpp"
-#include "Templates/spqr_happly.tpp"
-#include "Templates/spqr_panel.tpp"
-#include "Templates/spqr_happly_work.tpp"
-#include "Templates/spqr_trapezoidal.tpp"
-#include "Templates/spqr_larftb.tpp"
-#include "Templates/spqr_append.tpp"
-#include "Templates/spqr_tol.tpp"
-
-#include "Templates/SuiteSparseQR.tpp"
 #endif
 

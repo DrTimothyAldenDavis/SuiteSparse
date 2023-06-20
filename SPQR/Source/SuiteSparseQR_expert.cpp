@@ -1905,4 +1905,5 @@ template cholmod_sparse *SuiteSparseQR_min2norm <Complex, int64_t>
     cholmod_sparse *Bsparse,
     cholmod_common *cc
 ) ;
+
 #endif

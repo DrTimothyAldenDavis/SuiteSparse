@@ -286,8 +286,11 @@ if ( DEMO )
 
     add_executable ( qrsimple  "Demo/qrsimple.cpp" )
     add_executable ( qrsimplec "Demo/qrsimplec.c" )
+    add_executable ( qrsimplec_int32 "Demo/qrsimplec_int32.c" )
     add_executable ( qrdemo    "Demo/qrdemo.cpp" )
     add_executable ( qrdemoc   "Demo/qrdemoc.c" )
+    add_executable ( qrdemoc_int32   "Demo/qrdemoc_int32.c" )
+
 
     if ( SUITESPARSE_CUDA )
         add_executable ( qrdemo_gpu  "Demo/qrdemo_gpu.cpp" )
@@ -298,8 +301,11 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} )
     target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} )
     target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} )
     target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} )
+    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} )
+
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA} )

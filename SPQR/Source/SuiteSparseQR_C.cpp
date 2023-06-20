@@ -167,12 +167,14 @@ cholmod_dense *SuiteSparseQR_C_backslash    // returns X, NULL if failure
     cc->status = CHOLMOD_OK ;
     if (A->itype == CHOLMOD_INT)
     {
-    return ((A->xtype == CHOLMOD_REAL) ?
+        printf("I used Int\n") ;
+        return ((A->xtype == CHOLMOD_REAL) ?
         SuiteSparseQR <double, int32_t>  (ordering, tol, A, B, cc) :
         SuiteSparseQR <Complex, int32_t> (ordering, tol, A, B, cc)) ;
     }
     else
     {
+        printf("I used Long\n") ;
         return ((A->xtype == CHOLMOD_REAL) ?
         SuiteSparseQR <double, int64_t>  (ordering, tol, A, B, cc) :
         SuiteSparseQR <Complex, int64_t> (ordering, tol, A, B, cc)) ;

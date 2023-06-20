@@ -24,6 +24,8 @@ extern "C"
 #include "cholmod.h"
 }
 #undef SUITESPARSE_GPU_EXTERN_ON
+#include <complex>
+typedef std::complex<double> Complex ;
 
 // =============================================================================
 // === spqr_gpu ================================================================
@@ -306,7 +308,11 @@ template <typename Entry, typename Int = int64_t> struct spqr_numeric
     Int maxfm ;     // max (Hm [0:nf-1]), computed only if H kept
 
 } ;
+extern template struct spqr_numeric <double, int32_t>;
+extern template struct spqr_numeric <Complex, int32_t>;
 
+extern template struct spqr_numeric <double, int64_t>;
+extern template struct spqr_numeric <Complex, int64_t>;
 
 // =============================================================================
 // === SuiteSparseQR_factorization =============================================
@@ -652,7 +658,44 @@ template <typename Entry, typename Int = int64_t> int SuiteSparseQR_numeric
     SuiteSparseQR_factorization <Entry, Int> *QR,
     cholmod_common *cc      // workspace and parameters
 ) ;
+extern template int SuiteSparseQR_numeric <double, int32_t>
+(
+    // inputs:
+    double tol,             // treat columns with 2-norm <= tol as zero
+    cholmod_sparse *A,      // sparse matrix to factorize
+    // input/output
+    SuiteSparseQR_factorization <double, int32_t> *QR,
+    cholmod_common *cc      // workspace and parameters
+) ;
 
+extern template int SuiteSparseQR_numeric <Complex, int32_t>
+(
+    // inputs:
+    double tol,             // treat columns with 2-norm <= tol as zero
+    cholmod_sparse *A,      // sparse matrix to factorize
+    // input/output
+    SuiteSparseQR_factorization <Complex, int32_t> *QR,
+    cholmod_common *cc      // workspace and parameters
+) ;
+extern template int SuiteSparseQR_numeric <double, int64_t>
+(
+    // inputs:
+    double tol,             // treat columns with 2-norm <= tol as zero
+    cholmod_sparse *A,      // sparse matrix to factorize
+    // input/output
+    SuiteSparseQR_factorization <double, int64_t> *QR,
+    cholmod_common *cc      // workspace and parameters
+) ;
+
+extern template int SuiteSparseQR_numeric <Complex, int64_t>
+(
+    // inputs:
+    double tol,             // treat columns with 2-norm <= tol as zero
+    cholmod_sparse *A,      // sparse matrix to factorize
+    // input/output
+    SuiteSparseQR_factorization <Complex, int64_t> *QR,
+    cholmod_common *cc      // workspace and parameters
+) ;
 #endif
 
 #endif
