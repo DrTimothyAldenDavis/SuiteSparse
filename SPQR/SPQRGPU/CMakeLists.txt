@@ -59,7 +59,7 @@ if ( NOT NSTATIC )
         set_target_properties ( spqr_cuda_static PROPERTIES
             OUTPUT_NAME spqr_cuda_static )
     endif ( )
-endif ()
+endif ( )
 
 set ( SPQR_CUDA_INCLUDES
         ../../GPUQREngine/Include
@@ -82,19 +82,19 @@ if ( NOT NSTATIC )
             ${SPQR_CUDA_INCLUDES} )
     set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-endif ()
+endif ( )
 
 target_link_libraries ( spqr_cuda PRIVATE ${CHOLMOD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
-endif ()
+endif ( )
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
     if ( NOT NSTATIC )
         target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
-    endif ()
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -108,4 +108,4 @@ install ( TARGETS spqr_cuda
 if ( NOT NSTATIC )
     install ( TARGETS spqr_cuda_static
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
-endif ()
+endif ( )
