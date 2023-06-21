@@ -1,0 +1,5 @@
+# Ignore these files that should always be generated:
+SuiteSparse_config.h
+
+# Do not ignore this file
+!.gitignore
