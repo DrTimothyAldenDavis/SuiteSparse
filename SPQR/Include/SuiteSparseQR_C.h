@@ -13,7 +13,7 @@
 #ifdef __cplusplus
 /* If included by a C++ program, the Complex type is std::complex<double> */
 #include <complex>
-#define Complex std::complex<double>
+typedef std::complex<double> Complex ;
 extern "C" {
 #endif
 
