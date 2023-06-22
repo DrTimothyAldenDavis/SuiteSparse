@@ -16,6 +16,7 @@
 //
 // =============================================================================
 #include "GPUQREngine_LLBundle.hpp"
+#include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 void LLBundle <Int>::PipelinedRearrange
 (
@@ -108,5 +109,12 @@ void LLBundle <Int>::PipelinedRearrange
         while (next[Last] != EMPTY) Last = next[Last];
     }
 }
-extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+template void LLBundle <int32_t>::PipelinedRearrange
+(
+    void
+) ;
+template void LLBundle <int64_t>::PipelinedRearrange
+(
+    void
+) ;

@@ -20,14 +20,6 @@
 #include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_Stats.hpp"
 
-template class BucketList<int32_t>;
-template class BucketList<int64_t>;
-template class LLBundle<int32_t>;
-template class LLBundle<int64_t>;
-
-template class Scheduler<int32_t>;
-template class Scheduler<int64_t>;
-
 template <typename Int>
 QREngineResultCode GPUQREngine_Internal
 (
@@ -131,6 +123,15 @@ template QREngineResultCode GPUQREngine_Internal
                             // are collected and passed back to the caller
                             // via this struct
 ) ;
+
+template class BucketList<int32_t>;
+template class BucketList<int64_t>;
+
+template class LLBundle<int32_t>;
+template class LLBundle<int64_t>;
+
+template class Scheduler<int32_t>;
+template class Scheduler<int64_t>;
 
 #endif
 

@@ -18,6 +18,7 @@
 
 #ifndef GPUQRENGINE_TASKDESCRIPTOR_HPP
 #define GPUQRENGINE_TASKDESCRIPTOR_HPP
+#include <stdint.h>
 
 enum TaskType
 {

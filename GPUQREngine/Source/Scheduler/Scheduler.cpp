@@ -159,6 +159,18 @@ Scheduler <Int>::Scheduler
     renderCount = 0;
     #endif
 }
+template Scheduler <int32_t>::Scheduler
+(
+    Front <int32_t> *fronts,
+    int32_t numFronts,
+    size_t gpuMemorySize
+) ;
+template Scheduler <int64_t>::Scheduler
+(
+    Front <int64_t> *fronts,
+    int64_t numFronts,
+    size_t gpuMemorySize
+) ;
 
 // -----------------------------------------------------------------------------
 // Scheduler destructor
@@ -168,6 +180,9 @@ Scheduler <Int>::~Scheduler()
 {
     FREE_EVERYTHING_SCHEDULER ;
 }
+template Scheduler <int32_t>::~Scheduler() ;
+template Scheduler <int64_t>::~Scheduler() ;
+
 
 // -----------------------------------------------------------------------------
 // Scheduler::initialize
@@ -258,5 +273,12 @@ bool Scheduler <Int>::initialize
 
     return cuda_ok;
 }
-extern template class Scheduler<int64_t>;
-extern template class Scheduler<int32_t>;
+
+template bool Scheduler <int32_t>::initialize
+(
+    size_t gpuMemorySize
+) ;
+template bool Scheduler <int64_t>::initialize
+(
+    size_t gpuMemorySize
+) ;

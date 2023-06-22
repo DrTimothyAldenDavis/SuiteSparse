@@ -87,8 +87,21 @@ public:
     #endif
 
     // VT management functions
-    double *allocateVT();
-    double *freeVT(double *gpuVT);
+    double *allocateVT
+    (
+        void
+    )
+    {
+        return gpuVT[VThead++];
+    }
+    double *freeVT
+    (
+        double *doneVT              // The GPU pointer of a released VT tile
+    )
+    {
+        gpuVT[--VThead] = doneVT;
+        return NULL;
+    }
 
     bool IsDone()
     {

@@ -13,7 +13,7 @@
 //
 // =============================================================================
 #include "GPUQREngine_LLBundle.hpp"
-
+#include "GPUQREngine_BucketList.hpp"
 #ifdef GPUQRENGINE_PIPELINING
 template <typename Int>
 void LLBundle <Int>::AddTileToDelta
@@ -117,6 +117,12 @@ void LLBundle <Int>::AddTileToSlots
     /* Update last, if needed. */
     if (next[Last] != EMPTY) Last = next[Last];
 }
-/*included here in lieu of an LLBundle.cpp file. First alphabetically*/
-extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+template void LLBundle <int32_t>::AddTileToSlots
+(
+    int32_t rowTile
+) ;
+template void LLBundle <int64_t>::AddTileToSlots
+(
+    int64_t rowTile
+) ;

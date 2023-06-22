@@ -171,6 +171,14 @@ void Scheduler <Int>::fillWorkQueue
 #endif
 }
 
+template void Scheduler <int32_t>::fillWorkQueue
+(
+    void
+) ;
+template void Scheduler <int64_t>::fillWorkQueue
+(
+    void
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::fillTasks
 // -----------------------------------------------------------------------------
@@ -389,6 +397,18 @@ void Scheduler <Int>::fillTasks
     /* Copy-out the indexes. */
     *queueIndex = qindex;
 }
+template void Scheduler <int32_t>::fillTasks
+(
+    int32_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int32_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
+template void Scheduler <int64_t>::fillTasks
+(
+    int64_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int64_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
 // -----------------------------------------------------------------------------
 // buildSAssemblyTask
 // -----------------------------------------------------------------------------
@@ -466,5 +486,3 @@ TaskDescriptor buildSmallQRTask
     returner.fn = (int) front->fn;
     return returner;
 }
-extern template class Scheduler<int64_t>;
-extern template class Scheduler<int32_t>;

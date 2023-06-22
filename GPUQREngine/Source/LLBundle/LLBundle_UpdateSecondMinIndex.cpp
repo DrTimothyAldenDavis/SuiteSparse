@@ -17,6 +17,7 @@
 // LLBundle::UpdateSecondMinIndex
 // -----------------------------------------------------------------------------
 #include "GPUQREngine_LLBundle.hpp"
+#include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 void LLBundle <Int>::UpdateSecondMinIndex
 (
@@ -36,6 +37,14 @@ void LLBundle <Int>::UpdateSecondMinIndex
         inspect = next[inspect];
     }
 }
+template void LLBundle <int32_t>::UpdateSecondMinIndex
+(
+    void
+) ;
+template void LLBundle <int64_t>::UpdateSecondMinIndex
+(
+    void
+) ;
 
 // -----------------------------------------------------------------------------
 // LLBundle::UpdateMax
@@ -52,5 +61,12 @@ void LLBundle <Int>::UpdateMax
     Max = Shadow;
     for(Int tile=First; tile!=EMPTY; tile=next[tile]) Max = MAX(Max, tile);
 }
-extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+template void LLBundle <int32_t>::UpdateMax
+(
+    void
+) ;
+template void LLBundle <int64_t>::UpdateMax
+(
+    void
+) ;

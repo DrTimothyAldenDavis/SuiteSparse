@@ -99,7 +99,12 @@ void Scheduler <Int>::render
 
     fclose(output);
 }
-extern template class Scheduler<int64_t>;
-extern template class Scheduler<int32_t>;
+template void Scheduler <int32_t>::render
+(
+    void
+) ;
+template void Scheduler <int64_t>::render
+(
+    void
+) ;
 #endif
-

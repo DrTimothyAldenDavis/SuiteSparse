@@ -20,7 +20,7 @@
 //
 // =============================================================================
 #include "GPUQREngine_LLBundle.hpp"
-
+#include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 bool LLBundle <Int>::Advance
 (
@@ -83,5 +83,12 @@ bool LLBundle <Int>::Advance
 
     return stillAround;
 }
-extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+template bool LLBundle <int32_t>::Advance
+(
+    void
+) ;
+template bool LLBundle <int64_t>::Advance
+(
+    void
+) ;

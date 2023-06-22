@@ -72,6 +72,13 @@ void BucketList<Int>::GrowBundles
         }
     }
 }
-extern template class BucketList<int32_t>;
-extern template class BucketList<int64_t>;
+
+template void BucketList<int32_t>::GrowBundles
+(
+    void
+) ;
+template void BucketList<int64_t>::GrowBundles
+(
+    void
+) ;
 #endif

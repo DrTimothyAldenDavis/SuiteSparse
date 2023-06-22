@@ -13,6 +13,7 @@
 //
 // =============================================================================
 #include "GPUQREngine_LLBundle.hpp"
+#include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 void LLBundle <Int>::gpuPack
 (
@@ -58,5 +59,12 @@ void LLBundle <Int>::gpuPack
     cpuTask->AuxAddress[0] = VT[0];
     cpuTask->AuxAddress[1] = VT[1];
 }
-extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+template void LLBundle <int32_t>::gpuPack
+(
+    TaskDescriptor* cpuTask
+) ;
+template void LLBundle <int64_t>::gpuPack
+(
+    TaskDescriptor* cpuTask
+) ;

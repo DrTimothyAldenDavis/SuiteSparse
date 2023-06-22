@@ -69,7 +69,14 @@ void Scheduler <Int>::activateFront
         }
     }
 }
-
+template void Scheduler <int32_t>::activateFront
+(
+    int32_t f                                      // The front id to manipulate
+) ;
+template void Scheduler <int64_t>::activateFront
+(
+    int64_t f                                      // The front id to manipulate
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::pullFrontData
 // -----------------------------------------------------------------------------
@@ -124,6 +131,14 @@ bool Scheduler <Int>::pullFrontData
     return (FrontDataPulled[f] = true);
 }
 
+template bool Scheduler <int32_t>::pullFrontData
+(
+    int32_t f                                      // The front id to manipulate
+) ;
+template bool Scheduler <int64_t>::pullFrontData
+(
+    int64_t f                                      // The front id to manipulate
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::finishFront
 // -----------------------------------------------------------------------------
@@ -164,6 +179,14 @@ bool Scheduler <Int>::finishFront
     /* If we got through this method, we have successfully freed the front. */
     return true;
 }
+template bool Scheduler <int32_t>::finishFront
+(
+    int32_t f                                     // The front id to manipulate
+) ;
+template bool Scheduler <int64_t>::finishFront
+(
+    int64_t f                                     // The front id to manipulate
+) ;
 
 #include "GPUQREngine.hpp"
 // -----------------------------------------------------------------------------
@@ -211,6 +234,7 @@ void Scheduler <Int>::debugDumpFront(Front <Int> *front)
     wsFront->assign(wsFront->cpu(), NULL);
     wsFront = Workspace::destroy(wsFront);
 }
+template void Scheduler <int32_t>::debugDumpFront(Front <int32_t> *front) ;
+template void Scheduler <int64_t>::debugDumpFront(Front <int64_t> *front) ;
+
 #endif
-extern template class Scheduler<int64_t>;
-extern template class Scheduler<int32_t>;

@@ -103,12 +103,27 @@ BucketList<Int>::BucketList
     }
 }
 
+template BucketList<int32_t>::BucketList
+(
+    Front <int32_t> *F,
+    int32_t minApplyGranularity
+) ;
+template BucketList<int64_t>::BucketList
+(
+    Front <int64_t> *F,
+    int64_t minApplyGranularity
+) ;
+
 template <typename Int>
 BucketList<Int>::~BucketList()
 {
     FREE_EVERYTHING_BUCKET ;
 
 }
+
+template BucketList<int32_t>::~BucketList() ;
+template BucketList<int64_t>::~BucketList() ;
+
 
 template <typename Int>
 void BucketList<Int>::Initialize()
@@ -133,5 +148,6 @@ void BucketList<Int>::Initialize()
         }
     }
 }
-extern template class BucketList<int64_t>;
-extern template class BucketList<int32_t>;
+
+template void BucketList<int32_t>::Initialize() ;
+template void BucketList<int64_t>::Initialize() ;

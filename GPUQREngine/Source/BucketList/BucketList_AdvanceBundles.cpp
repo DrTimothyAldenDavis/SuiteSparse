@@ -44,5 +44,5 @@ void BucketList<Int>::AdvanceBundles()
     }
 }
 
-extern template class BucketList<int32_t>;
-extern template class BucketList<int64_t>;
+template void BucketList<int32_t>::AdvanceBundles() ;
+template void BucketList<int64_t>::AdvanceBundles() ;
