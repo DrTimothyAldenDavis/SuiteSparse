@@ -10,21 +10,11 @@
 #ifndef SUITESPARSEQR_C_H
 #define SUITESPARSEQR_C_H
 
-#ifdef __cplusplus
-/* If included by a C++ program, the Complex type is std::complex<double> */
-#include <complex>
-#define Complex std::complex<double>
-extern "C" {
-#endif
-
 #include "cholmod.h"
 #include "SuiteSparseQR_definitions.h"
 
-#ifndef __cplusplus
-/* The C++ functions will return a pointer to a std::complex<double> array of
-   size n, which the C code must then interpret as double array of size 2*n,
-   with real and imaginary parts interleaved. */
-#define Complex double
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 /* ========================================================================== */
