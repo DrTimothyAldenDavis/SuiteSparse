@@ -2,7 +2,7 @@
 // === GPUQREngine/Source/TaskDescriptor_flops.cpp =============================
 // =============================================================================
 
-// GPUQREngine, Copyright (c) 2013, Timothy A Davis, Sencer Nuri Yeralan,
+// GPUQREngine, Copyright (c) 2013-2023, Timothy A Davis, Sencer Nuri Yeralan,
 // and Sanjay Ranka.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
@@ -23,7 +23,7 @@
 
 Int flopsFactorizeVT(int numTiles)
 {
-    Int m = TILESIZE * numTiles;
+    Int m = TILESIZE * static_cast<Int>(numTiles);
     Int n = TILESIZE;
     Int v = TILESIZE;
     return 2 * (m-1)                       +
@@ -37,8 +37,10 @@ Int flopsFactorizeVT(int numTiles)
 // flopsFactorize
 // -----------------------------------------------------------------------------
 
-Int flopsFactorize(int m, int n)
+Int flopsFactorize(int m_int, int n_int)
 {
+    Int m = m_int;
+    Int n = n_int;
     Int v = MIN(m, n);
     return 2 * (m-1)                    +
            v * (6 + 4*m*n + 5*n + 2*m)  +
@@ -51,9 +53,10 @@ Int flopsFactorize(int m, int n)
 // flopsApply
 // -----------------------------------------------------------------------------
 
-Int flopsApply(int numTiles, int n)
+Int flopsApply(int numTiles, int n_int)
 {
-    Int m = TILESIZE * numTiles;
+    Int m = TILESIZE * static_cast<Int>(numTiles);
+    Int n = n_int;
     Int k = TILESIZE;
     return k*n*(4*m - k + 3);
 }
