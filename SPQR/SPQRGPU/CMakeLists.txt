@@ -46,17 +46,19 @@ set_target_properties ( spqr_cuda PROPERTIES
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${SPQR_VERSION_MAJOR} )
 
-add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
+if ( NOT NSTATIC )
+    add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
 
-set_target_properties ( spqr_cuda_static PROPERTIES
-    VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    OUTPUT_NAME spqr_cuda
-    SOVERSION ${SPQR_VERSION_MAJOR} )
-
-if ( MSVC )
     set_target_properties ( spqr_cuda_static PROPERTIES
-        OUTPUT_NAME spqr_cuda_static )
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 17
+        OUTPUT_NAME spqr_cuda
+        SOVERSION ${SPQR_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( spqr_cuda_static PROPERTIES
+            OUTPUT_NAME spqr_cuda_static )
+    endif ( )
 endif ( )
 
 set ( SPQR_CUDA_INCLUDES
@@ -74,19 +76,25 @@ target_include_directories ( spqr_cuda PUBLIC
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
-target_include_directories ( spqr_cuda_static PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${SPQR_CUDA_INCLUDES} )
-set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+if ( NOT NSTATIC )
+    target_include_directories ( spqr_cuda_static PUBLIC
+            ${CUDAToolkit_INCLUDE_DIRS}
+            ${SPQR_CUDA_INCLUDES} )
+    set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+endif ( )
 
 target_link_libraries ( spqr_cuda PRIVATE ${CHOLMOD_LIBRARIES} )
-target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
+if ( NOT NSTATIC )
+    target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
+endif ( )
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+    if ( NOT NSTATIC )
+        target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -97,5 +105,7 @@ install ( TARGETS spqr_cuda
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
-install ( TARGETS spqr_cuda_static
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+if ( NOT NSTATIC )
+    install ( TARGETS spqr_cuda_static
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )

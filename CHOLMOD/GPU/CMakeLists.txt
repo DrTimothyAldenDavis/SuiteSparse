@@ -47,17 +47,19 @@ set_target_properties ( cholmod_cuda PROPERTIES
     CXX_STANDARD_REQUIRED 17
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
-add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
+if ( NOT NSTATIC )
+    add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
 
-set_target_properties ( cholmod_cuda_static PROPERTIES
-    VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    OUTPUT_NAME cholmod_cuda
-    SOVERSION ${CHOLMOD_VERSION_MAJOR} )
-
-if ( MSVC )
     set_target_properties ( cholmod_cuda_static PROPERTIES
-        OUTPUT_NAME cholmod_cuda_static )
+        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
+        CXX_STANDARD_REQUIRED 17
+        OUTPUT_NAME cholmod_cuda
+        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( cholmod_cuda_static PROPERTIES
+            OUTPUT_NAME cholmod_cuda_static )
+    endif ( )
 endif ( )
 
 set ( CHOLMOD_CUDA_INCLUDES
@@ -77,19 +79,23 @@ target_include_directories ( cholmod_cuda PUBLIC
 set_target_properties ( cholmod_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( cholmod_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
-target_include_directories ( cholmod_cuda_static PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${CHOLMOD_CUDA_INCLUDES} )
-set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+if ( NOT NSTATIC )
+    target_include_directories ( cholmod_cuda_static PUBLIC
+            ${CUDAToolkit_INCLUDE_DIRS}
+            ${CHOLMOD_CUDA_INCLUDES} )
+    set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     # this must be a PUBLIC link, not PRIVATE, so the CHOLMOD library
     # itself can link against these libraries
     target_link_libraries ( cholmod_cuda PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( cholmod_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+    if ( NOT NSTATIC )
+        target_link_libraries ( cholmod_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -101,6 +107,7 @@ install ( TARGETS cholmod_cuda
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( TARGETS cholmod_cuda_static
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
-
+if ( NOT NSTATIC )
+    install ( TARGETS cholmod_cuda_static
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )
