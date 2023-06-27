@@ -3,6 +3,7 @@ Version 8.0.2, June 16, 2023
     * added -DJITINIT=option:  use -DJITINIT to set the initial state of
         the GxB_JIT_CONTROL (4:on, 3:load, 2:run, 1:pause, 0:off).  The default
         is 4 (on) if the JIT is enabled, or 2 (run) if -DNJIT=1 is set.
+    * xxHash: upgraded to latest version as of June 16, 2023
 
 Version 8.0.1, May 27, 2023
 
