@@ -34,16 +34,16 @@ else ( )
         LANGUAGES C CXX )
 endif ( )
 
-set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_C_STANDARD 11 )
-
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
 add_library ( spqr_cuda SHARED ${SPQR_CUDA_SOURCES} )
 
 set_target_properties ( spqr_cuda PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_STANDARD 17
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
     SOVERSION ${SPQR_VERSION_MAJOR} )
 
 if ( NOT NSTATIC )
@@ -51,7 +51,10 @@ if ( NOT NSTATIC )
 
     set_target_properties ( spqr_cuda_static PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-        CXX_STANDARD_REQUIRED 17
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
         OUTPUT_NAME spqr_cuda
         SOVERSION ${SPQR_VERSION_MAJOR} )
 
@@ -82,12 +85,10 @@ if ( NOT NSTATIC )
             ${SPQR_CUDA_INCLUDES} )
     set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
 endif ( )
 
 target_link_libraries ( spqr_cuda PRIVATE ${CHOLMOD_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( spqr_cuda_static PUBLIC ${CHOLMOD_LIBRARIES} )
-endif ( )
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )

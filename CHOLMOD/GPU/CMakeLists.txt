@@ -37,14 +37,14 @@ else ( )
     file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c" )
 endif ( )
 
-set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_C_STANDARD 11 )
-
 add_library ( cholmod_cuda SHARED ${CHOLMOD_CUDA_SOURCES} )
 
 set_target_properties ( cholmod_cuda PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_STANDARD 17
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
 if ( NOT NSTATIC )
@@ -52,7 +52,10 @@ if ( NOT NSTATIC )
 
     set_target_properties ( cholmod_cuda_static PROPERTIES
         VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-        CXX_STANDARD_REQUIRED 17
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
         OUTPUT_NAME cholmod_cuda
         SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
@@ -111,3 +114,4 @@ if ( NOT NSTATIC )
     install ( TARGETS cholmod_cuda_static
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
