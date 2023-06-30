@@ -20,8 +20,8 @@
 // Configuration information from CMake
 #define Mongoose_VERSION_MAJOR 3
 #define Mongoose_VERSION_MINOR 0
-#define Mongoose_VERSION_PATCH 4
-#define Mongoose_DATE "Jan 17, 2023"
+#define Mongoose_VERSION_PATCH 5
+#define Mongoose_DATE "June 16, 2023"
 
 namespace Mongoose
 {

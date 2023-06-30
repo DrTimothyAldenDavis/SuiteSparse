@@ -49,7 +49,7 @@ find_library ( SPQR_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME spqr_static )
+    set ( STATIC_NAME spqr_static spqr )
 else ( )
     set ( STATIC_NAME spqr )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

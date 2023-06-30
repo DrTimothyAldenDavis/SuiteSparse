@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Jan 17, 2023" )
+set ( SUITESPARSE_GPURUNTIME_DATE "June 16, 2023" )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
 set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   3 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   4 )
 
 message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
@@ -54,7 +54,7 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -73,9 +73,6 @@ if ( SUITESPARSE_CUDA )
     message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 endif ( )
 
-set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_C_STANDARD 11 )
-
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
 
 set ( SUITESPARSE_GPURUNTIME_INCLUDES Include 
@@ -91,7 +88,8 @@ add_library ( suitesparse_gpuruntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
 set_target_properties ( suitesparse_gpuruntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
+    CXX_STANDARD 17
+    CXX_STANDARD_REQUIRED ON
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
     PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -103,7 +101,7 @@ target_include_directories ( suitesparse_gpuruntime PUBLIC
 if ( SUITESPARSE_CUDA )
     set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_link_libraries ( suitesparse_gpuruntime CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( suitesparse_gpuruntime PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
 
@@ -116,7 +114,8 @@ if ( NOT NSTATIC )
 
     set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
         VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
-        CXX_STANDARD_REQUIRED 17
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparse_gpuruntime
         SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
 
@@ -132,7 +131,7 @@ if ( NOT NSTATIC )
     if ( SUITESPARSE_CUDA )
         set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( suitesparse_gpuruntime_static CUDA::nvrtc CUDA::cudart_static
+        target_link_libraries ( suitesparse_gpuruntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 endif ( )

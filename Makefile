@@ -153,9 +153,10 @@ purge:
 	- ( cd SPQR && $(MAKE) purge )
 	- $(RM) MATLAB_Tools/*/*.mex* MATLAB_Tools/*/*/*.mex*
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
-	- $(RM) -r include/* bin/* lib/* Example/build/*
+	- $(RM) -r Example/build/*
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd SPEX && $(MAKE) purge )
+	- $(RM) -r include/* bin/* lib/*
 
 clean: purge
 

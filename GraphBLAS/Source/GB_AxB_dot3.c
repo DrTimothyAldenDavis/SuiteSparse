@@ -2,7 +2,7 @@
 // GB_AxB_dot3: compute C<M> = A'*B in parallel
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
@@ -12,10 +12,13 @@
 // applied.  C and M are both sparse or hypersparse, and have the same sparsity
 // structure.
 
+// JIT: done.
+
 #include "GB_mxm.h"
 #include "GB_binop.h"
+#include "GB_stringify.h"
 #include "GB_AxB__include1.h"
-#ifndef GBCUDA_DEV
+#ifndef GBCOMPACT
 #include "GB_AxB__include2.h"
 #endif
 #include "GB_unused.h"
@@ -42,7 +45,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     const GrB_Matrix B,             // input matrix
     const GrB_Semiring semiring,    // semiring that defines C=A*B
     const bool flipxy,              // if true, do z=fmult(b,a) vs fmult(a,b)
-    GB_Context Context
+    GB_Werk Werk
 )
 {
 
@@ -117,7 +120,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     const int64_t *restrict Mp = M->p ;
     const int64_t *restrict Mh = M->h ;
     const int64_t *restrict Mi = M->i ;
-    const GB_void *restrict Mx = (GB_void *) (Mask_struct ? NULL : (M->x)) ;
+    const GB_M_TYPE *restrict Mx = (GB_M_TYPE *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
     const int64_t mvlen = M->vlen ;
     const int64_t mvdim = M->vdim ;
@@ -172,7 +175,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
         ctype, cvlen, cvdim, GB_Ap_malloc, true,
         C_sparsity, true, M->hyper_switch, cnvec,
         cnz+1,  // add one to cnz for GB_cumsum of Cwork in GB_AxB_dot3_slice
-        true, C_iso, Context)) ;
+        true, C_iso)) ;
 
     int64_t *restrict Cp = C->p ;
     int64_t *restrict Ch = C->h ;
@@ -182,7 +185,8 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     // determine the # of threads to use
     //--------------------------------------------------------------------------
 
-    GB_GET_NTHREADS_MAX (nthreads_max, chunk, Context) ;
+    int nthreads_max = GB_Context_nthreads_max ( ) ;
+    double chunk = GB_Context_chunk ( ) ;
 
     //--------------------------------------------------------------------------
     // copy Mp and Mh into C
@@ -207,28 +211,30 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 
     nthreads = GB_nthreads (cnz, chunk, nthreads_max) ;
     GB_OK (GB_AxB_dot3_one_slice (&TaskList, &TaskList_size, &ntasks, &nthreads,
-        M, Context)) ;
+        M, Werk)) ;
 
     //--------------------------------------------------------------------------
     // phase1: estimate the work to compute each entry in C
     //--------------------------------------------------------------------------
 
     // The work to compute C(i,j) is held in Cwork [p], if C(i,j) appears in
-    // as the pth entry in C.
+    // as the pth entry in C.  This phase is purely symbolic and does not
+    // depend on the data types or semiring.
 
+    #include "GB_mxm_shared_definitions.h"
     #define GB_DOT3
     #define GB_DOT3_PHASE1
 
     if (M_is_sparse && Mask_struct)
-    {
-        // special case: M is sparse and structural
-        #define GB_MASK_SPARSE_AND_STRUCTURAL
+    { 
+        // special case: M is present, sparse, structural, and not complemented
+        #define GB_MASK_SPARSE_STRUCTURAL_AND_NOT_COMPLEMENTED
         #include "GB_meta16_factory.c"
-        #undef GB_MASK_SPARSE_AND_STRUCTURAL
+        #undef  GB_MASK_SPARSE_STRUCTURAL_AND_NOT_COMPLEMENTED
         // TODO: skip phase1 if A and B are both bitmap/full.
     }
     else
-    {
+    { 
         // general case: M sparse/hyper, structural/valued
         #include "GB_meta16_factory.c"
     }
@@ -242,7 +248,7 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
 
     GB_FREE_WORK (&TaskList, TaskList_size) ;
     GB_OK (GB_AxB_dot3_slice (&TaskList, &TaskList_size, &ntasks, &nthreads,
-        C, Context)) ;
+        C, Werk)) ;
 
     GBURBLE ("nthreads %d ntasks %d ", nthreads, ntasks) ;
 
@@ -254,24 +260,25 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     { 
 
         //----------------------------------------------------------------------
-        // C is iso; compute the pattern of C<M>=A'*B with the any_pair semiring
+        // via the iso kernel
         //----------------------------------------------------------------------
 
         memcpy (C->x, cscalar, ctype->size) ;
-        GB_OK (GB (_Adot3B__any_pair_iso) (C, M, Mask_struct, A, B,
-            TaskList, ntasks, nthreads)) ;
+        info = GB (_Adot3B__any_pair_iso) (C, M, Mask_struct, A, B,
+            TaskList, ntasks, nthreads) ;
 
     }
     else
     {
 
         //----------------------------------------------------------------------
-        // C is non-iso
+        // via the factory kernel
         //----------------------------------------------------------------------
 
-        bool done = false ;
-
-        #ifndef GBCUDA_DEV
+        info = GrB_NO_VALUE ;
+        #ifndef GBCOMPACT
+        GB_IF_FACTORY_KERNELS_ENABLED
+        { 
 
             //------------------------------------------------------------------
             // define the worker for the switch factory
@@ -284,7 +291,6 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
             {                                                               \
                 info = GB_Adot3B (add,mult,xname) (C, M, Mask_struct, A, B, \
                     TaskList, ntasks, nthreads) ;                           \
-                done = (info != GrB_NO_VALUE) ;                             \
             }                                                               \
             break ;
 
@@ -300,19 +306,37 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
             { 
                 #include "GB_AxB_factory.c"
             }
-
+        }
         #endif
 
         //----------------------------------------------------------------------
-        // C<M> = A'*B, via masked dot product method and typecasting
+        // via the JIT or PreJIT kernel
         //----------------------------------------------------------------------
 
-        if (!done)
+        if (info == GrB_NO_VALUE)
+        { 
+            info = GB_AxB_dot3_jit (C, M, Mask_struct, A, B,
+                semiring, flipxy, TaskList, ntasks, nthreads) ;
+        }
+
+        //----------------------------------------------------------------------
+        // via the generic kernel
+        //----------------------------------------------------------------------
+
+        if (info == GrB_NO_VALUE)
         { 
             #define GB_DOT3_GENERIC
             GB_BURBLE_MATRIX (C, "(generic C<M>=A'*B) ") ;
             #include "GB_AxB_dot_generic.c"
+            info = GrB_SUCCESS ;
         }
+    }
+
+    if (info != GrB_SUCCESS)
+    { 
+        // out of memory, or other error
+        GB_FREE_ALL ;
+        return (info) ;
     }
 
     //--------------------------------------------------------------------------

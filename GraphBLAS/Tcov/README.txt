@@ -1,4 +1,4 @@
-SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 SPDX-License-Identifier: Apache-2.0
 
 GraphBLAS/Tcov: statement coverage tests
@@ -48,7 +48,6 @@ Files in GraphBLAS/Tcov:
     Makefile        just for 'make clean' and 'make purge'
     README.txt      this file
 
-    GB_cover_util.c     get/put the coverage
     log_*.txt           100% test coverage certificates
 
     tmp_cover       where coverage reports are placed

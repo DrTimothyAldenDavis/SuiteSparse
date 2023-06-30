@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.19 )
 
-set ( SPEX_DATE "Jan 17, 2023" )
+set ( SPEX_DATE "June 16, 2023" )
 set ( SPEX_VERSION_MAJOR 2 )
 set ( SPEX_VERSION_MINOR 0 )
-set ( SPEX_VERSION_SUB   3 )
+set ( SPEX_VERSION_SUB   4 )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -46,9 +46,9 @@ project ( spex
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.0.0 REQUIRED )
-find_package ( COLAMD 3.0.3 REQUIRED )
-find_package ( AMD 3.0.3 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( COLAMD 3.0.4 REQUIRED )
+find_package ( AMD 3.0.4 REQUIRED )
 find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
 find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
 
@@ -83,7 +83,8 @@ add_library ( spex SHARED ${SPEX_SOURCES} )
 
 set_target_properties ( spex PROPERTIES
     VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${SPEX_VERSION_MAJOR}
     PUBLIC_HEADER "Include/SPEX.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -97,7 +98,8 @@ if ( NOT NSTATIC )
 
     set_target_properties ( spex_static PROPERTIES
         VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         OUTPUT_NAME spex
         SOVERSION ${SPEX_VERSION_MAJOR} )
 
@@ -112,39 +114,39 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spex PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # AMD:
-target_link_libraries ( spex PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # COLAMD:
-target_link_libraries ( spex PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # MPFR:
-target_link_libraries ( spex PUBLIC ${MPFR_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${MPFR_STATIC} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
-target_link_libraries ( spex PUBLIC ${GMP_LIBRARIES} )
+target_link_libraries ( spex PRIVATE ${GMP_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spex PUBLIC m )
+    target_link_libraries ( spex PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( spex_static PUBLIC m )
     endif ( )

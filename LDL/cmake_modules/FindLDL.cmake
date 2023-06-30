@@ -49,7 +49,7 @@ find_library ( LDL_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME ldl_static )
+    set ( STATIC_NAME ldl_static ldl )
 else ( )
     set ( STATIC_NAME ldl )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

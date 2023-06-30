@@ -51,7 +51,7 @@ find_library ( GPUQRENGINE_LIBRARY
 )
 
 if ( MSVC )
-    set ( STATIC_NAME gpuqrengine_static )
+    set ( STATIC_NAME gpuqrengine_static gpuqrengine )
 else ( )
     set ( STATIC_NAME gpuqrengine )
     set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )

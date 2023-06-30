@@ -114,4 +114,8 @@ int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 #define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 
+#ifdef __cplusplus
+}
+#endif
+
 #endif

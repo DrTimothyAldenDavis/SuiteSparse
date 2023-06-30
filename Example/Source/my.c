@@ -1,6 +1,11 @@
 // Example library that relies on SuiteSparse packages
 
-#include "my.h"
+// ANSI C include files:
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
+
+#include "my_internal.h"
 
 #define OK(result)                                      \
     if (!(result))                                      \
@@ -82,7 +87,7 @@ void my_function (void)
         Work) ;
     OK (nblocks > 0) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
-    for (int k = 0 ; k < n ; k++) printf ("Q [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++) printf ("Q [%d] = %d\n", k, (int) Q [k]) ;
     printf ("nblocks %d\n", (int) nblocks) ;
 
     //--------------------------------------------------------------------------

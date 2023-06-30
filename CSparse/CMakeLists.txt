@@ -17,10 +17,10 @@
 
 cmake_minimum_required ( VERSION 3.13 )
 
-set ( CSPARSE_DATE "Jan 17, 2023" )
+set ( CSPARSE_DATE "June 16, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 )
 set ( CSPARSE_VERSION_MINOR 0 )
-set ( CSPARSE_VERSION_SUB   1 )
+set ( CSPARSE_VERSION_SUB   4 )
 
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
@@ -86,7 +86,8 @@ add_library ( csparse SHARED ${CSPARSE_SOURCES} )
 
 set_target_properties ( csparse PROPERTIES
     VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
-    C_STANDARD_REQUIRED 11
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
     SOVERSION ${CSPARSE_VERSION_MAJOR}
     PUBLIC_HEADER "Include/cs.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
@@ -101,7 +102,8 @@ if ( NOT NSTATIC )
     set_target_properties ( csparse_static PROPERTIES
         VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
         OUTPUT_NAME csparse
-        C_STANDARD_REQUIRED 11
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
         SOVERSION ${CSPARSE_VERSION_MAJOR} )
 
     if ( MSVC )
@@ -116,7 +118,7 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( csparse PUBLIC m )
+    target_link_libraries ( csparse PRIVATE m )
     if ( NOT NSTATIC )
         target_link_libraries ( csparse_static PUBLIC m )
     endif ( )
