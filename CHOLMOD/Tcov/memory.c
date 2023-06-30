@@ -127,7 +127,7 @@ void normal_memory_handler ( void )
 void test_memory_handler ( void )
 {
     SuiteSparse_config_malloc_func_set (my_malloc2) ;
-    SuiteSparse_config_calloc_func_set ((my_calloc2) ;
+    SuiteSparse_config_calloc_func_set (my_calloc2) ;
     SuiteSparse_config_realloc_func_set (my_realloc2) ;
     SuiteSparse_config_free_func_set (my_free2) ;
 
