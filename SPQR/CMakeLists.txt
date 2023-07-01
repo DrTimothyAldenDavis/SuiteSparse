@@ -95,12 +95,11 @@ find_package ( CAMD 3.0.4
 if ( NOT TARGET camd )
     find_package ( CAMD 3.0.4 )
 endif ( )
-find_package ( CCOLAMD 3.0.4 )
 
-find_package ( CCOLAMD 3.0.3
+find_package ( CCOLAMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET ccolamd )
-    find_package ( CCOLAMD 3.0.3 )
+    find_package ( CCOLAMD 3.0.4 )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
