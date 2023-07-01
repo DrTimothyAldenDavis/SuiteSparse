@@ -34,29 +34,34 @@ else ( )
         LANGUAGES C CXX )
 endif ( )
 
-set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_C_STANDARD 11 )
-
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
 add_library ( spqr_cuda SHARED ${SPQR_CUDA_SOURCES} )
 
 set_target_properties ( spqr_cuda PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_STANDARD 17
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
     SOVERSION ${SPQR_VERSION_MAJOR} )
 
-add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
+if ( NOT NSTATIC )
+    add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
 
-set_target_properties ( spqr_cuda_static PROPERTIES
-    VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    OUTPUT_NAME spqr_cuda
-    SOVERSION ${SPQR_VERSION_MAJOR} )
-
-if ( MSVC )
     set_target_properties ( spqr_cuda_static PROPERTIES
-        OUTPUT_NAME spqr_cuda_static )
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        OUTPUT_NAME spqr_cuda
+        SOVERSION ${SPQR_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( spqr_cuda_static PROPERTIES
+            OUTPUT_NAME spqr_cuda_static )
+    endif ( )
 endif ( )
 
 set ( SPQR_CUDA_INCLUDES ../Include )
@@ -84,6 +89,7 @@ target_include_directories ( spqr_cuda PRIVATE
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
+if ( NOT NSTATIC )
 target_include_directories ( spqr_cuda_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
@@ -91,17 +97,22 @@ target_include_directories ( spqr_cuda_static PRIVATE
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-target_link_libraries ( spqr_cuda PRIVATE cholmod )
 if ( TARGET cholmod_static )
     target_link_libraries ( spqr_cuda_static PUBLIC cholmod_static )
 else ( )
     target_link_libraries ( spqr_cuda_static PUBLIC cholmod )
 endif ( )
+endif ( )
+
+target_link_libraries ( spqr_cuda PRIVATE cholmod )
+
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+    if ( NOT NSTATIC )
+        target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -115,9 +126,12 @@ install ( TARGETS spqr_cuda
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+
+if ( NOT NSTATIC )
 install ( TARGETS spqr_cuda_static
     EXPORT SPQR_CUDATargets
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT SPQR_CUDATargets
@@ -140,3 +154,4 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfigVersion.cmake
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+
