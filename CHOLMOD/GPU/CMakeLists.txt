@@ -76,18 +76,18 @@ set ( CHOLMOD_CUDA_INCLUDES
 
 include_directories ( ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-target_include_directories ( cholmod_cuda PUBLIC
+target_include_directories ( cholmod_cuda PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( cholmod_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( cholmod_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
 if ( NOT NSTATIC )
-    target_include_directories ( cholmod_cuda_static PUBLIC
-            ${CUDAToolkit_INCLUDE_DIRS}
-            ${CHOLMOD_CUDA_INCLUDES} )
-    set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-    set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+target_include_directories ( cholmod_cuda_static PRIVATE
+        ${CUDAToolkit_INCLUDE_DIRS}
+        ${CHOLMOD_CUDA_INCLUDES} )
+set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
@@ -105,13 +105,39 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS cholmod_cuda
+    EXPORT CHOLMOD_CUDATargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS cholmod_cuda_static
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+install ( TARGETS cholmod_cuda_static
+    EXPORT CHOLMOD_CUDATargets
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
+
+# create (temporary) export target file during build
+export ( EXPORT CHOLMOD_CUDATargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDATargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT CHOLMOD_CUDATargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+
+configure_package_config_file (
+    ../Config/CHOLMOD_CUDAConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )

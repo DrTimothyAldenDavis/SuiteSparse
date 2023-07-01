@@ -91,6 +91,10 @@ set_target_properties ( suitesparseconfig PROPERTIES
     PUBLIC_HEADER "SuiteSparse_config.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( suitesparseconfig
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static suitesparseconfig library properties
 #-------------------------------------------------------------------------------
@@ -109,6 +113,10 @@ if ( NOT NSTATIC )
         set_target_properties ( suitesparseconfig_static PROPERTIES
             OUTPUT_NAME suitesparseconfig_static )
     endif ( )
+
+    target_include_directories ( suitesparseconfig_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -150,9 +158,12 @@ endif ( )
 # suitesparseconfig installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
 install ( TARGETS suitesparseconfig
+    EXPORT SuiteSparse_configTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
@@ -163,7 +174,30 @@ install ( FILES
     COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS suitesparseconfig_static
+        EXPORT SuiteSparse_configTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT SuiteSparse_configTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configTargets.cmake )
+
+# install export target and config for find_package
+install ( EXPORT SuiteSparse_configTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
+
+configure_package_config_file (
+    Config/SuiteSparse_configConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
 
 include ( SuiteSparseReport )

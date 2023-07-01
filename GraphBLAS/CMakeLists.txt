@@ -239,6 +239,10 @@ set_target_properties ( graphblas PROPERTIES
     PUBLIC_HEADER "Include/GraphBLAS.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( graphblas
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 if ( SUITESPARSE_CUDA )
     add_dependencies ( graphblas graphblascuda )
 #   add_dependencies ( graphblas rmm_wrap )
@@ -268,6 +272,10 @@ if ( NOT NSTATIC )
         set_target_properties ( graphblas_static PROPERTIES
             OUTPUT_NAME graphblas_static )
     endif ( )
+
+    target_include_directories ( graphblas_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
     if ( SUITESPARSE_CUDA )
         add_dependencies ( graphblas_static graphblascuda )
@@ -452,18 +460,42 @@ endif ( )
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS graphblas
+    EXPORT GraphBLASTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindGraphBLAS.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
-    COMPONENT Development )
+
 if ( NOT NSTATIC )
     install ( TARGETS graphblas_static
+        EXPORT GraphBLASTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT GraphBLASTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASTargets.cmake )
+
+# install export target and config for find_package
+install ( EXPORT GraphBLASTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+
+configure_package_config_file (
+    Config/GraphBLASConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
 
 #-------------------------------------------------------------------------------
 # configure the JITs
@@ -503,4 +535,3 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )
-

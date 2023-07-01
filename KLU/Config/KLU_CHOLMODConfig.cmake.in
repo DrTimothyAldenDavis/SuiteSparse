@@ -1,0 +1,121 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/KLU/cmake_modules/KLU_CHOLMODConfig.cmake
+#-------------------------------------------------------------------------------
+
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# KLU_CHOLMODConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
+
+# Finds the KLU include file and compiled library.
+# The following targets are defined:
+#   klu_cholmod           - for the shared library (if available)
+#   klu_cholmod_static    - for the static library (if available)
+
+# For backward compatibility the following variables are set:
+
+# KLU_CHOLMOD_INCLUDE_DIR - where to find klu_cholmod.h
+# KLU_CHOLMOD_LIBRARY     - compiled KLU_CHOLMOD library
+# KLU_CHOLMOD_STATIC      - static KLU_CHOLMOD library
+# KLU_CHOLMOD_LIBRARIES   - libraries when using KLU_CHOLMOD
+# KLU_CHOLMOD_FOUND       - true if KLU_CHOLMOD found
+
+# Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is
+# installed.
+
+#-------------------------------------------------------------------------------
+
+@PACKAGE_INIT@
+
+set ( KLU_CHOLMOD_DATE "@KLU_DATE@" )
+set ( KLU_CHOLMOD_VERSION_MAJOR @KLU_VERSION_MAJOR@ )
+set ( KLU_CHOLMOD_VERSION_MINOR @KLU_VERSION_MINOR@ )
+set ( KLU_CHOLMOD_VERSION_PATCH @KLU_VERSION_SUB@ )
+set ( KLU_CHOLMOD_VERSION "@KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@" )
+
+include ( ${CMAKE_CURRENT_LIST_DIR}/KLU_CHOLMODTargets.cmake )
+
+# The following is only for backward compatibility with FindKLU_CHOLMOD.
+
+set ( _target_shared klu_cholmod )
+set ( _target_static klu_cholmod )
+set ( _var_prefix "KLU_CHOLMOD" )
+
+get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
+if ( ${_var_prefix}_INCLUDE_DIR )
+    # First item in SuiteSparse targets contains the "main" header directory.
+    list ( GET ${_var_prefix}_INCLUDE_DIR 0 ${_var_prefix}_INCLUDE_DIR )
+endif ( )
+get_target_property ( ${_var_prefix}_LIBRARY ${_target_shared} IMPORTED_IMPLIB )
+if ( NOT ${_var_prefix}_LIBRARY )
+    get_target_property ( _library_chk ${_target_shared} IMPORTED_LOCATION )
+    if ( EXISTS ${_library_chk} )
+        set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+    endif ( )
+endif ( )
+if ( TARGET ${_target_static} )
+    get_target_property ( ${_var_prefix}_STATIC ${_target_static} IMPORTED_LOCATION )
+endif ( )
+
+# Check for most common build types
+set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" )
+
+get_property ( _isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
+if ( _isMultiConfig )
+    # For multi-configuration generators (e.g., Visual Studio), prefer those
+    # configurations.
+    list ( PREPEND _config_types ${CMAKE_CONFIGURATION_TYPES} )
+else ( )
+    # For single-configuration generators, prefer the current configuration.
+    list ( PREPEND _config_types ${CMAKE_BUILD_TYPE} )
+endif ( )
+
+list ( REMOVE_DUPLICATES _config_types )
+
+foreach ( _config ${_config_types} )
+    string ( TOUPPER ${_config} _uc_config )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_IMPLIB_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( TARGET ${_target_static} AND NOT ${_var_prefix}_STATIC )
+        get_target_property ( _library_chk ${_target_static}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_STATIC ${_library_chk} )
+        endif ( )
+    endif ( )
+endforeach ( )
+
+set ( KLU_CHOLMOD_LIBRARIES ${KLU_CHOLMOD_LIBRARY} )
+
+macro ( suitesparse_check_exist _var _files )
+  # ignore generator expressions
+  string ( GENEX_STRIP "${_files}" _files2 )
+
+  foreach ( _file ${_files2} )
+    if ( NOT EXISTS "${_file}" )
+      message ( FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist!" )
+    endif ( )
+  endforeach ()
+endmacro ( )
+
+suitesparse_check_exist ( KLU_CHOLMOD_INCLUDE_DIR ${KLU_CHOLMOD_INCLUDE_DIR} )
+suitesparse_check_exist ( KLU_CHOLMOD_LIBRARY ${KLU_CHOLMOD_LIBRARY} )
+
+message ( STATUS "KLU_CHOLMOD version: ${KLU_CHOLMOD_VERSION}" )
+message ( STATUS "KLU_CHOLMOD include: ${KLU_CHOLMOD_INCLUDE_DIR}" )
+message ( STATUS "KLU_CHOLMOD library: ${KLU_CHOLMOD_LIBRARY}" )
+message ( STATUS "KLU_CHOLMOD static:  ${KLU_CHOLMOD_STATIC}" )

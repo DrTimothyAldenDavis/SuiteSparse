@@ -27,7 +27,6 @@ message ( STATUS "Building AMD version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
@@ -57,7 +56,11 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -72,7 +75,7 @@ configure_file ( "Config/amd_version.tex.in" "${PROJECT_SOURCE_DIR}/Doc/amd_vers
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic amd library properties
@@ -93,6 +96,10 @@ set_target_properties ( amd PROPERTIES
     PUBLIC_HEADER "Include/amd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( amd
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 #-------------------------------------------------------------------------------
 # static amd library properties
 #-------------------------------------------------------------------------------
@@ -110,6 +117,11 @@ if ( NOT NSTATIC )
         set_target_properties ( amd_static PROPERTIES
             OUTPUT_NAME amd_static )
     endif ( )
+
+    target_include_directories ( amd_static
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -117,9 +129,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( amd PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( amd PRIVATE suitesparseconfig )
+target_include_directories ( amd PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( amd_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( amd_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( amd_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
 
 # libm:
@@ -134,18 +151,41 @@ endif ( )
 # AMD installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS amd
+    EXPORT AMDTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindAMD.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS amd_static
+        EXPORT AMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT AMDTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/AMDTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT AMDTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
+
+configure_package_config_file (
+    Config/AMDConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/AMDConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/AMDConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs

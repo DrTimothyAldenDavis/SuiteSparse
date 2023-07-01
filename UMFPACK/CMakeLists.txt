@@ -27,11 +27,6 @@ message ( STATUS "Building UMFPACK version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
@@ -57,21 +52,54 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
-find_package ( AMD 3.0.4 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
+find_package ( AMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET amd )
+    find_package ( AMD 3.0.4 REQUIRED )
+endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.4 )
-    find_package ( CHOLMOD_CUDA 4.0.4 )
+    find_package ( CHOLMOD 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod )
+        find_package ( CHOLMOD 4.0.4 )
+    endif ( )
+
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    endif ( )
+
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( COLAMD 3.0.4 )
-    find_package ( CAMD 3.0.4 )
-    find_package ( CCOLAMD 3.0.4 )
+    find_package ( COLAMD 3.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET colamd )
+        find_package ( COLAMD 3.0.4 )
+    endif ( )
+
+    find_package ( CAMD 3.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET camd )
+        find_package ( CAMD 3.0.4 )
+    endif ( )
+
+    find_package ( CCOLAMD 3.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET ccolamd )
+        find_package ( CCOLAMD 3.0.4 )
+    endif ( )
+
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
@@ -101,9 +129,7 @@ configure_file ( "Config/umfpack_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/../AMD/Include )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic umfpack library properties
@@ -120,6 +146,10 @@ set_target_properties ( umfpack PROPERTIES
     SOVERSION ${UMFPACK_VERSION_MAJOR}
     PUBLIC_HEADER "Include/umfpack.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+target_include_directories ( umfpack 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
 #-------------------------------------------------------------------------------
 # static umfpack library properties
@@ -139,6 +169,11 @@ if ( NOT NSTATIC )
         set_target_properties ( umfpack_static PROPERTIES
             OUTPUT_NAME umfpack_static )
     endif ( )
+
+    target_include_directories ( umfpack_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -146,9 +181,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( umfpack PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( umfpack PRIVATE suitesparseconfig )
+target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( umfpack_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( umfpack_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -173,9 +213,14 @@ if ( NOT WIN32 )
 endif ( )
 
 # amd:
-target_link_libraries ( umfpack PRIVATE ${AMD_LIBRARIES} )
+target_link_libraries ( umfpack PRIVATE amd )
+target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:amd,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( umfpack_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET amd_static )
+        target_link_libraries ( umfpack_static PUBLIC amd_static )
+    else ( )
+        target_link_libraries ( umfpack_static PUBLIC amd )
+    endif ( )
 endif ( )
 
 # BLAS:
@@ -192,14 +237,15 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( umfpack PRIVATE
-        ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-        ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
-        ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+        cholmod ${CHOLMOD_CUDA_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC
-            ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
-            ${AMD_STATIC} ${COLAMD_STATIC}
-            ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+            ${CHOLMOD_CUDA_STATIC} )
+        if ( TARGET cholmod_static )
+            target_link_libraries ( umfpack_static PUBLIC cholmod_static )
+        else ( )
+            target_link_libraries ( umfpack_static PUBLIC cholmod )
+        endif ( )
     endif ( )
 endif ( )
 
@@ -207,18 +253,41 @@ endif ( )
 # UMFPACK installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS umfpack
+    EXPORT UMFPACKTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindUMFPACK.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS umfpack_static
+        EXPORT UMFPACKTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT UMFPACKTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT UMFPACKTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+
+configure_package_config_file (
+    Config/UMFPACKConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
@@ -260,7 +329,7 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( umfpack_simple  PUBLIC umfpack ${SUITESPARSE_CONFIG_LIBRARIES} )
+    target_link_libraries ( umfpack_simple  PUBLIC umfpack suitesparseconfig )
     target_link_libraries ( umfpack_di_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )
@@ -269,17 +338,17 @@ if ( DEMO )
         # This is only needed because the demos might be linked before those
         # libraries are installed. Would it be better to set the rpath instead?
         target_link_libraries ( umfpack_di_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            colamd camd ccolamd )
         target_link_libraries ( umfpack_dl_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            colamd camd ccolamd )
         target_link_libraries ( umfpack_zi_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            colamd camd ccolamd )
         target_link_libraries ( umfpack_zl_demo PUBLIC
-            ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+            colamd camd ccolamd )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
-        target_link_libraries ( umf4            PUBLIC umfpack ${AMD_LIBRARIES} )
+        target_link_libraries ( umf4            PUBLIC umfpack amd )
         target_link_libraries ( umf4hb          PUBLIC umfpack )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )
@@ -289,13 +358,13 @@ if ( DEMO )
             # those libraries are installed. Would it be better to set the
             # rpath instead?
             target_link_libraries ( umf4hb PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                colamd camd ccolamd )
             target_link_libraries ( umf4zhb PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                colamd camd ccolamd )
             target_link_libraries ( umf4hb64 PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                colamd camd ccolamd )
             target_link_libraries ( umf4zhb64 PUBLIC
-                ${COLAMD_LIBRARIES} ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+                colamd camd ccolamd )
         endif ( )
     endif ( )
 
