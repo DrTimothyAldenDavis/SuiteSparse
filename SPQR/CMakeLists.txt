@@ -28,14 +28,6 @@ message ( STATUS "Building SPQR version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../GPUQREngine/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
@@ -72,26 +64,72 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
-find_package ( AMD 3.0.4 REQUIRED )
-find_package ( COLAMD 3.0.4 REQUIRED )
-find_package ( CHOLMOD 4.0.4 REQUIRED )
+find_package ( SuiteSparse_config 7.1.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET suitesparseconfig )
+    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+endif ( )
+
+find_package ( AMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET amd )
+    find_package ( AMD 3.0.4 REQUIRED )
+endif ( )
+
+find_package ( COLAMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET colamd )
+    find_package ( COLAMD 3.0.4 REQUIRED )
+endif ( )
+
+find_package ( CHOLMOD 4.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+if ( NOT TARGET cholmod )
+    find_package ( CHOLMOD 4.0.4 REQUIRED )
+endif ( )
+
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-find_package ( CAMD 3.0.4 )
-find_package ( CCOLAMD 3.0.4 )
+find_package ( CAMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET camd )
+    find_package ( CAMD 3.0.4 )
+endif ( )
+
+find_package ( CCOLAMD 3.0.4
+    PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+if ( NOT TARGET ccolamd )
+    find_package ( CCOLAMD 3.0.4 )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
-    find_package ( GPUQREngine 2.0.4 REQUIRED )
-    find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 2.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
+    if ( NOT TARGET suitesparse_gpuruntime )
+        find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
+    endif ( )
+
+    find_package ( GPUQREngine 2.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../GPUQREngine/build NO_DEFAULT_PATH )
+    if ( NOT TARGET gpuqrengine )
+        find_package ( GPUQREngine 2.0.4 REQUIRED )
+    endif ( )
+
+    find_package ( CHOLMOD_CUDA 4.0.4
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET cholmod_cuda )
+        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    endif ( )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
 add_subdirectory ( SPQRGPU )
-set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} ${GPUQRENGINE_LIBRARIES} ${SUITESPARSE_GPURUNTIME_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES} )
+set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} )
+if ( SUITESPARSE_CUDA )
+    list ( APPEND SPQR_CUDA gpuqrengine suitesparse_gpuruntime cholmod_cuda )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
@@ -114,15 +152,7 @@ configure_file ( "Config/spqr_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} ${CHOLMOD_INCLUDE_DIR}
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include )
-
-if ( SUITESPARSE_CUDA )
-    include_directories ( 
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/Include
-    ${CMAKE_SOURCE_DIR}/../GPUQREngine/Include )
-endif ( )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic spqr library properties
@@ -140,6 +170,10 @@ set_target_properties ( spqr PROPERTIES
     C_STANDARD_REQUIRED ON
     SOVERSION ${SPQR_VERSION_MAJOR}
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+target_include_directories ( spqr 
+    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
 #-------------------------------------------------------------------------------
 # static spqr library properties
@@ -161,6 +195,11 @@ if ( NOT NSTATIC )
         set_target_properties ( spqr_static PROPERTIES
             OUTPUT_NAME spqr_static )
     endif ( )
+
+    target_include_directories ( spqr_static 
+        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
+                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -168,9 +207,13 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spqr PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE suitesparseconfig )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET suitesparseconfig_static )
+        target_link_libraries ( spqr_static PUBLIC suitesparseconfig_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC suitesparseconfig )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -195,15 +238,23 @@ if ( NOT WIN32 )
 endif ( )
 
 # amd:
-target_link_libraries ( spqr PRIVATE ${AMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE amd )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${AMD_STATIC} )
+    if ( TARGET amd_static )
+        target_link_libraries ( spqr_static PUBLIC amd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC amd )
+    endif ( )
 endif ( )
 
 # colamd:
-target_link_libraries ( spqr PRIVATE ${COLAMD_LIBRARIES} )
+target_link_libraries ( spqr PRIVATE colamd )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${COLAMD_STATIC} )
+    if ( TARGET colamd_static )
+        target_link_libraries ( spqr_static PUBLIC colamd_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC colamd )
+    endif ( )
 endif ( )
 
 # BLAS:
@@ -229,14 +280,15 @@ include_directories ( ${LAPACK_INCLUDE_DIR} )
 # cholmod:
 # link with CHOLMOD and its dependencies, both required and optional
 target_link_libraries ( spqr PRIVATE
-    ${CHOLMOD_LIBRARIES} ${CHOLMOD_CUDA_LIBRARIES}
-    ${AMD_LIBRARIES} ${COLAMD_LIBRARIES}
-    ${CAMD_LIBRARIES} ${CCOLAMD_LIBRARIES} )
+    cholmod ${CHOLMOD_CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC
-        ${CHOLMOD_STATIC} ${CHOLMOD_CUDA_STATIC}
-        ${AMD_STATIC} ${COLAMD_STATIC}
-        ${CAMD_STATIC} ${CCOLAMD_STATIC} )
+        ${CHOLMOD_CUDA_STATIC} )
+    if ( TARGET cholmod_static )
+        target_link_libraries ( spqr_static PUBLIC cholmod_static )
+    else ( )
+        target_link_libraries ( spqr_static PUBLIC cholmod )
+    endif ( )
 endif ( )
 
 # CUDA
@@ -250,22 +302,44 @@ endif ( )
 # SPQR installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS spqr
+    EXPORT SPQRTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
-install ( FILES
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR.cmake
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSPQR_CUDA.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
     install ( TARGETS spqr_static
+        EXPORT SPQRTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
-    endif ( )
+endif ( )
+
 install ( FILES "Include/SuiteSparseQR_C.h"
     "Include/SuiteSparseQR_definitions.h"
     "Include/SuiteSparseQR.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+
+# create (temporary) export target file during build
+export ( EXPORT SPQRTargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SPQRTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT SPQRTargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
+
+configure_package_config_file (
+    Config/SPQRConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
@@ -299,21 +373,20 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} ${CHOLMOD_LIBRARIES} )
-
+    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} cholmod )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            cholmod suitesparseconfig )
         target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            cholmod suitesparseconfig )
         target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
-            ${CHOLMOD_LIBRARIES} ${SUITESPARSE_CONFIG_LIBRARIES} )
+            cholmod suitesparseconfig )
     endif ( )
 
 else ( )

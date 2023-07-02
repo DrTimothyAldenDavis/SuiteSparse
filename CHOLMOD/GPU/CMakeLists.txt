@@ -37,27 +37,32 @@ else ( )
     file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c" )
 endif ( )
 
-set ( CMAKE_CXX_STANDARD 17 )
-set ( CMAKE_C_STANDARD 11 )
-
 add_library ( cholmod_cuda SHARED ${CHOLMOD_CUDA_SOURCES} )
 
 set_target_properties ( cholmod_cuda PROPERTIES
     VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
+    CXX_STANDARD_REQUIRED ON
+    CXX_STANDARD 17
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
-add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
+if ( NOT NSTATIC )
+    add_library ( cholmod_cuda_static STATIC ${CHOLMOD_CUDA_SOURCES} )
 
-set_target_properties ( cholmod_cuda_static PROPERTIES
-    VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    CXX_STANDARD_REQUIRED 17
-    OUTPUT_NAME cholmod_cuda
-    SOVERSION ${CHOLMOD_VERSION_MAJOR} )
-
-if ( MSVC )
     set_target_properties ( cholmod_cuda_static PROPERTIES
-        OUTPUT_NAME cholmod_cuda_static )
+        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        OUTPUT_NAME cholmod_cuda
+        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+
+    if ( MSVC )
+        set_target_properties ( cholmod_cuda_static PROPERTIES
+            OUTPUT_NAME cholmod_cuda_static )
+    endif ( )
 endif ( )
 
 set ( CHOLMOD_CUDA_INCLUDES
@@ -71,36 +76,68 @@ set ( CHOLMOD_CUDA_INCLUDES
 
 include_directories ( ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-target_include_directories ( cholmod_cuda PUBLIC
+target_include_directories ( cholmod_cuda PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( cholmod_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( cholmod_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
-target_include_directories ( cholmod_cuda_static PUBLIC
+if ( NOT NSTATIC )
+target_include_directories ( cholmod_cuda_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( cholmod_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( cholmod_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+endif ( )
 
 if ( SUITESPARSE_CUDA )
     # this must be a PUBLIC link, not PRIVATE, so the CHOLMOD library
     # itself can link against these libraries
     target_link_libraries ( cholmod_cuda PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    target_link_libraries ( cholmod_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+    if ( NOT NSTATIC )
+        target_link_libraries ( cholmod_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS cholmod_cuda
+    EXPORT CHOLMOD_CUDATargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( NOT NSTATIC )
 install ( TARGETS cholmod_cuda_static
+    EXPORT CHOLMOD_CUDATargets
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )
 
+
+# create (temporary) export target file during build
+export ( EXPORT CHOLMOD_CUDATargets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDATargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT CHOLMOD_CUDATargets
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+
+configure_package_config_file (
+    ../Config/CHOLMOD_CUDAConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
