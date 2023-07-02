@@ -11,14 +11,14 @@
 
 #include "spqr.hpp"
 
-inline double spqr_private_nrm2 (int64_t n, double *X, cholmod_common *cc)
+template <typename Int> inline double spqr_private_nrm2 (Int n, double *X, cholmod_common *cc)
 {
     double norm ;
     SUITESPARSE_BLAS_dnrm2 (norm, n, X, 1, cc->blas_ok) ;
     return (norm) ;
 }
 
-inline double spqr_private_nrm2 (int64_t n, Complex *X, cholmod_common *cc)
+template <typename Int> inline double spqr_private_nrm2 (Int n, Complex *X, cholmod_common *cc)
 {
     double norm ;
     SUITESPARSE_BLAS_dznrm2 (norm, n, X, 1, cc->blas_ok) ;
@@ -30,7 +30,7 @@ inline double spqr_private_nrm2 (int64_t n, Complex *X, cholmod_common *cc)
 // === spqr_maxcolnorm =========================================================
 // =============================================================================
 
-template <typename Entry> double spqr_maxcolnorm
+template <typename Entry, typename Int> double spqr_maxcolnorm
 (
     // inputs, not modified
     cholmod_sparse *A,
@@ -40,7 +40,7 @@ template <typename Entry> double spqr_maxcolnorm
 )
 {
     double norm, maxnorm ;
-    int64_t j, p, len, n, *Ap ;
+    Int j, p, len, n, *Ap ;
     Entry *Ax ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
@@ -48,7 +48,7 @@ template <typename Entry> double spqr_maxcolnorm
 
     cc->blas_ok = TRUE ;
     n = A->ncol ;
-    Ap = (int64_t *) A->p ;
+    Ap = (Int *) A->p ;
     Ax = (Entry *) A->x ;
 
     maxnorm = 0 ;
@@ -60,7 +60,7 @@ template <typename Entry> double spqr_maxcolnorm
         maxnorm = MAX (maxnorm, norm) ;
     }
 
-    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !cc->blas_ok)
     {
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (EMPTY) ;
@@ -69,9 +69,7 @@ template <typename Entry> double spqr_maxcolnorm
     return (maxnorm) ;
 }
 
-// =============================================================================
-
-template double spqr_maxcolnorm <double>
+template double spqr_maxcolnorm <double, int32_t>
 (
     // inputs, not modified
     cholmod_sparse *A,
@@ -79,8 +77,23 @@ template double spqr_maxcolnorm <double>
     // workspace and parameters
     cholmod_common *cc
 ) ;
+template double spqr_maxcolnorm <Complex, int32_t>
+(
+    // inputs, not modified
+    cholmod_sparse *A,
 
-template double spqr_maxcolnorm <Complex>
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template double spqr_maxcolnorm <double, int64_t>
+(
+    // inputs, not modified
+    cholmod_sparse *A,
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template double spqr_maxcolnorm <Complex, int64_t>
 (
     // inputs, not modified
     cholmod_sparse *A,

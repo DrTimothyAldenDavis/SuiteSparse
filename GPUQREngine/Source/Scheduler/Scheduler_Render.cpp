@@ -26,16 +26,16 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_Internal.hpp"
+
 
 #ifdef GPUQRENGINE_RENDER
-
+#include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Scheduler.hpp"
 #include <stdio.h>
 #include <string.h>
 
 
-void Scheduler::render
+void Scheduler <Int>::render
 (
     void
 )
@@ -99,4 +99,12 @@ void Scheduler::render
 
     fclose(output);
 }
+template void Scheduler <int32_t>::render
+(
+    void
+) ;
+template void Scheduler <int64_t>::render
+(
+    void
+) ;
 #endif

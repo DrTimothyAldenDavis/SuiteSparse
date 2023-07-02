@@ -1,0 +1,121 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/CCOLAMD/cmake_modules/CCOLAMDConfig.cmake
+#-------------------------------------------------------------------------------
+
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# CCOLAMDConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
+
+# Finds the CCOLAMD include file and compiled library.
+# The following targets are defined:
+#   ccolamd           - for the shared library (if available)
+#   ccolamd_static    - for the static library (if available)
+
+# For backward compatibility the following variables are set:
+
+# CCOLAMD_INCLUDE_DIR - where to find ccolamd.h
+# CCOLAMD_LIBRARY     - dynamic CCOLAMD library
+# CCOLAMD_STATIC      - static CCOLAMD library
+# CCOLAMD_LIBRARIES   - libraries when using CCOLAMD
+# CCOLAMD_FOUND       - true if CCOLAMD found
+
+# Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is
+# installed.
+
+#-------------------------------------------------------------------------------
+
+@PACKAGE_INIT@
+
+set ( CCOLAMD_DATE "@CCOLAMD_DATE@" )
+set ( CCOLAMD_VERSION_MAJOR @CCOLAMD_VERSION_MAJOR@ )
+set ( CCOLAMD_VERSION_MINOR @CCOLAMD_VERSION_MINOR@ )
+set ( CCOLAMD_VERSION_PATCH @CCOLAMD_VERSION_SUB@ )
+set ( CCOLAMD_VERSION "@CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@.@CCOLAMD_VERSION_SUB@" )
+
+include ( ${CMAKE_CURRENT_LIST_DIR}/CCOLAMDTargets.cmake )
+
+# The following is only for backward compatibility with FindCCOLAMD.
+
+set ( _target_shared ccolamd )
+set ( _target_static ccolamd_static )
+set ( _var_prefix "CCOLAMD" )
+
+get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
+if ( ${_var_prefix}_INCLUDE_DIR )
+    # First item in SuiteSparse targets contains the "main" header directory.
+    list ( GET ${_var_prefix}_INCLUDE_DIR 0 ${_var_prefix}_INCLUDE_DIR )
+endif ( )
+get_target_property ( ${_var_prefix}_LIBRARY ${_target_shared} IMPORTED_IMPLIB )
+if ( NOT ${_var_prefix}_LIBRARY )
+    get_target_property ( _library_chk ${_target_shared} IMPORTED_LOCATION )
+    if ( EXISTS ${_library_chk} )
+        set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+    endif ( )
+endif ( )
+if ( TARGET ${_target_static} )
+    get_target_property ( ${_var_prefix}_STATIC ${_target_static} IMPORTED_LOCATION )
+endif ( )
+
+# Check for most common build types
+set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" )
+
+get_property ( _isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
+if ( _isMultiConfig )
+    # For multi-configuration generators (e.g., Visual Studio), prefer those
+    # configurations.
+    list ( PREPEND _config_types ${CMAKE_CONFIGURATION_TYPES} )
+else ( )
+    # For single-configuration generators, prefer the current configuration.
+    list ( PREPEND _config_types ${CMAKE_BUILD_TYPE} )
+endif ( )
+
+list ( REMOVE_DUPLICATES _config_types )
+
+foreach ( _config ${_config_types} )
+    string ( TOUPPER ${_config} _uc_config )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_IMPLIB_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( TARGET ${_target_static} AND NOT ${_var_prefix}_STATIC )
+        get_target_property ( _library_chk ${_target_static}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_STATIC ${_library_chk} )
+        endif ( )
+    endif ( )
+endforeach ( )
+
+set ( CCOLAMD_LIBRARIES ${CCOLAMD_LIBRARY} )
+
+macro ( suitesparse_check_exist _var _files )
+  # ignore generator expressions
+  string ( GENEX_STRIP "${_files}" _files2 )
+
+  foreach ( _file ${_files2} )
+    if ( NOT EXISTS "${_file}" )
+      message ( FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist!" )
+    endif ( )
+  endforeach ()
+endmacro ( )
+
+suitesparse_check_exist ( CCOLAMD_INCLUDE_DIR ${CCOLAMD_INCLUDE_DIR} )
+suitesparse_check_exist ( CCOLAMD_LIBRARY ${CCOLAMD_LIBRARY} )
+
+message ( STATUS "CCOLAMD version: ${CCOLAMD_VERSION}" )
+message ( STATUS "CCOLAMD include: ${CCOLAMD_INCLUDE_DIR}" )
+message ( STATUS "CCOLAMD library: ${CCOLAMD_LIBRARY}" )
+message ( STATUS "CCOLAMD static:  ${CCOLAMD_STATIC}" )

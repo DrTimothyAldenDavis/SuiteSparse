@@ -19,11 +19,10 @@
 // front in it to begin with.
 //
 // =============================================================================
-
+#include "GPUQREngine_LLBundle.hpp"
 #include "GPUQREngine_BucketList.hpp"
-
-
-bool LLBundle::Advance
+template <typename Int>
+bool LLBundle <Int>::Advance
 (
     void
 )
@@ -84,3 +83,12 @@ bool LLBundle::Advance
 
     return stillAround;
 }
+
+template bool LLBundle <int32_t>::Advance
+(
+    void
+) ;
+template bool LLBundle <int64_t>::Advance
+(
+    void
+) ;

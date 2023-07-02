@@ -35,18 +35,18 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_panel
+template <typename Entry, typename Int> void spqr_panel
 (
     // input
     int method,         // 0,1,2,3
-    int64_t m,
-    int64_t n,
-    int64_t v,             // length of the first vector in V
-    int64_t h,             // number of Householder vectors in the panel
-    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    Int m,
+    Int n,
+    Int v,             // length of the first vector in V
+    Int h,             // number of Householder vectors in the panel
+    Int *Vi,           // Vi [0:v-1] defines the pattern of the panel
     Entry *V,           // v-by-h, panel of Householder vectors
     Entry *Tau,         // size h, Householder coefficients for the panel
-    int64_t ldx,
+    Int ldx,
 
     // input/output
     Entry *X,           // m-by-n with leading dimension ldx
@@ -59,7 +59,7 @@ template <typename Entry> void spqr_panel
 )
 {
     Entry *C1, *X1 ;
-    int64_t k, p, i ;
+    Int k, p, i ;
 
     // -------------------------------------------------------------------------
     // gather X into workspace C
@@ -147,51 +147,94 @@ template <typename Entry> void spqr_panel
     }
 }
 
-
-// =============================================================================
-
-template void spqr_panel <double>
+template void spqr_panel <Complex, int32_t>
 (
     // input
-    int method,
-    int64_t m,
-    int64_t n,
-    int64_t v,
-    int64_t h,             // number of Householder vectors in the panel
-    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    double *V,          // v-by-h, panel of Householder vectors
-    double *Tau,        // size h, Householder coefficients for the panel
-    int64_t ldx,
+    int method,         // 0,1,2,3
+    int32_t m,
+    int32_t n,
+    int32_t v,             // length of the first vector in V
+    int32_t h,             // number of Householder vectors in the panel
+    int32_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    Complex *V,           // v-by-h, panel of Householder vectors
+    Complex *Tau,         // size h, Householder coefficients for the panel
+    int32_t ldx,
 
     // input/output
-    double *X,          // m-by-n with leading dimension m 
+    Complex *X,           // m-by-n with leading dimension ldx
 
     // workspace
-    double *C,          // method 0,1: v-by-n;  method 2,3: m-by-v
-    double *W,          // method 0,1: k*k+n*k; method 2,3: k*k+m*k
+    Complex *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
+    Complex *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
 
     cholmod_common *cc
 ) ;
 
-template void spqr_panel <Complex>
+template void spqr_panel <Complex, int64_t>
 (
     // input
-    int method,
+    int method,         // 0,1,2,3
     int64_t m,
     int64_t n,
-    int64_t v,
+    int64_t v,             // length of the first vector in V
     int64_t h,             // number of Householder vectors in the panel
     int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    Complex *V,         // v-by-h, panel of Householder vectors
-    Complex *Tau,       // size h, Householder coefficients for the panel
+    Complex *V,           // v-by-h, panel of Householder vectors
+    Complex *Tau,         // size h, Householder coefficients for the panel
     int64_t ldx,
 
     // input/output
-    Complex *X,         // m-by-n with leading dimension m
+    Complex *X,           // m-by-n with leading dimension ldx
 
     // workspace
-    Complex *C,         // method 0,1: v-by-n;  method 2,3: m-by-v
-    Complex *W,         // method 0,1: k*k+n*k; method 2,3: k*k+m*k
+    Complex *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
+    Complex *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
+
+    cholmod_common *cc
+) ;
+
+template void spqr_panel <double, int32_t>
+(
+    // input
+    int method,         // 0,1,2,3
+    int32_t m,
+    int32_t n,
+    int32_t v,             // length of the first vector in V
+    int32_t h,             // number of Householder vectors in the panel
+    int32_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    double *V,           // v-by-h, panel of Householder vectors
+    double *Tau,         // size h, Householder coefficients for the panel
+    int32_t ldx,
+
+    // input/output
+    double *X,           // m-by-n with leading dimension ldx
+
+    // workspace
+    double *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
+    double *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
+
+    cholmod_common *cc
+) ;
+
+template void spqr_panel <double, int64_t>
+(
+    // input
+    int method,         // 0,1,2,3
+    int64_t m,
+    int64_t n,
+    int64_t v,             // length of the first vector in V
+    int64_t h,             // number of Householder vectors in the panel
+    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
+    double *V,           // v-by-h, panel of Householder vectors
+    double *Tau,         // size h, Householder coefficients for the panel
+    int64_t ldx,
+
+    // input/output
+    double *X,           // m-by-n with leading dimension ldx
+
+    // workspace
+    double *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
+    double *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
 
     cholmod_common *cc
 ) ;
