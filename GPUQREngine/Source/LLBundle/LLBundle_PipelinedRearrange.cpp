@@ -15,11 +15,10 @@
 // data structure.
 //
 // =============================================================================
-
+#include "GPUQREngine_LLBundle.hpp"
 #include "GPUQREngine_BucketList.hpp"
-
-
-void LLBundle::PipelinedRearrange
+template <typename Int>
+void LLBundle <Int>::PipelinedRearrange
 (
     void
 )
@@ -110,3 +109,12 @@ void LLBundle::PipelinedRearrange
         while (next[Last] != EMPTY) Last = next[Last];
     }
 }
+
+template void LLBundle <int32_t>::PipelinedRearrange
+(
+    void
+) ;
+template void LLBundle <int64_t>::PipelinedRearrange
+(
+    void
+) ;

@@ -7,21 +7,20 @@
 
 //------------------------------------------------------------------------------
 
-// Frees the contents of the QR factor object.
-
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_freefac
+// Frees the contents of the QR factor object.
+
+template <typename Entry, typename Int> void spqr_freefac
 (
-    SuiteSparseQR_factorization <Entry> **QR_handle,
+    SuiteSparseQR_factorization <Entry, Int> **QR_handle,
 
     // workspace and parameters
     cholmod_common *cc
 )
-
 {
-    SuiteSparseQR_factorization <Entry> *QR ;
-    int64_t n, m, bncols, n1rows, r1nz ;
+    SuiteSparseQR_factorization <Entry, Int> *QR ;
+    Int n, m, bncols, n1rows, r1nz ;
 
     if (QR_handle == NULL || *QR_handle == NULL)
     {
@@ -39,34 +38,44 @@ template <typename Entry> void spqr_freefac
     spqr_freenum (& (QR->QRnum), cc) ;
     spqr_freesym (& (QR->QRsym), cc) ;
 
-    cholmod_l_free (n+bncols, sizeof (int64_t),  QR->Q1fill,  cc) ; 
-    cholmod_l_free (m,        sizeof (int64_t),  QR->P1inv,   cc) ;
-    cholmod_l_free (m,        sizeof (int64_t),  QR->HP1inv,  cc) ;
-    cholmod_l_free (n1rows+1, sizeof (int64_t),  QR->R1p,     cc) ;
-    cholmod_l_free (r1nz,     sizeof (int64_t),  QR->R1j,     cc) ;
-    cholmod_l_free (r1nz,     sizeof (Entry), QR->R1x,     cc) ;
-    cholmod_l_free (n,        sizeof (int64_t),  QR->Rmap,    cc) ;
-    cholmod_l_free (n,        sizeof (int64_t),  QR->RmapInv, cc) ;
+    spqr_free <Int> (n+bncols, sizeof (Int),  QR->Q1fill,  cc) ; 
+    spqr_free <Int> (m,        sizeof (Int),  QR->P1inv,   cc) ;
+    spqr_free <Int> (m,        sizeof (Int),  QR->HP1inv,  cc) ;
+    spqr_free <Int> (n1rows+1, sizeof (Int),  QR->R1p,     cc) ;
+    spqr_free <Int> (r1nz,     sizeof (Int),  QR->R1j,     cc) ;
+    spqr_free <Int> (r1nz,     sizeof (Entry), QR->R1x,     cc) ;
+    spqr_free <Int> (n,        sizeof (Int),  QR->Rmap,    cc) ;
+    spqr_free <Int> (n,        sizeof (Int),  QR->RmapInv, cc) ;
 
-    cholmod_l_free (1, sizeof (SuiteSparseQR_factorization <Entry>), QR, cc) ;
+    spqr_free <Int> (1, sizeof (SuiteSparseQR_factorization <Entry, Int>), QR, cc) ;
     *QR_handle = NULL ;
 }
 
 // =============================================================================
-
-template void spqr_freefac <double>
+template void spqr_freefac <double, int32_t>
 (
-    SuiteSparseQR_factorization <double> **QR_handle,
+    SuiteSparseQR_factorization <double, int32_t> **QR_handle,
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
-
-// =============================================================================
-
-template void spqr_freefac <Complex>
+template void spqr_freefac <Complex, int32_t>
 (
-    SuiteSparseQR_factorization <Complex> **QR_handle,
+    SuiteSparseQR_factorization <Complex, int32_t> **QR_handle,
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template void spqr_freefac <double, int64_t>
+(
+    SuiteSparseQR_factorization <double, int64_t> **QR_handle,
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template void spqr_freefac <Complex, int64_t>
+(
+    SuiteSparseQR_factorization <Complex, int64_t> **QR_handle,
 
     // workspace and parameters
     cholmod_common *cc

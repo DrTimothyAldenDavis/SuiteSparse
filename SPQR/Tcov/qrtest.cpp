@@ -242,7 +242,7 @@ template <typename Entry> cholmod_dense *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
     int64_t method,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_dense *X,
     cholmod_common *cc,
 
@@ -284,7 +284,7 @@ template <typename Entry> cholmod_sparse *SPQR_qmult
 (
     // arguments for SuiteSparseQR_qmult: 
     int64_t method,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_sparse *X,
     cholmod_common *cc,
 
@@ -327,7 +327,7 @@ template <typename Entry> cholmod_dense *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
     int64_t system,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_dense *B,
     cholmod_common *cc,
 
@@ -370,7 +370,7 @@ template <typename Entry> cholmod_sparse *SPQR_solve
 (
     // arguments for SuiteSparseQR_solve: 
     int64_t system,
-    SuiteSparseQR_factorization <Entry> *QR,
+    SuiteSparseQR_factorization <Entry, int64_t> *QR,
     cholmod_sparse *B,
     cholmod_common *cc,
 
@@ -496,7 +496,7 @@ template <typename Entry> cholmod_sparse *SPQR_min2norm
 // Wrapper for testing SuiteSparseQR_factorize or
 // SuiteSparseQR_symbolic and SuiteSparseQR_numeric
 
-template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
+template <typename Entry> SuiteSparseQR_factorization <Entry, int64_t> *SPQR_factorize
 (
     // arguments for SuiteSparseQR_factorize: 
     int ordering,
@@ -517,7 +517,7 @@ template <typename Entry> SuiteSparseQR_factorization <Entry> *SPQR_factorize
     int64_t memory_punt         // if TRUE, test punt case
 )
 {
-    SuiteSparseQR_factorization <Entry> *QR ;
+    SuiteSparseQR_factorization <Entry, int64_t> *QR ;
     SuiteSparseQR_C_factorization *C_QR ;
     if (!memory_test)
     {
@@ -731,7 +731,7 @@ template <typename Entry> int64_t SPQR_qr
         }
         else
         {
-            rank = SuiteSparseQR <Entry> (ordering, tol, econ, getCTX, A,
+            rank = SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, getCTX, A,
                 Bsparse, Bdense, Zsparse, Zdense, R, E, H, HPinv, HTau, cc) ;
         }
     } 
@@ -751,7 +751,7 @@ template <typename Entry> int64_t SPQR_qr
             }
             else
             {
-                rank = SuiteSparseQR <Entry> (ordering, tol, econ, getCTX, A,
+                rank = SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, getCTX, A,
                     Bsparse, Bdense, Zsparse, Zdense, R, E, H, HPinv, HTau, cc);
             }
             if (cc->status == CHOLMOD_OK)
@@ -1887,14 +1887,14 @@ template <typename Entry> void qrtest
             if (ordering == SPQR_ORDERING_DEFAULT && tol == SPQR_DEFAULT_TOL)
             {
                 printf ("[ backslach, A and B and X dense: defaults\n") ;
-                Xdense = SuiteSparseQR <Entry> (A, Bdense, cc) ;
+                Xdense = SuiteSparseQR <Entry, int64_t> (A, Bdense, cc) ;
                 printf ("] done backslach, A and B and X dense: defaults\n") ;
             }
             else
             {
                 printf ("[ backslach, A and B and X dense: tol %g order %d\n",
                     tol, ordering) ;
-                Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
+                Xdense = SuiteSparseQR <Entry, int64_t> (ordering, tol, A, Bdense, cc) ;
                 printf ("] done backslach, A B X dense: tol %g order %d\n",
                     tol, ordering) ;
             }
@@ -1912,7 +1912,7 @@ template <typename Entry> void qrtest
                 int64_t save = cc->gpuMemorySize ;
                 cc->gpuMemorySize = 1 ;
                 printf ("[ Pretend GPU memory is too small:\n") ;
-                Xdense = SuiteSparseQR <Entry> (ordering, tol, A, Bdense, cc) ;
+                Xdense = SuiteSparseQR <Entry, int64_t> (ordering, tol, A, Bdense, cc) ;
                 cc->gpuMemorySize = save ;
                 printf ("] test done infeasible GPU, status %2d, useGPU: %d\n",
                     cc->status, cc->useGPU) ;
@@ -1927,7 +1927,7 @@ template <typename Entry> void qrtest
 
             // X = A\B
             printf ("[ backslash with sparse B: tol  %g\n", tol) ;
-            Xsparse = SuiteSparseQR <Entry> (ordering, tol, A, Bsparse, cc) ;
+            Xsparse = SuiteSparseQR <Entry, int64_t> (ordering, tol, A, Bsparse, cc) ;
             printf ("] did tol %g\n", tol) ;
 
             // check norm (A*x-b), x and b sparse
@@ -2064,7 +2064,7 @@ template <typename Entry> void qrtest
             // [C,R,E] = qr (A,B) where C and B are full, simple wrapper
             // -----------------------------------------------------------------
 
-            SuiteSparseQR <Entry> (ordering, tol, econ, A, Bdense,
+            SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, A, Bdense,
                 &Cdense, &R, &Qfill, cc) ;
 
             // check that R'*R = (A*E)'*(A*E)
@@ -2082,7 +2082,7 @@ template <typename Entry> void qrtest
             
             Bsparse = cholmod_l_dense_to_sparse (Bdense, TRUE, cc) ;
 
-            SuiteSparseQR <Entry> (ordering, tol, econ, A, Bsparse,
+            SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, A, Bsparse,
                 &Csparse, &R, &Qfill, cc) ;
 
             // check that R'*R = (A*E)'*(A*E)
@@ -2173,7 +2173,7 @@ template <typename Entry> void qrtest
             else
             {
                 // use C++ version
-                SuiteSparseQR <Entry> (ordering, tol, m, A, &Q, &R, &Qfill, cc);
+                SuiteSparseQR <Entry, int64_t> (ordering, tol, m, A, &Q, &R, &Qfill, cc);
             }
 
             // ensure norm (Q*R - A*E) is small
@@ -2207,7 +2207,7 @@ template <typename Entry> void qrtest
             // [R,E] = qr (A) using simple wrapper
             // -----------------------------------------------------------------
 
-            SuiteSparseQR <Entry> (ordering, tol, econ, A, &R, &Qfill, cc) ;
+            SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, A, &R, &Qfill, cc) ;
 
             // check that R'*R = (A*E)'*(A*E)
             err = check_r_factor <Entry> (R, A, Qfill, cc) ;
@@ -2274,7 +2274,7 @@ template <typename Entry> void qrtest
             // [H,R,E] = qr (A), simple wrapper
             // -----------------------------------------------------------------
 
-            SuiteSparseQR <Entry> (ordering, tol, econ, A,
+            SuiteSparseQR <Entry, int64_t> (ordering, tol, econ, A,
                 &R, &Qfill, &H, &HPinv, &HTau, cc) ;
 
             // check that R'*R = (A*E)'*(A*E)
@@ -2561,7 +2561,7 @@ template <typename Entry> void qrtest
 
     printf ("Check error handling, one error message is expected:\n") ;
     cholmod_dense *Bgunk = cholmod_l_ones (m+1, 1, xtype, cc) ;
-    rank = SuiteSparseQR <Entry> (
+    rank = SuiteSparseQR <Entry, int64_t> (
         0, 0, econ, -1, A,
         NULL, Bgunk, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
         cc) ;
@@ -2576,7 +2576,7 @@ template <typename Entry> void qrtest
 
     // attempt to permute A to upper triangular form
     int64_t *Qtrap ;
-    rank = spqr_trapezoidal (n, Ap, Ai, Ax, 0, NULL, FALSE, &Cp, &Ci, &Cx,
+    rank = spqr_trapezoidal <Entry, int64_t> (n, Ap, Ai, Ax, 0, NULL, FALSE, &Cp, &Ci, &Cx,
         &Qtrap, cc) ;
     printf ("Rank of A, if A*P permutable to upper trapezoidal: %ld\n", rank) ;
     if (Cp != NULL)
