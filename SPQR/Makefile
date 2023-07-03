@@ -58,7 +58,9 @@ debug:
 
 all: library
 
-demos: library
+demos: demos64 demos32 
+
+demos64: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/qrsimple  < Matrix/ash219.mtx
 	- ./build/qrsimplec < Matrix/ash219.mtx
@@ -120,6 +122,67 @@ demos: library
 	- ./build/qrdemoc < Matrix/Ragusa16.mtx
 	- ./build/qrdemoc < Matrix/young1c.mtx
 	- ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
+
+demos32: library
+	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	- ./build/qrsimplec_int32 < Matrix/ash219.mtx
+	- ./build/qrsimplec_int32 < Matrix/west0067.mtx
+	- ./build/qrdemo_int32 < Matrix/a2.mtx
+	- ./build/qrdemo_int32 < Matrix/r2.mtx
+	- ./build/qrdemo_int32 < Matrix/a04.mtx
+	- ./build/qrdemo_int32 < Matrix/a2.mtx
+	- ./build/qrdemo_int32 < Matrix/west0067.mtx
+	- ./build/qrdemo_int32 < Matrix/c2.mtx
+	- ./build/qrdemo_int32 < Matrix/a0.mtx
+	- ./build/qrdemo_int32 < Matrix/lfat5b.mtx
+	- ./build/qrdemo_int32 < Matrix/bfwa62.mtx
+	- ./build/qrdemo_int32 < Matrix/LFAT5.mtx
+	- ./build/qrdemo_int32 < Matrix/b1_ss.mtx
+	- ./build/qrdemo_int32 < Matrix/bcspwr01.mtx
+	- ./build/qrdemo_int32 < Matrix/lpi_galenet.mtx
+	- ./build/qrdemo_int32 < Matrix/lpi_itest6.mtx
+	- ./build/qrdemo_int32 < Matrix/ash219.mtx
+	- ./build/qrdemo_int32 < Matrix/a4.mtx
+	- ./build/qrdemo_int32 < Matrix/s32.mtx
+	- ./build/qrdemo_int32 < Matrix/c32.mtx
+	- ./build/qrdemo_int32 < Matrix/lp_share1b.mtx
+	- ./build/qrdemo_int32 < Matrix/a1.mtx
+	- ./build/qrdemo_int32 < Matrix/GD06_theory.mtx
+	- ./build/qrdemo_int32 < Matrix/GD01_b.mtx
+	- ./build/qrdemo_int32 < Matrix/Tina_AskCal_perm.mtx
+	- ./build/qrdemo_int32 < Matrix/Tina_AskCal.mtx
+	- ./build/qrdemo_int32 < Matrix/GD98_a.mtx
+	- ./build/qrdemo_int32 < Matrix/Ragusa16.mtx
+	- ./build/qrdemo_int32 < Matrix/young1c.mtx
+	- ./build/qrdemo_int32 < Matrix/lp_e226_transposed.mtx
+	- ./build/qrdemoc_int32 < Matrix/a2.mtx
+	- ./build/qrdemoc_int32 < Matrix/r2.mtx
+	- ./build/qrdemoc_int32 < Matrix/a04.mtx
+	- ./build/qrdemoc_int32 < Matrix/a2.mtx
+	- ./build/qrdemoc_int32 < Matrix/west0067.mtx
+	- ./build/qrdemoc_int32 < Matrix/c2.mtx
+	- ./build/qrdemoc_int32 < Matrix/a0.mtx
+	- ./build/qrdemoc_int32 < Matrix/lfat5b.mtx
+	- ./build/qrdemoc_int32 < Matrix/bfwa62.mtx
+	- ./build/qrdemoc_int32 < Matrix/LFAT5.mtx
+	- ./build/qrdemoc_int32 < Matrix/b1_ss.mtx
+	- ./build/qrdemoc_int32 < Matrix/bcspwr01.mtx
+	- ./build/qrdemoc_int32 < Matrix/lpi_galenet.mtx
+	- ./build/qrdemoc_int32 < Matrix/lpi_itest6.mtx
+	- ./build/qrdemoc_int32 < Matrix/ash219.mtx
+	- ./build/qrdemoc_int32 < Matrix/a4.mtx
+	- ./build/qrdemoc_int32 < Matrix/s32.mtx
+	- ./build/qrdemoc_int32 < Matrix/c32.mtx
+	- ./build/qrdemoc_int32 < Matrix/lp_share1b.mtx
+	- ./build/qrdemoc_int32 < Matrix/a1.mtx
+	- ./build/qrdemoc_int32 < Matrix/GD06_theory.mtx
+	- ./build/qrdemoc_int32 < Matrix/GD01_b.mtx
+	- ./build/qrdemoc_int32 < Matrix/Tina_AskCal_perm.mtx
+	- ./build/qrdemoc_int32 < Matrix/Tina_AskCal.mtx
+	- ./build/qrdemoc_int32 < Matrix/GD98_a.mtx
+	- ./build/qrdemoc_int32 < Matrix/Ragusa16.mtx
+	- ./build/qrdemoc_int32 < Matrix/young1c.mtx
+	- ./build/qrdemoc_int32 < Matrix/lp_e226_transposed.mtx
 
 cov:
 	( cd Tcov && $(MAKE) )

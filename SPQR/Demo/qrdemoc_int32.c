@@ -44,11 +44,13 @@ int main (int argc, char **argv)
 
     /* B = ones (m,1), a dense right-hand-side of the same type as A */
     B = cholmod_ones (m, 1, A->xtype, cc) ;
-    cholmod_print_dense(B, "B", cc) ;
+    // cholmod_print_dense(B, "B", cc) ;
+
     /* X = A\B ; with default ordering and default column 2-norm tolerance */
     X = SuiteSparseQR_C_backslash
         (SPQR_ORDERING_DEFAULT, SPQR_DEFAULT_TOL, A, B, cc) ;
-    cholmod_print_dense(X, "X", cc) ;
+    // cholmod_print_dense(X, "X", cc) ;
+
     /* get the rank(A) estimate */
     rnk = cc->SPQR_istat [4] ;
 

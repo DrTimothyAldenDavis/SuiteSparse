@@ -12,10 +12,10 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "June 16, 2023" )
+set ( MY_DATE "July FIXME, 2023" )
 set ( MY_VERSION_MAJOR 1 )
-set ( MY_VERSION_MINOR 2 )
-set ( MY_VERSION_PATCH 5 )
+set ( MY_VERSION_MINOR 3 )
+set ( MY_VERSION_PATCH 0 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -79,8 +79,8 @@ find_package ( Mongoose 3.0.5 REQUIRED )
 find_package ( RBio 4.0.0 REQUIRED )
 find_package ( SPEX 2.0.4 REQUIRED )
 find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
-find_package ( SPQR 3.0.4 REQUIRED )
-find_package ( SPQR_CUDA 3.0.4 REQUIRED )
+find_package ( SPQR 4.0.0 REQUIRED )
+find_package ( SPQR_CUDA 4.0.0 REQUIRED )
 find_package ( UMFPACK 6.1.1 REQUIRED )
 
 # look for all external libaries:

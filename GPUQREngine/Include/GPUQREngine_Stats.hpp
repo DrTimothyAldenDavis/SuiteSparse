@@ -24,7 +24,7 @@ template <typename Int = int64_t> struct QREngineStats
 
     Int numLaunches;            // The total number of kernel launches.
 
-    Int flopsActual;            // The total number of flops performed.
+    int64_t flopsActual;        // The total number of flops performed.
 
     QREngineStats()
     {

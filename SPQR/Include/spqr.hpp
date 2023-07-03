@@ -198,7 +198,8 @@
 // For counting flops
 // -----------------------------------------------------------------------------
 
-#define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->SPQR_flopcount += (f) ; }
+#define FLOP_COUNT(f) { if (cc->SPQR_grain <= 1) cc->SPQR_flopcount += ((double) (f)) ; }
+#define FLOP_COUNT2(f1,f2) FLOP_COUNT(((double) (f1)) * ((double) (f2)))
 
 // =============================================================================
 // === spqr_work ===============================================================

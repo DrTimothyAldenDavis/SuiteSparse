@@ -2,7 +2,7 @@
 # SuiteSparse/SPQR/CMakeLists.txt:  cmake for SuiteSparseQR (aka "SPQR")
 #-------------------------------------------------------------------------------
 
-# SPQR (SuiteSparseQR), Copyright (c) 2008-2022, Timothy A Davis.
+# SPQR (SuiteSparseQR), Copyright (c) 2008-2023, Timothy A Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "June 16, 2023" )
-set ( SPQR_VERSION_MAJOR 3 )
+set ( SPQR_DATE "July FIXME, 2023" )
+set ( SPQR_VERSION_MAJOR 4 )
 set ( SPQR_VERSION_MINOR 0 )
-set ( SPQR_VERSION_SUB   4 )
+set ( SPQR_VERSION_SUB   0 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -360,9 +360,11 @@ if ( DEMO )
 
     add_executable ( qrsimple  "Demo/qrsimple.cpp" )
     add_executable ( qrsimplec "Demo/qrsimplec.c" )
-    add_executable ( qrsimplec_int32 "Demo/qrsimplec_int32.c" )
     add_executable ( qrdemo    "Demo/qrdemo.cpp" )
     add_executable ( qrdemoc   "Demo/qrdemoc.c" )
+
+    add_executable ( qrsimplec_int32 "Demo/qrsimplec_int32.c" )
+    add_executable ( qrdemo_int32    "Demo/qrdemo_int32.cpp" )
     add_executable ( qrdemoc_int32   "Demo/qrdemoc_int32.c" )
 
 
@@ -375,10 +377,12 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} cholmod )
     target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} cholmod )
-    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} cholmod )
     target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} cholmod )
     target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} cholmod )
+
+    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} cholmod )
     target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} cholmod )
+    target_link_libraries ( qrdemo_int32    PUBLIC spqr ${SPQR_CUDA} cholmod )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}

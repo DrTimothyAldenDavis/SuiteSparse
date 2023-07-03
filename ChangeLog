@@ -1,3 +1,7 @@
+July FIXME, 2023: version 7.2.0
+
+    * SPQR 4.0.0: added 32-bit integer version; contributed by Raye Kimmerer
+
 June 29, 2023: version 7.1.0
 
     * GraphBLAS v8.0.2: major update with a new JIT feature.

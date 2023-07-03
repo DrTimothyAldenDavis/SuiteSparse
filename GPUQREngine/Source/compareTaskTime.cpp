@@ -10,6 +10,12 @@ int compareTaskTime (const void * a, const void * b)
     int64_t aFlops = getWeightedFlops(ta);
     int64_t bFlops = getWeightedFlops(tb);
 
-    return bFlops - aFlops;
+    // revised
+    if (aFlops == bFlops) return (0) ;
+    if (aFlops <  bFlops) return (-1) ;
+    if (aFlops >  bFlops) return (1) ;
+
+    // old:
+    // return bFlops - aFlops;
 }
 #endif

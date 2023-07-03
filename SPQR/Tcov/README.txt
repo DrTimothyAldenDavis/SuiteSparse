@@ -1,5 +1,7 @@
 SuiteSparseQR exhaustive statement coverage tests.
 
+FIXME: Tcov is currently broken (needs an int32_t version as well)
+
 SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
 SPDX-License-Identifier: GPL-2.0+
 

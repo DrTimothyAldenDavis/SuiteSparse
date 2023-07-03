@@ -516,7 +516,7 @@ template <typename Entry, typename Int> Int spqr_front
             // k+1:n-1, or n-k-1 columns).  Applying the Householder reflection
             // to just one column takes 4*(t-g) flops.
 
-            FLOP_COUNT ((t-g) * (3 + 4 * (n-k-1))) ;
+            FLOP_COUNT2 ((t-g) , (3 + 4 * (n-k-1))) ;
 
             // -----------------------------------------------------------------
             // apply the kth Householder reflection to the current panel

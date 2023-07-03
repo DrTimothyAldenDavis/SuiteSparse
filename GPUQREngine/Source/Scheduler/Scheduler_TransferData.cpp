@@ -39,7 +39,7 @@ void Scheduler <Int>::transferData
     for(Int t=0; t<numTasks[activeSet]; t++)
     {
         TaskDescriptor *task = &(queue[t]);
-        Int flops = getFlops(task);
+        int64_t flops = getFlops(task);
         gpuFlops += flops;
     }
 

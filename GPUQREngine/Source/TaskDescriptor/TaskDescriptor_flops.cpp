@@ -23,7 +23,8 @@
 
 int64_t flopsFactorizeVT(int numTiles)
 {
-    int64_t m = TILESIZE * numTiles;
+    int64_t ntiles = numTiles ;
+    int64_t m = TILESIZE * ntiles ;
     int64_t n = TILESIZE;
     int64_t v = TILESIZE;
     return 2 * (m-1)                       +
@@ -37,8 +38,10 @@ int64_t flopsFactorizeVT(int numTiles)
 // flopsFactorize
 // -----------------------------------------------------------------------------
 
-int64_t flopsFactorize(int m, int n)
+int64_t flopsFactorize(int m_in, int n_in)
 {
+    int64_t m = m_in ;
+    int64_t n = n_in ;
     int64_t v = MIN(m, n);
     return 2 * (m-1)                    +
            v * (6 + 4*m*n + 5*n + 2*m)  +
@@ -51,9 +54,11 @@ int64_t flopsFactorize(int m, int n)
 // flopsApply
 // -----------------------------------------------------------------------------
 
-int64_t flopsApply(int numTiles, int n)
+int64_t flopsApply(int numTiles, int n_in)
 {
-    int64_t m = TILESIZE * numTiles;
+    int64_t ntiles = numTiles ;
+    int64_t n = n_in ;
+    int64_t m = TILESIZE * ntiles;
     int64_t k = TILESIZE;
     return k*n*(4*m - k + 3);
 }

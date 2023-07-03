@@ -157,7 +157,7 @@ public:
     /* Stats */
     float kernelTime;
     Int numKernelLaunches;
-    Int gpuFlops;
+    int64_t gpuFlops;
 
 #ifdef GPUQRENGINE_RENDER
     /* Debug stuff */

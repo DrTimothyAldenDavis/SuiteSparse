@@ -347,8 +347,12 @@ template <typename Entry, typename Int> void spqr_rsolve
     // === solve with the singleton rows of R ==================================
     // =========================================================================
 
-    FLOP_COUNT ((n1rows <= 0) ? 0 :
-        nrhs * (n1rows + (2 * (R1p [n1rows] - n1rows)))) ;
+    if (n1rows > 0)
+    {
+        FLOP_COUNT2 (
+            ((n1rows <= 0) ? 0 : nrhs) ,
+            (n1rows + (2 * (R1p [n1rows] - n1rows)))) ;
+    }
 
     for (kk = 0 ; kk < nrhs ; kk++)
     {
