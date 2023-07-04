@@ -66,7 +66,7 @@ endif ( )
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET suitesparseconfig )
+if ( NOT TARGET SuiteSparse::suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -207,12 +207,12 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spqr PRIVATE suitesparseconfig )
+target_link_libraries ( spqr PRIVATE SuiteSparse::suitesparseconfig )
 if ( NOT NSTATIC )
-    if ( TARGET suitesparseconfig_static )
-        target_link_libraries ( spqr_static PUBLIC suitesparseconfig_static )
+    if ( TARGET SuiteSparse::suitesparseconfig_static )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::suitesparseconfig_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC suitesparseconfig )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::suitesparseconfig )
     endif ( )
 endif ( )
 
@@ -386,11 +386,11 @@ if ( DEMO )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
-            cholmod suitesparseconfig )
+            cholmod SuiteSparse::suitesparseconfig )
         target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
-            cholmod suitesparseconfig )
+            cholmod SuiteSparse::suitesparseconfig )
         target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
-            cholmod suitesparseconfig )
+            cholmod SuiteSparse::suitesparseconfig )
     endif ( )
 
 else ( )

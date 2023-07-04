@@ -45,7 +45,7 @@ project ( klu
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET suitesparseconfig )
+if ( NOT TARGET SuiteSparse::suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 find_package ( BTF 2.0.4
@@ -221,12 +221,12 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( klu PRIVATE suitesparseconfig )
+target_link_libraries ( klu PRIVATE SuiteSparse::suitesparseconfig )
 if ( NOT NSTATIC )
-    if ( TARGET suitesparseconfig_static )
-        target_link_libraries ( klu_static PUBLIC suitesparseconfig_static )
+    if ( TARGET SuiteSparse::suitesparseconfig_static )
+        target_link_libraries ( klu_static PUBLIC SuiteSparse::suitesparseconfig_static )
     else ( )
-        target_link_libraries ( klu_static PUBLIC suitesparseconfig )
+        target_link_libraries ( klu_static PUBLIC SuiteSparse::suitesparseconfig )
     endif ( )
 endif ( )
 

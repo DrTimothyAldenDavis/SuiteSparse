@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SuiteSparse_configTargets.cmake )
 
 # The following is only for backward compatibility with FindSuiteSparse_config.
 
-set ( _target_shared suitesparseconfig )
-set ( _target_static suitesparseconfig_static )
+set ( _target_shared SuiteSparse::suitesparseconfig )
+set ( _target_static SuiteSparse::suitesparseconfig_static )
 set ( _var_prefix "SUITESPARSE_CONFIG" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

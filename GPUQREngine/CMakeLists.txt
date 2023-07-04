@@ -57,7 +57,7 @@ endif ( )
 # for the library itself
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET suitesparseconfig )
+if ( NOT TARGET SuiteSparse::suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -166,7 +166,7 @@ set_target_properties ( gpuqrengine PROPERTIES
 target_include_directories ( gpuqrengine PRIVATE
     ${CUDAToolkit_INCLUDE_DIRS}
     ${GPUQRENGINE_INCLUDES}
-    $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+    $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
 if ( SUITESPARSE_CUDA )
     target_include_directories ( gpuqrengine PRIVATE
@@ -204,7 +204,7 @@ if ( NOT NSTATIC )
     target_include_directories ( gpuqrengine_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES}
-        $<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
     if ( SUITESPARSE_CUDA )
         target_include_directories ( gpuqrengine_static PRIVATE
@@ -283,7 +283,7 @@ if ( DEMO AND DEMO_OK )
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
         cholmod amd colamd
         camd ccolamd cholmod_cuda
-        suitesparse_gpuruntime suitesparseconfig )
+        suitesparse_gpuruntime SuiteSparse::suitesparseconfig )
 
 else ( )
 

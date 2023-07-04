@@ -46,7 +46,7 @@ project ( spex
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET suitesparseconfig )
+if ( NOT TARGET SuiteSparse::suitesparseconfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -133,13 +133,14 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( spex PRIVATE suitesparseconfig )
-target_include_directories ( spex PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+target_link_libraries ( spex PRIVATE SuiteSparse::suitesparseconfig )
+target_include_directories ( spex PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET suitesparseconfig_static )
-        target_link_libraries ( spex_static PUBLIC suitesparseconfig_static )
+    if ( TARGET SuiteSparse::suitesparseconfig_static )
+        target_link_libraries ( spex_static PUBLIC SuiteSparse::suitesparseconfig_static )
     else ( )
-        target_link_libraries ( spex_static PUBLIC suitesparseconfig )
+        target_link_libraries ( spex_static PUBLIC SuiteSparse::suitesparseconfig )
     endif ( )
 endif ( )
 

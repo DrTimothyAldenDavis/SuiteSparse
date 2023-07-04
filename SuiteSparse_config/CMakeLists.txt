@@ -180,10 +180,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT SuiteSparse_configTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configTargets.cmake )
 
 # install export target and config for find_package
 install ( EXPORT SuiteSparse_configTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
 
 configure_package_config_file (
