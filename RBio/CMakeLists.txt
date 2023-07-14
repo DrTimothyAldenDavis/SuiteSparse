@@ -44,7 +44,7 @@ project ( rbio
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -111,15 +111,15 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-# suitesparseconfig:
-target_link_libraries ( rbio PRIVATE SuiteSparse::suitesparseconfig )
+# SuiteSparseConfig:
+target_link_libraries ( rbio PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( rbio PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::suitesparseconfig_static )
-        target_link_libraries ( rbio_static PUBLIC SuiteSparse::suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( rbio_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( rbio_static PUBLIC SuiteSparse::suitesparseconfig )
+        target_link_libraries ( rbio_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -191,7 +191,7 @@ if ( DEMO )
     add_executable ( RBdemo "Demo/RBdemo.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( RBdemo PUBLIC rbio SuiteSparse::suitesparseconfig )
+    target_link_libraries ( RBdemo PUBLIC rbio SuiteSparse::SuiteSparseConfig )
 
 else ( )
 

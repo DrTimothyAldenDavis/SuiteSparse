@@ -66,7 +66,7 @@ endif ( )
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -206,13 +206,13 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-# suitesparseconfig:
-target_link_libraries ( spqr PRIVATE SuiteSparse::suitesparseconfig )
+# SuiteSparseConfig:
+target_link_libraries ( spqr PRIVATE SuiteSparse::SuiteSparseConfig )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::suitesparseconfig_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::suitesparseconfig )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -386,11 +386,11 @@ if ( DEMO )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
-            cholmod SuiteSparse::suitesparseconfig )
+            cholmod SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
-            cholmod SuiteSparse::suitesparseconfig )
+            cholmod SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
-            cholmod SuiteSparse::suitesparseconfig )
+            cholmod SuiteSparse::SuiteSparseConfig )
     endif ( )
 
 else ( )

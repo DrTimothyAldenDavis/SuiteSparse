@@ -55,7 +55,7 @@ endif ( )
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -101,7 +101,7 @@ target_include_directories ( suitesparse_gpuruntime PRIVATE
     ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
 target_include_directories ( suitesparse_gpuruntime PUBLIC
-    $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+    $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
@@ -138,7 +138,7 @@ if ( NOT NSTATIC )
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
     target_include_directories ( suitesparse_gpuruntime_static PUBLIC
-        $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
     if ( SUITESPARSE_CUDA )
         set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )

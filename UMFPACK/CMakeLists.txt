@@ -54,7 +54,7 @@ endif ( )
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 find_package ( AMD 3.0.4
@@ -180,14 +180,14 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-# suitesparseconfig:
-target_link_libraries ( umfpack PRIVATE SuiteSparse::suitesparseconfig )
-target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+# SuiteSparseConfig:
+target_link_libraries ( umfpack PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( umfpack PUBLIC "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::suitesparseconfig_static )
-        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::suitesparseconfig )
+        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -329,7 +329,7 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( umfpack_simple  PUBLIC umfpack SuiteSparse::suitesparseconfig )
+    target_link_libraries ( umfpack_simple  PUBLIC umfpack SuiteSparse::SuiteSparseConfig )
     target_link_libraries ( umfpack_di_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_dl_demo PUBLIC umfpack )
     target_link_libraries ( umfpack_zi_demo PUBLIC umfpack )

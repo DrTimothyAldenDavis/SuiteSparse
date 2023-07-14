@@ -85,7 +85,7 @@ endif ( )
 target_include_directories ( spqr_cuda PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
@@ -93,7 +93,7 @@ if ( NOT NSTATIC )
 target_include_directories ( spqr_cuda_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 

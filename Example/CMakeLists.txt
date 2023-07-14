@@ -403,15 +403,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC spqr )
 endif ( )
 
-# suitesparseconfig:
-target_link_libraries ( my PRIVATE SuiteSparse::suitesparseconfig )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::suitesparseconfig )
-if ( TARGET SuiteSparse::suitesparseconfig_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::suitesparseconfig_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::suitesparseconfig_static )
+# SuiteSparseConfig:
+target_link_libraries ( my PRIVATE SuiteSparse::SuiteSparseConfig )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::SuiteSparseConfig )
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::suitesparseconfig )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::suitesparseconfig )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::SuiteSparseConfig )
 endif ( )
 
 # suitesparse_gpuruntime:

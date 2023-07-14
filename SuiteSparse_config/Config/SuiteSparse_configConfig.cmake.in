@@ -11,8 +11,8 @@
 
 # Finds the SuiteSparse_config include file and compiled library.
 # The following targets are defined:
-#   suitesparseconfig            - for the shared library (if available)
-#   suitesparseconfig_static     - for the static library (if available)
+#   SuiteSparseConfig            - for the shared library (if available)
+#   SuiteSparseConfig_static     - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SuiteSparse_configTargets.cmake )
 
 # The following is only for backward compatibility with FindSuiteSparse_config.
 
-set ( _target_shared SuiteSparse::suitesparseconfig )
-set ( _target_static SuiteSparse::suitesparseconfig_static )
+set ( _target_shared SuiteSparse::SuiteSparseConfig )
+set ( _target_static SuiteSparse::SuiteSparseConfig_static )
 set ( _var_prefix "SUITESPARSE_CONFIG" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

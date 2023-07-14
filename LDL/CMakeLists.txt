@@ -44,7 +44,7 @@ project ( ldl
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 find_package ( AMD 3.0.4
@@ -128,9 +128,9 @@ if ( NOT WIN32 )
 endif ( )
 
 target_link_libraries ( ldl PRIVATE
-    amd SuiteSparse::suitesparseconfig )
+    amd SuiteSparse::SuiteSparseConfig )
 target_include_directories ( ldl PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( NOT NSTATIC )
     if ( TARGET amd_static )
@@ -138,10 +138,10 @@ if ( NOT NSTATIC )
     else ( )
         target_link_libraries ( ldl_static PUBLIC amd )
     endif ( )
-    if ( TARGET SuiteSparse::suitesparseconfig_static )
-        target_link_libraries ( ldl_static PUBLIC SuiteSparse::suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( ldl_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( ldl_static PUBLIC SuiteSparse::suitesparseconfig )
+        target_link_libraries ( ldl_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -209,7 +209,7 @@ if ( DEMO )
     add_executable ( ldllmain       "Demo/ldllmain.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( ldlsimple   PUBLIC ldl SuiteSparse::suitesparseconfig )
+    target_link_libraries ( ldlsimple   PUBLIC ldl SuiteSparse::SuiteSparseConfig )
     target_link_libraries ( ldllsimple  PUBLIC ldl )
     target_link_libraries ( ldlmain     PUBLIC ldl )
     target_link_libraries ( ldllmain    PUBLIC ldl )

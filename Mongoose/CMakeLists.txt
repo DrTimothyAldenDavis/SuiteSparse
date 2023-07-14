@@ -75,7 +75,7 @@ configure_file (
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -191,10 +191,10 @@ if ( NOT NSTATIC )
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
-    if ( TARGET SuiteSparse::suitesparseconfig_static )
-        target_link_libraries ( mongoose_static PUBLIC SuiteSparse::suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( mongoose_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( mongoose_static PUBLIC SuiteSparse::suitesparseconfig )
+        target_link_libraries ( mongoose_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -209,9 +209,9 @@ target_include_directories ( mongoose
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
-target_link_libraries ( mongoose PRIVATE SuiteSparse::suitesparseconfig )
+target_link_libraries ( mongoose PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( mongoose PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 # if(CMAKE_MAJOR_VERSION GREATER 2)
 #     set_target_properties(mongoose PROPERTIES VERSION ${PROJECT_VERSION})
@@ -232,10 +232,10 @@ add_library ( mongoose_static_dbg STATIC ${MONGOOSE_LIB_FILES} )
 set_target_properties ( mongoose_static_dbg PROPERTIES
         OUTPUT_NAME mongoose_dbg )
 
-if ( TARGET SuiteSparse::suitesparseconfig_static )
-    target_link_libraries ( mongoose_static_dbg SuiteSparse::suitesparseconfig_static )
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( mongoose_static_dbg SuiteSparse::SuiteSparseConfig_static )
 else ( )
-    target_link_libraries ( mongoose_static_dbg SuiteSparse::suitesparseconfig )
+    target_link_libraries ( mongoose_static_dbg SuiteSparse::SuiteSparseConfig )
 endif ( )
 
 # Build the Mongoose executable
