@@ -176,6 +176,7 @@ void my_function (void)
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
 
+#if ! defined (NO_GRAPHBLAS)
     //--------------------------------------------------------------------------
     // GraphBLAS
     //--------------------------------------------------------------------------
@@ -193,6 +194,7 @@ void my_function (void)
               << version[2] << " "
               << "(in library)" << std::endl;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
+#endif
 
     //--------------------------------------------------------------------------
     // KLU
