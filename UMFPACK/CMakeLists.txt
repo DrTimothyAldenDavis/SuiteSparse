@@ -84,7 +84,7 @@ if ( NOT NCHOLMOD )
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( COLAMD 3.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET colamd )
+    if ( NOT TARGET SuiteSparse::colamd )
         find_package ( COLAMD 3.0.4 )
     endif ( )
 
@@ -339,13 +339,13 @@ if ( DEMO )
         # This is only needed because the demos might be linked before those
         # libraries are installed. Would it be better to set the rpath instead?
         target_link_libraries ( umfpack_di_demo PUBLIC
-            colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+            SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
         target_link_libraries ( umfpack_dl_demo PUBLIC
-            colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+            SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
         target_link_libraries ( umfpack_zi_demo PUBLIC
-            colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+            SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
         target_link_libraries ( umfpack_zl_demo PUBLIC
-            colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+            SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
@@ -359,13 +359,13 @@ if ( DEMO )
             # those libraries are installed. Would it be better to set the
             # rpath instead?
             target_link_libraries ( umf4hb PUBLIC
-                colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+                SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
             target_link_libraries ( umf4zhb PUBLIC
-                colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+                SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
             target_link_libraries ( umf4hb64 PUBLIC
-                colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+                SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
             target_link_libraries ( umf4zhb64 PUBLIC
-                colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+                SuiteSparse::colamd SuiteSparse::CAMD SuiteSparse::CCOLAMD )
         endif ( )
     endif ( )
 

@@ -150,10 +150,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT COLAMDTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/COLAMDTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT COLAMDTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
 
 configure_package_config_file (

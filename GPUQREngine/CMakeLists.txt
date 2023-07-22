@@ -82,7 +82,7 @@ if ( DEMO AND DEMO_OK )
 
     find_package ( COLAMD 3.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET colamd )
+    if ( NOT TARGET SuiteSparse::colamd )
         find_package ( COLAMD 3.0.4 )
     endif ( )
 
@@ -281,7 +281,7 @@ if ( DEMO AND DEMO_OK )
 
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
-        SuiteSparse::CHOLMOD SuiteSparse::AMD colamd
+        SuiteSparse::CHOLMOD SuiteSparse::AMD SuiteSparse::colamd
         SuiteSparse::CAMD SuiteSparse::CCOLAMD SuiteSparse::CHOLMOD_CUDA
         suitesparse_gpuruntime SuiteSparse::SuiteSparseConfig )
 
