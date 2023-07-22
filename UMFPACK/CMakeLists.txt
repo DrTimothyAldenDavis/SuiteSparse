@@ -270,10 +270,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT UMFPACKTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT UMFPACKTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
 
 configure_package_config_file (

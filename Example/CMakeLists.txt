@@ -426,14 +426,14 @@ else ( )
 endif ( )
 
 # umfpack:
-target_link_libraries ( my PRIVATE umfpack )
-target_link_libraries ( my_cxx PRIVATE umfpack )
-if ( TARGET umfpack_static )
-    target_link_libraries ( my_static PUBLIC umfpack_static )
-    target_link_libraries ( my_cxx_static PUBLIC umfpack_static )
+target_link_libraries ( my PRIVATE SuiteSparse::umfpack )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::umfpack )
+if ( TARGET SuiteSparse::umfpack_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::umfpack_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::umfpack_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC umfpack )
-    target_link_libraries ( my_cxx_static PUBLIC umfpack )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::umfpack )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::umfpack )
 endif ( )
 
 #-------------------------------------------------------------------------------

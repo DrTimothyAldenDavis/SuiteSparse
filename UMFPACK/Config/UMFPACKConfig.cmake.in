@@ -11,8 +11,8 @@
 
 # Finds the UMFPACK include file and compiled library.
 # The following targets are defined:
-#   umfpack           - for the shared library (if available)
-#   umfpack_static    - for the static library (if available)
+#   SuiteSparse::umfpack           - for the shared library (if available)
+#   SuiteSparse::umfpack_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/UMFPACKTargets.cmake )
 
 # The following is only for backward compatibility with FindUMFPACK.
 
-set ( _target_shared umfpack )
-set ( _target_static umfpack_static )
+set ( _target_shared SuiteSparse::umfpack )
+set ( _target_static SuiteSparse::umfpack_static )
 set ( _var_prefix "UMFPACK" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
