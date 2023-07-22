@@ -36,20 +36,21 @@ endif ( )
 
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
-add_library ( spqr_cuda SHARED ${SPQR_CUDA_SOURCES} )
+add_library ( SPQR_CUDA SHARED ${SPQR_CUDA_SOURCES} )
 
-set_target_properties ( spqr_cuda PROPERTIES
+set_target_properties ( SPQR_CUDA PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
     CXX_STANDARD_REQUIRED ON
     CXX_STANDARD 17
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
+    OUTPUT_NAME spqr_cuda
     SOVERSION ${SPQR_VERSION_MAJOR} )
 
 if ( NOT NSTATIC )
-    add_library ( spqr_cuda_static STATIC ${SPQR_CUDA_SOURCES} )
+    add_library ( SPQR_CUDA_static STATIC ${SPQR_CUDA_SOURCES} )
 
-    set_target_properties ( spqr_cuda_static PROPERTIES
+    set_target_properties ( SPQR_CUDA_static PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD_REQUIRED ON
         CXX_STANDARD 17
@@ -59,8 +60,8 @@ if ( NOT NSTATIC )
         SOVERSION ${SPQR_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( spqr_cuda_static PROPERTIES
-            OUTPUT_NAME spqr_cuda_static )
+        set_target_properties ( SPQR_CUDA_static PROPERTIES
+            OUTPUT_NAME SPQR_CUDA_static )
     endif ( )
 endif ( )
 
@@ -69,48 +70,48 @@ set ( SPQR_CUDA_INCLUDES ../Include )
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
 if ( TARGET SuiteSparse::GPUQREngine )
-    target_include_directories ( spqr_cuda PRIVATE
+    target_include_directories ( SPQR_CUDA PRIVATE
         $<TARGET_PROPERTY:SuiteSparse::GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES> )
-    target_include_directories ( spqr_cuda_static PRIVATE
+    target_include_directories ( SPQR_CUDA_static PRIVATE
         $<TARGET_PROPERTY:SuiteSparse::GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
 if ( TARGET SuiteSparse::GPURuntime )
-    target_include_directories ( spqr_cuda PRIVATE
+    target_include_directories ( SPQR_CUDA PRIVATE
         $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
-    target_include_directories ( spqr_cuda_static PRIVATE
+    target_include_directories ( SPQR_CUDA_static PRIVATE
         $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
-target_include_directories ( spqr_cuda PRIVATE
+target_include_directories ( SPQR_CUDA PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
-set_target_properties ( spqr_cuda PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( spqr_cuda PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+set_target_properties ( SPQR_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
+set_target_properties ( SPQR_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
 if ( NOT NSTATIC )
-target_include_directories ( spqr_cuda_static PRIVATE
+target_include_directories ( SPQR_CUDA_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
-set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+set_target_properties ( SPQR_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+set_target_properties ( SPQR_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
 if ( TARGET SuiteSparse::CHOLMOD_static )
-    target_link_libraries ( spqr_cuda_static PUBLIC SuiteSparse::CHOLMOD_static )
+    target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD_static )
 else ( )
-    target_link_libraries ( spqr_cuda_static PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD )
 endif ( )
 endif ( )
 
-target_link_libraries ( spqr_cuda PRIVATE SuiteSparse::CHOLMOD )
+target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 
 if ( SUITESPARSE_CUDA )
-    target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
     if ( NOT NSTATIC )
-        target_link_libraries ( spqr_cuda_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+        target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 endif ( )
@@ -121,14 +122,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS spqr_cuda
+install ( TARGETS SPQR_CUDA
     EXPORT SPQR_CUDATargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 
 if ( NOT NSTATIC )
-install ( TARGETS spqr_cuda_static
+install ( TARGETS SPQR_CUDA_static
     EXPORT SPQR_CUDATargets
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )

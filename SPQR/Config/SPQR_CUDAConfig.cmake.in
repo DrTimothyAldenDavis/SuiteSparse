@@ -11,8 +11,8 @@
 
 # Finds the SPQR_CUDA include file and compiled library.
 # The following targets are defined:
-#   SuiteSparse::spqr_cuda           - for the shared library (if available)
-#   SuiteSparse::spqr_cuda_static    - for the static library (if available)
+#   SuiteSparse::SPQR_CUDA           - for the shared library (if available)
+#   SuiteSparse::SPQR_CUDA_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -38,8 +38,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SPQR_CUDATargets.cmake )
 
 # The following is only for backward compatibility with FindSPQR_CUDA.
 
-set ( _target_shared SuiteSparse::spqr_cuda )
-set ( _target_static SuiteSparse::spqr_cuda_static )
+set ( _target_shared SuiteSparse::SPQR_CUDA )
+set ( _target_static SuiteSparse::SPQR_CUDA_static )
 set ( _var_prefix "SPQR_CUDA" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
