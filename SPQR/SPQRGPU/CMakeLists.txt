@@ -135,10 +135,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT SPQR_CUDATargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDATargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT SPQR_CUDATargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
 
 configure_package_config_file (
