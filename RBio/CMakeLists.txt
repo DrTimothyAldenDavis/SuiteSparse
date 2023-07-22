@@ -151,10 +151,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT RBioTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/RBioTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT RBioTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
 
 configure_package_config_file (

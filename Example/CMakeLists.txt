@@ -371,14 +371,14 @@ else ( )
 endif ( )
 
 # rbio:
-target_link_libraries ( my PRIVATE rbio )
-target_link_libraries ( my_cxx PRIVATE rbio )
-if ( TARGET rbio_static )
-    target_link_libraries ( my_static PUBLIC rbio_static )
-    target_link_libraries ( my_cxx_static PUBLIC rbio_static )
+target_link_libraries ( my PRIVATE SuiteSparse::rbio )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::rbio )
+if ( TARGET SuiteSparse::rbio_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::rbio_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::rbio_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC rbio )
-    target_link_libraries ( my_cxx_static PUBLIC rbio )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::rbio )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::rbio )
 endif ( )
 
 # spex:
