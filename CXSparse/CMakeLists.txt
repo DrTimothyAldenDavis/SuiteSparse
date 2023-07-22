@@ -183,10 +183,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT CXSparseTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/CXSparseTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT CXSparseTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
 
 configure_package_config_file (
