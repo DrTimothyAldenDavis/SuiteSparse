@@ -11,8 +11,8 @@
 
 # Finds the CXSparse include file and compiled library.
 # The following targets are defined:
-#   SuiteSparse::cxsparse           - for the shared library (if available)
-#   SuiteSparse::cxsparse_static    - for the static library (if available)
+#   SuiteSparse::CXSparse           - for the shared library (if available)
+#   SuiteSparse::CXSparse_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CXSparseTargets.cmake )
 
 # The following is only for backward compatibility with FindCXSparse.
 
-set ( _target_shared SuiteSparse::cxsparse )
-set ( _target_static SuiteSparse::cxsparse_static )
+set ( _target_shared SuiteSparse::CXSparse )
+set ( _target_static SuiteSparse::CXSparse_static )
 set ( _var_prefix "CXSPARSE" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

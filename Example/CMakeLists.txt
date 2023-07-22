@@ -286,15 +286,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::COLAMD )
 endif ( )
 
-# cxsparse:
-target_link_libraries ( my PRIVATE SuiteSparse::cxsparse )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::cxsparse )
-if ( TARGET SuiteSparse::cxsparse_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::cxsparse_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::cxsparse_static )
+# CXSparse:
+target_link_libraries ( my PRIVATE SuiteSparse::CXSparse )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::CXSparse )
+if ( TARGET SuiteSparse::CXSparse_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CXSparse_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CXSparse_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::cxsparse )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::cxsparse )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CXSparse )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CXSparse )
 endif ( )
 
 # gpuqrengine:
