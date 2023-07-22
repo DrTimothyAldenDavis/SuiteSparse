@@ -326,15 +326,15 @@ else ( )
     target_compile_definitions ( my_cxx_static PRIVATE NO_GRAPHBLAS )
 endif ( )
 
-# klu:
-target_link_libraries ( my PRIVATE SuiteSparse::klu )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::klu )
-if ( TARGET SuiteSparse::klu_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::klu_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu_static )
+# KLU:
+target_link_libraries ( my PRIVATE SuiteSparse::KLU )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::KLU )
+if ( TARGET SuiteSparse::KLU_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::KLU_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::KLU_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::klu )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::KLU )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::KLU )
 endif ( )
 
 # klu_cholmod:
