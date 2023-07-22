@@ -477,10 +477,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT GraphBLASTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASTargets.cmake )
 
 # install export target and config for find_package
 install ( EXPORT GraphBLASTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
 
 configure_package_config_file (
