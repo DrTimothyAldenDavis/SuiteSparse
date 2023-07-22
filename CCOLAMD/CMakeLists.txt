@@ -68,17 +68,18 @@ include_directories ( Source Include )
 
 file ( GLOB CCOLAMD_SOURCES "Source/*.c" )
 
-add_library ( ccolamd SHARED ${CCOLAMD_SOURCES} )
+add_library ( CCOLAMD SHARED ${CCOLAMD_SOURCES} )
 
-set_target_properties ( ccolamd PROPERTIES
+set_target_properties ( CCOLAMD PROPERTIES
     VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME ccolamd
     SOVERSION ${CCOLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/ccolamd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( ccolamd
+target_include_directories ( CCOLAMD
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -87,9 +88,9 @@ target_include_directories ( ccolamd
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( ccolamd_static STATIC ${CCOLAMD_SOURCES} )
+    add_library ( CCOLAMD_static STATIC ${CCOLAMD_SOURCES} )
 
-    set_target_properties ( ccolamd_static PROPERTIES
+    set_target_properties ( CCOLAMD_static PROPERTIES
         VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
         OUTPUT_NAME ccolamd
         C_STANDARD 11
@@ -97,11 +98,11 @@ if ( NOT NSTATIC )
         SOVERSION ${CCOLAMD_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( ccolamd_static PROPERTIES
+        set_target_properties ( CCOLAMD_static PROPERTIES
             OUTPUT_NAME ccolamd_static )
     endif ( )
 
-    target_include_directories ( ccolamd_static
+    target_include_directories ( CCOLAMD_static
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -111,22 +112,22 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( ccolamd PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( ccolamd PUBLIC
+target_link_libraries ( CCOLAMD PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( CCOLAMD PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( ccolamd_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( CCOLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( ccolamd_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( CCOLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( ccolamd PRIVATE m )
+    target_link_libraries ( CCOLAMD PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( ccolamd_static PUBLIC m )
+        target_link_libraries ( CCOLAMD_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -136,14 +137,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS ccolamd
+install ( TARGETS CCOLAMD
     EXPORT CCOLAMDTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS ccolamd_static
+    install ( TARGETS CCOLAMD_static
         EXPORT CCOLAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -193,8 +194,8 @@ if ( DEMO )
     add_executable ( ccolamd_l_example "Demo/ccolamd_l_example.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( ccolamd_example   PUBLIC ccolamd )
-    target_link_libraries ( ccolamd_l_example PUBLIC ccolamd )
+    target_link_libraries ( ccolamd_example   PUBLIC CCOLAMD )
+    target_link_libraries ( ccolamd_l_example PUBLIC CCOLAMD )
 
 else ( )
 

@@ -253,15 +253,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CAMD )
 endif ( )
 
-# ccolamd:
-target_link_libraries ( my PRIVATE SuiteSparse::ccolamd )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::ccolamd )
-if ( TARGET SuiteSparse::ccolamd_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::ccolamd_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::ccolamd_static )
+# CCOLAMD:
+target_link_libraries ( my PRIVATE SuiteSparse::CCOLAMD )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::CCOLAMD )
+if ( TARGET SuiteSparse::CCOLAMD_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CCOLAMD_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CCOLAMD_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::ccolamd )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::ccolamd )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CCOLAMD )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CCOLAMD )
 endif ( )
 
 # cholmod:

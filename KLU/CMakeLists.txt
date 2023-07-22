@@ -92,7 +92,7 @@ if ( NOT NCHOLMOD )
 
     find_package ( CCOLAMD 3.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::ccolamd )
+    if ( NOT TARGET SuiteSparse::CCOLAMD )
         find_package ( CCOLAMD 3.0.4 )
     endif ( )
 
