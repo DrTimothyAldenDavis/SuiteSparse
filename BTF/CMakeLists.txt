@@ -68,17 +68,18 @@ include_directories ( Source Include )
 
 file ( GLOB BTF_SOURCES "Source/*.c" )
 
-add_library ( btf SHARED ${BTF_SOURCES} )
+add_library ( BTF SHARED ${BTF_SOURCES} )
 
-set_target_properties ( btf PROPERTIES
+set_target_properties ( BTF PROPERTIES
     VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME btf
     SOVERSION ${BTF_VERSION_MAJOR}
     PUBLIC_HEADER "Include/btf.h" 
     WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-target_include_directories ( btf
+target_include_directories ( BTF
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -87,9 +88,9 @@ target_include_directories ( btf
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( btf_static STATIC ${BTF_SOURCES} )
+    add_library ( BTF_static STATIC ${BTF_SOURCES} )
 
-    set_target_properties ( btf_static PROPERTIES
+    set_target_properties ( BTF_static PROPERTIES
         VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -97,11 +98,11 @@ if ( NOT NSTATIC )
         SOVERSION ${BTF_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( btf_static PROPERTIES
+        set_target_properties ( BTF_static PROPERTIES
             OUTPUT_NAME btf_static )
     endif ( )
 
-    target_include_directories ( btf_static
+    target_include_directories ( BTF_static
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -112,22 +113,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( btf PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( btf PUBLIC
+target_link_libraries ( BTF PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( BTF PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( btf_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( BTF_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( btf_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( BTF_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( btf PRIVATE m )
+    target_link_libraries ( BTF PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( btf_static PUBLIC m )
+        target_link_libraries ( BTF_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -137,14 +138,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS btf
+install ( TARGETS BTF
     EXPORT BTFTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS btf_static
+    install ( TARGETS BTF_static
         EXPORT BTFTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
