@@ -64,7 +64,7 @@ endif ( )
 if ( SUITESPARSE_CUDA )
     find_package ( SuiteSparse_GPURuntime 2.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::suitesparse_gpuruntime )
+    if ( NOT TARGET SuiteSparse::GPURuntime )
         find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
     endif ( )
 endif ( )
@@ -171,7 +171,7 @@ target_include_directories ( GPUQREngine PRIVATE
 
 if ( SUITESPARSE_CUDA )
     target_include_directories ( GPUQREngine PRIVATE
-        $<TARGET_PROPERTY:SuiteSparse::suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
 
     set_target_properties ( GPUQREngine PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( GPUQREngine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
@@ -209,7 +209,7 @@ if ( NOT NSTATIC )
 
     if ( SUITESPARSE_CUDA )
         target_include_directories ( GPUQREngine_static PRIVATE
-            $<TARGET_PROPERTY:SuiteSparse::suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
+            $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
 
         set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
@@ -286,7 +286,7 @@ if ( DEMO AND DEMO_OK )
     target_link_libraries ( gpuqrengine_demo PUBLIC GPUQREngine
         SuiteSparse::CHOLMOD SuiteSparse::AMD SuiteSparse::COLAMD
         SuiteSparse::CAMD SuiteSparse::CCOLAMD SuiteSparse::CHOLMOD_CUDA
-        SuiteSparse::suitesparse_gpuruntime SuiteSparse::SuiteSparseConfig )
+        SuiteSparse::GPURuntime SuiteSparse::SuiteSparseConfig )
 
 else ( )
 

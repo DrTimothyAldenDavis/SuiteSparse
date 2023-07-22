@@ -86,31 +86,32 @@ include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDES} ${CUDAToolkit_INCLUDE_D
 # dynamic suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
-add_library ( suitesparse_gpuruntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
+add_library ( GPURuntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
-set_target_properties ( suitesparse_gpuruntime PROPERTIES
+set_target_properties ( GPURuntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
+    OUTPUT_NAME suitesparse_gpuruntime
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
     PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( suitesparse_gpuruntime PRIVATE
+target_include_directories ( GPURuntime PRIVATE
     ${CUDAToolkit_INCLUDE_DIRS}
     ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
-target_include_directories ( suitesparse_gpuruntime PUBLIC
+target_include_directories ( GPURuntime PUBLIC
     $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
 if ( SUITESPARSE_CUDA )
-    set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
-    set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_link_libraries ( suitesparse_gpuruntime PRIVATE CUDA::nvrtc CUDA::cudart_static
+    set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( GPURuntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    target_link_libraries ( GPURuntime PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
 
-target_include_directories ( suitesparse_gpuruntime 
+target_include_directories ( GPURuntime 
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -119,9 +120,9 @@ target_include_directories ( suitesparse_gpuruntime
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( suitesparse_gpuruntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
+    add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
-    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+    set_target_properties ( GPURuntime_static PROPERTIES
         VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
@@ -129,25 +130,25 @@ if ( NOT NSTATIC )
         SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+        set_target_properties ( GPURuntime_static PROPERTIES
             OUTPUT_NAME suitesparse_gpuruntime_static )
     endif ( )
 
-    target_include_directories ( suitesparse_gpuruntime_static PRIVATE
+    target_include_directories ( GPURuntime_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
-    target_include_directories ( suitesparse_gpuruntime_static PUBLIC
+    target_include_directories ( GPURuntime_static PUBLIC
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
     if ( SUITESPARSE_CUDA )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( suitesparse_gpuruntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+        set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( GPURuntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+        target_link_libraries ( GPURuntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 
-    target_include_directories ( suitesparse_gpuruntime_static 
+    target_include_directories ( GPURuntime_static 
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -159,14 +160,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS suitesparse_gpuruntime
+install ( TARGETS GPURuntime
     EXPORT SuiteSparse_GPURuntimeTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS suitesparse_gpuruntime_static
+    install ( TARGETS GPURuntime_static
         EXPORT SuiteSparse_GPURuntimeTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )

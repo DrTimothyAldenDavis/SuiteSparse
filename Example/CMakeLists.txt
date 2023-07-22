@@ -414,15 +414,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::SuiteSparseConfig )
 endif ( )
 
-# suitesparse_gpuruntime:
-target_link_libraries ( my PRIVATE SuiteSparse::suitesparse_gpuruntime )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::suitesparse_gpuruntime )
-if ( TARGET SuiteSparse::suitesparse_gpuruntime_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::suitesparse_gpuruntime_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::suitesparse_gpuruntime_static )
+# GPURuntime:
+target_link_libraries ( my PRIVATE SuiteSparse::GPURuntime )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::GPURuntime )
+if ( TARGET SuiteSparse::GPURuntime_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::GPURuntime_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::GPURuntime_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::suitesparse_gpuruntime )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::suitesparse_gpuruntime )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::GPURuntime )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::GPURuntime )
 endif ( )
 
 # umfpack:

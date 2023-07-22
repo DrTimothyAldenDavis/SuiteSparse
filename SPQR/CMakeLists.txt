@@ -105,7 +105,7 @@ endif ( )
 if ( SUITESPARSE_CUDA )
     find_package ( SuiteSparse_GPURuntime 2.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::suitesparse_gpuruntime )
+    if ( NOT TARGET SuiteSparse::GPURuntime )
         find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
     endif ( )
 
@@ -128,7 +128,7 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 add_subdirectory ( SPQRGPU )
 set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} )
 if ( SUITESPARSE_CUDA )
-    list ( APPEND SPQR_CUDA SuiteSparse::GPUQREngine SuiteSparse::suitesparse_gpuruntime SuiteSparse::CHOLMOD_CUDA )
+    list ( APPEND SPQR_CUDA SuiteSparse::GPUQREngine SuiteSparse::GPURuntime SuiteSparse::CHOLMOD_CUDA )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
