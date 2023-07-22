@@ -466,10 +466,12 @@ install ( TARGETS mongoose_exe
 
 # create (temporary) export target file during build
 export ( EXPORT MongooseTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/MongooseTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT MongooseTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
 
 configure_package_config_file (

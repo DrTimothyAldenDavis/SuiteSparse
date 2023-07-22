@@ -11,8 +11,8 @@
 
 # Finds the Mongoose include file and compiled library.
 # The following targets are defined:
-#   mongoose           - for the shared library (if available)
-#   mongoose_static    - for the static library (if available)
+#   SuiteSparse::mongoose           - for the shared library (if available)
+#   SuiteSparse::mongoose_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/MongooseTargets.cmake )
 
 # The following is only for backward compatibility with FindMongoose.
 
-set ( _target_shared mongoose )
-set ( _target_static mongoose_static )
+set ( _target_shared SuiteSparse::mongoose )
+set ( _target_static SuiteSparse::mongoose_static )
 set ( _var_prefix "MONGOOSE" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

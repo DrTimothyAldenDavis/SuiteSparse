@@ -360,14 +360,14 @@ else ( )
 endif ( )
 
 # mongoose:
-target_link_libraries ( my PRIVATE mongoose )
-target_link_libraries ( my_cxx PRIVATE mongoose )
-if ( TARGET mongoose_static )
-    target_link_libraries ( my_static PUBLIC mongoose_static )
-    target_link_libraries ( my_cxx_static PUBLIC mongoose_static )
+target_link_libraries ( my PRIVATE SuiteSparse::mongoose )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::mongoose )
+if ( TARGET SuiteSparse::mongoose_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::mongoose_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::mongoose_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC mongoose )
-    target_link_libraries ( my_cxx_static PUBLIC mongoose )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::mongoose )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::mongoose )
 endif ( )
 
 # rbio:
