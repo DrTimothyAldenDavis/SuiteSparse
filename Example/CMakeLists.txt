@@ -382,14 +382,14 @@ else ( )
 endif ( )
 
 # spex:
-target_link_libraries ( my PRIVATE spex )
-target_link_libraries ( my_cxx PRIVATE spex )
-if ( TARGET spex_static )
-    target_link_libraries ( my_static PUBLIC spex_static )
-    target_link_libraries ( my_cxx_static PUBLIC spex_static )
+target_link_libraries ( my PRIVATE SuiteSparse::spex )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::spex )
+if ( TARGET SuiteSparse::spex_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::spex_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spex_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC spex )
-    target_link_libraries ( my_cxx_static PUBLIC spex )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::spex )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spex )
 endif ( )
 
 # spqr:

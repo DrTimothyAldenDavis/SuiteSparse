@@ -205,10 +205,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT SPEXTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/SPEXTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT SPEXTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
 
 configure_package_config_file (
