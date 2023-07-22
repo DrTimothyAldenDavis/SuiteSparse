@@ -337,15 +337,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::KLU )
 endif ( )
 
-# klu_cholmod:
-target_link_libraries ( my PRIVATE SuiteSparse::klu_cholmod )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::klu_cholmod )
-if ( TARGET SuiteSparse::klu_cholmod_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::klu_cholmod_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu_cholmod_static )
+# KLU_CHOLMOD:
+target_link_libraries ( my PRIVATE SuiteSparse::KLU_CHOLMOD )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::KLU_CHOLMOD )
+if ( TARGET SuiteSparse::KLU_CHOLMOD_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::KLU_CHOLMOD_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::KLU_CHOLMOD_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::klu_cholmod )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu_cholmod )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::KLU_CHOLMOD )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::KLU_CHOLMOD )
 endif ( )
 
 # ldl:
