@@ -327,14 +327,14 @@ else ( )
 endif ( )
 
 # klu:
-target_link_libraries ( my PRIVATE klu )
-target_link_libraries ( my_cxx PRIVATE klu )
-if ( TARGET klu_static )
-    target_link_libraries ( my_static PUBLIC klu_static )
-    target_link_libraries ( my_cxx_static PUBLIC klu_static )
+target_link_libraries ( my PRIVATE SuiteSparse::klu )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::klu )
+if ( TARGET SuiteSparse::klu_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::klu_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC klu )
-    target_link_libraries ( my_cxx_static PUBLIC klu )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::klu )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::klu )
 endif ( )
 
 # klu_cholmod:

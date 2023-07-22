@@ -332,10 +332,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT KLUTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/KLUTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT KLUTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
 
 configure_package_config_file (
