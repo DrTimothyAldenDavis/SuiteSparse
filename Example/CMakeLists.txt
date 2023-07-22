@@ -370,15 +370,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::Mongoose )
 endif ( )
 
-# rbio:
-target_link_libraries ( my PRIVATE SuiteSparse::rbio )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::rbio )
-if ( TARGET SuiteSparse::rbio_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::rbio_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::rbio_static )
+# RBio:
+target_link_libraries ( my PRIVATE SuiteSparse::RBio )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::RBio )
+if ( TARGET SuiteSparse::RBio_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::RBio_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::RBio_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::rbio )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::rbio )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::RBio )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::RBio )
 endif ( )
 
 # spex:
