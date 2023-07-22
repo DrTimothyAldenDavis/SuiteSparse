@@ -89,17 +89,18 @@ include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include
 
 file ( GLOB SPEX_SOURCES "SPEX*/Source/*.c" )
 
-add_library ( spex SHARED ${SPEX_SOURCES} )
+add_library ( SPEX SHARED ${SPEX_SOURCES} )
 
-set_target_properties ( spex PROPERTIES
+set_target_properties ( SPEX PROPERTIES
     VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME spex
     SOVERSION ${SPEX_VERSION_MAJOR}
     PUBLIC_HEADER "Include/SPEX.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( spex 
+target_include_directories ( SPEX 
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -108,9 +109,9 @@ target_include_directories ( spex
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( spex_static STATIC ${SPEX_SOURCES} )
+    add_library ( SPEX_static STATIC ${SPEX_SOURCES} )
 
-    set_target_properties ( spex_static PROPERTIES
+    set_target_properties ( SPEX_static PROPERTIES
         VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -118,11 +119,11 @@ if ( NOT NSTATIC )
         SOVERSION ${SPEX_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( spex_static PROPERTIES
+        set_target_properties ( SPEX_static PROPERTIES
             OUTPUT_NAME spex_static )
     endif ( )
 
-    target_include_directories ( spex_static 
+    target_include_directories ( SPEX_static 
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -133,55 +134,55 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( spex PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( spex PUBLIC
+target_link_libraries ( SPEX PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( SPEX PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
 # AMD:
-target_link_libraries ( spex PRIVATE SuiteSparse::AMD )
+target_link_libraries ( SPEX PRIVATE SuiteSparse::AMD )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::AMD_static )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::AMD )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD )
     endif ( )
 endif ( )
 
 # COLAMD:
-target_link_libraries ( spex PRIVATE SuiteSparse::COLAMD )
+target_link_libraries ( SPEX PRIVATE SuiteSparse::COLAMD )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::COLAMD_static )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::COLAMD_static )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
-        target_link_libraries ( spex_static PUBLIC SuiteSparse::COLAMD )
+        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD )
     endif ( )
 endif ( )
 
 # MPFR:
-target_link_libraries ( spex PRIVATE ${MPFR_LIBRARIES} )
+target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
-    target_link_libraries ( spex_static PUBLIC ${MPFR_STATIC} )
+    target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
-target_link_libraries ( spex PRIVATE ${GMP_LIBRARIES} )
+target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
 if ( NOT NSTATIC )
-    target_link_libraries ( spex_static PUBLIC ${GMP_STATIC} )
+    target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spex PRIVATE m )
+    target_link_libraries ( SPEX PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( spex_static PUBLIC m )
+        target_link_libraries ( SPEX_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -191,14 +192,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS spex
+install ( TARGETS SPEX
     EXPORT SPEXTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS spex_static
+    install ( TARGETS SPEX_static
         EXPORT SPEXTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -251,9 +252,9 @@ if ( DEMO )
                                  "SPEX_Left_LU/Demo/demos.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( spexlu_demo PUBLIC spex )
-    target_link_libraries ( example  PUBLIC spex )
-    target_link_libraries ( example2 PUBLIC spex )
+    target_link_libraries ( spexlu_demo PUBLIC SPEX )
+    target_link_libraries ( example  PUBLIC SPEX )
+    target_link_libraries ( example2 PUBLIC SPEX )
 
 else ( )
 

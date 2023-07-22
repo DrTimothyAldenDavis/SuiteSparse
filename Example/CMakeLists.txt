@@ -381,15 +381,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::RBio )
 endif ( )
 
-# spex:
-target_link_libraries ( my PRIVATE SuiteSparse::spex )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::spex )
-if ( TARGET SuiteSparse::spex_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::spex_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spex_static )
+# SPEX:
+target_link_libraries ( my PRIVATE SuiteSparse::SPEX )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::SPEX )
+if ( TARGET SuiteSparse::SPEX_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::SPEX_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::SPEX_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::spex )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spex )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::SPEX )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::SPEX )
 endif ( )
 
 # spqr:
