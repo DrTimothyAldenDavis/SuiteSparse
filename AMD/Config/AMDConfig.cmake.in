@@ -11,8 +11,8 @@
 
 # Finds the AMD include file and compiled library.
 # The following targets are defined:
-#   amd           - for the shared library (if available)
-#   amd_static    - for the static library (if available)
+#   SuiteSparse::amd           - for the shared library (if available)
+#   SuiteSparse::amd_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/AMDTargets.cmake )
 
 # The following is only for backward compatibility with FindAMD.
 
-set ( _target_shared amd )
-set ( _target_static amd_static )
+set ( _target_shared SuiteSparse::amd )
+set ( _target_static SuiteSparse::amd_static )
 set ( _var_prefix "AMD" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

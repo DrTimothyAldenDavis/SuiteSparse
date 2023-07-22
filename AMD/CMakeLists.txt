@@ -168,10 +168,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT AMDTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/AMDTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT AMDTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
 
 configure_package_config_file (

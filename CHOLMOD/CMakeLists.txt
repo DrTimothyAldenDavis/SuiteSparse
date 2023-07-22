@@ -90,7 +90,7 @@ endif ( )
 
 find_package ( AMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET amd )
+if ( NOT TARGET SuiteSparse::amd )
     find_package ( AMD 3.0.4 REQUIRED )
 endif ( )
 
@@ -392,12 +392,12 @@ if ( NOT WIN32 )
 endif ( )
 
 # amd:
-target_link_libraries ( cholmod PRIVATE amd )
+target_link_libraries ( cholmod PRIVATE SuiteSparse::amd )
 if ( NOT NSTATIC )
-    if ( TARGET amd_static )
-        target_link_libraries ( cholmod_static PUBLIC amd_static )
+    if ( TARGET SuiteSparse::amd_static )
+        target_link_libraries ( cholmod_static PUBLIC SuiteSparse::amd_static )
     else ( )
-        target_link_libraries ( cholmod_static PUBLIC amd )
+        target_link_libraries ( cholmod_static PUBLIC SuiteSparse::amd )
     endif ( )
 endif ( )
 
