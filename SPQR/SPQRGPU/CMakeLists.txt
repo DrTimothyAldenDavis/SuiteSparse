@@ -97,14 +97,14 @@ target_include_directories ( spqr_cuda_static PRIVATE
 set_target_properties ( spqr_cuda_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
 set_target_properties ( spqr_cuda_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-if ( TARGET cholmod_static )
-    target_link_libraries ( spqr_cuda_static PUBLIC cholmod_static )
+if ( TARGET SuiteSparse::cholmod_static )
+    target_link_libraries ( spqr_cuda_static PUBLIC SuiteSparse::cholmod_static )
 else ( )
-    target_link_libraries ( spqr_cuda_static PUBLIC cholmod )
+    target_link_libraries ( spqr_cuda_static PUBLIC SuiteSparse::cholmod )
 endif ( )
 endif ( )
 
-target_link_libraries ( spqr_cuda PRIVATE cholmod )
+target_link_libraries ( spqr_cuda PRIVATE SuiteSparse::cholmod )
 
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( spqr_cuda PRIVATE CUDA::nvrtc CUDA::cudart_static

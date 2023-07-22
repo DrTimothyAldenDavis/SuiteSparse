@@ -11,8 +11,8 @@
 
 # Finds the CHOLMOD include file and compiled library.
 # The following targets are defined:
-#   cholmod           - for the shared library (if available)
-#   cholmod_static    - for the static library (if available)
+#   SuiteSparse::cholmod           - for the shared library (if available)
+#   SuiteSparse::cholmod_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -38,8 +38,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMODTargets.cmake )
 
 # The following is only for backward compatibility with FindCHOLMOD.
 
-set ( _target_shared cholmod )
-set ( _target_static cholmod_static )
+set ( _target_shared SuiteSparse::cholmod )
+set ( _target_static SuiteSparse::cholmod_static )
 set ( _var_prefix "CHOLMOD" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
