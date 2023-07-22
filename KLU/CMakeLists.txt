@@ -370,10 +370,12 @@ if ( NOT NCHOLMOD )
 
     # create (temporary) export target file during build
     export ( EXPORT KLU_CHOLMODTargets
+        NAMESPACE SuiteSparse::
         FILE ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODTargets.cmake )
 
     # install export target, config and version files for find_package
     install ( EXPORT KLU_CHOLMODTargets
+        NAMESPACE SuiteSparse::
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
 
     configure_package_config_file (

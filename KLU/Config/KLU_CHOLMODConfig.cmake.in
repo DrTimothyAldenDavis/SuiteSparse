@@ -11,8 +11,8 @@
 
 # Finds the KLU include file and compiled library.
 # The following targets are defined:
-#   klu_cholmod           - for the shared library (if available)
-#   klu_cholmod_static    - for the static library (if available)
+#   SuiteSparse::klu_cholmod           - for the shared library (if available)
+#   SuiteSparse::klu_cholmod_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/KLU_CHOLMODTargets.cmake )
 
 # The following is only for backward compatibility with FindKLU_CHOLMOD.
 
-set ( _target_shared klu_cholmod )
-set ( _target_static klu_cholmod )
+set ( _target_shared SuiteSparse::klu_cholmod )
+set ( _target_static SuiteSparse::klu_cholmod_static )
 set ( _var_prefix "KLU_CHOLMOD" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
