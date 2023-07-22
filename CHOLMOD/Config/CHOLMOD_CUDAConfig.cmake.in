@@ -11,8 +11,8 @@
 
 # Finds the CHOLMOD_CUDA include file and compiled library.
 # The following targets are defined:
-#   cholmod_cuda           - for the shared library (if available)
-#   cholmod_cuda_static    - for the static library (if available)
+#   SuiteSparse::cholmod_cuda           - for the shared library (if available)
+#   SuiteSparse::cholmod_cuda_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -38,8 +38,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMOD_CUDATargets.cmake )
 
 # The following is only for backward compatibility with FindCHOLMOD_CUDA.
 
-set ( _target_shared cholmod_cuda  )
-set ( _target_static cholmod_cuda_static  )
+set ( _target_shared SuiteSparse::cholmod_cuda  )
+set ( _target_static SuiteSparse::cholmod_cuda_static  )
 set ( _var_prefix "CHOLMOD_CUDA" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

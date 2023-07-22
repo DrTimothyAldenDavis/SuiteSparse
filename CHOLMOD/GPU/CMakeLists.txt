@@ -114,18 +114,20 @@ install ( TARGETS cholmod_cuda
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-install ( TARGETS cholmod_cuda_static
-    EXPORT CHOLMOD_CUDATargets
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+    install ( TARGETS cholmod_cuda_static
+        EXPORT CHOLMOD_CUDATargets
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 
 # create (temporary) export target file during build
 export ( EXPORT CHOLMOD_CUDATargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDATargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT CHOLMOD_CUDATargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
 
 configure_package_config_file (

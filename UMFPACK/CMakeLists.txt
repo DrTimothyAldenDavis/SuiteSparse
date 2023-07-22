@@ -76,7 +76,7 @@ if ( NOT NCHOLMOD )
 
     find_package ( CHOLMOD_CUDA 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET cholmod_cuda )
+    if ( NOT TARGET SuiteSparse::cholmod_cuda )
         find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
     endif ( )
 
