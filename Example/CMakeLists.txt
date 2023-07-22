@@ -359,15 +359,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::LDL )
 endif ( )
 
-# mongoose:
-target_link_libraries ( my PRIVATE SuiteSparse::mongoose )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::mongoose )
-if ( TARGET SuiteSparse::mongoose_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::mongoose_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::mongoose_static )
+# Mongoose:
+target_link_libraries ( my PRIVATE SuiteSparse::Mongoose )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::Mongoose )
+if ( TARGET SuiteSparse::Mongoose_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::Mongoose_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::Mongoose_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::mongoose )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::mongoose )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::Mongoose )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::Mongoose )
 endif ( )
 
 # rbio:
