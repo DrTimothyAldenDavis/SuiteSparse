@@ -393,14 +393,14 @@ else ( )
 endif ( )
 
 # spqr:
-target_link_libraries ( my PRIVATE spqr )
-target_link_libraries ( my_cxx PRIVATE spqr )
-if ( TARGET spqr_static )
-    target_link_libraries ( my_static PUBLIC spqr_static )
-    target_link_libraries ( my_cxx_static PUBLIC spqr_static )
+target_link_libraries ( my PRIVATE SuiteSparse::spqr )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::spqr )
+if ( TARGET SuiteSparse::spqr_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::spqr_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spqr_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC spqr )
-    target_link_libraries ( my_cxx_static PUBLIC spqr )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::spqr )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::spqr )
 endif ( )
 
 # SuiteSparseConfig:

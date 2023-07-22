@@ -11,8 +11,8 @@
 
 # Finds the SPQR include file and compiled library.
 # The following targets are defined:
-#   spqr           - for the shared library (if available)
-#   spqr_static    - for the static library (if available)
+#   SuiteSparse::spqr           - for the shared library (if available)
+#   SuiteSparse::spqr_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -46,8 +46,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SPQRTargets.cmake )
 
 # The following is only for backward compatibility with FindSPQR.
 
-set ( _target_shared spqr )
-set ( _target_static spqr_static )
+set ( _target_shared SuiteSparse::spqr )
+set ( _target_static SuiteSparse::spqr_static )
 set ( _var_prefix "SPQR" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

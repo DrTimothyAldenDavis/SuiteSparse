@@ -321,10 +321,12 @@ install ( FILES "Include/SuiteSparseQR_C.h"
 
 # create (temporary) export target file during build
 export ( EXPORT SPQRTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/SPQRTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT SPQRTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
 configure_package_config_file (
