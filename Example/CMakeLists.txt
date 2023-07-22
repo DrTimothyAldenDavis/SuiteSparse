@@ -220,15 +220,15 @@ target_link_libraries ( my_cxx PRIVATE ${MPFR_LIBRARIES} )
 target_link_libraries ( my_cxx_static PUBLIC ${MPFR_STATIC} )
 include_directories ( ${MPFR_INCLUDE_DIR} )
 
-# amd:
-target_link_libraries ( my PRIVATE SuiteSparse::amd )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::amd )
-if ( TARGET SuiteSparse::amd_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::amd_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::amd_static )
+# AMD:
+target_link_libraries ( my PRIVATE SuiteSparse::AMD )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::AMD )
+if ( TARGET SuiteSparse::AMD_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::AMD_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::AMD_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::amd )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::amd )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::AMD )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::AMD )
 endif ( )
 
 # btf:

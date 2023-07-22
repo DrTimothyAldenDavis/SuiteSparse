@@ -59,7 +59,7 @@ if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
 endif ( )
 find_package ( AMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::amd )
+if ( NOT TARGET SuiteSparse::AMD )
     find_package ( AMD 3.0.4 REQUIRED )
 endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -212,15 +212,15 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-# amd:
-target_link_libraries ( umfpack PRIVATE SuiteSparse::amd )
+# AMD:
+target_link_libraries ( umfpack PRIVATE SuiteSparse::AMD )
 target_include_directories ( umfpack PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::amd,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::amd_static )
-        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::amd_static )
+    if ( TARGET SuiteSparse::AMD_static )
+        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::amd )
+        target_link_libraries ( umfpack_static PUBLIC SuiteSparse::AMD )
     endif ( )
 endif ( )
 
@@ -349,7 +349,7 @@ if ( DEMO )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
-        target_link_libraries ( umf4            PUBLIC umfpack SuiteSparse::amd )
+        target_link_libraries ( umf4            PUBLIC umfpack SuiteSparse::AMD )
         target_link_libraries ( umf4hb          PUBLIC umfpack )
         target_link_libraries ( umf4zhb         PUBLIC umfpack )
         target_link_libraries ( umf4hb64        PUBLIC umfpack )

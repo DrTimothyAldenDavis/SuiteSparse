@@ -76,7 +76,7 @@ if ( DEMO AND DEMO_OK )
     # for the demo only:
     find_package ( AMD 3.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::amd )
+    if ( NOT TARGET SuiteSparse::AMD )
         find_package ( AMD 3.0.4 )
     endif ( )
 
@@ -281,7 +281,7 @@ if ( DEMO AND DEMO_OK )
 
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
-        cholmod SuiteSparse::amd colamd
+        cholmod SuiteSparse::AMD colamd
         camd ccolamd cholmod_cuda
         suitesparse_gpuruntime SuiteSparse::SuiteSparseConfig )
 

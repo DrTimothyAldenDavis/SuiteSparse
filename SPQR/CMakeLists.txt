@@ -237,13 +237,13 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-# amd:
-target_link_libraries ( spqr PRIVATE SuiteSparse::amd )
+# AMD:
+target_link_libraries ( spqr PRIVATE SuiteSparse::AMD )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::amd_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::amd_static )
+    if ( TARGET SuiteSparse::AMD_static )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::amd )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::AMD )
     endif ( )
 endif ( )
 
