@@ -160,18 +160,19 @@ include_directories ( Source Include )
 
 file ( GLOB SPQR_SOURCES "Source/spqr_*.cpp" "Source/SuiteSparseQR*.cpp" )
 
-add_library ( spqr SHARED ${SPQR_SOURCES} )
+add_library ( SPQR SHARED ${SPQR_SOURCES} )
 
-set_target_properties ( spqr PROPERTIES
+set_target_properties ( SPQR PROPERTIES
     VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME spqr
     SOVERSION ${SPQR_VERSION_MAJOR}
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( spqr 
+target_include_directories ( SPQR 
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -180,9 +181,9 @@ target_include_directories ( spqr
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( spqr_static STATIC ${SPQR_SOURCES} )
+    add_library ( SPQR_static STATIC ${SPQR_SOURCES} )
 
-    set_target_properties ( spqr_static PROPERTIES
+    set_target_properties ( SPQR_static PROPERTIES
         VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
@@ -192,11 +193,11 @@ if ( NOT NSTATIC )
         SOVERSION ${SPQR_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( spqr_static PROPERTIES
+        set_target_properties ( SPQR_static PROPERTIES
             OUTPUT_NAME spqr_static )
     endif ( )
 
-    target_include_directories ( spqr_static 
+    target_include_directories ( SPQR_static 
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -207,12 +208,12 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( spqr PRIVATE SuiteSparse::SuiteSparseConfig )
+target_link_libraries ( SPQR PRIVATE SuiteSparse::SuiteSparseConfig )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -221,9 +222,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( spqr PRIVATE ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( SPQR PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( spqr_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SPQR_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
@@ -231,29 +232,29 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( spqr PRIVATE m )
+    target_link_libraries ( SPQR PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( spqr_static PUBLIC m )
+        target_link_libraries ( SPQR_static PUBLIC m )
     endif ( )
 endif ( )
 
 # AMD:
-target_link_libraries ( spqr PRIVATE SuiteSparse::AMD )
+target_link_libraries ( SPQR PRIVATE SuiteSparse::AMD )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::AMD_static )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::AMD )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::AMD )
     endif ( )
 endif ( )
 
 # COLAMD:
-target_link_libraries ( spqr PRIVATE SuiteSparse::COLAMD )
+target_link_libraries ( SPQR PRIVATE SuiteSparse::COLAMD )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::COLAMD_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::COLAMD_static )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::COLAMD )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::COLAMD )
     endif ( )
 endif ( )
 
@@ -261,9 +262,9 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( spqr PRIVATE ${BLAS_LIBRARIES} )
+target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${BLAS_LIBRARIES} )
+    target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
@@ -271,31 +272,31 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-target_link_libraries ( spqr PRIVATE ${LAPACK_LIBRARIES} )
+target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC ${LAPACK_LIBRARIES} )
+    target_link_libraries ( SPQR_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
 include_directories ( ${LAPACK_INCLUDE_DIR} )
 
 # CHOLMOD:
 # link with CHOLMOD and its dependencies, both required and optional
-target_link_libraries ( spqr PRIVATE
+target_link_libraries ( SPQR PRIVATE
     SuiteSparse::CHOLMOD ${CHOLMOD_CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
-    target_link_libraries ( spqr_static PUBLIC
+    target_link_libraries ( SPQR_static PUBLIC
         ${CHOLMOD_CUDA_STATIC} )
     if ( TARGET SuiteSparse::CHOLMOD_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::CHOLMOD )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD )
     endif ( )
 endif ( )
 
 # CUDA
 message ( STATUS "SPQR cuda:  ${SPQR_CUDA} " )
-target_link_libraries ( spqr PRIVATE ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+target_link_libraries ( SPQR PRIVATE ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( spqr_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
+target_link_libraries ( SPQR_static PUBLIC ${SPQR_CUDA} ${CUDA_LIBRARIES} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -304,13 +305,13 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS spqr
+install ( TARGETS SPQR
     EXPORT SPQRTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS spqr_static
+    install ( TARGETS SPQR_static
         EXPORT SPQRTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -377,21 +378,21 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrsimple  PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrsimplec PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo    PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc   PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
 
-    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemo_int32    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrsimplec_int32 PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc_int32   PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo_int32    PUBLIC SPQR ${SPQR_CUDA} SuiteSparse::CHOLMOD )
 
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
+        target_link_libraries ( qrdemo_gpu   PUBLIC SPQR ${SPQR_CUDA}
             SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
-        target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
+        target_link_libraries ( qrdemo_gpu2  PUBLIC SPQR ${SPQR_CUDA}
             SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
-        target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
+        target_link_libraries ( qrdemo_gpu3  PUBLIC SPQR ${SPQR_CUDA}
             SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
     endif ( )
 
