@@ -92,7 +92,7 @@ endif ( )
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
 find_package ( CAMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::camd )
+if ( NOT TARGET SuiteSparse::CAMD )
     find_package ( CAMD 3.0.4 )
 endif ( )
 

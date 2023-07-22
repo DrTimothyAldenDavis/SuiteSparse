@@ -242,15 +242,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::BTF )
 endif ( )
 
-# camd:
-target_link_libraries ( my PRIVATE SuiteSparse::camd )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::camd )
-if ( TARGET SuiteSparse::camd_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::camd_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::camd_static )
+# CAMD:
+target_link_libraries ( my PRIVATE SuiteSparse::CAMD )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::CAMD )
+if ( TARGET SuiteSparse::CAMD_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CAMD_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CAMD_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::camd )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::camd )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CAMD )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CAMD )
 endif ( )
 
 # ccolamd:

@@ -196,7 +196,7 @@ endif ( )
         # find CAMD and CCOLAMD
         find_package ( CAMD 3.0.4
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::camd )
+        if ( NOT TARGET SuiteSparse::CAMD )
             find_package ( CAMD 3.0.4 )
         endif ( )
 
@@ -434,14 +434,14 @@ if ( NOT NSUPERNODAL )
     include_directories ( ${LAPACK_INCLUDE_DIR} )
 endif ( )
 
-# camd and ccolamd:
+# CAMD and ccolamd:
 if ( NOT NCAMD )
-    target_link_libraries ( cholmod PRIVATE SuiteSparse::camd )
+    target_link_libraries ( cholmod PRIVATE SuiteSparse::CAMD )
     if ( NOT NSTATIC )
-        if ( TARGET SuiteSparse::camd_static )
-            target_link_libraries ( cholmod_static PUBLIC SuiteSparse::camd_static )
+        if ( TARGET SuiteSparse::CAMD_static )
+            target_link_libraries ( cholmod_static PUBLIC SuiteSparse::CAMD_static )
         else ( )
-            target_link_libraries ( cholmod_static PUBLIC SuiteSparse::camd )
+            target_link_libraries ( cholmod_static PUBLIC SuiteSparse::CAMD )
         endif ( )
     endif ( )
 

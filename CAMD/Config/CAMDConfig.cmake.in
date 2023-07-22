@@ -11,8 +11,8 @@
 
 # Finds the CAMD include file and compiled library.
 # The following targets are defined:
-#   SuiteSparse::camd           - for the shared library (if available)
-#   SuiteSparse::camd_static    - for the static library (if available)
+#   SuiteSparse::CAMD           - for the shared library (if available)
+#   SuiteSparse::CAMD_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CAMDTargets.cmake )
 
 # The following is only for backward compatibility with FindCAMD.
 
-set ( _target_shared SuiteSparse::camd )
-set ( _target_static SuiteSparse::camd_static )
+set ( _target_shared SuiteSparse::CAMD )
+set ( _target_static SuiteSparse::CAMD_static )
 set ( _var_prefix "CAMD" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

@@ -71,17 +71,18 @@ include_directories ( Source Include )
 
 file ( GLOB CAMD_SOURCES "Source/*.c" )
 
-add_library ( camd SHARED ${CAMD_SOURCES} )
+add_library ( CAMD SHARED ${CAMD_SOURCES} )
 
-set_target_properties ( camd PROPERTIES
+set_target_properties ( CAMD PROPERTIES
     VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME camd
     SOVERSION ${CAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/camd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( camd
+target_include_directories ( CAMD
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -90,9 +91,9 @@ target_include_directories ( camd
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( camd_static STATIC ${CAMD_SOURCES} )
+    add_library ( CAMD_static STATIC ${CAMD_SOURCES} )
 
-    set_target_properties ( camd_static PROPERTIES
+    set_target_properties ( CAMD_static PROPERTIES
         VERSION ${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -100,11 +101,11 @@ if ( NOT NSTATIC )
         SOVERSION ${CAMD_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( camd_static PROPERTIES
+        set_target_properties ( CAMD_static PROPERTIES
             OUTPUT_NAME camd_static )
     endif ( )
 
-    target_include_directories ( camd_static
+    target_include_directories ( CAMD_static
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -114,22 +115,22 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( camd PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( camd PUBLIC
+target_link_libraries ( CAMD PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( CAMD PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( camd_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( CAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( camd_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( CAMD_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( camd PRIVATE m )
+    target_link_libraries ( CAMD PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( camd_static PUBLIC m )
+        target_link_libraries ( CAMD_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -139,14 +140,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS camd
+install ( TARGETS CAMD
     EXPORT CAMDTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS camd_static
+    install ( TARGETS CAMD_static
         EXPORT CAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
@@ -198,10 +199,10 @@ if ( DEMO )
     add_executable ( camd_simple "Demo/camd_simple.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( camd_demo   PUBLIC camd )
-    target_link_libraries ( camd_l_demo PUBLIC camd )
-    target_link_libraries ( camd_demo2  PUBLIC camd )
-    target_link_libraries ( camd_simple PUBLIC camd )
+    target_link_libraries ( camd_demo   PUBLIC CAMD )
+    target_link_libraries ( camd_l_demo PUBLIC CAMD )
+    target_link_libraries ( camd_demo2  PUBLIC CAMD )
+    target_link_libraries ( camd_simple PUBLIC CAMD )
 
 else ( )
 
