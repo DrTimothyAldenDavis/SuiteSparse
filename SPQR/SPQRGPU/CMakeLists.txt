@@ -68,11 +68,11 @@ set ( SPQR_CUDA_INCLUDES ../Include )
 
 include_directories ( ${SPQR_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-if ( TARGET gpuqrengine )
+if ( TARGET SuiteSparse::gpuqrengine )
     target_include_directories ( spqr_cuda PRIVATE
-        $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
     target_include_directories ( spqr_cuda_static PRIVATE
-        $<TARGET_PROPERTY:gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::gpuqrengine,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
 if ( TARGET suitesparse_gpuruntime )

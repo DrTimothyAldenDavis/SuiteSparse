@@ -241,10 +241,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT GPUQREngineTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT GPUQREngineTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
 
 configure_package_config_file (

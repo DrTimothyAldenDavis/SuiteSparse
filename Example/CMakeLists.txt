@@ -298,14 +298,14 @@ else ( )
 endif ( )
 
 # gpuqrengine:
-target_link_libraries ( my PRIVATE gpuqrengine )
-target_link_libraries ( my_cxx PRIVATE gpuqrengine )
-if ( TARGET gpuqrengine_static )
-    target_link_libraries ( my_static PUBLIC gpuqrengine_static )
-    target_link_libraries ( my_cxx_static PUBLIC gpuqrengine_static )
+target_link_libraries ( my PRIVATE SuiteSparse::gpuqrengine )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::gpuqrengine )
+if ( TARGET SuiteSparse::gpuqrengine_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::gpuqrengine_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::gpuqrengine_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC gpuqrengine )
-    target_link_libraries ( my_cxx_static PUBLIC gpuqrengine )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::gpuqrengine )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::gpuqrengine )
 endif ( )
 
 # GraphBLAS:
