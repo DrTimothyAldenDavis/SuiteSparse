@@ -425,15 +425,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::GPURuntime )
 endif ( )
 
-# umfpack:
-target_link_libraries ( my PRIVATE SuiteSparse::umfpack )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::umfpack )
-if ( TARGET SuiteSparse::umfpack_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::umfpack_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::umfpack_static )
+# UMFPACK:
+target_link_libraries ( my PRIVATE SuiteSparse::UMFPACK )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::UMFPACK )
+if ( TARGET SuiteSparse::UMFPACK_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::UMFPACK_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::UMFPACK_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::umfpack )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::umfpack )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::UMFPACK )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::UMFPACK )
 endif ( )
 
 #-------------------------------------------------------------------------------
