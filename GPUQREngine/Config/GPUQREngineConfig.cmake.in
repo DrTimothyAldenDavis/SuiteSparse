@@ -11,8 +11,8 @@
 
 # Finds the GPUQREngine include file and compiled library.
 # The following targets are defined:
-#   SuiteSparse::gpuqrengine           - for the shared library (if available)
-#   SuiteSparse::gpuqrengine_static    - for the static library (if available)
+#   SuiteSparse::GPUQREngine           - for the shared library (if available)
+#   SuiteSparse::GPUQREngine_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/GPUQREngineTargets.cmake )
 
 # The following is only for backward compatibility with FindGPUQREngine.
 
-set ( _target_shared SuiteSparse::gpuqrengine )
-set ( _target_static SuiteSparse::gpuqrengine_static )
+set ( _target_shared SuiteSparse::GPUQREngine )
+set ( _target_static SuiteSparse::GPUQREngine_static )
 set ( _var_prefix "GPUQRENGINE" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

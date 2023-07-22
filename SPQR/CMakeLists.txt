@@ -111,7 +111,7 @@ if ( SUITESPARSE_CUDA )
 
     find_package ( GPUQREngine 2.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../GPUQREngine/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::gpuqrengine )
+    if ( NOT TARGET SuiteSparse::GPUQREngine )
         find_package ( GPUQREngine 2.0.4 REQUIRED )
     endif ( )
 
@@ -128,7 +128,7 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 add_subdirectory ( SPQRGPU )
 set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} )
 if ( SUITESPARSE_CUDA )
-    list ( APPEND SPQR_CUDA SuiteSparse::gpuqrengine suitesparse_gpuruntime SuiteSparse::CHOLMOD_CUDA )
+    list ( APPEND SPQR_CUDA SuiteSparse::GPUQREngine suitesparse_gpuruntime SuiteSparse::CHOLMOD_CUDA )
 endif ( )
 
 if ( SUITESPARSE_CUDA )

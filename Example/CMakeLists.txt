@@ -297,15 +297,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CXSparse )
 endif ( )
 
-# gpuqrengine:
-target_link_libraries ( my PRIVATE SuiteSparse::gpuqrengine )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::gpuqrengine )
-if ( TARGET SuiteSparse::gpuqrengine_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::gpuqrengine_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::gpuqrengine_static )
+# GPUQREngine:
+target_link_libraries ( my PRIVATE SuiteSparse::GPUQREngine )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::GPUQREngine )
+if ( TARGET SuiteSparse::GPUQREngine_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::GPUQREngine_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::GPUQREngine_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::gpuqrengine )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::gpuqrengine )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::GPUQREngine )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::GPUQREngine )
 endif ( )
 
 # GraphBLAS:
