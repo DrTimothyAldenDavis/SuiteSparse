@@ -11,8 +11,8 @@
 
 # Finds the COLAMD include file and compiled library.
 # The following targets are defined:
-#   SuiteSparse::colamd           - for the shared library (if available)
-#   SuiteSparse::colamd_static    - for the static library (if available)
+#   SuiteSparse::COLAMD           - for the shared library (if available)
+#   SuiteSparse::COLAMD_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/COLAMDTargets.cmake )
 
 # The following is only for backward compatibility with FindCOLAMD.
 
-set ( _target_shared SuiteSparse::colamd )
-set ( _target_static SuiteSparse::colamd_static )
+set ( _target_shared SuiteSparse::COLAMD )
+set ( _target_static SuiteSparse::COLAMD_static )
 set ( _var_prefix "COLAMD" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

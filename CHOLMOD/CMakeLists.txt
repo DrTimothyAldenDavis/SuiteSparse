@@ -84,7 +84,7 @@ endif ( )
 
 find_package ( COLAMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::colamd )
+if ( NOT TARGET SuiteSparse::COLAMD )
     find_package ( COLAMD 3.0.4 REQUIRED )
 endif ( )
 
@@ -402,13 +402,13 @@ if ( NOT NSTATIC )
     endif ( )
 endif ( )
 
-# colamd:
-target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::colamd )
+# COLAMD:
+target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::COLAMD )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::colamd_static )
-        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::colamd_static )
+    if ( TARGET SuiteSparse::COLAMD_static )
+        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
-        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::colamd )
+        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::COLAMD )
     endif ( )
 endif ( )
 
