@@ -166,10 +166,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT LDLTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/LDLTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT LDLTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/LDL )
 
 configure_package_config_file (

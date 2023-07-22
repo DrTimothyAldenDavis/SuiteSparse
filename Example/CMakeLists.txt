@@ -349,14 +349,14 @@ else ( )
 endif ( )
 
 # ldl:
-target_link_libraries ( my PRIVATE ldl )
-target_link_libraries ( my_cxx PRIVATE ldl )
-if ( TARGET ldl_static )
-    target_link_libraries ( my_static PUBLIC ldl_static )
-    target_link_libraries ( my_cxx_static PUBLIC ldl_static )
+target_link_libraries ( my PRIVATE SuiteSparse::ldl )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::ldl )
+if ( TARGET SuiteSparse::ldl_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::ldl_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::ldl_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC ldl )
-    target_link_libraries ( my_cxx_static PUBLIC ldl )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::ldl )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::ldl )
 endif ( )
 
 # mongoose:
