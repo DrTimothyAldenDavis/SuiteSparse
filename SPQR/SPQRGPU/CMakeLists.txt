@@ -75,11 +75,11 @@ if ( TARGET SuiteSparse::GPUQREngine )
         $<TARGET_PROPERTY:SuiteSparse::GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
-if ( TARGET suitesparse_gpuruntime )
+if ( TARGET SuiteSparse::suitesparse_gpuruntime )
     target_include_directories ( spqr_cuda PRIVATE
-        $<TARGET_PROPERTY:suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
     target_include_directories ( spqr_cuda_static PRIVATE
-        $<TARGET_PROPERTY:suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:SuiteSparse::suitesparse_gpuruntime,INTERFACE_INCLUDE_DIRECTORIES> )
 endif ( )
 
 target_include_directories ( spqr_cuda PRIVATE
