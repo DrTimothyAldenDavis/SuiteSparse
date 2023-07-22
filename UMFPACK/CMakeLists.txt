@@ -90,7 +90,7 @@ if ( NOT NCHOLMOD )
 
     find_package ( CAMD 3.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET camd )
+    if ( NOT TARGET SuiteSparse::camd )
         find_package ( CAMD 3.0.4 )
     endif ( )
 
@@ -339,13 +339,13 @@ if ( DEMO )
         # This is only needed because the demos might be linked before those
         # libraries are installed. Would it be better to set the rpath instead?
         target_link_libraries ( umfpack_di_demo PUBLIC
-            colamd camd ccolamd )
+            colamd SuiteSparse::camd ccolamd )
         target_link_libraries ( umfpack_dl_demo PUBLIC
-            colamd camd ccolamd )
+            colamd SuiteSparse::camd ccolamd )
         target_link_libraries ( umfpack_zi_demo PUBLIC
-            colamd camd ccolamd )
+            colamd SuiteSparse::camd ccolamd )
         target_link_libraries ( umfpack_zl_demo PUBLIC
-            colamd camd ccolamd )
+            colamd SuiteSparse::camd ccolamd )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
@@ -359,13 +359,13 @@ if ( DEMO )
             # those libraries are installed. Would it be better to set the
             # rpath instead?
             target_link_libraries ( umf4hb PUBLIC
-                colamd camd ccolamd )
+                colamd SuiteSparse::camd ccolamd )
             target_link_libraries ( umf4zhb PUBLIC
-                colamd camd ccolamd )
+                colamd SuiteSparse::camd ccolamd )
             target_link_libraries ( umf4hb64 PUBLIC
-                colamd camd ccolamd )
+                colamd SuiteSparse::camd ccolamd )
             target_link_libraries ( umf4zhb64 PUBLIC
-                colamd camd ccolamd )
+                colamd SuiteSparse::camd ccolamd )
         endif ( )
     endif ( )
 

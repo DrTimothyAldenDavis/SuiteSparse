@@ -72,7 +72,7 @@ endif ( )
 
 find_package ( AMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::amd )
+if ( NOT TARGET SuiteSparse::AMD )
     find_package ( AMD 3.0.4 REQUIRED )
 endif ( )
 
@@ -92,7 +92,7 @@ endif ( )
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
 find_package ( CAMD 3.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET camd )
+if ( NOT TARGET SuiteSparse::camd )
     find_package ( CAMD 3.0.4 )
 endif ( )
 

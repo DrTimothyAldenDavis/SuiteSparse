@@ -153,10 +153,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT CAMDTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/CAMDTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT CAMDTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
 
 configure_package_config_file (

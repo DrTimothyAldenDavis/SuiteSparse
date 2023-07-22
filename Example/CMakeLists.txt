@@ -243,14 +243,14 @@ else ( )
 endif ( )
 
 # camd:
-target_link_libraries ( my PRIVATE camd )
-target_link_libraries ( my_cxx PRIVATE camd )
-if ( TARGET camd_static )
-    target_link_libraries ( my_static PUBLIC camd_static )
-    target_link_libraries ( my_cxx_static PUBLIC camd_static )
+target_link_libraries ( my PRIVATE SuiteSparse::camd )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::camd )
+if ( TARGET SuiteSparse::camd_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::camd_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::camd_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC camd )
-    target_link_libraries ( my_cxx_static PUBLIC camd )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::camd )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::camd )
 endif ( )
 
 # ccolamd:
