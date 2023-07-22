@@ -117,7 +117,7 @@ if ( SUITESPARSE_CUDA )
 
     find_package ( CHOLMOD_CUDA 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::cholmod_cuda )
+    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
         find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
     endif ( )
 endif ( )
@@ -128,7 +128,7 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 add_subdirectory ( SPQRGPU )
 set ( SPQR_CUDA spqr_cuda ${CUDA_LIBRARIES} )
 if ( SUITESPARSE_CUDA )
-    list ( APPEND SPQR_CUDA gpuqrengine suitesparse_gpuruntime SuiteSparse::cholmod_cuda )
+    list ( APPEND SPQR_CUDA gpuqrengine suitesparse_gpuruntime SuiteSparse::CHOLMOD_CUDA )
 endif ( )
 
 if ( SUITESPARSE_CUDA )

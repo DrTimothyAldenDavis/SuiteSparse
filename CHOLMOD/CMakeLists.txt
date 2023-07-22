@@ -268,8 +268,8 @@ endif ( )
 add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
-    set ( CHOLMOD_CUDA cholmod_cuda ${CUDA_LIBRARIES} )
-    set ( CHOLMOD_CUDA_STATIC cholmod_cuda_static ${CUDA_LIBRARIES} )
+    set ( CHOLMOD_CUDA CHOLMOD_CUDA ${CUDA_LIBRARIES} )
+    set ( CHOLMOD_CUDA_STATIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 else ( )
@@ -463,12 +463,12 @@ if ( NOT NPARTITION )
     include_directories ( SuiteSparse_metis/include )
 endif ( )
 
-# cholmod_cuda
+# CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( CHOLMOD PRIVATE cholmod_cuda )
+    target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA )
     if ( NOT NSTATIC )
-        target_link_libraries ( CHOLMOD_static PUBLIC cholmod_cuda_static )
+        target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static )
     endif ( )
 endif ( )
 

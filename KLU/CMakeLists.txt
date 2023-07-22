@@ -78,7 +78,7 @@ if ( NOT NCHOLMOD )
 
     find_package ( CHOLMOD_CUDA 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::cholmod_cuda )
+    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
         find_package ( CHOLMOD_CUDA 4.0.4 )
     endif ( )
 
@@ -279,9 +279,9 @@ if ( NOT NCHOLMOD )
     # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( klu PRIVATE
-        SuiteSparse::CHOLMOD SuiteSparse::cholmod_cuda )
+        SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA )
     target_link_libraries ( klu_cholmod PRIVATE
-        SuiteSparse::CHOLMOD SuiteSparse::cholmod_cuda )
+        SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA )
     if ( NOT NSTATIC )
        if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -290,12 +290,12 @@ if ( NOT NCHOLMOD )
             target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD )
             target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
-        if ( TARGET SuiteSparse::cholmod_cuda_static )
-            target_link_libraries ( klu_static PUBLIC SuiteSparse::cholmod_cuda_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::cholmod_cuda_static )
+        if ( TARGET SuiteSparse::CHOLMOD_CUDA_static )
+            target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD_CUDA_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::CHOLMOD_CUDA_static )
         else ( )
-            target_link_libraries ( klu_static PUBLIC SuiteSparse::cholmod_cuda )
-            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::cholmod_cuda )
+            target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD_CUDA )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::CHOLMOD_CUDA )
         endif ( )
     endif ( )
 
