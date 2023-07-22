@@ -232,14 +232,14 @@ else ( )
 endif ( )
 
 # btf:
-target_link_libraries ( my PRIVATE btf )
-target_link_libraries ( my_cxx PRIVATE btf )
-if ( TARGET btf_static )
-    target_link_libraries ( my_static PUBLIC btf_static )
-    target_link_libraries ( my_cxx_static PUBLIC btf_static )
+target_link_libraries ( my PRIVATE SuiteSparse::btf )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::btf )
+if ( TARGET SuiteSparse::btf_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::btf_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::btf_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC btf )
-    target_link_libraries ( my_cxx_static PUBLIC btf )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::btf )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::btf )
 endif ( )
 
 # camd:

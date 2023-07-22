@@ -151,10 +151,12 @@ endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT BTFTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/BTFTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT BTFTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
 
 configure_package_config_file (

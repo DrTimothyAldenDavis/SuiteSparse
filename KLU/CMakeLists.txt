@@ -50,7 +50,7 @@ if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
 endif ( )
 find_package ( BTF 2.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
-if ( NOT TARGET btf )
+if ( NOT TARGET SuiteSparse::btf )
     find_package ( BTF 2.0.4 REQUIRED )
 endif ( )
 
@@ -263,14 +263,14 @@ if ( NOT NSTATIC )
 endif ( )
 
 # btf:
-target_link_libraries ( klu PRIVATE btf )
+target_link_libraries ( klu PRIVATE SuiteSparse::btf )
 target_include_directories ( klu PUBLIC
-    "$<TARGET_PROPERTY:btf,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:SuiteSparse::btf,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET btf_static )
-        target_link_libraries ( klu_static PUBLIC btf_static )
+    if ( TARGET SuiteSparse::btf_static )
+        target_link_libraries ( klu_static PUBLIC SuiteSparse::btf_static )
     else ( )
-        target_link_libraries ( klu_static PUBLIC btf )
+        target_link_libraries ( klu_static PUBLIC SuiteSparse::btf )
     endif ( )
 endif ( )
 
@@ -300,12 +300,12 @@ if ( NOT NCHOLMOD )
     endif ( )
 
     # klu:
-    target_link_libraries ( klu_cholmod PRIVATE klu btf )
+    target_link_libraries ( klu_cholmod PRIVATE klu SuiteSparse::btf )
     if ( NOT NSTATIC )
-        if ( TARGET btf_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC btf_static )
+        if ( TARGET SuiteSparse::btf_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::btf_static )
         else ( )
-            target_link_libraries ( klu_cholmod_static PUBLIC btf )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::btf )
         endif ( )
     endif ( )
 
