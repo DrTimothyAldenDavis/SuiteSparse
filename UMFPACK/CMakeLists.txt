@@ -70,7 +70,7 @@ if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::cholmod )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
@@ -234,18 +234,18 @@ if ( NOT NSTATIC )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
 
-# cholmod:
+# CHOLMOD:
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( umfpack PRIVATE
-        SuiteSparse::cholmod ${CHOLMOD_CUDA_LIBRARIES} )
+        SuiteSparse::CHOLMOD ${CHOLMOD_CUDA_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( umfpack_static PUBLIC
             ${CHOLMOD_CUDA_STATIC} )
-        if ( TARGET SuiteSparse::cholmod_static )
-            target_link_libraries ( umfpack_static PUBLIC SuiteSparse::cholmod_static )
+        if ( TARGET SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( umfpack_static PUBLIC SuiteSparse::CHOLMOD_static )
         else ( )
-            target_link_libraries ( umfpack_static PUBLIC SuiteSparse::cholmod )
+            target_link_libraries ( umfpack_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
 endif ( )

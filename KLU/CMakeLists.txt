@@ -72,7 +72,7 @@ if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::cholmod )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
@@ -276,19 +276,19 @@ endif ( )
 
 if ( NOT NCHOLMOD )
 
-    # cholmod:
+    # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( klu PRIVATE
-        SuiteSparse::cholmod cholmod_cuda )
+        SuiteSparse::CHOLMOD cholmod_cuda )
     target_link_libraries ( klu_cholmod PRIVATE
-        SuiteSparse::cholmod cholmod_cuda )
+        SuiteSparse::CHOLMOD cholmod_cuda )
     if ( NOT NSTATIC )
-       if ( TARGET SuiteSparse::cholmod_static )
-            target_link_libraries ( klu_static PUBLIC SuiteSparse::cholmod_static )
-            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::cholmod_static )
+       if ( TARGET SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::CHOLMOD_static )
         else ( )
-            target_link_libraries ( klu_static PUBLIC SuiteSparse::cholmod )
-            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::cholmod )
+            target_link_libraries ( klu_static PUBLIC SuiteSparse::CHOLMOD )
+            target_link_libraries ( klu_cholmod_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
         if ( TARGET cholmod_cuda_static )
             target_link_libraries ( klu_static PUBLIC cholmod_cuda_static )
@@ -415,8 +415,8 @@ if ( DEMO )
     # Libraries required for Demo programs
     target_link_libraries ( klu_simple  PUBLIC klu )
     if ( NOT NCHOLMOD )
-        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu SuiteSparse::cholmod )
-        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu SuiteSparse::cholmod )
+        target_link_libraries ( kludemo  PUBLIC klu_cholmod klu SuiteSparse::CHOLMOD )
+        target_link_libraries ( kluldemo PUBLIC klu_cholmod klu SuiteSparse::CHOLMOD )
         if ( NOT WIN32 )
             target_link_libraries ( kludemo  PUBLIC m )
             target_link_libraries ( kluldemo PUBLIC m )

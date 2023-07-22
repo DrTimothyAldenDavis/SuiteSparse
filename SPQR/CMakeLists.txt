@@ -84,7 +84,7 @@ endif ( )
 
 find_package ( CHOLMOD 4.0.4
     PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::cholmod )
+if ( NOT TARGET SuiteSparse::CHOLMOD )
     find_package ( CHOLMOD 4.0.4 REQUIRED )
 endif ( )
 
@@ -277,17 +277,17 @@ if ( NOT NSTATIC )
 endif ( )
 include_directories ( ${LAPACK_INCLUDE_DIR} )
 
-# cholmod:
+# CHOLMOD:
 # link with CHOLMOD and its dependencies, both required and optional
 target_link_libraries ( spqr PRIVATE
-    SuiteSparse::cholmod ${CHOLMOD_CUDA_LIBRARIES} )
+    SuiteSparse::CHOLMOD ${CHOLMOD_CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
     target_link_libraries ( spqr_static PUBLIC
         ${CHOLMOD_CUDA_STATIC} )
-    if ( TARGET SuiteSparse::cholmod_static )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::cholmod_static )
+    if ( TARGET SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::CHOLMOD_static )
     else ( )
-        target_link_libraries ( spqr_static PUBLIC SuiteSparse::cholmod )
+        target_link_libraries ( spqr_static PUBLIC SuiteSparse::CHOLMOD )
     endif ( )
 endif ( )
 
@@ -375,22 +375,22 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
-    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
-    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
-    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
+    target_link_libraries ( qrsimple  PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrsimplec PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
 
-    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
-    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
-    target_link_libraries ( qrdemo_int32    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::cholmod )
+    target_link_libraries ( qrsimplec_int32 PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc_int32   PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo_int32    PUBLIC spqr ${SPQR_CUDA} SuiteSparse::CHOLMOD )
 
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( qrdemo_gpu   PUBLIC spqr ${SPQR_CUDA}
-            SuiteSparse::cholmod SuiteSparse::SuiteSparseConfig )
+            SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu2  PUBLIC spqr ${SPQR_CUDA}
-            SuiteSparse::cholmod SuiteSparse::SuiteSparseConfig )
+            SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu3  PUBLIC spqr ${SPQR_CUDA}
-            SuiteSparse::cholmod SuiteSparse::SuiteSparseConfig )
+            SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
     endif ( )
 
 else ( )

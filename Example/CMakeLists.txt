@@ -264,15 +264,15 @@ else ( )
     target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CCOLAMD )
 endif ( )
 
-# cholmod:
-target_link_libraries ( my PRIVATE SuiteSparse::cholmod )
-target_link_libraries ( my_cxx PRIVATE SuiteSparse::cholmod )
-if ( TARGET SuiteSparse::cholmod_static )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::cholmod_static )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::cholmod_static )
+# CHOLMOD:
+target_link_libraries ( my PRIVATE SuiteSparse::CHOLMOD )
+target_link_libraries ( my_cxx PRIVATE SuiteSparse::CHOLMOD )
+if ( TARGET SuiteSparse::CHOLMOD_static )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CHOLMOD_static )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CHOLMOD_static )
 else ( )
-    target_link_libraries ( my_static PUBLIC SuiteSparse::cholmod )
-    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::cholmod )
+    target_link_libraries ( my_static PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::CHOLMOD )
 endif ( )
 
 # colamd:

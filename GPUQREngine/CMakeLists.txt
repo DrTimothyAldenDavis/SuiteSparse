@@ -100,7 +100,7 @@ if ( DEMO AND DEMO_OK )
 
     find_package ( CHOLMOD 4.0.4
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::cholmod )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
@@ -281,7 +281,7 @@ if ( DEMO AND DEMO_OK )
 
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC gpuqrengine
-        SuiteSparse::cholmod SuiteSparse::AMD colamd
+        SuiteSparse::CHOLMOD SuiteSparse::AMD colamd
         SuiteSparse::CAMD SuiteSparse::CCOLAMD cholmod_cuda
         suitesparse_gpuruntime SuiteSparse::SuiteSparseConfig )
 
