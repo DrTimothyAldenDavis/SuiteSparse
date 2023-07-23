@@ -16,7 +16,7 @@
  * A subset of the CSparse library is used for its sparse matrix data
  * structure and efficient fundamental matrix operations, such as adding,
  * transposing, and converting from triplet to CSC form.  This version
- * uses the same integer (csi or int64_t) as the Int in Mongoose.
+ * uses the same integer (csi or SuiteSparse_long) as the Int in Mongoose.
  */
 
 // #pragma once
@@ -34,7 +34,7 @@
 #endif
 
 /* same as Int in Mongoose */
-typedef int64_t csi;
+typedef SuiteSparse_long csi;
 
 /* CSparse Macros */
 #ifndef CS_CSC

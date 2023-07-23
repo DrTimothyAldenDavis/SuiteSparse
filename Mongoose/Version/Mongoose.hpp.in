@@ -27,7 +27,7 @@ namespace Mongoose
 {
 
 /* Type definitions */
-typedef int64_t Int;
+typedef SuiteSparse_long Int;
 
 typedef struct cs_sparse /* matrix in compressed-column or triplet form */
 {

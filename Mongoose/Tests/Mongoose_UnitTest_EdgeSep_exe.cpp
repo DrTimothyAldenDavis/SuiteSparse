@@ -124,11 +124,13 @@ int main(int argn, char** argv)
     result->~EdgeCut();
     O->use_FM = true;
 
+#if 1000000000000000 <= SuiteSparse_long_max
     // Test with no coarsening
     O->coarsen_limit = 1E15;
     result = edge_cut(G, O);
     assert(result->partition != NULL);
     result->~EdgeCut();
+#endif
 
     // Test with x = NULL (assume pattern matrix)
     G->x = NULL;

@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <inttypes.h>
-#define ID PRId64
+#define ID SuiteSparse_long_idd
 
 #include "mmio.h"
 
@@ -101,7 +101,7 @@ int mm_read_banner(FILE *f, MM_typecode *matcode)
     return 0;
 }
 
-int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz )
+int mm_read_mtx_crd_size(FILE *f, SuiteSparse_long *M, SuiteSparse_long *N, SuiteSparse_long *nz )
 {
     char line[MM_MAX_LINE_LENGTH];
     int num_items_read;
@@ -137,13 +137,14 @@ int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz )
 /* use when I[], J[], and val[]J, and val[] are already allocated */
 /******************************************************************/
 
-int mm_read_mtx_crd_data(FILE *f, int64_t M, int64_t N, int64_t nz, int64_t I[], int64_t J[],
+int mm_read_mtx_crd_data(FILE *f, SuiteSparse_long M, SuiteSparse_long N,
+        SuiteSparse_long nz, SuiteSparse_long I[], SuiteSparse_long J[],
         double val[], MM_typecode matcode)
 {
     (void)M; // Unused variable
     (void)N; // Unused variable
 
-    int64_t i;
+    SuiteSparse_long i;
     if (mm_is_complex(matcode))
     {
         for (i=0; i<nz; i++)

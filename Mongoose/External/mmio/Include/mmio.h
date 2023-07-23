@@ -9,6 +9,8 @@
 #ifndef MM_IO_H
 #define MM_IO_H
 
+#include "SuiteSparse_config.h"
+
 #define MM_MAX_LINE_LENGTH 1025
 #define MatrixMarketBanner "%%MatrixMarket"
 #define MM_MAX_TOKEN_LENGTH 64
@@ -16,7 +18,7 @@
 typedef char MM_typecode[4];
 
 int mm_read_banner(FILE *f, MM_typecode *matcode);
-int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz);
+int mm_read_mtx_crd_size(FILE *f, SuiteSparse_long *M, SuiteSparse_long *N, SuiteSparse_long *nz);
 
 /********************* MM_typecode query fucntions ***************************/
 
@@ -107,8 +109,9 @@ int mm_read_mtx_crd_size(FILE *f, int64_t *M, int64_t *N, int64_t *nz);
 
 /*  high level routines */
 
-int mm_read_mtx_crd_data(FILE *f, int64_t M, int64_t N, int64_t nz, int64_t I[], int64_t J[],
-		double val[], MM_typecode matcode);
+int mm_read_mtx_crd_data(FILE *f, SuiteSparse_long M, SuiteSparse_long N,
+    SuiteSparse_long nz, SuiteSparse_long I[], SuiteSparse_long J[],
+    double val[], MM_typecode matcode);
 
 
 #endif

@@ -35,9 +35,9 @@ namespace Mongoose
 {
 
 /* Type definitions */
-typedef int64_t Int;
+typedef SuiteSparse_long Int;
 #ifndef MAX_INT
-#define MAX_INT INT64_MAX
+#define MAX_INT SuiteSparse_long_max
 #endif
 
 /* Enumerations */
