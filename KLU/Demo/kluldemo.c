@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Demo/kluldemo.c:  demo for KLU (int64_t version)
+// KLU/Demo/kluldemo.c:  demo for KLU (SuiteSparse_long version)
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
@@ -27,30 +27,30 @@
 static int klu_l_backslash    /* return 1 if successful, 0 otherwise */
 (
     /* --- input ---- */
-    int64_t n,          /* A is n-by-n */
-    int64_t *Ap,        /* size n+1, column pointers */
-    int64_t *Ai,        /* size nz = Ap [n], row indices */
-    double *Ax,         /* size nz, numerical values */
-    int64_t isreal,     /* nonzero if A is real, 0 otherwise */
-    double *B,          /* size n, right-hand-side */
+    SuiteSparse_long n,       /* A is n-by-n */
+    SuiteSparse_long *Ap,     /* size n+1, column pointers */
+    SuiteSparse_long *Ai,     /* size nz = Ap [n], row indices */
+    double *Ax,               /* size nz, numerical values */
+    SuiteSparse_long isreal,  /* nonzero if A is real, 0 otherwise */
+    double *B,                /* size n, right-hand-side */
 
     /* --- output ---- */
-    double *X,          /* size n, solution to Ax=b */
-    double *R,          /* size n, residual r = b-A*x */
+    double *X,                /* size n, solution to Ax=b */
+    double *R,                /* size n, residual r = b-A*x */
 
     /* --- scalar output --- */
-    int64_t *lunz,      /* nnz (L+U+F) */
-    double *rnorm,      /* norm (b-A*x,1) / norm (A,1) */
+    SuiteSparse_long *lunz,   /* nnz (L+U+F) */
+    double *rnorm,            /* norm (b-A*x,1) / norm (A,1) */
 
     /* --- workspace - */
 
-    klu_l_common *Common    /* default parameters and statistics */
+    klu_l_common *Common      /* default parameters and statistics */
 )
 {
     double anorm = 0, asum ;
     klu_l_symbolic *Symbolic ;
     klu_l_numeric *Numeric ;
-    int64_t i, j, p ;
+    SuiteSparse_long i, j, p ;
 
     if (!Ap || !Ai || !Ax || !B || !X || !B) return (0) ;
 
@@ -212,13 +212,14 @@ static int klu_l_backslash    /* return 1 if successful, 0 otherwise */
 
 /* Given a sparse matrix A, set up a right-hand-side and solve X = A\b */
 
-static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
-    int64_t isreal, int cholmod_ordering)
+static void klu_l_demo (SuiteSparse_long n, SuiteSparse_long *Ap,
+    SuiteSparse_long *Ai, double *Ax, SuiteSparse_long isreal,
+    int cholmod_ordering)
 {
     double rnorm ;
     klu_l_common Common ;
     double *B, *X, *R ;
-    int64_t i, lunz ;
+    SuiteSparse_long i, lunz ;
 
     printf ("KLU: %s, version: %d.%d.%d\n", KLU_DATE, KLU_MAIN_VERSION,
         KLU_SUB_VERSION, KLU_SUBSUB_VERSION) ;
@@ -228,7 +229,7 @@ static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
     /* ---------------------------------------------------------------------- */
 
     klu_l_defaults (&Common) ;
-    int64_t user_data [2] ;
+    SuiteSparse_long user_data [2] ;
     if (cholmod_ordering >= 0)
     {
         Common.ordering = 3 ;
@@ -283,10 +284,11 @@ static void klu_l_demo (int64_t n, int64_t *Ap, int64_t *Ai, double *Ax,
     }
     else
     {
-        printf ("n %"PRId64" nnz(A) %"PRId64" nnz(L+U+F) %"PRId64" resid %g\n"
-            "recip growth %g condest %g rcond %g flops %g\n",
-            n, Ap [n], lunz, rnorm, Common.rgrowth, Common.condest,
-            Common.rcond, Common.flops) ;
+        printf ("n %" SuiteSparse_long_idd " nnz(A) %" SuiteSparse_long_idd
+                " nnz(L+U+F) %" SuiteSparse_long_idd " resid %g\n"
+                "recip growth %g condest %g rcond %g flops %g\n",
+                n, Ap [n], lunz, rnorm, Common.rgrowth, Common.condest,
+                Common.rcond, Common.flops) ;
     }
 
     /* ---------------------------------------------------------------------- */

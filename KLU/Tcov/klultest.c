@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Tcov/klultest.c: int64_t version of klutest
+// KLU/Tcov/klultest.c: SuiteSparse_long version of klutest
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.

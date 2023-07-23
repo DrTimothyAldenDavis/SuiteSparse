@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Source/klu_l_factor.c: int64_t version of klu_factor
+// KLU/Source/klu_l_factor.c: SuiteSparse_long version of klu_factor
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (C) 2004-2022, University of Florida, All Rights Reserved.

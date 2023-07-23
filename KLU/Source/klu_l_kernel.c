@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Source/klu_l_kernel.c: int64_t version of klu_kernel
+// KLU/Source/klu_l_kernel.c: SuiteSparse_long version of klu_kernel
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (C) 2004-2022, University of Florida, All Rights Reserved.

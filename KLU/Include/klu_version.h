@@ -12,9 +12,9 @@
 #define _KLU_VERSION_H
 
 #ifdef DLONG
-#define Int int64_t
-#define Int_id "%" PRId64
-#define Int_MAX INT64_MAX
+#define Int SuiteSparse_long
+#define Int_id "%" SuiteSparse_long_idd
+#define Int_MAX SuiteSparse_long_max
 #else
 #define Int int32_t
 #define Int_id "%d"

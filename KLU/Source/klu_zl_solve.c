@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Source/klu_zl_solve.c: complex int64_t version of klu_solve
+// KLU/Source/klu_zl_solve.c: complex, SuiteSparse_long version of klu_solve
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (C) 2004-2022, University of Florida, All Rights Reserved.

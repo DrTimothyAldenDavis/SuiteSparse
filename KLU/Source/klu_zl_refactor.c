@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Source/klu_zl_refactor.c: complex int64_t version of klu_refactor
+// KLU/Source/klu_zl_refactor.c: complex, SuiteSparse_long version of klu_refactor
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (C) 2004-2022, University of Florida, All Rights Reserved.

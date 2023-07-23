@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// SuiteSparse/KLU/User/klu_l_cholmod.c: KLU int64_t interface to CHOLMOD
+// SuiteSparse/KLU/User/klu_l_cholmod.c: KLU SuiteSparse_long interface to CHOLMOD
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
@@ -24,14 +24,14 @@
 #define TRUE 1
 #define FALSE 0
 
-int64_t klu_l_cholmod
+SuiteSparse_long klu_l_cholmod
 (
     /* inputs */
-    int64_t n,              /* A is n-by-n */
-    int64_t Ap [ ],         /* column pointers */
-    int64_t Ai [ ],         /* row indices */
+    SuiteSparse_long n,              /* A is n-by-n */
+    SuiteSparse_long Ap [ ],         /* column pointers */
+    SuiteSparse_long Ai [ ],         /* row indices */
     /* outputs */
-    int64_t Perm [ ],       /* fill-reducing permutation */
+    SuiteSparse_long Perm [ ],       /* fill-reducing permutation */
     /* user-defined */
     klu_l_common *Common    /* user-defined data is in Common->user_data */
 )
@@ -40,8 +40,8 @@ int64_t klu_l_cholmod
     cholmod_sparse Amatrix, *A, *AT, *S ;
     cholmod_factor *L ;
     cholmod_common cm ;
-    int64_t *P ;
-    int64_t k ;
+    SuiteSparse_long *P ;
+    SuiteSparse_long k ;
     int symmetric ;
     printf ("------------------- KLU User\n") ;
     klu_l_common km ;
@@ -79,7 +79,7 @@ int64_t klu_l_cholmod
     symmetric = true ;
     cm.nmethods = 1 ;
     cm.method [0].ordering = CHOLMOD_AMD ;
-    int64_t *user_data = Common->user_data ;
+    SuiteSparse_long *user_data = Common->user_data ;
     if (user_data != NULL)
     {
         symmetric = (user_data [0] != 0) ;

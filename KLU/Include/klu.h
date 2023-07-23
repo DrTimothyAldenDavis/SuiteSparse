@@ -63,7 +63,7 @@ typedef struct          /* 64-bit version (otherwise same as above) */
 {
     double symmetry, est_flops, lnz, unz ;
     double *Lnz ;
-    int64_t n, nz, *P, *Q, *R, nzoff, nblocks, maxblock, ordering,
+    SuiteSparse_long n, nz, *P, *Q, *R, nzoff, nblocks, maxblock, ordering,
         do_btf, structural_rank ;
 
 } klu_l_symbolic ;
@@ -114,7 +114,7 @@ typedef struct
 
 typedef struct          /* 64-bit version (otherwise same as above) */
 {
-    int64_t n, nblocks, lnz, unz, max_lnz_block, max_unz_block, *Pnum,
+    SuiteSparse_long n, nblocks, lnz, unz, max_lnz_block, max_unz_block, *Pnum,
         *Pinv, *Lip, *Uip, *Llen, *Ulen ;
     void **LUbx ;
     size_t *LUsize ;
@@ -122,10 +122,10 @@ typedef struct          /* 64-bit version (otherwise same as above) */
     double *Rs ;
     size_t worksize ;
     void *Work, *Xwork ;
-    int64_t *Iwork ;
-    int64_t *Offp, *Offi ;
+    SuiteSparse_long *Iwork ;
+    SuiteSparse_long *Offp, *Offi ;
     void *Offx ;
-    int64_t nzoff ;
+    SuiteSparse_long nzoff ;
 
 } klu_l_numeric ;
 
@@ -218,11 +218,11 @@ typedef struct klu_l_common_struct /* 64-bit version (otherwise same as above)*/
 
     double tol, memgrow, initmem_amd, initmem, maxwork ;
     int btf, ordering, scale ;
-    int64_t (*user_order) (int64_t, int64_t *, int64_t *, int64_t *,
-        struct klu_l_common_struct *) ;
+    SuiteSparse_long (*user_order) (SuiteSparse_long, SuiteSparse_long *,
+        SuiteSparse_long *, SuiteSparse_long *, struct klu_l_common_struct *) ;
     void *user_data ;
     int halt_if_singular, status, nrealloc ;
-    int64_t structural_rank, numerical_rank, singular_col, noffdiag ;
+    SuiteSparse_long structural_rank, numerical_rank, singular_col, noffdiag ;
     double flops, rcond, condest, rgrowth, work ;
     size_t memusage, mempeak ;
 
@@ -255,8 +255,8 @@ klu_symbolic *klu_analyze
     klu_common *Common
 ) ;
 
-klu_l_symbolic *klu_l_analyze (int64_t, int64_t *, int64_t *,
-    klu_l_common *Common) ;
+klu_l_symbolic *klu_l_analyze (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, klu_l_common *Common) ;
 
 
 /* -------------------------------------------------------------------------- */
@@ -278,8 +278,8 @@ klu_symbolic *klu_analyze_given
     klu_common *Common
 ) ;
 
-klu_l_symbolic *klu_l_analyze_given (int64_t, int64_t *, int64_t *, int64_t *,
-    int64_t *, klu_l_common *) ;
+klu_l_symbolic *klu_l_analyze_given (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *, klu_l_common *) ;
 
 
 /* -------------------------------------------------------------------------- */
@@ -306,12 +306,12 @@ klu_numeric *klu_z_factor      /* returns KLU_OK if OK, < 0 if error */
      klu_common *Common
 ) ;
 
-/* int64_t / real version */
-klu_l_numeric *klu_l_factor (int64_t *, int64_t *, double *,
+/* SuiteSparse_long / real version */
+klu_l_numeric *klu_l_factor (SuiteSparse_long *, SuiteSparse_long *, double *,
     klu_l_symbolic *, klu_l_common *) ;
 
-/* int64_t / complex version */
-klu_l_numeric *klu_zl_factor (int64_t *, int64_t *, double *,
+/* SuiteSparse_long / complex version */
+klu_l_numeric *klu_zl_factor (SuiteSparse_long *, SuiteSparse_long *, double *,
     klu_l_symbolic *, klu_l_common *) ;
 
 
@@ -346,10 +346,10 @@ int klu_z_solve
 ) ;
 
 int klu_l_solve (klu_l_symbolic *, klu_l_numeric *,
-    int64_t, int64_t, double *, klu_l_common *) ;
+    SuiteSparse_long, SuiteSparse_long, double *, klu_l_common *) ;
 
 int klu_zl_solve (klu_l_symbolic *, klu_l_numeric *,
-    int64_t, int64_t, double *, klu_l_common *) ;
+    SuiteSparse_long, SuiteSparse_long, double *, klu_l_common *) ;
 
 
 /* -------------------------------------------------------------------------- */
@@ -385,10 +385,10 @@ int klu_z_tsolve
 ) ;
 
 int klu_l_tsolve (klu_l_symbolic *, klu_l_numeric *,
-    int64_t, int64_t, double *, klu_l_common *) ;
+    SuiteSparse_long, SuiteSparse_long, double *, klu_l_common *) ;
 
 int klu_zl_tsolve (klu_l_symbolic *, klu_l_numeric *,
-    int64_t, int64_t, double *, int, klu_l_common * ) ;
+    SuiteSparse_long, SuiteSparse_long, double *, int, klu_l_common * ) ;
 
 
 /* -------------------------------------------------------------------------- */
@@ -419,10 +419,10 @@ int klu_z_refactor          /* return TRUE if successful, FALSE otherwise */
      klu_common *Common
 ) ;
 
-int klu_l_refactor (int64_t *, int64_t *,
+int klu_l_refactor (SuiteSparse_long *, SuiteSparse_long *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
-int klu_zl_refactor (int64_t *, int64_t *,
+int klu_zl_refactor (SuiteSparse_long *, SuiteSparse_long *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
 
@@ -553,10 +553,10 @@ int klu_z_rgrowth
     klu_common *Common          /* Common->rgrowth = reciprocal pivot growth */
 ) ;
 
-int klu_l_rgrowth (int64_t *, int64_t *,
+int klu_l_rgrowth (SuiteSparse_long *, SuiteSparse_long *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
-int klu_zl_rgrowth (int64_t *, int64_t *,
+int klu_zl_rgrowth (SuiteSparse_long *, SuiteSparse_long *,
     double *, klu_l_symbolic *, klu_l_numeric *, klu_l_common *) ;
 
 
@@ -586,10 +586,10 @@ int klu_z_condest
     klu_common *Common      /* result returned in Common->condest */
 ) ;
 
-int klu_l_condest (int64_t *, double *, klu_l_symbolic *,
+int klu_l_condest (SuiteSparse_long *, double *, klu_l_symbolic *,
     klu_l_numeric *, klu_l_common *) ;
 
-int klu_zl_condest (int64_t *, double *, klu_l_symbolic *,
+int klu_zl_condest (SuiteSparse_long *, double *, klu_l_symbolic *,
     klu_l_numeric *, klu_l_common *) ;
 
 
@@ -648,11 +648,11 @@ int klu_z_scale         /* return TRUE if successful, FALSE otherwise */
     klu_common *Common
 ) ;
 
-int klu_l_scale (int, int64_t, int64_t *, int64_t *, double *,
-    double *, int64_t *, klu_l_common *) ;
+int klu_l_scale (int, SuiteSparse_long, SuiteSparse_long *, SuiteSparse_long *, double *,
+    double *, SuiteSparse_long *, klu_l_common *) ;
 
-int klu_zl_scale (int, int64_t, int64_t *, int64_t *, double *,
-    double *, int64_t *, klu_l_common *) ;
+int klu_zl_scale (int, SuiteSparse_long, SuiteSparse_long *, SuiteSparse_long *, double *,
+    double *, SuiteSparse_long *, klu_l_common *) ;
 
 
 /* -------------------------------------------------------------------------- */
@@ -740,18 +740,18 @@ int klu_z_extract           /* returns TRUE if successful, FALSE otherwise */
 ) ;
 
 int klu_l_extract (klu_l_numeric *, klu_l_symbolic *,
-    int64_t *, int64_t *, double *,
-    int64_t *, int64_t *, double *,
-    int64_t *, int64_t *, double *,
-    int64_t *, int64_t *, double *,
-    int64_t *, klu_l_common *) ;
+    SuiteSparse_long *, SuiteSparse_long *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *,
+    SuiteSparse_long *, klu_l_common *) ;
 
 int klu_zl_extract (klu_l_numeric *, klu_l_symbolic *,
-    int64_t *, int64_t *, double *, double *,
-    int64_t *, int64_t *, double *, double *,
-    int64_t *, int64_t *, double *, double *,
-    int64_t *, int64_t *, double *,
-    int64_t *, klu_l_common *) ;
+    SuiteSparse_long *, SuiteSparse_long *, double *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *, double *,
+    SuiteSparse_long *, SuiteSparse_long *, double *,
+    SuiteSparse_long *, klu_l_common *) ;
 
 
 /* -------------------------------------------------------------------------- */

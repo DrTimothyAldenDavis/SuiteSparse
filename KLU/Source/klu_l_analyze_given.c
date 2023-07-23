@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// KLU/Source/klu_l_analyze_given.c: int64_t version of klu_analyze_given
+// KLU/Source/klu_l_analyze_given.c: SuiteSparse_long version of klu_analyze_given
 //------------------------------------------------------------------------------
 
 // KLU, Copyright (C) 2004-2022, University of Florida, All Rights Reserved.
