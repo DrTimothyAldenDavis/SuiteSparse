@@ -49,13 +49,15 @@ extern "C"
 // int64_t instead.
 
 #undef  SuiteSparse_long
+#undef  SuiteSparse_ulong
 #undef  SuiteSparse_long_max
 #undef  SuiteSparse_long_idd
 #undef  SuiteSparse_long_id
 
-#define SuiteSparse_long int64_t
-#define SuiteSparse_long_max INT64_MAX
-#define SuiteSparse_long_idd PRId64
+#define SuiteSparse_long intptr_t
+#define SuiteSparse_ulong uintptr_t
+#define SuiteSparse_long_max INTPTR_MAX
+#define SuiteSparse_long_idd PRIdPTR
 #define SuiteSparse_long_id "%" SuiteSparse_long_idd
 
 //------------------------------------------------------------------------------
