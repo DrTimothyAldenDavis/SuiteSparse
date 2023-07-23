@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_cl_gaxpy.c: complex, int64_t version of cs_gaxpy
+// CXSparse/Source/cs_cl_gaxpy.c: complex, SuiteSparse_long version of cs_gaxpy
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

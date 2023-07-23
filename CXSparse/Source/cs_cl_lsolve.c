@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_cl_lsolve.c: complex, int64_t version of cs_lsolve
+// CXSparse/Source/cs_cl_lsolve.c: complex, SuiteSparse_long version of cs_lsolve
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

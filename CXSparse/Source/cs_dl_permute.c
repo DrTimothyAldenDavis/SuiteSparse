@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_permute.c: double, int64_t version of cs_permute
+// CXSparse/Source/cs_dl_permute.c: double, SuiteSparse_long version of cs_permute
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

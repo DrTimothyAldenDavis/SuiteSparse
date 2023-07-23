@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_dropzeros.c: double, int64_t version of cs_dropzeros
+// CXSparse/Source/cs_dl_dropzeros.c: double, SuiteSparse_long version of cs_dropzeros
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

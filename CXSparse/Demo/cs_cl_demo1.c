@@ -1,11 +1,11 @@
-// CSparse/Demo/cs_cl_demo1: demo program for CXSparse (complex int64_t)
+// CSparse/Demo/cs_cl_demo1: demo program for CXSparse (complex, SuiteSparse_long)
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
 int main (void)
 {
     cs_cl *T, *A, *Eye, *AT, *C, *D ;
-    int64_t i, m ;
+    SuiteSparse_long i, m ;
     T = cs_cl_load (stdin) ;               /* load triplet matrix T from stdin */
     printf ("T:\n") ; cs_cl_print (T, 0) ; /* print T */
     A = cs_cl_compress (T) ;               /* A = compressed-column form of T */

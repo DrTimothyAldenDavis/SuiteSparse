@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_transpose.c: double, int64_t version of cs_transpose
+// CXSparse/Source/cs_dl_transpose.c: double, SuiteSparse_long version of cs_transpose
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

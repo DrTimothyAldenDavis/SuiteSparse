@@ -6,13 +6,13 @@ typedef struct problem_struct
 {
     cs_dl *A ;
     cs_dl *C ;
-    int64_t sym ;
+    SuiteSparse_long sym ;
     double *x ;
     double *b ;
     double *resid ;
 } problem ;
 
 problem *get_problem (FILE *f, double tol) ;
-int64_t demo2 (problem *Prob) ;
-int64_t demo3 (problem *Prob) ;
+SuiteSparse_long demo2 (problem *Prob) ;
+SuiteSparse_long demo3 (problem *Prob) ;
 problem *free_problem (problem *Prob) ;

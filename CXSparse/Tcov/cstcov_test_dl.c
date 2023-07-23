@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // CXSparse/Tcov/cstcov_test_dl.c:
-// double, int64_t version of cstcov_test.c
+// double, SuiteSparse_long version of cstcov_test.c
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

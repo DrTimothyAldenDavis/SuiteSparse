@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_cl_dfs.c: complex, int64_t version of cs_dfs
+// CXSparse/Source/cs_cl_dfs.c: complex, SuiteSparse_long version of cs_dfs
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_leaf.c: double, int64_t version of cs_leaf
+// CXSparse/Source/cs_dl_leaf.c: double, SuiteSparse_long version of cs_leaf
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

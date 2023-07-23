@@ -49,12 +49,12 @@ cs_ci *cs_i_complex (cs_di *A, int real)
     return (C) ;
 }
 
-/* convert from complex to real (int64_t version) */
+/* convert from complex to real (SuiteSparse_long version) */
 /* C = real(A) if real is true, imag(A) otherwise */
-cs_dl *cs_l_real (cs_cl *A, int64_t real)
+cs_dl *cs_l_real (cs_cl *A, SuiteSparse_long real)
 {
     cs_dl *C ;
-    int64_t n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
+    SuiteSparse_long n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     cs_complex_t *Ax ;
     double *Cx ;
     if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */
@@ -72,12 +72,12 @@ cs_dl *cs_l_real (cs_cl *A, int64_t real)
     return (C) ;
 }
 
-/* convert from real to complex (int64_t version) */
+/* convert from real to complex (SuiteSparse_long version) */
 /* C = A if real is true, or C = i*A otherwise */
-cs_cl *cs_l_complex (cs_dl *A, int64_t real)
+cs_cl *cs_l_complex (cs_dl *A, SuiteSparse_long real)
 {
     cs_cl *C ;
-    int64_t n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
+    SuiteSparse_long n, triplet, nn, p, nz, *Ap, *Ai, *Cp, *Ci ;
     double *Ax ;
     cs_complex_t *Cx ;
     if (!A || !A->x) return (NULL) ;    /* return if A NULL or pattern-only */

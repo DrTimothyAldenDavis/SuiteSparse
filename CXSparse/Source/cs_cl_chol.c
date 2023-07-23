@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_cl_chol.c: complex, int64_t version of cs_chol
+// CXSparse/Source/cs_cl_chol.c: complex, SuiteSparse_long version of cs_chol
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

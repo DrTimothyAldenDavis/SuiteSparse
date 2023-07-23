@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_cl_load.c: complex, int64_t version of cs_load
+// CXSparse/Source/cs_cl_load.c: complex, SuiteSparse_long version of cs_load
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

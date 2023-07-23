@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_utsolve.c: double, int64_t version of cs_utsolve
+// CXSparse/Source/cs_dl_utsolve.c: double, SuiteSparse_long version of cs_utsolve
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

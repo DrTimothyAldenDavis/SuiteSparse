@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CXSparse/Source/cs_dl_schol.c: double, int64_t version of cs_schol
+// CXSparse/Source/cs_dl_schol.c: double, SuiteSparse_long version of cs_schol
 //------------------------------------------------------------------------------
 
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved

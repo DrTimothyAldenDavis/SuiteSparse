@@ -60,7 +60,7 @@ code to be written in a type-generic manner:
     CS_INT      int by default, int64_t if -DCS_LONG compiler flag
                 is used
     CS_ENTRY    double by default, double complex if -DCS_COMPLEX flag is used.
-    CS_ID       "%d" or "%"PRId64, for printf and scanf of the CS_INT type.
+    CS_ID       "%d" or "%"SuiteSparse_long_idd, for printf and scanf of the CS_INT type.
     CS_INT_MAX  INT32_MAX or INT64_MAX, the largest possible value of CS_INT.
     CS_REAL(x)  x or creal(x)
     CS_IMAG(x)  0 or cimag(x)

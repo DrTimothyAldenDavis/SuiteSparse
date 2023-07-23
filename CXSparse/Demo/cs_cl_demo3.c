@@ -1,4 +1,4 @@
-// CSparse/Demo/cs_cl_demo3: demo program for CXSparse (complex int64_t)
+// CSparse/Demo/cs_cl_demo3: demo program for CXSparse (complex, SuiteSparse_long)
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #include "cs_cl_demo.h"
