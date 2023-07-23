@@ -8,6 +8,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <inttypes.h>
 #ifdef MATLAB_MEX_FILE
 #include "mex.h"
@@ -19,7 +20,7 @@
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 
 #ifndef csi
-#define csi int64_t
+#define csi intptr_t
 #endif
 
 /* --- primary CSparse routines and data structures ------------------------- */
