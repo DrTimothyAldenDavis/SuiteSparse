@@ -72,9 +72,9 @@
 /* === Description of user-callable routines ================================ */
 /* ========================================================================== */
 
-/* CCOLAMD includes both int32_t and int64_t versions of all its routines.
- * The description below is for the int32_t version.   For int64_t, all
- * int32_t arguments become int64_t integers.  */
+/* CCOLAMD includes both int32_t and SuiteSparse_long versions of all its
+ * routines. The description below is for the int32_t version. Fo
+ *r SuiteSparse_long, all int32_t arguments become SuiteSparse_long integers. */
 
 /*  ----------------------------------------------------------------------------
  *  ccolamd_recommended:
@@ -84,8 +84,8 @@
  *
  *	    #include "ccolamd.h"
  *	    size_t ccolamd_recommended (int32_t nnz, int32_t n_row, int32_t n_col) ;
- *	    size_t ccolamd_l_recommended (int64_t nnz,
- *              int64_t n_row, int64_t n_col) ;
+ *	    size_t ccolamd_l_recommended (SuiteSparse_long nnz,
+ *              SuiteSparse_long n_row, SuiteSparse_long n_col) ;
  *
  *	Purpose:
  *
@@ -181,12 +181,12 @@
  *              int32_t *p, double knobs [CCOLAMD_KNOBS],
  *              int32_t stats [CCOLAMD_STATS], int32_t *cmember) ;
  *
- *	    int64_t ccolamd_l (int64_t n_row,
- *	        int64_t n_col, int64_t Alen,
- *              int64_t *A, int64_t *p,
+ *	    SuiteSparse_long ccolamd_l (SuiteSparse_long n_row,
+ *              SuiteSparse_long n_col, SuiteSparse_long Alen,
+ *              SuiteSparse_long *A, SuiteSparse_long *p,
  *              double knobs [CCOLAMD_KNOBS],
- *              int64_t stats [CCOLAMD_STATS],
- *              int64_t *cmember) ;
+ *              SuiteSparse_long stats [CCOLAMD_STATS],
+ *              SuiteSparse_long *cmember) ;
  *
  *	Purpose:
  *
@@ -396,12 +396,12 @@
  *		void (*allocate) (size_t, size_t), void (*release) (void *),
  *		int32_t *cmember, int32_t stype) ;
  *
- *	    int64_t csymamd_l (int64_t n,
- *              int64_t *A, int64_t *p,
- *              int64_t *perm, double knobs [CCOLAMD_KNOBS],
- *              int64_t stats [CCOLAMD_STATS], void (*allocate)
+ *	    SuiteSparse_long csymamd_l (SuiteSparse_long n,
+ *              SuiteSparse_long *A, SuiteSparse_long *p,
+ *              SuiteSparse_long *perm, double knobs [CCOLAMD_KNOBS],
+ *              SuiteSparse_long stats [CCOLAMD_STATS], void (*allocate)
  *              (size_t, size_t), void (*release) (void *),
- *              int64_t *cmember, int64_t stype) ;
+ *              SuiteSparse_long *cmember, SuiteSparse_long stype) ;
  *
  *	Purpose:
  *
@@ -537,7 +537,7 @@
  *
  *	    #include "ccolamd.h"
  *	    ccolamd_report (int32_t stats [CCOLAMD_STATS]) ;
- *	    ccolamd_l_report (int64_t stats [CCOLAMD_STATS]) ;
+ *	    ccolamd_l_report (SuiteSparse_long stats [CCOLAMD_STATS]) ;
  *
  *	Purpose:
  *
@@ -558,7 +558,7 @@
  *
  *	    #include "ccolamd.h"
  *	    csymamd_report (int32_t stats [CCOLAMD_STATS]) ;
- *	    csymamd_l_report (int64_t stats [CCOLAMD_STATS]) ;
+ *	    csymamd_l_report (SuiteSparse_long stats [CCOLAMD_STATS]) ;
  *
  *	Purpose:
  *
@@ -597,15 +597,15 @@
 #endif
 
 /* ========================================================================== */
-/* === int32_t or int64_t ============================================== */
+/* === int32_t or SuiteSparse_long ========================================== */
 /* ========================================================================== */
 
 #ifdef DLONG
 
-#define Int int64_t
-#define UInt uint64_t
-#define ID  "%" PRId64
-#define Int_MAX INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define ID  "%" SuiteSparse_long_idd
+#define Int_MAX SuiteSparse_long_max
 
 #define CCOLAMD_recommended ccolamd_l_recommended
 #define CCOLAMD_set_defaults ccolamd_l_set_defaults

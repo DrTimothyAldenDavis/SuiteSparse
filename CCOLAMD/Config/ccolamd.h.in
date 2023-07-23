@@ -123,9 +123,9 @@ size_t ccolamd_recommended	/* returns recommended value of Alen, */
 size_t ccolamd_l_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
 (
-    int64_t nnz,		/* nonzeros in A */
-    int64_t n_row,		/* number of rows in A */
-    int64_t n_col		/* number of columns in A */
+    SuiteSparse_long nnz,		/* nonzeros in A */
+    SuiteSparse_long n_row,		/* number of rows in A */
+    SuiteSparse_long n_col		/* number of columns in A */
 ) ;
 
 void ccolamd_set_defaults	/* sets default parameters */
@@ -150,16 +150,16 @@ int ccolamd			/* returns (1) if successful, (0) otherwise*/
     int cmember [ ]		/* Constraint set of A, of size n_col */
 ) ;
 
-int ccolamd_l      /* as ccolamd w/ int64_t integers */
+int ccolamd_l      /* as ccolamd w/ SuiteSparse_long integers */
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t Alen,
-    int64_t A [ ],
-    int64_t p [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long Alen,
+    SuiteSparse_long A [ ],
+    SuiteSparse_long p [ ],
     double knobs [CCOLAMD_KNOBS],
-    int64_t stats [CCOLAMD_STATS],
-    int64_t cmember [ ]
+    SuiteSparse_long stats [CCOLAMD_STATS],
+    SuiteSparse_long cmember [ ]
 ) ;
 
 int csymamd			/* return (1) if OK, (0) otherwise */
@@ -178,18 +178,18 @@ int csymamd			/* return (1) if OK, (0) otherwise */
     int stype			/* 0: use both parts, >0: upper, <0: lower */
 ) ;
 
-int csymamd_l      /* as csymamd, w/ int64_t integers */
+int csymamd_l      /* as csymamd, w/ SuiteSparse_long integers */
 (
-    int64_t n,
-    int64_t A [ ],
-    int64_t p [ ],
-    int64_t perm [ ],
+    SuiteSparse_long n,
+    SuiteSparse_long A [ ],
+    SuiteSparse_long p [ ],
+    SuiteSparse_long perm [ ],
     double knobs [CCOLAMD_KNOBS],
-    int64_t stats [CCOLAMD_STATS],
+    SuiteSparse_long stats [CCOLAMD_STATS],
     void * (*allocate) (size_t, size_t),
     void (*release) (void *),
-    int64_t cmember [ ],
-    int64_t stype
+    SuiteSparse_long cmember [ ],
+    SuiteSparse_long stype
 ) ;
 
 void ccolamd_report
@@ -199,7 +199,7 @@ void ccolamd_report
 
 void ccolamd_l_report
 (
-    int64_t stats [CCOLAMD_STATS]
+    SuiteSparse_long stats [CCOLAMD_STATS]
 ) ;
 
 void csymamd_report
@@ -209,7 +209,7 @@ void csymamd_report
 
 void csymamd_l_report
 (
-    int64_t stats [CCOLAMD_STATS]
+    SuiteSparse_long stats [CCOLAMD_STATS]
 ) ;
 
 
@@ -242,23 +242,23 @@ int ccolamd2
     int cmember [ ]		/* Constraint set of A */
 ) ;
 
-int ccolamd2_l     /* as ccolamd2, w/ int64_t integers */
+int ccolamd2_l     /* as ccolamd2, w/ SuiteSparse_long integers */
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t Alen,
-    int64_t A [ ],
-    int64_t p [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long Alen,
+    SuiteSparse_long A [ ],
+    SuiteSparse_long p [ ],
     double knobs [CCOLAMD_KNOBS],
-    int64_t stats [CCOLAMD_STATS],
-    int64_t Front_npivcol [ ],
-    int64_t Front_nrows [ ],
-    int64_t Front_ncols [ ],
-    int64_t Front_parent [ ],
-    int64_t Front_cols [ ],
-    int64_t *p_nfr,
-    int64_t InFront [ ],
-    int64_t cmember [ ]
+    SuiteSparse_long stats [CCOLAMD_STATS],
+    SuiteSparse_long Front_npivcol [ ],
+    SuiteSparse_long Front_nrows [ ],
+    SuiteSparse_long Front_ncols [ ],
+    SuiteSparse_long Front_parent [ ],
+    SuiteSparse_long Front_cols [ ],
+    SuiteSparse_long *p_nfr,
+    SuiteSparse_long InFront [ ],
+    SuiteSparse_long cmember [ ]
 ) ;
 
 void ccolamd_apply_order
@@ -272,11 +272,11 @@ void ccolamd_apply_order
 
 void ccolamd_l_apply_order
 (
-    int64_t Front [ ],
-    const int64_t Order [ ],
-    int64_t Temp [ ],
-    int64_t nn,
-    int64_t nfr
+    SuiteSparse_long Front [ ],
+    const SuiteSparse_long Order [ ],
+    SuiteSparse_long Temp [ ],
+    SuiteSparse_long nn,
+    SuiteSparse_long nfr
 ) ;
 
 void ccolamd_fsize
@@ -291,12 +291,12 @@ void ccolamd_fsize
 
 void ccolamd_l_fsize
 (
-    int64_t nn,
-    int64_t MaxFsize [ ],
-    int64_t Fnrows [ ],
-    int64_t Fncols [ ],
-    int64_t Parent [ ],
-    int64_t Npiv [ ]
+    SuiteSparse_long nn,
+    SuiteSparse_long MaxFsize [ ],
+    SuiteSparse_long Fnrows [ ],
+    SuiteSparse_long Fncols [ ],
+    SuiteSparse_long Parent [ ],
+    SuiteSparse_long Npiv [ ]
 ) ;
 
 void ccolamd_postorder
@@ -315,16 +315,16 @@ void ccolamd_postorder
 
 void ccolamd_l_postorder
 (
-    int64_t nn,
-    int64_t Parent [ ],
-    int64_t Npiv [ ],
-    int64_t Fsize [ ],
-    int64_t Order [ ],
-    int64_t Child [ ],
-    int64_t Sibling [ ],
-    int64_t Stack [ ],
-    int64_t Front_cols [ ],
-    int64_t cmember [ ]
+    SuiteSparse_long nn,
+    SuiteSparse_long Parent [ ],
+    SuiteSparse_long Npiv [ ],
+    SuiteSparse_long Fsize [ ],
+    SuiteSparse_long Order [ ],
+    SuiteSparse_long Child [ ],
+    SuiteSparse_long Sibling [ ],
+    SuiteSparse_long Stack [ ],
+    SuiteSparse_long Front_cols [ ],
+    SuiteSparse_long cmember [ ]
 ) ;
 
 int ccolamd_post_tree
@@ -337,14 +337,14 @@ int ccolamd_post_tree
     int Stack [ ]
 ) ;
 
-int64_t ccolamd_l_post_tree
+SuiteSparse_long ccolamd_l_post_tree
 (
-    int64_t root,
-    int64_t k,
-    int64_t Child [ ],
-    const int64_t Sibling [ ],
-    int64_t Order [ ],
-    int64_t Stack [ ]
+    SuiteSparse_long root,
+    SuiteSparse_long k,
+    SuiteSparse_long Child [ ],
+    const SuiteSparse_long Sibling [ ],
+    SuiteSparse_long Order [ ],
+    SuiteSparse_long Stack [ ]
 ) ;
 
 #ifdef __cplusplus
