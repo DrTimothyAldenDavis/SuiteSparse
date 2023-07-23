@@ -49,11 +49,11 @@ void my_function (void)
     // create a dense 2-by-2 matrix
     #define N 2
     #define NNZ 4
-    int64_t n = N, nzmax = NNZ ;
+    SuiteSparse_long n = N, nzmax = NNZ ;
     A = cs_dl_spalloc (n, n, nzmax, true, false) ;
     OK (A != NULL) ;
-    int64_t *Ap = A->p ;
-    int64_t *Ai = A->i ;
+    SuiteSparse_long *Ap = A->p ;
+    SuiteSparse_long *Ai = A->i ;
     double  *Ax = A->x ;
     Ap [0] = 0 ;
     Ap [1] = 2 ;
@@ -70,7 +70,7 @@ void my_function (void)
 
     printf ("AMD: v%d.%d.%d (%s)\n",
         AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
-    int64_t P [N] ;
+    SuiteSparse_long P [N] ;
     OK (amd_l_order (n, Ap, Ai, P, NULL, NULL) == AMD_OK) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
 
@@ -81,9 +81,9 @@ void my_function (void)
     printf ("BTF: v%d.%d.%d (%s)\n",
         BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE) ;
     double work ;
-    int64_t nmatch ;
-    int64_t Q [N], R [N+1], Work [5*N] ;
-    int64_t nblocks = btf_l_order (n, Ap, Ai, -1, &work, P, Q, R, &nmatch,
+    SuiteSparse_long nmatch ;
+    SuiteSparse_long Q [N], R [N+1], Work [5*N] ;
+    SuiteSparse_long nblocks = btf_l_order (n, Ap, Ai, -1, &work, P, Q, R, &nmatch,
         Work) ;
     OK (nblocks > 0) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
@@ -96,7 +96,7 @@ void my_function (void)
 
     printf ("CAMD: v%d.%d.%d (%s)\n",
         CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE) ;
-    int64_t Cmem [N] ;
+    SuiteSparse_long Cmem [N] ;
     for (int k = 0 ; k < n ; k++) Cmem [k] = 0 ;
     OK (camd_l_order (n, Ap, Ai, P, NULL, NULL, Cmem) == CAMD_OK) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
@@ -108,10 +108,10 @@ void my_function (void)
     printf ("CCOLAMD: v%d.%d.%d (%s)\n",
         CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
         CCOLAMD_DATE) ;
-    int64_t Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    int64_t *Awork = malloc (Alen * sizeof (int64_t)) ;
+    SuiteSparse_long Alen = ccolamd_l_recommended (NNZ, n, n) ;
+    SuiteSparse_long *Awork = malloc (Alen * sizeof (SuiteSparse_long)) ;
     OK (Awork != NULL) ;
-    memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
+    memcpy (Awork, Ai, NNZ * sizeof (SuiteSparse_long)) ;
     OK (ccolamd_l (n, n, Alen, Awork, P, NULL, NULL, Cmem) == CCOLAMD_OK) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
     free (Awork) ;
@@ -124,9 +124,9 @@ void my_function (void)
         COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
         COLAMD_DATE) ;
     Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    Awork = malloc (Alen * sizeof (int64_t)) ;
+    Awork = malloc (Alen * sizeof (SuiteSparse_long)) ;
     OK (Awork != NULL) ;
-    memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
+    memcpy (Awork, Ai, NNZ * sizeof (SuiteSparse_long)) ;
     OK (colamd_l (n, n, Alen, Awork, P, NULL, NULL) == COLAMD_OK) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
     free (Awork) ;
@@ -217,7 +217,7 @@ void my_function (void)
     strncpy (key, "simple", 8) ;
     strncpy (title, "2-by-2 matrix", 80) ;
     mtype [0] = '\0' ;
-    int64_t njumbled, nzeros ;
+    SuiteSparse_long njumbled, nzeros ;
     int result = RBok (n, n, NNZ, Ap, Ai, Ax, NULL, NULL, 0,
         &njumbled, &nzeros) ;
     OK (result == RBIO_OK) ;
