@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// BTF/Source/btf_l_maxtrans.c: int64_t version of btf_maxtrans
+// BTF/Source/btf_l_maxtrans.c: SuiteSparse_long version of btf_maxtrans
 //------------------------------------------------------------------------------
 
 // BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.

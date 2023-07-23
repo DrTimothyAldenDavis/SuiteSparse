@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// BTF/Source/btf_l_order.c: int64_t version of btf_order
+// BTF/Source/btf_l_order.c: SuiteSparse_long version of btf_order
 //------------------------------------------------------------------------------
 
 // BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.

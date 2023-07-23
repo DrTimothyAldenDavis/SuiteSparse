@@ -119,10 +119,10 @@ int32_t btf_maxtrans    /* returns # of columns matched */
     int32_t Work [ ]    /* size 5*ncol */
 ) ;
 
-/* int64_t integer version */
-int64_t btf_l_maxtrans (int64_t, int64_t,
-    int64_t *, int64_t *, double, double *,
-    int64_t *, int64_t *) ;
+/* SuiteSparse_long integer version */
+SuiteSparse_long btf_l_maxtrans (SuiteSparse_long, SuiteSparse_long,
+    SuiteSparse_long *, SuiteSparse_long *, double, double *,
+    SuiteSparse_long *, SuiteSparse_long *) ;
 
 
 /* ========================================================================== */
@@ -167,9 +167,9 @@ int32_t btf_strongcomp  /* return # of strongly connected components */
     int32_t Work [ ]    /* size 4n */
 ) ;
 
-int64_t btf_l_strongcomp (int64_t, int64_t *,
-    int64_t *, int64_t *, int64_t *,
-    int64_t *, int64_t *) ;
+SuiteSparse_long btf_l_strongcomp (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *) ;
 
 
 /* ========================================================================== */
@@ -215,8 +215,10 @@ int32_t btf_order       /* returns number of blocks found */
     int32_t Work [ ] /* size 5n */
 ) ;
 
-int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
-    int64_t *, int64_t *, int64_t *, int64_t *, int64_t *) ;
+SuiteSparse_long btf_l_order (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, double , double *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *) ;
 
 
 /* ========================================================================== */

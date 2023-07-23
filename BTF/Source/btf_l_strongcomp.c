@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// BTF/Source/btf_l_strongcomp.c: int64_t version of btf_strongcomp
+// BTF/Source/btf_l_strongcomp.c: SuiteSparse_long version of btf_strongcomp
 //------------------------------------------------------------------------------
 
 // BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
