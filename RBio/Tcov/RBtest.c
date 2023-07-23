@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 #include "RBio.h"
-#define ID "%" PRId64
+#define ID "%" SuiteSparse_long_idd
 
 #define SLEN 4096
 
@@ -16,9 +16,9 @@ int main (int argc, char **argv)
 {
     double xr, xz, xmin, xmax ;
     double *Ax, *Az ;
-    int64_t nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize, mkind2,
-        skind2, znz, j, p, status, njumbled, nzeros, build_upper, zero_handling,
-        fem, xsize, nelnz, nnz, kk, anz ;
+    SuiteSparse_long nrow, ncol, mkind, skind, *Ap, *Ai, i, *Zp, *Zi, asize,
+        mkind2, skind2, znz, j, p, status, njumbled, nzeros, build_upper,
+        zero_handling, fem, xsize, nelnz, nnz, kk, anz ;
     int ok ;
     char title [73], key [9], mtype [4], mtype2 [4], *filename, s [100], *As ;
 

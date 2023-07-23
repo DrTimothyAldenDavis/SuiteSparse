@@ -107,8 +107,8 @@ extern "C" {
     RBok:           test the validity of a sparse matrix
 
     Each function comes in two versions: one with int32_t integers, the other
-    with int64_t integers.  The default type is int64_t.  Functions for int32_t
-    integers have the _i suffix appended to their names.
+    with SuiteSparse_long integers.  The default type is SuiteSparse_long.
+    Functions for int32_t integers have the _i suffix appended to their names.
 */
 
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
@@ -134,10 +134,10 @@ int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
     int32_t *cp     /* workspace of size ncol+1, undefined on input and output*/
 ) ;
 
-int RBkind (int64_t nrow, int64_t ncol,
-    const int64_t *Ap, const int64_t *Ai, const double *Ax, const double *Az,
-    int64_t mkind_in, int64_t *mkind, int64_t *skind,
-    char mtype [4], double *xmin, double *xmax, int64_t *cp) ;
+int RBkind (SuiteSparse_long nrow, SuiteSparse_long ncol,
+    const SuiteSparse_long *Ap, const SuiteSparse_long *Ai, const double *Ax, const double *Az,
+    SuiteSparse_long mkind_in, SuiteSparse_long *mkind, SuiteSparse_long *skind,
+    char mtype [4], double *xmin, double *xmax, SuiteSparse_long *cp) ;
 
 int RBread_i            /* 0: OK, < 0: error, > 0: warning */
 (
@@ -166,12 +166,12 @@ int RBread_i            /* 0: OK, < 0: error, > 0: warning */
     int32_t **Zi        /* row indices of Z */
 ) ;
 
-int RBread (const char *filename, int64_t build_upper,
-    int64_t zero_handling, char title [73], char key [9],
-    char mtype [4], int64_t *nrow, int64_t *ncol,
-    int64_t *mkind, int64_t *skind, int64_t *asize,
-    int64_t *znz, int64_t **Ap, int64_t **Ai,
-    double **Ax, double **Az, int64_t **Zp, int64_t **Zi) ;
+int RBread (const char *filename, SuiteSparse_long build_upper,
+    SuiteSparse_long zero_handling, char title [73], char key [9],
+    char mtype [4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
+    SuiteSparse_long *mkind, SuiteSparse_long *skind, SuiteSparse_long *asize,
+    SuiteSparse_long *znz, SuiteSparse_long **Ap, SuiteSparse_long **Ai,
+    double **Ax, double **Az, SuiteSparse_long **Zp, SuiteSparse_long **Zi) ;
 
 
 int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
@@ -200,10 +200,10 @@ int RBreadraw_i         /* 0: OK, < 0: error, > 0: warning */
 
 
 int RBreadraw (const char *filename, char title [73], char key [9],
-    char mtype[4], int64_t *nrow, int64_t *ncol,
-    int64_t *nnz, int64_t *nelnz, int64_t *mkind,
-    int64_t *skind, int64_t *fem, int64_t *xsize,
-    int64_t **p_Ap, int64_t **p_Ai, double **p_Ax) ;
+    char mtype[4], SuiteSparse_long *nrow, SuiteSparse_long *ncol,
+    SuiteSparse_long *nnz, SuiteSparse_long *nelnz, SuiteSparse_long *mkind,
+    SuiteSparse_long *skind, SuiteSparse_long *fem, SuiteSparse_long *xsize,
+    SuiteSparse_long **p_Ap, SuiteSparse_long **p_Ai, double **p_Ax) ;
 
 
 int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
@@ -227,9 +227,9 @@ int RBwrite_i       /* 0:OK, < 0: error, > 0: warning */
 ) ;
 
 int RBwrite (const char *filename, const char *title, const char *key,
-    int64_t nrow, int64_t ncol, const int64_t *Ap,
-    const int64_t *Ai, const double *Ax, const double *Az, const int64_t *Zp,
-    const int64_t *Zi, int64_t mkind_in, char mtype [4]) ;
+    SuiteSparse_long nrow, SuiteSparse_long ncol, const SuiteSparse_long *Ap,
+    const SuiteSparse_long *Ai, const double *Ax, const double *Az, const SuiteSparse_long *Zp,
+    const SuiteSparse_long *Zi, SuiteSparse_long mkind_in, char mtype [4]) ;
 
 
 void RBget_entry_i
@@ -242,8 +242,8 @@ void RBget_entry_i
     double *xz          /* imaginary part */
 ) ;
 
-void RBget_entry (int64_t mkind, const double *Ax, const double *Az,
-    int64_t p, double *xr, double *xz) ;
+void RBget_entry (SuiteSparse_long mkind, const double *Ax, const double *Az,
+    SuiteSparse_long p, double *xr, double *xz) ;
 
 
 void RBput_entry_i
@@ -256,8 +256,8 @@ void RBput_entry_i
     double xz           /* imaginary part */
 ) ;
 
-void RBput_entry (int64_t mkind, double *Ax, double *Az,
-    int64_t p, double xr, double xz) ;
+void RBput_entry (SuiteSparse_long mkind, double *Ax, double *Az,
+    SuiteSparse_long p, double xr, double xz) ;
 
 
 int RBok_i          /* 0:OK, < 0: error, > 0: warning */
@@ -279,10 +279,10 @@ int RBok_i          /* 0:OK, < 0: error, > 0: warning */
     int32_t *p_nzeros      /* number of explicit zeros (-1 if not computed) */
 ) ;
 
-int RBok (int64_t nrow, int64_t ncol,
-    int64_t nzmax, const int64_t *Ap, const int64_t *Ai,
-    const double *Ax, const double *Az, const char *As, int64_t mkind,
-    int64_t *p_njumbled, int64_t *p_nzeros) ;
+int RBok (SuiteSparse_long nrow, SuiteSparse_long ncol,
+    SuiteSparse_long nzmax, const SuiteSparse_long *Ap, const SuiteSparse_long *Ai,
+    const double *Ax, const double *Az, const char *As, SuiteSparse_long mkind,
+    SuiteSparse_long *p_njumbled, SuiteSparse_long *p_nzeros) ;
 
 #ifdef MATLAB_MEX_FILE
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */

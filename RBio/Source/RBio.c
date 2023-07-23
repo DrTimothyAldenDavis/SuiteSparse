@@ -25,8 +25,8 @@
 #define RB(name) RB ## name ## _i
 #else
 /* Default: long (except for Windows, which is __int64) */
-#define Int int64_t
-#define IDD PRId64
+#define Int SuiteSparse_long
+#define IDD SuiteSparse_long_idd
 #define RB(name) RB ## name
 #endif
 #define ID "%" IDD
