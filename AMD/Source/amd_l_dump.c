@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// AMD/Source/amd_l_dump.c: int64_t version of amd_dump
+// AMD/Source/amd_l_dump.c: SuiteSparse_long version of amd_dump
 //------------------------------------------------------------------------------
 
 // AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// AMD/Source/amd_l_postorder.c: int64_t version of amd_postorder
+// AMD/Source/amd_l_postorder.c: SuiteSparse_long version of amd_postorder
 //------------------------------------------------------------------------------
 
 // AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and

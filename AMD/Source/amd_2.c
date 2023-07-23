@@ -119,9 +119,9 @@ void AMD_2
  *	ouput.  Many of these functions are also provided by the Fortran
  *	Harwell Subroutine Library routine MC47A.
  *
- * (6) both int32_t and int64_t versions are provided.  In the
- *      descriptions below an integer is int32_t or int64_t depending
- *      on which version is being used.
+ * (6) both int32_t and SuiteSparse_long versions are provided.  In the
+ *      descriptions below an integer is int32_t or SuiteSparse_long
+ *      depending on which version is being used.
 
  **********************************************************************
  ***** CAUTION:  ARGUMENTS ARE NOT CHECKED FOR ERRORS ON INPUT.  ******
@@ -494,9 +494,9 @@ void AMD_2
  * nvj:		the number of variables in a supervariable j (= Nv [j])
  * nvpiv:	number of pivots in current element
  * slenme:	number of variables in variable list of pivotal variable
- * wbig:	= (INT32_MAX - n) for the int32_t version, (INT64_MAX - n)
- *                  for the int64_t version.  wflg is not allowed to
- *                  be >= wbig.
+ * wbig:	= (INT32_MAX - n) for the int32_t version, (INTPTR_MAX - n)
+ *                  for the SuiteSparse_long version.  wflg is not
+ *                  allowed to be >= wbig.
  * we:		W [e]
  * wflg:	used for flagging the W array.  See description of Iw.
  * wnvi:	wflg - Nv [i]

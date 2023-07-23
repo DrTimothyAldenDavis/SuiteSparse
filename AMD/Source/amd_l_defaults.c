@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// AMD/Source/amd_l_defaults.c: int64_t version of amd_defaults
+// AMD/Source/amd_l_defaults.c: SuiteSparse_long version of amd_defaults
 //------------------------------------------------------------------------------
 
 // AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and

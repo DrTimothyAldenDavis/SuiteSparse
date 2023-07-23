@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// AMD/Source/amd_l_post_tree.c: int64_t version of amd_post_tree
+// AMD/Source/amd_l_post_tree.c: SuiteSparse_long version of amd_post_tree
 //------------------------------------------------------------------------------
 
 // AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and

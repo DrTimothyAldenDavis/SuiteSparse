@@ -106,15 +106,15 @@
 #endif
 
 /* ------------------------------------------------------------------------- */
-/* integer type for AMD: int32_t or int64_t */
+/* integer type for AMD: int32_t or SuiteSparse_long */
 /* ------------------------------------------------------------------------- */
 
 #if defined (DLONG) || defined (ZLONG)
 
-#define Int int64_t
-#define UInt uint64_t
-#define ID  "%" PRId64
-#define Int_MAX INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define ID  "%" SuiteSparse_long_idd
+#define Int_MAX SuiteSparse_long_max
 
 #define AMD_order amd_l_order
 #define AMD_defaults amd_l_defaults
