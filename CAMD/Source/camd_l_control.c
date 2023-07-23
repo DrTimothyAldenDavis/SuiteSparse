@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CAMD/Source/camd_l_control.c: int64_t version of camd_control
+// CAMD/Source/camd_l_control.c: SuiteSparse_long version of camd_control
 //------------------------------------------------------------------------------
 
 // CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.

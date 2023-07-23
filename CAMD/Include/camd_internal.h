@@ -112,7 +112,7 @@
 #endif
 
 /* ------------------------------------------------------------------------- */
-/* integer type for CAMD: int32_t or int64_t */
+/* integer type for CAMD: int32_t or SuiteSparse_long */
 /* ------------------------------------------------------------------------- */
 
 #define SUITESPARSE_LIBRARY
@@ -120,10 +120,10 @@
 
 #if defined (DLONG) || defined (ZLONG)
 
-#define Int int64_t
-#define UInt uint64_t
-#define ID  "%" PRId64
-#define Int_MAX INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define ID  "%" SuiteSparse_long_idd
+#define Int_MAX SuiteSparse_long_max
 
 #define CAMD_order camd_l_order
 #define CAMD_defaults camd_l_defaults

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CAMD/Source/camd_l_postorder.c: int64_t version of camd_postorder
+// CAMD/Source/camd_l_postorder.c: SuiteSparse_long version of camd_postorder
 //------------------------------------------------------------------------------
 
 // CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.

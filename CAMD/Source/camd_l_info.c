@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CAMD/Source/camd_l_info.c: int64_t version of camd_info
+// CAMD/Source/camd_l_info.c: SuiteSparse_long version of camd_info
 //------------------------------------------------------------------------------
 
 // CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.

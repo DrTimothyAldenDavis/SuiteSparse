@@ -12,7 +12,8 @@
  * factorization of P*A*P' has fewer nonzeros and takes less work than the
  * Cholesky factorization of A.  If A is not symmetric, then it performs its
  * ordering on the matrix A+A'.  Two sets of user-callable routines are
- * provided, one for int32_t integers and the other for int64_t integers.
+ * provided, one for int32_t integers and the other for SuiteSparse_long
+ * integers.
  *
  * The method is based on the approximate minimum degree algorithm, discussed
  * in Amestoy, Davis, and Duff, "An approximate degree ordering algorithm",
@@ -44,30 +45,31 @@ int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
 
 int camd_l_order   /* see above for description */
 (
-    int64_t n,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
-    int64_t P [ ],
+    SuiteSparse_long n,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
+    SuiteSparse_long P [ ],
     double Control [ ],
     double Info [ ],
-    const int64_t C [ ]
+    const SuiteSparse_long C [ ]
 ) ;
 
 /* Input arguments (not modified):
  *
  *      n: the matrix A is n-by-n.
- *      Ap: an int32_t/int64_t array of size n+1, containing column
- *          pointers of A.
- *      Ai: an int32_t/int64_t array of size nz, containing the row
- *          indices of A, where nz = Ap [n].
+ *      Ap: an int32_t/SuiteSparse_long array of size n+1, containing
+ *          column pointers of A.
+ *      Ai: an int32_t/SuiteSparse_long array of size nz, containing the
+ *          row indices of A, where nz = Ap [n].
  *      Control:  a double array of size CAMD_CONTROL, containing control
  *          parameters.  Defaults are used if Control is NULL.
  *
  * Output arguments (not defined on input):
  *
- *      P: an int32_t/int64_t array of size n, containing the output
- *          permutation. If row i is the kth pivot row, then P [k] = i.  In
- *          MATLAB notation, the reordered matrix is A (P,P).
+ *      P: an int32_t/SuiteSparse_long array of size n, containing the
+ *          output permutation. If row i is the kth pivot row, then
+ *          P [k] = i.  In MATLAB notation, the reordered matrix is
+ *          A (P,P).
  *      Info: a double array of size CAMD_INFO, containing statistical
  *          information.  Ignored if Info is NULL.
  *
@@ -244,23 +246,23 @@ void camd_2
 
 void camd_l2
 (
-    int64_t n,
-    int64_t Pe [ ],
-    int64_t Iw [ ],
-    int64_t Len [ ],
-    int64_t iwlen,
-    int64_t pfree,
-    int64_t Nv [ ],
-    int64_t Next [ ], 
-    int64_t Last [ ],
-    int64_t Head [ ],
-    int64_t Elen [ ],
-    int64_t Degree [ ],
-    int64_t W [ ],
+    SuiteSparse_long n,
+    SuiteSparse_long Pe [ ],
+    SuiteSparse_long Iw [ ],
+    SuiteSparse_long Len [ ],
+    SuiteSparse_long iwlen,
+    SuiteSparse_long pfree,
+    SuiteSparse_long Nv [ ],
+    SuiteSparse_long Next [ ], 
+    SuiteSparse_long Last [ ],
+    SuiteSparse_long Head [ ],
+    SuiteSparse_long Elen [ ],
+    SuiteSparse_long Degree [ ],
+    SuiteSparse_long W [ ],
     double Control [ ],
     double Info [ ],
-    const int64_t C [ ],
-    int64_t BucketSet [ ]
+    const SuiteSparse_long C [ ],
+    SuiteSparse_long BucketSet [ ]
     
 ) ;
 
@@ -286,10 +288,10 @@ int camd_valid
 
 int camd_l_valid
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ]
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ]
 ) ;
 
 /* ------------------------------------------------------------------------- */
@@ -307,8 +309,8 @@ int camd_cvalid
 
 int camd_l_cvalid
 (
-   int64_t n,
-   const int64_t C [ ]
+   SuiteSparse_long n,
+   const SuiteSparse_long C [ ]
 ) ;
 
 /* ------------------------------------------------------------------------- */
