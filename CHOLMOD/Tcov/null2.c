@@ -41,7 +41,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 	*R2p, *R2i ;
     double *Xwork, *Cx, *x, *Lx, *Tx, *Az, *R2x ;
     size_t size, nznew, gsave2 ;
-    int64_t lr ;
+    SuiteSparse_long lr ;
     void *pp, *ii, *jj, *xx ;
     Int p, i, j, d, nrhs, nrow, ncol, stype, fsizeok, nz, ok, n2, trial, anz,
 	nzmax, cset [CSETSIZE], Axbad_type, isreal, xtype, enz, Lxtype, Cxtype,
@@ -3177,13 +3177,14 @@ if (do_nantests)
     CHOLMOD(free_work)(cm) ;
     if (A->stype == 0)
     {
-	for (trial = 0 ; !ok && trial < 20 ; trial++)
-	{
-	    my_tries = trial ;
-	    printf ("--------------------- trial %"PRId64"\n", my_tries) ;
-	    ok = CHOLMOD(colamd)(A, NULL, 0, TRUE, Pok, cm) ;
-	}
-	OK (ok) ;
+      for (trial = 0 ; !ok && trial < 20 ; trial++)
+      {
+          my_tries = trial ;
+          printf ("--------------------- trial %" SuiteSparse_long_idd "\n",
+                  my_tries) ;
+          ok = CHOLMOD(colamd)(A, NULL, 0, TRUE, Pok, cm) ;
+      }
+      OK (ok) ;
     }
 
 

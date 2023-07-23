@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/GPU/cholmod_l_gpu.c: int64_t version of cholmod_gpu
+// CHOLMOD/GPU/cholmod_l_gpu.c: SuiteSparse_long version of cholmod_gpu
 //------------------------------------------------------------------------------
 
 // CHOLMOD/GPU Module.  Copyright (C) 2005-2022, Timothy A. Davis

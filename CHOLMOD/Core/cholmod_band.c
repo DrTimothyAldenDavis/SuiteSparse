@@ -48,8 +48,8 @@ static cholmod_sparse *band		/* returns C, or NULL if failure */
     /* ---- input or in/out if inplace is TRUE --- */
     cholmod_sparse *A,
     /* ---- input ---- */
-    int64_t k1,     /* ignore entries below the k1-st diagonal */
-    int64_t k2,     /* ignore entries above the k2-nd diagonal */
+    SuiteSparse_long k1,     /* ignore entries below the k1-st diagonal */
+    SuiteSparse_long k2,     /* ignore entries above the k2-nd diagonal */
     int mode,	    /* >0: numerical, 0: pattern, <0: pattern (no diagonal) */
     int inplace,    /* if TRUE, then convert A in place */
     /* --------------- */
@@ -339,8 +339,8 @@ cholmod_sparse *CHOLMOD(band)
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to extract band matrix from */
-    int64_t k1,         /* ignore entries below the k1-st diagonal */
-    int64_t k2,         /* ignore entries above the k2-nd diagonal */
+    SuiteSparse_long k1,         /* ignore entries below the k1-st diagonal */
+    SuiteSparse_long k2,         /* ignore entries above the k2-nd diagonal */
     int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
     /* --------------- */
     cholmod_common *Common
@@ -357,8 +357,8 @@ cholmod_sparse *CHOLMOD(band)
 int CHOLMOD(band_inplace)
 (
     /* ---- input ---- */
-    int64_t k1,    /* ignore entries below the k1-st diagonal */
-    int64_t k2,    /* ignore entries above the k2-nd diagonal */
+    SuiteSparse_long k1,    /* ignore entries below the k1-st diagonal */
+    SuiteSparse_long k2,    /* ignore entries above the k2-nd diagonal */
     int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
     /* ---- in/out --- */
     cholmod_sparse *A,	/* matrix from which entries not in band are removed */

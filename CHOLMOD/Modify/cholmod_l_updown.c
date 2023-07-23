@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Modify/cholmod_l_updown.c: int64_t version of cholmod_updown
+// CHOLMOD/Modify/cholmod_l_updown.c: SuiteSparse_long version of cholmod_updown
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,

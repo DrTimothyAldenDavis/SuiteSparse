@@ -136,8 +136,8 @@
 /* CHOLMOD is designed for 3 types of integer variables:
  *
  *	(1) all integers are int
- *	(2) most integers are int, some are int64_t
- *	(3) all integers are int64_t
+ *	(2) most integers are int, some are SuiteSparse_long
+ *	(3) all integers are SuiteSparse_long
  *
  * and two kinds of floating-point values:
  *
@@ -152,10 +152,10 @@
  * first two are currently supported):
  *
  *	DINT	double, int			prefix: cholmod_
- *	DLONG	double, int64_t	prefix: cholmod_l_
- *	DMIX	double, mixed int/int64_t	prefix: cholmod_m_
+ *	DLONG	double, SuiteSparse_long	prefix: cholmod_l_
+ *	DMIX	double, mixed int/SuiteSparse_long	prefix: cholmod_m_
  *	SINT	float, int			prefix: cholmod_si_
- *	SLONG	float, int64_t		prefix: cholmod_sl_
+ *	SLONG	float, SuiteSparse_long		prefix: cholmod_sl_
  *	SMIX	float, mixed int/log		prefix: cholmod_sm_
  *
  * These are selected with compile time flags (-DDLONG, for example).  If no
@@ -183,20 +183,20 @@ size_t cholmod_l_add_size_t (size_t a, size_t b, int *ok) ;
 size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
 
 /* -------------------------------------------------------------------------- */
-/* double (also complex double), int64_t */
+/* double (also complex double), SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
 #define Real double
-#define Int int64_t
-#define UInt uint64_t
-#define Int_max INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define Int_max SuiteSparse_long_max
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
 #define DOUBLE
 #define ITYPE CHOLMOD_LONG
 #define DTYPE CHOLMOD_DOUBLE
-#define ID "%" PRId64
+#define ID "%" SuiteSparse_long_idd
 
 /* -------------------------------------------------------------------------- */
 /* double (also complex double), int: this is the default */
@@ -560,7 +560,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     }
     work  = MAX (work, 1) ;
     chunk = MAX (chunk, 1) ;
-    int64_t nthreads = (int64_t) floor (work / chunk) ;
+    SuiteSparse_long nthreads = (SuiteSparse_long) floor (work / chunk) ;
     nthreads = MIN (nthreads, nthreads_max) ;
     nthreads = MAX (nthreads, 1) ;
     return ((int) nthreads) ;
@@ -590,7 +590,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 /* double, int */
 EXTERN int cholmod_dump ;
 EXTERN int cholmod_dump_malloc ;
-int64_t cholmod_dump_sparse (cholmod_sparse  *, const char *,
+SuiteSparse_long cholmod_dump_sparse (cholmod_sparse  *, const char *,
     cholmod_common *) ;
 int  cholmod_dump_factor (cholmod_factor  *, const char *, cholmod_common *) ;
 int  cholmod_dump_triplet (cholmod_triplet *, const char *, cholmod_common *) ;
@@ -600,40 +600,40 @@ int  cholmod_dump_subset (int *, size_t, size_t, const char *,
 int  cholmod_dump_perm (int *, size_t, size_t, const char *, cholmod_common *) ;
 int  cholmod_dump_parent (int *, size_t, const char *, cholmod_common *) ;
 void cholmod_dump_init (const char *, cholmod_common *) ;
-int  cholmod_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_dump_real (const char *, Real *, int64_t,
-    int64_t, int, int, cholmod_common *) ;
-void cholmod_dump_super (int64_t, int *, int *, int *, int *, double *,
+int  cholmod_dump_mem (const char *, SuiteSparse_long, cholmod_common *) ;
+void cholmod_dump_real (const char *, Real *, SuiteSparse_long,
+    SuiteSparse_long, int, int, cholmod_common *) ;
+void cholmod_dump_super (SuiteSparse_long, int *, int *, int *, int *, double *,
     int, cholmod_common *) ;
-int  cholmod_dump_partition (int64_t, int *, int *, int *, int *,
-    int64_t, cholmod_common *) ;
-int  cholmod_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_dump_partition (SuiteSparse_long, int *, int *, int *, int *,
+    SuiteSparse_long, cholmod_common *) ;
+int  cholmod_dump_work(int, int, SuiteSparse_long, cholmod_common *) ;
 
-/* double, int64_t */
+/* double, SuiteSparse_long */
 EXTERN int cholmod_l_dump ;
 EXTERN int cholmod_l_dump_malloc ;
-int64_t cholmod_l_dump_sparse (cholmod_sparse  *, const char *,
+SuiteSparse_long cholmod_l_dump_sparse (cholmod_sparse  *, const char *,
     cholmod_common *) ;
 int  cholmod_l_dump_factor (cholmod_factor  *, const char *, cholmod_common *) ;
 int  cholmod_l_dump_triplet (cholmod_triplet *, const char *, cholmod_common *);
 int  cholmod_l_dump_dense (cholmod_dense   *, const char *, cholmod_common *) ;
-int  cholmod_l_dump_subset (int64_t *, size_t, size_t, const char *,
+int  cholmod_l_dump_subset (SuiteSparse_long *, size_t, size_t, const char *,
     cholmod_common *) ;
-int  cholmod_l_dump_perm (int64_t *, size_t, size_t, const char *,
+int  cholmod_l_dump_perm (SuiteSparse_long *, size_t, size_t, const char *,
     cholmod_common *) ;
-int  cholmod_l_dump_parent (int64_t *, size_t, const char *,
+int  cholmod_l_dump_parent (SuiteSparse_long *, size_t, const char *,
     cholmod_common *) ;
 void cholmod_l_dump_init (const char *, cholmod_common *) ;
-int  cholmod_l_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_l_dump_real (const char *, Real *, int64_t,
-    int64_t, int, int, cholmod_common *) ;
-void cholmod_l_dump_super (int64_t, int64_t *,
-    int64_t *, int64_t *, int64_t *,
+int  cholmod_l_dump_mem (const char *, SuiteSparse_long, cholmod_common *) ;
+void cholmod_l_dump_real (const char *, Real *, SuiteSparse_long,
+    SuiteSparse_long, int, int, cholmod_common *) ;
+void cholmod_l_dump_super (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *,
     double *, int, cholmod_common *) ;
-int  cholmod_l_dump_partition (int64_t, int64_t *,
-    int64_t *, int64_t *,
-    int64_t *, int64_t, cholmod_common *) ;
-int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_l_dump_partition (SuiteSparse_long, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long *,
+    SuiteSparse_long *, SuiteSparse_long, cholmod_common *) ;
+int  cholmod_l_dump_work(int, int, SuiteSparse_long, cholmod_common *) ;
 
 #define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
 #define ASSERT(expression) (assert (expression))

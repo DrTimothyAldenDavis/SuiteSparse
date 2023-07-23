@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_postorder.c: int64_t version of cholmod_postorder
+// CHOLMOD/Cholesky/cholmod_l_postorder.c: SuiteSparse_long version of cholmod_postorder
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

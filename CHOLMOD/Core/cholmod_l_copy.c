@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Core/cholmod_l_copy.c: int64_t version of cholmod_copy
+// CHOLMOD/Core/cholmod_l_copy.c: SuiteSparse_long version of cholmod_copy
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.

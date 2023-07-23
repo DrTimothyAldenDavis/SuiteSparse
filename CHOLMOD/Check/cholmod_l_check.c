@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Check/cholmod_l_check.c: int64_t version of cholmod_check
+// CHOLMOD/Check/cholmod_l_check.c: SuiteSparse_long version of cholmod_check
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/amdtest_l: int64_t version of amdtest
+// CHOLMOD/Tcov/amdtest_l: SuiteSparse_long version of amdtest
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.

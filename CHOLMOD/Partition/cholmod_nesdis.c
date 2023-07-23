@@ -64,7 +64,7 @@
  * cholmod_metis_bisector).
  */
 
-static int64_t partition    /* size of separator or -1 if failure */
+static SuiteSparse_long partition    /* size of separator or -1 if failure */
 (
     /* inputs, not modified on output */
 #ifndef NDEBUG
@@ -585,7 +585,7 @@ static int64_t partition    /* size of separator or -1 if failure */
  * workspace: Flag (nrow)
  */
 
-static int64_t clear_flag (Int *Map, Int cn, cholmod_common *Common)
+static SuiteSparse_long clear_flag (Int *Map, Int cn, cholmod_common *Common)
 {
     Int nrow, i ;
     Int *Flag ;
@@ -836,7 +836,7 @@ static void find_components
  *	and O(nnz(A)) temporary memory space.
  */
 
-int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
+SuiteSparse_long CHOLMOD(bisect)	/* returns # of nodes in separator */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */
@@ -1040,7 +1040,7 @@ int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
  *	Allocates an additional 3*n*sizeof(Int) temporary workspace
  */
 
-int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
+SuiteSparse_long CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to order */
@@ -1966,7 +1966,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
  * Returns the new number of nodes in the separator tree.
  */
 
-int64_t CHOLMOD(collapse_septree)
+SuiteSparse_long CHOLMOD(collapse_septree)
 (
     /* ---- input ---- */
     size_t n,		/* # of nodes in the graph */

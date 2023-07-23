@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_solve.c: int64_t version of cholmod_solve
+// CHOLMOD/Cholesky/cholmod_l_solve.c: SuiteSparse_long version of cholmod_solve
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

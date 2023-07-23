@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_rowfac.c: int64_t version of cholmod_rowfac
+// CHOLMOD/Cholesky/cholmod_l_rowfac.c: SuiteSparse_long version of cholmod_rowfac
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

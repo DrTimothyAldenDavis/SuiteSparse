@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Partition/cholmod_l_metis.c: int64_t version of cholmod_metis
+// CHOLMOD/Partition/cholmod_l_metis.c: SuiteSparse_long version of cholmod_metis
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.

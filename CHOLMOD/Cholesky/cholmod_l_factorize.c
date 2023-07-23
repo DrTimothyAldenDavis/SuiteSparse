@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_factorize.c: int64_t version of cholmod_factorize
+// CHOLMOD/Cholesky/cholmod_l_factorize.c: SuiteSparse_long version of cholmod_factorize
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

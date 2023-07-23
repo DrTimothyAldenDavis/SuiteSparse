@@ -611,7 +611,7 @@ int CHOLMOD(free_work)
  * workspace: Flag (nrow).  Does not modify Flag if nrow is zero.
  */
 
-int64_t CHOLMOD(clear_flag)
+SuiteSparse_long CHOLMOD(clear_flag)
 (
     cholmod_common *Common
 )

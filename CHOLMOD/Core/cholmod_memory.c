@@ -129,7 +129,7 @@ void *CHOLMOD(malloc)	/* returns pointer to the newly malloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0")  ;
 	p = NULL ;
     }
-    else if (n >= (SIZE_MAX / size) || (int64_t) n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || (SuiteSparse_long) n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -241,7 +241,7 @@ void *CHOLMOD(calloc)	/* returns pointer to the newly calloc'd block */
 	ERROR (CHOLMOD_INVALID, "sizeof(item) must be > 0") ;
 	p = NULL ;
     }
-    else if (n >= (SIZE_MAX / size) || (int64_t) n >= Int_max)
+    else if (n >= (SIZE_MAX / size) || (SuiteSparse_long) n >= Int_max)
     {
 	/* object is too big to allocate without causing integer overflow */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -329,7 +329,7 @@ void *CHOLMOD(realloc)	/* returns pointer to reallocated block */
 	/* Nothing to do.  Do not change p or n. */
 	PRINT1 (("realloc nothing: %d %d\n", nnew, size)) ;
     }
-    else if (nnew >= (SIZE_MAX / size) || (int64_t) nnew >= Int_max)
+    else if (nnew >= (SIZE_MAX / size) || (SuiteSparse_long) nnew >= Int_max)
     {
 	/* failure: nnew is too big.  Do not change p or n. */
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -381,11 +381,11 @@ int CHOLMOD(realloc_multiple)
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated blocks */
-    int nint,		/* number of int32_t/int64_t blocks */
+    int nint,		/* number of int32_t/SuiteSparse_long blocks */
     int xtype,		/* CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX */
     /* ---- in/out --- */
-    void **Iblock,	/* int32_t or int64_t block */
-    void **Jblock,	/* int32_t or int64_t block */
+    void **Iblock,	/* int32_t or SuiteSparse_long block */
+    void **Jblock,	/* int32_t or SuiteSparse_long block */
     void **Xblock,	/* complex or double block */
     void **Zblock,	/* zomplex case only: double block */
     size_t *nold_p,	/* current size of the I,J,X,Z blocks on input,

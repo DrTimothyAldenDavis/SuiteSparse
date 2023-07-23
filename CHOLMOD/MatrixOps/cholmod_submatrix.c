@@ -74,9 +74,9 @@ cholmod_sparse *CHOLMOD(submatrix)
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to subreference */
     Int *rset,		/* set of row indices, duplicates OK */
-    int64_t rsize,	/* size of rset, or -1 for ":" */
+    SuiteSparse_long rsize,	/* size of rset, or -1 for ":" */
     Int *cset,		/* set of column indices, duplicates OK */
-    int64_t csize,	/* size of cset, or -1 for ":" */
+    SuiteSparse_long csize,	/* size of cset, or -1 for ":" */
     int values,		/* if TRUE compute the numerical values of C */
     int sorted,		/* if TRUE then return C with sorted columns */
     /* --------------- */

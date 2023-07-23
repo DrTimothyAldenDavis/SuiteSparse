@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Modify/cholmod_l_rowdel.c: int64_t version of cholmod_rowdel
+// CHOLMOD/Modify/cholmod_l_rowdel.c: SuiteSparse_long version of cholmod_rowdel
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,

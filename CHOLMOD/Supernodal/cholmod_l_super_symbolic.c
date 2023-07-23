@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // CHOLMOD/Supernodal/cholmod_l_super_symbolic.c:
-// int64_t version of cholmod_super_symbolic
+// SuiteSparse_long version of cholmod_super_symbolic
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.

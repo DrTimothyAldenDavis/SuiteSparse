@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/MatrixOps/cholmod_l_vertcat.c: int64_t version of cholmod_vertcat
+// CHOLMOD/MatrixOps/cholmod_l_vertcat.c: SuiteSparse_long version of cholmod_vertcat
 //------------------------------------------------------------------------------
 
 // CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.

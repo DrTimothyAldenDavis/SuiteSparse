@@ -17,14 +17,14 @@
 #include <signal.h>
 
 /* -------------------------------------------------------------------------- */
-/* double, int64_t */
+/* double, SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
 #define Real double
-#define Int int64_t
-#define UInt uint64_t
-#define Int_max INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define Int_max SuiteSparse_long_max
 #define CHOLMOD(name) cholmod_l_ ## name
 #define LONG
 #define DOUBLE
@@ -118,7 +118,7 @@
 EXTERN double zero [2], one [2], minusone [2] ;
 EXTERN cholmod_common Common, *cm ;
 EXTERN cholmod_dense *M1 ;
-EXTERN int64_t my_tries ;
+EXTERN SuiteSparse_long my_tries ;
 EXTERN double Zero [2] ;
 
 /* -------------------------------------------------------------------------- */
@@ -185,7 +185,7 @@ void camdtest (cholmod_sparse *A) ;
 
 #ifdef LONG
 
-#define ID "%" PRId64
+#define ID "%" SuiteSparse_long_idd
 
 #define AMD_order amd_l_order
 #define AMD_defaults amd_l_defaults

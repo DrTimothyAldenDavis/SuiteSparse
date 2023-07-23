@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/camdtest_l: int64_t version of camdtest
+// CHOLMOD/Tcov/camdtest_l: SuiteSparse_long version of camdtest
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.

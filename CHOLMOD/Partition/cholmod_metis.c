@@ -134,10 +134,10 @@
 
 #ifdef DUMP_GRAPH
 /* After dumping the graph with this routine, run "onmetis metisgraph" */
-static void dumpgraph (idx_t *Mp, idx_t *Mi, int64_t n,
+static void dumpgraph (idx_t *Mp, idx_t *Mi, SuiteSparse_long n,
     cholmod_common *Common)
 {
-    int64_t i, j, p, nz ;
+    SuiteSparse_long i, j, p, nz ;
     FILE *f ;
     nz = Mp [n] ;
     printf ("Dumping METIS graph n %ld nz %ld\n", n, nz) ;    /* DUMP_GRAPH */
@@ -248,7 +248,7 @@ static int metis_memory_ok
  * checked.
  */
 
-int64_t CHOLMOD(metis_bisector)	/* returns separator size */
+SuiteSparse_long CHOLMOD(metis_bisector)	/* returns separator size */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to bisect */

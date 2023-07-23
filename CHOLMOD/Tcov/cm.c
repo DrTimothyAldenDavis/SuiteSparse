@@ -1433,16 +1433,16 @@ int main (int argc, char **argv)
     OKP (p) ;
     p [0] = 'a' ;
     SuiteSparse_free (p) ;
-    p = SuiteSparse_malloc (INT64_MAX, 1024) ;
+    p = SuiteSparse_malloc (SuiteSparse_long_max, 1024) ;
     NOP (p) ;
-    p = SuiteSparse_calloc (INT64_MAX, 1024) ;
+    p = SuiteSparse_calloc (SuiteSparse_long_max, 1024) ;
     NOP (p) ;
     p = SuiteSparse_realloc (0, 0, 0, NULL, &ok) ;
     OK (ok) ;
     OKP (p) ;
     p [0] = 'a' ;
     SuiteSparse_free (p) ;
-    p = SuiteSparse_realloc (INT64_MAX, 0, 1024, NULL, &ok) ;
+    p = SuiteSparse_realloc (SuiteSparse_long_max, 0, 1024, NULL, &ok) ;
     NOP (p) ;
     NOT (ok) ;
 

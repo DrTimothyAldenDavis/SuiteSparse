@@ -30,7 +30,7 @@
  * See cholmod_simple.c for a simpler demo program.
  *
  * cholmod_demo is the same as cholmod_l_demo, except for the size of the
- * basic integer (int vs int64_t)
+ * basic integer (int vs SuiteSparse_long)
  */
 
 #include "cholmod_demo.h"

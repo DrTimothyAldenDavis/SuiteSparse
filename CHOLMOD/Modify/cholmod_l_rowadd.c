@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Modify/cholmod_l_rowadd.c: int64_t version of cholmod_rowadd
+// CHOLMOD/Modify/cholmod_l_rowadd.c: SuiteSparse_long version of cholmod_rowadd
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,

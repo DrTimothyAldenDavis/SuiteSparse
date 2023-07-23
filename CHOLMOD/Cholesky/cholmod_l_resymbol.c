@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_resymbol.c: int64_t version of cholmod_resymbol
+// CHOLMOD/Cholesky/cholmod_l_resymbol.c: SuiteSparse_long version of cholmod_resymbol
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

@@ -60,7 +60,7 @@ int main (int argc, char **argv)
     cholmod_common Common, *cm ;
     cholmod_factor *L ;
     double *Bx, *Rx, *Xx, *Bz, *Xz, *Rz ;
-    int64_t i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
+    SuiteSparse_long i, n, isize, xsize, ordering, xtype, s, ss, lnz ;
     int trial, method, L_is_super ;
     int ver [3] ;
     int prefer_zomplex, nmethods ;
@@ -151,8 +151,8 @@ int main (int argc, char **argv)
            the real and imaginary parts are in separate arrays.  MATLAB
            uses zomplex matrix exclusively. */
         double *Ax = A->x ;
-        int64_t nz = cholmod_l_nnz (A, cm) ;
-        printf ("nz: %"PRId64"\n", nz) ;
+        SuiteSparse_long nz = cholmod_l_nnz (A, cm) ;
+        printf ("nz: %" SuiteSparse_long_idd "\n", nz) ;
         double *Ax2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         double *Az2 = cholmod_l_malloc (nz, sizeof (double), cm) ;
         for (i = 0 ; i < nz ; i++)
@@ -176,7 +176,8 @@ int main (int argc, char **argv)
       printf ("\n\n     SCALING DIAGONAL   \n\n");
       
       // create diagonal
-      printf ("%"PRId64",%"PRId64",%d\n", A->nrow, A->ncol, A->xtype );
+      printf ("%" SuiteSparse_long_idd ",%" SuiteSparse_long_idd ",%d\n",
+              A->nrow, A->ncol, A->xtype );
 
       cholmod_sparse *D = cholmod_l_speye (A->nrow, A->ncol, A->xtype, cm );
       printf ("sparse done \n");
@@ -399,7 +400,7 @@ int main (int argc, char **argv)
             cholmod_dense *Ywork = NULL, *Ework = NULL ;
             cholmod_dense *X2 = NULL, *B2 = NULL ;
             cholmod_sparse *Bset, *Xset = NULL ;
-            int64_t *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
+            SuiteSparse_long *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
             double *X1x, *X2x, *B2x, err ;
             FILE *timelog = fopen ("timelog.m", "w") ;
             if (timelog) fprintf (timelog, "results = [\n") ;

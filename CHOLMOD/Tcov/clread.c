@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/clread: int64_t version of cmread
+// CHOLMOD/Tcov/clread: SuiteSparse_long version of cmread
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.

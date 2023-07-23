@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/cl: int64_t version of Tcov/cm test program
+// CHOLMOD/Tcov/cl: SuiteSparse_long version of Tcov/cm test program
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.

@@ -19,8 +19,8 @@
 
 #ifdef DLONG
 #define CHOLMOD(routine) cholmod_l_ ## routine
-#define Int int64_t
-#define UInt uint64_t
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
 #else
 #define CHOLMOD(routine) cholmod_ ## routine
 #define Int int32_t

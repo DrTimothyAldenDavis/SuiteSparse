@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Core/cholmod_l_dense.c: int64_t version of cholmod_dense
+// CHOLMOD/Core/cholmod_l_dense.c: SuiteSparse_long version of cholmod_dense
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Core Module.  Copyright (C) 2005-2022, University of Florida.

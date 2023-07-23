@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // CHOLMOD/Cholesky/cholmod_l_rowcolcounts.c:
-// int64_t version of cholmod_rowcolcounts
+// SuiteSparse_long version of cholmod_rowcolcounts
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

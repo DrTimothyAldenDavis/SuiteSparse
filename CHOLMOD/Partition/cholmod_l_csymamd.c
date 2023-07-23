@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Partition/cholmod_l_csymamd.c: int64_t version of cholmod_csymamd
+// CHOLMOD/Partition/cholmod_l_csymamd.c: SuiteSparse_long version of cholmod_csymamd
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.

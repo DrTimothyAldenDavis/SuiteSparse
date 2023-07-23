@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Cholesky/cholmod_l_etree.c: int64_t version of cholmod_etree
+// CHOLMOD/Cholesky/cholmod_l_etree.c: SuiteSparse_long version of cholmod_etree
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis

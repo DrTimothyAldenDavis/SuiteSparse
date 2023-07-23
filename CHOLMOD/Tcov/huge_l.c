@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/huge_l: int64_t version of huge
+// CHOLMOD/Tcov/huge_l: SuiteSparse_long version of huge
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.

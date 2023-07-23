@@ -22,19 +22,22 @@ extern "C" {
 
 #include "SuiteSparse_config.h"
 
-int createMapOnDevice ( int64_t *d_Map, int64_t *d_Ls, int64_t psi, int64_t nsrow ); 
+int createMapOnDevice ( SuiteSparse_long *d_Map, SuiteSparse_long *d_Ls,
+    SuiteSparse_long psi, SuiteSparse_long nsrow ) ;
 
-int createRelativeMapOnDevice ( int64_t *d_Map, int64_t *d_Ls, 
-				  int64_t *d_RelativeMap,int64_t  pdi1, 
-				  int64_t ndrow, cudaStream_t* astream ) ;
+int createRelativeMapOnDevice ( SuiteSparse_long *d_Map,
+    SuiteSparse_long *d_Ls, SuiteSparse_long *d_RelativeMap,
+    SuiteSparse_long pdi1, SuiteSparse_long ndrow, cudaStream_t* astream ) ;
 
-int addUpdateOnDevice ( double *d_A, double *devPtrC, int64_t *d_RelativeMap,
-    int64_t ndrow1, int64_t ndrow2, int64_t nsrow, cudaStream_t* astream ) ;
+int addUpdateOnDevice ( double *d_A, double *devPtrC,
+    SuiteSparse_long *d_RelativeMap,
+    SuiteSparse_long ndrow1, SuiteSparse_long ndrow2, SuiteSparse_long nsrow,
+    cudaStream_t* astream ) ;
 
 int addComplexUpdateOnDevice ( double *d_A, double *devPtrC, 
-				 int64_t *d_RelativeMap, int64_t ndrow1, 
-				 int64_t ndrow2, int64_t nsrow, 
-				 cudaStream_t* astream ) ;
+    SuiteSparse_long *d_RelativeMap, SuiteSparse_long ndrow1, 
+    SuiteSparse_long ndrow2, SuiteSparse_long nsrow, 
+    cudaStream_t* astream ) ;
 
 int sumAOnDevice ( double *a1, double *a2, const double alpha, int nsrow,
     int nscol );

@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // CHOLMOD/Supernodal/cholmod_l_super_solve.c:
-// int64_t version of cholmod_super_solve
+// SuiteSparse_long version of cholmod_super_solve
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Supernodal Module.  Copyright (C) 2005-2022, Timothy A. Davis.
