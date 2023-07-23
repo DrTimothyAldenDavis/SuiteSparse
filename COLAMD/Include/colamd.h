@@ -140,9 +140,9 @@ size_t colamd_recommended       /* returns recommended value of Alen, */
 size_t colamd_l_recommended     /* returns recommended value of Alen, */
                                 /* or 0 if input arguments are erroneous */
 (
-    int64_t nnz,                /* nonzeros in A */
-    int64_t n_row,              /* number of rows in A */
-    int64_t n_col               /* number of columns in A */
+    SuiteSparse_long nnz,       /* nonzeros in A */
+    SuiteSparse_long n_row,     /* number of rows in A */
+    SuiteSparse_long n_col      /* number of columns in A */
 ) ;
 
 void colamd_set_defaults        /* sets default parameters */
@@ -168,13 +168,13 @@ int colamd                      /* returns (1) if successful, (0) otherwise*/
 
 int colamd_l                    /* returns (1) if successful, (0) otherwise*/
 (                               /* A and p arguments are modified on output */
-    int64_t n_row,              /* number of rows in A */
-    int64_t n_col,              /* number of columns in A */
-    int64_t Alen,               /* size of the array A */
-    int64_t A [],               /* row indices of A, of size Alen */
-    int64_t p [],               /* column pointers of A, of size n_col+1 */
+    SuiteSparse_long n_row,     /* number of rows in A */
+    SuiteSparse_long n_col,     /* number of columns in A */
+    SuiteSparse_long Alen,      /* size of the array A */
+    SuiteSparse_long A [],      /* row indices of A, of size Alen */
+    SuiteSparse_long p [],      /* column pointers of A, of size n_col+1 */
     double knobs [COLAMD_KNOBS],    /* parameter settings for colamd */
-    int64_t stats [COLAMD_STATS]    /* colamd output stats and error codes */
+    SuiteSparse_long stats [COLAMD_STATS]  /* colamd output stats and error codes */
 ) ;
 
 int symamd                              /* return (1) if OK, (0) otherwise */
@@ -195,12 +195,12 @@ int symamd                              /* return (1) if OK, (0) otherwise */
 
 int symamd_l                            /* return (1) if OK, (0) otherwise */
 (
-    int64_t n,                          /* number of rows and columns of A */
-    int64_t A [],                       /* row indices of A */
-    int64_t p [],                       /* column pointers of A */
-    int64_t perm [],                    /* output permutation, size n_col+1 */
+    SuiteSparse_long n,                 /* number of rows and columns of A */
+    SuiteSparse_long A [],              /* row indices of A */
+    SuiteSparse_long p [],              /* column pointers of A */
+    SuiteSparse_long perm [],           /* output permutation, size n_col+1 */
     double knobs [COLAMD_KNOBS],        /* parameters (uses defaults if NULL) */
-    int64_t stats [COLAMD_STATS],       /* output stats and error codes */
+    SuiteSparse_long stats [COLAMD_STATS],  /* output stats and error codes */
     void * (*allocate) (size_t, size_t),
                                         /* pointer to calloc (ANSI C) or */
                                         /* mxCalloc (for MATLAB mexFunction) */
@@ -216,7 +216,7 @@ void colamd_report
 
 void colamd_l_report
 (
-    int64_t stats [COLAMD_STATS]
+    SuiteSparse_long stats [COLAMD_STATS]
 ) ;
 
 void symamd_report
@@ -226,7 +226,7 @@ void symamd_report
 
 void symamd_l_report
 (
-    int64_t stats [COLAMD_STATS]
+    SuiteSparse_long stats [COLAMD_STATS]
 ) ;
 
 #ifdef __cplusplus

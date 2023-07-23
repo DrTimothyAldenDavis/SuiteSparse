@@ -82,9 +82,9 @@
 /* === Description of user-callable routines ================================ */
 /* ========================================================================== */
 
-/* COLAMD includes both int32_t and int64_t versions of all its routines.
-    The description below is for the int32_t version.  For int64_t, all
-    int32_t arguments become int64_t.
+/* COLAMD includes both int32_t and SuiteSparse_long versions of all its
+    routines. The description below is for the int32_t version.
+    For SuiteSparse_long, all int32_t arguments become SuiteSparse_long.
 
     ----------------------------------------------------------------------------
     colamd_recommended:
@@ -94,8 +94,8 @@
 
 	    #include "colamd.h"
 	    size_t colamd_recommended (int32_t nnz, int32_t n_row, int32_t n_col) ;
-	    size_t colamd_l_recommended (int64_t nnz,
-                int64_t n_row, int64_t n_col) ;
+	    size_t colamd_l_recommended (SuiteSparse_long nnz,
+                SuiteSparse_long n_row, SuiteSparse_long n_col) ;
 
 	Purpose:
 
@@ -175,10 +175,10 @@
 	    #include "colamd.h"
 	    int colamd (int32_t n_row, int32_t n_col, int32_t Alen, int32_t *A, int32_t *p,
 	    	double knobs [COLAMD_KNOBS], int32_t stats [COLAMD_STATS]) ;
-	    int colamd_l (int64_t n_row,
-                int64_t n_col, int64_t Alen,
-                int64_t *A, int64_t *p, double knobs
-                [COLAMD_KNOBS], int64_t stats [COLAMD_STATS]) ;
+	    int colamd_l (SuiteSparse_long n_row,
+                SuiteSparse_long n_col, SuiteSparse_long Alen,
+                SuiteSparse_long *A, SuiteSparse_long *p, double knobs
+                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -386,9 +386,9 @@
 	    int symamd (int32_t n, int32_t *A, int32_t *p, int32_t *perm,
 	    	double knobs [COLAMD_KNOBS], int32_t stats [COLAMD_STATS],
 		void (*allocate) (size_t, size_t), void (*release) (void *)) ;
-	    int symamd_l (int64_t n, int64_t *A,
-                int64_t *p, int64_t *perm, double knobs
-                [COLAMD_KNOBS], int64_t stats [COLAMD_STATS], void
+	    int symamd_l (SuiteSparse_long n, SuiteSparse_long *A,
+                SuiteSparse_long *p, SuiteSparse_long *perm, double knobs
+                [COLAMD_KNOBS], SuiteSparse_long stats [COLAMD_STATS], void
                 (*allocate) (size_t, size_t), void (*release) (void *)) ;
 
 	Purpose:
@@ -556,7 +556,7 @@
 
 	    #include "colamd.h"
 	    colamd_report (int32_t stats [COLAMD_STATS]) ;
-	    colamd_l_report (int64_t stats [COLAMD_STATS]) ;
+	    colamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -577,7 +577,7 @@
 
 	    #include "colamd.h"
 	    symamd_report (int32_t stats [COLAMD_STATS]) ;
-	    symamd_l_report (int64_t stats [COLAMD_STATS]) ;
+	    symamd_l_report (SuiteSparse_long stats [COLAMD_STATS]) ;
 
 	Purpose:
 
@@ -645,15 +645,15 @@
 #endif
 
 /* ========================================================================== */
-/* === int32_t or int64_t ============================================== */
+/* === int32_t or SuiteSparse_long ========================================== */
 /* ========================================================================== */
 
 #ifdef DLONG
 
-#define Int int64_t
-#define UInt uint64_t
-#define ID  "%" PRId64
-#define Int_MAX INT64_MAX
+#define Int SuiteSparse_long
+#define UInt SuiteSparse_ulong
+#define ID  "%" SuiteSparse_long_idd
+#define Int_MAX SuiteSparse_long_max
 
 #define COLAMD_recommended colamd_l_recommended
 #define COLAMD_set_defaults colamd_l_set_defaults
