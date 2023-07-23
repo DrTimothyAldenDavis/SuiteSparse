@@ -755,78 +755,37 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
 }
 
 
-// =============================================================================
+// explicit instantiations
 
 template SuiteSparseQR_factorization <Complex, int32_t> *spqr_1factor <Complex, int32_t>
 (
-    // inputs, not modified
-    int ordering,           // all, except 3:given treated as 0:fixed
-    double tol,             // only accept singletons above tol.  If tol <= -2,
-                            // then use the default tolerance
-    int32_t bncols,            // number of columns of B
-    int keepH,              // if TRUE, keep the Householder vectors
-    cholmod_sparse *A,      // m-by-n sparse matrix
-    int32_t ldb,               // if dense, the leading dimension of B
-    int32_t *Bp,               // size bncols+1, column pointers of B
-    int32_t *Bi,               // size bnz = Bp [bncols], row indices of B
-    Complex *Bx,              // size bnz, numerical values of B
-
-    // workspace and parameters
-    cholmod_common *cc
+    int ordering, double tol, int32_t bncols, int keepH, cholmod_sparse *A,
+    int32_t ldb, int32_t *Bp, int32_t *Bi, Complex *Bx, cholmod_common *cc
 ) ;
 
 
 template SuiteSparseQR_factorization <double, int32_t> *spqr_1factor <double, int32_t>
 (
-    // inputs, not modified
-    int ordering,           // all, except 3:given treated as 0:fixed
-    double tol,             // only accept singletons above tol.  If tol <= -2,
-                            // then use the default tolerance
-    int32_t bncols,            // number of columns of B
-    int keepH,              // if TRUE, keep the Householder vectors
-    cholmod_sparse *A,      // m-by-n sparse matrix
-    int32_t ldb,               // if dense, the leading dimension of B
-    int32_t *Bp,               // size bncols+1, column pointers of B
-    int32_t *Bi,               // size bnz = Bp [bncols], row indices of B
-    double *Bx,              // size bnz, numerical values of B
-
-    // workspace and parameters
-    cholmod_common *cc
+    int ordering, double tol, int32_t bncols, int keepH, cholmod_sparse *A,
+    int32_t ldb, int32_t *Bp, int32_t *Bi, double *Bx, cholmod_common *cc
 ) ;
 
-template SuiteSparseQR_factorization <Complex, int64_t> *spqr_1factor <Complex, int64_t>
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparseQR_factorization <Complex, SuiteSparse_long>
+*spqr_1factor <Complex, SuiteSparse_long>
 (
-    // inputs, not modified
-    int ordering,           // all, except 3:given treated as 0:fixed
-    double tol,             // only accept singletons above tol.  If tol <= -2,
-                            // then use the default tolerance
-    int64_t bncols,            // number of columns of B
-    int keepH,              // if TRUE, keep the Householder vectors
-    cholmod_sparse *A,      // m-by-n sparse matrix
-    int64_t ldb,               // if dense, the leading dimension of B
-    int64_t *Bp,               // size bncols+1, column pointers of B
-    int64_t *Bi,               // size bnz = Bp [bncols], row indices of B
-    Complex *Bx,              // size bnz, numerical values of B
-
-    // workspace and parameters
-    cholmod_common *cc
+    int ordering, double tol, SuiteSparse_long bncols, int keepH,
+    cholmod_sparse *A, SuiteSparse_long ldb, SuiteSparse_long *Bp,
+    SuiteSparse_long *Bi, Complex *Bx, cholmod_common *cc
 ) ;
 
-
-template SuiteSparseQR_factorization <double, int64_t> *spqr_1factor <double, int64_t>
+template SuiteSparseQR_factorization <double, SuiteSparse_long>
+*spqr_1factor <double, SuiteSparse_long>
 (
-    // inputs, not modified
-    int ordering,           // all, except 3:given treated as 0:fixed
-    double tol,             // only accept singletons above tol.  If tol <= -2,
-                            // then use the default tolerance
-    int64_t bncols,            // number of columns of B
-    int keepH,              // if TRUE, keep the Householder vectors
-    cholmod_sparse *A,      // m-by-n sparse matrix
-    int64_t ldb,               // if dense, the leading dimension of B
-    int64_t *Bp,               // size bncols+1, column pointers of B
-    int64_t *Bi,               // size bnz = Bp [bncols], row indices of B
-    double *Bx,              // size bnz, numerical values of B
-
-    // workspace and parameters
-    cholmod_common *cc
+    int ordering, double tol, SuiteSparse_long bncols, int keepH,
+    cholmod_sparse *A, SuiteSparse_long ldb, SuiteSparse_long *Bp,
+    SuiteSparse_long *Bi, double *Bx, cholmod_common *cc
 ) ;
+
+#endif

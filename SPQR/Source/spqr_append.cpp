@@ -134,62 +134,31 @@ template <typename Entry, typename Int> int spqr_append       // TRUE/FALSE if O
     return (TRUE) ;
 }
 
-template int spqr_append <double, int32_t>       // TRUE/FALSE if OK or not
+
+// explicit instantiations
+
+template int spqr_append <double, int32_t>
 (
-    // inputs, not modified
-    double *X,           // size m-by-1
-    int32_t *P,            // size m, or NULL; permutation to apply to X.
-                        // P [k] = i if row k of A is row i of X
+    double *X, int32_t *P, cholmod_sparse *A, int32_t *p_n, cholmod_common *cc
+) ;
 
-    // input/output
-    cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    int32_t *p_n,          // n = # of columns of A so far; increased one
+template int spqr_append <Complex, int32_t>
+(
+    Complex *X, int32_t *P, cholmod_sparse *A, int32_t *p_n, cholmod_common *cc
+) ;
 
-    // workspace and parameters
+#if SuiteSparse_long_max != INT32_MAX
+
+template int spqr_append <double, SuiteSparse_long>
+(
+    double *X, SuiteSparse_long *P, cholmod_sparse *A, SuiteSparse_long *p_n,
     cholmod_common *cc
 ) ;
 
-template int spqr_append <Complex, int32_t>       // TRUE/FALSE if OK or not
+template int spqr_append <Complex, SuiteSparse_long>
 (
-    // inputs, not modified
-    Complex *X,           // size m-by-1
-    int32_t *P,            // size m, or NULL; permutation to apply to X.
-                        // P [k] = i if row k of A is row i of X
-
-    // input/output
-    cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    int32_t *p_n,          // n = # of columns of A so far; increased one
-
-    // workspace and parameters
+    Complex *X, SuiteSparse_long *P, cholmod_sparse *A, SuiteSparse_long *p_n,
     cholmod_common *cc
 ) ;
 
-template int spqr_append <double, int64_t>       // TRUE/FALSE if OK or not
-(
-    // inputs, not modified
-    double *X,           // size m-by-1
-    int64_t *P,            // size m, or NULL; permutation to apply to X.
-                        // P [k] = i if row k of A is row i of X
-
-    // input/output
-    cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    int64_t *p_n,          // n = # of columns of A so far; increased one
-
-    // workspace and parameters
-    cholmod_common *cc
-) ;
-
-template int spqr_append <Complex, int64_t>       // TRUE/FALSE if OK or not
-(
-    // inputs, not modified
-    Complex *X,           // size m-by-1
-    int64_t *P,            // size m, or NULL; permutation to apply to X.
-                        // P [k] = i if row k of A is row i of X
-
-    // input/output
-    cholmod_sparse *A,  // size m-by-(A->ncol) where A->ncol > n must hold
-    int64_t *p_n,          // n = # of columns of A so far; increased one
-
-    // workspace and parameters
-    cholmod_common *cc
-) ;
+#endif

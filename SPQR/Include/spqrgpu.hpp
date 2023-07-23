@@ -12,13 +12,13 @@
 
 #include "GPUQREngine_SuiteSparse.hpp"
 
-template <typename Int = int64_t> void spqrgpu_kernel
+template <typename Int = SuiteSparse_long> void spqrgpu_kernel
 (
     spqr_blob <double, Int> *Blob    // contains the entire problem input/output
 ) ;
 
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 void spqrgpu_kernel
 (
     spqr_blob <Complex, Int> *Blob

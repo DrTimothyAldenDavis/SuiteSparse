@@ -339,23 +339,29 @@ template <typename Entry, typename Int> void spqr_kernel // _worker
     Work [stack].wssq   = wssq   ;
 }
 
-template void spqr_kernel <double, int32_t> // _worker
+
+// explicit instantiations
+
+template void spqr_kernel <double, int32_t>
 (
-    int32_t task,
-    spqr_blob <double, int32_t> *Blob
+    int32_t task, spqr_blob <double, int32_t> *Blob
 ) ;
-template void spqr_kernel <Complex, int32_t> // _worker
+
+template void spqr_kernel <Complex, int32_t>
 (
-    int32_t task,
-    spqr_blob <Complex, int32_t> *Blob
+    int32_t task, spqr_blob <Complex, int32_t> *Blob
 ) ;
-template void spqr_kernel <double, int64_t> // _worker
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_kernel <double, SuiteSparse_long>
 (
-    int64_t task,
-    spqr_blob <double, int64_t> *Blob
+    SuiteSparse_long task, spqr_blob <double, SuiteSparse_long> *Blob
 ) ;
-template void spqr_kernel <Complex, int64_t> // _worker
+
+template void spqr_kernel <Complex, SuiteSparse_long> 
 (
-    int64_t task,
-    spqr_blob <Complex, int64_t> *Blob
+    SuiteSparse_long task, spqr_blob <Complex, SuiteSparse_long> *Blob
 ) ;
+
+#endif

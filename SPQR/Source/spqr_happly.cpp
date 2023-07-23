@@ -113,6 +113,46 @@ template <typename Entry, typename Int> void spqr_private_do_panel
 }
 
 
+// explicit instantiations
+
+template void spqr_private_do_panel <double, int32_t>
+(
+    int method, int32_t m, int32_t n, int32_t v, int32_t *Wi, int32_t h1,
+    int32_t h2, int32_t *Hp, int32_t *Hi, double *Hx, double *Tau,
+    int32_t *Wmap, double *X, double *V, double *C, double *W,
+    cholmod_common *cc
+) ;
+
+template void spqr_private_do_panel <Complex, int32_t>
+(
+    int method, int32_t m, int32_t n, int32_t v, int32_t *Wi, int32_t h1,
+    int32_t h2, int32_t *Hp, int32_t *Hi, Complex *Hx, Complex *Tau,
+    int32_t *Wmap, Complex *X, Complex *V, Complex *C, Complex *W,
+    cholmod_common *cc
+) ;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_private_do_panel <double, SuiteSparse_long>
+(
+    int method, SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long v,
+    SuiteSparse_long *Wi, SuiteSparse_long h1, SuiteSparse_long h2,
+    SuiteSparse_long *Hp, SuiteSparse_long *Hi, double *Hx, double *Tau,
+    SuiteSparse_long *Wmap, double *X, double *V, double *C, double *W,
+    cholmod_common *cc
+) ;
+
+template void spqr_private_do_panel <Complex, SuiteSparse_long>
+(
+    int method, SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long v,
+    SuiteSparse_long *Wi, SuiteSparse_long h1, SuiteSparse_long h2,
+    SuiteSparse_long *Hp, SuiteSparse_long *Hi, Complex *Hx, Complex *Tau,
+    SuiteSparse_long *Wmap, Complex *X, Complex *V, Complex *C, Complex *W,
+    cholmod_common *cc
+) ;
+
+#endif
+
 // =============================================================================
 // === spqr_happly =============================================================
 // =============================================================================
@@ -384,234 +424,41 @@ template <typename Entry, typename Int> void spqr_happly
     }
 }
 
-template void spqr_private_do_panel <double, int32_t>
-(
-    // inputs, not modified
-    int method,         // which method to use (0,1,2,3)
-    int32_t m,
-    int32_t n,
-    int32_t v,             // number of Householder vectors in the panel
-    int32_t *Wi,           // Wi [0:v-1] defines the pattern of the panel
-    int32_t h1,            // load H (h1) to H (h2-1) into V
-    int32_t h2,
 
-    // FUTURE : make H cholmod_sparse:
-    int32_t *Hp,           // Householder vectors: mh-by-nh sparse matrix
-    int32_t *Hi,
-    double *Hx,
+// explicit instantiations
 
-    double *Tau,         // Householder coefficients (size nh)
-
-    // input/output
-    int32_t *Wmap,         // inverse of Wi on input, set to all EMPTY on output
-    double *X,           // m-by-n with leading dimension m
-
-    // workspace, undefined on input and output
-    double *V,           // dense panel
-    double *C,           // workspace
-    double *W,           // workspace
-    cholmod_common *cc
-) ;
-
-template void spqr_private_do_panel <double, int64_t>
-(
-    // inputs, not modified
-    int method,         // which method to use (0,1,2,3)
-    int64_t m,
-    int64_t n,
-    int64_t v,             // number of Householder vectors in the panel
-    int64_t *Wi,           // Wi [0:v-1] defines the pattern of the panel
-    int64_t h1,            // load H (h1) to H (h2-1) into V
-    int64_t h2,
-
-    // FUTURE : make H cholmod_sparse:
-    int64_t *Hp,           // Householder vectors: mh-by-nh sparse matrix
-    int64_t *Hi,
-    double *Hx,
-
-    double *Tau,         // Householder coefficients (size nh)
-
-    // input/output
-    int64_t *Wmap,         // inverse of Wi on input, set to all EMPTY on output
-    double *X,           // m-by-n with leading dimension m
-
-    // workspace, undefined on input and output
-    double *V,           // dense panel
-    double *C,           // workspace
-    double *W,           // workspace
-    cholmod_common *cc
-) ;
-
-template void spqr_private_do_panel <Complex, int32_t>
-(
-    // inputs, not modified
-    int method,         // which method to use (0,1,2,3)
-    int32_t m,
-    int32_t n,
-    int32_t v,             // number of Householder vectors in the panel
-    int32_t *Wi,           // Wi [0:v-1] defines the pattern of the panel
-    int32_t h1,            // load H (h1) to H (h2-1) into V
-    int32_t h2,
-
-    // FUTURE : make H cholmod_sparse:
-    int32_t *Hp,           // Householder vectors: mh-by-nh sparse matrix
-    int32_t *Hi,
-    Complex *Hx,
-
-    Complex *Tau,         // Householder coefficients (size nh)
-
-    // input/output
-    int32_t *Wmap,         // inverse of Wi on input, set to all EMPTY on output
-    Complex *X,           // m-by-n with leading dimension m
-
-    // workspace, undefined on input and output
-    Complex *V,           // dense panel
-    Complex *C,           // workspace
-    Complex *W,           // workspace
-    cholmod_common *cc
-) ;
-
-template void spqr_private_do_panel <Complex, int64_t>
-(
-    // inputs, not modified
-    int method,         // which method to use (0,1,2,3)
-    int64_t m,
-    int64_t n,
-    int64_t v,             // number of Householder vectors in the panel
-    int64_t *Wi,           // Wi [0:v-1] defines the pattern of the panel
-    int64_t h1,            // load H (h1) to H (h2-1) into V
-    int64_t h2,
-
-    // FUTURE : make H cholmod_sparse:
-    int64_t *Hp,           // Householder vectors: mh-by-nh sparse matrix
-    int64_t *Hi,
-    Complex *Hx,
-
-    Complex *Tau,         // Householder coefficients (size nh)
-
-    // input/output
-    int64_t *Wmap,         // inverse of Wi on input, set to all EMPTY on output
-    Complex *X,           // m-by-n with leading dimension m
-
-    // workspace, undefined on input and output
-    Complex *V,           // dense panel
-    Complex *C,           // workspace
-    Complex *W,           // workspace
-    cholmod_common *cc
-) ;
 template void spqr_happly <double, int32_t>
 (
-    // input
-    int method,     // 0,1,2,3
-
-    int32_t m,         // X is m-by-n with leading dimension m
-    int32_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int32_t nh,        // number of Householder vectors
-    int32_t *Hp,       // size nh+1, column pointers for H
-    int32_t *Hi,       // size hnz = Hp [nh], row indices of H
-    double *Hx,      // size hnz, Householder values.  Note that the first
-                    // entry in each column must be equal to 1.0
-
-    double *Tau,     // size nh
-
-    // input/output
-    double *X,       // size m-by-n with leading dimension m
-
-    // workspace
-    int32_t vmax,
-    int32_t hchunk,
-    int32_t *Wi,       // size vmax
-    int32_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
-    double *C,       // size csize
-    double *V,       // size vsize
-    cholmod_common *cc
+    int method, int32_t m, int32_t n, int32_t nh, int32_t *Hp, int32_t *Hi,
+    double *Hx, double *Tau, double *X, int32_t vmax, int32_t hchunk,
+    int32_t *Wi, int32_t *Wmap, double *C, double *V, cholmod_common *cc
 ) ;
+
 template void spqr_happly <Complex, int32_t>
 (
-    // input
-    int method,     // 0,1,2,3
-
-    int32_t m,         // X is m-by-n with leading dimension m
-    int32_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int32_t nh,        // number of Householder vectors
-    int32_t *Hp,       // size nh+1, column pointers for H
-    int32_t *Hi,       // size hnz = Hp [nh], row indices of H
-    Complex *Hx,      // size hnz, Householder values.  Note that the first
-                    // entry in each column must be equal to 1.0
-
-    Complex *Tau,     // size nh
-
-    // input/output
-    Complex *X,       // size m-by-n with leading dimension m
-
-    // workspace
-    int32_t vmax,
-    int32_t hchunk,
-    int32_t *Wi,       // size vmax
-    int32_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
-    Complex *C,       // size csize
-    Complex *V,       // size vsize
-    cholmod_common *cc
+    int method, int32_t m, int32_t n, int32_t nh, int32_t *Hp, int32_t *Hi,
+    Complex *Hx, Complex *Tau, Complex *X, int32_t vmax, int32_t hchunk,
+    int32_t *Wi, int32_t *Wmap, Complex *C, Complex *V, cholmod_common *cc
 ) ;
-template void spqr_happly <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_happly <double, SuiteSparse_long>
 (
-    // input
-    int method,     // 0,1,2,3
-
-    int64_t m,         // X is m-by-n with leading dimension m
-    int64_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int64_t nh,        // number of Householder vectors
-    int64_t *Hp,       // size nh+1, column pointers for H
-    int64_t *Hi,       // size hnz = Hp [nh], row indices of H
-    double *Hx,      // size hnz, Householder values.  Note that the first
-                    // entry in each column must be equal to 1.0
-
-    double *Tau,     // size nh
-
-    // input/output
-    double *X,       // size m-by-n with leading dimension m
-
-    // workspace
-    int64_t vmax,
-    int64_t hchunk,
-    int64_t *Wi,       // size vmax
-    int64_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
-    double *C,       // size csize
-    double *V,       // size vsize
+    int method, SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long nh,
+    SuiteSparse_long *Hp, SuiteSparse_long *Hi, double *Hx, double *Tau,
+    double *X, SuiteSparse_long vmax, SuiteSparse_long hchunk,
+    SuiteSparse_long *Wi, SuiteSparse_long *Wmap, double *C, double *V,
     cholmod_common *cc
 ) ;
-template void spqr_happly <Complex, int64_t>
+
+template void spqr_happly <Complex, SuiteSparse_long>
 (
-    // input
-    int method,     // 0,1,2,3
-
-    int64_t m,         // X is m-by-n with leading dimension m
-    int64_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int64_t nh,        // number of Householder vectors
-    int64_t *Hp,       // size nh+1, column pointers for H
-    int64_t *Hi,       // size hnz = Hp [nh], row indices of H
-    Complex *Hx,      // size hnz, Householder values.  Note that the first
-                    // entry in each column must be equal to 1.0
-
-    Complex *Tau,     // size nh
-
-    // input/output
-    Complex *X,       // size m-by-n with leading dimension m
-
-    // workspace
-    int64_t vmax,
-    int64_t hchunk,
-    int64_t *Wi,       // size vmax
-    int64_t *Wmap,     // size MAX(mh,1) where H is mh-by-nh; all EMPTY
-    Complex *C,       // size csize
-    Complex *V,       // size vsize
+    int method,  SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long nh,
+    SuiteSparse_long *Hp, SuiteSparse_long *Hi, Complex *Hx, Complex *Tau,
+    Complex *X, SuiteSparse_long vmax, SuiteSparse_long hchunk,
+    SuiteSparse_long *Wi, SuiteSparse_long *Wmap, Complex *C, Complex *V,
     cholmod_common *cc
 ) ;
+
+#endif

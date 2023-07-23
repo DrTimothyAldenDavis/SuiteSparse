@@ -747,59 +747,35 @@ template <typename Entry, typename Int> spqr_numeric <Entry, Int> *spqr_factoriz
     return (QRnum) ;
 }
 
+
+// explicit instantiations
+
 template spqr_numeric <double, int32_t> *spqr_factorize <double, int32_t>
 (
-    // input, optionally freed on output
-    cholmod_sparse **Ahandle,
-
-    // inputs, not modified
-    int32_t freeA,                     // if TRUE, free A on output
-    double tol,                     // for rank detection
-    int32_t ntol,                      // apply tol only to first ntol columns
-    spqr_symbolic <int32_t> *QRsym,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse **Ahandle, int32_t freeA, double tol, int32_t ntol,
+    spqr_symbolic <int32_t> *QRsym, cholmod_common *cc
 ) ;
+
 template spqr_numeric <Complex, int32_t> *spqr_factorize <Complex, int32_t>
 (
-    // input, optionally freed on output
-    cholmod_sparse **Ahandle,
-
-    // inputs, not modified
-    int32_t freeA,                     // if TRUE, free A on output
-    double tol,                     // for rank detection
-    int32_t ntol,                      // apply tol only to first ntol columns
-    spqr_symbolic <int32_t> *QRsym,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse **Ahandle, int32_t freeA, double tol, int32_t ntol,
+    spqr_symbolic <int32_t> *QRsym, cholmod_common *cc
 ) ;
-template spqr_numeric <double, int64_t> *spqr_factorize <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template spqr_numeric <double, SuiteSparse_long> *spqr_factorize <double, SuiteSparse_long>
 (
-    // input, optionally freed on output
-    cholmod_sparse **Ahandle,
-
-    // inputs, not modified
-    int64_t freeA,                     // if TRUE, free A on output
-    double tol,                     // for rank detection
-    int64_t ntol,                      // apply tol only to first ntol columns
-    spqr_symbolic <int64_t> *QRsym,
-
-    // workspace and parameters
+    cholmod_sparse **Ahandle, SuiteSparse_long freeA, double tol,
+    SuiteSparse_long ntol, spqr_symbolic <SuiteSparse_long> *QRsym,
     cholmod_common *cc
 ) ;
-template spqr_numeric <Complex, int64_t> *spqr_factorize <Complex, int64_t>
+
+template spqr_numeric <Complex, SuiteSparse_long> *spqr_factorize <Complex, SuiteSparse_long>
 (
-    // input, optionally freed on output
-    cholmod_sparse **Ahandle,
-
-    // inputs, not modified
-    int64_t freeA,                     // if TRUE, free A on output
-    double tol,                     // for rank detection
-    int64_t ntol,                      // apply tol only to first ntol columns
-    spqr_symbolic <int64_t> *QRsym,
-
-    // workspace and parameters
+    cholmod_sparse **Ahandle, SuiteSparse_long freeA, double tol,
+    SuiteSparse_long ntol, spqr_symbolic <SuiteSparse_long> *QRsym,
     cholmod_common *cc
 ) ;
+
+#endif

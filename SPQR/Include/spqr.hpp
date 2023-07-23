@@ -90,7 +90,7 @@
 
 #define ITYPE CHOLMOD_LONG
 #define DTYPE CHOLMOD_DOUBLE
-#define ID "%" PRId64
+#define ID "%" SuiteSparse_long_idd
 
 // -----------------------------------------------------------------------------
 
@@ -206,7 +206,7 @@
 // =============================================================================
 
 // workspace required for each stack in spqr_factorize and spqr_kernel
-template <typename Entry, typename Int = int64_t> struct spqr_work
+template <typename Entry, typename Int = SuiteSparse_long> struct spqr_work
 {
     Int *Stair1 ;          // size maxfn if H not kept
     Int *Cmap ;            // size maxfn
@@ -231,7 +231,7 @@ template <typename Entry, typename Int = int64_t> struct spqr_work
 
 // The spqr_blob is a collection of objects that the spqr_kernel requires.
 
-template <typename Entry, typename Int = int64_t> struct spqr_blob
+template <typename Entry, typename Int = SuiteSparse_long> struct spqr_blob
 {
     double tol ;
     spqr_symbolic <Int> *QRsym ;
@@ -250,7 +250,7 @@ template <typename Entry, typename Int = int64_t> struct spqr_blob
 // === SuiteSparseQR non-user-callable functions ===============================
 // =============================================================================
 
-template <typename Int = int64_t> spqr_symbolic <Int> *spqr_analyze
+template <typename Int = SuiteSparse_long> spqr_symbolic <Int> *spqr_analyze
 ( 
     // inputs, not modified
     cholmod_sparse *A,
@@ -269,7 +269,8 @@ template <typename Int = int64_t> spqr_symbolic <Int> *spqr_analyze
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> spqr_numeric <Entry, Int> *spqr_factorize
+template <typename Entry, typename Int = SuiteSparse_long>
+spqr_numeric <Entry, Int> *spqr_factorize
 (
     // input, optionally freed on output
     cholmod_sparse **Ahandle,
@@ -285,7 +286,7 @@ template <typename Entry, typename Int = int64_t> spqr_numeric <Entry, Int> *spq
 ) ;
 
 // returns tol (-1 if error)
-template <typename Entry, typename Int = int64_t> double spqr_tol
+template <typename Entry, typename Int = SuiteSparse_long> double spqr_tol
 (
     // inputs, not modified
     cholmod_sparse *A,
@@ -294,7 +295,7 @@ template <typename Entry, typename Int = int64_t> double spqr_tol
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> double spqr_maxcolnorm
+template <typename Entry, typename Int = SuiteSparse_long> double spqr_maxcolnorm
 (
     // inputs, not modified
     cholmod_sparse *A,
@@ -303,20 +304,20 @@ template <typename Entry, typename Int = int64_t> double spqr_maxcolnorm
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_kernel
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_kernel
 (
     Int task,
     spqr_blob <Entry, Int> *Blob
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_parallel
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_parallel
 (
     Int ntasks,
     int nthreads,
     spqr_blob <Entry, Int> *Blob
 ) ;
 
-template <typename Int = int64_t> void spqr_freesym
+template <typename Int = SuiteSparse_long> void spqr_freesym
 (
     spqr_symbolic <Int> **QRsym_handle,
 
@@ -324,7 +325,7 @@ template <typename Int = int64_t> void spqr_freesym
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_freenum
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_freenum
 (
     spqr_numeric <Entry, Int> **QRnum_handle,
 
@@ -332,7 +333,7 @@ template <typename Entry, typename Int = int64_t> void spqr_freenum
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_freefac
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_freefac
 (
     SuiteSparseQR_factorization <Entry, Int> **QR_handle,
 
@@ -340,7 +341,7 @@ template <typename Entry, typename Int = int64_t> void spqr_freefac
     cholmod_common *cc
 ) ;
 
-template <typename Int = int64_t> void spqr_stranspose1
+template <typename Int = SuiteSparse_long> void spqr_stranspose1
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
@@ -365,7 +366,7 @@ template <typename Int = int64_t> void spqr_stranspose1
 ) ;
 
 
-template <typename Entry, typename Int = int64_t> void spqr_stranspose2
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_stranspose2
 (
     // input, not modified
     cholmod_sparse *A,  // m-by-n
@@ -389,7 +390,7 @@ template <typename Entry, typename Int = int64_t> void spqr_stranspose2
 
 #ifndef NDEBUG
 
-template <typename Entry, typename Int = int64_t> void spqrDebug_dumpdense
+template <typename Entry, typename Int = SuiteSparse_long> void spqrDebug_dumpdense
 (
     Entry *A,
     Int m,
@@ -398,7 +399,7 @@ template <typename Entry, typename Int = int64_t> void spqrDebug_dumpdense
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqrDebug_dumpsparse
+template <typename Entry, typename Int = SuiteSparse_long> void spqrDebug_dumpsparse
 (
     Int *Ap,
     Int *Ai,
@@ -411,10 +412,10 @@ template <typename Entry, typename Int = int64_t> void spqrDebug_dumpsparse
 void spqrDebug_print (double x) ;
 void spqrDebug_print (Complex x) ;
 
-template <typename Int = int64_t> 
+template <typename Int = SuiteSparse_long> 
 void spqrDebug_dump_Parent (Int n, Int *Parent, const char *filename) ;
 
-template <typename Int = int64_t> Int spqrDebug_rhsize // returns # of entries in R+H block
+template <typename Int = SuiteSparse_long> Int spqrDebug_rhsize // returns # of entries in R+H block
 (
     // input, not modified
     Int m,                 // # of rows in F
@@ -427,7 +428,7 @@ template <typename Int = int64_t> Int spqrDebug_rhsize // returns # of entries i
 #endif
 
 #ifdef DEBUG_EXPENSIVE
-template <typename Int = int64_t> Int spqrDebug_listcount
+template <typename Int = SuiteSparse_long> Int spqrDebug_listcount
 (
     Int x, Int *List, Int len, Int what,
     cholmod_common *cc
@@ -436,7 +437,7 @@ template <typename Int = int64_t> Int spqrDebug_listcount
 
 // =============================================================================
 
-template <typename Int = int64_t> Int spqr_fsize // returns # of rows of F
+template <typename Int = SuiteSparse_long> Int spqr_fsize // returns # of rows of F
 (
     // inputs, not modified
     Int f,
@@ -454,7 +455,7 @@ template <typename Int = int64_t> Int spqr_fsize // returns # of rows of F
 ) ;
 
 
-template <typename Entry, typename Int = int64_t> void spqr_assemble
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_assemble
 (
     // inputs, not modified
     Int f,                 // front to assemble F
@@ -490,7 +491,7 @@ template <typename Entry, typename Int = int64_t> void spqr_assemble
     Int *Cmap
 ) ;
 
-template <typename Entry, typename Int = int64_t> Int spqr_cpack // returns # of rows in C
+template <typename Entry, typename Int = SuiteSparse_long> Int spqr_cpack // returns # of rows in C
 (
     // input, not modified
     Int m,                 // # of rows in F
@@ -506,7 +507,7 @@ template <typename Entry, typename Int = int64_t> Int spqr_cpack // returns # of
                             // trapezoidal form.
 ) ;
 
-template <typename Int = int64_t> Int spqr_fcsize // returns # of entries in C of current front F
+template <typename Int = SuiteSparse_long> Int spqr_fcsize // returns # of entries in C of current front F
 (
     // input, not modified
     Int m,                 // # of rows in F
@@ -515,7 +516,7 @@ template <typename Int = int64_t> Int spqr_fcsize // returns # of entries in C o
     Int g                  // the C block starts at F (g,npiv)
 ) ;
 
-template <typename Int = int64_t> Int spqr_csize // returns # of entries in C of a child
+template <typename Int = SuiteSparse_long> Int spqr_csize // returns # of entries in C of a child
 (
     // input, not modified
     Int c,                 // child c
@@ -524,7 +525,7 @@ template <typename Int = int64_t> Int spqr_csize // returns # of entries in C of
     Int *Super             // size nf, pivotal columns in each front
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_rcount
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_rcount
 (
     // inputs, not modified
     spqr_symbolic <Int> *QRsym,
@@ -547,7 +548,7 @@ template <typename Entry, typename Int = int64_t> void spqr_rcount
     Int *p_nh          // number of Householder vectors (nh <= rjsize)
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_rconvert
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_rconvert
 (
     // inputs, not modified
     spqr_symbolic <Int> *QRsym,
@@ -592,7 +593,7 @@ template <typename Entry, typename Int = int64_t> void spqr_rconvert
     Entry *H2Tau        // size nh; Householder coefficients
 ) ;
 
-template <typename Entry, typename Int = int64_t> Int spqr_rhpack    // returns # of entries in R+H
+template <typename Entry, typename Int = SuiteSparse_long> Int spqr_rhpack    // returns # of entries in R+H
 (
     // input, not modified
     int keepH,              // if true, then H is packed
@@ -610,7 +611,7 @@ template <typename Entry, typename Int = int64_t> Int spqr_rhpack    // returns 
     Int *p_rm              // number of rows in R block
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_hpinv
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_hpinv
 (
     // input
     spqr_symbolic <Int> *QRsym,
@@ -620,7 +621,7 @@ template <typename Entry, typename Int = int64_t> void spqr_hpinv
     Int *W              // size QRnum->m
 ) ;
 
-template <typename Entry, typename Int = int64_t> int spqr_1colamd
+template <typename Entry, typename Int = SuiteSparse_long> int spqr_1colamd
 (
     // inputs, not modified
     int ordering,           // all available, except 0:fixed and 3:given
@@ -652,7 +653,7 @@ template <typename Entry, typename Int = int64_t> int spqr_1colamd
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> int spqr_1fixed
+template <typename Entry, typename Int = SuiteSparse_long> int spqr_1fixed
 (
     // inputs, not modified
     double tol,             // only accept singletons above tol
@@ -679,7 +680,7 @@ template <typename Entry, typename Int = int64_t> int spqr_1fixed
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> 
+template <typename Entry, typename Int = SuiteSparse_long> 
 SuiteSparseQR_factorization <Entry, Int> *spqr_1factor
 (
     // inputs, not modified
@@ -697,7 +698,7 @@ SuiteSparseQR_factorization <Entry, Int> *spqr_1factor
     cholmod_common *cc
 ) ;
 
-template <typename Int = int64_t> Int spqr_cumsum // returns total sum
+template <typename Int = SuiteSparse_long> Int spqr_cumsum // returns total sum
 (
     // input, not modified
     Int n,
@@ -706,7 +707,7 @@ template <typename Int = int64_t> Int spqr_cumsum // returns total sum
     Int *X                 // size n+1. X = cumsum ([0 X])
 ) ;
 
-template <typename Int = int64_t> void spqr_shift
+template <typename Int = SuiteSparse_long> void spqr_shift
 (
     // input, not modified
     Int n,
@@ -715,7 +716,7 @@ template <typename Int = int64_t> void spqr_shift
     Int *X                 // size n+1
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_larftb
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_larftb
 (
     // inputs, not modified (V is modified and then restored on output)
     int method,     // 0,1,2,3
@@ -738,7 +739,7 @@ template <typename Entry, typename Int = int64_t> void spqr_larftb
     cholmod_common *cc
 ) ;
 
-template <typename Int = int64_t> int spqr_happly_work
+template <typename Int = SuiteSparse_long> int spqr_happly_work
 (
     // input
     int method,     // 0,1,2,3 
@@ -757,7 +758,7 @@ template <typename Int = int64_t> int spqr_happly_work
     Int *p_csize
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_happly
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_happly
 (
     // input
     int method,     // 0,1,2,3 
@@ -786,7 +787,7 @@ template <typename Entry, typename Int = int64_t> void spqr_happly
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_panel
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_panel
 (
     // input
     int method,
@@ -809,7 +810,7 @@ template <typename Entry, typename Int = int64_t> void spqr_panel
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> int spqr_append       // TRUE if OK, FALSE otherwise
+template <typename Entry, typename Int = SuiteSparse_long> int spqr_append       // TRUE if OK, FALSE otherwise
 (
     // inputs, not modified
     Entry *X,       // size m-by-1
@@ -824,7 +825,7 @@ template <typename Entry, typename Int = int64_t> int spqr_append       // TRUE 
     cholmod_common *cc
 ) ;
 
-template <typename Entry, typename Int = int64_t> Int spqr_trapezoidal // rank of R, or EMPTY
+template <typename Entry, typename Int = SuiteSparse_long> Int spqr_trapezoidal // rank of R, or EMPTY
 (
     // inputs, not modified
 
@@ -857,11 +858,16 @@ template <typename Entry, typename Int = int64_t> Int spqr_trapezoidal // rank o
 
 template <typename Entry> int spqr_type (void) ;
 
-template <typename Int = int64_t> void *spqr_malloc (size_t n, size_t size, cholmod_common *Common) ;
-template <typename Int = int64_t> void *spqr_calloc (size_t n, size_t size, cholmod_common *Common) ;
-template <typename Int = int64_t> void *spqr_free (size_t n, size_t size, void *p, cholmod_common *Common) ;
+template <typename Int = SuiteSparse_long>
+void *spqr_malloc (size_t n, size_t size, cholmod_common *Common) ;
 
-template <typename Int = int64_t> void *spqr_realloc	/* returns pointer to reallocated block */
+template <typename Int = SuiteSparse_long>
+void *spqr_calloc (size_t n, size_t size, cholmod_common *Common) ;
+
+template <typename Int = SuiteSparse_long>
+void *spqr_free (size_t n, size_t size, void *p, cholmod_common *Common) ;
+
+template <typename Int = SuiteSparse_long> void *spqr_realloc	/* returns pointer to reallocated block */
 (
     /* ---- input ---- */
     size_t nnew,	/* requested # of items in reallocated block */
@@ -873,7 +879,7 @@ template <typename Int = int64_t> void *spqr_realloc	/* returns pointer to reall
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> cholmod_sparse *spqr_allocate_sparse 
+template <typename Int = SuiteSparse_long> cholmod_sparse *spqr_allocate_sparse 
 (
     /* ---- input ---- */
     size_t nrow,	/* # of rows of A */
@@ -887,7 +893,7 @@ template <typename Int = int64_t> cholmod_sparse *spqr_allocate_sparse
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> int spqr_free_sparse
+template <typename Int = SuiteSparse_long> int spqr_free_sparse
 (
     /* ---- in/out --- */
     cholmod_sparse **A,	/* matrix to deallocate, NULL on output */
@@ -895,7 +901,7 @@ template <typename Int = int64_t> int spqr_free_sparse
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> int spqr_reallocate_sparse
+template <typename Int = SuiteSparse_long> int spqr_reallocate_sparse
 (
     /* ---- input ---- */
     size_t nznew,	/* new # of entries in A */
@@ -905,7 +911,7 @@ template <typename Int = int64_t> int spqr_reallocate_sparse
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> cholmod_sparse *spqr_speye
+template <typename Int = SuiteSparse_long> cholmod_sparse *spqr_speye
 (
     /* ---- input ---- */
     size_t nrow,	/* # of rows of A */
@@ -915,7 +921,7 @@ template <typename Int = int64_t> cholmod_sparse *spqr_speye
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> cholmod_dense *spqr_allocate_dense
+template <typename Int = SuiteSparse_long> cholmod_dense *spqr_allocate_dense
 (
     /* ---- input ---- */
     size_t nrow,	/* # of rows of matrix */
@@ -926,7 +932,7 @@ template <typename Int = int64_t> cholmod_dense *spqr_allocate_dense
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> int spqr_free_dense
+template <typename Int = SuiteSparse_long> int spqr_free_dense
 (
     /* ---- in/out --- */
     cholmod_dense **X,	/* dense matrix to deallocate, NULL on output */
@@ -934,7 +940,7 @@ template <typename Int = int64_t> int spqr_free_dense
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> cholmod_factor *spqr_allocate_factor
+template <typename Int = SuiteSparse_long> cholmod_factor *spqr_allocate_factor
 (
     /* ---- input ---- */
     size_t n,		/* L is n-by-n */
@@ -942,7 +948,7 @@ template <typename Int = int64_t> cholmod_factor *spqr_allocate_factor
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> int spqr_free_factor
+template <typename Int = SuiteSparse_long> int spqr_free_factor
 (
     /* ---- in/out --- */
     cholmod_factor **L,	/* factor to free, NULL on output */
@@ -950,7 +956,7 @@ template <typename Int = int64_t> int spqr_free_factor
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> int spqr_allocate_work
+template <typename Int = SuiteSparse_long> int spqr_allocate_work
 (
     /* ---- input ---- */
     size_t nrow,	/* size: Common->Flag (nrow), Common->Head (nrow+1) */
@@ -960,17 +966,17 @@ template <typename Int = int64_t> int spqr_allocate_work
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> 
+template <typename Int = SuiteSparse_long> 
 int spqr_amd(cholmod_sparse *A, Int *fset, size_t fsize, Int *Perm, cholmod_common *Common) ;
 
-template <typename Int = int64_t> 
+template <typename Int = SuiteSparse_long> 
 int spqr_metis(cholmod_sparse *A, Int *fset, size_t fsize, int postorder, Int *Perm, cholmod_common *Common) ;
 
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 cholmod_sparse *spqr_transpose(cholmod_sparse *A, int values, cholmod_common *Common) ;
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 cholmod_factor *spqr_analyze_p2
 (
     /* ---- input ---- */
@@ -985,7 +991,7 @@ cholmod_factor *spqr_analyze_p2
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 int spqr_colamd
 (
     /* ---- input ---- */
@@ -999,14 +1005,14 @@ int spqr_colamd
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 int64_t spqr_nnz
 (
     cholmod_sparse *A,
     cholmod_common *Common
 ) ;
 
-template <typename Int = int64_t> Int spqr_postorder	/* return # of nodes postordered */
+template <typename Int = SuiteSparse_long> Int spqr_postorder	/* return # of nodes postordered */
 (
     /* ---- input ---- */
     Int *Parent,	/* size n. Parent [j] = p if p is the parent of j */
@@ -1018,7 +1024,7 @@ template <typename Int = int64_t> Int spqr_postorder	/* return # of nodes postor
     cholmod_common *Common
 ) ;
 
-template <typename Entry, typename Int = int64_t> void spqr_rsolve
+template <typename Entry, typename Int = SuiteSparse_long> void spqr_rsolve
 (
     // inputs
     SuiteSparseQR_factorization <Entry, Int> *QR,
@@ -1040,7 +1046,7 @@ template <typename Entry, typename Int = int64_t> void spqr_rsolve
 ) ;
 
 // returns rank of F, or 0 on error
-template <typename Entry, typename Int = int64_t> Int spqr_front
+template <typename Entry, typename Int = SuiteSparse_long> Int spqr_front
 (
     // input, not modified
     Int m,             // F is m-by-n with leading dimension m
@@ -1071,7 +1077,7 @@ template <typename Entry, typename Int = int64_t> Int spqr_front
     cholmod_common *cc
 ) ;
 
-template <typename Int = int64_t> cholmod_sparse *spqr_dense_to_sparse
+template <typename Int = SuiteSparse_long> cholmod_sparse *spqr_dense_to_sparse
 (
     /* ---- input ---- */
     cholmod_dense *X,	/* matrix to copy */
@@ -1079,7 +1085,7 @@ template <typename Int = int64_t> cholmod_sparse *spqr_dense_to_sparse
     /* --------------- */
     cholmod_common *Common
 ) ;
-template <typename Int = int64_t> cholmod_dense *spqr_sparse_to_dense
+template <typename Int = SuiteSparse_long> cholmod_dense *spqr_sparse_to_dense
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to copy */
@@ -1087,7 +1093,7 @@ template <typename Int = int64_t> cholmod_dense *spqr_sparse_to_dense
     cholmod_common *Common
 ) ;
 
-template <typename Entry, typename Int = int64_t> int spqr_rmap
+template <typename Entry, typename Int = SuiteSparse_long> int spqr_rmap
 (
     SuiteSparseQR_factorization <Entry, Int> *QR,
     cholmod_common *cc
@@ -1156,7 +1162,7 @@ inline Complex spqr_divide (Complex a, Complex b, cholmod_common *cc)
 // Add two non-negative Int's, and return the result.  Checks for Int
 // overflow and sets ok to FALSE if it occurs.
 
-template <typename Int = int64_t> inline Int spqr_add (Int a, Int b, int *ok)
+template <typename Int = SuiteSparse_long> inline Int spqr_add (Int a, Int b, int *ok)
 {
     Int c = a + b ;
     if (c < 0)
@@ -1175,7 +1181,7 @@ template <typename Int = int64_t> inline Int spqr_add (Int a, Int b, int *ok)
 // Multiply two positive Int's, and return the result.  Checks for Int
 // overflow and sets ok to FALSE if it occurs.
 
-template <typename Int = int64_t> inline Int spqr_mult (Int a, Int b, int *ok)
+template <typename Int = SuiteSparse_long> inline Int spqr_mult (Int a, Int b, int *ok)
 {
     Int c = a * b ;
     if (((double) c) != ((double) a) * ((double) b))
@@ -1234,5 +1240,5 @@ template <typename Int = int64_t> inline Int spqr_mult (Int a, Int b, int *ok)
     #define TEST_COVERAGE_RESUME
 
 #endif
-#endif
 
+#endif

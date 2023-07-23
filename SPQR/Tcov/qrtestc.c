@@ -26,7 +26,7 @@ void qrtest_C
     cholmod_sparse *Bsparse, *Xsparse ;
     SuiteSparseQR_C_factorization *QR ;
     double resid, one [2] = {1,0}, minusone [2] = {-1,0} ;
-    int64_t m, n ;
+    SuiteSparse_long m, n ;
 #ifndef NEXPERT
     cholmod_dense *Y ;
     int split ;

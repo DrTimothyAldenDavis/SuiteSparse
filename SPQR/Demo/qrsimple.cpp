@@ -40,7 +40,7 @@ int main (int argc, char **argv)
 #else
     printf ("2-norm of residual: not computed (requires CHOLMOD/MatrixOps)\n") ;
 #endif
-    printf ("rank %" PRId64 "\n", cc->SPQR_istat [4]) ;
+    printf ("rank %" SuiteSparse_long_idd "\n", cc->SPQR_istat [4]) ;
 
     // free everything and finish CHOLMOD
     cholmod_l_free_dense (&Residual, cc) ;

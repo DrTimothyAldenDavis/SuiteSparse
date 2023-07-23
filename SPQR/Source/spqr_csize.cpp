@@ -27,24 +27,25 @@ template <typename Int> Int spqr_csize     // returns # of entries in C of a chi
     cn = fnc - fpc ;                // # of cols in child C
     ASSERT (cm >= 0 && cm <= cn) ;
     ASSERT (pc + cm <= Rp [c+1]) ;
-    // Note that this is safe from int64_t overflow
+    // Note that this is safe from SuiteSparse_long overflow
     csize = (cm * (cm+1)) / 2 + cm * (cn - cm) ;
     return (csize) ;
 }
 
-template int32_t spqr_csize <int32_t>     // returns # of entries in C of a child
+
+// explicit instantiations
+
+template int32_t spqr_csize <int32_t>
 (
-    // input, not modified
-    int32_t c,                 // child c
-    int32_t *Rp,               // size nf+1, pointers for pattern of R
-    int32_t *Cm,               // size nf, Cm [c] = # of rows in child C
-    int32_t *Super             // size nf, pivotal columns in each front
+    int32_t c, int32_t *Rp, int32_t *Cm, int32_t *Super
 ) ;
-template int64_t spqr_csize <int64_t>     // returns # of entries in C of a child
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparse_long spqr_csize <SuiteSparse_long>
 (
-    // input, not modified
-    int64_t c,                 // child c
-    int64_t *Rp,               // size nf+1, pointers for pattern of R
-    int64_t *Cm,               // size nf, Cm [c] = # of rows in child C
-    int64_t *Super             // size nf, pivotal columns in each front
+    SuiteSparse_long c, SuiteSparse_long *Rp, SuiteSparse_long *Cm,
+    SuiteSparse_long *Super
 ) ;
+
+#endif

@@ -106,63 +106,32 @@ template <typename Entry, typename Int> Int spqr_cpack     // returns # of rows 
     PR (("Cpack rank %ld cm %ld cn %ld\n", rank, cm, cn)) ;
     return (cm) ;                       // return # of rows in C
 }
-template int32_t spqr_cpack <double, int32_t>     // returns # of rows in C
+
+
+// explicit instantiations
+
+template int32_t spqr_cpack <double, int32_t>
 (
-    // input, not modified
-    int32_t m,                 // # of rows in F
-    int32_t n,                 // # of columns in F
-    int32_t npiv,              // number of pivotal columns in F
-    int32_t rank,              // the C block starts at F (rank,npiv)
-
-    // input, not modified unless the pack occurs in-place
-    double *F,               // m-by-n frontal matrix in column-major order
-
-    // output, contents not defined on input
-    double *C                // packed columns of C, of size cm-by-cn in upper
-                            // trapezoidal form.
+    int32_t m, int32_t n, int32_t npiv, int32_t rank, double *F, double *C
 ) ;
-template int32_t spqr_cpack <Complex, int32_t>     // returns # of rows in C
+
+template int32_t spqr_cpack <Complex, int32_t>
 (
-    // input, not modified
-    int32_t m,                 // # of rows in F
-    int32_t n,                 // # of columns in F
-    int32_t npiv,              // number of pivotal columns in F
-    int32_t rank,              // the C block starts at F (rank,npiv)
-
-    // input, not modified unless the pack occurs in-place
-    Complex *F,               // m-by-n frontal matrix in column-major order
-
-    // output, contents not defined on input
-    Complex *C                // packed columns of C, of size cm-by-cn in upper
-                            // trapezoidal form.
+    int32_t m, int32_t n, int32_t npiv, int32_t rank, Complex *F, Complex *C
 ) ;
-template int64_t spqr_cpack <double, int64_t>     // returns # of rows in C
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparse_long spqr_cpack <double, SuiteSparse_long>
 (
-    // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t rank,              // the C block starts at F (rank,npiv)
-
-    // input, not modified unless the pack occurs in-place
-    double *F,               // m-by-n frontal matrix in column-major order
-
-    // output, contents not defined on input
-    double *C                // packed columns of C, of size cm-by-cn in upper
-                            // trapezoidal form.
+    SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long npiv,
+    SuiteSparse_long rank, double *F, double *C
 ) ;
-template int64_t spqr_cpack <Complex, int64_t>     // returns # of rows in C
+
+template SuiteSparse_long spqr_cpack <Complex, SuiteSparse_long>
 (
-    // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t rank,              // the C block starts at F (rank,npiv)
-
-    // input, not modified unless the pack occurs in-place
-    Complex *F,               // m-by-n frontal matrix in column-major order
-
-    // output, contents not defined on input
-    Complex *C                // packed columns of C, of size cm-by-cn in upper
-                            // trapezoidal form.
+    SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long npiv,
+    SuiteSparse_long rank, Complex *F, Complex *C
 ) ;
+
+#endif

@@ -113,24 +113,31 @@ template <typename Entry, typename Int> int spqr_rmap
     return (TRUE) ;
 }
 
+
+// explicit instantiations
+
 template int spqr_rmap <double, int32_t>
 (
-    SuiteSparseQR_factorization <double, int32_t> *QR,
-    cholmod_common *cc
+    SuiteSparseQR_factorization <double, int32_t> *QR, cholmod_common *cc
 ) ;
+
 template int spqr_rmap <Complex, int32_t>
 (
-    SuiteSparseQR_factorization <Complex, int32_t> *QR,
+    SuiteSparseQR_factorization <Complex, int32_t> *QR, cholmod_common *cc
+) ;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template int spqr_rmap <double, SuiteSparse_long>
+(
+    SuiteSparseQR_factorization <double, SuiteSparse_long> *QR,
     cholmod_common *cc
 ) ;
 
-template int spqr_rmap <double, int64_t>
+template int spqr_rmap <Complex, SuiteSparse_long>
 (
-    SuiteSparseQR_factorization <double, int64_t> *QR,
+    SuiteSparseQR_factorization <Complex, SuiteSparse_long> *QR,
     cholmod_common *cc
 ) ;
-template int spqr_rmap <Complex, int64_t>
-(
-    SuiteSparseQR_factorization <Complex, int64_t> *QR,
-    cholmod_common *cc
-) ;
+
+#endif

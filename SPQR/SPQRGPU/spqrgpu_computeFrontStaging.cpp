@@ -237,84 +237,35 @@ void spqrgpu_computeFrontStaging
     return;
 }
 
-template void spqrgpu_computeFrontStaging
-(
-    // inputs, not modified on output
-    int64_t numFronts,     // total number of fronts (nf in caller)
-    int64_t *Parent,       // size nf+1, assembly tree (f=nf is placeholder)
-    int64_t *Childp,       // size nf+2, children of f are
-                        //      Child [Childp [f] ... Childp [f+1]-1]
-    int64_t *Child,        // size nf+1.
 
-    int64_t *Fm,           // size nf+1, front f has Fm [f] rows
-    int64_t *Cm,           // size nf+1, front f has Cm [f] rows in contrib
-    int64_t *Rp,           // size nf+1, Rj[Rp[f]...Rp[f+1]-1] are the cols in f
-    int64_t *Sp,           // size m+1, row pointers for sparse matrix S
-    int64_t *Sleft,        // size n+2, see spqr_stranspose for description
-    int64_t *Super,        // size nf+1, front f pivotal cols are
-                        //      Super[f]..Super[f+1]-1
-    int64_t *Post,         // size nf+1, front f is kth, if f = Post [k]
-
-    int64_t RimapSize,     // scalar, size of Rimap on the GPU (# of int's)
-    int64_t RjmapSize,     // scalar, size of Rimap on the GPU (# of int's)
-
-    // output, not defined on input:
-    bool *feasible,     // scalar, true if feasible, false if GPU memory too low
-    int64_t *numStages,    // scalar, number of stages
-    int64_t *Stagingp,     // size nf+2, fronts are in the list
-                        //      Post [Stagingp [stage]...Stagingp[stage+1]-1]
-    int64_t *StageMap,     // size nf, front f is in stage StageMap [f]
-
-    size_t *FSize,      // size nf+1, FSize[stage]: size in bytes of MongoF
-    size_t *RSize,      // size nf+1, Rsize[stage]: size in bytes of MongoR
-    size_t *SSize,      // size nf+1, Ssize[stage]: size in bytes of S
-    int64_t *FOffsets,     // size nf, front f in MondoF [FOffsets[f]...] on GPU
-    int64_t *ROffsets,     // size nf, R block in MondoR [Roffsets[f]...] on CPU
-    int64_t *SOffsets,     // size nf, S entries for front f are in
-                        //      wsS [SOffsets[f]...]
-
-    // input/output:
-    cholmod_common *cc
-) ;
+// explicit instantiations
 
 template void spqrgpu_computeFrontStaging
 (
-    // inputs, not modified on output
-    int32_t numFronts,     // total number of fronts (nf in caller)
-    int32_t *Parent,       // size nf+1, assembly tree (f=nf is placeholder)
-    int32_t *Childp,       // size nf+2, children of f are
-                        //      Child [Childp [f] ... Childp [f+1]-1]
-    int32_t *Child,        // size nf+1.
-
-    int32_t *Fm,           // size nf+1, front f has Fm [f] rows
-    int32_t *Cm,           // size nf+1, front f has Cm [f] rows in contrib
-    int32_t *Rp,           // size nf+1, Rj[Rp[f]...Rp[f+1]-1] are the cols in f
-    int32_t *Sp,           // size m+1, row pointers for sparse matrix S
-    int32_t *Sleft,        // size n+2, see spqr_stranspose for description
-    int32_t *Super,        // size nf+1, front f pivotal cols are
-                        //      Super[f]..Super[f+1]-1
-    int32_t *Post,         // size nf+1, front f is kth, if f = Post [k]
-
-    int32_t RimapSize,     // scalar, size of Rimap on the GPU (# of int's)
-    int32_t RjmapSize,     // scalar, size of Rimap on the GPU (# of int's)
-
-    // output, not defined on input:
-    bool *feasible,     // scalar, true if feasible, false if GPU memory too low
-    int32_t *numStages,    // scalar, number of stages
-    int32_t *Stagingp,     // size nf+2, fronts are in the list
-                        //      Post [Stagingp [stage]...Stagingp[stage+1]-1]
-    int32_t *StageMap,     // size nf, front f is in stage StageMap [f]
-
-    size_t *FSize,      // size nf+1, FSize[stage]: size in bytes of MongoF
-    size_t *RSize,      // size nf+1, Rsize[stage]: size in bytes of MongoR
-    size_t *SSize,      // size nf+1, Ssize[stage]: size in bytes of S
-    int32_t *FOffsets,     // size nf, front f in MondoF [FOffsets[f]...] on GPU
-    int32_t *ROffsets,     // size nf, R block in MondoR [Roffsets[f]...] on CPU
-    int32_t *SOffsets,     // size nf, S entries for front f are in
-                        //      wsS [SOffsets[f]...]
-
-    // input/output:
-    cholmod_common *cc
+    int32_t numFronts, int32_t *Parent, int32_t *Childp, int32_t *Child,
+    int32_t *Fm, int32_t *Cm, int32_t *Rp, int32_t *Sp, int32_t *Sleft,
+    int32_t *Super, int32_t *Post, int32_t RimapSize, int32_t RjmapSize,
+    bool *feasible, int32_t *numStages, int32_t *Stagingp, int32_t *StageMap,
+    size_t *FSize, size_t *RSize, size_t *SSize, int32_t *FOffsets,
+    int32_t *ROffsets, int32_t *SOffsets, cholmod_common *cc
 ) ;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqrgpu_computeFrontStaging
+(
+    SuiteSparse_long numFronts, SuiteSparse_long *Parent,
+    SuiteSparse_long *Childp,  SuiteSparse_long *Child,
+    SuiteSparse_long *Fm, SuiteSparse_long *Cm,
+    SuiteSparse_long *Rp, SuiteSparse_long *Sp, SuiteSparse_long *Sleft,
+    SuiteSparse_long *Super, SuiteSparse_long *Post,
+    SuiteSparse_long RimapSize, SuiteSparse_long RjmapSize,
+    bool *feasible, SuiteSparse_long *numStages, SuiteSparse_long *Stagingp,
+    SuiteSparse_long *StageMap, size_t *FSize, size_t *RSize,  size_t *SSize,
+    SuiteSparse_long *FOffsets, SuiteSparse_long *ROffsets,
+    SuiteSparse_long *SOffsets, cholmod_common *cc
+) ;
+
+#endif
 
 #endif

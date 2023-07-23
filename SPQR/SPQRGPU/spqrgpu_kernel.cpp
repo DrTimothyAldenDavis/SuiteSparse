@@ -750,8 +750,17 @@ void spqrgpu_kernel
     return ;
 }
 
-template void spqrgpu_kernel (spqr_blob <Complex, int32_t> *Blob) ;
-template void spqrgpu_kernel (spqr_blob <Complex, int64_t> *Blob) ;
+
+// explicit instantiations
 
 template void spqrgpu_kernel (spqr_blob <double, int32_t> *Blob) ;
-template void spqrgpu_kernel (spqr_blob <double, int64_t> *Blob) ;
+
+template void spqrgpu_kernel (spqr_blob <Complex, int32_t> *Blob) ;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqrgpu_kernel (spqr_blob <double, SuiteSparse_long> *Blob) ;
+
+template void spqrgpu_kernel (spqr_blob <Complex, SuiteSparse_long> *Blob) ;
+
+#endif

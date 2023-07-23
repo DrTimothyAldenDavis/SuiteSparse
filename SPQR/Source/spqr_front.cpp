@@ -143,12 +143,6 @@
 //
 //  This function performs about 3*n+2 flops
 
-inline double spqr_private_larfg (int64_t n, double *X, cholmod_common *cc)
-{
-    double tau = 0 ;
-    SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
-    return (tau) ;
-}
 inline double spqr_private_larfg (int32_t n, double *X, cholmod_common *cc)
 {
     double tau = 0 ;
@@ -156,18 +150,31 @@ inline double spqr_private_larfg (int32_t n, double *X, cholmod_common *cc)
     return (tau) ;
 }
 
-inline Complex spqr_private_larfg (int64_t n, Complex *X, cholmod_common *cc)
-{
-    Complex tau = 0 ;
-    SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
-    return (tau) ;
-}
 inline Complex spqr_private_larfg (int32_t n, Complex *X, cholmod_common *cc)
 {
     Complex tau = 0 ;
     SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
     return (tau) ;
 }
+
+#if SuiteSparse_long_max != INT32_MAX
+
+inline double spqr_private_larfg (SuiteSparse_long n, double *X, cholmod_common *cc)
+{
+    double tau = 0 ;
+    SUITESPARSE_LAPACK_dlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
+    return (tau) ;
+}
+
+inline Complex spqr_private_larfg (SuiteSparse_long n, Complex *X, cholmod_common *cc)
+{
+    Complex tau = 0 ;
+    SUITESPARSE_LAPACK_zlarfg (n, X, X + 1, 1, &tau, cc->blas_ok) ;
+    return (tau) ;
+}
+
+#endif
+
 
 template <typename Entry, typename Int> Entry spqr_private_house  // returns tau
 (
@@ -203,12 +210,6 @@ template <typename Entry, typename Int> Entry spqr_private_house  // returns tau
 //  If applied to a single column, this function performs 2*n-1 flops to
 //  compute w, and 2*n+1 to apply it to C, for a total of 4*n flops.
 
-inline void spqr_private_larf (int64_t m, int64_t n, double *V, double tau,
-    double *C, int64_t ldc, double *W, cholmod_common *cc)
-{
-    char left = 'L' ;
-    SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
-}
 inline void spqr_private_larf (int32_t m, int32_t n, double *V, double tau,
     double *C, int32_t ldc, double *W, cholmod_common *cc)
 {
@@ -216,14 +217,6 @@ inline void spqr_private_larf (int32_t m, int32_t n, double *V, double tau,
     SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
 }
 
-inline void spqr_private_larf (int64_t m, int64_t n, Complex *V, Complex tau,
-    Complex *C, int64_t ldc, Complex *W, cholmod_common *cc)
-{
-    char left = 'L' ;
-    Complex conj_tau = spqr_conj (tau) ;
-    SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
-        cc->blas_ok) ;
-}
 inline void spqr_private_larf (int32_t m, int32_t n, Complex *V, Complex tau,
     Complex *C, int32_t ldc, Complex *W, cholmod_common *cc)
 {
@@ -232,6 +225,29 @@ inline void spqr_private_larf (int32_t m, int32_t n, Complex *V, Complex tau,
     SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
         cc->blas_ok) ;
 }
+
+#if SuiteSparse_long_max != INT32_MAX
+
+inline void spqr_private_larf (SuiteSparse_long m, SuiteSparse_long n,
+    double *V, double tau, double *C, SuiteSparse_long ldc, double *W,
+    cholmod_common *cc)
+{
+    char left = 'L' ;
+    SUITESPARSE_LAPACK_dlarf (&left, m, n, V, 1, &tau, C, ldc, W, cc->blas_ok) ;
+}
+
+inline void spqr_private_larf (SuiteSparse_long m, SuiteSparse_long n,
+    Complex *V, Complex tau, Complex *C, SuiteSparse_long ldc, Complex *W,
+    cholmod_common *cc)
+{
+    char left = 'L' ;
+    Complex conj_tau = spqr_conj (tau) ;
+    SUITESPARSE_LAPACK_zlarf (&left, m, n, V, 1, &conj_tau, C, ldc, W,
+        cc->blas_ok) ;
+}
+
+#endif
+
 
 template <typename Entry, typename Int> void spqr_private_apply1
 (
@@ -565,9 +581,9 @@ template <typename Entry, typename Int> Int spqr_front
         }
     }
 
-    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (int64_t) && !cc->blas_ok)
+    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (SuiteSparse_long) && !cc->blas_ok)
     {
-        // This cannot occur if the SUITESPARSE_BLAS_INT and the int64_t are
+        // This cannot occur if the SUITESPARSE_BLAS_INT and the SuiteSparse_long are
         // the same integer.
         ERROR (CHOLMOD_INVALID, "problem too large for the BLAS") ;
         return (0) ;
@@ -576,123 +592,39 @@ template <typename Entry, typename Int> Int spqr_front
     return (rank) ;
 }
 
+
+// explicit instantiations
+
 template int32_t spqr_front <double, int32_t>
 (
-    // input, not modified
-    int32_t m,             // F is m-by-n with leading dimension m
-    int32_t n,
-    int32_t npiv,          // number of pivot columns
-    double tol,         // a column is flagged as dead if its norm is <= tol
-    int32_t ntol,          // apply tol only to first ntol pivot columns
-    int32_t fchunk,        // block size for compact WY Householder reflections,
-                        // treated as 1 if fchunk <= 1
-
-    // input/output
-    double *F,           // frontal matrix F of size m-by-n
-    int32_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
-                        // for each k = 0:n-1, and remain zero on output.
-    char *Rdead,        // size npiv; all zero on input.  If k is dead,
-                        // Rdead [k] is set to 1
-
-    // output, not defined on input
-    double *Tau,         // size n, Householder coefficients
-
-    // workspace, undefined on input and output
-    double *W,           // size b*n, where b = min (fchunk,n,m)
-
-    // input/output
-    double *wscale,
-    double *wssq,
-
-    cholmod_common *cc
+    int32_t m, int32_t n, int32_t npiv, double tol, int32_t ntol,
+    int32_t fchunk, double *F, int32_t *Stair, char *Rdead, double *Tau,
+    double *W, double *wscale, double *wssq, cholmod_common *cc
 ) ;
+
 template int32_t spqr_front <Complex, int32_t>
 (
-    // input, not modified
-    int32_t m,             // F is m-by-n with leading dimension m
-    int32_t n,
-    int32_t npiv,          // number of pivot columns
-    double tol,         // a column is flagged as dead if its norm is <= tol
-    int32_t ntol,          // apply tol only to first ntol pivot columns
-    int32_t fchunk,        // block size for compact WY Householder reflections,
-                        // treated as 1 if fchunk <= 1
-
-    // input/output
-    Complex *F,           // frontal matrix F of size m-by-n
-    int32_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
-                        // for each k = 0:n-1, and remain zero on output.
-    char *Rdead,        // size npiv; all zero on input.  If k is dead,
-                        // Rdead [k] is set to 1
-
-    // output, not defined on input
-    Complex *Tau,         // size n, Householder coefficients
-
-    // workspace, undefined on input and output
-    Complex *W,           // size b*n, where b = min (fchunk,n,m)
-
-    // input/output
-    double *wscale,
-    double *wssq,
-
-    cholmod_common *cc
+    int32_t m, int32_t n, int32_t npiv, double tol, int32_t ntol,
+    int32_t fchunk, Complex *F, int32_t *Stair, char *Rdead, Complex *Tau,
+    Complex *W, double *wscale, double *wssq, cholmod_common *cc
 ) ;
-template int64_t spqr_front <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparse_long spqr_front <double, SuiteSparse_long>
 (
-    // input, not modified
-    int64_t m,             // F is m-by-n with leading dimension m
-    int64_t n,
-    int64_t npiv,          // number of pivot columns
-    double tol,         // a column is flagged as dead if its norm is <= tol
-    int64_t ntol,          // apply tol only to first ntol pivot columns
-    int64_t fchunk,        // block size for compact WY Householder reflections,
-                        // treated as 1 if fchunk <= 1
-
-    // input/output
-    double *F,           // frontal matrix F of size m-by-n
-    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
-                        // for each k = 0:n-1, and remain zero on output.
-    char *Rdead,        // size npiv; all zero on input.  If k is dead,
-                        // Rdead [k] is set to 1
-
-    // output, not defined on input
-    double *Tau,         // size n, Householder coefficients
-
-    // workspace, undefined on input and output
-    double *W,           // size b*n, where b = min (fchunk,n,m)
-
-    // input/output
-    double *wscale,
-    double *wssq,
-
-    cholmod_common *cc
+    SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long npiv,
+    double tol, SuiteSparse_long ntol, SuiteSparse_long fchunk, double *F,
+    SuiteSparse_long *Stair, char *Rdead, double *Tau, double *W,
+    double *wscale, double *wssq, cholmod_common *cc
 ) ;
-template int64_t spqr_front <Complex, int64_t>
+
+template SuiteSparse_long spqr_front <Complex, SuiteSparse_long>
 (
-    // input, not modified
-    int64_t m,             // F is m-by-n with leading dimension m
-    int64_t n,
-    int64_t npiv,          // number of pivot columns
-    double tol,         // a column is flagged as dead if its norm is <= tol
-    int64_t ntol,          // apply tol only to first ntol pivot columns
-    int64_t fchunk,        // block size for compact WY Householder reflections,
-                        // treated as 1 if fchunk <= 1
-
-    // input/output
-    Complex *F,           // frontal matrix F of size m-by-n
-    int64_t *Stair,        // size n, entries F (Stair[k]:m-1, k) are all zero,
-                        // for each k = 0:n-1, and remain zero on output.
-    char *Rdead,        // size npiv; all zero on input.  If k is dead,
-                        // Rdead [k] is set to 1
-
-    // output, not defined on input
-    Complex *Tau,         // size n, Householder coefficients
-
-    // workspace, undefined on input and output
-    Complex *W,           // size b*n, where b = min (fchunk,n,m)
-
-    // input/output
-    double *wscale,
-    double *wssq,
-
-    cholmod_common *cc
+    SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long npiv,
+    double tol, SuiteSparse_long ntol, SuiteSparse_long fchunk,
+    Complex *F, SuiteSparse_long *Stair, char *Rdead, Complex *Tau,
+    Complex *W, double *wscale, double *wssq, cholmod_common *cc
 ) ;
+
+#endif

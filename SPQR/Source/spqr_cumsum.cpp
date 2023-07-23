@@ -46,19 +46,19 @@ template <typename Int> Int spqr_cumsum
     return (itot) ;
 }
 
+
+// explicit instantiations
+
 template int32_t spqr_cumsum <int32_t>
 (
-    // input, not modified
-    int32_t n,
-
-    // input/output
-    int32_t *X                         // size n+1. X = cumsum ([0 X])
+    int32_t n, int32_t *X
 ) ;
-template int64_t spqr_cumsum <int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparse_long spqr_cumsum <SuiteSparse_long>
 (
-    // input, not modified
-    int64_t n,
-
-    // input/output
-    int64_t *X                         // size n+1. X = cumsum ([0 X])
+    SuiteSparse_long n, SuiteSparse_long *X
 ) ;
+
+#endif

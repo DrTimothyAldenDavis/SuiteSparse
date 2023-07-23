@@ -99,28 +99,34 @@ template <typename Entry, typename Int> void spqr_parallel
         spqr_zippy <Entry, Int> (ntasks-1, Blob) ;
     task::spawn_root_and_wait (a) ;
 }
+
+
+// explicit instantiations
+
 template void spqr_parallel <double, int32_t>
 (
-    int32_t ntasks,
-    int nthreads,
-    spqr_blob <double, int32_t> *Blob
+    int32_t ntasks, int nthreads, spqr_blob <double, int32_t> *Blob
 ) ;
+
 template void spqr_parallel <Complex, int32_t>
 (
-    int32_t ntasks,
-    int nthreads,
-    spqr_blob <Complex, int32_t> *Blob
+    int32_t ntasks, int nthreads, spqr_blob <Complex, int32_t> *Blob
 ) ;
-template void spqr_parallel <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_parallel <double, SuiteSparse_long>
 (
-    int64_t ntasks,
-    int nthreads,
-    spqr_blob <double, int64_t> *Blob
+    SuiteSparse_long ntasks, int nthreads,
+    spqr_blob <double, SuiteSparse_long> *Blob
 ) ;
-template void spqr_parallel <Complex, int64_t>
+
+template void spqr_parallel <Complex, SuiteSparse_long>
 (
-    int64_t ntasks,
-    int nthreads,
-    spqr_blob <Complex, int64_t> *Blob
+    SuiteSparse_long ntasks, int nthreads,
+    spqr_blob <Complex, SuiteSparse_long> *Blob
 ) ;
+
+#endif
+
 #endif

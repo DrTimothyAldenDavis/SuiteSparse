@@ -147,94 +147,39 @@ template <typename Entry, typename Int> void spqr_panel
     }
 }
 
-template void spqr_panel <Complex, int32_t>
-(
-    // input
-    int method,         // 0,1,2,3
-    int32_t m,
-    int32_t n,
-    int32_t v,             // length of the first vector in V
-    int32_t h,             // number of Householder vectors in the panel
-    int32_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    Complex *V,           // v-by-h, panel of Householder vectors
-    Complex *Tau,         // size h, Householder coefficients for the panel
-    int32_t ldx,
 
-    // input/output
-    Complex *X,           // m-by-n with leading dimension ldx
-
-    // workspace
-    Complex *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
-    Complex *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
-
-    cholmod_common *cc
-) ;
-
-template void spqr_panel <Complex, int64_t>
-(
-    // input
-    int method,         // 0,1,2,3
-    int64_t m,
-    int64_t n,
-    int64_t v,             // length of the first vector in V
-    int64_t h,             // number of Householder vectors in the panel
-    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    Complex *V,           // v-by-h, panel of Householder vectors
-    Complex *Tau,         // size h, Householder coefficients for the panel
-    int64_t ldx,
-
-    // input/output
-    Complex *X,           // m-by-n with leading dimension ldx
-
-    // workspace
-    Complex *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
-    Complex *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
-
-    cholmod_common *cc
-) ;
+// explicit instantiations
 
 template void spqr_panel <double, int32_t>
 (
-    // input
-    int method,         // 0,1,2,3
-    int32_t m,
-    int32_t n,
-    int32_t v,             // length of the first vector in V
-    int32_t h,             // number of Householder vectors in the panel
-    int32_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    double *V,           // v-by-h, panel of Householder vectors
-    double *Tau,         // size h, Householder coefficients for the panel
-    int32_t ldx,
-
-    // input/output
-    double *X,           // m-by-n with leading dimension ldx
-
-    // workspace
-    double *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
-    double *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
-
+    int method, int32_t m, int32_t n, int32_t v, int32_t h,  int32_t *Vi,
+    double *V, double *Tau, int32_t ldx, double *X, double *C, double *W,
     cholmod_common *cc
 ) ;
 
-template void spqr_panel <double, int64_t>
+template void spqr_panel <Complex, int32_t>
 (
-    // input
-    int method,         // 0,1,2,3
-    int64_t m,
-    int64_t n,
-    int64_t v,             // length of the first vector in V
-    int64_t h,             // number of Householder vectors in the panel
-    int64_t *Vi,           // Vi [0:v-1] defines the pattern of the panel
-    double *V,           // v-by-h, panel of Householder vectors
-    double *Tau,         // size h, Householder coefficients for the panel
-    int64_t ldx,
-
-    // input/output
-    double *X,           // m-by-n with leading dimension ldx
-
-    // workspace
-    double *C,           // method 0,1: v-by-n;  method 2,3: m-by-v
-    double *W,           // method 0,1: h*h+n*h; method 2,3: h*h+m*h
-
+    int method, int32_t m, int32_t n, int32_t v, int32_t h, int32_t *Vi,
+    Complex *V, Complex *Tau, int32_t ldx, Complex *X, Complex *C, Complex *W,
     cholmod_common *cc
 ) ;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_panel <double, SuiteSparse_long>
+(
+    int method, SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long v,
+    SuiteSparse_long h, SuiteSparse_long *Vi, double *V, double *Tau,
+    SuiteSparse_long ldx, double *X, double *C, double *W,
+    cholmod_common *cc
+) ;
+
+template void spqr_panel <Complex, SuiteSparse_long>
+(
+    int method, SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long v,
+    SuiteSparse_long h, SuiteSparse_long *Vi, Complex *V, Complex *Tau,
+    SuiteSparse_long ldx, Complex *X, Complex *C, Complex *W,
+    cholmod_common *cc
+) ;
+
+#endif

@@ -24,24 +24,25 @@ template <typename Int> Int spqr_fcsize    // returns # of entries in C of curre
     cn = n - npiv ;                         // number of columns of C
     cm = MIN (m-rank, cn) ;                 // number of rows of C
     ASSERT (cm <= cn) ;
-    // Note that this is safe from int64_t overflow:
+    // Note that this is safe from SuiteSparse_long overflow:
     csize = (cm * (cm+1)) / 2 + cm * (cn - cm) ;
     return (csize) ;                        // return # of entries in C
 }
 
-template int32_t spqr_fcsize <int32_t>    // returns # of entries in C of current front F
+
+// explicit instantiations
+
+template int32_t spqr_fcsize <int32_t>
 (
-    // input, not modified
-    int32_t m,                 // # of rows in F
-    int32_t n,                 // # of columns in F
-    int32_t npiv,              // number of pivotal columns in F
-    int32_t rank               // the C block starts at F (rank,npiv)
+    int32_t m, int32_t n, int32_t npiv, int32_t rank
 ) ;
-template int64_t spqr_fcsize <int64_t>    // returns # of entries in C of current front F
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template SuiteSparse_long spqr_fcsize <SuiteSparse_long>
 (
-    // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t rank               // the C block starts at F (rank,npiv)
+    SuiteSparse_long m, SuiteSparse_long n, SuiteSparse_long npiv,
+    SuiteSparse_long rank
 ) ;
+
+#endif

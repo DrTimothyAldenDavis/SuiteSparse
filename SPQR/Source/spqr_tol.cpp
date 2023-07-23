@@ -36,36 +36,29 @@ template <typename Entry, typename Int> double spqr_tol
     return (tol) ;
 }
 
+
+// explicit instantiations
+
 template double spqr_tol <double, int32_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
+
 template double spqr_tol <Complex, int32_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
 
-template double spqr_tol <double, int64_t>
+#if SuiteSparse_long_max != INT32_MAX
+
+template double spqr_tol <double, SuiteSparse_long>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
-template double spqr_tol <Complex, int64_t>
+
+template double spqr_tol <Complex, SuiteSparse_long>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
+
+#endif

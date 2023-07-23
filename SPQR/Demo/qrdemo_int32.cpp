@@ -23,9 +23,9 @@ void check_residual
     cholmod_common *cc
 )
 {
-    int64_t m = A->nrow ;
-    int64_t n = A->ncol ;
-    int64_t rnk ;
+    SuiteSparse_long m = A->nrow ;
+    SuiteSparse_long n = A->ncol ;
+    SuiteSparse_long rnk ;
     double rnorm, anorm, xnorm, atrnorm ;
     double one [2] = {1,0}, minusone [2] = {-1,0}, zero [2] = {0,0} ;
     cholmod_dense *r, *atr ;
@@ -56,13 +56,13 @@ void check_residual
         // find the relative residual, except for least-squares systems
         rnorm /= (anorm * xnorm) ;
     }
-    printf ("relative norm(Ax-b): %8.1e rank: %6" PRId64 "  "
+    printf ("relative norm(Ax-b): %8.1e rank: %6" SuiteSparse_long_idd "  "
         "rel. norm(A'(Ax-b)) %8.1e\n", rnorm, rnk, atrnorm) ;
     cholmod_free_dense (&r, cc) ;
     cholmod_free_dense (&atr, cc) ;
 #else
     printf ("relative norm(Ax-b): not computed (requires CHOLMOD/MatrixOps)\n");
-    printf ("rank: %6" PRId64 "\n", rnk) ;
+    printf ("rank: %6" SuiteSparse_long_idd "\n", rnk) ;
 #endif
 }
 
@@ -74,7 +74,7 @@ int main (int argc, char **argv)
     cholmod_sparse *A ;
     cholmod_dense *X, *B ;
     int mtype ;
-    int64_t m, n ;
+    SuiteSparse_long m, n ;
 
     // start CHOLMOD
     cc = &Common ;
@@ -92,8 +92,9 @@ int main (int argc, char **argv)
     m = A->nrow ;
     n = A->ncol ;
 
-    printf ("Matrix %6" PRId64 "-by-%-6" PRId64 " nnz: %6" PRId64 "\n",
-        m, n, cholmod_nnz (A, cc)) ;
+    printf ("Matrix %6" SuiteSparse_long_idd "-by-%-6" SuiteSparse_long_idd
+            " nnz: %6" SuiteSparse_long_idd "\n",
+            m, n, cholmod_nnz (A, cc)) ;
 
     // B = ones (m,1), a dense right-hand-side of the same type as A
     B = cholmod_ones (m, 1, A->xtype, cc) ;
@@ -124,7 +125,7 @@ int main (int argc, char **argv)
     {
         SuiteSparseQR_factorization <double, int32_t> *QR ;
         cholmod_dense *Y ;
-        int64_t i ;
+        SuiteSparse_long i ;
         double *Bx ;
 
         // factorize once

@@ -168,39 +168,35 @@ template <typename Entry, typename Int> void spqr_hpinv
     }
 }
 
+
+// explicit instantiations
+
 template void spqr_hpinv <double, int32_t>
 (
-    // input
-    spqr_symbolic <int32_t> *QRsym,
-    // input/output
-    spqr_numeric <double, int32_t> *QRnum,
-    // workspace
-    int32_t *W              // size QRnum->m
+    spqr_symbolic <int32_t> *QRsym, spqr_numeric <double, int32_t> *QRnum,
+    int32_t *W
 ) ;
+
 template void spqr_hpinv <Complex, int32_t>
 (
-    // input
-    spqr_symbolic <int32_t> *QRsym,
-    // input/output
-    spqr_numeric <Complex, int32_t> *QRnum,
-    // workspace
-    int32_t *W              // size QRnum->m
+    spqr_symbolic <int32_t> *QRsym, spqr_numeric <Complex, int32_t> *QRnum,
+    int32_t *W
 ) ;
-template void spqr_hpinv <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template void spqr_hpinv <double, SuiteSparse_long>
 (
-    // input
-    spqr_symbolic <int64_t> *QRsym,
-    // input/output
-    spqr_numeric <double, int64_t> *QRnum,
-    // workspace
-    int64_t *W              // size QRnum->m
+    spqr_symbolic <SuiteSparse_long> *QRsym,
+    spqr_numeric <double, SuiteSparse_long> *QRnum,
+    SuiteSparse_long *W
 ) ;
-template void spqr_hpinv <Complex, int64_t>
+
+template void spqr_hpinv <Complex, SuiteSparse_long>
 (
-    // input
-    spqr_symbolic <int64_t> *QRsym,
-    // input/output
-    spqr_numeric <Complex, int64_t> *QRnum,
-    // workspace
-    int64_t *W              // size QRnum->m
+    spqr_symbolic <SuiteSparse_long> *QRsym,
+    spqr_numeric <Complex, SuiteSparse_long> *QRnum,
+    SuiteSparse_long *W
 ) ;
+
+#endif

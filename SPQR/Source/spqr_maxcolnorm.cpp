@@ -69,35 +69,29 @@ template <typename Entry, typename Int> double spqr_maxcolnorm
     return (maxnorm) ;
 }
 
+
+// explicit instantiations
+
 template double spqr_maxcolnorm <double, int32_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
+
 template double spqr_maxcolnorm <Complex, int32_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
-template double spqr_maxcolnorm <double, int64_t>
+
+#if SuiteSparse_long_max != INT32_MAX
+
+template double spqr_maxcolnorm <double, SuiteSparse_long>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
-template double spqr_maxcolnorm <Complex, int64_t>
+
+template double spqr_maxcolnorm <Complex, SuiteSparse_long>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, cholmod_common *cc
 ) ;
+
+#endif
