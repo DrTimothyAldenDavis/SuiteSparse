@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_assemble.c:
-// double int64_t version of umf_assemble
+// double, SuiteSparse_long version of umf_assemble
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

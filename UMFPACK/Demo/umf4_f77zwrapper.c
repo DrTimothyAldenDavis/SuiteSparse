@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 /* FORTRAN interface for the C-callable UMFPACK library (complex / int version
- * only and complex / int64_t versions only).  This is HIGHLY
+ * only and complex / SuiteSparse_long versions only).  This is HIGHLY
  * non-portable.  You will need to modify this depending on how your FORTRAN
  * and C compilers behave.
  *
@@ -31,12 +31,12 @@
 #define LEN 200
 
 /* -------------------------------------------------------------------------- */
-/* integer type: int32_t or int64_t */
+/* integer type: int32_t or SuiteSparse_long */
 /* -------------------------------------------------------------------------- */
 
 #if defined (ZLONG)
 
-#define Int int64_t
+#define Int SuiteSparse_long
 #define UMFPACK_defaults	 umfpack_zl_defaults
 #define UMFPACK_free_numeric	 umfpack_zl_free_numeric
 #define UMFPACK_free_symbolic	 umfpack_zl_free_symbolic
@@ -78,7 +78,7 @@ static void make_filename (Int filenum, char *prefix, char *filename)
 {
     char *psrc, *pdst ;
 #ifdef ZLONG
-    sprintf (filename, "%s%"PRId64".umf", prefix, filenum) ;
+    sprintf (filename, "%s%" SuiteSparse_long_idd ".umf", prefix, filenum) ;
 #else
     sprintf (filename, "%s%d.umf", prefix, filenum) ;
 #endif

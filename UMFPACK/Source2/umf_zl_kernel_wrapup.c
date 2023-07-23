@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_zl_kernel_wrapup.c:
-// double complex int64_t version of umf_kernel_wrapup
+// double complex, SuiteSparse_long version of umf_kernel_wrapup
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

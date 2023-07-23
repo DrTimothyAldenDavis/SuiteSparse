@@ -56,9 +56,9 @@
 /* triplet form of the matrix.  The triplets can be in any order. */
 /* -------------------------------------------------------------------------- */
 
-static int64_t n = 5, nz = 12 ;
-static int64_t Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
-static int64_t Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
+static SuiteSparse_long n = 5, nz = 12 ;
+static SuiteSparse_long Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
+static SuiteSparse_long Acol [ ] = { 0,  4,  0,  2,   1,   2,  1,  4,  3,  2,  1,  2} ;
 static double Aval [ ] = {2., 1., 3., 4., -1., -3., 3., 6., 2., 1., 4., 2.} ;
 static double b [ ] = {8., 45., -3., 3., 19.}, x [5], r [5] ;
 
@@ -84,12 +84,12 @@ static void error
 static double resid
 (
     int transpose,
-    int64_t Ap [ ],
-    int64_t Ai [ ],
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ]
 )
 {
-    int64_t i, j, p ;
+    SuiteSparse_long i, j, p ;
     double norm ;
 
     for (i = 0 ; i < n ; i++)
@@ -135,7 +135,7 @@ int main (int argc, char **argv)
 {
     double Info [UMFPACK_INFO], Control [UMFPACK_CONTROL], *Ax, *Cx, *Lx, *Ux,
 	*W, t [2], *Dx, rnorm, *Rb, *y, *Rs ;
-    int64_t *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
+    SuiteSparse_long *Ap, *Ai, *Cp, *Ci, row, col, p, lnz, unz, nr, nc, *Lp, *Li, *Ui, *Up,
 	*P, *Q, *Lj, i, j, k, anz, nfr, nchains, *Qinit, fnpiv, lnz1, unz1, nz1,
 	status, *Front_npivcol, *Front_parent, *Chain_start, *Wi, *Pinit, n1,
 	*Chain_maxrows, *Chain_maxcols, *Front_1strow, *Front_leftmostdesc,
@@ -180,8 +180,8 @@ int main (int argc, char **argv)
 
     /* convert to column form */
     nz1 = MAX (nz,1) ;	/* ensure arrays are not of size zero. */
-    Ap = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Ai = (int64_t *) malloc (nz1 * sizeof (int64_t)) ;
+    Ap = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ai = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
     Ax = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Ap || !Ai || !Ax)
     {
@@ -189,7 +189,7 @@ int main (int argc, char **argv)
     }
 
     status = umfpack_dl_triplet_to_col (n, n, nz, Arow, Acol, Aval,
-	Ap, Ai, Ax, (int64_t *) NULL) ;
+	Ap, Ai, Ax, (SuiteSparse_long *) NULL) ;
 
     if (status < 0)
     {
@@ -320,7 +320,7 @@ int main (int argc, char **argv)
     {
 	if (row == Ai [p])
 	{
-	    printf ("\nchanging A (%"PRId64",%"PRId64") to zero\n", row, col) ;
+	    printf ("\nchanging A (%" SuiteSparse_long_idd ",%" SuiteSparse_long_idd ") to zero\n", row, col) ;
 	    Ax [p] = 0.0 ;
 	    break ;
 	}
@@ -378,7 +378,7 @@ int main (int argc, char **argv)
 	{
 	    row = Ai [p] ;
 	    printf ("changing ") ;
-	    printf ("A (%"PRId64",%"PRId64") from %g", row, col, Ax [p]) ;
+	    printf ("A (%" SuiteSparse_long_idd ",%" SuiteSparse_long_idd ") from %g", row, col, Ax [p]) ;
 	    Ax [p] = Ax [p] + col*10 - row ;
 	    printf (" to %g\n", Ax [p]) ;
 	}
@@ -453,15 +453,15 @@ int main (int argc, char **argv)
     /* C = transpose of A */
     /* ---------------------------------------------------------------------- */
 
-    Cp = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Ci = (int64_t *) malloc (nz1 * sizeof (int64_t)) ;
+    Cp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ci = (SuiteSparse_long *) malloc (nz1 * sizeof (SuiteSparse_long)) ;
     Cx = (double *) malloc (nz1 * sizeof (double)) ;
     if (!Cp || !Ci || !Cx)
     {
 	error ("out of memory") ;
     }
     status = umfpack_dl_transpose (n, n, Ap, Ai, Ax,
-	(int64_t *) NULL, (int64_t *) NULL, Cp, Ci, Cx) ;
+	(SuiteSparse_long *) NULL, (SuiteSparse_long *) NULL, Cp, Ci, Cx) ;
     if (status < 0)
     {
 	umfpack_dl_report_status (Control, status) ;
@@ -491,16 +491,16 @@ int main (int argc, char **argv)
 
     printf ("\nGet the contents of the Symbolic object for C:\n") ;
     printf ("(compare with umfpack_dl_report_symbolic output, above)\n") ;
-    Pinit = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Qinit = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Front_npivcol = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Front_1strow = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Front_leftmostdesc = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Front_parent = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Chain_start = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Chain_maxrows = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Chain_maxcols = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Dmap = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
+    Pinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Qinit = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_npivcol = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_1strow = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_leftmostdesc = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Front_parent = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_start = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_maxrows = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Chain_maxcols = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Dmap = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
     if (!Pinit || !Qinit || !Front_npivcol || !Front_parent || !Chain_start ||
 	!Chain_maxrows || !Chain_maxcols || !Front_1strow || !Dmap ||
 	!Front_leftmostdesc)
@@ -518,40 +518,47 @@ int main (int argc, char **argv)
 	error ("symbolic factorization invalid") ;
     }
 
-    printf ("From the Symbolic object, C is of dimension %"PRId64"-by-%"PRId64"\n", nr, nc);
-    printf ("   with nz = %"PRId64", number of fronts = %"PRId64",\n", nz, nfr) ;
-    printf ("   number of frontal matrix chains = %"PRId64"\n", nchains) ;
+    printf ("From the Symbolic object, C is of dimension %" SuiteSparse_long_idd
+            "-by-%" SuiteSparse_long_idd "\n", nr, nc);
+    printf ("   with nz = %" SuiteSparse_long_idd
+            ", number of fronts = %" SuiteSparse_long_idd ",\n", nz, nfr) ;
+    printf ("   number of frontal matrix chains = %" SuiteSparse_long_idd "\n",
+            nchains) ;
 
     printf ("\nPivot columns in each front, and parent of each front:\n") ;
     k = 0 ;
     for (i = 0 ; i < nfr ; i++)
     {
-	fnpiv = Front_npivcol [i] ;
-	printf ("    Front %"PRId64": parent front: %"PRId64" number of pivot cols: %"PRId64"\n",
-		i, Front_parent [i], fnpiv) ;
-	for (j = 0 ; j < fnpiv ; j++)
-	{
-	    col = Qinit [k] ;
-	    printf (
-	    "        %"PRId64"-th pivot column is column %"PRId64" in original matrix\n",
-		k, col) ;
-	    k++ ;
-	}
+      fnpiv = Front_npivcol [i] ;
+      printf ("    Front %" SuiteSparse_long_idd
+              ": parent front: %" SuiteSparse_long_idd
+              " number of pivot cols: %" SuiteSparse_long_idd "\n",
+              i, Front_parent [i], fnpiv) ;
+      for (j = 0 ; j < fnpiv ; j++)
+      {
+          col = Qinit [k] ;
+          printf ("        %" SuiteSparse_long_idd "-th pivot column is column "
+                  "%" SuiteSparse_long_idd " in original matrix\n",
+                  k, col) ;
+          k++ ;
+      }
     }
 
     printf ("\nNote that the column ordering, above, will be refined\n") ;
     printf ("in the numeric factorization below.  The assignment of pivot\n") ;
     printf ("columns to frontal matrices will always remain unchanged.\n") ;
 
-    printf ("\nTotal number of pivot columns in frontal matrices: %"PRId64"\n", k) ;
+    printf ("\nTotal number of pivot columns in frontal matrices: %" SuiteSparse_long_idd "\n", k) ;
 
     printf ("\nFrontal matrix chains:\n") ;
     for (j = 0 ; j < nchains ; j++)
     {
-	printf ("   Frontal matrices %"PRId64" to %"PRId64" are factorized in a single\n",
-	    Chain_start [j], Chain_start [j+1] - 1) ;
-	printf ("        working array of size %"PRId64"-by-%"PRId64"\n",
-	    Chain_maxrows [j], Chain_maxcols [j]) ;
+      printf ("   Frontal matrices %" SuiteSparse_long_idd " to "
+              "%" SuiteSparse_long_idd " are factorized in a single\n",
+              Chain_start [j], Chain_start [j+1] - 1) ;
+      printf ("        working array of size %" SuiteSparse_long_idd "-by-"
+              "%" SuiteSparse_long_idd "\n",
+              Chain_maxrows [j], Chain_maxcols [j]) ;
     }
 
     //--------------------------------------------------------------------------
@@ -577,14 +584,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t S_blobsize ;
+    SuiteSparse_long S_blobsize ;
     status = umfpack_dl_serialize_symbolic_size (&S_blobsize, Symbolic) ;
     if (status < 0)
     {
 	umfpack_dl_report_status (Control, status) ;
 	error ("umfpack_dl_serialize_symbolic_size failed") ;
     }
-    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    printf ("\nSymbolic blob size: %" SuiteSparse_long_idd "\n", S_blobsize) ;
     // allocate the blob
     void *S_blob = malloc (S_blobsize) ;
     if (!S_blob)
@@ -634,14 +641,14 @@ int main (int argc, char **argv)
     /* ensure arrays are not of zero size */
     lnz1 = MAX (lnz,1) ;
     unz1 = MAX (unz,1) ;
-    Lp = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Lj = (int64_t *) malloc (lnz1 * sizeof (int64_t)) ;
+    Lp = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Lj = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
     Lx = (double *) malloc (lnz1 * sizeof (double)) ;
-    Up = (int64_t *) malloc ((n+1) * sizeof (int64_t)) ;
-    Ui = (int64_t *) malloc (unz1 * sizeof (int64_t)) ;
+    Up = (SuiteSparse_long *) malloc ((n+1) * sizeof (SuiteSparse_long)) ;
+    Ui = (SuiteSparse_long *) malloc (unz1 * sizeof (SuiteSparse_long)) ;
     Ux = (double *) malloc (unz1 * sizeof (double)) ;
-    P = (int64_t *) malloc (n * sizeof (int64_t)) ;
-    Q = (int64_t *) malloc (n * sizeof (int64_t)) ;
+    P = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
+    Q = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
     Dx = (double *) NULL ;	/* D vector not requested */
     Rs  = (double *) malloc (n * sizeof (double)) ;
     if (!Lp || !Lj || !Lx || !Up || !Ui || !Ux || !P || !Q || !Rs)
@@ -672,7 +679,7 @@ int main (int argc, char **argv)
     {
 	printf ("divided by the ith scale factor\n") ;
     }
-    for (i = 0 ; i < n ; i++) printf ("%"PRId64": %g\n", i, Rs [i]) ;
+    for (i = 0 ; i < n ; i++) printf ("%" SuiteSparse_long_idd ": %g\n", i, Rs [i]) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert L to triplet form and print it */
@@ -682,7 +689,7 @@ int main (int argc, char **argv)
     /* by umfpack_dl_col_to_triplet. */
 
     printf ("\nConverting L to triplet form, and printing it:\n") ;
-    Li = (int64_t *) malloc (lnz1 * sizeof (int64_t)) ;
+    Li = (SuiteSparse_long *) malloc (lnz1 * sizeof (SuiteSparse_long)) ;
     if (!Li)
     {
 	error ("out of memory") ;
@@ -758,14 +765,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t N_blobsize ;
+    SuiteSparse_long N_blobsize ;
     status = umfpack_dl_serialize_numeric_size (&N_blobsize, Numeric) ;
     if (status < 0)
     {
 	umfpack_dl_report_status (Control, status) ;
 	error ("umfpack_dl_serialize_numeric_size failed") ;
     }
-    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    printf ("\nNumeric blob size: %" SuiteSparse_long_idd "\n", N_blobsize) ;
     // allocate the blob
     void *N_blob = malloc (N_blobsize) ;
     if (!N_blob)
@@ -813,7 +820,7 @@ int main (int argc, char **argv)
     /* ---------------------------------------------------------------------- */
 
     printf ("\nSolving C'x=b again, using umfpack_dl_wsolve instead:\n") ;
-    Wi = (int64_t *) malloc (n * sizeof (int64_t)) ;
+    Wi = (SuiteSparse_long *) malloc (n * sizeof (SuiteSparse_long)) ;
     W = (double *) malloc (5*n * sizeof (double)) ;
     if (!Wi || !W)
     {

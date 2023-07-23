@@ -23,7 +23,7 @@
 
 int UMFPACK_serialize_numeric_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize,         // output: required size of blob
     void *NumericHandle         // input: Numeric object to serialize
 )
 {
@@ -45,7 +45,7 @@ int UMFPACK_serialize_numeric_size
     }
 
     // blob header
-    (*blobsize) += sizeof (int64_t) + 10 * sizeof (int32_t) ;
+    (*blobsize) += sizeof (intptr_t) + 10 * sizeof (int32_t) ;
 
     // Numeric header struct:
     (*blobsize) += sizeof (NumericType) ;
@@ -98,7 +98,7 @@ int UMFPACK_serialize_numeric
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *NumericHandle     // input: Numeric object to serialize
 )
 {
@@ -108,7 +108,7 @@ int UMFPACK_serialize_numeric
     {
         return (UMFPACK_ERROR_argument_missing) ;
     }
-    int64_t required ;
+    intptr_t required ;
     int status = UMFPACK_serialize_numeric_size (&required, NumericHandle) ;
     if (status != UMFPACK_OK)
     {
@@ -125,15 +125,15 @@ int UMFPACK_serialize_numeric
     NumericType *Numeric = (NumericType *) NumericHandle ;
 
     // write the blob header:
-    int64_t offset = 0 ;
-    SERIALIZE (&required, int64_t, 1) ;         // required size of this blob
+    intptr_t offset = 0 ;
+    SERIALIZE (&required, intptr_t, 1) ;        // required size of this blob
     SERIALIZE_INT32 (NUMERIC_VALID) ;           // tag as a Numeric object
     SERIALIZE_INT32 (UMFPACK_MAIN_VERSION) ;    // gaurd against version changes
     SERIALIZE_INT32 (UMFPACK_SUB_VERSION) ;
     SERIALIZE_INT32 (UMFPACK_SUBSUB_VERSION) ;
     SERIALIZE_INT32 (sizeof (NumericType)) ;    // size of Numeric header
     SERIALIZE_INT32 (sizeof (Entry)) ;          // double or double complex
-    SERIALIZE_INT32 (sizeof (Int)) ;            // Int is int32_t or int64_t
+    SERIALIZE_INT32 (sizeof (Int)) ;            // Int is int32_t or SuiteSparse_long
     SERIALIZE_INT32 (sizeof (Unit)) ;
     SERIALIZE_INT32 (sizeof (double)) ;
     SERIALIZE_INT32 (sizeof (void *)) ;         // 32-bit vs 64-bit OS

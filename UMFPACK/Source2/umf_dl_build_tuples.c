@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_build_tuples.c:
-// double int64_t version of umf_build_tuples
+// double, SuiteSparse_long version of umf_build_tuples
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

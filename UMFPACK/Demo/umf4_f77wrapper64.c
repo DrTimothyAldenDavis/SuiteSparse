@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Demo/umf4_f77wrapper64.c:
-// double int64_t version of umf4_f77wrapper.c
+// double, SuiteSparse_long version of umf4_f77wrapper.c
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.

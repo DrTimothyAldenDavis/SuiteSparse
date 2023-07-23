@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umfpack_zl_solve.c:
-// double complex int64_t version of umfpack_solve
+// double complex, SuiteSparse_long version of umfpack_solve
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

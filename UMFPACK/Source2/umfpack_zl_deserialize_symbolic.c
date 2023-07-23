@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umfpack_zl_deserialize_symbolic.c:
-// double complex int64_t version of umfpack_deserialize_symbolic
+// double complex, SuiteSparse_long version of umfpack_deserialize_symbolic
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

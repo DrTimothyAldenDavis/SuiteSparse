@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_zl_blas3_update.c:
-// double complex int64_t version of umf_blas3_update
+// double complex, SuiteSparse_long version of umf_blas3_update
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

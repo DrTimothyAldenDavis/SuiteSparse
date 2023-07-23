@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Tcov/ut_dl.c:
-// double int64_t version of ut
+// double, SuiteSparse_long version of ut
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2022, Timothy A. Davis, All Rights Reserved.

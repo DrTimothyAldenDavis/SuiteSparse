@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_zl_transpose.c:
-// double complex int64_t version of umf_transpose
+// double complex, SuiteSparse_long version of umf_transpose
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

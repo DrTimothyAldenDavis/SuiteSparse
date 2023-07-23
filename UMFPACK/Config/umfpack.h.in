@@ -118,7 +118,7 @@ extern "C" {
 
 /* computed in UMFPACK_*symbolic: */
 #define UMFPACK_SIZE_OF_INT 4           /* sizeof (int32_t) */
-#define UMFPACK_SIZE_OF_LONG 5          /* sizeof (int64_t) */
+#define UMFPACK_SIZE_OF_LONG 5          /* sizeof (SuiteSparse_long) */
 #define UMFPACK_SIZE_OF_POINTER 6       /* sizeof (void *) */
 #define UMFPACK_SIZE_OF_ENTRY 7         /* sizeof (Entry), real or complex */
 #define UMFPACK_NDENSE_ROW 8            /* number of dense rows */
@@ -400,10 +400,10 @@ int umfpack_di_symbolic
 
 int umfpack_dl_symbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -424,10 +424,10 @@ int umfpack_zi_symbolic
 
 int umfpack_zl_symbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -444,11 +444,11 @@ double int32_t Syntax:
     int status = umfpack_di_symbolic (n_row, n_col, Ap, Ai, Ax,
         &Symbolic, Control, Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    int64_t n_row, n_col, *Ap, *Ai ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax ;
     int status = umfpack_dl_symbolic (n_row, n_col, Ap, Ai, Ax,
         &Symbolic, Control, Info) ;
@@ -462,11 +462,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_symbolic (n_row, n_col, Ap, Ai, Ax, Az,
         &Symbolic, Control, Info) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    int64_t n_row, n_col, *Ap, *Ai ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax, *Az ;
     int status = umfpack_zl_symbolic (n_row, n_col, Ap, Ai, Ax, Az,
         &Symbolic, Control, Info) ;
@@ -727,7 +727,7 @@ Arguments:
 
         Info [UMFPACK_SIZE_OF_INT]:  the number of bytes in an int32_t.
 
-        Info [UMFPACK_SIZE_OF_LONG]:  the number of bytes in a int64_t.
+        Info [UMFPACK_SIZE_OF_LONG]:  the number of bytes in a SuiteSparse_long.
 
         Info [UMFPACK_SIZE_OF_POINTER]:  the number of bytes in a void *
             pointer.
@@ -934,8 +934,8 @@ int umfpack_di_numeric
 
 int umfpack_dl_numeric
 (
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     void *Symbolic,
     void **Numeric,
@@ -956,8 +956,8 @@ int umfpack_zi_numeric
 
 int umfpack_zl_numeric
 (
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     void *Symbolic,
     void **Numeric,
@@ -975,11 +975,11 @@ double int32_t Syntax:
     int status = umfpack_di_numeric (Ap, Ai, Ax, Symbolic, &Numeric, Control,
         Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic, *Numeric ;
-    int64_t *Ap, *Ai ;
+    SuiteSparse_long *Ap, *Ai ;
     double *Ax, Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     int status = umfpack_dl_numeric (Ap, Ai, Ax, Symbolic, &Numeric, Control,
         Info) ;
@@ -993,11 +993,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
         Control, Info) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic, *Numeric ;
-    int64_t *Ap, *Ai ;
+    SuiteSparse_long *Ap, *Ai ;
     double *Ax, *Az, Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     int status = umfpack_zl_numeric (Ap, Ai, Ax, Az, Symbolic, &Numeric,
         Control, Info) ;
@@ -1477,8 +1477,8 @@ int umfpack_di_solve
 int umfpack_dl_solve
 (
     int sys,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     double X [ ],
     const double B [ ],
@@ -1503,8 +1503,8 @@ int umfpack_zi_solve
 int umfpack_zl_solve
 (
     int sys,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     double Xx [ ],       double Xz [ ],
     const double Bx [ ], const double Bz [ ],
@@ -1524,11 +1524,11 @@ double int32_t Syntax:
     int status = umfpack_di_solve (sys, Ap, Ai, Ax, X, B, Numeric, Control,
         Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Ap, *Ai ;
+    SuiteSparse_long *Ap, *Ai ;
     int sys ;
     double *B, *X, *Ax, Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
     int status = umfpack_dl_solve (sys, Ap, Ai, Ax, X, B, Numeric, Control,
@@ -1545,11 +1545,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_solve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz,
         Numeric, Control, Info) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Ap, *Ai ;
+    SuiteSparse_long *Ap, *Ai ;
     int sys ;
     double *Bx, *Bz, *Xx, *Xz, *Ax, *Az, Info [UMFPACK_INFO],
         Control [UMFPACK_CONTROL] ;
@@ -1790,7 +1790,7 @@ double int32_t Syntax:
     void *Symbolic ;
     umfpack_di_free_symbolic (&Symbolic) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
@@ -1802,7 +1802,7 @@ complex int32_t Syntax:
     void *Symbolic ;
     umfpack_zi_free_symbolic (&Symbolic) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
@@ -1852,7 +1852,7 @@ double int32_t Syntax:
     void *Numeric ;
     umfpack_di_free_numeric (&Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -1864,7 +1864,7 @@ complex int32_t Syntax:
     void *Numeric ;
     umfpack_zi_free_numeric (&Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -1918,7 +1918,7 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     umfpack_di_defaults (Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -1930,7 +1930,7 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     umfpack_zi_defaults (Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -1970,12 +1970,12 @@ int umfpack_di_qsymbolic
 
 int umfpack_dl_qsymbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
-    const int64_t Qinit [ ],
+    const SuiteSparse_long Qinit [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO]
@@ -1996,12 +1996,12 @@ int umfpack_zi_qsymbolic
 
 int umfpack_zl_qsymbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
-    const int64_t Qinit [ ],
+    const SuiteSparse_long Qinit [ ],
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO]
@@ -2024,13 +2024,14 @@ int umfpack_di_fsymbolic
 
 int umfpack_dl_fsymbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
-    int (*user_ordering) (int64_t, int64_t, int64_t, int64_t *, int64_t *,
-        int64_t *, void *, double *),
+    int (*user_ordering) (SuiteSparse_long, SuiteSparse_long, SuiteSparse_long,
+        SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *, void *,
+        double *),
     void *user_params,
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -2054,13 +2055,14 @@ int umfpack_zi_fsymbolic
 
 int umfpack_zl_fsymbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
-    int (*user_ordering) (int64_t, int64_t, int64_t, int64_t *, int64_t *,
-        int64_t *, void *, double *),
+    int (*user_ordering) (SuiteSparse_long, SuiteSparse_long, SuiteSparse_long,
+        SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *, void *,
+        double *),
     void *user_params,
     void **Symbolic,
     const double Control [UMFPACK_CONTROL],
@@ -2077,11 +2079,11 @@ double int32_t Syntax:
     int status = umfpack_di_qsymbolic (n_row, n_col, Ap, Ai, Ax, Qinit,
         &Symbolic, Control, Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    int64_t n_row, n_col, *Ap, *Ai, *Qinit ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, *Qinit ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax ;
     int status = umfpack_dl_qsymbolic (n_row, n_col, Ap, Ai, Ax, Qinit,
         &Symbolic, Control, Info) ;
@@ -2095,11 +2097,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_qsymbolic (n_row, n_col, Ap, Ai, Ax, Az, Qinit,
         &Symbolic, Control, Info) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
-    int64_t n_row, n_col, *Ap, *Ai, *Qinit ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, *Qinit ;
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO], *Ax, *Az ;
     int status = umfpack_zl_qsymbolic (n_row, n_col, Ap, Ai, Ax, Az, Qinit,
         &Symbolic, Control, Info) ;
@@ -2160,7 +2162,7 @@ The umfpack_*_fsymbolic functions are identical to their umfpack_*_qsymbolic
 functions, except that Qinit is replaced with a pointer to an ordering
 function (user_ordering), and a pointer to an extra input that is passed
 to the user_ordering (user_params).  The arguments have the following syntax
-(where Int is int32_t or int64_t):
+(where Int is int32_t or SuiteSparse_long):
 
     int (*user_ordering)    // TRUE if OK, FALSE otherwise
     (
@@ -2206,14 +2208,15 @@ int umfpack_di_paru_symbolic
 
 int umfpack_dl_paru_symbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
-    const int64_t Qinit [ ],
-    int (*user_ordering) (int64_t, int64_t, int64_t, int64_t *, int64_t *,
-        int64_t *, void *, double *),
+    const SuiteSparse_long Qinit [ ],
+    int (*user_ordering) (SuiteSparse_long, SuiteSparse_long, SuiteSparse_long,
+        SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *, void *,
+        double *),
     void *user_params,
     void **Symbolic,
     void **SW,
@@ -2240,14 +2243,15 @@ int umfpack_zi_paru_symbolic
 
 int umfpack_zl_paru_symbolic
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
-    const int64_t Qinit [ ],
-    int (*user_ordering) (int64_t, int64_t, int64_t, int64_t *, int64_t *,
-        int64_t *, void *, double *),
+    const SuiteSparse_long Qinit [ ],
+    int (*user_ordering) (SuiteSparse_long, SuiteSparse_long, SuiteSparse_long,
+        SuiteSparse_long *, SuiteSparse_long *, SuiteSparse_long *, void *,
+        double *),
     void *user_params,
     void **Symbolic,
     void **SW,
@@ -2298,15 +2302,15 @@ int umfpack_di_wsolve
 int umfpack_dl_wsolve
 (
     int sys,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     double X [ ],
     const double B [ ],
     void *Numeric,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    int64_t Wi [ ],
+    SuiteSparse_long Wi [ ],
     double W [ ]
 ) ;
 
@@ -2328,15 +2332,15 @@ int umfpack_zi_wsolve
 int umfpack_zl_wsolve
 (
     int sys,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     double Xx [ ],       double Xz [ ],
     const double Bx [ ], const double Bz [ ],
     void *Numeric,
     const double Control [UMFPACK_CONTROL],
     double Info [UMFPACK_INFO],
-    int64_t Wi [ ],
+    SuiteSparse_long Wi [ ],
     double W [ ]
 ) ;
 
@@ -2351,11 +2355,11 @@ double int32_t Syntax:
     int status = umfpack_di_wsolve (sys, Ap, Ai, Ax, X, B, Numeric,
         Control, Info, Wi, W) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Ap, *Ai, *Wi ;
+    SuiteSparse_long *Ap, *Ai, *Wi ;
     int sys ;
     double *B, *X, *Ax, *W, Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
     int status = umfpack_dl_wsolve (sys, Ap, Ai, Ax, X, B, Numeric,
@@ -2372,11 +2376,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_wsolve (sys, Ap, Ai, Ax, Az, Xx, Xz, Bx, Bz,
         Numeric, Control, Info, Wi, W) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Ap, *Ai, *Wi ;
+    SuiteSparse_long *Ap, *Ai, *Wi ;
     int sys ;
     double *Bx, *Bz, *Xx, *Xz, *Ax, *Az, *W,
         Info [UMFPACK_INFO], Control [UMFPACK_CONTROL] ;
@@ -2471,16 +2475,16 @@ int umfpack_di_triplet_to_col
 
 int umfpack_dl_triplet_to_col
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t nz,
-    const int64_t Ti [ ],
-    const int64_t Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ],
-    int64_t Ap [ ],
-    int64_t Ai [ ],
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ],
-    int64_t Map [ ]
+    SuiteSparse_long Map [ ]
 ) ;
 
 int umfpack_zi_triplet_to_col
@@ -2499,16 +2503,16 @@ int umfpack_zi_triplet_to_col
 
 int umfpack_zl_triplet_to_col
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t nz,
-    const int64_t Ti [ ],
-    const int64_t Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ], const double Tz [ ],
-    int64_t Ap [ ],
-    int64_t Ai [ ],
+    SuiteSparse_long Ap [ ],
+    SuiteSparse_long Ai [ ],
     double Ax [ ], double Az [ ],
-    int64_t Map [ ]
+    SuiteSparse_long Map [ ]
 ) ;
 
 /*
@@ -2520,10 +2524,10 @@ double int32_t Syntax:
     int status = umfpack_di_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx,
         Ap, Ai, Ax, Map) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, *Map ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, *Map ;
     double *Tx, *Ax ;
     int status = umfpack_dl_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx,
         Ap, Ai, Ax, Map) ;
@@ -2536,10 +2540,10 @@ complex int32_t Syntax:
     int status = umfpack_zi_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx, Tz,
         Ap, Ai, Ax, Az, Map) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, *Map ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj, *Ap, *Ai, *Map ;
     double *Tx, *Tz, *Ax, *Az ;
     int status = umfpack_zl_triplet_to_col (n_row, n_col, nz, Ti, Tj, Tx, Tz,
         Ap, Ai, Ax, Az, Map) ;
@@ -2722,9 +2726,9 @@ int umfpack_di_col_to_triplet
 
 int umfpack_dl_col_to_triplet
 (
-    int64_t n_col,
-    const int64_t Ap [ ],
-    int64_t Tj [ ]
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    SuiteSparse_long Tj [ ]
 ) ;
 
 int umfpack_zi_col_to_triplet
@@ -2736,9 +2740,9 @@ int umfpack_zi_col_to_triplet
 
 int umfpack_zl_col_to_triplet
 (
-    int64_t n_col,
-    const int64_t Ap [ ],
-    int64_t Tj [ ]
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    SuiteSparse_long Tj [ ]
 ) ;
 
 /*
@@ -2748,10 +2752,10 @@ double int32_t Syntax:
     int32_t n_col, *Tj, *Ap ;
     int status = umfpack_di_col_to_triplet (n_col, Ap, Tj) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_col, *Tj, *Ap ;
+    SuiteSparse_long n_col, *Tj, *Ap ;
     int status = umfpack_dl_col_to_triplet (n_col, Ap, Tj) ;
 
 complex int32_t Syntax:
@@ -2760,10 +2764,10 @@ complex int32_t Syntax:
     int32_t n_col, *Tj, *Ap ;
     int status = umfpack_zi_col_to_triplet (n_col, Ap, Tj) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_col, *Tj, *Ap ;
+    SuiteSparse_long n_col, *Tj, *Ap ;
     int status = umfpack_zl_col_to_triplet (n_col, Ap, Tj) ;
 
 Purpose:
@@ -2834,15 +2838,15 @@ int umfpack_di_transpose
 
 int umfpack_dl_transpose
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
-    const int64_t P [ ],
-    const int64_t Q [ ],
-    int64_t Rp [ ],
-    int64_t Ri [ ],
+    const SuiteSparse_long P [ ],
+    const SuiteSparse_long Q [ ],
+    SuiteSparse_long Rp [ ],
+    SuiteSparse_long Ri [ ],
     double Rx [ ]
 ) ;
 
@@ -2863,15 +2867,15 @@ int umfpack_zi_transpose
 
 int umfpack_zl_transpose
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
-    const int64_t P [ ],
-    const int64_t Q [ ],
-    int64_t Rp [ ],
-    int64_t Ri [ ],
+    const SuiteSparse_long P [ ],
+    const SuiteSparse_long Q [ ],
+    SuiteSparse_long Rp [ ],
+    SuiteSparse_long Ri [ ],
     double Rx [ ], double Rz [ ],
     int do_conjugate
 ) ;
@@ -2885,10 +2889,10 @@ double int32_t Syntax:
     int status = umfpack_di_transpose (n_row, n_col, Ap, Ai, Ax, P, Q,
         Rp, Ri, Rx) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, *Ap, *Ai, *P, *Q, *Rp, *Ri ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, *P, *Q, *Rp, *Ri ;
     double *Ax, *Rx ;
     int status = umfpack_dl_transpose (n_row, n_col, Ap, Ai, Ax, P, Q,
         Rp, Ri, Rx) ;
@@ -2902,10 +2906,10 @@ complex int32_t Syntax:
     int status = umfpack_zi_transpose (n_row, n_col, Ap, Ai, Ax, Az, P, Q,
         Rp, Ri, Rx, Rz, do_conjugate) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, *Ap, *Ai, *P, *Q, *Rp, *Ri ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai, *P, *Q, *Rp, *Ri ;
     int do_conjugate ;
     double *Ax, *Az, *Rx, *Rz ;
     int status = umfpack_zl_transpose (n_row, n_col, Ap, Ai, Ax, Az, P, Q,
@@ -3069,7 +3073,7 @@ double int32_t Syntax:
     double *B, *X ;
     int status = umfpack_di_scale (X, B, Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -3083,7 +3087,7 @@ complex int32_t Syntax:
     double *Bx, *Bz, *Xx, *Xz ;
     int status = umfpack_zi_scale (Xx, Xz, Bx, Bz, Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -3156,11 +3160,11 @@ int umfpack_di_get_lunz
 
 int umfpack_dl_get_lunz
 (
-    int64_t *lnz,
-    int64_t *unz,
-    int64_t *n_row,
-    int64_t *n_col,
-    int64_t *nz_udiag,
+    SuiteSparse_long *lnz,
+    SuiteSparse_long *unz,
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *nz_udiag,
     void *Numeric
 ) ;
 
@@ -3176,11 +3180,11 @@ int umfpack_zi_get_lunz
 
 int umfpack_zl_get_lunz
 (
-    int64_t *lnz,
-    int64_t *unz,
-    int64_t *n_row,
-    int64_t *n_col,
-    int64_t *nz_udiag,
+    SuiteSparse_long *lnz,
+    SuiteSparse_long *unz,
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *nz_udiag,
     void *Numeric
 ) ;
 
@@ -3193,11 +3197,11 @@ double int32_t Syntax:
     int status = umfpack_di_get_lunz (&lnz, &unz, &n_row, &n_col, &nz_udiag,
         Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t lnz, unz, n_row, n_col, nz_udiag ;
+    SuiteSparse_long lnz, unz, n_row, n_col, nz_udiag ;
     int status = umfpack_dl_get_lunz (&lnz, &unz, &n_row, &n_col, &nz_udiag,
         Numeric) ;
 
@@ -3209,11 +3213,11 @@ complex int32_t Syntax:
     int status = umfpack_zi_get_lunz (&lnz, &unz, &n_row, &n_col, &nz_udiag,
         Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t lnz, unz, n_row, n_col, nz_udiag ;
+    SuiteSparse_long lnz, unz, n_row, n_col, nz_udiag ;
     int status = umfpack_zl_get_lunz (&lnz, &unz, &n_row, &n_col, &nz_udiag,
         Numeric) ;
 
@@ -3294,16 +3298,16 @@ int umfpack_di_get_numeric
 
 int umfpack_dl_get_numeric
 (
-    int64_t Lp [ ],
-    int64_t Lj [ ],
+    SuiteSparse_long Lp [ ],
+    SuiteSparse_long Lj [ ],
     double Lx [ ],
-    int64_t Up [ ],
-    int64_t Ui [ ],
+    SuiteSparse_long Up [ ],
+    SuiteSparse_long Ui [ ],
     double Ux [ ],
-    int64_t P [ ],
-    int64_t Q [ ],
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
     double Dx [ ],
-    int64_t *do_recip,
+    SuiteSparse_long *do_recip,
     double Rs [ ],
     void *Numeric
 ) ;
@@ -3326,16 +3330,16 @@ int umfpack_zi_get_numeric
 
 int umfpack_zl_get_numeric
 (
-    int64_t Lp [ ],
-    int64_t Lj [ ],
+    SuiteSparse_long Lp [ ],
+    SuiteSparse_long Lj [ ],
     double Lx [ ], double Lz [ ],
-    int64_t Up [ ],
-    int64_t Ui [ ],
+    SuiteSparse_long Up [ ],
+    SuiteSparse_long Ui [ ],
     double Ux [ ], double Uz [ ],
-    int64_t P [ ],
-    int64_t Q [ ],
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
     double Dx [ ], double Dz [ ],
-    int64_t *do_recip,
+    SuiteSparse_long *do_recip,
     double Rs [ ],
     void *Numeric
 ) ;
@@ -3350,11 +3354,11 @@ double int32_t Syntax:
     int status = umfpack_di_get_numeric (Lp, Lj, Lx, Up, Ui, Ux, P, Q, Dx,
         &do_recip, Rs, Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Lp, *Lj, *Up, *Ui, *P, *Q, do_recip ;
+    SuiteSparse_long *Lp, *Lj, *Up, *Ui, *P, *Q, do_recip ;
     double *Lx, *Ux, *Dx, *Rs ;
     int status = umfpack_dl_get_numeric (Lp, Lj, Lx, Up, Ui, Ux, P, Q, Dx,
         &do_recip, Rs, Numeric) ;
@@ -3368,16 +3372,16 @@ complex int32_t Syntax:
     int status = umfpack_zi_get_numeric (Lp, Lj, Lx, Lz, Up, Ui, Ux, Uz, P, Q,
         Dx, Dz, &do_recip, Rs, Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
-    int64_t *Lp, *Lj, *Up, *Ui, *P, *Q, do_recip ;
+    SuiteSparse_long *Lp, *Lj, *Up, *Ui, *P, *Q, do_recip ;
     double *Lx, *Lz, *Ux, *Uz, *Dx, *Dz, *Rs ;
     int status = umfpack_zl_get_numeric (Lp, Lj, Lx, Lz, Up, Ui, Ux, Uz, P, Q,
         Dx, Dz, &do_recip, Rs, Numeric) ;
 
-packed complex int32_t/int64_t Syntax:
+packed complex int32_t/SuiteSparse_long Syntax:
 
     Same as above, except Lz, Uz, and Dz are all NULL.
 
@@ -3546,22 +3550,22 @@ int umfpack_di_get_symbolic
 
 int umfpack_dl_get_symbolic
 (
-    int64_t *n_row,
-    int64_t *n_col,
-    int64_t *n1,
-    int64_t *nz,
-    int64_t *nfr,
-    int64_t *nchains,
-    int64_t P [ ],
-    int64_t Q [ ],
-    int64_t Front_npivcol [ ],
-    int64_t Front_parent [ ],
-    int64_t Front_1strow [ ],
-    int64_t Front_leftmostdesc [ ],
-    int64_t Chain_start [ ],
-    int64_t Chain_maxrows [ ],
-    int64_t Chain_maxcols [ ],
-    int64_t Dmap [ ],  // added for v6.0.0
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *n1,
+    SuiteSparse_long *nz,
+    SuiteSparse_long *nfr,
+    SuiteSparse_long *nchains,
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
+    SuiteSparse_long Front_npivcol [ ],
+    SuiteSparse_long Front_parent [ ],
+    SuiteSparse_long Front_1strow [ ],
+    SuiteSparse_long Front_leftmostdesc [ ],
+    SuiteSparse_long Chain_start [ ],
+    SuiteSparse_long Chain_maxrows [ ],
+    SuiteSparse_long Chain_maxcols [ ],
+    SuiteSparse_long Dmap [ ],  // added for v6.0.0
     void *Symbolic
 ) ;
 
@@ -3588,22 +3592,22 @@ int umfpack_zi_get_symbolic
 
 int umfpack_zl_get_symbolic
 (
-    int64_t *n_row,
-    int64_t *n_col,
-    int64_t *n1,
-    int64_t *nz,
-    int64_t *nfr,
-    int64_t *nchains,
-    int64_t P [ ],
-    int64_t Q [ ],
-    int64_t Front_npivcol [ ],
-    int64_t Front_parent [ ],
-    int64_t Front_1strow [ ],
-    int64_t Front_leftmostdesc [ ],
-    int64_t Chain_start [ ],
-    int64_t Chain_maxrows [ ],
-    int64_t Chain_maxcols [ ],
-    int64_t Dmap [ ],  // added for v6.0.0
+    SuiteSparse_long *n_row,
+    SuiteSparse_long *n_col,
+    SuiteSparse_long *n1,
+    SuiteSparse_long *nz,
+    SuiteSparse_long *nfr,
+    SuiteSparse_long *nchains,
+    SuiteSparse_long P [ ],
+    SuiteSparse_long Q [ ],
+    SuiteSparse_long Front_npivcol [ ],
+    SuiteSparse_long Front_parent [ ],
+    SuiteSparse_long Front_1strow [ ],
+    SuiteSparse_long Front_leftmostdesc [ ],
+    SuiteSparse_long Chain_start [ ],
+    SuiteSparse_long Chain_maxrows [ ],
+    SuiteSparse_long Chain_maxcols [ ],
+    SuiteSparse_long Dmap [ ],  // added for v6.0.0
     void *Symbolic
 ) ;
 
@@ -3621,10 +3625,10 @@ double int32_t Syntax:
         Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
         Dmap, Symbolic) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, nfr, nchains, *P, *Q,
+    SuiteSparse_long n_row, n_col, nz, nfr, nchains, *P, *Q,
         *Front_npivcol, *Front_parent, *Front_1strow, *Front_leftmostdesc,
         *Chain_start, *Chain_maxrows, *Chain_maxcols, *Dmap ;
     void *Symbolic ;
@@ -3645,10 +3649,10 @@ complex int32_t Syntax:
         Front_leftmostdesc, Chain_start, Chain_maxrows, Chain_maxcols,
         Dmap, Symbolic) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, nfr, nchains, *P, *Q,
+    SuiteSparse_long n_row, n_col, nz, nfr, nchains, *P, *Q,
         *Front_npivcol, *Front_parent, *Front_1strow, *Front_leftmostdesc,
         *Chain_start, *Chain_maxrows, *Chain_maxcols, *Dmap ;
     void *Symbolic ;
@@ -3901,7 +3905,7 @@ double int32_t Syntax:
     void *Numeric ;
     int status = umfpack_di_save_numeric (Numeric, filename) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -3915,7 +3919,7 @@ complex int32_t Syntax:
     void *Numeric ;
     int status = umfpack_zi_save_numeric (Numeric, filename) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -3982,7 +3986,7 @@ double int32_t Syntax:
     void *Numeric ;
     int status = umfpack_di_load_numeric (&Numeric, filename) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -3996,7 +4000,7 @@ complex int32_t Syntax:
     void *Numeric ;
     int status = umfpack_zi_load_numeric (&Numeric, filename) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -4068,7 +4072,7 @@ double int Syntax:
     void *Numeric ;
     status = umfpack_di_copy_numeric (&Numeric, Original) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Original ;
@@ -4082,7 +4086,7 @@ complex int Syntax:
     void *Numeric ;
     int status = umfpack_zi_copy_numeric (&Numeric, Original) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Original ;
@@ -4122,25 +4126,25 @@ Arguments:
 
 int umfpack_di_serialize_numeric_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize, // output: required size of blob
     void *Numeric               // input: Numeric object to serialize
 ) ;
 
 int umfpack_dl_serialize_numeric_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize, // output: required size of blob
     void *Numeric               // input: Numeric object to serialize
 ) ;
 
 int umfpack_zi_serialize_numeric_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize, // output: required size of blob
     void *Numeric               // input: Numeric object to serialize
 ) ;
 
 int umfpack_zl_serialize_numeric_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize, // output: required size of blob
     void *Numeric               // input: Numeric object to serialize
 ) ;
 
@@ -4148,28 +4152,28 @@ int umfpack_zl_serialize_numeric_size
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Numeric ;
     int status = umfpack_di_serialize_numeric_size (&blobsize, Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Numeric ;
     int status = umfpack_dl_serialize_numeric_size (&blobsize, Numeric) ;
 
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Numeric ;
     int status = umfpack_zi_serialize_numeric_size (&blobsize, Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Numeric ;
     int status = umfpack_zl_serialize_numeric_size (&blobsize, Numeric) ;
 
@@ -4186,7 +4190,7 @@ Returns:
 
 Arguments:
 
-    int64_t *blobsize ;     Output argument.
+    intptr_t *blobsize ;    Output argument.
 
         Required size of the blob to hold the Numeric object, in bytes.
 
@@ -4205,7 +4209,7 @@ int umfpack_di_serialize_numeric
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Numeric           // input: Numeric object to serialize
 ) ;
 
@@ -4213,7 +4217,7 @@ int umfpack_dl_serialize_numeric
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Numeric           // input: Numeric object to serialize
 ) ;
 
@@ -4221,7 +4225,7 @@ int umfpack_zi_serialize_numeric
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Numeric           // input: Numeric object to serialize
 ) ;
 
@@ -4229,7 +4233,7 @@ int umfpack_zl_serialize_numeric
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Numeric           // input: Numeric object to serialize
 ) ;
 
@@ -4237,15 +4241,15 @@ int umfpack_zl_serialize_numeric
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_di_serialize_numeric (blob, blobsize, Numeric) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_dl_serialize_numeric (blob, blobsize, Numeric) ;
@@ -4253,15 +4257,15 @@ double int64_t Syntax:
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_zi_serialize_numeric (blob, blobsize, Numeric) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_zl_serialize_numeric (blob, blobsize, Numeric) ;
@@ -4285,7 +4289,7 @@ Arguments:
         A user-allocated array of size blobsize.  On output, it contains the
         serialized blob created from the Numeric object.
 
-    int64_t blobsize ;      Input argument, not modified.
+    intptr_t blobsize;      Input argument, not modified.
 
         Size of the blob, in bytes.  Must be at least as large as the
         value returned by umfpack_*_serialize_numeric_size.
@@ -4305,43 +4309,43 @@ int umfpack_di_deserialize_numeric
 (
     void **Numeric,         // output: Numeric object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_dl_deserialize_numeric
 (
     void **Numeric,         // output: Numeric object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_zi_deserialize_numeric
 (
     void **Numeric,         // output: Numeric object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_zl_deserialize_numeric
 (
     void **Numeric,         // output: Numeric object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 /*
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_di_deserialize_numeric (&Numeric, blob, blobsize) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_dl_deserialize_numeric (&Numeric, blob, blobsize) ;
@@ -4349,15 +4353,15 @@ double int64_t Syntax:
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_zi_deserialize_numeric (&Numeric, blob, blobsize) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Numeric ;
     int status = umfpack_zl_deserialize_numeric (&Numeric, blob, blobsize) ;
@@ -4388,7 +4392,7 @@ Arguments:
         A user-allocated array of size blobsize containing a blob created
         by umfpack_*_serialize_numeric.
 
-    int64_t blobsize ;      Input argument, not modified.
+    intptr_t blobsize;      Input argument, not modified.
 
         Size of the blob, in bytes.
 */
@@ -4429,7 +4433,7 @@ double int32_t Syntax:
     void *Symbolic ;
     int status = umfpack_di_save_symbolic (Symbolic, filename) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -4443,7 +4447,7 @@ complex int32_t Syntax:
     void *Symbolic ;
     int status = umfpack_zi_save_symbolic (Symbolic, filename) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -4510,7 +4514,7 @@ double int32_t Syntax:
     void *Symbolic ;
     int status = umfpack_di_load_symbolic (&Symbolic, filename) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -4524,7 +4528,7 @@ complex int32_t Syntax:
     void *Symbolic ;
     int status = umfpack_zi_load_symbolic (&Symbolic, filename) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     char *filename ;
@@ -4596,7 +4600,7 @@ double int Syntax:
     void *Symbolic ;
     int status = umfpack_di_copy_symbolic (&Symbolic, Original) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Original ;
@@ -4610,7 +4614,7 @@ complex int Syntax:
     void *Symbolic ;
     int status = umfpack_zi_copy_symbolic (&Symbolic, Original) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Original ;
@@ -4650,25 +4654,25 @@ Arguments:
 
 int umfpack_di_serialize_symbolic_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize,         // output: required size of blob
     void *Symbolic              // input: Symbolic object to serialize
 ) ;
 
 int umfpack_dl_serialize_symbolic_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize,         // output: required size of blob
     void *Symbolic              // input: Symbolic object to serialize
 ) ;
 
 int umfpack_zi_serialize_symbolic_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize,         // output: required size of blob
     void *Symbolic              // input: Symbolic object to serialize
 ) ;
 
 int umfpack_zl_serialize_symbolic_size
 (
-    int64_t *blobsize,          // output: required size of blob
+    intptr_t *blobsize,         // output: required size of blob
     void *Symbolic              // input: Symbolic object to serialize
 ) ;
 
@@ -4676,28 +4680,28 @@ int umfpack_zl_serialize_symbolic_size
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Symbolic ;
     int status = umfpack_di_serialize_symbolic_size (&blobsize, Symbolic) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Symbolic ;
     int status = umfpack_dl_serialize_symbolic_size (&blobsize, Symbolic) ;
 
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Symbolic ;
     int status = umfpack_zi_serialize_symbolic_size (&blobsize, Symbolic) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     void *Symbolic ;
     int status = umfpack_zl_serialize_symbolic_size (&blobsize, Symbolic) ;
 
@@ -4714,7 +4718,7 @@ Returns:
 
 Arguments:
 
-    int64_t *blobsize ;     Output argument.
+    intptr_t *blobsize ;    Output argument.
 
         Required size of the blob to hold the Symbolic object, in bytes.
 
@@ -4733,7 +4737,7 @@ int umfpack_di_serialize_symbolic
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Symbolic          // input: Symbolic object to serialize
 ) ;
 
@@ -4741,7 +4745,7 @@ int umfpack_dl_serialize_symbolic
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Symbolic          // input: Symbolic object to serialize
 ) ;
 
@@ -4749,7 +4753,7 @@ int umfpack_zi_serialize_symbolic
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Symbolic          // input: Symbolic object to serialize
 ) ;
 
@@ -4757,7 +4761,7 @@ int umfpack_zl_serialize_symbolic
 (
     int8_t *blob,           // output: serialized blob of size blobsize,
                             // allocated but unitialized on input.
-    int64_t blobsize,       // input: size of the blob
+    intptr_t blobsize,      // input: size of the blob
     void *Symbolic          // input: Symbolic object to serialize
 ) ;
 
@@ -4765,15 +4769,15 @@ int umfpack_zl_serialize_symbolic
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_di_serialize_symbolic (blob, blobsize, Symbolic) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_dl_serialize_symbolic (blob, blobsize, Symbolic) ;
@@ -4781,15 +4785,15 @@ double int64_t Syntax:
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_zi_serialize_symbolic (blob, blobsize, Symbolic) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_zl_serialize_symbolic (blob, blobsize, Symbolic) ;
@@ -4813,7 +4817,7 @@ Arguments:
         A user-allocated array of size blobsize.  On output, it contains the
         serialized blob created from the Symbolic object.
 
-    int64_t blobsize ;      Input argument, not modified.
+    intptr_t blobsize;      Input argument, not modified.
 
         Size of the blob, in bytes.  Must be at least as large as the
         value returned by umfpack_*_serialize_symbolic_size.
@@ -4833,43 +4837,43 @@ int umfpack_di_deserialize_symbolic
 (
     void **Symbolic,        // output: Symbolic object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_dl_deserialize_symbolic
 (
     void **Symbolic,        // output: Symbolic object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_zi_deserialize_symbolic
 (
     void **Symbolic,        // output: Symbolic object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 int umfpack_zl_deserialize_symbolic
 (
     void **Symbolic,        // output: Symbolic object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 ) ;
 
 /*
 double int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_di_deserialize_symbolic (&Symbolic, blob, blobsize) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_dl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
@@ -4877,15 +4881,15 @@ double int64_t Syntax:
 complex int32_t Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_zi_deserialize_symbolic (&Symbolic, blob, blobsize) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t blobsize ;
+    intptr_t blobsize;
     int8_t *blob ;
     void *Symbolic ;
     int status = umfpack_zl_deserialize_symbolic (&Symbolic, blob, blobsize) ;
@@ -4916,7 +4920,7 @@ Arguments:
         A user-allocated array of size blobsize containing a blob created
         by umfpack_*_serialize_symbolic.
 
-    int64_t blobsize ;      Input argument, not modified.
+    intptr_t blobsize;      Input argument, not modified.
 
         Size of the blob, in bytes.
 */
@@ -4967,7 +4971,7 @@ double int32_t Syntax:
     double Mx, Ex, Info [UMFPACK_INFO] ;
     int status = umfpack_di_get_determinant (&Mx, &Ex, Numeric, Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -5147,7 +5151,7 @@ double int32_t Syntax:
     int status ;
     umfpack_di_report_status (Control, status) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -5161,7 +5165,7 @@ complex int32_t Syntax:
     int status ;
     umfpack_zi_report_status (Control, status) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -5231,7 +5235,7 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     umfpack_di_report_info (Control, Info) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
@@ -5243,7 +5247,7 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
     umfpack_zi_report_info (Control, Info) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL], Info [UMFPACK_INFO] ;
@@ -5308,7 +5312,7 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     umfpack_di_report_control (Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -5320,7 +5324,7 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     umfpack_zi_report_control (Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     double Control [UMFPACK_CONTROL] ;
@@ -5365,10 +5369,10 @@ int umfpack_di_report_matrix
 
 int umfpack_dl_report_matrix
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ],
     int col_form,
     const double Control [UMFPACK_CONTROL]
@@ -5387,10 +5391,10 @@ int umfpack_zi_report_matrix
 
 int umfpack_zl_report_matrix
 (
-    int64_t n_row,
-    int64_t n_col,
-    const int64_t Ap [ ],
-    const int64_t Ai [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    const SuiteSparse_long Ap [ ],
+    const SuiteSparse_long Ai [ ],
     const double Ax [ ], const double Az [ ],
     int col_form,
     const double Control [UMFPACK_CONTROL]
@@ -5407,10 +5411,10 @@ double int32_t Syntax:
 or:
     status = umfpack_di_report_matrix (n_row, n_col, Ap, Ai, Ax, 0, Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, *Ap, *Ai ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai ;
     double *Ax, Control [UMFPACK_CONTROL] ;
     int status ;
     status = umfpack_dl_report_matrix (n_row, n_col, Ap, Ai, Ax, 1, Control) ;
@@ -5429,10 +5433,10 @@ or:
     status = umfpack_zi_report_matrix (n_row, n_col, Ap, Ai, Ax, Az, 0,
         Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, *Ap, *Ai ;
+    SuiteSparse_long n_row, n_col, *Ap, *Ai ;
     double *Ax, Control [UMFPACK_CONTROL] ;
     int status ;
     status = umfpack_zl_report_matrix (n_row, n_col, Ap, Ai, Ax, Az, 1,
@@ -5567,11 +5571,11 @@ int umfpack_di_report_triplet
 
 int umfpack_dl_report_triplet
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t nz,
-    const int64_t Ti [ ],
-    const int64_t Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -5589,11 +5593,11 @@ int umfpack_zi_report_triplet
 
 int umfpack_zl_report_triplet
 (
-    int64_t n_row,
-    int64_t n_col,
-    int64_t nz,
-    const int64_t Ti [ ],
-    const int64_t Tj [ ],
+    SuiteSparse_long n_row,
+    SuiteSparse_long n_col,
+    SuiteSparse_long nz,
+    const SuiteSparse_long Ti [ ],
+    const SuiteSparse_long Tj [ ],
     const double Tx [ ], const double Tz [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -5607,10 +5611,10 @@ double int32_t Syntax:
     int status = umfpack_di_report_triplet (n_row, n_col, nz, Ti, Tj, Tx,
         Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, *Ti, *Tj ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj ;
     double *Tx, Control [UMFPACK_CONTROL] ;
     int status = umfpack_dl_report_triplet (n_row, n_col, nz, Ti, Tj, Tx,
         Control) ;
@@ -5623,10 +5627,10 @@ complex int32_t Syntax:
     int status = umfpack_zi_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Tz,
         Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n_row, n_col, nz, *Ti, *Tj ;
+    SuiteSparse_long n_row, n_col, nz, *Ti, *Tj ;
     double *Tx, *Tz, Control [UMFPACK_CONTROL] ;
     int status = umfpack_zl_report_triplet (n_row, n_col, nz, Ti, Tj, Tx, Tz,
         Control) ;
@@ -5713,7 +5717,7 @@ int umfpack_di_report_vector
 
 int umfpack_dl_report_vector
 (
-    int64_t n,
+    SuiteSparse_long n,
     const double X [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -5727,7 +5731,7 @@ int umfpack_zi_report_vector
 
 int umfpack_zl_report_vector
 (
-    int64_t n,
+    SuiteSparse_long n,
     const double Xx [ ], const double Xz [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
@@ -5740,10 +5744,10 @@ double int32_t Syntax:
     double *X, Control [UMFPACK_CONTROL] ;
     int status = umfpack_di_report_vector (n, X, Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n ;
+    SuiteSparse_long n ;
     double *X, Control [UMFPACK_CONTROL] ;
     int status = umfpack_dl_report_vector (n, X, Control) ;
 
@@ -5754,10 +5758,10 @@ complex int32_t Syntax:
     double *Xx, *Xz, Control [UMFPACK_CONTROL] ;
     int status = umfpack_zi_report_vector (n, Xx, Xz, Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t n ;
+    SuiteSparse_long n ;
     double *Xx, *Xz, Control [UMFPACK_CONTROL] ;
     int status = umfpack_zl_report_vector (n, Xx, Xz, Control) ;
 
@@ -5864,7 +5868,7 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_di_report_symbolic (Symbolic, Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
@@ -5878,7 +5882,7 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_zi_report_symbolic (Symbolic, Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Symbolic ;
@@ -5966,7 +5970,7 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_di_report_numeric (Numeric, Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -5980,7 +5984,7 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_zi_report_numeric (Numeric, Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
     void *Numeric ;
@@ -6046,8 +6050,8 @@ int umfpack_di_report_perm
 
 int umfpack_dl_report_perm
 (
-    int64_t np,
-    const int64_t Perm [ ],
+    SuiteSparse_long np,
+    const SuiteSparse_long Perm [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -6060,8 +6064,8 @@ int umfpack_zi_report_perm
 
 int umfpack_zl_report_perm
 (
-    int64_t np,
-    const int64_t Perm [ ],
+    SuiteSparse_long np,
+    const SuiteSparse_long Perm [ ],
     const double Control [UMFPACK_CONTROL]
 ) ;
 
@@ -6073,10 +6077,10 @@ double int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_di_report_perm (np, Perm, Control) ;
 
-double int64_t Syntax:
+double SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t np, *Perm ;
+    SuiteSparse_long np, *Perm ;
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_dl_report_perm (np, Perm, Control) ;
 
@@ -6087,10 +6091,10 @@ complex int32_t Syntax:
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_zi_report_perm (np, Perm, Control) ;
 
-complex int64_t Syntax:
+complex SuiteSparse_long Syntax:
 
     #include "umfpack.h"
-    int64_t np, *Perm ;
+    SuiteSparse_long np, *Perm ;
     double Control [UMFPACK_CONTROL] ;
     int status = umfpack_zl_report_perm (np, Perm, Control) ;
 

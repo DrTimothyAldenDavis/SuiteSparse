@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_mem_alloc_head_block.c:
-// double int64_t version of umf_mem_alloc_head_block
+// double, SuiteSparse_long version of umf_mem_alloc_head_block
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

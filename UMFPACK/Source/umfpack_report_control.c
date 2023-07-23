@@ -48,7 +48,7 @@ void UMFPACK_report_control
 #endif
 #ifdef DLONG
     PRINTF (("    Matrix entry defined as: double\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 #ifdef ZINT
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
@@ -56,7 +56,7 @@ void UMFPACK_report_control
 #endif
 #ifdef ZLONG
     PRINTF (("    Matrix entry defined as: double complex\n")) ;
-    PRINTF (("    Int (generic integer) defined as: int64_t\n")) ;
+    PRINTF (("    Int (generic integer) defined as: SuiteSparse_long\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */

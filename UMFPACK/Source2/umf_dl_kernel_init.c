@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_kernel_init.c:
-// double int64_t version of umf_kernel_init
+// double, SuiteSparse_long version of umf_kernel_init
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

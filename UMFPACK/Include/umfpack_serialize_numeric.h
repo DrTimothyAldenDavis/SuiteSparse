@@ -9,25 +9,25 @@
 
 int umfpack_di_serialize_numeric_size
 (
-    Int *size,
+    SuiteSparse_long *size,
     void *Numeric
 ) ;
 
 SuiteSparse_long umfpack_dl_serialize_numeric_size
 (
-    Int *size,
+    SuiteSparse_long *size,
     void *Numeric
 ) ;
 
 int umfpack_zi_serialize_numeric_size
 (
-    Int *size,
+    SuiteSparse_long *size,
     void *Numeric
 ) ;
 
 SuiteSparse_long umfpack_zl_serialize_numeric_size
 (
-    Int *size,
+    SuiteSparse_long *size,
     void *Numeric
 ) ;
 

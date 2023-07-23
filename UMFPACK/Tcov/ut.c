@@ -1895,13 +1895,13 @@ static double do_symnum
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t S_blobsize ;
+    SuiteSparse_long S_blobsize ;
     status = UMFPACK_serialize_symbolic_size (&S_blobsize, Symbolic) ;
     if (status != UMFPACK_OK)
     {
 	error ("UMFPACK_serialize_symbolic_size failed", 0.) ;
     }
-    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    printf ("\nSymbolic blob size: %" SuiteSparse_long_idd "\n", S_blobsize) ;
     // allocate the blob
     int8_t *S_blob = malloc (S_blobsize) ;
     if (!S_blob)
@@ -2344,13 +2344,13 @@ static double do_symnum
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t N_blobsize ;
+    SuiteSparse_long N_blobsize ;
     status = UMFPACK_serialize_numeric_size (&N_blobsize, Numeric) ;
     if (status != UMFPACK_OK)
     {
 	error ("UMFPACK_serialize_numeric_size failed", 0.) ;
     }
-    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    printf ("\nNumeric blob size: %" SuiteSparse_long_idd "\n", N_blobsize) ;
     // allocate the blob
     int8_t *N_blob = malloc (N_blobsize) ;
     if (!N_blob)
@@ -6438,7 +6438,7 @@ int main (int argc, char **argv)
         Sym->valid = SYMBOLIC_VALID ;
 
         int8_t *S_blob = NULL ;
-        int64_t S_blobsize = 0 ;
+        SuiteSparse_long S_blobsize = 0 ;
 
         s = UMFPACK_serialize_symbolic_size (&S_blobsize, NULL) ;
 	if (s != UMFPACK_ERROR_argument_missing) error ("99b",0.) ;
@@ -6480,7 +6480,7 @@ int main (int argc, char **argv)
 	if (Symbolic_copy != NULL || s != UMFPACK_ERROR_invalid_blob) error ("99m",0.) ;
 
         // mangle the S_blob
-        int64_t S_header = sizeof (int64_t) + 10 * sizeof (int32_t) ;
+        SuiteSparse_long S_header = sizeof (SuiteSparse_long) + 10 * sizeof (int32_t) ;
         memset (S_blob + S_header, 0, S_blobsize - S_header) ;
 
         s = UMFPACK_deserialize_symbolic (&Symbolic_copy, S_blob, S_blobsize) ;
@@ -6564,7 +6564,7 @@ int main (int argc, char **argv)
             Num->valid = NUMERIC_VALID ;
 
             int8_t *N_blob = NULL ;
-            int64_t N_blobsize = 0 ;
+            SuiteSparse_long N_blobsize = 0 ;
 
             s = UMFPACK_serialize_numeric_size (&N_blobsize, NULL) ;
             if (s != UMFPACK_ERROR_argument_missing) error ("103b",0.) ;
@@ -6605,7 +6605,7 @@ int main (int argc, char **argv)
             if (Numeric_copy != NULL || s != UMFPACK_ERROR_invalid_blob) error ("103m",0.) ;
 
             // mangle the N_blob
-            int64_t N_header = sizeof (int64_t) + 10 * sizeof (int32_t) ;
+            SuiteSparse_long N_header = sizeof (SuiteSparse_long) + 10 * sizeof (int32_t) ;
             memset (N_blob + N_header, 0, N_blobsize - N_header) ;
 
             s = UMFPACK_deserialize_numeric (&Numeric_copy, N_blob, N_blobsize) ;

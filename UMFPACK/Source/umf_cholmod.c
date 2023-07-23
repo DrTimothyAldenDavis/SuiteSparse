@@ -242,7 +242,7 @@ int UMF_cholmod
       not installed */
     if (ordering_option == UMFPACK_ORDERING_NONE)
     {
-        int64_t k ;
+        Int k ;
         for (k = 0 ; k < ncol ; k++)
         {
             Perm [k] = k ;

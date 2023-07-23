@@ -8,7 +8,7 @@
 //------------------------------------------------------------------------------
 
 /*  Degree update and numerical assembly.  This is compiled twice (with and
- *  without FIXQ) for each real/complex int32_t/int64_t version, for a
+ *  without FIXQ) for each real/complex int32_t/SuiteSparse_long version, for a
  *  total of 8 versions.*/
 
 #include "umf_internal.h"

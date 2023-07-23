@@ -208,7 +208,7 @@ Files and directories in the UMFPACK distribution:
 
     umf_config.h		configuration file (BLAS, memory, timer)
     umf_internal.h		definitions internal to UMFPACK
-    umf_version.h		version definitions (int/int64_t, real/complex)
+    umf_version.h		version definitions (int/SuiteSparse_long, real/complex)
 
     umf_analyze.[ch]		symbolic factorization of A'*A
     umf_apply_order.[ch]	apply column etree postorder
@@ -281,9 +281,9 @@ Files and directories in the UMFPACK distribution:
     umfpack_zl_demo.sed		for creating umfpack_zl_demo.c
 
     umfpack_di_demo.c		a full demo (real/int version)
-    umfpack_dl_demo.c		a full demo (real/int64_t version)
+    umfpack_dl_demo.c		a full demo (real/SuiteSparse_long version)
     umfpack_zi_demo.c		a full demo (complex/int version)
-    umfpack_zl_demo.c		a full demo (complex/int64_t version)
+    umfpack_zl_demo.c		a full demo (complex/SuiteSparse_long version)
 
     umfpack_di_demo.out		umfpack_di_demo output
     umfpack_dl_demo.out		umfpack_dl_demo output

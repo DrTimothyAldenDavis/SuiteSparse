@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umfpack_dl_qsymbolic.c:
-// double int64_t version of umfpack_qsymbolic
+// double, SuiteSparse_long version of umfpack_qsymbolic
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

@@ -11,8 +11,8 @@
    Define routine names, depending on version being compiled.
 
    DINT:	double precision, int32_t integers
-   DLONG:	double precision, int64_t integers
-   ZLONG:	complex double precision, int64_t integers
+   DLONG:	double precision, SuiteSparse_long integers
+   ZLONG:	complex double precision, SuiteSparse_long integers
    ZINT:	complex double precision, int32_t integers
 */
 
@@ -27,7 +27,7 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* integer type (Int is int32_t or int64_t) defined in amd_internal.h */
+/* integer type (Int is int32_t or SuiteSparse_long) defined in amd_internal.h */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG) || defined (ZLONG)
@@ -543,7 +543,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Double precision, with int64_t integers */
+/* Double precision, with SuiteSparse_long integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef DLONG
@@ -799,7 +799,7 @@ typedef struct
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* Complex double precision, with int64_t integers */
+/* Complex double precision, with SuiteSparse_long integers */
 /* -------------------------------------------------------------------------- */
 
 #ifdef ZLONG

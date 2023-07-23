@@ -49,7 +49,7 @@ int UMFPACK_deserialize_numeric
 (
     void **NumericHandle,   // output: Numeric object created from the blob
     int8_t *blob,           // input: serialized blob, not modified
-    int64_t blobsize        // size of the blob in bytes
+    intptr_t blobsize       // size of the blob in bytes
 )
 {
 
@@ -64,7 +64,7 @@ int UMFPACK_deserialize_numeric
 
     NumericType *Numeric ;
     (*NumericHandle) = (void *) NULL ;
-    int64_t offset = 0 ;
+    intptr_t offset = 0 ;
 
     // read the blob header:
     DESERIALIZE_SCALAR (int64_t, required) ;

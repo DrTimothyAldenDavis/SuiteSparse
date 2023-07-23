@@ -603,14 +603,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t S_blobsize ;
+    SuiteSparse_long S_blobsize ;
     status = umfpack_zi_serialize_symbolic_size (&S_blobsize, Symbolic) ;
     if (status < 0)
     {
 	umfpack_zi_report_status (Control, status) ;
 	error ("umfpack_zi_serialize_symbolic_size failed") ;
     }
-    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    printf ("\nSymbolic blob size: %" SuiteSparse_long_idd "\n", S_blobsize) ;
     // allocate the blob
     void *S_blob = malloc (S_blobsize) ;
     if (!S_blob)
@@ -787,14 +787,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t N_blobsize ;
+    SuiteSparse_long N_blobsize ;
     status = umfpack_zi_serialize_numeric_size (&N_blobsize, Numeric) ;
     if (status < 0)
     {
 	umfpack_zi_report_status (Control, status) ;
 	error ("umfpack_zi_serialize_numeric_size failed") ;
     }
-    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    printf ("\nNumeric blob size: %" SuiteSparse_long_idd "\n", N_blobsize) ;
     // allocate the blob
     void *N_blob = malloc (N_blobsize) ;
     if (!N_blob)

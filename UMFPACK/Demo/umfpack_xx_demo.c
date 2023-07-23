@@ -12,9 +12,9 @@
 :: four different C demo programs:
 ::
 :: umfpack_di_demo.c:  double precision, int32_t integers
-:: umfpack_dl_demo.c:  double precision, int64_t integers
+:: umfpack_dl_demo.c:  double precision, SuiteSparse_long integers
 :: umfpack_zi_demo.c:  complex double precision, int32_t integers
-:: umfpack_zl_demo.c:  complex double precision, int64_t integers
+:: umfpack_zl_demo.c:  complex double precision, SuiteSparse_long integers
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 /*
@@ -70,7 +70,7 @@
 /* -------------------------------------------------------------------------- */
 
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-:: Int is either int32_t or int64_t:
+:: Int is either int32_t or SuiteSparse_long:
 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 static Int n = 5, nz = 12 ;
 static Int Arow [ ] = { 0,  4,  1,  1,   2,   2,  0,  1,  2,  3,  4,  4} ;
@@ -618,14 +618,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t S_blobsize ;
+    SuiteSparse_long S_blobsize ;
     status = umfpack_xx_serialize_symbolic_size (&S_blobsize, Symbolic) ;
     if (status < 0)
     {
 	umfpack_xx_report_status (Control, status) ;
 	error ("umfpack_xx_serialize_symbolic_size failed") ;
     }
-    printf ("\nSymbolic blob size: %"PRId64"\n", S_blobsize) ;
+    printf ("\nSymbolic blob size: %" SuiteSparse_long_idd "\n", S_blobsize) ;
     // allocate the blob
     int8_t *S_blob = malloc (S_blobsize) ;
     if (!S_blob)
@@ -802,14 +802,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     // determine the required blobsize
-    int64_t N_blobsize ;
+    SuiteSparse_long N_blobsize ;
     status = umfpack_xx_serialize_numeric_size (&N_blobsize, Numeric) ;
     if (status < 0)
     {
 	umfpack_xx_report_status (Control, status) ;
 	error ("umfpack_xx_serialize_numeric_size failed") ;
     }
-    printf ("\nNumeric blob size: %"PRId64"\n", N_blobsize) ;
+    printf ("\nNumeric blob size: %" SuiteSparse_long_idd "\n", N_blobsize) ;
     // allocate the blob
     int8_t *N_blob = malloc (N_blobsize) ;
     if (!N_blob)

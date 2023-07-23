@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_mem_alloc_element.c:
-// double int64_t version of umf_mem_alloc_element
+// double, SuiteSparse_long version of umf_mem_alloc_element
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

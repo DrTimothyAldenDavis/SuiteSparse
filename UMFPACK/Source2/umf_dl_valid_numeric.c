@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_valid_numeric.c:
-// double int64_t version of umf_valid_numeric
+// double, SuiteSparse_long version of umf_valid_numeric
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

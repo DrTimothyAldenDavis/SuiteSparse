@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umf_dl_symbolic_usage.c:
-// double int64_t version of umf_symbolic_usage
+// double, SuiteSparse_long version of umf_symbolic_usage
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.

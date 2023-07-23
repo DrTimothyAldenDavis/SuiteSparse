@@ -1090,9 +1090,9 @@ void UMF_dump_start
     sizeof (int32_t), sizeof (int32_t) / sizeof (int), UNITS (int32_t, 1) )) ;
     DEBUG2 (("sizeof (size_t)        %u %u %u\n",
     sizeof (size_t), sizeof (size_t) / sizeof (int), UNITS (size_t, 1) )) ;
-    DEBUG2 (("sizeof (int64_t)       %u %u %u\n",
-    sizeof (int64_t),
-    sizeof (int64_t) / sizeof (int),
+    DEBUG2 (("sizeof (SuiteSparse_long)       %u %u %u\n",
+    sizeof (SuiteSparse_long),
+    sizeof (SuiteSparse_long) / sizeof (int),
     UNITS (int64_t, 1)));
     DEBUG2 (("sizeof (double)        %u %u %u\n",
     sizeof (double), sizeof (double) / sizeof (int), UNITS (double, 1) )) ;

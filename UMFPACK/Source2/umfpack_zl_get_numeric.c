@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 // UMFPACK/Source2/umfpack_zl_get_numeric.c:
-// double complex int64_t version of umfpack_get_numeric
+// double complex, SuiteSparse_long version of umfpack_get_numeric
 //------------------------------------------------------------------------------
 
 // UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
