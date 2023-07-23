@@ -28,7 +28,7 @@ enum QREngineResultCode
 
 // Use C++ Polymorphism to provide many different function signatures and
 // call patterns.
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,
@@ -37,7 +37,7 @@ QREngineResultCode GPUQREngine
     QREngineStats <Int> *stats = NULL
 );
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,
@@ -49,7 +49,7 @@ QREngineResultCode GPUQREngine
     QREngineStats <Int> *stats = NULL
 );
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 Int *GPUQREngine_FindStaircase
 (
     Front <Int> *front                // The front whose staircase we are computing

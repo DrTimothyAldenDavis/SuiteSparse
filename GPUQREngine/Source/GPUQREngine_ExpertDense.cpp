@@ -47,9 +47,9 @@ template QREngineResultCode GPUQREngine_Cleanup
 template QREngineResultCode GPUQREngine_Cleanup
 (
     QREngineResultCode code,    // The result code that we're exiting with
-    Front <int64_t> *userFronts,          // The user-provided list of fronts
-    Front <int64_t> *fronts,              // The internal copy of the user's fronts
-    int64_t numFronts,              // The number of fronts to be factorized
+    Front <SuiteSparse_long> *userFronts, // The user-provided list of fronts
+    Front <SuiteSparse_long> *fronts,     // The internal copy of the user's fronts
+    SuiteSparse_long numFronts,           // The number of fronts to be factorized
     Workspace *wsMongoF,        // Pointer to the total GPU Front workspace
     Workspace *wsMongoR         // Pointer to the total CPU R workspace
 );
@@ -198,9 +198,10 @@ template QREngineResultCode GPUQREngine
 template QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,   // The total available GPU memory size in bytes
-    Front <int64_t> *userFronts,      // The list of fronts to factorize
-    int64_t numFronts,          // The number of fronts to factorize
-    QREngineStats <int64_t> *stats    // An optional parameter. If present, statistics
+    Front <SuiteSparse_long> *userFronts, // The list of fronts to factorize
+    SuiteSparse_long numFronts,           // The number of fronts to factorize
+    QREngineStats <SuiteSparse_long> *stats
+                            // An optional parameter. If present, statistics
                             // are collected and passed back to the caller
                             // via this struct
 ) ;
@@ -270,9 +271,9 @@ template int32_t *GPUQREngine_FindStaircase
 (
     Front <int32_t> *front                // The front whose staircase we are computing
 ) ;
-template int64_t *GPUQREngine_FindStaircase
+template SuiteSparse_long *GPUQREngine_FindStaircase
 (
-    Front <int64_t> *front                // The front whose staircase we are computing
+    Front <SuiteSparse_long> *front       // The front whose staircase we are computing
 ) ;
 #endif
 

@@ -112,26 +112,27 @@ template QREngineResultCode GPUQREngine_Internal
 template QREngineResultCode GPUQREngine_Internal
 (
     size_t gpuMemorySize,   // The total available GPU memory size in bytes
-    Front <int64_t> *fronts,          // The list of fronts to factorize
-    int64_t numFronts,          // The number of fronts to factorize
-    int64_t *Parent,            // The front-to-parent mapping
-    int64_t *Childp,            // Front-to-child column pointers
-    int64_t *Child,             // Child permutation
+    Front <SuiteSparse_long> *fronts, // The list of fronts to factorize
+    SuiteSparse_long numFronts,       // The number of fronts to factorize
+    SuiteSparse_long *Parent,         // The front-to-parent mapping
+    SuiteSparse_long *Childp,         // Front-to-child column pointers
+    SuiteSparse_long *Child,          // Child permutation
                             // (Child[Childp[f]] to Child[Childp[f+1]] are all
                             // the front identifiers for front "f"'s children.
-    QREngineStats <int64_t> *stats    // An optional parameter. If present, statistics
+    QREngineStats <SuiteSparse_long> *stats
+                            // An optional parameter. If present, statistics
                             // are collected and passed back to the caller
                             // via this struct
 ) ;
 
 template class BucketList<int32_t>;
-template class BucketList<int64_t>;
+template class BucketList<SuiteSparse_long>;
 
 template class LLBundle<int32_t>;
-template class LLBundle<int64_t>;
+template class LLBundle<SuiteSparse_long>;
 
 template class Scheduler<int32_t>;
-template class Scheduler<int64_t>;
+template class Scheduler<SuiteSparse_long>;
 
 #endif
 

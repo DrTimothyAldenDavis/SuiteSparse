@@ -33,7 +33,7 @@ size_t ssgpu_maxQueueSize       // return size of scheduler queue
     size_t gpuMemorySize        // size of GPU memory, in bytes
 ) ;
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 class Scheduler
 {
 private:
@@ -172,6 +172,15 @@ public:
 #endif
 };
 
+
+// forward declare some template instantiations
+
 extern template class Scheduler<int32_t>;
-extern template class Scheduler<int64_t>;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+extern template class Scheduler<SuiteSparse_long>;
+
+#endif
+
 #endif

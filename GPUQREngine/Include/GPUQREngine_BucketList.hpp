@@ -32,7 +32,7 @@ struct TaskDescriptor;
 template <typename Int>
 class LLBundle;
 
-template <typename Int = int64_t> class BucketList
+template <typename Int = SuiteSparse_long> class BucketList
 {
 public:
     bool useFlag;            // A flag indicating whether to use this
@@ -188,7 +188,15 @@ public:
     );
 };
 
+
+// forward declare some template instantiations
+
 extern template class BucketList<int32_t>;
-extern template class BucketList<int64_t>;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+extern template class BucketList<SuiteSparse_long>;
+
+#endif
 
 #endif

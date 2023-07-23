@@ -23,7 +23,7 @@
 #include "GPUQREngine_SparseMeta.hpp"
 #include "GPUQREngine_FrontState.hpp"
 
-template <typename Int = int64_t> class Front
+template <typename Int = SuiteSparse_long> class Front
 {
 public:
     Int fids;           // Front id within a stage

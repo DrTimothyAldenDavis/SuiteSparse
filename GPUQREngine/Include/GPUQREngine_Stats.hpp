@@ -16,7 +16,7 @@
 #ifndef GPUQRENGINE_STATS_HPP
 #define GPUQRENGINE_STATS_HPP
 
-template <typename Int = int64_t> struct QREngineStats
+template <typename Int = SuiteSparse_long> struct QREngineStats
 {
     float kernelTime;           // The total time spent in the kernel.
                                 // This time is accumulated across multiple

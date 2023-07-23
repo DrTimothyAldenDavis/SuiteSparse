@@ -28,7 +28,7 @@ void GPUQREngine_UberKernel
     int numTasks                    // The # of items in the work list
 );
 
-template <typename Int = int64_t>
+template <typename Int = SuiteSparse_long>
 QREngineResultCode GPUQREngine_Internal
 (
     size_t gpuMemorySize,           // The total size of the GPU memory

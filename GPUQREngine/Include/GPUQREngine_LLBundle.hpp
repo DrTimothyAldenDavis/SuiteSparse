@@ -32,7 +32,7 @@ template <typename Int>
 class BucketList;
 
 
-template <typename Int = int64_t> class LLBundle
+template <typename Int = SuiteSparse_long> class LLBundle
 {
 public:
     BucketList <Int> *Buckets; // A back pointer to the hosting BucketList
@@ -125,6 +125,15 @@ public:
     void gpuPack(TaskDescriptor *cpuTask);
 };
 
+
+// forward declare some template instantiations
+
 extern template class LLBundle<int32_t>;
-extern template class LLBundle<int64_t>;
+
+#if SuiteSparse_long_max != INT32_MAX
+
+extern template class LLBundle<SuiteSparse_long>;
+
+#endif
+
 #endif
