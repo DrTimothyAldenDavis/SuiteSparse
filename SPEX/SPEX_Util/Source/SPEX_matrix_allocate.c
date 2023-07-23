@@ -26,9 +26,9 @@ SPEX_info SPEX_matrix_allocate
     SPEX_matrix **A_handle, // matrix to allocate
     SPEX_kind kind,         // CSC, triplet, or dense
     SPEX_type type,         // mpz, mpq, mpfr, int64, or double
-    int64_t m,              // # of rows
-    int64_t n,              // # of columns
-    int64_t nzmax,          // max # of entries for CSC or triplet
+    SuiteSparse_long m,     // # of rows
+    SuiteSparse_long n,     // # of columns
+    SuiteSparse_long nzmax, // max # of entries for CSC or triplet
                             // (ignored if A is dense)
     bool shallow,           // if true, matrix is shallow.  A->p, A->i, A->j,
                             // A->x are all returned as NULL and must be set
@@ -122,14 +122,14 @@ SPEX_info SPEX_matrix_allocate
         switch (kind)
         {
             case SPEX_CSC:
-                A->p = (int64_t *) SPEX_calloc (n+1, sizeof (int64_t)) ;
-                A->i = (int64_t *) SPEX_calloc (nzmax, sizeof (int64_t)) ;
+                A->p = (SuiteSparse_long *) SPEX_calloc (n+1, sizeof (SuiteSparse_long)) ;
+                A->i = (SuiteSparse_long *) SPEX_calloc (nzmax, sizeof (SuiteSparse_long)) ;
                 ok = (A->p != NULL && A->i != NULL) ;
                 break ;
 
             case SPEX_TRIPLET:
-                A->i = (int64_t *) SPEX_calloc (nzmax, sizeof (int64_t)) ;
-                A->j = (int64_t *) SPEX_calloc (nzmax, sizeof (int64_t)) ;
+                A->i = (SuiteSparse_long *) SPEX_calloc (nzmax, sizeof (SuiteSparse_long)) ;
+                A->j = (SuiteSparse_long *) SPEX_calloc (nzmax, sizeof (SuiteSparse_long)) ;
                 ok = (A->i != NULL && A->j != NULL) ;
                 break ;
 

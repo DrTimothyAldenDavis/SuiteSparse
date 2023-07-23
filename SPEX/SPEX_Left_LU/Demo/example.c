@@ -45,7 +45,7 @@ int main (void)
     //--------------------------------------------------------------------------
 
     SPEX_info ok;
-    int64_t n = 50, nz = 2500, num=0;
+    SuiteSparse_long n = 50, nz = 2500, num=0;
     SPEX_matrix *A = NULL ;                     // input matrix
     SPEX_matrix *R = NULL ;                     // Random matrix to create A
     SPEX_matrix *Rb = NULL;                     // Random matrix to create b
@@ -73,10 +73,10 @@ int main (void)
     // Randomly generate the input
     unsigned int seed = 10;
     srand(seed);
-    for (int64_t k = 0; k < n; k++)
+    for (SuiteSparse_long k = 0; k < n; k++)
     {
         Rb->x.fp64[k] = rand();
-        for (int64_t p = 0; p < n; p++)
+        for (SuiteSparse_long p = 0; p < n; p++)
         {
             R->i[num] = k;
             R->j[num] = p;

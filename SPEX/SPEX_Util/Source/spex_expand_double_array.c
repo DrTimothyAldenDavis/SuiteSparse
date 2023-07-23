@@ -28,7 +28,7 @@ SPEX_info spex_expand_double_array
     mpz_t* x_out,           // integral final array
     double* x,              // double array that needs to be made integral
     mpq_t scale,            // the scaling factor used (x_out = scale * x)
-    int64_t n,              // size of x
+    SuiteSparse_long n,     // size of x
     const SPEX_options* option // Command options
 )
 {
@@ -41,7 +41,7 @@ SPEX_info spex_expand_double_array
 
     //--------------------------------------------------------------------------
 
-    int64_t i, k ;
+    SuiteSparse_long i, k ;
     int r1, r2 = 1;
     bool nz_found = false;
     SPEX_info info ;

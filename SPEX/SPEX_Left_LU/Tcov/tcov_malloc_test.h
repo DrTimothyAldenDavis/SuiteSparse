@@ -15,7 +15,7 @@
 #include "spex_util_internal.h"
 #include "SPEX_gmp.h"
 
-extern int64_t malloc_count ;
+extern SuiteSparse_long malloc_count ;
 
 #define GOTCHA \
     printf ("%s, line %d, spex_gmp_ntrials = %ld, malloc_count = %ld\n", \

@@ -32,7 +32,7 @@ SPEX_info SPEX_matrix_copy
     SPEX_matrix **C_handle, // matrix to create (never shallow)
     // inputs, not modified:
     SPEX_kind C_kind,       // C->kind: CSC, triplet, or dense
-    SPEX_type C_type,       // C->type: mpz_t, mpq_t, mpfr_t, int64_t, or double
+    SPEX_type C_type,       // C->type: mpz_t, mpq_t, mpfr_t, SuiteSparse_long, or double
     SPEX_matrix *A,         // matrix to make a copy of (may be shallow)
     const SPEX_options *option
 )
@@ -45,11 +45,11 @@ SPEX_info SPEX_matrix_copy
     SPEX_info info ;
     if (!spex_initialized ( )) return (SPEX_PANIC) ;
 
-    int64_t nz;
+    SuiteSparse_long nz;
     SPEX_matrix *C = NULL ;
     SPEX_matrix *Y = NULL ;
     SPEX_matrix *T = NULL ;
-    int64_t *W = NULL ;
+    SuiteSparse_long *W = NULL ;
 
     SPEX_CHECK (SPEX_matrix_nnz (&nz, A, option)) ;
     ASSERT( nz >= 0);
@@ -63,8 +63,8 @@ SPEX_info SPEX_matrix_copy
         return (SPEX_INCORRECT_INPUT) ;
     }
     (*C_handle) = NULL ;
-    int64_t m = A->m ;
-    int64_t n = A->n ;
+    SuiteSparse_long m = A->m ;
+    SuiteSparse_long n = A->n ;
     mpfr_rnd_t round = SPEX_OPTION_ROUND (option) ;
 
     //--------------------------------------------------------------------------
@@ -94,8 +94,8 @@ SPEX_info SPEX_matrix_copy
                     SPEX_CHECK (SPEX_matrix_allocate (&C, SPEX_CSC, C_type,
                         m, n, nz, false, true, option)) ;
                     // copy the pattern of A into C
-                    memcpy (C->p, A->p, (n+1) * sizeof (int64_t)) ;
-                    memcpy (C->i, A->i, nz * sizeof (int64_t)) ;
+                    memcpy (C->p, A->p, (n+1) * sizeof (SuiteSparse_long)) ;
+                    memcpy (C->i, A->i, nz * sizeof (SuiteSparse_long)) ;
                     // copy and typecast A->x into C->x
                     SPEX_CHECK (spex_cast_array (SPEX_X (C), C->type,
                         SPEX_X (A), A->type, nz, C->scale, A->scale, option)) ;
@@ -114,7 +114,7 @@ SPEX_info SPEX_matrix_copy
                     SPEX_CHECK (spex_cast_matrix (&Y, C_type, A, option)) ;
 
                     // allocate workspace
-                    W = (int64_t *) SPEX_calloc (n, sizeof (int64_t)) ;
+                    W = (SuiteSparse_long *) SPEX_calloc (n, sizeof (SuiteSparse_long)) ;
                     if (W == NULL)
                     {
                         SPEX_FREE_ALL ;
@@ -130,7 +130,7 @@ SPEX_info SPEX_matrix_copy
                     SPEX_mpq_set(C->scale, Y->scale);
                     
                     // count the # of entries in each column
-                    for (int64_t k = 0 ; k < nz ; k++)
+                    for (SuiteSparse_long k = 0 ; k < nz ; k++)
                     {
                         W [A->j [k]]++ ;
                     }
@@ -142,9 +142,9 @@ SPEX_info SPEX_matrix_copy
                     switch (C->type)
                     {
                         case SPEX_MPZ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t p = W [A->j [k]]++ ;
+                                SuiteSparse_long p = W [A->j [k]]++ ;
                                 C->i [p] = A->i [k] ;
                                 SPEX_CHECK (SPEX_mpz_set (
                                     SPEX_1D (C, p, mpz),
@@ -153,9 +153,9 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPQ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t p = W [A->j [k]]++ ;
+                                SuiteSparse_long p = W [A->j [k]]++ ;
                                 C->i [p] = A->i [k] ;
                                 SPEX_CHECK (SPEX_mpq_set (
                                     SPEX_1D (C, p, mpq),
@@ -164,9 +164,9 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPFR:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t p = W [A->j [k]]++ ;
+                                SuiteSparse_long p = W [A->j [k]]++ ;
                                 C->i [p] = A->i [k] ;
                                 SPEX_CHECK (SPEX_mpfr_set (
                                     SPEX_1D (C, p, mpfr),
@@ -176,9 +176,9 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_INT64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t p = W [A->j [k]]++ ;
+                                SuiteSparse_long p = W [A->j [k]]++ ;
                                 C->i [p] = A->i [k] ;
                                 SPEX_1D (C, p, int64) =
                                     SPEX_1D (Y, k, int64) ;
@@ -186,9 +186,9 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_FP64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t p = W [A->j [k]]++ ;
+                                SuiteSparse_long p = W [A->j [k]]++ ;
                                 C->i [p] = A->i [k] ;
                                 SPEX_1D (C, p, fp64) =
                                     SPEX_1D (Y, k, fp64) ;
@@ -211,12 +211,12 @@ SPEX_info SPEX_matrix_copy
                     int s ;
 
                     // count the actual nonzeros in Y
-                    int64_t actual = 0 ;
+                    SuiteSparse_long actual = 0 ;
                     switch (Y->type)
                     {
 
                         case SPEX_MPZ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
                                 SPEX_CHECK (SPEX_mpz_sgn (&s,
                                     SPEX_1D (Y, k, mpz))) ;
@@ -225,7 +225,7 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPQ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
                                 SPEX_CHECK (SPEX_mpq_sgn (&s,
                                     SPEX_1D (Y, k, mpq))) ;
@@ -234,7 +234,7 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPFR:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
                                 SPEX_CHECK (SPEX_mpfr_sgn (&s,
                                     SPEX_1D (Y, k, mpfr))) ;
@@ -243,14 +243,14 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_INT64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
                                 if (SPEX_1D (Y, k, int64) != 0) actual++ ;
                             }
                             break ;
 
                         case SPEX_FP64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
                                 if (SPEX_1D (Y, k, fp64) != 0) actual++ ;
                             }
@@ -270,10 +270,10 @@ SPEX_info SPEX_matrix_copy
                     {
 
                         case SPEX_MPZ:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
                                 C->p [j] = nz ;
-                                for (int64_t i = 0 ; i < m ; i++)
+                                for (SuiteSparse_long i = 0 ; i < m ; i++)
                                 {
                                     SPEX_CHECK( SPEX_mpz_sgn( &s, Y->x.mpz[ i + j*A->m]));
                                     if (s != 0)
@@ -288,10 +288,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPQ:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
                                 C->p [j] = nz ;
-                                for (int64_t i = 0 ; i < m ; i++)
+                                for (SuiteSparse_long i = 0 ; i < m ; i++)
                                 {
                                     SPEX_CHECK (SPEX_mpq_sgn (&s,
                                         Y->x.mpq[ i + j*A->m])) ;
@@ -308,10 +308,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPFR:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
                                 C->p [j] = nz ;
-                                for (int64_t i = 0 ; i < m ; i++)
+                                for (SuiteSparse_long i = 0 ; i < m ; i++)
                                 {
                                     SPEX_CHECK (SPEX_mpfr_sgn (&s,
                                         Y->x.mpfr[i + j*A->m])) ;
@@ -330,10 +330,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_INT64:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
                                 C->p [j] = nz ;
-                                for (int64_t i = 0 ; i < m ; i++)
+                                for (SuiteSparse_long i = 0 ; i < m ; i++)
                                 {
                                     if ( Y->x.int64[i +j*A->m] != 0)
                                     {
@@ -347,10 +347,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_FP64:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
                                 C->p [j] = nz ;
-                                for (int64_t i = 0 ; i < m ; i++)
+                                for (SuiteSparse_long i = 0 ; i < m ; i++)
                                 {
                                     if ( Y->x.fp64[i +j*A->m] != 0)
                                     {
@@ -395,11 +395,11 @@ SPEX_info SPEX_matrix_copy
                     SPEX_CHECK (spex_cast_array (SPEX_X (C), C->type,
                         SPEX_X (A), A->type, nz, C->scale, A->scale, option)) ;
                     // copy the row indices A->i into C->i
-                    memcpy (C->i, A->i, nz * sizeof (int64_t)) ;
+                    memcpy (C->i, A->i, nz * sizeof (SuiteSparse_long)) ;
                     // construct C->j
-                    for (int64_t j = 0 ; j < n ; j++)
+                    for (SuiteSparse_long j = 0 ; j < n ; j++)
                     {
-                        for (int64_t p = A->p [j] ; p < A->p [j+1] ; p++)
+                        for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ; p++)
                         {
                             C->j [p] = j ;
                         }
@@ -419,8 +419,8 @@ SPEX_info SPEX_matrix_copy
                     SPEX_CHECK (SPEX_matrix_allocate (&C, SPEX_TRIPLET, C_type,
                         m, n, nz, false, true, option)) ;
                     // copy the pattern of A into C
-                    memcpy (C->j, A->j, nz * sizeof (int64_t)) ;
-                    memcpy (C->i, A->i, nz * sizeof (int64_t)) ;
+                    memcpy (C->j, A->j, nz * sizeof (SuiteSparse_long)) ;
+                    memcpy (C->i, A->i, nz * sizeof (SuiteSparse_long)) ;
                     // copy and typecast A->x into C->x
                     SPEX_CHECK (spex_cast_array (SPEX_X (C), C->type,
                         SPEX_X (A), A->type, nz, C->scale, A->scale, option)) ;
@@ -482,11 +482,11 @@ SPEX_info SPEX_matrix_copy
                     {
 
                         case SPEX_MPZ:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
-                                for (int64_t p = A->p [j] ; p < A->p [j+1] ;p++)
+                                for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ;p++)
                                 {
-                                    int64_t i = A->i [p] ;
+                                    SuiteSparse_long i = A->i [p] ;
                                     SPEX_CHECK (SPEX_mpz_set (
                                         SPEX_2D (C, i, j, mpz),
                                         SPEX_1D (Y, p, mpz))) ;
@@ -495,11 +495,11 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPQ:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
-                                for (int64_t p = A->p [j] ; p < A->p [j+1] ;p++)
+                                for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ;p++)
                                 {
-                                    int64_t i = A->i [p] ;
+                                    SuiteSparse_long i = A->i [p] ;
                                     SPEX_CHECK (SPEX_mpq_set (
                                         SPEX_2D (C, i, j, mpq),
                                         SPEX_1D (Y, p, mpq))) ;
@@ -508,11 +508,11 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPFR:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
-                                for (int64_t p = A->p [j] ; p < A->p [j+1] ;p++)
+                                for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ;p++)
                                 {
-                                    int64_t i = A->i [p] ;
+                                    SuiteSparse_long i = A->i [p] ;
                                     SPEX_CHECK (SPEX_mpfr_set (
                                         SPEX_2D (C, i, j, mpfr),
                                         SPEX_1D (Y, p, mpfr),
@@ -522,11 +522,11 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_INT64:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
-                                for (int64_t p = A->p [j] ; p < A->p [j+1] ;p++)
+                                for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ;p++)
                                 {
-                                    int64_t i = A->i [p] ;
+                                    SuiteSparse_long i = A->i [p] ;
                                     SPEX_2D (C, i, j, int64) =
                                         SPEX_1D (Y, p, int64) ;
                                 }
@@ -534,11 +534,11 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_FP64:
-                            for (int64_t j = 0 ; j < n ; j++)
+                            for (SuiteSparse_long j = 0 ; j < n ; j++)
                             {
-                                for (int64_t p = A->p [j] ; p < A->p [j+1] ;p++)
+                                for (SuiteSparse_long p = A->p [j] ; p < A->p [j+1] ;p++)
                                 {
-                                    int64_t i = A->i [p] ;
+                                    SuiteSparse_long i = A->i [p] ;
                                     SPEX_2D (C, i, j, fp64) =
                                         SPEX_1D (Y, p, fp64) ;
                                 }
@@ -565,10 +565,10 @@ SPEX_info SPEX_matrix_copy
                     {
 
                         case SPEX_MPZ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t i = A->i [k] ;
-                                int64_t j = A->j [k] ;
+                                SuiteSparse_long i = A->i [k] ;
+                                SuiteSparse_long j = A->j [k] ;
                                 SPEX_CHECK (SPEX_mpz_set (
                                     SPEX_2D (C, i, j, mpz),
                                     SPEX_1D (Y, k, mpz))) ;
@@ -576,10 +576,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPQ:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t i = A->i [k] ;
-                                int64_t j = A->j [k] ;
+                                SuiteSparse_long i = A->i [k] ;
+                                SuiteSparse_long j = A->j [k] ;
                                 SPEX_CHECK (SPEX_mpq_set (
                                     SPEX_2D (C, i, j, mpq),
                                     SPEX_1D (Y, k, mpq))) ;
@@ -587,10 +587,10 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_MPFR:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t i = A->i [k] ;
-                                int64_t j = A->j [k] ;
+                                SuiteSparse_long i = A->i [k] ;
+                                SuiteSparse_long j = A->j [k] ;
                                 SPEX_CHECK (SPEX_mpfr_set (
                                     SPEX_2D (C, i, j, mpfr),
                                     SPEX_1D (Y, k, mpfr),
@@ -599,20 +599,20 @@ SPEX_info SPEX_matrix_copy
                             break ;
 
                         case SPEX_INT64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t i = A->i [k] ;
-                                int64_t j = A->j [k] ;
+                                SuiteSparse_long i = A->i [k] ;
+                                SuiteSparse_long j = A->j [k] ;
                                 SPEX_2D (C, i, j, int64) =
                                     SPEX_1D (Y, k, int64) ;
                             }
                             break ;
 
                         case SPEX_FP64:
-                            for (int64_t k = 0 ; k < nz ; k++)
+                            for (SuiteSparse_long k = 0 ; k < nz ; k++)
                             {
-                                int64_t i = A->i [k] ;
-                                int64_t j = A->j [k] ;
+                                SuiteSparse_long i = A->i [k] ;
+                                SuiteSparse_long j = A->j [k] ;
                                 SPEX_2D (C, i, j, fp64) =
                                     SPEX_1D (Y, k, fp64) ;
                             }

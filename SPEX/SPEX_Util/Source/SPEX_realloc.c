@@ -37,11 +37,11 @@
 void *SPEX_realloc      // pointer to reallocated block, or original block
                         // if the realloc failed
 (
-    int64_t nitems_new,     // new number of items in the object
-    int64_t nitems_old,     // old number of items in the object
-    size_t size_of_item,    // sizeof each item
-    void *p,                // old object to reallocate
-    bool *ok                // true if success, false on failure
+    SuiteSparse_long nitems_new,  // new number of items in the object
+    SuiteSparse_long nitems_old,  // old number of items in the object
+    size_t size_of_item,          // sizeof each item
+    void *p,                      // old object to reallocate
+    bool *ok                      // true if success, false on failure
 )
 {
     if (!spex_initialized ( ))

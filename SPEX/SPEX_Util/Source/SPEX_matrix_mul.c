@@ -35,11 +35,11 @@ SPEX_info SPEX_matrix_mul   // multiplies x by a scalar
     // x = x * scalar
     //--------------------------------------------------------------------------
 
-    int64_t nz;
+    SuiteSparse_long nz;
     info = SPEX_matrix_nnz (&nz, x, NULL) ;
     if (info != SPEX_OK) {return info;}
 
-    for (int64_t i = 0; i < nz; i++)
+    for (SuiteSparse_long i = 0; i < nz; i++)
     {
         // x[i] = x[i]*scalar
         SPEX_CHECK( SPEX_mpz_mul( x->x.mpz[i], x->x.mpz[i], scalar));

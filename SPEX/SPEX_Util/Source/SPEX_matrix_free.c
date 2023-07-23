@@ -48,7 +48,7 @@ SPEX_info SPEX_matrix_free
         {
             case SPEX_MPZ:
                 if ( A->x.mpz)
-                for (int64_t i = 0; i < A->nzmax; i++)
+                for (SuiteSparse_long i = 0; i < A->nzmax; i++)
                 {
                     if ( A->x.mpz[i] != NULL)
                     {
@@ -60,7 +60,7 @@ SPEX_info SPEX_matrix_free
 
             case SPEX_MPQ:
                 if ( A->x.mpq)
-                for (int64_t i = 0; i < A->nzmax; i++)
+                for (SuiteSparse_long i = 0; i < A->nzmax; i++)
                 {
                     if ( A->x.mpq[i] != NULL)
                     {
@@ -72,7 +72,7 @@ SPEX_info SPEX_matrix_free
 
             case SPEX_MPFR:
                 if ( A->x.mpfr)
-                for (int64_t i = 0; i < A->nzmax; i++)
+                for (SuiteSparse_long i = 0; i < A->nzmax; i++)
                 {
                     if ( A->x.mpfr[i] != NULL)
                     {

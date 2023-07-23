@@ -16,16 +16,16 @@
 
 SPEX_info SPEX_cumsum
 (
-    int64_t *p,          // vector to store the sum of c
-    int64_t *c,          // vector which is summed
-    int64_t n            // size of c
+    SuiteSparse_long *p,          // vector to store the sum of c
+    SuiteSparse_long *c,          // vector which is summed
+    SuiteSparse_long n            // size of c
 )
 {
     if (!spex_initialized ( )) return (SPEX_PANIC) ;
 
     if (!p || !c) return SPEX_INCORRECT_INPUT;
     ASSERT(n >= 0);    
-    int64_t i, nz = 0 ;
+    SuiteSparse_long i, nz = 0 ;
     for (i = 0 ; i < n ; i++)
     {
         p [i] = nz ;

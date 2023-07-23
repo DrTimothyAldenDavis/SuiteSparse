@@ -32,13 +32,13 @@ SPEX_info spex_sparse_realloc
     // double the size of A->x and A->i
     //--------------------------------------------------------------------------
 
-    int64_t nzmax = A->nzmax ;
+    SuiteSparse_long nzmax = A->nzmax ;
 
     bool okx, oki ;
     A->x.mpz = (mpz_t *)
         SPEX_realloc (2*nzmax, nzmax, sizeof (mpz_t), A->x.mpz, &okx) ;
-    A->i = (int64_t *)
-        SPEX_realloc (2*nzmax, nzmax, sizeof (int64_t), A->i, &oki) ;
+    A->i = (SuiteSparse_long *)
+        SPEX_realloc (2*nzmax, nzmax, sizeof (SuiteSparse_long), A->i, &oki) ;
     if (!oki || !okx)
     {
         return (SPEX_OUT_OF_MEMORY) ;
@@ -50,7 +50,7 @@ SPEX_info spex_sparse_realloc
     // set newly allocated mpz entries to NULL
     //--------------------------------------------------------------------------
 
-    for (int64_t p = nzmax ; p < 2*nzmax ; p++)
+    for (SuiteSparse_long p = nzmax ; p < 2*nzmax ; p++)
     {
         SPEX_MPZ_SET_NULL (A->x.mpz [p]) ;
     }

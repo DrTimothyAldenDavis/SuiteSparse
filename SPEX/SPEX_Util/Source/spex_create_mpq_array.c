@@ -16,7 +16,7 @@
 
 mpq_t* spex_create_mpq_array
 (
-    int64_t n              // size of the array
+    SuiteSparse_long n  // size of the array
 )
 {
 
@@ -31,13 +31,13 @@ mpq_t* spex_create_mpq_array
     // Malloc space
     mpq_t* x = (mpq_t*) SPEX_calloc(n, sizeof(mpq_t));
     if (!x) {return NULL;}
-    for (int64_t i = 0; i < n; i++)
+    for (SuiteSparse_long i = 0; i < n; i++)
     {
         if (SPEX_mpq_init(x[i]) != SPEX_OK)
         {
             // Out of memory
             SPEX_MPQ_SET_NULL(x[i]);
-            for (int64_t j = 0; j < n; j++)
+            for (SuiteSparse_long j = 0; j < n; j++)
             {
                 if ( x[j] != NULL)
                 {

@@ -14,9 +14,9 @@
 
 SPEX_info SPEX_matrix_nnz     // find the # of entries in A
 (
-    int64_t *nnz,              // # of entries in A, -1 if A is NULL
-    const SPEX_matrix *A,      // matrix to query
-    const SPEX_options *option // command options, currently unused
+    SuiteSparse_long *nnz,      // # of entries in A, -1 if A is NULL
+    const SPEX_matrix *A,       // matrix to query
+    const SPEX_options *option  // command options, currently unused
 )
 {
 

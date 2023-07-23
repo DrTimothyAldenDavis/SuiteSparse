@@ -43,7 +43,7 @@ SPEX_info SPEX_check_solution
     // Declare vars
     //--------------------------------------------------------------------------
 
-    int64_t p, j, i ;
+    SuiteSparse_long p, j, i ;
     SPEX_matrix *b2 = NULL;   // b2 stores the solution of A*x
     mpq_t temp; SPEX_MPQ_SET_NULL(temp);
 

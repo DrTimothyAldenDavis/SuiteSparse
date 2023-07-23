@@ -19,9 +19,9 @@
 
 SPEX_info spex_left_lu_permute_b
 (
-    SPEX_matrix **b_handle,     // permuted RHS vector
-    const SPEX_matrix *b2,      // unpermuted RHS vector (not modified)
-    const int64_t *pinv,        // inverse row permutation
+    SPEX_matrix **b_handle,       // permuted RHS vector
+    const SPEX_matrix *b2,        // unpermuted RHS vector (not modified)
+    const SuiteSparse_long *pinv, // inverse row permutation
     const SPEX_options* option
 )
 {
@@ -40,8 +40,8 @@ SPEX_info spex_left_lu_permute_b
     // b(pinv) = b2
     //--------------------------------------------------------------------------
 
-    int64_t m = b2->m ;
-    int64_t n = b2->n ;
+    SuiteSparse_long m = b2->m ;
+    SuiteSparse_long n = b2->n ;
 
     // allocate x
     SPEX_matrix *b = NULL ;
@@ -49,9 +49,9 @@ SPEX_info spex_left_lu_permute_b
         0, false, true, option)) ;
 
     // Set b = P'*b2
-    for (int64_t i = 0 ; i < m ; i++)
+    for (SuiteSparse_long i = 0 ; i < m ; i++)
     {
-        for (int64_t j = 0 ; j < n ; j++)
+        for (SuiteSparse_long j = 0 ; j < n ; j++)
         {
             SPEX_CHECK(SPEX_mpz_set(SPEX_2D(b,  pinv[i], j, mpz),
                                     SPEX_2D(b2,   i,     j, mpz)));

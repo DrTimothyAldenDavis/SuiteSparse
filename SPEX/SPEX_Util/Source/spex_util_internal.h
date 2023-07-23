@@ -140,7 +140,7 @@
 void spex_gmp_dump ( void ) ;
 #endif
 
-extern int64_t spex_gmp_ntrials ;
+extern SuiteSparse_long spex_gmp_ntrials ;
 
 #ifndef SPEX_GMP_LIST_INIT
 // A size of 32 ensures that the list never needs to be increased in size.
@@ -342,7 +342,7 @@ void spex_set_initialized (bool s) ;    // set global initialzed flag to s
 /* Purpose: This function creates a MPFR array of desired precision*/
 mpfr_t* spex_create_mpfr_array
 (
-    int64_t n,     // size of the array
+    SuiteSparse_long n,   // size of the array
     const SPEX_options* option
 );
 
@@ -353,7 +353,7 @@ mpfr_t* spex_create_mpfr_array
  */
 mpq_t* spex_create_mpq_array
 (
-    int64_t n              // size of the array
+    SuiteSparse_long n  // size of the array
 );
 
 
@@ -368,7 +368,7 @@ mpq_t* spex_create_mpq_array
  */
 mpz_t* spex_create_mpz_array
 (
-    int64_t n              // Size of x
+    SuiteSparse_long n  // Size of x
 );
 
 
@@ -379,10 +379,10 @@ mpz_t* spex_create_mpz_array
  */
 SPEX_info spex_expand_double_array
 (
-    mpz_t *x_out,   // integral final array
-    double* x,      // double array that needs to be made integral
-    mpq_t scale,    // the scaling factor used (x_out = scale * x)
-    int64_t n,      // size of x
+    mpz_t *x_out,       // integral final array
+    double* x,          // double array that needs to be made integral
+    mpq_t scale,        // the scaling factor used (x_out = scale * x)
+    SuiteSparse_long n, // size of x
     const SPEX_options* option
 );
 
@@ -393,10 +393,10 @@ SPEX_info spex_expand_double_array
  */
 SPEX_info spex_expand_mpfr_array
 (
-    mpz_t *x_out,   // integral final array
-    mpfr_t* x,      // mpfr array to be expanded
-    mpq_t scale,    // scaling factor used (x_out = scale*x)
-    int64_t n,      // size of x
+    mpz_t *x_out,       // integral final array
+    mpfr_t* x,          // mpfr array to be expanded
+    mpq_t scale,        // scaling factor used (x_out = scale*x)
+    SuiteSparse_long n, // size of x
     const SPEX_options *option // command options containing the prec for mpfr
 );
 
@@ -406,10 +406,10 @@ SPEX_info spex_expand_mpfr_array
  */
 SPEX_info spex_expand_mpq_array
 (
-    mpz_t *x_out, // integral final array
-    mpq_t* x,     // mpq array that needs to be converted
-    mpq_t scale,  // scaling factor. x_out = scale*x
-    int64_t n,     // size of x
+    mpz_t *x_out,       // integral final array
+    mpq_t* x,           // mpq array that needs to be converted
+    mpq_t scale,        // scaling factor. x_out = scale*x
+    SuiteSparse_long n, // size of x
     const SPEX_options* option // Command options
 );
 
@@ -420,11 +420,11 @@ SPEX_info spex_expand_mpq_array
  */
 SPEX_info spex_expand_mpq_mat
 (
-    mpz_t **x_out,// integral final mat
-    mpq_t **x,    // mpq mat that needs to be converted
-    mpq_t scale,  // scaling factor. x_out = scale*x
-    int64_t m,    // number of rows of x
-    int64_t n     // number of columns of x
+    mpz_t **x_out,      // integral final mat
+    mpq_t **x,          // mpq mat that needs to be converted
+    mpq_t scale,        // scaling factor. x_out = scale*x
+    SuiteSparse_long m, // number of rows of x
+    SuiteSparse_long n  // number of columns of x
 );
 
 
@@ -455,7 +455,7 @@ SPEX_info spex_cast_array
     SPEX_type ytype,        // type of Y
     void *X,                // input array, of size n
     SPEX_type xtype,        // type of X
-    int64_t n,              // size of Y and X
+    SuiteSparse_long n,              // size of Y and X
     mpq_t y_scale,          // scale factor applied if y is mpz_t
     mpq_t x_scale,          // scale factor applied if x is mpz_t
     const SPEX_options *option

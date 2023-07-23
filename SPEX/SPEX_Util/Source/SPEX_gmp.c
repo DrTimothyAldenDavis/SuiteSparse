@@ -72,12 +72,12 @@
 //------------------------------------------------------------------------------
 
 jmp_buf spex_gmp_environment ;  // for setjmp and longjmp
-int64_t spex_gmp_nmalloc = 0 ;  // number of malloc'd objects in SPEX_gmp_list
-int64_t spex_gmp_nlist = 0 ;    // size of the SPEX_gmp_list
+SuiteSparse_long spex_gmp_nmalloc = 0 ;  // number of malloc'd objects in SPEX_gmp_list
+SuiteSparse_long spex_gmp_nlist = 0 ;    // size of the SPEX_gmp_list
 void **spex_gmp_list = NULL ;   // list of malloc'd objects
 
-int64_t spex_gmp_ntrials = -1 ; // number of malloc's allowed (for
-                                // testing only): -1 means unlimited.
+SuiteSparse_long spex_gmp_ntrials = -1 ;  // number of malloc's allowed (for
+                                          // testing only): -1 means unlimited.
 
 mpz_t  *spex_gmpz_archive  = NULL ;    // current mpz object
 mpq_t  *spex_gmpq_archive  = NULL ;    // current mpq object
@@ -170,7 +170,7 @@ void *spex_gmp_allocate
     {
         // double the size of the SPEX_gmp_list
         bool ok ;
-        int64_t newsize = 2 * spex_gmp_nlist ;
+        SuiteSparse_long newsize = 2 * spex_gmp_nlist ;
         spex_gmp_list = (void **)
             SPEX_realloc (newsize, spex_gmp_nlist, sizeof (void *),
             spex_gmp_list, &ok) ;
@@ -234,7 +234,7 @@ void spex_gmp_free
     if (p != NULL && spex_gmp_list != NULL)
     {
         // remove p from the SPEX_gmp_list
-        for (int64_t i = 0 ; i < spex_gmp_nmalloc ; i++)
+        for (SuiteSparse_long i = 0 ; i < spex_gmp_nmalloc ; i++)
         {
             if (spex_gmp_list [i] == p)
             {
@@ -311,7 +311,7 @@ void spex_gmp_dump ( )
         (double) spex_gmp_nmalloc, (double) spex_gmp_nlist) ;
     if (spex_gmp_list != NULL)
     {
-        for (int64_t i = 0 ; i < spex_gmp_nmalloc ; i++)
+        for (SuiteSparse_long i = 0 ; i < spex_gmp_nmalloc ; i++)
         {
             SPEX_PRINTF ("    spex_gmp_list [%d] = %p\n", i, spex_gmp_list [i]);
         }
@@ -340,7 +340,7 @@ void spex_gmp_failure
     // Free the list
     if (spex_gmp_list != NULL)
     {
-        for (int64_t i = 0 ; i < spex_gmp_nmalloc ; i++)
+        for (SuiteSparse_long i = 0 ; i < spex_gmp_nmalloc ; i++)
         {
             SPEX_GMP_SAFE_FREE (spex_gmp_list [i]) ;
         }
@@ -665,12 +665,12 @@ SPEX_info SPEX_mpz_set
 // SPEX_mpz_set_ui
 //------------------------------------------------------------------------------
 
-/* Purpose: Safely set an mpz number = to uint64_t, i.e., x = y */
+/* Purpose: Safely set an mpz number = to SuiteSparse_ulong, i.e., x = y */
 
 SPEX_info SPEX_mpz_set_ui
 (
     mpz_t x,
-    const uint64_t y
+    const SuiteSparse_ulong y
 )
 {
     SPEX_GMPZ_WRAPPER_START (x) ;
@@ -683,12 +683,12 @@ SPEX_info SPEX_mpz_set_ui
 // SPEX_mpz_set_si
 //------------------------------------------------------------------------------
 
-/* Purpose: Safely set an mpz number = a signed int64_t */
+/* Purpose: Safely set an mpz number = a signed SuiteSparse_long */
 
 SPEX_info SPEX_mpz_set_si
 (
     mpz_t x,
-    const int64_t y
+    const SuiteSparse_long y
 )
 {
     SPEX_GMPZ_WRAPPER_START (x) ;
@@ -739,11 +739,11 @@ SPEX_info SPEX_mpz_get_d
 // SPEX_mpz_get_si
 //------------------------------------------------------------------------------
 
-/* Purpose: Safely set an int64_t = a mpz */
+/* Purpose: Safely set an SuiteSparse_long = a mpz */
 
 SPEX_info SPEX_mpz_get_si
 (
-    int64_t *x,
+    SuiteSparse_long *x,
     const mpz_t y
 )
 {
@@ -977,13 +977,13 @@ SPEX_info SPEX_mpz_cmpabs
 // SPEX_mpz_cmp_ui
 //------------------------------------------------------------------------------
 
-/* Purpose: Safely compare a mpz number with a uint64_t integer
+/* Purpose: Safely compare a mpz number with a SuiteSparse_ulong integer
  * r > 0 if x > y, r = 0 if x = y, and r < 0 if x < y */
 SPEX_info SPEX_mpz_cmp_ui
 (
     int *r,
     const mpz_t x,
-    const uint64_t y
+    const SuiteSparse_ulong y
 )
 {
     SPEX_GMP_WRAPPER_START ;
@@ -1020,7 +1020,7 @@ SPEX_info SPEX_mpz_sizeinbase
 (
     size_t *size,
     const mpz_t x,
-    int64_t base
+    SuiteSparse_long base
 )
 {
     SPEX_GMP_WRAPPER_START ;
@@ -1117,8 +1117,8 @@ SPEX_info SPEX_mpq_set_d
 SPEX_info SPEX_mpq_set_ui
 (
     mpq_t x,
-    const uint64_t y,
-    const uint64_t z
+    const SuiteSparse_ulong y,
+    const SuiteSparse_ulong z
 )
 {
     SPEX_GMPQ_WRAPPER_START (x) ;
@@ -1131,13 +1131,13 @@ SPEX_info SPEX_mpq_set_ui
 // SPEX_mpq_set_si
 //------------------------------------------------------------------------------
 
-/* Purpose: Safely set an mpq number = an int64_t */
+/* Purpose: Safely set an mpq number = a SuiteSparse_long */
 
 SPEX_info SPEX_mpq_set_si
 (
     mpq_t x,
-    const int64_t y,
-    const uint64_t z
+    const SuiteSparse_long y,
+    const SuiteSparse_ulong z
 )
 {
     SPEX_GMPQ_WRAPPER_START (x) ;
@@ -1323,8 +1323,8 @@ SPEX_info SPEX_mpq_cmp_ui
 (
     int *r,
     const mpq_t x,
-    const uint64_t num,
-    const uint64_t den
+    const SuiteSparse_ulong num,
+    const SuiteSparse_ulong den
 )
 {
     SPEX_GMP_WRAPPER_START ;
@@ -1386,7 +1386,7 @@ SPEX_info SPEX_mpq_sgn
 SPEX_info SPEX_mpfr_init2
 (
     mpfr_t x,       // Floating point number to initialize
-    uint64_t size    // # of bits in x
+    SuiteSparse_ulong size    // # of bits in x
 )
 {
     SPEX_GMPFR_WRAPPER_START (x) ;
@@ -1443,7 +1443,7 @@ SPEX_info SPEX_mpfr_set_d
 SPEX_info SPEX_mpfr_set_si
 (
     mpfr_t x,
-    int64_t y,
+    SuiteSparse_long y,
     const mpfr_rnd_t rnd  // MPFR rounding scheme used
 )
 {
@@ -1556,7 +1556,7 @@ SPEX_info SPEX_mpfr_get_d
 
 SPEX_info SPEX_mpfr_get_si
 (
-    int64_t *x,
+    SuiteSparse_long *x,
     const mpfr_t y,
     const mpfr_rnd_t rnd  // MPFR rounding scheme used
 )
@@ -1642,8 +1642,8 @@ SPEX_info SPEX_mpfr_div_d
 SPEX_info SPEX_mpfr_ui_pow_ui
 (
     mpfr_t x,
-    const uint64_t y,
-    const uint64_t z,
+    const SuiteSparse_ulong y,
+    const SuiteSparse_ulong z,
     const mpfr_rnd_t rnd  // MPFR rounding mode
 )
 {

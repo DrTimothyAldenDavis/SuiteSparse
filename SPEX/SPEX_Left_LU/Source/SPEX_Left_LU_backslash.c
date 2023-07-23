@@ -81,7 +81,7 @@ SPEX_info SPEX_Left_LU_backslash
     SPEX_matrix *L = NULL ;
     SPEX_matrix *U = NULL ;
     SPEX_matrix *x = NULL;
-    int64_t *pinv = NULL ;
+    SuiteSparse_long *pinv = NULL ;
     SPEX_matrix *rhos = NULL ;
     SPEX_LU_analysis *S = NULL;
 
@@ -106,7 +106,7 @@ SPEX_info SPEX_Left_LU_backslash
         (const SPEX_matrix *) U,
         (const SPEX_matrix *) rhos,
         S,
-        (const int64_t *) pinv,
+        (const SuiteSparse_long *) pinv,
         option)) ;
 
     //--------------------------------------------------------------------------

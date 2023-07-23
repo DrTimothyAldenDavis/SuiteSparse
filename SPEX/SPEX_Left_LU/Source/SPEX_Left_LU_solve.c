@@ -61,7 +61,7 @@ SPEX_info SPEX_Left_LU_solve     // solves the linear system LD^(-1)U x = b
     const SPEX_matrix *U,   // upper triangular matrix
     const SPEX_matrix *rhos,// sequence of pivots
     const SPEX_LU_analysis *S,// symbolic analysis struct
-    const int64_t *pinv,    // inverse row permutation
+    const SuiteSparse_long *pinv,    // inverse row permutation
     const SPEX_options* option // Command options
 )
 {
@@ -90,7 +90,7 @@ SPEX_info SPEX_Left_LU_solve     // solves the linear system LD^(-1)U x = b
     // Declare and initialize workspace
     //--------------------------------------------------------------------------
 
-    int64_t i, n = L->n;
+    SuiteSparse_long i, n = L->n;
     mpq_t scale ;
     SPEX_MPQ_SET_NULL (scale) ;
 
@@ -156,7 +156,7 @@ SPEX_info SPEX_Left_LU_solve     // solves the linear system LD^(-1)U x = b
     // Determine if the scaling factor is 1
     int r;
     SPEX_CHECK(SPEX_mpq_cmp_ui(&r, scale, 1, 1));
-    int64_t nz = x->m * x->n;
+    SuiteSparse_long nz = x->m * x->n;
     if (r != 0 )
     {
         for (i = 0; i < nz; i++)

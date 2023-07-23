@@ -31,7 +31,7 @@ SPEX_info spex_sparse_collapse
 
     //--------------------------------------------------------------------------
 
-    int64_t anz;
+    SuiteSparse_long anz;
     SPEX_info info = SPEX_matrix_nnz (&anz, A, NULL);
     if (info != SPEX_OK)    {return info;}
 
@@ -39,8 +39,8 @@ SPEX_info spex_sparse_collapse
     // SPEX_realloc cannot fail since the space is shrinking.
 
     bool ok ;
-    A->i = (int64_t *)
-        SPEX_realloc (anz, A->nzmax, sizeof (int64_t), A->i, &ok) ;
+    A->i = (SuiteSparse_long *)
+        SPEX_realloc (anz, A->nzmax, sizeof (SuiteSparse_long), A->i, &ok) ;
     if (!ok)    {return SPEX_OUT_OF_MEMORY;}
 
     A->x.mpz = (mpz_t *)

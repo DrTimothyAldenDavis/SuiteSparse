@@ -40,13 +40,13 @@ SPEX_info spex_left_lu_back_sub  // performs sparse REF backward substitution
 
     int sgn;
     mpz_t *Ux = U->x.mpz;
-    int64_t *Ui = U->i;
-    int64_t *Up = U->p;
+    SuiteSparse_long *Ui = U->i;
+    SuiteSparse_long *Up = U->p;
 
-    for (int64_t k = 0; k < bx->n; k++)
+    for (SuiteSparse_long k = 0; k < bx->n; k++)
     {
         // Start at bx[n]
-        for (int64_t j = U->n-1; j >= 0; j--)
+        for (SuiteSparse_long j = U->n-1; j >= 0; j--)
         {
             // If bx[j] is zero skip this iteration
             SPEX_CHECK( SPEX_mpz_sgn( &sgn, SPEX_2D( bx, j, k, mpz)));
@@ -56,7 +56,7 @@ SPEX_info spex_left_lu_back_sub  // performs sparse REF backward substitution
             SPEX_CHECK(SPEX_mpz_divexact( SPEX_2D(bx, j, k, mpz),
                                           SPEX_2D(bx, j, k, mpz),
                                           Ux[Up[j+1]-1]));
-            for (int64_t i = Up[j]; i < Up[j+1]-1; i++)
+            for (SuiteSparse_long i = Up[j]; i < Up[j+1]-1; i++)
             {
                 SPEX_CHECK(SPEX_mpz_sgn(&sgn, Ux[i]));
                 if (sgn == 0) {continue;}

@@ -21,18 +21,19 @@
 
 /* Description of input/output
  *
- *  top_output: An int64_t scalar which on input is uninitialized. On output
- *              contains the contains the beginning of the nonzero pattern.
- *              The nonzero pattern is contained in xi[top_output...n-1].
+ *  top_output: An SuiteSparse_long scalar which on input is uninitialized.
+ *              On output contains the contains the beginning of the nonzero
+ *              pattern. The nonzero pattern is contained in
+ *              xi[top_output...n-1].
  *
  *  L:          The partial L matrix. On input contains columns 1:k-1 of L.
  *              Unmodified on on output.
  *
  *  A:          The input matrix. Unmodified on input/output
  *
- *  k:          Unmodified int64_t which indicates which column of L and U is
- *              being computed.  That is, this triangular solve computes L(:,k)
- *              and U(:,k).
+ *  k:          Unmodified SuiteSparse_long which indicates which column of L
+ *              and U is being computed.  That is, this triangular solve
+ *              computes L(:,k) and U(:,k).
  *
  *  xi:         A worspace array of size 2n, unitialized on input. On output,
  *              xi[top...n-1] contains the nonzero pattern of L(:,k) and U(:,k)
@@ -72,7 +73,7 @@
 // Sorting function
 static inline int compare (const void * a, const void * b)
 {
-    int64_t delta = ( *(int64_t*)a - *(int64_t*)b ) ;
+    SuiteSparse_long delta = ( *(SuiteSparse_long*)a - *(SuiteSparse_long*)b ) ;
     //return value for delta==0 won't matter since it's not happening here
     if (delta < 0)
     {
@@ -86,17 +87,17 @@ static inline int compare (const void * a, const void * b)
 
 SPEX_info spex_left_lu_ref_triangular_solve // performs the sparse REF triangular solve
 (
-    int64_t *top_output,      // Output the beginning of nonzero pattern
-    SPEX_matrix* L,           // partial L matrix
-    const SPEX_matrix* A,     // input matrix
-    int64_t k,                // constructing L(:,k)
-    int64_t* xi,              // nonzero pattern vector
-    const int64_t* q,         // column permutation, not modified
-    SPEX_matrix* rhos,        // sequence of pivots
-    const int64_t* pinv,      // inverse row permutation
-    const int64_t* row_perm,  // row permutation
-    int64_t* h,               // history vector
-    SPEX_matrix* x            // solution of system ==> kth column of L and U
+    SuiteSparse_long *top_output,     // Output the beginning of nonzero pattern
+    SPEX_matrix* L,                   // partial L matrix
+    const SPEX_matrix* A,             // input matrix
+    SuiteSparse_long k,               // constructing L(:,k)
+    SuiteSparse_long* xi,             // nonzero pattern vector
+    const SuiteSparse_long* q,        // column permutation, not modified
+    SPEX_matrix* rhos,                // sequence of pivots
+    const SuiteSparse_long* pinv,     // inverse row permutation
+    const SuiteSparse_long* row_perm, // row permutation
+    SuiteSparse_long* h,              // history vector
+    SPEX_matrix* x                    // solution of system ==> kth column of L and U
 )
 {
 
@@ -110,7 +111,7 @@ SPEX_info spex_left_lu_ref_triangular_solve // performs the sparse REF triangula
     SPEX_REQUIRE(A, SPEX_CSC, SPEX_MPZ);
     SPEX_REQUIRE(rhos, SPEX_DENSE, SPEX_MPZ);
 
-    int64_t j, jnew, i, inew, p, m, n, col, top ;
+    SuiteSparse_long j, jnew, i, inew, p, m, n, col, top ;
     int sgn ;
     mpz_t *x_mpz = x->x.mpz, *Ax_mpz = A->x.mpz, *Lx_mpz = L->x.mpz,
           *rhos_mpz = rhos->x.mpz;
@@ -140,7 +141,7 @@ SPEX_info spex_left_lu_ref_triangular_solve // performs the sparse REF triangula
     }
 
     // Sort xi[top..n-1]
-    qsort(&xi[top], n-top, sizeof(int64_t), compare);
+    qsort(&xi[top], n-top, sizeof(SuiteSparse_long), compare);
 
     // Place xi back in original value
     for (j = top; j < n; j++)

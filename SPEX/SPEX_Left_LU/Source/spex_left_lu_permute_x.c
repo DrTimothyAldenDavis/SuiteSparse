@@ -40,9 +40,9 @@ SPEX_info spex_left_lu_permute_x
     // x (q) = x2
     //--------------------------------------------------------------------------
 
-    int64_t *q = S->q ;     // column permutation
-    int64_t m = x2->m ;
-    int64_t n = x2->n ;
+    SuiteSparse_long *q = S->q ;     // column permutation
+    SuiteSparse_long m = x2->m ;
+    SuiteSparse_long n = x2->n ;
 
     // allocate x
     SPEX_matrix *x = NULL ;
@@ -50,9 +50,9 @@ SPEX_info spex_left_lu_permute_x
         0, false, true, option)) ;
 
     // Set x = Q*x2
-    for (int64_t i = 0 ; i < m ; i++)
+    for (SuiteSparse_long i = 0 ; i < m ; i++)
     {
-        for (int64_t j = 0 ; j < n ; j++)
+        for (SuiteSparse_long j = 0 ; j < n ; j++)
         {
             SPEX_CHECK(SPEX_mpq_set(SPEX_2D(x,  q[i], j, mpq),
                                     SPEX_2D(x2,   i,  j, mpq)));

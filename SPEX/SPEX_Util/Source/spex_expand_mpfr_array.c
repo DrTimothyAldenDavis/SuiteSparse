@@ -25,7 +25,7 @@ SPEX_info spex_expand_mpfr_array
     mpz_t* x_out,         // full precision mpz array
     mpfr_t* x,            // mpfr array to be expanded
     mpq_t scale,          // scaling factor used (x_out = scale*x)
-    int64_t n,            // size of x
+    SuiteSparse_long n,   // size of x
     const SPEX_options *option  // command options containing the prec
                           // and rounding for mpfr
 )
@@ -41,7 +41,7 @@ SPEX_info spex_expand_mpfr_array
     // initializations
     //--------------------------------------------------------------------------
 
-    int64_t i;
+    SuiteSparse_long i;
     SPEX_matrix* x3 = NULL;
     mpfr_rnd_t round = SPEX_OPTION_ROUND (option) ;
     

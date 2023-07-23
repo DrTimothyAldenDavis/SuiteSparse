@@ -65,9 +65,9 @@ SPEX_info SPEX_matrix_div // divides the x matrix by a scalar
     // iterate each entry of x, copy to x2 and divide it by scalar
     //--------------------------------------------------------------------------
 
-    int64_t nz;
+    SuiteSparse_long nz;
     SPEX_CHECK (SPEX_matrix_nnz (&nz, x, option)) ;
-    for (int64_t i = 0; i < nz; i++)
+    for (SuiteSparse_long i = 0; i < nz; i++)
     {
         // Set x2[i] = x[i]
         SPEX_CHECK (SPEX_mpq_set_num (x2->x.mpq[i], x->x.mpz[i])) ;

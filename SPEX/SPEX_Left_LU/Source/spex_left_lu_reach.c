@@ -18,12 +18,12 @@
 
 void spex_left_lu_reach    // compute the reach of column k of A on the graph of L
 (
-    int64_t *top,
-    SPEX_matrix* L,         // matrix representing graph of L
-    const SPEX_matrix* A,   // input matrix
-    int64_t k,              // column of A of interest
-    int64_t* xi,            // nonzero pattern
-    const int64_t* pinv     // row permutation
+    SuiteSparse_long *top,
+    SPEX_matrix* L,               // matrix representing graph of L
+    const SPEX_matrix* A,         // input matrix
+    SuiteSparse_long k,           // column of A of interest
+    SuiteSparse_long* xi,         // nonzero pattern
+    const SuiteSparse_long* pinv  // row permutation
 )
 {
 
@@ -32,7 +32,7 @@ void spex_left_lu_reach    // compute the reach of column k of A on the graph of
     //--------------------------------------------------------------------------
     if (top == NULL) { return ;}
     // inputs have been checked in spex_ref_triangular_solve
-    int64_t p, n = L->n;
+    SuiteSparse_long p, n = L->n;
     *top = n;
 
     //--------------------------------------------------------------------------

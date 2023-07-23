@@ -93,7 +93,7 @@ int main (int argc, char **argv)
     // Check if the size of A matches b
     if (A->n != b->m)
     {
-        printf("%"PRId64" %"PRId64" \n", A->m,b->m);
+        printf("%" SuiteSparse_long_idd " %" SuiteSparse_long_idd " \n", A->m,b->m);
         fprintf (stderr, "Error! Size of A and b do not match!\n");
         FREE_WORKSPACE;
         return 0;

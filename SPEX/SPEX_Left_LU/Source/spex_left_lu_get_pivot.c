@@ -32,19 +32,19 @@
 
 SPEX_info spex_left_lu_get_pivot
 (
-    int64_t *pivot,         // found index of pivot entry
-    SPEX_matrix* x,         // kth column of L and U
-    int64_t* pivs,          // vector indicating which rows have been pivotal
-    int64_t n,              // dimension of the problem
-    int64_t top,            // nonzero pattern is located in xi[top..n-1]
-    int64_t* xi,            // nonzero pattern of x
-    int64_t col,            // current column of A (real kth column i.e., q[k])
-    int64_t k,              // iteration of the algorithm
-    SPEX_matrix* rhos,      // vector of pivots
-    int64_t* pinv,          // row permutation
-    int64_t* row_perm,      // opposite of pinv.
-                            // if pinv[i] = j then row_perm[j] = i
-    const SPEX_options* option // command options
+    SuiteSparse_long *pivot,    // found index of pivot entry
+    SPEX_matrix* x,             // kth column of L and U
+    SuiteSparse_long* pivs,     // vector indicating which rows have been pivotal
+    SuiteSparse_long n,         // dimension of the problem
+    SuiteSparse_long top,       // nonzero pattern is located in xi[top..n-1]
+    SuiteSparse_long* xi,       // nonzero pattern of x
+    SuiteSparse_long col,       // current column of A (real kth column i.e., q[k])
+    SuiteSparse_long k,         // iteration of the algorithm
+    SPEX_matrix* rhos,          // vector of pivots
+    SuiteSparse_long* pinv,     // row permutation
+    SuiteSparse_long* row_perm, // opposite of pinv.
+                                // if pinv[i] = j then row_perm[j] = i
+    const SPEX_options* option  // command options
 )
 {
 
@@ -190,8 +190,8 @@ SPEX_info spex_left_lu_get_pivot
     // Reflect changes in row location & row_perm
     //--------------------------------------------------------------------------
     // Must move pivot into position k
-    int64_t intermed = pinv[*pivot];
-    int64_t intermed2 = row_perm[k];
+    SuiteSparse_long intermed = pinv[*pivot];
+    SuiteSparse_long intermed2 = row_perm[k];
 
     //--------------------------------------------------------------------------
     // Set row_perm[k] = pivot and row_perm[pinv[pivot]] = row_perm[k]

@@ -422,25 +422,25 @@ SPEX_type ;
 
 typedef struct
 {
-    int64_t m ;         // number of rows
-    int64_t n ;         // number of columns
-    int64_t nzmax ;     // size of A->i, A->j, and A->x
-    int64_t nz ;        // # nonzeros in a triplet matrix .
-                        // Ignored for CSC and dense matrices.
-    SPEX_kind kind ;    // CSC, triplet, or dense
-    SPEX_type type ;    // mpz, mpq, mpfr, int64, or fp64 (double)
+    SuiteSparse_long m ;      // number of rows
+    SuiteSparse_long n ;      // number of columns
+    SuiteSparse_long nzmax ;  // size of A->i, A->j, and A->x
+    SuiteSparse_long nz ;     // # nonzeros in a triplet matrix .
+                              // Ignored for CSC and dense matrices.
+    SPEX_kind kind ;          // CSC, triplet, or dense
+    SPEX_type type ;          // mpz, mpq, mpfr, int64, or fp64 (double)
 
-    int64_t *p ;        // if CSC: column pointers, an array size is n+1.
-                        // if triplet or dense: A->p is NULL.
-    bool p_shallow ;    // if true, A->p is shallow.
+    SuiteSparse_long *p ;     // if CSC: column pointers, an array size is n+1.
+                              // if triplet or dense: A->p is NULL.
+    bool p_shallow ;          // if true, A->p is shallow.
 
-    int64_t *i ;        // if CSC or triplet: row indices, of size nzmax.
-                        // if dense: A->i is NULL.
-    bool i_shallow ;    // if true, A->i is shallow.
+    SuiteSparse_long *i ;     // if CSC or triplet: row indices, of size nzmax.
+                              // if dense: A->i is NULL.
+    bool i_shallow ;          // if true, A->i is shallow.
 
-    int64_t *j ;        // if triplet: column indices, of size nzmax.
-                        // if CSC or dense: A->j is NULL.
-    bool j_shallow ;    // if true, A->j is shallow.
+    SuiteSparse_long *j ;     // if triplet: column indices, of size nzmax.
+                              // if CSC or dense: A->j is NULL.
+    bool j_shallow ;          // if true, A->j is shallow.
 
     union               // A->x.type has size nzmax.
     {
@@ -475,9 +475,9 @@ SPEX_info SPEX_matrix_allocate
     SPEX_matrix **A_handle, // matrix to allocate
     SPEX_kind kind,         // CSC, triplet, or dense
     SPEX_type type,         // mpz, mpq, mpfr, int64, or double
-    int64_t m,              // # of rows
-    int64_t n,              // # of columns
-    int64_t nzmax,          // max # of entries
+    SuiteSparse_long m,     // # of rows
+    SuiteSparse_long n,     // # of columns
+    SuiteSparse_long nzmax, // max # of entries
     bool shallow,           // if true, matrix is shallow.  A->p, A->i, A->j,
                             // A->x are all returned as NULL and must be set
                             // by the caller.  All A->*_shallow are returned
@@ -507,8 +507,8 @@ SPEX_info SPEX_matrix_free
 
 SPEX_info SPEX_matrix_nnz     // find the # of entries in A
 (
-    int64_t *nnz,              // # of entries in A, -1 if A is NULL
-    const SPEX_matrix *A,      // matrix to query
+    SuiteSparse_long *nnz,    // # of entries in A, -1 if A is NULL
+    const SPEX_matrix *A,     // matrix to query
     const SPEX_options *option
 ) ;
 
@@ -551,14 +551,16 @@ SPEX_info SPEX_matrix_copy
 
 typedef struct
 {
-    int64_t *q ;    // Column permutation for LU factorization, representing
-                    // the permutation matrix Q.   The matrix A*Q is factorized.
-                    // If the kth column of L, U, and A*Q is column j of the
-                    // unpermuted matrix A, then j = S->q [k].
-    int64_t lnz ;   // Approximate number of nonzeros in L.
-    int64_t unz ;   // Approximate number of nonzeros in U.
-                    // lnz and unz are used to allocate the initial space for
-                    // L and U; the space is reallocated as needed.
+    SuiteSparse_long *q ;   // Column permutation for LU factorization,
+                            // representing the permutation matrix Q.
+                            // The matrix A*Q is factorized.
+                            // If the kth column of L, U, and A*Q is column j
+                            // of the unpermuted matrix A, then j = S->q [k].
+    SuiteSparse_long lnz ;  // Approximate number of nonzeros in L.
+    SuiteSparse_long unz ;  // Approximate number of nonzeros in U.
+                            // lnz and unz are used to allocate the initial
+                            // space for L and U; the space is reallocated as
+                            // needed.
 } SPEX_LU_analysis ;
 
 // The symbolic analysis object is created by SPEX_LU_analyze.
@@ -641,11 +643,11 @@ void SPEX_free
 void *SPEX_realloc      // pointer to reallocated block, or original block
                         // if the realloc failed
 (
-    int64_t nitems_new,     // new number of items in the object
-    int64_t nitems_old,     // old number of items in the object
-    size_t size_of_item,    // sizeof each item
-    void *p,                // old object to reallocate
-    bool *ok                // true if success, false on failure
+    SuiteSparse_long nitems_new,  // new number of items in the object
+    SuiteSparse_long nitems_old,  // old number of items in the object
+    size_t size_of_item,          // sizeof each item
+    void *p,                      // old object to reallocate
+    bool *ok                      // true if success, false on failure
 ) ;
 
 //------------------------------------------------------------------------------
@@ -711,7 +713,7 @@ SPEX_info SPEX_check_solution
     const SPEX_matrix *A,          // input matrix
     const SPEX_matrix *x,          // solution vector
     const SPEX_matrix *b,          // right hand side
-    const SPEX_options* option           // Command options
+    const SPEX_options* option     // Command options
 );
 
 /* Purpose: p [0..n] = cumulative sum of c [0..n-1], and then copy p [0..n-1]
@@ -719,9 +721,9 @@ SPEX_info SPEX_check_solution
  */
 SPEX_info SPEX_cumsum
 (
-    int64_t *p,          // vector to store the sum of c
-    int64_t *c,          // vector which is summed
-    int64_t n           // size of c
+    SuiteSparse_long *p,  // vector to store the sum of c
+    SuiteSparse_long *c,  // vector which is summed
+    SuiteSparse_long n    // size of c
 );
 
 
@@ -755,13 +757,13 @@ SPEX_info SPEX_mpz_init2(mpz_t x, const size_t size) ;
 
 SPEX_info SPEX_mpz_set (mpz_t x, const mpz_t y) ;
 
-SPEX_info SPEX_mpz_set_ui (mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_set_ui (mpz_t x, const SuiteSparse_ulong y) ;
 
-SPEX_info SPEX_mpz_set_si (mpz_t x, const int64_t y) ;
+SPEX_info SPEX_mpz_set_si (mpz_t x, const SuiteSparse_long y) ;
 
 SPEX_info SPEX_mpz_get_d (double *x, const mpz_t y) ;
 
-SPEX_info SPEX_mpz_get_si (int64_t *x, const mpz_t y) ;
+SPEX_info SPEX_mpz_get_si (SuiteSparse_long *x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_set_q (mpz_t x, const mpq_t y) ;
 
@@ -787,11 +789,11 @@ SPEX_info SPEX_mpz_cmp (int *r, const mpz_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpz_cmpabs (int *r, const mpz_t x, const mpz_t y) ;
 
-SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const uint64_t y) ;
+SPEX_info SPEX_mpz_cmp_ui (int *r, const mpz_t x, const SuiteSparse_ulong y) ;
 
 SPEX_info SPEX_mpz_sgn (int *sgn, const mpz_t x) ;
 
-SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, int64_t base) ;
+SPEX_info SPEX_mpz_sizeinbase (size_t *size, const mpz_t x, SuiteSparse_long base) ;
 
 SPEX_info SPEX_mpq_init (mpq_t x) ;
 
@@ -801,9 +803,9 @@ SPEX_info SPEX_mpq_set_z (mpq_t x, const mpz_t y) ;
 
 SPEX_info SPEX_mpq_set_d (mpq_t x, const double y) ;
 
-SPEX_info SPEX_mpq_set_ui (mpq_t x, const uint64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_ui (mpq_t x, const SuiteSparse_ulong y, const SuiteSparse_ulong z) ;
 
-SPEX_info SPEX_mpq_set_si (mpq_t x, const int64_t y, const uint64_t z) ;
+SPEX_info SPEX_mpq_set_si (mpq_t x, const SuiteSparse_long y, const SuiteSparse_ulong z) ;
 
 SPEX_info SPEX_mpq_set_num (mpq_t x, const mpz_t y) ;
 
@@ -824,19 +826,19 @@ SPEX_info SPEX_mpq_div (mpq_t x, const mpq_t y, const mpq_t z) ;
 SPEX_info SPEX_mpq_cmp (int *r, const mpq_t x, const mpq_t y) ;
 
 SPEX_info SPEX_mpq_cmp_ui (int *r, const mpq_t x,
-                    const uint64_t num, const uint64_t den) ;
+                    const SuiteSparse_ulong num, const SuiteSparse_ulong den) ;
 
 SPEX_info SPEX_mpq_sgn (int *sgn, const mpq_t x) ;
 
 SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
 
-SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
+SPEX_info SPEX_mpfr_init2(mpfr_t x, const SuiteSparse_ulong size) ;
 
 SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
 
-SPEX_info SPEX_mpfr_set_si (mpfr_t x, int64_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_set_si (mpfr_t x, SuiteSparse_long y, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_set_q (mpfr_t x, const mpq_t y, const mpfr_rnd_t rnd) ;
 
@@ -848,7 +850,7 @@ SPEX_info SPEX_mpfr_get_q (mpq_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_get_d (double *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
-SPEX_info SPEX_mpfr_get_si (int64_t *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_get_si (SuiteSparse_long *x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_mul (mpfr_t x, const mpfr_t y, const mpfr_t z,
                     const mpfr_rnd_t rnd) ;
@@ -859,8 +861,8 @@ SPEX_info SPEX_mpfr_mul_d (mpfr_t x, const mpfr_t y, const double z,
 SPEX_info SPEX_mpfr_div_d (mpfr_t x, const mpfr_t y, const double z,
                     const mpfr_rnd_t rnd) ;
 
-SPEX_info SPEX_mpfr_ui_pow_ui (mpfr_t x, const uint64_t y, const uint64_t z,
-                    const mpfr_rnd_t rnd) ;
+SPEX_info SPEX_mpfr_ui_pow_ui (mpfr_t x, const SuiteSparse_ulong y,
+                    const SuiteSparse_ulong z, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_sgn (int *sgn, const mpfr_t x) ;
 
@@ -930,14 +932,14 @@ SPEX_info SPEX_Left_LU_backslash
 SPEX_info SPEX_Left_LU_factorize
 (
     // output:
-    SPEX_matrix **L_handle,     // lower triangular matrix
-    SPEX_matrix **U_handle,     // upper triangular matrix
-    SPEX_matrix **rhos_handle,  // sequence of pivots
-    int64_t **pinv_handle,      // inverse row permutation
+    SPEX_matrix **L_handle,         // lower triangular matrix
+    SPEX_matrix **U_handle,         // upper triangular matrix
+    SPEX_matrix **rhos_handle,      // sequence of pivots
+    SuiteSparse_long **pinv_handle, // inverse row permutation
     // input:
-    const SPEX_matrix *A,       // matrix to be factored
-    const SPEX_LU_analysis *S,  // column permutation and estimates
-                                // of nnz in L and U 
+    const SPEX_matrix *A,           // matrix to be factored
+    const SPEX_LU_analysis *S,      // column permutation and estimates
+                                    // of nnz in L and U 
     const SPEX_options* option
 ) ;
 
@@ -945,15 +947,15 @@ SPEX_info SPEX_Left_LU_factorize
 SPEX_info SPEX_Left_LU_solve         // solves the linear system LD^(-1)U x = b
 (
     // Output
-    SPEX_matrix **X_handle,     // rational solution to the system
+    SPEX_matrix **X_handle,       // rational solution to the system
     // input:
-    const SPEX_matrix *b,       // right hand side vector
-    const SPEX_matrix *A,       // Input matrix
-    const SPEX_matrix *L,       // lower triangular matrix
-    const SPEX_matrix *U,       // upper triangular matrix
-    const SPEX_matrix *rhos,    // sequence of pivots
-    const SPEX_LU_analysis *S,  // symbolic analysis struct
-    const int64_t *pinv,        // inverse row permutation
+    const SPEX_matrix *b,         // right hand side vector
+    const SPEX_matrix *A,         // Input matrix
+    const SPEX_matrix *L,         // lower triangular matrix
+    const SPEX_matrix *U,         // upper triangular matrix
+    const SPEX_matrix *rhos,      // sequence of pivots
+    const SPEX_LU_analysis *S,    // symbolic analysis struct
+    const SuiteSparse_long *pinv, // inverse row permutation
     const SPEX_options* option
 ) ;
 

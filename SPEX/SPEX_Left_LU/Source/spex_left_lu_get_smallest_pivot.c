@@ -22,12 +22,12 @@
 
 SPEX_info spex_left_lu_get_smallest_pivot
 (
-    int64_t *pivot,         // the index of smallest pivot
-    SPEX_matrix* x,         // kth column of L and U
-    int64_t* pivs,          // vector indicating if each row has been pivotal
-    int64_t n,              // dimension of problem
-    int64_t top,            // nonzeros are stored in xi[top..n-1]
-    int64_t* xi             // nonzero pattern of x
+    SuiteSparse_long *pivot,  // the index of smallest pivot
+    SPEX_matrix* x,           // kth column of L and U
+    SuiteSparse_long* pivs,   // vector indicating if each row has been pivotal
+    SuiteSparse_long n,       // dimension of problem
+    SuiteSparse_long top,     // nonzeros are stored in xi[top..n-1]
+    SuiteSparse_long* xi      // nonzero pattern of x
 )
 {
 
@@ -43,7 +43,7 @@ SPEX_info spex_left_lu_get_smallest_pivot
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    int64_t i, inew, j, flag ;
+    SuiteSparse_long i, inew, j, flag ;
     int sgn, r;
     // Flag is non-negative until we have an initial starting value for small
     (*pivot) = -1;

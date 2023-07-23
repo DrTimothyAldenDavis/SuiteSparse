@@ -103,16 +103,16 @@ if (!pretend_to_fail)                            \
 
 #define MAX_MALLOC_COUNT 1000
 
-int64_t Ap[5] = {0, 3, 5, 8, 11};
-int64_t Ai[11]   = {0, 1, 2, 2, 3, 1, 2, 3, 0, 1,  2};
+SuiteSparse_long Ap[5] = {0, 3, 5, 8, 11};
+SuiteSparse_long Ai[11]   = {0, 1, 2, 2, 3, 1, 2, 3, 0, 1,  2};
 double Axnum[11] = {1, 2, 7, 1, 2, 4, 1, 3, 1, 12, 1};  // Numerator of x
 double Axden[11] = {3, 3, 6, 1, 7, 1, 1, 1, 5, 1,  1};  // Denominator of x
-double bxnum[4] = {170, 1820, 61, 670};                // Numerator of b
+double bxnum[4] = {170, 1820, 61, 670};                 // Numerator of b
 double bxden[4] = {15,  3,   6,  7};                    // Denominator of b
-int64_t Axnum3[11] = {1, 2, 7, 1, 2, 4, 1, 3, 1, 12, 1};    // Numerator of x
-int64_t Axden3[11] = {3, 3, 6, 1, 7, 1, 1, 1, 5, 1,  1};    // Denominator of x
-int64_t bxnum3[4] = {17, 182, 61, 67};                      // Numerator of b
-int64_t bxden3[4] = {15,  3,   6,  7};                      // Denominator of b
+SuiteSparse_long Axnum3[11] = {1, 2, 7, 1, 2, 4, 1, 3, 1, 12, 1}; // Numerator of x
+SuiteSparse_long Axden3[11] = {3, 3, 6, 1, 7, 1, 1, 1, 5, 1,  1}; // Denominator of x
+SuiteSparse_long bxnum3[4] = {17, 182, 61, 67};                   // Numerator of b
+SuiteSparse_long bxden3[4] = {15,  3,   6,  7};                   // Denominator of b
 
 #include <float.h>
 #include <assert.h>
@@ -121,14 +121,13 @@ int main( int argc, char* argv[])
 {
     bool IS_SIMPLE_TEST = true;
     int Ab_type = 0;
-    int64_t malloc_count_list[20]= { -1, -1, -1, -1, -1,
-                                     -1, -1, -1, -1, -1,
-                                     -1, -1, -1, -1, -1,
-                                     -1, -1, -1, -1, -1};
-    int64_t NUM_OF_TRIALS = 0 ;
-    int64_t NUM_OF_MALLOC_T = 0;
-    int64_t *gmp_ntrial_list=NULL;         // only used in simple test
-    int64_t *malloc_trials_list=NULL;          // only used in simple test
+    SuiteSparse_long malloc_count_list[20]
+        = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    SuiteSparse_long NUM_OF_TRIALS = 0 ;
+    SuiteSparse_long NUM_OF_MALLOC_T = 0;
+    SuiteSparse_long *gmp_ntrial_list=NULL;         // only used in simple test
+    SuiteSparse_long *malloc_trials_list=NULL;          // only used in simple test
     bool pretend_to_fail = false ;
 
     //--------------------------------------------------------------------------
@@ -144,22 +143,22 @@ int main( int argc, char* argv[])
     {
         IS_SIMPLE_TEST = true;
 
-        int64_t arg_count = 0;
+        SuiteSparse_long arg_count = 0;
         // type of Matrix A and vector b:
-        // 0 mpz, 1 double, 2 int64_t, 3 mpq, 4 mpfr
+        // 0 mpz, 1 double, 2 SuiteSparse_long, 3 mpq, 4 mpfr
         Ab_type = atoi(argv[++arg_count]);
         if (!argv[++arg_count])
         {
             NUM_OF_TRIALS=1;
-            gmp_ntrial_list= malloc (NUM_OF_TRIALS* sizeof(int64_t));
+            gmp_ntrial_list= malloc (NUM_OF_TRIALS* sizeof(SuiteSparse_long));
             gmp_ntrial_list[0]=-1;
             arg_count--;
         }
         else
         {
             NUM_OF_TRIALS=atoi(argv[arg_count]);
-            gmp_ntrial_list= malloc (NUM_OF_TRIALS* sizeof(int64_t));
-            for (int64_t k=0; k<NUM_OF_TRIALS; k++)
+            gmp_ntrial_list= malloc (NUM_OF_TRIALS* sizeof(SuiteSparse_long));
+            for (SuiteSparse_long k=0; k<NUM_OF_TRIALS; k++)
             {
                 if (argv[++arg_count])
                 {
@@ -177,14 +176,14 @@ int main( int argc, char* argv[])
         if (!argv[++arg_count])
         {
             NUM_OF_MALLOC_T=1;
-            malloc_trials_list= malloc (NUM_OF_MALLOC_T* sizeof(int64_t));
+            malloc_trials_list= malloc (NUM_OF_MALLOC_T* sizeof(SuiteSparse_long));
             malloc_trials_list[0]=MAX_MALLOC_COUNT;//INT_MAX;
         }
         else
         {
             NUM_OF_MALLOC_T=atoi(argv[arg_count]);
-            malloc_trials_list= malloc (NUM_OF_MALLOC_T* sizeof(int64_t));
-            for (int64_t k=0; k<NUM_OF_MALLOC_T; k++)
+            malloc_trials_list= malloc (NUM_OF_MALLOC_T* sizeof(SuiteSparse_long));
+            for (SuiteSparse_long k=0; k<NUM_OF_MALLOC_T; k++)
             {
                 if (argv[++arg_count])
                 {
@@ -201,12 +200,12 @@ int main( int argc, char* argv[])
 
         #ifdef SPEX_TCOV_SHOW_LIST
         printf ("gmp ntrials list is: ");
-        for (int64_t k=0; k<NUM_OF_TRIALS; k++)
+        for (SuiteSparse_long k=0; k<NUM_OF_TRIALS; k++)
         {
             printf("%ld   ",gmp_ntrial_list[k]);
         }
         printf("\nmalloc trial list is: ");
-        for (int64_t k=0; k<NUM_OF_MALLOC_T; k++)
+        for (SuiteSparse_long k=0; k<NUM_OF_MALLOC_T; k++)
         {
             printf("%d   ",malloc_trials_list[k]);
         }
@@ -243,7 +242,7 @@ int main( int argc, char* argv[])
     // inner loop iterates for malloc_count initialized from 0 to
     // MAX_MALLOC_COUNT, break when malloc_count>0 at the end of inner loop.
 
-    for (int64_t k=0; k<NUM_OF_TRIALS; k++)
+    for (SuiteSparse_long k=0; k<NUM_OF_TRIALS; k++)
     {
         if (IS_SIMPLE_TEST)
         {
@@ -260,7 +259,7 @@ int main( int argc, char* argv[])
             NUM_OF_MALLOC_T = MAX_MALLOC_COUNT;
         }
 
-        for (int64_t kk=0; kk<NUM_OF_MALLOC_T; kk++)
+        for (SuiteSparse_long kk=0; kk<NUM_OF_MALLOC_T; kk++)
         {
             pretend_to_fail = false ;
             if (IS_SIMPLE_TEST)
@@ -268,14 +267,14 @@ int main( int argc, char* argv[])
                 spex_gmp_ntrials=gmp_ntrial_list[k];
                 printf("initial spex_gmp_ntrials=%ld\n",spex_gmp_ntrials);
                 malloc_count=malloc_trials_list[kk];
-                printf("%"PRId64" out of %"PRId64", "
-                    "initial malloc_count=%"PRId64"\n",
+                printf("%" SuiteSparse_long_idd " out of %" SuiteSparse_long_idd
+                    ", initial malloc_count=%" SuiteSparse_long_idd "\n",
                     kk, NUM_OF_MALLOC_T, malloc_count);
             }
             else
             {
                 malloc_count = kk;
-                printf("[Ab_type malloc_count] = [%d %"PRId64"]\n",
+                printf("[Ab_type malloc_count] = [%d %" SuiteSparse_long_idd "]\n",
                     Ab_type, malloc_count);
             }
 
@@ -296,7 +295,7 @@ int main( int argc, char* argv[])
             SPEX_MPZ_SET_NULL(mpz2);
             SPEX_MPZ_SET_NULL(mpz3);*/
 
-            int64_t n=4, numRHS=1, j, nz=11;
+            SuiteSparse_long n=4, numRHS=1, j, nz=11;
             SPEX_options* option ;
 
             //------------------------------------------------------------------
@@ -523,13 +522,13 @@ int main( int argc, char* argv[])
                 //--------------------------------------------------------------
 
                 n = 4, nz = 11;
-                int64_t m1, n1, nz1;
-                int64_t I[11]={0, 1, 2, 2, 3, 1, 2, 3, 0, 1, 2};
-                int64_t J[11]={0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 3};
-                int64_t P[11]={0, 3, 5, 8, 11};
+                SuiteSparse_long m1, n1, nz1;
+                SuiteSparse_long I[11] = {0, 1, 2, 2, 3, 1, 2, 3, 0, 1, 2};
+                SuiteSparse_long J[11] = {0, 0, 0, 1, 1, 2, 2, 2, 3, 3, 3};
+                SuiteSparse_long P[11] = {0, 3, 5, 8, 11};
 
                 double x_doub2[11] = {1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4};
-                int64_t x_int64[11] = {1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4};
+                SuiteSparse_long x_int64[11] = {1, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4};
                 
                 // find the type and kind of the source matrix to copy from
                 Ab_type = Ab_type > 19 ? 19:Ab_type;
@@ -815,8 +814,8 @@ int main( int argc, char* argv[])
                 printf ("\n[ SPEX_matrix_check -------------------------\n") ;
                 TEST_OK (SPEX_matrix_free (&A, option)) ;
                 if (pretend_to_fail) continue ;
-                int64_t I2 [4] = { 1, 2, 1, 1 } ;
-                int64_t J2 [4] = { 1, 0, 0, 1 } ;
+                SuiteSparse_long I2 [4] = { 1, 2, 1, 1 } ;
+                SuiteSparse_long J2 [4] = { 1, 0, 0, 1 } ;
                 TEST_CHECK (SPEX_matrix_allocate (&A, SPEX_TRIPLET,
                     SPEX_INT64, 3, 3, 4, true, false, option)) ;
                 if (pretend_to_fail) continue ;
@@ -834,8 +833,8 @@ int main( int argc, char* argv[])
                 TEST_CHECK (SPEX_matrix_allocate (&A, SPEX_CSC,
                     SPEX_INT64, 3, 3, 4, true, false, option)) ;
                 if (pretend_to_fail) continue ;
-                int64_t P3 [4] = { 0, 2, 4, 4 } ;
-                int64_t I3 [4] = { 0, 0, 0, 0 } ;
+                SuiteSparse_long P3 [4] = { 0, 2, 4, 4 } ;
+                SuiteSparse_long I3 [4] = { 0, 0, 0, 0 } ;
                 A->p = P3 ;
                 A->i = I3 ;
                 A->x.int64 = I3 ;
@@ -915,7 +914,7 @@ int main( int argc, char* argv[])
                     if (pretend_to_fail) continue ;
                     // invalid kind
                     A->kind = 4;
-                    int64_t tmp;
+                    SuiteSparse_long tmp;
                     TEST_CHECK_FAILURE(SPEX_matrix_nnz(&tmp, A, NULL),
                         SPEX_INCORRECT_INPUT);
                     if (pretend_to_fail) continue ;

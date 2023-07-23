@@ -121,7 +121,7 @@ int main (int argc, char* argv[])
     SPEX_matrix *x = NULL;
     SPEX_matrix *b = NULL;
     SPEX_matrix *rhos = NULL;
-    int64_t* pinv = NULL;
+    SuiteSparse_long* pinv = NULL;
     SPEX_LU_analysis* S = NULL;
     SPEX_info ok ;
     
@@ -244,7 +244,7 @@ int main (int argc, char* argv[])
         (const SPEX_matrix *) U,
         (const SPEX_matrix *) rhos,
                      S,
-        (const int64_t *) pinv,
+        (const SuiteSparse_long *) pinv,
                      option));    
 
     clock_t end_solve = clock();
@@ -268,7 +268,7 @@ int main (int argc, char* argv[])
     double t_factor = (double) (end_factor - start_factor) / CLOCKS_PER_SEC;
     double t_solve =  (double) (end_solve - start_solve) / CLOCKS_PER_SEC;
 
-    printf("\nNumber of L+U nonzeros: \t\t%"PRId64,
+    printf("\nNumber of L+U nonzeros: \t\t%" SuiteSparse_long_idd ,
         (L->p[L->n]) + (U->p[U->n]) - (L->m));
     printf("\nSymbolic analysis time: \t\t%lf", t_sym);
     printf("\nSPEX Left LU Factorization time: \t%lf", t_factor);

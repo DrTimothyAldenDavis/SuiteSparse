@@ -236,10 +236,11 @@ SPEX_info SPEX_tripread
 
     (*A_handle) = NULL ;
 
-    int64_t m, n, nz;
+    SuiteSparse_long m, n, nz;
 
     // Read in size of matrix & number of nonzeros
-    int s = fscanf(file, "%"PRId64" %"PRId64" %"PRId64"\n", &m, &n, &nz);
+    int s = fscanf(file, "%" SuiteSparse_long_idd " %" SuiteSparse_long_idd
+                   " %" SuiteSparse_long_idd "\n", &m, &n, &nz);
     if (feof(file) || s < 3)
     {
         printf ("premature end-of-file\n") ;
@@ -257,8 +258,9 @@ SPEX_info SPEX_tripread
     }
 
     // Read in first values of A
-    info = SPEX_gmp_fscanf(file, "%"PRId64" %"PRId64" %Zd\n",
-        &A->i[0], &A->j[0], &A->x.mpz[0]);
+    info = SPEX_gmp_fscanf(file, "%" SuiteSparse_long_idd 
+                           " %" SuiteSparse_long_idd " %Zd\n",
+                           &A->i[0], &A->j[0], &A->x.mpz[0]);
     if (feof (file) || info != SPEX_OK)
     {
         printf ("premature end-of-file\n") ;
@@ -272,10 +274,11 @@ SPEX_info SPEX_tripread
     A->j[0] -= 1;
     
     // Read in the values from file
-    for (int64_t p = 1; p < nz; p++)
+    for (SuiteSparse_long p = 1; p < nz; p++)
     {
-        info = SPEX_gmp_fscanf(file, "%"PRId64" %"PRId64" %Zd\n",
-            &A->i[p], &A->j[p], &A->x.mpz[p]);
+        info = SPEX_gmp_fscanf(file, "%" SuiteSparse_long_idd 
+                               " %" SuiteSparse_long_idd " %Zd\n",
+                               &A->i[p], &A->j[p], &A->x.mpz[p]);
         if ((feof(file) && p != nz-1) || info != SPEX_OK)
         {
             printf ("premature end-of-file\n") ;
@@ -334,10 +337,11 @@ SPEX_info SPEX_tripread_double
     (*A_handle) = NULL ;
 
     // Read in triplet form first
-    int64_t m, n, nz;
+    SuiteSparse_long m, n, nz;
 
     // Read in size of matrix & number of nonzeros
-    int s = fscanf(file, "%"PRId64" %"PRId64" %"PRId64"\n", &m, &n, &nz);
+    int s = fscanf(file, "%" SuiteSparse_long_idd " %" SuiteSparse_long_idd
+                   " %" SuiteSparse_long_idd "\n", &m, &n, &nz);
     if (feof(file) || s < 3)
     {
         printf ("premature end-of-file\n") ;
@@ -353,7 +357,7 @@ SPEX_info SPEX_tripread_double
         return (info) ;
     }
 
-    info = fscanf (file, "%"PRId64" %"PRId64" %lf\n",
+    info = fscanf (file, "%" SuiteSparse_long_idd " %" SuiteSparse_long_idd " %lf\n",
         &(A->i[0]), &(A->j[0]), &(A->x.fp64[0])) ;
     if (feof(file) || info != SPEX_OK)
     {
@@ -368,9 +372,9 @@ SPEX_info SPEX_tripread_double
     A->j[0] -= 1;
 
     // Read in the values from file
-    for (int64_t k = 1; k < nz; k++)
+    for (SuiteSparse_long k = 1; k < nz; k++)
     {
-        s = fscanf(file, "%"PRId64" %"PRId64" %lf\n",
+        s = fscanf(file, "%" SuiteSparse_long_idd " %" SuiteSparse_long_idd " %lf\n",
             &(A->i[k]), &(A->j[k]), &(A->x.fp64[k]));
         if ((feof(file) && k != nz-1) || s < 3)
         {
@@ -419,11 +423,12 @@ SPEX_info SPEX_read_dense
         printf ("invalid inputs\n") ;
         return SPEX_INCORRECT_INPUT;
     }
-    int64_t nrows, ncols;
+    SuiteSparse_long nrows, ncols;
     SPEX_info info ;
 
     // First, we obtain the dimension of the matrix
-    int s = fscanf(file, "%"PRId64" %"PRId64, &nrows, &ncols) ;
+    int s = fscanf(file, "%" SuiteSparse_long_idd " %" SuiteSparse_long_idd ,
+                   &nrows, &ncols) ;
     if (feof(file) || s < 2)
     {
         printf ("premature end-of-file\n") ;
@@ -440,14 +445,15 @@ SPEX_info SPEX_read_dense
     }
 
     // We now populate the matrix b.
-    for (int64_t i = 0; i < nrows; i++)
+    for (SuiteSparse_long i = 0; i < nrows; i++)
     {
-        for (int64_t j = 0; j < ncols; j++)
+        for (SuiteSparse_long j = 0; j < ncols; j++)
         {
             info = SPEX_gmp_fscanf(file, "%Zd", &(SPEX_2D(A, i, j, mpz)));
             if (info != SPEX_OK)
             {
-                printf("\n\nhere at i = %"PRId64" and j = %"PRId64"", i, j);
+                printf("\n\nhere at i = %" SuiteSparse_long_idd " and "
+                       "j = %" SuiteSparse_long_idd "", i, j);
                 return SPEX_INCORRECT_INPUT;
             }
         }

@@ -20,11 +20,11 @@
 
 SPEX_info spex_expand_mpq_array
 (
-    mpz_t* x_out,        // mpz array, on output x_out = x*scale
-    mpq_t* x,            // mpq array that needs to be converted
-    mpq_t scale,         // scaling factor. x_out = scale*x
-    int64_t n,           // size of x
-    const SPEX_options* option // Command options
+    mpz_t* x_out,               // mpz array, on output x_out = x*scale
+    mpq_t* x,                   // mpq array that needs to be converted
+    mpq_t scale,                // scaling factor. x_out = scale*x
+    SuiteSparse_long n,         // size of x
+    const SPEX_options* option  // Command options
 )
 {
 
@@ -44,13 +44,13 @@ SPEX_info spex_expand_mpq_array
 
     // Find LCM of denominators of x
     SPEX_CHECK(SPEX_mpz_set(temp, SPEX_MPQ_DEN(x[0])));
-    for (int64_t i = 1; i < n; i++)
+    for (SuiteSparse_long i = 1; i < n; i++)
     {
         SPEX_CHECK(SPEX_mpz_lcm(temp, SPEX_MPQ_DEN(x[i]), temp));
     }
     SPEX_CHECK(SPEX_mpq_set_z(scale,temp));
 
-    for (int64_t i = 0; i < n; i++)
+    for (SuiteSparse_long i = 0; i < n; i++)
     {
         // x_out[i] = x[i]*temp
         SPEX_CHECK(SPEX_mpz_divexact(x_out[i], temp, SPEX_MPQ_DEN(x[i])));

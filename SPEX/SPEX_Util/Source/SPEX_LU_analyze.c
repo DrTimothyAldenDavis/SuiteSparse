@@ -55,7 +55,7 @@ SPEX_info SPEX_LU_analyze
     //--------------------------------------------------------------------------
 
     SPEX_LU_analysis *S = NULL ;
-    int64_t i, n = A->n, anz;
+    SuiteSparse_long i, n = A->n, anz;
     // SPEX enviroment is checked to be init'ed and A is checked to be not NULL
     // and a SPEX_CSC kind, so there shouldnt be any error from this function
     SPEX_matrix_nnz(&anz, A, option);
@@ -64,7 +64,7 @@ SPEX_info SPEX_LU_analyze
     if (S == NULL) {return SPEX_OUT_OF_MEMORY;}
 
     // Allocate memory for column permutation
-    S->q = (int64_t*) SPEX_malloc((n+1) * sizeof(int64_t));
+    S->q = (SuiteSparse_long*) SPEX_malloc((n+1) * sizeof(SuiteSparse_long));
     if (S->q == NULL)
     {
         SPEX_FREE(S);
@@ -101,8 +101,8 @@ SPEX_info SPEX_LU_analyze
         amd_l_defaults (Control) ;              // Set AMD defaults
         double Info [AMD_INFO];
         // Perform AMD
-        amd_l_order(n, (int64_t *) A->p, (int64_t *) A->i,
-            (int64_t *) S->q, Control, Info) ;
+        amd_l_order(n, (SuiteSparse_long *) A->p, (SuiteSparse_long *) A->i,
+            (SuiteSparse_long *) S->q, Control, Info) ;
         S->lnz = S->unz = Info[AMD_LNZ];        // estimate for unz and lnz
         if (pr > 0)   // Output AMD info if desired
         {
@@ -120,8 +120,8 @@ SPEX_info SPEX_LU_analyze
     else
     {
         // Declared as per COLAMD documentation
-        int64_t Alen = 2*anz + 6 *(n+1) + 6*(n+1) + n;
-        int64_t* A2 = (int64_t*) SPEX_malloc(Alen* sizeof(int64_t));
+        SuiteSparse_long Alen = 2*anz + 6 *(n+1) + 6*(n+1) + n;
+        SuiteSparse_long* A2 = (SuiteSparse_long*) SPEX_malloc(Alen* sizeof(SuiteSparse_long));
         if (!A2)
         {
             // out of memory
@@ -138,10 +138,10 @@ SPEX_info SPEX_LU_analyze
         {
             A2[i] = A->i[i];
         }
-        int64_t stats [COLAMD_STATS];
-        colamd_l (n, n, Alen, (int64_t *) A2,
-            (int64_t *) S->q, (double *) NULL,
-            (int64_t *) stats) ;
+        SuiteSparse_long stats [COLAMD_STATS];
+        colamd_l (n, n, Alen, (SuiteSparse_long *) A2,
+            (SuiteSparse_long *) S->q, (double *) NULL,
+            (SuiteSparse_long *) stats) ;
         // estimate for lnz and unz
         S->lnz = S->unz = 10*anz;
 
@@ -149,8 +149,8 @@ SPEX_info SPEX_LU_analyze
         if (pr > 0)
         {
             SPEX_PRINTF ("\n****Column Ordering Information****\n") ;
-            colamd_l_report ((int64_t *) stats) ;
-            SPEX_PRINTF ("\nEstimated L and U nonzeros: %" PRId64 "\n", S->lnz);
+            colamd_l_report ((SuiteSparse_long *) stats) ;
+            SPEX_PRINTF ("\nEstimated L and U nonzeros: %" SuiteSparse_long_idd "\n", S->lnz);
         }
         SPEX_FREE(A2);
     }
@@ -164,7 +164,7 @@ SPEX_info SPEX_LU_analyze
     // estimate exceeds max number of nnz in A
     if (S->lnz > (double) n*n)
     {
-        int64_t nnz = ceil(0.5*n*n);
+        SuiteSparse_long nnz = ceil(0.5*n*n);
         S->lnz = S->unz = nnz;
     }
     // If estimate < n, first column of triangular solve may fail

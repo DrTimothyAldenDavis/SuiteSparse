@@ -45,7 +45,7 @@ SPEX_info SPEX_Left_LU_factorize
     SPEX_matrix **L_handle,    // lower triangular matrix
     SPEX_matrix **U_handle,    // upper triangular matrix
     SPEX_matrix **rhos_handle, // sequence of pivots
-    int64_t **pinv_handle,     // inverse row permutation
+    SuiteSparse_long **pinv_handle,     // inverse row permutation
     // input:
     const SPEX_matrix *A,      // matrix to be factored
     const SPEX_LU_analysis *S, // column permutation and estimates
@@ -61,7 +61,7 @@ SPEX_info SPEX_Left_LU_factorize
     if (!spex_initialized ( )) return (SPEX_PANIC) ;
 
     SPEX_REQUIRE (A, SPEX_CSC, SPEX_MPZ) ;
-    int64_t anz;
+    SuiteSparse_long anz;
     // SPEX enviroment is checked to be init'ed and A is a SPEX_CSC matrix that
     // is not NULL, so SPEX_matrix_nnz must return SPEX_OK
     SPEX_info info = SPEX_matrix_nnz (&anz, A, option) ;
@@ -84,40 +84,40 @@ SPEX_info SPEX_Left_LU_factorize
     SPEX_matrix *L = NULL ;
     SPEX_matrix *U = NULL ;
     SPEX_matrix *rhos = NULL ;
-    int64_t *pinv = NULL ;
-    int64_t *xi = NULL ;
-    int64_t *h = NULL ;
-    int64_t *pivs = NULL ;
-    int64_t *row_perm = NULL ;
+    SuiteSparse_long *pinv = NULL ;
+    SuiteSparse_long *xi = NULL ;
+    SuiteSparse_long *h = NULL ;
+    SuiteSparse_long *pivs = NULL ;
+    SuiteSparse_long *row_perm = NULL ;
     SPEX_matrix *x = NULL ;
 
-    int64_t n = A->n ;
+    SuiteSparse_long n = A->n ;
 
-    int64_t k = 0, top, i, j, col, loc, lnz = 0, unz = 0, pivot, jnew ;
+    SuiteSparse_long k = 0, top, i, j, col, loc, lnz = 0, unz = 0, pivot, jnew ;
     size_t size ;
 
     // Inverse pivot ordering
-    pinv = (int64_t *) SPEX_malloc (n * sizeof (int64_t)) ;
+    pinv = (SuiteSparse_long *) SPEX_malloc (n * sizeof (SuiteSparse_long)) ;
 
     // Indicator of which rows have been pivotal
     // pivs[i] = 1 if row i has been selected as a pivot
     // row, otherwise, pivs[i] < 0
-    pivs = (int64_t*) SPEX_malloc(n* sizeof(int64_t));
+    pivs = (SuiteSparse_long*) SPEX_malloc(n* sizeof(SuiteSparse_long));
 
     // h is the history vector utilized for the sparse REF
     // triangular solve algorithm. h serves as a global
     // vector which is repeatedly passed into the triangular
     // solve algorithm
-    h = (int64_t*) SPEX_malloc(n* sizeof(int64_t));
+    h = (SuiteSparse_long*) SPEX_malloc(n* sizeof(SuiteSparse_long));
 
     // xi is the global nonzero pattern vector. It stores
     // the pattern of nonzeros of the kth column of L and U
     // for the triangular solve.
-    xi = (int64_t*) SPEX_malloc(2*n* sizeof(int64_t));
+    xi = (SuiteSparse_long*) SPEX_malloc(2*n* sizeof(SuiteSparse_long));
 
     // Actual row permutation, the inverse of pinv. This
     // is used for sorting
-    row_perm = (int64_t*) SPEX_malloc(n* sizeof(int64_t));
+    row_perm = (SuiteSparse_long*) SPEX_malloc(n* sizeof(SuiteSparse_long));
 
     if (!pivs || !h || !xi || !row_perm || !pinv)
     {
@@ -170,7 +170,7 @@ SPEX_info SPEX_Left_LU_factorize
     // Note that the estimate presented here is not an upper bound nor a lower
     // bound.  It is still possible that more bits will be required which is
     // correctly handled internally.
-    int64_t estimate = 64 * SPEX_MAX (2, ceil (log2 ((double) n))) ;
+    SuiteSparse_long estimate = 64 * SPEX_MAX (2, ceil (log2 ((double) n))) ;
 
     // Create x, a global dense mpz_t matrix of dimension n*1. Unlike rhos, the
     // second boolean parameter is set to false to avoid initializing
@@ -216,10 +216,10 @@ SPEX_info SPEX_Left_LU_factorize
         // Triangular solve to compute LDx = A(:,k)
         //----------------------------------------------------------------------
         SPEX_CHECK(spex_left_lu_ref_triangular_solve(&top, L, A, k, xi,
-            (const int64_t *) (S->q),
+            (const SuiteSparse_long *) (S->q),
             rhos,
-            (const int64_t *) pinv,
-            (const int64_t *) row_perm,
+            (const SuiteSparse_long *) pinv,
+            (const SuiteSparse_long *) row_perm,
             h, x)) ;
 
         //----------------------------------------------------------------------

@@ -10,7 +10,7 @@
 
 #include "tcov_malloc_test.h"
 
-int64_t malloc_count = INT64_MAX ;
+SuiteSparse_long malloc_count = SuiteSparse_long_max ;
 
 // Note that only the ANSI C memory manager is used here
 // (malloc, calloc, realloc, free)

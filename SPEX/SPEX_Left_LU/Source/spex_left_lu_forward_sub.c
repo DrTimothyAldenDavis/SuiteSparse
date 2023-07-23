@@ -43,7 +43,7 @@ SPEX_info spex_left_lu_forward_sub
 
     //--------------------------------------------------------------------------
 
-    int64_t i, hx, k, j, jnew;
+    SuiteSparse_long i, hx, k, j, jnew;
     int sgn ;
 
     // Build the history matrix

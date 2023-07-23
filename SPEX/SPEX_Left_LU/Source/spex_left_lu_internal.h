@@ -55,12 +55,12 @@ SPEX_info spex_left_lu_back_sub  // performs sparse REF backward substitution
  */
 void spex_left_lu_dfs // performs a dfs of the graph of the matrix starting at node j
 (
-    int64_t *top,          // beginning of stack
-    int64_t j,             // What node to start DFS at
-    SPEX_matrix* L,        // matrix which represents the Graph of L
-    int64_t* xi,           // the nonzero pattern
-    int64_t* pstack,       // workspace vector
-    const int64_t* pinv   // row permutation
+    SuiteSparse_long *top,        // beginning of stack
+    SuiteSparse_long j,           // What node to start DFS at
+    SPEX_matrix* L,               // matrix which represents the Graph of L
+    SuiteSparse_long* xi,         // the nonzero pattern
+    SuiteSparse_long* pstack,     // workspace vector
+    const SuiteSparse_long* pinv  // row permutation
 );
 
 
@@ -77,18 +77,18 @@ void spex_left_lu_dfs // performs a dfs of the graph of the matrix starting at n
  */
 SPEX_info spex_left_lu_get_pivot
 (
-    int64_t *pivot,      // found index of pivot entry
-    SPEX_matrix* x,      // kth column of L and U
-    int64_t* pivs,       // vector indicating which rows have been pivotal
-    int64_t n,           // dimension of the problem
-    int64_t top,         // nonzero pattern is located in xi[top..n-1]
-    int64_t* xi,         // nonzero pattern of x
-    int64_t col,         // current column of A (real kth column i.e., q[k])
-    int64_t k,           // iteration of the algorithm
-    SPEX_matrix* rhos,   // vector of pivots
-    int64_t* pinv,       // row permutation
-    int64_t* row_perm,   // opposite of pinv. if pinv[i] = j then row_perm[j] = i
-    const SPEX_options *option // command option
+    SuiteSparse_long *pivot,    // found index of pivot entry
+    SPEX_matrix* x,             // kth column of L and U
+    SuiteSparse_long* pivs,     // vector indicating which rows have been pivotal
+    SuiteSparse_long n,         // dimension of the problem
+    SuiteSparse_long top,       // nonzero pattern is located in xi[top..n-1]
+    SuiteSparse_long* xi,       // nonzero pattern of x
+    SuiteSparse_long col,       // current column of A (real kth column i.e., q[k])
+    SuiteSparse_long k,         // iteration of the algorithm
+    SPEX_matrix* rhos,          // vector of pivots
+    SuiteSparse_long* pinv,     // row permutation
+    SuiteSparse_long* row_perm, // opposite of pinv. if pinv[i] = j then row_perm[j] = i
+    const SPEX_options *option  // command option
 );
 
 /* Purpose: This function selects the pivot element as the largest in the
@@ -98,12 +98,12 @@ SPEX_info spex_left_lu_get_pivot
  */
 SPEX_info spex_left_lu_get_largest_pivot
 (
-    int64_t *pivot,         // the index of largest pivot
-    SPEX_matrix* x,         // kth column of L and U
-    int64_t* pivs,          // vector which indicates whether each row has been pivotal
-    int64_t n,              // dimension of problem
-    int64_t top,            // nonzero pattern is located in xi[top..n-1]
-    int64_t* xi             // nonzero pattern of x
+    SuiteSparse_long *pivot,  // the index of largest pivot
+    SPEX_matrix* x,           // kth column of L and U
+    SuiteSparse_long* pivs,   // vector which indicates whether each row has been pivotal
+    SuiteSparse_long n,       // dimension of problem
+    SuiteSparse_long top,     // nonzero pattern is located in xi[top..n-1]
+    SuiteSparse_long* xi      // nonzero pattern of x
 );
 
 /* This function obtains the first eligible nonzero pivot.  This is enabled if
@@ -112,12 +112,12 @@ SPEX_info spex_left_lu_get_largest_pivot
  */
 SPEX_info spex_left_lu_get_nonzero_pivot // find the first eligible nonzero pivot
 (
-    int64_t *pivot,      // the index of first eligible nonzero pivot
-    SPEX_matrix* x,      // kth column of L and U
-    int64_t* pivs,       // vector indicating which rows are pivotal
-    int64_t n,           // size of x
-    int64_t top,         // nonzero pattern is located in xi[top..n-1]
-    int64_t* xi          // nonzero pattern of x
+    SuiteSparse_long *pivot,  // the index of first eligible nonzero pivot
+    SPEX_matrix* x,           // kth column of L and U
+    SuiteSparse_long* pivs,   // vector indicating which rows are pivotal
+    SuiteSparse_long n,       // size of x
+    SuiteSparse_long top,     // nonzero pattern is located in xi[top..n-1]
+    SuiteSparse_long* xi      // nonzero pattern of x
 );
 
 /* Purpose: This function selects the pivot element as the smallest in the
@@ -127,12 +127,12 @@ SPEX_info spex_left_lu_get_nonzero_pivot // find the first eligible nonzero pivo
  */
 SPEX_info spex_left_lu_get_smallest_pivot
 (
-    int64_t *pivot,         // index of smallest pivot
-    SPEX_matrix *x,         // kth column of L and U
-    int64_t* pivs,          // vector indicating whether each row has been pivotal
-    int64_t n,              // dimension of problem
-    int64_t top,            // nonzeros are stored in xi[top..n-1]
-    int64_t* xi             // nonzero pattern of x
+    SuiteSparse_long *pivot,  // index of smallest pivot
+    SPEX_matrix *x,           // kth column of L and U
+    SuiteSparse_long* pivs,   // vector indicating whether each row has been pivotal
+    SuiteSparse_long n,       // dimension of problem
+    SuiteSparse_long top,     // nonzeros are stored in xi[top..n-1]
+    SuiteSparse_long* xi      // nonzero pattern of x
 );
 
 
@@ -141,9 +141,9 @@ SPEX_info spex_left_lu_get_smallest_pivot
  */
 SPEX_info spex_left_lu_permute_b
 (
-    SPEX_matrix **b_handle,     // permuted RHS vector
-    const SPEX_matrix *b2,      // unpermuted RHS vector (not modified)
-    const int64_t *pinv,        // inverse row permutation
+    SPEX_matrix **b_handle,       // permuted RHS vector
+    const SPEX_matrix *b2,        // unpermuted RHS vector (not modified)
+    const SuiteSparse_long *pinv, // inverse row permutation
     const SPEX_options* option
 );
 
@@ -164,12 +164,12 @@ SPEX_info spex_left_lu_permute_x
  */
 void spex_left_lu_reach    // compute the reach of column k of A on the graph of L
 (
-    int64_t *top,
-    SPEX_matrix* L,         // matrix representing graph of L
-    const SPEX_matrix* A,   // input matrix
-    int64_t k,              // column of A of interest
-    int64_t* xi,            // nonzero pattern
-    const int64_t* pinv     // row permutation
+    SuiteSparse_long *top,
+    SPEX_matrix* L,               // matrix representing graph of L
+    const SPEX_matrix* A,         // input matrix
+    SuiteSparse_long k,           // column of A of interest
+    SuiteSparse_long* xi,         // nonzero pattern
+    const SuiteSparse_long* pinv  // row permutation
 )  ;
 
 /* Purpose: This function performs the sparse REF triangular solve; that is,
@@ -182,17 +182,17 @@ void spex_left_lu_reach    // compute the reach of column k of A on the graph of
  */
 SPEX_info spex_left_lu_ref_triangular_solve // performs the sparse REF triangular solve
 (
-    int64_t *top_output,      // Output the beginning of nonzero pattern
-    SPEX_matrix* L,           // partial L matrix
-    const SPEX_matrix* A,     // input matrix
-    int64_t k,                // iteration of algorithm
-    int64_t* xi,              // nonzero pattern vector
-    const int64_t* q,         // column permutation
-    SPEX_matrix* rhos,        // sequence of pivots
-    const int64_t* pinv,      // inverse row permutation
-    const int64_t* row_perm,  // row permutation
-    int64_t* h,               // history vector
-    SPEX_matrix* x            // solution of system ==> kth column of L and U
+    SuiteSparse_long *top_output,     // Output the beginning of nonzero pattern
+    SPEX_matrix* L,                   // partial L matrix
+    const SPEX_matrix* A,             // input matrix
+    SuiteSparse_long k,               // iteration of algorithm
+    SuiteSparse_long* xi,             // nonzero pattern vector
+    const SuiteSparse_long* q,        // column permutation
+    SPEX_matrix* rhos,                // sequence of pivots
+    const SuiteSparse_long* pinv,     // inverse row permutation
+    const SuiteSparse_long* row_perm, // row permutation
+    SuiteSparse_long* h,              // history vector
+    SPEX_matrix* x                    // solution of system ==> kth column of L and U
 );
 
 #endif

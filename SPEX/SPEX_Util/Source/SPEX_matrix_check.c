@@ -27,8 +27,8 @@ int compar (const void *x, const void *y) ;
 int compar (const void *x, const void *y)
 {
     // compare two (i,j) tuples
-    int64_t *a = (int64_t *) x ;
-    int64_t *b = (int64_t *) y ;
+    SuiteSparse_long *a = (SuiteSparse_long *) x ;
+    SuiteSparse_long *b = (SuiteSparse_long *) y ;
     if (a [0] < b [0])
     {
         return (-1) ;
@@ -75,13 +75,13 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
     SPEX_info status = 0 ;
     char * buff = NULL ;
     int pr = SPEX_OPTION_PRINT_LEVEL (option) ;
-    int64_t nz;                            // Number of nonzeros in A
+    SuiteSparse_long nz;                            // Number of nonzeros in A
     status = SPEX_matrix_nnz(&nz, A, option);
     if (status != SPEX_OK) {return status;}
 
-    int64_t m = A->m ;
-    int64_t n = A->n ;
-    int64_t nzmax = A->nzmax ;
+    SuiteSparse_long m = A->m ;
+    SuiteSparse_long n = A->n ;
+    SuiteSparse_long nzmax = A->nzmax ;
 
     if (m < 0)
     {
@@ -110,8 +110,10 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
         return (SPEX_INCORRECT_INPUT) ;
     }
 
-    SPEX_PR2 ("SPEX_matrix: nrows: %"PRId64", ncols: %"PRId64", nz:"
-        "%"PRId64", nzmax: %"PRId64", kind: %s, type: %s\n", m, n, nz,
+    SPEX_PR2 ("SPEX_matrix: nrows: %" SuiteSparse_long_idd 
+        ", ncols: %" SuiteSparse_long_idd ", nz:"
+        "%" SuiteSparse_long_idd ", nzmax: %" SuiteSparse_long_idd
+        ", kind: %s, type: %s\n", m, n, nz,
         nzmax, A->kind < 1 ? "CSC" : A->kind < 2 ? "Triplet" : "Dense",
         A->type < 1 ? "MPZ" : A->type < 2 ? "MPQ" : A->type < 3 ?
         "MPFR" : A->type < 4 ? "int64" : "double") ;
@@ -131,11 +133,11 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
     // initialize workspace
     //--------------------------------------------------------------------------
 
-    int64_t i, j, p, pend ;
-    int64_t* work = NULL;   // used for checking duplicates for CSC and triplet
+    SuiteSparse_long i, j, p, pend ;
+    SuiteSparse_long* work = NULL;   // used for checking duplicates for CSC and triplet
     uint64_t prec = SPEX_OPTION_PREC (option);
 
-    int64_t lines = 0 ;     // # of lines printed so far
+    SuiteSparse_long lines = 0 ;     // # of lines printed so far
 
     //--------------------------------------------------------------------------
     // check each kind of matrix: CSC, triplet, or dense
@@ -150,8 +152,8 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
 
         case SPEX_CSC:
         {
-            int64_t* Ap = A->p;
-            int64_t* Ai = A->i;
+            SuiteSparse_long* Ap = A->p;
+            SuiteSparse_long* Ai = A->i;
 
             //------------------------------------------------------------------
             // check the column pointers
@@ -187,7 +189,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             }
 
             // allocate workspace to check for duplicates
-            work = (int64_t *) SPEX_calloc (m, sizeof (int64_t)) ;
+            work = (SuiteSparse_long *) SPEX_calloc (m, sizeof (SuiteSparse_long)) ;
             if (work == NULL)
             {
                 // out of memory
@@ -199,8 +201,8 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             for (j = 0 ; j < n ; j++)  // iterate across columns
             {
                 SPEX_PR_LIMIT ;
-                SPEX_PR2 ("column %"PRId64" :\n", j) ;
-                int64_t marked = j+1 ;
+                SPEX_PR2 ("column %" SuiteSparse_long_idd " :\n", j) ;
+                SuiteSparse_long marked = j+1 ;
                 for (p = Ap [j] ; p < Ap [j+1] ; p++)
                 {
                     i = Ai [p] ;
@@ -221,7 +223,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
                     if (pr >= 2)
                     {
                         SPEX_PR_LIMIT ;
-                        SPEX_PR2 ("  row %"PRId64" : ", i) ;
+                        SPEX_PR2 ("  row %" SuiteSparse_long_idd " : ", i) ;
 
                         switch ( A->type)
                         {
@@ -289,8 +291,8 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
         case SPEX_TRIPLET:
         {
 
-            int64_t* Aj = A->j;
-            int64_t* Ai = A->i;
+            SuiteSparse_long* Aj = A->j;
+            SuiteSparse_long* Ai = A->i;
 
             //------------------------------------------------------------------
             // basic pointer checking
@@ -321,7 +323,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
                 if (pr >= 2)
                 {
                     SPEX_PR_LIMIT ;
-                    SPEX_PR2 ("  %"PRId64" %"PRId64" : ", i, j) ;
+                    SPEX_PR2 ("  %" SuiteSparse_long_idd " %" SuiteSparse_long_idd " : ", i, j) ;
 
                     switch ( A->type)
                     {
@@ -383,7 +385,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             //------------------------------------------------------------------
 
             // allocate workspace to check for duplicates
-            work = (int64_t *) SPEX_malloc (nz * 2 * sizeof (int64_t)) ;
+            work = (SuiteSparse_long *) SPEX_malloc (nz * 2 * sizeof (SuiteSparse_long)) ;
             if (work == NULL)
             {
                 // out of memory
@@ -400,15 +402,15 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             }
 
             // sort the (i,j) indices
-            qsort (work, nz, 2 * sizeof (int64_t), compar) ;
+            qsort (work, nz, 2 * sizeof (SuiteSparse_long), compar) ;
 
             // check for duplicates
             for (p = 1 ; p < nz ; p++)
             {
-                int64_t this_j = work [2*p  ] ;
-                int64_t this_i = work [2*p+1] ;
-                int64_t last_j = work [2*(p-1)  ] ;
-                int64_t last_i = work [2*(p-1)+1] ;
+                SuiteSparse_long this_j = work [2*p  ] ;
+                SuiteSparse_long this_i = work [2*p+1] ;
+                SuiteSparse_long last_j = work [2*(p-1)  ] ;
+                SuiteSparse_long last_i = work [2*(p-1)+1] ;
                 if (this_j == last_j && this_i == last_i)
                 {
                     SPEX_PR1 ("duplicate index: (%ld, %ld)\n", this_i, this_j) ;
@@ -444,13 +446,13 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             for (j = 0 ; j < n ; j++)
             {
                 SPEX_PR_LIMIT ;
-                SPEX_PR2 ("column %"PRId64" :\n", j) ;
+                SPEX_PR2 ("column %" SuiteSparse_long_idd " :\n", j) ;
                 for (i = 0; i < m; i++)
                 {
                     if (pr >= 2)
                     {
                         SPEX_PR_LIMIT ;
-                        SPEX_PR2 ("  row %"PRId64" : ", i) ;
+                        SPEX_PR2 ("  row %" SuiteSparse_long_idd " : ", i) ;
 
                         switch ( A->type)
                         {
