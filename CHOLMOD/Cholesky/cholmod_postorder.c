@@ -153,14 +153,6 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
     int ok = TRUE ;
     Int n = (Int) n_input ;
 
-// printf ("Here I am, sizeof(Int) %g\n", (double) sizeof (Int)) ;
-// printf ("sizeof(Int *) %g\n", (double) sizeof (Int *)) ;
-// #ifdef DLONG
-// printf ("DLONG is defined\n") ;
-// #endif
-// printf ("n input: %g\n", (double) n_input) ;
-// printf ("n: %g\n", (double) n) ;
-
     /* ---------------------------------------------------------------------- */
     /* check inputs */
     /* ---------------------------------------------------------------------- */
@@ -176,7 +168,6 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
 
     /* s = 2*n */
     s = CHOLMOD(mult_size_t) (n_input, (size_t) 2, &ok) ;
-// printf ("s %g\n", (double) s) ;
     if (!ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

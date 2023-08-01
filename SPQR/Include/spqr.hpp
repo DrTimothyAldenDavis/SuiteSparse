@@ -40,8 +40,8 @@
 
 // uncomment the following line to turn on debugging (SPQR will be slow!)
 /*
-*/
 #undef NDEBUG
+*/
 
 // uncomment the following line to turn on printing (LOTS of output!)
 /*

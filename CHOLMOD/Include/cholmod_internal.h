@@ -43,8 +43,8 @@
 #endif
 
 /* Uncomment this line to enable debugging.  CHOLMOD will be very slow.
- */
 #undef NDEBUG
+ */
 
 /* ========================================================================== */
 /* === basic definitions ==================================================== */
