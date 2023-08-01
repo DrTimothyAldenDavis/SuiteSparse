@@ -87,7 +87,9 @@ double gk_CPUSeconds(void) { return (0) ; }
 #include "SuiteSparse_metis/libmetis/wspace.c"
 
 // unused by CHOLMOD:
-// #include "SuiteSparse_metis/libmetis/checkgraph.c"
+#ifndef NDEBUG
+#include "SuiteSparse_metis/libmetis/checkgraph.c"
+#endif
 // #include "SuiteSparse_metis/libmetis/frename.c"
 // #include "SuiteSparse_metis/libmetis/mesh.c"
 // #include "SuiteSparse_metis/libmetis/meshpart.c"
