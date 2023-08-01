@@ -640,7 +640,7 @@ int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
 
 #define PRK(k,params)                                           \
 {                                                               \
-    if (CHOLMOD(dump) >= (k)                                    \
+    if (CHOLMOD(dump) >= (k))                                   \
     {                                                           \
         int (*printf_func) (const char *, ...) ;                \
         printf_func = SuiteSparse_config_printf_func_get ( ) ;  \
