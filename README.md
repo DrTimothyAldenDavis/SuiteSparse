@@ -606,8 +606,8 @@ You can set specific options for CMake with the command (for example):
     CMAKE_OPTIONS="-DNPARTITION=1 -DNSTATIC=1 -DCMAKE_BUILD_TYPE=Debug" make
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
-Module.  Debug mode will be used.  The static libraries will not be built
-(NSTATIC is true).
+Module (because of -DNPARTITION=1).  Debug mode will be used (the build type).
+The static libraries will not be built (since -DNSTATIC=1 is set).
 
     CMAKE_BUILD_TYPE:   Default: "Release", use "Debug" for debugging.
 
