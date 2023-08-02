@@ -621,6 +621,14 @@ Module.  Debug mode will be used.  The static libraries will not be built
                         CMAKE_INSTALL_PREFIX).
                         Default: false
 
+    CMAKE_INSTALL_PREFIX:   defines the install location (default on Linux is
+                        /usr/local).  For example, this command in the top
+                        level SuiteSparse folder will set the install directory
+                        to "/stuff", used by the subsequent "sudo make install":
+
+                            CMAKE_OPTIONS="-DCMAKE_INSTALL_PREFIX=/stuff" make
+                            sudo make install
+
     NSTATIC:            if true, static libraries are not built.
                         Default: false, except for GraphBLAS, which
                         takes a long time to compile so the default for
