@@ -170,7 +170,7 @@ template <typename Int> Int spqrDebug_listcount
 
 // Count the number of entries in the R+H block for a single front.
 
-template <typename Int> spqrDebug_rhsize       // returns # of entries in R+H
+template <typename Int> Int spqrDebug_rhsize    // returns # of entries in R+H
 (
     // input, not modified
     Int m,                 // # of rows in F
@@ -234,11 +234,33 @@ template <typename Int> spqrDebug_rhsize       // returns # of entries in R+H
 }
 
 
+template int32_t spqrDebug_rhsize    // returns # of entries in R+H
+(
+    // input, not modified
+    int32_t m,                 // # of rows in F
+    int32_t n,                 // # of columns in F
+    int32_t npiv,              // number of pivotal columns in F
+    int32_t *Stair,            // size n; column j is dead if Stair [j] == 0.
+                            // Only the first npiv columns can be dead.
+    cholmod_common *cc
+) ;
+
+template int64_t spqrDebug_rhsize    // returns # of entries in R+H
+(
+    // input, not modified
+    int64_t m,                 // # of rows in F
+    int64_t n,                 // # of columns in F
+    int64_t npiv,              // number of pivotal columns in F
+    int64_t *Stair,            // size n; column j is dead if Stair [j] == 0.
+                            // Only the first npiv columns can be dead.
+    cholmod_common *cc
+) ;
+
 // =============================================================================
 // === spqrDebug_dump_Parent ===================================================
 // =============================================================================
 
-template <typename Int> void spqrDebug_dump_Parent <Int> (Int n, Int *Parent, const char *filename)
+template <typename Int> void spqrDebug_dump_Parent (Int n, Int *Parent, const char *filename)
 {
     FILE *pfile = fopen (filename, "w") ;
     if (Parent == NULL)
@@ -254,4 +276,9 @@ template <typename Int> void spqrDebug_dump_Parent <Int> (Int n, Int *Parent, co
     }
     fclose (pfile) ;
 }
+
+template void spqrDebug_dump_Parent <int32_t> (int32_t n, int32_t *Parent, const char *filename) ;
+
+template void spqrDebug_dump_Parent <int64_t> (int64_t n, int64_t *Parent, const char *filename) ;
+
 #endif

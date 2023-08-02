@@ -1060,7 +1060,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     cc->SPQR_istat [3] = 1 ;                   // ntasks, for now
 
     DEBUG (spqrDebug_dump_Parent (nf+1, Parent, "pfile")) ;
-    DEBUG (spqrDebug_dump_Parent (1, NULL, "tfile")) ;
+    DEBUG (spqrDebug_dump_Parent ((Int) 1, (Int *) NULL, "tfile")) ;
 
     PR (("flops %g\n", total_flops)) ;
 
