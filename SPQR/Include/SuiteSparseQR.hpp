@@ -659,43 +659,31 @@ template <typename Entry, typename Int = int64_t> int SuiteSparseQR_numeric
     SuiteSparseQR_factorization <Entry, Int> *QR,
     cholmod_common *cc      // workspace and parameters
 ) ;
+
+// forward declare template instantiations
+
 extern template int SuiteSparseQR_numeric <double, int32_t>
 (
-    // inputs:
-    double tol,             // treat columns with 2-norm <= tol as zero
-    cholmod_sparse *A,      // sparse matrix to factorize
-    // input/output
-    SuiteSparseQR_factorization <double, int32_t> *QR,
-    cholmod_common *cc      // workspace and parameters
+    double tol, cholmod_sparse *A,
+    SuiteSparseQR_factorization <double, int32_t> *QR, cholmod_common *cc
 ) ;
 
 extern template int SuiteSparseQR_numeric <Complex, int32_t>
 (
-    // inputs:
-    double tol,             // treat columns with 2-norm <= tol as zero
-    cholmod_sparse *A,      // sparse matrix to factorize
-    // input/output
-    SuiteSparseQR_factorization <Complex, int32_t> *QR,
-    cholmod_common *cc      // workspace and parameters
+    double tol, cholmod_sparse *A,
+    SuiteSparseQR_factorization <Complex, int32_t> *QR, cholmod_common *cc
 ) ;
+
 extern template int SuiteSparseQR_numeric <double, int64_t>
 (
-    // inputs:
-    double tol,             // treat columns with 2-norm <= tol as zero
-    cholmod_sparse *A,      // sparse matrix to factorize
-    // input/output
-    SuiteSparseQR_factorization <double, int64_t> *QR,
-    cholmod_common *cc      // workspace and parameters
+    double tol, cholmod_sparse *A,
+    SuiteSparseQR_factorization <double, int64_t> *QR, cholmod_common *cc
 ) ;
 
 extern template int SuiteSparseQR_numeric <Complex, int64_t>
 (
-    // inputs:
-    double tol,             // treat columns with 2-norm <= tol as zero
-    cholmod_sparse *A,      // sparse matrix to factorize
-    // input/output
-    SuiteSparseQR_factorization <Complex, int64_t> *QR,
-    cholmod_common *cc      // workspace and parameters
+    double tol, cholmod_sparse *A,
+    SuiteSparseQR_factorization <Complex, int64_t> *QR, cholmod_common *cc
 ) ;
 #endif
 

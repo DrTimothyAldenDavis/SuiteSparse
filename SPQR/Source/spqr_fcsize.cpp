@@ -29,19 +29,14 @@ template <typename Int> Int spqr_fcsize    // returns # of entries in C of curre
     return (csize) ;                        // return # of entries in C
 }
 
-template int32_t spqr_fcsize <int32_t>    // returns # of entries in C of current front F
+
+// explicit instantiations
+
+template int32_t spqr_fcsize <int32_t>
 (
-    // input, not modified
-    int32_t m,                 // # of rows in F
-    int32_t n,                 // # of columns in F
-    int32_t npiv,              // number of pivotal columns in F
-    int32_t rank               // the C block starts at F (rank,npiv)
+    int32_t m, int32_t n, int32_t npiv, int32_t rank
 ) ;
-template int64_t spqr_fcsize <int64_t>    // returns # of entries in C of current front F
+template int64_t spqr_fcsize <int64_t>
 (
-    // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t rank               // the C block starts at F (rank,npiv)
+    int64_t m, int64_t n, int64_t npiv, int64_t rank
 ) ;

@@ -133,35 +133,17 @@ template <typename Int> Int spqr_fsize     // returns # of rows of F
 
     return (fm) ;
 }
-template int32_t spqr_fsize <int32_t>     // returns # of rows of F
-(
-    // inputs, not modified
-    int32_t f,
-    int32_t *Super,            // size nf, from QRsym
-    int32_t *Rp,               // size nf, from QRsym
-    int32_t *Rj,               // size rjsize, from QRsym
-    int32_t *Sleft,            // size n+2, from QRsym
-    int32_t *Child,            // size nf, from QRsym
-    int32_t *Childp,           // size nf+1, from QRsym
-    int32_t *Cm,               // size nf
 
-    // outputs, not defined on input
-    int32_t *Fmap,             // size n
-    int32_t *Stair             // size fn
+
+// explicit instantiations
+
+template int32_t spqr_fsize <int32_t>
+(
+    int32_t f, int32_t *Super, int32_t *Rp, int32_t *Rj, int32_t *Sleft,
+    int32_t *Child, int32_t *Childp, int32_t *Cm, int32_t *Fmap, int32_t *Stair
 ) ;
-template int64_t spqr_fsize <int64_t>     // returns # of rows of F
+template int64_t spqr_fsize <int64_t>
 (
-    // inputs, not modified
-    int64_t f,
-    int64_t *Super,            // size nf, from QRsym
-    int64_t *Rp,               // size nf, from QRsym
-    int64_t *Rj,               // size rjsize, from QRsym
-    int64_t *Sleft,            // size n+2, from QRsym
-    int64_t *Child,            // size nf, from QRsym
-    int64_t *Childp,           // size nf+1, from QRsym
-    int64_t *Cm,               // size nf
-
-    // outputs, not defined on input
-    int64_t *Fmap,             // size n
-    int64_t *Stair             // size fn
+    int64_t f, int64_t *Super, int64_t *Rp, int64_t *Rj, int64_t *Sleft,
+    int64_t *Child, int64_t *Childp, int64_t *Cm, int64_t *Fmap, int64_t *Stair
 ) ;

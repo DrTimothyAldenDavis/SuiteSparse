@@ -12,6 +12,8 @@
 
 #include "spqr.hpp"
 
+// template specializations
+
 template <> int spqr_type <double> (void)
 {
     return (CHOLMOD_REAL) ;

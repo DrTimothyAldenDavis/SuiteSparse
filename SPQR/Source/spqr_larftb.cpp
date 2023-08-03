@@ -156,91 +156,29 @@ template <typename Entry, typename Int> void spqr_larftb
     }
 }
 
+
+// explicit instantiations
+
 template void spqr_larftb <double, int32_t>
 (
-    // inputs, not modified (V is modified and then restored on output)
-    int method,     // 0,1,2,3
-    int32_t m,         // C is m-by-n
-    int32_t n,
-    int32_t k,         // V is v-by-k
-                    // for methods 0 and 1, v = m,
-                    // for methods 2 and 3, v = n
-    int32_t ldc,       // leading dimension of C
-    int32_t ldv,       // leading dimension of V
-    double *V,       // V is v-by-k, unit lower triangular (diag not stored)
-    double *Tau,     // size k, the k Householder coefficients
-
-    // input/output
-    double *C,       // C is m-by-n, with leading dimension ldc
-
-    // workspace, not defined on input or output
-    double *W,       // for methods 0,1: size k*k + n*k
-                    // for methods 2,3: size k*k + m*k
-    cholmod_common *cc
+    int method, int32_t m, int32_t n, int32_t k, int32_t ldc, int32_t ldv,
+    double *V, double *Tau, double *C, double *W, cholmod_common *cc
 ) ;
+
 template void spqr_larftb <Complex, int32_t>
 (
-    // inputs, not modified (V is modified and then restored on output)
-    int method,     // 0,1,2,3
-    int32_t m,         // C is m-by-n
-    int32_t n,
-    int32_t k,         // V is v-by-k
-                    // for methods 0 and 1, v = m,
-                    // for methods 2 and 3, v = n
-    int32_t ldc,       // leading dimension of C
-    int32_t ldv,       // leading dimension of V
-    Complex *V,       // V is v-by-k, unit lower triangular (diag not stored)
-    Complex *Tau,     // size k, the k Householder coefficients
-
-    // input/output
-    Complex *C,       // C is m-by-n, with leading dimension ldc
-
-    // workspace, not defined on input or output
-    Complex *W,       // for methods 0,1: size k*k + n*k
-                    // for methods 2,3: size k*k + m*k
-    cholmod_common *cc
+    int method, int32_t m, int32_t n, int32_t k, int32_t ldc, int32_t ldv,
+    Complex *V, Complex *Tau, Complex *C, Complex *W, cholmod_common *cc
 ) ;
+
 template void spqr_larftb <double, int64_t>
 (
-    // inputs, not modified (V is modified and then restored on output)
-    int method,     // 0,1,2,3
-    int64_t m,         // C is m-by-n
-    int64_t n,
-    int64_t k,         // V is v-by-k
-                    // for methods 0 and 1, v = m,
-                    // for methods 2 and 3, v = n
-    int64_t ldc,       // leading dimension of C
-    int64_t ldv,       // leading dimension of V
-    double *V,       // V is v-by-k, unit lower triangular (diag not stored)
-    double *Tau,     // size k, the k Householder coefficients
-
-    // input/output
-    double *C,       // C is m-by-n, with leading dimension ldc
-
-    // workspace, not defined on input or output
-    double *W,       // for methods 0,1: size k*k + n*k
-                    // for methods 2,3: size k*k + m*k
-    cholmod_common *cc
+    int method, int64_t m, int64_t n, int64_t k, int64_t ldc, int64_t ldv,
+    double *V, double *Tau, double *C, double *W, cholmod_common *cc
 ) ;
+
 template void spqr_larftb <Complex, int64_t>
 (
-    // inputs, not modified (V is modified and then restored on output)
-    int method,     // 0,1,2,3
-    int64_t m,         // C is m-by-n
-    int64_t n,
-    int64_t k,         // V is v-by-k
-                    // for methods 0 and 1, v = m,
-                    // for methods 2 and 3, v = n
-    int64_t ldc,       // leading dimension of C
-    int64_t ldv,       // leading dimension of V
-    Complex *V,       // V is v-by-k, unit lower triangular (diag not stored)
-    Complex *Tau,     // size k, the k Householder coefficients
-
-    // input/output
-    Complex *C,       // C is m-by-n, with leading dimension ldc
-
-    // workspace, not defined on input or output
-    Complex *W,       // for methods 0,1: size k*k + n*k
-                    // for methods 2,3: size k*k + m*k
-    cholmod_common *cc
+    int method, int64_t m, int64_t n, int64_t k, int64_t ldc, int64_t ldv,
+    Complex *V, Complex *Tau, Complex *C, Complex *W, cholmod_common *cc
 ) ;

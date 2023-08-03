@@ -445,143 +445,54 @@ template <typename Entry, typename Int> void spqr_assemble
     /* the Stair is now complete */
     ASSERT (Stair [fn-1] == fm) ;
 }
+
+
+// explicit instantiations
+
 template void spqr_assemble <double, int32_t>
 (
-    /* inputs, not modified */
-    int32_t f,                 /* front to assemble F */
-    int32_t fm,                /* number of rows of F */
-    int keepH,              /* if TRUE, then construct row pattern of H */
-    int32_t *Super,
-    int32_t *Rp,
-    int32_t *Rj,
-    int32_t *Sp,
-    int32_t *Sj,
-    int32_t *Sleft,
-    int32_t *Child,
-    int32_t *Childp,
-    double *Sx,
-    int32_t *Fmap,
-    int32_t *Cm,
-    double **Cblock,
+    int32_t f, int32_t fm, int keepH, int32_t *Super, int32_t *Rp, int32_t *Rj,
+    int32_t *Sp, int32_t *Sj, int32_t *Sleft, int32_t *Child, int32_t *Childp,
+    double *Sx, int32_t *Fmap, int32_t *Cm, double **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
     int32_t *Hr,
-
-    /* input/output */
-    int32_t *Stair,
-    int32_t *Hii,              /* if keepH, construct list of row indices for F */
-    // input only
-    int32_t *Hip,
-
-    /* outputs, not defined on input */
-    double *F,
-
-    /* workspace, not defined on input or output */
-    int32_t *Cmap
+    int32_t *Stair, int32_t *Hii, int32_t *Hip,double *F, int32_t *Cmap
 ) ;
+
 template void spqr_assemble <Complex, int32_t>
 (
-    /* inputs, not modified */
-    int32_t f,                 /* front to assemble F */
-    int32_t fm,                /* number of rows of F */
-    int keepH,              /* if TRUE, then construct row pattern of H */
-    int32_t *Super,
-    int32_t *Rp,
-    int32_t *Rj,
-    int32_t *Sp,
-    int32_t *Sj,
-    int32_t *Sleft,
-    int32_t *Child,
-    int32_t *Childp,
-    Complex *Sx,
-    int32_t *Fmap,
-    int32_t *Cm,
-    Complex **Cblock,
+    int32_t f, int32_t fm, int keepH, int32_t *Super, int32_t *Rp, int32_t *Rj,
+    int32_t *Sp, int32_t *Sj, int32_t *Sleft, int32_t *Child, int32_t *Childp,
+    Complex *Sx, int32_t *Fmap, int32_t *Cm, Complex **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
     int32_t *Hr,
-
-    /* input/output */
-    int32_t *Stair,
-    int32_t *Hii,              /* if keepH, construct list of row indices for F */
-    // input only
-    int32_t *Hip,
-
-    /* outputs, not defined on input */
-    Complex *F,
-
-    /* workspace, not defined on input or output */
-    int32_t *Cmap
+    int32_t *Stair, int32_t *Hii, int32_t *Hip, Complex *F,int32_t *Cmap
 ) ;
+
 template void spqr_assemble <double, int64_t>
 (
-    /* inputs, not modified */
-    int64_t f,                 /* front to assemble F */
-    int64_t fm,                /* number of rows of F */
-    int keepH,              /* if TRUE, then construct row pattern of H */
-    int64_t *Super,
-    int64_t *Rp,
-    int64_t *Rj,
-    int64_t *Sp,
-    int64_t *Sj,
-    int64_t *Sleft,
-    int64_t *Child,
-    int64_t *Childp,
-    double *Sx,
-    int64_t *Fmap,
-    int64_t *Cm,
-    double **Cblock,
+    int64_t f, int64_t fm, int keepH, int64_t *Super, int64_t *Rp, int64_t *Rj,
+    int64_t *Sp, int64_t *Sj, int64_t *Sleft, int64_t *Child, int64_t *Childp,
+    double *Sx, int64_t *Fmap, int64_t *Cm, double **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
     int64_t *Hr,
-
-    /* input/output */
-    int64_t *Stair,
-    int64_t *Hii,              /* if keepH, construct list of row indices for F */
-    // input only
-    int64_t *Hip,
-
-    /* outputs, not defined on input */
-    double *F,
-
-    /* workspace, not defined on input or output */
-    int64_t *Cmap
+    int64_t *Stair, int64_t *Hii, int64_t *Hip, double *F, int64_t *Cmap
 ) ;
+
 template void spqr_assemble <Complex, int64_t>
 (
-    /* inputs, not modified */
-    int64_t f,                 /* front to assemble F */
-    int64_t fm,                /* number of rows of F */
-    int keepH,              /* if TRUE, then construct row pattern of H */
-    int64_t *Super,
-    int64_t *Rp,
-    int64_t *Rj,
-    int64_t *Sp,
-    int64_t *Sj,
-    int64_t *Sleft,
-    int64_t *Child,
-    int64_t *Childp,
-    Complex *Sx,
-    int64_t *Fmap,
-    int64_t *Cm,
-    Complex **Cblock,
+    int64_t f, int64_t fm, int keepH, int64_t *Super, int64_t *Rp, int64_t *Rj,
+    int64_t *Sp, int64_t *Sj, int64_t *Sleft, int64_t *Child, int64_t *Childp,
+    Complex *Sx, int64_t *Fmap, int64_t *Cm, Complex **Cblock,
 #ifndef NDEBUG
     char *Rdead,
 #endif
     int64_t *Hr,
-
-    /* input/output */
-    int64_t *Stair,
-    int64_t *Hii,              /* if keepH, construct list of row indices for F */
-    // input only
-    int64_t *Hip,
-
-    /* outputs, not defined on input */
-    Complex *F,
-
-    /* workspace, not defined on input or output */
-    int64_t *Cmap
+    int64_t *Stair, int64_t *Hii, int64_t *Hip, Complex *F, int64_t *Cmap
 ) ;

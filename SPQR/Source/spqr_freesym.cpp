@@ -91,17 +91,15 @@ template <typename Int> void spqr_freesym
     *QRsym_handle = NULL ;
 }
 
+
+// explicit instantiations
+
 template void spqr_freesym <int32_t>
 (
-    spqr_symbolic <int32_t> **QRsym_handle,
-
-    // workspace and parameters
-    cholmod_common *cc
+    spqr_symbolic <int32_t> **QRsym_handle, cholmod_common *cc
 ) ;
+
 template void spqr_freesym <int64_t>
 (
-    spqr_symbolic <int64_t> **QRsym_handle,
-
-    // workspace and parameters
-    cholmod_common *cc
+    spqr_symbolic <int64_t> **QRsym_handle, cholmod_common *cc
 ) ;

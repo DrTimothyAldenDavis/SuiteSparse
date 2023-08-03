@@ -32,19 +32,15 @@ template <typename Int> Int spqr_csize     // returns # of entries in C of a chi
     return (csize) ;
 }
 
-template int32_t spqr_csize <int32_t>     // returns # of entries in C of a child
+
+// explicit instantiations
+
+template int32_t spqr_csize <int32_t>
 (
-    // input, not modified
-    int32_t c,                 // child c
-    int32_t *Rp,               // size nf+1, pointers for pattern of R
-    int32_t *Cm,               // size nf, Cm [c] = # of rows in child C
-    int32_t *Super             // size nf, pivotal columns in each front
+    int32_t c, int32_t *Rp, int32_t *Cm, int32_t *Super
 ) ;
-template int64_t spqr_csize <int64_t>     // returns # of entries in C of a child
+
+template int64_t spqr_csize <int64_t>
 (
-    // input, not modified
-    int64_t c,                 // child c
-    int64_t *Rp,               // size nf+1, pointers for pattern of R
-    int64_t *Cm,               // size nf, Cm [c] = # of rows in child C
-    int64_t *Super             // size nf, pivotal columns in each front
+    int64_t c, int64_t *Rp, int64_t *Cm, int64_t *Super
 ) ;

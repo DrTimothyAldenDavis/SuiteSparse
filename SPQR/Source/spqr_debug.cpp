@@ -234,27 +234,18 @@ template <typename Int> Int spqrDebug_rhsize    // returns # of entries in R+H
 }
 
 
-template int32_t spqrDebug_rhsize    // returns # of entries in R+H
+// explicit instantiations
+
+template int32_t spqrDebug_rhsize <int32_t>
 (
-    // input, not modified
-    int32_t m,                 // # of rows in F
-    int32_t n,                 // # of columns in F
-    int32_t npiv,              // number of pivotal columns in F
-    int32_t *Stair,            // size n; column j is dead if Stair [j] == 0.
-                            // Only the first npiv columns can be dead.
-    cholmod_common *cc
+    int32_t m, int32_t n, int32_t npiv, int32_t *Stair, cholmod_common *cc
 ) ;
 
-template int64_t spqrDebug_rhsize    // returns # of entries in R+H
+template int64_t spqrDebug_rhsize <int64_t>
 (
-    // input, not modified
-    int64_t m,                 // # of rows in F
-    int64_t n,                 // # of columns in F
-    int64_t npiv,              // number of pivotal columns in F
-    int64_t *Stair,            // size n; column j is dead if Stair [j] == 0.
-                            // Only the first npiv columns can be dead.
-    cholmod_common *cc
+    int64_t m, int64_t n, int64_t npiv, int64_t *Stair, cholmod_common *cc
 ) ;
+
 
 // =============================================================================
 // === spqrDebug_dump_Parent ===================================================
@@ -276,6 +267,9 @@ template <typename Int> void spqrDebug_dump_Parent (Int n, Int *Parent, const ch
     }
     fclose (pfile) ;
 }
+
+
+// explicit instantiations
 
 template void spqrDebug_dump_Parent <int32_t> (int32_t n, int32_t *Parent, const char *filename) ;
 

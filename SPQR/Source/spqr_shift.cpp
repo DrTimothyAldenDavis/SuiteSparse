@@ -32,19 +32,15 @@ template <typename Int> void spqr_shift
     }
 }
 
+
+// explicit instantiations
+
 template void spqr_shift <int32_t>
 (
-    // input, not modified
-    int32_t n,
-
-    // input/output
-    int32_t *X                     // size n+1
+    int32_t n, int32_t *X
 ) ;
+
 template void spqr_shift <int64_t>
 (
-    // input, not modified
-    int64_t n,
-
-    // input/output
-    int64_t *X                     // size n+1
+    int64_t n, int64_t *X
 ) ;

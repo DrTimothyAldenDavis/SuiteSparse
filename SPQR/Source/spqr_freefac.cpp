@@ -51,32 +51,29 @@ template <typename Entry, typename Int> void spqr_freefac
     *QR_handle = NULL ;
 }
 
-// =============================================================================
+
+// explicit instantiations
+
 template void spqr_freefac <double, int32_t>
 (
     SuiteSparseQR_factorization <double, int32_t> **QR_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
+
 template void spqr_freefac <Complex, int32_t>
 (
     SuiteSparseQR_factorization <Complex, int32_t> **QR_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
+
 template void spqr_freefac <double, int64_t>
 (
     SuiteSparseQR_factorization <double, int64_t> **QR_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
+
 template void spqr_freefac <Complex, int64_t>
 (
     SuiteSparseQR_factorization <Complex, int64_t> **QR_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;

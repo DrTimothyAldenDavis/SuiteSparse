@@ -99,28 +99,27 @@ template <typename Entry, typename Int> void spqr_parallel
         spqr_zippy <Entry, Int> (ntasks-1, Blob) ;
     task::spawn_root_and_wait (a) ;
 }
+
+
+// explicit instantiations
+
 template void spqr_parallel <double, int32_t>
 (
-    int32_t ntasks,
-    int nthreads,
-    spqr_blob <double, int32_t> *Blob
+    int32_t ntasks, int nthreads, spqr_blob <double, int32_t> *Blob
 ) ;
+
 template void spqr_parallel <Complex, int32_t>
 (
-    int32_t ntasks,
-    int nthreads,
-    spqr_blob <Complex, int32_t> *Blob
+    int32_t ntasks, int nthreads, spqr_blob <Complex, int32_t> *Blob
 ) ;
+
 template void spqr_parallel <double, int64_t>
 (
-    int64_t ntasks,
-    int nthreads,
-    spqr_blob <double, int64_t> *Blob
+    int64_t ntasks, int nthreads, spqr_blob <double, int64_t> *Blob
 ) ;
+
 template void spqr_parallel <Complex, int64_t>
 (
-    int64_t ntasks,
-    int nthreads,
-    spqr_blob <Complex, int64_t> *Blob
+    int64_t ntasks, int nthreads, spqr_blob <Complex, int64_t> *Blob
 ) ;
 #endif

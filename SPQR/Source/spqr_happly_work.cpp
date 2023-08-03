@@ -14,7 +14,7 @@
 template <typename Int> int spqr_happly_work
 (
     // input
-    int method,     // 0,1,2,3 
+    int method,     // 0,1,2,3
 
     Int m,         // X is m-by-n
     Int n,
@@ -25,8 +25,8 @@ template <typename Int> int spqr_happly_work
     Int hchunk,
 
     // outputs; sizes of workspaces needed
-    Int *p_vmax, 
-    Int *p_vsize, 
+    Int *p_vmax,
+    Int *p_vsize,
     Int *p_csize
 )
 {
@@ -100,39 +100,17 @@ template <typename Int> int spqr_happly_work
     return (ok) ;
 }
 
+
+// explicit instantiations
+
 template int spqr_happly_work <int32_t>
 (
-    // input
-    int method,     // 0,1,2,3 
-
-    int32_t m,         // X is m-by-n
-    int32_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int32_t nh,        // number of Householder vectors
-    int32_t *Hp,       // size nh+1, column pointers for H
-    int32_t hchunk,
-
-    // outputs; sizes of workspaces needed
-    int32_t *p_vmax, 
-    int32_t *p_vsize, 
-    int32_t *p_csize
+    int method, int32_t m, int32_t n, int32_t nh, int32_t *Hp, int32_t hchunk,
+    int32_t *p_vmax, int32_t *p_vsize, int32_t *p_csize
 ) ;
+
 template int spqr_happly_work <int64_t>
 (
-    // input
-    int method,     // 0,1,2,3 
-
-    int64_t m,         // X is m-by-n
-    int64_t n,
-
-    // FUTURE : make H cholmod_sparse:
-    int64_t nh,        // number of Householder vectors
-    int64_t *Hp,       // size nh+1, column pointers for H
-    int64_t hchunk,
-
-    // outputs; sizes of workspaces needed
-    int64_t *p_vmax, 
-    int64_t *p_vsize, 
-    int64_t *p_csize
+    int method, int64_t m, int64_t n, int64_t nh, int64_t *Hp, int64_t hchunk,
+    int64_t *p_vmax, int64_t *p_vsize, int64_t *p_csize
 ) ;

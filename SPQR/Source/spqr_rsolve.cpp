@@ -382,84 +382,31 @@ template <typename Entry, typename Int> void spqr_rsolve
     }
 }
 
+
+// explicit instantiations
+
 template void spqr_rsolve <double, int32_t>
 (
-    // inputs
     SuiteSparseQR_factorization <double, int32_t> *QR,
-    int use_Q1fill,         // if TRUE, do X=E*(R\B), otherwise do X=R\B
-
-    int32_t nrhs,              // number of columns of B
-    int32_t ldb,               // leading dimension of B
-    double *B,               // size m-by-nrhs with leading dimesion ldb
-
-    // output
-    double *X,               // size n-by-nrhs with leading dimension n
-
-    // workspace
-    double **Rcolp,          // size QRnum->maxfrank
-    int32_t *Rlive,            // size QRnum->maxfrank
-    double *W,               // size QRnum->maxfrank * nrhs
-
-    cholmod_common *cc
+    int use_Q1fill, int32_t nrhs, int32_t ldb, double *B,  double *X,
+    double **Rcolp, int32_t *Rlive, double *W, cholmod_common *cc
 ) ;
 template void spqr_rsolve <Complex, int32_t>
 (
-    // inputs
     SuiteSparseQR_factorization <Complex, int32_t> *QR,
-    int use_Q1fill,         // if TRUE, do X=E*(R\B), otherwise do X=R\B
-
-    int32_t nrhs,              // number of columns of B
-    int32_t ldb,               // leading dimension of B
-    Complex *B,               // size m-by-nrhs with leading dimesion ldb
-
-    // output
-    Complex *X,               // size n-by-nrhs with leading dimension n
-
-    // workspace
-    Complex **Rcolp,          // size QRnum->maxfrank
-    int32_t *Rlive,            // size QRnum->maxfrank
-    Complex *W,               // size QRnum->maxfrank * nrhs
-
-    cholmod_common *cc
+    int use_Q1fill, int32_t nrhs, int32_t ldb, Complex *B, Complex *X,
+    Complex **Rcolp, int32_t *Rlive, Complex *W, cholmod_common *cc
 ) ;
 
 template void spqr_rsolve <double, int64_t>
 (
-    // inputs
     SuiteSparseQR_factorization <double, int64_t> *QR,
-    int use_Q1fill,         // if TRUE, do X=E*(R\B), otherwise do X=R\B
-
-    int64_t nrhs,              // number of columns of B
-    int64_t ldb,               // leading dimension of B
-    double *B,               // size m-by-nrhs with leading dimesion ldb
-
-    // output
-    double *X,               // size n-by-nrhs with leading dimension n
-
-    // workspace
-    double **Rcolp,          // size QRnum->maxfrank
-    int64_t *Rlive,            // size QRnum->maxfrank
-    double *W,               // size QRnum->maxfrank * nrhs
-
-    cholmod_common *cc
+    int use_Q1fill, int64_t nrhs, int64_t ldb, double *B, double *X,
+    double **Rcolp, int64_t *Rlive, double *W, cholmod_common *cc
 ) ;
 template void spqr_rsolve <Complex, int64_t>
 (
-    // inputs
     SuiteSparseQR_factorization <Complex, int64_t> *QR,
-    int use_Q1fill,         // if TRUE, do X=E*(R\B), otherwise do X=R\B
-
-    int64_t nrhs,              // number of columns of B
-    int64_t ldb,               // leading dimension of B
-    Complex *B,               // size m-by-nrhs with leading dimesion ldb
-
-    // output
-    Complex *X,               // size n-by-nrhs with leading dimension n
-
-    // workspace
-    Complex **Rcolp,          // size QRnum->maxfrank
-    int64_t *Rlive,            // size QRnum->maxfrank
-    Complex *W,               // size QRnum->maxfrank * nrhs
-
-    cholmod_common *cc
+    int use_Q1fill, int64_t nrhs, int64_t ldb, Complex *B, Complex *X,
+    Complex **Rcolp, int64_t *Rlive, Complex *W, cholmod_common *cc
 ) ;

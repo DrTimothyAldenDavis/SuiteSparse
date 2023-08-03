@@ -219,95 +219,33 @@ template <typename Entry, typename Int> void spqr_rcount
     }
 }
 
+
+// explicit instantiations
+
 template void spqr_rcount <double, int32_t>
 (
-    // inputs, not modified
-    spqr_symbolic <int32_t> *QRsym,
-    spqr_numeric <double, int32_t> *QRnum,
-
-    int32_t n1rows,        // added to each row index of Ra and Rb
-    int32_t econ,          // only get entries in rows n1rows to econ-1
-    int32_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
-    int getT,           // if true, count Rb' instead of Rb
-
-    // input/output
-    // FUTURE : make Ra, Rb, H2 cholmod_sparse
-    int32_t *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    int32_t *Rb,           // If getT is false: size n-n2 and
-                        // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
-                        // If getT is true: size econ, and
-                        // Rb [i] += nnz (R (i, n2:n-1))
-    int32_t *H2p,          // size rjsize+1.  Column pointers for H.
-                        // Only computed if H was kept during factorization.
-                        // Only H2p [0..nh] is used.
-    int32_t *p_nh          // number of Householder vectors (nh <= rjsize)
+    spqr_symbolic <int32_t> *QRsym, spqr_numeric <double, int32_t> *QRnum,
+    int32_t n1rows, int32_t econ, int32_t n2, int getT,
+    int32_t *Ra, int32_t *Rb, int32_t *H2p, int32_t *p_nh
 ) ;
+
 template void spqr_rcount <Complex, int32_t>
 (
-    // inputs, not modified
-    spqr_symbolic <int32_t> *QRsym,
-    spqr_numeric <Complex, int32_t> *QRnum,
-
-    int32_t n1rows,        // added to each row index of Ra and Rb
-    int32_t econ,          // only get entries in rows n1rows to econ-1
-    int32_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
-    int getT,           // if true, count Rb' instead of Rb
-
-    // input/output
-    // FUTURE : make Ra, Rb, H2 cholmod_sparse
-    int32_t *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    int32_t *Rb,           // If getT is false: size n-n2 and
-                        // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
-                        // If getT is true: size econ, and
-                        // Rb [i] += nnz (R (i, n2:n-1))
-    int32_t *H2p,          // size rjsize+1.  Column pointers for H.
-                        // Only computed if H was kept during factorization.
-                        // Only H2p [0..nh] is used.
-    int32_t *p_nh          // number of Householder vectors (nh <= rjsize)
+    spqr_symbolic <int32_t> *QRsym, spqr_numeric <Complex, int32_t> *QRnum,
+    int32_t n1rows, int32_t econ, int32_t n2, int getT, 
+    int32_t *Ra, int32_t *Rb, int32_t *H2p, int32_t *p_nh
 ) ;
+
 template void spqr_rcount <double, int64_t>
 (
-    // inputs, not modified
-    spqr_symbolic <int64_t> *QRsym,
-    spqr_numeric <double, int64_t> *QRnum,
-
-    int64_t n1rows,        // added to each row index of Ra and Rb
-    int64_t econ,          // only get entries in rows n1rows to econ-1
-    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
-    int getT,           // if true, count Rb' instead of Rb
-
-    // input/output
-    // FUTURE : make Ra, Rb, H2 cholmod_sparse
-    int64_t *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    int64_t *Rb,           // If getT is false: size n-n2 and
-                        // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
-                        // If getT is true: size econ, and
-                        // Rb [i] += nnz (R (i, n2:n-1))
-    int64_t *H2p,          // size rjsize+1.  Column pointers for H.
-                        // Only computed if H was kept during factorization.
-                        // Only H2p [0..nh] is used.
-    int64_t *p_nh          // number of Householder vectors (nh <= rjsize)
+    spqr_symbolic <int64_t> *QRsym, spqr_numeric <double, int64_t> *QRnum,
+    int64_t n1rows, int64_t econ, int64_t n2, int getT,
+    int64_t *Ra, int64_t *Rb, int64_t *H2p, int64_t *p_nh
 ) ;
+
 template void spqr_rcount <Complex, int64_t>
 (
-    // inputs, not modified
-    spqr_symbolic <int64_t> *QRsym,
-    spqr_numeric <Complex, int64_t> *QRnum,
-
-    int64_t n1rows,        // added to each row index of Ra and Rb
-    int64_t econ,          // only get entries in rows n1rows to econ-1
-    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
-    int getT,           // if true, count Rb' instead of Rb
-
-    // input/output
-    // FUTURE : make Ra, Rb, H2 cholmod_sparse
-    int64_t *Ra,           // size n2; Ra [j] += nnz (R (:,j)) if j < n2
-    int64_t *Rb,           // If getT is false: size n-n2 and
-                        // Rb [j-n2] += nnz (R (:,j)) if j >= n2.
-                        // If getT is true: size econ, and
-                        // Rb [i] += nnz (R (i, n2:n-1))
-    int64_t *H2p,          // size rjsize+1.  Column pointers for H.
-                        // Only computed if H was kept during factorization.
-                        // Only H2p [0..nh] is used.
-    int64_t *p_nh          // number of Householder vectors (nh <= rjsize)
+    spqr_symbolic <int64_t> *QRsym, spqr_numeric <Complex, int64_t> *QRnum,
+    int64_t n1rows, int64_t econ, int64_t n2, int getT,
+    int64_t *Ra, int64_t *Rb, int64_t *H2p, int64_t *p_nh
 ) ;

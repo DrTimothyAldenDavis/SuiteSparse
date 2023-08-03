@@ -1800,42 +1800,17 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     return (QRsym) ;
 }
 
+
+// explicit instantiations
+
 template spqr_symbolic <int32_t> *spqr_analyze <int32_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-    int ordering,           // all options available
-    int32_t *Quser,            // user provided ordering, if given (may be NULL)
-
-    int do_rank_detection,  // if TRUE, then rank deficient matrices may be
-                            // considered during numerical factorization,
-    // with tol >= 0 (tol < 0 is also allowed).  If FALSE, then the tol
-    // parameter is ignored by the numerical factorization, and no rank
-    // detection is performed.  Ignored when using GPU acceleration
-    // (no rank detection is performed in that case).
-
-    int keepH,              // if TRUE, keep the Householder vectors
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, int ordering, int32_t *Quser, int do_rank_detection,
+    int keepH, cholmod_common *cc
 ) ;
 
 template spqr_symbolic <int64_t> *spqr_analyze <int64_t>
 (
-    // inputs, not modified
-    cholmod_sparse *A,
-    int ordering,           // all options available
-    int64_t *Quser,            // user provided ordering, if given (may be NULL)
-
-    int do_rank_detection,  // if TRUE, then rank deficient matrices may be
-                            // considered during numerical factorization,
-    // with tol >= 0 (tol < 0 is also allowed).  If FALSE, then the tol
-    // parameter is ignored by the numerical factorization, and no rank
-    // detection is performed.  Ignored when using GPU acceleration
-    // (no rank detection is performed in that case).
-
-    int keepH,              // if TRUE, keep the Householder vectors
-
-    // workspace and parameters
-    cholmod_common *cc
+    cholmod_sparse *A, int ordering, int64_t *Quser, int do_rank_detection,
+    int keepH, cholmod_common *cc
 ) ;

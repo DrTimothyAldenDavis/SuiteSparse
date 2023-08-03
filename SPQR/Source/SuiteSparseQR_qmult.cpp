@@ -352,59 +352,32 @@ template <typename Entry, typename Int> cholmod_dense *SuiteSparseQR_qmult
 }
 
 
-// =============================================================================
+// explicit instantiations
+
+template cholmod_dense *SuiteSparseQR_qmult <double, int32_t>
+(
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int32_t *HPinv,
+    cholmod_dense *Xdense, cholmod_common *cc
+) ;
+
+template cholmod_dense *SuiteSparseQR_qmult <Complex, int32_t>
+(
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int32_t *HPinv,
+    cholmod_dense *Xdense, cholmod_common *cc
+) ;
 
 template cholmod_dense *SuiteSparseQR_qmult <double, int64_t>
 (
-    // inputs, not modified
-    int method,             // 0,1,2,3
-    cholmod_sparse *H,      // either m-by-nh or n-by-nh
-    cholmod_dense *HTau,    // size 1-by-nh
-    int64_t *HPinv,            // size mh
-    cholmod_dense *Xdense,  // size m-by-n with leading dimension ldx
-
-    // workspace and parameters
-    cholmod_common *cc
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int64_t *HPinv,
+    cholmod_dense *Xdense, cholmod_common *cc
 ) ;
-template cholmod_dense *SuiteSparseQR_qmult <double, int32_t>
-(
-    // inputs, not modified
-    int method,             // 0,1,2,3
-    cholmod_sparse *H,      // either m-by-nh or n-by-nh
-    cholmod_dense *HTau,    // size 1-by-nh
-    int32_t *HPinv,            // size mh
-    cholmod_dense *Xdense,  // size m-by-n with leading dimension ldx
-
-    // workspace and parameters
-    cholmod_common *cc
-) ;
-
-// =============================================================================
 
 template cholmod_dense *SuiteSparseQR_qmult <Complex, int64_t>
 (
-    // inputs, not modified
-    int method,             // 0,1,2,3
-    cholmod_sparse *H,      // either m-by-nh or n-by-nh
-    cholmod_dense *HTau,    // size 1-by-nh
-    int64_t *HPinv,            // size mh
-    cholmod_dense *Xdense,  // size m-by-n with leading dimension ldx
-
-    // workspace and parameters
-    cholmod_common *cc
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int64_t *HPinv,
+    cholmod_dense *Xdense, cholmod_common *cc
 ) ;
-template cholmod_dense *SuiteSparseQR_qmult <Complex, int32_t>
-(
-    // inputs, not modified
-    int method,             // 0,1,2,3
-    cholmod_sparse *H,      // either m-by-nh or n-by-nh
-    cholmod_dense *HTau,    // size 1-by-nh
-    int32_t *HPinv,            // size mh
-    cholmod_dense *Xdense,  // size m-by-n with leading dimension ldx
 
-    // workspace and parameters
-    cholmod_common *cc
-) ;
 
 // =============================================================================
 // === SuiteSparseQR_qmult (sparse) ============================================
@@ -727,56 +700,28 @@ template <typename Entry, typename Int> cholmod_sparse *SuiteSparseQR_qmult
 }
 
 
-// =============================================================================
+// explicit instantiations
 
 template cholmod_sparse *SuiteSparseQR_qmult <double, int32_t>
 (
-    // inputs, not modified
-    int method,                 // 0,1,2,3
-    cholmod_sparse *H,          // size m-by-nh or n-by-nh
-    cholmod_dense *HTau,        // size 1-by-nh
-    int32_t *HPinv,                // size mh
-    cholmod_sparse *Xsparse,
-
-    // workspace and parameters
-    cholmod_common *cc
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int32_t *HPinv,
+    cholmod_sparse *Xsparse, cholmod_common *cc
 ) ;
-template cholmod_sparse *SuiteSparseQR_qmult <double, int64_t>
-(
-    // inputs, not modified
-    int method,                 // 0,1,2,3
-    cholmod_sparse *H,          // size m-by-nh or n-by-nh
-    cholmod_dense *HTau,        // size 1-by-nh
-    int64_t *HPinv,                // size mh
-    cholmod_sparse *Xsparse,
-
-    // workspace and parameters
-    cholmod_common *cc
-) ;
-
-// =============================================================================
 
 template cholmod_sparse *SuiteSparseQR_qmult <Complex, int32_t>
 (
-    // inputs, not modified
-    int method,                 // 0,1,2,3
-    cholmod_sparse *H,          // size m-by-nh or n-by-nh
-    cholmod_dense *HTau,        // size 1-by-nh
-    int32_t *HPinv,                // size mh
-    cholmod_sparse *Xsparse,
-
-    // workspace and parameters
-    cholmod_common *cc
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int32_t *HPinv,
+    cholmod_sparse *Xsparse, cholmod_common *cc
 ) ;
+
+template cholmod_sparse *SuiteSparseQR_qmult <double, int64_t>
+(
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int64_t *HPinv,
+    cholmod_sparse *Xsparse, cholmod_common *cc
+) ;
+
 template cholmod_sparse *SuiteSparseQR_qmult <Complex, int64_t>
 (
-    // inputs, not modified
-    int method,                 // 0,1,2,3
-    cholmod_sparse *H,          // size m-by-nh or n-by-nh
-    cholmod_dense *HTau,        // size 1-by-nh
-    int64_t *HPinv,                // size mh
-    cholmod_sparse *Xsparse,
-
-    // workspace and parameters
-    cholmod_common *cc
+    int method, cholmod_sparse *H, cholmod_dense *HTau, int64_t *HPinv,
+    cholmod_sparse *Xsparse, cholmod_common *cc
 ) ;

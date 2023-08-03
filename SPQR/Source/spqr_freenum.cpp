@@ -68,32 +68,29 @@ template <typename Entry, typename Int> void spqr_freenum
     *QRnum_handle = NULL ;
 }
 
+
+// explicit instantiations
+
 template void spqr_freenum <double, int32_t>
 (
     spqr_numeric <double, int32_t> **QRnum_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
-template void spqr_freenum <double, int64_t>
-(
-    spqr_numeric <double, int64_t> **QRnum_handle,
 
-    // workspace and parameters
-    cholmod_common *cc
-) ;
 template void spqr_freenum <Complex, int32_t>
 (
     spqr_numeric <Complex, int32_t> **QRnum_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
+
+template void spqr_freenum <double, int64_t>
+(
+    spqr_numeric <double, int64_t> **QRnum_handle,
+    cholmod_common *cc
+) ;
+
 template void spqr_freenum <Complex, int64_t>
 (
     spqr_numeric <Complex, int64_t> **QRnum_handle,
-
-    // workspace and parameters
     cholmod_common *cc
 ) ;
-// =============================================================================

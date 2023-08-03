@@ -214,130 +214,37 @@ template <typename Entry, typename Int> Int spqr_trapezoidal // rank of R; EMPTY
     return (rank) ;
 }
 
-template int32_t spqr_trapezoidal <double, int32_t> // rank of R; EMPTY on failure
+
+// explicit instantiations
+
+template int32_t spqr_trapezoidal <double, int32_t>
 (
-    // inputs, not modified
-
-    // FUTURE : make R and T cholmod_sparse:
-    int32_t n,         // R is m-by-n (m is not needed here; can be economy R)
-    int32_t *Rp,       // size n+1, column pointers of R
-    int32_t *Ri,       // size rnz = Rp [n], row indices of R
-    double *Rx,      // size rnz, numerical values of R
-
-    int32_t bncols,    // number of columns of B
-
-    int32_t *Qfill,    // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
-                    // the jth column of A is the kth column of R.  If Qfill is
-                    // NULL, then it is assumed to be the identity
-                    // permutation.
-
-    int skip_if_trapezoidal,        // if R is already in trapezoidal form,
-                                    // and skip_if_trapezoidal is TRUE, then
-                                    // the matrix T is not created.
-
-    // outputs, not allocated on input
-    int32_t **p_Tp,    // size n+1, column pointers of T
-    int32_t **p_Ti,    // size rnz, row indices of T
-    double **p_Tx,   // size rnz, numerical values of T
-
-    int32_t **p_Qtrap,  // size n+bncols, modified Qfill
-
-    // workspace and parameters
+    int32_t n, int32_t *Rp, int32_t *Ri, double *Rx, int32_t bncols,
+    int32_t *Qfill, int skip_if_trapezoidal,
+    int32_t **p_Tp, int32_t **p_Ti, double **p_Tx, int32_t **p_Qtrap,
     cholmod_common *cc
 ) ;
 
-template int32_t spqr_trapezoidal <Complex, int32_t> // rank of R; EMPTY on failure
+template int32_t spqr_trapezoidal <Complex, int32_t>
 (
-    // inputs, not modified
-
-    // FUTURE : make R and T cholmod_sparse:
-    int32_t n,         // R is m-by-n (m is not needed here; can be economy R)
-    int32_t *Rp,       // size n+1, column pointers of R
-    int32_t *Ri,       // size rnz = Rp [n], row indices of R
-    Complex *Rx,      // size rnz, numerical values of R
-
-    int32_t bncols,    // number of columns of B
-
-    int32_t *Qfill,    // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
-                    // the jth column of A is the kth column of R.  If Qfill is
-                    // NULL, then it is assumed to be the identity
-                    // permutation.
-
-    int skip_if_trapezoidal,        // if R is already in trapezoidal form,
-                                    // and skip_if_trapezoidal is TRUE, then
-                                    // the matrix T is not created.
-
-    // outputs, not allocated on input
-    int32_t **p_Tp,    // size n+1, column pointers of T
-    int32_t **p_Ti,    // size rnz, row indices of T
-    Complex **p_Tx,   // size rnz, numerical values of T
-
-    int32_t **p_Qtrap,  // size n+bncols, modified Qfill
-
-    // workspace and parameters
+    int32_t n, int32_t *Rp, int32_t *Ri, Complex *Rx, int32_t bncols,
+    int32_t *Qfill, int skip_if_trapezoidal,
+    int32_t **p_Tp, int32_t **p_Ti, Complex **p_Tx, int32_t **p_Qtrap,
     cholmod_common *cc
 ) ;
 
-template int64_t spqr_trapezoidal <double, int64_t> // rank of R; EMPTY on failure
+template int64_t spqr_trapezoidal <double, int64_t>
 (
-    // inputs, not modified
-
-    // FUTURE : make R and T cholmod_sparse:
-    int64_t n,         // R is m-by-n (m is not needed here; can be economy R)
-    int64_t *Rp,       // size n+1, column pointers of R
-    int64_t *Ri,       // size rnz = Rp [n], row indices of R
-    double *Rx,      // size rnz, numerical values of R
-
-    int64_t bncols,    // number of columns of B
-
-    int64_t *Qfill,    // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
-                    // the jth column of A is the kth column of R.  If Qfill is
-                    // NULL, then it is assumed to be the identity
-                    // permutation.
-
-    int skip_if_trapezoidal,        // if R is already in trapezoidal form,
-                                    // and skip_if_trapezoidal is TRUE, then
-                                    // the matrix T is not created.
-
-    // outputs, not allocated on input
-    int64_t **p_Tp,    // size n+1, column pointers of T
-    int64_t **p_Ti,    // size rnz, row indices of T
-    double **p_Tx,   // size rnz, numerical values of T
-
-    int64_t **p_Qtrap,  // size n+bncols, modified Qfill
-
-    // workspace and parameters
+    int64_t n, int64_t *Rp, int64_t *Ri, double *Rx, int64_t bncols,
+    int64_t *Qfill, int skip_if_trapezoidal, 
+    int64_t **p_Tp, int64_t **p_Ti, double **p_Tx, int64_t **p_Qtrap,
     cholmod_common *cc
 ) ;
 
-template int64_t spqr_trapezoidal <Complex, int64_t> // rank of R; EMPTY on failure
+template int64_t spqr_trapezoidal <Complex, int64_t>
 (
-    // inputs, not modified
-
-    // FUTURE : make R and T cholmod_sparse:
-    int64_t n,         // R is m-by-n (m is not needed here; can be economy R)
-    int64_t *Rp,       // size n+1, column pointers of R
-    int64_t *Ri,       // size rnz = Rp [n], row indices of R
-    Complex *Rx,      // size rnz, numerical values of R
-
-    int64_t bncols,    // number of columns of B
-
-    int64_t *Qfill,    // size n+bncols, fill-reducing ordering.  Qfill [k] = j if
-                    // the jth column of A is the kth column of R.  If Qfill is
-                    // NULL, then it is assumed to be the identity
-                    // permutation.
-
-    int skip_if_trapezoidal,        // if R is already in trapezoidal form,
-                                    // and skip_if_trapezoidal is TRUE, then
-                                    // the matrix T is not created.
-
-    // outputs, not allocated on input
-    int64_t **p_Tp,    // size n+1, column pointers of T
-    int64_t **p_Ti,    // size rnz, row indices of T
-    Complex **p_Tx,   // size rnz, numerical values of T
-
-    int64_t **p_Qtrap,  // size n+bncols, modified Qfill
-
-    // workspace and parameters
+    int64_t n, int64_t *Rp, int64_t *Ri, Complex *Rx, int64_t bncols,
+    int64_t *Qfill, int skip_if_trapezoidal,
+    int64_t **p_Tp, int64_t **p_Ti, Complex **p_Tx, int64_t **p_Qtrap,
     cholmod_common *cc
 ) ;
