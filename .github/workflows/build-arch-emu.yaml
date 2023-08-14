@@ -1,0 +1,169 @@
+name: arch-emu
+on:
+  push:
+    branches-ignore:
+      - '**/dev2'
+  pull_request:
+
+concurrency: ci-arch-emu-${{ github.ref }}
+
+env:
+  # string with name of libraries to be built
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SuiteSparse_GPURuntime:GPUQREngine:SPQR:SPEX"
+  # string with name of libraries to be checked
+  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:SPEX"
+
+
+jobs:
+
+  alpine:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # Use emulated shell as default
+        shell: alpine.sh {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # For available CPU architectures, see:
+        # https://github.com/marketplace/actions/setup-alpine-linux-environment
+        arch: [x86, aarch64, armv7, ppc64le, s390x]
+        include:
+          - arch: x86
+            ccache-max: 42M
+          - arch: aarch64
+            ccache-max: 42M
+          - arch: armv7
+            ccache-max: 42M
+          - arch: ppc64le
+            ccache-max: 45M
+          - arch: s390x
+            ccache-max: 42M
+
+    name: alpine (${{ matrix.arch }})
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+        # shell: bash
+
+      - name: install dependencies
+        uses: jirutka/setup-alpine@v1
+        # shell: bash
+        with:
+          arch: ${{ matrix.arch }}
+          packages: >
+            build-base
+            ccache
+            cmake
+            gfortran
+            m4
+            gmp-dev
+            mpfr-dev
+            openblas-dev
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:alpine:${{ matrix.arch }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v3
+        with:
+          # location of the ccache of the chroot in the root file system
+          path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
+          restore-keys: |
+            ccache:alpine:${{ matrix.arch }}:${{ github.ref }}
+            ccache:alpine:${{ matrix.arch }}
+
+      - name: configure ccache
+        env:
+          CCACHE_MAX: ${{ matrix.ccache-max }}
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          which ccache
+          # echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: build
+        run: |
+          echo "gcc --version"
+          gcc --version
+          echo "gcc -dumpmachine"
+          gcc -dumpmachine
+          IFS=:
+          for lib in ${BUILD_LIBS}; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
+                  -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                  -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
+
+      - name: check
+        run: |
+          IFS=':'
+          for lib in ${CHECK_LIBS}; do
+            printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}
+            make demos
+            echo "::endgroup::"
+          done
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: install
+        run: |
+          IFS=':'
+          for lib in ${BUILD_LIBS}; do
+            printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake --install .
+            echo "::endgroup::"
+          done
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example/build
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DBLA_VENDOR="OpenBLAS" \
+            ..
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+          echo "::endgroup::"
+

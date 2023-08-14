@@ -144,6 +144,7 @@ void my_function (void)
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
 
+#if ! defined (NO_GRAPHBLAS)
     //--------------------------------------------------------------------------
     // GraphBLAS
     //--------------------------------------------------------------------------
@@ -156,6 +157,7 @@ void my_function (void)
     printf ("GraphBLAS: v%d.%d.%d (in library)\n",
         version [0], version [1], version [2]) ;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
+#endif
 
     //--------------------------------------------------------------------------
     // KLU
