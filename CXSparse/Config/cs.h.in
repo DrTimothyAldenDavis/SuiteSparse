@@ -27,12 +27,12 @@
 #define _CXS_H
 
 #if @CXSPARSE_USE_COMPLEX@
-#include <complex.h>
-#define cs_complex_t double _Complex
-#endif
-
-#ifdef __cplusplus
-extern "C" {
+#  ifdef __cplusplus
+#    include <complex>
+#  else
+#    include <complex.h>
+#  endif
+#  define cs_complex_t double _Complex
 #endif
 
 #define CS_VER @CXSPARSE_VERSION_MAJOR@  /* CXSparse Version */
@@ -46,6 +46,10 @@ extern "C" {
 #define cs_long_t       int64_t
 #define cs_long_t_id    "%" PRId64
 #define cs_long_t_max   INT64_MAX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* double/int32_t version of CXSparse */
