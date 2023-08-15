@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( SPEX_DATE "June 16, 2023" )
 set ( SPEX_VERSION_MAJOR 2 )
@@ -168,6 +168,7 @@ endif ( )
 # MPFR:
 target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
 if ( NOT NSTATIC )
+    list ( APPEND SPEX_STATIC_LIBS ${MPFR_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
 endif ( )
 
@@ -175,6 +176,7 @@ endif ( )
 # must occur after MPFR
 target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
 if ( NOT NSTATIC )
+    list ( APPEND SPEX_STATIC_LIBS ${GMP_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
 endif ( )
 
@@ -182,6 +184,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( SPEX PRIVATE m )
     if ( NOT NSTATIC )
+        list ( APPEND SPEX_STATIC_LIBS "m" )
         target_link_libraries ( SPEX_static PUBLIC m )
     endif ( )
 endif ( )
@@ -227,6 +230,55 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+
+# create pkg-config file
+
+# This might be something like:
+#   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+# convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+set ( SPEX_STATIC_LIBS_LIST ${SPEX_STATIC_LIBS} )
+set ( SPEX_STATIC_LIBS "" )
+foreach ( _lib ${SPEX_STATIC_LIBS_LIST} )
+        string ( FIND ${_lib} "." _pos REVERSE )
+        if ( ${_pos} EQUAL "-1" )
+            set ( SPEX_STATIC_LIBS "${SPEX_STATIC_LIBS} -l${_lib}" )
+            continue ()
+        endif ( )
+    foreach ( _kind IN ITEMS "IMPORT" "SHARED" "STATIC" )
+        set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+        if ( ${_lib} MATCHES ${_regex} )
+            string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+            if ( NOT "${_libname}" STREQUAL "" )
+                set ( SPEX_STATIC_LIBS "${SPEX_STATIC_LIBS} -l${_libname}" )
+                break ()
+            endif ( )
+        endif ( )
+    endforeach ( )
+endforeach ( )
+message ( STATUS "SPEX_STATIC_LIBS: ${SPEX_STATIC_LIBS}" )
+
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/SPEX.pc.in
+    SPEX.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SPEX.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
