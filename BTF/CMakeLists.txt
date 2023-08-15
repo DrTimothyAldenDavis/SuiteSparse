@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( BTF_DATE "June 16, 2023" )
 set ( BTF_VERSION_MAJOR 2 )
@@ -128,6 +128,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( BTF PRIVATE m )
     if ( NOT NSTATIC )
+        set ( BTF_STATIC_LIBS "${BTF_STATIC_LIBS} -lm" )
         target_link_libraries ( BTF_static PUBLIC m )
     endif ( )
 endif ( )
@@ -173,6 +174,30 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+
+# create pkg-config file
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/BTF.pc.in
+    BTF.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/BTF.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # report status
