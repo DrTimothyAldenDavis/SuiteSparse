@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 
 # cmake 3.22 is required to find the BLAS/LAPACK
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( GPUQRENGINE_DATE "June 16, 2023" )
 set ( GPUQRENGINE_VERSION_MAJOR 2 )
@@ -263,6 +263,30 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+
+# create pkg-config file
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/GPUQREngine.pc.in
+    GPUQREngine.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngine.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
