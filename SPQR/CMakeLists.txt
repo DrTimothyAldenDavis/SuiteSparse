@@ -225,6 +225,7 @@ if ( OPENMP_FOUND )
     target_link_libraries ( SPQR PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
         target_link_libraries ( SPQR_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        list ( APPEND SPQR_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
@@ -234,6 +235,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( SPQR PRIVATE m )
     if ( NOT NSTATIC )
+        list ( APPEND SPQR_STATIC_LIBS "m" )
         target_link_libraries ( SPQR_static PUBLIC m )
     endif ( )
 endif ( )
@@ -258,25 +260,27 @@ if ( NOT NSTATIC )
     endif ( )
 endif ( )
 
-# BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
-endif ( )
-include_directories ( ${BLAS_INCLUDE_DIRS} )
-
 # LAPACK:
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
 target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
 if ( NOT NSTATIC )
+    list ( APPEND SPQR_STATIC_LIBS ${LAPACK_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${LAPACK_LIBRARIES} )
 endif ( )
 include_directories ( ${LAPACK_INCLUDE_DIR} )
+
+# BLAS:
+message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
+message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
+if ( NOT NSTATIC )
+    list ( APPEND SPQR_STATIC_LIBS ${BLAS_LIBRARIES} )
+    target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
+endif ( )
+include_directories ( ${BLAS_INCLUDE_DIRS} )
 
 # CHOLMOD:
 # link with CHOLMOD and its dependencies, both required and optional
@@ -296,7 +300,7 @@ endif ( )
 message ( STATUS "SPQR cuda:  ${SPQR_CUDA_LIBS} " )
 target_link_libraries ( SPQR PRIVATE ${SPQR_CUDA_LIBS} ${CUDA_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( SPQR_static PUBLIC ${SPQR_CUDA_LIBS} ${CUDA_LIBRARIES} )
+    target_link_libraries ( SPQR_static PUBLIC ${SPQR_CUDA_LIBS} ${CUDA_LIBRARIES} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -343,6 +347,55 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
+
+# create pkg-config file
+
+# This might be something like:
+#   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+# convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+set ( SPQR_STATIC_LIBS_LIST ${SPQR_STATIC_LIBS} )
+set ( SPQR_STATIC_LIBS "" )
+foreach ( _lib ${SPQR_STATIC_LIBS_LIST} )
+    string ( FIND ${_lib} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( SPQR_STATIC_LIBS "${SPQR_STATIC_LIBS} -l${_lib}" )
+        continue ()
+    endif ( )
+    foreach ( _kind IN ITEMS "IMPORT" "SHARED" "STATIC" )
+        set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+        if ( ${_lib} MATCHES ${_regex} )
+            string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+            if ( NOT "${_libname}" STREQUAL "" )
+                set ( SPQR_STATIC_LIBS "${SPQR_STATIC_LIBS} -l${_libname}" )
+                break ()
+            endif ( )
+        endif ( )
+    endforeach ( )
+endforeach ( )
+message ( STATUS "SPQR_STATIC_LIBS: ${SPQR_STATIC_LIBS}" )
+
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/SPQR.pc.in
+    SPQR.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SPQR.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
