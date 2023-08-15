@@ -1,0 +1,17 @@
+# KLU, Copyright (c) 2004-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: KLU
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Routines for solving sparse linear systems of equations in SuiteSparse
+Version: @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@
+Requires.private: SuiteSparse_config AMD COLAMD BTF @KLU_STATIC_MODULES@
+Libs: -L${libdir} -lklu
+Libs.private: @KLU_STATIC_LIBS@
+Cflags: -I${includedir}

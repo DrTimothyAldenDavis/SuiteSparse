@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( KLU_DATE "June 16, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
@@ -236,6 +236,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( KLU PRIVATE m )
     if ( NOT NSTATIC )
+        set ( KLU_STATIC_LIBS "${KLU_STATIC_LIBS} -lm" )
         target_link_libraries ( KLU_static PUBLIC m )
     endif ( )
 endif ( )
@@ -285,6 +286,7 @@ if ( NOT NCHOLMOD )
     target_link_libraries ( KLU_CHOLMOD PRIVATE
         SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA )
     if ( NOT NSTATIC )
+       set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD CHOLMOD_CUDA" )
        if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD_static )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -355,6 +357,30 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+
+# create pkg-config file
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/KLU.pc.in
+    KLU.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 if ( NOT NCHOLMOD )
     install ( TARGETS KLU_CHOLMOD
