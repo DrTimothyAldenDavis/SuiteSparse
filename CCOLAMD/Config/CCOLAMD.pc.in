@@ -1,0 +1,17 @@
+# CCOLAMD, Copyright (c) 2005-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: CCOLAMD
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Routines for column approximate minimum degree ordering algorithm in SuiteSparse
+Version: @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@.@CCOLAMD_VERSION_SUB@
+Requires.private: SuiteSparse_config
+Libs: -L${libdir} -lccolamd
+Libs.private: @CCOLAMD_STATIC_LIBS@
+Cflags: -I${includedir}
