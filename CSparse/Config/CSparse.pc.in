@@ -1,0 +1,16 @@
+# CSparse, Copyright (c) 2006-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: LGPL-2.1-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: CSparse
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Direct methods for sparse linear systems in SuiteSparse
+Version: @CSPARSE_VERSION_MAJOR@.@CSPARSE_VERSION_MINOR@.@CSPARSE_VERSION_SUB@
+Libs: -L${libdir} -lcsparse
+Libs.private: @CSPARSE_STATIC_LIBS@
+Cflags: -I${includedir}
