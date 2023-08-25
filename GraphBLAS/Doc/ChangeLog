@@ -1,3 +1,8 @@
+Version 8.0.3, Aug 25, 2023
+
+    * update to cmake build system: using cmake namespaces instead of
+        FindGraphBLAS.cmake, contributed by Markus Muetzel.
+
 Version 8.0.2, June 16, 2023
 
     * added -DJITINIT=option:  use -DJITINIT to set the initial state of
