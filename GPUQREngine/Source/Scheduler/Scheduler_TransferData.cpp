@@ -25,15 +25,15 @@
 
 static int compareTaskTime (const void * a, const void * b)
 {
-    TaskDescriptor *ta = reinterpret_cast<TaskDescriptor*> (a);
-    TaskDescriptor *tb = reinterpret_cast<TaskDescriptor*> (b);
+    const TaskDescriptor *ta = reinterpret_cast<const TaskDescriptor*> (a);
+    const TaskDescriptor *tb = reinterpret_cast<const TaskDescriptor*> (b);
 
     int64_t aFlops = getWeightedFlops(ta);
     int64_t bFlops = getWeightedFlops(tb);
 
     if (aFlops == bFlops) return (0) ;
     if (aFlops <  bFlops) return (-1) ;
-    if (aFlops >  bFlops) return (1) ;
+    /* if (aFlops >  bFlops) */ return (1) ;
 }
 
 template <typename Int>

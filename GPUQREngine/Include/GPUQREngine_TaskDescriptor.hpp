@@ -114,12 +114,12 @@ struct TaskDescriptor
 // uniform distribution of work items in the queue.
 int64_t getFlops
 (
-    TaskDescriptor *task                // Task for which to compute the flops
+    const TaskDescriptor *task          // Task for which to compute the flops
 );
 
 int64_t getWeightedFlops
 (
-    TaskDescriptor *task                // Task for which to compute the flops
+    const TaskDescriptor *task          // Task for which to compute the flops
 );
 
 #endif

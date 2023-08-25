@@ -78,7 +78,7 @@ int64_t flopsApplyFactorize(int applyTiles, int factorizeTiles)
 // getFlops
 // -----------------------------------------------------------------------------
 
-int64_t getFlops(TaskDescriptor *task)
+int64_t getFlops(const TaskDescriptor *task)
 {
     switch(task->Type)
     {
@@ -118,7 +118,7 @@ int64_t getFlops(TaskDescriptor *task)
 // getWeightedFlops
 // -----------------------------------------------------------------------------
 
-int64_t getWeightedFlops(TaskDescriptor *task)
+int64_t getWeightedFlops(const TaskDescriptor *task)
 {
     int64_t flops = getFlops(task);
     switch(task->Type)
