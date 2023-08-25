@@ -11,8 +11,8 @@
 
 # Finds the GraphBLAS include file and compiled library.
 # The following targets are defined:
-#   graphblas           - for the shared library (if available)
-#   graphblas_static    - for the static library (if available)
+#   SuiteSparse::GraphBLAS           - for the shared library (if available)
+#   SuiteSparse::GraphBLAS_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/GraphBLASTargets.cmake )
 
 # The following is only for backward compatibility with FindGraphBLAS.
 
-set ( _target_shared graphblas )
-set ( _target_static graphblas_static )
+set ( _target_shared SuiteSparse::GraphBLAS )
+set ( _target_static SuiteSparse::GraphBLAS_static )
 set ( _var_prefix "GRAPHBLAS" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )

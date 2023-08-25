@@ -180,14 +180,14 @@ set_target_properties(graphblascuda_test PROPERTIES CUDA_ARCHITECTURES "52;75;80
 
 include(GoogleTest)
 
-add_dependencies(graphblascuda_test graphblas)
+add_dependencies(graphblascuda_test GraphBLAS)
 add_dependencies(graphblascuda_test graphblascuda)
 add_dependencies(graphblascuda_test gtest_main)
 add_dependencies(graphblascuda_test rmm_wrap)
 
 target_link_libraries(graphblascuda_test
         PUBLIC
-        graphblas
+        GraphBLAS
         graphblascuda
         rmm_wrap
         CUDA::cudart_static

@@ -44,7 +44,7 @@ project ( colamd
 
 find_package ( SuiteSparse_config 7.1.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET suitesparseconfig )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 endif ( )
 
@@ -68,17 +68,18 @@ include_directories ( Source Include )
 
 file ( GLOB COLAMD_SOURCES "Source/*.c" )
 
-add_library ( colamd SHARED ${COLAMD_SOURCES} )
+add_library ( COLAMD SHARED ${COLAMD_SOURCES} )
 
-set_target_properties ( colamd PROPERTIES
+set_target_properties ( COLAMD PROPERTIES
     VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME colamd
     SOVERSION ${COLAMD_VERSION_MAJOR}
     PUBLIC_HEADER "Include/colamd.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( colamd
+target_include_directories ( COLAMD
     INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
               "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -87,9 +88,9 @@ target_include_directories ( colamd
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( colamd_static STATIC ${COLAMD_SOURCES} )
+    add_library ( COLAMD_static STATIC ${COLAMD_SOURCES} )
 
-    set_target_properties ( colamd_static PROPERTIES
+    set_target_properties ( COLAMD_static PROPERTIES
         VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
         OUTPUT_NAME colamd
         C_STANDARD 11
@@ -97,11 +98,11 @@ if ( NOT NSTATIC )
         SOVERSION ${COLAMD_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( colamd_static PROPERTIES
+        set_target_properties ( COLAMD_static PROPERTIES
             OUTPUT_NAME colamd_static )
     endif ( )
 
-    target_include_directories ( colamd_static
+    target_include_directories ( COLAMD_static
         INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
                   "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
 
@@ -111,21 +112,22 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( colamd PRIVATE suitesparseconfig )
-target_include_directories ( colamd PUBLIC "$<TARGET_PROPERTY:suitesparseconfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+target_link_libraries ( COLAMD PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( COLAMD PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET suitesparseconfig_static )
-        target_link_libraries ( colamd_static PUBLIC suitesparseconfig_static )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( COLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( colamd_static PUBLIC suitesparseconfig )
+        target_link_libraries ( COLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( colamd PRIVATE m )
+    target_link_libraries ( COLAMD PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( colamd_static PUBLIC m )
+        target_link_libraries ( COLAMD_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -135,24 +137,26 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS colamd
+install ( TARGETS COLAMD
     EXPORT COLAMDTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 if ( NOT NSTATIC )
-    install ( TARGETS colamd_static
+    install ( TARGETS COLAMD_static
         EXPORT COLAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
 
 # create (temporary) export target file during build
 export ( EXPORT COLAMDTargets
+    NAMESPACE SuiteSparse::
     FILE ${CMAKE_CURRENT_BINARY_DIR}/COLAMDTargets.cmake )
 
 # install export target, config and version files for find_package
 install ( EXPORT COLAMDTargets
+    NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
 
 configure_package_config_file (
@@ -190,8 +194,8 @@ if ( DEMO )
     add_executable ( colamd_l_example "Demo/colamd_l_example.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( colamd_example   PUBLIC colamd )
-    target_link_libraries ( colamd_l_example PUBLIC colamd )
+    target_link_libraries ( colamd_example   PUBLIC COLAMD )
+    target_link_libraries ( colamd_l_example PUBLIC COLAMD )
 
 else ( )
 

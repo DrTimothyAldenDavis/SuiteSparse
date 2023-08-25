@@ -11,8 +11,8 @@
 
 # Finds the LDL include file and compiled library.
 # The following targets are defined:
-#   ldl           - for the shared library (if available)
-#   ldl_static    - for the static library (if available)
+#   SuiteSparse::LDL           - for the shared library (if available)
+#   SuiteSparse::LDL_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
@@ -39,8 +39,8 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/LDLTargets.cmake )
 
 # The following is only for backward compatibility with FindLDL.
 
-set ( _target_shared ldl )
-set ( _target_static ldl_static )
+set ( _target_shared SuiteSparse::LDL )
+set ( _target_static SuiteSparse::LDL_static )
 set ( _var_prefix "LDL" )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
