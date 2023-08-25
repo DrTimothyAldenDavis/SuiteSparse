@@ -102,7 +102,7 @@ target_include_directories ( GPURuntime PRIVATE
     ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
 target_include_directories ( GPURuntime PUBLIC
-    $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( SUITESPARSE_CUDA )
     set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
@@ -139,7 +139,7 @@ if ( NOT NSTATIC )
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
     target_include_directories ( GPURuntime_static PUBLIC
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
     if ( SUITESPARSE_CUDA )
         set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )

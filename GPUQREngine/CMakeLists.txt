@@ -167,11 +167,11 @@ set_target_properties ( GPUQREngine PROPERTIES
 target_include_directories ( GPUQREngine PRIVATE
     ${CUDAToolkit_INCLUDE_DIRS}
     ${GPUQRENGINE_INCLUDES}
-    $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( SUITESPARSE_CUDA )
     target_include_directories ( GPUQREngine PRIVATE
-        $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
+        "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
     set_target_properties ( GPUQREngine PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( GPUQREngine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
@@ -205,11 +205,11 @@ if ( NOT NSTATIC )
     target_include_directories ( GPUQREngine_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
     if ( SUITESPARSE_CUDA )
         target_include_directories ( GPUQREngine_static PRIVATE
-            $<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
+            "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
         set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
