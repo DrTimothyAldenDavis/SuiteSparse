@@ -12,7 +12,7 @@
 cmake_minimum_required ( VERSION 3.19 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "July FIXME, 2023" )
+set ( MY_DATE "Aug FIXME, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 3 )
 set ( MY_VERSION_PATCH 0 )
@@ -61,6 +61,7 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
+# FIXME: update all package versions for next release (GraphBLAS already done)
 find_package ( SuiteSparse_config 7.1.0 REQUIRED )
 find_package ( AMD 3.0.4 REQUIRED )
 find_package ( BTF 2.0.4 REQUIRED )
@@ -71,7 +72,7 @@ find_package ( CHOLMOD 4.0.4 REQUIRED )
 find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
 find_package ( CXSparse 4.0.4 REQUIRED )
 find_package ( GPUQREngine 2.0.4 REQUIRED )
-find_package ( GraphBLAS 8.0.2 )
+find_package ( GraphBLAS 8.0.3 )
 find_package ( KLU 2.0.4 REQUIRED )
 find_package ( KLU_CHOLMOD 2.0.4 REQUIRED )
 find_package ( LDL 3.0.4 REQUIRED )

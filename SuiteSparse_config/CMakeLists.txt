@@ -14,6 +14,8 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
+# FIXME: update version for next release of SuiteSparse
+# FIXME: revise find_package ( SuiteSparse_config ... ) in all packages.
 set ( SUITESPARSE_DATE "June 29, 2023" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
 set ( SUITESPARSE_VERSION_MINOR 1 )
