@@ -30,15 +30,24 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( umfpack
-    VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
-    LANGUAGES C )
+if ( SUITESPARSE_CUDA )
+    # UMFPACK with CHOLMOD (which can use CUDA)
+    project ( umfpack
+        VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
+        LANGUAGES C CXX CUDA )
+else ( )
+    project ( umfpack
+        VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
+        LANGUAGES C )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -74,10 +83,12 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.0.4 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+    if ( SUITESPARSE_CUDA )
+        find_package ( CHOLMOD_CUDA 4.0.4
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
+            find_package ( CHOLMOD_CUDA 4.0.4 )
+        endif ( )
     endif ( )
 
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
@@ -102,6 +113,9 @@ if ( NOT NCHOLMOD )
 
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
         # CHOLMOD not found so disable it
+        set ( NCHOLMOD true )
+    endif ( )
+    if ( SUITESPARSE_CUDA AND NOT CHOLMOD_CUDA_FOUND )
         set ( NCHOLMOD true )
     endif ( )
 endif ( )
@@ -241,6 +255,7 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 # CHOLMOD:
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
+    message ( STATUS "CHOLMOD cuda libraries: " ${CHOLMOD_CUDA_LIBRARIES} )
     target_link_libraries ( UMFPACK PRIVATE
         SuiteSparse::CHOLMOD ${CHOLMOD_CUDA_LIBRARIES} )
     if ( NOT NSTATIC )
@@ -253,6 +268,7 @@ if ( NOT NCHOLMOD )
             target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
+
 endif ( )
 
 #-------------------------------------------------------------------------------

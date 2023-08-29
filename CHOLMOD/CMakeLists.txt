@@ -268,6 +268,7 @@ endif ( )
 add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
+    message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
     set ( CHOLMOD_CUDA CHOLMOD_CUDA ${CUDA_LIBRARIES} )
     set ( CHOLMOD_CUDA_STATIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
@@ -472,10 +473,18 @@ endif ( )
 
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
+    # this must be a PUBLIC link, not PRIVATE, so that libraries using
+    # CHOLMOD can link against these libraries
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA )
+    target_link_libraries ( CHOLMOD PUBLIC ${CHOLMOD_CUDA} )
     if ( NOT NSTATIC )
-        target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static )
+        target_link_libraries ( CHOLMOD_static PUBLIC ${CHOLMOD_CUDA_static} )
+    endif ( )
+    target_link_libraries ( CHOLMOD PUBLIC CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+    if ( NOT NSTATIC )
+        target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+            CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 endif ( )
 
