@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( COLAMD_DATE "June 16, 2023" )
+set ( COLAMD_DATE "FIXME DATE, 2023" )
 set ( COLAMD_VERSION_MAJOR 3 )
-set ( COLAMD_VERSION_MINOR 0 )
-set ( COLAMD_VERSION_SUB   4 )
+set ( COLAMD_VERSION_MINOR 2 )
+set ( COLAMD_VERSION_SUB   0 )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.
@@ -42,10 +42,10 @@ project ( colamd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------

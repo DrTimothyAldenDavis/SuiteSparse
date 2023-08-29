@@ -123,7 +123,7 @@ GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query) ;
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
 {
     (*hash) = 0x422f36dae3aeca51 ;
-    v [0] = 8 ; v [1] = 0 ; v [2] = 1 ;
+    v [0] = 8 ; v [1] = 0 ; v [2] = 3 ;
     defn [0] = NULL ;
     defn [1] = GB_my_rdiv2_USER_DEFN ;
     defn [2] = NULL ;

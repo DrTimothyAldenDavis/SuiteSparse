@@ -8,10 +8,10 @@
 #-------------------------------------------------------------------------------
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Aug 25, 2023" )
+set ( GraphBLAS_DATE "FIXME DATE, 2023" )
 set ( GraphBLAS_VERSION_MAJOR 8 )
-set ( GraphBLAS_VERSION_MINOR 0 )
-set ( GraphBLAS_VERSION_SUB   3 )
+set ( GraphBLAS_VERSION_MINOR 2 )
+set ( GraphBLAS_VERSION_SUB   0 )
 
 # GraphBLAS C API Specification version, at graphblas.org
 set ( GraphBLAS_API_DATE "Nov 15, 2021" )

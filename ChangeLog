@@ -1,6 +1,9 @@
-July FIXME, 2023: version 7.2.0
+FIXME DATE, 2023: version 7.2.0
 
-    * SPQR 4.0.0: added 32-bit integer version; contributed by Raye Kimmerer
+    * build system: modern cmake structure, by Markus Muetzel.
+        Most packages updated to vX.2.0 where X is unchanged (except SPQR
+        and Example package).
+    * SPQR v4.2.0: Major SO update.  Support for int32 indices by Raye Kimmerer
 
 June 29, 2023: version 7.1.0
 

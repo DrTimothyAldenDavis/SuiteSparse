@@ -13,9 +13,9 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "July FIXME, 2023" )
+set ( SPQR_DATE "FIXME DATE, 2023" )
 set ( SPQR_VERSION_MAJOR 4 )
-set ( SPQR_VERSION_MINOR 0 )
+set ( SPQR_VERSION_MINOR 2 )
 set ( SPQR_VERSION_SUB   0 )
 
 message ( STATUS "Building SPQR version: v"
@@ -64,61 +64,61 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
 
-find_package ( AMD 3.0.4
+find_package ( AMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.0.4 REQUIRED )
+    find_package ( AMD 3.2.0 REQUIRED )
 endif ( )
 
-find_package ( COLAMD 3.0.4
+find_package ( COLAMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.0.4 REQUIRED )
+    find_package ( COLAMD 3.2.0 REQUIRED )
 endif ( )
 
-find_package ( CHOLMOD 4.0.4
+find_package ( CHOLMOD 4.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::CHOLMOD )
-    find_package ( CHOLMOD 4.0.4 REQUIRED )
+    find_package ( CHOLMOD 4.2.0 REQUIRED )
 endif ( )
 
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
 # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-find_package ( CAMD 3.0.4
+find_package ( CAMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::CAMD )
-    find_package ( CAMD 3.0.4 )
+    find_package ( CAMD 3.2.0 )
 endif ( )
 
-find_package ( CCOLAMD 3.0.4
+find_package ( CCOLAMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::CCOLAMD )
-    find_package ( CCOLAMD 3.0.4 )
+    find_package ( CCOLAMD 3.2.0 )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 2.0.4
+    find_package ( SuiteSparse_GPURuntime 3.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::GPURuntime )
-        find_package ( SuiteSparse_GPURuntime 2.0.4 REQUIRED )
+        find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
     endif ( )
 
-    find_package ( GPUQREngine 2.0.4
+    find_package ( GPUQREngine 3.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../GPUQREngine/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::GPUQREngine )
-        find_package ( GPUQREngine 2.0.4 REQUIRED )
+        find_package ( GPUQREngine 3.2.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.0.4
+    find_package ( CHOLMOD_CUDA 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.0.4 REQUIRED )
+        find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
     endif ( )
 endif ( )
 

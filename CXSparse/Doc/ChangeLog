@@ -1,3 +1,8 @@
+FIXME DATE, 2023: version 4.2.0
+
+    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
+    * complex types: more changes for C++, from Markus Muetzel
+
 June 16, 2023: version 4.0.4
 
     * cmake build system updates: update by Markus Muetzel

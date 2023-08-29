@@ -1,3 +1,10 @@
+FIXME DATE, 2023: version 4.2.0
+
+    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
+    * bug fix: typecast was broken in cholmod_postorder.c
+    * minor fixes to debug scaffolding and test code: cholmod_internal.h,
+        cholmod_metis_wrapper.c, Tcov/memory.c.
+
 June 16, 2023: version 4.0.4
 
     * cmake build system updates: update by Markus Muetzel

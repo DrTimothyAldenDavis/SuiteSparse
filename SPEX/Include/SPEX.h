@@ -265,11 +265,11 @@
 // #define SPEX_UTIL_VERSION_MINOR 1
 // #define SPEX_UTIL_VERSION_SUB   1
 
-#define SPEX_DATE "June 16, 2023"
-#define SPEX_VERSION "2.0.4"
+#define SPEX_DATE "FIXME DATE, 2023"
+#define SPEX_VERSION "2.2.0"
 #define SPEX_VERSION_MAJOR 2
-#define SPEX_VERSION_MINOR 0
-#define SPEX_VERSION_SUB   4
+#define SPEX_VERSION_MINOR 2
+#define SPEX_VERSION_SUB   0
 
 #if defined ( __cplusplus )
 extern "C"

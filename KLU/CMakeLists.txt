@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( KLU_DATE "June 16, 2023" )
+set ( KLU_DATE "FIXME DATE, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
-set ( KLU_VERSION_MINOR 0 )
-set ( KLU_VERSION_SUB   4 )
+set ( KLU_VERSION_MINOR 2 )
+set ( KLU_VERSION_SUB   0 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -53,59 +53,59 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
-find_package ( BTF 2.0.4
+find_package ( BTF 2.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::BTF )
-    find_package ( BTF 2.0.4 REQUIRED )
+    find_package ( BTF 2.2.0 REQUIRED )
 endif ( )
 
-find_package ( COLAMD 3.0.4
+find_package ( COLAMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.0.4 REQUIRED )
+    find_package ( COLAMD 3.2.0 REQUIRED )
 endif ( )
 
-find_package ( AMD 3.0.4
+find_package ( AMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.0.4 REQUIRED )
+    find_package ( AMD 3.2.0 REQUIRED )
 endif ( )
 
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
 
 if ( NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 4.0.4
+    find_package ( CHOLMOD 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 4.0.4 )
+        find_package ( CHOLMOD 4.2.0 )
     endif ( )
 
     if ( SUITESPARSE_CUDA )
-        find_package ( CHOLMOD_CUDA 4.0.4
+        find_package ( CHOLMOD_CUDA 4.2.0
             PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-            find_package ( CHOLMOD_CUDA 4.0.4 )
+            find_package ( CHOLMOD_CUDA 4.2.0 )
         endif ( )
     endif ( )
 
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( CAMD 3.0.4
+    find_package ( CAMD 3.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CAMD )
-        find_package ( CAMD 3.0.4 )
+        find_package ( CAMD 3.2.0 )
     endif ( )
 
-    find_package ( CCOLAMD 3.0.4
+    find_package ( CCOLAMD 3.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CCOLAMD )
-        find_package ( CCOLAMD 3.0.4 )
+        find_package ( CCOLAMD 3.2.0 )
     endif ( )
 
     if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )

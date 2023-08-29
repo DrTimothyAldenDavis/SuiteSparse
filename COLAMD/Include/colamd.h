@@ -70,10 +70,10 @@ extern "C" {
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "June 16, 2023"
+#define COLAMD_DATE "FIXME DATE, 2023"
 #define COLAMD_MAIN_VERSION   3
-#define COLAMD_SUB_VERSION    0
-#define COLAMD_SUBSUB_VERSION 4
+#define COLAMD_SUB_VERSION    2
+#define COLAMD_SUBSUB_VERSION 0
 
 #define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define COLAMD_VERSION \

@@ -1,3 +1,7 @@
+FIXME DATE, 2023: version 3.2.0
+
+    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
+
 June 16, 2023: version 3.0.4
 
     * cmake build system updates: update by Markus Muetzel

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( LDL_DATE "June 16, 2023" )
+set ( LDL_DATE "FIXME DATE, 2023" )
 set ( LDL_VERSION_MAJOR 3 )
-set ( LDL_VERSION_MINOR 0 )
-set ( LDL_VERSION_SUB   4 )
+set ( LDL_VERSION_MINOR 2 )
+set ( LDL_VERSION_SUB   0 )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -42,15 +42,15 @@ project ( ldl
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
-find_package ( AMD 3.0.4
+find_package ( AMD 3.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.0.4 REQUIRED )
+    find_package ( AMD 3.2.0 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------

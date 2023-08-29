@@ -43,11 +43,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "June 16, 2023")
-set(Mongoose_NUMERIC_DATE "2023-06-16")
+set(Mongoose_DATE "FIXME DATE, 2023")
+set(Mongoose_NUMERIC_DATE "2023-FIXME-DATE")
 set(Mongoose_VERSION_MAJOR 3)
-set(Mongoose_VERSION_MINOR 0)
-set(Mongoose_VERSION_PATCH 5)
+set(Mongoose_VERSION_MINOR 2)
+set(Mongoose_VERSION_PATCH 0)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -73,10 +73,10 @@ configure_file (
         NEWLINE_STYLE LF
 )
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
 
 include_directories("${PROJECT_BINARY_DIR}")

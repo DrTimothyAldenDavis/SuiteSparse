@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "June 16, 2023" )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   4 )
+set ( SUITESPARSE_GPURUNTIME_DATE "FIXME DATE, 2023" )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 3 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 2 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   0 )
 
 message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
@@ -53,10 +53,10 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0
+find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------

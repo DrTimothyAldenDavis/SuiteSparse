@@ -62,9 +62,9 @@
         #endif
  */
 
-#define SPQR_DATE "July FIXME, 2023"
+#define SPQR_DATE "FIXME DATE, 2023"
 #define SPQR_MAIN_VERSION   4
-#define SPQR_SUB_VERSION    0
+#define SPQR_SUB_VERSION    2
 #define SPQR_SUBSUB_VERSION 0
 
 #define SPQR_VER_CODE(main,sub) ((main) * 1000 + (sub))

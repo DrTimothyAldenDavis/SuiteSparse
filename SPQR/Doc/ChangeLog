@@ -1,5 +1,6 @@
-July 2023: version 4.0.0    FIXME: Date
+FIXME DATE, 2023: version 4.2.0
 
+    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
     * 32-bit version added: by Raye Kimmerer
 
 June 16, 2023: version 3.0.4
