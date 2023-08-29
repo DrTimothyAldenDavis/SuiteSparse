@@ -269,14 +269,8 @@ add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
     message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
-    set ( CHOLMOD_CUDA CHOLMOD_CUDA ${CUDA_LIBRARIES} )
-    set ( CHOLMOD_CUDA_STATIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
-else ( )
-    # without CUDA and RMM
-    set ( CHOLMOD_CUDA )
-    set ( CHOLMOD_CUDA_STATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -474,9 +468,9 @@ endif ( )
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( CHOLMOD PRIVATE ${CHOLMOD_CUDA} )
+    target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA ${CUDA_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( CHOLMOD_static PUBLIC ${CHOLMOD_CUDA_static} )
+        target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
     endif ( )
     target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
@@ -605,9 +599,9 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cholmod_demo   PUBLIC CHOLMOD ${CHOLMOD_CUDA} SuiteSparse::SuiteSparseConfig )
-    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD ${CHOLMOD_CUDA} SuiteSparse::SuiteSparseConfig )
-    target_link_libraries ( cholmod_simple PUBLIC CHOLMOD ${CHOLMOD_CUDA} )
+    target_link_libraries ( cholmod_demo   PUBLIC CHOLMOD CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_simple PUBLIC CHOLMOD CHOLMOD_CUDA )
 
 else ( )
 
