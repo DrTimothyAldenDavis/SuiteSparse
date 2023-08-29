@@ -31,8 +31,6 @@ cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
 cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
-
 if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
 endif ( )
@@ -40,9 +38,6 @@ endif ( )
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C CXX )
 include ( GNUInstallDirs )
-if ( ENABLE_CUDA )
-    enable_language ( CUDA )
-endif ( )
 
 # set the module path for all Find*.cmake files.
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
@@ -84,7 +79,8 @@ find_package ( SPEX 2.2.0 REQUIRED )
 find_package ( SPQR 4.2.0 REQUIRED )
 find_package ( UMFPACK 6.2.0 REQUIRED )
 
-if ( ENABLE_CUDA )
+if ( TARGET CUDA::nvrtc )
+    # CHOLMOD has been compiled with CUDA enabled.
     find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
     find_package ( SPQR_CUDA 4.2.0 REQUIRED )
     find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
