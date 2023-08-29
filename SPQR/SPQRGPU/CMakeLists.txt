@@ -142,12 +142,12 @@ export ( EXPORT SPQR_CUDATargets
 # install export target, config and version files for find_package
 install ( EXPORT SPQR_CUDATargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR_CUDA )
 
 configure_package_config_file (
     ../Config/SPQR_CUDAConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
-    INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR_CUDA )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfigVersion.cmake
@@ -156,7 +156,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfigVersion.cmake
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SPQR_CUDA )
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR_CUDA )
 
 # create pkg-config file
 set ( prefix "${CMAKE_INSTALL_PREFIX}" )
