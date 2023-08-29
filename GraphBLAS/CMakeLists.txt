@@ -11,7 +11,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.16 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
@@ -325,6 +325,7 @@ if ( NOT WIN32 )
     set ( GB_M "m" )
     target_link_libraries ( GraphBLAS PRIVATE m )
     if ( NOT NSTATIC )
+        list ( APPEND GRAPHBLAS_STATIC_LIBS "m" )
         target_link_libraries ( GraphBLAS_static PUBLIC m )
     endif ( )
 endif ( )
@@ -333,6 +334,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( GraphBLAS PRIVATE dl )
     if ( NOT NSTATIC )
+        list ( APPEND GRAPHBLAS_STATIC_LIBS "dl" )
         target_link_libraries ( GraphBLAS_static PUBLIC dl )
     endif ( )
 endif ( )
@@ -342,6 +344,7 @@ include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )
     target_link_libraries ( GraphBLAS PRIVATE atomic )
     if ( NOT NSTATIC )
+        list ( APPEND GRAPHBLAS_STATIC_LIBS "atomic" )
         target_link_libraries ( GraphBLAS_static PUBLIC atomic )
     endif ( )
 endif ( )
@@ -361,6 +364,7 @@ if ( OPENMP_FOUND )
     # So this breaks:
     # target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     if ( NOT NSTATIC )
+        list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
         # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
     endif ( )
@@ -499,6 +503,55 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+
+# create pkg-config file
+
+# This might be something like:
+#   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+# convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+set ( GRAPHBLAS_STATIC_LIBS_LIST ${GRAPHBLAS_STATIC_LIBS} )
+set ( GRAPHBLAS_STATIC_LIBS "" )
+foreach ( _lib ${GRAPHBLAS_STATIC_LIBS_LIST} )
+    string ( FIND ${_lib} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( GRAPHBLAS_STATIC_LIBS "${GRAPHBLAS_STATIC_LIBS} -l${_lib}" )
+        continue ()
+    endif ( )
+    foreach ( _kind IN ITEMS "IMPORT" "SHARED" "STATIC" )
+        set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+        if ( ${_lib} MATCHES ${_regex} )
+            string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+            if ( NOT "${_libname}" STREQUAL "" )
+                set ( GRAPHBLAS_STATIC_LIBS "${GRAPHBLAS_STATIC_LIBS} -l${_libname}" )
+                break ()
+            endif ( )
+        endif ( )
+    endforeach ( )
+endforeach ( )
+message ( STATUS "GRAPHBLAS_STATIC_LIBS: ${GRAPHBLAS_STATIC_LIBS}" )
+
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/GraphBLAS.pc.in
+    GraphBLAS.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # configure the JITs

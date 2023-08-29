@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 set ( RBIO_DATE "June 16, 2023" )
 set ( RBIO_VERSION_MAJOR 4 )
@@ -128,6 +128,7 @@ endif ( )
 if ( NOT WIN32 )
     target_link_libraries ( RBio PRIVATE m )
     if ( NOT NSTATIC )
+        set ( RBIO_STATIC_LIBS "${RBIO_STATIC_LIBS} -lm" )
         target_link_libraries ( RBio_static PUBLIC m )
     endif ( )
 endif ( )
@@ -173,6 +174,30 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+
+# create pkg-config file
+set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+set ( exec_prefix "\${prefix}" )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+configure_file (
+    Config/RBio.pc.in
+    RBio.pc
+    @ONLY
+    NEWLINE_STYLE LF )
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/RBio.pc
+    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
