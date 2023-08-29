@@ -473,14 +473,12 @@ endif ( )
 
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
-    # this must be a PUBLIC link, not PRIVATE, so that libraries using
-    # CHOLMOD can link against these libraries
     message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
-    target_link_libraries ( CHOLMOD PUBLIC ${CHOLMOD_CUDA} )
+    target_link_libraries ( CHOLMOD PRIVATE ${CHOLMOD_CUDA} )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_static PUBLIC ${CHOLMOD_CUDA_static} )
     endif ( )
-    target_link_libraries ( CHOLMOD PUBLIC CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static

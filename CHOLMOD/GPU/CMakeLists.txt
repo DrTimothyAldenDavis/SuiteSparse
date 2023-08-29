@@ -92,9 +92,7 @@ set_target_properties ( CHOLMOD_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    # this must be a PUBLIC link, not PRIVATE, so the CHOLMOD library
-    # itself can link against these libraries
-    target_link_libraries ( CHOLMOD_CUDA PUBLIC CUDA::nvrtc CUDA::cudart_static
+    target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
