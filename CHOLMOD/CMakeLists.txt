@@ -474,6 +474,8 @@ if ( SUITESPARSE_CUDA )
     endif ( )
     target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
+    target_include_directories ( CHOLMOD INTERFACE
+        $<TARGET_PROPERTY:CUDA::cublas,INTERFACE_INCLUDE_DIRECTORIES> )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
