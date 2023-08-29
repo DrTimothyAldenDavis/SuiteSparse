@@ -296,43 +296,20 @@ if ( NOT NCHOLMOD )
 
     # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
-
-    if ( SUITESPARSE_CUDA )
-
-        # CHOLMOD with CUDA
-        target_link_libraries ( KLU PRIVATE
-            SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA )
-        target_link_libraries ( KLU_CHOLMOD PRIVATE
-            SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA )
-        if ( NOT NSTATIC )
-           set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD CHOLMOD_CUDA" )
-           if ( TARGET SuiteSparse::CHOLMOD_static )
-                target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD_static )
-                target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
-            else ( )
-                target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD )
-                target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD )
-            endif ( )
+    # CHOLMOD without CUDA
+    target_link_libraries ( KLU PRIVATE
+        SuiteSparse::CHOLMOD )
+    target_link_libraries ( KLU_CHOLMOD PRIVATE
+        SuiteSparse::CHOLMOD )
+    if ( NOT NSTATIC )
+       set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
+       if ( TARGET SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
+        else ( )
+            target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD )
+            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
-
-    else ( )
-
-        # CHOLMOD without CUDA
-        target_link_libraries ( KLU PRIVATE
-            SuiteSparse::CHOLMOD )
-        target_link_libraries ( KLU_CHOLMOD PRIVATE
-            SuiteSparse::CHOLMOD )
-        if ( NOT NSTATIC )
-           set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
-           if ( TARGET SuiteSparse::CHOLMOD_static )
-                target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD_static )
-                target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
-            else ( )
-                target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD )
-                target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD )
-            endif ( )
-        endif ( )
-
     endif ( )
 
     # klu:
