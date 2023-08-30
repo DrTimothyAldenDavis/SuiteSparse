@@ -188,6 +188,7 @@ int TEMPLATE2 (CHOLMOD (gpu_init))
 
 }
 
+typedef int (*__compar_fn_t) (const void*, const void*);
 
 /* ========================================================================== */
 /* === gpu_reorder_descendants ============================================== */
