@@ -510,9 +510,18 @@ install ( EXPORT CHOLMODTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE on )
 configure_package_config_file (
     Config/CHOLMODConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE off )
+configure_package_config_file (
+    Config/CHOLMODConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CHOLMODConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
 
 write_basic_package_version_file (
@@ -520,7 +529,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CHOLMODConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
 
