@@ -100,6 +100,19 @@ if ( SUITESPARSE_CUDA )
     endif ( )
 endif ( )
 
+include ( CheckTypeSize )
+set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
+list ( APPEND CMAKE_EXTRA_INCLUDE_FILES "stdlib.h" )
+check_type_size ( "__compar_fn_t" COMPAR_FN_T )
+set ( CMAKE_EXTRA_INCLUDE_FILES old_CMAKE_EXTRA_INCLUDE_FILES )
+
+if ( NOT HAVE_COMPAR_FN_T )
+    target_compile_definitions ( CHOLMOD_CUDA PRIVATE NCOMPAR_FN_T )
+    if ( NOT NSTATIC )
+        target_compile_definitions ( CHOLMOD_CUDA_static PRIVATE NCOMPAR_FN_T )
+    endif ( )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # installation location
 #-------------------------------------------------------------------------------
