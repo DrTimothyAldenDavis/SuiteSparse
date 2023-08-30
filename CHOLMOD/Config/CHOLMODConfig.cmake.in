@@ -37,11 +37,15 @@ set ( CHOLMOD_VERSION "@CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_
 if ( @SUITESPARSE_CUDA@ )
     # Look for imported targets of additional dependency if CHOLMOD was built with CUDA
 
-    # First check in a common build tree
-    find_package ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    # Then, check in the currently active CMAKE_MODULE_PATH
-    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
+    if ( @SUITESPARSE_IN_BUILD_TREE@ )
+        # First check in a common build tree
+        find_package ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
+            find_package ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ REQUIRED )
+        endif ( )
+    else ( )
         find_package ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ REQUIRED )
     endif ( )
 endif ( )
