@@ -80,8 +80,8 @@ set_target_properties ( BTF PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 target_include_directories ( BTF
-    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static btf library properties
@@ -103,8 +103,8 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( BTF_static
-        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 endif ( )
 

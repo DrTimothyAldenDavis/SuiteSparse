@@ -173,8 +173,8 @@ set_target_properties ( SPQR PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( SPQR 
-    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static spqr library properties
@@ -198,8 +198,8 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( SPQR_static 
-        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 endif ( )
 
