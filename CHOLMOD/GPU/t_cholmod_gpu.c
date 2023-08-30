@@ -49,7 +49,7 @@ void TEMPLATE2 (CHOLMOD (gpu_clear_memory))
     int chunk_multiplier = 5;
     int num_chunks = chunk_multiplier * num_threads;
     size_t chunksize = size / num_chunks;
-    size_t i;
+    int i;
 
 #pragma omp parallel for num_threads(num_threads) private(i) schedule(dynamic)
     for(i = 0; i < num_chunks; i++) {
