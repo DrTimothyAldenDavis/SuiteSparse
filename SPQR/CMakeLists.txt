@@ -334,9 +334,18 @@ install ( EXPORT SPQRTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE on )
 configure_package_config_file (
     Config/SPQRConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE off )
+configure_package_config_file (
+    Config/SPQRConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/SPQRConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
 write_basic_package_version_file (
@@ -344,7 +353,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/SPQRConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
