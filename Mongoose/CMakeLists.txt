@@ -188,8 +188,8 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( Mongoose_static
-        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( Mongoose_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
@@ -206,8 +206,8 @@ set_target_properties ( Mongoose PROPERTIES
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( Mongoose
-    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 target_link_libraries ( Mongoose PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( Mongoose PUBLIC

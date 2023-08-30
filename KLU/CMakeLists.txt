@@ -160,8 +160,8 @@ set_target_properties ( KLU PROPERTIES
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( KLU 
-    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static klu library properties
@@ -183,8 +183,8 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( KLU_static
-        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 endif ( )
 
@@ -207,8 +207,8 @@ if ( NOT NCHOLMOD )
         PUBLIC_HEADER "User/klu_cholmod.h" )
 
     target_include_directories ( KLU_CHOLMOD 
-        INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                  "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
     if ( NOT NSTATIC )
         add_library ( KLU_CHOLMOD_static STATIC ${KLU_CHOLMOD_SOURCES} )
@@ -226,8 +226,8 @@ if ( NOT NCHOLMOD )
         endif ( )
 
         target_include_directories ( KLU_CHOLMOD_static 
-            INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-                      "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+            INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                      $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
     endif ( )
 
