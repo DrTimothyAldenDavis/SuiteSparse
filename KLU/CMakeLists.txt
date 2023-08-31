@@ -367,7 +367,10 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
 
-# create pkg-config file
+#-------------------------------------------------------------------------------
+# create pkg-config file for KLU
+#-------------------------------------------------------------------------------
+
 set ( prefix "${CMAKE_INSTALL_PREFIX}" )
 set ( exec_prefix "\${prefix}" )
 cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
@@ -390,6 +393,10 @@ configure_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc
     DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+
+#-------------------------------------------------------------------------------
+# KLU_CHOLMOD installation
+#-------------------------------------------------------------------------------
 
 if ( NOT NCHOLMOD )
     install ( TARGETS KLU_CHOLMOD
@@ -428,7 +435,10 @@ if ( NOT NCHOLMOD )
         ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfigVersion.cmake
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
 
-    # create pkg-config file
+    #---------------------------------------------------------------------------
+    # create pkg-config file for KLU_CHOLMOD
+    #---------------------------------------------------------------------------
+
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
     cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )

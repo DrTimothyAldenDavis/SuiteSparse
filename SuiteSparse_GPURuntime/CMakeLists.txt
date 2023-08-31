@@ -110,8 +110,8 @@ if ( SUITESPARSE_CUDA )
 endif ( )
 
 target_include_directories ( GPURuntime 
-    INTERFACE "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>"
-              "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>" )
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_gpuruntime library properties
@@ -192,7 +192,10 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_GPURuntime )
 
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
+
 set ( prefix "${CMAKE_INSTALL_PREFIX}" )
 set ( exec_prefix "\${prefix}" )
 cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )

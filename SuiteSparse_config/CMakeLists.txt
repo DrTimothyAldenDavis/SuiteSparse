@@ -203,7 +203,10 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
 
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
+
 set ( prefix "${CMAKE_INSTALL_PREFIX}" )
 set ( exec_prefix "\${prefix}" )
 cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
@@ -226,5 +229,7 @@ configure_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_config.pc
     DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+
+#-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )

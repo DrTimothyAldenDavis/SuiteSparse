@@ -312,7 +312,10 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
 
 # This might be something like:
 #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m

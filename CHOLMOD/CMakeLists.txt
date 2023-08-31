@@ -547,7 +547,9 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
 
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
 
 # This might be something like:
 #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m

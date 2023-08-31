@@ -174,7 +174,10 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CCOLAMDConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CCOLAMD )
 
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
+
 set ( prefix "${CMAKE_INSTALL_PREFIX}" )
 set ( exec_prefix "\${prefix}" )
 cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )

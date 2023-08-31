@@ -357,7 +357,9 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SPQRConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR )
 
+#-------------------------------------------------------------------------------
 # create pkg-config file
+#-------------------------------------------------------------------------------
 
 # This might be something like:
 #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
