@@ -34,6 +34,9 @@ set ( SPQR_CUDA_VERSION_MINOR @SPQR_VERSION_MINOR@ )
 set ( SPQR_CUDA_VERSION_PATCH @SPQR_VERSION_SUB@ )
 set ( SPQR_CUDA_VERSION "@SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@" )
 
+# Look for NVIDIA CUDA toolkit
+find_package ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
+
 include ( ${CMAKE_CURRENT_LIST_DIR}/SPQR_CUDATargets.cmake )
 
 # The following is only for backward compatibility with FindSPQR_CUDA.
