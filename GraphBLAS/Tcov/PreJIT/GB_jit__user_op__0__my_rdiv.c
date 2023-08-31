@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // GB_jit__user_op__0__my_rdiv.c
 //------------------------------------------------------------------------------
-// SuiteSparse:GraphBLAS v8.0.1, Timothy A. Davis, (c) 2017-2023,
+// SuiteSparse:GraphBLAS v8.2.0, Timothy A. Davis, (c) 2017-2023,
 // All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 // The above copyright and license do not apply to any
