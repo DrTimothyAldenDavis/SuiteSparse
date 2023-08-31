@@ -80,11 +80,11 @@ find_package ( SPQR 4.2.0 REQUIRED )
 find_package ( UMFPACK 6.2.0 REQUIRED )
 
 if ( TARGET CUDA::nvrtc )
-#     # CHOLMOD and SPQR have been compiled with CUDA enabled.
-#     find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
-#     find_package ( SPQR_CUDA 4.2.0 REQUIRED )
-      find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
-      find_package ( GPUQREngine 3.2.0 REQUIRED )
+    # CHOLMOD and SPQR have been compiled with CUDA enabled.
+#   find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
+#   find_package ( SPQR_CUDA 4.2.0 REQUIRED )
+    find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
+    find_package ( GPUQREngine 3.2.0 REQUIRED )
 endif ( )
 
 # look for all external libaries:
