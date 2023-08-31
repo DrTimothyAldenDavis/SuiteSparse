@@ -111,7 +111,7 @@ endif ( )
 
 target_include_directories ( GPURuntime 
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-              $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}> )
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_gpuruntime library properties
