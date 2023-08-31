@@ -265,9 +265,9 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-add_subdirectory ( GPU )
 if ( SUITESPARSE_CUDA )
     # with CUDA
+    add_subdirectory ( GPU )
     message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
     include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
     link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
@@ -626,9 +626,18 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cholmod_demo   PUBLIC CHOLMOD CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
-    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
-    target_link_libraries ( cholmod_simple PUBLIC CHOLMOD CHOLMOD_CUDA )
+    target_link_libraries ( cholmod_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_demo PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_simple PUBLIC CHOLMOD )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_simple PUBLIC CHOLMOD_CUDA )
+    endif ( )
 
 else ( )
 

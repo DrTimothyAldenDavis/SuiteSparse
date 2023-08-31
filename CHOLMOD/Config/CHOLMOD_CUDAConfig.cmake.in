@@ -34,11 +34,8 @@ set ( CHOLMOD_CUDA_VERSION_MINOR @CHOLMOD_VERSION_MINOR@ )
 set ( CHOLMOD_CUDA_VERSION_PATCH @CHOLMOD_VERSION_SUB@ )
 set ( CHOLMOD_CUDA_VERSION "@CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@" )
 
-if ( @SUITESPARSE_CUDA@ )
-    # Look for NVIDIA CUDA toolkit if CHOLMOD_CUDA was built as a non-empty library.
-    # FindCUDAToolkit ( @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
-    find_package ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
-endif ( )
+# Look for NVIDIA CUDA toolkit
+find_package ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
 
 include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMOD_CUDATargets.cmake )
 
