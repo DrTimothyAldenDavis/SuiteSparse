@@ -20,19 +20,13 @@ message ( STATUS "Building SPQR_CUDA version: v"
 
 include ( SuiteSparsePolicy )
 
-if ( SUITESPARSE_CUDA )
-    project ( spqr_cuda 
-        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-        LANGUAGES C CXX CUDA )
-    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
-    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-else ( )
-    project ( spqr_cuda 
-        VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-        LANGUAGES C CXX )
-endif ( )
+project ( spqr_cuda 
+    VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
+    LANGUAGES C CXX CUDA )
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
@@ -91,29 +85,27 @@ set_target_properties ( SPQR_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( SPQR_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 
 if ( NOT NSTATIC )
-target_include_directories ( SPQR_CUDA_static PRIVATE
+    target_include_directories ( SPQR_CUDA_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${SPQR_CUDA_INCLUDES}
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-set_target_properties ( SPQR_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( SPQR_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( SPQR_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( SPQR_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 
-if ( TARGET SuiteSparse::CHOLMOD_static )
-    target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD_static )
-else ( )
-    target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD )
-endif ( )
+    if ( TARGET SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD_static )
+    else ( )
+        target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD )
+    endif ( )
 endif ( )
 
 target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 
-if ( SUITESPARSE_CUDA )
-    target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+    CUDA::nvToolsExt CUDA::cublas )
+if ( NOT NSTATIC )
+    target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    if ( NOT NSTATIC )
-        target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
-    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
