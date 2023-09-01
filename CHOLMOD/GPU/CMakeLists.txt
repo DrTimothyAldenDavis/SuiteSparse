@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 
 # cmake 3.22 is required to find the BLAS/LAPACK
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
 message ( STATUS "Building CHOLMOD_CUDA version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -20,22 +20,15 @@ message ( STATUS "Building CHOLMOD_CUDA version: v"
 
 include ( SuiteSparsePolicy )
 
-if ( SUITESPARSE_CUDA )
-    project ( cholmod_cuda
-        VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
-        LANGUAGES C CXX CUDA )
-    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
-    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-    file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c"
-        "cholmod_gpu_kernels.cu" )
-else ( )
-    project ( cholmod_cuda
-        VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
-        LANGUAGES C CXX )
-    file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c" )
-endif ( )
+project ( cholmod_cuda
+    VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
+    LANGUAGES C CXX CUDA )
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
+file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c"
+    "cholmod_gpu_kernels.cu" )
 
 add_library ( CHOLMOD_CUDA SHARED ${CHOLMOD_CUDA_SOURCES} )
 
@@ -91,13 +84,11 @@ set_target_properties ( CHOLMOD_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATIO
 set_target_properties ( CHOLMOD_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
-    target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+    CUDA::nvToolsExt CUDA::cublas )
+if ( NOT NSTATIC )
+    target_link_libraries ( CHOLMOD_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
-    if ( NOT NSTATIC )
-        target_link_libraries ( CHOLMOD_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
-    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
