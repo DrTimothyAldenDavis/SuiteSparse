@@ -149,9 +149,9 @@ configure_file (
     CSparse.pc
     @ONLY
     NEWLINE_STYLE LF )
-install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/CSparse.pc
-    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig )
+# install ( FILES
+#     ${CMAKE_CURRENT_BINARY_DIR}/CSparse.pc
+#     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
