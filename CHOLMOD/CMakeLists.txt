@@ -42,7 +42,9 @@ if ( NGPL )
 endif ( )
 
 include ( SuiteSparsePolicy )
-include ( SuiteSparse_ssize_t )
+
+include ( CheckTypeSize )
+check_type_size ( "ssize_t" SSIZE_T )
 if ( NOT HAVE_SSIZE_T )
     # #include <sys/types.h> and ssize_t not defined (typically on Windows)
     add_compile_definitions ( NO_SSIZE_T )
@@ -481,7 +483,6 @@ if ( SUITESPARSE_CUDA )
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 
-    include ( CheckTypeSize )
     set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
     list ( APPEND CMAKE_EXTRA_INCLUDE_FILES "stdlib.h" )
     check_type_size ( "__compar_fn_t" COMPAR_FN_T )
