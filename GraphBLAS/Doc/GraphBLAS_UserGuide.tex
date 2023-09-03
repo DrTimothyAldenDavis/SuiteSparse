@@ -16078,13 +16078,37 @@ Visual Studio 2019, but may work for earlier versions.
 %----------------------------------------
 
 To use OpenMP with clang on the Mac, try installing it from the 
-    \url{https://mac.r-project.org/openmp/} project:
+    \url{https://mac.r-project.org/openmp/} project.
+Be sure to check that page for the OpenMP version
+that matches your version of Apple Xcode.
+If using Xcode 13.3 to 13.4.1, use:
 
     {\scriptsize
     \begin{verbatim}
     curl -O https://mac.r-project.org/openmp/openmp-13.0.0-darwin21-Release.tar.gz
     sudo tar fvxz openmp-13.0.0-darwin21-Release.tar.gz -C /
     \end{verbatim} }
+
+
+For Xcode 14+ use the following instead.
+
+    {\scriptsize
+    \begin{verbatim}
+    curl -O https://mac.r-project.org/openmp/openmp-14.0.6-darwin20-Release.tar.gz
+    sudo tar fvxz openmp-14.0.6-darwin20-Release.tar.gz -C /
+    \end{verbatim} }
+
+These commands will install universal binaries (ARM and x86) for
+\verb'libomp.dylib', and the following files:
+
+    {\scriptsize
+    \begin{verbatim}
+    /usr/local/lib/libomp.dylib
+    /usr/local/include/ompt.h
+    /usr/local/include/omp.h
+    /usr/local/include/omp-tools.h
+    \end{verbatim} }
+
 
 Once you do this, the GraphBLAS Cmake should find this copy of OpenMP
 for clang.
