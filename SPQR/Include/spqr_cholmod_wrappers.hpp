@@ -1,5 +1,35 @@
 #include "spqr.hpp"
 
+template <typename Int> int spqr_start
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_start <int32_t>
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_start <int64_t>
+(
+    cholmod_common *Common
+) ;
+
+template <typename Int> int spqr_finish
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_finish <int32_t>
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_finish <int64_t>
+(
+    cholmod_common *Common
+) ;
+
 template <typename Int> void *spqr_malloc (size_t n, size_t size, cholmod_common *Common) ;
 template <> void *spqr_malloc <int32_t> (size_t n, size_t size, cholmod_common *Common) ;
 template <> void *spqr_malloc <int64_t> (size_t n, size_t size, cholmod_common *Common) ;
@@ -506,3 +536,387 @@ template <> cholmod_sparse *spqr_speye <int32_t>
     /* --------------- */
     cholmod_common *Common
 ) ;
+
+
+template <typename Int> int spqr_free_work
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_free_work <int32_t>
+(
+    cholmod_common *Common
+) ;
+
+template <> int spqr_free_work <int64_t>
+(
+    cholmod_common *Common
+) ;
+
+template <typename Int> cholmod_dense *spqr_zeros
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_zeros <int32_t>
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_zeros <int64_t>
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <typename Int> cholmod_dense *spqr_ones
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_ones <int32_t>
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_ones <int64_t>
+(
+    /* ---- input ---- */
+    size_t nrow,	/* # of rows of matrix */
+    size_t ncol,	/* # of columns of matrix */
+    int xtype,		/* CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <typename Int> cholmod_sparse *spqr_ssmult
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* left matrix to multiply */
+    cholmod_sparse *B,	/* right matrix to multiply */
+    int stype,		/* requested stype of C */
+    int values,		/* TRUE: do numerical values, FALSE: pattern only */
+    int sorted,		/* if TRUE then return C with sorted columns */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_ssmult <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* left matrix to multiply */
+    cholmod_sparse *B,	/* right matrix to multiply */
+    int stype,		/* requested stype of C */
+    int values,		/* TRUE: do numerical values, FALSE: pattern only */
+    int sorted,		/* if TRUE then return C with sorted columns */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_ssmult <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* left matrix to multiply */
+    cholmod_sparse *B,	/* right matrix to multiply */
+    int stype,		/* requested stype of C */
+    int values,		/* TRUE: do numerical values, FALSE: pattern only */
+    int sorted,		/* if TRUE then return C with sorted columns */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+
+template <typename Int> cholmod_sparse *spqr_ssadd
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	    /* matrix to add */
+    cholmod_sparse *B,	    /* matrix to add */
+    double alpha [2],	    /* scale factor for A */
+    double beta [2],	    /* scale factor for B */
+    int values,		    /* if TRUE compute the numerical values of C */
+    int sorted,		    /* if TRUE, sort columns of C */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_ssadd <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	    /* matrix to add */
+    cholmod_sparse *B,	    /* matrix to add */
+    double alpha [2],	    /* scale factor for A */
+    double beta [2],	    /* scale factor for B */
+    int values,		    /* if TRUE compute the numerical values of C */
+    int sorted,		    /* if TRUE, sort columns of C */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_ssadd <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	    /* matrix to add */
+    cholmod_sparse *B,	    /* matrix to add */
+    double alpha [2],	    /* scale factor for A */
+    double beta [2],	    /* scale factor for B */
+    int values,		    /* if TRUE compute the numerical values of C */
+    int sorted,		    /* if TRUE, sort columns of C */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+
+template <typename Int> int spqr_sdmult
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* sparse matrix to multiply */
+    int transpose,	/* use A if 0, or A' otherwise */
+    double alpha [2],   /* scale factor for A */
+    double beta [2],    /* scale factor for Y */
+    cholmod_dense *X,	/* dense matrix to multiply */
+    /* ---- in/out --- */
+    cholmod_dense *Y,	/* resulting dense matrix */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> int spqr_sdmult <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* sparse matrix to multiply */
+    int transpose,	/* use A if 0, or A' otherwise */
+    double alpha [2],   /* scale factor for A */
+    double beta [2],    /* scale factor for Y */
+    cholmod_dense *X,	/* dense matrix to multiply */
+    /* ---- in/out --- */
+    cholmod_dense *Y,	/* resulting dense matrix */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> int spqr_sdmult <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* sparse matrix to multiply */
+    int transpose,	/* use A if 0, or A' otherwise */
+    double alpha [2],   /* scale factor for A */
+    double beta [2],    /* scale factor for Y */
+    cholmod_dense *X,	/* dense matrix to multiply */
+    /* ---- in/out --- */
+    cholmod_dense *Y,	/* resulting dense matrix */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+
+
+template <typename Int> double spqr_norm_sparse
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> double spqr_norm_sparse <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> double spqr_norm_sparse <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+
+template <typename Int> double spqr_norm_dense
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm, 2: 2-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> double spqr_norm_dense <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm, 2: 2-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> double spqr_norm_dense <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to compute the norm of */
+    int norm,		/* type of norm: 0: inf. norm, 1: 1-norm, 2: 2-norm */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+
+template <typename Int> cholmod_dense *spqr_copy_dense
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to copy */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_copy_dense <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to copy */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_dense *spqr_copy_dense <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to copy */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <typename Int> cholmod_sparse *spqr_copy
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to copy */
+    int stype,		/* requested stype of C */
+    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_copy <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to copy */
+    int stype,		/* requested stype of C */
+    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_copy <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to copy */
+    int stype,		/* requested stype of C */
+    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <typename Int> int spqr_sparse_xtype
+(
+    /* ---- input ---- */
+    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
+    /* ---- in/out --- */
+    cholmod_sparse *A,	/* sparse matrix to change */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> int spqr_sparse_xtype <int32_t>
+(
+    /* ---- input ---- */
+    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
+    /* ---- in/out --- */
+    cholmod_sparse *A,	/* sparse matrix to change */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> int spqr_sparse_xtype <int64_t>
+(
+    /* ---- input ---- */
+    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
+    /* ---- in/out --- */
+    cholmod_sparse *A,	/* sparse matrix to change */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <typename Int> int spqr_gpu_memorysize
+(
+    size_t         *total_mem,
+    size_t         *available_mem,
+    cholmod_common *Common
+) ;
+
+template <> int spqr_gpu_memorysize <int32_t>
+(
+    size_t         *total_mem,
+    size_t         *available_mem,
+    cholmod_common *Common
+) ;
+
+template <> int spqr_gpu_memorysize <int64_t>
+(
+    size_t         *total_mem,
+    size_t         *available_mem,
+    cholmod_common *Common
+) ;
+
+
+template <typename Int> cholmod_sparse *spqr_read_sparse
+(
+    /* ---- input ---- */
+    FILE *f,		/* file to read from, must already be open */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_read_sparse <int32_t>
+(
+    /* ---- input ---- */
+    FILE *f,		/* file to read from, must already be open */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+
+template <> cholmod_sparse *spqr_read_sparse <int64_t>
+(
+    /* ---- input ---- */
+    FILE *f,		/* file to read from, must already be open */
+    /* --------------- */
+    cholmod_common *Common
+) ;
+

@@ -60,15 +60,16 @@ NVCC = /usr/local/cuda/bin/nvcc -g --profile --generate-line-info $(NV20) \
 
 CLIB = -lsuitesparseconfig -lcholmod -lamd -lcolamd -lccolamd -lcamd
 
-all: qrtest gpudemo qrdemo_gpu
+all: qrtest qrtest32 gpudemo qrdemo_gpu
 
-library: qrtest gpudemo
+library: qrtest qrtest32 gpudemo
 
 purge: distclean
 
 distclean: clean
-	- $(RM) qrtest qrtest_out.txt pfile tfile cov.out qrtest_out1.txt
+	- $(RM) qrtest qrtest32 qrtest_out.txt pfile tfile cov.out 
 	- $(RM) gpuqrengine_demo troll.m qrdemo_gpu gpu_results.txt X.mtx
+	- $(RM) qrtest_out32.txt qrtest_out1.txt
 	- $(RM) -r $(PURGE)
 
 clean:
@@ -76,7 +77,7 @@ clean:
 
 INC = ../Include/spqr.hpp ../Include/SuiteSparseQR_C.h \
 	../Include/SuiteSparseQR_definitions.h \
-	../Include/SuiteSparseQR.hpp
+	../Include/SuiteSparseQR.hpp qrtest_template.hpp
 
 OBJ = \
     spqr_rmap.o                              \
@@ -180,6 +181,9 @@ qrtestc.o: qrtestc.c $(INC)
 qrtest: qrtest.cpp $(INC) $(OBJ)
 	$(C) qrtest.cpp -o qrtest $(OBJ) $(LIBS) -lm
 
+qrtest32: qrtest.cpp $(INC) $(OBJ)
+	$(C) -DINT32=1 qrtest.cpp -o qrtest32 $(OBJ) $(LIBS) -lm
+
 ifneq ($(GPU_CONFIG),)
 gpu: gpuqrengine_demo qrdemo_gpu
 	- ./gpuqrengine_demo
@@ -202,21 +206,24 @@ ifneq ($(GPU_CONFIG),)
 	$(C) ../Demo/qrdemo_gpu.cpp -o qrdemo_gpu $(OBJ) $(LIBS)
 endif
 
-go: qrtest gpu qrdemo_gpu
+go: qrtest qrtest32 gpu qrdemo_gpu
+	- ./qrtest32 matrixlist.txt > qrtest_out32.txt
 	- ./qrtest matrixlist.txt > qrtest_out.txt
 	- ./cov
 
-go1: qrtest
+go1: qrtest qrtest32
 	- ./qrtest matrix1.txt > qrtest_out1.txt
+	- ./qrtest32 matrix1.txt > qrtest_out1.txt
 	- ./cov
 
-vgo1: qrtest
+vgo1: qrtest qrtest32
 	- valgrind ./qrtest matrix1.txt > qrtest_out1.txt
-	# - valgrind --leak-check=full --show-reachable=yes ./qrtest matrix1.txt > qrtest_out1.txt
+	- valgrind ./qrtest32 matrix1.txt > qrtest_out1.txt
 	- ./cov
 
-vgo: qrtest
-	- valgrind --leak-check=full --show-reachable=yes ./qrtest matrixlist.txt > qrtest_out.txt
+vgo: qrtest qrtest32
+	- valgrind --leak-check=full --show-reachable=yes ./qrtest matrixlist.txt > qrtest_out32.txt
+	- valgrind --leak-check=full --show-reachable=yes ./qrtest32 matrixlist.txt > qrtest_out.txt
 	- ./cov
 
 spqr_1colamd.o: ../Source/spqr_1colamd.cpp

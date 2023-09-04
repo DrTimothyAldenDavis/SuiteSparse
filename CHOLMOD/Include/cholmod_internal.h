@@ -133,45 +133,12 @@
 /* === int/long and double/float definitions ================================ */
 /* ========================================================================== */
 
-/* CHOLMOD is designed for 3 types of integer variables:
- *
- *	(1) all integers are int
- *	(2) most integers are int, some are int64_t
- *	(3) all integers are int64_t
- *
- * and two kinds of floating-point values:
- *
- *	(1) double
- *	(2) float
- *
- * the complex types (ANSI-compatible complex, and MATLAB-compatable zomplex)
- * are based on the double or float type, and are not selected here.  They
- * are typically selected via template routines.
- *
- * This gives 6 different modes in which CHOLMOD can be compiled (only the
- * first two are currently supported):
- *
- *	DINT	double, int			prefix: cholmod_
- *	DLONG	double, int64_t	prefix: cholmod_l_
- *	DMIX	double, mixed int/int64_t	prefix: cholmod_m_
- *	SINT	float, int			prefix: cholmod_si_
- *	SLONG	float, int64_t		prefix: cholmod_sl_
- *	SMIX	float, mixed int/log		prefix: cholmod_sm_
- *
- * These are selected with compile time flags (-DDLONG, for example).  If no
- * flag is selected, the default is DINT.
- *
- * All six versions use the same include files.  The user-visible include files
- * are completely independent of which int/long/double/float version is being
- * used.  The integer / real types in all data structures (sparse, triplet,
- * dense, common, and triplet) are defined at run-time, not compile-time, so
- * there is only one "cholmod_sparse" data type.  Void pointers are used inside
- * that data structure to point to arrays of the proper type.  Each data
- * structure has an itype and dtype field which determines the kind of basic
- * types used.  These are defined in Include/cholmod_core.h.
- *
- * FUTURE WORK: support all six types (float, and mixed int/long)
- */
+#include "cholmod_types.h"
+
+#ifndef DLONG
+// GPU acceleration only available for the DLONG case (double, int64)
+#undef SUITESPARSE_CUDA
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* routines for doing arithmetic on size_t, and checking for overflow */
@@ -181,49 +148,6 @@ size_t cholmod_add_size_t (size_t a, size_t b, int *ok) ;
 size_t cholmod_mult_size_t (size_t a, size_t k, int *ok) ;
 size_t cholmod_l_add_size_t (size_t a, size_t b, int *ok) ;
 size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
-
-/* -------------------------------------------------------------------------- */
-/* double (also complex double), int64_t */
-/* -------------------------------------------------------------------------- */
-
-#ifdef DLONG
-#define Real double
-#define Int int64_t
-#define UInt uint64_t
-#define Int_max INT64_MAX
-#define CHOLMOD(name) cholmod_l_ ## name
-#define LONG
-#define DOUBLE
-#define ITYPE CHOLMOD_LONG
-#define DTYPE CHOLMOD_DOUBLE
-#define ID "%" PRId64
-
-/* -------------------------------------------------------------------------- */
-/* double (also complex double), int: this is the default */
-/* -------------------------------------------------------------------------- */
-
-#else
-
-#ifndef DINT
-#define DINT
-#endif
-#define INT
-#define DOUBLE
-
-#define Real double
-#define Int int32_t
-#define UInt uint32_t
-#define Int_max INT32_MAX
-#define CHOLMOD(name) cholmod_ ## name
-#define ITYPE CHOLMOD_INT
-#define DTYPE CHOLMOD_DOUBLE
-#define ID "%d"
-
-/* GPU acceleration is not available for the int version of CHOLMOD */
-#undef SUITESPARSE_CUDA
-
-#endif
-
 
 /* ========================================================================== */
 /* === Include/cholmod_complexity.h ========================================= */
