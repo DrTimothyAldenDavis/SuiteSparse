@@ -40,7 +40,7 @@ double yy = 0 ;
 // =============================================================================
 
 extern "C" {
-void qrtest_C
+void qrtest_C       // handles both int32_t and int64_t versions
 (
     cholmod_sparse *A,
     double anorm,
