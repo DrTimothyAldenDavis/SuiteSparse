@@ -199,8 +199,44 @@ McGinnis, kmcginnis@txamfoundation.com) for details.
 SuiteSparse:GraphBLAS, is copyrighted by Timothy A. Davis, (c) 2017-2023, All
 Rights Reserved.  davis@tamu.edu.
 
+-----------------------------------------------------------------------------
+
+## For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
+
+Thanks for packaging SuiteSparse!  Here are some suggestions:
+
+    * GraphBLAS takes a long time to compile because it creates many fast
+        "FactoryKernels" at compile-time.  If you want to reduce the compile
+        time and library size, enable the COMPACT mode, but keep the JIT
+        enabled.  Then GraphBLAS will compile the kernels it needs at run-time,
+        via its JIT.  Performance will be the same as the FactoryKernels once
+        the JIT kernels are compiled.  User compiled kernels are placed in
+        ~/.SuiteSparse, by default.  You do not need to distribute the source
+        for GraphBLAS to enable the JIT: just libgraphblas.so and GraphBLAS.h
+        is enough.
+
+    * GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
+        distribute it with OpenMP enabled.  Performance will suffer
+        otherwise.
+
 --------------------------------------------------------------------------------
 
+## References:
+
+To cite this package, please use the following:
+
+    T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
+    algorithms in the language of sparse linear algebra, ACM Trans on
+    Mathematical Software, just acceped, 2023.  See the pdf in
+    https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc .
+    https://doi.org/10.1145/3577195
+
+    T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in
+    the language of sparse linear algebra, ACM Trans on Mathematical
+    Software, vol 45, no 4, Dec. 2019, Article No 44.
+    https://doi.org/10.1145/3322125.
+
+--------------------------------------------------------------------------------
 ## Software Acknowledgements
 
 SuiteSparse:GraphBLAS relies on the following packages (details in the LICENSE
