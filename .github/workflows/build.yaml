@@ -50,6 +50,7 @@ jobs:
             cuda-cmake-flags:
               -DENABLE_CUDA=On
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 
     env:
       CC: ${{ matrix.cc }}
