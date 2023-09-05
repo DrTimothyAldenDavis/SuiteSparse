@@ -165,7 +165,6 @@ cholmod_dense *SuiteSparseQR_C_backslash    // returns X, NULL if failure
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (B, NULL) ;
     cc->status = CHOLMOD_OK ;
-    printf ("A->itype in C backslash is %d\n", A->itype) ;
     if (A->itype == CHOLMOD_INT)
     {
         return ((A->xtype == CHOLMOD_REAL) ?
