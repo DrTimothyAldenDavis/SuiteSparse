@@ -6,6 +6,8 @@ FIXME DATE, 2023: version 4.2.0
         cholmod_metis_wrapper.c, Tcov/memory.c.
     * support for SPQR: minor changes to support SPQR v4.2.0 with 32-bit
         integers; no change to user-visible API.
+    * METIS now using GKRAND: with threadprivate state variables, to
+        avoid global system lock when using CHOLMON on many user threads
 
 June 16, 2023: version 4.0.4
 

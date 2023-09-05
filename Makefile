@@ -183,7 +183,7 @@ demos:
 # Create the PDF documentation
 docs:
 	( cd GraphBLAS && $(MAKE) docs )
-	( cd Mongoose  && $(MAKE) docs )
+	# ( cd Mongoose  && $(MAKE) docs )
 	( cd AMD && $(MAKE) docs )
 	( cd CAMD && $(MAKE) docs )
 	( cd KLU && $(MAKE) docs )

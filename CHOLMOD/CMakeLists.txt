@@ -380,6 +380,11 @@ if ( OPENMP_FOUND )
     set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS} " )
     set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
+else ( )
+    # to fix METIS: use threadprivate variables for GKRAND instead globals,
+    # so multiple user threads can call cholmod_analyze in parallel on
+    # different matrices, and avoid global locking of the system rand.
+    include ( SuiteSparse__thread )
 endif ( )
 
 # libm:
