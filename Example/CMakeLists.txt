@@ -12,7 +12,7 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "FIXME DATE, 2023" )
+set ( MY_DATE "Sept 5, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 4 )
 set ( MY_VERSION_PATCH 0 )

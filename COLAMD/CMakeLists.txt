@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( COLAMD_DATE "FIXME DATE, 2023" )
+set ( COLAMD_DATE "Sept 5, 2023" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 2 )
 set ( COLAMD_VERSION_SUB   0 )

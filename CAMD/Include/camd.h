@@ -384,7 +384,7 @@ void camd_l_info     (double Info [ ]) ;
  *      #endif
  */
 
-#define CAMD_DATE "FIXME DATE, 2023"
+#define CAMD_DATE "Sept 5, 2023"
 #define CAMD_MAIN_VERSION   3
 #define CAMD_SUB_VERSION    2
 #define CAMD_SUBSUB_VERSION 0

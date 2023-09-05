@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "FIXME DATE, 2023" )
+set ( GraphBLAS_DATE "Sept 5, 2023" )
 set ( GraphBLAS_VERSION_MAJOR 8 )
 set ( GraphBLAS_VERSION_MINOR 2 )
 set ( GraphBLAS_VERSION_SUB   0 )

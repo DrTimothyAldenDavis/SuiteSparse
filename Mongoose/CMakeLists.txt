@@ -43,8 +43,8 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "FIXME DATE, 2023")
-set(Mongoose_NUMERIC_DATE "2023-FIXME-DATE")
+set(Mongoose_DATE "Sept 5, 2023")
+set(Mongoose_NUMERIC_DATE "2023-09-05")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 2)
 set(Mongoose_VERSION_PATCH 0)

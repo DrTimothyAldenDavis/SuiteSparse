@@ -106,7 +106,7 @@ int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 /* === LDL version ========================================================== */
 /* ========================================================================== */
 
-#define LDL_DATE "FIXME DATE, 2023"
+#define LDL_DATE "Sept 5, 2023"
 #define LDL_MAIN_VERSION   3
 #define LDL_SUB_VERSION    2
 #define LDL_SUBSUB_VERSION 0

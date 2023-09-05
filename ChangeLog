@@ -1,4 +1,4 @@
-FIXME DATE, 2023: version 7.2.0
+Sept 5, 2023: version 7.2.0
 
     * build system: modern cmake structure, by Markus Muetzel.
         Most packages updated to vX.2.0 where X is unchanged (except SPQR

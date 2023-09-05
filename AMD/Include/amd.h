@@ -374,7 +374,7 @@ void amd_l_info     (double Info [ ]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "FIXME DATE, 2023"
+#define AMD_DATE "Sept 5, 2023"
 #define AMD_MAIN_VERSION   3
 #define AMD_SUB_VERSION    2
 #define AMD_SUBSUB_VERSION 0
