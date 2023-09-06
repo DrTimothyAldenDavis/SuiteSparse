@@ -62,6 +62,9 @@ demos: demos64 demos32
 
 demos64: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	- ./build/qrdemo < Matrix/a00.mtx
+	- ./build/qrdemo < Matrix/a01.mtx
+	- ./build/qrdemo < Matrix/a10.mtx
 	- ./build/qrsimple  < Matrix/ash219.mtx
 	- ./build/qrsimplec < Matrix/ash219.mtx
 	- ./build/qrsimple  < Matrix/west0067.mtx
@@ -125,6 +128,9 @@ demos64: library
 
 demos32: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	- ./build/qrdemo_int32 < Matrix/a00.mtx
+	- ./build/qrdemo_int32 < Matrix/a01.mtx
+	- ./build/qrdemo_int32 < Matrix/a10.mtx
 	- ./build/qrsimplec_int32 < Matrix/ash219.mtx
 	- ./build/qrsimplec_int32 < Matrix/west0067.mtx
 	- ./build/qrdemo_int32 < Matrix/a2.mtx

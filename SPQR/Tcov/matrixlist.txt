@@ -1,3 +1,6 @@
+0 ../Matrix/a00.mtx
+0 ../Matrix/a10.mtx
+0 ../Matrix/a01.mtx
 0 ../Matrix/west0067.mtx
 0 ../Matrix/r2.mtx
 0 ../Matrix/a04.mtx
