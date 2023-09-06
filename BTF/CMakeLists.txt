@@ -179,28 +179,30 @@ install ( FILES
 # create pkg-config file
 #-------------------------------------------------------------------------------
 
-set ( prefix "${CMAKE_INSTALL_PREFIX}" )
-set ( exec_prefix "\${prefix}" )
-cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
-if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
-    set ( libdir "${SUITESPARSE_LIBDIR}")
-else ( )
-    set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+if ( NOT MSVC )
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        Config/BTF.pc.in
+        BTF.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/BTF.pc
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 endif ( )
-cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
-if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
-    set ( includedir "${SUITESPARSE_INCLUDEDIR}")
-else ( )
-    set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
-endif ( )
-configure_file (
-    Config/BTF.pc.in
-    BTF.pc
-    @ONLY
-    NEWLINE_STYLE LF )
-install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/BTF.pc
-    DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 
 #-------------------------------------------------------------------------------
 # report status
