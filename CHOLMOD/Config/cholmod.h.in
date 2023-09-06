@@ -102,11 +102,6 @@
 #define CHOLMOD_SUB_VERSION    @CHOLMOD_VERSION_MINOR@
 #define CHOLMOD_SUBSUB_VERSION @CHOLMOD_VERSION_SUB@
 
-/* make it easy for C++ programs to include CHOLMOD */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* ========================================================================== */
 /* === Include/cholmod_io64 ================================================= */
 /* ========================================================================== */
@@ -583,6 +578,11 @@ extern "C" {
 #define CHOLMOD_SIMPLICIAL 0	/* always do simplicial */
 #define CHOLMOD_AUTO 1		/* select simpl/super depending on matrix */
 #define CHOLMOD_SUPERNODAL 2	/* always do supernodal */
+
+/* make it easy for C++ programs to include CHOLMOD */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct cholmod_common_struct
 {
@@ -4596,6 +4596,11 @@ int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
 
 #endif
 
+#ifdef __cplusplus
+}
+#endif
+
+
 /* ========================================================================== */
 /* === Include/cholmod_gpu.h ================================================ */
 /* ========================================================================== */
@@ -4633,6 +4638,11 @@ int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
 #define CHOLMOD_GPU_SKIP     3    
 
 #define CHOLMOD_HANDLE_CUDA_ERROR(e,s) {if (e) {ERROR(CHOLMOD_GPU_PROBLEM,s);}}
+
+/* make it easy for C++ programs to include CHOLMOD */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 typedef struct cholmod_gpu_pointers
 {
@@ -4672,11 +4682,10 @@ void cholmod_l_gpu_end ( cholmod_common *Common ) ;
 int cholmod_gpu_allocate   ( cholmod_common *Common ) ;
 int cholmod_l_gpu_allocate ( cholmod_common *Common ) ;
 
-#endif
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif
 
+#endif
