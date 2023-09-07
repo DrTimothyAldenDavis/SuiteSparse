@@ -46,6 +46,14 @@ project ( spqr
 # find library dependencies
 #-------------------------------------------------------------------------------
 
+option ( NOPENMP "ON (default): do not use OpenMP.  OFF: use OpenMP" ON )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_FOUND false )
+else ( )
+    find_package ( OpenMP )
+endif ( )
+
 find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
@@ -187,6 +195,15 @@ if ( NOT NSTATIC )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig )
+    endif ( )
+endif ( )
+
+# OpenMP:
+if ( OPENMP_FOUND )
+    target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
+    if ( NOT NSTATIC )
+        target_link_libraries ( SPQR_static PUBLIC OpenMP::OpenMP_CXX )
+        list ( APPEND SPQR_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
     endif ( )
 endif ( )
 
