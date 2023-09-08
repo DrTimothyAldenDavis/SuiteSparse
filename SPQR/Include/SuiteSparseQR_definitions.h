@@ -62,7 +62,7 @@
         #endif
  */
 
-#define SPQR_DATE "Sept 5, 2023"
+#define SPQR_DATE "Sept 8, 2023"
 #define SPQR_MAIN_VERSION   4
 #define SPQR_SUB_VERSION    2
 #define SPQR_SUBSUB_VERSION 0

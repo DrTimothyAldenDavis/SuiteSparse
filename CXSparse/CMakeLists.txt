@@ -11,7 +11,7 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( CXSPARSE_DATE "Sept 5, 2023" )
+set ( CXSPARSE_DATE "Sept 8, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 2 )
 set ( CXSPARSE_VERSION_SUB   0 )

@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Sept 5, 2023" )
+set ( SPQR_DATE "Sept 8, 2023" )
 set ( SPQR_VERSION_MAJOR 4 )
 set ( SPQR_VERSION_MINOR 2 )
 set ( SPQR_VERSION_SUB   0 )
