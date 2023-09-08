@@ -464,10 +464,22 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
+    name: msvc (${{ matrix.openmp }} OpenMP)
+
     defaults:
       run:
         # Use bash as default shell
         shell: bash -el {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        openmp: [with, without]
+        include:
+          - openmp: without
+            openmp-cmake-flags: "-DNOPENMP=ON"
 
     env:
       CHERE_INVOKING: 1
@@ -592,6 +604,7 @@ jobs:
                   -DCMAKE_Fortran_COMPILER_LAUNCHER=${CCACHE} \
                   -DNFORTRAN=ON \
                   -DBLA_VENDOR="All" \
+                  ${{ matrix.openmp-cmake-flags }} \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -630,6 +643,7 @@ jobs:
           cmake \
             -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
+            ${{ matrix.openmp-cmake-flags }} \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
