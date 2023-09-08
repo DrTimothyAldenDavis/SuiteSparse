@@ -14,29 +14,29 @@
 
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_rconvert
+template <typename Entry, typename Int> void spqr_rconvert
 (
     // inputs, not modified
-    spqr_symbolic *QRsym,
-    spqr_numeric <Entry> *QRnum,
+    spqr_symbolic <Int> *QRsym,
+    spqr_numeric <Entry, Int> *QRnum,
 
-    int64_t n1rows,        // added to each row index of Ra, Rb, and H
-    int64_t econ,          // only get entries in rows n1rows to econ-1
-    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    Int n1rows,        // added to each row index of Ra, Rb, and H
+    Int econ,          // only get entries in rows n1rows to econ-1
+    Int n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
     // FUTURE : make Ra, Rb, H2 cholmod_sparse:
-    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+    Int *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    Int *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
     Entry *Rax,         // size rnz; numerical values of Ra
 
     // input/output
-    int64_t *Rbp,          // if getT is false:
+    Int *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
@@ -46,16 +46,16 @@ template <typename Entry> void spqr_rconvert
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    Int *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
     Entry *Rbx,         // size rnz2; numerical values of Rb
 
     // input
-    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+    Int *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    int64_t *H2i,          // size hnz = nnz(H); indices of H
+    Int *H2i,          // size hnz = nnz(H); indices of H
     Entry *H2x,         // size hnz; numerical values of H
 
     Entry *H2Tau        // size nh; Householder coefficients
@@ -63,9 +63,9 @@ template <typename Entry> void spqr_rconvert
 {
     Entry rij, hij ;
     Entry **Rblock, *R, *Tau, *HTau ;
-    int64_t *Rp, *Rj, *Super, *HStair, *Hii, *Stair, *Hip, *Hm, *Hi ;
+    Int *Rp, *Rj, *Super, *HStair, *Hii, *Stair, *Hip, *Hm, *Hi ;
     char *Rdead ;
-    int64_t nf, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
+    Int nf, j, f, col1, fp, pr, fn, rm, k, i, p, getRa, getRb, row1, fm,
         // n, rjsize,
         h, getH, keepH, ph, t, nh ;
 
@@ -94,8 +94,8 @@ template <typename Entry> void spqr_rconvert
     }
     if (getRb)
     {
-        int64_t n = QRsym->n ;
-        int64_t zn = getT ? econ : n-n2 ;
+        Int n = QRsym->n ;
+        Int zn = getT ? econ : n-n2 ;
         for (k = 0 ; k <= zn ; k++)
         {
             PR (("Rbp [%ld] = %ld on input\n", k, Rbp [k])) ;
@@ -304,63 +304,103 @@ template <typename Entry> void spqr_rconvert
         row1 += rm ;                        // count the squeezed rows of R
     }
 }
-
-
-// =============================================================================
-
-template void spqr_rconvert <double>
+template void spqr_rconvert <double, int32_t>
 (
     // inputs, not modified
-    spqr_symbolic *QRsym,
-    spqr_numeric <double> *QRnum,
+    spqr_symbolic <int32_t> *QRsym,
+    spqr_numeric <double, int32_t> *QRnum,
 
-    int64_t n1rows,        // added to each row index of Ra, Rb, and H
-    int64_t econ,          // only get entries in rows n1rows to econ-1
-    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int32_t n1rows,        // added to each row index of Ra, Rb, and H
+    int32_t econ,          // only get entries in rows n1rows to econ-1
+    int32_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
-    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+    // FUTURE : make Ra, Rb, H2 cholmod_sparse:
+    int32_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
-    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
-    double *Rax,        // size rnz; numerical values of Ra
+    int32_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    double *Rax,         // size rnz; numerical values of Ra
 
     // input/output
-    int64_t *Rbp,          // if getT is false:
+    int32_t *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
-
                         // if getT is true:
                         // size econ+1; on input, Rbp [i] is the row
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to row i of Rb.
 
     // output, not defined on input
-    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
-    double *Rbx,        // size rnz2; numerical values of Rb
+    int32_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    double *Rbx,         // size rnz2; numerical values of Rb
 
     // input
-    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+    int32_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
                         // H2p, H2i, and H2x are ignored if H was not kept
                         // during factorization.  nh computed by rcount
 
     // output, not defined on input
-    int64_t *H2i,          // size hnz = nnz(H); indices of H
-    double *H2x,        // size hnz; numerical values of H
-    double *H2Tau       // size nh; Householder coefficients
+    int32_t *H2i,          // size hnz = nnz(H); indices of H
+    double *H2x,         // size hnz; numerical values of H
+
+    double *H2Tau        // size nh; Householder coefficients
 ) ;
-
-// =============================================================================
-
-template void spqr_rconvert <Complex>
+template void spqr_rconvert <Complex, int32_t>
 (
     // inputs, not modified
-    spqr_symbolic *QRsym,
-    spqr_numeric<Complex> *QRnum,
+    spqr_symbolic <int32_t> *QRsym,
+    spqr_numeric <Complex, int32_t> *QRnum,
+
+    int32_t n1rows,        // added to each row index of Ra, Rb, and H
+    int32_t econ,          // only get entries in rows n1rows to econ-1
+    int32_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int getT,           // if true, get Rb' instead of Rb
+
+    // input/output
+    // FUTURE : make Ra, Rb, H2 cholmod_sparse:
+    int32_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+                        // for Ra.  Incremented on output by the number of
+                        // entries added to column j of Ra.
+
+    // output, not defined on input
+    int32_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    Complex *Rax,         // size rnz; numerical values of Ra
+
+    // input/output
+    int32_t *Rbp,          // if getT is false:
+                        // size (n-n2)+1; on input, Rbp [j] is the column
+                        // pointer for Rb.  Incremented on output by the number
+                        // of entries added to column j of Rb.
+                        // if getT is true:
+                        // size econ+1; on input, Rbp [i] is the row
+                        // pointer for Rb.  Incremented on output by the number
+                        // of entries added to row i of Rb.
+
+    // output, not defined on input
+    int32_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    Complex *Rbx,         // size rnz2; numerical values of Rb
+
+    // input
+    int32_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+                        // H2p, H2i, and H2x are ignored if H was not kept
+                        // during factorization.  nh computed by rcount
+
+    // output, not defined on input
+    int32_t *H2i,          // size hnz = nnz(H); indices of H
+    Complex *H2x,         // size hnz; numerical values of H
+
+    Complex *H2Tau        // size nh; Householder coefficients
+) ;
+template void spqr_rconvert <double, int64_t>
+(
+    // inputs, not modified
+    spqr_symbolic <int64_t> *QRsym,
+    spqr_numeric <double, int64_t> *QRnum,
 
     int64_t n1rows,        // added to each row index of Ra, Rb, and H
     int64_t econ,          // only get entries in rows n1rows to econ-1
@@ -368,20 +408,20 @@ template void spqr_rconvert <Complex>
     int getT,           // if true, get Rb' instead of Rb
 
     // input/output
+    // FUTURE : make Ra, Rb, H2 cholmod_sparse:
     int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
                         // for Ra.  Incremented on output by the number of
                         // entries added to column j of Ra.
 
     // output, not defined on input
     int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
-    Complex *Rax,       // size rnz; numerical values of Ra
+    double *Rax,         // size rnz; numerical values of Ra
 
     // input/output
     int64_t *Rbp,          // if getT is false:
                         // size (n-n2)+1; on input, Rbp [j] is the column
                         // pointer for Rb.  Incremented on output by the number
                         // of entries added to column j of Rb.
-
                         // if getT is true:
                         // size econ+1; on input, Rbp [i] is the row
                         // pointer for Rb.  Incremented on output by the number
@@ -389,7 +429,7 @@ template void spqr_rconvert <Complex>
 
     // output, not defined on input
     int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
-    Complex *Rbx,       // size rnz2; numerical values of Rb
+    double *Rbx,         // size rnz2; numerical values of Rb
 
     // input
     int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
@@ -398,6 +438,53 @@ template void spqr_rconvert <Complex>
 
     // output, not defined on input
     int64_t *H2i,          // size hnz = nnz(H); indices of H
-    Complex *H2x,       // size hnz; numerical values of H
-    Complex *H2Tau      // size nh; Householder coefficients
+    double *H2x,         // size hnz; numerical values of H
+
+    double *H2Tau        // size nh; Householder coefficients
+) ;
+template void spqr_rconvert <Complex, int64_t>
+(
+    // inputs, not modified
+    spqr_symbolic <int64_t> *QRsym,
+    spqr_numeric <Complex, int64_t> *QRnum,
+
+    int64_t n1rows,        // added to each row index of Ra, Rb, and H
+    int64_t econ,          // only get entries in rows n1rows to econ-1
+    int64_t n2,            // Ra = R (:,0:n2-1), Rb = R (:,n2:n-1)
+    int getT,           // if true, get Rb' instead of Rb
+
+    // input/output
+    // FUTURE : make Ra, Rb, H2 cholmod_sparse:
+    int64_t *Rap,          // size n2+1; on input, Rap [j] is the column pointer
+                        // for Ra.  Incremented on output by the number of
+                        // entries added to column j of Ra.
+
+    // output, not defined on input
+    int64_t *Rai,          // size rnz1 = nnz(Ra); row indices of Ra
+    Complex *Rax,         // size rnz; numerical values of Ra
+
+    // input/output
+    int64_t *Rbp,          // if getT is false:
+                        // size (n-n2)+1; on input, Rbp [j] is the column
+                        // pointer for Rb.  Incremented on output by the number
+                        // of entries added to column j of Rb.
+                        // if getT is true:
+                        // size econ+1; on input, Rbp [i] is the row
+                        // pointer for Rb.  Incremented on output by the number
+                        // of entries added to row i of Rb.
+
+    // output, not defined on input
+    int64_t *Rbi,          // size rnz2 = nnz(Rb); indices of Rb
+    Complex *Rbx,         // size rnz2; numerical values of Rb
+
+    // input
+    int64_t *H2p,          // size nh+1; H2p [j] is the column pointer for H.
+                        // H2p, H2i, and H2x are ignored if H was not kept
+                        // during factorization.  nh computed by rcount
+
+    // output, not defined on input
+    int64_t *H2i,          // size hnz = nnz(H); indices of H
+    Complex *H2x,         // size hnz; numerical values of H
+
+    Complex *H2Tau        // size nh; Householder coefficients
 ) ;

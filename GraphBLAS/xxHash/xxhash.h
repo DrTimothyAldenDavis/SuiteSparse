@@ -1181,31 +1181,24 @@ struct XXH64_state_s {
 #ifndef XXH_NO_XXH3
 
 //--------------------------------------------------------------------------
-#if defined ( _MSC_VER ) /* GraphBLAS modification */
-    // MS Visual Studio is badly broken.  It states that it complies with
-    // ANSI C11, but it does not provide the required stdalign.h.
-    #define XXH_ALIGN(n)      __declspec(align(n))
-#else
-// unmodified rules from the original xxhash.h:
-//--------------------------------------------------------------------------
-
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) /* >= C11 */
-#  include <stdalign.h>
-#  define XXH_ALIGN(n)      alignas(n)
+#if defined( _MSC_VER ) && (_MSC_VER < 1930) /* GraphBLAS modification */
+/* MS Visual Studio before MSVC 2022 doesn't provide <stdalign.h> albeit
+ * defining __STDC_VERSION__ >= 201112L. */
+#  define XXH_ALIGN(n)      __declspec(align(n))
+/* moved C++11 before C11 */
 #elif defined(__cplusplus) && (__cplusplus >= 201103L) /* >= C++11 */
 /* In C++ alignas() is a keyword */
 #  define XXH_ALIGN(n)      alignas(n)
+#elif defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L) /* >= C11 */
+#  include <stdalign.h>
+#  define XXH_ALIGN(n)      alignas(n)
+// unmodified rules from the original xxhash.h:
+//--------------------------------------------------------------------------
 #elif defined(__GNUC__)
 #  define XXH_ALIGN(n)      __attribute__ ((aligned(n)))
-#elif defined(_MSC_VER)
-#  define XXH_ALIGN(n)      __declspec(align(n))
 #else
 #  define XXH_ALIGN(n)   /* disabled */
 #endif
-
-//--------------------------------------------------------------------------
-#endif  /* GraphBLAS modification */
-//--------------------------------------------------------------------------
 
 /* Old GCC versions only accept the attribute after the type in structures. */
 #if !(defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 201112L))   /* C11+ */ \

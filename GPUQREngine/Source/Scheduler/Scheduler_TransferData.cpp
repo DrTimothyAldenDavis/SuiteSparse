@@ -20,23 +20,24 @@
 //   compareTaskTime is the comparator.
 //
 // =============================================================================
-
-#include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
+#include "GPUQREngine_Scheduler.hpp"
 
-
-int compareTaskTime (const void * a, const void * b)
+static int compareTaskTime (const void * a, const void * b)
 {
-    TaskDescriptor *ta = (TaskDescriptor*) a;
-    TaskDescriptor *tb = (TaskDescriptor*) b;
+    const TaskDescriptor *ta = reinterpret_cast<const TaskDescriptor*> (a);
+    const TaskDescriptor *tb = reinterpret_cast<const TaskDescriptor*> (b);
 
-    Int aFlops = getWeightedFlops(ta);
-    Int bFlops = getWeightedFlops(tb);
+    int64_t aFlops = getWeightedFlops(ta);
+    int64_t bFlops = getWeightedFlops(tb);
 
-    return bFlops - aFlops;
+    if (aFlops == bFlops) return (0) ;
+    if (aFlops <  bFlops) return (-1) ;
+    /* if (aFlops >  bFlops) */ return (1) ;
 }
 
-void Scheduler::transferData
+template <typename Int>
+void Scheduler <Int>::transferData
 (
     void
 )
@@ -49,7 +50,7 @@ void Scheduler::transferData
     for(Int t=0; t<numTasks[activeSet]; t++)
     {
         TaskDescriptor *task = &(queue[t]);
-        Int flops = getFlops(task);
+        int64_t flops = getFlops(task);
         gpuFlops += flops;
     }
 
@@ -63,3 +64,12 @@ void Scheduler::transferData
     wsQueueSurgical.transfer(cudaMemcpyHostToDevice, false, memoryStreamH2D);
     wsQueueSurgical.assign(NULL, NULL);
 }
+
+template void Scheduler <int32_t>::transferData
+(
+    void
+) ;
+template void Scheduler <int64_t>::transferData
+(
+    void
+) ;

@@ -12,15 +12,13 @@
 // and keeping a Shadow copy to support subsequent Apply tasks.
 //
 // =============================================================================
-
-
 #include "GPUQREngine_BucketList.hpp"
-
-void BucketList::AdvanceBundles()
+template <typename Int>
+void BucketList<Int>::AdvanceBundles()
 {
     for (int i = 0; i < numBundles; i++)
     {
-        LLBundle& bundle = Bundles[i];
+        LLBundle <Int>& bundle = Bundles[i];
 
         /* An advancing bundle is removed from its native bucket. */
         bundleCount[bundle.NativeBucket]--;
@@ -45,3 +43,6 @@ void BucketList::AdvanceBundles()
         }
     }
 }
+
+template void BucketList<int32_t>::AdvanceBundles() ;
+template void BucketList<int64_t>::AdvanceBundles() ;

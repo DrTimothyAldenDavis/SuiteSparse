@@ -3,6 +3,8 @@ o_*
 A.mtx
 X.mtx
 gpu_results.txt
+tfile
+pfile
 
 # Do not ignore this file
 !.gitignore

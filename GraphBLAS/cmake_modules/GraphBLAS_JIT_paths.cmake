@@ -21,6 +21,13 @@ if ( DEFINED ENV{GRAPHBLAS_CACHE_PATH} )
 elseif ( DEFINED ENV{HOME} )
     # use the current HOME environment variable from cmake (for Linux, Unix, Mac)
     set ( GRAPHBLAS_CACHE_PATH "$ENV{HOME}/.SuiteSparse/GrB${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" )
+    if ( GBMATLAB AND APPLE )
+        # MATLAB on the Mac is a non-native application so the compiled JIT
+        # kernels are compiled to x86 assembly.  The primary libgraphblas.dylib
+        # called from a C application would likely be native, in ARM assembly.
+        # So use a different JIT folder for MATLAB.
+        set ( GRAPHBLAS_CACHE_PATH "${GRAPHBLAS_CACHE_PATH}_matlab" )
+    endif ( )
 elseif ( WIN32 )
     # use LOCALAPPDATA for Windows
     set ( GRAPHBLAS_CACHE_PATH "$ENV{LOCALAPPDATA}/SuiteSparse/GrB${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" )

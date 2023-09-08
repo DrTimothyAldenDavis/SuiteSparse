@@ -27,18 +27,18 @@
 #define _CXS_H
 
 #if 1
-#include <complex.h>
-#define cs_complex_t double _Complex
-#endif
-
-#ifdef __cplusplus
-extern "C" {
+#  ifdef __cplusplus
+#    include <complex>
+#  else
+#    include <complex.h>
+#  endif
+#  define cs_complex_t double _Complex
 #endif
 
 #define CS_VER 4  /* CXSparse Version */
-#define CS_SUBVER 0
-#define CS_SUBSUB 4
-#define CS_DATE "June 16, 2023"        /* CXSparse release date */
+#define CS_SUBVER 2
+#define CS_SUBSUB 0
+#define CS_DATE "Sept 8, 2023"        /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
 #define CXSPARSE
 
@@ -46,6 +46,10 @@ extern "C" {
 #define cs_long_t       int64_t
 #define cs_long_t_id    "%" PRId64
 #define cs_long_t_max   INT64_MAX
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* double/int32_t version of CXSparse */

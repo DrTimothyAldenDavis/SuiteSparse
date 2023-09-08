@@ -1,3 +1,175 @@
+( cd build && cmake  .. && cmake --build . --config Release -j8 )
+-- Building KLU version: v2.2.0 (Sept 8, 2023)
+-- Source:        /home/faculty/d/davis/dev2/SuiteSparse/KLU 
+-- Build:         /home/faculty/d/davis/dev2/SuiteSparse/KLU/build 
+-- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install include: /home/faculty/d/davis/dev2/SuiteSparse/include
+-- Install bin:     /home/faculty/d/davis/dev2/SuiteSparse/bin
+-- Install rpath:   /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build   rpath:   /home/faculty/d/davis/dev2/SuiteSparse/KLU/build;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build type:    Release 
+-- Fortran: /usr/bin/f95
+-- Looking for CUDA
+-- Find CUDA tool kit:
+-- Found CUDAToolkit: /usr/local/cuda/include (found version "11.7.99") 
+-- CUDA toolkit found:   TRUE
+-- CUDA toolkit version: 11.7.99
+-- CUDA toolkit include: /usr/local/cuda/include
+-- CUDA toolkit lib dir: /usr/local/cuda/lib64
+-- CUDA: enabled
+-- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
+-- BTF version: 2.2.0
+-- BTF include: /home/faculty/d/davis/dev2/SuiteSparse/BTF/Include
+-- BTF library: /home/faculty/d/davis/dev2/SuiteSparse/BTF/build/libbtf.so.2.2.0
+-- BTF static:  /home/faculty/d/davis/dev2/SuiteSparse/BTF/build/libbtf.a
+-- COLAMD version: 3.2.0
+-- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.0
+-- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
+-- AMD version: 3.2.0
+-- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.0
+-- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
+-- Found CUDAToolkit: /usr/local/cuda/include (found suitable version "11.7.99", minimum required is "11") 
+-- CHOLMOD_CUDA version: 4.2.0
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
+-- CHOLMOD version: 4.2.0
+-- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.0
+-- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
+-- CHOLMOD_CUDA version: 4.2.0
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
+-- CAMD version: 3.2.0
+-- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.0
+-- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
+-- CCOLAMD version: 3.2.0
+-- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.0
+-- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
+-- Using CHOLMOD for addtional pre-ordering options
+-- Also compiling the demos in KLU/Demo
+-- ------------------------------------------------------------------------
+-- SuiteSparse CMAKE report for: klu
+-- ------------------------------------------------------------------------
+-- inside common SuiteSparse root:  true
+-- install in SuiteSparse/lib and SuiteSparse/include: 1
+-- build type:           Release
+-- NSTATIC:              false (build static library)
+-- use OpenMP:           no 
+-- C compiler:           /usr/bin/cc 
+-- C flags:              
+-- C++ compiler:         /usr/bin/c++
+-- C++ flags:            
+-- C Flags release:      -O3 -DNDEBUG 
+-- C++ Flags release:    -O3 -DNDEBUG 
+-- Fortran compiler:     /usr/bin/f95 
+-- compile definitions:  SUITESPARSE_CUDA
+-- CUDA architectures:   52;75;80
+-- ------------------------------------------------------------------------
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/KLU/build
+gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/KLU/build'
+[  3%] Built target KLU_CHOLMOD_static
+[ 48%] Built target KLU_static
+[ 93%] Built target KLU
+[ 95%] Built target KLU_CHOLMOD
+[ 96%] Built target klu_simple
+[ 98%] Built target kludemo
+[100%] Built target kluldemo
+gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/KLU/build'
+( cd build && cmake  -DDEMO=1 .. && cmake --build . --config Release -j8 )
+-- Building KLU version: v2.2.0 (Sept 8, 2023)
+-- Source:        /home/faculty/d/davis/dev2/SuiteSparse/KLU 
+-- Build:         /home/faculty/d/davis/dev2/SuiteSparse/KLU/build 
+-- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install include: /home/faculty/d/davis/dev2/SuiteSparse/include
+-- Install bin:     /home/faculty/d/davis/dev2/SuiteSparse/bin
+-- Install rpath:   /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build   rpath:   /home/faculty/d/davis/dev2/SuiteSparse/KLU/build;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build type:    Release 
+-- Fortran: /usr/bin/f95
+-- Looking for CUDA
+-- Find CUDA tool kit:
+-- Found CUDAToolkit: /usr/local/cuda/include (found version "11.7.99") 
+-- CUDA toolkit found:   TRUE
+-- CUDA toolkit version: 11.7.99
+-- CUDA toolkit include: /usr/local/cuda/include
+-- CUDA toolkit lib dir: /usr/local/cuda/lib64
+-- CUDA: enabled
+-- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
+-- BTF version: 2.2.0
+-- BTF include: /home/faculty/d/davis/dev2/SuiteSparse/BTF/Include
+-- BTF library: /home/faculty/d/davis/dev2/SuiteSparse/BTF/build/libbtf.so.2.2.0
+-- BTF static:  /home/faculty/d/davis/dev2/SuiteSparse/BTF/build/libbtf.a
+-- COLAMD version: 3.2.0
+-- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.0
+-- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
+-- AMD version: 3.2.0
+-- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.0
+-- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
+-- Found CUDAToolkit: /usr/local/cuda/include (found suitable version "11.7.99", minimum required is "11") 
+-- CHOLMOD_CUDA version: 4.2.0
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
+-- CHOLMOD version: 4.2.0
+-- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.0
+-- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
+-- CHOLMOD_CUDA version: 4.2.0
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
+-- CAMD version: 3.2.0
+-- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.0
+-- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
+-- CCOLAMD version: 3.2.0
+-- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.0
+-- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
+-- Using CHOLMOD for addtional pre-ordering options
+-- Also compiling the demos in KLU/Demo
+-- ------------------------------------------------------------------------
+-- SuiteSparse CMAKE report for: klu
+-- ------------------------------------------------------------------------
+-- inside common SuiteSparse root:  true
+-- install in SuiteSparse/lib and SuiteSparse/include: 1
+-- build type:           Release
+-- NSTATIC:              false (build static library)
+-- use OpenMP:           no 
+-- C compiler:           /usr/bin/cc 
+-- C flags:              
+-- C++ compiler:         /usr/bin/c++
+-- C++ flags:            
+-- C Flags release:      -O3 -DNDEBUG 
+-- C++ Flags release:    -O3 -DNDEBUG 
+-- Fortran compiler:     /usr/bin/f95 
+-- compile definitions:  SUITESPARSE_CUDA
+-- CUDA architectures:   52;75;80
+-- ------------------------------------------------------------------------
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/KLU/build
+gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/KLU/build'
+[  3%] Built target KLU_CHOLMOD_static
+[ 48%] Built target KLU_static
+[ 93%] Built target KLU
+[ 95%] Built target KLU_CHOLMOD
+[ 96%] Built target klu_simple
+[ 98%] Built target kludemo
+[100%] Built target kluldemo
+gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/KLU/build'
 ./build/klu_simple
 x [0] = 1
 x [1] = 2
@@ -7,188 +179,188 @@ x [4] = 5
 ./build/kludemo  < ./Matrix/1c.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 492 bytes
 ./build/kludemo  < ./Matrix/arrowc.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
-n 100 nnz(A) 298 nnz(L+U+F) 298 resid 5.67084e-15
+KLU: Sept 8, 2023, version: 2.2.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 2.93788e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 32244 bytes
 ./build/kludemo  < ./Matrix/arrow.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
-n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
+KLU: Sept 8, 2023, version: 2.2.0
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.9762e-14
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 20412 bytes
 ./build/kludemo  < ./Matrix/impcol_a.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 207 nnz(A) 572 nnz(L+U+F) 615 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
 peak memory usage: 34276 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 207 nnz(A) 572 nnz(L+U+F) 616 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 264
 peak memory usage: 34276 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 207 nnz(A) 572 nnz(L+U+F) 610 resid 4.65661e-10
 recip growth 0.00588235 condest 4.35093e+07 rcond 2.44261e-05 flops 231
 peak memory usage: 34548 bytes
 ./build/kludemo  < ./Matrix/w156.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 39516 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 39516 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
-n 156 nnz(A) 362 nnz(L+U+F) 402 resid 5.08832e-10
-recip growth 0.00484701 condest 1.79787e+09 rcond 4.56786e-05 flops 191
-peak memory usage: 39868 bytes
+KLU: Sept 8, 2023, version: 2.2.0
+n 156 nnz(A) 362 nnz(L+U+F) 406 resid 6.14058e-10
+recip growth 0.00285463 condest 1.79787e+09 rcond 2.69023e-05 flops 207
+peak memory usage: 40060 bytes
 ./build/kludemo  < ./Matrix/ctina.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 4268 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 4268 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
-n 11 nnz(A) 36 nnz(L+U+F) 41 resid 4.44089e-16
-recip growth 1 condest 56 rcond 1 flops 49
+KLU: Sept 8, 2023, version: 2.2.0
+n 11 nnz(A) 36 nnz(L+U+F) 42 resid 4.44089e-16
+recip growth 1 condest 56 rcond 1 flops 54
 peak memory usage: 4268 bytes
 ./build/kluldemo < ./Matrix/1c.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 1 nnz(A) 1 nnz(L+U+F) 1 resid 0
 recip growth 1 condest 1 rcond 1 flops 0
 peak memory usage: 600 bytes
 ./build/kluldemo < ./Matrix/arrowc.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 39000 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.68007e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 39000 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
-n 100 nnz(A) 298 nnz(L+U+F) 298 resid 5.67084e-15
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 2.93788e-14
 recip growth 0.019999 condest 295.99 rcond 0.019999 flops 297
 peak memory usage: 39000 bytes
 ./build/kluldemo < ./Matrix/arrow.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 29584 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 29584 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
-n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.77636e-15
+n 100 nnz(A) 298 nnz(L+U+F) 298 resid 1.9762e-14
 recip growth 0.0204082 condest 303 rcond 0.0204082 flops 297
 peak memory usage: 29584 bytes
 ./build/kluldemo < ./Matrix/impcol_a.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 207 nnz(A) 572 nnz(L+U+F) 615 resid 6.98492e-10
 recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 259
 peak memory usage: 44800 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 ------------------- KLU User
 n 207 nnz(A) 572 nnz(L+U+F) 616 resid 6.98492e-10
@@ -196,7 +368,7 @@ recip growth 0.00957447 condest 4.35093e+07 rcond 4.5277e-05 flops 264
 peak memory usage: 44800 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 ------------------- KLU User
 n 207 nnz(A) 572 nnz(L+U+F) 610 resid 4.65661e-10
@@ -205,42 +377,42 @@ peak memory usage: 45152 bytes
 ./build/kluldemo < ./Matrix/w156.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 47480 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 n 156 nnz(A) 362 nnz(L+U+F) 396 resid 6.23816e-08
 recip growth 0.00889922 condest 1.79787e+09 rcond 0.000124785 flops 175
 peak memory usage: 47480 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
-n 156 nnz(A) 362 nnz(L+U+F) 402 resid 5.08832e-10
-recip growth 0.00484701 condest 1.79787e+09 rcond 4.56786e-05 flops 191
-peak memory usage: 47928 bytes
+n 156 nnz(A) 362 nnz(L+U+F) 406 resid 6.14058e-10
+recip growth 0.00285463 condest 1.79787e+09 rcond 2.69023e-05 flops 207
+peak memory usage: 48152 bytes
 ./build/kluldemo < ./Matrix/ctina.mtx
 
 default ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 5144 bytes
 
 CHOLMOD AMD ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
 n 11 nnz(A) 36 nnz(L+U+F) 45 resid 4.44089e-16
 recip growth 1 condest 56 rcond 1 flops 73
 peak memory usage: 5144 bytes
 
 CHOLMOD METIS ordering:
-KLU: Jan 9, 2023, version: 2.0.3
+KLU: Sept 8, 2023, version: 2.2.0
 ------------------- KLU User
-n 11 nnz(A) 36 nnz(L+U+F) 41 resid 4.44089e-16
-recip growth 1 condest 56 rcond 1 flops 49
+n 11 nnz(A) 36 nnz(L+U+F) 42 resid 4.44089e-16
+recip growth 1 condest 56 rcond 1 flops 54
 peak memory usage: 5144 bytes

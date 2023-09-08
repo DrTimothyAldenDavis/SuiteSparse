@@ -1,0 +1,17 @@
+# UMFPACK, Copyright (c) 1995-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: UMFPACK
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Routines solving sparse linear systems via LU factorization in SuiteSparse
+Version: @UMFPACK_VERSION_MAJOR@.@UMFPACK_VERSION_MINOR@.@UMFPACK_VERSION_SUB@
+Requires.private: SuiteSparse_config AMD @UMFPACK_STATIC_MODULES@
+Libs: -L${libdir} -lumfpack
+Libs.private: @UMFPACK_STATIC_LIBS@
+Cflags: -I${includedir}

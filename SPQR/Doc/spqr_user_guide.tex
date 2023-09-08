@@ -61,13 +61,13 @@ The algorithms used in SuiteSparseQR are discussed in a companion paper,
 \cite{Davis08b}.  This document gives detailed information on the installation
 and use of SuiteSparseQR.
 
-SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 
 SPDX-License-Identifier: GPL-2.0+
 
 The GPU modules in SPQRGPU are under a different copyright:
 
-    SPQRGPU, Copyright (c) 2008-2022, Timothy A Davis, Sanjay Ranka,
+    SPQRGPU, Copyright (c) 2008-2023, Timothy A Davis, Sanjay Ranka,
     Sencer Nuri Yeralan, and Wissam Sid-Lakhdar, All Rights Reserved.
 
 %-------------------------------------------------------------------------------
@@ -433,7 +433,8 @@ The C version of this function is almost identical:
 \end{verbatim}
 }
 
-Below is a simple C++ program that illustrates the use of SuiteSparseQR.  The
+Below is a simple C++ program that illustrates the use of SuiteSparseQR
+(with 64-bit integer indices).  The
 program reads in a least-squares problem from \verb'stdin' in MatrixMarket
 format \cite{BoisvertPozoRemingtonBarrettDongarra97}, solves it, and prints the
 norm of the residual and the estimated rank of \verb'A'.  The comments reflect
@@ -480,6 +481,16 @@ replaced with the C version of the statement above, and C-style comments.
         cholmod_l_finish (cc) ;
         return (0) ;
     }
+\end{verbatim}
+}
+
+To use SuiteSparseQR with 32-bit integer indices in all of its matrices,
+simply replace all \verb'cholmod_l_*' calls abovce to \verb'cholmod_*',
+and use this for SPQR:
+
+{\footnotesize
+\begin{verbatim}
+        X = SuiteSparseQR <double,int32_t> (A, B, cc) ;
 \end{verbatim}
 }
 
@@ -558,15 +569,17 @@ the C-callable functions.
 
 \end{enumerate}
 
-Most of the packages in SuiteSparse come in multiple versions with different
-sized integers:  \verb'int32_t' and \verb'int64_t'.
-By contrast, SuiteSparseQR only provides a \verb'int64_t' version.
+Version 4.0 of SuiteSparseQR adds a 32-bit version, where the indices of its
+sparse matrices are all \verb'int32_t', contributed by Raye Kimmerer.  To use
+this version, add \verb'int32_t' as the second template parameter to all C++
+methods, and use the \verb'cholmod_*' methods instead of \verb'cholmod_l_*'
+to create and access its input/output matrices.
 
 The C/C++ options corresponding to the MATLAB \verb'opts' parameters and the
 contents of the optional \verb'info' output of \verb'spqr_solve' are described
 below.  Let \verb'cc' be the CHOLMOD \verb'Common' object, containing parameter
 settings and statistics.  All are of type \verb'double', except for
-\verb'SPQR_istat' which is \verb'inte64_t',
+\verb'SPQR_istat' which is \verb'int64_t',
 \verb'cc->memory_usage' which is
 \verb'size_t', and \verb'cc->SPQR_nthreads' which is \verb'int'.  Parameters
 include:

@@ -168,7 +168,9 @@ SPQR/Tcov/gpu_results.txt
 SPQR/Tcov/gpuqrengine_demo
 SPQR/Tcov/qrdemo_gpu
 SPQR/Tcov/qrtest
+SPQR/Tcov/qrtest32
 SPQR/Tcov/qrtest_out.txt
+SPQR/Tcov/qrtest_out32.txt
 SPQR/Tcov/troll.m
 SPQR/Tcov/cov.out
 

@@ -17,7 +17,9 @@
 #include "cholmod.h"
 #include "colamd.h"
 #include "cs.h"
-#include "GraphBLAS.h"
+#if ! defined (NO_GRAPHBLAS)
+#  include "GraphBLAS.h"
+#endif
 #include "klu.h"
 #include "ldl.h"
 #include "RBio.h"
@@ -27,8 +29,8 @@
 
 #ifdef __cplusplus
 // SuiteSparse include files for C++:
-#include "SuiteSparseQR.hpp"
-#include "Mongoose.hpp"
+#  include "SuiteSparseQR.hpp"
+#  include "Mongoose.hpp"
 #endif
 
 // OpenMP include file:

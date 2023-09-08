@@ -13,12 +13,11 @@
 //
 // =============================================================================
 
-#include "GPUQREngine_BucketList.hpp"
-
-
 // CreateBundles selects rowtiles up to PANELSIZE and creates a new bundle
 // ready for factorization.
-void BucketList::CreateBundles
+#include "GPUQREngine_BucketList.hpp"
+template <typename Int>
+void BucketList<Int>::CreateBundles
 (
     void
 )
@@ -32,7 +31,7 @@ void BucketList::CreateBundles
         if (SkipBundleCreation(tile, colBucket)){ colBucket++; continue; }
 
         /* At this point we know we're going to add a bundle. */
-        LLBundle candidate(this, PanelSize, colBucket);
+        LLBundle <Int> candidate(this, PanelSize, colBucket);
         for (int i=0; i<PanelSize && tile != EMPTY; i++)
         {
             /* Remove the node from the bucket lists. */
@@ -59,9 +58,19 @@ void BucketList::CreateBundles
     }
 }
 
+template void BucketList<int32_t>::CreateBundles
+(
+    void
+) ;
+template void BucketList<int64_t>::CreateBundles
+(
+    void
+) ;
+
 // SkipBundleCreation determines whether we should skip creating a new
 // bundle for the specified tile in the specified column bucket.
-bool BucketList::SkipBundleCreation
+template <typename Int>
+bool BucketList<Int>::SkipBundleCreation
 (
     Int tile,           // The tile to consider
     Int colBucket       // The column bucket it sits in
@@ -84,12 +93,24 @@ bool BucketList::SkipBundleCreation
     return false;
 }
 
+template bool BucketList<int32_t>::SkipBundleCreation
+(
+    int32_t tile,           // The tile to consider
+    int32_t colBucket       // The column bucket it sits in
+) ;
+template bool BucketList<int64_t>::SkipBundleCreation
+(
+    int64_t tile,           // The tile to consider
+    int64_t colBucket       // The column bucket it sits in
+) ;
+
 // IsInternal determines whether a tile is completely within the bounds
 // of the front because if it isn't then we will need to use the special
 // edge case kernels.
-bool BucketList::IsInternal
+template <typename Int>
+bool BucketList<Int>::IsInternal
 (
-    LLBundle& Bundle,
+    LLBundle <Int>& Bundle,
     int jLast
 )
 {
@@ -112,3 +133,14 @@ bool BucketList::IsInternal
     Int iLast = TILESIZE * (iTile+1) - 1;
     return(iLast < front->fm && jLast < front->fn);
 }
+
+template bool BucketList<int32_t>::IsInternal
+(
+    LLBundle <int32_t>& Bundle,
+    int jLast
+) ;
+template bool BucketList<int64_t>::IsInternal
+(
+    LLBundle <int64_t>& Bundle,
+    int jLast
+) ;

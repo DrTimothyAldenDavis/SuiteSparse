@@ -10,12 +10,12 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "June 16, 2023" )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 2 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 0 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   4 )
+set ( SUITESPARSE_GPURUNTIME_DATE "Sept 8, 2023" )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 3 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 2 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   0 )
 
 message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
@@ -27,7 +27,6 @@ message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
@@ -54,7 +53,11 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.1.0 REQUIRED )
+find_package ( SuiteSparse_config 7.2.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -75,8 +78,7 @@ endif ( )
 
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
 
-set ( SUITESPARSE_GPURUNTIME_INCLUDES Include 
-    ${SUITESPARSE_CONFIG_INCLUDE_DIR} )
+set ( SUITESPARSE_GPURUNTIME_INCLUDES Include )
 
 include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
@@ -84,35 +86,41 @@ include_directories ( ${SUITESPARSE_GPURUNTIME_INCLUDES} ${CUDAToolkit_INCLUDE_D
 # dynamic suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
-add_library ( suitesparse_gpuruntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
+add_library ( GPURuntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
-set_target_properties ( suitesparse_gpuruntime PROPERTIES
+set_target_properties ( GPURuntime PROPERTIES
     VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
+    OUTPUT_NAME suitesparse_gpuruntime
     SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
     PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( suitesparse_gpuruntime PUBLIC
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+target_include_directories ( GPURuntime PRIVATE
+    ${CUDAToolkit_INCLUDE_DIRS}
+    ${SUITESPARSE_GPURUNTIME_INCLUDES}
+    $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
 if ( SUITESPARSE_CUDA )
-    set_target_properties ( suitesparse_gpuruntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
-    set_target_properties ( suitesparse_gpuruntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_link_libraries ( suitesparse_gpuruntime PRIVATE CUDA::nvrtc CUDA::cudart_static
+    set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( GPURuntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    target_link_libraries ( GPURuntime PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
+
+target_include_directories ( GPURuntime 
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 #-------------------------------------------------------------------------------
 # static suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( suitesparse_gpuruntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
+    add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
-    set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+    set_target_properties ( GPURuntime_static PROPERTIES
         VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
@@ -120,38 +128,97 @@ if ( NOT NSTATIC )
         SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES
+        set_target_properties ( GPURuntime_static PROPERTIES
             OUTPUT_NAME suitesparse_gpuruntime_static )
     endif ( )
 
-    target_include_directories ( suitesparse_gpuruntime_static PUBLIC
-            ${CUDAToolkit_INCLUDE_DIRS}
-            ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+    target_include_directories ( GPURuntime_static PRIVATE
+        ${CUDAToolkit_INCLUDE_DIRS}
+        ${SUITESPARSE_GPURUNTIME_INCLUDES}
+        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
     if ( SUITESPARSE_CUDA )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-        set_target_properties ( suitesparse_gpuruntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( suitesparse_gpuruntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
+        set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+        set_target_properties ( GPURuntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+        target_link_libraries ( GPURuntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
             CUDA::nvToolsExt CUDA::cublas )
     endif ( )
+
+    target_include_directories ( GPURuntime_static 
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
 endif ( )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse_GPURuntime installation location
 #-------------------------------------------------------------------------------
 
-install ( TARGETS suitesparse_gpuruntime
+include ( CMakePackageConfigHelpers )
+
+install ( TARGETS GPURuntime
+    EXPORT SuiteSparse_GPURuntimeTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES
-    ${CMAKE_SOURCE_DIR}/cmake_modules/FindSuiteSparse_GPURuntime.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
 if ( NOT NSTATIC )
-    install ( TARGETS suitesparse_gpuruntime_static
+    install ( TARGETS GPURuntime_static
+        EXPORT SuiteSparse_GPURuntimeTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT SuiteSparse_GPURuntimeTargets
+    NAMESPACE SuiteSparse::
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT SuiteSparse_GPURuntimeTargets
+    NAMESPACE SuiteSparse::
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_GPURuntime )
+
+configure_package_config_file (
+    Config/SuiteSparse_GPURuntimeConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_GPURuntime )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntimeConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_GPURuntime )
+
+#-------------------------------------------------------------------------------
+# create pkg-config file
+#-------------------------------------------------------------------------------
+
+if ( NOT MSVC )
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        Config/SuiteSparse_GPURuntime.pc.in
+        SuiteSparse_GPURuntime.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

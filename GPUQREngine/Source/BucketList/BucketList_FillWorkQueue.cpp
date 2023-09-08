@@ -21,11 +21,11 @@
 
 #include "GPUQREngine_BucketList.hpp"
 
-
 // FillWorkQueue is responsible for filling the work queue with items and
 // resolving generic TaskType entries on the bundles into concrete tasks
 // to be performed by the GPU.
-Int BucketList::FillWorkQueue
+template <typename Int>
+Int BucketList<Int>::FillWorkQueue
 (
     TaskDescriptor *queue,  // The list of work items for the GPU
     Int *queueIndex         // The current index into the queue
@@ -42,7 +42,7 @@ Int BucketList::FillWorkQueue
     // For all bundles the bucket list is currently tracking:
     for (int i = 0; i < numBundles; i++)
     {
-        LLBundle& bundle = Bundles[i];
+        LLBundle <Int>& bundle = Bundles[i];
         TaskType type = bundle.CurrentTask;
         int nativeBucket = (int) bundle.NativeBucket;
 
@@ -202,3 +202,14 @@ Int BucketList::FillWorkQueue
 
     return numTasks;
 }
+
+template int32_t BucketList<int32_t>::FillWorkQueue
+(
+    TaskDescriptor *queue,  // The list of work items for the GPU
+    int32_t *queueIndex         // The current index into the queue
+) ;
+template int64_t BucketList<int64_t>::FillWorkQueue
+(
+    TaskDescriptor *queue,  // The list of work items for the GPU
+    int64_t *queueIndex         // The current index into the queue
+) ;

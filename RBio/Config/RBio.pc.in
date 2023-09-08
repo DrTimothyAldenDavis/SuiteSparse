@@ -1,0 +1,17 @@
+# RBio, Copyright (c) 2009-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: RBio
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing format in SuiteSparse
+Version: @RBIO_VERSION_MAJOR@.@RBIO_VERSION_MINOR@.@RBIO_VERSION_SUB@
+Requires.private: SuiteSparse_config
+Libs: -L${libdir} -lrbio
+Libs.private: @RBIO_STATIC_LIBS@
+Cflags: -I${includedir}

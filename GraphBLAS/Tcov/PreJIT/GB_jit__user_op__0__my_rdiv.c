@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 // GB_jit__user_op__0__my_rdiv.c
 //------------------------------------------------------------------------------
-// SuiteSparse:GraphBLAS v8.0.1, Timothy A. Davis, (c) 2017-2023,
+// SuiteSparse:GraphBLAS v8.2.0, Timothy A. Davis, (c) 2017-2023,
 // All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 // The above copyright and license do not apply to any
@@ -37,7 +37,7 @@ GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query) ;
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
 {
     (*hash) = 0xa98ff14e387744fe ;
-    v [0] = 8 ; v [1] = 0 ; v [2] = 1 ;
+    v [0] = 8 ; v [1] = 2 ; v [2] = 0 ;
     defn [0] = GB_my_rdiv_USER_DEFN ;
     defn [1] = NULL ;
     defn [2] = NULL ;

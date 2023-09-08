@@ -69,41 +69,41 @@
 //     When all fronts are in the DONE state then the QREngine's work is done.
 //
 // =============================================================================
-
-#include "GPUQREngine_Scheduler.hpp"
 #include "GPUQREngine_GraphVizHelper.hpp"
-
+#include "GPUQREngine_Scheduler.hpp"
 
 // -----------------------------------------------------------------------------
 // prototypes for local functions
 // -----------------------------------------------------------------------------
-
+template <typename Int>
 TaskDescriptor buildSAssemblyTask
 (
-    Front *front,
+    Front <Int> *front,
     int pstart,
     int pend
 );
 
+template <typename Int>
 TaskDescriptor buildPackAssemblyTask
 (
-    Front *front,
+    Front <Int> *front,
     int cistart,
     int ciend,
     int cjstart,
     int cjend
 );
 
+template <typename Int>
 TaskDescriptor buildSmallQRTask
 (
-    Front *front
+    Front <Int> *front
 );
 
 // -----------------------------------------------------------------------------
 // Scheduler::fillWorkQueue
 // -----------------------------------------------------------------------------
-
-void Scheduler::fillWorkQueue
+template <typename Int>
+void Scheduler <Int>::fillWorkQueue
 (
     void
 )
@@ -141,7 +141,7 @@ void Scheduler::fillWorkQueue
             for(Int p=0; p<numActiveFronts && !valid; p++)
             {
                 Int f = afPerm[p];
-                Front *front = (&frontList[f]);
+                Front <Int> *front = (&frontList[f]);
                 valid = (front->gpuF == queue[t].F && front->printMe);
             }
             if(!valid) continue;
@@ -171,18 +171,26 @@ void Scheduler::fillWorkQueue
 #endif
 }
 
+template void Scheduler <int32_t>::fillWorkQueue
+(
+    void
+) ;
+template void Scheduler <int64_t>::fillWorkQueue
+(
+    void
+) ;
 // -----------------------------------------------------------------------------
 // Scheduler::fillTasks
 // -----------------------------------------------------------------------------
-
-void Scheduler::fillTasks
+template <typename Int>
+void Scheduler <Int>::fillTasks
 (
     Int f,                      // INPUT: Current front
     TaskDescriptor *queue,      // INPUT: CPU Task entries
     Int *queueIndex             // IN/OUT: The index of the current entry
 )
 {
-    Front *front = (&frontList[f]);
+    Front <Int> *front = (&frontList[f]);
     SparseMeta *sparseMeta = &(front->sparseMeta);
     bool isDense = front->isDense();
 
@@ -228,7 +236,7 @@ void Scheduler::fillTasks
             while(pstart != pend)
             {
                 /* Build the S Assembly task. */
-                queue[qindex++] = buildSAssemblyTask(front, pstart, pend);
+                queue[qindex++] = buildSAssemblyTask <Int>(front, pstart, pend);
 
                 /* Save-through the lastSIndex then update pend */
                 pstart = sparseMeta->lastSIndex = pend;
@@ -254,7 +262,7 @@ void Scheduler::fillTasks
         case FACTORIZE:
         {
             /* If we have to schedule the fronts via the scheduler: */
-            BucketList *Buckets = (&bucketLists[f]);
+            BucketList <Int> *Buckets = (&bucketLists[f]);
             if(Buckets->useFlag)
             {
                 /* Only invoke the bucket scheduler if we have enough space in
@@ -389,14 +397,25 @@ void Scheduler::fillTasks
     /* Copy-out the indexes. */
     *queueIndex = qindex;
 }
-
+template void Scheduler <int32_t>::fillTasks
+(
+    int32_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int32_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
+template void Scheduler <int64_t>::fillTasks
+(
+    int64_t f,                      // INPUT: Current front
+    TaskDescriptor *queue,      // INPUT: CPU Task entries
+    int64_t *queueIndex             // IN/OUT: The index of the current entry
+) ;
 // -----------------------------------------------------------------------------
 // buildSAssemblyTask
 // -----------------------------------------------------------------------------
-
+template <typename Int>
 TaskDescriptor buildSAssemblyTask
 (
-    Front *front,
+    Front <Int> *front,
     int pstart,
     int pend
 )
@@ -418,10 +437,10 @@ TaskDescriptor buildSAssemblyTask
 // -----------------------------------------------------------------------------
 // buildPackAssemblyTask
 // -----------------------------------------------------------------------------
-
+template <typename Int>
 TaskDescriptor buildPackAssemblyTask
 (
-    Front *front,
+    Front <Int> *front,
     int cistart,
     int ciend,
     int cjstart,
@@ -454,10 +473,10 @@ TaskDescriptor buildPackAssemblyTask
 // -----------------------------------------------------------------------------
 // buildSmallQRTask
 // -----------------------------------------------------------------------------
-
+template <typename Int>
 TaskDescriptor buildSmallQRTask
 (
-    Front *front
+    Front <Int> *front
 )
 {
     TaskDescriptor returner;

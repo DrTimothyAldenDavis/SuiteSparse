@@ -21,11 +21,12 @@
 // flopsFactorizeVT
 // -----------------------------------------------------------------------------
 
-Int flopsFactorizeVT(int numTiles)
+int64_t flopsFactorizeVT(int numTiles)
 {
-    Int m = TILESIZE * numTiles;
-    Int n = TILESIZE;
-    Int v = TILESIZE;
+    int64_t ntiles = numTiles ;
+    int64_t m = TILESIZE * ntiles ;
+    int64_t n = TILESIZE;
+    int64_t v = TILESIZE;
     return 2 * (m-1)                       +
            v * (6 + 4*m*n + 5*n + 2*m)     +
            ((-4*n -2*m -5) * (v*(v+1)/2))  +
@@ -37,9 +38,11 @@ Int flopsFactorizeVT(int numTiles)
 // flopsFactorize
 // -----------------------------------------------------------------------------
 
-Int flopsFactorize(int m, int n)
+int64_t flopsFactorize(int m_in, int n_in)
 {
-    Int v = MIN(m, n);
+    int64_t m = m_in ;
+    int64_t n = n_in ;
+    int64_t v = MIN(m, n);
     return 2 * (m-1)                    +
            v * (6 + 4*m*n + 5*n + 2*m)  +
            ((-4*n -2*m -4) * v*(v+1)/2) +
@@ -51,10 +54,12 @@ Int flopsFactorize(int m, int n)
 // flopsApply
 // -----------------------------------------------------------------------------
 
-Int flopsApply(int numTiles, int n)
+int64_t flopsApply(int numTiles, int n_in)
 {
-    Int m = TILESIZE * numTiles;
-    Int k = TILESIZE;
+    int64_t ntiles = numTiles ;
+    int64_t n = n_in ;
+    int64_t m = TILESIZE * ntiles;
+    int64_t k = TILESIZE;
     return k*n*(4*m - k + 3);
 }
 
@@ -63,7 +68,7 @@ Int flopsApply(int numTiles, int n)
 // -----------------------------------------------------------------------------
 
 #ifdef GPUQRENGINE_PIPELINING
-Int flopsApplyFactorize(int applyTiles, int factorizeTiles)
+int64_t flopsApplyFactorize(int applyTiles, int factorizeTiles)
 {
     return flopsApply(applyTiles, TILESIZE) + flopsFactorizeVT(factorizeTiles);
 }
@@ -73,7 +78,7 @@ Int flopsApplyFactorize(int applyTiles, int factorizeTiles)
 // getFlops
 // -----------------------------------------------------------------------------
 
-Int getFlops(TaskDescriptor *task)
+int64_t getFlops(const TaskDescriptor *task)
 {
     switch(task->Type)
     {
@@ -113,9 +118,9 @@ Int getFlops(TaskDescriptor *task)
 // getWeightedFlops
 // -----------------------------------------------------------------------------
 
-Int getWeightedFlops(TaskDescriptor *task)
+int64_t getWeightedFlops(const TaskDescriptor *task)
 {
-    Int flops = getFlops(task);
+    int64_t flops = getFlops(task);
     switch(task->Type)
     {
         case TASKTYPE_FactorizeVT_3x1:

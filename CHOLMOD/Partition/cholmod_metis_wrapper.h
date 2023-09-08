@@ -2,7 +2,7 @@
 // CHOLMOD/Partition/cholmod_metis_wrapper.h: METIS renaming for CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
+// CHOLMOD/Partition Module.  Copyright (C) 2005-2023, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -10,6 +10,11 @@
 
 #ifndef CHOLMOD_METIS_WRAP_H
 #define CHOLMOD_METIS_WRAP_H
+
+// always use GKRAND instead of the system rand in METIS
+#ifndef USE_GKRAND
+#define USE_GKRAND
+#endif
 
 #if defined ( __GNUC__ ) && !defined ( __clang__ )
     // disable memcpy warnings:

@@ -1,0 +1,121 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/AMD/cmake_modules/AMDConfig.cmake
+#-------------------------------------------------------------------------------
+
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# AMDConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
+
+# Finds the AMD include file and compiled library.
+# The following targets are defined:
+#   SuiteSparse::AMD           - for the shared library (if available)
+#   SuiteSparse::AMD_static    - for the static library (if available)
+
+# For backward compatibility the following variables are set:
+
+# AMD_INCLUDE_DIR - where to find amd.h
+# AMD_LIBRARY     - dynamic AMD library
+# AMD_STATIC      - static AMD library
+# AMD_LIBRARIES   - libraries when using AMD
+# AMD_FOUND       - true if AMD found
+
+# Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is
+# installed.
+
+#-------------------------------------------------------------------------------
+
+@PACKAGE_INIT@
+
+set ( AMD_DATE "@AMD_DATE@" )
+set ( AMD_VERSION_MAJOR @AMD_VERSION_MAJOR@ )
+set ( AMD_VERSION_MINOR @AMD_VERSION_MINOR@ )
+set ( AMD_VERSION_PATCH @AMD_VERSION_SUB@ )
+set ( AMD_VERSION "@AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@" )
+
+include ( ${CMAKE_CURRENT_LIST_DIR}/AMDTargets.cmake )
+
+# The following is only for backward compatibility with FindAMD.
+
+set ( _target_shared SuiteSparse::AMD )
+set ( _target_static SuiteSparse::AMD_static )
+set ( _var_prefix "AMD" )
+
+get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
+if ( ${_var_prefix}_INCLUDE_DIR )
+    # First item in SuiteSparse targets contains the "main" header directory.
+    list ( GET ${_var_prefix}_INCLUDE_DIR 0 ${_var_prefix}_INCLUDE_DIR )
+endif ( )
+get_target_property ( ${_var_prefix}_LIBRARY ${_target_shared} IMPORTED_IMPLIB )
+if ( NOT ${_var_prefix}_LIBRARY )
+    get_target_property ( _library_chk ${_target_shared} IMPORTED_LOCATION )
+    if ( EXISTS ${_library_chk} )
+        set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+    endif ( )
+endif ( )
+if ( TARGET ${_target_static} )
+    get_target_property ( ${_var_prefix}_STATIC ${_target_static} IMPORTED_LOCATION )
+endif ( )
+
+# Check for most common build types
+set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" )
+
+get_property ( _isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
+if ( _isMultiConfig )
+    # For multi-configuration generators (e.g., Visual Studio), prefer those
+    # configurations.
+    list ( PREPEND _config_types ${CMAKE_CONFIGURATION_TYPES} )
+else ( )
+    # For single-configuration generators, prefer the current configuration.
+    list ( PREPEND _config_types ${CMAKE_BUILD_TYPE} )
+endif ( )
+
+list ( REMOVE_DUPLICATES _config_types )
+
+foreach ( _config ${_config_types} )
+    string ( TOUPPER ${_config} _uc_config )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_IMPLIB_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( TARGET ${_target_static} AND NOT ${_var_prefix}_STATIC )
+        get_target_property ( _library_chk ${_target_static}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_STATIC ${_library_chk} )
+        endif ( )
+    endif ( )
+endforeach ( )
+
+set ( AMD_LIBRARIES ${AMD_LIBRARY} )
+
+macro ( suitesparse_check_exist _var _files )
+  # ignore generator expressions
+  string ( GENEX_STRIP "${_files}" _files2 )
+
+  foreach ( _file ${_files2} )
+    if ( NOT EXISTS "${_file}" )
+      message ( FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist!" )
+    endif ( )
+  endforeach ()
+endmacro ( )
+
+suitesparse_check_exist ( AMD_INCLUDE_DIR ${AMD_INCLUDE_DIR} )
+suitesparse_check_exist ( AMD_LIBRARY ${AMD_LIBRARY} )
+
+message ( STATUS "AMD version: ${AMD_VERSION}" )
+message ( STATUS "AMD include: ${AMD_INCLUDE_DIR}")
+message ( STATUS "AMD library: ${AMD_LIBRARY}")
+message ( STATUS "AMD static:  ${AMD_STATIC}")

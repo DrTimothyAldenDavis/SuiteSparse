@@ -1,0 +1,15 @@
+# SuiteSparse_config, Copyright (c) 2012-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: SuiteSparseConfig
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Configuration for SuiteSparse
+Version: @SUITESPARSE_VERSION_MAJOR@.@SUITESPARSE_VERSION_MINOR@.@SUITESPARSE_VERSION_SUB@
+Libs: -L${libdir} -lsuitesparseconfig
+Cflags: -I${includedir}

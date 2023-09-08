@@ -1,0 +1,137 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/SPQR/cmake_modules/SPQRConfig.cmake
+#-------------------------------------------------------------------------------
+
+# The following copyright and license applies to just this file only, not to
+# the library itself:
+# SPQRConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-clause
+
+#-------------------------------------------------------------------------------
+
+# Finds the SPQR include file and compiled library.
+# The following targets are defined:
+#   SuiteSparse::SPQR           - for the shared library (if available)
+#   SuiteSparse::SPQR_static    - for the static library (if available)
+
+# For backward compatibility the following variables are set:
+
+# SPQR_INCLUDE_DIR - where to find SuiteSparseQR.hpp and other headers
+# SPQR_LIBRARY     - dynamic SPQR library
+# SPQR_STATIC      - static SPQR library
+# SPQR_LIBRARIES   - libraries when using SPQR
+# SPQR_FOUND       - true if SPQR found
+
+# Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is
+# installed.
+
+#-------------------------------------------------------------------------------
+
+@PACKAGE_INIT@
+
+set ( SPQR_DATE "@SPQR_DATE@" )
+set ( SPQR_VERSION_MAJOR @SPQR_VERSION_MAJOR@ )
+set ( SPQR_VERSION_MINOR @SPQR_VERSION_MINOR@ )
+set ( SPQR_VERSION_PATCH @SPQR_VERSION_SUB@ )
+set ( SPQR_VERSION "@SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@" )
+
+if ( @SUITESPARSE_CUDA@ )
+    # Look for imported targets of additional dependency if SPQR was built with CUDA
+
+    if ( @SUITESPARSE_IN_BUILD_TREE@ )
+        # First check in a common build tree
+         find_package ( SPQR_CUDA ${SPQR_VERSION}
+            PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT TARGET SPQR_CUDA )
+            find_package ( SPQR_CUDA ${SPQR_VERSION} REQUIRED )
+        endif ( )
+    else ( )
+        find_package ( SPQR_CUDA ${SPQR_VERSION} REQUIRED )
+    endif ( )
+endif ( )
+
+include ( ${CMAKE_CURRENT_LIST_DIR}/SPQRTargets.cmake )
+
+# The following is only for backward compatibility with FindSPQR.
+
+set ( _target_shared SuiteSparse::SPQR )
+set ( _target_static SuiteSparse::SPQR_static )
+set ( _var_prefix "SPQR" )
+
+get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
+if ( ${_var_prefix}_INCLUDE_DIR )
+    # First item in SuiteSparse targets contains the "main" header directory.
+    list ( GET ${_var_prefix}_INCLUDE_DIR 0 ${_var_prefix}_INCLUDE_DIR )
+endif ( )
+get_target_property ( ${_var_prefix}_LIBRARY ${_target_shared} IMPORTED_IMPLIB )
+if ( NOT ${_var_prefix}_LIBRARY )
+    get_target_property ( _library_chk ${_target_shared} IMPORTED_LOCATION )
+    if ( EXISTS ${_library_chk} )
+        set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+    endif ( )
+endif ( )
+if ( TARGET ${_target_static} )
+    get_target_property ( ${_var_prefix}_STATIC ${_target_static} IMPORTED_LOCATION )
+endif ( )
+
+# Check for most common build types
+set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" )
+
+get_property ( _isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
+if ( _isMultiConfig )
+    # For multi-configuration generators (e.g., Visual Studio), prefer those
+    # configurations.
+    list ( PREPEND _config_types ${CMAKE_CONFIGURATION_TYPES} )
+else ( )
+    # For single-configuration generators, prefer the current configuration.
+    list ( PREPEND _config_types ${CMAKE_BUILD_TYPE} )
+endif ( )
+
+list ( REMOVE_DUPLICATES _config_types )
+
+foreach ( _config ${_config_types} )
+    string ( TOUPPER ${_config} _uc_config )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_IMPLIB_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( NOT ${_var_prefix}_LIBRARY )
+        get_target_property ( _library_chk ${_target_shared}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_LIBRARY ${_library_chk} )
+        endif ( )
+    endif ( )
+    if ( TARGET ${_target_static} AND NOT ${_var_prefix}_STATIC )
+        get_target_property ( _library_chk ${_target_static}
+            IMPORTED_LOCATION_${_uc_config} )
+        if ( EXISTS ${_library_chk} )
+            set ( ${_var_prefix}_STATIC ${_library_chk} )
+        endif ( )
+    endif ( )
+endforeach ( )
+
+set ( SPQR_LIBRARIES ${SPQR_LIBRARY} )
+
+macro ( suitesparse_check_exist _var _files )
+  # ignore generator expressions
+  string ( GENEX_STRIP "${_files}" _files2 )
+
+  foreach ( _file ${_files2} )
+    if ( NOT EXISTS "${_file}" )
+      message ( FATAL_ERROR "File or directory ${_file} referenced by variable ${_var} does not exist!" )
+    endif ( )
+  endforeach ()
+endmacro ( )
+
+suitesparse_check_exist ( SPQR_INCLUDE_DIR ${SPQR_INCLUDE_DIR} )
+suitesparse_check_exist ( SPQR_LIBRARY ${SPQR_LIBRARY} )
+
+message ( STATUS "SPQR version: ${SPQR_VERSION}" )
+message ( STATUS "SPQR include: ${SPQR_INCLUDE_DIR}" )
+message ( STATUS "SPQR library: ${SPQR_LIBRARY}" )
+message ( STATUS "SPQR static:  ${SPQR_STATIC}" )

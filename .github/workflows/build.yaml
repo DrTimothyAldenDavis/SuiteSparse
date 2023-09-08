@@ -22,12 +22,15 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: ubuntu-latest
 
+    name: ubuntu (${{ matrix.compiler }} ${{ matrix.cuda }} CUDA)
+
     strategy:
       # Allow other runners in the matrix to continue if some fail
       fail-fast: false
 
       matrix:
         compiler: [gcc, clang]
+        cuda: [with, without]
         include:
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
@@ -42,6 +45,12 @@ jobs:
             ccache-max: 600M
           - compiler: clang
             ccache-max: 500M
+          - cuda: with
+            cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
+            cuda-cmake-flags:
+              -DENABLE_CUDA=On
+              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 
     env:
       CC: ${{ matrix.cc }}
@@ -54,18 +63,19 @@ jobs:
       - name: install dependencies
         env:
           COMPILER_PKGS: ${{ matrix.compiler-pkgs }}
+          CUDA_PKGS: ${{ matrix.cuda-pkgs }}
         run: |
           sudo apt -qq update
           sudo apt install -y ${COMPILER_PKGS} autoconf automake ccache cmake \
             dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
-            libopenblas-dev
+            libopenblas-dev ${CUDA_PKGS}
 
       - name: prepare ccache
         # create key with human readable timestamp
         # used in action/cache/restore and action/cache/save steps
         id: ccache-prepare
         run: |
-          echo "key=ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
@@ -75,8 +85,23 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:ubuntu:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:ubuntu:${{ matrix.compiler }}
+            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ github.ref }}
+            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}
+
+      - name: create empty libraries
+        # This is to work around a bug in nvlink.
+        # See: https://forums.developer.nvidia.com/t/nvlink-fatal-could-not-open-input-file-when-linking-with-empty-static-library/208517
+        if: matrix.cuda == 'with'
+        run: |
+          touch empty.c
+          gcc -fPIC -c empty.c -oempty.o
+          ar rcsv libdl.a empty.o
+          ar rcsv librt.a empty.o
+          ar rcsv libpthread.a empty.o
+          # overwrite system libraries with "valid" empty libraries
+          sudo mv ./libdl.a /usr/lib/x86_64-linux-gnu/libdl.a
+          sudo mv ./librt.a /usr/lib/x86_64-linux-gnu/librt.a
+          sudo mv ./libpthread.a /usr/lib/x86_64-linux-gnu/libpthread.a
 
       - name: configure ccache
         env:
@@ -101,6 +126,7 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
+                  ${{ matrix.cuda-cmake-flags }} \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -146,6 +172,7 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
             -DBLA_VENDOR="OpenBLAS" \
+            ${{ matrix.cuda-cmake-flags }} \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"

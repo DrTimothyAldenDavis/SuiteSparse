@@ -28,28 +28,31 @@ enum QREngineResultCode
 
 // Use C++ Polymorphism to provide many different function signatures and
 // call patterns.
+template <typename Int = int64_t>
 QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,
-    Front *userFronts,
+    Front <Int> *userFronts,
     Int numFronts,
-    QREngineStats *stats = NULL
+    QREngineStats <Int> *stats = NULL
 );
 
+template <typename Int = int64_t>
 QREngineResultCode GPUQREngine
 (
     size_t gpuMemorySize,
-    Front *userFronts,
+    Front <Int> *userFronts,
     Int numFronts,
     Int *Parent,
     Int *Childp,
     Int *Child,
-    QREngineStats *stats = NULL
+    QREngineStats <Int> *stats = NULL
 );
 
+template <typename Int = int64_t>
 Int *GPUQREngine_FindStaircase
 (
-    Front *front                // The front whose staircase we are computing
+    Front <Int> *front                // The front whose staircase we are computing
 );
 
 // Version information:

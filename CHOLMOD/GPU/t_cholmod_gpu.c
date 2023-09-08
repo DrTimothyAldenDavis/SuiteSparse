@@ -49,7 +49,7 @@ void TEMPLATE2 (CHOLMOD (gpu_clear_memory))
     int chunk_multiplier = 5;
     int num_chunks = chunk_multiplier * num_threads;
     size_t chunksize = size / num_chunks;
-    size_t i;
+    int i;
 
 #pragma omp parallel for num_threads(num_threads) private(i) schedule(dynamic)
     for(i = 0; i < num_chunks; i++) {
@@ -116,14 +116,16 @@ int TEMPLATE2 (CHOLMOD (gpu_init))
     }
 
     /* divvy up the memory in dev_mempool */
-    gpu_p->d_Lx[0] = Common->dev_mempool;
-    gpu_p->d_Lx[1] = Common->dev_mempool + Common->devBuffSize;
-    gpu_p->d_C = Common->dev_mempool + 2*Common->devBuffSize;
-    gpu_p->d_A[0] = Common->dev_mempool + 3*Common->devBuffSize;
-    gpu_p->d_A[1] = Common->dev_mempool + 4*Common->devBuffSize;
-    gpu_p->d_Ls = Common->dev_mempool + 5*Common->devBuffSize;
-    gpu_p->d_Map = gpu_p->d_Ls + (nls+1)*sizeof(int64_t) ;
-    gpu_p->d_RelativeMap = gpu_p->d_Map + (n+1)*sizeof(int64_t) ;
+    // these d_* are (double *) pointers, so add an explicit typecast:
+    gpu_p->d_Lx[0] = (double *) (Common->dev_mempool) ;
+    gpu_p->d_Lx[1] = (double *) ((char*)Common->dev_mempool + Common->devBuffSize) ;
+    gpu_p->d_C     = (double *) ((char*)Common->dev_mempool + 2 * Common->devBuffSize) ;
+    gpu_p->d_A[0]  = (double *) ((char*)Common->dev_mempool + 3 * Common->devBuffSize) ;
+    gpu_p->d_A[1]  = (double *) ((char*)Common->dev_mempool + 4 * Common->devBuffSize) ;
+    // these d_* pointers are (void *):
+    gpu_p->d_Ls = (char*)Common->dev_mempool + 5 * Common->devBuffSize;
+    gpu_p->d_Map = (char*)gpu_p->d_Ls + (nls + 1) * sizeof(int64_t);
+    gpu_p->d_RelativeMap = (char*)gpu_p->d_Map + (n + 1) * sizeof(int64_t) ;
 
     /* Copy all of the Ls and Lpi data to the device.  If any supernodes are
      * to be computed on the device then this will be needed, so might as
@@ -188,6 +190,9 @@ int TEMPLATE2 (CHOLMOD (gpu_init))
 
 }
 
+#if defined(NCOMPAR_FN_T)
+typedef int (*__compar_fn_t)(const void *, const void *);
+#endif
 
 /* ========================================================================== */
 /* === gpu_reorder_descendants ============================================== */

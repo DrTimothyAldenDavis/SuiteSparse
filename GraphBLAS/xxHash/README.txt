@@ -13,8 +13,8 @@ Files in this folder:
 
     LICENSE         BSD 2-clause, Copyright (c) Copyright (c) 2012-present,
                     Yann Collet
-    xxhash.h        unmodified from the xxHash library, dev branch as of
-                    June 16, 2023
+    xxhash.h        from the xxHash library, dev branch as of June 16, 2023,
+                    slightly modified for GraphBLAS to fix the XXH_ALIGN macro.
     README_xxhash.md  xxhash/README.md
     README.txt      this file
 
