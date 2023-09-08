@@ -203,7 +203,7 @@ void my_function (void)
     err = 0 ;
     for (int i = 0 ; i < n ; i++)
     {
-        printf ("x2 [%d] = %g\n", i, b [i]) ;
+        printf ("x2 [%d] = %g\n", i, x2 [i]) ;
         err = fmax (err, fabs (x2 [i] - xgood [i])) ;
     }
     printf ("error: %g\n", err) ;
