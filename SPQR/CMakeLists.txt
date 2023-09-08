@@ -73,12 +73,6 @@ if ( SUITESPARSE_CUDA )
         find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
     endif ( )
 
-    find_package ( GPUQREngine 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../GPUQREngine/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::GPUQREngine )
-        find_package ( GPUQREngine 3.2.0 REQUIRED )
-    endif ( )
-
     find_package ( CHOLMOD_CUDA 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
@@ -91,6 +85,7 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
+    add_subdirectory ( GPUQREngine )
     add_subdirectory ( SPQRGPU )
 endif ( )
 
@@ -232,7 +227,7 @@ if ( SUITESPARSE_CUDA )
     # Maybe, those two targets aren't actually standalone libraries but should
     # be part of the SPQR project?
     target_link_libraries ( SPQR PRIVATE
-        SuiteSparse::GPUQREngine SuiteSparse::GPURuntime )
+        GPUQREngine SuiteSparse::GPURuntime )
     target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
     if ( NOT NSTATIC )
@@ -244,11 +239,8 @@ if ( SUITESPARSE_CUDA )
         target_link_libraries ( SPQR_static PUBLIC SPQR_CUDA_static )
         target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
 
-        if ( TARGET SuiteSparse::GPUQREngine_static )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPUQREngine_static )
-        else ( )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPUQREngine )
-        endif ( )
+        target_link_libraries ( SPQR_static PUBLIC GPUQREngine_static )
+
         if ( TARGET SuiteSparse::GPURuntime_static )
             target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPURuntime_static )
         else ( )
