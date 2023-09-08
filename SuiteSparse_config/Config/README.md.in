@@ -718,6 +718,8 @@ SuiteSparse build system and how it works with various Linux / Python distros
 and other package managers.  If you are a maintainer of a SuiteSparse packaging
 for a Linux distro, conda-forge, R, spack, brew, vcpkg, etc, please feel free
 to contact me if there's anything I can do to make your life easier.
+I would also like to thank Raye Kimmerer for adding support for 32-bit
+row/column indices in SPQR v4.2.0.
 
 See also the various Acknowledgements within each package.
 
