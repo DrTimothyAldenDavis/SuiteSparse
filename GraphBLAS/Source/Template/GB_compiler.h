@@ -168,8 +168,8 @@
 //------------------------------------------------------------------------------
 
 // If variable-length arrays are not supported, user-defined types are limited
-// in size to 128 bytes or less.  Many of the type-generic routines allocate
-// workspace for a single scalar of variable size, using a statement:
+// in size to GB_VLA_MAXSIZE bytes or less.  Many of the type-generic routines
+// allocate workspace for a single scalar of variable size, using a statement:
 //
 //      GB_void aij [xsize] ;
 //
@@ -178,8 +178,8 @@
 //      GB_void aij [GB_VLA(xsize)] ;
 //
 // GB_VLA(xsize) is either defined as xsize (for ANSI C99 or later), or a fixed
-// size of 128, in which case user-defined types
-// are limited to a max of 128 bytes.
+// size of GB_VLA_MAXSIZE, in which case user-defined types are limited to a
+// max of GB_VLA_MAXSIZE bytes.
 
 #if GB_COMPILER_NVCC
 
@@ -224,7 +224,7 @@
 #else
 
     // variable-length arrays are not allowed
-    #define GB_VLA_MAXSIZE 128
+    #define GB_VLA_MAXSIZE 1024
     #define GB_VLA(s) GB_VLA_MAXSIZE
 
 #endif

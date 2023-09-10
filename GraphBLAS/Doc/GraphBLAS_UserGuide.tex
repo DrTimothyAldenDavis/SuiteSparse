@@ -15980,7 +15980,7 @@ keyword, required for the polymorphic GraphBLAS functions.  So for example, you
 will need to use \verb'GrB_Matrix_free' instead of just \verb'GrB_free'.
 
 \item Variable-length arrays are not supported, so user-defined
-types are limited to 128 bytes in size.  This can be changed by editing
+types are limited to 1024 bytes in size.  This can be changed by editing
 \verb'GB_VLA_MAXSIZE' in \verb'Source/GB_compiler.h', and recompiling
 SuiteSparse:GraphBLAS.
 
