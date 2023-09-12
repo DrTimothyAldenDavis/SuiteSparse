@@ -474,8 +474,8 @@ endif ( )
 
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
-    message ( STATUS "CHOLMOD cuda: " ${CHOLMOD_CUDA} )
     target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA ${CUDA_LIBRARIES} )
+    set ( CHOLMOD_STATIC_MODULES " ${CHOLMOD_STATIC_MODULES} CHOLMOD_CUDA" )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
     endif ( )
