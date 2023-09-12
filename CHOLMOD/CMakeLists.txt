@@ -475,9 +475,12 @@ endif ( )
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA ${CUDA_LIBRARIES} )
-    set ( CHOLMOD_STATIC_MODULES " ${CHOLMOD_STATIC_MODULES} CHOLMOD_CUDA" )
+    set ( CHOLMOD_STATIC_MODULES "${CHOLMOD_STATIC_MODULES} CHOLMOD_CUDA" )
+    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DSUITESPARSE_CUDA" )
+    target_compile_definitions ( CHOLMOD PUBLIC "SUITESPARSE_CUDA" )
     if ( NOT NSTATIC )
         target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
+        target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
