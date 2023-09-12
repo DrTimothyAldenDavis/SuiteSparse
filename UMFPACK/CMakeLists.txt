@@ -83,14 +83,6 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.2.0 )
     endif ( )
 
-    if ( SUITESPARSE_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-            find_package ( CHOLMOD_CUDA 4.2.0 )
-        endif ( )
-    endif ( )
-
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( COLAMD 3.2.0
@@ -255,13 +247,9 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 # CHOLMOD:
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
-    message ( STATUS "CHOLMOD cuda libraries: " ${CHOLMOD_CUDA_LIBRARIES} )
-    target_link_libraries ( UMFPACK PRIVATE
-        SuiteSparse::CHOLMOD ${CHOLMOD_CUDA_LIBRARIES} )
+    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
     if ( NOT NSTATIC )
-        set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD CHOLMOD_CUDA" )
-        target_link_libraries ( UMFPACK_static PUBLIC
-            ${CHOLMOD_CUDA_STATIC} )
+        set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
         if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD_static )
         else ( )
