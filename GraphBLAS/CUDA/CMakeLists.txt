@@ -38,6 +38,7 @@ add_library ( GraphBLAS_CUDA SHARED ${GRAPHBLAS_CUDA_SOURCES} )
 
 set_target_properties ( GraphBLAS_CUDA PROPERTIES
     VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+    OUTPUT_NAME graphblascuda
     SOVERSION ${GraphBLAS_VERSION_MAJOR}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON )
@@ -112,6 +113,35 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfigVersion.cmake
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+
+#-------------------------------------------------------------------------------
+# create pkg-config file
+#-------------------------------------------------------------------------------
+
+if ( NOT MSVC )
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        Config/GraphBLAS_CUDA.pc.in
+        GraphBLAS_CUDA.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDA.pc
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # test suite for the CUDA kernels
