@@ -73,6 +73,8 @@ set_target_properties(GraphBLAS_CUDA PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
 target_link_libraries(GraphBLAS_CUDA CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver CUDA::nvToolsExt )
 
+target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
+
 target_include_directories ( GraphBLAS_CUDA
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
               $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )

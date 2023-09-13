@@ -61,7 +61,6 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DSUITESPARSE_CUDA" )
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
     set ( GB_RMM rmm_wrap ${CUDA_LIBRARIES} )
