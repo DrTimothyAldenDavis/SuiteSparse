@@ -14,4 +14,4 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: CHOLMOD/GPU module in SuiteSparse
 Version: @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@
 Libs: -L${libdir} -lcholmod_cuda
-Cflags: -I${includedir}
+Cflags: -I${includedir} -DSUITESPARSE_CUDA

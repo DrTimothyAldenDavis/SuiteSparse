@@ -75,13 +75,15 @@ target_include_directories ( CHOLMOD_CUDA PRIVATE
         ${CHOLMOD_CUDA_INCLUDES} )
 set_target_properties ( CHOLMOD_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( CHOLMOD_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+target_compile_definitions ( CHOLMOD_CUDA PUBLIC "SUITESPARSE_CUDA" )
 
 if ( NOT NSTATIC )
-target_include_directories ( CHOLMOD_CUDA_static PRIVATE
+    target_include_directories ( CHOLMOD_CUDA_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
-set_target_properties ( CHOLMOD_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-set_target_properties ( CHOLMOD_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    set_target_properties ( CHOLMOD_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( CHOLMOD_CUDA_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    target_compile_definitions ( CHOLMOD_CUDA_static PUBLIC "SUITESPARSE_CUDA" )
 endif ( )
 
 target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static

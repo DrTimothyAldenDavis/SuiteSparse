@@ -86,14 +86,6 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.2.0 )
     endif ( )
 
-    if ( SUITESPARSE_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-            find_package ( CHOLMOD_CUDA 4.2.0 )
-        endif ( )
-    endif ( )
-
     # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
     # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
     find_package ( CAMD 3.2.0

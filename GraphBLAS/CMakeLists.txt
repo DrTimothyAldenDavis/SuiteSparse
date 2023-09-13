@@ -63,7 +63,7 @@ if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DSUITESPARSE_CUDA" )
     add_subdirectory ( CUDA )
-    set ( GB_CUDA graphblascuda  ${CUDA_LIBRARIES} )
+    set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
     set ( GB_RMM rmm_wrap ${CUDA_LIBRARIES} )
     add_subdirectory ( rmm_wrap )
     include_directories ( "rmm_wrap" ${CUDA_INCLUDE_DIRS}
@@ -245,7 +245,7 @@ target_include_directories ( GraphBLAS
               $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 if ( SUITESPARSE_CUDA )
-    add_dependencies ( GraphBLAS graphblascuda )
+    add_dependencies ( GraphBLAS GraphBLAS_CUDA )
 #   add_dependencies ( GraphBLAS rmm_wrap )
 endif ( )
 
@@ -279,7 +279,7 @@ if ( NOT NSTATIC )
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
     if ( SUITESPARSE_CUDA )
-        add_dependencies ( GraphBLAS_static graphblascuda )
+        add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
 #       add_dependencies ( GraphBLAS_static rmm_wrap )
     endif ( )
 endif ( )
