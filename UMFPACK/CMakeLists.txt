@@ -83,27 +83,7 @@ if ( NOT NCHOLMOD )
         find_package ( CHOLMOD 4.2.0 )
     endif ( )
 
-    # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
-    # CCOLAMD are optional, but must be found if CHOLMOD was built with them.
-    find_package ( COLAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.2.0 )
-    endif ( )
-
-    find_package ( CAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CAMD )
-        find_package ( CAMD 3.2.0 )
-    endif ( )
-
-    find_package ( CCOLAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CCOLAMD )
-        find_package ( CCOLAMD 3.2.0 )
-    endif ( )
-
-    if ( NOT CHOLMOD_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
+    if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
     endif ( )
