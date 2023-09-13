@@ -35,6 +35,9 @@ set ( GRAPHBLAS_CUDA_VERSION_MINOR @GraphBLAS_VERSION_MINOR@ )
 set ( GRAPHBLAS_CUDA_VERSION_PATCH @GraphBLAS_VERSION_SUB@ )
 set ( GRAPHBLAS_CUDA_VERSION "@GraphBLAS_VERSION_MAJOR@.@GraphBLAS_VERSION_MINOR@.@GraphBLAS_VERSION_SUB@" )
 
+# Look for NVIDIA CUDA toolkit
+find_package ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
+
 include ( ${CMAKE_CURRENT_LIST_DIR}/GraphBLAS_CUDATargets.cmake )
 
 # The following is only for backward compatibility with FindGraphBLAS_CUDA.
