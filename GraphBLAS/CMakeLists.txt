@@ -61,7 +61,6 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DSUITESPARSE_CUDA" )
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
     set ( GB_RMM rmm_wrap ${CUDA_LIBRARIES} )
@@ -263,9 +262,9 @@ if ( NOT NSTATIC )
     add_library ( GraphBLAS_static STATIC ${GRAPHBLAS_SOURCES} )
 
     set_target_properties ( GraphBLAS_static PROPERTIES
-       VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
-       OUTPUT_NAME graphblas
-       SOVERSION ${GraphBLAS_VERSION_MAJOR}
+        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
+        OUTPUT_NAME graphblas
+        SOVERSION ${GraphBLAS_VERSION_MAJOR}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON )
 
@@ -280,6 +279,7 @@ if ( NOT NSTATIC )
 
     if ( SUITESPARSE_CUDA )
         add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
+        set ( GRAPHBLAS_STATIC_MODULES "${GRAPHBLAS_STATIC_MODULES} GraphBLAS_CUDA" )
 #       add_dependencies ( GraphBLAS_static rmm_wrap )
     endif ( )
 endif ( )
