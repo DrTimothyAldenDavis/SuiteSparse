@@ -268,7 +268,11 @@ GrB_Info GB_jitifyer_init (void)
             size_t len = strlen (home) + 60 ;
             GB_MALLOC_STUFF (GB_jit_cache_path, len) ;
             snprintf (GB_jit_cache_path, GB_jit_cache_path_allocated,
-                "%s/%sSuiteSparse/GrB%d.%d.%d", home, dot,
+                "%s/%sSuiteSparse/GrB%d.%d.%d"
+                #if defined ( GBMATLAB ) && defined ( __APPLE__ )
+                "_matlab"
+                #endif
+                , home, dot,
                 GxB_IMPLEMENTATION_MAJOR,
                 GxB_IMPLEMENTATION_MINOR,
                 GxB_IMPLEMENTATION_SUB) ;

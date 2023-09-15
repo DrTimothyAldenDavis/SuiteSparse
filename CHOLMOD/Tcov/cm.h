@@ -17,43 +17,6 @@
 #include <signal.h>
 
 /* -------------------------------------------------------------------------- */
-/* double, int64_t */
-/* -------------------------------------------------------------------------- */
-
-#ifdef DLONG
-#define Real double
-#define Int int64_t
-#define UInt uint64_t
-#define Int_max INT64_MAX
-#define CHOLMOD(name) cholmod_l_ ## name
-#define LONG
-#define DOUBLE
-#define ITYPE CHOLMOD_LONG
-#define DTYPE CHOLMOD_DOUBLE
-
-/* -------------------------------------------------------------------------- */
-/* double, int: this is the default */
-/* -------------------------------------------------------------------------- */
-
-#else
-
-#ifndef DINT
-#define DINT
-#endif
-#define INT
-#define DOUBLE
-
-#define Real double
-#define Int int32_t
-#define UInt uint32_t
-#define Int_max INT32_MAX
-#define CHOLMOD(name) cholmod_ ## name
-#define ITYPE CHOLMOD_INT
-#define DTYPE CHOLMOD_DOUBLE
-
-#endif
-
-/* -------------------------------------------------------------------------- */
 
 #include "cholmod_internal.h"
 
@@ -183,9 +146,7 @@ void camdtest (cholmod_sparse *A) ;
 /* AMD, COLAMD, and CCOLAMD */
 /* -------------------------------------------------------------------------- */
 
-#ifdef LONG
-
-#define ID "%" PRId64
+#if ( ITYPE == CHOLMOD_LONG )
 
 #define AMD_order amd_l_order
 #define AMD_defaults amd_l_defaults
@@ -237,8 +198,6 @@ void camdtest (cholmod_sparse *A) ;
 #define SYMAMD_report symamd_l_report
 
 #else
-
-#define ID "%d"
 
 #define AMD_order amd_order
 #define AMD_defaults amd_defaults

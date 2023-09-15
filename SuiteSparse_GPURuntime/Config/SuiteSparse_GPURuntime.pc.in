@@ -1,0 +1,18 @@
+# SuiteSparse_GPURuntime, Copyright (c) 2013-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+# FIXME: Which flags do we need to statically link CUDA
+
+Name: SuiteSparse_GPURuntime
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Helper functions for the GPU in SuiteSparse
+Version: @SUITESPARSE_GPURUNTIME_VERSION_MAJOR@.@SUITESPARSE_GPURUNTIME_VERSION_MINOR@.@SUITESPARSE_GPURUNTIME_VERSION_SUB@
+Requires.private: SuiteSparse_config
+Libs: -L${libdir} -lsuitesparse_gpuruntime
+Cflags: -I${includedir}

@@ -7,24 +7,24 @@
 
 //------------------------------------------------------------------------------
 
-#include "spqr.hpp"
-
 //  Overwrite a vector of length n with its cumulative sum of length n+1.
 //  On input, X [0:n-1] contains the counts.  On output, X [k] is replaced with
 //  the sum of the input counts X [0:k-1].  No work is done if n < 0 or if
 //  X is NULL.  int64_t overflow is not checked (SuiteSparseQR doesn't need it;
 //  it has already been checked whereever this function is used).
 
-int64_t spqr_cumsum
+#include "spqr.hpp"
+
+template <typename Int> Int spqr_cumsum
 (
     // input, not modified
-    int64_t n,
+    Int n,
 
     // input/output
-    int64_t *X                         // size n+1. X = cumsum ([0 X])
+    Int *X                         // size n+1. X = cumsum ([0 X])
 )
 {
-    int64_t itot, t, x, k ;
+    Int itot, t, x, k ;
 
     // -------------------------------------------------------------------------
     // X = cumsum ([0 X])
@@ -45,3 +45,20 @@ int64_t spqr_cumsum
 
     return (itot) ;
 }
+
+template int32_t spqr_cumsum <int32_t>
+(
+    // input, not modified
+    int32_t n,
+
+    // input/output
+    int32_t *X                         // size n+1. X = cumsum ([0 X])
+) ;
+template int64_t spqr_cumsum <int64_t>
+(
+    // input, not modified
+    int64_t n,
+
+    // input/output
+    int64_t *X                         // size n+1. X = cumsum ([0 X])
+) ;

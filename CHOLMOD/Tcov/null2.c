@@ -878,7 +878,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->print = 1 ;
 
     cm->print = 4 ;
-#ifdef LONG
+#if ( ITYPE == CHOLMOD_LONG )
     C->itype = CHOLMOD_INT ;
 #else
     C->itype = CHOLMOD_LONG ;
@@ -1183,7 +1183,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_factor)(L, "L OK", cm) ;			    OK (ok) ;
 
     cm->print = 4 ;
-#ifdef LONG
+#if ( ITYPE == CHOLMOD_LONG )
     L->itype = CHOLMOD_INT ;
 #else
     L->itype = CHOLMOD_LONG ;
@@ -2369,7 +2369,7 @@ if (do_nantests)
     ok = CHOLMOD(print_triplet)(T, "T ok", cm) ;		    OK (ok) ;
 
     cm->print = 4 ;
-#ifdef LONG
+#if ( ITYPE == CHOLMOD_LONG )
     T->itype = CHOLMOD_INT ;
 #else
     T->itype = CHOLMOD_LONG ;

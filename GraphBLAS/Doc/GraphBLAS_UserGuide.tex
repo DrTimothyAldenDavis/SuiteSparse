@@ -15980,7 +15980,7 @@ keyword, required for the polymorphic GraphBLAS functions.  So for example, you
 will need to use \verb'GrB_Matrix_free' instead of just \verb'GrB_free'.
 
 \item Variable-length arrays are not supported, so user-defined
-types are limited to 128 bytes in size.  This can be changed by editing
+types are limited to 1024 bytes in size.  This can be changed by editing
 \verb'GB_VLA_MAXSIZE' in \verb'Source/GB_compiler.h', and recompiling
 SuiteSparse:GraphBLAS.
 
@@ -16078,13 +16078,37 @@ Visual Studio 2019, but may work for earlier versions.
 %----------------------------------------
 
 To use OpenMP with clang on the Mac, try installing it from the 
-    \url{https://mac.r-project.org/openmp/} project:
+    \url{https://mac.r-project.org/openmp/} project.
+Be sure to check that page for the OpenMP version
+that matches your version of Apple Xcode.
+If using Xcode 13.3 to 13.4.1, use:
 
     {\scriptsize
     \begin{verbatim}
     curl -O https://mac.r-project.org/openmp/openmp-13.0.0-darwin21-Release.tar.gz
     sudo tar fvxz openmp-13.0.0-darwin21-Release.tar.gz -C /
     \end{verbatim} }
+
+
+For Xcode 14+ use the following instead.
+
+    {\scriptsize
+    \begin{verbatim}
+    curl -O https://mac.r-project.org/openmp/openmp-14.0.6-darwin20-Release.tar.gz
+    sudo tar fvxz openmp-14.0.6-darwin20-Release.tar.gz -C /
+    \end{verbatim} }
+
+These commands will install universal binaries (ARM and x86) for
+\verb'libomp.dylib', and the following files:
+
+    {\scriptsize
+    \begin{verbatim}
+    /usr/local/lib/libomp.dylib
+    /usr/local/include/ompt.h
+    /usr/local/include/omp.h
+    /usr/local/include/omp-tools.h
+    \end{verbatim} }
+
 
 Once you do this, the GraphBLAS Cmake should find this copy of OpenMP
 for clang.
@@ -16423,6 +16447,12 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Version 8.2.0, Sept 5, 2023
+
+    \begin{itemize}
+    \item cmake updates: \verb'SuiteSparse::' namespace by Markus M\"{u}tzel.
+    \end{itemize}
 
 \item Version 8.0.2, June 16, 2023
 

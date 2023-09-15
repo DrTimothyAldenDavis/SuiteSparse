@@ -1,0 +1,17 @@
+# CHOLMOD_CUDA, Copyright (c) 2005-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+# FIXME: Which flags do we need for static linking?
+
+Name: CHOLMOD_CUDA
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: CHOLMOD/GPU module in SuiteSparse
+Version: @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@
+Libs: -L${libdir} -lcholmod_cuda
+Cflags: -I${includedir} -DSUITESPARSE_CUDA

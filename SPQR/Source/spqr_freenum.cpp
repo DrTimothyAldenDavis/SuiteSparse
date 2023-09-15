@@ -7,20 +7,20 @@
 
 //------------------------------------------------------------------------------
 
-// Frees the contents of the QR Numeric object
-
 #include "spqr.hpp"
 
-template <typename Entry> void spqr_freenum
+// Frees the contents of the QR Numeric object
+
+template <typename Entry, typename Int> void spqr_freenum
 (
-    spqr_numeric <Entry> **QRnum_handle,
+    spqr_numeric <Entry, Int> **QRnum_handle,
 
     // workspace and parameters
     cholmod_common *cc
 )
 {
-    spqr_numeric <Entry> *QRnum ;
-    int64_t nf, n, m, rjsize, hisize, ns, stack, maxstack ;
+    spqr_numeric <Entry, Int> *QRnum ;
+    Int nf, n, m, rjsize, hisize, ns, stack, maxstack ;
 
     if (QRnum_handle == NULL || *QRnum_handle == NULL)
     {
@@ -37,53 +37,63 @@ template <typename Entry> void spqr_freenum
     ns = QRnum->ns ;
     maxstack = QRnum->maxstack ;
 
-    cholmod_l_free (nf, sizeof (Entry *), QRnum->Rblock, cc) ;
-    cholmod_l_free (n,  sizeof (char),    QRnum->Rdead,  cc) ;
+    spqr_free <Int> (nf, sizeof (Entry *), QRnum->Rblock, cc) ;
+    spqr_free <Int> (n,  sizeof (char),    QRnum->Rdead,  cc) ;
 
     if (QRnum->keepH)
     {
         // QRnum->H* items are present only if H is kept
-        cholmod_l_free (rjsize, sizeof (int64_t),  QRnum->HStair,  cc) ;
-        cholmod_l_free (rjsize, sizeof (Entry), QRnum->HTau,    cc) ;
-        cholmod_l_free (nf,     sizeof (int64_t),  QRnum->Hm,      cc) ;
-        cholmod_l_free (nf,     sizeof (int64_t),  QRnum->Hr,      cc) ;
-        cholmod_l_free (hisize, sizeof (int64_t),  QRnum->Hii,     cc) ;
-        cholmod_l_free (m,      sizeof (int64_t),  QRnum->HPinv,   cc) ;
+        spqr_free <Int> (rjsize, sizeof (Int),  QRnum->HStair,  cc) ;
+        spqr_free <Int> (rjsize, sizeof (Entry), QRnum->HTau,    cc) ;
+        spqr_free <Int> (nf,     sizeof (Int),  QRnum->Hm,      cc) ;
+        spqr_free <Int> (nf,     sizeof (Int),  QRnum->Hr,      cc) ;
+        spqr_free <Int> (hisize, sizeof (Int),  QRnum->Hii,     cc) ;
+        spqr_free <Int> (m,      sizeof (Int),  QRnum->HPinv,   cc) ;
     }
 
     // free each stack
     if (QRnum->Stacks != NULL)
     {
-        int64_t *Stack_size = QRnum->Stack_size ;
+        Int *Stack_size = QRnum->Stack_size ;
         for (stack = 0 ; stack < ns ; stack++)
         {
             size_t s = Stack_size ? (Stack_size [stack]) : maxstack ;
-            cholmod_l_free (s, sizeof (Entry), QRnum->Stacks [stack], cc) ;
+            spqr_free <Int> (s, sizeof (Entry), QRnum->Stacks [stack], cc) ;
         }
     }
-    cholmod_l_free (ns, sizeof (Entry *), QRnum->Stacks, cc) ;
-    cholmod_l_free (ns, sizeof (int64_t), QRnum->Stack_size, cc) ;
+    spqr_free <Int> (ns, sizeof (Entry *), QRnum->Stacks, cc) ;
+    spqr_free <Int> (ns, sizeof (Int), QRnum->Stack_size, cc) ;
 
-    cholmod_l_free (1, sizeof (spqr_numeric<Entry>), QRnum, cc) ;
+    spqr_free <Int> (1, sizeof (spqr_numeric<Entry, Int>), QRnum, cc) ;
     *QRnum_handle = NULL ;
 }
 
-// =============================================================================
-
-template void spqr_freenum <double>
+template void spqr_freenum <double, int32_t>
 (
-    spqr_numeric <double> **QRnum_handle,
+    spqr_numeric <double, int32_t> **QRnum_handle,
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
-
-// =============================================================================
-
-template void spqr_freenum <Complex>
+template void spqr_freenum <double, int64_t>
 (
-    spqr_numeric <Complex> **QRnum_handle,
+    spqr_numeric <double, int64_t> **QRnum_handle,
 
     // workspace and parameters
     cholmod_common *cc
 ) ;
+template void spqr_freenum <Complex, int32_t>
+(
+    spqr_numeric <Complex, int32_t> **QRnum_handle,
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+template void spqr_freenum <Complex, int64_t>
+(
+    spqr_numeric <Complex, int64_t> **QRnum_handle,
+
+    // workspace and parameters
+    cholmod_common *cc
+) ;
+// =============================================================================

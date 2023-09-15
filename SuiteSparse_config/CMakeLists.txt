@@ -14,9 +14,9 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "June 29, 2023" )
+set ( SUITESPARSE_DATE "Sept 8, 2023" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
-set ( SUITESPARSE_VERSION_MINOR 1 )
+set ( SUITESPARSE_VERSION_MINOR 2 )
 set ( SUITESPARSE_VERSION_SUB   0 )
 
 message ( STATUS "Building SuiteSparse_config version: v"
@@ -45,7 +45,7 @@ endif ( )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( suitesparseconfig
+project ( SuiteSparseConfig
     VERSION "${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}"
     LANGUAGES C )
 
@@ -77,28 +77,33 @@ configure_file ( "Config/README.md.in"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
-# dynamic suitesparseconfig library properties
+# dynamic SuiteSparseConfig library properties
 #-------------------------------------------------------------------------------
 
 file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
-add_library ( suitesparseconfig SHARED ${SUITESPARSECONFIG_SOURCES} )
-set_target_properties ( suitesparseconfig PROPERTIES
+add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
+set_target_properties ( SuiteSparseConfig PROPERTIES
     VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
     C_STANDARD 11
     C_STANDARD_REQUIRED ON
+    OUTPUT_NAME suitesparseconfig
     SOVERSION ${SUITESPARSE_VERSION_MAJOR}
     PUBLIC_HEADER "SuiteSparse_config.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( SuiteSparseConfig
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
 #-------------------------------------------------------------------------------
-# static suitesparseconfig library properties
+# static SuiteSparseConfig library properties
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( suitesparseconfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
+    add_library ( SuiteSparseConfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
-    set_target_properties ( suitesparseconfig_static PROPERTIES
+    set_target_properties ( SuiteSparseConfig_static PROPERTIES
         VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
@@ -106,9 +111,13 @@ if ( NOT NSTATIC )
         SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
 
     if ( MSVC )
-        set_target_properties ( suitesparseconfig_static PROPERTIES
+        set_target_properties ( SuiteSparseConfig_static PROPERTIES
             OUTPUT_NAME suitesparseconfig_static )
     endif ( )
+
+    target_include_directories ( SuiteSparseConfig_static
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -117,9 +126,9 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( suitesparseconfig PRIVATE m )
+    target_link_libraries ( SuiteSparseConfig PRIVATE m )
     if ( NOT NSTATIC )
-        target_link_libraries ( suitesparseconfig_static PUBLIC m )
+        target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
     endif ( )
 endif ( )
 
@@ -128,9 +137,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( suitesparseconfig PRIVATE ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
     if ( NOT NSTATIC )
-        target_link_libraries ( suitesparseconfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SuiteSparseConfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
     include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
@@ -147,12 +156,15 @@ if ( BLAS_FOUND )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# suitesparseconfig installation location
+# SuiteSparseConfig installation location
 #-------------------------------------------------------------------------------
+
+include ( CMakePackageConfigHelpers )
 
 file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
-install ( TARGETS suitesparseconfig
+install ( TARGETS SuiteSparseConfig
+    EXPORT SuiteSparse_configTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
@@ -162,8 +174,64 @@ install ( FILES
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse
     COMPONENT Development )
 if ( NOT NSTATIC )
-    install ( TARGETS suitesparseconfig_static
+    install ( TARGETS SuiteSparseConfig_static
+        EXPORT SuiteSparse_configTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT SuiteSparse_configTargets
+    NAMESPACE SuiteSparse::
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configTargets.cmake )
+
+# install export target and config for find_package
+install ( EXPORT SuiteSparse_configTargets
+    NAMESPACE SuiteSparse::
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
+
+configure_package_config_file (
+    Config/SuiteSparse_configConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_configConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse_config )
+
+#-------------------------------------------------------------------------------
+# create pkg-config file
+#-------------------------------------------------------------------------------
+
+if ( NOT MSVC )
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        Config/SuiteSparse_config.pc.in
+        SuiteSparse_config.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_config.pc
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+endif ( )
+
+#-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )

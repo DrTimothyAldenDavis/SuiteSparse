@@ -1,0 +1,17 @@
+# COLAMD, Copyright (c) 1998-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: BSD-3-Clause
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: COLAMD
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Routines for column approximate minimum degree ordering algorithm in SuiteSparse
+Version: @COLAMD_VERSION_MAJOR@.@COLAMD_VERSION_MINOR@.@COLAMD_VERSION_SUB@
+Requires.private: SuiteSparse_config
+Libs: -L${libdir} -lcolamd
+Libs.private: @COLAMD_STATIC_LIBS@
+Cflags: -I${includedir}

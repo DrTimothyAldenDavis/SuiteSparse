@@ -33,19 +33,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+template <typename Int>
 void GraphVizHelper_ComputeBundleLabel
 (
-    LLBundle& bundle,   // C++ Reference to the bundle
+    LLBundle <Int>& bundle,   // C++ Reference to the bundle
     char *label         // (output) The label to use for the bundle
 );
 
 static int DotSID = 1;
 
-void GPUQREngine_RenderBuckets(BucketList *buckets)
+template <typename Int>
+void GPUQREngine_RenderBuckets(BucketList <Int> *buckets)
 {
     // if(!RENDER_DENSE_FACTORIZATION) return;
 
-    LLBundle *bundles = buckets->Bundles;
+    LLBundle <Int> *bundles = buckets->Bundles;
 
     int numBundles = buckets->numBundles;
     char bundleNames[numBundles][64];
@@ -139,7 +141,7 @@ void GPUQREngine_RenderBuckets(BucketList *buckets)
         }
         for(int i=0; i<numBundles; i++)
         {
-            LLBundle& bundle = bundles[i];
+            LLBundle <Int>& bundle = bundles[i];
             if (bundle.NativeBucket == colBucket)
             {
                 sprintf(bundleNames[bbc], "CB_%d_HB_%d", colBucket, bbc);
@@ -191,9 +193,10 @@ void GPUQREngine_RenderBuckets(BucketList *buckets)
     fclose(output);
 }
 
+template <typename Int>
 void GraphVizHelper_ComputeBundleLabel
 (
-    LLBundle& bundle,   // C++ Reference to the bundle
+    LLBundle <Int>& bundle,   // C++ Reference to the bundle
     char *label         // (output) The label to use for the bundle
 )
 {

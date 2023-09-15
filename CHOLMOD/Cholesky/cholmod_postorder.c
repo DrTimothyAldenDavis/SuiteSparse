@@ -139,7 +139,7 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
 (
     /* ---- input ---- */
     Int *Parent,	/* size n. Parent [j] = p if p is the parent of j */
-    size_t n,
+    size_t n_input,
     Int *Weight,	/* size n, optional. Weight [j] is weight of node j */
     /* ---- output --- */
     Int *Post,		/* size n. Post [k] = j is kth in postordered tree */
@@ -151,6 +151,7 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
     Int j, p, k, w, nextj ;
     size_t s ;
     int ok = TRUE ;
+    Int n = (Int) n_input ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -166,7 +167,7 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
     /* ---------------------------------------------------------------------- */
 
     /* s = 2*n */
-    s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
+    s = CHOLMOD(mult_size_t) (n_input, (size_t) 2, &ok) ;
     if (!ok)
     {
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

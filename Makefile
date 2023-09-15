@@ -227,6 +227,6 @@ debug:
 	( cd SuiteSparse_GPURuntime && $(MAKE) )
 	( cd GPUQREngine && $(MAKE) )
 	( cd SPQR && $(MAKE) debug )
-	( cd GraphBLAS && $(MAKE) debug )
+	( cd GraphBLAS && $(MAKE) cdebug )
 	( cd SPEX && $(MAKE) debug )
 

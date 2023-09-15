@@ -9,16 +9,16 @@
 
 #include "spqr.hpp"
 
-int64_t spqr_csize     // returns # of entries in C of a child
+template <typename Int> Int spqr_csize     // returns # of entries in C of a child
 (
     // input, not modified
-    int64_t c,                 // child c
-    int64_t *Rp,               // size nf+1, pointers for pattern of R
-    int64_t *Cm,               // size nf, Cm [c] = # of rows in child C
-    int64_t *Super             // size nf, pivotal columns in each front
+    Int c,                 // child c
+    Int *Rp,               // size nf+1, pointers for pattern of R
+    Int *Cm,               // size nf, Cm [c] = # of rows in child C
+    Int *Super             // size nf, pivotal columns in each front
 )
 {
-    int64_t pc, cm, fnc, fpc, cn, csize ;
+    Int pc, cm, fnc, fpc, cn, csize ;
 
     pc = Rp [c] ;                   // get the pattern of child R
     cm = Cm [c] ;                   // # of rows in child C
@@ -32,3 +32,19 @@ int64_t spqr_csize     // returns # of entries in C of a child
     return (csize) ;
 }
 
+template int32_t spqr_csize <int32_t>     // returns # of entries in C of a child
+(
+    // input, not modified
+    int32_t c,                 // child c
+    int32_t *Rp,               // size nf+1, pointers for pattern of R
+    int32_t *Cm,               // size nf, Cm [c] = # of rows in child C
+    int32_t *Super             // size nf, pivotal columns in each front
+) ;
+template int64_t spqr_csize <int64_t>     // returns # of entries in C of a child
+(
+    // input, not modified
+    int64_t c,                 // child c
+    int64_t *Rp,               // size nf+1, pointers for pattern of R
+    int64_t *Cm,               // size nf, Cm [c] = # of rows in child C
+    int64_t *Super             // size nf, pivotal columns in each front
+) ;

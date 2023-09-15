@@ -49,7 +49,6 @@
 #define NUMTHREADS                     384
 #define PACKASSEMBLY_SHMEM_MAPINTS     2024
 
-
 /*** Common Macros ***********************************************************/
 
 // ceiling of a/b for two integers a and b
@@ -66,7 +65,7 @@
 #endif
 
 #define EMPTY       (-1)
-#define Int         int64_t
+// #define Int         int64_t
 
 // To render the buckets for visualization in graphvis, uncomment this next
 // line, or compile the code with -DGPUQRENGINE_RENDER

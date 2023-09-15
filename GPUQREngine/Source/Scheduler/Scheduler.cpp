@@ -21,24 +21,22 @@
 // the constructor is responsible for memory management AND initialization.
 // =============================================================================
 
-#include "GPUQREngine_Scheduler.hpp"
-
 // -----------------------------------------------------------------------------
 // Macro destructor
 // -----------------------------------------------------------------------------
-
-#define FREE_EVERYTHING \
+#include "GPUQREngine_Scheduler.hpp"
+#define FREE_EVERYTHING_SCHEDULER \
     afPerm = (Int *) SuiteSparse_free(afPerm); \
     afPinv = (Int *) SuiteSparse_free(afPinv); \
     if(bucketLists) \
     { \
         for(Int f=0; f<numFronts; f++) \
         { \
-            BucketList *dlbl = (&bucketLists[f]); \
+            BucketList <Int> *dlbl = (&bucketLists[f]); \
             dlbl->~BucketList(); \
         } \
     } \
-    bucketLists = (BucketList*) SuiteSparse_free(bucketLists); \
+    bucketLists = (BucketList <Int> *) SuiteSparse_free(bucketLists); \
     FrontDataPulled = (bool *) SuiteSparse_free(FrontDataPulled); \
     eventFrontDataReady =(cudaEvent_t*) SuiteSparse_free(eventFrontDataReady); \
     eventFrontDataPulled=(cudaEvent_t*) SuiteSparse_free(eventFrontDataPulled);\
@@ -56,9 +54,10 @@
 // Scheduler constructor
 // -----------------------------------------------------------------------------
 
-Scheduler::Scheduler
+template <typename Int>
+Scheduler <Int>::Scheduler
 (
-    Front *fronts,
+    Front <Int> *fronts,
     Int numFronts,
     size_t gpuMemorySize
 )
@@ -87,8 +86,8 @@ Scheduler::Scheduler
 
     afPerm = (Int*) SuiteSparse_calloc(numFronts, sizeof(Int));
     afPinv = (Int*) SuiteSparse_calloc(numFronts, sizeof(Int));
-    bucketLists = (BucketList*)
-        SuiteSparse_calloc(numFronts, sizeof(BucketList));
+    bucketLists = (BucketList <Int>*)
+        SuiteSparse_calloc(numFronts, sizeof(BucketList <Int>));
     FrontDataPulled = (bool*) SuiteSparse_calloc(numFronts, sizeof(bool));
     eventFrontDataReady =
         (cudaEvent_t*) SuiteSparse_calloc(numFronts, sizeof(cudaEvent_t));
@@ -98,7 +97,7 @@ Scheduler::Scheduler
     if(!afPerm || !afPinv || !bucketLists || !FrontDataPulled
        || !eventFrontDataReady || !eventFrontDataPulled)
     {
-        FREE_EVERYTHING ;
+        FREE_EVERYTHING_SCHEDULER ;
         memory_ok = false;
         return;
     }
@@ -111,7 +110,7 @@ Scheduler::Scheduler
        If this fails, we have either cuda_ok = false or memory_ok = false. */
     if(!initialize(gpuMemorySize))
     {
-        FREE_EVERYTHING;
+        FREE_EVERYTHING_SCHEDULER ;
         // If cuda_ok is still true then we ran out of memory.
         // Else we had enough memory but failed the cuda calls.
         if(cuda_ok) memory_ok = false;
@@ -160,22 +159,38 @@ Scheduler::Scheduler
     renderCount = 0;
     #endif
 }
+template Scheduler <int32_t>::Scheduler
+(
+    Front <int32_t> *fronts,
+    int32_t numFronts,
+    size_t gpuMemorySize
+) ;
+template Scheduler <int64_t>::Scheduler
+(
+    Front <int64_t> *fronts,
+    int64_t numFronts,
+    size_t gpuMemorySize
+) ;
 
 // -----------------------------------------------------------------------------
 // Scheduler destructor
 // -----------------------------------------------------------------------------
-
-Scheduler::~Scheduler()
+template <typename Int>
+Scheduler <Int>::~Scheduler()
 {
-    FREE_EVERYTHING ;
+    FREE_EVERYTHING_SCHEDULER ;
 }
+template Scheduler <int32_t>::~Scheduler() ;
+template Scheduler <int64_t>::~Scheduler() ;
+
 
 // -----------------------------------------------------------------------------
 // Scheduler::initialize
 // -----------------------------------------------------------------------------
 // Returns true if OK, false if out of memory or cuda initialization failed.
 // -----------------------------------------------------------------------------
-bool Scheduler::initialize
+template <typename Int>
+bool Scheduler <Int>::initialize
 (
     size_t gpuMemorySize
 )
@@ -187,7 +202,7 @@ bool Scheduler::initialize
     for(int pf=0; pf<numFronts; pf++)
     {
         /* Extract the front details from the frontListing. */
-        Front *front = &(frontList[pf]);
+        Front <Int> *front = &(frontList[pf]);
         SparseMeta *meta = &(front->sparseMeta);
         Int f = front->fids;
         bool isDense = front->isDense();
@@ -197,7 +212,7 @@ bool Scheduler::initialize
         afPinv[f] = EMPTY;
 
         /* Configure the bucket list for each front. */
-        BucketList *dlbl = (&bucketLists[f]);
+        BucketList <Int> *dlbl = (&bucketLists[f]);
         dlbl->useFlag = false;
         if(front->isTooBigForSmallQR())
         {
@@ -258,3 +273,12 @@ bool Scheduler::initialize
 
     return cuda_ok;
 }
+
+template bool Scheduler <int32_t>::initialize
+(
+    size_t gpuMemorySize
+) ;
+template bool Scheduler <int64_t>::initialize
+(
+    size_t gpuMemorySize
+) ;

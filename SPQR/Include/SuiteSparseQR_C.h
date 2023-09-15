@@ -10,21 +10,11 @@
 #ifndef SUITESPARSEQR_C_H
 #define SUITESPARSEQR_C_H
 
-#ifdef __cplusplus
-/* If included by a C++ program, the Complex type is std::complex<double> */
-#include <complex>
-#define Complex std::complex<double>
-extern "C" {
-#endif
-
 #include "cholmod.h"
 #include "SuiteSparseQR_definitions.h"
 
-#ifndef __cplusplus
-/* The C++ functions will return a pointer to a std::complex<double> array of
-   size n, which the C code must then interpret as double array of size 2*n,
-   with real and imaginary parts interleaved. */
-#define Complex double
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 /* ========================================================================== */
@@ -36,7 +26,7 @@ int64_t SuiteSparseQR_C /* returns rank(A) estimate, (-1) if failure */
     /* inputs: */
     int ordering,               /* all, except 3:given treated as 0:fixed */
     double tol,                 /* columns with 2-norm <= tol treated as 0 */
-    int64_t econ,      /* e = max(min(m,econ),rank(A)) */
+    int64_t econ,               /* e = max(min(m,econ),rank(A)) */
     int getCTX,                 /* 0: Z=C (e-by-k), 1: Z=C', 2: Z=X (e-by-k) */
     cholmod_sparse *A,          /* m-by-n sparse matrix to factorize */
     cholmod_sparse *Bsparse,    /* sparse m-by-k B */
@@ -45,9 +35,30 @@ int64_t SuiteSparseQR_C /* returns rank(A) estimate, (-1) if failure */
     cholmod_sparse **Zsparse,   /* sparse Z */
     cholmod_dense  **Zdense,    /* dense Z */
     cholmod_sparse **R,         /* e-by-n sparse matrix */
-    int64_t **E,       /* size n column perm, NULL if identity */
+    int64_t **E,                /* size n column perm, NULL if identity */
     cholmod_sparse **H,         /* m-by-nh Householder vectors */
-    int64_t **HPinv,   /* size m row permutation */
+    int64_t **HPinv,            /* size m row permutation */
+    cholmod_dense **HTau,       /* 1-by-nh Householder coefficients */
+    cholmod_common *cc          /* workspace and parameters */
+) ;
+
+int32_t SuiteSparseQR_i_C /* returns rank(A) estimate, (-1) if failure */
+(
+    /* inputs: */
+    int ordering,               /* all, except 3:given treated as 0:fixed */
+    double tol,                 /* columns with 2-norm <= tol treated as 0 */
+    int32_t econ,               /* e = max(min(m,econ),rank(A)) */
+    int getCTX,                 /* 0: Z=C (e-by-k), 1: Z=C', 2: Z=X (e-by-k) */
+    cholmod_sparse *A,          /* m-by-n sparse matrix to factorize */
+    cholmod_sparse *Bsparse,    /* sparse m-by-k B */
+    cholmod_dense  *Bdense,     /* dense  m-by-k B */
+    /* outputs: */
+    cholmod_sparse **Zsparse,   /* sparse Z */
+    cholmod_dense  **Zdense,    /* dense Z */
+    cholmod_sparse **R,         /* e-by-n sparse matrix */
+    int32_t **E,                /* size n column perm, NULL if identity */
+    cholmod_sparse **H,         /* m-by-nh Householder vectors */
+    int32_t **HPinv,            /* size m row permutation */
     cholmod_dense **HTau,       /* 1-by-nh Householder coefficients */
     cholmod_common *cc          /* workspace and parameters */
 ) ;
@@ -62,14 +73,28 @@ int64_t SuiteSparseQR_C_QR /* returns rank(A) est., (-1) if failure */
     /* inputs: */
     int ordering,               /* all, except 3:given treated as 0:fixed */
     double tol,                 /* columns with 2-norm <= tol treated as 0 */
-    int64_t econ,      /* e = max(min(m,econ),rank(A)) */
+    int64_t econ,               /* e = max(min(m,econ),rank(A)) */
     cholmod_sparse *A,          /* m-by-n sparse matrix to factorize */
     /* outputs: */
     cholmod_sparse **Q,         /* m-by-e sparse matrix */
     cholmod_sparse **R,         /* e-by-n sparse matrix */
-    int64_t **E,       /* size n column perm, NULL if identity */
+    int64_t **E,                /* size n column perm, NULL if identity */
     cholmod_common *cc          /* workspace and parameters */
 ) ;
+
+int32_t SuiteSparseQR_i_C_QR          // returns rank(A) estimate, (-1) if failure
+(
+    // inputs:
+    int ordering,           // all, except 3:given treated as 0:fixed
+    double tol,             // columns with 2-norm <= tol are treated as 0
+    int32_t econ,           // e = max(min(m,econ),rank(A))
+    cholmod_sparse *A,      // m-by-n sparse matrix to factorize
+    // outputs:
+    cholmod_sparse **Q,     // m-by-e sparse matrix
+    cholmod_sparse **R,     // e-by-n sparse matrix
+    int32_t **E,            // size n column permutation, NULL if identity
+    cholmod_common *cc      // workspace and parameters
+);
 
 /* ========================================================================== */
 /* === SuiteSparseQR_C_backslash ============================================ */
@@ -122,6 +147,7 @@ cholmod_sparse *SuiteSparseQR_C_backslash_sparse   /* returns X, or NULL */
 typedef struct SuiteSparseQR_C_factorization_struct
 {
     int xtype ;                 /* CHOLMOD_REAL or CHOLMOD_COMPLEX */
+    int itype ;
     void *factors ;             /* from SuiteSparseQR_factorize <double> or
                                         SuiteSparseQR_factorize <Complex> */
 

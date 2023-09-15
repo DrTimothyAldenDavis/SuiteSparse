@@ -1,0 +1,19 @@
+# SPQR, Copyright (c) 2008-2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+# FIXME: Which flags do we need to statically link CUDA
+
+Name: SPQR
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Multithreaded, multifrontal, rank-revealing sparse QR factorization method in SuiteSparse
+Version: @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
+Requires.private: SuiteSparse_config CHOLMOD
+Libs: -L${libdir} -lspqr
+Libs.private: @SPQR_STATIC_LIBS@
+Cflags: -I${includedir} @SPQR_CFLAGS@

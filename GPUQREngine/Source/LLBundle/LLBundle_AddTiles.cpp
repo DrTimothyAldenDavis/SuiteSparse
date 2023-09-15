@@ -12,13 +12,11 @@
 // or to the bundle's delta (if pipelined factorization is enabled).
 //
 // =============================================================================
-
+#include "GPUQREngine_LLBundle.hpp"
 #include "GPUQREngine_BucketList.hpp"
-
-
 #ifdef GPUQRENGINE_PIPELINING
-
-void LLBundle::AddTileToDelta
+template <typename Int>
+void LLBundle <Int>::AddTileToDelta
 (
     Int rowTile
 )
@@ -66,7 +64,8 @@ void LLBundle::AddTileToDelta
 
 #endif
 
-void LLBundle::AddTileToSlots
+template <typename Int>
+void LLBundle <Int>::AddTileToSlots
 (
     Int rowTile
 )
@@ -118,3 +117,12 @@ void LLBundle::AddTileToSlots
     /* Update last, if needed. */
     if (next[Last] != EMPTY) Last = next[Last];
 }
+
+template void LLBundle <int32_t>::AddTileToSlots
+(
+    int32_t rowTile
+) ;
+template void LLBundle <int64_t>::AddTileToSlots
+(
+    int64_t rowTile
+) ;
