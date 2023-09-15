@@ -34,9 +34,24 @@ set ( CHOLMOD_CUDA_VERSION_MINOR @CHOLMOD_VERSION_MINOR@ )
 set ( CHOLMOD_CUDA_VERSION_PATCH @CHOLMOD_VERSION_SUB@ )
 set ( CHOLMOD_CUDA_VERSION "@CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@" )
 
-# Look for NVIDIA CUDA toolkit
-find_package ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ REQUIRED )
+# Check for dependent targets
+include ( CMakeFindDependencyMacro )
+set ( _dependencies_found ON )
 
+# Look for NVIDIA CUDA toolkit
+if ( NOT CUDAToolkit_FOUND )
+    find_dependency ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ )
+    if ( NOT CUDAToolkit_FOUND )
+        set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
+if ( NOT _dependencies_found )
+    set ( CHOLMOD_CUDA_FOUND OFF )
+    return ( )
+endif ( )
+
+# Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMOD_CUDATargets.cmake )
 
 # The following is only for backward compatibility with FindCHOLMOD_CUDA.
