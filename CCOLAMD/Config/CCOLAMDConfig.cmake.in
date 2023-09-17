@@ -35,6 +35,32 @@ set ( CCOLAMD_VERSION_MINOR @CCOLAMD_VERSION_MINOR@ )
 set ( CCOLAMD_VERSION_PATCH @CCOLAMD_VERSION_SUB@ )
 set ( CCOLAMD_VERSION "@CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@.@CCOLAMD_VERSION_SUB@" )
 
+# Check for dependent targets
+include ( CMakeFindDependencyMacro )
+
+# Look for SuiteSparse_config target
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        # First check in a common build tree
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT SuiteSparse_config_FOUND )
+            find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+else ( )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+if ( NOT SuiteSparse_config_FOUND )
+    set ( CCOLAMD_FOUND OFF )
+    return ( )
+endif ( )
+
+
+# Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/CCOLAMDTargets.cmake )
 
 # The following is only for backward compatibility with FindCCOLAMD.
