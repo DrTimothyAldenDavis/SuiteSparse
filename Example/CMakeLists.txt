@@ -89,8 +89,7 @@ endif ( )
 
 # look for all external libaries:
 find_package ( OpenMP REQUIRED )
-find_package ( GMP 6.1.2 REQUIRED )
-find_package ( MPFR 4.0.2 REQUIRED )
+
 include ( SuiteSparseBLAS )
 
 #-------------------------------------------------------------------------------
