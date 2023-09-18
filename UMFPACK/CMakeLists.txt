@@ -395,9 +395,12 @@ if ( DEMO )
     if ( NOT NFORTRAN )
         # Fortran demos
         add_executable ( umf4            "Demo/umf4.c" )
-        add_executable ( readhb          "Demo/readhb.f" )
-        add_executable ( readhb_nozeros  "Demo/readhb_nozeros.f" )
-        add_executable ( readhb_size     "Demo/readhb_size.f" )
+        add_executable ( umfreadhb       "Demo/readhb.f" )
+        set_target_properties ( umfreadhb PROPERTIES OUTPUT_NAME readhb )
+        add_executable ( umfreadhb_nozeros "Demo/readhb_nozeros.f" )
+        set_target_properties ( umfreadhb_nozeros PROPERTIES OUTPUT_NAME readhb_nozeros )
+        add_executable ( umfreadhb_size  "Demo/readhb_size.f" )
+        set_target_properties ( umfreadhb_size PROPERTIES OUTPUT_NAME readhb_size )
         add_executable ( umf4hb          "Demo/umf4hb.f"
                                          "Demo/umf4_f77wrapper.c" )
         add_executable ( umf4zhb         "Demo/umf4zhb.f"
