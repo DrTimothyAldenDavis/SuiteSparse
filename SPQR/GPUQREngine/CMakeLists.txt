@@ -13,18 +13,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( GPUQRENGINE_DATE "Oct 23, 2023" )
-set ( GPUQRENGINE_VERSION_MAJOR 3 )
-set ( GPUQRENGINE_VERSION_MINOR 2 )
-set ( GPUQRENGINE_VERSION_SUB   2 )
+set ( GPUQRENGINE_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( GPUQRENGINE_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( GPUQRENGINE_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building GPUQRENGINE version: v"
     ${GPUQRENGINE_VERSION_MAJOR}.
     ${GPUQRENGINE_VERSION_MINOR}.
     ${GPUQRENGINE_VERSION_SUB} " (" ${GPUQRENGINE_DATE} ")" )
-
-set ( GPUQRENGINE_VERSION_MAJOR ${GPUQRENGINE_VERSION_MAJOR} PARENT_SCOPE )
-set ( GPUQRENGINE_VERSION_MINOR ${GPUQRENGINE_VERSION_MINOR} PARENT_SCOPE )
-set ( GPUQRENGINE_VERSION_SUB   ${GPUQRENGINE_VERSION_SUB} PARENT_SCOPE )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -47,17 +43,10 @@ include ( SuiteSparsePolicy )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-# for the library itself
-find_package ( SuiteSparse_config 7.3.0
-    PATHS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
-endif ( )
-
 # Demo disabled for GPUQREngine v2.x
 set ( DEMO_OK false )
 
-if ( DEMO AND DEMO_OK )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND DEMO AND DEMO_OK )
     # for the demo only:
     find_package ( CHOLMOD 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
@@ -245,9 +234,8 @@ if ( DEMO AND DEMO_OK )
     add_executable ( gpuqrengine_demo "Demo/gpuqrengine_demo.cpp" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( gpuqrengine_demo PUBLIC GPUQREngine
-        SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA
-        GPURuntime SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( gpuqrengine_demo PUBLIC GPUQREngine GPURuntime
+        SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
 
 else ( )
 
