@@ -1,0 +1,90 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/CMakeLists.txt:  root CMake build rules
+#-------------------------------------------------------------------------------
+
+# Copyright (c) 2023, Timothy A. Davis.
+# All Rights Reserved.
+
+# The actually required minimum CMake version might be higher depending on the
+# selected SuiteSparse projects.
+cmake_minimum_required ( VERSION 3.20 )
+
+project ( "SuiteSparse" )
+
+#-------------------------------------------------------------------------------
+# build options
+#-------------------------------------------------------------------------------
+
+# lower-case list of all projects that can be built by this root CMake file
+set ( SUITESPARSE_KNOWN_PROJECTS
+    "suitesparse_config;amd" )
+
+set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
+    "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
+
+# expand "all" early on
+if ( SUITESPARSE_ENABLE_PROJECTS STREQUAL "all" )
+    set ( SUITESPARSE_ENABLE_PROJECTS ${SUITESPARSE_KNOWN_PROJECTS} )
+endif ( )
+
+# check for unknown projects in list
+foreach ( proj ${SUITESPARSE_ENABLE_PROJECTS} )
+  if ( NOT "${proj}" IN_LIST SUITESPARSE_KNOWN_PROJECTS )
+     message ( FATAL_ERROR "${proj} is not a known project: ${SUITESPARSE_KNOWN_PROJECTS}." )
+  endif ( )
+endforeach ( )
+
+#-------------------------------------------------------------------------------
+# global variables
+#-------------------------------------------------------------------------------
+
+# Set to indicate that we are building from a root CMake file.
+# That will change the directory layout and (imported) target names (namespace!)
+# during the build process.
+set ( SUITESPARSE_ROOT_CMAKELISTS ON )
+
+#-------------------------------------------------------------------------------
+# common SuiteSparse modules
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# check/add project dependencies
+#-------------------------------------------------------------------------------
+
+if ( "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# include selected projects
+#-------------------------------------------------------------------------------
+
+if ( "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "SuiteSparse_config" )
+    add_library ( SuiteSparse::SuiteSparseConfig ALIAS SuiteSparseConfig )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::SuiteSparseConfig_static ALIAS SuiteSparseConfig_static )
+    endif ( )
+endif ( )
+
+if ( "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "AMD" )
+    add_library ( SuiteSparse::AMD ALIAS AMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::AMD_static ALIAS AMD_static )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )
