@@ -17,7 +17,7 @@ project ( "SuiteSparse" )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS
-    "suitesparse_config;amd" )
+    "suitesparse_config;mongoose;amd" )
 
 set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
     "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
@@ -56,7 +56,8 @@ include ( SuiteSparsePolicy )
 # check/add project dependencies
 #-------------------------------------------------------------------------------
 
-if ( "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
@@ -72,6 +73,14 @@ if ( "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::SuiteSparseConfig ALIAS SuiteSparseConfig )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::SuiteSparseConfig_static ALIAS SuiteSparseConfig_static )
+    endif ( )
+endif ( )
+
+if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "Mongoose" )
+    add_library ( SuiteSparse::Mongoose ALIAS Mongoose )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::Mongoose_static ALIAS Mongoose_static )
     endif ( )
 endif ( )
 
