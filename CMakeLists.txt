@@ -17,7 +17,7 @@ project ( "SuiteSparse" )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS
-    "suitesparse_config;mongoose;amd;btf" )
+    "suitesparse_config;mongoose;amd;btf;camd" )
 
 set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
     "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
@@ -58,7 +58,8 @@ include ( SuiteSparsePolicy )
 
 if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
@@ -98,6 +99,14 @@ if ( "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::BTF ALIAS BTF )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::BTF_static ALIAS BTF_static )
+    endif ( )
+endif ( )
+
+if ( "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CAMD" )
+    add_library ( SuiteSparse::CAMD ALIAS CAMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CAMD_static ALIAS CAMD_static )
     endif ( )
 endif ( )
 
