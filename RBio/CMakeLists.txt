@@ -2,7 +2,7 @@
 # SuiteSparse/RBio/CMakeLists.txt:  cmake for RBio
 #-------------------------------------------------------------------------------
 
-# RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+# RBio, Copyright (c) 2009-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
@@ -12,23 +12,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( RBIO_DATE "Sept 18, 2023" )
-set ( RBIO_VERSION_MAJOR 4 )
-set ( RBIO_VERSION_MINOR 2 )
-set ( RBIO_VERSION_SUB   1 )
+set ( RBIO_VERSION_MAJOR 4 CACHE STRING "" FORCE )
+set ( RBIO_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( RBIO_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building RBIO version: v"
     ${RBIO_VERSION_MAJOR}.
     ${RBIO_VERSION_MINOR}.
     ${RBIO_VERSION_SUB} " (" ${RBIO_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -39,13 +30,24 @@ project ( rbio
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -217,7 +219,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 if ( DEMO )
 
     #---------------------------------------------------------------------------
@@ -245,5 +247,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

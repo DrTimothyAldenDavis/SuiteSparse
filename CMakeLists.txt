@@ -17,7 +17,7 @@ project ( "SuiteSparse" )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;rbio" )
 
 set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
     "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
@@ -113,7 +113,8 @@ if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
@@ -223,6 +224,14 @@ if ( "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::UMFPACK ALIAS UMFPACK )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::UMFPACK_static ALIAS UMFPACK_static )
+    endif ( )
+endif ( )
+
+if ( "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "RBio" )
+    add_library ( SuiteSparse::RBio ALIAS RBio )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::RBio_static ALIAS RBio_static )
     endif ( )
 endif ( )
 
