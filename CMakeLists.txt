@@ -33,7 +33,7 @@ set ( SUITESPARSE_ALL_PROJECTS
 
 # lower-case list of extra projects that can be built by this root CMake file
 set ( SUITESPARSE_EXTRA_PROJECTS
-    "" )
+    "csparse" )
 
 # lower-case list of known projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS "${SUITESPARSE_ALL_PROJECTS};${SUITESPARSE_EXTRA_PROJECTS}" )
@@ -318,6 +318,14 @@ if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::LAGraph ALIAS LAGraph )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::LAGraph_static ALIAS LAGraph_static )
+    endif ( )
+endif ( )
+
+if ( "csparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CSparse" )
+    add_library ( SuiteSparse::CSparse ALIAS CSparse )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CSparse_static ALIAS CSparse_static )
     endif ( )
 endif ( )
 
