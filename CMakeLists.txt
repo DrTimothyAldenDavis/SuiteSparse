@@ -17,7 +17,7 @@ project ( "SuiteSparse" )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse" )
 
 set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
     "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
@@ -65,7 +65,8 @@ if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
@@ -164,6 +165,14 @@ if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     endif ( )
     if ( TARGET CHOLMOD_CUDA_static )
         add_library ( SuiteSparse::CHOLMOD_CUDA_static ALIAS CHOLMOD_CUDA_static )
+    endif ( )
+endif ( )
+
+if ( "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CXSparse" )
+    add_library ( SuiteSparse::CXSparse ALIAS CXSparse )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CXSparse_static ALIAS CXSparse_static )
     endif ( )
 endif ( )
 
