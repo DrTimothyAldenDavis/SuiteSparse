@@ -12,23 +12,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( COLAMD_DATE "Sept 18, 2023" )
-set ( COLAMD_VERSION_MAJOR 3 )
-set ( COLAMD_VERSION_MINOR 2 )
-set ( COLAMD_VERSION_SUB   1 )
+set ( COLAMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( COLAMD_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( COLAMD_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.
     ${COLAMD_VERSION_MINOR}.
     ${COLAMD_VERSION_SUB} " (" ${COLAMD_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -39,13 +30,24 @@ project ( colamd
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -246,5 +248,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )
