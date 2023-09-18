@@ -17,7 +17,7 @@ project ( "SuiteSparse" )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_KNOWN_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod" )
 
 set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
     "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
@@ -33,6 +33,9 @@ foreach ( proj ${SUITESPARSE_ENABLE_PROJECTS} )
      message ( FATAL_ERROR "${proj} is not a known project: ${SUITESPARSE_KNOWN_PROJECTS}." )
   endif ( )
 endforeach ( )
+
+# CHOLMOD options affecting dependencies
+option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
 
 #-------------------------------------------------------------------------------
 # global variables
@@ -61,10 +64,32 @@ if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+    endif ( )
+endif ( )
+
+if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"amd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
+    endif ( )
+    if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"colamd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
+    endif ( )
+    if ( NOT NCAMD )
+        if ( NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"camd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
+        endif ( )
+        if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
+        endif ( )
     endif ( )
 endif ( )
 
@@ -125,6 +150,20 @@ if ( "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::COLAMD ALIAS COLAMD )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::COLAMD_static ALIAS COLAMD_static )
+    endif ( )
+endif ( )
+
+if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CHOLMOD" )
+    add_library ( SuiteSparse::CHOLMOD ALIAS CHOLMOD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CHOLMOD_static ALIAS CHOLMOD_static )
+    endif ( )
+    if ( TARGET CHOLMOD_CUDA )
+        add_library ( SuiteSparse::CHOLMOD_CUDA ALIAS CHOLMOD_CUDA )
+    endif ( )
+    if ( TARGET CHOLMOD_CUDA_static )
+        add_library ( SuiteSparse::CHOLMOD_CUDA_static ALIAS CHOLMOD_CUDA_static )
     endif ( )
 endif ( )
 

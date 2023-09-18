@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLMOD/CMakeLists.txt:  cmake for CHOLMOD
 #-------------------------------------------------------------------------------
 
-# CHOLMOD: Copyright (c) 2005-2022, Timothy A. Davis.
+# CHOLMOD: Copyright (c) 2005-2023, Timothy A. Davis.
 # Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
@@ -13,9 +13,9 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( CHOLMOD_DATE "Oct 31, 2023" )
-set ( CHOLMOD_VERSION_MAJOR 5 )
-set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_MINOR 0 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -23,12 +23,20 @@ message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_SUB} " (" ${CHOLMOD_DATE} ")" )
 
 #-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( cholmod
+        VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
+        LANGUAGES C )
+
+#-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${PROJECT_SOURCE_DIR}/cmake_modules
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
 
@@ -50,20 +58,9 @@ if ( NOT HAVE_SSIZE_T )
     add_compile_definitions ( NO_SSIZE_T )
 endif ( )
 
-#-------------------------------------------------------------------------------
-# define the project
-#-------------------------------------------------------------------------------
-
 if ( SUITESPARSE_CUDA )
     # CHOLMOD with CUDA
-    project ( cholmod
-            VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
-            LANGUAGES CUDA C CXX )
-else ( )
-    # CHOLMOD without CUDA
-    project ( cholmod
-            VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
-            LANGUAGES C )
+    enable_language ( CUDA CXX )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -78,22 +75,24 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.3.1
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.1 REQUIRED )
-endif ( )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.3.1
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.3.1 REQUIRED )
+    endif ( )
 
-find_package ( COLAMD 3.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.2.1 REQUIRED )
-endif ( )
+    find_package ( AMD 3.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_package ( AMD 3.2.1 REQUIRED )
+    endif ( )
 
-find_package ( AMD 3.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.1 REQUIRED )
+    find_package ( COLAMD 3.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::COLAMD )
+        find_package ( COLAMD 3.2.1 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -124,7 +123,7 @@ endif ( )
 
     option ( NCHECK "ON: do not use Check Module.  OFF (default): use Check Module" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Check )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Check )
         # Check module does not appear so don't use it
         set ( NCHECK true )
     endif ( )
@@ -139,7 +138,7 @@ endif ( )
 
     option ( NMATRIXOPS "ON: do not use MatrixOps Module.  OFF (default): use MatrixOps Module" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/MatrixOps )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/MatrixOps )
         # MatrixOps module does not appear so don't use it
         set ( NMATRIXOPS true )
     endif ( )
@@ -154,7 +153,7 @@ endif ( )
 
     option ( NCHOLESKY "ON: do not use Cholesky Module.  OFF (default): use Cholesky Module" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Cholesky )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Cholesky )
         # Cholesky module does not appear so don't use it
         set ( NCHOLESKY true )
     endif ( )
@@ -172,7 +171,7 @@ endif ( )
 
     option ( NMODIFY "ON: do not use Modify Module.  OFF (default): use Modify Module" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Modify )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Modify )
         # Modify module does not appear so don't use it
         set ( NMODIFY true )
     endif ( )
@@ -185,7 +184,7 @@ endif ( )
     # interfaces to CAMD and CCOLAMD
     #---------------------------------------------------------------------------
 
-    option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" off )
+    option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
 
     # The CHOLMOD interfaces to CAMD and CCOLAMD are in the Partition module
     # (cholmod_camd, cholmod_ccolamd, cholmod_csymamd).  The Partition module
@@ -194,7 +193,7 @@ endif ( )
     # future, the CAMD and CCOLAMD interfaces will be split into their own
     # module to make this dependency more clear.
 
-    if ( NOT NCAMD )
+    if ( NOT NCAMD AND NOT SUITESPARSE_ROOT_CMAKELISTS )
         # find CAMD and CCOLAMD
         find_package ( CAMD 3.2.1
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
@@ -226,7 +225,7 @@ endif ( )
 
     option ( NPARTITION "ON: do not use METIS.  OFF (default): use METIS" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Partition )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Partition )
         # Partition module does not appear so don't use it.  Since this
         # folder also includes the CAMD and CCOLAMD interfaces, NCAMD must
         # be set true here as well.
@@ -249,7 +248,7 @@ endif ( )
 
     option ( NSUPERNODAL "ON: do not use Supernodal Module.  OFF (default): use Supernodal Module" off )
 
-    if ( NOT EXISTS ${CMAKE_SOURCE_DIR}/Supernodal )
+    if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Supernodal )
         # Supernodal module does not appear so don't use it
         set ( NSUPERNODAL true )
     endif ( )
@@ -291,7 +290,7 @@ configure_file ( "Config/cholmod_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( Check Cholesky Utility MatrixOps Modify Partition
-    Supernodal Include ${CMAKE_SOURCE_DIR} )
+    Supernodal Include ${PROJECT_SOURCE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic cholmod library properties
@@ -663,6 +662,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )
