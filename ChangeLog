@@ -1,3 +1,9 @@
+Sept 18, 2023: version 7.2.1
+
+    * UMFPACK v6.2.1 and GPUQREngine v3.2.1: copies internal include files
+        from other SuiteSparse packages (AMD and SuiteSparse_GPURuntime),
+        so these two packages can be built independently.
+
 Sept 8, 2023: version 7.2.0
 
     * build system: modern cmake structure, by Markus Muetzel.
