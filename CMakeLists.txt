@@ -29,7 +29,7 @@ include ( SuiteSparsePolicy )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_ALL_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;rbio;spqr" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;rbio;spqr;graphblas" )
 
 # lower-case list of extra projects that can be built by this root CMake file
 set ( SUITESPARSE_EXTRA_PROJECTS
@@ -58,6 +58,10 @@ option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" O
 
 # KLU and UMFPACK options affecting dependencies
 option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): use CHOLMOD" OFF )
+
+# overwrite NSTATIC specifically for GraphBLAS because building the library
+# takes a long time
+option ( GRAPHBLAS_NSTATIC "ON (default): set NSTATIC for GraphBLAS project.  OFF: Use same value of NSTATIC for GraphBLAS like in the other projects" ON )
 
 #-------------------------------------------------------------------------------
 # global variables
@@ -262,6 +266,14 @@ if ( "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::SPQR ALIAS SPQR )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::SPQR_static ALIAS SPQR_static )
+    endif ( )
+endif ( )
+
+if ( "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "GraphBLAS" )
+    add_library ( SuiteSparse::GraphBLAS ALIAS GraphBLAS )
+    if ( TARGET GraphBLAS_static )
+        add_library ( SuiteSparse::GraphBLAS_static ALIAS GraphBLAS_static )
     endif ( )
 endif ( )
 

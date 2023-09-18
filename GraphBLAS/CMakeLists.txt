@@ -7,24 +7,29 @@
 
 # See the User Guide for details on how to compile SuiteSparse:GraphBLAS.
 
-#-------------------------------------------------------------------------------
-# get the version
-#-------------------------------------------------------------------------------
-
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules )
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
 
-include ( GraphBLAS_version )
+project ( graphblas
+        LANGUAGES C )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
-# CUDA is under development for now, and not deployed in production:
-  set ( ENABLE_CUDA false )
-# set ( ENABLE_CUDA true )
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/cmake_modules )
+
+#-------------------------------------------------------------------------------
+# get the version
+#-------------------------------------------------------------------------------
+
+include ( GraphBLAS_version )
+
+set ( PROJECT_VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -34,8 +39,17 @@ include ( GraphBLAS_version )
 # by default
 set ( NSTATIC_DEFAULT_ON true )
 
+# CUDA is under development for now, and not deployed in production:
+  set ( ENABLE_CUDA false )
+# set ( ENABLE_CUDA true )
+
 include ( SuiteSparsePolicy )
 include ( GraphBLAS_JIT_paths )
+
+if ( GRAPHBLAS_NSTATIC )
+    # ignore current value of NSTATIC and set it to ON
+    set ( NSTATIC ON )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -43,16 +57,11 @@ include ( GraphBLAS_JIT_paths )
 
 if ( SUITESPARSE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
-    set ( COMPACT on )
+    set ( COMPACT ON )
     message ( STATUS "GraphBLAS CUDA JIT: enabled")
-    project ( graphblas
-            VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
-            LANGUAGES CUDA C )
+    enable_language ( CUDA )
 else ( )
     message ( STATUS "GraphBLAS CUDA JIT: disabled")
-    project ( graphblas
-            VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}"
-            LANGUAGES C )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -623,4 +632,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )
