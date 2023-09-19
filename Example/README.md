@@ -12,7 +12,7 @@ to build a library that depends on SuiteSparse libraries.
     Include/my.h        created by cmake from Config/my.h.in
     Config/my.h.in      input file for Include/my.h
     Demo/my_demo.c      demo program that uses 'my' package
-    Demo/my_demo.out    output of my_demo
+    Demo/mydemo.out     output of my_demo
     Source/my.c         library source code
     build               where the 'my' package is built
     cmake_modules/FindGMP.cmake     how to find the GMP library

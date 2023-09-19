@@ -1,5 +1,8 @@
 Sept 18, 2023: version 7.2.1
 
+    * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux,
+        to all *Config.cmake files for all packages except CSparse (CXSparse
+        is built instead, and CSparse does not have CSparseConfig.cmake file)
     * UMFPACK v6.2.1 and GPUQREngine v3.2.1: copies internal include files
         from other SuiteSparse packages (AMD and SuiteSparse_GPURuntime),
         so these two packages can be built independently.

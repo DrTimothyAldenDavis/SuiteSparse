@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( CAMD_DATE "Sept 8, 2023" )
+set ( CAMD_DATE "Sept 18, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 2 )
-set ( CAMD_VERSION_SUB   0 )
+set ( CAMD_VERSION_SUB   1 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.

@@ -60,7 +60,7 @@ if ( TARGET ${_target_static} )
 endif ( )
 
 # Check for most common build types
-set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" )
+set ( _config_types "Debug" "Release" "RelWithDebInfo" "MinSizeRel" "None" )
 
 get_property ( _isMultiConfig GLOBAL PROPERTY GENERATOR_IS_MULTI_CONFIG )
 if ( _isMultiConfig )

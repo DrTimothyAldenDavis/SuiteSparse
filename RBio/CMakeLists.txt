@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( RBIO_DATE "Sept 8, 2023" )
+set ( RBIO_DATE "Sept 18, 2023" )
 set ( RBIO_VERSION_MAJOR 4 )
 set ( RBIO_VERSION_MINOR 2 )
-set ( RBIO_VERSION_SUB   0 )
+set ( RBIO_VERSION_SUB   1 )
 
 message ( STATUS "Building RBIO version: v"
     ${RBIO_VERSION_MAJOR}.
