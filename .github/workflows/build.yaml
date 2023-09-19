@@ -86,7 +86,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ github.ref }}
-            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}
+            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:
 
       - name: create empty libraries
         # This is to work around a bug in nvlink.
@@ -573,7 +573,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:msvc:${{ matrix.openmp }}:${{ github.ref }}
-            ccache:msvc:${{ matrix.openmp }}
+            ccache:msvc:${{ matrix.openmp }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
