@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( KLU_DATE "Sept 8, 2023" )
+set ( KLU_DATE "Sept 18, 2023" )
 set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 2 )
-set ( KLU_VERSION_SUB   0 )
+set ( KLU_VERSION_SUB   1 )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.

@@ -97,10 +97,10 @@
 #ifndef CHOLMOD_H
 #define CHOLMOD_H
 
-#define CHOLMOD_DATE "Sept 8, 2023"
+#define CHOLMOD_DATE "Sept 18, 2023"
 #define CHOLMOD_MAIN_VERSION   4
 #define CHOLMOD_SUB_VERSION    2
-#define CHOLMOD_SUBSUB_VERSION 0
+#define CHOLMOD_SUBSUB_VERSION 1
 
 /* ========================================================================== */
 /* === Include/cholmod_io64 ================================================= */

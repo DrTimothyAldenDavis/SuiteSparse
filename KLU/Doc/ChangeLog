@@ -1,3 +1,7 @@
+Sept 18, 2023: version 2.2.1
+
+    * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
+
 Sept 8, 2023: version 2.2.0
 
     * cmake updates: SuiteSparse:: namespace by Markus Muetzel

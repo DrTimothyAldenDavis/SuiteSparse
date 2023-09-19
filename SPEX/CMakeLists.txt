@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( SPEX_DATE "Sept 8, 2023" )
+set ( SPEX_DATE "Sept 18, 2023" )
 set ( SPEX_VERSION_MAJOR 2 )
 set ( SPEX_VERSION_MINOR 2 )
-set ( SPEX_VERSION_SUB   0 )
+set ( SPEX_VERSION_SUB   1 )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
