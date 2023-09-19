@@ -2,7 +2,7 @@
 # GraphBLAS/CMakeLists.txt:  cmake script for GraphBLAS
 #-------------------------------------------------------------------------------
 
-# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+# SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 # SPDX-License-Identifier: Apache-2.0
 
 # See the User Guide for details on how to compile SuiteSparse:GraphBLAS.
@@ -246,6 +246,7 @@ target_include_directories ( GraphBLAS
 if ( SUITESPARSE_CUDA )
     add_dependencies ( GraphBLAS GraphBLAS_CUDA )
 #   add_dependencies ( GraphBLAS rmm_wrap )
+    target_compile_definitions ( GraphBLAS PRIVATE "SUITESPARSE_CUDA" )
 endif ( )
 
 if ( WIN32 )
@@ -281,6 +282,7 @@ if ( NOT NSTATIC )
         add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
         set ( GRAPHBLAS_STATIC_MODULES "${GRAPHBLAS_STATIC_MODULES} GraphBLAS_CUDA" )
 #       add_dependencies ( GraphBLAS_static rmm_wrap )
+        target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
     endif ( )
 endif ( )
 
