@@ -2,7 +2,7 @@
 # SuiteSparse/SuiteSparse_GPURuntime/CMakeLists.txt
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_GPURuntime, Copyright (c) 2013-2022, Timothy A Davis,
+# SuiteSparse_GPURuntime, Copyright (c) 2013-2023, Timothy A Davis,
 # Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -22,32 +22,28 @@ message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.
     ${SUITESPARSE_GPURUNTIME_VERSION_SUB} " (" ${SUITESPARSE_GPURUNTIME_DATE} ")" )
 
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
-
-include ( SuiteSparsePolicy )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} PARENT_SCOPE )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR ${SUITESPARSE_GPURUNTIME_VERSION_MINOR} PARENT_SCOPE )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   ${SUITESPARSE_GPURUNTIME_VERSION_SUB} PARENT_SCOPE )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
-    project ( suitesparse_gpuruntime 
-        VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
-        LANGUAGES C CXX CUDA )
-else ( )
-    # CUDA not available
-    project ( suitesparse_gpuruntime 
-        VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
-        LANGUAGES C CXX )
-    message ( STATUS "CUDA not enabled:  library will be empty" )
-endif ( )
+project ( suitesparse_gpuruntime 
+    VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
+    LANGUAGES C CXX CUDA )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
+
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -69,12 +65,10 @@ configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in"
 
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
-    set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
-    message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-    message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-endif ( )
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
+message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
 
@@ -102,12 +96,10 @@ target_include_directories ( GPURuntime PRIVATE
     ${SUITESPARSE_GPURUNTIME_INCLUDES}
     $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
-if ( SUITESPARSE_CUDA )
-    set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
-    set_target_properties ( GPURuntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_link_libraries ( GPURuntime PRIVATE CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
-endif ( )
+set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
+set_target_properties ( GPURuntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+target_link_libraries ( GPURuntime PRIVATE
+    CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
 
 target_include_directories ( GPURuntime 
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -137,12 +129,10 @@ if ( NOT NSTATIC )
         ${SUITESPARSE_GPURUNTIME_INCLUDES}
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
-    if ( SUITESPARSE_CUDA )
-        set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-        set_target_properties ( GPURuntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( GPURuntime_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
-    endif ( )
+    set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
+    set_target_properties ( GPURuntime_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    target_link_libraries ( GPURuntime_static PUBLIC
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
 
     target_include_directories ( GPURuntime_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -220,10 +210,3 @@ if ( NOT MSVC )
         ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc
         DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
 endif ( )
-
-#-------------------------------------------------------------------------------
-# report status
-#-------------------------------------------------------------------------------
-
-include ( SuiteSparseReport )
-

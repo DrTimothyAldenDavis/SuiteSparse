@@ -59,16 +59,11 @@ endif ( )
 set ( SPQR_CUDA_INCLUDES ../Include )
 
 target_include_directories ( SPQR_CUDA PRIVATE
-    "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
+    "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 target_include_directories ( SPQR_CUDA_static PRIVATE
-    "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>" )
-
-if ( TARGET SuiteSparse::GPURuntime )
-    target_include_directories ( SPQR_CUDA PRIVATE
-        "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
-    target_include_directories ( SPQR_CUDA_static PRIVATE
-        "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
+    "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
+    "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 target_include_directories ( SPQR_CUDA PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}

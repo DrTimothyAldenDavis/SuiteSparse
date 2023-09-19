@@ -27,21 +27,21 @@ set ( GPUQRENGINE_VERSION_MINOR ${GPUQRENGINE_VERSION_MINOR} PARENT_SCOPE )
 set ( GPUQRENGINE_VERSION_SUB   ${GPUQRENGINE_VERSION_SUB} PARENT_SCOPE )
 
 #-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
-
-#-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
 project ( gpuqrengine 
     VERSION "${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}"
     LANGUAGES CXX CUDA )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -52,12 +52,6 @@ find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.2.0 REQUIRED )
-endif ( )
-
-find_package ( SuiteSparse_GPURuntime 3.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::GPURuntime )
-    find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
 endif ( )
 
 # Demo disabled for GPUQREngine v2.x
@@ -111,12 +105,12 @@ set_target_properties ( GPUQREngine PROPERTIES
 target_include_directories ( GPUQREngine PRIVATE
     ${GPUQRENGINE_INCLUDES}
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>"
-    "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
+    "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 set_target_properties ( GPUQREngine PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( GPUQREngine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-target_link_libraries ( GPUQREngine PRIVATE CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+target_link_libraries ( GPUQREngine PRIVATE
+    CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
 
 target_include_directories ( GPUQREngine
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -148,12 +142,12 @@ if ( NOT NSTATIC )
 
     if ( SUITESPARSE_CUDA )
         target_include_directories ( GPUQREngine_static PRIVATE
-            "$<TARGET_PROPERTY:SuiteSparse::GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
+            "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
         set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( GPUQREngine_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
+        target_link_libraries ( GPUQREngine_static PUBLIC
+            CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
     endif ( )
 
     target_include_directories ( GPUQREngine_static
@@ -253,7 +247,7 @@ if ( DEMO AND DEMO_OK )
     # Libraries required for Demo programs
     target_link_libraries ( gpuqrengine_demo PUBLIC GPUQREngine
         SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA
-        SuiteSparse::GPURuntime SuiteSparse::SuiteSparseConfig )
+        GPURuntime SuiteSparse::SuiteSparseConfig )
 
 else ( )
 
