@@ -261,7 +261,6 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     message ( STATUS "CUDA: enabled" )
-    add_compile_definitions ( SUITESPARSE_CUDA )
     set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
