@@ -111,6 +111,7 @@ set_target_properties ( GPUQREngine PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( GPUQREngine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 target_link_libraries ( GPUQREngine PRIVATE
     CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
 
 target_include_directories ( GPUQREngine
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -140,15 +141,14 @@ if ( NOT NSTATIC )
         ${GPUQRENGINE_INCLUDES}
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-    if ( SUITESPARSE_CUDA )
-        target_include_directories ( GPUQREngine_static PRIVATE
-            "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
+    target_include_directories ( GPUQREngine_static PRIVATE
+        "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-        set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-        set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-        target_link_libraries ( GPUQREngine_static PUBLIC
-            CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
-    endif ( )
+    set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    target_link_libraries ( GPUQREngine_static PUBLIC
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+    target_compile_definitions ( GPUQREngine_static PRIVATE "SUITESPARSE_CUDA" )
 
     target_include_directories ( GPUQREngine_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
