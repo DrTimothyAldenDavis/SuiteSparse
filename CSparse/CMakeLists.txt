@@ -22,6 +22,8 @@ set ( CSPARSE_VERSION_MAJOR 4 )
 set ( CSPARSE_VERSION_MINOR 2 )
 set ( CSPARSE_VERSION_SUB   0 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
     ${CSPARSE_VERSION_MINOR}.
@@ -152,7 +154,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     # install ( FILES
     #     ${CMAKE_CURRENT_BINARY_DIR}/CSparse.pc
-    #     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig )
+    #     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig RENAME CSparse${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

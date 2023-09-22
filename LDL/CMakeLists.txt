@@ -16,6 +16,8 @@ set ( LDL_VERSION_MAJOR 3 )
 set ( LDL_VERSION_MINOR 2 )
 set ( LDL_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
     ${LDL_VERSION_MINOR}.
@@ -216,7 +218,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/LDL.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME LDL${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

@@ -17,6 +17,8 @@ set ( SPEX_VERSION_MAJOR 2 )
 set ( SPEX_VERSION_MINOR 2 )
 set ( SPEX_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
     ${SPEX_VERSION_MINOR}.
@@ -285,7 +287,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/SPEX.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME SPEX${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

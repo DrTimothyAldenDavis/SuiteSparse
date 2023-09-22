@@ -18,6 +18,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( GraphBLAS_version )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
@@ -557,7 +559,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME GraphBLAS${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

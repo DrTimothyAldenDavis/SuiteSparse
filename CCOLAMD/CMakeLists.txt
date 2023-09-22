@@ -16,6 +16,8 @@ set ( CCOLAMD_VERSION_MAJOR 3 )
 set ( CCOLAMD_VERSION_MINOR 2 )
 set ( CCOLAMD_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building CCOLAMD version: v"
     ${CCOLAMD_VERSION_MAJOR}.
     ${CCOLAMD_VERSION_MINOR}.
@@ -200,7 +202,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CCOLAMD.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME CCOLAMD${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

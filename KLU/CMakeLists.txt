@@ -17,6 +17,8 @@ set ( KLU_VERSION_MAJOR 2 )
 set ( KLU_VERSION_MINOR 2 )
 set ( KLU_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
     ${KLU_VERSION_MINOR}.
@@ -385,7 +387,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME KLU${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -455,7 +457,7 @@ if ( NOT NCHOLMOD )
             NEWLINE_STYLE LF )
         install ( FILES
             ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMOD.pc
-            DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+            DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME KLU_CHOLMOD${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
     endif ( )
 endif ( )
 

@@ -17,6 +17,8 @@ set ( GPUQRENGINE_VERSION_MAJOR 3 )
 set ( GPUQRENGINE_VERSION_MINOR 2 )
 set ( GPUQRENGINE_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building GPUQRENGINE version: v"
     ${GPUQRENGINE_VERSION_MAJOR}.
     ${GPUQRENGINE_VERSION_MINOR}.
@@ -289,7 +291,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngine.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME GPUQREngine${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------

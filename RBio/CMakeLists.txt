@@ -16,6 +16,8 @@ set ( RBIO_VERSION_MAJOR 4 )
 set ( RBIO_VERSION_MINOR 2 )
 set ( RBIO_VERSION_SUB   1 )
 
+string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_UPPER)
+
 message ( STATUS "Building RBIO version: v"
     ${RBIO_VERSION_MAJOR}.
     ${RBIO_VERSION_MINOR}.
@@ -201,7 +203,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/RBio.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig RENAME RBio${CMAKE_${CMAKE_BUILD_TYPE_UPPER}_POSTFIX}.pc )
 endif ( )
 
 #-------------------------------------------------------------------------------
