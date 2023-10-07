@@ -65,7 +65,7 @@ void mexFunction
     // GxB_Context_error
     //--------------------------------------------------------------------------
 
-    char *s = NULL ;
+    const char *s = NULL ;
     OK (GrB_error (&s, GxB_CONTEXT_WORLD)) ;
     CHECK (s != NULL) ;
     CHECK (strlen (s) == 0) ;
