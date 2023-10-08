@@ -568,7 +568,13 @@ Arguments:
 
         Control [UMFPACK_STRATEGY]:  This is the most important control
             parameter.  It determines what kind of ordering and pivoting
-            strategy that UMFPACK should use.  There are 4 options:
+            strategy that UMFPACK should use.
+
+            NOTE: the interaction of numerical and fill-reducing pivoting is
+            a delicate balance, and a perfect hueristic is not possible because
+            sparsity-preserving pivoting is an NP-hard problem.  Selecting the
+            wrong strategy can lead to catastrophic fill-in and/or numerical
+            inaccuracy.
 
             UMFPACK_STRATEGY_AUTO:  This is the default.  The input matrix is
                 analyzed to determine how symmetric the nonzero pattern is, and
