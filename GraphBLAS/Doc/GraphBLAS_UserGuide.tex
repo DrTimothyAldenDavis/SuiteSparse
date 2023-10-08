@@ -116,7 +116,7 @@ application to create new types and operators without needing to recompile the
 GraphBLAS library.
 
 For more details on SuiteSparse:GraphBLAS, and its use in LAGraph, see
-\cite{Davis19,Davis22,Davis18b,DavisAznavehKolodziej19,Davis20,Mattson19}.
+\cite{Davis19,Davis23,Davis18b,DavisAznavehKolodziej19,Davis20,Mattson19}.
 
 A full and precise definition of the GraphBLAS specification is provided in
 {\em The GraphBLAS C API Specification} by {Ayd\i n Bulu\c{c}, Timothy Mattson,
@@ -16448,9 +16448,14 @@ GraphBLAS folder.
 
 \begin{itemize}
 
-\item Sept 18, 2023: version 8.2.1
+\item Oct 7, 2023: version 8.2.1
 
     \begin{itemize}
+    \item (49) bug fix: \verb'GrB_mxm' saxpy4 and saxpy5 had incorrectly handling of
+        typecasting in v8.0.0 to v8.2.0 (caught by Erik Welch)
+    \item cross-compiler support: replace \verb'check_c_source_runs' with \verb'_compiles'
+        for GraphBLAS and SuiteSparse\_config, and remove check for
+        \verb'getenv("HOME")'.
     \item cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
     \end{itemize}
 

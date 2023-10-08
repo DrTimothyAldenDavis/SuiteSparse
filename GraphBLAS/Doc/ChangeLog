@@ -1,5 +1,10 @@
-Sept 18, 2023: version 8.2.1
+Oct 7, 2023: version 8.2.1
 
+    * (49) bug fix: GrB_mxm saxpy4 and saxpy5 had incorrectly handling of
+        typecasting in v8.0.0 to v8.2.0 (caught by Erik Welch)
+    * cross-compiler support: replace check_c_source_runs with _compiles,
+        for GraphBLAS and SuiteSparse_config, and remove check for
+        getenv("HOME").
     * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
 
 Sept 8, 2023: version 8.2.0

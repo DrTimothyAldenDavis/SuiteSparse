@@ -99,7 +99,7 @@ GrB_Info GB_AxB_saxpy4              // C += A*B
 
     GB_Opcode mult_binop_code, add_binop_code ;
     GB_Type_code xcode, ycode, zcode ;
-    GB_AxB_semiring_builtin (A, A_is_pattern, B,
+    bool builtin_semiring = GB_AxB_semiring_builtin (A, A_is_pattern, B,
         B_is_pattern, semiring, flipxy, &mult_binop_code, &add_binop_code,
         &xcode, &ycode, &zcode) ;
 
@@ -259,7 +259,10 @@ GrB_Info GB_AxB_saxpy4              // C += A*B
 
         // disabled the ANY monoid
         #define GB_NO_ANY_MONOID
-        #include "GB_AxB_factory.c"
+        if (builtin_semiring)
+        {
+            #include "GB_AxB_factory.c"
+        }
 
     }
     #endif
@@ -274,6 +277,7 @@ GrB_Info GB_AxB_saxpy4              // C += A*B
             ntasks, nthreads, nfine_tasks_per_vector, use_coarse_tasks,
             use_atomics, A_slice, H_slice, Wcx, Wf) ;
     }
+
 
     //--------------------------------------------------------------------------
     // free workspace and return result

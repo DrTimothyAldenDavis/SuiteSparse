@@ -4,7 +4,7 @@ SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 
-VERSION 8.2.1, Sept 18, 2023
+VERSION 8.2.1, Oct 7, 2023
 
 SuiteSparse:GraphBLAS is a complete implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
@@ -225,10 +225,9 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
 To cite this package, please use the following:
 
-    T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
-    algorithms in the language of sparse linear algebra, ACM Trans on
-    Mathematical Software, just acceped, 2023.  See the pdf in
-    https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc .
+    T. A. Davis. Algorithm 1037: SuiteSparse:GraphBLAS: Parallel Graph
+    Algorithms in the Language of Sparse Linear Algebra. ACM Trans. Math.
+    Softw. 49, 3, Article 28 (September 2023), 30 pages.
     https://doi.org/10.1145/3577195
 
     T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in

@@ -384,9 +384,10 @@ else ( )
     "(Linux, conda-forge, spack, brew, vcpkg, etc). " )
     # check for __thread, __declspec(thread), and _Thread_local keywords
     include ( SuiteSparse__thread )
-    if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD )
-        message  ( WARNING "The C compiler supports neither the __thread "
-        "nor the __declspec(thread) keyword for thread-local-storage; "
+    if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD
+        AND NOT HAVE_KEYWORD__THREAD_LOCAL )
+        message  ( WARNING
+        "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )
 endif ( )

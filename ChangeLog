@@ -1,5 +1,9 @@
-Sept 18, 2023: version 7.2.1
+Oct 7, 2023: version 7.2.1
 
+    * GraphBLAS 8.2.1: bug fix to GrB_mxm; incorrect handling of typecasting
+    * cross-compiler support: replace check_c_source_runs with _compiles,
+        for GraphBLAS and SuiteSparse_config, and remove check for
+        getenv("HOME").
     * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux,
         to all *Config.cmake files for all packages except CSparse (CXSparse
         is built instead, and CSparse does not have CSparseConfig.cmake file)

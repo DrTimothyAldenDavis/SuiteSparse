@@ -49,6 +49,18 @@ for k = 1:32
     GB_spec_compare (C1, C2, 0, 1e-12) ;
 end
 
+% test saxpy5: A full, B sparse, with typecasting
+A2 = A ;
+A2.class = 'single' ;
+for k = 1:32
+    % C += A*B
+    B = rand (k, n) ;
+    F = rand (k, n) ;
+    C1 = GB_mex_mxm_update (F, semiring, B, A2, [ ]) ;
+    C2 = F + B*A.matrix ;
+    GB_spec_compare (C1, C2, 0, 1e-5) ;
+end
+
 % test saxpy5: A iso bitmap, B sparse
 A.sparsity = 4 ;    % A is bitmap
 A.iso = true ;      % A is bitmap
