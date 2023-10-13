@@ -55,7 +55,7 @@ void mexFunction
         // JIT is disabled
         printf ("JIT disabled\n") ;
         OK (GxB_Global_Option_set_CHAR (GxB_JIT_CACHE_PATH, "/myroot")) ;
-        char *s ;
+        const char *s ;
         OK (GxB_Global_Option_get_CHAR (GxB_JIT_CACHE_PATH, &s)) ;
         CHECK (MATCH (s, "/myroot")) ;
     }

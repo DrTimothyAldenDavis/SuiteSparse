@@ -43,11 +43,11 @@ include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Sept 8, 2023")
-set(Mongoose_NUMERIC_DATE "2023-09-08")
+set(Mongoose_DATE "Sept 18, 2023")
+set(Mongoose_NUMERIC_DATE "2023-09-18")
 set(Mongoose_VERSION_MAJOR 3)
 set(Mongoose_VERSION_MINOR 2)
-set(Mongoose_VERSION_PATCH 0)
+set(Mongoose_VERSION_PATCH 1)
 
 project(Mongoose
         VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
@@ -247,6 +247,11 @@ if ( NSTATIC )
 else ( )
     target_link_libraries ( mongoose_exe Mongoose_static )
 endif ( )
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( mongoose_exe SuiteSparse::SuiteSparseConfig_static )
+else ( )
+    target_link_libraries ( mongoose_exe SuiteSparse::SuiteSparseConfig )
+endif ( )
 
 # Build the Demo executable
 add_executable ( demo_exe ${DEMO_FILES} )
@@ -257,26 +262,36 @@ if ( NSTATIC )
 else ( )
     target_link_libraries ( demo_exe Mongoose_static )
 endif ( )
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( demo_exe SuiteSparse::SuiteSparseConfig_static )
+else ( )
+    target_link_libraries ( demo_exe SuiteSparse::SuiteSparseConfig )
+endif ( )
 
 # Coverage and Unit Testing Setup
 enable_testing()
 set(TESTING_OUTPUT_PATH ${CMAKE_BINARY_DIR}/tests)
 
 # I/O Tests
-add_executable(mongoose_test_io
+add_executable ( mongoose_test_io
         Tests/Mongoose_Test_IO.cpp
-        Tests/Mongoose_Test_IO_exe.cpp)
+        Tests/Mongoose_Test_IO_exe.cpp )
 target_link_libraries ( mongoose_test_io Mongoose_static_dbg )
-set_target_properties(mongoose_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig_static )
+else ( )
+    target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig )
+endif ( )
+set_target_properties ( mongoose_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
 add_test(IO_Test ./runTests -min 1 -max 15 -t io -k)
 
 # Edge Separator Tests
-add_executable(mongoose_test_edgesep
+add_executable ( mongoose_test_edgesep
         Tests/Mongoose_Test_EdgeSeparator.cpp
         Tests/Mongoose_Test_EdgeSeparator_exe.cpp)
 target_link_libraries ( mongoose_test_edgesep Mongoose_static_dbg )
-set_target_properties(mongoose_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
+set_target_properties ( mongoose_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
 add_test(Edge_Separator_Test ./runTests -min 1 -max 15 -t edgesep)
 add_test(Edge_Separator_Test_2 ./runTests -t edgesep -i 21 39 191 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 360 1437)
@@ -284,56 +299,66 @@ add_test(Weighted_Edge_Separator_Test ./runTests -t edgesep -i 2624)
 add_test(Target_Split_Test ./runTests -min 1 -max 15 -t edgesep -s 0.3)
 
 # Memory Tests
-add_executable(mongoose_test_memory
+add_executable ( mongoose_test_memory
         Tests/Mongoose_Test_Memory.cpp
         Tests/Mongoose_Test_Memory_exe.cpp)
 target_link_libraries ( mongoose_test_memory Mongoose_static_dbg )
-set_target_properties(mongoose_test_memory PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
+set_target_properties ( mongoose_test_memory PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
 add_test(Memory_Test ./runTests -min 1 -max 15 -t memory)
 
 # Performance Test
-add_executable(mongoose_test_performance
+add_executable ( mongoose_test_performance
         Tests/Mongoose_Test_Performance.cpp
-        Tests/Mongoose_Test_Performance_exe.cpp)
+        Tests/Mongoose_Test_Performance_exe.cpp )
 if ( NSTATIC )
     target_link_libraries ( mongoose_test_performance Mongoose )
 else ( )
     target_link_libraries ( mongoose_test_performance Mongoose_static )
 endif ( )
-set_target_properties(mongoose_test_performance PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig_static )
+else ( )
+    target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig )
+endif ( )
+set_target_properties ( mongoose_test_performance PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 add_test(Performance_Test ./runTests -min 1 -max 15 -t performance -p)
 add_test(Performance_Test_2 ./runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p)
 
 # Reference Test
-add_executable(mongoose_test_reference
+add_executable ( mongoose_test_reference
         Tests/Mongoose_Test_Reference.cpp
-        Tests/Mongoose_Test_Reference_exe.cpp)
+        Tests/Mongoose_Test_Reference_exe.cpp )
 if ( NSTATIC )
     target_link_libraries ( mongoose_test_reference Mongoose )
 else ( )
     target_link_libraries ( mongoose_test_reference Mongoose_static )
 endif ( )
-set_target_properties(mongoose_test_reference PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
+if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+    target_link_libraries ( mongoose_test_reference SuiteSparse::SuiteSparseConfig_static )
+else ( )
+    target_link_libraries ( mongoose_test_reference SuiteSparse::SuiteSparseConfig )
+endif ( )
+set_target_properties ( mongoose_test_reference PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
 # Unit Tests
-add_executable(mongoose_unit_test_io
+add_executable ( mongoose_unit_test_io
         Tests/Mongoose_UnitTest_IO_exe.cpp)
 target_link_libraries ( mongoose_unit_test_io Mongoose_static_dbg )
-set_target_properties(mongoose_unit_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
-add_test(Unit_Test_IO ./tests/mongoose_unit_test_io)
+set_target_properties ( mongoose_unit_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+add_test ( Unit_Test_IO ./tests/mongoose_unit_test_io )
 
-add_executable(mongoose_unit_test_graph
-        Tests/Mongoose_UnitTest_Graph_exe.cpp)
+add_executable ( mongoose_unit_test_graph
+        Tests/Mongoose_UnitTest_Graph_exe.cpp )
 target_link_libraries ( mongoose_unit_test_graph Mongoose_static_dbg )
-set_target_properties(mongoose_unit_test_graph PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
-add_test(Unit_Test_Graph ./tests/mongoose_unit_test_graph)
+set_target_properties ( mongoose_unit_test_graph PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+add_test ( Unit_Test_Graph ./tests/mongoose_unit_test_graph )
 
-add_executable(mongoose_unit_test_edgesep
+add_executable ( mongoose_unit_test_edgesep
         Tests/Mongoose_UnitTest_EdgeSep_exe.cpp)
 target_link_libraries ( mongoose_unit_test_edgesep Mongoose_static_dbg )
-set_target_properties(mongoose_unit_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH})
-add_test(Unit_Test_EdgeSep ./tests/mongoose_unit_test_edgesep)
+set_target_properties ( mongoose_unit_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+add_test ( Unit_Test_EdgeSep ./tests/mongoose_unit_test_edgesep )
 
 if ( $ENV{MONGOOSE_COVERAGE} )
     set ( COV on )

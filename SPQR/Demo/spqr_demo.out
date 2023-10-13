@@ -1,5 +1,5 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -16,48 +16,47 @@
 -- CUDA toolkit include: /usr/local/cuda/include
 -- CUDA toolkit lib dir: /usr/local/cuda/lib64
 -- CUDA: enabled
--- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config version: 7.2.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.2.0
+-- AMD version: 3.2.1
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.0
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.1
 -- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.2.0
+-- COLAMD version: 3.2.1
 -- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.0
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.1
 -- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- Found CUDAToolkit: /usr/local/cuda/include (found suitable version "11.7.99", minimum required is "11") 
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
--- CHOLMOD version: 4.2.0
+-- CHOLMOD version: 4.2.1
 -- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.0
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.1
 -- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
--- CAMD version: 3.2.0
+-- CAMD version: 3.2.1
 -- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.0
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.1
 -- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.2.0
+-- CCOLAMD version: 3.2.1
 -- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.0
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.1
 -- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- SuiteSparse_GPURuntime version: 3.2.0
+-- SuiteSparse_GPURuntime version: 3.2.1
 -- SuiteSparse_GPURuntime include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/Include
--- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.0
+-- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.1
 -- SuiteSparse_GPURuntime static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.a
--- GPUQREngine version: 3.2.0
+-- GPUQREngine version: 3.2.1
 -- GPUQREngine include: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/Include
--- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.0
+-- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.1
 -- GPUQREngine static:  /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.a
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
 -- Looking for Intel 32-bit BLAS
 -- Found Intel10_64lp 32-bit BLAS
--- Building SPQR_CUDA version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR_CUDA version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -69,7 +68,6 @@
 -- Fortran: /usr/bin/f95
 -- Looking for CUDA
 -- Find CUDA tool kit:
--- Found CUDAToolkit: /usr/local/cuda/include (found version "11.7.99") 
 -- CUDA toolkit found:   TRUE
 -- CUDA toolkit version: 11.7.99
 -- CUDA toolkit include: /usr/local/cuda/include
@@ -102,27 +100,27 @@
 -- BLAS integer:         int32_t
 -- CUDA architectures:   52;75;80
 -- ------------------------------------------------------------------------
--- Configuring done (0.6s)
+-- Configuring done (0.5s)
 -- Generating done (0.1s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
-[  3%] Built target SPQR_CUDA
-[  7%] Built target SPQR_CUDA_static
-[ 44%] Built target SPQR
-[ 82%] Built target SPQR_static
-[ 84%] Built target qrsimple
-[ 86%] Built target qrdemoc_int32
-[ 88%] Built target qrdemo
-[ 90%] Built target qrdemoc
-[ 91%] Built target qrsimplec_int32
-[ 93%] Built target qrsimplec
-[ 95%] Built target qrdemo_int32
+[  4%] Built target SPQR_CUDA_static
+[  7%] Built target SPQR_CUDA
+[ 45%] Built target SPQR_static
+[ 82%] Built target SPQR
+[ 83%] Built target qrdemoc
+[ 85%] Built target qrdemo
+[ 87%] Built target qrsimplec
+[ 89%] Built target qrdemoc_int32
+[ 91%] Built target qrdemo_int32
+[ 93%] Built target qrsimple
+[ 95%] Built target qrsimplec_int32
 [ 96%] Built target qrdemo_gpu
-[ 98%] Built target qrdemo_gpu3
-[100%] Built target qrdemo_gpu2
+[ 98%] Built target qrdemo_gpu2
+[100%] Built target qrdemo_gpu3
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 ( cd build && cmake  -DDEMO=1 .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -139,48 +137,47 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 -- CUDA toolkit include: /usr/local/cuda/include
 -- CUDA toolkit lib dir: /usr/local/cuda/lib64
 -- CUDA: enabled
--- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config version: 7.2.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.2.0
+-- AMD version: 3.2.1
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.0
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.1
 -- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.2.0
+-- COLAMD version: 3.2.1
 -- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.0
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.1
 -- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- Found CUDAToolkit: /usr/local/cuda/include (found suitable version "11.7.99", minimum required is "11") 
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
--- CHOLMOD version: 4.2.0
+-- CHOLMOD version: 4.2.1
 -- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.0
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.1
 -- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
--- CAMD version: 3.2.0
+-- CAMD version: 3.2.1
 -- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.0
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.1
 -- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.2.0
+-- CCOLAMD version: 3.2.1
 -- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.0
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.1
 -- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- SuiteSparse_GPURuntime version: 3.2.0
+-- SuiteSparse_GPURuntime version: 3.2.1
 -- SuiteSparse_GPURuntime include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/Include
--- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.0
+-- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.1
 -- SuiteSparse_GPURuntime static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.a
--- GPUQREngine version: 3.2.0
+-- GPUQREngine version: 3.2.1
 -- GPUQREngine include: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/Include
--- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.0
+-- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.1
 -- GPUQREngine static:  /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.a
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
 -- Looking for Intel 32-bit BLAS
 -- Found Intel10_64lp 32-bit BLAS
--- Building SPQR_CUDA version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR_CUDA version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -192,7 +189,6 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 -- Fortran: /usr/bin/f95
 -- Looking for CUDA
 -- Find CUDA tool kit:
--- Found CUDAToolkit: /usr/local/cuda/include (found version "11.7.99") 
 -- CUDA toolkit found:   TRUE
 -- CUDA toolkit version: 11.7.99
 -- CUDA toolkit include: /usr/local/cuda/include
@@ -231,16 +227,16 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 [  3%] Built target SPQR_CUDA
 [  7%] Built target SPQR_CUDA_static
-[ 45%] Built target SPQR_static
-[ 82%] Built target SPQR
-[ 83%] Built target qrdemoc
-[ 85%] Built target qrsimplec
-[ 87%] Built target qrsimplec_int32
-[ 89%] Built target qrsimple
-[ 91%] Built target qrdemo
-[ 92%] Built target qrdemo_gpu
-[ 94%] Built target qrdemo_int32
-[ 96%] Built target qrdemoc_int32
+[ 44%] Built target SPQR
+[ 82%] Built target SPQR_static
+[ 84%] Built target qrsimple
+[ 86%] Built target qrsimplec
+[ 87%] Built target qrdemoc
+[ 89%] Built target qrdemo_int32
+[ 92%] Built target qrsimplec_int32
+[ 93%] Built target qrdemoc_int32
+[ 95%] Built target qrdemo
+[ 96%] Built target qrdemo_gpu
 [ 98%] Built target qrdemo_gpu2
 [100%] Built target qrdemo_gpu3
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
@@ -462,7 +458,7 @@ Matrix    841-by-841    nnz:   4089 residual:  1.8e-16 rank:    841
 ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
 Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 ( cd build && cmake  -DDEMO=1 .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -479,48 +475,47 @@ Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 -- CUDA toolkit include: /usr/local/cuda/include
 -- CUDA toolkit lib dir: /usr/local/cuda/lib64
 -- CUDA: enabled
--- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config version: 7.2.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.2.0
+-- AMD version: 3.2.1
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.0
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.2.1
 -- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.2.0
+-- COLAMD version: 3.2.1
 -- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.0
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.2.1
 -- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- Found CUDAToolkit: /usr/local/cuda/include (found suitable version "11.7.99", minimum required is "11") 
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
--- CHOLMOD version: 4.2.0
+-- CHOLMOD version: 4.2.1
 -- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.0
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.4.2.1
 -- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
--- CAMD version: 3.2.0
+-- CAMD version: 3.2.1
 -- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.0
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.2.1
 -- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.2.0
+-- CCOLAMD version: 3.2.1
 -- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.0
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.2.1
 -- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- SuiteSparse_GPURuntime version: 3.2.0
+-- SuiteSparse_GPURuntime version: 3.2.1
 -- SuiteSparse_GPURuntime include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/Include
--- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.0
+-- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.so.3.2.1
 -- SuiteSparse_GPURuntime static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_GPURuntime/build/libsuitesparse_gpuruntime.a
--- GPUQREngine version: 3.2.0
+-- GPUQREngine version: 3.2.1
 -- GPUQREngine include: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/Include
--- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.0
+-- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.so.3.2.1
 -- GPUQREngine static:  /home/faculty/d/davis/dev2/SuiteSparse/GPUQREngine/build/libgpuqrengine.a
--- CHOLMOD_CUDA version: 4.2.0
--- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.0
+-- CHOLMOD_CUDA version: 4.2.1
+-- CHOLMOD_CUDA library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.so.4.2.1
 -- CHOLMOD_CUDA static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/GPU/libcholmod_cuda.a
 -- Looking for Intel 32-bit BLAS
 -- Found Intel10_64lp 32-bit BLAS
--- Building SPQR_CUDA version: v4.2.0 (Sept 8, 2023)
+-- Building SPQR_CUDA version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -532,7 +527,6 @@ Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 -- Fortran: /usr/bin/f95
 -- Looking for CUDA
 -- Find CUDA tool kit:
--- Found CUDAToolkit: /usr/local/cuda/include (found version "11.7.99") 
 -- CUDA toolkit found:   TRUE
 -- CUDA toolkit version: 11.7.99
 -- CUDA toolkit include: /usr/local/cuda/include
@@ -569,20 +563,20 @@ Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 -- Generating done (0.1s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
-[  4%] Built target SPQR_CUDA_static
-[  7%] Built target SPQR_CUDA
-[ 80%] Built target SPQR
+[  3%] Built target SPQR_CUDA
+[  7%] Built target SPQR_CUDA_static
+[ 44%] Built target SPQR
 [ 82%] Built target SPQR_static
-[ 83%] Built target qrdemoc
-[ 85%] Built target qrsimple
-[ 86%] Built target qrdemo_gpu
-[ 88%] Built target qrsimplec
-[ 90%] Built target qrsimplec_int32
-[ 92%] Built target qrdemo_int32
-[ 94%] Built target qrdemo
-[ 96%] Built target qrdemoc_int32
-[ 98%] Built target qrdemo_gpu2
-[100%] Built target qrdemo_gpu3
+[ 84%] Built target qrsimplec
+[ 87%] Built target qrsimplec_int32
+[ 87%] Built target qrdemoc
+[ 91%] Built target qrdemo
+[ 92%] Built target qrdemoc_int32
+[ 93%] Built target qrsimple
+[ 95%] Built target qrdemo_int32
+[ 96%] Built target qrdemo_gpu
+[ 98%] Built target qrdemo_gpu3
+[100%] Built target qrdemo_gpu2
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 ./build/qrdemo_int32 < Matrix/a00.mtx
 Matrix      0-by-0      nnz:      0

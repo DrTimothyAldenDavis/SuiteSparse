@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( COLAMD_DATE "Sept 8, 2023" )
+set ( COLAMD_DATE "Sept 18, 2023" )
 set ( COLAMD_VERSION_MAJOR 3 )
 set ( COLAMD_VERSION_MINOR 2 )
-set ( COLAMD_VERSION_SUB   0 )
+set ( COLAMD_VERSION_SUB   1 )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.

@@ -1,5 +1,5 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- Building RBIO version: v4.2.0 (Sept 8, 2023)
+-- Building RBIO version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/RBio 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -10,9 +10,9 @@
 -- Build type:    Release 
 -- Fortran: /usr/bin/f95
 -- CUDA: not enabled
--- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config version: 7.2.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------
@@ -41,7 +41,7 @@ gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 [100%] Built target RBdemo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 ( cd build && cmake  -DDEMO=1 .. && cmake --build . --config Release -j8 )
--- Building RBIO version: v4.2.0 (Sept 8, 2023)
+-- Building RBIO version: v4.2.1 (Sept 18, 2023)
 -- Source:        /home/faculty/d/davis/dev2/SuiteSparse/RBio 
 -- Build:         /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
 -- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -52,9 +52,9 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 -- Build type:    Release 
 -- Fortran: /usr/bin/f95
 -- CUDA: not enabled
--- SuiteSparse_config version: 7.2.0
+-- SuiteSparse_config version: 7.2.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------

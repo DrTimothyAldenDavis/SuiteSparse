@@ -1,4 +1,4 @@
-UMFPACK V6.2.0 (Sept 8, 2023), Control:
+UMFPACK V6.2.1 (Sept 18, 2023), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int64_t
 
@@ -38,7 +38,7 @@ UMFPACK V6.2.0 (Sept 8, 2023), Control:
     computer/operating system: Linux
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 16 (in bytes)
 
-UMFPACK V6.2.0 (Sept 8, 2023), Info:
+UMFPACK V6.2.1 (Sept 18, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -119,10 +119,10 @@ UMFPACK V6.2.0 (Sept 8, 2023), Info:
     numeric factorization defragmentations:        0
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
-    numeric factorization wallclock time (sec):    0.04
-    numeric factorization mflops (wallclock):      407.98
-    symbolic + numeric wall clock time (sec):      0.04
-    symbolic + numeric mflops (wall clock):        383.46
+    numeric factorization wallclock time (sec):    0.01
+    numeric factorization mflops (wallclock):      962.67
+    symbolic + numeric wall clock time (sec):      0.02
+    symbolic + numeric mflops (wall clock):        839.26
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
@@ -143,7 +143,7 @@ symbolic analysis:
    nnz (U):           39609.
 numeric factorization:
    status:     0.
-   time:      0.35E-01
+   time:      0.15E-01
    actual numeric LU statistics:
    size of LU:          0.74 (MB)
    memory needed:       1.38 (MB)

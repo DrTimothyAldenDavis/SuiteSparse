@@ -22,7 +22,7 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: ubuntu-latest
 
-    name: ubuntu (${{ matrix.compiler }} ${{ matrix.cuda }} CUDA)
+    name: ubuntu (${{ matrix.compiler }} ${{ matrix.cuda }} CUDA ${{ matrix.openmp }} OpenMP)
 
     strategy:
       # Allow other runners in the matrix to continue if some fail
@@ -31,6 +31,7 @@ jobs:
       matrix:
         compiler: [gcc, clang]
         cuda: [with, without]
+        openmp: [with]
         include:
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
@@ -51,6 +52,14 @@ jobs:
               -DENABLE_CUDA=On
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+          - compiler: gcc
+            compiler-pkgs: "g++ gcc"
+            cc: "gcc"
+            cxx: "g++"
+            ccache-max: 600M
+            cuda: without
+            openmp: without
+            openmp-cmake-flags: "-DNOPENMP=ON"
 
     env:
       CC: ${{ matrix.cc }}
@@ -75,7 +84,7 @@ jobs:
         # used in action/cache/restore and action/cache/save steps
         id: ccache-prepare
         run: |
-          echo "key=ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.openmp }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
@@ -85,8 +94,8 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ github.ref }}
-            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}
+            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.openmp }}:${{ github.ref }}
+            ccache:ubuntu:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.openmp }}:
 
       - name: create empty libraries
         # This is to work around a bug in nvlink.
@@ -127,6 +136,7 @@ jobs:
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
                   ${{ matrix.cuda-cmake-flags }} \
+                  ${{ matrix.openmp-cmake-flags }} \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -573,7 +583,7 @@ jobs:
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
             ccache:msvc:${{ matrix.openmp }}:${{ github.ref }}
-            ccache:msvc:${{ matrix.openmp }}
+            ccache:msvc:${{ matrix.openmp }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.

@@ -71,8 +71,8 @@ GK_MKRANDOM(gk_z,   size_t, ssize_t)
 #elif defined ( HAVE_KEYWORD__THREAD )
 
     // gcc and many other compilers support the __thread keyword
-    __thread static uint64_t mt[NN];
-    __thread static int mti=NN+1;
+    static __thread uint64_t mt[NN];
+    static __thread int mti=NN+1;
 
 #elif defined ( HAVE_KEYWORD__DECLSPEC_THREAD )
 

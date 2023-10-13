@@ -1,4 +1,4 @@
-UMFPACK V6.2.0 (Sept 8, 2023), Control:
+UMFPACK V6.2.1 (Sept 18, 2023), Control:
     Matrix entry defined as: double
     Int (generic integer) defined as: int64_t
 
@@ -38,7 +38,7 @@ UMFPACK V6.2.0 (Sept 8, 2023), Control:
     computer/operating system: Linux
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 8 (in bytes)
 
-UMFPACK V6.2.0 (Sept 8, 2023), Info:
+UMFPACK V6.2.1 (Sept 18, 2023), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4

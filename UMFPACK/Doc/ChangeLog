@@ -1,3 +1,9 @@
+Sept 18, 2023: version 6.2.1
+
+    * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
+    * AMD: amd_internal.h include file copied into UMFPACK/Source, so
+        that UMFPACK can be built with just the installed AMD files.
+
 Sept 8, 2023: version 6.2.0
 
     * cmake updates: SuiteSparse:: namespace by Markus Muetzel

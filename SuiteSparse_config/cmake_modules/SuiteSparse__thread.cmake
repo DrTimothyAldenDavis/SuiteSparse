@@ -10,7 +10,7 @@
 # determine if the __thread keyword is available, which is an extension by
 # gcc but supported by many compilers, to indicate thread-local-storage.
 
-include ( CheckCSourceRuns )
+include ( CheckCSourceCompiles )
 
 set ( thread_src
 "   #include <stdio.h>
@@ -43,11 +43,11 @@ set ( thread_local_src
     }
 " )
 
-check_c_source_runs ( "${declspec_thread_src}" HAVE_KEYWORD__DECLSPEC_THREAD )
+check_c_source_compiles ( "${declspec_thread_src}" HAVE_KEYWORD__DECLSPEC_THREAD )
 
-check_c_source_runs ( "${thread_src}" HAVE_KEYWORD__THREAD )
+check_c_source_compiles ( "${thread_src}" HAVE_KEYWORD__THREAD )
 
-check_c_source_runs ( "${thread_local_src}" HAVE_KEYWORD__THREAD_LOCAL )
+check_c_source_compiles ( "${thread_local_src}" HAVE_KEYWORD__THREAD_LOCAL )
 
 if ( HAVE_KEYWORD__DECLSPEC_THREAD )
     add_compile_definitions ( HAVE_KEYWORD__DECLSPEC_THREAD )

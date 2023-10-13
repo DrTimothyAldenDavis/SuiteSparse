@@ -37,10 +37,17 @@ for kind = 1:2
     F = GB_spec_random (n, 1, inf, 1, class) ;
     F.sparsity = 8 ;    % full
 
-    A.sparsity = 2 ;
+    A.sparsity = 2 ;    % sparse
     C1 = GB_mex_mxm  (F, [ ], accum, semiring, A, B, [ ]) ;
     C2 = GB_spec_mxm (F, [ ], accum, semiring, A, B, [ ]) ;
-    GB_spec_compare (C1, C2, [ ], tol) ;
+    GB_spec_compare (C2, C1, 0, tol) ;
+
+    % typecasting (to trigger the JIT)
+    A.class = 'single' ;
+    C1 = GB_mex_mxm  (F, [ ], accum, semiring, A, B, [ ]) ;
+    C2 = GB_spec_mxm (F, [ ], accum, semiring, A, B, [ ]) ;
+    GB_spec_compare (C2, C1, 0, tol) ;
+
 end
 
 GB_mex_burble (0) ;

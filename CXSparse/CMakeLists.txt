@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( CXSPARSE_DATE "Sept 8, 2023" )
+set ( CXSPARSE_DATE "Sept 18, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 )
 set ( CXSPARSE_VERSION_MINOR 2 )
-set ( CXSPARSE_VERSION_SUB   0 )
+set ( CXSPARSE_VERSION_SUB   1 )
 
 message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_MAJOR}.

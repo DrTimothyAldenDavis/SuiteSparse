@@ -12,8 +12,6 @@
 # The GraphBLAS CPU and CUDA JITs need to know where the GraphBLAS source is
 # located, and where to put the compiled libraries.
 
-include ( SuiteSparse_getenv )
-
 # set the GRAPHBLAS_CACHE_PATH for compiled JIT kernels
 if ( DEFINED ENV{GRAPHBLAS_CACHE_PATH} )
     # use the GRAPHBLAS_CACHE_PATH environment variable

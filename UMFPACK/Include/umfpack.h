@@ -82,10 +82,10 @@ extern "C" {
  * below.
  */
 
-#define UMFPACK_DATE "Sept 8, 2023"
+#define UMFPACK_DATE "Sept 18, 2023"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    2
-#define UMFPACK_SUBSUB_VERSION 0
+#define UMFPACK_SUBSUB_VERSION 1
 
 #define UMFPACK_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
@@ -568,7 +568,13 @@ Arguments:
 
         Control [UMFPACK_STRATEGY]:  This is the most important control
             parameter.  It determines what kind of ordering and pivoting
-            strategy that UMFPACK should use.  There are 4 options:
+            strategy that UMFPACK should use.
+
+            NOTE: the interaction of numerical and fill-reducing pivoting is
+            a delicate balance, and a perfect hueristic is not possible because
+            sparsity-preserving pivoting is an NP-hard problem.  Selecting the
+            wrong strategy can lead to catastrophic fill-in and/or numerical
+            inaccuracy.
 
             UMFPACK_STRATEGY_AUTO:  This is the default.  The input matrix is
                 analyzed to determine how symmetric the nonzero pattern is, and

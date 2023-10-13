@@ -109,7 +109,7 @@ GrB_Info GB_add             // C=A+B, C<M>=A+B, or C<!M>=A+B
     // initializations
     //--------------------------------------------------------------------------
 
-    int64_t Cnvec, Cnvec_nonempty ;
+    int64_t Cnvec = 0 , Cnvec_nonempty = 0  ;
     int64_t *Cp     = NULL ; size_t Cp_size = 0 ;
     int64_t *Ch     = NULL ; size_t Ch_size = 0 ; 
     int64_t *C_to_M = NULL ; size_t C_to_M_size = 0 ;

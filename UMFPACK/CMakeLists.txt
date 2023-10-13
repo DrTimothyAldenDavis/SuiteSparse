@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Sept 8, 2023" )
+set ( UMFPACK_DATE "Sept 18, 2023" )
 set ( UMFPACK_VERSION_MAJOR 6 )
 set ( UMFPACK_VERSION_MINOR 2 )
-set ( UMFPACK_VERSION_SUB   0 )
+set ( UMFPACK_VERSION_SUB   1 )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.

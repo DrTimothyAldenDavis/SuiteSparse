@@ -40,26 +40,26 @@ tol = 1e-5 ;
 C2 = GB_mex_mxm  (C, [ ], add_op, semiring, A, B, dnn) ;
 C1 = GB_spec_mxm (C, [ ], add_op, semiring, A, B, dnn) ;
 C3 = GB_mex_plusplus (C, [ ], add_op, [ ], A, B, dnn) ;
-GB_spec_compare (C1, C2, [ ], tol) ;
-GB_spec_compare (C1, C3, [ ], tol) ;
+GB_spec_compare (C1, C2, 0, tol) ;
+GB_spec_compare (C1, C3, 0, tol) ;
 
 C2 = GB_mex_mxm  (C, [ ], add_op, semiring, AT, B, dtn) ;
 C1 = GB_spec_mxm (C, [ ], add_op, semiring, AT, B, dtn) ;
 C3 = GB_mex_plusplus (C, [ ], add_op, [ ], AT, B, dtn) ;
-GB_spec_compare (C1, C2, [ ], tol) ;
-GB_spec_compare (C1, C3, [ ], tol) ;
+GB_spec_compare (C1, C2, 0, tol) ;
+GB_spec_compare (C1, C3, 0, tol) ;
 
 C2 = GB_mex_mxm  (C, [ ], add_op, semiring, A, BT, dnt) ;
 C1 = GB_spec_mxm (C, [ ], add_op, semiring, A, BT, dnt) ;
 C3 = GB_mex_plusplus (C, [ ], add_op, [ ], A, BT, dnt) ;
-GB_spec_compare (C1, C2, [ ], tol) ;
-GB_spec_compare (C1, C3, [ ], tol) ;
+GB_spec_compare (C1, C2, 0, tol) ;
+GB_spec_compare (C1, C3, 0, tol) ;
 
 C2 = GB_mex_mxm  (C, [ ], add_op, semiring, AT, BT, dtt) ;
 C1 = GB_spec_mxm (C, [ ], add_op, semiring, AT, BT, dtt) ;
 C3 = GB_mex_plusplus (C, [ ], add_op, [ ], AT, BT, dtt) ;
-GB_spec_compare (C1, C2, [ ], tol) ;
-GB_spec_compare (C1, C3, [ ], tol) ;
+GB_spec_compare (C1, C2, 0, tol) ;
+GB_spec_compare (C1, C3, 0, tol) ;
 
 fprintf ('test259: all tests passed\n') ;
 
