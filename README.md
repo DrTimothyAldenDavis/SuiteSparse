@@ -563,7 +563,7 @@ build `SuiteSparse_config` on Windows in the command window:
 
     cd SuiteSparse_config/build
     cmake ..
-    cmke --build . --config Release
+    cmake --build . --config Release
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
