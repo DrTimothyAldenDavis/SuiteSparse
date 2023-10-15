@@ -1,3 +1,7 @@
+Oct 16, 2023: version 4.2.2
+
+    * bug fix: incorrect computation of work for nthreads in CHOLMOD/Supernodal
+
 Sept 18, 2023: version 4.2.1
 
     * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux

@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Sept 18, 2023" )
+set ( CHOLMOD_DATE "Oct 15, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 4 )
 set ( CHOLMOD_VERSION_MINOR 2 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_SUB   2 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
