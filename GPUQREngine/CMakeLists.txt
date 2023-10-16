@@ -97,16 +97,16 @@ if ( DEMO AND DEMO_OK )
         find_package ( CCOLAMD 3.2.0 )
     endif ( )
 
-    find_package ( CHOLMOD 4.2.2
+    find_package ( CHOLMOD 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 4.2.2 )
+        find_package ( CHOLMOD 4.2.0 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.2.2
+    find_package ( CHOLMOD_CUDA 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.2 )
+        find_package ( CHOLMOD_CUDA 4.2.0 )
     endif ( )
 endif ( )
 
