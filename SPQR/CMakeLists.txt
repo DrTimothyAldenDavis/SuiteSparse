@@ -74,10 +74,10 @@ endif ( )
 
 # It would be nice if just checking for CHOLMOD would automatically pull in
 # the targets for its dependencies.
-find_package ( CHOLMOD 4.2.2
+find_package ( CHOLMOD 4.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::CHOLMOD )
-    find_package ( CHOLMOD 4.2.2 REQUIRED )
+    find_package ( CHOLMOD 4.2.0 REQUIRED )
 endif ( )
 
 # look for CHOLMOD's dependencies: AMD and COLAMD are required.  CAMD and
@@ -107,10 +107,10 @@ if ( SUITESPARSE_CUDA )
         find_package ( GPUQREngine 3.2.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.2.2
+    find_package ( CHOLMOD_CUDA 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.2 REQUIRED )
+        find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
     endif ( )
 endif ( )
 
