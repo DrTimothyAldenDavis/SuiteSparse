@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Oct 7, 2023, SuiteSparse VERSION 7.2.1
+Oct 15, 2023, SuiteSparse VERSION 7.2.2
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -81,10 +81,9 @@ papers in ACM TOMS, for each package.
 
     * for GraphBLAS, and `C=A*B` in MATLAB (sparse-times-sparse):
 
-        T. Davis, Algorithm 10xx: SuiteSparse:GraphBLAS: parallel graph
-        algorithms in the language of sparse linear algebra, ACM Trans on
-        Mathematical Software, just accepted, 2023.  See the pdf in
-        https://github.com/DrTimothyAldenDavis/GraphBLAS/tree/stable/Doc .
+        T. A. Davis. Algorithm 1037: SuiteSparse:GraphBLAS: Parallel Graph
+        Algorithms in the Language of Sparse Linear Algebra. ACM Trans. Math.
+        Softw. 49, 3, Article 28 (September 2023), 30 pages.
         https://doi.org/10.1145/3577195
 
         T. Davis, Algorithm 1000: SuiteSparse:GraphBLAS: graph algorithms in

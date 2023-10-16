@@ -372,13 +372,13 @@ static int TEMPLATE (cholmod_super_numeric)
         if (stype != 0)
         {
             Int pfirst = Ap [k1] ;
-            Int plast = (Apacked) ? (Ap [k2+1]) : (pfirst + Anz [k2]) ;
+            Int plast = (Apacked) ? (Ap [k2]) : (pfirst + Anz [k2-1]) ;
             work = (double) (plast - pfirst) ;
         }
         else
         {
             Int pfirst = Fp [k1] ;
-            Int plast  = (Fpacked) ? (Fp [k2+1]) : (pfirst + Fnz [k2]) ;
+            Int plast  = (Fpacked) ? (Fp [k2]) : (pfirst + Fnz [k2-1]) ;
             work = (double) (plast - pfirst) ;
         }
         nthreads = cholmod_nthreads (work, Common) ;
