@@ -163,9 +163,18 @@ install ( EXPORT CAMDTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/CAMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/CAMDConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CAMDConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
 
 write_basic_package_version_file (

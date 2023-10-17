@@ -178,9 +178,18 @@ install ( EXPORT AMDTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/AMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/AMDConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/AMDConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
 
 write_basic_package_version_file (

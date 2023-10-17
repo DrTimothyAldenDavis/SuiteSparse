@@ -176,9 +176,18 @@ install ( EXPORT LDLTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/LDL )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/LDLConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/LDLConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/LDLConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/LDLConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/LDLConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/LDL )
 
 write_basic_package_version_file (

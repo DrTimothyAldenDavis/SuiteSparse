@@ -193,9 +193,18 @@ install ( EXPORT CXSparseTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/CXSparseConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/CXSparseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CXSparseConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
 
 write_basic_package_version_file (
