@@ -73,45 +73,14 @@ set ( DEMO_OK false )
 
 if ( DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( AMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.2.0 )
-    endif ( )
-
-    find_package ( COLAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.2.0 )
-    endif ( )
-
-    find_package ( CAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CAMD )
-        find_package ( CAMD 3.2.0 )
-    endif ( )
-
-    find_package ( CCOLAMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CCOLAMD )
-        find_package ( CCOLAMD 3.2.0 )
-    endif ( )
-
     find_package ( CHOLMOD 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
         find_package ( CHOLMOD 4.2.0 )
     endif ( )
-
-    find_package ( CHOLMOD_CUDA 4.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.0 )
-    endif ( )
 endif ( )
 
-if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND AND AMD_FOUND AND COLAMD_FOUND AND 
-    CAMD_FOUND AND CCOLAMD_FOUND )
+if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND )
     set ( DEMO_OK true )
 else ( )
     set ( DEMO_OK false )
