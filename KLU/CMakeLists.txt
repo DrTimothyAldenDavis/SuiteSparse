@@ -275,24 +275,20 @@ if ( NOT NCHOLMOD )
     # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
     # CHOLMOD without CUDA
-    target_link_libraries ( KLU PRIVATE
-        SuiteSparse::CHOLMOD )
-    target_link_libraries ( KLU_CHOLMOD PRIVATE
-        SuiteSparse::CHOLMOD )
+    target_link_libraries ( KLU_CHOLMOD PRIVATE SuiteSparse::CHOLMOD )
     if ( NOT NSTATIC )
        set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
        if ( TARGET SuiteSparse::CHOLMOD_static )
-            target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD_static )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
         else ( )
-            target_link_libraries ( KLU_static PUBLIC SuiteSparse::CHOLMOD )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
 
     # klu:
-    target_link_libraries ( KLU_CHOLMOD PRIVATE KLU SuiteSparse::BTF )
+    target_link_libraries ( KLU_CHOLMOD PRIVATE KLU )
     if ( NOT NSTATIC )
+        target_link_libraries ( KLU_CHOLMOD_static PUBLIC KLU_static )
         if ( TARGET SuiteSparse::BTF_static )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::BTF_static )
         else ( )
@@ -331,9 +327,18 @@ install ( EXPORT KLUTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/KLUConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/KLUConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/KLUConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
 
 write_basic_package_version_file (
@@ -401,9 +406,18 @@ if ( NOT NCHOLMOD )
         NAMESPACE SuiteSparse::
         DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
 
+    # generate config file to be used in common build tree
+    set ( SUITESPARSE_IN_BUILD_TREE ON )
     configure_package_config_file (
         Config/KLU_CHOLMODConfig.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfig.cmake
+        INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfig.cmake )
+
+    # generate config file to be installed
+    set ( SUITESPARSE_IN_BUILD_TREE OFF )
+    configure_package_config_file (
+        Config/KLU_CHOLMODConfig.cmake.in
+        ${CMAKE_CURRENT_BINARY_DIR}/target/KLU_CHOLMODConfig.cmake
         INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
 
     write_basic_package_version_file (
