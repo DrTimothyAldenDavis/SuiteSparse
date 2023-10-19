@@ -67,18 +67,6 @@ if ( NOT TARGET SuiteSparse::CHOLMOD )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::GPURuntime )
-        find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
-    endif ( )
-
-    find_package ( GPUQREngine 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../GPUQREngine/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::GPUQREngine )
-        find_package ( GPUQREngine 3.2.0 REQUIRED )
-    endif ( )
-
     find_package ( CHOLMOD_CUDA 4.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
@@ -91,6 +79,8 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
 if ( SUITESPARSE_CUDA )
     # with CUDA
+    add_subdirectory ( GPURuntime )
+    add_subdirectory ( GPUQREngine )
     add_subdirectory ( SPQRGPU )
 endif ( )
 
@@ -226,13 +216,8 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # CUDA
-    target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD_CUDA SPQR_CUDA )
-    # SPQR includes files from the following targets that are not installed by
-    # them.  That looks strange and will only work before they are installed.
-    # Maybe, those two targets aren't actually standalone libraries but should
-    # be part of the SPQR project?
     target_link_libraries ( SPQR PRIVATE
-        SuiteSparse::GPUQREngine SuiteSparse::GPURuntime )
+        SuiteSparse::CHOLMOD_CUDA SPQR_CUDA GPUQREngine GPURuntime )
     target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
     if ( NOT NSTATIC )
@@ -241,19 +226,9 @@ if ( SUITESPARSE_CUDA )
         else ( )
             target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_CUDA )
         endif ( )
-        target_link_libraries ( SPQR_static PUBLIC SPQR_CUDA_static )
+        target_link_libraries ( SPQR_static PUBLIC
+            SPQR_CUDA_static GPUQREngine_static GPURuntime_static )
         target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
-
-        if ( TARGET SuiteSparse::GPUQREngine_static )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPUQREngine_static )
-        else ( )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPUQREngine )
-        endif ( )
-        if ( TARGET SuiteSparse::GPURuntime_static )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPURuntime_static )
-        else ( )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::GPURuntime )
-        endif ( )
     endif ( )
 endif ( )
 
