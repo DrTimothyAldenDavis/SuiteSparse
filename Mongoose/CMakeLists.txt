@@ -499,9 +499,18 @@ install ( EXPORT MongooseTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/MongooseConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/MongooseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/MongooseConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/Mongoose )
 
 write_basic_package_version_file (

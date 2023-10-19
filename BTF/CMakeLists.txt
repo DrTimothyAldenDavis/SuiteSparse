@@ -161,9 +161,18 @@ install ( EXPORT BTFTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/BTFConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/BTFConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/BTFConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
 
 write_basic_package_version_file (

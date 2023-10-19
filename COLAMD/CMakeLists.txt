@@ -160,9 +160,18 @@ install ( EXPORT COLAMDTargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/COLAMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/COLAMDConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/COLAMDConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
 
 write_basic_package_version_file (
