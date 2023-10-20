@@ -29,14 +29,7 @@ message ( STATUS "Building PARU version: v"
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../AMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../COLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CCOLAMD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../UMFPACK/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/SuiteSparse_config/cmake_modules
     )
 
 include ( SuiteSparsePolicy )
@@ -95,13 +88,7 @@ configure_file ( "Config/paru_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Source Include ${SUITESPARSE_CONFIG_INCLUDE_DIR}
-    ${AMD_INCLUDE_DIR}
-    ${CAMD_INCLUDE_DIR}
-    ${COLAMD_INCLUDE_DIR}
-    ${CCOLAMD_INCLUDE_DIR}
-    ${CHOLMOD_INCLUDE_DIR}
-    ${UMFPACK_INCLUDE_DIR}
+include_directories ( Source Include
     ${CMAKE_SOURCE_DIR}/../UMFPACK/Source
     ${CMAKE_SOURCE_DIR}/../UMFPACK/Include
     ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include
@@ -142,9 +129,15 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( paru PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( paru PRIVATE SuiteSparse::SuiteSparseConfig )
+target_include_directories ( paru PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+    else ( )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::SuiteSparseConfig )
+    endif ( )
 endif ( )
 
 # OpenMP:
@@ -166,34 +159,16 @@ if ( NOT MSVC )
     endif ( )
 endif ( )
 
-# amd
-target_link_libraries ( paru PRIVATE ${AMD_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${AMD_STATIC} )
-endif ( )
-
-# camd:
-target_link_libraries ( paru PRIVATE ${CAMD_LIBRARIES} )
-if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${CAMD_STATIC} )
-endif ( )
-
-# colamd:
-target_link_libraries ( paru PRIVATE ${COLAMD_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${COLAMD_STATIC} )
-endif ( )
-
-# ccolamd:
-target_link_libraries ( paru PRIVATE ${CCOLAMD_LIBRARIES} )
-if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${CCOLAMD_STATIC} )
-endif ( )
-
 # umfpack:
-target_link_libraries ( paru PRIVATE ${UMFPACK_LIBRARIES} )
+target_link_libraries ( paru PRIVATE SuiteSparse::UMFPACK )
+target_include_directories ( paru PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::UMFPACK,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${UMFPACK_STATIC} )
+    if ( TARGET SuiteSparse::UMFPACK_static )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::UMFPACK_static )
+    else ( )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::UMFPACK )
+    endif ( )
 endif ( )
 
 # BLAS:
@@ -206,9 +181,15 @@ if ( NOT NSTATIC )
 endif ( )
 
 # cholmod:
-target_link_libraries ( paru PRIVATE ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE SuiteSparse::CHOLMOD )
+target_include_directories ( paru PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${CHOLMOD_STATIC} )
+    if ( TARGET SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::CHOLMOD_static )
+    else ( )
+        target_link_libraries ( paru_static PUBLIC SuiteSparse::CHOLMOD )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -275,10 +256,14 @@ if ( DEMO )
     add_executable ( paru_simplec "Demo/paru_simplec.c"  )
 
     # Libraries required for Demo programs
-    target_link_libraries ( paru_demo    PUBLIC paru OpenMP::OpenMP_CXX )
-    target_link_libraries ( paru_democ   PUBLIC paru OpenMP::OpenMP_C )
-    target_link_libraries ( paru_simple  PUBLIC paru )
-    target_link_libraries ( paru_simplec PUBLIC paru )
+    target_link_libraries ( paru_demo
+        PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
+    target_link_libraries ( paru_democ
+        PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
+    target_link_libraries ( paru_simple
+        PUBLIC paru SuiteSparse::CHOLMOD )
+    target_link_libraries ( paru_simplec
+        PUBLIC paru SuiteSparse::CHOLMOD )
 
 else ( )
 
