@@ -142,9 +142,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # suitesparseconfig:
-target_link_libraries ( paru PUBLIC ${SUITESPARSE_CONFIG_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${SUITESPARSE_CONFIG_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # OpenMP:
@@ -160,55 +160,55 @@ endif ( )
 
 # libm:
 if ( NOT MSVC )
-    target_link_libraries ( paru PUBLIC m )
+    target_link_libraries ( paru PRIVATE m )
     if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC m )
+        target_link_libraries ( paru_static PUBLIC m )
     endif ( )
 endif ( )
 
 # amd
-target_link_libraries ( paru PUBLIC ${AMD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${AMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${AMD_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${AMD_STATIC} )
 endif ( )
 
 # camd:
-target_link_libraries ( paru PUBLIC ${CAMD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${CAMD_LIBRARIES} )
 if ( NOT NSTATIC )
 target_link_libraries ( paru_static PUBLIC ${CAMD_STATIC} )
 endif ( )
 
 # colamd:
-target_link_libraries ( paru PUBLIC ${COLAMD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${COLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${COLAMD_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${COLAMD_STATIC} )
 endif ( )
 
 # ccolamd:
-target_link_libraries ( paru PUBLIC ${CCOLAMD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${CCOLAMD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${CCOLAMD_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${CCOLAMD_STATIC} )
 endif ( )
 
 # umfpack:
-target_link_libraries ( paru PUBLIC ${UMFPACK_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${UMFPACK_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${UMFPACK_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${UMFPACK_STATIC} )
 endif ( )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( paru PUBLIC ${BLAS_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${BLAS_LIBRARIES} )
-include_directories ( ${BLAS_INCLUDE_DIRS} )
+    target_link_libraries ( paru_static PUBLIC ${BLAS_LIBRARIES} )
+    include_directories ( ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 # cholmod:
-target_link_libraries ( paru PUBLIC ${CHOLMOD_LIBRARIES} )
+target_link_libraries ( paru PRIVATE ${CHOLMOD_LIBRARIES} )
 if ( NOT NSTATIC )
-target_link_libraries ( paru_static PUBLIC ${CHOLMOD_STATIC} )
+    target_link_libraries ( paru_static PUBLIC ${CHOLMOD_STATIC} )
 endif ( )
 
 #-------------------------------------------------------------------------------
