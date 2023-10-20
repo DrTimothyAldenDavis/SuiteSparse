@@ -118,7 +118,11 @@ endif ( )
 # set ( ENV{GRAPHBLAS_ROOT} ${CMAKE_SOURCE_DIR}/../GraphBLAS )
 message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
 message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
-find_package (GraphBLAS 7.0.1 REQUIRED MODULE)
+find_package ( GraphBLAS 8.2.1
+    PATHS ${CMAKE_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
+if ( NOT TARGET SuiteSparse::GraphBLAS )
+    find_package ( GraphBLAS 8.2.1 REQUIRED )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # determine what user threading model to use

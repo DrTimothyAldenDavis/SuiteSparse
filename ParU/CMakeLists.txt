@@ -56,13 +56,25 @@ project ( paru
 enable_language ( C CXX Fortran )
 message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
 find_package ( OpenMP )
-find_package ( SuiteSparse_config 6.0.0 REQUIRED )
-find_package ( AMD 3.0.0 REQUIRED )
-find_package ( CAMD 3.0.0 REQUIRED )
-find_package ( COLAMD 3.0.0 REQUIRED )
-find_package ( CCOLAMD 3.0.0 REQUIRED )
-find_package ( CHOLMOD 4.0.0 REQUIRED )
-find_package ( UMFPACK 6.0.0 REQUIRED )
+
+find_package ( SuiteSparse_config 7.2.0
+    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+endif ( )
+
+find_package ( CHOLMOD 4.2.2
+    PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+if ( NOT CHOLMOD_FOUND )
+    find_package ( CHOLMOD 4.2.2 REQUIRED )
+endif ( )
+
+find_package ( UMFPACK 6.2.1
+    PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
+if ( NOT CAMD_FOUND )
+    find_package ( UMFPACK 6.2.1 REQUIRED )
+endif ( )
+
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 #-------------------------------------------------------------------------------
