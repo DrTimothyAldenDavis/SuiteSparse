@@ -51,7 +51,14 @@ if ( DEMO )
     enable_language ( C )
 endif ( )
 
-find_package ( OpenMP )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
+if ( NOPENMP )
+    # OpenMP has been disabled
+    set ( OPENMP_CXX_FOUND OFF )
+    set ( OPENMP_C_FOUND OFF )
+else ( )
+    find_package ( OpenMP )
+endif ( )
 
 find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
@@ -250,18 +257,23 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( paru_demo    "Demo/paru_demo.cpp"   )
-    add_executable ( paru_democ   "Demo/paru_democ.c"    )
-    add_executable ( paru_simple  "Demo/paru_simple.cpp" )
-    add_executable ( paru_simplec "Demo/paru_simplec.c"  )
+    if ( OPENMP_CXX_FOUND )
+        add_executable ( paru_demo    "Demo/paru_demo.cpp"   )
+        target_link_libraries ( paru_demo
+            PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
+    endif ( )
 
-    # Libraries required for Demo programs
-    target_link_libraries ( paru_demo
-        PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
-    target_link_libraries ( paru_democ
-        PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
+    if ( OPENMP_C_FOUND )
+        add_executable ( paru_democ   "Demo/paru_democ.c"    )
+        target_link_libraries ( paru_democ
+            PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
+    endif ( )
+
+    add_executable ( paru_simple  "Demo/paru_simple.cpp" )
     target_link_libraries ( paru_simple
         PUBLIC paru SuiteSparse::CHOLMOD )
+
+    add_executable ( paru_simplec "Demo/paru_simplec.c"  )
     target_link_libraries ( paru_simplec
         PUBLIC paru SuiteSparse::CHOLMOD )
 
