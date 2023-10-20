@@ -133,6 +133,11 @@ if ( NOT NSTATIC )
         SOVERSION ${PARU_VERSION_MAJOR}
         PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    if ( MSVC )
+        set_target_properties ( paru_static PROPERTIES
+            OUTPUT_NAME paru_static )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
