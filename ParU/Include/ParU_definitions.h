@@ -9,10 +9,6 @@
 #ifndef PARU_DEFINITIONS_H
 #define PARU_DEFINITIONS_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
 
 #include "SuiteSparse_config.h"
 #include "cholmod.h"
@@ -26,10 +22,6 @@ typedef enum ParU_Ret
     PARU_SINGULAR = -3,
     PARU_TOO_LARGE = -4
 } ParU_Ret;
-
-#ifdef __cplusplus
-}
-#endif 
 
 #define PARU_MEM_CHUNK (1024*1024)
 
