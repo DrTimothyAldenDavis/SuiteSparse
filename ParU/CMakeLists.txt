@@ -2,7 +2,7 @@
 # SuiteSparse/ParU/CMakeLists.txt:  cmake for ParU
 #-------------------------------------------------------------------------------
 
-# ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2023, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
 # SPDX-License-Identifier: GNU GPL 3.0
 
@@ -113,8 +113,8 @@ add_library ( paru SHARED ${PARU_SOURCES} )
 
 set_target_properties ( paru PROPERTIES
     VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
-    C_STANDARD_REQUIRED 11
-    CXX_STANDARD_REQUIRED 11
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON
     SOVERSION ${PARU_VERSION_MAJOR} )
 
 #-------------------------------------------------------------------------------
@@ -122,14 +122,14 @@ set_target_properties ( paru PROPERTIES
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-add_library ( paru_static STATIC ${PARU_SOURCES} )
+    add_library ( paru_static STATIC ${PARU_SOURCES} )
 
-set_target_properties ( paru_static PROPERTIES
-    VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
-    C_STANDARD_REQUIRED 11
-    CXX_STANDARD_REQUIRED 11
-    OUTPUT_NAME paru
-    SOVERSION ${PARU_VERSION_MAJOR} )
+    set_target_properties ( paru_static PROPERTIES
+        VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED ON
+        OUTPUT_NAME paru
+        SOVERSION ${PARU_VERSION_MAJOR} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -211,7 +211,7 @@ endif ( )
 
 #-------------------------------------------------------------------------------
 # PARU installation location
-#---------------------------------------------------------------Z--------------
+#-------------------------------------------------------------------------------
 
 if ( GLOBAL_INSTALL )
     # install in /usr/local/lib and /usr/local/include.
