@@ -11,10 +11,6 @@
 #ifndef PARU_C_H
 #define PARU_C_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
 #include <stdint.h>
 #include "ParU_definitions.h"
 
@@ -78,6 +74,10 @@ typedef struct ParU_C_Numeric_struct
     double *Rs ;
     void *num_handle;
 } ParU_C_Numeric;
+
+#ifdef __cplusplus
+extern "C" {
+#endif 
 
 //------------------------------------------------------------------------------
 // ParU_Version: 
