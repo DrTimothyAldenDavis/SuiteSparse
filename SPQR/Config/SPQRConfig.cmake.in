@@ -37,7 +37,43 @@ set ( SPQR_VERSION "@SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
 
 # Check for dependent targets
 include ( CMakeFindDependencyMacro )
+
 set ( _dependencies_found ON )
+
+# Look for SuiteSparse_config and CHOLMOD targets
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        # First check in a common build tree
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT SuiteSparse_config_FOUND )
+            find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        # First check in a common build tree
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT CHOLMOD_FOUND )
+            find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+else ( )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+    endif ( )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+
+if ( NOT SuiteSparse_config_FOUND OR NOT CHOLMOD_FOUND )
+    set ( _dependencies_found OFF )
+endif ( )
 
 if ( @SUITESPARSE_CUDA@ )
     # Look for imported targets of additional dependency if SPQR was built with CUDA

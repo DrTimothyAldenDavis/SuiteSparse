@@ -127,9 +127,18 @@ install ( EXPORT SPQR_CUDATargets
     NAMESPACE SuiteSparse::
     DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR_CUDA )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     ../Config/SPQR_CUDAConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/../SPQR_CUDAConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    ../Config/SPQR_CUDAConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/../target/SPQR_CUDAConfig.cmake
     INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPQR_CUDA )
 
 write_basic_package_version_file (
