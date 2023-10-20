@@ -35,11 +35,6 @@ include ( SuiteSparsePolicy )
 # define the project
 #-------------------------------------------------------------------------------
 
-if ( WIN32 )
-    # disable Fortran in AMD when compiling on Windows
-    set ( NFORTRAN true )
-endif ( )
-
 if ( NOT NFORTRAN )
     # Fortan is available and enabled
     project ( amd
