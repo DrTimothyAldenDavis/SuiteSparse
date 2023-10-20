@@ -35,6 +35,7 @@ library:
 	( cd LDL && $(MAKE) )
 	( cd KLU && $(MAKE) )
 	( cd UMFPACK && $(MAKE) )
+	( cd ParU && $(MAKE) )
 	( cd RBio && $(MAKE) )
 	( cd SPQR && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) )
@@ -55,6 +56,7 @@ local:
 	( cd LDL && $(MAKE) local )
 	( cd KLU && $(MAKE) local )
 	( cd UMFPACK && $(MAKE) local )
+	( cd ParU && $(MAKE) local )
 	( cd RBio && $(MAKE) local )
 	( cd SPQR && $(MAKE) local )
 	( cd GraphBLAS && $(MAKE) local )
@@ -76,6 +78,7 @@ global:
 	( cd LDL && $(MAKE) global )
 	( cd KLU && $(MAKE) global )
 	( cd UMFPACK && $(MAKE) global )
+	( cd ParU && $(MAKE) global )
 	( cd RBio && $(MAKE) global )
 	( cd SPQR && $(MAKE) global )
 	( cd GraphBLAS && $(MAKE) global )
@@ -95,6 +98,7 @@ install:
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
+	( cd ParU && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) install )
@@ -111,6 +115,7 @@ uninstall:
 	( cd KLU && $(MAKE) uninstall )
 	( cd LDL && $(MAKE) uninstall )
 	( cd CCOLAMD && $(MAKE) uninstall )
+	( cd ParU && $(MAKE) uninstall )
 	( cd UMFPACK && $(MAKE) uninstall )
 	( cd CHOLMOD && $(MAKE) uninstall )
 	( cd CXSparse && $(MAKE) uninstall )
@@ -144,6 +149,7 @@ purge:
 	- $(RM) -r Example/build/*
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd SPEX && $(MAKE) purge )
+	- ( cd ParU && $(MAKE) purge )
 	- $(RM) -r include/* bin/* lib/*
 
 clean: purge
@@ -167,6 +173,7 @@ demos:
 	- ( cd SPQR && $(MAKE) demos )
 	- ( cd GraphBLAS && $(MAKE) demos )
 	- ( cd SPEX && $(MAKE) demos )
+	- ( cd ParU && $(MAKE) demos )
 
 # Create the PDF documentation
 docs:
@@ -178,6 +185,7 @@ docs:
 	( cd LDL && $(MAKE) docs )
 	( cd UMFPACK && $(MAKE) docs )
 	( cd CHOLMOD && $(MAKE) docs )
+	( cd ParU && $(MAKE) docs )
 	( cd SPQR && $(MAKE) docs )
 	( cd SPEX && $(MAKE) docs )
 
@@ -211,6 +219,7 @@ debug:
 	( cd LDL && $(MAKE) debug )
 	( cd KLU && $(MAKE) debug )
 	( cd UMFPACK && $(MAKE) debug )
+	( cd ParU && $(MAKE) debug )
 	( cd RBio && $(MAKE) debug )
 	( cd SPQR && $(MAKE) debug )
 	( cd GraphBLAS && $(MAKE) cdebug )
