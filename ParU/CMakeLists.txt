@@ -148,17 +148,14 @@ target_link_libraries ( paru_static PUBLIC ${SUITESPARSE_CONFIG_STATIC} )
 endif ( )
 
 # OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
-    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
-    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( paru PUBLIC ${OpenMP_C_LIBRARIES} )
+if ( OPENMP_CXX_FOUND )
+    message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
+    message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
+    message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
+    target_link_libraries ( paru PRIVATE OpenMP::OpenMP_CXX )
     if ( NOT NSTATIC )
-    target_link_libraries ( paru_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( paru_static PUBLIC OpenMP::OpenMP_CXX )
     endif ( )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    set ( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
 # libm:
@@ -278,8 +275,8 @@ if ( DEMO )
     add_executable ( paru_simplec "Demo/paru_simplec.c"  )
 
     # Libraries required for Demo programs
-    target_link_libraries ( paru_demo    PUBLIC paru )
-    target_link_libraries ( paru_democ   PUBLIC paru )
+    target_link_libraries ( paru_demo    PUBLIC paru OpenMP::OpenMP_CXX )
+    target_link_libraries ( paru_democ   PUBLIC paru OpenMP::OpenMP_C )
     target_link_libraries ( paru_simple  PUBLIC paru )
     target_link_libraries ( paru_simplec PUBLIC paru )
 
