@@ -115,6 +115,7 @@ set_target_properties ( paru PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
     SOVERSION ${PARU_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
@@ -130,6 +131,7 @@ if ( NOT NSTATIC )
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
         SOVERSION ${PARU_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 endif ( )
 
@@ -205,42 +207,19 @@ endif ( )
 # PARU installation location
 #-------------------------------------------------------------------------------
 
-if ( GLOBAL_INSTALL )
-    # install in /usr/local/lib and /usr/local/include.
-    # requires "sudo make install"
-    message ( STATUS "Installation will be system-wide (requires 'sudo make install')" )
-    install ( TARGETS paru
-        LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindParU.cmake
-        DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-    if ( NOT NSTATIC )
-    install ( TARGETS paru_static
-        ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR} )
-    endif ( )
-    install ( FILES "Include/ParU_C.h"
-        "Include/ParU_definitions.h"
-        "Include/ParU.hpp" DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
-endif ( )
+install ( TARGETS paru
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-if ( INSIDE_SUITESPARSE )
-    # also install in SuiteSparse/lib and SuiteSparse/include;
-    # does not require "sudo make install", just "make install"
-    message ( STATUS "Installation in ../lib and ../include only," )
-    message ( STATUS "  with 'make install'. No 'sudo' required." )
-    install ( TARGETS paru
-        LIBRARY       DESTINATION ${SUITESPARSE_LIBDIR}
-        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-    install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindParU.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-        COMPONENT Development )
-    if ( NOT NSTATIC )
+install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindParU.cmake
+    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
+    COMPONENT Development )
+
+if ( NOT NSTATIC )
     install ( TARGETS paru_static
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
-    endif ( )
-    install ( FILES "Include/ParU_C.h"
-        "Include/ParU_definitions.h"
-        "Include/ParU.hpp" DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 #-------------------------------------------------------------------------------
