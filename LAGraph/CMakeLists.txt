@@ -127,11 +127,8 @@ find_package (GraphBLAS 7.0.1 REQUIRED MODULE)
 if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
-    include ( FindOpenMP  )
-    include ( FindThreads )
-    if ( OPENMP_FOUND )
-        set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    endif ( )
+    find_package ( OpenMP )
+    find_package ( Threads )
 endif ( )
 
 #-------------------------------------------------------------------------------
