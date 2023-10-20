@@ -88,11 +88,11 @@ configure_file ( "Config/paru_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
+# FIXME: "paru_internal.hpp" includes "umf_internal.h" which is not installed.
+#        That means the two libraries are interdependent and ParU cannot be
+#        built as a stand-alone project outside a common build tree.
 include_directories ( Source Include
     ${CMAKE_SOURCE_DIR}/../UMFPACK/Source
-    ${CMAKE_SOURCE_DIR}/../UMFPACK/Include
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/Include
-    ${CMAKE_SOURCE_DIR}/../AMD/Include
     )
 
 #-------------------------------------------------------------------------------
