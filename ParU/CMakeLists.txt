@@ -85,9 +85,11 @@ include ( SuiteSparseBLAS )     # requires cmake 3.22
 #-------------------------------------------------------------------------------
 
 configure_file ( "Config/ParU_definitions.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/ParU_definitions.h" )
+    "${PROJECT_SOURCE_DIR}/Include/ParU_definitions.h"
+    NEWLINE_STYLE LF )
 configure_file ( "Config/paru_version.tex.in"
-    "${PROJECT_SOURCE_DIR}/Doc/paru_version.tex" )
+    "${PROJECT_SOURCE_DIR}/Doc/paru_version.tex"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # include directories
