@@ -114,7 +114,8 @@ set_target_properties ( paru PROPERTIES
     VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
-    SOVERSION ${PARU_VERSION_MAJOR} )
+    SOVERSION ${PARU_VERSION_MAJOR}
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 #-------------------------------------------------------------------------------
 # static paru library properties
@@ -128,7 +129,8 @@ if ( NOT NSTATIC )
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
-        SOVERSION ${PARU_VERSION_MAJOR} )
+        SOVERSION ${PARU_VERSION_MAJOR}
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 endif ( )
 
 #-------------------------------------------------------------------------------
