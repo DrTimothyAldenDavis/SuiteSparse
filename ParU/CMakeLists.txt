@@ -53,8 +53,8 @@ project ( paru
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C CXX Fortran )
-message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER_ID} ") 
+enable_language ( C CXX )
+
 find_package ( OpenMP )
 
 find_package ( SuiteSparse_config 7.2.0
