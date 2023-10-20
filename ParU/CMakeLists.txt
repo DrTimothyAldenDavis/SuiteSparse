@@ -46,14 +46,17 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 project ( paru
-    VERSION "${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}"
-    LANGUAGES C CXX )
+    VERSION "${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}" )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-enable_language ( C CXX )
+enable_language ( CXX )
+
+if ( DEMO )
+    enable_language ( C )
+endif ( )
 
 find_package ( OpenMP )
 
