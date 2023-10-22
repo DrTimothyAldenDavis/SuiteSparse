@@ -43,7 +43,7 @@ int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control)
             paru_cumsum(n - mid, X + mid, Control);
             #pragma omp taskwait
             #pragma omp taskloop
-            for (int i = mid; i < n; i++)
+            for (int64_t i = mid; i < n; i++)
             {
                 X[i] += sum;
             }

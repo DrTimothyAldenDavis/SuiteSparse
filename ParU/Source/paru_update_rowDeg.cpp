@@ -86,7 +86,6 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
      *
      */
     int64_t *frowList = Num->frowList[f];
-    std::set<int64_t>::iterator it;
 
     paru_tupleList *RowList = Work->RowList;
     for (int64_t i = j1; i < j2; i++)
@@ -188,7 +187,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #ifndef NDEBUG
                 PR = 1;
                 // stl_colSet.insert (curCol);
-                for (it = stl_colSet.begin(); it != stl_colSet.end(); it++)
+                for (std::set<int64_t>::iterator it = stl_colSet.begin(); it != stl_colSet.end(); it++)
                     PRLEVEL(PR, ("%%@  %ld", *it));
 
 #endif
@@ -218,7 +217,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     if (colCount != stl_colSize)
     {
         PRLEVEL(PR, ("%% STL %ld:\n", stl_colSize));
-        for (it = stl_colSet.begin(); it != stl_colSet.end(); it++)
+        for (std::set<int64_t>::iterator it = stl_colSet.begin(); it != stl_colSet.end(); it++)
             PRLEVEL(PR, ("%%  %ld", *it));
         PRLEVEL(PR, ("\n%% My Set %ld:\n", colCount));
         PRLEVEL(PR, ("\n"));
@@ -510,10 +509,9 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             else if (el->cValid != npMark)
             {  // it has been seen
                 el->cValid = npMark;
-                int64_t intsct;
                 if (elCol[e] != 0)
                 {
-                    intsct = paru_intersection(e, elementList, stl_newColSet);
+                    int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
                     elCol[e] -= intsct;
                 }
             }

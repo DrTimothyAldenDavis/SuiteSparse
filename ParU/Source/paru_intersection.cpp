@@ -50,7 +50,7 @@ int paru_intersection(int64_t e, paru_element **elementList,
     //   log(nEl)*stl_newColSet.size()
     {
         PRLEVEL(PR, ("%%el >> stl_newColSet\n"));
-        for (it = stl_newColSet.begin(); it != stl_newColSet.end(); it++)
+        for (it = stl_newColSet.begin(); it != stl_newColSet.end(); ++it)
         {
             int64_t c = *it;
             int64_t col = paru_bin_srch_col(el_colIndex, el->lac, nEl - 1, c);
@@ -92,11 +92,11 @@ int paru_intersection(int64_t e, paru_element **elementList,
         int64_t ncolsseen = el->ncolsleft;
         while (it != stl_newColSet.end() && ncolsseen > 0)
         {
-            while (el_colIndex[c] < 0 && c < nEl) ++c;  // skip dead columns
+            while (c < nEl && el_colIndex[c] < 0) ++c;  // skip dead columns
             if (c >= nEl) break;
 
             if (*it < el_colIndex[c])
-                it++;
+                ++it;
             else if (el_colIndex[c] < *it)
             {
                 c++;
@@ -109,7 +109,7 @@ int paru_intersection(int64_t e, paru_element **elementList,
                 PRLEVEL(PR, ("%%3: c=%ld ", c));
                 PRLEVEL(PR, ("%%col= %ld", el_colIndex[c]));
                 PRLEVEL(PR, ("%%intersection=%ld\n", intersection));
-                it++;
+                ++it;
                 c++;
                 ncolsseen--;
             };
