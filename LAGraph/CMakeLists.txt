@@ -62,7 +62,8 @@ enable_language ( C )
 # configure LAGraph.h with the LAGraph date and version
 configure_file (
     "config/LAGraph.h.in"
-    "${PROJECT_SOURCE_DIR}/include/LAGraph.h" )
+    "${PROJECT_SOURCE_DIR}/include/LAGraph.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # code coverage and build type
