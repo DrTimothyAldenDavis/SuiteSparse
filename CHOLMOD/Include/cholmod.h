@@ -102,6 +102,10 @@
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int cholmod_version     // returns CHOLMOD_VERSION, defined above
 (
     // if version is not NULL, then cholmod_version returns its contents as:
@@ -111,6 +115,10 @@ int cholmod_version     // returns CHOLMOD_VERSION, defined above
     int version [3]
 ) ;
 int cholmod_l_version (int version [3]) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 //==============================================================================
 // Large file support
