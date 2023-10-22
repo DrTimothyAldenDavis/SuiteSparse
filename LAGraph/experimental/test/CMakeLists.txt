@@ -70,8 +70,8 @@ target_link_directories( lagraphxtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/b
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraphxtest PUBLIC ${OpenMP_C_LIBRARIES} )
-    target_link_libraries ( lagraphxtest_static PUBLIC ${OpenMP_C_LIBRARIES} )
+    target_link_libraries ( lagraphxtest PUBLIC OpenMP::OpenMP_C )
+    target_link_libraries ( lagraphxtest_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 
 
