@@ -144,7 +144,7 @@ double CHOLMOD(norm_dense)
 	for (i = 0 ; i < nrow ; i++)
 	{
 	    s = W [i] ;
-	    if ((IS_NAN (s) || s > xnorm) && !IS_NAN (xnorm))
+	    if ((isnan (s) || s > xnorm) && !isnan (xnorm))
 	    {
 		xnorm = s ;
 	    }
@@ -166,7 +166,7 @@ double CHOLMOD(norm_dense)
 	    {
 		s += abs_value (xtype, Xx, Xz, i+j*d, Common) ;
 	    }
-	    if ((IS_NAN (s) || s > xnorm) && !IS_NAN (xnorm))
+	    if ((isnan (s) || s > xnorm) && !isnan (xnorm))
 	    {
 		xnorm = s ;
 	    }
@@ -187,7 +187,7 @@ double CHOLMOD(norm_dense)
 	    {
 		s += abs_value (xtype, Xx, Xz, i+j*d, Common) ;
 	    }
-	    if ((IS_NAN (s) || s > xnorm) && !IS_NAN (xnorm))
+	    if ((isnan (s) || s > xnorm) && !isnan (xnorm))
 	    {
 		xnorm = s ;
 	    }
@@ -416,7 +416,7 @@ double CHOLMOD(norm_sparse)
 		    s += abs_value (xtype, Ax, Az, p, Common) ;
 		}
 	    }
-	    if ((IS_NAN (s) || s > anorm) && !IS_NAN (anorm))
+	    if ((isnan (s) || s > anorm) && !isnan (anorm))
 	    {
 		anorm = s ;
 	    }
@@ -432,7 +432,7 @@ double CHOLMOD(norm_sparse)
 	for (i = 0 ; i < nrow ; i++)
 	{
 	    s = W [i] ;
-	    if ((IS_NAN (s) || s > anorm) && !IS_NAN (anorm))
+	    if ((isnan (s) || s > anorm) && !isnan (anorm))
 	    {
 		anorm = s ;
 	    }

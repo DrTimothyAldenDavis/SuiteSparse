@@ -75,14 +75,15 @@ default: go
 
 ################################################################################
 
-# valgrind is not used
+# without valgrind
 V =
-
-# covall is used
 COVER = ./covall
-
-# with test coverage and 32-bit BLAS
 CF = -O0 -g --coverage -fprofile-abs-path -DTEST_COVERAGE -DBLAS32 -fopenmp
+
+# with valgrind
+# V = valgrind --suppressions=suppress --quiet
+# COVER =
+# CF = -O0 -g
 
 # Temp directory
 T = $(TCOV_TMP)/CHOLMOD_TCOV_TMP
@@ -99,8 +100,10 @@ C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 # no test coverage
 CN = $(CC) -O0 -g -fopenmp $(CHOLMOD_CONFIG) $(NANTESTS)
 
-LDLIBS = -L$(SUITESPARSE)/lib -lsuitesparseconfig \
-  	-lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
+# LDLIBS = -L$(SUITESPARSE)/lib -lsuitesparseconfig \
+#   	-lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
+
+LDLIBS = -lm $(LAPACK) $(BLAS)
 
 #-------------------------------------------------------------------------------
 # With the CUDA BLAS:
@@ -113,20 +116,22 @@ I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
 	-I../SuiteSparse_metis/include -I../../CCOLAMD/Include \
 	-I../../CAMD/Include \
 	-I../Include -I../../SuiteSparse_config $(CUDA_INC) \
-        -I../Core -I../Check -I../Cholesky -I../Demo -I../Supernodal \
+        -I../Check -I../Cholesky -I../Demo -I../Supernodal \
         -I../Partition -I../Modify -I../MatrixOps -I../GPU \
         -I../SuiteSparse_metis \
         -I../SuiteSparse_metis/GKlib \
         -I../SuiteSparse_metis/libmetis \
         -I../../AMD/Source -I../../CAMD/Source \
-        -I../../COLAMD/Source -I../../CCOLAMD/Source
+        -I../../COLAMD/Source -I../../CCOLAMD/Source \
+        -I../Utility
 
 I += $(GPU_CONFIG)
 
 ccode: cm cl zdemo ldemo cmread clread
 
-TEST = cm.c test_ops.c null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
-	raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
+TEST = cm.c \
+    test_ops.c  null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
+    raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
 
 LTEST = cl.c amdtest_l.c camdtest_l.c huge_l.c
 
@@ -204,7 +209,7 @@ IPARTITION_OBJ = \
 	z_csymamd.o \
 	z_camd.o \
 	z_metis.o \
-	z_metis_wrapper.o \
+	n_metis_wrapper.o \
 	z_nesdis.o
 
 LPARTITION_OBJ = \
@@ -212,7 +217,7 @@ LPARTITION_OBJ = \
 	l_csymamd.o \
 	l_camd.o \
 	l_metis.o \
-	z_metis_wrapper.o \
+	n_metis_wrapper.o \
 	l_nesdis.o
 
 CAMDSRC = ../../CAMD/Source/camd_1.c \
@@ -274,22 +279,147 @@ $(LCAMDOBJ): $(CAMDSRC)
 # LCAMDOBJ = 
 #-------------------------------------------------------------------------------
 
-IOBJ = \
-	z_common.o \
-	z_version.o \
-	z_dense.o \
-	z_factor.o \
-	z_change_factor.o \
-	z_memory.o \
-	z_sparse.o \
-	z_complex.o \
-	z_transpose.o \
-	z_band.o \
-	z_copy.o \
-	z_triplet.o \
-	z_error.o \
-	z_aat.o \
-	z_add.o \
+IUTIL_OBJ = \
+    ui_change_factor.o \
+    ui_transpose_unsym.o \
+    ui_transpose_sym.o \
+    ui_transpose.o \
+    ui_ptranspose.o \
+    ui_sort.o \
+    ui_aat.o \
+    ui_factor_to_sparse.o \
+    ui_reallocate_column.o \
+    ui_copy_factor.o \
+    ui_pack_factor.o \
+    ui_reallocate_factor.o \
+    ui_free_factor.o \
+    ui_alloc_factor.o \
+    ui_allocate_factor.o \
+    ui_copy.o \
+    ui_add.o \
+    ui_add_size_t.o \
+    ui_alloc_work.o \
+    ui_allocate_dense.o \
+    ui_allocate_sparse.o \
+    ui_allocate_triplet.o \
+    ui_allocate_work.o \
+    ui_band.o \
+    ui_band_nnz.o \
+    ui_calloc.o \
+    ui_clear_flag.o \
+    ui_copy_dense.o \
+    ui_copy_dense2.o \
+    ui_copy_sparse.o \
+    ui_copy_triplet.o \
+    ui_cumsum.o \
+    ui_dbound.o \
+    ui_defaults.o \
+    ui_dense_nnz.o \
+    ui_dense_to_sparse.o \
+    ui_divcomplex.o \
+    ui_ensure_dense.o \
+    ui_error.o \
+    ui_eye.o \
+    ui_finish.o \
+    ui_free.o \
+    ui_free_dense.o \
+    ui_free_sparse.o \
+    ui_free_triplet.o \
+    ui_free_work.o \
+    ui_hypot.o \
+    ui_malloc.o \
+    ui_maxrank.o \
+    ui_mult_size_t.o \
+    ui_nnz.o \
+    ui_ones.o \
+    ui_realloc.o \
+    ui_realloc_multiple.o \
+    ui_reallocate_sparse.o \
+    ui_reallocate_triplet.o \
+    ui_sbound.o \
+    ui_score_comp.o \
+    ui_set_empty.o \
+    ui_sparse_to_dense.o \
+    ui_sparse_to_triplet.o \
+    ui_speye.o \
+    ui_spzeros.o \
+    ui_start.o \
+    ui_triplet_to_sparse.o \
+    ui_version.o \
+    ui_xtype.o \
+    ui_zeros.o
+
+LUTIL_OBJ = \
+    ul_change_factor.o \
+    ul_transpose_unsym.o \
+    ul_transpose_sym.o \
+    ul_transpose.o \
+    ul_ptranspose.o \
+    ul_sort.o \
+    ul_aat.o \
+    ul_factor_to_sparse.o \
+    ul_reallocate_column.o \
+    ul_copy_factor.o \
+    ul_pack_factor.o \
+    ul_reallocate_factor.o \
+    ul_free_factor.o \
+    ul_alloc_factor.o \
+    ul_allocate_factor.o \
+    ul_copy.o \
+    ul_add.o \
+    ul_add_size_t.o \
+    ul_alloc_work.o \
+    ul_allocate_dense.o \
+    ul_allocate_sparse.o \
+    ul_allocate_triplet.o \
+    ul_allocate_work.o \
+    ul_band.o \
+    ul_band_nnz.o \
+    ul_calloc.o \
+    ul_clear_flag.o \
+    ul_copy_dense.o \
+    ul_copy_dense2.o \
+    ul_copy_sparse.o \
+    ul_copy_triplet.o \
+    ul_cumsum.o \
+    ul_dbound.o \
+    ul_defaults.o \
+    ul_dense_nnz.o \
+    ul_dense_to_sparse.o \
+    ul_divcomplex.o \
+    ul_ensure_dense.o \
+    ul_error.o \
+    ul_eye.o \
+    ul_finish.o \
+    ul_free.o \
+    ul_free_dense.o \
+    ul_free_sparse.o \
+    ul_free_triplet.o \
+    ul_free_work.o \
+    ul_hypot.o \
+    ul_malloc.o \
+    ul_maxrank.o \
+    ul_mult_size_t.o \
+    ul_nnz.o \
+    ul_ones.o \
+    ul_realloc.o \
+    ul_realloc_multiple.o \
+    ul_reallocate_sparse.o \
+    ul_reallocate_triplet.o \
+    ul_sbound.o \
+    ul_score_comp.o \
+    ul_set_empty.o \
+    ul_sparse_to_dense.o \
+    ul_sparse_to_triplet.o \
+    ul_speye.o \
+    ul_spzeros.o \
+    ul_start.o \
+    ul_triplet_to_sparse.o \
+    ul_version.o \
+    ul_xtype.o \
+    ul_zeros.o
+
+IOBJ = $(IUTIL_OBJ) \
 	z_check.o \
 	z_read.o \
 	z_write.o \
@@ -322,22 +452,7 @@ IOBJ = \
 	z_super_symbolic.o \
 	$(IPARTITION_OBJ)
 
-LOBJ = \
-	l_common.o \
-	l_version.o \
-	l_dense.o \
-	l_factor.o \
-	l_change_factor.o \
-	l_memory.o \
-	l_sparse.o \
-	l_complex.o \
-	l_transpose.o \
-	l_band.o \
-	l_copy.o \
-	l_triplet.o \
-	l_error.o \
-	l_aat.o \
-	l_add.o \
+LOBJ = $(LUTIL_OBJ) \
 	l_check.o \
 	l_read.o \
 	l_write.o \
@@ -378,18 +493,22 @@ else
     LGPU = 
 endif
 
-# CONFIG = zz_SuiteSparse_config.o
-CONFIG =
+CONFIG = zz_SuiteSparse_config.o
+# CONFIG =
 
-IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG) $(IGPU)
+ILOBJ = u_mult_uint64_t.o u_memdebug.o
 
-LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG) $(LGPU)
+IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG) $(ILOBJ) $(IGPU)
+
+LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG) $(ILOBJ) $(LGPU)
 
 
 cm: $(IALL) $(TEST) cm.h Makefile
 	$(C) $(I) $(TEST) -o cm $(IALL) $(LDLIBS)
 
-cl: $(LALL) $(LTEST) cm.h Makefile
+cl: $(LALL) $(LTEST) cm.h Makefile cm.c \
+    test_ops.c  null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
+    raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
 	$(C) $(I) $(LTEST) -o cl $(LALL) $(LDLIBS)
 
 cmread: $(IALL) cmread.c Makefile
@@ -603,7 +722,7 @@ go: zdemo ldemo cmread clread cm cl
 	$(V) ./cl -n < Matrix/galenet               > $(T)/l_galenet_nan.out
 	- $(COVER)
 	$(V) ./cm    < Matrix/zero                  > $(T)/zero.out
-	$(V) ./cl    < Matrix/zero                  > $(T)/zero.out
+	$(V) ./cl    < Matrix/zero                  > $(T)/l_zero.out
 	- $(COVER)
 
 cov:
@@ -630,6 +749,7 @@ clean:
 	- $(RM) -r cm.profile cmread.profile zdemo.profile $(T)
 	- $(RM) -r cl.profile clread.profile ldemo.profile
 	- $(RM) temp*.mtx timelog.m l_*.cu
+	- $(RM) ui_*.c ul_*.c u_*.c n_*.c
 	- $(RM) -r $(PURGE)
 	- $(RM) -r $(CLEAN)
 
@@ -884,66 +1004,568 @@ z_write.o: ../Check/cholmod_write.c
 	$(C) -c $(I) z_write.c
 
 #-------------------------------------------------------------------------------
+# Utility, int32
+#-------------------------------------------------------------------------------
 
-z_common.o: ../Core/cholmod_common.c
-	- ln -s $< z_common.c
-	$(C) -c $(I) z_common.c
+ui_change_factor.o: ../Utility/cholmod_change_factor.c
+	- ln -s $< ui_change_factor.c
+	$(C) -c $(I) ui_change_factor.c
 
-z_version.o: ../Core/cholmod_version.c
-	- ln -s $< z_version.c
-	$(C) -c $(I) z_version.c
+ui_transpose_unsym.o: ../Utility/cholmod_transpose_unsym.c
+	- ln -s $< ui_transpose_unsym.c
+	$(C) -c $(I) ui_transpose_unsym.c
 
-z_dense.o: ../Core/cholmod_dense.c
-	- ln -s $< z_dense.c
-	$(C) -c $(I) z_dense.c
+ui_transpose_sym.o: ../Utility/cholmod_transpose_sym.c
+	- ln -s $< ui_transpose_sym.c
+	$(C) -c $(I) ui_transpose_sym.c
 
-z_factor.o: ../Core/cholmod_factor.c
-	- ln -s $< z_factor.c
-	$(C) -c $(I) z_factor.c
+ui_transpose.o: ../Utility/cholmod_transpose.c
+	- ln -s $< ui_transpose.c
+	$(C) -c $(I) ui_transpose.c
 
-z_change_factor.o: ../Core/cholmod_change_factor.c
-	- ln -s $< z_change_factor.c
-	$(C) -c $(I) z_change_factor.c
+ui_ptranspose.o: ../Utility/cholmod_ptranspose.c
+	- ln -s $< ui_ptranspose.c
+	$(C) -c $(I) ui_ptranspose.c
 
-z_memory.o: ../Core/cholmod_memory.c
-	- ln -s $< z_memory.c
-	$(C) -c $(I) z_memory.c
+ui_sort.o: ../Utility/cholmod_sort.c
+	- ln -s $< ui_sort.c
+	$(C) -c $(I) ui_sort.c
 
-z_sparse.o: ../Core/cholmod_sparse.c
-	- ln -s $< z_sparse.c
-	$(C) -c $(I) z_sparse.c
+ui_aat.o: ../Utility/cholmod_aat.c
+	- ln -s $< ui_aat.c
+	$(C) -c $(I) ui_aat.c
 
-z_complex.o: ../Core/cholmod_complex.c
-	- ln -s $< z_complex.c
-	$(C) -c $(I) z_complex.c
+ui_factor_to_sparse.o: ../Utility/cholmod_factor_to_sparse.c
+	- ln -s $< ui_factor_to_sparse.c
+	$(C) -c $(I) ui_factor_to_sparse.c
 
-z_transpose.o: ../Core/cholmod_transpose.c
-	- ln -s $< z_transpose.c
-	$(C) -c $(I) z_transpose.c
+ui_reallocate_column.o: ../Utility/cholmod_reallocate_column.c
+	- ln -s $< ui_reallocate_column.c
+	$(C) -c $(I) ui_reallocate_column.c
 
-z_band.o: ../Core/cholmod_band.c
-	- ln -s $< z_band.c
-	$(C) -c $(I) z_band.c
+ui_copy_factor.o: ../Utility/cholmod_copy_factor.c
+	- ln -s $< ui_copy_factor.c
+	$(C) -c $(I) ui_copy_factor.c
 
-z_copy.o: ../Core/cholmod_copy.c
-	- ln -s $< z_copy.c
-	$(C) -c $(I) z_copy.c
+ui_pack_factor.o: ../Utility/cholmod_pack_factor.c
+	- ln -s $< ui_pack_factor.c
+	$(C) -c $(I) ui_pack_factor.c
 
-z_triplet.o: ../Core/cholmod_triplet.c
-	- ln -s $< z_triplet.c
-	$(C) -c $(I) z_triplet.c
+ui_reallocate_factor.o: ../Utility/cholmod_reallocate_factor.c
+	- ln -s $< ui_reallocate_factor.c
+	$(C) -c $(I) ui_reallocate_factor.c
 
-z_error.o: ../Core/cholmod_error.c
-	- ln -s $< z_error.c
-	$(C) -c $(I) z_error.c
+ui_free_factor.o: ../Utility/cholmod_free_factor.c
+	- ln -s $< ui_free_factor.c
+	$(C) -c $(I) ui_free_factor.c
 
-z_aat.o: ../Core/cholmod_aat.c
-	- ln -s $< z_aat.c
-	$(C) -c $(I) z_aat.c
+ui_alloc_factor.o: ../Utility/cholmod_alloc_factor.c
+	- ln -s $< ui_alloc_factor.c
+	$(C) -c $(I) ui_alloc_factor.c
 
-z_add.o: ../Core/cholmod_add.c
-	- ln -s $< z_add.c
-	$(C) -c $(I) z_add.c
+ui_allocate_factor.o: ../Utility/cholmod_allocate_factor.c
+	- ln -s $< ui_allocate_factor.c
+	$(C) -c $(I) ui_allocate_factor.c
+
+ui_copy.o: ../Utility/cholmod_copy.c
+	- ln -s $< ui_copy.c
+	$(C) -c $(I) ui_copy.c
+
+ui_add.o: ../Utility/cholmod_add.c
+	- ln -s $< ui_add.c
+	$(C) -c $(I) ui_add.c
+
+ui_add_size_t.o: ../Utility/cholmod_add_size_t.c
+	- ln -s $< ui_add_size_t.c
+	$(C) -c $(I) ui_add_size_t.c
+
+ui_alloc_work.o: ../Utility/cholmod_alloc_work.c
+	- ln -s $< ui_alloc_work.c
+	$(C) -c $(I) ui_alloc_work.c
+
+ui_allocate_dense.o: ../Utility/cholmod_allocate_dense.c
+	- ln -s $< ui_allocate_dense.c
+	$(C) -c $(I) ui_allocate_dense.c
+
+ui_allocate_sparse.o: ../Utility/cholmod_allocate_sparse.c
+	- ln -s $< ui_allocate_sparse.c
+	$(C) -c $(I) ui_allocate_sparse.c
+
+ui_allocate_triplet.o: ../Utility/cholmod_allocate_triplet.c
+	- ln -s $< ui_allocate_triplet.c
+	$(C) -c $(I) ui_allocate_triplet.c
+
+ui_allocate_work.o: ../Utility/cholmod_allocate_work.c
+	- ln -s $< ui_allocate_work.c
+	$(C) -c $(I) ui_allocate_work.c
+
+ui_band.o: ../Utility/cholmod_band.c
+	- ln -s $< ui_band.c
+	$(C) -c $(I) ui_band.c
+
+ui_band_nnz.o: ../Utility/cholmod_band_nnz.c
+	- ln -s $< ui_band_nnz.c
+	$(C) -c $(I) ui_band_nnz.c
+
+ui_calloc.o: ../Utility/cholmod_calloc.c
+	- ln -s $< ui_calloc.c
+	$(C) -c $(I) ui_calloc.c
+
+ui_clear_flag.o: ../Utility/cholmod_clear_flag.c
+	- ln -s $< ui_clear_flag.c
+	$(C) -c $(I) ui_clear_flag.c
+
+ui_copy_dense.o: ../Utility/cholmod_copy_dense.c
+	- ln -s $< ui_copy_dense.c
+	$(C) -c $(I) ui_copy_dense.c
+
+ui_copy_dense2.o: ../Utility/cholmod_copy_dense2.c
+	- ln -s $< ui_copy_dense2.c
+	$(C) -c $(I) ui_copy_dense2.c
+
+ui_copy_sparse.o: ../Utility/cholmod_copy_sparse.c
+	- ln -s $< ui_copy_sparse.c
+	$(C) -c $(I) ui_copy_sparse.c
+
+ui_copy_triplet.o: ../Utility/cholmod_copy_triplet.c
+	- ln -s $< ui_copy_triplet.c
+	$(C) -c $(I) ui_copy_triplet.c
+
+ui_cumsum.o: ../Utility/cholmod_cumsum.c
+	- ln -s $< ui_cumsum.c
+	$(C) -c $(I) ui_cumsum.c
+
+ui_dbound.o: ../Utility/cholmod_dbound.c
+	- ln -s $< ui_dbound.c
+	$(C) -c $(I) ui_dbound.c
+
+ui_defaults.o: ../Utility/cholmod_defaults.c
+	- ln -s $< ui_defaults.c
+	$(C) -c $(I) ui_defaults.c
+
+ui_dense_nnz.o: ../Utility/cholmod_dense_nnz.c
+	- ln -s $< ui_dense_nnz.c
+	$(C) -c $(I) ui_dense_nnz.c
+
+ui_dense_to_sparse.o: ../Utility/cholmod_dense_to_sparse.c
+	- ln -s $< ui_dense_to_sparse.c
+	$(C) -c $(I) ui_dense_to_sparse.c
+
+ui_divcomplex.o: ../Utility/cholmod_divcomplex.c
+	- ln -s $< ui_divcomplex.c
+	$(C) -c $(I) ui_divcomplex.c
+
+ui_ensure_dense.o: ../Utility/cholmod_ensure_dense.c
+	- ln -s $< ui_ensure_dense.c
+	$(C) -c $(I) ui_ensure_dense.c
+
+ui_error.o: ../Utility/cholmod_error.c
+	- ln -s $< ui_error.c
+	$(C) -c $(I) ui_error.c
+
+ui_eye.o: ../Utility/cholmod_eye.c
+	- ln -s $< ui_eye.c
+	$(C) -c $(I) ui_eye.c
+
+ui_finish.o: ../Utility/cholmod_finish.c
+	- ln -s $< ui_finish.c
+	$(C) -c $(I) ui_finish.c
+
+ui_free.o: ../Utility/cholmod_free.c
+	- ln -s $< ui_free.c
+	$(C) -c $(I) ui_free.c
+
+ui_free_dense.o: ../Utility/cholmod_free_dense.c
+	- ln -s $< ui_free_dense.c
+	$(C) -c $(I) ui_free_dense.c
+
+ui_free_sparse.o: ../Utility/cholmod_free_sparse.c
+	- ln -s $< ui_free_sparse.c
+	$(C) -c $(I) ui_free_sparse.c
+
+ui_free_triplet.o: ../Utility/cholmod_free_triplet.c
+	- ln -s $< ui_free_triplet.c
+	$(C) -c $(I) ui_free_triplet.c
+
+ui_free_work.o: ../Utility/cholmod_free_work.c
+	- ln -s $< ui_free_work.c
+	$(C) -c $(I) ui_free_work.c
+
+ui_hypot.o: ../Utility/cholmod_hypot.c
+	- ln -s $< ui_hypot.c
+	$(C) -c $(I) ui_hypot.c
+
+ui_malloc.o: ../Utility/cholmod_malloc.c
+	- ln -s $< ui_malloc.c
+	$(C) -c $(I) ui_malloc.c
+
+ui_maxrank.o: ../Utility/cholmod_maxrank.c
+	- ln -s $< ui_maxrank.c
+	$(C) -c $(I) ui_maxrank.c
+
+ui_mult_size_t.o: ../Utility/cholmod_mult_size_t.c
+	- ln -s $< ui_mult_size_t.c
+	$(C) -c $(I) ui_mult_size_t.c
+
+ui_nnz.o: ../Utility/cholmod_nnz.c
+	- ln -s $< ui_nnz.c
+	$(C) -c $(I) ui_nnz.c
+
+ui_ones.o: ../Utility/cholmod_ones.c
+	- ln -s $< ui_ones.c
+	$(C) -c $(I) ui_ones.c
+
+ui_realloc.o: ../Utility/cholmod_realloc.c
+	- ln -s $< ui_realloc.c
+	$(C) -c $(I) ui_realloc.c
+
+ui_realloc_multiple.o: ../Utility/cholmod_realloc_multiple.c
+	- ln -s $< ui_realloc_multiple.c
+	$(C) -c $(I) ui_realloc_multiple.c
+
+ui_reallocate_sparse.o: ../Utility/cholmod_reallocate_sparse.c
+	- ln -s $< ui_reallocate_sparse.c
+	$(C) -c $(I) ui_reallocate_sparse.c
+
+ui_reallocate_triplet.o: ../Utility/cholmod_reallocate_triplet.c
+	- ln -s $< ui_reallocate_triplet.c
+	$(C) -c $(I) ui_reallocate_triplet.c
+
+ui_sbound.o: ../Utility/cholmod_sbound.c
+	- ln -s $< ui_sbound.c
+	$(C) -c $(I) ui_sbound.c
+
+ui_score_comp.o: ../Utility/cholmod_score_comp.c
+	- ln -s $< ui_score_comp.c
+	$(C) -c $(I) ui_score_comp.c
+
+ui_set_empty.o: ../Utility/cholmod_set_empty.c
+	- ln -s $< ui_set_empty.c
+	$(C) -c $(I) ui_set_empty.c
+
+ui_sparse_to_dense.o: ../Utility/cholmod_sparse_to_dense.c
+	- ln -s $< ui_sparse_to_dense.c
+	$(C) -c $(I) ui_sparse_to_dense.c
+
+ui_sparse_to_triplet.o: ../Utility/cholmod_sparse_to_triplet.c
+	- ln -s $< ui_sparse_to_triplet.c
+	$(C) -c $(I) ui_sparse_to_triplet.c
+
+ui_speye.o: ../Utility/cholmod_speye.c
+	- ln -s $< ui_speye.c
+	$(C) -c $(I) ui_speye.c
+
+ui_spzeros.o: ../Utility/cholmod_spzeros.c
+	- ln -s $< ui_spzeros.c
+	$(C) -c $(I) ui_spzeros.c
+
+ui_start.o: ../Utility/cholmod_start.c
+	- ln -s $< ui_start.c
+	$(C) -c $(I) ui_start.c
+
+ui_triplet_to_sparse.o: ../Utility/cholmod_triplet_to_sparse.c
+	- ln -s $< ui_triplet_to_sparse.c
+	$(C) -c $(I) ui_triplet_to_sparse.c
+
+ui_version.o: ../Utility/cholmod_version.c
+	- ln -s $< ui_version.c
+	$(C) -c $(I) ui_version.c
+
+ui_xtype.o: ../Utility/cholmod_xtype.c
+	- ln -s $< ui_xtype.c
+	$(C) -c $(I) ui_xtype.c
+
+ui_zeros.o: ../Utility/cholmod_zeros.c
+	- ln -s $< ui_zeros.c
+	$(C) -c $(I) ui_zeros.c
+
+#-------------------------------------------------------------------------------
+# Utility, just one compilation
+#-------------------------------------------------------------------------------
+
+u_mult_uint64_t.o: ../Utility/cholmod_mult_uint64_t.c
+	- ln -s $< u_mult_uint64_t.c
+	$(C) -c $(I) u_mult_uint64_t.c
+
+u_memdebug.o: ../Utility/cholmod_memdebug.c
+	- ln -s $< u_memdebug.c
+	$(C) -c $(I) u_memdebug.c
+
+#-------------------------------------------------------------------------------
+# Utility, int64
+#-------------------------------------------------------------------------------
+
+ul_change_factor.o: ../Utility/cholmod_l_change_factor.c
+	- ln -s $< ul_change_factor.c
+	$(C) -c $(I) ul_change_factor.c
+
+ul_transpose_unsym.o: ../Utility/cholmod_l_transpose_unsym.c
+	- ln -s $< ul_transpose_unsym.c
+	$(C) -c $(I) ul_transpose_unsym.c
+
+ul_transpose_sym.o: ../Utility/cholmod_l_transpose_sym.c
+	- ln -s $< ul_transpose_sym.c
+	$(C) -c $(I) ul_transpose_sym.c
+
+ul_transpose.o: ../Utility/cholmod_l_transpose.c
+	- ln -s $< ul_transpose.c
+	$(C) -c $(I) ul_transpose.c
+
+ul_ptranspose.o: ../Utility/cholmod_l_ptranspose.c
+	- ln -s $< ul_ptranspose.c
+	$(C) -c $(I) ul_ptranspose.c
+
+ul_sort.o: ../Utility/cholmod_l_sort.c
+	- ln -s $< ul_sort.c
+	$(C) -c $(I) ul_sort.c
+
+ul_aat.o: ../Utility/cholmod_l_aat.c
+	- ln -s $< ul_aat.c
+	$(C) -c $(I) ul_aat.c
+
+ul_factor_to_sparse.o: ../Utility/cholmod_l_factor_to_sparse.c
+	- ln -s $< ul_factor_to_sparse.c
+	$(C) -c $(I) ul_factor_to_sparse.c
+
+ul_reallocate_column.o: ../Utility/cholmod_l_reallocate_column.c
+	- ln -s $< ul_reallocate_column.c
+	$(C) -c $(I) ul_reallocate_column.c
+
+ul_copy_factor.o: ../Utility/cholmod_l_copy_factor.c
+	- ln -s $< ul_copy_factor.c
+	$(C) -c $(I) ul_copy_factor.c
+
+ul_pack_factor.o: ../Utility/cholmod_l_pack_factor.c
+	- ln -s $< ul_pack_factor.c
+	$(C) -c $(I) ul_pack_factor.c
+
+ul_reallocate_factor.o: ../Utility/cholmod_l_reallocate_factor.c
+	- ln -s $< ul_reallocate_factor.c
+	$(C) -c $(I) ul_reallocate_factor.c
+
+ul_free_factor.o: ../Utility/cholmod_l_free_factor.c
+	- ln -s $< ul_free_factor.c
+	$(C) -c $(I) ul_free_factor.c
+
+ul_alloc_factor.o: ../Utility/cholmod_l_alloc_factor.c
+	- ln -s $< ul_alloc_factor.c
+	$(C) -c $(I) ul_alloc_factor.c
+
+ul_allocate_factor.o: ../Utility/cholmod_l_allocate_factor.c
+	- ln -s $< ul_allocate_factor.c
+	$(C) -c $(I) ul_allocate_factor.c
+
+ul_copy.o: ../Utility/cholmod_l_copy.c
+	- ln -s $< ul_copy.c
+	$(C) -c $(I) ul_copy.c
+
+ul_add.o: ../Utility/cholmod_l_add.c
+	- ln -s $< ul_add.c
+	$(C) -c $(I) ul_add.c
+
+ul_add_size_t.o: ../Utility/cholmod_l_add_size_t.c
+	- ln -s $< ul_add_size_t.c
+	$(C) -c $(I) ul_add_size_t.c
+
+ul_alloc_work.o: ../Utility/cholmod_l_alloc_work.c
+	- ln -s $< ul_alloc_work.c
+	$(C) -c $(I) ul_alloc_work.c
+
+ul_allocate_dense.o: ../Utility/cholmod_l_allocate_dense.c
+	- ln -s $< ul_allocate_dense.c
+	$(C) -c $(I) ul_allocate_dense.c
+
+ul_allocate_sparse.o: ../Utility/cholmod_l_allocate_sparse.c
+	- ln -s $< ul_allocate_sparse.c
+	$(C) -c $(I) ul_allocate_sparse.c
+
+ul_allocate_triplet.o: ../Utility/cholmod_l_allocate_triplet.c
+	- ln -s $< ul_allocate_triplet.c
+	$(C) -c $(I) ul_allocate_triplet.c
+
+ul_allocate_work.o: ../Utility/cholmod_l_allocate_work.c
+	- ln -s $< ul_allocate_work.c
+	$(C) -c $(I) ul_allocate_work.c
+
+ul_band.o: ../Utility/cholmod_l_band.c
+	- ln -s $< ul_band.c
+	$(C) -c $(I) ul_band.c
+
+ul_band_nnz.o: ../Utility/cholmod_l_band_nnz.c
+	- ln -s $< ul_band_nnz.c
+	$(C) -c $(I) ul_band_nnz.c
+
+ul_calloc.o: ../Utility/cholmod_l_calloc.c
+	- ln -s $< ul_calloc.c
+	$(C) -c $(I) ul_calloc.c
+
+ul_clear_flag.o: ../Utility/cholmod_l_clear_flag.c
+	- ln -s $< ul_clear_flag.c
+	$(C) -c $(I) ul_clear_flag.c
+
+ul_copy_dense.o: ../Utility/cholmod_l_copy_dense.c
+	- ln -s $< ul_copy_dense.c
+	$(C) -c $(I) ul_copy_dense.c
+
+ul_copy_dense2.o: ../Utility/cholmod_l_copy_dense2.c
+	- ln -s $< ul_copy_dense2.c
+	$(C) -c $(I) ul_copy_dense2.c
+
+ul_copy_sparse.o: ../Utility/cholmod_l_copy_sparse.c
+	- ln -s $< ul_copy_sparse.c
+	$(C) -c $(I) ul_copy_sparse.c
+
+ul_copy_triplet.o: ../Utility/cholmod_l_copy_triplet.c
+	- ln -s $< ul_copy_triplet.c
+	$(C) -c $(I) ul_copy_triplet.c
+
+ul_cumsum.o: ../Utility/cholmod_l_cumsum.c
+	- ln -s $< ul_cumsum.c
+	$(C) -c $(I) ul_cumsum.c
+
+ul_dbound.o: ../Utility/cholmod_l_dbound.c
+	- ln -s $< ul_dbound.c
+	$(C) -c $(I) ul_dbound.c
+
+ul_defaults.o: ../Utility/cholmod_l_defaults.c
+	- ln -s $< ul_defaults.c
+	$(C) -c $(I) ul_defaults.c
+
+ul_dense_nnz.o: ../Utility/cholmod_l_dense_nnz.c
+	- ln -s $< ul_dense_nnz.c
+	$(C) -c $(I) ul_dense_nnz.c
+
+ul_dense_to_sparse.o: ../Utility/cholmod_l_dense_to_sparse.c
+	- ln -s $< ul_dense_to_sparse.c
+	$(C) -c $(I) ul_dense_to_sparse.c
+
+ul_divcomplex.o: ../Utility/cholmod_l_divcomplex.c
+	- ln -s $< ul_divcomplex.c
+	$(C) -c $(I) ul_divcomplex.c
+
+ul_ensure_dense.o: ../Utility/cholmod_l_ensure_dense.c
+	- ln -s $< ul_ensure_dense.c
+	$(C) -c $(I) ul_ensure_dense.c
+
+ul_error.o: ../Utility/cholmod_l_error.c
+	- ln -s $< ul_error.c
+	$(C) -c $(I) ul_error.c
+
+ul_eye.o: ../Utility/cholmod_l_eye.c
+	- ln -s $< ul_eye.c
+	$(C) -c $(I) ul_eye.c
+
+ul_finish.o: ../Utility/cholmod_l_finish.c
+	- ln -s $< ul_finish.c
+	$(C) -c $(I) ul_finish.c
+
+ul_free.o: ../Utility/cholmod_l_free.c
+	- ln -s $< ul_free.c
+	$(C) -c $(I) ul_free.c
+
+ul_free_dense.o: ../Utility/cholmod_l_free_dense.c
+	- ln -s $< ul_free_dense.c
+	$(C) -c $(I) ul_free_dense.c
+
+ul_free_sparse.o: ../Utility/cholmod_l_free_sparse.c
+	- ln -s $< ul_free_sparse.c
+	$(C) -c $(I) ul_free_sparse.c
+
+ul_free_triplet.o: ../Utility/cholmod_l_free_triplet.c
+	- ln -s $< ul_free_triplet.c
+	$(C) -c $(I) ul_free_triplet.c
+
+ul_free_work.o: ../Utility/cholmod_l_free_work.c
+	- ln -s $< ul_free_work.c
+	$(C) -c $(I) ul_free_work.c
+
+ul_hypot.o: ../Utility/cholmod_l_hypot.c
+	- ln -s $< ul_hypot.c
+	$(C) -c $(I) ul_hypot.c
+
+ul_malloc.o: ../Utility/cholmod_l_malloc.c
+	- ln -s $< ul_malloc.c
+	$(C) -c $(I) ul_malloc.c
+
+ul_maxrank.o: ../Utility/cholmod_l_maxrank.c
+	- ln -s $< ul_maxrank.c
+	$(C) -c $(I) ul_maxrank.c
+
+ul_mult_size_t.o: ../Utility/cholmod_l_mult_size_t.c
+	- ln -s $< ul_mult_size_t.c
+	$(C) -c $(I) ul_mult_size_t.c
+
+ul_nnz.o: ../Utility/cholmod_l_nnz.c
+	- ln -s $< ul_nnz.c
+	$(C) -c $(I) ul_nnz.c
+
+ul_ones.o: ../Utility/cholmod_l_ones.c
+	- ln -s $< ul_ones.c
+	$(C) -c $(I) ul_ones.c
+
+ul_realloc.o: ../Utility/cholmod_l_realloc.c
+	- ln -s $< ul_realloc.c
+	$(C) -c $(I) ul_realloc.c
+
+ul_realloc_multiple.o: ../Utility/cholmod_l_realloc_multiple.c
+	- ln -s $< ul_realloc_multiple.c
+	$(C) -c $(I) ul_realloc_multiple.c
+
+ul_reallocate_sparse.o: ../Utility/cholmod_l_reallocate_sparse.c
+	- ln -s $< ul_reallocate_sparse.c
+	$(C) -c $(I) ul_reallocate_sparse.c
+
+ul_reallocate_triplet.o: ../Utility/cholmod_l_reallocate_triplet.c
+	- ln -s $< ul_reallocate_triplet.c
+	$(C) -c $(I) ul_reallocate_triplet.c
+
+ul_sbound.o: ../Utility/cholmod_l_sbound.c
+	- ln -s $< ul_sbound.c
+	$(C) -c $(I) ul_sbound.c
+
+ul_score_comp.o: ../Utility/cholmod_l_score_comp.c
+	- ln -s $< ul_score_comp.c
+	$(C) -c $(I) ul_score_comp.c
+
+ul_set_empty.o: ../Utility/cholmod_l_set_empty.c
+	- ln -s $< ul_set_empty.c
+	$(C) -c $(I) ul_set_empty.c
+
+ul_sparse_to_dense.o: ../Utility/cholmod_l_sparse_to_dense.c
+	- ln -s $< ul_sparse_to_dense.c
+	$(C) -c $(I) ul_sparse_to_dense.c
+
+ul_sparse_to_triplet.o: ../Utility/cholmod_l_sparse_to_triplet.c
+	- ln -s $< ul_sparse_to_triplet.c
+	$(C) -c $(I) ul_sparse_to_triplet.c
+
+ul_speye.o: ../Utility/cholmod_l_speye.c
+	- ln -s $< ul_speye.c
+	$(C) -c $(I) ul_speye.c
+
+ul_spzeros.o: ../Utility/cholmod_l_spzeros.c
+	- ln -s $< ul_spzeros.c
+	$(C) -c $(I) ul_spzeros.c
+
+ul_start.o: ../Utility/cholmod_l_start.c
+	- ln -s $< ul_start.c
+	$(C) -c $(I) ul_start.c
+
+ul_triplet_to_sparse.o: ../Utility/cholmod_l_triplet_to_sparse.c
+	- ln -s $< ul_triplet_to_sparse.c
+	$(C) -c $(I) ul_triplet_to_sparse.c
+
+ul_version.o: ../Utility/cholmod_l_version.c
+	- ln -s $< ul_version.c
+	$(C) -c $(I) ul_version.c
+
+ul_xtype.o: ../Utility/cholmod_l_xtype.c
+	- ln -s $< ul_xtype.c
+	$(C) -c $(I) ul_xtype.c
+
+ul_zeros.o: ../Utility/cholmod_l_zeros.c
+	- ln -s $< ul_zeros.c
+	$(C) -c $(I) ul_zeros.c
 
 #-------------------------------------------------------------------------------
 
@@ -1017,9 +1639,9 @@ z_nesdis.o: ../Partition/cholmod_nesdis.c
 	$(C) -c $(I) z_nesdis.c
 
 # do not use test coverage for this file:
-z_metis_wrapper.o: ../Partition/cholmod_metis_wrapper.c
-	- ln -s $< z_metis_wrapper.c
-	$(CN) -c $(I) z_metis_wrapper.c
+n_metis_wrapper.o: ../Partition/cholmod_metis_wrapper.c
+	- ln -s $< n_metis_wrapper.c
+	$(CN) -c $(I) n_metis_wrapper.c
 
 #-------------------------------------------------------------------------------
 
@@ -1092,7 +1714,6 @@ z_super_solve.o: ../Supernodal/cholmod_super_solve.c
 	$(C) -c $(I) z_super_solve.c
 
 #-------------------------------------------------------------------------------
-#-------------------------------------------------------------------------------
 
 l_check.o: ../Check/cholmod_l_check.c
 	- ln -s $< l_check.c
@@ -1105,68 +1726,6 @@ l_read.o: ../Check/cholmod_l_read.c
 l_write.o: ../Check/cholmod_l_write.c
 	- ln -s $< l_write.c
 	$(C) -c $(I) l_write.c
-
-#-------------------------------------------------------------------------------
-
-l_common.o: ../Core/cholmod_l_common.c
-	- ln -s $< l_common.c
-	$(C) -c $(I) l_common.c
-
-l_version.o: ../Core/cholmod_l_version.c
-	- ln -s $< l_version.c
-	$(C) -c $(I) l_version.c
-
-l_dense.o: ../Core/cholmod_l_dense.c
-	- ln -s $< l_dense.c
-	$(C) -c $(I) l_dense.c
-
-l_factor.o: ../Core/cholmod_l_factor.c
-	- ln -s $< l_factor.c
-	$(C) -c $(I) l_factor.c
-
-l_change_factor.o: ../Core/cholmod_l_change_factor.c
-	- ln -s $< l_change_factor.c
-	$(C) -c $(I) l_change_factor.c
-
-l_memory.o: ../Core/cholmod_l_memory.c
-	- ln -s $< l_memory.c
-	$(C) -c $(I) l_memory.c
-
-l_sparse.o: ../Core/cholmod_l_sparse.c
-	- ln -s $< l_sparse.c
-	$(C) -c $(I) l_sparse.c
-
-l_complex.o: ../Core/cholmod_l_complex.c
-	- ln -s $< l_complex.c
-	$(C) -c $(I) l_complex.c
-
-l_transpose.o: ../Core/cholmod_l_transpose.c
-	- ln -s $< l_transpose.c
-	$(C) -c $(I) l_transpose.c
-
-l_band.o: ../Core/cholmod_l_band.c
-	- ln -s $< l_band.c
-	$(C) -c $(I) l_band.c
-
-l_copy.o: ../Core/cholmod_l_copy.c
-	- ln -s $< l_copy.c
-	$(C) -c $(I) l_copy.c
-
-l_triplet.o: ../Core/cholmod_l_triplet.c
-	- ln -s $< l_triplet.c
-	$(C) -c $(I) l_triplet.c
-
-l_error.o: ../Core/cholmod_l_error.c
-	- ln -s $< l_error.c
-	$(C) -c $(I) l_error.c
-
-l_aat.o: ../Core/cholmod_l_aat.c
-	- ln -s $< l_aat.c
-	$(C) -c $(I) l_aat.c
-
-l_add.o: ../Core/cholmod_l_add.c
-	- ln -s $< l_add.c
-	$(C) -c $(I) l_add.c
 
 #-------------------------------------------------------------------------------
 

@@ -395,7 +395,7 @@ int CHOLMOD(rowdel_mark)
 	    }
 	}
 
-	do_update = IS_GT_ZERO (dk) ;
+	do_update = (dk > 0) ;
 	if (!do_update)
 	{
 	    dk = -dk ;

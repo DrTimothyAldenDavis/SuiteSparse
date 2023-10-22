@@ -1,6 +1,10 @@
-Oct 16, 2023: version 4.2.2
+Oct 23, 2023, version 5.0.0
 
-    * bug fix: incorrect computation of work for nthreads in CHOLMOD/Supernodal
+    * CHOLMOD v5.0.0: introduces the first part of support for single
+        precision sparse matrices, with the introduction of the new
+        CHOLMOD:Utility Module.  The CHOLMOD:Utility Module replaces
+        CHOLMOD:Core in prior versions. Single precision is not yet
+        incorporated into the remaining Modules, however.
 
 Sept 18, 2023: version 4.2.1
 

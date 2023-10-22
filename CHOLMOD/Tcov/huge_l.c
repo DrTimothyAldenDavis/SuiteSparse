@@ -8,6 +8,7 @@
 
 //------------------------------------------------------------------------------
 
-#define DLONG
+#define CHOLMOD_INT64
+#include "cholmod_internal.h"
 #include "huge.c"
 
