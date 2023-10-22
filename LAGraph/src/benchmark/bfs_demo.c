@@ -81,9 +81,9 @@ int main (int argc, char **argv)
     }
     printf ("\n") ;
 
-    double tpl [nthreads_max+1] ;
-    double tp [nthreads_max+1] ;
-    double tl [nthreads_max+1] ;
+    double *tpl = malloc ((nthreads_max+1) * sizeof (double)) ;
+    double *tp = malloc ((nthreads_max+1) * sizeof (double)) ;
+    double *tl = malloc ((nthreads_max+1) * sizeof (double)) ;
 
     //--------------------------------------------------------------------------
     // read in the graph
@@ -295,6 +295,9 @@ int main (int argc, char **argv)
     // free all workspace and finish
     //--------------------------------------------------------------------------
 
+    free ((void *) tpl) ;
+    free ((void *) tp) ;
+    free ((void *) tl) ;
     LG_FREE_ALL ;
     LAGRAPH_TRY (LAGraph_Finalize (msg)) ;
     return (GrB_SUCCESS) ;

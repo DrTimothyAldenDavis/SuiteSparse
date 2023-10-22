@@ -295,8 +295,10 @@ int LAGraph_FastGraphletTransform
 
     const GrB_Index entries_per_tile = 1000;
     GrB_Index ntiles = (nvals + entries_per_tile - 1) / entries_per_tile ;
-    GrB_Matrix A_Tiles [ntiles], D_Tiles [ntiles], C_Tiles [ntiles] ;
-    GrB_Index Tile_nrows [ntiles] ;
+    GrB_Matrix *A_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
+    GrB_Matrix *D_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
+    GrB_Matrix *C_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
+    GrB_Index *Tile_nrows = malloc (ntiles * sizeof (GrB_Index)) ;
     GrB_Index Tile_ncols [1] = {n} ;
 
     int64_t tot_deg = 0 ;
@@ -566,6 +568,10 @@ int LAGraph_FastGraphletTransform
     //--------------------------------------------------------------------------
 
     LG_FREE_WORK ;
+    free ((void *) A_Tiles) ;
+    free ((void *) D_Tiles) ;
+    free ((void *) C_Tiles) ;
+    free ((void *) Tile_nrows) ;
 
     return (0) ;
 #endif

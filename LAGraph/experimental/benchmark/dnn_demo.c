@@ -236,8 +236,8 @@ int main (int argc, char **argv)
     // LAGraph_dnn, but it is exploited here, simply to reduce the time to load
     // the problems.
 
-    int len = 1024 ;
-    char filename [len] ;
+    #define FILENAME_LEN 1024
+    char filename [FILENAME_LEN] ;
 
     #define NMAXLAYERS 3
     int maxLayers [NMAXLAYERS] = { 120, 480, 1920 } ;
