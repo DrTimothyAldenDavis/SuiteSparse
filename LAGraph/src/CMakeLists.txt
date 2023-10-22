@@ -34,7 +34,7 @@ SET_TARGET_PROPERTIES ( lagraph PROPERTIES
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraph.h" )
-target_link_libraries ( lagraph PUBLIC ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
+target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
 # install ( FILES ${LAGRAPH_INCLUDE} DESTINATION include)
@@ -65,7 +65,7 @@ target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build 
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraph PUBLIC OpenMP::OpenMP_C )
+    target_link_libraries ( lagraph PRIVATE OpenMP::OpenMP_C )
     target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 

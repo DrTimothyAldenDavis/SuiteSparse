@@ -30,7 +30,7 @@ SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraphX.h" )
-target_link_libraries ( lagraphx PUBLIC lagraph ${GRAPHBLAS_LIBRARIES} )
+target_link_libraries ( lagraphx PRIVATE lagraph ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
@@ -59,7 +59,7 @@ target_link_directories ( lagraphx_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/buil
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraphx PUBLIC OpenMP::OpenMP_C )
+    target_link_libraries ( lagraphx PRIVATE OpenMP::OpenMP_C )
     target_link_libraries ( lagraphx_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 

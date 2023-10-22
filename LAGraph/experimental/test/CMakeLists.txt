@@ -41,8 +41,8 @@ SET_TARGET_PROPERTIES ( lagraphxtest PROPERTIES
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
     C_STANDARD 11 )
-target_link_libraries(lagraphxtest PUBLIC lagraph lagraphtest ${GRAPHBLAS_LIBRARIES})
-target_link_directories( lagraphxtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_link_libraries ( lagraphxtest PRIVATE lagraph lagraphtest ${GRAPHBLAS_LIBRARIES} )
+target_link_directories ( lagraphxtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
 # static lagraphxtest library properties
@@ -62,15 +62,15 @@ if ( MSVC )
         OUTPUT_NAME lagraphxtest_static )
 endif ( )
 
-target_link_libraries(lagraphxtest_static PUBLIC lagraph lagraphtest ${GRAPHBLAS_LIBRARIES})
-target_link_directories( lagraphxtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_link_libraries ( lagraphxtest_static PUBLIC lagraph lagraphtest ${GRAPHBLAS_LIBRARIES} )
+target_link_directories ( lagraphxtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
 # add OpenMP
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraphxtest PUBLIC OpenMP::OpenMP_C )
+    target_link_libraries ( lagraphxtest PRIVATE OpenMP::OpenMP_C )
     target_link_libraries ( lagraphxtest_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 
