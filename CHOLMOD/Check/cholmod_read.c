@@ -48,7 +48,7 @@
  *	complex symmetric matrices are always returned with both upper and lower
  *	triangular parts present, with an stype of zero, since CHOLMOD does not
  *	have a method for representing skew-symmetric and complex symmetric
- *	matrices.  Real symmetric and complex Hermitian matrices may optionally
+ *	matrices.  real symmetric and complex Hermitian matrices may optionally
  *	be returned with both parts present.
  *
  * Any other lines starting with "%" are treated as comments, and are ignored.

@@ -89,7 +89,7 @@ void mexFunction
 	mexErrMsgTxt ("could not read file") ;
     }
 
-    /* get the specific matrix (A or X), and change to ZOMPLEX if needed */
+    /* get the specific matrix (A or X), and change to zomplex if needed */
     if (mtype == CHOLMOD_SPARSE)
     {
 	A = (cholmod_sparse *) G ;
@@ -100,7 +100,7 @@ void mexFunction
 	Ai = A->i ;
 	if (is_complex)
 	{
-	    /* if complex, ensure A is ZOMPLEX */
+	    /* if complex, ensure A is zomplex */
 	    cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
 	}
 	Ax = A->x ;
@@ -114,7 +114,7 @@ void mexFunction
 	is_complex = (X->xtype == CHOLMOD_COMPLEX) ;
 	if (is_complex)
 	{
-	    /* if complex, ensure X is ZOMPLEX */
+	    /* if complex, ensure X is zomplex */
 	    cholmod_l_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
 	}
 	Ax = X->x ;

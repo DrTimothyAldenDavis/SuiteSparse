@@ -86,7 +86,7 @@ int CHOLMOD(csymamd)
     perm = Common->Head ;	/* size nrow+1 (i/l/l) */
 
     /* get parameters */
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     ccolamd_l_set_defaults (knobs) ;
 #else
     ccolamd_set_defaults (knobs) ;
@@ -103,7 +103,7 @@ int CHOLMOD(csymamd)
         calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
         free_func   = SuiteSparse_config_free_func_get ( ) ;
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
 	csymamd_l (nrow, A->i, A->p, perm, knobs, stats,
                 calloc_func,
                 free_func,

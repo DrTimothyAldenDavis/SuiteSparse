@@ -115,8 +115,8 @@ int CHOLMOD(sdmult)
 
     ASSERT (CHOLMOD(dump_sparse) (A, "A", Common) >= 0) ;
     DEBUG (CHOLMOD(dump_dense) (X, "X", Common)) ;
-    DEBUG (if (IS_NONZERO (beta [0])
-	   || (IS_NONZERO (beta [1]) && A->xtype != CHOLMOD_REAL))
+    DEBUG (if ((beta [0] != 0)
+	   || ((beta [1] != 0) && A->xtype != CHOLMOD_REAL))
 	    CHOLMOD(dump_dense) (Y, "Y", Common)) ;
 
     switch (A->xtype)

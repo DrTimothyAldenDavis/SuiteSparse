@@ -17,7 +17,7 @@
 
 #include "cholmod.h"
 
-#ifdef DLONG
+#ifdef CHOLMOD_INT64
 #define CHOLMOD(routine) cholmod_l_ ## routine
 #define Int int64_t
 #define UInt uint64_t

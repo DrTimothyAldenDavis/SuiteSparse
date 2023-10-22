@@ -232,7 +232,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			for (i = 0 ; i < n ; i++)
 			{
 			    x = X4x [i + j_n] ;
-			    if (IS_NONZERO (x))
+			    if (x != 0)
 			    {
 				Xi [xnz] = i ;
 				Xx [xnz] = x ;
@@ -246,7 +246,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			{
 			    x = X4x [2*(i + j_n)  ] ;
 			    z = X4x [2*(i + j_n)+1] ;
-			    if (IS_NONZERO (x) || IS_NONZERO (z))
+			    if ((x != 0) || (z != 0))
 			    {
 				Xi [xnz] = i ;
 				Xx [2*xnz  ] = x ;
@@ -261,7 +261,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			{
 			    x = X4x [i + j_n] ;
 			    z = X4z [i + j_n] ;
-			    if (IS_NONZERO (x) || IS_NONZERO (z))
+			    if ((x != 0) || (z != 0))
 			    {
 				Xi [xnz] = i ;
 				Xx [xnz] = x ;
@@ -287,7 +287,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			for (i = 0 ; i < n ; i++)
 			{
 			    x = X4x [i + j_n] ;
-			    if (IS_NONZERO (x))
+			    if (x != 0)
 			    {
 				EXPAND_AS_NEEDED ;
 				Xi [xnz] = i ;
@@ -302,7 +302,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			{
 			    x = X4x [2*(i + j_n)  ] ;
 			    z = X4x [2*(i + j_n)+1] ;
-			    if (IS_NONZERO (x) || IS_NONZERO (z))
+			    if ((x != 0) || (z != 0))
 			    {
 				EXPAND_AS_NEEDED ;
 				Xi [xnz] = i ;
@@ -318,7 +318,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
 			{
 			    x = X4x [i + j_n] ;
 			    z = X4z [i + j_n] ;
-			    if (IS_NONZERO (x) || IS_NONZERO (z))
+			    if ((x != 0) || (z != 0))
 			    {
 				EXPAND_AS_NEEDED ;
 				Xi [xnz] = i ;

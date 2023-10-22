@@ -50,7 +50,7 @@ modification package}
 
 CHOLMOD Copyright\copyright 2005-2023 by Timothy A. Davis, All Rights Reserved.
 Portions are also copyrighted by William W. Hager (the {\tt Modify} Module),
-and the University of Florida (the {\tt Partition} and {\tt Core} Modules).
+and the University of Florida (the {\tt Partition} Module).
 All Rights Reserved.
 
 See CHOLMOD/Doc/License.txt for the license.
@@ -92,14 +92,14 @@ Most of its operations are available within MATLAB via mexFunction interfaces.
     that can factorize symmetric indefinite matrices if all of their
     leading submatrices are well-conditioned ($\m{D}$ is diagonal).
 
-A pair of articles on CHOLMOD has been submitted to the ACM Transactions
+A pair of articles on CHOLMOD appears in the ACM Transactions
 on Mathematical Software:
 \cite{ChenDavisHagerRajamanickam06,DavisHager06}.
 
-CHOLMOD 1.0 replaces {\tt chol} (the sparse case), {\tt symbfact}, and {\tt etree}
-in MATLAB 7.2 (R2006a), and is used for {\tt x=A}$\backslash${\tt b}
-when {\tt A} is symmetric positive definite \cite{GilbertMolerSchreiber}.
-It will replace {\tt sparse} in a future version of MATLAB.
+CHOLMOD 1.0 replaces {\tt chol} (the sparse case), {\tt symbfact}, and {\tt
+etree} in MATLAB 7.2 (R2006a), and is used for {\tt x=A}$\backslash${\tt b}
+when {\tt A} is symmetric positive definite \cite{GilbertMolerSchreiber}.  It
+will replace {\tt sparse} in a future version of MATLAB.
 
 The C-callable CHOLMOD library consists of 133 user-callable routines and one
 include file.  Each routine comes in two versions, one for {\tt int} integers
@@ -109,6 +109,18 @@ complex matrices, simply by passing a matrix of the appropriate type.
 Nick Gould, Yifan Hu, and Jennifer Scott have independently tested CHOLMOD's
 performance, comparing it with nearly a dozen or so other solvers
 \cite{GouldHuScott05,GouldHuScott05b}.  Its performance was quite competitive.
+
+%-------------------------------------------------------------------------------
+\newpage \section{Single-precision sparse matrix support}
+%-------------------------------------------------------------------------------
+
+{\bf CHOLMOD v5.0.0}: introduces the first part of support for single
+        precision sparse matrices, with the introduction of the new
+        CHOLMOD:Utility Module.  The CHOLMOD:Utility Module replaces the
+        CHOLMOD:Core Module that appeared in prior versions of CHOLMOD.
+        Single precision is not yet incorporated into the remaining Modules,
+        however.  This feature will be implemented soon in a later version
+        of CHOLMOD.
 
 %-------------------------------------------------------------------------------
 \newpage \section{Primary routines and data structures}
@@ -708,7 +720,7 @@ sub-directory (a folder for Windows users) within the CHOLMOD directory
 \vspace{0.1in}
 \noindent There are seven Modules that provide user-callable routines for CHOLMOD.
     \begin{enumerate}
-    \item {\tt Core}: basic data structures and definitions
+    \item {\tt Utility}: basic data structures and definitions
     \item {\tt Check}: prints/checks each of CHOLMOD's objects
     \item {\tt Cholesky}: sparse Cholesky factorization
     \item {\tt Modify}: sparse Cholesky update/downdate and row-add/row-delete
@@ -727,7 +739,6 @@ sub-directory (a folder for Windows users) within the CHOLMOD directory
     \item {\tt Doc}: documentation (including this document)
     \item {\tt MATLAB}: CHOLMOD's interface to MATLAB
     \item {\tt Tcov}: an exhaustive test coverage (requires Linux or Solaris)
-    \item {\tt Valgrind}: runs the {\tt Tcov} test under {\tt valgrind} (requires Linux)
     \item \verb'cmake_modules':  how other packages can find CHOLMOD when
         using cmake.
     \item \verb'Config':  a folder containing the input files to create the
@@ -735,11 +746,11 @@ sub-directory (a folder for Windows users) within the CHOLMOD directory
     \end{enumerate}
 
 %-------------------------------------------------------------------------------
-\newpage \subsection{{\tt Core} Module: basic data structures and definitions}
+\newpage \subsection{{\tt Utility} Module: basic data structures and definitions}
 %-------------------------------------------------------------------------------
 
-CHOLMOD includes five basic objects, defined in the {\tt Core} Module.
-The {\tt Core Module} provides basic operations for these objects
+CHOLMOD includes five basic objects, defined in the {\tt Utility} Module.
+The {\tt Utility Module} provides basic operations for these objects
 and is required by all six other CHOLMOD library Modules:
 
 \subsubsection{{\tt cholmod\_common}: parameters, statistics, and workspace}
@@ -949,7 +960,7 @@ The {\tt cholmod\_version} function returns the current version of CHOLMOD.
     basic objects in CHOLMOD, and three kinds of integer vectors (a set,
     a permutation, and a tree).  It also provides a routine to read a sparse
     matrix from a file in Matrix Market format (http://www.nist.gov/MatrixMarket).
-    Requires the {\tt Core} Module.
+    Requires the {\tt Utility} Module.
 
 \vspace{0.1in}
 \noindent Primary routines:
@@ -997,7 +1008,7 @@ The {\tt cholmod\_version} function returns the current version of CHOLMOD.
 The primary routines are all that a user requires to order, analyze, and
 factorize a sparse symmetric positive definite matrix $\m{A}$ (or $\m{AA}\tr$), and
 to solve $\m{Ax}=\m{b}$ (or $\m{AA}\tr\m{x}=\m{b}$).  The primary routines rely on the secondary
-routines, the {\tt Core} Module, and the AMD and COLAMD packages.  They
+routines, the {\tt Utility} Module, and the AMD and COLAMD packages.  They
 make optional use of the {\tt Supernodal} and {\tt Partition} Modules, the
 METIS package, the CAMD package, and
 the CCOLAMD package.  The {\tt Cholesky} Module is
@@ -1044,9 +1055,9 @@ update, downdate, row-add, and row-delete.
 It can also modify a corresponding solution to $\m{Lx}=\m{b}$ when L is modified.
 This module is most useful when applied on a Cholesky factorization computed by
 the {\tt Cholesky} module, but it does not actually require the {\tt Cholesky} module.
-The {\tt Core} module can create an identity Cholesky factorization ($\m{LDL}\tr$ where
+The {\tt Utility} module can create an identity Cholesky factorization ($\m{LDL}\tr$ where
 $\m{L}=\m{D}=\m{I}$) that can then be modified by these routines.
-Requires the {\tt Core} module.  Not required by any other CHOLMOD Module.
+Requires the {\tt Utility} module.  Not required by any other CHOLMOD Module.
 
 \vspace{0.1in}
 \noindent Primary routine:
@@ -1075,7 +1086,7 @@ Requires the {\tt Core} module.  Not required by any other CHOLMOD Module.
 
 The {\tt MatrixOps} Module provides
 basic operations on sparse and dense matrices.
-Requires the {\tt Core} module.  Not required by any other CHOLMOD module.
+Requires the {\tt Utility} module.  Not required by any other CHOLMOD module.
 In the descriptions below,
 {\tt A}, {\tt B}, and {\tt C:} are sparse matrices ({\tt cholmod\_sparse}),
 {\tt X} and {\tt Y} are dense matrices ({\tt cholmod\_dense}),
@@ -1106,7 +1117,7 @@ these routines is via the {\tt Cholesky} Module.  This Module does not provide a
 fill-reducing orderings.  It normally operates on matrices ordered by the
 {\tt Cholesky} Module.
 It does not require the {\tt Cholesky} Module itself, however.
-Requires the {\tt Core} Module, and two external packages: LAPACK and the BLAS.
+Requires the {\tt Utility} Module, and two external packages: LAPACK and the BLAS.
 Optionally used by the {\tt Cholesky} Module.  All are secondary routines
 since these functions are more easily used via the {\tt Cholesky} Module.
 
@@ -1129,7 +1140,7 @@ graph partitioning and graph-partition-based orderings.  It includes an
 interface to CAMD, CCOLAMD, and CSYMAMD, constrained minimum degree ordering
 methods which order a matrix following constraints determined via nested
 dissection.
-Requires the {\tt Core} and {\tt Cholesky} Modules, and two packages: {\tt METIS 5.1.0}, CAMD, and CCOLAMD.
+Requires the {\tt Utility} and {\tt Cholesky} Modules, and two packages: {\tt METIS 5.1.0}, CAMD, and CCOLAMD.
 Optionally used by the {\tt Cholesky} Module.  All are secondary routines since
 these are more easily used by the {\tt Cholesky} Module.
 
@@ -1208,7 +1219,7 @@ only accessed if the other inputs are complex or zomplex.  In some cases
 the imaginary part is always ignored ({\tt cholmod\_factor\_p}, for example).
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: {\tt cholmod\_common} object}
+\newpage \section{{\tt Utility} Module: {\tt cholmod\_common} object}
 \label{cholmod_common}
 %-------------------------------------------------------------------------------
 
@@ -1268,13 +1279,22 @@ Allocates workspace in {\tt Common}.  The workspace consists
 of the integer {\tt Head}, {\tt Flag}, and {\tt Iwork} arrays,
 of size {\tt nrow+1}, {\tt nrow}, and {\tt iworksize},
 respectively, and a {\tt double} array {\tt Xwork} of size
-{\tt xworksize}.  The {\tt Head} array is normally equal to -1
+{\tt xworksize} entries.  The {\tt Head} array is normally equal to -1
 when it is cleared.  If the {\tt Flag} array is cleared,
 all entries are less than {\tt Common->mark}.  The {\tt Iwork} array is
 not kept in any particular state.
 The integer type is {\tt int} or {\tt long}, depending
 on whether the {\tt cholmod\_} or {\tt cholmod\_l\_} routines
 are used.
+
+%---------------------------------------
+% \subsection{{\tt cholmod\_alloc\_work}: allocate workspace}
+%---------------------------------------
+
+% \input{_alloc_work.tex}
+% This is the same as {\tt cholmod\_allocate\_work}, except that
+% the {\tt Xwork} array can be {\tt float} or {\tt double}, as
+% determined by the {\tt dtype} input parameter.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_free\_work}: free workspace}
@@ -1336,7 +1356,7 @@ The exception is made to match the return value of a different complex divide ro
 that is not a part of CHOLMOD, but can be used via the function pointer.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: {\tt cholmod\_sparse} object}
+\newpage \section{{\tt Utility} Module: {\tt cholmod\_sparse} object}
 \label{cholmod_sparse}
 %-------------------------------------------------------------------------------
 
@@ -1652,7 +1672,7 @@ Changes the {\tt xtype} of a sparse matrix, to pattern, real, complex, or zomple
 Changing from complex or zomplex to real discards the imaginary part.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: {\tt cholmod\_factor} object}
+\newpage \section{{\tt Utility} Module: {\tt cholmod\_factor} object}
 \label{cholmod_factor}
 %-------------------------------------------------------------------------------
 
@@ -1698,49 +1718,49 @@ monotonic or non-monotonic status of a {\tt cholmod\_factor} object.
 There are four basic classes of factor types:
 \begin{enumerate}
 \item simplicial symbolic:  Consists of two size-{\tt n} arrays: the fill-reducing
-permutation ({\tt L->Perm}) and the nonzero count for each column of L
-({\tt L->ColCount}).  All other factor types also include this information.
-{\tt L->ColCount} may be exact (obtained from the analysis routines), or
-it may be a guess.  During factorization, and certainly after update/downdate,
-the columns of {\tt L} can have a different number of nonzeros.
-{\tt L->ColCount} is used to allocate space.  {\tt L->ColCount} is exact for the
-supernodal factorizations.  The nonzero pattern of {\tt L} is not kept.
+    permutation ({\tt L->Perm}) and the nonzero count for each column of L
+    ({\tt L->ColCount}).  All other factor types also include this information.
+    {\tt L->ColCount} may be exact (obtained from the analysis routines), or it
+    may be a guess.  During factorization, and certainly after update/downdate,
+    the columns of {\tt L} can have a different number of nonzeros.  {\tt
+    L->ColCount} is used to allocate space.  {\tt L->ColCount} is exact for the
+    supernodal factorizations.  The nonzero pattern of {\tt L} is not kept.
 
 \item simplicial numeric:  These represent {\tt L} in a compressed column form.  The
-variants of this type are:
+    variants of this type are:
 
-\begin{itemize}
-\item $\m{LDL}\tr$:	{\tt L} is unit diagonal.  Row indices in column {\tt j} are located in
-    {\tt L->i [L->p [j] ... L->p [j] + L->nz [j]]}, and corresponding numeric
-    values are in the same locations in {\tt L->x}.  The total number of
-    entries is the sum of {\tt L->nz [j]}.  The unit diagonal is not stored;
-    {\tt D} is stored on the diagonal of {\tt L} instead.  {\tt L->p} may or may not be
-    monotonic.  The order of storage of the columns in {\tt L->i} and {\tt L->x} is
-    given by a doubly-linked list ({\tt L->prev} and {\tt L->next}).  {\tt L->p} is of
-    size {\tt n+1}, but only the first {\tt n} entries are used.
+    \begin{itemize}
+    \item $\m{LDL}\tr$:	{\tt L} is unit diagonal.  Row indices in column {\tt j} are located in
+        {\tt L->i [L->p [j] ... L->p [j] + L->nz [j]]}, and corresponding numeric
+        values are in the same locations in {\tt L->x}.  The total number of
+        entries is the sum of {\tt L->nz [j]}.  The unit diagonal is not stored;
+        {\tt D} is stored on the diagonal of {\tt L} instead.  {\tt L->p} may or may not be
+        monotonic.  The order of storage of the columns in {\tt L->i} and {\tt L->x} is
+        given by a doubly-linked list ({\tt L->prev} and {\tt L->next}).  {\tt L->p} is of
+        size {\tt n+1}, but only the first {\tt n} entries are used.
 
-    For the complex case, {\tt L->x} is stored interleaved with real and imaginary
-    parts, and is of size {\tt 2*lnz*sizeof(double)}.  For the zomplex case,
-    {\tt L->x} is of size {\tt lnz*sizeof(double)} and holds the real part; {\tt L->z}
-    is the same size and holds the imaginary part.
+        For the complex case, {\tt L->x} is stored interleaved with real and imaginary
+        parts, and is of size {\tt 2*lnz*sizeof(double)}.  For the zomplex case,
+        {\tt L->x} is of size {\tt lnz*sizeof(double)} and holds the real part; {\tt L->z}
+        is the same size and holds the imaginary part.
 
-\item $\m{LL}\tr$:  This is identical to the $\m{LDL}\tr$ form, except that the non-unit
-    diagonal of {\tt L} is stored as the first entry in each column of {\tt L}.
-\end{itemize}
+    \item $\m{LL}\tr$:  This is identical to the $\m{LDL}\tr$ form, except that the non-unit
+        diagonal of {\tt L} is stored as the first entry in each column of {\tt L}.
+    \end{itemize}
 
 \item supernodal symbolic:  A representation of the nonzero pattern of the
-supernodes for a supernodal factorization.  There are {\tt L->nsuper}
-supernodes.  Columns {\tt L->super [k]} to {\tt L->super [k+1]-1} are in the {\tt k}th
-supernode.  The row indices for the {\tt k}th supernode are in
-{\tt L->s [L->pi [k] ... L->pi [k+1]-1]}.  The numerical values are not
-allocated ({\tt L->x}), but when they are they will be located in
-{\tt L->x [L->px [k] ... L->px [k+1]-1]}, and the {\tt L->px} array is defined
-in this factor type.
+    supernodes for a supernodal factorization.  There are {\tt L->nsuper}
+    supernodes.  Columns {\tt L->super [k]} to {\tt L->super [k+1]-1} are in the {\tt k}th
+    supernode.  The row indices for the {\tt k}th supernode are in
+    {\tt L->s [L->pi [k] ... L->pi [k+1]-1]}.  The numerical values are not
+    allocated ({\tt L->x}), but when they are they will be located in
+    {\tt L->x [L->px [k] ... L->px [k+1]-1]}, and the {\tt L->px} array is defined
+    in this factor type.
 
-For the complex case, {\tt L->x} is stored interleaved with real/imaginary parts,
-and is of size \newline
-{\tt 2*L->xsize*sizeof(double)}.  The zomplex supernodal case
-is not supported, since it is not compatible with LAPACK and the BLAS.
+    For the complex case, {\tt L->x} is stored interleaved with real/imaginary parts,
+    and is of size \newline
+    {\tt 2*L->xsize*sizeof(double)}.  The zomplex supernodal case
+    is not supported, since it is not compatible with LAPACK and the BLAS.
 
 \item supernodal numeric:  Always an $\m{LL}\tr$ factorization.  {\tt L} has a non-unit
      diagonal.  {\tt L->x} contains the numerical values of the supernodes, as
@@ -1845,7 +1865,7 @@ Changing from complex or zomplex to real discards the imaginary part.
 You cannot change a supernodal factor to the zomplex xtype.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: {\tt cholmod\_dense} object}
+\newpage \section{{\tt Utility} Module: {\tt cholmod\_dense} object}
 \label{cholmod_dense}
 %-------------------------------------------------------------------------------
 
@@ -1909,6 +1929,13 @@ Returns a dense identity matrix.
 Returns a dense copy of a sparse matrix.
 
 %---------------------------------------
+\subsection{{\tt cholmod\_dense\_nnz}: number of nonzeros in a dense matrix}
+%---------------------------------------
+
+\input{_dense_nnz.tex}
+Returns a count of the number of nonzero entries in a dense matrix.
+
+%---------------------------------------
 \subsection{{\tt cholmod\_dense\_to\_sparse}: sparse matrix copy of a dense matrix}
 %---------------------------------------
 
@@ -1938,7 +1965,7 @@ Changes the {\tt xtype} of a dense matrix, to real, complex, or zomplex.
 Changing from complex or zomplex to real discards the imaginary part.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: {\tt cholmod\_triplet} object}
+\newpage \section{{\tt Utility} Module: {\tt cholmod\_triplet} object}
 \label{cholmod_triplet}
 %-------------------------------------------------------------------------------
 
@@ -2007,7 +2034,7 @@ Changes the {\tt xtype} of a dense matrix, to real, complex, or zomplex.
 Changing from complex or zomplex to real discards the imaginary part.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: memory management}
+\newpage \section{{\tt Utility} Module: memory management}
 %-------------------------------------------------------------------------------
 
 %---------------------------------------
@@ -2074,7 +2101,7 @@ Reallocates multiple blocks of memory, all with the same number of items
 or all are returned to their original size.
 
 %-------------------------------------------------------------------------------
-\newpage \section{{\tt Core} Module: version control}
+\newpage \section{{\tt Utility} Module: version control}
 %-------------------------------------------------------------------------------
 
 \subsection{{\tt cholmod\_version}: return current CHOLMOD version}
@@ -2508,30 +2535,32 @@ particularly for the supernodal factorization.
 If you truly want the natural ordering with no postordering,
 you must set {\tt Common->postorder} to {\tt FALSE}.
 
-The factor {\tt L} is returned as simplicial symbolic if
-{\tt Common->supernodal} is {\tt CHOLMOD\_SIMPLICIAL} (zero) or as supernodal symbolic if
-{\tt Common->supernodal} is {\tt CHOLMOD\_SUPERNODAL} (two).  If \newline
-{\tt Common->supernodal} is {\tt CHOLMOD\_AUTO} (one),
-then {\tt L} is simplicial if the flop count per nonzero in {\tt L} is less than
-{\tt Common->supernodal\_switch} (default: 40), and
-supernodal otherwise.  In both cases, {\tt L->xtype} is {\tt CHOLMOD\_PATTERN}.
-A subsequent call to {\tt cholmod\_factorize} will perform a
-simplicial or supernodal factorization, depending on the type of {\tt L}.
+The factor {\tt L} is returned as simplicial symbolic if {\tt
+Common->supernodal} is {\tt CHOLMOD\_SIMPLICIAL} (zero) or as supernodal
+symbolic if {\tt Common->supernodal} is {\tt CHOLMOD\_SUPERNODAL} (two).  If
+\newline {\tt Common->supernodal} is {\tt CHOLMOD\_AUTO} (one), then {\tt L} is
+simplicial if the flop count per nonzero in {\tt L} is less than {\tt
+Common->supernodal\_switch} (default: 40), and supernodal otherwise.  In both
+cases, {\tt L->xtype} is {\tt CHOLMOD\_PATTERN}.  A subsequent call to {\tt
+cholmod\_factorize} will perform a simplicial or supernodal factorization,
+depending on the type of {\tt L}.
 
-For the simplicial case, {\tt L} contains the fill-reducing permutation ({\tt L->Perm})
-and the counts of nonzeros in each column of {\tt L} ({\tt L->ColCount}).  For the
-supernodal case, {\tt L} also contains the nonzero pattern of each supernode.
+For the simplicial case, {\tt L} contains the fill-reducing permutation ({\tt
+L->Perm}) and the counts of nonzeros in each column of {\tt L} ({\tt
+L->ColCount}).  For the supernodal case, {\tt L} also contains the nonzero
+pattern of each supernode.
 
-If a simplicial factorization is selected, it will be $\m{LDL}\tr$ by default, since
-this is the kind required by the {\tt Modify} Module.  CHOLMOD does not include a
-supernodal $\m{LDL}\tr$ factorization, so if a supernodal factorization is selected,
-it will be in the form $\m{LL}\tr$.  The $\m{LDL}\tr$ method can be used to
-factorize positive definite matrices and indefinite matrices whose leading minors
-are well-conditioned (2-by-2 pivoting is not supported).  The $\m{LL}\tr$ method
-is restricted to positive definite matrices.  To factorize a large indefinite matrix,
-set {\tt Common->supernodal} to {\tt CHOLMOD\_SIMPLICIAL}, and the simplicial 
-$\m{LDL}\tr$ method will always be used.  This will be significantly slower than
-a supernodal $\m{LL}\tr$ factorization, however.
+If a simplicial factorization is selected, it will be $\m{LDL}\tr$ by default,
+since this is the kind required by the {\tt Modify} Module.  CHOLMOD does not
+include a supernodal $\m{LDL}\tr$ factorization, so if a supernodal
+factorization is selected, it will be in the form $\m{LL}\tr$.  The
+$\m{LDL}\tr$ method can be used to factorize positive definite matrices and
+indefinite matrices whose leading minors are well-conditioned (2-by-2 pivoting
+is not supported).  The $\m{LL}\tr$ method is restricted to positive definite
+matrices.  To factorize a large indefinite matrix, set {\tt Common->supernodal}
+to {\tt CHOLMOD\_SIMPLICIAL}, and the simplicial $\m{LDL}\tr$ method will
+always be used.  This will be significantly slower than a supernodal
+$\m{LL}\tr$ factorization, however.
 
 Refer to {\tt cholmod\_transpose\_unsym} for a description of {\tt f}.
 
@@ -2539,24 +2568,22 @@ Refer to {\tt cholmod\_transpose\_unsym} for a description of {\tt f}.
 \subsection{{\tt cholmod\_factorize}: numeric factorization}
 %---------------------------------------
 
-\input{_factorize.tex}
-Computes the numerical factorization of a symmetric matrix.  The % primary
-inputs to this routine are a sparse matrix {\tt A} and the symbolic factor {\tt L} from
-{\tt cholmod\_analyze} or a prior numerical factor {\tt L}.  If {\tt A} is symmetric, this
-routine factorizes {\tt A(p,p)}. %+beta*I (beta can be zero),
-where p is the fill-reducing permutation ({\tt L->Perm}).  If {\tt A} is unsymmetric,
-% either
-{\tt A(p,:)*A(p,:)'} % +beta*I  or A(p,f)*A(p,f)'+beta*I
-is factorized.  %  The set f and
-The nonzero pattern of the matrix {\tt A} must be the same as the matrix passed to
-{\tt cholmod\_analyze} for the supernodal case.  For the simplicial case, it can
-be different, but it should be the same for best performance. %  beta is real.
+\input{_factorize.tex} Computes the numerical factorization of a symmetric
+matrix.  The inputs to this routine are a sparse matrix {\tt A} and the
+symbolic factor {\tt L} from {\tt cholmod\_analyze} or a prior numerical factor
+{\tt L}.  If {\tt A} is symmetric, this routine factorizes {\tt A(p,p)}.  where
+p is the fill-reducing permutation ({\tt L->Perm}).  If {\tt A} is unsymmetric,
+{\tt A(p,:)*A(p,:)'} is factorized.  The nonzero pattern of the matrix {\tt A}
+must be the same as the matrix passed to {\tt cholmod\_analyze} for the
+supernodal case.  For the simplicial case, it can be different, but it should
+be the same for best performance.
 
-A simplicial factorization or supernodal factorization is chosen, based on
-the type of the factor {\tt L}.  If {\tt L->is\_super} is {\tt TRUE}, a supernodal $\m{LL}\tr$
-factorization is computed.  Otherwise, a simplicial numeric factorization
-is computed, either $\m{LL}\tr$ or $\m{LDL}\tr$, depending on {\tt Common->final\_ll}
-(the default for the simplicial case is to compute an $\m{LDL}\tr$ factorization).
+A simplicial factorization or supernodal factorization is chosen, based on the
+type of the factor {\tt L}.  If {\tt L->is\_super} is {\tt TRUE}, a supernodal
+$\m{LL}\tr$ factorization is computed.  Otherwise, a simplicial numeric
+factorization is computed, either $\m{LL}\tr$ or $\m{LDL}\tr$, depending on
+{\tt Common->final\_ll} (the default for the simplicial case is to compute an
+$\m{LDL}\tr$ factorization).
 
 Once the factorization is complete, it can be left as is or optionally
 converted into any simplicial numeric type, depending on the
@@ -2939,12 +2966,12 @@ Refer to {\tt cholmod\_transpose\_unsym} for a description of {\tt f}.
 
 If an entry in {\tt L} is kept, its numerical value does not change.
 
-This routine is used after a supernodal factorization is converted into
-a simplicial one, to remove zero entries that were added due to relaxed
-supernode amalgamation.  It can also be used after a series of downdates
-to remove entries that would no longer be present if the matrix were
-factorized from scratch.  A downdate ({\tt cholmod\_updown}) does not remove any
-entries from {\tt L}.
+This routine is used after a supernodal factorization is converted into a
+simplicial one, to remove zero entries that were added due to relaxed supernode
+amalgamation.  It can also be used after a series of downdates to remove
+entries that would no longer be present if the matrix were factorized from
+scratch.  A downdate ({\tt cholmod\_updown}) does not remove any entries from
+{\tt L}.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_resymbol\_noperm}: re-do symbolic factorization}

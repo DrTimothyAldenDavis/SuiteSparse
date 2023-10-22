@@ -408,7 +408,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
     Int *First, *Level, *Work4n, *Cmember, *CParent, *ColCount, *Lperm, *Parent,
 	*Post, *Perm, *Lparent, *Lcolcount ;
     cholmod_factor *L ;
-    Int k, n, ordering, method, nmethods, status, default_strategy, ncol, uncol,
+    Int k, n, method, nmethods, status, default_strategy, ncol, uncol,
 	skip_analysis, skip_best ;
     Int amd_backup ;
     size_t s ;
@@ -477,7 +477,9 @@ cholmod_factor *CHOLMOD(analyze_p2)
          * being tried, then enable AMD backup */
         amd_backup = (nmethods > 1) || (nmethods == 1 &&
             (Common->method [0].ordering == CHOLMOD_METIS ||
-             Common->method [0].ordering == CHOLMOD_NESDIS)) ;
+             Common->method [0].ordering == CHOLMOD_NESDIS ||
+            (Common->method [0].ordering == CHOLMOD_GIVEN &&
+                UserPerm == NULL))) ;
     }
 
 #ifdef NSUPERNODAL
@@ -565,6 +567,8 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	/* determine the method to try */
 	/* ------------------------------------------------------------------ */
 
+        Int ordering ;
+
 	Common->fl = EMPTY ;
 	Common->lnz = EMPTY ;
 	skip_analysis = FALSE ;
@@ -574,7 +578,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    /* All methods failed: backup to AMD */
 	    if (Common->selected == EMPTY && amd_backup)
 	    {
-		PRINT1 (("All methods requested failed: backup to AMD\n")) ;
 		ordering = CHOLMOD_AMD ;
 	    }
 	    else
@@ -587,7 +590,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    ordering = Common->method [method].ordering ;
 	}
 	Common->current = method ;
-	PRINT1 (("method "ID": Try method: "ID"\n", method, ordering)) ;
 
 	/* ------------------------------------------------------------------ */
 	/* find the fill-reducing permutation */
@@ -616,7 +618,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    if (UserPerm == NULL)
 	    {
 		/* this is not an error condition */
-		PRINT1 (("skip, no user perm given\n")) ;
 		continue ;
 	    }
 	    for (k = 0 ; k < n ; k++)
@@ -652,9 +653,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    }
 	    else
 	    {
-		/* Alternative:
-		CHOLMOD(ccolamd) (A, fset, fsize, NULL, Perm, Common) ;
-		*/
 		/* do not postorder, it is done later, below */
 		/* workspace: Iwork (4*nrow+uncol), Flag (nrow), Head (nrow+1)*/
 		CHOLMOD(colamd) (A, fset, fsize, FALSE, Perm, Common) ;
@@ -707,7 +705,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    /* -------------------------------------------------------------- */
 
 	    Common->status = CHOLMOD_INVALID ;
-	    PRINT1 (("No such ordering: "ID"\n", ordering)) ;
 	}
 
 	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
@@ -739,7 +736,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	ASSERT (Common->fl >= 0 && Common->lnz >= 0) ;
 	Common->method [method].fl  = Common->fl ;
 	Common->method [method].lnz = Common->lnz ;
-	PRINT1 (("lnz %g fl %g\n", Common->lnz, Common->fl)) ;
 
 	/* ------------------------------------------------------------------ */
 	/* pick the best method */
@@ -749,7 +745,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	if (Common->selected == EMPTY || Common->lnz < lnz_best)
 	{
 	    Common->selected = method ;
-	    PRINT1 (("this is best so far, method "ID"\n", method)) ;
 	    L->ordering = ordering ;
 	    lnz_best = Common->lnz ;
 	    for (k = 0 ; k < n ; k++)
@@ -915,8 +910,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 
 	/* workspace: Flag (nrow), Head (nrow), Iwork (5*nrow) */
 	CHOLMOD(super_symbolic2) (for_whom, S, F, Lparent, L, Common) ;
-	PRINT1 (("status %d\n", Common->status)) ;
-
 	CHOLMOD(free_sparse) (&A1, Common) ;
 	CHOLMOD(free_sparse) (&A2, Common) ;
     }

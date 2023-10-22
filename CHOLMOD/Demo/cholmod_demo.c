@@ -23,7 +23,7 @@
  * The matrix is assumed to be positive definite (a supernodal LL' or simplicial
  * LDL' factorization is used).
  *
- * Requires the Core, Cholesky, MatrixOps, and Check Modules.
+ * Requires the Utility, Cholesky, MatrixOps, and Check Modules.
  * Optionally uses the Partition and Supernodal Modules.
  * Does not use the Modify Module.
  *

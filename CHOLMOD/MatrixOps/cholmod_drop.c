@@ -88,7 +88,7 @@ int CHOLMOD(drop)
 		{
 		    i = Ai [p] ;
 		    aij = Ax [p] ;
-		    if (i <= j && (fabs (aij) > tol || IS_NAN (aij)))
+		    if (i <= j && (fabs (aij) > tol || isnan (aij)))
 		    {
 			Ai [nz] = i ;
 			Ax [nz] = aij ;
@@ -114,7 +114,7 @@ int CHOLMOD(drop)
 		{
 		    i = Ai [p] ;
 		    aij = Ax [p] ;
-		    if (i >= j && (fabs (aij) > tol || IS_NAN (aij)))
+		    if (i >= j && (fabs (aij) > tol || isnan (aij)))
 		    {
 			Ai [nz] = i ;
 			Ax [nz] = aij ;
@@ -139,7 +139,7 @@ int CHOLMOD(drop)
 		{
 		    i = Ai [p] ;
 		    aij = Ax [p] ;
-		    if (fabs (aij) > tol || IS_NAN (aij))
+		    if (fabs (aij) > tol || isnan (aij))
 		    {
 			Ai [nz] = i ;
 			Ax [nz] = aij ;

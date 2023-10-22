@@ -345,7 +345,7 @@ static void NUMERIC (WDIM, RANK)
     double *Lx ;
     Int *Li, *Lp, *Lnz ;
     Int p, k ;
-    Int use_dbound = IS_GT_ZERO (Common->dbound) ;
+    Int use_dbound = (Common->dbound > 0) ;
 
     Li = L->i ;
     Lx = L->x ;
@@ -386,7 +386,7 @@ static void NUMERIC (WDIM, RANK)
     double *W0, *W1, *W2, *W3, *Lx ;
     Int *Li, *Lp, *Lnz ;
     Int j1, j2, j3, p0, p1, p2, p3, parent, lnz, pend, k ;
-    Int use_dbound = IS_GT_ZERO (Common->dbound) ;
+    Int use_dbound = (Common->dbound > 0) ;
 
     Li = L->i ;
     Lx = L->x ;

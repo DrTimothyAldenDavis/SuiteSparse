@@ -9,6 +9,6 @@
 
 //------------------------------------------------------------------------------
 
-#define DLONG
+#define CHOLMOD_INT64
 #include "cholmod_super_solve.c"
 

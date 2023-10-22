@@ -10,10 +10,12 @@
 
 /* Test for camd v2.0 */
 
+#undef ASSERT
 #include "cm.h"
 #undef FLIP
 #undef UNFLIP
 
+#undef ASSERT
 #ifndef NCAMD
 #include "camd.h"
 #include "camd_internal.h"
