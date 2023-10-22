@@ -59,6 +59,8 @@ project ( lagraph
 
 enable_language ( C )
 
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
+
 # configure LAGraph.h with the LAGraph date and version
 configure_file (
     "config/LAGraph.h.in"
@@ -133,8 +135,12 @@ endif ( )
 if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
-    find_package ( OpenMP )
-    find_package ( Threads )
+    if ( NOPENMP )
+        set ( OPENMP_C_FOUND OFF )
+    else ( )
+        find_package ( OpenMP )
+        find_package ( Threads )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -155,7 +161,7 @@ message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
 message ( STATUS "CMAKE thread library:      " ${CMAKE_THREAD_LIBS_INIT} )
 message ( STATUS "CMAKE have pthreads:       " ${CMAKE_USE_PTHREADS_INIT}  )
 message ( STATUS "CMAKE have Win32 pthreads: " ${CMAKE_USE_WIN32_THREADS_INIT} )
-message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
+message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 
 #-------------------------------------------------------------------------------
 # include directories for LAGraph library

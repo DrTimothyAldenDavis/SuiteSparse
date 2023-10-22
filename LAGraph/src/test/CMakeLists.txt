@@ -71,7 +71,7 @@ target_link_directories( lagraphtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/bu
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
+if ( OPENMP_C_FOUND )
     target_link_libraries ( lagraphtest PUBLIC ${OpenMP_C_LIBRARIES} )
     target_link_libraries ( lagraphtest_static PUBLIC ${OpenMP_C_LIBRARIES} )
 endif ( )

@@ -64,7 +64,7 @@ target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build 
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
+if ( OPENMP_C_FOUND )
     target_link_libraries ( lagraph PUBLIC OpenMP::OpenMP_C )
     target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
