@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Sept 18, 2023" )
+set ( SPQR_DATE "Oct 23, 2023" )
 set ( SPQR_VERSION_MAJOR 4 )
 set ( SPQR_VERSION_MINOR 2 )
-set ( SPQR_VERSION_SUB   1 )
+set ( SPQR_VERSION_SUB   2 )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -54,23 +54,23 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.3.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
 endif ( )
 
-find_package ( CHOLMOD 4.2.0
+find_package ( CHOLMOD 5.0.0
     PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::CHOLMOD )
-    find_package ( CHOLMOD 4.2.0 REQUIRED )
+    find_package ( CHOLMOD 5.0.0 REQUIRED )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( CHOLMOD_CUDA 4.2.0
+    find_package ( CHOLMOD_CUDA 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.0 REQUIRED )
+        find_package ( CHOLMOD_CUDA 5.0.0 REQUIRED )
     endif ( )
 endif ( )
 

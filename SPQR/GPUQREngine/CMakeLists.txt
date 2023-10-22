@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( GPUQRENGINE_DATE "Sept 18, 2023" )
+set ( GPUQRENGINE_DATE "Oct 23, 2023" )
 set ( GPUQRENGINE_VERSION_MAJOR 3 )
 set ( GPUQRENGINE_VERSION_MINOR 2 )
-set ( GPUQRENGINE_VERSION_SUB   1 )
+set ( GPUQRENGINE_VERSION_SUB   2 )
 
 message ( STATUS "Building GPUQRENGINE version: v"
     ${GPUQRENGINE_VERSION_MAJOR}.
@@ -48,10 +48,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 # for the library itself
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.3.0
     PATHS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
 endif ( )
 
 # Demo disabled for GPUQREngine v2.x
@@ -59,10 +59,10 @@ set ( DEMO_OK false )
 
 if ( DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 4.2.0
+    find_package ( CHOLMOD 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 4.2.0 )
+        find_package ( CHOLMOD 5.0.0 )
     endif ( )
 endif ( )
 
