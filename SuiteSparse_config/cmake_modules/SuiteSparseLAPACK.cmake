@@ -26,7 +26,7 @@ if ( BLA_VENDOR STREQUAL "FLAME" )
         NAMES flame
         PATH_SUFFIXES lib build )
 
-    # look for the static LAPACK library (usually liblagraph.a)
+    # look for the static LAPACK library (usually liblapack.a)
     if ( MSVC )
         set ( STATIC_SUFFIX .lib )
     else ( )
