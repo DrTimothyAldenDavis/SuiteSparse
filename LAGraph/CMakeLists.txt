@@ -41,7 +41,7 @@ cmake_minimum_required ( VERSION 3.13 )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
     )
 
 cmake_policy ( SET CMP0042 NEW )
@@ -53,6 +53,8 @@ set ( LAGraph_DATE "Aug 2, 2023" )
 set ( LAGraph_VERSION_MAJOR 1 )
 set ( LAGraph_VERSION_MINOR 0 )
 set ( LAGraph_VERSION_SUB   2 )
+
+include ( SuiteSparsePolicy )
 
 project ( lagraph
           VERSION "${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}" )
@@ -262,10 +264,12 @@ message ( STATUS "Installation in: ${CMAKE_INSTALL_PREFIX}" )
 include ( GNUInstallDirs )
 
 install ( TARGETS lagraph lagraphx
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
 install ( TARGETS lagraph_static lagraphx_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
