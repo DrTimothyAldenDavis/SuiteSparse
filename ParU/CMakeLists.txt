@@ -60,22 +60,22 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.3.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
 endif ( )
 
-find_package ( CHOLMOD 4.2.2
+find_package ( CHOLMOD 5.0.0
     PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
 if ( NOT CHOLMOD_FOUND )
-    find_package ( CHOLMOD 4.2.2 REQUIRED )
+    find_package ( CHOLMOD 5.0.0 REQUIRED )
 endif ( )
 
-find_package ( UMFPACK 6.2.1
+find_package ( UMFPACK 6.2.2
     PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
 if ( NOT CAMD_FOUND )
-    find_package ( UMFPACK 6.2.1 REQUIRED )
+    find_package ( UMFPACK 6.2.2 REQUIRED )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
