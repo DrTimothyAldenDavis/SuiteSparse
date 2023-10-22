@@ -12,10 +12,10 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Oct 23, 2023" )
+set ( MY_DATE "Oct 16, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 4 )
-set ( MY_VERSION_PATCH 3 )
+set ( MY_VERSION_PATCH 2 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -61,28 +61,28 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+find_package ( SuiteSparse_config 7.2.2 REQUIRED )
 find_package ( AMD 3.2.1 REQUIRED )
 find_package ( BTF 2.2.1 REQUIRED )
 find_package ( CAMD 3.2.1 REQUIRED )
 find_package ( CCOLAMD 3.2.1 REQUIRED )
 find_package ( COLAMD 3.2.1 REQUIRED )
-find_package ( CHOLMOD 5.0.0 REQUIRED )
+find_package ( CHOLMOD 4.2.2 REQUIRED )
 find_package ( CXSparse 4.2.1 REQUIRED )
 find_package ( GraphBLAS 8.2.1 )
-find_package ( KLU 2.2.2 REQUIRED )
-find_package ( KLU_CHOLMOD 2.2.2 REQUIRED )
+find_package ( KLU 2.2.1 REQUIRED )
+find_package ( KLU_CHOLMOD 2.2.1 REQUIRED )
 find_package ( LDL 3.2.1 REQUIRED )
 find_package ( Mongoose 3.2.1 REQUIRED )
 find_package ( RBio 4.2.1 REQUIRED )
 find_package ( SPEX 2.2.1 REQUIRED )
-find_package ( SPQR 4.2.2 REQUIRED )
-find_package ( UMFPACK 6.2.2 REQUIRED )
+find_package ( SPQR 4.2.1 REQUIRED )
+find_package ( UMFPACK 6.2.1 REQUIRED )
 
 if ( TARGET CUDA::nvrtc )
     # CHOLMOD and SPQR have been compiled with CUDA enabled.
     find_package ( SuiteSparse_GPURuntime 3.2.1 REQUIRED )
-    find_package ( GPUQREngine 3.2.2 REQUIRED )
+    find_package ( GPUQREngine 3.2.1 REQUIRED )
 endif ( )
 
 # look for all external libaries:

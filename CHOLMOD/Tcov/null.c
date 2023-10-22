@@ -66,7 +66,7 @@ void null_test (cholmod_common *cn)
 #endif
 
     /* ---------------------------------------------------------------------- */
-    /* Utility */
+    /* Core */
     /* ---------------------------------------------------------------------- */
 
     if (cn == NULL)
@@ -282,7 +282,7 @@ void null_test2 (void)
     int ok ;
 
     /* ---------------------------------------------------------------------- */
-    /* Test Common */
+    /* Test Core Common */
     /* ---------------------------------------------------------------------- */
 
     ok = CHOLMOD(allocate_work)(SIZE_MAX, 1, 1, cm) ;		NOT (ok) ;
@@ -308,13 +308,9 @@ void null_test2 (void)
     /* dense */
     /* ---------------------------------------------------------------------- */
 
-    X = CHOLMOD(allocate_dense)(5, 4, 1, CHOLMOD_REAL, cm) ;
-    OKP (X) ;
-    OK (X->d == 5) ;
-    CHOLMOD(free_dense)(&X, cm) ;
-
+    X = CHOLMOD(allocate_dense)(5, 4, 1, CHOLMOD_REAL, cm) ;	    NOP (X) ;
     X = CHOLMOD(allocate_dense)(1, Int_max, 1, CHOLMOD_REAL, cm) ;  NOP (X) ;
-    X = CHOLMOD(allocate_dense)(1, 1, 1, CHOLMOD_PATTERN, cm) ;     NOP (X) ;
+    X = CHOLMOD(allocate_dense)(1, 1, 1, -1, cm) ;		    NOP (X) ;
     CHOLMOD(free_dense)(&X, cm) ;
 
     /* free a NULL dense matrix */
@@ -322,13 +318,9 @@ void null_test2 (void)
     ok = CHOLMOD(free_dense)(NULL, cm) ;			    OK (ok) ;
 
     /* make an invalid sparse matrix */
-    printf ("\nspeye:\n") ;
-    Sbad = CHOLMOD(speye)(2, 3, CHOLMOD_REAL, cm) ;
-    OKP (Sbad) ;
-
+    Sbad = CHOLMOD(speye)(2, 3, CHOLMOD_REAL, cm) ;		    OKP (Sbad) ;
     Sbad->stype = 1 ;
     ok = CHOLMOD(check_sparse)(Sbad, cm) ;			    NOT (ok) ;
-    printf ("\nSparse to dense:\n") ;
     X = CHOLMOD(sparse_to_dense)(Sbad, cm) ;			    NOP (X) ;
     ok = CHOLMOD(free_sparse)(&Sbad, cm) ;			    OK (ok) ;
 
@@ -349,7 +341,7 @@ void null_test2 (void)
     /* free a NULL sparse matrix */
     ok = CHOLMOD(free_sparse)(&A, cm) ;				    OK (ok) ;
     ok = CHOLMOD(free_sparse)(NULL, cm) ;			    OK (ok) ;
-    A = CHOLMOD(copy_sparse)(NULL, cm) ;                            NOP (A) ;
+    A = CHOLMOD(copy_sparse)(NULL, cm) ;			    NOP (A) ;
 
     /* ---------------------------------------------------------------------- */
     /* error tests done */

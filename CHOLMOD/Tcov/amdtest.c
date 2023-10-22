@@ -10,12 +10,10 @@
 
 /* Test for amd v2.0 */
 
-#undef ASSERT
 #include "amd.h"
 #include "amd_internal.h"
 #undef FLIP
 #undef UNFLIP
-#undef ASSERT
 #include "cm.h"
 
 

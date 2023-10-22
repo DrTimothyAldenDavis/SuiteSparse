@@ -63,7 +63,7 @@
 /* === TEMPLATE codes for GPU and regular numeric factorization ============= */
 /* ========================================================================== */
 
-#ifdef CHOLMOD_INT64
+#ifdef DLONG
 #ifdef SUITESPARSE_CUDA
 #include "cholmod_gpu_kernels.h"
 #define REAL
@@ -218,7 +218,7 @@ int CHOLMOD(super_numeric)
 	    return (FALSE) ;
 	}
     }
-    ASSERT (L->dtype == CHOLMOD_DOUBLE) ;   // FIXME
+    ASSERT (L->dtype == DTYPE) ;
     ASSERT (L->xtype == CHOLMOD_REAL || L->xtype == CHOLMOD_COMPLEX) ;
 
     /* supernodal LDL' is not supported */
@@ -298,8 +298,7 @@ int CHOLMOD(super_numeric)
     /* Flag array was used as workspace, clear it */
     Common->mark = EMPTY ;
     /* CHOLMOD(clear_flag) (Common) ; */
-    CLEAR_FLAG (Common) ;
-    ASSERT (check_flag (Common)) ;
+    CHOLMOD_CLEAR_FLAG (Common) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     CHOLMOD(free_dense) (&C, Common) ;
     return (ok) ;

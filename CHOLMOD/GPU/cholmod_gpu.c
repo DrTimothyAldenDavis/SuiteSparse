@@ -78,7 +78,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 
     *total_mem = 0;
     *available_mem = 0;
-#ifndef CHOLMOD_INT64
+#ifndef DLONG
     return 0;
 #endif
 

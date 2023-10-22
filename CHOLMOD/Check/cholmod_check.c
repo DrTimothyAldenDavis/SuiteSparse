@@ -69,7 +69,7 @@
 /* === printing definitions ================================================= */
 /* ========================================================================== */
 
-#if defined ( CHOLMOD_INT64 )
+#if ( ITYPE == CHOLMOD_LONG )
 #define I8 "%8ld"
 #define I_8 "%-8ld"
 #else
@@ -204,7 +204,7 @@ static int check_common
 )
 {
     double fl, lnz ;
-    uint8_t *Xwork ;
+    double *Xwork ;
     Int *Flag, *Head ;
     int64_t mark ;
     Int i, nrow, nmethods, ordering, xworksize, amd_backup, init_print ;
@@ -502,14 +502,8 @@ static int check_common
     }
 
     P4 ("  dbound:  LDL' diagonal threshold: % .5g\n    Entries with abs. value"
-	    " less than dbound are replaced with +/- dbound.\n"
-            "    (for double precision case)\n",
+	    " less than dbound are replaced with +/- dbound.\n",
 	    Common->dbound) ;
-
-    P4 ("  sbound:  LDL' diagonal threshold: % .5g\n    Entries with abs. value"
-	    " less than sbound are replaced with +/- sbound.\n"
-            "    (for single precision case)\n",
-	    Common->sbound) ;
 
     P4 ("  grow0: memory reallocation: % .5g\n", Common->grow0) ;
     P4 ("  grow1: memory reallocation: % .5g\n", Common->grow1) ;
@@ -558,8 +552,7 @@ static int check_common
 	    }
 	}
     }
-
-    xworksize = Common->xworkbytes ;
+    xworksize = Common->xworksize ;
     Xwork = Common->Xwork ;
     if (xworksize > 0)
     {
@@ -571,7 +564,7 @@ static int check_common
 	{
 	    if (Xwork [i] != 0.)
 	    {
-		PRINT0 (("Xwork ["ID"] = %d\n", i, Xwork [i])) ;
+		PRINT0 (("Xwork ["ID"] = %g\n", i, Xwork [i])) ;
 		ERR ("workspace corrupted (Xwork)") ;
 	    }
 	}
@@ -749,6 +742,7 @@ static int64_t check_sparse
     switch (A->itype)
     {
 	case CHOLMOD_INT:     P4 ("%s", "\n  scalar types: int, ") ; break ;
+	case CHOLMOD_INTLONG: ERR ("mixed int/long type unsupported") ;
 	case CHOLMOD_LONG:    P4 ("%s", "\n  scalar types: int64_t, ");
         break ;
 	default:	      ERR ("unknown itype") ;
@@ -766,13 +760,13 @@ static int64_t check_sparse
     switch (A->dtype)
     {
 	case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ;	       break ;
-	case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ;	       break ;
+	case CHOLMOD_SINGLE:  ERR ("float unsupported") ;
 	default:	      ERR ("unknown dtype") ;
     }
 
-    if (A->itype != ITYPE)
+    if (A->itype != ITYPE || A->dtype != DTYPE)
     {
-	ERR ("integer type must match routine") ;
+	ERR ("integer and real type must match routine") ;
     }
 
     if (A->stype && nrow != ncol)
@@ -1015,7 +1009,7 @@ static int check_dense
     switch (X->dtype)
     {
 	case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ;	       break ;
-	case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ;	       break ;
+	case CHOLMOD_SINGLE:  ERR ("single unsupported") ;
 	default:	      ERR ("unknown dtype") ;
     }
 
@@ -1548,6 +1542,7 @@ static int check_factor
     switch (L->itype)
     {
 	case CHOLMOD_INT:     P4 ("%s", "\n  scalar types: int, ") ; break ;
+	case CHOLMOD_INTLONG: ERR ("mixed int/long type unsupported") ;
 	case CHOLMOD_LONG:    P4 ("%s", "\n  scalar types: int64_t, ");
         break ;
 	default:	      ERR ("unknown itype") ;
@@ -1565,13 +1560,13 @@ static int check_factor
     switch (L->dtype)
     {
 	case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ;	       break ;
-	case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ;	       break ;
+	case CHOLMOD_SINGLE:  ERR ("single unsupported") ;
 	default:	      ERR ("unknown dtype") ;
     }
 
-    if (L->itype != ITYPE)
+    if (L->itype != ITYPE || L->dtype != DTYPE)
     {
-	ERR ("integer type must match routine") ;
+	ERR ("integer and real type must match routine") ;
     }
 
     if (L->is_super)
@@ -2123,6 +2118,7 @@ static int check_triplet
     switch (T->itype)
     {
 	case CHOLMOD_INT:     P4 ("%s", "\n  scalar types: int, ") ; break ;
+	case CHOLMOD_INTLONG: ERR ("mixed int/long type unsupported") ;
 	case CHOLMOD_LONG:    P4 ("%s", "\n  scalar types: int64_t, ");
         break ;
 	default:	      ERR ("unknown itype") ;
@@ -2140,13 +2136,13 @@ static int check_triplet
     switch (T->dtype)
     {
 	case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ;	       break ;
-	case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ;	       break ;
+	case CHOLMOD_SINGLE:  ERR ("single unsupported") ;
 	default:	      ERR ("unknown dtype") ;
     }
 
-    if (T->itype != ITYPE)
+    if (T->itype != ITYPE || T->dtype != DTYPE)
     {
-	ERR ("integer type must match routine") ;
+	ERR ("integer and real type must match routine") ;
     }
 
     if (T->stype && nrow != ncol)
@@ -2454,7 +2450,7 @@ int CHOLMOD(dump_parent)
 void CHOLMOD(dump_real)
 (
     const char *name,
-    double *X, int64_t nrow, int64_t ncol, int lower,
+    Real *X, int64_t nrow, int64_t ncol, int lower,
     int xentry, cholmod_common *Common
 )
 {
@@ -2658,19 +2654,16 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
     W = Common->Xwork ;
     mark = Common->mark ;
 
-#if 0
-    // FIXME: need float and double
     if (wsize < 0)
     {
 	/* check all of Xwork */
-	wsize = Common->xworkbytes ;
+	wsize = Common->xworksize ;
     }
     else
     {
 	/* check on the first wsize doubles in Xwork */
-	wsize = MIN (wsize, (Int) (Common->xworkbytes)) ;
+	wsize = MIN (wsize, (Int) (Common->xworksize)) ;
     }
-#endif
 
     if (flag)
     {
@@ -2680,6 +2673,7 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
 	    {
 		PRINT0 (("Flag invalid, Flag ["ID"] = "ID", mark = "ID"\n",
 			    k, Flag [k], mark)) ;
+		ASSERT (0) ;
 		return (FALSE) ;
 	    }
 	}
@@ -2692,25 +2686,23 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
 	    if (Head [k] != EMPTY)
 	    {
 		PRINT0 (("Head invalid, Head ["ID"] = "ID"\n", k, Head [k])) ;
+		ASSERT (0) ;
 		return (FALSE) ;
 	    }
 	}
     }
 
-#if 0
-    // FIXME: need float and double
     for (k = 0 ; k < wsize ; k++)
     {
 	if (W [k] != 0.)
 	{
 	    PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
+	    ASSERT (0) ;
 	    return (FALSE) ;
 	}
     }
-#endif
 
     return (TRUE) ;
 }
 #endif
 #endif
-

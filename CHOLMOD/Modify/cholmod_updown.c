@@ -541,8 +541,7 @@ int CHOLMOD(updown_mask2)
     /* ---------------------------------------------------------------------- */
 
     /* mark = CHOLMOD(clear_flag) (Common) ; */
-    CLEAR_FLAG (Common) ;
-    ASSERT (check_flag (Common)) ;
+    CHOLMOD_CLEAR_FLAG (Common) ;
     mark = Common->mark ;
 
     PRINT1 (("updown, rank %g update %d\n", (double) C->ncol, update)) ;
@@ -736,7 +735,7 @@ int CHOLMOD(updown_mask2)
 	    if (do_solve)
 	    {
 		xj = Xx [j] ;
-		if (xj != 0)
+		if (IS_NONZERO (xj))
 		{
 		    xj = Xx [j] ;
 		    /* This is first time column j has been seen for entire */

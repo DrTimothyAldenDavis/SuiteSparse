@@ -63,7 +63,7 @@ set ( CHOLMOD_CUDA_INCLUDES
         ../Check
         ../../SuiteSparse_config
         ../Cholesky
-        ../Utility
+        ../Core
         ../Supernodal
         ../Include
         ../GPU )

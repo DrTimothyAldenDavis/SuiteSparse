@@ -152,7 +152,6 @@ static void check_equality (cholmod_sparse *E, cholmod_sparse *D, Int xtype)
 
     OK (E->ncol == D->ncol) ;
     OK (E->nrow == D->nrow) ;
-    OK (E->packed == D->packed) ;
 
     ncol = E->ncol ;
 
@@ -241,9 +240,6 @@ double test_ops (cholmod_sparse *A)
     /* E = pattern of A */
     E = CHOLMOD(copy) (A, 0, 0, cm) ;
     CHOLMOD(print_sparse) (E, "E = pattern of A", cm) ;
-//  int64_t enz = CHOLMOD (nnz) (E, cm) ;
-//  int64_t anz = CHOLMOD (nnz) (A, cm) ;
-//  if (E->stype == A->stype) { OK (enz == anz) ; }
     r1 = CHOLMOD(norm_sparse) (E, 1, cm) ;
     rinf = CHOLMOD(norm_sparse) (E, 0, cm) ;
     OK (r1 <= nrow) ;
@@ -289,6 +285,13 @@ double test_ops (cholmod_sparse *A)
     /* ---------------------------------------------------------------------- */
     /* read/write */
     /* ---------------------------------------------------------------------- */
+
+/*
+    i = cm->print ;
+    cm->print = 4 ;
+    CHOLMOD(print_sparse) (A, "A for read/write", cm) ;
+    cm->print = i ;
+*/
 
     /* delete the contents of the temp1.mtx and temp2.mtx file */
     f = fopen ("temp1.mtx", "w") ;
@@ -425,7 +428,7 @@ double test_ops (cholmod_sparse *A)
 
     S = CHOLMOD(sparse_to_triplet) (A, cm) ; /* [ */
 
-    if (S != NULL && nmin > 0 && S->nnz > 0)
+    if (S != NULL && nmin > 0)
     {
 
 	/* double the number of entries in S */
@@ -746,7 +749,7 @@ double test_ops (cholmod_sparse *A)
 
 	/* G = E+F */
 	G = CHOLMOD(add) (E, F, one, one, TRUE, TRUE, cm) ;
-	CHOLMOD(print_sparse) (G, "G=E+F (1)", cm) ;
+	CHOLMOD(print_sparse) (G, "G=E+F", cm) ;
 
 	/* D = A-G, which should be empty */
 	D = CHOLMOD(add) (G, A, one, minusone, TRUE, TRUE, cm) ;
@@ -804,7 +807,7 @@ double test_ops (cholmod_sparse *A)
 
 	/* G = E+C */
 	G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
-	CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
+	CHOLMOD(print_sparse) (G, "G=E+F", cm) ;
 	CHOLMOD(sort) (G, cm) ;
 
 	CHOLMOD(drop) (0, G, cm) ;
@@ -844,6 +847,7 @@ double test_ops (cholmod_sparse *A)
 
 	/* try CHOLMOD's interface to METIS_ComputeVertexSeparator */
 	cm->metis_memory = 2.0 ;
+        /* cm->print = 5 ; */
 	CHOLMOD(print_sparse) (A, "A for bisect", cm) ;
 	csep = CHOLMOD(bisect) (A, NULL, 0, TRUE, Partition, cm) ;
 	if (csep != EMPTY)
@@ -935,7 +939,7 @@ double test_ops (cholmod_sparse *A)
 	    nc_new = CHOLMOD(collapse_septree) (1, 1, 0.1, 400,
 		CParent, Cmember, cm) ;
 	    OK (nc_new == 1 || nc_new == EMPTY) ;
-	    nc_new = CHOLMOD(collapse_septree) (SIZE_MAX, SIZE_MAX,
+	    nc_new = CHOLMOD(collapse_septree) (Int_max, Int_max,
 		0.1, 400, CParent, Cmember, cm) ;
 	    OK (nc_new == EMPTY) ;
 
@@ -982,12 +986,8 @@ double test_ops (cholmod_sparse *A)
 	    {
 		F = CHOLMOD(add) (E, D, one, minusone, TRUE, TRUE, cm) ;
 		r = CHOLMOD(norm_sparse) (F, 0, cm) ;
-		if (F != NULL && cm->status == CHOLMOD_OK)
+		if (F != NULL)
 		{
-                    if (r != 0)
-                    {
-                        printf ("r %g at %d:%s\n", r, __LINE__, __FILE__) ;
-                    }
 		    OK (r == 0) ;
 		}
 		CHOLMOD(free_sparse) (&F, cm) ;
@@ -1020,21 +1020,19 @@ double test_ops (cholmod_sparse *A)
 	F = CHOLMOD(transpose) (E, 1, cm) ;
 	G = CHOLMOD(add) (D, F, one, minusone, TRUE, FALSE, cm) ;
 	r = CHOLMOD(norm_sparse) (G, 0, cm) ;
-	if (G != NULL && cm->status == CHOLMOD_OK)
+	if (G != NULL)
 	{
 	    OK (r == 0) ;
 	}
 	CHOLMOD(drop) (0, G, cm) ;
 	r = CHOLMOD(norm_sparse) (G, 0, cm) ;
-	if (G != NULL && cm->status == CHOLMOD_OK)
+	nz = CHOLMOD(nnz) (G, cm) ;
+	if (G != NULL)
 	{
 	    OK (r == 0) ;
-	}
-	nz = CHOLMOD(nnz) (G, cm) ;
-	if (G != NULL && cm->status == CHOLMOD_OK)
-	{
 	    OK (nz == 0) ;
 	}
+
 	CHOLMOD(free_sparse) (&C, cm) ;
 	CHOLMOD(free_sparse) (&D, cm) ;
 	CHOLMOD(free_sparse) (&E, cm) ;
@@ -1061,16 +1059,10 @@ double test_ops (cholmod_sparse *A)
 	C = CHOLMOD(copy_sparse) (A, cm) ;
 	CHOLMOD(sort) (C, cm) ;
 
-        int cstype = (C == NULL) ? 0 : C->stype ;
-	E = CHOLMOD(copy) (C, cstype, 1, cm) ;
-	F = CHOLMOD(copy) (D, cstype, 1, cm) ;
-
 	/* C and D should be equal */
-	check_equality (E, F, xtype) ;
+	check_equality (C, D, xtype) ;
 	CHOLMOD(free_sparse) (&C, cm) ;
 	CHOLMOD(free_sparse) (&D, cm) ;
-	CHOLMOD(free_sparse) (&E, cm) ;
-	CHOLMOD(free_sparse) (&F, cm) ;
 
 	/* C = A.' */
 	C = CHOLMOD(transpose) (A, 1, cm) ;
@@ -1084,16 +1076,10 @@ double test_ops (cholmod_sparse *A)
 	C = CHOLMOD(copy_sparse) (A, cm) ;
 	CHOLMOD(sort) (C, cm) ;
 
-        cstype = (C == NULL) ? 0 : C->stype ;
-	E = CHOLMOD(copy) (C, cstype, 1, cm) ;
-	F = CHOLMOD(copy) (D, cstype, 1, cm) ;
-
 	/* C and D should be equal */
-	check_equality (E, F, xtype) ;
+	check_equality (C, D, xtype) ;
 	CHOLMOD(free_sparse) (&C, cm) ;
 	CHOLMOD(free_sparse) (&D, cm) ;
-	CHOLMOD(free_sparse) (&E, cm) ;
-	CHOLMOD(free_sparse) (&F, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */

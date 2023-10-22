@@ -146,7 +146,7 @@ void camdtest (cholmod_sparse *A) ;
 /* AMD, COLAMD, and CCOLAMD */
 /* -------------------------------------------------------------------------- */
 
-#ifdef CHOLMOD_INT64
+#if ( ITYPE == CHOLMOD_LONG )
 
 #define AMD_order amd_l_order
 #define AMD_defaults amd_l_defaults
