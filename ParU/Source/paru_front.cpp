@@ -316,7 +316,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         {
             PRLEVEL(PR, ("%% colHash LOOKUP size = %ld LU %ld\n", hash_size,
                          Sym->n));
-            for (it = stl_colSet.begin(); it != stl_colSet.end(); it++)
+            for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
             {
                 colHash[*it] = ii;
                 fcolList[ii++] = *it;
@@ -329,7 +329,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
             PRLEVEL(PR, ("%% colHash HASH hash_size=%ld\n", hash_size));
             PRLEVEL(PR, ("%% colCount=%ld\n", colCount));
-            for (it = stl_colSet.begin(); it != stl_colSet.end(); it++)
+            for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
             {
                 paru_insert_hash(*it, ii, colHash);
                 fcolList[ii++] = *it;
