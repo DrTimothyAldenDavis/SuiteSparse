@@ -21,11 +21,11 @@
     ParU_Freesym(&Sym, &Control);           \
     cholmod_l_free_sparse(&A, cc);          \
     cholmod_l_finish(cc);                   \
-    if (B  != NULL) free(B);   B  = NULL ;  \
-    if (X  != NULL) free(X);   X  = NULL ;  \
-    if (b  != NULL) free(b);   b  = NULL ;  \
-    if (x  != NULL) free(x);   x  = NULL ;  \
-    if (xx != NULL) free(xx) ; xx = NULL ;  \
+    if (B  != NULL) { free(B);  B  = NULL; } \
+    if (X  != NULL) { free(X);  X  = NULL; } \
+    if (b  != NULL) { free(b);  b  = NULL; } \
+    if (x  != NULL) { free(x);  x  = NULL; } \
+    if (xx != NULL) { free(xx); xx = NULL; } \
 }
 
 int main(int argc, char **argv)
