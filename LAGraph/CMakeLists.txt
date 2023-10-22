@@ -180,9 +180,7 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 # check which compiler is being used.  If you need to make
 # compiler-specific modifications, here is the place to do it.
 if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-    # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
-    # cmake 3.0 doesn't have this problem.
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -std=c11 -lm -Wno-pragmas " )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -lm -Wno-pragmas " )
     # check all warnings:
 #   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Werror " )
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g " )
@@ -190,11 +188,9 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
     #    message ( FATAL_ERROR "gcc version must be at least 4.9" )
     #endif ( )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel" )
-    # options for icc: also needs -std=c11
     # note that -g can be used, for VTune.  Comment out the following line
     # to compile without -g.
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g " )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -std=c11 " )
     # check all warnings:
 #   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -w3 " )
     #if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 18.0 )
@@ -202,7 +198,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel" )
     #endif ( )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" )
     # options for clang
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -O3 -std=c11 " )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -O3 " )
     #if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 3.3 )
     #    message ( FATAL_ERROR "clang version must be at least 3.3" )
     #endif ( )
@@ -210,8 +206,8 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     # options for MicroSoft Visual Studio
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI" )
     # options for PGI pgcc compiler
-    set ( CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -noswitcherror -c11 -lm -fPIC " )
-    set ( CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1 -noswitcherror --c++11 -lm -fPIC " )
+    set ( CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -noswitcherror -lm -fPIC " )
+    set ( CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1 -noswitcherror -lm -fPIC " )
 endif ( )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
