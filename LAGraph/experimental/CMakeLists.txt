@@ -29,7 +29,8 @@ SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
-    PUBLIC_HEADER "include/LAGraphX.h" )
+    PUBLIC_HEADER "include/LAGraphX.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 target_link_libraries ( lagraphx PRIVATE lagraph ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
@@ -44,7 +45,8 @@ SET_TARGET_PROPERTIES ( lagraphx_static PROPERTIES
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
-    C_STANDARD 11 )
+    C_STANDARD 11
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( MSVC )
     set_target_properties ( lagraphx_static PROPERTIES

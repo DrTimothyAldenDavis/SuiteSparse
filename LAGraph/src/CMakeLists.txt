@@ -33,7 +33,8 @@ SET_TARGET_PROPERTIES ( lagraph PROPERTIES
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
-    PUBLIC_HEADER "include/LAGraph.h" )
+    PUBLIC_HEADER "include/LAGraph.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
@@ -50,7 +51,8 @@ SET_TARGET_PROPERTIES ( lagraph_static PROPERTIES
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
-    C_STANDARD 11 )
+    C_STANDARD 11
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( MSVC )
     set_target_properties ( lagraph_static PROPERTIES
