@@ -21,17 +21,12 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 if ( BLA_VENDOR STREQUAL "FLAME" )
-    # FLAME has the BLAS but not LAPACK
 
-    set ( BLA_VENDOR "Generic" )
-    message ( STATUS "Looking for generic LAPACK to use with BLIS/FLAME BLAS" )
-
-    # look for the generic dynamic LAPACK library (usually liblagraph.so)
     find_library ( LAPACK_LIBRARY
-        NAMES lapack
+        NAMES flame
         PATH_SUFFIXES lib build )
 
-    # look for the static LAPACK library (usually liblagraph.a)
+    # look for the static LAPACK library (usually liblapack.a)
     if ( MSVC )
         set ( STATIC_SUFFIX .lib )
     else ( )
