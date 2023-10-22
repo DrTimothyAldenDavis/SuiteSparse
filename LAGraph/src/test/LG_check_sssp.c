@@ -251,7 +251,7 @@ int LG_check_sssp
         // directly access the indices of entries in A(u,:)
         GrB_Index degree = Ap [u+1] - Ap [u] ;
         GrB_Index *node_u_adjacency_list = Aj + Ap [u] ;
-        void *weights = Ax + ((iso ? 0 : Ap [u]) * etypesize) ;
+        void *weights = ((char *) Ax) + ((iso ? 0 : Ap [u]) * etypesize) ;
         #else
         // extract the indices of entries in A(u,:)
         GrB_Index degree = n ;
