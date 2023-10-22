@@ -88,7 +88,6 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 
 		# turn off optimization for non-skewed coverage reports
 		set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -DCOVERAGE" )
-		set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0" )
 
 		setup_target_for_coverage_lcov (
 			NAME test_coverage
@@ -205,7 +204,6 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI" )
     # options for PGI pgcc compiler
     set ( CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -noswitcherror -lm -fPIC " )
-    set ( CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1 -noswitcherror -lm -fPIC " )
 endif ( )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
