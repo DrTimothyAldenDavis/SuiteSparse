@@ -51,30 +51,33 @@ JOBS ?= 8
 default: library
 
 library:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . --config Release -j${JOBS} )
 
 vanilla:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLAGRAPH_VANILLA=1 .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DLAGRAPH_VANILLA=1 .. && cmake --build . --config Release -j${JOBS} )
 
 # compile with -g for debugging
 debug:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . --config Release -j${JOBS} )
 
 all: library
 
 test: library
-	( cd build && make test )
+	( cd build && ctest . )
+
+# target used in CI
+demos: test
 
 # just compile after running cmake; do not run cmake again
 remake:
-	( cd build && $(MAKE) --jobs=${JOBS} )
+	( cd build && cmake --build . --config Release -j${JOBS} )
 
 # just run cmake to set things up
 setup:
 	( cd build ; cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build ; $(MAKE) install )
+	( cd build ; cmake --install . )
 
 # remove any installed libraries and #include files
 uninstall:
@@ -82,7 +85,7 @@ uninstall:
 
 # clean, compile, and run test coverage
 cov: distclean
-	( cd build && cmake -DCOVERAGE=1 .. && $(MAKE) --jobs=${JOBS} && make test_coverage ) 
+	( cd build && cmake -DCOVERAGE=1 .. && cmake --build . --config Release -j${JOBS} && cmake --build . --target test_coverage )
 
 # remove all files not in the distribution
 clean: distclean
