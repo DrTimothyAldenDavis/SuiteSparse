@@ -175,9 +175,6 @@ set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${CMAKE_SOURCE_DIR}" )
 # compiler options
 #-------------------------------------------------------------------------------
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED True)
-
 # check which compiler is being used.  If you need to make
 # compiler-specific modifications, here is the place to do it.
 if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")

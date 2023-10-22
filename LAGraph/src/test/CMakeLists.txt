@@ -41,8 +41,8 @@ add_library ( lagraphtest SHARED ${LAGRAPHTEST_LIB_SOURCES} )
 SET_TARGET_PROPERTIES ( lagraphtest PROPERTIES
     VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11 )
-set_property ( TARGET lagraphtest PROPERTY C_STANDARD 11 )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11 )
 target_link_libraries( lagraphtest PUBLIC lagraph ${GRAPHBLAS_LIBRARIES})
 target_link_directories( lagraphtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
@@ -56,14 +56,14 @@ SET_TARGET_PROPERTIES ( lagraphtest_static PROPERTIES
     OUTPUT_NAME lagraphtest
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11 )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11 )
 
 if ( MSVC )
     set_target_properties ( lagraphtest_static PROPERTIES
         OUTPUT_NAME lagraphtest_static )
 endif ( )
 
-set_property ( TARGET lagraphtest_static PROPERTY C_STANDARD 11 )
 target_link_libraries(lagraphtest_static PUBLIC lagraph ${GRAPHBLAS_LIBRARIES})
 target_link_directories( lagraphtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
@@ -86,6 +86,9 @@ foreach( testsourcefile ${TEST_SOURCES} )
     string( REPLACE ".c" "" testname ${justname} )
 #   message("Adding: ${testname}")
     add_executable( ${testname} ${testsourcefile})
+    set_target_properties ( ${testname} PROPERTIES
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11 )
     target_link_libraries( ${testname} lagraph lagraphx lagraphtest ${GRAPHBLAS_LIBRARIES} )
     target_link_directories( ${testname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
     string( REPLACE "test_" "ctest_" ctestname ${testname})
