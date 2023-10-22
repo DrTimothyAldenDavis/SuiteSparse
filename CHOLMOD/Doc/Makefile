@@ -66,7 +66,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/int cholmod_free_work/, /\*\) ;/' ../Include/cholmod.h > _free_work.tex
 	./getproto '/int64_t cholmod_clear_flag/, /\*\) ;/' ../Include/cholmod.h > _clear_flag.tex
 	./getproto '/int cholmod_error/, /\*\) ;/' ../Include/cholmod.h > _error.tex
-	./getproto '/double cholmod_dbound/, /\*\) ;/' ../Include/cholmod.h > _dbound.tex
+	./getproto '/double cholmod_dbound/, /l_sbound/' ../Include/cholmod.h > _dbound.tex
 	./getproto '/double cholmod_hypot/, /double\) ;/' ../Include/cholmod.h > _hypot.tex
 	./getproto '/int cholmod_divcomplex/, /\*\) ;/' ../Include/cholmod.h > _divcomplex.tex
 	./getproto '/typedef struct cholmod_sparse/, /^}/' ../Include/cholmod.h > _sparse.tex
@@ -74,6 +74,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/int cholmod_free_sparse/, /\*\) ;/' ../Include/cholmod.h > _free_sparse.tex
 	./getproto '/int cholmod_reallocate_sparse/, /\*\) ;/' ../Include/cholmod.h > _reallocate_sparse.tex
 	./getproto '/int64_t cholmod_nnz/, /\*\) ;/' ../Include/cholmod.h > _nnz.tex
+	./getproto '/int64_t cholmod_dense_nnz/, /\*\) ;/' ../Include/cholmod.h > _dense_nnz.tex
 	./getproto '/cholmod_sparse \*cholmod_speye/, /\*\) ;/' ../Include/cholmod.h > _speye.tex
 	./getproto '/cholmod_sparse \*cholmod_spzeros/, /\*\) ;/' ../Include/cholmod.h > _spzeros.tex
 	./getproto '/cholmod_sparse \*cholmod_transpose/, /\*\) ;/' ../Include/cholmod.h > _transpose.tex
@@ -124,7 +125,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	./getproto '/void \*cholmod_realloc/, /\*\) ;/' ../Include/cholmod.h > _realloc.tex 
 	./getproto '/int cholmod_realloc_multiple/, /\*\) ;/' ../Include/cholmod.h > _realloc_multiple.tex 
 	./getproto '/int cholmod_version/, /l_version/' ../Include/cholmod.h > _version.tex 
-	./getproto '/itype defines the/, /define CHOLMOD_SUPERNODAL/' ../Include/cholmod.h > _defn.tex 
+	./getproto '/itype: integer sizes/, /define CHOLMOD_SUPERNODAL/' ../Include/cholmod.h > _defn.tex 
 	./getproto '/int cholmod_check_common/, /\*\) ;/' ../Include/cholmod.h > _check_common.tex 
 	./getproto '/int cholmod_print_common/, /\*\) ;/' ../Include/cholmod.h > _print_common.tex 
 	./getproto '/int cholmod_check_sparse/, /\*\) ;/' ../Include/cholmod.h > _check_sparse.tex 
@@ -205,7 +206,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	bibtex CHOLMOD_UserGuide
 	pdflatex CHOLMOD_UserGuide
 	pdflatex CHOLMOD_UserGuide
-	- $(RM) _temp.awk _*.tex
+	- $(RM) _temp.awk
 	- $(RM) -r *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
 
 distclean: purge
@@ -213,6 +214,7 @@ distclean: purge
 purge: clean
 
 clean:
-	- $(RM) _temp.awk _*.tex
+	- $(RM) _*.tex
+	- $(RM) _temp.awk
 	- $(RM) -r *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
 

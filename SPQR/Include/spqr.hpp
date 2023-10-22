@@ -118,11 +118,6 @@
     { \
 	return (result) ; \
     } \
-    if (cc->dtype != DTYPE) \
-    { \
-	cc->status = CHOLMOD_INVALID ; \
-	return (result) ; \
-    } \
 }
 
 #define RETURN_IF_XTYPE_INVALID(A,result) \

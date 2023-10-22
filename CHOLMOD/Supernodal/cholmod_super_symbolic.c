@@ -130,15 +130,15 @@ static void subtree
 
 
 /* clear workspace used by cholmod_super_symbolic */
-#define FREE_WORKSPACE \
-{ \
-    /* CHOLMOD(clear_flag) (Common) ; */ \
-    CHOLMOD_CLEAR_FLAG (Common) ; \
-    for (k = 0 ; k <= nfsuper ; k++) \
-    { \
-	Head [k] = EMPTY ; \
-    } \
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ; \
+#define FREE_WORKSPACE                                      \
+{                                                           \
+    CLEAR_FLAG (Common) ;                                   \
+    ASSERT (check_flag (Common)) ;                          \
+    for (k = 0 ; k <= nfsuper ; k++)                        \
+    {                                                       \
+	Head [k] = EMPTY ;                                  \
+    }                                                       \
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;   \
 } \
 
 
@@ -249,7 +249,7 @@ int CHOLMOD(super_symbolic2)
         max_bytes = 0;
         max_fraction = 0;
 
-#ifdef DLONG
+#ifdef CHOLMOD_INT64
         if ( Common->useGPU == EMPTY )
         {
             /* useGPU not explicity requested by the user, but not explicitly
@@ -363,9 +363,9 @@ int CHOLMOD(super_symbolic2)
     zrelax1 = Common->zrelax [1] ;
     zrelax2 = Common->zrelax [2] ;
 
-    zrelax0 = IS_NAN (zrelax0) ? 0 : zrelax0 ;
-    zrelax1 = IS_NAN (zrelax1) ? 0 : zrelax1 ;
-    zrelax2 = IS_NAN (zrelax2) ? 0 : zrelax2 ;
+    zrelax0 = isnan (zrelax0) ? 0 : zrelax0 ;
+    zrelax1 = isnan (zrelax1) ? 0 : zrelax1 ;
+    zrelax2 = isnan (zrelax2) ? 0 : zrelax2 ;
 
     ASSERT (CHOLMOD(dump_parent) (Parent, n, "Parent", Common)) ;
 
@@ -805,7 +805,7 @@ int CHOLMOD(super_symbolic2)
 
 	    /* clear the Flag array and mark the current supernode */
 	    /* mark = CHOLMOD(clear_flag) (Common) ; */
-	    CHOLMOD_CLEAR_FLAG (Common) ;
+	    CLEAR_FLAG (Common) ;
 	    mark = Common->mark ;
 	    Flag [s] = mark ;
 	    ASSERT (s == SuperMap [k]) ;

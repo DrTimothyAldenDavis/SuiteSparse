@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( GPUQRENGINE_DATE "Sept 18, 2023" )
+set ( GPUQRENGINE_DATE "Oct 23, 2023" )
 set ( GPUQRENGINE_VERSION_MAJOR 3 )
 set ( GPUQRENGINE_VERSION_MINOR 2 )
-set ( GPUQRENGINE_VERSION_SUB   1 )
+set ( GPUQRENGINE_VERSION_SUB   2 )
 
 message ( STATUS "Building GPUQRENGINE version: v"
     ${GPUQRENGINE_VERSION_MAJOR}.
@@ -54,17 +54,17 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # for the library itself
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.3.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    find_package ( SuiteSparse_GPURuntime 3.2.0
+    find_package ( SuiteSparse_GPURuntime 3.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_GPURuntime/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::GPURuntime )
-        find_package ( SuiteSparse_GPURuntime 3.2.0 REQUIRED )
+        find_package ( SuiteSparse_GPURuntime 3.2.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -73,40 +73,40 @@ set ( DEMO_OK false )
 
 if ( DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( AMD 3.2.0
+    find_package ( AMD 3.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.2.0 )
+        find_package ( AMD 3.2.1 )
     endif ( )
 
-    find_package ( COLAMD 3.2.0
+    find_package ( COLAMD 3.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.2.0 )
+        find_package ( COLAMD 3.2.1 )
     endif ( )
 
-    find_package ( CAMD 3.2.0
+    find_package ( CAMD 3.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CAMD )
-        find_package ( CAMD 3.2.0 )
+        find_package ( CAMD 3.2.1 )
     endif ( )
 
-    find_package ( CCOLAMD 3.2.0
+    find_package ( CCOLAMD 3.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CCOLAMD )
-        find_package ( CCOLAMD 3.2.0 )
+        find_package ( CCOLAMD 3.2.1 )
     endif ( )
 
-    find_package ( CHOLMOD 4.2.0
+    find_package ( CHOLMOD 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 4.2.0 )
+        find_package ( CHOLMOD 5.0.0 )
     endif ( )
 
-    find_package ( CHOLMOD_CUDA 4.2.0
+    find_package ( CHOLMOD_CUDA 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 4.2.0 )
+        find_package ( CHOLMOD_CUDA 5.0.0 )
     endif ( )
 endif ( )
 

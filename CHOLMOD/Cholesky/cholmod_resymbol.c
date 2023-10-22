@@ -440,7 +440,7 @@ int CHOLMOD(resymbol_noperm)
 
 	/* flag the diagonal entry */
 	/* mark = CHOLMOD(clear_flag) (Common) ; */
-	CHOLMOD_CLEAR_FLAG (Common) ;
+	CLEAR_FLAG (Common) ;
 	mark = Common->mark ;
 
 	Flag [k] = mark ;
@@ -597,8 +597,8 @@ int CHOLMOD(resymbol_noperm)
     /* ---------------------------------------------------------------------- */
 
     /* CHOLMOD(clear_flag) (Common) ; */
-    CHOLMOD_CLEAR_FLAG (Common) ;
-
+    CLEAR_FLAG (Common) ;
+    ASSERT (check_flag (Common)) ;
     DEBUG (CHOLMOD(dump_factor) (L, "ReSymbol final L (i, x):", Common)) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
     return (TRUE) ;

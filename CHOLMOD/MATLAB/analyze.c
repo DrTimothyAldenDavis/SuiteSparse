@@ -71,7 +71,7 @@ void mexFunction
     if (nargin == 3)
     {
 	cm->nmethods = mxGetScalar (pargin [2]) ;
-	if (cm->nmethods == -1)
+	if (cm->nmethods == -1 || cm->nmethods == 1 || cm->nmethods == 2)
 	{
 	    /* use AMD only */
 	    cm->nmethods = 1 ;

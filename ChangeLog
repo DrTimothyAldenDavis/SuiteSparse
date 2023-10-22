@@ -1,3 +1,10 @@
+Oct 23, 2023: version 7.3.0
+
+    * CHOLMOD 5.0.0: initial support for sparse single precision matries.
+        CHOLMOD:Core replaced with CHOLMOD:Utility
+    * updated to require CHOLMOD 5.0.0:
+        Example 1.4.3, GPUQREngine 3.3.3, KLU 2.2.2, SPQR 4.2.2, UMFPACK 6.2.2
+
 Oct 7, 2023: version 7.2.1
 
     * GraphBLAS 8.2.1: bug fix to GrB_mxm; incorrect handling of typecasting
