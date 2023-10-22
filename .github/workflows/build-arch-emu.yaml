@@ -9,9 +9,9 @@ concurrency: ci-arch-emu-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:SPEX:ParU"
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
   # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:SPEX"
+  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
 
 
 jobs:
