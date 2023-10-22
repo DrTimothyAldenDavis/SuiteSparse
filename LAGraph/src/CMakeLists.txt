@@ -17,7 +17,7 @@ include_directories ( ${CMAKE_SOURCE_DIR}/include utility )
 
 file ( GLOB LAGRAPH_LIB_SOURCES "utility/*.c" "algorithm/*.c" )
 
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( WIN32 )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )
