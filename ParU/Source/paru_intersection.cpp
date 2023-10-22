@@ -92,7 +92,7 @@ int paru_intersection(int64_t e, paru_element **elementList,
         int64_t ncolsseen = el->ncolsleft;
         while (it != stl_newColSet.end() && ncolsseen > 0)
         {
-            while (el_colIndex[c] < 0 && c < nEl) ++c;  // skip dead columns
+            while (c < nEl && el_colIndex[c] < 0) ++c;  // skip dead columns
             if (c >= nEl) break;
 
             if (*it < el_colIndex[c])
