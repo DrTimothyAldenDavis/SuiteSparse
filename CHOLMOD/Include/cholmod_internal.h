@@ -179,14 +179,14 @@ void cholmod_l_set_empty
     size_t n
 ) ;
 
-int cholmod_to_simplicial_sym
+void cholmod_to_simplicial_sym
 (
     cholmod_factor *L,          // sparse factorization to modify 
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 ) ;
 
-int cholmod_l_to_simplicial_sym
+void cholmod_l_to_simplicial_sym
 (
     cholmod_factor *L,          // sparse factorization to modify 
     int to_ll,                  // change L to hold a LL' or LDL' factorization
