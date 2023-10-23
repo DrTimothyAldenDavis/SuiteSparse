@@ -6,6 +6,11 @@ Oct 23, 2023, version 5.0.0
         CHOLMOD:Core in prior versions. Single precision is not yet
         incorporated into the remaining Modules, however.
 
+Oct 18, 2023: version 4.2.2
+
+    * CHOLMOD 4.2.2: bug fix to CHOLMOD/Supernodal (heuristic to determine
+        # threads to use for last supernode was incorrect)
+
 Sept 18, 2023: version 4.2.1
 
     * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
