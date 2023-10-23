@@ -77,7 +77,7 @@ int LAGraph_SSaveSet            // save a set of matrices from a *.lagraph file
     GRB_TRY (GxB_set (desc, GxB_COMPRESSION, GxB_COMPRESSION_LZ4HC + 9)) ;
     #endif
 
-    f = fopen (filename, "w") ;
+    f = fopen (filename, "wb") ;
     LG_ASSERT_MSG (f != NULL, -1001, "unable to create output file") ;
 
     //--------------------------------------------------------------------------

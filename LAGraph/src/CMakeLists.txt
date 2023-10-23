@@ -17,7 +17,7 @@ include_directories ( ${CMAKE_SOURCE_DIR}/include utility )
 
 file ( GLOB LAGRAPH_LIB_SOURCES "utility/*.c" "algorithm/*.c" )
 
-if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
+if ( WIN32 )
     set ( M_LIB "" )
 else ( )
     set ( M_LIB "m" )
@@ -31,10 +31,12 @@ add_library ( lagraph SHARED ${LAGRAPH_LIB_SOURCES} )
 SET_TARGET_PROPERTIES ( lagraph PROPERTIES
     VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11
-    PUBLIC_HEADER "include/LAGraph.h" )
-set_property ( TARGET lagraph PROPERTY C_STANDARD 11 )
-target_link_libraries ( lagraph PUBLIC ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
+    PUBLIC_HEADER "include/LAGraph.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
+target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
 # install ( FILES ${LAGRAPH_INCLUDE} DESTINATION include)
@@ -49,14 +51,15 @@ SET_TARGET_PROPERTIES ( lagraph_static PROPERTIES
     OUTPUT_NAME lagraph
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11 )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( MSVC )
     set_target_properties ( lagraph_static PROPERTIES
         OUTPUT_NAME lagraph_static )
 endif ( )
 
-set_property ( TARGET lagraph_static PROPERTY C_STANDARD 11 )
 target_link_libraries ( lagraph_static PUBLIC ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
@@ -64,8 +67,8 @@ target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build 
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
-    target_link_libraries ( lagraph PUBLIC OpenMP::OpenMP_C )
+if ( OPENMP_C_FOUND )
+    target_link_libraries ( lagraph PRIVATE OpenMP::OpenMP_C )
     target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 

@@ -27,7 +27,9 @@ set(DOXYFILE_IN ${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in)
 set(DOXYFILE_OUT ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
 
 # Set the Doxygen input and output directories in the Doxyfile
-configure_file(${DOXYFILE_IN} ${DOXYFILE_OUT} @ONLY)
+configure_file ( ${DOXYFILE_IN} ${DOXYFILE_OUT}
+    @ONLY
+    NEWLINE_STYLE LF )
 
 # Doxygen won't create this for us
 file(MAKE_DIRECTORY ${DOXYGEN_OUTPUT_DIR})

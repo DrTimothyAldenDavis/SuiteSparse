@@ -22,6 +22,9 @@ foreach( demosourcefile ${DEMO_SOURCES} )
     string( REPLACE ".c" "" demoname ${justname} )
 #   message("Adding: ${demoname}")
     add_executable( ${demoname} ${demosourcefile} )
+    set_target_properties ( ${demoname} PROPERTIES
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11 )
     target_link_libraries( ${demoname} lagraph lagraphx lagraphtest ${GRAPHBLAS_LIBRARIES} )
     target_link_directories( ${demoname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 endforeach( demosourcefile ${DEMO_SOURCES} )

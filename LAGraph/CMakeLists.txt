@@ -41,7 +41,7 @@ cmake_minimum_required ( VERSION 3.13 )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse/cmake_modules
+    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
     )
 
 cmake_policy ( SET CMP0042 NEW )
@@ -54,13 +54,20 @@ set ( LAGraph_VERSION_MAJOR 1 )
 set ( LAGraph_VERSION_MINOR 0 )
 set ( LAGraph_VERSION_SUB   2 )
 
+include ( SuiteSparsePolicy )
+
 project ( lagraph
           VERSION "${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}" )
+
+enable_language ( C )
+
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 
 # configure LAGraph.h with the LAGraph date and version
 configure_file (
     "config/LAGraph.h.in"
-    "${PROJECT_SOURCE_DIR}/include/LAGraph.h" )
+    "${PROJECT_SOURCE_DIR}/include/LAGraph.h"
+    NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
 # code coverage and build type
@@ -85,7 +92,6 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 
 		# turn off optimization for non-skewed coverage reports
 		set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -DCOVERAGE" )
-		set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0" )
 
 		setup_target_for_coverage_lcov (
 			NAME test_coverage
@@ -131,8 +137,12 @@ endif ( )
 if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
-    find_package ( OpenMP )
-    find_package ( Threads )
+    if ( NOPENMP )
+        set ( OPENMP_C_FOUND OFF )
+    else ( )
+        find_package ( OpenMP )
+        find_package ( Threads )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -153,7 +163,7 @@ message ( STATUS "CMAKE compiler ID:         " ${CMAKE_C_COMPILER_ID} )
 message ( STATUS "CMAKE thread library:      " ${CMAKE_THREAD_LIBS_INIT} )
 message ( STATUS "CMAKE have pthreads:       " ${CMAKE_USE_PTHREADS_INIT}  )
 message ( STATUS "CMAKE have Win32 pthreads: " ${CMAKE_USE_WIN32_THREADS_INIT} )
-message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_FOUND} )
+message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 
 #-------------------------------------------------------------------------------
 # include directories for LAGraph library
@@ -172,15 +182,9 @@ set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${CMAKE_SOURCE_DIR}" )
 # compiler options
 #-------------------------------------------------------------------------------
 
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED True)
-
 # check which compiler is being used.  If you need to make
 # compiler-specific modifications, here is the place to do it.
 if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-    # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
-    # cmake 3.0 doesn't have this problem.
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -std=c11 -lm -Wno-pragmas " )
     # check all warnings:
 #   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -Wextra -Wpedantic -Werror " )
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g " )
@@ -188,11 +192,9 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
     #    message ( FATAL_ERROR "gcc version must be at least 4.9" )
     #endif ( )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel" )
-    # options for icc: also needs -std=c11
     # note that -g can be used, for VTune.  Comment out the following line
     # to compile without -g.
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g " )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -std=c11 " )
     # check all warnings:
 #   set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -w3 " )
     #if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 18.0 )
@@ -200,7 +202,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Intel" )
     #endif ( )
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "Clang" )
     # options for clang
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -O3 -std=c11 " )
+    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -O3 " )
     #if ( CMAKE_C_COMPILER_VERSION VERSION_LESS 3.3 )
     #    message ( FATAL_ERROR "clang version must be at least 3.3" )
     #endif ( )
@@ -208,8 +210,7 @@ elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "MSVC" )
     # options for MicroSoft Visual Studio
 elseif ( "${CMAKE_C_COMPILER_ID}" STREQUAL "PGI" )
     # options for PGI pgcc compiler
-    set ( CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -noswitcherror -c11 -lm -fPIC " )
-    set ( CMAKE_CXX_FLAGS  "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -D__GCC_ATOMIC_TEST_AND_SET_TRUEVAL=1 -noswitcherror --c++11 -lm -fPIC " )
+    set ( CMAKE_C_FLAGS    "${CMAKE_C_FLAGS} -acc -Minfo=accel -Mcuda -Mnoopenmp -noswitcherror -fPIC " )
 endif ( )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -262,10 +263,12 @@ message ( STATUS "Installation in: ${CMAKE_INSTALL_PREFIX}" )
 include ( GNUInstallDirs )
 
 install ( TARGETS lagraph lagraphx
-    LIBRARY       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
 install ( TARGETS lagraph_static lagraphx_static
-    ARCHIVE       DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR} )
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 

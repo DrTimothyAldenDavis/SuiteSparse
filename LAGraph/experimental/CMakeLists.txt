@@ -27,10 +27,12 @@ add_library ( lagraphx SHARED ${LAGRAPHX_LIB_SOURCES} )
 SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11
-    PUBLIC_HEADER "include/LAGraphX.h" )
-set_property ( TARGET lagraphx PROPERTY C_STANDARD 11 )
-target_link_libraries ( lagraphx PUBLIC lagraph ${GRAPHBLAS_LIBRARIES} )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
+    PUBLIC_HEADER "include/LAGraphX.h"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
+target_link_libraries ( lagraphx PRIVATE lagraph ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
@@ -43,14 +45,15 @@ SET_TARGET_PROPERTIES ( lagraphx_static PROPERTIES
     OUTPUT_NAME lagraphx
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED 11 )
+    C_STANDARD_REQUIRED ON
+    C_STANDARD 11
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 if ( MSVC )
     set_target_properties ( lagraphx_static PROPERTIES
         OUTPUT_NAME lagraphx_static )
 endif ( )
 
-set_property ( TARGET lagraphx_static PROPERTY C_STANDARD 11 )
 target_link_libraries ( lagraphx_static PUBLIC lagraph_static ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphx_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
@@ -58,9 +61,9 @@ target_link_directories ( lagraphx_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/buil
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
-    target_link_libraries ( lagraphx PUBLIC lagraph OpenMP::OpenMP_C )
-    target_link_libraries ( lagraphx_static PUBLIC lagraph_static OpenMP::OpenMP_C )
+if ( OPENMP_C_FOUND )
+    target_link_libraries ( lagraphx PRIVATE OpenMP::OpenMP_C )
+    target_link_libraries ( lagraphx_static PUBLIC OpenMP::OpenMP_C )
 endif ( )
 
 #-------------------------------------------------------------------------------

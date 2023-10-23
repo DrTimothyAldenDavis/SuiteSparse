@@ -38,8 +38,9 @@ library:
 	( cd ParU && $(MAKE) )
 	( cd RBio && $(MAKE) )
 	( cd SPQR && $(MAKE) )
-	( cd GraphBLAS && $(MAKE) )
 	( cd SPEX && $(MAKE) )
+	( cd GraphBLAS && $(MAKE) )
+	( cd LAGraph && $(MAKE) )
 
 # compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
 local:
@@ -59,8 +60,9 @@ local:
 	( cd ParU && $(MAKE) local )
 	( cd RBio && $(MAKE) local )
 	( cd SPQR && $(MAKE) local )
-	( cd GraphBLAS && $(MAKE) local )
 	( cd SPEX && $(MAKE) local )
+	( cd GraphBLAS && $(MAKE) local )
+	( cd LAGraph && $(MAKE) local )
 
 # compile; "sudo make install" will install only in /usr/local
 # (or whatever your CMAKE_INSTALL_PREFIX is)
@@ -81,8 +83,9 @@ global:
 	( cd ParU && $(MAKE) global )
 	( cd RBio && $(MAKE) global )
 	( cd SPQR && $(MAKE) global )
-	( cd GraphBLAS && $(MAKE) global )
 	( cd SPEX && $(MAKE) global )
+	( cd GraphBLAS && $(MAKE) global )
+	( cd LAGraph && $(MAKE) global )
 
 # install all packages.  Location depends on prior "make", "make global" etc
 install:
@@ -101,8 +104,9 @@ install:
 	( cd ParU && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
-	( cd GraphBLAS && $(MAKE) install )
 	( cd SPEX && $(MAKE) install )
+	( cd GraphBLAS && $(MAKE) install )
+	( cd LAGraph && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
@@ -121,8 +125,9 @@ uninstall:
 	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
-	( cd GraphBLAS && $(MAKE) uninstall )
 	( cd SPEX && $(MAKE) uninstall )
+	( cd GraphBLAS && $(MAKE) uninstall )
+	( cd LAGraph && $(MAKE) uninstall )
 
 # Remove all files not in the original distribution
 distclean: purge
@@ -150,6 +155,7 @@ purge:
 	- ( cd GraphBLAS && $(MAKE) purge )
 	- ( cd SPEX && $(MAKE) purge )
 	- ( cd ParU && $(MAKE) purge )
+	- ( cd LAGraph && $(MAKE) purge )
 	- $(RM) -r include/* bin/* lib/*
 
 clean: purge
@@ -174,6 +180,7 @@ demos:
 	- ( cd GraphBLAS && $(MAKE) demos )
 	- ( cd SPEX && $(MAKE) demos )
 	- ( cd ParU && $(MAKE) demos )
+	- ( cd LAGraph && $(MAKE) demos )
 
 # Create the PDF documentation
 docs:
@@ -198,6 +205,7 @@ cov: local install
 	( cd SPQR && $(MAKE) cov )
 	( cd UMFPACK && $(MAKE) cov )
 	( cd SPEX && $(MAKE) cov )
+	( cd LAGraph && $(MAKE) cov )
 
 gbmatlab:
 	( cd GraphBLAS/GraphBLAS && $(MAKE) )
@@ -222,6 +230,7 @@ debug:
 	( cd ParU && $(MAKE) debug )
 	( cd RBio && $(MAKE) debug )
 	( cd SPQR && $(MAKE) debug )
-	( cd GraphBLAS && $(MAKE) cdebug )
 	( cd SPEX && $(MAKE) debug )
+	( cd GraphBLAS && $(MAKE) cdebug )
+	( cd LAGraph && $(MAKE) debug )
 
