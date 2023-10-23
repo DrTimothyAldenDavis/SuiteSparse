@@ -34,7 +34,9 @@ jobs:
         arch: [x86, aarch64, armv7, ppc64le, s390x]
         include:
           - arch: x86
-            ccache-max: 42M
+            ccache-max: 80M
+            extra-build-libs: ":GraphBLAS:LAGraph"
+            extra-check-libs: ":GraphBLAS:LAGraph"
           - arch: aarch64
             ccache-max: 42M
           - arch: armv7
@@ -103,6 +105,7 @@ jobs:
           echo "gcc -dumpmachine"
           gcc -dumpmachine
           IFS=:
+          BUILD_LIBS="${BUILD_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${BUILD_LIBS}; do
             printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
             echo "::group::Configure $lib"
@@ -113,6 +116,7 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
+                  -DCOMPACT=ON \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -123,6 +127,7 @@ jobs:
       - name: check
         run: |
           IFS=':'
+          CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
           for lib in ${CHECK_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
@@ -145,6 +150,7 @@ jobs:
       - name: install
         run: |
           IFS=':'
+          BUILD_LIBS="${BUILD_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${BUILD_LIBS}; do
             printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}/build
