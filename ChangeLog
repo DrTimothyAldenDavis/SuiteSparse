@@ -4,6 +4,14 @@ Oct 23, 2023: version 7.3.0
         CHOLMOD:Core replaced with CHOLMOD:Utility
     * updated to require CHOLMOD 5.0.0:
         Example 1.4.3, GPUQREngine 3.3.3, KLU 2.2.2, SPQR 4.2.2, UMFPACK 6.2.2
+    * SuiteSparseLAPACK.cmake: allow the use of BLIS/FLAME for LAPACK;
+        update from Theirry Thomas.
+    * build system: further updates to cmake, by Markus Muetzel.
+
+Oct 18, 2023: version 7.2.2
+
+    * CHOLMOD 4.2.2: bug fix to CHOLMOD/Supernodal (heuristic to determine
+        # threads to use for last supernode was incorrect)
 
 Oct 7, 2023: version 7.2.1
 
