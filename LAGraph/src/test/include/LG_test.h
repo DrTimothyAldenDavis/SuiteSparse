@@ -136,8 +136,8 @@ int LG_check_export
 LAGRAPH_PUBLIC int LG_brutal_setup (char *msg) ;
 LAGRAPH_PUBLIC int LG_brutal_teardown (char *msg) ;
 
-LAGRAPH_PUBLIC int64_t LG_brutal ;
-LAGRAPH_PUBLIC int64_t LG_nmalloc ;
+LAGRAPH_PUBLIC extern int64_t LG_brutal ;
+LAGRAPH_PUBLIC extern int64_t LG_nmalloc ;
 
 LAGRAPH_PUBLIC
 void *LG_brutal_malloc      // return pointer to allocated block of memory
