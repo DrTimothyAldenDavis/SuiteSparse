@@ -288,7 +288,7 @@ void test_SWrite_errors (void)
     TEST_CHECK (result == GrB_INVALID_VALUE) ;
     fclose (f) ;
 
-    f = fopen ("error.lagraph", "w") ;
+    f = fopen ("error.lagraph", "wb") ;
     TEST_CHECK (f != NULL) ;
 
     result = LAGraph_SWrite_HeaderStart (f, NULL, msg) ;

@@ -1541,7 +1541,7 @@ acutest_cmdline_callback_(int id, const char* arg)
             acutest_worker_index_ = atoi(arg);
             break;
         case 'x':
-            acutest_xml_output_ = fopen(arg, "w");
+            acutest_xml_output_ = fopen(arg, "wb");
             if (!acutest_xml_output_) {
                 fprintf(stderr, "Unable to open '%s': %s\n", arg, strerror(errno));
                 acutest_exit_(2);
