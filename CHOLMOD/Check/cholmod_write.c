@@ -140,7 +140,7 @@ static int print_value
     /* ---------------------------------------------------------------------- */
 
     /* change -inf to -HUGE_DOUBLE, and change +inf and nan to +HUGE_DOUBLE */
-    if (CHOLMOD_IS_NAN (x) || x >= HUGE_DOUBLE)
+    if (isnan (x) || x >= HUGE_DOUBLE)
     {
 	x = HUGE_DOUBLE ;
     }
@@ -341,7 +341,7 @@ static Int ntriplets
  * as A.
  *
  * Returns the symmetry in which the matrix was printed (1 to 7, see the
- * CHOLMOD_MM_* codes in CHOLMOD/Include/cholmod_core.h), or -1 on failure.
+ * CHOLMOD_MM_* codes in CHOLMOD/Include/cholmod.h), or -1 on failure.
  *
  * If A and Z are sorted on input, and either unsymmetric (stype = 0) or
  * symmetric-lower (stype < 0), and if A and Z do not overlap, then the triplets

@@ -18,7 +18,7 @@
  *
  * Required by all CHOLMOD routines.  Not required by any user routine that
  * uses CHOLMOMD.  Unless debugging is enabled, this file does not require any
- * CHOLMOD module (not even the Core module).
+ * CHOLMOD module (not even the Utility module).
  *
  * If debugging is enabled, all CHOLMOD modules require the Check module.
  * Enabling debugging requires that this file be editted.  Debugging cannot be
@@ -55,7 +55,6 @@
 #undef FALSE
 #define TRUE 1
 #define FALSE 0
-#define BOOLEAN(x) ((x) ? TRUE : FALSE)
 
 /* NULL should already be defined, but ensure it is here. */
 #ifndef NULL
@@ -77,6 +76,11 @@
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 #define IMPLIES(p,q) (!(p) || (q))
 
+// RANGE (k, lo, hi): ensures k is in range lo:hi
+#define RANGE(k,lo,hi)          \
+    (((k) < (lo)) ? (lo) :      \
+    (((k) > (hi)) ? (hi) : (k)))
+
 /* find the sign: -1 if x < 0, 1 if x > 0, zero otherwise.
  * Not safe for NaN's */
 #define SIGN(x) (((x) < 0) ? (-1) : (((x) > 0) ? 1 : 0))
@@ -93,11 +97,11 @@
 { \
     if ((A) == NULL) \
     { \
-	if (Common->status != CHOLMOD_OUT_OF_MEMORY) \
-	{ \
-	    ERROR (CHOLMOD_INVALID, "argument missing") ; \
-	} \
-	return (result) ; \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY) \
+        { \
+            ERROR (CHOLMOD_INVALID, "argument missing") ; \
+        } \
+        return (result) ; \
     } \
 }
 
@@ -106,21 +110,14 @@
 { \
     if (Common == NULL) \
     { \
-	return (result) ; \
+        return (result) ; \
     } \
-    if (Common->itype != ITYPE || Common->dtype != DTYPE) \
+    if (Common->itype != ITYPE) \
     { \
-	Common->status = CHOLMOD_INVALID ; \
-	return (result) ; \
+        Common->status = CHOLMOD_INVALID ; \
+        return (result) ; \
     } \
 }
-
-#define IS_NAN(x)	CHOLMOD_IS_NAN(x)
-#define IS_ZERO(x)	CHOLMOD_IS_ZERO(x)
-#define IS_NONZERO(x)	CHOLMOD_IS_NONZERO(x)
-#define IS_LT_ZERO(x)	CHOLMOD_IS_LT_ZERO(x)
-#define IS_GT_ZERO(x)	CHOLMOD_IS_GT_ZERO(x)
-#define IS_LE_ZERO(x)	CHOLMOD_IS_LE_ZERO(x)
 
 /* 1e308 is a huge number that doesn't take many characters to print in a
  * file, in CHOLMOD/Check/cholmod_read and _write.  Numbers larger than this
@@ -129,25 +126,72 @@
  * better, except that it takes too many digits to print in a file. */
 #define HUGE_DOUBLE 1e308
 
-/* ========================================================================== */
-/* === int/long and double/float definitions ================================ */
-/* ========================================================================== */
+//==============================================================================
+// int32/int64 and double/single definitions
+//==============================================================================
 
 #include "cholmod_types.h"
 
-#ifndef DLONG
-// GPU acceleration only available for the DLONG case (double, int64)
+#ifndef CHOLMOD_INT64
+// GPU acceleration only available for the CHOLMOD_INT64 case (int64)
 #undef SUITESPARSE_CUDA
 #endif
 
-/* -------------------------------------------------------------------------- */
-/* routines for doing arithmetic on size_t, and checking for overflow */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// internal routines
+//------------------------------------------------------------------------------
 
-size_t cholmod_add_size_t (size_t a, size_t b, int *ok) ;
-size_t cholmod_mult_size_t (size_t a, size_t k, int *ok) ;
-size_t cholmod_l_add_size_t (size_t a, size_t b, int *ok) ;
-size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
+bool cholmod_mult_uint64_t      // c = a*b, return true if ok
+(
+    uint64_t *restrict c,
+    const uint64_t a,
+    const uint64_t b
+) ;
+
+size_t cholmod_add_size_t    (size_t a, size_t b, int *ok) ;
+size_t cholmod_mult_size_t   (size_t a, size_t b, int *ok) ;
+size_t cholmod_l_add_size_t  (size_t a, size_t b, int *ok) ;
+size_t cholmod_l_mult_size_t (size_t a, size_t b, int *ok) ;
+
+int64_t cholmod_cumsum  // return sum (Cnz), or -1 if int32_t overflow
+(
+    int32_t *Cp,    // size n+1, output array, the cumsum of Cnz
+    int32_t *Cnz,   // size n, input array
+    size_t n        // size of Cp and Cnz
+) ;
+
+int64_t cholmod_l_cumsum  // return sum (Cnz), or -1 if int64_t overflow
+(
+    int64_t *Cp,    // size n+1, output array, the cumsum of Cnz
+    int64_t *Cnz,   // size n, input array
+    size_t n        // size of Cp and Cnz
+) ;
+
+void cholmod_set_empty
+(
+    int32_t *S,     // int32 array of size n
+    size_t n
+) ;
+
+void cholmod_l_set_empty
+(
+    int64_t *S,     // int64 array of size n
+    size_t n
+) ;
+
+void cholmod_to_simplicial_sym
+(
+    cholmod_factor *L,          // sparse factorization to modify 
+    int to_ll,                  // change L to hold a LL' or LDL' factorization
+    cholmod_common *Common
+) ;
+
+void cholmod_l_to_simplicial_sym
+(
+    cholmod_factor *L,          // sparse factorization to modify 
+    int to_ll,                  // change L to hold a LL' or LDL' factorization
+    cholmod_common *Common
+) ;
 
 /* ========================================================================== */
 /* === Include/cholmod_complexity.h ========================================= */
@@ -168,51 +212,58 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
  * XTYPE and XTYPE2 are defined in cholmod_template.h.  
  */
 
-/* -------------------------------------------------------------------------- */
-/* pattern */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// pattern: single or double
+//------------------------------------------------------------------------------
 
-#define P_TEMPLATE(name)		p_ ## name
-#define P_ASSIGN2(x,z,p,ax,az,q)	x [p] = 1
-#define P_PRINT(k,x,z,p)		PRK(k, ("1"))
+#define P_TEMPLATE(name)                p_ ## name
+#define P_S_TEMPLATE(name)              p_s_ ## name
 
-/* -------------------------------------------------------------------------- */
-/* real */
-/* -------------------------------------------------------------------------- */
+#define P_ASSIGN2(x,z,p,ax,az,q)        x [p] = 1
+#define P_PRINT(k,x,z,p)                PRK(k, ("1"))
 
-#define R_TEMPLATE(name)			r_ ## name
-#define R_ASSEMBLE(x,z,p,ax,az,q)		x [p] += ax [q]
-#define R_ASSIGN(x,z,p,ax,az,q)			x [p]  = ax [q]
-#define R_ASSIGN_CONJ(x,z,p,ax,az,q)		x [p]  = ax [q]
-#define R_ASSIGN_REAL(x,p,ax,q)			x [p]  = ax [q]
-#define R_XTYPE_OK(type)			((type) == CHOLMOD_REAL)
-#define R_IS_NONZERO(ax,az,q)			IS_NONZERO (ax [q])
-#define R_IS_ZERO(ax,az,q)			IS_ZERO (ax [q])
-#define R_IS_ONE(ax,az,q)			(ax [q] == 1)
-#define R_MULT(x,z,p, ax,az,q, bx,bz,r)		x [p]  = ax [q] * bx [r]
-#define R_MULTADD(x,z,p, ax,az,q, bx,bz,r)	x [p] += ax [q] * bx [r]
-#define R_MULTSUB(x,z,p, ax,az,q, bx,bz,r)	x [p] -= ax [q] * bx [r]
-#define R_MULTADDCONJ(x,z,p, ax,az,q, bx,bz,r)	x [p] += ax [q] * bx [r]
-#define R_MULTSUBCONJ(x,z,p, ax,az,q, bx,bz,r)	x [p] -= ax [q] * bx [r]
-#define R_ADD(x,z,p, ax,az,q, bx,bz,r)		x [p]  = ax [q] + bx [r]
-#define R_ADD_REAL(x,p, ax,q, bx,r)		x [p]  = ax [q] + bx [r]
-#define R_CLEAR(x,z,p)				x [p]  = 0
+//------------------------------------------------------------------------------
+// real: single or double
+//------------------------------------------------------------------------------
+
+#define R_TEMPLATE(name)                        r_ ## name
+#define R_S_TEMPLATE(name)                      r_s_ ## name
+
+#define R_ASSEMBLE(x,z,p,ax,az,q)               x [p] += ax [q]
+#define R_ASSIGN(x,z,p,ax,az,q)                 x [p]  = ax [q]
+#define R_ASSIGN_CONJ(x,z,p,ax,az,q)            x [p]  = ax [q]
+#define R_ASSIGN_REAL(x,p,ax,q)                 x [p]  = ax [q]
+#define R_XTYPE_OK(type)                        ((type) == CHOLMOD_REAL)
+#define R_IS_NONZERO(ax,az,q)                   (ax [q] != 0)
+#define R_IS_ZERO(ax,az,q)                      (ax [q] == 0)
+#define R_IS_ONE(ax,az,q)                       (ax [q] == 1)
+#define R_MULT(x,z,p, ax,az,q, bx,bz,r)         x [p]  = ax [q] * bx [r]
+#define R_MULTADD(x,z,p, ax,az,q, bx,bz,r)      x [p] += ax [q] * bx [r]
+#define R_MULTSUB(x,z,p, ax,az,q, bx,bz,r)      x [p] -= ax [q] * bx [r]
+#define R_MULTADDCONJ(x,z,p, ax,az,q, bx,bz,r)  x [p] += ax [q] * bx [r]
+#define R_MULTSUBCONJ(x,z,p, ax,az,q, bx,bz,r)  x [p] -= ax [q] * bx [r]
+#define R_ADD(x,z,p, ax,az,q, bx,bz,r)          x [p]  = ax [q] + bx [r]
+#define R_ADD_REAL(x,p, ax,q, bx,r)             x [p]  = ax [q] + bx [r]
+#define R_CLEAR(x,z,p)                          x [p]  = 0
 #define R_CLEAR_IMAG(x,z,p)
-#define R_DIV(x,z,p,ax,az,q)			x [p] /= ax [q]
-#define R_LLDOT(x,p, ax,az,q)			x [p] -= ax [q] * ax [q]
-#define R_PRINT(k,x,z,p)			PRK(k, ("%24.16e", x [p]))
+#define R_DIV(x,z,p,ax,az,q)                    x [p] /= ax [q]
+#define R_LLDOT(x,p, ax,az,q)                   x [p] -= ax [q] * ax [q]
+#define R_PRINT(k,x,z,p)                        PRK(k, ("%24.16e", x [p]))
 
-#define R_DIV_REAL(x,z,p, ax,az,q, bx,r)	x [p] = ax [q] / bx [r]
-#define R_MULT_REAL(x,z,p, ax,az,q, bx,r)	x [p] = ax [q] * bx [r]
+#define R_DIV_REAL(x,z,p, ax,az,q, bx,r)        x [p] = ax [q] / bx [r]
+#define R_MULT_REAL(x,z,p, ax,az,q, bx,r)       x [p] = ax [q] * bx [r]
 
-#define R_LDLDOT(x,p, ax,az,q, bx,r)		x [p] -=(ax[q] * ax[q])/ bx[r]
+#define R_LDLDOT(x,p, ax,az,q, bx,r)            x [p] -=(ax[q] * ax[q])/ bx[r]
 
-/* -------------------------------------------------------------------------- */
-/* complex */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// complex: single or double
+//------------------------------------------------------------------------------
 
-#define C_TEMPLATE(name)		c_ ## name
-#define CT_TEMPLATE(name)		ct_ ## name
+#define C_TEMPLATE(name)                c_ ## name
+#define CT_TEMPLATE(name)               ct_ ## name
+
+#define C_S_TEMPLATE(name)              c_s_ ## name
+#define CT_S_TEMPLATE(name)             ct_s_ ## name
 
 #define C_ASSEMBLE(x,z,p,ax,az,q) \
     x [2*(p)  ] += ax [2*(q)  ] ; \
@@ -222,46 +273,44 @@ size_t cholmod_l_mult_size_t (size_t a, size_t k, int *ok) ;
     x [2*(p)  ] = ax [2*(q)  ] ; \
     x [2*(p)+1] = ax [2*(q)+1]
 
-#define C_ASSIGN_REAL(x,p,ax,q)			x [2*(p)]  = ax [2*(q)]
+#define C_ASSIGN_REAL(x,p,ax,q)                 x [2*(p)]  = ax [2*(q)]
 
 #define C_ASSIGN_CONJ(x,z,p,ax,az,q) \
     x [2*(p)  ] =  ax [2*(q)  ] ; \
     x [2*(p)+1] = -ax [2*(q)+1]
 
-#define C_XTYPE_OK(type)		((type) == CHOLMOD_COMPLEX)
+#define C_XTYPE_OK(type)                ((type) == CHOLMOD_COMPLEX)
 
-#define C_IS_NONZERO(ax,az,q) \
-    (IS_NONZERO (ax [2*(q)]) || IS_NONZERO (ax [2*(q)+1]))
+#define C_IS_NONZERO(ax,az,q) ((ax [2*(q)] != 0) || (ax [2*(q)+1] != 0))
 
-#define C_IS_ZERO(ax,az,q) \
-    (IS_ZERO (ax [2*(q)]) && IS_ZERO (ax [2*(q)+1]))
+#define C_IS_ZERO(ax,az,q) ((ax [2*(q)] == 0) && (ax [2*(q)+1] == 0))
 
 #define C_IS_ONE(ax,az,q) \
-    ((ax [2*(q)] == 1) && IS_ZERO (ax [2*(q)+1]))
+    ((ax [2*(q)] == 1) && (ax [2*(q)+1]) == 0)
 
-#define C_IMAG_IS_NONZERO(ax,az,q)  (IS_NONZERO (ax [2*(q)+1]))
+#define C_IMAG_IS_NONZERO(ax,az,q)  (ax [2*(q)+1] != 0)
 
 #define C_MULT(x,z,p, ax,az,q, bx,bz,r) \
-x [2*(p)  ] = ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
-x [2*(p)+1] = ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
+    x [2*(p)  ] = ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
+    x [2*(p)+1] = ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 #define C_MULTADD(x,z,p, ax,az,q, bx,bz,r) \
-x [2*(p)  ] += ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
-x [2*(p)+1] += ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
+    x [2*(p)  ] += ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
+    x [2*(p)+1] += ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 #define C_MULTSUB(x,z,p, ax,az,q, bx,bz,r) \
-x [2*(p)  ] -= ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
-x [2*(p)+1] -= ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
+    x [2*(p)  ] -= ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
+    x [2*(p)+1] -= ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 /* s += conj(a)*b */
 #define C_MULTADDCONJ(x,z,p, ax,az,q, bx,bz,r) \
-x [2*(p)  ] +=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ; \
-x [2*(p)+1] += (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
+    x [2*(p)  ] +=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ;\
+    x [2*(p)+1] += (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 /* s -= conj(a)*b */
 #define C_MULTSUBCONJ(x,z,p, ax,az,q, bx,bz,r) \
-x [2*(p)  ] -=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ; \
-x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
+    x [2*(p)  ] -=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ;\
+    x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
 #define C_ADD(x,z,p, ax,az,q, bx,bz,r) \
     x [2*(p)  ] = ax [2*(q)  ] + bx [2*(r)  ] ; \
@@ -277,12 +326,24 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define C_CLEAR_IMAG(x,z,p) \
     x [2*(p)+1] = 0
 
-/* s = s / a */
+// s = s / a (complex double case)
 #define C_DIV(x,z,p,ax,az,q) \
     SuiteSparse_config_divcomplex ( \
-	      x [2*(p)],  x [2*(p)+1], \
-	     ax [2*(q)], ax [2*(q)+1], \
-	     &x [2*(p)], &x [2*(p)+1])
+              x [2*(p)],  x [2*(p)+1], \
+             ax [2*(q)], ax [2*(q)+1], \
+             &x [2*(p)], &x [2*(p)+1])
+
+// s = s / a (complex single case)
+#define C_S_DIV(x,z,p,ax,az,q)                                  \
+{                                                               \
+    double cr, ci ;                                             \
+    SuiteSparse_config_divcomplex (                             \
+        (double)  x [2*(p)], (double)  x [2*(p)+1],             \
+        (double) ax [2*(q)], (double) ax [2*(q)+1],             \
+        &cr, &ci) ;                                             \
+    x [2*(p)  ] = (float) cr ;                                  \
+    x [2*(p)+1] = (float) ci ;                                  \
+}
 
 /* s -= conj(a)*a ; note that the result of conj(a)*a is real */
 #define C_LLDOT(x,p, ax,az,q) \
@@ -302,12 +363,15 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define C_LDLDOT(x,p, ax,az,q, bx,r) \
     x [2*(p)] -= (ax [2*(q)] * ax [2*(q)] + ax [2*(q)+1] * ax [2*(q)+1]) / bx[r]
 
-/* -------------------------------------------------------------------------- */
-/* zomplex */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// zomplex: single or double
+//------------------------------------------------------------------------------
 
-#define Z_TEMPLATE(name)		z_ ## name
-#define ZT_TEMPLATE(name)		zt_ ## name
+#define Z_TEMPLATE(name)                z_ ## name
+#define ZT_TEMPLATE(name)               zt_ ## name
+
+#define Z_S_TEMPLATE(name)              z_s_ ## name
+#define ZT_S_TEMPLATE(name)             zt_s_ ## name
 
 #define Z_ASSEMBLE(x,z,p,ax,az,q) \
     x [p] += ax [q] ; \
@@ -317,24 +381,21 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
     x [p] = ax [q] ; \
     z [p] = az [q]
 
-#define Z_ASSIGN_REAL(x,p,ax,q)			x [p]  = ax [q]
+#define Z_ASSIGN_REAL(x,p,ax,q)                 x [p]  = ax [q]
 
 #define Z_ASSIGN_CONJ(x,z,p,ax,az,q) \
     x [p] =  ax [q] ; \
     z [p] = -az [q]
 
-#define Z_XTYPE_OK(type)		((type) == CHOLMOD_ZOMPLEX)
+#define Z_XTYPE_OK(type)                ((type) == CHOLMOD_ZOMPLEX)
 
-#define Z_IS_NONZERO(ax,az,q) \
-    (IS_NONZERO (ax [q]) || IS_NONZERO (az [q]))
+#define Z_IS_NONZERO(ax,az,q) ((ax [q] != 0) || (az [q] != 0))
 
-#define Z_IS_ZERO(ax,az,q) \
-    (IS_ZERO (ax [q]) && IS_ZERO (az [q]))
+#define Z_IS_ZERO(ax,az,q) ((ax [q] == 0) && (az [q] == 0))
 
-#define Z_IS_ONE(ax,az,q) \
-    ((ax [q] == 1) && IS_ZERO (az [q]))
+#define Z_IS_ONE(ax,az,q)  ((ax [q] == 1) && (az [q] == 0))
 
-#define Z_IMAG_IS_NONZERO(ax,az,q)  (IS_NONZERO (az [q]))
+#define Z_IMAG_IS_NONZERO(ax,az,q)  (az [q] != 0)
 
 #define Z_MULT(x,z,p, ax,az,q, bx,bz,r) \
     x [p] = ax [q] * bx [r] - az [q] * bz [r] ; \
@@ -357,11 +418,11 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
     z [p] -= (-az [q]) * bx [r] + ax [q] * bz [r]
 
 #define Z_ADD(x,z,p, ax,az,q, bx,bz,r) \
-	x [p] = ax [q] + bx [r] ; \
-	z [p] = az [q] + bz [r]
+    x [p] = ax [q] + bx [r] ; \
+    z [p] = az [q] + bz [r]
 
 #define Z_ADD_REAL(x,p, ax,q, bx,r) \
-	x [p] = ax [q] + bx [r]
+    x [p] = ax [q] + bx [r]
 
 #define Z_CLEAR(x,z,p) \
     x [p] = 0 ; \
@@ -370,16 +431,28 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define Z_CLEAR_IMAG(x,z,p) \
     z [p] = 0
 
-/* s = s / a */
+// s = s / a (zomplex double case)
 #define Z_DIV(x,z,p,ax,az,q) \
     SuiteSparse_config_divcomplex \
         (x [p], z [p], ax [q], az [q], &x [p], &z [p])
+
+// s = s / a (zomplex single case)
+#define Z_S_DIV(x,z,p,ax,az,q)                                  \
+{                                                               \
+    double cr, ci ;                                             \
+    SuiteSparse_config_divcomplex (                             \
+        (double)  x [p], (double)  z [p],                       \
+        (double) ax [q], (double) az [q],                       \
+        &cr, &ci) ;                                             \
+    x [p] = (float) cr ;                                        \
+    z [p] = (float) ci ;                                        \
+}
 
 /* s -= conj(a)*a ; note that the result of conj(a)*a is real */
 #define Z_LLDOT(x,p, ax,az,q) \
     x [p] -= ax [q] * ax [q] + az [q] * az [q]
 
-#define Z_PRINT(k,x,z,p)	PRK(k, ("(%24.16e,%24.16e)", x [p], z [p]))
+#define Z_PRINT(k,x,z,p)        PRK(k, ("(%24.16e,%24.16e)", x [p], z [p]))
 
 #define Z_DIV_REAL(x,z,p, ax,az,q, bx,r) \
     x [p] = ax [q] / bx [r] ; \
@@ -393,76 +466,141 @@ x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 #define Z_LDLDOT(x,p, ax,az,q, bx,r) \
     x [p] -= (ax [q] * ax [q] + az [q] * az [q]) / bx[r]
 
-/* -------------------------------------------------------------------------- */
-/* all classes */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// all classes
+//------------------------------------------------------------------------------
 
-/* Check if A->xtype and the two arrays A->x and A->z are valid.  Set status to
- * invalid, unless status is already "out of memory".  A can be a sparse matrix,
- * dense matrix, factor, or triplet. */
+// Check if A->xtype and the two arrays A->x and A->z are valid.  Set status to
+// invalid, unless status is already "out of memory".  A can be a sparse matrix,
+// dense matrix, factor, or triplet.
 
-#define RETURN_IF_XTYPE_INVALID(A,xtype1,xtype2,result) \
-{ \
-    if ((A)->xtype < (xtype1) || (A)->xtype > (xtype2) || \
-        ((A)->xtype != CHOLMOD_PATTERN && ((A)->x) == NULL) || \
-	((A)->xtype == CHOLMOD_ZOMPLEX && ((A)->z) == NULL)) \
-    { \
-	if (Common->status != CHOLMOD_OUT_OF_MEMORY) \
-	{ \
-	    ERROR (CHOLMOD_INVALID, "invalid xtype") ; \
-	} \
-	return (result) ; \
-    } \
+#define RETURN_IF_XTYPE_IS_INVALID(xtype,xtype1,xtype2,result)      \
+    if (xtype < (xtype1) || xtype > (xtype2))                       \
+    {                                                               \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)                \
+        {                                                           \
+            ERROR (CHOLMOD_INVALID, "invalid xtype") ;              \
+        }                                                           \
+        return (result) ;                                           \
+    }                                                               \
+
+#define RETURN_IF_XTYPE_INVALID(A,xtype1,xtype2,result)                       \
+{                                                                             \
+    if ((A)->xtype < (xtype1) || (A)->xtype > (xtype2) ||                     \
+        ((A)->xtype != CHOLMOD_PATTERN && ((A)->x) == NULL) ||                \
+        ((A)->xtype == CHOLMOD_ZOMPLEX && ((A)->z) == NULL) ||                \
+        !(((A)->dtype == CHOLMOD_DOUBLE) || ((A)->dtype == CHOLMOD_SINGLE)))  \
+    {                                                                         \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)                          \
+        {                                                                     \
+            ERROR (CHOLMOD_INVALID, "invalid xtype or dtype") ;               \
+        }                                                                     \
+        return (result) ;                                                     \
+    }                                                                         \
 }
 
-/* ========================================================================== */
-/* === Architecture and BLAS ================================================ */
-/* ========================================================================== */
+#define RETURN_IF_DENSE_MATRIX_INVALID(X,result)                            \
+    RETURN_IF_NULL (X, result) ;                                            \
+    RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_ZOMPLEX, result) ;    \
+    if ((X)->d < (X)->nrow)                                                 \
+    {                                                                       \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)                        \
+        {                                                                   \
+	    ERROR (CHOLMOD_INVALID, "dense matrix invalid") ;               \
+        }                                                                   \
+	return (result) ;                                                   \
+    }
+
+#define RETURN_IF_SPARSE_MATRIX_INVALID(A,result)                           \
+    RETURN_IF_NULL (A, result) ;                                            \
+    RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, result) ; \
+    if ((A)->p == NULL || (!(A)->packed && ((A)->nz == NULL)) ||            \
+        (A->stype != 0 && A->nrow != A->ncol))                              \
+    {                                                                       \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)                        \
+        {                                                                   \
+            ERROR (CHOLMOD_INVALID, "sparse matrix invalid") ;              \
+        }                                                                   \
+	return (result) ;                                                   \
+    }
+
+#define RETURN_IF_TRIPLET_MATRIX_INVALID(T,result)                          \
+    RETURN_IF_NULL (T, result) ;                                            \
+    RETURN_IF_XTYPE_INVALID (T, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, result) ; \
+    if ((T)->nnz > 0 && ((T)->i == NULL || (T)->j == NULL ||                \
+        ((T)->xtype != CHOLMOD_PATTERN && (T)->x == NULL) ||                \
+        ((T)->xtype == CHOLMOD_ZOMPLEX && (T)->z == NULL)))                 \
+    {                                                                       \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)                        \
+        {                                                                   \
+            ERROR (CHOLMOD_INVALID, "triplet matrix invalid") ;             \
+        }                                                                   \
+	return (result) ;                                                   \
+    }
+
+#define RETURN_IF_FACTOR_INVALID(L,result)                                  \
+    RETURN_IF_NULL (L, result) ;                                            \
+    RETURN_IF_XTYPE_INVALID (L, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, result) ;
+
+//==============================================================================
+// Architecture and BLAS
+//==============================================================================
 
 #if defined (__sun) || defined (MSOL2) || defined (ARCH_SOL2)
-#define CHOLMOD_SOL2
-#define CHOLMOD_ARCHITECTURE "Sun Solaris"
+
+    #define CHOLMOD_SOL2
+    #define CHOLMOD_ARCHITECTURE "Sun Solaris"
 
 #elif defined (__sgi) || defined (MSGI) || defined (ARCH_SGI)
-#define CHOLMOD_SGI
-#define CHOLMOD_ARCHITECTURE "SGI Irix"
+
+    #define CHOLMOD_SGI
+    #define CHOLMOD_ARCHITECTURE "SGI Irix"
 
 #elif defined (__linux) || defined (MGLNX86) || defined (ARCH_GLNX86)
-#define CHOLMOD_LINUX
-#define CHOLMOD_ARCHITECTURE "Linux"
+
+    #define CHOLMOD_LINUX
+    #define CHOLMOD_ARCHITECTURE "Linux"
 
 #elif defined (__APPLE__)
-#define CHOLMOD_MAC
-#define CHOLMOD_ARCHITECTURE "Mac"
+
+    #define CHOLMOD_MAC
+    #define CHOLMOD_ARCHITECTURE "Mac"
 
 #elif defined (_AIX) || defined (MIBM_RS) || defined (ARCH_IBM_RS)
-#define CHOLMOD_AIX
-#define CHOLMOD_ARCHITECTURE "IBM AIX"
+
+    #define CHOLMOD_AIX
+    #define CHOLMOD_ARCHITECTURE "IBM AIX"
 
 #elif defined (__alpha) || defined (MALPHA) || defined (ARCH_ALPHA)
-#define CHOLMOD_ALPHA
-#define CHOLMOD_ARCHITECTURE "Compaq Alpha"
+
+    #define CHOLMOD_ALPHA
+    #define CHOLMOD_ARCHITECTURE "Compaq Alpha"
 
 #elif defined (_WIN32) || defined (WIN32) || defined (_WIN64) || defined (WIN64)
-#if defined (__MINGW32__) || defined (__MINGW32__)
-#define CHOLMOD_MINGW
-#elif defined (__CYGWIN32__) || defined (__CYGWIN32__)
-#define CHOLMOD_CYGWIN
-#else
-#define CHOLMOD_WINDOWS
-#endif
-#define CHOLMOD_ARCHITECTURE "Microsoft Windows"
+
+    #if defined (__MINGW32__) || defined (__MINGW32__)
+        #define CHOLMOD_MINGW
+    #elif defined (__CYGWIN32__) || defined (__CYGWIN32__)
+        #define CHOLMOD_CYGWIN
+    #else
+        #define CHOLMOD_WINDOWS
+    #endif
+    #define CHOLMOD_ARCHITECTURE "Microsoft Windows"
 
 #elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)
-#define CHOLMOD_HP
-#define CHOLMOD_ARCHITECTURE "HP Unix"
+
+    #define CHOLMOD_HP
+    #define CHOLMOD_ARCHITECTURE "HP Unix"
 
 #elif defined (__hp700) || defined (MHP700) || defined (ARCH_HP700)
-#define CHOLMOD_HP
-#define CHOLMOD_ARCHITECTURE "HP 700 Unix"
+
+    #define CHOLMOD_HP
+    #define CHOLMOD_ARCHITECTURE "HP 700 Unix"
 
 #else
-#define CHOLMOD_ARCHITECTURE "unknown"
+
+    #define CHOLMOD_ARCHITECTURE "unknown"
+
 #endif
 
 //==============================================================================
@@ -525,7 +663,7 @@ int  cholmod_dump_perm (int *, size_t, size_t, const char *, cholmod_common *) ;
 int  cholmod_dump_parent (int *, size_t, const char *, cholmod_common *) ;
 void cholmod_dump_init (const char *, cholmod_common *) ;
 int  cholmod_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_dump_real (const char *, Real *, int64_t,
+void cholmod_dump_real (const char *, double *, int64_t,
     int64_t, int, int, cholmod_common *) ;
 void cholmod_dump_super (int64_t, int *, int *, int *, int *, double *,
     int, cholmod_common *) ;
@@ -549,7 +687,7 @@ int  cholmod_l_dump_parent (int64_t *, size_t, const char *,
     cholmod_common *) ;
 void cholmod_l_dump_init (const char *, cholmod_common *) ;
 int  cholmod_l_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_l_dump_real (const char *, Real *, int64_t,
+void cholmod_l_dump_real (const char *, double *, int64_t,
     int64_t, int, int, cholmod_common *) ;
 void cholmod_l_dump_super (int64_t, int64_t *,
     int64_t *, int64_t *, int64_t *,
@@ -580,11 +718,19 @@ int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
 #define PRINT2(params) PRK (2, params)
 #define PRINT3(params) PRK (3, params)
 
+void CM_memtable_dump (void) ;
+int CM_memtable_n (void) ;
+void CM_memtable_clear (void) ;
+void CM_memtable_add (void *p, size_t size) ;
+size_t CM_memtable_size (void *p) ;
+bool CM_memtable_find (void *p) ;
+void CM_memtable_remove (void *p) ;
+
 #define PRINTM(params) \
 { \
     if (CHOLMOD(dump_malloc) > 0) \
     { \
-	printf params ; \
+        printf params ; \
     } \
 }
 
@@ -603,5 +749,29 @@ int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
 #define ASSERT(expression)
 #define DEBUG(statement)
 #endif
+
+static bool check_flag (cholmod_common *Common)
+{
+    int64_t mark = Common->mark ;
+    size_t n = Common->nrow ;
+    if (Common->itype == CHOLMOD_LONG)
+    {
+        int64_t *Flag = Common->Flag ;
+        for (int64_t i = 0 ; i < n ; i++)
+        {
+            if (Flag [i] >= mark) return (false) ;
+        }
+    }
+    else
+    {
+        ASSERT (mark <= INT32_MAX) ;
+        int32_t *Flag = Common->Flag ;
+        for (int32_t i = 0 ; i < n ; i++)
+        {
+            if (Flag [i] >= mark) return (false) ;
+        }
+    }
+    return (true) ;
+}
 
 #endif

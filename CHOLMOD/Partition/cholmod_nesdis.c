@@ -1007,7 +1007,8 @@ int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
     B->ncol = n ;   /* restore size for memory usage statistics */
     CHOLMOD(free_sparse) (&B, Common) ;
     Common->mark = EMPTY ;
-    CHOLMOD_CLEAR_FLAG (Common) ;
+    CLEAR_FLAG (Common) ;
+    ASSERT (check_flag (Common)) ;
     CHOLMOD(free) (csize, sizeof (Int), Bew, Common) ;
     return (sepsize) ;
 #else
@@ -1199,7 +1200,8 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 
     /* all nodes start out unmarked and unordered (Type 4, see below) */
     Common->mark = EMPTY ;
-    CHOLMOD_CLEAR_FLAG (Common) ;
+    CLEAR_FLAG (Common) ;
+    ASSERT (check_flag (Common)) ;
     ASSERT (Flag == Common->Flag) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
 
@@ -1209,7 +1211,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     }
 
     /* prune dense nodes from B */
-    if (IS_NAN (prune_dense) || prune_dense < 0)
+    if (isnan (prune_dense) || prune_dense < 0)
     {
 	/* only remove completely dense nodes */
 	threshold = n-2 ;
@@ -1260,7 +1262,8 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 	CHOLMOD(free_sparse) (&B, Common) ;
 	CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 	Common->mark = EMPTY ;
-	CHOLMOD_CLEAR_FLAG (Common) ;
+	CLEAR_FLAG (Common) ;
+        ASSERT (check_flag (Common)) ;
 	return (1) ;
     }
 
@@ -1277,7 +1280,8 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 	CHOLMOD(free) (csize, sizeof (Int), Cew, Common) ;
 	CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 	Common->mark = EMPTY ;
-	CHOLMOD_CLEAR_FLAG (Common) ;
+	CLEAR_FLAG (Common) ;
+        ASSERT (check_flag (Common)) ;
 	PRINT2 (("out of memory for C, etc\n")) ;
 	return (EMPTY) ;
     }
@@ -1503,7 +1507,8 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
 		CHOLMOD(free) (csize, sizeof (Int), Cew, Common) ;
 		CHOLMOD(free) (3*n, sizeof (Int), Work3n, Common) ;
 		Common->mark = EMPTY ;
-		CHOLMOD_CLEAR_FLAG (Common) ;
+		CLEAR_FLAG (Common) ;
+                ASSERT (check_flag (Common)) ;
 		return (EMPTY) ;
 	    }
 
@@ -1831,7 +1836,8 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     /* ---------------------------------------------------------------------- */
 
     Common->mark = EMPTY ;
-    CHOLMOD_CLEAR_FLAG (Common) ;
+    CLEAR_FLAG (Common) ;
+    ASSERT (check_flag (Common)) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
@@ -2037,6 +2043,7 @@ int64_t CHOLMOD(collapse_septree)
     /* find the first descendant of each node of the separator tree */
     /* ---------------------------------------------------------------------- */
 
+    ASSERT (ncomponents >= 1 && ncomponents <= n) ;
     for (c = 0 ; c < nc ; c++)
     {
 	First [c] = EMPTY ;

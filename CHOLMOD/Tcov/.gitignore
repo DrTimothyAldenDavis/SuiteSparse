@@ -7,3 +7,8 @@ l_*.cu
 *.gcno
 *.gcov
 timelog.m
+u_*.c
+n_*.c
+ui_*.c
+ul_*.c
+o*

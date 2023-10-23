@@ -94,7 +94,7 @@ static int TEMPLATE (cholmod_rowfac)
     packed = A->packed ;
     sorted = A->sorted ;
 
-    use_dbound = IS_GT_ZERO (Common->dbound) ;
+    use_dbound = (Common->dbound > 0) ;
 
     /* get the current factors L (and D for LDL'); allocate space if needed */
     is_ll = L->is_ll ;
@@ -157,7 +157,8 @@ static int TEMPLATE (cholmod_rowfac)
 				 * zomplex.  Xwork [i] == 0 must hold. */
     Wz = Wx + n ;		/* size n for zomplex case only */
     mark = Common->mark ;
-    ASSERT ((Int) Common->xworksize >= (L->xtype == CHOLMOD_REAL ? 1:2)*n) ;
+    size_t wsize = (L->xtype == CHOLMOD_REAL ? 1:2) * n ;
+    ASSERT (Common->xworkbytes >= wsize * sizeof (Real)) ;
 
     /* ---------------------------------------------------------------------- */
     /* compute LDL' or LL' factorization by rows */
@@ -179,7 +180,7 @@ static int TEMPLATE (cholmod_rowfac)
 
 	/* column k of L is currently empty */
 	ASSERT (Lnz [k] == 1) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
 
 	top = n ;		/* Stack is empty */
 	Flag [k] = mark ;	/* do not include diagonal entry in Stack */
@@ -262,7 +263,7 @@ static int TEMPLATE (cholmod_rowfac)
 	 * Flag [Stack [top..n-1]] is equal to mark, but no longer needed */
 
 	/* mark = CHOLMOD(clear_flag) (Common) ; */
-	CHOLMOD_CLEAR_FLAG (Common) ;
+	CLEAR_FLAG (Common) ;
 	mark = Common->mark ;
 
 	/* ------------------------------------------------------------------ */
@@ -315,7 +316,7 @@ static int TEMPLATE (cholmod_rowfac)
 	    /* di = Lx [p] ; the diagonal entry L or D(i,i), which is real */
 	    ASSIGN_REAL (di,0, Lx,p) ;
 
-	    if (i >= (Int) L->minor || IS_ZERO (di [0]))
+	    if (i >= (Int) L->minor || (di [0] == 0))
 	    {
 		/* For the LL' factorization, L(i,i) is zero.  For the LDL',
 		 * D(i,i) is zero.  Skip column i of L, and set L(k,i) = 0. */
@@ -386,7 +387,7 @@ static int TEMPLATE (cholmod_rowfac)
 			/* W [i] = 0 ; */
 			CLEAR (Wx,Wz,i) ;
 		    }
-		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, n, Common)) ;
+		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
 		    return (FALSE) ;
 		}
 		Li = L->i ;		/* L->i, L->x, L->z may have moved */
@@ -420,7 +421,7 @@ static int TEMPLATE (cholmod_rowfac)
 	    /* modify the diagonal to force LL' or LDL' to exist */
 	    dk [0] = CHOLMOD(dbound) (is_ll ? fabs (dk [0]) : dk [0], Common) ;
 	}
-	else if ((is_ll ? (IS_LE_ZERO (dk [0])) : (IS_ZERO (dk [0])))
+	else if ((is_ll ? (dk [0] <= 0) : (dk [0] == 0))
 #ifndef REAL
 		|| dk_imaginary
 #endif
@@ -449,7 +450,7 @@ static int TEMPLATE (cholmod_rowfac)
     Common->rowfacfl = fl ;
 
     DEBUG (CHOLMOD(dump_factor) (L, "final cholmod_rowfac", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, n, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
     return (TRUE) ;
 }
 #undef PATTERN

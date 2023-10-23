@@ -177,7 +177,7 @@ int CHOLMOD(camd)
 	Control [CAMD_AGGRESSIVE] = Common->method [Common->current].aggressive;
     }
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     /* DEBUG (camd_l_debug_init ("cholmod_l_camd")) ; */
     camd_l2 (n, C->p,  C->i, Len, C->nzmax, cnz, Nv, Next, Perm, Head, Elen,
 	    Degree, Wi, Control, Info, Cmember, BucketSet) ;

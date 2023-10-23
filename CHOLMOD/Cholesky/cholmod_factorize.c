@@ -386,7 +386,7 @@ int CHOLMOD(factorize_p)
 	if (Common->status == CHOLMOD_OK)
 	{
 	    grow2 = Common->grow2 ;
-	    L->is_ll = BOOLEAN (Common->final_ll) ;
+	    L->is_ll = (Common->final_ll) ? 1 : 0 ;
 	    if (L->xtype == CHOLMOD_PATTERN && Common->final_pack)
 	    {
 		/* allocate a factor with exactly the space required */

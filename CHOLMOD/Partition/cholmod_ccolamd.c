@@ -67,7 +67,7 @@ static int ccolamd_interface
     /* ---------------------------------------------------------------------- */
 
     /* get parameters */
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     ccolamd_l_set_defaults (knobs) ;
 #else
     ccolamd_set_defaults (knobs) ;
@@ -90,7 +90,7 @@ static int ccolamd_interface
     if (ok)
     {
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
 	ccolamd_l (ncol, nrow, alen, C->i, C->p, knobs, stats, Cmember) ;
 #else
 	ccolamd (ncol, nrow, alen, C->i, C->p, knobs, stats, Cmember) ;
@@ -164,7 +164,7 @@ int CHOLMOD(ccolamd)
     /* allocate workspace */
     /* ---------------------------------------------------------------------- */
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     alen = ccolamd_l_recommended (A->nzmax, ncol, nrow) ;
 #else
     alen = ccolamd_recommended (A->nzmax, ncol, nrow) ;

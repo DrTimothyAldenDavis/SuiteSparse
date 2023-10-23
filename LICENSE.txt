@@ -235,14 +235,14 @@ found in the lists below.
             Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
         --------------------------------------------------------------------------------
-        ==> Core/License.txt <==
+        ==> Utility/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Core Module.  Copyright (C) 2005-2022, Univ. of Florida.  Author:
-            Timothy A. Davis.  CHOLMOD is also available under other licenses; contact
-            authors for details.  http://suitesparse.com
+            CHOLMOD/Utility Module, Copyright (C) 2023, Timothy A. Davis.
+            CHOLMOD is also available under other licenses; contact authors for
+            details.  http://suitesparse.com
 
-            Note that this license is for the CHOLMOD/Core module only.
+            Note that this license is for the CHOLMOD/Utility module only.
             All CHOLMOD modules are licensed separately.
 
 
@@ -303,22 +303,9 @@ found in the lists below.
             contains definitions and prototypes:
 
             Include/cholmod.h               LGPL
-            Include/cholmod_camd.h          part of Partition module
-            Include/cholmod_check.h         part of Check module
-            Include/cholmod_cholesky.h      part of Cholesky module
-            Include/cholmod_complexity.h    LGPL
-            Include/cholmod_config.h        LGPL
-            Include/cholmod_core.h          part of Core module
-            Include/cholmod_function.h      no license; freely usable, no restrictions
-            Include/cholmod_gpu.h           part of GPU module
-            Include/cholmod_gpu_kernels.h   part of GPU module
             Include/cholmod_internal.h      LGPL
-            Include/cholmod_io64.h          LGPL
-            Include/cholmod_matrixops.h     part of MatrixOps module
-            Include/cholmod_modify.h        part of Modify module
-            Include/cholmod_partition.h     part of Partition module
-            Include/cholmod_supernodal.h    part of Supernodal module
             Include/cholmod_template.h      LGPL
+            Include/cholmod_types.h
 
         --------------------------------------------------------------------------------
         ==> MATLAB/License.txt <==

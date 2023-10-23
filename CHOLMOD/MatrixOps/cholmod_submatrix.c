@@ -107,6 +107,13 @@ cholmod_sparse *CHOLMOD(submatrix)
 	ERROR (CHOLMOD_INVALID, "symmetric upper or lower case not supported") ;
 	return (NULL) ;
     }
+
+    if (rsize > Int_max || csize > Int_max)
+    {
+	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
+	return (NULL) ;
+    }
+
     Common->status = CHOLMOD_OK ;
 
     /* ---------------------------------------------------------------------- */
@@ -115,8 +122,9 @@ cholmod_sparse *CHOLMOD(submatrix)
 
     ancol = A->ncol ;
     anrow = A->nrow ;
-    nr = rsize ;
-    nc = csize ;
+    nr = (Int) rsize ;
+    nc = (Int) csize ;
+
     if (rset == NULL)
     {
 	/* nr = 0 denotes rset = [ ], nr < 0 denotes rset = 0:anrow-1 */
@@ -147,6 +155,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	}
 	return (C) ;
     }
+
     PRINT1 (("submatrix nr "ID" nc "ID" Cnrow "ID" Cncol "ID""
 	    "  Anrow "ID" Ancol "ID"\n", nr, nc, cnrow, cncol, anrow, ancol)) ;
 

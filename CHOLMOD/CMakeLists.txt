@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Oct 15, 2023" )
-set ( CHOLMOD_VERSION_MAJOR 4 )
-set ( CHOLMOD_VERSION_MINOR 2 )
-set ( CHOLMOD_VERSION_SUB   2 )
+set ( CHOLMOD_DATE "Oct 23, 2023" )
+set ( CHOLMOD_VERSION_MAJOR 5 )
+set ( CHOLMOD_VERSION_MINOR 0 )
+set ( CHOLMOD_VERSION_SUB   0 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -78,22 +78,22 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.3.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
 endif ( )
 
-find_package ( COLAMD 3.2.0
+find_package ( COLAMD 3.2.1
     PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.2.0 REQUIRED )
+    find_package ( COLAMD 3.2.1 REQUIRED )
 endif ( )
 
-find_package ( AMD 3.2.0
+find_package ( AMD 3.2.1
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.0 REQUIRED )
+    find_package ( AMD 3.2.1 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -196,16 +196,16 @@ endif ( )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.2.0
+        find_package ( CAMD 3.2.1
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.2.0 )
+            find_package ( CAMD 3.2.1 )
         endif ( )
 
-        find_package ( CCOLAMD 3.2.0
+        find_package ( CCOLAMD 3.2.1
             PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.2.0 )
+            find_package ( CCOLAMD 3.2.1 )
         endif ( )
 
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
@@ -290,7 +290,7 @@ configure_file ( "Config/cholmod_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( Check Cholesky Core MatrixOps Modify Partition
+include_directories ( Check Cholesky Utility MatrixOps Modify Partition
     Supernodal Include ${CMAKE_SOURCE_DIR} )
 
 #-------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ include_directories ( Check Cholesky Core MatrixOps Modify Partition
 #-------------------------------------------------------------------------------
 
 file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
-    "Core/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
+    "Utility/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
     "Partition/cholmod_*.c" "Supernodal/cholmod_*.c" )
 
 add_library ( CHOLMOD SHARED ${CHOLMOD_SOURCES} )

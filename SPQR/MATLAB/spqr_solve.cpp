@@ -283,9 +283,7 @@ void mexFunction
     rank = cc->SPQR_istat [4] ;
     if (rank < MIN (m,n))
     {
-        // snprintf would be safer, but Windows is oblivious to safety ...
-        // (Visual Studio C++ 2008 does not recognize snprintf!)
-        sprintf (msg, "rank deficient. rank = %" PRId64 " tol = %g\n",
+        snprintf (msg, LEN, "rank deficient. rank = %" PRId64 " tol = %g\n",
             rank, cc->SPQR_tol_used) ;
         mexWarnMsgIdAndTxt ("MATLAB:rankDeficientMatrix", msg) ;
     }

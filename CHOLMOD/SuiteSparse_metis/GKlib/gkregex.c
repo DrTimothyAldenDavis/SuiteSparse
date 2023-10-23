@@ -10135,7 +10135,7 @@ check_node_accept_bytes (const re_dfa_t *dfa, int node_idx,
     {
       if (char_len <= 1)
         return 0;
-      /* FIXME: I don't think this if is needed, as both '\n'
+      /* fixme: I don't think this if is needed, as both '\n'
 	 and '\0' are char_len == 1.  */
       /* '.' accepts any one character except the following two cases.  */
       if ((!(dfa->syntax & RE_DOT_NEWLINE) &&

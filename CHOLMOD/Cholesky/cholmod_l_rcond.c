@@ -8,6 +8,6 @@
 
 //------------------------------------------------------------------------------
 
-#define DLONG
+#define CHOLMOD_INT64
 #include "cholmod_rcond.c"
 
