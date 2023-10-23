@@ -11,6 +11,10 @@
 
 #include "spqr.hpp"
 
+//==============================================================================
+// CHOLMOD:Utility (required)
+//==============================================================================
+
 //------------------------------------------------------------------------------
 // spqr_start
 //------------------------------------------------------------------------------
@@ -352,45 +356,6 @@ template <> int spqr_allocate_work <int64_t>
 }
 
 //------------------------------------------------------------------------------
-// spqr_amd
-//------------------------------------------------------------------------------
-
-template <> int spqr_amd <int64_t> 
-(
-    cholmod_sparse *A, int64_t *fset, size_t fsize, int64_t *Perm, cholmod_common *Common
-)
-{
-    return cholmod_l_amd (A, fset, fsize, Perm, Common) ;
-}
-template <> int spqr_amd <int32_t> 
-(
-    cholmod_sparse *A, int32_t *fset, size_t fsize, int32_t *Perm, cholmod_common *Common
-)
-{
-    return cholmod_amd (A, fset, fsize, Perm, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_metis
-//------------------------------------------------------------------------------
-
-template <> int spqr_metis <int64_t> 
-(
-    cholmod_sparse *A, int64_t *fset, size_t fsize, int postorder, int64_t *Perm, cholmod_common *Common
-)
-{
-    return cholmod_l_metis (A, fset, fsize, postorder, Perm, Common) ;
-}
-
-template <> int spqr_metis <int32_t> 
-(
-    cholmod_sparse *A, int32_t *fset, size_t fsize, int postorder, int32_t *Perm, cholmod_common *Common
-)
-{
-    return cholmod_metis (A, fset, fsize, postorder, Perm, Common) ;
-}
-
-//------------------------------------------------------------------------------
 // spqr_transpose
 //------------------------------------------------------------------------------
 
@@ -401,119 +366,13 @@ template <> cholmod_sparse *spqr_transpose <int64_t>
 {
     return cholmod_l_transpose (A, values, Common) ;
 }
+
 template <> cholmod_sparse *spqr_transpose <int32_t> 
 (
     cholmod_sparse *A, int values, cholmod_common *Common
 )
 {
     return cholmod_transpose (A, values, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_analyze_p2
-//------------------------------------------------------------------------------
-
-template <>
-cholmod_factor *spqr_analyze_p2 <int32_t>
-(
-    /* ---- input ---- */
-    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
-                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
-                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
-    cholmod_sparse *A,	/* matrix to order and analyze */
-    int32_t *UserPerm,	/* user-provided permutation, size A->nrow */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_analyze_p2 (for_whom, A, UserPerm, fset, fsize, Common) ;
-}
-template <>
-cholmod_factor *spqr_analyze_p2 <int64_t>
-(
-    /* ---- input ---- */
-    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
-                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
-                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
-    cholmod_sparse *A,	/* matrix to order and analyze */
-    int64_t *UserPerm,	/* user-provided permutation, size A->nrow */
-    int64_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_analyze_p2 (for_whom, A, UserPerm, fset, fsize, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_colamd
-//------------------------------------------------------------------------------
-
-template <> int spqr_colamd <int32_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int postorder,	/* if TRUE, follow with a coletree postorder */
-    /* ---- output --- */
-    int32_t *Perm,	/* size A->nrow, output permutation */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_colamd (A, fset, fsize, postorder, Perm, Common) ;
-}
-template <> int spqr_colamd <int64_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int64_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int postorder,	/* if TRUE, follow with a coletree postorder */
-    /* ---- output --- */
-    int64_t *Perm,	/* size A->nrow, output permutation */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_colamd (A, fset, fsize, postorder, Perm, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_postorder
-//------------------------------------------------------------------------------
-
-template <> int32_t spqr_postorder <int32_t>	/* return # of nodes postordered */
-(
-    /* ---- input ---- */
-    int32_t *Parent,	/* size n. Parent [j] = p if p is the parent of j */
-    size_t n,
-    int32_t *Weight_p,	/* size n, optional. Weight [j] is weight of node j */
-    /* ---- output --- */
-    int32_t *Post,	/* size n. Post [k] = j is kth in postordered tree */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_postorder (Parent, n, Weight_p, Post, Common) ;
-}
-template <> int64_t spqr_postorder <int64_t>	/* return # of nodes postordered */
-(
-    /* ---- input ---- */
-    int64_t *Parent,	/* size n. Parent [j] = p if p is the parent of j */
-    size_t n,
-    int64_t *Weight_p,	/* size n, optional. Weight [j] is weight of node j */
-    /* ---- output --- */
-    int64_t *Post,	/* size n. Post [k] = j is kth in postordered tree */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_postorder (Parent, n, Weight_p, Post, Common) ;
 }
 
 //------------------------------------------------------------------------------
@@ -699,40 +558,6 @@ template <> cholmod_dense *spqr_ones <int64_t>
 }
 
 //------------------------------------------------------------------------------
-// spqr_ssmult
-//------------------------------------------------------------------------------
-
-template <> cholmod_sparse *spqr_ssmult <int32_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* left matrix to multiply */
-    cholmod_sparse *B,	/* right matrix to multiply */
-    int stype,		/* requested stype of C */
-    int values,		/* TRUE: do numerical values, FALSE: pattern only */
-    int sorted,		/* if TRUE then return C with sorted columns */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_ssmult (A, B, stype, values, sorted, Common) ;
-}
-
-template <> cholmod_sparse *spqr_ssmult <int64_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* left matrix to multiply */
-    cholmod_sparse *B,	/* right matrix to multiply */
-    int stype,		/* requested stype of C */
-    int values,		/* TRUE: do numerical values, FALSE: pattern only */
-    int sorted,		/* if TRUE then return C with sorted columns */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_ssmult (A, B, stype, values, sorted, Common) ;
-}
-
-//------------------------------------------------------------------------------
 // spqr_ssadd
 //------------------------------------------------------------------------------
 
@@ -766,6 +591,290 @@ template <> cholmod_sparse *spqr_ssadd <int64_t>
 )
 {
     return cholmod_l_add (A, B, alpha, beta, values, sorted, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_copy_dense
+//------------------------------------------------------------------------------
+
+template <> cholmod_dense *spqr_copy_dense <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to copy */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_copy_dense (X, Common) ;
+}
+
+template <> cholmod_dense *spqr_copy_dense <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_dense *X,	/* matrix to copy */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_copy_dense (X, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_copy
+//------------------------------------------------------------------------------
+
+template <> cholmod_sparse *spqr_copy <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to copy */
+    int stype,		/* requested stype of C */
+    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_copy (A, stype, mode, Common) ;
+}
+
+template <> cholmod_sparse *spqr_copy <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to copy */
+    int stype,		/* requested stype of C */
+    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_copy (A, stype, mode, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_xtype
+//------------------------------------------------------------------------------
+
+template <> int spqr_sparse_xtype <int32_t>
+(
+    /* ---- input ---- */
+    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
+    /* ---- in/out --- */
+    cholmod_sparse *A,	/* sparse matrix to change */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_sparse_xtype (to_xtype, A, Common) ;
+}
+
+template <> int spqr_sparse_xtype <int64_t>
+(
+    /* ---- input ---- */
+    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
+    /* ---- in/out --- */
+    cholmod_sparse *A,	/* sparse matrix to change */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_sparse_xtype (to_xtype, A, Common) ;
+}
+
+//==============================================================================
+// CHOLMOD:Cholesky (required)
+//==============================================================================
+
+//------------------------------------------------------------------------------
+// spqr_amd
+//------------------------------------------------------------------------------
+
+template <> int spqr_amd <int64_t> 
+(
+    cholmod_sparse *A, int64_t *fset, size_t fsize, int64_t *Perm, cholmod_common *Common
+)
+{
+    return cholmod_l_amd (A, fset, fsize, Perm, Common) ;
+}
+template <> int spqr_amd <int32_t> 
+(
+    cholmod_sparse *A, int32_t *fset, size_t fsize, int32_t *Perm, cholmod_common *Common
+)
+{
+    return cholmod_amd (A, fset, fsize, Perm, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_analyze_p2
+//------------------------------------------------------------------------------
+
+template <>
+cholmod_factor *spqr_analyze_p2 <int32_t>
+(
+    /* ---- input ---- */
+    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
+    cholmod_sparse *A,	/* matrix to order and analyze */
+    int32_t *UserPerm,	/* user-provided permutation, size A->nrow */
+    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_analyze_p2 (for_whom, A, UserPerm, fset, fsize, Common) ;
+}
+template <>
+cholmod_factor *spqr_analyze_p2 <int64_t>
+(
+    /* ---- input ---- */
+    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
+    cholmod_sparse *A,	/* matrix to order and analyze */
+    int64_t *UserPerm,	/* user-provided permutation, size A->nrow */
+    int64_t *fset,	/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_analyze_p2 (for_whom, A, UserPerm, fset, fsize, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_colamd
+//------------------------------------------------------------------------------
+
+template <> int spqr_colamd <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to order */
+    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    int postorder,	/* if TRUE, follow with a coletree postorder */
+    /* ---- output --- */
+    int32_t *Perm,	/* size A->nrow, output permutation */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_colamd (A, fset, fsize, postorder, Perm, Common) ;
+}
+template <> int spqr_colamd <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* matrix to order */
+    int64_t *fset,	/* subset of 0:(A->ncol)-1 */
+    size_t fsize,	/* size of fset */
+    int postorder,	/* if TRUE, follow with a coletree postorder */
+    /* ---- output --- */
+    int64_t *Perm,	/* size A->nrow, output permutation */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_colamd (A, fset, fsize, postorder, Perm, Common) ;
+}
+
+//------------------------------------------------------------------------------
+// spqr_postorder
+//------------------------------------------------------------------------------
+
+template <> int32_t spqr_postorder <int32_t>	/* return # of nodes postordered */
+(
+    /* ---- input ---- */
+    int32_t *Parent,	/* size n. Parent [j] = p if p is the parent of j */
+    size_t n,
+    int32_t *Weight_p,	/* size n, optional. Weight [j] is weight of node j */
+    /* ---- output --- */
+    int32_t *Post,	/* size n. Post [k] = j is kth in postordered tree */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_postorder (Parent, n, Weight_p, Post, Common) ;
+}
+template <> int64_t spqr_postorder <int64_t>	/* return # of nodes postordered */
+(
+    /* ---- input ---- */
+    int64_t *Parent,	/* size n. Parent [j] = p if p is the parent of j */
+    size_t n,
+    int64_t *Weight_p,	/* size n, optional. Weight [j] is weight of node j */
+    /* ---- output --- */
+    int64_t *Post,	/* size n. Post [k] = j is kth in postordered tree */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_postorder (Parent, n, Weight_p, Post, Common) ;
+}
+
+//==============================================================================
+// CHOLMOD:Partition (optional)
+//==============================================================================
+
+#ifndef NPARTITION
+
+//------------------------------------------------------------------------------
+// spqr_metis
+//------------------------------------------------------------------------------
+
+template <> int spqr_metis <int64_t> 
+(
+    cholmod_sparse *A, int64_t *fset, size_t fsize, int postorder, int64_t *Perm, cholmod_common *Common
+)
+{
+    return cholmod_l_metis (A, fset, fsize, postorder, Perm, Common) ;
+}
+
+template <> int spqr_metis <int32_t> 
+(
+    cholmod_sparse *A, int32_t *fset, size_t fsize, int postorder, int32_t *Perm, cholmod_common *Common
+)
+{
+    return cholmod_metis (A, fset, fsize, postorder, Perm, Common) ;
+}
+
+#endif
+
+//==============================================================================
+// CHOLMOD:MatrixOps (optional)
+//==============================================================================
+
+#ifndef NMATRIXOPS
+
+//------------------------------------------------------------------------------
+// spqr_ssmult
+//------------------------------------------------------------------------------
+
+template <> cholmod_sparse *spqr_ssmult <int32_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* left matrix to multiply */
+    cholmod_sparse *B,	/* right matrix to multiply */
+    int stype,		/* requested stype of C */
+    int values,		/* TRUE: do numerical values, FALSE: pattern only */
+    int sorted,		/* if TRUE then return C with sorted columns */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_ssmult (A, B, stype, values, sorted, Common) ;
+}
+
+template <> cholmod_sparse *spqr_ssmult <int64_t>
+(
+    /* ---- input ---- */
+    cholmod_sparse *A,	/* left matrix to multiply */
+    cholmod_sparse *B,	/* right matrix to multiply */
+    int stype,		/* requested stype of C */
+    int values,		/* TRUE: do numerical values, FALSE: pattern only */
+    int sorted,		/* if TRUE then return C with sorted columns */
+    /* --------------- */
+    cholmod_common *Common
+)
+{
+    return cholmod_l_ssmult (A, B, stype, values, sorted, Common) ;
 }
 
 //------------------------------------------------------------------------------
@@ -863,97 +972,18 @@ template <> double spqr_norm_dense <int64_t>
     return cholmod_l_norm_dense (X, norm, Common) ;
 }
 
-//------------------------------------------------------------------------------
-// spqr_copy_dense
-//------------------------------------------------------------------------------
+#endif
 
-template <> cholmod_dense *spqr_copy_dense <int32_t>
-(
-    /* ---- input ---- */
-    cholmod_dense *X,	/* matrix to copy */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_copy_dense (X, Common) ;
-}
-
-template <> cholmod_dense *spqr_copy_dense <int64_t>
-(
-    /* ---- input ---- */
-    cholmod_dense *X,	/* matrix to copy */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_copy_dense (X, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_copy
-//------------------------------------------------------------------------------
-
-template <> cholmod_sparse *spqr_copy <int32_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to copy */
-    int stype,		/* requested stype of C */
-    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_copy (A, stype, mode, Common) ;
-}
-
-template <> cholmod_sparse *spqr_copy <int64_t>
-(
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to copy */
-    int stype,		/* requested stype of C */
-    int mode,		/* >0: numerical, 0: pattern, <0: pattern (no diag) */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_copy (A, stype, mode, Common) ;
-}
-
-//------------------------------------------------------------------------------
-// spqr_xtype
-//------------------------------------------------------------------------------
-
-template <> int spqr_sparse_xtype <int32_t>
-(
-    /* ---- input ---- */
-    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
-    /* ---- in/out --- */
-    cholmod_sparse *A,	/* sparse matrix to change */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_sparse_xtype (to_xtype, A, Common) ;
-}
-
-template <> int spqr_sparse_xtype <int64_t>
-(
-    /* ---- input ---- */
-    int to_xtype,	/* requested xtype (pattern, real, complex, zomplex) */
-    /* ---- in/out --- */
-    cholmod_sparse *A,	/* sparse matrix to change */
-    /* --------------- */
-    cholmod_common *Common
-)
-{
-    return cholmod_l_sparse_xtype (to_xtype, A, Common) ;
-}
+//==============================================================================
+// CHOLMOD:GPU (optional)
+//==============================================================================
 
 //------------------------------------------------------------------------------
 // spqr_gpu_memorysize
 //------------------------------------------------------------------------------
 
 #ifdef SUITESPARSE_CUDA
+
 template <> int spqr_gpu_memorysize <int32_t>
 (
     size_t         *total_mem,
@@ -974,6 +1004,12 @@ template <> int spqr_gpu_memorysize <int64_t>
     return cholmod_l_gpu_memorysize (total_mem, available_mem, Common) ;
 }
 #endif
+
+//==============================================================================
+// CHOLMOD:Check (optional)
+//==============================================================================
+
+#ifndef NCHECK
 
 //------------------------------------------------------------------------------
 // spqr_read_sparse
@@ -1001,4 +1037,5 @@ template <> cholmod_sparse *spqr_read_sparse <int64_t>
     return cholmod_l_read_sparse (f, Common) ;
 }
 
+#endif
 

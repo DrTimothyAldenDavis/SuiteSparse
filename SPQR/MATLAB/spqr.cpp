@@ -311,14 +311,14 @@ void mexFunction
             if (B_is_sparse)
             {
                 // B and C are both sparse and complex
-                SuiteSparseQR <Complex> (order, tol, econ, A, Bsparse,
+                SuiteSparseQR <Complex,int64_t> (order, tol, econ, A, Bsparse,
                     &Csparse, &R, &E, cc) ;
                 pargout [0] = spqr_mx_put_sparse (&Csparse, cc) ;
             }
             else
             {
                 // B and C are both dense and complex
-                SuiteSparseQR <Complex> (order, tol, econ, A, Bdense,
+                SuiteSparseQR <Complex,int64_t> (order, tol, econ, A, Bdense,
                     &Cdense, &R, &E, cc) ;
                 pargout [0] = spqr_mx_put_dense (&Cdense, cc) ;
             }
@@ -334,14 +334,14 @@ void mexFunction
             if (B_is_sparse)
             {
                 // B and C are both sparse and real
-                SuiteSparseQR <double> (order, tol, econ, A, Bsparse,
+                SuiteSparseQR <double,int64_t> (order, tol, econ, A, Bsparse,
                     &Csparse, &R, &E, cc) ;
                 pargout [0] = spqr_mx_put_sparse (&Csparse, cc) ;
             }
             else
             {
                 // B and C are both dense and real
-                SuiteSparseQR <double> (order, tol, econ, A, Bdense,
+                SuiteSparseQR <double,int64_t> (order, tol, econ, A, Bdense,
                     &Cdense, &R, &E, cc) ;
                 pargout [0] = spqr_mx_put_dense (&Cdense, cc) ;
             }
@@ -359,11 +359,11 @@ void mexFunction
 
         if (is_complex)
         {
-            SuiteSparseQR <Complex> (0, tol, econ, A, &R, NULL, cc) ;
+            SuiteSparseQR <Complex,int64_t> (0, tol, econ, A, &R, NULL, cc) ;
         }
         else
         {
-            SuiteSparseQR <double> (0, tol, econ, A, &R, NULL, cc) ;
+            SuiteSparseQR <double,int64_t> (0, tol, econ, A, &R, NULL, cc) ;
         }
         pargout [0] = spqr_mx_put_sparse (&R, cc) ;
 
@@ -384,11 +384,13 @@ void mexFunction
 
             if (is_complex)
             {
-                SuiteSparseQR <Complex> (order, tol, econ, A, &R, &E, cc);
+                SuiteSparseQR <Complex,int64_t> (order, tol, econ, A, &R, &E,
+                    cc);
             }
             else
             {
-                SuiteSparseQR <double> (order, tol, econ, A, &R, &E, cc) ;
+                SuiteSparseQR <double,int64_t> (order, tol, econ, A, &R, &E,
+                    cc) ;
             }
             pargout [0] = mxCreateDoubleMatrix (0, 0, mxREAL) ;
 
@@ -402,11 +404,11 @@ void mexFunction
 
             if (is_complex)
             {
-                SuiteSparseQR <Complex> (order, tol, econ, A, &Q, &R, &E, cc) ;
+                SuiteSparseQR <Complex,int64_t> (order, tol, econ, A, &Q, &R, &E, cc) ;
             }
             else
             {
-                SuiteSparseQR <double> (order, tol, econ, A, &Q, &R, &E, cc) ;
+                SuiteSparseQR <double,int64_t> (order, tol, econ, A, &Q, &R, &E, cc) ;
             }
             pargout [0] = spqr_mx_put_sparse (&Q, cc) ;
 
@@ -421,12 +423,12 @@ void mexFunction
             mxArray *Tau, *P, *Hmatlab ;
             if (is_complex)
             {
-                SuiteSparseQR <Complex> (order, tol, econ, A,
+                SuiteSparseQR <Complex,int64_t> (order, tol, econ, A,
                     &R, &E, &H, &HPinv, &HTau, cc) ;
             }
             else
             {
-                SuiteSparseQR <double> (order, tol, econ, A,
+                SuiteSparseQR <double,int64_t> (order, tol, econ, A,
                     &R, &E, &H, &HPinv, &HTau, cc) ;
             }
 

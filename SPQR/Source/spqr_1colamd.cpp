@@ -538,8 +538,12 @@ template <typename Entry, typename Int> int spqr_1colamd  // TRUE if OK, FALSE o
         {
             // use CHOLMOD's interface to METIS to order A'*A (if installed)
             TEST_COVERAGE_PAUSE ;
+            #ifndef NPARTITION
             spqr_metis <Int> (AT, NULL, 0, TRUE,
                 (Int *) (Q1fill + n1cols), cc) ;
+            #else
+            cc-status = CHOLMOD_NOT_INSTALLED ;
+            #endif
             TEST_COVERAGE_RESUME ;
         }
         else if (ordering == SPQR_ORDERING_CHOLMOD)
