@@ -237,6 +237,15 @@ int cholmod_l_version (int version [3]) ;
 #define CHOLMOD_DENSE 3
 #define CHOLMOD_TRIPLET 4
 
+// enums used by cholmod_symmetry and cholmod_write
+#define CHOLMOD_MM_RECTANGULAR       1
+#define CHOLMOD_MM_UNSYMMETRIC       2
+#define CHOLMOD_MM_SYMMETRIC         3
+#define CHOLMOD_MM_HERMITIAN         4
+#define CHOLMOD_MM_SKEW_SYMMETRIC    5
+#define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
+#define CHOLMOD_MM_HERMITIAN_POSDIAG 7
+
 //------------------------------------------------------------------------------
 // CHOLMOD Common object
 //------------------------------------------------------------------------------
@@ -3102,15 +3111,6 @@ cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
 /* -------------------------------------------------------------------------- */
 /* cholmod_symmetry: determine if a sparse matrix is symmetric */
 /* -------------------------------------------------------------------------- */
-
-// returns one of the following:
-#define CHOLMOD_MM_RECTANGULAR       1
-#define CHOLMOD_MM_UNSYMMETRIC       2
-#define CHOLMOD_MM_SYMMETRIC         3
-#define CHOLMOD_MM_HERMITIAN         4
-#define CHOLMOD_MM_SKEW_SYMMETRIC    5
-#define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
-#define CHOLMOD_MM_HERMITIAN_POSDIAG 7
 
 int cholmod_symmetry
 (
