@@ -91,7 +91,7 @@ int LAGraph_SLoadSet            // load a set of matrices from a *.lagraph file
 
     if (filename != NULL)
     {
-        f = fopen (filename, "r") ;
+        f = fopen (filename, "rb") ;
         LG_ASSERT_MSG (f != NULL,
             LAGRAPH_IO_ERROR, "unable to open input file") ;
     }
