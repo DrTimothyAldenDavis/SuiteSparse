@@ -98,12 +98,12 @@ void mexFunction
 
     if (is_complex)
     {
-        spqr_1colamd <Complex> (SPQR_ORDERING_NATURAL, tol, 0, A,
+        spqr_1colamd <Complex,int64_t> (SPQR_ORDERING_NATURAL, tol, 0, A,
             &Q, &Rp, &Pinv, &Y, &n1cols, &n1rows, cc) ;
     }
     else
     {
-        spqr_1colamd <double> (SPQR_ORDERING_NATURAL, tol, 0, A,
+        spqr_1colamd <double,int64_t> (SPQR_ORDERING_NATURAL, tol, 0, A,
             &Q, &Rp, &Pinv, &Y, &n1cols, &n1rows, cc) ;
     }
 
