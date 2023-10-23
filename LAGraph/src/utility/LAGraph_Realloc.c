@@ -82,8 +82,7 @@ int LAGraph_Realloc
     size_t newsize, oldsize ;
     bool ok = LG_Multiply_size_t (&newsize, nitems_new, size_of_item)
            && LG_Multiply_size_t (&oldsize, nitems_old, size_of_item) ;
-
-    if (!ok || nitems_new > GrB_INDEX_MAX || size_of_item > GrB_INDEX_MAX)
+    if (!ok)
     {
         // overflow
         return (GrB_OUT_OF_MEMORY) ;

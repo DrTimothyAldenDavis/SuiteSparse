@@ -36,11 +36,15 @@ void test_malloc (void)
     OK (LAGraph_Free ((void **) &p, msg)) ;
     TEST_CHECK (p == NULL) ;
 
-    LAGraph_Malloc ((void **) &p, GrB_INDEX_MAX + 1, sizeof (char), msg) ;
-    TEST_CHECK (p == NULL) ;
+    size_t huge = 1 + SIZE_MAX/2 ;
 
-    LAGraph_Calloc ((void **) &p, GrB_INDEX_MAX + 1, sizeof (char), msg) ;
-    TEST_CHECK (p == NULL) ;
+    if (sizeof (size_t) >= sizeof (uint64_t))
+    {
+        LAGraph_Malloc ((void **) &p, huge, sizeof (char), msg) ;
+        TEST_CHECK (p == NULL) ;    // was FAIL
+        LAGraph_Calloc ((void **) &p, huge, sizeof (char), msg) ;
+        TEST_CHECK (p == NULL) ;    // was FAIL
+    }
 
     OK (LAGraph_Calloc ((void **) &p, 42, sizeof (char), msg)) ;
     for (int k = 0 ; k < 42 ; k++)
@@ -74,18 +78,22 @@ void test_malloc (void)
     TEST_CHECK (p == NULL) ;
 
     OK (LAGraph_Realloc ((void **) &p, 80, 0, sizeof (char), msg)) ;
+
+    if (sizeof (size_t) >= sizeof (uint64_t))
+    {
+        int s = (LAGraph_Realloc ((void **) &p, huge, 80, sizeof (char), msg)) ;
+        TEST_CHECK (s == GrB_OUT_OF_MEMORY) ;  // was FAIL
+    }
+
     for (int k = 0 ; k < 80 ; k++)
     {
         p [k] = (char) k ;
     }
 
-    int status = (LAGraph_Realloc ((void **) &p, GrB_INDEX_MAX+1, 80, sizeof (char), msg)) ;
-    TEST_CHECK (status == GrB_OUT_OF_MEMORY) ;
-
     OK (LAGraph_Realloc ((void **) &p, 80, 80, sizeof (char), msg)) ;
     for (int k = 0 ; k < 80 ; k++)
     {
-        TEST_CHECK (p [k] == (char) k) ;
+        TEST_CHECK (p [k] == (char) k) ;    // was FAIL
     }
 
     LAGraph_Realloc_function = NULL ;
@@ -93,7 +101,7 @@ void test_malloc (void)
     OK (LAGraph_Realloc ((void **) &p, 100, 80, sizeof (char), msg)) ;
     for (int k = 0 ; k < 80 ; k++)
     {
-        TEST_CHECK (p [k] == (char) k) ;
+        TEST_CHECK (p [k] == (char) k) ;    // was FAIL
     }
 
     OK (LAGraph_Free ((void **) &p, NULL)) ;

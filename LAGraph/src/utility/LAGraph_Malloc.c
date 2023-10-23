@@ -40,8 +40,7 @@ int LAGraph_Malloc
 
     // compute the size and check for integer overflow
     size_t size ;
-    bool ok = LG_Multiply_size_t (&size, nitems, size_of_item) ;
-    if (!ok || nitems > GrB_INDEX_MAX || size_of_item > GrB_INDEX_MAX)
+    if (!LG_Multiply_size_t (&size, nitems, size_of_item))
     {
         // overflow
         return (GrB_OUT_OF_MEMORY) ;
