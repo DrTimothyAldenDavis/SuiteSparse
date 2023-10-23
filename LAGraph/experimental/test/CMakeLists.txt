@@ -44,6 +44,8 @@ SET_TARGET_PROPERTIES ( lagraphxtest PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphxtest PRIVATE lagraph lagraphtest ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphxtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_compile_definitions ( lagraphxtest PRIVATE LGX_TEST_LIBRARY )
+target_compile_definitions ( lagraphxtest PUBLIC LGX_TEST_DLL )
 
 #-------------------------------------------------------------------------------
 # static lagraphxtest library properties

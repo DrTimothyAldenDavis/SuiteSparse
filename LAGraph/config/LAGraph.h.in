@@ -66,7 +66,7 @@
     #error "The GraphBLAS library must support the v2.0 C API Specification"
 #endif
 
-#if ( _MSC_VER && !__INTEL_COMPILER )
+#if ( _MSC_VER && !__INTEL_COMPILER && LG_DLL )
     #ifdef LG_LIBRARY
         // compiling LAGraph itself, exporting symbols to user apps
         #define LAGRAPH_PUBLIC __declspec ( dllexport )

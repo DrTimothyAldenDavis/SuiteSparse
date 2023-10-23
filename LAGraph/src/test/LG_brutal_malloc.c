@@ -19,6 +19,7 @@
 // LAGr_Init.
 
 #include "LG_internal.h"
+#include "LG_test.h"
 
 //------------------------------------------------------------------------------
 // global variables: LG_brutal and LG_nmalloc
@@ -38,14 +39,14 @@
 // It is decremented by LG_brutal_free.  After LAGraph_Finalize is called,
 // this value should be zero.  If nonzero, a memory leak has occured.
 
-int64_t LG_brutal = -1 ;
-int64_t LG_nmalloc = 0 ;
+LG_TEST_PUBLIC int64_t LG_brutal = -1 ;
+LG_TEST_PUBLIC int64_t LG_nmalloc = 0 ;
 
 //------------------------------------------------------------------------------
 // LG_brutal_malloc
 //------------------------------------------------------------------------------
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_malloc      // return pointer to allocated block of memory
 (
     size_t size             // # of bytes to allocate
@@ -83,7 +84,7 @@ void *LG_brutal_malloc      // return pointer to allocated block of memory
 // LG_brutal_calloc
 //------------------------------------------------------------------------------
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_calloc      // return pointer to allocated block of memory
 (
     size_t nitems,          // # of items to allocate
@@ -103,7 +104,7 @@ void *LG_brutal_calloc      // return pointer to allocated block of memory
 // LG_brutal_free
 //------------------------------------------------------------------------------
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void LG_brutal_free
 (
     void *p                 // block to free
@@ -125,7 +126,7 @@ void LG_brutal_free
 // LG_brutal_realloc
 //------------------------------------------------------------------------------
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_realloc     // return pointer to reallocated memory
 (
     void *p,                // block to realloc

@@ -38,6 +38,8 @@ SET_TARGET_PROPERTIES ( lagraph PROPERTIES
 target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
+target_compile_definitions ( lagraph PRIVATE LG_LIBRARY )
+target_compile_definitions ( lagraph PUBLIC LG_DLL )
 # install ( FILES ${LAGRAPH_INCLUDE} DESTINATION include)
 
 #-------------------------------------------------------------------------------

@@ -33,6 +33,8 @@ SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphx PRIVATE lagraph ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_compile_definitions ( lagraphx PRIVATE LGX_LIBRARY )
+target_compile_definitions ( lagraphx PUBLIC LGX_DLL )
 
 #-------------------------------------------------------------------------------
 # static lagraphx library properties

@@ -25,7 +25,6 @@
 // include files
 //------------------------------------------------------------------------------
 
-#define LG_LIBRARY
 #include <ctype.h>
 #include "LAGraph.h"
 
