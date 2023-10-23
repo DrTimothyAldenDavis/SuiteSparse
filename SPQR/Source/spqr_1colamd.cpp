@@ -542,7 +542,7 @@ template <typename Entry, typename Int> int spqr_1colamd  // TRUE if OK, FALSE o
             spqr_metis <Int> (AT, NULL, 0, TRUE,
                 (Int *) (Q1fill + n1cols), cc) ;
             #else
-            cc-status = CHOLMOD_NOT_INSTALLED ;
+            cc->status = CHOLMOD_NOT_INSTALLED ;
             #endif
             TEST_COVERAGE_RESUME ;
         }
