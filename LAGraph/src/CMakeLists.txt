@@ -34,7 +34,8 @@ SET_TARGET_PROPERTIES ( lagraph PROPERTIES
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraph.h"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    WINDOWS_EXPORT_ALL_SYMBOLS ON
+    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
