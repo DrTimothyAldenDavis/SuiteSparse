@@ -120,12 +120,12 @@ export ( EXPORT CHOLMOD_CUDATargets
 # install export target, config and version files for find_package
 install ( EXPORT CHOLMOD_CUDATargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD_CUDA )
 
 configure_package_config_file (
     ../Config/CHOLMOD_CUDAConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD_CUDA )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
@@ -134,7 +134,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/../CHOLMOD_CUDAConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD_CUDA )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD_CUDA )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -162,5 +162,5 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CHOLMOD_CUDA.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )

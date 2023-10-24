@@ -531,7 +531,7 @@ export ( EXPORT CHOLMODTargets
 # install export target, config and version files for find_package
 install ( EXPORT CHOLMODTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE on )
@@ -545,7 +545,7 @@ set ( SUITESPARSE_IN_BUILD_TREE off )
 configure_package_config_file (
     Config/CHOLMODConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/CHOLMODConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
@@ -554,7 +554,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/target/CHOLMODConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CHOLMODConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CHOLMOD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CHOLMOD )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -609,7 +609,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CHOLMOD.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

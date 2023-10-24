@@ -181,12 +181,12 @@ export ( EXPORT GPUQREngineTargets
 # install export target, config and version files for find_package
 install ( EXPORT GPUQREngineTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GPUQREngine )
 
 configure_package_config_file (
     Config/GPUQREngineConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GPUQREngine )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfigVersion.cmake
@@ -195,7 +195,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngineConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GPUQREngine )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GPUQREngine )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -223,7 +223,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngine.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

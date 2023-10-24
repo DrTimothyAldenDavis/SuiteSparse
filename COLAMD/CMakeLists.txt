@@ -158,7 +158,7 @@ export ( EXPORT COLAMDTargets
 # install export target, config and version files for find_package
 install ( EXPORT COLAMDTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/COLAMD )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -172,7 +172,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/COLAMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/COLAMDConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/COLAMD )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfigVersion.cmake
@@ -181,7 +181,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/COLAMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/COLAMD )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -209,7 +209,7 @@ if ( NOT MSVC )
       NEWLINE_STYLE LF )
   install ( FILES
       ${CMAKE_CURRENT_BINARY_DIR}/COLAMD.pc
-      DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+      DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

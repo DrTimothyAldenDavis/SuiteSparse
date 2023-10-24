@@ -159,7 +159,7 @@ export ( EXPORT BTFTargets
 # install export target, config and version files for find_package
 install ( EXPORT BTFTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -173,7 +173,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/BTFConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/BTFConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
@@ -182,7 +182,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -210,7 +210,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/BTF.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

@@ -191,7 +191,7 @@ export ( EXPORT CXSparseTargets
 # install export target, config and version files for find_package
 install ( EXPORT CXSparseTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CXSparse )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -205,7 +205,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/CXSparseConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/CXSparseConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CXSparse )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfigVersion.cmake
@@ -214,7 +214,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CXSparse )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CXSparse )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -242,7 +242,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CXSparse.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------
