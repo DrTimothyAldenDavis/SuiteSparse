@@ -54,10 +54,21 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 if ( NOPENMP )
     # OpenMP has been disabled
-    set ( OPENMP_CXX_FOUND OFF )
-    set ( OPENMP_C_FOUND OFF )
+    set ( OpenMP_CXX_FOUND OFF )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
+    if ( OpenMP_CXX_FOUND AND OpenMP_CXX_VERSION VERSION_LESS 4.5 )
+        set ( NOPENMP ON )
+    endif ( )
+    if ( DEMO AND OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
+        set ( NOPENMP ON )
+    endif ( )
+    if ( NOPENMP )
+        message ( STATUS "Version of OpenMP is too old." )
+        set ( OpenMP_CXX_FOUND OFF )
+        set ( OpenMP_C_FOUND OFF )
+    endif ( )
 endif ( )
 
 find_package ( SuiteSparse_config 7.3.0
@@ -157,7 +168,7 @@ if ( NOT NSTATIC )
 endif ( )
 
 # OpenMP:
-if ( OPENMP_CXX_FOUND )
+if ( OpenMP_CXX_FOUND )
     message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
     message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
@@ -243,13 +254,13 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    if ( OPENMP_CXX_FOUND )
+    if ( OpenMP_CXX_FOUND )
         add_executable ( paru_demo    "Demo/paru_demo.cpp"   )
         target_link_libraries ( paru_demo
             PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_CXX )
     endif ( )
 
-    if ( OPENMP_C_FOUND )
+    if ( OpenMP_C_FOUND )
         add_executable ( paru_democ   "Demo/paru_democ.c"    )
         target_link_libraries ( paru_democ
             PUBLIC paru SuiteSparse::CHOLMOD SuiteSparse::UMFPACK OpenMP::OpenMP_C )
