@@ -66,17 +66,17 @@
     #error "The GraphBLAS library must support the v2.0 C API Specification"
 #endif
 
-#if ( _MSC_VER && !__INTEL_COMPILER )
+#if ( _MSC_VER && !__INTEL_COMPILER && LG_DLL )
     #ifdef LG_LIBRARY
         // compiling LAGraph itself, exporting symbols to user apps
-        #define LAGRAPH_PUBLIC extern __declspec ( dllexport )
+        #define LAGRAPH_PUBLIC __declspec ( dllexport )
     #else
         // compiling the user application, importing symbols from LAGraph
-        #define LAGRAPH_PUBLIC extern __declspec ( dllimport )
+        #define LAGRAPH_PUBLIC __declspec ( dllimport )
     #endif
 #else
     // for other compilers
-    #define LAGRAPH_PUBLIC extern
+    #define LAGRAPH_PUBLIC
 #endif
 
 #if defined ( __cplusplus )
@@ -376,10 +376,10 @@
 // the following are pointers to the ANSI C11 malloc/calloc/realloc/free
 // functions.
 
-LAGRAPH_PUBLIC void * (* LAGraph_Malloc_function  ) (size_t)         ;
-LAGRAPH_PUBLIC void * (* LAGraph_Calloc_function  ) (size_t, size_t) ;
-LAGRAPH_PUBLIC void * (* LAGraph_Realloc_function ) (void *, size_t) ;
-LAGRAPH_PUBLIC void   (* LAGraph_Free_function    ) (void *)         ;
+LAGRAPH_PUBLIC extern void * (* LAGraph_Malloc_function  ) (size_t)         ;
+LAGRAPH_PUBLIC extern void * (* LAGraph_Calloc_function  ) (size_t, size_t) ;
+LAGRAPH_PUBLIC extern void * (* LAGraph_Realloc_function ) (void *, size_t) ;
+LAGRAPH_PUBLIC extern void   (* LAGraph_Free_function    ) (void *)         ;
 
 //------------------------------------------------------------------------------
 // LAGraph_Malloc:  allocate a block of memory (wrapper for malloc)
@@ -763,7 +763,7 @@ int LAGraph_Init
 // FUTURE: include these as built-in semirings in v2.1 C API, Table 3.9:
 
 // LAGraph semirings, created by LAGraph_Init or LAGr_Init:
-LAGRAPH_PUBLIC GrB_Semiring
+LAGRAPH_PUBLIC extern GrB_Semiring
 
     // LAGraph_plus_first_T: using the GrB_PLUS_MONOID_T monoid and the
     // corresponding GrB_FIRST_T multiplicative operator.

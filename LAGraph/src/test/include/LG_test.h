@@ -17,6 +17,19 @@
 #include <GraphBLAS.h>
 #include <LAGraph.h>
 
+#if ( _MSC_VER && !__INTEL_COMPILER && LG_TEST_DLL )
+    #ifdef LG_TEST_LIBRARY
+        // compiling LAGraph itself, exporting symbols to user apps
+        #define LG_TEST_PUBLIC __declspec ( dllexport )
+    #else
+        // compiling the user application, importing symbols from LAGraph
+        #define LG_TEST_PUBLIC __declspec ( dllimport )
+    #endif
+#else
+    // for other compilers
+    #define LG_TEST_PUBLIC
+#endif
+
 int LG_check_bfs
 (
     // input
@@ -133,32 +146,32 @@ int LG_check_export
 //      all entries cleared, if an out-of-memory failure occurs (GrB_assign
 //      in particular).  See src/test/test_vector for an example.
 
-LAGRAPH_PUBLIC int LG_brutal_setup (char *msg) ;
-LAGRAPH_PUBLIC int LG_brutal_teardown (char *msg) ;
+LG_TEST_PUBLIC int LG_brutal_setup (char *msg) ;
+LG_TEST_PUBLIC int LG_brutal_teardown (char *msg) ;
 
-LAGRAPH_PUBLIC int64_t LG_brutal ;
-LAGRAPH_PUBLIC int64_t LG_nmalloc ;
+LG_TEST_PUBLIC extern int64_t LG_brutal ;
+LG_TEST_PUBLIC extern int64_t LG_nmalloc ;
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_malloc      // return pointer to allocated block of memory
 (
     size_t size             // # of bytes to allocate
 ) ;
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_calloc      // return pointer to allocated block of memory
 (
     size_t nitems,          // # of items to allocate
     size_t itemsize         // # of bytes per item
 ) ;
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void LG_brutal_free
 (
     void *p                 // block to free
 ) ;
 
-LAGRAPH_PUBLIC
+LG_TEST_PUBLIC
 void *LG_brutal_realloc     // return pointer to reallocated memory
 (
     void *p,                // block to realloc

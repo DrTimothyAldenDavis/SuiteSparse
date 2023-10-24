@@ -27,59 +27,59 @@ bool LG_init_has_been_called = false ;
 
 // LAGraph_plus_first_T: using the GrB_PLUS_MONOID_T monoid and the
 // corresponding GrB_FIRST_T multiplicative operator.
-GrB_Semiring LAGraph_plus_first_int8   = NULL ;
-GrB_Semiring LAGraph_plus_first_int16  = NULL ;
-GrB_Semiring LAGraph_plus_first_int32  = NULL ;
-GrB_Semiring LAGraph_plus_first_int64  = NULL ;
-GrB_Semiring LAGraph_plus_first_uint8  = NULL ;
-GrB_Semiring LAGraph_plus_first_uint16 = NULL ;
-GrB_Semiring LAGraph_plus_first_uint32 = NULL ;
-GrB_Semiring LAGraph_plus_first_uint64 = NULL ;
-GrB_Semiring LAGraph_plus_first_fp32   = NULL ;
-GrB_Semiring LAGraph_plus_first_fp64   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_int8   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_int16  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_int32  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_int64  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_uint8  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_uint16 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_uint32 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_uint64 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_fp32   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_first_fp64   = NULL ;
 
 // LAGraph_plus_second_T: using the GrB_PLUS_MONOID_T monoid and the
 // corresponding GrB_SECOND_T multiplicative operator.
-GrB_Semiring LAGraph_plus_second_int8   = NULL ;
-GrB_Semiring LAGraph_plus_second_int16  = NULL ;
-GrB_Semiring LAGraph_plus_second_int32  = NULL ;
-GrB_Semiring LAGraph_plus_second_int64  = NULL ;
-GrB_Semiring LAGraph_plus_second_uint8  = NULL ;
-GrB_Semiring LAGraph_plus_second_uint16 = NULL ;
-GrB_Semiring LAGraph_plus_second_uint32 = NULL ;
-GrB_Semiring LAGraph_plus_second_uint64 = NULL ;
-GrB_Semiring LAGraph_plus_second_fp32   = NULL ;
-GrB_Semiring LAGraph_plus_second_fp64   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_int8   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_int16  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_int32  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_int64  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_uint8  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_uint16 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_uint32 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_uint64 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_fp32   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_second_fp64   = NULL ;
 
 // LAGraph_plus_one_T: using the GrB_PLUS_MONOID_T monoid and the
 // corresponding GrB_ONEB_T multiplicative operator.
-GrB_Semiring LAGraph_plus_one_int8   = NULL ;
-GrB_Semiring LAGraph_plus_one_int16  = NULL ;
-GrB_Semiring LAGraph_plus_one_int32  = NULL ;
-GrB_Semiring LAGraph_plus_one_int64  = NULL ;
-GrB_Semiring LAGraph_plus_one_uint8  = NULL ;
-GrB_Semiring LAGraph_plus_one_uint16 = NULL ;
-GrB_Semiring LAGraph_plus_one_uint32 = NULL ;
-GrB_Semiring LAGraph_plus_one_uint64 = NULL ;
-GrB_Semiring LAGraph_plus_one_fp32   = NULL ;
-GrB_Semiring LAGraph_plus_one_fp64   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_int8   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_int16  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_int32  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_int64  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_uint8  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_uint16 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_uint32 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_uint64 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_fp32   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_plus_one_fp64   = NULL ;
 
 
 // use LAGraph_any_one_bool, etc
 
 // LAGraph_any_one_T: using the GrB_MIN_MONOID_T for non-boolean types
 // or GrB_LOR_MONOID_BOOL for boolean, and the GrB_ONEB_T multiplicative op.
-GrB_Semiring LAGraph_any_one_bool   = NULL ;
-GrB_Semiring LAGraph_any_one_int8   = NULL ;
-GrB_Semiring LAGraph_any_one_int16  = NULL ;
-GrB_Semiring LAGraph_any_one_int32  = NULL ;
-GrB_Semiring LAGraph_any_one_int64  = NULL ;
-GrB_Semiring LAGraph_any_one_uint8  = NULL ;
-GrB_Semiring LAGraph_any_one_uint16 = NULL ;
-GrB_Semiring LAGraph_any_one_uint32 = NULL ;
-GrB_Semiring LAGraph_any_one_uint64 = NULL ;
-GrB_Semiring LAGraph_any_one_fp32   = NULL ;
-GrB_Semiring LAGraph_any_one_fp64   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_bool   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_int8   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_int16  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_int32  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_int64  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_uint8  = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_uint16 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_uint32 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_uint64 = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_fp32   = NULL ;
+LAGRAPH_PUBLIC GrB_Semiring LAGraph_any_one_fp64   = NULL ;
 
 //------------------------------------------------------------------------------
 // LAGr_Init

@@ -25,7 +25,6 @@
 // include files
 //------------------------------------------------------------------------------
 
-#define LG_LIBRARY
 #include <ctype.h>
 #include "LAGraph.h"
 
@@ -353,11 +352,11 @@ MM_storage_enum ;
 // LG_PART and LG_PARTITION: definitions for partitioning an index range
 //------------------------------------------------------------------------------
 
-LAGRAPH_PUBLIC
+LAGRAPH_PUBLIC extern
 int LG_nthreads_outer ; // # of threads to use at the higher level of a nested
                         // parallel region in LAGraph.  Default: 1.
 
-LAGRAPH_PUBLIC
+LAGRAPH_PUBLIC extern
 int LG_nthreads_inner ; // # of threads to use at the lower level of a nested
                         // parallel region, or to use inside GraphBLAS.
                         // Default: the value obtained by omp_get_max_threads

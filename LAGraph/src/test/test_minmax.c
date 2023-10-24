@@ -185,7 +185,7 @@ void test_minmax (void)
         TEST_CASE (aname) ;
         printf ("\n============= %2d: %s\n", k, aname) ;
         snprintf (filename, LEN, LG_DATA_DIR "%s", aname) ;
-        FILE *f = fopen (filename, "r") ;
+        FILE *f = fopen (filename, "rb") ;
         TEST_CHECK (f != NULL) ;
         OK (LAGraph_MMRead (&A, f, msg)) ;
         OK (fclose (f)) ;
@@ -273,7 +273,7 @@ void test_minmax_int64 (void)
         TEST_CASE (aname) ;
         printf ("\n============= %2d: %s\n", k, aname) ;
         snprintf (filename, LEN, LG_DATA_DIR "%s", aname) ;
-        FILE *f = fopen (filename, "r") ;
+        FILE *f = fopen (filename, "rb") ;
         TEST_CHECK (f != NULL) ;
         OK (LAGraph_MMRead (&A, f, msg)) ;
         OK (fclose (f)) ;
@@ -350,7 +350,7 @@ void test_minmax_uint64 (void)
         TEST_CASE (aname) ;
         printf ("\n============= %2d: %s\n", k, aname) ;
         snprintf (filename, LEN, LG_DATA_DIR "%s", aname) ;
-        FILE *f = fopen (filename, "r") ;
+        FILE *f = fopen (filename, "rb") ;
         TEST_CHECK (f != NULL) ;
         OK (LAGraph_MMRead (&A, f, msg)) ;
         OK (fclose (f)) ;

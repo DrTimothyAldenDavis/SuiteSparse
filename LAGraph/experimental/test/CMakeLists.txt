@@ -41,10 +41,11 @@ SET_TARGET_PROPERTIES ( lagraphxtest PROPERTIES
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
-    WINDOWS_EXPORT_ALL_SYMBOLS ON
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphxtest PRIVATE lagraph lagraphtest ${GRAPHBLAS_LIBRARIES} )
 target_link_directories ( lagraphxtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_compile_definitions ( lagraphxtest PRIVATE LGX_TEST_LIBRARY )
+target_compile_definitions ( lagraphxtest PUBLIC LGX_TEST_DLL )
 
 #-------------------------------------------------------------------------------
 # static lagraphxtest library properties
@@ -57,8 +58,7 @@ SET_TARGET_PROPERTIES ( lagraphxtest_static PROPERTIES
     POSITION_INDEPENDENT_CODE OFF
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
-    C_STANDARD 11
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    C_STANDARD 11 )
 
 if ( MSVC )
     set_target_properties ( lagraphxtest_static PROPERTIES
