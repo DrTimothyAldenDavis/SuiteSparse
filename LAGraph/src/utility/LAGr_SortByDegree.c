@@ -118,8 +118,9 @@ int LAGr_SortByDegree
     // construct the pair [D,P] to sort
     //--------------------------------------------------------------------------
 
+    int64_t k;
     #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (int64_t k = 0 ; k < n ; k++)
+    for (k = 0 ; k < n ; k++)
     {
         D [k] = 0 ;
         P [k] = k ;
@@ -133,7 +134,7 @@ int LAGr_SortByDegree
     {
         // sort [D,P] in ascending order of degree, tie-breaking on P
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int64_t k = 0 ; k < nvals ; k++)
+        for (k = 0 ; k < nvals ; k++)
         {
             D [W0 [k]] = W1 [k] ;
         }
@@ -142,7 +143,7 @@ int LAGr_SortByDegree
     {
         // sort [D,P] in descending order of degree, tie-breaking on P
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int64_t k = 0 ; k < nvals ; k++)
+        for (k = 0 ; k < nvals ; k++)
         {
             D [W0 [k]] = -W1 [k] ;
         }

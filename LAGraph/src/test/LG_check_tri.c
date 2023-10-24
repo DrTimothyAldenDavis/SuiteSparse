@@ -85,10 +85,11 @@ int LG_check_tri        // -1 if out of memory, 0 if successful
     Ai = Aj ;       // pretend A is symmetric and in CSC format instead
 
     // masked dot-product method
+    int64_t j;
     #if !defined ( COVERAGE )
     #pragma omp parallel for reduction(+:ntriangles) schedule(dynamic,1024)
     #endif
-    for (int64_t j = 0 ; j < n ; j++)
+    for (j = 0 ; j < n ; j++)
     {
         // for each entry in the lower triangular part of A
         for (int64_t p = Ap [j] ; p < Ap [j+1] ; p++)

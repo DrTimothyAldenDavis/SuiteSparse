@@ -321,16 +321,16 @@ int LAGraph_FastGraphletTransform
 
     for (int i = 0; i < tile_cnt; ++i) C_Tiles [i] = NULL ;
 
-#define TRY(method)                     \
-    {                                   \
-        GrB_Info info = method ;        \
-        if (info != GrB_SUCCESS)        \
-        {                               \
-            GrB_free (&A_i) ;           \
-            GrB_free (&C_Tiles [i]) ;   \
-            GrB_free (&e) ;             \
-            continue ;                  \
-        }                               \
+#define TRY(method)                         \
+    {                                       \
+        GrB_Info info = method ;            \
+        if (info != GrB_SUCCESS)            \
+        {                                   \
+            GrB_free (&A_i) ;               \
+            GrB_free (&C_Tiles [i_tile]) ;  \
+            GrB_free (&e) ;                 \
+            continue ;                      \
+        }                                   \
     }
 
 //  GxB_set (GxB_NTHREADS, 1) ;
@@ -338,22 +338,23 @@ int LAGraph_FastGraphletTransform
     LG_TRY (LAGraph_GetNumThreads (&save_nthreads_outer, &save_nthreads_inner, msg)) ;
     LG_TRY (LAGraph_SetNumThreads (1, 1, msg)) ;
 
+    int i_tile;
     #pragma omp parallel for num_threads(omp_get_max_threads()) schedule(dynamic,1)
-    for (int i = 0; i < tile_cnt; ++i) {
+    for (i_tile = 0; i_tile < tile_cnt; ++i_tile) {
         GrB_Matrix A_i = NULL, e = NULL ;
 
         TRY (GrB_Matrix_new (&e, GrB_INT64, n, 1)) ;
         TRY (GrB_assign (e, NULL, NULL, (int64_t) 1, GrB_ALL, n, GrB_ALL, 1, NULL)) ;
 
-        TRY (GrB_Matrix_new (&A_i, GrB_INT64, Tile_nrows [i], n)) ;
-        TRY (GrB_Matrix_new (&C_Tiles [i], GrB_INT64, Tile_nrows [i], 1)) ;
+        TRY (GrB_Matrix_new (&A_i, GrB_INT64, Tile_nrows [i_tile], n)) ;
+        TRY (GrB_Matrix_new (&C_Tiles [i_tile], GrB_INT64, Tile_nrows [i_tile], 1)) ;
 
-        TRY (GrB_mxm (A_i, NULL, NULL, GxB_PLUS_PAIR_INT64, A_Tiles [i], A, NULL)) ;
-        TRY (GrB_eWiseAdd (A_i, NULL, NULL, GrB_MINUS_INT64, A_i, D_Tiles [i], NULL)) ;
+        TRY (GrB_mxm (A_i, NULL, NULL, GxB_PLUS_PAIR_INT64, A_Tiles [i_tile], A, NULL)) ;
+        TRY (GrB_eWiseAdd (A_i, NULL, NULL, GrB_MINUS_INT64, A_i, D_Tiles [i_tile], NULL)) ;
         TRY (GrB_apply (A_i, NULL, NULL, Sub_one_mult, A_i, NULL)) ;
 
         // multiply A_i by it on the right
-        TRY (GrB_mxm (C_Tiles [i], NULL, NULL, GxB_PLUS_FIRST_INT64, A_i, e, NULL)) ;
+        TRY (GrB_mxm (C_Tiles [i_tile], NULL, NULL, GxB_PLUS_FIRST_INT64, A_i, e, NULL)) ;
 
         GrB_free (&A_i) ;
         GrB_free (&e) ;
@@ -445,15 +446,15 @@ int LAGraph_FastGraphletTransform
             while (info != GxB_EXHAUSTED)
             {
                 // iterate over entries in A(i,:)
-                GrB_Index i = GxB_rowIterator_getRowIndex (iterator) ;
-                if (i >= row2) break ;
+                GrB_Index idx2 = GxB_rowIterator_getRowIndex (iterator) ;
+                if (idx2 >= row2) break ;
                 int neighbor_cnt = 0 ;
                 while (info == GrB_SUCCESS)
                 {
-                    // working with edge (i, j)
+                    // working with edge (idx2, j)
                     GrB_Index j = GxB_rowIterator_getColIndex (iterator) ;
 
-                    if (j > i) {
+                    if (j > idx2) {
                         neighbors [neighbor_cnt++] = j ;
                         isNeighbor [j] = 1 ;
                     }
@@ -482,7 +483,7 @@ int LAGraph_FastGraphletTransform
                         while (info == GrB_SUCCESS) { // iterate over neighbors of k
                             GrB_Index l = GxB_rowIterator_getColIndex (riterator) ;
                             if (l > k && isNeighbor [l] == -1) {
-                                f15[i]++ ;
+                                f15[idx2]++ ;
                                 f15[j]++ ;
                                 f15[k]++ ;
                                 f15[l]++ ;
