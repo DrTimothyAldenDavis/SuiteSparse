@@ -377,9 +377,10 @@ int main (int argc, char **argv)
             bool ok = true ;
 
             // assume the I/O system can handle 2-way parallelism
+            int layer;
             #pragma omp parallel for schedule(dynamic,1) reduction(&&:ok) \
                 num_threads (2)
-            for (int layer = first_layer ; layer < nlayers ; layer++)
+            for (layer = first_layer ; layer < nlayers ; layer++)
             {
                 // read the neuron layer: W [layer]
                 char my_filename [1024] ;
@@ -428,7 +429,7 @@ int main (int argc, char **argv)
             printf ("read net time %g sec\n", t) ;
 
             double nedges = 0 ;
-            for (int layer = 0 ; layer < nlayers ; layer++)
+            for (layer = 0 ; layer < nlayers ; layer++)
             {
                 GrB_Index nvals ;
                 GRB_TRY (GrB_Matrix_nvals (&nvals, W [layer])) ;

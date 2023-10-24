@@ -105,10 +105,11 @@ int LG_check_ktruss
         //----------------------------------------------------------------------
 
         // masked dot-product method: C{C}=C*C' using the PLUS_ONE semiring
+        int64_t i;
         #if !defined ( COVERAGE )
         #pragma omp parallel for schedule(dynamic,1024)
         #endif
-        for (int64_t i = 0 ; i < n ; i++)
+        for (i = 0 ; i < n ; i++)
         {
             // for each entry in C(i,:)
             for (int64_t p = Cp [i] ; p < Cp [i+1] ; p++)

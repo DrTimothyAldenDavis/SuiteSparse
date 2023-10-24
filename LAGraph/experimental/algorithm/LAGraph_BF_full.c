@@ -218,8 +218,9 @@ GrB_Info LAGraph_BF_full
     LG_TRY (LAGraph_GetNumThreads (&nthreads_outer, &nthreads_inner, msg)) ;
     nthreads = nthreads_outer * nthreads_inner ;
     printf ("nthreads %d\n", nthreads) ;
+    int64_t k;
     #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (GrB_Index k = 0; k < nz; k++)
+    for (k = 0; k < nz; k++)
     {
         if (w[k] == 0)             //diagonal entries
         {
@@ -292,7 +293,7 @@ GrB_Info LAGraph_BF_full
     LAGRAPH_TRY (LAGraph_Malloc ((void **) &h , nz, sizeof(GrB_Index), msg)) ;
     LAGRAPH_TRY (LAGraph_Malloc ((void **) &pi, nz, sizeof(GrB_Index), msg)) ;
 
-    for (GrB_Index k = 0; k < nz; k++)
+    for (k = 0; k < nz; k++)
     {
         w [k] = W[k].w ;
         h [k] = W[k].h ;

@@ -408,7 +408,8 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         //----------------------------------------------------------------------
 
         // thread tid works on rows range[tid]:range[tid+1]-1 of A and T
-        for (int tid = 0 ; tid <= nthreads ; tid++)
+        int tid;
+        for (tid = 0 ; tid <= nthreads ; tid++)
         {
             range [tid] = (n * tid + nthreads - 1) / nthreads ;
         }
@@ -418,7 +419,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         //----------------------------------------------------------------------
 
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             for (int64_t i = range [tid] ; i < range [tid+1] ; i++)
             {
@@ -431,7 +432,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         // count = cumsum (count)
         //----------------------------------------------------------------------
 
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             count [tid + 1] += count [tid] ;
         }
@@ -443,7 +444,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         // T (i,:) consists of the first FASTSV_SAMPLES of A (i,:).
 
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             GrB_Index p = count [tid] ;
             Tp [range [tid]] = p ;
@@ -553,7 +554,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
             &Tx_size, &T_iso, &T_jumbled, NULL)) ;
 
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             GrB_Index p = Ap [range [tid]] ;
             // thread tid scans A (range [tid]:range [tid+1]-1,:),
@@ -598,7 +599,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
 
         // Compact empty space out of Tj not filled in from the above phase.
         nvals = 0 ;
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             memcpy (Tj + nvals, Tj + Tp [range [tid]],
                 sizeof (GrB_Index) * count [tid]) ;
@@ -608,7 +609,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
 
         // Compact empty space out of Tp
         #pragma omp parallel for num_threads(nthreads) schedule(static)
-        for (int tid = 0 ; tid < nthreads ; tid++)
+        for (tid = 0 ; tid < nthreads ; tid++)
         {
             GrB_Index p = Tp [range [tid]] ;
             for (int64_t i = range [tid] ; i < range [tid+1] ; i++)

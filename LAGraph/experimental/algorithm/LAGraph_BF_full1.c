@@ -248,8 +248,9 @@ GrB_Info LAGraph_BF_full1
     LG_TRY (LAGraph_GetNumThreads (&nthreads_outer, &nthreads_inner, msg)) ;
     nthreads = nthreads_outer * nthreads_inner ;
     printf ("nthreads %d\n", nthreads) ;
+    int64_t k;
     #pragma omp parallel for num_threads(nthreads) schedule(static)
-    for (GrB_Index k = 0; k < nz; k++)
+    for (k = 0; k < nz; k++)
     {
         W[k] = (BF1_Tuple3_struct) { .w = w[k], .h = 1, .pi = I[k] + 1 };
     }
@@ -350,7 +351,7 @@ GrB_Info LAGraph_BF_full1
 
     GRB_TRY (GrB_Vector_extractTuples_UDT (I, (void *) W, &n, d));
 
-    for (GrB_Index k = 0; k < n; k++)
+    for (k = 0; k < n; k++)
     {
         w [k] = W[k].w ;
         h [k] = W[k].h ;

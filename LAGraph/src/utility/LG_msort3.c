@@ -440,7 +440,7 @@ int LG_msort3
         //----------------------------------------------------------------------
 
         // this could be done in parallel if ntasks was large
-        for (int tid = 0 ; tid < ntasks ; tid += 2*nt)
+        for (tid = 0 ; tid < ntasks ; tid += 2*nt)
         {
             // create 2*nt tasks to merge two A sublists into one W sublist
             LG_msort_3b_create_merge_tasks (
@@ -469,7 +469,7 @@ int LG_msort3
         //----------------------------------------------------------------------
 
         // this could be done in parallel if ntasks was large
-        for (int tid = 0 ; tid < ntasks ; tid += 2*nt)
+        for (tid = 0 ; tid < ntasks ; tid += 2*nt)
         {
             // create 2*nt tasks to merge two W sublists into one A sublist
             LG_msort_3b_create_merge_tasks (
