@@ -161,7 +161,7 @@ export ( EXPORT CAMDTargets
 # install export target, config and version files for find_package
 install ( EXPORT CAMDTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CAMD )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -175,7 +175,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/CAMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/CAMDConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CAMD )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfigVersion.cmake
@@ -184,7 +184,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/CAMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CAMD )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -212,7 +212,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CAMD.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

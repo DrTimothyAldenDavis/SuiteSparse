@@ -265,7 +265,7 @@ export ( EXPORT UMFPACKTargets
 # install export target, config and version files for find_package
 install ( EXPORT UMFPACKTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -279,7 +279,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/UMFPACKConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/UMFPACKConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
@@ -288,7 +288,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/UMFPACK )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -343,7 +343,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/UMFPACK.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

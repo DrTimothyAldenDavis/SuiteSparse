@@ -171,7 +171,7 @@ export ( EXPORT AMDTargets
 # install export target, config and version files for find_package
 install ( EXPORT AMDTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/AMD )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -185,7 +185,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/AMDConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/AMDConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/AMD )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/AMDConfigVersion.cmake
@@ -194,7 +194,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/AMDConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/AMD )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/AMD )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -222,7 +222,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/AMD.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

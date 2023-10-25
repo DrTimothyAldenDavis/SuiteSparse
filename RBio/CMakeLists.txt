@@ -159,7 +159,7 @@ export ( EXPORT RBioTargets
 # install export target, config and version files for find_package
 install ( EXPORT RBioTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/RBio )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -173,7 +173,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/RBioConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/RBioConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/RBio )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
@@ -182,7 +182,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/RBio )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/RBio )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -210,7 +210,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/RBio.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

@@ -325,7 +325,7 @@ export ( EXPORT KLUTargets
 # install export target, config and version files for find_package
 install ( EXPORT KLUTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -339,7 +339,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/KLUConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/KLUConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
@@ -348,7 +348,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file for KLU
@@ -376,7 +376,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -404,7 +404,7 @@ if ( NOT NCHOLMOD )
     # install export target, config and version files for find_package
     install ( EXPORT KLU_CHOLMODTargets
         NAMESPACE SuiteSparse::
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU_CHOLMOD )
 
     # generate config file to be used in common build tree
     set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -418,7 +418,7 @@ if ( NOT NCHOLMOD )
     configure_package_config_file (
         Config/KLU_CHOLMODConfig.cmake.in
         ${CMAKE_CURRENT_BINARY_DIR}/target/KLU_CHOLMODConfig.cmake
-        INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+        INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU_CHOLMOD )
 
     write_basic_package_version_file (
         ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfigVersion.cmake
@@ -427,7 +427,7 @@ if ( NOT NCHOLMOD )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfig.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMODConfigVersion.cmake
-        DESTINATION ${SUITESPARSE_LIBDIR}/cmake/KLU_CHOLMOD )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU_CHOLMOD )
 
     #---------------------------------------------------------------------------
     # create pkg-config file for KLU_CHOLMOD
@@ -455,7 +455,7 @@ if ( NOT NCHOLMOD )
             NEWLINE_STYLE LF )
         install ( FILES
             ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMOD.pc
-            DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+            DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
     endif ( )
 endif ( )
 

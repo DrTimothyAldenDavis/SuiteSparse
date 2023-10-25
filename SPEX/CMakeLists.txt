@@ -216,7 +216,7 @@ export ( EXPORT SPEXTargets
 # install export target, config and version files for find_package
 install ( EXPORT SPEXTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SPEX )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
@@ -230,7 +230,7 @@ set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
     Config/SPEXConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/target/SPEXConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SPEX )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
@@ -239,7 +239,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SPEX )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SPEX )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -294,7 +294,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/SPEX.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

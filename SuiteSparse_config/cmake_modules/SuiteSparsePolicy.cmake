@@ -174,11 +174,15 @@ if ( INSIDE_SUITESPARSE )
     set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
 endif ( )
 
-message ( STATUS "Install lib:     ${SUITESPARSE_LIBDIR}" )
-message ( STATUS "Install include: ${SUITESPARSE_INCLUDEDIR}" )
-message ( STATUS "Install bin:     ${SUITESPARSE_BINDIR}" )
-message ( STATUS "Install rpath:   ${CMAKE_INSTALL_RPATH}" )
-message ( STATUS "Build   rpath:   ${CMAKE_BUILD_RPATH}" )
+set ( SUITESPARSE_PKGFILEDIR ${SUITESPARSE_LIBDIR} CACHE STRING
+    "Directory where CMake Config and pkg-config files will be installed" )
+
+message ( STATUS "Install lib:      ${SUITESPARSE_LIBDIR}" )
+message ( STATUS "Install include:  ${SUITESPARSE_INCLUDEDIR}" )
+message ( STATUS "Install bin:      ${SUITESPARSE_BINDIR}" )
+message ( STATUS "Install pkg-file: ${SUITESPARSE_PKGFILEDIR}" )
+message ( STATUS "Install rpath:    ${CMAKE_INSTALL_RPATH}" )
+message ( STATUS "Build   rpath:    ${CMAKE_BUILD_RPATH}" )
 
 if ( NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
