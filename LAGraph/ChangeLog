@@ -1,3 +1,8 @@
+Version 1.0.3: IN PROGRESS
+
+    * cmake build system: revised to work in SuiteSparse, and port to 32-bit
+        platforms
+
 Version 1.0.2: Aug 2, 2023
 
     * port: removed GxB_SelectOp so LAGraph v1.0.2 can be compiled with

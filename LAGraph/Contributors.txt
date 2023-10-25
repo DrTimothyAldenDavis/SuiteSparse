@@ -22,6 +22,7 @@ Contributors (in alphabetical order):
     Tze Meng Low,      Carnegie Mellon University
     Tim Mattson,       Intel
     Scott McMillan,    Carnegie Mellon University
+    Markus Muetzel,
     Michel Pelletier,  Graphegon
     Gabor Szarnyas,    CWI Amsterdam, The Netherlands
     Erik Welch,        Anaconda, NVIDIA

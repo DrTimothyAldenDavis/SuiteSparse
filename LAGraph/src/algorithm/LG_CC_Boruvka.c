@@ -66,7 +66,7 @@ static GrB_Info Reduce_assign
 //------------------------------------------------------------------------------
 
 // Rather than using a global variable to access the Px array, it is passed to
-// the select function as a uint64_t value that contains a pointer to Px.  It
+// the select function as a uintptr_t value that contains a pointer to Px.  It
 // might be better to create a user-defined type for y, but this works fine.
 
 void my_select_func (void *z, const void *x,
@@ -131,6 +131,13 @@ int LG_CC_Boruvka
         LAGRAPH_SYMMETRIC_STRUCTURE_REQUIRED,
         "G->A must be known to be symmetric") ;
 
+    // determine the pointer size
+    GrB_Type UintPtr_type =
+        ((sizeof (uintptr_t) == sizeof (uint32_t)) ? GrB_UINT32 :
+        ((sizeof (uintptr_t) == sizeof (uint64_t)) ? GrB_UINT64 : NULL)) ;
+    LG_ASSERT_MSG (UintPtr_type != NULL,
+        GrB_NOT_IMPLEMENTED, "system has an unsupported sizeof (uintptr_t)") ;
+
     //--------------------------------------------------------------------------
     // initializations
     //--------------------------------------------------------------------------
@@ -163,7 +170,7 @@ int LG_CC_Boruvka
     GRB_TRY (GrB_Vector_extractTuples (I, Px, &n, parent)) ;
 
     GRB_TRY (GrB_IndexUnaryOp_new (&select_op, my_select_func, GrB_BOOL,
-        /* aij: ignored */ GrB_BOOL, /* y: pointer to Px */ GrB_UINT64)) ;
+        /* aij: ignored */ GrB_BOOL, /* y: pointer to Px */ UintPtr_type)) ;
 
     GrB_Index nvals ;
     GRB_TRY (GrB_Matrix_nvals (&nvals, S)) ;
@@ -249,7 +256,18 @@ int LG_CC_Boruvka
 
         // This step is the costliest part of this algorithm when dealing with
         // large matrices.
-        GRB_TRY (GrB_select (S, NULL, NULL, select_op, S, (uint64_t) Px, NULL));
+        if (sizeof (void *) == sizeof (uint32_t))
+        {
+            // 32-bit platforms
+            GRB_TRY (GrB_Matrix_select_UINT32 (S, NULL, NULL, select_op, S,
+                (uintptr_t) Px, NULL)) ;
+        }
+        else
+        {
+            // 64-bit platforms
+            GRB_TRY (GrB_Matrix_select_UINT64 (S, NULL, NULL, select_op, S,
+                (uintptr_t) Px, NULL)) ;
+        }
         GRB_TRY (GrB_Matrix_nvals (&nvals, S)) ;
     }
 
