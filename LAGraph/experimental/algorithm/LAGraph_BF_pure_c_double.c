@@ -44,6 +44,8 @@
     LAGraph_Free ((void**) &pi, NULL) ;     \
 }
 
+#include <float.h>
+
 #include "LG_internal.h"
 #include <LAGraphX.h>
 
@@ -122,7 +124,7 @@ GrB_Info LAGraph_BF_pure_c_double
         {
             i = I[k];
             j = J[k];
-            if (d[j] > d[i] + W[k])
+            if (d[j] > d[i] + W[k] + DBL_EPSILON*d[j])
             {
                 LG_FREE_ALL ;
                 return (GrB_NO_VALUE) ;
