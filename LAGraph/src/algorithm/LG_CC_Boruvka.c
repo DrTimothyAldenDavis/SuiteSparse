@@ -29,6 +29,12 @@
 
 #include "LG_internal.h"
 
+#if !LAGRAPH_SUITESPARSE
+
+// FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
+// with SIGILL, so it is disabled (for now) when using SuiteSparse:GraphBLAS.
+// When using SuiteSparse, LG_CC_FastSV6 is used instead.
+
 //------------------------------------------------------------------------------
 // Reduce_assign
 //------------------------------------------------------------------------------
@@ -280,3 +286,5 @@ int LG_CC_Boruvka
     LG_FREE_WORK ;
     return (GrB_SUCCESS) ;
 }
+
+#endif

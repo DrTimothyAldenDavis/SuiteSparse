@@ -54,6 +54,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
     char *msg
 ) ;
 
+#if !LAGRAPH_SUITESPARSE
 int LG_CC_Boruvka
 (
     // output:
@@ -62,5 +63,6 @@ int LG_CC_Boruvka
     const LAGraph_Graph G,  // input graph, not modified
     char *msg
 ) ;
+#endif
 
 #endif

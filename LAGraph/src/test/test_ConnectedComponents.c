@@ -134,15 +134,17 @@ void test_cc_matrices (void)
             #endif
 
             // find the connected components with LG_CC_Boruvka
+            int result = GrB_SUCCESS ;
+            #if !LAGRAPH_SUITESPARSE
             printf ("\n------ CC_BORUVKA:\n") ;
             OK (LG_CC_Boruvka (&C2, G, msg)) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
             OK (LG_check_cc (C2, G, msg)) ;
             OK (GrB_free (&C2)) ;
-
-            int result = LG_CC_Boruvka (NULL, G, msg) ;
+            result = LG_CC_Boruvka (NULL, G, msg) ;
             TEST_CHECK (result == GrB_NULL_POINTER) ;
+            #endif
 
             if (trial == 0)
             {
@@ -183,8 +185,11 @@ void test_cc_errors (void)
     printf ("\n") ;
 
     // check for null pointers
-    int result = LG_CC_Boruvka (NULL, NULL, msg) ;
+    int result = GrB_SUCCESS ;
+    #if !LAGRAPH_SUITESPARSE
+    result = LG_CC_Boruvka (NULL, NULL, msg) ;
     TEST_CHECK (result == GrB_NULL_POINTER) ;
+    #endif
     #if LAGRAPH_SUITESPARSE
     result = LG_CC_FastSV6 (NULL, NULL, msg) ;
     TEST_CHECK (result == GrB_NULL_POINTER) ;
@@ -200,9 +205,11 @@ void test_cc_errors (void)
     OK (LAGraph_New (&G, &A, LAGraph_ADJACENCY_DIRECTED, msg)) ;
     TEST_CHECK (A == NULL) ;    // A has been moved into G->A
 
+    #if !LAGRAPH_SUITESPARSE
     result = LG_CC_Boruvka (&C, G, msg) ;
     TEST_CHECK (result == -1001) ;
     printf ("result expected: %d msg:\n%s\n", result, msg) ;
+    #endif
     #if LAGRAPH_SUITESPARSE
     result = LG_CC_FastSV6 (&C, G, msg) ;
     TEST_CHECK (result == -1001) ;
