@@ -29,11 +29,12 @@
 
 #include "LG_internal.h"
 
-#if !LAGRAPH_SUITESPARSE
+#if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
 
 // FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
-// with SIGILL, so it is disabled (for now) when using SuiteSparse:GraphBLAS.
-// When using SuiteSparse, LG_CC_FastSV6 is used instead.
+// with SIGILL, so it is disabled (for now) when using a 32-bit platform.  When
+// using SuiteSparse, LAGr_ConnectedComponents uses LG_CC_FastSV6 instead
+// anyway.
 
 //------------------------------------------------------------------------------
 // Reduce_assign
@@ -143,6 +144,8 @@ int LG_CC_Boruvka
     #if defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX
     GrB_Type UintPtr_type = GrB_UINT64;
     #elif defined (UINT32_MAX) && UINT32_MAX == UINTPTR_MAX
+    // 32-bit case: this works on all but Alpine Linux x86, so LG_CC_Boruvka is
+    // disabled for now (see the test above)
     GrB_Type UintPtr_type = GrB_UINT32;
     #else
     #  error "system has an unsupported sizeof (uintptr_t)"

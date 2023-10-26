@@ -1,5 +1,6 @@
 name: arch-emu
 on:
+  workflow_dispatch:
   push:
     branches-ignore:
       - '**/dev2'
