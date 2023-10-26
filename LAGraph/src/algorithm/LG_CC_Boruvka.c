@@ -25,6 +25,8 @@
 // slower in general than LG_CC_FastSV6, which uses GxB pack/unpack methods
 // for faster access to the contents of the matrices and vectors.
 
+#include <stdint.h>
+
 #include "LG_internal.h"
 
 //------------------------------------------------------------------------------
@@ -132,11 +134,13 @@ int LG_CC_Boruvka
         "G->A must be known to be symmetric") ;
 
     // determine the pointer size
-    GrB_Type UintPtr_type =
-        ((sizeof (uintptr_t) == sizeof (uint32_t)) ? GrB_UINT32 :
-        ((sizeof (uintptr_t) == sizeof (uint64_t)) ? GrB_UINT64 : NULL)) ;
-    LG_ASSERT_MSG (UintPtr_type != NULL,
-        GrB_NOT_IMPLEMENTED, "system has an unsupported sizeof (uintptr_t)") ;
+    #if defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX
+    GrB_Type UintPtr_type = GrB_UINT64;
+    #elif defined (UINT32_MAX) && UINT32_MAX == UINTPTR_MAX
+    GrB_Type UintPtr_type = GrB_UINT32;
+    #else
+    #  error "system has an unsupported sizeof (uintptr_t)"
+    #endif
 
     //--------------------------------------------------------------------------
     // initializations
@@ -256,18 +260,15 @@ int LG_CC_Boruvka
 
         // This step is the costliest part of this algorithm when dealing with
         // large matrices.
-        if (sizeof (void *) == sizeof (uint32_t))
-        {
-            // 32-bit platforms
-            GRB_TRY (GrB_Matrix_select_UINT32 (S, NULL, NULL, select_op, S,
-                (uintptr_t) Px, NULL)) ;
-        }
-        else
-        {
-            // 64-bit platforms
-            GRB_TRY (GrB_Matrix_select_UINT64 (S, NULL, NULL, select_op, S,
-                (uintptr_t) Px, NULL)) ;
-        }
+        #if defined (UINT32_MAX) && UINT32_MAX == UINTPTR_MAX
+        // 32-bit platforms
+        GRB_TRY (GrB_Matrix_select_UINT32 (S, NULL, NULL, select_op, S,
+            (uintptr_t) Px, NULL)) ;
+        #else
+        // 64-bit platforms
+        GRB_TRY (GrB_Matrix_select_UINT64 (S, NULL, NULL, select_op, S,
+            (uintptr_t) Px, NULL)) ;
+        #endif
         GRB_TRY (GrB_Matrix_nvals (&nvals, S)) ;
     }
 
