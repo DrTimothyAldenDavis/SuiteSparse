@@ -21,6 +21,10 @@
 
 #define LG_FREE_ALL                             \
 {                                               \
+    LAGraph_Free ((void **) &vert, msg) ;       \
+    LAGraph_Free ((void **) &deg, msg) ;        \
+    LAGraph_Free ((void **) &bin, msg) ;        \
+    LAGraph_Free ((void **) &pos, msg) ;        \
     LAGraph_Free ((void **) &Ap, msg) ;         \
     LAGraph_Free ((void **) &Aj, msg) ;         \
     LAGraph_Free ((void **) &Ax, msg) ;         \
@@ -48,7 +52,8 @@ int LG_check_kcore
     //--------------------------------------------------------------------------
 
     LG_CLEAR_MSG ;
-
+    uint64_t *vert = NULL, *pos = NULL, *bin = NULL, *deg = NULL ;
+    uint64_t maxDeg = 0;
     GrB_Index *Ap = NULL, *Aj = NULL, *Ai = NULL ;
     void *Ax = NULL ;
     GrB_Index Ap_size, Aj_size, Ax_size, n, ncols, Ap_len, Aj_len, Ax_len ;
@@ -78,8 +83,7 @@ int LG_check_kcore
     //printf("ap_len = %ld, aj_len = %ld, ax_len = %ld\n", Ap_len, Aj_len, Ax_len) ;
 
     //create the arrays
-    uint64_t *vert = NULL, *pos = NULL, *bin = NULL, *deg = NULL /*, *core = NULL */;
-    uint64_t maxDeg = 0;
+
     LAGraph_Malloc((void **) &deg, n, sizeof(uint64_t), msg) ;
     LAGraph_Malloc((void **) &vert, n, sizeof(uint64_t), msg) ;
     LAGraph_Malloc((void **) &pos, n, sizeof(uint64_t), msg) ;

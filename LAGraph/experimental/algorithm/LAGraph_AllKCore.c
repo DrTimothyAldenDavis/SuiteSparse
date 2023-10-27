@@ -94,6 +94,7 @@ int LAGraph_KCore_All
 
     //change deg vector to int32 if needed
     if(int_type == GrB_INT32){
+        GrB_free (&deg) ;
         GRB_TRY (GrB_Vector_new(&deg, int_type, n)) ;
         GRB_TRY (GrB_assign (deg, G->out_degree, NULL, G->out_degree, GrB_ALL, n, NULL)) ;
     }

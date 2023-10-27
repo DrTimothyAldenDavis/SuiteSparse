@@ -116,6 +116,8 @@ void test_AllKCore (void)
         TEST_CHECK(km1 == km2) ;
         OK (LAGraph_Vector_IsEqual (&ok, c1, c2, msg)) ;
         TEST_CHECK (ok) ;
+        GrB_free (&c1) ;
+        GrB_free (&c2) ;
 
         OK (LAGraph_Delete (&G, msg)) ;
     }
