@@ -54,6 +54,7 @@
     GrB_free(&BF_LT_Tuple3);           \
     GrB_free(&BF_lMIN_Tuple3_Monoid);  \
     GrB_free(&BF_lMIN_PLUSrhs_Tuple3); \
+    GrB_free(&BF_Identity_Tuple3 );    \
     LAGraph_Free ((void**)&I, NULL);   \
     LAGraph_Free ((void**)&J, NULL);   \
     LAGraph_Free ((void**)&w, NULL);   \
@@ -173,15 +174,15 @@ GrB_Info LAGraph_BF_full1
     // tmp vector to store distance vector after n (i.e., V) loops
     GrB_Vector d = NULL, dmasked = NULL, dless = NULL;
     GrB_Matrix Atmp = NULL;
-    GrB_Type BF_Tuple3;
+    GrB_Type BF_Tuple3 = NULL ;
 
-    GrB_BinaryOp BF_lMIN_Tuple3;
-    GrB_BinaryOp BF_PLUSrhs_Tuple3;
-    GrB_UnaryOp BF_Identity_Tuple3;
-    GrB_BinaryOp BF_LT_Tuple3;
+    GrB_BinaryOp BF_lMIN_Tuple3 = NULL ;
+    GrB_BinaryOp BF_PLUSrhs_Tuple3 = NULL ;
+    GrB_UnaryOp BF_Identity_Tuple3 = NULL ;
+    GrB_BinaryOp BF_LT_Tuple3 = NULL ;
 
-    GrB_Monoid BF_lMIN_Tuple3_Monoid;
-    GrB_Semiring BF_lMIN_PLUSrhs_Tuple3;
+    GrB_Monoid BF_lMIN_Tuple3_Monoid = NULL ;
+    GrB_Semiring BF_lMIN_PLUSrhs_Tuple3 = NULL ;
 
     GrB_Index nrows, ncols, n, nz;  // n = # of row/col, nz = # of nnz in graph
     GrB_Index *I = NULL, *J = NULL; // for col/row indices of entries from A

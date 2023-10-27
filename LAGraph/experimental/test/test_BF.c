@@ -312,6 +312,7 @@ void test_BF (void)
                 LAGraph_Free ((void **) &pi10, NULL) ;
                 result = LAGraph_BF_pure_c (&d10, &pi10, s, n, nvals,
                     (const int64_t *) I, (const int64_t *) J, W_int32) ;
+                LAGraph_Free ((void **) &pi10, NULL) ;
                 TEST_CHECK (result == valid) ;
             }
 
@@ -498,6 +499,7 @@ void test_BF (void)
         GrB_free (&d9) ;
         GrB_free (&pi6) ;
         GrB_free (&h6) ;
+        LAGraph_Free ((void **) &d10, NULL) ;
     }
 
     teardown ( ) ;
