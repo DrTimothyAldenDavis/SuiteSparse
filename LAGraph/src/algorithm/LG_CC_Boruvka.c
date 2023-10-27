@@ -29,13 +29,6 @@
 
 #include "LG_internal.h"
 
-#if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
-
-// FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
-// with SIGILL, so it is disabled (for now) when using a 32-bit platform.  When
-// using SuiteSparse, LAGr_ConnectedComponents uses LG_CC_FastSV6 instead
-// anyway.
-
 //------------------------------------------------------------------------------
 // Reduce_assign
 //------------------------------------------------------------------------------
@@ -147,6 +140,15 @@ int LG_CC_Boruvka
     // 32-bit case: this works on all but Alpine Linux x86, so LG_CC_Boruvka is
     // disabled for now (see the test above)
     GrB_Type UintPtr_type = GrB_UINT32;
+    // FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
+    // with SIGILL, so it is disabled (for now) when using a 32-bit platform.
+    // When using SuiteSparse, LAGr_ConnectedComponents uses LG_CC_FastSV6
+    // instead anyway.  It seems to work on other 32-bit platforms, but it
+    // might be fragile by depending upon undefined behavior that just happens
+    // to work on those platforms.  So for now, this method is disabled on all
+    // 32-bit platforms.
+    LG_ASSERT_MSG (false, GrB_NOT_IMPLEMENTED, "LG_CC_Boruvka method: "
+        " not implemented on 32-bit platforms") ;
     #else
     #  error "system has an unsupported sizeof (uintptr_t)"
     #endif
@@ -290,4 +292,3 @@ int LG_CC_Boruvka
     return (GrB_SUCCESS) ;
 }
 
-#endif

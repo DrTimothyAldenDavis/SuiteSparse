@@ -135,16 +135,23 @@ void test_cc_matrices (void)
 
             // find the connected components with LG_CC_Boruvka
             int result = GrB_SUCCESS ;
-            #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
             printf ("\n------ CC_BORUVKA:\n") ;
+            #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
             OK (LG_CC_Boruvka (&C2, G, msg)) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
             OK (LG_check_cc (C2, G, msg)) ;
             OK (GrB_free (&C2)) ;
+            #else
+            // Boruvka method is currently failing on 32-bit platforms,
+            // and has been disabled.
+            result = LG_CC_Boruvka (&C2, G, msg) ;
+            TEST_CHECK (result = GrB_NOT_IMPLEMENTED) ;
+            TEST_CHECK (C2 == NULL) ;
+            #endif
+
             result = LG_CC_Boruvka (NULL, G, msg) ;
             TEST_CHECK (result == GrB_NULL_POINTER) ;
-            #endif
 
             if (trial == 0)
             {
@@ -186,10 +193,10 @@ void test_cc_errors (void)
 
     // check for null pointers
     int result = GrB_SUCCESS ;
-    #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+
     result = LG_CC_Boruvka (NULL, NULL, msg) ;
     TEST_CHECK (result == GrB_NULL_POINTER) ;
-    #endif
+
     #if LAGRAPH_SUITESPARSE
     result = LG_CC_FastSV6 (NULL, NULL, msg) ;
     TEST_CHECK (result == GrB_NULL_POINTER) ;
@@ -205,11 +212,10 @@ void test_cc_errors (void)
     OK (LAGraph_New (&G, &A, LAGraph_ADJACENCY_DIRECTED, msg)) ;
     TEST_CHECK (A == NULL) ;    // A has been moved into G->A
 
-    #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
     result = LG_CC_Boruvka (&C, G, msg) ;
     TEST_CHECK (result == -1001) ;
     printf ("result expected: %d msg:\n%s\n", result, msg) ;
-    #endif
+
     #if LAGRAPH_SUITESPARSE
     result = LG_CC_FastSV6 (&C, G, msg) ;
     TEST_CHECK (result == -1001) ;
