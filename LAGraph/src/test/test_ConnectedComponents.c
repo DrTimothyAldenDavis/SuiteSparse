@@ -146,7 +146,7 @@ void test_cc_matrices (void)
             // Boruvka method is currently failing on 32-bit platforms,
             // and has been disabled.
             result = LG_CC_Boruvka (&C2, G, msg) ;
-            TEST_CHECK (result = GrB_NOT_IMPLEMENTED) ;
+            TEST_CHECK (result == GrB_NOT_IMPLEMENTED) ;
             TEST_CHECK (C2 == NULL) ;
             #endif
 
