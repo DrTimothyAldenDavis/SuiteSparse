@@ -122,6 +122,7 @@ void test_cc_matrices (void)
 
             // check the result
             OK (LG_check_cc (C, G, msg)) ;
+            OK (GrB_free (&C)) ;
 
             // find the connected components with LG_CC_FastSV5
             #if LAGRAPH_SUITESPARSE
@@ -136,11 +137,17 @@ void test_cc_matrices (void)
             // find the connected components with LG_CC_Boruvka
             int result = GrB_SUCCESS ;
             printf ("\n------ CC_BORUVKA:\n") ;
-            OK (LG_CC_Boruvka (&C2, G, msg)) ;
+            result = LG_CC_Boruvka (&C2, G, msg) ;
+
+            #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+            OK (result) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
             OK (LG_check_cc (C2, G, msg)) ;
             OK (GrB_free (&C2)) ;
+            #else
+            TEST_CHECK (result == GrB_NOT_IMPLEMENTED) ;
+            #endif
 
             result = LG_CC_Boruvka (NULL, G, msg) ;
             TEST_CHECK (result == GrB_NULL_POINTER) ;
@@ -168,7 +175,6 @@ void test_cc_matrices (void)
         }
 
         OK (LAGraph_Delete (&G, msg)) ;
-        OK (GrB_free (&C)) ;
     }
 
     OK (LAGraph_Finalize (msg)) ;

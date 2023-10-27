@@ -101,6 +101,7 @@ void my_select_func (void *z, const void *x,
     LAGraph_Free ((void **) &I, NULL) ;     \
     LAGraph_Free ((void **) &Px, NULL) ;    \
     LAGraph_Free ((void **) &mem, NULL) ;   \
+    GrB_free (&S) ;                         \
     GrB_free (&Parent_Type) ;               \
     GrB_free (&gp) ;                        \
     GrB_free (&mnp) ;                       \
@@ -142,14 +143,8 @@ int LG_CC_Boruvka
         LAGRAPH_SYMMETRIC_STRUCTURE_REQUIRED,
         "G->A must be known to be symmetric") ;
 
-#if 0
-    // determine the pointer size
-    #if defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX
-    GrB_Type UintPtr_type = GrB_UINT64;
-    #elif defined (UINT32_MAX) && UINT32_MAX == UINTPTR_MAX
-    // 32-bit case: this works on all but Alpine Linux x86, so LG_CC_Boruvka is
-    // disabled for now (see the test above)
-    GrB_Type UintPtr_type = GrB_UINT32;
+#if !(defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+
     // FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
     // with SIGILL, so it is disabled (for now) when using a 32-bit platform.
     // When using SuiteSparse, LAGr_ConnectedComponents uses LG_CC_FastSV6
@@ -157,12 +152,11 @@ int LG_CC_Boruvka
     // might be fragile by depending upon undefined behavior that just happens
     // to work on those platforms.  So for now, this method is disabled on all
     // 32-bit platforms.
+
     LG_ASSERT_MSG (false, GrB_NOT_IMPLEMENTED, "LG_CC_Boruvka method: "
         " not implemented on 32-bit platforms") ;
-    #else
-    #  error "system has an unsupported sizeof (uintptr_t)"
-    #endif
-#endif
+
+#else
 
     //--------------------------------------------------------------------------
     // initializations
@@ -297,5 +291,6 @@ int LG_CC_Boruvka
     (*component) = parent ;
     LG_FREE_WORK ;
     return (GrB_SUCCESS) ;
+#endif
 }
 
