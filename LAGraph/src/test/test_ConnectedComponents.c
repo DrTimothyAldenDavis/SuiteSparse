@@ -136,19 +136,11 @@ void test_cc_matrices (void)
             // find the connected components with LG_CC_Boruvka
             int result = GrB_SUCCESS ;
             printf ("\n------ CC_BORUVKA:\n") ;
-            #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
             OK (LG_CC_Boruvka (&C2, G, msg)) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
             OK (LG_check_cc (C2, G, msg)) ;
             OK (GrB_free (&C2)) ;
-            #else
-            // Boruvka method is currently failing on 32-bit platforms,
-            // and has been disabled.
-            result = LG_CC_Boruvka (&C2, G, msg) ;
-            TEST_CHECK (result == GrB_NOT_IMPLEMENTED) ;
-            TEST_CHECK (C2 == NULL) ;
-            #endif
 
             result = LG_CC_Boruvka (NULL, G, msg) ;
             TEST_CHECK (result == GrB_NULL_POINTER) ;

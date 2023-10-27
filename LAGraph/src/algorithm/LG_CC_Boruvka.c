@@ -67,14 +67,20 @@ static GrB_Info Reduce_assign
 // select_func: IndexUnaryOp for pruning entries from S
 //------------------------------------------------------------------------------
 
-// Rather than using a global variable to access the Px array, it is passed to
-// the select function as a uintptr_t value that contains a pointer to Px.  It
-// might be better to create a user-defined type for y, but this works fine.
+// The pointer to the Px array is passed to the select function as a component
+// of a user-defined data type.
+
+typedef struct
+{
+    GrB_Index *pointer ;
+}
+Parent_struct ;
 
 void my_select_func (void *z, const void *x,
                  const GrB_Index i, const GrB_Index j, const void *y)
 {
-    GrB_Index *Px = (*(GrB_Index **) y) ;
+    Parent_struct *Parent = (Parent_struct *) y ;
+    GrB_Index *Px = Parent->pointer ;
     (*((bool *) z)) = (Px [i] != Px [j]) ;
 }
 
@@ -95,6 +101,7 @@ void my_select_func (void *z, const void *x,
     LAGraph_Free ((void **) &I, NULL) ;     \
     LAGraph_Free ((void **) &Px, NULL) ;    \
     LAGraph_Free ((void **) &mem, NULL) ;   \
+    GrB_free (&Parent_Type) ;               \
     GrB_free (&gp) ;                        \
     GrB_free (&mnp) ;                       \
     GrB_free (&ccmn) ;                      \
@@ -122,6 +129,8 @@ int LG_CC_Boruvka
         mask = NULL ;
     GrB_IndexUnaryOp select_op = NULL ;
     GrB_Matrix S = NULL ;
+    GrB_Type Parent_Type = NULL ;
+    Parent_struct Parent ;
 
     LG_CLEAR_MSG ;
     LG_TRY (LAGraph_CheckGraph (G, msg)) ;
@@ -133,6 +142,7 @@ int LG_CC_Boruvka
         LAGRAPH_SYMMETRIC_STRUCTURE_REQUIRED,
         "G->A must be known to be symmetric") ;
 
+#if 0
     // determine the pointer size
     #if defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX
     GrB_Type UintPtr_type = GrB_UINT64;
@@ -152,6 +162,7 @@ int LG_CC_Boruvka
     #else
     #  error "system has an unsupported sizeof (uintptr_t)"
     #endif
+#endif
 
     //--------------------------------------------------------------------------
     // initializations
@@ -169,6 +180,9 @@ int LG_CC_Boruvka
 
     LG_TRY (LAGraph_Malloc ((void **) &mem, 3*n, sizeof (GrB_Index), msg)) ;
     LG_TRY (LAGraph_Malloc ((void **) &Px, n, sizeof (GrB_Index), msg)) ;
+    Parent.pointer = Px ;
+
+    GRB_TRY (GrB_Type_new (&Parent_Type, sizeof (Parent_struct))) ;
 
     #if !LAGRAPH_SUITESPARSE
     // I is not needed for SuiteSparse and remains NULL
@@ -185,7 +199,7 @@ int LG_CC_Boruvka
     GRB_TRY (GrB_Vector_extractTuples (I, Px, &n, parent)) ;
 
     GRB_TRY (GrB_IndexUnaryOp_new (&select_op, my_select_func, GrB_BOOL,
-        /* aij: ignored */ GrB_BOOL, /* y: pointer to Px */ UintPtr_type)) ;
+        /* aij: ignored */ GrB_BOOL, /* y: pointer to Px */ Parent_Type)) ;
 
     GrB_Index nvals ;
     GRB_TRY (GrB_Matrix_nvals (&nvals, S)) ;
@@ -271,15 +285,8 @@ int LG_CC_Boruvka
 
         // This step is the costliest part of this algorithm when dealing with
         // large matrices.
-        #if defined (UINT32_MAX) && UINT32_MAX == UINTPTR_MAX
-        // 32-bit platforms
-        GRB_TRY (GrB_Matrix_select_UINT32 (S, NULL, NULL, select_op, S,
-            (uintptr_t) Px, NULL)) ;
-        #else
-        // 64-bit platforms
-        GRB_TRY (GrB_Matrix_select_UINT64 (S, NULL, NULL, select_op, S,
-            (uintptr_t) Px, NULL)) ;
-        #endif
+        GRB_TRY (GrB_Matrix_select_UDT (S, NULL, NULL, select_op, S,
+            (void *) (&Parent), NULL)) ;
         GRB_TRY (GrB_Matrix_nvals (&nvals, S)) ;
     }
 
