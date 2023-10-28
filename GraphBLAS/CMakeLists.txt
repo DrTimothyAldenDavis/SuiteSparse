@@ -16,6 +16,8 @@ cmake_minimum_required ( VERSION 3.20 )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
+set ( CMAKE_BUILD_TYPE Debug )
+
 include ( GraphBLAS_version )
 
 #-------------------------------------------------------------------------------
