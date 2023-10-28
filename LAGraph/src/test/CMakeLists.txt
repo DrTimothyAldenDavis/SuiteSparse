@@ -95,7 +95,7 @@ foreach( testsourcefile ${TEST_SOURCES} )
     target_link_libraries( ${testname} lagraph lagraphx lagraphtest ${GRAPHBLAS_LIBRARIES} )
     target_link_directories( ${testname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
     string( REPLACE "test_" "ctest_" ctestname ${testname})
-    add_test( ${ctestname} ${testname})
+    add_test( NAME ${ctestname} COMMAND valgrind $<TARGET_FILE:${testname}> )
     if (WIN32)
         set_tests_properties ( ${ctestname} PROPERTIES
             ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${CMAKE_BINARY_DIR}/dlls" )
