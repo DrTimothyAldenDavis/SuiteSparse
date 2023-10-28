@@ -117,6 +117,7 @@ void test_TriangleCentrality (void)
         G->kind = LAGraph_ADJACENCY_DIRECTED ;
         OK (LAGraph_VertexCentrality_Triangle (&c, &ntri, 0, G, msg)) ;
         TEST_CHECK (ntri == ntriangles) ;
+        GrB_free (&c) ;
 
         OK (LAGraph_Delete (&G, msg)) ;
     }

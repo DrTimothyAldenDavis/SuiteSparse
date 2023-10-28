@@ -79,13 +79,14 @@
 {                                   \
     GrB_free (&squares) ;           \
     GrB_free (&denom) ;             \
+    GrB_free (&neg_denom) ;         \
+    GrB_free (&P2) ;                \
+    GrB_free (&D) ;                 \
 }
 
 #define LG_FREE_ALL                 \
 {                                   \
     LG_FREE_WORK ;                  \
-    GrB_free (&D) ;                 \
-    GrB_free (&P2) ;                \
     GrB_free (&r) ;                 \
 }
 
