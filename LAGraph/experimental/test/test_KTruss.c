@@ -124,6 +124,8 @@ void test_ktruss (void)
         OK (LG_check_ktruss (&C2, G, 3, msg)) ;
         OK (LAGraph_Matrix_IsEqual (&ok, C1, C2, msg)) ;
         TEST_CHECK (ok) ;
+        OK (GrB_free (&C1)) ;
+        OK (GrB_free (&C2)) ;
 
         OK (LAGraph_Delete (&G, msg)) ;
     }
