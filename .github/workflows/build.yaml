@@ -76,7 +76,7 @@ jobs:
         run: |
           sudo apt -qq update
           sudo apt install -y ${COMPILER_PKGS} autoconf automake ccache cmake \
-            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
+            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev valgrind \
             libopenblas-dev ${CUDA_PKGS}
 
       - name: prepare ccache

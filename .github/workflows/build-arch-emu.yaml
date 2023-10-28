@@ -68,6 +68,7 @@ jobs:
             gmp-dev
             mpfr-dev
             openblas-dev
+            valgrind
 
       - name: prepare ccache
         # create key with human readable timestamp
