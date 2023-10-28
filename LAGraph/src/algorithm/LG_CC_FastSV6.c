@@ -553,7 +553,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         bool T_jumbled, T_iso ;
         GRB_TRY (GxB_Matrix_unpack_CSR (T, &Tp, &Tj, &Tx, &Tp_size, &Tj_size,
             &Tx_size, &T_iso, &T_jumbled, NULL)) ;
-
+printf ("did unpack T\n") ; fflush (stdout) ; fflush (stderr) ;
         #pragma omp parallel for num_threads(nthreads) schedule(static)
         for (tid = 0 ; tid < nthreads ; tid++)
         {
@@ -598,6 +598,8 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
             count [tid] = p - Tp [range [tid]] ;
         }
 
+printf ("did prune T\n") ; fflush (stdout) ; fflush (stderr) ;
+
         // Compact empty space out of Tj not filled in from the above phase.
         nvals = 0 ;
         for (tid = 0 ; tid < nthreads ; tid++)
@@ -607,6 +609,7 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
             nvals += count [tid] ;
             count [tid] = nvals - count [tid] ;
         }
+printf ("did compact T\n") ; fflush (stdout) ; fflush (stderr) ;
 
         // Compact empty space out of Tp
         #pragma omp parallel for num_threads(nthreads) schedule(static)
@@ -619,6 +622,8 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
             }
         }
 
+printf ("did 2nd compact T\n") ; fflush (stdout) ; fflush (stderr) ;
+
         // finalize T
         Tp [n] = nvals ;
 
@@ -626,9 +631,13 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         GRB_TRY (GxB_Matrix_pack_CSR (T, &Tp, &Tj, &Tx, Tp_size, Tj_size,
             Tx_size, T_iso, /* T is now jumbled */ true, NULL)) ;
 
+printf ("did pack T\n") ; fflush (stdout) ; fflush (stderr) ;
+
         // pack A (unchanged since last unpack); this is the original G->A.
         GRB_TRY (GxB_Matrix_pack_CSR (A, &Ap, &Aj, &Ax, Ap_size, Aj_size,
             Ax_size, A_iso, A_jumbled, NULL)) ;
+
+printf ("did pack A\n") ; fflush (stdout) ; fflush (stderr) ;
 
 // ].  The unpack/pack of A into Ap, Aj, Ax will not be needed, and G->A
 // will become truly a read-only matrix.
