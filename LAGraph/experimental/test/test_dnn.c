@@ -140,6 +140,7 @@ void test_dnn (void)
     OK (GrB_Col_extract (TrueCategories, NULL, NULL, T, GrB_ALL,
         nfeatures_subset, 0, NULL)) ;
     OK (LAGraph_Vector_Print (TrueCategories, LAGraph_COMPLETE, stdout, msg)) ;
+    GrB_free (&T) ;
 
     //--------------------------------------------------------------------------
     // solve the problem

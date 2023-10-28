@@ -58,6 +58,20 @@
     GrB_free (&U_inv) ;             \
     GrB_free (&F_raw) ;             \
     GrB_free (&C_4) ;               \
+    GrB_free (&Sub_one_mult) ;      \
+    GrB_free (&T) ;                 \
+    if (A_Tiles != NULL)                                                \
+    {                                                                   \
+        for (int i = 0; i < tile_cnt; ++i) GrB_free (&A_Tiles [i]) ;    \
+    }                                                                   \
+    if (D_Tiles != NULL)                                                \
+    {                                                                   \
+        for (int i = 0; i < tile_cnt; ++i) GrB_free (&D_Tiles [i]) ;    \
+    }                                                                   \
+    if (C_Tiles != NULL)                                                \
+    {                                                                   \
+        for (int i = 0; i < tile_cnt; ++i) GrB_free (&C_Tiles [i]) ;    \
+    }                                                                   \
 }
 
 #define LG_FREE_ALL                 \
@@ -90,6 +104,13 @@ int LAGraph_FastGraphletTransform
     GrB_Index const U_inv_J[] = {0, 1, 2, 4, 3, 4, 4, 5, 9, 10, 12, 13, 14, 15, 6, 10, 11, 12, 13, 14, 15, 7, 9, 10, 13, 14, 15, 8, 11, 14, 15, 9, 13, 15, 10, 13, 14, 15, 11, 14, 15, 12, 13, 14, 15, 13, 15, 14, 15, 15} ;
     int64_t const U_inv_X[] = {1, 1, 1, -2, 1, -1, 1, 1, -2, -1, -2, 4, 2, -6, 1, -1, -2, -2, 2, 4, -6, 1, -1, -1, 2, 1, -3, 1, -1, 1, -1, 1, -2, 3, 1, -2, -2, 6, 1, -2, 3, 1, -1, -1, 3, 1, -3, 1, -3, 1} ;
     GrB_Index const U_inv_nvals = 50;
+    GrB_UnaryOp Sub_one_mult = NULL ;
+    int tile_cnt = 0 ;
+    GrB_Matrix *A_Tiles = NULL ;
+    GrB_Matrix *D_Tiles = NULL ;
+    GrB_Matrix *C_Tiles = NULL ;
+    GrB_Index *Tile_nrows = NULL ;
+    GrB_Matrix T = NULL ;
 
     GrB_Matrix C_3 = NULL,
 	       A = NULL,
@@ -149,10 +170,10 @@ int LAGraph_FastGraphletTransform
     // compute d_1 = Ae (in_degree)
     //--------------------------------------------------------------------------
 
-    GRB_TRY (GrB_Vector_new (&d_1, GrB_INT64, n)) ;
+//  GRB_TRY (GrB_Vector_new (&d_1, GrB_INT64, n)) ;
 
     // d_1 = Ae (in_degree)
-    GRB_TRY (LAGraph_Cached_OutDegree (G, msg)) ;
+    LG_TRY (LAGraph_Cached_OutDegree (G, msg)) ;
 
     GRB_TRY (GrB_Vector_dup (&d_1, G->out_degree)) ;
 
@@ -172,7 +193,6 @@ int LAGraph_FastGraphletTransform
 
     GRB_TRY (GrB_Vector_new (&d_3, GrB_INT64, n)) ;
 
-    GrB_UnaryOp Sub_one_mult = NULL ;
     GRB_TRY (GrB_UnaryOp_new (&Sub_one_mult, F_UNARY (sub_one_mult), GrB_INT64, GrB_INT64)) ;
 
     GRB_TRY (GrB_apply (d_3, NULL, NULL, Sub_one_mult, d_1, NULL)) ;
@@ -295,17 +315,17 @@ int LAGraph_FastGraphletTransform
 
     const GrB_Index entries_per_tile = 1000;
     GrB_Index ntiles = (nvals + entries_per_tile - 1) / entries_per_tile ;
-    GrB_Matrix *A_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
-    GrB_Matrix *D_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
-    GrB_Matrix *C_Tiles = malloc (ntiles * sizeof (GrB_Matrix)) ;
-    GrB_Index *Tile_nrows = malloc (ntiles * sizeof (GrB_Index)) ;
+    // FIXME: use LAGraph_Calloc here, and check if out of memory:
+    A_Tiles = calloc (ntiles , sizeof (GrB_Matrix)) ;
+    D_Tiles = calloc (ntiles , sizeof (GrB_Matrix)) ;
+    C_Tiles = calloc (ntiles , sizeof (GrB_Matrix)) ;
+    Tile_nrows = calloc (ntiles , sizeof (GrB_Index)) ;
     GrB_Index Tile_ncols [1] = {n} ;
 
     int64_t tot_deg = 0 ;
-    int tile_cnt = 0 ;
     GrB_Index last_row = -1 ;
     for (GrB_Index i = 0; i < n; ++i) {
-        int64_t deg ;
+        int64_t deg = 0 ;
         GRB_TRY (GrB_Vector_extractElement (&deg, d_1, i)) ;
 
         if (i == n - 1 || (tot_deg / entries_per_tile != (tot_deg + deg) / entries_per_tile)) {
@@ -319,16 +339,15 @@ int LAGraph_FastGraphletTransform
     GRB_TRY (GxB_Matrix_split (A_Tiles, tile_cnt, 1, Tile_nrows, Tile_ncols, A, NULL)) ;
     GRB_TRY (GxB_Matrix_split (D_Tiles, tile_cnt, 1, Tile_nrows, Tile_ncols, D_1, NULL)) ;
 
-    for (int i = 0; i < tile_cnt; ++i) C_Tiles [i] = NULL ;
-
 #define TRY(method)                         \
     {                                       \
-        GrB_Info info = method ;            \
-        if (info != GrB_SUCCESS)            \
+        GrB_Info info2 = method ;           \
+        if (info2 != GrB_SUCCESS)           \
         {                                   \
             GrB_free (&A_i) ;               \
             GrB_free (&C_Tiles [i_tile]) ;  \
             GrB_free (&e) ;                 \
+            info1 = info2 ;                 \
             continue ;                      \
         }                                   \
     }
@@ -339,6 +358,7 @@ int LAGraph_FastGraphletTransform
     LG_TRY (LAGraph_SetNumThreads (1, 1, msg)) ;
 
     int i_tile;
+    GrB_Info info1 = GrB_SUCCESS ;
     #pragma omp parallel for num_threads(omp_get_max_threads()) schedule(dynamic,1)
     for (i_tile = 0; i_tile < tile_cnt; ++i_tile) {
         GrB_Matrix A_i = NULL, e = NULL ;
@@ -358,8 +378,10 @@ int LAGraph_FastGraphletTransform
 
         GrB_free (&A_i) ;
         GrB_free (&e) ;
-
     }
+
+    GRB_TRY (info1) ;
+
 //  GxB_set (GxB_NTHREADS, omp_get_max_threads()) ;
     LG_TRY (LAGraph_SetNumThreads (save_nthreads_outer, save_nthreads_inner, msg)) ;
 
@@ -409,10 +431,9 @@ int LAGraph_FastGraphletTransform
     //--------------------------------------------------------------------------
 
     if (compute_d_15) {
-        LAGRAPH_TRY (LAGraph_KTruss (&A, G, 4, msg)) ;
+        LG_TRY (LAGraph_KTruss (&T, G, 4, msg)) ;
         GRB_TRY (GrB_Vector_new (&d_15, GrB_INT64, n)) ;
 
-        //GrB_wait (A, GrB_MATERIALIZE) ;     // this is essential
         int nthreads = 1 ;
         // todo: parallelize this...
 //#pragma omp parallel for num_threads(nthreads)
@@ -429,23 +450,23 @@ int LAGraph_FastGraphletTransform
             }
 
 
-            // thread tid operates on A(row1:row2-1,:)
+            // thread tid operates on T(row1:row2-1,:)
             GrB_Index row1 = 0;//tid * (n / nthreads) ;
             GrB_Index row2 = n;//(tid == nthreads - 1) ? n : ((tid+1) * (n / nthreads)) ;
 
             GxB_Iterator riterator ;
             GxB_Iterator_new (&riterator) ;
-            GRB_TRY (GxB_rowIterator_attach (riterator, A, NULL)) ;
+            GRB_TRY (GxB_rowIterator_attach (riterator, T, NULL)) ;
 
             GxB_Iterator iterator ;
             GxB_Iterator_new (&iterator) ;
-            GRB_TRY (GxB_rowIterator_attach (iterator, A, NULL)) ;
+            GRB_TRY (GxB_rowIterator_attach (iterator, T, NULL)) ;
 
-            // seek to A(row1,:)
+            // seek to T(row1,:)
             GrB_Info info = GxB_rowIterator_seekRow (iterator, row1) ;
             while (info != GxB_EXHAUSTED)
             {
-                // iterate over entries in A(i,:)
+                // iterate over entries in T(i,:)
                 GrB_Index idx2 = GxB_rowIterator_getRowIndex (iterator) ;
                 if (idx2 >= row2) break ;
                 int neighbor_cnt = 0 ;
@@ -501,11 +522,12 @@ int LAGraph_FastGraphletTransform
                     isNeighbor [j] = 0 ;
                 }
 
-                // move to the next row, A(i+1,:)
+                // move to the next row, T(i+1,:)
                 info = GxB_rowIterator_nextRow (iterator) ;
             }
             GrB_free (&iterator) ;
             GrB_free (&riterator) ;
+            GrB_free (&T) ;
             GRB_TRY (GrB_Vector_build (d_15, I, f15, n, NULL)) ;
 
             free (neighbors) ;
@@ -569,10 +591,10 @@ int LAGraph_FastGraphletTransform
     //--------------------------------------------------------------------------
 
     LG_FREE_WORK ;
-    free ((void *) A_Tiles) ;
-    free ((void *) D_Tiles) ;
-    free ((void *) C_Tiles) ;
-    free ((void *) Tile_nrows) ;
+    free ((void *) A_Tiles) ;       A_Tiles = NULL ;
+    free ((void *) D_Tiles) ;       D_Tiles = NULL ;
+    free ((void *) C_Tiles) ;       C_Tiles = NULL ;
+    free ((void *) Tile_nrows) ;    Tile_nrows = NULL ;
 
     return (0) ;
 #endif
