@@ -23,6 +23,9 @@
 #include "LAGraphX.h"
 #include "LG_alg_internal.h"
 
+#undef NDEBUG
+#include <assert.h>
+
 char msg [LAGRAPH_MSG_LEN] ;
 LAGraph_Graph G = NULL ;
 #define LEN 512

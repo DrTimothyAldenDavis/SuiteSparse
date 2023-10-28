@@ -107,7 +107,7 @@ endif ( )
 
 # For development only, not for end-users:
 # FIXME
-set ( CMAKE_BUILD_TYPE Debug )
+# set ( CMAKE_BUILD_TYPE Debug )
 
 if ( NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
@@ -178,6 +178,7 @@ include_directories ( "/usr/local/include" )
 
 # tell LAGraph where to find its own source (for LAGraph/data files)
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${CMAKE_SOURCE_DIR}" )
+set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O" )
 
 #-------------------------------------------------------------------------------
 # compiler options
