@@ -182,6 +182,7 @@ void test_lcc (void)
             OK (GrB_reduce (&err, NULL, GrB_MAX_MONOID_FP64, cgood, NULL)) ;
             printf ("err: %g\n", err) ;
             TEST_CHECK (err < 1e-6) ;
+            OK (GrB_free (&cgood)) ;
         }
 
         printf ("\nlcc:\n") ;

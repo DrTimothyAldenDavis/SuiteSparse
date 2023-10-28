@@ -64,9 +64,9 @@
 
 #define LG_FREE_ALL                 \
 {                                   \
-    GrB_free (&C) ;                 \
+    GrB_free (&A2) ;                \
+    GrB_free (&C2) ;                \
     GrB_free (&CL) ;                \
-    if (sanitize) GrB_free (&S) ;   \
     GrB_free (&U) ;                 \
     GrB_free (&W) ;                 \
     GrB_free (&LCC) ;               \
@@ -133,7 +133,8 @@ int LAGraph_lcc            // compute lcc for all nodes in A
     }
 
     GrB_Matrix C = NULL, CL = NULL, S = NULL, U = NULL ;
-    GrB_Vector W = NULL, LCC = NULL ;
+    GrB_Vector W = NULL, LCC = NULL ; 
+    GrB_Matrix A2 = NULL, C2 = NULL ;
     GrB_UnaryOp LAGraph_COMB_DIR_FP64 = NULL ;
     GrB_UnaryOp LAGraph_COMB_UNDIR_FP64 = NULL ;
     GrB_Info info ;
@@ -167,12 +168,13 @@ int LAGraph_lcc            // compute lcc for all nodes in A
         t [0] = LAGraph_WallClockTime ( ) ;
 
         // S = binary structure of A
-        GrB_Matrix_new (&S, GrB_FP64, n, n) ;
-        GrB_apply (S, NULL, NULL, GrB_ONEB_FP64, A, 0, NULL) ;
+        GRB_TRY (GrB_Matrix_new (&A2, GrB_FP64, n, n)) ;
+        GRB_TRY (GrB_apply (A2, NULL, NULL, GrB_ONEB_FP64, A, 0, NULL)) ;
 
         // remove all self edges
-        GrB_select (S, NULL, NULL, GrB_OFFDIAG, S, 0, NULL) ;
+        GRB_TRY (GrB_select (A2, NULL, NULL, GrB_OFFDIAG, A2, 0, NULL)) ;
         t [0] = LAGraph_WallClockTime ( ) - t [0] ;
+        S = A2 ;
     }
     else
     {
@@ -195,13 +197,11 @@ int LAGraph_lcc            // compute lcc for all nodes in A
                                  F_UNARY (LAGraph_comb_undir_fp64),
                                  GrB_FP64, GrB_FP64)) ;
 
-    GRB_TRY (GrB_Matrix_new (&C, GrB_FP64, n, n)) ;
     GRB_TRY (GrB_Matrix_new (&U, GrB_UINT32, n, n)) ;
 
     if (symmetric)
     {
         C = S ;
-        S = NULL ;
 
         //----------------------------------------------------------------------
         // U = triu(C)
@@ -221,7 +221,8 @@ int LAGraph_lcc            // compute lcc for all nodes in A
         // C = A \/ A' to create an undirected graph C
         //----------------------------------------------------------------------
 
-        GRB_TRY (GrB_Matrix_new (&C, GrB_FP64, n, n)) ;
+        GRB_TRY (GrB_Matrix_new (&C2, GrB_FP64, n, n)) ;
+        C = C2 ;
         GRB_TRY (GrB_eWiseAdd (C, NULL, NULL, GrB_LOR, S, AT, NULL)) ;
 
         //----------------------------------------------------------------------
@@ -232,7 +233,6 @@ int LAGraph_lcc            // compute lcc for all nodes in A
         GRB_TRY (GrB_eWiseAdd (D, NULL, NULL, GrB_PLUS_FP64, S, AT, NULL)) ;
 
         GrB_free (&AT) ;
-        if (sanitize) GrB_free (&S) ;
 
         //----------------------------------------------------------------------
         // U = triu(D)
