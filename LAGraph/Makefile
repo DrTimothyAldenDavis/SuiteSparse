@@ -63,7 +63,10 @@ debug:
 all: library
 
 test: library
-	( cd build && ctest . --verbose || ctest . --rerun-failed --output-on-failure || true )
+	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
+
+verbose_test: library
+	( cd build && ctest . --verbose || ctest . --rerun-failed --output-on-failure )
 
 # target used in CI
 demos: test

@@ -85,7 +85,7 @@ void test_cc_matrices (void)
 {
 
     OK (LAGraph_Init (msg)) ;
-    OK (GxB_set (GxB_BURBLE, true)) ;
+    // OK (GxB_set (GxB_BURBLE, true)) ;
 
     for (int k = 0 ; ; k++)
     {
