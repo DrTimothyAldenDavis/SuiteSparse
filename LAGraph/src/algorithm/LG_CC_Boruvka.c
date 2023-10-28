@@ -143,7 +143,8 @@ int LG_CC_Boruvka
         LAGRAPH_SYMMETRIC_STRUCTURE_REQUIRED,
         "G->A must be known to be symmetric") ;
 
-#if !(defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+// #if !(defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+#if 0
 
     // FIXME: LG_CC_Boruvka method fails on an Alpine Linux x86 (32-bit) system
     // with SIGILL, so it is disabled (for now) when using a 32-bit platform.

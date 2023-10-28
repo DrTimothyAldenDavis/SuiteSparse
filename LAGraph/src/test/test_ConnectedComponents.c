@@ -143,7 +143,8 @@ void test_cc_matrices (void)
             printf ("\n------ CC_BORUVKA:\n") ;
             result = LG_CC_Boruvka (&C2, G, msg) ;
 
-            #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+//          #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
+            #if 1
             OK (result) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
