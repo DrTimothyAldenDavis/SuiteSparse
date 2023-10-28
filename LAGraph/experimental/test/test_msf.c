@@ -82,6 +82,7 @@ void test_msf (void)
         OK (GrB_assign (S, NULL, NULL, A, GrB_ALL, nrows, GrB_ALL, ncols,
             NULL)) ;
         GrB_Index n = nrows ;
+        OK (GrB_free (&A)) ;
 
         // construct a directed graph G with adjacency matrix S
         OK (LAGraph_New (&G, &S, LAGraph_ADJACENCY_DIRECTED, msg)) ;
@@ -112,6 +113,7 @@ void test_msf (void)
             bool ok = false ;
             OK (LAGraph_Matrix_IsEqual (&ok, C, Cgood, msg)) ;
             TEST_CHECK (ok) ;
+            OK (GrB_free (&Cgood)) ;
         }
 
         printf ("\nmsf:\n") ;

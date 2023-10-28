@@ -100,6 +100,7 @@ void test_MIS (void)
 
         // C = structure of A
         OK (LAGraph_Matrix_Structure (&C, A, msg)) ;
+        OK (GrB_free (&A)) ;
 
         // construct a directed graph G with adjacency matrix C
         OK (LAGraph_New (&G, &C, LAGraph_ADJACENCY_DIRECTED, msg)) ;

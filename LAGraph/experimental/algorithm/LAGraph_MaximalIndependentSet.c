@@ -27,6 +27,7 @@
     GrB_free (&empty) ;             \
     GrB_free (&Seed) ;              \
     GrB_free (&score) ;             \
+    GrB_free (&degree) ;            \
 }
 
 #define LG_FREE_ALL                 \
