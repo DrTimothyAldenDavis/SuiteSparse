@@ -604,8 +604,16 @@ printf ("did prune T\n") ; fflush (stdout) ; fflush (stderr) ;
         nvals = 0 ;
         for (tid = 0 ; tid < nthreads ; tid++)
         {
-            memcpy (Tj + nvals, Tj + Tp [range [tid]],
-                sizeof (GrB_Index) * count [tid]) ;
+
+//          memcpy (Tj + nvals, Tj + Tp [range [tid]],
+//              sizeof (GrB_Index) * count [tid]) ;
+            GrB_Index *Tj_dest = Tj + nvals ;
+            GrB_Index *Tj_src  = Tj + Tp [range [tid]] ;
+            for (int64_t k = 0 ; k < count [tid] ; k++)
+            {
+                Tj_dest [k] = Tj_src [k] ;
+            }
+
             nvals += count [tid] ;
             count [tid] = nvals - count [tid] ;
         }
