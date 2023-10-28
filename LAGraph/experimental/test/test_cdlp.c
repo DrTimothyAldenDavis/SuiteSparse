@@ -182,6 +182,7 @@ void test_cdlp (void)
             bool ok = false ;
             OK (LAGraph_Vector_IsEqual (&ok, c, cgood, msg)) ;
             TEST_CHECK (ok) ;
+            OK (GrB_free (&cgood)) ;
         }
 
         printf ("\ncdlp:\n") ;

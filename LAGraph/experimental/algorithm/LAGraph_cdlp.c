@@ -213,7 +213,7 @@ int LAGraph_cdlp
         LAGRAPH_TRY (LAGraph_Malloc ((void **) &AJ, nz, sizeof(GrB_Index),msg));
         GRB_TRY (GrB_Matrix_extractTuples_UINT64(AI, AJ, GrB_NULL, &nz, A))
 
-        LAGRAPH_TRY (LAGraph_Malloc ((void **) &AX, nz, sizeof(GrB_Index),msg));
+        LAGRAPH_TRY (LAGraph_Calloc ((void **) &AX, nz, sizeof(GrB_Index),msg));
         GRB_TRY (GrB_Matrix_new(&S, GrB_UINT64, n, n));
         GRB_TRY (GrB_Matrix_build(S, AI, AJ, AX, nz, GrB_PLUS_UINT64));
 
@@ -234,6 +234,7 @@ int LAGraph_cdlp
     GRB_TRY (GxB_get(GxB_FORMAT, &global_format))
     if (A_format != GxB_BY_ROW || global_format != GxB_BY_ROW)
     {
+        LG_FREE_ALL;
         return (GrB_INVALID_VALUE) ;
     }
 #endif
