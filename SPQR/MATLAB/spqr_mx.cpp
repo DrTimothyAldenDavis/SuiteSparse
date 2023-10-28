@@ -939,7 +939,7 @@ void spqr_mx_get_usage
 char spqr_mx_debug_string [200] ;       // global variable; debugging only
 char *spqr_mx_id (int line)
 {
-    sprintf (spqr_mx_debug_string, "QR:Line_%d", line) ;
+    snprintf (spqr_mx_debug_string, 190, "QR:Line_%d", line) ;
     return (spqr_mx_debug_string) ;
 }
 

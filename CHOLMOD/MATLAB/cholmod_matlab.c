@@ -718,8 +718,8 @@ cholmod_sparse *sputil_extract_zeros
     {
 	for (p = Ap [j] ; p < Ap [j+1] ; p++)
 	{
-	    if (CHOLMOD_IS_ZERO (Ax [p]) &&
-		((is_complex) ? CHOLMOD_IS_ZERO (Az [p]) : TRUE))
+	    if ((Ax [p] == 0) &&
+		((is_complex) ? (Az [p] == 0) : TRUE))
 	    {
 		nzeros++ ;
 	    }
@@ -741,8 +741,8 @@ cholmod_sparse *sputil_extract_zeros
 	    Zp [j] = pz ;
 	    for (p = Ap [j] ; p < Ap [j+1] ; p++)
 	    {
-		if (CHOLMOD_IS_ZERO (Ax [p]) &&
-		    ((is_complex) ? CHOLMOD_IS_ZERO (Az [p]) : TRUE))
+		if ((Ax [p] == 0) &&
+		    ((is_complex) ? (Az [p] == 0) : TRUE))
 		{
 		    Zi [pz] = Ai [p] ;
 		    Zx [pz] = 1 ;
@@ -803,7 +803,7 @@ int64_t sputil_drop_zeros
 	    {
 		sik = Sx [p] ;
 		zik = Sz [p] ;
-		if (CHOLMOD_IS_NONZERO (sik) || CHOLMOD_IS_NONZERO (zik))
+		if ((sik != 0) || (zik != 0))
 		{
 		    if (p != pdest)
 		    {
@@ -826,7 +826,7 @@ int64_t sputil_drop_zeros
 	    for ( ; p < pend ; p++)
 	    {
 		sik = Sx [p] ;
-		if (CHOLMOD_IS_NONZERO (sik))
+		if ((sik != 0))
 		{
 		    if (p != pdest)
 		    {
@@ -1078,7 +1078,7 @@ int64_t sputil_copy_ij		/* returns the dimension, n */
 	for (i = 0 ; i < nrow ; i++) \
 	{ \
 	    xij = X [i + j*nrow] ; \
-	    if (CHOLMOD_IS_NONZERO (xij)) \
+	    if (xij != 0) \
 	    { \
 		nz++ ; \
 	    } \
@@ -1099,7 +1099,7 @@ int64_t sputil_copy_ij		/* returns the dimension, n */
 	for (i = 0 ; i < nrow ; i++) \
 	{ \
 	    xij = X [i + j*nrow] ; \
-	    if (CHOLMOD_IS_NONZERO (xij)) \
+	    if (xij != 0) \
 	    { \
 		Si [nz] = i ; \
 		Sx [nz] = (stype) xij ; \
@@ -1155,7 +1155,7 @@ mxArray *sputil_dense_to_sparse (const mxArray *arg)
 	    {
 		xij = X [i + j*nrow] ;
 		zij = Z [i + j*nrow] ;
-		if (CHOLMOD_IS_NONZERO (xij) || CHOLMOD_IS_NONZERO (zij))
+		if ((xij != 0) || (zij != 0))
 		{
 		    nz++ ;
 		}
@@ -1174,7 +1174,7 @@ mxArray *sputil_dense_to_sparse (const mxArray *arg)
 	    {
 		xij = X [i + j*nrow] ;
 		zij = Z [i + j*nrow] ;
-		if (CHOLMOD_IS_NONZERO (xij) || CHOLMOD_IS_NONZERO (zij))
+		if ((xij != 0) || (zij != 0))
 		{
 		    Si [nz] = i ;
 		    Sx [nz] = xij ;
@@ -1606,7 +1606,7 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 	{
 	    aij = Ax [p] ;
 	    zij = Az [p] ;
-	    if (CHOLMOD_IS_NONZERO (aij) || CHOLMOD_IS_NONZERO (zij))
+	    if ((aij != 0) || (zij != 0))
 	    {
 		snz++ ;
 	    }
@@ -1629,7 +1629,7 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 	    {
 		aij = Ax [p] ;
 		zij = Az [p] ;
-		if (CHOLMOD_IS_NONZERO (aij) || CHOLMOD_IS_NONZERO (zij))
+		if ((aij != 0) || (zij != 0))
 		{
 		    Si [snz] = Ai [p] ;
 		    Sx [snz] = aij ;
@@ -1652,7 +1652,7 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 	for (p = 0 ; p < anz ; p++)
 	{
 	    aij = Ax [p] ;
-	    if (CHOLMOD_IS_NONZERO (aij))
+	    if (aij != 0)
 	    {
 		snz++ ;
 	    }
@@ -1673,7 +1673,7 @@ mxArray *sputil_copy_sparse (const mxArray *A)
 	    for (p = Ap [j] ; p < pend ; p++)
 	    {
 		aij = Ax [p] ;
-		if (CHOLMOD_IS_NONZERO (aij))
+		if (aij != 0)
 		{
 		    Si [snz] = Ai [p] ;
 		    Sx [snz] = aij ;

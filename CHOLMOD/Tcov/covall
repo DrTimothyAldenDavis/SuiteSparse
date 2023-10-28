@@ -6,7 +6,7 @@
 # SPDX-License-Identifier: GPL-2.0+
 # ------------------------------------------------------------------------------
 
-./gcovs z*.c l_*c
+./gcovs z_*.c zz_*.c l_*.c ui_*.c ul_*.c zl_*.c
 ./covs *.gcov > covs.out
 echo -n "statments not yet tested: "
 grep -c "#####" covs.out

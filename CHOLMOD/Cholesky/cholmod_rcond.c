@@ -33,7 +33,7 @@
 #define FIRST_LMINMAX(Ljj,lmin,lmax) \
 { \
     double ljj = Ljj ; \
-    if (IS_NAN (ljj)) \
+    if (isnan (ljj)) \
     { \
 	return (0) ; \
     } \
@@ -44,7 +44,7 @@
 #define LMINMAX(Ljj,lmin,lmax) \
 { \
     double ljj = Ljj ; \
-    if (IS_NAN (ljj)) \
+    if (isnan (ljj)) \
     { \
 	return (0) ; \
     } \

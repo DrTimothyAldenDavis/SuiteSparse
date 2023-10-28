@@ -127,7 +127,7 @@ void progress (Int force, char s)
 
 void my_handler (int status, const char *file, int line, const char *msg)
 {
-    printf ("Error handler: file %s line %d status %d: %s\n", 
+    printf ("Error handler: file %s line %d status %d: %s\n",
 	    file, line, status, msg) ;
     if (status < CHOLMOD_OK || status > CHOLMOD_DSMALL)
     {
@@ -1261,7 +1261,7 @@ double do_matrix (cholmod_sparse *A)
 	    /* test various matrix operations */
 	    /* -------------------------------------------------------------- */
 
-	    err = test_ops (A) ;				/* RAND */
+            err = test_ops (A) ;				/* RAND */
 	    MAXERR (maxerr, err, 1) ;
 
 	    /* -------------------------------------------------------------- */
@@ -1523,6 +1523,7 @@ int main (int argc, char **argv)
 	OK (CHOLMOD(print_sparse) (A, "Test matrix, A", cm)) ;
 	C = unpack (A) ;					/* RAND */
 	OK (CHOLMOD(print_sparse) (C, "Unpacked/unsorted version of A", cm)) ;
+
 	cm->print = 1 ;
 
 	if (T != NULL)
@@ -1537,7 +1538,16 @@ int main (int argc, char **argv)
 	/* basic error tests */
 	/* ------------------------------------------------------------------ */
 
-	null2 (T, do_nantests) ;				/* RAND */
+//      printf ("null2:: start malloc count "ID" inuse "ID"\n",
+//              (Int) cm->malloc_count,
+//              (Int) cm->memory_inuse) ;
+
+        null2 (T, do_nantests) ;				/* RAND */
+
+//      printf ("null2:: done malloc count "ID" inuse "ID"\n",
+//              (Int) cm->malloc_count,
+//              (Int) cm->memory_inuse) ;
+
 	printf ("Null2 OK : no error\n") ;
 	if (do_nantests)
 	{
@@ -1570,9 +1580,11 @@ int main (int argc, char **argv)
 	    cholmod_sparse *F ;
 	    int save = T->stype ;
 
+            printf ("triplet to sparse:\n") ;
 	    T->stype = 0 ;
 	    F = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
 	    T->stype = save ;
+            // OKP (F) ;
 
 	    /*
 	    ET = CHOLMOD(transpose) (E, 2, cm) ;
@@ -1619,7 +1631,7 @@ int main (int argc, char **argv)
 	/* matrix ops */
 	/* ------------------------------------------------------------------ */
 
-	err = test_ops (A) ;					/* RAND */
+        err = test_ops (A) ;					/* RAND */
 	MAXERR (maxerr, err, 1) ;
 	printf ("initial testops error %.1g\n", err) ;
 
@@ -1744,9 +1756,11 @@ int main (int argc, char **argv)
     CHOLMOD(finish) (cm) ;
 
     cm->print = 5 ; OK (CHOLMOD(print_common) ("cm", cm)) ;
-    printf ("malloc count "ID" inuse "ID"\n",
-	    (Int) cm->malloc_count, 
+
+    printf ("FINAL::malloc count "ID" inuse "ID"\n",
+	    (Int) cm->malloc_count,
 	    (Int) cm->memory_inuse) ;
+
     OK (cm->malloc_count == 0) ;
     OK (cm->memory_inuse == 0) ;
     t = SuiteSparse_toc (tic) ;

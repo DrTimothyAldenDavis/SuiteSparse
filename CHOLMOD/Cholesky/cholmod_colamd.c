@@ -92,7 +92,7 @@ int CHOLMOD(colamd)
     s = CHOLMOD(mult_size_t) (nrow, 4, &ok) ;
     s = CHOLMOD(add_size_t) (s, ncol, &ok) ;
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     alen = colamd_l_recommended (A->nzmax, ncol, nrow) ;
     colamd_l_set_defaults (knobs) ;
 #else
@@ -151,7 +151,7 @@ int CHOLMOD(colamd)
 	Int stats [COLAMD_STATS] ;
 	Cp = C->p ;
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
 	colamd_l (ncol, nrow, alen, C->i, Cp, knobs, stats) ;
 #else
 	colamd (ncol, nrow, alen, C->i, Cp, knobs, stats) ;

@@ -8,7 +8,7 @@
 
 //------------------------------------------------------------------------------
 
-#define DLONG
+#define CHOLMOD_INT64
 #include "cm.c"
 #include "test_ops.c"
 #include "null.c"

@@ -1153,13 +1153,12 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
         /* convert a supernodal L to simplicial when using Bset */
         if (L->is_super)
         {
-            /* Can only use Bset on a simplicial factorization.  The supernodal
-             * factor L is converted to simplicial, leaving the xtype unchanged
-             * (real, complex, or zomplex).  Since the supernodal factorization
-             * is already LL', it is left in that form.   This conversion uses
-             * the ll_super_to_simplicial_numeric function in
-             * cholmod_change_factor.
-             */
+            // Can only use Bset on a simplicial factorization.  The supernodal
+            // factor L is converted to simplicial, leaving the xtype unchanged
+            // (real, complex, or zomplex).  Since the supernodal factorization
+            // is already LL', it is left in that form.   This conversion uses
+            // the super_num_to_simplicial_num function in
+            // cholmod_change_factor.
             CHOLMOD(change_factor) (
                 CHOLMOD_REAL,   /* ignored, since L is already numeric */
                 TRUE,           /* convert to LL' (no change to num. values) */
@@ -1548,6 +1547,13 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
         Common->blas_ok = TRUE ;
 	dual = (L->xtype == CHOLMOD_REAL && B->xtype != CHOLMOD_REAL) ? 2 : 1 ;
 	Y = CHOLMOD(ensure_dense) (Y_Handle, n, dual*nrhs, n, L->xtype, Common);
+
+	if (Common->status < CHOLMOD_OK)
+	{
+	    /* out of memory */
+            return (FALSE) ;
+	}
+
 	E = CHOLMOD(ensure_dense) (E_Handle, dual*nrhs, L->maxesize, dual*nrhs,
 		L->xtype, Common) ;
 

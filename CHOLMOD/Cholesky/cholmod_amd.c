@@ -166,7 +166,7 @@ int CHOLMOD(amd)
 	Control [AMD_AGGRESSIVE] = Common->method [Common->current].aggressive ;
     }
 
-#if ( ITYPE == CHOLMOD_LONG )
+#if defined ( CHOLMOD_INT64 )
     amd_l2 (n, C->p,  C->i, Len, C->nzmax, cnz, Nv, Next, Perm, Head, Elen,
 	    Degree, Wi, Control, Info) ;
 #else

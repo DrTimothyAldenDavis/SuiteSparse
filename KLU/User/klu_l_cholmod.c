@@ -43,7 +43,6 @@ int64_t klu_l_cholmod
     int64_t *P ;
     int64_t k ;
     int symmetric ;
-    printf ("------------------- KLU User\n") ;
     klu_l_common km ;
     klu_l_defaults (&km) ;
 
@@ -65,7 +64,7 @@ int64_t klu_l_cholmod
     A->nzmax = Ap [n] ;             /* with nzmax entries */
     A->packed = TRUE ;              /* there is no A->nz array */
     A->stype = 0 ;                  /* A is unsymmetric */
-    A->itype = CHOLMOD_INT ;
+    A->itype = CHOLMOD_LONG ;
     A->xtype = CHOLMOD_PATTERN ;
     A->dtype = CHOLMOD_DOUBLE ;
     A->nz = NULL ;
