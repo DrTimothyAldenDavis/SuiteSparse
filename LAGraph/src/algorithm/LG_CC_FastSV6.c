@@ -47,6 +47,9 @@
 // G->A will then become a truly read-only object (assuming GrB_wait (G->A)
 // has been done first).
 
+#define __STDC_WANT_LIB_EXT1__ 1
+#include <string.h>
+
 #define LG_FREE_ALL ;
 #include "LG_internal.h"
 
@@ -604,18 +607,16 @@ int LG_CC_FastSV6           // SuiteSparse:GraphBLAS method, with GxB extensions
         nvals = 0 ;
         for (tid = 0 ; tid < nthreads ; tid++)
         {
+            // `memcpy` is not safe if src/dest are overlapping.
+            // Use `memmove` (or if available `memmove_s`) instead.
 
-//          this memcpy is not safe (src/dest can overlap)
-//          memcpy (Tj + nvals, Tj + Tp [range [tid]],
-//              sizeof (GrB_Index) * count [tid]) ;
-
-            // use a for loop instead
-            GrB_Index *Tj_dest = Tj + nvals ;
-            GrB_Index *Tj_src  = Tj + Tp [range [tid]] ;
-            for (int64_t k = 0 ; k < count [tid] ; k++)
-            {
-                Tj_dest [k] = Tj_src [k] ;
-            }
+            #if defined (__STDC_LIB_EXT1__)
+            memmove_s (Tj + nvals, Tj_size - sizeof (GrB_Index) * nvals,
+                Tj + Tp [range [tid]], sizeof (GrB_Index) * count [tid]) ;
+            #else
+            memmove (Tj + nvals,
+                Tj + Tp [range [tid]], sizeof (GrB_Index) * count [tid]) ;
+            #endif
 
             nvals += count [tid] ;
             count [tid] = nvals - count [tid] ;
