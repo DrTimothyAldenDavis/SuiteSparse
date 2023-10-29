@@ -10,6 +10,9 @@
  *    it must be called after the results are computed
  *  @author Aznaveh
  */
+
+#define LD "%" PRId64
+
 #include "paru_internal.hpp"
 void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 {
@@ -57,7 +60,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         for (int64_t col = 0; col < n; col++)
         {                                      // for each column of A(:,Qfill)
             int64_t j = Qfill ? Qfill[col] : col;  // col of S is column j of A
-            fprintf(colfptr, "%ld\n", j);
+            fprintf(colfptr, LD "\n", j);
         }
 
         fclose(colfptr);
@@ -111,7 +114,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         int64_t ip = 0;  // number of rows seen so far
         for (int64_t k = 0; k < n1; k++)
             // first singletons
-            fprintf(rowfptr, "%ld\n", Pinit[k]);
+            fprintf(rowfptr, LD "\n", Pinit[k]);
 
         for (int64_t f = 0; f < nf; f++)
         {  // rows for each front
@@ -124,7 +127,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             {
                 oldRofS[ip++] = frowList[k];  // computing permutation for S
                 // P[k] = i
-                fprintf(rowfptr, "%ld\n", Pinit[frowList[k]]);
+                fprintf(rowfptr, LD "\n", Pinit[frowList[k]]);
             }
         }
         fclose(rowfptr);
@@ -237,7 +240,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 
     fprintf(LUfptr, "%%%%MatrixMarket matrix coordinate real general\n");
     fprintf(LUfptr, "%%-----------produced by ParU ---------------\n");
-    fprintf(LUfptr, "%ld  %ld %ld\n", m, n, nnz);
+    fprintf(LUfptr, LD "  " LD " " LD "\n", m, n, nnz);
 
     // writing the singletons
     // (I haven't add that part yet)
@@ -260,14 +263,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             for (int64_t i = 0; i < rowCount; i++)
             {
                 if (pivotalFront[(j - col1) * rowCount + i] != 0.0)
-                    fprintf(LUfptr, "%ld  %ld %.17g\n",
+                    fprintf(LUfptr, LD "  " LD " %.17g\n",
                             newRofS[frowList[i]] + n1 + 1, j + n1 + 1,
                             pivotalFront[(j - col1) * rowCount + i]);
             }
 
 #ifndef NDEBUG  // Printing the pivotal front
         int64_t p = 1;
-        PRLEVEL(p, ("\n%%Inside paru_write Luf{%ld}= [", f + 1));
+        PRLEVEL(p, ("\n%%Inside paru_write Luf{" LD "}= [", f + 1));
         for (int64_t r = 0; r < rowCount; r++)
         {
             PRLEVEL(p, (" "));
@@ -285,14 +288,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             for (int64_t i = 0; i < fp; i++)
             {
                 if (uPart[fp * j + i] != 0.0)
-                    fprintf(LUfptr, "%ld  %ld %.17g\n",
+                    fprintf(LUfptr, LD "  " LD " %.17g\n",
                             newRofS[frowList[i]] + n1 + 1, fcolList[j] + n1 + 1,
                             uPart[fp * j + i]);
             }
 #ifndef NDEBUG  // Printing the  U part
         p = 1;
         PRLEVEL(p, ("\n"));
-        PRLEVEL(p, ("%% fp = %ld, colCount = %ld\n", fp, colCount));
+        PRLEVEL(p, ("%% fp = " LD ", colCount = " LD "\n", fp, colCount));
         if (colCount != 0)
         {
             for (int64_t i = 0; i < fp; i++)
