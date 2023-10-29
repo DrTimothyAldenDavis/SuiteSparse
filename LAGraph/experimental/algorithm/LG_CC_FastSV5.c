@@ -679,13 +679,17 @@ int LG_CC_FastSV5           // SuiteSparse:GraphBLAS method, with GxB extensions
 //          memcpy (Tj + offset, Tj + Tp [range [tid]],
 //              sizeof (GrB_Index) * count [tid]) ;
 
-            // use a for loop instead
-            GrB_Index *Tj_dest = Tj + offset ;
-            GrB_Index *Tj_src  = Tj + Tp [range [tid]] ;
-            for (int64_t k = 0 ; k < count [tid] ; k++)
-            {
-                Tj_dest [k] = Tj_src [k] ;
-            }
+//          // using a for loop instead:
+//          GrB_Index *Tj_dest = Tj + offset ;
+//          GrB_Index *Tj_src  = Tj + Tp [range [tid]] ;
+//          for (int64_t k = 0 ; k < count [tid] ; k++)
+//          {
+//              Tj_dest [k] = Tj_src [k] ;
+//          }
+
+//          this is safe (memmove_s not necessary):
+            memmove (Tj + offset, Tj + Tp [range [tid]],
+                sizeof (GrB_Index) * count [tid]) ;
 
             offset += count [tid] ;
             count [tid] = offset - count [tid] ;
