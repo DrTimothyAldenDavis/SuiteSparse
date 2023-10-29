@@ -142,17 +142,11 @@ void test_cc_matrices (void)
             int result = GrB_SUCCESS ;
             printf ("\n------ CC_BORUVKA:\n") ;
             result = LG_CC_Boruvka (&C2, G, msg) ;
-
-//          #if (defined (UINT64_MAX) && UINT64_MAX == UINTPTR_MAX)
-            #if 1
             OK (result) ;
             ncomponents = count_connected_components (C2) ;
             TEST_CHECK (ncomponents == ncomp) ;
             OK (LG_check_cc (C2, G, msg)) ;
             OK (GrB_free (&C2)) ;
-            #else
-            TEST_CHECK (result == GrB_NOT_IMPLEMENTED) ;
-            #endif
 
             result = LG_CC_Boruvka (NULL, G, msg) ;
             TEST_CHECK (result == GrB_NULL_POINTER) ;
