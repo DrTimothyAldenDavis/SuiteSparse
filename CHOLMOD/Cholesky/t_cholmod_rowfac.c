@@ -157,7 +157,7 @@ static int TEMPLATE (cholmod_rowfac)
 				 * zomplex.  Xwork [i] == 0 must hold. */
     Wz = Wx + n ;		/* size n for zomplex case only */
     mark = Common->mark ;
-    size_t wsize = (L->xtype == CHOLMOD_REAL ? 1:2) * n ;
+    size_t wsize = (L->xtype == CHOLMOD_REAL ? 1:2) * ((size_t) n) ;
     ASSERT (Common->xworkbytes >= wsize * sizeof (Real)) ;
 
     /* ---------------------------------------------------------------------- */
