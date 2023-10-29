@@ -28,7 +28,6 @@ message ( STATUS "Building PARU version: v"
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
     ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
     )
 
@@ -129,6 +128,10 @@ set_target_properties ( paru PROPERTIES
     PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+target_include_directories ( paru
+    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
 #-------------------------------------------------------------------------------
 # static paru library properties
 #-------------------------------------------------------------------------------
@@ -149,6 +152,10 @@ if ( NOT NSTATIC )
         set_target_properties ( paru_static PROPERTIES
             OUTPUT_NAME paru_static )
     endif ( )
+
+    target_include_directories ( paru_static
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -223,20 +230,54 @@ endif ( )
 # PARU installation location
 #-------------------------------------------------------------------------------
 
+include ( CMakePackageConfigHelpers )
+
 install ( TARGETS paru
+    EXPORT ParUTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-install ( FILES ${CMAKE_SOURCE_DIR}/cmake_modules/FindParU.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/SuiteSparse 
-    COMPONENT Development )
-
 if ( NOT NSTATIC )
     install ( TARGETS paru_static
-        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR} )
+        EXPORT ParUTargets
+        ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
+
+# create (temporary) export target file during build
+export ( EXPORT ParUTargets
+    NAMESPACE SuiteSparse::
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/ParUTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT ParUTargets
+    NAMESPACE SuiteSparse::
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/ParU )
+
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
+configure_package_config_file (
+    Config/ParUConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/ParUConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/ParUConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/ParUConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/ParUConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/ParU )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/ParUConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/ParUConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/ParUConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/ParU )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
