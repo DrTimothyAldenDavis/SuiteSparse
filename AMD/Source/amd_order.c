@@ -150,9 +150,10 @@ int AMD_order
     slen = nzaat ;			/* space for matrix */
     ok = ((slen + nzaat/5) >= slen) ;	/* check for size_t overflow */
     slen += nzaat/5 ;			/* add elbow room */
+    size_t nn = (size_t) n ;            // n is always >= 0
     for (i = 0 ; ok && i < 7 ; i++)
     {
-	ok = ((slen + n) > slen) ;	/* check for size_t overflow */
+	ok = ((slen + nn) > slen) ;	/* check for size_t overflow */
 	slen += n ;			/* size-n elbow room, 6 size-n work */
     }
     mem += slen ;
