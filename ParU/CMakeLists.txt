@@ -182,6 +182,7 @@ if ( OpenMP_CXX_FOUND )
     message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
     target_link_libraries ( ParU PRIVATE OpenMP::OpenMP_CXX )
     if ( NOT NSTATIC )
+        list ( APPEND PARU_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
         target_link_libraries ( ParU_static PUBLIC OpenMP::OpenMP_CXX )
     endif ( )
 endif ( )
@@ -190,6 +191,7 @@ endif ( )
 if ( NOT MSVC )
     target_link_libraries ( ParU PRIVATE m )
     if ( NOT NSTATIC )
+        list ( APPEND PARU_STATIC_LIBS m )
         target_link_libraries ( ParU_static PUBLIC m )
     endif ( )
 endif ( )
@@ -211,6 +213,7 @@ message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( ParU PRIVATE ${BLAS_LIBRARIES} )
 if ( NOT NSTATIC )
+    list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
     include_directories ( ${BLAS_INCLUDE_DIRS} )
 endif ( )
@@ -279,6 +282,62 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/ParUConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/ParUConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/ParU )
+
+#-------------------------------------------------------------------------------
+# create pkg-config file
+#-------------------------------------------------------------------------------
+
+if ( NOT MSVC )
+    # This might be something like:
+    #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+    # convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+    set ( PARU_STATIC_LIBS_LIST ${PARU_STATIC_LIBS} )
+    set ( PARU_STATIC_LIBS "" )
+    foreach ( _lib ${PARU_STATIC_LIBS_LIST} )
+        string ( FIND ${_lib} "." _pos REVERSE )
+        if ( ${_pos} EQUAL "-1" )
+            set ( PARU_STATIC_LIBS "${PARU_STATIC_LIBS} -l${_lib}" )
+            continue ()
+        endif ( )
+        set ( _kinds "SHARED" "STATIC" )
+        if ( WIN32 )
+            list ( PREPEND _kinds "IMPORT" )
+        endif ( )
+        foreach ( _kind IN LISTS _kinds )
+            set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+            if ( ${_lib} MATCHES ${_regex} )
+                string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+                if ( NOT "${_libname}" STREQUAL "" )
+                    set ( PARU_STATIC_LIBS "${PARU_STATIC_LIBS} -l${_libname}" )
+                    break ()
+                endif ( )
+            endif ( )
+        endforeach ( )
+    endforeach ( )
+
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        Config/ParU.pc.in
+        ParU.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/ParU.pc
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
