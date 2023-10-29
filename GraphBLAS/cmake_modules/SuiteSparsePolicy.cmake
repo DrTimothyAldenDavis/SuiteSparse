@@ -174,9 +174,8 @@ if ( INSIDE_SUITESPARSE )
     set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
 endif ( )
 
-option ( SUITESPARSE_PKGFILEDIR
-    "Directory where CMake Config and pkg-config files will be installed"
-    ${SUITESPARSE_LIBDIR} )
+set ( SUITESPARSE_PKGFILEDIR ${SUITESPARSE_LIBDIR} CACHE STRING
+    "Directory where CMake Config and pkg-config files will be installed" )
 
 message ( STATUS "Install lib:      ${SUITESPARSE_LIBDIR}" )
 message ( STATUS "Install include:  ${SUITESPARSE_INCLUDEDIR}" )
