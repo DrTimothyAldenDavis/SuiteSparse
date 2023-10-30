@@ -29,7 +29,7 @@ include ( SuiteSparsePolicy )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_ALL_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;rbio;spqr;spex;graphblas" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;paru;rbio;spqr;spex;graphblas" )
 
 # lower-case list of extra projects that can be built by this root CMake file
 set ( SUITESPARSE_EXTRA_PROJECTS
@@ -92,10 +92,18 @@ if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     endif ( )
 endif ( )
 
+if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"cholmod\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+    endif ( )
+endif ( )
+
 if ( ( NOT NCHOLMOD AND
           ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
-        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         message ( STATUS "Adding \"cholmod\" to the list of built targets." )
         list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
@@ -142,6 +150,7 @@ if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
         OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
@@ -254,6 +263,14 @@ if ( "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::UMFPACK ALIAS UMFPACK )
     if ( NOT NSTATIC )
         add_library ( SuiteSparse::UMFPACK_static ALIAS UMFPACK_static )
+    endif ( )
+endif ( )
+
+if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "ParU" )
+    add_library ( SuiteSparse::ParU ALIAS ParU )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::ParU_static ALIAS ParU_static )
     endif ( )
 endif ( )
 
