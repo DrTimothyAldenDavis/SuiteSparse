@@ -90,12 +90,12 @@
 #ifndef _BTF_H
 #define _BTF_H
 
+#include "SuiteSparse_config.h"
+
 /* make it easy for C++ programs to include BTF */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "SuiteSparse_config.h"
 
 int32_t btf_maxtrans    /* returns # of columns matched */
 (
@@ -218,6 +218,10 @@ int32_t btf_order       /* returns number of blocks found */
 int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
     int64_t *, int64_t *, int64_t *, int64_t *, int64_t *) ;
 
+#ifdef __cplusplus
+}
+#endif
+
 
 /* ========================================================================== */
 /* === BTF marking of singular columns ====================================== */
@@ -262,7 +266,4 @@ int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
 #define BTF_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
 #define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
 
-#ifdef __cplusplus
-}
-#endif
 #endif
