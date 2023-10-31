@@ -286,7 +286,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/UMFPACKConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 

@@ -182,7 +182,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CAMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CAMDConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CAMD )
 

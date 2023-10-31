@@ -212,7 +212,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/CXSparseConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/CXSparseConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/CXSparse )
 

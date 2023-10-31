@@ -346,7 +346,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/KLUConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/KLUConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/KLUConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/KLU )
 
