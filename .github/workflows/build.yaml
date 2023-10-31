@@ -181,6 +181,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
             -DBLA_VENDOR="OpenBLAS" \
             ${{ matrix.cuda-cmake-flags }} \
             ..
@@ -300,7 +301,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DCMAKE_PREFIX_PATH="/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
@@ -457,7 +458,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DCMAKE_MODULE_PATH="${MINGW_PREFIX}/lib/cmake/SuiteSparse" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
@@ -651,7 +652,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
             ${{ matrix.openmp-cmake-flags }} \
             ..
