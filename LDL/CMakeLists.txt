@@ -41,16 +41,20 @@ project ( ldl
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 find_package ( SuiteSparse_config 7.2.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
     find_package ( SuiteSparse_config 7.2.0 REQUIRED )
 endif ( )
-find_package ( AMD 3.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.0 REQUIRED )
+
+if ( DEMO )
+    find_package ( AMD 3.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_package ( AMD 3.2.0 )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -129,25 +133,13 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-target_link_libraries ( LDL PRIVATE
-    SuiteSparse::AMD SuiteSparse::SuiteSparseConfig )
 target_include_directories ( LDL PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( LDL_static PUBLIC SuiteSparse::AMD_static )
-    else ( )
-        target_link_libraries ( LDL_static PUBLIC SuiteSparse::AMD )
-    endif ( )
-    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( LDL_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
-    else ( )
-        target_link_libraries ( LDL_static PUBLIC SuiteSparse::SuiteSparseConfig )
-    endif ( )
+    target_include_directories ( LDL_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-
-
 #-------------------------------------------------------------------------------
 # LDL installation location
 #-------------------------------------------------------------------------------
@@ -232,7 +224,6 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
 if ( DEMO )
 
     #---------------------------------------------------------------------------
