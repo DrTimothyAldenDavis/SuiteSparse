@@ -219,15 +219,11 @@ if ( NOT NSTATIC )
 endif ( )
 
 # cholmod:
-target_link_libraries ( ParU PRIVATE SuiteSparse::CHOLMOD )
 target_include_directories ( ParU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::CHOLMOD_static )
-        target_link_libraries ( ParU_static PUBLIC SuiteSparse::CHOLMOD_static )
-    else ( )
-        target_link_libraries ( ParU_static PUBLIC SuiteSparse::CHOLMOD )
-    endif ( )
+    target_include_directories ( ParU_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
 
 #-------------------------------------------------------------------------------
