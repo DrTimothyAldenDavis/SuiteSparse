@@ -115,7 +115,7 @@ int CHOLMOD(transpose_sym)
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    CHOLMOD(allocate_work) (0, ((Perm == NULL) ? 1: 2) * n, 0, Common) ;
+    CHOLMOD(allocate_work) (0, ((Perm == NULL) ? 1: 2) * A->ncol, 0, Common) ;
     RETURN_IF_ERROR ;
 
     Int *Wi = (Int *) Common->Iwork ;   // size n integers

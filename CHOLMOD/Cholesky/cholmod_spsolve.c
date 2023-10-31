@@ -112,7 +112,7 @@ cholmod_sparse *CHOLMOD(spsolve)	    /* returns the sparse solution X */
     block = MIN (nrhs, 4) ;
 
     /* initial size of X is at most 4*n */
-    nzmax = n*block ;
+    nzmax = ((size_t) n) * ((size_t) block) ;
 
     X = CHOLMOD(spzeros) (n, nrhs, nzmax, xtype, Common) ;
     B4 = CHOLMOD(zeros) (n, block, B->xtype, Common) ;
