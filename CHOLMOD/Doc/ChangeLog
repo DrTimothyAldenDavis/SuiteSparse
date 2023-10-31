@@ -1,3 +1,8 @@
+Oct 31, 2023, version 5.0.1
+
+    * cholmod.h: remove use of "I" which conflicts with
+        #include <complex.h>.
+
 Oct 23, 2023, version 5.0.0
 
     * CHOLMOD v5.0.0: introduces the first part of support for single
