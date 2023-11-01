@@ -217,6 +217,9 @@ if ( NJIT )
             "Source/FactoryKernels/*.c" )
     endif ( )
 else ( )
+    # generate compressed JIT sources
+    add_subdirectory ( JITpackage )
+
     if ( COMPACT )
         # with the JIT; but do not compile the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" 
@@ -254,6 +257,11 @@ if ( WIN32 )
     target_compile_definitions ( GraphBLAS PRIVATE GB_DLL_EXPORT )
 endif ( )
 
+if ( NOT NJIT )
+    # Make sure compressed sources are built before library
+    add_dependencies ( GraphBLAS grb_jitpackage )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # static graphblas library properties
 #-------------------------------------------------------------------------------
@@ -284,6 +292,12 @@ if ( NOT NSTATIC )
 #       add_dependencies ( GraphBLAS_static rmm_wrap )
         target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
     endif ( )
+
+    if ( NOT NJIT )
+        # Make sure compressed sources are built before library
+        add_dependencies ( GraphBLAS_static grb_jitpackage )
+    endif ( )
+
 endif ( )
 
 #-------------------------------------------------------------------------------

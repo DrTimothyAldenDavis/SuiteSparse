@@ -9,9 +9,6 @@
 
 go:
 	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . )
-	./build/grb_jitpackage ../Include/GraphBLAS.h \
-            ../Source/Template/*.[ch] ../Source/JitKernels/*.[ch] \
-            ../Source/Shared/*.h
 
 clean: distclean
 
