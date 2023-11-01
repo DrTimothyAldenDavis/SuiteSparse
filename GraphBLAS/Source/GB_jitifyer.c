@@ -234,7 +234,8 @@ GrB_Info GB_jitifyer_init (void)
     control = GB_IMIN (control, (int) GxB_JIT_ON) ;
     #else
     // The JIT is restricted; only OFF, PAUSE, and RUN settings can be
-    // used.  No JIT kernels can be loaded or compiled.
+    // used.  No JIT kernels can be loaded or compiled.  Only PreJIT kernels
+    // can be used.
     control = GB_IMIN (control, (int) GxB_JIT_RUN) ;
     #endif
     GB_jit_control = (GxB_JIT_Control) control ;
@@ -2168,6 +2169,16 @@ void GB_jitifyer_table_free (bool freeall)
 // handled by modifying the command string in the caller, so they do not have
 // to be handled here.
 
+// NOTE: this call to system(...) *cannot* be sanitized; CodeQL flags calls to
+// GB_jitifyer_command as security isses, but this is intentional.  The JIT
+// allows the end user to create arbitary user-defined types and operators,
+// which GraphBLAS then injects into C source code of a JIT kernel created at
+// run time.  The end user can also specify an arbitrary compiler to compile
+// JIT kernels.  This code injection is intentional, and required for the JIT.
+// If a security-hardened GraphBLAS library is required, then GraphBLAS must be
+// compiled with -DNJIT to disable the JIT entirely.  This option does not
+// disable any PreJIT kernels.
+
 static void GB_jitifyer_command (char *command)
 { 
     int result = system (command) ;
@@ -2198,7 +2209,7 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
         "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // create the build folder for this kernel
     snprintf (GB_jit_temp, GB_jit_temp_allocated, GB_BLD_DIR,
@@ -2259,7 +2270,7 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
         GB_jit_cache_path, hash,     // -B build path
         GB_jit_C_compiler,                  // C compiler to use
         burble_stdout, err_redirect, GB_jit_error_log) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // compile the library for this kernel
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
@@ -2267,21 +2278,21 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
         // can add "--verbose" here too
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // install the library
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
         "cmake --install \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // remove the build folder and all its contents
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
         "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
 #endif
 }
@@ -2348,7 +2359,7 @@ void GB_jitifyer_direct_compile (char *kernel_name, uint32_t bucket)
 
     // compile the library and return result
     GBURBLE ("(jit: %s) ", GB_jit_temp) ;
-    GB_jitifyer_command (GB_jit_temp) ;
+    GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // remove the *.o file
     snprintf (GB_jit_temp, GB_jit_temp_allocated, "%s/c/%02x/%s%s",
