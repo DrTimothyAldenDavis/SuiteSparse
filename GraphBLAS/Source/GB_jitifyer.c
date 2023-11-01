@@ -2170,14 +2170,17 @@ void GB_jitifyer_table_free (bool freeall)
 // to be handled here.
 
 // NOTE: this call to system(...) *cannot* be sanitized; CodeQL flags calls to
-// GB_jitifyer_command as security isses, but this is intentional.  The JIT
+// GB_jitifyer_command as security issues, but this is intentional.  The JIT
 // allows the end user to create arbitary user-defined types and operators,
 // which GraphBLAS then injects into C source code of a JIT kernel created at
 // run time.  The end user can also specify an arbitrary compiler to compile
 // JIT kernels.  This code injection is intentional, and required for the JIT.
 // If a security-hardened GraphBLAS library is required, then GraphBLAS must be
-// compiled with -DNJIT to disable the JIT entirely.  This option does not
-// disable any PreJIT kernels.
+// compiled with -DNJIT to disable the JIT entirely.  User-defined JIT kernels
+// will not be created at run time, and thus user-defined types and operators
+// will be slow, however.  This option does not disable any PreJIT kernels, so
+// if fast user-defined kernels are required, they can be used with the PreJIT
+// mechanism; see the GraphBLAS User Guide for details.
 
 static void GB_jitifyer_command (char *command)
 { 
