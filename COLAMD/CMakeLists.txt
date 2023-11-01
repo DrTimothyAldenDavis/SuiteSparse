@@ -179,7 +179,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/COLAMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/COLAMDConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/COLAMD )
 

@@ -187,7 +187,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/LDLConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/LDLConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/LDLConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/LDL )
 

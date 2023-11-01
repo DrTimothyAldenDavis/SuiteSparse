@@ -512,7 +512,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/GraphBLASConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLASConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GraphBLAS )
 

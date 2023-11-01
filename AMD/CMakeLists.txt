@@ -192,7 +192,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/AMDConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/AMDConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/AMDConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/AMD )
 

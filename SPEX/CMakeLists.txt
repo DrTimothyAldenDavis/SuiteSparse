@@ -237,7 +237,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/SPEXConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/SPEXConfigVersion.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindGMP.cmake
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindMPFR.cmake

@@ -180,7 +180,7 @@ write_basic_package_version_file (
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/RBioConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/RBioConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/RBioConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/RBio )
 
