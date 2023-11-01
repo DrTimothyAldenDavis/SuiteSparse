@@ -83,7 +83,7 @@ int main (int argc, char **argv)
     // start the GB_JITpackage.c file
     //--------------------------------------------------------------------------
 
-    FILE *fp = fopen ("GB_JITpackage.c", "w") ;
+    FILE *fp = fopen ("GB_JITpackage.c", "wb") ;
     OK (fp != NULL) ;
     int nfiles = argc - 1 ;
     printf ("Processing %d input files ...\n", nfiles) ;
