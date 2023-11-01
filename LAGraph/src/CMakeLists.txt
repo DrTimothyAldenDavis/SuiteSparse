@@ -35,7 +35,7 @@ SET_TARGET_PROPERTIES ( lagraph PROPERTIES
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraph.h"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
-target_link_libraries ( lagraph PRIVATE ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
+target_link_libraries ( lagraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
 target_link_directories ( lagraph BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_include_directories ( lagraph PUBLIC include/ )
 target_compile_definitions ( lagraph PRIVATE LG_LIBRARY )
@@ -60,7 +60,12 @@ if ( MSVC )
         OUTPUT_NAME lagraph_static )
 endif ( )
 
-target_link_libraries ( lagraph_static PUBLIC ${GRAPHBLAS_LIBRARIES} ${M_LIB} )
+if ( TARGET GraphBLAS::GraphBLAS_static )
+    target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS_static )
+else ( )
+    target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS )
+endif ( )
+target_link_libraries ( lagraph_static PUBLIC ${M_LIB} )
 target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------

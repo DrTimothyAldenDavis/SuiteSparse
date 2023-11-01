@@ -31,7 +31,7 @@ SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraphX.h"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
-target_link_libraries ( lagraphx PRIVATE lagraph ${GRAPHBLAS_LIBRARIES} )
+target_link_libraries ( lagraphx PRIVATE lagraph GraphBLAS::GraphBLAS )
 target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_compile_definitions ( lagraphx PRIVATE LGX_LIBRARY )
 target_compile_definitions ( lagraphx PUBLIC LGX_DLL )
@@ -54,7 +54,11 @@ if ( MSVC )
         OUTPUT_NAME lagraphx_static )
 endif ( )
 
-target_link_libraries ( lagraphx_static PUBLIC lagraph_static ${GRAPHBLAS_LIBRARIES} )
+if ( TARGET GraphBLAS::GraphBLAS_static )
+    target_link_libraries ( lagraphx_static PUBLIC GraphBLAS::GraphBLAS_static )
+else ( )
+    target_link_libraries ( lagraphx_static PUBLIC GraphBLAS::GraphBLAS )
+endif ( )
 target_link_directories ( lagraphx_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
