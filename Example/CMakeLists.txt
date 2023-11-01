@@ -43,10 +43,6 @@ set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C CXX )
 include ( GNUInstallDirs )
 
-# set the module path for all Find*.cmake files.
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules )
-
 #-------------------------------------------------------------------------------
 # define my project
 #-------------------------------------------------------------------------------
