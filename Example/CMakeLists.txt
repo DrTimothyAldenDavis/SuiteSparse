@@ -5,6 +5,10 @@
 # Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
+# To build this example, add the location of the CMake config files to
+# CMAKE_PREFIX_PATH if the SuiteSparse libraries aren't installed at a
+# default location.
+
 #-------------------------------------------------------------------------------
 # get the version
 #-------------------------------------------------------------------------------
@@ -38,15 +42,6 @@ endif ( )
 set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C CXX )
 include ( GNUInstallDirs )
-
-# set the module path for all Find*.cmake files.
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../lib/cmake/SuiteSparse
-    ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
-# add path to cmake target files (if necessary)
-set ( CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
-    ${CMAKE_SOURCE_DIR}/../lib/cmake )
 
 #-------------------------------------------------------------------------------
 # define my project
@@ -82,8 +77,8 @@ find_package ( UMFPACK 6.2.2 REQUIRED )
 
 # look for all external libaries:
 find_package ( OpenMP REQUIRED )
-
-include ( SuiteSparseBLAS )
+find_package ( BLAS REQUIRED )
+find_package ( LAPACK REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

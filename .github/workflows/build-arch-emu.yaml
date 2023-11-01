@@ -165,6 +165,7 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
             -DBLA_VENDOR="OpenBLAS" \
             ..
           echo "::endgroup::"
