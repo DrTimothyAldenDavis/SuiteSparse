@@ -1,3 +1,7 @@
+Oct 31, 2023: version 7.3.1
+
+    * CHOLMOD 5.0.1: remove "I" from cholmod.h.
+
 Oct 23, 2023: version 7.3.0
 
     * CHOLMOD 5.0.0: initial support for sparse single precision matries.
