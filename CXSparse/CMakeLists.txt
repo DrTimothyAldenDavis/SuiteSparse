@@ -145,15 +145,11 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
-target_link_libraries ( CXSparse PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( CXSparse PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( CXSparse_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
-    else ( )
-        target_link_libraries ( CXSparse_static PUBLIC SuiteSparse::SuiteSparseConfig )
-    endif ( )
+    target_include_directories ( CXSparse_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
 
 # libm:
