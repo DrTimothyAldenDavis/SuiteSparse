@@ -137,6 +137,9 @@ else ( )
         set ( OPENMP_C_FOUND OFF )
     else ( )
         find_package ( OpenMP )
+        if ( OPENMP_C_FOUND AND NOT NSTATIC )
+            list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
+        endif ( )
         find_package ( Threads )
     endif ( )
 endif ( )
@@ -252,13 +255,10 @@ endif ( )
 # LAGraph installation location
 #-------------------------------------------------------------------------------
 
-# install in ${CMAKE_INSTALL_PREFIX}/lib and ${CMAKE_INSTALL_PREFIX}/include.
-# Requires "sudo make install" if this is /usr/local (default).
-
-message ( STATUS "Installation in: ${CMAKE_INSTALL_PREFIX}" )
-include ( GNUInstallDirs )
+include ( CMakePackageConfigHelpers )
 
 install ( TARGETS lagraph lagraphx
+    EXPORT LAGraphTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
@@ -266,6 +266,105 @@ install ( TARGETS lagraph lagraphx
 
 if ( NOT NSTATIC )
     install ( TARGETS lagraph_static lagraphx_static
+        EXPORT LAGraphTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
+
+
+# create (temporary) export target file during build
+export ( EXPORT LAGraphTargets
+    NAMESPACE SuiteSparse::
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/LAGraphTargets.cmake )
+
+# install export target, config and version files for find_package
+install ( EXPORT LAGraphTargets
+    NAMESPACE SuiteSparse::
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/LAGraph )
+
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
+configure_package_config_file (
+    config/LAGraphConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/LAGraphConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/LAGraphConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    config/LAGraphConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/LAGraphConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/LAGraph )
+
+write_basic_package_version_file (
+    ${CMAKE_CURRENT_BINARY_DIR}/LAGraphConfigVersion.cmake
+    COMPATIBILITY SameMajorVersion )
+
+install ( FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/target/LAGraphConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/LAGraphConfigVersion.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/FindGraphBLAS.cmake
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/LAGraph )
+
+#-------------------------------------------------------------------------------
+# create pkg-config file
+#-------------------------------------------------------------------------------
+
+if ( NOT MSVC )
+    if ( NOT NSTATIC )
+        if ( NOT WIN32 )
+            list ( APPEND LAGRAPH_STATIC_LIBS "m" )
+        endif ( )
+        list ( APPEND LAGRAPH_STATIC_LIBS ${GRAPHBLAS_LIBRARY} )
+    endif ( )
+    # This might be something like:
+    #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+    # convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+    set ( LAGRAPH_STATIC_LIBS_LIST ${LAGRAPH_STATIC_LIBS} )
+    set ( LAGRAPH_STATIC_LIBS "" )
+    message ( STATUS "LAGRAPH_STATIC_LIBS_LIST: ${LAGRAPH_STATIC_LIBS_LIST}" )
+    foreach ( _lib ${LAGRAPH_STATIC_LIBS_LIST} )
+        string ( FIND ${_lib} "." _pos REVERSE )
+        if ( ${_pos} EQUAL "-1" )
+            set ( LAGRAPH_STATIC_LIBS "${LAGRAPH_STATIC_LIBS} -l${_lib}" )
+            continue ()
+        endif ( )
+        set ( _kinds "SHARED" "STATIC" )
+        if ( WIN32 )
+            list ( PREPEND _kinds "IMPORT" )
+        endif ( )
+        foreach ( _kind IN LISTS _kinds )
+            set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+            if ( ${_lib} MATCHES ${_regex} )
+                string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+                if ( NOT "${_libname}" STREQUAL "" )
+                    set ( LAGRAPH_STATIC_LIBS "${LAGRAPH_STATIC_LIBS} -l${_libname}" )
+                    break ()
+                endif ( )
+            endif ( )
+        endforeach ( )
+    endforeach ( )
+
+    set ( prefix "${CMAKE_INSTALL_PREFIX}" )
+    set ( exec_prefix "\${prefix}" )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+        set ( libdir "${SUITESPARSE_LIBDIR}")
+    else ( )
+        set ( libdir "\${exec_prefix}/${SUITESPARSE_LIBDIR}")
+    endif ( )
+    cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+    if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+        set ( includedir "${SUITESPARSE_INCLUDEDIR}")
+    else ( )
+        set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
+    endif ( )
+    configure_file (
+        config/LAGraph.pc.in
+        LAGraph.pc
+        @ONLY
+        NEWLINE_STYLE LF )
+    install ( FILES
+        ${CMAKE_CURRENT_BINARY_DIR}/LAGraph.pc
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )

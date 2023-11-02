@@ -13,7 +13,7 @@
 
 #-------------------------------------------------------------------------------
 
-include_directories ( ${CMAKE_SOURCE_DIR}/include
+include_directories (
     ${CMAKE_SOURCE_DIR}/src/utility
     ${CMAKE_SOURCE_DIR}/deps/json_h )
 
@@ -32,7 +32,12 @@ SET_TARGET_PROPERTIES ( lagraphx PROPERTIES
     PUBLIC_HEADER "include/LAGraphX.h"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphx PRIVATE lagraph GraphBLAS::GraphBLAS )
-target_link_directories ( lagraphx BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+target_link_directories ( lagraphx BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
+
+target_include_directories ( lagraphx PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
 target_compile_definitions ( lagraphx PRIVATE LGX_LIBRARY )
 target_compile_definitions ( lagraphx PUBLIC LGX_DLL )
 
@@ -60,7 +65,11 @@ if ( NOT NSTATIC )
     else ( )
         target_link_libraries ( lagraphx_static PUBLIC GraphBLAS::GraphBLAS )
     endif ( )
-    target_link_directories ( lagraphx_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+    target_link_directories ( lagraphx_static BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
+
+    target_include_directories ( lagraphx_static PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
 #-------------------------------------------------------------------------------
