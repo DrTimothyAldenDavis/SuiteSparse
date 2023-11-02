@@ -27,23 +27,24 @@ endif ( )
 # dynamic lagraph library properties
 #-------------------------------------------------------------------------------
 
-add_library ( lagraph SHARED ${LAGRAPH_LIB_SOURCES} )
-SET_TARGET_PROPERTIES ( lagraph PROPERTIES
+add_library ( LAGraph SHARED ${LAGRAPH_LIB_SOURCES} )
+SET_TARGET_PROPERTIES ( LAGraph PROPERTIES
     VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
     SOVERSION ${LAGraph_VERSION_MAJOR}
+    OUTPUT_NAME lagraph
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraph.h"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
-target_link_libraries ( lagraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
-target_link_directories ( lagraph BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
+target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
+target_link_directories ( LAGraph BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
 
-target_include_directories ( lagraph PUBLIC
+target_include_directories ( LAGraph PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-target_compile_definitions ( lagraph PRIVATE LG_LIBRARY )
-target_compile_definitions ( lagraph PUBLIC LG_DLL )
+target_compile_definitions ( LAGraph PRIVATE LG_LIBRARY )
+target_compile_definitions ( LAGraph PUBLIC LG_DLL )
 # install ( FILES ${LAGRAPH_INCLUDE} DESTINATION include)
 
 #-------------------------------------------------------------------------------
@@ -51,8 +52,8 @@ target_compile_definitions ( lagraph PUBLIC LG_DLL )
 #-------------------------------------------------------------------------------
 
 if ( NOT NSTATIC )
-    add_library ( lagraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
-    SET_TARGET_PROPERTIES ( lagraph_static PROPERTIES
+    add_library ( LAGraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
+    SET_TARGET_PROPERTIES ( LAGraph_static PROPERTIES
         VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
         OUTPUT_NAME lagraph
         POSITION_INDEPENDENT_CODE OFF
@@ -61,19 +62,19 @@ if ( NOT NSTATIC )
         C_STANDARD 11 )
 
     if ( MSVC )
-        set_target_properties ( lagraph_static PROPERTIES
+        set_target_properties ( LAGraph_static PROPERTIES
             OUTPUT_NAME lagraph_static )
     endif ( )
 
     if ( TARGET GraphBLAS::GraphBLAS_static )
-        target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS_static )
+        target_link_libraries ( LAGraph_static PUBLIC GraphBLAS::GraphBLAS_static )
     else ( )
-        target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS )
+        target_link_libraries ( LAGraph_static PUBLIC GraphBLAS::GraphBLAS )
     endif ( )
-    target_link_libraries ( lagraph_static PUBLIC ${M_LIB} )
-    target_link_directories( lagraph_static BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
+    target_link_libraries ( LAGraph_static PUBLIC ${M_LIB} )
+    target_link_directories( LAGraph_static BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
 
-    target_include_directories ( lagraph_static PUBLIC
+    target_include_directories ( LAGraph_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
@@ -83,9 +84,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraph PRIVATE OpenMP::OpenMP_C )
+    target_link_libraries ( LAGraph PRIVATE OpenMP::OpenMP_C )
     if ( NOT NSTATIC )
-        target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( LAGraph_static PUBLIC OpenMP::OpenMP_C )
     endif ( )
 endif ( )
 

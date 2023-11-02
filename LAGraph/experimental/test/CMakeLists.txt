@@ -42,7 +42,7 @@ SET_TARGET_PROPERTIES ( lagraphxtest PROPERTIES
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
-target_link_libraries ( lagraphxtest PRIVATE lagraph lagraphtest GraphBLAS::GraphBLAS )
+target_link_libraries ( lagraphxtest PRIVATE LAGraph lagraphtest GraphBLAS::GraphBLAS )
 target_link_directories ( lagraphxtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_compile_definitions ( lagraphxtest PRIVATE LGX_TEST_LIBRARY )
 target_compile_definitions ( lagraphxtest PUBLIC LGX_TEST_DLL )
@@ -65,7 +65,7 @@ if ( MSVC )
         OUTPUT_NAME lagraphxtest_static )
 endif ( )
 
-target_link_libraries ( lagraphxtest_static PUBLIC lagraph lagraphtest GraphBLAS::GraphBLAS )
+target_link_libraries ( lagraphxtest_static PUBLIC LAGraph lagraphtest GraphBLAS::GraphBLAS )
 target_link_directories ( lagraphxtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ foreach( testsourcefile ${TEST_SOURCES} )
     set_target_properties ( ${testname} PROPERTIES
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
-    target_link_libraries( ${testname} lagraphx lagraph lagraphxtest lagraphtest GraphBLAS::GraphBLAS )
+    target_link_libraries( ${testname} LAGraphX LAGraph lagraphxtest lagraphtest GraphBLAS::GraphBLAS )
     target_link_directories( ${testname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
     string( REPLACE "test_" "ctest_" ctestname ${testname})
     add_test( ${ctestname} ${testname} )

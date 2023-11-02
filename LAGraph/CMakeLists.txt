@@ -257,7 +257,7 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS lagraph lagraphx
+install ( TARGETS LAGraph LAGraphX
     EXPORT LAGraphTargets
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
@@ -265,7 +265,7 @@ install ( TARGETS lagraph lagraphx
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
 if ( NOT NSTATIC )
-    install ( TARGETS lagraph_static lagraphx_static
+    install ( TARGETS LAGraph_static LAGraphX_static
         EXPORT LAGraphTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
@@ -322,7 +322,6 @@ if ( NOT MSVC )
     # convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
     set ( LAGRAPH_STATIC_LIBS_LIST ${LAGRAPH_STATIC_LIBS} )
     set ( LAGRAPH_STATIC_LIBS "" )
-    message ( STATUS "LAGRAPH_STATIC_LIBS_LIST: ${LAGRAPH_STATIC_LIBS_LIST}" )
     foreach ( _lib ${LAGRAPH_STATIC_LIBS_LIST} )
         string ( FIND ${_lib} "." _pos REVERSE )
         if ( ${_pos} EQUAL "-1" )
