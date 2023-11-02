@@ -2,7 +2,7 @@
 # LAGraph/src/CMakeLists.txt:  cmake script for LAGraph/src
 #-------------------------------------------------------------------------------
 
-# LAGraph, (c) 2019-2022 by The LAGraph Contributors, All Rights Reserved.
+# LAGraph, (c) 2019-2023 by The LAGraph Contributors, All Rights Reserved.
 # SPDX-License-Identifier: BSD-2-Clause
 #
 # For additional details (including references to third party source code and
@@ -46,27 +46,29 @@ target_compile_definitions ( lagraph PUBLIC LG_DLL )
 # static lagraph library properties
 #-------------------------------------------------------------------------------
 
-add_library ( lagraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
-SET_TARGET_PROPERTIES ( lagraph_static PROPERTIES
-    VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
-    OUTPUT_NAME lagraph
-    POSITION_INDEPENDENT_CODE OFF
-    SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED ON
-    C_STANDARD 11 )
+if ( NOT NSTATIC )
+    add_library ( lagraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
+    SET_TARGET_PROPERTIES ( lagraph_static PROPERTIES
+        VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
+        OUTPUT_NAME lagraph
+        POSITION_INDEPENDENT_CODE OFF
+        SOVERSION ${LAGraph_VERSION_MAJOR}
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11 )
 
-if ( MSVC )
-    set_target_properties ( lagraph_static PROPERTIES
-        OUTPUT_NAME lagraph_static )
-endif ( )
+    if ( MSVC )
+        set_target_properties ( lagraph_static PROPERTIES
+            OUTPUT_NAME lagraph_static )
+    endif ( )
 
-if ( TARGET GraphBLAS::GraphBLAS_static )
-    target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS_static )
-else ( )
-    target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS )
+    if ( TARGET GraphBLAS::GraphBLAS_static )
+        target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS_static )
+    else ( )
+        target_link_libraries ( lagraph_static PUBLIC GraphBLAS::GraphBLAS )
+    endif ( )
+    target_link_libraries ( lagraph_static PUBLIC ${M_LIB} )
+    target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 endif ( )
-target_link_libraries ( lagraph_static PUBLIC ${M_LIB} )
-target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
 # add OpenMP
@@ -74,7 +76,9 @@ target_link_directories( lagraph_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build 
 
 if ( OPENMP_C_FOUND )
     target_link_libraries ( lagraph PRIVATE OpenMP::OpenMP_C )
-    target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
+    if ( NOT NSTATIC )
+        target_link_libraries ( lagraph_static PUBLIC OpenMP::OpenMP_C )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
