@@ -37,7 +37,6 @@ SET_TARGET_PROPERTIES ( LAGraph PROPERTIES
     PUBLIC_HEADER "include/LAGraph.h"
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
-target_link_directories ( LAGraph BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
 
 target_include_directories ( LAGraph PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
@@ -72,7 +71,6 @@ if ( NOT NSTATIC )
         target_link_libraries ( LAGraph_static PUBLIC GraphBLAS::GraphBLAS )
     endif ( )
     target_link_libraries ( LAGraph_static PUBLIC ${M_LIB} )
-    target_link_directories( LAGraph_static BEFORE PRIVATE ${CMAKE_SOURCE_DIR}/build )
 
     target_include_directories ( LAGraph_static PUBLIC
         $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>

@@ -45,7 +45,6 @@ SET_TARGET_PROPERTIES ( lagraphtest PROPERTIES
     C_STANDARD 11
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphtest PRIVATE LAGraph GraphBLAS::GraphBLAS )
-target_link_directories ( lagraphtest BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 target_compile_definitions ( lagraphtest PRIVATE LG_TEST_LIBRARY )
 target_compile_definitions ( lagraphtest PUBLIC LG_TEST_DLL )
 
@@ -68,7 +67,6 @@ if ( MSVC )
 endif ( )
 
 target_link_libraries ( lagraphtest_static PUBLIC LAGraph GraphBLAS::GraphBLAS )
-target_link_directories ( lagraphtest_static BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
 
 #-------------------------------------------------------------------------------
 # add OpenMP
@@ -93,7 +91,6 @@ foreach( testsourcefile ${TEST_SOURCES} )
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
     target_link_libraries( ${testname} LAGraph LAGraphX lagraphtest GraphBLAS::GraphBLAS )
-    target_link_directories( ${testname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
     string( REPLACE "test_" "ctest_" ctestname ${testname})
     add_test( ${ctestname} ${testname} )
 #   add_test( NAME ${ctestname} COMMAND valgrind $<TARGET_FILE:${testname}> )
