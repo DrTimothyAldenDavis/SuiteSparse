@@ -44,16 +44,11 @@ set ( NSTATIC_DEFAULT_ON true )
 # set ( ENABLE_CUDA true )
 
 include ( SuiteSparsePolicy )
-include ( GraphBLAS_JIT_paths )
 
 if ( GRAPHBLAS_NSTATIC )
     # ignore current value of NSTATIC and set it to ON
     set ( NSTATIC ON )
 endif ( )
-
-#-------------------------------------------------------------------------------
-# define the project
-#-------------------------------------------------------------------------------
 
 # FIXME: force COMPACT mode in GraphBLAS (while debugging)
 set ( COMPACT ON )
@@ -66,6 +61,8 @@ if ( SUITESPARSE_CUDA )
 else ( )
     message ( STATUS "GraphBLAS CUDA JIT: disabled")
 endif ( )
+
+include ( GraphBLAS_JIT_paths )
 
 #-------------------------------------------------------------------------------
 # find OpenMP, CUDA, RMM, and cpu_features
