@@ -110,7 +110,8 @@ static void perm
 )
 {
     double *Yx, *Yz, *Bx, *Bz ;
-    Int k2, nk, p, k, j, nrow, ncol, d, dual, dj, j2 ;
+    Int k2, nk, p, k, j, nrow, ncol, d, dj, j2 ;
+    size_t dual ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -532,7 +533,8 @@ static void ptrans
 )
 {
     double *Yx, *Yz, *Bx, *Bz ;
-    Int k2, nk, p, k, j, nrow, ncol, d, dual, dj, j2 ;
+    Int k2, nk, p, k, j, nrow, ncol, d, dj, j2 ;
+    size_t dual ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -1543,7 +1545,7 @@ int CHOLMOD(solve2)         /* returns TRUE on success, FALSE on failure */
 #ifndef NSUPERNODAL
 	/* allocate workspace */
 	cholmod_dense *E ;
-	Int dual ;
+	size_t dual ;
         Common->blas_ok = TRUE ;
 	dual = (L->xtype == CHOLMOD_REAL && B->xtype != CHOLMOD_REAL) ? 2 : 1 ;
 	Y = CHOLMOD(ensure_dense) (Y_Handle, n, dual*nrhs, n, L->xtype, Common);

@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Oct 23, 2023" )
+set ( CHOLMOD_DATE "Oct 31, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 5 )
 set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   0 )
+set ( CHOLMOD_VERSION_SUB   1 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -78,10 +78,10 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.3.0
+find_package ( SuiteSparse_config 7.3.1
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.3.1 REQUIRED )
 endif ( )
 
 find_package ( COLAMD 3.2.1

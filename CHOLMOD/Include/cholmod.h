@@ -92,10 +92,10 @@
 // version control
 //==============================================================================
 
-#define CHOLMOD_DATE "Oct 23, 2023"
+#define CHOLMOD_DATE "Oct 31, 2023"
 #define CHOLMOD_MAIN_VERSION   5
 #define CHOLMOD_SUB_VERSION    0
-#define CHOLMOD_SUBSUB_VERSION 0
+#define CHOLMOD_SUBSUB_VERSION 1
 
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_VERSION \
@@ -1894,17 +1894,18 @@ void *cholmod_l_realloc (size_t, size_t, void *, size_t *, cholmod_common *) ;
 int cholmod_realloc_multiple    // returns true if successful, false otherwise
 (
     size_t nnew,    // # of items in newly reallocate memory
-    int nint,       // 0: do not allocate I or J, 1: just I, 2: both I and J
+    int nint,       // 0: do not allocate I_block or J_block, 1: just I_block,
+                    // 2: both I_block and J_block
     int xdtype,     // xtype + dtype of the matrix:
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     // input/output:
-    void **I,       // integer block of memory (int32_t or int64_t)
-    void **J,       // integer block of memory (int32_t or int64_t)
-    void **X,       // real or complex, double or single, block
-    void **Z,       // zomplex only: double or single block
-    size_t *n,      // current size of I, J, X, and/or Z blocks on input,
-                    // changed to nnew on output, if successful
+    void **I_block,       // integer block of memory (int32_t or int64_t)
+    void **J_block,       // integer block of memory (int32_t or int64_t)
+    void **X_block,       // real or complex, double or single, block
+    void **Z_block,       // zomplex only: double or single block
+    size_t *n,      // current size of I_block, J_block, X_block, and/or Z_block
+                    // on input,  changed to nnew on output, if successful
     cholmod_common *Common
 ) ;
 int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
