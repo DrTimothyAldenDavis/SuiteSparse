@@ -145,6 +145,7 @@ jobs:
           done
 
       - name: check
+        timeout-minutes: 20
         run: |
           IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
           for lib in "${libs[@]}"; do
@@ -265,6 +266,7 @@ jobs:
           done
 
       - name: check
+        timeout-minutes: 20
         run: |
           IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
           for lib in "${libs[@]}"; do
@@ -427,6 +429,7 @@ jobs:
           done
 
       - name: check
+        timeout-minutes: 20
         # Need to install the libraries for the tests
         run: |
           echo "::group::Install libraries"

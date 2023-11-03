@@ -127,6 +127,7 @@ jobs:
           done
 
       - name: check
+        timeout-minutes: 30
         run: |
           IFS=':'
           CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
