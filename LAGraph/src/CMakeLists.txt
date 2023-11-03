@@ -39,7 +39,7 @@ SET_TARGET_PROPERTIES ( LAGraph PROPERTIES
 target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
 
 target_include_directories ( LAGraph PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 target_compile_definitions ( LAGraph PRIVATE LG_LIBRARY )
@@ -73,7 +73,7 @@ if ( NOT NSTATIC )
     target_link_libraries ( LAGraph_static PUBLIC ${M_LIB} )
 
     target_include_directories ( LAGraph_static PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 

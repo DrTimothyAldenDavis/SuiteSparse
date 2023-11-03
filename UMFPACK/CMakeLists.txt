@@ -2,7 +2,7 @@
 # SuiteSparse/UMFPACK/CMakeLists.txt:  cmake for UMFPACK
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1995-2022, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 1995-2023, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
@@ -13,9 +13,9 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( UMFPACK_DATE "Oct 23, 2023" )
-set ( UMFPACK_VERSION_MAJOR 6 )
-set ( UMFPACK_VERSION_MINOR 2 )
-set ( UMFPACK_VERSION_SUB   2 )
+set ( UMFPACK_VERSION_MAJOR 6 CACHE STRING "" FORCE )
+set ( UMFPACK_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( UMFPACK_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -23,37 +23,36 @@ message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_SUB} " (" ${UMFPACK_DATE} ")" )
 
 #-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( umfpack
+    VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
+    LANGUAGES C )
+
+#-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../CHOLMOD/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${PROJECT_SOURCE_DIR}/../CHOLMOD/cmake_modules
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 include ( SuiteSparsePolicy )
 
-#-------------------------------------------------------------------------------
-# define the project
-#-------------------------------------------------------------------------------
-
 if ( SUITESPARSE_CUDA )
     # UMFPACK with CHOLMOD (which can use CUDA)
-    project ( umfpack
-        VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
-        LANGUAGES C CXX CUDA )
-else ( )
-    project ( umfpack
-        VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
-        LANGUAGES C )
+    enable_language ( CXX CUDA )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 if ( NOPENMP )
     # OpenMP has been disabled
     set ( OPENMP_FOUND false )
@@ -61,21 +60,45 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.3.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.3.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+    endif ( )
+
+    find_package ( AMD 3.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_package ( AMD 3.2.1 REQUIRED )
+    endif ( )
+
+    if ( DEMO AND NOT WIN32 )
+        find_package ( COLAMD 3.2.1
+            PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::COLAMD )
+            find_package ( COLAMD 3.2.1 REQUIRED )
+        endif ( )
+
+        find_package ( CAMD 3.2.1
+            PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::CAMD )
+            find_package ( CAMD 3.2.1 REQUIRED )
+        endif ( )
+
+        find_package ( CCOLAMD 3.2.1
+            PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::CCOLAMD )
+            find_package ( CCOLAMD 3.2.1 REQUIRED )
+        endif ( )
+    endif ( )
 endif ( )
-find_package ( AMD 3.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.1 REQUIRED )
-endif ( )
+
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
-option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
 
-if ( NOT NCHOLMOD )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
@@ -169,7 +192,8 @@ endif ( )
 
 # SuiteSparseConfig:
 target_link_libraries ( UMFPACK PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( UMFPACK PUBLIC "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+target_include_directories ( UMFPACK PUBLIC
+    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
@@ -350,7 +374,6 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
 if ( DEMO )
 
     #---------------------------------------------------------------------------
@@ -372,9 +395,12 @@ if ( DEMO )
     if ( NOT NFORTRAN )
         # Fortran demos
         add_executable ( umf4            "Demo/umf4.c" )
-        add_executable ( readhb          "Demo/readhb.f" )
-        add_executable ( readhb_nozeros  "Demo/readhb_nozeros.f" )
-        add_executable ( readhb_size     "Demo/readhb_size.f" )
+        add_executable ( umfreadhb       "Demo/readhb.f" )
+        set_target_properties ( umfreadhb PROPERTIES OUTPUT_NAME readhb )
+        add_executable ( umfreadhb_nozeros "Demo/readhb_nozeros.f" )
+        set_target_properties ( umfreadhb_nozeros PROPERTIES OUTPUT_NAME readhb_nozeros )
+        add_executable ( umfreadhb_size  "Demo/readhb_size.f" )
+        set_target_properties ( umfreadhb_size PROPERTIES OUTPUT_NAME readhb_size )
         add_executable ( umf4hb          "Demo/umf4hb.f"
                                          "Demo/umf4_f77wrapper.c" )
         add_executable ( umf4zhb         "Demo/umf4zhb.f"
@@ -435,5 +461,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

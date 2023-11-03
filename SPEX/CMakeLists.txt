@@ -2,7 +2,7 @@
 # SuiteSparse/SPEX/CMakeLists.txt:  cmake for SPEX
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1996-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
+# Copyright (c) 1996-2023, Timothy A. Davis, Patrick Amestoy, Iain Duff.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -13,24 +13,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( SPEX_DATE "Sept 18, 2023" )
-set ( SPEX_VERSION_MAJOR 2 )
-set ( SPEX_VERSION_MINOR 2 )
-set ( SPEX_VERSION_SUB   1 )
+set ( SPEX_VERSION_MAJOR 2 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
     ${SPEX_VERSION_MINOR}.
     ${SPEX_VERSION_SUB} " (" ${SPEX_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -41,25 +31,37 @@ project ( spex
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/cmake_modules
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
-endif ( )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 
-find_package ( COLAMD 3.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.2.0 REQUIRED )
-endif ( )
+    find_package ( AMD 3.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_package ( AMD 3.2.0 REQUIRED )
+    endif ( )
 
-find_package ( AMD 3.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.0 REQUIRED )
+    find_package ( COLAMD 3.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::COLAMD )
+        find_package ( COLAMD 3.2.0 REQUIRED )
+    endif ( )
 endif ( )
 
 find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
@@ -337,5 +339,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

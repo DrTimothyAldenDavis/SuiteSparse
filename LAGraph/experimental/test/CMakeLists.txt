@@ -17,9 +17,9 @@
 # build the lagraphxtest library
 #-------------------------------------------------------------------------------
 
-include_directories ( ${CMAKE_SOURCE_DIR}/src/test/include
-    ${CMAKE_SOURCE_DIR}/src/test/include
-    ${CMAKE_SOURCE_DIR}/experimental/test/include )
+include_directories ( ${PROJECT_SOURCE_DIR}/src/test/include
+    ${PROJECT_SOURCE_DIR}/src/test/include
+    ${PROJECT_SOURCE_DIR}/experimental/test/include )
 
 file ( GLOB LAGRAPHXTEST_LIB_SOURCES "LG_*.c" )
 

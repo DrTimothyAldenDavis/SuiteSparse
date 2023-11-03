@@ -29,29 +29,54 @@
 #
 #   make distclean
 
+#-------------------------------------------------------------------------------
+# get the version
+#-------------------------------------------------------------------------------
+
 cmake_minimum_required ( VERSION 3.20 )
+
+set ( Mongoose_DATE "Sept 18, 2023" )
+set ( Mongoose_NUMERIC_DATE "2023-09-18" )
+set ( Mongoose_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_PATCH 1 CACHE STRING "" FORCE )
+
+message ( STATUS "Building Mongoose version: v"
+    ${Mongoose_VERSION_MAJOR}.
+    ${Mongoose_VERSION_MINOR}.
+    ${Mongoose_VERSION_PATCH} " (" ${Mongoose_DATE} ")" )
+
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project(Mongoose
+        VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
+        LANGUAGES CXX C)
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${PROJECT_SOURCE_DIR}/cmake_modules
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
+# find library dependencies
+#-------------------------------------------------------------------------------
 
-set(Mongoose_DATE "Sept 18, 2023")
-set(Mongoose_NUMERIC_DATE "2023-09-18")
-set(Mongoose_VERSION_MAJOR 3)
-set(Mongoose_VERSION_MINOR 2)
-set(Mongoose_VERSION_PATCH 1)
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
+endif ( )
 
-project(Mongoose
-        VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
-        LANGUAGES CXX C)
+#-------------------------------------------------------------------------------
 
 # Mongoose installation location
 include ( GNUInstallDirs )
@@ -72,12 +97,6 @@ configure_file (
         "${PROJECT_SOURCE_DIR}/codemeta.json"
         NEWLINE_STYLE LF
 )
-
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
-endif ( )
 
 include_directories("${PROJECT_BINARY_DIR}")
 
@@ -555,5 +574,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

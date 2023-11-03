@@ -14,25 +14,14 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( SPQR_DATE "Oct 23, 2023" )
-set ( SPQR_VERSION_MAJOR 4 )
-set ( SPQR_VERSION_MINOR 2 )
-set ( SPQR_VERSION_SUB   2 )
+set ( SPQR_VERSION_MAJOR 4 CACHE STRING "" FORCE )
+set ( SPQR_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( SPQR_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
     ${SPQR_VERSION_MINOR}.
     ${SPQR_VERSION_SUB} " (" ${SPQR_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -41,6 +30,17 @@ include ( SuiteSparsePolicy )
 project ( spqr
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES C CXX )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
+
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -54,19 +54,21 @@ else ( )
     find_package ( OpenMP )
 endif ( )
 
-find_package ( SuiteSparse_config 7.3.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.3.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+    endif ( )
+
+    find_package ( CHOLMOD 5.0.0
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        find_package ( CHOLMOD 5.0.0 REQUIRED )
+    endif ( )
 endif ( )
 
-find_package ( CHOLMOD 5.0.0
-    PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::CHOLMOD )
-    find_package ( CHOLMOD 5.0.0 REQUIRED )
-endif ( )
-
-if ( SUITESPARSE_CUDA )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_CUDA )
     find_package ( CHOLMOD_CUDA 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
@@ -204,8 +206,7 @@ endif ( )
 
 # CHOLMOD:
 # link with CHOLMOD and its dependencies
-target_link_libraries ( SPQR PRIVATE
-    SuiteSparse::CHOLMOD )
+target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
 if ( NOT NSTATIC )
     if ( TARGET SuiteSparse::CHOLMOD_static )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -404,5 +405,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

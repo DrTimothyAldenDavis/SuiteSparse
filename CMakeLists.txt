@@ -1,0 +1,338 @@
+#-------------------------------------------------------------------------------
+# SuiteSparse/CMakeLists.txt:  root CMake build rules
+#-------------------------------------------------------------------------------
+
+# Copyright (c) 2023, Timothy A. Davis.
+# All Rights Reserved.
+
+# The actually required minimum CMake version might be higher depending on the
+# selected SuiteSparse projects.
+cmake_minimum_required ( VERSION 3.20 )
+
+project ( "SuiteSparse" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
+
+option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
+
+# SuiteSparsePolicy enables SUITESPARSE_CUDA if a CUDA compiler can be found.
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# build options
+#-------------------------------------------------------------------------------
+
+# lower-case list of all projects that can be built by this root CMake file
+set ( SUITESPARSE_ALL_PROJECTS
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;paru;rbio;spqr;spex;graphblas;lagraph" )
+
+# lower-case list of extra projects that can be built by this root CMake file
+set ( SUITESPARSE_EXTRA_PROJECTS
+    "csparse" )
+
+# lower-case list of known projects that can be built by this root CMake file
+set ( SUITESPARSE_KNOWN_PROJECTS "${SUITESPARSE_ALL_PROJECTS};${SUITESPARSE_EXTRA_PROJECTS}" )
+
+set ( SUITESPARSE_ENABLE_PROJECTS "all" CACHE STRING
+    "Semicolon-separated list of SuiteSparse projects to be built (${SUITESPARSE_KNOWN_PROJECTS}, or \"all\")" )
+
+# expand "all" early on
+if ( "all" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    set ( SUITESPARSE_ENABLE_PROJECTS "${SUITESPARSE_ENABLE_PROJECTS};${SUITESPARSE_ALL_PROJECTS}" )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "all" )
+    list ( REMOVE_DUPLICATES  SUITESPARSE_ENABLE_PROJECTS )
+endif ( )
+
+# check for unknown projects in list
+foreach ( proj ${SUITESPARSE_ENABLE_PROJECTS} )
+  if ( NOT "${proj}" IN_LIST SUITESPARSE_KNOWN_PROJECTS )
+     message ( FATAL_ERROR "${proj} is not a known project: ${SUITESPARSE_KNOWN_PROJECTS}." )
+  endif ( )
+endforeach ( )
+
+# CHOLMOD options affecting dependencies
+option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
+
+# KLU and UMFPACK options affecting dependencies
+option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): use CHOLMOD" OFF )
+
+# overwrite NSTATIC specifically for GraphBLAS because building the library
+# takes a long time
+option ( GRAPHBLAS_NSTATIC "ON (default): set NSTATIC for GraphBLAS project.  OFF: Use same value of NSTATIC for GraphBLAS like in the other projects" ON )
+
+#-------------------------------------------------------------------------------
+# global variables
+#-------------------------------------------------------------------------------
+
+# Set to indicate that we are building from a root CMake file.
+# That will change the directory layout and (imported) target names (namespace!)
+# during the build process.
+set ( SUITESPARSE_ROOT_CMAKELISTS ON )
+
+#-------------------------------------------------------------------------------
+# common SuiteSparse modules
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${CMAKE_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# check/add project dependencies
+#-------------------------------------------------------------------------------
+
+if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"graphblas\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
+    endif ( )
+endif ( )
+
+if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"btf\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
+    endif ( )
+endif ( )
+
+if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"cholmod\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+    endif ( )
+endif ( )
+
+if ( ( NOT NCHOLMOD AND
+          ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
+        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"cholmod\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+    endif ( )
+endif ( )
+
+if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"amd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
+    endif ( )
+endif ( )
+
+if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"colamd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
+    endif ( )
+endif ( )
+
+if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"camd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
+    endif ( )
+    if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
+    endif ( )
+endif ( )
+
+if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# include selected projects
+#-------------------------------------------------------------------------------
+
+if ( "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "SuiteSparse_config" )
+    add_library ( SuiteSparse::SuiteSparseConfig ALIAS SuiteSparseConfig )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::SuiteSparseConfig_static ALIAS SuiteSparseConfig_static )
+    endif ( )
+endif ( )
+
+if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "Mongoose" )
+    add_library ( SuiteSparse::Mongoose ALIAS Mongoose )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::Mongoose_static ALIAS Mongoose_static )
+    endif ( )
+endif ( )
+
+if ( "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "AMD" )
+    add_library ( SuiteSparse::AMD ALIAS AMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::AMD_static ALIAS AMD_static )
+    endif ( )
+endif ( )
+
+if ( "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "BTF" )
+    add_library ( SuiteSparse::BTF ALIAS BTF )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::BTF_static ALIAS BTF_static )
+    endif ( )
+endif ( )
+
+if ( "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CAMD" )
+    add_library ( SuiteSparse::CAMD ALIAS CAMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CAMD_static ALIAS CAMD_static )
+    endif ( )
+endif ( )
+
+if ( "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CCOLAMD" )
+    add_library ( SuiteSparse::CCOLAMD ALIAS CCOLAMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CCOLAMD_static ALIAS CCOLAMD_static )
+    endif ( )
+endif ( )
+
+if ( "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "COLAMD" )
+    add_library ( SuiteSparse::COLAMD ALIAS COLAMD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::COLAMD_static ALIAS COLAMD_static )
+    endif ( )
+endif ( )
+
+if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CHOLMOD" )
+    add_library ( SuiteSparse::CHOLMOD ALIAS CHOLMOD )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CHOLMOD_static ALIAS CHOLMOD_static )
+    endif ( )
+    if ( TARGET CHOLMOD_CUDA )
+        add_library ( SuiteSparse::CHOLMOD_CUDA ALIAS CHOLMOD_CUDA )
+    endif ( )
+    if ( TARGET CHOLMOD_CUDA_static )
+        add_library ( SuiteSparse::CHOLMOD_CUDA_static ALIAS CHOLMOD_CUDA_static )
+    endif ( )
+endif ( )
+
+if ( "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CXSparse" )
+    add_library ( SuiteSparse::CXSparse ALIAS CXSparse )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CXSparse_static ALIAS CXSparse_static )
+    endif ( )
+endif ( )
+
+if ( "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "LDL" )
+    add_library ( SuiteSparse::LDL ALIAS LDL )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::LDL_static ALIAS LDL_static )
+    endif ( )
+endif ( )
+
+if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "KLU" )
+    add_library ( SuiteSparse::KLU ALIAS KLU )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::KLU_static ALIAS KLU_static )
+    endif ( )
+endif ( )
+
+if ( "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "UMFPACK" )
+    add_library ( SuiteSparse::UMFPACK ALIAS UMFPACK )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::UMFPACK_static ALIAS UMFPACK_static )
+    endif ( )
+endif ( )
+
+if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "ParU" )
+    add_library ( SuiteSparse::ParU ALIAS ParU )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::ParU_static ALIAS ParU_static )
+    endif ( )
+endif ( )
+
+if ( "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "RBio" )
+    add_library ( SuiteSparse::RBio ALIAS RBio )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::RBio_static ALIAS RBio_static )
+    endif ( )
+endif ( )
+
+if ( "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "SPQR" )
+    add_library ( SuiteSparse::SPQR ALIAS SPQR )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::SPQR_static ALIAS SPQR_static )
+    endif ( )
+endif ( )
+
+if ( "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "SPEX" )
+    add_library ( SuiteSparse::SPEX ALIAS SPEX )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::SPEX_static ALIAS SPEX_static )
+    endif ( )
+endif ( )
+
+if ( "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "GraphBLAS" )
+    add_library ( SuiteSparse::GraphBLAS ALIAS GraphBLAS )
+    if ( TARGET GraphBLAS_static )
+        add_library ( SuiteSparse::GraphBLAS_static ALIAS GraphBLAS_static )
+    endif ( )
+endif ( )
+
+if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "LAGraph" )
+    add_library ( SuiteSparse::LAGraph ALIAS LAGraph )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::LAGraph_static ALIAS LAGraph_static )
+    endif ( )
+endif ( )
+
+if ( "csparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "CSparse" )
+    add_library ( SuiteSparse::CSparse ALIAS CSparse )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::CSparse_static ALIAS CSparse_static )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# report status
+#-------------------------------------------------------------------------------
+
+include ( SuiteSparseReport )

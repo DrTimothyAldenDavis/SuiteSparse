@@ -14,8 +14,8 @@
 #-------------------------------------------------------------------------------
 
 include_directories (
-    ${CMAKE_SOURCE_DIR}/src/utility
-    ${CMAKE_SOURCE_DIR}/deps/json_h )
+    ${PROJECT_SOURCE_DIR}/src/utility
+    ${PROJECT_SOURCE_DIR}/deps/json_h )
 
 file ( GLOB LAGRAPHX_LIB_SOURCES "utility/*.c" "algorithm/*.c" )
 
@@ -35,7 +35,7 @@ SET_TARGET_PROPERTIES ( LAGraphX PROPERTIES
 target_link_libraries ( LAGraphX PRIVATE LAGraph GraphBLAS::GraphBLAS )
 
 target_include_directories ( LAGraphX PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
 target_compile_definitions ( LAGraphX PRIVATE LGX_LIBRARY )
@@ -67,7 +67,7 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( LAGraphX_static PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 

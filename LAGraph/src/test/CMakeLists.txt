@@ -20,8 +20,8 @@
 # build the lagraphtest library
 #-------------------------------------------------------------------------------
 
-include_directories ( ${CMAKE_SOURCE_DIR}/src/test/include
-    ${CMAKE_SOURCE_DIR}/src/algorithm )
+include_directories ( ${PROJECT_SOURCE_DIR}/src/test/include
+    ${PROJECT_SOURCE_DIR}/src/algorithm )
 
 file ( GLOB LAGRAPHTEST_LIB_SOURCES "LG_*.c" )
 

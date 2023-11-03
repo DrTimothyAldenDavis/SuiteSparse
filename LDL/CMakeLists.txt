@@ -2,7 +2,7 @@
 # SuiteSparse/LDL/CMakeLists.txt:  cmake for LDL
 #-------------------------------------------------------------------------------
 
-# LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+# LDL, Copyright (c) 2005-2023 by Timothy A. Davis. All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
@@ -12,23 +12,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( LDL_DATE "Sept 18, 2023" )
-set ( LDL_VERSION_MAJOR 3 )
-set ( LDL_VERSION_MINOR 2 )
-set ( LDL_VERSION_SUB   1 )
+set ( LDL_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( LDL_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( LDL_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
     ${LDL_VERSION_MINOR}.
     ${LDL_VERSION_SUB} " (" ${LDL_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -39,21 +30,33 @@ project ( ldl
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
+
 option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
-endif ( )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 
-if ( DEMO )
-    find_package ( AMD 3.2.0
-        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.2.0 )
+    if ( DEMO )
+        find_package ( AMD 3.2.0
+            PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::AMD )
+            find_package ( AMD 3.2.0 REQUIRED )
+        endif ( )
     endif ( )
 endif ( )
 
@@ -265,5 +268,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

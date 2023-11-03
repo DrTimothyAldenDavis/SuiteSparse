@@ -2,7 +2,7 @@
 # SuiteSparse/BTF/CMakeLists.txt:  cmake for BTF
 #-------------------------------------------------------------------------------
 
-# BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+# BTF, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 # Author: Timothy A. Davis.
 # SPDX-License-Identifier: LGPL-2.1+
 
@@ -13,23 +13,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( BTF_DATE "Sept 18, 2023" )
-set ( BTF_VERSION_MAJOR 2 )
-set ( BTF_VERSION_MINOR 2 )
-set ( BTF_VERSION_SUB   1 )
+set ( BTF_VERSION_MAJOR 2 CACHE STRING "" FORCE )
+set ( BTF_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( BTF_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building BTF version: v"
     ${BTF_VERSION_MAJOR}.
     ${BTF_VERSION_MINOR}.
     ${BTF_VERSION_SUB} " (" ${BTF_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -40,13 +31,24 @@ project ( btf
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -213,5 +215,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

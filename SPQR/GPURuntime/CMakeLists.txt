@@ -13,18 +13,14 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( SUITESPARSE_GPURUNTIME_DATE "Sept 18, 2023" )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 3 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 2 )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   1 )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
     ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
     ${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.
     ${SUITESPARSE_GPURUNTIME_VERSION_SUB} " (" ${SUITESPARSE_GPURUNTIME_DATE} ")" )
-
-set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} PARENT_SCOPE )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR ${SUITESPARSE_GPURUNTIME_VERSION_MINOR} PARENT_SCOPE )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   ${SUITESPARSE_GPURUNTIME_VERSION_SUB} PARENT_SCOPE )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -41,19 +37,9 @@ project ( suitesparse_gpuruntime
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
 
 include ( SuiteSparsePolicy )
-
-#-------------------------------------------------------------------------------
-# find library dependencies
-#-------------------------------------------------------------------------------
-
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
-endif ( )
 
 #-------------------------------------------------------------------------------
 # configure files

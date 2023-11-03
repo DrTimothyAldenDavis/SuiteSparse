@@ -2,7 +2,7 @@
 # SuiteSparse/KLU/CMakeLists.txt:  cmake for KLU
 #-------------------------------------------------------------------------------
 
-# KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+# KLU, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 # Authors: Timothy A. Davis and Ekanathan Palamadai.
 # SPDX-License-Identifier: LGPL-2.1+
 
@@ -13,9 +13,9 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( KLU_DATE "Oct 23, 2023" )
-set ( KLU_VERSION_MAJOR 2 )
-set ( KLU_VERSION_MINOR 2 )
-set ( KLU_VERSION_SUB   2 )
+set ( KLU_VERSION_MAJOR 2 CACHE STRING "" FORCE )
+set ( KLU_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( KLU_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -23,62 +23,61 @@ message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_SUB} " (" ${KLU_DATE} ")" )
 
 #-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( klu
+    VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
+    LANGUAGES C )
+#-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 option ( ENABLE_CUDA "Enable CUDA acceleration" on )
 
 include ( SuiteSparsePolicy )
 
-#-------------------------------------------------------------------------------
-# define the project
-#-------------------------------------------------------------------------------
-
 if ( SUITESPARSE_CUDA )
     # KLU with CHOLMOD (which can use CUDA)
-    project ( klu
-        VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
-        LANGUAGES C CXX CUDA )
-else ( )
-    # KLU without CHOLMOD (thus no CUDA)
-    project ( klu
-        VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
-        LANGUAGES C )
+    enable_language ( CXX CUDA )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.3.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
-endif ( )
-find_package ( BTF 2.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::BTF )
-    find_package ( BTF 2.2.1 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.3.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+    endif ( )
+
+    find_package ( AMD 3.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_package ( AMD 3.2.1 REQUIRED )
+    endif ( )
+
+    find_package ( COLAMD 3.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::COLAMD )
+        find_package ( COLAMD 3.2.1 REQUIRED )
+    endif ( )
+
+    find_package ( BTF 2.2.1
+        PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::BTF )
+        find_package ( BTF 2.2.1 REQUIRED )
+    endif ( )
 endif ( )
 
-find_package ( COLAMD 3.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::COLAMD )
-    find_package ( COLAMD 3.2.1 REQUIRED )
-endif ( )
+option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
 
-find_package ( AMD 3.2.1
-    PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.1 REQUIRED )
-endif ( )
-
-option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" off )
-
-if ( NOT NCHOLMOD )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 5.0.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
@@ -503,5 +502,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

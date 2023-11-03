@@ -38,26 +38,34 @@
 
 cmake_minimum_required ( VERSION 3.13 )
 
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/cmake_modules
-    ${CMAKE_SOURCE_DIR}/../cmake_modules
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    )
-
 cmake_policy ( SET CMP0042 NEW )
 cmake_policy ( SET CMP0048 NEW )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of LAGraph
 set ( LAGraph_DATE "Aug 2, 2023" )
-set ( LAGraph_VERSION_MAJOR 1 )
-set ( LAGraph_VERSION_MINOR 0 )
-set ( LAGraph_VERSION_SUB   2 )
+set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_MINOR 0 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_SUB   2 CACHE STRING "" FORCE )
 
-include ( SuiteSparsePolicy )
+#-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
 
 project ( lagraph
           VERSION "${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/cmake_modules
+    ${PROJECT_SOURCE_DIR}/../cmake_modules
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
 
 enable_language ( C )
 
@@ -80,29 +88,28 @@ configure_file (
 #   make test_coverage
 
 if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-	if ( COVERAGE )
-                message ( STATUS "============== Code coverage enabled ===============" )
-		set ( CMAKE_BUILD_TYPE Debug )
-                # On the Mac, you need gcov-11 from homebrew (part of gcc-11):
-                # and uncomment this line:
-                # set ( GCOV_PATH /usr/local/bin/gcov-11)
-		include ( CodeCoverage )
+    if ( COVERAGE )
+        message ( STATUS "============== Code coverage enabled ===============" )
+        set ( CMAKE_BUILD_TYPE Debug )
+        # On the Mac, you need gcov-11 from homebrew (part of gcc-11):
+        # and uncomment this line:
+        # set ( GCOV_PATH /usr/local/bin/gcov-11)
+        include ( CodeCoverage )
 
-		append_coverage_compiler_flags ( )
+        append_coverage_compiler_flags ( )
 
-		# turn off optimization for non-skewed coverage reports
-		set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -DCOVERAGE" )
+        # turn off optimization for non-skewed coverage reports
+        set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -DCOVERAGE" )
 
-		setup_target_for_coverage_lcov (
-			NAME test_coverage
-			EXECUTABLE ctest
-			DEPENDENCIES ${PROJECT_NAME}
-			BASE_DIRECTORY "."
-			NO_DEMANGLE TRUE
-                        EXCLUDE "*/benchmark/*" "deps/json*/*"
-                            "src/test/include/acutest.h"
-		)
-	endif ( )
+        setup_target_for_coverage_lcov (
+            NAME test_coverage
+            EXECUTABLE ctest
+            DEPENDENCIES ${PROJECT_NAME}
+            BASE_DIRECTORY "."
+            NO_DEMANGLE TRUE
+            EXCLUDE "*/benchmark/*" "deps/json*/*" "src/test/include/acutest.h"
+            )
+    endif ( )
 endif ( )
 
 # For development only, not for end-users:
@@ -116,15 +123,28 @@ endif ( )
 # Find the GraphBLAS installation
 #-------------------------------------------------------------------------------
 
-# If GraphBLAS is not in a standard installation location, either
-#     export GRAPHBLAS_ROOT <path>
-# or
-#     GRAPHBLAS_ROOT=<path> cmake ..
-# or uncomment the next line:
-# set ( ENV{GRAPHBLAS_ROOT} ${CMAKE_SOURCE_DIR}/../GraphBLAS )
-message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
-message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
-find_package ( GraphBLAS 8.2.1 MODULE REQUIRED )
+if ( SUITESPARSE_ROOT_CMAKELISTS )
+
+    add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS )
+    if ( TARGET GraphBLAS_static )
+        add_library ( GraphBLAS::GraphBLAS_static ALIAS GraphBLAS_static )
+    endif ( )
+
+else ( )
+
+    # If GraphBLAS is not in a standard installation location, either
+    #     export GRAPHBLAS_ROOT <path>
+    # or
+    #     GRAPHBLAS_ROOT=<path> cmake ..
+    # or uncomment the next line:
+    # set ( ENV{GRAPHBLAS_ROOT} ${PROJECT_SOURCE_DIR}/../GraphBLAS )
+
+    message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
+    message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
+
+    find_package ( GraphBLAS 8.2.1 MODULE REQUIRED )
+
+endif ( )
 
 #-------------------------------------------------------------------------------
 # determine what user threading model to use
@@ -149,7 +169,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 message ( STATUS "CMAKE build type:          " ${CMAKE_BUILD_TYPE} )
-message ( STATUS "CMAKE source directory:    " ${CMAKE_SOURCE_DIR} )
+message ( STATUS "CMAKE source directory:    " ${PROJECT_SOURCE_DIR} )
 message ( STATUS "CMAKE build directory:     " ${CMAKE_BINARY_DIR} )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -168,13 +188,13 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 # include directories for LAGraph library
 #-------------------------------------------------------------------------------
 
-include_directories ( ${CMAKE_SOURCE_DIR}/include
-                      ${CMAKE_SOURCE_DIR}/src/utility
-                      ${CMAKE_SOURCE_DIR}/test/include )
+include_directories ( ${PROJECT_SOURCE_DIR}/include
+                      ${PROJECT_SOURCE_DIR}/src/utility
+                      ${PROJECT_SOURCE_DIR}/test/include )
 include_directories ( "/usr/local/include" )
 
 # tell LAGraph where to find its own source (for LAGraph/data files)
-set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${CMAKE_SOURCE_DIR}" )
+set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${PROJECT_SOURCE_DIR}" )
 # set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O" )
 
 #-------------------------------------------------------------------------------

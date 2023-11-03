@@ -12,9 +12,9 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 set ( CXSPARSE_DATE "Sept 18, 2023" )
-set ( CXSPARSE_VERSION_MAJOR 4 )
-set ( CXSPARSE_VERSION_MINOR 2 )
-set ( CXSPARSE_VERSION_SUB   1 )
+set ( CXSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
+set ( CXSPARSE_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( CXSPARSE_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_MAJOR}.
@@ -22,11 +22,19 @@ message ( STATUS "Building CXSparse version: v"
     ${CXSPARSE_VERSION_SUB} " (" ${CXSPARSE_DATE} ")" )
 
 #-------------------------------------------------------------------------------
+# define the project
+#-------------------------------------------------------------------------------
+
+project ( cxsparse
+    VERSION "${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}"
+    LANGUAGES C )
+
+#-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
 
@@ -52,21 +60,15 @@ else ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# define the project
-#-------------------------------------------------------------------------------
-
-project ( cxsparse
-    VERSION "${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}"
-    LANGUAGES C )
-
-#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.2.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -333,5 +335,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

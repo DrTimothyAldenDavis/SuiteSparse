@@ -14,9 +14,9 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 set ( PARU_DATE "Dec 20, 2022" )    # FIXME: pick a date
-set ( PARU_VERSION_MAJOR 1 )
-set ( PARU_VERSION_MINOR 0 )
-set ( PARU_VERSION_UPDATE 0 )
+set ( PARU_VERSION_MAJOR 1 CACHE STRING "" FORCE )
+set ( PARU_VERSION_MINOR 0 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -24,21 +24,21 @@ message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_UPDATE} " (" ${PARU_DATE} ")" )
 
 #-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
-    )
-
-include ( SuiteSparsePolicy )
-
-#-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
 project ( paru
     VERSION "${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}" )
+
+#-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
+    )
+
+include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -70,22 +70,24 @@ else ( )
     endif ( )
 endif ( )
 
-find_package ( SuiteSparse_config 7.3.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.3.0 REQUIRED )
-endif ( )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.3.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+    endif ( )
 
-find_package ( CHOLMOD 5.0.0
-    PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-if ( NOT CHOLMOD_FOUND )
-    find_package ( CHOLMOD 5.0.0 REQUIRED )
-endif ( )
+    find_package ( CHOLMOD 5.0.0
+        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+    if ( NOT CHOLMOD_FOUND )
+        find_package ( CHOLMOD 5.0.0 REQUIRED )
+    endif ( )
 
-find_package ( UMFPACK 6.2.2
-    PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
-if ( NOT CAMD_FOUND )
-    find_package ( UMFPACK 6.2.2 REQUIRED )
+    find_package ( UMFPACK 6.2.2
+        PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
+    if ( NOT CAMD_FOUND )
+        find_package ( UMFPACK 6.2.2 REQUIRED )
+    endif ( )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
@@ -109,7 +111,7 @@ configure_file ( "Config/paru_version.tex.in"
 #        That means the two libraries are interdependent and ParU cannot be
 #        built as a stand-alone project outside a common build tree.
 include_directories ( Source Include
-    ${CMAKE_SOURCE_DIR}/../UMFPACK/Source
+    ${PROJECT_SOURCE_DIR}/../UMFPACK/Source
     )
 
 #-------------------------------------------------------------------------------
@@ -381,5 +383,6 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )
