@@ -42,15 +42,19 @@ extern "C"
 }
 
 // for printing information uncomment this; to activate assertions uncomment
-//#undef NPR  //<<1>>
+// FIXME NPR and NDEBUG enabled
+#undef NPR
 // uncomment the following line to turn on debugging mode
-//#undef NDEBUG  //<<2>>
+#undef NDEBUG
 // uncomment the following line to turn on OpenMP timing
-//#undef NTIME   //<<3>>
+//#undef NTIME
 
 #ifndef NDEBUG
     #undef NPR
 #endif
+
+// for printing int64_t types:
+#define LD "%" PRId64
 
 // uncomment if you want to count hardware flops
 //#define COUNT_FLOPS
@@ -67,13 +71,14 @@ extern "C"
 #endif
 
 #ifndef NPR
-static int print_level = 0;
+static int print_level = 0;   // FIXME
     #define PRLEVEL(level, param)                   \
         {                                           \
             if (print_level >= level) printf param; \
         }
     #define DEBUGLEVEL(level)    \
         {                        \
+            if (level == 999) printf ("\nLine %4d File: %s\n", __LINE__, __FILE__) ; \
             print_level = level; \
         }
     #define PARU_DEFINE_PRLEVEL int PR = 1

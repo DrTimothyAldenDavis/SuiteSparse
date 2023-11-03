@@ -39,11 +39,11 @@ int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowC
     int64_t ldb = (int64_t)fp;
 
 #ifndef NDEBUG  // Printing the  U part
-    PRLEVEL(1, ("TRSM (%dx%d) (%dx%d) \n", mB, mB, mB, nB));
+    PRLEVEL(1, ("TRSM (" LD "x" LD ") (" LD "x" LD ") \n", mB, mB, mB, nB));
     int64_t p = 1;
-    PRLEVEL(p, ("mB=%d nB = %d alpha = %f \n", mB, nB, alpha));
-    PRLEVEL(p, ("lda =%d ldb =%d\n", lda, ldb));
-    PRLEVEL(p, ("(I)U Before Trsm: %ld x %ld\n", fp, colCount));
+    PRLEVEL(p, ("mB=" LD " nB = " LD " alpha = %f \n", mB, nB, alpha));
+    PRLEVEL(p, ("lda =" LD " ldb =" LD "\n", lda, ldb));
+    PRLEVEL(p, ("(I)U Before Trsm: " LD " x " LD "\n", fp, colCount));
     for (int64_t i = 0; i < fp; i++)
     {
         for (int64_t j = 0; j < colCount; j++)
@@ -56,7 +56,7 @@ int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowC
             lda, uPart, ldb, Work, Num);
 
 #ifndef NDEBUG  // Printing the  U part
-    PRLEVEL(p, ("(I)U After Trsm: %ld x %ld\n", fp, colCount));
+    PRLEVEL(p, ("(I)U After Trsm: " LD " x " LD "\n", fp, colCount));
     for (int64_t i = 0; i < fp; i++)
     {
         for (int64_t j = 0; j < colCount; j++)

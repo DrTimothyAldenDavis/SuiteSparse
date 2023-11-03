@@ -30,9 +30,9 @@ int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
     int64_t nB = (int64_t)colCount;
     int64_t nA = (int64_t)fp;
 
-    PRLEVEL(1, ("%% mA =%d  ", mA));
-    PRLEVEL(1, ("%% nB =%d  ", nB));
-    PRLEVEL(1, ("%% nA =%d\n", nA));
+    PRLEVEL(1, ("%% mA = " LD " ", mA));
+    PRLEVEL(1, ("%% nB = " LD " " , nB));
+    PRLEVEL(1, ("%% nA = " LD "\n", nA));
 
 #ifndef NDEBUG
     double *Ap = pF + fp;
@@ -73,9 +73,9 @@ int64_t paru_dgemm(int64_t f, double *pF, double *uPart, double *el, int64_t fp,
     int64_t ldb = (int64_t)fp;
     int64_t ldc = (int64_t)(rowCount - fp);
 
-    PRLEVEL(1, ("%% lda =%d  ", lda));
-    PRLEVEL(1, ("%% ldb =%d  ", ldb));
-    PRLEVEL(1, ("%% ldc =%d\n", ldc));
+    PRLEVEL(1, ("%% lda = " LD " ", lda));
+    PRLEVEL(1, ("%% ldb = " LD " ", ldb));
+    PRLEVEL(1, ("%% ldc = " LD "\n", ldc));
 
     // double beta = 0;  // U part is not initialized
 

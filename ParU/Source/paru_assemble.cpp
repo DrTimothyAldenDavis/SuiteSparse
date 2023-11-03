@@ -26,15 +26,15 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     ParU_Symbolic *Sym = Work->Sym;
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
-    PRLEVEL(PR, ("%% Eliminate all of %ld in %ld(f=%ld) (tid=%d)\n", e, eli, f,
+    PRLEVEL(PR, ("%% Eliminate all of " LD " in " LD "(f=" LD ") (tid=%d)\n", e, eli, f,
                  PARU_OPENMP_GET_THREAD_ID));
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", eli));
+    PRLEVEL(PR, ("%% " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
     PR = 1;
 #endif
@@ -77,8 +77,8 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     int64_t colCount = Us[f].n;
     ASSERT(el_colIndex[el->lac] <= fcolList[colCount - 1]);
     ASSERT(el_colIndex[nEl - 1] <= 0 || fcolList[0] <= el_colIndex[nEl - 1]);
-    PRLEVEL(PR, ("%% newColSet.size = %ld\n", colCount));
-    PRLEVEL(PR, ("%% nEl = %ld\n", nEl));
+    PRLEVEL(PR, ("%% newColSet.size = " LD "\n", colCount));
+    PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
 #endif
 
     if (el->ncolsleft == 1)
@@ -87,7 +87,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         double *sC = el_Num + mEl * el->lac;  // source column pointer
 #ifndef NDEBUG
         int64_t colInd = el_colIndex[el->lac];
-        PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
         ASSERT(colInd >= 0);
 #endif
         int64_t fcolind = colRelIndex[el->lac];
@@ -96,22 +96,22 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0)
             {
                 int64_t ri = isRowInFront[rowInd];
-                PRLEVEL(1, ("%% ri = %ld \n", ri));
-                PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                 dC[ri] += sC[i];
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
                 if (--nrowsSeen == 0) break;
             }
         }
     }
     else
     {
-        PRLEVEL(PR, ("%% more than 1 col left (%ld->%ld)\n %%", e, eli));
+        PRLEVEL(PR, ("%% more than 1 col left (" LD "->" LD ")\n %%", e, eli));
 
         // save the structure of the rows once at first
         // int64_t tempRow[el->nrowsleft];  // C99
@@ -120,7 +120,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0)
             {
                 tempRow[ii++] = i;
@@ -147,15 +147,15 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         {  // not enoght resources or very small assembly
             // sequential
             PRLEVEL(1,
-                    ("Seqntial Assembly naft=%ld colsleft=%ld rowsleft=%ld \n",
+                    ("Seqntial Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " \n",
                      naft, el->ncolsleft, el->nrowsleft));
 
             for (int64_t j = el->lac; j < nEl; j++)
             {
-                PRLEVEL(1, ("%% j =%ld \n", j));
+                PRLEVEL(1, ("%% j =" LD " \n", j));
                 double *sC = el_Num + mEl * j;  // source column pointer
                 int64_t colInd = el_colIndex[j];
-                PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+                PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
                 if (colInd < 0) continue;
                 int64_t fcolind = colRelIndex[j];
 
@@ -165,11 +165,11 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                     int64_t i = tempRow[iii];
                     int64_t ri = rowRelIndex[i];
 
-                    PRLEVEL(1, ("%% ri = %ld \n", ri));
-                    PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                    PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                    PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                    PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                     dC[ri] += sC[i];
-                    PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
                 }
 
                 if (--el->ncolsleft == 0) break;
@@ -180,8 +180,8 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         {
             // enoght threads and big assembly
             // go parallel
-            PRLEVEL(1, ("Parallel Assembly naft=%ld colsleft=%ld rowsleft=%ld "
-                        "el->lac = %ld nEl=%ld rem =%ld (%ld->%ld)\n",
+            PRLEVEL(1, ("Parallel Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " "
+                        "el->lac = " LD " nEl=" LD " rem =" LD " (" LD "->" LD ")\n",
                         naft, el->ncolsleft, el->nrowsleft, el->lac, nEl,
                         nEl - el->lac, e, eli));
 
@@ -192,10 +192,10 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             //#..pragma omp task untied
             // for (int64_t j = el->lac; j < nEl; j++)
             //{
-            //    PRLEVEL(1, ("%% j =%ld \n", j));
+            //    PRLEVEL(1, ("%% j =" LD " \n", j));
             //    double *sC = el_Num + mEl * j;  // source column pointer
             //    int64_t colInd = el_colIndex[j];
-            //    PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+            //    PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
             //    if (colInd < 0) continue;
 
             //    int64_t fcolind = colRelIndex[j];
@@ -208,11 +208,11 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             //        int64_t i = tempRow[iii];
             //        int64_t ri = rowRelIndex[i];
 
-            //        PRLEVEL(1, ("%% ri = %ld \n", ri));
-            //        PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-            //        PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+            //        PRLEVEL(1, ("%% ri = " LD " \n", ri));
+            //        PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+            //        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
             //        dC[ri] += sC[i];
-            //        PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+            //        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
             //    }
             //    if (--el->ncolsleft == 0) break;
             //    PRLEVEL(1, ("\n"));
@@ -225,14 +225,14 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             int64_t ntasks = (max_threads - naft + 1) * 2;
             ntasks = (ntasks <= 0) ? 1 : ntasks;
             int64_t task_size = (nEl - el->lac) / ntasks;
-            PRLEVEL(1, ("BBB el->lac=%ld nEl=%ld ntasks=%ld task_size=%ld\n",
+            PRLEVEL(1, ("BBB el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
                         el->lac, nEl, ntasks, task_size));
             if (task_size == 0 || task_size == 1)
             {
                 task_size = 1;
                 ntasks = nEl - el->lac;
             }
-            PRLEVEL(1, ("el->lac=%ld nEl=%ld ntasks=%ld task_size=%ld\n",
+            PRLEVEL(1, ("el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
                         el->lac, nEl, ntasks, task_size));
             #pragma omp parallel proc_bind(close) num_threads(ntasks)
             #pragma omp single
@@ -242,16 +242,16 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                 int64_t c1 = el->lac + t * task_size;
                 int64_t c2 = el->lac + (t + 1) * task_size;
                 c2 = t == ntasks - 1 ? nEl : c2;
-                PRLEVEL(1, ("t=%ld c1=%ld c2=%ld\n", t, c1, c2));
+                PRLEVEL(1, ("t=" LD " c1=" LD " c2=" LD "\n", t, c1, c2));
                 #pragma omp task mergeable
                 for (int64_t j = c1; j < c2; j++)
                 {
-                    PRLEVEL(1, ("%% j =%ld t=%ld\n", j, t));
+                    PRLEVEL(1, ("%% j =" LD " t=" LD "\n", j, t));
                     double *sC = el_Num + mEl * j;  // source column pointer
                     int64_t colInd = el_colIndex[j];
-                    PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+                    PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
                     if (colInd < 0) continue;
-                    PRLEVEL(1, ("inside paralle region %d j=%ld (tid=%d)\n",
+                    PRLEVEL(1, ("inside paralle region %d j=" LD " (tid=%d)\n",
                                 PARU_OPENMP_GET_ACTIVE_LEVEL, j,
                                 PARU_OPENMP_GET_THREAD_NUM));
                     int64_t fcolind = colRelIndex[j];
@@ -263,11 +263,11 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                         int64_t i = tempRow[iii];
                         int64_t ri = rowRelIndex[i];
 
-                        PRLEVEL(1, ("%% ri = %ld \n", ri));
-                        PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                        PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                        PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                        PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                         dC[ri] += sC[i];
-                        PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
                     }
                     PRLEVEL(1, ("\n"));
                 }
@@ -277,7 +277,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     paru_free_el(e, elementList);
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% after assembly %ld :\n", eli));
+    PRLEVEL(PR, ("%% after assembly " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
     PR = 1;
 #endif
@@ -288,7 +288,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     #pragma omp atomic update
     tot_assem_time += time;
     if (f > Sym->nf - 5)
-        PRLEVEL(-1, ("%% assemble all %ld\t->%ld\t took %lf seconds tot=%lf\n",
+        PRLEVEL(-1, ("%% assemble all " LD "\t->" LD "\t took %lf seconds tot=%lf\n",
                      e, eli, time, tot_assem_time));
 #endif
 }
@@ -310,14 +310,14 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
-    PRLEVEL(PR, ("%% Eliminat some cols of %ld in %ld\n", e, eli));
+    PRLEVEL(PR, ("%% Eliminat some cols of " LD " in " LD "\n", e, eli));
 #ifndef NDEBUG
     PR = 1;
 
-    PRLEVEL(PR, ("%% %ld :\n", eli));
+    PRLEVEL(PR, ("%% " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
 
@@ -376,7 +376,7 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             for (int64_t i = 0; i < mEl; i++)
             {
                 int64_t rowInd = el_rowIndex[i];
-                PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
                 if (rowInd >= 0)
                 {
                     tempRow[ii++] = i;
@@ -391,9 +391,9 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         int64_t colInd = el_colIndex[el->lac];
         int64_t fcolind = paru_find_hash(colInd, colHash, fcolList);
 
-        PRLEVEL(1, ("%% el->lac =%ld \n", el->lac));
+        PRLEVEL(1, ("%% el->lac =" LD " \n", el->lac));
         double *sC = el_Num + mEl * el->lac;  // source column pointer
-        PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
         ASSERT(colInd >= 0);
 
         double *dC = curEl_Num + fcolind * curEl->nrows;
@@ -404,11 +404,11 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             int64_t i = tempRow[ii];
             int64_t ri = rowRelIndex[i];
 
-            PRLEVEL(1, ("%% ri = %ld \n", ri));
-            PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
             dC[ri] += sC[i];
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
         }
 #ifndef NDEBUG
         c++;
@@ -437,7 +437,7 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             for (int64_t i = 0; i < mEl; i++)
             {
                 int64_t rowInd = el_rowIndex[i];
-                PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
                 if (rowInd >= 0)
                 {
                     tempRow[ii++] = i;
@@ -449,10 +449,10 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             tempRow_ready = 1;
         }
 
-        PRLEVEL(1, ("%% j =%ld \n", j));
+        PRLEVEL(1, ("%% j =" LD " \n", j));
         double *sC = el_Num + mEl * j;  // source column pointer
         int64_t colInd = el_colIndex[j];
-        PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
         if (colInd < 0) continue;
         int64_t fcolind = paru_find_hash(colInd, colHash, fcolList);
         if (fcolind == -1) continue;
@@ -465,11 +465,11 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             int64_t i = tempRow[ii];
             int64_t ri = rowRelIndex[i];
 
-            PRLEVEL(1, ("%% ri = %ld \n", ri));
-            PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
             dC[ri] += sC[i];
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
         }
 #ifndef NDEBUG
         c++;
@@ -479,7 +479,7 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     }
 
 #ifndef NDEBUG
-    PRLEVEL(1, ("%%  %ld has found and assembled, ncolsleft %ld\n", c,
+    PRLEVEL(1, ("%%  " LD " has found and assembled, ncolsleft " LD "\n", c,
                 el->ncolsleft));
 #endif
 
@@ -500,7 +500,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
 
-    PRLEVEL(PR, ("%% Eliminat some rows of %ld in %ld\n", e, eli));
+    PRLEVEL(PR, ("%% Eliminat some rows of " LD " in " LD "\n", e, eli));
 
     paru_element **elementList = Work->elementList;
 
@@ -553,11 +553,11 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             // coompare their global indices
             if (curEl_rowIndex[rowInd] == el_rowIndex[i])
             {
-                PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
-                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =%ld \n",
+                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =" LD " \n",
                             curEl_rowIndex[rowInd]));
-                PRLEVEL(1, ("%% i =%ld \n", i));
-                PRLEVEL(1, ("%% el_rowIndex[i] =%ld \n", el_rowIndex[i]));
+                PRLEVEL(1, ("%% i =" LD " \n", i));
+                PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
                 tempRow.push_back(i);
             }
             else
@@ -568,7 +568,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 
 #ifndef NDEBUG
     if (tempRow.size() > 0)
-        PRLEVEL(PR, ("%% Toll free zone: %ld rows has been found: \n%%",
+        PRLEVEL(PR, ("%% Toll free zone: " LD " rows has been found: \n%%",
                      tempRow.size()));
 #endif
 
@@ -588,11 +588,11 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             // coompare their global indices
             if (curEl_rowIndex[rowInd] == el_rowIndex[i])
             {
-                PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
-                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =%ld \n",
+                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =" LD " \n",
                             curEl_rowIndex[rowInd]));
-                PRLEVEL(1, ("%% i =%ld \n", i));
-                PRLEVEL(1, ("%% el_rowIndex[i] =%ld \n", el_rowIndex[i]));
+                PRLEVEL(1, ("%% i =" LD " \n", i));
+                PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
 
                 tempRow.push_back(i);
                 toll++;
@@ -606,18 +606,18 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     if (tempRow.empty()) return;
 
     PRLEVEL(PR,
-            ("%% %ld rows has been found, toll %ld\n%%", tempRow.size(), toll));
+            ("%% " LD " rows has been found, toll " LD "\n%%", tempRow.size(), toll));
 #ifndef NDEBUG
     for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
-        PRLEVEL(PR, ("%ld ", tempRow[ii]));
+        PRLEVEL(PR, ("" LD " ", tempRow[ii]));
     PRLEVEL(PR, ("\n "));
 #endif
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% Before eliminiatine some rows %ld :\n", eli));
+    PRLEVEL(PR, ("%% Before eliminiatine some rows " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
 
@@ -631,15 +631,15 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
 
     for (int64_t j = el->lac; j < nEl; j++)
     {
-        PRLEVEL(1, ("%% j =%ld \n", j));
+        PRLEVEL(1, ("%% j =" LD " \n", j));
         double *sC = el_Num + mEl * j;  // source column pointer
         int64_t colInd = el_colIndex[j];
-        PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
         if (colInd < 0) continue;
         ncolsSeen--;
         int64_t fcolind = colRelIndex[j];
 
-        PRLEVEL(1, ("%% fcolind=%ld \n", fcolind));
+        PRLEVEL(1, ("%% fcolind=" LD " \n", fcolind));
         double *dC = curEl_Num + fcolind * curEl->nrows;
 
         for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
@@ -648,11 +648,11 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
             int64_t rowInd = el_rowIndex[i1];
             int64_t ri = isRowInFront[rowInd];
 
-            PRLEVEL(1, ("%% ri = %ld \n", ri));
-            PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
             dC[ri] += sC[i1];
-            PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
         }
 
         if (ncolsSeen == 0) break;
@@ -674,10 +674,10 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     }
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% After Eliminate some rows %ld :\n", eli));
+    PRLEVEL(PR, ("%% After Eliminate some rows " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
 }
@@ -710,14 +710,14 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     PRLEVEL(PR, ("%% \n+++++++++++++++++++++++++++++++++++++++\n"));
-    PRLEVEL(PR, ("%% Eliminat elment %ld  with0rows in %ld\n", e, eli));
+    PRLEVEL(PR, ("%% Eliminat elment " LD "  with0rows in " LD "\n", e, eli));
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% %ld :\n", eli));
+    PRLEVEL(PR, ("%% " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 
 #endif
@@ -762,8 +762,8 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     int64_t colCount = Us[f].n;
     ASSERT(el_colIndex[el->lac] <= fcolList[colCount - 1]);
     ASSERT(el_colIndex[nEl - 1] <= 0 || fcolList[0] <= el_colIndex[nEl - 1]);
-    PRLEVEL(PR, ("%% newColSet.size = %ld\n", colCount));
-    PRLEVEL(PR, ("%% nEl = %ld\n", nEl));
+    PRLEVEL(PR, ("%% newColSet.size = " LD "\n", colCount));
+    PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
 #endif
 
     if (el->ncolsleft == 1)
@@ -772,7 +772,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         double *sC = el_Num + mEl * el->lac;  // source column pointer
 #ifndef NDEBUG
         int64_t colInd = el_colIndex[el->lac];
-        PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
         ASSERT(colInd >= 0);
 #endif
         int64_t fcolind = colRelIndex[el->lac];
@@ -781,17 +781,17 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0)
             {
                 if (rowRelIndex[i] != -1)  // row with at least one nz
                 {
                     int64_t ri = isRowInFront[rowInd];
-                    PRLEVEL(1, ("%% ri = %ld \n", ri));
-                    PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                    PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                    PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                    PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                     dC[ri] += sC[i];
-                    PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
                 }
                 if (--nrows2bSeen == 0) break;
             }
@@ -809,7 +809,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld ", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " ", rowInd));
 #ifndef NDEBUG
             if (rowRelIndex[i] == -1) PRLEVEL(1, ("%% row_with0 "));
 #endif
@@ -828,7 +828,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         PR = 1;
         PRLEVEL(PR, ("%% list of the rows to be assembled:\n%%"));
         for (int64_t i = 0; i < nrows2assembl; i++)
-            PRLEVEL(PR, ("%ld ", el_rowIndex[tempRow[i]]));
+            PRLEVEL(PR, ("" LD " ", el_rowIndex[tempRow[i]]));
         PRLEVEL(PR, ("%% \n"));
 #endif
         int64_t ncols2bSeen = el->ncolsleft;
@@ -838,10 +838,10 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         //**//pragma omp taskgroup
         for (int64_t j = el->lac; j < nEl; j++)
         {
-            PRLEVEL(1, ("%% j =%ld \n", j));
+            PRLEVEL(1, ("%% j =" LD " \n", j));
             double *sC = el_Num + mEl * j;  // source column pointer
             int64_t colInd = el_colIndex[j];
-            PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+            PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
             if (colInd < 0) continue;
             int64_t fcolind = colRelIndex[j];
 
@@ -854,11 +854,11 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
                 int64_t ri = rowRelIndex[i];
                 ASSERT(rowRelIndex[i] != -1);  // I already picked the rows
                 // that are not in zero pivots
-                PRLEVEL(1, ("%% ri = %ld \n", ri));
-                PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                 dC[ri] += sC[i];
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
             }
 
             if (--ncols2bSeen == 0) break;
@@ -877,19 +877,19 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
 
         if (rowRelIndex[ii] == -1)  // row with all zeros in piv
         {                           // update lac
-            PRLEVEL(1, ("%%Searching for lac in %ld\n%%", rowInd));
-            PRLEVEL(1, ("%%col=%ld\n%%", el->lac));
+            PRLEVEL(1, ("%%Searching for lac in " LD "\n%%", rowInd));
+            PRLEVEL(1, ("%%col=" LD "\n%%", el->lac));
             for (int64_t jj = el->lac; jj < new_lac; jj++)
             // searching for the first nz
             {
                 if (el_colIndex[jj] < 0) continue;
                 // el [rowInd, jj]
-                PRLEVEL(1, ("%% el[%ld,%ld]=%2.5lf\n%%", rowInd, jj,
+                PRLEVEL(1, ("%% el[" LD "," LD "]=%2.5lf\n%%", rowInd, jj,
                             el_Num[mEl * jj + ii]));
                 if (el_Num[mEl * jj + ii] != 0)
                 {
                     new_lac = jj;
-                    PRLEVEL(1, ("%%Found new-lac in %ld\n%%", jj));
+                    PRLEVEL(1, ("%%Found new-lac in " LD "\n%%", jj));
                     break;
                 }
             }
@@ -910,7 +910,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
         {
             if (el_colIndex[j] > 0) ncolsleft++;
         }
-        PRLEVEL(1, ("%%colsleft was %ld and now is %ld\n%%", el->ncolsleft,
+        PRLEVEL(1, ("%%colsleft was " LD " and now is " LD "\n%%", el->ncolsleft,
                     ncolsleft));
         el->ncolsleft = ncolsleft;
         for (int64_t j = el->lac; j < new_lac; j++)
@@ -928,18 +928,18 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
     PR = 1;
-    PRLEVEL(PR, ("%% %ld(%ld) %ld-%ld :\n", f, eli, col1, col2));
-    PRLEVEL(PR, ("%%Finally new-lac is %ld ", el->lac));
-    PRLEVEL(PR, ("nEl=%ld\n lacList[%ld]=%ld nrowsleft=%ld\n", nEl, e,
+    PRLEVEL(PR, ("%% " LD "(" LD ") " LD "-" LD " :\n", f, eli, col1, col2));
+    PRLEVEL(PR, ("%%Finally new-lac is " LD " ", el->lac));
+    PRLEVEL(PR, ("nEl=" LD "\n lacList[" LD "]=" LD " nrowsleft=" LD "\n", nEl, e,
                  lacList[e], el->nrowsleft));
 
     PR = 1;
     if (nEl != new_lac && el_colIndex[new_lac] < col2) PR = -2;
 
-    PRLEVEL(PR, ("%% %ld :\n", eli));
+    PRLEVEL(PR, ("%% " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
 
-    PRLEVEL(PR, ("%% %ld :\n", e));
+    PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
     PR = 1;
     ASSERT(nEl == new_lac || col2 <= el_colIndex[new_lac]);
@@ -948,7 +948,7 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     if (new_lac == nEl)
     {
 #ifndef NDEBUG
-        PRLEVEL(PR, ("%% %ld is freed inside with0\n", eli));
+        PRLEVEL(PR, ("%% " LD " is freed inside with0\n", eli));
 #endif
         paru_free_el(e, elementList);
     }

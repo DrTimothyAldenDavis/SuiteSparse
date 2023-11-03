@@ -67,6 +67,7 @@ int main(int argc, char **argv)
     // Control.umfpack_default_singleton = 0;
     // Control.paru_max_threads = 6;
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
+    printf ("\n--------- ParU_Analyze:\n") ;
     info = ParU_Analyze(A, &Sym, &Control);
     double my_time_analyze = omp_get_wtime() - my_start_time;
     if (info != PARU_SUCCESS)
@@ -78,6 +79,7 @@ int main(int argc, char **argv)
     printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
     printf("ParU: Symbolic factorization is done in %lfs!\n", my_time_analyze);
     ParU_Numeric *Num;
+    printf ("\n--------- ParU_Factorize:\n") ;
     double my_start_time_fac = omp_get_wtime();
     info = ParU_Factorize(A, Sym, &Num, &Control);
     double my_time_fac = omp_get_wtime() - my_start_time_fac;
@@ -108,6 +110,7 @@ int main(int argc, char **argv)
         double *b = (double *)malloc(m * sizeof(double));
         double *xx = (double *)malloc(m * sizeof(double));
         for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+        printf ("\n--------- ParU_Solve:\n") ;
         double my_solve_time_start = omp_get_wtime();
         info = ParU_Solve(Sym, Num, b, xx, &Control);
         if (info != PARU_SUCCESS)
@@ -133,6 +136,7 @@ int main(int argc, char **argv)
     #endif
 
         double resid, anorm, xnorm;
+        printf ("\n--------- ParU_Residual:\n") ;
         info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
         if (info != PARU_SUCCESS)
         {
@@ -158,6 +162,7 @@ int main(int argc, char **argv)
             for (int64_t j = 0; j < nrhs; ++j)
                 B[j * m + i] = (double)(i + j + 1);
 
+        printf ("\n--------- ParU_Solve:\n") ;
         info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
         if (info != PARU_SUCCESS)
         {
@@ -169,6 +174,7 @@ int main(int argc, char **argv)
             ParU_Freesym(&Sym, &Control);
             return info;
         }
+        printf ("\n--------- ParU_Residual:\n") ;
         info = ParU_Residual(A, X, B, m, nrhs, resid, anorm, xnorm, &Control);
         if (info != PARU_SUCCESS)
         {

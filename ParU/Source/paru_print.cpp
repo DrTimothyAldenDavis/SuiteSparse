@@ -10,7 +10,6 @@
  *
  * @author Aznaveh
  */
-#define LD "%" PRId64
 
 #include "paru_internal.hpp"
 void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num)

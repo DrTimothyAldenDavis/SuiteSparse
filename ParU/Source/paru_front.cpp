@@ -34,7 +34,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
     /* get the front F  */
     /* ---------------------------------------------------------------------- */
 
-    PRLEVEL(-2, ("%%~~~~~~~  Assemble Front %ld start ~~%.0lf~~~~~~~(%d)\n", f,
+    PRLEVEL(-2, ("%%~~~~~~~  Assemble Front " LD " start ~~%.0lf~~~~~~~(%d)\n", f,
                  Sym->stree_flop_bound[f], omp_get_thread_num()));
 
     /* pivotal columns Super [f] ... Super [f+1]-1 */
@@ -44,7 +44,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
     paru_element **elementList = Work->elementList;
 
-    PRLEVEL(-1, ("%% fp=%ld pivotal columns:clo1=%ld...col2=%ld\n", fp, col1,
+    PRLEVEL(-1, ("%% fp=" LD " pivotal columns:clo1=" LD "...col2=" LD "\n", fp, col1,
                  col2 - 1));
     ASSERT(fp > 0);
 
@@ -67,12 +67,12 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         int64_t *isRowInFront = Work->rowSize;
 
         int64_t fm = Sym->Fm[f]; /* Upper bound number of rows of F */
-        PRLEVEL(1, ("%% the size of fm is %ld\n", fm));
+        PRLEVEL(1, ("%% the size of fm is " LD "\n", fm));
         int64_t *frowList = (int64_t *)paru_alloc(fm, sizeof(int64_t));
         if (frowList == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to allocate"
-                        " for frowList %ld\n",
+                        " for frowList " LD "\n",
                         f));
             return PARU_OUT_OF_MEMORY;
         }
@@ -88,7 +88,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
 #ifndef NDEBUG
         int64_t time_f = Work->time_stamp[f];
-        PRLEVEL(0, ("%% Begin of Front %ld time_f = %ld\n", f, time_f));
+        PRLEVEL(0, ("%% Begin of Front " LD " time_f = " LD "\n", f, time_f));
 #endif
 
         // int64_t panel_num = 0;
@@ -131,7 +131,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         if (res_pivotal == PARU_OUT_OF_MEMORY)
         {
             PRLEVEL(1,
-                    ("ParU: out of memory making pivotal of front %ld\n", f));
+                    ("ParU: out of memory making pivotal of front " LD "\n", f));
             return PARU_OUT_OF_MEMORY;
         }
         PRLEVEL(1, ("%% Done: work on pivotal column assembly\n"));
@@ -144,11 +144,11 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         int64_t rowMark = rowMarkp[eli];
         int64_t m = Num->m;
 
-        PRLEVEL(1, ("%% rowMark=%ld;\n", rowMark));
+        PRLEVEL(1, ("%% rowMark=" LD ";\n", rowMark));
         for (int64_t i = 0; i < m; i++)
         {
             if (isRowInFront[i] >= rowMark)
-                PRLEVEL(1, ("%%rowMark = %ld, isRowInFront[%ld] = %ld\n",
+                PRLEVEL(1, ("%%rowMark = " LD ", isRowInFront[" LD "] = " LD "\n",
                             rowMark, i, isRowInFront[i]));
         }
 #endif
@@ -160,12 +160,12 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
         /***********  factorizing the fully summed part of the matrix        ***
          ** a set of pivot is found in this part that is crucial to assemble **/
-        PRLEVEL(1, ("%% rowCount =%ld\n", rowCount));
+        PRLEVEL(1, ("%% rowCount =" LD "\n", rowCount));
 
 #ifndef NDEBUG  // Printing the list of rows
         PRLEVEL(PR, ("%% Befor factorization (inside assemble): \n"));
         for (int64_t i = 0; i < rowCount; i++)
-            PRLEVEL(PR, ("%% frowList [%ld] =%ld\n", i, frowList[i]));
+            PRLEVEL(PR, ("%% frowList [" LD "] =" LD "\n", i, frowList[i]));
         PRLEVEL(PR, ("\n"));
 
 #endif
@@ -176,7 +176,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
         if (rowCount < fp)
         {
-            PRLEVEL(-1, ("ParU: singular, structural problem on %ld: %ldx%ld\n",
+            PRLEVEL(-1, ("ParU: singular, structural problem on " LD ": " LD "x" LD "\n",
                          f, rowCount, fp));
 #pragma omp atomic write
             Num->res = PARU_SINGULAR;
@@ -184,7 +184,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         }
 
         int64_t start_fac = Work->time_stamp[f];
-        PRLEVEL(1, ("%% start_fac= %ld\n", start_fac));
+        PRLEVEL(1, ("%% start_fac= " LD "\n", start_fac));
 
         ParU_Ret ffs_blas_ok = paru_factorize_full_summed(
             f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Num);
@@ -193,30 +193,30 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
 #ifndef NDEBUG
         time_f = Work->time_stamp[f];
-        PRLEVEL(1, ("%%After factorization time_f = %ld\n", time_f));
+        PRLEVEL(1, ("%%After factorization time_f = " LD "\n", time_f));
 #endif
 
         /*To this point fully summed part of the front is computed and L and U /
          * The next part is to find columns of nonfully summed then rows
          * the rest of the matrix and doing TRSM and GEMM,                    */
 
-        PRLEVEL(1, ("%% num_panels = %ld\n", num_panels));
-        PRLEVEL(1, ("%% After free num_panels = %ld\n", num_panels));
+        PRLEVEL(1, ("%% num_panels = " LD "\n", num_panels));
+        PRLEVEL(1, ("%% After free num_panels = " LD "\n", num_panels));
 
 #ifndef NDEBUG  // Printing the list of rows
         PRLEVEL(PR, ("%% After factorization (inside assemble): \n"));
         for (int64_t i = 0; i < rowCount; i++)
-            PRLEVEL(PR, ("%% frowList [%ld] =%ld\n", i, frowList[i]));
+            PRLEVEL(PR, ("%% frowList [" LD "] =" LD "\n", i, frowList[i]));
         PRLEVEL(PR, ("\n"));
 #endif
 
 #ifndef NDEBUG  // Printing the permutation
         PRLEVEL(PR, ("%% pivotal rows:\n"));
         for (int64_t i = 0; i < fp; i++)
-            PRLEVEL(PR, ("%% frowList[%ld] =%ld\n", i, frowList[i]));
+            PRLEVEL(PR, ("%% frowList[" LD "] =" LD "\n", i, frowList[i]));
         PRLEVEL(PR, ("%% =======\n"));
         for (int64_t i = fp; i < rowCount; i++)
-            PRLEVEL(PR, ("%% frowList[%ld] =%ld\n", i, frowList[i]));
+            PRLEVEL(PR, ("%% frowList[" LD "] =" LD "\n", i, frowList[i]));
         PRLEVEL(PR, ("\n"));
 #endif
 
@@ -225,19 +225,19 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(PR, ("%%L part:\n"));
 
         // col permutatin
-        PRLEVEL(PR, ("cols{%ld} = [", f + 1));
-        for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("%ld ", c + 1));
+        PRLEVEL(PR, ("cols{" LD "} = [", f + 1));
+        for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("" LD " ", c + 1));
         PRLEVEL(PR, ("];\n"));
 
         // row permutatin
-        PRLEVEL(PR, ("rows{%ld} = [", f + 1));
+        PRLEVEL(PR, ("rows{" LD "} = [", f + 1));
         for (int64_t r = 0; r < rowCount; r++)
-            PRLEVEL(PR, ("%ld ", frowList[r] + 1));  // Matlab is base 1
+            PRLEVEL(PR, ("" LD " ", frowList[r] + 1));  // Matlab is base 1
         PRLEVEL(PR, ("];\n"));
 
         // inv row permutatin
 
-        PRLEVEL(PR, ("Luf{%ld}= [", f + 1));
+        PRLEVEL(PR, ("Luf{" LD "}= [", f + 1));
         for (int64_t r = 0; r < rowCount; r++)
         {
             PRLEVEL(PR, (" "));
@@ -249,9 +249,9 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         PRLEVEL(PR, ("];\n"));
         PR = 1;
         // just in cases that there is no U for MATLAB
-        PRLEVEL(PR, ("Us{%ld} =[];\n", f + 1));
-        PRLEVEL(PR, ("Ucols{%ld}=[];\n", f + 1));
-        PRLEVEL(PR, ("Urows{%ld}=[];\n", f + 1));
+        PRLEVEL(PR, ("Us{" LD "} =[];\n", f + 1));
+        PRLEVEL(PR, ("Ucols{" LD "}=[];\n", f + 1));
+        PRLEVEL(PR, ("Urows{" LD "}=[];\n", f + 1));
 #endif
 
         int64_t colCount = stl_colSet.size();
@@ -261,13 +261,13 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
         if (fn != 0)
         {
-            PRLEVEL(1, ("%% fp=%ld fn=%ld \n", fp, fn));
+            PRLEVEL(1, ("%% fp=" LD " fn=" LD " \n", fp, fn));
             fcolList = (int64_t *)paru_calloc(stl_colSet.size(), sizeof(int64_t));
 
             if (fcolList == NULL)
             {
                 PRLEVEL(1, ("ParU: out of memory when tried to allocate for"
-                            " fcolList=%ld with the size %ld\n",
+                            " fcolList=" LD " with the size " LD "\n",
                             f, fn));
                 return PARU_OUT_OF_MEMORY;
             }
@@ -286,18 +286,18 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
             if (zero_piv_rows > 0 || rowCount > fp)
             {
                 // make the heap and return
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front %ld finished~~~1\n", f));
+                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~1\n", f));
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
                                                Num);
             }
             else
             {
                 PRLEVEL(
-                    1, ("%%Heap freed inside front %p id=%ld\n", curHeap, eli));
+                    1, ("%%Heap freed inside front %p id=" LD "\n", curHeap, eli));
                 delete curHeap;
                 Work->heapList[eli] = NULL;
                 PRLEVEL(1, ("%% pivotalFront =%p\n", pivotalFront));
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front %ld finished~~~2\n", f));
+                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~2\n", f));
                 return PARU_SUCCESS;
             }
         }
@@ -307,14 +307,14 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         // the last elment of the hash shows if it is a lookup table
         // int64_t hash_size = (colCount*2 > Sym->n )? Sym->n : colCount;
         int64_t hash_size = ((int64_t)2) << ((int64_t)floor(log2((double)colCount)) + 1);
-        PRLEVEL(1, ("%% 1Front hash_size=%ld\n", hash_size));
+        PRLEVEL(1, ("%% 1Front hash_size=" LD "\n", hash_size));
         hash_size = (hash_size > Sym->n) ? Sym->n : hash_size;
-        PRLEVEL(1, ("%% 2Front hash_size=%ld\n", hash_size));
+        PRLEVEL(1, ("%% 2Front hash_size=" LD "\n", hash_size));
         std::vector<int64_t> colHash(hash_size + 1, -1);
         int64_t ii = 0;
         if (hash_size == Sym->n)
         {
-            PRLEVEL(PR, ("%% colHash LOOKUP size = %ld LU %ld\n", hash_size,
+            PRLEVEL(PR, ("%% colHash LOOKUP size = " LD " LU " LD "\n", hash_size,
                          Sym->n));
             for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
             {
@@ -327,8 +327,8 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
             // hash_bits is a bit mask to compute the result modulo
             // the hash table size, which is always a power of 2.
 
-            PRLEVEL(PR, ("%% colHash HASH hash_size=%ld\n", hash_size));
-            PRLEVEL(PR, ("%% colCount=%ld\n", colCount));
+            PRLEVEL(PR, ("%% colHash HASH hash_size=" LD "\n", hash_size));
+            PRLEVEL(PR, ("%% colCount=" LD "\n", colCount));
             for (it = stl_colSet.begin(); it != stl_colSet.end(); ++it)
             {
                 paru_insert_hash(*it, ii, colHash);
@@ -338,7 +338,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         }
 #ifndef NDEBUG
         PRLEVEL(PR, ("%% colHash %%"));
-        for (auto i : colHash) PRLEVEL(PR, (" %ld ", i));
+        for (auto i : colHash) PRLEVEL(PR, (" " LD " ", i));
         PRLEVEL(PR, ("\n"));
 #endif
 
@@ -349,7 +349,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         if (uPart == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to"
-                        " allocate for U part %ld\n",
+                        " allocate for U part " LD "\n",
                         f));
             return PARU_OUT_OF_MEMORY;
         }
@@ -360,8 +360,8 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
             PR = 3;
         }
         if (fn != colCount)
-            PRLEVEL(PR, ("%% fn=%ld colCount=%ld ", fn, colCount));
-        PRLEVEL(PR, ("%% uPart = %p size=%ld", uPart, colCount * fp));
+            PRLEVEL(PR, ("%% fn=" LD " colCount=" LD " ", fn, colCount));
+        PRLEVEL(PR, ("%% uPart = %p size=" LD "", uPart, colCount * fp));
 #endif
 
         ParU_Factors *Us = Num->partial_Us;
@@ -381,13 +381,13 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         {
             int64_t curFsRowIndex = i;  // current fully summed row index
             int64_t curFsRow = frowList[curFsRowIndex];
-            PRLEVEL(1, ("%% curFsRow =%ld\n", curFsRow));
+            PRLEVEL(1, ("%% curFsRow =" LD "\n", curFsRow));
             paru_tupleList *curRowTupleList = &RowList[curFsRow];
             int64_t numTuple = curRowTupleList->numTuple;
             ASSERT(numTuple >= 0);
             ASSERT(numTuple <= m);
             paru_tuple *listRowTuples = curRowTupleList->list;
-            PRLEVEL(1, ("%% numTuple = %ld\n", numTuple));
+            PRLEVEL(1, ("%% numTuple = " LD "\n", numTuple));
             for (int64_t k = 0; k < numTuple; k++)
             {
                 paru_tuple curTpl = listRowTuples[k];
@@ -406,12 +406,12 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
                 // int64_t *rowRelIndex = relRowInd (el);
                 int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
 
-                PRLEVEL(1, ("%% curFsRowIndex =%ld\n", curFsRowIndex));
+                PRLEVEL(1, ("%% curFsRowIndex =" LD "\n", curFsRowIndex));
                 ASSERT(el_rowIndex[curRowIndex] == curFsRow);
                 ASSERT(curRowIndex < mEl);
-                PRLEVEL(1, ("%% curColIndex =%ld\n", curRowIndex));
+                PRLEVEL(1, ("%% curColIndex =" LD "\n", curRowIndex));
 
-                PRLEVEL(1, ("%% element= %ld  nEl =%ld \n", e, nEl));
+                PRLEVEL(1, ("%% element= " LD "  nEl =" LD " \n", e, nEl));
 
                 //**//pragma omp task priority(Depth[f]) if(mEl > 1024)
                 paru_assemble_row_2U(e, f, curRowIndex, curFsRowIndex, colHash,
@@ -431,14 +431,14 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
 #ifndef NDEBUG  // Printing the  U part
         PR = -1;
-        PRLEVEL(PR, ("%% U part Before TRSM: %ld x %ld\n", fp, colCount));
+        PRLEVEL(PR, ("%% U part Before TRSM: " LD " x " LD "\n", fp, colCount));
         PRLEVEL(PR, ("%% U\t"));
         for (int64_t i = 0; i < colCount; i++)
-            PRLEVEL(PR, ("%ld\t\t", fcolList[i]));
+            PRLEVEL(PR, ("" LD "\t\t", fcolList[i]));
         PRLEVEL(PR, ("\n"));
         for (int64_t i = 0; i < fp; i++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[i]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[i]));
             for (int64_t j = 0; j < colCount; j++)
                 PRLEVEL(PR, (" %2.5lf\t", uPart[j * fp + i]));
             PRLEVEL(PR, ("\n"));
@@ -454,19 +454,19 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
 #ifndef NDEBUG  // Printing the  U part
         PR = -1;
-        PRLEVEL(PR, ("%% rowCount=%ld;\n", rowCount));
-        PRLEVEL(PR, ("%% U part After TRSM: %ld x %ld\n", fp, colCount));
+        PRLEVEL(PR, ("%% rowCount=" LD ";\n", rowCount));
+        PRLEVEL(PR, ("%% U part After TRSM: " LD " x " LD "\n", fp, colCount));
 
-        PRLEVEL(PR, ("Ucols{%ld} = [", f + 1));
+        PRLEVEL(PR, ("Ucols{" LD "} = [", f + 1));
         for (int64_t i = 0; i < colCount; i++)
-            PRLEVEL(PR, ("%ld ", fcolList[i] + 1));
+            PRLEVEL(PR, ("" LD " ", fcolList[i] + 1));
         PRLEVEL(PR, ("];\n"));
 
-        PRLEVEL(PR, ("Urows{%ld} = [", f + 1));
-        for (int64_t i = 0; i < fp; i++) PRLEVEL(PR, ("%ld ", frowList[i] + 1));
+        PRLEVEL(PR, ("Urows{" LD "} = [", f + 1));
+        for (int64_t i = 0; i < fp; i++) PRLEVEL(PR, ("" LD " ", frowList[i] + 1));
         PRLEVEL(PR, ("];\n"));
 
-        PRLEVEL(PR, ("Us{%ld} = [", f + 1));
+        PRLEVEL(PR, ("Us{" LD "} = [", f + 1));
 
         for (int64_t i = 0; i < fp; i++)
         {
@@ -479,9 +479,9 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 #endif
 
         paru_element *curEl;
-        PRLEVEL(1, ("%% rowCount=%ld, colCount=%ld, fp=%ld\n", rowCount,
+        PRLEVEL(1, ("%% rowCount=" LD ", colCount=" LD ", fp=" LD "\n", rowCount,
                     colCount, fp));
-        PRLEVEL(1, ("%% curEl is %ld by %ld\n", rowCount - fp, colCount));
+        PRLEVEL(1, ("%% curEl is " LD " by " LD "\n", rowCount - fp, colCount));
         if (fp < rowCount)
         {
             // allocating an un-initialized part of memory
@@ -492,18 +492,18 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
             if (curEl == NULL)
             {
                 PRLEVEL(1, ("ParU: out of memory when tried to allocate"
-                            " current CB %ld\n",
+                            " current CB " LD "\n",
                             eli));
                 return PARU_OUT_OF_MEMORY;
             }
-            PRLEVEL(1, ("%% Created ele %ld in curEl =%p\n", eli, curEl));
+            PRLEVEL(1, ("%% Created ele " LD " in curEl =%p\n", eli, curEl));
         }
         else  // EXIT point
         {     // NO rows for current contribution block
             if (zero_piv_rows > 0)
             {
                 // keep the heap and do it for the parent.
-                PRLEVEL(-2, ("%%~~~~~~~Assemble Front %ld finished~~~3\n", f));
+                PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~3\n", f));
                 return paru_make_heap_empty_el(f, pivotal_elements, hi, Work,
                                                Num);
                 // There are stuff left from in zero
@@ -515,10 +515,10 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
                                                Num);
                 // delete curHeap;
                 // Work->heapList[eli] = NULL;
-                // PRLEVEL(1, ("%%(2)Heap freed inside front %p id=%ld\n"
+                // PRLEVEL(1, ("%%(2)Heap freed inside front %p id=" LD "\n"
                 //            , curHeap, eli));
                 // PRLEVEL(1, ("%% pivotalFront =%p\n", pivotalFront));
-                // PRLEVEL(-2, ("%%~~~~~~~Assemble Front %ld finished~~~4\n",
+                // PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~4\n",
                 // f)); return PARU_SUCCESS;
             }
         }
@@ -540,7 +540,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
             // attention it is the old rowMark not the updated rowMarkp + eli
             // If I decide to add rowMark I should change paru_pivotal
             isRowInFront[curRow] = locIndx;
-            PRLEVEL(1, ("%% el_rowIndex [%ld] =%ld\n", locIndx,
+            PRLEVEL(1, ("%% el_rowIndex [" LD "] =" LD "\n", locIndx,
                         el_rowIndex[locIndx]));
         }
 
@@ -564,9 +564,9 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
                 }
 #endif
 
-        PRLEVEL(PR, ("\n%% FlopCount Dgemm front %ld %ld %ld \n", rowCount - fp,
+        PRLEVEL(PR, ("\n%% FlopCount Dgemm front " LD " " LD " " LD " \n", rowCount - fp,
                      fp, colCount));
-        PRLEVEL(PR, ("%ld %ld %ld \n", rowCount - fp, fp, colCount));
+        PRLEVEL(PR, ("" LD " " LD " " LD " \n", rowCount - fp, fp, colCount));
 #endif
 
 #ifndef NDEBUG
@@ -578,12 +578,12 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
         /*** 7 * Count number of rows and columsn of prior CBs to asslemble ***/
 
-        PRLEVEL(-1, ("\n%%||||  Start Finalize %ld ||||\n", f));
+        PRLEVEL(-1, ("\n%%||||  Start Finalize " LD " ||||\n", f));
         ParU_Ret res_prior;
         res_prior = paru_prior_assemble(f, start_fac, pivotal_elements, colHash,
                                         hi, Work, Num);
         if (res_prior != PARU_SUCCESS) return res_prior;
-        PRLEVEL(-1, ("\n%%||||  Finish Finalize %ld ||||\n", f));
+        PRLEVEL(-1, ("\n%%||||  Finish Finalize " LD " ||||\n", f));
 
         ////////////////////////////////////////////////////////////////////////
 
@@ -608,10 +608,10 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         //        ASSERT ( isRowInFront [i] < rowMark);
 #endif
 
-        PRLEVEL(1, ("%%rowCount =%ld  ", rowCount));
-        PRLEVEL(1, ("colCount =%ld", colCount));
-        PRLEVEL(1, ("fp =%ld;\n", fp));
-        PRLEVEL(-2, ("%%~~~~~~~Assemble Front %ld finished~~~5\n", f));
+        PRLEVEL(1, ("%%rowCount =" LD "  ", rowCount));
+        PRLEVEL(1, ("colCount =" LD "", colCount));
+        PRLEVEL(1, ("fp =" LD ";\n", fp));
+        PRLEVEL(-2, ("%%~~~~~~~Assemble Front " LD " finished~~~5\n", f));
     }
 
     catch (std::bad_alloc const &)

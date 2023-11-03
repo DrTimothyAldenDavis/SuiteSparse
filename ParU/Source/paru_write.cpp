@@ -11,8 +11,6 @@
  *  @author Aznaveh
  */
 
-#define LD "%" PRId64
-
 #include "paru_internal.hpp"
 void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 {

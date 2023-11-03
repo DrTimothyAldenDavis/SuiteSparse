@@ -43,7 +43,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
     if (M < trivial && N < trivial && K < trivial)
     // if(0)
     {
-        PRLEVEL(1, ("%% SMALL DGEMM (%d,%d,%d) in %ld\n", M, N, K, f));
+        PRLEVEL(1, ("%% SMALL DGEMM (" LD "," LD "," LD ") in " LD "\n", M, N, K, f));
         for (int64_t i = 0; i < M; i++)
             for (int64_t j = 0; j < N; j++)
             {
@@ -61,11 +61,11 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 #ifndef NDEBUG
         if (naft == 1)
         {
-            PRLEVEL(1, ("%% A max_threads DGEMM (%dx%d) in %ld\n", M, N, f));
+            PRLEVEL(1, ("%% A max_threads DGEMM (" LD "x" LD ") in " LD "\n", M, N, f));
         }
         else if (M < L && N < L)
         {
-            PRLEVEL(1, ("%% Single call DGEMM (%dx%d) in %ld\n", M, N, f));
+            PRLEVEL(1, ("%% Single call DGEMM (" LD "x" LD ") in " LD "\n", M, N, f));
         }
 #endif
         SUITESPARSE_BLAS_dgemm("N", "N", M, N, K, &alpha, A, lda, B, ldb, &beta,
@@ -76,7 +76,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
         int my_share = max_threads / naft;
         if (my_share == 0) my_share = 1;
-        PRLEVEL(1, ("%% MKL local threads for DGEMM (%dx%d) in %ld [[%ld]]\n",
+        PRLEVEL(1, ("%% MKL local threads for DGEMM (" LD "x" LD ") in " LD " [[%d]]\n",
                     M, N, f, my_share));
         // using my share of threads
         mkl_set_num_threads_local(my_share);
@@ -90,14 +90,14 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 
         mkl_set_num_threads_local(0);
 #else
-        PRLEVEL(1, ("%%YES tasking for DGEMM (%dx%d) in %ld \n", M, N, f));
+        PRLEVEL(1, ("%%YES tasking for DGEMM (" LD "x" LD ") in " LD " \n", M, N, f));
         int64_t num_col_blocks = N / L + 1;
         int64_t num_row_blocks = M / L + 1;
 
         int64_t len_col = N / num_col_blocks;
         int64_t len_row = M / num_row_blocks;
 
-        PRLEVEL(1, ("%% col-blocks=%ld,row-blocks=%ld [%ld]\n", num_col_blocks,
+        PRLEVEL(1, ("%% col-blocks=" LD ",row-blocks=" LD " [" LD "]\n", num_col_blocks,
                     num_row_blocks, num_col_blocks * num_row_blocks));
     #pragma omp parallel proc_bind(close)
     #pragma omp single nowait
@@ -110,7 +110,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
                 {
                     int64_t n =
                         (J + 1) == num_col_blocks ? (N - J * len_col) : len_col;
-                    PRLEVEL(1, ("%% I=%ld J=%ld m=%d n=%d in %ld\n", I, J, m, n,
+                    PRLEVEL(1, ("%% I=" LD " J=" LD " m=" LD " n=" LD " in " LD "\n", I, J, m, n,
                                 f));
     #pragma omp task
                     {
@@ -135,7 +135,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("%% DGEMM (%d,%d,%d)%1.1f in %ld {%ld} in %lf seconds\n", M, N,
+    PRLEVEL(1, ("%% DGEMM (" LD "," LD "," LD ")%1.1f in " LD " {" LD "} in %lf seconds\n", M, N,
                 K, beta, f, naft, time));
 #endif
 

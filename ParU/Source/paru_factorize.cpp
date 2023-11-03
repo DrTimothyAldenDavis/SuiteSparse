@@ -15,10 +15,14 @@
  */
 #include "paru_internal.hpp"
 
+//------------------------------------------------------------------------------
+// paru_exec_tasks_seq: execute all tasks on a single thread
+//------------------------------------------------------------------------------
+
 ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work,
                              ParU_Numeric *Num)
 {
-    DEBUGLEVEL(0);
+    DEBUGLEVEL(1);
     ParU_Symbolic *Sym = Work->Sym;
     int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
@@ -81,10 +85,14 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
     return myInfo;
 }
 
+//------------------------------------------------------------------------------
+// paru_exec_tasks: execute all tasks in parallel
+//------------------------------------------------------------------------------
+
 ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task,
                          paru_work *Work, ParU_Numeric *Num)
 {
-    DEBUGLEVEL(0);
+    DEBUGLEVEL(1);    // FIXME
     ParU_Symbolic *Sym = Work->Sym;
     int64_t *task_parent = Sym->task_parent;
     int64_t daddy = task_parent[t];
@@ -175,10 +183,15 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
     }
     return myInfo;
 }
+
+//------------------------------------------------------------------------------
+// ParU_Factorize: factorize a sparse matrix A
+//------------------------------------------------------------------------------
+
 ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
                         ParU_Numeric **Num_handle, ParU_Control *user_Control)
 {
-    DEBUGLEVEL(0);
+    DEBUGLEVEL(1);    // FIXME
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
     double my_start_time = PARU_OPENMP_GET_WTIME;
@@ -246,6 +259,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     paru_work *Work;
     Work = &myWork;
 
+    #pragma omp atomic write
     Work->naft = 0;
     ParU_Numeric *Num;
     Num = *Num_handle;
@@ -267,7 +281,9 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     int64_t *task_depth = Sym->task_depth;
     std::vector<int64_t> task_Q;
     
-    int64_t *task_num_child = Work->task_num_child;
+    int64_t *task_num_child ;
+    #pragma omp atomic write
+    task_num_child = Work->task_num_child;
     paru_memcpy(task_num_child, Sym->task_num_child, ntasks * sizeof(int64_t),
                 Control);
     try
@@ -288,6 +304,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
             [&task_depth](const int64_t &t1, const int64_t &t2) -> bool {
             return task_depth[t1] > task_depth[t2];
             });
+    #pragma omp atomic write
     Work->resq = task_Q.size();
 
 #ifndef NDEBUG
@@ -300,8 +317,14 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         PRLEVEL(1, ("nf = %ld, deepest = %ld, chainess = %lf \n", nf,
                     task_depth[task_Q[0]], chainess));
     }
-    Work->actual_alloc_LUs = Work->actual_alloc_Us = 0;
-    Work->actual_alloc_row_int = Work->actual_alloc_col_int = 0;
+    #pragma omp atomic write
+    Work->actual_alloc_LUs = 0 ;
+    #pragma omp atomic write
+    Work->actual_alloc_Us = 0;
+    #pragma omp atomic write
+    Work->actual_alloc_row_int = 0 ;
+    #pragma omp atomic write
+    Work->actual_alloc_col_int = 0;
     PR = 1;
     int64_t *task_map = Sym->task_map;
     PRLEVEL(PR, ("\n%% task_Q:\n"));
@@ -313,12 +336,16 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     }
     PRLEVEL(PR, ("\n"));
 #endif
+
+    //--------------------------------------------------------------------------
+    // execute the task tree
+    //--------------------------------------------------------------------------
+
     if ((int64_t)task_Q.size() * 2 > Control->paru_max_threads)
-        // if (1)
     {
         PRLEVEL(1, ("Parallel\n"));
         // chekcing user input
-        PRLEVEL(2, ("Control: max_th=%ld scale=%ld piv_toler=%lf "
+        PRLEVEL(1, ("Control: max_th=%ld scale=%ld piv_toler=%lf "
                     "diag_toler=%lf trivial =%ld worthwhile_dgemm=%ld "
                     "worthwhile_trsm=%ld\n",
                     Control->paru_max_threads, Control->scale,
@@ -380,6 +407,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         // chain break
         if (chain_task != -1 && info == PARU_SUCCESS)
         {
+            #pragma omp atomic write
             Work->naft = 1;
             PRLEVEL(1, ("Chain_taskd %ld has remained\n", chain_task));
             info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Num);
@@ -419,6 +447,11 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         }
     }
 
+    //--------------------------------------------------------------------------
+    // finalize the permutation
+    //--------------------------------------------------------------------------
+
+    PRLEVEL(1, ("finalize permutation\n"));
     info = paru_finalize_perm(Sym, Num);  // to form the final permutation
     paru_free_work(Sym, Work);   // free the work DS
     Num->Control = NULL;
@@ -438,6 +471,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 #endif
     int64_t max_rc = 0, max_cc = 0;
     double min_udiag = 1, max_udiag = -1;  // not to fail for nf ==0
+
     // using the first value of the first front just to initialize
     if (nf > 0)
     {
@@ -505,6 +539,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
             }
         }
     }
+
     PRLEVEL(1, ("max_rc=%ld max_cc=%ld\n", max_rc, max_cc));
     PRLEVEL(1, ("max_udiag=%e min_udiag=%e rcond=%e\n", max_udiag, min_udiag,
                 min_udiag / max_udiag));
@@ -520,3 +555,4 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 #endif
     return Num->res;
 }
+

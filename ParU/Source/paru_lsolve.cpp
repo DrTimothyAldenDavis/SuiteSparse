@@ -70,23 +70,23 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
 
         for (int64_t j = cs1; j < n1; j++)
         {
-            PRLEVEL(PR, ("j = %ld\n", j));
+            PRLEVEL(PR, ("j = " LD "\n", j));
             int64_t *Slp = Sym->lstons.Slp;
             int64_t *Sli = Sym->lstons.Sli;
             double *Slx = Num->Slx;
             ASSERT(Sli != NULL && Slx != NULL && Slp != NULL);
             int64_t diag = Slp[j - cs1];
-            PRLEVEL(PR, (" x[%ld]=%.2lf Slx[%ld]=%.2lf\n", j, x[j], diag,
+            PRLEVEL(PR, (" x[" LD "]=%.2lf Slx[" LD "]=%.2lf\n", j, x[j], diag,
                          Slx[diag]));
             x[j] /= Slx[diag];
-            PRLEVEL(PR, (" After x[%ld]=%.2lf \n", j, x[j]));
+            PRLEVEL(PR, (" After x[" LD "]=%.2lf \n", j, x[j]));
 
             for (int64_t p = Slp[j - cs1] + 1; p < Slp[j - cs1 + 1]; p++)
             {
                 int64_t r = Sli[p] < n1 ? Sli[p] : Ps[Sli[p] - n1] + n1;
-                PRLEVEL(PR, (" r=%ld\n", r));
+                PRLEVEL(PR, (" r=" LD "\n", r));
                 x[r] -= Slx[p] * x[j];
-                PRLEVEL(PR, ("A x[%ld]=%.2lf\n", Sli[p], x[Sli[p]]));
+                PRLEVEL(PR, ("A x[" LD "]=%.2lf\n", Sli[p], x[Sli[p]]));
             }
         }
     }
@@ -131,14 +131,14 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
         PRLEVEL(PR, ("%% LUs:\n%%"));
         for (int64_t r = 0; r < rowCount; r++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
             for (int64_t c = col1; c < col2; c++)
                 PRLEVEL(PR, (" %2.5lf\t", A[(c - col1) * rowCount + r]));
             PRLEVEL(PR, ("\n"));
         }
 
-        PRLEVEL(PR, ("%% lda = %d\n%%", rowCount));
-        PRLEVEL(PR, ("%% during lsolve x [%ld-%ld)is:\n%%", col1, col2));
+        PRLEVEL(PR, ("%% lda = " LD "\n%%", rowCount));
+        PRLEVEL(PR, ("%% during lsolve x [" LD "-" LD ")is:\n%%", col1, col2));
         // for (int64_t k = col1; k < col2; k++)
         int64_t m = Sym->m;
         for (int64_t k = 0; k < m; k++)
@@ -151,7 +151,7 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
         if (rowCount > fp)
         {
             PRLEVEL(2, ("%% lsolve: Working on DGEMV\n%%"));
-            PRLEVEL(2, ("fp=%ld  rowCount=%ld\n", fp, rowCount));
+            PRLEVEL(2, ("fp=" LD "  rowCount=" LD "\n", fp, rowCount));
             double alpha = 1;
             double beta = 0;
             SUITESPARSE_BLAS_dgemv("N", rowCount - fp, fp, &alpha, A + fp,
@@ -173,7 +173,7 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
 
             double i_prod = work[i - fp];
             int64_t r = Ps[frowList[i]] + n1;
-            PRLEVEL(2, ("i_prod[%ld]=%lf  work=%lf r=%ld\n", i, i_prod,
+            PRLEVEL(2, ("i_prod[" LD "]=%lf  work=%lf r=" LD "\n", i, i_prod,
                         work[i - fp], r));
             x[r] -= i_prod;
         }
@@ -236,31 +236,31 @@ ParU_Ret ParU_Lsolve( ParU_Symbolic *Sym, ParU_Numeric *Num,
 
         for (int64_t j = cs1; j < n1; j++)
         {
-            PRLEVEL(PR, ("j = %ld\n", j));
+            PRLEVEL(PR, ("j = " LD "\n", j));
             int64_t *Slp = Sym->lstons.Slp;
             int64_t *Sli = Sym->lstons.Sli;
             double *Slx = Num->Slx;
             ASSERT(Sli != NULL && Slx != NULL && Slp != NULL);
             int64_t diag = Slp[j - cs1];
-            PRLEVEL(PR, (" X[%ld]=%.2lf Slx[%ld]=%.2lf\n", j, X[j * nrhs], diag,
+            PRLEVEL(PR, (" X[" LD "]=%.2lf Slx[" LD "]=%.2lf\n", j, X[j * nrhs], diag,
                          Slx[diag]));
             // pragma omp simd
             for (int64_t l = 0; l < nrhs; l++)
             {
                 X[l * m + j] /= Slx[diag];
             }
-            PRLEVEL(PR, (" After X[%ld]=%.2lf \n", j, X[j * nrhs]));
+            PRLEVEL(PR, (" After X[" LD "]=%.2lf \n", j, X[j * nrhs]));
 
             for (int64_t p = Slp[j - cs1] + 1; p < Slp[j - cs1 + 1]; p++)
             {
                 int64_t r = Sli[p] < n1 ? Sli[p] : Ps[Sli[p] - n1] + n1;
-                PRLEVEL(PR, (" r=%ld\n", r));
+                PRLEVEL(PR, (" r=" LD "\n", r));
                 // pragma omp simd
                 for (int64_t l = 0; l < nrhs; l++)
                 {
                     X[l * m + r] -= Slx[p] * X[l * m + j];
                 }
-                PRLEVEL(PR, ("A X[%ld]=%.2lf\n", Sli[p], X[Sli[p]] * nrhs));
+                PRLEVEL(PR, ("A X[" LD "]=%.2lf\n", Sli[p], X[Sli[p]] * nrhs));
             }
         }
     }
@@ -300,26 +300,26 @@ ParU_Ret ParU_Lsolve( ParU_Symbolic *Sym, ParU_Numeric *Num,
         int64_t col2 = Super[f + 1];
         int64_t fp = col2 - col1;
         double *A = LUs[f].p;
-        PRLEVEL(2, ("%% mRHS Working on DTRSM f=%ld\n", f));
+        PRLEVEL(2, ("%% mRHS Working on DTRSM f=" LD "\n", f));
         double alpha = 1;
         SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", fp, nrhs, &alpha, A, rowCount,
                                X + n1 + col1, m, blas_ok);
-        PRLEVEL(2, ("%% mRHS DTRSM is just finished f=%ld\n", f));
+        PRLEVEL(2, ("%% mRHS DTRSM is just finished f=" LD "\n", f));
 #ifndef NDEBUG
         PR = 2;
         PRLEVEL(PR, ("%% LUs:\n%%"));
         for (int64_t r = 0; r < rowCount; r++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
             for (int64_t c = col1; c < col2; c++)
                 PRLEVEL(PR, (" %2.5lf\t", A[(c - col1) * rowCount + r]));
             PRLEVEL(PR, ("\n"));
         }
 
-        PRLEVEL(PR, ("%% lda = %d\n%%", rowCount));
+        PRLEVEL(PR, ("%% lda = " LD "\n%%", rowCount));
         PR = 1;
         PRLEVEL(PR,
-                ("%% during lsolve X f=%ld[%ld-%ld)is:\n%%", f, col1, col2));
+                ("%% during lsolve X f=" LD "[" LD "-" LD ")is:\n%%", f, col1, col2));
         for (int64_t k = 0; k < m; k++)
         {
             PRLEVEL(1, ("%%"));
@@ -335,7 +335,7 @@ ParU_Ret ParU_Lsolve( ParU_Symbolic *Sym, ParU_Numeric *Num,
         if (rowCount > fp)
         {
             PRLEVEL(2, ("%% mRHS lsolve: Working on DGEMM\n%%"));
-            PRLEVEL(2, ("fp=%ld  rowCount=%ld\n", fp, rowCount));
+            PRLEVEL(2, ("fp=" LD "  rowCount=" LD "\n", fp, rowCount));
             double beta = 0;
             SUITESPARSE_BLAS_dgemm("N", "N", rowCount - fp, nrhs, fp, &alpha,
                                    A + fp, rowCount, X + n1 + col1, m, &beta,

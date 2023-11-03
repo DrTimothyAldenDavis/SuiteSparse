@@ -376,7 +376,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NDEBUG
     /* print the control parameters */
     if (PR <= 0) umfpack_dl_report_control(umf_Control);
-    PRLEVEL (1, ("max_threads =%ld\n", control_nthreads (Control)));
+    PRLEVEL (1, ("max_threads =%d\n", control_nthreads (Control)));
 #endif
 
     /* performing the symbolic analysis */

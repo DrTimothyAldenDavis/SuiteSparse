@@ -37,9 +37,9 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
     if (n < L || (naft == 1) || (naft >= max_threads))
     {
 #ifndef NDEBUG
-        if (n < L) PRLEVEL(1, ("%% Small TRSM (%dx%d) in %ld\n", m, n, f));
+        if (n < L) PRLEVEL(1, ("%% Small TRSM (" LD "x" LD ") in " LD "\n", m, n, f));
         if (naft == 1)
-            PRLEVEL(1, ("%% All threads for trsm(%dx%d) in %ld\n", m, n, f));
+            PRLEVEL(1, ("%% All threads for trsm(" LD "x" LD ") in " LD "\n", m, n, f));
 #endif
         SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", m, n, &alpha, a, lda, b, ldb,
                                blas_ok);
@@ -49,7 +49,7 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
 #if ( defined ( BLAS_Intel10_64ilp ) || defined ( BLAS_Intel10_64lp ) )
         int my_share = max_threads / naft;
         if (my_share == 0) my_share = 1;
-        PRLEVEL(1, ("%% MKL local threads for trsm(%dx%d) in %ld [[%ld]]\n", m,
+        PRLEVEL(1, ("%% MKL local threads for trsm(" LD "x" LD ") in " LD " [[%d]]\n", m,
                     n, f, my_share));
         mkl_set_num_threads_local(my_share);
         SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", m, n, &alpha, a, lda, b, ldb,
@@ -57,17 +57,17 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
 
         mkl_set_num_threads_local(0);
 #else
-        PRLEVEL(1, ("%%YES tasksingt for trsm(%dx%d) in %ld \n", m, n, f));
+        PRLEVEL(1, ("%%YES tasksingt for trsm(" LD "x" LD ") in " LD " \n", m, n, f));
         int64_t num_blocks = n / L + 1;
         int64_t len_bloc = n / num_blocks;
-        PRLEVEL(1, ("%%  num_blocks = %ld", num_blocks));
+        PRLEVEL(1, ("%%  num_blocks = " LD "\n", num_blocks));
     #pragma omp parallel proc_bind(close)
     #pragma omp single nowait
         {
             for (int64_t J = 0; J < num_blocks; J++)
             {
                 int64_t n_b = (J + 1) == num_blocks ? (n - J * len_bloc) : len_bloc;
-                PRLEVEL(1, ("%%  n_b= %d\n", n_b));
+                PRLEVEL(1, ("%%  n_b= " LD "\n", n_b));
     #pragma omp task
                 {
                     int64_t my_blas_ok = TRUE;

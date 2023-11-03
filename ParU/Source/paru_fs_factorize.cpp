@@ -291,12 +291,12 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
             int64_t Incy = (int64_t)m;
             int64_t lda = (int64_t)m;
             int64_t PR = 1;
-            PRLEVEL(PR, ("%% lda =%d ", lda));
-            PRLEVEL(PR, ("%% M =%d ", M));
-            PRLEVEL(PR, ("N =%d \n %%", N));
-            PRLEVEL(PR, ("%% x= (%d)", N));
+            PRLEVEL(PR, ("%% lda = " LD " ", lda));
+            PRLEVEL(PR, ("%% M = " LD " ", M));
+            PRLEVEL(PR, ("N = " LD " \n %%", N));
+            PRLEVEL(PR, ("%% x= ( " LD ")", N));
             for (int64_t i = 0; i < M; i++) PRLEVEL(PR, (" %lf ", X[i]));
-            PRLEVEL(PR, ("\n %% y= (%d)", N));
+            PRLEVEL(PR, ("\n %% y= ( " LD ")", N));
             for (int64_t j = 0; j < N; j++) PRLEVEL(PR, (" %lf ", Y[j * m]));
             PRLEVEL(PR, ("\n"));
 
@@ -314,7 +314,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 #pragma omp atomic update
             Num->flp_cnt_dger += (double)2 * M * N;
 #ifndef NDEBUG
-            PRLEVEL(PR, ("\n%% FlopCount Dger fac %d %d ", M, N));
+            PRLEVEL(PR, ("\n%% FlopCount Dger fac  " LD "  " LD " ", M, N));
             PRLEVEL(PR, ("cnt = %lf\n ", Num->flp_cnt_dger));
 #endif
 #endif
@@ -438,8 +438,8 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
                 int64_t ldb = (int64_t)rowCount;
 #ifndef NDEBUG
                 int64_t PR = 1;
-                PRLEVEL(PR, ("%% M =%d N = %d alpha = %f \n", M, N, alpha));
-                PRLEVEL(PR, ("%% lda =%d ldb =%d\n", lda, ldb));
+                PRLEVEL(PR, ("%% M = " LD " N =  " LD " alpha = %f \n", M, N, alpha));
+                PRLEVEL(PR, ("%% lda = " LD " ldb = " LD "\n", lda, ldb));
                 PRLEVEL(PR, ("%% Pivotal Front Before Trsm: %ld x %ld\n", fp,
                              rowCount));
                 for (int64_t r = 0; r < rowCount; r++)
@@ -514,23 +514,23 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
 #ifndef NDEBUG
             int64_t PR = 1;
             PRLEVEL(PR, ("%% DGEMM "));
-            PRLEVEL(PR, ("%% M =%d K = %d N = %d \n", M, K, N));
-            PRLEVEL(PR, ("%% lda =%d ldb =%d\n", lda, ldb));
+            PRLEVEL(PR, ("%% M = " LD " K =  " LD " N =  " LD " \n", M, K, N));
+            PRLEVEL(PR, ("%% lda = " LD " ldb = " LD "\n", lda, ldb));
             PRLEVEL(PR, ("%% j2 =%ld j1=%ld\n", j2, j1));
             PRLEVEL(PR, ("\n %%"));
 #endif
             blas_ok = paru_tasked_dgemm(f, M, N, K, A, lda, B, ldb, 1, C, ldc,
                                         Work, Num);
             if (!blas_ok) return (PARU_TOO_LARGE);
-                // printf ("%d %d %d ",M ,N, K);
-                // printf ("%d %d %d\n ",lda ,ldb, ldc);
+                // printf (" " LD "  " LD "  " LD " ",M ,N, K);
+                // printf (" " LD "  " LD "  " LD "\n ",lda ,ldb, ldc);
 #ifdef COUNT_FLOPS
                 // printf("dgemm adding to flop count %ld\n", M*N*2);
                 //#pragma omp atomic
                 // Num->flp_cnt_real_dgemm += (double)2 * M * N * K;
 #ifndef NDEBUG
-            PRLEVEL(PR, ("\n%% FlopCount Dgemm factorize %d %d %d ", M, N, K));
-            PRLEVEL(PR, ("%d %d %d \n", M, N, K));
+            PRLEVEL(PR, ("\n%% FlopCount Dgemm factorize  " LD "  " LD "  " LD " ", M, N, K));
+            PRLEVEL(PR, (" " LD "  " LD "  " LD " \n", M, N, K));
 #endif
 #endif
         }

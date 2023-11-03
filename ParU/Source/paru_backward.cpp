@@ -76,7 +76,7 @@ ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     anorm = paru_spm_1norm(A) ;
     xnorm = paru_vec_1norm (x1, m) ;
     PRLEVEL(1, ("backward error is |%.2lf| and weigheted backward error is"
-       "|%.2f|.\n",resid == 0 ? 0 : log10(resid), resid == 0 ? 0 :log10(norm)));
+       "|%.2f|.\n",resid == 0 ? 0 : log10(resid), resid == 0 ? 0 :log10(xnorm)));
     paru_free(m, sizeof(int64_t), b);
     return PARU_SUCCESS;
 }
