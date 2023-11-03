@@ -65,7 +65,7 @@ in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 ## New versions of SuiteSparse GraphBLAS (8.0.3 and newer) ##
 
 find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG
-    PATHS ${CMAKE_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
+    PATHS ${PROJECT_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::GraphBLAS )
     find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG )
 endif ( )
@@ -88,9 +88,9 @@ find_path ( GRAPHBLAS_INCLUDE_DIR
   NAMES GraphBLAS.h
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
-  HINTS ${CMAKE_SOURCE_DIR}/..
-  HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
-  HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/..
+  HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES include Include
   )
 
@@ -99,9 +99,9 @@ find_library ( GRAPHBLAS_LIBRARY
   NAMES graphblas
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
-  HINTS ${CMAKE_SOURCE_DIR}/..
-  HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
-  HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/..
+  HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
   )
 
@@ -120,9 +120,9 @@ find_library ( GRAPHBLAS_STATIC
   NAMES ${STATIC_NAME}
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
-  HINTS ${CMAKE_SOURCE_DIR}/..
-  HINTS ${CMAKE_SOURCE_DIR}/../GraphBLAS
-  HINTS ${CMAKE_SOURCE_DIR}/../SuiteSparse/GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/..
+  HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
+  HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
   )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )

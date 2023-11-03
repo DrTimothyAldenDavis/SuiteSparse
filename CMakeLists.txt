@@ -29,7 +29,7 @@ include ( SuiteSparsePolicy )
 
 # lower-case list of all projects that can be built by this root CMake file
 set ( SUITESPARSE_ALL_PROJECTS
-    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;paru;rbio;spqr;spex;graphblas" )
+    "suitesparse_config;mongoose;amd;btf;camd;ccolamd;colamd;cholmod;cxsparse;ldl;klu;umfpack;paru;rbio;spqr;spex;graphblas;lagraph" )
 
 # lower-case list of extra projects that can be built by this root CMake file
 set ( SUITESPARSE_EXTRA_PROJECTS
@@ -84,6 +84,13 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 # check/add project dependencies
 #-------------------------------------------------------------------------------
+
+if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        message ( STATUS "Adding \"graphblas\" to the list of built targets." )
+        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
+    endif ( )
+endif ( )
 
 if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
@@ -303,6 +310,14 @@ if ( "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
     add_library ( SuiteSparse::GraphBLAS ALIAS GraphBLAS )
     if ( TARGET GraphBLAS_static )
         add_library ( SuiteSparse::GraphBLAS_static ALIAS GraphBLAS_static )
+    endif ( )
+endif ( )
+
+if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    add_subdirectory ( "LAGraph" )
+    add_library ( SuiteSparse::LAGraph ALIAS LAGraph )
+    if ( NOT NSTATIC )
+        add_library ( SuiteSparse::LAGraph_static ALIAS LAGraph_static )
     endif ( )
 endif ( )
 

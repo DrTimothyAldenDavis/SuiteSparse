@@ -13,9 +13,9 @@
 
 #-------------------------------------------------------------------------------
 
-include_directories ( ${CMAKE_SOURCE_DIR}/src/test/include
-    ${CMAKE_SOURCE_DIR}/src/benchmark
-    ${CMAKE_SOURCE_DIR}/experimental/test/include )
+include_directories ( ${PROJECT_SOURCE_DIR}/src/test/include
+    ${PROJECT_SOURCE_DIR}/src/benchmark
+    ${PROJECT_SOURCE_DIR}/experimental/test/include )
 
 file( GLOB DEMO_SOURCES LIST_DIRECTORIES false *_demo.c )
 foreach( demosourcefile ${DEMO_SOURCES} )
