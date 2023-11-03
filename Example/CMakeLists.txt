@@ -463,3 +463,9 @@ target_link_libraries ( my_demo PUBLIC my )
 
 add_executable ( my_cxx_demo "Demo/my_demo.c" )
 target_link_libraries ( my_cxx_demo PUBLIC my_cxx )
+
+add_executable ( my_demo_static "Demo/my_demo.c" )
+target_link_libraries ( my_demo_static PUBLIC my_static )
+
+add_executable ( my_cxx_demo_static "Demo/my_demo.c" )
+target_link_libraries ( my_cxx_demo_static PUBLIC my_cxx_static )
