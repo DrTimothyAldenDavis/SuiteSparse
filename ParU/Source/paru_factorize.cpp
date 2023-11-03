@@ -30,7 +30,7 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
 
     int64_t num_original_children = 0;
     if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
-    PRLEVEL(1, ("Seq: executing task %ld fronts %ld-%ld (%ld children)\n", t,
+    PRLEVEL(1, ("Seq: executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
     ParU_Ret myInfo;
 #ifndef NTIME
@@ -38,7 +38,7 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
 #endif
     for (int64_t f = task_map[t] + 1; f <= task_map[t + 1]; f++)
     {
-        PRLEVEL(2, ("Seq: calling %ld\n", f));
+        PRLEVEL(2, ("Seq: calling " LD "\n", f));
         myInfo = paru_front(f, Work, Num);
         if (myInfo != PARU_SUCCESS)
         {
@@ -49,11 +49,11 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("task time task %ld is %lf\n", t, time));
+    PRLEVEL(1, ("task time task " LD " is %lf\n", t, time));
 #endif
 
 #ifndef NDEBUG
-    if (daddy == -1) PRLEVEL(1, ("%% finished task root(%ld)\n", t));
+    if (daddy == -1) PRLEVEL(1, ("%% finished task root(" LD ")\n", t));
 #endif
 
     if (daddy != -1)  // if it is not a root
@@ -64,19 +64,19 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
             num_rem_children = task_num_child[daddy];
 
             PRLEVEL(1,
-                    ("%%Seq finished task %ld(%ld,%ld)Parent has %ld left\n", t,
+                    ("%%Seq finished task " LD "(" LD "," LD ")Parent has " LD " left\n", t,
                      task_map[t] + 1, task_map[t + 1], task_num_child[daddy]));
             if (num_rem_children == 0)
             {
                 PRLEVEL(
-                    1, ("%%Seq task %ld executing its parent %ld\n", t, daddy));
+                    1, ("%%Seq task " LD " executing its parent " LD "\n", t, daddy));
                 return myInfo = paru_exec_tasks_seq(daddy, task_num_child, Work,
                                                     Num);
             }
         }
         else  // I was the only spoiled kid in the family;
         {
-            PRLEVEL(1, ("%% Seq task %ld only child executing its parent %ld\n",
+            PRLEVEL(1, ("%% Seq task " LD " only child executing its parent " LD "\n",
                         t, daddy));
             return myInfo =
                        paru_exec_tasks_seq(daddy, task_num_child, Work, Num);
@@ -100,7 +100,7 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
 
     int64_t num_original_children = 0;
     if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
-    PRLEVEL(1, ("executing task %ld fronts %ld-%ld (%ld children)\n", t,
+    PRLEVEL(1, ("executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
     ParU_Ret myInfo;
 #ifndef NTIME
@@ -118,11 +118,11 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("task time task %ld is %lf\n", t, time));
+    PRLEVEL(1, ("task time task " LD " is %lf\n", t, time));
 #endif
 
 #ifndef NDEBUG
-    if (daddy == -1) PRLEVEL(1, ("%% finished task root(%ld)\n", t));
+    if (daddy == -1) PRLEVEL(1, ("%% finished task root(" LD ")\n", t));
 #endif
 
     if (daddy != -1)  // if it is not a root
@@ -136,20 +136,20 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
             }
 
             PRLEVEL(1,
-                    ("%% finished task %ld(%ld,%ld)  Parent has %ld left\n", t,
+                    ("%% finished task " LD "(" LD "," LD ")  Parent has " LD " left\n", t,
                      task_map[t] + 1, task_map[t + 1], task_num_child[daddy]));
             if (num_rem_children == 0)
             {
                 PRLEVEL(1,
-                        ("%% task %ld executing its parent %ld\n", t, daddy));
+                        ("%% task " LD " executing its parent " LD "\n", t, daddy));
                 int64_t resq;
                 #pragma omp atomic read
                 resq = Work->resq;
                 if (resq == 1)
                 {
                     chain_task = daddy;
-                    PRLEVEL(2, ("%% CHAIN ALERT1: task %ld calling %ld"
-                                " resq = %ld\n",
+                    PRLEVEL(2, ("%% CHAIN ALERT1: task " LD " calling " LD ""
+                                " resq = " LD "\n",
                                 t, daddy, resq));
                 }
                 else
@@ -161,7 +161,7 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
         }
         else  // I was the only spoiled kid in the family;
         {
-            PRLEVEL(1, ("%% task %ld only child executing its parent %ld\n", t,
+            PRLEVEL(1, ("%% task " LD " only child executing its parent " LD "\n", t,
                         daddy));
             int64_t resq;
             #pragma omp atomic read
@@ -170,8 +170,8 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
             if (resq == 1)
             {
                 chain_task = daddy;
-                PRLEVEL(2, ("%% CHAIN ALERT1: task %ld calling %ld"
-                            " resq = %ld\n",
+                PRLEVEL(2, ("%% CHAIN ALERT1: task " LD " calling " LD ""
+                            " resq = " LD "\n",
                             t, daddy, resq));
             }
             else
@@ -309,12 +309,12 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 
 #ifndef NDEBUG
     double chainess = 2;
-    PRLEVEL(1, ("ntasks=%ld task_Q.size=%ld\n", ntasks, task_Q.size()));
+    PRLEVEL(1, ("ntasks=" LD " task_Q.size=" LD "\n", ntasks, task_Q.size()));
     if (ntasks > 0)
     {
         // chainess = (task_depth[task_Q[0]] + 1) / (double)nf;
         chainess = 1 - (task_Q.size() / (double)ntasks);
-        PRLEVEL(1, ("nf = %ld, deepest = %ld, chainess = %lf \n", nf,
+        PRLEVEL(1, ("nf = " LD ", deepest = " LD ", chainess = %lf \n", nf,
                     task_depth[task_Q[0]], chainess));
     }
     #pragma omp atomic write
@@ -331,7 +331,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     for (int64_t i = 0; i < (int64_t)task_Q.size(); i++)
     {
         int64_t t = task_Q[i];
-        PRLEVEL(PR, ("%ld[%ld-%ld](%ld) ", t, task_map[t] + 1, task_map[t + 1],
+        PRLEVEL(PR, ("" LD "[" LD "-" LD "](" LD ") ", t, task_map[t] + 1, task_map[t + 1],
                     task_depth[t]));
     }
     PRLEVEL(PR, ("\n"));
@@ -345,9 +345,9 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     {
         PRLEVEL(1, ("Parallel\n"));
         // chekcing user input
-        PRLEVEL(1, ("Control: max_th=%ld scale=%ld piv_toler=%lf "
-                    "diag_toler=%lf trivial =%ld worthwhile_dgemm=%ld "
-                    "worthwhile_trsm=%ld\n",
+        PRLEVEL(1, ("Control: max_th=" LD " scale=" LD " piv_toler=%lf "
+                    "diag_toler=%lf trivial =" LD " worthwhile_dgemm=" LD " "
+                    "worthwhile_trsm=" LD "\n",
                     Control->paru_max_threads, Control->scale,
                     Control->piv_toler, Control->diag_toler, Control->trivial,
                     Control->worthwhile_dgemm, Control->worthwhile_trsm));
@@ -366,13 +366,13 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         int64_t chain_task = -1;
         int64_t start = 0;
         PRLEVEL(
-            1, ("%% size=%ld, steps =%ld, stages =%ld\n", size, steps, stages));
+            1, ("%% size=" LD ", steps =" LD ", stages =" LD "\n", size, steps, stages));
 
         for (int64_t ii = 0; ii < stages; ii++)
         {
             if (start >= size) break;
             int64_t end = start + steps > size ? size : start + steps;
-            PRLEVEL(1, ("%% doing Queue tasks <%ld,%ld>\n", start, end));
+            PRLEVEL(1, ("%% doing Queue tasks <" LD "," LD ">\n", start, end));
             #pragma omp parallel proc_bind(spread)                             \
             num_threads(Control->paru_max_threads)
             #pragma omp single nowait
@@ -409,7 +409,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         {
             #pragma omp atomic write
             Work->naft = 1;
-            PRLEVEL(1, ("Chain_taskd %ld has remained\n", chain_task));
+            PRLEVEL(1, ("Chain_taskd " LD " has remained\n", chain_task));
             info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Num);
         }
         if (info != PARU_SUCCESS)
@@ -434,12 +434,12 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         Work->naft = 1;
         for (int64_t i = 0; i < nf; i++)
         {
-            // if (i %1000 == 0) PRLEVEL(1, ("%% Wroking on front %ld\n", i));
+            // if (i %1000 == 0) PRLEVEL(1, ("%% Wroking on front " LD "\n", i));
 
             info = paru_front(i, Work, Num);
             if (info != PARU_SUCCESS)
             {
-                PRLEVEL(1, ("%% A problem happend in %ld\n", i));
+                PRLEVEL(1, ("%% A problem happend in " LD "\n", i));
                 paru_free_work(Sym, Work);   // free the work DS
                 ParU_Freenum(Num_handle, Control);
                 return info;
@@ -540,7 +540,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         }
     }
 
-    PRLEVEL(1, ("max_rc=%ld max_cc=%ld\n", max_rc, max_cc));
+    PRLEVEL(1, ("max_rc=" LD " max_cc=" LD "\n", max_rc, max_cc));
     PRLEVEL(1, ("max_udiag=%e min_udiag=%e rcond=%e\n", max_udiag, min_udiag,
                 min_udiag / max_udiag));
     Num->max_row_count = max_rc;

@@ -24,7 +24,7 @@ int paru_intersection(int64_t e, paru_element **elementList,
     for (std::set<int64_t>::iterator it = stl_newColSet.begin();
          it != stl_newColSet.end(); it++)
     {
-        PRLEVEL(PR, (" %ld", *it));
+        PRLEVEL(PR, (" " LD "", *it));
     }
     PRLEVEL(PR, ("\n"));
 
@@ -41,8 +41,8 @@ int paru_intersection(int64_t e, paru_element **elementList,
     if (el_colIndex[el->lac] > *stl_newColSet.end()) 
         return 0;
 
-    PRLEVEL(PR, ("%% newColSet.size = %ld\n", stl_newColSet.size()));
-    PRLEVEL(PR, ("%% nEl = %ld\n", nEl));
+    PRLEVEL(PR, ("%% newColSet.size = " LD "\n", stl_newColSet.size()));
+    PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
     std::set<int64_t>::iterator it;
     if ((int64_t)(Const * stl_newColSet.size()) < nEl - el->lac)
     // if size el >> stl_newColSet
@@ -54,13 +54,13 @@ int paru_intersection(int64_t e, paru_element **elementList,
         {
             int64_t c = *it;
             int64_t col = paru_bin_srch_col(el_colIndex, el->lac, nEl - 1, c);
-            PRLEVEL(PR, ("%%intersection=%ld", intersection));
-            PRLEVEL(PR, ("%%after bsearch for c=%ld col=%ld \n", c, col));
+            PRLEVEL(PR, ("%%intersection=" LD "", intersection));
+            PRLEVEL(PR, ("%%after bsearch for c=" LD " col=" LD " \n", c, col));
             if (col != -1 && el_colIndex[col] == c)
             {
                 intersection++;
-                PRLEVEL(PR, ("%%##1: c=%ld ", c));
-                PRLEVEL(PR, ("%%intersection=%ld\n", intersection));
+                PRLEVEL(PR, ("%%##1: c=" LD " ", c));
+                PRLEVEL(PR, ("%%intersection=" LD "\n", intersection));
             };
         }
     }
@@ -78,8 +78,8 @@ int paru_intersection(int64_t e, paru_element **elementList,
             if (stl_newColSet.find(col) != stl_newColSet.end())
             {
                 intersection++;
-                PRLEVEL(PR, ("%%2: col=%ld ", col));
-                PRLEVEL(PR, ("%%intersection=%ld\n", intersection));
+                PRLEVEL(PR, ("%%2: col=" LD " ", col));
+                PRLEVEL(PR, ("%%intersection=" LD "\n", intersection));
             };
             if (ncolsseen == 0) return intersection;
         }
@@ -106,15 +106,15 @@ int paru_intersection(int64_t e, paru_element **elementList,
             // *it == col
             {
                 intersection++;
-                PRLEVEL(PR, ("%%3: c=%ld ", c));
-                PRLEVEL(PR, ("%%col= %ld", el_colIndex[c]));
-                PRLEVEL(PR, ("%%intersection=%ld\n", intersection));
+                PRLEVEL(PR, ("%%3: c=" LD " ", c));
+                PRLEVEL(PR, ("%%col= " LD "", el_colIndex[c]));
+                PRLEVEL(PR, ("%%intersection=" LD "\n", intersection));
                 ++it;
                 c++;
                 ncolsseen--;
             };
         }
     }
-    PRLEVEL(PR, (" e = %ld intersection= %ld\n", e, intersection));
+    PRLEVEL(PR, (" e = " LD " intersection= " LD "\n", e, intersection));
     return intersection;
 }

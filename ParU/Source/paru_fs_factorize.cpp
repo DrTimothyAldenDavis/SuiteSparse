@@ -27,7 +27,7 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
     // naft = Num->naft;
     // const int64_t max_threads = Control->paru_max_threads;
     // if ( (naft == 1) && (n > 1024) )
-    // printf ("naft=%ld, max_threads=%ld num_tasks=%ld n =%ld \n",
+    // printf ("naft=" LD ", max_threads=" LD " num_tasks=" LD " n =" LD " \n",
     //        naft, max_threads, max_threads/(naft), n);
     // pragma omp parallel if ( (naft == 1) && (n > 1024) )
     // pragma omp single
@@ -46,7 +46,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
     // https://github.com/xianyi/OpenBLAS/blob/develop/reference/dgetf2f.f
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
-    PRLEVEL(1, ("%% Inside panel factorization %ld \n", panel_num));
+    PRLEVEL(1, ("%% Inside panel factorization " LD " \n", panel_num));
 
     int64_t *row_degree_bound = Work->row_degree_bound;
     ParU_Control *Control = Num->Control;
@@ -56,8 +56,8 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
     //     last panel might be smaller
     int64_t j2 = (j1 + panel_width < n) ? j1 + panel_width : n;
 
-    PRLEVEL(1, ("%% j1= %ld j2 =%ld \n", j1, j2));
-    PRLEVEL(1, ("%% row_end= %ld\n", row_end));
+    PRLEVEL(1, ("%% j1= " LD " j2 =" LD " \n", j1, j2));
+    PRLEVEL(1, ("%% row_end= " LD "\n", row_end));
 
     // ASSERT(row_end >= j2);
 
@@ -71,7 +71,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
     PRLEVEL(PR, ("%% This Panel:\n"));
     for (int64_t r = j1; r < row_end; r++)
     {
-        PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+        PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
         for (int64_t c = j1; c < j2; c++) PRLEVEL(PR, (" %2.5lf\t", F[c * m + r]));
         PRLEVEL(PR, ("\n"));
     }
@@ -88,7 +88,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         // for fat fronts
         if (j >= row_end) break;
 
-        PRLEVEL(1, ("%% j = %ld\n", j));
+        PRLEVEL(1, ("%% j = " LD "\n", j));
 
         // Initializing maximum element in the column
         int64_t row_max = j;
@@ -97,20 +97,20 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 
 #ifndef NDEBUG
         int64_t row_deg_max = row_degree_bound[frowList[row_max]];
-        PRLEVEL(1, ("%% before search max value= %2.4lf row_deg = %ld\n",
+        PRLEVEL(1, ("%% before search max value= %2.4lf row_deg = " LD "\n",
                     maxval, row_deg_max));
 #endif
 
         int64_t row_diag = (Diag_map) ? Diag_map[col1 + j + n1] - n1 : -1;
         double diag_val = maxval;  // initialization
         int64_t diag_found = frowList[j] == row_diag ? j : -1;
-        PRLEVEL(1, ("%%curCol=%ld row_diag=%ld\n", j + col1 + n1, row_diag));
-        PRLEVEL(1, ("%%##j=%ld value= %2.4lf\n", j, F[j * m + j]));
+        PRLEVEL(1, ("%%curCol=" LD " row_diag=" LD "\n", j + col1 + n1, row_diag));
+        PRLEVEL(1, ("%%##j=" LD " value= %2.4lf\n", j, F[j * m + j]));
 
         for (int64_t i = j + 1; i < row_end; i++)
         {  // find max
-            PRLEVEL(1, ("%%i=%ld value= %2.4lf", i, F[j * m + i]));
-            PRLEVEL(1, (" deg = %ld \n", row_degree_bound[frowList[i]]));
+            PRLEVEL(1, ("%%i=" LD " value= %2.4lf", i, F[j * m + i]));
+            PRLEVEL(1, (" deg = " LD " \n", row_degree_bound[frowList[i]]));
             if (fabs(maxval) < fabs(F[j * m + i]))
             {
                 row_max = i;
@@ -133,7 +133,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 
         if (maxval == 0)
         {
-            PRLEVEL(1, ("%% NO pivot found in %ld\n", n1 + col1 + j));
+            PRLEVEL(1, ("%% NO pivot found in " LD "\n", n1 + col1 + j));
 #pragma omp atomic write
             Num->res = PARU_SINGULAR;
             continue;
@@ -152,14 +152,14 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
                     piv = diag_val;
                     row_piv = diag_found;
                     PRLEVEL(1, ("%% symmetric pivot piv value= %2.4lf"
-                                " row_piv=%ld\n",
+                                " row_piv=" LD "\n",
                                 piv, row_piv));
                     chose_diag = 1;
                 }
 #ifndef NDEBUG
                 else
                 {
-                    PRLEVEL(1, ("%% diag found but too small %ld"
+                    PRLEVEL(1, ("%% diag found but too small " LD ""
                                 " maxval=%2.4lf diag_val=%e \n",
                                 row_piv, maxval, diag_val));
                 }
@@ -168,7 +168,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 #ifndef NDEBUG
             else
             {
-                PRLEVEL(1, ("%% diag not found %ld\n", row_piv));
+                PRLEVEL(1, ("%% diag not found " LD "\n", row_piv));
             }
 #endif
         }
@@ -207,13 +207,13 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
             int64_t pivrow = frowList[row_piv];  // S row index
             paru_Diag_update(pivcol, pivrow, Work);
             PRLEVEL(1, ("%% symmetric matrix but the diag didn't picked for "
-                        "row_piv=%ld\n",
+                        "row_piv=" LD "\n",
                         row_piv));
         }
-        PRLEVEL(1, ("%% piv value= %2.4lf row_deg=%ld\n", piv, row_deg_sp));
+        PRLEVEL(1, ("%% piv value= %2.4lf row_deg=" LD "\n", piv, row_deg_sp));
         PRLEVEL(1, ("%% piv value= %e \n", piv));
         // swap rows
-        PRLEVEL(1, ("%% Swaping rows j=%ld, row_piv=%ld\n", j, row_piv));
+        PRLEVEL(1, ("%% Swaping rows j=" LD ", row_piv=" LD "\n", j, row_piv));
         paru_swap_rows(F, frowList, m, n, j, row_piv, Num);
 
 #ifndef NDEBUG  // Printing the pivotal front
@@ -223,7 +223,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         PRLEVEL(PR, (" \n"));
         for (int64_t r = 0; r < row_end; r++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
             for (int64_t c = 0; c < num_col_panel; c++)
                 PRLEVEL(PR, (" %2.5lf\t", F[c * m + r]));
             PRLEVEL(PR, ("\n"));
@@ -240,7 +240,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
 #pragma omp simd
             for (int64_t i = j + 1; i < row_end; i++)
             {
-                // printf("%%i=%ld value= %2.4lf", i, F[j * m + i]);
+                // printf("%%i=" LD " value= %2.4lf", i, F[j * m + i]);
                 F[j * m + i] /= piv;
                 // printf(" -> %2.4lf\n", F[j * m + i]);
             }
@@ -310,7 +310,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
                 // lda); cblas_dger(CblasColMajor, M, N, alpha, X, Incx, Y,
                 // Incy, A, lda);
 #ifdef COUNT_FLOPS
-                // printf("dger adding to flop count %ld\n", M*N*2);
+                // printf("dger adding to flop count " LD "\n", M*N*2);
 #pragma omp atomic update
             Num->flp_cnt_dger += (double)2 * M * N;
 #ifndef NDEBUG
@@ -325,7 +325,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         PRLEVEL(PR, ("%% After dger\n"));
         for (int64_t r = j; r < row_end; r++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
             for (int64_t c = j; c < j2; c++)
                 PRLEVEL(PR, (" %2.5lf\t", F[c * m + r]));
             PRLEVEL(PR, ("\n"));
@@ -362,11 +362,11 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
     {
 #ifndef NDEBUG  // Printing the pivotal front
         int64_t *frowList = Num->frowList[f];
-        PRLEVEL(PR, ("%%Pivotal Front Before %ld\n", panel_num));
+        PRLEVEL(PR, ("%%Pivotal Front Before " LD "\n", panel_num));
 
         for (int64_t r = 0; r < rowCount; r++)
         {
-            PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+            PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
             for (int64_t c = 0; c < fp; c++)
             {
                 PRLEVEL(PR, (" %2.5lf\t", F[c * rowCount + r]));
@@ -440,11 +440,11 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
                 int64_t PR = 1;
                 PRLEVEL(PR, ("%% M = " LD " N =  " LD " alpha = %f \n", M, N, alpha));
                 PRLEVEL(PR, ("%% lda = " LD " ldb = " LD "\n", lda, ldb));
-                PRLEVEL(PR, ("%% Pivotal Front Before Trsm: %ld x %ld\n", fp,
+                PRLEVEL(PR, ("%% Pivotal Front Before Trsm: " LD " x " LD "\n", fp,
                              rowCount));
                 for (int64_t r = 0; r < rowCount; r++)
                 {
-                    PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+                    PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
                     for (int64_t c = 0; c < fp; c++)
                         PRLEVEL(PR, (" %2.5lf\t", F[c * rowCount + r]));
                     PRLEVEL(PR, ("\n"));
@@ -455,11 +455,11 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
                     paru_tasked_trsm(f, M, N, alpha, A, lda, B, ldb, Work, Num);
                 if (!blas_ok) return (PARU_TOO_LARGE);
 #ifndef NDEBUG
-                PRLEVEL(PR, ("%% Pivotal Front After Trsm: %ld x %ld\n %%", fp,
+                PRLEVEL(PR, ("%% Pivotal Front After Trsm: " LD " x " LD "\n %%", fp,
                              rowCount));
                 for (int64_t r = 0; r < rowCount; r++)
                 {
-                    PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+                    PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
                     for (int64_t c = 0; c < fp; c++)
                         PRLEVEL(PR, (" %2.5lf\t", F[c * rowCount + r]));
                     PRLEVEL(PR, ("\n"));
@@ -516,7 +516,7 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
             PRLEVEL(PR, ("%% DGEMM "));
             PRLEVEL(PR, ("%% M = " LD " K =  " LD " N =  " LD " \n", M, K, N));
             PRLEVEL(PR, ("%% lda = " LD " ldb = " LD "\n", lda, ldb));
-            PRLEVEL(PR, ("%% j2 =%ld j1=%ld\n", j2, j1));
+            PRLEVEL(PR, ("%% j2 =" LD " j1=" LD "\n", j2, j1));
             PRLEVEL(PR, ("\n %%"));
 #endif
             blas_ok = paru_tasked_dgemm(f, M, N, K, A, lda, B, ldb, 1, C, ldc,
@@ -525,7 +525,7 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
                 // printf (" " LD "  " LD "  " LD " ",M ,N, K);
                 // printf (" " LD "  " LD "  " LD "\n ",lda ,ldb, ldc);
 #ifdef COUNT_FLOPS
-                // printf("dgemm adding to flop count %ld\n", M*N*2);
+                // printf("dgemm adding to flop count " LD "\n", M*N*2);
                 //#pragma omp atomic
                 // Num->flp_cnt_real_dgemm += (double)2 * M * N * K;
 #ifndef NDEBUG
@@ -538,11 +538,11 @@ ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
 #ifndef NDEBUG
         if (j2 < fp)
         {
-            PRLEVEL(PR, ("%% Pivotal Front After Dgemm: %ld x %ld\n %%", fp,
+            PRLEVEL(PR, ("%% Pivotal Front After Dgemm: " LD " x " LD "\n %%", fp,
                          rowCount));
             for (int64_t r = 0; r < rowCount; r++)
             {
-                PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+                PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
                 for (int64_t c = 0; c < fp; c++)
                     PRLEVEL(PR, (" %2.5lf\t", F[c * rowCount + r]));
                 PRLEVEL(PR, ("\n"));

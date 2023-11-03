@@ -512,7 +512,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NDEBUG
     int64_t nr = Sym_umf->n_row;
     int64_t nc = Sym_umf->n_col;
-    PRLEVEL(1, ("In: %ldx%ld nnz = %ld \n", nr, nc, anz));
+    PRLEVEL(1, ("In: " LD "x" LD " nnz = " LD " \n", nr, nc, anz));
 #endif
 
     // nchains = Sym_umf->nchains;
@@ -543,13 +543,13 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(-1, ("\n%%\tcs1 = %ld, rs1 = %ld n1 = %ld\n", cs1, rs1, n1));
+    PRLEVEL(-1, ("\n%%\tcs1 = " LD ", rs1 = " LD " n1 = " LD "\n", cs1, rs1, n1));
     PRLEVEL(PR, ("From the Symbolic object,\
-                C is of dimension %ld-by-%ld\n",
+                C is of dimension " LD "-by-" LD "\n",
                  nr, nc));
-    PRLEVEL(PR, ("   with nz = %ld, number of fronts = %ld,\n", anz, nfr));
+    PRLEVEL(PR, ("   with nz = " LD ", number of fronts = " LD ",\n", anz, nfr));
     PR = 1;
-    // PRLEVEL(PR, ("   number of frontal matrix chains = %ld\n", nchains));
+    // PRLEVEL(PR, ("   number of frontal matrix chains = " LD "\n", nchains));
 
     PRLEVEL(1, ("\nPivot columns in each front, and parent of each front:\n"));
     int64_t k = 0;
@@ -558,14 +558,14 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     for (int64_t i = 0; i < nfr; i++)
     {
         int64_t fnpiv = Front_npivcol[i];
-        PRLEVEL(PR, ("Front %ld: parent front: %ld number of pivot cols: %ld\n",
+        PRLEVEL(PR, ("Front " LD ": parent front: " LD " number of pivot cols: " LD "\n",
                      i, Front_parent[i], fnpiv));
-        // PRLEVEL(PR, ("%% first row is %ld\n", Front_1strow[i]));
+        // PRLEVEL(PR, ("%% first row is " LD "\n", Front_1strow[i]));
 
         for (int64_t j = 0; j < fnpiv; j++)
         {
             int64_t col = Qinit[k];
-            PRLEVEL(PR, ("%ld-th pivot column is column %ld"
+            PRLEVEL(PR, ("" LD "-th pivot column is column " LD ""
                          " in original matrix\n",
                          k, col));
             k++;
@@ -574,31 +574,31 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     PR = -1;
 
     PRLEVEL(PR, ("\nTotal number of pivot columns "
-                 "in frontal matrices: %ld\n",
+                 "in frontal matrices: " LD "\n",
                  k));
 
     // PRLEVEL(PR, ("\nFrontal matrix chains:\n"));
     //    for (int64_t j = 0; j < nchains; j++)
     //    {
-    //        PRLEVEL(PR, ("Frontal matrices %ld to %ld in chain\n",
+    //        PRLEVEL(PR, ("Frontal matrices " LD " to " LD " in chain\n",
     //        Chain_start[j],
     //                     Chain_start[j + 1] - 1));
-    //        PRLEVEL(PR, ("\tworking array of size %ld-by-%ld\n",
+    //        PRLEVEL(PR, ("\tworking array of size " LD "-by-" LD "\n",
     //        Chain_maxrows[j],
     //                     Chain_maxcols[j]));
     //    }
 
     PRLEVEL(PR, ("Forthwith Pinit =\n"));
-    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("%ld ", Pinit[i]));
+    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
     PRLEVEL(PR, ("\n"));
     PRLEVEL(PR, ("Forthwith Qinit =\n"));
-    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("%ld ", Qinit[i]));
+    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("" LD " ", Qinit[i]));
     PRLEVEL(PR, ("\n"));
     PR = -1;
     if (Diag_map)
     {
         PRLEVEL(PR, ("Forthwith Diag_map =\n"));
-        for (int64_t i = 0; i < MIN(77, n); i++) PRLEVEL(PR, ("%ld ", Diag_map[i]));
+        for (int64_t i = 0; i < MIN(77, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -626,11 +626,11 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     Sym->Qfill = Qinit;
     Sym->Diag_map = Diag_map;
 
-    PRLEVEL(0, ("%% A  is  %ld x %ld \n", m, n));
-    PRLEVEL(1, ("LU = zeros(%ld,%ld);\n", m, n));
+    PRLEVEL(0, ("%% A  is  " LD " x " LD " \n", m, n));
+    PRLEVEL(1, ("LU = zeros(" LD "," LD ");\n", m, n));
     PRLEVEL(1, ("npivots =[]; \n"));
-    PRLEVEL(1, ("S = zeros(%ld,%ld); %% n1 = %ld\n", m, n, n1));
-    PRLEVEL(1, ("%% nf=%ld\n", nf));
+    PRLEVEL(1, ("S = zeros(" LD "," LD "); %% n1 = " LD "\n", m, n, n1));
+    PRLEVEL(1, ("%% nf=" LD "\n", nf));
     //
     /* ---------------------------------------------------------------------- */
     /*           Fixing Parent and computing Children datat structure         */
@@ -688,12 +688,12 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (nf > 0)
     {
         PRLEVEL(PR, ("%%%% Super:\n"));
-        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  %ld", Super[k]));
+        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  " LD "", Super[k]));
         PRLEVEL(PR, ("\n"));
 
         PR = 1;
         PRLEVEL(PR, ("%%%% Parent:\n"));
-        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  %ld", Parent[k]));
+        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  " LD "", Parent[k]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -712,7 +712,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     // Number of the columns of the root of each subtree
     //
     int64_t threshold = Control->relaxed_amalgamation_threshold;
-    PRLEVEL(1, ("Relaxed amalgamation threshold = %ld\n", threshold));
+    PRLEVEL(1, ("Relaxed amalgamation threshold = " LD "\n", threshold));
     int64_t newF = 0;
 
     // int64_t num_roots = 0; //deprecated I dont use it anymore
@@ -721,28 +721,28 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {  // finding representative for each front
         int64_t repr = f;
         // amalgamate till number of pivot columns is small
-        PRLEVEL(PR, ("%% repr = %ld Parent =%ld\n", repr, Parent[repr]));
-        PRLEVEL(PR, ("%%size of Potential pivot= %ld\n",
+        PRLEVEL(PR, ("%% repr = " LD " Parent =" LD "\n", repr, Parent[repr]));
+        PRLEVEL(PR, ("%%size of Potential pivot= " LD "\n",
                      Super[Parent[repr] + 1] - Super[f]));
         while (Super[Parent[repr] + 1] - Super[f] < threshold &&
                Parent[repr] != -1)
         {
             repr = Parent[repr];
-            PRLEVEL(PR, ("%%Middle stage f= %ld repr = %ld\n", f, repr));
-            PRLEVEL(PR, ("%%number of pivot cols= %ld\n",
+            PRLEVEL(PR, ("%%Middle stage f= " LD " repr = " LD "\n", f, repr));
+            PRLEVEL(PR, ("%%number of pivot cols= " LD "\n",
                          Super[repr + 1] - Super[f]));
-            PRLEVEL(PR, ("%%number of pivot cols if Parent collapsed= %ld\n",
+            PRLEVEL(PR, ("%%number of pivot cols if Parent collapsed= " LD "\n",
                          Super[Parent[repr] + 1] - Super[f]));
         }
         // if (Parent[repr] == -1) num_roots++;
 
-        PRLEVEL(PR, ("%% newF = %ld for:\n", newF));
+        PRLEVEL(PR, ("%% newF = " LD " for:\n", newF));
         for (int64_t k = f; k <= repr; k++)
         {
-            PRLEVEL(PR, ("%%  %ld ", k));
+            PRLEVEL(PR, ("%%  " LD " ", k));
             fmap[k] = newF;
         }
-        PRLEVEL(PR, ("%%repr = %ld\n", repr));
+        PRLEVEL(PR, ("%%repr = " LD "\n", repr));
         newF++;
         f = repr;
     }
@@ -776,7 +776,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         int64_t oldParent = Parent[oldf];
         newParent[newf] = oldParent >= 0 ? fmap[oldParent] : -1;
     }
-    PRLEVEL(-1, ("%% newF = %ld and nf=%ld\n", newNf, nf));
+    PRLEVEL(-1, ("%% newF = " LD " and nf=" LD "\n", newNf, nf));
 
     /* ---------------------------------------------------------------------- */
     /*         Finding the Upper bound of rows and cols                       */
@@ -810,10 +810,10 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     // Copying first nf+1 elements of Front_nrows(UMFPACK) into Fm(SPQR like)
     for (int64_t oldf = 0; oldf < nf; oldf++)
     {
-        PRLEVEL(PR, ("oldf=%ld\n", oldf));
+        PRLEVEL(PR, ("oldf=" LD "\n", oldf));
         int64_t newf = fmap[oldf];
-        PRLEVEL(PR, ("newf=%ld\n", newf));
-        PRLEVEL(PR, ("next=%ld\n", fmap[oldf + 1]));
+        PRLEVEL(PR, ("newf=" LD "\n", newf));
+        PRLEVEL(PR, ("next=" LD "\n", fmap[oldf + 1]));
 
         if (newf != fmap[oldf + 1])
         {                                   // either root or not amalgamated
@@ -821,15 +821,15 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
             Cm[newf] = Front_ncols[oldf] - Front_npivcol[oldf];
             // newSuper[newf+1] = Super[oldf+1] ;
             Super[newf + 1] = Super[oldf + 1];
-            PRLEVEL(PR, ("Fm[newf]=%ld\n", Fm[newf]));
-            PRLEVEL(PR, ("Cm[newf]=%ld\n", Cm[newf]));
+            PRLEVEL(PR, ("Fm[newf]=" LD "\n", Fm[newf]));
+            PRLEVEL(PR, ("Cm[newf]=" LD "\n", Cm[newf]));
         }
         else
         {
             Fm[newf] += Front_npivcol[oldf];
             // Cm[newf] += Front_npivcol[oldf];
-            PRLEVEL(PR, ("Fm[newf]=%ld\n", Fm[newf]));
-            PRLEVEL(PR, ("Cm[newf]=%ld\n", Cm[newf]));
+            PRLEVEL(PR, ("Fm[newf]=" LD "\n", Fm[newf]));
+            PRLEVEL(PR, ("Cm[newf]=" LD "\n", Cm[newf]));
         }
     }
     if (Super) Super[newNf] = Super[nf];
@@ -841,46 +841,46 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (Cm)
     {
         PRLEVEL(PR, ("Cm =\n"));
-        for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("%ld ", Cm[i]));
+        for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Cm[i]));
         PRLEVEL(PR, ("\n"));
     }
 
     if (Fm)
     {
         PRLEVEL(PR, ("Fm =\n"));
-        for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("%ld ", Fm[i]));
+        for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Fm[i]));
         PRLEVEL(PR, ("\n"));
     }
 
     PRLEVEL(PR, ("Pivot cols=\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("%ld ", Front_npivcol[i]));
+    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_npivcol[i]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Upper bound on Rows =\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("%ld ", Front_nrows[i]));
+    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_nrows[i]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Upper bound on Cols=\n"));
-    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("%ld ", Front_ncols[i]));
+    for (int64_t i = 0; i < nf + 1; i++) PRLEVEL(PR, ("" LD " ", Front_ncols[i]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% Super:\n"));
     if (nf > 0)
-        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  %ld", Super[k]));
+        for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  " LD "", Super[k]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% fmap:\n"));
-    for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  %ld", fmap[k]));
+    for (int64_t k = 0; k <= nf; k++) PRLEVEL(PR, ("  " LD "", fmap[k]));
     PRLEVEL(PR, ("\n"));
 
     PR = -1;
-    PRLEVEL(PR, ("%%%% newParent(%ld):\n", newNf));
-    for (int64_t k = 0; k < newNf; k++) PRLEVEL(PR, ("%ld ", newParent[k]));
+    PRLEVEL(PR, ("%%%% newParent(" LD "):\n", newNf));
+    for (int64_t k = 0; k < newNf; k++) PRLEVEL(PR, ("" LD " ", newParent[k]));
     PRLEVEL(PR, ("\n"));
 #endif
     // This prints my etree; I keep it in comments to find it easily
     // printf ("%%%% newParent:\n");
-    // for (int64_t k = 0; k < newNf; k++) printf("%ld ", newParent[k]);
+    // for (int64_t k = 0; k < newNf; k++) printf("" LD " ", newParent[k]);
     // printf("\n");
 
     paru_free(nf + 1, sizeof(int64_t), Sym->Parent);
@@ -901,17 +901,17 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         if (Parent[f] != -1 && Depth[f] == 0)  // not computed so far
         {
-            PRLEVEL(PR, ("%% Precompute Depth[%ld]=%ld\n", f, Depth[f]));
+            PRLEVEL(PR, ("%% Precompute Depth[" LD "]=" LD "\n", f, Depth[f]));
             int64_t d = 1;
             int64_t p = Parent[f];
             while (Parent[p] != -1 && Depth[p] == 0)
             {
                 p = Parent[p];
                 d++;
-                PRLEVEL(PR, ("%% Up Depth[%ld]=%ld d=%ld\n", p, Depth[p], d));
+                PRLEVEL(PR, ("%% Up Depth[" LD "]=" LD " d=" LD "\n", p, Depth[p], d));
             }
             Depth[f] = d + Depth[p];  // depth is computed
-            PRLEVEL(PR, ("%% Depth[%ld]=%ld Depth[%ld]=%ld\n", p, Depth[p], f,
+            PRLEVEL(PR, ("%% Depth[" LD "]=" LD " Depth[" LD "]=" LD "\n", p, Depth[p], f,
                          Depth[f]));
             // updating ancestors
             d = Depth[f];
@@ -920,10 +920,10 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
             {
                 Depth[p] = --d;
                 p = Parent[p];
-                PRLEVEL(PR, ("%% down Depth[%ld]=%ld d=%ld\n", p, Depth[p], d));
+                PRLEVEL(PR, ("%% down Depth[" LD "]=" LD " d=" LD "\n", p, Depth[p], d));
             }
         }
-        PRLEVEL(PR, ("%% Postcompute Depth[%ld]=%ld\n", f, Depth[f]));
+        PRLEVEL(PR, ("%% Postcompute Depth[" LD "]=" LD "\n", f, Depth[f]));
     }
 
     // depth of each non leave node is the max of depth of its children
@@ -983,17 +983,17 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     Sym->row_Int_bound = row_Int_bound;
     Sym->col_Int_bound = col_Int_bound;
     PR = 1;
-    PRLEVEL(PR, ("%%row_Int_bound=%ld, col_Int_bound=%ld", row_Int_bound,
+    PRLEVEL(PR, ("%%row_Int_bound=" LD ", col_Int_bound=" LD "", row_Int_bound,
                  col_Int_bound));
     PRLEVEL(PR,
-            ("%%-Us_bound_size = %ld LUs_bound_size = %ld sum = %ld\n",
+            ("%%-Us_bound_size = " LD " LUs_bound_size = " LD " sum = " LD "\n",
              Us_bound_size, LUs_bound_size,
              row_Int_bound + col_Int_bound + Us_bound_size + LUs_bound_size));
     PR = 1;
     PRLEVEL(PR, ("%%%%-Chidlp-----"));
     if (Childp)
     {
-        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("%ld ", Childp[f]));
+        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("" LD " ", Childp[f]));
         PRLEVEL(PR, ("\n"));
     }
 #endif
@@ -1034,7 +1034,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         PR = 1;
         PRLEVEL(PR, ("%%%%_cChidlp_____"));
-        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("%ld ", cChildp[f]));
+        for (int64_t f = 0; f < nf + 2; f++) PRLEVEL(PR, ("" LD " ", cChildp[f]));
         PRLEVEL(PR, ("\n"));
     }
 #endif
@@ -1078,16 +1078,16 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 
 #ifndef NDEBUG
     PRLEVEL(PR, ("Qinit =\n"));
-    for (int64_t j = 0; j < MIN(64, n); j++) PRLEVEL(PR, ("%ld ", Qinit[j]));
+    for (int64_t j = 0; j < MIN(64, n); j++) PRLEVEL(PR, ("" LD " ", Qinit[j]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Pinit =\n"));
-    for (int64_t i = 0; i < MIN(64, m); i++) PRLEVEL(PR, ("%ld ", Pinit[i]));
+    for (int64_t i = 0; i < MIN(64, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
     PRLEVEL(PR, ("\n"));
 
     PR = 1;
     PRLEVEL(PR, ("Pinv =\n"));
-    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("%ld ", Pinv[i]));
+    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("" LD " ", Pinv[i]));
     PRLEVEL(PR, ("\n"));
 
     PR = 1;
@@ -1095,7 +1095,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         PRLEVEL(PR, ("inv_Diag_map =\n"));
         for (int64_t i = 0; i < MIN(64, n); i++)
-            PRLEVEL(PR, ("%ld ", inv_Diag_map[i]));
+            PRLEVEL(PR, ("" LD " ", inv_Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1117,7 +1117,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (((Slp == NULL || cSlp == NULL) && rs1 != 0) ||
         ((Sup == NULL || cSup == NULL) && cs1 != 0) || Ps == NULL)
     {
-        PRLEVEL(1, ("ParU: rs1=%ld cs1=%ld memory problem\n", rs1, cs1));
+        PRLEVEL(1, ("ParU: rs1=" LD " cs1=" LD " memory problem\n", rs1, cs1));
         ParU_Freesym(S_handle, Control);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
@@ -1132,18 +1132,18 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("Computing Staircase Structure and singleton structure\n"));
-    PRLEVEL(PR, ("rs1= %ld cs1=%ld\n", rs1, cs1));
+    PRLEVEL(PR, ("rs1= " LD " cs1=" LD "\n", rs1, cs1));
     PR = 1;
 #endif
     for (int64_t newcol = 0; newcol < n1; newcol++)
     {  // The columns that are just in singleton
         int64_t oldcol = Qinit[newcol];
-        PRLEVEL(PR, ("newcol = %ld oldcol=%ld\n", newcol, oldcol));
+        PRLEVEL(PR, ("newcol = " LD " oldcol=" LD "\n", newcol, oldcol));
         for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
         {
             int64_t oldrow = Ai[p];
             int64_t newrow = Pinv[oldrow];
-            PRLEVEL(PR, ("newrow=%ld oldrow=%ld\n", newrow, oldrow));
+            PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
             if (newrow < cs1)
             {  // inside U singletons
                 PRLEVEL(PR, ("Counting phase,Inside U singletons\n"));
@@ -1156,13 +1156,13 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
                 PR = 1;
 #endif
                 PRLEVEL(PR, ("Counting phase,Inside L singletons "));
-                PRLEVEL(PR, ("newrow=%ld oldrow=%ld\n", newrow, oldrow));
+                PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
                 slnz++;
                 // if (newcol-cs1 +1 == 0)
                 if (newcol < cs1)
                 {
-                    PRLEVEL(PR, ("newrow=%ld oldrow=%ld\n", newrow, oldrow));
-                    PRLEVEL(PR, ("!!!! newcol=%ld cs1=%ld\n", newcol, cs1));
+                    PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
+                    PRLEVEL(PR, ("!!!! newcol=" LD " cs1=" LD "\n", newcol, cs1));
                 }
                 ASSERT(newcol - cs1 + 1 != 0);
                 ASSERT(newcol >= cs1);
@@ -1176,34 +1176,34 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     PRLEVEL(PR, ("Analyze: Sup and Slp in the middle\n"));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Sup =", sunz));
-        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("%ld ", Sup[k]));
+        PRLEVEL(PR, ("(" LD ") Sup =", sunz));
+        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("" LD " ", Sup[k]));
         PRLEVEL(PR, ("\n"));
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("%ld ", Slp[k - cs1]));
+        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
+        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
         PRLEVEL(PR, ("\n"));
     }
 #endif
     for (int64_t newcol = n1; newcol < n; newcol++)
     {
         int64_t oldcol = Qinit[newcol];
-        PRLEVEL(1, ("newcol = %ld oldcol=%ld\n", newcol, oldcol));
+        PRLEVEL(1, ("newcol = " LD " oldcol=" LD "\n", newcol, oldcol));
         for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
         {
             int64_t oldrow = Ai[p];
             int64_t newrow = Pinv[oldrow];
             int64_t srow = newrow - n1;
-            PRLEVEL(1, ("\tnewrow=%ld oldrow=%ld srow=%ld\n", newrow, oldrow,
+            PRLEVEL(1, ("\tnewrow=" LD " oldrow=" LD " srow=" LD "\n", newrow, oldrow,
                         srow));
             if (srow >= 0)
             {  // it is insdie S otherwise it is part of singleton
                 // and update Diag_map
                 if (Sp[srow + 1] == 0)
                 {  // first time seen
-                    PRLEVEL(1, ("\tPs[%ld]= %ld\n", rowcount, srow));
+                    PRLEVEL(1, ("\tPs[" LD "]= " LD "\n", rowcount, srow));
                     Ps[rowcount] = srow;
                     Pinit[n1 + rowcount] = oldrow;
                     if (Diag_map)
@@ -1211,7 +1211,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
                         int64_t diag_col = inv_Diag_map[newrow];
                         if (diag_col < n1)
                         {
-                            PRLEVEL(0, ("diag_col= %ld\n", diag_col));
+                            PRLEVEL(0, ("diag_col= " LD "\n", diag_col));
                         }
                         // This assertions is not correct because
                         // sometimes singltones can steal diagonals
@@ -1239,28 +1239,28 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("Sup and Slp finished (before cumsum)U-sing =%ld L-sing=%ld\n",
+    PRLEVEL(PR, ("Sup and Slp finished (before cumsum)U-sing =" LD " L-sing=" LD "\n",
                  sunz, slnz));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Sup =", sunz));
-        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("%ld ", Sup[k]));
+        PRLEVEL(PR, ("(" LD ") Sup =", sunz));
+        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("" LD " ", Sup[k]));
         PRLEVEL(PR, ("\n"));
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("%ld ", Slp[k - cs1]));
+        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
+        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
     PRLEVEL(PR, ("Ps =\n"));
-    for (int64_t k = 0; k < rowcount; k++) PRLEVEL(PR, ("%ld ", Ps[k]));
+    for (int64_t k = 0; k < rowcount; k++) PRLEVEL(PR, ("" LD " ", Ps[k]));
     PRLEVEL(PR, ("\n"));
     if (Diag_map)
     {
-        PRLEVEL(PR, ("Symbolic Diag_map (%ld) =\n", n));
-        for (int64_t i = 0; i < MIN(64, n); i++) PRLEVEL(PR, ("%ld ", Diag_map[i]));
+        PRLEVEL(PR, ("Symbolic Diag_map (" LD ") =\n", n));
+        for (int64_t i = 0; i < MIN(64, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1272,13 +1272,13 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         // That must not happen anyway if umfpack finds it
         PRLEVEL(1, ("ParU: Empty rows in submatrix\n"));
 #ifndef NDEBUG
-        PRLEVEL(1, ("m = %ld, n1 = %ld, rowcount = %ld, snz = %ld\n", m, n1,
+        PRLEVEL(1, ("m = " LD ", n1 = " LD ", rowcount = " LD ", snz = " LD "\n", m, n1,
                     rowcount, snz));
         for (int64_t srow = 0; srow < m - n1; srow++)
         {
             if (Sp[srow] == 0)
             {
-                PRLEVEL(1, ("Row %ld is empty\n", srow));
+                PRLEVEL(1, ("Row " LD " is empty\n", srow));
             }
         }
 #endif
@@ -1292,7 +1292,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("Before permutation Sp =\n"));
-    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("%ld ", Sp[i - n1]));
+    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("" LD " ", Sp[i - n1]));
     PRLEVEL(PR, ("\n"));
 #endif
 
@@ -1321,13 +1321,13 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 
 #ifndef NDEBUG
     PRLEVEL(PR, ("After permutation Sp =\n"));
-    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("%ld ", cSp[i - n1]));
+    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("" LD " ", cSp[i - n1]));
     PRLEVEL(PR, ("\n"));
     PR = 1;
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Slp =", slnz));
-        for (int64_t k = 0; k <= rs1; k++) PRLEVEL(PR, ("%ld ", Slp[k]));
+        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
+        for (int64_t k = 0; k <= rs1; k++) PRLEVEL(PR, ("" LD " ", Slp[k]));
     }
     PRLEVEL(PR, ("\n"));
 #endif
@@ -1351,41 +1351,41 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     PRLEVEL(PR, ("Analyze: Sup and Slp in the after cumsum\n"));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Sup =", sunz));
+        PRLEVEL(PR, ("(" LD ") Sup =", sunz));
         for (int64_t k = 0; k <= cs1; k++)
         {
-            PRLEVEL(PR, ("%ld ", Sup[k]));
-            PRLEVEL(PR + 2, ("c%ld ", cSup[k]));
+            PRLEVEL(PR, ("" LD " ", Sup[k]));
+            PRLEVEL(PR + 2, ("c" LD " ", cSup[k]));
             if (Sup[k] != cSup[k])
-                PRLEVEL(PR, ("Sup[%ld] =%ld, cSup=%ld", k, Sup[k], cSup[k]));
+                PRLEVEL(PR, ("Sup[" LD "] =" LD ", cSup=" LD "", k, Sup[k], cSup[k]));
             ASSERT(Sup[k] == cSup[k]);
         }
         PRLEVEL(PR, ("\n"));
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Slp =", slnz));
+        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
         for (int64_t k = 0; k <= rs1; k++)
         {
-            PRLEVEL(PR, ("%ld ", Slp[k]));
-            PRLEVEL(PR + 2, ("o%ld ", cSlp[k]));
+            PRLEVEL(PR, ("" LD " ", Slp[k]));
+            PRLEVEL(PR + 2, ("o" LD " ", cSlp[k]));
             if (Slp[k] != cSlp[k])
                 PRLEVEL(PR,
-                        ("\nSup[%ld] =%ld, cSup=%ld\n", k, Slp[k], cSlp[k]));
+                        ("\nSup[" LD "] =" LD ", cSup=" LD "\n", k, Slp[k], cSlp[k]));
             ASSERT(Slp[k] == cSlp[k]);
         }
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
     PRLEVEL(PR, ("After cumsum  Sp =\n"));
-    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("%ld ", Sp[i - n1]));
+    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("" LD " ", Sp[i - n1]));
     PRLEVEL(PR, ("\n"));
 #endif
 
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("After Stair case Pinv =\n"));
-    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("%ld ", Pinv[i]));
+    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("" LD " ", Pinv[i]));
     PRLEVEL(PR, ("\n"));
 #endif
     // PofA
@@ -1395,7 +1395,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("Before Sj Sp =\n"));
-    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("%ld ", cSp[i - n1]));
+    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("" LD " ", cSp[i - n1]));
     PRLEVEL(PR, ("\n"));
 #endif
 
@@ -1433,12 +1433,12 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     for (int64_t newcol = 0; newcol < n1; newcol++)
     {  // The columns that are just in singleton
         int64_t oldcol = Qinit[newcol];
-        PRLEVEL(PR, ("newcol = %ld oldcol=%ld\n", newcol, oldcol));
+        PRLEVEL(PR, ("newcol = " LD " oldcol=" LD "\n", newcol, oldcol));
         for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
         {
             int64_t oldrow = Ai[p];
             int64_t newrow = Pinv[oldrow];
-            PRLEVEL(PR, ("newrow=%ld oldrow=%ld\n", newrow, oldrow));
+            PRLEVEL(PR, ("newrow=" LD " oldrow=" LD "\n", newrow, oldrow));
             if (newrow < cs1)
             {  // inside U singletons CSR
                 PRLEVEL(PR, ("Inside U singletons\n"));
@@ -1482,7 +1482,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
             }
             else
             {  // inside the U singletons
-                PRLEVEL(PR, ("Usingleton rest newcol = %ld newrow=%ld\n",
+                PRLEVEL(PR, ("Usingleton rest newcol = " LD " newrow=" LD "\n",
                              newcol, newrow));
                 ASSERT(newrow != newcol);  // not a diagonal entry
                 Suj[++cSup[newrow]] = newcol;
@@ -1495,48 +1495,48 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     PRLEVEL(PR, ("Sup and Slp after making \n"));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("U singltons(CSR) (nnz=%ld) Sup =", sunz));
-        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("%ld ", Sup[k]));
+        PRLEVEL(PR, ("U singltons(CSR) (nnz=" LD ") Sup =", sunz));
+        for (int64_t k = 0; k <= cs1; k++) PRLEVEL(PR, ("" LD " ", Sup[k]));
         PRLEVEL(PR, ("\n"));
 
         for (int64_t newrow = 0; newrow < cs1; newrow++)
         {
-            PRLEVEL(PR, ("row = %ld\n", newrow));
+            PRLEVEL(PR, ("row = " LD "\n", newrow));
             for (int64_t p = Sup[newrow]; p < Sup[newrow + 1]; p++)
             {
-                PRLEVEL(PR, (" (%ld)", Suj[p]));
+                PRLEVEL(PR, (" (" LD ")", Suj[p]));
             }
             PRLEVEL(PR, ("\n"));
         }
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("L singleons(CSC) (nnz=%ld) Slp =", slnz));
-        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("%ld ", Slp[k - cs1]));
+        PRLEVEL(PR, ("L singleons(CSC) (nnz=" LD ") Slp =", slnz));
+        for (int64_t k = cs1; k <= n1; k++) PRLEVEL(PR, ("" LD " ", Slp[k - cs1]));
         PRLEVEL(PR, ("\n"));
 
         for (int64_t newcol = cs1; newcol < n1; newcol++)
         {
-            PRLEVEL(PR, ("col = %ld\n", newcol));
+            PRLEVEL(PR, ("col = " LD "\n", newcol));
             for (int64_t p = Slp[newcol - cs1]; p < Slp[newcol - cs1 + 1]; p++)
             {
-                PRLEVEL(PR, (" (%ld)", Sli[p]));
+                PRLEVEL(PR, (" (" LD ")", Sli[p]));
             }
             PRLEVEL(PR, ("\n"));
         }
     }
     PR = 1;
     PRLEVEL(PR, ("Sp =\n"));
-    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("%ld ", Sp[i - n1]));
+    for (int64_t i = n1; i <= m; i++) PRLEVEL(PR, ("" LD " ", Sp[i - n1]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Sj =\n"));
-    for (int64_t k = 0; k < snz; k++) PRLEVEL(PR, ("%ld ", Sj[k]));
+    for (int64_t k = 0; k < snz; k++) PRLEVEL(PR, ("" LD " ", Sj[k]));
     PRLEVEL(PR, ("\n"));
     PR = 1;
     for (int64_t i = 0; i < m - n1; i++)
     {
-        PRLEVEL(PR, (" i=%ld cSp=%ld Sp=%ld\n", i, cSp[i], Sp[i + 1]));
+        PRLEVEL(PR, (" i=" LD " cSp=" LD " Sp=" LD "\n", i, cSp[i], Sp[i + 1]));
         ASSERT(cSp[i] == Sp[i + 1]);
     }
 #endif
@@ -1552,11 +1552,11 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         int64_t col1 = Super[f];
         int64_t col2 = Super[f + 1];
         int64_t fp = Super[f + 1] - Super[f];
-        PRLEVEL(PR, ("%% Front=%ld Parent=%ld\n", f, Parent[f]));
-        PRLEVEL(PR, ("%% %ld...%ld npivotal=%ld\n", col1, col2, fp));
-        PRLEVEL(PR, ("%% list of %ld children: ", Childp[f + 1] - Childp[f]));
+        PRLEVEL(PR, ("%% Front=" LD " Parent=" LD "\n", f, Parent[f]));
+        PRLEVEL(PR, ("%% " LD "..." LD " npivotal=" LD "\n", col1, col2, fp));
+        PRLEVEL(PR, ("%% list of " LD " children: ", Childp[f + 1] - Childp[f]));
         for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
-            PRLEVEL(PR, ("%ld ", Child[i]));
+            PRLEVEL(PR, ("" LD " ", Child[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1610,8 +1610,8 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     for (int64_t f = 0; f < nf; f++)
     {
 #ifndef NDEBUG
-        PRLEVEL(PR, ("%% Front %ld\n", f));
-        PRLEVEL(PR, ("%% pivot columns [ %ld to %ld ] n: %ld \n", Super[f],
+        PRLEVEL(PR, ("%% Front " LD "\n", f));
+        PRLEVEL(PR, ("%% pivot columns [ " LD " to " LD " ] n: " LD " \n", Super[f],
                      Super[f + 1] - 1, ns));
 #endif
 
@@ -1625,11 +1625,11 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
         {
             stree_flop_bound[f] += stree_flop_bound[Child[i]];
-            PRLEVEL(PR, ("%% child=%ld fl=%lf ", Child[i],
+            PRLEVEL(PR, ("%% child=" LD " fl=%lf ", Child[i],
                          front_flop_bound[Child[i]]));
         }
         PRLEVEL(PR, ("%% flops bound= %lf\n ", front_flop_bound[f]));
-        PRLEVEL(PR, ("%% %ld %ld %ld\n ", fp, fm, fn));
+        PRLEVEL(PR, ("%% " LD " " LD " " LD "\n ", fp, fm, fn));
         PRLEVEL(PR, ("%% stree bound= %lf\n ", stree_flop_bound[f]));
         ASSERT(Super[f + 1] <= ns);
         int64_t numRow = Sleft[Super[f + 1]] - Sleft[Super[f]];
@@ -1637,29 +1637,29 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         int64_t numoforiginalChild = 0;
         if (lastChildFlag)
         {  // the current node is the parent
-            PRLEVEL(PR, ("%% Childs of %ld: ", f));
+            PRLEVEL(PR, ("%% Childs of " LD ": ", f));
             numoforiginalChild = Childp[f + 1] - Childp[f];
 
             for (int64_t i = Childp[f]; i <= Childp[f + 1] - 1; i++)
             {
-                PRLEVEL(PR, ("%ld ", Child[i]));
+                PRLEVEL(PR, ("" LD " ", Child[i]));
                 int64_t c = Child[i];
                 ASSERT(snM[c] < ms + nf + 1);
                 aParent[snM[c]] = offset + numRow;
-                PRLEVEL(PR, ("%% aParent[%ld] =%ld\n", aParent[snM[c]],
+                PRLEVEL(PR, ("%% aParent[" LD "] =" LD "\n", aParent[snM[c]],
                              offset + numRow));
                 ASSERT(childpointer < ms + nf + 1);
                 aChild[childpointer++] = snM[c];
             }
         }
 
-        PRLEVEL(1, ("%% numRow=%ld ", numRow));
-        PRLEVEL(1, ("#offset=%ld\n", offset));
+        PRLEVEL(1, ("%% numRow=" LD " ", numRow));
+        PRLEVEL(1, ("#offset=" LD "\n", offset));
         for (int64_t i = offset; i < offset + numRow; i++)
         {
             ASSERT(aChildp[i + 1] == -1);
             aChildp[i + 1] = aChildp[i];
-            PRLEVEL(1, ("%% @i=%ld aCp[%ld]=%ld aCp[%ld]=%ld", i, i + 1,
+            PRLEVEL(1, ("%% @i=" LD " aCp[" LD "]=" LD " aCp[" LD "]=" LD "", i, i + 1,
                         aChildp[i + 1], i, aChildp[i]));
         }
 
@@ -1681,17 +1681,17 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         ASSERT(aChildp[offset] == -1);
         aChildp[offset] = aChildp[offset - 1] + numRow + numoforiginalChild;
         PRLEVEL(
-            1, ("\n %% f=%ld numoforiginalChild=%ld\n", f, numoforiginalChild));
+            1, ("\n %% f=" LD " numoforiginalChild=" LD "\n", f, numoforiginalChild));
 
         if (Parent[f] == f + 1)
         {  // last child due to staircase
-            PRLEVEL(1, ("%% last Child =%ld\n", f));
+            PRLEVEL(1, ("%% last Child =" LD "\n", f));
             lastChildFlag = 1;
         }
         else
             lastChildFlag = 0;
     }
-    //    PRLEVEL(1, ("%% root_count=%ld, num_roots=%ld\n ", root_count,
+    //    PRLEVEL(1, ("%% root_count=" LD ", num_roots=" LD "\n ", root_count,
     //    num_roots)); ASSERT(root_count == num_roots);
 
     // Initialize first descendent of the etree
@@ -1700,7 +1700,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         for (int64_t r = i; r != -1 && first[r] == -1; r = Parent[r])
         {
-            PRLEVEL(PR, ("%% first of %ld is %ld\n", r, i));
+            PRLEVEL(PR, ("%% first of " LD " is " LD "\n", r, i));
             first[r] = i;
         }
     }
@@ -1736,7 +1736,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         }
     }
 
-    PRLEVEL(1, ("%% ntasks = %ld\n", ntasks));
+    PRLEVEL(1, ("%% ntasks = " LD "\n", ntasks));
     Sym->ntasks = ntasks;
     if (nf > 0)
     {
@@ -1766,7 +1766,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         int64_t node = task_map[t + 1];
         int64_t rep = Parent[node];
-        PRLEVEL(1, ("t=%ld node=%ld rep =%ld\n", t, node, rep));
+        PRLEVEL(1, ("t=" LD " node=" LD " rep =" LD "\n", t, node, rep));
         if (rep == -1)
         {
             task_parent[t] = -1;
@@ -1780,7 +1780,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
             task_depth[t] = MAX(Depth[node], task_depth[t]);
             while (task_helper[rep] < 0) rep = Parent[rep];
             PRLEVEL(1,
-                    ("After a while t=%ld node=%ld rep =%ld\n", t, node, rep));
+                    ("After a while t=" LD " node=" LD " rep =" LD "\n", t, node, rep));
             task_parent[t] = task_helper[rep];
         }
     }
@@ -1797,20 +1797,20 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     // while (ii < nf)
     //{
     //    int64_t chain_size = 0;
-    //    PRLEVEL(1, ("ii = %ld\n", ii));
+    //    PRLEVEL(1, ("ii = " LD "\n", ii));
     //    while (Parent[ii] != -1 && ii < nf &&
     //      Childp[Parent[ii] + 1] - Childp[Parent[ii]] == 1)
     //    {
     //        chain_size++;
     //        ii++;
     //    }
-    //    PRLEVEL(1, ("after ii = %ld\n", ii));
+    //    PRLEVEL(1, ("after ii = " LD "\n", ii));
     //    max_chain = MAX(chain_size, max_chain);
-    //    PRLEVEL(1, ("max_chain = %ld\n", max_chain));
+    //    PRLEVEL(1, ("max_chain = " LD "\n", max_chain));
     //    ii++;
     //}
     // Sym->max_chain = max_chain;
-    // PRLEVEL(1, ("max_chain = %ld\n", max_chain));
+    // PRLEVEL(1, ("max_chain = " LD "\n", max_chain));
 
 #ifndef NDEBUG
     if (ntasks > 0)
@@ -1818,27 +1818,27 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         PR = 1;
         PRLEVEL(PR, ("%% Task tree helper:\n"));
         for (int64_t i = 0; i < nf; i++)
-            PRLEVEL(PR, ("%ld)%ld ", i, task_helper[i]));
-        PRLEVEL(PR, ("\n%% tasknodes map (%ld):\n", ntasks));
-        for (int64_t i = 0; i <= ntasks; i++) PRLEVEL(PR, ("%ld ", task_map[i]));
+            PRLEVEL(PR, ("" LD ")" LD " ", i, task_helper[i]));
+        PRLEVEL(PR, ("\n%% tasknodes map (" LD "):\n", ntasks));
+        for (int64_t i = 0; i <= ntasks; i++) PRLEVEL(PR, ("" LD " ", task_map[i]));
         PR = -1;
         PRLEVEL(PR, ("%% tasktree :\n"));
-        for (int64_t i = 0; i < ntasks; i++) PRLEVEL(PR, ("%ld ", task_parent[i]));
+        for (int64_t i = 0; i < ntasks; i++) PRLEVEL(PR, ("" LD " ", task_parent[i]));
         PRLEVEL(PR, ("\n"));
         PR = 1;
         PRLEVEL(PR, ("\n%% task_num_child:\n"));
         for (int64_t i = 0; i < ntasks; i++)
-            PRLEVEL(PR, ("%ld ", task_num_child[i]));
+            PRLEVEL(PR, ("" LD " ", task_num_child[i]));
         PRLEVEL(PR, ("\n"));
-        PRLEVEL(PR, ("\n%% %ld tasks:\n", ntasks));
+        PRLEVEL(PR, ("\n%% " LD " tasks:\n", ntasks));
         for (int64_t t = 0; t < ntasks; t++)
         {
-            PRLEVEL(PR, ("%ld[%ld-%ld] ", t, task_map[t] + 1, task_map[t + 1]));
+            PRLEVEL(PR, ("" LD "[" LD "-" LD "] ", t, task_map[t] + 1, task_map[t + 1]));
         }
         PRLEVEL(PR, ("\n%% task depth:\n"));
         for (int64_t t = 0; t < ntasks; t++)
         {
-            PRLEVEL(PR, ("%ld ", task_depth[t]));
+            PRLEVEL(PR, ("" LD " ", task_depth[t]));
         }
         PRLEVEL(PR, ("\n"));
     }
@@ -1848,11 +1848,11 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     for (int64_t f = 0; f < nf; f++)
     {
         ASSERT(snM[f] != -1);
-        PRLEVEL(PR, ("%ld (%ld) ", snM[f], Sleft[Super[f]]));
+        PRLEVEL(PR, ("" LD " (" LD ") ", snM[f], Sleft[Super[f]]));
     }
     if (nf > 0)
     {
-        PRLEVEL(PR, ("- (%ld) ", Sleft[Super[nf]]));
+        PRLEVEL(PR, ("- (" LD ") ", Sleft[Super[nf]]));
         PRLEVEL(PR, ("\n"));
     }
 
@@ -1863,7 +1863,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         for (int64_t i = 0; i < ms; i++)
         {
             ASSERT(rM[i] != -1);
-            PRLEVEL(PR, ("%ld ", rM[i]));
+            PRLEVEL(PR, ("" LD " ", rM[i]));
         }
         PRLEVEL(PR, ("\n"));
     }
@@ -1871,21 +1871,21 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (aParent)
     {
         PRLEVEL(PR, ("%% aParent: "));
-        for (int64_t i = 0; i < ms + nf; i++) PRLEVEL(PR, ("%ld ", aParent[i]));
+        for (int64_t i = 0; i < ms + nf; i++) PRLEVEL(PR, ("" LD " ", aParent[i]));
         PRLEVEL(PR, ("%% \n"));
     }
 
     if (aChildp)
     {
         PRLEVEL(PR, ("%% aChildp: "));
-        for (int64_t i = 0; i < ms + nf + 2; i++) PRLEVEL(PR, ("%ld ", aChildp[i]));
+        for (int64_t i = 0; i < ms + nf + 2; i++) PRLEVEL(PR, ("" LD " ", aChildp[i]));
         PRLEVEL(PR, ("\n"));
     }
 
     if (aChild)
     {
         PRLEVEL(PR, ("%% aChild: "));
-        for (int64_t i = 0; i < ms + nf + 1; i++) PRLEVEL(PR, ("%ld ", aChild[i]));
+        for (int64_t i = 0; i < ms + nf + 1; i++) PRLEVEL(PR, ("" LD " ", aChild[i]));
         PRLEVEL(PR, ("\n"));
     }
 
@@ -1895,9 +1895,9 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         for (int64_t i = 0; i < ms + nf; i++)
         {
             if (aChildp[i] == aChildp[i + 1]) continue;
-            PRLEVEL(PR, ("%% anode:%ld", i));
+            PRLEVEL(PR, ("%% anode:" LD "", i));
             for (int64_t c = aChildp[i]; c < aChildp[i + 1]; c++)
-                PRLEVEL(PR, (" %ld,", aChild[c]));
+                PRLEVEL(PR, (" " LD ",", aChild[c]));
             PRLEVEL(PR, ("\n"));
         }
     }
@@ -1907,24 +1907,24 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     {
         PRLEVEL(PR, ("%% first: "));
         for (int64_t i = 0; i < nf + 1; i++)
-            PRLEVEL(PR, ("first[%ld]=%ld ", i, first[i]));
+            PRLEVEL(PR, ("first[" LD "]=" LD " ", i, first[i]));
         PRLEVEL(PR, ("\n"));
     }
 
     PR = 1;
     //    PRLEVEL(PR, ("%%%% roots:\n"));
-    //    for (int64_t k = 0; k < num_roots; k++) PRLEVEL(PR, ("  %ld", roots[k]));
+    //    for (int64_t k = 0; k < num_roots; k++) PRLEVEL(PR, ("  " LD "", roots[k]));
     //    PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("%%%% Depth:\n"));
-    for (int64_t k = 0; k < nf; k++) PRLEVEL(PR, ("  %ld", Depth[k]));
+    for (int64_t k = 0; k < nf; k++) PRLEVEL(PR, ("  " LD "", Depth[k]));
     PRLEVEL(PR, ("\n"));
 
 #endif
 
     // This prints the task tree; I keep it in comments to find it easily
     // printf ("%% tasktree :\n");
-    // for (int64_t i = 0; i < ntasks; i++) printf("%ld ", task_parent[i]);
+    // for (int64_t i = 0; i < ntasks; i++) printf("" LD " ", task_parent[i]);
     // printf ("\n");
 
 #ifndef NTIME

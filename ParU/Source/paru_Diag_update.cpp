@@ -35,8 +35,8 @@ void paru_Diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work)
     int64_t col2 = inv_Diag_map[pivrow];
     Diag_map[col2] = diag_row;
 
-    PRLEVEL(1, ("%% Inside Diag update pivcol=%ld pivrow=%ld"
-                " diag_row=%ld col2=%ld\n",
+    PRLEVEL(1, ("%% Inside Diag update pivcol=" LD " pivrow=" LD ""
+                " diag_row=" LD " col2=" LD "\n",
                 pivcol, pivrow, diag_row, col2));
 
     inv_Diag_map[diag_row] = col2;

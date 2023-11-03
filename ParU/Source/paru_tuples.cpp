@@ -20,7 +20,7 @@
 ParU_Ret paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T)
 {
     DEBUGLEVEL(0);
-    PRLEVEL(1, ("row =%ld, (%ld,%ld)\n", row, T.e, T.f));
+    PRLEVEL(1, ("row =" LD ", (" LD "," LD ")\n", row, T.e, T.f));
 
     paru_tupleList *cur = &RowList[row];
 

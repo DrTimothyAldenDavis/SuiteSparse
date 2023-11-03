@@ -35,7 +35,8 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
     /* ---------------------------------------------------------------------- */
 
     PRLEVEL(-2, ("%%~~~~~~~  Assemble Front " LD " start ~~%.0lf~~~~~~~(%d)\n", f,
-                 Sym->stree_flop_bound[f], omp_get_thread_num()));
+                 Sym->stree_flop_bound[f], PARU_OPENMP_GET_THREAD_ID));
+
 
     /* pivotal columns Super [f] ... Super [f+1]-1 */
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */

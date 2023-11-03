@@ -53,7 +53,7 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, 
     PRLEVEL(1, ("%% Inside apply inv permutaion P is:\n%%"));
     for (int64_t k = 0; k < m; k++)
     {
-        PRLEVEL(1, (" %ld, ", P[k]));
+        PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 
@@ -102,7 +102,7 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, 
     PRLEVEL(PR, ("%% mRHS Inside apply inv permutaion P is:\n%%"));
     for (int64_t k = 0; k < m; k++)
     {
-        PRLEVEL(PR, (" %ld, ", P[k]));
+        PRLEVEL(PR, (" " LD ", ", P[k]));
     }
     PRLEVEL(PR, (" \n"));
 
@@ -178,7 +178,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
     PRLEVEL(1, ("%% Inside apply permutaion and scale P is:\n%%"));
     for (int64_t k = 0; k < m; k++)
     {
-        PRLEVEL(1, (" %ld, ", P[k]));
+        PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 
@@ -205,7 +205,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             #ifndef NDEBUG
-            PRLEVEL(1, ("b[%ld]= %lf ", j, b[j]));
+            PRLEVEL(1, ("b[" LD "]= %lf ", j, b[j]));
             #endif
             x[k] = b[j] ;
         }
@@ -217,8 +217,8 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             #ifndef NDEBUG
-            PRLEVEL(1, ("b[%ld]= %lf ", j, b[j]));
-            PRLEVEL(1, ("s[%ld]=%lf, ", j, s[j]));
+            PRLEVEL(1, ("b[" LD "]= %lf ", j, b[j]));
+            PRLEVEL(1, ("s[" LD "]=%lf, ", j, s[j]));
             #endif
             x[k] = b[j] / s[j] ;
         }
@@ -246,7 +246,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *B
     PRLEVEL(1, ("%% mRHS Inside apply Permutaion and scale P is:\n%%"));
     for (int64_t k = 0; k < m; k++)
     {
-        PRLEVEL(1, (" %ld, ", P[k]));
+        PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 

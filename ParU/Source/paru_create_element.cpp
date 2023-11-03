@@ -25,7 +25,7 @@ paru_element *paru_create_element(int64_t nrows, int64_t ncols)
 {
     DEBUGLEVEL(0);
 
-    PRLEVEL(1, ("%% creating %ldx%ld element ", nrows, ncols));
+    PRLEVEL(1, ("%% creating " LD "x" LD " element ", nrows, ncols));
     paru_element *curEl;
     size_t tot_size = sizeof(paru_element) +
                       sizeof(int64_t) * (2 * (nrows + ncols)) +
@@ -33,7 +33,7 @@ paru_element *paru_create_element(int64_t nrows, int64_t ncols)
     curEl = (paru_element *)paru_alloc(1, tot_size);
     if (curEl == NULL) return NULL;  // do not do error checking
 
-    PRLEVEL(1, (" with size of %ld in %p\n", tot_size, curEl));
+    PRLEVEL(1, (" with size of " LD " in %p\n", tot_size, curEl));
 
     // Initializing current element
     curEl->nrowsleft = curEl->nrows = nrows;

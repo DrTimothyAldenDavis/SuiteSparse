@@ -23,7 +23,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     int64_t n = Num->n;
     static int64_t r1 = 0, r2 = 0, r3 = 0;
 #endif
-    PRLEVEL(1, ("%%-------ROW degree update of panel %ld of front %ld \n",
+    PRLEVEL(1, ("%%-------ROW degree update of panel " LD " of front " LD " \n",
                 panel_num, f));
     ParU_Control *Control = Num->Control;
     int64_t panel_width = Control->panel_width;
@@ -93,14 +93,14 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         int64_t curFsRow = frowList[i];
 #ifndef NDEBUG
         int64_t curFsRowIndex = i;  // current fully summed row index
-        PRLEVEL(1, ("%% 4: curFsRowIndex = %ld\n", curFsRowIndex));
-        PRLEVEL(1, ("%% curFsRow =%ld\n", curFsRow));
+        PRLEVEL(1, ("%% 4: curFsRowIndex = " LD "\n", curFsRowIndex));
+        PRLEVEL(1, ("%% curFsRow =" LD "\n", curFsRow));
 #endif
         paru_tupleList *curRowTupleList = &RowList[curFsRow];
         int64_t numTuple = curRowTupleList->numTuple;
         ASSERT(numTuple >= 0);
         paru_tuple *listRowTuples = curRowTupleList->list;
-        PRLEVEL(1, ("%% 4: numTuple = %ld\n", numTuple));
+        PRLEVEL(1, ("%% 4: numTuple = " LD "\n", numTuple));
 
         int64_t pdst = 0, psrc;
         for (psrc = 0; psrc < numTuple; psrc++)
@@ -136,35 +136,35 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             {  // an element never seen before
 
                 PRLEVEL(
-                    1, ("%%P: first time seen elRow[%ld]=%ld \n", e, elRow[e]));
-                PRLEVEL(1, ("%%pMark=%ld  npMark= %ld\n", pMark, npMark));
+                    1, ("%%P: first time seen elRow[" LD "]=" LD " \n", e, elRow[e]));
+                PRLEVEL(1, ("%%pMark=" LD "  npMark= " LD "\n", pMark, npMark));
 
                 // if (el->rValid < pMark)
                 if (npMark == pMark + 1)
                     elRow[e] = el->nrowsleft - 1;  // initiaze
                 el->rValid = pMark;
 
-                PRLEVEL(1, ("%%changed to elRow[%ld]=%ld \n", e, elRow[e]));
+                PRLEVEL(1, ("%%changed to elRow[" LD "]=" LD " \n", e, elRow[e]));
 #ifndef NDEBUG
                 if (el->rValid > pMark)
-                    PRLEVEL(1, ("%%pMark=%ld  rVal= %ld\n", pMark, el->rValid));
+                    PRLEVEL(1, ("%%pMark=" LD "  rVal= " LD "\n", pMark, el->rValid));
 #endif
             }
             else  // el->rValid == pMark
             {     // already added to pivotal rows
                 if (npMark == pMark + 1) elRow[e]--;
-                PRLEVEL(1, ("%%already seen elRow[%ld]=%ld \n", e, elRow[e]));
+                PRLEVEL(1, ("%%already seen elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
             }
 
             // int64_t *el_colIndex = colIndex_pointer (el);
             int64_t *el_colIndex = (int64_t *)(el + 1);
 
-            PRLEVEL(1, ("%% element= %ld  nEl =%ld \n", e, nEl));
+            PRLEVEL(1, ("%% element= " LD "  nEl =" LD " \n", e, nEl));
             for (int64_t cEl = 0; cEl < nEl; cEl++)
             {
                 int64_t curCol = el_colIndex[cEl];
-                PRLEVEL(1, ("%% curCol =%ld\n", curCol));
+                PRLEVEL(1, ("%% curCol =" LD "\n", curCol));
                 ASSERT(curCol < n);
 
                 if (curCol < 0)  // already deleted
@@ -188,7 +188,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 PR = 1;
                 // stl_colSet.insert (curCol);
                 for (std::set<int64_t>::iterator it = stl_colSet.begin(); it != stl_colSet.end(); it++)
-                    PRLEVEL(PR, ("%%@  %ld", *it));
+                    PRLEVEL(PR, ("%%@  " LD "", *it));
 
 #endif
 
@@ -209,17 +209,17 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 
 #ifndef NDEBUG /* Checking if columns are correct */
     PR = 1;
-    PRLEVEL(PR, ("%% There are %ld columns in this contribution block: \n",
+    PRLEVEL(PR, ("%% There are " LD " columns in this contribution block: \n",
                  colCount));
     PRLEVEL(PR, ("\n"));
     int64_t stl_colSize = stl_colSet.size();
 
     if (colCount != stl_colSize)
     {
-        PRLEVEL(PR, ("%% STL %ld:\n", stl_colSize));
+        PRLEVEL(PR, ("%% STL " LD ":\n", stl_colSize));
         for (std::set<int64_t>::iterator it = stl_colSet.begin(); it != stl_colSet.end(); it++)
-            PRLEVEL(PR, ("%%  %ld", *it));
-        PRLEVEL(PR, ("\n%% My Set %ld:\n", colCount));
+            PRLEVEL(PR, ("%%  " LD "", *it));
+        PRLEVEL(PR, ("\n%% My Set " LD ":\n", colCount));
         PRLEVEL(PR, ("\n"));
     }
     ASSERT(colCount == stl_colSize);
@@ -281,7 +281,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         //It seems that I keep pivotal_elements really clean before this
         //if (el == NULL)
         //{  // removing the  element from the list
-        //    PRLEVEL(1, ("%% eli = %ld, element= %ld  \n", eli, e));
+        //    PRLEVEL(1, ("%% eli = " LD ", element= " LD "  \n", eli, e));
         //    continue;
         //}
         //This next lines are also extra; I didn't have resize after them
@@ -292,7 +292,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         ASSERT(el != NULL);
 
 #ifndef NDEBUG
-        PRLEVEL(PR, ("%% pivotal element= %ld lac=%ld colsleft=%ld \n", e,
+        PRLEVEL(PR, ("%% pivotal element= " LD " lac=" LD " colsleft=" LD " \n", e,
                      el->lac, el->ncolsleft));
         if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
@@ -358,7 +358,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             paru_tuple *listRowTuples = curRowTupleList->list;
 #ifndef NDEBUG
             int64_t PR = 1;
-            PRLEVEL(PR, ("\n %%----r =%ld  numTuple = %ld\n", r, numTuple));
+            PRLEVEL(PR, ("\n %%----r =" LD "  numTuple = " LD "\n", r, numTuple));
             if (PR <= 0) paru_print_paru_tupleList(RowList, r);
 #endif
             int64_t pdst = 0, psrc;
@@ -387,20 +387,20 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 if (el->rValid == pMark)
                 {  // already a pivot and wont change the row degree
                     elRow[e]--;
-                    PRLEVEL(1, ("%% Pivotal elRow[%ld]=%ld \n", e, elRow[e]));
+                    PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 }
                 else if (el->rValid != npMark)
                 {
                     el->rValid = npMark;
                     elRow[e] = el->nrowsleft - 1;  // initiaze
-                    PRLEVEL(1, ("%%rValid=%ld \n", el->rValid));
-                    PRLEVEL(1, ("%%NP: first time seen elRow[%ld]=%ld \n", e,
+                    PRLEVEL(1, ("%%rValid=" LD " \n", el->rValid));
+                    PRLEVEL(1, ("%%NP: first time seen elRow[" LD "]=" LD " \n", e,
                                 elRow[e]));
                 }
                 else
                 {  // el->rValid == npMark //it has been seen in this stage
                     elRow[e]--;
-                    PRLEVEL(1, ("%%seen before: elRow[e]=%ld \n", elRow[e]));
+                    PRLEVEL(1, ("%%seen before: elRow[e]=" LD " \n", elRow[e]));
                 }
             }
 
@@ -459,7 +459,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #ifndef NDEBUG
         int64_t PR = 1;
         PRLEVEL(PR,
-                ("\n %%--------> 2nd r =%ld  numTuple = %ld\n", r, numTuple));
+                ("\n %%--------> 2nd r =" LD "  numTuple = " LD "\n", r, numTuple));
         if (PR <= 0) paru_print_paru_tupleList(RowList, r);
 #endif
 
@@ -487,7 +487,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 
             if (el->rValid == pMark)
             {  // already a pivot and wont change the row degree
-                PRLEVEL(1, ("%% Pivotal elRow[%ld]=%ld \n", e, elRow[e]));
+                PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
             }
 
@@ -517,7 +517,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             }
             new_row_degree_bound_for_r += elCol[e];
 
-            PRLEVEL(1, ("%% pMark=%ld npMark=%ld \n", pMark, npMark));
+            PRLEVEL(1, ("%% pMark=" LD " npMark=" LD " \n", pMark, npMark));
         }
         curRowTupleList->numTuple = pdst;
 
@@ -525,10 +525,10 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 
 #ifndef NDEBUG
         PR = 1;
-        PRLEVEL(PR, ("%%old_bound_updated =%ld \n", old_bound_updated));
-        PRLEVEL(PR, ("%%new_row_degree_bound_for_r=%ld \n",
+        PRLEVEL(PR, ("%%old_bound_updated =" LD " \n", old_bound_updated));
+        PRLEVEL(PR, ("%%new_row_degree_bound_for_r=" LD " \n",
                      new_row_degree_bound_for_r));
-        PRLEVEL(PR, ("%%row_degroo_bound[%ld]=%ld \n", r, row_degree_bound[r]));
+        PRLEVEL(PR, ("%%row_degroo_bound[" LD "]=" LD " \n", r, row_degree_bound[r]));
 #endif
 
         row_degree_bound[r] =  // min
@@ -539,7 +539,7 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 
     Work->time_stamp[f] += 2;  // making all the markings invalid again
 #ifndef NDEBUG
-    PRLEVEL(1, ("%% Finalized counters r1=%ld r2=%ld r3=%ld sum=%ld\n", r1, r2,
+    PRLEVEL(1, ("%% Finalized counters r1=" LD " r2=" LD " r3=" LD " sum=" LD "\n", r1, r2,
                 r3, r1 + r2 + r3));
 #endif
 }

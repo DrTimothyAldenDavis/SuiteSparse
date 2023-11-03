@@ -20,7 +20,7 @@ void paru_update_rel_ind_col(int64_t e, int64_t f,
     // it might be for curent element or for the Upart therefore we might even
     // dont have the curEl
     DEBUGLEVEL(0);
-    PRLEVEL(1, ("%%update relative in %ld\n", f));
+    PRLEVEL(1, ("%%update relative in " LD "\n", f));
 
     paru_element **elementList = Work->elementList;
     paru_element *el = elementList[e];
@@ -44,13 +44,13 @@ void paru_update_rel_ind_col(int64_t e, int64_t f,
             colRelIndex[i] = -1;
             continue;
         }
-        PRLEVEL(1, ("%% searching for: cb_index[%ld]=%ld\n", i, colInd));
+        PRLEVEL(1, ("%% searching for: cb_index[" LD "]=" LD "\n", i, colInd));
         int64_t found = paru_find_hash(colInd, colHash, fcolList);
         colRelIndex[i] = found;
         ASSERT(found != -1);
     }
 
-    PRLEVEL(1, ("%%update relative in %ld finished\n", f));
+    PRLEVEL(1, ("%%update relative in " LD " finished\n", f));
 
     // update the cVal of el
     el->cValid = Work->time_stamp[f];

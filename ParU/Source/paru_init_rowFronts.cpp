@@ -181,10 +181,10 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
     {
         PRLEVEL(PR, ("%% $RowList =%p\n", RowList));
         paru_memset(rowSize, -1, m * sizeof(int64_t), Control);
-        PRLEVEL(PR, ("%% rowSize pointer=%p size=%ld \n", rowSize,
+        PRLEVEL(PR, ("%% rowSize pointer=%p size=" LD " \n", rowSize,
                      m * sizeof(int64_t)));
 
-        PRLEVEL(PR, ("%% rowMark pointer=%p size=%ld \n", rowMark,
+        PRLEVEL(PR, ("%% rowMark pointer=%p size=" LD " \n", rowMark,
                      (m + nf) * sizeof(int64_t)));
 
         paru_memset(elRow, -1, (m + nf) * sizeof(int64_t), Control);
@@ -219,27 +219,27 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
     PRLEVEL(PR, ("Init Sup and Slp in the middle\n"));
     if (cs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Sup =", sunz));
+        PRLEVEL(PR, ("(" LD ") Sup =", sunz));
         for (int64_t k = 0; k <= cs1; k++)
         {
-            PRLEVEL(PR, ("%ld ", Sup[k]));
-            PRLEVEL(PR + 2, ("c%ld ", cSup[k]));
+            PRLEVEL(PR, ("" LD " ", Sup[k]));
+            PRLEVEL(PR + 2, ("c" LD " ", cSup[k]));
             if (Sup[k] != cSup[k])
-                PRLEVEL(PR, ("Sup[%ld] =%ld, cSup=%ld", k, Sup[k], cSup[k]));
+                PRLEVEL(PR, ("Sup[" LD "] =" LD ", cSup=" LD "", k, Sup[k], cSup[k]));
             ASSERT(Sup[k] == cSup[k]);
         }
         PRLEVEL(PR, ("\n"));
     }
     if (rs1 > 0)
     {
-        PRLEVEL(PR, ("(%ld) Slp =", slnz));
+        PRLEVEL(PR, ("(" LD ") Slp =", slnz));
         for (int64_t k = 0; k <= rs1; k++)
         {
-            PRLEVEL(PR, ("%ld ", Slp[k]));
-            PRLEVEL(PR + 2, ("o%ld ", cSlp[k]));
+            PRLEVEL(PR, ("" LD " ", Slp[k]));
+            PRLEVEL(PR + 2, ("o" LD " ", cSlp[k]));
             if (Slp[k] != cSlp[k])
                 PRLEVEL(PR,
-                        ("\nSup[%ld] =%ld, cSup=%ld\n", k, Slp[k], cSlp[k]));
+                        ("\nSup[" LD "] =" LD ", cSup=" LD "\n", k, Slp[k], cSlp[k]));
             ASSERT(Slp[k] == cSlp[k]);
         }
         PRLEVEL(PR, ("\n"));
@@ -253,7 +253,7 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("Iniit Pinv =\n"));
-    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("%ld ", Pinv[i]));
+    for (int64_t i = 0; i < m; i++) PRLEVEL(PR, ("" LD " ", Pinv[i]));
     PRLEVEL(PR, ("\n"));
 #endif
 
@@ -278,7 +278,7 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
             PRLEVEL(PR, ("%lf ", Rs[k]));
             if (Rs[k] <= 0)
             {
-                PRLEVEL(1, ("ParU: Matrix is singular, row %ld is zero\n", k));
+                PRLEVEL(1, ("ParU: Matrix is singular, row " LD " is zero\n", k));
                 Num->res = PARU_SINGULAR;
                 return PARU_SINGULAR;
             }
@@ -301,7 +301,7 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
             }
             else if (srow < 0 && scol >= 0)
             {  // inside the U singletons
-                PRLEVEL(PR, ("Usingleton newcol = %ld newrow=%ld\n", newcol,
+                PRLEVEL(PR, ("Usingleton newcol = " LD " newrow=" LD "\n", newcol,
                              newrow));
                 // let the diagonal entries be first
                 Sux[++cSup[newrow]] = (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
@@ -362,15 +362,15 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
     // -------------------------------------------------------------------------
 #ifndef NDEBUG
     int64_t n = Num->n = Sym->n - Sym->n1;
-    PRLEVEL(1, ("%% m=%ld, n=%ld\n", m, n));
+    PRLEVEL(1, ("%% m=" LD ", n=" LD "\n", m, n));
     PR = 1;
     PRLEVEL(PR, ("\n%% Inside init row fronts\n"));
     PRLEVEL(PR, ("%% Sp =\n%%"));
-    for (int64_t i = 0; i <= m; i++) PRLEVEL(PR, ("%ld ", Sp[i]));
+    for (int64_t i = 0; i <= m; i++) PRLEVEL(PR, ("" LD " ", Sp[i]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Sj =\n"));
-    for (int64_t k = 0; k < snz; k++) PRLEVEL(PR, ("%ld ", Sj[k]));
+    for (int64_t k = 0; k < snz; k++) PRLEVEL(PR, ("" LD " ", Sj[k]));
     PRLEVEL(PR, ("\n"));
 #endif
 
@@ -388,22 +388,22 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
         }
 #ifndef NDEBUG
         PR = 1;
-        PRLEVEL(PR, ("init_row Diag_map (%ld) =\n", Sym->n));
+        PRLEVEL(PR, ("init_row Diag_map (" LD ") =\n", Sym->n));
         for (int64_t i = 0; i < MIN(64, Sym->n); i++)
-            PRLEVEL(PR, ("%ld ", Diag_map[i]));
+            PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
         PRLEVEL(PR, ("inv_Diag_map =\n"));
         for (int64_t i = 0; i < MIN(64, Sym->n); i++)
-            PRLEVEL(PR, ("%ld ", inv_Diag_map[i]));
+            PRLEVEL(PR, ("" LD " ", inv_Diag_map[i]));
         PRLEVEL(PR, ("\n"));
         for (int64_t i = 0; i < Sym->n; i++)
         {
             if (Diag_map[i] == -1)
                 PRLEVEL(PR,
-                        ("Diag_map[%ld] is not correctly initialized\n", i));
+                        ("Diag_map[" LD "] is not correctly initialized\n", i));
 
             if (inv_Diag_map[i] == -1)
-                PRLEVEL(PR, ("inv_Diag_map[%ld] is not correctly initialized\n",
+                PRLEVEL(PR, ("inv_Diag_map[" LD "] is not correctly initialized\n",
                              i));
 
             ASSERT(Diag_map[i] != -1);

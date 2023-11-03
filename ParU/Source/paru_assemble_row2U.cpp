@@ -55,12 +55,12 @@ void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
         {  // If still valid
             ncolsSeen--;
             PRLEVEL(1,
-                    ("%% sM [%ld] =%2.5lf \n", mEl * j + sR, sM[mEl * j + sR]));
-            PRLEVEL(1, ("%% uPart [%ld] =%2.5lf \n", rj * fp + dR,
+                    ("%% sM [" LD "] =%2.5lf \n", mEl * j + sR, sM[mEl * j + sR]));
+            PRLEVEL(1, ("%% uPart [" LD "] =%2.5lf \n", rj * fp + dR,
                         uPart[rj * fp + dR]));
             //**//#pragma omp atomic
             uPart[rj * fp + dR] += sM[mEl * j + sR];
-            PRLEVEL(1, ("%% uPart [%ld] =%2.5lf \n", rj * fp + dR,
+            PRLEVEL(1, ("%% uPart [" LD "] =%2.5lf \n", rj * fp + dR,
                         uPart[rj * fp + dR]));
             if (ncolsSeen == 0) break;
         }

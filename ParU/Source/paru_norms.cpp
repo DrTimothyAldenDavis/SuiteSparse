@@ -27,7 +27,7 @@ double paru_spm_1norm(cholmod_sparse *A)
         double s = 0;
         for (int64_t p = Ap[j]; p < Ap[j + 1]; p++)
         {
-            PRLEVEL(3, ("Ax[%ld] = %.2lf\n", p, Ax[p]));
+            PRLEVEL(3, ("Ax[" LD "] = %.2lf\n", p, Ax[p]));
             s += fabs(Ax[p]);
         }
         PRLEVEL(2, ("s = %le\n", s));

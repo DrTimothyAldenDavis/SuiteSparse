@@ -22,19 +22,19 @@ int64_t paru_bin_srch(int64_t *srt_lst, int64_t l, int64_t r, int64_t num)
 // a simple binary search for when we know all the indices are available
 {
     DEBUGLEVEL(0);
-    PRLEVEL(1, ("%% BINSearch %ld,%ld for %ld\n", l, r, num));
+    PRLEVEL(1, ("%% BINSearch " LD "," LD " for " LD "\n", l, r, num));
     if (r >= l + LEN)
     {
         int64_t mid = l + (r - l) / 2;
-        PRLEVEL(1, ("%% mid is %ld\n", mid));
+        PRLEVEL(1, ("%% mid is " LD "\n", mid));
         if (srt_lst[mid] == num) return mid;
 
         if (srt_lst[mid] > num)
         {
-            PRLEVEL(1, ("%% 1 New %ld,%ld \n", l, mid - 1));
+            PRLEVEL(1, ("%% 1 New " LD "," LD " \n", l, mid - 1));
             return paru_bin_srch(srt_lst, l, mid - 1, num);
         }
-        PRLEVEL(1, ("%% 2 New %ld,%ld \n", mid + 1, r));
+        PRLEVEL(1, ("%% 2 New " LD "," LD " \n", mid + 1, r));
         return paru_bin_srch(srt_lst, mid + 1, r, num);
     }
 

@@ -37,7 +37,7 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     PRLEVEL(PR, ("%% Initial row permutaion is:\n%%"));
     for (int64_t k = 0; k < m; k++)
     {
-        PRLEVEL(PR, (" %ld, ", Pinit[k]));
+        PRLEVEL(PR, (" " LD ", ", Pinit[k]));
     }
     PRLEVEL(PR, (" \n"));
 #endif
@@ -48,7 +48,7 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     for (int64_t k = 0; k < n1; k++)
     {  // first singletons
         Pfin[ip++] = Pinit[k];
-        PRLEVEL(PR, ("(%ld)%ld ", ip - 1, Pfin[ip - 1]));
+        PRLEVEL(PR, ("(" LD ")" LD " ", ip - 1, Pfin[ip - 1]));
     }
     PRLEVEL(PR, ("\n"));
 
@@ -66,7 +66,7 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
             // P[k] = i
             Ps[frowList[k]] = ip - n1;
             Pfin[ip++] = Pinit[frowList[k] + n1];
-            PRLEVEL(PR, ("(%ld)%ld\n ", ip - 1, Pfin[ip - 1]));
+            PRLEVEL(PR, ("(" LD ")" LD "\n ", ip - 1, Pfin[ip - 1]));
         }
     }
     PRLEVEL(PR, ("\n"));
@@ -76,12 +76,12 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     PRLEVEL(PR, ("%% Final Ps:\n%%"));
     for (int64_t k = 0; k < m - n1; k++)
     {
-        PRLEVEL(PR, (" %ld, ", Ps[k]));
+        PRLEVEL(PR, (" " LD ", ", Ps[k]));
     }
     PRLEVEL(PR, (" \n"));
     PR = 1;
-    PRLEVEL(PR, ("%% n1=%ld Final row permutaion is:\n%%", n1));
-    for (int64_t k = 0; k < MIN(77, m); k++) PRLEVEL(PR, ("%ld ", Pfin[k]));
+    PRLEVEL(PR, ("%% n1=" LD " Final row permutaion is:\n%%", n1));
+    for (int64_t k = 0; k < MIN(77, m); k++) PRLEVEL(PR, ("" LD " ", Pfin[k]));
     PRLEVEL(PR, (" \n"));
 #endif
     return PARU_SUCCESS;

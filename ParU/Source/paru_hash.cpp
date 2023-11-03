@@ -27,10 +27,10 @@ void paru_insert_hash(int64_t key, int64_t value, std::vector<int64_t> &colHash)
     PARU_DEFINE_PRLEVEL;
 
 #ifndef NDEBUG
-    PRLEVEL(PR, ("%% Insert hash key=%ld value=%ld ", key, value));
-    PRLEVEL(PR, ("size=%ld \n", colHash.size()));
+    PRLEVEL(PR, ("%% Insert hash key=" LD " value=" LD " ", key, value));
+    PRLEVEL(PR, ("size=" LD " \n", colHash.size()));
     PRLEVEL(PR, ("%% before insertion"));
-    for (auto i : colHash) PRLEVEL(PR, (" %ld ", i));
+    for (auto i : colHash) PRLEVEL(PR, (" " LD " ", i));
     PRLEVEL(PR, ("\n"));
 
 #endif
@@ -42,7 +42,7 @@ void paru_insert_hash(int64_t key, int64_t value, std::vector<int64_t> &colHash)
     while (colHash[index] != -1)
     {  // finding an empty spot
         index = (index + 1) & hash_bits;
-        PRLEVEL(PR, ("index =%ld colHash=%ld\n", index, colHash[index]));
+        PRLEVEL(PR, ("index =" LD " colHash=" LD "\n", index, colHash[index]));
         loop_cnt++;
         ASSERT(loop_cnt < hash_bits);
     }
@@ -52,7 +52,7 @@ void paru_insert_hash(int64_t key, int64_t value, std::vector<int64_t> &colHash)
     PR = 1;
     PRLEVEL(PR, ("%% hash_bits == %lx ", hash_bits));
     PRLEVEL(PR, ("%%"));
-    for (auto i : colHash) PRLEVEL(PR, (" %ld ", i));
+    for (auto i : colHash) PRLEVEL(PR, (" " LD " ", i));
     PRLEVEL(PR, ("\n"));
 #endif
 }
@@ -62,12 +62,12 @@ int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash, int64_t *fcol
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 #ifndef NDEBUG
-    PRLEVEL(PR, ("%% find for hash key=%ld \n", key));
+    PRLEVEL(PR, ("%% find for hash key=" LD " \n", key));
 #endif
     // lookup table
     if (colHash.back() == -1)
     {
-        PRLEVEL(PR, ("%% LOOKUP key =%ld colHash=%ld \n", key, colHash[key]));
+        PRLEVEL(PR, ("%% LOOKUP key =" LD " colHash=" LD " \n", key, colHash[key]));
         return colHash[key];
     }
 
@@ -79,7 +79,7 @@ int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash, int64_t *fcol
     while (value != -1 && fcolList[value] != key)
     {
         index = (index + 1) & hash_bits;
-        PRLEVEL(PR, ("%% index =%ld \n", index));
+        PRLEVEL(PR, ("%% index =" LD " \n", index));
         value = colHash[index];
         if (loop_cnt++ > log2(hash_bits))
         {  // take a long time in the hash;
@@ -93,11 +93,11 @@ int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash, int64_t *fcol
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%%"));
-    for (auto i : colHash) PRLEVEL(PR, (" %ld ", i));
+    for (auto i : colHash) PRLEVEL(PR, (" " LD " ", i));
     PRLEVEL(PR, ("\n"));
-    PRLEVEL(PR, ("%% value is =%ld \n", value));
+    PRLEVEL(PR, ("%% value is =" LD " \n", value));
     int64_t bsRes = paru_bin_srch(fcolList, 0, size - 1, key);
-    PRLEVEL(PR, ("%% binSearch=%ld \n", bsRes));
+    PRLEVEL(PR, ("%% binSearch=" LD " \n", bsRes));
 #endif
     return value;
 }

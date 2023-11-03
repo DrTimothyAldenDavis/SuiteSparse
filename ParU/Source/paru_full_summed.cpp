@@ -43,13 +43,13 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 #ifndef NDEBUG
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
-    PRLEVEL(PR, ("%% Fully summing %ld in %ld(%ld)\n", e, f, eli));
+    PRLEVEL(PR, ("%% Fully summing " LD " in " LD "(" LD ")\n", e, f, eli));
 #endif
 
     int64_t *Super = Sym->Super;
     int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
     int64_t col2 = Super[f + 1];
-    PRLEVEL(PR, ("%% col1=%ld, col2=%ld\n", col1, col2));
+    PRLEVEL(PR, ("%% col1=" LD ", col2=" LD "\n", col1, col2));
 
     paru_element **elementList = Work->elementList;
 
@@ -76,7 +76,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 
 #ifndef NDEBUG  // print the element which is going to be assembled from
     PR = 2;
-    PRLEVEL(PR, ("%% ASSEMBL element= %ld  mEl =%ld ", e, mEl));
+    PRLEVEL(PR, ("%% ASSEMBL element= " LD "  mEl =" LD " ", e, mEl));
     if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
 
@@ -92,7 +92,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         int64_t fcolInd = el_colIndex[el->lac] - col1;
 #ifndef NDEBUG
         int64_t colInd = el_colIndex[el->lac];
-        PRLEVEL(1, ("%% colInd =%ld \n", fcolInd));
+        PRLEVEL(1, ("%% colInd =" LD " \n", fcolInd));
         ASSERT(colInd >= 0);
 #endif
         double *dC = pivotalFront + fcolInd * rowCount;
@@ -100,15 +100,15 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0 && rowRelIndex[i] != -1)
             {  // active and do not contain zero in pivot
                 int64_t ri = rowRelIndex[i];
-                PRLEVEL(1, ("%% ri = %ld \n", ri));
-                PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                 dC[ri] += sC[i];
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
                 el_colIndex[el->lac] = flip(el_colIndex[el->lac]);
                 if (--nrows2bSeen == 0) break;
             }
@@ -127,7 +127,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         for (int64_t i = 0; i < mEl; i++)
         {
             int64_t rowInd = el_rowIndex[i];
-            PRLEVEL(1, ("%% rowInd =%ld \n", rowInd));
+            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
             if (rowInd >= 0 && rowRelIndex[i] != -1)
             {
                 tempRow[ii++] = i;
@@ -139,7 +139,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         PR = 1;
         PRLEVEL(PR, ("%% list of the rows to be assembled:\n%%"));
         for (int64_t i = 0; i < nrows2assembl; i++)
-            PRLEVEL(PR, ("%ld ", el_rowIndex[tempRow[i]]));
+            PRLEVEL(PR, ("" LD " ", el_rowIndex[tempRow[i]]));
         PRLEVEL(PR, ("%% \n"));
 #endif
         // note: parallelism slows this down
@@ -149,10 +149,10 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         //#pragma omp taskgroup
         for (; j < nEl; j++)
         {  // j already defined out of this scope while it is needed
-            PRLEVEL(1, ("%% j =%ld \n", j));
+            PRLEVEL(1, ("%% j =" LD " \n", j));
             double *sC = el_Num + mEl * j;  // source column pointer
             int64_t colInd = el_colIndex[j];
-            PRLEVEL(1, ("%% colInd =%ld \n", colInd));
+            PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
             if (colInd >= col2) break;
             if (colInd < 0) continue;
 
@@ -170,11 +170,11 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
                 // that are not in zero pivots
                 ASSERT(el_rowIndex[i] >= 0);  // and also still alive
 
-                PRLEVEL(1, ("%% ri = %ld \n", ri));
-                PRLEVEL(1, ("%% sC [%ld] =%2.5lf \n", i, sC[i]));
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", ri, dC[ri]));
+                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
                 dC[ri] += sC[i];
-                PRLEVEL(1, ("%% dC [%ld] =%2.5lf \n", i, dC[ri]));
+                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
             }
 
             el_colIndex[j] = flip(el_colIndex[j]);
@@ -185,7 +185,7 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
 
     if (el->ncolsleft == 0)
     {  // free el
-        PRLEVEL(PR, ("%% element %ld is freed after pivotal assembly\n", e));
+        PRLEVEL(PR, ("%% element " LD " is freed after pivotal assembly\n", e));
         paru_free_el(e, elementList);
     }
 
@@ -194,26 +194,26 @@ void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num)
         el->lac = j;
         int64_t *lacList = Work->lacList;
         lacList[e] = lac_el(elementList, e);
-        PRLEVEL(1, ("%%e = %ld, el->lac= %ld ", e, el->lac));
-        PRLEVEL(1, ("el_colIndex[%ld]=%ld :\n", el->lac, el_colIndex[el->lac]));
+        PRLEVEL(1, ("%%e = " LD ", el->lac= " LD " ", e, el->lac));
+        PRLEVEL(1, ("el_colIndex[" LD "]=" LD " :\n", el->lac, el_colIndex[el->lac]));
         ASSERT(j < nEl);
     }
 #ifndef NDEBUG  // print the element which has been assembled from
     PR = 1;
-    PRLEVEL(PR, ("%% ASSEMBLED element= %ld  mEl =%ld ", e, mEl));
+    PRLEVEL(PR, ("%% ASSEMBLED element= " LD "  mEl =" LD " ", e, mEl));
     if (PR <= 0) paru_print_element(e, Work, Num);
 
     // Printing the pivotal front
     PR = 2;
-    PRLEVEL(PR, ("%% After Assemble element %ld\n", e));
+    PRLEVEL(PR, ("%% After Assemble element " LD "\n", e));
     PRLEVEL(PR, ("%% x =  \t"));
-    for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("%ld\t\t", c));
+    for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("" LD "\t\t", c));
     PRLEVEL(PR, (" ;\n"));
 
     int64_t *frowList = Num->frowList[f];
     for (int64_t r = 0; r < rowCount; r++)
     {
-        PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+        PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
         for (int64_t c = col1; c < col2; c++)
             PRLEVEL(PR, (" %2.5lf\t", pivotalFront[(c - col1) * rowCount + r]));
         PRLEVEL(PR, ("\n"));

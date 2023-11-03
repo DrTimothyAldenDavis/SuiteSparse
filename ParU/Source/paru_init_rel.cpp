@@ -26,16 +26,16 @@ void paru_init_rel(int64_t f, paru_work *Work)
     int64_t *Childp = Sym->Childp;
     int64_t max_time = 0;
 
-    PRLEVEL(1, ("%% begining=%ld end=%ld \n", Childp[f], Childp[f + 1]));
-    PRLEVEL(1, ("%% children of %ld  are:\n", f));
+    PRLEVEL(1, ("%% begining=" LD " end=" LD " \n", Childp[f], Childp[f + 1]));
+    PRLEVEL(1, ("%% children of " LD "  are:\n", f));
     for (int64_t p = Childp[f]; p <= Childp[f + 1] - 1; p++)
     {
         int64_t child_rel;
         ASSERT(Child[p] >= 0);
         child_rel = time_stamp[Child[p]];
-        PRLEVEL(1, ("%% Child[%ld]= %ld  ", p, Child[p]));
+        PRLEVEL(1, ("%% Child[" LD "]= " LD "  ", p, Child[p]));
         max_time = max_time > child_rel ? max_time : child_rel;
     }
     time_stamp[f] = ++max_time;
-    PRLEVEL(1, ("%% max_time=%ld \n", max_time));
+    PRLEVEL(1, ("%% max_time=" LD " \n", max_time));
 }

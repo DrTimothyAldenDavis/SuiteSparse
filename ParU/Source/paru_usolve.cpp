@@ -112,7 +112,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
             //        i_prod += A2[fp * j + i] * x[fcolList[j] + n1];
             //    }
             //    int64_t r = Ps[frowList[i]] + n1;
-            //    PRLEVEL(2, ("i_prod[%ld]=%lf  r=%ld\n", i, i_prod,  r));
+            //    PRLEVEL(2, ("i_prod[" LD "]=%lf  r=" LD "\n", i, i_prod,  r));
             //    x[r] -= i_prod;
             //}
         }
@@ -141,23 +141,23 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
     {
         for (int64_t i = cs1 - 1; i >= 0; i--)
         {
-            PRLEVEL(PR, ("i = %ld\n", i));
+            PRLEVEL(PR, ("i = " LD "\n", i));
             int64_t *Sup = Sym->ustons.Sup;
             int64_t *Suj = Sym->ustons.Suj;
             double *Sux = Num->Sux;
             ASSERT(Suj != NULL && Sux != NULL && Sup != NULL);
-            PRLEVEL(PR, (" Before computation x[%ld]=%.2lf \n", i, x[i]))
+            PRLEVEL(PR, (" Before computation x[" LD "]=%.2lf \n", i, x[i]))
             for (int64_t p = Sup[i] + 1; p < Sup[i + 1]; p++)
             {
                 int64_t r = Suj[p];
-                PRLEVEL(PR, (" r=%ld\n", r));
+                PRLEVEL(PR, (" r=" LD "\n", r));
                 x[i] -= Sux[p] * x[r];
-                PRLEVEL(PR, ("Suj[%ld]=%ld\n", p, Suj[p]));
-                PRLEVEL(PR, (" x[%ld]=%.2lf x[%ld]=%.2lf\n", r, x[r], i, x[i]));
+                PRLEVEL(PR, ("Suj[" LD "]=" LD "\n", p, Suj[p]));
+                PRLEVEL(PR, (" x[" LD "]=%.2lf x[" LD "]=%.2lf\n", r, x[r], i, x[i]));
             }
             int64_t diag = Sup[i];
             x[i] /= Sux[diag];
-            PRLEVEL(PR, (" After computation x[%ld]=%.2lf \n", i, x[i]))
+            PRLEVEL(PR, (" After computation x[" LD "]=%.2lf \n", i, x[i]))
             PRLEVEL(PR, ("\n"));
         }
     }
@@ -237,7 +237,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
         double *A2 = Us[f].p;
         if (A2 != NULL)
         {
-            PRLEVEL(2, ("%% mRHS usolve: Working on DGEMM f=%ld\n%%", f));
+            PRLEVEL(2, ("%% mRHS usolve: Working on DGEMM f=" LD "\n%%", f));
             double *Xg = &work[0] + fp * nrhs;     // size Xg is colCount x nrhs
             for (int64_t j = 0; j < colCount; j++)  // gathering X in Xg
             {
@@ -276,7 +276,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
             //    int64_t r = Ps[frowList[i]] + n1;
             //    for (int64_t l = 0; l < nrhs; l++)
             //    {
-            //        PRLEVEL(2, ("i_prod[%ld]=%lf  r=%ld\nrhs", i, i_prod[i], r));
+            //        PRLEVEL(2, ("i_prod[" LD "]=%lf  r=" LD "\nrhs", i, i_prod[i], r));
             //        X[l*m+r] -= i_prod[l];
             //    }
             //}
@@ -298,7 +298,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
     {
         for (int64_t i = cs1 - 1; i >= 0; i--)
         {
-            PRLEVEL(PR, ("i = %ld\n", i));
+            PRLEVEL(PR, ("i = " LD "\n", i));
             int64_t *Sup = Sym->ustons.Sup;
             int64_t *Suj = Sym->ustons.Suj;
             double *Sux = Num->Sux;
@@ -306,7 +306,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
             for (int64_t p = Sup[i] + 1; p < Sup[i + 1]; p++)
             {
                 int64_t r = Suj[p];
-                PRLEVEL(PR, (" r=%ld\n", r));
+                PRLEVEL(PR, (" r=" LD "\n", r));
 #pragma omp simd
                 for (int64_t l = 0; l < nrhs; l++)
                 {

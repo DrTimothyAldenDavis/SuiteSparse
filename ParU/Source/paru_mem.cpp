@@ -45,8 +45,8 @@ void paru_set_nmalloc(int64_t nmalloc)
     {
         paru_nmalloc = nmalloc;
     }
-    //printf("inside set nmalloc=%ld",nmalloc);
-    PRLEVEL(1, ("inside set nmalloc=%ld",nmalloc));
+    //printf("inside set nmalloc=" LD "",nmalloc);
+    PRLEVEL(1, ("inside set nmalloc=" LD "",nmalloc));
 }
 
 int64_t paru_decr_nmalloc(void)
@@ -59,8 +59,8 @@ int64_t paru_decr_nmalloc(void)
             nmalloc = paru_nmalloc--;
         }
     }
-    //printf("inside decr nmalloc=%ld",nmalloc);
-    PRLEVEL(1, ("inside decr nmalloc=%ld",nmalloc));
+    //printf("inside decr nmalloc=" LD "",nmalloc);
+    PRLEVEL(1, ("inside decr nmalloc=" LD "",nmalloc));
     return (nmalloc);
 }
 
@@ -71,8 +71,8 @@ int64_t paru_get_nmalloc(void)
     {
         nmalloc = paru_nmalloc;
     }
-    //printf("inside get nmalloc=%ld",nmalloc);
-    PRLEVEL(1, ("inside get nmalloc=%ld",nmalloc));
+    //printf("inside get nmalloc=" LD "",nmalloc);
+    PRLEVEL(1, ("inside get nmalloc=" LD "",nmalloc));
     return (nmalloc);
 }
 
@@ -128,7 +128,7 @@ void *paru_alloc(size_t n, size_t size)
         else
         {
 #ifndef NDEBUG
-            PRLEVEL(1, ("%% allocated %ld in %p total= %ld\n", n * size, p,
+            PRLEVEL(1, ("%% allocated " LD " in %p total= " LD "\n", n * size, p,
                         alloc_count));
             alloc_count += n * size;
 #endif
@@ -185,7 +185,7 @@ void *paru_calloc(size_t n, size_t size)
         else
         {
 #ifndef NDEBUG
-            PRLEVEL(1, ("%% callocated %ld in %p total= %ld\n", n * size, p,
+            PRLEVEL(1, ("%% callocated " LD " in %p total= " LD "\n", n * size, p,
                         calloc_count));
             calloc_count += n * size;
 #endif
@@ -220,7 +220,7 @@ void *paru_realloc(
     }
     else if (nnew == *n )
     {
-        PRLEVEL(1, ("%% reallocating nothing %ld, %ld in %p \n", nnew, *n,
+        PRLEVEL(1, ("%% reallocating nothing " LD ", " LD " in %p \n", nnew, *n,
                     p));
     }
     else if (nnew >= (Size_max / size_Entry) || nnew >= INT_MAX)
@@ -231,7 +231,7 @@ void *paru_realloc(
 
     else
     {  // The object exists, and is changing to some other nonzero size.
-        PRLEVEL(1, ("realloc : %ld to %ld, %ld\n", *n, nnew, size_Entry));
+        PRLEVEL(1, ("realloc : " LD " to " LD ", " LD "\n", *n, nnew, size_Entry));
         int ok = TRUE;
 
 #ifdef PARU_ALLOC_TESTING
@@ -262,7 +262,7 @@ void *paru_realloc(
         {
 #ifndef NDEBUG
             realloc_count += nnew * size_Entry - *n;
-            PRLEVEL(1, ("%% reallocated %ld in %p and freed %p total= %ld\n",
+            PRLEVEL(1, ("%% reallocated " LD " in %p and freed %p total= " LD "\n",
                         nnew* size_Entry, pnew, p, realloc_count));
 #endif
 	    p = pnew ;
@@ -282,7 +282,7 @@ void paru_free(size_t n, size_t size, void *p)
     // free_count += n * size;
 
     // Valgrind is unhappy about some part here
-    //    PRLEVEL (1, ("%% free %ld in %p total= %ld\n",
+    //    PRLEVEL (1, ("%% free " LD " in %p total= " LD "\n",
     //                n*size, p, free_count));
 
     if (p != NULL)
@@ -301,7 +301,7 @@ void *operator new(size_t size)
 #ifndef NDEBUG
     static int64_t cpp_count = 0;
     cpp_count += size;
-    PRLEVEL(1, ("global op new called, size = %zu tot=%ld\n", size, cpp_count));
+    PRLEVEL(1, ("global op new called, size = %zu tot=" LD "\n", size, cpp_count));
 #endif
 
     if (size == 0)
@@ -334,8 +334,8 @@ ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control)
     int64_t n1 = Sym->n1;
     int64_t nf = Sym->nf;
     int64_t snz = Sym->snz;
-    PRLEVEL(1, ("%% In free sym: m=%ld n=%ld\n nf=%ld "
-                "Sym->anz=%ld \n",
+    PRLEVEL(1, ("%% In free sym: m=" LD " n=" LD "\n nf=" LD " "
+                "Sym->anz=" LD " \n",
                 m, n, nf, Sym->anz));
 
     paru_free(nf + 1, sizeof(int64_t), Sym->Parent);
@@ -412,9 +412,9 @@ void paru_free_el(int64_t e, paru_element **elementList)
     if (el == NULL) return;
 #ifndef NDEBUG
     int64_t nrows = el->nrows, ncols = el->ncols;
-    PRLEVEL(1, ("%%Free the element e =%ld\t", e));
-    PRLEVEL(1, ("%% nrows =%ld ", nrows));
-    PRLEVEL(1, ("%% ncols =%ld\n", ncols));
+    PRLEVEL(1, ("%%Free the element e =" LD "\t", e));
+    PRLEVEL(1, ("%% nrows =" LD " ", nrows));
+    PRLEVEL(1, ("%% ncols =" LD "\n", ncols));
     int64_t tot_size = 
         sizeof(paru_element) + sizeof(int64_t)
         * (2 * (nrows + ncols)) + sizeof(double) * nrows * ncols;
@@ -467,7 +467,7 @@ ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
         for (int64_t i = 0; i < m; i++)
         {                               // freeing all row elements
             int64_t e = Sym->row2atree[i];  // element number in augmented tree
-            PRLEVEL(1, ("%% e =%ld\t", e));
+            PRLEVEL(1, ("%% e =" LD "\t", e));
             paru_free_el(e, elementList);
         }
 
@@ -493,7 +493,7 @@ ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
             if (heapList[eli] != NULL)
             {
                 PRLEVEL(1,
-                        ("%% %ld has not been freed %p\n", eli, heapList[eli]));
+                        ("%% " LD " has not been freed %p\n", eli, heapList[eli]));
                 delete heapList[eli];
                 heapList[eli] = NULL;
             }

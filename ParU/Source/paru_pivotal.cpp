@@ -37,7 +37,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
     int64_t m = Num->m;
     PRLEVEL(PR, ("%%~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n"));
-    PRLEVEL(PR, ("%% Pivotal assembly of front %ld (eli %ld) cols %ld-%ld\n", f,
+    PRLEVEL(PR, ("%% Pivotal assembly of front " LD " (eli " LD ") cols " LD "-" LD "\n", f,
                  eli, col1, col2));
 #endif
 
@@ -60,7 +60,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         int64_t f_rmark = rowMarkp[chelid];
         rowMark = rowMark > f_rmark ? rowMark : f_rmark;
 
-        PRLEVEL(PR, ("%% chelid = %ld\n", chelid));
+        PRLEVEL(PR, ("%% chelid = " LD "\n", chelid));
         std::vector<int64_t> *curHeap = heapList[chelid];
 
         if (curHeap == NULL) continue;
@@ -70,10 +70,10 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         {
             int64_t frontEl = curHeap->front();
             int64_t lacFel = lacList[frontEl];
-            PRLEVEL(PR, ("%% element = %ld col1=%ld", frontEl, col1));
-            PRLEVEL(PR, (" lac_el = %ld \n", lacFel));
+            PRLEVEL(PR, ("%% element = " LD " col1=" LD "", frontEl, col1));
+            PRLEVEL(PR, (" lac_el = " LD " \n", lacFel));
             // ASSERT(lacFel >= col1);
-            PRLEVEL(PR, ("%% curHeap->size= %ld \n", curHeap->size()));
+            PRLEVEL(PR, ("%% curHeap->size= " LD " \n", curHeap->size()));
 
             if (lacFel >= col2) break;
 
@@ -94,12 +94,12 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         {
             // IMPORTANT: type conversion is necessary
             int64_t cur_size = curHeap->size();
-            PRLEVEL(PR, ("%% curHeap->size= *%ld \n", curHeap->size()));
-            PRLEVEL(PR, ("%% biggest_Child_size = %ld \n", biggest_Child_size));
+            PRLEVEL(PR, ("%% curHeap->size= *" LD " \n", curHeap->size()));
+            PRLEVEL(PR, ("%% biggest_Child_size = " LD " \n", biggest_Child_size));
             tot_size += curHeap->size();
             if (cur_size > biggest_Child_size)
             {
-                PRLEVEL(PR, ("%% biggest_Child_id = %ld \n", biggest_Child_id));
+                PRLEVEL(PR, ("%% biggest_Child_id = " LD " \n", biggest_Child_id));
                 biggest_Child_id = chelid;
                 biggest_Child_size = cur_size;
             }
@@ -110,9 +110,9 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     hi.biggest_Child_id = biggest_Child_id;
     hi.biggest_Child_size = biggest_Child_size;
 
-    PRLEVEL(PR, ("%%Inside pivot tot_size= %ld \n", hi.sum_size));
-    PRLEVEL(PR, ("%% biggest_Child_id = %ld \n", hi.biggest_Child_id));
-    PRLEVEL(PR, ("%% hi.biggest_Child_size = %ld \n", hi.biggest_Child_size));
+    PRLEVEL(PR, ("%%Inside pivot tot_size= " LD " \n", hi.sum_size));
+    PRLEVEL(PR, ("%% biggest_Child_id = " LD " \n", hi.biggest_Child_id));
+    PRLEVEL(PR, ("%% hi.biggest_Child_size = " LD " \n", hi.biggest_Child_size));
 
     rowMarkp[eli] = rowMark;
 
@@ -131,13 +131,13 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     }
     #endif
     rowMarkp[eli] = rowMark;
-    PRLEVEL(1, ("%% rowMark=%ld;\n", rowMark));
+    PRLEVEL(1, ("%% rowMark=" LD ";\n", rowMark));
 
 #ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% pivotal columns eli(%ld): ", eli));
+    PRLEVEL(PR, ("%% pivotal columns eli(" LD "): ", eli));
     for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
-        PRLEVEL(PR, ("%ld ", pivotal_elements[i]));
+        PRLEVEL(PR, ("" LD " ", pivotal_elements[i]));
     PRLEVEL(PR, ("\n"));
     std::set<int64_t> stl_rowSet;
     std::set<int64_t>::iterator it;
@@ -160,9 +160,9 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
         // int64_t *el_colIndex = colIndex_pointer (curEl);
         int64_t *el_colIndex = (int64_t *)(el + 1);
-        PRLEVEL(PR, ("current element(%ld) %ld-%ld\n", e, col1, col2));
-        PRLEVEL(PR, ("lac = %ld ", el->lac));
-        PRLEVEL(PR, ("lac_col = %ld\n ", lacList[e]));
+        PRLEVEL(PR, ("current element(" LD ") " LD "-" LD "\n", e, col1, col2));
+        PRLEVEL(PR, ("lac = " LD " ", el->lac));
+        PRLEVEL(PR, ("lac_col = " LD "\n ", lacList[e]));
         ASSERT(el_colIndex[el->lac] >= col1);
         if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
@@ -176,7 +176,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         // int64_t *rowRelIndex = relRowInd (el);
         int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
 
-        PRLEVEL(1, ("%% rowMark=%ld;\n", rowMark));
+        PRLEVEL(1, ("%% rowMark=" LD ";\n", rowMark));
 
         el->nzr_pc = 0;  // initializing ; number of zero rows
         int64_t nrows2bSeen = el->nrowsleft;
@@ -184,14 +184,14 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         for (int64_t rEl = 0; rEl < mEl; rEl++)
         {
             int64_t curRow = el_rowIndex[rEl];
-            PRLEVEL(1, ("%% curRow =%ld rEl=%ld\n", curRow, rEl));
+            PRLEVEL(1, ("%% curRow =" LD " rEl=" LD "\n", curRow, rEl));
             if (nrows2bSeen == 0) break;
             if (curRow < 0) continue;  // that row has already deleted
             nrows2bSeen--;
 
 #ifndef NDEBUG
             //            stl_rowSet.insert(curRow);
-            PRLEVEL(1, ("%% %p ---> isRowInFront [%ld]=%ld\n",
+            PRLEVEL(1, ("%% %p ---> isRowInFront [" LD "]=" LD "\n",
                         isRowInFront + curRow, curRow, isRowInFront[curRow]));
 #endif
 
@@ -224,7 +224,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
                 {
                     el->nzr_pc++;
                     PRLEVEL(1, ("%% Found a row with all zeroes!! "
-                                "curRow =%ld el=%ld\n",
+                                "curRow =" LD " el=" LD "\n",
                                 curRow, e));
 
                     zero_piv_rows++;
@@ -239,20 +239,20 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
                 stl_rowSet.insert(curRow);
 #endif
-                PRLEVEL(1, ("%%curRow =%ld rowCount=%ld\n", curRow, rowCount));
+                PRLEVEL(1, ("%%curRow =" LD " rowCount=" LD "\n", curRow, rowCount));
                 frowList[rowCount] = curRow;
                 rowRelIndex[rEl] = rowCount;
-                PRLEVEL(1, ("%%1st: rowRelIndex[%ld] = %ld\n", rEl, rowCount));
+                PRLEVEL(1, ("%%1st: rowRelIndex[" LD "] = " LD "\n", rEl, rowCount));
                 isRowInFront[curRow] = rowMark + rowCount++;
             }
             else
             {  // already seen curRow
-                PRLEVEL(1, ("%%curRow =%ld rowCount=%ld\n", curRow, rowCount));
-                PRLEVEL(1, ("%%before updating rowRelIndex[%ld] = %ld\n", rEl,
+                PRLEVEL(1, ("%%curRow =" LD " rowCount=" LD "\n", curRow, rowCount));
+                PRLEVEL(1, ("%%before updating rowRelIndex[" LD "] = " LD "\n", rEl,
                             rowRelIndex[rEl]));
-                PRLEVEL(1, ("%% rowMark =%ld\n", rowMark));
+                PRLEVEL(1, ("%% rowMark =" LD "\n", rowMark));
                 rowRelIndex[rEl] = isRowInFront[curRow] - rowMark;
-                PRLEVEL(1, ("%%N1st: rowRelIndex[%ld] = %ld\n", rEl,
+                PRLEVEL(1, ("%%N1st: rowRelIndex[" LD "] = " LD "\n", rEl,
                             rowRelIndex[rEl]));
             }
 
@@ -260,19 +260,19 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
             if (rowCount != (int64_t)stl_rowSet.size())
             {
-                PRLEVEL(1, ("%%curRow =%ld rowCount=%ld\n", curRow, rowCount));
-                PRLEVEL(1, ("%%stl_rowSet.size()=%ld \n", stl_rowSet.size()));
+                PRLEVEL(1, ("%%curRow =" LD " rowCount=" LD "\n", curRow, rowCount));
+                PRLEVEL(1, ("%%stl_rowSet.size()=" LD " \n", stl_rowSet.size()));
             }
 #endif
             ASSERT(rowCount == (int64_t)stl_rowSet.size());
         }
         panel_row[(lacList[e] - col1) / panel_width] = rowCount;
 #ifndef NDEBUG
-        PRLEVEL(PR, ("%%rowCount=%ld", rowCount));
-        PRLEVEL(PR, (" lac=%ld", lacList[e]));
+        PRLEVEL(PR, ("%%rowCount=" LD "", rowCount));
+        PRLEVEL(PR, (" lac=" LD "", lacList[e]));
         ASSERT((lacList[e] - col1) / panel_width < num_panels);
         ASSERT((lacList[e] - col1) / panel_width >= 0);
-        PRLEVEL(PR, (" ind.=%ld\n", (lacList[e] - col1) / panel_width));
+        PRLEVEL(PR, (" ind.=" LD "\n", (lacList[e] - col1) / panel_width));
 #endif
     }
 
@@ -281,12 +281,12 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
         // there is a structural problem
         PRLEVEL(PR,
-                ("%%STRUCTURAL PROBLEM! rowCount=%ld, fp =%ld", rowCount, fp));
+                ("%%STRUCTURAL PROBLEM! rowCount=" LD ", fp =" LD "", rowCount, fp));
 #endif
         if (rowCount + zero_piv_rows > fp)
         {
             PRLEVEL(PR,
-                    (" it can be solved by adding %ld zeros", zero_piv_rows));
+                    (" it can be solved by adding " LD " zeros", zero_piv_rows));
         }
         else
         {
@@ -298,10 +298,10 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     }
 
     // make sure that all panel_row is correctly initialized
-    PRLEVEL(PR, ("%% num_panels: %ld \n ", num_panels));
+    PRLEVEL(PR, ("%% num_panels: " LD " \n ", num_panels));
     PRLEVEL(PR, ("%% panel_row: \n %%"));
     int64_t pprow = panel_row[0];
-    PRLEVEL(PR, ("%% %ld ", pprow));
+    PRLEVEL(PR, ("%% " LD " ", pprow));
     ASSERT(pprow != 0);
     for (int64_t i = 1; i < num_panels; i++)
     {
@@ -313,7 +313,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         {
             pprow = panel_row[i];
         }
-        PRLEVEL(1, ("%ld ", panel_row[i]));
+        PRLEVEL(1, ("" LD " ", panel_row[i]));
         ASSERT(panel_row[i] > 0);
         ASSERT(panel_row[i] <= m);
     }
@@ -327,21 +327,21 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 
 #ifndef NDEBUG /* Checking if pivotal rows are correct */
     PRLEVEL(PR, ("%% panel_row: \n %%"));
-    for (int64_t i = 0; i < num_panels; i++) PRLEVEL(PR, ("%ld ", panel_row[i]));
+    for (int64_t i = 0; i < num_panels; i++) PRLEVEL(PR, ("" LD " ", panel_row[i]));
     PRLEVEL(PR, ("\n"));
-    PRLEVEL(PR, ("%%There are %ld rows x %ld columns %ld - %ld "
-                 "in front %ld with %ld zero rows: \n%%",
+    PRLEVEL(PR, ("%%There are " LD " rows x " LD " columns " LD " - " LD " "
+                 "in front " LD " with " LD " zero rows: \n%%",
                  rowCount, fp, col1, col2, f, zero_piv_rows));
-    for (int64_t i = 0; i < rowCount; i++) PRLEVEL(PR, (" %ld", frowList[i]));
+    for (int64_t i = 0; i < rowCount; i++) PRLEVEL(PR, (" " LD "", frowList[i]));
     PRLEVEL(PR, ("\n"));
     int64_t stl_rowSize = stl_rowSet.size();
     if (rowCount != stl_rowSize)
     {
-        PRLEVEL(PR, ("%% STL %ld:\n", stl_rowSize));
+        PRLEVEL(PR, ("%% STL " LD ":\n", stl_rowSize));
         for (it = stl_rowSet.begin(); it != stl_rowSet.end(); it++)
-            PRLEVEL(PR, ("%% %ld", *it));
-        PRLEVEL(PR, ("\n%%My Set %ld:\n", rowCount));
-        for (int64_t i = 0; i < rowCount; i++) PRLEVEL(PR, ("%% %ld", frowList[i]));
+            PRLEVEL(PR, ("%% " LD "", *it));
+        PRLEVEL(PR, ("\n%%My Set " LD ":\n", rowCount));
+        for (int64_t i = 0; i < rowCount; i++) PRLEVEL(PR, ("%% " LD "", frowList[i]));
         PRLEVEL(PR, ("\n"));
     }
     ASSERT(rowCount == stl_rowSize);
@@ -360,7 +360,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     if (sz != (size_t) rowCount)
     {
         PRLEVEL(1, ("ParU: 0ut of memory when tried to reallocate for frowList"
-                    "part %ld\n", f));
+                    "part " LD "\n", f));
         return PARU_OUT_OF_MEMORY;
     }
 
@@ -370,21 +370,21 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     if (pivotalFront == NULL)
     {
         PRLEVEL(1, ("ParU: 0ut of memory when tried to allocate for pivotal "
-                    "part %ld\n", f));
+                    "part " LD "\n", f));
         return PARU_OUT_OF_MEMORY;
     }
 #ifndef NDEBUG
     Work->actual_alloc_LUs += rowCount * fp;
     Work->actual_alloc_row_int += rowCount;
-    if (fm != rowCount) PRLEVEL(PR, ("%% fm=%ld rowCount=%ld ", fm, rowCount));
-    PRLEVEL(PR, ("%% LUs=%ld ", Work->actual_alloc_LUs));
-    PRLEVEL(PR, ("%% pivotalFront = %p size=%ld", pivotalFront, rowCount * fp));
+    if (fm != rowCount) PRLEVEL(PR, ("%% fm=" LD " rowCount=" LD " ", fm, rowCount));
+    PRLEVEL(PR, ("%% LUs=" LD " ", Work->actual_alloc_LUs));
+    PRLEVEL(PR, ("%% pivotalFront = %p size=" LD "", pivotalFront, rowCount * fp));
     int64_t act = Work->actual_alloc_LUs + Work->actual_alloc_Us +
         Work->actual_alloc_row_int;
     int64_t upp = Sym->Us_bound_size + Sym->LUs_bound_size + Sym->row_Int_bound +
         Sym->col_Int_bound;
-    PRLEVEL(PR, ("%% MEM=%ld percent=%lf%%", act, 100.0 * act / upp));
-    PRLEVEL(PR, ("%% MEM=%ld percent=%lf%%\n", act, 100.0 * act / upp));
+    PRLEVEL(PR, ("%% MEM=" LD " percent=%lf%%", act, 100.0 * act / upp));
+    PRLEVEL(PR, ("%% MEM=" LD " percent=%lf%%\n", act, 100.0 * act / upp));
 #endif
     ParU_Factors *LUs = Num->partial_LUs;
     Num->frowCount[f] = rowCount;
@@ -429,8 +429,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 
     if (ii < (int64_t)pivotal_elements.size())
     {
-        PRLEVEL(PR, ("%% pivotal size was %ld ", pivotal_elements.size()));
-        PRLEVEL(PR, ("%% and now is %ld\n ", ii));
+        PRLEVEL(PR, ("%% pivotal size was " LD " ", pivotal_elements.size()));
+        PRLEVEL(PR, ("%% and now is " LD "\n ", ii));
         pivotal_elements.resize(ii);
     }
 
@@ -476,7 +476,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
             if (el->nzr_pc == 0)
             {  // all the zero rows fit in the front
-                PRLEVEL(1, ("%%element %ld totally fit in current front %ld\n",
+                PRLEVEL(1, ("%%element " LD " totally fit in current front " LD "\n",
                             e, f));
                 num_children_with0_which_fit++;
             }
@@ -492,37 +492,37 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 
 #ifndef NDEBUG
     PR = 2;
-    PRLEVEL(PR, ("%% pivotal columns eli(%ld) after resizing: ", eli));
+    PRLEVEL(PR, ("%% pivotal columns eli(" LD ") after resizing: ", eli));
     for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
-        PRLEVEL(PR, ("%ld ", pivotal_elements[i]));
+        PRLEVEL(PR, ("" LD " ", pivotal_elements[i]));
     PRLEVEL(PR, ("\n"));
 
     PR = 2;
-    PRLEVEL(PR, ("%% After all the assemble %ld, z=%ld\n", f, zero_piv_rows));
+    PRLEVEL(PR, ("%% After all the assemble " LD ", z=" LD "\n", f, zero_piv_rows));
     PRLEVEL(PR, ("%% x =  \t"));
-    for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("%ld\t\t", c));
+    for (int64_t c = col1; c < col2; c++) PRLEVEL(PR, ("" LD "\t\t", c));
     PRLEVEL(PR, (" ;\n"));
     for (int64_t r = 0; r < rowCount; r++)
     {
-        PRLEVEL(PR, ("%% %ld\t", frowList[r]));
+        PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
         for (int64_t c = col1; c < col2; c++)
             PRLEVEL(PR, (" %2.5lf\t", pivotalFront[(c - col1) * rowCount + r]));
         PRLEVEL(PR, ("\n"));
     }
-    PRLEVEL(PR, (" %% %ld*%ld\n", rowCount, fp));
+    PRLEVEL(PR, (" %% " LD "*" LD "\n", rowCount, fp));
     PR = 2;
-    PRLEVEL(PR, ("x%ld = [ \t", f));
+    PRLEVEL(PR, ("x" LD " = [ \t", f));
     for (int64_t r = 0; r < rowCount; r++)
     {
         for (int64_t c = col1; c < col2; c++)
             PRLEVEL(PR, (" %2.5lf\t", pivotalFront[(c - col1) * rowCount + r]));
         PRLEVEL(PR, ("\n"));
     }
-    PRLEVEL(PR, (" ]; %% %ld*%ld\n", rowCount, fp));
+    PRLEVEL(PR, (" ]; %% " LD "*" LD "\n", rowCount, fp));
     PR = 1;
 #endif
 
     rowMarkp[eli] += rowCount;
-    PRLEVEL(1, ("%% rowMarkp[%ld] =%ld\n", eli, rowMarkp[eli]));
+    PRLEVEL(1, ("%% rowMarkp[" LD "] =" LD "\n", eli, rowMarkp[eli]));
     return PARU_SUCCESS;
 }

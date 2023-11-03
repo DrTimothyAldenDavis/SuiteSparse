@@ -32,8 +32,8 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
 #ifndef NDEBUG
     int64_t *elRow = Work->elRow;
     int64_t el_ind = snM[f];
-    PRLEVEL(PR, ("%%Inside prior eli=%ld f=%ld\n", el_ind, f));
-    PRLEVEL(PR, ("%% pivotal size is %ld ", pivotal_elements.size()));
+    PRLEVEL(PR, ("%%Inside prior eli=" LD " f=" LD "\n", el_ind, f));
+    PRLEVEL(PR, ("%% pivotal size is " LD " ", pivotal_elements.size()));
 
 #endif
     int64_t ii = 0;
@@ -42,15 +42,15 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
     {
         int64_t e = pivotal_elements[i];
         paru_element *el = elementList[e];
-        PRLEVEL(PR, ("%% element= %ld  \n", e));
+        PRLEVEL(PR, ("%% element= " LD "  \n", e));
         if (el == NULL)
         {
-            PRLEVEL(PR, ("%% element= %ld is NULL ii=%ld \n", e, ii));
+            PRLEVEL(PR, ("%% element= " LD " is NULL ii=" LD " \n", e, ii));
             continue;
         }
 #ifndef NDEBUG
-        PRLEVEL(PR, ("%%elRow[%ld]=%ld \n", e, elRow[e]));
-        // if (elRow[e] != 0) PRLEVEL(-1, ("%%elRow[%ld]=%ld \n", e, elRow[e]));
+        PRLEVEL(PR, ("%%elRow[" LD "]=" LD " \n", e, elRow[e]));
+        // if (elRow[e] != 0) PRLEVEL(-1, ("%%elRow[" LD "]=" LD " \n", e, elRow[e]));
         // ASSERT (elRow[e] == 0);
 #endif
 
@@ -61,22 +61,22 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
             // both a pivotal column and pivotal row
             {
                 #ifndef NDEBUG
-                PRLEVEL(PR, ("%%assembling %ld in %ld\n", e, el_ind));
-                PRLEVEL(PR, ("%% size %ld x %ld\n", el->nrows, el->ncols));
+                PRLEVEL(PR, ("%%assembling " LD " in " LD "\n", e, el_ind));
+                PRLEVEL(PR, ("%% size " LD " x " LD "\n", el->nrows, el->ncols));
                 #endif
                 paru_assemble_all(e, f, colHash, Work, Num);
                 #ifndef NDEBUG
-                PRLEVEL(PR, ("%%assembling %ld in %ld done\n", e, el_ind));
+                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
                 #endif
                 continue;
             }
 
             #ifndef NDEBUG
-            PRLEVEL(PR, ("%%assembling %ld in %ld\n", e, el_ind));
+            PRLEVEL(PR, ("%%assembling " LD " in " LD "\n", e, el_ind));
             #endif
             paru_assemble_cols(e, f, colHash, Work, Num);
             #ifndef NDEBUG
-            PRLEVEL(PR, ("%%partial col assembly%ld in %ld done\n", e, el_ind));
+            PRLEVEL(PR, ("%%partial col assembly" LD " in " LD " done\n", e, el_ind));
             #endif
             if (elementList[e] == NULL) continue;
         }
@@ -103,7 +103,7 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
                 paru_assemble_el_with0rows(e, f, colHash, Work, Num);
                 if (elementList[e] == NULL) continue;
                 #ifndef NDEBUG
-                PRLEVEL(PR, ("%%assembling %ld in %ld done\n", e, el_ind));
+                PRLEVEL(PR, ("%%assembling " LD " in " LD " done\n", e, el_ind));
                 #endif
             }
             // keeping current element
@@ -114,8 +114,8 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
 
     if (ii < (int64_t)pivotal_elements.size())
     {
-        PRLEVEL(PR, ("%% Prior: size was %ld ", pivotal_elements.size()));
-        PRLEVEL(PR, (" and now is %ld\n ", ii));
+        PRLEVEL(PR, ("%% Prior: size was " LD " ", pivotal_elements.size()));
+        PRLEVEL(PR, (" and now is " LD "\n ", ii));
         pivotal_elements.resize(ii);
     }
 
@@ -145,14 +145,14 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
     {
         int64_t ee = (*curHeap)[k];
         paru_element *ell = elementList[ee];
-        PRLEVEL(PR, ("%ld-%ld", k, ee));
+        PRLEVEL(PR, ("" LD "-" LD "", k, ee));
         if (ell != NULL)
         {
-            PRLEVEL(PR, ("(%ld) ", lacList[ee]));
+            PRLEVEL(PR, ("(" LD ") ", lacList[ee]));
         }
         else
         {
-            PRLEVEL(PR, ("(*%ld) ", lacList[ee]));
+            PRLEVEL(PR, ("(*" LD ") ", lacList[ee]));
         }
     }
     PRLEVEL(PR, ("\n"));
@@ -166,8 +166,8 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
         int64_t pelid = (*curHeap)[(i - 1) / 2];  // parent id
         if (lacList[pelid] > lacList[elid])
         {
-            PRLEVEL(PR, ("%ld-%ld(%ld) <", (i - 1) / 2, pelid, lacList[pelid]));
-            PRLEVEL(PR, ("%ld-%ld(%ld) \n", i, elid, lacList[elid]));
+            PRLEVEL(PR, ("" LD "-" LD "(" LD ") <", (i - 1) / 2, pelid, lacList[pelid]));
+            PRLEVEL(PR, ("" LD "-" LD "(" LD ") \n", i, elid, lacList[elid]));
         }
         ASSERT(lacList[pelid] <= lacList[elid]);
     }
