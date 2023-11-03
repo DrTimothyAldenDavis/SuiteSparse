@@ -26,6 +26,5 @@ foreach( demosourcefile ${DEMO_SOURCES} )
     set_target_properties ( ${demoname} PROPERTIES
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
-    target_link_libraries( ${demoname} lagraphx lagraph lagraphtest lagraphxtest ${GRAPHBLAS_LIBRARIES} )
-    target_link_directories( ${demoname} BEFORE PUBLIC ${CMAKE_SOURCE_DIR}/build )
+    target_link_libraries( ${demoname} LAGraphX LAGraph lagraphtest lagraphxtest GraphBLAS::GraphBLAS )
 endforeach( demosourcefile ${DEMO_SOURCES} )
