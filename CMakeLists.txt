@@ -65,6 +65,17 @@ option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): us
 # takes a long time
 option ( GRAPHBLAS_NSTATIC "ON (default): set NSTATIC for GraphBLAS project.  OFF: Use same value of NSTATIC for GraphBLAS like in the other projects" ON )
 
+# options to build with libraries installed on the system instead of building
+# dependencies automatically
+option ( USE_SYSTEM_BTF "ON: use BTF libraries installed on the build system.  OFF (default): Automatically build BTF as dependency if needed." OFF )
+option ( USE_SYSTEM_CHOLMOD "ON: use CHOLMOD libraries installed on the build system.  OFF (default): Automatically build CHOLMOD as dependency if needed." OFF )
+option ( USE_SYSTEM_AMD "ON: use AMD libraries installed on the build system.  OFF (default): Automatically build AMD as dependency if needed." OFF )
+option ( USE_SYSTEM_COLAMD "ON: use COLAMD libraries installed on the build system.  OFF (default): Automatically build COLAMD as dependency if needed." OFF )
+option ( USE_SYSTEM_CAMD "ON: use CAMD libraries installed on the build system.  OFF (default): Automatically build CAMD as dependency if needed." OFF )
+option ( USE_SYSTEM_CCOLAMD "ON: use CCOLAMD libraries installed on the build system.  OFF (default): Automatically build CCOLAMD as dependency if needed." OFF )
+option ( USE_SYSTEM_GRAPHBLAS "ON: use GraphBLAS libraries installed on the build system.  OFF (default): Automatically build GraphBLAS as dependency if needed." OFF )
+option ( USE_SYSTEM_SUITESPARSE_CONFIG "ON: use SuiteSparse_config libraries installed on the build system.  OFF (default): Automatically build SuiteSparse_config as dependency if needed." OFF )
+
 #-------------------------------------------------------------------------------
 # global variables
 #-------------------------------------------------------------------------------
@@ -87,85 +98,121 @@ include ( SuiteSparsePolicy )
 # check/add project dependencies
 #-------------------------------------------------------------------------------
 
-if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"graphblas\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
+if ( USE_SYSTEM_GRAPHBLAS )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "graphblas" )
+    find_package ( GraphBLAS REQUIRED )
+else ( )
+    if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"graphblas\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"btf\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
+if ( USE_SYSTEM_BTF )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "btf" )
+    find_package ( BTF REQUIRED )
+else ( )
+    if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"btf\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"cholmod\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+if ( USE_SYSTEM_CHOLMOD )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+    find_package ( CHOLMOD REQUIRED )
+else ( )
+    if ( ( NOT NCHOLMOD AND
+              ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+                OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
+            OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"cholmod\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( ( NOT NCHOLMOD AND
-          ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-            OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
-        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"cholmod\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
+if ( USE_SYSTEM_AMD )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "amd" )
+    find_package ( AMD REQUIRED )
+else ( )
+    if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"amd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"amd\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
+if ( USE_SYSTEM_COLAMD )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "colamd" )
+    find_package ( COLAMD REQUIRED )
+else ( )
+    if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"colamd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"colamd\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
+if ( USE_SYSTEM_CAMD )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "camd" )
+    find_package ( CAMD REQUIRED )
+else ( )
+    if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT USE_SYSTEM_CAMD AND NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"camd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"camd\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
-    endif ( )
-    if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
+if ( USE_SYSTEM_CCOLAMD )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
+    find_package ( CCOLAMD REQUIRED )
+else ( )
+    if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
+        endif ( )
     endif ( )
 endif ( )
 
-if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-        OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-    if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
-        list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+if ( USE_SYSTEM_SUITESPARSE_CONFIG )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+    find_package ( SuiteSparse_config REQUIRED )
+else ( )
+    if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "cxsparse" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
+        endif ( )
     endif ( )
 endif ( )
 
