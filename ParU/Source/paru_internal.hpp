@@ -45,7 +45,7 @@ extern "C"
 // FIXME NPR and NDEBUG enabled
 #undef NPR
 // uncomment the following line to turn on debugging mode
-#undef NDEBUG
+// #undef NDEBUG
 // uncomment the following line to turn on OpenMP timing
 //#undef NTIME
 
