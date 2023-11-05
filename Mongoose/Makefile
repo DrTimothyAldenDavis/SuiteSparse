@@ -48,6 +48,7 @@ global:
 # build the Mongoose library (static and dynamic) and run a quick test
 demos: library
 	( cd build ; ./demo )
+	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
 
 # the same as "make library"
 static: library

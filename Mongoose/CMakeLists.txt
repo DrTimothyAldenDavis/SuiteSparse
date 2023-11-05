@@ -76,6 +76,9 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     endif ( )
 endif ( )
 
+# For ctests
+find_package ( Python COMPONENTS Interpreter )
+
 #-------------------------------------------------------------------------------
 
 # Mongoose installation location
@@ -288,66 +291,101 @@ else ( )
 endif ( )
 
 # Coverage and Unit Testing Setup
-enable_testing()
-set(TESTING_OUTPUT_PATH ${CMAKE_BINARY_DIR}/tests)
+enable_testing ( )
+set ( TESTING_OUTPUT_PATH ${PROJECT_BINARY_DIR}/tests )
 
-# I/O Tests
-add_executable ( mongoose_test_io
+if ( Python_Interpreter_FOUND )
+    # I/O Tests
+    add_executable ( mongoose_test_io
         Tests/Mongoose_Test_IO.cpp
         Tests/Mongoose_Test_IO_exe.cpp )
-target_link_libraries ( mongoose_test_io Mongoose_static_dbg )
-if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-    target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig_static )
-else ( )
-    target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig )
-endif ( )
-set_target_properties ( mongoose_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+    target_link_libraries ( mongoose_test_io Mongoose_static_dbg )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig_static )
+    else ( )
+        target_link_libraries ( mongoose_test_io SuiteSparse::SuiteSparseConfig )
+    endif ( )
+    set_target_properties ( mongoose_test_io PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
-add_test(IO_Test ./runTests -min 1 -max 15 -t io -k)
+    add_test ( NAME IO_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t io -k )
 
-# Edge Separator Tests
-add_executable ( mongoose_test_edgesep
+    if (WIN32)
+        set_tests_properties ( IO_Test PROPERTIES
+            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${PROJECT_BINARY_DIR}" )
+    endif ( )
+
+    # Edge Separator Tests
+    add_executable ( mongoose_test_edgesep
         Tests/Mongoose_Test_EdgeSeparator.cpp
         Tests/Mongoose_Test_EdgeSeparator_exe.cpp)
-target_link_libraries ( mongoose_test_edgesep Mongoose_static_dbg )
-set_target_properties ( mongoose_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+    target_link_libraries ( mongoose_test_edgesep Mongoose_static_dbg )
+    set_target_properties ( mongoose_test_edgesep PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
-add_test(Edge_Separator_Test ./runTests -min 1 -max 15 -t edgesep)
-add_test(Edge_Separator_Test_2 ./runTests -t edgesep -i 21 39 191 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 360 1437)
-add_test(Weighted_Edge_Separator_Test ./runTests -t edgesep -i 2624)
-add_test(Target_Split_Test ./runTests -min 1 -max 15 -t edgesep -s 0.3)
+    add_test ( NAME Edge_Separator_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t edgesep )
+    add_test ( NAME Edge_Separator_Test_2
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -t edgesep -i 21 39 191 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 360 1437 )
+    add_test ( NAME Weighted_Edge_Separator_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -t edgesep -i 2624 )
+    add_test ( NAME Target_Split_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t edgesep -s 0.3 )
 
-# Memory Tests
-add_executable ( mongoose_test_memory
+    if (WIN32)
+        set_tests_properties ( Edge_Separator_Test Edge_Separator_Test_2 Weighted_Edge_Separator_Test Target_Split_Test PROPERTIES
+            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${PROJECT_BINARY_DIR}" )
+    endif ( )
+
+    # Memory Tests
+    add_executable ( mongoose_test_memory
         Tests/Mongoose_Test_Memory.cpp
         Tests/Mongoose_Test_Memory_exe.cpp)
-target_link_libraries ( mongoose_test_memory Mongoose_static_dbg )
-set_target_properties ( mongoose_test_memory PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+    target_link_libraries ( mongoose_test_memory Mongoose_static_dbg )
+    set_target_properties ( mongoose_test_memory PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
 
-add_test(Memory_Test ./runTests -min 1 -max 15 -t memory)
+    add_test ( NAME Memory_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t memory )
 
-# Performance Test
-add_executable ( mongoose_test_performance
+    if (WIN32)
+        set_tests_properties ( Memory_Test PROPERTIES
+            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${PROJECT_BINARY_DIR}" )
+    endif ( )
+
+    # Performance Test
+    add_executable ( mongoose_test_performance
         Tests/Mongoose_Test_Performance.cpp
         Tests/Mongoose_Test_Performance_exe.cpp )
-if ( NSTATIC )
-    target_link_libraries ( mongoose_test_performance Mongoose )
-else ( )
-    target_link_libraries ( mongoose_test_performance Mongoose_static )
+    if ( NSTATIC )
+        target_link_libraries ( mongoose_test_performance Mongoose )
+    else ( )
+        target_link_libraries ( mongoose_test_performance Mongoose_static )
+    endif ( )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig_static )
+    else ( )
+        target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig )
+    endif ( )
+    set_target_properties ( mongoose_test_performance PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
+
+    add_test ( NAME Performance_Test
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t performance -p )
+    add_test ( NAME Performance_Test_2
+        COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p )
+
+    if (WIN32)
+        set_tests_properties ( Performance_Test Performance_Test_2 PROPERTIES
+            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${PROJECT_BINARY_DIR}" )
+    endif ( )
 endif ( )
-if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-    target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig_static )
-else ( )
-    target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig )
-endif ( )
-set_target_properties ( mongoose_test_performance PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
-add_test(Performance_Test ./runTests -min 1 -max 15 -t performance -p)
-add_test(Performance_Test_2 ./runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p)
 
 # Reference Test
 add_executable ( mongoose_test_reference
-        Tests/Mongoose_Test_Reference.cpp
-        Tests/Mongoose_Test_Reference_exe.cpp )
+    Tests/Mongoose_Test_Reference.cpp
+    Tests/Mongoose_Test_Reference_exe.cpp )
 if ( NSTATIC )
     target_link_libraries ( mongoose_test_reference Mongoose )
 else ( )
@@ -362,27 +400,37 @@ set_target_properties ( mongoose_test_reference PROPERTIES RUNTIME_OUTPUT_DIRECT
 
 # Unit Tests
 add_executable ( mongoose_unit_test_io
-        Tests/Mongoose_UnitTest_IO_exe.cpp)
+    Tests/Mongoose_UnitTest_IO_exe.cpp )
 target_link_libraries ( mongoose_unit_test_io Mongoose_static_dbg )
 set_target_properties ( mongoose_unit_test_io PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
-add_test ( Unit_Test_IO ./tests/mongoose_unit_test_io )
+add_test ( NAME Unit_Test_IO
+    COMMAND ${TESTING_OUTPUT_PATH}/mongoose_unit_test_io )
 
 add_executable ( mongoose_unit_test_graph
-        Tests/Mongoose_UnitTest_Graph_exe.cpp )
+    Tests/Mongoose_UnitTest_Graph_exe.cpp )
 target_link_libraries ( mongoose_unit_test_graph Mongoose_static_dbg )
 set_target_properties ( mongoose_unit_test_graph PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
-add_test ( Unit_Test_Graph ./tests/mongoose_unit_test_graph )
+add_test ( NAME Unit_Test_Graph
+    COMMAND ${TESTING_OUTPUT_PATH}/mongoose_unit_test_graph
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Tests )
 
 add_executable ( mongoose_unit_test_edgesep
-        Tests/Mongoose_UnitTest_EdgeSep_exe.cpp)
+    Tests/Mongoose_UnitTest_EdgeSep_exe.cpp )
 target_link_libraries ( mongoose_unit_test_edgesep Mongoose_static_dbg )
 set_target_properties ( mongoose_unit_test_edgesep PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTING_OUTPUT_PATH} )
-add_test ( Unit_Test_EdgeSep ./tests/mongoose_unit_test_edgesep )
+add_test ( NAME Unit_Test_EdgeSep
+    COMMAND ${TESTING_OUTPUT_PATH}/mongoose_unit_test_edgesep
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Tests )
+
+if (WIN32)
+    set_tests_properties ( Unit_Test_IO Unit_Test_Graph Unit_Test_EdgeSep PROPERTIES
+        ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${PROJECT_BINARY_DIR}" )
+endif ( )
 
 if ( $ENV{MONGOOSE_COVERAGE} )
-    set ( COV on )
+    set ( COV ON )
 else ( )
-    set ( COV off )
+    set ( COV OFF )
 endif ( )
 
 option ( MONGOOSE_COVERAGE "OFF: do not compile debug library with test coverage.  ON: debug with test coverage" ${COV} )
@@ -430,27 +478,21 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
     # using Visual Studio C++
 endif ()
 
-set_target_properties ( Mongoose_static_dbg PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}" )
-set_target_properties ( Mongoose_static_dbg PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
+set_target_properties ( Mongoose_static_dbg PROPERTIES
+    COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
+    LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 
 # Add debug compile/linker flags
-set_target_properties(mongoose_test_io PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_test_io PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set_target_properties(mongoose_test_memory PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_test_memory PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set_target_properties(mongoose_test_edgesep PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_test_edgesep PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_io PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_io PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_graph PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_graph PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_edgesep PROPERTIES COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}")
-set_target_properties(mongoose_unit_test_edgesep PROPERTIES LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}")
+if ( Python_Interpreter_FOUND )
+    set_target_properties ( mongoose_test_io mongoose_test_memory mongoose_test_edgesep PROPERTIES
+        COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
+        LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
+endif ( )
+set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph mongoose_unit_test_edgesep PROPERTIES
+    COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
+    LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 
-set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1) # Necessary for gcov - prevents file.cpp.gcda instead of file.gcda
-
-# Copy over runTest.py to build folder for ease of use
-file(COPY Tests/runTests DESTINATION ${CMAKE_BINARY_DIR})
+set ( CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1 ) # Necessary for gcov - prevents file.cpp.gcda instead of file.gcda
 
 # if ( NOT NSTATIC )
 #   add_custom_command ( TARGET Mongoose_static
@@ -466,8 +508,8 @@ file(COPY Tests/runTests DESTINATION ${CMAKE_BINARY_DIR})
 #       COMMENT "Copying libmongoose (dynamic) to root Lib directory"
 #       )
 
-add_custom_target(purge
-        COMMAND rm -rf ${CMAKE_BINARY_DIR}/*
+add_custom_target ( purge
+        COMMAND rm -rf ${PROJECT_BINARY_DIR}/*
 #       COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex.aux
@@ -480,7 +522,7 @@ add_custom_target(purge
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.blg
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.tar.gz
         COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.csv
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
         )
 
 add_custom_target(userguide

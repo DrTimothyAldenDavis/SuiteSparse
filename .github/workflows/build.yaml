@@ -385,6 +385,7 @@ jobs:
             ${{ matrix.target-prefix }}-ccache
             ${{ matrix.target-prefix }}-openblas
             ${{ matrix.target-prefix }}-omp
+            ${{ matrix.target-prefix }}-python
             ${{ matrix.target-prefix }}-gmp
             ${{ matrix.target-prefix }}-mpfr
 
@@ -435,6 +436,7 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
+                  -DPython_EXECUTABLE="$(which python)" \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
