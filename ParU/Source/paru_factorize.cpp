@@ -343,7 +343,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 
     if ((int64_t)task_Q.size() * 2 > Control->paru_max_threads)
     {
-        printf ("Parallel:\n") ;
+        printf ("Parallel:\n") ;    // FIXME
         PRLEVEL(1, ("Parallel\n"));
         // chekcing user input
         PRLEVEL(1, ("Control: max_th=" LD " scale=" LD " piv_toler=%lf "
@@ -368,13 +368,13 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         int64_t start = 0;
         PRLEVEL(
             1, ("%% size=" LD ", steps =" LD ", stages =" LD "\n", size, steps, stages));
-        printf ("stages " LD "\n", stages) ;
+        printf ("stages " LD "\n", stages) ;    // FIXME
 
         for (int64_t ii = 0; ii < stages; ii++)
         {
             if (start >= size) break;
             int64_t end = start + steps > size ? size : start + steps;
-            printf ("stage " LD "\n", ii) ;
+            printf ("stage " LD "\n", ii) ; // FIXME
             PRLEVEL(1, ("%% doing Queue tasks <" LD "," LD ">\n", start, end));
             #pragma omp parallel proc_bind(spread)                             \
             num_threads(Control->paru_max_threads)
@@ -412,7 +412,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         {
             #pragma omp atomic write
             Work->naft = 1;
-            printf ("remaining " LD "\n", chain_task) ;
+            printf ("remaining " LD "\n", chain_task) ; // FIXME
             PRLEVEL(1, ("Chain_taskd " LD " has remained\n", chain_task));
             info = paru_exec_tasks_seq(chain_task, task_num_child, Work, Num);
         }
@@ -455,7 +455,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     // finalize the permutation
     //--------------------------------------------------------------------------
 
-    printf ("finalize permutation\n") ;
+    printf ("finalize permutation\n") ; // FIXME
     PRLEVEL(1, ("finalize permutation\n"));
     info = paru_finalize_perm(Sym, Num);  // to form the final permutation
     paru_free_work(Sym, Work);   // free the work DS

@@ -42,8 +42,7 @@ extern "C"
 }
 
 // for printing information uncomment this; to activate assertions uncomment
-// FIXME NPR and NDEBUG enabled
-#undef NPR
+// #undef NPR
 // uncomment the following line to turn on debugging mode
 // #undef NDEBUG
 // uncomment the following line to turn on OpenMP timing
@@ -78,7 +77,6 @@ static int print_level = 0;   // FIXME
         }
     #define DEBUGLEVEL(level)    \
         {                        \
-            if (level == 999) printf ("\nLine %4d File: %s\n", __LINE__, __FILE__) ; \
             print_level = level; \
         }
     #define PARU_DEFINE_PRLEVEL int PR = 1
