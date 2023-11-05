@@ -37,7 +37,7 @@ set ( PROJECT_VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${G
 
 # GraphBLAS takes a long time to build, so do not build the static library
 # by default
-set ( NSTATIC_DEFAULT_ON true )
+set ( NSTATIC_DEFAULT_ON ON )
 
 # CUDA is under development for now, and not deployed in production:
   set ( ENABLE_CUDA false )
@@ -289,7 +289,7 @@ if ( NOT NSTATIC )
     endif ( )
 
     target_include_directories ( GraphBLAS_static
-        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
     if ( SUITESPARSE_CUDA )
