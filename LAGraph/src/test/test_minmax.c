@@ -212,6 +212,10 @@ void test_minmax (void)
         double emin2 = 0 ;
         double emax2 = 0 ;
 
+        printf ("min/max as GrB_Scalars:\n") ;
+        GxB_print (G->emin, 3) ;
+        GxB_print (G->emax, 3) ;
+
         int result ;
         result = GrB_Scalar_extractElement_FP64 (&emin2, G->emin) ;
         printf ("min: %g %g err %g\n", emin1, emin2, emin1 - emin2) ;
@@ -231,6 +235,15 @@ void test_minmax (void)
             printf ("emin1: %30.20g\n", emin1) ;
             printf ("emin2: %30.20g\n", emin2) ;
             OK (LAGraph_Matrix_Print (G->A, 5, stdout, msg)) ;
+
+            // extract as int64:
+            int64_t emin2_int64 = 0 ;
+            int64_t emax2_int64 = 0 ;
+            GrB_Scalar_extractElement_INT64 (&emin2_int64, G->emin) ;
+            GrB_Scalar_extractElement_INT64 (&emax2_int64, G->emax) ;
+            printf ("emin2 int64: %" PRId64 "\n", emin2_int64) ;
+            printf ("emax2 int64: %" PRId64 "\n", emax2_int64) ;
+
         }
         TEST_CHECK (emin1 == emin2) ;
 
