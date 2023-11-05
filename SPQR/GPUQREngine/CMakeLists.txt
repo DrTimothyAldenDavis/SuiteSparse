@@ -37,6 +37,8 @@ project ( gpuqrengine
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
 
+option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
+
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
@@ -96,8 +98,11 @@ target_include_directories ( GPUQREngine PRIVATE
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>"
     "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-set_target_properties ( GPUQREngine PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( GPUQREngine PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+set_target_properties ( GPUQREngine PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CUDA_SEPARABLE_COMPILATION ON
+    CUDA_RESOLVE_DEVICE_SYMBOLS ON
+    CUDA_RUNTIME_LIBRARY Static )
 target_link_libraries ( GPUQREngine PRIVATE
     CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
 target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
@@ -128,13 +133,14 @@ if ( NOT NSTATIC )
     target_include_directories ( GPUQREngine_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES}
-        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>
+        $<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
 
-    target_include_directories ( GPUQREngine_static PRIVATE
-        "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
-
-    set_target_properties ( GPUQREngine_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    set_target_properties ( GPUQREngine_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( GPUQREngine_static PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_RESOLVE_DEVICE_SYMBOLS ON
+        CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine_static PUBLIC
         CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
     target_compile_definitions ( GPUQREngine_static PRIVATE "SUITESPARSE_CUDA" )

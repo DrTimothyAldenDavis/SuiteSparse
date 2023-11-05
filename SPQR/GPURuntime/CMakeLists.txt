@@ -51,10 +51,6 @@ configure_file ( "Config/SuiteSparse_GPURuntime.hpp.in"
 
 #-------------------------------------------------------------------------------
 
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo" )
-message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
-message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
-
 file ( GLOB SUITESPARSE_GPURUNTIME_SOURCES "Source/*.cpp" )
 
 set ( SUITESPARSE_GPURUNTIME_INCLUDES Include )
@@ -81,8 +77,10 @@ target_include_directories ( GPURuntime PRIVATE
     ${SUITESPARSE_GPURUNTIME_INCLUDES}
     $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
-set_target_properties ( GPURuntime PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( GPURuntime PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+set_target_properties ( GPURuntime PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+    CUDA_SEPARABLE_COMPILATION ON
+    CUDA_RUNTIME_LIBRARY Static )
 target_link_libraries ( GPURuntime PRIVATE
     CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
 target_compile_definitions ( GPURuntime PRIVATE "SUITESPARSE_CUDA" )
@@ -115,8 +113,10 @@ if ( NOT NSTATIC )
         ${SUITESPARSE_GPURUNTIME_INCLUDES}
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
 
-    set_target_properties ( GPURuntime_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    set_target_properties ( GPURuntime_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( GPURuntime_static PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime_static PUBLIC
         CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
     target_compile_definitions ( GPURuntime_static PRIVATE "SUITESPARSE_CUDA" )
