@@ -206,6 +206,7 @@ CHOLMOD_UserGuide.pdf: CHOLMOD_UserGuide.tex UserGuide.bib $(I) $(C) $(M) Makefi
 	bibtex CHOLMOD_UserGuide
 	pdflatex CHOLMOD_UserGuide
 	pdflatex CHOLMOD_UserGuide
+	- $(RM) _*.tex
 	- $(RM) _temp.awk
 	- $(RM) -r *.aux *.bbl *.blg *.log *.toc *.dvi *.lof *.lot
 
