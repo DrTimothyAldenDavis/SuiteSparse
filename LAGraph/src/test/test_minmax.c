@@ -228,6 +228,8 @@ void test_minmax (void)
             // failure on MSVC, OpenMP
             // https://github.com/DrTimothyAldenDavis/SuiteSparse/actions/runs/6763376325/job/18380420493?pr=503
             printf ("Test failure, k: %d name: %s\n", k, aname) ;
+            printf ("emin1: %30.20g\n", emin1) ;
+            printf ("emin2: %30.20g\n", emin2) ;
             OK (LAGraph_Matrix_Print (G->A, 5, stdout, msg)) ;
         }
         TEST_CHECK (emin1 == emin2) ;
