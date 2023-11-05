@@ -259,10 +259,6 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # enable testing and add subdirectories
 #-------------------------------------------------------------------------------
 
-# allow ctest to find the binaries:
-set ( CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} )
-set ( CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} )
-
 enable_testing ( )
 
 add_subdirectory ( src )
