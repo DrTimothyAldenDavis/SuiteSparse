@@ -90,7 +90,7 @@ foreach( testsourcefile ${TEST_SOURCES} )
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
     target_link_libraries( ${testname} LAGraphX LAGraph lagraphxtest lagraphtest GraphBLAS::GraphBLAS )
-    string( REPLACE "test_" "ctest_" ctestname ${testname})
+    string( REPLACE "test_" "LAGraphX_" ctestname ${testname})
     add_test( ${ctestname} ${testname} )
 #   add_test( NAME ${ctestname} COMMAND valgrind $<TARGET_FILE:${testname}> )
     if (WIN32)
