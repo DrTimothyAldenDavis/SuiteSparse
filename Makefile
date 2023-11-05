@@ -157,6 +157,7 @@ purge:
 	- ( cd ParU && $(MAKE) purge )
 	- ( cd LAGraph && $(MAKE) purge )
 	- $(RM) -r include/* bin/* lib/*
+	- $(RM) -r build/*
 
 clean: purge
 
