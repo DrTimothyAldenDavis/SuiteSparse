@@ -50,9 +50,6 @@ if ( GRAPHBLAS_NSTATIC )
     set ( NSTATIC ON )
 endif ( )
 
-# FIXME: force COMPACT mode in GraphBLAS (while debugging)
-set ( COMPACT ON )
-
 if ( SUITESPARSE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
     set ( COMPACT ON )

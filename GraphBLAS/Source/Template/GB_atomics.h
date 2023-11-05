@@ -62,7 +62,7 @@
 // OpenMP 4.0 or later) with the "update" clause.  For MS Visual Studio, the
 // "update" clause is removed since it supports OpenMP 2.0.
 
-#if ! defined (_OPENMP) || (_OPENMP < 199810)
+#if (! defined (_OPENMP)) || (_OPENMP < 199810)
 
     // no OpenMP at all
     #define GB_ATOMIC_UPDATE
@@ -168,7 +168,7 @@
 // https://docs.microsoft.com/en-us/cpp/intrinsics/interlockedexchange-intrinsic-functions
 // https://docs.microsoft.com/en-us/cpp/intrinsics/interlockedor-intrinsic-functions
 
-#if ! defined (_OPENMP) || (_OPENMP < 199810)
+#if (! defined (_OPENMP)) || (_OPENMP < 199810)
 
     // no OpenMP at all
     #define GB_ATOMIC_CAPTURE
