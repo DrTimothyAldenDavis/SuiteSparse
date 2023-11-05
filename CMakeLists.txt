@@ -383,3 +383,12 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )
+
+#-------------------------------------------------------------------------------
+# enable testing facilities
+#-------------------------------------------------------------------------------
+
+# Currently, only LAGraph and Mongoose have ctests.
+# FIXME: Consider converting (some of) the existing demos to ctests.
+
+enable_testing ( )
