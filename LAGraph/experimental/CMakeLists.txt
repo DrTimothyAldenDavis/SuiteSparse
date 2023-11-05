@@ -31,7 +31,7 @@ SET_TARGET_PROPERTIES ( LAGraphX PROPERTIES
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
     PUBLIC_HEADER "include/LAGraphX.h"
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
 target_link_libraries ( LAGraphX PRIVATE LAGraph GraphBLAS::GraphBLAS )
 
 target_include_directories ( LAGraphX PUBLIC

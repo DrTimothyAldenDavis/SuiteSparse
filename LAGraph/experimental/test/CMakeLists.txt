@@ -41,7 +41,7 @@ SET_TARGET_PROPERTIES ( lagraphxtest PROPERTIES
     SOVERSION ${LAGraph_VERSION_MAJOR}
     C_STANDARD_REQUIRED ON
     C_STANDARD 11
-    RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/dlls )
+    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
 target_link_libraries ( lagraphxtest PRIVATE LAGraph lagraphtest GraphBLAS::GraphBLAS )
 target_compile_definitions ( lagraphxtest PRIVATE LGX_TEST_LIBRARY )
 target_compile_definitions ( lagraphxtest PUBLIC LGX_TEST_DLL )
@@ -90,12 +90,12 @@ foreach( testsourcefile ${TEST_SOURCES} )
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
     target_link_libraries( ${testname} LAGraphX LAGraph lagraphxtest lagraphtest GraphBLAS::GraphBLAS )
-    string( REPLACE "test_" "ctest_" ctestname ${testname})
-    add_test( ${ctestname} ${testname} )
+    string( REPLACE "test_" "LAGraphX_" ctestname ${testname})
+    add_test( NAME ${ctestname} COMMAND $<TARGET_FILE:${testname}> )
 #   add_test( NAME ${ctestname} COMMAND valgrind $<TARGET_FILE:${testname}> )
     if (WIN32)
         set_tests_properties ( ${ctestname} PROPERTIES
-            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${CMAKE_BINARY_DIR}/dlls" )
+            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphxtest>" )
     endif ( )
 endforeach( testsourcefile ${TEST_SOURCES} )
 
