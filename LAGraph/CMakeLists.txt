@@ -170,7 +170,7 @@ endif ( )
 
 message ( STATUS "CMAKE build type:          " ${CMAKE_BUILD_TYPE} )
 message ( STATUS "CMAKE source directory:    " ${PROJECT_SOURCE_DIR} )
-message ( STATUS "CMAKE build directory:     " ${CMAKE_BINARY_DIR} )
+message ( STATUS "CMAKE build directory:     " ${PROJECT_BINARY_DIR} )
 
 if ( ${CMAKE_BUILD_TYPE} STREQUAL "Debug")
     message ( STATUS "CMAKE C Flags debug:       " ${CMAKE_C_FLAGS_DEBUG} )
