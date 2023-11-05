@@ -386,22 +386,17 @@ Each function is described in the next sections.
 \subsection{{\tt analyze}: order and analyze}					\input{_analyze_m.tex}
 \subsection{{\tt bisect}: find a node separator}				\input{_bisect_m.tex}
 \subsection{{\tt chol2}: same as {\tt chol}}					\input{_chol2_m.tex}
-\newpage
 \subsection{{\tt cholmod2}: supernodal backslash}				\input{_cholmod2_m.tex}
 \newpage
 \subsection{{\tt cholmod\_demo}: a short demo program}				\input{_cholmod_demo_m.tex}
 \subsection{{\tt cholmod\_make}: compile CHOLMOD in MATLAB}			\input{_cholmod_make_m.tex}
 \newpage
 \subsection{{\tt etree2}: same as {\tt etree}}					\input{_etree2_m.tex}
-\newpage
 \subsection{{\tt graph\_demo}: graph partitioning demo}				\input{_graph_demo_m.tex}
-\newpage
 \subsection{{\tt lchol}: $\m{LL}\tr$ factorization}				\input{_lchol_m.tex}
 \subsection{{\tt ldlchol}: $\m{LDL}\tr$ factorization}				\input{_ldlchol_m.tex}
-% \newpage
 \subsection{{\tt ldlsolve}: solve using an $\m{LDL}\tr$ factorization}		\input{_ldlsolve_m.tex}
 \subsection{{\tt ldlsplit}: split an $\m{LDL}\tr$ factorization}		\input{_ldlsplit_m.tex}
-\newpage
 \subsection{{\tt ldlupdate}: update/downdate an $\m{LDL}\tr$ factorization}	\input{_ldlupdate_m.tex}
 \newpage
 \subsection{{\tt ldlrowmod}: add/delete a row from an $\m{LDL}\tr$ factorization}	\input{_ldlrowmod_m.tex}
@@ -1311,7 +1306,7 @@ Frees the workspace in {\tt Common}.
 Increments {\tt Common->mark} so that the {\tt Flag} array is now cleared.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_error}: report error}
+\subsection{{\tt cholmod\_error}: report error}
 %---------------------------------------
 
 \input{_error.tex}
@@ -1413,7 +1408,7 @@ for {\tt cholmod\_allocate\_sparse}, but with fewer parameters
 (the matrix is packed, sorted, and unsymmetric).
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_transpose}: transpose sparse matrix}
+\subsection{{\tt cholmod\_transpose}: transpose sparse matrix}
 %---------------------------------------
 
 \input{_transpose.tex}
@@ -1439,7 +1434,7 @@ Sorts the columns of the matrix {\tt A}.  Returns  {\tt A} in packed form, even 
 starts as unpacked.  Removes entries in the ignored part of a symmetric matrix.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_transpose\_unsym}: transpose/permute unsymmetric sparse matrix}
+\subsection{{\tt cholmod\_transpose\_unsym}: transpose/permute unsymmetric sparse matrix}
 %---------------------------------------
 
 \input{_transpose_unsym.tex}
@@ -1654,7 +1649,7 @@ The xtype of {\tt A} can be pattern or real.  Complex or zomplex cases are suppo
 if {\tt values} is {\tt FALSE} (in which case the numerical values are ignored).
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_add}: add sparse matrices}
+\subsection{{\tt cholmod\_add}: add sparse matrices}
 %---------------------------------------
 
 \input{_add.tex}
@@ -1687,7 +1682,7 @@ For an $\m{LDL}\tr$ factorization, the diagonal matrix $\m{D}$ is stored
 as the diagonal of $\m{L}$; the unit-diagonal of $\m{L}$ is not stored.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_free\_factor}: free factor}
+\subsection{{\tt cholmod\_free\_factor}: free factor}
 %---------------------------------------
 
 \input{_free_factor.tex}
@@ -1708,7 +1703,7 @@ Allocates a factor and sets it to identity.
 Reallocates a simplicial factor so that it can contain {\tt nznew} entries.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_change\_factor}: change factor}
+\subsection{{\tt cholmod\_change\_factor}: change factor}
 %---------------------------------------
 
 \input{_change_factor.tex}
@@ -1809,7 +1804,7 @@ complex, or zomplex) to a different numeric xtype.  For that conversion,
 use {\tt cholmod\_factor\_xtype} instead.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_pack\_factor}: pack the columns of a factor}
+\subsection{{\tt cholmod\_pack\_factor}: pack the columns of a factor}
 %---------------------------------------
 
 \input{_pack_factor.tex}
@@ -1834,7 +1829,7 @@ which packs the columns and ensures that they appear in monotonic order.
 Reallocates the space allotted to a single column of $\m{L}$.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_factor\_to\_sparse}: sparse matrix copy of a factor}
+\subsection{{\tt cholmod\_factor\_to\_sparse}: sparse matrix copy of a factor}
 %---------------------------------------
 
 \input{_factor_to_sparse.tex}
@@ -1901,7 +1896,7 @@ Ensures a dense matrix has a given size and type.
 %---------------------------------------
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_zeros}: dense zero matrix}
+\subsection{{\tt cholmod\_zeros}: dense zero matrix}
 %---------------------------------------
 
 \input{_zeros.tex}
@@ -1922,7 +1917,7 @@ Returns a dense matrix with each entry equal to one.
 Returns a dense identity matrix.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_sparse\_to\_dense}: dense matrix copy of a sparse matrix}
+\subsection{{\tt cholmod\_sparse\_to\_dense}: dense matrix copy of a sparse matrix}
 %---------------------------------------
 
 \input{_sparse_to_dense.tex}
@@ -1950,7 +1945,7 @@ Returns a sparse copy of a dense matrix.
 Returns a copy of a dense matrix.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_copy\_dense2}: copy dense matrix (preallocated)}
+\subsection{{\tt cholmod\_copy\_dense2}: copy dense matrix (preallocated)}
 %---------------------------------------
 
 \input{_copy_dense2.tex}
@@ -1991,7 +1986,7 @@ Allocates a triplet matrix.
 Frees a triplet matrix.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_reallocate\_triplet}: reallocate triplet matrix}
+\subsection{{\tt cholmod\_reallocate\_triplet}: reallocate triplet matrix}
 %---------------------------------------
 
 \input{_reallocate_triplet.tex}
@@ -2019,7 +2014,7 @@ converting to a sparse matrix.
 Any duplicate entries are summed.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_copy\_triplet}: copy triplet matrix}
+\subsection{{\tt cholmod\_copy\_triplet}: copy triplet matrix}
 %---------------------------------------
 
 \input{_copy_triplet.tex}
@@ -2060,7 +2055,7 @@ A value of {\tt n=0} is treated as {\tt n=1}.
 If not successful, {\tt NULL} is returned and {\tt Common->status} is set to {\tt CHOLMOD\_OUT\_OF\_MEMORY}.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_free}: free memory}
+\subsection{{\tt cholmod\_free}: free memory}
 %---------------------------------------
 
 \input{_free.tex}
@@ -2092,7 +2087,7 @@ unchanged otherwise.
 A value of {\tt nnew=0} is treated as {\tt nnew=1}.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_realloc\_multiple}: reallocate memory}
+\subsection{{\tt cholmod\_realloc\_multiple}: reallocate memory}
 %---------------------------------------
 
 \input{_realloc_multiple.tex}
@@ -2172,7 +2167,7 @@ Print the {\tt Common} object and check if it is valid.
 This prints the CHOLMOD parameters and statistics.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_sparse}: check sparse matrix}
+\subsection{{\tt cholmod\_check\_sparse}: check sparse matrix}
 %---------------------------------------
 
 \input{_check_sparse.tex}
@@ -2186,7 +2181,7 @@ Check if a sparse matrix is valid.
 Print a sparse matrix and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_dense}: check dense matrix}
+\subsection{{\tt cholmod\_check\_dense}: check dense matrix}
 %---------------------------------------
 
 \input{_check_dense.tex}
@@ -2200,7 +2195,7 @@ Check if a dense matrix is valid.
 Print a dense matrix and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_factor}: check factor}
+\subsection{{\tt cholmod\_check\_factor}: check factor}
 %---------------------------------------
 
 \input{_check_factor.tex}
@@ -2214,7 +2209,7 @@ Check if a factor is valid.
 Print a factor and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_triplet}: check triplet matrix}
+\subsection{{\tt cholmod\_check\_triplet}: check triplet matrix}
 %---------------------------------------
 
 \input{_check_triplet.tex}
@@ -2228,7 +2223,7 @@ Check if a triplet matrix is valid.
 Print a triplet matrix and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_subset}: check subset}
+\subsection{{\tt cholmod\_check\_subset}: check subset}
 %---------------------------------------
 
 \input{_check_subset.tex}
@@ -2242,7 +2237,7 @@ Check if a subset is valid.
 Print a subset and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_perm}: check permutation}
+\subsection{{\tt cholmod\_check\_perm}: check permutation}
 %---------------------------------------
 
 \input{_check_perm.tex}
@@ -2256,7 +2251,7 @@ Check if a permutation is valid.
 Print a permutation and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_check\_parent}: check elimination tree}
+\subsection{{\tt cholmod\_check\_parent}: check elimination tree}
 %---------------------------------------
 
 \input{_check_parent.tex}
@@ -2270,7 +2265,7 @@ Check if an elimination tree is valid.
 Print an elimination tree and check if it is valid.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_read\_triplet}: read triplet matrix from file}
+\subsection{{\tt cholmod\_read\_triplet}: read triplet matrix from file}
 %---------------------------------------
 
 \input{_read_triplet.tex}
@@ -2389,7 +2384,7 @@ returned stored in upper-triangular form ({\tt A->stype} is 1).
 Otherwise, it is left in its original form, either upper or lower.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_read\_dense}: read dense matrix from file}
+\subsection{{\tt cholmod\_read\_dense}: read dense matrix from file}
 %---------------------------------------
 
 \input{_read_dense.tex}
@@ -2409,7 +2404,7 @@ Returns a {\tt void} pointer to either a
 {\tt cholmod\_dense} object.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_write\_sparse}: write a sparse matrix to a file}
+\subsection{{\tt cholmod\_write\_sparse}: write a sparse matrix to a file}
 %---------------------------------------
 
 \input{_write_sparse.tex}
@@ -3204,7 +3199,7 @@ Returns the infinity-norm or 1-norm of a sparse matrix.
 All xtypes are supported.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_scale}: scale sparse matrix}
+\subsection{{\tt cholmod\_scale}: scale sparse matrix}
 %---------------------------------------
 
 \input{_scale.tex}
@@ -3247,7 +3242,7 @@ The scale parameter determines the kind of scaling to perform and the size of {\
 Only real matrices are supported.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_sdmult}: sparse-times-dense matrix}
+\subsection{{\tt cholmod\_sdmult}: sparse-times-dense matrix}
 %---------------------------------------
 
 \input{_sdmult.tex}
@@ -3281,7 +3276,7 @@ are supported only when the numerical values are not computed ({\tt values}
 is {\tt FALSE}).
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_submatrix}: sparse submatrix}
+\subsection{{\tt cholmod\_submatrix}: sparse submatrix}
 %---------------------------------------
 
 \input{_submatrix.tex}
@@ -3309,7 +3304,7 @@ Only pattern and real matrices are supported.  Complex and zomplex matrices
 are supported only when {\tt values} is {\tt FALSE}.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_horzcat}: horizontal concatenation}
+\subsection{{\tt cholmod\_horzcat}: horizontal concatenation}
 %---------------------------------------
 
 \input{_horzcat.tex}
@@ -3333,7 +3328,7 @@ Vertical concatenation, returns {\tt C = [A;B]} in MATLAB notation.
 {\tt A} and {\tt B} cannot be complex or zomplex, unless {\tt values} is {\tt FALSE}.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_symmetry}: compute the symmetry of a matrix}
+\subsection{{\tt cholmod\_symmetry}: compute the symmetry of a matrix}
 %---------------------------------------
 
 \input{_symmetry.tex}
@@ -3381,7 +3376,7 @@ statistics for the matrices in the SuiteSparse Matrix Collection.
 	is matched if $a_{ji} = a_{ij}$, but this is only counted if both
 	$a_{ji}$ and $a_{ij}$ are nonzero.  This does not depend on {\tt Z}.
 	(If A is complex, then the above test is modified; $a_{ij}$ is matched
-	if $\mbox{conj}(a_{ji}) = a_{ij}$.
+	if $\mbox{conj}(a_{ji}) = a_{ij}$).
 
 	Then numeric symmetry = xmatched / nzoffdiag, or 1 if nzoffdiag = 0.
  
@@ -3418,7 +3413,6 @@ complex.  Otherwise, it will return a value less than this.  This is true
 regardless of the value of the option parameter.
 
 
-
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Supernodal} Module routines}
 %-------------------------------------------------------------------------------
@@ -3444,7 +3438,7 @@ permuted.  Allocates and computes the supernodal pattern of {\tt L}
 Does not allocate the real part ({\tt L->x}).
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_super\_numeric}: supernodal numeric factorization}
+\subsection{{\tt cholmod\_super\_numeric}: supernodal numeric factorization}
 %---------------------------------------
 
 \input{_super_numeric.tex}
@@ -3453,7 +3447,7 @@ lower triangular part of {\tt A+beta*I} or {\tt A*F+beta*I} is accessed.  The
 matrices {\tt A} and {\tt F} must already be permuted according to the fill-reduction
 permutation {\tt L->Perm}.  {\tt cholmod\_factorize} is an "easy" wrapper for this code
 which applies that permutation.
-The input scalar {\tt beta} is real; only the real part ({\tt beta[0]} is used.
+The input scalar {\tt beta} is real; only the real part ({\tt beta[0]}) is used.
 
 Symmetric case: {\tt A} is a symmetric (lower) matrix.  {\tt F} is not accessed and may be {\tt NULL}.
 With a fill-reducing permutation, {\tt A(p,p)} should be passed for {\tt A}, where is
@@ -3485,7 +3479,7 @@ match {\tt A} (except that {\tt L} can be complex and {\tt A} zomplex).  The xty
 must match.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_super\_lsolve}: supernodal forward solve}
+\subsection{{\tt cholmod\_super\_lsolve}: supernodal forward solve}
 %---------------------------------------
 
 \input{_super_lsolve.tex}
@@ -3535,7 +3529,7 @@ This routine orders the whole matrix with CAMD, CSYMAMD, or CCOLAMD, all at once
 when the graph partitioning is done.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_metis}: interface to METIS nested dissection}
+\subsection{{\tt cholmod\_metis}: interface to METIS nested dissection}
 %---------------------------------------
 
 \input{_metis.tex}
@@ -3545,7 +3539,7 @@ This routine is comparable to {\tt cholmod\_nested\_dissection}, except that it
 calls {\tt METIS\_NodeND} directly, and it does not return the separator tree.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_camd}: interface to CAMD}
+\subsection{{\tt cholmod\_camd}: interface to CAMD}
 %---------------------------------------
 
 \input{_camd.tex}
@@ -3557,7 +3551,7 @@ If {\tt Cmember[i]=c} then node {\tt i} is in set {\tt c}.
 All nodes in set 0 are ordered first, followed by all nodes in set 1, and so on.
 
 %---------------------------------------
-\newpage \subsection{{\tt cholmod\_ccolamd}: interface to CCOLAMD}
+\subsection{{\tt cholmod\_ccolamd}: interface to CCOLAMD}
 %---------------------------------------
 
 \input{_ccolamd.tex}
@@ -3582,7 +3576,6 @@ If {\tt Cmember[i]=c} then node {\tt i} is in set {\tt c}.
 All nodes in set 0 are ordered first, followed by all nodes in set 1, and so on.
 
 %---------------------------------------
-\newpage
 \subsection{{\tt cholmod\_bisect}: graph bisector}
 %---------------------------------------
 
@@ -3605,7 +3598,6 @@ parts present) and with no diagonal entries.  These conditions are not
 checked.  Use cholmod\_bisect to check these conditions.
 
 %---------------------------------------
-\newpage
 \subsection{{\tt cholmod\_collapse\_septree}: prune a separator tree}
 %---------------------------------------
 
