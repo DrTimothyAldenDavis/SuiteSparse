@@ -80,7 +80,7 @@ const matrix_info files [ ] =
     {                  1,                  1, "matrix_fp32_structure.mtx" } ,
     {          -INFINITY,           INFINITY, "matrix_fp64.mtx" } ,
     {             -32768,              32767, "matrix_int16.mtx" } ,
-    {        -2147483648,         2147483647, "matrix_int32.mtx" } ,
+    {      -2147483648.0,         2147483647, "matrix_int32.mtx" } ,
     {               -128,                127, "matrix_int8.mtx" } ,
     {                  0,              65535, "matrix_uint16.mtx" } ,
     {                  0,         4294967295, "matrix_uint32.mtx" } ,
