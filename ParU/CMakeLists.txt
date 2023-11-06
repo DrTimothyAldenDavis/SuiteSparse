@@ -162,6 +162,19 @@ if ( NOT NSTATIC )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# additional definitions
+#-------------------------------------------------------------------------------
+
+if ( WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
+    # Some parallelization levels don't work correctly with GCC on Windows
+    # (because of emuTLS?). Omit them.
+    target_compile_definitions (ParU PRIVATE PARU_GCC_WINDOWS )
+    if ( NOT NSTATIC )
+        target_compile_definitions (ParU_static PRIVATE PARU_GCC_WINDOWS )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 

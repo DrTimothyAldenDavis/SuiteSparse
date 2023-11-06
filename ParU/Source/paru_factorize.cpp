@@ -341,6 +341,9 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
     // execute the task tree
     //--------------------------------------------------------------------------
 
+#if ! defined ( PARU_GCC_WINDOWS )
+    // The parallel factorization gets stuck intermittently on Windows with GCC.
+    // Use the sequential factorization unconditionally in that case.
     if ((int64_t)task_Q.size() * 2 > Control->paru_max_threads)
     {
         printf ("Parallel:\n") ;    // FIXME
@@ -433,6 +436,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         }
     }
     else
+#endif
     {
         PRLEVEL(1, ("Sequential\n"));
         Work->naft = 1;
