@@ -4,6 +4,7 @@ on:
   push:
     branches-ignore:
       - '**/dev2'
+      - '**/*dev2'
   pull_request:
 
 concurrency: ci-${{ github.ref }}
