@@ -93,6 +93,7 @@ static void cm_copy_Cnz (Int *Cnz, Int *Wi, Int *Perm, Int nrow)
 }
 
 //------------------------------------------------------------------------------
+// cholmod_transpose_unsym
 //------------------------------------------------------------------------------
 
 int CHOLMOD(transpose_unsym)
