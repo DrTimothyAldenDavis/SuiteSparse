@@ -2,7 +2,7 @@
 // CHOLMOD/Cholesky/cholmod_analyze: order and analyze a matrix
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -540,7 +540,9 @@ cholmod_factor *CHOLMOD(analyze_p2)
     /* allocate more workspace, and an empty simplicial symbolic factor */
     /* ---------------------------------------------------------------------- */
 
-    L = CHOLMOD(allocate_factor) (n, Common) ;
+    // Numerical values are not yet in L for the symbolic analysis here, but
+    // set its dtype the same as A, for the numerical factorization:
+    L = CHOLMOD(alloc_factor) (n, A->dtype, Common) ;
     Lparent  = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
     Perm     = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
     ColCount = CHOLMOD(malloc) (n, sizeof (Int), Common) ;

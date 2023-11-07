@@ -2,7 +2,7 @@
 // CHOLMOD/Cholesky/cholmod_amd: AMD interface for CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -34,8 +34,9 @@
 #ifndef NCHOLESKY
 
 #include "amd.h"
-#if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (2,0)))
-#error "AMD v2.0 or later is required"
+#if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (3,0)))
+// AMD 3.0 or later required (SuiteSparse 6.0.0 or later)
+#error "AMD v3.0 or later is required"
 #endif
 
 /* ========================================================================== */

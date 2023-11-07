@@ -2,7 +2,7 @@
 // CHOLMOD/Cholesky/cholmod_colamd: COLAMD interface for CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -29,8 +29,9 @@
 #ifndef NCHOLESKY
 
 #include "colamd.h"
-#if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (2,5)))
-#error "COLAMD v2.5 or later is required"
+#if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (3,0)))
+// COLAMD 3.0 or later required (SuiteSparse 6.0.0 or later)
+#error "COLAMD v3.0 or later is required"
 #endif
 
 /* ========================================================================== */
@@ -116,8 +117,10 @@ int CHOLMOD(colamd)
     /* allocate COLAMD workspace */
     /* ---------------------------------------------------------------------- */
 
+    // C is purely symbolic, so C->dtype doesn't actually matter, but it must
+    // match A->dtype for the call to cholmod_transpose_unsym below.
     C = CHOLMOD(allocate_sparse) (ncol, nrow, alen, TRUE, TRUE, 0,
-	    CHOLMOD_PATTERN, Common) ;
+	    CHOLMOD_PATTERN + A->dtype, Common) ;
 
     /* ---------------------------------------------------------------------- */
     /* copy (and transpose) the input matrix A into the colamd workspace */

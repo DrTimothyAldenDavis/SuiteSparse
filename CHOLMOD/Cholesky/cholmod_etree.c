@@ -2,7 +2,7 @@
 // CHOLMOD/Cholesky/cholmod_etree: elimination tree of A or A'*A
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 

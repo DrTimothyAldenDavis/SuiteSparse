@@ -2863,68 +2863,61 @@ int cholmod_row_lsubtree
 int cholmod_l_row_lsubtree (cholmod_sparse *, int64_t *, size_t,
     size_t, cholmod_factor *, cholmod_sparse *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_resymbol:  recompute the symbolic pattern of L */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_resymbol:  recompute the symbolic pattern of L
+//------------------------------------------------------------------------------
 
-/* Remove entries from L that are not in the factorization of P*A*P', P*A*A'*P',
- * or P*F*F'*P' (depending on A->stype and whether fset is NULL or not).
- *
- * cholmod_resymbol is the same as cholmod_resymbol_noperm, except that it
- * first permutes A according to L->Perm.  A can be upper/lower/unsymmetric,
- * in contrast to cholmod_resymbol_noperm (which can be lower or unsym). */
+// Remove entries from L that are not in the factorization of P*A*P', P*A*A'*P',
+// or P*F*F'*P' (depending on A->stype and whether fset is NULL or not).
+//
+// cholmod_resymbol is the same as cholmod_resymbol_noperm, except that it
+// first permutes A according to L->Perm.  A can be upper/lower/unsymmetric,
+// in contrast to cholmod_resymbol_noperm (which can be lower or unsym).
 
 int cholmod_resymbol    // recompute symbolic pattern of L
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int pack,		/* if TRUE, pack the columns of L */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* factorization, entries pruned on output */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    int *fset,          // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    int pack,           // if TRUE, pack the columns of L
+    // input/output:
+    cholmod_factor *L,  // factorization, entries pruned on output
     cholmod_common *Common
 ) ;
-
 int cholmod_l_resymbol (cholmod_sparse *, int64_t *, size_t, int,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_resymbol_noperm:  recompute the symbolic pattern of L, no L->Perm */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_resymbol_noperm:  recompute the symbolic pattern of L, no L->Perm
+//------------------------------------------------------------------------------
 
-/* Remove entries from L that are not in the factorization of A, A*A',
- * or F*F' (depending on A->stype and whether fset is NULL or not). */
+// Remove entries from L that are not in the factorization of A, A*A',
+// or F*F' (depending on A->stype and whether fset is NULL or not).
 
 int cholmod_resymbol_noperm
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int pack,		/* if TRUE, pack the columns of L */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* factorization, entries pruned on output */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    int *fset,          // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    int pack,           // if TRUE, pack the columns of L
+    // input/output:
+    cholmod_factor *L,  // factorization, entries pruned on output
     cholmod_common *Common
 ) ;
-
 int cholmod_l_resymbol_noperm (cholmod_sparse *, int64_t *, size_t, int,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rcond:  compute rough estimate of reciprocal of condition number */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rcond:  compute rough estimate of reciprocal of condition number
+//------------------------------------------------------------------------------
 
-double cholmod_rcond	    /* return min(diag(L)) / max(diag(L)) */
+double cholmod_rcond        // return min(diag(L)) / max(diag(L))
 (
-    /* ---- input ---- */
-    cholmod_factor *L,
-    /* --------------- */
+    cholmod_factor *L,      // factorization to query; not modified
     cholmod_common *Common
 ) ;
-
 double cholmod_l_rcond (cholmod_factor *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */

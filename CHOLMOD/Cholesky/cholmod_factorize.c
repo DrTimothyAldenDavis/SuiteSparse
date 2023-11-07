@@ -2,7 +2,7 @@
 // CHOLMOD/Cholesky/cholmod_factorize: numerical Cholesky factorization
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -52,6 +52,9 @@
  * input matrix A cannot be pattern-only.  If L is simplicial, its numeric
  * xtype matches A on output.  If L is supernodal, its xtype is real if A is
  * real, or complex if A is complex or zomplex.
+ *
+ * The factorization L is computed with the same dtype as A (L->dtype will
+ * be the same as A->dtype).
  */
 
 #include "cholmod_internal.h"
