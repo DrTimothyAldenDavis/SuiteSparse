@@ -68,7 +68,7 @@ jobs:
             m4
             gmp-dev
             mpfr-dev
-            openblas-dev
+            lapack-dev
             valgrind
 
       - name: prepare ccache
@@ -118,7 +118,7 @@ jobs:
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                  -DBLA_VENDOR="OpenBLAS" \
+                  -DBLA_VENDOR="Generic" \
                   -DCOMPACT=ON \
                   ..
             echo "::endgroup::"
@@ -168,7 +168,7 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
-            -DBLA_VENDOR="OpenBLAS" \
+            -DBLA_VENDOR="Generic" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
