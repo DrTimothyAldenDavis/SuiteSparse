@@ -253,7 +253,7 @@ int CHOLMOD(row_subtree)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -349,7 +349,7 @@ int CHOLMOD(row_subtree)
     R->sorted = FALSE ;
 
     CHOLMOD(clear_flag) (Common) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (TRUE) ;
 }
 
@@ -486,7 +486,7 @@ int CHOLMOD(row_lsubtree)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -560,7 +560,7 @@ int CHOLMOD(row_lsubtree)
     R->sorted = FALSE ;
 
     CHOLMOD(clear_flag) (Common) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (TRUE) ;
 }
 
@@ -712,7 +712,8 @@ int CHOLMOD(rowfac_mask2)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, A->nrow, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, A->nrow, /* FIXME: */ CHOLMOD_DOUBLE,
+        Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* factorize the matrix, using template routine */

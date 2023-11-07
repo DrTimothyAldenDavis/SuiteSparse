@@ -96,6 +96,7 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
+    // cm->print = 5 ;
 
     /* cm->useGPU = 1; */
     cm->prefer_zomplex = prefer_zomplex ;
@@ -164,7 +165,6 @@ int main (int argc, char **argv)
         A->x = Ax2 ;
         A->z = Az2 ;
         A->xtype = CHOLMOD_ZOMPLEX ;
-        /* cm->print = 5 ; */
     }
 
     xtype = A->xtype ;

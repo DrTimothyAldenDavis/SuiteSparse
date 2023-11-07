@@ -110,7 +110,9 @@ static void NUMERIC (WDIM, r)
     packed = C->packed ;
     ASSERT (IMPLIES (!packed, Cnz != NULL)) ;
     ASSERT (L->n == C->nrow) ;
-    DEBUG (CHOLMOD(dump_real) ("num_d: in W:", W, WDIM, L->n, FALSE, 1,Common));
+    DEBUG (CHOLMOD(dump_real) ("num_d: in W:", W,
+        /* FIXME: */ CHOLMOD_DOUBLE,
+        WDIM, L->n, FALSE, 1, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* scatter C into W */
@@ -138,7 +140,9 @@ static void NUMERIC (WDIM, r)
 	}
 	Alpha [path] = 1.0 ;
     }
-    DEBUG (CHOLMOD(dump_real) ("num_d: W:", W, WDIM, L->n, FALSE, 1,Common)) ;
+    DEBUG (CHOLMOD(dump_real) ("num_d: W:", W,
+        /* FIXME: */ CHOLMOD_DOUBLE,
+        WDIM, L->n, FALSE, 1,Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* numeric update/downdate of the paths */

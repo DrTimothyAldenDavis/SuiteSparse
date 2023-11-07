@@ -463,8 +463,9 @@ static int TEMPLATE (cholmod_super_numeric)
         }
 
         PRINT1 (("Supernode with just A: repeat: "ID"\n", repeat_supernode)) ;
-        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx, L_ENTRY,
-                                    Common)) ;
+        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx,
+            /* FIXME: */ CHOLMOD_DOUBLE,
+            L_ENTRY, Common)) ;
         PRINT1 (("\n\n")) ;
 
         /* ------------------------------------------------------------------ */
@@ -499,8 +500,9 @@ static int TEMPLATE (cholmod_super_numeric)
         for (d = Head [s] ; d != EMPTY ; d = Next [d])
         {
             PRINT1 (("\nWill update "ID" with Child: "ID"\n", s, d)) ;
-            DEBUG (CHOLMOD(dump_super) (d, Super, Lpi, Ls, Lpx, Lx, L_ENTRY,
-                                        Common)) ;
+            DEBUG (CHOLMOD(dump_super) (d, Super, Lpi, Ls, Lpx, Lx,
+                /* FIXME: */ CHOLMOD_DOUBLE,
+                L_ENTRY, Common)) ;
         }
         PRINT1 (("\nNow factorizing supernode "ID":\n", s)) ;
 #endif
@@ -621,8 +623,9 @@ static int TEMPLATE (cholmod_super_numeric)
             ndrow = pdend - pdi ;   /* # rows in all of d */
 
             PRINT1 (("Child: ")) ;
-            DEBUG (CHOLMOD(dump_super) (d, Super, Lpi, Ls, Lpx, Lx, L_ENTRY,
-                                        Common)) ;
+            DEBUG (CHOLMOD(dump_super) (d, Super, Lpi, Ls, Lpx, Lx,
+                /* FIXME: */ CHOLMOD_DOUBLE,
+                L_ENTRY, Common)) ;
 
             /* -------------------------------------------------------------- */
             /* find the range of rows of d that affect rows k1 to k2-1 of s */
@@ -777,8 +780,9 @@ static int TEMPLATE (cholmod_super_numeric)
                 /* construct relative map to assemble d into s */
                 /* ---------------------------------------------------------- */
 
-                DEBUG (CHOLMOD(dump_real) ("C", C, ndrow2, ndrow1, TRUE,
-                                           L_ENTRY, Common)) ;
+                DEBUG (CHOLMOD(dump_real) ("C", C,
+                    /* FIXME: */ CHOLMOD_DOUBLE,
+                    ndrow2, ndrow1, TRUE, L_ENTRY, Common)) ;
 
                 #ifdef _OPENMP
                 int nthreads = cholmod_nthreads ((double) ndrow2, Common) ;
@@ -873,8 +877,9 @@ static int TEMPLATE (cholmod_super_numeric)
 
         PRINT1 (("\nSupernode with contributions A: repeat: "ID"\n",
                  repeat_supernode)) ;
-        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx, L_ENTRY,
-                                    Common)) ;
+        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx,
+            /* FIXME: */ CHOLMOD_DOUBLE,
+            L_ENTRY, Common)) ;
         PRINT1 (("\n\n")) ;
 
         /* ------------------------------------------------------------------ */
@@ -1102,8 +1107,9 @@ static int TEMPLATE (cholmod_super_numeric)
 
         /* clear the Map (debugging only, to detect changes in pattern of A) */
         DEBUG (for (k = 0 ; k < nsrow ; k++) Map [Ls [psi + k]] = EMPTY) ;
-        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx, L_ENTRY,
-                                    Common)) ;
+        DEBUG (CHOLMOD(dump_super) (s, Super, Lpi, Ls, Lpx, Lx,
+            /* FIXME: */ CHOLMOD_DOUBLE,
+            L_ENTRY, Common)) ;
 
         if (repeat_supernode)
         {

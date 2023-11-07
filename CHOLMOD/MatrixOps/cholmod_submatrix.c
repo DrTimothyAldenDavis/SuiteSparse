@@ -175,7 +175,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	return (NULL) ;
     }
 
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -310,7 +310,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	{
 	    Head [i] = EMPTY ;
 	}
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 	return (NULL) ;
     }
 
@@ -401,7 +401,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	Head [rset [ci]] = EMPTY ;
     }
 
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* sort C, if requested */
@@ -416,7 +416,7 @@ cholmod_sparse *CHOLMOD(submatrix)
 	{
 	    /* out of memory */
 	    CHOLMOD(free_sparse) (&C, Common) ;
-	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 	    return (NULL) ;
 	}
     }
@@ -426,7 +426,7 @@ cholmod_sparse *CHOLMOD(submatrix)
     /* ---------------------------------------------------------------------- */
 
     ASSERT (CHOLMOD(dump_sparse) (C , "Final C", Common) >= 0) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (C) ;
 }
 #endif

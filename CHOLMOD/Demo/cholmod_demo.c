@@ -96,6 +96,7 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_start (cm) ;
+    // cm->print = 5 ;
 
     /* use default parameter settings, except for the error handler.  This
      * demo program terminates if an error occurs (out of memory, not positive

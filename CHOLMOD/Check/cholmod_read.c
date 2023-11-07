@@ -2,7 +2,7 @@
 // CHOLMOD/Check/cholmod_read: read a sparse matrix from a file
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Check Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -502,6 +502,7 @@ static cholmod_triplet *read_triplet
     size_t nnz,		    /* number of triplets in file to read */
     int stype,		    /* stype from header, or "unknown" */
     int prefer_unsym,	    /* if TRUE, always return T->stype of zero */
+    int dtype,              // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     /* ---- workspace */
     char *buf,		    /* of size MAXLINE+1 */
     /* --------------- */
@@ -509,7 +510,6 @@ static cholmod_triplet *read_triplet
 )
 {
     double x, z ;
-    double *Tx ;
     Int *Ti, *Tj, *Rdeg, *Cdeg ;
     cholmod_triplet *T ;
     double l1, l2 ;
@@ -525,8 +525,8 @@ static cholmod_triplet *read_triplet
     if (nrow == 0 || ncol == 0 || nnz == 0)
     {
 	/* return an empty matrix */
-	return (CHOLMOD(allocate_triplet) (nrow, ncol, 0, 0, CHOLMOD_REAL,
-		    Common)) ;
+	return (CHOLMOD(allocate_triplet) (nrow, ncol, 0, 0,
+            CHOLMOD_REAL + dtype, Common)) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -579,7 +579,6 @@ static cholmod_triplet *read_triplet
     imax = 0 ;
     jmax = 0 ;
 
-    Tx = NULL ;
     Ti = NULL ;
     Tj = NULL ;
     xtype = 999 ;
@@ -651,7 +650,8 @@ static cholmod_triplet *read_triplet
 
 	    /* allocate triplet matrix */
 	    T = CHOLMOD(allocate_triplet) (nrow, ncol, nnz2, stype,
-		    (xtype == CHOLMOD_PATTERN ? CHOLMOD_REAL : xtype), Common) ;
+		    (xtype == CHOLMOD_PATTERN ? CHOLMOD_REAL : xtype) + dtype,
+                    Common) ;
 	    if (Common->status < CHOLMOD_OK)
 	    {
 		/* out of memory */
@@ -659,7 +659,6 @@ static cholmod_triplet *read_triplet
 	    }
 	    Ti = T->i ;
 	    Tj = T->j ;
-	    Tx = T->x ;
 	    T->nnz = nnz ;
 	}
 
@@ -689,15 +688,32 @@ static cholmod_triplet *read_triplet
 	    is_upper = FALSE ;
 	}
 
-	if (xtype == CHOLMOD_REAL)
-	{
-	    Tx [k] = x ;
-	}
-	else if (xtype == CHOLMOD_COMPLEX)
-	{
-	    Tx [2*k  ] = x ;	/* real part */
-	    Tx [2*k+1] = z ;	/* imaginary part */
-	}
+        if (dtype == CHOLMOD_DOUBLE)
+        {
+            double *Tx = (double *) T->x ;
+            if (xtype == CHOLMOD_REAL)
+            {
+                Tx [k] = x ;
+            }
+            else if (xtype == CHOLMOD_COMPLEX)
+            {
+                Tx [2*k  ] = x ;	/* real part */
+                Tx [2*k+1] = z ;	/* imaginary part */
+            }
+        }
+        else
+        {
+            float *Tx = (float *) T->x ;
+            if (xtype == CHOLMOD_REAL)
+            {
+                Tx [k] = x ;
+            }
+            else if (xtype == CHOLMOD_COMPLEX)
+            {
+                Tx [2*k  ] = x ;	/* real part */
+                Tx [2*k+1] = z ;	/* imaginary part */
+            }
+        }
 
 	if (i == 0 || j == 0)
 	{
@@ -778,35 +794,73 @@ static cholmod_triplet *read_triplet
 	    {
 		Ti [p] = j ;
 		Tj [p] = i ;
-		if (xtype == CHOLMOD_REAL)
-		{
-		    if (skew_symmetric)
-		    {
-			Tx [p] = -Tx [k] ;
-		    }
-		    else
-		    {
-			Tx [p] =  Tx [k] ;
-		    }
-		}
-		else if (xtype == CHOLMOD_COMPLEX)
-		{
-		    if (skew_symmetric)
-		    {
-			Tx [2*p  ] = -Tx [2*k ] ;
-			Tx [2*p+1] = -Tx [2*k+1] ;
-		    }
-		    else if (complex_symmetric)
-		    {
-			Tx [2*p  ] =  Tx [2*k ] ;
-			Tx [2*p+1] =  Tx [2*k+1] ;
-		    }
-		    else /* Hermitian */
-		    {
-			Tx [2*p  ] =  Tx [2*k ] ;
-			Tx [2*p+1] = -Tx [2*k+1] ;
-		    }
-		}
+
+                if (dtype == CHOLMOD_DOUBLE)
+                {
+                    double *Tx = (double *) T->x ;
+                    if (xtype == CHOLMOD_REAL)
+                    {
+                        if (skew_symmetric)
+                        {
+                            Tx [p] = -Tx [k] ;
+                        }
+                        else
+                        {
+                            Tx [p] =  Tx [k] ;
+                        }
+                    }
+                    else if (xtype == CHOLMOD_COMPLEX)
+                    {
+                        if (skew_symmetric)
+                        {
+                            Tx [2*p  ] = -Tx [2*k ] ;
+                            Tx [2*p+1] = -Tx [2*k+1] ;
+                        }
+                        else if (complex_symmetric)
+                        {
+                            Tx [2*p  ] =  Tx [2*k ] ;
+                            Tx [2*p+1] =  Tx [2*k+1] ;
+                        }
+                        else /* Hermitian */
+                        {
+                            Tx [2*p  ] =  Tx [2*k ] ;
+                            Tx [2*p+1] = -Tx [2*k+1] ;
+                        }
+                    }
+                }
+                else
+                {
+                    float *Tx = (float *) T->x ;
+                    if (xtype == CHOLMOD_REAL)
+                    {
+                        if (skew_symmetric)
+                        {
+                            Tx [p] = -Tx [k] ;
+                        }
+                        else
+                        {
+                            Tx [p] =  Tx [k] ;
+                        }
+                    }
+                    else if (xtype == CHOLMOD_COMPLEX)
+                    {
+                        if (skew_symmetric)
+                        {
+                            Tx [2*p  ] = -Tx [2*k ] ;
+                            Tx [2*p+1] = -Tx [2*k+1] ;
+                        }
+                        else if (complex_symmetric)
+                        {
+                            Tx [2*p  ] =  Tx [2*k ] ;
+                            Tx [2*p+1] =  Tx [2*k+1] ;
+                        }
+                        else /* Hermitian */
+                        {
+                            Tx [2*p  ] =  Tx [2*k ] ;
+                            Tx [2*p+1] = -Tx [2*k+1] ;
+                        }
+                    }
+                }
 		p++ ;
 	    }
 	}
@@ -825,10 +879,22 @@ static cholmod_triplet *read_triplet
 	if (stype == STYPE_UNSYMMETRIC || Common->prefer_binary)
 	{
 	    /* unsymmetric case, or binary case */
-	    for (k = 0 ; k < (Int) nnz ; k++)
-	    {
-		Tx [k] = 1 ;
-	    }
+            if (dtype == CHOLMOD_DOUBLE)
+            {
+                double *Tx = (double *) T->x ;
+                for (k = 0 ; k < (Int) nnz ; k++)
+                {
+                    Tx [k] = 1 ;
+                }
+            }
+            else
+            {
+                float *Tx = (float *) T->x ;
+                for (k = 0 ; k < (Int) nnz ; k++)
+                {
+                    Tx [k] = 1 ;
+                }
+            }
 	}
 	else
 	{
@@ -855,12 +921,26 @@ static cholmod_triplet *read_triplet
 		}
 	    }
 	    /* assign the numerical values */
-	    for (k = 0 ; k < (Int) nnz ; k++)
-	    {
-		i = Ti [k] ;
-		j = Tj [k] ;
-		Tx [k] = (i == j) ? (1 + MAX (Rdeg [i], Cdeg [j])) : (-1) ;
-	    }
+            if (dtype == CHOLMOD_DOUBLE)
+            {
+                double *Tx = (double *) T->x ;
+                for (k = 0 ; k < (Int) nnz ; k++)
+                {
+                    i = Ti [k] ;
+                    j = Tj [k] ;
+                    Tx [k] = (i == j) ? (1 + MAX (Rdeg [i], Cdeg [j])) : (-1) ;
+                }
+            }
+            else
+            {
+                float *Tx = (float *) T->x ;
+                for (k = 0 ; k < (Int) nnz ; k++)
+                {
+                    i = Ti [k] ;
+                    j = Tj [k] ;
+                    Tx [k] = (i == j) ? (1 + MAX (Rdeg [i], Cdeg [j])) : (-1) ;
+                }
+            }
 	}
     }
 
@@ -886,6 +966,7 @@ static cholmod_dense *read_dense
     size_t nrow,	    /* number of rows */
     size_t ncol,	    /* number of columns */
     int stype,		    /* stype from header */
+    int dtype,              // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     /* ---- workspace */
     char *buf,		    /* of size MAXLINE+1 */
     /* --------------- */
@@ -893,7 +974,6 @@ static cholmod_dense *read_dense
 )
 {
     double x, z ;
-    double *Xx = NULL ;
     cholmod_dense *X ;
     Int nitems, xtype = -1, nshould = 0, i, j, k, kup, first ;
 
@@ -998,13 +1078,12 @@ static cholmod_dense *read_dense
 		nshould = nitems ;
 
 		/* allocate the result */
-		X = CHOLMOD(zeros) (nrow, ncol, xtype, Common) ;
+		X = CHOLMOD(zeros) (nrow, ncol, xtype + dtype, Common) ;
 		if (Common->status < CHOLMOD_OK)
 		{
 		    /* out of memory */
 		    return (NULL) ;
 		}
-		Xx = X->x ;
 	    }
 
 	    /* -------------------------------------------------------------- */
@@ -1022,50 +1101,105 @@ static cholmod_dense *read_dense
 	    k = i + j*nrow ;
 	    kup = j + i*nrow ;
 
-	    if (xtype == CHOLMOD_REAL)
-	    {
-		/* real matrix */
-		Xx [k] = x ;
-		if (k != kup)
-		{
-		    if (stype == STYPE_SYMMETRIC_LOWER)
-		    {
-			/* real symmetric matrix */
-			Xx [kup] = x ;
-		    }
-		    else if (stype == STYPE_SKEW_SYMMETRIC)
-		    {
-			/* real skew symmetric matrix */
-			Xx [kup] = -x ;
-		    }
-		}
-	    }
-	    else if (xtype == CHOLMOD_COMPLEX)
-	    {
-		Xx [2*k  ] = x ;	    /* real part */
-		Xx [2*k+1] = z ;	    /* imaginary part */
-		if (k != kup)
-		{
-		    if (stype == STYPE_SYMMETRIC_LOWER)
-		    {
-			/* complex Hermitian */
-			Xx [2*kup  ] = x ;	    /* real part */
-			Xx [2*kup+1] = -z ;	    /* imaginary part */
-		    }
-		    else if (stype == STYPE_SKEW_SYMMETRIC)
-		    {
-			/* complex skew symmetric */
-			Xx [2*kup  ] = -x ;	    /* real part */
-			Xx [2*kup+1] = -z ;	    /* imaginary part */
-		    }
-		    if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)
-		    {
-			/* complex symmetric */
-			Xx [2*kup  ] = x ;	    /* real part */
-			Xx [2*kup+1] = z ;	    /* imaginary part */
-		    }
-		}
-	    }
+            if (dtype == CHOLMOD_DOUBLE)
+            {
+
+                double *Xx = (double *) X->x ;
+                if (xtype == CHOLMOD_REAL)
+                {
+                    /* real matrix */
+                    Xx [k] = x ;
+                    if (k != kup)
+                    {
+                        if (stype == STYPE_SYMMETRIC_LOWER)
+                        {
+                            /* real symmetric matrix */
+                            Xx [kup] = x ;
+                        }
+                        else if (stype == STYPE_SKEW_SYMMETRIC)
+                        {
+                            /* real skew symmetric matrix */
+                            Xx [kup] = -x ;
+                        }
+                    }
+                }
+                else if (xtype == CHOLMOD_COMPLEX)
+                {
+                    Xx [2*k  ] = x ;	    /* real part */
+                    Xx [2*k+1] = z ;	    /* imaginary part */
+                    if (k != kup)
+                    {
+                        if (stype == STYPE_SYMMETRIC_LOWER)
+                        {
+                            /* complex Hermitian */
+                            Xx [2*kup  ] = x ;	    /* real part */
+                            Xx [2*kup+1] = -z ;	    /* imaginary part */
+                        }
+                        else if (stype == STYPE_SKEW_SYMMETRIC)
+                        {
+                            /* complex skew symmetric */
+                            Xx [2*kup  ] = -x ;	    /* real part */
+                            Xx [2*kup+1] = -z ;	    /* imaginary part */
+                        }
+                        if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)
+                        {
+                            /* complex symmetric */
+                            Xx [2*kup  ] = x ;	    /* real part */
+                            Xx [2*kup+1] = z ;	    /* imaginary part */
+                        }
+                    }
+                }
+
+            }
+            else
+            {
+
+                float *Xx = (float *) X->x ;
+                if (xtype == CHOLMOD_REAL)
+                {
+                    /* real matrix */
+                    Xx [k] = x ;
+                    if (k != kup)
+                    {
+                        if (stype == STYPE_SYMMETRIC_LOWER)
+                        {
+                            /* real symmetric matrix */
+                            Xx [kup] = x ;
+                        }
+                        else if (stype == STYPE_SKEW_SYMMETRIC)
+                        {
+                            /* real skew symmetric matrix */
+                            Xx [kup] = -x ;
+                        }
+                    }
+                }
+                else if (xtype == CHOLMOD_COMPLEX)
+                {
+                    Xx [2*k  ] = x ;	    /* real part */
+                    Xx [2*k+1] = z ;	    /* imaginary part */
+                    if (k != kup)
+                    {
+                        if (stype == STYPE_SYMMETRIC_LOWER)
+                        {
+                            /* complex Hermitian */
+                            Xx [2*kup  ] = x ;	    /* real part */
+                            Xx [2*kup+1] = -z ;	    /* imaginary part */
+                        }
+                        else if (stype == STYPE_SKEW_SYMMETRIC)
+                        {
+                            /* complex skew symmetric */
+                            Xx [2*kup  ] = -x ;	    /* real part */
+                            Xx [2*kup+1] = -z ;	    /* imaginary part */
+                        }
+                        if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)
+                        {
+                            /* complex symmetric */
+                            Xx [2*kup  ] = x ;	    /* real part */
+                            Xx [2*kup+1] = z ;	    /* imaginary part */
+                        }
+                    }
+                }
+            }
 	}
     }
 
@@ -1077,20 +1211,35 @@ static cholmod_dense *read_dense
 }
 
 
-/* ========================================================================== */
-/* === cholmod_read_triplet ================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cholmod_read_triplet
+//------------------------------------------------------------------------------
 
-/* Read in a triplet matrix from a file. */
+// Read in a triplet matrix from a file (as double, not float)
 
 cholmod_triplet *CHOLMOD(read_triplet)
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 )
 {
+    return (CHOLMOD(read_triplet2) (f, CHOLMOD_DOUBLE, Common)) ;
+}
+
+//------------------------------------------------------------------------------
+// cholmod_read_triplet2
+//------------------------------------------------------------------------------
+
+// Read in a triplet matrix from a file (as float or double)
+
+cholmod_triplet *CHOLMOD(read_triplet2)
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    cholmod_common *Common
+)
+{
+
     char buf [MAXLINE+1] ;
     size_t nrow, ncol, nnz ;
     int stype, mtype ;
@@ -1108,37 +1257,49 @@ cholmod_triplet *CHOLMOD(read_triplet)
     /* ---------------------------------------------------------------------- */
 
     if (!read_header (f, buf, &mtype, &nrow, &ncol, &nnz, &stype) ||
-	mtype != CHOLMOD_TRIPLET)
+        mtype != CHOLMOD_TRIPLET)
     {
-	/* invalid matrix - this function can only read in a triplet matrix */
-	ERROR (CHOLMOD_INVALID, "invalid format") ;
-	return (NULL) ;
+        /* invalid matrix - this function can only read in a triplet matrix */
+        ERROR (CHOLMOD_INVALID, "invalid format") ;
+        return (NULL) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* read the triplet matrix */
     /* ---------------------------------------------------------------------- */
 
-    return (read_triplet (f, nrow, ncol, nnz, stype, FALSE, buf, Common)) ;
+    return (read_triplet (f, nrow, ncol, nnz, stype, FALSE,
+        dtype, buf, Common)) ;
 }
 
 
-/* ========================================================================== */
-/* === cholmod_read_sparse ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cholmod_read_sparse
+//------------------------------------------------------------------------------
 
-/* Read a sparse matrix from a file.  See cholmod_read_triplet for a discussion
- * of the file format.
- *
- * If Common->prefer_upper is TRUE (the default case), a symmetric matrix is
- * returned stored in upper-triangular form (A->stype == 1).
- */
+// Read a sparse matrix from a file (as double).  See cholmod_read_triplet for
+// a discussion of the file format.
+//
+// If Common->prefer_upper is TRUE (the default case), a symmetric matrix is
+// returned stored in upper-triangular form (A->stype == 1).
 
 cholmod_sparse *CHOLMOD(read_sparse)
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
+    cholmod_common *Common
+)
+{
+    return (CHOLMOD(read_sparse2) (f, CHOLMOD_DOUBLE, Common)) ;
+}
+
+//------------------------------------------------------------------------------
+// cholmod_read_sparse2: read sparse matrix from a file (double or single)
+//------------------------------------------------------------------------------
+
+cholmod_sparse *CHOLMOD(read_sparse2)
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
 )
 {
@@ -1157,32 +1318,45 @@ cholmod_sparse *CHOLMOD(read_sparse)
     /* convert to a sparse matrix in compressed-column form */
     /* ---------------------------------------------------------------------- */
 
-    T = CHOLMOD(read_triplet) (f, Common) ;
+    T = CHOLMOD(read_triplet2) (f, dtype, Common) ;
     A = CHOLMOD(triplet_to_sparse) (T, 0, Common) ;
     CHOLMOD(free_triplet) (&T, Common) ;
 
     if (Common->prefer_upper && A != NULL && A->stype == -1)
     {
-	/* A=A' */
-	A2 = CHOLMOD(transpose) (A, 2, Common) ;
-	CHOLMOD(free_sparse) (&A, Common) ;
-	A = A2 ;
+        /* A=A' */
+        A2 = CHOLMOD(transpose) (A, 2, Common) ;
+        CHOLMOD(free_sparse) (&A, Common) ;
+        A = A2 ;
     }
     return (A) ;
 }
 
+//------------------------------------------------------------------------------
+// cholmod_read_dense
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === cholmod_read_dense =================================================== */
-/* ========================================================================== */
-
-/* Read a dense matrix from a file. */
+// Read a dense matrix from a file (double only).
 
 cholmod_dense *CHOLMOD(read_dense)
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
+    cholmod_common *Common
+)
+{
+    return (CHOLMOD(read_dense2) (f, CHOLMOD_DOUBLE, Common)) ;
+}
+
+//------------------------------------------------------------------------------
+// cholmod_read_dense2
+//------------------------------------------------------------------------------
+
+// Read a dense matrix from a file (float or double).
+
+cholmod_dense *CHOLMOD(read_dense2)
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
 )
 {
@@ -1203,51 +1377,65 @@ cholmod_dense *CHOLMOD(read_dense)
     /* ---------------------------------------------------------------------- */
 
     if (!read_header (f, buf, &mtype, &nrow, &ncol, &nnz, &stype) ||
-	mtype != CHOLMOD_DENSE)
+        mtype != CHOLMOD_DENSE)
     {
-	/* invalid matrix - this function can only read in a dense matrix */
-	ERROR (CHOLMOD_INVALID, "invalid format") ;
-	return (NULL) ;
+        /* invalid matrix - this function can only read in a dense matrix */
+        ERROR (CHOLMOD_INVALID, "invalid format") ;
+        return (NULL) ;
     }
 
     /* ---------------------------------------------------------------------- */
     /* read the dense matrix */
     /* ---------------------------------------------------------------------- */
 
-    return (read_dense (f, nrow, ncol, stype, buf, Common)) ;
+    return (read_dense (f, nrow, ncol, stype, dtype, buf, Common)) ;
 }
 
 
-/* ========================================================================== */
-/* === cholmod_read_matrix ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cholmod_read_matrix
+//------------------------------------------------------------------------------
 
-/* Read a triplet matrix, sparse matrix or a dense matrix from a file.  Returns
- * a void pointer to either a cholmod_triplet, cholmod_sparse, or cholmod_dense
- * object.  The type of object is passed back to the caller as the mtype
- * argument. */
+// Read a triplet matrix, sparse matrix or a dense matrix from a file.  Returns
+// a void pointer to either a cholmod_triplet, cholmod_sparse, or cholmod_dense
+// object.  The type of object is passed back to the caller as the mtype
+// argument.  The matrix is read in double precision only.
 
 void *CHOLMOD(read_matrix)
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    int prefer,		/* If 0, a sparse matrix is always return as a
-			 *	cholmod_triplet form.  It can have any stype
-			 *	(symmetric-lower, unsymmetric, or
-			 *	symmetric-upper).
-			 * If 1, a sparse matrix is returned as an unsymmetric
-			 *	cholmod_sparse form (A->stype == 0), with both
-			 *	upper and lower triangular parts present.
-			 *	This is what the MATLAB mread mexFunction does,
-			 *	since MATLAB does not have an stype.
-			 * If 2, a sparse matrix is returned with an stype of 0
-			 *	or 1 (unsymmetric, or symmetric with upper part
-			 *	stored).
-			 * This argument has no effect for dense matrices.
-			 */
-    /* ---- output---- */
-    int *mtype,		/* CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE */
-    /* --------------- */
+    // input:
+    FILE *f,        // file to read from, must already be open
+    int prefer,     // If 0, a sparse matrix is always return as a
+                    // cholmod_triplet form.  It can have any stype
+                    // (symmetric-lower, unsymmetric, or symmetric-upper).
+                    // If 1, a sparse matrix is returned as an unsymmetric
+                    // cholmod_sparse form (A->stype == 0), with both upper and
+                    // lower triangular parts present.  This is what the MATLAB
+                    // mread mexFunction does, since MATLAB does not have an
+                    // stype.
+                    // If 2, a sparse matrix is returned with an stype of 0 or
+                    // 1 (unsymmetric, or symmetric with upper part stored).
+                    // This argument has no effect for dense matrices.
+    // output:
+    int *mtype,     // CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE
+    cholmod_common *Common
+)
+{
+    return (CHOLMOD(read_matrix2) (f, prefer, CHOLMOD_DOUBLE, mtype, Common)) ;
+}
+
+//------------------------------------------------------------------------------
+// cholmod_read_matrix2: same as cholmod_read_matrix, but float or double
+//------------------------------------------------------------------------------
+
+void *CHOLMOD(read_matrix2)
+(
+    // input:
+    FILE *f,        // file to read from, must already be open
+    int prefer,     // see cholmod_read_matrix
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    // output:
+    int *mtype,     // CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE
     cholmod_common *Common
 )
 {
@@ -1286,7 +1474,8 @@ void *CHOLMOD(read_matrix)
     {
 	/* read in the triplet matrix, converting to unsymmetric format if
 	 * prefer == 1 */
-	T = read_triplet (f, nrow, ncol, nnz, stype, prefer == 1, buf, Common) ;
+	T = read_triplet (f, nrow, ncol, nnz, stype, prefer == 1,
+            dtype, buf, Common) ;
 	if (prefer == 0)
 	{
 	    /* return matrix in its original triplet form */
@@ -1311,7 +1500,7 @@ void *CHOLMOD(read_matrix)
     else if (*mtype == CHOLMOD_DENSE)
     {
 	/* return a dense matrix */
-	G = read_dense (f, nrow, ncol, stype, buf, Common) ;
+	G = read_dense (f, nrow, ncol, stype, dtype, buf, Common) ;
     }
     return (G) ;
 }

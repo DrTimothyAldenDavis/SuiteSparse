@@ -195,7 +195,7 @@ int CHOLMOD(rowadd_mark)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, s, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, s, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert to simplicial numeric LDL' factor, if not already */
@@ -271,7 +271,7 @@ int CHOLMOD(rowadd_mark)
 
     DEBUG (for (p = 0 ; p < rnz ; p++)
 	    PRINT1 (("C ("ID",%g)\n", Ci [p], W [Ci [p]]))) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* flag the diagonal */
     Flag [k] = mark ;
@@ -604,7 +604,7 @@ int CHOLMOD(rowadd_mark)
     mark = CHOLMOD(clear_flag) (Common) ;
 
     /* workspaces are now cleared */
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* update/downdate */
@@ -669,7 +669,7 @@ int CHOLMOD(rowadd_mark)
     Common->modfl += fl ;
 
     DEBUG (CHOLMOD(dump_factor) (L, "LDL factorization, L:", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
     return (ok) ;
 }
 #endif

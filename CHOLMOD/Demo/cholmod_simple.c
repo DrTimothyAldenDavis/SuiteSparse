@@ -23,6 +23,7 @@ int main (void)
     cholmod_common c ;
     cholmod_start (&c) ;			    /* start CHOLMOD */
     A = cholmod_read_sparse (stdin, &c) ;	    /* read in a matrix */
+    c.print = (A->nrow > 5) ? 2 : 5 ;
     cholmod_print_sparse (A, "A", &c) ;		    /* print the matrix */
     if (A == NULL || A->stype == 0)		    /* A must be symmetric */
     {

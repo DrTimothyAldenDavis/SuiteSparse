@@ -298,7 +298,7 @@ int CHOLMOD(resymbol_noperm)
     {
 	return (FALSE) ;	/* out of memory */
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -380,7 +380,7 @@ int CHOLMOD(resymbol_noperm)
 		{
 		    /* out-of-range or duplicate entry in fset */
 		    ERROR (CHOLMOD_INVALID, "fset invalid") ;
-		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 		    return (FALSE) ;
 		}
 		/* flag column j as having been seen */
@@ -600,7 +600,7 @@ int CHOLMOD(resymbol_noperm)
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
     DEBUG (CHOLMOD(dump_factor) (L, "ReSymbol final L (i, x):", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (TRUE) ;
 }
 #endif

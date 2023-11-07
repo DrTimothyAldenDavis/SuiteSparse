@@ -2234,77 +2234,115 @@ int cholmod_print_parent
 int cholmod_l_print_parent (int64_t *, size_t, const char *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_read_sparse: read a sparse matrix from a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_read_sparse: read a sparse matrix from a file (double only)
+//------------------------------------------------------------------------------
 
 cholmod_sparse *cholmod_read_sparse
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
-
 cholmod_sparse *cholmod_l_read_sparse (FILE *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_read_triplet: read a triplet matrix from a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_read_sparse2: read a sparse matrix from a file (float or double)
+//------------------------------------------------------------------------------
+
+cholmod_sparse *cholmod_read_sparse2
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    cholmod_common *Common
+) ;
+cholmod_sparse *cholmod_l_read_sparse2 (FILE *, int, cholmod_common *) ;
+
+//------------------------------------------------------------------------------
+// cholmod_read_triplet: read a triplet matrix from a file (double only)
+//------------------------------------------------------------------------------
 
 cholmod_triplet *cholmod_read_triplet
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
-
 cholmod_triplet *cholmod_l_read_triplet (FILE *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_read_dense: read a dense matrix from a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_read_triplet: read a triplet matrix from a file (float or double)
+//------------------------------------------------------------------------------
+
+cholmod_triplet *cholmod_read_triplet2
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    cholmod_common *Common
+) ;
+cholmod_triplet *cholmod_l_read_triplet2 (FILE *, int, cholmod_common *) ;
+
+//------------------------------------------------------------------------------
+// cholmod_read_dense: read a dense matrix from a file (double only)
+//------------------------------------------------------------------------------
 
 cholmod_dense *cholmod_read_dense
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    /* --------------- */
+    FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
-
 cholmod_dense *cholmod_l_read_dense (FILE *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_read_matrix: read a sparse or dense matrix from a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_read_dense2: read a dense matrix from a file (float or double)
+//------------------------------------------------------------------------------
+
+cholmod_dense *cholmod_read_dense2
+(
+    FILE *f,        // file to read from, must already be open
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    cholmod_common *Common
+) ;
+cholmod_dense *cholmod_l_read_dense2 (FILE *, int, cholmod_common *) ;
+
+//------------------------------------------------------------------------------
+// cholmod_read_matrix: read a sparse or dense matrix from a file (double only)
+//------------------------------------------------------------------------------
 
 void *cholmod_read_matrix
 (
-    /* ---- input ---- */
-    FILE *f,		/* file to read from, must already be open */
-    int prefer,		/* If 0, a sparse matrix is always return as a
-			 *	cholmod_triplet form.  It can have any stype
-			 *	(symmetric-lower, unsymmetric, or
-			 *	symmetric-upper).
-			 * If 1, a sparse matrix is returned as an unsymmetric
-			 *	cholmod_sparse form (A->stype == 0), with both
-			 *	upper and lower triangular parts present.
-			 *	This is what the MATLAB mread mexFunction does,
-			 *	since MATLAB does not have an stype.
-			 * If 2, a sparse matrix is returned with an stype of 0
-			 *	or 1 (unsymmetric, or symmetric with upper part
-			 *	stored).
-			 * This argument has no effect for dense matrices.
-			 */
-    /* ---- output---- */
-    int *mtype,		/* CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE */
-    /* --------------- */
+    // input:
+    FILE *f,        // file to read from, must already be open
+    int prefer,     // If 0, a sparse matrix is always return as a
+                    // cholmod_triplet form.  It can have any stype
+                    // (symmetric-lower, unsymmetric, or symmetric-upper).
+                    // If 1, a sparse matrix is returned as an unsymmetric
+                    // cholmod_sparse form (A->stype == 0), with both upper and
+                    // lower triangular parts present.  This is what the MATLAB
+                    // mread mexFunction does, since MATLAB does not have an
+                    // stype.
+                    // If 2, a sparse matrix is returned with an stype of 0 or
+                    // 1 (unsymmetric, or symmetric with upper part stored).
+                    // This argument has no effect for dense matrices.
+    // output:
+    int *mtype,     // CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE
     cholmod_common *Common
 ) ;
-
 void *cholmod_l_read_matrix (FILE *, int, int *, cholmod_common *) ;
+
+//------------------------------------------------------------------------------
+// cholmod_read_matrix2: read a sparse or dense matrix (float or double)
+//------------------------------------------------------------------------------
+
+void *cholmod_read_matrix2
+(
+    // input:
+    FILE *f,        // file to read from, must already be open
+    int prefer,     // see cholmod_read_matrix
+    int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
+    // output:
+    int *mtype,     // CHOLMOD_TRIPLET, CHOLMOD_SPARSE or CHOLMOD_DENSE
+    cholmod_common *Common
+) ;
+void *cholmod_l_read_matrix2 (FILE *, int, int, int *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_write_sparse: write a sparse matrix to a file */

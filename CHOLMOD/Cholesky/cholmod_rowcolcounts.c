@@ -509,7 +509,7 @@ int CHOLMOD(rowcolcounts)
     /* CHOLMOD(clear_flag) (Common) ; */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* flop count and nnz(L) for subsequent LL' numerical factorization */

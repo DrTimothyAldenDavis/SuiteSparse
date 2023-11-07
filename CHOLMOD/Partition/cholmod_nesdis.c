@@ -898,7 +898,7 @@ int64_t CHOLMOD(bisect)	/* returns # of nodes in separator */
     {
 	return (EMPTY) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     Iwork = Common->Iwork ;
     Hash = Iwork ;		/* size n, (i/l/l) */
@@ -1134,7 +1134,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     {
 	return (EMPTY) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get workspace */
@@ -1203,7 +1203,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
     ASSERT (Flag == Common->Flag) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     for (j = 0 ; j < n ; j++)
     {
@@ -1838,7 +1838,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     Common->mark = EMPTY ;
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* find the permutation */
@@ -1946,7 +1946,7 @@ int64_t CHOLMOD(nested_dissection) /* returns # of components, or -1 if error */
     /* clear workspace and return number of components */
     /* ---------------------------------------------------------------------- */
 
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (ncomponents) ;
 #else
     Common->status = CHOLMOD_NOT_INSTALLED ;

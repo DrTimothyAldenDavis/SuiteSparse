@@ -180,7 +180,7 @@ static int TEMPLATE (cholmod_rowfac)
 
 	/* column k of L is currently empty */
 	ASSERT (Lnz [k] == 1) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
 	top = n ;		/* Stack is empty */
 	Flag [k] = mark ;	/* do not include diagonal entry in Stack */
@@ -387,7 +387,7 @@ static int TEMPLATE (cholmod_rowfac)
 			/* W [i] = 0 ; */
 			CLEAR (Wx,Wz,i) ;
 		    }
-		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
+		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 		    return (FALSE) ;
 		}
 		Li = L->i ;		/* L->i, L->x, L->z may have moved */
@@ -450,7 +450,7 @@ static int TEMPLATE (cholmod_rowfac)
     Common->rowfacfl = fl ;
 
     DEBUG (CHOLMOD(dump_factor) (L, "final cholmod_rowfac", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wsize, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
     return (TRUE) ;
 }
 #undef PATTERN

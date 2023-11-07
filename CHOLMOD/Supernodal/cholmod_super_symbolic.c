@@ -130,15 +130,15 @@ static void subtree
 
 
 /* clear workspace used by cholmod_super_symbolic */
-#define FREE_WORKSPACE                                      \
-{                                                           \
-    CLEAR_FLAG (Common) ;                                   \
-    ASSERT (check_flag (Common)) ;                          \
-    for (k = 0 ; k <= nfsuper ; k++)                        \
-    {                                                       \
-	Head [k] = EMPTY ;                                  \
-    }                                                       \
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;   \
+#define FREE_WORKSPACE                                          \
+{                                                               \
+    CLEAR_FLAG (Common) ;                                       \
+    ASSERT (check_flag (Common)) ;                              \
+    for (k = 0 ; k <= nfsuper ; k++)                            \
+    {                                                           \
+	Head [k] = EMPTY ;                                      \
+    }                                                           \
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;    \
 } \
 
 
@@ -230,7 +230,7 @@ int CHOLMOD(super_symbolic2)
 	/* out of memory */
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* allocate GPU workspace */
@@ -834,7 +834,7 @@ int CHOLMOD(super_symbolic2)
     {
 	PRINT1 (("Lpi2[s] "ID" Lpi[s+1] "ID"\n", Lpi2 [s], Lpi [s+1])) ;
 	ASSERT (Lpi2 [s] == Lpi [s+1]) ;
-	CHOLMOD(dump_super) (s, Super, Lpi, Ls, NULL, NULL, 0, Common) ;
+	CHOLMOD(dump_super) (s, Super, Lpi, Ls, NULL, NULL, 0, 0, Common) ;
     }
 #endif
 

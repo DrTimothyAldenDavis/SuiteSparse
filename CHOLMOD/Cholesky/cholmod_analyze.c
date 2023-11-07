@@ -369,18 +369,18 @@ int CHOLMOD(analyze_ordering)
 /* === Free workspace and return L ========================================== */
 /* ========================================================================== */
 
-#define FREE_WORKSPACE_AND_RETURN \
-{ \
-    Common->no_workspace_reallocate = FALSE ; \
-    CHOLMOD(free) (n, sizeof (Int), Lparent,  Common) ; \
-    CHOLMOD(free) (n, sizeof (Int), Perm,     Common) ; \
-    CHOLMOD(free) (n, sizeof (Int), ColCount, Common) ; \
-    if (Common->status < CHOLMOD_OK) \
-    { \
-	CHOLMOD(free_factor) (&L, Common) ; \
-    } \
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ; \
-    return (L) ; \
+#define FREE_WORKSPACE_AND_RETURN                               \
+{                                                               \
+    Common->no_workspace_reallocate = FALSE ;                   \
+    CHOLMOD(free) (n, sizeof (Int), Lparent,  Common) ;         \
+    CHOLMOD(free) (n, sizeof (Int), Perm,     Common) ;         \
+    CHOLMOD(free) (n, sizeof (Int), ColCount, Common) ;         \
+    if (Common->status < CHOLMOD_OK)                            \
+    {                                                           \
+	CHOLMOD(free_factor) (&L, Common) ;                     \
+    }                                                           \
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;    \
+    return (L) ;                                                \
 }
 
 
@@ -509,7 +509,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
     {
 	return (NULL) ;	    /* out of memory */
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ensure that subsequent routines, called by cholmod_analyze, do not
      * reallocate any workspace.  This is set back to FALSE in the
@@ -707,7 +707,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
 	    Common->status = CHOLMOD_INVALID ;
 	}
 
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
 	if (Common->status < CHOLMOD_OK)
 	{

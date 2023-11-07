@@ -611,7 +611,7 @@ int CHOLMOD(updown_mask2)
 	k2 = k1 + k - 1 ;
 
 	/* workspaces are in the following state, on input and output */
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
 	/* ------------------------------------------------------------------ */
 	/* create a zero-length path for each column of W */
@@ -687,7 +687,7 @@ int CHOLMOD(updown_mask2)
 			j, p1, p2, newlnz)) ;
 	    dump_col ("Old", j, p1, p2, Li, Lx, n, Common) ;
 	    oldparent = (Lnz [j] > 1) ? (Li [p1 + 1]) : EMPTY ;
-	    ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, Common)) ;
+	    ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, 0, Common)) ;
 	    ASSERT (!scattered) ;
 	    PRINT1 (("Col "ID": Checking paths, npaths: "ID"\n", j, npaths)) ;
 	    for (kk = 0 ; kk < npaths ; kk++)
@@ -948,7 +948,7 @@ int CHOLMOD(updown_mask2)
 		    {
 			Head [j] = EMPTY ;
 		    }
-		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, Common)) ;
+		    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 		    return (FALSE) ;
 		}
 		/* L->i and L->x may have moved.  Column j has moved too */
@@ -1317,7 +1317,7 @@ int CHOLMOD(updown_mask2)
 	}
 
 	/* ensure workspaces are back to the values required on input */
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, TRUE, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
 	/* ------------------------------------------------------------------ */
 	/* depth-first-search of tree to order the paths */
@@ -1405,7 +1405,7 @@ int CHOLMOD(updown_mask2)
 	/* numeric update/downdate for all paths */
 	/* ------------------------------------------------------------------ */
 
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
 	switch (wdim)
 	{
@@ -1427,7 +1427,7 @@ int CHOLMOD(updown_mask2)
 		break ;
 	}
 
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, wdim, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -1585,7 +1585,7 @@ int CHOLMOD(updown_mask2)
 
     Common->modfl = fl ;
     DEBUG (for (j = 0 ; j < n ; j++) ASSERT (IMPLIES (do_solve, Nx[j] == 0.))) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, TRUE, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     DEBUG (CHOLMOD(dump_factor) (L, "output L for updown", Common)) ;
     return (TRUE) ;
 }

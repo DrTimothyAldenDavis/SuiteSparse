@@ -198,7 +198,7 @@ int CHOLMOD(super_numeric)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get the current factor L and allocate numerical part, if needed */
@@ -300,7 +300,7 @@ int CHOLMOD(super_numeric)
     /* CHOLMOD(clear_flag) (Common) ; */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     CHOLMOD(free_dense) (&C, Common) ;
     return (ok) ;
 }

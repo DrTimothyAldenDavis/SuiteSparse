@@ -187,7 +187,7 @@ int CHOLMOD(rowdel_mark)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert to simplicial numeric LDL' factor, if not already */
@@ -451,7 +451,7 @@ int CHOLMOD(rowdel_mark)
     }
 
     DEBUG (CHOLMOD(dump_factor) (L, "LDL factorization, L:", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
     return (ok) ;
 }
 #endif

@@ -2,7 +2,7 @@
 // CHOLMOD/Check/cholmod_check: check and print each CHOLMOD object
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Check Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -107,19 +107,6 @@
     return (FALSE) ; \
 }
 
-/* print a numerical value */
-#define PRINTVALUE(value) \
-{ \
-    if (Common->precise) \
-    { \
-	P4 (" %23.15e", value) ; \
-    } \
-    else \
-    { \
-	P4 (" %.5g", value) ; \
-    } \
-}
-
 /* start printing */
 #define ETC_START(count,limit) \
 { \
@@ -155,39 +142,56 @@
 
 #define BOOLSTR(x) ((x) ? "true " : "false")
 
-/* ========================================================================== */
-/* === print_value ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// print_value
+//------------------------------------------------------------------------------
+
+// get a double or float value from an array at X [p]
+#define GETVAL(X,p,dtype) \
+    ((dtype == CHOLMOD_DOUBLE) ? (((double *) X) [p]) : (((float  *) X) [p]))
+
+// print a numerical value in X [p], as float or double
+#define PRINTVALUE(X,p,dtype)                                       \
+{                                                                   \
+    double value = GETVAL (X, p, dtype) ;                           \
+    char *fmt = (Common->precise) ?                                 \
+        ((dtype == CHOLMOD_DOUBLE) ?  (" %23.15e") : (" %15.7e")) : \
+        (" %.5g ") ;                                                \
+    P4 (fmt, value) ;                                               \
+}
 
 static void print_value
 (
     Int print,
-    Int xtype,
-    double *Xx,
-    double *Xz,
+    int xtype,      // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
+    int dtype,      // CHOLMOD_SINGLE or _DOUBLE
+    void *Xx,       // pointer to float or double (real part)
+    void *Xz,       // pointer to float or double (zomplex only)
     Int p,
     cholmod_common *Common)
 {
+
     if (xtype == CHOLMOD_REAL)
     {
-	PRINTVALUE (Xx [p]) ;
+	PRINTVALUE (Xx, p, dtype) ;
     }
     else if (xtype == CHOLMOD_COMPLEX)
     {
 	P4 ("%s", "(") ;
-	PRINTVALUE (Xx [2*p  ]) ;
+	PRINTVALUE (Xx, 2*p  , dtype) ;
 	P4 ("%s", " , ") ;
-	PRINTVALUE (Xx [2*p+1]) ;
+	PRINTVALUE (Xx, 2*p+1, dtype) ;
 	P4 ("%s", ")") ;
     }
     else if (xtype == CHOLMOD_ZOMPLEX)
     {
 	P4 ("%s", "(") ;
-	PRINTVALUE (Xx [p]) ;
+	PRINTVALUE (Xx, p, dtype) ;
 	P4 ("%s", " , ") ;
-	PRINTVALUE (Xz [p]) ;
+	PRINTVALUE (Xz, p, dtype) ;
 	P4 ("%s", ")") ;
     }
+
 }
 
 /* ========================================================================== */
@@ -204,7 +208,6 @@ static int check_common
 )
 {
     double fl, lnz ;
-    uint8_t *Xwork ;
     Int *Flag, *Head ;
     int64_t mark ;
     Int i, nrow, nmethods, ordering, xworksize, amd_backup, init_print ;
@@ -560,7 +563,7 @@ static int check_common
     }
 
     xworksize = Common->xworkbytes ;
-    Xwork = Common->Xwork ;
+    uint8_t *Xwork = Common->Xwork ;
     if (xworksize > 0)
     {
 	if (Xwork == NULL)
@@ -679,10 +682,10 @@ static int64_t check_sparse
     cholmod_common *Common
 )
 {
-    double *Ax, *Az ;
+    void *Ax, *Az ;
     Int *Ap, *Ai, *Anz ;
     Int nrow, ncol, nzmax, sorted, packed, j, p, pend, i, nz, ilast,
-	init_print, dnz, count, xtype ;
+	init_print, dnz, count ;
     const char *type = "sparse" ;
 
     /* ---------------------------------------------------------------------- */
@@ -706,7 +709,8 @@ static int64_t check_sparse
     nzmax = A->nzmax ;
     sorted = A->sorted ;
     packed = A->packed ;
-    xtype = A->xtype ;
+    int xtype = A->xtype ;
+    int dtype = A->dtype ;
     Ap = A->p ;
     Ai = A->i ;
     Ax = A->x ;
@@ -876,9 +880,7 @@ static int64_t check_sparse
 	    ETC (j == ncol-1 && p >= pend-4, count, -1) ;
 	    i = Ai [p] ;
 	    P4 ("  "I8":", i) ;
-
-	    print_value (print, xtype, Ax, Az, p, Common) ;
-
+	    print_value (print, xtype, dtype, Ax, Az, p, Common) ;
 	    if (i == j)
 	    {
 		dnz++ ;
@@ -958,8 +960,8 @@ static int check_dense
     cholmod_common *Common
 )
 {
-    double *Xx, *Xz ;
-    Int i, j, d, nrow, ncol, nzmax, nz, init_print, count, xtype ;
+    void *Xx, *Xz ;
+    Int i, j, d, nrow, ncol, nzmax, nz, init_print, count ;
     const char *type = "dense" ;
 
     /* ---------------------------------------------------------------------- */
@@ -984,7 +986,8 @@ static int check_dense
     d = X->d ;
     Xx = X->x ;
     Xz = X->z ;
-    xtype = X->xtype ;
+    int xtype = X->xtype ;
+    int dtype = X->dtype ;
 
     P3 (" "ID"", nrow) ;
     P3 ("-by-"ID", ", ncol) ;
@@ -1036,9 +1039,7 @@ static int check_dense
 	    {
 		ETC (j == ncol-1 && i >= nrow-4, count, -1) ;
 		P4 ("  "I8":", i) ;
-
-		print_value (print, xtype, Xx, Xz, i+j*d, Common) ;
-
+		print_value (print, xtype, dtype, Xx, Xz, i+j*d, Common) ;
 		P4 ("%s", "\n") ;
 	    }
 	}
@@ -1259,7 +1260,7 @@ static int check_perm
 	/* use the Common->Flag array if it's big enough */
 	mark = CHOLMOD(clear_flag) (Common) ;
 	Flag = Common->Flag ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, 0, Common)) ;
 	if (print >= 4)
 	{
 	    for (k = 0 ; k < ((Int) len) ; k++)
@@ -1290,7 +1291,7 @@ static int check_perm
 	    }
 	}
 	CHOLMOD(clear_flag) (Common) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, FALSE, 0, 0, Common)) ;
     }
     else
     {
@@ -1500,13 +1501,13 @@ static int check_factor
     cholmod_common *Common
 )
 {
-    double *Lx, *Lz ;
+    void *Lx, *Lz ;
     Int *Lp, *Li, *Lnz, *Lnext, *Lprev, *Perm, *ColCount, *Lpi, *Lpx, *Super,
 	*Ls ;
     Int n, nzmax, j, p, pend, i, nz, ordering, space, is_monotonic, minor,
 	count, precise, init_print, ilast, lnz, head, tail, jprev, plast,
 	jnext, examine_super, nsuper, s, k1, k2, psi, psend, psx, nsrow, nscol,
-	ps2, psxend, ssize, xsize, maxcsize, maxesize, nsrow2, jj, ii, xtype ;
+	ps2, psxend, ssize, xsize, maxcsize, maxesize, nsrow2, jj, ii ;
     Int check_Lpx ;
     const char *type = "factor" ;
 
@@ -1529,7 +1530,8 @@ static int check_factor
     n = L->n ;
     minor = L->minor ;
     ordering = L->ordering ;
-    xtype = L->xtype ;
+    int xtype = L->xtype ;
+    int dtype = L->dtype ;
 
     Perm = L->Perm ;
     ColCount = L->ColCount ;
@@ -1753,15 +1755,16 @@ static int check_factor
 	    }
 	    plast = p ;
 
+            // print the diagonal entry
 	    i = Li [p] ;
 	    P4 ("  "I8":", i) ;
 	    if (i != j)
 	    {
 		ERR ("diagonal missing") ;
 	    }
+	    print_value (print, xtype, dtype, Lx, Lz, p, Common) ;
 
-	    print_value (print, xtype, Lx, Lz, p, Common) ;
-
+            // print the off-diagonal entries
 	    P4 ("%s", "\n") ;
 	    ilast = j ;
 	    for (p++ ; p < pend ; p++)
@@ -1777,9 +1780,7 @@ static int check_factor
 		{
 		    ERR ("row indices out of order") ;
 		}
-
-		print_value (print, xtype, Lx, Lz, p, Common) ;
-
+		print_value (print, xtype, dtype, Lx, Lz, p, Common) ;
 		P4 ("%s", "\n") ;
 		ilast = i ;
 	    }
@@ -1957,8 +1958,8 @@ static int check_factor
 			    ERR ("row index invalid") ;
 			}
 
-			/* PRINTVALUE (Lx [psx + jj + jj*nsrow]) ; */
-			print_value (print, xtype, Lx, NULL,
+			// print (Lx [psx + jj + jj*nsrow])
+			print_value (print, xtype, dtype, Lx, NULL,
 				psx + jj + jj*nsrow, Common) ;
 
 			P4 ("%s", "\n") ;
@@ -1972,8 +1973,8 @@ static int check_factor
 				ERR ("row index out of range") ;
 			    }
 
-			    /* PRINTVALUE (Lx [psx + ii + jj*nsrow]) ; */
-			    print_value (print, xtype, Lx, NULL,
+			    // print (Lx [psx + ii + jj*nsrow])
+			    print_value (print, xtype, dtype, Lx, NULL,
 				    psx + ii + jj*nsrow, Common) ;
 
 			    P4 ("%s", "\n") ;
@@ -2066,9 +2067,9 @@ static int check_triplet
     cholmod_common *Common
 )
 {
-    double *Tx, *Tz ;
+    void *Tx, *Tz ;
     Int *Ti, *Tj ;
-    Int i, j, p, nrow, ncol, nzmax, nz, xtype, init_print, count ;
+    Int i, j, p, nrow, ncol, nzmax, nz, init_print, count ;
     const char *type = "triplet" ;
 
     /* ---------------------------------------------------------------------- */
@@ -2095,8 +2096,8 @@ static int check_triplet
     Tj = T->j ;
     Tx = T->x ;
     Tz = T->z ;
-    xtype = T->xtype ;
-
+    int xtype = T->xtype ;
+    int dtype = T->dtype ;
 
     P3 (" "ID"", nrow) ;
     P3 ("-by-"ID", ", ncol) ;
@@ -2196,9 +2197,7 @@ static int check_triplet
 	{
 	    ERR ("column index out of range") ;
 	}
-
-	print_value (print, xtype, Tx, Tz, p, Common) ;
-
+	print_value (print, xtype, dtype, Tx, Tz, p, Common) ;
 	P4 ("%s", "\n") ;
     }
 
@@ -2454,13 +2453,17 @@ int CHOLMOD(dump_parent)
 void CHOLMOD(dump_real)
 (
     const char *name,
-    double *X, int64_t nrow, int64_t ncol, int lower,
-    int xentry, cholmod_common *Common
+    void *X,        // float or double, in column-major form
+    int dtype,      // CHOLMOD_SINGLE or CHOLMOD_DOUBLE
+    int64_t nrow,   // # of rows
+    int64_t ncol,   // # of cols
+    int lower,      // if true, only print lower triangular part
+    int xentry,     // 1 if real, 2 if complex (never zomplex)
+    cholmod_common *Common
 )
 {
-    /* dump an nrow-by-ncol real dense matrix */
-    int64_t i, j ;
-    double x, z ;
+
+    // dump an nrow-by-ncol real or complex dense matrix
     if (CHOLMOD(dump) < -1)
     {
 	/* no checks if debug level is -2 or less */
@@ -2468,10 +2471,11 @@ void CHOLMOD(dump_real)
     }
     PRINT1 (("%s: dump_real, nrow: %ld ncol: %ld lower: %d\n",
 		name, nrow, ncol, lower)) ;
-    for (j = 0 ; j < ncol ; j++)
+    int64_t p = 0 ;
+    for (int64_t j = 0 ; j < ncol ; j++)
     {
 	PRINT2 (("    col %ld\n", j)) ;
-	for (i = 0 ; i < nrow ; i++)
+	for (int64_t i = 0 ; i < nrow ; i++)
 	{
 	    /* X is stored in column-major form */
 	    if (lower && i < j)
@@ -2480,16 +2484,18 @@ void CHOLMOD(dump_real)
 	    }
 	    else
 	    {
-		x = *X ;
+                // x = X [p]
+                double x = GETVAL (X, p, dtype) ;
 		PRINT2 (("        %5ld: %e", i, x)) ;
 		if (xentry == 2)
 		{
-		    z = *(X+1) ;
+                    // x = X [p+1]
+		    double z = GETVAL (X, p+1, dtype) ;
 		    PRINT2 ((", %e", z)) ;
 		}
 	    }
 	    PRINT2 (("\n")) ;
-	    X += xentry ;
+	    p += xentry ;
 	}
     }
 }
@@ -2502,7 +2508,9 @@ void CHOLMOD(dump_real)
 void CHOLMOD(dump_super)
 (
     int64_t s,
-    Int *Super, Int *Lpi, Int *Ls, Int *Lpx, double *Lx,
+    Int *Super, Int *Lpi, Int *Ls, Int *Lpx,
+    void *Lx,       // float or double
+    int dtype,      // CHOLMOD_SINGLE or CHOLMOD_DOUBLE
     int xentry,
     cholmod_common *Common
 )
@@ -2535,8 +2543,18 @@ void CHOLMOD(dump_super)
     if (do_values)
     {
 	psx = Lpx [s] ;
-	CHOLMOD(dump_real) ("Supernode", Lx + xentry*psx, nsrow, nscol, TRUE, 
-		xentry, Common) ;
+        if (dtype == CHOLMOD_DOUBLE)
+        {
+            double *X = (double *) Lx ;
+	    CHOLMOD(dump_real) ("Supernode", X + xentry*psx, dtype,
+                nsrow, nscol, TRUE, xentry, Common) ;
+        }
+        else
+        {
+            float *X = (float *) Lx ;
+	    CHOLMOD(dump_real) ("Supernode", X + xentry*psx, dtype,
+                nsrow, nscol, TRUE, xentry, Common) ;
+        }
     }
 }
 
@@ -2638,10 +2656,9 @@ int CHOLMOD(dump_partition)
 /* === cholmod_dump_work ==================================================== */
 /* ========================================================================== */
 
-int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
+int CHOLMOD(dump_work) (int flag, int head, int64_t wsize, int dtype,
     cholmod_common *Common)
 {
-    double *W ;
     Int *Flag, *Head ;
     Int k, nrow, mark ;
 
@@ -2655,22 +2672,7 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
     nrow = Common->nrow ;
     Flag = Common->Flag ;
     Head = Common->Head ;
-    W = Common->Xwork ;
     mark = Common->mark ;
-
-#if 0
-    // FIXME: need float and double
-    if (wsize < 0)
-    {
-	/* check all of Xwork */
-	wsize = Common->xworkbytes ;
-    }
-    else
-    {
-	/* check on the first wsize doubles in Xwork */
-	wsize = MIN (wsize, (Int) (Common->xworkbytes)) ;
-    }
-#endif
 
     if (flag)
     {
@@ -2697,17 +2699,52 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize,
 	}
     }
 
-#if 0
-    // FIXME: need float and double
-    for (k = 0 ; k < wsize ; k++)
+    if (dtype == CHOLMOD_DOUBLE)
     {
-	if (W [k] != 0.)
-	{
-	    PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
-	    return (FALSE) ;
-	}
+        double *W = Common->Xwork ;
+        int64_t s = (int64_t) (Common->xworkbytes / sizeof (double)) ;
+        if (wsize < 0)
+        {
+            /* check all of Xwork */
+            wsize = s ;
+        }
+        else
+        {
+            /* check on the first wsize entries in Xwork */
+            wsize = MIN (wsize, s) ;
+        }
+        for (k = 0 ; k < wsize ; k++)
+        {
+            if (W [k] != 0.)
+            {
+                PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
+                return (FALSE) ;
+            }
+        }
     }
-#endif
+    else
+    {
+        float *W = Common->Xwork ;
+        int64_t s = (int64_t) (Common->xworkbytes / sizeof (float)) ;
+        if (wsize < 0)
+        {
+            /* check all of Xwork */
+            wsize = s ;
+        }
+        else
+        {
+            /* check on the first wsize entries in Xwork */
+            wsize = MIN (wsize, s) ;
+        }
+        for (k = 0 ; k < wsize ; k++)
+        {
+            if (W [k] != 0.)
+            {
+                PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
+                return (FALSE) ;
+            }
+        }
+    }
 
     return (TRUE) ;
 }

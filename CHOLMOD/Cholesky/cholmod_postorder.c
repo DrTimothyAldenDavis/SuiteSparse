@@ -179,7 +179,7 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
     {
 	return (EMPTY) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -283,7 +283,7 @@ Int CHOLMOD(postorder)	/* return # of nodes postordered */
     }
 
     PRINT1 (("postordered "ID" nodes\n", k)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (k) ;
 }
 #endif

@@ -107,7 +107,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	/* out of memory */
 	return (NULL) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1 : 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1 : 0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* get inputs */
@@ -123,7 +123,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	if (Common->status < CHOLMOD_OK)
 	{
 	    /* out of memory */
-	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 	    return (NULL) ;
 	}
 	A = A2 ;
@@ -138,7 +138,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	{
 	    /* out of memory */
 	    CHOLMOD(free_sparse) (&A2, Common) ;
-	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 	    return (NULL) ;
 	}
 	B = B2 ;
@@ -222,7 +222,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
 	CHOLMOD(free_sparse) (&A2, Common) ;
 	CHOLMOD(free_sparse) (&B2, Common) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 	return (NULL) ;
     }
 
@@ -260,7 +260,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 		/* out of memory */
 		CHOLMOD(free_sparse) (&A2, Common) ;
 		CHOLMOD(free_sparse) (&B2, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
+		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common));
 		return (NULL) ;
 	    }
 	    /* workspace: Iwork (B->nrow) */
@@ -272,7 +272,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 		/* out of memory */
 		CHOLMOD(free_sparse) (&A2, Common) ;
 		CHOLMOD(free_sparse) (&B2, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
+		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common));
 		return (NULL) ;
 	    }
 	    A = B2 ;
@@ -309,7 +309,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	/* out of memory */
 	CHOLMOD(free_sparse) (&A2, Common) ;
 	CHOLMOD(free_sparse) (&B2, Common) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 	return (NULL) ;
     }
 
@@ -422,7 +422,7 @@ cholmod_sparse *CHOLMOD(ssmult)
     /* CHOLMOD(clear_flag) (Common) ; */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert C to a symmetric upper/lower matrix if requested */
@@ -457,7 +457,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	    if (Common->status < CHOLMOD_OK)
 	    {
 		/* out of memory */
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
+		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common));
 		return (NULL) ;
 	    }
 	    C = C2 ;
@@ -469,7 +469,7 @@ cholmod_sparse *CHOLMOD(ssmult)
 	    {
 		/* out of memory */
 		CHOLMOD(free_sparse) (&C, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
+		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common));
 		return (NULL) ;
 	    }
 	}
@@ -480,7 +480,7 @@ cholmod_sparse *CHOLMOD(ssmult)
     /* ---------------------------------------------------------------------- */
 
     ASSERT (CHOLMOD(dump_sparse) (C, "ssmult", Common) >= 0) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
     return (C) ;
 }
 #endif

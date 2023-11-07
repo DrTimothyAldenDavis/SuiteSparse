@@ -634,7 +634,7 @@ int CHOLMOD(metis)
     {
 	return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     /* ---------------------------------------------------------------------- */
     /* convert the matrix to adjacency list form */
@@ -850,7 +850,7 @@ int CHOLMOD(metis)
 	}
     }
 
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     PRINT1 (("cholmod_metis done\n")) ;
     return (Common->status == CHOLMOD_OK) ;
 #else

@@ -43,8 +43,9 @@
 #endif
 
 /* Uncomment this line to enable debugging.  CHOLMOD will be very slow.
-#undef NDEBUG
  */
+// FIXME: debug is on
+#undef NDEBUG
 
 /* ========================================================================== */
 /* === basic definitions ==================================================== */
@@ -663,13 +664,13 @@ int  cholmod_dump_perm (int *, size_t, size_t, const char *, cholmod_common *) ;
 int  cholmod_dump_parent (int *, size_t, const char *, cholmod_common *) ;
 void cholmod_dump_init (const char *, cholmod_common *) ;
 int  cholmod_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_dump_real (const char *, double *, int64_t,
+void cholmod_dump_real (const char *, void *, int, int64_t,
     int64_t, int, int, cholmod_common *) ;
-void cholmod_dump_super (int64_t, int *, int *, int *, int *, double *,
+void cholmod_dump_super (int64_t, int *, int *, int *, int *, void *, int,
     int, cholmod_common *) ;
 int  cholmod_dump_partition (int64_t, int *, int *, int *, int *,
     int64_t, cholmod_common *) ;
-int  cholmod_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
 /* double, int64_t */
 EXTERN int cholmod_l_dump ;
@@ -687,15 +688,15 @@ int  cholmod_l_dump_parent (int64_t *, size_t, const char *,
     cholmod_common *) ;
 void cholmod_l_dump_init (const char *, cholmod_common *) ;
 int  cholmod_l_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_l_dump_real (const char *, double *, int64_t,
+void cholmod_l_dump_real (const char *, void *, int, int64_t,
     int64_t, int, int, cholmod_common *) ;
 void cholmod_l_dump_super (int64_t, int64_t *,
     int64_t *, int64_t *, int64_t *,
-    double *, int, cholmod_common *) ;
+    void *, int, int, cholmod_common *) ;
 int  cholmod_l_dump_partition (int64_t, int64_t *,
     int64_t *, int64_t *,
     int64_t *, int64_t, cholmod_common *) ;
-int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_l_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
 #define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
 #define ASSERT(expression) (assert (expression))
