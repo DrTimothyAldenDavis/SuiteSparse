@@ -328,11 +328,10 @@ if ( NOT NSTATIC )
     add_library ( CHOLMOD_static STATIC ${CHOLMOD_SOURCES} )
 
     set_target_properties ( CHOLMOD_static PROPERTIES
-        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME cholmod
-        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/cholmod.h" )
 
     if ( MSVC )
         set_target_properties ( CHOLMOD_static PROPERTIES
@@ -519,7 +518,8 @@ install ( TARGETS CHOLMOD
 if ( NOT NSTATIC )
     install ( TARGETS CHOLMOD_static
         EXPORT CHOLMODTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

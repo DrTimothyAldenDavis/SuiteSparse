@@ -93,11 +93,10 @@ if ( NOT NSTATIC )
     add_library ( RBio_static STATIC ${RBIO_SOURCES} )
 
     set_target_properties ( RBio_static PROPERTIES
-        VERSION ${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME rbio
-        SOVERSION ${RBIO_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/RBio.h" )
 
     if ( MSVC )
         set_target_properties ( RBio_static PROPERTIES
@@ -150,7 +149,8 @@ install ( TARGETS RBio
 if ( NOT NSTATIC )
     install ( TARGETS RBio_static
         EXPORT RBioTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

@@ -78,7 +78,7 @@ set_target_properties ( BTF PROPERTIES
     C_STANDARD_REQUIRED ON
     OUTPUT_NAME btf
     SOVERSION ${BTF_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/btf.h" 
+    PUBLIC_HEADER "Include/btf.h"
     WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 target_include_directories ( BTF
@@ -93,11 +93,10 @@ if ( NOT NSTATIC )
     add_library ( BTF_static STATIC ${BTF_SOURCES} )
 
     set_target_properties ( BTF_static PROPERTIES
-        VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME btf
-        SOVERSION ${BTF_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/btf.h" )
 
     if ( MSVC )
         set_target_properties ( BTF_static PROPERTIES
@@ -146,7 +145,8 @@ install ( TARGETS BTF
 if ( NOT NSTATIC )
     install ( TARGETS BTF_static
         EXPORT BTFTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

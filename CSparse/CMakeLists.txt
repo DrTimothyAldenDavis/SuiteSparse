@@ -99,11 +99,10 @@ if ( NOT NSTATIC )
     add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
 
     set_target_properties ( csparse_static PROPERTIES
-        VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
         OUTPUT_NAME csparse
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
-        SOVERSION ${CSPARSE_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/cs.h" )
 
     if ( MSVC )
         set_target_properties ( csparse_static PROPERTIES

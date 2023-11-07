@@ -115,11 +115,10 @@ if ( NOT NSTATIC )
     add_library ( SPEX_static STATIC ${SPEX_SOURCES} )
 
     set_target_properties ( SPEX_static PROPERTIES
-        VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME spex
-        SOVERSION ${SPEX_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/SPEX.h" )
 
     if ( MSVC )
         set_target_properties ( SPEX_static PROPERTIES
@@ -207,7 +206,8 @@ install ( TARGETS SPEX
 if ( NOT NSTATIC )
     install ( TARGETS SPEX_static
         EXPORT SPEXTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

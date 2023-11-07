@@ -126,11 +126,10 @@ if ( NOT NSTATIC )
     add_library ( CXSparse_static STATIC ${CXSPARSE_SOURCES} )
 
     set_target_properties ( CXSparse_static PROPERTIES
-        VERSION ${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}
         OUTPUT_NAME cxsparse
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
-        SOVERSION ${CXSPARSE_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/cs.h" )
 
     if ( MSVC )
         set_target_properties ( CXSparse_static PROPERTIES
@@ -182,7 +181,8 @@ install ( TARGETS CXSparse
 if ( NOT NSTATIC )
     install ( TARGETS CXSparse_static
         EXPORT CXSparseTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

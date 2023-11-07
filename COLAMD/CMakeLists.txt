@@ -93,11 +93,10 @@ if ( NOT NSTATIC )
     add_library ( COLAMD_static STATIC ${COLAMD_SOURCES} )
 
     set_target_properties ( COLAMD_static PROPERTIES
-        VERSION ${COLAMD_VERSION_MAJOR}.${COLAMD_VERSION_MINOR}.${COLAMD_VERSION_SUB}
         OUTPUT_NAME colamd
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
-        SOVERSION ${COLAMD_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/colamd.h" )
 
     if ( MSVC )
         set_target_properties ( COLAMD_static PROPERTIES
@@ -149,7 +148,8 @@ install ( TARGETS COLAMD
 if ( NOT NSTATIC )
     install ( TARGETS COLAMD_static
         EXPORT COLAMDTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

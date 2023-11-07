@@ -106,11 +106,10 @@ if ( NOT NSTATIC )
     add_library ( LDL_static STATIC ${LDL_SOURCES} )
 
     set_target_properties ( LDL_static PROPERTIES
-        VERSION ${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME ldl
-        SOVERSION ${LDL_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/ldl.h" )
 
     if ( MSVC )
         set_target_properties ( LDL_static PROPERTIES
@@ -158,7 +157,8 @@ install ( TARGETS LDL
 if ( NOT NSTATIC )
     install ( TARGETS LDL_static
         EXPORT LDLTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build
