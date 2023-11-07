@@ -175,10 +175,13 @@ static int get_line (FILE *f, char *buf)
 
 static double fix_inf (double x)
 {
-    if ((x >= HUGE_DOUBLE) || (x <= -HUGE_DOUBLE))
+    if (x >= HUGE_DOUBLE)
     {
-	/* treat this as +/- Inf (assume 2*x leads to overflow) */
-	x = 2*x ;
+	x = INFINITY ;
+    }
+    else if (x <= -HUGE_DOUBLE)
+    {
+	x = -INFINITY ;
     }
     return (x) ;
 }
@@ -688,31 +691,27 @@ static cholmod_triplet *read_triplet
 	    is_upper = FALSE ;
 	}
 
+        #define ASSIGN_TRIPLET_VALUE(fltype)                \
+        {                                                   \
+            fltype *Tx = (fltype *) T->x ;                  \
+            if (xtype == CHOLMOD_REAL)                      \
+            {                                               \
+                Tx [k] = x ;                                \
+            }                                               \
+            else if (xtype == CHOLMOD_COMPLEX)              \
+            {                                               \
+                Tx [2*k  ] = x ;    /* real part */         \
+                Tx [2*k+1] = z ;    /* imaginary part */    \
+            }                                               \
+        }
+
         if (dtype == CHOLMOD_DOUBLE)
         {
-            double *Tx = (double *) T->x ;
-            if (xtype == CHOLMOD_REAL)
-            {
-                Tx [k] = x ;
-            }
-            else if (xtype == CHOLMOD_COMPLEX)
-            {
-                Tx [2*k  ] = x ;	/* real part */
-                Tx [2*k+1] = z ;	/* imaginary part */
-            }
+            ASSIGN_TRIPLET_VALUE (double) ;
         }
         else
         {
-            float *Tx = (float *) T->x ;
-            if (xtype == CHOLMOD_REAL)
-            {
-                Tx [k] = x ;
-            }
-            else if (xtype == CHOLMOD_COMPLEX)
-            {
-                Tx [2*k  ] = x ;	/* real part */
-                Tx [2*k+1] = z ;	/* imaginary part */
-            }
+            ASSIGN_TRIPLET_VALUE (float) ;
         }
 
 	if (i == 0 || j == 0)
@@ -795,71 +794,47 @@ static cholmod_triplet *read_triplet
 		Ti [p] = j ;
 		Tj [p] = i ;
 
+                #define ASSIGN_SYMETRIC_TRIPLET(fltype)         \
+                {                                               \
+                    double *Tx = (double *) T->x ;              \
+                    if (xtype == CHOLMOD_REAL)                  \
+                    {                                           \
+                        if (skew_symmetric)                     \
+                        {                                       \
+                            Tx [p] = -Tx [k] ;                  \
+                        }                                       \
+                        else                                    \
+                        {                                       \
+                            Tx [p] =  Tx [k] ;                  \
+                        }                                       \
+                    }                                           \
+                    else if (xtype == CHOLMOD_COMPLEX)          \
+                    {                                           \
+                        if (skew_symmetric)                     \
+                        {                                       \
+                            Tx [2*p  ] = -Tx [2*k ] ;           \
+                            Tx [2*p+1] = -Tx [2*k+1] ;          \
+                        }                                       \
+                        else if (complex_symmetric)             \
+                        {                                       \
+                            Tx [2*p  ] =  Tx [2*k ] ;           \
+                            Tx [2*p+1] =  Tx [2*k+1] ;          \
+                        }                                       \
+                        else /* Hermitian */                    \
+                        {                                       \
+                            Tx [2*p  ] =  Tx [2*k ] ;           \
+                            Tx [2*p+1] = -Tx [2*k+1] ;          \
+                        }                                       \
+                    }                                           \
+                }
+
                 if (dtype == CHOLMOD_DOUBLE)
                 {
-                    double *Tx = (double *) T->x ;
-                    if (xtype == CHOLMOD_REAL)
-                    {
-                        if (skew_symmetric)
-                        {
-                            Tx [p] = -Tx [k] ;
-                        }
-                        else
-                        {
-                            Tx [p] =  Tx [k] ;
-                        }
-                    }
-                    else if (xtype == CHOLMOD_COMPLEX)
-                    {
-                        if (skew_symmetric)
-                        {
-                            Tx [2*p  ] = -Tx [2*k ] ;
-                            Tx [2*p+1] = -Tx [2*k+1] ;
-                        }
-                        else if (complex_symmetric)
-                        {
-                            Tx [2*p  ] =  Tx [2*k ] ;
-                            Tx [2*p+1] =  Tx [2*k+1] ;
-                        }
-                        else /* Hermitian */
-                        {
-                            Tx [2*p  ] =  Tx [2*k ] ;
-                            Tx [2*p+1] = -Tx [2*k+1] ;
-                        }
-                    }
+                    ASSIGN_SYMETRIC_TRIPLET (double) ;
                 }
                 else
                 {
-                    float *Tx = (float *) T->x ;
-                    if (xtype == CHOLMOD_REAL)
-                    {
-                        if (skew_symmetric)
-                        {
-                            Tx [p] = -Tx [k] ;
-                        }
-                        else
-                        {
-                            Tx [p] =  Tx [k] ;
-                        }
-                    }
-                    else if (xtype == CHOLMOD_COMPLEX)
-                    {
-                        if (skew_symmetric)
-                        {
-                            Tx [2*p  ] = -Tx [2*k ] ;
-                            Tx [2*p+1] = -Tx [2*k+1] ;
-                        }
-                        else if (complex_symmetric)
-                        {
-                            Tx [2*p  ] =  Tx [2*k ] ;
-                            Tx [2*p+1] =  Tx [2*k+1] ;
-                        }
-                        else /* Hermitian */
-                        {
-                            Tx [2*p  ] =  Tx [2*k ] ;
-                            Tx [2*p+1] = -Tx [2*k+1] ;
-                        }
-                    }
+                    ASSIGN_SYMETRIC_TRIPLET (float) ;
                 }
 		p++ ;
 	    }
@@ -878,22 +853,22 @@ static cholmod_triplet *read_triplet
     {
 	if (stype == STYPE_UNSYMMETRIC || Common->prefer_binary)
 	{
-	    /* unsymmetric case, or binary case */
+            // unsymmetric case, or binary case
+            #define TRIPLETS_ALL_ONE(fltype)            \
+            {                                           \
+                fltype *Tx = (fltype *) T->x ;          \
+                for (k = 0 ; k < (Int) nnz ; k++)       \
+                {                                       \
+                    Tx [k] = 1 ;                        \
+                }                                       \
+            }
             if (dtype == CHOLMOD_DOUBLE)
             {
-                double *Tx = (double *) T->x ;
-                for (k = 0 ; k < (Int) nnz ; k++)
-                {
-                    Tx [k] = 1 ;
-                }
+                TRIPLETS_ALL_ONE (double) ;
             }
             else
             {
-                float *Tx = (float *) T->x ;
-                for (k = 0 ; k < (Int) nnz ; k++)
-                {
-                    Tx [k] = 1 ;
-                }
+                TRIPLETS_ALL_ONE (float) ;
             }
 	}
 	else
@@ -920,26 +895,26 @@ static cholmod_triplet *read_triplet
 		    Cdeg [i]++ ;
 		}
 	    }
-	    /* assign the numerical values */
+
+            // assign the numerical values
+            #define TRIPLET_LAPLACIAN(fltype)                                 \
+            {                                                                 \
+                fltype *Tx = (fltype *) T->x ;                                \
+                for (k = 0 ; k < (Int) nnz ; k++)                             \
+                {                                                             \
+                    i = Ti [k] ;                                              \
+                    j = Tj [k] ;                                              \
+                    Tx [k] = (i == j) ? (1 + MAX (Rdeg[i], Cdeg[j])) : (-1) ; \
+                }                                                             \
+            }
+
             if (dtype == CHOLMOD_DOUBLE)
             {
-                double *Tx = (double *) T->x ;
-                for (k = 0 ; k < (Int) nnz ; k++)
-                {
-                    i = Ti [k] ;
-                    j = Tj [k] ;
-                    Tx [k] = (i == j) ? (1 + MAX (Rdeg [i], Cdeg [j])) : (-1) ;
-                }
+                TRIPLET_LAPLACIAN (double) ;
             }
             else
             {
-                float *Tx = (float *) T->x ;
-                for (k = 0 ; k < (Int) nnz ; k++)
-                {
-                    i = Ti [k] ;
-                    j = Tj [k] ;
-                    Tx [k] = (i == j) ? (1 + MAX (Rdeg [i], Cdeg [j])) : (-1) ;
-                }
+                TRIPLET_LAPLACIAN (float) ;
             }
 	}
     }
@@ -1101,106 +1076,64 @@ static cholmod_dense *read_dense
 	    k = i + j*nrow ;
 	    kup = j + i*nrow ;
 
+            #define ASSIGN_DENSE_VALUE(fltype)                              \
+            {                                                               \
+                fltype *Xx = (fltype *) X->x ;                              \
+                if (xtype == CHOLMOD_REAL)                                  \
+                {                                                           \
+                    /* real matrix */                                       \
+                    Xx [k] = x ;                                            \
+                    if (k != kup)                                           \
+                    {                                                       \
+                        if (stype == STYPE_SYMMETRIC_LOWER)                 \
+                        {                                                   \
+                            /* real symmetric matrix */                     \
+                            Xx [kup] = x ;                                  \
+                        }                                                   \
+                        else if (stype == STYPE_SKEW_SYMMETRIC)             \
+                        {                                                   \
+                            /* real skew symmetric matrix */                \
+                            Xx [kup] = -x ;                                 \
+                        }                                                   \
+                    }                                                       \
+                }                                                           \
+                else if (xtype == CHOLMOD_COMPLEX)                          \
+                {                                                           \
+                    Xx [2*k  ] = x ;    /* real part */                     \
+                    Xx [2*k+1] = z ;    /* imaginary part */                \
+                    if (k != kup)                                           \
+                    {                                                       \
+                        if (stype == STYPE_SYMMETRIC_LOWER)                 \
+                        {                                                   \
+                            /* complex Hermitian */                         \
+                            Xx [2*kup  ] = x ;      /* real part */         \
+                            Xx [2*kup+1] = -z ;     /* imaginary part */    \
+                        }                                                   \
+                        else if (stype == STYPE_SKEW_SYMMETRIC)             \
+                        {                                                   \
+                            /* complex skew symmetric */                    \
+                            Xx [2*kup  ] = -x ;     /* real part */         \
+                            Xx [2*kup+1] = -z ;     /* imaginary part */    \
+                        }                                                   \
+                        if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)         \
+                        {                                                   \
+                            /* complex symmetric */                         \
+                            Xx [2*kup  ] = x ;      /* real part */         \
+                            Xx [2*kup+1] = z ;      /* imaginary part */    \
+                        }                                                   \
+                    }                                                       \
+                }                                                           \
+            }
+
             if (dtype == CHOLMOD_DOUBLE)
             {
-
-                double *Xx = (double *) X->x ;
-                if (xtype == CHOLMOD_REAL)
-                {
-                    /* real matrix */
-                    Xx [k] = x ;
-                    if (k != kup)
-                    {
-                        if (stype == STYPE_SYMMETRIC_LOWER)
-                        {
-                            /* real symmetric matrix */
-                            Xx [kup] = x ;
-                        }
-                        else if (stype == STYPE_SKEW_SYMMETRIC)
-                        {
-                            /* real skew symmetric matrix */
-                            Xx [kup] = -x ;
-                        }
-                    }
-                }
-                else if (xtype == CHOLMOD_COMPLEX)
-                {
-                    Xx [2*k  ] = x ;	    /* real part */
-                    Xx [2*k+1] = z ;	    /* imaginary part */
-                    if (k != kup)
-                    {
-                        if (stype == STYPE_SYMMETRIC_LOWER)
-                        {
-                            /* complex Hermitian */
-                            Xx [2*kup  ] = x ;	    /* real part */
-                            Xx [2*kup+1] = -z ;	    /* imaginary part */
-                        }
-                        else if (stype == STYPE_SKEW_SYMMETRIC)
-                        {
-                            /* complex skew symmetric */
-                            Xx [2*kup  ] = -x ;	    /* real part */
-                            Xx [2*kup+1] = -z ;	    /* imaginary part */
-                        }
-                        if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)
-                        {
-                            /* complex symmetric */
-                            Xx [2*kup  ] = x ;	    /* real part */
-                            Xx [2*kup+1] = z ;	    /* imaginary part */
-                        }
-                    }
-                }
-
+                ASSIGN_DENSE_VALUE (double) ;
             }
             else
             {
-
-                float *Xx = (float *) X->x ;
-                if (xtype == CHOLMOD_REAL)
-                {
-                    /* real matrix */
-                    Xx [k] = x ;
-                    if (k != kup)
-                    {
-                        if (stype == STYPE_SYMMETRIC_LOWER)
-                        {
-                            /* real symmetric matrix */
-                            Xx [kup] = x ;
-                        }
-                        else if (stype == STYPE_SKEW_SYMMETRIC)
-                        {
-                            /* real skew symmetric matrix */
-                            Xx [kup] = -x ;
-                        }
-                    }
-                }
-                else if (xtype == CHOLMOD_COMPLEX)
-                {
-                    Xx [2*k  ] = x ;	    /* real part */
-                    Xx [2*k+1] = z ;	    /* imaginary part */
-                    if (k != kup)
-                    {
-                        if (stype == STYPE_SYMMETRIC_LOWER)
-                        {
-                            /* complex Hermitian */
-                            Xx [2*kup  ] = x ;	    /* real part */
-                            Xx [2*kup+1] = -z ;	    /* imaginary part */
-                        }
-                        else if (stype == STYPE_SKEW_SYMMETRIC)
-                        {
-                            /* complex skew symmetric */
-                            Xx [2*kup  ] = -x ;	    /* real part */
-                            Xx [2*kup+1] = -z ;	    /* imaginary part */
-                        }
-                        if (stype == STYPE_COMPLEX_SYMMETRIC_LOWER)
-                        {
-                            /* complex symmetric */
-                            Xx [2*kup  ] = x ;	    /* real part */
-                            Xx [2*kup+1] = z ;	    /* imaginary part */
-                        }
-                    }
-                }
+                ASSIGN_DENSE_VALUE (float) ;
             }
-	}
+        }
     }
 
     /* ---------------------------------------------------------------------- */

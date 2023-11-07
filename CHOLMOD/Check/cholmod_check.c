@@ -173,23 +173,23 @@ static void print_value
 
     if (xtype == CHOLMOD_REAL)
     {
-	PRINTVALUE (Xx, p, dtype) ;
+        PRINTVALUE (Xx, p, dtype) ;
     }
     else if (xtype == CHOLMOD_COMPLEX)
     {
-	P4 ("%s", "(") ;
-	PRINTVALUE (Xx, 2*p  , dtype) ;
-	P4 ("%s", " , ") ;
-	PRINTVALUE (Xx, 2*p+1, dtype) ;
-	P4 ("%s", ")") ;
+        P4 ("%s", "(") ;
+        PRINTVALUE (Xx, 2*p  , dtype) ;
+        P4 ("%s", " , ") ;
+        PRINTVALUE (Xx, 2*p+1, dtype) ;
+        P4 ("%s", ")") ;
     }
     else if (xtype == CHOLMOD_ZOMPLEX)
     {
-	P4 ("%s", "(") ;
-	PRINTVALUE (Xx, p, dtype) ;
-	P4 ("%s", " , ") ;
-	PRINTVALUE (Xz, p, dtype) ;
-	P4 ("%s", ")") ;
+        P4 ("%s", "(") ;
+        PRINTVALUE (Xx, p, dtype) ;
+        P4 ("%s", " , ") ;
+        PRINTVALUE (Xz, p, dtype) ;
+        P4 ("%s", ")") ;
     }
 
 }
@@ -2699,51 +2699,37 @@ int CHOLMOD(dump_work) (int flag, int head, int64_t wsize, int dtype,
 	}
     }
 
+    #define CHECK_XWORK(fltype)                                         \
+    {                                                                   \
+        fltype *W = Common->Xwork ;                                     \
+        int64_t s = (int64_t) (Common->xworkbytes / sizeof (fltype)) ;  \
+        if (wsize < 0)                                                  \
+        {                                                               \
+            /* check all of Xwork */                                    \
+            wsize = s ;                                                 \
+        }                                                               \
+        else                                                            \
+        {                                                               \
+            /* check on the first wsize entries in Xwork */             \
+            wsize = MIN (wsize, s) ;                                    \
+        }                                                               \
+        for (k = 0 ; k < wsize ; k++)                                   \
+        {                                                               \
+            if (W [k] != 0.)                                            \
+            {                                                           \
+                PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;     \
+                return (FALSE) ;                                        \
+            }                                                           \
+        }                                                               \
+    }
+
     if (dtype == CHOLMOD_DOUBLE)
     {
-        double *W = Common->Xwork ;
-        int64_t s = (int64_t) (Common->xworkbytes / sizeof (double)) ;
-        if (wsize < 0)
-        {
-            /* check all of Xwork */
-            wsize = s ;
-        }
-        else
-        {
-            /* check on the first wsize entries in Xwork */
-            wsize = MIN (wsize, s) ;
-        }
-        for (k = 0 ; k < wsize ; k++)
-        {
-            if (W [k] != 0.)
-            {
-                PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
-                return (FALSE) ;
-            }
-        }
+        CHECK_XWORK (double) ;
     }
     else
     {
-        float *W = Common->Xwork ;
-        int64_t s = (int64_t) (Common->xworkbytes / sizeof (float)) ;
-        if (wsize < 0)
-        {
-            /* check all of Xwork */
-            wsize = s ;
-        }
-        else
-        {
-            /* check on the first wsize entries in Xwork */
-            wsize = MIN (wsize, s) ;
-        }
-        for (k = 0 ; k < wsize ; k++)
-        {
-            if (W [k] != 0.)
-            {
-                PRINT0 (("W invalid, W ["ID"] = %g\n", k, W [k])) ;
-                return (FALSE) ;
-            }
-        }
+        CHECK_XWORK (float) ;
     }
 
     return (TRUE) ;

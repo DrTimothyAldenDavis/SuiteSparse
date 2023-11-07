@@ -2,7 +2,7 @@
 // CHOLMOD/Check/cholmod_write: write a matrix to a file in Matrix Market format
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Check Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -66,47 +66,58 @@ static int include_comments (FILE *f, const char *comments)
     return (ok) ;
 }
 
+//------------------------------------------------------------------------------
+// get_value
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === get_value ============================================================ */
-/* ========================================================================== */
-
-/* Get the pth value in the matrix. */
+// Get the pth value in a double or float matrix.  Resulting scalar is returned
+// as double (x and z).
 
 static void get_value
 (
-    double *Ax,	    /* real values, or real/imag. for CHOLMOD_COMPLEX type */
-    double *Az,	    /* imaginary values for CHOLMOD_ZOMPLEX type */
-    Int p,	    /* get the pth entry */
-    Int xtype,	    /* A->xtype: pattern, real, complex, or zomplex */
-    double *x,	    /* the real part */
-    double *z	    /* the imaginary part */
+    void *Ax_in,    // real values, or real/imag. for CHOLMOD_COMPLEX type
+    void *Az_in,    // imaginary values for CHOLMOD_ZOMPLEX type
+    Int p,          // get the pth entry
+    int xtype,      // A->xtype: pattern, real, complex, or zomplex
+    int dtype,      // A->dtype: double or single
+    double *x,      // the real part
+    double *z       // the imaginary part
 )
 {
-    switch (xtype)
+    #define GET_VALUE(fltype)               \
+    {                                       \
+        fltype *Ax = (fltype *) Ax_in ;     \
+        fltype *Az = (fltype *) Az_in ;     \
+        switch (xtype)                      \
+        {                                   \
+            case CHOLMOD_PATTERN:           \
+                *x = 1 ;                    \
+                *z = 0 ;                    \
+                break ;                     \
+            case CHOLMOD_REAL:              \
+                *x = (double) Ax [p] ;      \
+                *z = 0 ;                    \
+                break ;                     \
+            case CHOLMOD_COMPLEX:           \
+                *x = (double) Ax [2*p] ;    \
+                *z = (double) Ax [2*p+1] ;  \
+                break ;                     \
+            case CHOLMOD_ZOMPLEX:           \
+                *x = (double) Ax [p] ;      \
+                *z = (double) Az [p] ;      \
+                break ;                     \
+        }                                   \
+    }
+
+    if (dtype == CHOLMOD_DOUBLE)
     {
-	case CHOLMOD_PATTERN:
-	    *x = 1 ;
-	    *z = 0 ;
-	    break ;
-
-	case CHOLMOD_REAL:
-	    *x = Ax [p] ;
-	    *z = 0 ;
-	    break ;
-
-	case CHOLMOD_COMPLEX:
-	    *x = Ax [2*p] ;
-	    *z = Ax [2*p+1] ;
-	    break ;
-
-	case CHOLMOD_ZOMPLEX:
-	    *x = Ax [p] ;
-	    *z = Az [p] ;
-	    break ;
+        GET_VALUE (double) ;
+    }
+    else
+    {
+        GET_VALUE (float) ;
     }
 }
-
 
 /* ========================================================================== */
 /* === print_value ========================================================== */
@@ -362,11 +373,11 @@ int CHOLMOD(write_sparse)
 )
 {
     double x = 0, z = 0 ;
-    double *Ax, *Az ;
+    void *Ax, *Az ;
     Int *Ap, *Ai, *Anz, *Zp, *Zi, *Znz ;
     Int nrow, ncol, is_complex, symmetry, i, j, q, iz, p, nz, is_binary, stype,
-	is_integer, asym, is_sym, xtype, apacked, zpacked, pend, qend, zsym ;
-    int ok ;
+	is_integer, asym, is_sym, apacked, zpacked, pend, qend, zsym ;
+    int ok, xtype, dtype ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -404,6 +415,7 @@ int CHOLMOD(write_sparse)
     nrow = A->nrow ;
     ncol = A->ncol ;
     xtype = A->xtype ;
+    dtype = A->dtype ;
     apacked = A->packed ;
 
     if (xtype == CHOLMOD_PATTERN)
@@ -425,7 +437,7 @@ int CHOLMOD(write_sparse)
 	    pend = (apacked) ? Ap [j+1] : p + Anz [j] ;
 	    for ( ; (is_binary || is_integer) && p < pend ; p++)
 	    {
-		x = Ax [p] ;
+		get_value (Ax, Az, p, xtype, dtype, &x, &z) ;
 		if (x != 1)
 		{
 		    is_binary = FALSE ;
@@ -594,7 +606,7 @@ int CHOLMOD(write_sparse)
 	    {
 		/* get A(i,j), or quit if both A and Z are exhausted */
 		if (i == nrow+1) break ;
-		get_value (Ax, Az, p, xtype, &x, &z) ;
+		get_value (Ax, Az, p, xtype, dtype, &x, &z) ;
 		p++ ;
 	    }
 	    else
@@ -665,9 +677,9 @@ int CHOLMOD(write_dense)
 )
 {
     double x = 0, z = 0 ;
-    double *Xx, *Xz ;
-    Int nrow, ncol, is_complex, i, j, xtype, p ;
-    int ok ;
+    void *Xx, *Xz ;
+    Int nrow, ncol, is_complex, i, j, p ;
+    int ok, xtype, dtype ;
 
     /* ---------------------------------------------------------------------- */
     /* check inputs */
@@ -683,11 +695,10 @@ int CHOLMOD(write_dense)
     /* get the X matrix */
     /* ---------------------------------------------------------------------- */
 
-    Xx = X->x ;
-    Xz = X->z ;
     nrow = X->nrow ;
     ncol = X->ncol ;
     xtype = X->xtype ;
+    dtype = X->dtype ;
     is_complex = (xtype == CHOLMOD_COMPLEX) || (xtype == CHOLMOD_ZOMPLEX) ;
 
     /* ---------------------------------------------------------------------- */
@@ -724,7 +735,7 @@ int CHOLMOD(write_dense)
 	for (i = 0 ; ok && i < nrow ; i++)
 	{
 	    p = i + j*nrow ;
-	    get_value (Xx, Xz, p, xtype, &x, &z) ;
+	    get_value (Xx, Xz, p, xtype, dtype, &x, &z) ;
 	    ok = ok && print_value (f, x, FALSE) ;
 	    if (is_complex)
 	    {
