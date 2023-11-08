@@ -2387,170 +2387,158 @@ int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
 
 #ifndef NCHOLESKY
 
-/* Sparse Cholesky routines: analysis, factorization, and solve.
- *
- * The primary routines are all that a user requires to order, analyze, and
- * factorize a sparse symmetric positive definite matrix A (or A*A'), and
- * to solve Ax=b (or A*A'x=b).  The primary routines rely on the secondary
- * routines, the CHOLMOD Utility module, and the AMD and COLAMD packages.  They
- * make optional use of the CHOLMOD Supernodal and Partition modules, the
- * METIS package, and the CCOLAMD package.
- *
- * Primary routines:
- * -----------------
- *
- * cholmod_analyze		order and analyze (simplicial or supernodal)
- * cholmod_factorize		simplicial or supernodal Cholesky factorization
- * cholmod_solve		solve a linear system (simplicial or supernodal)
- * cholmod_solve2		like cholmod_solve, but reuse workspace
- * cholmod_spsolve		solve a linear system (sparse x and b)
- *
- * Secondary routines:
- * ------------------
- *
- * cholmod_analyze_p		analyze, with user-provided permutation or f set
- * cholmod_factorize_p		factorize, with user-provided permutation or f
- * cholmod_analyze_ordering	analyze a fill-reducing ordering
- * cholmod_etree		find the elimination tree
- * cholmod_rowcolcounts		compute the row/column counts of L
- * cholmod_amd			order using AMD
- * cholmod_colamd		order using COLAMD
- * cholmod_rowfac		incremental simplicial factorization
- * cholmod_rowfac_mask		rowfac, specific to LPDASA
- * cholmod_rowfac_mask2         rowfac, specific to LPDASA
- * cholmod_row_subtree		find the nonzero pattern of a row of L
- * cholmod_resymbol		recompute the symbolic pattern of L
- * cholmod_resymbol_noperm	recompute the symbolic pattern of L, no L->Perm
- * cholmod_postorder		postorder a tree
- *
- * Requires the Utility module, and two packages: AMD and COLAMD.
- * Optionally uses the Supernodal and Partition modules.
- * Required by the Partition module.
- */
+// Sparse Cholesky routines: analysis, factorization, and solve.
+//
+// The primary routines are all that a user requires to order, analyze, and
+// factorize a sparse symmetric positive definite matrix A (or A*A'), and
+// to solve Ax=b (or A*A'x=b).  The primary routines rely on the secondary
+// routines, the CHOLMOD Utility module, and the AMD and COLAMD packages.  They
+// make optional use of the CHOLMOD Supernodal and Partition modules, the
+// METIS package, and the CCOLAMD package.
+//
+// Primary routines:
+// -----------------
+//
+// cholmod_analyze              order and analyze (simplicial or supernodal)
+// cholmod_factorize            simplicial or supernodal Cholesky factorization
+// cholmod_solve                solve a linear system (simplicial or supernodal)
+// cholmod_solve2               like cholmod_solve, but reuse workspace
+// cholmod_spsolve              solve a linear system (sparse x and b)
+//
+// Secondary routines:
+// ------------------
+//
+// cholmod_analyze_p            analyze, with user-provided permutation or f set
+// cholmod_factorize_p          factorize, with user-provided permutation or f
+// cholmod_analyze_ordering     analyze a fill-reducing ordering
+// cholmod_etree                find the elimination tree
+// cholmod_rowcolcounts         compute the row/column counts of L
+// cholmod_amd                  order using AMD
+// cholmod_colamd               order using COLAMD
+// cholmod_rowfac               incremental simplicial factorization
+// cholmod_rowfac_mask          rowfac, specific to LPDASA
+// cholmod_rowfac_mask2         rowfac, specific to LPDASA
+// cholmod_row_subtree          find the nonzero pattern of a row of L
+// cholmod_resymbol             recompute the symbolic pattern of L
+// cholmod_resymbol_noperm      recompute the symbolic pattern of L, no L->Perm
+// cholmod_postorder            postorder a tree
+//
+// Requires the Utility module, and two packages: AMD and COLAMD.
+// Optionally uses the Supernodal and Partition modules.
+// Required by the Partition module.
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_analyze:  order and analyze (simplicial or supernodal) */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_analyze:  order and analyze (simplicial or supernodal)
+//------------------------------------------------------------------------------
 
-/* Orders and analyzes A, AA', PAP', or PAA'P' and returns a symbolic factor
- * that can later be passed to cholmod_factorize. */
+// Orders and analyzes A, AA', PAP', or PAA'P' and returns a symbolic factor
+// that can later be passed to cholmod_factorize.
 
-cholmod_factor *cholmod_analyze     // order and analyze
+cholmod_factor *cholmod_analyze     // returns symbolic factor L
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order and analyze */
-    /* --------------- */
+    cholmod_sparse *A,      // matrix to order and analyze
     cholmod_common *Common
 ) ;
-
 cholmod_factor *cholmod_l_analyze (cholmod_sparse *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_analyze_p:  analyze, with user-provided permutation or f set */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_analyze_p:  analyze, with user-provided permutation or f set
+//------------------------------------------------------------------------------
 
-/* Orders and analyzes A, AA', PAP', PAA'P', FF', or PFF'P and returns a
- * symbolic factor that can later be passed to cholmod_factorize, where
- * F = A(:,fset) if fset is not NULL and A->stype is zero.
- * UserPerm is tried if non-NULL.  */
+// Orders and analyzes A, AA', PAP', PAA'P', FF', or PFF'P and returns a
+// symbolic factor that can later be passed to cholmod_factorize, where
+// F = A(:,fset) if fset is not NULL and A->stype is zero.
+// UserPerm is tried if non-NULL.
 
-cholmod_factor *cholmod_analyze_p
+cholmod_factor *cholmod_analyze_p   // returns symbolic factor L
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order and analyze */
-    int32_t *UserPerm,	/* user-provided permutation, size A->nrow */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to order and analyze
+    int32_t *UserPerm,  // user-provided permutation, size A->nrow
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
     cholmod_common *Common
 ) ;
+cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, int64_t *, int64_t *,
+    size_t, cholmod_common *) ;
 
-cholmod_factor *cholmod_l_analyze_p (cholmod_sparse *, int64_t *,
-    int64_t *, size_t, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_analyze_p2:  analyze for sparse Cholesky or sparse QR */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_analyze_p2:  analyze for sparse Cholesky or sparse QR
+//------------------------------------------------------------------------------
 
 cholmod_factor *cholmod_analyze_p2
 (
-    /* ---- input ---- */
-    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
-                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
-                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
-    cholmod_sparse *A,	/* matrix to order and analyze */
-    int32_t *UserPerm,	/* user-provided permutation, size A->nrow */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* --------------- */
+    // input:
+    int for_whom,       // FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                        // FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                        // FOR_SPQRGPU  (2): for SPQR with GPU acceleration
+    cholmod_sparse *A,  // matrix to order and analyze
+    int32_t *UserPerm,  // user-provided permutation, size A->nrow
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
     cholmod_common *Common
 ) ;
-
 cholmod_factor *cholmod_l_analyze_p2 (int, cholmod_sparse *, int64_t *,
     int64_t *, size_t, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_factorize:  simplicial or supernodal Cholesky factorization */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_factorize:  simplicial or supernodal Cholesky factorization
+//------------------------------------------------------------------------------
 
-/* Factorizes PAP' (or PAA'P' if A->stype is 0), using a factor obtained
- * from cholmod_analyze.  The analysis can be re-used simply by calling this
- * routine a second time with another matrix.  A must have the same nonzero
- * pattern as that passed to cholmod_analyze. */
+// Factorizes PAP' (or PAA'P' if A->stype is 0), using a factor obtained
+// from cholmod_analyze.  The analysis can be re-used simply by calling this
+// routine a second time with another matrix.  A must have the same nonzero
+// pattern as that passed to cholmod_analyze.
 
 int cholmod_factorize       // simplicial or superodal Cholesky factorization
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* resulting factorization */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    // input/output:
+    cholmod_factor *L,  // resulting factorization
     cholmod_common *Common
 ) ;
-
 int cholmod_l_factorize (cholmod_sparse *, cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_factorize_p:  factorize, with user-provided permutation or fset */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_factorize_p:  factorize, with user-provided permutation or fset
+//------------------------------------------------------------------------------
 
-/* Same as cholmod_factorize, but with more options. */
+// Same as cholmod_factorize, but with more options.
 
 int cholmod_factorize_p
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    double beta [2],	/* factorize beta*I+A or beta*I+A'*A */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* resulting factorization */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    double beta [2],    // factorize beta*I+A or beta*I+A'*A
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    // input/output:
+    cholmod_factor *L,  // resulting factorization
     cholmod_common *Common
 ) ;
+int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
+    cholmod_factor *, cholmod_common *) ;
 
-int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *,
-    size_t, cholmod_factor *, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_solve:  solve a linear system (simplicial or supernodal) */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_solve:  solve a linear system (simplicial or supernodal)
+//------------------------------------------------------------------------------
 
 /* Solves one of many linear systems with a dense right-hand-side, using the
  * factorization from cholmod_factorize (or as modified by any other CHOLMOD
  * routine).  D is identity for LL' factorizations. */
 
-#define CHOLMOD_A    0		/* solve Ax=b */
-#define CHOLMOD_LDLt 1		/* solve LDL'x=b */
-#define CHOLMOD_LD   2		/* solve LDx=b */
-#define CHOLMOD_DLt  3		/* solve DL'x=b */
-#define CHOLMOD_L    4		/* solve Lx=b */
-#define CHOLMOD_Lt   5		/* solve L'x=b */
-#define CHOLMOD_D    6		/* solve Dx=b */
-#define CHOLMOD_P    7		/* permute x=Px */
-#define CHOLMOD_Pt   8		/* permute x=P'x */
+#define CHOLMOD_A    0  /* solve Ax=b */
+#define CHOLMOD_LDLt 1  /* solve LDL'x=b */
+#define CHOLMOD_LD   2  /* solve LDx=b */
+#define CHOLMOD_DLt  3  /* solve DL'x=b */
+#define CHOLMOD_L    4  /* solve Lx=b */
+#define CHOLMOD_Lt   5  /* solve L'x=b */
+#define CHOLMOD_D    6  /* solve Dx=b */
+#define CHOLMOD_P    7  /* permute x=Px */
+#define CHOLMOD_Pt   8  /* permute x=P'x */
 
-cholmod_dense *cholmod_solve	/* returns the solution X */
+cholmod_dense *cholmod_solve    // returns the solution X
 (
     /* ---- input ---- */
     int sys,		/* system to solve */
@@ -2563,9 +2551,9 @@ cholmod_dense *cholmod_solve	/* returns the solution X */
 cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_solve2:  like cholmod_solve, but with reusable workspace */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_solve2:  like cholmod_solve, but with reusable workspace
+//------------------------------------------------------------------------------
 
 int cholmod_solve2     /* returns TRUE on success, FALSE on failure */
 (
@@ -2588,9 +2576,9 @@ int cholmod_l_solve2 (int, cholmod_factor *, cholmod_dense *, cholmod_sparse *,
     cholmod_dense **, cholmod_sparse **, cholmod_dense **, cholmod_dense **,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_spsolve:  solve a linear system with a sparse right-hand-side */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_spsolve:  solve a linear system with a sparse right-hand-side
+//------------------------------------------------------------------------------
 
 cholmod_sparse *cholmod_spsolve
 (
@@ -2605,263 +2593,240 @@ cholmod_sparse *cholmod_spsolve
 cholmod_sparse *cholmod_l_spsolve (int, cholmod_factor *, cholmod_sparse *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_etree: find the elimination tree of A or A'*A */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_etree: find the elimination tree of A or A'*A
+//------------------------------------------------------------------------------
 
 int cholmod_etree
 (
-    /* ---- input ---- */
+    // input:
     cholmod_sparse *A,
-    /* ---- output --- */
-    int32_t *Parent,	/* size ncol.  Parent [j] = p if p is the parent of j */
-    /* --------------- */
+    // output:
+    int32_t *Parent,      // size ncol.  Parent [j] = p if p is the parent of j
     cholmod_common *Common
 ) ;
-
 int cholmod_l_etree (cholmod_sparse *, int64_t *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowcolcounts: compute the row/column counts of L */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowcolcounts: compute the row/column counts of L
+//------------------------------------------------------------------------------
 
 int cholmod_rowcolcounts
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int32_t *Parent,	/* size nrow.  Parent [i] = p if p is the parent of i */
-    int32_t *Post,	/* size nrow.  Post [k] = i if i is the kth node in
-			 * the postordered etree. */
-    /* ---- output --- */
-    int32_t *RowCount,	/* size nrow. RowCount [i] = # entries in the ith row of
-			 * L, including the diagonal. */
-    int32_t *ColCount,	/* size nrow. ColCount [i] = # entries in the ith
-			 * column of L, including the diagonal. */
-    int32_t *First,	/* size nrow.  First [i] = k is the least postordering
-			 * of any descendant of i. */
-    int32_t *Level,	/* size nrow.  Level [i] is the length of the path from
-			 * i to the root, with Level [root] = 0. */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    int32_t *Parent,    // size nrow.  Parent [i] = p if p is the parent of i
+    int32_t *Post,      // size nrow.  Post [k] = i if i is the kth node in
+                        // the postordered etree.
+    // output:
+    int32_t *RowCount,  // size nrow. RowCount [i] = # entries in the ith
+                        // row of L, including the diagonal.
+    int32_t *ColCount,  // size nrow. ColCount [i] = # entries in the ith
+                        // column of L, including the diagonal.
+    int32_t *First,     // size nrow.  First [i] = k is the least
+                        // postordering of any descendant of i.
+    int32_t *Level,     // size nrow.  Level [i] is the length of the path
+                        // from i to the root, with Level [root] = 0.
     cholmod_common *Common
 ) ;
+int cholmod_l_rowcolcounts (cholmod_sparse *, int64_t *, size_t, int64_t *,
+    int64_t *, int64_t *, int64_t *, int64_t *, int64_t *, cholmod_common *) ;
 
-int cholmod_l_rowcolcounts (cholmod_sparse *, int64_t *, size_t,
-    int64_t *, int64_t *, int64_t *,
-    int64_t *, int64_t *, int64_t *,
-    cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_analyze_ordering:  analyze a fill-reducing ordering */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_analyze_ordering:  analyze a fill-reducing ordering
+//------------------------------------------------------------------------------
 
 int cholmod_analyze_ordering
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    int ordering,	/* ordering method used */
-    int32_t *Perm,	/* size n, fill-reducing permutation to analyze */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* ---- output --- */
-    int32_t *Parent,	/* size n, elimination tree */
-    int32_t *Post,	/* size n, postordering of elimination tree */
-    int32_t *ColCount,	/* size n, nnz in each column of L */
-    /* ---- workspace  */
-    int32_t *First,	/* size nworkspace for cholmod_postorder */
-    int32_t *Level,	/* size n workspace for cholmod_postorder */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    int ordering,       // ordering method used
+    int32_t *Perm,      // size n, fill-reducing permutation to analyze
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    // output:
+    int32_t *Parent,    // size n, elimination tree
+    int32_t *Post,      // size n, postordering of elimination tree
+    int32_t *ColCount,  // size n, nnz in each column of L
+    // workspace:
+    int32_t *First,     // size n workspace for cholmod_postorder
+    int32_t *Level,     // size n workspace for cholmod_postorder
     cholmod_common *Common
 ) ;
-
-int cholmod_l_analyze_ordering (cholmod_sparse *, int, int64_t *,
-    int64_t *, size_t, int64_t *, int64_t *, int64_t *, int64_t *, int64_t *,
+int cholmod_l_analyze_ordering (cholmod_sparse *, int, int64_t *, int64_t *,
+    size_t, int64_t *, int64_t *, int64_t *, int64_t *, int64_t *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_amd:  order using AMD */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_amd:  order using AMD
+//------------------------------------------------------------------------------
 
-/* Finds a permutation P to reduce fill-in in the factorization of P*A*P'
- * or P*A*A'P' */
+// Finds a permutation P to reduce fill-in in the factorization of P*A*P'
+// or P*A*A'P'
 
 int cholmod_amd
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    /* ---- output --- */
-    int32_t *Perm,	/* size A->nrow, output permutation */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to order
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    // output:
+    int32_t *Perm,      // size A->nrow, output permutation
     cholmod_common *Common
 ) ;
+int cholmod_l_amd (cholmod_sparse *, int64_t *, size_t, int64_t *,
+    cholmod_common *) ;
 
-int cholmod_l_amd (cholmod_sparse *, int64_t *, size_t,
-    int64_t *, cholmod_common *) ;
+//------------------------------------------------------------------------------
+// cholmod_colamd:  order using COLAMD
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_colamd:  order using COLAMD */
-/* -------------------------------------------------------------------------- */
-
-/* Finds a permutation P to reduce fill-in in the factorization of P*A*A'*P'.
- * Orders F*F' where F = A (:,fset) if fset is not NULL */
+// Finds a permutation P to reduce fill-in in the factorization of P*A*A'*P'.
+// Orders F*F' where F = A (:,fset) if fset is not NULL
 
 int cholmod_colamd
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    int32_t *fset,	/* subset of 0:(A->ncol)-1 */
-    size_t fsize,	/* size of fset */
-    int postorder,	/* if TRUE, follow with a coletree postorder */
-    /* ---- output --- */
-    int32_t *Perm,	/* size A->nrow, output permutation */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to order
+    int32_t *fset,      // subset of 0:(A->ncol)-1
+    size_t fsize,       // size of fset
+    int postorder,      // if TRUE, follow with a coletree postorder
+    // output:
+    int32_t *Perm,      // size A->nrow, output permutation
     cholmod_common *Common
 ) ;
+int cholmod_l_colamd (cholmod_sparse *, int64_t *, size_t, int, int64_t *,
+    cholmod_common *) ;
 
-int cholmod_l_colamd (cholmod_sparse *, int64_t *, size_t, int,
-    int64_t *, cholmod_common *) ;
+//------------------------------------------------------------------------------
+// cholmod_rowfac:  incremental simplicial factorization
+//------------------------------------------------------------------------------
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowfac:  incremental simplicial factorization */
-/* -------------------------------------------------------------------------- */
-
-/* Partial or complete simplicial factorization.  Rows and columns kstart:kend-1
- * of L and D must be initially equal to rows/columns kstart:kend-1 of the
- * identity matrix.   Row k can only be factorized if all descendants of node
- * k in the elimination tree have been factorized. */
+// Partial or complete simplicial factorization.  Rows and columns kstart:kend-1
+// of L and D must be initially equal to rows/columns kstart:kend-1 of the
+// identity matrix.   Row k can only be factorized if all descendants of node
+// k in the elimination tree have been factorized.
 
 int cholmod_rowfac
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    cholmod_sparse *F,	/* used for A*A' case only. F=A' or A(:,fset)' */
-    double beta [2],	/* factorize beta*I+A or beta*I+A'*A */
-    size_t kstart,	/* first row to factorize */
-    size_t kend,	/* last row to factorize is kend-1 */
-    /* ---- in/out --- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    cholmod_sparse *F,  // used for A*A' case only. F=A' or A(:,f)'
+    double beta [2],    // factorize beta*I+A or beta*I+AA'
+    size_t kstart,      // first row to factorize
+    size_t kend,        // last row to factorize is kend-1
+    // input/output:
     cholmod_factor *L,
-    /* --------------- */
     cholmod_common *Common
 ) ;
-
 int cholmod_l_rowfac (cholmod_sparse *, cholmod_sparse *, double *, size_t,
     size_t, cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowfac_mask:  incremental simplicial factorization */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowfac_mask:  incremental simplicial factorization
+//------------------------------------------------------------------------------
 
-/* cholmod_rowfac_mask is a version of cholmod_rowfac that is specific to
- * LPDASA.  It is unlikely to be needed by any other application. */
+// cholmod_rowfac_mask is a version of cholmod_rowfac that is specific to
+// LPDASA.  It is unlikely to be needed by any other application.
 
 int cholmod_rowfac_mask
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    cholmod_sparse *F,	/* used for A*A' case only. F=A' or A(:,fset)' */
-    double beta [2],	/* factorize beta*I+A or beta*I+A'*A */
-    size_t kstart,	/* first row to factorize */
-    size_t kend,	/* last row to factorize is kend-1 */
-    int32_t *mask,	/* if mask[i] >= 0, then set row i to zero */
-    int32_t *RLinkUp,	/* link list of rows to compute */
-    /* ---- in/out --- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    cholmod_sparse *F,  // used for A*A' case only. F=A' or A(:,f)'
+    double beta [2],    // factorize beta*I+A or beta*I+AA'
+    size_t kstart,      // first row to factorize
+    size_t kend,        // last row to factorize is kend-1
+    int32_t *mask,      // size A->nrow. if mask[i] >= 0 row i is set to zero
+    int32_t *RLinkUp,   // size A->nrow. link list of rows to compute
+    // input/output:
     cholmod_factor *L,
-    /* --------------- */
     cholmod_common *Common
 ) ;
-
-int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double *, size_t,
-    size_t, int64_t *, int64_t *, cholmod_factor *,
-    cholmod_common *) ;
+int cholmod_l_rowfac_mask (cholmod_sparse *, cholmod_sparse *, double *,
+    size_t, size_t, int64_t *, int64_t *, cholmod_factor *, cholmod_common *) ;
 
 int cholmod_rowfac_mask2
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    cholmod_sparse *F,	/* used for A*A' case only. F=A' or A(:,fset)' */
-    double beta [2],	/* factorize beta*I+A or beta*I+A'*A */
-    size_t kstart,	/* first row to factorize */
-    size_t kend,	/* last row to factorize is kend-1 */
-    int32_t *mask,	/* if mask[i] >= maskmark, then set row i to zero */
-    int32_t maskmark,
-    int32_t *RLinkUp,	/* link list of rows to compute */
-    /* ---- in/out --- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    cholmod_sparse *F,  // used for A*A' case only. F=A' or A(:,f)'
+    double beta [2],    // factorize beta*I+A or beta*I+AA'
+    size_t kstart,      // first row to factorize
+    size_t kend,        // last row to factorize is kend-1
+    int32_t *mask,      // size A->nrow. if mask[i] >= maskmark row i is set
+                        // to zero
+    int32_t maskmark,   // for mask [i] test
+    int32_t *RLinkUp,   // size A->nrow. link list of rows to compute
+    // input/output:
     cholmod_factor *L,
-    /* --------------- */
     cholmod_common *Common
 ) ;
-
 int cholmod_l_rowfac_mask2 (cholmod_sparse *, cholmod_sparse *, double *,
-    size_t, size_t, int64_t *, int64_t, int64_t *,
-    cholmod_factor *, cholmod_common *) ;
+    size_t, size_t, int64_t *, int64_t, int64_t *, cholmod_factor *,
+    cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_row_subtree:  find the nonzero pattern of a row of L */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_row_subtree:  find the nonzero pattern of a row of L
+//------------------------------------------------------------------------------
 
-/* Find the nonzero pattern of x for the system Lx=b where L = (0:k-1,0:k-1)
- * and b = kth column of A or A*A' (rows 0 to k-1 only) */
+// Find the nonzero pattern of x for the system Lx=b where L = (0:k-1,0:k-1)
+// and b = kth column of A or A*A' (rows 0 to k-1 only)
 
 int cholmod_row_subtree
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    cholmod_sparse *F,	/* used for A*A' case only. F=A' or A(:,fset)' */
-    size_t k,		/* row k of L */
-    int32_t *Parent,	/* elimination tree */
-    /* ---- output --- */
-    cholmod_sparse *R,	/* pattern of L(k,:), n-by-1 with R->nzmax >= n */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    cholmod_sparse *F,  // used for A*A' case only. F=A' or A(:,f)'
+    size_t krow,        // row k of L
+    int32_t *Parent,    // elimination tree
+    // output:
+    cholmod_sparse *R,  // pattern of L(k,:), 1-by-n with R->nzmax >= n
     cholmod_common *Common
 ) ;
-
 int cholmod_l_row_subtree (cholmod_sparse *, cholmod_sparse *, size_t,
     int64_t *, cholmod_sparse *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_lsolve_pattern: find the nonzero pattern of x=L\b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_lsolve_pattern: find the nonzero pattern of y=L\b
+//------------------------------------------------------------------------------
 
 int cholmod_lsolve_pattern
 (
-    /* ---- input ---- */
-    cholmod_sparse *B,	/* sparse right-hand-side (a single sparse column) */
-    cholmod_factor *L,	/* the factor L from which parent(i) is derived */
-    /* ---- output --- */
-    cholmod_sparse *X,	/* pattern of X=L\B, n-by-1 with X->nzmax >= n */
-    /* --------------- */
+    // input:
+    cholmod_sparse *B,  // sparse right-hand-side (a single sparse column)
+    cholmod_factor *L,  // the factor L from which parent(i) is derived
+    // output:
+    cholmod_sparse *Yset,   // pattern of Y=L\B, n-by-1 with Y->nzmax >= n
     cholmod_common *Common
 ) ;
-
 int cholmod_l_lsolve_pattern (cholmod_sparse *, cholmod_factor *,
     cholmod_sparse *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_row_lsubtree:  find the nonzero pattern of a row of L */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_row_lsubtree:  find the nonzero pattern of a row of L
+//------------------------------------------------------------------------------
 
-/* Identical to cholmod_row_subtree, except that it finds the elimination tree
- * from L itself. */
+// Identical to cholmod_row_subtree, except that it finds the elimination tree
+// from L itself.
 
 int cholmod_row_lsubtree
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    int32_t *Fi, size_t fnz, /* nonzero pattern of kth row of A', not required
-			      * for the symmetric case.  Need not be sorted. */
-    size_t k,		/* row k of L */
-    cholmod_factor *L,	/* the factor L from which parent(i) is derived */
-    /* ---- output --- */
-    cholmod_sparse *R,	/* pattern of L(k,:), n-by-1 with R->nzmax >= n */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    int32_t *Fi,        // nonzero pattern of kth row of A', not required
+                        // for the symmetric case.  Need not be sorted.
+    size_t fnz,         // size of Fi
+    size_t krow,        // row k of L
+    cholmod_factor *L,  // the factor L from which parent(i) is derived
+    // output:
+    cholmod_sparse *R,  // pattern of L(k,:), n-by-1 with R->nzmax >= n
     cholmod_common *Common
 ) ;
-
-int cholmod_l_row_lsubtree (cholmod_sparse *, int64_t *, size_t,
-    size_t, cholmod_factor *, cholmod_sparse *, cholmod_common *) ;
+int cholmod_l_row_lsubtree (cholmod_sparse *, int64_t *, size_t, size_t,
+    cholmod_factor *, cholmod_sparse *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
 // cholmod_resymbol:  recompute the symbolic pattern of L
@@ -2920,9 +2885,9 @@ double cholmod_rcond        // return min(diag(L)) / max(diag(L))
 ) ;
 double cholmod_l_rcond (cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_postorder: Compute the postorder of a tree */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_postorder: Compute the postorder of a tree
+//------------------------------------------------------------------------------
 
 int32_t cholmod_postorder	/* return # of nodes postordered */
 (
