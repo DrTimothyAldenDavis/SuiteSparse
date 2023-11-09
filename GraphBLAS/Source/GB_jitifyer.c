@@ -37,8 +37,8 @@ static int64_t  GB_jit_table_populated = 0 ;
 static size_t   GB_jit_table_allocated = 0 ;
 
 static bool GB_jit_use_cmake =
-    #if GB_WINDOWS
-    true ;      // Windows requires cmake
+    #if defined (_MSC_VER)
+    true ;      // MSVC requires cmake
     #else
     false ;     // otherwise, default is to skip cmake and compile directly
     #endif
@@ -2320,8 +2320,9 @@ void GB_jitifyer_direct_compile (char *kernel_name, uint32_t bucket)
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
 
     // compile:
-    "%s -DGB_JIT_RUNTIME=1 "            // compiler command
-    "%s "                               // C flags
+    "sh -c \""                          // execute with POSIX shell
+    "%s "                               // compiler command
+    "-DGB_JIT_RUNTIME=1 %s "            // C flags
     "-I%s/src "                         // include source directory
     "%s "                               // openmp include directories
     "-o %s/c/%02x/%s%s "                // *.o output file
@@ -2336,8 +2337,8 @@ void GB_jitifyer_direct_compile (char *kernel_name, uint32_t bucket)
     "-o %s/lib/%02x/%s%s%s "            // lib*.so output file
     "%s/c/%02x/%s%s "                   // *.o input file
     "%s "                               // libraries to link with
-    "%s"                                // burble stdout
-    "%s %s ",                           // error log file
+    "%s "                               // burble stdout
+    "%s %s\"",                          // error log file
 
     // compile:
     GB_jit_C_compiler,                  // C compiler
