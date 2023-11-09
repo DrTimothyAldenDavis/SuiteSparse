@@ -696,7 +696,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         if (sys == CHOLMOD_A || sys == CHOLMOD_LDLt)
         {
             CHOLMOD(super_lsolve) (L, Y, E, Common) ;       // Y = L\Y
-            CHOLMOD(super_ltsolve) (L, Y, E, Common) ;      // Y = L'\Y*/
+            CHOLMOD(super_ltsolve) (L, Y, E, Common) ;      // Y = L'\Y
         }
         else if (sys == CHOLMOD_L || sys == CHOLMOD_LD)
         {
@@ -704,7 +704,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         }
         else if (sys == CHOLMOD_Lt || sys == CHOLMOD_DLt)
         {
-            CHOLMOD(super_ltsolve) (L, Y, E, Common) ;      // Y = L'\Y*/
+            CHOLMOD(super_ltsolve) (L, Y, E, Common) ;      // Y = L'\Y
         }
 
         if (L->dtype == CHOLMOD_DOUBLE)
