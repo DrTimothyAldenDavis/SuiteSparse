@@ -2524,9 +2524,9 @@ int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
 // cholmod_solve:  solve a linear system (simplicial or supernodal)
 //------------------------------------------------------------------------------
 
-/* Solves one of many linear systems with a dense right-hand-side, using the
- * factorization from cholmod_factorize (or as modified by any other CHOLMOD
- * routine).  D is identity for LL' factorizations. */
+// Solves one of many linear systems with a dense right-hand-side, using the
+// factorization from cholmod_factorize (or as modified by any other CHOLMOD
+// routine).  D is identity for LL' factorizations. */
 
 #define CHOLMOD_A    0  /* solve Ax=b */
 #define CHOLMOD_LDLt 1  /* solve LDL'x=b */
@@ -2540,14 +2540,12 @@ int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
 
 cholmod_dense *cholmod_solve    // returns the solution X
 (
-    /* ---- input ---- */
-    int sys,		/* system to solve */
-    cholmod_factor *L,	/* factorization to use */
-    cholmod_dense *B,	/* right-hand-side */
-    /* --------------- */
+    // input:
+    int sys,            // system to solve
+    cholmod_factor *L,  // factorization to use
+    cholmod_dense *B,   // right-hand-side
     cholmod_common *Common
 ) ;
-
 cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
     cholmod_common *) ;
 
@@ -2557,21 +2555,19 @@ cholmod_dense *cholmod_l_solve (int, cholmod_factor *, cholmod_dense *,
 
 int cholmod_solve2     /* returns TRUE on success, FALSE on failure */
 (
-    /* ---- input ---- */
-    int sys,		            /* system to solve */
-    cholmod_factor *L,	            /* factorization to use */
-    cholmod_dense *B,               /* right-hand-side */
+    // input:
+    int sys,                        // system to solve
+    cholmod_factor *L,              // factorization to use
+    cholmod_dense *B,               // right-hand-side
     cholmod_sparse *Bset,
-    /* ---- output --- */
-    cholmod_dense **X_Handle,       /* solution, allocated if need be */
+    // output:
+    cholmod_dense **X_Handle,       // solution, allocated if need be
     cholmod_sparse **Xset_Handle,
-    /* ---- workspace  */
-    cholmod_dense **Y_Handle,       /* workspace, or NULL */
-    cholmod_dense **E_Handle,       /* workspace, or NULL */
-    /* --------------- */
+    // workspace:
+    cholmod_dense **Y_Handle,       // workspace, or NULL
+    cholmod_dense **E_Handle,       // workspace, or NULL
     cholmod_common *Common
 ) ;
-
 int cholmod_l_solve2 (int, cholmod_factor *, cholmod_dense *, cholmod_sparse *,
     cholmod_dense **, cholmod_sparse **, cholmod_dense **, cholmod_dense **,
     cholmod_common *) ;

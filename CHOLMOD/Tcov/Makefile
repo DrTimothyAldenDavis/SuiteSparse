@@ -75,6 +75,7 @@ default: go
 
 ################################################################################
 
+
 # without valgrind
 V =
 COVER = ./covall
@@ -83,7 +84,7 @@ CF = -O0 -g --coverage -fprofile-abs-path -DTEST_COVERAGE -DBLAS32 -fopenmp
 # with valgrind
 # V = valgrind --suppressions=suppress --quiet
 # COVER =
-# CF = -O0 -g
+# CF = -O0 -g -DTEST_COVERAGE -DBLAS32 -fopenmp
 
 # Temp directory
 T = $(TCOV_TMP)/CHOLMOD_TCOV_TMP

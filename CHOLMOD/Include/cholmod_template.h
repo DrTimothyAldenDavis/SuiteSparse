@@ -28,6 +28,7 @@
 
 #undef TEMPLATE
 #undef TEMPLATE2
+#undef TEMPLATE_DTYPE
 #undef XTYPE
 #undef XTYPE2
 #undef XTYPE_OK
@@ -77,19 +78,25 @@
 #ifdef SINGLE
     // single precision
     #define Real float
+    #define TEMPLATE_DTYPE(name) s_ ## name
 #else
     // double precision
     #ifndef DOUBLE
     #define DOUBLE
     #endif
     #define Real double
+    #define TEMPLATE_DTYPE(name) d_ ## name
 #endif
 
 //------------------------------------------------------------------------------
-// pattern: both double and single
+// xtype: pattern/real/complex/zomplex
 //------------------------------------------------------------------------------
 
 #ifdef PATTERN
+
+    //--------------------------------------------------------------------------
+    // pattern: both double and single
+    //--------------------------------------------------------------------------
 
     #ifdef SINGLE
         #define PREFIX                      p_s_
@@ -138,11 +145,11 @@
     #define XPRINT2(x,z,p)                  P_PRINT(2,x,z,p)
     #define XPRINT3(x,z,p)                  P_PRINT(3,x,z,p)
 
-//------------------------------------------------------------------------------
-// real: double and single
-//------------------------------------------------------------------------------
-
 #elif defined (REAL)
+
+    //--------------------------------------------------------------------------
+    // real: double and single
+    //--------------------------------------------------------------------------
 
     #ifdef SINGLE
         #define PREFIX                      r_s_
@@ -195,11 +202,11 @@
     #define XPRINT2(x,z,p)                  R_PRINT(2,x,z,p)
     #define XPRINT3(x,z,p)                  R_PRINT(3,x,z,p)
 
-//------------------------------------------------------------------------------
-// complex: both double and single
-//------------------------------------------------------------------------------
-
 #elif defined (COMPLEX)
+
+    //--------------------------------------------------------------------------
+    // complex: both double and single
+    //--------------------------------------------------------------------------
 
     #ifdef SINGLE
         #define PREFIX                      c_s_
@@ -270,11 +277,11 @@
     #define XPRINT2(x,z,p)                  C_PRINT(2,x,z,p)
     #define XPRINT3(x,z,p)                  C_PRINT(3,x,z,p)
 
-//------------------------------------------------------------------------------
-// zomplex: both double and single
-//------------------------------------------------------------------------------
-
 #elif defined (ZOMPLEX)
+
+    //--------------------------------------------------------------------------
+    // zomplex: both double and single
+    //--------------------------------------------------------------------------
 
     #ifdef SINGLE
         #define PREFIX                      z_s_
@@ -345,6 +352,10 @@
     #define XPRINT3(x,z,p)                  Z_PRINT(3,x,z,p)
 
 #endif
+
+//------------------------------------------------------------------------------
+// conjugate/non-conjugate assignment (for pattern/real/complex/zomplex)
+//------------------------------------------------------------------------------
 
 #ifdef NCONJUGATE
     // non-conjugate assign
