@@ -1189,7 +1189,7 @@ cholmod_sparse *cholmod_l_band (cholmod_sparse *, int64_t, int64_t, int,
     cholmod_common *) ;
 
 //------------------------------------------------------------------------------
-// cholmod_band_inplace:  A = tril (triu (A,k1), k2) */
+// cholmod_band_inplace:  A = tril (triu (A,k1), k2)
 //------------------------------------------------------------------------------
 
 int cholmod_band_inplace
@@ -1933,306 +1933,272 @@ int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
 
 #ifndef NCHECK
 
-/* Routines that check and print the 5 basic data types in CHOLMOD, and 3 kinds
- * of integer vectors (subset, perm, and parent), and read in matrices from a
- * file:
- *
- * cholmod_check_common	    check/print the Common object
- * cholmod_print_common
- *
- * cholmod_check_sparse	    check/print a sparse matrix in column-oriented form
- * cholmod_print_sparse
- *
- * cholmod_check_dense	    check/print a dense matrix
- * cholmod_print_dense
- *
- * cholmod_check_factor	    check/print a Cholesky factorization
- * cholmod_print_factor
- *
- * cholmod_check_triplet    check/print a sparse matrix in triplet form
- * cholmod_print_triplet
- *
- * cholmod_check_subset	    check/print a subset (integer vector in given range)
- * cholmod_print_subset
- *
- * cholmod_check_perm	    check/print a permutation (an integer vector)
- * cholmod_print_perm
- *
- * cholmod_check_parent	    check/print an elimination tree (an integer vector)
- * cholmod_print_parent
- *
- * cholmod_read_triplet	    read a matrix in triplet form (any Matrix Market
- *			    "coordinate" format, or a generic triplet format).
- *
- * cholmod_read_sparse	    read a matrix in sparse form (same file format as
- *			    cholmod_read_triplet).
- *
- * cholmod_read_dense	    read a dense matrix (any Matrix Market "array"
- *			    format, or a generic dense format).
- *
- * cholmod_write_sparse	    write a sparse matrix to a Matrix Market file.
- *
- * cholmod_write_dense	    write a dense matrix to a Matrix Market file.
- *
- * cholmod_print_common and cholmod_check_common are the only two routines that
- * you may call after calling cholmod_finish.
- *
- * Requires the Utility module.  Not required by any CHOLMOD module, except when
- * debugging is enabled (in which case all modules require the Check module).
- *
- * See cholmod_read.c for a description of the file formats supported by the
- * cholmod_read_* routines.
- */
+// Routines that check and print the 5 basic data types in CHOLMOD, and 3 kinds
+// of integer vectors (subset, perm, and parent), and read in matrices from a
+// file:
+//
+// cholmod_check_common     check/print the Common object
+// cholmod_print_common
+//
+// cholmod_check_sparse     check/print a sparse matrix in column-oriented form
+// cholmod_print_sparse
+//
+// cholmod_check_dense      check/print a dense matrix
+// cholmod_print_dense
+//
+// cholmod_check_factor     check/print a Cholesky factorization
+// cholmod_print_factor
+//
+// cholmod_check_triplet    check/print a sparse matrix in triplet form
+// cholmod_print_triplet
+//
+// cholmod_check_subset     check/print a subset (integer vector in given range)
+// cholmod_print_subset
+//
+// cholmod_check_perm       check/print a permutation (an integer vector)
+// cholmod_print_perm
+//
+// cholmod_check_parent     check/print an elimination tree (an integer vector)
+// cholmod_print_parent
+//
+// cholmod_read_triplet     read a matrix in triplet form (any Matrix Market
+//                          "coordinate" format, or a generic triplet format).
+//
+// cholmod_read_sparse      read a matrix in sparse form (same file format as
+//                          cholmod_read_triplet).
+//
+// cholmod_read_dense       read a dense matrix (any Matrix Market "array"
+//                          format, or a generic dense format).
+//
+// cholmod_write_sparse     write a sparse matrix to a Matrix Market file.
+//
+// cholmod_write_dense      write a dense matrix to a Matrix Market file.
+//
+// cholmod_print_common and cholmod_check_common are the only two routines that
+// you may call after calling cholmod_finish.
+//
+// Requires the Utility module.  Not required by any CHOLMOD module, except when
+// debugging is enabled (in which case all modules require the Check module).
+//
+// See cholmod_read.c for a description of the file formats supported by the
+// cholmod_read_* routines.
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_common:  check the Common object */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_common:  check the Common object
+//------------------------------------------------------------------------------
 
 int cholmod_check_common
 (
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_common (cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_common:  print the Common object */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_common:  print the Common object
+//------------------------------------------------------------------------------
 
 int cholmod_print_common
 (
-    /* ---- input ---- */
-    const char *name,	/* printed name of Common object */
-    /* --------------- */
+    // input:
+    const char *name,   // printed name of Common object
     cholmod_common *Common
 ) ;
 
 int cholmod_l_print_common (const char *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_gpu_stats:  print the GPU / CPU statistics */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_gpu_stats:  print the GPU / CPU statistics
+//------------------------------------------------------------------------------
 
 int cholmod_gpu_stats   (cholmod_common *) ;
 int cholmod_l_gpu_stats (cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_sparse:  check a sparse matrix */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_sparse:  check a sparse matrix
+//------------------------------------------------------------------------------
 
 int cholmod_check_sparse
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* sparse matrix to check */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // sparse matrix to check
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_sparse (cholmod_sparse *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_sparse */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_sparse
+//------------------------------------------------------------------------------
 
 int cholmod_print_sparse
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* sparse matrix to print */
-    const char *name,	/* printed name of sparse matrix */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // sparse matrix to print
+    const char *name,   // printed name of sparse matrix
     cholmod_common *Common
 ) ;
-
 int cholmod_l_print_sparse (cholmod_sparse *, const char *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_dense:  check a dense matrix */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_dense:  check a dense matrix
+//------------------------------------------------------------------------------
 
 int cholmod_check_dense
 (
-    /* ---- input ---- */
-    cholmod_dense *X,	/* dense matrix to check */
-    /* --------------- */
+    // input:
+    cholmod_dense *X,   // dense matrix to check
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_dense (cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_dense:  print a dense matrix */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_dense:  print a dense matrix
+//------------------------------------------------------------------------------
 
 int cholmod_print_dense
 (
-    /* ---- input ---- */
-    cholmod_dense *X,	/* dense matrix to print */
-    const char *name,	/* printed name of dense matrix */
-    /* --------------- */
+    // input:
+    cholmod_dense *X,   // dense matrix to print
+    const char *name,   // printed name of dense matrix
     cholmod_common *Common
 ) ;
-
 int cholmod_l_print_dense (cholmod_dense *, const char *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_factor:  check a factor */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_factor:  check a factor
+//------------------------------------------------------------------------------
 
 int cholmod_check_factor
 (
-    /* ---- input ---- */
-    cholmod_factor *L,	/* factor to check */
-    /* --------------- */
+    // input:
+    cholmod_factor *L,  // factor to check
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_factor (cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_factor:  print a factor */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_factor:  print a factor
+//------------------------------------------------------------------------------
 
 int cholmod_print_factor
 (
-    /* ---- input ---- */
-    cholmod_factor *L,	/* factor to print */
-    const char *name,	/* printed name of factor */
-    /* --------------- */
+    // input:
+    cholmod_factor *L,  // factor to print
+    const char *name,   // printed name of factor
     cholmod_common *Common
 ) ;
-
 int cholmod_l_print_factor (cholmod_factor *, const char *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_triplet:  check a sparse matrix in triplet form */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_triplet:  check a sparse matrix in triplet form
+//------------------------------------------------------------------------------
 
 int cholmod_check_triplet
 (
-    /* ---- input ---- */
-    cholmod_triplet *T,	/* triplet matrix to check */
-    /* --------------- */
+    // input:
+    cholmod_triplet *T, // triplet matrix to check
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_triplet (cholmod_triplet *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_triplet:  print a triplet matrix */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_triplet:  print a triplet matrix
+//------------------------------------------------------------------------------
 
 int cholmod_print_triplet
 (
-    /* ---- input ---- */
-    cholmod_triplet *T,	/* triplet matrix to print */
-    const char *name,	/* printed name of triplet matrix */
-    /* --------------- */
+    // input:
+    cholmod_triplet *T, // triplet matrix to print
+    const char *name,   // printed name of triplet matrix
     cholmod_common *Common
 ) ;
+int cholmod_l_print_triplet (cholmod_triplet *, const char *, cholmod_common *) ;
 
-int cholmod_l_print_triplet (cholmod_triplet *, const char *,
-    cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_subset:  check a subset */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_subset:  check a subset
+//------------------------------------------------------------------------------
 
 int cholmod_check_subset
 (
-    /* ---- input ---- */
-    int32_t *Set,	/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len,        /* size of Set (an integer array) */
-    size_t n,		/* 0:n-1 is valid range */
-    /* --------------- */
+    // input:
+    int32_t *Set,       // Set [0:len-1] is a subset of 0:n-1.  Duplicates OK
+    int64_t len,        // size of Set (an integer array)
+    size_t n,           // 0:n-1 is valid range
     cholmod_common *Common
 ) ;
+int cholmod_l_check_subset (int64_t *, int64_t, size_t, cholmod_common *) ;
 
-int cholmod_l_check_subset (int64_t *, int64_t, size_t,
-    cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_subset:  print a subset */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_subset:  print a subset
+//------------------------------------------------------------------------------
 
 int cholmod_print_subset
 (
-    /* ---- input ---- */
-    int32_t *Set,	/* Set [0:len-1] is a subset of 0:n-1.  Duplicates OK */
-    int64_t len,        /* size of Set (an integer array) */
-    size_t n,		/* 0:n-1 is valid range */
-    const char *name,	/* printed name of Set */
-    /* --------------- */
+    // input:
+    int32_t *Set,       // Set [0:len-1] is a subset of 0:n-1.  Duplicates OK
+    int64_t len,        // size of Set (an integer array)
+    size_t n,           // 0:n-1 is valid range
+    const char *name,   // printed name of Set
     cholmod_common *Common
 ) ;
+int cholmod_l_print_subset (int64_t *, int64_t, size_t, const char *,
+    cholmod_common *) ;
 
-int cholmod_l_print_subset (int64_t *, int64_t, size_t,
-    const char *, cholmod_common *) ;
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_perm:  check a permutation */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_perm:  check a permutation
+//------------------------------------------------------------------------------
 
 int cholmod_check_perm
 (
-    /* ---- input ---- */
-    int32_t *Perm,	/* Perm [0:len-1] is a permutation of subset of 0:n-1 */
-    size_t len,		/* size of Perm (an integer array) */
-    size_t n,		/* 0:n-1 is valid range */
-    /* --------------- */
+    // input:
+    int32_t *Perm,      // Perm [0:len-1] is a permutation of subset of 0:n-1
+    size_t len,         // size of Perm (an integer array)
+    size_t n,           // 0:n-1 is valid range
     cholmod_common *Common
 ) ;
+int cholmod_l_check_perm (int64_t *, size_t, size_t, cholmod_common *) ;
 
-int cholmod_l_check_perm (int64_t *, size_t, size_t, cholmod_common *);
-
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_perm:  print a permutation vector */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_perm:  print a permutation vector
+//------------------------------------------------------------------------------
 
 int cholmod_print_perm
 (
-    /* ---- input ---- */
-    int32_t *Perm,	/* Perm [0:len-1] is a permutation of subset of 0:n-1 */
-    size_t len,		/* size of Perm (an integer array) */
-    size_t n,		/* 0:n-1 is valid range */
-    const char *name,	/* printed name of Perm */
-    /* --------------- */
+    // input:
+    int32_t *Perm,      // Perm [0:len-1] is a permutation of subset of 0:n-1
+    size_t len,         // size of Perm (an integer array)
+    size_t n,           // 0:n-1 is valid range
+    const char *name,   // printed name of Perm
     cholmod_common *Common
 ) ;
-
 int cholmod_l_print_perm (int64_t *, size_t, size_t, const char *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_check_parent:  check an elimination tree */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_check_parent:  check an elimination tree
+//------------------------------------------------------------------------------
 
 int cholmod_check_parent
 (
-    /* ---- input ---- */
-    int32_t *Parent,	/* Parent [0:n-1] is an elimination tree */
-    size_t n,		/* size of Parent */
-    /* --------------- */
+    // input:
+    int32_t *Parent,    // Parent [0:n-1] is an elimination tree
+    size_t n,           // size of Parent
     cholmod_common *Common
 ) ;
-
 int cholmod_l_check_parent (int64_t *, size_t, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_print_parent */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_print_parent
+//------------------------------------------------------------------------------
 
 int cholmod_print_parent
 (
-    /* ---- input ---- */
-    int32_t *Parent,	/* Parent [0:n-1] is an elimination tree */
-    size_t n,		/* size of Parent */
-    const char *name,	/* printed name of Parent */
-    /* --------------- */
+    // input:
+    int32_t *Parent,    // Parent [0:n-1] is an elimination tree
+    size_t n,           // size of Parent
+    const char *name,   // printed name of Parent
     cholmod_common *Common
 ) ;
-
-int cholmod_l_print_parent (int64_t *, size_t, const char *,
-    cholmod_common *) ;
+int cholmod_l_print_parent (int64_t *, size_t, const char *, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
 // cholmod_read_sparse: read a sparse matrix from a file (double only)
@@ -2344,38 +2310,34 @@ void *cholmod_read_matrix2
 ) ;
 void *cholmod_l_read_matrix2 (FILE *, int, int, int *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_write_sparse: write a sparse matrix to a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_write_sparse: write a sparse matrix to a file
+//------------------------------------------------------------------------------
 
 int cholmod_write_sparse    // returns the same result as cholmod_symmetry
 (
-    /* ---- input ---- */
-    FILE *f,		    /* file to write to, must already be open */
-    cholmod_sparse *A,	    /* matrix to print */
-    cholmod_sparse *Z,	    /* optional matrix with pattern of explicit zeros */
-    const char *comments,   /* optional filename of comments to include */
-    /* --------------- */
+    // input:
+    FILE *f,                // file to write to, must already be open
+    cholmod_sparse *A,      // matrix to print
+    cholmod_sparse *Z,      // optional matrix with pattern of explicit zeros
+    const char *comments,   // optional filename of comments to include
     cholmod_common *Common
 ) ;
-
 int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
     const char *c, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_write_dense: write a dense matrix to a file */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_write_dense: write a dense matrix to a file
+//------------------------------------------------------------------------------
 
 int cholmod_write_dense
 (
-    /* ---- input ---- */
-    FILE *f,		    /* file to write to, must already be open */
-    cholmod_dense *X,	    /* matrix to print */
-    const char *comments,   /* optional filename of comments to include */
-    /* --------------- */
+    // input:
+    FILE *f,                // file to write to, must already be open
+    cholmod_dense *X,       // matrix to print
+    const char *comments,   // optional filename of comments to include
     cholmod_common *Common
 ) ;
-
 int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
     cholmod_common *) ;
 
@@ -2526,16 +2488,16 @@ int cholmod_l_factorize_p (cholmod_sparse *, double *, int64_t *, size_t,
 
 // Solves one of many linear systems with a dense right-hand-side, using the
 // factorization from cholmod_factorize (or as modified by any other CHOLMOD
-// routine).  D is identity for LL' factorizations. */
+// routine).  D is identity for LL' factorizations.
 
-#define CHOLMOD_A    0  /* solve Ax=b */
+#define CHOLMOD_A    0  /* solve Ax=b    */
 #define CHOLMOD_LDLt 1  /* solve LDL'x=b */
-#define CHOLMOD_LD   2  /* solve LDx=b */
-#define CHOLMOD_DLt  3  /* solve DL'x=b */
-#define CHOLMOD_L    4  /* solve Lx=b */
-#define CHOLMOD_Lt   5  /* solve L'x=b */
-#define CHOLMOD_D    6  /* solve Dx=b */
-#define CHOLMOD_P    7  /* permute x=Px */
+#define CHOLMOD_LD   2  /* solve LDx=b   */
+#define CHOLMOD_DLt  3  /* solve DL'x=b  */
+#define CHOLMOD_L    4  /* solve Lx=b    */
+#define CHOLMOD_Lt   5  /* solve L'x=b   */
+#define CHOLMOD_D    6  /* solve Dx=b    */
+#define CHOLMOD_P    7  /* permute x=Px  */
 #define CHOLMOD_Pt   8  /* permute x=P'x */
 
 cholmod_dense *cholmod_solve    // returns the solution X
@@ -2883,7 +2845,7 @@ double cholmod_l_rcond (cholmod_factor *, cholmod_common *) ;
 // cholmod_postorder: Compute the postorder of a tree
 //------------------------------------------------------------------------------
 
-int32_t cholmod_postorder	// return # of nodes postordered
+int32_t cholmod_postorder   // return # of nodes postordered
 (
     // input:
     int32_t *Parent,    // size n. Parent [j] = p if p is the parent of j
@@ -2982,10 +2944,10 @@ cholmod_sparse *cholmod_l_horzcat (cholmod_sparse *, cholmod_sparse *, int,
 //------------------------------------------------------------------------------
 
 // scaling modes, selected by the scale input parameter:
-#define CHOLMOD_SCALAR 0	/* A = s*A */
-#define CHOLMOD_ROW 1		/* A = diag(s)*A */
-#define CHOLMOD_COL 2		/* A = A*diag(s) */
-#define CHOLMOD_SYM 3		/* A = diag(s)*A*diag(s) */
+#define CHOLMOD_SCALAR 0    /* A = s*A               */
+#define CHOLMOD_ROW    1    /* A = diag(s)*A         */
+#define CHOLMOD_COL    2    /* A = A*diag(s)         */
+#define CHOLMOD_SYM    3    /* A = diag(s)*A*diag(s) */
 
 int cholmod_scale
 (
@@ -3002,7 +2964,7 @@ int cholmod_l_scale (cholmod_dense *, int, cholmod_sparse *, cholmod_common *) ;
 // cholmod_sdmult:  Y = alpha*(A*X) + beta*Y or alpha*(A'*X) + beta*Y
 //------------------------------------------------------------------------------
 
-/* Sparse matrix times dense matrix */
+// Sparse matrix times dense matrix
 
 int cholmod_sdmult
 (
@@ -3110,11 +3072,11 @@ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
 
 #ifndef NMODIFY
 
-/* -----------------------------------------------------------------------------
- * CHOLMOD/Include/cholmod_modify.h.
- * Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager
- * http://www.suitesparse.com
- * -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// CHOLMOD/Include/cholmod_modify.h.
+// Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager
+// http://www.suitesparse.com
+//------------------------------------------------------------------------------
 
 /* Sparse Cholesky modification routines: update / downdate / rowadd / rowdel.
  * Can also modify a corresponding solution to Lx=b when L is modified.  This
@@ -3536,10 +3498,10 @@ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t,
  * dissection.
  *
  * These functions require METIS:
- * cholmod_nested_dissection	CHOLMOD nested dissection ordering
- * cholmod_metis		METIS nested dissection ordering (METIS_NodeND)
- * cholmod_bisect		graph partitioner (currently based on METIS)
- * cholmod_metis_bisector	direct interface to METIS_ComputeVertexSeparator
+ * cholmod_nested_dissection    CHOLMOD nested dissection ordering
+ * cholmod_metis                METIS nested dissection ordering (METIS_NodeND)
+ * cholmod_bisect               graph partitioner (currently based on METIS)
+ * cholmod_metis_bisector       direct interface to METIS_ComputeVertexSeparator
  *
  * Requires the Utility and Cholesky modules, and three packages: METIS, CAMD,
  * and CCOLAMD.  Optionally used by the Cholesky module.
@@ -3562,7 +3524,7 @@ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t,
  * finds better orderings than METIS_NodeND, but takes longer.
  */
 
-int64_t cholmod_nested_dissection	/* returns # of components */
+int64_t cholmod_nested_dissection   /* returns # of components */
 (
     /* ---- input ---- */
     cholmod_sparse *A,	/* matrix to order */
@@ -3884,18 +3846,16 @@ int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
 #include <cuda_runtime.h>
 #endif
 
-/* CHOLMOD_GPU_PRINTF: for printing GPU debug error messages */
-/*
-#define CHOLMOD_GPU_PRINTF(args) printf args
-*/
+// CHOLMOD_GPU_PRINTF: for printing GPU debug error messages
+// #define CHOLMOD_GPU_PRINTF(args) printf args
 #define CHOLMOD_GPU_PRINTF(args)
 
-/* define supernode requirements for processing on GPU */
-#define CHOLMOD_ND_ROW_LIMIT 256 /* required descendant rows */
-#define CHOLMOD_ND_COL_LIMIT 32  /* required descendnat cols */
+// define supernode requirements for processing on GPU */
+#define CHOLMOD_ND_ROW_LIMIT 256  /* required descendant rows */
+#define CHOLMOD_ND_COL_LIMIT 32   /* required descendnat cols */
 #define CHOLMOD_POTRF_LIMIT  512  /* required cols for POTRF & TRSM on GPU */
 
-/* # of host supernodes to perform before checking for free pinned buffers */
+// # of host supernodes to perform before checking for free pinned buffers
 #define CHOLMOD_GPU_SKIP     3
 
 #define CHOLMOD_HANDLE_CUDA_ERROR(e,s) {if (e) {ERROR(CHOLMOD_GPU_PROBLEM,s);}}
@@ -3916,14 +3876,14 @@ typedef struct cholmod_gpu_pointers
 
 } cholmod_gpu_pointers ;
 
-int cholmod_gpu_memorysize   /* GPU memory size available, 1 if no GPU */
+int cholmod_gpu_memorysize   // GPU memory size available, 1 if no GPU
 (
     size_t         *total_mem,
     size_t         *available_mem,
     cholmod_common *Common
 ) ;
 
-int cholmod_l_gpu_memorysize /* GPU memory size available, 1 if no GPU */
+int cholmod_l_gpu_memorysize // GPU memory size available, 1 if no GPU
 (
     size_t         *total_mem,
     size_t         *available_mem,
