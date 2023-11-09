@@ -42,13 +42,11 @@ if ( NOT NSTATIC )
     add_library ( SPQR_CUDA_static STATIC ${SPQR_CUDA_SOURCES} )
 
     set_target_properties ( SPQR_CUDA_static PROPERTIES
-        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD_REQUIRED ON
         CXX_STANDARD 17
         C_STANDARD_REQUIRED ON
         C_STANDARD 11
-        OUTPUT_NAME spqr_cuda
-        SOVERSION ${SPQR_VERSION_MAJOR} )
+        OUTPUT_NAME spqr_cuda )
 
     if ( MSVC )
         set_target_properties ( SPQR_CUDA_static PROPERTIES

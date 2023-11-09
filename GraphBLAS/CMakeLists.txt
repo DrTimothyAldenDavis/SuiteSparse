@@ -277,11 +277,10 @@ if ( NOT NSTATIC )
     add_library ( GraphBLAS_static STATIC ${GRAPHBLAS_SOURCES} )
 
     set_target_properties ( GraphBLAS_static PROPERTIES
-        VERSION ${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}
         OUTPUT_NAME graphblas
-        SOVERSION ${GraphBLAS_VERSION_MAJOR}
         C_STANDARD 11
-        C_STANDARD_REQUIRED ON )
+        C_STANDARD_REQUIRED ON
+        PUBLIC_HEADER "Include/GraphBLAS.h" )
 
     if ( MSVC )
         set_target_properties ( GraphBLAS_static PROPERTIES
@@ -500,7 +499,8 @@ install ( TARGETS GraphBLAS
 if ( NOT NSTATIC )
     install ( TARGETS GraphBLAS_static
         EXPORT GraphBLASTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

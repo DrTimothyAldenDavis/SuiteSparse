@@ -143,11 +143,9 @@ if ( NOT NSTATIC )
     add_library ( ParU_static STATIC ${PARU_SOURCES} )
 
     set_target_properties ( ParU_static PROPERTIES
-        VERSION ${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
-        SOVERSION ${PARU_VERSION_MAJOR}
         PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 

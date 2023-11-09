@@ -53,12 +53,11 @@ target_compile_definitions ( LAGraph PUBLIC LG_DLL )
 if ( NOT NSTATIC )
     add_library ( LAGraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
     SET_TARGET_PROPERTIES ( LAGraph_static PROPERTIES
-        VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
         OUTPUT_NAME lagraph
         POSITION_INDEPENDENT_CODE OFF
-        SOVERSION ${LAGraph_VERSION_MAJOR}
         C_STANDARD_REQUIRED ON
-        C_STANDARD 11 )
+        C_STANDARD 11
+        PUBLIC_HEADER "include/LAGraph.h" )
 
     if ( MSVC )
         set_target_properties ( LAGraph_static PROPERTIES

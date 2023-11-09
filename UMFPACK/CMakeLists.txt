@@ -169,11 +169,10 @@ if ( NOT NSTATIC )
     add_library ( UMFPACK_static STATIC ${UMFPACK_SOURCES} )
 
     set_target_properties ( UMFPACK_static PROPERTIES
-        VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME umfpack
-        SOVERSION ${UMFPACK_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/umfpack.h" )
 
     if ( MSVC )
         set_target_properties ( UMFPACK_static PROPERTIES
@@ -278,7 +277,8 @@ install ( TARGETS UMFPACK
 if ( NOT NSTATIC )
     install ( TARGETS UMFPACK_static
         EXPORT UMFPACKTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

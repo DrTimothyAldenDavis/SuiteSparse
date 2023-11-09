@@ -128,13 +128,11 @@ if ( NOT NSTATIC )
     add_library ( SPQR_static STATIC ${SPQR_SOURCES} )
 
     set_target_properties ( SPQR_static PROPERTIES
-        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
-        OUTPUT_NAME spqr
-        SOVERSION ${SPQR_VERSION_MAJOR} )
+        OUTPUT_NAME spqr )
 
     if ( MSVC )
         set_target_properties ( SPQR_static PROPERTIES

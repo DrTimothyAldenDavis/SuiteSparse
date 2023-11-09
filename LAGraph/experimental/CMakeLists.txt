@@ -48,12 +48,11 @@ target_compile_definitions ( LAGraphX PUBLIC LGX_DLL )
 if ( NOT NSTATIC )
     add_library ( LAGraphX_static STATIC ${LAGRAPHX_LIB_SOURCES} )
     SET_TARGET_PROPERTIES ( LAGraphX_static PROPERTIES
-        VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
         OUTPUT_NAME lagraphx
         POSITION_INDEPENDENT_CODE OFF
-        SOVERSION ${LAGraph_VERSION_MAJOR}
         C_STANDARD_REQUIRED ON
-        C_STANDARD 11 )
+        C_STANDARD 11
+        PUBLIC_HEADER "include/LAGraphX.h" )
 
     if ( MSVC )
         set_target_properties ( LAGraphX_static PROPERTIES

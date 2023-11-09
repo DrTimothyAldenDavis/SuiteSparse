@@ -202,7 +202,8 @@ if ( NOT NSTATIC )
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
 #   set_property ( TARGET Mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( Mongoose_static PROPERTIES
-            OUTPUT_NAME mongoose )
+        OUTPUT_NAME mongoose
+        PUBLIC_HEADER "Include/Mongoose.hpp" )
 
     if ( MSVC )
         set_target_properties ( Mongoose_static PROPERTIES
@@ -224,8 +225,10 @@ endif ( )
 add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
 set_property ( TARGET Mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( Mongoose PROPERTIES
-        OUTPUT_NAME mongoose
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    OUTPUT_NAME mongoose
+    SOVERSION ${Mongoose_VERSION_MAJOR}
+    PUBLIC_HEADER "Include/Mongoose.hpp"
+    WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
 target_include_directories ( Mongoose
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -235,16 +238,6 @@ target_link_libraries ( Mongoose PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( Mongoose PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-# if(CMAKE_MAJOR_VERSION GREATER 2)
-#     set_target_properties(Mongoose PROPERTIES VERSION ${PROJECT_VERSION})
-#     set_target_properties(Mongoose PROPERTIES SOVERSION ${Mongoose_VERSION_MAJOR})
-# else()
-    set_target_properties ( Mongoose PROPERTIES
-        VERSION ${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}
-        SOVERSION ${Mongoose_VERSION_MAJOR} )
-# endif()
-
-set_target_properties ( Mongoose PROPERTIES PUBLIC_HEADER Include/Mongoose.hpp )
 target_include_directories ( Mongoose PRIVATE . )
 
 #-------------------------------------------------------------------------------

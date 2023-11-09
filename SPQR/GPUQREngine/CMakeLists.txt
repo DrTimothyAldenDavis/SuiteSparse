@@ -119,11 +119,10 @@ if ( NOT NSTATIC )
     add_library ( GPUQREngine_static STATIC ${GPUQRENGINE_SOURCES} )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
-        VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME gpuqrengine
-        SOVERSION ${GPUQRENGINE_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/GPUQREngine.hpp" )
 
     if ( MSVC )
         set_target_properties ( GPUQREngine_static PROPERTIES
@@ -165,7 +164,8 @@ install ( TARGETS GPUQREngine
 if ( NOT NSTATIC )
     install ( TARGETS GPUQREngine_static
         EXPORT GPUQREngineTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

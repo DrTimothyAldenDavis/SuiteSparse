@@ -148,11 +148,10 @@ if ( NOT NSTATIC )
     add_library ( KLU_static STATIC ${KLU_SOURCES} )
 
     set_target_properties ( KLU_static PROPERTIES
-        VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME klu
-        SOVERSION ${KLU_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/klu.h" )
 
     if ( MSVC )
         set_target_properties ( KLU_static PROPERTIES
@@ -191,11 +190,10 @@ if ( NOT NCHOLMOD )
         add_library ( KLU_CHOLMOD_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
         set_target_properties ( KLU_CHOLMOD_static PROPERTIES
-            VERSION ${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}
             C_STANDARD 11
             C_STANDARD_REQUIRED ON
             OUTPUT_NAME klu_cholmod
-            SOVERSION ${KLU_VERSION_MAJOR} )
+            PUBLIC_HEADER "User/klu_cholmod.h" )
 
         if ( MSVC )
             set_target_properties ( KLU_CHOLMOD_static PROPERTIES
@@ -313,7 +311,8 @@ install ( TARGETS KLU
 if ( NOT NSTATIC )
     install ( TARGETS KLU_static
         EXPORT KLUTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build
@@ -392,7 +391,8 @@ if ( NOT NCHOLMOD )
     if ( NOT NSTATIC )
         install ( TARGETS KLU_CHOLMOD_static
             EXPORT KLU_CHOLMODTargets
-            ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+            ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+            PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     endif ( )
 
     # create (temporary) export target file during build

@@ -102,11 +102,10 @@ target_include_directories ( AMD
 if ( NOT NSTATIC )
     add_library ( AMD_static STATIC ${AMD_SOURCES} )
     set_target_properties ( AMD_static PROPERTIES
-        VERSION ${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME amd
-        SOVERSION ${AMD_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/amd.h" )
 
     if ( MSVC )
         set_target_properties ( AMD_static PROPERTIES
@@ -159,7 +158,8 @@ install ( TARGETS AMD
 if ( NOT NSTATIC )
     install ( TARGETS AMD_static
         EXPORT AMDTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

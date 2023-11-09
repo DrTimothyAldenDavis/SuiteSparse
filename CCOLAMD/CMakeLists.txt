@@ -93,11 +93,10 @@ if ( NOT NSTATIC )
     add_library ( CCOLAMD_static STATIC ${CCOLAMD_SOURCES} )
 
     set_target_properties ( CCOLAMD_static PROPERTIES
-        VERSION ${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}
         OUTPUT_NAME ccolamd
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
-        SOVERSION ${CCOLAMD_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/ccolamd.h" )
 
     if ( MSVC )
         set_target_properties ( CCOLAMD_static PROPERTIES
@@ -149,7 +148,8 @@ install ( TARGETS CCOLAMD
 if ( NOT NSTATIC )
     install ( TARGETS CCOLAMD_static
         EXPORT CCOLAMDTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

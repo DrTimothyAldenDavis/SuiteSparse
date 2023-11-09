@@ -107,11 +107,10 @@ if ( NOT NSTATIC )
     add_library ( SuiteSparseConfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
     set_target_properties ( SuiteSparseConfig_static PROPERTIES
-        VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparseconfig
-        SOVERSION ${SUITESPARSE_VERSION_MAJOR} )
+        PUBLIC_HEADER "SuiteSparse_config.h" )
 
     if ( MSVC )
         set_target_properties ( SuiteSparseConfig_static PROPERTIES
@@ -179,7 +178,8 @@ install ( FILES
 if ( NOT NSTATIC )
     install ( TARGETS SuiteSparseConfig_static
         EXPORT SuiteSparse_configTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build

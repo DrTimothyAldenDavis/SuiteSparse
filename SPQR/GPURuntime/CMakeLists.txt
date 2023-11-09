@@ -97,11 +97,10 @@ if ( NOT NSTATIC )
     add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
     set_target_properties ( GPURuntime_static PROPERTIES
-        VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparse_gpuruntime
-        SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp" )
 
     if ( MSVC )
         set_target_properties ( GPURuntime_static PROPERTIES
@@ -142,7 +141,8 @@ install ( TARGETS GPURuntime
 if ( NOT NSTATIC )
     install ( TARGETS GPURuntime_static
         EXPORT SuiteSparse_GPURuntimeTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build
