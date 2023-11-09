@@ -80,7 +80,6 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     //--------------------------------------------------------------------------
 
     cholmod_sparse *C = NULL, *A2 = NULL, *B2 = NULL, *C2 = NULL ;
-//  cholmod_sparse *A3 = NULL, *B3 = NULL ;
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;

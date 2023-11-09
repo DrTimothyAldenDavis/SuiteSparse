@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME: TODO
+
 /* Sparse matrix times dense matrix:
  * Y = alpha*(A*X) + beta*Y or Y = alpha*(A'*X) + beta*Y,
  * where A is sparse and X and Y are dense.

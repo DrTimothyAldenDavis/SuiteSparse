@@ -48,7 +48,7 @@
 // cholmod_norm_dense
 //------------------------------------------------------------------------------
 
-double CHOLMOD(norm_dense)
+double CHOLMOD(norm_dense)      // returns norm (X)
 (
     // input:
     cholmod_dense *X,   // matrix to compute the norm of
@@ -130,7 +130,7 @@ double CHOLMOD(norm_dense)
 // cholmod_norm_sparse
 //------------------------------------------------------------------------------
 
-double CHOLMOD(norm_sparse)
+double CHOLMOD(norm_sparse)     // returns norm (A)
 (
     // input:
     cholmod_sparse *A,  // matrix to compute the norm of

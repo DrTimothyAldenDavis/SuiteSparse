@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME: TODO
+
 /* Vertical concatenation, C = [A ; B] in MATLAB notation.
  *
  * A and B can be up/lo/unsym; C is unsymmetric and packed.

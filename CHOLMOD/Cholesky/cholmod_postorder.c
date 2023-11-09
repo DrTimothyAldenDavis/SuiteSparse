@@ -145,15 +145,16 @@ Int CHOLMOD(postorder)  // return # of nodes postordered
     cholmod_common *Common
 )
 {
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
     Int *Head, *Next, *Pstack, *Iwork ;
     Int j, p, k, w, nextj ;
     size_t s ;
     int ok = TRUE ;
     Int n = (Int) n_input ;
-
-    //--------------------------------------------------------------------------
-    // check inputs
-    //--------------------------------------------------------------------------
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (Parent, EMPTY) ;

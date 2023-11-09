@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME: TODO
+
 /* Determines if a sparse matrix is rectangular, unsymmetric, symmetric,
  * skew-symmetric, or Hermitian.  It does so by looking at its numerical values
  * of both upper and lower triangular parts of a CHOLMOD "unsymmetric"

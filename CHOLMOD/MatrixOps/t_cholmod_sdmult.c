@@ -8,6 +8,8 @@
 
 //------------------------------------------------------------------------------
 
+// FIXME: TODO
+
 /* Template routine for cholmod_sdmult */
 
 #include "cholmod_template.h"
