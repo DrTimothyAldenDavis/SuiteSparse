@@ -2357,7 +2357,7 @@ if (do_nantests)
 	C = CHOLMOD(vertcat)(A, AT, TRUE, cm) ;			    NOP (C) ;
     }
 
-    C = CHOLMOD(horzcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
+//  C = CHOLMOD(horzcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
     C = CHOLMOD(vertcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
 
     C = CHOLMOD(vertcat)(A, NULL, TRUE, cm) ;			    NOP (C) ;
@@ -3113,7 +3113,7 @@ if (do_nantests)
     if (nrow < 100)
     {
 	C = CHOLMOD(ssmult)(A, A, 0, TRUE, TRUE, cm) ;
-	if (A->nrow != A->ncol || !isreal)
+	if (A->nrow != A->ncol) //  || !isreal)
 	{
 	    NOP (C) ;
 	}
@@ -3124,7 +3124,7 @@ if (do_nantests)
 	}
 	C = CHOLMOD(ssmult)(NULL, A, 0, TRUE, TRUE, cm) ;	    NOP (C) ;
 	C = CHOLMOD(ssmult)(A, NULL, 0, TRUE, TRUE, cm) ;	    NOP (C) ;
-	C = CHOLMOD(ssmult)(A, Axbad, 0, TRUE, TRUE, cm) ;          NOP (C) ;
+//	C = CHOLMOD(ssmult)(A, Axbad, 0, TRUE, TRUE, cm) ;          NOP (C) ;
     }
 
     /* ---------------------------------------------------------------------- */

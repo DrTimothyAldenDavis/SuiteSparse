@@ -1743,6 +1743,7 @@ int main (int argc, char **argv)
 	{
 	    /* maxerr should be NaN if nrow > ncol, so don't print it */
 	    fprintf (stderr, ", maxerr %.1g", maxerr) ;
+            OK (!isnan (maxerr)) ;
 	}
 	fprintf (stderr, "\n") ;
 	my_srand (42) ;						/* RAND reset */

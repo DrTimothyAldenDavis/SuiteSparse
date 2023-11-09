@@ -230,6 +230,7 @@ void cholmod_l_to_simplicial_sym
 #define R_TEMPLATE(name)                        r_ ## name
 #define R_S_TEMPLATE(name)                      r_s_ ## name
 
+#define R_ABS(x,z,p)                            fabs ((double) (x [p]))
 #define R_ASSEMBLE(x,z,p,ax,az,q)               x [p] += ax [q]
 #define R_ASSIGN(x,z,p,ax,az,q)                 x [p]  = ax [q]
 #define R_ASSIGN_CONJ(x,z,p,ax,az,q)            x [p]  = ax [q]
@@ -265,6 +266,9 @@ void cholmod_l_to_simplicial_sym
 
 #define C_S_TEMPLATE(name)              c_s_ ## name
 #define CT_S_TEMPLATE(name)             ct_s_ ## name
+
+#define C_ABS(x,z,p) \
+    SuiteSparse_config_hypot ((double) (x [2*(p)]), (double) (x [2*(p)+1]))
 
 #define C_ASSEMBLE(x,z,p,ax,az,q) \
     x [2*(p)  ] += ax [2*(q)  ] ; \
@@ -373,6 +377,9 @@ void cholmod_l_to_simplicial_sym
 
 #define Z_S_TEMPLATE(name)              z_s_ ## name
 #define ZT_S_TEMPLATE(name)             zt_s_ ## name
+
+#define Z_ABS(x,z,p) \
+    SuiteSparse_config_hypot ((double) (x [p]), (double) (z [p]))
 
 #define Z_ASSEMBLE(x,z,p,ax,az,q) \
     x [p] += ax [q] ; \

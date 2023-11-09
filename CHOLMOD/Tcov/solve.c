@@ -182,8 +182,8 @@ double solve (cholmod_sparse *A)
 	*A3, *C3, *E3 ;
     cholmod_dense *B2, *B2complex, *B2zomplex, *B2real, *Ywork, *Ework ;
     cholmod_sparse *AFt, *AF, *G, *RowK, *Bsparse, *Xsparse ;
-    double *Cx ;
-    double *B2x ;
+    double *Cx ;    // FIXME
+    double *B2x ;   // FIXME
     Int *P, *cset, *fset, *Parent, *Post, *RowCount, *ColCount,
 	     *First, *Level, *rcount, *ccount, *Lp, *Li ;
     Int p, i, j, k, n, nrhs, save, save2, csize, rank, nrow, ncol, is_ll,
@@ -193,6 +193,8 @@ double solve (cholmod_sparse *A)
     Ywork = NULL ;
     Ework = NULL ;
 
+// int psave = cm->print ; cm->print = 5 ;
+
     if (cm->print > 1)
     {
 	printf ("============================================== in solve:\n") ;
@@ -201,6 +203,7 @@ double solve (cholmod_sparse *A)
     if (A == NULL)
     {
 	ERROR (CHOLMOD_INVALID, "nothing to solve") ;
+// cm->print = psave ;
 	return (1) ;
     }
 
@@ -227,7 +230,7 @@ double solve (cholmod_sparse *A)
     B2 = CHOLMOD(copy_dense) (B, cm) ;
     if (B2 != NULL)
     {
-        B2x = (double *) B2->x ;
+        B2x = (double *) B2->x ;    // FIXME
         B2x [0] = 42 ;
     }
 
@@ -327,12 +330,12 @@ double solve (cholmod_sparse *A)
 		&& Bzomplex->xtype == CHOLMOD_ZOMPLEX)
 	{
 	    /* add an arbitrary imaginary part */
-	    double *Bz = Bzomplex->z ;
+	    double *Bz = Bzomplex->z ;  //FIXME
 	    for (j = 0 ; j < NRHS ; j++)
 	    {
 		for (i = 0 ; i < n ; i++)
 		{
-		    Bz [i+j*n] = (double) (i+j*n) ;
+		    Bz [i+j*n] = (double) (i+j*n) ; //FIXME
 		}
 	    }
 	}
@@ -344,7 +347,7 @@ double solve (cholmod_sparse *A)
         B2zomplex = CHOLMOD(copy_dense) (Bzomplex, cm) ;
         if (B2zomplex != NULL)
         {
-            B2x = (double *) B2zomplex->x ;
+            B2x = (double *) B2zomplex->x ; // FIXME
             B2x [0] = 99 ;
         }
 
@@ -371,7 +374,7 @@ double solve (cholmod_sparse *A)
         B2complex = CHOLMOD(copy_dense) (Bcomplex, cm) ;
         if (B2complex != NULL)
         {
-            B2x = (double *) B2complex->x ;
+            B2x = (double *) B2complex->x ; // FIXME
             B2x [0] = 777 ;
         }
 
@@ -398,7 +401,7 @@ double solve (cholmod_sparse *A)
         B2real = CHOLMOD(copy_dense) (Breal, cm) ;
         if (B2real != NULL)
         {
-            B2x = (double *) B2real->x ;
+            B2x = (double *) B2real->x ;    // FIXME
             B2x [0] = 1234 ;
         }
 
@@ -664,8 +667,8 @@ double solve (cholmod_sparse *A)
 	if (!is_ll && D != NULL && Lo != NULL)
 	{
 	    /* factorization is LDL' = Lo*D*Up */
-	    double *Dx = D->x ;
-	    double *Lx = Lo->x ;
+	    double *Dx = D->x ; // FIXME
+	    double *Lx = Lo->x ;    // FIXME
 	    Lp = Lo->p ;
 	    for (k = 0 ; k < n ; k++)
 	    {
@@ -955,7 +958,7 @@ double solve (cholmod_sparse *A)
         cholmod_sparse *Xset ;
         cholmod_dense *X2 ;
         Int *Bseti, *Bsetp, *Xseti ;
-        double *X2x, *X1x, *Bx, *Bz ;
+        double *X2x, *X1x, *Bx, *Bz ;   // FIXME
 
         Xset = NULL ;
         X2 = NULL ;
@@ -1436,14 +1439,22 @@ double solve (cholmod_sparse *A)
 	}
 	Lxtype = (L == NULL) ? CHOLMOD_REAL : (L->xtype) ;
 
+// int ssave = cm->print ; cm->print = 5 ;
+// CHOLMOD(print_factor) (L, "L before", cm) ;
+
 	CHOLMOD(change_factor) (Lxtype, ll_types [k], FALSE, pk_types [k],
 		mn_types [k], L, cm) ;
 
-	cm->prefer_zomplex =  prefer_zomplex ;
+// CHOLMOD(print_factor) (L, "L after", cm) ;
+// cm->print = ssave ;
+
+	cm->prefer_zomplex = prefer_zomplex ;
 	X = CHOLMOD(solve) (CHOLMOD_A, L, B, cm) ;
 	cm->prefer_zomplex = FALSE ;
 	r = resid (C, X, B) ;
 	MAXERR (maxerr, r, 1) ;
+// printf ("here: %s %d maxerr %g\n", __FILE__, __LINE__, maxerr) ;
+// if (isnan (maxerr)) abort ( ) ;
 	CHOLMOD(free_dense) (&X, cm) ;
     }
 
@@ -1473,7 +1484,7 @@ double solve (cholmod_sparse *A)
 
     if (A->stype == 0)
     {
-	double *Rx, *Rz, *Xx, *Xz ;
+	double *Rx, *Rz, *Xx, *Xz ; // FIXME
 	double beta [2] ;
 	beta [0] = 3.14159 ;
 	beta [1] = 0 ;
@@ -1506,6 +1517,7 @@ double solve (cholmod_sparse *A)
 
 	    for (i = 0 ; i < nrow ; i++)
 	    {
+                // FIXME:
 		switch (xtype)
 		{
 		    case CHOLMOD_REAL:
@@ -1630,5 +1642,8 @@ double solve (cholmod_sparse *A)
 
     OK (CHOLMOD(print_common) ("cm", cm)) ;
     progress (0, '.') ;
+// cm->print = psave ;
+// printf ("here: %s %d maxerr %g\n", __FILE__, __LINE__, maxerr) ;
+// if (isnan (maxerr)) abort ( ) ;
     return (maxerr) ;
 }

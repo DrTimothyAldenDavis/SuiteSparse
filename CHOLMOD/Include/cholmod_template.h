@@ -36,6 +36,7 @@
 #undef ENTRY_IS_ONE
 #undef IMAG_IS_NONZERO
 
+#undef ABS
 #undef ASSEMBLE
 #undef ASSIGN
 #undef ASSIGN_CONJ
@@ -109,6 +110,7 @@
     #define IMAG_IS_NONZERO(ax,az,q)        (FALSE)
     #define ENTRY_SIZE                      0
 
+    #define ABS(ax,az,p)                    ((double) 1)
     #define ASSEMBLE(x,z,p,ax,az,q)
     #define ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)
@@ -161,6 +163,7 @@
     #define IMAG_IS_NONZERO(ax,az,q)        (FALSE)
     #define ENTRY_SIZE                      1
 
+    #define ABS(ax,az,p)                    R_ABS(ax,az,p)
     #define ASSEMBLE(x,z,p,ax,az,q)         R_ASSEMBLE(x,z,p,ax,az,q) 
     #define ASSIGN(x,z,p,ax,az,q)           R_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      R_ASSIGN(x,z,p,ax,az,q)
@@ -222,6 +225,7 @@
         #endif
     #endif
 
+    #define ABS(ax,az,p)                    C_ABS(ax,az,p)
     #define ASSEMBLE(x,z,p,ax,az,q)         C_ASSEMBLE(x,z,p,ax,az,q) 
     #define ASSIGN(x,z,p,ax,az,q)           C_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      C_ASSIGN_CONJ(x,z,p,ax,az,q)
@@ -295,6 +299,7 @@
         #endif
     #endif
 
+    #define ABS(ax,az,p)                    Z_ABS(ax,az,p)
     #define ASSEMBLE(x,z,p,ax,az,q)         Z_ASSEMBLE(x,z,p,ax,az,q) 
     #define ASSIGN(x,z,p,ax,az,q)           Z_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      Z_ASSIGN_CONJ(x,z,p,ax,az,q)

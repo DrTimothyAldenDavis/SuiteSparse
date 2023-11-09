@@ -30,11 +30,14 @@ size_t CHOLMOD(maxrank)     // return validated Common->maxrank
     //--------------------------------------------------------------------------
 
     size_t maxrank = Common->maxrank ;
-    if (n == 0) return (2) ;
+//  if (n == 0) return (2) ;
 
-    // guard against size_t overflow (very unlikely)
-    size_t max_maxrank = SIZE_MAX / (n * sizeof (float)) ;
-    maxrank = MIN (maxrank, max_maxrank) ;
+    if (n > 0)
+    {
+        // guard against size_t overflow (very unlikely)
+        size_t max_maxrank = SIZE_MAX / (n * sizeof (float)) ;
+        maxrank = MIN (maxrank, max_maxrank) ;
+    }
 
     // maxrank of 2 or less: use 2
     // maxrank of 3 or 4: use 4
