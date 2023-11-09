@@ -72,7 +72,7 @@ double CHOLMOD(norm_dense)
     }
 
     //--------------------------------------------------------------------------
-    /* allocate workspace, if needed */
+    // allocate workspace, if needed
     //--------------------------------------------------------------------------
 
     double *W = NULL ;
@@ -83,14 +83,14 @@ double CHOLMOD(norm_dense)
         W = (double *) (Common->Xwork) ;
         if (Common->status < CHOLMOD_OK)
         {
-            /* oops, no workspace */
+            // oops, no workspace
             use_workspace = FALSE ;
             W = NULL ;
         }
     }
 
     //--------------------------------------------------------------------------
-    /* compute the norm */
+    // compute the norm
     //--------------------------------------------------------------------------
 
     double xnorm = 0 ;

@@ -6,6 +6,8 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
+// FIXME: comments
+
 //------------------------------------------------------------------------------
 
 /* Read a sparse matrix in triplet or dense form.  A triplet matrix can be

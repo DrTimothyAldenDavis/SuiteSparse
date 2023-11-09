@@ -70,8 +70,8 @@ int CHOLMOD(pack_factor)
 
     if (L->xtype == CHOLMOD_PATTERN || L->is_super)
     {
-	// nothing to do
-	return (TRUE) ;
+        // nothing to do
+        return (TRUE) ;
     }
 
     //--------------------------------------------------------------------------

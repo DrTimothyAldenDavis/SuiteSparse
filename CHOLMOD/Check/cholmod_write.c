@@ -6,6 +6,8 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
+// FIXME: comments
+
 //------------------------------------------------------------------------------
 
 /* Write a matrix to a file in Matrix Market form.

@@ -6,6 +6,8 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
+// FIXME: comments
+
 //------------------------------------------------------------------------------
 
 /* Routines to check and print the contents of the 5 CHOLMOD objects:

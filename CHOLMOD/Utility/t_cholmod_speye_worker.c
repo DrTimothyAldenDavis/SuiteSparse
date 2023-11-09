@@ -46,7 +46,7 @@ static void TEMPLATE (cholmod_speye_worker)
 
     for (Int k = n ; k <= ncol ; k++)
     {
-	Ap [k] = n ;
+        Ap [k] = n ;
     }
 }
 

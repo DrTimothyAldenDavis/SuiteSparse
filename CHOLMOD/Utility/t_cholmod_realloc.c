@@ -47,8 +47,8 @@ void *CHOLMOD(realloc)  // return newly reallocated block of memory
 
         if (!newly_allocated)
         {
-	    PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n",
-		pold, (double) nold*size, (double) Common->malloc_count-1,
+            PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n",
+                pold, (double) nold*size, (double) Common->malloc_count-1,
                    (double) (Common->memory_inuse - nold*size))) ;
             #ifndef NDEBUG
             size_t size2 = CM_memtable_size (pold) ;

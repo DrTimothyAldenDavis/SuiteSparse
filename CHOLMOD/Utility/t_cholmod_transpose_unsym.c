@@ -170,16 +170,16 @@ int CHOLMOD(transpose_unsym)
     if (Perm != NULL)
     {
         memset (Wi, 0, nrow * sizeof (Int)) ;
-	for (Int k = 0 ; k < nrow ; k++)
-	{
-	    Int i = Perm [k] ;
-	    if (i < 0 || i > nrow || Wi [i] == 1)
-	    {
-		ERROR (CHOLMOD_INVALID, "invalid permutation") ;
-		return (FALSE) ;
-	    }
-	    Wi [i] = 1 ;
-	}
+        for (Int k = 0 ; k < nrow ; k++)
+        {
+            Int i = Perm [k] ;
+            if (i < 0 || i > nrow || Wi [i] == 1)
+            {
+                ERROR (CHOLMOD_INVALID, "invalid permutation") ;
+                return (FALSE) ;
+            }
+            Wi [i] = 1 ;
+        }
     }
 
     ASSERT (CHOLMOD(dump_perm) (Perm, nrow, nrow, "Perm", Common)) ;
@@ -194,17 +194,17 @@ int CHOLMOD(transpose_unsym)
     {
         Int jlast = EMPTY ;
         memset (Wi, 0, ncol * sizeof (Int)) ;
-	for (Int k = 0 ; k < nf ; k++)
+        for (Int k = 0 ; k < nf ; k++)
         {
-	    Int j = fset [k] ;
-	    if (j < 0 || j > ncol || Wi [j] == 1)
-	    {
-		ERROR (CHOLMOD_INVALID, "invalid fset") ;
-		return (FALSE) ;
-	    }
-	    Wi [j] = 1 ;
+            Int j = fset [k] ;
+            if (j < 0 || j > ncol || Wi [j] == 1)
+            {
+                ERROR (CHOLMOD_INVALID, "invalid fset") ;
+                return (FALSE) ;
+            }
+            Wi [j] = 1 ;
             fsorted = fsorted && (j > jlast) ;
-	    jlast = j ;
+            jlast = j ;
         }
     }
 
@@ -239,8 +239,8 @@ int CHOLMOD(transpose_unsym)
         // save the nz counts if C is unpacked, and recount all of A
         //----------------------------------------------------------------------
 
-	if (!(C->packed))
-	{
+        if (!(C->packed))
+        {
 
             cm_copy_Cnz (Cnz, Wi, Perm, nrow) ;
 
@@ -258,7 +258,7 @@ int CHOLMOD(transpose_unsym)
             {
                 #include "t_cholmod_transpose_unsym_template.c"
             }
-	}
+        }
 
     }
     else
@@ -282,10 +282,10 @@ int CHOLMOD(transpose_unsym)
         // save the nz counts if C is unpacked, and recount all of A
         //----------------------------------------------------------------------
 
-	if (!(C->packed))
-	{
+        if (!(C->packed))
+        {
             cm_copy_Cnz (Cnz, Wi, Perm, nrow) ;
-	}
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -303,23 +303,23 @@ int CHOLMOD(transpose_unsym)
     else
     {
         // Cp = cumsum (Wi [Perm])
-	for (Int i = 0 ; i < nrow ; i++)
-	{
-	    Cp [i] = p ;
-	    p += Wi [Perm [i]] ;
-	}
+        for (Int i = 0 ; i < nrow ; i++)
+        {
+            Cp [i] = p ;
+            p += Wi [Perm [i]] ;
+        }
         Cp [nrow] = p ;
         // Wi [Perm [0..nrow-1]] = Cp [0..nrow-1]
-	for (Int i = 0 ; i < nrow ; i++)
-	{
-	    Wi [Perm [i]] = Cp [i] ;
-	}
+        for (Int i = 0 ; i < nrow ; i++)
+        {
+            Wi [Perm [i]] = Cp [i] ;
+        }
     }
 
     if (p > (Int) C->nzmax)
     {
-	ERROR (CHOLMOD_INVALID, "C is too small") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "C is too small") ;
+        return (FALSE) ;
     }
 
     //--------------------------------------------------------------------------
