@@ -30,33 +30,9 @@
 #ifndef NCHOLESKY
 
 //------------------------------------------------------------------------------
-// EXPAND_AS_NEEDED macro
-//------------------------------------------------------------------------------
-
-// Double the size of the sparse matrix X, if we have run out of space.
-
-#define EXPAND_AS_NEEDED                                \
-if (xnz >= nzmax)                                       \
-{                                                       \
-    nzmax *= 2 ;                                        \
-    CHOLMOD(reallocate_sparse) (nzmax, X, Common) ;     \
-    if (Common->status < CHOLMOD_OK)                    \
-    {                                                   \
-        CHOLMOD(free_sparse) (&X, Common) ;             \
-        CHOLMOD(free_dense) (&X4, Common) ;             \
-        CHOLMOD(free_dense) (&B4, Common) ;             \
-        return (NULL) ;                                 \
-    }                                                   \
-    Xi = X->i ;                                         \
-    Xx = X->x ;                                         \
-    Xz = X->z ;                                         \
-}
-
-//------------------------------------------------------------------------------
 // t_cholmod_spsolve_worker
 //------------------------------------------------------------------------------
 
-#if 0
 #define DOUBLE
 #define REAL
 #include "t_cholmod_spsolve_worker.c"
@@ -73,7 +49,6 @@ if (xnz >= nzmax)                                       \
 #include "t_cholmod_spsolve_worker.c"
 #define ZOMPLEX
 #include "t_cholmod_spsolve_worker.c"
-#endif
 
 //------------------------------------------------------------------------------
 // cholmod_spsolve
@@ -93,13 +68,8 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     // check inputs
     //--------------------------------------------------------------------------
 
-    double x, z ;
-    cholmod_dense *X4, *B4 ;
-    cholmod_sparse *X ;
-    double *Bx, *Bz, *Xx, *Xz, *B4x, *B4z, *X4x, *X4z ; // FIXME
-    Int *Bi, *Bp, *Xp, *Xi, *Bnz ;
-    Int n, nrhs, q, p, i, j, jfirst, jlast, packed, block, pend, j_n, xtype ;
-    size_t xnz, nzmax ;
+    cholmod_dense *X4 = NULL, *B4 = NULL ;
+    cholmod_sparse *X = NULL ;
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (L, NULL) ;
@@ -127,21 +97,21 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     // allocate workspace B4 and initial result X
     //--------------------------------------------------------------------------
 
-    n = L->n ;
-    nrhs = B->ncol ;
+    Int n = L->n ;
+    Int nrhs = B->ncol ;
 
     // X is real if both L and B are real, complex/zomplex otherwise
-    xtype = (L->xtype == CHOLMOD_REAL && B->xtype == CHOLMOD_REAL) ?
+    int X_xtype = (L->xtype == CHOLMOD_REAL && B->xtype == CHOLMOD_REAL) ?
         CHOLMOD_REAL :
         (Common->prefer_zomplex ? CHOLMOD_ZOMPLEX : CHOLMOD_COMPLEX) ;
 
     // solve up to 4 columns at a time
-    block = MIN (nrhs, 4) ;
+    Int block = MIN (nrhs, 4) ;
 
     // initial size of X is at most 4*n
-    nzmax = ((size_t) n) * ((size_t) block) ;
+    size_t nzmax = ((size_t) n) * ((size_t) block) ;
 
-    X = CHOLMOD(spzeros) (n, nrhs, nzmax, xtype + B->dtype, Common) ;
+    X = CHOLMOD(spzeros) (n, nrhs, nzmax, X_xtype + B->dtype, Common) ;
     B4 = CHOLMOD(zeros) (n, block, B->xtype + B->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
@@ -150,76 +120,52 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
         return (NULL) ;
     }
 
-    Bp = B->p ;
-    Bi = B->i ;
-    Bx = B->x ;
-    Bz = B->z ;
-    Bnz = B->nz ;
-    packed = B->packed ;
-
-    Xp = X->p ;
-    Xi = X->i ;
-    Xx = X->x ;
-    Xz = X->z ;
-
-    xnz = 0 ;
-
-    B4x = B4->x ;
-    B4z = B4->z ;
+    size_t xnz = 0 ;
 
     //--------------------------------------------------------------------------
     // solve in chunks of 4 columns at a time
     //--------------------------------------------------------------------------
 
-    for (jfirst = 0 ; jfirst < nrhs ; jfirst += block)
+    for (Int jfirst = 0 ; jfirst < nrhs ; jfirst += block)
     {
 
         //----------------------------------------------------------------------
         // adjust the number of columns of B4
         //----------------------------------------------------------------------
 
-        jlast = MIN (nrhs, jfirst + block) ;
+        Int jlast = MIN (nrhs, jfirst + block) ;
         B4->ncol = jlast - jfirst ;
 
         //----------------------------------------------------------------------
         // scatter B(jfirst:jlast-1) into B4
         //----------------------------------------------------------------------
 
-        for (j = jfirst ; j < jlast ; j++)
+        switch ((B->xtype + B->dtype) % 8)
         {
-            p = Bp [j] ;
-            pend = (packed) ? (Bp [j+1]) : (p + Bnz [j]) ;
-            j_n = (j-jfirst)*n ;
 
-            switch (B->xtype)
-            {
+            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+                r_s_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
 
-                case CHOLMOD_REAL:
-                    for ( ; p < pend ; p++)
-                    {
-                        q = Bi [p] + j_n ;
-                        B4x [q] = Bx [p] ;
-                    }
-                    break ;
+            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+                c_s_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
 
-                case CHOLMOD_COMPLEX:
-                    for ( ; p < pend ; p++)
-                    {
-                        q = Bi [p] + j_n ;
-                        B4x [2*q  ] = Bx [2*p  ] ;
-                        B4x [2*q+1] = Bx [2*p+1] ;
-                    }
-                    break ;
+            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+                z_s_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
 
-                case CHOLMOD_ZOMPLEX:
-                    for ( ; p < pend ; p++)
-                    {
-                        q = Bi [p] + j_n ;
-                        B4x [q] = Bx [p] ;
-                        B4z [q] = Bz [p] ;
-                    }
-                    break ;
-            }
+            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+                r_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
+
+            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+                c_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
+
+            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+                z_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
+                break ;
         }
 
         //----------------------------------------------------------------------
@@ -234,133 +180,56 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
             CHOLMOD(free_dense) (&X4, Common) ;
             return (NULL) ;
         }
-        ASSERT (X4->xtype == xtype) ;
-        X4x = X4->x ;
-        X4z = X4->z ;
+        ASSERT (X4->xtype == X_xtype) ;
 
         //----------------------------------------------------------------------
         // append the solution onto X
         //----------------------------------------------------------------------
 
-        for (j = jfirst ; j < jlast ; j++)
+        bool ok = true ;
+
+        switch ((X->xtype + X->dtype) % 8)
         {
-            Xp [j] = xnz ;
-            j_n = (j-jfirst)*n ;
-            if ( xnz + n <= nzmax)
-            {
 
-                //--------------------------------------------------------------
-                // X is guaranteed to be large enough
-                //--------------------------------------------------------------
+            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+                ok = r_s_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
 
-                switch (xtype)
-                {
+            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+                ok = c_s_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
 
-                    case CHOLMOD_REAL:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [i + j_n] ;
-                            if (x != 0)
-                            {
-                                Xi [xnz] = i ;
-                                Xx [xnz] = x ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
+            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+                ok = z_s_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
 
-                    case CHOLMOD_COMPLEX:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [2*(i + j_n)  ] ;
-                            z = X4x [2*(i + j_n)+1] ;
-                            if ((x != 0) || (z != 0))
-                            {
-                                Xi [xnz] = i ;
-                                Xx [2*xnz  ] = x ;
-                                Xx [2*xnz+1] = z ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
+            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+                ok = r_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
 
-                    case CHOLMOD_ZOMPLEX:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [i + j_n] ;
-                            z = X4z [i + j_n] ;
-                            if ((x != 0) || (z != 0))
-                            {
-                                Xi [xnz] = i ;
-                                Xx [xnz] = x ;
-                                Xz [xnz] = z ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
-                }
+            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+                ok = c_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
 
-            }
-            else
-            {
-
-                //--------------------------------------------------------------
-                // X may need to increase in size
-                //--------------------------------------------------------------
-
-                switch (xtype)
-                {
-
-                    case CHOLMOD_REAL:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [i + j_n] ;
-                            if (x != 0)
-                            {
-                                EXPAND_AS_NEEDED ;
-                                Xi [xnz] = i ;
-                                Xx [xnz] = x ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
-
-                    case CHOLMOD_COMPLEX:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [2*(i + j_n)  ] ;
-                            z = X4x [2*(i + j_n)+1] ;
-                            if ((x != 0) || (z != 0))
-                            {
-                                EXPAND_AS_NEEDED ;
-                                Xi [xnz] = i ;
-                                Xx [2*xnz  ] = x ;
-                                Xx [2*xnz+1] = z ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
-
-                    case CHOLMOD_ZOMPLEX:
-                        for (i = 0 ; i < n ; i++)
-                        {
-                            x = X4x [i + j_n] ;
-                            z = X4z [i + j_n] ;
-                            if ((x != 0) || (z != 0))
-                            {
-                                EXPAND_AS_NEEDED ;
-                                Xi [xnz] = i ;
-                                Xx [xnz] = x ;
-                                Xz [xnz] = z ;
-                                xnz++ ;
-                            }
-                        }
-                        break ;
-                }
-
-            }
+            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+                ok = z_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
+                    Common) ;
+                break ;
         }
+
         CHOLMOD(free_dense) (&X4, Common) ;
+        if (!ok)
+        {
+            // out of memory
+            CHOLMOD(free_sparse) (&X, Common) ;
+            CHOLMOD(free_dense) (&B4, Common) ;
+            return (NULL) ;
+        }
 
         //----------------------------------------------------------------------
         // clear B4 for next iteration
@@ -368,52 +237,42 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
 
         if (jlast < nrhs)
         {
-
-            for (j = jfirst ; j < jlast ; j++)
+            switch ((B->xtype + B->dtype) % 8)
             {
-                p = Bp [j] ;
-                pend = (packed) ? (Bp [j+1]) : (p + Bnz [j]) ;
-                j_n = (j-jfirst)*n ;
 
-                switch (B->xtype)
-                {
+                case CHOLMOD_SINGLE + CHOLMOD_REAL:
+                    r_s_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
 
-                    case CHOLMOD_REAL:
-                        for ( ; p < pend ; p++)
-                        {
-                            q = Bi [p] + j_n ;
-                            B4x [q] = 0 ;
-                        }
-                        break ;
+                case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+                    c_s_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
 
-                    case CHOLMOD_COMPLEX:
-                        for ( ; p < pend ; p++)
-                        {
-                            q = Bi [p] + j_n ;
-                            B4x [2*q  ] = 0 ;
-                            B4x [2*q+1] = 0 ;
-                        }
-                        break ;
+                case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+                    z_s_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
 
-                    case CHOLMOD_ZOMPLEX:
-                        for ( ; p < pend ; p++)
-                        {
-                            q = Bi [p] + j_n ;
-                            B4x [q] = 0 ;
-                            B4z [q] = 0 ;
-                        }
-                        break ;
-                }
+                case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+                    r_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
+
+                case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+                    c_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
+
+                case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+                    z_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
+                    break ;
             }
         }
     }
 
+    //--------------------------------------------------------------------------
+    // finalize X, reduce it in size, free workspace, and return result
+    //--------------------------------------------------------------------------
+
+    Int *Xp = X->p ;
     Xp [nrhs] = xnz ;
-
-    //--------------------------------------------------------------------------
-    // reduce X in size, free workspace, and return result
-    //--------------------------------------------------------------------------
-
     ASSERT (xnz <= X->nzmax) ;
     CHOLMOD(reallocate_sparse) (xnz, X, Common) ;
     ASSERT (Common->status == CHOLMOD_OK) ;
