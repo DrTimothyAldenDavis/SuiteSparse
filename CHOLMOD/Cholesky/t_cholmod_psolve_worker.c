@@ -8,9 +8,8 @@
 
 //------------------------------------------------------------------------------
 
-// This worker is included twice into cholmod_solve.c, to create worker methods
-// for single and double precision.  Each method handles all xtypes (real,
-// complex, and zomplex) itself.
+// This worker is included just twice into cholmod_solve.c, for both dtypes.
+// Each method below handles all xtypes (real, complex, and zomplex) itself.
 
 #include "cholmod_template.h"
 

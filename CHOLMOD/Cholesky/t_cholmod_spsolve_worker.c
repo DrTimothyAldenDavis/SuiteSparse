@@ -130,7 +130,7 @@ static bool TEMPLATE (cholmod_spsolve_X_worker)
                 {
                     if (px >= nzmax)
                     {
-                        // double the size of X if out of space
+                        // increase the size of X
                         nzmax *= 2 ;
                         CHOLMOD(reallocate_sparse) (nzmax, X, Common) ;
                         if (Common->status < CHOLMOD_OK)

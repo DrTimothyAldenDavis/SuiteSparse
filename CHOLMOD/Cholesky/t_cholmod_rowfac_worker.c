@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // Template routine for cholmod_rowfac.  Supports any numeric xtype
-// (real, complex, or zomplex), and any dtype (single or double).
+// (real, complex, or zomplex) but not pattern, and any dtype.
 //
 // workspace: Iwork (n), Flag (n), Xwork (n if real, 2*n if complex)
 
