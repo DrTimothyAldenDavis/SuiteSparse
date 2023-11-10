@@ -25,6 +25,8 @@ modification package}
 \input{cholmod_version.tex}
 \maketitle
 
+% FIXME: TODO: discuss single precision
+
 %-------------------------------------------------------------------------------
 \begin{abstract}
     CHOLMOD\footnote{CHOLMOD is short for CHOLesky MODification,
@@ -168,9 +170,11 @@ as pointers to {\tt struct}'s:
     \begin{itemize}
 	\item {\tt A->p}, an integer array of size {\tt A->ncol+1}.
 	\item {\tt A->i}, an integer array of size {\tt A->nzmax}.
-	\item {\tt A->x}, a {\tt double} array of size {\tt A->nzmax} or twice that for the complex case.
+	\item {\tt A->x}, a {\tt double} % FIXME
+            array of size {\tt A->nzmax} or twice that for the complex case.
 	    This is compatible with the Fortran and ANSI C99 complex data type.
-	\item {\tt A->z}, a {\tt double} array of size {\tt A->nzmax} if {\tt A} is zomplex.
+	\item {\tt A->z}, a {\tt double} % FIXME
+            array of size {\tt A->nzmax} if {\tt A} is zomplex.
 	    A zomplex matrix has a {\tt z} array, thus the name.
 	    This is compatible with the MATLAB representation of complex matrices.
     \end{itemize}
@@ -192,8 +196,10 @@ as pointers to {\tt struct}'s:
     A dense matrix, either real, complex or zomplex, in column-major order.
     This differs from the row-major convention used in C.  A dense matrix {\tt X} contains
     \begin{itemize}
-	\item {\tt X->x}, a double array of size {\tt X->nzmax} or twice that for the complex case.
-	\item {\tt X->z}, a double array of size {\tt X->nzmax} if {\tt X} is zomplex.
+	\item {\tt X->x}, a {\tt double} % FIXME
+        array of size {\tt X->nzmax} or twice that for the complex case.
+	\item {\tt X->z}, a {\tt double} % FIXME
+        array of size {\tt X->nzmax} if {\tt X} is zomplex.
     \end{itemize}
     For a real dense matrix $x_{ij}$ is {\tt X->x [i+j*d]} where {\tt d = X->d} is the leading dimension of {\tt X}.
     For a complex dense matrix, the real part of $x_{ij}$ is {\tt X->x [2*(i+j*d)]} and the imaginary part is {\tt X->x [2*(i+j*d)+1]}.
@@ -210,8 +216,10 @@ as pointers to {\tt struct}'s:
     In its basic form, the triplet matrix {\tt T} contains
     \begin{itemize}
 	\item {\tt T->i} and {\tt T->j}, integer arrays of size {\tt T->nzmax}.
-	\item {\tt T->x}, a double array of size {\tt T->nzmax} or twice that for the complex case.
-	\item {\tt T->z}, a double array of size {\tt T->nzmax} if {\tt T} is zomplex.
+	\item {\tt T->x}, a {\tt double} % FIXME
+        array of size {\tt T->nzmax} or twice that for the complex case.
+	\item {\tt T->z}, a {\tt double} % FIXME
+        array of size {\tt T->nzmax} if {\tt T} is zomplex.
     \end{itemize}
     The {\tt k}th entry in the data structure has row index
     {\tt T->i [k]} and column index {\tt T->j [k]}.
@@ -587,30 +595,27 @@ Environment variables
 \newpage \section{Integer and floating-point types, and notation used}
 %-------------------------------------------------------------------------------
 
-CHOLMOD supports both {\tt int} and {\tt long} integers.  CHOLMOD
-routines with the prefix {\tt cholmod\_} use {\tt int} integers,
-{\tt cholmod\_l\_} routines use {\tt long}.  All floating-point
-values are {\tt double}.
-
-The {\tt long} integer is redefinable, via {\tt SuiteSparse\_config.h}.
-That file defines a C preprocessor token {\tt SuiteSparse\_long} which is
-{\tt long} on all systems except for Windows-64, in which case it is
-defined as {\tt \_\_int64}.  The intent is that with suitable compile-time
-switches, {\tt int} is a 32-bit integer and {\tt SuiteSparse\_long} is a 64-bit
-integer.  The term {\tt long} is used to describe the latter
-integer throughout this document (except in the prototypes).
+CHOLMOD supports both {\tt int32\_t} and {\tt int64\_t} integers.  CHOLMOD
+routines with the prefix {\tt cholmod\_} use {\tt int32\_t} integers,
+{\tt cholmod\_l\_} routines use {\tt int64\_t}.  All floating-point
+values are {\tt double}.    % FIXME
 
 Two kinds of complex matrices are supported: complex and zomplex.
 A complex matrix is held in a manner that is compatible with the
 Fortran and ANSI C99 complex data type.  A complex array of size {\tt n}
-is a {\tt double} array {\tt x} of size {\tt 2*n}, with the real and imaginary
-parts interleaved (the real part comes first, as a {\tt double}, followed the
-imaginary part, also as a {\tt double}.  Thus, the real part of the {\tt k}th
+is a {\tt double} % FIXME
+array {\tt x} of size {\tt 2*n}, with the real and imaginary
+parts interleaved (the real part comes first, as a {\tt double}, % FIXME
+followed the
+imaginary part, also as a {\tt double}.  % FIXME
+Thus, the real part of the {\tt k}th
 entry is {\tt x[2*k]} and the imaginary part is {\tt x[2*k+1]}.
 
 A zomplex matrix of size {\tt n} stores its real part in one
-{\tt double} array of size {\tt n} called {\tt x} and its imaginary part
-in another {\tt double} array of size {\tt n} called {\tt z} (thus the
+{\tt double} % FIXME
+array of size {\tt n} called {\tt x} and its imaginary part
+in another {\tt double} % FIXME
+array of size {\tt n} called {\tt z} (thus the
 name ``zomplex'').  This also how MATLAB stores its complex matrices.
 The real part of the {\tt k}th entry is {\tt x[k]} and the imaginary part is
 {\tt z[k]}.
@@ -624,7 +629,7 @@ creates a copy of a pattern, real, complex, or zomplex sparse matrix {\tt A}.
 The xtype (pattern, real, complex, or zomplex) of the resulting sparse matrix {\tt C}
 is the same as {\tt A} (a pattern-only sparse matrix contains no floating-point
 values).  In the above case, {\tt C} and {\tt A} use {\tt int} integers.
-For {\tt long} integers, the statement would become:
+For {\tt int64\_t} integers, the statement would become:
 \begin{verbatim}
     C = cholmod_l_copy_sparse (A, &Common) ;
 \end{verbatim}
@@ -638,7 +643,7 @@ matrix, or factorization) determines whether it is pattern-only,
 real, complex, or zomplex.
 
 The names of the {\tt int} versions are primarily used in this document.
-To obtain the name of the {\tt long} version of the same routine, simply
+To obtain the name of the {\tt int64\_t} version of the same routine, simply
 replace {\tt cholmod\_} with {\tt cholmod\_l\_}.
 
 MATLAB matrix notation is used throughout this document and in
@@ -704,7 +709,7 @@ minor variations used in CHOLMOD:
 %-------------------------------------------------------------------------------
 
 CHOLMOD contains a total of 133 {\tt int}-based routines (and the same number
-of {\tt long} routines), divided into a set of inter-related
+of {\tt int64\_t} routines), divided into a set of inter-related
 Modules.  Each Module contains a set of related functions.  The functions
 are divided into two types: Primary and Secondary, to reflect how a user will
 typically use CHOLMOD.  Most users will find the Primary routines to be
@@ -1139,10 +1144,6 @@ Requires the {\tt Utility} and {\tt Cholesky} Modules, and two packages: {\tt ME
 Optionally used by the {\tt Cholesky} Module.  All are secondary routines since
 these are more easily used by the {\tt Cholesky} Module.
 
-Note that METIS does not have a version that uses {\tt long} integers.  If you try to use
-these routines (except the CAMD, CCOLAMD, and CSYMAMD interfaces)
-on a matrix that is too large, an error code will be returned.
-
 \vspace{0.1in}
 \noindent Secondary routines:
 % 8
@@ -1177,8 +1178,10 @@ The {\tt cholmod.h} file must be included in user programs that use CHOLMOD:
 All CHOLMOD routines (in all modules) use the following protocol for return values:
 \begin{itemize}
 \item {\tt int}: {\tt TRUE} (1) if successful, or {\tt FALSE} (0) otherwise. (exception: {\tt cholmod\_divcomplex}).
-\item {\tt long}: a value $\ge 0$ if successful, or -1 otherwise.
-\item {\tt double}: a value $\ge 0$ if successful, or -1 otherwise.
+\item {\tt int32\_t} or {\tt int64\_t}:
+    a value $\ge 0$ if successful, or -1 otherwise.
+\item {\tt float} or {\tt double}:
+    a value $\ge 0$ if successful, or -1 otherwise.
 \item {\tt size\_t}: a value $>$ 0 if successful, or 0 otherwise.
 \item {\tt void *}: a non-{\tt NULL} pointer to newly allocated memory if successful, or {\tt NULL} otherwise.
 \item {\tt cholmod\_sparse *}:  a non-{\tt NULL} pointer to a newly allocated sparse matrix if successful, or {\tt NULL} otherwise.
@@ -1207,6 +1210,7 @@ point to allocated space on input, but their contents are not defined on input.
 It is always an input/output parameter.
 \end{itemize}
 
+% FIXME: also uses double when the method is single
 A floating-point scalar is passed to CHOLMOD as a pointer to a {\tt double}
 array of size two.  The first entry in this array is the real part of the
 scalar, and the second entry is the imaginary part.  The imaginary part is
@@ -1273,7 +1277,8 @@ Returns the maximum rank for an update/downdate.
 Allocates workspace in {\tt Common}.  The workspace consists
 of the integer {\tt Head}, {\tt Flag}, and {\tt Iwork} arrays,
 of size {\tt nrow+1}, {\tt nrow}, and {\tt iworksize},
-respectively, and a {\tt double} array {\tt Xwork} of size
+respectively, and a {\tt double} % FIXME
+array {\tt Xwork} of size
 {\tt xworksize} entries.  The {\tt Head} array is normally equal to -1
 when it is cleared.  If the {\tt Flag} array is cleared,
 all entries are less than {\tt Common->mark}.  The {\tt Iwork} array is
@@ -1285,6 +1290,8 @@ are used.
 %---------------------------------------
 % \subsection{{\tt cholmod\_alloc\_work}: allocate workspace}
 %---------------------------------------
+
+% FIXME: add this
 
 % \input{_alloc_work.tex}
 % This is the same as {\tt cholmod\_allocate\_work}, except that
@@ -1735,8 +1742,10 @@ There are four basic classes of factor types:
         size {\tt n+1}, but only the first {\tt n} entries are used.
 
         For the complex case, {\tt L->x} is stored interleaved with real and imaginary
-        parts, and is of size {\tt 2*lnz*sizeof(double)}.  For the zomplex case,
-        {\tt L->x} is of size {\tt lnz*sizeof(double)} and holds the real part; {\tt L->z}
+        parts, and is of size {\tt 2*lnz*sizeof(double)}.  % FIXME
+        For the zomplex case,
+        {\tt L->x} is of size {\tt lnz*sizeof(double)} % FIXME
+        and holds the real part; {\tt L->z}
         is the same size and holds the imaginary part.
 
     \item $\m{LL}\tr$:  This is identical to the $\m{LDL}\tr$ form, except that the non-unit
@@ -1754,14 +1763,16 @@ There are four basic classes of factor types:
 
     For the complex case, {\tt L->x} is stored interleaved with real/imaginary parts,
     and is of size \newline
-    {\tt 2*L->xsize*sizeof(double)}.  The zomplex supernodal case
+    {\tt 2*L->xsize*sizeof(double)}.  % FIXME
+    The zomplex supernodal case
     is not supported, since it is not compatible with LAPACK and the BLAS.
 
 \item supernodal numeric:  Always an $\m{LL}\tr$ factorization.  {\tt L} has a non-unit
      diagonal.  {\tt L->x} contains the numerical values of the supernodes, as
      described above for the supernodal symbolic factor.
      For the complex case, {\tt L->x} is stored interleaved, and is of size
-     {\tt 2*L->xsize*sizeof(double)}.  The zomplex supernodal case is not
+     {\tt 2*L->xsize*sizeof(double)}.  % FIXME
+     The zomplex supernodal case is not
      supported, since it is not compatible with LAPACK and the BLAS.
 \end{enumerate}
 
@@ -2756,7 +2767,7 @@ allocate these outputs and workspaces for you, simply initialize them to
 NULL (as in the example above).  Since it is possible for this function
 to reallocate these 4 arrays, you should always re-acquire the pointers to
 their internal data ({\tt X->x} for example) after calling
-{\tt cholmod\_solve2}), since they may change.  They normally will not
+{\tt cholmod\_solve2}, since they may change.  They normally will not
 change except in the first call to this function.
 
 On the first call to {\tt cholmod\_solve2} when {\tt Bset} is NULL,

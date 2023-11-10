@@ -1603,7 +1603,8 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
     L6 = CHOLMOD(copy_factor)(L, cm) ;				    OKP (L6) ;
     I  = CHOLMOD(speye)(nrow, nrow, L->xtype, cm) ;		    OKP (I) ;
-    I3 = CHOLMOD(speye)(nrow, nrow, L->xtype-1, cm) ;		    OKP (I3) ;
+    int i3_xtype = (I->xtype == CHOLMOD_REAL) ? CHOLMOD_COMPLEX : CHOLMOD_REAL ;
+    I3 = CHOLMOD(speye)(nrow, nrow, i3_xtype, cm) ;		    OKP (I3) ;
 
 
     ok = CHOLMOD(super_numeric)(I, I, beta, L6, cm) ;		    OK (ok) ;

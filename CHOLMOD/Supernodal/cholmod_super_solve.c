@@ -13,6 +13,8 @@
  * interface that performs that operation.
  */
 
+// FIXME: TODO
+
 #include "cholmod_internal.h"
 
 #ifndef NGPL
@@ -43,11 +45,11 @@
 int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
 (
     /* ---- input ---- */
-    cholmod_factor *L,	/* factor to use for the forward solve */
+    cholmod_factor *L,  /* factor to use for the forward solve */
     /* ---- output ---- */
-    cholmod_dense *X,	/* b on input, solution to Lx=b on output */
+    cholmod_dense *X,   /* b on input, solution to Lx=b on output */
     /* ---- workspace ---- */
-    cholmod_dense *E,	/* workspace of size nrhs*(L->maxesize) */
+    cholmod_dense *E,   /* workspace of size nrhs*(L->maxesize) */
     /* --------------- */
     cholmod_common *Common
 )
@@ -65,35 +67,35 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
     RETURN_IF_XTYPE_INVALID (E, CHOLMOD_REAL, CHOLMOD_COMPLEX, FALSE) ;
     if (L->xtype != X->xtype)
     {
-	ERROR (CHOLMOD_INVALID, "L and X must have the same xtype") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L and X must have the same xtype") ;
+        return (FALSE) ;
     }
     if (L->xtype != E->xtype)
     {
-	ERROR (CHOLMOD_INVALID, "L and E must have the same xtype") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L and E must have the same xtype") ;
+        return (FALSE) ;
     }
     if (X->d < X->nrow || L->n != X->nrow)
     {
-	ERROR (CHOLMOD_INVALID, "X and L dimensions must match") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "X and L dimensions must match") ;
+        return (FALSE) ;
     }
     if (E->nzmax < X->ncol * (L->maxesize))
     {
-	ERROR (CHOLMOD_INVALID, "workspace E not large enough") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "workspace E not large enough") ;
+        return (FALSE) ;
     }
     if (!(L->is_ll) || !(L->is_super))
     {
-	ERROR (CHOLMOD_INVALID, "L not supernodal") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L not supernodal") ;
+        return (FALSE) ;
     }
     Common->status = CHOLMOD_OK ;
     ASSERT (IMPLIES (L->n == 0, L->nsuper == 0)) ;
     if (L->n == 0 || X->ncol == 0)
     {
-	/* nothing to do */
-	return (TRUE) ;
+        /* nothing to do */
+        return (TRUE) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -103,18 +105,18 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
     switch (L->xtype)
     {
 
-	case CHOLMOD_REAL:
-	    r_cholmod_super_lsolve (L, X, E, Common) ;
-	    break ;
+        case CHOLMOD_REAL:
+            r_cholmod_super_lsolve (L, X, E, Common) ;
+            break ;
 
-	case CHOLMOD_COMPLEX:
-	    c_cholmod_super_lsolve (L, X, E, Common) ;
-	    break ;
+        case CHOLMOD_COMPLEX:
+            c_cholmod_super_lsolve (L, X, E, Common) ;
+            break ;
     }
 
     if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
-	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
+        ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
     return (Common->blas_ok) ;
 }
@@ -136,11 +138,11 @@ int CHOLMOD(super_lsolve)   /* TRUE if OK, FALSE if BLAS overflow occured */
 int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
 (
     /* ---- input ---- */
-    cholmod_factor *L,	/* factor to use for the backsolve */
+    cholmod_factor *L,  /* factor to use for the backsolve */
     /* ---- output ---- */
-    cholmod_dense *X,	/* b on input, solution to L'x=b on output */
+    cholmod_dense *X,   /* b on input, solution to L'x=b on output */
     /* ---- workspace ---- */
-    cholmod_dense *E,	/* workspace of size nrhs*(L->maxesize) */
+    cholmod_dense *E,   /* workspace of size nrhs*(L->maxesize) */
     /* --------------- */
     cholmod_common *Common
 )
@@ -158,35 +160,35 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
     RETURN_IF_XTYPE_INVALID (E, CHOLMOD_REAL, CHOLMOD_COMPLEX, FALSE) ;
     if (L->xtype != X->xtype)
     {
-	ERROR (CHOLMOD_INVALID, "L and X must have the same xtype") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L and X must have the same xtype") ;
+        return (FALSE) ;
     }
     if (L->xtype != E->xtype)
     {
-	ERROR (CHOLMOD_INVALID, "L and E must have the same xtype") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L and E must have the same xtype") ;
+        return (FALSE) ;
     }
     if (X->d < X->nrow || L->n != X->nrow)
     {
-	ERROR (CHOLMOD_INVALID, "X and L dimensions must match") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "X and L dimensions must match") ;
+        return (FALSE) ;
     }
     if (E->nzmax < X->ncol * (L->maxesize))
     {
-	ERROR (CHOLMOD_INVALID, "workspace E not large enough") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "workspace E not large enough") ;
+        return (FALSE) ;
     }
     if (!(L->is_ll) || !(L->is_super))
     {
-	ERROR (CHOLMOD_INVALID, "L not supernodal") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "L not supernodal") ;
+        return (FALSE) ;
     }
     Common->status = CHOLMOD_OK ;
     ASSERT (IMPLIES (L->n == 0, L->nsuper == 0)) ;
     if (L->n == 0 || X->ncol == 0)
     {
-	/* nothing to do */
-	return (TRUE) ;
+        /* nothing to do */
+        return (TRUE) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -196,18 +198,18 @@ int CHOLMOD(super_ltsolve)  /* TRUE if OK, FALSE if BLAS overflow occured */
     switch (L->xtype)
     {
 
-	case CHOLMOD_REAL:
-	    r_cholmod_super_ltsolve (L, X, E, Common) ;
-	    break ;
+        case CHOLMOD_REAL:
+            r_cholmod_super_ltsolve (L, X, E, Common) ;
+            break ;
 
-	case CHOLMOD_COMPLEX:
-	    c_cholmod_super_ltsolve (L, X, E, Common) ;
-	    break ;
+        case CHOLMOD_COMPLEX:
+            c_cholmod_super_ltsolve (L, X, E, Common) ;
+            break ;
     }
 
     if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
-	ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
+        ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
     return (Common->blas_ok) ;
 }

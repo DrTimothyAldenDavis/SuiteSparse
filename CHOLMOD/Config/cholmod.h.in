@@ -3641,9 +3641,9 @@ int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t, int64_t *,
 // Requires the Utility module, and two external packages: LAPACK and the BLAS.
 // Optionally used by the Cholesky module.
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_symbolic */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_symbolic
+//------------------------------------------------------------------------------
 
 // Analyzes A, AA', or A(:,f)*A(:,f)' in preparation for a supernodal numeric
 // factorization.  The user need not call this directly; cholmod_analyze is
@@ -3665,9 +3665,9 @@ int cholmod_super_symbolic
 int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, int64_t *,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_symbolic2 */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_symbolic2
+//------------------------------------------------------------------------------
 
 /* Analyze for supernodal Cholesky or multifrontal QR */
 
@@ -3690,9 +3690,9 @@ int cholmod_super_symbolic2
 int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
     int64_t *, cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_numeric */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_numeric
+//------------------------------------------------------------------------------
 
 // Computes the numeric LL' factorization of A, AA', or A(:,f)*A(:,f)' using
 // a BLAS-based supernodal method.  The user need not call this directly;
@@ -3700,22 +3700,20 @@ int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
 
 int cholmod_super_numeric
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    cholmod_sparse *F,	/* F = A' or A(:,f)' */
-    double beta [2],	/* beta*I is added to diagonal of matrix to factorize */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* factorization */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    cholmod_sparse *F,  // F = A' or A(:,f)'
+    double beta [2],    // beta*I is added to diagonal of matrix to factorize
+    // input/output:
+    cholmod_factor *L,  // factorization
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_lsolve */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_lsolve
+//------------------------------------------------------------------------------
 
 // Solve Lx=b where L is from a supernodal numeric factorization.  The user
 // need not call this routine directly.  cholmod_solve is a "simple" wrapper
@@ -3736,9 +3734,9 @@ int cholmod_super_lsolve
 int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_ltsolve */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_ltsolve
+//------------------------------------------------------------------------------
 
 // Solve L'x=b where L is from a supernodal numeric factorization.  The user
 // need not call this routine directly.  cholmod_solve is a "simple" wrapper

@@ -259,14 +259,6 @@ for i = f
             error ('!') ;
         end
 
-%       if (nnz (spones (LD5) - spones (LD4)) ~= 0)
-%           % TODO: fails on ssget (878) because MATLAB changed spones(...).
-%           LD5 (262,246)
-%           LD4 (262,246)
-%           spones (LD5) - spones (LD4)
-%           error ('!') ;
-%       end
-
 	b = rand (n,2) ;
 	x = ldlsolve (LD4, b) ;
 	err1 = norm (S2*x-b,1) / norm (S,1) ;

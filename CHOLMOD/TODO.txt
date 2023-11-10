@@ -1,0 +1,18 @@
+TODO: for CHOLMOD 5.1.0:
+
+Include/cholmod_internal.h
+Modify/cholmod_rowadd.c
+Modify/cholmod_rowdel.c
+Modify/cholmod_updown.c
+Modify/t_cholmod_updown.c
+Modify/t_cholmod_updown_numkr.c
+Supernodal/cholmod_super_solve.c
+Supernodal/cholmod_super_symbolic.c
+Supernodal/t_cholmod_super_solve.c
+
+Demo/*
+
+Tcov/*
+
+MATLAB/*    add a flag to convert double to single, just for testing
+            (return results as double)

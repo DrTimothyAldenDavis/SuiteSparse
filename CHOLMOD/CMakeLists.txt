@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLMOD/CMakeLists.txt:  cmake for CHOLMOD
 #-------------------------------------------------------------------------------
 
-# CHOLMOD: Copyright (c) 2005-2022, Timothy A. Davis.
+# CHOLMOD: Copyright (c) 2005-2023, Timothy A. Davis.
 # Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Oct 31, 2023" )
+set ( CHOLMOD_DATE "Nov 30, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 5 )
-set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_MINOR 1 )
+set ( CHOLMOD_VERSION_SUB   0 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.

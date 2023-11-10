@@ -2111,7 +2111,8 @@ int cholmod_print_triplet
     const char *name,   // printed name of triplet matrix
     cholmod_common *Common
 ) ;
-int cholmod_l_print_triplet (cholmod_triplet *, const char *, cholmod_common *) ;
+int cholmod_l_print_triplet (cholmod_triplet *, const char *,
+    cholmod_common *) ;
 
 //------------------------------------------------------------------------------
 // cholmod_check_subset:  check a subset
@@ -3067,47 +3068,45 @@ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
 #ifndef NMODIFY
 
 //------------------------------------------------------------------------------
-// CHOLMOD/Include/cholmod_modify.h.
-// Copyright (C) 2005-2006, Timothy A. Davis and William W. Hager
-// http://www.suitesparse.com
+// CHOLMOD:Modify Module. Copyright (C) 2005-2006, Timothy A. Davis and William
+// W. Hager.  http://www.suitesparse.com
 //------------------------------------------------------------------------------
 
-/* Sparse Cholesky modification routines: update / downdate / rowadd / rowdel.
- * Can also modify a corresponding solution to Lx=b when L is modified.  This
- * module is most useful when applied on a Cholesky factorization computed by
- * the Cholesky module, but it does not actually require the Cholesky module.
- * The Utility module can create an identity Cholesky factorization (LDL' where
- * L=D=I) that can then by modified by these routines.
- *
- * Primary routines:
- * -----------------
- *
- * cholmod_updown	    multiple rank update/downdate
- * cholmod_rowadd	    add a row to an LDL' factorization
- * cholmod_rowdel	    delete a row from an LDL' factorization
- *
- * Secondary routines:
- * -------------------
- *
- * cholmod_updown_solve	    update/downdate, and modify solution to Lx=b
- * cholmod_updown_mark	    update/downdate, and modify solution to partial Lx=b
- * cholmod_updown_mask	    update/downdate for LPDASA
- * cholmod_updown_mask2     update/downdate for LPDASA
- * cholmod_rowadd_solve	    add a row, and update solution to Lx=b
- * cholmod_rowadd_mark	    add a row, and update solution to partial Lx=b
- * cholmod_rowdel_solve	    delete a row, and downdate Lx=b
- * cholmod_rowdel_mark	    delete a row, and downdate solution to partial Lx=b
- *
- * Requires the Utility module.  Not required by any other CHOLMOD module.
- */
+// Sparse Cholesky modification routines: update / downdate / rowadd / rowdel.
+// Can also modify a corresponding solution to Lx=b when L is modified.  This
+// module is most useful when applied on a Cholesky factorization computed by
+// the Cholesky module, but it does not actually require the Cholesky module.
+// The Utility module can create an identity Cholesky factorization (LDL' where
+// L=D=I) that can then by modified by these routines.
+//
+// Primary routines:
+// -----------------
+//
+// cholmod_updown           multiple rank update/downdate
+// cholmod_rowadd           add a row to an LDL' factorization
+// cholmod_rowdel           delete a row from an LDL' factorization
+//
+// Secondary routines:
+// -------------------
+//
+// cholmod_updown_solve     update/downdate, and modify solution to Lx=b
+// cholmod_updown_mark      update/downdate, and modify solution to partial Lx=b
+// cholmod_updown_mask      update/downdate for LPDASA
+// cholmod_updown_mask2     update/downdate for LPDASA
+// cholmod_rowadd_solve     add a row, and update solution to Lx=b
+// cholmod_rowadd_mark      add a row, and update solution to partial Lx=b
+// cholmod_rowdel_solve     delete a row, and downdate Lx=b
+// cholmod_rowdel_mark      delete a row, and downdate solution to partial Lx=b
+//
+// Requires the Utility module.  Not required by any other CHOLMOD module.
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_updown:  multiple rank update/downdate */
 /* -------------------------------------------------------------------------- */
 
-/* Compute the new LDL' factorization of LDL'+CC' (an update) or LDL'-CC'
- * (a downdate).  The factor object L need not be an LDL' factorization; it
- * is converted to one if it isn't. */
+// Compute the new LDL' factorization of LDL'+CC' (an update) or LDL'-CC'
+// (a downdate).  The factor object L need not be an LDL' factorization; it
+// is converted to one if it isn't.
 
 int cholmod_updown          // update/downdate
 (
@@ -3119,18 +3118,18 @@ int cholmod_updown          // update/downdate
     /* --------------- */
     cholmod_common *Common
 ) ;
-int cholmod_l_updown (int, cholmod_sparse *, cholmod_factor *, cholmod_common *) ;
-
+int cholmod_l_updown (int, cholmod_sparse *, cholmod_factor *,
+    cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_updown_solve:  update/downdate, and modify solution to Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_updown, except that it also updates/downdates the
- * solution to Lx=b+DeltaB.  x and b must be n-by-1 dense matrices.  b is not
- * need as input to this routine, but a sparse change to b is (DeltaB).  Only
- * entries in DeltaB corresponding to columns modified in L are accessed; the
- * rest must be zero. */
+// Does the same as cholmod_updown, except that it also updates/downdates the
+// solution to Lx=b+DeltaB.  x and b must be n-by-1 dense matrices.  b is not
+// need as input to this routine, but a sparse change to b is (DeltaB).  Only
+// entries in DeltaB corresponding to columns modified in L are accessed; the
+// rest must be zero.
 
 int cholmod_updown_solve
 (
@@ -3152,10 +3151,10 @@ int cholmod_l_updown_solve (int, cholmod_sparse *, cholmod_factor *,
 /* cholmod_updown_mark:  update/downdate, and modify solution to partial Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_updown_solve, except only part of L is used in
- * the update/downdate of the solution to Lx=b.  This routine is an "expert"
- * routine.  It is meant for use in LPDASA only.  See cholmod_updown.c for
- * a description of colmark. */
+// Does the same as cholmod_updown_solve, except only part of L is used in
+// the update/downdate of the solution to Lx=b.  This routine is an "expert"
+// routine.  It is meant for use in LPDASA only.  See cholmod_updown.c for
+// a description of colmark.
 
 int cholmod_updown_mark
 (
@@ -3171,16 +3170,16 @@ int cholmod_updown_mark
     cholmod_common *Common
 ) ;
 
-int cholmod_l_updown_mark (int, cholmod_sparse *, int64_t *,
-    cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
+int cholmod_l_updown_mark (int, cholmod_sparse *, int64_t *, cholmod_factor *,
+    cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_updown_mask:  update/downdate, for LPDASA */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_updown_mark, except has an additional "mask"
- * argument.  This routine is an "expert" routine.  It is meant for use in
- * LPDASA only.  See cholmod_updown.c for a description of mask. */
+// Does the same as cholmod_updown_mark, except has an additional "mask"
+// argument.  This routine is an "expert" routine.  It is meant for use in
+// LPDASA only.  See cholmod_updown.c for a description of mask.
 
 int cholmod_updown_mask
 (
@@ -3197,9 +3196,8 @@ int cholmod_updown_mask
     cholmod_common *Common
 ) ;
 
-int cholmod_l_updown_mask (int, cholmod_sparse *, int64_t *,
-    int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
-    cholmod_common *) ;
+int cholmod_l_updown_mask (int, cholmod_sparse *, int64_t *, int64_t *,
+    cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 int cholmod_updown_mask2
 (
@@ -3217,20 +3215,20 @@ int cholmod_updown_mask2
     cholmod_common *Common
 ) ;
 
-int cholmod_l_updown_mask2 (int, cholmod_sparse *, int64_t *,
-    int64_t *, int64_t, cholmod_factor *, cholmod_dense *,
-    cholmod_dense *, cholmod_common *) ;
+int cholmod_l_updown_mask2 (int, cholmod_sparse *, int64_t *, int64_t *,
+    int64_t, cholmod_factor *, cholmod_dense *, cholmod_dense *,
+    cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_rowadd:  add a row to an LDL' factorization (a rank-2 update) */
 /* -------------------------------------------------------------------------- */
 
-/* cholmod_rowadd adds a row to the LDL' factorization.  It computes the kth
- * row and kth column of L, and then updates the submatrix L (k+1:n,k+1:n)
- * accordingly.  The kth row and column of L must originally be equal to the
- * kth row and column of the identity matrix.  The kth row/column of L is
- * computed as the factorization of the kth row/column of the matrix to
- * factorize, which is provided as a single n-by-1 sparse matrix R. */
+// cholmod_rowadd adds a row to the LDL' factorization.  It computes the kth
+// row and kth column of L, and then updates the submatrix L (k+1:n,k+1:n)
+// accordingly.  The kth row and column of L must originally be equal to the
+// kth row and column of the identity matrix.  The kth row/column of L is
+// computed as the factorization of the kth row/column of the matrix to
+// factorize, which is provided as a single n-by-1 sparse matrix R.
 
 int cholmod_rowadd      // add a row to an LDL' factorization
 (
@@ -3250,9 +3248,9 @@ int cholmod_l_rowadd (size_t, cholmod_sparse *, cholmod_factor *,
 /* cholmod_rowadd_solve:  add a row, and update solution to Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_rowadd, and also updates the solution to Lx=b
- * See cholmod_updown for a description of how Lx=b is updated.  There is on
- * additional parameter:  bk specifies the new kth entry of b. */
+// Does the same as cholmod_rowadd, and also updates the solution to Lx=b
+// See cholmod_updown for a description of how Lx=b is updated.  There is on
+// additional parameter:  bk specifies the new kth entry of b.
 
 int cholmod_rowadd_solve
 (
@@ -3275,9 +3273,9 @@ int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
 /* cholmod_rowadd_mark:  add a row, and update solution to partial Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_rowadd_solve, except only part of L is used in
- * the update/downdate of the solution to Lx=b.  This routine is an "expert"
- * routine.  It is meant for use in LPDASA only.  */
+// Does the same as cholmod_rowadd_solve, except only part of L is used in
+// the update/downdate of the solution to Lx=b.  This routine is an "expert"
+// routine.  It is meant for use in LPDASA only.
 
 int cholmod_rowadd_mark
 (
@@ -3294,21 +3292,19 @@ int cholmod_rowadd_mark
     cholmod_common *Common
 ) ;
 
-int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *,
-    int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
-    cholmod_common *) ;
+int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *, int64_t *,
+    cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 /* -------------------------------------------------------------------------- */
 /* cholmod_rowdel:  delete a row from an LDL' factorization (a rank-2 update) */
 /* -------------------------------------------------------------------------- */
 
-/* Sets the kth row and column of L to be the kth row and column of the identity
- * matrix, and updates L(k+1:n,k+1:n) accordingly.   To reduce the running time,
- * the caller can optionally provide the nonzero pattern (or an upper bound) of
- * kth row of L, as the sparse n-by-1 vector R.  Provide R as NULL if you want
- * CHOLMOD to determine this itself, which is easier for the caller, but takes
- * a little more time.
- */
+// Sets the kth row and column of L to be the kth row and column of the identity
+// matrix, and updates L(k+1:n,k+1:n) accordingly.   To reduce the running time,
+// the caller can optionally provide the nonzero pattern (or an upper bound) of
+// kth row of L, as the sparse n-by-1 vector R.  Provide R as NULL if you want
+// CHOLMOD to determine this itself, which is easier for the caller, but takes
+// a little more time.
 
 int cholmod_rowdel      // delete a rw from an LDL' factorization
 (
@@ -3328,10 +3324,10 @@ int cholmod_l_rowdel (size_t, cholmod_sparse *, cholmod_factor *,
 /* cholmod_rowdel_solve:  delete a row, and downdate Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_rowdel, but also downdates the solution to Lx=b.
- * When row/column k of A is "deleted" from the system A*y=b, this can induce
- * a change to x, in addition to changes arising when L and b are modified.
- * If this is the case, the kth entry of y is required as input (yk) */
+// Does the same as cholmod_rowdel, but also downdates the solution to Lx=b.
+// When row/column k of A is "deleted" from the system A*y=b, this can induce
+// a change to x, in addition to changes arising when L and b are modified.
+// If this is the case, the kth entry of y is required as input (yk).
 
 int cholmod_rowdel_solve
 (
@@ -3354,9 +3350,9 @@ int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
 /* cholmod_rowdel_mark:  delete a row, and downdate solution to partial Lx=b */
 /* -------------------------------------------------------------------------- */
 
-/* Does the same as cholmod_rowdel_solve, except only part of L is used in
- * the update/downdate of the solution to Lx=b.  This routine is an "expert"
- * routine.  It is meant for use in LPDASA only.  */
+// Does the same as cholmod_rowdel_solve, except only part of L is used in
+// the update/downdate of the solution to Lx=b.  This routine is an "expert"
+// routine.  It is meant for use in LPDASA only.
 
 int cholmod_rowdel_mark
 (
@@ -3373,9 +3369,8 @@ int cholmod_rowdel_mark
     cholmod_common *Common
 ) ;
 
-int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *,
-    int64_t *, cholmod_factor *, cholmod_dense *, cholmod_dense *,
-    cholmod_common *) ;
+int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *, int64_t *,
+    cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
 #endif
 
@@ -3393,9 +3388,9 @@ int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *,
 //
 // These functions do not require METIS.  They are installed unless NCAMD
 // is defined:
-// cholmod_ccolamd		interface to CCOLAMD ordering
-// cholmod_csymamd		interface to CSYMAMD ordering
-// cholmod_camd			interface to CAMD ordering
+// cholmod_ccolamd      interface to CCOLAMD ordering
+// cholmod_csymamd      interface to CSYMAMD ordering
+// cholmod_camd         interface to CAMD ordering
 //
 // Requires the Utility and Cholesky modules, and two packages: CAMD,
 // and CCOLAMD.  Used by functions in the Partition Module.
@@ -3432,17 +3427,15 @@ int cholmod_l_ccolamd (cholmod_sparse *, int64_t *, size_t, int64_t *,
 
 int cholmod_csymamd
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    /* ---- output --- */
-    int32_t *Cmember,	/* size nrow.  see cholmod_ccolamd above */
-    int32_t *Perm,	/* size A->nrow, output permutation */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to order
+    // output:
+    int32_t *Cmember,   // size nrow.  see cholmod_ccolamd.c for description
+    int32_t *Perm,      // size A->nrow, output permutation
     cholmod_common *Common
 ) ;
-
-int cholmod_l_csymamd (cholmod_sparse *, int64_t *,
-    int64_t *, cholmod_common *) ;
+int cholmod_l_csymamd (cholmod_sparse *, int64_t *, int64_t *,
+    cholmod_common *) ;
 
 //------------------------------------------------------------------------------
 // cholmod_camd: order A using CAMD
@@ -3546,7 +3539,7 @@ int cholmod_l_metis (cholmod_sparse *, int64_t *, size_t, int, int64_t *,
 
 // Finds a node bisector of A, A*A', A(:,f)*A(:,f)'.
 
-int64_t cholmod_bisect	/* returns # of nodes in separator */
+int64_t cholmod_bisect  // returns # of nodes in separator
 (
     // input:
     cholmod_sparse *A,  // matrix to bisect
@@ -3569,7 +3562,7 @@ int64_t cholmod_l_bisect (cholmod_sparse *, int64_t *, size_t, int, int64_t *,
 // Find a set of nodes that bisects the graph of A or AA' (direct interface
 // to METIS_ComputeVertexSeperator).
 
-int64_t cholmod_metis_bisector	// returns separator size
+int64_t cholmod_metis_bisector      // returns separator size
 (
     // input:
     cholmod_sparse *A,  // matrix to bisect
@@ -3616,45 +3609,45 @@ int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t, int64_t *,
 
 #ifndef NSUPERNODAL
 
-/* Supernodal analysis, factorization, and solve.  The simplest way to use
- * these routines is via the Cholesky module.  It does not provide any
- * fill-reducing orderings, but does accept the orderings computed by the
- * Cholesky module.  It does not require the Cholesky module itself, however.
- *
- * Primary routines:
- * -----------------
- * cholmod_super_symbolic	supernodal symbolic analysis
- * cholmod_super_numeric	supernodal numeric factorization
- * cholmod_super_lsolve		supernodal Lx=b solve
- * cholmod_super_ltsolve	supernodal L'x=b solve
- *
- * Prototypes for the BLAS and LAPACK routines that CHOLMOD uses are listed
- * below, including how they are used in CHOLMOD.
- *
- * BLAS routines:
- * --------------
- * dtrsv	solve Lx=b or L'x=b, L non-unit diagonal, x and b stride-1
- * dtrsm	solve LX=B or L'X=b, L non-unit diagonal
- * dgemv	y=y-A*x or y=y-A'*x (x and y stride-1)
- * dgemm	C=A*B', C=C-A*B, or C=C-A'*B
- * dsyrk	C=tril(A*A')
- *
- * LAPACK routines:
- * ----------------
- * dpotrf	LAPACK: A=chol(tril(A))
- *
- * Requires the Utility module, and two external packages: LAPACK and the BLAS.
- * Optionally used by the Cholesky module.
- */
+// Supernodal analysis, factorization, and solve.  The simplest way to use
+// these routines is via the Cholesky module.  It does not provide any
+// fill-reducing orderings, but does accept the orderings computed by the
+// Cholesky module.  It does not require the Cholesky module itself, however.
+//
+// Primary routines:
+// -----------------
+// cholmod_super_symbolic       supernodal symbolic analysis
+// cholmod_super_numeric        supernodal numeric factorization
+// cholmod_super_lsolve         supernodal Lx=b solve
+// cholmod_super_ltsolve        supernodal L'x=b solve
+//
+// Prototypes for the BLAS and LAPACK routines that CHOLMOD uses are listed
+// below, including how they are used in CHOLMOD.  Only the double methods are
+// listed, but CHOLMOD also uses the corresponding single, single complex, and
+// double complex routines.
+//
+// BLAS routines:
+// --------------
+// dtrsv    solve Lx=b or L'x=b, L non-unit diagonal, x and b stride-1
+// dtrsm    solve LX=B or L'X=b, L non-unit diagonal
+// dgemv    y=y-A*x or y=y-A'*x (x and y stride-1)
+// dgemm    C=A*B', C=C-A*B, or C=C-A'*B
+// dsyrk    C=tril(A*A'), zherk for the double complex case
+//
+// LAPACK routines:
+// ----------------
+// dpotrf   LAPACK: A=chol(tril(A))
+//
+// Requires the Utility module, and two external packages: LAPACK and the BLAS.
+// Optionally used by the Cholesky module.
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_symbolic */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_symbolic
+//------------------------------------------------------------------------------
 
-/* Analyzes A, AA', or A(:,f)*A(:,f)' in preparation for a supernodal numeric
- * factorization.  The user need not call this directly; cholmod_analyze is
- * a "simple" wrapper for this routine.
- */
+// Analyzes A, AA', or A(:,f)*A(:,f)' in preparation for a supernodal numeric
+// factorization.  The user need not call this directly; cholmod_analyze is
+// a "simple" wrapper for this routine.
 
 int cholmod_super_symbolic
 (
@@ -3672,9 +3665,9 @@ int cholmod_super_symbolic
 int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, int64_t *,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_symbolic2 */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_symbolic2
+//------------------------------------------------------------------------------
 
 /* Analyze for supernodal Cholesky or multifrontal QR */
 
@@ -3697,37 +3690,34 @@ int cholmod_super_symbolic2
 int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
     int64_t *, cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_numeric */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_numeric
+//------------------------------------------------------------------------------
 
-/* Computes the numeric LL' factorization of A, AA', or A(:,f)*A(:,f)' using
- * a BLAS-based supernodal method.  The user need not call this directly;
- * cholmod_factorize is a "simple" wrapper for this routine.
- */
+// Computes the numeric LL' factorization of A, AA', or A(:,f)*A(:,f)' using
+// a BLAS-based supernodal method.  The user need not call this directly;
+// cholmod_factorize is a "simple" wrapper for this routine.
 
 int cholmod_super_numeric
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to factorize */
-    cholmod_sparse *F,	/* F = A' or A(:,f)' */
-    double beta [2],	/* beta*I is added to diagonal of matrix to factorize */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* factorization */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to factorize
+    cholmod_sparse *F,  // F = A' or A(:,f)'
+    double beta [2],    // beta*I is added to diagonal of matrix to factorize
+    // input/output:
+    cholmod_factor *L,  // factorization
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_lsolve */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_lsolve
+//------------------------------------------------------------------------------
 
-/* Solve Lx=b where L is from a supernodal numeric factorization.  The user
- * need not call this routine directly.  cholmod_solve is a "simple" wrapper
- * for this routine. */
+// Solve Lx=b where L is from a supernodal numeric factorization.  The user
+// need not call this routine directly.  cholmod_solve is a "simple" wrapper
+// for this routine.
 
 int cholmod_super_lsolve
 (
@@ -3744,13 +3734,13 @@ int cholmod_super_lsolve
 int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_super_ltsolve */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_super_ltsolve
+//------------------------------------------------------------------------------
 
-/* Solve L'x=b where L is from a supernodal numeric factorization.  The user
- * need not call this routine directly.  cholmod_solve is a "simple" wrapper
- * for this routine. */
+// Solve L'x=b where L is from a supernodal numeric factorization.  The user
+// need not call this routine directly.  cholmod_solve is a "simple" wrapper
+// for this routine.
 
 int cholmod_super_ltsolve
 (

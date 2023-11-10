@@ -2,11 +2,13 @@
 // CHOLMOD/Modify/cholmod_del: delete row/column from an LDL' factorization
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// CHOLMOD/Modify Module.  Copyright (C) 2005-2023, Timothy A. Davis,
 // and William W. Hager.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
+
+// FIXME: TODO
 
 /* Deletes a row and column from an LDL' factorization.  The row and column k
  * is set to the kth row and column of the identity matrix.  Optionally
