@@ -43,7 +43,7 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
     }
     PRLEVEL(PR, (" \n"));
 #endif
-    double *ax_b = (double *)paru_alloc(m, sizeof(double));
+    double *ax_b = static_cast<double*>(paru_alloc(m, sizeof(double)));
     if (ax_b == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside residual\n"));
@@ -110,7 +110,7 @@ ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B, int64_t m,
     }
 
 #endif
-    double *AX_B = (double *)paru_alloc(m * nrhs, sizeof(double));
+    double *AX_B = static_cast<double*>(paru_alloc(m * nrhs, sizeof(double)));
     if (AX_B == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside mRHS residual\n"));

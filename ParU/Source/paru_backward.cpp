@@ -37,7 +37,7 @@ ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     }
     PRLEVEL(PR, (" \n"));
 #endif
-    double *b = (double *)paru_calloc(m, sizeof(double));
+    double *b = static_cast<double*>(paru_calloc(m, sizeof(double)));
     if (b == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside backward\n"));

@@ -30,7 +30,7 @@ paru_element *paru_create_element(int64_t nrows, int64_t ncols)
     size_t tot_size = sizeof(paru_element) +
                       sizeof(int64_t) * (2 * (nrows + ncols)) +
                       sizeof(double) * nrows * ncols;
-    curEl = (paru_element *)paru_alloc(1, tot_size);
+    curEl = static_cast<paru_element*>(paru_alloc(1, tot_size));
     if (curEl == NULL) return NULL;  // do not do error checking
 
     PRLEVEL(1, (" with size of " LD " in %p\n", tot_size, curEl));
