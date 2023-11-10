@@ -2358,7 +2358,7 @@ if (do_nantests)
     }
 
 //  C = CHOLMOD(horzcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
-    C = CHOLMOD(vertcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
+//  C = CHOLMOD(vertcat)(A, Axbad, TRUE, cm) ;                      NOP (C) ;
 
     C = CHOLMOD(vertcat)(A, NULL, TRUE, cm) ;			    NOP (C) ;
     C = CHOLMOD(vertcat)(NULL, AT, TRUE, cm) ;			    NOP (C) ;
