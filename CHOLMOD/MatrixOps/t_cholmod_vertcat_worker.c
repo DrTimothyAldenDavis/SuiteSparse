@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/MatrixOps/t_cholmod_horzcat_worker
+// CHOLMOD/MatrixOps/t_cholmod_vertcat_worker
 //------------------------------------------------------------------------------
 
 // CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2023, Timothy A. Davis.
@@ -10,11 +10,11 @@
 
 #include "cholmod_template.h"
 
-static void TEMPLATE (cholmod_horzcat_worker)
+static void TEMPLATE (cholmod_vertcat_worker)
 (
     cholmod_sparse *C,  // output matrix
-    cholmod_sparse *A,  // left matrix to concatenate
-    cholmod_sparse *B   // right matrix to concatenate
+    cholmod_sparse *A,  // top matrix to concatenate
+    cholmod_sparse *B   // bottom matrix to concatenate
 )
 {
 
@@ -28,7 +28,7 @@ static void TEMPLATE (cholmod_horzcat_worker)
     Real *Ax  = A->x ;
     Real *Az  = A->z ;
     bool apacked = A->packed ;
-    Int ancol = A->ncol ;
+    Int anrow = A->nrow ;
 
     Int *Bp  = B->p ;
     Int *Bnz = B->nz ;
@@ -36,7 +36,6 @@ static void TEMPLATE (cholmod_horzcat_worker)
     Real *Bx  = B->x ;
     Real *Bz  = B->z ;
     bool bpacked = B->packed ;
-    Int bncol = B->ncol ;
 
     Int *Cp = C->p ;
     Int *Ci = C->i ;
@@ -45,15 +44,14 @@ static void TEMPLATE (cholmod_horzcat_worker)
     Int ncol = C->ncol ;
 
     //--------------------------------------------------------------------------
-    // C = [A , B]
+    // C = [A ; B]
     //--------------------------------------------------------------------------
 
     Int pc = 0 ;
 
-    // copy A as the first A->ncol columns of C
-    for (Int j = 0 ; j < ancol ; j++)
+    for (Int j = 0 ; j < ncol ; j++)
     {
-        // A(:,j) is the jth column of C
+        // append A(:,j) as the first part of C(:,j)
         Int p = Ap [j] ;
         Int pend = (apacked) ? (Ap [j+1]) : (p + Anz [j]) ;
         Cp [j] = pc ;
@@ -63,18 +61,13 @@ static void TEMPLATE (cholmod_horzcat_worker)
             ASSIGN (Cx, Cz, pc, Ax, Az, p) ;
             pc++ ;
         }
-    }
 
-    // copy B as the next B->ncol columns of C
-    for (Int j = 0 ; j < bncol ; j++)
-    {
-        // B(:,j) is the (ancol+j)th column of C
-        Int p = Bp [j] ;
-        Int pend = (bpacked) ? (Bp [j+1]) : (p + Bnz [j]) ;
-        Cp [ancol + j] = pc ;
+        // append B(:,j) as the second part of C(:,j)
+        p = Bp [j] ;
+        pend = (bpacked) ? (Bp [j+1]) : (p + Bnz [j]) ;
         for ( ; p < pend ; p++)
         {
-            Ci [pc] = Bi [p] ;
+            Ci [pc] = Bi [p] + anrow ;
             ASSIGN (Cx, Cz, pc, Bx, Bz, p) ;
             pc++ ;
         }

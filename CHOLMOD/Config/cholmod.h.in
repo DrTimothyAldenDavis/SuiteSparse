@@ -2928,7 +2928,7 @@ double cholmod_l_norm_sparse (cholmod_sparse *, int, cholmod_common *) ;
 // cholmod_horzcat:  C = [A,B]
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_horzcat     // return C = [A B]
+cholmod_sparse *cholmod_horzcat     // returns C = [A B]
 (
     // input:
     cholmod_sparse *A,  // left matrix to concatenate
@@ -3028,16 +3028,14 @@ cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, int64_t *,
 // cholmod_vertcat:  C = [A ; B]
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_vertcat
+cholmod_sparse *cholmod_vertcat     // returns C = [A ; B]
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* left matrix to concatenate */
-    cholmod_sparse *B,	/* right matrix to concatenate */
-    int values,		/* if TRUE compute the numerical values of C */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // top matrix to concatenate
+    cholmod_sparse *B,  // bottom matrix to concatenate
+    int values,         // if TRUE compute the numerical values of C
     cholmod_common *Common
 ) ;
-
 cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
     cholmod_common *) ;
 
