@@ -2968,18 +2968,16 @@ int cholmod_l_scale (cholmod_dense *, int, cholmod_sparse *, cholmod_common *) ;
 
 int cholmod_sdmult
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* sparse matrix to multiply */
-    int transpose,	/* use A if 0, or A' otherwise */
-    double alpha [2],   /* scale factor for A */
-    double beta [2],    /* scale factor for Y */
-    cholmod_dense *X,	/* dense matrix to multiply */
-    /* ---- in/out --- */
-    cholmod_dense *Y,	/* resulting dense matrix */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // sparse matrix to multiply
+    int transpose,      // use A if 0, otherwise use A'
+    double alpha [2],   // scale factor for A
+    double beta [2],    // scale factor for Y
+    cholmod_dense *X,   // dense matrix to multiply
+    // input/output::
+    cholmod_dense *Y,   // resulting dense matrix
     cholmod_common *Common
 ) ;
-
 int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
     cholmod_dense *, cholmod_dense *Y, cholmod_common *) ;
 
