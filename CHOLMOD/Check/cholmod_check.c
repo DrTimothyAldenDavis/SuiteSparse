@@ -268,7 +268,7 @@ static int check_common
             ERR ("unknown status") ;
     }
 
-    P2 ("  Architecture: %s\n", CHOLMOD_ARCHITECTURE) ;
+    P3 ("%s", "  Architecture:\n") ;
     P3 ("    sizeof(int):      %d\n", (int) sizeof (int)) ;
     P3 ("    sizeof(int64_t):  %d\n", (int) sizeof (int64_t));
     P3 ("    sizeof(void *):   %d\n", (int) sizeof (void *)) ;

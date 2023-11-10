@@ -2,7 +2,7 @@
 // CHOLMOD/Include/cholmod_template.h: template definitions for CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Include/cholmod_internal.h. Copyright (C) 2005-2022,
+// CHOLMOD/Include/cholmod_internal.h. Copyright (C) 2005-2023,
 // Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
