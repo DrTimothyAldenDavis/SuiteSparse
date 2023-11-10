@@ -40,10 +40,10 @@
 int CHOLMOD(rowdel)
 (
     /* ---- input ---- */
-    size_t k,		/* row/column index to delete */
-    cholmod_sparse *R,	/* NULL, or the nonzero pattern of kth row of L */
+    size_t k,           /* row/column index to delete */
+    cholmod_sparse *R,  /* NULL, or the nonzero pattern of kth row of L */
     /* ---- in/out --- */
-    cholmod_factor *L,	/* factor to modify */
+    cholmod_factor *L,  /* factor to modify */
     /* --------------- */
     cholmod_common *Common
 )
@@ -67,12 +67,12 @@ int CHOLMOD(rowdel)
 int CHOLMOD(rowdel_solve)
 (
     /* ---- input ---- */
-    size_t k,		/* row/column index to delete */
-    cholmod_sparse *R,	/* NULL, or the nonzero pattern of kth row of L */
-    double yk [2],	/* kth entry in the solution to A*y=b */
+    size_t k,           /* row/column index to delete */
+    cholmod_sparse *R,  /* NULL, or the nonzero pattern of kth row of L */
+    double yk [2],      /* kth entry in the solution to A*y=b */
     /* ---- in/out --- */
-    cholmod_factor *L,	/* factor to modify */
-    cholmod_dense *X,	/* solution to Lx=b (size n-by-1) */
+    cholmod_factor *L,  /* factor to modify */
+    cholmod_dense *X,   /* solution to Lx=b (size n-by-1) */
     cholmod_dense *DeltaB,  /* change in b, zero on output */
     /* --------------- */
     cholmod_common *Common
@@ -99,13 +99,13 @@ int CHOLMOD(rowdel_solve)
 int CHOLMOD(rowdel_mark)
 (
     /* ---- input ---- */
-    size_t kdel,	/* row/column index to delete */
-    cholmod_sparse *R,	/* NULL, or the nonzero pattern of kth row of L */
-    double yk [2],	/* kth entry in the solution to A*y=b */
-    Int *colmark,	/* Int array of size 1.  See cholmod_updown.c */
+    size_t kdel,        /* row/column index to delete */
+    cholmod_sparse *R,  /* NULL, or the nonzero pattern of kth row of L */
+    double yk [2],      /* kth entry in the solution to A*y=b */
+    Int *colmark,       /* Int array of size 1.  See cholmod_updown.c */
     /* ---- in/out --- */
-    cholmod_factor *L,	/* factor to modify */
-    cholmod_dense *X,	/* solution to Lx=b (size n-by-1) */
+    cholmod_factor *L,  /* factor to modify */
+    cholmod_dense *X,   /* solution to Lx=b (size n-by-1) */
     cholmod_dense *DeltaB,  /* change in b, zero on output */
     /* --------------- */
     cholmod_common *Common
@@ -116,7 +116,7 @@ int CHOLMOD(rowdel_mark)
     Int *Li, *Lp, *Lnz, *Ci, *Rj, *Rp, *Iwork ;
     cholmod_sparse *C, Cmatrix ;
     Int j, p, pend, kk, lnz, n, Cp [2], do_solve, do_update, left, k,
-	right, middle, i, klast, given_row, rnz ;
+        right, middle, i, klast, given_row, rnz ;
     size_t s ;
     int ok = TRUE ;
 
@@ -131,44 +131,44 @@ int CHOLMOD(rowdel_mark)
     k = kdel ;
     if (kdel >= L->n || k < 0)
     {
-	ERROR (CHOLMOD_INVALID, "k invalid") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "k invalid") ;
+        return (FALSE) ;
     }
     if (R == NULL)
     {
-	Rj = NULL ;
-	rnz = EMPTY ;
+        Rj = NULL ;
+        rnz = EMPTY ;
     }
     else
     {
-	RETURN_IF_XTYPE_INVALID (R, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, FALSE) ;
-	if (R->ncol != 1 || R->nrow != L->n)
-	{
-	    ERROR (CHOLMOD_INVALID, "R invalid") ;
-	    return (FALSE) ;
-	}
-	Rj = R->i ;
-	Rp = R->p ;
-	rnz = Rp [1] ;
+        RETURN_IF_XTYPE_INVALID (R, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, FALSE) ;
+        if (R->ncol != 1 || R->nrow != L->n)
+        {
+            ERROR (CHOLMOD_INVALID, "R invalid") ;
+            return (FALSE) ;
+        }
+        Rj = R->i ;
+        Rp = R->p ;
+        rnz = Rp [1] ;
     }
     do_solve = (X != NULL) && (DeltaB != NULL) ;
     if (do_solve)
     {
-	RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
-	RETURN_IF_XTYPE_INVALID (DeltaB, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
-	Xx = X->x ;
-	Nx = DeltaB->x ;
-	if (X->nrow != L->n || X->ncol != 1 || DeltaB->nrow != L->n ||
-		DeltaB->ncol != 1 || Xx == NULL || Nx == NULL)
-	{
-	    ERROR (CHOLMOD_INVALID, "X and/or DeltaB invalid") ;
-	    return (FALSE) ;
-	}
+        RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
+        RETURN_IF_XTYPE_INVALID (DeltaB, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
+        Xx = X->x ;
+        Nx = DeltaB->x ;
+        if (X->nrow != L->n || X->ncol != 1 || DeltaB->nrow != L->n ||
+                DeltaB->ncol != 1 || Xx == NULL || Nx == NULL)
+        {
+            ERROR (CHOLMOD_INVALID, "X and/or DeltaB invalid") ;
+            return (FALSE) ;
+        }
     }
     else
     {
-	Xx = NULL ;
-	Nx = NULL ;
+        Xx = NULL ;
+        Nx = NULL ;
     }
     Common->status = CHOLMOD_OK ;
 
@@ -180,14 +180,14 @@ int CHOLMOD(rowdel_mark)
     s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
     if (!ok)
     {
-	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
+        return (FALSE) ;
     }
 
     CHOLMOD(allocate_work) (n, s, s, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
-	return (FALSE) ;
+        return (FALSE) ;
     }
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, /* FIXME: */ CHOLMOD_DOUBLE, Common)) ;
 
@@ -197,14 +197,14 @@ int CHOLMOD(rowdel_mark)
 
     if (L->xtype == CHOLMOD_PATTERN || L->is_super || L->is_ll) 
     {
-	/* can only update/downdate a simplicial LDL' factorization */
-	CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,
-		Common) ;
-	if (Common->status < CHOLMOD_OK)
-	{
-	    /* out of memory, L is returned unchanged */
-	    return (FALSE) ;
-	}
+        /* can only update/downdate a simplicial LDL' factorization */
+        CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,
+                Common) ;
+        if (Common->status < CHOLMOD_OK)
+        {
+            /* out of memory, L is returned unchanged */
+            return (FALSE) ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -212,12 +212,12 @@ int CHOLMOD(rowdel_mark)
     /* ---------------------------------------------------------------------- */
 
     /* inputs, not modified on output: */
-    Lp = L->p ;		/* size n+1 */
+    Lp = L->p ;         /* size n+1 */
 
     /* outputs, contents defined on input for incremental case only: */
-    Lnz = L->nz ;	/* size n */
-    Li = L->i ;		/* size L->nzmax.  Can change in size. */
-    Lx = L->x ;		/* size L->nzmax.  Can change in size. */
+    Lnz = L->nz ;       /* size n */
+    Li = L->i ;         /* size L->nzmax.  Can change in size. */
+    Lx = L->x ;         /* size L->nzmax.  Can change in size. */
 
     ASSERT (L->nz != NULL) ;
 
@@ -225,10 +225,10 @@ int CHOLMOD(rowdel_mark)
     /* get workspace */
     /* ---------------------------------------------------------------------- */
 
-    W = Common->Xwork ; 	/* size n, used only in cholmod_updown */
-    Cx = W + n ;		/* use 2nd column of Xwork for C (size n) */
+    W = Common->Xwork ;         /* size n, used only in cholmod_updown */
+    Cx = W + n ;                /* use 2nd column of Xwork for C (size n) */
     Iwork = Common->Iwork ;
-    Ci = Iwork + n ;		/* size n (i/i/l) */
+    Ci = Iwork + n ;            /* size n (i/i/l) */
     /* NOTE: cholmod_updown uses Iwork [0..n-1] (i/i/l) as Stack */
 
     /* ---------------------------------------------------------------------- */
@@ -241,120 +241,120 @@ int CHOLMOD(rowdel_mark)
 
     for (kk = 0 ; kk < klast ; kk++)
     {
-	/* either search j = 0:k-1 or j = Rj [0:rnz-1] */
-	j = given_row ? (Rj [kk]) : (kk) ;
+        /* either search j = 0:k-1 or j = Rj [0:rnz-1] */
+        j = given_row ? (Rj [kk]) : (kk) ;
 
-	if (j < 0 || j >= k)
-	{
-	    ERROR (CHOLMOD_INVALID, "R invalid") ;
-	    return (FALSE) ;
-	}
+        if (j < 0 || j >= k)
+        {
+            ERROR (CHOLMOD_INVALID, "R invalid") ;
+            return (FALSE) ;
+        }
 
-	PRINT2 (("Prune col j = "ID":\n", j)) ;
+        PRINT2 (("Prune col j = "ID":\n", j)) ;
 
-	lnz = Lnz [j] ;
-	dj = Lx [Lp [j]] ;
-	ASSERT (Lnz [j] > 0 && Li [Lp [j]] == j) ;
+        lnz = Lnz [j] ;
+        dj = Lx [Lp [j]] ;
+        ASSERT (Lnz [j] > 0 && Li [Lp [j]] == j) ;
 
-	if (lnz > 1)
-	{
-	    left = Lp [j] ;
-	    pend = left + lnz ;
-	    right = pend - 1 ;
+        if (lnz > 1)
+        {
+            left = Lp [j] ;
+            pend = left + lnz ;
+            right = pend - 1 ;
 
-	    i = Li [right] ;
+            i = Li [right] ;
 
-	    if (i < k)
-	    {
-		/* row k is not in column j */
-		continue ;
-	    }
-	    else if (i == k)
-	    {
-		/* k is the last row index in this column (quick delete) */
-		if (do_solve)
-		{
-		    Xx [j] -= yk [0] * dj * Lx [right] ;
-		}
-		Lx [right] = 0 ;
-	    }
-	    else
-	    {
-		/* binary search for row k in column j */
-		PRINT2 (("\nBinary search: lnz "ID" k = "ID"\n", lnz, k)) ;
-		while (left < right)
-		{
-		    middle = (left + right) / 2 ;
-		    PRINT2 (("left "ID" right "ID" middle "ID": ["ID" "ID""
-			""ID"]\n", left, right, middle,
-			Li [left], Li [middle], Li [right])) ;
-		    if (k > Li [middle])
-		    {
-			left = middle + 1 ;
-		    }
-		    else
-		    {
-			right = middle ;
-		    }
-		}
-		ASSERT (left >= Lp [j] && left < pend) ;
+            if (i < k)
+            {
+                /* row k is not in column j */
+                continue ;
+            }
+            else if (i == k)
+            {
+                /* k is the last row index in this column (quick delete) */
+                if (do_solve)
+                {
+                    Xx [j] -= yk [0] * dj * Lx [right] ;
+                }
+                Lx [right] = 0 ;
+            }
+            else
+            {
+                /* binary search for row k in column j */
+                PRINT2 (("\nBinary search: lnz "ID" k = "ID"\n", lnz, k)) ;
+                while (left < right)
+                {
+                    middle = (left + right) / 2 ;
+                    PRINT2 (("left "ID" right "ID" middle "ID": ["ID" "ID""
+                        ""ID"]\n", left, right, middle,
+                        Li [left], Li [middle], Li [right])) ;
+                    if (k > Li [middle])
+                    {
+                        left = middle + 1 ;
+                    }
+                    else
+                    {
+                        right = middle ;
+                    }
+                }
+                ASSERT (left >= Lp [j] && left < pend) ;
 
 #ifndef NDEBUG
-		/* brute force, linear-time search */
-		{
-		    Int p3 = Lp [j] ;
-		    i = EMPTY ;
-		    PRINT2 (("Brute force:\n")) ;
-		    for ( ; p3 < pend ; p3++)
-		    {
-			i = Li [p3] ;
-			PRINT2 (("p "ID" ["ID"]\n", p3, i)) ;
-			if (i >= k)
-			{
-			    break ;
-			}
-		    }
-		    if (i == k)
-		    {
-			ASSERT (k == Li [p3]) ;
-			ASSERT (p3 == left) ;
-		    }
-		}
+                /* brute force, linear-time search */
+                {
+                    Int p3 = Lp [j] ;
+                    i = EMPTY ;
+                    PRINT2 (("Brute force:\n")) ;
+                    for ( ; p3 < pend ; p3++)
+                    {
+                        i = Li [p3] ;
+                        PRINT2 (("p "ID" ["ID"]\n", p3, i)) ;
+                        if (i >= k)
+                        {
+                            break ;
+                        }
+                    }
+                    if (i == k)
+                    {
+                        ASSERT (k == Li [p3]) ;
+                        ASSERT (p3 == left) ;
+                    }
+                }
 #endif
 
-		if (k == Li [left])
-		{
-		    if (do_solve)
-		    {
-			Xx [j] -= yk [0] * dj * Lx [left] ;
-		    }
-		    /* found row k in column j.  Prune it from the column.*/
-		    Lx [left] = 0 ;
-		}
-	    }
-	}
+                if (k == Li [left])
+                {
+                    if (do_solve)
+                    {
+                        Xx [j] -= yk [0] * dj * Lx [left] ;
+                    }
+                    /* found row k in column j.  Prune it from the column.*/
+                    Lx [left] = 0 ;
+                }
+            }
+        }
     }
 
 #ifndef NDEBUG
     /* ensure that row k has been deleted from the matrix L */
     for (j = 0 ; j < k ; j++)
     {
-	Int lasti ;
-	lasti = EMPTY ;
-	p = Lp [j] ;
-	pend = p + Lnz [j] ;
-	/* look for row k in column j */
-	PRINT1 (("Pruned column "ID"\n", j)) ;
-	for ( ; p < pend ; p++)
-	{
-	    i = Li [p] ;
-	    PRINT2 ((" "ID"", i)) ;
-	    PRINT2 ((" %g\n", Lx [p])) ;
-	    ASSERT (IMPLIES (i == k, Lx [p] == 0)) ;
-	    ASSERT (i > lasti) ;
-	    lasti = i ;
-	}
-	PRINT1 (("\n")) ;
+        Int lasti ;
+        lasti = EMPTY ;
+        p = Lp [j] ;
+        pend = p + Lnz [j] ;
+        /* look for row k in column j */
+        PRINT1 (("Pruned column "ID"\n", j)) ;
+        for ( ; p < pend ; p++)
+        {
+            i = Li [p] ;
+            PRINT2 ((" "ID"", i)) ;
+            PRINT2 ((" %g\n", Lx [p])) ;
+            ASSERT (IMPLIES (i == k, Lx [p] == 0)) ;
+            ASSERT (i > lasti) ;
+            lasti = i ;
+        }
+        PRINT1 (("\n")) ;
     }
 #endif
 
@@ -387,69 +387,69 @@ int CHOLMOD(rowdel_mark)
 
     if (lnz > 0)
     {
-	/* compute DeltaB for updown (in DeltaB) */
-	if (do_solve)
-	{
-	    xk = Xx [k] - yk [0] * dk ;
-	    for ( ; p < pend ; p++)
-	    {
-		Nx [Li [p]] += Lx [p] * xk ;
-	    }
-	}
+        /* compute DeltaB for updown (in DeltaB) */
+        if (do_solve)
+        {
+            xk = Xx [k] - yk [0] * dk ;
+            for ( ; p < pend ; p++)
+            {
+                Nx [Li [p]] += Lx [p] * xk ;
+            }
+        }
 
-	do_update = (dk > 0) ;
-	if (!do_update)
-	{
-	    dk = -dk ;
-	}
-	sqrt_dk = sqrt (dk) ;
-	p = Lp [k] + 1 ;
-	for (kk = 0 ; kk < lnz ; kk++, p++)
-	{
-	    Ci [kk] = Li [p] ;
-	    Cx [kk] = Lx [p] * sqrt_dk ;
-	    Lx [p] = 0 ;		/* clear column k */
-	}
-	fl = lnz + 1 ;
+        do_update = (dk > 0) ;
+        if (!do_update)
+        {
+            dk = -dk ;
+        }
+        sqrt_dk = sqrt (dk) ;
+        p = Lp [k] + 1 ;
+        for (kk = 0 ; kk < lnz ; kk++, p++)
+        {
+            Ci [kk] = Li [p] ;
+            Cx [kk] = Lx [p] * sqrt_dk ;
+            Lx [p] = 0 ;                /* clear column k */
+        }
+        fl = lnz + 1 ;
 
-	/* create a n-by-1 sparse matrix to hold the single column */
-	C = &Cmatrix ;
-	C->nrow = n ;
-	C->ncol = 1 ;
-	C->nzmax = lnz ;
-	C->sorted = TRUE ;
-	C->packed = TRUE ;
-	C->p = Cp ;
-	C->i = Ci ;
-	C->x = Cx ;
-	C->nz = NULL ;
-	C->itype = L->itype ;
-	C->xtype = L->xtype ;
-	C->dtype = L->dtype ;
-	C->z = NULL ;
-	C->stype = 0 ;
+        /* create a n-by-1 sparse matrix to hold the single column */
+        C = &Cmatrix ;
+        C->nrow = n ;
+        C->ncol = 1 ;
+        C->nzmax = lnz ;
+        C->sorted = TRUE ;
+        C->packed = TRUE ;
+        C->p = Cp ;
+        C->i = Ci ;
+        C->x = Cx ;
+        C->nz = NULL ;
+        C->itype = L->itype ;
+        C->xtype = L->xtype ;
+        C->dtype = L->dtype ;
+        C->z = NULL ;
+        C->stype = 0 ;
 
-	Cp [0] = 0 ;
-	Cp [1] = lnz ;
+        Cp [0] = 0 ;
+        Cp [1] = lnz ;
 
-	/* numeric update if dk > 0, and with Lx=b change */
-	/* workspace: Flag (nrow), Head (nrow+1), W (nrow), Iwork (2*nrow) */
-	ok = CHOLMOD(updown_mark) (do_update ? (1) : (0), C, colmark,
-		L, X, DeltaB, Common) ;
+        /* numeric update if dk > 0, and with Lx=b change */
+        /* workspace: Flag (nrow), Head (nrow+1), W (nrow), Iwork (2*nrow) */
+        ok = CHOLMOD(updown_mark) (do_update ? (1) : (0), C, colmark,
+                L, X, DeltaB, Common) ;
 
-	/* clear workspace */
-	for (kk = 0 ; kk < lnz ; kk++)
-	{
-	    Cx [kk] = 0 ;
-	}
+        /* clear workspace */
+        for (kk = 0 ; kk < lnz ; kk++)
+        {
+            Cx [kk] = 0 ;
+        }
     }
 
     Common->modfl += fl ;
 
     if (do_solve)
     {
-	/* kth equation becomes identity, so X(k) is now Y(k) */
-	Xx [k] = yk [0] ;
+        /* kth equation becomes identity, so X(k) is now Y(k) */
+        Xx [k] = yk [0] ;
     }
 
     DEBUG (CHOLMOD(dump_factor) (L, "LDL factorization, L:", Common)) ;
