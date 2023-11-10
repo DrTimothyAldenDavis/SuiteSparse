@@ -92,10 +92,10 @@
 // version control
 //==============================================================================
 
-#define CHOLMOD_DATE "Oct 31, 2023"
+#define CHOLMOD_DATE "Nov 30, 2023"
 #define CHOLMOD_MAIN_VERSION   5
-#define CHOLMOD_SUB_VERSION    0
-#define CHOLMOD_SUBSUB_VERSION 1
+#define CHOLMOD_SUB_VERSION    1
+#define CHOLMOD_SUBSUB_VERSION 0
 
 #define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define CHOLMOD_VERSION \
@@ -1148,7 +1148,7 @@ cholmod_sparse *cholmod_l_ptranspose (cholmod_sparse *, int, int64_t *,
     int64_t *, size_t, cholmod_common *) ;
 
 //------------------------------------------------------------------------------
-// cholmod_sort: sort the indices of a sparse matrix 
+// cholmod_sort: sort the indices of a sparse matrix
 //------------------------------------------------------------------------------
 
 int cholmod_sort
@@ -3100,9 +3100,9 @@ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
 //
 // Requires the Utility module.  Not required by any other CHOLMOD module.
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_updown:  multiple rank update/downdate */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_updown:  multiple rank update/downdate
+//------------------------------------------------------------------------------
 
 // Compute the new LDL' factorization of LDL'+CC' (an update) or LDL'-CC'
 // (a downdate).  The factor object L need not be an LDL' factorization; it
@@ -3121,9 +3121,9 @@ int cholmod_updown          // update/downdate
 int cholmod_l_updown (int, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_updown_solve:  update/downdate, and modify solution to Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_updown_solve:  update/downdate, and modify solution to Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_updown, except that it also updates/downdates the
 // solution to Lx=b+DeltaB.  x and b must be n-by-1 dense matrices.  b is not
@@ -3147,9 +3147,9 @@ int cholmod_updown_solve
 int cholmod_l_updown_solve (int, cholmod_sparse *, cholmod_factor *,
     cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_updown_mark:  update/downdate, and modify solution to partial Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_updown_mark:  update/downdate, and modify solution to partial Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_updown_solve, except only part of L is used in
 // the update/downdate of the solution to Lx=b.  This routine is an "expert"
@@ -3173,9 +3173,9 @@ int cholmod_updown_mark
 int cholmod_l_updown_mark (int, cholmod_sparse *, int64_t *, cholmod_factor *,
     cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_updown_mask:  update/downdate, for LPDASA */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_updown_mask:  update/downdate, for LPDASA
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_updown_mark, except has an additional "mask"
 // argument.  This routine is an "expert" routine.  It is meant for use in
@@ -3219,9 +3219,9 @@ int cholmod_l_updown_mask2 (int, cholmod_sparse *, int64_t *, int64_t *,
     int64_t, cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowadd:  add a row to an LDL' factorization (a rank-2 update) */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowadd:  add a row to an LDL' factorization (a rank-2 update)
+//------------------------------------------------------------------------------
 
 // cholmod_rowadd adds a row to the LDL' factorization.  It computes the kth
 // row and kth column of L, and then updates the submatrix L (k+1:n,k+1:n)
@@ -3244,9 +3244,9 @@ int cholmod_rowadd      // add a row to an LDL' factorization
 int cholmod_l_rowadd (size_t, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowadd_solve:  add a row, and update solution to Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowadd_solve:  add a row, and update solution to Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_rowadd, and also updates the solution to Lx=b
 // See cholmod_updown for a description of how Lx=b is updated.  There is on
@@ -3269,9 +3269,9 @@ int cholmod_rowadd_solve
 int cholmod_l_rowadd_solve (size_t, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowadd_mark:  add a row, and update solution to partial Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowadd_mark:  add a row, and update solution to partial Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_rowadd_solve, except only part of L is used in
 // the update/downdate of the solution to Lx=b.  This routine is an "expert"
@@ -3295,9 +3295,9 @@ int cholmod_rowadd_mark
 int cholmod_l_rowadd_mark (size_t, cholmod_sparse *, double *, int64_t *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowdel:  delete a row from an LDL' factorization (a rank-2 update) */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowdel:  delete a row from an LDL' factorization (a rank-2 update)
+//------------------------------------------------------------------------------
 
 // Sets the kth row and column of L to be the kth row and column of the identity
 // matrix, and updates L(k+1:n,k+1:n) accordingly.   To reduce the running time,
@@ -3320,9 +3320,9 @@ int cholmod_rowdel      // delete a rw from an LDL' factorization
 int cholmod_l_rowdel (size_t, cholmod_sparse *, cholmod_factor *,
     cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowdel_solve:  delete a row, and downdate Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowdel_solve:  delete a row, and downdate Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_rowdel, but also downdates the solution to Lx=b.
 // When row/column k of A is "deleted" from the system A*y=b, this can induce
@@ -3346,9 +3346,9 @@ int cholmod_rowdel_solve
 int cholmod_l_rowdel_solve (size_t, cholmod_sparse *, double *,
     cholmod_factor *, cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 
-/* -------------------------------------------------------------------------- */
-/* cholmod_rowdel_mark:  delete a row, and downdate solution to partial Lx=b */
-/* -------------------------------------------------------------------------- */
+//------------------------------------------------------------------------------
+// cholmod_rowdel_mark:  delete a row, and downdate solution to partial Lx=b
+//------------------------------------------------------------------------------
 
 // Does the same as cholmod_rowdel_solve, except only part of L is used in
 // the update/downdate of the solution to Lx=b.  This routine is an "expert"
@@ -3651,17 +3651,15 @@ int64_t cholmod_l_collapse_septree (size_t, size_t, double, size_t, int64_t *,
 
 int cholmod_super_symbolic
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to analyze */
-    cholmod_sparse *F,	/* F = A' or A(:,f)' */
-    int32_t *Parent,	/* elimination tree */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* simplicial symbolic on input,
-			 * supernodal symbolic on output */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to analyze
+    cholmod_sparse *F,  // F = A' or A(:,f)'
+    int32_t *Parent,    // elimination tree
+    // input/output:
+    cholmod_factor *L,  // simplicial symbolic on input,
+                        // supernodal symbolic on output
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, int64_t *,
     cholmod_factor *, cholmod_common *) ;
 
@@ -3669,24 +3667,22 @@ int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, int64_t *,
 // cholmod_super_symbolic2
 //------------------------------------------------------------------------------
 
-/* Analyze for supernodal Cholesky or multifrontal QR */
+// Analyze for supernodal Cholesky or multifrontal QR
 
 int cholmod_super_symbolic2
 (
-    /* ---- input ---- */
-    int for_whom,       /* FOR_SPQR     (0): for SPQR but not GPU-accelerated
-                           FOR_CHOLESKY (1): for Cholesky (GPU or not)
-                           FOR_SPQRGPU  (2): for SPQR with GPU acceleration */
-    cholmod_sparse *A,	/* matrix to analyze */
-    cholmod_sparse *F,	/* F = A' or A(:,f)' */
-    int32_t *Parent,	/* elimination tree */
-    /* ---- in/out --- */
-    cholmod_factor *L,	/* simplicial symbolic on input,
-			 * supernodal symbolic on output */
-    /* --------------- */
+    // input:
+    int for_whom,       // FOR_SPQR     (0): for SPQR but not GPU-accelerated
+                        // FOR_CHOLESKY (1): for Cholesky (GPU or not)
+                        // FOR_SPQRGPU  (2): for SPQR with GPU acceleration
+    cholmod_sparse *A,  // matrix to analyze
+    cholmod_sparse *F,  // F = A' or A(:,f)'
+    int32_t *Parent,    // elimination tree
+    // input/output:
+    cholmod_factor *L,  // simplicial symbolic on input,
+                        // supernodal symbolic on output
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_symbolic2 (int, cholmod_sparse *, cholmod_sparse *,
     int64_t *, cholmod_factor *, cholmod_common *) ;
 
@@ -3721,16 +3717,14 @@ int cholmod_l_super_numeric (cholmod_sparse *, cholmod_sparse *, double *,
 
 int cholmod_super_lsolve
 (
-    /* ---- input ---- */
-    cholmod_factor *L,	/* factor to use for the forward solve */
-    /* ---- output ---- */
-    cholmod_dense *X,	/* b on input, solution to Lx=b on output */
-    /* ---- workspace   */
-    cholmod_dense *E,	/* workspace of size nrhs*(L->maxesize) */
-    /* --------------- */
+    // input:
+    cholmod_factor *L,  // factor to use for the forward solve
+    // input/output:
+    cholmod_dense *X,   // b on input, solution to Lx=b on output
+    // workspace:
+    cholmod_dense *E,   // workspace of size nrhs*(L->maxesize)
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
@@ -3744,16 +3738,14 @@ int cholmod_l_super_lsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
 
 int cholmod_super_ltsolve
 (
-    /* ---- input ---- */
-    cholmod_factor *L,	/* factor to use for the backsolve */
-    /* ---- output ---- */
-    cholmod_dense *X,	/* b on input, solution to L'x=b on output */
-    /* ---- workspace   */
-    cholmod_dense *E,	/* workspace of size nrhs*(L->maxesize) */
-    /* --------------- */
+    // input:
+    cholmod_factor *L,  // factor to use for the backsolve
+    // input/output:
+    cholmod_dense *X,   // b on input, solution to L'x=b on output
+    // workspace:
+    cholmod_dense *E,   // workspace of size nrhs*(L->maxesize)
     cholmod_common *Common
 ) ;
-
 int cholmod_l_super_ltsolve (cholmod_factor *, cholmod_dense *, cholmod_dense *,
     cholmod_common *) ;
 
