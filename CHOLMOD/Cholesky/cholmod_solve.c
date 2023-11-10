@@ -26,26 +26,30 @@
 // CHOLMOD_L solve the same system if an LL' factorization was performed,
 // for example.
 //
-// The supernodal solver uses BLAS routines dtrsv, dgemv, dtrsm, and dgemm,
-// or their complex counterparts ztrsv, zgemv, ztrsm, and zgemm.
+// The supernodal solver uses BLAS routines:
+//
+//      dtrsv, dgemv, dtrsm, dgemm: double real
+//      ztrsv, zgemv, ztrsm, zgemm: double complex
+//      strsv, sgemv, strsm, sgemm: float real
+//      ctrsv, cgemv, ctrsm, cgemm: float complex
 //
 // If both L and B are real, then X is returned real.  If either is complex
 // or zomplex, X is returned as either complex or zomplex, depending on the
 // Common->prefer_zomplex parameter.
 //
-// Supports any numeric xtype (pattern-only matrices not supported),
-// and any dtype.
+// Supports any numeric xtype (real, complex, or zomplex; pattern-only matrices
+// not supported), and any dtype.
 //
 // This routine does not check to see if the diagonal of L or D is zero,
 // because sometimes a partial solve can be done with indefinite or singular
-// matrix.  If you wish to check in your own code, test L->minor.  If
-// L->minor == L->n, then the matrix has no zero diagonal entries.
-// If k = L->minor < L->n, then L(k,k) is zero for an LL' factorization, or
-// D(k,k) is zero for an LDL' factorization.
+// matrix.  If you wish to check in your own code, test L->minor.  If L->minor
+// == L->n, then the matrix has no zero diagonal entries.  If k = L->minor <
+// L->n, then L(k,k) is zero for an LL' factorization, or D(k,k) is zero for an
+// LDL' factorization.
 //
 // This routine returns X as NULL only if it runs out of memory.  If L is
-// indefinite or singular, then X may contain Inf's or NaN's, but it will
-// exist on output.
+// indefinite or singular, then X may contain Inf's or NaN's, but it will exist
+// on output.
 
 #include "cholmod_internal.h"
 
