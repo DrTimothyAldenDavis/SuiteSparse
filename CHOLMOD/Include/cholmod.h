@@ -3043,20 +3043,18 @@ cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
 // cholmod_symmetry: determine if a sparse matrix is symmetric
 //------------------------------------------------------------------------------
 
-int cholmod_symmetry
+int cholmod_symmetry            // returns CHOLMOD_MM_* (see above)
 (
-    /* ---- input ---- */
+    // input:
     cholmod_sparse *A,
-    int option,
-    /* ---- output ---- */
-    int32_t *xmatched,
-    int32_t *pmatched,
-    int32_t *nzoffdiag,
-    int32_t *nzdiag,
-    /* --------------- */
+    int option,                 // option 0, 1, or 2
+    // output:
+    int32_t *xmatched,          // # of matched numerical entries
+    int32_t *pmatched,          // # of matched entries in pattern
+    int32_t *nzoffdiag,         // # of off diagonal entries
+    int32_t *nzdiag,            // # of diagonal entries
     cholmod_common *Common
 ) ;
-
 int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
     int64_t *, cholmod_common *) ;
 
