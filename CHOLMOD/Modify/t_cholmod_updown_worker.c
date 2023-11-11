@@ -45,7 +45,7 @@
 // debug routine
 //------------------------------------------------------------------------------
 
-#ifndef NDEBUB
+#ifndef NDEBUG
 
 static void TEMPLATE (dump_col)
 (
