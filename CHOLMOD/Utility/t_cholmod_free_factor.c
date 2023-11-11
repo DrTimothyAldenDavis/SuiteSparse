@@ -21,7 +21,7 @@
 
 void CHOLMOD(to_simplicial_sym)
 (
-    cholmod_factor *L,          // sparse factorization to modify 
+    cholmod_factor *L,          // sparse factorization to modify
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 )

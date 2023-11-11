@@ -171,7 +171,7 @@
     #define ENTRY_SIZE                      1
 
     #define ABS(ax,az,p)                    R_ABS(ax,az,p)
-    #define ASSEMBLE(x,z,p,ax,az,q)         R_ASSEMBLE(x,z,p,ax,az,q) 
+    #define ASSEMBLE(x,z,p,ax,az,q)         R_ASSEMBLE(x,z,p,ax,az,q)
     #define ASSIGN(x,z,p,ax,az,q)           R_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      R_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN2(x,z,p,ax,az,q)          R_ASSIGN(x,z,p,ax,az,q)
@@ -188,8 +188,8 @@
     #define MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb) \
         R_MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb)
     #define LLDOT(x,p,ax,az,q)              R_LLDOT(x,p,ax,az,q)
-    #define CLEAR(x,z,p)                    R_CLEAR(x,z,p) 
-    #define CLEAR_IMAG(x,z,p)               R_CLEAR_IMAG(x,z,p) 
+    #define CLEAR(x,z,p)                    R_CLEAR(x,z,p)
+    #define CLEAR_IMAG(x,z,p)               R_CLEAR_IMAG(x,z,p)
 
     #define DIV(x,z,p,ax,az,q)              R_DIV(x,z,p,ax,az,q)
 
@@ -233,7 +233,7 @@
     #endif
 
     #define ABS(ax,az,p)                    C_ABS(ax,az,p)
-    #define ASSEMBLE(x,z,p,ax,az,q)         C_ASSEMBLE(x,z,p,ax,az,q) 
+    #define ASSEMBLE(x,z,p,ax,az,q)         C_ASSEMBLE(x,z,p,ax,az,q)
     #define ASSIGN(x,z,p,ax,az,q)           C_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      C_ASSIGN_CONJ(x,z,p,ax,az,q)
     #define ASSIGN2(x,z,p,ax,az,q)          C_ASSIGN(x,z,p,ax,az,q)
@@ -259,8 +259,8 @@
     #define MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb) \
         C_MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb)
     #define LLDOT(x,p,ax,az,q)              C_LLDOT(x,p,ax,az,q)
-    #define CLEAR(x,z,p)                    C_CLEAR(x,z,p) 
-    #define CLEAR_IMAG(x,z,p)               C_CLEAR_IMAG(x,z,p) 
+    #define CLEAR(x,z,p)                    C_CLEAR(x,z,p)
+    #define CLEAR_IMAG(x,z,p)               C_CLEAR_IMAG(x,z,p)
 
     #ifdef SINGLE
         #define DIV(x,z,p,ax,az,q)          C_S_DIV(x,z,p,ax,az,q)
@@ -307,7 +307,7 @@
     #endif
 
     #define ABS(ax,az,p)                    Z_ABS(ax,az,p)
-    #define ASSEMBLE(x,z,p,ax,az,q)         Z_ASSEMBLE(x,z,p,ax,az,q) 
+    #define ASSEMBLE(x,z,p,ax,az,q)         Z_ASSEMBLE(x,z,p,ax,az,q)
     #define ASSIGN(x,z,p,ax,az,q)           Z_ASSIGN(x,z,p,ax,az,q)
     #define ASSIGN_CONJ(x,z,p,ax,az,q)      Z_ASSIGN_CONJ(x,z,p,ax,az,q)
     #define ASSIGN2(x,z,p,ax,az,q)          Z_ASSIGN(x,z,p,ax,az,q)
@@ -333,8 +333,8 @@
     #define MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb) \
         Z_MULTSUBCONJ(x,z,p,ax,az,q,bx,bz,pb)
     #define LLDOT(x,p,ax,az,q)              Z_LLDOT(x,p,ax,az,q)
-    #define CLEAR(x,z,p)                    Z_CLEAR(x,z,p) 
-    #define CLEAR_IMAG(x,z,p)               Z_CLEAR_IMAG(x,z,p) 
+    #define CLEAR(x,z,p)                    Z_CLEAR(x,z,p)
+    #define CLEAR_IMAG(x,z,p)               Z_CLEAR_IMAG(x,z,p)
 
     #ifdef SINGLE
         #define DIV(x,z,p,ax,az,q)          Z_S_DIV(x,z,p,ax,az,q)

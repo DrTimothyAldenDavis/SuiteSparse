@@ -180,14 +180,14 @@ void cholmod_l_set_empty
 
 void cholmod_to_simplicial_sym
 (
-    cholmod_factor *L,          // sparse factorization to modify 
+    cholmod_factor *L,          // sparse factorization to modify
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 ) ;
 
 void cholmod_l_to_simplicial_sym
 (
-    cholmod_factor *L,          // sparse factorization to modify 
+    cholmod_factor *L,          // sparse factorization to modify
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 ) ;
@@ -208,7 +208,7 @@ void cholmod_l_to_simplicial_sym
 // XTYPE is CHOLMOD_PATTERN, _REAL, _COMPLEX or _ZOMPLEX, and is the xtype of
 // the template routine under construction.  XTYPE2 is equal to XTYPE, except
 // if XTYPE is CHOLMOD_PATTERN, in which case XTYPE is CHOLMOD_REAL.
-// XTYPE and XTYPE2 are defined in cholmod_template.h.  
+// XTYPE and XTYPE2 are defined in cholmod_template.h.
 
 //------------------------------------------------------------------------------
 // pattern: single or double
@@ -556,7 +556,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     double work,                    // total work to do
     cholmod_common *Common
 )
-{ 
+{
     #ifdef _OPENMP
     double chunk = Common->chunk ;  // give each thread at least this much work
     int nthreads_max = Common->nthreads_max ;   // max # of threads to use

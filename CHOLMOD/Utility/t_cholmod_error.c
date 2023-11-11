@@ -70,12 +70,12 @@ int CHOLMOD(error)
             if (status > 0 && Common->print > 1)
             {
                 // print a warning message
-                MESSAGE ("warning") ; 
+                MESSAGE ("warning") ;
             }
             else if (Common->print > 0)
             {
                 // print an error message
-                MESSAGE ("error") ; 
+                MESSAGE ("error") ;
             }
         }
         #endif

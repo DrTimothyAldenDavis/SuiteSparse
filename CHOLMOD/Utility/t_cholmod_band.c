@@ -58,7 +58,7 @@ static cholmod_sparse *band_helper
     cholmod_sparse *A,
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
-    bool values,            // if true and A numerical, C is numerical 
+    bool values,            // if true and A numerical, C is numerical
     bool inplace,           // if true, convert A in place (A cannot be packed)
     bool ignore_diag,       // if true, ignore diagonal
     cholmod_common *Common
@@ -131,7 +131,7 @@ static cholmod_sparse *band_helper
     {
         default:
             p_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
-            break ; 
+            break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
             r_s_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;

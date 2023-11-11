@@ -28,7 +28,7 @@
 //
 // In addition, this file contains routines to check and print three types of
 // integer vectors:
-// 
+//
 // cholmod_check_perm           check a permutation of 0:n-1 (no duplicates)
 // cholmod_check_subset         check a subset of 0:n-1 (duplicates OK)
 // cholmod_check_parent         check an elimination tree
@@ -290,9 +290,9 @@ static int check_common
     }
 
     P2 ("  memory blocks in use:    %8.0f\n", (double) (Common->malloc_count)) ;
-    P2 ("  memory in use (MB):      %8.1f\n", 
+    P2 ("  memory in use (MB):      %8.1f\n",
         (double) (Common->memory_inuse) / 1048576.) ;
-    P2 ("  peak memory usage (MB):  %8.1f\n", 
+    P2 ("  peak memory usage (MB):  %8.1f\n",
         (double) (Common->memory_usage) / 1048576.) ;
 
     //--------------------------------------------------------------------------
@@ -346,7 +346,7 @@ static int check_common
         P3 ("%s", "    Select best ordering tried.\n") ;
         Common->method [0].ordering = CHOLMOD_GIVEN ;
         Common->method [1].ordering = CHOLMOD_AMD ;
-        Common->method [2].ordering = 
+        Common->method [2].ordering =
             (Common->default_nesdis ? CHOLMOD_NESDIS : CHOLMOD_METIS) ;
         amd_backup = FALSE ;
         #ifndef NPARTITION

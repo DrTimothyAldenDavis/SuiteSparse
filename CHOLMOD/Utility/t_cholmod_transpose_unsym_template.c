@@ -14,7 +14,7 @@
 
 // define PACKED: if A->packed is true, undefine if A->packed is false
 
-// define NUMERIC: if computing values and pattern of C, undefine it if 
+// define NUMERIC: if computing values and pattern of C, undefine it if
 //      computing just the column counts of C.
 
 //------------------------------------------------------------------------------

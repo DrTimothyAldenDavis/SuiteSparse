@@ -62,7 +62,7 @@ static void TEMPLATE (cholmod_spsolve_B_scatter_worker)
 
 static bool TEMPLATE (cholmod_spsolve_X_worker)
 (
-    cholmod_sparse *X,      // append X4 onto X 
+    cholmod_sparse *X,      // append X4 onto X
     cholmod_dense *X4,
     Int jfirst,
     Int jlast,

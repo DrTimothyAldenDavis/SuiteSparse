@@ -22,7 +22,7 @@
 //  1       numerical, with non-conjugate transpose
 //  0       pattern, keeping the diagonal
 //  -1      pattern, remove the diagonal
-//  -2      pattern, and add 50% + n extra space to C 
+//  -2      pattern, and add 50% + n extra space to C
 //          as elbow room for AMD and CAMD, when converting
 //          a symmetric matrix A to an unsymmetric matrix C
 

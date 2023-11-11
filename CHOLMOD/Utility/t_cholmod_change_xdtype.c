@@ -172,7 +172,7 @@ int CHOLMOD(dense_xtype)
     {
         // output_xtype not supported
         ERROR (CHOLMOD_INVALID, "invalid xtype") ;
-        return (FALSE) ; 
+        return (FALSE) ;
     }
 
     return (change_xdtype (X->nzmax, &(X->xtype), output_xtype,
@@ -205,12 +205,12 @@ int CHOLMOD(factor_xtype)
     int output_xtype = to_xdtype & 3 ;  // real, complex, or zomplex
     int output_dtype = to_xdtype & 4 ;  // double or single
 
-    if (output_xtype <= CHOLMOD_PATTERN || 
+    if (output_xtype <= CHOLMOD_PATTERN ||
         L->is_super && output_xtype == CHOLMOD_ZOMPLEX)
     {
         // output_xtype not supported
         ERROR (CHOLMOD_INVALID, "invalid xtype") ;
-        return (FALSE) ; 
+        return (FALSE) ;
     }
 
     Int nzmax = L->is_super ? L->xsize : L->nzmax ;

@@ -113,7 +113,7 @@ int CHOLMOD(defaults) (cholmod_common *Common)
     Common->method [8].ordering = CHOLMOD_COLAMD ;
 
     //--------------------------------------------------------------------------
-    // GPU 
+    // GPU
     //--------------------------------------------------------------------------
 
     #if defined ( CHOLMOD_INT64 )

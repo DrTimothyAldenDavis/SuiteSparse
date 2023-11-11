@@ -29,7 +29,7 @@ bool cholmod_mult_uint64_t      // c = a*b, return true if ok
 {
 
     if (a <= 1 || b <= 1)
-    { 
+    {
         (*c) = a*b ;
         return (true) ;
     }
@@ -37,7 +37,7 @@ bool cholmod_mult_uint64_t      // c = a*b, return true if ok
     uint64_t a1 = a >> 30 ;     // a1 = a / 2^30
     uint64_t b1 = b >> 30 ;     // b1 = b / 2^30
     if (a1 > 0 && b1 > 0)
-    { 
+    {
         // c = a*b will likely overflow, since both a and b are >= 2^30 and
         // thus c >= 2^60.  This is slightly pessimistic.
         (*c) = UINT64_MAX ;
@@ -73,7 +73,7 @@ bool cholmod_mult_uint64_t      // c = a*b, return true if ok
     // a*b = (t0 + t1) * 2^30 + a0*b0
 
     if (t0 >= 0x40000000L || t1 >= 0x40000000L)
-    { 
+    {
         // t >= 2^31, so t * 2^30 might overflow.  This is also slightly
         // pessimistic, but good enough for the usage of this function.
         (*c) = UINT64_MAX ;

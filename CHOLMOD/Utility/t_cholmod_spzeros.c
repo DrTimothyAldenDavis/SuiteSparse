@@ -27,7 +27,7 @@ cholmod_sparse *CHOLMOD(spzeros)    // return a sparse matrix with no entries
 {
     return (CHOLMOD(allocate_sparse) (nrow, ncol, nzmax,
         /* A is sorted: */ TRUE,
-        /* A is packed: */ TRUE, 
+        /* A is packed: */ TRUE,
         /* A is unsymmetric: */ 0,
         xdtype, Common)) ;
 }

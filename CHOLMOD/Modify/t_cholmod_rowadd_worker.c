@@ -109,7 +109,7 @@ static int TEMPLATE (cholmod_rowadd_worker)
         if (i < k)
         {
 
-            // walk from i = entry in Ci to root (and stop if i marked)*/
+            // walk from i = entry in Ci to root (and stop if i marked)
             PRINT2 (("\nwalk from i = "ID" towards k = "ID"\n", i, k)) ;
             Int len = 0 ;
 
@@ -495,6 +495,7 @@ static int TEMPLATE (cholmod_rowadd_worker)
     }
 
     Common->modfl += fl ;
+    return (ok) ;
 }
 
 #undef PATTERN

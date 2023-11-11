@@ -11,8 +11,8 @@
 #include "cholmod_internal.h"
 
 int CHOLMOD(score_comp)
-(   
-    struct cholmod_descendant_score_t *i, 
+(
+    struct cholmod_descendant_score_t *i,
     struct cholmod_descendant_score_t *j
 )
 {

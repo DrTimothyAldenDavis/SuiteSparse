@@ -26,11 +26,10 @@ size_t CHOLMOD(maxrank)     // return validated Common->maxrank
     RETURN_IF_NULL_COMMON (0) ;
 
     //--------------------------------------------------------------------------
-    // determine a valid value of maxrank 
+    // determine a valid value of maxrank
     //--------------------------------------------------------------------------
 
     size_t maxrank = Common->maxrank ;
-//  if (n == 0) return (2) ;
 
     if (n > 0)
     {

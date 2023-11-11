@@ -42,7 +42,7 @@
 //  1       numerical, with non-conjugate transpose
 //  0       pattern, keeping the diagonal
 //  -1      pattern, remove the diagonal
-//  -2      pattern, and add 50% + n extra space to C 
+//  -2      pattern, and add 50% + n extra space to C
 //          as elbow room for AMD and CAMD, when converting
 //          a symmetric matrix A to an unsymmetric matrix C
 
@@ -161,8 +161,8 @@ cholmod_sparse *CHOLMOD(copy)
         // A is unsymmetric; C is symmetric upper or lower
         //----------------------------------------------------------------------
 
-        size_t nlo = (stype > 0) ? 0 : (-nrow) ; 
-        size_t nup = (stype > 0) ? ncol : 0 ; 
+        size_t nlo = (stype > 0) ? 0 : (-nrow) ;
+        size_t nup = (stype > 0) ? ncol : 0 ;
         C = CHOLMOD(band) (A, nlo, nup, mode, Common) ;
         RETURN_IF_ERROR ;
         C->stype = stype ;

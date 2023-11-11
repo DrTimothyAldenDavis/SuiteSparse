@@ -42,7 +42,7 @@ void mexFunction
     int64_t n, minor ;
 
     /* ---------------------------------------------------------------------- */
-    /* start CHOLMOD and set parameters */ 
+    /* start CHOLMOD and set parameters */
     /* ---------------------------------------------------------------------- */
 
     cm = &Common ;

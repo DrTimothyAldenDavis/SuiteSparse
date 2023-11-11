@@ -11,7 +11,7 @@
 //------------------------------------------------------------------------------
 
 // The including file must define or undef NUMERIC.
-// define NUMERIC: if computing values and pattern of C, undefine it if 
+// define NUMERIC: if computing values and pattern of C, undefine it if
 //      computing just the column counts of C.
 
 //------------------------------------------------------------------------------

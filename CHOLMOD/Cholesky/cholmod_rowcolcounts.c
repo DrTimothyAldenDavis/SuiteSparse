@@ -94,7 +94,7 @@ static void process_edge
     Int PrevNbr [ ],    // u was last considered at step k = PrevNbr [u]
     Int ColCount [ ],   // ColCount [c] is the current weight of node c
     Int PrevLeaf [ ],   // s = PrevLeaf [u] means that s was the last leaf
-                        // seen in the subtree rooted at u. 
+                        // seen in the subtree rooted at u.
     Int RowCount [ ],   // RowCount [i] is # of nonzeros in row i of L,
                         // including the diagonal.  Not computed if NULL.
     Int SetParent [ ],  // the FIND/UNION data structure, which forms a set

@@ -40,7 +40,7 @@ static void TEMPLATE (cholmod_pack_factor_worker)
     //--------------------------------------------------------------------------
 
     Int j = Lnext [n+1] ;   // first column in the list is Lnext [n+1]
-    Int pnew = 0 ;          // next column can move to pnew 
+    Int pnew = 0 ;          // next column can move to pnew
 
     while (j != n)          // j=n is the fictious placeholder at end of list
     {
@@ -71,7 +71,7 @@ static void TEMPLATE (cholmod_pack_factor_worker)
         }
 
         //----------------------------------------------------------------------
-        // add some empty space at the end of column j 
+        // add some empty space at the end of column j
         //----------------------------------------------------------------------
 
         Int desired_space = lnzj + slack ;  // add slack space to column j

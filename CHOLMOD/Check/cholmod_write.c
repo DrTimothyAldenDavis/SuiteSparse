@@ -269,7 +269,7 @@ static int print_triplet
     double z            // imaginary part
 )
 {
-    int ok ; 
+    int ok ;
     ok = (fprintf (f, ID " " ID, 1+i, 1+j) > 0) ;
     if (!is_binary)
     {

@@ -164,7 +164,7 @@ static int TEMPLATE (cholmod_rowfac_worker)
     Iwork = Common->Iwork ;
     Stack = Iwork ;             // size n
     Flag = Common->Flag ;       // size n, Flag [i] < mark must hold
-    Wx = Common->Xwork ;        // size n if real, 2*n if complex or 
+    Wx = Common->Xwork ;        // size n if real, 2*n if complex or
                                 // zomplex.  Xwork [i] == 0 must hold.
     Wz = Wx + n ;               // size n for zomplex case only
     mark = Common->mark ;

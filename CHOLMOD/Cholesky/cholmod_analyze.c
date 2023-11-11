@@ -437,7 +437,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
     PRINT1 (("cholmod_analyze_p2 :: nmethods "ID"\n", nmethods)) ;
     for (method = 0 ; method < nmethods ; method++)
     {
-        PRINT1 (("  "ID": ordering "ID"\n",     
+        PRINT1 (("  "ID": ordering "ID"\n",
             method, Common->method [method].ordering)) ;
     }
     #endif
@@ -452,7 +452,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
         // TRUE, then NESDIS is used as the 3rd ordering instead.
         Common->method [0].ordering = CHOLMOD_GIVEN ; // skip if UserPerm NULL
         Common->method [1].ordering = CHOLMOD_AMD ;
-        Common->method [2].ordering = 
+        Common->method [2].ordering =
             (Common->default_nesdis ? CHOLMOD_NESDIS : CHOLMOD_METIS) ;
         amd_backup = FALSE ;
         #ifndef NPARTITION
@@ -790,7 +790,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
 
     if (Common->selected == EMPTY)
     {
-        // All methods failed.  
+        // All methods failed.
         // If two or more methods failed, they may have failed for different
         // reasons.  Both would clear Common->status and skip to the next
         // method.  Common->status needs to be restored here to the worst error
