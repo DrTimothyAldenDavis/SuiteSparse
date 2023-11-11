@@ -110,14 +110,15 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
 
             for (int64_t e : pivotal_elements)
             {
-                paru_element *el = elementList[e];
 #ifndef NDEBUG
-                ASSERT(el != NULL);
+                ASSERT(elementList[e] != NULL);
 #endif
-                if (el == NULL) continue;
-                PRLEVEL(PR, ("" LD "  ", e));
-                curHeap->push_back(e);
-                std::push_heap(curHeap->begin(), curHeap->end(), greater);
+                if (elementList[e] != NULL)
+                {
+                    PRLEVEL(PR, ("" LD "  ", e));
+                    curHeap->push_back(e);
+                    std::push_heap(curHeap->begin(), curHeap->end(), greater);
+                }
             }
             curHeap->push_back(eli);
             std::push_heap(curHeap->begin(), curHeap->end(), greater);
@@ -270,11 +271,12 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
 
             for (int64_t e : pivotal_elements)
             {
-                paru_element *el = elementList[e];
-                if (el == NULL) continue;
-                PRLEVEL(PR, ("" LD "  ", e));
-                curHeap->push_back(e);
-                std::push_heap(curHeap->begin(), curHeap->end(), greater);
+                if (elementList[e] != NULL)
+                {
+                    PRLEVEL(PR, ("" LD "  ", e));
+                    curHeap->push_back(e);
+                    std::push_heap(curHeap->begin(), curHeap->end(), greater);
+                }
             }
             std::push_heap(curHeap->begin(), curHeap->end(), greater);
             PRLEVEL(PR, ("%% " LD " pushed ", eli));
