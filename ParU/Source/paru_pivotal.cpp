@@ -136,8 +136,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% pivotal columns eli(" LD "): ", eli));
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
-        PRLEVEL(PR, ("" LD " ", pivotal_elements[i]));
+    for (int64_t e : pivotal_elements)
+        PRLEVEL(PR, ("" LD " ", e));
     PRLEVEL(PR, ("\n"));
     std::set<int64_t> stl_rowSet;
     std::set<int64_t>::iterator it;
@@ -416,13 +416,12 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
      * */
 
     int64_t ii = 0;  // using for resizing pivotal_elements
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_full_summed(e, f, Work, Num);
         if (elementList[e] != NULL)
         {  // keeping the element
-            pivotal_elements[ii++] = pivotal_elements[i];
+            pivotal_elements[ii++] = e;
         }
     }
 
