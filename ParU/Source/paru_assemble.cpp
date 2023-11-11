@@ -642,9 +642,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         PRLEVEL(1, ("%% fcolind=" LD " \n", fcolind));
         double *dC = curEl_Num + fcolind * curEl->nrows;
 
-        for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+        for (int64_t i1 : tempRow)
         {
-            int64_t i1 = tempRow[ii];
             int64_t rowInd = el_rowIndex[i1];
             int64_t ri = isRowInFront[rowInd];
 
@@ -660,9 +659,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     }
 
     // invalidating assembled rows
-    for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+    for (int64_t i2 : tempRow)
     {
-        int64_t i2 = tempRow[ii];
         el_rowIndex[i2] = -1;
         rowRelIndex[i2] = -1;
     }

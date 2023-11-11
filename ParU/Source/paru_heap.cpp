@@ -90,9 +90,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
                 std::vector<int64_t> *chHeap = heapList[chelid];
                 if (chHeap == NULL) continue;
                 // concatening the child and freeing the memory
-                for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+                for (int64_t e : *chHeap)
                 {
-                    int64_t e = (*chHeap)[k];
                     if (elementList[e] != NULL)
                     {
                         paru_check_prior_element(e, f, start_fac, colHash, Work,
@@ -109,9 +108,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
                 heapList[chelid] = NULL;
             }
 
-            for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+            for (int64_t e : pivotal_elements)
             {
-                int64_t e = pivotal_elements[i];
                 paru_element *el = elementList[e];
 #ifndef NDEBUG
                 ASSERT(el != NULL);
@@ -137,9 +135,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
 
                 // curHeap->insert(curHeap->end(),
                 //      chHeap->begin(), chHeap->end());
-                for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+                for (int64_t e : *chHeap)
                 {
-                    int64_t e = (*chHeap)[k];
                     if (elementList[e] != NULL)
                     {
                         paru_check_prior_element(e, f, start_fac, colHash, Work,
@@ -258,9 +255,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
                 std::vector<int64_t> *chHeap = heapList[chelid];
                 if (chHeap == NULL) continue;
                 // concatening the child and freeing the memory
-                for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+                for (int64_t e : *chHeap)
                 {
-                    int64_t e = (*chHeap)[k];
                     if (elementList[e] != NULL)
                     {
                         curHeap->push_back(e);
@@ -272,9 +268,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
                 heapList[chelid] = NULL;
             }
 
-            for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+            for (int64_t e : pivotal_elements)
             {
-                int64_t e = pivotal_elements[i];
                 paru_element *el = elementList[e];
                 if (el == NULL) continue;
                 PRLEVEL(PR, ("" LD "  ", e));
@@ -296,9 +291,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
 
                 // curHeap->insert(curHeap->end(),
                 //      chHeap->begin(), chHeap->end());
-                for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+                for (int64_t e : *chHeap)
                 {
-                    int64_t e = (*chHeap)[k];
                     if (elementList[e] != NULL)
                     {
                         curHeap->push_back(e);

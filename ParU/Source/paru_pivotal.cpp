@@ -151,9 +151,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     int64_t rowCount = 0;
 
     /*************** finding set of rows in current front *********************/
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_element *el = elementList[e];
         ASSERT(el != NULL);
 
@@ -441,9 +440,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     int64_t num_children_with0 = 0;
     int64_t num_children_with0_which_fit = 0;
 
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_element *el = elementList[e];
         if (el->nzr_pc > 0)  // an elemen that has at least one zero row
         {
