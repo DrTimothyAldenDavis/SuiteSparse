@@ -62,13 +62,15 @@
     paru_free((n + 1), sizeof(int64_t), Front_parent);  \
     paru_free((n + 1), sizeof(int64_t), Front_npivcol); \
     paru_free((m - n1), sizeof(int64_t), Ps);           \
-    paru_free((MAX(m, n) + 2), sizeof(int64_t), Work);  \
+    paru_free((std::max(m, n) + 2), sizeof(int64_t), Work);  \
     paru_free((cs1 + 1), sizeof(int64_t), cSup);        \
     paru_free((rs1 + 1), sizeof(int64_t), cSlp);        \
     umfpack_dl_free_symbolic(&Symbolic);            \
     umfpack_dl_paru_free_sw(&SW);
 
 // =============================================================================
+
+#include <algorithm>
 
 #include "paru_internal.hpp"
 
@@ -589,16 +591,16 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     //    }
 
     PRLEVEL(PR, ("Forthwith Pinit =\n"));
-    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
+    for (int64_t i = 0; i < std::min(77, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
     PRLEVEL(PR, ("\n"));
     PRLEVEL(PR, ("Forthwith Qinit =\n"));
-    for (int64_t i = 0; i < MIN(77, m); i++) PRLEVEL(PR, ("" LD " ", Qinit[i]));
+    for (int64_t i = 0; i < std::min(77, m); i++) PRLEVEL(PR, ("" LD " ", Qinit[i]));
     PRLEVEL(PR, ("\n"));
     PR = -1;
     if (Diag_map)
     {
         PRLEVEL(PR, ("Forthwith Diag_map =\n"));
-        for (int64_t i = 0; i < MIN(77, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
+        for (int64_t i = 0; i < std::min(77, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1010,7 +1012,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         }
     }
     // copy of Childp using Work for other places also
-    Work = (int64_t *)paru_alloc((MAX(m, n) + 2), sizeof(int64_t));
+    Work = (int64_t *)paru_alloc(std::max(m, n) + 2, sizeof(int64_t));
     int64_t *cChildp = Work;
     if (cChildp == NULL)
     {
@@ -1078,11 +1080,11 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 
 #ifndef NDEBUG
     PRLEVEL(PR, ("Qinit =\n"));
-    for (int64_t j = 0; j < MIN(64, n); j++) PRLEVEL(PR, ("" LD " ", Qinit[j]));
+    for (int64_t j = 0; j < std::min(64, n); j++) PRLEVEL(PR, ("" LD " ", Qinit[j]));
     PRLEVEL(PR, ("\n"));
 
     PRLEVEL(PR, ("Pinit =\n"));
-    for (int64_t i = 0; i < MIN(64, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
+    for (int64_t i = 0; i < std::min(64, m); i++) PRLEVEL(PR, ("" LD " ", Pinit[i]));
     PRLEVEL(PR, ("\n"));
 
     PR = 1;
@@ -1094,7 +1096,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (inv_Diag_map)
     {
         PRLEVEL(PR, ("inv_Diag_map =\n"));
-        for (int64_t i = 0; i < MIN(64, n); i++)
+        for (int64_t i = 0; i < std::min(64, n); i++)
             PRLEVEL(PR, ("" LD " ", inv_Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
@@ -1260,7 +1262,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     if (Diag_map)
     {
         PRLEVEL(PR, ("Symbolic Diag_map (" LD ") =\n", n));
-        for (int64_t i = 0; i < MIN(64, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
+        for (int64_t i = 0; i < std::min(64, n); i++) PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
     }
     PR = 1;
@@ -1777,7 +1779,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         }
         else
         {
-            task_depth[t] = MAX(Depth[node], task_depth[t]);
+            task_depth[t] = std::max(Depth[node], task_depth[t]);
             while (task_helper[rep] < 0) rep = Parent[rep];
             PRLEVEL(1,
                     ("After a while t=" LD " node=" LD " rep =" LD "\n", t, node, rep));
@@ -1805,7 +1807,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     //        ii++;
     //    }
     //    PRLEVEL(1, ("after ii = " LD "\n", ii));
-    //    max_chain = MAX(chain_size, max_chain);
+    //    max_chain = std::max(chain_size, max_chain);
     //    PRLEVEL(1, ("max_chain = " LD "\n", max_chain));
     //    ii++;
     //}

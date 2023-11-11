@@ -322,7 +322,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     // No support for max and min in OpenMP C++
     //pragma omp atomic capture 
     //{
-    //    Num->max_row_count = MAX(Num->max_row_count, rowCount);
+    //    Num->max_row_count = std::max(Num->max_row_count, rowCount);
     //}
 
 #ifndef NDEBUG /* Checking if pivotal rows are correct */

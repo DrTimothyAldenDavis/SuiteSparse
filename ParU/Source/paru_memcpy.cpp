@@ -11,6 +11,8 @@
  *
  * @author Aznaveh
  */
+#include <algorithm>
+
 #include "paru_internal.hpp"
 
 void paru_memcpy(void *destination, const void *source, 
@@ -39,7 +41,7 @@ void paru_memcpy(void *destination, const void *source,
             size_t start = k * mem_chunk;
             if (start < num)
             {
-                size_t chunk = MIN(num - start, mem_chunk);
+                size_t chunk = std::min(num - start, mem_chunk);
                 // void* arithmetic is illegal it is why I am using this
                 unsigned char *pdest = static_cast<unsigned char*>(destination) + start;
                 const unsigned char *psrc = static_cast<const unsigned char*>(source) + start;

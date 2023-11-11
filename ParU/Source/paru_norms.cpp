@@ -10,6 +10,8 @@
  *  and matrix
  *  @author Aznaveh
  */
+#include <algorithm>
+
 #include "paru_internal.hpp"
 double paru_spm_1norm(cholmod_sparse *A)
 {
@@ -31,7 +33,7 @@ double paru_spm_1norm(cholmod_sparse *A)
             s += fabs(Ax[p]);
         }
         PRLEVEL(2, ("s = %le\n", s));
-        norm = MAX(norm, s);
+        norm = std::max(norm, s);
     }
     PRLEVEL(1, ("norm = %.8lf\n", norm));
     return (norm);
@@ -58,7 +60,7 @@ double paru_matrix_1norm(const double *x, int64_t m, int64_t n)
     for (int64_t j = 0 ; j < n ; j++)
     {
         double colnorm = paru_vec_1norm (x + j*m, m) ;
-        norm = MAX (norm, colnorm) ;
+        norm = std::max(norm, colnorm);
     }
     PRLEVEL(1, ("matrix 1norm = %.8lf\n", norm));
     return (norm);

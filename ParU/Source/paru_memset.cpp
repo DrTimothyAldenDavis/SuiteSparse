@@ -10,6 +10,8 @@
  *
  * @author Aznaveh
  */
+#include <algorithm>
+
 #include "paru_internal.hpp"
 
 void paru_memset(void *ptr, int64_t value, size_t num, ParU_Control *Control)
@@ -36,7 +38,7 @@ void paru_memset(void *ptr, int64_t value, size_t num, ParU_Control *Control)
             size_t start = k * mem_chunk;
             if (start < num)
             {
-                size_t chunk = MIN(num - start, mem_chunk);
+                size_t chunk = std::min(num - start, mem_chunk);
                 // void* arithmetic is illegal it is why I am using this
                 unsigned char *ptr_chunk = static_cast<unsigned char*>(ptr) + start;
                 memset(ptr_chunk, value, chunk);
