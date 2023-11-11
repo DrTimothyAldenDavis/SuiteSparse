@@ -73,8 +73,11 @@ demos: library
 	./build/cholmod_demo   < ./Demo/Matrix/c.tri
 	./build/cholmod_l_demo < ./Demo/Matrix/c.tri
 	./build/cholmod_simple < ./Demo/Matrix/c.tri
+	./build/cholmod_s_simple < ./Demo/Matrix/c.tri
 	./build/cholmod_simple < ./Demo/Matrix/can___24.mtx
+	./build/cholmod_s_simple < ./Demo/Matrix/can___24.mtx
 	./build/cholmod_simple < ./Demo/Matrix/bcsstk01.tri
+	./build/cholmod_s_simple < ./Demo/Matrix/bcsstk01.tri
 
 cov:
 	( cd Tcov && $(MAKE) )

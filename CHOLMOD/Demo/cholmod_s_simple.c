@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Demo/cholmod_simple: simple demo program for CHOLMOD
+// CHOLMOD/Demo/cholmod_s_simple: simple demo program for CHOLMOD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
@@ -10,17 +10,13 @@
 
 // Read in a real symmetric or complex Hermitian matrix from stdin in
 // MatrixMarket format, solve Ax=b where b=[1 1 ... 1]', and print the residual.
-// The matrix and its factorization are all in double precision.  Compare with
-// cholmod_s_simple.
+// The matrix and its factorization are all in single precision.  Compare with
+// cholmod_simple.  Note that all scalars (one, m1, rnorm, anorm) are passed
+// to CHOLMOD in double precision, and returned as double.  However, all
+// internal computations below are done in single precision.  For input/output
+// parameters, scalars are typecast to/from the internal float computations.
 //
-// CHOLMOD_DOUBLE is zero, so the default is double precision.
-//
-// A = cholmod_read_sparse (stdin, &c) still works, and it appeared as such in
-// this demo in CHOLMOD v4.  It has no dtype parameter and reads its matrix in
-// double precision.  Here, I've used cholmod_read_sparse2 so the data type can
-// be explicitly selected, and to compare with cholmod_s_simple.
-//
-// Usage: cholmod_simple < matrixfile
+// Usage: cholmod_s_simple < matrixfile
 
 #include "cholmod.h"
 int main (void)
@@ -31,9 +27,8 @@ int main (void)
     double one [2] = {1,0}, m1 [2] = {-1,0} ;       // basic scalars
     cholmod_common c ;
     cholmod_start (&c) ;                            // start CHOLMOD
-    int dtype = CHOLMOD_DOUBLE ;                    // use double precision
+    int dtype = CHOLMOD_SINGLE ;                    // use single precision
     A = cholmod_read_sparse2 (stdin, dtype, &c) ;   // read in a matrix
-//  A = cholmod_read_sparse (stdin, &c) ;           // (same as above)
     c.precise = true ;
     c.print = (A->nrow > 5) ? 4 : 5 ;
     cholmod_print_sparse (A, "A", &c) ;             // print the matrix

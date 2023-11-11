@@ -3182,7 +3182,7 @@ int cholmod_updown_mask
     int update,         // TRUE for update, FALSE for downdate
     cholmod_sparse *C,  // the incoming sparse update
     int32_t *colmark,   // array of size n.  See cholmod_updown.c for details
-    int32_t *mask,      // size n */
+    int32_t *mask,      // size n
     // input/output:
     cholmod_factor *L,  // factor to modify
     cholmod_dense *X,   // solution to Lx=b (size n-by-1)
@@ -3779,7 +3779,7 @@ int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
 // #define CHOLMOD_GPU_PRINTF(args) printf args
 #define CHOLMOD_GPU_PRINTF(args)
 
-// define supernode requirements for processing on GPU */
+// define supernode requirements for processing on GPU
 #define CHOLMOD_ND_ROW_LIMIT 256  /* required descendant rows */
 #define CHOLMOD_ND_COL_LIMIT 32   /* required descendnat cols */
 #define CHOLMOD_POTRF_LIMIT  512  /* required cols for POTRF & TRSM on GPU */
