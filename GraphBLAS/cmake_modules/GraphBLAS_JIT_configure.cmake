@@ -8,7 +8,13 @@
 #-------------------------------------------------------------------------------
 
 # construct the JIT compiler/link strings
-set ( GB_C_COMPILER  "${CMAKE_C_COMPILER}" )
+if ( MINGW )
+    execute_process ( COMMAND cygpath -u "${CMAKE_C_COMPILER}"
+        OUTPUT_VARIABLE C_COMPILER_BINARY OUTPUT_STRIP_TRAILING_WHITESPACE )
+else ( )
+    set ( C_COMPILER_BINARY "${CMAKE_C_COMPILER}" )
+endif ( )
+set ( GB_C_COMPILER  "${C_COMPILER_BINARY}" )
 set ( GB_C_FLAGS "${CMAKE_C_FLAGS}" )
 set ( GB_C_LINK_FLAGS "${CMAKE_SHARED_LINKER_FLAGS}" )
 set ( GB_LIB_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}" )
@@ -25,8 +31,8 @@ if ( APPLE )
     set ( GB_C_FLAGS "${GB_C_FLAGS} -isysroot ${CMAKE_OSX_SYSROOT} " )
     set ( GB_C_LINK_FLAGS "${GB_C_LINK_FLAGS} -dynamiclib " )
     set ( GB_OBJ_SUFFIX ".o" )
-elseif ( WIN32 )
-    # Windows
+elseif ( MSVC )
+    # Microsoft compiler
     set ( GB_OBJ_SUFFIX ".obj" )
 else ( )
     # Linux / Unix
@@ -48,15 +54,30 @@ else ( )
 endif ( )
 
 # construct the library list
-string ( REPLACE "." "\\." LIBSUFFIX1 ${GB_LIB_SUFFIX} )
-string ( REPLACE "." "\\." LIBSUFFIX2 ${CMAKE_STATIC_LIBRARY_SUFFIX} )
+# This might be something like:
+#   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+# convert to -l flags to avoid relocation issues, i.e.: "-lgomp -lpthread -lm"
 set ( GB_C_LIBRARIES "" )
-foreach ( LIB_NAME ${GB_CMAKE_LIBRARIES} )
-    if (( LIB_NAME MATCHES ${LIBSUFFIX1} ) OR ( LIB_NAME MATCHES ${LIBSUFFIX2} ))
-        string ( APPEND GB_C_LIBRARIES " " ${LIB_NAME} )
-    else ( )
-        string ( APPEND GB_C_LIBRARIES " -l" ${LIB_NAME} )
+foreach ( _lib ${GB_CMAKE_LIBRARIES} )
+    string ( FIND ${_lib} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( GB_C_LIBRARIES "${GB_C_LIBRARIES} -l${_lib}" )
+        continue ()
     endif ( )
+    set ( _kinds "SHARED" "STATIC" )
+    if ( WIN32 )
+        list ( PREPEND _kinds "IMPORT" )
+    endif ( )
+    foreach ( _kind IN LISTS _kinds )
+        set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+        if ( ${_lib} MATCHES ${_regex} )
+            string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+            if ( NOT "${_libname}" STREQUAL "" )
+                set ( GB_C_LIBRARIES "${GB_C_LIBRARIES} -l${_libname}" )
+                break ()
+            endif ( )
+        endif ( )
+    endforeach ( )
 endforeach ( )
 
 if ( NOT NJIT OR ENABLE_CUDA )
