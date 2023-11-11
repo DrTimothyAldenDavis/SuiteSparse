@@ -21,8 +21,8 @@ Demos for CHOLMOD
 
     Matrix                  folder with test matrices
 
-To compile and run the demos on the CPU, do "make demos" in the ../CHOLMOD
-directory.
+To compile and run the demos on the CPU, do "make demos" in the parent
+directory (SuiteSparse/CHOLMOD).
 
 To run the demos on the GPU, you must first download the ND/ND6k matrix
 from the SuiteSparse Matrix Collection, hosted at https://sparse.tamu.edu
