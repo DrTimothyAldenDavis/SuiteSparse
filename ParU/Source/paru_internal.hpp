@@ -138,11 +138,6 @@ static int print_level = 0;   // FIXME
 // define FALSE 0
 #define IMPLIES(p, q) (!(p) || (q))
 
-// NULL should already be defined, but ensure it is here.
-#ifndef NULL
-    #define NULL ((void *)0)
-#endif
-
 #define Size_max ((size_t)(-1))  // the largest value of size_t
 
 // internal data structures
