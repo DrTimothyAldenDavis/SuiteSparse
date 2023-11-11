@@ -18,8 +18,8 @@ double paru_spm_1norm(cholmod_sparse *A)
     DEBUGLEVEL(0);
     if (!(A) || !A->x) return (-1);
     int64_t n = A->ncol;
-    int64_t *Ap = (int64_t *)A->p;
-    double *Ax = (double *)A->x;
+    int64_t *Ap = static_cast<int64_t*>(A->p);
+    double *Ax = static_cast<double*>(A->x);
 
     double norm = 0;
     for (int64_t j = 0; j < n; j++)

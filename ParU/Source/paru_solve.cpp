@@ -48,7 +48,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
 
-    double *t = (double *)paru_alloc(m, sizeof(double));
+    double *t = static_cast<double*>(paru_alloc(m, sizeof(double)));
     if (t == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside solve\n"));
@@ -131,7 +131,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
-    double *T = (double *)paru_alloc(m * nrhs, sizeof(double));
+    double *T = static_cast<double*>(paru_alloc(m * nrhs, sizeof(double)));
     if (T == NULL)
     {
         PRLEVEL(1, ("ParU: memory problem inside Solve\n"));

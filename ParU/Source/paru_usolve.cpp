@@ -60,7 +60,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
     int64_t *Super = Sym->Super;
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
-    double *work = (double *)paru_alloc((Num->max_col_count), sizeof(double));
+    double *work = static_cast<double*>(paru_alloc((Num->max_col_count), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory usolve\n"));
@@ -215,7 +215,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
 
     BLAS_set_num_threads(control_nthreads (Control)) ;
     double *work =
-        (double *)paru_alloc((Num->max_col_count * nrhs), sizeof(double));
+        static_cast<double*>(paru_alloc((Num->max_col_count * nrhs), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory Usolve\n"));

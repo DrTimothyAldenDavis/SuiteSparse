@@ -102,7 +102,7 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
     BLAS_set_num_threads(control_nthreads (Control)) ;
 
     // gather scatter space for dgemm
-    double *work = (double *)paru_alloc((Num->max_row_count), sizeof(double));
+    double *work = static_cast<double*>(paru_alloc((Num->max_row_count), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));
@@ -282,7 +282,7 @@ ParU_Ret ParU_Lsolve( ParU_Symbolic *Sym, ParU_Numeric *Num,
 
     // gather scatter space for dgemm
     double *work =
-        (double *)paru_alloc((Num->max_row_count * nrhs), sizeof(double));
+        static_cast<double*>(paru_alloc((Num->max_row_count * nrhs), sizeof(double)));
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));

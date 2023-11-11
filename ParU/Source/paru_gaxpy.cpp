@@ -23,9 +23,9 @@ int64_t paru_gaxpy(cholmod_sparse *A, const double *x, double *y, double alpha)
     DEBUGLEVEL(0);
 
     if (!A || !x || !y) return (0);
-    int64_t *Ap = (int64_t *)A->p;
-    int64_t *Ai = (int64_t *)A->i;
-    double *Ax = (double *)A->x;
+    int64_t *Ap = static_cast<int64_t*>(A->p);
+    int64_t *Ai = static_cast<int64_t*>(A->i);
+    double *Ax = static_cast<double*>(A->x);
     int64_t n = A->ncol;
 
     for (int64_t j = 0; j < n; j++)

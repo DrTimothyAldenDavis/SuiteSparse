@@ -73,8 +73,8 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
     int64_t *newRofS = NULL;
     int64_t *Pinit = Sym->Pinit;
 
-    oldRofS = (int64_t *)paru_alloc(m, sizeof(int64_t));  // S -> LU P
-    newRofS = (int64_t *)paru_alloc(m, sizeof(int64_t));  // Pinv of S
+    oldRofS = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));  // S -> LU P
+    newRofS = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));  // Pinv of S
 
     if (oldRofS == NULL || newRofS == NULL)
     {
