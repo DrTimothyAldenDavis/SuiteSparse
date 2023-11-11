@@ -43,6 +43,7 @@ int main (void)
     cholmod_factorize (A, L, &c) ;                  // factorize
     cholmod_print_factor (L, "L", &c) ;             // print the factorization
     x = cholmod_solve (CHOLMOD_A, L, b, &c) ;       // solve Ax=b
+    cholmod_print_dense (x, "x", &c) ;              // print the solution
     r = cholmod_copy_dense (b, &c) ;                // r = b
 #ifndef NMATRIXOPS
     cholmod_sdmult (A, 0, m1, one, x, r, &c) ;      // r = r-Ax
