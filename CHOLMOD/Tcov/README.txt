@@ -15,14 +15,14 @@ testing, and to run the tests.  Type ./go to test the GPU.
 Note that about 500MB of disk space is required, mostly in the
 CHOLMOD_TCOV_TMP directory.
 
-(Nearly) every line of AMD, CAMD, COLAMD, CCOLAMD, and CHOLMOD will be exercised,
-and their results checked.  The line "All tests passed" should be
+(Nearly) every line of AMD, CAMD, COLAMD, CCOLAMD, and CHOLMOD will be
+exercised, and their results checked.  The line "All tests passed" should be
 printed for each test on stderr.  Some matrices will report NaN as their
 maximum error; these are the four singular test matrices (Matrix/1_0,
 Matrix/3singular, Matrix/c3singluar, and Matrix/z3singular).  These test
-results are expected.  Nan's appear in CHOLMOD_TCOV_TMP/galenet_nan.out
-and CHOLMOD_TCOV_TMP/l_galenet_nan.out; these are generated intentionally,
-to test the code's NaN-handling features.
+results are expected.  Nan's appear in CHOLMOD_TCOV_TMP/galenet_nan.out and
+CHOLMOD_TCOV_TMP/l_galenet_nan.out; these are generated intentionally, to test
+the code's NaN-handling features.
 
 Note that many, many error messages will appear in the test output itself
 (CHOLMOD_TCOV_TMP/*.out), because all of CHOLMOD's error handling is

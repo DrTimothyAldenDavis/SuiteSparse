@@ -128,13 +128,37 @@ I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
 
 I += $(GPU_CONFIG)
 
-ccode: cm cl di_demo dl_demo cmread clread
+ccode:  \
+    di_test dl_test si_test sl_test \
+    di_demo dl_demo si_demo sl_demo \
+    di_read dl_read si_read sl_read
 
-TEST = cm.c \
-    test_ops.c  null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
-    raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
+PROGS = \
+    di_test dl_test si_test sl_test \
+    di_demo dl_demo si_demo sl_demo \
+    di_read dl_read si_read sl_read
 
-LTEST = cl.c amdtest_l.c camdtest_l.c huge_l.c
+TEMPLATES =         \
+    t_amdtest.c     \
+    t_aug.c         \
+    t_camdtest.c    \
+    t_cctest.c      \
+    t_cm.c          \
+    t_ctest.c       \
+    t_huge.c        \
+    t_lpdemo.c      \
+    t_memory.c      \
+    t_null2.c       \
+    t_null.c        \
+    t_raw_factor.c  \
+    t_solve.c       \
+    t_test_ops.c    \
+    t_unpack.c
+
+DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
+DI_TEST = di_test.c di_amdtest.c di_camdtest.c di_huge.c
+SL_TEST = sl_test.c sl_amdtest.c sl_camdtest.c sl_huge.c
+SI_TEST = si_test.c si_amdtest.c si_camdtest.c si_huge.c
 
 INC =   ../Include/cholmod.h \
 	../Include/cholmod_internal.h \
@@ -504,43 +528,53 @@ IALL = $(IOBJ) $(AMDOBJ)  $(COLAMDOBJ)  $(CCOLAMDOBJ)  $(CAMDOBJ)   $(CONFIG) $(
 LALL = $(LOBJ) $(LAMDOBJ) $(LCOLAMDOBJ) $(LCCOLAMDOBJ) $(LCAMDOBJ)  $(CONFIG) $(ILOBJ) $(LGPU)
 
 
-cm: $(IALL) $(TEST) cm.h Makefile
-	$(C) $(I) $(TEST) -o cm $(IALL) $(LDLIBS)
+di_test: $(IALL) $(DI_TEST) cm.h Makefile $(TEMPLATES)
+	$(C) $(I) $(DI_TEST) -o di_test $(IALL) $(LDLIBS)
 
-cl: $(LALL) $(LTEST) cm.h Makefile cm.c \
-    test_ops.c  null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
-    raw_factor.c cctest.c ctest.c amdtest.c camdtest.c huge.c
-	$(C) $(I) $(LTEST) -o cl $(LALL) $(LDLIBS)
+dl_test: $(LALL) $(DL_TEST) cm.h Makefile $(TEMPLATES)
+	$(C) $(I) $(DL_TEST) -o dl_test $(LALL) $(LDLIBS)
 
-cmread: $(IALL) cmread.c Makefile
-	$(C) $(I) cmread.c -o cmread $(IALL) $(LDLIBS)
+si_test: $(IALL) $(SI_TEST) cm.h Makefile $(TEMPLATES)
+	$(C) $(I) $(SI_TEST) -o si_test $(IALL) $(LDLIBS)
 
-clread: $(LALL) clread.c Makefile
-	$(C) $(I) clread.c -o clread $(LALL) $(LDLIBS)
+sl_test: $(IALL) $(SL_TEST) cm.h Makefile $(TEMPLATES)
+	$(C) $(I) $(SL_TEST) -o sl_test $(LALL) $(LDLIBS)
 
-di_demo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
+di_read: $(IALL) di_read.c Makefile t_cmread.c
+	$(C) $(I) di_read.c -o di_read $(IALL) $(LDLIBS)
+
+dl_read: $(LALL) dl_read.c Makefile t_cmread.c
+	$(C) $(I) dl_read.c -o dl_read $(LALL) $(LDLIBS)
+
+si_read: $(IALL) si_read.c Makefile t_cmread.c
+	$(C) $(I) si_read.c -o si_read $(IALL) $(LDLIBS)
+
+sl_read: $(LALL) sl_read.c Makefile t_cmread.c
+	$(C) $(I) sl_read.c -o sl_read $(LALL) $(LDLIBS)
+
+di_demo: $(IALL) ../Demo/cholmod_demo.c Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_demo.c di_demo.c
 	$(C) $(I) -I../Demo di_demo.c -o di_demo $(IALL) $(LDLIBS)
 
-si_demo: $(IALL) ../Demo/cholmod_s_demo.c cm.h Makefile \
+si_demo: $(IALL) ../Demo/cholmod_s_demo.c Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_s_demo.c si_demo.c
 	$(C) $(I) -I../Demo si_demo.c -o si_demo $(IALL) $(LDLIBS)
 
-dl_demo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+dl_demo: $(LALL) ../Demo/cholmod_l_demo.c Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_l_demo.c dl_demo.c
 	$(C) $(I) -I../Demo dl_demo.c -o dl_demo $(LALL) $(LDLIBS)
 
-sl_demo: $(LALL) ../Demo/cholmod_sl_demo.c cm.h Makefile \
+sl_demo: $(LALL) ../Demo/cholmod_sl_demo.c Makefile \
 	../Demo/cholmod_demo.h
 	- ln -s ../Demo/cholmod_sl_demo.c sl_demo.c
 	$(C) $(I) -I../Demo sl_demo.c -o sl_demo $(LALL) $(LDLIBS)
 
-compile: di_demo dl_demo cmread clread cm cl
+compile:  ccode
 
-go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
+go: ccode
 	mkdir -p $(T)
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/di_demo_k1.out
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/di_demo_k2.out
@@ -554,11 +588,11 @@ go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
 	$(V) ./di_demo < Matrix/3_2                   > $(T)/di_demo_3_2.out
 	$(V) ./di_demo < Matrix/c5lo                  > $(T)/di_demo_c5lo.out
 	$(V) ./di_demo < Matrix/c10                   > $(T)/di_demo_c10.out
-	- $(V) ./di_demo no_such_file                   > $(T)/di_demo_no_such_file.out
-	- $(V) ./di_demo ../Demo/Matrix/mangle1.mtx     > $(T)/di_demo_mangle1.out
-	- $(V) ./di_demo ../Demo/Matrix/mangle2.mtx     > $(T)/di_demo_mangle2.out
-	- $(V) ./di_demo ../Demo/Matrix/mangle3.mtx     > $(T)/di_demo_mangle3.out
-	- $(V) ./di_demo ../Demo/Matrix/mangle4.mtx     > $(T)/di_demo_mangle4.out
+	- $(V) ./di_demo no_such_file                 > $(T)/di_demo_no_such_file.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle1.mtx   > $(T)/di_demo_mangle1.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle2.mtx   > $(T)/di_demo_mangle2.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle3.mtx   > $(T)/di_demo_mangle3.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle4.mtx   > $(T)/di_demo_mangle4.out
 	$(V) ./di_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/di_demo_pts5ldd03.out
 	$(V) ./si_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/si_demo_k1.out
 	$(V) ./si_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/si_demo_k2.out
@@ -572,11 +606,11 @@ go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
 	$(V) ./si_demo < Matrix/3_2                   > $(T)/si_demo_3_2.out
 	$(V) ./si_demo < Matrix/c5lo                  > $(T)/si_demo_c5lo.out
 	$(V) ./si_demo < Matrix/c10                   > $(T)/si_demo_c10.out
-	- $(V) ./si_demo no_such_file                   > $(T)/si_demo_no_such_file.out
-	- $(V) ./si_demo ../Demo/Matrix/mangle1.mtx     > $(T)/si_demo_mangle1.out
-	- $(V) ./si_demo ../Demo/Matrix/mangle2.mtx     > $(T)/si_demo_mangle2.out
-	- $(V) ./si_demo ../Demo/Matrix/mangle3.mtx     > $(T)/si_demo_mangle3.out
-	- $(V) ./si_demo ../Demo/Matrix/mangle4.mtx     > $(T)/si_demo_mangle4.out
+	- $(V) ./si_demo no_such_file                 > $(T)/si_demo_no_such_file.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle1.mtx   > $(T)/si_demo_mangle1.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle2.mtx   > $(T)/si_demo_mangle2.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle3.mtx   > $(T)/si_demo_mangle3.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle4.mtx   > $(T)/si_demo_mangle4.out
 	$(V) ./si_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/si_demo_pts5ldd03.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/dl_demo_k1.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/dl_demo_k2.out
@@ -594,11 +628,11 @@ go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
 	$(V) ./dl_demo < Matrix/3_2                   > $(T)/dl_demo_3_2.out
 	$(V) ./dl_demo < Matrix/c5lo                  > $(T)/dl_demo_c5lo.out
 	$(V) ./dl_demo < Matrix/c10                   > $(T)/dl_demo_c10.out
-	- $(V) ./dl_demo no_such_file                   > $(T)/dl_demo_no_such_file.out
-	- $(V) ./dl_demo ../Demo/Matrix/mangle1.mtx     > $(T)/dl_demo_mangle1.out
-	- $(V) ./dl_demo ../Demo/Matrix/mangle2.mtx     > $(T)/dl_demo_mangle2.out
-	- $(V) ./dl_demo ../Demo/Matrix/mangle3.mtx     > $(T)/dl_demo_mangle3.out
-	- $(V) ./dl_demo ../Demo/Matrix/mangle4.mtx     > $(T)/dl_demo_mangle4.out
+	- $(V) ./dl_demo no_such_file                 > $(T)/dl_demo_no_such_file.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle1.mtx   > $(T)/dl_demo_mangle1.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle2.mtx   > $(T)/dl_demo_mangle2.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle3.mtx   > $(T)/dl_demo_mangle3.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle4.mtx   > $(T)/dl_demo_mangle4.out
 	$(V) ./dl_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/dl_demo_pts5ldd03.out
 	$(V) ./sl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/sl_demo_k1.out
 	$(V) ./sl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/sl_demo_k2.out
@@ -616,164 +650,164 @@ go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
 	$(V) ./sl_demo < Matrix/3_2                   > $(T)/sl_demo_3_2.out
 	$(V) ./sl_demo < Matrix/c5lo                  > $(T)/sl_demo_c5lo.out
 	$(V) ./sl_demo < Matrix/c10                   > $(T)/sl_demo_c10.out
-	- $(V) ./sl_demo no_such_file                   > $(T)/sl_demo_no_such_file.out
-	- $(V) ./sl_demo ../Demo/Matrix/mangle1.mtx     > $(T)/sl_demo_mangle1.out
-	- $(V) ./sl_demo ../Demo/Matrix/mangle2.mtx     > $(T)/sl_demo_mangle2.out
-	- $(V) ./sl_demo ../Demo/Matrix/mangle3.mtx     > $(T)/sl_demo_mangle3.out
-	- $(V) ./sl_demo ../Demo/Matrix/mangle4.mtx     > $(T)/sl_demo_mangle4.out
+	- $(V) ./sl_demo no_such_file                 > $(T)/sl_demo_no_such_file.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle1.mtx   > $(T)/sl_demo_mangle1.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle2.mtx   > $(T)/sl_demo_mangle2.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle3.mtx   > $(T)/sl_demo_mangle3.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle4.mtx   > $(T)/sl_demo_mangle4.out
 	$(V) ./sl_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/sl_demo_pts5ldd03.out
 	- grep maxresid $(T)/??_demo*.out
-	$(V) ./cl    < Matrix/galenet               > $(T)/l_galenet.out
-	$(V) ./cl -m < Matrix/z5lo                  > $(T)/l_z5lo.out
-	$(V) ./cmread no_such_file                  > $(T)/no_such_file.out
-	$(V) ./cmread Matrix/crud1                  > $(T)/crud1.out
-	$(V) ./cmread Matrix/crud2                  > $(T)/crud2.out
-	$(V) ./cmread Matrix/fullcrud.mtx           > $(T)/fullcrud.out
-	$(V) ./cmread Matrix/fullcrud1.mtx          > $(T)/fullcrud1.out
-	$(V) ./cmread Matrix/fullcrud2.mtx          > $(T)/fullcrud2.out
-	$(V) ./cmread Matrix/3by0.mtx               > $(T)/3by0.out
-	$(V) ./cmread Matrix/fullrza.mtx            > $(T)/fullrza.out
-	$(V) ./cmread Matrix/fullrsa.mtx            > $(T)/fullrsa.out
-	$(V) ./cmread Matrix/fullcsa.mtx            > $(T)/fullcsa.out
-	$(V) ./cmread Matrix/fullcza.mtx            > $(T)/fullcza.out
-	$(V) ./cmread Matrix/fullcha.mtx            > $(T)/fullcha.out
-	$(V) ./cmread Matrix/cha.mtx                > $(T)/cha.out
-	$(V) ./cmread Matrix/cza.mtx                > $(T)/cza.out
-	$(V) ./cmread Matrix/csa.mtx                > $(T)/csa.out
-	$(V) ./cmread Matrix/one                    > $(T)/one.out
-	$(V) ./cmread Matrix/rza.mtx                > $(T)/rza.out
-	$(V) ./cmread ../Demo/Matrix/mangle5.tri    > $(T)/mangle5.out
-	$(V) ./cmread ../Demo/Matrix/mangle6.tri    > $(T)/mangle6.out
-	$(V) ./cmread ../Demo/Matrix/mangle7.tri    > $(T)/mangle6.out
-	$(V) ./cmread ../Demo/Matrix/mangle8.tri    > $(T)/mangle8.out
-	$(V) ./cmread ../Demo/Matrix/empty.tri      > $(T)/empty.out
-	$(V) ./cmread ../Demo/Matrix/one.tri        > $(T)/one.out
-	$(V) ./cmread Matrix/plskz362.mtx           > $(T)/plskz363.out
-	$(V) ./cmread Matrix/2diag.tri              > $(T)/2diag.out
-	$(V) ./cmread Matrix/r5lo                   > $(T)/r5lo.out
-	$(V) ./cmread Matrix/r5lo2                  > $(T)/r5lo2.out
+	$(V) ./dl_test    < Matrix/galenet           > $(T)/dl_test_galenet.out
+	$(V) ./dl_test -m < Matrix/z5lo              > $(T)/dl_test_z5lo.out
+	$(V) ./di_read no_such_file                  > $(T)/no_such_file.out
+	$(V) ./di_read Matrix/crud1                  > $(T)/crud1.out
+	$(V) ./di_read Matrix/crud2                  > $(T)/crud2.out
+	$(V) ./di_read Matrix/fullcrud.mtx           > $(T)/fullcrud.out
+	$(V) ./di_read Matrix/fullcrud1.mtx          > $(T)/fullcrud1.out
+	$(V) ./di_read Matrix/fullcrud2.mtx          > $(T)/fullcrud2.out
+	$(V) ./di_read Matrix/3by0.mtx               > $(T)/3by0.out
+	$(V) ./di_read Matrix/fullrza.mtx            > $(T)/fullrza.out
+	$(V) ./di_read Matrix/fullrsa.mtx            > $(T)/fullrsa.out
+	$(V) ./di_read Matrix/fullcsa.mtx            > $(T)/fullcsa.out
+	$(V) ./di_read Matrix/fullcza.mtx            > $(T)/fullcza.out
+	$(V) ./di_read Matrix/fullcha.mtx            > $(T)/fullcha.out
+	$(V) ./di_read Matrix/cha.mtx                > $(T)/cha.out
+	$(V) ./di_read Matrix/cza.mtx                > $(T)/cza.out
+	$(V) ./di_read Matrix/csa.mtx                > $(T)/csa.out
+	$(V) ./di_read Matrix/one                    > $(T)/one.out
+	$(V) ./di_read Matrix/rza.mtx                > $(T)/rza.out
+	$(V) ./di_read ../Demo/Matrix/mangle5.tri    > $(T)/mangle5.out
+	$(V) ./di_read ../Demo/Matrix/mangle6.tri    > $(T)/mangle6.out
+	$(V) ./di_read ../Demo/Matrix/mangle7.tri    > $(T)/mangle6.out
+	$(V) ./di_read ../Demo/Matrix/mangle8.tri    > $(T)/mangle8.out
+	$(V) ./di_read ../Demo/Matrix/empty.tri      > $(T)/empty.out
+	$(V) ./di_read ../Demo/Matrix/one.tri        > $(T)/one.out
+	$(V) ./di_read Matrix/plskz362.mtx           > $(T)/plskz363.out
+	$(V) ./di_read Matrix/2diag.tri              > $(T)/2diag.out
+	$(V) ./di_read Matrix/r5lo                   > $(T)/r5lo.out
+	$(V) ./di_read Matrix/r5lo2                  > $(T)/r5lo2.out
 	- diff $(T)/r5lo.out $(T)/r5lo2.out
-	$(V) ./cmread Matrix/cs.mtx                 > $(T)/cs.out
-	$(V) ./cmread Matrix/2lo.tri                > $(T)/2lo.out
-	$(V) ./cmread Matrix/2.tri                  > $(T)/2.out
-	$(V) ./cmread Matrix/2up.tri                > $(T)/2up.out
-	$(V) ./cmread Matrix/huge.tri               > $(T)/huge.out
-	$(V) ./cmread Matrix/1e99                   > $(T)/1e99.out
-	$(V) ./clread no_such_file                  > $(T)/l_no_such_file.out
-	$(V) ./clread Matrix/crud1                  > $(T)/l_crud1.out
-	$(V) ./clread Matrix/crud2                  > $(T)/l_crud2.out
-	$(V) ./clread Matrix/fullcrud.mtx           > $(T)/l_fullcrud.out
-	$(V) ./clread Matrix/fullcrud1.mtx          > $(T)/l_fullcrud1.out
-	$(V) ./clread Matrix/fullcrud2.mtx          > $(T)/l_fullcrud2.out
-	$(V) ./clread Matrix/3by0.mtx               > $(T)/l_3by0.out
-	$(V) ./clread Matrix/fullrza.mtx            > $(T)/l_fullrza.out
-	$(V) ./clread Matrix/fullrsa.mtx            > $(T)/l_fullrsa.out
-	$(V) ./clread Matrix/fullcsa.mtx            > $(T)/l_fullcsa.out
-	$(V) ./clread Matrix/fullcza.mtx            > $(T)/l_fullcza.out
-	$(V) ./clread Matrix/fullcha.mtx            > $(T)/l_fullcha.out
-	$(V) ./clread Matrix/cha.mtx                > $(T)/l_cha.out
-	$(V) ./clread Matrix/cza.mtx                > $(T)/l_cza.out
-	$(V) ./clread Matrix/csa.mtx                > $(T)/l_csa.out
-	$(V) ./clread Matrix/one                    > $(T)/l_one.out
-	$(V) ./clread Matrix/rza.mtx                > $(T)/l_rza.out
-	$(V) ./clread ../Demo/Matrix/mangle5.tri    > $(T)/l_mangle5.out
-	$(V) ./clread ../Demo/Matrix/mangle6.tri    > $(T)/l_mangle6.out
-	$(V) ./clread ../Demo/Matrix/mangle7.tri    > $(T)/l_mangle6.out
-	$(V) ./clread ../Demo/Matrix/mangle8.tri    > $(T)/l_mangle8.out
-	$(V) ./clread ../Demo/Matrix/empty.tri      > $(T)/l_empty.out
-	$(V) ./clread ../Demo/Matrix/one.tri        > $(T)/l_one.out
-	$(V) ./clread Matrix/plskz362.mtx           > $(T)/l_plskz363.out
-	$(V) ./clread Matrix/2diag.tri              > $(T)/l_2diag.out
-	$(V) ./clread Matrix/r5lo                   > $(T)/l_r5lo.out
-	$(V) ./clread Matrix/r5lo2                  > $(T)/l_r5lo2.out
+	$(V) ./di_read Matrix/cs.mtx                 > $(T)/cs.out
+	$(V) ./di_read Matrix/2lo.tri                > $(T)/2lo.out
+	$(V) ./di_read Matrix/2.tri                  > $(T)/2.out
+	$(V) ./di_read Matrix/2up.tri                > $(T)/2up.out
+	$(V) ./di_read Matrix/huge.tri               > $(T)/huge.out
+	$(V) ./di_read Matrix/1e99                   > $(T)/1e99.out
+	$(V) ./dl_read no_such_file                  > $(T)/dl_read_no_such_file.out
+	$(V) ./dl_read Matrix/crud1                  > $(T)/dl_read_crud1.out
+	$(V) ./dl_read Matrix/crud2                  > $(T)/dl_read_crud2.out
+	$(V) ./dl_read Matrix/fullcrud.mtx           > $(T)/dl_read_fullcrud.out
+	$(V) ./dl_read Matrix/fullcrud1.mtx          > $(T)/dl_read_fullcrud1.out
+	$(V) ./dl_read Matrix/fullcrud2.mtx          > $(T)/dl_read_fullcrud2.out
+	$(V) ./dl_read Matrix/3by0.mtx               > $(T)/dl_read_3by0.out
+	$(V) ./dl_read Matrix/fullrza.mtx            > $(T)/dl_read_fullrza.out
+	$(V) ./dl_read Matrix/fullrsa.mtx            > $(T)/dl_read_fullrsa.out
+	$(V) ./dl_read Matrix/fullcsa.mtx            > $(T)/dl_read_fullcsa.out
+	$(V) ./dl_read Matrix/fullcza.mtx            > $(T)/dl_read_fullcza.out
+	$(V) ./dl_read Matrix/fullcha.mtx            > $(T)/dl_read_fullcha.out
+	$(V) ./dl_read Matrix/cha.mtx                > $(T)/dl_read_cha.out
+	$(V) ./dl_read Matrix/cza.mtx                > $(T)/dl_read_cza.out
+	$(V) ./dl_read Matrix/csa.mtx                > $(T)/dl_read_csa.out
+	$(V) ./dl_read Matrix/one                    > $(T)/dl_read_one.out
+	$(V) ./dl_read Matrix/rza.mtx                > $(T)/dl_read_rza.out
+	$(V) ./dl_read ../Demo/Matrix/mangle5.tri    > $(T)/dl_read_mangle5.out
+	$(V) ./dl_read ../Demo/Matrix/mangle6.tri    > $(T)/dl_read_mangle6.out
+	$(V) ./dl_read ../Demo/Matrix/mangle7.tri    > $(T)/dl_read_mangle6.out
+	$(V) ./dl_read ../Demo/Matrix/mangle8.tri    > $(T)/dl_read_mangle8.out
+	$(V) ./dl_read ../Demo/Matrix/empty.tri      > $(T)/dl_read_empty.out
+	$(V) ./dl_read ../Demo/Matrix/one.tri        > $(T)/dl_read_one.out
+	$(V) ./dl_read Matrix/plskz362.mtx           > $(T)/dl_read_plskz363.out
+	$(V) ./dl_read Matrix/2diag.tri              > $(T)/dl_read_2diag.out
+	$(V) ./dl_read Matrix/r5lo                   > $(T)/dl_read_r5lo.out
+	$(V) ./dl_read Matrix/r5lo2                  > $(T)/dl_read_r5lo2.out
 	- diff $(T)/r5lo.out $(T)/r5lo2.out
-	$(V) ./clread Matrix/cs.mtx                 > $(T)/l_cs.out
-	$(V) ./clread Matrix/2lo.tri                > $(T)/l_l_2lo.out
-	$(V) ./clread Matrix/2.tri                  > $(T)/l_2.out
-	$(V) ./clread Matrix/2up.tri                > $(T)/l_2up.out
-	$(V) ./clread Matrix/huge.tri               > $(T)/l_huge.out
-	$(V) ./clread Matrix/1e99                   > $(T)/l_1e99.out
-	$(V) ./cm    < Matrix/galenet               > $(T)/galenet.out
+	$(V) ./dl_read Matrix/cs.mtx                 > $(T)/dl_read_cs.out
+	$(V) ./dl_read Matrix/2lo.tri                > $(T)/dl_read_l_2lo.out
+	$(V) ./dl_read Matrix/2.tri                  > $(T)/dl_read_2.out
+	$(V) ./dl_read Matrix/2up.tri                > $(T)/dl_read_2up.out
+	$(V) ./dl_read Matrix/huge.tri               > $(T)/dl_read_huge.out
+	$(V) ./dl_read Matrix/1e99                   > $(T)/dl_read_1e99.out
+	$(V) ./di_test    < Matrix/galenet               > $(T)/di_test_galenet.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/5by50                 > $(T)/5by50.out
-	$(V) ./cl    < Matrix/5by50                 > $(T)/l_5by50.out
+	$(V) ./di_test    < Matrix/5by50                 > $(T)/di_test_5by50.out
+	$(V) ./dl_test    < Matrix/5by50                 > $(T)/dl_test_5by50.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/r5lo                  > $(T)/r5lo.out 
-	$(V) ./cl    < Matrix/r5lo                  > $(T)/l_r5lo.out
-	$(V) ./cm    < Matrix/r5up                  > $(T)/r5up.out
-	$(V) ./cl    < Matrix/r5up                  > $(T)/l_r5up.out
-	$(V) ./cm    < Matrix/r5up2                 > $(T)/r5up2.out
-	$(V) ./cl    < Matrix/r5up2                 > $(T)/l_r5up2.out
-	$(V) ./cm    < Matrix/c5up2                 > $(T)/c5up2.out
-	$(V) ./cl    < Matrix/c5up2                 > $(T)/l_c5up2.out
-	$(V) ./cm    < Matrix/z5up2                 > $(T)/z5up2.out
-	$(V) ./cl    < Matrix/z5up2                 > $(T)/l_z5up2.out
-	$(V) ./cm -m < Matrix/z5lo                  > $(T)/z5lo.out
-	$(V) ./cm    < Matrix/ibm32                 > $(T)/ibm.out
-	$(V) ./cl    < Matrix/ibm32                 > $(T)/l_ibm.out
+	$(V) ./di_test    < Matrix/r5lo                  > $(T)/di_test_r5lo.out 
+	$(V) ./dl_test    < Matrix/r5lo                  > $(T)/dl_test_r5lo.out
+	$(V) ./di_test    < Matrix/r5up                  > $(T)/di_test_r5up.out
+	$(V) ./dl_test    < Matrix/r5up                  > $(T)/dl_test_r5up.out
+	$(V) ./di_test    < Matrix/r5up2                 > $(T)/di_test_r5up2.out
+	$(V) ./dl_test    < Matrix/r5up2                 > $(T)/dl_test_r5up2.out
+	$(V) ./di_test    < Matrix/c5up2                 > $(T)/di_test_c5up2.out
+	$(V) ./dl_test    < Matrix/c5up2                 > $(T)/dl_test_c5up2.out
+	$(V) ./di_test    < Matrix/z5up2                 > $(T)/di_test_z5up2.out
+	$(V) ./dl_test    < Matrix/z5up2                 > $(T)/dl_test_z5up2.out
+	$(V) ./di_test -m < Matrix/z5lo                  > $(T)/di_test_z5lo.out
+	$(V) ./di_test    < Matrix/ibm32                 > $(T)/di_test_ibm.out
+	$(V) ./dl_test    < Matrix/ibm32                 > $(T)/dl_test_ibm.out
 	- $(COVER)
-	$(V) ./cm -m < Matrix/c5lo                  > $(T)/c5lo.out
-	$(V) ./cl -m < Matrix/c5lo                  > $(T)/l_c5lo.out
-	$(V) ./cm -m < Matrix/z10                   > $(T)/z10.out
-	$(V) ./cl -m < Matrix/z10                   > $(T)/l_z10.out
-	$(V) ./cm -m < Matrix/z5up                  > $(T)/z5up.out
-	$(V) ./cl -m < Matrix/z5up                  > $(T)/l_z5up.out
+	$(V) ./di_test -m < Matrix/c5lo                  > $(T)/di_test_c5lo.out
+	$(V) ./dl_test -m < Matrix/c5lo                  > $(T)/dl_test_c5lo.out
+	$(V) ./di_test -m < Matrix/z10                   > $(T)/di_test_z10.out
+	$(V) ./dl_test -m < Matrix/z10                   > $(T)/dl_test_z10.out
+	$(V) ./di_test -m < Matrix/z5up                  > $(T)/di_test_z5up.out
+	$(V) ./dl_test -m < Matrix/z5up                  > $(T)/dl_test_z5up.out
 	- $(COVER)
-	$(V) ./cm -s < Matrix/3singular             > $(T)/3singular.out
-	$(V) ./cl -s < Matrix/3singular             > $(T)/l_3singular.out
-	$(V) ./cm -s < Matrix/z3singular            > $(T)/z3singular.out
-	$(V) ./cl -s < Matrix/z3singular            > $(T)/l_z3singular.out
-	$(V) ./cm -s < Matrix/c3singular            > $(T)/c3singular.out
-	$(V) ./cl -s < Matrix/c3singular            > $(T)/l_c3singular.out
-	$(V) ./cm -m < Matrix/0                     > $(T)/0.out
-	$(V) ./cl -m < Matrix/0                     > $(T)/l_0.out
-	$(V) ./cm -m < Matrix/afiro                 > $(T)/afiro.out
-	$(V) ./cl -m < Matrix/afiro                 > $(T)/l_afiro.out
+	$(V) ./di_test -s < Matrix/3singular             > $(T)/di_test_3singular.out
+	$(V) ./dl_test -s < Matrix/3singular             > $(T)/dl_test_3singular.out
+	$(V) ./di_test -s < Matrix/z3singular            > $(T)/di_test_z3singular.out
+	$(V) ./dl_test -s < Matrix/z3singular            > $(T)/dl_test_z3singular.out
+	$(V) ./di_test -s < Matrix/c3singular            > $(T)/di_test_c3singular.out
+	$(V) ./dl_test -s < Matrix/c3singular            > $(T)/dl_test_c3singular.out
+	$(V) ./di_test -m < Matrix/0                     > $(T)/di_test_0.out
+	$(V) ./dl_test -m < Matrix/0                     > $(T)/dl_test_0.out
+	$(V) ./di_test -m < Matrix/afiro                 > $(T)/di_test_afiro.out
+	$(V) ./dl_test -m < Matrix/afiro                 > $(T)/dl_test_afiro.out
 	- $(COVER)
-	$(V) ./cm -m < Matrix/k01up                 > $(T)/k01up.out
-	$(V) ./cl -m < Matrix/k01up                 > $(T)/l_k01up.out
+	$(V) ./di_test -m < Matrix/k01up                 > $(T)/di_test_k01up.out
+	$(V) ./dl_test -m < Matrix/k01up                 > $(T)/dl_test_k01up.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/diag                  > $(T)/diag.out
-	$(V) ./cl    < Matrix/diag                  > $(T)/l_diag.out
-	$(V) ./cm -m < Matrix/ex5lo                 > $(T)/ex5lo.out
-	$(V) ./cl -m < Matrix/ex5lo                 > $(T)/l_ex5lo.out
+	$(V) ./di_test    < Matrix/diag                  > $(T)/di_test_diag.out
+	$(V) ./dl_test    < Matrix/diag                  > $(T)/dl_test_diag.out
+	$(V) ./di_test -m < Matrix/ex5lo                 > $(T)/di_test_ex5lo.out
+	$(V) ./dl_test -m < Matrix/ex5lo                 > $(T)/dl_test_ex5lo.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/20lo                  > $(T)/20lo.out
-	$(V) ./cl    < Matrix/20lo                  > $(T)/l_20lo.out
-	$(V) ./cm    < Matrix/z30lo                 > $(T)/z30lo.out
-	$(V) ./cl    < Matrix/z30lo                 > $(T)/l_z30lo.out
+	$(V) ./di_test    < Matrix/20lo                  > $(T)/di_test_20lo.out
+	$(V) ./dl_test    < Matrix/20lo                  > $(T)/dl_test_20lo.out
+	$(V) ./di_test    < Matrix/z30lo                 > $(T)/di_test_z30lo.out
+	$(V) ./dl_test    < Matrix/z30lo                 > $(T)/dl_test_z30lo.out
 	- $(COVER)
-	$(V) ./cm -m < Matrix/z30up                 > $(T)/z30up.out
-	$(V) ./cl -m < Matrix/z30up                 > $(T)/l_z30up.out
-	$(V) ./cm    < Matrix/c10                   > $(T)/c10.out
-	$(V) ./cl    < Matrix/c10                   > $(T)/l_c10.out
-	$(V) ./cm    < Matrix/c30lo                 > $(T)/c30lo.out
-	$(V) ./cl    < Matrix/c30lo                 > $(T)/l_c30lo.out
+	$(V) ./di_test -m < Matrix/z30up                 > $(T)/di_test_z30up.out
+	$(V) ./dl_test -m < Matrix/z30up                 > $(T)/dl_test_z30up.out
+	$(V) ./di_test    < Matrix/c10                   > $(T)/di_test_c10.out
+	$(V) ./dl_test    < Matrix/c10                   > $(T)/dl_test_c10.out
+	$(V) ./di_test    < Matrix/c30lo                 > $(T)/di_test_c30lo.out
+	$(V) ./dl_test    < Matrix/c30lo                 > $(T)/dl_test_c30lo.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/C9840                 > $(T)/C9840.out
-	$(V) ./cl    < Matrix/C9840                 > $(T)/l_C9840.out
+	$(V) ./di_test    < Matrix/C9840                 > $(T)/di_test_C9840.out
+	$(V) ./dl_test    < Matrix/C9840                 > $(T)/dl_test_C9840.out
 	- $(COVER)
-	$(V) ./cm -m < Matrix/c30up                 > $(T)/c30up.out
-	$(V) ./cl -m < Matrix/c30up                 > $(T)/l_c30up.out
-	$(V) ./cm    < Matrix/pi                    > $(T)/pi.out
-	$(V) ./cl    < Matrix/pi                    > $(T)/l_pi.out
-	$(V) ./cm    < Matrix/cpi                   > $(T)/cpi.out
-	$(V) ./cl    < Matrix/cpi                   > $(T)/l_cpi.out
-	$(V) ./cm    < Matrix/1_0                   > $(T)/1_0.out
-	$(V) ./cl    < Matrix/1_0                   > $(T)/l_1_0.out
-	$(V) ./cm -s < Matrix/3b                    > $(T)/3b.out
-	$(V) ./cl -s < Matrix/3b                    > $(T)/l_3b.out
-	$(V) ./cm -s < Matrix/cza                   > $(T)/cza2.out
-	$(V) ./cl -s < Matrix/cza                   > $(T)/l_cza2.out
-	$(V) ./cm    < Matrix/0_1                   > $(T)/0_1.out
-	$(V) ./cl    < Matrix/0_1                   > $(T)/l_0_1.out
+	$(V) ./di_test -m < Matrix/c30up                 > $(T)/di_test_c30up.out
+	$(V) ./dl_test -m < Matrix/c30up                 > $(T)/dl_test_c30up.out
+	$(V) ./di_test    < Matrix/pi                    > $(T)/di_test_pi.out
+	$(V) ./dl_test    < Matrix/pi                    > $(T)/dl_test_pi.out
+	$(V) ./di_test    < Matrix/cpi                   > $(T)/di_test_cpi.out
+	$(V) ./dl_test    < Matrix/cpi                   > $(T)/dl_test_cpi.out
+	$(V) ./di_test    < Matrix/1_0                   > $(T)/di_test_1_0.out
+	$(V) ./dl_test    < Matrix/1_0                   > $(T)/dl_test_1_0.out
+	$(V) ./di_test -s < Matrix/3b                    > $(T)/di_test_3b.out
+	$(V) ./dl_test -s < Matrix/3b                    > $(T)/dl_test_3b.out
+	$(V) ./di_test -s < Matrix/cza                   > $(T)/di_test_cza2.out
+	$(V) ./dl_test -s < Matrix/cza                   > $(T)/dl_test_cza2.out
+	$(V) ./di_test    < Matrix/0_1                   > $(T)/di_test_0_1.out
+	$(V) ./dl_test    < Matrix/0_1                   > $(T)/dl_test_0_1.out
 	- $(COVER)
-	$(V) ./cm -n < Matrix/galenet               > $(T)/galenet_nan.out
+	$(V) ./di_test -n < Matrix/galenet               > $(T)/di_test_galenet_nan.out
 	- $(COVER)
-	$(V) ./cl -n < Matrix/galenet               > $(T)/l_galenet_nan.out
+	$(V) ./dl_test -n < Matrix/galenet               > $(T)/dl_test_galenet_nan.out
 	- $(COVER)
-	$(V) ./cm    < Matrix/zero                  > $(T)/zero.out
-	$(V) ./cl    < Matrix/zero                  > $(T)/l_zero.out
+	$(V) ./di_test    < Matrix/zero                  > $(T)/di_test_zero.out
+	$(V) ./dl_test    < Matrix/zero                  > $(T)/dl_test_zero.out
 	- $(COVER)
 
 cov:
@@ -795,12 +829,13 @@ purge: clean
 distclean: clean
 
 clean:
-	- $(RM) cm cl cmread clread *.c.gcov *.out di_demo dl_demo
-	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort dl_demo.c di_demo.c
-	- $(RM) -r cm.profile cmread.profile di_demo.profile $(T)
-	- $(RM) -r cl.profile clread.profile dl_demo.profile
+	- $(RM) $(PROGS)
+	- $(RM) *.c.gcov *.out
+	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort
+	- $(RM) -r *.profile $(T)
 	- $(RM) temp*.mtx timelog.m l_*.cu
-	- $(RM) si_demo.c si_demo sl_demo.c sl_demo
+	- $(RM) si_demo.c sl_demo.c
+	- $(RM) di_demo.c dl_demo.c
 	- $(RM) ui_*.c ul_*.c u_*.c n_*.c
 	- $(RM) -r $(PURGE)
 	- $(RM) -r $(CLEAN)
