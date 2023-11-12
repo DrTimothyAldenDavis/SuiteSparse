@@ -1,7 +1,5 @@
 FIXME TODO: for CHOLMOD 5.1.0:
 
-Demo/*      add single demos
-
 Tcov/*      add single tests
 
 MATLAB/*    add a flag to convert double to single, just for testing

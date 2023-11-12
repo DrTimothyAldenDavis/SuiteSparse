@@ -12,3 +12,7 @@ n_*.c
 ui_*.c
 ul_*.c
 o*
+di_demo*
+si_demo*
+dl_demo*
+sl_demo*

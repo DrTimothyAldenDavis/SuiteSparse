@@ -128,7 +128,7 @@ I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
 
 I += $(GPU_CONFIG)
 
-ccode: cm cl zdemo ldemo cmread clread
+ccode: cm cl di_demo dl_demo cmread clread
 
 TEST = cm.c \
     test_ops.c  null.c null2.c lpdemo.c memory.c solve.c aug.c unpack.c \
@@ -518,63 +518,113 @@ cmread: $(IALL) cmread.c Makefile
 clread: $(LALL) clread.c Makefile
 	$(C) $(I) clread.c -o clread $(LALL) $(LDLIBS)
 
-zdemo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
+di_demo: $(IALL) ../Demo/cholmod_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
-	- ln -s ../Demo/cholmod_demo.c zdemo.c
-	$(C) $(I) -I../Demo zdemo.c -o zdemo $(IALL) $(LDLIBS)
+	- ln -s ../Demo/cholmod_demo.c di_demo.c
+	$(C) $(I) -I../Demo di_demo.c -o di_demo $(IALL) $(LDLIBS)
 
-ldemo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+si_demo: $(IALL) ../Demo/cholmod_s_demo.c cm.h Makefile \
 	../Demo/cholmod_demo.h
-	- ln -s ../Demo/cholmod_l_demo.c ldemo.c
-	$(C) $(I) -I../Demo ldemo.c -o ldemo $(LALL) $(LDLIBS)
+	- ln -s ../Demo/cholmod_s_demo.c si_demo.c
+	$(C) $(I) -I../Demo si_demo.c -o si_demo $(IALL) $(LDLIBS)
 
-compile: zdemo ldemo cmread clread cm cl
+dl_demo: $(LALL) ../Demo/cholmod_l_demo.c cm.h Makefile \
+	../Demo/cholmod_demo.h
+	- ln -s ../Demo/cholmod_l_demo.c dl_demo.c
+	$(C) $(I) -I../Demo dl_demo.c -o dl_demo $(LALL) $(LDLIBS)
 
-go: zdemo ldemo cmread clread cm cl
+sl_demo: $(LALL) ../Demo/cholmod_sl_demo.c cm.h Makefile \
+	../Demo/cholmod_demo.h
+	- ln -s ../Demo/cholmod_sl_demo.c sl_demo.c
+	$(C) $(I) -I../Demo sl_demo.c -o sl_demo $(LALL) $(LDLIBS)
+
+compile: di_demo dl_demo cmread clread cm cl
+
+go: di_demo dl_demo cmread clread cm cl si_demo sl_demo
 	mkdir -p $(T)
+	$(V) ./di_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/di_demo_k1.out
+	$(V) ./di_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/di_demo_k2.out
+	$(V) ./di_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/di_demo_afiro.out
+	$(V) ./di_demo < ../Demo/Matrix/can___24.mtx  > $(T)/di_demo_can24.out
+	$(V) ./di_demo < ../Demo/Matrix/c.tri         > $(T)/di_demo_c.out
+	$(V) ./di_demo < ../Demo/Matrix/d.tri         > $(T)/di_demo_d.out
+	$(V) ./di_demo < ../Demo/Matrix/up.tri        > $(T)/di_demo_up.out
+	$(V) ./di_demo < ../Demo/Matrix/c.mtx         > $(T)/di_demo_c_mtx.out
+	$(V) ./di_demo < ../Demo/Matrix/0.tri         > $(T)/di_demo_0.out
+	$(V) ./di_demo < Matrix/3_2                   > $(T)/di_demo_3_2.out
+	$(V) ./di_demo < Matrix/c5lo                  > $(T)/di_demo_c5lo.out
+	$(V) ./di_demo < Matrix/c10                   > $(T)/di_demo_c10.out
+	- $(V) ./di_demo no_such_file                   > $(T)/di_demo_no_such_file.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle1.mtx     > $(T)/di_demo_mangle1.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle2.mtx     > $(T)/di_demo_mangle2.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle3.mtx     > $(T)/di_demo_mangle3.out
+	- $(V) ./di_demo ../Demo/Matrix/mangle4.mtx     > $(T)/di_demo_mangle4.out
+	$(V) ./di_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/di_demo_pts5ldd03.out
+	$(V) ./si_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/si_demo_k1.out
+	$(V) ./si_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/si_demo_k2.out
+	$(V) ./si_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/si_demo_afiro.out
+	$(V) ./si_demo < ../Demo/Matrix/can___24.mtx  > $(T)/si_demo_can24.out
+	$(V) ./si_demo < ../Demo/Matrix/c.tri         > $(T)/si_demo_c.out
+	$(V) ./si_demo < ../Demo/Matrix/d.tri         > $(T)/si_demo_d.out
+	$(V) ./si_demo < ../Demo/Matrix/up.tri        > $(T)/si_demo_up.out
+	$(V) ./si_demo < ../Demo/Matrix/c.mtx         > $(T)/si_demo_c_mtx.out
+	$(V) ./si_demo < ../Demo/Matrix/0.tri         > $(T)/si_demo_0.out
+	$(V) ./si_demo < Matrix/3_2                   > $(T)/si_demo_3_2.out
+	$(V) ./si_demo < Matrix/c5lo                  > $(T)/si_demo_c5lo.out
+	$(V) ./si_demo < Matrix/c10                   > $(T)/si_demo_c10.out
+	- $(V) ./si_demo no_such_file                   > $(T)/si_demo_no_such_file.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle1.mtx     > $(T)/si_demo_mangle1.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle2.mtx     > $(T)/si_demo_mangle2.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle3.mtx     > $(T)/si_demo_mangle3.out
+	- $(V) ./si_demo ../Demo/Matrix/mangle4.mtx     > $(T)/si_demo_mangle4.out
+	$(V) ./si_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/si_demo_pts5ldd03.out
+	$(V) ./dl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/dl_demo_k1.out
+	$(V) ./dl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/dl_demo_k2.out
+	$(V) ./dl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/dl_demo_afiro.out
+	$(V) ./dl_demo < ../Demo/Matrix/can___24.mtx  > $(T)/dl_demo_can24.out
+	$(V) ./dl_demo < ../Demo/Matrix/c.tri         > $(T)/dl_demo_c.out
+	$(V) ./dl_demo   ../Demo/Matrix/c.tri 1       > $(T)/dl_demo_c_zomplex.out
+	$(V) ./dl_demo < ../Demo/Matrix/d.tri         > $(T)/dl_demo_d.out
+	$(V) ./dl_demo   ../Demo/Matrix/d.tri 1       > $(T)/dl_demo_d.out
+	$(V) ./dl_demo < ../Demo/Matrix/up.tri        > $(T)/dl_demo_up.out
+	$(V) ./dl_demo   ../Demo/Matrix/up.tri 1      > $(T)/dl_demo_up_zomplex.out
+	$(V) ./dl_demo < ../Demo/Matrix/c.mtx         > $(T)/dl_demo_c_mtx.out
+	$(V) ./dl_demo   ../Demo/Matrix/c.mtx 1       > $(T)/dl_demo_c_mtx_zomplex.out
+	$(V) ./dl_demo < ../Demo/Matrix/0.tri         > $(T)/dl_demo_0.out
+	$(V) ./dl_demo < Matrix/3_2                   > $(T)/dl_demo_3_2.out
+	$(V) ./dl_demo < Matrix/c5lo                  > $(T)/dl_demo_c5lo.out
+	$(V) ./dl_demo < Matrix/c10                   > $(T)/dl_demo_c10.out
+	- $(V) ./dl_demo no_such_file                   > $(T)/dl_demo_no_such_file.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle1.mtx     > $(T)/dl_demo_mangle1.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle2.mtx     > $(T)/dl_demo_mangle2.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle3.mtx     > $(T)/dl_demo_mangle3.out
+	- $(V) ./dl_demo ../Demo/Matrix/mangle4.mtx     > $(T)/dl_demo_mangle4.out
+	$(V) ./dl_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/dl_demo_pts5ldd03.out
+	$(V) ./sl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/sl_demo_k1.out
+	$(V) ./sl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/sl_demo_k2.out
+	$(V) ./sl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/sl_demo_afiro.out
+	$(V) ./sl_demo < ../Demo/Matrix/can___24.mtx  > $(T)/sl_demo_can24.out
+	$(V) ./sl_demo < ../Demo/Matrix/c.tri         > $(T)/sl_demo_c.out
+	$(V) ./sl_demo   ../Demo/Matrix/c.tri 1       > $(T)/sl_demo_c_zomplex.out
+	$(V) ./sl_demo < ../Demo/Matrix/d.tri         > $(T)/sl_demo_d.out
+	$(V) ./sl_demo   ../Demo/Matrix/d.tri 1       > $(T)/sl_demo_d.out
+	$(V) ./sl_demo < ../Demo/Matrix/up.tri        > $(T)/sl_demo_up.out
+	$(V) ./sl_demo   ../Demo/Matrix/up.tri 1      > $(T)/sl_demo_up_zomplex.out
+	$(V) ./sl_demo < ../Demo/Matrix/c.mtx         > $(T)/sl_demo_c_mtx.out
+	$(V) ./sl_demo   ../Demo/Matrix/c.mtx 1       > $(T)/sl_demo_c_mtx_zomplex.out
+	$(V) ./sl_demo < ../Demo/Matrix/0.tri         > $(T)/sl_demo_0.out
+	$(V) ./sl_demo < Matrix/3_2                   > $(T)/sl_demo_3_2.out
+	$(V) ./sl_demo < Matrix/c5lo                  > $(T)/sl_demo_c5lo.out
+	$(V) ./sl_demo < Matrix/c10                   > $(T)/sl_demo_c10.out
+	- $(V) ./sl_demo no_such_file                   > $(T)/sl_demo_no_such_file.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle1.mtx     > $(T)/sl_demo_mangle1.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle2.mtx     > $(T)/sl_demo_mangle2.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle3.mtx     > $(T)/sl_demo_mangle3.out
+	- $(V) ./sl_demo ../Demo/Matrix/mangle4.mtx     > $(T)/sl_demo_mangle4.out
+	$(V) ./sl_demo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/sl_demo_pts5ldd03.out
+	- grep maxresid $(T)/??_demo*.out
 	$(V) ./cl    < Matrix/galenet               > $(T)/l_galenet.out
 	$(V) ./cl -m < Matrix/z5lo                  > $(T)/l_z5lo.out
-	$(V) ./zdemo   ../Demo/Matrix/bcsstk01.tri  > $(T)/demo_k1.out
-	$(V) ./zdemo   ../Demo/Matrix/bcsstk02.tri  > $(T)/demo_k2.out
-	$(V) ./zdemo < ../Demo/Matrix/lp_afiro.tri  > $(T)/demo_afiro.out
-	$(V) ./zdemo < ../Demo/Matrix/can___24.mtx  > $(T)/demo_can24.out
-	$(V) ./zdemo < ../Demo/Matrix/c.tri         > $(T)/demo_c.out
-	$(V) ./zdemo < ../Demo/Matrix/d.tri         > $(T)/demo_d.out
-	$(V) ./zdemo < ../Demo/Matrix/up.tri        > $(T)/demo_up.out
-	$(V) ./zdemo < ../Demo/Matrix/c.mtx         > $(T)/demo_c_mtx.out
-	$(V) ./zdemo < ../Demo/Matrix/0.tri         > $(T)/demo_0.out
-	$(V) ./zdemo < Matrix/3_2                   > $(T)/demo_3_2.out
-	$(V) ./zdemo < Matrix/c5lo                  > $(T)/demo_c5lo.out
-	$(V) ./zdemo < Matrix/c10                   > $(T)/demo_c10.out
-	$(V) ./zdemo no_such_file                   > $(T)/demo_no_such_file.out
-	$(V) ./zdemo ../Demo/Matrix/mangle1.mtx     > $(T)/demo_mangle1.out
-	$(V) ./zdemo ../Demo/Matrix/mangle2.mtx     > $(T)/demo_mangle2.out
-	$(V) ./zdemo ../Demo/Matrix/mangle3.mtx     > $(T)/demo_mangle3.out
-	$(V) ./zdemo ../Demo/Matrix/mangle4.mtx     > $(T)/demo_mangle4.out
-	$(V) ./zdemo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/demo_pts5ldd03.out
-	$(V) ./ldemo   ../Demo/Matrix/bcsstk01.tri  > $(T)/ldemo_k1.out
-	$(V) ./ldemo   ../Demo/Matrix/bcsstk02.tri  > $(T)/ldemo_k2.out
-	$(V) ./ldemo < ../Demo/Matrix/lp_afiro.tri  > $(T)/ldemo_afiro.out
-	$(V) ./ldemo < ../Demo/Matrix/can___24.mtx  > $(T)/ldemo_can24.out
-	$(V) ./ldemo < ../Demo/Matrix/c.tri         > $(T)/ldemo_c.out
-	$(V) ./ldemo   ../Demo/Matrix/c.tri 1       > $(T)/ldemo_c_zomplex.out
-	$(V) ./ldemo < ../Demo/Matrix/d.tri         > $(T)/ldemo_d.out
-	$(V) ./ldemo   ../Demo/Matrix/d.tri 1       > $(T)/ldemo_d.out
-	$(V) ./ldemo < ../Demo/Matrix/up.tri        > $(T)/ldemo_up.out
-	$(V) ./ldemo   ../Demo/Matrix/up.tri 1      > $(T)/ldemo_up_zomplex.out
-	$(V) ./ldemo < ../Demo/Matrix/c.mtx         > $(T)/ldemo_c_mtx.out
-	$(V) ./ldemo   ../Demo/Matrix/c.mtx 1       > $(T)/ldemo_c_mtx_zomplex.out
-	$(V) ./ldemo < ../Demo/Matrix/0.tri         > $(T)/ldemo_0.out
-	$(V) ./ldemo < Matrix/3_2                   > $(T)/ldemo_3_2.out
-	$(V) ./ldemo < Matrix/c5lo                  > $(T)/ldemo_c5lo.out
-	$(V) ./ldemo < Matrix/c10                   > $(T)/ldemo_c10.out
-	$(V) ./ldemo no_such_file                   > $(T)/ldemo_no_such_file.out
-	$(V) ./ldemo ../Demo/Matrix/mangle1.mtx     > $(T)/ldemo_mangle1.out
-	$(V) ./ldemo ../Demo/Matrix/mangle2.mtx     > $(T)/ldemo_mangle2.out
-	$(V) ./ldemo ../Demo/Matrix/mangle3.mtx     > $(T)/ldemo_mangle3.out
-	$(V) ./ldemo ../Demo/Matrix/mangle4.mtx     > $(T)/ldemo_mangle4.out
-	$(V) ./ldemo ../Demo/Matrix/pts5ldd03.mtx   > $(T)/ldemo_pts5ldd03.out
-	- grep resid $(T)/demo*
 	$(V) ./cmread no_such_file                  > $(T)/no_such_file.out
 	$(V) ./cmread Matrix/crud1                  > $(T)/crud1.out
 	$(V) ./cmread Matrix/crud2                  > $(T)/crud2.out
@@ -734,10 +784,10 @@ cov:
 #       make gpu
 #       setenv CHOLMOD_USE_GPU 0
 #       make gpu
-gpu: ldemo
-	./ldemo ../../../Matrix/nd6k.mtx
-	./ldemo ../../../Matrix/nd6k_complex.mtx
-	./ldemo ../../../Matrix/nd6k_complex.mtx 1
+gpu: dl_demo
+	./dl_demo ../../../Matrix/nd6k.mtx
+	./dl_demo ../../../Matrix/nd6k_complex.mtx
+	./dl_demo ../../../Matrix/nd6k_complex.mtx 1
 	- $(COVER)
 
 purge: clean
@@ -745,11 +795,12 @@ purge: clean
 distclean: clean
 
 clean:
-	- $(RM) cm cl cmread clread *.c.gcov *.out zdemo ldemo
-	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort ldemo.c zdemo.c
-	- $(RM) -r cm.profile cmread.profile zdemo.profile $(T)
-	- $(RM) -r cl.profile clread.profile ldemo.profile
+	- $(RM) cm cl cmread clread *.c.gcov *.out di_demo dl_demo
+	- $(RM) leak zz_*.c z_*.c *.a l_*.c zl_*.c cov.sort dl_demo.c di_demo.c
+	- $(RM) -r cm.profile cmread.profile di_demo.profile $(T)
+	- $(RM) -r cl.profile clread.profile dl_demo.profile
 	- $(RM) temp*.mtx timelog.m l_*.cu
+	- $(RM) si_demo.c si_demo sl_demo.c sl_demo
 	- $(RM) ui_*.c ul_*.c u_*.c n_*.c
 	- $(RM) -r $(PURGE)
 	- $(RM) -r $(CLEAN)

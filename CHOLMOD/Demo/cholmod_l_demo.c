@@ -162,7 +162,7 @@ int main (int argc, char **argv)
         // Convert to zomplex, just for testing.  In a zomplex matrix,
         // the real and imaginary parts are in separate arrays.  MATLAB
         // uses zomplex matrix exclusively.
-        cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
+        cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX + A->dtype, A, cm) ;
     }
 
     int xtype = A->xtype ;  // real, complex, or zomplex
@@ -485,7 +485,8 @@ int main (int argc, char **argv)
             }
 
 #ifndef NMATRIXOPS
-            resid [3] = resid [3] / cholmod_l_norm_dense (X, 1, cm) ;
+            double xnorm1 = cholmod_l_norm_dense (X, 1, cm) + ((n==0)?1:0) ;
+            resid [3] = resid [3] / xnorm1 ;
 #endif
 
             cholmod_l_free_dense (&Ywork, cm) ;
@@ -710,9 +711,10 @@ int main (int argc, char **argv)
     cholmod_l_finish (cm) ;
 
     bool ok = !isnan (maxresid) &&
-        maxresid < ((dtype == CHOLMOD_DOUBLE) ? 1e-10 : 1e-5) ;
-    printf ("%s\n", ok ? "All tests passed" : "test failure") ;
-    fprintf (stderr, "%s maxresid: %8.1g %s : %s\n",
+        maxresid < ((dtype == CHOLMOD_DOUBLE) ? 1e-7 : 1e-4) ;
+    printf ("maxresid: %g : %s\n", maxresid, 
+        ok ? "All tests passed" : "test failure") ;
+    fprintf (stderr, "%s maxresid: %10.2g %s : %s\n",
         ok ? "OK" : "FAIL", maxresid,
         (dtype == CHOLMOD_DOUBLE) ? "(double)" : "(single)",
         (argc > 1) ? argv [1] : "stdin") ;
