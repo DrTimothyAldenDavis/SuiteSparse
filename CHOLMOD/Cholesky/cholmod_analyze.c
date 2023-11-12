@@ -120,6 +120,7 @@
 
 cholmod_factor *CHOLMOD(analyze)    // returns symbolic factor L
 (
+    // input:
     cholmod_sparse *A,      // matrix to order and analyze
     cholmod_common *Common
 )

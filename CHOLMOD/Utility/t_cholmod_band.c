@@ -185,6 +185,7 @@ static cholmod_sparse *band_helper
 
 cholmod_sparse *CHOLMOD(band)   // return a new matrix C
 (
+    // input:
     cholmod_sparse *A,      // input matrix
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
@@ -204,9 +205,11 @@ cholmod_sparse *CHOLMOD(band)   // return a new matrix C
 
 int CHOLMOD(band_inplace)
 (
+    // input:
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
     int mode,               // >0: numerical, 0: pattern, <0: pattern (no diag)
+    // input/output:
     cholmod_sparse *A,      // input/output matrix
     cholmod_common *Common
 )

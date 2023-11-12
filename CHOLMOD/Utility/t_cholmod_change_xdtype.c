@@ -88,7 +88,9 @@ static int change_xdtype
 
 int CHOLMOD(sparse_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_sparse *A,  // sparse matrix to change
     cholmod_common *Common
 )
@@ -118,7 +120,9 @@ int CHOLMOD(sparse_xtype)
 
 int CHOLMOD(triplet_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_triplet *T, // triplet matrix to change
     cholmod_common *Common
 )
@@ -148,7 +152,9 @@ int CHOLMOD(triplet_xtype)
 
 int CHOLMOD(dense_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_dense *X,   // dense matrix to change
     cholmod_common *Common
 )
@@ -185,7 +191,9 @@ int CHOLMOD(dense_xtype)
 
 int CHOLMOD(factor_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_factor *L,  // factor to change
     cholmod_common *Common
 )

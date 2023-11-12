@@ -50,6 +50,7 @@
 
 double CHOLMOD(rcond)       // return min(diag(L)) / max(diag(L))
 (
+    // input:
     cholmod_factor *L,      // factorization to query; not modified
     cholmod_common *Common
 )

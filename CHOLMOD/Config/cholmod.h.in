@@ -411,6 +411,10 @@ typedef struct cholmod_common_struct
         // entries in row/column k, and off-diagonals are set to -1.
         // Default: false.
 
+    //--------------------------------------------------------------------------
+    // printing and error handling options
+    //--------------------------------------------------------------------------
+
     int print ;     // print level.  Default is 3.
     int precise ;   // if true, print 16 digits, otherwise 5. Default: false.
 
@@ -586,9 +590,8 @@ typedef struct cholmod_common_struct
     int64_t mark ;      // Flag is cleared if Flag [0..nrow-1] < mark.
     size_t iworksize ;  // size of Iwork, in Ints (int32 or int64).
                         // This is at most 6*nrow + ncol.
-    size_t xworkbytes ; // size of Xwork, in bytes.  for update/downdate:
-        // maxrank*nrow*sizeof(double or float), 2*nrow*sizeof(double or float)
-        // otherwise.  NOTE: in CHOLMOD v4 and earlier, xworkwise was in terms
+    size_t xworkbytes ; // size of Xwork, in bytes.     // NEW (revised defn)
+        // NOTE: in CHOLMOD v4 and earlier, xworkwise was in terms
         // of # of doubles, not # of bytes.
 
     void *Flag ;    // size nrow.  If this is "cleared" then
@@ -614,7 +617,7 @@ typedef struct cholmod_common_struct
         // The itype of the Common object must match the function name
         // and all objects passed to it.
 
-    int other_5 ;   // unused: for future expansion
+    int other_5 ;   // unused: for future expansion // NEW was dtype; not needed
 
     int no_workspace_reallocate ;   // an internal flag, usually false.
         // This is set true to disable any reallocation of the workspace
@@ -692,11 +695,12 @@ typedef struct cholmod_common_struct
     // as well.  This mitigates any changes between v4.0 and v5.0, and may make
     // it easier to upgrade from v4 to v5.
 
-    double nsbounds_hit ;   // # of times diagonal modified by sbound.  This
-                    // ought to be int64_t, but ndbounds_hit was double in v4
-                    // (see above), so nsbounds_hit is made the same type for
-                    // consistency.
-    float sbound ;  // Same as dbound, but for single precision factorization.
+    double nsbounds_hit ;   // # of times diagonal modified by sbound. // NEW
+                    // This ought to be int64_t, but ndbounds_hit was double in
+                    // v4 (see above), so nsbounds_hit is made the same type
+                    // for consistency.
+    float sbound ;  // Same as dbound, // NEW
+                    // but for single precision factorization.
     float other_6 ; // for future expansion
 
     //--------------------------------------------------------------------------
@@ -833,6 +837,7 @@ int cholmod_l_defaults (cholmod_common *) ;
 
 size_t cholmod_maxrank      // return validated Common->maxrank
 (
+    // input:
     size_t n,               // # of rows of L and A
     cholmod_common *Common
 ) ;
@@ -845,8 +850,9 @@ size_t cholmod_l_maxrank (size_t, cholmod_common *) ;
 // This method always allocates Xwork as double, for backward compatibility
 // with CHOLMOD v4 and earlier.  See cholmod_alloc_work for CHOLMOD v5.
 
-int cholmod_allocate_work
+int cholmod_allocate_work   // TCOV
 (
+    // input:
     size_t nrow,        // size of Common->Flag (nrow int32's)
                         // and Common->Head (nrow+1 int32's)
     size_t iworksize,   // size of Common->Iwork (# of int32's)
@@ -861,8 +867,9 @@ int cholmod_l_allocate_work (size_t, size_t, size_t, cholmod_common *) ;
 
 // Added for CHOLMOD v5: allocates Xwork as either double or single.
 
-int cholmod_alloc_work
+int cholmod_alloc_work  // TCOV NEW
 (
+    // input:
     size_t nrow,        // size of Common->Flag (nrow int32's)
                         // and Common->Head (nrow+1 int32's)
     size_t iworksize,   // size of Common->Iwork (# of int32's)
@@ -903,6 +910,7 @@ int64_t cholmod_l_clear_flag (cholmod_common *) ;
 
 int cholmod_error
 (
+    // input:
     int status,             // Common->status
     const char *file,       // source file where error occurred
     int line,               // line number where error occurred
@@ -920,8 +928,8 @@ int cholmod_l_error (int, const char *, int, const char *, cholmod_common *) ;
 
 double cholmod_dbound   (double, cholmod_common *) ;
 double cholmod_l_dbound (double, cholmod_common *) ;
-float  cholmod_sbound   (float,  cholmod_common *) ;
-float  cholmod_l_sbound (float,  cholmod_common *) ;
+float  cholmod_sbound   (float,  cholmod_common *) ;    // NEW
+float  cholmod_l_sbound (float,  cholmod_common *) ;    // NEW
 
 //------------------------------------------------------------------------------
 // cholmod_hypot:  compute sqrt (x*x + y*y) accurately
@@ -936,6 +944,7 @@ double cholmod_l_hypot (double, double) ;
 
 int cholmod_divcomplex          // return 1 if divide-by-zero, 0 if OK
 (
+    // input:
     double ar, double ai,       // a (real, imaginary)
     double br, double bi,       // b (real, imaginary)
     double *cr, double *ci      // c (real, imaginary)
@@ -980,7 +989,7 @@ typedef struct cholmod_sparse_struct
         // if CHOLMOD_INT, these arrays are all of type int32_t.
         // if CHOLMOD_LONG, these arrays are all of type int64_t.
     int xtype ;     // pattern, real, complex, or zomplex
-    int dtype ;     // x and z are double or single
+    int dtype ;     // x and z are double or single     // NEW (now used)
     int sorted ;    // true if columns are sorted, false otherwise
     int packed ;    // true if packed (A->nz ignored), false if unpacked
 
@@ -990,15 +999,16 @@ typedef struct cholmod_sparse_struct
 // cholmod_allocate_sparse:  allocate a sparse matrix
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_allocate_sparse
+cholmod_sparse *cholmod_allocate_sparse // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t nzmax,   // max # of entries the matrix can hold
     int sorted,     // true if columns are sorted
     int packed,     // true if A is be packed (A->nz NULL), false if unpacked
     int stype,      // the stype of the matrix (unsym, tril, or triu)
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix:     // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1012,6 +1022,7 @@ cholmod_sparse *cholmod_l_allocate_sparse (size_t, size_t, size_t, int, int,
 
 int cholmod_free_sparse
 (
+    // input/output:
     cholmod_sparse **A,         // handle of sparse matrix to free
     cholmod_common *Common
 ) ;
@@ -1023,7 +1034,9 @@ int cholmod_l_free_sparse (cholmod_sparse **, cholmod_common *) ;
 
 int cholmod_reallocate_sparse
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the sparse matrix can hold
+    // input/output:
     cholmod_sparse *A,  // sparse matrix to reallocate
     cholmod_common *Common
 ) ;
@@ -1035,6 +1048,7 @@ int cholmod_l_reallocate_sparse (size_t, cholmod_sparse *, cholmod_common *) ;
 
 int64_t cholmod_nnz             // return # of entries in the sparse matrix
 (
+    // input:
     cholmod_sparse *A,          // sparse matrix to query
     cholmod_common *Common
 ) ;
@@ -1044,11 +1058,12 @@ int64_t cholmod_l_nnz (cholmod_sparse *, cholmod_common *) ;
 // cholmod_speye:  sparse identity matrix (possibly rectangular)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_speye
+cholmod_sparse *cholmod_speye   // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1062,12 +1077,13 @@ cholmod_sparse *cholmod_l_speye (size_t, size_t, int, cholmod_common *) ;
 // Identical to cholmod_allocate_sparse, with packed = true, sorted = true,
 // and stype = 0.
 
-cholmod_sparse *cholmod_spzeros     // return a sparse matrix with no entries
+cholmod_sparse *cholmod_spzeros     // return a sparse matrix with no entries   // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t nzmax,   // max # of entries the matrix can hold
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1081,6 +1097,7 @@ cholmod_sparse *cholmod_l_spzeros (size_t, size_t, size_t, int,
 
 cholmod_sparse *cholmod_transpose       // return new sparse matrix C
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
@@ -1098,12 +1115,14 @@ cholmod_sparse *cholmod_l_transpose (cholmod_sparse *, int, cholmod_common *) ;
 
 int cholmod_transpose_unsym
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,f)', or NULL
     int32_t *fset,      // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 ) ;
@@ -1120,10 +1139,12 @@ int cholmod_l_transpose_unsym (cholmod_sparse *, int, int64_t *, int64_t *,
 
 int cholmod_transpose_sym
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,p)', or NULL
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 ) ;
@@ -1136,6 +1157,7 @@ int cholmod_l_transpose_sym (cholmod_sparse *, int, int64_t *, cholmod_sparse *,
 
 cholmod_sparse *cholmod_ptranspose      // return new sparse matrix C
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
@@ -1153,6 +1175,7 @@ cholmod_sparse *cholmod_l_ptranspose (cholmod_sparse *, int, int64_t *,
 
 int cholmod_sort
 (
+    // input/output:
     cholmod_sparse *A,      // input/output matrix to sort
     cholmod_common *Common
 ) ;
@@ -1162,8 +1185,9 @@ int cholmod_l_sort (cholmod_sparse *, cholmod_common *) ;
 // cholmod_band_nnz: # of entries within a band of a sparse matrix
 //------------------------------------------------------------------------------
 
-int64_t cholmod_band_nnz    // return # of entries in a band (-1 if error)
+int64_t cholmod_band_nnz    // return # of entries in a band (-1 if error)  // NEW
 (
+    // input:
     cholmod_sparse *A,      // matrix to examine
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
@@ -1179,6 +1203,7 @@ int64_t cholmod_l_band_nnz (cholmod_sparse *, int64_t, int64_t, bool,
 
 cholmod_sparse *cholmod_band    // return a new matrix C
 (
+    // input:
     cholmod_sparse *A,      // input matrix
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
@@ -1194,9 +1219,11 @@ cholmod_sparse *cholmod_l_band (cholmod_sparse *, int64_t, int64_t, int,
 
 int cholmod_band_inplace
 (
+    // input:
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
     int mode,               // >0: numerical, 0: pattern, <0: pattern (no diag)
+    // input/output:
     cholmod_sparse *A,      // input/output matrix
     cholmod_common *Common
 ) ;
@@ -1209,6 +1236,7 @@ int cholmod_l_band_inplace (int64_t, int64_t, int, cholmod_sparse *,
 
 cholmod_sparse *cholmod_aat     // return sparse matrix C
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int32_t *fset,      // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
@@ -1230,6 +1258,7 @@ cholmod_sparse *cholmod_l_aat (cholmod_sparse *, int64_t *, size_t, int,
 
 cholmod_sparse *cholmod_copy_sparse  // return new sparse matrix
 (
+    // input:
     cholmod_sparse *A,     // sparse matrix to copy
     cholmod_common *Common
 ) ;
@@ -1241,6 +1270,7 @@ cholmod_sparse *cholmod_l_copy_sparse (cholmod_sparse *, cholmod_common *) ;
 
 cholmod_sparse *cholmod_copy        // return new sparse matrix
 (
+    // input:
     cholmod_sparse *A,  // input matrix, not modified
     int stype,          // stype of C
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
@@ -1256,6 +1286,7 @@ cholmod_sparse *cholmod_l_copy (cholmod_sparse *, int, int, cholmod_common *) ;
 
 cholmod_sparse *cholmod_add     // return C = alpha*A + beta*B
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     cholmod_sparse *B,  // input matrix
     double alpha [2],   // scale factor for A (two entires used if complex)
@@ -1271,9 +1302,11 @@ cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
 // cholmod_sparse_xtype: change the xtype and/or dtype of a sparse matrix
 //------------------------------------------------------------------------------
 
-int cholmod_sparse_xtype
+int cholmod_sparse_xtype    // TCOV
 (
-    int to_xdtype,      // requested xtype and dtype
+    // input:
+    int to_xdtype,      // requested xtype and dtype    // NEW
+    // input/output:
     cholmod_sparse *A,  // sparse matrix to change
     cholmod_common *Common
 ) ;
@@ -1400,7 +1433,7 @@ typedef struct cholmod_factor_struct
                 // if L->itype is CHOLMOD_LONG.
 
     int xtype ; // pattern, real, complex, or zomplex
-    int dtype ; // x and z are double or single
+    int dtype ; // x and z are double or single // NEW
 
     int useGPU; // if true, symbolic factorization allows for use of the GPU
 
@@ -1412,8 +1445,9 @@ typedef struct cholmod_factor_struct
 
 // L is returned as double precision
 
-cholmod_factor *cholmod_allocate_factor         // return the new factor L
+cholmod_factor *cholmod_allocate_factor         // return the new factor L  // TCOV
 (
+    // input:
     size_t n,               // L is factorization of an n-by-n matrix
     cholmod_common *Common
 ) ;
@@ -1423,8 +1457,9 @@ cholmod_factor *cholmod_l_allocate_factor (size_t, cholmod_common *) ;
 // cholmod_alloc_factor: allocate a numerical factor (double or single)
 //------------------------------------------------------------------------------
 
-cholmod_factor *cholmod_alloc_factor        // return the new factor L
+cholmod_factor *cholmod_alloc_factor        // return the new factor L  // TCOV // NEW
 (
+    // input:
     size_t n,               // L is factorization of an n-by-n matrix
     int dtype,              // CHOLMOD_SINGLE or CHOLMOD_DOUBLE
     cholmod_common *Common
@@ -1437,6 +1472,7 @@ cholmod_factor *cholmod_l_alloc_factor (size_t, int, cholmod_common *) ;
 
 int cholmod_free_factor
 (
+    // input/output:
     cholmod_factor **L,         // handle of sparse factorization to free
     cholmod_common *Common
 ) ;
@@ -1448,7 +1484,9 @@ int cholmod_l_free_factor (cholmod_factor **, cholmod_common *) ;
 
 int cholmod_reallocate_factor
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the factor matrix can hold
+    // input/output:
     cholmod_factor *L,  // factor to reallocate
     cholmod_common *Common
 ) ;
@@ -1460,11 +1498,13 @@ int cholmod_l_reallocate_factor (size_t, cholmod_factor *, cholmod_common *) ;
 
 int cholmod_change_factor
 (
+    // input:
     int to_xtype,       // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
     int to_ll,          // if true: convert to LL'; else to LDL'
     int to_super,       // if true: convert to supernodal; else to simplicial
     int to_packed,      // if true: pack simplicial columns' else: do not pack
     int to_monotonic,   // if true, put simplicial columns in order
+    // input/output:
     cholmod_factor *L,  // factor to change.
     cholmod_common *Common
 ) ;
@@ -1479,6 +1519,7 @@ int cholmod_l_change_factor (int, int, int, int, int, cholmod_factor *,
 
 int cholmod_pack_factor
 (
+    // input/output:
     cholmod_factor *L,      // factor to pack
     cholmod_common *Common
 ) ;
@@ -1490,8 +1531,10 @@ int cholmod_l_pack_factor (cholmod_factor *, cholmod_common *) ;
 
 int cholmod_reallocate_column
 (
+    // input:
     size_t j,                   // reallocate L(:,j)
     size_t need,                // space in L(:,j) for this # of entries
+    // input/output:
     cholmod_factor *L,          // L factor modified, L(:,j) resized
     cholmod_common *Common
 ) ;
@@ -1504,6 +1547,7 @@ int cholmod_l_reallocate_column (size_t, size_t, cholmod_factor *,
 
 cholmod_sparse *cholmod_factor_to_sparse    // return a new sparse matrix
 (
+    // input/output:
     cholmod_factor *L,  // input: factor to convert; output: L is converted
                         // to a simplicial symbolic factor
     cholmod_common *Common
@@ -1517,6 +1561,7 @@ cholmod_sparse *cholmod_l_factor_to_sparse (cholmod_factor *,
 
 cholmod_factor *cholmod_copy_factor     // return a copy of the factor
 (
+    // input:
     cholmod_factor *L,      // factor to copy (not modified)
     cholmod_common *Common
 ) ;
@@ -1526,9 +1571,11 @@ cholmod_factor *cholmod_l_copy_factor (cholmod_factor *, cholmod_common *) ;
 // cholmod_factor_xtype: change the xtype and/or dtype of a factor
 //------------------------------------------------------------------------------
 
-int cholmod_factor_xtype
+int cholmod_factor_xtype    // TCOV
 (
-    int to_xdtype,      // requested xtype and dtype
+    // input:
+    int to_xdtype,      // requested xtype and dtype // NEW
+    // input/output:
     cholmod_factor *L,  // factor to change
     cholmod_common *Common
 ) ;
@@ -1555,12 +1602,13 @@ typedef struct cholmod_dense_struct
 // cholmod_allocate_dense: allocate a dense matrix (contents not initialized)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_allocate_dense
+cholmod_dense *cholmod_allocate_dense   // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t d,       // leading dimension
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1572,11 +1620,12 @@ cholmod_dense *cholmod_l_allocate_dense (size_t, size_t, size_t, int,
 // cholmod_zeros: allocate a dense matrix and set it to zero
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_zeros
+cholmod_dense *cholmod_zeros    // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1587,11 +1636,12 @@ cholmod_dense *cholmod_l_zeros (size_t, size_t, int, cholmod_common *) ;
 // cholmod_ones: allocate a dense matrix of all 1's
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_ones
+cholmod_dense *cholmod_ones // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (_REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1602,11 +1652,12 @@ cholmod_dense *cholmod_l_ones (size_t, size_t, int, cholmod_common *) ;
 // cholmod_eye: allocate a dense identity matrix
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_eye      // return a dense identity matrix
+cholmod_dense *cholmod_eye      // return a dense identity matrix   // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (_REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1619,6 +1670,7 @@ cholmod_dense *cholmod_l_eye (size_t, size_t, int, cholmod_common *) ;
 
 int cholmod_free_dense
 (
+    // input/output:
     cholmod_dense **X,          // handle of dense matrix to free
     cholmod_common *Common
 ) ;
@@ -1628,13 +1680,15 @@ int cholmod_l_free_dense (cholmod_dense **, cholmod_common *) ;
 // cholmod_ensure_dense:  ensure a dense matrix has a given size and type
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_ensure_dense
+cholmod_dense *cholmod_ensure_dense // TCOV
 (
+    // input/output:
     cholmod_dense **X,  // matrix to resize as needed (*X may be NULL)
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t d,       // leading dimension
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1648,6 +1702,7 @@ cholmod_dense *cholmod_l_ensure_dense (cholmod_dense **, size_t, size_t,
 
 cholmod_dense *cholmod_sparse_to_dense      // return a dense matrix
 (
+    // input:
     cholmod_sparse *A,      // input matrix
     cholmod_common *Common
 ) ;
@@ -1657,8 +1712,9 @@ cholmod_dense *cholmod_l_sparse_to_dense (cholmod_sparse *, cholmod_common *) ;
 // cholmod_dense_nnz: count # of nonzeros in a dense matrix
 //------------------------------------------------------------------------------
 
-int64_t cholmod_dense_nnz       // return # of entries in the dense matrix
+int64_t cholmod_dense_nnz       // return # of entries in the dense matrix  // NEW
 (
+    // input:
     cholmod_dense *X,       // input matrix
     cholmod_common *Common
 ) ;
@@ -1670,6 +1726,7 @@ int64_t cholmod_l_dense_nnz (cholmod_dense *, cholmod_common *) ;
 
 cholmod_sparse *cholmod_dense_to_sparse         // return a sparse matrix C
 (
+    // input:
     cholmod_dense *X,       // input matrix
     int values,             // if true, copy the values; if false, C is pattern
     cholmod_common *Common
@@ -1683,6 +1740,7 @@ cholmod_sparse *cholmod_l_dense_to_sparse (cholmod_dense *, int,
 
 cholmod_dense *cholmod_copy_dense   // returns new dense matrix
 (
+    // input:
     cholmod_dense *X,   // input dense matrix
     cholmod_common *Common
 ) ;
@@ -1694,7 +1752,9 @@ cholmod_dense *cholmod_l_copy_dense (cholmod_dense *, cholmod_common *) ;
 
 int cholmod_copy_dense2
 (
+    // input:
     cholmod_dense *X,   // input dense matrix
+    // input/output:
     cholmod_dense *Y,   // output dense matrix (already allocated on input)
     cholmod_common *Common
 ) ;
@@ -1704,9 +1764,11 @@ int cholmod_l_copy_dense2 (cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 // cholmod_dense_xtype: change the xtype and/or dtype of a dense matrix
 //------------------------------------------------------------------------------
 
-int cholmod_dense_xtype
+int cholmod_dense_xtype // TCOV
 (
-    int to_xdtype,      // requested xtype and dtype
+    // input:
+    int to_xdtype,      // requested xtype and dtype    // NEW
+    // input/output:
     cholmod_dense *X,   // dense matrix to change
     cholmod_common *Common
 ) ;
@@ -1750,7 +1812,7 @@ typedef struct cholmod_triplet_struct
         // if CHOLMOD_INT, these arrays are all of type int32_t.
         // if CHOLMOD_LONG, these arrays are all of type int64_t.
     int xtype ;     // pattern, real, complex, or zomplex
-    int dtype ;     // x and z are double or single
+    int dtype ;     // x and z are double or single // NEW
 
 } cholmod_triplet ;
 
@@ -1758,13 +1820,14 @@ typedef struct cholmod_triplet_struct
 // cholmod_allocate_triplet: allocate a triplet matrix
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_allocate_triplet       // return triplet matrix T
+cholmod_triplet *cholmod_allocate_triplet       // return triplet matrix T  // TCOV
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t nzmax,   // max # of entries the matrix can hold
     int stype,      // the stype of the matrix (unsym, tril, or triu)
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     cholmod_common *Common
@@ -1778,6 +1841,7 @@ cholmod_triplet *cholmod_l_allocate_triplet (size_t, size_t, size_t, int, int,
 
 int cholmod_free_triplet
 (
+    // input/output:
     cholmod_triplet **T,        // handle of triplet matrix to free
     cholmod_common *Common
 ) ;
@@ -1789,7 +1853,9 @@ int cholmod_l_free_triplet (cholmod_triplet **, cholmod_common *) ;
 
 int cholmod_reallocate_triplet
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the triplet matrix can hold
+    // input/output:
     cholmod_triplet *T, // triplet matrix to reallocate
     cholmod_common *Common
 ) ;
@@ -1801,6 +1867,7 @@ int cholmod_l_reallocate_triplet (size_t, cholmod_triplet *, cholmod_common *) ;
 
 cholmod_triplet *cholmod_sparse_to_triplet
 (
+    // input:
     cholmod_sparse *A,      // matrix to copy into triplet form T
     cholmod_common *Common
 ) ;
@@ -1813,6 +1880,7 @@ cholmod_triplet *cholmod_l_sparse_to_triplet (cholmod_sparse *,
 
 cholmod_sparse *cholmod_triplet_to_sparse       // return sparse matrix A
 (
+    // input:
     cholmod_triplet *T,     // input triplet matrix
     size_t nzmax,           // allocate space for max(nzmax,nnz(A)) entries
     cholmod_common *Common
@@ -1826,6 +1894,7 @@ cholmod_sparse *cholmod_l_triplet_to_sparse (cholmod_triplet *, size_t,
 
 cholmod_triplet *cholmod_copy_triplet   // return new triplet matrix
 (
+    // input:
     cholmod_triplet *T,     // triplet matrix to copy
     cholmod_common *Common
 ) ;
@@ -1835,9 +1904,11 @@ cholmod_triplet *cholmod_l_copy_triplet (cholmod_triplet *, cholmod_common *) ;
 // cholmod_triplet_xtype: change the xtype and/or dtype of a triplet matrix
 //------------------------------------------------------------------------------
 
-int cholmod_triplet_xtype
+int cholmod_triplet_xtype   // TCOV
 (
-    int to_xdtype,      // requested xtype and dtype
+    // input:
+    int to_xdtype,      // requested xtype and dtype    // NEW
+    // input/output:
     cholmod_triplet *T, // triplet matrix to change
     cholmod_common *Common
 ) ;
@@ -1858,6 +1929,7 @@ int cholmod_l_triplet_xtype (int, cholmod_triplet *, cholmod_common *) ;
 
 void *cholmod_malloc    // return pointer to newly allocated memory
 (
+    // input:
     size_t n,           // number of items
     size_t size,        // size of each item
     cholmod_common *Common
@@ -1866,6 +1938,7 @@ void *cholmod_l_malloc (size_t, size_t, cholmod_common *) ;
 
 void *cholmod_calloc    // return pointer to newly allocated memory
 (
+    // input:
     size_t n,           // number of items
     size_t size,        // size of each item
     cholmod_common *Common
@@ -1874,8 +1947,10 @@ void *cholmod_l_calloc (size_t, size_t, cholmod_common *) ;
 
 void *cholmod_free      // returns NULL to simplify its usage
 (
+    // input:
     size_t n,           // number of items
     size_t size,        // size of each item
+    // input/output:
     void *p,            // memory to free
     cholmod_common *Common
 ) ;
@@ -1883,20 +1958,23 @@ void *cholmod_l_free (size_t, size_t, void *, cholmod_common *) ;
 
 void *cholmod_realloc   // return newly reallocated block of memory
 (
+    // input:
     size_t nnew,        // # of items in newly reallocate memory
     size_t size,        // size of each item
+    // input/output:
     void *p,            // pointer to memory to reallocate (may be NULL)
     size_t *n,          // # of items in p on input; nnew on output if success
     cholmod_common *Common
 ) ;
 void *cholmod_l_realloc (size_t, size_t, void *, size_t *, cholmod_common *) ;
 
-int cholmod_realloc_multiple    // returns true if successful, false otherwise
+int cholmod_realloc_multiple    // returns true if successful, false otherwise  // TCOV
 (
+    // input:
     size_t nnew,    // # of items in newly reallocate memory
     int nint,       // 0: do not allocate I_block or J_block, 1: just I_block,
                     // 2: both I_block and J_block
-    int xdtype,     // xtype + dtype of the matrix:
+    int xdtype,     // xtype + dtype of the matrix: // NEW
                     // (CHOLMOD_DOUBLE, _SINGLE) +
                     // (CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX)
     // input/output:
@@ -2205,8 +2283,9 @@ int cholmod_l_print_parent (int64_t *, size_t, const char *, cholmod_common *) ;
 // cholmod_read_sparse: read a sparse matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_read_sparse
+cholmod_sparse *cholmod_read_sparse // TCOV
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
@@ -2216,8 +2295,9 @@ cholmod_sparse *cholmod_l_read_sparse (FILE *, cholmod_common *) ;
 // cholmod_read_sparse2: read a sparse matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_read_sparse2
+cholmod_sparse *cholmod_read_sparse2    // TCOV // NEW
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
@@ -2228,8 +2308,9 @@ cholmod_sparse *cholmod_l_read_sparse2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_triplet: read a triplet matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_read_triplet
+cholmod_triplet *cholmod_read_triplet   // TCOV
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
@@ -2239,8 +2320,9 @@ cholmod_triplet *cholmod_l_read_triplet (FILE *, cholmod_common *) ;
 // cholmod_read_triplet: read a triplet matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_read_triplet2
+cholmod_triplet *cholmod_read_triplet2  // TCOV // NEW
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
@@ -2251,8 +2333,9 @@ cholmod_triplet *cholmod_l_read_triplet2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_dense: read a dense matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_read_dense
+cholmod_dense *cholmod_read_dense   // TCOV
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 ) ;
@@ -2262,8 +2345,9 @@ cholmod_dense *cholmod_l_read_dense (FILE *, cholmod_common *) ;
 // cholmod_read_dense2: read a dense matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_read_dense2
+cholmod_dense *cholmod_read_dense2  // TCOV // NEW
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
@@ -2274,7 +2358,7 @@ cholmod_dense *cholmod_l_read_dense2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_matrix: read a sparse or dense matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-void *cholmod_read_matrix
+void *cholmod_read_matrix   // TCOV
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2299,7 +2383,7 @@ void *cholmod_l_read_matrix (FILE *, int, int *, cholmod_common *) ;
 // cholmod_read_matrix2: read a sparse or dense matrix (float or double)
 //------------------------------------------------------------------------------
 
-void *cholmod_read_matrix2
+void *cholmod_read_matrix2  // TCOV // NEW
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2399,6 +2483,7 @@ int cholmod_l_write_dense (FILE *, cholmod_dense *, const char *,
 
 cholmod_factor *cholmod_analyze     // returns symbolic factor L
 (
+    // input:
     cholmod_sparse *A,      // matrix to order and analyze
     cholmod_common *Common
 ) ;
@@ -2821,7 +2906,7 @@ int cholmod_resymbol_noperm
 (
     // input:
     cholmod_sparse *A,  // matrix to analyze
-    int *fset,          // subset of 0:(A->ncol)-1
+    int32_t *fset,      // subset of 0:(A->ncol)-1
     size_t fsize,       // size of fset
     int pack,           // if TRUE, pack the columns of L
     // input/output:
@@ -2837,6 +2922,7 @@ int cholmod_l_resymbol_noperm (cholmod_sparse *, int64_t *, size_t, int,
 
 double cholmod_rcond        // return min(diag(L)) / max(diag(L))
 (
+    // input:
     cholmod_factor *L,      // factorization to query; not modified
     cholmod_common *Common
 ) ;
@@ -2975,7 +3061,7 @@ int cholmod_sdmult
     double alpha [2],   // scale factor for A
     double beta [2],    // scale factor for Y
     cholmod_dense *X,   // dense matrix to multiply
-    // input/output::
+    // input/output:
     cholmod_dense *Y,   // resulting dense matrix
     cholmod_common *Common
 ) ;

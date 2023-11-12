@@ -39,7 +39,9 @@
 
 int CHOLMOD(copy_dense2)
 (
+    // input:
     cholmod_dense *X,   // input dense matrix
+    // input/output:
     cholmod_dense *Y,   // output dense matrix (already allocated on input)
     cholmod_common *Common
 )

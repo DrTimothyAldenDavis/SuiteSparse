@@ -47,6 +47,7 @@
 
 cholmod_sparse *CHOLMOD(copy_sparse)  // return new sparse matrix
 (
+    // input:
     cholmod_sparse *A,     // sparse matrix to copy
     cholmod_common *Common
 )

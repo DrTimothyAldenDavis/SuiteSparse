@@ -51,8 +51,10 @@
 
 int CHOLMOD(reallocate_column)
 (
+    // input:
     size_t j,                   // reallocate L(:,j)
     size_t need,                // space in L(:,j) for this # of entries
+    // input/output:
     cholmod_factor *L,          // L factor modified, L(:,j) resized
     cholmod_common *Common
 )

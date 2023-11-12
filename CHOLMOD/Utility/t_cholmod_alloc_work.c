@@ -30,6 +30,7 @@
 
 int CHOLMOD(alloc_work)
 (
+    // input:
     size_t nrow,        // # of rows in the matrix A
     size_t iworksize,   // size of Iwork (# of integers, int32 or int64)
     size_t xworksize,   // size of Xwork (in # of entries, double or single)

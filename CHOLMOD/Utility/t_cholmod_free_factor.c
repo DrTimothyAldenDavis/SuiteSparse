@@ -96,6 +96,7 @@ void CHOLMOD(to_simplicial_sym)
 
 int CHOLMOD(free_factor)
 (
+    // input/output:
     cholmod_factor **L,         // handle of sparse factorization to free
     cholmod_common *Common
 )

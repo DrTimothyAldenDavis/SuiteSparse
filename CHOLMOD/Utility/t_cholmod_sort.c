@@ -74,6 +74,7 @@ static inline uint64_t cm_rand (uint64_t *seed)
 
 int CHOLMOD(sort)
 (
+    // input/output:
     cholmod_sparse *A,      // input/output matrix to sort
     cholmod_common *Common
 )

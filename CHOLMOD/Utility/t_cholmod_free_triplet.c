@@ -12,6 +12,7 @@
 
 int CHOLMOD(free_triplet)
 (
+    // input/output:
     cholmod_triplet **T,        // handle of triplet matrix to free
     cholmod_common *Common
 )

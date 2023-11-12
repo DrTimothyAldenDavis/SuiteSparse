@@ -98,12 +98,14 @@ static void cm_copy_Cnz (Int *Cnz, Int *Wi, Int *Perm, Int nrow)
 
 int CHOLMOD(transpose_unsym)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,f)', or NULL
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 )

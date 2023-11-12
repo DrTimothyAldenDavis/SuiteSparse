@@ -55,6 +55,7 @@
 
 cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     cholmod_sparse *B,  // input matrix
     double alpha [2],   // scale factor for A (two entires used if complex)

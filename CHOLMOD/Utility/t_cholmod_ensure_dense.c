@@ -22,7 +22,9 @@
 
 cholmod_dense *CHOLMOD(ensure_dense)
 (
+    // input/output:
     cholmod_dense **X,  // matrix to resize as needed (*X may be NULL)
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t d,       // leading dimension

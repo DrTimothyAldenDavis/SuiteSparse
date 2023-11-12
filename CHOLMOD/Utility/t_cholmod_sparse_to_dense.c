@@ -52,6 +52,7 @@
 
 cholmod_dense *CHOLMOD(sparse_to_dense)     // return a dense matrix
 (
+    // input:
     cholmod_sparse *A,      // input matrix
     cholmod_common *Common
 )

@@ -1143,6 +1143,7 @@ static cholmod_dense *read_dense
 
 cholmod_triplet *CHOLMOD(read_triplet)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 )
@@ -1158,6 +1159,7 @@ cholmod_triplet *CHOLMOD(read_triplet)
 
 cholmod_triplet *CHOLMOD(read_triplet2)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
@@ -1208,6 +1210,7 @@ cholmod_triplet *CHOLMOD(read_triplet2)
 
 cholmod_sparse *CHOLMOD(read_sparse)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 )
@@ -1221,6 +1224,7 @@ cholmod_sparse *CHOLMOD(read_sparse)
 
 cholmod_sparse *CHOLMOD(read_sparse2)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common
@@ -1263,6 +1267,7 @@ cholmod_sparse *CHOLMOD(read_sparse2)
 
 cholmod_dense *CHOLMOD(read_dense)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     cholmod_common *Common
 )
@@ -1278,6 +1283,7 @@ cholmod_dense *CHOLMOD(read_dense)
 
 cholmod_dense *CHOLMOD(read_dense2)
 (
+    // input:
     FILE *f,        // file to read from, must already be open
     int dtype,      // CHOLMOD_DOUBLE or CHOLMOD_SINGLE
     cholmod_common *Common

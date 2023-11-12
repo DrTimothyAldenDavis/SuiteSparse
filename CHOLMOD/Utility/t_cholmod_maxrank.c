@@ -14,6 +14,7 @@
 
 size_t CHOLMOD(maxrank)     // return validated Common->maxrank
 (
+    // input:
     size_t n,               // # of rows of L and A
     cholmod_common *Common
 )

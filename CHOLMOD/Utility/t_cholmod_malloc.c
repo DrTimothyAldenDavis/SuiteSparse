@@ -18,6 +18,7 @@
 
 void *CHOLMOD_ALLOC_FUNCTION    // return pointer to newly allocated memory
 (
+    // input:
     size_t n,           // number of items
     size_t size,        // size of each item
     cholmod_common *Common

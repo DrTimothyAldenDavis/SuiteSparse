@@ -66,6 +66,7 @@
 
 cholmod_sparse *CHOLMOD(aat)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset

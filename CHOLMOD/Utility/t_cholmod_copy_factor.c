@@ -44,6 +44,7 @@
 
 cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
 (
+    // input:
     cholmod_factor *L,      // factor to copy (not modified)
     cholmod_common *Common
 )

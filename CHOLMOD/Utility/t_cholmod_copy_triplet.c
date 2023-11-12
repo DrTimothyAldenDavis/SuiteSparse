@@ -19,6 +19,7 @@
 
 cholmod_triplet *CHOLMOD(copy_triplet)  // return new triplet matrix
 (
+    // input:
     cholmod_triplet *T,     // triplet matrix to copy
     cholmod_common *Common
 )

@@ -12,8 +12,10 @@
 
 void *CHOLMOD(realloc)  // return newly reallocated block of memory
 (
+    // input:
     size_t nnew,        // # of items in newly reallocate memory
     size_t size,        // size of each item
+    // input/output:
     void *p,            // pointer to memory to reallocate (may be NULL)
     size_t *n,          // # of items in p on input; nnew on output if success
     cholmod_common *Common

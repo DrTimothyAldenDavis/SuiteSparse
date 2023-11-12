@@ -55,6 +55,7 @@
 
 cholmod_sparse *CHOLMOD(triplet_to_sparse)      // return sparse matrix A
 (
+    // input:
     cholmod_triplet *T,     // input triplet matrix
     size_t nzmax,           // allocate space for max(nzmax,nnz(A)) entries
     cholmod_common *Common

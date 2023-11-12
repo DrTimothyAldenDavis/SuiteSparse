@@ -40,6 +40,7 @@
 
 cholmod_triplet *CHOLMOD(sparse_to_triplet)
 (
+    // input:
     cholmod_sparse *A,      // matrix to copy into triplet form T
     cholmod_common *Common
 )

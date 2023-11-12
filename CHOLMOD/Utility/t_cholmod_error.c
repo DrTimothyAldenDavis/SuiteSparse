@@ -31,6 +31,7 @@
 
 int CHOLMOD(error)
 (
+    // input:
     int status,             // Common->status
     const char *file,       // source file where error occurred
     int line,               // line number where error occurred

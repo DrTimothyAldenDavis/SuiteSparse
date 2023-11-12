@@ -16,6 +16,7 @@
 
 cholmod_sparse *CHOLMOD(spzeros)    // return a sparse matrix with no entries
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t nzmax,   // max # of entries the matrix can hold

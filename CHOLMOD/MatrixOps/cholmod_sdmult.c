@@ -67,7 +67,7 @@ int CHOLMOD(sdmult)
     double alpha [2],   // scale factor for A
     double beta [2],    // scale factor for Y
     cholmod_dense *X,   // dense matrix to multiply
-    // input/output::
+    // input/output:
     cholmod_dense *Y,   // resulting dense matrix
     cholmod_common *Common
 )

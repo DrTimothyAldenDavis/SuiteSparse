@@ -14,7 +14,7 @@
 // CHOLMOD_INT64).  CHOLMOD is designed for 2 types of integer variables:
 // int32_t or int64_t.
 //
-// The complex types (ANSI-compatible complex, and MATLAB-compatable zomplex)
+// The complex types (ANSI-compatible complex, and MATLAB-compatible zomplex)
 // are based on the double or float type, and are not selected here.  They are
 // typically selected via template routines.
 

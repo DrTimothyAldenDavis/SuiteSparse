@@ -48,6 +48,7 @@
 
 cholmod_sparse *CHOLMOD(dense_to_sparse)        // return a sparse matrix C
 (
+    // input:
     cholmod_dense *X,       // input matrix
     int values,             // if true, copy the values; if false, C is pattern
     cholmod_common *Common

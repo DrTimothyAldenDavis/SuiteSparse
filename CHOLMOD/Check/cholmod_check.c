@@ -1562,16 +1562,16 @@ static int check_factor
     P4 ("%s", "\n  ordering method used: ") ;
     switch (L->ordering)
     {
-        case CHOLMOD_POSTORDERED:P4 ("%s", "natural (postordered)") ;     break ;
-        case CHOLMOD_NATURAL:    P4 ("%s", "natural") ;                   break ;
-        case CHOLMOD_GIVEN:      P4 ("%s", "user-provided") ;             break ;
-        case CHOLMOD_AMD:        P4 ("%s", "AMD") ;                       break ;
-        case CHOLMOD_COLAMD:     P4 ("%s", "AMD for A, COLAMD for A*A'") ;break ;
+        case CHOLMOD_POSTORDERED:P4("%s", "natural (postordered)") ;     break ;
+        case CHOLMOD_NATURAL:   P4 ("%s", "natural") ;                   break ;
+        case CHOLMOD_GIVEN:     P4 ("%s", "user-provided") ;             break ;
+        case CHOLMOD_AMD:       P4 ("%s", "AMD") ;                       break ;
+        case CHOLMOD_COLAMD:    P4 ("%s", "AMD for A, COLAMD for A*A'") ;break ;
         #ifndef NPARTITION
-        case CHOLMOD_METIS:      P4 ("%s", "METIS NodeND") ;              break ;
-        case CHOLMOD_NESDIS:     P4 ("%s", "CHOLMOD nested dissection") ; break ;
+        case CHOLMOD_METIS:     P4 ("%s", "METIS NodeND") ;              break ;
+        case CHOLMOD_NESDIS:    P4 ("%s", "CHOLMOD nested dissection") ; break ;
         #endif
-        default:                 ERR ("unknown ordering") ;
+        default:                ERR ("unknown ordering") ;
     }
 
     P4 ("%s", "\n") ;

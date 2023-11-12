@@ -101,6 +101,7 @@
 
 cholmod_sparse *CHOLMOD(copy)
 (
+    // input:
     cholmod_sparse *A,  // input matrix, not modified
     int stype,          // stype of C
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),

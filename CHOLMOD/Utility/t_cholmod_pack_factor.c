@@ -53,6 +53,7 @@
 
 int CHOLMOD(pack_factor)
 (
+    // input/output:
     cholmod_factor *L,      // factor to pack
     cholmod_common *Common
 )

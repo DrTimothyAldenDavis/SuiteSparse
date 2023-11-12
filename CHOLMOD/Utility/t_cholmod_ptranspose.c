@@ -24,6 +24,7 @@
 
 cholmod_sparse *CHOLMOD(ptranspose)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)

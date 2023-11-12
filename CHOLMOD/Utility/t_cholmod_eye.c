@@ -47,6 +47,7 @@
 
 cholmod_dense *CHOLMOD(eye)     // return a dense identity matrix
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     int xdtype,     // xtype + dtype of the matrix:

@@ -22,6 +22,7 @@
 
 cholmod_triplet *CHOLMOD(allocate_triplet)      // return triplet matrix T
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t nzmax,   // max # of entries the matrix can hold

@@ -70,10 +70,12 @@
 
 int CHOLMOD(transpose_sym)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
                         // <= 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,p)', or NULL
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 )

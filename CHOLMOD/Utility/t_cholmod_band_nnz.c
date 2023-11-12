@@ -17,6 +17,7 @@
 
 int64_t CHOLMOD(band_nnz)   // return # of entries in a band (-1 if error)
 (
+    // input:
     cholmod_sparse *A,      // matrix to examine
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,

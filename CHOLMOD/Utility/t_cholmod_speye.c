@@ -51,6 +51,7 @@
 
 cholmod_sparse *CHOLMOD(speye)
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     int xdtype,     // xtype + dtype of the matrix:

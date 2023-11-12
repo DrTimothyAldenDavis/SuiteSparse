@@ -21,6 +21,7 @@
 
 cholmod_dense *CHOLMOD(allocate_dense)
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t d,       // leading dimension

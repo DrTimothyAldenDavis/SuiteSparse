@@ -39,6 +39,7 @@
 
 int64_t CHOLMOD(dense_nnz)      // return # of entries in the dense matrix
 (
+    // input:
     cholmod_dense *X,       // input matrix
     cholmod_common *Common
 )
