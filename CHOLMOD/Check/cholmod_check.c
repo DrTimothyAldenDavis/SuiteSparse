@@ -745,9 +745,8 @@ static int64_t check_sparse
 
     switch (A->itype)
     {
-        case CHOLMOD_INT:     P4 ("%s", "\n  scalar types: int, ") ; break ;
-        case CHOLMOD_LONG:    P4 ("%s", "\n  scalar types: int64_t, ");
-        break ;
+        case CHOLMOD_INT:     P4 ("%s", "\n  scalar types: int32_t, ") ; break ;
+        case CHOLMOD_LONG:    P4 ("%s", "\n  scalar types: int64_t, ") ; break ;
         default:              ERR ("unknown itype") ;
     }
 
@@ -1516,7 +1515,7 @@ static int check_factor
 
     switch (L->itype)
     {
-        case CHOLMOD_INT:   P4 ("%s", "\n  scalar types: int, ")     ; break ;
+        case CHOLMOD_INT:   P4 ("%s", "\n  scalar types: int32_t, ") ; break ;
         case CHOLMOD_LONG:  P4 ("%s", "\n  scalar types: int64_t, ") ; break ;
         default:            ERR ("unknown itype") ;
     }
@@ -2085,7 +2084,7 @@ static int check_triplet
 
     switch (T->itype)
     {
-        case CHOLMOD_INT:  P4 ("%s", "\n  scalar types: int, ")     ; break ;
+        case CHOLMOD_INT:  P4 ("%s", "\n  scalar types: int32_t, ") ; break ;
         case CHOLMOD_LONG: P4 ("%s", "\n  scalar types: int64_t, ") ; break ;
         default:           ERR ("unknown itype") ;
     }

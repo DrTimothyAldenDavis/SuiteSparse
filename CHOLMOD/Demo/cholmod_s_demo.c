@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Demo/cholmod_demo:  demo program for CHOLMOD
+// CHOLMOD/Demo/cholmod_s_demo:  demo program for CHOLMOD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis,
@@ -17,8 +17,8 @@
 // finite-element form.
 //
 // Usage:
-//      cholmod_demo matrixfile
-//      cholmod_demo < matrixfile
+//      cholmod_s_demo matrixfile
+//      cholmod_s_demo < matrixfile
 //
 // The matrix is assumed to be positive definite (a supernodal LL' or simplicial
 // LDL' factorization is used).
@@ -63,7 +63,7 @@ int main (int argc, char **argv)
         one [2], zero [2], minusone [2], beta [2], xlnz,
         isize, xsize, s, ss, lnz ;
 
-    double
+    float
         *Bx, *Rx, *Xx, *Bz, *Xz, *Rz, xn, *X1x, *X2x, *B2x ;
     int32_t
         i, n, *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
@@ -139,12 +139,12 @@ int main (int argc, char **argv)
     // read in a matrix
     //--------------------------------------------------------------------------
 
-    printf ("\n---------------------------------- cholmod_demo:\n") ;
+    printf ("\n---------------------------------- cholmod_s_demo:\n") ;
     cholmod_version (ver) ;
     printf ("cholmod version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
     SuiteSparse_version (ver) ;
     printf ("SuiteSparse version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
-    A = cholmod_read_sparse2 (f, CHOLMOD_DOUBLE, cm) ;
+    A = cholmod_read_sparse2 (f, CHOLMOD_SINGLE, cm) ;
     if (ff != NULL)
     {
         fclose (ff) ;

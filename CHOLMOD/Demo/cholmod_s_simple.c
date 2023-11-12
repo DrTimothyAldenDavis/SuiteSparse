@@ -52,7 +52,9 @@ int main (void)
     printf ("\n%s precision results:\n", dtype ? "single" : "double") ;
     printf ("norm(b-Ax) %8.1e\n", rnorm) ;
     printf ("norm(A)    %8.1e\n", anorm) ;
-    printf ("norm(b-Ax)/norm(A) %8.1e\n", rnorm / anorm) ;
+    double relresid = rnorm / anorm ;
+    printf ("resid: norm(b-Ax)/norm(A) %8.1e\n", relresid) ;
+    fprintf (stderr, "resid: norm(b-Ax)/norm(A) %8.1e\n", relresid) ;
 #else
     printf ("residual norm not computed (requires CHOLMOD/MatrixOps)\n") ;
 #endif

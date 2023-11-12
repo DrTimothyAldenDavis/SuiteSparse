@@ -33,7 +33,7 @@ int main (void)
     cholmod_start (&c) ;                            // start CHOLMOD
     int dtype = CHOLMOD_DOUBLE ;                    // use double precision
     A = cholmod_read_sparse2 (stdin, dtype, &c) ;   // read in a matrix
-//  A = cholmod_read_sparse (stdin, &c) ;           // (same as above)
+//  A = cholmod_read_sparse (stdin, &c) ;           // (same, default is double)
     c.precise = true ;
     c.print = (A->nrow > 5) ? 4 : 5 ;
     cholmod_print_sparse (A, "A", &c) ;             // print the matrix
@@ -57,7 +57,9 @@ int main (void)
     printf ("\n%s precision results:\n", dtype ? "single" : "double") ;
     printf ("norm(b-Ax) %8.1e\n", rnorm) ;
     printf ("norm(A)    %8.1e\n", anorm) ;
-    printf ("norm(b-Ax)/norm(A) %8.1e\n", rnorm / anorm) ;
+    double relresid = rnorm / anorm ;
+    printf ("resid: norm(b-Ax)/norm(A) %8.1e\n", relresid) ;
+    fprintf (stderr, "resid: norm(b-Ax)/norm(A) %8.1e\n", relresid) ;
 #else
     printf ("residual norm not computed (requires CHOLMOD/MatrixOps)\n") ;
 #endif

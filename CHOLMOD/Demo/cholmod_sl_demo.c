@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Demo/cholmod_demo:  demo program for CHOLMOD
+// CHOLMOD/Demo/cholmod_sl_demo: demo program for CHOLMOD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis,
@@ -17,8 +17,8 @@
 // finite-element form.
 //
 // Usage:
-//      cholmod_demo matrixfile
-//      cholmod_demo < matrixfile
+//      cholmod_sl_demo matrixfile
+//      cholmod_sl_demo < matrixfile
 //
 // The matrix is assumed to be positive definite (a supernodal LL' or simplicial
 // LDL' factorization is used).
@@ -63,9 +63,9 @@ int main (int argc, char **argv)
         one [2], zero [2], minusone [2], beta [2], xlnz,
         isize, xsize, s, ss, lnz ;
 
-    double
+    float
         *Bx, *Rx, *Xx, *Bz, *Xz, *Rz, xn, *X1x, *X2x, *B2x ;
-    int32_t
+    int64_t
         i, n, *Bsetp, *Bseti, *Xsetp, *Xseti, xlen, j, k, *Lnz ;
 
     FILE *f ;
@@ -107,7 +107,7 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     cm = &Common ;
-    cholmod_start (cm) ;
+    cholmod_l_start (cm) ;
     cm->print = 4 ;
 
     cm->prefer_zomplex = prefer_zomplex ;
@@ -139,12 +139,12 @@ int main (int argc, char **argv)
     // read in a matrix
     //--------------------------------------------------------------------------
 
-    printf ("\n---------------------------------- cholmod_demo:\n") ;
-    cholmod_version (ver) ;
+    printf ("\n---------------------------------- cholmod_sl_demo:\n") ;
+    cholmod_l_version (ver) ;
     printf ("cholmod version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
     SuiteSparse_version (ver) ;
     printf ("SuiteSparse version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
-    A = cholmod_read_sparse2 (f, CHOLMOD_DOUBLE, cm) ;
+    A = cholmod_l_read_sparse2 (f, CHOLMOD_SINGLE, cm) ;
     if (ff != NULL)
     {
         fclose (ff) ;
@@ -152,9 +152,9 @@ int main (int argc, char **argv)
     }
     anorm = 1 ;
 #ifndef NMATRIXOPS
-    anorm = cholmod_norm_sparse (A, 0, cm) ;
+    anorm = cholmod_l_norm_sparse (A, 0, cm) ;
     printf ("norm (A,inf) = %g\n", anorm) ;
-    printf ("norm (A,1)   = %g\n", cholmod_norm_sparse (A, 1, cm)) ;
+    printf ("norm (A,1)   = %g\n", cholmod_l_norm_sparse (A, 1, cm)) ;
 #endif
 
     if (prefer_zomplex && A->xtype == CHOLMOD_COMPLEX)
@@ -162,19 +162,19 @@ int main (int argc, char **argv)
         // Convert to zomplex, just for testing.  In a zomplex matrix,
         // the real and imaginary parts are in separate arrays.  MATLAB
         // uses zomplex matrix exclusively.
-        cholmod_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
+        cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
     }
 
     int xtype = A->xtype ;  // real, complex, or zomplex
     int dtype = A->dtype ;  // single or double
     int xdtype = xtype + dtype ;
-    cholmod_print_sparse (A, "A", cm) ;
+    cholmod_l_print_sparse (A, "A", cm) ;
 
     if (A->nrow > A->ncol)
     {
         // Transpose A so that A'A+beta*I will be factorized instead
-        cholmod_sparse *C = cholmod_transpose (A, 2, cm) ;
-        cholmod_free_sparse (&A, cm) ;
+        cholmod_sparse *C = cholmod_l_transpose (A, 2, cm) ;
+        cholmod_l_free_sparse (&A, cm) ;
         A = C ;
         printf ("transposing input matrix\n") ;
     }
@@ -185,7 +185,7 @@ int main (int argc, char **argv)
 
     n = A->nrow ;
     xn = n ;
-    B = cholmod_zeros (n, 1, xdtype, cm) ;
+    B = cholmod_l_zeros (n, 1, xdtype, cm) ;
     Bx = B->x ;
     Bz = B->z ;
 
@@ -193,9 +193,9 @@ int main (int argc, char **argv)
     {
         // b = A*ones(n,1), used by Gould, Hu, and Scott in their experiments
         cholmod_dense *X0 ;
-        X0 = cholmod_ones (A->ncol, 1, xdtype, cm) ;
-        cholmod_sdmult (A, 0, one, zero, X0, B, cm) ;
-        cholmod_free_dense (&X0, cm) ;
+        X0 = cholmod_l_ones (A->ncol, 1, xdtype, cm) ;
+        cholmod_l_sdmult (A, 0, one, zero, X0, B, cm) ;
+        cholmod_l_free_dense (&X0, cm) ;
     }
 #else
     if (xtype == CHOLMOD_REAL)
@@ -226,10 +226,10 @@ int main (int argc, char **argv)
     }
 #endif
 
-    cholmod_print_dense (B, "B", cm) ;
+    cholmod_l_print_dense (B, "B", cm) ;
     bnorm = 1 ;
 #ifndef NMATRIXOPS
-    bnorm = cholmod_norm_dense (B, 0, cm) ;     // max norm
+    bnorm = cholmod_l_norm_dense (B, 0, cm) ;   // max norm
     printf ("bnorm %g\n", bnorm) ;
 #endif
 
@@ -238,7 +238,7 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     t = CPUTIME ;
-    L = cholmod_analyze (A, cm) ;
+    L = cholmod_l_analyze (A, cm) ;
     ta = CPUTIME - t ;
     ta = MAX (ta, 0) ;
 
@@ -248,7 +248,7 @@ int main (int argc, char **argv)
     {
         printf ("Factorizing A*A'+beta*I\n") ;
         t = CPUTIME ;
-        cholmod_factorize_p (A, beta, NULL, 0, L, cm) ;
+        cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
         tf = CPUTIME - t ;
         tf = MAX (tf, 0) ;
     }
@@ -256,12 +256,12 @@ int main (int argc, char **argv)
     {
         printf ("Factorizing A\n") ;
         t = CPUTIME ;
-        cholmod_factorize (A, L, cm) ;
+        cholmod_l_factorize (A, L, cm) ;
         tf = CPUTIME - t ;
         tf = MAX (tf, 0) ;
     }
 
-    cholmod_print_factor (L, "L", cm) ;
+    cholmod_l_print_factor (L, "L", cm) ;
 
     // determine the # of integers's and reals's in L.  See cholmod_free
     if (L->is_super)
@@ -294,7 +294,7 @@ int main (int argc, char **argv)
     }
 
     // solve with Bset will change L from simplicial to supernodal
-    rcond = cholmod_rcond (L, cm) ;
+    rcond = cholmod_l_rcond (L, cm) ;
     L_is_super = L->is_super ;
 
     //--------------------------------------------------------------------------
@@ -323,7 +323,7 @@ int main (int argc, char **argv)
         {
             // basic solve, just once
             t = CPUTIME ;
-            X = cholmod_solve (CHOLMOD_A, L, B, cm) ;
+            X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
             ts [0] = CPUTIME - t ;
             ts [0] = MAX (ts [0], 0) ;
         }
@@ -333,9 +333,9 @@ int main (int argc, char **argv)
             t = CPUTIME ;
             for (trial = 0 ; trial < NTRIALS ; trial++)
             {
-                cholmod_free_dense (&X, cm) ;
+                cholmod_l_free_dense (&X, cm) ;
                 Bx [0] = 1 + trial / xn ;       // tweak B each iteration
-                X = cholmod_solve (CHOLMOD_A, L, B, cm) ;
+                X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
             }
             ts [1] = CPUTIME - t ;
             ts [1] = MAX (ts [1], 0) / NTRIALS ;
@@ -344,17 +344,17 @@ int main (int argc, char **argv)
         {
             // solve with reused workspace
             cholmod_dense *Ywork = NULL, *Ework = NULL ;
-            cholmod_free_dense (&X, cm) ;
+            cholmod_l_free_dense (&X, cm) ;
 
             t = CPUTIME ;
             for (trial = 0 ; trial < NTRIALS ; trial++)
             {
                 Bx [0] = 1 + trial / xn ;       // tweak B each iteration
-                cholmod_solve2 (CHOLMOD_A, L, B, NULL, &X, NULL,
+                cholmod_l_solve2 (CHOLMOD_A, L, B, NULL, &X, NULL,
                     &Ywork, &Ework, cm) ;
             }
-            cholmod_free_dense (&Ywork, cm) ;
-            cholmod_free_dense (&Ework, cm) ;
+            cholmod_l_free_dense (&Ywork, cm) ;
+            cholmod_l_free_dense (&Ework, cm) ;
             ts [2] = CPUTIME - t ;
             ts [2] = MAX (ts [2], 0) / NTRIALS ;
         }
@@ -371,10 +371,10 @@ int main (int argc, char **argv)
             if (timelog) fprintf (timelog, "results = [\n") ;
 
             // xtype is CHOLMOD_REAL or CHOLMOD_COMPLEX, not CHOLMOD_ZOMPLEX
-            B2 = cholmod_zeros (n, 1, xdtype, cm) ;
+            B2 = cholmod_l_zeros (n, 1, xdtype, cm) ;
             B2x = B2->x ;
 
-            Bset = cholmod_allocate_sparse (n, 1, 1, FALSE, TRUE, 0,
+            Bset = cholmod_l_allocate_sparse (n, 1, 1, FALSE, TRUE, 0,
                 CHOLMOD_PATTERN + dtype, cm) ;
             Bsetp = Bset->p ;
             Bseti = Bset->i ;
@@ -398,7 +398,7 @@ int main (int argc, char **argv)
                 }
 
                 // first get the entire solution, to compare against
-                cholmod_solve2 (CHOLMOD_A, L, B2, NULL, &X, NULL,
+                cholmod_l_solve2 (CHOLMOD_A, L, B2, NULL, &X, NULL,
                     &Ywork, &Ework, cm) ;
 
                 // now get the sparse solutions; this will change L from
@@ -409,7 +409,7 @@ int main (int argc, char **argv)
                     // first solve can be slower because it has to allocate
                     // space for X2, Xset, etc, and change L.
                     // So don't time it
-                    cholmod_solve2 (CHOLMOD_A, L, B2, Bset, &X2, &Xset,
+                    cholmod_l_solve2 (CHOLMOD_A, L, B2, Bset, &X2, &Xset,
                         &Ywork, &Ework, cm) ;
                 }
 
@@ -419,7 +419,7 @@ int main (int argc, char **argv)
                     // solve Ax=b but only to get x(i).
                     // b is all zero except for b(i).
                     // This takes O(xlen) time
-                    cholmod_solve2 (CHOLMOD_A, L, B2, Bset, &X2, &Xset,
+                    cholmod_l_solve2 (CHOLMOD_A, L, B2, Bset, &X2, &Xset,
                         &Ywork, &Ework, cm) ;
                 }
                 t = CPUTIME - t ;
@@ -485,15 +485,15 @@ int main (int argc, char **argv)
             }
 
 #ifndef NMATRIXOPS
-            resid [3] = resid [3] / cholmod_norm_dense (X, 1, cm) ;
+            resid [3] = resid [3] / cholmod_l_norm_dense (X, 1, cm) ;
 #endif
 
-            cholmod_free_dense (&Ywork, cm) ;
-            cholmod_free_dense (&Ework, cm) ;
-            cholmod_free_dense (&X2, cm) ;
-            cholmod_free_dense (&B2, cm) ;
-            cholmod_free_sparse (&Xset, cm) ;
-            cholmod_free_sparse (&Bset, cm) ;
+            cholmod_l_free_dense (&Ywork, cm) ;
+            cholmod_l_free_dense (&Ework, cm) ;
+            cholmod_l_free_dense (&X2, cm) ;
+            cholmod_l_free_dense (&B2, cm) ;
+            cholmod_l_free_sparse (&Xset, cm) ;
+            cholmod_l_free_sparse (&Bset, cm) ;
         }
 
         //----------------------------------------------------------------------
@@ -507,12 +507,12 @@ int main (int argc, char **argv)
             {
                 // (AA'+beta*I)x=b is the linear system that was solved
                 // W = A'*X
-                W = cholmod_allocate_dense (A->ncol, 1, A->ncol, xtype+dtype,
+                W = cholmod_l_allocate_dense (A->ncol, 1, A->ncol, xtype+dtype,
                     cm) ;
-                cholmod_sdmult (A, 2, one, zero, X, W, cm) ;
+                cholmod_l_sdmult (A, 2, one, zero, X, W, cm) ;
                 // R = B - beta*X
-                cholmod_free_dense (&R, cm) ;
-                R = cholmod_zeros (n, 1, xdtype, cm) ;
+                cholmod_l_free_dense (&R, cm) ;
+                R = cholmod_l_zeros (n, 1, xdtype, cm) ;
                 Rx = R->x ;
                 Rz = R->z ;
                 Xx = X->x ;
@@ -544,18 +544,18 @@ int main (int argc, char **argv)
                 }
 
                 // R = A*W - R
-                cholmod_sdmult (A, 0, one, minusone, W, R, cm) ;
-                cholmod_free_dense (&W, cm) ;
+                cholmod_l_sdmult (A, 0, one, minusone, W, R, cm) ;
+                cholmod_l_free_dense (&W, cm) ;
             }
             else
             {
                 // Ax=b was factorized and solved, R = B-A*X
-                cholmod_free_dense (&R, cm) ;
-                R = cholmod_copy_dense (B, cm) ;
-                cholmod_sdmult (A, 0, minusone, one, X, R, cm) ;
+                cholmod_l_free_dense (&R, cm) ;
+                R = cholmod_l_copy_dense (B, cm) ;
+                cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
             }
-            rnorm = cholmod_norm_dense (R, 0, cm) ;         // max abs. entry
-            xnorm = cholmod_norm_dense (X, 0, cm) ;         // max abs. entry
+            rnorm = cholmod_l_norm_dense (R, 0, cm) ;       // max abs. entry
+            xnorm = cholmod_l_norm_dense (X, 0, cm) ;       // max abs. entry
             axbnorm = (anorm * xnorm + bnorm + ((n == 0) ? 1 : 0)) ;
             resid [method] = rnorm / axbnorm ;
 #else
@@ -577,16 +577,16 @@ int main (int argc, char **argv)
         cholmod_dense *R2 ;
 
         // x = A\b
-        cholmod_free_dense (&X, cm) ;
-        X = cholmod_solve (CHOLMOD_A, L, B, cm) ;
+        cholmod_l_free_dense (&X, cm) ;
+        X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
 
         // R = B-A*X
-        cholmod_free_dense (&R, cm) ;
-        R = cholmod_copy_dense (B, cm) ;
-        cholmod_sdmult (A, 0, minusone, one, X, R, cm) ;
+        cholmod_l_free_dense (&R, cm) ;
+        R = cholmod_l_copy_dense (B, cm) ;
+        cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
 
         // R2 = A\(B-A*X)
-        R2 = cholmod_solve (CHOLMOD_A, L, R, cm) ;
+        R2 = cholmod_l_solve (CHOLMOD_A, L, R, cm) ;
 
         // compute X = X + A\(B-A*X)
         Xx = X->x ;
@@ -595,18 +595,18 @@ int main (int argc, char **argv)
         {
             Xx [i] = Xx [i] + Rx [i] ;
         }
-        cholmod_free_dense (&R2, cm) ;
+        cholmod_l_free_dense (&R2, cm) ;
 
         // compute the new residual, R = B-A*X
-        cholmod_free_dense (&R, cm) ;
-        R = cholmod_copy_dense (B, cm) ;
-        cholmod_sdmult (A, 0, minusone, one, X, R, cm) ;
-        rnorm2 = cholmod_norm_dense (R, 0, cm) ;
+        cholmod_l_free_dense (&R, cm) ;
+        R = cholmod_l_copy_dense (B, cm) ;
+        cholmod_l_sdmult (A, 0, minusone, one, X, R, cm) ;
+        rnorm2 = cholmod_l_norm_dense (R, 0, cm) ;
         resid2 = rnorm2 / axbnorm ;
     }
 #endif
 
-    cholmod_free_dense (&R, cm) ;
+    cholmod_l_free_dense (&R, cm) ;
 
     //--------------------------------------------------------------------------
     // print results
@@ -695,19 +695,19 @@ int main (int argc, char **argv)
 
     if (L_is_super)
     {
-        cholmod_gpu_stats (cm) ;
+        cholmod_l_gpu_stats (cm) ;
     }
 
-    cholmod_free_factor (&L, cm) ;
-    cholmod_free_dense (&X, cm) ;
+    cholmod_l_free_factor (&L, cm) ;
+    cholmod_l_free_dense (&X, cm) ;
 
     //--------------------------------------------------------------------------
     // free matrices and finish CHOLMOD
     //--------------------------------------------------------------------------
 
-    cholmod_free_sparse (&A, cm) ;
-    cholmod_free_dense (&B, cm) ;
-    cholmod_finish (cm) ;
+    cholmod_l_free_sparse (&A, cm) ;
+    cholmod_l_free_dense (&B, cm) ;
+    cholmod_l_finish (cm) ;
 
     bool ok = !isnan (maxresid) &&
         maxresid < ((dtype == CHOLMOD_DOUBLE) ? 1e-10 : 1e-5) ;

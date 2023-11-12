@@ -616,8 +616,10 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." on )
 if ( DEMO )
+
+    enable_testing ( )
 
     #---------------------------------------------------------------------------
     # demo library
@@ -629,10 +631,12 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( cholmod_demo   "Demo/cholmod_demo.c" )
-    add_executable ( cholmod_l_demo "Demo/cholmod_l_demo.c" )
-    add_executable ( cholmod_simple "Demo/cholmod_simple.c" )
-    add_executable ( cholmod_s_simple "Demo/cholmod_s_simple.c" )
+    add_executable ( cholmod_demo       "Demo/cholmod_demo.c" )
+    add_executable ( cholmod_s_demo     "Demo/cholmod_s_demo.c" )
+    add_executable ( cholmod_l_demo     "Demo/cholmod_l_demo.c" )
+    add_executable ( cholmod_sl_demo    "Demo/cholmod_sl_demo.c" )
+    add_executable ( cholmod_simple     "Demo/cholmod_simple.c" )
+    add_executable ( cholmod_s_simple   "Demo/cholmod_s_simple.c" )
 
     if ( NOT NFORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
@@ -645,9 +649,17 @@ if ( DEMO )
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( cholmod_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
+    target_link_libraries ( cholmod_s_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_s_demo PUBLIC CHOLMOD_CUDA )
+    endif ( )
     target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
     target_link_libraries ( cholmod_simple PUBLIC CHOLMOD )
     if ( SUITESPARSE_CUDA )
@@ -657,6 +669,51 @@ if ( DEMO )
     if ( SUITESPARSE_CUDA )
         target_link_libraries ( cholmod_s_simple PUBLIC CHOLMOD_CUDA )
     endif ( )
+
+    add_test ( NAME int32_double_bcsstk01
+        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int64_double_bcsstk01
+        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int32_single_bcsstk01
+        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int64_single_bcsstk01
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+
+    add_test ( NAME int32_double_lp_afiro
+        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int64_double_lp_afiro
+        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int32_single_lp_afiro
+        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int64_single_lp_afiro
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+
+    add_test ( NAME int32_double_can24
+        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int64_double_can24
+        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int32_single_can24
+        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int64_single_can24
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+
+    add_test ( NAME int32_double_complex
+        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int64_double_complex
+        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int32_single_complex
+        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int64_single_complex
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+
+    add_test ( NAME int32_double_supernodal
+        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int64_double_supernodal
+        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int32_single_supernodal
+        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int64_single_supernodal
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 
 else ( )
 
