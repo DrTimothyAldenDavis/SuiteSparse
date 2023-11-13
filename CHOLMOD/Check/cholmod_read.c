@@ -788,9 +788,9 @@ static cholmod_triplet *read_triplet
                 Ti [p] = j ;
                 Tj [p] = i ;
 
-                #define ASSIGN_SYMETRIC_TRIPLET(fltype)         \
+                #define ASSIGN_SYMMETRIC_TRIPLET(fltype)        \
                 {                                               \
-                    double *Tx = (double *) T->x ;              \
+                    fltype *Tx = (fltype *) T->x ;              \
                     if (xtype == CHOLMOD_REAL)                  \
                     {                                           \
                         if (skew_symmetric)                     \
@@ -824,11 +824,11 @@ static cholmod_triplet *read_triplet
 
                 if (dtype == CHOLMOD_DOUBLE)
                 {
-                    ASSIGN_SYMETRIC_TRIPLET (double) ;
+                    ASSIGN_SYMMETRIC_TRIPLET (double) ;
                 }
                 else
                 {
-                    ASSIGN_SYMETRIC_TRIPLET (float) ;
+                    ASSIGN_SYMMETRIC_TRIPLET (float) ;
                 }
                 p++ ;
             }
