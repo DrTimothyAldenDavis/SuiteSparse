@@ -1,14 +1,14 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/huge: test program for CHOLMOD on huge matrices
+// CHOLMOD/Tcov/t_huge: test program for CHOLMOD on huge matrices
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Tests on huge matrices */
+// Tests on huge matrices
 
 #include "cm.h"
 #include "amd.h"
@@ -20,9 +20,9 @@
 #define ERROR(status,message) \
     CHOLMOD(error) (status, __FILE__, __LINE__, message, cm)
 
-/* ========================================================================== */
-/* === huge ================================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// huge
+//------------------------------------------------------------------------------
 
 void huge ( )
 {
@@ -43,25 +43,26 @@ void huge ( )
 
     n = CHOLMOD(add_size_t) (n, 1, &ok) ; NOT (ok) ;
 
-    /* create a fake zero sparse matrix, with huge dimensions */
-    A = CHOLMOD (spzeros) (1, 1, 0, CHOLMOD_REAL, cm) ;
+    // create a fake zero sparse matrix, with huge dimensions
+    A = CHOLMOD (spzeros) (1, 1, 0, CHOLMOD_REAL + DTYPE, cm) ;
     A->nrow = SIZE_MAX ;
     A->ncol = SIZE_MAX ;
     A->stype = 0 ;
 
-    /* create a fake factor, with huge dimensions.  */
-    L = CHOLMOD (allocate_factor)  (1, cm) ;
+    // create a fake factor, with huge dimensions.
+//  L = CHOLMOD (allocate_factor) (1, cm) ;
+    L = CHOLMOD (alloc_factor) (1, DTYPE, cm) ;
     OKP (L) ;
     L->n = SIZE_MAX ;
     CHOLMOD (factorize) (A, L, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
 
-    /* free the fake factor */
+    // free the fake factor
     L->n = 1 ;
     CHOLMOD (free_factor) (&L, cm) ;
 
-    /* create a valid factor to test resymbol */
-    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL, cm) ;
+    // create a valid factor to test resymbol
+    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL + DTYPE, cm) ;
     C->stype = 1 ;
     L = CHOLMOD (analyze) (C, cm) ;
     OKP (L) ;
@@ -111,7 +112,7 @@ void huge ( )
     CHOLMOD (free_factor) (&L, cm) ;
 
     C = CHOLMOD (allocate_sparse) (SIZE_MAX, SIZE_MAX, SIZE_MAX,
-        0, 0, 0, 0, cm) ;
+        0, 0, 0, CHOLMOD_PATTERN + DTYPE, cm) ;
     printf ("cm->status %d\n", cm->status) ;
     NOP (C) ;
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
@@ -173,6 +174,10 @@ void huge ( )
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
     NOP (L) ;
 
+    L = CHOLMOD (alloc_factor) (SIZE_MAX, DTYPE, cm) ;
+    OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
+    NOP (L) ;
+
 #ifndef NPARTITION
     CHOLMOD (metis) (A, NULL, 0, 0, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
@@ -187,7 +192,7 @@ void huge ( )
     CHOLMOD (postorder) (&junk, SIZE_MAX, &junk, &junk, cm) ;
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
 
-    /* causes overflow in 32-bit version, but not 64-bit */
+    // causes overflow in 32-bit version, but not 64-bit
     f = fopen ("../Tcov/Matrix/mega.tri", "r") ;
     T = CHOLMOD (read_triplet) (f, cm) ;
     if (sizeof (Int) == sizeof (int))
@@ -199,13 +204,13 @@ void huge ( )
     fclose (f) ;
 
     n = SIZE_MAX ;
-    X = CHOLMOD (allocate_dense) (n, 1, n, CHOLMOD_REAL, cm) ;
+    X = CHOLMOD (allocate_dense) (n, 1, n, CHOLMOD_REAL + DTYPE, cm) ;
     printf ("status %d\n", cm->status) ;
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
     NOP (X) ;
 
-    /* supernodal symbolic test */
-    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL, cm) ;
+    // supernodal symbolic test
+    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL + DTYPE, cm) ;
     C->stype = 1 ;
     save = cm->supernodal ;
     cm->supernodal = CHOLMOD_SIMPLICIAL ;
@@ -224,8 +229,8 @@ void huge ( )
     CHOLMOD (free_sparse) (&C, cm) ;
     CHOLMOD (free_factor) (&L, cm) ;
 
-    /* supernodal numeric test */
-    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL, cm) ;
+    // supernodal numeric test
+    C = CHOLMOD (speye) (1, 1, CHOLMOD_REAL + DTYPE, cm) ;
     C->stype = -1 ;
     save = cm->supernodal ;
     cm->supernodal = CHOLMOD_SUPERNODAL ;
@@ -243,7 +248,7 @@ void huge ( )
     CHOLMOD (free_sparse) (&C, cm) ;
     CHOLMOD (free_factor) (&L, cm) ;
 
-    /* free the fake matrix */
+    // free the fake matrix
     A->nrow = 1 ;
     A->ncol = 1 ;
     CHOLMOD (free_sparse) (&A, cm) ;

@@ -1,25 +1,24 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/raw_factor: test CHOLMOD factorization and solvers
+// CHOLMOD/Tcov/t_raw_factor: test CHOLMOD factorization and solvers
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Factorize A using cholmod_rowfac for the simplicial case, and the 
- * cholmod_super_* routines for the supernodal case, and test the solution to
- * linear systems. */
+// Factorize A using cholmod_rowfac for the simplicial case, and the
+// cholmod_super_* routines for the supernodal case, and test the solution to
+// linear systems.
 
 #include "cm.h"
 
+//------------------------------------------------------------------------------
+// icomp
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === icomp ================================================================ */
-/* ========================================================================== */
-
-/* for sorting by qsort */
+// for sorting by qsort
 static int icomp (Int *i, Int *j)
 {
     if (*i < *j)
@@ -32,26 +31,23 @@ static int icomp (Int *i, Int *j)
     }
 }
 
-
-/* ========================================================================== */
-/* === add_gunk ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// add_gunk
+//------------------------------------------------------------------------------
 
 static cholmod_sparse *add_gunk (cholmod_sparse *A)
 {
     cholmod_sparse *S ;
-    double *Sx, *Sz ;
+    Real *Sx, *Sz ;
     Int *Sp, *Si, nz, p, save3, j, n ;
 
     if (A == NULL) return (NULL) ;
-
-    /* save3 = cm->print ; cm->print = 5 ; */
 
     A->nzmax++ ;
     S = CHOLMOD(copy_sparse) (A, cm) ;
     A->nzmax-- ;
 
-    /* add a S(n,1)=1 entry to the matrix */
+    // add a S(n,1)=1 entry to the matrix
     if (S != NULL)
     {
         S->sorted = FALSE ;
@@ -101,22 +97,16 @@ static cholmod_sparse *add_gunk (cholmod_sparse *A)
         }
     }
 
-    /* CHOLMOD(print_sparse) (A, "A for gunk", cm) ; */
-    /* CHOLMOD(print_sparse) (S, "S with gunk", cm) ; */
-    /* cm->print = save3 ; */
-
     return (S) ;
 }
 
+//------------------------------------------------------------------------------
+// raw_factor
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === raw_factor =========================================================== */
-/* ========================================================================== */
-
-/* Factor A, without using any fill-reducing permutation.  This may fail due
- * to catastrophic fill-in (which is the desired test result for a large
- * arrowhead matrix).
- */
+// Factor A, without using any fill-reducing permutation.  This may fail due
+// to catastrophic fill-in (which is the desired test result for a large
+// arrowhead matrix).
 
 double raw_factor (cholmod_sparse *A, Int check_errors)
 {
@@ -132,9 +122,9 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     double beta [2] ;
     uint64_t save ;
 
-    /* ---------------------------------------------------------------------- */
-    /* create the problem */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // create the problem
+    //--------------------------------------------------------------------------
 
     if (A == NULL || A->stype != 1)
     {
@@ -158,11 +148,11 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     prefer_zomplex = (A->xtype == CHOLMOD_ZOMPLEX) ;
     Bxtype = A->xtype ;
 
-    /* ---------------------------------------------------------------------- */
-    /* supernodal factorization */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // supernodal factorization
+    //--------------------------------------------------------------------------
 
-    L = CHOLMOD(allocate_factor) (n, cm) ;
+    L = CHOLMOD(alloc_factor) (n, DTYPE, cm) ;
     ok1 = CHOLMOD(etree) (A, Parent, cm) ;
     lr = CHOLMOD(postorder) (Parent, n, NULL, Post, cm) ;
     ok2 = CHOLMOD(rowcolcounts) (AT, NULL, 0, Parent, Post,
@@ -186,23 +176,23 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         OK (ok2) ;
         OK (lr >= 0) ;
 
-        /* rowcolcounts requires A in symmetric lower form */
+        // rowcolcounts requires A in symmetric lower form
         ok = CHOLMOD(rowcolcounts) (A, NULL, 0, Parent, Post,
             NULL, L->ColCount, First, Level, cm) ;                  NOT (ok) ;
     }
 
-    /* super_symbolic needs A in upper form, so this will succeed
-     * unless the problem is huge */
+    // super_symbolic needs A in upper form, so this will succeed
+    // unless the problem is huge
     ok = CHOLMOD(super_symbolic) (A, NULL, Parent, L, cm) ;
 
-    /* super_symbolic should fail if lnz is too large */
+    // super_symbolic should fail if lnz is too large
     if (cm->lnz > SIZE_MAX / 2)
     {
         printf ("raw_factor: problem is huge\n") ;
         NOT (ok) ;
         OK (L->xtype == CHOLMOD_PATTERN && !(L->is_super)) ;
 
-        /* try changing to LDL packed, which should also fail */
+        // try changing to LDL packed, which should also fail
         ok = CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, TRUE, TRUE,
                 L, cm) ;
         NOT (ok) ;
@@ -223,7 +213,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         if (cm->status == CHOLMOD_OUT_OF_MEMORY
          || cm->status == CHOLMOD_TOO_LARGE)
         {
-            /* no test case will reach here, but check just to be safe */
+            // no test case will reach here, but check just to be safe
             printf ("raw_factor: out of memory for symbolic case %d\n",
                 cm->status) ;
             CHOLMOD(free_factor) (&L, cm) ;
@@ -244,8 +234,8 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         ok = CHOLMOD(super_symbolic)(A, NULL, Parent, NULL, cm) ;   NOT (ok) ;
     }
 
-    /* super_numeric needs A in lower form, so this will succeed unless
-     * the problem is huge */
+    // super_numeric needs A in lower form, so this will succeed unless
+    // the problem is huge
     ok = CHOLMOD(super_numeric) (AT, NULL, Zero, L, cm) ;
 
     if (check_errors)
@@ -253,7 +243,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 
         if (cm->status == CHOLMOD_OUT_OF_MEMORY)
         {
-            /* For the 64-bit case, the Matrix/a1 problem will reach here */
+            // For the 64-bit case, the Matrix/a1 problem will reach here
             printf ("raw_factor: out of memory for numeric case\n") ;
             CHOLMOD(free_factor) (&L, cm) ;
             CHOLMOD(free_sparse) (&AT, cm) ;
@@ -271,13 +261,13 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         ok = CHOLMOD(super_numeric)(AT, NULL, Zero, NULL, cm) ;     NOT (ok) ;
     }
 
-    /* solve */
+    // solve
     Lxtype = (L == NULL) ? CHOLMOD_REAL : L->xtype ;
-    W = CHOLMOD(zeros) (n, 1, Lxtype, cm) ;
+    W = CHOLMOD(zeros) (n, 1, Lxtype + DTYPE, cm) ;
     X = CHOLMOD(copy_dense) (B, cm) ;
     if (Bxtype == CHOLMOD_ZOMPLEX)
     {
-        CHOLMOD(dense_xtype) (CHOLMOD_COMPLEX, X, cm) ;
+        CHOLMOD(dense_xtype) (CHOLMOD_COMPLEX + DTYPE, X, cm) ;
     }
 
     CHOLMOD(print_factor) (L, "L for super l/ltsolve", cm) ;
@@ -292,7 +282,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 
     if (Bxtype == CHOLMOD_ZOMPLEX)
     {
-        CHOLMOD(dense_xtype) (CHOLMOD_ZOMPLEX, X, cm) ;
+        CHOLMOD(dense_xtype) (CHOLMOD_ZOMPLEX + DTYPE, X, cm) ;
     }
 
     r = resid (A, X, B) ;
@@ -300,7 +290,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 
     if (Bxtype == CHOLMOD_ZOMPLEX)
     {
-        CHOLMOD(dense_xtype) (CHOLMOD_COMPLEX, X, cm) ;
+        CHOLMOD(dense_xtype) (CHOLMOD_COMPLEX + DTYPE, X, cm) ;
     }
 
     if (check_errors)
@@ -318,17 +308,20 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 
         if (L != NULL && L->maxesize > 1)
         {
-            /* W is too small */
+            // W is too small
             ok = CHOLMOD(free_dense) (&W, cm) ;                     OK (ok) ;
-            W = CHOLMOD(zeros) (1, 1, Lxtype, cm) ;                 OKP (W) ;
+            W = CHOLMOD(zeros) (1, 1, Lxtype + DTYPE, cm) ;
+            OKP (W) ;
             ok = CHOLMOD(super_lsolve) (L, X, W, cm) ;              NOT (ok) ;
             ok = CHOLMOD(super_ltsolve) (L, X, W, cm) ;             NOT (ok) ;
             ok = CHOLMOD(free_dense) (&W, cm) ;                     OK (ok) ;
-            W = CHOLMOD(zeros) (n, 1, Lxtype, cm) ;                 OKP (W) ;
+            W = CHOLMOD(zeros) (n, 1, Lxtype + DTYPE, cm) ;
+            OKP (W) ;
         }
 
-        /* X2 has the wrong dimensions */
-        X2 = CHOLMOD(zeros) (n+1, 1, Lxtype, cm) ;                  OKP (X2) ;
+        // X2 has the wrong dimensions
+        X2 = CHOLMOD(zeros) (n+1, 1, Lxtype + DTYPE, cm) ;
+        OKP (X2) ;
         ok = CHOLMOD(super_lsolve) (L, X2, W, cm) ;                 NOT (ok) ;
         ok = CHOLMOD(super_ltsolve) (L, X2, W, cm) ;                NOT (ok) ;
         CHOLMOD(free_dense) (&X2, cm) ;
@@ -336,8 +329,8 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
 
     CHOLMOD(free_dense) (&X, cm) ;
 
-    /* X2 is n-by-0, which is OK */
-    X2 = CHOLMOD(zeros) (n, 0, Lxtype, cm) ;
+    // X2 is n-by-0, which is OK
+    X2 = CHOLMOD(zeros) (n, 0, Lxtype + DTYPE, cm) ;
     ok1 = CHOLMOD(super_lsolve) (L, X2, W, cm) ;
     ok2 = CHOLMOD(super_ltsolve) (L, X2, W, cm) ;
     CHOLMOD(free_dense) (&W, cm) ;
@@ -355,31 +348,32 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         cm->error_handler = NULL ;
     }
 
-    /* R = space for result of row_subtree and row_lsubtree */
-    R = CHOLMOD(allocate_sparse)(n, 1, n, FALSE, TRUE, 0, CHOLMOD_PATTERN, cm) ;
+    // R = space for result of row_subtree and row_lsubtree
+    R = CHOLMOD(allocate_sparse)(n, 1, n, FALSE, TRUE, 0,
+        CHOLMOD_PATTERN + DTYPE, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* erroneous factorization */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // erroneous factorization
+    //--------------------------------------------------------------------------
 
-    /* cannot use rowfac or row_lsubtree on a supernodal factorization */
+    // cannot use rowfac or row_lsubtree on a supernodal factorization
     if (check_errors && n > 0)
     {
         ok = CHOLMOD(rowfac) (A, NULL, beta, 0, 0, L, cm) ;         NOT (ok) ;
         ok = CHOLMOD(row_lsubtree) (A, &i, 0, n-1, L, R, cm) ;      NOT (ok) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* convert to simplicial LDL' */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // convert to simplicial LDL'
+    //--------------------------------------------------------------------------
 
     CHOLMOD(change_factor) (Lxtype, FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
-    /* remove entries due to relaxed supernodal amalgamation */
+    // remove entries due to relaxed supernodal amalgamation
     CHOLMOD(resymbol) (A, NULL, 0, TRUE, L, cm) ;
 
-    /* refactorize a numeric factor */
-    posdef = 0 ;   /* unknown */
+    // refactorize a numeric factor
+    posdef = 0 ;   // unknown
     if (A != NULL && A->stype >= 0)
     {
         if (A->stype > 0 && A->packed)
@@ -388,9 +382,10 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             CHOLMOD(rowfac) (S, NULL, beta, 0, n, L, cm) ;
             if (S && S->xtype == CHOLMOD_COMPLEX)
             {
-                CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX, S, cm) ;
+                CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX + DTYPE, S, cm) ;
             }
-            ok = CHOLMOD(free_sparse) (&S, cm) ;                            OK (ok) ;
+            ok = CHOLMOD(free_sparse) (&S, cm) ;
+            OK (ok) ;
         }
         else
         {
@@ -399,7 +394,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         posdef = (cm->status == CHOLMOD_OK) ;
     }
 
-    /* convert to a sparse matrix, and transpose L */
+    // convert to a sparse matrix, and transpose L
     Lcopy = CHOLMOD(copy_factor)(L, cm) ;
     Lsparse = CHOLMOD(factor_to_sparse) (L, cm) ;
 
@@ -413,14 +408,14 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         OK (LT->packed) ;
     }
 
-    /* remove the unit diagonal of LT */
+    // remove the unit diagonal of LT
     CHOLMOD(band_inplace) (1, n, -1, LT, cm) ;
 
-    /* ST = pattern of A(p,p)' */
+    // ST = pattern of A(p,p)'
     P = (L == NULL) ? NULL : L->Perm ;
     ST = CHOLMOD(ptranspose) (A, 0, P, NULL, 0, cm) ;
 
-    /* S = pattern of A(p,p) */
+    // S = pattern of A(p,p)
     S = CHOLMOD(transpose) (ST, 0, cm) ;
     ok = CHOLMOD(free_sparse) (&ST, cm) ;
 
@@ -433,13 +428,13 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         Ri = R->i ;
         Rp = R->p ;
 
-        save = my_seed ( ) ;                                    /* RAND */
+        save = my_seed ( ) ;                                    // RAND
         for (trial = 0 ; trial < 30 ; trial++)
         {
-            /* pick a row at random */
-            i = nrand (n) ;                                     /* RAND */
+            // pick a row at random
+            i = nrand (n) ;                                     // RAND
 
-            /* compute R = pattern of L(i,0:i-1), using row subtrees */
+            // compute R = pattern of L(i,0:i-1), using row subtrees
             ok = CHOLMOD(row_subtree) (S, NULL, i, Parent, R, cm) ;
             if (!ok)
             {
@@ -447,22 +442,21 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
             rnz = Rp [1] ;
 
-            /* sort R */
+            // sort R
             qsort (Ri, rnz, sizeof (Int),
                     (int (*) (const void *, const void *)) icomp) ;
 
-            /* compare with ith column of L transpose */
+            // compare with ith column of L transpose
             lnz = LTp [i+1] - LTp [i] ;
             ok = TRUE ;
             for (k = 0 ; k < MIN (rnz,lnz) ; k++)
             {
-                /* printf ("%d vs %d\n", Ri [k], LTi [LTp [i] + k]) ; */
                 ok = ok && (Ri [k] == LTi [LTp [i] + k]) ;
             }
             OK (ok) ;
             OK (rnz == lnz) ;
 
-            /* compute R = pattern of L(i,0:i-1), using row lsubtrees */
+            // compute R = pattern of L(i,0:i-1), using row lsubtrees
             ok = CHOLMOD(row_lsubtree) (S, NULL, 0, i, Lcopy, R, cm) ;
             if (!ok)
             {
@@ -470,22 +464,22 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
             rnz = Rp [1] ;
 
-            /* sort R */
+            // sort R
             qsort (Ri, rnz, sizeof (Int),
                     (int (*) (const void *, const void *)) icomp) ;
 
-            /* compare with ith column of L transpose */
+            // compare with ith column of L transpose
             lnz = LTp [i+1] - LTp [i] ;
             ok = TRUE ;
             for (k = 0 ; k < MIN (rnz,lnz) ; k++)
             {
-                /* printf ("%d vs %d\n", Ri [k], LTi [LTp [i] + k]) ; */
+                // printf ("%d vs %d\n", Ri [k], LTi [LTp [i] + k]) ;
                 ok = ok && (Ri [k] == LTi [LTp [i] + k]) ;
             }
             OK (ok) ;
             OK (rnz == lnz) ;
 
-            /* L is symbolic, so cholmod_lsubtree will fail */
+            // L is symbolic, so cholmod_lsubtree will fail
             if (check_errors)
             {
                 ok = CHOLMOD(row_lsubtree) (S, NULL, 0, i, L, R, cm) ;
@@ -493,7 +487,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
 
         }
-        my_srand (save) ;                                       /* RAND */
+        my_srand (save) ;                                       // RAND
     }
 
     ok = CHOLMOD(free_factor) (&L, cm) ;                            OK (ok) ;
@@ -502,15 +496,15 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     ok = CHOLMOD(free_sparse) (&R, cm) ;                            OK (ok) ;
     ok = CHOLMOD(free_sparse) (&S, cm) ;                            OK (ok) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* simplicial LDL' or LL' factorization with no analysis */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // simplicial LDL' or LL' factorization with no analysis
+    //--------------------------------------------------------------------------
 
     for (trial = 0 ; trial <= check_errors ; trial++)
     {
 
-        /* create a simplicial symbolic factor */
-        L = CHOLMOD(allocate_factor) (n, cm) ;
+        // create a simplicial symbolic factor
+        L = CHOLMOD(alloc_factor) (n, DTYPE, cm) ;
         ok = TRUE ;
         Axtype = (A == NULL) ? CHOLMOD_REAL : A->xtype ;
 
@@ -519,7 +513,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             OKP (L) ;
             if (trial == 0)
             {
-                /* convert to packed LDL' first, then unpacked */
+                // convert to packed LDL' first, then unpacked
                 ok = CHOLMOD(change_factor) (Axtype, FALSE, FALSE, TRUE,
                         TRUE, L, cm) ;
                 OK (ok);
@@ -535,14 +529,15 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
                 if (n > 1)
                 {
                     A1 = CHOLMOD(allocate_sparse)(1, 1, 1, TRUE, TRUE, 1,
-                        CHOLMOD_PATTERN, cm) ;                        OKP (A1) ;
+                        CHOLMOD_PATTERN + DTYPE, cm) ;
+                    OKP (A1) ;
                     ok = CHOLMOD(rowfac)(A1, NULL, beta, 0, 0, L, cm); NOT (ok);
                     ok = CHOLMOD(free_sparse)(&A1, cm) ;                OK (ok);
                 }
             }
             else
             {
-                /* convert to symbolic LL' */
+                // convert to symbolic LL'
                 ok = CHOLMOD(change_factor) (CHOLMOD_PATTERN, TRUE, FALSE, TRUE,
                         TRUE, L, cm) ;
                 OK (ok) ;
@@ -550,7 +545,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
         }
 
-        /* factor */
+        // factor
         CHOLMOD(print_factor) (L, "L for rowfac", cm) ;
         CHOLMOD(print_sparse) (A, "A for rowfac", cm) ;
 
@@ -563,7 +558,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
             if (cm->status == CHOLMOD_NOT_POSDEF)
             {
-                /* LL' factorization failed; subsequent rowfac's should fail */
+                // LL' factorization failed; subsequent rowfac's should fail
                 k++ ;
                 ok = CHOLMOD(rowfac) (A, NULL, beta, k, k+1, L, cm) ;
                 NOT (ok) ;
@@ -579,59 +574,29 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             ok = TRUE ;
         }
 
-        /* solve */
+        // solve
         if (ok)
         {
-
-/*
-int saveit = cm->print ;
-int saveit2 = cm->precise ;
-cm->print = 5 ;
-cm->precise = TRUE ;
-
-CHOLMOD (print_sparse) (A, "A here", cm) ;
-CHOLMOD (print_factor) (L, "L here", cm) ;
-CHOLMOD (print_dense) (B, "B here", cm) ;
-*/
-
             cm->prefer_zomplex = prefer_zomplex ;
             X = CHOLMOD(solve) (CHOLMOD_A, L, B, cm) ;
-
-/*
-CHOLMOD (print_dense) (X, "X here", cm) ;
-*/
 
             cm->prefer_zomplex = FALSE ;
             r = resid (A, X, B) ;
             MAXERR (maxerr, r, 1) ;
             CHOLMOD(free_dense) (&X, cm) ;
-
-/*
-cm->print = saveit ;
-cm->precise = saveit2 ;
-fprintf (stderr, "solve %8.2e\n", r) ;
-*/
         }
 
         CHOLMOD(free_factor) (&L, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* factor again with entries in the (ignored) lower part A */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // factor again with entries in the (ignored) lower part A
+    //--------------------------------------------------------------------------
 
     if (A->packed)
     {
-        L = CHOLMOD(allocate_factor) (n, cm) ;
+        L = CHOLMOD(alloc_factor) (n, DTYPE, cm) ;
         C = add_gunk (A) ;
-
-/*
-        C = CHOLMOD(copy) (A, 0, 1, cm) ;
-        if (C != NULL)
-        {
-            C->stype = 1 ;
-        }
-*/
 
         CHOLMOD(rowfac) (C, NULL, beta, 0, n, L, cm) ;
 
@@ -644,9 +609,9 @@ fprintf (stderr, "solve %8.2e\n", r) ;
         CHOLMOD(free_dense) (&X, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* factor again using rowfac_mask (for LPDASA only) */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // factor again using rowfac_mask (for LPDASA only)
+    //--------------------------------------------------------------------------
 
     r = raw_factor2 (A, 0., 0) ;
     MAXERR (maxerr, r, 1) ;
@@ -654,9 +619,9 @@ fprintf (stderr, "solve %8.2e\n", r) ;
     r = raw_factor2 (A, 1e-16, 0) ;
     MAXERR (maxerr, r, 1) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free the problem */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free the problem
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free_sparse) (&AT, cm) ;
     CHOLMOD(free_dense) (&B, cm) ;
@@ -668,15 +633,14 @@ fprintf (stderr, "solve %8.2e\n", r) ;
     return (maxerr) ;
 }
 
+//------------------------------------------------------------------------------
+// raw_factor2
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === raw_factor2 ========================================================== */
-/* ========================================================================== */
-
-/* A->stype can be 0 (lower), 1 (upper) or 0 (unsymmetric).  In the first two
- * cases, Ax=b is solved.  In the third, A*A'x=b is solved.  No analysis and no
- * fill-reducing ordering is used.  Both simplicial LL' and LDL' factorizations
- * are used (testing rowfac_mask, for LPDASA only). */
+// A->stype can be 0 (lower), 1 (upper) or 0 (unsymmetric).  In the first two
+// cases, Ax=b is solved.  In the third, A*A'x=b is solved.  No analysis and no
+// fill-reducing ordering is used.  Both simplicial LL' and LDL' factorizations
+// are used (testing rowfac_mask, for LPDASA only).
 
 double raw_factor2 (cholmod_sparse *A, double alpha, int domask)
 {
@@ -688,13 +652,6 @@ double raw_factor2 (cholmod_sparse *A, double alpha, int domask)
     cholmod_factor *L = NULL ;
     cholmod_dense *B = NULL, *X = NULL ;
     double beta [2] ;
-
-/*
-int saveit = cm->print ;
-int saveit2 = cm->precise ;
-cm->print = 5 ;
-cm->precise = TRUE ;
-*/
 
     if (A == NULL)
     {
@@ -713,7 +670,7 @@ cm->precise = TRUE ;
     prefer_zomplex = (A->xtype == CHOLMOD_ZOMPLEX) ;
     AT = CHOLMOD(transpose) (A, 2, cm) ;
 
-    /* ensure C has stype of 0 or 1.  Do not prune any entries */
+    // ensure C has stype of 0 or 1.  Do not prune any entries
     stype = A->stype ;
     if (stype >= 0)
     {
@@ -721,29 +678,18 @@ cm->precise = TRUE ;
         C = CHOLMOD(copy_sparse) (A, cm) ;
         A->stype = stype ;
         if (C) C->stype = stype ;
-        /*
-        C = CHOLMOD(copy) (A, 0, 1, cm) ;
-        if (C) C->stype = A->stype ;
-        */
         CT = AT ;
 
     }
     else
     {
         C = AT ;
-        /*
-        CT = CHOLMOD(copy_sparse) (A, cm) ;
-        */
-        /*
-        CT = CHOLMOD(copy) (A, 0, 1, cm) ;
-        if (CT) CT->stype = A->stype ;
-        */
         A->stype = 0 ;
         CT = CHOLMOD(copy_sparse) (A, cm) ;
         A->stype = stype ;
         if (CT) CT->stype = stype ;
 
-        /* only domask if C is symmetric and upper part stored */
+        // only domask if C is symmetric and upper part stored
         domask = FALSE ;
 
     }
@@ -766,11 +712,11 @@ cm->precise = TRUE ;
 
     if (C && !(C->packed) && !(C->sorted))
     {
-        /* do not do the unpacked or unsorted cases */
+        // do not do the unpacked or unsorted cases
         domask = FALSE ;
     }
 
-    /* make a copy of C and add some gunk if stype > 0 */
+    // make a copy of C and add some gunk if stype > 0
     added_gunk = (C && C->stype > 0) ;
     if (added_gunk)
     {
@@ -786,12 +732,12 @@ cm->precise = TRUE ;
     if (CC && domask)
     {
         Int *Cp, *Ci, p ;
-        double *Cx, *Cz ;
+        Real *Cx, *Cz ;
 
-        /* this implicitly sets the first row/col of C to zero, except diag. */
+        // this implicitly sets the first row/col of C to zero, except diag.
         mask [0] = 1 ;
 
-        /* CC = C2, and then set the first row/col to zero, except diagonal */
+        // CC = C2, and then set the first row/col to zero, except diagonal
         Cp = CC->p ;
         Ci = CC->i ;
         Cx = CC->x ;
@@ -847,7 +793,7 @@ cm->precise = TRUE ;
             for (xtype = 0 ; xtype <= 1 ; xtype++)
             {
 
-                L = CHOLMOD(allocate_factor) (n, cm) ;
+                L = CHOLMOD(alloc_factor) (n, DTYPE, cm) ;
                 if (L) L->is_ll = is_ll ;
 
                 if (xtype)

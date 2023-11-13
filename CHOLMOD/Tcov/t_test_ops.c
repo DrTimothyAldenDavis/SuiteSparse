@@ -1,23 +1,22 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/test_ops: test CHOLMOD matrix operators
+// CHOLMOD/Tcov/t_test_ops: test CHOLMOD matrix operators
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Test CHOLMOD matrix operators. */
+// Test CHOLMOD matrix operators.
 
 #include "cm.h"
 
+//------------------------------------------------------------------------------
+// nzdiag
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === nzdiag =============================================================== */
-/* ========================================================================== */
-
-/* Count the entries on the diagonal */
+// Count the entries on the diagonal
 
 Int nzdiag (cholmod_sparse *A)
 {
@@ -49,16 +48,14 @@ Int nzdiag (cholmod_sparse *A)
     return (nnzdiag) ;
 }
 
+//------------------------------------------------------------------------------
+// check_partition
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === check_partition ====================================================== */
-/* ========================================================================== */
-
-/* Check a node separator, and return the # of nodes in the node separator or
- * -1 if the separater is invalid.  A node j is in the left part if
- * Part [j] = 0, in the right part if Part [j] = 1, and in the separator if
- * Part [j] = 2.
- */
+// Check a node separator, and return the # of nodes in the node separator or
+// -1 if the separater is invalid.  A node j is in the left part if
+// Part [j] = 0, in the right part if Part [j] = 1, and in the separator if
+// Part [j] = 2.
 
 Int check_partition (cholmod_sparse *A, Int *Part)
 {
@@ -67,7 +64,7 @@ Int check_partition (cholmod_sparse *A, Int *Part)
 
     if (A == NULL || Part == NULL || A->nrow != A->ncol)
     {
-        /* printf ("A NULL, no Partition, or rectangular\n") ; */
+        // printf ("A NULL, no Partition, or rectangular\n") ;
         return (EMPTY) ;
     }
     n = A->nrow ;
@@ -80,22 +77,22 @@ Int check_partition (cholmod_sparse *A, Int *Part)
     chek [1] = 0 ;
     chek [2] = 0 ;
 
-    /* printf ("\ncheck partition:\n") ; */
+    // printf ("\ncheck partition:\n") ;
     for (j = 0 ; j < n ; j++)
     {
         which = Part [j] ;
-        /* printf ("node "ID" in Part "ID"\n", j, which) ; */
+        // printf ("node "ID" in Part "ID"\n", j, which) ;
         p = Ap [j] ;
         pend = (packed) ? (Ap [j+1]) : (p + Anz [j]) ;
         for ( ; p < pend ; p++)
         {
             i = Ai [p] ;
-            /* printf ("   neighbor "ID" in part "ID"\n", i, Part [i]) ; */
+            // printf ("   neighbor "ID" in part "ID"\n", i, Part [i]) ;
             if (which == 0)
             {
                 if (Part [i] == 1)
                 {
-                    /* printf ("   broken!\n") ; */
+                    // printf ("   broken!\n") ;
                     return (EMPTY) ;
                 }
             }
@@ -103,35 +100,32 @@ Int check_partition (cholmod_sparse *A, Int *Part)
             {
                 if (Part [i] == 0)
                 {
-                    /* printf ("   broken!\n") ; */
+                    // printf ("   broken!\n") ;
                     return (EMPTY) ;
                 }
             }
         }
         if (which < 0 || which > 2)
         {
-            /* printf ("   node j, invalid partition, broken!\n") ; */
+            // printf ("   node j, invalid partition, broken!\n") ;
             return (EMPTY) ;
         }
         chek [which]++ ;
     }
-    /*
-    printf ("nodes in left: "ID" right: "ID" separator: "ID"\n",
-        chek [0], chek [1], chek [2]) ;
-    */
+    // printf ("nodes in left: "ID" right: "ID" separator: "ID"\n",
+    //     chek [0], chek [1], chek [2]) ;
     return (chek [2]) ;
 }
 
+//------------------------------------------------------------------------------
+// check_equality
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === check_equality ======================================================= */
-/* ========================================================================== */
-
-/* Ensure two sparse matrices are identical. */
+// Ensure two sparse matrices are identical.
 
 static void check_equality (cholmod_sparse *E, cholmod_sparse *D, Int xtype)
 {
-    double *Ex, *Ez, *Dx, *Dz ;
+    Real *Ex, *Ez, *Dx, *Dz ;
     Int *Ep, *Ei, *Dp, *Di ;
     Int j, nz, p, ncol ;
 
@@ -191,17 +185,16 @@ static void check_equality (cholmod_sparse *E, cholmod_sparse *D, Int xtype)
     }
 }
 
+//------------------------------------------------------------------------------
+// test_ops
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === test_ops ============================================================= */
-/* ========================================================================== */
-
-/* Test various matrix operations. */
+// Test various matrix operations.
 
 double test_ops (cholmod_sparse *A)
 {
     double maxerr = 0, r, x, anorm, r1, rinf ;
-    double *Sx, *Sz ;
+    Real *Sx, *Sz ;
     Int *Pinv, *P, *Si, *Sj, *Q, *Qinv, *fset, *Partition ;
     cholmod_triplet *S ;
     cholmod_sparse *C, *D, *E, *F, *G, *H, *AT, *Zs ;
@@ -210,7 +203,8 @@ double test_ops (cholmod_sparse *A)
         xtype, xtype2, mtype, asym, xmatched, pmatched, nzoffdiag, nz_diag ;
     size_t nz1, nz2 ;
     void (*save) (int, const char *, int, const char *) ;
-    double alpha [2], beta [2], *Xx ;
+    double alpha [2], beta [2] ;
+    Real *Xx ;
     FILE *f ;
     int option, save3 ;
 
@@ -228,9 +222,9 @@ double test_ops (cholmod_sparse *A)
     xtype = A->xtype ;
     isreal = (A->xtype == CHOLMOD_REAL) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* norm */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // norm
+    //--------------------------------------------------------------------------
 
     CHOLMOD(print_sparse) (A, "A for testops", cm) ;
     r1 = CHOLMOD(norm_sparse) (A, 1, cm) ;
@@ -238,7 +232,7 @@ double test_ops (cholmod_sparse *A)
 
     anorm = r1 ;
 
-    /* E = pattern of A */
+    // E = pattern of A
     E = CHOLMOD(copy) (A, 0, 0, cm) ;
     CHOLMOD(print_sparse) (E, "E = pattern of A", cm) ;
 //  int64_t enz = CHOLMOD (nnz) (E, cm) ;
@@ -250,7 +244,7 @@ double test_ops (cholmod_sparse *A)
     OK (rinf <= ncol) ;
     CHOLMOD(free_sparse) (&E, cm) ;
 
-    /* E = pattern of A, but exclude the diagonal */
+    // E = pattern of A, but exclude the diagonal
     E = CHOLMOD(copy) (A, 0, -1, cm) ;
     CHOLMOD(print_sparse) (E, "E = spones (A), excl diag", cm) ;
     r1 = CHOLMOD(norm_sparse) (E, 1, cm) ;
@@ -267,13 +261,13 @@ double test_ops (cholmod_sparse *A)
     }
     CHOLMOD(free_sparse) (&E, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* copy */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // copy
+    //--------------------------------------------------------------------------
 
     if (A->stype)
     {
-        /* E = tril (A), no diagonal */
+        // E = tril (A), no diagonal
         E = CHOLMOD(copy) (A, -1, -1, cm) ;
         CHOLMOD(print_sparse) (E, "E, lower and no diagonal", cm) ;
         CHOLMOD(band_inplace) (0, n, 0, E, cm) ;
@@ -286,11 +280,11 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&E, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* read/write */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // read/write
+    //--------------------------------------------------------------------------
 
-    /* delete the contents of the temp1.mtx and temp2.mtx file */
+    // delete the contents of the temp1.mtx and temp2.mtx file
     f = fopen ("temp1.mtx", "w") ;
     fprintf (f, "temp1\n") ;
     fclose (f) ;
@@ -308,7 +302,7 @@ double test_ops (cholmod_sparse *A)
     OK (IMPLIES (A != NULL, asym > EMPTY)) ;
 
     f = fopen ("temp1.mtx", "r") ;
-    C = CHOLMOD(read_sparse) (f, cm) ;
+    C = CHOLMOD(read_sparse2) (f, DTYPE, cm) ;
     fclose (f) ;
     printf ("got_sparse\n") ;
     CHOLMOD(free_sparse) (&C, cm) ;
@@ -322,7 +316,7 @@ double test_ops (cholmod_sparse *A)
     printf ("write_sparse3, asym: "ID"\n", asym) ;
 
     f = fopen ("temp3.mtx", "r") ;
-    C = CHOLMOD(read_sparse) (f, cm) ;
+    C = CHOLMOD(read_sparse2) (f, DTYPE, cm) ;
     fclose (f) ;
     printf ("got_sparse3\n") ;
     CHOLMOD(free_sparse) (&C, cm) ;
@@ -334,7 +328,7 @@ double test_ops (cholmod_sparse *A)
         fprintf (f, "temp2\n") ;
         fclose (f) ;
 
-        X = CHOLMOD(ones) (4, 4, CHOLMOD_REAL, cm) ;
+        X = CHOLMOD(ones) (4, 4, CHOLMOD_REAL + DTYPE, cm) ;
         if (X != NULL)
         {
             Xx = X->x ;
@@ -346,16 +340,16 @@ double test_ops (cholmod_sparse *A)
         printf ("wrote dense\n") ;
 
         f = fopen ("temp2.mtx", "r") ;
-        Y = CHOLMOD(read_dense) (f, cm) ;
+        Y = CHOLMOD(read_dense2) (f, DTYPE, cm) ;
         fclose (f) ;
         printf ("got dense\n") ;
         CHOLMOD(free_dense) (&X, cm) ;
         CHOLMOD(free_dense) (&Y, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* symmetry */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // symmetry
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free_work) (cm) ;
     xmatched = 0 ;
@@ -371,18 +365,18 @@ double test_ops (cholmod_sparse *A)
             asym, xmatched, pmatched, nzoffdiag, nz_diag) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* transpose */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // transpose
+    //--------------------------------------------------------------------------
 
     C = CHOLMOD(allocate_sparse) (A->ncol, A->nrow, A->nzmax, TRUE, TRUE,
-            -(A->stype), A->xtype, cm) ;
+            -(A->stype), A->xtype + DTYPE, cm) ;
     D = CHOLMOD(allocate_sparse) (A->nrow, A->ncol, A->nzmax, TRUE, TRUE,
-            A->stype, A->xtype, cm) ;
+            A->stype, A->xtype + DTYPE, cm) ;
     CHOLMOD(free_work) (cm) ;
-    ok = (C != NULL && D != NULL) ; 
+    ok = (C != NULL && D != NULL) ;
 
-    /* C = A' */
+    // C = A'
     if (ok)
     {
         if (A->stype)
@@ -396,7 +390,7 @@ double test_ops (cholmod_sparse *A)
         OK (ok || cm->status == CHOLMOD_OUT_OF_MEMORY) ;
     }
 
-    /* D = C' */
+    // D = C'
     if (ok)
     {
         if (A->stype)
@@ -419,23 +413,23 @@ double test_ops (cholmod_sparse *A)
     CHOLMOD(free_sparse) (&C, cm) ;
     CHOLMOD(free_sparse) (&D, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* C = A with jumbled triplets */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // C = A with jumbled triplets
+    //--------------------------------------------------------------------------
 
-    S = CHOLMOD(sparse_to_triplet) (A, cm) ; /* [ */
+    S = CHOLMOD(sparse_to_triplet) (A, cm) ; // [
 
     if (S != NULL && nmin > 0 && S->nnz > 0)
     {
 
-        /* double the number of entries in S */
+        // double the number of entries in S
         nz1 = S->nzmax ;
         nz2 = 2*nz1 ;
         ok = CHOLMOD(reallocate_triplet) (nz2, S, cm) ;
 
         if (ok)
         {
-            /* add duplicate entries, but keep the matrix the same */
+            // add duplicate entries, but keep the matrix the same
             OK (S->nzmax == nz2) ;
             Si = S->i ;
             Sj = S->j ;
@@ -444,42 +438,42 @@ double test_ops (cholmod_sparse *A)
 
             for (k = nz1 ; k < ((Int) nz2) ; k++)
             {
-                kk = nrand (k) ;                                /* RAND */
+                kk = nrand (k) ;                                // RAND
                 Si [k] = Si [kk] ;
                 Sj [k] = Sj [kk] ;
 
                 if (S->xtype == CHOLMOD_REAL)
                 {
-                    x = Sx [kk] * (xrand (4.) - 2) ;            /* RAND */
+                    x = Sx [kk] * (xrand (4.) - 2) ;            // RAND
                     Sx [k] = x ;
                     Sx [kk] -= x ;
                 }
                 else if (S->xtype == CHOLMOD_COMPLEX)
                 {
-                    x = Sx [2*kk] * (xrand (4.) - 2) ;          /* RAND */
+                    x = Sx [2*kk] * (xrand (4.) - 2) ;          // RAND
                     Sx [2*k] = x ;
                     Sx [2*kk] -= x ;
 
-                    x = Sx [2*kk+1] * (xrand (4.) - 2) ;        /* RAND */
+                    x = Sx [2*kk+1] * (xrand (4.) - 2) ;        // RAND
                     Sx [2*k+1] = x ;
                     Sx [2*kk+1] -= x ;
                 }
                 else
                 {
-                    x = Sx [kk] * (xrand (4.) - 2) ;            /* RAND */
+                    x = Sx [kk] * (xrand (4.) - 2) ;            // RAND
                     Sx [k] = x ;
                     Sx [kk] -= x ;
 
-                    x = Sz [kk] * (xrand (4.) - 2) ;            /* RAND */
+                    x = Sz [kk] * (xrand (4.) - 2) ;            // RAND
                     Sz [k] = x ;
                     Sz [kk] -= x ;
                 }
             }
 
-            /* randomly jumble the entries */
+            // randomly jumble the entries
             for (k = 0 ; k < ((Int) (nz2-1)) ; k++)
             {
-                kk = k + nrand (nz2-k) ;                        /* RAND */
+                kk = k + nrand (nz2-k) ;                        // RAND
                 i = Si [k] ;
                 Si [k] = Si [kk] ;
                 Si [kk] = i ;
@@ -523,11 +517,11 @@ double test_ops (cholmod_sparse *A)
 
     CHOLMOD(print_triplet) (S, "S jumbled", cm) ;
 
-    C = CHOLMOD(triplet_to_sparse) (S, 0, cm) ; /* [ */
+    C = CHOLMOD(triplet_to_sparse) (S, 0, cm) ; // [
     CHOLMOD(print_sparse) (A, "A", cm) ;
     CHOLMOD(print_sparse) (C, "C", cm) ;
 
-    Zs = CHOLMOD(spzeros) (nrow, ncol, 1, xtype, cm) ;  /* [ */
+    Zs = CHOLMOD(spzeros) (nrow, ncol, 1, xtype + DTYPE, cm) ;  // [
 
     G = NULL ;
     F = NULL ;
@@ -535,11 +529,11 @@ double test_ops (cholmod_sparse *A)
     if (isreal)
     {
 
-        /* G=A+0 */
-        G = CHOLMOD(add) (A, Zs, one, one, TRUE, TRUE, cm) ; /* [ */
+        // G=A+0
+        G = CHOLMOD(add) (A, Zs, one, one, TRUE, TRUE, cm) ; // [
 
-        /* F = G-C */
-        F = CHOLMOD(add) (G, C, one, minusone, TRUE, TRUE, cm) ;        /* [ */
+        // F = G-C
+        F = CHOLMOD(add) (G, C, one, minusone, TRUE, TRUE, cm) ;        // [
 
         CHOLMOD(print_sparse) (F, "F", cm) ;
         r = CHOLMOD(norm_sparse) (F, 1, cm) ;
@@ -554,7 +548,7 @@ double test_ops (cholmod_sparse *A)
         MAXERR (maxerr, r, anorm) ;
         MAXERR (maxerr, rinf, anorm) ;
 
-        /* E = F, with change of type and dropping small entries */
+        // E = F, with change of type and dropping small entries
         for (stype = -1 ; stype <= 1 ; stype++)
         {
             if (stype != 0 && (F != NULL && F->nrow != F->ncol))
@@ -563,7 +557,7 @@ double test_ops (cholmod_sparse *A)
             }
             for (mode = 0 ; mode <= 1 ; mode++)
             {
-                E = CHOLMOD(copy) (F, stype, mode, cm) ;        /* [ */
+                E = CHOLMOD(copy) (F, stype, mode, cm) ;        // [
                 CHOLMOD(drop) (1e-16, E, cm) ;
                 r1 = CHOLMOD(norm_sparse) (E, 1, cm) ;
                 rinf = CHOLMOD(norm_sparse) (E, 0, cm) ;
@@ -571,7 +565,7 @@ double test_ops (cholmod_sparse *A)
                 {
                     if (mode == 0)
                     {
-                        /* pattern only */
+                        // pattern only
                         OK (r1 <= nrow) ;
                         OK (rinf <= ncol) ;
                     }
@@ -581,21 +575,21 @@ double test_ops (cholmod_sparse *A)
                         MAXERR (maxerr, rinf, anorm) ;
                     }
                 }
-                CHOLMOD(free_sparse) (&E, cm) ; /* ] */
+                CHOLMOD(free_sparse) (&E, cm) ; // ]
             }
         }
 
-        CHOLMOD(free_sparse) (&F, cm) ; /* ] */
-        CHOLMOD(free_sparse) (&G, cm) ; /* ] */
+        CHOLMOD(free_sparse) (&F, cm) ; // ]
+        CHOLMOD(free_sparse) (&G, cm) ; // ]
     }
 
-    Y = CHOLMOD(ones) (nrow, 1, xtype, cm) ;   /* [ */
-    X = CHOLMOD(ones) (ncol, 1, xtype, cm) ;   /* [ */
+    Y = CHOLMOD(ones) (nrow, 1, xtype + DTYPE, cm) ;   // [
+    X = CHOLMOD(ones) (ncol, 1, xtype + DTYPE, cm) ;   // [
     alpha [0] = 0 ;
     alpha [1] = 0 ;
     beta [0] = 2 ;
     beta [1] = 0 ;
-    /* Y = 0*A*X + 2*Y */
+    // Y = 0*A*X + 2*Y
     CHOLMOD(sdmult) (A, FALSE, alpha, beta, X, Y, cm) ;
     r = CHOLMOD(norm_dense) (Y, 0, cm) ;
     if (Y != NULL && X != NULL && A != NULL)
@@ -604,7 +598,7 @@ double test_ops (cholmod_sparse *A)
     }
 
     alpha [0] = 1 ;
-    /* Y = 1*(0)*X + 2*Y */
+    // Y = 1*(0)*X + 2*Y
     CHOLMOD(sdmult) (Zs, FALSE, alpha, beta, X, Y, cm) ;
     r = CHOLMOD(norm_dense) (Y, 0, cm) ;
     if (Y != NULL && X != NULL && A != NULL)
@@ -612,27 +606,27 @@ double test_ops (cholmod_sparse *A)
         OK ((nrow == 0) ? (r == 0) : (r == 4)) ;
     }
 
-    CHOLMOD(free_dense) (&X, cm) ;   /* ] */
-    CHOLMOD(free_dense) (&Y, cm) ;   /* ] */
+    CHOLMOD(free_dense) (&X, cm) ;   // ]
+    CHOLMOD(free_dense) (&Y, cm) ;   // ]
 
-    CHOLMOD(free_sparse) (&Zs, cm) ; /* ] */
-    CHOLMOD(free_sparse) (&C, cm) ;  /* ] */
-    CHOLMOD(free_triplet) (&S, cm) ; /* ] */
+    CHOLMOD(free_sparse) (&Zs, cm) ; // ]
+    CHOLMOD(free_sparse) (&C, cm) ;  // ]
+    CHOLMOD(free_triplet) (&S, cm) ; // ]
 
-    /* ---------------------------------------------------------------------- */
-    /* C = P*A*Q in triplet form */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // C = P*A*Q in triplet form
+    //--------------------------------------------------------------------------
 
     S = CHOLMOD(sparse_to_triplet) (A, cm) ;
-    P = prand (nrow) ;                                          /* RAND */
+    P = prand (nrow) ;                                          // RAND
     if (A->stype == 0)
     {
-        Q = prand (ncol) ;                                      /* RAND */
+        Q = prand (ncol) ;                                      // RAND
     }
     else
     {
-        /* if A is symmetric, and stored in either upper or lower form, then
-         * the following code only works if P = Q */
+        // if A is symmetric, and stored in either upper or lower form, then
+        // the following code only works if P = Q
         Q = P ;
     }
     Pinv = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
@@ -671,17 +665,17 @@ double test_ops (cholmod_sparse *A)
     if (isreal)
     {
 
-        /* ------------------------------------------------------------------ */
-        /* E = P*A*Q in sparse form */
-        /* ------------------------------------------------------------------ */
+        //----------------------------------------------------------------------
+        // E = P*A*Q in sparse form
+        //----------------------------------------------------------------------
 
         D = CHOLMOD(copy) (A, 0, 1, cm) ;
         E = CHOLMOD(submatrix) (D, P, nrow, Q, ncol, TRUE, FALSE, cm) ;
         CHOLMOD(sort) (E, cm) ;
 
-        /* ------------------------------------------------------------------ */
-        /* F = E-G */
-        /* ------------------------------------------------------------------ */
+        //----------------------------------------------------------------------
+        // F = E-G
+        //----------------------------------------------------------------------
 
         G = CHOLMOD(copy) (C, 0, 1, cm) ;
         F = CHOLMOD(add) (E, G, one, minusone, TRUE, TRUE, cm) ;
@@ -701,15 +695,15 @@ double test_ops (cholmod_sparse *A)
     CHOLMOD(free_sparse) (&C, cm) ;
     CHOLMOD(free_triplet) (&S, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* submatrix */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // submatrix
+    //--------------------------------------------------------------------------
 
     if (A->stype == 0 && isreal)
     {
-        /* E = A(:,:) */
+        // E = A(:,:)
         E = CHOLMOD(submatrix) (A, NULL, -1, NULL, -1, TRUE, TRUE, cm) ;
-        /* C = A-E */
+        // C = A-E
         C = CHOLMOD(add) (A, E, one, minusone, TRUE, TRUE, cm) ;
         ok = CHOLMOD(drop) (0., C, cm) ;
         nz = CHOLMOD(nnz) (C, cm) ;
@@ -721,34 +715,34 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&E, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* test band and add, unsymmetric */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test band and add, unsymmetric
+    //--------------------------------------------------------------------------
 
     if (isreal)
     {
         CHOLMOD(print_sparse) (A, "A for do triplet", cm) ;
 
-        /* E = A */
+        // E = A
         E = CHOLMOD(copy) (A, 0, 1, cm) ;
         CHOLMOD(print_sparse) (E, "E=triu(A)", cm) ;
 
-        /* E = triu (E) */
+        // E = triu (E)
         CHOLMOD(band_inplace) (0, ncol, 1, E, cm) ;
 
-        /* F = A */
+        // F = A
         F = CHOLMOD(copy) (A, 0, 1, cm) ;
         CHOLMOD(print_sparse) (F, "F=tril(A)", cm) ;
 
-        /* F = tril(F,-1) */
+        // F = tril(F,-1)
         CHOLMOD(band_inplace) (-nrow, -1, 1, F, cm) ;
         CHOLMOD(print_sparse) (F, "Ftril", cm) ;
 
-        /* G = E+F */
+        // G = E+F
         G = CHOLMOD(add) (E, F, one, one, TRUE, TRUE, cm) ;
         CHOLMOD(print_sparse) (G, "G=E+F (1)", cm) ;
 
-        /* D = A-G, which should be empty */
+        // D = A-G, which should be empty
         D = CHOLMOD(add) (G, A, one, minusone, TRUE, TRUE, cm) ;
         CHOLMOD(print_sparse) (D, "D=A-G", cm) ;
 
@@ -781,28 +775,28 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&D, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* test band, add and copy_sparse (symmetric) */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test band, add and copy_sparse (symmetric)
+    //--------------------------------------------------------------------------
 
     if (A->stype && isreal)
     {
 
-        /* E = A, in symmetric/upper form */
+        // E = A, in symmetric/upper form
         E = CHOLMOD(copy) (A, 1, 1, cm) ;
         CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
 
-        /* E = -E */
+        // E = -E
         CHOLMOD(scale) (M1, CHOLMOD_SCALAR, E, cm) ;
 
-        /* F = A, in symmetric/lower form */
+        // F = A, in symmetric/lower form
         F = CHOLMOD(copy) (A, -1, 1, cm) ;
         CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
 
-        /* C = F (exact copy) */
+        // C = F (exact copy)
         C = CHOLMOD(copy_sparse) (F, cm) ;
 
-        /* G = E+C */
+        // G = E+C
         G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
         CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
         CHOLMOD(sort) (G, cm) ;
@@ -822,17 +816,17 @@ double test_ops (cholmod_sparse *A)
 
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* try a dense identity matrix */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // try a dense identity matrix
+    //--------------------------------------------------------------------------
 
-    X = CHOLMOD(eye) (3, 4, CHOLMOD_REAL, cm) ;
+    X = CHOLMOD(eye) (3, 4, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(print_dense) (X, "Dense identity", cm) ;
     CHOLMOD(free_dense) (&X, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* bisector and nested_dissection */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // bisector and nested_dissection
+    //--------------------------------------------------------------------------
 
 #ifndef NPARTITION
     if (A != NULL && A->nrow == A->ncol)
@@ -842,23 +836,23 @@ double test_ops (cholmod_sparse *A)
         Int *Cnw, *Cew, *Cmember, *CParent, *Perm ;
         double save1 ;
 
-        /* try CHOLMOD's interface to METIS_ComputeVertexSeparator */
+        // try CHOLMOD's interface to METIS_ComputeVertexSeparator
         cm->metis_memory = 2.0 ;
         CHOLMOD(print_sparse) (A, "A for bisect", cm) ;
         csep = CHOLMOD(bisect) (A, NULL, 0, TRUE, Partition, cm) ;
         if (csep != EMPTY)
         {
             Int csep2 ;
-            /* printf ("csep %g\n", (double) csep) ; */
+            // printf ("csep %g\n", (double) csep) ;
             csep2 = check_partition (A, Partition) ;
-            /* printf ("csep2 %g\n", (double) csep2) ; */
+            // printf ("csep2 %g\n", (double) csep2) ;
             OK (csep == csep2) ;
         }
 
-        /* try the raw interface to METIS_ComputeVertexSeparator */
+        // try the raw interface to METIS_ComputeVertexSeparator
         CHOLMOD(print_sparse) (A, "A for metis bisect", cm) ;
 
-        /* C = A+A', remove the diagonal */
+        // C = A+A', remove the diagonal
         AT = CHOLMOD(transpose) (A, 0, cm) ;
         E = CHOLMOD(add) (A, AT, one, one, FALSE, TRUE, cm) ;
         CHOLMOD(free_sparse) (&AT, cm) ;
@@ -911,13 +905,13 @@ double test_ops (cholmod_sparse *A)
 
         CHOLMOD(free_work) (cm) ;
 
-        /* collapse the septree */
+        // collapse the septree
         if (nc > 0 && n > 0)
         {
             nc_new = CHOLMOD(collapse_septree) (n, nc, 0.1, 400,
                 CParent, Cmember, cm) ;
 
-            /* error checks */
+            // error checks
             save = cm->error_handler ;
             cm->error_handler = NULL ;
             nc_new = CHOLMOD(collapse_septree) (n, nc, 0.1, 400,
@@ -952,32 +946,32 @@ double test_ops (cholmod_sparse *A)
     }
 #endif
 
-    /* ---------------------------------------------------------------------- */
-    /* dense to/from sparse conversions */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // dense to/from sparse conversions
+    //--------------------------------------------------------------------------
 
-    /* convert A to real, remove zero entries, and then convert to pattern */
+    // convert A to real, remove zero entries, and then convert to pattern
     if (MAX (nrow, ncol) < 1000)
     {
 
         C = CHOLMOD(copy_sparse) (A, cm) ;
-        CHOLMOD(sparse_xtype) (CHOLMOD_REAL, C, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, C, cm) ;
         CHOLMOD(drop) (0., C, cm) ;
         D = CHOLMOD(copy) (C, 0, 0, cm) ;
         CHOLMOD(sort) (D, cm) ;
 
-        /* X = dense copy of C */
-        CHOLMOD(sparse_xtype) (CHOLMOD_PATTERN, C, cm) ;
+        // X = dense copy of C
+        CHOLMOD(sparse_xtype) (CHOLMOD_PATTERN + DTYPE, C, cm) ;
         X = CHOLMOD(sparse_to_dense) (C, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
 
-        /* change X to sparse pattern and then real/complex/zomplex, it should
-         * equal D */
+        // change X to sparse pattern and then real/complex/zomplex, it should
+        // equal D
         for (xtype2 = CHOLMOD_REAL ; xtype2 <= CHOLMOD_ZOMPLEX ; xtype2++)
         {
             E = CHOLMOD(dense_to_sparse) (X, FALSE, cm) ;
-            ok = CHOLMOD(sparse_xtype) (xtype2, E, cm) ;
-            ok = CHOLMOD(sparse_xtype) (xtype2, D, cm) ;
+            ok = CHOLMOD(sparse_xtype) (xtype2 + DTYPE, E, cm) ;
+            ok = CHOLMOD(sparse_xtype) (xtype2 + DTYPE, D, cm) ;
             if (xtype2 == CHOLMOD_REAL)
             {
                 F = CHOLMOD(add) (E, D, one, minusone, TRUE, TRUE, cm) ;
@@ -1003,12 +997,12 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_dense) (&X, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* unsymmetric transpose */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // unsymmetric transpose
+    //--------------------------------------------------------------------------
 
     len = ncol/2 ;
-    fset = prand (ncol) ;                                       /* RAND */
+    fset = prand (ncol) ;                                       // RAND
     CHOLMOD(print_perm) (P, nrow, nrow, "P", cm) ;
     CHOLMOD(print_subset) (fset, ncol, ncol, "fset", cm) ;
 
@@ -1042,22 +1036,22 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&G, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* symmetric array transpose */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // symmetric array transpose
+    //--------------------------------------------------------------------------
 
     if (A->stype != 0)
     {
 
-        /* C = A(p,p).' */
+        // C = A(p,p).'
         C = CHOLMOD(ptranspose) (A, 1, P, NULL, 0, cm) ;
 
-        /* D = C(pinv,pinv).' */
+        // D = C(pinv,pinv).'
         D = CHOLMOD(ptranspose) (C, 1, Pinv, NULL, 0, cm) ;
         CHOLMOD(sort) (D, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
 
-        /* C = A, sorted */
+        // C = A, sorted
         C = CHOLMOD(copy_sparse) (A, cm) ;
         CHOLMOD(sort) (C, cm) ;
 
@@ -1065,22 +1059,22 @@ double test_ops (cholmod_sparse *A)
         E = CHOLMOD(copy) (C, cstype, 1, cm) ;
         F = CHOLMOD(copy) (D, cstype, 1, cm) ;
 
-        /* C and D should be equal */
+        // C and D should be equal
         check_equality (E, F, xtype) ;
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&D, cm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&F, cm) ;
 
-        /* C = A.' */
+        // C = A.'
         C = CHOLMOD(transpose) (A, 1, cm) ;
 
-        /* D = C.' */
+        // D = C.'
         D = CHOLMOD(transpose) (C, 1, cm) ;
         CHOLMOD(sort) (D, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
 
-        /* C = A, sorted */
+        // C = A, sorted
         C = CHOLMOD(copy_sparse) (A, cm) ;
         CHOLMOD(sort) (C, cm) ;
 
@@ -1088,7 +1082,7 @@ double test_ops (cholmod_sparse *A)
         E = CHOLMOD(copy) (C, cstype, 1, cm) ;
         F = CHOLMOD(copy) (D, cstype, 1, cm) ;
 
-        /* C and D should be equal */
+        // C and D should be equal
         check_equality (E, F, xtype) ;
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&D, cm) ;
@@ -1096,13 +1090,13 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&F, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* matrix multiply */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // matrix multiply
+    //--------------------------------------------------------------------------
 
     if (isreal)
     {
-        /* this fails for a large arrowhead matrix, so turn off error hanlder */
+        // this fails for a large arrowhead matrix, so turn off error hanlder
         save = cm->error_handler ;
         cm->error_handler = NULL ;
         AT = CHOLMOD(transpose) (A, 1, cm) ;
@@ -1136,9 +1130,9 @@ double test_ops (cholmod_sparse *A)
 
         if (nrow == ncol)
         {
-            /* E = pattern of A */
+            // E = pattern of A
             E = CHOLMOD(copy) (A, 0, 0, cm) ;
-            /* G = E*E */
+            // G = E*E
             if (n > NLARGE) progress (1, '.') ;
             G = CHOLMOD(ssmult) (E, E, 0, FALSE, FALSE, cm) ;
             if (n > NLARGE) progress (1, '.') ;
@@ -1153,9 +1147,9 @@ double test_ops (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&AT, cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* free P, Q, and their inverses */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free P, Q, and their inverses
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free) (ncol, sizeof (Int), fset, cm) ;
     CHOLMOD(free) (nrow, sizeof (Int), P, cm) ;
@@ -1170,3 +1164,4 @@ double test_ops (cholmod_sparse *A)
     progress (0, '.') ;
     return (maxerr) ;
 }
+

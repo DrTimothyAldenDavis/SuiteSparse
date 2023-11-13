@@ -1,19 +1,18 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/cmread: test program that reads in a sparse matrix 
+// CHOLMOD/Tcov/t_cmread: test program that reads in a sparse matrix
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Read in a matrix from a file and print it out.
- *
- * Usage:
- *      cmread matrixfile
- *      cmread < matrixfile
- */
+// Read in a matrix from a file and print it out.
+//
+// Usage:
+//      cmread matrixfile
+//      cmread < matrixfile
 
 #include "cholmod.h"
 
@@ -27,6 +26,12 @@
 #define UInt uint32_t
 #endif
 
+#ifdef SINGLE
+#define Real float
+#else
+#define Real double
+#endif
+
 int main (int argc, char **argv)
 {
     cholmod_sparse *A, *C, *Z ;
@@ -37,9 +42,9 @@ int main (int argc, char **argv)
     cholmod_common Common, *cm ;
     int mtype, prefer, option ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get the file containing the input matrix */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get the file containing the input matrix
+    //--------------------------------------------------------------------------
 
     if (argc > 1)
     {
@@ -54,14 +59,15 @@ int main (int argc, char **argv)
         f = stdin ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* start CHOLMOD, read the matrix, print it, and free it */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // start CHOLMOD, read the matrix, print it, and free it
+    //--------------------------------------------------------------------------
 
     cm = &Common ;
     CHOLMOD (start) (cm) ;
     cm->print = 5 ;
-    A = CHOLMOD (read_sparse) (f, cm) ;
+//  A = CHOLMOD (read_sparse) (f, cm) ;
+    A = CHOLMOD (read_sparse2) (f, DTYPE, cm) ;
     if (argc > 1) fclose (f) ;
     CHOLMOD (print_sparse) (A, "A", cm) ;
 
@@ -71,7 +77,8 @@ int main (int argc, char **argv)
         {
             printf ("\n---------------------- Prefer: %d\n", prefer) ;
             f = fopen (argv [1], "r") ;
-            V = CHOLMOD (read_matrix) (f, prefer, &mtype, cm) ;
+//          V = CHOLMOD (read_matrix) (f, prefer, &mtype, cm) ;
+            V = CHOLMOD (read_matrix2) (f, prefer, DTYPE, &mtype, cm) ;
             if (V != NULL) switch (mtype)
             {
                 case CHOLMOD_TRIPLET:
@@ -82,12 +89,13 @@ int main (int argc, char **argv)
                 case CHOLMOD_SPARSE:
                     C = V ;
                     CHOLMOD (print_sparse) (C, "C", cm) ;
-                    Z = CHOLMOD (speye) (C->nrow, C->ncol, CHOLMOD_PATTERN, cm);
+                    Z = CHOLMOD (speye) (C->nrow, C->ncol,
+                        CHOLMOD_PATTERN + DTYPE, cm) ;
                     for (option = 0 ; option <= 2 ; option++)
                     {
                         int asym ;
                         Int xmatch = 0, pmatch = 0, nzoff = 0, nzd = 0 ;
-                        asym = CHOLMOD (symmetry) (C, option, 
+                        asym = CHOLMOD (symmetry) (C, option,
                             &xmatch, &pmatch, &nzoff, &nzd, cm) ;
                         f2 = fopen ("temp5.mtx", "w") ;
                         CHOLMOD (write_sparse) (f2, C, Z, NULL, cm) ;
@@ -114,3 +122,4 @@ int main (int argc, char **argv)
     CHOLMOD (finish) (cm) ;
     return (0) ;
 }
+

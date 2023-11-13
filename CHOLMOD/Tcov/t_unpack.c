@@ -1,27 +1,25 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/unpack: test CHOLMOD unpacked matrices
+// CHOLMOD/Tcov/t_unpack: test CHOLMOD unpacked matrices
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Create an unpacked, unsorted version of a matrix, with random-sized gaps in
- * each column. */
+// Create an unpacked, unsorted version of a matrix, with random-sized gaps in
+// each column.
 
 #include "cm.h"
 
-
-/* ========================================================================== */
-/* === unpack =============================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// unpack
+//------------------------------------------------------------------------------
 
 cholmod_sparse *unpack (cholmod_sparse *A)
 {
-    double x ;
-    double *Ax, *Cx, *Az, *Cz ;
+    Real *Ax, *Cx, *Az, *Cz ;
     Int *Ap, *Ai, *Anz, *Cp, *Ci, *Cnz ;
     cholmod_sparse *C ;
     Int i, j, p, q, pdest, pend, nrow, ncol, nzmax, sorted, packed, stype,
@@ -42,7 +40,7 @@ cholmod_sparse *unpack (cholmod_sparse *A)
     stype = A->stype ;
 
     C = CHOLMOD(allocate_sparse) (nrow, ncol, nzmax + extra*ncol, FALSE,
-        FALSE, stype, A->xtype, cm) ;
+        FALSE, stype, A->xtype + A->dtype, cm) ;
 
     if (C == NULL)
     {
@@ -93,7 +91,7 @@ cholmod_sparse *unpack (cholmod_sparse *A)
     pdest = 0 ;
     for (j = 0 ; j < ncol ; j++)
     {
-        /* copy the column into C */
+        // copy the column into C
         p = Ap [j] ;
         Cp [j] = pdest ;
         pend = (packed) ? (Ap [j+1]) : (p + Anz [j]) ;
@@ -118,25 +116,25 @@ cholmod_sparse *unpack (cholmod_sparse *A)
             pdest++ ;
         }
 
-        /* jumble the column */
+        // jumble the column
         p = Cp [j] ;
         pend = p + Cnz [j] ;
         for ( ; p < pend-1 ; p++)
         {
-            q = p + nrand (pend-p) ;                            /* RAND */
+            q = p + nrand (pend-p) ;                            // RAND
             i = Ci [p] ;
             Ci [p] = Ci [q] ;
             Ci [q] = i ;
 
             if (A->xtype == CHOLMOD_REAL)
             {
-                x = Cx [p] ;
+                Real x = Cx [p] ;
                 Cx [p] = Cx [q] ;
                 Cx [q] = x ;
             }
             else if (A->xtype == CHOLMOD_COMPLEX)
             {
-                x = Cx [2*p] ;
+                Real x = Cx [2*p] ;
                 Cx [2*p] = Cx [2*q] ;
                 Cx [2*q] = x ;
 
@@ -146,7 +144,7 @@ cholmod_sparse *unpack (cholmod_sparse *A)
             }
             else if (A->xtype == CHOLMOD_ZOMPLEX)
             {
-                x = Cx [p] ;
+                Real x = Cx [p] ;
                 Cx [p] = Cx [q] ;
                 Cx [q] = x ;
 
@@ -156,8 +154,8 @@ cholmod_sparse *unpack (cholmod_sparse *A)
             }
         }
 
-        /* add some random blank space */
-        pdest += nrand (extra) ;                                /* RAND */
+        // add some random blank space
+        pdest += nrand (extra) ;                                // RAND
         for (p = pend ; p < pdest ; p++)
         {
             Ci [p] = 0 ;
@@ -181,3 +179,4 @@ cholmod_sparse *unpack (cholmod_sparse *A)
 
     return (C) ;
 }
+

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/camdtest: test of CAMD
+// CHOLMOD/Tcov/t_camdtest: test of CAMD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
@@ -7,8 +7,6 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
-
-// This method works for any dtype (double or single)
 
 #undef ASSERT
 #include "cm.h"
@@ -412,3 +410,4 @@ void camdtest (cholmod_sparse *A)
     cm->print = 1 ;
 }
 #endif
+

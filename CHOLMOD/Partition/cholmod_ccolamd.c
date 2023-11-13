@@ -181,7 +181,7 @@ int CHOLMOD(ccolamd)
     }
 
     C = CHOLMOD(allocate_sparse) (ncol, nrow, alen, TRUE, TRUE, 0,
-            CHOLMOD_PATTERN, Common) ;
+        CHOLMOD_PATTERN + A->dtype, Common) ;
 
     //--------------------------------------------------------------------------
     // order with ccolamd

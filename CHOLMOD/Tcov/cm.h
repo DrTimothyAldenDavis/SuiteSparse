@@ -23,6 +23,17 @@
 
 #include "cholmod_internal.h"
 
+#ifdef SINGLE
+    // single precision
+    #define Real float
+#else
+    // double precision
+    #ifndef DOUBLE
+    #define DOUBLE
+    #endif
+    #define Real double
+#endif
+
 #define EMPTY (-1)
 #define TRUE 1
 #define FALSE 0
@@ -43,7 +54,7 @@
 {                                                                       \
     if (ISNAN (maxerr))                                                 \
     {                                                                   \
-        /* do nothing */ ;                                              \
+        ;                                                               \
     }                                                                   \
     else if (ISNAN (err))                                               \
     {                                                                   \
@@ -57,8 +68,6 @@
     {                                                                   \
         if (err > maxerr) maxerr = err ;                                \
     }                                                                   \
-    /* printf ("MAXERR: %7.2e %7.2e %7.2e  in %d : %s\n",       */      \
-    /*      maxerr, err, (double) anorm, __LINE__, __FILE__ ) ; */      \
 }
 
 #define OKP(p)      Assert ((p) != NULL, __FILE__, __LINE__)
@@ -74,7 +83,7 @@
     CHOLMOD(error) (status, __FILE__, __LINE__, message, cm)
 
 //------------------------------------------------------------------------------
-/* global variables */
+// global variables
 //------------------------------------------------------------------------------
 
 #ifndef EXTERN
@@ -88,7 +97,7 @@ EXTERN int64_t my_tries ;
 EXTERN double Zero [2] ;
 
 //------------------------------------------------------------------------------
-/* prototypes */
+// prototypes
 //------------------------------------------------------------------------------
 
 void null_test (cholmod_common *) ;
@@ -146,7 +155,7 @@ void huge (void) ;
 void camdtest (cholmod_sparse *A) ;
 
 //------------------------------------------------------------------------------
-/* AMD, COLAMD, and CCOLAMD */
+// AMD, COLAMD, and CCOLAMD
 //------------------------------------------------------------------------------
 
 #ifdef CHOLMOD_INT64

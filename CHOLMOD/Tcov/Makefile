@@ -3,7 +3,7 @@
 #===============================================================================
 
 # ------------------------------------------------------------------------------
-# CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+# CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 # ------------------------------------------------------------------------------
@@ -295,13 +295,13 @@ $(LCAMDOBJ): $(CAMDSRC)
 # with empty ones (see immediately below), and then you do not need a copy of
 # CCOLAMD:
 # CCOLAMDSRC =
-# CCOLAMDOBJ = 
+# CCOLAMDOBJ =
 # LCCOLAMDOBJ =
-# IPARTITION_OBJ = 
-# LPARTITION_OBJ = 
-# CAMDSRC = 
-# CAMDOBJ = 
-# LCAMDOBJ = 
+# IPARTITION_OBJ =
+# LPARTITION_OBJ =
+# CAMDSRC =
+# CAMDOBJ =
+# LCAMDOBJ =
 #-------------------------------------------------------------------------------
 
 IUTIL_OBJ = \
@@ -514,8 +514,8 @@ ifneq ($(GPU_CONFIG),)
     IGPU = l_gpu_kernels.o z_gpu.o
     LGPU = l_gpu_kernels.o l_gpu.o
 else
-    IGPU = 
-    LGPU = 
+    IGPU =
+    LGPU =
 endif
 
 CONFIG = zz_SuiteSparse_config.o
@@ -732,7 +732,7 @@ go: ccode
 	$(V) ./di_test    < Matrix/5by50                 > $(T)/di_test_5by50.out
 	$(V) ./dl_test    < Matrix/5by50                 > $(T)/dl_test_5by50.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/r5lo                  > $(T)/di_test_r5lo.out 
+	$(V) ./di_test    < Matrix/r5lo                  > $(T)/di_test_r5lo.out
 	$(V) ./dl_test    < Matrix/r5lo                  > $(T)/dl_test_r5lo.out
 	$(V) ./di_test    < Matrix/r5up                  > $(T)/di_test_r5up.out
 	$(V) ./dl_test    < Matrix/r5up                  > $(T)/dl_test_r5up.out
@@ -1704,7 +1704,7 @@ z_rowfac.o: ../Cholesky/cholmod_rowfac.c
 	- ln -s $< z_rowfac.c
 	$(C) -c $(I) z_rowfac.c
 
-#------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------
 z_ccolamd.o: ../Partition/cholmod_ccolamd.c
 	- ln -s $< z_ccolamd.c
 	$(C) -c $(I) z_ccolamd.c
@@ -1864,7 +1864,7 @@ l_rowfac.o: ../Cholesky/cholmod_l_rowfac.c
 	- ln -s $< l_rowfac.c
 	$(C) -c $(I) l_rowfac.c
 
-#------------------------------------------------------------------------------- 
+#-------------------------------------------------------------------------------
 l_ccolamd.o: ../Partition/cholmod_l_ccolamd.c
 	- ln -s $< l_ccolamd.c
 	$(C) -c $(I) l_ccolamd.c

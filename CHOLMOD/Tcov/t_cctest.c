@@ -1,25 +1,23 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/cctest: test for CCOLAMD
+// CHOLMOD/Tcov/t_cctest: test for CCOLAMD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
-
-/* Test for ccolamd v1.0.  Not used if NCAMD defined at compile time. */
 
 #include "cm.h"
 
 #ifndef NCAMD
 #include "ccolamd.h"
 
-/* ========================================================================== */
-/* === check_constraints ==================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// check_constraints
+//------------------------------------------------------------------------------
 
-/* Check to see if P obeys the constraints */
+// Check to see if P obeys the constraints
 Int check_constraints (Int *P, Int *Cmember, Int n)
 {
     Int c, clast, k, i ;
@@ -43,10 +41,9 @@ Int check_constraints (Int *P, Int *Cmember, Int n)
     return (TRUE) ;
 }
 
-
-/* ========================================================================== */
-/* === cctest =============================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cctest
+//------------------------------------------------------------------------------
 
 void cctest (cholmod_sparse *A)
 {
@@ -58,11 +55,11 @@ void cctest (cholmod_sparse *A)
     Int nrow, ncol, alen, ok, stats [CCOLAMD_STATS], csets, i, nfr, c, p ;
     size_t s ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
-    my_srand (42) ;                                             /* RAND reset */
+    my_srand (42) ;                                             // RAND reset
 
     printf ("\nCCOLAMD test\n") ;
 
@@ -88,9 +85,9 @@ void cctest (cholmod_sparse *A)
     Si = S->i ;
     Sp = S->p ;
 
-    /* ---------------------------------------------------------------------- */
-    /* allocate workspace and Cmember for ccolamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // allocate workspace and Cmember for ccolamd
+    //--------------------------------------------------------------------------
 
     P = CHOLMOD(malloc) (nrow+1, sizeof (Int), cm) ;
     Cmember = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
@@ -115,13 +112,13 @@ void cctest (cholmod_sparse *A)
 
     alen = CCOLAMD_recommended (B->nzmax, ncol, nrow) ;
     C = CHOLMOD(allocate_sparse) (ncol, nrow, alen, TRUE, TRUE, 0,
-            CHOLMOD_PATTERN, cm) ;
+            CHOLMOD_PATTERN + DTYPE, cm) ;
     Cp = C->p ;
     Ci = C->i ;
 
-    /* ---------------------------------------------------------------------- */
-    /* order with ccolamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // order with ccolamd
+    //--------------------------------------------------------------------------
 
     ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
     CHOLMOD(print_sparse) (C, "C for ccolamd", cm) ;
@@ -132,13 +129,13 @@ void cctest (cholmod_sparse *A)
     ok = (ok == CCOLAMD_OK || ok == CCOLAMD_OK_BUT_JUMBLED) ;
     OK (ok) ;
 
-    /* permutation returned in C->p, if the ordering succeeded */
-    /* make sure P obeys the constraints */
+    // permutation returned in C->p, if the ordering succeeded
+    // make sure P obeys the constraints
     OK (check_constraints (Cp, Cmember, nrow)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* order with ccolamd2 */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // order with ccolamd2
+    //--------------------------------------------------------------------------
 
     ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
     ok = CCOLAMD_2 (ncol, nrow, alen, Ci, Cp, NULL, stats,
@@ -147,9 +144,9 @@ void cctest (cholmod_sparse *A)
     CCOLAMD_report (stats) ;
     OK (check_constraints (Cp, Cmember, nrow)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* with a small dense-row threshold */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // with a small dense-row threshold
+    //--------------------------------------------------------------------------
 
     knobs2 [CCOLAMD_DENSE_ROW] = 0 ;
     ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
@@ -170,9 +167,9 @@ void cctest (cholmod_sparse *A)
 
     knobs2 [CCOLAMD_DENSE_COL] = 0 ;
 
-    /* ---------------------------------------------------------------------- */
-    /* duplicate entries */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // duplicate entries
+    //--------------------------------------------------------------------------
 
     if (ncol > 2 && nrow > 2)
     {
@@ -187,9 +184,9 @@ void cctest (cholmod_sparse *A)
         OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "ccolamd perm", cm)) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* csymamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // csymamd
+    //--------------------------------------------------------------------------
 
     if (nrow == ncol)
     {
@@ -208,9 +205,9 @@ void cctest (cholmod_sparse *A)
         OK (check_constraints (P, Cmember, n)) ;
         CSYMAMD_report (stats) ;
 
-        /* ------------------------------------------------------------------ */
-        /* csymamd errors */
-        /* ------------------------------------------------------------------ */
+        //----------------------------------------------------------------------
+        // csymamd errors
+        //----------------------------------------------------------------------
 
         ok = CSYMAMD_MAIN (n, Si, Sp, P, NULL, NULL,
                 calloc_func,
@@ -272,7 +269,7 @@ void cctest (cholmod_sparse *A)
             CSYMAMD_report (stats) ;
             Si [0] = i ;
 
-            /* ok, but jumbled */
+            // ok, but jumbled
             i = Si [0] ;
             Si [0] = Si [1] ;
             Si [1] = i ;
@@ -300,57 +297,71 @@ void cctest (cholmod_sparse *A)
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* error tests */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // error tests
+    //--------------------------------------------------------------------------
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;   OK (ok) ;
-    ok = CCOLAMD_MAIN (ncol, nrow, 0, Ci, Cp, knobs, stats, Cmember) ;     NOT (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, 0, Ci, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CCOLAMD_MAIN (ncol, nrow, alen, NULL, Cp, knobs, stats, Cmember); NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, alen, NULL, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, NULL, knobs, stats, Cmember); NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, NULL, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, NULL, Cmember) ;   NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, NULL, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CCOLAMD_MAIN (-1, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;    NOT (ok) ;
+    ok = CCOLAMD_MAIN (-1, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CCOLAMD_MAIN (ncol, -1, alen, Ci, Cp, knobs, stats, Cmember) ;    NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, -1, alen, Ci, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     Cp [nrow] = -1 ;
-    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;  NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
     Cp [0] = 1 ;
-    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;  NOT (ok) ;
+    ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+    NOT (ok) ;
     CCOLAMD_report (stats) ;
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;   OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
 
     if (nrow > 0 && alen > 0 && Cp [1] > 0)
     {
         c = Cmember [0] ;
         Cmember [0] = -1 ;
-        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;NOT(ok);
+        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+        NOT(ok);
         CCOLAMD_report (stats) ;
         Cmember [0] = c ;
 
         p = Cp [1] ;
         Cp [1] = -1 ;
-        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;NOT(ok);
+        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+        NOT(ok);
         CCOLAMD_report (stats) ;
         Cp [1] = p ;
 
         i = Ci [0] ;
         Ci [0] = -1 ;
-        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;NOT(ok);
+        ok = CCOLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats, Cmember) ;
+        NOT(ok);
         CCOLAMD_report (stats) ;
         Ci [0] = i ;
     }
@@ -358,9 +369,9 @@ void cctest (cholmod_sparse *A)
     s = CCOLAMD_recommended (-1, 0, 0) ;
     OK (s == 0) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free workspace */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free workspace
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free) (nrow+1, sizeof (Int), Front_npivcol, cm) ;
     CHOLMOD(free) (nrow+1, sizeof (Int), Front_nrows, cm) ;
@@ -389,3 +400,4 @@ void cctest (cholmod_sparse *A)
     cm->print = 1 ;
 }
 #endif
+

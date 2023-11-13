@@ -1,27 +1,25 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/aug: test with an augmented system
+// CHOLMOD/Tcov/t_aug: test with an augmented system
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Create the augmented system S = [-I A' ; A alpha*I], solve Sx=b, and return
- * the residual.  The system solved is (alpha*I + A*A')*x=b.
- *
- * r1 = norm (Sx-b)
- * r2 = norm ((alpha*I+AA')x-b)
- * alpha = norm(A)
- */
+// Create the augmented system S = [-I A' ; A alpha*I], solve Sx=b, and return
+// the residual.  The system solved is (alpha*I + A*A')*x=b.
+//
+// r1 = norm (Sx-b)
+// r2 = norm ((alpha*I+AA')x-b)
+// alpha = norm(A)
 
 #include "cm.h"
 
-
-/* ========================================================================== */
-/* === aug ================================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// aug
+//------------------------------------------------------------------------------
 
 double aug (cholmod_sparse *A)
 {
@@ -29,7 +27,7 @@ double aug (cholmod_sparse *A)
     cholmod_sparse *S, *Im, *In, *At, *A1, *A2, *Sup ;
     cholmod_dense *Alpha, *B, *Baug, *X, *W1, *W2, *R, *X2, X2mat ;
     cholmod_factor *L ;
-    double *b, *baug, *rx, *w, *x ;
+    Real *b, *baug, *rx, *w, *x ;
     Int nrow, ncol, nrhs, i, j, d, d2, save, save2, save3 ;
 
     if (A == NULL)
@@ -43,51 +41,51 @@ double aug (cholmod_sparse *A)
         return (0) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* A is m-by-n, B must be m-by-nrhs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // A is m-by-n, B must be m-by-nrhs
+    //--------------------------------------------------------------------------
 
     nrow = A->nrow ;
     ncol = A->ncol ;
     B = rhs (A, 5, A->nrow + 7) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* create scalars */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // create scalars
+    //--------------------------------------------------------------------------
 
     bnorm = CHOLMOD(norm_dense) (B, 0, cm) ;
     anorm = CHOLMOD(norm_sparse) (A, 1, cm) ;
 
-    Alpha = CHOLMOD(eye) (1, 1, CHOLMOD_REAL, cm) ;
+    Alpha = CHOLMOD(eye) (1, 1, CHOLMOD_REAL + DTYPE, cm) ;
     if (Alpha != NULL)
     {
-        ((double *) (Alpha->x)) [0] = anorm ;
+        ((Real *) (Alpha->x)) [0] = anorm ;
     }
 
     CHOLMOD(print_dense) (M1, "MinusOne", cm) ;
     CHOLMOD(print_dense) (Alpha, "Alpha = norm(A)", cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* create augmented system, S = [-I A' ; A anorm*I] */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // create augmented system, S = [-I A' ; A anorm*I]
+    //--------------------------------------------------------------------------
 
-    Im = CHOLMOD(speye) (nrow, nrow, CHOLMOD_REAL, cm) ;
-    In = CHOLMOD(speye) (ncol, ncol, CHOLMOD_REAL, cm) ;
+    Im = CHOLMOD(speye) (nrow, nrow, CHOLMOD_REAL + DTYPE, cm) ;
+    In = CHOLMOD(speye) (ncol, ncol, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(scale) (Alpha, CHOLMOD_SCALAR, Im, cm) ;
     CHOLMOD(scale) (M1, CHOLMOD_SCALAR, In, cm) ;
     At = CHOLMOD(transpose) (A, 2, cm) ;
 
-    /* use one of two equivalent methods */
+    // use one of two equivalent methods
     if (nrow % 2)
     {
-        /* S = [[-In A'] ; [A alpha*Im]] */
+        // S = [[-In A'] ; [A alpha*Im]]
         A1 = CHOLMOD(horzcat) (In, At, TRUE, cm) ;
         A2 = CHOLMOD(horzcat) (A,  Im, TRUE, cm) ;
         S = CHOLMOD(vertcat) (A1, A2, TRUE, cm) ;
     }
     else
     {
-        /* S = [[-In ; A] [A' ; alpha*Im]] */
+        // S = [[-In ; A] [A' ; alpha*Im]]
         A1 = CHOLMOD(vertcat) (In, A, TRUE, cm) ;
         A2 = CHOLMOD(vertcat) (At, Im, TRUE, cm) ;
         S = CHOLMOD(horzcat) (A1, A2, TRUE, cm) ;
@@ -98,15 +96,15 @@ double aug (cholmod_sparse *A)
 
     CHOLMOD(print_sparse) (S, "S, augmented system", cm) ;
 
-    /* make a symmetric (upper) copy of S */
+    // make a symmetric (upper) copy of S
     Sup = CHOLMOD(copy) (S, 1, 1, cm) ;
 
     CHOLMOD(print_sparse) (S, "S, augmented system (upper)", cm) ;
     CHOLMOD(print_sparse) (Sup, "Sup", cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* create augmented right-hand-side, Baug = [ zeros(ncol,nrhs) ; B ] */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // create augmented right-hand-side, Baug = [ zeros(ncol,nrhs) ; B ]
+    //--------------------------------------------------------------------------
 
     b = NULL ;
     d = 0 ;
@@ -117,7 +115,7 @@ double aug (cholmod_sparse *A)
         nrhs = B->ncol ;
         d = B->d ;
         b = B->x ;
-        Baug = CHOLMOD(zeros) (nrow+ncol, nrhs, CHOLMOD_REAL, cm) ;
+        Baug = CHOLMOD(zeros) (nrow+ncol, nrhs, CHOLMOD_REAL + DTYPE, cm) ;
         if (Baug != NULL)
         {
             d2 = Baug->d ;
@@ -136,11 +134,11 @@ double aug (cholmod_sparse *A)
         Baug = NULL ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* solve Sx=baug */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // solve Sx=baug
+    //--------------------------------------------------------------------------
 
-    /* S is symmetric indefinite, so do not use a supernodal LL' */
+    // S is symmetric indefinite, so do not use a supernodal LL'
     save = cm->supernodal ;
     save2 = cm->final_asis ;
     cm->supernodal = CHOLMOD_SIMPLICIAL ;
@@ -154,16 +152,16 @@ double aug (cholmod_sparse *A)
     cm->final_asis = save2 ;
     cm->metis_memory = save3 ;
 
-    /* ---------------------------------------------------------------------- */
-    /* compute the residual */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // compute the residual
+    //--------------------------------------------------------------------------
 
     r = resid (Sup, X, Baug) ;
     MAXERR (maxerr, r, 1) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* create a shallow submatrix of X, X2 = X (ncol:end, :)  */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // create a shallow submatrix of X, X2 = X (ncol:end, :)
+    //--------------------------------------------------------------------------
 
     if (X == NULL)
     {
@@ -172,11 +170,11 @@ double aug (cholmod_sparse *A)
     else
     {
         X2 = &X2mat ;
-        X2->nrow = nrow ; 
-        X2->ncol = nrhs ; 
+        X2->nrow = nrow ;
+        X2->ncol = nrhs ;
         X2->nzmax = X->nzmax ;
         X2->d = X->d ;
-        X2->x = ((double *) X->x) + ncol ;
+        X2->x = ((Real *) X->x) + ncol ;
         X2->z = NULL ;
         X2->xtype = X->xtype ;
         X2->dtype = X->dtype ;
@@ -185,20 +183,20 @@ double aug (cholmod_sparse *A)
     CHOLMOD(print_dense) (X, "X", cm) ;
     CHOLMOD(print_dense) (X2, "X2 = X (ncol:end,:)", cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* compute norm ((alpha*I + A*A')*x-b) */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // compute norm ((alpha*I + A*A')*x-b)
+    //--------------------------------------------------------------------------
 
-    /* W1 = A'*X2 */
-    W1 = CHOLMOD(zeros) (ncol, nrhs, CHOLMOD_REAL, cm) ;
+    // W1 = A'*X2
+    W1 = CHOLMOD(zeros) (ncol, nrhs, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(sdmult) (A, TRUE, one, zero, X2, W1, cm) ;
 
-    /* W2 = A*W1 */
-    W2 = CHOLMOD(zeros) (nrow, nrhs, CHOLMOD_REAL, cm) ;
+    // W2 = A*W1
+    W2 = CHOLMOD(zeros) (nrow, nrhs, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(sdmult) (A, FALSE, one, zero, W1, W2, cm) ;
 
-    /* R = alpha*x + w2 - b */
-    R = CHOLMOD(zeros) (nrow, nrhs, CHOLMOD_REAL, cm) ;
+    // R = alpha*x + w2 - b
+    R = CHOLMOD(zeros) (nrow, nrhs, CHOLMOD_REAL + DTYPE, cm) ;
 
     if (R != NULL && W2 != NULL && X != NULL)
     {
@@ -217,9 +215,9 @@ double aug (cholmod_sparse *A)
     r = CHOLMOD(norm_dense) (R, 1, cm) ;
     MAXERR (maxerr, r, bnorm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free everything */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free everything
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free_sparse) (&At, cm) ;
     CHOLMOD(free_sparse) (&A1, cm) ;
@@ -238,3 +236,4 @@ double aug (cholmod_sparse *A)
     progress (0, '.') ;
     return (maxerr) ;
 }
+

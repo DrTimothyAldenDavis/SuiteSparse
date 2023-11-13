@@ -1,41 +1,37 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/memory: memory-failure testing in CHOLMOD
+// CHOLMOD/Tcov/t_memory: memory-failure testing in CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Extensive memory-failure testing for CHOLMOD.
- *
- * my_malloc2, my_calloc2, and my_realloc2 pretend to fail if my_tries goes to
- * zero, to test CHOLMOD's memory error handling.   No failure occurs if
- * my_tries is negative.
- */
+// Extensive memory-failure testing for CHOLMOD.
+//
+// my_malloc2, my_calloc2, and my_realloc2 pretend to fail if my_tries goes to
+// zero, to test CHOLMOD's memory error handling.   No failure occurs if
+// my_tries is negative.
 
 #include "cm.h"
 
+//------------------------------------------------------------------------------
+// my_tries
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === my_tries ============================================================= */
-/* ========================================================================== */
+int64_t my_tries = -1 ; // a global variable
 
-int64_t my_tries = -1 ; /* a global variable */
-
-
-/* ========================================================================== */
-/* === my_malloc2 =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// my_malloc2
+//------------------------------------------------------------------------------
 
 void *my_malloc2 (size_t size)
 {
     void *p ;
     if (my_tries == 0)
     {
-        /* pretend to fail */
-        // printf ("(my_malloc2 pretend to fail)\n") ;
+        // pretend to fail
         return (NULL) ;
     }
     if (my_tries > 0)
@@ -43,22 +39,19 @@ void *my_malloc2 (size_t size)
         my_tries-- ;
     }
     p = malloc (size) ;
-    /* printf ("p %p\n", p) ; */
     return (p) ;
 }
 
-
-/* ========================================================================== */
-/* === my_calloc2 =========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// my_calloc2
+//------------------------------------------------------------------------------
 
 void *my_calloc2 (size_t n, size_t size)
 {
     void *p ;
     if (my_tries == 0)
     {
-        /* pretend to fail */
-        // printf ("(my_calloc2 pretend to fail)\n") ;
+        // pretend to fail
         return (NULL) ;
     }
     if (my_tries > 0)
@@ -66,22 +59,19 @@ void *my_calloc2 (size_t n, size_t size)
         my_tries-- ;
     }
     p = calloc (n, size) ;
-    /* printf ("p %p\n", p) ; */
     return (p) ;
 }
 
-
-/* ========================================================================== */
-/* === my_realloc2 ========================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// my_realloc2
+//------------------------------------------------------------------------------
 
 void *my_realloc2 (void *p, size_t size)
 {
     void *p2 ;
     if (my_tries == 0)
     {
-        /* pretend to fail */
-        // printf ("(my_realloc2 pretend to fail)\n") ;
+        // pretend to fail
         return (NULL) ;
     }
     if (my_tries > 0)
@@ -89,24 +79,21 @@ void *my_realloc2 (void *p, size_t size)
         my_tries-- ;
     }
     p2 = realloc (p, size) ;
-    /* printf ("p2 %p\n", p2) ; */
     return (p2) ;
 }
 
-
-/* ========================================================================== */
-/* === my_free2 ============================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// my_free2
+//------------------------------------------------------------------------------
 
 void my_free2 (void *p)
 {
     free (p) ;
 }
 
-
-/* ========================================================================== */
-/* === normal_memory_handler ================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// normal_memory_handler
+//------------------------------------------------------------------------------
 
 void normal_memory_handler ( void )
 {
@@ -119,10 +106,9 @@ void normal_memory_handler ( void )
     CHOLMOD(free_work) (cm) ;
 }
 
-
-/* ========================================================================== */
-/* === test_memory_handler ================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// test_memory_handler
+//------------------------------------------------------------------------------
 
 void test_memory_handler ( void )
 {
@@ -136,10 +122,9 @@ void test_memory_handler ( void )
     my_tries = 0 ;
 }
 
-
-/* ========================================================================== */
-/* === memory tests ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// memory tests
+//------------------------------------------------------------------------------
 
 void memory_tests (cholmod_triplet *T)
 {
@@ -161,9 +146,9 @@ void memory_tests (cholmod_triplet *T)
     cm->final_pack = FALSE ;
     cm->final_monotonic = FALSE ;
 
-    /* ---------------------------------------------------------------------- */
-    /* test raw factorizations */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test raw factorizations
+    //--------------------------------------------------------------------------
 
     printf ("==================================== fac memory test\n") ;
     count = cm->malloc_count ;
@@ -174,8 +159,8 @@ void memory_tests (cholmod_triplet *T)
         fflush (stdout) ;
         my_tries = trial ;
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-        my_srand (trial+1) ;                                    /* RAND reset */
-        err = raw_factor (A, FALSE) ;                           /* RAND */
+        my_srand (trial+1) ;                                    // RAND reset
+        err = raw_factor (A, FALSE) ;                           // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
         OK (CHOLMOD(print_common) ("cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
@@ -191,9 +176,9 @@ void memory_tests (cholmod_triplet *T)
     OK (count == cm->malloc_count) ;
     OK (inuse == cm->memory_inuse) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* test raw factorizations (rowfac_mask) */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test raw factorizations (rowfac_mask)
+    //--------------------------------------------------------------------------
 
     printf ("==================================== fac memory test2\n") ;
     count = cm->malloc_count ;
@@ -204,8 +189,8 @@ void memory_tests (cholmod_triplet *T)
         fflush (stdout) ;
         my_tries = trial ;
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-        my_srand (trial+1) ;                                    /* RAND reset */
-        err = raw_factor2 (A, 0., 0) ;                          /* RAND */
+        my_srand (trial+1) ;                                    // RAND reset
+        err = raw_factor2 (A, 0., 0) ;                          // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
         OK (CHOLMOD(print_common) ("cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
@@ -221,9 +206,9 @@ void memory_tests (cholmod_triplet *T)
     OK (count == cm->malloc_count) ;
     OK (inuse == cm->memory_inuse) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* test augmented system solver */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test augmented system solver
+    //--------------------------------------------------------------------------
 
     printf ("==================================== aug memory test\n") ;
     count = cm->malloc_count ;
@@ -234,7 +219,7 @@ void memory_tests (cholmod_triplet *T)
         fflush (stdout) ;
         my_tries = trial ;
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-        err = aug (A) ;                         /* no random number use */
+        err = aug (A) ;                         // no random number use
         CHOLMOD(free_sparse) (&A, cm) ;
         OK (CHOLMOD(print_common) ("cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
@@ -250,9 +235,9 @@ void memory_tests (cholmod_triplet *T)
     OK (count == cm->malloc_count) ;
     OK (inuse == cm->memory_inuse) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* test ops */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test ops
+    //--------------------------------------------------------------------------
 
     printf ("==================================== test_ops memory test\n") ;
     count = cm->malloc_count ;
@@ -263,8 +248,8 @@ void memory_tests (cholmod_triplet *T)
         fflush (stdout) ;
         my_tries = trial ;
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-        my_srand (trial+1) ;                                    /* RAND reset */
-        err = test_ops (A) ;                                    /* RAND */
+        my_srand (trial+1) ;                                    // RAND reset
+        err = test_ops (A) ;                                    // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
         OK (CHOLMOD(print_common) ("cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
@@ -280,9 +265,9 @@ void memory_tests (cholmod_triplet *T)
     OK (count == cm->malloc_count) ;
     OK (inuse == cm->memory_inuse) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* test lpdemo */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test lpdemo
+    //--------------------------------------------------------------------------
 
     if (T == NULL || T->nrow != T->ncol)
     {
@@ -294,8 +279,8 @@ void memory_tests (cholmod_triplet *T)
             cm->print = 0 ;
             fflush (stdout) ;
             my_tries = trial ;
-            my_srand (trial+1) ;                                /* RAND reset */
-            err = lpdemo (T) ;                                  /* RAND */
+            my_srand (trial+1) ;                                // RAND reset
+            err = lpdemo (T) ;                                  // RAND
             OK (CHOLMOD(print_common) ("cm", cm)) ;
             CHOLMOD(free_work) (cm) ;
             OK (count == cm->malloc_count) ;
@@ -311,9 +296,9 @@ void memory_tests (cholmod_triplet *T)
         OK (inuse == cm->memory_inuse) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* test solver */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // test solver
+    //--------------------------------------------------------------------------
 
     printf ("==================================== solve memory test\n") ;
     count = cm->malloc_count ;
@@ -328,8 +313,8 @@ void memory_tests (cholmod_triplet *T)
         fflush (stdout) ;
         my_tries = trial ;
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-        my_srand (trial+1) ;                                    /* RAND reset */
-        err = solve (A) ;                                       /* RAND */
+        my_srand (trial+1) ;                                    // RAND reset
+        err = solve (A) ;                                       // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
         OK (CHOLMOD(print_common) ("cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
@@ -347,12 +332,13 @@ void memory_tests (cholmod_triplet *T)
     cm->supernodal = CHOLMOD_AUTO ;
     progress (1, '|') ;
 
-    /* ---------------------------------------------------------------------- */
-    /* restore original memory handler */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // restore original memory handler
+    //--------------------------------------------------------------------------
 
     normal_memory_handler ( ) ;
     cm->print = 1 ;
 
     printf ("All memory tests OK, no error\n") ;
 }
+

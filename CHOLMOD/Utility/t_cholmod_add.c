@@ -73,8 +73,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_SPARSE_MATRIX_INVALID (A, NULL) ;
     RETURN_IF_SPARSE_MATRIX_INVALID (B, NULL) ;
-    ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
-    ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
     Common->status = CHOLMOD_OK ;
     cholmod_sparse *A2 = NULL, *B2 = NULL, *C = NULL ;
 
@@ -108,6 +106,9 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     int xtype = axtype ;
     int dtype = A->dtype ;
+
+    ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
+    ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
 
     //--------------------------------------------------------------------------
     // get the sizes of the entries of C, A, and B

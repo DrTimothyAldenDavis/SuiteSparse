@@ -1,22 +1,19 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/ctest: test for COLAMD
+// CHOLMOD/Tcov/t_ctest: test for COLAMD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Test for colamd v2.4 */
-
 #include "cm.h"
 #include "colamd.h"
 
-
-/* ========================================================================== */
-/* === ctest ================================================================ */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// ctest
+//------------------------------------------------------------------------------
 
 void ctest (cholmod_sparse *A)
 {
@@ -26,9 +23,9 @@ void ctest (cholmod_sparse *A)
     Int nrow, ncol, alen, ok, stats [COLAMD_STATS], i, p, trial ;
     size_t s ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
     printf ("\nCOLAMD test\n") ;
 
@@ -52,9 +49,9 @@ void ctest (cholmod_sparse *A)
     ncol = B->ncol ;
     S = NULL ;
 
-    /* ---------------------------------------------------------------------- */
-    /* allocate workspace colamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // allocate workspace colamd
+    //--------------------------------------------------------------------------
 
     P = CHOLMOD(malloc) (nrow+1, sizeof (Int), cm) ;
 
@@ -66,15 +63,16 @@ void ctest (cholmod_sparse *A)
 
     alen = COLAMD_recommended (B->nzmax, ncol, nrow) ;
     C = CHOLMOD(allocate_sparse) (ncol, nrow, alen, TRUE, TRUE, 0,
-            CHOLMOD_PATTERN, cm) ;
+            CHOLMOD_PATTERN + DTYPE, cm) ;
     Cp = C->p ;
     Ci = C->i ;
 
-    /* ---------------------------------------------------------------------- */
-    /* order with colamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // order with colamd
+    //--------------------------------------------------------------------------
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     CHOLMOD(print_sparse) (C, "C for colamd", cm) ;
     ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, NULL, stats) ;
     COLAMD_report (stats) ;
@@ -83,18 +81,19 @@ void ctest (cholmod_sparse *A)
     ok = (ok == COLAMD_OK || ok == COLAMD_OK_BUT_JUMBLED) ;
     OK (ok) ;
 
-    /* permutation returned in C->p, if the ordering succeeded */
-    /* make sure P obeys the constraints */
+    // permutation returned in C->p, if the ordering succeeded
+    // make sure P obeys the constraints
     OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "colamd perm", cm)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* with different dense thresholds */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // with different dense thresholds
+    //--------------------------------------------------------------------------
 
     printf ("\nall dense rows:\n") ;
     knobs2 [COLAMD_DENSE_ROW] = 0 ;
     knobs2 [COLAMD_DENSE_COL] = 0.5 ;
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs2, stats) ;
     COLAMD_report (stats) ;
     OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "colamd perm", cm)) ;
@@ -102,7 +101,8 @@ void ctest (cholmod_sparse *A)
     printf ("\nall dense cols:\n") ;
     knobs2 [COLAMD_DENSE_ROW] = 0.5 ;
     knobs2 [COLAMD_DENSE_COL] = 0 ;
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs2, stats) ;
     COLAMD_report (stats) ;
     OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "colamd perm", cm)) ;
@@ -110,7 +110,8 @@ void ctest (cholmod_sparse *A)
     printf ("\nno dense rows/cols:\n") ;
     knobs2 [COLAMD_DENSE_ROW] = -1 ;
     knobs2 [COLAMD_DENSE_COL] = -1 ;
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs2, stats) ;
     COLAMD_report (stats) ;
     OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "colamd perm", cm)) ;
@@ -118,9 +119,9 @@ void ctest (cholmod_sparse *A)
     knobs2 [COLAMD_DENSE_ROW] = 0.5 ;
     knobs2 [COLAMD_DENSE_COL] = 0.5 ;
 
-    /* ---------------------------------------------------------------------- */
-    /* duplicate entries */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // duplicate entries
+    //--------------------------------------------------------------------------
 
     if (ncol > 2 && nrow > 2)
     {
@@ -135,15 +136,16 @@ void ctest (cholmod_sparse *A)
         OK (CHOLMOD(print_perm) (Cp, nrow, nrow, "colamd perm", cm)) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* symamd */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // symamd
+    //--------------------------------------------------------------------------
 
     if (nrow == ncol)
     {
         Int n = nrow ;
 
-        BT = CHOLMOD(transpose) (B, 0, cm) ;            OKP(BT);
+        BT = CHOLMOD(transpose) (B, 0, cm) ;
+        OKP(BT);
         S = CHOLMOD(add) (B, BT, one, one, FALSE, FALSE, cm) ;
         CHOLMOD(free_sparse) (&BT, cm) ;
         Si = S->i ;
@@ -155,15 +157,14 @@ void ctest (cholmod_sparse *A)
         free_func   = SuiteSparse_config_free_func_get ( ) ;
 
         ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
         OK (ok) ;
         OK (CHOLMOD(print_perm) (P, n, n, "symamd perm", cm)) ;
         SYMAMD_report (stats) ;
 
-        /* ------------------------------------------------------------------ */
-        /* symamd errors */
-        /* ------------------------------------------------------------------ */
+        //----------------------------------------------------------------------
+        // symamd errors
+        //----------------------------------------------------------------------
 
         test_memory_handler ( ) ;
         calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
@@ -172,55 +173,47 @@ void ctest (cholmod_sparse *A)
         {
             my_tries = trial ;
             ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
             NOT (ok) ;
         }
         my_tries = 3 ;
         ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
         OK (ok) ;
         normal_memory_handler ( ) ;
         calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
         free_func   = SuiteSparse_config_free_func_get ( ) ;
 
         ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, NULL,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
 
         ok = SYMAMD_MAIN (n, NULL, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
         SYMAMD_report (stats) ;
 
         ok = SYMAMD_MAIN (n, Si, NULL, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
         SYMAMD_report (stats) ;
 
         ok = SYMAMD_MAIN (-1, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
         SYMAMD_report (stats) ;
 
         p = Sp [n] ;
         Sp [n] = -1 ;
         ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
         SYMAMD_report (stats) ;
         Sp [n] = p ;
 
         Sp [0] = -1 ;
         ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
         SYMAMD_report (stats) ;
         Sp [0] = 0 ;
@@ -230,8 +223,7 @@ void ctest (cholmod_sparse *A)
             p = Sp [1] ;
             Sp [1] = -1 ;
             ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
             SYMAMD_report (stats) ;
             Sp [1] = p ;
@@ -239,19 +231,17 @@ void ctest (cholmod_sparse *A)
             i = Si [0] ;
             Si [0] = -1 ;
             ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
             SYMAMD_report (stats) ;
             Si [0] = i ;
 
-            /* ok, but jumbled */
+            // ok, but jumbled
             i = Si [0] ;
             Si [0] = Si [1] ;
             Si [1] = i ;
             ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 OK (ok);
             SYMAMD_report (stats) ;
             OK (CHOLMOD(print_perm) (P, nrow, nrow, "symamd perm", cm)) ;
@@ -263,8 +253,7 @@ void ctest (cholmod_sparse *A)
             calloc_func = SuiteSparse_config_calloc_func_get ( ) ;
             free_func   = SuiteSparse_config_free_func_get ( ) ;
             ok = SYMAMD_MAIN (n, Si, Sp, P, NULL, stats,
-                calloc_func,
-                free_func) ;
+                calloc_func, free_func) ;
                 NOT (ok);
             SYMAMD_report (stats) ;
             normal_memory_handler ( ) ;
@@ -273,52 +262,65 @@ void ctest (cholmod_sparse *A)
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* error tests */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // error tests
+    //--------------------------------------------------------------------------
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;   OK (ok) ;
-    ok = COLAMD_MAIN (ncol, nrow, 0, Ci, Cp, knobs, stats) ;            NOT (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, 0, Ci, Cp, knobs, stats) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = COLAMD_MAIN (ncol, nrow, alen, NULL, Cp, knobs, stats);        NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, alen, NULL, Cp, knobs, stats);
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, NULL, knobs, stats);        NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, NULL, knobs, stats);
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, NULL) ;  NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, NULL) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = COLAMD_MAIN (-1, nrow, alen, Ci, Cp, knobs, stats) ;   NOT (ok) ;
+    ok = COLAMD_MAIN (-1, nrow, alen, Ci, Cp, knobs, stats) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = COLAMD_MAIN (ncol, -1, alen, Ci, Cp, knobs, stats) ;   NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, -1, alen, Ci, Cp, knobs, stats) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ; OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
     Cp [nrow] = -1 ;
-    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ; NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
     Cp [0] = 1 ;
-    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ; NOT (ok) ;
+    ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;
+    NOT (ok) ;
     COLAMD_report (stats) ;
 
-    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;   OK (ok) ;
+    ok = CHOLMOD(transpose_unsym) (B, 0, NULL, NULL, 0, C, cm) ;
+    OK (ok) ;
 
     if (nrow > 0 && alen > 0 && Cp [1] > 0)
     {
 
         p = Cp [1] ;
         Cp [1] = -1 ;
-        ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;         NOT(ok);
+        ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;
+        NOT(ok);
         COLAMD_report (stats) ;
         Cp [1] = p ;
 
         i = Ci [0] ;
         Ci [0] = -1 ;
-        ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;         NOT(ok);
+        ok = COLAMD_MAIN (ncol, nrow, alen, Ci, Cp, knobs, stats) ;
+        NOT(ok);
         COLAMD_report (stats) ;
         Ci [0] = i ;
     }
@@ -326,12 +328,13 @@ void ctest (cholmod_sparse *A)
     s = COLAMD_recommended (-1, 0, 0) ;
     OK (s == 0) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free workspace */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free workspace
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free) (nrow+1, sizeof (Int), P, cm) ;
     CHOLMOD(free_sparse) (&S, cm) ;
     CHOLMOD(free_sparse) (&A2, cm) ;
     CHOLMOD(free_sparse) (&C, cm) ;
 }
+

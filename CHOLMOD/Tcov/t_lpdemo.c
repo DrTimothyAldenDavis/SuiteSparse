@@ -1,49 +1,47 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Tcov/lpdemo: test program with an LP-style operations in CHOLMOD
+// CHOLMOD/Tcov/t_lpdemo: test program with an LP-style operations in CHOLMOD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* A rectangular matrix is being tested (# nrows < # cols).  This is a
- * linear programming problem.  Process the system using the same kind of
- * operations that occur in an LP solver (the LP Dual Active Set Algorithm).
- * This routine does not actually solve the LP.  It simply mimics the kind
- * of matrix operations that occur in LPDASA.
- *
- * The active set f is held in fset [0..fsize-1].  It is a subset of the columns
- * of A.  Columns not in the fset are in the list fnot [0..ncol-fsize-1].
- *
- * Rows can be added and deleted from A as well.  A "dead" row is one that has
- * been (temporarily) set to zero in A.  If row i is dead, rflag [i] is 0,
- * and 1 otherwise.
- *
- * The list r of "live" rows is kept in rset [0..rsize-1].  The list of "dead"
- * rows is kept in rnot [0..nrow-rsize-1].
- *
- * The system to solve as r and/or f change is (beta*I + A(r,f)*A(r,f)') x = b.
- * If a row i is deleted from A, it is set to zero.  Row i of L and D are set
- * to the ith row of the identity matrix.
- */
+// A rectangular matrix is being tested (# nrows < # cols).  This is a
+// linear programming problem.  Process the system using the same kind of
+// operations that occur in an LP solver (the LP Dual Active Set Algorithm).
+// This routine does not actually solve the LP.  It simply mimics the kind
+// of matrix operations that occur in LPDASA.
+//
+// The active set f is held in fset [0..fsize-1].  It is a subset of the columns
+// of A.  Columns not in the fset are in the list fnot [0..ncol-fsize-1].
+//
+// Rows can be added and deleted from A as well.  A "dead" row is one that has
+// been (temporarily) set to zero in A.  If row i is dead, rflag [i] is 0,
+// and 1 otherwise.
+//
+// The list r of "live" rows is kept in rset [0..rsize-1].  The list of "dead"
+// rows is kept in rnot [0..nrow-rsize-1].
+//
+// The system to solve as r and/or f change is (beta*I + A(r,f)*A(r,f)') x = b.
+// If a row i is deleted from A, it is set to zero.  Row i of L and D are set
+// to the ith row of the identity matrix.
 
 #include "cm.h"
 #define MAXCOLS 8
 
+//------------------------------------------------------------------------------
+// Lcheck
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === Lcheck =============================================================== */
-/* ========================================================================== */
-
-/* Testing only: make sure there are no dead rows in L (excluding diagonal) */
+// Testing only: make sure there are no dead rows in L (excluding diagonal)
 
 static void Lcheck (cholmod_factor *L, Int *rflag)
 {
     Int *Lp, *Li, *Lnz ;
     Int i, n, j, p, pend ;
-    double *Lx ;
+    Real *Lx ;
 
     if (L == NULL)
     {
@@ -68,14 +66,13 @@ static void Lcheck (cholmod_factor *L, Int *rflag)
     }
 }
 
+//------------------------------------------------------------------------------
+// lp_prune
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === lp_prune ============================================================= */
-/* ========================================================================== */
-
-/* C = A (r,f), except that C and A have the same row dimension.  Row i of C
- * and A(:,f) are equal if row i is in the rset.  Row i of C is zero
- * otherwise.  C has as many columns as the size of f. */
+// C = A (r,f), except that C and A have the same row dimension.  Row i of C
+// and A(:,f) are equal if row i is in the rset.  Row i of C is zero
+// otherwise.  C has as many columns as the size of f.
 
 cholmod_sparse *lp_prune
 (
@@ -86,7 +83,7 @@ cholmod_sparse *lp_prune
 )
 {
     cholmod_sparse *C ;
-    double *Ax, *Cx ;
+    Real *Ax, *Cx ;
     Int *Ai, *Ap, *Ci, *Cp ;
     Int i, kk, j, p, nz, nf, ncol ;
 
@@ -105,7 +102,7 @@ cholmod_sparse *lp_prune
     OK (fsize >= 0) ;
 
     C = CHOLMOD(allocate_sparse) (A->nrow, nf, A->nzmax, A->sorted,
-            TRUE, 0, CHOLMOD_REAL, cm) ;
+            TRUE, 0, CHOLMOD_REAL + DTYPE, cm) ;
 
     if (C == NULL)
     {
@@ -138,18 +135,16 @@ cholmod_sparse *lp_prune
     return (C) ;
 }
 
+//------------------------------------------------------------------------------
+// lp_resid
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === lp_resid ============================================================= */
-/* ========================================================================== */
-
-/* Compute the 2-norm of the residual.
- * norm ((beta*I + C*C')y(r) - b(r)), where C = A (r,f).
- */
+// Compute the 2-norm of the residual.
+// norm ((beta*I + C*C')y(r) - b(r)), where C = A (r,f).
 
 double lp_resid
 (
-    cholmod_sparse *A, 
+    cholmod_sparse *A,
     Int *rflag,
     Int *fset,
     Int fsize,
@@ -159,7 +154,7 @@ double lp_resid
 )
 {
     cholmod_dense *R ;
-    double *Rx, *Yx ;
+    Real *Rx, *Yx ;
     double rnorm, bnorm, ynorm, norm ;
     cholmod_sparse *C ;
     cholmod_dense *W ;
@@ -172,23 +167,23 @@ double lp_resid
     }
 
     nrow = A->nrow ;
-    R = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL, cm) ;
+    R = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
 
-    /* C = A(r,f).  In LPDASA, we do this in place, without making a copy. */
+    // C = A(r,f).  In LPDASA, we do this in place, without making a copy.
     C = lp_prune (A, rflag, fset, fsize) ;
 
-    /* W = C'*Y */
+    // W = C'*Y
     OK (fsize >= 0) ;
-    W = CHOLMOD(zeros) (fsize, 1, CHOLMOD_REAL, cm) ;
+    W = CHOLMOD(zeros) (fsize, 1, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(sdmult) (C, TRUE, one, zero, Y, W, cm) ;
 
-    /* R = B */
+    // R = B
     CHOLMOD(copy_dense2) (B, R, cm) ;
 
-    /* R = C*W - R */
+    // R = C*W - R
     CHOLMOD(sdmult) (C, FALSE, one, minusone, W, R, cm) ;
 
-    /* R = R + beta*Y, (beta = 1 for dropped rows) */
+    // R = R + beta*Y, (beta = 1 for dropped rows)
     if (R != NULL && Y != NULL)
     {
         Rx = R->x ;
@@ -206,7 +201,7 @@ double lp_resid
         }
     }
 
-    /* rnorm = norm (R) */
+    // rnorm = norm (R)
     rnorm = CHOLMOD(norm_dense) (R, 2, cm) ;
     bnorm = CHOLMOD(norm_dense) (B, 2, cm) ;
     ynorm = CHOLMOD(norm_dense) (Y, 2, cm) ;
@@ -225,14 +220,13 @@ double lp_resid
     return (rnorm) ;
 }
 
+//------------------------------------------------------------------------------
+// get_row
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === get_row ============================================================== */
-/* ========================================================================== */
+// S = column i of beta*I + A(r,f)*A(r,f)'
 
-/* S = column i of beta*I + A(r,f)*A(r,f)' */
-
-cholmod_sparse *get_row 
+cholmod_sparse *get_row
 (
     cholmod_sparse *A,
     Int i,
@@ -243,32 +237,32 @@ cholmod_sparse *get_row
 )
 {
     cholmod_sparse *Ri, *R, *C, *S ;
-    double *Sx ;
+    Real *Sx ;
     Int *Sp, *Si ;
     Int p, ii, found ;
 
     if (rflag [i] == 0)
     {
-        S = CHOLMOD(speye) (A->nrow, A->nrow, CHOLMOD_REAL, cm) ;
+        S = CHOLMOD(speye) (A->nrow, A->nrow, CHOLMOD_REAL + DTYPE, cm) ;
         CHOLMOD(print_sparse) (S, "S identity", cm) ;
         return (S) ;
-    } 
+    }
     OK (fsize >= 0) ;
 
-    /* Getting row i of A is expensive.  In LPDASA, we maintain
-     * a copy of A(r,f)', and extact row i as column i of that
-     * matrix.  We compute S = A(r,f)*A(i,f)' and S(i) += beta
-     * in a single pass.  This is a simpler but slower method. */
+    // Getting row i of A is expensive.  In LPDASA, we maintain
+    // a copy of A(r,f)', and extact row i as column i of that
+    // matrix.  We compute S = A(r,f)*A(i,f)' and S(i) += beta
+    // in a single pass.  This is a simpler but slower method.
 
-    /* R = A (i,f)' */
+    // R = A (i,f)'
     Ri = CHOLMOD(submatrix) (A, &i, 1, fset, fsize, TRUE, FALSE, cm) ;
     R = CHOLMOD(transpose) (Ri, 1, cm) ;
     CHOLMOD(free_sparse) (&Ri, cm) ;
 
-    /* C = A (r,f) */
+    // C = A (r,f)
     C = lp_prune (A, rflag, fset, fsize) ;
 
-    /* S = C*R */
+    // S = C*R
     S = CHOLMOD(ssmult) (C, R, 0, TRUE, TRUE, cm) ;
     CHOLMOD(free_sparse) (&C, cm) ;
     CHOLMOD(free_sparse) (&R, cm) ;
@@ -278,7 +272,7 @@ cholmod_sparse *get_row
         return (NULL) ;
     }
 
-    /* S (i) += beta */
+    // S (i) += beta
     found = FALSE ;
     Sp = S->p ;
     Si = S->i ;
@@ -295,7 +289,7 @@ cholmod_sparse *get_row
     }
     if (!found)
     {
-        /* oops, row index i is not present in S.  Add it. */
+        // oops, row index i is not present in S.  Add it.
         CHOLMOD(reallocate_sparse) (S->nzmax+1, S, cm) ;
         OK (Sp [1] < (Int) (S->nzmax)) ;
         Si = S->i ;
@@ -311,15 +305,14 @@ cholmod_sparse *get_row
     return (S) ;
 }
 
-
-/* ========================================================================== */
-/* === lpdemo =============================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// lpdemo
+//------------------------------------------------------------------------------
 
 double lpdemo (cholmod_triplet *T)
 {
     double r, maxerr = 0, anorm, bnorm, norm, xnorm, ynorm ;
-    double *b = NULL, *Yx = NULL, *Xx = NULL, *Sx ;
+    Real *b = NULL, *Yx = NULL, *Xx = NULL, *Sx ;
     cholmod_sparse *A, *AT, *Apermuted, *C, *S, *Row ;
     cholmod_dense *X, *B, *Y, *DeltaB, *R ;
     cholmod_factor *L ;
@@ -329,13 +322,13 @@ double lpdemo (cholmod_triplet *T)
         p, op, ok ;
     double beta [2], bk [2], yk [2] ;
 
-    /* ---------------------------------------------------------------------- */
-    /* convert T into a sparse matrix A */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // convert T into a sparse matrix A
+    //--------------------------------------------------------------------------
 
     if (T == NULL || T->ncol == 0)
     {
-        /* nothing to do */
+        // nothing to do
         return (0) ;
     }
 
@@ -357,15 +350,15 @@ double lpdemo (cholmod_triplet *T)
 
     anorm = CHOLMOD(norm_sparse) (A, 1, cm) ;
 
-    /* switch for afiro, but not galenet */
+    // switch for afiro, but not galenet
     cm->supernodal_switch = 5 ;
 
-    /* ---------------------------------------------------------------------- */
-    /* select a random initial row and column basis */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // select a random initial row and column basis
+    //--------------------------------------------------------------------------
 
-    /* select an initial fset of size nrow */
-    init = prand (ncol) ;                                       /* RAND */
+    // select an initial fset of size nrow
+    init = prand (ncol) ;                                       // RAND
     fset = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;
     fnot = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;
     fflag = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;
@@ -389,7 +382,7 @@ double lpdemo (cholmod_triplet *T)
 
     CHOLMOD(free) (ncol, sizeof (Int), init, cm) ;
 
-    /* all rows are live */
+    // all rows are live
     rsize = nrow ;
     rflag = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
     rset = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
@@ -404,16 +397,16 @@ double lpdemo (cholmod_triplet *T)
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* factorize the first matrix, beta*I + A(p,f)*A(p,f)' */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // factorize the first matrix, beta*I + A(p,f)*A(p,f)'
+    //--------------------------------------------------------------------------
 
     beta [0] = 1e-6 ;
     beta [1] = 0 ;
 
-    /* Need to prune entries due to relaxed amalgamation, or else
-     * cholmod_row_subtree will not be able to find all the entries in row
-     * k of L. */
+    // Need to prune entries due to relaxed amalgamation, or else
+    // cholmod_row_subtree will not be able to find all the entries in row
+    // k of L.
     cm->final_resymbol = TRUE ;
 
     cm->final_asis = FALSE ;
@@ -425,7 +418,7 @@ double lpdemo (cholmod_triplet *T)
     L = CHOLMOD(analyze_p) (A, NULL, fset, fsize, cm) ;
     CHOLMOD(factorize_p) (A, beta, fset, fsize, L, cm) ;
 
-    /* get a copy of the fill-reducing permutation P and compute its inverse */
+    // get a copy of the fill-reducing permutation P and compute its inverse
     Lperm = (L != NULL) ? (L->Perm) : NULL ;
     P = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
     Pinv = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
@@ -452,87 +445,85 @@ double lpdemo (cholmod_triplet *T)
         cm->print = k ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* A=P*A: permute the rows of A according to P */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // A=P*A: permute the rows of A according to P
+    //--------------------------------------------------------------------------
 
-    /* This is done just once, since the system will be solved and modified
-     * many times.  It's faster, and easier, to work in the permuted ordering
-     * rather than the original ordering. */
+    // This is done just once, since the system will be solved and modified
+    // many times.  It's faster, and easier, to work in the permuted ordering
+    // rather than the original ordering.
 
-    /* A will become unsorted later on; don't bother to sort it here */
+    // A will become unsorted later on; don't bother to sort it here
     Apermuted = CHOLMOD(submatrix) (A, P, nrow, NULL, -1, TRUE, TRUE, cm) ;
     CHOLMOD(free_sparse) (&A, cm) ;
     A = Apermuted ;
 
-    /* ---------------------------------------------------------------------- */
-    /* find the etree of A*A' */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // find the etree of A*A'
+    //--------------------------------------------------------------------------
 
-    /* Since the fset is a subset of 0:ncol-1, and rset is a subset of 0:nrow-1,
-     * the nonzero pattern of the Cholesky factorization of A(r,f)*A(r,f)' is a
-     * subset of the Cholesky factorization of A*A'.  After many updates/
-     * downdates/rowadds/rowdels, any given row i of L may have entries that
-     * are not in the factorization of A (r,f)*A(r,f)'.  To drop a row using
-     * cholmod_rowdel, we either need to know the pattern of the ith row of L,
-     * we can pass NULL and have cholmod_rowdel look at each column 0 to i-1.
-     * The StaticParent array is the etree of A*A', and it suffices to compute
-     * the pattern of the ith row of L based on that etree, and A and A'
-     * (ignoring the fset and rset).  This gives us an upper bound on the
-     * nonzero pattern of the ith row of the current L (the factorization
-     * of A(r,f)*A(r,f)'.
-     */
+    // Since the fset is a subset of 0:ncol-1, and rset is a subset of 0:nrow-1,
+    // the nonzero pattern of the Cholesky factorization of A(r,f)*A(r,f)' is a
+    // subset of the Cholesky factorization of A*A'.  After many updates/
+    // downdates/rowadds/rowdels, any given row i of L may have entries that
+    // are not in the factorization of A (r,f)*A(r,f)'.  To drop a row using
+    // cholmod_rowdel, we either need to know the pattern of the ith row of L,
+    // we can pass NULL and have cholmod_rowdel look at each column 0 to i-1.
+    // The StaticParent array is the etree of A*A', and it suffices to compute
+    // the pattern of the ith row of L based on that etree, and A and A'
+    // (ignoring the fset and rset).  This gives us an upper bound on the
+    // nonzero pattern of the ith row of the current L (the factorization
+    // of A(r,f)*A(r,f)'.
 
-    /* AT = nonzero pattern of A', used for row-subtree computations */
+    // AT = nonzero pattern of A', used for row-subtree computations
     AT = CHOLMOD(transpose) (A, 0, cm) ;
 
-    /* Row = cholmod_row_subtree workspace (unsorted, packed, unsym, pattern) */
+    // Row = cholmod_row_subtree workspace (unsorted, packed, unsym, pattern)
     Row = CHOLMOD(allocate_sparse) (nrow, 1, nrow, FALSE, TRUE, 0,
-            CHOLMOD_PATTERN, cm) ;
+            CHOLMOD_PATTERN + DTYPE, cm) ;
 
-    /* Compute the "static" etree; the etree of A*A' */
+    // Compute the "static" etree; the etree of A*A'
     StaticParent = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
     CHOLMOD(etree) (AT, StaticParent, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* compute initial right-hand-side */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // compute initial right-hand-side
+    //--------------------------------------------------------------------------
 
-    /* If row i of the original A and B is row k of the permuted P*A and P*B,
-     * then P [k] = i and Pinv [i] = k.  Row indices of A now refer to the
-     * permuted form of A, not the original A.  Likewise, row k of B will
-     * refer to the permuted row k = Pinv [i], not the original row i.  In a
-     * real program, this would affect how B is computed.  This program just
-     * creates a random B anyway, so the order of B does not matter.  It does
-     * use Pinv [i], just to show you how you would do it.
-     */
+    // If row i of the original A and B is row k of the permuted P*A and P*B,
+    // then P [k] = i and Pinv [i] = k.  Row indices of A now refer to the
+    // permuted form of A, not the original A.  Likewise, row k of B will
+    // refer to the permuted row k = Pinv [i], not the original row i.  In a
+    // real program, this would affect how B is computed.  This program just
+    // creates a random B anyway, so the order of B does not matter.  It does
+    // use Pinv [i], just to show you how you would do it.
 
-    B = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL, cm) ;
+    B = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
 
     if (B != NULL && Pinv != NULL)
     {
         b = B->x ;
         for (i = 0 ; i < nrow ; i++)
         {
-            /* row i of the original B is row k of the permuted B */
+            // row i of the original B is row k of the permuted B
             k = Pinv [i] ;
-            b [k] = xrand (1.) ;                                /* RAND */
+            b [k] = xrand (1.) ;                                // RAND
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* solve the system */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // solve the system
+    //--------------------------------------------------------------------------
 
-    /* Solve the system (beta*I + A(:,f)*A(:,f)')y=b without using L->Perm,
-     * since A and B have already been permuted according to L->Perm. */
+    // Solve the system (beta*I + A(:,f)*A(:,f)')y=b without using L->Perm,
+    // since A and B have already been permuted according to L->Perm.
 
-    DeltaB = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL, cm) ;
+    DeltaB = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
 
-    /* solve Lx=b */
+    // solve Lx=b
     X = CHOLMOD(solve) (CHOLMOD_L, L, B, cm) ;
 
-    /* solve DL'y=x */
+    // solve DL'y=x
     Y = CHOLMOD(solve) (CHOLMOD_DLt, L, X, cm) ;
 
     r = lp_resid (A, rflag, fset, fsize, beta, Y, B) ;
@@ -546,9 +537,9 @@ double lpdemo (cholmod_triplet *T)
 
     bnorm = CHOLMOD(norm_dense) (B, 1, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* modify the system */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // modify the system
+    //--------------------------------------------------------------------------
 
     ok = (fset != NULL && fnot != NULL && fflag != NULL &&
           rset != NULL && rnot != NULL && rflag != NULL &&
@@ -558,8 +549,8 @@ double lpdemo (cholmod_triplet *T)
 
     for (trial = 1 ; ok && trial < MAX (64, 2*ncol) ; trial++)
     {
-        /* select an operation at random */
-        op = nrand (6) ;                                        /* RAND */
+        // select an operation at random
+        op = nrand (6) ;                                        // RAND
 
         Xx = X->x ;
         Yx = Y->x ;
@@ -567,12 +558,12 @@ double lpdemo (cholmod_triplet *T)
         switch (op)
         {
 
-            /* -------------------------------------------------------------- */
-            case 0:     /* update */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 0:     // update
+            //------------------------------------------------------------------
 
-                /* pick some columns at random, but not all columns */
-                rank = 1 + nrand (MAXCOLS+4) ;                  /* RAND */
+                // pick some columns at random, but not all columns
+                rank = 1 + nrand (MAXCOLS+4) ;                  // RAND
                 rank = MIN (rank, MAXCOLS) ;
 
                 rank = MIN (rank, ncol-fsize-1) ;
@@ -581,10 +572,10 @@ double lpdemo (cholmod_triplet *T)
                     continue ;
                 }
 
-                /* remove the columns from fnot and add them to fset */
+                // remove the columns from fnot and add them to fset
                 for (k = 0 ; k < rank ; k++)
                 {
-                    kk = nrand (ncol-fsize) ;                   /* RAND */
+                    kk = nrand (ncol-fsize) ;                   // RAND
                     j = fnot [kk] ;
                     fnot [kk] = fnot [ncol-fsize-1] ;
                     fset [fsize++] = j ;
@@ -593,18 +584,18 @@ double lpdemo (cholmod_triplet *T)
                     fflag [j] = 1 ;
                 }
 
-                /* update L, and the solution to Lx=b+deltaB */
+                // update L, and the solution to Lx=b+deltaB
                 C = lp_prune (A, rflag, cols, rank) ;
                 ok = CHOLMOD(updown_solve) (TRUE, C, L, X, DeltaB, cm) ;
                 CHOLMOD(free_sparse) (&C, cm) ;
                 break ;
 
-            /* -------------------------------------------------------------- */
-            case 1:     /* downdate */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 1:     // downdate
+            //------------------------------------------------------------------
 
-                /* pick some columns at random, but not all columns */
-                rank = 1 + nrand (MAXCOLS+4) ;                  /* RAND */
+                // pick some columns at random, but not all columns
+                rank = 1 + nrand (MAXCOLS+4) ;                  // RAND
                 rank = MIN (rank, MAXCOLS) ;
 
                 rank = MIN (rank, fsize-1) ;
@@ -613,10 +604,10 @@ double lpdemo (cholmod_triplet *T)
                     continue ;
                 }
 
-                /* remove the columns from fset and add them to fnot */
+                // remove the columns from fset and add them to fnot
                 for (k = 0 ; k < rank ; k++)
                 {
-                    kk = nrand (fsize) ;                        /* RAND */
+                    kk = nrand (fsize) ;                        // RAND
                     j = fset [kk] ;
                     fset [kk] = fset [fsize-1] ;
                     fnot [ncol-fsize] = j ;
@@ -626,32 +617,32 @@ double lpdemo (cholmod_triplet *T)
                     fflag [j] = 0 ;
                 }
 
-                /* downdate L, and the solution to Lx=b+deltaB */
+                // downdate L, and the solution to Lx=b+deltaB
                 C = lp_prune (A, rflag, cols, rank) ;
                 ok = CHOLMOD(updown_solve) (FALSE, C, L, X, DeltaB, cm) ;
                 CHOLMOD(free_sparse) (&C, cm) ;
                 break ;
 
-            /* -------------------------------------------------------------- */
-            case 2:     /* resymbol (no change to numerical values) */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 2:     // resymbol (no change to numerical values)
+            //------------------------------------------------------------------
 
-                /* let resymbol handle the fset */
+                // let resymbol handle the fset
                 C = lp_prune (A, rflag, NULL, 0) ;
                 ok = CHOLMOD(resymbol_noperm) (C, fset, fsize, TRUE, L, cm) ;
                 CHOLMOD(free_sparse) (&C, cm) ;
                 break;
 
-            /* -------------------------------------------------------------- */
-            case 3:     /* add row */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 3:     // add row
+            //------------------------------------------------------------------
 
-                /* remove a row from rnot and add to rset */
+                // remove a row from rnot and add to rset
                 if (nrow == rsize)
                 {
                     continue ;
                 }
-                kk = nrand (nrow-rsize) ;                       /* RAND */
+                kk = nrand (nrow-rsize) ;                       // RAND
                 i = rnot [kk] ;
 
                 OK (rflag [i] == 0) ;
@@ -660,14 +651,14 @@ double lpdemo (cholmod_triplet *T)
                 rset [rsize++] = i ;
                 rflag [i] = 1 ;
 
-                /* S = column i of beta*I + A(r,f)*A(r,f)' */
+                // S = column i of beta*I + A(r,f)*A(r,f)'
                 S = get_row (A, i, rflag, fset, fsize, beta) ;
                 ok = (S != NULL) ;
 
                 if (ok)
                 {
-                    /* pick a random right-hand-side for this new row */
-                    b [i] = 1 ; /* xrand (1) */                 /* was RAND */
+                    // pick a random right-hand-side for this new row
+                    b [i] = 1 ; // xrand (1)
                     bk [0] = b [i] ;
                     bk [1] = 0 ;
                     ok = CHOLMOD(rowadd_solve) (i, S, bk, L, X, DeltaB, cm) ;
@@ -676,16 +667,16 @@ double lpdemo (cholmod_triplet *T)
                 CHOLMOD(free_sparse) (&S, cm) ;
                 break ;
 
-            /* -------------------------------------------------------------- */
-            case 4:     /* delete row */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 4:     // delete row
+            //------------------------------------------------------------------
 
-                /* remove a row from rset and add to rnot */
+                // remove a row from rset and add to rnot
                 if (rsize == 0)
                 {
                     continue ;
                 }
-                kk = nrand (rsize) ;                            /* RAND */
+                kk = nrand (rsize) ;                            // RAND
                 i = rset [kk] ;
 
                 OK (rflag [i] == 1) ;
@@ -693,13 +684,13 @@ double lpdemo (cholmod_triplet *T)
                 rnot [nrow-rsize] = i ;
                 rsize-- ;
 
-                /* S = column i of beta*I + A(r,f)*A(r,f)' */
+                // S = column i of beta*I + A(r,f)*A(r,f)'
                 S = get_row (A, i, rflag, fset, fsize, beta) ;
                 ok = (S != NULL) ;
 
                 if (ok)
                 {
-                    /* B = B - S * y(i) */
+                    // B = B - S * y(i)
                     Sp = S->p ;
                     Si = S->i ;
                     Sx = S->x ;
@@ -707,30 +698,30 @@ double lpdemo (cholmod_triplet *T)
                     {
                         b [Si [p]] -= Sx [p] * Yx [i] ;
                     }
-                    /* B(i) = y(i) */
+                    // B(i) = y(i)
                     b [i] = Yx [i] ;
 
                     yk [0] = Yx [i] ;
                     yk [1] = 0 ;
 
-                    /* pick a method arbitrarily */
+                    // pick a method arbitrarily
                     if (trial % 2)
                     {
-                        /* get upper bound nonzero pattern of L(i,0:i-1) */
+                        // get upper bound nonzero pattern of L(i,0:i-1)
                         CHOLMOD(row_subtree) (A, AT, i, StaticParent, Row, cm) ;
                         ok = CHOLMOD(rowdel_solve) (i, Row, yk, L, X, DeltaB,
                                 cm) ;
                     }
                     else
                     {
-                        /* Look in all cols 0 to i-1 for entries in L(i,0:i-1).
-                         * This is more costly, but requires no knowledge of
-                         * an upper bound on the pattern of L. */
+                        // Look in all cols 0 to i-1 for entries in L(i,0:i-1).
+                        // This is more costly, but requires no knowledge of
+                        // an upper bound on the pattern of L.
                         ok = CHOLMOD(rowdel_solve) (i, NULL, yk, L, X, DeltaB,
                                 cm) ;
                     }
 
-                    /* for testing only, to ensure cholmod_row_subtree worked */
+                    // for testing only, to ensure cholmod_row_subtree worked
                     if (ok)
                     {
                         rflag [i] = 0 ;
@@ -740,7 +731,7 @@ double lpdemo (cholmod_triplet *T)
 
                 if (ok)
                 {
-                    /* let resymbol handle the fset */
+                    // let resymbol handle the fset
                     C = lp_prune (A, rflag, NULL, 0) ;
                     ok = CHOLMOD(resymbol_noperm) (C, fset, fsize, TRUE, L, cm) ;
                     CHOLMOD(free_sparse) (&C, cm) ;
@@ -749,18 +740,18 @@ double lpdemo (cholmod_triplet *T)
                 CHOLMOD(free_sparse) (&S, cm) ;
                 break ;
 
-            /* -------------------------------------------------------------- */
-            case 5:     /* convert, just for testing */
-            /* -------------------------------------------------------------- */
+            //------------------------------------------------------------------
+            case 5:     // convert, just for testing
+            //------------------------------------------------------------------
 
-                /* convert to LDL', optionally packed */
+                // convert to LDL', optionally packed
                 if (trial % 2)
                 {
                     ok = CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE,
                             TRUE, TRUE, L, cm) ;
                 }
                 else
-                { 
+                {
                     ok = CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE,
                             FALSE, TRUE, L, cm) ;
                 }
@@ -771,7 +762,7 @@ double lpdemo (cholmod_triplet *T)
         if (ok)
         {
 
-            /* scale B and X if their norm is getting large */
+            // scale B and X if their norm is getting large
             ynorm = CHOLMOD(norm_dense) (Y, 1, cm) ;
             bnorm = CHOLMOD(norm_dense) (B, 1, cm) ;
             xnorm = CHOLMOD(norm_dense) (X, 1, cm) ;
@@ -803,18 +794,18 @@ double lpdemo (cholmod_triplet *T)
     CHOLMOD(free_dense) (&Y, cm) ;
     OK (CHOLMOD(print_common) ("cm in lpdemo", cm)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* convert to LDL packed, LDL unpacked or LL packed and solve again */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // convert to LDL packed, LDL unpacked or LL packed and solve again
+    //--------------------------------------------------------------------------
 
-    /* solve the new system and check the residual */
+    // solve the new system and check the residual
 
     CHOLMOD(print_factor) (L, "L final, for convert", cm) ;
     if (ok)
     {
-        switch (nrand (3))                                      /* RAND */
+        switch (nrand (3))                                      // RAND
         {
-            /* pick one at random */
+            // pick one at random
             case 0:
             {
                 ok = CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, TRUE,
@@ -843,9 +834,9 @@ double lpdemo (cholmod_triplet *T)
         CHOLMOD(print_factor) (L, "L after convert", cm) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* rank-1 update, but only partial Lx=b update */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // rank-1 update, but only partial Lx=b update
+    //--------------------------------------------------------------------------
 
     if (ok && fsize < ncol && nrow > 3)
     {
@@ -862,27 +853,27 @@ double lpdemo (cholmod_triplet *T)
         {
             cholmod_factor *L2 ;
             cholmod_dense *X2 ;
-            double *X2x ;
+            Real *X2x ;
             L2 = CHOLMOD(copy_factor) (L, cm) ;
             X2 = CHOLMOD(copy_dense) (X, cm) ;
             X2x = (X2 == NULL) ? NULL : X2->x ;
 
-            /* fprintf (stderr, "check colmark "ID"\n", colmark [0]) ; */
+            // fprintf (stderr, "check colmark "ID"\n", colmark [0]) ;
             printf ("check cholmark "ID"\n", colmark [0]) ;
-            /* colmark [0] = 3 ; */
+            // colmark [0] = 3 ;
 
-            /* update L, and the solution to Lx=b+deltaB,
-             * but only update solution in rows 0 to colmark[0] */
+            // update L, and the solution to Lx=b+deltaB,
+            // but only update solution in rows 0 to colmark[0]
             C = lp_prune (A, rflag, cols, 1) ;
             ok = CHOLMOD(updown_mark) (TRUE, C, colmark, L2, X2, DeltaB, cm) ;
             CHOLMOD(free_sparse) (&C, cm) ;
 
-            /* compare with Lr=b+deltaB */
+            // compare with Lr=b+deltaB
             R = CHOLMOD(solve) (CHOLMOD_L, L2, B, cm) ;
             r = -1 ;
             if (ok && R != NULL)
             {
-                double *Rx ;
+                Real *Rx ;
                 Rx = R->x ;
                 r = 0 ;
                 for (i = 0 ; i < colmark [0] ; i++)
@@ -898,11 +889,11 @@ double lpdemo (cholmod_triplet *T)
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* free everything */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free everything
+    //--------------------------------------------------------------------------
 
-    /* restore defaults */
+    // restore defaults
     cm->final_resymbol = FALSE ;
     cm->final_asis = TRUE ;
     cm->supernodal_switch = 40 ;

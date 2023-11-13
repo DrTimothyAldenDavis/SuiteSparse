@@ -75,7 +75,7 @@ cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
     // allocate the new factor H, H->Perm, and H->ColCount
     //--------------------------------------------------------------------------
 
-    cholmod_factor *H = CHOLMOD(allocate_factor) (n, Common) ;
+    cholmod_factor *H = CHOLMOD(alloc_factor) (n, L->dtype, Common) ;
     RETURN_IF_ERROR ;
 
     //--------------------------------------------------------------------------

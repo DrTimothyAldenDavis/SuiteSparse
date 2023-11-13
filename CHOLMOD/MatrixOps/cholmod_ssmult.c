@@ -249,7 +249,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     //--------------------------------------------------------------------------
 
     C = CHOLMOD(allocate_sparse) (nrow, ncol, cnz, FALSE, TRUE, 0,
-            values ? A->xtype : CHOLMOD_PATTERN, Common) ;
+        (values ? A->xtype : CHOLMOD_PATTERN) + A->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         // out of memory

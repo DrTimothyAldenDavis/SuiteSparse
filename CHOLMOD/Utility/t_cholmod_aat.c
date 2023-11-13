@@ -85,13 +85,13 @@ cholmod_sparse *CHOLMOD(aat)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, NULL) ;
     Common->status = CHOLMOD_OK ;
     cholmod_sparse *C = NULL, *F = NULL ;
-    ASSERT (CHOLMOD(dump_sparse) (A, "aat:A", Common) >= 0) ;
-
     if (A->stype != 0)
     {
         ERROR (CHOLMOD_INVALID, "input matrix must be unsymmetric") ;
         return (NULL) ;
     }
+
+    ASSERT (CHOLMOD(dump_sparse) (A, "aat:A", Common) >= 0) ;
 
     //--------------------------------------------------------------------------
     // get inputs
