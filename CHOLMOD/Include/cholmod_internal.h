@@ -679,20 +679,6 @@ void CM_memtable_remove (void *p) ;
 
 #define DEBUG(statement) statement
 
-#else
-
-// Debugging disabled (the normal case)
-#define PRK(k,params)
-#define DEBUG_INIT(s,Common)
-#define PRINT0(params)
-#define PRINT1(params)
-#define PRINT2(params)
-#define PRINT3(params)
-#define PRINTM(params)
-#define ASSERT(expression)
-#define DEBUG(statement)
-#endif
-
 static bool check_flag (cholmod_common *Common)
 {
     int64_t mark = Common->mark ;
@@ -716,5 +702,19 @@ static bool check_flag (cholmod_common *Common)
     }
     return (true) ;
 }
+
+#else
+
+// Debugging disabled (the normal case)
+#define PRK(k,params)
+#define DEBUG_INIT(s,Common)
+#define PRINT0(params)
+#define PRINT1(params)
+#define PRINT2(params)
+#define PRINT3(params)
+#define PRINTM(params)
+#define ASSERT(expression)
+#define DEBUG(statement)
+#endif
 
 #endif
