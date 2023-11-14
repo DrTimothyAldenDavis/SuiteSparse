@@ -88,27 +88,27 @@ int CHOLMOD(drop)
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_drop_worker (tol, A, Common) ;
+            rs_cholmod_drop_worker (tol, A, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_drop_worker (tol, A, Common) ;
+            cs_cholmod_drop_worker (tol, A, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_drop_worker (tol, A, Common) ;
+            zs_cholmod_drop_worker (tol, A, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_drop_worker (tol, A, Common) ;
+            rd_cholmod_drop_worker (tol, A, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_drop_worker (tol, A, Common) ;
+            cd_cholmod_drop_worker (tol, A, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_drop_worker (tol, A, Common) ;
+            zd_cholmod_drop_worker (tol, A, Common) ;
             break ;
     }
 

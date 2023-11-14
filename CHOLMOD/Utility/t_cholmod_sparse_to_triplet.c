@@ -74,31 +74,32 @@ cholmod_triplet *CHOLMOD(sparse_to_triplet)
     switch ((A->xtype + A->dtype) % 8)
     {
         default:
+GOTCHA
             p_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_sparse_to_triplet_worker (T, A) ;
+            rs_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_sparse_to_triplet_worker (T, A) ;
+            cs_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_sparse_to_triplet_worker (T, A) ;
+            zs_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_sparse_to_triplet_worker (T, A) ;
+            rd_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_sparse_to_triplet_worker (T, A) ;
+            cd_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_sparse_to_triplet_worker (T, A) ;
+            zd_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
     }
 

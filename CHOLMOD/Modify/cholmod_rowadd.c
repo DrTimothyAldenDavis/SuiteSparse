@@ -150,7 +150,7 @@ int CHOLMOD(rowadd_mark)
     }
     if (L->xtype != CHOLMOD_PATTERN && L->dtype != R->dtype)
     {
-        ERROR (CHOLMOD_INVALID, "R invalid") ;
+        ERROR (CHOLMOD_INVALID, "R and L must have the same dtype") ;
         return (FALSE) ;
     }
 
@@ -179,6 +179,7 @@ int CHOLMOD(rowadd_mark)
     size_t s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -224,12 +225,12 @@ int CHOLMOD(rowadd_mark)
     switch (L->dtype & 4)
     {
         case CHOLMOD_SINGLE:
-            ok = r_s_cholmod_rowadd_worker (k, R, s_bk, colmark, L, X, DeltaB,
+            ok = rs_cholmod_rowadd_worker (k, R, s_bk, colmark, L, X, DeltaB,
                 Common) ;
             break ;
 
         case CHOLMOD_DOUBLE:
-            ok = r_cholmod_rowadd_worker (k, R, bk, colmark, L, X, DeltaB,
+            ok = rd_cholmod_rowadd_worker (k, R, bk, colmark, L, X, DeltaB,
                 Common) ;
             break ;
     }

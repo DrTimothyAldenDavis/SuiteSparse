@@ -235,6 +235,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
         }
         if (cnz < 0)
         {
+GOTCHA
             break ;         // integer overflow case
         }
     }
@@ -248,6 +249,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
 
     if (cnz < 0)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         CHOLMOD(free_sparse) (&A2, Common) ;
         CHOLMOD(free_sparse) (&B2, Common) ;
@@ -284,29 +286,27 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_ssmult_worker (C, A, B, Common) ;
+            rs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_ssmult_worker (C, A, B, Common) ;
+            cs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_ssmult_worker (C, A, B, Common) ;
+            zs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_ssmult_worker (C, A, B, Common) ;
+            rd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_ssmult_worker (C, A, B, Common) ;
+            cd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-// FIXME
-//          printf ("double zomplex ssmult worker:\n") ;
-            z_cholmod_ssmult_worker (C, A, B, Common) ;
+            zd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
     }
 
@@ -351,6 +351,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
         // workspace: Iwork (max (C->nrow,C->ncol))
         if (!CHOLMOD(sort) (C, Common))
         {
+GOTCHA
             // out of memory
             CHOLMOD(free_sparse) (&C, Common) ;
             ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;

@@ -78,6 +78,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     if (A->nrow != B->nrow || A->ncol != B->ncol)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "A and B dimensions do not match") ;
         return (NULL) ;
     }
@@ -100,6 +101,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     if (values && A->dtype != B->dtype)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "A and B dtypes do not match") ;
         return (NULL) ;
     }
@@ -228,27 +230,27 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            rs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            cs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            zs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            rd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            cd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+            zd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
     }
 

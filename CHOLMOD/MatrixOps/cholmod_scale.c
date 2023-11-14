@@ -148,32 +148,28 @@ int CHOLMOD(scale)
 
     switch ((A->xtype + A->dtype) % 8)
     {
-
-        default:
-            break ;
-
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_scale_worker (S, scale, A) ;
+            rs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_scale_worker (S, scale, A) ;
+            cs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_scale_worker (S, scale, A) ;
+            zs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_scale_worker (S, scale, A) ;
+            rd_cholmod_scale_worker (S, scale, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_scale_worker (S, scale, A) ;
+            cd_cholmod_scale_worker (S, scale, A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_scale_worker (S, scale, A) ;
+            zd_cholmod_scale_worker (S, scale, A) ;
             break ;
     }
 

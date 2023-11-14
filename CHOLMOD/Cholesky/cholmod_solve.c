@@ -221,6 +221,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
     }
     if (L->dtype != B->dtype)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "dtype of L and B must match") ;
         return (FALSE) ;
     }
@@ -239,6 +240,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
     {
         if (nrhs != 1)
         {
+GOTCHA
             ERROR (CHOLMOD_INVALID, "Bset requires a single right-hand side") ;
             return (FALSE) ;
         }
@@ -330,6 +332,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
                 L, Common) ;
             if (Common->status < CHOLMOD_OK)
             {
+GOTCHA
                 // out of memory, L is returned unchanged
                 return (FALSE) ;
             }
@@ -342,6 +345,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             Common) ;
         if (Common->status < CHOLMOD_OK)
         {
+GOTCHA
             // out of memory
             return (FALSE) ;
         }
@@ -364,6 +368,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
                 L->IPerm = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
                 if (Common->status < CHOLMOD_OK)
                 {
+GOTCHA
                     // out of memory
                     return (FALSE) ;
                 }
@@ -379,6 +384,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
 
         if (sys == CHOLMOD_P)
         {
+GOTCHA
             // x=Pb needs to turn off the subsequent x=P'b permutation
             Perm = NULL ;
         }
@@ -405,6 +411,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         Xset->stype = 0 ;
         if (Common->status < CHOLMOD_OK)
         {
+GOTCHA
             // out of memory
             return (FALSE) ;
         }
@@ -417,6 +424,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         CHOLMOD(allocate_work) (n, 3*n, 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
+GOTCHA
             // out of memory
             return (FALSE) ;
         }
@@ -506,6 +514,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         {
             if (!CHOLMOD(lsolve_pattern) (C, L, Yset, Common))
             {
+GOTCHA
                 Common->no_workspace_reallocate = save_realloc_state ;
                 return (FALSE) ;
             }
@@ -520,27 +529,27 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         {
 
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_bset_perm (B, Bset, Yset, C, Y) ;
+                rs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_bset_perm (B, Bset, Yset, C, Y) ;
+                cs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_bset_perm (B, Bset, Yset, C, Y) ;
+                zs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_bset_perm (B, Bset, Yset, C, Y) ;
+                rd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_bset_perm (B, Bset, Yset, C, Y) ;
+                cd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_bset_perm (B, Bset, Yset, C, Y) ;
+                zd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
         }
 
@@ -558,27 +567,27 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             {
 
                 case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                    r_s_simplicial_solver (sys, L, Y, Yset) ;
+                    rs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
                 case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                    c_s_simplicial_solver (sys, L, Y, Yset) ;
+                    cs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
                 case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                    z_s_simplicial_solver (sys, L, Y, Yset) ;
+                    zs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                    r_simplicial_solver (sys, L, Y, Yset) ;
+                    rd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                    c_simplicial_solver (sys, L, Y, Yset) ;
+                    cd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                    z_simplicial_solver (sys, L, Y, Yset) ;
+                    zd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
             }
         }
@@ -593,27 +602,27 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         {
 
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                rs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                cs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                zs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                rd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                cd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                zd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
         }
 
@@ -727,6 +736,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             // It might be possible for the calls to the BLAS to differ between
             // factorization and forward/backsolves, however.  This statement
             // cannot be tested.
+GOTCHA
             return (FALSE) ;
         }
 
@@ -804,27 +814,27 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             {
 
                 case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                    r_s_simplicial_solver (sys, L, Y, NULL) ;
+                    rs_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
 
                 case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                    c_s_simplicial_solver (sys, L, Y, NULL) ;
+                    cs_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
 
                 case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                    z_s_simplicial_solver (sys, L, Y, NULL) ;
+                    zs_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                    r_simplicial_solver (sys, L, Y, NULL) ;
+                    rd_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                    c_simplicial_solver (sys, L, Y, NULL) ;
+                    cd_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
 
                 case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                    z_simplicial_solver (sys, L, Y, NULL) ;
+                    zd_simplicial_solver (sys, L, Y, NULL) ;
                     break ;
             }
 

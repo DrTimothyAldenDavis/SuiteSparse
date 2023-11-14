@@ -213,18 +213,18 @@ void cholmod_l_to_simplicial_sym
 // pattern: single or double
 //------------------------------------------------------------------------------
 
-#define P_TEMPLATE(name)                p_ ## name
-#define P_S_TEMPLATE(name)              p_s_ ## name
+#define P_TEMPLATE(name)                        p_ ## name
+#define PS_TEMPLATE(name)                       ps_ ## name
 
-#define P_ASSIGN2(x,z,p,ax,az,q)        x [p] = 1
-#define P_PRINT(k,x,z,p)                PRK(k, ("1"))
+#define P_ASSIGN2(x,z,p,ax,az,q)                x [p] = 1
+#define P_PRINT(k,x,z,p)                        PRK(k, ("1"))
 
 //------------------------------------------------------------------------------
 // real: single or double
 //------------------------------------------------------------------------------
 
-#define R_TEMPLATE(name)                        r_ ## name
-#define R_S_TEMPLATE(name)                      r_s_ ## name
+#define RD_TEMPLATE(name)                       rd_ ## name
+#define RS_TEMPLATE(name)                       rs_ ## name
 
 #define R_ABS(x,z,p)                            fabs ((double) (x [p]))
 #define R_ASSEMBLE(x,z,p,ax,az,q)               x [p] += ax [q]
@@ -257,11 +257,11 @@ void cholmod_l_to_simplicial_sym
 // complex: single or double
 //------------------------------------------------------------------------------
 
-#define C_TEMPLATE(name)                c_ ## name
-#define CT_TEMPLATE(name)               ct_ ## name
+#define CD_TEMPLATE(name)                       cd_ ## name
+#define CD_T_TEMPLATE(name)                     cd_t_ ## name
 
-#define C_S_TEMPLATE(name)              c_s_ ## name
-#define CT_S_TEMPLATE(name)             ct_s_ ## name
+#define CS_TEMPLATE(name)                       cs_ ## name
+#define CS_T_TEMPLATE(name)                     cs_t_ ## name
 
 #define C_ABS(x,z,p) \
     SuiteSparse_config_hypot ((double) (x [2*(p)]), (double) (x [2*(p)+1]))
@@ -368,11 +368,11 @@ void cholmod_l_to_simplicial_sym
 // zomplex: single or double
 //------------------------------------------------------------------------------
 
-#define Z_TEMPLATE(name)                z_ ## name
-#define ZT_TEMPLATE(name)               zt_ ## name
+#define ZD_TEMPLATE(name)                       zd_ ## name
+#define ZD_T_TEMPLATE(name)                     zd_t_ ## name
 
-#define Z_S_TEMPLATE(name)              z_s_ ## name
-#define ZT_S_TEMPLATE(name)             zt_s_ ## name
+#define ZS_TEMPLATE(name)                       zs_ ## name
+#define ZS_T_TEMPLATE(name)                     zs_t_ ## name
 
 #define Z_ABS(x,z,p) \
     SuiteSparse_config_hypot ((double) (x [p]), (double) (z [p]))
@@ -561,6 +561,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     int nthreads_max = Common->nthreads_max ;   // max # of threads to use
     if (nthreads_max <= 0)
     {
+// GOTCHA
         nthreads_max = SUITESPARSE_OPENMP_MAX_THREADS ;
     }
     work  = MAX (work, 1) ;
@@ -577,6 +578,17 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 //==============================================================================
 //==== debugging definitions ===================================================
 //==============================================================================
+
+#if 1
+#define GOTCHA ;
+#else
+#define GOTCHA                                          \
+{                                                       \
+    printf ("Gotcha! %d:%s\n", __LINE__, __FILE__) ;    \
+    fflush (stdout) ;                                   \
+    abort ( ) ;                                         \
+}
+#endif
 
 #ifndef NDEBUG
 

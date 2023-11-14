@@ -126,6 +126,7 @@ cholmod_sparse *CHOLMOD(copy)
     stype = SIGN (stype) ;
     if ((stype || astype) && nrow != ncol)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "matrix invalid") ;
         return (NULL) ;
     }
@@ -271,54 +272,54 @@ cholmod_sparse *CHOLMOD(copy)
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                rs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
                 if (conj)
                 {
-                    c_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    ct_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cs_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
                 if (conj)
                 {
-                    z_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    zt_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zs_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                rd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
                 if (conj)
                 {
-                    c_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    ct_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cd_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
                 if (conj)
                 {
-                    z_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    zt_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zd_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
         }

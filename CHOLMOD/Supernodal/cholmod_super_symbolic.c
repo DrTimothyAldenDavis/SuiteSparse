@@ -216,6 +216,7 @@ int CHOLMOD(super_symbolic2)
     w = CHOLMOD(mult_size_t) (n, 5, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -673,6 +674,7 @@ int CHOLMOD(super_symbolic2)
             // For Cholesky factorization, however, memory of space xxsize
             // will be allocated, so this is a failure.  Both QR and Cholesky
             // fail if ssize overflows.
+GOTCHA
             ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
             FREE_WORKSPACE ;
             return (FALSE) ;
@@ -760,6 +762,7 @@ int CHOLMOD(super_symbolic2)
         // L->px is not needed for non-GPU accelerated QR factorization (it may
         // lead to Int overflow, anyway, if xsize caused Int overflow above).
         // Use a magic number to tell cholmod_check_factor to ignore Lpx.
+GOTCHA
         Lpx [0] = 123456 ;
     }
 

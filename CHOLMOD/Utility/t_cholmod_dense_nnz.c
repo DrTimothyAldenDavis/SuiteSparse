@@ -63,27 +63,27 @@ int64_t CHOLMOD(dense_nnz)      // return # of entries in the dense matrix
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            xnz = r_s_cholmod_dense_nnz_worker (X) ;
+            xnz = rs_cholmod_dense_nnz_worker (X) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            xnz = c_s_cholmod_dense_nnz_worker (X) ;
+            xnz = cs_cholmod_dense_nnz_worker (X) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            xnz = z_s_cholmod_dense_nnz_worker (X) ;
+            xnz = zs_cholmod_dense_nnz_worker (X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            xnz = r_cholmod_dense_nnz_worker (X) ;
+            xnz = rd_cholmod_dense_nnz_worker (X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            xnz = c_cholmod_dense_nnz_worker (X) ;
+            xnz = cd_cholmod_dense_nnz_worker (X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            xnz = z_cholmod_dense_nnz_worker (X) ;
+            xnz = zd_cholmod_dense_nnz_worker (X) ;
             break ;
     }
 

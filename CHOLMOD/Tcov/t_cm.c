@@ -57,7 +57,6 @@
 
 double zero [2], one [2], minusone [2] ;
 cholmod_common Common, *cm ;
-cholmod_dense *M1 ;
 Int dot = 0 ;
 double Zero [2] ;
 
@@ -1492,12 +1491,6 @@ int main (int argc, char **argv)
     one [1] = 0 ;
     minusone [0] = -1 ;
     minusone [1] = 0 ;
-    M1 = CHOLMOD(ones) (1, 1, CHOLMOD_REAL + DTYPE, cm) ;
-
-    if (M1 != NULL)
-    {
-        ((Real *) (M1->x)) [0] = -1 ;
-    }
 
     //--------------------------------------------------------------------------
     // basic tests
@@ -1763,7 +1756,6 @@ int main (int argc, char **argv)
     // finalize CHOLMOD
     //--------------------------------------------------------------------------
 
-    CHOLMOD(free_dense) (&M1, cm) ;
     CHOLMOD(finish) (cm) ;
 
     cm->print = 5 ; OK (CHOLMOD(print_common) ("4:cm", cm)) ;

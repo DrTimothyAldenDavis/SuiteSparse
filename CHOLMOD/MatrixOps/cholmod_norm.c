@@ -99,27 +99,27 @@ double CHOLMOD(norm_dense)      // returns norm (X)
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            xnorm = r_s_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = rs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            xnorm = c_s_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = cs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            xnorm = z_s_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = zs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            xnorm = r_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = rd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            xnorm = c_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = cd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            xnorm = z_cholmod_norm_dense_worker (X, norm, W) ;
+            xnorm = zd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
     }
 
@@ -189,27 +189,27 @@ double CHOLMOD(norm_sparse)     // returns norm (A)
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            anorm = r_s_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = rs_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            anorm = c_s_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = cs_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            anorm = z_s_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = zs_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            anorm = r_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = rd_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            anorm = c_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = cd_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            anorm = z_cholmod_norm_sparse_worker (A, norm, W) ;
+            anorm = zd_cholmod_norm_sparse_worker (A, norm, W) ;
             break ;
     }
 

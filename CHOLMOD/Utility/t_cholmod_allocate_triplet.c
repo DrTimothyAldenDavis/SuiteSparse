@@ -43,6 +43,7 @@ cholmod_triplet *CHOLMOD(allocate_triplet)      // return triplet matrix T
 
     if (stype != 0 && nrow != ncol)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "rectangular matrix with stype != 0 invalid") ;
         return (NULL) ;
     }

@@ -197,6 +197,7 @@ static int print_value
                 if (s [i+2] == '0')
                 {
                     // delete character s[i+2]
+GOTCHA
                     src = i+3 ;
                 }
                 else

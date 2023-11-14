@@ -196,6 +196,7 @@ cholmod_sparse *CHOLMOD(aat)
 
         if (cnz < 0 || cnz >= Int_max / sizeof (Int))
         {
+GOTCHA
             Common->status = CHOLMOD_TOO_LARGE ;
             break ;
         }
@@ -225,27 +226,31 @@ cholmod_sparse *CHOLMOD(aat)
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+            rs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+GOTCHA
+            cs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+GOTCHA
+            zs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+            rd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+GOTCHA
+            cd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+GOTCHA
+            zd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
     }
 

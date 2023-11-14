@@ -29,6 +29,7 @@ static inline uint64_t cm_rand15 (uint64_t *seed)
 // return a random uint64_t, in range 0 to 2^60
 static inline uint64_t cm_rand (uint64_t *seed)
 {
+GOTCHA
     uint64_t i = cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;
@@ -102,28 +103,28 @@ int CHOLMOD(sort)
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_sort_worker (A) ;
+            rs_cholmod_sort_worker (A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_sort_worker (A) ;
+            cs_cholmod_sort_worker (A) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_sort_worker (A) ;
+            zs_cholmod_sort_worker (A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_sort_worker (A) ;
+            rd_cholmod_sort_worker (A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_sort_worker (A) ;
+            cd_cholmod_sort_worker (A) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            printf ("z_cholmod_sort_worker (A) :\n") ;
-            z_cholmod_sort_worker (A) ;
+// printf ("zd_cholmod_sort_worker (A) :\n") ;
+            zd_cholmod_sort_worker (A) ;
             break ;
     }
 

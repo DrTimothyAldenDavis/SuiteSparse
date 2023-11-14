@@ -95,7 +95,6 @@
 
 EXTERN double zero [2], one [2], minusone [2] ;
 EXTERN cholmod_common Common, *cm ;
-EXTERN cholmod_dense *M1 ;
 EXTERN int64_t my_tries ;
 EXTERN double Zero [2] ;
 

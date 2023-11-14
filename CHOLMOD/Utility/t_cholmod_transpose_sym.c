@@ -179,54 +179,54 @@ int CHOLMOD(transpose_sym)
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+            rs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
             if (conj)
             {
-                c_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                ct_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cs_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
             if (conj)
             {
-                z_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                zt_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zs_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+            rd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
             if (conj)
             {
-                c_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                ct_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cd_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
             if (conj)
             {
-                z_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                zt_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zd_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
     }

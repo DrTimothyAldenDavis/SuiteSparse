@@ -110,27 +110,27 @@ cholmod_sparse *CHOLMOD(copy_sparse)  // return new sparse matrix
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_copy_sparse_worker (C, A) ;
+                rs_cholmod_copy_sparse_worker (C, A) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_cholmod_copy_sparse_worker (C, A) ;
+                cs_cholmod_copy_sparse_worker (C, A) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_cholmod_copy_sparse_worker (C, A) ;
+                zs_cholmod_copy_sparse_worker (C, A) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_copy_sparse_worker (C, A) ;
+                rd_cholmod_copy_sparse_worker (C, A) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_cholmod_copy_sparse_worker (C, A) ;
+                cd_cholmod_copy_sparse_worker (C, A) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_cholmod_copy_sparse_worker (C, A) ;
+                zd_cholmod_copy_sparse_worker (C, A) ;
                 break ;
         }
     }

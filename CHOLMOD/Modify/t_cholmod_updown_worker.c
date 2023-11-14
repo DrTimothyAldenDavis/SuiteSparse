@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 // This method, TEMPLATE (cholmod_updown_worker), is #included twice in
-// cholmod_updown.c, to create r_s_cholmod_updown_worker for the single case,
+// cholmod_updown.c, to create rs_cholmod_updown_worker for the single case,
 // and r_cholmod_updown_worker for the double case.
 
 // t_cholmod_update_wdim.c is #included four times below, to create the set of

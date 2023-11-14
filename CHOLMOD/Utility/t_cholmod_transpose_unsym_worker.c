@@ -42,6 +42,11 @@ static void TEMPLATE (cholmod_transpose_unsym_worker)
 
     if (fset != NULL)
     {
+#ifdef NCONJUGATE
+CSI_GOTCHA
+CSL_GOTCHA
+CDL_GOTCHA
+#endif
         if (A->packed)
         {
             // C = A (p,f)' or A(:,f)' where A is packed

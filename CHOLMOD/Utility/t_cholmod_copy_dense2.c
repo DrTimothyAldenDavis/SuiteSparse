@@ -96,30 +96,37 @@ int CHOLMOD(copy_dense2)
         // copy Y into X, with possible change of leading dimension
         //----------------------------------------------------------------------
 
+GOTCHA
         switch ((X->xtype + X->dtype) % 8)
         {
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                rs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                cs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                zs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                rd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                cd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_cholmod_copy_dense2_worker (X, Y) ;
+GOTCHA
+                zd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
         }
     }

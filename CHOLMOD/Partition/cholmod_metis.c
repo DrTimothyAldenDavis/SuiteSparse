@@ -434,16 +434,19 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
 
     if (ok == METIS_ERROR_MEMORY)
     {
+GOTCHA
         ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory in METIS") ;
         return (EMPTY) ;
     }
     else if (ok == METIS_ERROR_INPUT)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "invalid input to METIS") ;
         return (EMPTY) ;
     }
     else if (ok == METIS_ERROR)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "unspecified METIS error") ;
         return (EMPTY) ;
     }
@@ -468,6 +471,7 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
         if (Anw == NULL)
         {
             lightest = n-1 ;
+GOTCHA
         }
         else
         {
@@ -613,6 +617,7 @@ int CHOLMOD(metis)
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

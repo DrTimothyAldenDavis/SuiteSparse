@@ -306,6 +306,7 @@ static int check_common
     if (Common->supernodal <= CHOLMOD_SIMPLICIAL)
     {
         P3 ("%s", "(always do simplicial)\n") ;
+GOTCHA
     }
     else if (Common->supernodal == CHOLMOD_AUTO)
     {
@@ -336,6 +337,7 @@ static int check_common
         {
             P3 ("%s", "    Try NESDIS if AMD reports flops/nnz(L) >= 500 and "
                 "nnz(L)/nnz(A) >= 5.\n") ;
+GOTCHA
         }
         else
         {
@@ -447,6 +449,7 @@ static int check_common
     // backup AMD results, if any
     if (amd_backup)
     {
+GOTCHA
         P3 ("%s", "    backup method: ") ;
         P3 ("%s", "AMD (or COLAMD if factorizing AA')\n") ;
         fl = Common->method [nmethods].fl ;
@@ -477,6 +480,7 @@ static int check_common
         if (Common->final_ll)
         {
             P4 ("%s", "  final_ll: TRUE, convert to LL' form\n") ;
+GOTCHA
         }
         else
         {
@@ -763,7 +767,7 @@ static int64_t check_sparse
     {
         case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ; break ;
         case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ; break ;
-        default:              ERR ("unknown dtype") ;
+        default:              GOTCHA ; ERR ("unknown dtype") ;
     }
 
     if (A->itype != ITYPE)
@@ -1006,7 +1010,7 @@ static int check_dense
     {
         case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ;     break ;
         case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ;     break ;
-        default:              ERR ("unknown dtype") ;
+        default:              GOTCHA ; ERR ("unknown dtype") ;
     }
 
     //--------------------------------------------------------------------------
@@ -2102,7 +2106,7 @@ static int check_triplet
     {
         case CHOLMOD_DOUBLE:  P4 ("%s", ", double\n") ; break ;
         case CHOLMOD_SINGLE:  P4 ("%s", ", single\n") ; break ;
-        default:              ERR ("unknown dtype") ;
+        default:              GOTCHA ; ERR ("unknown dtype") ;
     }
 
     if (T->itype != ITYPE)

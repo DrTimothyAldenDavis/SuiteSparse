@@ -81,31 +81,28 @@ int CHOLMOD(pack_factor)
 
     switch ((L->xtype + L->dtype) % 8)
     {
-        default:
-            break ;
-
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_pack_factor_worker (L, Common) ;
+            rs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_pack_factor_worker (L, Common) ;
+            cs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_pack_factor_worker (L, Common) ;
+            zs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_pack_factor_worker (L, Common) ;
+            rd_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_pack_factor_worker (L, Common) ;
+            cd_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_pack_factor_worker (L, Common) ;
+            zd_cholmod_pack_factor_worker (L, Common) ;
             break ;
     }
 

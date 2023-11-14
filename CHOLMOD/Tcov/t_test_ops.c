@@ -526,11 +526,17 @@ double test_ops (cholmod_sparse *A)
     G = NULL ;
     F = NULL ;
 
-    if (isreal)
+    // if (isreal)
     {
+// FIXME
+// int ssa = cm->print ; cm->print = 5 ;
+// CHOLMOD(print_sparse) (A, "A", cm) ;
+// CHOLMOD(print_sparse) (Zs, "Zs", cm) ;
+// CHOLMOD(print_sparse) (C, "G", cm) ;
 
         // G=A+0
         G = CHOLMOD(add) (A, Zs, one, one, TRUE, TRUE, cm) ; // [
+// CHOLMOD(print_sparse) (G, "G", cm) ;
 
         // F = G-C
         F = CHOLMOD(add) (G, C, one, minusone, TRUE, TRUE, cm) ;        // [
@@ -540,9 +546,11 @@ double test_ops (cholmod_sparse *A)
         MAXERR (maxerr, r, anorm) ;
         r = CHOLMOD(norm_sparse) (F, 0, cm) ;
         CHOLMOD(drop) (0, F, cm) ;
+// CHOLMOD(print_sparse) (F, "F dropped", cm) ;
         rinf = CHOLMOD(norm_sparse) (F, 0, cm) ;
         if (F != NULL)
         {
+            printf ("r %g rinf %g\n", r, rinf) ;
             OK (r == rinf) ;
         }
         MAXERR (maxerr, r, anorm) ;
@@ -581,6 +589,7 @@ double test_ops (cholmod_sparse *A)
 
         CHOLMOD(free_sparse) (&F, cm) ; // ]
         CHOLMOD(free_sparse) (&G, cm) ; // ]
+// cm->print = ssa ;
     }
 
     Y = CHOLMOD(ones) (nrow, 1, xtype + DTYPE, cm) ;   // [
@@ -662,7 +671,7 @@ double test_ops (cholmod_sparse *A)
     F = NULL ;
     G = NULL ;
 
-    if (isreal)
+    // if (isreal)
     {
 
         //----------------------------------------------------------------------
@@ -699,7 +708,7 @@ double test_ops (cholmod_sparse *A)
     // submatrix
     //--------------------------------------------------------------------------
 
-    if (A->stype == 0 && isreal)
+    if (A->stype == 0 /*&& isreal*/)
     {
         // E = A(:,:)
         E = CHOLMOD(submatrix) (A, NULL, -1, NULL, -1, TRUE, TRUE, cm) ;
@@ -719,19 +728,23 @@ double test_ops (cholmod_sparse *A)
     // test band and add, unsymmetric
     //--------------------------------------------------------------------------
 
-    if (isreal)
+    // if (isreal)
     {
+
+// FIXME
+// int ssb = cm->print ; cm->print = 5 ;
+
         CHOLMOD(print_sparse) (A, "A for do triplet", cm) ;
 
         // E = A
-        E = CHOLMOD(copy) (A, 0, 1, cm) ;
+        E = CHOLMOD(copy) (A, 0, 2, cm) ;
         CHOLMOD(print_sparse) (E, "E=triu(A)", cm) ;
 
         // E = triu (E)
         CHOLMOD(band_inplace) (0, ncol, 1, E, cm) ;
 
         // F = A
-        F = CHOLMOD(copy) (A, 0, 1, cm) ;
+        F = CHOLMOD(copy) (A, 0, 2, cm) ;
         CHOLMOD(print_sparse) (F, "F=tril(A)", cm) ;
 
         // F = tril(F,-1)
@@ -753,6 +766,9 @@ double test_ops (cholmod_sparse *A)
         {
             OK (nz == 0) ;
         }
+
+// FIXME
+// cm->print = ssb ;
 
         CHOLMOD(free_sparse) (&F, cm) ;
         CHOLMOD(free_sparse) (&D, cm) ;
@@ -779,27 +795,45 @@ double test_ops (cholmod_sparse *A)
     // test band, add and copy_sparse (symmetric)
     //--------------------------------------------------------------------------
 
-    if (A->stype && isreal)
+    if (A->stype /*&& isreal*/)
     {
+        
+        // D = diag (A)
+        D = CHOLMOD(band) (A, 0, 0, true, cm) ;
+        
+
+// FIXME
+int ssc = cm->print ; cm->print = 5 ;
 
         // E = A, in symmetric/upper form
-        E = CHOLMOD(copy) (A, 1, 1, cm) ;
+CHOLMOD(print_sparse) (A, "A", cm) ;
+        E = CHOLMOD(copy) (A, 1, 2, cm) ;
         CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
 
+        // Minus1 = -1
+        cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm) ;
+        if (Minus1 != NULL)
+        {
+            ((Real *) (Minus1->x)) [0] = -1 ;
+        }
+
         // E = -E
-        CHOLMOD(scale) (M1, CHOLMOD_SCALAR, E, cm) ;
+        CHOLMOD(scale) (Minus1, CHOLMOD_SCALAR, E, cm) ;
+        CHOLMOD(print_sparse) (E, "E=-E", cm) ;
 
         // F = A, in symmetric/lower form
-        F = CHOLMOD(copy) (A, -1, 1, cm) ;
+        F = CHOLMOD(copy) (A, -1, 2, cm) ;
         CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
 
         // C = F (exact copy)
         C = CHOLMOD(copy_sparse) (F, cm) ;
+        CHOLMOD(print_sparse) (C, "C=F", cm) ;
 
-        // G = E+C
+        // G = E-C
         G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
         CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
         CHOLMOD(sort) (G, cm) ;
+        CHOLMOD(print_sparse) (G, "G sort", cm) ;
 
         CHOLMOD(drop) (0, G, cm) ;
         CHOLMOD(print_sparse) (G, "G drop", cm) ;
@@ -809,11 +843,14 @@ double test_ops (cholmod_sparse *A)
             OK (nz == 0) ;
         }
 
+// FIXME
+cm->print = ssc ;
+
+        CHOLMOD(free_dense) (&Minus1, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&F, cm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&G, cm) ;
-
     }
 
     //--------------------------------------------------------------------------

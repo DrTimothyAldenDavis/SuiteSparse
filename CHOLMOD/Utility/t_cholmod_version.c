@@ -26,6 +26,7 @@ int CHOLMOD(version)    // returns CHOLMOD_VERSION
 
     if (version == NULL)
     {
+GOTCHA
         return (CHOLMOD_VERSION) ;
     }
 

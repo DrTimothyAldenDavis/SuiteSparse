@@ -115,19 +115,19 @@ int CHOLMOD(super_lsolve)   // TRUE if OK, FALSE if BLAS overflow occured
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_super_lsolve_worker (L, X, E, Common) ;
+            rs_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_super_lsolve_worker (L, X, E, Common) ;
+            cs_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_super_lsolve_worker (L, X, E, Common) ;
+            rd_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_super_lsolve_worker (L, X, E, Common) ;
+            cd_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
     }
 
@@ -137,6 +137,7 @@ int CHOLMOD(super_lsolve)   // TRUE if OK, FALSE if BLAS overflow occured
 
     if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
     return (Common->blas_ok) ;
@@ -220,19 +221,19 @@ int CHOLMOD(super_ltsolve)  // TRUE if OK, FALSE if BLAS overflow occured
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_super_ltsolve_worker (L, X, E, Common) ;
+            rs_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_super_ltsolve_worker (L, X, E, Common) ;
+            cs_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_super_ltsolve_worker (L, X, E, Common) ;
+            rd_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_super_ltsolve_worker (L, X, E, Common) ;
+            cd_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
     }
 
@@ -242,6 +243,7 @@ int CHOLMOD(super_ltsolve)  // TRUE if OK, FALSE if BLAS overflow occured
 
     if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
     }
     return (Common->blas_ok) ;

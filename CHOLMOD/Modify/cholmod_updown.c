@@ -368,6 +368,7 @@ int CHOLMOD(updown_mask)
     cholmod_common *Common
 )
 {
+GOTCHA
     Int maskmark = 0 ;
     return (CHOLMOD(updown_mask2) (update, C, colmark, mask, maskmark,
         L, X, DeltaB, Common)) ;
@@ -416,6 +417,7 @@ int CHOLMOD(updown_mask2)
     }
     if (L->xtype != CHOLMOD_PATTERN && L->dtype != C->dtype)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "C and L must have the same dtype") ;
         return (FALSE) ;
     }
@@ -459,6 +461,7 @@ int CHOLMOD(updown_mask2)
     size_t w = CHOLMOD(mult_size_t) (n, wdim, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -479,6 +482,7 @@ int CHOLMOD(updown_mask2)
         // can only update/downdate a simplicial LDL' factorization
         if (L->xtype == CHOLMOD_PATTERN)
         {
+GOTCHA
             L->dtype = C->dtype ;
         }
         CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,
@@ -514,12 +518,12 @@ int CHOLMOD(updown_mask2)
     switch (L->dtype & 4)
     {
         case CHOLMOD_SINGLE:
-            ok = r_s_cholmod_updown_worker (k, update, C, colmark, mask,
+            ok = rs_cholmod_updown_worker (k, update, C, colmark, mask,
                 maskmark, L, X, DeltaB, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE:
-            ok = r_cholmod_updown_worker (k, update, C, colmark, mask,
+            ok = rd_cholmod_updown_worker (k, update, C, colmark, mask,
                 maskmark, L, X, DeltaB, Common) ;
             break ;
     }

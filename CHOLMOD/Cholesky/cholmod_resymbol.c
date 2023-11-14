@@ -111,6 +111,7 @@ int CHOLMOD(resymbol)   // recompute symbolic pattern of L
     s = CHOLMOD(add_size_t) (s, (stype ? 0 : ncol), &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -299,6 +300,7 @@ int CHOLMOD(resymbol_noperm)    // recompute symbolic pattern of L
     }
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -421,32 +423,28 @@ int CHOLMOD(resymbol_noperm)    // recompute symbolic pattern of L
 
     switch ((L->xtype + L->dtype) % 8)
     {
-
-        default:
-            break ;
-
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_resymbol_worker (A, pack, L, Common) ;
+            rs_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_resymbol_worker (A, pack, L, Common) ;
+            cs_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_resymbol_worker (A, pack, L, Common) ;
+            zs_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_resymbol_worker (A, pack, L, Common) ;
+            rd_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_resymbol_worker (A, pack, L, Common) ;
+            cd_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_resymbol_worker (A, pack, L, Common) ;
+            zd_cholmod_resymbol_worker (A, pack, L, Common) ;
             break ;
     }
 

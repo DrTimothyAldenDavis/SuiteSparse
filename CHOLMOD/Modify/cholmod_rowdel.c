@@ -147,6 +147,7 @@ int CHOLMOD(rowdel_mark)
         if (L->xtype == CHOLMOD_PATTERN)
         {
             // L will change to match the dtype of X and DeltaB
+GOTCHA
             L_dtype = X->dtype ;
         }
         if (X->nrow != L->n || X->ncol != 1 ||
@@ -169,6 +170,7 @@ int CHOLMOD(rowdel_mark)
     size_t s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -212,12 +214,12 @@ int CHOLMOD(rowdel_mark)
     switch (L->dtype & 4)
     {
         case CHOLMOD_SINGLE:
-            ok = r_s_cholmod_rowdel_worker (k, R, s_yk, colmark, L, X, DeltaB,
+            ok = rs_cholmod_rowdel_worker (k, R, s_yk, colmark, L, X, DeltaB,
                 Common) ;
             break ;
 
         case CHOLMOD_DOUBLE:
-            ok = r_cholmod_rowdel_worker (k, R, yk, colmark, L, X, DeltaB,
+            ok = rd_cholmod_rowdel_worker (k, R, yk, colmark, L, X, DeltaB,
                 Common) ;
             break ;
     }

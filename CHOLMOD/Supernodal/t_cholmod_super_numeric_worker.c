@@ -500,6 +500,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         {
             for (d = Head [s] ; d != EMPTY ; d = Next [d])
             {
+GOTCHA
                 Lpos [d] = Lpos_save [d] ;
                 Next [d] = Next_save [d] ;
             }
@@ -1022,6 +1023,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         // successful.
         if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
         {
+GOTCHA
             ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
         }
 
@@ -1159,6 +1161,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
             if (!Common->blas_ok)
             {
+GOTCHA
                 ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
             }
 

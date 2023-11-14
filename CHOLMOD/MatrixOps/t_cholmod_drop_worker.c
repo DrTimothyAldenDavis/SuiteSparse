@@ -11,30 +11,33 @@
 #include "cholmod_template.h"
 
 //------------------------------------------------------------------------------
-// IF_KEEP: macro to determine if A(i,j) is kept
+// IF_DROP: macro to determine if A(i,j) is dropped
 //------------------------------------------------------------------------------
 
 #ifdef REAL
 
-    #define IF_KEEP(Ax,Az,p,tol)                        \
-        double ax = (double) Ax [p] ;                   \
-        if (fabs (ax) > tol || isnan (ax))
+    #define IF_DROP(Ax,Az,p,tol)                                \
+        double ax = (double) Ax [p] ;                           \
+        /* FIXME*/ printf ("i %d j %d p %d (%g)", (int) i, (int) j, (int) p, ax) ; \
+        if (tol_is_zero ? (ax == 0) : (fabs (ax) <= tol))
 
 #elif defined ( COMPLEX )
 
-    #define IF_KEEP(Ax,Az,p,tol)                        \
-        double ax = (double) Ax [2*(p)  ] ;             \
-        double az = (double) Ax [2*(p)+1] ;             \
-        double a = SuiteSparse_config_hypot (ax, az) ;  \
-        if (a > tol || isnan (ax) || isnan (az))
+    #define IF_DROP(Ax,Az,p,tol)                                \
+        double ax = (double) Ax [2*(p)  ] ;                     \
+        double az = (double) Ax [2*(p)+1] ;                     \
+        /* FIXME*/ printf ("i %d j %d p %d (%g, %g)", (int) i, (int) j, (int) p, az, ax) ; \
+        if (tol_is_zero ? (ax == 0 && az == 0) :                \
+            (SuiteSparse_config_hypot (ax, az) <= tol))
 
 #elif defined ( ZOMPLEX )
 
-    #define IF_KEEP(Ax,Az,p,tol)                        \
-        double ax = (double) Ax [p] ;                   \
-        double az = (double) Az [p] ;                   \
-        double a = SuiteSparse_config_hypot (ax, az) ;  \
-        if (a > tol || isnan (ax) || isnan (az))
+    #define IF_DROP(Ax,Az,p,tol)                                \
+        double ax = (double) Ax [p] ;                           \
+        double az = (double) Az [p] ;                           \
+        /* FIXME*/ printf ("i %d j %d p %d (%g, %g)", (int) i, (int) j, (int) p, az, ax) ; \
+        if (tol_is_zero ? (ax == 0 && az == 0) :                \
+            (SuiteSparse_config_hypot (ax, az) <= tol))
 
 #endif
 
@@ -59,11 +62,13 @@ static void TEMPLATE (cholmod_drop_worker)
     Int *Ap = A->p ;
     Int *Ai = A->i ;
     Real *Ax = A->x ;
-    Real *Az = A->x ;
+    Real *Az = A->z ;
     Int *Anz = A->nz ;
     bool packed = A->packed ;
     Int ncol = A->ncol ;
     Int nz = 0 ;
+    bool tol_is_zero = (tol == 0.) ;
+    printf ("tol %d %g\n", tol_is_zero, tol) ;  // FIXME
 
     //--------------------------------------------------------------------------
     // drop small numerical entries from A, and entries in ignored part
@@ -85,13 +90,12 @@ static void TEMPLATE (cholmod_drop_worker)
             {
                 Int i = Ai [p] ;
                 if (i > j) continue ;
-                IF_KEEP (Ax, Ax, p, tol)
-                {
-                    // keep this entry
-                    Ai [nz] = i ;
-                    ASSIGN (Ax, Az, nz, Ax, Az, p) ;
-                    nz++ ;
-                }
+                IF_DROP (Ax, Az, p, tol) { printf ("\n") ; continue ; } // FIXME
+                // keep this entry
+                Ai [nz] = i ;
+                ASSIGN (Ax, Az, nz, Ax, Az, p) ;
+                printf ("   keep\n") ;  // FIXME
+                nz++ ;
             }
         }
 
@@ -112,13 +116,12 @@ static void TEMPLATE (cholmod_drop_worker)
             {
                 Int i = Ai [p] ;
                 if (i < j) continue ;
-                IF_KEEP (Ax, Ax, p, tol)
-                {
-                    // keep this entry
-                    Ai [nz] = i ;
-                    ASSIGN (Ax, Az, nz, Ax, Az, p) ;
-                    nz++ ;
-                }
+                IF_DROP (Ax, Az, p, tol) { printf ("\n") ; continue ; } // FIXME
+                // keep this entry
+                Ai [nz] = i ;
+                ASSIGN (Ax, Az, nz, Ax, Az, p) ;
+                printf ("   keep\n") ;  // FIXME
+                nz++ ;
             }
         }
 
@@ -138,13 +141,12 @@ static void TEMPLATE (cholmod_drop_worker)
             for ( ; p < pend ; p++)
             {
                 Int i = Ai [p] ;
-                IF_KEEP (Ax, Ax, p, tol)
-                {
-                    // keep this entry
-                    Ai [nz] = i ;
-                    ASSIGN (Ax, Az, nz, Ax, Az, p) ;
-                    nz++ ;
-                }
+                IF_DROP (Ax, Az, p, tol) { printf ("\n") ; continue ; } // FIXME
+                // keep this entry
+                Ai [nz] = i ;
+                ASSIGN (Ax, Az, nz, Ax, Az, p) ;
+                printf ("   keep\n") ;  // FIXME
+                nz++ ;
             }
         }
     }
@@ -163,5 +165,5 @@ static void TEMPLATE (cholmod_drop_worker)
 #undef COMPLEX
 #undef ZOMPLEX
 
-#undef IF_KEEP
+#undef IF_DROP
 

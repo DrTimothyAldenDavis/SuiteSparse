@@ -178,6 +178,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     size_t s = CHOLMOD(add_size_t) (anrow, MAX (0,nr), &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (NULL) ;
     }
@@ -348,31 +349,32 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
         {
 
             default:
+GOTCHA
                 p_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                rs_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                cs_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                zs_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                rd_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                cd_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 
             case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
+                zd_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
         }
     }
@@ -399,6 +401,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
         // workspace: Iwork (max (C->nrow,C->ncol))
         if (!CHOLMOD(sort) (C, Common))
         {
+GOTCHA
             // out of memory
             CHOLMOD(free_sparse) (&C, Common) ;
             ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;

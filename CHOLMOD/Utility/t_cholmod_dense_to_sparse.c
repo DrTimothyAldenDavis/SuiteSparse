@@ -83,27 +83,27 @@ cholmod_sparse *CHOLMOD(dense_to_sparse)        // return a sparse matrix C
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_dense_to_sparse_worker (C, X) ;
+            rs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_dense_to_sparse_worker (C, X) ;
+            cs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_dense_to_sparse_worker (C, X) ;
+            zs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_dense_to_sparse_worker (C, X) ;
+            rd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_dense_to_sparse_worker (C, X) ;
+            cd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_dense_to_sparse_worker (C, X) ;
+            zd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
     }
 

@@ -113,6 +113,7 @@ int CHOLMOD(etree)
     s = CHOLMOD(add_size_t) (A->nrow, (stype ? 0 : A->ncol), &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

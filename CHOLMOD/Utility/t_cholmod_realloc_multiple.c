@@ -69,6 +69,7 @@ int CHOLMOD(realloc_multiple)   // returns true if successful, false otherwise
     {
         if (Common->status != CHOLMOD_OUT_OF_MEMORY)
         {
+GOTCHA
             ERROR (CHOLMOD_INVALID, "argument missing") ;
         }
         return (FALSE) ;

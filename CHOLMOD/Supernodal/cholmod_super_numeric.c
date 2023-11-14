@@ -177,6 +177,7 @@ int CHOLMOD(super_numeric)
         }
         if (A->dtype != L->dtype)
         {
+GOTCHA
             ERROR (CHOLMOD_INVALID, "A and L must have the same dtype") ;
             return (FALSE) ;
         }
@@ -201,6 +202,7 @@ int CHOLMOD(super_numeric)
     w = CHOLMOD(add_size_t) (w, t, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -298,29 +300,29 @@ int CHOLMOD(super_numeric)
     {
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            ok = r_s_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
+            ok = rs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            ok = c_s_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
+            ok = cs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
             // A is zomplex, but L is complex
-            ok = z_s_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
+            ok = zs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            ok = r_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
+            ok = rd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            ok = c_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
+            ok = cd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
             // A is zomplex, but L is complex
-            ok = z_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
+            ok = zd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
     }
 

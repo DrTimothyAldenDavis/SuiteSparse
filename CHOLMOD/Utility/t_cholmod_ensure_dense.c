@@ -52,6 +52,7 @@ cholmod_dense *CHOLMOD(ensure_dense)
 
     if (xtype == CHOLMOD_PATTERN)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "xtype invalid") ;
         return (NULL) ;
     }
@@ -65,6 +66,7 @@ cholmod_dense *CHOLMOD(ensure_dense)
     size_t nzmax_required = CHOLMOD(mult_size_t) (d, ncol, &ok) ;
     if (!ok)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "problem too large") ;
         return (NULL) ;
     }

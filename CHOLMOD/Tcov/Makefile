@@ -575,8 +575,7 @@ sl_demo: $(LALL) ../Demo/cholmod_sl_demo.c Makefile \
 
 compile:  ccode
 
-
-go: ccode
+ok: ccode
 	mkdir -p $(T)
 	$(V) ./di_test    < Matrix/z30lo      > $(T)/di_test_z30lo.out
 	$(V) ./dl_test    < Matrix/z30lo      > $(T)/dl_test_z30lo.out
@@ -597,11 +596,6 @@ go: ccode
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/dl_demo_k2.out
 	$(V) ./si_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/si_demo_k2.out
 	$(V) ./sl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/sl_demo_k2.out
-	- $(COVER)
-	$(V) ./di_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/di_demo_afiro.out
-	$(V) ./dl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/dl_demo_afiro.out
-	$(V) ./si_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/si_demo_afiro.out
-	$(V) ./sl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/sl_demo_afiro.out
 	- $(COVER)
 	$(V) ./di_demo < ../Demo/Matrix/c.tri         > $(T)/di_demo_c.out
 	$(V) ./dl_demo < ../Demo/Matrix/c.tri         > $(T)/dl_demo_c.out
@@ -830,6 +824,9 @@ go: ccode
 	$(V) ./si_test -s < Matrix/3singular  > $(T)/si_test_3singular.out
 	$(V) ./sl_test -s < Matrix/3singular  > $(T)/sl_test_3singular.out
 	- $(COVER)
+
+go: ccode
+	mkdir -p $(T)
 	$(V) ./di_test -s < Matrix/z3singular > $(T)/di_test_z3singular.out
 	$(V) ./dl_test -s < Matrix/z3singular > $(T)/dl_test_z3singular.out
 	$(V) ./si_test -s < Matrix/z3singular > $(T)/si_test_z3singular.out
@@ -889,6 +886,11 @@ go: ccode
 	$(V) ./dl_test    < Matrix/zero       > $(T)/dl_test_zero.out
 	$(V) ./si_test    < Matrix/zero       > $(T)/si_test_zero.out
 	$(V) ./sl_test    < Matrix/zero       > $(T)/sl_test_zero.out
+	- $(COVER)
+	$(V) ./di_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/di_demo_afiro.out
+	$(V) ./dl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/dl_demo_afiro.out
+	$(V) ./si_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/si_demo_afiro.out
+	$(V) ./sl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/sl_demo_afiro.out
 	- $(COVER)
 	$(V) ./di_test -m < Matrix/k01up      > $(T)/di_test_k01up.out
 	$(V) ./dl_test -m < Matrix/k01up      > $(T)/dl_test_k01up.out

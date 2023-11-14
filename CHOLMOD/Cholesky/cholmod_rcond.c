@@ -89,20 +89,20 @@ double CHOLMOD(rcond)       // return rcond estimate
 
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
         case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            rcond = r_s_cholmod_rcond_worker (L) ;
+            rcond = rs_cholmod_rcond_worker (L) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            rcond = c_s_cholmod_rcond_worker (L) ;
+            rcond = cs_cholmod_rcond_worker (L) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            rcond = r_cholmod_rcond_worker (L) ;
+            rcond = rd_cholmod_rcond_worker (L) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            rcond = c_cholmod_rcond_worker (L) ;
+            rcond = cd_cholmod_rcond_worker (L) ;
             break ;
     }
 
