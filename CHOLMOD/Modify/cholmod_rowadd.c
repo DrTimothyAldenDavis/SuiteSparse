@@ -150,6 +150,7 @@ int CHOLMOD(rowadd_mark)
     }
     if (L->xtype != CHOLMOD_PATTERN && L->dtype != R->dtype)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "R and L must have the same dtype") ;
         return (FALSE) ;
     }
@@ -179,7 +180,6 @@ int CHOLMOD(rowadd_mark)
     size_t s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

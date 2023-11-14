@@ -153,28 +153,27 @@ cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
 
         switch ((L->xtype + L->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 cs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 zs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 cd_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 zd_cholmod_copy_factor_worker (L, H) ;
                 break ;
         }

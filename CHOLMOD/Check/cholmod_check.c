@@ -253,6 +253,7 @@ static int check_common
             break ;
 
         case CHOLMOD_GPU_PROBLEM:
+GOTCHA
             P1 ("%s", "status: ERROR, GPU had a fatal error\n") ;
             break ;
 

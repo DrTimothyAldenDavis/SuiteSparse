@@ -170,7 +170,6 @@ GOTCHA
     size_t s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

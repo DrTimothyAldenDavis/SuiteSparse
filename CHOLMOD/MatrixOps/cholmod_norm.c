@@ -97,28 +97,27 @@ double CHOLMOD(norm_dense)      // returns norm (X)
 
     switch ((X->xtype + X->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             xnorm = rs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             xnorm = cs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             xnorm = zs_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             xnorm = rd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             xnorm = cd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             xnorm = zd_cholmod_norm_dense_worker (X, norm, W) ;
             break ;
     }

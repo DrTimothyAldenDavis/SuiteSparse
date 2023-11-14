@@ -250,13 +250,17 @@ double solve (cholmod_sparse *A)
         L = CHOLMOD(analyze) (A, cm) ;
     }
 
-    // test rowadd on a symbolic factor
+    //--------------------------------------------------------------------------
+    // test rowadd on a symbolic factor (real matrices only)
+    //--------------------------------------------------------------------------
+
     if (isreal)
     {
         RowK = CHOLMOD(spzeros) (n, 1, 0, CHOLMOD_REAL, cm) ;
         Lcopy = CHOLMOD(copy_factor) (L, cm) ;
         if (n > 0)
         {
+            // rowadd does not work on complex/zomplex matrices
             CHOLMOD(rowadd) (0, RowK, Lcopy, cm) ;
             CHOLMOD(check_factor) (Lcopy, cm) ;
             CHOLMOD(print_factor) (Lcopy, "Lcopy, now numeric", cm) ;
@@ -624,7 +628,7 @@ double solve (cholmod_sparse *A)
 
     Lxtype = (Lmat == NULL) ? CHOLMOD_REAL : (Lmat->xtype) ;
 
-    if (isreal)
+    if (isreal)  /// TODO
     {
         // use band and add
         if (!is_ll)
@@ -680,7 +684,7 @@ double solve (cholmod_sparse *A)
     S = NULL ;
     G = NULL ;
 
-    if (isreal)
+    if (isreal)     // TODO
     {
 
         if (A->stype == 0)
@@ -1153,7 +1157,7 @@ double solve (cholmod_sparse *A)
     printf ("done testing sparse solve, maxerr so far %g\n", maxerr) ;
 
     //--------------------------------------------------------------------------
-    // update the factorization
+    // update the factorization (real matrices only)
     //--------------------------------------------------------------------------
 
     // turn off memory tests [
@@ -1514,7 +1518,7 @@ double solve (cholmod_sparse *A)
     }
 
     //--------------------------------------------------------------------------
-    // test rowdel and updown
+    // test rowdel and updown (real matrices only)
     //--------------------------------------------------------------------------
 
     if (isreal && A->stype == 1 && n > 0 && n < NLARGE)

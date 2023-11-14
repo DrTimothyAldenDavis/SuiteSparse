@@ -880,7 +880,6 @@ int64_t CHOLMOD(bisect) // returns # of nodes in separator
     s = CHOLMOD(add_size_t) (A->nrow, MAX (A->nrow, A->ncol), &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (EMPTY) ;
     }
@@ -1114,7 +1113,6 @@ int64_t CHOLMOD(nested_dissection) // returns # of components, or -1 if error
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (EMPTY) ;
     }

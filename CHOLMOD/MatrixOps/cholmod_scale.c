@@ -101,6 +101,7 @@ int CHOLMOD(scale)
     RETURN_IF_XTYPE_INVALID (S, CHOLMOD_REAL, CHOLMOD_ZOMPLEX, FALSE) ;
     if (A->xtype != S->xtype || A->dtype != S->dtype)
     {
+GOTCHA
         ERROR (CHOLMOD_INVALID, "xtype and dtype of A and S must match") ;
         return (FALSE) ;
     }
@@ -148,27 +149,27 @@ int CHOLMOD(scale)
 
     switch ((A->xtype + A->dtype) % 8)
     {
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_scale_worker (S, scale, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_scale_worker (S, scale, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_scale_worker (S, scale, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_scale_worker (S, scale, A) ;
             break ;
     }

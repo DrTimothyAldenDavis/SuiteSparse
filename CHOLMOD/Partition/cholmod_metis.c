@@ -617,7 +617,6 @@ int CHOLMOD(metis)
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

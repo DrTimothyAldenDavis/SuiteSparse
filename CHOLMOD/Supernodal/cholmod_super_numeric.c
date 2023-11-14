@@ -298,29 +298,28 @@ GOTCHA
 
     switch ((A->xtype + A->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             ok = rs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             ok = cs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             // A is zomplex, but L is complex
             ok = zs_cholmod_super_numeric_worker (A, F, s_beta, L, C, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             ok = rd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             ok = cd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             // A is zomplex, but L is complex
             ok = zd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;

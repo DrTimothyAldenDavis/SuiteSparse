@@ -242,7 +242,6 @@ int CHOLMOD(rowcolcounts)
     w = CHOLMOD(add_size_t) (w, (stype ? 0 : ncol), &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

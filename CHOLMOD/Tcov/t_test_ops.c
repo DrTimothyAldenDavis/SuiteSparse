@@ -795,62 +795,85 @@ double test_ops (cholmod_sparse *A)
     // test band, add and copy_sparse (symmetric)
     //--------------------------------------------------------------------------
 
-    if (A->stype /*&& isreal*/)
+    if (A->stype != 0 /*&& isreal*/)
     {
-        
-        // D = diag (A)
-        D = CHOLMOD(band) (A, 0, 0, true, cm) ;
-        
-
 // FIXME
-int ssc = cm->print ; cm->print = 5 ;
+// int ssc = cm->print ; cm->print = 5 ;
+// CHOLMOD(print_sparse) (A, "A", cm) ;
 
-        // E = A, in symmetric/upper form
-CHOLMOD(print_sparse) (A, "A", cm) ;
-        E = CHOLMOD(copy) (A, 1, 2, cm) ;
-        CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
+        // D1 = diag (A)
+        cholmod_sparse *D1 = CHOLMOD(band) (A, 0, 0, true, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX + DTYPE, D1, cm) ;
+// CHOLMOD(print_sparse) (D1, "D1", cm) ;
 
-        // Minus1 = -1
-        cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm) ;
-        if (Minus1 != NULL)
-        {
-            ((Real *) (Minus1->x)) [0] = -1 ;
-        }
+        // D2 = zomplex (real (D1))
+        cholmod_sparse *D2 = CHOLMOD(copy_sparse) (D1, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, D2, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_ZOMPLEX + DTYPE, D2, cm) ;
+// CHOLMOD(print_sparse) (D2, "D2", cm) ;
 
-        // E = -E
-        CHOLMOD(scale) (Minus1, CHOLMOD_SCALAR, E, cm) ;
-        CHOLMOD(print_sparse) (E, "E=-E", cm) ;
+        // G = D1-D2 = imaginary part of the diagonal of A
+        G = CHOLMOD(add) (D1, D2, one, minusone, TRUE, FALSE, cm) ;
+// CHOLMOD(print_sparse) (G, "G", cm) ;
 
-        // F = A, in symmetric/lower form
-        F = CHOLMOD(copy) (A, -1, 2, cm) ;
-        CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
+        // r is zero if the diagonal of A is all real
+        r = CHOLMOD(norm_sparse) (G, 0, cm) ;
+        printf ("norm(D2) (D2 = imag(diag(A))) : %g\n", r) ;
 
-        // C = F (exact copy)
-        C = CHOLMOD(copy_sparse) (F, cm) ;
-        CHOLMOD(print_sparse) (C, "C=F", cm) ;
-
-        // G = E-C
-        G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
-        CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
-        CHOLMOD(sort) (G, cm) ;
-        CHOLMOD(print_sparse) (G, "G sort", cm) ;
-
-        CHOLMOD(drop) (0, G, cm) ;
-        CHOLMOD(print_sparse) (G, "G drop", cm) ;
-        nz = CHOLMOD(nnz) (G, cm) ;
-        if (G != NULL)
-        {
-            OK (nz == 0) ;
-        }
-
-// FIXME
-cm->print = ssc ;
-
-        CHOLMOD(free_dense) (&Minus1, cm) ;
-        CHOLMOD(free_sparse) (&C, cm) ;
-        CHOLMOD(free_sparse) (&F, cm) ;
-        CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&G, cm) ;
+        CHOLMOD(free_sparse) (&D2, cm) ;
+        CHOLMOD(free_sparse) (&D1, cm) ;
+
+        if (r == 0)
+        {
+            // this test requires diag(A) to be real
+
+            // E = A, in symmetric/upper form
+            E = CHOLMOD(copy) (A, 1, 2, cm) ;
+            CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
+
+            // Minus1 = -1
+            cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm) ;
+            if (Minus1 != NULL)
+            {
+                ((Real *) (Minus1->x)) [0] = -1 ;
+            }
+
+            // E = -E
+            CHOLMOD(scale) (Minus1, CHOLMOD_SCALAR, E, cm) ;
+            CHOLMOD(print_sparse) (E, "E=-E", cm) ;
+
+            // F = A, in symmetric/lower form
+            F = CHOLMOD(copy) (A, -1, 2, cm) ;
+            CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
+
+            // C = F (exact copy)
+            C = CHOLMOD(copy_sparse) (F, cm) ;
+            CHOLMOD(print_sparse) (C, "C=F", cm) ;
+
+            // G = E+C
+            G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
+            CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
+            CHOLMOD(sort) (G, cm) ;
+            CHOLMOD(print_sparse) (G, "G sort", cm) ;
+
+            CHOLMOD(drop) (0, G, cm) ;
+            CHOLMOD(print_sparse) (G, "G drop", cm) ;
+            nz = CHOLMOD(nnz) (G, cm) ;
+            if (G != NULL)
+            {
+                OK (nz == 0) ;
+            }
+
+            CHOLMOD(free_dense) (&Minus1, cm) ;
+            CHOLMOD(free_sparse) (&C, cm) ;
+            CHOLMOD(free_sparse) (&F, cm) ;
+            CHOLMOD(free_sparse) (&E, cm) ;
+            CHOLMOD(free_sparse) (&G, cm) ;
+        }
+
+// FIXME
+// cm->print = ssc ;
     }
 
     //--------------------------------------------------------------------------
@@ -1043,10 +1066,10 @@ cm->print = ssc ;
     CHOLMOD(print_perm) (P, nrow, nrow, "P", cm) ;
     CHOLMOD(print_subset) (fset, ncol, ncol, "fset", cm) ;
 
-    if (isreal)
+    // if (isreal)
     {
-        C = CHOLMOD(copy) (A, 0, 1, cm) ;
-        D = CHOLMOD(ptranspose) (C, 1, P, fset, len, cm) ;
+        C = CHOLMOD(copy) (A, 0, 2, cm) ;
+        D = CHOLMOD(ptranspose) (C, 2, P, fset, len, cm) ;
         E = CHOLMOD(transpose) (D, 1, cm) ;
         F = CHOLMOD(transpose) (E, 1, cm) ;
         G = CHOLMOD(add) (D, F, one, minusone, TRUE, FALSE, cm) ;
@@ -1131,15 +1154,15 @@ cm->print = ssc ;
     // matrix multiply
     //--------------------------------------------------------------------------
 
-    if (isreal)
+    // if (isreal)
     {
         // this fails for a large arrowhead matrix, so turn off error hanlder
         save = cm->error_handler ;
         cm->error_handler = NULL ;
-        AT = CHOLMOD(transpose) (A, 1, cm) ;
-        D = CHOLMOD(copy) (A, 0, 1, cm) ;
+        AT = CHOLMOD(transpose) (A, 2, cm) ;
+        D = CHOLMOD(copy) (A, 0, 2, cm) ;
         if (n > NLARGE) progress (1, '.') ;
-        C = CHOLMOD(aat) (D, NULL, 0, 1, cm) ;
+        C = CHOLMOD(aat) (D, NULL, 0, 2, cm) ;
         if (n > NLARGE) progress (1, '.') ;
         CHOLMOD(print_common) ("38:cm After A*A'", cm) ;
 

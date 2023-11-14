@@ -216,7 +216,6 @@ int CHOLMOD(super_symbolic2)
     w = CHOLMOD(mult_size_t) (n, 5, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

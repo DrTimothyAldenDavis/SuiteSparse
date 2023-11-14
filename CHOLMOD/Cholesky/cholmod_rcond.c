@@ -87,21 +87,21 @@ double CHOLMOD(rcond)       // return rcond estimate
     switch ((L->xtype + L->dtype) % 8)
     {
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             rcond = rs_cholmod_rcond_worker (L) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             rcond = cs_cholmod_rcond_worker (L) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             rcond = rd_cholmod_rcond_worker (L) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             rcond = cd_cholmod_rcond_worker (L) ;
             break ;
     }

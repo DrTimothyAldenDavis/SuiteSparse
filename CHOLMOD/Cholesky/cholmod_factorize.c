@@ -148,7 +148,6 @@ int CHOLMOD(factorize_p)
     s = CHOLMOD(add_size_t) (s, t, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }

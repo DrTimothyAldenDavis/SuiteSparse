@@ -133,27 +133,27 @@ static cholmod_sparse *band_helper
             p_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
     }

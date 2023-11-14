@@ -575,17 +575,22 @@ sl_demo: $(LALL) ../Demo/cholmod_sl_demo.c Makefile \
 
 compile:  ccode
 
-ok: ccode
+go: ccode
 	mkdir -p $(T)
-	$(V) ./di_test    < Matrix/z30lo      > $(T)/di_test_z30lo.out
-	$(V) ./dl_test    < Matrix/z30lo      > $(T)/dl_test_z30lo.out
-	$(V) ./si_test    < Matrix/z30lo      > $(T)/si_test_z30lo.out
-	$(V) ./sl_test    < Matrix/z30lo      > $(T)/sl_test_z30lo.out
+	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
+	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
+	$(V) ./si_test -e5  < Matrix/c5up2    > $(T)/si_test_c5up2.out
+	$(V) ./sl_test -e5  < Matrix/c5up2    > $(T)/sl_test_c5up2.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/ex5lo      > $(T)/di_test_ex5lo.out
-	$(V) ./dl_test -m < Matrix/ex5lo      > $(T)/dl_test_ex5lo.out
-	$(V) ./si_test -m < Matrix/ex5lo      > $(T)/si_test_ex5lo.out
-	$(V) ./sl_test -m < Matrix/ex5lo      > $(T)/sl_test_ex5lo.out
+	$(V) ./di_test -e12   < Matrix/z30lo  > $(T)/di_test_z30lo.out
+	$(V) ./dl_test -e12   < Matrix/z30lo  > $(T)/dl_test_z30lo.out
+	$(V) ./si_test -e4    < Matrix/z30lo  > $(T)/si_test_z30lo.out
+	$(V) ./sl_test -e4    < Matrix/z30lo  > $(T)/sl_test_z30lo.out
+	- $(COVER)
+	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
+	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
+	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
+	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
 	- $(COVER)
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/di_demo_k1.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/dl_demo_k1.out
@@ -649,15 +654,15 @@ ok: ccode
 	- $(V) ./sl_demo ../Demo/Matrix/mangle4.mtx   > $(T)/sl_demo_mangle4.out
 	- $(COVER)
 	- grep maxresid $(T)/??_demo*.out
-	$(V) ./dl_test    < Matrix/galenet > $(T)/dl_test_galenet.out
-	$(V) ./di_test    < Matrix/galenet > $(T)/di_test_galenet.out
-	$(V) ./si_test    < Matrix/galenet > $(T)/si_test_galenet.out
-	$(V) ./sl_test    < Matrix/galenet > $(T)/sl_test_galenet.out
+	$(V) ./dl_test -e8 < Matrix/galenet   > $(T)/dl_test_galenet.out
+	$(V) ./di_test -e8 < Matrix/galenet   > $(T)/di_test_galenet.out
+	$(V) ./si_test -e2 < Matrix/galenet   > $(T)/si_test_galenet.out
+	$(V) ./sl_test -e2 < Matrix/galenet   > $(T)/sl_test_galenet.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/z5lo    > $(T)/di_test_z5lo.out
-	$(V) ./dl_test -m < Matrix/z5lo    > $(T)/dl_test_z5lo.out
-	$(V) ./si_test -m < Matrix/z5lo    > $(T)/si_test_z5lo.out
-	$(V) ./sl_test -m < Matrix/z5lo    > $(T)/sl_test_z5lo.out
+	$(V) ./di_test -m -e14 < Matrix/z5lo  > $(T)/di_test_z5lo.out
+	$(V) ./dl_test -m -e14 < Matrix/z5lo  > $(T)/dl_test_z5lo.out
+	$(V) ./si_test -m -e5  < Matrix/z5lo  > $(T)/si_test_z5lo.out
+	$(V) ./sl_test -m -e5  < Matrix/z5lo  > $(T)/sl_test_z5lo.out
 	- $(COVER)
 	$(V) ./di_read Matrix/crud1               > $(T)/di_read_crud1.out
 	$(V) ./dl_read Matrix/crud1               > $(T)/dl_read_crud1.out
@@ -774,138 +779,127 @@ ok: ccode
 	$(V) ./si_read Matrix/1e99                > $(T)/si_read_1e99.out
 	$(V) ./sl_read Matrix/1e99                > $(T)/sl_read_1e99.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/5by50      > $(T)/di_test_5by50.out
-	$(V) ./dl_test    < Matrix/5by50      > $(T)/dl_test_5by50.out
-	$(V) ./si_test    < Matrix/5by50      > $(T)/si_test_5by50.out
-	$(V) ./sl_test    < Matrix/5by50      > $(T)/sl_test_5by50.out
+	$(V) ./di_test -e9  < Matrix/5by50    > $(T)/di_test_5by50.out
+	$(V) ./dl_test -e9  < Matrix/5by50    > $(T)/dl_test_5by50.out
+	$(V) ./si_test -e3  < Matrix/5by50    > $(T)/si_test_5by50.out
+	$(V) ./sl_test -e3  < Matrix/5by50    > $(T)/sl_test_5by50.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/r5lo       > $(T)/di_test_r5lo.out
-	$(V) ./dl_test    < Matrix/r5lo       > $(T)/dl_test_r5lo.out
-	$(V) ./si_test    < Matrix/r5lo       > $(T)/si_test_r5lo.out
-	$(V) ./sl_test    < Matrix/r5lo       > $(T)/sl_test_r5lo.out
+	$(V) ./di_test -e11 < Matrix/r5lo     > $(T)/di_test_r5lo.out
+	$(V) ./dl_test -e11 < Matrix/r5lo     > $(T)/dl_test_r5lo.out
+	$(V) ./si_test -e2  < Matrix/r5lo     > $(T)/si_test_r5lo.out
+	$(V) ./sl_test -e2  < Matrix/r5lo     > $(T)/sl_test_r5lo.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/r5up       > $(T)/di_test_r5up.out
-	$(V) ./dl_test    < Matrix/r5up       > $(T)/dl_test_r5up.out
-	$(V) ./si_test    < Matrix/r5up       > $(T)/si_test_r5up.out
-	$(V) ./sl_test    < Matrix/r5up       > $(T)/sl_test_r5up.out
+	$(V) ./di_test -e11 < Matrix/r5up     > $(T)/di_test_r5up.out
+	$(V) ./dl_test -e11 < Matrix/r5up     > $(T)/dl_test_r5up.out
+	$(V) ./si_test -e2  < Matrix/r5up     > $(T)/si_test_r5up.out
+	$(V) ./sl_test -e2  < Matrix/r5up     > $(T)/sl_test_r5up.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/c5up2      > $(T)/di_test_c5up2.out
-	$(V) ./dl_test    < Matrix/c5up2      > $(T)/dl_test_c5up2.out
-	$(V) ./si_test    < Matrix/c5up2      > $(T)/si_test_c5up2.out
-	$(V) ./sl_test    < Matrix/c5up2      > $(T)/sl_test_c5up2.out
+	$(V) ./di_test -e14 < Matrix/z5up2    > $(T)/di_test_z5up2.out
+	$(V) ./dl_test -e14 < Matrix/z5up2    > $(T)/dl_test_z5up2.out
+	$(V) ./si_test -e5  < Matrix/z5up2    > $(T)/si_test_z5up2.out
+	$(V) ./sl_test -e5  < Matrix/z5up2    > $(T)/sl_test_z5up2.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/z5up2      > $(T)/di_test_z5up2.out
-	$(V) ./dl_test    < Matrix/z5up2      > $(T)/dl_test_z5up2.out
-	$(V) ./si_test    < Matrix/z5up2      > $(T)/si_test_z5up2.out
-	$(V) ./sl_test    < Matrix/z5up2      > $(T)/sl_test_z5up2.out
+	$(V) ./di_test -e8  < Matrix/ibm32    > $(T)/di_test_ibm.out
+	$(V) ./dl_test -e8  < Matrix/ibm32    > $(T)/dl_test_ibm.out
+	$(V) ./si_test      < Matrix/ibm32    > $(T)/si_test_ibm.out
+	$(V) ./sl_test      < Matrix/ibm32    > $(T)/sl_test_ibm.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/ibm32      > $(T)/di_test_ibm.out
-	$(V) ./dl_test    < Matrix/ibm32      > $(T)/dl_test_ibm.out
-	$(V) ./si_test    < Matrix/ibm32      > $(T)/si_test_ibm.out
-	$(V) ./sl_test    < Matrix/ibm32      > $(T)/sl_test_ibm.out
+	$(V) ./di_test -m -e14 < Matrix/c5lo  > $(T)/di_test_c5lo.out
+	$(V) ./dl_test -m -e14 < Matrix/c5lo  > $(T)/dl_test_c5lo.out
+	$(V) ./si_test -m -e5  < Matrix/c5lo  > $(T)/si_test_c5lo.out
+	$(V) ./sl_test -m -e5  < Matrix/c5lo  > $(T)/sl_test_c5lo.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/c5lo       > $(T)/di_test_c5lo.out
-	$(V) ./dl_test -m < Matrix/c5lo       > $(T)/dl_test_c5lo.out
-	$(V) ./si_test -m < Matrix/c5lo       > $(T)/si_test_c5lo.out
-	$(V) ./sl_test -m < Matrix/c5lo       > $(T)/sl_test_c5lo.out
+	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out
+	$(V) ./dl_test -m -e11 < Matrix/z10   > $(T)/dl_test_z10.out
+	$(V) ./si_test -m -e4  < Matrix/z10   > $(T)/si_test_z10.out
+	$(V) ./sl_test -m -e4  < Matrix/z10   > $(T)/sl_test_z10.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/z10        > $(T)/di_test_z10.out
-	$(V) ./dl_test -m < Matrix/z10        > $(T)/dl_test_z10.out
-	$(V) ./si_test -m < Matrix/z10        > $(T)/si_test_z10.out
-	$(V) ./sl_test -m < Matrix/z10        > $(T)/sl_test_z10.out
-	- $(COVER)
-	$(V) ./di_test -m < Matrix/z5up       > $(T)/di_test_z5up.out
-	$(V) ./dl_test -m < Matrix/z5up       > $(T)/dl_test_z5up.out
-	$(V) ./si_test -m < Matrix/z5up       > $(T)/si_test_z5up.out
-	$(V) ./sl_test -m < Matrix/z5up       > $(T)/sl_test_z5up.out
+	$(V) ./di_test -m -e14 < Matrix/z5up  > $(T)/di_test_z5up.out
+	$(V) ./dl_test -m -e14 < Matrix/z5up  > $(T)/dl_test_z5up.out
+	$(V) ./si_test -m -e5  < Matrix/z5up  > $(T)/si_test_z5up.out
+	$(V) ./sl_test -m -e5  < Matrix/z5up  > $(T)/sl_test_z5up.out
 	- $(COVER)
 	$(V) ./di_test -s < Matrix/3singular  > $(T)/di_test_3singular.out
 	$(V) ./dl_test -s < Matrix/3singular  > $(T)/dl_test_3singular.out
 	$(V) ./si_test -s < Matrix/3singular  > $(T)/si_test_3singular.out
 	$(V) ./sl_test -s < Matrix/3singular  > $(T)/sl_test_3singular.out
 	- $(COVER)
-
-go: ccode
-	mkdir -p $(T)
 	$(V) ./di_test -s < Matrix/z3singular > $(T)/di_test_z3singular.out
 	$(V) ./dl_test -s < Matrix/z3singular > $(T)/dl_test_z3singular.out
 	$(V) ./si_test -s < Matrix/z3singular > $(T)/si_test_z3singular.out
 	$(V) ./sl_test -s < Matrix/z3singular > $(T)/sl_test_z3singular.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/0          > $(T)/di_test_0.out
-	$(V) ./dl_test -m < Matrix/0          > $(T)/dl_test_0.out
-	$(V) ./si_test -m < Matrix/0          > $(T)/si_test_0.out
-	$(V) ./sl_test -m < Matrix/0          > $(T)/sl_test_0.out
+	$(V) ./di_test -m -e14 < Matrix/0     > $(T)/di_test_0.out
+	$(V) ./dl_test -m -e14 < Matrix/0     > $(T)/dl_test_0.out
+	$(V) ./si_test -m -e5  < Matrix/0     > $(T)/si_test_0.out
+	$(V) ./sl_test -m -e5  < Matrix/0     > $(T)/sl_test_0.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/afiro      > $(T)/di_test_afiro.out
-	$(V) ./dl_test -m < Matrix/afiro      > $(T)/dl_test_afiro.out
-	$(V) ./si_test -m < Matrix/afiro      > $(T)/si_test_afiro.out
-	$(V) ./sl_test -m < Matrix/afiro      > $(T)/sl_test_afiro.out
+	$(V) ./di_test -e11 < Matrix/diag     > $(T)/di_test_diag.out
+	$(V) ./dl_test -e11 < Matrix/diag     > $(T)/dl_test_diag.out
+	$(V) ./si_test -e2  < Matrix/diag     > $(T)/si_test_diag.out
+	$(V) ./sl_test -e2  < Matrix/diag     > $(T)/sl_test_diag.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/diag       > $(T)/di_test_diag.out
-	$(V) ./dl_test    < Matrix/diag       > $(T)/dl_test_diag.out
-	$(V) ./si_test    < Matrix/diag       > $(T)/si_test_diag.out
-	$(V) ./sl_test    < Matrix/diag       > $(T)/sl_test_diag.out
+	$(V) ./di_test -e12 < Matrix/20lo     > $(T)/di_test_20lo.out
+	$(V) ./dl_test -e12 < Matrix/20lo     > $(T)/dl_test_20lo.out
+	$(V) ./si_test -e3  < Matrix/20lo     > $(T)/si_test_20lo.out
+	$(V) ./sl_test -e3  < Matrix/20lo     > $(T)/sl_test_20lo.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/20lo       > $(T)/di_test_20lo.out
-	$(V) ./dl_test    < Matrix/20lo       > $(T)/dl_test_20lo.out
-	$(V) ./si_test    < Matrix/20lo       > $(T)/si_test_20lo.out
-	$(V) ./sl_test    < Matrix/20lo       > $(T)/sl_test_20lo.out
+	$(V) ./di_test -e12 < Matrix/c10      > $(T)/di_test_c10.out
+	$(V) ./dl_test -e12 < Matrix/c10      > $(T)/dl_test_c10.out
+	$(V) ./si_test -e4  < Matrix/c10      > $(T)/si_test_c10.out
+	$(V) ./sl_test -e4  < Matrix/c10      > $(T)/sl_test_c10.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/c10        > $(T)/di_test_c10.out
-	$(V) ./dl_test    < Matrix/c10        > $(T)/dl_test_c10.out
-	$(V) ./si_test    < Matrix/c10        > $(T)/si_test_c10.out
-	$(V) ./sl_test    < Matrix/c10        > $(T)/sl_test_c10.out
+	$(V) ./di_test    -e12 < Matrix/c30lo > $(T)/di_test_c30lo.out
+	$(V) ./dl_test    -e12 < Matrix/c30lo > $(T)/dl_test_c30lo.out
+	$(V) ./si_test    -e4  < Matrix/c30lo > $(T)/si_test_c30lo.out
+	$(V) ./sl_test    -e4  < Matrix/c30lo > $(T)/sl_test_c30lo.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/c30lo      > $(T)/di_test_c30lo.out
-	$(V) ./dl_test    < Matrix/c30lo      > $(T)/dl_test_c30lo.out
-	$(V) ./si_test    < Matrix/c30lo      > $(T)/si_test_c30lo.out
-	$(V) ./sl_test    < Matrix/c30lo      > $(T)/sl_test_c30lo.out
+	$(V) ./di_test -m -e12 < Matrix/c30up > $(T)/di_test_c30up.out
+	$(V) ./dl_test -m -e12 < Matrix/c30up > $(T)/dl_test_c30up.out
+	$(V) ./si_test -m -e4  < Matrix/c30up > $(T)/si_test_c30up.out
+	$(V) ./sl_test -m -e4  < Matrix/c30up > $(T)/sl_test_c30up.out
 	- $(COVER)
-	$(V) ./di_test    < Matrix/C9840      > $(T)/di_test_C9840.out
-	$(V) ./dl_test    < Matrix/C9840      > $(T)/dl_test_C9840.out
-	$(V) ./si_test    < Matrix/C9840      > $(T)/si_test_C9840.out
-	$(V) ./sl_test    < Matrix/C9840      > $(T)/sl_test_C9840.out
+	$(V) ./di_test -e11 < Matrix/C9840    > $(T)/di_test_C9840.out
+	$(V) ./dl_test -e11 < Matrix/C9840    > $(T)/dl_test_C9840.out
+	$(V) ./si_test -e2  < Matrix/C9840    > $(T)/si_test_C9840.out
+	$(V) ./sl_test -e2  < Matrix/C9840    > $(T)/sl_test_C9840.out
 	- $(COVER)
-	$(V) ./di_test -m < Matrix/c30up      > $(T)/di_test_c30up.out
-	$(V) ./dl_test -m < Matrix/c30up      > $(T)/dl_test_c30up.out
-	$(V) ./si_test -m < Matrix/c30up      > $(T)/si_test_c30up.out
-	$(V) ./sl_test -m < Matrix/c30up      > $(T)/sl_test_c30up.out
-	- $(COVER)
-	$(V) ./di_test    < Matrix/pi         > $(T)/di_test_pi.out
-	$(V) ./dl_test    < Matrix/pi         > $(T)/dl_test_pi.out
-	$(V) ./si_test    < Matrix/pi         > $(T)/si_test_pi.out
-	$(V) ./sl_test    < Matrix/pi         > $(T)/sl_test_pi.out
+	$(V) ./di_test -e11 < Matrix/pi       > $(T)/di_test_pi.out
+	$(V) ./dl_test -e11 < Matrix/pi       > $(T)/dl_test_pi.out
+	$(V) ./si_test -e2  < Matrix/pi       > $(T)/si_test_pi.out
+	$(V) ./sl_test -e2  < Matrix/pi       > $(T)/sl_test_pi.out
 	- $(COVER)
 	$(V) ./di_test -s < Matrix/cza        > $(T)/di_test_cza2.out
 	$(V) ./dl_test -s < Matrix/cza        > $(T)/dl_test_cza2.out
 	$(V) ./si_test -s < Matrix/cza        > $(T)/si_test_cza2.out
 	$(V) ./sl_test -s < Matrix/cza        > $(T)/sl_test_cza2.out
 	- $(COVER)
+	$(V) ./di_test -m -e7  < Matrix/afiro > $(T)/di_test_afiro.out
+	$(V) ./dl_test -m -e7  < Matrix/afiro > $(T)/dl_test_afiro.out
+	$(V) ./si_test -m -e2  < Matrix/afiro > $(T)/si_test_afiro.out
+	$(V) ./sl_test -m -e2  < Matrix/afiro > $(T)/sl_test_afiro.out
+	- $(COVER)
+	$(V) ./di_test -m -e10 < Matrix/k01up > $(T)/di_test_k01up.out
+	$(V) ./dl_test -m -e10 < Matrix/k01up > $(T)/dl_test_k01up.out
+	$(V) ./si_test -m -e4  < Matrix/k01up > $(T)/si_test_k01up.out
+	$(V) ./sl_test -m -e4  < Matrix/k01up > $(T)/sl_test_k01up.out
+	- $(COVER)
 	$(V) ./di_test    < Matrix/zero       > $(T)/di_test_zero.out
 	$(V) ./dl_test    < Matrix/zero       > $(T)/dl_test_zero.out
 	$(V) ./si_test    < Matrix/zero       > $(T)/si_test_zero.out
 	$(V) ./sl_test    < Matrix/zero       > $(T)/sl_test_zero.out
 	- $(COVER)
-	$(V) ./di_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/di_demo_afiro.out
-	$(V) ./dl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/dl_demo_afiro.out
-	$(V) ./si_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/si_demo_afiro.out
-	$(V) ./sl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/sl_demo_afiro.out
-	- $(COVER)
-	$(V) ./di_test -m < Matrix/k01up      > $(T)/di_test_k01up.out
-	$(V) ./dl_test -m < Matrix/k01up      > $(T)/dl_test_k01up.out
-	$(V) ./si_test -m < Matrix/k01up      > $(T)/si_test_k01up.out
-	$(V) ./sl_test -m < Matrix/k01up      > $(T)/sl_test_k01up.out
-	- $(COVER)
-
-d: dl_test
-	$(V) ./dl_test    < Matrix/z30lo      > oz
 
 unused:
 	$(V) ./di_demo < ../Demo/Matrix/can___24.mtx  > $(T)/di_demo_can24.out
 	$(V) ./dl_demo < ../Demo/Matrix/can___24.mtx  > $(T)/dl_demo_can24.out
 	$(V) ./si_demo < ../Demo/Matrix/can___24.mtx  > $(T)/si_demo_can24.out
 	$(V) ./sl_demo < ../Demo/Matrix/can___24.mtx  > $(T)/sl_demo_can24.out
+	- $(COVER)
+	$(V) ./di_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/di_demo_afiro.out
+	$(V) ./dl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/dl_demo_afiro.out
+	$(V) ./si_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/si_demo_afiro.out
+	$(V) ./sl_demo < ../Demo/Matrix/lp_afiro.tri  > $(T)/sl_demo_afiro.out
 	- $(COVER)
 	$(V) ./di_demo < Matrix/c5lo                  > $(T)/di_demo_c5lo.out
 	$(V) ./dl_demo < Matrix/c5lo                  > $(T)/dl_demo_c5lo.out

@@ -139,10 +139,6 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     // get inputs
     //--------------------------------------------------------------------------
 
-// FIXME
-// CHOLMOD(print_sparse) (A, "A: orig input to ssmult", Common) ;
-// CHOLMOD(print_sparse) (B, "B: orig input to ssmult", Common) ;
-
     // convert A to unsymmetric, if necessary
     A2 = NULL ;
     B2 = NULL ;
@@ -176,10 +172,6 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
 
     ASSERT (CHOLMOD(dump_sparse) (A, "A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "B", Common) >= 0) ;
-
-// FIXME
-// CHOLMOD(print_sparse) (A, "A: input to ssmult", Common) ;
-// CHOLMOD(print_sparse) (B, "B: input to ssmult", Common) ;
 
     // get the A matrix
     Int *Ap  = A->p ;
@@ -280,38 +272,34 @@ GOTCHA
 
     switch ((C->xtype + C->dtype) % 8)
     {
-
         default:
             p_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
     }
-
-// FIXME
-// CHOLMOD(print_sparse) (C, "C: output from ssmult, before convert", Common) ;
 
     //--------------------------------------------------------------------------
     // clear workspace and free temporary matrices
@@ -362,9 +350,6 @@ GOTCHA
     //--------------------------------------------------------------------------
     // return result
     //--------------------------------------------------------------------------
-
-// FIXME
-// CHOLMOD(print_sparse) (C, "C: output from ssmult, final", Common) ;
 
     ASSERT (CHOLMOD(dump_sparse) (C, "ssmult", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;

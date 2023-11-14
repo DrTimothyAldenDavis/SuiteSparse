@@ -368,6 +368,9 @@
 
 //------------------------------------------------------------------------------
 
+#undef PI_GOTCHA
+#undef PL_GOTCHA
+
 #undef PDI_GOTCHA
 #undef RDI_GOTCHA
 #undef CDI_GOTCHA
@@ -452,6 +455,7 @@
 #ifndef PI_GOTCHA
 #define PI_GOTCHA ;
 #endif
+
 #ifndef PL_GOTCHA
 #define PL_GOTCHA ;
 #endif

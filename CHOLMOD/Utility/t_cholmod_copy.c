@@ -145,8 +145,6 @@ GOTCHA
     // copy the matrix
     //--------------------------------------------------------------------------
 
-// FIXME
-// printf ("astype %d stype %d\n", astype, stype) ;
     if (astype == stype)
     {
 
@@ -271,11 +269,11 @@ GOTCHA
                 p_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 if (conj)
                 {
                     cs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
@@ -286,7 +284,7 @@ GOTCHA
                 }
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 if (conj)
                 {
                     zs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
@@ -297,11 +295,11 @@ GOTCHA
                 }
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 if (conj)
                 {
                     cd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
@@ -312,7 +310,7 @@ GOTCHA
                 }
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 if (conj)
                 {
                     zd_cholmod_copy_worker (C, A, ignore_diag, Common) ;

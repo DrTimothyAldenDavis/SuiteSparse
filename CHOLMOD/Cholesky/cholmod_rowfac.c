@@ -718,7 +718,6 @@ int CHOLMOD(rowfac_mask2)
     s = CHOLMOD(mult_size_t) (n, ((A->xtype != CHOLMOD_REAL) ? 2:1), &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
@@ -743,33 +742,32 @@ GOTCHA
 
         switch ((A->xtype + A->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 ok = rs_cholmod_rowfac_worker (A, F, s_beta, kstart, kend, L,
                     Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 ok = cs_cholmod_rowfac_worker (A, F, s_beta, kstart, kend, L,
                     Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 ok = zs_cholmod_rowfac_worker (A, F, s_beta, kstart, kend, L,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 ok = rd_cholmod_rowfac_worker (A, F, beta, kstart, kend, L,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 ok = cd_cholmod_rowfac_worker (A, F, beta, kstart, kend, L,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 ok = zd_cholmod_rowfac_worker (A, F, beta, kstart, kend, L,
                     Common) ;
                 break ;
@@ -781,37 +779,35 @@ GOTCHA
 
         switch ((A->xtype + A->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 ok = rs_cholmod_rowfac_mask_worker (A, F, s_beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 ok = cs_cholmod_rowfac_mask_worker (A, F, s_beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 ok = zs_cholmod_rowfac_mask_worker (A, F, s_beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 ok = rd_cholmod_rowfac_mask_worker (A, F, beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 ok = cd_cholmod_rowfac_mask_worker (A, F, beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 ok = zd_cholmod_rowfac_mask_worker (A, F, beta, kstart, kend,
                     mask, maskmark, RLinkUp, L, Common) ;
                 break ;
-
         }
     }
 

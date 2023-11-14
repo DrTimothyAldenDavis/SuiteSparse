@@ -46,6 +46,15 @@ static void TEMPLATE (cholmod_scale_worker)
         // A = diag(s)*A, row scaling
         //----------------------------------------------------------------------
 
+ZSI_GOTCHA
+ZSL_GOTCHA
+CSI_GOTCHA
+CSL_GOTCHA
+ZDI_GOTCHA
+ZDL_GOTCHA
+CDI_GOTCHA
+CDL_GOTCHA
+
         for (Int j = 0 ; j < ncol ; j++)
         {
             Int p = Ap [j] ;
@@ -70,6 +79,15 @@ static void TEMPLATE (cholmod_scale_worker)
         // A = A*diag(s), column scaling
         //----------------------------------------------------------------------
 
+ZSI_GOTCHA
+ZSL_GOTCHA
+CSI_GOTCHA
+CSL_GOTCHA
+ZDI_GOTCHA
+ZDL_GOTCHA
+CDI_GOTCHA
+CDL_GOTCHA
+
         for (Int j = 0 ; j < ncol ; j++)
         {
             // s = S (j)
@@ -93,6 +111,15 @@ static void TEMPLATE (cholmod_scale_worker)
     }
     else if (scale == CHOLMOD_SYM)
     {
+
+ZSI_GOTCHA
+ZSL_GOTCHA
+CSI_GOTCHA
+CSL_GOTCHA
+ZDI_GOTCHA
+ZDL_GOTCHA
+CDI_GOTCHA
+CDL_GOTCHA
 
         //----------------------------------------------------------------------
         // A = diag(s)*A*diag(s), symmetric scaling

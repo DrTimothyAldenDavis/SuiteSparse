@@ -115,7 +115,7 @@ static int CHANGE_XDTYPE2
 
                 case CHOLMOD_REAL:      // real to real
 
-GOTCHA
+GOTCHA  // case real to real
                     for (Int k = 0 ; k < nz ; k++)
                     {
                         X_output [k] = (Real_OUT) X_input [k] ;
@@ -170,7 +170,7 @@ GOTCHA
 
                 case CHOLMOD_COMPLEX:   // complex to complex
 
-GOTCHA
+GOTCHA  // case complex to complex
                     for (Int k = 0 ; k < 2*nz ; k++)
                     {
                         X_output [k] = (Real_OUT) X_input [k] ;
@@ -226,7 +226,7 @@ GOTCHA
 
                 case CHOLMOD_ZOMPLEX:   // zomplex to zomplex
 
-GOTCHA
+GOTCHA  // case zomplex to zomplex
                     for (Int k = 0 ; k < nz ; k++)
                     {
                         X_output [k] = (Real_OUT) X_input [k] ;

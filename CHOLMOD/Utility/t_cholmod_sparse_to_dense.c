@@ -82,36 +82,37 @@ cholmod_dense *CHOLMOD(sparse_to_dense)     // return a dense matrix
 
     switch ((A->xtype + A->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_PATTERN:
+        case CHOLMOD_PATTERN + CHOLMOD_SINGLE:
+            // input A is pattern but output X is single
             ps_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_PATTERN:
+        case CHOLMOD_PATTERN + CHOLMOD_DOUBLE:
+            // input A is pattern but output X is double
             p_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_sparse_to_dense_worker (X, A) ;
             break ;
     }

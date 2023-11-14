@@ -109,9 +109,6 @@ GOTCHA
     int xtype = axtype ;
     int dtype = A->dtype ;
 
-// FIXME:
-// CHOLMOD(print_sparse) (A, "A for add", Common) ;
-// CHOLMOD(print_sparse) (B, "B for add", Common) ;
 
     ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
@@ -143,11 +140,8 @@ GOTCHA
         if (!A->sorted)
         {
             A2 = CHOLMOD(copy) (A, A->stype, mode, Common) ;
-// FIXME:
-// CHOLMOD(print_sparse) (A2, "A2 copy", Common) ;
             RETURN_IF_ERROR ;
             CHOLMOD(sort) (A2, Common) ;
-// CHOLMOD(print_sparse) (A2, "A2 sorted", Common) ;
             RETURN_IF_ERROR ;
             A = A2 ;
         }
@@ -156,11 +150,8 @@ GOTCHA
         if (!B->sorted)
         {
             B2 = CHOLMOD(copy) (B, B->stype, mode, Common) ;
-// FIXME:
-// CHOLMOD(print_sparse) (B2, "B2 copy", Common) ;
             RETURN_IF_ERROR ;
             CHOLMOD(sort) (B2, Common) ;
-// CHOLMOD(print_sparse) (B2, "B2 sorted", Common) ;
             RETURN_IF_ERROR ;
             B = B2 ;
         }
@@ -215,10 +206,6 @@ GOTCHA
         A->stype, xtype + dtype, Common) ;
     RETURN_IF_ERROR ;
 
-// FIXME
-// CHOLMOD(print_sparse) (A, "A for add worker", Common) ;
-// CHOLMOD(print_sparse) (B, "B for add worker", Common) ;
-
     //--------------------------------------------------------------------------
     // C = alpha*A + beta*B
     //--------------------------------------------------------------------------
@@ -229,27 +216,27 @@ GOTCHA
             p_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
     }
@@ -273,8 +260,6 @@ GOTCHA
     // return result
     //--------------------------------------------------------------------------
 
-// FIXME
-// CHOLMOD(print_sparse) (C, "C output of add", Common) ;
     ASSERT (CHOLMOD(dump_sparse) (C, "add:C", Common) >= 0) ;
     return (C) ;
 }

@@ -803,6 +803,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
         {
             // this can occur if nmethods = 1, ordering = CHOLMOD_GIVEN,
             // but UserPerm is NULL
+GOTCHA
             status = CHOLMOD_INVALID ;
         }
         ERROR (status, "all methods failed") ;

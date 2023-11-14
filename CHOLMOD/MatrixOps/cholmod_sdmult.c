@@ -136,28 +136,27 @@ int CHOLMOD(sdmult)
 
     switch ((A->xtype + A->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_sdmult_worker (A, transpose, s_alpha, s_beta, X, Y, w) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_sdmult_worker (A, transpose, s_alpha, s_beta, X, Y, w) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_sdmult_worker (A, transpose, s_alpha, s_beta, X, Y, w) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_sdmult_worker (A, transpose, alpha, beta, X, Y, w) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_sdmult_worker (A, transpose, alpha, beta, X, Y, w) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_sdmult_worker (A, transpose, alpha, beta, X, Y, w) ;
             break ;
     }

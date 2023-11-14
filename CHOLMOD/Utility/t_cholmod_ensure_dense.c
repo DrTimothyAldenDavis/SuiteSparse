@@ -100,18 +100,6 @@ GOTCHA
     // return result
     //--------------------------------------------------------------------------
 
-// FIXME: HACK
-#if 0
-if (*X != NULL)
-{
-    size_t e = (dtype == CHOLMOD_SINGLE) ? sizeof (float) : sizeof (double) ;
-    size_t ex = e * ((xtype == CHOLMOD_COMPLEX) ? 2 : 1) ;
-    size_t ez = e * ((xtype == CHOLMOD_ZOMPLEX) ? 1 : 0) ;
-    if ((*X)->x != NULL) memset ((*X)->x, 0, (*X)->nzmax * ex) ;
-    if ((*X)->z != NULL) memset ((*X)->z, 0, (*X)->nzmax * ez) ;
-}
-#endif
-
     return (*X) ;
 }
 

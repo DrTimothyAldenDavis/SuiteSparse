@@ -527,28 +527,27 @@ GOTCHA
 
         switch ((L->xtype + L->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 cs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 zs_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 cd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 zd_bset_perm (B, Bset, Yset, C, Y) ;
                 break ;
         }
@@ -565,28 +564,27 @@ GOTCHA
         {
             switch ((L->xtype + L->dtype) % 8)
             {
-
-                case CHOLMOD_SINGLE + CHOLMOD_REAL:
+                case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                     rs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
-                case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+                case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                     cs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
-                case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+                case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                     zs_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+                case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                     rd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+                case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                     cd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+                case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                     zd_simplicial_solver (sys, L, Y, Yset) ;
                     break ;
             }
@@ -600,28 +598,27 @@ GOTCHA
 
         switch ((L->xtype + L->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 cs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 zs_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 cd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 zd_bset_iperm (Y, Yset, Perm, X, Xset) ;
                 break ;
         }
@@ -802,10 +799,6 @@ GOTCHA
                 s_ptrans (B, Perm, k1, ncols, Y) ;
             }
 
-// FIXME:
-// printf ("k1: %d ncols %d\n", (int) k1, ncols) ;
-// CHOLMOD(print_dense) (Y, "Y = B(p,:)", Common) ;
-
             //------------------------------------------------------------------
             // solve Y = (L' \ (L \ Y'))', or other system, with template
             //------------------------------------------------------------------
@@ -838,16 +831,10 @@ GOTCHA
                     break ;
             }
 
-// FIXME:
-// CHOLMOD(print_dense) (Y, "Y after solve", Common) ;
-
             //------------------------------------------------------------------
             // X (P, k1:k2+ncols-1) = Y'
             //------------------------------------------------------------------
 
-// FIXME:
-// CHOLMOD(print_dense) (Y, "Y input to iptrans", Common) ;
-// CHOLMOD(print_dense) (X, "X input to iptrans", Common) ;
             if (L->dtype == CHOLMOD_DOUBLE)
             {
                 d_iptrans (Y, Perm, k1, ncols, X) ;
@@ -856,13 +843,8 @@ GOTCHA
             {
                 s_iptrans (Y, Perm, k1, ncols, X) ;
             }
-// FIXME:
-// CHOLMOD(print_dense) (X, "X output from iptrans", Common) ;
         }
     }
-
-// FIXME:
-// CHOLMOD(print_dense) (X, "X result", Common) ;
 
     DEBUG (CHOLMOD(dump_dense) (X, "X result", Common)) ;
     return (TRUE) ;

@@ -618,30 +618,29 @@ static void simplicial_sym_to_simplicial_num
 
     if (packed >= 0)
     {
-
         switch ((L->xtype + L->dtype) % 8)
         {
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 cs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 zs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 cd_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 zd_cholmod_change_factor_1_worker (L) ;
                 break ;
         }
@@ -795,37 +794,37 @@ GOTCHA
 
     switch ((L->xtype + L->dtype) % 8)
     {
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             zs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             zd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;

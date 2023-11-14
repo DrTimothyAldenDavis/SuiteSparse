@@ -169,7 +169,6 @@ Int CHOLMOD(postorder)  // return # of nodes postordered
     s = CHOLMOD(mult_size_t) (n_input, (size_t) 2, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (EMPTY) ;
     }

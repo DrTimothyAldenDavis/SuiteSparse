@@ -42,23 +42,20 @@ static void TEMPLATE (cholmod_transpose_unsym_worker)
 
     if (fset != NULL)
     {
-#ifdef NCONJUGATE
-CSI_GOTCHA
-CSL_GOTCHA
-CDL_GOTCHA
-#endif
         if (A->packed)
         {
             // C = A (p,f)' or A(:,f)' where A is packed
             #define PACKED
             #define FSET
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
         else
         {
             // C = A (p,f)' or A(:,f)' where A is unpacked
             #define FSET
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
     }
     else
@@ -68,11 +65,13 @@ CDL_GOTCHA
             // C = A (p,:)' or A' where A is packed
             #define PACKED
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
         else
         {
             // C = A (p,:)' or A' where A is unpacked
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
     }
 }

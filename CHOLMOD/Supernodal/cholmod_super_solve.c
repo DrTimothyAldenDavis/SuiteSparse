@@ -113,20 +113,19 @@ int CHOLMOD(super_lsolve)   // TRUE if OK, FALSE if BLAS overflow occured
 
     switch ((L->xtype + L->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_super_lsolve_worker (L, X, E, Common) ;
             break ;
     }
@@ -219,20 +218,19 @@ int CHOLMOD(super_ltsolve)  // TRUE if OK, FALSE if BLAS overflow occured
 
     switch ((L->xtype + L->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             cs_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             cd_cholmod_super_ltsolve_worker (L, X, E, Common) ;
             break ;
     }

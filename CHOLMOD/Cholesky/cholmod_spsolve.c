@@ -94,10 +94,6 @@ GOTCHA
     }
     Common->status = CHOLMOD_OK ;
 
-// FIXME:
-// int sss = Common->print ; Common->print = 5 ;
-// CHOLMOD(print_sparse) (B, "spsolve: B", Common) ;
-
     //--------------------------------------------------------------------------
     // allocate workspace B4 and initial result X
     //--------------------------------------------------------------------------
@@ -147,28 +143,27 @@ GOTCHA
 
         switch ((B->xtype + B->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 rs_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 cs_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 zs_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 rd_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 cd_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 zd_cholmod_spsolve_B_scatter_worker (B4, B, jfirst, jlast) ;
                 break ;
         }
@@ -176,9 +171,6 @@ GOTCHA
         //----------------------------------------------------------------------
         // solve the system (X4 = A\B4 or other system)
         //----------------------------------------------------------------------
-
-// FIXME:
-// CHOLMOD(print_dense) (B4, "spsolve: B4", Common) ;
 
         X4 = CHOLMOD(solve) (sys, L, B4, Common) ;
         if (Common->status < CHOLMOD_OK)
@@ -190,9 +182,6 @@ GOTCHA
         }
         ASSERT (X4->xtype == X_xtype) ;
 
-// FIXME:
-// CHOLMOD(print_dense) (X4, "spsolve: X4", Common) ;
-
         //----------------------------------------------------------------------
         // append the solution onto X
         //----------------------------------------------------------------------
@@ -201,33 +190,32 @@ GOTCHA
 
         switch ((X->xtype + X->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                 ok = rs_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 ok = cs_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 ok = zs_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                 ok = rd_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 ok = cd_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 ok = zd_cholmod_spsolve_X_worker (X, X4, jfirst, jlast, &xnz,
                     Common) ;
                 break ;
@@ -250,28 +238,27 @@ GOTCHA
         {
             switch ((B->xtype + B->dtype) % 8)
             {
-
-                case CHOLMOD_SINGLE + CHOLMOD_REAL:
+                case CHOLMOD_REAL    + CHOLMOD_SINGLE:
                     rs_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
 
-                case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+                case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                     cs_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
 
-                case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+                case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                     zs_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+                case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
                     rd_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+                case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                     cd_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
 
-                case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+                case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                     zd_cholmod_spsolve_B_clear_worker (B4, B, jfirst, jlast) ;
                     break ;
             }
@@ -287,11 +274,7 @@ GOTCHA
     ASSERT (xnz <= X->nzmax) ;
     CHOLMOD(reallocate_sparse) (xnz, X, Common) ;
     ASSERT (Common->status == CHOLMOD_OK) ;
-// FIXME
-// CHOLMOD(print_sparse) (X, "spsolve: X", Common) ;
     CHOLMOD(free_dense) (&B4, Common) ;
-// FIXME
-// Common->print = sss ;
     return (X) ;
 }
 #endif

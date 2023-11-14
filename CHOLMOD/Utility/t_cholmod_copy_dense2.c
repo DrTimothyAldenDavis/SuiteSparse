@@ -99,33 +99,33 @@ int CHOLMOD(copy_dense2)
 GOTCHA
         switch ((X->xtype + X->dtype) % 8)
         {
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
-GOTCHA
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+GOTCHA  // case rs
                 rs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-GOTCHA
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+GOTCHA  // case cs
                 cs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-GOTCHA
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+GOTCHA  // case zs
                 zs_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-GOTCHA
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+GOTCHA  // case rd
                 rd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-GOTCHA
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+GOTCHA  // case cd
                 cd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-GOTCHA
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+GOTCHA  // case zd
                 zd_cholmod_copy_dense2_worker (X, Y) ;
                 break ;
         }

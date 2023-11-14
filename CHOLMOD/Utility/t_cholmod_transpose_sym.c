@@ -173,16 +173,15 @@ int CHOLMOD(transpose_sym)
 
     switch ((C->xtype + C->dtype) % 8)
     {
-
         default:
             p_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             rs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
                 cs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
@@ -193,7 +192,7 @@ int CHOLMOD(transpose_sym)
             }
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
                 zs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
@@ -204,11 +203,11 @@ int CHOLMOD(transpose_sym)
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             rd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
                 cd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
@@ -219,7 +218,7 @@ int CHOLMOD(transpose_sym)
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
                 zd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;

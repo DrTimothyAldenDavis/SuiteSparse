@@ -161,27 +161,27 @@ cholmod_sparse *CHOLMOD(triplet_to_sparse)      // return sparse matrix A
             anz = p_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
             anz = rs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             anz = cs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             anz = zs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
             anz = rd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             anz = cd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             anz = zd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
     }

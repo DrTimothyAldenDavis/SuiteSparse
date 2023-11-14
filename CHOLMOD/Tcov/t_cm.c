@@ -425,7 +425,7 @@ cholmod_triplet *read_triplet
             {
                 int64_t i, j ;
                 double x, z ;
-                if (fscanf (f,""ID" "ID" %lg %lg\n", &i, &j, &x, &z)
+                if (fscanf (f, "%ld %ld %lg %lg\n", &i, &j, &x, &z)
                     == EOF)
                 {
                     ERROR (CHOLMOD_INVALID, "Error reading triplet matrix\n") ;
@@ -442,7 +442,7 @@ cholmod_triplet *read_triplet
             {
                 int64_t i, j ;
                 double x ;
-                if (fscanf (f, ""ID" "ID" %lg\n", &i, &j, &x) == EOF)
+                if (fscanf (f, "%ld %ld %lg\n", &i, &j, &x) == EOF)
                 {
                     ERROR (CHOLMOD_INVALID, "Error reading triplet matrix\n") ;
                 }
@@ -470,11 +470,12 @@ cholmod_triplet *read_triplet
             "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID"\n",
             (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
 
-    if (MAX (nrow, ncol) > NLARGE)
-    {
-        fprintf (stderr, "Please wait, this will take a while ...") ;
-        dot = 39*LINEWIDTH ;
-    }
+//  if (MAX (nrow, ncol) > NLARGE)
+//  {
+//      fprintf (stderr, "Please wait, this will take a while ...\n") ;
+//      dot = 39*LINEWIDTH ;
+//  }
+
     return (T) ;
 }
 
@@ -1369,7 +1370,6 @@ int main (int argc, char **argv)
 {
     cholmod_triplet *T ;
     cholmod_sparse *A, *C, *AT ;
-    char *s ;
     double err = 0, maxerr = 0 ;
     Int n = 0, nmin = 0, nrow = 0, ncol = 0, save ;
     int singular, do_memory, i, do_nantests, ok ;
@@ -1413,15 +1413,42 @@ int main (int argc, char **argv)
 
     fflush (stdout) ;
 
+    double maxerr_allowed = 0.1 ;
+
     singular = FALSE ;
     do_memory = FALSE ;
     do_nantests = FALSE ;
     for (i = 1 ; i < argc ; i++)
     {
+        char *s ;
         s = argv [i] ;
-        if (s [0] == '-' && s [1] == 'm') do_memory = TRUE ;
-        if (s [0] == '-' && s [1] == 's') singular = TRUE ;
-        if (s [0] == '-' && s [1] == 'n') do_nantests = TRUE ;
+        if (s [0] == '-' && s [1] == 'm')
+        {
+            // -m   do memory tests
+            do_memory = TRUE ;
+        }
+        if (s [0] == '-' && s [1] == 's')
+        {
+            // -s   matrix is singular, maxerr not important (likely nan)
+            singular = TRUE ;
+        }
+        if (s [0] == '-' && s [1] == 'n')
+        {
+            // -n   do tests with nans
+            do_nantests = TRUE ;
+        }
+        if (s [0] == '-' && s [1] == 'e')
+        {
+            // -e# maxerr must be < 1e-#
+            // for example, -e-10 means maxerr < 1e-10 must hold for the
+            // test to pass.
+            long int ee = strtol (s + 2, NULL, 10) ;
+            if (ee > 0)
+            {
+                maxerr_allowed = pow ((double) 10, (double) (-ee)) ;
+                printf ("maxerr allowed: %g\n", maxerr_allowed) ;
+            }
+        }
     }
 
     printf ("do_memory: %d singular: %d\n", do_memory, singular) ;
@@ -1502,20 +1529,33 @@ int main (int argc, char **argv)
     // read in a triplet matrix and use it to test CHOLMOD
     //--------------------------------------------------------------------------
 
-    for ( ; (T = read_triplet (stdin)) != NULL ; )              // RAND
-    {
-        SuiteSparse_tic (tic2) ;
+    T = read_triplet (stdin) ;      // RAND
+    OKP (T) ;
 
-        if (T->nrow > 1000000)
+    SuiteSparse_tic (tic2) ;
+
+    int test_result = 0 ;
+
+    if (T->nrow > 1000000)
+    {
+
+        //----------------------------------------------------------------------
+        // do huge-problem tests only, but only for 32-bit systems
+        //----------------------------------------------------------------------
+
+        if (sizeof (Int) == sizeof (int))
         {
-            // do huge-problem tests only, but only for 32-bit systems
-            if (sizeof (Int) == sizeof (int))
-            {
-                huge ( ) ;
-            }
-            CHOLMOD(free_triplet) (&T, cm) ;
-            continue ;
+            huge ( ) ;
         }
+        CHOLMOD(free_triplet) (&T, cm) ;
+
+    }
+    else
+    {
+
+        //----------------------------------------------------------------------
+        // test CHOLMOD with this matrix T
+        //----------------------------------------------------------------------
 
         maxerr = 0 ;
         CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
@@ -1740,17 +1780,40 @@ int main (int argc, char **argv)
         CHOLMOD(free_triplet) (&T, cm) ;
 
         t2 = SuiteSparse_toc (tic2) ;
-        fprintf (stderr, "\n%8.2f sec                                "
-                    "          Test OK", t2) ;
+
+        ok = true ;
         if (nrow <= ncol && !singular)
         {
-            // maxerr should be NaN if nrow > ncol, so don't print it
-            fprintf (stderr, ", maxerr %.1g", maxerr) ;
-            OK (!isnan (maxerr)) ;
+            ok = (maxerr <= maxerr_allowed) && !isnan (maxerr) ;
         }
-        fprintf (stderr, "\n") ;
+
+        if (ok)
+        {
+            fprintf (stderr, "\n%8.2f sec                                "
+                        "          Test OK", t2) ;
+            if (nrow <= ncol && !singular)
+            {
+                // maxerr should be NaN if nrow > ncol, so don't print it
+                fprintf (stderr, ", maxerr %.1e <= %.1e",
+                    maxerr, maxerr_allowed) ;
+            }
+            test_result = 0 ;
+        }
+        else
+        {
+            fprintf (stderr, "\n%8.2f sec                                "
+                        "          Test FAIL", t2) ;
+            if (nrow <= ncol && !singular)
+            {
+                fprintf (stderr, ", maxerr %.1e > %.1e !!",
+                    maxerr, maxerr_allowed) ;
+            }
+            test_result = 1 ;
+        }
         my_srand (42) ;                                         // RAND reset
     }
+
+    fprintf (stderr, "\n") ;
 
     //--------------------------------------------------------------------------
     // finalize CHOLMOD
@@ -1778,6 +1841,6 @@ int main (int argc, char **argv)
     }
 
     SuiteSparse_finish ( ) ;
-    return (0) ;
+    return (test_result) ;
 }
 

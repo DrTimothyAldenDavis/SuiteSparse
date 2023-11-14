@@ -10,7 +10,7 @@
 
 #include "cm.h"
 
-void basic1 (cholmod_common *)
+void basic1 (cholmod_common *cm)
 {
 
     //--------------------------------------------------------------------------

@@ -158,14 +158,14 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     Aboth = NULL ;
     Sok = NULL ;
 
-    if (isreal)
+    if (isreal) // TODO
     {
         Aboth = CHOLMOD(copy)(A, 0, 1, cm) ;        // [
         Sok = CHOLMOD(copy)(A, 0, 0, cm) ;
         Aboth->sorted = FALSE ;
     }
 
-    if (isreal)     // [
+    if (isreal)     // [        // TODO
     {
         if (nrow > 1)
         {
@@ -420,7 +420,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     C = CHOLMOD(add)(A, NULL, one, one, TRUE, TRUE, cm) ;           NOP (C) ;
     C = CHOLMOD(add)(NULL, AT, one, one, TRUE, TRUE, cm) ;          NOP (C) ;
 
-    if (A->nrow == A->ncol && isreal)
+    if (A->nrow == A->ncol && /* TODO: */ isreal)
     {
         C = CHOLMOD(add)(A, AT, one, one, TRUE, TRUE, cm) ;
         OKP (C) ;
@@ -589,7 +589,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_perm)(Pok, nrow, nrow, "AMD perm", cm) ;     OK (ok) ;
     i = cm->print ;
     cm->print = 4 ;
-    if (A->nrow < 1000 && isreal)
+    if (A->nrow < 1000 && /* TODO: */ isreal)
     {
         CHOLMOD(print_sparse)(Aboth, "Aboth", cm) ;
         ok = CHOLMOD(amd)(Aboth, NULL, 0, Pok, cm) ;                OK (ok) ;
@@ -612,7 +612,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_perm)(Pok, nrow, nrow, "CAMD perm", cm) ;    OK (ok) ;
     i = cm->print ;
     cm->print = 4 ;
-    if (A->nrow < 1000 && isreal)
+    if (A->nrow < 1000 && /* TODO: */ isreal)
     {
         CHOLMOD(print_sparse)(Aboth, "Aboth", cm) ;
         ok = CHOLMOD(camd)(Aboth, NULL, 0, NULL, Pok, cm) ;         OK (ok) ;
@@ -728,7 +728,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
     E = CHOLMOD(submatrix)(Abad2, NULL, -1, NULL, -1, TRUE, TRUE, cm) ; NOP(E) ;
 
-    if (A->stype == 0 && isreal)
+    if (A->stype == 0 && /* TODO: */ isreal)
     {
         // E = A(:,:)
         E = CHOLMOD(submatrix)(NULL, NULL,-1, NULL,-1, TRUE, TRUE, cm) ; NOP(E);
@@ -2109,7 +2109,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->error_handler = NULL ;
 
     //--------------------------------------------------------------------------
-    // modify
+    // modify (real matrices only)
     //--------------------------------------------------------------------------
 
     X = CHOLMOD(ones)(nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
@@ -3142,7 +3142,7 @@ if (do_nantests)
     NOT (ok) ;
 
     //--------------------------------------------------------------------------
-    // rowadd
+    // rowadd (real matrices only)
     //--------------------------------------------------------------------------
 
     x = X->x ;
@@ -3228,7 +3228,7 @@ if (do_nantests)
     if (nrow < 100)
     {
         C = CHOLMOD(ssmult)(A, A, 0, TRUE, TRUE, cm) ;
-        if (A->nrow != A->ncol) //  || !isreal)
+        if (A->nrow != A->ncol)
         {
             NOP (C) ;
         }
