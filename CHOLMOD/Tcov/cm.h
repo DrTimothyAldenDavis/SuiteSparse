@@ -52,6 +52,7 @@
 
 #define MAXERR(maxerr,err,anorm)                                        \
 {                                                                       \
+    double a = (double) anorm ;                                         \
     if (ISNAN (maxerr))                                                 \
     {                                                                   \
         ;                                                               \
@@ -60,14 +61,16 @@
     {                                                                   \
         maxerr = err ;                                                  \
     }                                                                   \
-    else if (anorm > 0)                                                 \
+    else if (a > 0)                                                     \
     {                                                                   \
-        if ((err/anorm) > maxerr) maxerr = (err/anorm) ;                \
+        if ((err/a) > maxerr) maxerr = (err/a) ;                        \
     }                                                                   \
     else                                                                \
     {                                                                   \
         if (err > maxerr) maxerr = err ;                                \
     }                                                                   \
+    /* printf ("maxerr %g err %g anorm %g at %d:%s\n", */               \
+    /*  maxerr, err, a, __LINE__, __FILE__) ;          */               \
 }
 
 #define OKP(p)      Assert ((p) != NULL, __FILE__, __LINE__)
@@ -107,12 +110,12 @@ Int nrand (Int n) ;
 Int *prand (Int n) ;
 cholmod_triplet *read_triplet (FILE *f) ;
 double test_ops (cholmod_sparse *A) ;
-cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype) ;
+cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype, int tweak) ;
 double resid (cholmod_sparse *A, cholmod_dense *X, cholmod_dense *B) ;
 double solve (cholmod_sparse *A) ;
 double aug (cholmod_sparse *A) ;
 double do_matrix (cholmod_sparse *A) ;
-cholmod_dense *rhs (cholmod_sparse *A, Int nrhs, Int d) ;
+cholmod_dense *rhs (cholmod_sparse *A, Int nrhs, Int d, int tweak) ;
 void prune_row (cholmod_sparse *A, Int k) ;
 double pnorm (cholmod_dense *X, Int *P, cholmod_dense *B, Int inv) ;
 double test_solver (cholmod_sparse *A) ;
@@ -153,6 +156,12 @@ double resid_sparse (cholmod_sparse *A, cholmod_sparse *X, cholmod_sparse *B) ;
 cholmod_dense *zeros (Int nrow, Int ncol, Int d, int xdtype) ;
 void huge (void) ;
 void camdtest (cholmod_sparse *A) ;
+void basic1 (cholmod_common *) ;
+void sparse_dump (cholmod_sparse *A, char *filename, cholmod_common *cm) ;
+void factor_dump (cholmod_factor *L, char *L_filename, char *P_filename,
+    cholmod_common *cm) ;
+void dense_dump  (cholmod_dense  *X, char *filename, cholmod_common *cm) ;
+void Int_dump    (Int *P, Int n, char *filename, cholmod_common *cm) ;
 
 //------------------------------------------------------------------------------
 // AMD, COLAMD, and CCOLAMD

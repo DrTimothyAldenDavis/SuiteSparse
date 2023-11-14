@@ -344,6 +344,12 @@ static void TEMPLATE (cholmod_super_ltsolve_worker)
     minus_one [1] = 0 ;
     one [0] = 1.0 ;
     one [1] = 0 ;
+    #ifdef DOUBLE
+    ASSERT (L->dtype == CHOLMOD_DOUBLE) ;
+    #else
+    ASSERT (L->dtype == CHOLMOD_SINGLE) ;
+    #endif
+    ASSERT (L->dtype == X->dtype) ;
 
     //--------------------------------------------------------------------------
     // solve L'x=b

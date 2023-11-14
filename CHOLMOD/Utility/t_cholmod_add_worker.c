@@ -53,6 +53,10 @@ static void TEMPLATE (cholmod_add_worker)
     Int *Cp = (Int *) C->p ;
     Int *Ci = (Int *) C->i ;
 
+// FIXME
+// printf ("alpha %g %g\n", alpha [0], alpha [1]) ;
+// printf ("beta  %g %g\n", beta  [0], beta  [1]) ;
+
     #ifndef PATTERN
         Real *Ax = (Real *) A->x ;
         Real *Bx = (Real *) B->x ;
@@ -60,6 +64,8 @@ static void TEMPLATE (cholmod_add_worker)
         Real alphax [2], betax [2] ;
         alphax [0] = (Real) alpha [0] ;
         betax  [0] = (Real) beta  [0] ;
+        alphax [1] = 0 ;
+        betax  [1] = 0 ;
     #endif
 
     #ifdef COMPLEX

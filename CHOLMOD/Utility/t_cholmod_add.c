@@ -58,7 +58,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // input:
     cholmod_sparse *A,  // input matrix
     cholmod_sparse *B,  // input matrix
-    double alpha [2],   // scale factor for A (two entires used if complex)
+    double alpha [2],   // scale factor for A (two entries used if complex)
     double beta [2],    // scale factor for B (two entries used if complex)
     int values,         // if TRUE compute the numerical values of C
     int sorted,         // ignored; C is now always returned as sorted
@@ -107,6 +107,10 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     int xtype = axtype ;
     int dtype = A->dtype ;
 
+// FIXME:
+// CHOLMOD(print_sparse) (A, "A for add", Common) ;
+// CHOLMOD(print_sparse) (B, "B for add", Common) ;
+
     ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
 
@@ -124,7 +128,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // convert/sort A and/or B, if needed
     //--------------------------------------------------------------------------
 
-    int mode = values ? 1 : 0 ;
+    int mode = values ? 2 : 0 ;
 
     if (A->stype == B->stype)
     {
@@ -137,8 +141,11 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         if (!A->sorted)
         {
             A2 = CHOLMOD(copy) (A, A->stype, mode, Common) ;
+// FIXME:
+// CHOLMOD(print_sparse) (A2, "A2 copy", Common) ;
             RETURN_IF_ERROR ;
             CHOLMOD(sort) (A2, Common) ;
+// CHOLMOD(print_sparse) (A2, "A2 sorted", Common) ;
             RETURN_IF_ERROR ;
             A = A2 ;
         }
@@ -147,8 +154,11 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         if (!B->sorted)
         {
             B2 = CHOLMOD(copy) (B, B->stype, mode, Common) ;
+// FIXME:
+// CHOLMOD(print_sparse) (B2, "B2 copy", Common) ;
             RETURN_IF_ERROR ;
             CHOLMOD(sort) (B2, Common) ;
+// CHOLMOD(print_sparse) (B2, "B2 sorted", Common) ;
             RETURN_IF_ERROR ;
             B = B2 ;
         }
@@ -202,6 +212,10 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         /* C is sorted: */ TRUE, /* C is packed: */ TRUE,
         A->stype, xtype + dtype, Common) ;
     RETURN_IF_ERROR ;
+
+// FIXME
+// CHOLMOD(print_sparse) (A, "A for add worker", Common) ;
+// CHOLMOD(print_sparse) (B, "B for add worker", Common) ;
 
     //--------------------------------------------------------------------------
     // C = alpha*A + beta*B
@@ -257,6 +271,8 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // return result
     //--------------------------------------------------------------------------
 
+// FIXME
+// CHOLMOD(print_sparse) (C, "C output of add", Common) ;
     ASSERT (CHOLMOD(dump_sparse) (C, "add:C", Common) >= 0) ;
     return (C) ;
 }

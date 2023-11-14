@@ -425,7 +425,8 @@ int CHOLMOD(updown_mask2)
         RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
         RETURN_IF_XTYPE_INVALID (DeltaB, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
         if (X->nrow != L->n || X->ncol != 1 || DeltaB->nrow != L->n ||
-                DeltaB->ncol != 1)
+            DeltaB->ncol != 1 || X->dtype != C->dtype ||
+            DeltaB->dtype != C->dtype)
         {
             ERROR (CHOLMOD_INVALID, "X and/or DeltaB invalid") ;
             return (FALSE) ;

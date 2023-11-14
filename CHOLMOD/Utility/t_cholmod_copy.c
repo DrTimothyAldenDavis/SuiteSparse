@@ -144,6 +144,8 @@ cholmod_sparse *CHOLMOD(copy)
     // copy the matrix
     //--------------------------------------------------------------------------
 
+// FIXME
+// printf ("astype %d stype %d\n", astype, stype) ;
     if (astype == stype)
     {
 

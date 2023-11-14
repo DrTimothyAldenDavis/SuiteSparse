@@ -135,7 +135,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
     X2 = NULL ;
     L = NULL ;
     n = A->nrow ;
-    B = rhs (A, 1, n) ;
+    B = rhs (A, 1, n, 0) ;
     AT = CHOLMOD(transpose) (A, 2, cm) ;
     Parent = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
     Post = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
@@ -550,6 +550,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
         CHOLMOD(print_sparse) (A, "A for rowfac", cm) ;
 
         cm->dbound = 1e-15 ;
+        cm->sbound = 1e-6 ;
         for (k = 0 ; ok && k < n ; k++)
         {
             if (!CHOLMOD(rowfac) (A, NULL, beta, k, k+1, L, cm))
@@ -566,6 +567,7 @@ double raw_factor (cholmod_sparse *A, Int check_errors)
             }
         }
         cm->dbound = 0 ;
+        cm->sbound = 0 ;
 
         if (check_errors)
         {
@@ -776,7 +778,7 @@ double raw_factor2 (cholmod_sparse *A, double alpha, int domask)
         }
     }
 
-    B = rhs (CC, 1, n) ;
+    B = rhs (CC, 1, n, 0) ;
 
     for (sorted = 1 ; sorted >= 0 ; sorted--)
     {

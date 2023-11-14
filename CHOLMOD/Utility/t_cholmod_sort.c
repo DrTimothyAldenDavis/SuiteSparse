@@ -88,6 +88,9 @@ int CHOLMOD(sort)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, FALSE) ;
     ASSERT (CHOLMOD(dump_sparse) (A, "sort:A input", Common) >= 0) ;
 
+// FIXME
+// CHOLMOD(print_sparse) (A, "A to sort", Common) ;
+
     //--------------------------------------------------------------------------
     // sort each column of A
     //--------------------------------------------------------------------------
@@ -119,6 +122,7 @@ int CHOLMOD(sort)
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            printf ("z_cholmod_sort_worker (A) :\n") ;
             z_cholmod_sort_worker (A) ;
             break ;
     }
@@ -127,6 +131,8 @@ int CHOLMOD(sort)
     // return result
     //--------------------------------------------------------------------------
 
+// FIXME
+// CHOLMOD(print_sparse) (A, "A sorted", Common) ;
     ASSERT (CHOLMOD(dump_sparse) (A, "sort:A output", Common) >= 0) ;
     return (TRUE) ;
 }

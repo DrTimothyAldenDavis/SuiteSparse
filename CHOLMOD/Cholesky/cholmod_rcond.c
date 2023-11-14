@@ -48,7 +48,7 @@
 // cholmod_rcond
 //------------------------------------------------------------------------------
 
-double CHOLMOD(rcond)       // return min(diag(L)) / max(diag(L))
+double CHOLMOD(rcond)       // return rcond estimate
 (
     // input:
     cholmod_factor *L,      // factorization to query; not modified

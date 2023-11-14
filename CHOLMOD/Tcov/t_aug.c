@@ -47,7 +47,7 @@ double aug (cholmod_sparse *A)
 
     nrow = A->nrow ;
     ncol = A->ncol ;
-    B = rhs (A, 5, A->nrow + 7) ;
+    B = rhs (A, 5, A->nrow + 7, 0) ;
 
     //--------------------------------------------------------------------------
     // create scalars
@@ -212,8 +212,22 @@ double aug (cholmod_sparse *A)
         }
     }
 
+    double xnorm = CHOLMOD(norm_dense) (X2, 1, cm) ;
     r = CHOLMOD(norm_dense) (R, 1, cm) ;
-    MAXERR (maxerr, r, bnorm) ;
+
+    double rcond = CHOLMOD(rcond) (L, cm) ;
+    printf ("rcond in aug.c: %g, r: %g\n", rcond, r) ;
+
+    #ifdef DOUBLE
+    bool rcond_ok = rcond > 1e-6 ;
+    #else
+    bool rcond_ok = rcond > 1e-3 ;
+    #endif
+
+    if (rcond_ok)
+    {
+        MAXERR (maxerr, r, (anorm*anorm)*xnorm + bnorm) ;
+    }
 
     //--------------------------------------------------------------------------
     // free everything

@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLOMD/Makefile
 #-------------------------------------------------------------------------------
 
-# This CHOLMOD/Makefile: Copyright (c) 2005-2022, Timothy A. Davis.
+# This CHOLMOD/Makefile: Copyright (c) 2005-2023, Timothy A. Davis.
 # CHOLMOD: Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------

@@ -162,7 +162,7 @@ void memory_tests (cholmod_triplet *T)
         my_srand (trial+1) ;                                    // RAND reset
         err = raw_factor (A, FALSE) ;                           // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
-        OK (CHOLMOD(print_common) ("cm", cm)) ;
+        OK (CHOLMOD(print_common) ("7:cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
         OK (count == cm->malloc_count) ;
         OK (inuse == cm->memory_inuse) ;
@@ -192,7 +192,7 @@ void memory_tests (cholmod_triplet *T)
         my_srand (trial+1) ;                                    // RAND reset
         err = raw_factor2 (A, 0., 0) ;                          // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
-        OK (CHOLMOD(print_common) ("cm", cm)) ;
+        OK (CHOLMOD(print_common) ("8:cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
         OK (count == cm->malloc_count) ;
         OK (inuse == cm->memory_inuse) ;
@@ -221,7 +221,7 @@ void memory_tests (cholmod_triplet *T)
         A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
         err = aug (A) ;                         // no random number use
         CHOLMOD(free_sparse) (&A, cm) ;
-        OK (CHOLMOD(print_common) ("cm", cm)) ;
+        OK (CHOLMOD(print_common) ("9:cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
         OK (count == cm->malloc_count) ;
         OK (inuse == cm->memory_inuse) ;
@@ -251,7 +251,7 @@ void memory_tests (cholmod_triplet *T)
         my_srand (trial+1) ;                                    // RAND reset
         err = test_ops (A) ;                                    // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
-        OK (CHOLMOD(print_common) ("cm", cm)) ;
+        OK (CHOLMOD(print_common) ("10:cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
         printf ("inuse "ID" "ID"\n", (Int) inuse, (Int) (cm->memory_inuse)) ;
         OK (count == cm->malloc_count) ;
@@ -281,7 +281,7 @@ void memory_tests (cholmod_triplet *T)
             my_tries = trial ;
             my_srand (trial+1) ;                                // RAND reset
             err = lpdemo (T) ;                                  // RAND
-            OK (CHOLMOD(print_common) ("cm", cm)) ;
+            OK (CHOLMOD(print_common) ("11:cm", cm)) ;
             CHOLMOD(free_work) (cm) ;
             OK (count == cm->malloc_count) ;
             OK (inuse == cm->memory_inuse) ;
@@ -316,7 +316,7 @@ void memory_tests (cholmod_triplet *T)
         my_srand (trial+1) ;                                    // RAND reset
         err = solve (A) ;                                       // RAND
         CHOLMOD(free_sparse) (&A, cm) ;
-        OK (CHOLMOD(print_common) ("cm", cm)) ;
+        OK (CHOLMOD(print_common) ("12:cm", cm)) ;
         CHOLMOD(free_work) (cm) ;
         OK (count == cm->malloc_count) ;
         OK (inuse == cm->memory_inuse) ;

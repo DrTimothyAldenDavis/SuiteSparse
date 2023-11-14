@@ -10,8 +10,11 @@
 
 // C = A*B.  Multiply two sparse matrices.
 //
-// A and B can be packed or unpacked, sorted or unsorted, and of any stype.
-// If A or B are symmetric, an internal unsymmetric copy is made first, however.
+// A and B can be packed or unpacked, sorted or unsorted, and of any stype.  If
+// A or B are symmetric, an internal unsymmetric copy is made first, however.
+// For the complex case, if A and/or B are symmetric with just their lower or
+// upper part stored, they are assumed to be Hermitian when converted.
+//
 // C is computed as if A and B are unsymmetric, and then if the stype input
 // parameter requests a symmetric form (upper or lower) the matrix is converted
 // into that form.
@@ -136,13 +139,17 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     // get inputs
     //--------------------------------------------------------------------------
 
+// FIXME
+// CHOLMOD(print_sparse) (A, "A: orig input to ssmult", Common) ;
+// CHOLMOD(print_sparse) (B, "B: orig input to ssmult", Common) ;
+
     // convert A to unsymmetric, if necessary
     A2 = NULL ;
     B2 = NULL ;
     if (A->stype)
     {
         // workspace: Iwork (max (A->nrow,A->ncol))
-        A2 = CHOLMOD(copy) (A, 0, values, Common) ;
+        A2 = CHOLMOD(copy) (A, 0, values ? 2 : 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -156,7 +163,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     if (B->stype)
     {
         // workspace: Iwork (max (B->nrow,B->ncol))
-        B2 = CHOLMOD(copy) (B, 0, values, Common) ;
+        B2 = CHOLMOD(copy) (B, 0, values ? 2 : 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -169,6 +176,10 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
 
     ASSERT (CHOLMOD(dump_sparse) (A, "A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "B", Common) >= 0) ;
+
+// FIXME
+// CHOLMOD(print_sparse) (A, "A: input to ssmult", Common) ;
+// CHOLMOD(print_sparse) (B, "B: input to ssmult", Common) ;
 
     // get the A matrix
     Int *Ap  = A->p ;
@@ -293,9 +304,14 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+// FIXME
+//          printf ("double zomplex ssmult worker:\n") ;
             z_cholmod_ssmult_worker (C, A, B, Common) ;
             break ;
     }
+
+// FIXME
+// CHOLMOD(print_sparse) (C, "C: output from ssmult, before convert", Common) ;
 
     //--------------------------------------------------------------------------
     // clear workspace and free temporary matrices
@@ -345,6 +361,9 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     //--------------------------------------------------------------------------
     // return result
     //--------------------------------------------------------------------------
+
+// FIXME
+// CHOLMOD(print_sparse) (C, "C: output from ssmult, final", Common) ;
 
     ASSERT (CHOLMOD(dump_sparse) (C, "ssmult", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;

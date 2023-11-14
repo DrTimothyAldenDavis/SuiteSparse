@@ -166,22 +166,31 @@ double lp_resid
         return (1) ;
     }
 
+//  printf ("lp_resid:: fsize %g beta %g\n", (double) fsize, beta [0]) ;
+// int sav = cm->print ; cm->print = 5 ;
+//  CHOLMOD(print_sparse) (A, "A for lp_resid", cm) ;
+//  CHOLMOD(print_dense) (Y, "Y", cm) ;
+//  CHOLMOD(print_dense) (B, "B", cm) ;
+
     nrow = A->nrow ;
     R = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
 
     // C = A(r,f).  In LPDASA, we do this in place, without making a copy.
     C = lp_prune (A, rflag, fset, fsize) ;
+// CHOLMOD(print_sparse) (C, "C for lp_resid", cm) ;
 
     // W = C'*Y
     OK (fsize >= 0) ;
     W = CHOLMOD(zeros) (fsize, 1, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(sdmult) (C, TRUE, one, zero, Y, W, cm) ;
+// CHOLMOD(print_dense) (W, "W = C'Y", cm) ;
 
     // R = B
     CHOLMOD(copy_dense2) (B, R, cm) ;
 
     // R = C*W - R
     CHOLMOD(sdmult) (C, FALSE, one, minusone, W, R, cm) ;
+// CHOLMOD(print_dense) (R, "R = C*W-B", cm) ;
 
     // R = R + beta*Y, (beta = 1 for dropped rows)
     if (R != NULL && Y != NULL)
@@ -200,12 +209,14 @@ double lp_resid
             }
         }
     }
+// CHOLMOD(print_dense) (R, "R = R+beta*Y", cm) ;
 
     // rnorm = norm (R)
     rnorm = CHOLMOD(norm_dense) (R, 2, cm) ;
     bnorm = CHOLMOD(norm_dense) (B, 2, cm) ;
     ynorm = CHOLMOD(norm_dense) (Y, 2, cm) ;
     norm = MAX (bnorm, ynorm) ;
+// printf ("rnorm %g bnorm %g ynorm %g\n", rnorm, bnorm, ynorm) ;
     if (norm > 0)
     {
         rnorm /= norm ;
@@ -217,6 +228,7 @@ double lp_resid
     CHOLMOD(free_dense) (&W, cm) ;
     CHOLMOD(free_dense) (&R, cm) ;
 
+// cm->print = sav ;
     return (rnorm) ;
 }
 
@@ -401,7 +413,11 @@ double lpdemo (cholmod_triplet *T)
     // factorize the first matrix, beta*I + A(p,f)*A(p,f)'
     //--------------------------------------------------------------------------
 
+    #ifdef DOUBLE
     beta [0] = 1e-6 ;
+    #else
+    beta [0] = 0.1 ;
+    #endif
     beta [1] = 0 ;
 
     // Need to prune entries due to relaxed amalgamation, or else
@@ -441,7 +457,7 @@ double lpdemo (cholmod_triplet *T)
     {
         k = cm->print ;
         cm->print = 5 ;
-        CHOLMOD(print_common) ("cm for lpdemo", cm) ;
+        CHOLMOD(print_common) ("5:cm for lpdemo", cm) ;
         cm->print = k ;
     }
 
@@ -792,7 +808,7 @@ double lpdemo (cholmod_triplet *T)
     }
 
     CHOLMOD(free_dense) (&Y, cm) ;
-    OK (CHOLMOD(print_common) ("cm in lpdemo", cm)) ;
+    OK (CHOLMOD(print_common) ("6:cm in lpdemo", cm)) ;
 
     //--------------------------------------------------------------------------
     // convert to LDL packed, LDL unpacked or LL packed and solve again
@@ -849,17 +865,18 @@ double lpdemo (cholmod_triplet *T)
         cols [0] = j ;
         fflag [j] = 1 ;
 
-        for (colmark [0] = 0 ; colmark [0] <= nrow ; colmark [0]++)
+        for (colmark [0] = 0 ; ok && colmark [0] <= nrow ; colmark [0]++)
         {
             cholmod_factor *L2 ;
             cholmod_dense *X2 ;
             Real *X2x ;
             L2 = CHOLMOD(copy_factor) (L, cm) ;
             X2 = CHOLMOD(copy_dense) (X, cm) ;
+            if (X2 != NULL) { OK (X2->dtype == DTYPE) ; }
             X2x = (X2 == NULL) ? NULL : X2->x ;
 
             // fprintf (stderr, "check colmark "ID"\n", colmark [0]) ;
-            printf ("check cholmark "ID"\n", colmark [0]) ;
+//          printf ("check cholmark "ID"\n", colmark [0]) ;
             // colmark [0] = 3 ;
 
             // update L, and the solution to Lx=b+deltaB,
@@ -870,11 +887,16 @@ double lpdemo (cholmod_triplet *T)
 
             // compare with Lr=b+deltaB
             R = CHOLMOD(solve) (CHOLMOD_L, L2, B, cm) ;
+//          printf ("R %p status %d\n", cm->status) ;
+//          fflush (stdout) ;
+            ok = ok && (R != NULL) ;
             r = -1 ;
-            if (ok && R != NULL)
+            if (ok)
             {
                 Real *Rx ;
+                OK (R->dtype == DTYPE) ;
                 Rx = R->x ;
+                OK (X2x != NULL) ;
                 r = 0 ;
                 for (i = 0 ; i < colmark [0] ; i++)
                 {
@@ -882,11 +904,12 @@ double lpdemo (cholmod_triplet *T)
                 }
                 MAXERR (maxerr, r, 1) ;
             }
-            printf ("check cholmark resid %6.2e\n", r) ;
+//          printf ("check cholmark resid %6.2e\n", r) ;
             CHOLMOD(free_dense) (&R, cm) ;
             CHOLMOD(free_dense) (&X2, cm) ;
             CHOLMOD(free_factor) (&L2, cm) ;
         }
+ //     printf ("maxerr %g at %d: %s\n", maxerr, __LINE__, __FILE__) ;
     }
 
     //--------------------------------------------------------------------------
@@ -917,5 +940,7 @@ double lpdemo (cholmod_triplet *T)
     CHOLMOD(free_dense) (&DeltaB, cm) ;
 
     progress (0, '.') ;
+    printf ("maxerr %g at %d: %s\n", maxerr, __LINE__, __FILE__) ;
     return (maxerr) ;
 }
+

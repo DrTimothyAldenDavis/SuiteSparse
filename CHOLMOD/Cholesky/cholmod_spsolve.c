@@ -93,6 +93,10 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     }
     Common->status = CHOLMOD_OK ;
 
+// FIXME:
+// int sss = Common->print ; Common->print = 5 ;
+// CHOLMOD(print_sparse) (B, "spsolve: B", Common) ;
+
     //--------------------------------------------------------------------------
     // allocate workspace B4 and initial result X
     //--------------------------------------------------------------------------
@@ -101,8 +105,8 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     Int nrhs = B->ncol ;
 
     // X is real if both L and B are real, complex/zomplex otherwise
-    int X_xtype = (L->xtype == CHOLMOD_REAL && B->xtype == CHOLMOD_REAL) ?
-        CHOLMOD_REAL :
+    int X_xtype =
+        (L->xtype == CHOLMOD_REAL && B->xtype == CHOLMOD_REAL) ?  CHOLMOD_REAL :
         (Common->prefer_zomplex ? CHOLMOD_ZOMPLEX : CHOLMOD_COMPLEX) ;
 
     // solve up to 4 columns at a time
@@ -172,6 +176,9 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
         // solve the system (X4 = A\B4 or other system)
         //----------------------------------------------------------------------
 
+// FIXME:
+// CHOLMOD(print_dense) (B4, "spsolve: B4", Common) ;
+
         X4 = CHOLMOD(solve) (sys, L, B4, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
@@ -181,6 +188,9 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
             return (NULL) ;
         }
         ASSERT (X4->xtype == X_xtype) ;
+
+// FIXME:
+// CHOLMOD(print_dense) (X4, "spsolve: X4", Common) ;
 
         //----------------------------------------------------------------------
         // append the solution onto X
@@ -276,7 +286,11 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     ASSERT (xnz <= X->nzmax) ;
     CHOLMOD(reallocate_sparse) (xnz, X, Common) ;
     ASSERT (Common->status == CHOLMOD_OK) ;
+// FIXME
+// CHOLMOD(print_sparse) (X, "spsolve: X", Common) ;
     CHOLMOD(free_dense) (&B4, Common) ;
+// FIXME
+// Common->print = sss ;
     return (X) ;
 }
 #endif

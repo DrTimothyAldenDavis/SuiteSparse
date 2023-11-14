@@ -298,13 +298,13 @@ double test_ops (cholmod_sparse *A)
     f = fopen ("temp1.mtx", "w") ;
     asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
     fclose (f) ;
-    printf ("write_sparse, asym: "ID"\n", asym) ;
+//  printf ("write_sparse, asym: "ID"\n", asym) ;
     OK (IMPLIES (A != NULL, asym > EMPTY)) ;
 
     f = fopen ("temp1.mtx", "r") ;
     C = CHOLMOD(read_sparse2) (f, DTYPE, cm) ;
     fclose (f) ;
-    printf ("got_sparse\n") ;
+//  printf ("got_sparse\n") ;
     CHOLMOD(free_sparse) (&C, cm) ;
 
     save3 = A->xtype ;
@@ -313,12 +313,12 @@ double test_ops (cholmod_sparse *A)
     asym = CHOLMOD(write_sparse) (f, A, NULL, "comments.txt", cm) ;
     A->xtype = save3 ;
     fclose (f) ;
-    printf ("write_sparse3, asym: "ID"\n", asym) ;
+//  printf ("write_sparse3, asym: "ID"\n", asym) ;
 
     f = fopen ("temp3.mtx", "r") ;
     C = CHOLMOD(read_sparse2) (f, DTYPE, cm) ;
     fclose (f) ;
-    printf ("got_sparse3\n") ;
+//  printf ("got_sparse3\n") ;
     CHOLMOD(free_sparse) (&C, cm) ;
 
     for (i = 0 ; i <= 1 ; i++)
@@ -337,12 +337,12 @@ double test_ops (cholmod_sparse *A)
         f = fopen ("temp2.mtx", "w") ;
         ok = CHOLMOD(write_dense) (f, X, "comments.txt", cm) ;
         fclose (f) ;
-        printf ("wrote dense\n") ;
+//      printf ("wrote dense\n") ;
 
         f = fopen ("temp2.mtx", "r") ;
         Y = CHOLMOD(read_dense2) (f, DTYPE, cm) ;
         fclose (f) ;
-        printf ("got dense\n") ;
+//      printf ("got dense\n") ;
         CHOLMOD(free_dense) (&X, cm) ;
         CHOLMOD(free_dense) (&Y, cm) ;
     }
@@ -1104,7 +1104,7 @@ double test_ops (cholmod_sparse *A)
         if (n > NLARGE) progress (1, '.') ;
         C = CHOLMOD(aat) (D, NULL, 0, 1, cm) ;
         if (n > NLARGE) progress (1, '.') ;
-        CHOLMOD(print_common) ("After A*A'", cm) ;
+        CHOLMOD(print_common) ("38:cm After A*A'", cm) ;
 
         for (stype = -1 ; stype <= 1 ; stype++)
         {

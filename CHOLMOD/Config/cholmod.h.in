@@ -2920,7 +2920,7 @@ int cholmod_l_resymbol_noperm (cholmod_sparse *, int64_t *, size_t, int,
 // cholmod_rcond:  compute rough estimate of reciprocal of condition number
 //------------------------------------------------------------------------------
 
-double cholmod_rcond        // return min(diag(L)) / max(diag(L))
+double CHOLMOD(rcond)       // return rcond estimate
 (
     // input:
     cholmod_factor *L,      // factorization to query; not modified

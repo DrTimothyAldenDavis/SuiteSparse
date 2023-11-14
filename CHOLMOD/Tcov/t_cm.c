@@ -464,9 +464,9 @@ cholmod_triplet *read_triplet
     cm->print = 4 ;
     CHOLMOD(print_triplet) (T, "T input", cm) ;
     cm->print = 1 ;
-    fprintf (stderr, "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID
-            "\n",
-            (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
+//  fprintf (stderr, "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID
+//          "\n",
+//          (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
     printf ("\n\n======================================================\n"
             "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID"\n",
             (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
@@ -533,7 +533,9 @@ cholmod_dense *zeros (Int nrow, Int ncol, Int d, int xdtype)
 
 // Allocate and construct a dense matrix, X(i,j) = i+j*d+1
 
-cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype)
+// if tweak is nonzero, X(0,0) is revised.
+
+cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype, int tweak)
 {
     Real *x, *z ;
     cholmod_dense *X ;
@@ -581,6 +583,20 @@ cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype)
             }
         }
     }
+
+    if (tweak != 0 && nrow > 0 && ncol > 0)
+    {
+        x [0] += ((double) tweak) / 10.0 ;
+        if (xtype == CHOLMOD_COMPLEX)
+        {
+            x [1] += ((double) tweak) / 20.0 ;
+        }
+        else if (xtype == CHOLMOD_ZOMPLEX)
+        {
+            z [0] += ((double) tweak) / 20.0 ;
+        }
+    }
+
     return (X) ;
 }
 
@@ -590,7 +606,7 @@ cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype)
 
 // Create a right-hand-side, b = A*x, where x is a known solution
 
-cholmod_dense *rhs (cholmod_sparse *A, Int nrhs, Int d)
+cholmod_dense *rhs (cholmod_sparse *A, Int nrhs, Int d, int tweak)
 {
     Int n ;
     cholmod_dense *W, *Z, *B ;
@@ -610,7 +626,7 @@ cholmod_dense *rhs (cholmod_sparse *A, Int nrhs, Int d)
     // create a known solution
     //--------------------------------------------------------------------------
 
-    Z = xtrue (n, nrhs, d, A->xtype + DTYPE) ;
+    Z = xtrue (n, nrhs, d, A->xtype + DTYPE, tweak) ;
 
     //--------------------------------------------------------------------------
     // compute B = A*Z or A*A'*Z
@@ -1249,7 +1265,7 @@ double do_matrix (cholmod_sparse *A)
             save2 = cm->final_super ;
             cm->final_asis = FALSE ;
             cm->final_super = TRUE ;
-            OK (CHOLMOD(print_common) ("cm", cm)) ;
+            OK (CHOLMOD(print_common) ("1:cm", cm)) ;
             cm->final_asis = save1 ;
             cm->final_super = save2 ;
 
@@ -1329,7 +1345,7 @@ double do_matrix (cholmod_sparse *A)
             // restore default control parameters
             //------------------------------------------------------------------
 
-            OK (CHOLMOD(print_common) ("cm", cm)) ;
+            OK (CHOLMOD(print_common) ("2:cm", cm)) ;
             CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
         }
     }
@@ -1358,7 +1374,7 @@ int main (int argc, char **argv)
     double err = 0, maxerr = 0 ;
     Int n = 0, nmin = 0, nrow = 0, ncol = 0, save ;
     int singular, do_memory, i, do_nantests, ok ;
-    double v = CHOLMOD_VERSION, tic [2], t ;
+    double v = CHOLMOD_VERSION, tic [2], t, t2, tic2 [2] ;
     int version [3] ;
     char *p ;
     const char* env_use_gpu;
@@ -1484,11 +1500,18 @@ int main (int argc, char **argv)
     }
 
     //--------------------------------------------------------------------------
+    // basic tests
+    //--------------------------------------------------------------------------
+
+    basic1 (cm) ;
+
+    //--------------------------------------------------------------------------
     // read in a triplet matrix and use it to test CHOLMOD
     //--------------------------------------------------------------------------
 
     for ( ; (T = read_triplet (stdin)) != NULL ; )              // RAND
     {
+        SuiteSparse_tic (tic2) ;
 
         if (T->nrow > 1000000)
         {
@@ -1582,20 +1605,28 @@ int main (int argc, char **argv)
             printf ("raw factorization error5 %.1g\n", err) ;
 
             cm->dbound = 1e-15 ;
+            cm->sbound = 1e-6 ;
+
+            #ifdef DOUBLE
+            double alpha = 1e-16 ;
+            #else
+            double alpha = 1e-8 ;
+            #endif
 
             err = raw_factor2 (F, 0., 0) ;
             MAXERR (maxerr, err, 1) ;
             printf ("raw factorization error6 %.1g\n", err) ;
 
-            err = raw_factor2 (F, 1e-16, 0) ;
+            err = raw_factor2 (F, alpha, 0) ;
             MAXERR (maxerr, err, 1) ;
             printf ("raw factorization error7 %.1g\n", err) ;
 
-            err = raw_factor2 (F, 1e-16, 1) ;
+            err = raw_factor2 (F, alpha, 1) ;
             MAXERR (maxerr, err, 1) ;
             printf ("raw factorization error8 %.1g\n", err) ;
 
             cm->dbound = 0 ;
+            cm->sbound = 0 ;
 
             CHOLMOD(free_sparse) (&F, cm) ;
         }
@@ -1654,9 +1685,11 @@ int main (int argc, char **argv)
 
             // try with an unpacked matrix, and a non-default dbound
             cm->dbound = 1e-15 ;
+            cm->sbound = 1e-6 ;
             err = do_matrix (C) ;                               // RAND reset
             MAXERR (maxerr, err, 1) ;
             cm->dbound = 0 ;
+            cm->sbound = 0 ;
 
             //------------------------------------------------------------------
             // do_matrix: analyze, factorize, and solve, with many options
@@ -1675,12 +1708,15 @@ int main (int argc, char **argv)
                 err = lpdemo (T) ;                              // RAND
                 cm->print = 1 ;
                 MAXERR (maxerr, err, 1) ;
-                cm->print = 5; CHOLMOD(print_common) ("Common", cm);cm->print=1;
                 cm->nmethods = 1 ;
                 cm->method [0].ordering = CHOLMOD_COLAMD ;
                 err = lpdemo (T) ;                              // RAND
                 MAXERR (maxerr, err, 1) ;
+                #ifdef DOUBLE
                 printf ("initial lp error %.1g, dbound %g\n", err, cm->dbound) ;
+                #else
+                printf ("initial lp error %.1g, sbound %g\n", err, cm->sbound) ;
+                #endif
                 cm->nmethods = 0 ;
                 cm->method [0].ordering = CHOLMOD_GIVEN ;
             }
@@ -1710,8 +1746,9 @@ int main (int argc, char **argv)
         CHOLMOD(free_sparse) (&A, cm) ;
         CHOLMOD(free_triplet) (&T, cm) ;
 
-        fprintf (stderr, "\n                                             "
-                    "          Test OK") ;
+        t2 = SuiteSparse_toc (tic2) ;
+        fprintf (stderr, "\n%8.2f sec                                "
+                    "          Test OK", t2) ;
         if (nrow <= ncol && !singular)
         {
             // maxerr should be NaN if nrow > ncol, so don't print it
@@ -1729,7 +1766,7 @@ int main (int argc, char **argv)
     CHOLMOD(free_dense) (&M1, cm) ;
     CHOLMOD(finish) (cm) ;
 
-    cm->print = 5 ; OK (CHOLMOD(print_common) ("cm", cm)) ;
+    cm->print = 5 ; OK (CHOLMOD(print_common) ("4:cm", cm)) ;
 
     printf ("FINAL::malloc count "ID" inuse "ID"\n",
             (Int) cm->malloc_count,

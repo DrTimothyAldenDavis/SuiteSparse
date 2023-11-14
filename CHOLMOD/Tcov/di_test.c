@@ -24,3 +24,5 @@
 #include "t_raw_factor.c"
 #include "t_cctest.c"
 #include "t_ctest.c"
+#include "t_basic.c"
+#include "t_dump.c"

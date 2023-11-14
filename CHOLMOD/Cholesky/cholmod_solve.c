@@ -792,6 +792,10 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
                 s_ptrans (B, Perm, k1, ncols, Y) ;
             }
 
+// FIXME:
+// printf ("k1: %d ncols %d\n", (int) k1, ncols) ;
+// CHOLMOD(print_dense) (Y, "Y = B(p,:)", Common) ;
+
             //------------------------------------------------------------------
             // solve Y = (L' \ (L \ Y'))', or other system, with template
             //------------------------------------------------------------------
@@ -824,10 +828,16 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
                     break ;
             }
 
+// FIXME:
+// CHOLMOD(print_dense) (Y, "Y after solve", Common) ;
+
             //------------------------------------------------------------------
             // X (P, k1:k2+ncols-1) = Y'
             //------------------------------------------------------------------
 
+// FIXME:
+// CHOLMOD(print_dense) (Y, "Y input to iptrans", Common) ;
+// CHOLMOD(print_dense) (X, "X input to iptrans", Common) ;
             if (L->dtype == CHOLMOD_DOUBLE)
             {
                 d_iptrans (Y, Perm, k1, ncols, X) ;
@@ -836,8 +846,13 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             {
                 s_iptrans (Y, Perm, k1, ncols, X) ;
             }
+// FIXME:
+// CHOLMOD(print_dense) (X, "X output from iptrans", Common) ;
         }
     }
+
+// FIXME:
+// CHOLMOD(print_dense) (X, "X result", Common) ;
 
     DEBUG (CHOLMOD(dump_dense) (X, "X result", Common)) ;
     return (TRUE) ;

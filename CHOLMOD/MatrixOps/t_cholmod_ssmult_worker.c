@@ -23,6 +23,19 @@ static void TEMPLATE (cholmod_ssmult_worker)
     // get inputs
     //--------------------------------------------------------------------------
 
+// FIXME
+#if 0
+    #ifdef PATTERN
+    printf ("ssmult worker, patter\n") ;
+    #elif defined ( REAL )
+    printf ("ssmult worker, real\n") ;
+    #elif defined ( ZOMPLEX )
+    printf ("ssmult worker, zomplex\n") ;
+    #elif defined ( COMPLEX )
+    printf ("ssmult worker, complex\n") ;
+    #endif
+#endif
+
     Real *W = Common->Xwork ;
 
     Int *Ap  = A->p ;
@@ -61,6 +74,8 @@ static void TEMPLATE (cholmod_ssmult_worker)
 
     for (Int j = 0 ; j < ncol ; j++)
     {
+// FIXME
+//      printf ("\n===== compute column %d of C:\n", (int) j) ;
         // clear the Flag array
         CLEAR_FLAG (Common) ;
         Int mark = Common->mark ;
@@ -81,6 +96,15 @@ static void TEMPLATE (cholmod_ssmult_worker)
             Real bz [1] ;
             ASSIGN (bx, bz, 0, Bx, Bz, pb) ;
 
+#if 0
+            printf ("k %d", (int) k) ;
+// FIXME
+            #ifdef ZOMPLEX
+            printf ("   (%g,%g)", bx [0], bz [0]) ;
+            #endif
+            printf ("\n") ;
+#endif
+
             // add the nonzero pattern of A(:,k) to the pattern of C(:,j)
             // and scatter the values into W
             Int pa = Ap [k] ;
@@ -94,17 +118,62 @@ static void TEMPLATE (cholmod_ssmult_worker)
                     Ci [pc++] = i ;
                 }
                 // W (i) += Ax [pa] * b ;
+// FIXME
+#if 0
+                printf ("\n      i %d", (int) i) ;
+
+                printf ("   W(i) before: ") ;
+                #ifdef ZOMPLEX
+                printf ("   (%g,%g)", Wx [i], Wz [i]) ;
+                #endif
+                printf ("\n") ;
+#endif
                 MULTADD (Wx, Wz, i, Ax, Az, pa, bx, bz, 0) ;
+
+// FIXME
+#if 0
+                printf ("   A(i,k): ") ;
+                #ifdef ZOMPLEX
+                printf ("   (%g,%g)", Ax [pa], Az [pa]) ;
+                #endif
+                printf ("\n") ;
+
+                Real tx [2] ;
+                Real tz [1] ;
+                MULT (tx, tz, 0, Ax, Az, pa, bx, bz, 0) ;
+                printf ("   A(i,k)*B(k,j) ") ;
+                #ifdef ZOMPLEX
+                printf ("   (%g,%g)", tx [0], tz [0]) ;
+                #endif
+                printf ("\n") ;
+
+                printf ("   W(i) after: ") ;
+                #ifdef ZOMPLEX
+                printf ("   (%g,%g)", Wx [i], Wz [i]) ;
+                #endif
+                printf ("\n") ;
+#endif
             }
         }
 
         // gather the values into C(:,j)
         #ifndef PATTERN
+// FIXME
+//      printf ("\ncolumn %d of C:\n", (int) j) ;
         for (Int p = Cp [j] ; p < pc ; p++)
         {
             Int i = Ci [p] ;
+// FIXME
+//          printf (" %d: ", (int) i) ;
             // Cx [p] = W (i) ;
-            ASSIGN (Cx, Cx, p, Wx, Wz, i) ;
+            ASSIGN (Cx, Cz, p, Wx, Wz, i) ;
+// FIXME
+#if 0
+            #ifdef ZOMPLEX
+            printf (" (%g, %g)", Cx [p], Cz [p]) ;
+            #endif
+            printf ("\n") ;
+#endif
             // W (i) = 0 ;
             CLEAR (Wx, Wz, i) ;
         }
