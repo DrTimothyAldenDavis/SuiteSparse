@@ -761,9 +761,9 @@ go: ccode
 	$(V) ./sl_read Matrix/r5lo2               > $(T)/sl_read_r5lo2.out
 	- $(COVER)
 	$(V) ./di_read Matrix/2lo.tri             > $(T)/di_read_2lo.out
-	$(V) ./dl_read Matrix/2lo.tri             > $(T)/dl_read_l_2lo.out
+	$(V) ./dl_read Matrix/2lo.tri             > $(T)/dl_read_2lo.out
 	$(V) ./si_read Matrix/2lo.tri             > $(T)/si_read_2lo.out
-	$(V) ./sl_read Matrix/2lo.tri             > $(T)/sl_read_l_2lo.out
+	$(V) ./sl_read Matrix/2lo.tri             > $(T)/sl_read_2lo.out
 	- $(COVER)
 	$(V) ./di_read Matrix/2.tri               > $(T)/di_read_2.out
 	$(V) ./dl_read Matrix/2.tri               > $(T)/dl_read_2.out
