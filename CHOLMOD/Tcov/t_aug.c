@@ -36,7 +36,7 @@ double aug (cholmod_sparse *A)
         return (1) ;
     }
 
-    if (A->xtype != CHOLMOD_REAL)   // FIXME
+    if (A->xtype != CHOLMOD_REAL)   // FIXME TODO
     {
         return (0) ;
     }

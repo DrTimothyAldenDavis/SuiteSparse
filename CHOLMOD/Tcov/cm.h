@@ -50,6 +50,8 @@
 
 #define MY_RAND_MAX 32767
 
+#define MAXLINE 1024
+
 #define MAXERR(maxerr,err,anorm)                                        \
 {                                                                       \
     double a = (double) anorm ;                                         \

@@ -407,7 +407,6 @@ void camdtest (cholmod_sparse *A)
     {
         return ;
     }
-    cm->print = 1 ;
 }
 #endif
 

@@ -315,7 +315,10 @@ void null_test2 (void)
 
     // free a NULL pointer
     CHOLMOD(free)(42, sizeof (char), NULL, cm) ;
-    cm->print = 5 ; CHOLMOD(print_common)("34:cm", cm) ; cm->print = 3 ;
+    int psave = cm->print ;
+    cm->print = 5 ;
+    CHOLMOD(print_common)("34:cm", cm) ;
+    cm->print = psave ;
 
     cm->maxrank = 3 ;
     cm->maxrank = CHOLMOD(maxrank)(5, cm) ; OK (cm->maxrank == 4) ;
@@ -365,7 +368,9 @@ void null_test2 (void)
     A = CHOLMOD(dense_to_sparse)(Xbad, TRUE, cm) ;
     ok = CHOLMOD(free_dense)(&Xbad, cm) ;                           OK (ok) ;
     CHOLMOD(print_common)("35:cm", cm) ;
-    cm->print = 5 ; CHOLMOD(print_sparse)(A, "Bad A", cm) ; cm->print = 3 ;
+    cm->print = 5 ;
+    CHOLMOD(print_sparse)(A, "Bad A", cm) ;
+    cm->print = psave ;
     NOP (A) ;
 
     //--------------------------------------------------------------------------

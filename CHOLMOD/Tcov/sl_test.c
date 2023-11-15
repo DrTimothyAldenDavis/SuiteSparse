@@ -26,3 +26,4 @@
 #include "t_ctest.c"
 #include "t_basic.c"
 #include "t_dump.c"
+#include "t_read_triplet.c"

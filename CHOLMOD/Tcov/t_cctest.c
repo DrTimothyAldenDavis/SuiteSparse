@@ -385,7 +385,6 @@ void cctest (cholmod_sparse *A)
     CHOLMOD(free_sparse) (&S, cm) ;
     CHOLMOD(free_sparse) (&A2, cm) ;
     CHOLMOD(free_sparse) (&C, cm) ;
-    cm->print = 1 ;
 }
 
 #else
@@ -396,8 +395,6 @@ void cctest (cholmod_sparse *A)
     {
         return ;
     }
-
-    cm->print = 1 ;
 }
 #endif
 

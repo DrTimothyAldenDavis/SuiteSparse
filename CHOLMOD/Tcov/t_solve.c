@@ -183,8 +183,9 @@ double solve (cholmod_sparse *A)
     Int *P, *cset, *fset, *Parent, *Post, *RowCount, *ColCount,
              *First, *Level, *rcount, *ccount, *Lp, *Li ;
     Int p, i, j, k, n, nrhs, save, save2, csize, rank, nrow, ncol, is_ll,
-        xtype, isreal, prefer_zomplex, Lxtype, xtype2, save3 ;
+        xtype, isreal, prefer_zomplex, xtype2, save3 ;
     cm->blas_ok = TRUE ;
+    int Lxtype ;
 
     Ywork = NULL ;
     Ework = NULL ;
@@ -263,7 +264,7 @@ double solve (cholmod_sparse *A)
             // rowadd does not work on complex/zomplex matrices
             CHOLMOD(rowadd) (0, RowK, Lcopy, cm) ;
             CHOLMOD(check_factor) (Lcopy, cm) ;
-            CHOLMOD(print_factor) (Lcopy, "Lcopy, now numeric", cm) ;
+//          CHOLMOD(print_factor) (Lcopy, "Lcopy, now numeric", cm) ;
         }
         CHOLMOD(free_sparse) (&RowK, cm) ;
         CHOLMOD(free_factor) (&Lcopy, cm) ;
@@ -272,9 +273,6 @@ double solve (cholmod_sparse *A)
     //--------------------------------------------------------------------------
     // factorize
     //--------------------------------------------------------------------------
-
-// FIXME
-// int sss = cm->print ; cm->print = 5 ;   // [
 
     CHOLMOD(factorize) (A, L, cm) ;
 
@@ -307,7 +305,10 @@ double solve (cholmod_sparse *A)
         CHOLMOD(free_dense) (&X, cm) ;
 
         rcond = CHOLMOD(rcond) (L, cm) ;
-        printf ("rcond for solv2: %g k %d\n", rcond, (int) k) ;
+        if (cm->print > 1)
+        {
+            printf ("rcond for solv2: %g k %d\n", rcond, (int) k) ;
+        }
 
         // now test the same thing, but with cholmod_solve2
 
@@ -428,16 +429,14 @@ double solve (cholmod_sparse *A)
     // sparse solve to compute inv(A)
     //--------------------------------------------------------------------------
 
-// FIXME
-// printf ("computing C = inv (A):::\n") ;
-// sparse_dump (A, "A.tri", cm) ;
-// factor_dump (L, "L.tri", "P", cm) ;
-
-    CHOLMOD(print_sparse) (A, "A", cm) ;
-    CHOLMOD(print_factor) (L, "L", cm) ;
+//  CHOLMOD(print_sparse) (A, "A", cm) ;
+//  CHOLMOD(print_factor) (L, "L", cm) ;
 
     rcond = CHOLMOD(rcond) (L, cm) ;
-    printf ("rcond: %g\n", rcond) ;
+    if (cm->print > 1)
+    {
+        printf ("rcond: %g\n", rcond) ;
+    }
 
     #ifdef DOUBLE
     bool rcond_ok = rcond > 1e-6 ;
@@ -447,56 +446,25 @@ double solve (cholmod_sparse *A)
 
     if (n < 100 && A->stype != 0 && rcond_ok)
     {
-// FIXME
-// cholmod_dense *II = CHOLMOD(eye) (n, n, CHOLMOD_COMPLEX + DTYPE, cm) ;
-// CHOLMOD(print_dense) (II, "II", cm) ;
-// cholmod_dense *CC = CHOLMOD(solve) (CHOLMOD_A, L, II, cm) ;
-// CHOLMOD(print_dense) (CC, "CC", cm) ;
-// r = resid (A, CC, II) ;
-// printf ("resid:: %g\n", r) ;
-// dense_dump (CC, "CC.tri", cm) ;
-
         // solve A*C=I, so C should equal A inverse
         I = CHOLMOD(speye) (n, n, A->xtype + DTYPE, cm) ;
-// FIXME
-// CHOLMOD(print_sparse) (I, "I", cm) ;
         C = CHOLMOD(spsolve) (CHOLMOD_A, L, I, cm) ;
-// FIXME
-// CHOLMOD(print_sparse) (C, "C", cm) ;
         CHOLMOD(sparse_xtype) (A->xtype + DTYPE, C, cm) ;
-// FIXME
-// sparse_dump (C, "C.tri", cm) ;
-// if (I != NULL && C != NULL)
-//  printf ("xtype/dtype: A %d %d I %d %d C %d %d\n",
-//  A->xtype, A->dtype, I->xtype, I->dtype, C->xtype, C->dtype) ;
 
         // compute norm of A*C-I
         E = CHOLMOD(ssmult) (A, C, 0, TRUE, FALSE, cm) ;
-// FIXME
-// CHOLMOD(print_sparse) (E, "E", cm) ;
-// sparse_dump (E, "E.tri", cm) ;
         F = CHOLMOD(add) (E, I, minusone, one, TRUE, FALSE, cm) ;
-// sparse_dump (F, "F.tri", cm) ;
-// CHOLMOD(drop) (1e-10, F, cm) ;
-// FIXME
-// CHOLMOD(print_sparse) (F, "F", cm) ;
         r = CHOLMOD(norm_sparse) (F, 1, cm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&F, cm) ;
-        printf ("norm (A*C-I)::: %g\n", r) ;
+        if (cm->print > 1)
+        {
+            printf ("norm (A*C-I)::: %g\n", r) ;
+        }
         MAXERR (maxerr, r, 1) ;
         CHOLMOD(free_sparse) (&I, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
-
-// FIXME
-// CHOLMOD(free_dense) (&II, cm) ;
-// CHOLMOD(free_dense) (&CC, cm) ;
     }
-
-// FIXME    
-// cm->print = sss ;       // ]
-// fflush (stdout) ;
-// abort ( ) ;
 
     //--------------------------------------------------------------------------
     // change complexity of L and solve again; test copy/change routines
@@ -515,7 +483,7 @@ double solve (cholmod_sparse *A)
     Lxtype = (L == NULL) ? CHOLMOD_REAL : (L->xtype) ;
     Lcopy = CHOLMOD(copy_factor) (L, cm) ;
     CHOLMOD(check_factor) (L, cm) ;
-    CHOLMOD(print_factor) (Lcopy, "Lcopy", cm) ;
+//  CHOLMOD(print_factor) (Lcopy, "Lcopy", cm) ;
     CHOLMOD(change_factor) (Lxtype, FALSE, FALSE, TRUE, TRUE, Lcopy, cm) ;
     CHOLMOD(factor_xtype) (CHOLMOD_ZOMPLEX + DTYPE, Lcopy, cm) ;
     X = CHOLMOD(solve) (CHOLMOD_A, Lcopy, B, cm) ;
@@ -527,11 +495,14 @@ double solve (cholmod_sparse *A)
     Lcopy = CHOLMOD(copy_factor) (L, cm) ;
     CHOLMOD(change_factor) (Lxtype, TRUE, FALSE, FALSE, FALSE, Lcopy, cm) ;
     CHOLMOD(check_factor) (L, cm) ;
-    CHOLMOD(print_factor) (Lcopy, "Lcopy LL unpacked", cm) ;
+//  CHOLMOD(print_factor) (Lcopy, "Lcopy LL unpacked", cm) ;
     CHOLMOD(free_factor) (&Lcopy, cm) ;
 
     CHOLMOD(free_factor) (&L, cm) ;
     cm->final_asis = save ;
+
+// FIXME
+// int ssd = cm->print ; cm->print = 5 ;
 
     //--------------------------------------------------------------------------
     // solve again, but use cm->final_asis as given
@@ -548,18 +519,19 @@ double solve (cholmod_sparse *A)
         L = CHOLMOD(analyze) (A, cm) ;
     }
 
-    CHOLMOD(print_factor) (L, "Lsymbolic", cm) ;
+//  CHOLMOD(print_factor) (L, "Lsymbolic", cm) ;
     CHOLMOD(factorize) (A, L, cm) ;
+//  CHOLMOD(print_factor) (L, "Lnumeric", cm) ; // complex supernodal
 
     // turn off memory tests [
     save3 = my_tries ;
     my_tries = -1 ;
 
-    CHOLMOD(print_factor) (L, "Lnumeric for solver tests", cm) ;
-    CHOLMOD(print_dense) (B, "B for solver tests", cm) ;
-    CHOLMOD(print_dense) (Breal, "Breal for solver tests", cm) ;
-    CHOLMOD(print_dense) (Bcomplex, "Bcomplex for solver tests", cm) ;
-    CHOLMOD(print_dense) (Bzomplex, "Bzomplex for solver tests", cm) ;
+//  CHOLMOD(print_factor) (L, "Lnumeric for solver tests", cm) ;
+//  CHOLMOD(print_dense) (B, "B for solver tests", cm) ;
+//  CHOLMOD(print_dense) (Breal, "Breal for solver tests", cm) ;
+//  CHOLMOD(print_dense) (Bcomplex, "Bcomplex for solver tests", cm) ;
+//  CHOLMOD(print_dense) (Bzomplex, "Bzomplex for solver tests", cm) ;
 
     if (B != NULL && Breal != NULL && Bcomplex != NULL && Bzomplex != NULL)
     {
@@ -600,35 +572,52 @@ double solve (cholmod_sparse *A)
     // turn memory tests back on, where we left off ]
     my_tries = save3 ;
 
-    Lcopy = CHOLMOD(copy_factor) (L, cm) ;
-
     //--------------------------------------------------------------------------
     // convert L to LDL' packed or LL packed
     //--------------------------------------------------------------------------
 
-    printf ("before change factor : %d\n", L ? L->is_super : -1) ;
+    if (cm->print > 1)
+    {
+        printf ("before change factor : %d\n", L ? L->is_super : -1) ;
+    }
     is_ll = (L == NULL) ? FALSE : (L->is_ll) ;
     Lxtype = (L == NULL) ? CHOLMOD_REAL : (L->xtype) ;
+    Lcopy = CHOLMOD(copy_factor) (L, cm) ;
     CHOLMOD(change_factor) (Lxtype, is_ll, FALSE, TRUE, TRUE, Lcopy, cm) ;
-    printf ("after change factor : %d\n", L ? L->is_super : -1) ;
+    if (cm->print > 1)
+    {
+        printf ("after change factor : %d\n", L ? L->is_super : -1) ;
+    }
 
     //--------------------------------------------------------------------------
     // extract L, D, and L' as matrices from Lcopy
     //--------------------------------------------------------------------------
 
     CHOLMOD(resymbol) (A, NULL, 0, TRUE, Lcopy, cm) ;
+// CHOLMOD(print_factor) (Lcopy, "Lcopy HERE", cm) ;
+// CHOLMOD(print_sparse) (A, "A HERE", cm) ; // zomplex
 
     Lmat = CHOLMOD(factor_to_sparse) (Lcopy, cm) ;
+    CHOLMOD(free_factor) (&Lcopy, cm) ;
+    if (Lmat != NULL && A != NULL && Lmat->xtype != A->xtype)
+    {
+        if (cm->print > 1)
+        {
+            printf ("change Lmat from xtype %d to %d\n",
+                Lmat->xtype, A->xtype) ;
+        }
+        CHOLMOD(sparse_xtype) (A->xtype + DTYPE, Lmat, cm) ;
+    }
     CHOLMOD(check_sparse) (Lmat, cm) ;
-
-    I = CHOLMOD(speye) (n, n, CHOLMOD_REAL + DTYPE, cm) ;
+// CHOLMOD(print_sparse) (Lmat, "Lmat HERE", cm) ; // zomplex
 
     Lo = NULL ;
     D = NULL ;
 
     Lxtype = (Lmat == NULL) ? CHOLMOD_REAL : (Lmat->xtype) ;
+    I = CHOLMOD(speye) (n, n, Lxtype + DTYPE, cm) ;
 
-    if (isreal)  /// TODO
+    // if (isreal)  /// TODO
     {
         // use band and add
         if (!is_ll)
@@ -646,11 +635,14 @@ double solve (cholmod_sparse *A)
             D = CHOLMOD(speye) (n, n, Lxtype + DTYPE, cm) ;
         }
     }
+    #if 0
     else
     {
         // band and add do not work for c/zomplex matrices*/
         D = CHOLMOD(speye) (n, n, Lxtype + DTYPE, cm) ;
+// CHOLMOD(print_sparse) (D, "D speye", cm) ;  // zomplex
         Lo = CHOLMOD(copy_sparse) (Lmat, cm) ;
+// CHOLMOD(print_sparse) (Lo, "Lo", cm) ;  // zomplex
         if (!is_ll && D != NULL && Lo != NULL)
         {
             // factorization is LDL' = Lo*D*Up
@@ -673,6 +665,7 @@ double solve (cholmod_sparse *A)
             }
         }
     }
+    #endif
 
     Up = CHOLMOD(transpose) (Lo, 2, cm) ;
 
@@ -684,27 +677,44 @@ double solve (cholmod_sparse *A)
     S = NULL ;
     G = NULL ;
 
-    if (isreal)     // TODO
+    // if (isreal)     // HERE
     {
 
         if (A->stype == 0)
         {
+// FIXME
+// int ssc = cm->print ; cm->print = 5 ;
+
             // G = A*A', try with fset = prand (ncol)
             fset = prand (ncol) ;                               // RAND
-            AFt = CHOLMOD(ptranspose) (A, 1, NULL, fset, ncol, cm) ;
-            AF  = CHOLMOD(transpose) (AFt, 1, cm) ;
+// CHOLMOD(print_subset) (fset, ncol, ncol, "HERE fset for AA'", cm) ;
+// CHOLMOD(print_sparse) (A, "A for AA'", cm) ;
+// sparse_dump (A, "A.tri", cm) ;
+            AFt = CHOLMOD(ptranspose) (A, 2, NULL, fset, ncol, cm) ;
+// sparse_dump (AFt, "AFt.tri", cm) ;
+// CHOLMOD(print_sparse) (AFt, "AFt", cm) ;
+            AF  = CHOLMOD(transpose) (AFt, 2, cm) ;
+// sparse_dump (AF, "AF.tri", cm) ;
+// CHOLMOD(print_sparse) (AF, "AF", cm) ;
+
             CHOLMOD(free) (ncol, sizeof (Int), fset, cm) ;
             G = CHOLMOD(ssmult) (AF, AFt, 0, TRUE, TRUE, cm) ;
+// CHOLMOD(print_sparse) (G, "G", cm) ;
+// sparse_dump (G, "G.tri", cm) ;
 
             // also try aat
-            H = CHOLMOD(aat) (AF, NULL, 0, 1, cm) ;
+            H = CHOLMOD(aat) (AF, NULL, 0, 2, cm) ;
+// CHOLMOD(print_sparse) (H, "H", cm) ;
+// sparse_dump (H, "H.tri", cm) ;
 
             E = CHOLMOD(add) (G, H, one, minusone, TRUE, FALSE, cm) ;
+// CHOLMOD(print_sparse) (E, "E", cm) ;
+// sparse_dump (E, "E.tri", cm) ;
 
             enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
             gnorm = CHOLMOD(norm_sparse) (G, 0, cm) ;
             MAXERR (maxerr, enorm, gnorm) ;
-            if (1) // (cm->print > 1)
+            if (cm->print > 1)
             {
                 printf ("enorm %g gnorm %g hnorm %g\n", enorm, gnorm,
                     CHOLMOD(norm_sparse) (H, 0, cm)) ;
@@ -713,6 +723,10 @@ double solve (cholmod_sparse *A)
             {
                 enorm /= gnorm ;
             }
+
+// CHOLMOD(drop) (0, E, cm) ;
+// CHOLMOD(print_sparse) (E, "E dropped zeros", cm) ;
+
             #ifdef DOUBLE
             OK (enorm < 1e-8) ;
             #else
@@ -723,12 +737,17 @@ double solve (cholmod_sparse *A)
             CHOLMOD(free_sparse) (&E, cm) ;
             CHOLMOD(free_sparse) (&H, cm) ;
 
+// cm->print = ssc ;
+
         }
         else
         {
             // G = A
-            G = CHOLMOD(copy) (A, 0, 1, cm) ;
+            G = CHOLMOD(copy) (A, 0, 2, cm) ;
         }
+
+// CHOLMOD(print_sparse) (A, "A for PAP'", cm) ;
+// CHOLMOD(print_sparse) (G, "G for PAP'", cm) ;
 
         if (A->stype == 0)
         {
@@ -738,21 +757,29 @@ double solve (cholmod_sparse *A)
         else
         {
             // S = PAP'
-            Aboth = CHOLMOD(copy) (A, 0, 1, cm) ;
+            Aboth = CHOLMOD(copy) (A, 0, 2, cm) ;
+// CHOLMOD(print_sparse) (Aboth, "Aboth for PAP'", cm) ;
             S = CHOLMOD(submatrix) (Aboth, P, n, P, n, TRUE, FALSE, cm) ;
             CHOLMOD(free_sparse) (&Aboth, cm) ;
         }
+// CHOLMOD(print_sparse) (S, "S for PAP'", cm) ;
 
         if (n < NSMALL)
         {
             // only do this for small test matrices, since L*D*L' can have many
             // nonzero entries
-
             // E = L*D*L' - S
+// CHOLMOD(print_sparse) (Lmat, "Lmat for PAP'", cm) ;
+
+// CHOLMOD(print_sparse) (Lo, "Lo for PAP'", cm) ;
+// CHOLMOD(print_sparse) (D, "D for PAP'", cm) ;
             LD = CHOLMOD(ssmult) (Lo, D, 0, TRUE, FALSE, cm) ;
+// CHOLMOD(print_sparse) (LD, "LD for PAP'", cm) ;
             LDL = CHOLMOD(ssmult) (LD, Up, 0, TRUE, FALSE, cm) ;
+// CHOLMOD(print_sparse) (LDL, "LDL for PAP'", cm) ;
             CHOLMOD(free_sparse) (&LD, cm) ;
             E = CHOLMOD(add) (LDL, S, one, minusone, TRUE, FALSE, cm) ;
+// CHOLMOD(print_sparse) (E, "E for PAP'", cm) ;
             CHOLMOD(free_sparse) (&LDL, cm) ;
 
             // e = norm (E) / norm (S)
@@ -760,7 +787,9 @@ double solve (cholmod_sparse *A)
             snorm = CHOLMOD(norm_sparse) (S, 0, cm) ;
             MAXERR (maxerr, enorm, snorm) ;
             CHOLMOD(free_sparse) (&E, cm) ;
+
         }
+
 
         // check the row/col counts
         RowCount = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
@@ -779,9 +808,9 @@ double solve (cholmod_sparse *A)
             S->stype = 1 ;
 
             CHOLMOD(etree) (S, Parent, cm) ;
-            CHOLMOD(print_parent) (Parent, n, "Parent", cm) ;
+//          CHOLMOD(print_parent) (Parent, n, "Parent", cm) ;
             CHOLMOD(postorder) (Parent, n, NULL, Post, cm) ;
-            CHOLMOD(print_perm) (Post, n, n, "Post", cm) ;
+//          CHOLMOD(print_perm) (Post, n, n, "Post", cm) ;
             S->stype = -1 ;
             CHOLMOD(rowcolcounts) (S, NULL, 0, Parent, Post, RowCount, ColCount,
                     First, Level, cm) ;
@@ -823,8 +852,6 @@ double solve (cholmod_sparse *A)
 
         CHOLMOD(free_sparse) (&S, cm) ;
     }
-
-    CHOLMOD(free_factor) (&Lcopy, cm) ;
 
     //--------------------------------------------------------------------------
     // solve other systems
@@ -961,9 +988,16 @@ double solve (cholmod_sparse *A)
     // get ready for sparse solve
     Bset = CHOLMOD(allocate_sparse) (n, 1, 1, FALSE, TRUE, 0,
         CHOLMOD_PATTERN + DTYPE, cm) ;
+    Lxtype = (L == NULL) ? CHOLMOD_REAL : L->xtype ;
     B = CHOLMOD(zeros) (n, 1, Lxtype + DTYPE, cm) ;
 
-    printf ("testing sparse solve, maxerr so far %g\n", maxerr) ;
+// FIXME
+// printf ("Lxtype %d\n", Lxtype) ;
+// CHOLMOD(print_dense) (B, "B for Bset", cm) ;
+// CHOLMOD(print_factor) (L, "L for Bset", cm) ;
+// cm->print = ssd ;
+
+    // printf ("testing sparse solve, maxerr so far %g\n", maxerr) ;
 
     if (Bset != NULL && B != NULL && n > 0 && rcond_ok)
     {
@@ -1011,7 +1045,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 Ax=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 Ax=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1031,7 +1065,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 LDL'x=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 LDL'x=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1051,7 +1085,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 LDx=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 LDx=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1071,7 +1105,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 DL'x=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 DL'x=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1091,7 +1125,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 Lx=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 Lx=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1111,7 +1145,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 Ltx=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 Ltx=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1131,7 +1165,7 @@ double solve (cholmod_sparse *A)
                 X2x = X2->x ;
                 X1x = X->x ;
                 r = fabs (X2x [0] - X1x [0]) ;
-                printf ("solve2 Dx=b err %g\n", r) ;
+                if (cm->print > 1) printf ("solve2 Dx=b err %g\n", r) ;
                 MAXERR (maxerr, r, 1) ;
             }
         }
@@ -1154,7 +1188,7 @@ double solve (cholmod_sparse *A)
     CHOLMOD(free_sparse) (&Up, cm) ;
     CHOLMOD(free_sparse) (&Lmat, cm) ;
 
-    printf ("done testing sparse solve, maxerr so far %g\n", maxerr) ;
+    // printf ("done testing sparse solve, maxerr so far %g\n", maxerr) ;
 
     //--------------------------------------------------------------------------
     // update the factorization (real matrices only)

@@ -234,7 +234,7 @@ double test_ops (cholmod_sparse *A)
 
     // E = pattern of A
     E = CHOLMOD(copy) (A, 0, 0, cm) ;
-    CHOLMOD(print_sparse) (E, "E = pattern of A", cm) ;
+//  CHOLMOD(print_sparse) (E, "E = pattern of A", cm) ;
 //  int64_t enz = CHOLMOD (nnz) (E, cm) ;
 //  int64_t anz = CHOLMOD (nnz) (A, cm) ;
 //  if (E->stype == A->stype) { OK (enz == anz) ; }
@@ -246,7 +246,7 @@ double test_ops (cholmod_sparse *A)
 
     // E = pattern of A, but exclude the diagonal
     E = CHOLMOD(copy) (A, 0, -1, cm) ;
-    CHOLMOD(print_sparse) (E, "E = spones (A), excl diag", cm) ;
+//  CHOLMOD(print_sparse) (E, "E = spones (A), excl diag", cm) ;
     r1 = CHOLMOD(norm_sparse) (E, 1, cm) ;
     rinf = CHOLMOD(norm_sparse) (E, 0, cm) ;
     if (nrow < ncol)
@@ -269,9 +269,9 @@ double test_ops (cholmod_sparse *A)
     {
         // E = tril (A), no diagonal
         E = CHOLMOD(copy) (A, -1, -1, cm) ;
-        CHOLMOD(print_sparse) (E, "E, lower and no diagonal", cm) ;
+//      CHOLMOD(print_sparse) (E, "E, lower and no diagonal", cm) ;
         CHOLMOD(band_inplace) (0, n, 0, E, cm) ;
-        CHOLMOD(print_sparse) (E, "E Empty", cm) ;
+//      CHOLMOD(print_sparse) (E, "E Empty", cm) ;
         nz = CHOLMOD(nnz) (E, cm) ;
         if (E != NULL)
         {
@@ -515,11 +515,11 @@ double test_ops (cholmod_sparse *A)
         }
     }
 
-    CHOLMOD(print_triplet) (S, "S jumbled", cm) ;
+//  CHOLMOD(print_triplet) (S, "S jumbled", cm) ;
 
     C = CHOLMOD(triplet_to_sparse) (S, 0, cm) ; // [
-    CHOLMOD(print_sparse) (A, "A", cm) ;
-    CHOLMOD(print_sparse) (C, "C", cm) ;
+//  CHOLMOD(print_sparse) (A, "A", cm) ;
+//  CHOLMOD(print_sparse) (C, "C", cm) ;
 
     Zs = CHOLMOD(spzeros) (nrow, ncol, 1, xtype + DTYPE, cm) ;  // [
 
@@ -541,7 +541,7 @@ double test_ops (cholmod_sparse *A)
         // F = G-C
         F = CHOLMOD(add) (G, C, one, minusone, TRUE, TRUE, cm) ;        // [
 
-        CHOLMOD(print_sparse) (F, "F", cm) ;
+//      CHOLMOD(print_sparse) (F, "F", cm) ;
         r = CHOLMOD(norm_sparse) (F, 1, cm) ;
         MAXERR (maxerr, r, anorm) ;
         r = CHOLMOD(norm_sparse) (F, 0, cm) ;
@@ -734,33 +734,33 @@ double test_ops (cholmod_sparse *A)
 // FIXME
 // int ssb = cm->print ; cm->print = 5 ;
 
-        CHOLMOD(print_sparse) (A, "A for do triplet", cm) ;
+//      CHOLMOD(print_sparse) (A, "A for do triplet", cm) ;
 
         // E = A
         E = CHOLMOD(copy) (A, 0, 2, cm) ;
-        CHOLMOD(print_sparse) (E, "E=triu(A)", cm) ;
+//      CHOLMOD(print_sparse) (E, "E=triu(A)", cm) ;
 
         // E = triu (E)
         CHOLMOD(band_inplace) (0, ncol, 1, E, cm) ;
 
         // F = A
         F = CHOLMOD(copy) (A, 0, 2, cm) ;
-        CHOLMOD(print_sparse) (F, "F=tril(A)", cm) ;
+//      CHOLMOD(print_sparse) (F, "F=tril(A)", cm) ;
 
         // F = tril(F,-1)
         CHOLMOD(band_inplace) (-nrow, -1, 1, F, cm) ;
-        CHOLMOD(print_sparse) (F, "Ftril", cm) ;
+//      CHOLMOD(print_sparse) (F, "Ftril", cm) ;
 
         // G = E+F
         G = CHOLMOD(add) (E, F, one, one, TRUE, TRUE, cm) ;
-        CHOLMOD(print_sparse) (G, "G=E+F (1)", cm) ;
+//      CHOLMOD(print_sparse) (G, "G=E+F (1)", cm) ;
 
         // D = A-G, which should be empty
         D = CHOLMOD(add) (G, A, one, minusone, TRUE, TRUE, cm) ;
-        CHOLMOD(print_sparse) (D, "D=A-G", cm) ;
+//      CHOLMOD(print_sparse) (D, "D=A-G", cm) ;
 
         CHOLMOD(drop) (0, D, cm) ;
-        CHOLMOD(print_sparse) (D, "D drop", cm) ;
+//      CHOLMOD(print_sparse) (D, "D drop", cm) ;
         nz = CHOLMOD(nnz) (D, cm) ;
         if (D != NULL)
         {
@@ -830,7 +830,7 @@ double test_ops (cholmod_sparse *A)
 
             // E = A, in symmetric/upper form
             E = CHOLMOD(copy) (A, 1, 2, cm) ;
-            CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
+//          CHOLMOD(print_sparse) (E, "E=A in sym/upper form", cm) ;
 
             // Minus1 = -1
             cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm) ;
@@ -841,24 +841,24 @@ double test_ops (cholmod_sparse *A)
 
             // E = -E
             CHOLMOD(scale) (Minus1, CHOLMOD_SCALAR, E, cm) ;
-            CHOLMOD(print_sparse) (E, "E=-E", cm) ;
+//          CHOLMOD(print_sparse) (E, "E=-E", cm) ;
 
             // F = A, in symmetric/lower form
             F = CHOLMOD(copy) (A, -1, 2, cm) ;
-            CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
+//          CHOLMOD(print_sparse) (F, "F=A in sym/lower form", cm) ;
 
             // C = F (exact copy)
             C = CHOLMOD(copy_sparse) (F, cm) ;
-            CHOLMOD(print_sparse) (C, "C=F", cm) ;
+//          CHOLMOD(print_sparse) (C, "C=F", cm) ;
 
             // G = E+C
             G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
-            CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
+//          CHOLMOD(print_sparse) (G, "G = E+F", cm) ;
             CHOLMOD(sort) (G, cm) ;
-            CHOLMOD(print_sparse) (G, "G sort", cm) ;
+//          CHOLMOD(print_sparse) (G, "G sort", cm) ;
 
             CHOLMOD(drop) (0, G, cm) ;
-            CHOLMOD(print_sparse) (G, "G drop", cm) ;
+//          CHOLMOD(print_sparse) (G, "G drop", cm) ;
             nz = CHOLMOD(nnz) (G, cm) ;
             if (G != NULL)
             {
@@ -881,7 +881,7 @@ double test_ops (cholmod_sparse *A)
     //--------------------------------------------------------------------------
 
     X = CHOLMOD(eye) (3, 4, CHOLMOD_REAL + DTYPE, cm) ;
-    CHOLMOD(print_dense) (X, "Dense identity", cm) ;
+//  CHOLMOD(print_dense) (X, "Dense identity", cm) ;
     CHOLMOD(free_dense) (&X, cm) ;
 
     //--------------------------------------------------------------------------
@@ -898,7 +898,7 @@ double test_ops (cholmod_sparse *A)
 
         // try CHOLMOD's interface to METIS_ComputeVertexSeparator
         cm->metis_memory = 2.0 ;
-        CHOLMOD(print_sparse) (A, "A for bisect", cm) ;
+//      CHOLMOD(print_sparse) (A, "A for bisect", cm) ;
         csep = CHOLMOD(bisect) (A, NULL, 0, TRUE, Partition, cm) ;
         if (csep != EMPTY)
         {
@@ -910,14 +910,14 @@ double test_ops (cholmod_sparse *A)
         }
 
         // try the raw interface to METIS_ComputeVertexSeparator
-        CHOLMOD(print_sparse) (A, "A for metis bisect", cm) ;
+//      CHOLMOD(print_sparse) (A, "A for metis bisect", cm) ;
 
         // C = A+A', remove the diagonal
         AT = CHOLMOD(transpose) (A, 0, cm) ;
         E = CHOLMOD(add) (A, AT, one, one, FALSE, TRUE, cm) ;
         CHOLMOD(free_sparse) (&AT, cm) ;
         C = CHOLMOD(copy) (E, 0, -1, cm) ;
-        CHOLMOD(print_sparse) (C, "C for metis bisect", cm) ;
+//      CHOLMOD(print_sparse) (C, "C for metis bisect", cm) ;
 
         cnz = (C != NULL) ? (C->nzmax) : 0 ;
         Cew = CHOLMOD(malloc) (cnz, sizeof (Int), cm) ;
@@ -1063,8 +1063,8 @@ double test_ops (cholmod_sparse *A)
 
     len = ncol/2 ;
     fset = prand (ncol) ;                                       // RAND
-    CHOLMOD(print_perm) (P, nrow, nrow, "P", cm) ;
-    CHOLMOD(print_subset) (fset, ncol, ncol, "fset", cm) ;
+//  CHOLMOD(print_perm) (P, nrow, nrow, "P", cm) ;
+//  CHOLMOD(print_subset) (fset, ncol, ncol, "fset", cm) ;
 
     // if (isreal)
     {
@@ -1164,7 +1164,7 @@ double test_ops (cholmod_sparse *A)
         if (n > NLARGE) progress (1, '.') ;
         C = CHOLMOD(aat) (D, NULL, 0, 2, cm) ;
         if (n > NLARGE) progress (1, '.') ;
-        CHOLMOD(print_common) ("38:cm After A*A'", cm) ;
+//      CHOLMOD(print_common) ("38:cm After A*A'", cm) ;
 
         for (stype = -1 ; stype <= 1 ; stype++)
         {

@@ -57,6 +57,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     isreal = (xtype == CHOLMOD_REAL) ;
 
     double maxerr = 0 ;
+    const int psave = cm->print ;
 
     //--------------------------------------------------------------------------
     // create objects to test
@@ -150,7 +151,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     {
         CHOLMOD(print_parent)(Parent, nrow, "Parent", cm) ;
     }
-    cm->print = 1 ;
+    cm->print = psave ;
 
     // get row 0 and row 1 of A
     R0 = NULL ;
@@ -186,7 +187,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
             ok = CHOLMOD(print_sparse)(C, "(Row zero)*(Row one)'", cm) ;OK (ok);
             ok = CHOLMOD(free_sparse)(&C, cm) ;  OK (ok) ;
             ok = CHOLMOD(free_sparse)(&Rt, cm) ; OK (ok) ;
-            cm->print = 1 ;
+            cm->print = psave ;
         }
     }
 
@@ -206,7 +207,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     Abad2 = CHOLMOD(copy_sparse)(A, cm) ;           // [
     cm->print = 4 ;
     CHOLMOD(print_sparse)(Abad2, "Abad2", cm) ;
-    cm->print = 1 ;
+    cm->print = psave ;
     Abad2xtype = Abad2->xtype ;
     Abad2->xtype = -999 ;
 
@@ -561,7 +562,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     CHOLMOD(free_sparse)(&F, cm) ;
     CHOLMOD(free_sparse)(&G, cm) ;
 
-    cm->print = 1 ;
+    cm->print = psave ;
 
     //--------------------------------------------------------------------------
     // scale
@@ -587,14 +588,13 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(amd)(A, NULL, 0, Pok, cm) ;                        OK (ok) ;
     cm->current = 0 ;
     ok = CHOLMOD(print_perm)(Pok, nrow, nrow, "AMD perm", cm) ;     OK (ok) ;
-    i = cm->print ;
     cm->print = 4 ;
     if (A->nrow < 1000 && /* TODO: */ isreal)
     {
         CHOLMOD(print_sparse)(Aboth, "Aboth", cm) ;
         ok = CHOLMOD(amd)(Aboth, NULL, 0, Pok, cm) ;                OK (ok) ;
     }
-    cm->print = i ;
+    cm->print = psave ;
     ok = CHOLMOD(amd)(Abad2, NULL, 0, Pok, cm) ;                    NOT (ok) ;
 
     //--------------------------------------------------------------------------
@@ -610,14 +610,13 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(camd)(A, NULL, 0, NULL, Pok, cm) ;                 OK (ok) ;
     cm->current = 0 ;
     ok = CHOLMOD(print_perm)(Pok, nrow, nrow, "CAMD perm", cm) ;    OK (ok) ;
-    i = cm->print ;
     cm->print = 4 ;
     if (A->nrow < 1000 && /* TODO: */ isreal)
     {
         CHOLMOD(print_sparse)(Aboth, "Aboth", cm) ;
         ok = CHOLMOD(camd)(Aboth, NULL, 0, NULL, Pok, cm) ;         OK (ok) ;
     }
-    cm->print = i ;
+    cm->print = psave ;
     ok = CHOLMOD(camd)(Abad2, NULL, 0, NULL, Pok, cm) ;             NOT (ok) ;
 #endif
 
@@ -628,6 +627,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->print = 4 ;
     ok = CHOLMOD(print_common)("13:cm", cm) ;
     OK (ok) ;
+    cm->print = psave ;
 
     cm->nmethods = 1 ;
     cm->method [0].ordering = -1 ;
@@ -652,7 +652,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_common)("15:cm", cm) ;
     OK (ok) ;
     ok = CHOLMOD(print_factor)(L, "L symbolic", cm) ;               OK (ok) ;
-    cm->print = 1 ;
+    cm->print = psave ;
     ok = CHOLMOD(free_factor)(&L, cm) ;                             OK (ok) ;
     ok = CHOLMOD(free_factor)(&L, cm) ;                             OK (ok) ;
     ok = CHOLMOD(free_factor)(NULL, cm) ;                           OK (ok) ;
@@ -848,6 +848,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
     cm->print = 4 ;
     ok = CHOLMOD(print_common)("16:cm Null", NULL) ;
+    cm->print = psave ;
     NOT (ok) ;
     for (cm->status = CHOLMOD_INVALID ; cm->status <= CHOLMOD_DSMALL ;
             cm->status++)
@@ -926,7 +927,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     C->itype = EMPTY ;
     ok = CHOLMOD(print_sparse)(C, "CIbad", cm) ;                    NOT (ok) ;
     C->itype = cm->itype ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     cm->print = 4 ;
     #if defined ( CHOLMOD_INT64 )
@@ -936,7 +937,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     #endif
     ok = CHOLMOD(print_sparse)(C, "Cibad2", cm) ;                   NOT (ok) ;
     C->itype = cm->itype ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
 //  C->dtype = CHOLMOD_SINGLE ;
 //  ok = CHOLMOD(print_sparse)(C, "C single: OK", cm) ;             OK (ok) ;
@@ -1148,7 +1149,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
         OK (ok) ;
     }
 
-    cm->print = 1 ;
+    cm->print = psave ;
 
     //--------------------------------------------------------------------------
     // print_perm
@@ -1171,7 +1172,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
         }
         OK (ok) ;
     }
-    cm->print = 1 ;
+    cm->print = psave ;
 
     n2 = 2 * cm->nrow ;
     P2 = prand (n2) ;                                           // RAND
@@ -1188,7 +1189,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
         ok = CHOLMOD(print_perm)(P2, n2, n2, "P2 OK", cm) ;
         OK (ok) ;
     }
-    cm->print = 1 ;
+    cm->print = psave ;
 
     CHOLMOD(free)(2 * (cm->nrow), sizeof (Int), P2, cm) ;
 
@@ -1248,7 +1249,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_factor)(L, "L bad itype", cm) ;
     NOT (ok) ;
     L->itype = cm->itype ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     cm->print = 4 ;
 
@@ -1343,7 +1344,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(print_factor)(L, "L supernodal (precise)", cm) ;   OK (ok) ;
     cm->precise = FALSE ;
     ok = CHOLMOD(print_factor)(L, "L supernodal", cm) ;             OK (ok) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     // cannot realloc a supernodal L
     ok = CHOLMOD(reallocate_factor)(10000, L, cm) ;                 NOT (ok) ;
@@ -1357,13 +1358,12 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     Lxtype = L->xtype ;
     OK (L->dtype == DTYPE) ;
 
-    i = cm->print ;
     cm->print = 4 ;
     L->xtype = CHOLMOD_PATTERN ;
     ok = CHOLMOD(print_factor)(L, "L pattern", cm) ;                OK (ok) ;
     C = CHOLMOD(factor_to_sparse)(L, cm) ;                          NOP (C) ;
     L->xtype = Lxtype ;
-    cm->print = i ;
+    cm->print = psave ;
 
     // check with bad L factor
     ok = CHOLMOD(print_factor)(Lbad, "L unknown", cm) ;             NOT (ok) ;
@@ -1659,7 +1659,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->print = 4 ;
     CHOLMOD(print_sparse)(I3, "I3", cm) ;
     CHOLMOD(print_factor)(L6, "L6", cm) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     ok = CHOLMOD(super_numeric)(I3, NULL, beta, L6, cm) ;           NOT (ok) ;
     CHOLMOD(free_sparse)(&I, cm) ;
@@ -2065,10 +2065,6 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
         // now try to make L4 really huge
 
-        // cm->print = 5 ;
-        // CHOLMOD(print_sparse) (A, "A for huge", cm) ;
-        // CHOLMOD(print_factor) (L4, "L4 for huge", cm) ;
-
         if (ok && !(L->is_super) && L->xtype != CHOLMOD_PATTERN)
         {
 
@@ -2100,7 +2096,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     cm->grow1 = gsave1 ;
     cm->grow2 = gsave2 ;
 
-    cm->print = 1 ;
+    cm->print = psave ;
 
     //--------------------------------------------------------------------------
     // more error tests
@@ -2308,7 +2304,7 @@ if (do_nantests)
     }
     cm->supernodal = CHOLMOD_AUTO ;
     cm->final_ll = FALSE ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     //--------------------------------------------------------------------------
     // refactorize simplicial LDL'
@@ -2481,7 +2477,7 @@ if (do_nantests)
         OK (ok) ;
     }
     T->z = Tz ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     ok = CHOLMOD(print_triplet)(T, "T ok", cm) ;                    OK (ok) ;
 
@@ -2506,7 +2502,7 @@ if (do_nantests)
     #endif
     ok = CHOLMOD(print_triplet)(T, "T bad itype", cm) ;             NOT (ok) ;
     T->itype = cm->itype ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     Txtype = T->xtype ;
     T->xtype = -1 ;
@@ -2562,7 +2558,7 @@ if (do_nantests)
 //  ok = CHOLMOD(print_triplet)(T, "T ok", cm) ;            OK (ok) ;
     CHOLMOD(triplet_xtype)(CHOLMOD_PATTERN + DTYPE, T, cm) ;
     ok = CHOLMOD(print_triplet)(T, "T pattern ok", cm) ;            OK (ok) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     //--------------------------------------------------------------------------
     // triplet, realloc_multiple
@@ -2620,7 +2616,7 @@ if (do_nantests)
         ok = CHOLMOD(print_triplet)(T, "T pattern ok", cm) ;        OK (ok) ;
     }
     OK (cm->status == CHOLMOD_OK) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     ok = CHOLMOD(reallocate_triplet)(1, NULL, cm) ;                 NOT (ok) ;
 
@@ -2704,7 +2700,7 @@ if (do_nantests)
         printf ("stype "ID"\n", stype) ;
         CHOLMOD(print_triplet)(T, "T from triplet", cm) ;
         CHOLMOD(print_sparse)(C, "C from triplet", cm) ;
-        cm->print = 1 ;
+        cm->print = psave ;
         OKP (C) ;
         CHOLMOD(free_sparse)(&C, cm) ;
         CHOLMOD(free_triplet)(&T, cm) ;
@@ -2778,11 +2774,10 @@ if (do_nantests)
     ok = CHOLMOD(colamd)(A, fsetok, fsizeok, TRUE, Pok, cm) ;
     if (A->stype == 0)
     {
-        save3 = cm->print ;
         cm->print = 5 ;
         ok = CHOLMOD(print_common) ("33:cm colamd dense2", cm) ;
         OK (ok) ;
-        cm->print = save3 ;
+        cm->print = psave ;
         OK (ok) ;
     }
     else
@@ -3257,7 +3252,7 @@ if (do_nantests)
     OKP (XX) ;
     cm->print = 4 ;
     ok = CHOLMOD(print_dense)(XX, "XX", cm) ;                       OK (ok) ;
-    cm->print = 1 ;
+    cm->print = psave ;
     ok = CHOLMOD(sdmult)(A, FALSE, one, one, XX, YY, cm) ;          OK (ok) ;
     ok = CHOLMOD(sdmult)(NULL, FALSE, one, one, XX, YY, cm) ;       NOT (ok) ;
     ok = CHOLMOD(sdmult)(A, FALSE, one, one, NULL, YY, cm) ;        NOT (ok) ;
@@ -3285,10 +3280,9 @@ if (do_nantests)
         Int xmatched = 0, pmatched = 0, nzoffdiag = 0, nz_diag = 0 ;
         int asym ;
         printf ("test symmetry: option %d\n", option) ;
-        save1 = cm->print ;
         cm->print = 5 ;
         CHOLMOD(print_sparse) (A, "A", cm) ;
-        cm->print = save1 ;
+        cm->print = psave ;
         asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched,
             &nzoffdiag, &nz_diag, cm) ;
         printf ("asym: %d\n", asym) ;
@@ -3462,7 +3456,7 @@ if (do_nantests)
     ok = CHOLMOD(print_factor)(Lcopy, "Lcopy", cm) ;
     OK (ok) ;
     CHOLMOD(free_factor)(&Lcopy, cm) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     test_memory_handler ( ) ;
     ok = CHOLMOD(resymbol)(A, NULL, 0, TRUE, L, cm) ;           NOT (ok) ;

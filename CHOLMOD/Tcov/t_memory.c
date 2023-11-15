@@ -132,6 +132,7 @@ void memory_tests (cholmod_triplet *T)
     cholmod_sparse *A ;
     Int trial ;
     size_t count, inuse ;
+    const int psave = cm->print ;
 
     test_memory_handler ( ) ;
     inuse = cm->memory_inuse ;
@@ -337,7 +338,7 @@ void memory_tests (cholmod_triplet *T)
     //--------------------------------------------------------------------------
 
     normal_memory_handler ( ) ;
-    cm->print = 1 ;
+    cm->print = psave ;
 
     printf ("All memory tests OK, no error\n") ;
 }
