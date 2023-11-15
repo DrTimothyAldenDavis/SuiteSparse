@@ -242,6 +242,7 @@ double solve (cholmod_sparse *A)
     if (n < 100 && cm->nmethods == 1 && cm->method[0].ordering == CHOLMOD_GIVEN)
     {
         Int *UserPerm = prand (nrow) ;                          // RAND
+        CHOLMOD(print_perm) (UserPerm, nrow, nrow, "UserPerm", cm) ;
         L = CHOLMOD(analyze_p) (A, UserPerm, NULL, 0, cm) ;
         OK (CHOLMOD(print_common) ("36:cm with UserPerm", cm)) ;
         CHOLMOD(free) (nrow, sizeof (Int), UserPerm, cm) ;
@@ -277,6 +278,13 @@ double solve (cholmod_sparse *A)
 
     CHOLMOD(print_sparse) (A, "A here::", cm) ;
     CHOLMOD(print_factor) (L, "L here::", cm) ;
+
+    // make a of copy of L->Perm, just for testing
+    Int *PP = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
+    if (PP != NULL && L != NULL && L->Perm != NULL)
+    {
+        memcpy (PP, L->Perm, nrow * sizeof (Int)) ;
+    }
 
     //--------------------------------------------------------------------------
     // various solves
@@ -448,16 +456,25 @@ double solve (cholmod_sparse *A)
         CHOLMOD(sparse_xtype) (A->xtype + DTYPE, C, cm) ;
 
         // compute norm of A*C-I
+
+        // E = A*C
         E = CHOLMOD(ssmult) (A, C, 0, TRUE, FALSE, cm) ;
+
+        // r = norm (E-I)
         F = CHOLMOD(add) (E, I, minusone, one, TRUE, FALSE, cm) ;
         r = CHOLMOD(norm_sparse) (F, 1, cm) ;
-        CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&F, cm) ;
+
+        // also use ptest to compute norm (E-I)
+        double r2 = ptest (E, I, PP, n) ;
+
+        CHOLMOD(free_sparse) (&E, cm) ;
         if (cm->print > 1)
         {
-            printf ("norm (A*C-I)::: %g\n", r) ;
+            printf ("norm (A*C-I)::: %g\n", r, r2) ;
         }
         MAXERR (maxerr, r, 1) ;
+        MAXERR (maxerr, r2, 1) ;
         CHOLMOD(free_sparse) (&I, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
     }
@@ -502,6 +519,7 @@ double solve (cholmod_sparse *A)
     if (n < 100 && cm->nmethods == 1 && cm->method[0].ordering == CHOLMOD_GIVEN)
     {
         Int *UserPerm = prand (nrow) ;                          // RAND
+        CHOLMOD(print_perm) (UserPerm, nrow, nrow, "UserPerm", cm) ;
         L = CHOLMOD(analyze_p) (A, UserPerm, NULL, 0, cm) ;
         CHOLMOD(free) (nrow, sizeof (Int), UserPerm, cm) ;
     }
@@ -626,23 +644,30 @@ double solve (cholmod_sparse *A)
     {
         // G = A*A', try with fset = prand (ncol)
         fset = prand (ncol) ;                               // RAND
+        CHOLMOD(print_perm) (fset, ncol, ncol, "fset", cm) ;
         AFt = CHOLMOD(ptranspose) (A, 2, NULL, fset, ncol, cm) ;
         AF  = CHOLMOD(transpose) (AFt, 2, cm) ;
 
         CHOLMOD(free) (ncol, sizeof (Int), fset, cm) ;
         G = CHOLMOD(ssmult) (AF, AFt, 0, TRUE, TRUE, cm) ;
 
-        // also try aat
+        // H = A*A' using aat
         H = CHOLMOD(aat) (AF, NULL, 0, 2, cm) ;
 
+        // enorm = norm (G-H)
         E = CHOLMOD(add) (G, H, one, minusone, TRUE, FALSE, cm) ;
-
         enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
+        CHOLMOD(free_sparse) (&E, cm) ;
+
+        // also use ptest to compute enorm (G-H)
+        double enorm2 = ptest (G, H, PP, nrow) ;
+
         gnorm = CHOLMOD(norm_sparse) (G, 0, cm) ;
         MAXERR (maxerr, enorm, gnorm) ;
+        MAXERR (maxerr, enorm2, gnorm) ;
         if (cm->print > 1)
         {
-            printf ("enorm %g gnorm %g hnorm %g\n", enorm, gnorm,
+            printf ("enorm %g %g gnorm %g hnorm %g\n", enorm, enorm2, gnorm,
                 CHOLMOD(norm_sparse) (H, 0, cm)) ;
         }
         if (gnorm > 0)
@@ -657,7 +682,6 @@ double solve (cholmod_sparse *A)
         #endif
         CHOLMOD(free_sparse) (&AFt, cm) ;
         CHOLMOD(free_sparse) (&AF, cm) ;
-        CHOLMOD(free_sparse) (&E, cm) ;
         CHOLMOD(free_sparse) (&H, cm) ;
     }
     else
@@ -1525,6 +1549,7 @@ double solve (cholmod_sparse *A)
     // return result
     //--------------------------------------------------------------------------
 
+    CHOLMOD(free) (nrow, sizeof (Int), PP, cm) ;
     progress (0, '.') ;
     return (maxerr) ;
 }

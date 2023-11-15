@@ -147,16 +147,22 @@ TEMPLATES =             \
     t_read_triplet.c    \
     t_rhs.c             \
     t_znorm_diag.c      \
+    t_prand.c           \
+    t_perm_matrix.c     \
+    t_rand_dense.c      \
+    t_ptest.c           \
     t_ctest.c           \
     t_huge.c            \
     t_lpdemo.c          \
     t_memory.c          \
     t_null2.c           \
     t_basic.c           \
+    t_overflow_tests.c  \
     t_null.c            \
     t_raw_factor.c      \
     t_solve.c           \
     t_test_ops.c        \
+    t_test_ops2.c       \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
@@ -1951,7 +1957,7 @@ z_horzcat.o: ../MatrixOps/cholmod_horzcat.c
 	$(C) -c $(I) z_horzcat.c
 
 z_norm.o: ../MatrixOps/cholmod_norm.c
-	$- ln -s $< z_norm.c
+	- ln -s $< z_norm.c
 	$(C) -c $(I) z_norm.c
 
 z_scale.o: ../MatrixOps/cholmod_scale.c

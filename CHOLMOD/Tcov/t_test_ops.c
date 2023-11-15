@@ -606,9 +606,11 @@ double test_ops (cholmod_sparse *A)
 
     S = CHOLMOD(sparse_to_triplet) (A, cm) ;
     P = prand (nrow) ;                                          // RAND
+    CHOLMOD(print_perm) (P, nrow, nrow, "P", cm) ;
     if (A->stype == 0)
     {
         Q = prand (ncol) ;                                      // RAND
+        CHOLMOD(print_perm) (Q, ncol, ncol, "Q", cm) ;
     }
     else
     {
@@ -983,6 +985,7 @@ double test_ops (cholmod_sparse *A)
 
     len = ncol/2 ;
     fset = prand (ncol) ;                                       // RAND
+    CHOLMOD(print_perm) (fset, ncol, ncol, "fset", cm) ;
 
     C = CHOLMOD(copy) (A, 0, 2, cm) ;
     D = CHOLMOD(ptranspose) (C, 2, P, fset, len, cm) ;

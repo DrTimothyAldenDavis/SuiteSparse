@@ -371,6 +371,7 @@ double lpdemo (cholmod_triplet *T)
 
     // select an initial fset of size nrow
     init = prand (ncol) ;                                       // RAND
+    CHOLMOD(print_perm) (init, ncol, ncol, "init", cm) ;
     fset = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;
     fnot = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;
     fflag = CHOLMOD(malloc) (ncol, sizeof (Int), cm) ;

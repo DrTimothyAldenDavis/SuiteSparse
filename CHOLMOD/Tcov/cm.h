@@ -109,8 +109,11 @@ void null_test2 (void) ;
 void Assert (int truth, char *file, int line) ;
 Int nrand (Int n) ;
 Int *prand (Int n) ;
+
+double ptest (cholmod_sparse *A, cholmod_sparse *B, Int *perm, Int n) ;
 cholmod_triplet *read_triplet (FILE *f) ;
 double test_ops (cholmod_sparse *A) ;
+double test_ops2 (cholmod_sparse *A) ;
 cholmod_dense *xtrue (Int nrow, Int ncol, Int d, int xdtype, int tweak) ;
 double resid (cholmod_sparse *A, cholmod_dense *X, cholmod_dense *B) ;
 double solve (cholmod_sparse *A) ;
@@ -158,12 +161,24 @@ cholmod_dense *zeros (Int nrow, Int ncol, Int d, int xdtype) ;
 void huge (void) ;
 void camdtest (cholmod_sparse *A) ;
 void basic1 (cholmod_common *) ;
+void overflow_tests (cholmod_common *cm) ;
 void sparse_dump (cholmod_sparse *A, char *filename, cholmod_common *cm) ;
 void factor_dump (cholmod_factor *L, char *L_filename, char *P_filename,
     cholmod_common *cm) ;
 void dense_dump  (cholmod_dense  *X, char *filename, cholmod_common *cm) ;
 void Int_dump    (Int *P, Int n, char *filename, cholmod_common *cm) ;
 double znorm_diag (cholmod_sparse *A, cholmod_common *cm) ;
+
+cholmod_dense *rand_dense
+(
+    Int nrow,
+    Int ncol,
+    int xdtype,
+    cholmod_common *Common
+) ;
+
+cholmod_sparse *perm_matrix (Int *perm, Int n, int xdtype,
+    cholmod_common *Common) ;
 
 //------------------------------------------------------------------------------
 // AMD, COLAMD, and CCOLAMD

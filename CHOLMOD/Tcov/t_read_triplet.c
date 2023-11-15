@@ -34,6 +34,8 @@ cholmod_triplet *read_triplet
         return (NULL) ;
     }
 
+    // header line: nrow ncol nz stype (xtype-1)
+
     x1 = 0 ;
     x2 = 0 ;
     x3 = 0 ;

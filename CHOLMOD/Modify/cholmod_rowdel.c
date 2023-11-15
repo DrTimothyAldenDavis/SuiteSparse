@@ -167,7 +167,7 @@ GOTCHA
 
     // s = 2*n
     int ok = TRUE ;
-    size_t s = CHOLMOD(mult_size_t) (n, 2, &ok) ;
+    size_t s = CHOLMOD(mult_size_t) (L->n, 2, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

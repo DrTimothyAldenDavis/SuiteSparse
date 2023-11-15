@@ -88,13 +88,17 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     printf ("fset:\n") ;
 
     fsetok = prand (ncol) ;     // RAND [
+    CHOLMOD(print_perm) (fsetok, ncol, ncol, "fsetok", cm) ;
+
     fsetbad = prand (ncol) ;    // RAND [
+    CHOLMOD(print_perm) (fsetbad, ncol, ncol, "fsetbad (befor mangling)", cm) ;
 
     if (ncol > 0)
     {
         fsetbad [0] = -1 ;
     }
     Pbad = prand (nrow) ;       // RAND [
+    CHOLMOD(print_perm) (Pbad, nrow, nrow, "Pbad", cm) ;
 
     if (nrow > 0)
     {
@@ -104,6 +108,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
     fsizeok = (ncol < 2) ? ncol : (ncol/2) ;
     Pok = prand (nrow) ;    // RAND [
+    CHOLMOD(print_perm) (Pok, nrow, nrow, "Pok", cm) ;
 
     R2 = CHOLMOD(allocate_sparse) (nrow, 1, nrow, FALSE, TRUE, 0,    // [
             CHOLMOD_REAL + DTYPE, cm) ;
@@ -1228,6 +1233,7 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
     n2 = 2 * cm->nrow ;
     P2 = prand (n2) ;                                           // RAND
+    CHOLMOD(print_perm) (P2, n2, n2, "P2", cm) ;
 
     for (cm->print = 3 ; cm->print <= 4 ; cm->print++)
     {

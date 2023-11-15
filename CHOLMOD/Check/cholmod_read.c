@@ -554,9 +554,7 @@ static cholmod_triplet *read_triplet
 
     // s = nrow + ncol
     s = CHOLMOD(add_size_t) (nrow, ncol, &ok) ;
-    if (!ok || (Int) nrow > Int_max
-            || (Int) ncol > Int_max
-            || (Int) nnz  > Int_max)
+    if (!ok || nrow > Int_max || ncol > Int_max || nnz > Int_max)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (NULL) ;

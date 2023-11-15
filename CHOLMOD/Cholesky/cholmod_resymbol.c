@@ -291,11 +291,11 @@ int CHOLMOD(resymbol_noperm)    // recompute symbolic pattern of L
     //--------------------------------------------------------------------------
 
     // s = nrow + (stype ? 0 : ncol)
-    size_t s = nrow ;
+    size_t s = A->nrow ;
     int ok = TRUE ;
     if (stype != 0)
     {
-        s = CHOLMOD(add_size_t) (s, ncol, &ok) ;
+        s = CHOLMOD(add_size_t) (s, A->ncol, &ok) ;
     }
     if (!ok)
     {

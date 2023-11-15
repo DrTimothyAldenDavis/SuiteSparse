@@ -173,37 +173,6 @@ double xrand (double range)
 }
 
 //------------------------------------------------------------------------------
-// prand
-//------------------------------------------------------------------------------
-
-// allocate and construct a random permutation of 0:n-1
-
-Int *prand (Int n)
-{
-    Int *P ;
-    Int t, j, k ;
-    P = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-    if (P == NULL)
-    {
-        ERROR (CHOLMOD_INVALID, "cannot create random perm") ;
-        return (NULL) ;
-    }
-    for (k = 0 ; k < n ; k++)
-    {
-        P [k] = k ;
-    }
-    for (k = 0 ; k < n-1 ; k++)
-    {
-        j = k + nrand (n-k) ;
-        t = P [j] ;
-        P [j] = P [k] ;
-        P [k] = t ;
-    }
-    CHOLMOD(print_perm) (P, n, n, "Prandom", cm) ;
-    return (P) ;
-}
-
-//------------------------------------------------------------------------------
 // rand_set
 //------------------------------------------------------------------------------
 
@@ -1225,6 +1194,14 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
 
     basic1 (cm) ;
+    printf ("basic1 tests OK\n") ;
+
+    //--------------------------------------------------------------------------
+    // integer overflow tests
+    //--------------------------------------------------------------------------
+
+    overflow_tests (cm) ;
+    printf ("overflow tests OK\n") ;
 
     //--------------------------------------------------------------------------
     // read in a triplet matrix and use it to test CHOLMOD
@@ -1457,15 +1434,21 @@ int main (int argc, char **argv)
             }
         }
 
-        progress (1, '|') ;
+        //----------------------------------------------------------------------
+        // test more ops
+        //----------------------------------------------------------------------
 
+        my_srand (42) ;                                         // RAND reset
+        double err = test_ops2 (A) ;
+        MAXERR (maxerr, err, 1) ;
+
+        //----------------------------------------------------------------------
+        // exhaustive memory-error handling for small matrices
+        //----------------------------------------------------------------------
+
+        progress (1, '|') ;
         if (n < NSMALL && do_memory)
         {
-
-            //------------------------------------------------------------------
-            // Exhaustive memory-error handling
-            //------------------------------------------------------------------
-
             memory_tests (T) ;                                  // RAND
         }
 
@@ -1512,6 +1495,7 @@ int main (int argc, char **argv)
             }
             test_result = 1 ;
         }
+
         my_srand (42) ;                                         // RAND reset
     }
 

@@ -8,5 +8,5 @@
 
 ./gcovs z_*.c zz_*.c l_*.c ui_*.c ul_*.c zl_*.c
 ./covs *.gcov > covs.out
-echo -n "statments not yet tested: "
+echo -n "statements not yet tested: "
 grep -c "#####" covs.out

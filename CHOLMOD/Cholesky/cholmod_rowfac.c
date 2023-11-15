@@ -715,7 +715,7 @@ int CHOLMOD(rowfac_mask2)
     n = L->n  ;
 
     // s = ((A->xtype != CHOLMOD_REAL) ? 2:1)*n
-    s = CHOLMOD(mult_size_t) (n, ((A->xtype != CHOLMOD_REAL) ? 2:1), &ok) ;
+    s = CHOLMOD(mult_size_t) (L->n, ((A->xtype != CHOLMOD_REAL) ? 2:1), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
