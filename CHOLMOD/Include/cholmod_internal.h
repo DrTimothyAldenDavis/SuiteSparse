@@ -91,30 +91,30 @@
 
 // Check a pointer and return if null.  Set status to invalid, unless the
 // status is already "out of memory"
-#define RETURN_IF_NULL(A,result) \
-{ \
-    if ((A) == NULL) \
-    { \
-        if (Common->status != CHOLMOD_OUT_OF_MEMORY) \
-        { \
-            ERROR (CHOLMOD_INVALID, "argument missing") ; \
-        } \
-        return (result) ; \
-    } \
+#define RETURN_IF_NULL(A,result)                            \
+{                                                           \
+    if ((A) == NULL)                                        \
+    {                                                       \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)        \
+        {                                                   \
+            ERROR (CHOLMOD_INVALID, "argument missing") ;   \
+        }                                                   \
+        return (result) ;                                   \
+    }                                                       \
 }
 
 // Return if Common is NULL or invalid
-#define RETURN_IF_NULL_COMMON(result) \
-{ \
-    if (Common == NULL) \
-    { \
-        return (result) ; \
-    } \
-    if (Common->itype != ITYPE) \
-    { \
-        Common->status = CHOLMOD_INVALID ; \
-        return (result) ; \
-    } \
+#define RETURN_IF_NULL_COMMON(result)                       \
+{                                                           \
+    if (Common == NULL)                                     \
+    {                                                       \
+        return (result) ;                                   \
+    }                                                       \
+    if (Common->itype != ITYPE)                             \
+    {                                                       \
+        Common->status = CHOLMOD_INVALID ;                  \
+        return (result) ;                                   \
+    }                                                       \
 }
 
 // 1e308 is a huge number that doesn't take many characters to print in a
@@ -604,7 +604,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 #define EXTERN extern
 #endif
 
-// double, int32_t
+// int32_t
 EXTERN int cholmod_dump ;
 EXTERN int cholmod_dump_malloc ;
 int64_t cholmod_dump_sparse (cholmod_sparse  *, const char *,
@@ -626,7 +626,7 @@ int  cholmod_dump_partition (int64_t, int *, int *, int *, int *,
     int64_t, cholmod_common *) ;
 int  cholmod_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
-// double, int64_t
+// int64_t
 EXTERN int cholmod_l_dump ;
 EXTERN int cholmod_l_dump_malloc ;
 int64_t cholmod_l_dump_sparse (cholmod_sparse  *, const char *,
@@ -681,12 +681,12 @@ size_t CM_memtable_size (void *p) ;
 bool CM_memtable_find (void *p) ;
 void CM_memtable_remove (void *p) ;
 
-#define PRINTM(params) \
-{ \
-    if (CHOLMOD(dump_malloc) > 0) \
-    { \
-        printf params ; \
-    } \
+#define PRINTM(params)              \
+{                                   \
+    if (CHOLMOD(dump_malloc) > 0)   \
+    {                               \
+        printf params ;             \
+    }                               \
 }
 
 #define DEBUG(statement) statement
