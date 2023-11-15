@@ -622,144 +622,140 @@ double solve (cholmod_sparse *A)
     S = NULL ;
     G = NULL ;
 
-    // if (isreal)     // HERE
+    if (A->stype == 0)
     {
+        // G = A*A', try with fset = prand (ncol)
+        fset = prand (ncol) ;                               // RAND
+        AFt = CHOLMOD(ptranspose) (A, 2, NULL, fset, ncol, cm) ;
+        AF  = CHOLMOD(transpose) (AFt, 2, cm) ;
 
-        if (A->stype == 0)
+        CHOLMOD(free) (ncol, sizeof (Int), fset, cm) ;
+        G = CHOLMOD(ssmult) (AF, AFt, 0, TRUE, TRUE, cm) ;
+
+        // also try aat
+        H = CHOLMOD(aat) (AF, NULL, 0, 2, cm) ;
+
+        E = CHOLMOD(add) (G, H, one, minusone, TRUE, FALSE, cm) ;
+
+        enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
+        gnorm = CHOLMOD(norm_sparse) (G, 0, cm) ;
+        MAXERR (maxerr, enorm, gnorm) ;
+        if (cm->print > 1)
         {
-            // G = A*A', try with fset = prand (ncol)
-            fset = prand (ncol) ;                               // RAND
-            AFt = CHOLMOD(ptranspose) (A, 2, NULL, fset, ncol, cm) ;
-            AF  = CHOLMOD(transpose) (AFt, 2, cm) ;
+            printf ("enorm %g gnorm %g hnorm %g\n", enorm, gnorm,
+                CHOLMOD(norm_sparse) (H, 0, cm)) ;
+        }
+        if (gnorm > 0)
+        {
+            enorm /= gnorm ;
+        }
 
-            CHOLMOD(free) (ncol, sizeof (Int), fset, cm) ;
-            G = CHOLMOD(ssmult) (AF, AFt, 0, TRUE, TRUE, cm) ;
+        #ifdef DOUBLE
+        OK (enorm < 1e-8) ;
+        #else
+        OK (enorm < 1e-4) ;
+        #endif
+        CHOLMOD(free_sparse) (&AFt, cm) ;
+        CHOLMOD(free_sparse) (&AF, cm) ;
+        CHOLMOD(free_sparse) (&E, cm) ;
+        CHOLMOD(free_sparse) (&H, cm) ;
+    }
+    else
+    {
+        // G = A
+        G = CHOLMOD(copy) (A, 0, 2, cm) ;
+    }
 
-            // also try aat
-            H = CHOLMOD(aat) (AF, NULL, 0, 2, cm) ;
+    if (A->stype == 0)
+    {
+        // S = PAA'P'
+        S = CHOLMOD(submatrix) (G, P, n, P, n, TRUE, FALSE, cm) ;
+    }
+    else
+    {
+        // S = PAP'
+        Aboth = CHOLMOD(copy) (A, 0, 2, cm) ;
+        S = CHOLMOD(submatrix) (Aboth, P, n, P, n, TRUE, FALSE, cm) ;
+        CHOLMOD(free_sparse) (&Aboth, cm) ;
+    }
 
-            E = CHOLMOD(add) (G, H, one, minusone, TRUE, FALSE, cm) ;
+    if (n < NSMALL)
+    {
+        // only do this for small test matrices, since L*D*L' can have many
+        // nonzero entries
+        // E = L*D*L' - S
 
-            enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
-            gnorm = CHOLMOD(norm_sparse) (G, 0, cm) ;
-            MAXERR (maxerr, enorm, gnorm) ;
-            if (cm->print > 1)
+        LD = CHOLMOD(ssmult) (Lo, D, 0, TRUE, FALSE, cm) ;
+        LDL = CHOLMOD(ssmult) (LD, Up, 0, TRUE, FALSE, cm) ;
+        CHOLMOD(free_sparse) (&LD, cm) ;
+        E = CHOLMOD(add) (LDL, S, one, minusone, TRUE, FALSE, cm) ;
+        CHOLMOD(free_sparse) (&LDL, cm) ;
+
+        // e = norm (E) / norm (S)
+        enorm = CHOLMOD(norm_sparse) (E, 1, cm) ;
+        snorm = CHOLMOD(norm_sparse) (S, 0, cm) ;
+        MAXERR (maxerr, enorm, snorm) ;
+        CHOLMOD(free_sparse) (&E, cm) ;
+    }
+
+    // check the row/col counts
+    RowCount = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    ColCount = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    Parent   = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    Post     = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    First    = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    Level    = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
+    rcount   = CHOLMOD(calloc) (n, sizeof (Int), cm) ;
+    ccount   = CHOLMOD(calloc) (n, sizeof (Int), cm) ;
+
+    if (S != NULL && Lmat != NULL && RowCount != NULL && ColCount != NULL &&
+        Parent != NULL && Post != NULL && First != NULL && Level != NULL &&
+        rcount != NULL && ccount != NULL)
+    {
+        S->stype = 1 ;
+
+        CHOLMOD(etree) (S, Parent, cm) ;
+        CHOLMOD(postorder) (Parent, n, NULL, Post, cm) ;
+        S->stype = -1 ;
+        CHOLMOD(rowcolcounts) (S, NULL, 0, Parent, Post, RowCount, ColCount,
+                First, Level, cm) ;
+
+        Lp = Lmat->p ;
+        Li = Lmat->i ;
+        OK (Lmat->packed) ;
+        for (j = 0 ; j < n ; j++)
+        {
+            for (p = Lp [j] ; p < Lp [j+1] ; p++)
             {
-                printf ("enorm %g gnorm %g hnorm %g\n", enorm, gnorm,
-                    CHOLMOD(norm_sparse) (H, 0, cm)) ;
+                i = Li [p] ;
+                rcount [i]++ ;
+                ccount [j]++ ;
             }
-            if (gnorm > 0)
-            {
-                enorm /= gnorm ;
-            }
-
-            #ifdef DOUBLE
-            OK (enorm < 1e-8) ;
-            #else
-            OK (enorm < 1e-4) ;
-            #endif
-            CHOLMOD(free_sparse) (&AFt, cm) ;
-            CHOLMOD(free_sparse) (&AF, cm) ;
-            CHOLMOD(free_sparse) (&E, cm) ;
-            CHOLMOD(free_sparse) (&H, cm) ;
         }
-        else
+        // a singular matrix will only be partially factorized
+        if (L->minor == (size_t) n)
         {
-            // G = A
-            G = CHOLMOD(copy) (A, 0, 2, cm) ;
-        }
-
-        if (A->stype == 0)
-        {
-            // S = PAA'P'
-            S = CHOLMOD(submatrix) (G, P, n, P, n, TRUE, FALSE, cm) ;
-        }
-        else
-        {
-            // S = PAP'
-            Aboth = CHOLMOD(copy) (A, 0, 2, cm) ;
-            S = CHOLMOD(submatrix) (Aboth, P, n, P, n, TRUE, FALSE, cm) ;
-            CHOLMOD(free_sparse) (&Aboth, cm) ;
-        }
-
-        if (n < NSMALL)
-        {
-            // only do this for small test matrices, since L*D*L' can have many
-            // nonzero entries
-            // E = L*D*L' - S
-
-            LD = CHOLMOD(ssmult) (Lo, D, 0, TRUE, FALSE, cm) ;
-            LDL = CHOLMOD(ssmult) (LD, Up, 0, TRUE, FALSE, cm) ;
-            CHOLMOD(free_sparse) (&LD, cm) ;
-            E = CHOLMOD(add) (LDL, S, one, minusone, TRUE, FALSE, cm) ;
-            CHOLMOD(free_sparse) (&LDL, cm) ;
-
-            // e = norm (E) / norm (S)
-            enorm = CHOLMOD(norm_sparse) (E, 1, cm) ;
-            snorm = CHOLMOD(norm_sparse) (S, 0, cm) ;
-            MAXERR (maxerr, enorm, snorm) ;
-            CHOLMOD(free_sparse) (&E, cm) ;
-        }
-
-        // check the row/col counts
-        RowCount = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        ColCount = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        Parent   = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        Post     = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        First    = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        Level    = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
-        rcount   = CHOLMOD(calloc) (n, sizeof (Int), cm) ;
-        ccount   = CHOLMOD(calloc) (n, sizeof (Int), cm) ;
-
-        if (S != NULL && Lmat != NULL && RowCount != NULL && ColCount != NULL &&
-            Parent != NULL && Post != NULL && First != NULL && Level != NULL &&
-            rcount != NULL && ccount != NULL)
-        {
-            S->stype = 1 ;
-
-            CHOLMOD(etree) (S, Parent, cm) ;
-            CHOLMOD(postorder) (Parent, n, NULL, Post, cm) ;
-            S->stype = -1 ;
-            CHOLMOD(rowcolcounts) (S, NULL, 0, Parent, Post, RowCount, ColCount,
-                    First, Level, cm) ;
-
-            Lp = Lmat->p ;
-            Li = Lmat->i ;
-            OK (Lmat->packed) ;
             for (j = 0 ; j < n ; j++)
             {
-                for (p = Lp [j] ; p < Lp [j+1] ; p++)
-                {
-                    i = Li [p] ;
-                    rcount [i]++ ;
-                    ccount [j]++ ;
-                }
-            }
-            // a singular matrix will only be partially factorized
-            if (L->minor == (size_t) n)
-            {
-                for (j = 0 ; j < n ; j++)
-                {
-                    OK (ccount [j] == ColCount [j]) ;
-                }
-            }
-            for (i = 0 ; i < (Int) (L->minor) ; i++)
-            {
-                OK (rcount [i] == RowCount [i]) ;
+                OK (ccount [j] == ColCount [j]) ;
             }
         }
-
-        CHOLMOD(free) (n, sizeof (Int), RowCount, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), ColCount, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), Parent, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), Post, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), First, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), Level, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), rcount, cm) ;
-        CHOLMOD(free) (n, sizeof (Int), ccount, cm) ;
-
-        CHOLMOD(free_sparse) (&S, cm) ;
+        for (i = 0 ; i < (Int) (L->minor) ; i++)
+        {
+            OK (rcount [i] == RowCount [i]) ;
+        }
     }
+
+    CHOLMOD(free) (n, sizeof (Int), RowCount, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), ColCount, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), Parent, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), Post, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), First, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), Level, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), rcount, cm) ;
+    CHOLMOD(free) (n, sizeof (Int), ccount, cm) ;
+
+    CHOLMOD(free_sparse) (&S, cm) ;
 
     //--------------------------------------------------------------------------
     // solve other systems
