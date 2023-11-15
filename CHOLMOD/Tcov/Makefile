@@ -102,7 +102,7 @@ C = $(CC) $(CF) $(CHOLMOD_CONFIG) $(NANTESTS)
 CN = $(CC) -O0 -g -fopenmp $(CHOLMOD_CONFIG) $(NANTESTS)
 
 # LDLIBS = -L$(SUITESPARSE)/lib -lsuitesparseconfig \
-#   	-lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
+#       -lm $(LAPACK) $(BLAS) -lrt -Wl,-rpath=$(SUITESPARSE)/lib
 
 LDLIBS = -lm $(LAPACK) $(BLAS)
 
@@ -114,9 +114,9 @@ endif
 #-------------------------------------------------------------------------------
 
 I = -I.. -I../../AMD/Include -I../../COLAMD/Include \
-	-I../SuiteSparse_metis/include -I../../CCOLAMD/Include \
-	-I../../CAMD/Include \
-	-I../Include -I../../SuiteSparse_config $(CUDA_INC) \
+        -I../SuiteSparse_metis/include -I../../CCOLAMD/Include \
+        -I../../CAMD/Include \
+        -I../Include -I../../SuiteSparse_config $(CUDA_INC) \
         -I../Check -I../Cholesky -I../Demo -I../Supernodal \
         -I../Partition -I../Modify -I../MatrixOps -I../GPU \
         -I../SuiteSparse_metis \
@@ -165,52 +165,52 @@ SL_TEST = sl_test.c sl_amdtest.c sl_camdtest.c sl_huge.c
 SI_TEST = si_test.c si_amdtest.c si_camdtest.c si_huge.c
 
 INC =   ../Include/cholmod.h \
-	../Include/cholmod_internal.h \
-	../Include/cholmod_template.h
+        ../Include/cholmod_internal.h \
+        ../Include/cholmod_template.h
 
 AMDSRC = ../../AMD/Source/amd_1.c \
-	../../AMD/Source/amd_2.c \
-	../../AMD/Source/amd_aat.c \
-	../../AMD/Source/amd_control.c \
-	../../AMD/Source/amd_defaults.c \
-	../../AMD/Source/amd_info.c \
-	../../AMD/Source/amd_order.c \
-	../../AMD/Source/amd_postorder.c \
-	../../AMD/Source/amd_post_tree.c \
-	../../AMD/Source/amd_preprocess.c \
-	../../AMD/Source/amd_valid.c \
-	../../AMD/Include/amd.h \
-	../../AMD/Include/amd_internal.h
+        ../../AMD/Source/amd_2.c \
+        ../../AMD/Source/amd_aat.c \
+        ../../AMD/Source/amd_control.c \
+        ../../AMD/Source/amd_defaults.c \
+        ../../AMD/Source/amd_info.c \
+        ../../AMD/Source/amd_order.c \
+        ../../AMD/Source/amd_postorder.c \
+        ../../AMD/Source/amd_post_tree.c \
+        ../../AMD/Source/amd_preprocess.c \
+        ../../AMD/Source/amd_valid.c \
+        ../../AMD/Include/amd.h \
+        ../../AMD/Include/amd_internal.h
 
 AMDOBJ = \
-	zz_amd_1.o \
-	zz_amd_2.o \
-	zz_amd_aat.o \
-	zz_amd_control.o \
-	zz_amd_defaults.o \
-	zz_amd_info.o \
-	zz_amd_order.o \
-	zz_amd_postorder.o \
-	zz_amd_post_tree.o \
-	zz_amd_preprocess.o \
-	zz_amd_valid.o
-# add this to AMDOBJ if debugging is enabled
-#	zz_amd_dump.o \
+        zz_amd_1.o \
+        zz_amd_2.o \
+        zz_amd_aat.o \
+        zz_amd_control.o \
+        zz_amd_defaults.o \
+        zz_amd_info.o \
+        zz_amd_order.o \
+        zz_amd_postorder.o \
+        zz_amd_post_tree.o \
+        zz_amd_preprocess.o \
+        zz_amd_valid.o
+        # add this to AMDOBJ if debugging is enabled
+        # zz_amd_dump.o \
 
 LAMDOBJ = \
-	zl_amd_1.o \
-	zl_amd_2.o \
-	zl_amd_aat.o \
-	zl_amd_control.o \
-	zl_amd_defaults.o \
-	zl_amd_info.o \
-	zl_amd_order.o \
-	zl_amd_postorder.o \
-	zl_amd_post_tree.o \
-	zl_amd_preprocess.o \
-	zl_amd_valid.o
-# add this to LAMDOBJ if debugging is enabled
-#	zl_amd_dump.o \
+        zl_amd_1.o \
+        zl_amd_2.o \
+        zl_amd_aat.o \
+        zl_amd_control.o \
+        zl_amd_defaults.o \
+        zl_amd_info.o \
+        zl_amd_order.o \
+        zl_amd_postorder.o \
+        zl_amd_post_tree.o \
+        zl_amd_preprocess.o \
+        zl_amd_valid.o
+        # add this to LAMDOBJ if debugging is enabled
+        # zl_amd_dump.o \
 
 COLAMDSRC = ../../COLAMD/Source/colamd.c
 
@@ -222,8 +222,8 @@ LCOLAMDOBJ = zl_colamd.o
 # When using the Partition Module:
 
 CCOLAMDSRC = \
-	../../CCOLAMD/Source/ccolamd.c \
-	../../CCOLAMD/Include/ccolamd.h
+        ../../CCOLAMD/Source/ccolamd.c \
+        ../../CCOLAMD/Include/ccolamd.h
 
 CCOLAMDOBJ = zz_ccolamd.o
 
@@ -234,61 +234,61 @@ $(CCOLAMDOBJ): $(CCOLAMDSRC)
 $(LCCOLAMDOBJ): $(CCOLAMDSRC)
 
 IPARTITION_OBJ = \
-	z_ccolamd.o \
-	z_csymamd.o \
-	z_camd.o \
-	z_metis.o \
-	n_metis_wrapper.o \
-	z_nesdis.o
+        z_ccolamd.o \
+        z_csymamd.o \
+        z_camd.o \
+        z_metis.o \
+        n_metis_wrapper.o \
+        z_nesdis.o
 
 LPARTITION_OBJ = \
-	l_ccolamd.o \
-	l_csymamd.o \
-	l_camd.o \
-	l_metis.o \
-	n_metis_wrapper.o \
-	l_nesdis.o
+        l_ccolamd.o \
+        l_csymamd.o \
+        l_camd.o \
+        l_metis.o \
+        n_metis_wrapper.o \
+        l_nesdis.o
 
 CAMDSRC = ../../CAMD/Source/camd_1.c \
-	../../CAMD/Source/camd_2.c \
-	../../CAMD/Source/camd_aat.c \
-	../../CAMD/Source/camd_control.c \
-	../../CAMD/Source/camd_defaults.c \
-	../../CAMD/Source/camd_info.c \
-	../../CAMD/Source/camd_order.c \
-	../../CAMD/Source/camd_postorder.c \
-	../../CAMD/Source/camd_preprocess.c \
-	../../CAMD/Source/camd_valid.c \
-	../../CAMD/Include/camd.h \
-	../../CAMD/Include/camd_internal.h
+        ../../CAMD/Source/camd_2.c \
+        ../../CAMD/Source/camd_aat.c \
+        ../../CAMD/Source/camd_control.c \
+        ../../CAMD/Source/camd_defaults.c \
+        ../../CAMD/Source/camd_info.c \
+        ../../CAMD/Source/camd_order.c \
+        ../../CAMD/Source/camd_postorder.c \
+        ../../CAMD/Source/camd_preprocess.c \
+        ../../CAMD/Source/camd_valid.c \
+        ../../CAMD/Include/camd.h \
+        ../../CAMD/Include/camd_internal.h
 
 CAMDOBJ = \
-	zz_camd_1.o \
-	zz_camd_2.o \
-	zz_camd_aat.o \
-	zz_camd_control.o \
-	zz_camd_defaults.o \
-	zz_camd_info.o \
-	zz_camd_order.o \
-	zz_camd_postorder.o \
-	zz_camd_preprocess.o \
-	zz_camd_valid.o
-# add this to CAMDOBJ if debugging is enabled
-#	zz_camd_dump.o \
+        zz_camd_1.o \
+        zz_camd_2.o \
+        zz_camd_aat.o \
+        zz_camd_control.o \
+        zz_camd_defaults.o \
+        zz_camd_info.o \
+        zz_camd_order.o \
+        zz_camd_postorder.o \
+        zz_camd_preprocess.o \
+        zz_camd_valid.o
+        # add this to CAMDOBJ if debugging is enabled
+        # zz_camd_dump.o \
 
 LCAMDOBJ = \
-	zl_camd_1.o \
-	zl_camd_2.o \
-	zl_camd_aat.o \
-	zl_camd_control.o \
-	zl_camd_defaults.o \
-	zl_camd_info.o \
-	zl_camd_order.o \
-	zl_camd_postorder.o \
-	zl_camd_preprocess.o \
-	zl_camd_valid.o
-# add this to LCAMDOBJ if debugging is enabled
-#	zl_camd_dump.o \
+        zl_camd_1.o \
+        zl_camd_2.o \
+        zl_camd_aat.o \
+        zl_camd_control.o \
+        zl_camd_defaults.o \
+        zl_camd_info.o \
+        zl_camd_order.o \
+        zl_camd_postorder.o \
+        zl_camd_preprocess.o \
+        zl_camd_valid.o
+        # add this to LCAMDOBJ if debugging is enabled
+        #   zl_camd_dump.o \
 
 $(CAMDOBJ): $(CAMDSRC)
 
@@ -449,70 +449,70 @@ LUTIL_OBJ = \
     ul_zeros.o
 
 IOBJ = $(IUTIL_OBJ) \
-	z_check.o \
-	z_read.o \
-	z_write.o \
-	z_amd.o \
-	z_analyze.o \
-	z_colamd.o \
-	z_etree.o \
-	z_factorize.o \
-	z_postorder.o \
-	z_rcond.o \
-	z_resymbol.o \
-	z_rowcolcounts.o \
-	z_rowfac.o \
-	z_solve.o \
-	z_spsolve.o \
-	z_drop.o \
-	z_horzcat.o \
-	z_norm.o \
-	z_scale.o \
-	z_sdmult.o \
-	z_ssmult.o \
-	z_submatrix.o \
-	z_vertcat.o \
-	z_symmetry.o \
-	z_rowadd.o \
-	z_rowdel.o \
-	z_updown.o \
-	z_super_numeric.o \
-	z_super_solve.o \
-	z_super_symbolic.o \
-	$(IPARTITION_OBJ)
+    z_check.o \
+    z_read.o \
+    z_write.o \
+    z_amd.o \
+    z_analyze.o \
+    z_colamd.o \
+    z_etree.o \
+    z_factorize.o \
+    z_postorder.o \
+    z_rcond.o \
+    z_resymbol.o \
+    z_rowcolcounts.o \
+    z_rowfac.o \
+    z_solve.o \
+    z_spsolve.o \
+    z_drop.o \
+    z_horzcat.o \
+    z_norm.o \
+    z_scale.o \
+    z_sdmult.o \
+    z_ssmult.o \
+    z_submatrix.o \
+    z_vertcat.o \
+    z_symmetry.o \
+    z_rowadd.o \
+    z_rowdel.o \
+    z_updown.o \
+    z_super_numeric.o \
+    z_super_solve.o \
+    z_super_symbolic.o \
+    $(IPARTITION_OBJ)
 
 LOBJ = $(LUTIL_OBJ) \
-	l_check.o \
-	l_read.o \
-	l_write.o \
-	l_amd.o \
-	l_analyze.o \
-	l_colamd.o \
-	l_etree.o \
-	l_factorize.o \
-	l_postorder.o \
-	l_rcond.o \
-	l_resymbol.o \
-	l_rowcolcounts.o \
-	l_rowfac.o \
-	l_solve.o \
-	l_spsolve.o \
-	l_drop.o \
-	l_horzcat.o \
-	l_norm.o \
-	l_scale.o \
-	l_sdmult.o \
-	l_ssmult.o \
-	l_submatrix.o \
-	l_vertcat.o \
-	l_symmetry.o \
-	l_rowadd.o \
-	l_rowdel.o \
-	l_updown.o \
-	l_super_numeric.o \
-	l_super_solve.o \
-	l_super_symbolic.o \
-	$(LPARTITION_OBJ)
+    l_check.o \
+    l_read.o \
+    l_write.o \
+    l_amd.o \
+    l_analyze.o \
+    l_colamd.o \
+    l_etree.o \
+    l_factorize.o \
+    l_postorder.o \
+    l_rcond.o \
+    l_resymbol.o \
+    l_rowcolcounts.o \
+    l_rowfac.o \
+    l_solve.o \
+    l_spsolve.o \
+    l_drop.o \
+    l_horzcat.o \
+    l_norm.o \
+    l_scale.o \
+    l_sdmult.o \
+    l_ssmult.o \
+    l_submatrix.o \
+    l_vertcat.o \
+    l_symmetry.o \
+    l_rowadd.o \
+    l_rowdel.o \
+    l_updown.o \
+    l_super_numeric.o \
+    l_super_solve.o \
+    l_super_symbolic.o \
+    $(LPARTITION_OBJ)
 
 ifneq ($(GPU_CONFIG),)
     IGPU = l_gpu_kernels.o z_gpu.o

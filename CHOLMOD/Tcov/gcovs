@@ -9,5 +9,5 @@
 # usage: gcovs files
 for file in $@
 do
-	gcov -fl $file > /dev/null
+    gcov -fl $file > /dev/null
 done
