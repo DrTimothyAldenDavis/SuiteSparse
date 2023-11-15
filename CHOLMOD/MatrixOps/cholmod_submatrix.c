@@ -393,18 +393,9 @@ GOTCHA  // case p
     //--------------------------------------------------------------------------
 
     ASSERT (CHOLMOD(dump_sparse) (C , "C before sort", Common) >= 0) ;
-
     if (sorted && !csorted)
     {
-        // workspace: Iwork (max (C->nrow,C->ncol))
-        if (!CHOLMOD(sort) (C, Common))
-        {
-GOTCHA
-            // out of memory
-            CHOLMOD(free_sparse) (&C, Common) ;
-            ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
-            return (NULL) ;
-        }
+        CHOLMOD(sort) (C, Common) ;
     }
 
     //--------------------------------------------------------------------------

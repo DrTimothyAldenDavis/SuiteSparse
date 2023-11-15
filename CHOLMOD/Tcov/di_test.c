@@ -27,3 +27,5 @@
 #include "t_basic.c"
 #include "t_dump.c"
 #include "t_read_triplet.c"
+#include "t_rhs.c"
+#include "t_znorm_diag.c"

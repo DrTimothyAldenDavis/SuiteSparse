@@ -336,15 +336,8 @@ GOTCHA
 
     if (sorted)
     {
-        // workspace: Iwork (max (C->nrow,C->ncol))
-        if (!CHOLMOD(sort) (C, Common))
-        {
-GOTCHA
-            // out of memory
-            CHOLMOD(free_sparse) (&C, Common) ;
-            ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
-            return (NULL) ;
-        }
+        // this cannot fail (no workspace; sort is done in-place)
+        CHOLMOD(sort) (C, Common) ;
     }
 
     //--------------------------------------------------------------------------

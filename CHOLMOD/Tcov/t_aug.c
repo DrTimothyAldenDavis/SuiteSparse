@@ -14,6 +14,8 @@
 // r1 = norm (Sx-b)
 // r2 = norm ((alpha*I+AA')x-b)
 // alpha = norm(A)
+//
+// All matrices are real, not complex/zomplex.
 
 #include "cm.h"
 
@@ -36,7 +38,7 @@ double aug (cholmod_sparse *A)
         return (1) ;
     }
 
-    if (A->xtype != CHOLMOD_REAL)   // FIXME TODO
+    if (A->xtype != CHOLMOD_REAL)
     {
         return (0) ;
     }
@@ -222,8 +224,10 @@ double aug (cholmod_sparse *A)
     r = CHOLMOD(norm_dense) (R, 1, cm) ;
 
     double rcond = CHOLMOD(rcond) (L, cm) ;
-    printf ("rcond in aug.c: %g, r: %g\n", rcond, r) ;
-
+    if (cm->print > 1)
+    {
+        printf ("rcond in aug.c: %g, r: %g\n", rcond, r) ;
+    }
     #ifdef DOUBLE
     bool rcond_ok = rcond > 1e-6 ;
     #else

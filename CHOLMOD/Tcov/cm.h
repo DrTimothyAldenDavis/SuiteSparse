@@ -163,6 +163,7 @@ void factor_dump (cholmod_factor *L, char *L_filename, char *P_filename,
     cholmod_common *cm) ;
 void dense_dump  (cholmod_dense  *X, char *filename, cholmod_common *cm) ;
 void Int_dump    (Int *P, Int n, char *filename, cholmod_common *cm) ;
+double znorm_diag (cholmod_sparse *A, cholmod_common *cm) ;
 
 //------------------------------------------------------------------------------
 // AMD, COLAMD, and CCOLAMD

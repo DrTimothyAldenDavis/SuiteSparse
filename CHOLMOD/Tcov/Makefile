@@ -138,23 +138,25 @@ PROGS = \
     di_demo dl_demo si_demo sl_demo \
     di_read dl_read si_read sl_read
 
-TEMPLATES =         \
-    t_amdtest.c     \
-    t_aug.c         \
-    t_camdtest.c    \
-    t_cctest.c      \
-    t_cm.c          \
+TEMPLATES =             \
+    t_amdtest.c         \
+    t_aug.c             \
+    t_camdtest.c        \
+    t_cctest.c          \
+    t_cm.c              \
     t_read_triplet.c    \
-    t_ctest.c       \
-    t_huge.c        \
-    t_lpdemo.c      \
-    t_memory.c      \
-    t_null2.c       \
-    t_basic.c       \
-    t_null.c        \
-    t_raw_factor.c  \
-    t_solve.c       \
-    t_test_ops.c    \
+    t_rhs.c             \
+    t_znorm_diag.c      \
+    t_ctest.c           \
+    t_huge.c            \
+    t_lpdemo.c          \
+    t_memory.c          \
+    t_null2.c           \
+    t_basic.c           \
+    t_null.c            \
+    t_raw_factor.c      \
+    t_solve.c           \
+    t_test_ops.c        \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
@@ -581,20 +583,19 @@ d: di_test
 
 go: ccode
 	mkdir -p $(T)
-	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out
-	$(V) ./dl_test -m -e11 < Matrix/z10   > $(T)/dl_test_z10.out
-	$(V) ./si_test -m -e4  < Matrix/z10   > $(T)/si_test_z10.out
-	$(V) ./sl_test -m -e4  < Matrix/z10   > $(T)/sl_test_z10.out
-	- $(COVER)
 	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
 	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
 	$(V) ./si_test -e5  < Matrix/c5up2    > $(T)/si_test_c5up2.out
 	$(V) ./sl_test -e5  < Matrix/c5up2    > $(T)/sl_test_c5up2.out
 	- $(COVER)
+	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out
+	$(V) ./dl_test -m -e11 < Matrix/z10   > $(T)/dl_test_z10.out
+	$(V) ./si_test -m -e4  < Matrix/z10   > $(T)/si_test_z10.out
+	$(V) ./sl_test -m -e4  < Matrix/z10   > $(T)/sl_test_z10.out
+	- $(COVER)
 	$(V) ./di_test -e12   < Matrix/z30lo  > $(T)/di_test_z30lo.out
 	$(V) ./dl_test -e12   < Matrix/z30lo  > $(T)/dl_test_z30lo.out
 	$(V) ./si_test -e4    < Matrix/z30lo  > $(T)/si_test_z30lo.out
-	$(V) ./sl_test -e4    < Matrix/z30lo  > $(T)/sl_test_z30lo.out
 	- $(COVER)
 	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
 	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
