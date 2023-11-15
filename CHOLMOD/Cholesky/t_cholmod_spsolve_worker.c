@@ -87,10 +87,6 @@ static bool TEMPLATE (cholmod_spsolve_X_worker)
     Real *X4z = X4->z ;
     Int n = X4->nrow ;
 
-// FIXME
-//    printf ("X->xtype  %d\n", X->xtype) ;
-//    printf ("X4->xtype %d\n", X4->xtype) ;
-
     //--------------------------------------------------------------------------
     // append nonzeros from X4 onto X
     //--------------------------------------------------------------------------

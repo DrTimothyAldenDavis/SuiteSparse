@@ -579,7 +579,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 //==== debugging definitions ===================================================
 //==============================================================================
 
-#if 1
+#if 0
 #define GOTCHA ;
 #else
 #define GOTCHA                                          \

@@ -703,10 +703,6 @@ static void TEMPLATE_DTYPE (iptrans)
     // X (P (1:nrow), k1:k2-1) = Y'
     //--------------------------------------------------------------------------
 
-// FIXME
-//    printf ("iptrans: input  Y type %d\n", Y->xtype) ;
-//    printf ("iptrans: output X type %d\n", X->xtype) ;
-
     switch (Y->xtype)
     {
 

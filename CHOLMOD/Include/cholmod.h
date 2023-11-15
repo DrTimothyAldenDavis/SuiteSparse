@@ -850,7 +850,7 @@ size_t cholmod_l_maxrank (size_t, cholmod_common *) ;
 // This method always allocates Xwork as double, for backward compatibility
 // with CHOLMOD v4 and earlier.  See cholmod_alloc_work for CHOLMOD v5.
 
-int cholmod_allocate_work   // TCOV
+int cholmod_allocate_work
 (
     // input:
     size_t nrow,        // size of Common->Flag (nrow int32's)
@@ -867,7 +867,7 @@ int cholmod_l_allocate_work (size_t, size_t, size_t, cholmod_common *) ;
 
 // Added for CHOLMOD v5: allocates Xwork as either double or single.
 
-int cholmod_alloc_work  // TCOV NEW
+int cholmod_alloc_work  // NEW
 (
     // input:
     size_t nrow,        // size of Common->Flag (nrow int32's)
@@ -999,7 +999,7 @@ typedef struct cholmod_sparse_struct
 // cholmod_allocate_sparse:  allocate a sparse matrix
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_allocate_sparse // TCOV
+cholmod_sparse *cholmod_allocate_sparse
 (
     // input:
     size_t nrow,    // # of rows
@@ -1058,7 +1058,7 @@ int64_t cholmod_l_nnz (cholmod_sparse *, cholmod_common *) ;
 // cholmod_speye:  sparse identity matrix (possibly rectangular)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_speye   // TCOV
+cholmod_sparse *cholmod_speye
 (
     // input:
     size_t nrow,    // # of rows
@@ -1077,7 +1077,7 @@ cholmod_sparse *cholmod_l_speye (size_t, size_t, int, cholmod_common *) ;
 // Identical to cholmod_allocate_sparse, with packed = true, sorted = true,
 // and stype = 0.
 
-cholmod_sparse *cholmod_spzeros     // return a sparse matrix with no entries   // TCOV
+cholmod_sparse *cholmod_spzeros     // return a sparse matrix with no entries
 (
     // input:
     size_t nrow,    // # of rows
@@ -1302,7 +1302,7 @@ cholmod_sparse *cholmod_l_add (cholmod_sparse *, cholmod_sparse *, double *,
 // cholmod_sparse_xtype: change the xtype and/or dtype of a sparse matrix
 //------------------------------------------------------------------------------
 
-int cholmod_sparse_xtype    // TCOV
+int cholmod_sparse_xtype
 (
     // input:
     int to_xdtype,      // requested xtype and dtype    // NEW
@@ -1445,7 +1445,7 @@ typedef struct cholmod_factor_struct
 
 // L is returned as double precision
 
-cholmod_factor *cholmod_allocate_factor         // return the new factor L  // TCOV
+cholmod_factor *cholmod_allocate_factor         // return the new factor L
 (
     // input:
     size_t n,               // L is factorization of an n-by-n matrix
@@ -1457,7 +1457,7 @@ cholmod_factor *cholmod_l_allocate_factor (size_t, cholmod_common *) ;
 // cholmod_alloc_factor: allocate a numerical factor (double or single)
 //------------------------------------------------------------------------------
 
-cholmod_factor *cholmod_alloc_factor        // return the new factor L  // TCOV // NEW
+cholmod_factor *cholmod_alloc_factor    // return the new factor L // NEW
 (
     // input:
     size_t n,               // L is factorization of an n-by-n matrix
@@ -1571,7 +1571,7 @@ cholmod_factor *cholmod_l_copy_factor (cholmod_factor *, cholmod_common *) ;
 // cholmod_factor_xtype: change the xtype and/or dtype of a factor
 //------------------------------------------------------------------------------
 
-int cholmod_factor_xtype    // TCOV
+int cholmod_factor_xtype
 (
     // input:
     int to_xdtype,      // requested xtype and dtype // NEW
@@ -1602,7 +1602,7 @@ typedef struct cholmod_dense_struct
 // cholmod_allocate_dense: allocate a dense matrix (contents not initialized)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_allocate_dense   // TCOV
+cholmod_dense *cholmod_allocate_dense
 (
     // input:
     size_t nrow,    // # of rows
@@ -1620,7 +1620,7 @@ cholmod_dense *cholmod_l_allocate_dense (size_t, size_t, size_t, int,
 // cholmod_zeros: allocate a dense matrix and set it to zero
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_zeros    // TCOV
+cholmod_dense *cholmod_zeros
 (
     // input:
     size_t nrow,    // # of rows
@@ -1636,7 +1636,7 @@ cholmod_dense *cholmod_l_zeros (size_t, size_t, int, cholmod_common *) ;
 // cholmod_ones: allocate a dense matrix of all 1's
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_ones // TCOV
+cholmod_dense *cholmod_ones
 (
     // input:
     size_t nrow,    // # of rows
@@ -1652,7 +1652,7 @@ cholmod_dense *cholmod_l_ones (size_t, size_t, int, cholmod_common *) ;
 // cholmod_eye: allocate a dense identity matrix
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_eye      // return a dense identity matrix   // TCOV
+cholmod_dense *cholmod_eye      // return a dense identity matrix
 (
     // input:
     size_t nrow,    // # of rows
@@ -1680,7 +1680,7 @@ int cholmod_l_free_dense (cholmod_dense **, cholmod_common *) ;
 // cholmod_ensure_dense:  ensure a dense matrix has a given size and type
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_ensure_dense // TCOV
+cholmod_dense *cholmod_ensure_dense
 (
     // input/output:
     cholmod_dense **X,  // matrix to resize as needed (*X may be NULL)
@@ -1764,7 +1764,7 @@ int cholmod_l_copy_dense2 (cholmod_dense *, cholmod_dense *, cholmod_common *) ;
 // cholmod_dense_xtype: change the xtype and/or dtype of a dense matrix
 //------------------------------------------------------------------------------
 
-int cholmod_dense_xtype // TCOV
+int cholmod_dense_xtype
 (
     // input:
     int to_xdtype,      // requested xtype and dtype    // NEW
@@ -1820,7 +1820,7 @@ typedef struct cholmod_triplet_struct
 // cholmod_allocate_triplet: allocate a triplet matrix
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_allocate_triplet       // return triplet matrix T  // TCOV
+cholmod_triplet *cholmod_allocate_triplet       // return triplet matrix T
 (
     // input:
     size_t nrow,    // # of rows
@@ -1904,7 +1904,7 @@ cholmod_triplet *cholmod_l_copy_triplet (cholmod_triplet *, cholmod_common *) ;
 // cholmod_triplet_xtype: change the xtype and/or dtype of a triplet matrix
 //------------------------------------------------------------------------------
 
-int cholmod_triplet_xtype   // TCOV
+int cholmod_triplet_xtype
 (
     // input:
     int to_xdtype,      // requested xtype and dtype    // NEW
@@ -1968,7 +1968,7 @@ void *cholmod_realloc   // return newly reallocated block of memory
 ) ;
 void *cholmod_l_realloc (size_t, size_t, void *, size_t *, cholmod_common *) ;
 
-int cholmod_realloc_multiple    // returns true if successful, false otherwise  // TCOV
+int cholmod_realloc_multiple    // returns true if successful, false otherwise
 (
     // input:
     size_t nnew,    // # of items in newly reallocate memory
@@ -2283,7 +2283,7 @@ int cholmod_l_print_parent (int64_t *, size_t, const char *, cholmod_common *) ;
 // cholmod_read_sparse: read a sparse matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_read_sparse // TCOV
+cholmod_sparse *cholmod_read_sparse
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2295,7 +2295,7 @@ cholmod_sparse *cholmod_l_read_sparse (FILE *, cholmod_common *) ;
 // cholmod_read_sparse2: read a sparse matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_sparse *cholmod_read_sparse2    // TCOV // NEW
+cholmod_sparse *cholmod_read_sparse2    // NEW
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2308,7 +2308,7 @@ cholmod_sparse *cholmod_l_read_sparse2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_triplet: read a triplet matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_read_triplet   // TCOV
+cholmod_triplet *cholmod_read_triplet
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2320,7 +2320,7 @@ cholmod_triplet *cholmod_l_read_triplet (FILE *, cholmod_common *) ;
 // cholmod_read_triplet: read a triplet matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_triplet *cholmod_read_triplet2  // TCOV // NEW
+cholmod_triplet *cholmod_read_triplet2  // NEW
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2333,7 +2333,7 @@ cholmod_triplet *cholmod_l_read_triplet2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_dense: read a dense matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_read_dense   // TCOV
+cholmod_dense *cholmod_read_dense
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2345,7 +2345,7 @@ cholmod_dense *cholmod_l_read_dense (FILE *, cholmod_common *) ;
 // cholmod_read_dense2: read a dense matrix from a file (float or double)
 //------------------------------------------------------------------------------
 
-cholmod_dense *cholmod_read_dense2  // TCOV // NEW
+cholmod_dense *cholmod_read_dense2  // NEW
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2358,7 +2358,7 @@ cholmod_dense *cholmod_l_read_dense2 (FILE *, int, cholmod_common *) ;
 // cholmod_read_matrix: read a sparse or dense matrix from a file (double only)
 //------------------------------------------------------------------------------
 
-void *cholmod_read_matrix   // TCOV
+void *cholmod_read_matrix
 (
     // input:
     FILE *f,        // file to read from, must already be open
@@ -2383,7 +2383,7 @@ void *cholmod_l_read_matrix (FILE *, int, int *, cholmod_common *) ;
 // cholmod_read_matrix2: read a sparse or dense matrix (float or double)
 //------------------------------------------------------------------------------
 
-void *cholmod_read_matrix2  // TCOV // NEW
+void *cholmod_read_matrix2  // NEW
 (
     // input:
     FILE *f,        // file to read from, must already be open
