@@ -992,11 +992,6 @@ unused:
 	$(V) ./si_read ../Demo/Matrix/empty.tri   > $(T)/si_read_empty.out
 	$(V) ./sl_read ../Demo/Matrix/empty.tri   > $(T)/sl_read_empty.out
 	- $(COVER)
-	$(V) ./di_read Matrix/r5lo                > $(T)/di_read_r5lo.out
-	$(V) ./dl_read Matrix/r5lo                > $(T)/dl_read_r5lo.out
-	$(V) ./si_read Matrix/r5lo                > $(T)/si_read_r5lo.out
-	$(V) ./sl_read Matrix/r5lo                > $(T)/sl_read_r5lo.out
-	- $(COVER)
 	$(V) ./di_test -s < Matrix/c3singular > $(T)/di_test_c3singular.out
 	$(V) ./dl_test -s < Matrix/c3singular > $(T)/dl_test_c3singular.out
 	$(V) ./si_test -s < Matrix/c3singular > $(T)/si_test_c3singular.out
