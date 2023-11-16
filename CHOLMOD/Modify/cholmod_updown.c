@@ -116,7 +116,7 @@ int CHOLMOD(updown_solve)
 
 // Power2 [i] is smallest power of 2 that is >= i (for i in range 0 to 8)
 
-static Int Power2 [ ] =
+static size_t Power2 [ ] =
 {
 //  0  1  2  3  4  5  6  7  8
     0, 1, 2, 4, 4, 8, 8, 8, 8
@@ -410,7 +410,7 @@ int CHOLMOD(updown_mask2)
         ERROR (CHOLMOD_INVALID, "C must have sorted columns") ;
         return (FALSE) ;
     }
-    if (n != (Int) (C->nrow))
+    if (L->n != C->nrow)
     {
         ERROR (CHOLMOD_INVALID, "C and L dimensions do not match") ;
         return (FALSE) ;
@@ -452,20 +452,20 @@ GOTCHA
     // make sure maxrank is in the proper range
     size_t maxrank = CHOLMOD(maxrank) (n, Common) ;
     Int k = MIN (cncol, (Int) maxrank) ;    // maximum k is wdim
-    Int wdim = Power2 [k] ;                 // number of columns needed in W
-    ASSERT (wdim <= (Int) maxrank) ;
-    PRINT1 (("updown wdim final "ID" k "ID"\n", wdim, k)) ;
+    size_t wdim = Power2 [k] ;              // number of columns needed in W
+    ASSERT (wdim <= maxrank) ;
+    PRINT1 (("updown wdim final "ID" k "ID"\n", (Int) wdim, k)) ;
 
     // w = wdim * n
     int ok = TRUE ;
-    size_t w = CHOLMOD(mult_size_t) (n, wdim, &ok) ;
+    size_t w = CHOLMOD(mult_size_t) (L->n, wdim, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
 
-    CHOLMOD(alloc_work) (n, n, w, C->dtype, Common) ;
+    CHOLMOD(alloc_work) (L->n, L->n, w, C->dtype, Common) ;
     if (Common->status < CHOLMOD_OK || maxrank == 0)
     {
         // out of memory, L is returned unchanged

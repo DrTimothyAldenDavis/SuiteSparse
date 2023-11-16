@@ -175,7 +175,8 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
 
     // s = MAX3 (anrow+MAX(0,nr), cncol, cnrow) ;
     int ok = TRUE ;
-    size_t s = CHOLMOD(add_size_t) (A->nrow, MAX (0,nr), &ok) ;
+    size_t nr_size = (size_t) MAX (0, nr) ;
+    size_t s = CHOLMOD(add_size_t) (A->nrow, MAX (0, nr_size), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

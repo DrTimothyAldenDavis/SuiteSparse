@@ -61,7 +61,6 @@ static int change_xdtype
         else
         {
             // double to single
-GOTCHA
             return (change_xdtype_d2s (nz, input_xtype, output_xtype,
                 input_dtype, output_dtype, X, Z, Common)) ;
         }
@@ -71,7 +70,6 @@ GOTCHA
         if (output_dtype == CHOLMOD_DOUBLE)
         {
             // single to double
-GOTCHA
             return (change_xdtype_s2d (nz, input_xtype, output_xtype,
                 input_dtype, output_dtype, X, Z, Common)) ;
         }

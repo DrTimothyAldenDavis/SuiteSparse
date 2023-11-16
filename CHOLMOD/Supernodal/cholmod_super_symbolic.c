@@ -172,8 +172,7 @@ int CHOLMOD(super_symbolic2)
         nsrow, ndrow1, ndrow2, stype, ssize, xsize, sparent, plast, slast,
         csize, maxcsize, ss, nscol0, nscol1, ns, nfsuper, newzeros, totzeros,
         merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2, Asorted ;
-    size_t w ;
-    int ok = TRUE, find_xsize ;
+    int find_xsize ;
     const char* env_use_gpu;
     const char* env_max_bytes;
     size_t max_bytes;
@@ -212,15 +211,16 @@ int CHOLMOD(super_symbolic2)
 
     n = A->nrow ;
 
-    // w = 5*n
-    w = CHOLMOD(mult_size_t) (n, 5, &ok) ;
+    // w = 5*nrow
+    int ok = TRUE ;
+    size_t w = CHOLMOD(mult_size_t) (A->nrow, 5, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
 
-    CHOLMOD(allocate_work) (n, w, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, w, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         // out of memory

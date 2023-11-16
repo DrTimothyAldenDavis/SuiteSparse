@@ -58,7 +58,6 @@ int CHOLMOD(amd)
     Int *Cp, *Len, *Nv, *Head, *Elen, *Degree, *Wi, *Iwork, *Next ;
     cholmod_sparse *C ;
     Int j, n, cnz ;
-    size_t s ;
     int ok = TRUE ;
 
     //--------------------------------------------------------------------------
@@ -89,8 +88,8 @@ int CHOLMOD(amd)
     // cholmod_amd is being called by that routine, no space will be
     // allocated.
 
-    // s = MAX (6*n, A->ncol)
-    s = CHOLMOD(mult_size_t) (n, 6, &ok) ;
+    // s = MAX (6*nrow, ncol)
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 6, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -98,7 +97,7 @@ int CHOLMOD(amd)
     }
     s = MAX (s, A->ncol) ;
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;

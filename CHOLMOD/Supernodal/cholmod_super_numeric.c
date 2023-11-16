@@ -119,8 +119,7 @@ int CHOLMOD(super_numeric)
     Int *Super, *Map, *SuperMap ;
     size_t maxcsize ;
     Int nsuper, n, i, k, s, nrow ;
-    int ok = TRUE, symbolic ;
-    size_t t, w ;
+    int symbolic ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (L, FALSE) ;
@@ -196,18 +195,18 @@ GOTCHA
     PRINT1 (("nsuper "ID" maxcsize %g\n", nsuper, (double) maxcsize)) ;
     ASSERT (nsuper >= 0 && maxcsize > 0) ;
 
-    // w = 2*n + 5*nsuper
-    w = CHOLMOD(mult_size_t) (n, 2, &ok) ;
-    t = CHOLMOD(mult_size_t) (nsuper, 5, &ok) ;
+    // w = 2*nrow + 5*nsuper
+    int ok = TRUE ;
+    size_t w = CHOLMOD(mult_size_t) (A->nrow, 2, &ok) ;
+    size_t t = CHOLMOD(mult_size_t) (L->nsuper, 5, &ok) ;
     w = CHOLMOD(add_size_t) (w, t, &ok) ;
     if (!ok)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
 
-    CHOLMOD(allocate_work) (n, w, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, w, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;

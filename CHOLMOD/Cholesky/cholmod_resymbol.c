@@ -107,15 +107,15 @@ int CHOLMOD(resymbol)   // recompute symbolic pattern of L
 
     // s = 2*nrow + (stype ? 0 : ncol)
     int ok = TRUE ;
-    size_t s = CHOLMOD(mult_size_t) (nrow, 2, &ok) ;
-    s = CHOLMOD(add_size_t) (s, (stype ? 0 : ncol), &ok) ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 2, &ok) ;
+    s = CHOLMOD(add_size_t) (s, (stype ? 0 : A->ncol), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (FALSE) ;
     }
 
-    CHOLMOD(allocate_work) (nrow, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;
@@ -303,7 +303,7 @@ int CHOLMOD(resymbol_noperm)    // recompute symbolic pattern of L
         return (FALSE) ;
     }
 
-    CHOLMOD(allocate_work) (nrow, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;        // out of memory

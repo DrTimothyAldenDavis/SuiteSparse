@@ -270,7 +270,6 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
     idx_t *Mp, *Mi, *Mnw, *Mpart ;
     Int n, nleft, nright, j, p, csep, total_weight, lightest, nz ;
     idx_t nn, csp ;
-    size_t n1 ;
     int ok ;
     DEBUG (Int nsep) ;
 
@@ -297,7 +296,7 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
     {
         return (0) ;
     }
-    n1 = ((size_t) n) + 1 ;
+    size_t n1 = A->nrow + 1 ;
 
     //--------------------------------------------------------------------------
     // get inputs
@@ -585,10 +584,8 @@ int CHOLMOD(metis)
     Int *Iperm, *Iwork, *Bp, *Bi ;
     idx_t *Mp, *Mi, *Mperm, *Miperm ;
     cholmod_sparse *B ;
-    Int i, j, n, nz, p, identity, uncol ;
+    Int i, j, n, nz, p, identity ;
     idx_t nn, zero = 0 ;
-    size_t n1, s ;
-    int ok = TRUE ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
@@ -605,15 +602,16 @@ int CHOLMOD(metis)
     {
         return (TRUE) ;
     }
-    n1 = ((size_t) n) + 1 ;
+    size_t n1 = A->nrow + 1 ;
 
     //--------------------------------------------------------------------------
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    // s = 4*n + uncol
-    uncol = (A->stype == 0) ? A->ncol : 0 ;
-    s = CHOLMOD(mult_size_t) (n, 4, &ok) ;
+    // s = 4*nrow + uncol
+    size_t uncol = (A->stype == 0) ? A->ncol : 0 ;
+    int ok = TRUE ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 4, &ok) ;
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
@@ -621,7 +619,7 @@ int CHOLMOD(metis)
         return (FALSE) ;
     }
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;

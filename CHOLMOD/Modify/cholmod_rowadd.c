@@ -184,7 +184,7 @@ GOTCHA
         return (FALSE) ;
     }
 
-    CHOLMOD(alloc_work) (n, s, s, R->dtype, Common) ;
+    CHOLMOD(alloc_work) (L->n, s, s, R->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;

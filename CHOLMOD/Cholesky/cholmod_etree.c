@@ -90,8 +90,6 @@ int CHOLMOD(etree)
 
     Int *Ap, *Ai, *Anz, *Ancestor, *Prev, *Iwork ;
     Int i, j, jprev, p, pend, nrow, ncol, packed, stype ;
-    size_t s ;
-    int ok = TRUE ;
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -110,7 +108,8 @@ int CHOLMOD(etree)
     stype = A->stype ;
 
     // s = A->nrow + (stype ? 0 : A->ncol)
-    s = CHOLMOD(add_size_t) (A->nrow, (stype ? 0 : A->ncol), &ok) ;
+    int ok = TRUE ;
+    size_t s = CHOLMOD(add_size_t) (A->nrow, (stype ? 0 : A->ncol), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

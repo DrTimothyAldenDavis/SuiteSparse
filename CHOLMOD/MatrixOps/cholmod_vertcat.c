@@ -164,7 +164,6 @@ GOTCHA
     switch ((C->xtype + C->dtype) % 8)
     {
         default:
-GOTCHA  // case p
             p_cholmod_vertcat_worker (C, A, B) ;
             break ;
 
@@ -173,12 +172,10 @@ GOTCHA  // case p
             break ;
 
         case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
-GOTCHA  // case cs
             cs_cholmod_vertcat_worker (C, A, B) ;
             break ;
 
         case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
-GOTCHA  // case zs
             zs_cholmod_vertcat_worker (C, A, B) ;
             break ;
 
@@ -187,12 +184,10 @@ GOTCHA  // case zs
             break ;
 
         case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
-GOTCHA  // case cd
             cd_cholmod_vertcat_worker (C, A, B) ;
             break ;
 
         case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
-GOTCHA  // case zd
             zd_cholmod_vertcat_worker (C, A, B) ;
             break ;
     }

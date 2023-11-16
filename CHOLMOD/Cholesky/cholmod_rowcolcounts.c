@@ -206,8 +206,6 @@ int CHOLMOD(rowcolcounts)
         *Iwork ;
     Int i, j, r, k, len, s, p, pend, inew, stype, nf, anz, inode, parent,
         nrow, ncol, packed, use_fset, jj ;
-    size_t w ;
-    int ok = TRUE ;
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -238,8 +236,9 @@ int CHOLMOD(rowcolcounts)
     ncol = A->ncol ;    // the number of columns of A
 
     // w = 2*nrow + (stype ? 0 : ncol)
-    w = CHOLMOD(mult_size_t) (nrow, 2, &ok) ;
-    w = CHOLMOD(add_size_t) (w, (stype ? 0 : ncol), &ok) ;
+    int ok = TRUE ;
+    size_t w = CHOLMOD(mult_size_t) (A->nrow, 2, &ok) ;
+    w = CHOLMOD(add_size_t) (w, (stype ? 0 : A->ncol), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

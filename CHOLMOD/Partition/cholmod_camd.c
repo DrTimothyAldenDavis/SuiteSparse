@@ -64,15 +64,14 @@ int CHOLMOD(camd)
         *Work3n, *p ;
     cholmod_sparse *C ;
     Int j, n, cnz ;
-    size_t s ;
-    int ok = TRUE ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
     n = A->nrow ;
 
-    // s = 4*n
-    s = CHOLMOD(mult_size_t) (n, 4, &ok) ;
+    // s = 4*nrow
+    int ok = TRUE ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 4, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -100,7 +99,7 @@ int CHOLMOD(camd)
     // or A->ncol otherwise.  Thus, only the first 4n integers in Common->Iwork
     // can be used here.
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;

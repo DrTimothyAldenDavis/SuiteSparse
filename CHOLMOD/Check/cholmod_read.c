@@ -512,8 +512,6 @@ static cholmod_triplet *read_triplet
     double l1, l2 ;
     Int nitems, xtype, unknown, k, nshould, is_lower, is_upper, one_based, i, j,
         imax, jmax, skew_symmetric, p, complex_symmetric ;
-    size_t s, nnz2, extra ;
-    int ok = TRUE ;
 
     //--------------------------------------------------------------------------
     // quick return for empty matrix
@@ -534,7 +532,7 @@ static cholmod_triplet *read_triplet
     skew_symmetric = (stype == STYPE_SKEW_SYMMETRIC) ;
     complex_symmetric = (stype == STYPE_COMPLEX_SYMMETRIC_LOWER) ;
 
-    extra = 0 ;
+    size_t extra = 0 ;
     if (stype < STYPE_SYMMETRIC_LOWER
         || (prefer_unsym && stype != STYPE_UNSYMMETRIC))
     {
@@ -546,14 +544,15 @@ static cholmod_triplet *read_triplet
         stype = STYPE_UNSYMMETRIC ;
         extra = nnz ;
     }
-    nnz2 = CHOLMOD(add_size_t) (nnz, extra, &ok) ;
+    int ok = TRUE ;
+    size_t nnz2 = CHOLMOD(add_size_t) (nnz, extra, &ok) ;
 
     //--------------------------------------------------------------------------
     // allocate workspace
     //--------------------------------------------------------------------------
 
     // s = nrow + ncol
-    s = CHOLMOD(add_size_t) (nrow, ncol, &ok) ;
+    size_t s = CHOLMOD(add_size_t) (nrow, ncol, &ok) ;
     if (!ok || nrow > Int_max || ncol > Int_max || nnz > Int_max)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

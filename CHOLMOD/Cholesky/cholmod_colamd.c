@@ -54,8 +54,6 @@ int CHOLMOD(colamd)
     cholmod_sparse *C ;
     Int *NewPerm, *Parent, *Post, *Work2n ;
     Int k, nrow, ncol ;
-    size_t s, alen ;
-    int ok = TRUE ;
 
     //--------------------------------------------------------------------------
     // check inputs
@@ -88,14 +86,15 @@ int CHOLMOD(colamd)
     // allocated.
 
     // s = 4*nrow + ncol
-    s = CHOLMOD(mult_size_t) (nrow, 4, &ok) ;
-    s = CHOLMOD(add_size_t) (s, ncol, &ok) ;
+    int ok = TRUE ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 4, &ok) ;
+    s = CHOLMOD(add_size_t) (s, A->ncol, &ok) ;
 
     #if defined ( CHOLMOD_INT64 )
-    alen = colamd_l_recommended (A->nzmax, ncol, nrow) ;
+    size_t alen = colamd_l_recommended (A->nzmax, ncol, nrow) ;
     colamd_l_set_defaults (knobs) ;
     #else
-    alen = colamd_recommended (A->nzmax, ncol, nrow) ;
+    size_t alen = colamd_recommended (A->nzmax, ncol, nrow) ;
     colamd_set_defaults (knobs) ;
     #endif
 

@@ -661,7 +661,6 @@ int CHOLMOD(rowfac_mask2)
 
     Int n ;
     size_t s ;
-    int ok = TRUE ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
@@ -714,7 +713,8 @@ int CHOLMOD(rowfac_mask2)
     // Xwork is of size n for the real case, 2*n for complex/zomplex
     n = L->n  ;
 
-    // s = ((A->xtype != CHOLMOD_REAL) ? 2:1)*n
+    // s = n * ((A->xtype != CHOLMOD_REAL) ? 2:1)
+    int ok = TRUE ;
     s = CHOLMOD(mult_size_t) (L->n, ((A->xtype != CHOLMOD_REAL) ? 2:1), &ok) ;
     if (!ok)
     {

@@ -104,8 +104,7 @@ int CHOLMOD(factorize_p)
 {
 
     cholmod_sparse *S, *F, *A1, *A2 ;
-    Int nrow, ncol, stype, convert, n, nsuper, grow2, status ;
-    size_t s, t, uncol ;
+    Int nrow, ncol, stype, convert, n, grow2, status ;
     int ok = TRUE ;
 
     //--------------------------------------------------------------------------
@@ -138,13 +137,13 @@ int CHOLMOD(factorize_p)
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    nsuper = (L->is_super ? L->nsuper : 0) ;
-    uncol = ((stype != 0) ? 0 : ncol) ;
+    size_t nsuper = (L->is_super ? L->nsuper : 0) ;
+    size_t uncol = ((stype != 0) ? 0 : A->ncol) ;
 
     // s = 2*nrow + MAX (uncol, 2*nsuper)
-    s = CHOLMOD(mult_size_t) (nsuper, 2, &ok) ;
+    size_t s = CHOLMOD(mult_size_t) (nsuper, 2, &ok) ;
     s = MAX (uncol, s) ;
-    t = CHOLMOD(mult_size_t) (nrow, 2, &ok) ;
+    size_t t = CHOLMOD(mult_size_t) (A->nrow, 2, &ok) ;
     s = CHOLMOD(add_size_t) (s, t, &ok) ;
     if (!ok)
     {

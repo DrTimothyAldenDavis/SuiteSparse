@@ -15,7 +15,7 @@
 size_t CHOLMOD(mult_size_t) (size_t a, size_t b, int *ok)
 {
     uint64_t x ;
-    (*ok) = cholmod_mult_uint64_t (&x, (uint64_t) a, (uint64_t) b) ;
+    (*ok) = (*ok) && cholmod_mult_uint64_t (&x, (uint64_t) a, (uint64_t) b) ;
     return (((*ok) && x <= SIZE_MAX) ? ((size_t) x) : 0) ;
 }
 

@@ -853,8 +853,6 @@ int64_t CHOLMOD(bisect) // returns # of nodes in separator
     cholmod_sparse *B ;
     UInt hash ;
     Int j, n, bnz, sepsize, p, pend ;
-    size_t csize, s ;
-    int ok = TRUE ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (A, EMPTY) ;
@@ -876,15 +874,16 @@ int64_t CHOLMOD(bisect) // returns # of nodes in separator
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    // s = n + MAX (n, A->ncol)
-    s = CHOLMOD(add_size_t) (A->nrow, MAX (A->nrow, A->ncol), &ok) ;
+    // s = nrow + MAX (nrow, ncol)
+    int ok = TRUE ;
+    size_t s = CHOLMOD(add_size_t) (A->nrow, MAX (A->nrow, A->ncol), &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (EMPTY) ;
     }
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (EMPTY) ;
@@ -933,7 +932,7 @@ int64_t CHOLMOD(bisect) // returns # of nodes in separator
 
     // Bew should be at least size n for the hash function to work well
     // this cannot cause overflow, because the matrix is already created
-    csize = MAX (((size_t) n) + 1, (size_t) bnz) ;
+    size_t csize = MAX (((size_t) n) + 1, (size_t) bnz) ;
 
     // create the graph using Flag as workspace for node weights [
     Bnw = Common->Flag ;    // size n workspace
@@ -1058,13 +1057,11 @@ int64_t CHOLMOD(nested_dissection) // returns # of components, or -1 if error
         *Ipost, *NewParent, *Hash, *Cmap, *Cp, *Ci, *Cew, *Cnw, *Part, *Post,
         *Work3n ;
     UInt hash ;
-    Int n, bnz, top, i, j, k, cnode, cdense, p, cj, cn, ci, cnz, mark, c, uncol,
+    Int n, bnz, top, i, j, k, cnode, cdense, p, cj, cn, ci, cnz, mark, c,
         sepsize, parent, ncomponents, threshold, ndense, pstart, pdest, pend,
         nd_compress, nd_camd, csize, jnext, nd_small, total_weight,
         nchild, child = EMPTY ;
     cholmod_sparse *B, *C ;
-    size_t s ;
-    int ok = TRUE ;
     DEBUG (Int cnt) ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
@@ -1107,9 +1104,10 @@ int64_t CHOLMOD(nested_dissection) // returns # of components, or -1 if error
     // allocate workspace
     //--------------------------------------------------------------------------
 
-    // s = 4*n + uncol
-    uncol = (A->stype == 0) ? A->ncol : 0 ;
-    s = CHOLMOD(mult_size_t) (n, 4, &ok) ;
+    // s = 4*nrow + uncol
+    size_t uncol = (A->stype == 0) ? A->ncol : 0 ;
+    int ok = TRUE ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 4, &ok) ;
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
@@ -1117,7 +1115,7 @@ int64_t CHOLMOD(nested_dissection) // returns # of components, or -1 if error
         return (EMPTY) ;
     }
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (EMPTY) ;
@@ -1979,8 +1977,7 @@ int64_t CHOLMOD(collapse_septree)
 
     Int *First, *Count, *Csubtree, *W, *Map ;
     Int c, j, k, nc, sepsize, total_weight, parent, nc_new, first ;
-    int collapse = FALSE, ok = TRUE ;
-    size_t s ;
+    int collapse = FALSE ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (CParent, EMPTY) ;
@@ -2007,7 +2004,8 @@ int64_t CHOLMOD(collapse_septree)
     //--------------------------------------------------------------------------
 
     // s = 3*ncomponents
-    s = CHOLMOD(mult_size_t) (ncomponents, 3, &ok) ;
+    int ok = TRUE ;
+    size_t s = CHOLMOD(mult_size_t) (ncomponents, 3, &ok) ;
     if (!ok)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;

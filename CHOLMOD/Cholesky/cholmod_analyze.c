@@ -399,10 +399,9 @@ cholmod_factor *CHOLMOD(analyze_p2)
     Int *First, *Level, *Work4n, *Cmember, *CParent, *ColCount, *Lperm, *Parent,
         *Post, *Perm, *Lparent, *Lcolcount ;
     cholmod_factor *L ;
-    Int k, n, method, nmethods, status, default_strategy, ncol, uncol,
+    Int k, n, method, nmethods, status, default_strategy, ncol,
         skip_analysis, skip_best ;
     Int amd_backup ;
-    size_t s ;
     int ok = TRUE ;
 
     //--------------------------------------------------------------------------
@@ -423,7 +422,6 @@ cholmod_factor *CHOLMOD(analyze_p2)
 
     n = A->nrow ;
     ncol = A->ncol ;
-    uncol = (A->stype == 0) ? (A->ncol) : 0 ;
 
     //--------------------------------------------------------------------------
     // set the default strategy
@@ -485,8 +483,9 @@ cholmod_factor *CHOLMOD(analyze_p2)
     // Note: enough space needs to be allocated here so that routines called by
     // cholmod_analyze do not reallocate the space.
 
-    // s = 6*n + uncol
-    s = CHOLMOD(mult_size_t) (n, 6, &ok) ;
+    // s = 6*nrow + uncol
+    size_t uncol = (A->stype == 0) ? (A->ncol) : 0 ;
+    size_t s = CHOLMOD(mult_size_t) (A->nrow, 6, &ok) ;
     s = CHOLMOD(add_size_t) (s, uncol, &ok) ;
     if (!ok)
     {
@@ -494,7 +493,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
         return (NULL) ;
     }
 
-    CHOLMOD(allocate_work) (n, s, 0, Common) ;
+    CHOLMOD(allocate_work) (A->nrow, s, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (NULL) ;     // out of memory
