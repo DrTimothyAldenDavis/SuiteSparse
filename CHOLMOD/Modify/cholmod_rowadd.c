@@ -150,7 +150,6 @@ int CHOLMOD(rowadd_mark)
     }
     if (L->xtype != CHOLMOD_PATTERN && L->dtype != R->dtype)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "R and L must have the same dtype") ;
         return (FALSE) ;
     }

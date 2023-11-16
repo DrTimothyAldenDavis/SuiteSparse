@@ -197,7 +197,6 @@ static int print_value
                 if (s [i+2] == '0')
                 {
                     // delete character s[i+2]
-GOTCHA
                     src = i+3 ;
                 }
                 else
@@ -230,18 +229,6 @@ GOTCHA
         s [1] = '-' ;
         p = s + 1 ;
     }
-
-#if 0
-    // double-check
-    i = sscanf (p, "%lg", &z) ;
-    if (i != 1 || y != z)
-    {
-        // oops! something went wrong in the "e+0" edit, above.
-        // this "cannot" happen
-        sprintf (s, "%.*g", width, x) ;
-        p = s ;
-    }
-#endif
 
     //--------------------------------------------------------------------------
     // print the value to the file

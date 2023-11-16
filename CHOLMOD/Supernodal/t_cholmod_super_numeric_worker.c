@@ -280,8 +280,8 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     if ( useGPU )
     {
         // Case of GPU, zero all supernodes at one time for better performance
-        TEMPLATE2 (CHOLMOD (gpu_clear_memory))(Lx, L->xsize,
-            Common->nthreads_max) ;
+        int nthreads = cholmod_nthreads ((double) L->xsize, cm) ;
+        TEMPLATE2 (CHOLMOD (gpu_clear_memory))(Lx, L->xsize, nthreads) ;
     }
     #endif
 

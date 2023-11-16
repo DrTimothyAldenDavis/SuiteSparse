@@ -101,7 +101,6 @@ int CHOLMOD(scale)
     RETURN_IF_XTYPE_INVALID (S, CHOLMOD_REAL, CHOLMOD_ZOMPLEX, FALSE) ;
     if (A->xtype != S->xtype || A->dtype != S->dtype)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "xtype and dtype of A and S must match") ;
         return (FALSE) ;
     }

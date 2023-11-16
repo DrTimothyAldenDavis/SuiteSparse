@@ -467,12 +467,8 @@ GOTCHA
     {
         // The separator is empty, select lightest node as separator.  If
         // ties, select the highest numbered node.
-        if (Anw == NULL)
-        {
-            lightest = n-1 ;
-GOTCHA
-        }
-        else
+        lightest = n-1 ;
+        if (Anw != NULL)
         {
             lightest = 0 ;
             for (j = 0 ; j < n ; j++)

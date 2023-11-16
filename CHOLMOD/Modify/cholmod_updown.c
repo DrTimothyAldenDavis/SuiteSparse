@@ -417,7 +417,6 @@ int CHOLMOD(updown_mask2)
     }
     if (L->xtype != CHOLMOD_PATTERN && L->dtype != C->dtype)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "C and L must have the same dtype") ;
         return (FALSE) ;
     }

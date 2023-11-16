@@ -52,7 +52,6 @@ cholmod_dense *CHOLMOD(ensure_dense)
 
     if (xtype == CHOLMOD_PATTERN)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "xtype invalid") ;
         return (NULL) ;
     }

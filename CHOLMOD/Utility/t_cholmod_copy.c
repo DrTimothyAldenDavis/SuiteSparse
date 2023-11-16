@@ -126,7 +126,6 @@ cholmod_sparse *CHOLMOD(copy)
     stype = SIGN (stype) ;
     if ((stype || astype) && nrow != ncol)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "matrix invalid") ;
         return (NULL) ;
     }

@@ -798,13 +798,7 @@ cholmod_factor *CHOLMOD(analyze_p2)
         // than CHOLMOD_OUT_OF_MEMORY, since the former implies something may
         // be wrong with the user's input.  CHOLMOD_OUT_OF_MEMORY is simply an
         // indication of lack of resources.
-        if (status >= CHOLMOD_OK)
-        {
-            // this can occur if nmethods = 1, ordering = CHOLMOD_GIVEN,
-            // but UserPerm is NULL
-GOTCHA
-            status = CHOLMOD_INVALID ;
-        }
+        status = (status >= CHOLMOD_OK) ? CHOLMOD_INVALID : status ;
         ERROR (status, "all methods failed") ;
         FREE_WORKSPACE_AND_RETURN ;
     }

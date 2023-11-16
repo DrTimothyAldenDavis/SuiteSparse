@@ -78,7 +78,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     if (A->nrow != B->nrow || A->ncol != B->ncol)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "A and B dimensions do not match") ;
         return (NULL) ;
     }
@@ -101,7 +100,6 @@ GOTCHA
 
     if (values && A->dtype != B->dtype)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "A and B dtypes do not match") ;
         return (NULL) ;
     }

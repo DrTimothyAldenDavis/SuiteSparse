@@ -41,7 +41,6 @@ cholmod_factor *CHOLMOD(alloc_factor)       // return the new factor L
 
     if ((int64_t) n >= Int_max)
     {
-GOTCHA
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (NULL) ;
     }

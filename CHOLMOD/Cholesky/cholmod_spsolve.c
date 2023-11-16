@@ -88,7 +88,6 @@ cholmod_sparse *CHOLMOD(spsolve)            // returns the sparse solution X
     }
     if (L->dtype != B->dtype)
     {
-GOTCHA
         ERROR (CHOLMOD_INVALID, "dtype of L and B must match") ;
         return (NULL) ;
     }

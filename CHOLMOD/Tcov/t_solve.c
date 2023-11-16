@@ -61,7 +61,10 @@ double test_solver (cholmod_sparse *A)
         // supernodal
         printf ("test_solver: supernodal\n") ;
         cm->supernodal = CHOLMOD_SUPERNODAL ;
+        save = cm->nthreads_max ;
+        cm->nthreads_max = -1 ;
         err = solve (A) ;
+        cm->nthreads_max = save ;
         MAXERR (maxerr, err, 1) ;
         printf ("test_solver err: %6.2e\n", err) ;
 

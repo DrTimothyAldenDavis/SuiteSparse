@@ -38,3 +38,5 @@
 #include "t_cat_tests.c"
 #include "t_dense_tests.c"
 #include "t_dtype_tests.c"
+#include "t_common_tests.c"
+#include "t_error_tests.c"

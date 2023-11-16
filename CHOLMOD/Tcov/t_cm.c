@@ -1052,6 +1052,7 @@ int main (int argc, char **argv)
     SuiteSparse_tic (tic) ;
     printf ("Testing CHOLMOD (%g): %d ", v, CHOLMOD(version) (version)) ;
     printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
+    OK (CHOLMOD_VERSION == CHOLMOD(version) (NULL)) ;
     v = SUITESPARSE_VERSION ;
     printf ("for SuiteSparse (%g): %d ", v, SuiteSparse_version (version)) ;
     printf ("(%d.%d.%d)\n", version [0], version [1], version [2]) ;
@@ -1449,6 +1450,10 @@ int main (int argc, char **argv)
         MAXERR (maxerr, err, 1) ;
 
         dtype_tests (A, cm) ;
+
+        common_tests (cm) ;
+
+        error_tests (A, cm) ;
 
         //----------------------------------------------------------------------
         // exhaustive memory-error handling for small matrices

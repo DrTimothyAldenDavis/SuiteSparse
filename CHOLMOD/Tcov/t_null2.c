@@ -871,7 +871,14 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     CHOLMOD(free_sparse) (&Z, cm) ;
 
     Z = CHOLMOD(speye) (0, ncol+1, CHOLMOD_PATTERN + DTYPE, cm) ;
-    f = fopen ("temp4.mtx", "w") ;
+    if (ncol == 7 && nrow == 7)
+    {
+        f = fopen ("temp4_write7.mtx", "w") ;
+    }
+    else
+    {
+        f = fopen ("temp4.mtx", "w") ;
+    }
     asym = CHOLMOD(write_sparse) (f, A, Z, NULL, cm) ;
     fclose (f) ;
     printf ("write_sparse, asym: %d with Z\n", asym) ;

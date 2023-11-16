@@ -166,6 +166,8 @@ TEMPLATES =             \
     t_test_ops2.c       \
     t_dense_tests.c     \
     t_dtype_tests.c     \
+    t_common_tests.c    \
+    t_error_tests.c     \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
@@ -861,6 +863,9 @@ go: ccode
 	$(V) ./dl_test    -e12 < Matrix/c30lo > $(T)/dl_test_c30lo.out
 	$(V) ./si_test    -e4  < Matrix/c30lo > $(T)/si_test_c30lo.out
 	$(V) ./sl_test    -e4  < Matrix/c30lo > $(T)/sl_test_c30lo.out
+	- $(COVER)
+	$(V) ./di_test -e5 < Matrix/write.tri > $(T)/di_test_write.out
+	$(V) ./dl_test -e5 < Matrix/write.tri > $(T)/dl_test_write.out
 	- $(COVER)
 	$(V) ./di_test -m -e12 < Matrix/c30up > $(T)/di_test_c30up.out
 	$(V) ./dl_test -m -e12 < Matrix/c30up > $(T)/dl_test_c30up.out

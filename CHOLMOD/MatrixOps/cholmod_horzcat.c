@@ -83,7 +83,6 @@ cholmod_sparse *CHOLMOD(horzcat)    // return C = [A B]
     }
     if (values && (A->xtype != B->xtype || A->dtype != A->dtype))
     {
-GOTCHA
         // A and B must have the same xtype and dtype if values is TRUE
         ERROR (CHOLMOD_INVALID, "A and B must have same xtype and dtype") ;
         return (NULL) ;
