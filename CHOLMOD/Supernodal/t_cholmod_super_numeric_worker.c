@@ -434,7 +434,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
                 Real fjk[2] ;
                 pf = Fp [k] ;
-                pfend = (Fpacked) ? (Fp [k+1]) : (p + Fnz [k]) ;
+                pfend = (Fpacked) ? (Fp [k+1]) : (pf + Fnz [k]) ;
                 for ( ; pf < pfend ; pf++)
                 {
                     j = Fi [pf] ;
