@@ -539,7 +539,8 @@ install ( TARGETS Mongoose
 if ( NOT NSTATIC )
     install ( TARGETS Mongoose_static
         EXPORT MongooseTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 install ( TARGETS mongoose_exe
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
