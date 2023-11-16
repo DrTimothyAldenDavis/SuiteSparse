@@ -12,6 +12,18 @@ void overflow_tests (cholmod_common *cm)
 {
 
     //--------------------------------------------------------------------------
+    // cholmod_read_triplet
+    //--------------------------------------------------------------------------
+
+    FILE *f = fopen ("Matrix/overflow.tri", "r") ;
+    if (f != NULL)
+    {
+        cholmod_triplet *T = CHOLMOD(read_triplet) (f, cm) ;
+        OK (cm->status = CHOLMOD_TOO_LARGE) ;
+        OK (T == NULL) ;
+    }
+
+    //--------------------------------------------------------------------------
     // AMD and CAMD
     //--------------------------------------------------------------------------
 
@@ -45,16 +57,21 @@ void overflow_tests (cholmod_common *cm)
 
     cholmod_sparse *A = CHOLMOD(spzeros) (1, 1, 1, CHOLMOD_REAL + DTYPE, cm) ;
     cholmod_sparse *R = CHOLMOD(spzeros) (1, 1, 1, CHOLMOD_REAL + DTYPE, cm);
+    cholmod_sparse *C = CHOLMOD(spzeros) (1, 8, 1, CHOLMOD_REAL + DTYPE, cm);
     cholmod_factor *L = CHOLMOD(alloc_factor) (1, DTYPE, cm) ;
+    cm->print = 5 ;
+    CHOLMOD(print_sparse) (C, "C", cm) ;
 
     if (A != NULL && R != NULL && L != NULL)
     {
         Int P [1] ;
 
         size_t n_save = L->n ;
+        bool is_super_save = L->is_super ;
         size_t ncol_save = A->ncol ;
         size_t nrow_save = A->nrow ;
         size_t R_nrow_save = R->nrow ;
+        size_t C_nrow_save = C->nrow ;
         int stype_save = A->stype ;
         int L_xtype_save = L->xtype ;
         int A_xtype_save = A->xtype ;
@@ -195,7 +212,6 @@ void overflow_tests (cholmod_common *cm)
         ok = CHOLMOD(resymbol_noperm) (A, NULL, 0, true, L, cm) ;
         printf ("cholmod_resymbol_noperm result: %d\n", ok) ;
         OK (!ok) ;
-        printf ("status: %d\n", cm->status) ;
         OK (cm->status == CHOLMOD_TOO_LARGE) ;
         cm->status = CHOLMOD_OK ;
 
@@ -317,25 +333,56 @@ void overflow_tests (cholmod_common *cm)
         OK (cm->status == CHOLMOD_TOO_LARGE) ;
         cm->status = CHOLMOD_OK ;
 
-        A->stype = 0 ;
+        A->stype = stype_save ;
+        A->nrow = nrow_save ;
+        A->ncol = ncol_save ;
+
+        //----------------------------------------------------------------------
+        // cholmod_updown
+        //----------------------------------------------------------------------
+
+        L->n = SIZE_MAX ;
+        L->xtype = CHOLMOD_REAL ;
+        L->x = X ;
+        C->nrow = SIZE_MAX ;
+
+        ok = CHOLMOD(updown) (1, C, L, cm) ;
+        printf ("cholmod_updown result: %d\n", ok) ;
+        OK (!ok) ;
+        OK (cm->status == CHOLMOD_TOO_LARGE) ;
+        cm->status = CHOLMOD_OK ;
+
+        L->n = n_save ;
+        L->xtype = L_xtype_save ;
+        L->x = NULL ;
+        C->nrow = C_nrow_save ;
+
+        //----------------------------------------------------------------------
+        // cholmod_super_numeric
+        //----------------------------------------------------------------------
+
+        L->n = SIZE_MAX ;
+        L->is_super = true ;
+        A->stype = -1 ;
+        A->nrow = SIZE_MAX ;
+        A->ncol = SIZE_MAX ;
+
+        ok = CHOLMOD(super_numeric) (A, NULL, one, L, cm) ;
+        printf ("cholmod_super_numeric result: %d\n", ok) ;
+        OK (!ok) ;
+        OK (cm->status == CHOLMOD_TOO_LARGE) ;
+        cm->status = CHOLMOD_OK ;
+
+        L->is_super = is_super_save ;
+        L->n = n_save ;
+        A->stype = stype_save ;
         A->nrow = nrow_save ;
         A->ncol = ncol_save ;
     }
 
+    CHOLMOD(free_sparse) (&C, cm) ;
     CHOLMOD(free_sparse) (&R, cm) ;
     CHOLMOD(free_sparse) (&A, cm) ;
     CHOLMOD(free_factor) (&L, cm) ;
-
-    //--------------------------------------------------------------------------
-    // cholmod_read_triplet
-    //--------------------------------------------------------------------------
-
-    FILE *f = fopen ("Matrix/overflow.tri", "r") ;
-    if (f != NULL)
-    {
-        cholmod_triplet *T = CHOLMOD(read_triplet) (f, cm) ;
-        OK (cm->status = CHOLMOD_TOO_LARGE) ;
-        OK (T == NULL) ;
-    }
 }
 

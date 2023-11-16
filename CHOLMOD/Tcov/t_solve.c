@@ -471,7 +471,7 @@ double solve (cholmod_sparse *A)
         CHOLMOD(free_sparse) (&E, cm) ;
         if (cm->print > 1)
         {
-            printf ("norm (A*C-I)::: %g\n", r, r2) ;
+            printf ("norm (A*C-I): %g %g\n", r, r2) ;
         }
         MAXERR (maxerr, r, 1) ;
         MAXERR (maxerr, r2, 1) ;

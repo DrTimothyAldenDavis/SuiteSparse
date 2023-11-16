@@ -180,6 +180,10 @@ cholmod_dense *rand_dense
 cholmod_sparse *perm_matrix (Int *perm, Int n, int xdtype,
     cholmod_common *Common) ;
 
+double cat_tests (cholmod_sparse *A, cholmod_common *cm) ;
+double dense_tests (cholmod_sparse *A, cholmod_common *cm) ;
+double dtype_tests (cholmod_sparse *A, cholmod_common *cm) ;
+
 //------------------------------------------------------------------------------
 // AMD, COLAMD, and CCOLAMD
 //------------------------------------------------------------------------------

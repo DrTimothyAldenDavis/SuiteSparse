@@ -331,12 +331,43 @@ void memory_tests (cholmod_triplet *T)
     OK (count == cm->malloc_count) ;
     OK (inuse == cm->memory_inuse) ;
     cm->supernodal = CHOLMOD_AUTO ;
-    progress (1, '|') ;
+
+    //--------------------------------------------------------------------------
+    // cat tests
+    //--------------------------------------------------------------------------
+
+    CHOLMOD(defaults) (cm) ; cm->useGPU = 0 ;
+    test_memory_handler ( ) ;
+
+    printf ("==================================== cat_tests memory test\n") ;
+    count = cm->malloc_count ;
+    my_tries = -1 ;
+    for (trial = 0 ; my_tries <= 0 ; trial++)
+    {
+        cm->print = 0 ;
+        fflush (stdout) ;
+        my_tries = trial ;
+        A = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
+        err = cat_tests (A, cm) ;
+        CHOLMOD(free_sparse) (&A, cm) ;
+        CHOLMOD(free_work) (cm) ;
+        printf ("inuse "ID" "ID"\n", (Int) inuse, (Int) (cm->memory_inuse)) ;
+        OK (count == cm->malloc_count) ;
+        OK (inuse == cm->memory_inuse) ;
+    }
+    printf ("memory test: cat_test error %.1g trials "ID"\n", err, trial) ;
+    printf ("initial count: "ID" final count "ID"\n",
+            (Int) count, (Int) cm->malloc_count) ;
+    printf ("initial inuse: "ID" final inuse "ID"\n",
+            (Int) inuse, (Int) cm->memory_inuse) ;
+    OK (count == cm->malloc_count) ;
+    OK (inuse == cm->memory_inuse) ;
 
     //--------------------------------------------------------------------------
     // restore original memory handler
     //--------------------------------------------------------------------------
 
+    progress (1, '|') ;
     normal_memory_handler ( ) ;
     cm->print = psave ;
 

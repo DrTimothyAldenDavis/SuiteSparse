@@ -1442,6 +1442,14 @@ int main (int argc, char **argv)
         double err = test_ops2 (A) ;
         MAXERR (maxerr, err, 1) ;
 
+        err = cat_tests (A, cm) ;
+        MAXERR (maxerr, err, 1) ;
+
+        err = dense_tests (A, cm) ;
+        MAXERR (maxerr, err, 1) ;
+
+        dtype_tests (A, cm) ;
+
         //----------------------------------------------------------------------
         // exhaustive memory-error handling for small matrices
         //----------------------------------------------------------------------

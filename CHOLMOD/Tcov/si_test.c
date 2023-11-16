@@ -35,3 +35,6 @@
 #include "t_perm_matrix.c"
 #include "t_ptest.c"
 #include "t_rand_dense.c"
+#include "t_cat_tests.c"
+#include "t_dense_tests.c"
+#include "t_dtype_tests.c"

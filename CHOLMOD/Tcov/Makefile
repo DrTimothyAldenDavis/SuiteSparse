@@ -158,11 +158,14 @@ TEMPLATES =             \
     t_null2.c           \
     t_basic.c           \
     t_overflow_tests.c  \
+    t_cat_tests.c       \
     t_null.c            \
     t_raw_factor.c      \
     t_solve.c           \
     t_test_ops.c        \
     t_test_ops2.c       \
+    t_dense_tests.c     \
+    t_dtype_tests.c     \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
@@ -589,6 +592,11 @@ d: di_test
 
 go: ccode
 	mkdir -p $(T)
+	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
+	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
+	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
+	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
+	- $(COVER)
 	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
 	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
 	$(V) ./si_test -e5  < Matrix/c5up2    > $(T)/si_test_c5up2.out
@@ -602,11 +610,7 @@ go: ccode
 	$(V) ./di_test -e12   < Matrix/z30lo  > $(T)/di_test_z30lo.out
 	$(V) ./dl_test -e12   < Matrix/z30lo  > $(T)/dl_test_z30lo.out
 	$(V) ./si_test -e4    < Matrix/z30lo  > $(T)/si_test_z30lo.out
-	- $(COVER)
-	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
-	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
-	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
-	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
+	$(V) ./sl_test -e4    < Matrix/z30lo  > $(T)/sl_test_z30lo.out
 	- $(COVER)
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/di_demo_k1.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/dl_demo_k1.out
@@ -627,10 +631,10 @@ go: ccode
 	#
 	$(V) ./di_demo < ../Demo/Matrix/up.tri        > $(T)/di_demo_up.out
 	$(V) ./dl_demo < ../Demo/Matrix/up.tri        > $(T)/dl_demo_up.out
-	$(V) ./dl_demo   ../Demo/Matrix/up.tri 1      > $(T)/dl_demo_up_zomplex.out
+	$(V) ./dl_demo   ../Demo/Matrix/up.tri 1      > $(T)/dl_demo_up_z.out
 	$(V) ./si_demo < ../Demo/Matrix/up.tri        > $(T)/si_demo_up.out
 	$(V) ./sl_demo < ../Demo/Matrix/up.tri        > $(T)/sl_demo_up.out
-	$(V) ./sl_demo   ../Demo/Matrix/up.tri 1      > $(T)/sl_demo_up_zomplex.out
+	$(V) ./sl_demo   ../Demo/Matrix/up.tri 1      > $(T)/sl_demo_up_z.out
 	#
 	$(V) ./di_demo < ../Demo/Matrix/0.tri         > $(T)/di_demo_0.out
 	$(V) ./dl_demo < ../Demo/Matrix/0.tri         > $(T)/dl_demo_0.out
@@ -897,10 +901,10 @@ go: ccode
 unused:
 	$(V) ./di_demo < ../Demo/Matrix/c.tri         > $(T)/di_demo_c.out
 	$(V) ./dl_demo < ../Demo/Matrix/c.tri         > $(T)/dl_demo_c.out
-	$(V) ./dl_demo   ../Demo/Matrix/c.tri 1       > $(T)/dl_demo_c_zomplex.out
+	$(V) ./dl_demo   ../Demo/Matrix/c.tri 1       > $(T)/dl_demo_c_z.out
 	$(V) ./si_demo < ../Demo/Matrix/c.tri         > $(T)/si_demo_c.out
 	$(V) ./sl_demo < ../Demo/Matrix/c.tri         > $(T)/sl_demo_c.out
-	$(V) ./sl_demo   ../Demo/Matrix/c.tri 1       > $(T)/sl_demo_c_zomplex.out
+	$(V) ./sl_demo   ../Demo/Matrix/c.tri 1       > $(T)/sl_demo_c_z.out
 	- $(COVER)
 	$(V) ./di_demo < ../Demo/Matrix/can___24.mtx  > $(T)/di_demo_can24.out
 	$(V) ./dl_demo < ../Demo/Matrix/can___24.mtx  > $(T)/dl_demo_can24.out
