@@ -40,3 +40,4 @@
 #include "t_dtype_tests.c"
 #include "t_common_tests.c"
 #include "t_error_tests.c"
+#include "t_tofrom_tests.c"

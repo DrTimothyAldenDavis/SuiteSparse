@@ -367,6 +367,11 @@
 #endif
 
 //------------------------------------------------------------------------------
+// macros for finding untested code (for developent only)
+//------------------------------------------------------------------------------
+
+// These macros are xtype and/or dtype-type specific versions of the GOTCHA
+// macro #defined in cholmod_internal.h.
 
 #undef PI_GOTCHA
 #undef PL_GOTCHA
@@ -399,7 +404,7 @@
             #define PL_GOTCHA GOTCHA
             #define PDL_GOTCHA GOTCHA
         #elif defined ( REAL )
-            #define PDL_GOTCHA GOTCHA
+            #define RDL_GOTCHA GOTCHA
         #elif defined ( COMPLEX )
             #define CDL_GOTCHA GOTCHA
         #elif defined ( ZOMPLEX )
@@ -412,7 +417,7 @@
             #define PI_GOTCHA GOTCHA
             #define PDI_GOTCHA GOTCHA
         #elif defined ( REAL )
-            #define PDI_GOTCHA GOTCHA
+            #define RDI_GOTCHA GOTCHA
         #elif defined ( COMPLEX )
             #define CDI_GOTCHA GOTCHA
         #elif defined ( ZOMPLEX )
@@ -429,7 +434,7 @@
             #define PL_GOTCHA GOTCHA
             #define PSL_GOTCHA GOTCHA
         #elif defined ( REAL )
-            #define PSL_GOTCHA GOTCHA
+            #define RSL_GOTCHA GOTCHA
         #elif defined ( COMPLEX )
             #define CSL_GOTCHA GOTCHA
         #elif defined ( ZOMPLEX )
@@ -442,7 +447,7 @@
             #define PI_GOTCHA GOTCHA
             #define PSI_GOTCHA GOTCHA
         #elif defined ( REAL )
-            #define PSI_GOTCHA GOTCHA
+            #define RSI_GOTCHA GOTCHA
         #elif defined ( COMPLEX )
             #define CSI_GOTCHA GOTCHA
         #elif defined ( ZOMPLEX )

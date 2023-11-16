@@ -1455,6 +1455,9 @@ int main (int argc, char **argv)
 
         error_tests (A, cm) ;
 
+        err = tofrom_tests (A, cm) ;
+        MAXERR (maxerr, err, 1) ;
+
         //----------------------------------------------------------------------
         // exhaustive memory-error handling for small matrices
         //----------------------------------------------------------------------

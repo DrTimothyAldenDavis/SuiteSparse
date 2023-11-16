@@ -83,14 +83,6 @@ static void TEMPLATE (cholmod_sparse_to_dense_worker)
                     Int s = j + i*nrow ;
                     ASSIGN2_CONJ (Xx, Xz, s, Ax, Az, p) ;
                 }
-ZSI_GOTCHA
-ZSL_GOTCHA
-CSI_GOTCHA
-CSL_GOTCHA
-RSI_GOTCHA
-RSL_GOTCHA
-RDI_GOTCHA
-RDL_GOTCHA
 
             }
             else if (lower)
@@ -109,14 +101,6 @@ RDL_GOTCHA
                     Int s = j + i*nrow ;
                     ASSIGN2_CONJ (Xx, Xz, s, Ax, Az, p) ;
                 }
-ZSI_GOTCHA
-ZSL_GOTCHA
-CSI_GOTCHA
-CSL_GOTCHA
-RSI_GOTCHA
-RSL_GOTCHA
-RDI_GOTCHA
-RDL_GOTCHA
 
             }
             else

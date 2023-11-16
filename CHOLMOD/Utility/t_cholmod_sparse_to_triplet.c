@@ -74,7 +74,6 @@ cholmod_triplet *CHOLMOD(sparse_to_triplet)
     switch ((A->xtype + A->dtype) % 8)
     {
         default:
-GOTCHA  // case p
             p_cholmod_sparse_to_triplet_worker (T, A) ;
             break ;
 

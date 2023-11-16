@@ -168,6 +168,7 @@ TEMPLATES =             \
     t_dtype_tests.c     \
     t_common_tests.c    \
     t_error_tests.c     \
+    t_tofrom_tests.c    \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c
@@ -594,15 +595,20 @@ d: di_test
 
 go: ccode
 	mkdir -p $(T)
-	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
-	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
-	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
-	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
-	- $(COVER)
 	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
 	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
 	$(V) ./si_test -e5  < Matrix/c5up2    > $(T)/si_test_c5up2.out
 	$(V) ./sl_test -e5  < Matrix/c5up2    > $(T)/sl_test_c5up2.out
+	- $(COVER)
+	$(V) ./di_test -e11 < Matrix/r5lo     > $(T)/di_test_r5lo.out
+	$(V) ./dl_test -e11 < Matrix/r5lo     > $(T)/dl_test_r5lo.out
+	$(V) ./si_test -e2  < Matrix/r5lo     > $(T)/si_test_r5lo.out
+	$(V) ./sl_test -e2  < Matrix/r5lo     > $(T)/sl_test_r5lo.out
+	- $(COVER)
+	$(V) ./di_test -m -e7 < Matrix/ex5lo  > $(T)/di_test_ex5lo.out
+	$(V) ./dl_test -m -e7 < Matrix/ex5lo  > $(T)/dl_test_ex5lo.out
+	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
+	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
 	- $(COVER)
 	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out
 	$(V) ./dl_test -m -e11 < Matrix/z10   > $(T)/dl_test_z10.out
