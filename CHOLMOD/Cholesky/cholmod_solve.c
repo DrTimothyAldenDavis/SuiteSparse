@@ -246,6 +246,7 @@ GOTCHA  // B->ncol must be 1
         }
         if (L->xtype != B->xtype)
         {
+GOTCHA  // B and L xtype must match
             ERROR (CHOLMOD_INVALID, "Bset requires xtype of L and B to match") ;
             return (FALSE) ;
         }
