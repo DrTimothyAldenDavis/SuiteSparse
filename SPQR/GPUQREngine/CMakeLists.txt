@@ -115,7 +115,7 @@ target_include_directories ( GPUQREngine
 # static gpuqrengine library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( GPUQREngine_static STATIC ${GPUQRENGINE_SOURCES} )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
@@ -161,7 +161,7 @@ install ( TARGETS GPUQREngine
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS GPUQREngine_static
         EXPORT GPUQREngineTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

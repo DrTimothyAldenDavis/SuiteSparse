@@ -93,7 +93,7 @@ target_include_directories ( GPURuntime
 # static suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
     set_target_properties ( GPURuntime_static PROPERTIES
@@ -138,7 +138,7 @@ install ( TARGETS GPURuntime
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS GPURuntime_static
         EXPORT SuiteSparse_GPURuntimeTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

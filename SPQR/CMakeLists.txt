@@ -124,7 +124,7 @@ target_include_directories ( SPQR
 # static spqr library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( SPQR_static STATIC ${SPQR_SOURCES} )
 
     set_target_properties ( SPQR_static PROPERTIES
@@ -152,7 +152,7 @@ endif ( )
 
 # SuiteSparseConfig:
 target_link_libraries ( SPQR PRIVATE SuiteSparse::SuiteSparseConfig )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -163,7 +163,7 @@ endif ( )
 # OpenMP:
 if ( OPENMP_FOUND )
     target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SPQR_static PUBLIC OpenMP::OpenMP_CXX )
         list ( APPEND SPQR_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
     endif ( )
@@ -172,7 +172,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( SPQR PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND SPQR_STATIC_LIBS "m" )
         target_link_libraries ( SPQR_static PUBLIC m )
     endif ( )
@@ -184,7 +184,7 @@ message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
 target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
 target_include_directories ( SPQR PRIVATE ${LAPACK_INCLUDE_DIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${LAPACK_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${LAPACK_LIBRARIES} )
     target_include_directories ( SPQR_static PRIVATE ${LAPACK_INCLUDE_DIR} )
@@ -196,7 +196,7 @@ message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
 target_include_directories ( SPQR PRIVATE ${BLAS_INCLUDE_DIRS} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
     target_include_directories ( SPQR_static PRIVATE ${BLAS_INCLUDE_DIRS} )
@@ -205,7 +205,7 @@ endif ( )
 # CHOLMOD:
 # link with CHOLMOD and its dependencies
 target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::CHOLMOD_static )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
     else ( )
@@ -219,7 +219,7 @@ if ( SUITESPARSE_CUDA )
         SuiteSparse::CHOLMOD_CUDA SPQR_CUDA GPUQREngine GPURuntime )
     target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         if ( TARGET SuiteSparse::CHOLMOD_CUDA_static )
             target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_CUDA_static )
         else ( )
@@ -242,7 +242,7 @@ install ( TARGETS SPQR
     LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS SPQR_static
         EXPORT SPQRTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
