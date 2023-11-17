@@ -139,7 +139,7 @@ target_include_directories ( ParU
 # static paru library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( ParU_static STATIC ${PARU_SOURCES} )
 
     set_target_properties ( ParU_static PROPERTIES
@@ -167,7 +167,7 @@ if ( WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
     # Some parallelization levels don't work correctly with GCC on Windows
     # (because of emuTLS?). Omit them.
     target_compile_definitions (ParU PRIVATE PARU_GCC_WINDOWS )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_compile_definitions (ParU_static PRIVATE PARU_GCC_WINDOWS )
     endif ( )
 endif ( )
@@ -180,7 +180,7 @@ endif ( )
 target_link_libraries ( ParU PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( ParU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( ParU_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -194,16 +194,16 @@ if ( OpenMP_CXX_FOUND )
     message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
     target_link_libraries ( ParU PRIVATE OpenMP::OpenMP_CXX )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND PARU_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
         target_link_libraries ( ParU_static PUBLIC OpenMP::OpenMP_CXX )
     endif ( )
 endif ( )
 
 # libm:
-if ( NOT MSVC )
+if ( NOT WIN32 )
     target_link_libraries ( ParU PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND PARU_STATIC_LIBS m )
         target_link_libraries ( ParU_static PUBLIC m )
     endif ( )
@@ -213,7 +213,7 @@ endif ( )
 target_link_libraries ( ParU PRIVATE SuiteSparse::UMFPACK )
 target_include_directories ( ParU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::UMFPACK,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::UMFPACK_static )
         target_link_libraries ( ParU_static PUBLIC SuiteSparse::UMFPACK_static )
     else ( )
@@ -225,7 +225,7 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( ParU PRIVATE ${BLAS_LIBRARIES} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
     include_directories ( ${BLAS_INCLUDE_DIRS} )
@@ -234,7 +234,7 @@ endif ( )
 # cholmod:
 target_include_directories ( ParU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     target_include_directories ( ParU_static PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
@@ -252,7 +252,7 @@ install ( TARGETS ParU
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS ParU_static
         EXPORT ParUTargets
         ARCHIVE       DESTINATION ${SUITESPARSE_LIBDIR}
