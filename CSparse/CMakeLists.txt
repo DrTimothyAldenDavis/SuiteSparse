@@ -95,7 +95,7 @@ set_target_properties ( csparse PROPERTIES
 # static csparse library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
 
     set_target_properties ( csparse_static PROPERTIES
@@ -117,7 +117,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( csparse PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( CSPARSE_STATIC_LIBS "${CSPARSE_STATIC_LIBS} -lm" )
         target_link_libraries ( csparse_static PUBLIC m )
     endif ( )
