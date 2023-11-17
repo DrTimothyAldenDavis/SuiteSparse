@@ -28,10 +28,10 @@
 #                       Set CMAKE_INSTALL_PREFIX instead.
 #                       Default: false
 #
-#   NSTATIC:            if true, static libraries are not built.
-#                       Default: false, except for GraphBLAS, which
+#   BUILD_STATIC_LIBS:  if true, static libraries are built.
+#                       Default: true, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
-#                       GraphBLAS is true.
+#                       GraphBLAS is false.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
@@ -94,11 +94,23 @@ include ( GNUInstallDirs )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-# NSTATIC option
-if ( NSTATIC_DEFAULT_ON )
-    option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
+# BUILD_STATIC_LIBS option
+if ( BUILD_STATIC_LIBS_DEFAULT_OFF )
+    option ( BUILD_STATIC_LIBS "OFF (default): do not build static libraries.  ON: build static libraries" OFF )
 else ( )
-    option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
+    # For backwards compatibility, use NSTATIC if it is set.
+    if ( NSTATIC )
+        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" OFF )
+    else ( )
+        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+    endif ( )
+endif ( )
+
+# FIXME: Remove the following when NSTATIC is no longer used in any SuiteSparse library.
+if ( BUILD_STATIC_LIBS )
+    set ( NSTATIC OFF )
+else ( )
+    set ( NSTATIC ON )
 endif ( )
 
 # installation options

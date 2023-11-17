@@ -63,7 +63,7 @@ option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): us
 
 # overwrite NSTATIC specifically for GraphBLAS because building the library
 # takes a long time
-option ( GRAPHBLAS_NSTATIC "ON (default): set NSTATIC for GraphBLAS project.  OFF: Use same value of NSTATIC for GraphBLAS like in the other projects" ON )
+option ( GRAPHBLAS_BUILD_STATIC_LIBS "OFF (default): Do not build static libraries for GraphBLAS project.  ON: Use same value of BUILD_STATIC_LIBS for GraphBLAS like in the other projects" OFF )
 
 # options to build with libraries installed on the system instead of building
 # dependencies automatically

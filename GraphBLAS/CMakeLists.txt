@@ -37,7 +37,7 @@ set ( PROJECT_VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${G
 
 # GraphBLAS takes a long time to build, so do not build the static library
 # by default
-set ( NSTATIC_DEFAULT_ON ON )
+set ( BUILD_STATIC_LIBS_DEFAULT_OFF ON )
 
 # CUDA is under development for now, and not deployed in production:
   set ( ENABLE_CUDA false )
@@ -45,7 +45,7 @@ set ( NSTATIC_DEFAULT_ON ON )
 
 include ( SuiteSparsePolicy )
 
-if ( GRAPHBLAS_NSTATIC )
+if ( NOT GRAPHBLAS_BUILD_STATIC_LIBS )
     # ignore current value of NSTATIC and set it to ON
     set ( NSTATIC ON )
 endif ( )

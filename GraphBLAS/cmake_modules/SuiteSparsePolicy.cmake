@@ -24,12 +24,14 @@
 #                       if false, "cmake --install" will install into the
 #                       default prefix (or the one configured with
 #                       CMAKE_INSTALL_PREFIX).  Requires cmake 3.19.
+#                       This is ignored when using the root CMakeLists.txt.
+#                       Set CMAKE_INSTALL_PREFIX instead.
 #                       Default: false
 #
-#   NSTATIC:            if true, static libraries are not built.
-#                       Default: false, except for GraphBLAS, which
+#   BUILD_STATIC_LIBS:  if true, static libraries are built.
+#                       Default: true, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
-#                       GraphBLAS is true.
+#                       GraphBLAS is false.
 #
 #   SUITESPARSE_CUDA_ARCHITECTURES:  a string, such as "all" or
 #                       "35;50;75;80" that lists the CUDA architectures to use
@@ -92,19 +94,31 @@ include ( GNUInstallDirs )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
-# NSTATIC option
-if ( NSTATIC_DEFAULT_ON )
-    option ( NSTATIC "ON (default): do not build static libraries.  OFF: build static libraries" on )
+# BUILD_STATIC_LIBS option
+if ( BUILD_STATIC_LIBS_DEFAULT_OFF )
+    option ( BUILD_STATIC_LIBS "OFF (default): do not build static libraries.  ON: build static libraries" OFF )
 else ( )
-    option ( NSTATIC "ON: do not build static libraries.  OFF (default): build static libraries" off )
+    # For backwards compatibility, use NSTATIC if it is set.
+    if ( NSTATIC )
+        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" OFF )
+    else ( )
+        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+    endif ( )
+endif ( )
+
+# FIXME: Remove the following when NSTATIC is no longer used in any SuiteSparse library.
+if ( BUILD_STATIC_LIBS )
+    set ( NSTATIC OFF )
+else ( )
+    set ( NSTATIC ON )
 endif ( )
 
 # installation options
-if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.19.0" )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.19.0" )
     # the LOCAL_INSTALL option requires cmake 3.19.0 or later
-    option ( LOCAL_INSTALL "Install in SuiteSparse/lib" off )
+    option ( LOCAL_INSTALL "Install in SuiteSparse/lib" OFF )
 else ( )
-    set ( LOCAL_INSTALL off )
+    set ( LOCAL_INSTALL OFF )
 endif ( )
 
 if ( SUITESPARSE_SECOND_LEVEL )
@@ -121,30 +135,32 @@ endif ( )
 # find this one without "make install"
 set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
 
-# determine if this Package is inside the SuiteSparse folder
-set ( INSIDE_SUITESPARSE false )
-if ( LOCAL_INSTALL )
-    # if you do not want to install local copies of SuiteSparse
-    # packages in SuiteSparse/lib and SuiteSparse/, set
-    # LOCAL_INSTALL to false in your CMake options.
-    if ( SUITESPARSE_SECOND_LEVEL )
-        # the package is normally located at the 2nd level inside SuiteSparse
-        # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
-        if ( EXISTS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config )
-            set ( INSIDE_SUITESPARSE true )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    # determine if this Package is inside the SuiteSparse folder
+    set ( INSIDE_SUITESPARSE false )
+    if ( LOCAL_INSTALL )
+        # if you do not want to install local copies of SuiteSparse
+        # packages in SuiteSparse/lib and SuiteSparse/, set
+        # LOCAL_INSTALL to false in your CMake options.
+        if ( SUITESPARSE_SECOND_LEVEL )
+            # the package is normally located at the 2nd level inside SuiteSparse
+            # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
+            if ( EXISTS ${CMAKE_SOURCE_DIR}/../../SuiteSparse_config )
+                set ( INSIDE_SUITESPARSE true )
+            endif ( )
+        else ( )
+            # typical case, the package is at the 1st level inside SuiteSparse
+            # (SuiteSparse/AMD for example)
+            if ( EXISTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config )
+                set ( INSIDE_SUITESPARSE true )
+            endif ( )
         endif ( )
-    else ( )
-        # typical case, the package is at the 1st level inside SuiteSparse
-        # (SuiteSparse/AMD for example)
-        if ( EXISTS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config )
-            set ( INSIDE_SUITESPARSE true )
+
+        if ( NOT INSIDE_SUITESPARSE )
+            message ( FATAL_ERROR "Unsupported layout for local installation. Correct the directory layout or unset LOCAL_INSTALL." )
         endif ( )
-    endif ( )
 
-    if ( NOT INSIDE_SUITESPARSE )
-        message ( FATAL_ERROR "Unsupported layout for local installation. Correct the directory layout or unset LOCAL_INSTALL." )
     endif ( )
-
 endif ( )
 
 if ( LOCAL_INSTALL )
