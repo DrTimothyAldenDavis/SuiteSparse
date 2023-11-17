@@ -1159,7 +1159,7 @@ void GB_jitifyer_set_use_cmake (bool use_cmake)
 { 
     #pragma omp critical (GB_jitifyer_worker)
     {
-        #if GB_WINDOWS
+        #if defined (_MSC_VER)
         // Windows requires cmake
         GB_jit_use_cmake = true ;
         #else
