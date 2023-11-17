@@ -47,13 +47,11 @@ int64_t CHOLMOD(band_nnz)   // return # of entries in a band (-1 if error)
     if (A->stype > 0 && k1 < 0)
     {
         // A is symmetric with the strictly lower triangular part ignored
-GOTCHA  // stype > 0 && k1 < 0
         k1 = 0 ;
     }
     else if (A->stype < 0 && k2 > 0)
     {
         // A is symmetric with the strictly upper triangular part ignored
-GOTCHA  // stype < 0 && k2 > 0
         k2 = 0 ;
     }
 

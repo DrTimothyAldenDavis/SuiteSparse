@@ -268,9 +268,7 @@ double test_ops (cholmod_sparse *A)
     {
         // E = tril (A), no diagonal
         E = CHOLMOD(copy) (A, -1, -1, cm) ;
-//      CHOLMOD(print_sparse) (E, "E, lower and no diagonal", cm) ;
         CHOLMOD(band_inplace) (0, n, 0, E, cm) ;
-//      CHOLMOD(print_sparse) (E, "E Empty", cm) ;
         nz = CHOLMOD(nnz) (E, cm) ;
         if (E != NULL)
         {
@@ -278,6 +276,16 @@ double test_ops (cholmod_sparse *A)
         }
         CHOLMOD(free_sparse) (&E, cm) ;
     }
+
+    // E = -2:2 bands of A
+    nz2 = CHOLMOD(band_nnz) (A, -2, 2, false, cm) ;
+    E = CHOLMOD(band) (A, -2, 2, 0, cm) ;
+    nz = CHOLMOD(nnz) (E, cm) ;
+    if (E != NULL)
+    {
+        OK (nz == nz2) ;
+    }
+    CHOLMOD(free_sparse) (&E, cm) ;
 
     //--------------------------------------------------------------------------
     // read/write
@@ -741,12 +749,14 @@ double test_ops (cholmod_sparse *A)
         OK (nz == 0) ;
     }
     CHOLMOD(free_sparse) (&D, cm) ;
+
     D = CHOLMOD(band) (A, 0, 0, 0, cm) ;
     nz = CHOLMOD(nnz) (D, cm) ;
     if (D != NULL)
     {
         OK (nz == nzdiag (D)) ;
     }
+
     CHOLMOD(free_sparse) (&D, cm) ;
 
     //--------------------------------------------------------------------------

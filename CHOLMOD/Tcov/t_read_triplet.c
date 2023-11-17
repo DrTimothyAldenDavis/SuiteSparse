@@ -241,19 +241,9 @@ cholmod_triplet *read_triplet
     cm->print = 4 ;
     CHOLMOD(print_triplet) (T, "T input", cm) ;
     cm->print = psave ;
-//  fprintf (stderr, "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID
-//          "\n",
-//          (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
     printf ("\n\n======================================================\n"
             "Test matrix: "ID"-by-"ID" with "ID" entries, stype: "ID"\n",
             (Int) T->nrow, (Int) T->ncol, (Int) T->nnz, (Int) T->stype) ;
-
-//  if (MAX (nrow, ncol) > NLARGE)
-//  {
-//      fprintf (stderr, "Please wait, this will take a while ...\n") ;
-//      dot = 39*LINEWIDTH ;
-//  }
-
     return (T) ;
 }
 

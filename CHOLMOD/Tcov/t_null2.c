@@ -3298,7 +3298,7 @@ if (do_nantests)
         Int xmatched = 0, pmatched = 0, nzoffdiag = 0, nz_diag = 0 ;
         int asym ;
         printf ("test symmetry: option %d\n", option) ;
-        cm->print = 5 ;
+        cm->print = 3 ; // 5 ;
         CHOLMOD(print_sparse) (A, "A", cm) ;
         cm->print = psave ;
         asym = CHOLMOD(symmetry) (A, option, &xmatched, &pmatched,

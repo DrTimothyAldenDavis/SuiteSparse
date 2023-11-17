@@ -57,7 +57,6 @@
 
 double zero [2], one [2], minusone [2] ;
 cholmod_common Common, *cm ;
-Int dot = 0 ;
 double Zero [2] ;
 
 //------------------------------------------------------------------------------
@@ -92,23 +91,19 @@ unsigned long my_seed (void)
 
 // print a "." on stderr to indicate progress
 
-#define LINEWIDTH 70
 #define COUNT 100
 
+Int dot = 0 ;
 void progress (Int force, char s)
 {
     dot++ ;
     if (force)
     {
-        dot += (COUNT - (dot % COUNT)) ;
+        dot = 0 ;
     }
     if (dot % COUNT == 0)
     {
         fprintf (stderr, "%c", s) ;
-    }
-    if (dot % (COUNT*LINEWIDTH) == 0)
-    {
-        fprintf (stderr, "\n") ;
     }
     fflush (stdout) ;
     fflush (stderr) ;

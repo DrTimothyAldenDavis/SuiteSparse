@@ -67,9 +67,9 @@ int CHOLMOD(realloc_multiple)   // returns true if successful, false otherwise
         (ex   > 0 && X == NULL) ||
         (ez   > 0 && Z == NULL))
     {
+        // input argument missing
         if (Common->status != CHOLMOD_OUT_OF_MEMORY)
         {
-GOTCHA      // input argument missing
             ERROR (CHOLMOD_INVALID, "argument missing") ;
         }
         return (FALSE) ;

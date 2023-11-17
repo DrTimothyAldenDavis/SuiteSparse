@@ -193,7 +193,8 @@ void huge ( )
     OK (cm->status == CHOLMOD_TOO_LARGE || cm->status == CHOLMOD_OUT_OF_MEMORY);
 
     // causes overflow in 32-bit version, but not 64-bit
-    f = fopen ("../Tcov/Matrix/mega.tri", "r") ;
+    f = fopen ("Matrix/mega.tri", "r") ;
+    OK (f != NULL) ;
     T = CHOLMOD (read_triplet) (f, cm) ;
     if (sizeof (Int) == sizeof (int))
     {

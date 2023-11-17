@@ -15,7 +15,7 @@ void overflow_tests (cholmod_common *cm)
     // cholmod_read_triplet
     //--------------------------------------------------------------------------
 
-    FILE *f = fopen ("Matrix/overflow.tri", "r") ;  // FIXME: .gitignored
+    FILE *f = fopen ("Matrix/int_overflow.tri", "r") ;
     if (f != NULL)
     {
         cholmod_triplet *T = CHOLMOD(read_triplet) (f, cm) ;

@@ -166,31 +166,22 @@ double lp_resid
         return (1) ;
     }
 
-//  printf ("lp_resid:: fsize %g beta %g\n", (double) fsize, beta [0]) ;
-// int sav = cm->print ; cm->print = 5 ;
-//  CHOLMOD(print_sparse) (A, "A for lp_resid", cm) ;
-//  CHOLMOD(print_dense) (Y, "Y", cm) ;
-//  CHOLMOD(print_dense) (B, "B", cm) ;
-
     nrow = A->nrow ;
     R = CHOLMOD(zeros) (nrow, 1, CHOLMOD_REAL + DTYPE, cm) ;
 
     // C = A(r,f).  In LPDASA, we do this in place, without making a copy.
     C = lp_prune (A, rflag, fset, fsize) ;
-// CHOLMOD(print_sparse) (C, "C for lp_resid", cm) ;
 
     // W = C'*Y
     OK (fsize >= 0) ;
     W = CHOLMOD(zeros) (fsize, 1, CHOLMOD_REAL + DTYPE, cm) ;
     CHOLMOD(sdmult) (C, TRUE, one, zero, Y, W, cm) ;
-// CHOLMOD(print_dense) (W, "W = C'Y", cm) ;
 
     // R = B
     CHOLMOD(copy_dense2) (B, R, cm) ;
 
     // R = C*W - R
     CHOLMOD(sdmult) (C, FALSE, one, minusone, W, R, cm) ;
-// CHOLMOD(print_dense) (R, "R = C*W-B", cm) ;
 
     // R = R + beta*Y, (beta = 1 for dropped rows)
     if (R != NULL && Y != NULL)
@@ -209,14 +200,12 @@ double lp_resid
             }
         }
     }
-// CHOLMOD(print_dense) (R, "R = R+beta*Y", cm) ;
 
     // rnorm = norm (R)
     rnorm = CHOLMOD(norm_dense) (R, 2, cm) ;
     bnorm = CHOLMOD(norm_dense) (B, 2, cm) ;
     ynorm = CHOLMOD(norm_dense) (Y, 2, cm) ;
     norm = MAX (bnorm, ynorm) ;
-// printf ("rnorm %g bnorm %g ynorm %g\n", rnorm, bnorm, ynorm) ;
     if (norm > 0)
     {
         rnorm /= norm ;
@@ -228,7 +217,6 @@ double lp_resid
     CHOLMOD(free_dense) (&W, cm) ;
     CHOLMOD(free_dense) (&R, cm) ;
 
-// cm->print = sav ;
     return (rnorm) ;
 }
 
@@ -750,7 +738,7 @@ double lpdemo (cholmod_triplet *T)
                 {
                     // let resymbol handle the fset
                     C = lp_prune (A, rflag, NULL, 0) ;
-                    ok = CHOLMOD(resymbol_noperm) (C, fset, fsize, TRUE, L, cm) ;
+                    ok = CHOLMOD(resymbol_noperm) (C, fset, fsize, TRUE, L, cm);
                     CHOLMOD(free_sparse) (&C, cm) ;
                 }
 
@@ -876,10 +864,6 @@ double lpdemo (cholmod_triplet *T)
             if (X2 != NULL) { OK (X2->dtype == DTYPE) ; }
             X2x = (X2 == NULL) ? NULL : X2->x ;
 
-            // fprintf (stderr, "check colmark "ID"\n", colmark [0]) ;
-//          printf ("check cholmark "ID"\n", colmark [0]) ;
-            // colmark [0] = 3 ;
-
             // update L, and the solution to Lx=b+deltaB,
             // but only update solution in rows 0 to colmark[0]
             C = lp_prune (A, rflag, cols, 1) ;
@@ -888,8 +872,6 @@ double lpdemo (cholmod_triplet *T)
 
             // compare with Lr=b+deltaB
             R = CHOLMOD(solve) (CHOLMOD_L, L2, B, cm) ;
-//          printf ("R %p status %d\n", cm->status) ;
-//          fflush (stdout) ;
             ok = ok && (R != NULL) ;
             r = -1 ;
             if (ok)
@@ -905,12 +887,10 @@ double lpdemo (cholmod_triplet *T)
                 }
                 MAXERR (maxerr, r, 1) ;
             }
-//          printf ("check cholmark resid %6.2e\n", r) ;
             CHOLMOD(free_dense) (&R, cm) ;
             CHOLMOD(free_dense) (&X2, cm) ;
             CHOLMOD(free_factor) (&L2, cm) ;
         }
- //     printf ("maxerr %g at %d: %s\n", maxerr, __LINE__, __FILE__) ;
     }
 
     //--------------------------------------------------------------------------

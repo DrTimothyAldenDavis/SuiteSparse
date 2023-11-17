@@ -276,6 +276,16 @@ void error_tests (cholmod_sparse *A_input, cholmod_common *cm)
     }
 
     //--------------------------------------------------------------------------
+    // realloc_multiple
+    //--------------------------------------------------------------------------
+
+    size_t siz = 0 ;
+    ok = CHOLMOD(realloc_multiple) (2, 2, CHOLMOD_PATTERN + DTYPE,
+        NULL, NULL, NULL, NULL, &siz, cm) ;
+    OK (cm->status == CHOLMOD_INVALID) ;
+    cm->status = CHOLMOD_OK ;
+
+    //--------------------------------------------------------------------------
     // free matrices and restore error handling
     //--------------------------------------------------------------------------
 
