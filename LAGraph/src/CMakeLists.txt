@@ -50,7 +50,7 @@ target_compile_definitions ( LAGraph PUBLIC LG_DLL )
 # static lagraph library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( LAGraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
     SET_TARGET_PROPERTIES ( LAGraph_static PROPERTIES
         OUTPUT_NAME lagraph
@@ -82,7 +82,7 @@ endif ( )
 
 if ( OPENMP_C_FOUND )
     target_link_libraries ( LAGraph PRIVATE OpenMP::OpenMP_C )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( LAGraph_static PUBLIC OpenMP::OpenMP_C )
     endif ( )
 endif ( )

@@ -157,7 +157,7 @@ else ( )
         set ( OPENMP_C_FOUND OFF )
     else ( )
         find_package ( OpenMP )
-        if ( OPENMP_C_FOUND AND NOT NSTATIC )
+        if ( OPENMP_C_FOUND AND BUILD_STATIC_LIBS )
             list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         endif ( )
         find_package ( Threads )
@@ -280,7 +280,7 @@ install ( TARGETS LAGraph LAGraphX
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS LAGraph_static LAGraphX_static
         EXPORT LAGraphTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
@@ -327,7 +327,7 @@ install ( FILES
 #-------------------------------------------------------------------------------
 
 if ( NOT MSVC )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         if ( NOT WIN32 )
             list ( APPEND LAGRAPH_STATIC_LIBS "m" )
         endif ( )
