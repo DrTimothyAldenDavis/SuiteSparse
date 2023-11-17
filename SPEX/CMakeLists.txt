@@ -111,7 +111,7 @@ target_include_directories ( SPEX
 # static spex library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( SPEX_static STATIC ${SPEX_SOURCES} )
 
     set_target_properties ( SPEX_static PROPERTIES
@@ -139,7 +139,7 @@ endif ( )
 target_link_libraries ( SPEX PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( SPEX PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( SPEX_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -149,7 +149,7 @@ endif ( )
 
 # AMD:
 target_link_libraries ( SPEX PRIVATE SuiteSparse::AMD )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
         target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD_static )
     else ( )
@@ -159,7 +159,7 @@ endif ( )
 
 # COLAMD:
 target_link_libraries ( SPEX PRIVATE SuiteSparse::COLAMD )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
         target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
@@ -169,7 +169,7 @@ endif ( )
 
 # MPFR:
 target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${MPFR_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
 endif ( )
@@ -177,7 +177,7 @@ endif ( )
 # GMP:
 # must occur after MPFR
 target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${GMP_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
 endif ( )
@@ -185,7 +185,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( SPEX PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND SPEX_STATIC_LIBS "m" )
         target_link_libraries ( SPEX_static PUBLIC m )
     endif ( )
@@ -203,7 +203,7 @@ install ( TARGETS SPEX
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS SPEX_static
         EXPORT SPEXTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
