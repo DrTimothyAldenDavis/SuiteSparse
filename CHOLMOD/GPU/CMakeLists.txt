@@ -41,7 +41,7 @@ set_target_properties ( CHOLMOD_CUDA PROPERTIES
     OUTPUT_NAME cholmod_cuda
     SOVERSION ${CHOLMOD_VERSION_MAJOR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( CHOLMOD_CUDA_static STATIC ${CHOLMOD_CUDA_SOURCES} )
 
     set_target_properties ( CHOLMOD_CUDA_static PROPERTIES
@@ -75,7 +75,7 @@ set_target_properties ( CHOLMOD_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
 set_target_properties ( CHOLMOD_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 target_compile_definitions ( CHOLMOD_CUDA PUBLIC "SUITESPARSE_CUDA" )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     target_include_directories ( CHOLMOD_CUDA_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
@@ -86,7 +86,7 @@ endif ( )
 
 target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
     CUDA::nvToolsExt CUDA::cublas )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( CHOLMOD_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
 endif ( )
@@ -103,7 +103,7 @@ install ( TARGETS CHOLMOD_CUDA
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS CHOLMOD_CUDA_static
         EXPORT CHOLMOD_CUDATargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
