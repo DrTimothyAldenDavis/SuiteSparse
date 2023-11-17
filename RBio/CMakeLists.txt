@@ -89,7 +89,7 @@ target_include_directories ( RBio
 # static rbio library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( RBio_static STATIC ${RBIO_SOURCES} )
 
     set_target_properties ( RBio_static PROPERTIES
@@ -117,7 +117,7 @@ endif ( )
 target_link_libraries ( RBio PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( RBio PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( RBio_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -128,7 +128,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( RBio PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( RBIO_STATIC_LIBS "${RBIO_STATIC_LIBS} -lm" )
         target_link_libraries ( RBio_static PUBLIC m )
     endif ( )
@@ -146,7 +146,7 @@ install ( TARGETS RBio
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS RBio_static
         EXPORT RBioTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
