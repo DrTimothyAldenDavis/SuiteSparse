@@ -122,7 +122,6 @@ int CHOLMOD(rowdel_mark)
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (L, FALSE) ;
     RETURN_IF_XTYPE_INVALID (L, CHOLMOD_PATTERN, CHOLMOD_REAL, FALSE) ;
-    int L_dtype = L->dtype ;
     Int n = L->n ;
     Int k = kdel ;
     if (kdel >= L->n || k < 0)
@@ -144,15 +143,9 @@ int CHOLMOD(rowdel_mark)
     {
         RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
         RETURN_IF_XTYPE_INVALID (DeltaB, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
-        if (L->xtype == CHOLMOD_PATTERN)
-        {
-            // L will change to match the dtype of X and DeltaB
-GOTCHA      // L is pattern, change its dtype to X->dtype 
-            L_dtype = X->dtype ;
-        }
         if (X->nrow != L->n || X->ncol != 1 ||
             DeltaB->nrow != L->n || DeltaB->ncol != 1 ||
-            X->dtype != L_dtype || DeltaB->dtype != L_dtype)
+            X->dtype != L->dtype || DeltaB->dtype != L->dtype)
         {
             ERROR (CHOLMOD_INVALID, "X and/or DeltaB invalid") ;
             return (FALSE) ;
@@ -174,12 +167,12 @@ GOTCHA      // L is pattern, change its dtype to X->dtype
         return (FALSE) ;
     }
 
-    CHOLMOD(alloc_work) (L->n, s, s, L_dtype, Common) ;
+    CHOLMOD(alloc_work) (L->n, s, s, L->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         return (FALSE) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, L_dtype, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 2*n, L->dtype, Common)) ;
 
     //--------------------------------------------------------------------------
     // convert to simplicial numeric LDL' factor, if not already
@@ -188,11 +181,6 @@ GOTCHA      // L is pattern, change its dtype to X->dtype
     if (L->xtype == CHOLMOD_PATTERN || L->is_super || L->is_ll)
     {
         // can only update/downdate a simplicial LDL' factorization
-        if (L->xtype == CHOLMOD_PATTERN)
-        {
-            // L is symbolic; convert it to L_dtype
-            L->dtype = L_dtype ;
-        }
         CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,
                 Common) ;
         if (Common->status < CHOLMOD_OK)
@@ -228,7 +216,7 @@ GOTCHA      // L is pattern, change its dtype to X->dtype
     //--------------------------------------------------------------------------
 
     DEBUG (CHOLMOD(dump_factor) (L, "LDL factorization, L:", Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, s, L_dtype, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, s, L->dtype, Common)) ;
     return (ok) ;
 }
 

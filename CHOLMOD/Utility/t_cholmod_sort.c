@@ -29,7 +29,6 @@ static inline uint64_t cm_rand15 (uint64_t *seed)
 // return a random uint64_t, in range 0 to 2^60
 static inline uint64_t cm_rand (uint64_t *seed)
 {
-GOTCHA  // cm_rand (n > 32767 required)
     uint64_t i = cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;

@@ -32,12 +32,15 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
 
         cholmod_sparse *A = CHOLMOD(copy_sparse) (A_input, cm) ;
         CHOLMOD(sparse_xtype) (to_xtype + DTYPE, A, cm) ;
-        cholmod_dense *Y = CHOLMOD(sparse_to_dense) (A, cm) ;
 
+        // C = sparse (dense (sparse (triplet (A))))
         cholmod_triplet *T = CHOLMOD(sparse_to_triplet) (A, cm) ;
         cholmod_sparse *B = CHOLMOD(triplet_to_sparse) (T, anz, cm) ;
         cholmod_dense *X = CHOLMOD(sparse_to_dense) (B, cm) ;
         cholmod_sparse *C = CHOLMOD(dense_to_sparse) (X, true, cm) ;
+
+        // G = sparse (dense (A))
+        cholmod_dense *Y = CHOLMOD(sparse_to_dense) (A, cm) ;
         cholmod_sparse *G = CHOLMOD(dense_to_sparse) (Y, true, cm) ;
 
         if (to_xtype == CHOLMOD_PATTERN)
@@ -59,10 +62,28 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
         MAXERR (maxerr, enorm, anorm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
 
+        // S1 = real (pattern (X))
+        cholmod_sparse *S1 = CHOLMOD(dense_to_sparse) (X, false, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, S1, cm) ;
+
+        // S2 = real (pattern (A))
+        cholmod_sparse *S2 = CHOLMOD(copy_sparse) (A_input, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_PATTERN + DTYPE, S2, cm) ;
+        CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, S2, cm) ;
+
+        // E = S1-S2
+        E = CHOLMOD(add) (S1, S2, one, minusone, true, true, cm) ;
+        CHOLMOD(drop) (0, E, cm) ;
+        int64_t enz = CHOLMOD(nnz) (E, cm) ;
+        CHOLMOD(free_sparse) (&E, cm) ;
+        OK (enz == 0) ;
+
         CHOLMOD(free_sparse) (&A, cm) ;
         CHOLMOD(free_sparse) (&B, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&G, cm) ;
+        CHOLMOD(free_sparse) (&S1, cm) ;
+        CHOLMOD(free_sparse) (&S2, cm) ;
         CHOLMOD(free_triplet) (&T, cm) ;
         CHOLMOD(free_dense) (&X, cm) ;
         CHOLMOD(free_dense) (&Y, cm) ;

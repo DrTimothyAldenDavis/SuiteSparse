@@ -1038,7 +1038,7 @@ int main (int argc, char **argv)
     double err = 0, maxerr = 0 ;
     Int n = 0, nmin = 0, nrow = 0, ncol = 0, save ;
     int singular, do_memory, i, do_nantests, ok ;
-    double v = CHOLMOD_VERSION, tic [2], t, t2, tic2 [2] ;
+    double v = CHOLMOD_VERSION, tic [2], t ;
     int version [3] ;
     char *p ;
     const char* env_use_gpu;
@@ -1200,27 +1200,26 @@ int main (int argc, char **argv)
     printf ("overflow tests OK\n") ;
 
     //--------------------------------------------------------------------------
-    // read in a triplet matrix and use it to test CHOLMOD
+    // read in a triplet matrix
     //--------------------------------------------------------------------------
 
-    T = read_triplet (stdin) ;      // RAND
+    T = read_triplet (stdin) ;                                  // RAND
     OKP (T) ;
-
-    SuiteSparse_tic (tic2) ;
-
     int test_result = 0 ;
+    ok = true ;
+
+    //--------------------------------------------------------------------------
+    // test CHOLMOD with the triplet matrix T
+    //--------------------------------------------------------------------------
 
     if (T->nrow > 1000000)
     {
 
         //----------------------------------------------------------------------
-        // do huge-problem tests only, but only for 32-bit systems
+        // do huge-problem tests only
         //----------------------------------------------------------------------
 
-        if (sizeof (Int) == sizeof (int))
-        {
-            huge ( ) ;
-        }
+        huge ( ) ;                                              // RAND
         CHOLMOD(free_triplet) (&T, cm) ;
 
     }
@@ -1259,258 +1258,253 @@ int main (int argc, char **argv)
         }
 
         //----------------------------------------------------------------------
-        // basic error tests
+        // basic error tests, possibily with nans
         //----------------------------------------------------------------------
 
         null2 (T, do_nantests) ;                                // RAND
 
         printf ("Null2 OK : no error\n") ;
-        if (do_nantests)
-        {
-            maxerr = 0 ;
-            goto done ; // yes, this is ugly
-        }
+        maxerr = 0 ;
 
         //----------------------------------------------------------------------
-        // raw factorization tests
+        // remaining tests (skip if nantests were just done)
         //----------------------------------------------------------------------
 
-        cm->error_handler = NULL ;
-        err = raw_factor (A, 2) ;                               // RAND
-        cm->error_handler = my_handler ;
-        MAXERR (maxerr, err, 1) ;
-        printf ("raw factorization error %.1g\n", err) ;
-
-        err = raw_factor2 (A, 0., 0) ;
-        MAXERR (maxerr, err, 1) ;
-        printf ("raw factorization error2 %.1g\n", err) ;
-
-        err = raw_factor2 (A, 1e-16, 0) ;
-        MAXERR (maxerr, err, 1) ;
-        printf ("raw factorization error3 %.1g\n", err) ;
-
-        if (n < 1000 && A && T && A->stype == 1)
-        {
-            // factorize a symmetric matrix (upper part stored), possibly
-            // with ignored entries in lower triangular part.
-            cholmod_sparse *F ;
-            int save = T->stype ;
-
-            printf ("triplet to sparse:\n") ;
-            T->stype = 0 ;
-            F = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
-            T->stype = save ;
-
-            if (F) F->stype = 1 ;
-
-            err = raw_factor2 (F, 0., 0) ;
-            MAXERR (maxerr, err, 1) ;
-            printf ("raw factorization error4 %.1g\n", err) ;
-
-            err = raw_factor2 (F, 1e-16, 0) ;
-            MAXERR (maxerr, err, 1) ;
-            printf ("raw factorization error5 %.1g\n", err) ;
-
-            cm->dbound = 1e-15 ;
-            cm->sbound = 1e-6 ;
-
-            #ifdef DOUBLE
-            double alpha = 1e-16 ;
-            #else
-            double alpha = 1e-8 ;
-            #endif
-
-            err = raw_factor2 (F, 0., 0) ;
-            MAXERR (maxerr, err, 1) ;
-            printf ("raw factorization error6 %.1g\n", err) ;
-
-            err = raw_factor2 (F, alpha, 0) ;
-            MAXERR (maxerr, err, 1) ;
-            printf ("raw factorization error7 %.1g\n", err) ;
-
-            err = raw_factor2 (F, alpha, 1) ;
-            MAXERR (maxerr, err, 1) ;
-            printf ("raw factorization error8 %.1g\n", err) ;
-
-            cm->dbound = 0 ;
-            cm->sbound = 0 ;
-
-            CHOLMOD(free_sparse) (&F, cm) ;
-        }
-
-        //----------------------------------------------------------------------
-        // matrix ops
-        //----------------------------------------------------------------------
-
-        err = test_ops (A) ;                                    // RAND
-        MAXERR (maxerr, err, 1) ;
-        printf ("initial testops error %.1g\n", err) ;
-
-        //----------------------------------------------------------------------
-        // analyze, factorize, solve
-        //----------------------------------------------------------------------
-
-        err = solve (A) ;                                       // RAND
-        MAXERR (maxerr, err, 1) ;
-        printf ("initial solve error %.1g\n", err) ;
-
-        //----------------------------------------------------------------------
-        // CCOLAMD tests
-        //----------------------------------------------------------------------
-
-        cctest (A) ;                                            // RAND reset
-        cctest (AT) ;                                           // RAND reset
-
-        //----------------------------------------------------------------------
-        // COLAMD tests
-        //----------------------------------------------------------------------
-
-        ctest (A) ;
-        ctest (AT) ;
-
-        //----------------------------------------------------------------------
-        // AMD tests
-        //----------------------------------------------------------------------
-
-        if (n < NLARGE || A->stype)
-        {
-            // for unsymmetric matrices, this forms A*A' and A'*A, which can
-            // fail if A has a dense row or column.  So it is only done for
-            // modest-sized unsymmetric matrices.
-            amdtest (A) ;
-            amdtest (AT) ;
-            camdtest (A) ;                                      // RAND
-            camdtest (AT) ;                                     // RAND
-        }
-
-        if (n < NSMALL)
+        if (!do_nantests)
         {
 
             //------------------------------------------------------------------
-            // do_matrix with an unpacked matrix
+            // raw factorization tests
             //------------------------------------------------------------------
 
-            // try with an unpacked matrix, and a non-default dbound
-            cm->dbound = 1e-15 ;
-            cm->sbound = 1e-6 ;
-            err = do_matrix (C) ;                               // RAND reset
+            cm->error_handler = NULL ;
+            err = raw_factor (A, 2) ;                           // RAND
+            cm->error_handler = my_handler ;
             MAXERR (maxerr, err, 1) ;
-            cm->dbound = 0 ;
-            cm->sbound = 0 ;
+            printf ("raw factorization error %.1g\n", err) ;
 
-            //------------------------------------------------------------------
-            // do_matrix: analyze, factorize, and solve, with many options
-            //------------------------------------------------------------------
-
-            err = do_matrix (A) ;                               // RAND reset
+            err = raw_factor2 (A, 0., 0) ;
             MAXERR (maxerr, err, 1) ;
+            printf ("raw factorization error2 %.1g\n", err) ;
 
-            //------------------------------------------------------------------
-            // pretend to solve an LP
-            //------------------------------------------------------------------
+            err = raw_factor2 (A, 1e-16, 0) ;
+            MAXERR (maxerr, err, 1) ;
+            printf ("raw factorization error3 %.1g\n", err) ;
 
-            if (nrow != ncol)
+            if (n < 1000 && A && T && A->stype == 1)
             {
-                int psave = cm->print ;
-                cm->print = 2 ;
-                err = lpdemo (T) ;                              // RAND
-                cm->print = psave ;
+                // factorize a symmetric matrix (upper part stored), possibly
+                // with ignored entries in lower triangular part.
+                cholmod_sparse *F ;
+                int save = T->stype ;
+
+                printf ("triplet to sparse:\n") ;
+                T->stype = 0 ;
+                F = CHOLMOD(triplet_to_sparse) (T, 0, cm) ;
+                T->stype = save ;
+
+                if (F) F->stype = 1 ;
+
+                err = raw_factor2 (F, 0., 0) ;
                 MAXERR (maxerr, err, 1) ;
-                cm->nmethods = 1 ;
-                cm->method [0].ordering = CHOLMOD_COLAMD ;
-                err = lpdemo (T) ;                              // RAND
+                printf ("raw factorization error4 %.1g\n", err) ;
+
+                err = raw_factor2 (F, 1e-16, 0) ;
                 MAXERR (maxerr, err, 1) ;
+                printf ("raw factorization error5 %.1g\n", err) ;
+
+                cm->dbound = 1e-15 ;
+                cm->sbound = 1e-6 ;
+
                 #ifdef DOUBLE
-                printf ("initial lp error %.1g, dbound %g\n", err, cm->dbound) ;
+                double alpha = 1e-16 ;
                 #else
-                printf ("initial lp error %.1g, sbound %g\n", err, cm->sbound) ;
+                double alpha = 1e-8 ;
                 #endif
-                cm->nmethods = 0 ;
-                cm->method [0].ordering = CHOLMOD_GIVEN ;
+
+                err = raw_factor2 (F, 0., 0) ;
+                MAXERR (maxerr, err, 1) ;
+                printf ("raw factorization error6 %.1g\n", err) ;
+
+                err = raw_factor2 (F, alpha, 0) ;
+                MAXERR (maxerr, err, 1) ;
+                printf ("raw factorization error7 %.1g\n", err) ;
+
+                err = raw_factor2 (F, alpha, 1) ;
+                MAXERR (maxerr, err, 1) ;
+                printf ("raw factorization error8 %.1g\n", err) ;
+
+                cm->dbound = 0 ;
+                cm->sbound = 0 ;
+
+                CHOLMOD(free_sparse) (&F, cm) ;
             }
-        }
 
-        //----------------------------------------------------------------------
-        // test more ops
-        //----------------------------------------------------------------------
+            //------------------------------------------------------------------
+            // matrix ops
+            //------------------------------------------------------------------
 
-        my_srand (42) ;                                         // RAND reset
-        double err = test_ops2 (A) ;
-        MAXERR (maxerr, err, 1) ;
+            err = test_ops (A) ;                                // RAND
+            MAXERR (maxerr, err, 1) ;
+            printf ("initial testops error %.1g\n", err) ;
 
-        err = cat_tests (A, cm) ;
-        MAXERR (maxerr, err, 1) ;
+            //------------------------------------------------------------------
+            // analyze, factorize, solve
+            //------------------------------------------------------------------
 
-        err = dense_tests (A, cm) ;
-        MAXERR (maxerr, err, 1) ;
+            err = solve (A) ;                                   // RAND
+            MAXERR (maxerr, err, 1) ;
+            printf ("initial solve error %.1g\n", err) ;
 
-        dtype_tests (A, cm) ;
+            //------------------------------------------------------------------
+            // CCOLAMD tests
+            //------------------------------------------------------------------
 
-        common_tests (cm) ;
+            cctest (A) ;                                        // RAND reset
+            cctest (AT) ;                                       // RAND reset
 
-        error_tests (A, cm) ;
+            //------------------------------------------------------------------
+            // COLAMD tests
+            //------------------------------------------------------------------
 
-        err = tofrom_tests (A, cm) ;
-        MAXERR (maxerr, err, 1) ;
+            ctest (A) ;
+            ctest (AT) ;
 
-        //----------------------------------------------------------------------
-        // exhaustive memory-error handling for small matrices
-        //----------------------------------------------------------------------
+            //------------------------------------------------------------------
+            // AMD tests
+            //------------------------------------------------------------------
 
-        progress (1, '|') ;
-        if (n < NSMALL && do_memory)
-        {
-            memory_tests (T) ;                                  // RAND
+            if (n < NLARGE || A->stype)
+            {
+                // for unsymmetric matrices, this forms A*A' and A'*A, which
+                // can fail if A has a dense row or column.  So it is only done
+                // for modest-sized unsymmetric matrices.
+                amdtest (A) ;
+                amdtest (AT) ;
+                camdtest (A) ;                                  // RAND
+                camdtest (AT) ;                                 // RAND
+            }
+
+            if (n < NSMALL)
+            {
+
+                //--------------------------------------------------------------
+                // do_matrix with an unpacked matrix
+                //--------------------------------------------------------------
+
+                // try with an unpacked matrix, and a non-default dbound
+                cm->dbound = 1e-15 ;
+                cm->sbound = 1e-6 ;
+                err = do_matrix (C) ;                           // RAND reset
+                MAXERR (maxerr, err, 1) ;
+                cm->dbound = 0 ;
+                cm->sbound = 0 ;
+
+                //--------------------------------------------------------------
+                // do_matrix: analyze, factorize, and solve, with many options
+                //--------------------------------------------------------------
+
+                err = do_matrix (A) ;                           // RAND reset
+                MAXERR (maxerr, err, 1) ;
+
+                //--------------------------------------------------------------
+                // pretend to solve an LP
+                //--------------------------------------------------------------
+
+                if (nrow != ncol)
+                {
+                    int psave = cm->print ;
+                    cm->print = 2 ;
+                    err = lpdemo (T) ;                          // RAND
+                    cm->print = psave ;
+                    MAXERR (maxerr, err, 1) ;
+                    cm->nmethods = 1 ;
+                    cm->method [0].ordering = CHOLMOD_COLAMD ;
+                    err = lpdemo (T) ;                          // RAND
+                    MAXERR (maxerr, err, 1) ;
+                    #ifdef DOUBLE
+                    printf ("initial lp error %.1g, dbound %g\n",
+                        err, cm->dbound) ;
+                    #else
+                    printf ("initial lp error %.1g, sbound %g\n",
+                        err, cm->sbound) ;
+                    #endif
+                    cm->nmethods = 0 ;
+                    cm->method [0].ordering = CHOLMOD_GIVEN ;
+                }
+            }
+
+            //------------------------------------------------------------------
+            // test more ops
+            //------------------------------------------------------------------
+
+            my_srand (42) ;                                     // RAND reset
+            double err = test_ops2 (A) ;
+            MAXERR (maxerr, err, 1) ;
+
+            err = cat_tests (A, cm) ;
+            MAXERR (maxerr, err, 1) ;
+
+            err = dense_tests (A, cm) ;
+            MAXERR (maxerr, err, 1) ;
+
+            dtype_tests (A, cm) ;
+
+            common_tests (cm) ;
+
+            error_tests (A, cm) ;
+
+            err = tofrom_tests (A, cm) ;
+            MAXERR (maxerr, err, 1) ;
+
+            //------------------------------------------------------------------
+            // exhaustive memory-error handling for small matrices
+            //------------------------------------------------------------------
+
+            progress (1, '|') ;
+            if (n < NSMALL && do_memory)
+            {
+                memory_tests (T) ;                              // RAND
+            }
         }
 
         //----------------------------------------------------------------------
         // free matrices and print results
         //----------------------------------------------------------------------
 
-        done:   // an ugly "goto" target; added to minimize code changes
-                // when added "do_nantests"
-
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&AT, cm) ;
         CHOLMOD(free_sparse) (&A, cm) ;
         CHOLMOD(free_triplet) (&T, cm) ;
-
-        t2 = SuiteSparse_toc (tic2) ;
 
         ok = true ;
         if (nrow <= ncol && !singular)
         {
             ok = (maxerr <= maxerr_allowed) && !isnan (maxerr) ;
         }
-
-        if (ok)
-        {
-            fprintf (stderr, "\n%8.2f sec                                "
-                        "          Test OK", t2) ;
-            if (nrow <= ncol && !singular)
-            {
-                // maxerr should be NaN if nrow > ncol, so don't print it
-                fprintf (stderr, ", maxerr %.1e <= %.1e",
-                    maxerr, maxerr_allowed) ;
-            }
-            test_result = 0 ;
-        }
-        else
-        {
-            fprintf (stderr, "\n%8.2f sec                                "
-                        "          Test FAIL", t2) ;
-            if (nrow <= ncol && !singular)
-            {
-                fprintf (stderr, ", maxerr %.1e > %.1e !!",
-                    maxerr, maxerr_allowed) ;
-            }
-            test_result = 1 ;
-        }
-
-        my_srand (42) ;                                         // RAND reset
     }
 
-    fprintf (stderr, "\n") ;
+    //--------------------------------------------------------------------------
+    // report results
+    //--------------------------------------------------------------------------
+
+    t = SuiteSparse_toc (tic) ;
+    fprintf (stderr, "\n%8.2f sec", t) ;
+    if (nrow <= ncol && !singular)
+    {
+        // maxerr should be NaN if nrow > ncol, so don't print it
+        fprintf (stderr, ", maxerr %.1e <= %.1e", maxerr, maxerr_allowed) ;
+    }
+    if (ok)
+    {
+        fprintf (stderr, ", Test OK\n") ;
+        test_result = 0 ;
+    }
+    else
+    {
+        fprintf (stderr, "Test FAIL\n") ;
+        test_result = 1 ;
+    }
 
     //--------------------------------------------------------------------------
     // finalize CHOLMOD
@@ -1529,7 +1523,6 @@ int main (int argc, char **argv)
 
     OK (cm->malloc_count == 0) ;
     OK (cm->memory_inuse == 0) ;
-    t = SuiteSparse_toc (tic) ;
     if (nrow > ncol)
     {
         // maxerr should be NaN, so don't print it

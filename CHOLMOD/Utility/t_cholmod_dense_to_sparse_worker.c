@@ -58,10 +58,6 @@ static void TEMPLATE (cholmod_dense_to_sparse_worker)
         // copy just the pattern of the nonzeros of X into C
         //----------------------------------------------------------------------
 
-ZSI_GOTCHA
-ZSL_GOTCHA
-CSI_GOTCHA
-CSL_GOTCHA
         for (Int j = 0, jx = 0 ; j < ncol ; j++, jx += d)
         {
             // log the start of C(:,j)

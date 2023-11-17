@@ -156,7 +156,7 @@ int CHOLMOD(super_numeric)
     }
     else
     {
-        // symmetric upper case not suppored
+        // symmetric upper case not supported
         ERROR (CHOLMOD_INVALID, "symmetric upper case not supported") ;
         return (FALSE) ;
     }
@@ -176,7 +176,6 @@ int CHOLMOD(super_numeric)
         }
         if (A->dtype != L->dtype)
         {
-GOTCHA  // A and L must have same dtype
             ERROR (CHOLMOD_INVALID, "A and L must have the same dtype") ;
             return (FALSE) ;
         }

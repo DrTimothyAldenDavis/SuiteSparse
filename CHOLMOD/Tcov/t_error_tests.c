@@ -177,10 +177,13 @@ void error_tests (cholmod_sparse *A_input, cholmod_common *cm)
             // super_numeric
             //------------------------------------------------------------------
 
+            int is_super = L->is_super ;
+            L->is_super = true ;
             CHOLMOD(super_numeric) (B, B, one, L, cm) ;
             NOT (ok) ;
             OK (cm->status == CHOLMOD_INVALID) ;
             cm->status = CHOLMOD_OK ;
+            L->is_super = is_super ;
 
             //------------------------------------------------------------------
             // rowadd

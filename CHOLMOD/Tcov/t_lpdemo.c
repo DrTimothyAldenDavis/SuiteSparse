@@ -843,6 +843,8 @@ double lpdemo (cholmod_triplet *T)
     // rank-1 update, but only partial Lx=b update
     //--------------------------------------------------------------------------
 
+    int whatever = 0 ;
+
     if (ok && fsize < ncol && nrow > 3)
     {
         Int colmark [1] ;
@@ -867,7 +869,17 @@ double lpdemo (cholmod_triplet *T)
             // update L, and the solution to Lx=b+deltaB,
             // but only update solution in rows 0 to colmark[0]
             C = lp_prune (A, rflag, cols, 1) ;
-            ok = CHOLMOD(updown_mark) (TRUE, C, colmark, L2, X2, DeltaB, cm) ;
+            if ((whatever++) % 2 == 0)
+            {
+                ok = CHOLMOD(updown_mark) (TRUE, C, colmark,
+                    L2, X2, DeltaB, cm) ;
+            }
+            else
+            {
+                // does the same thing as updown_mark, with different API
+                ok = CHOLMOD(updown_mask) (TRUE, C, colmark, NULL,
+                    L2, X2, DeltaB, cm) ;
+            }
             CHOLMOD(free_sparse) (&C, cm) ;
 
             // compare with Lr=b+deltaB

@@ -17,7 +17,6 @@ Int *prand (Int n)
     P = CHOLMOD(malloc) (n, sizeof (Int), cm) ;
     if (P == NULL)
     {
-//      ERROR (CHOLMOD_INVALID, "cannot create random perm") ;
         return (NULL) ;
     }
 
@@ -33,7 +32,6 @@ Int *prand (Int n)
         P [j] = P [k] ;
         P [k] = t ;
     }
-//  CHOLMOD(print_perm) (P, n, n, "Prandom", cm) ;
     return (P) ;
 }
 

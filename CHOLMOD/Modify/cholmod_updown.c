@@ -80,8 +80,9 @@ int CHOLMOD(updown)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(updown_mask2) (update, C, NULL, NULL, 0, L, NULL, NULL,
-        Common)) ;
+    return (CHOLMOD(updown_mask2) (update, C, /* colmark: */ NULL,
+        /* mask: */ NULL, /* maskmark: */ 0,
+        L, /* X: */ NULL, /* DeltaB: */ NULL, Common)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -106,8 +107,9 @@ int CHOLMOD(updown_solve)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(updown_mask2) (update, C, NULL, NULL, 0, L, X, DeltaB,
-        Common)) ;
+    return (CHOLMOD(updown_mask2) (update, C, /* colmark: */ NULL,
+        /* mask: */ NULL, /* maskmark: */ 0,
+        L, X, DeltaB, Common)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -346,8 +348,9 @@ int CHOLMOD(updown_mark)
     cholmod_common *Common
 )
 {
-    return (CHOLMOD(updown_mask2) (update, C, colmark, NULL, 0, L, X, DeltaB,
-        Common)) ;
+    return (CHOLMOD(updown_mask2) (update, C, colmark,
+        /* mask: */ NULL, /* maskmark: */ 0,
+        L, X, DeltaB, Common)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -368,9 +371,8 @@ int CHOLMOD(updown_mask)
     cholmod_common *Common
 )
 {
-GOTCHA  // updown_mask
-    Int maskmark = 0 ;
-    return (CHOLMOD(updown_mask2) (update, C, colmark, mask, maskmark,
+    return (CHOLMOD(updown_mask2) (update, C, colmark,
+        mask, /* maskmark: */ 0,
         L, X, DeltaB, Common)) ;
 }
 
@@ -415,7 +417,7 @@ int CHOLMOD(updown_mask2)
         ERROR (CHOLMOD_INVALID, "C and L dimensions do not match") ;
         return (FALSE) ;
     }
-    if (L->xtype != CHOLMOD_PATTERN && L->dtype != C->dtype)
+    if (L->dtype != C->dtype)
     {
         ERROR (CHOLMOD_INVALID, "C and L must have the same dtype") ;
         return (FALSE) ;
@@ -425,9 +427,9 @@ int CHOLMOD(updown_mask2)
     {
         RETURN_IF_XTYPE_INVALID (X, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
         RETURN_IF_XTYPE_INVALID (DeltaB, CHOLMOD_REAL, CHOLMOD_REAL, FALSE) ;
-        if (X->nrow != L->n || X->ncol != 1 || DeltaB->nrow != L->n ||
-            DeltaB->ncol != 1 || X->dtype != C->dtype ||
-            DeltaB->dtype != C->dtype)
+        if (X->nrow != L->n || X->ncol != 1 ||
+            DeltaB->nrow != L->n || DeltaB->ncol != 1 ||
+            X->dtype != L->dtype || DeltaB->dtype != L->dtype)
         {
             ERROR (CHOLMOD_INVALID, "X and/or DeltaB invalid") ;
             return (FALSE) ;
@@ -464,7 +466,7 @@ int CHOLMOD(updown_mask2)
         return (FALSE) ;
     }
 
-    CHOLMOD(alloc_work) (L->n, L->n, w, C->dtype, Common) ;
+    CHOLMOD(alloc_work) (L->n, L->n, w, L->dtype, Common) ;
     if (Common->status < CHOLMOD_OK || maxrank == 0)
     {
         // out of memory, L is returned unchanged
@@ -478,11 +480,6 @@ int CHOLMOD(updown_mask2)
     if (L->xtype == CHOLMOD_PATTERN || L->is_super || L->is_ll)
     {
         // can only update/downdate a simplicial LDL' factorization
-        if (L->xtype == CHOLMOD_PATTERN)
-        {
-GOTCHA      // L is pattern, change its dtype to C->dtype 
-            L->dtype = C->dtype ;
-        }
         CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,
                 Common) ;
         if (Common->status < CHOLMOD_OK)
