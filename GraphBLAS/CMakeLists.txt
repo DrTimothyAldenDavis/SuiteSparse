@@ -46,8 +46,8 @@ set ( BUILD_STATIC_LIBS_DEFAULT_OFF ON )
 include ( SuiteSparsePolicy )
 
 if ( NOT GRAPHBLAS_BUILD_STATIC_LIBS )
-    # ignore current value of NSTATIC and set it to ON
-    set ( NSTATIC ON )
+    # ignore current value of BUILD_STATIC_LIBS and set it to OFF
+    set ( BUILD_STATIC_LIBS OFF )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
@@ -132,15 +132,15 @@ endif ( )
 # determine build type
 #-------------------------------------------------------------------------------
 
-# select "true" to build both dynamic and static libraries:
-# set ( NOT NSTATIC true )
-# set ( NOT NSTATIC false )
-# or use cmake with -DNSTATIC=1
+# select "ON" to build both dynamic and static libraries:
+# set ( BUILD_STATIC_LIBS ON )
+# set ( BUILD_STATIC_LIBS OFF )
+# or use cmake with -DGRAPHBLAS_BUILD_STATIC_LIBS=ON
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     message ( STATUS "Building all GraphBLAS libraries (static and dynamic)" )
 else ( )
-    message ( STATUS "Building dynamic GraphBLAS library" )
+    message ( STATUS "Building dynamic GraphBLAS library (no static)" )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -272,7 +272,7 @@ endif ( )
 # static graphblas library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
 
     add_library ( GraphBLAS_static STATIC ${GRAPHBLAS_SOURCES} )
 
@@ -318,7 +318,7 @@ if ( NOT GBNCPUFEAT )
         if ( HAVE_DLFCN_H )
             message ( STATUS "cpu_feautures has dlfcn.h" )
             target_compile_definitions ( GraphBLAS PRIVATE HAVE_DLFCN_H )
-            if ( NOT NSTATIC )
+            if ( BUILD_STATIC_LIBS )
                 target_compile_definitions ( GraphBLAS_static PRIVATE HAVE_DLFCN_H )
             endif ( )
         else ( )
@@ -328,7 +328,7 @@ if ( NOT GBNCPUFEAT )
         if ( HAVE_STRONG_GETAUXVAL )
             message ( STATUS "cpu_feautures has getauxval from sys/auxv.h" )
             target_compile_definitions ( GraphBLAS PRIVATE HAVE_STRONG_GETAUXVAL )
-            if ( NOT NSTATIC )
+            if ( BUILD_STATIC_LIBS )
                 target_compile_definitions ( GraphBLAS_static PRIVATE HAVE_STRONG_GETAUXVAL )
             endif ( )
         else ( )
@@ -345,7 +345,7 @@ endif ( )
 if ( NOT WIN32 )
     set ( GB_M "m" )
     target_link_libraries ( GraphBLAS PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS "m" )
         target_link_libraries ( GraphBLAS_static PUBLIC m )
     endif ( )
@@ -354,7 +354,7 @@ endif ( )
 # libdl
 if ( NOT WIN32 )
     target_link_libraries ( GraphBLAS PRIVATE dl )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS "dl" )
         target_link_libraries ( GraphBLAS_static PUBLIC dl )
     endif ( )
@@ -364,7 +364,7 @@ endif ( )
 include ( SuiteSparseAtomic )
 if ( LIBATOMIC_REQUIRED )
     target_link_libraries ( GraphBLAS PRIVATE atomic )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS "atomic" )
         target_link_libraries ( GraphBLAS_static PUBLIC atomic )
     endif ( )
@@ -384,7 +384,7 @@ if ( OPENMP_FOUND )
     # C compiler, and this is converted into "-lOpenMP::OpenMP_C".
     # So this breaks:
     # target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
         # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
@@ -421,7 +421,7 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     target_link_libraries ( GraphBLAS PRIVATE ${GB_CUDA} ${GB_RMM} )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( GraphBLAS_static PUBLIC ${GB_CUDA} ${GB_RMM} )
     endif ( )
 endif ( )
@@ -496,7 +496,7 @@ install ( TARGETS GraphBLAS
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS GraphBLAS_static
         EXPORT GraphBLASTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
