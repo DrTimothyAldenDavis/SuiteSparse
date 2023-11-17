@@ -197,8 +197,10 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     // count the number of entries in the result C
     //--------------------------------------------------------------------------
 
-    Int cnz = 0 ;
-    for (Int j = 0 ; j < ncol ; j++)
+    int ok = TRUE ;
+    size_t cnz = 0 ;
+    size_t cnzmax = SIZE_MAX - A->nrow ;
+    for (Int j = 0 ; ok && (j < ncol) ; j++)
     {
         // clear the Flag array
         CLEAR_FLAG (Common) ;
@@ -225,36 +227,18 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
                 }
             }
         }
-        if (cnz < 0)
-        {
-GOTCHA
-            break ;         // integer overflow case
-        }
+        ok = (cnz < cnzmax) ;
     }
 
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
 
     //--------------------------------------------------------------------------
-    // check for integer overflow
-    //--------------------------------------------------------------------------
-
-    if (cnz < 0)
-    {
-GOTCHA
-        ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
-        CHOLMOD(free_sparse) (&A2, Common) ;
-        CHOLMOD(free_sparse) (&B2, Common) ;
-        ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
-        return (NULL) ;
-    }
-
-    //--------------------------------------------------------------------------
     // allocate C
     //--------------------------------------------------------------------------
 
-    C = CHOLMOD(allocate_sparse) (nrow, ncol, cnz, FALSE, TRUE, 0,
-        (values ? A->xtype : CHOLMOD_PATTERN) + A->dtype, Common) ;
+    C = CHOLMOD(allocate_sparse) (nrow, ncol, ok ? cnz : SIZE_MAX, FALSE, TRUE,
+        0, (values ? A->xtype : CHOLMOD_PATTERN) + A->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
         // out of memory

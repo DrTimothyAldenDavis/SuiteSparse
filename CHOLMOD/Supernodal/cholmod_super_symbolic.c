@@ -164,12 +164,12 @@ int CHOLMOD(super_symbolic2)
     // check inputs
     //--------------------------------------------------------------------------
 
-    double zrelax0, zrelax1, zrelax2, xxsize ;
+    double zrelax0, zrelax1, zrelax2 ;
     Int *Wi, *Wj, *Super, *Snz, *Ap, *Ai, *Flag, *Head, *Ls, *Lpi, *Lpx, *Fnz,
         *Sparent, *Anz, *SuperMap, *Merged, *Nscol, *Zeros, *Fp, *Fj,
         *ColCount, *Lpi2, *Lsuper, *Iwork ;
-    Int nsuper, d, n, j, k, s, mark, parent, p, pend, k1, k2, packed, nscol,
-        nsrow, ndrow1, ndrow2, stype, ssize, xsize, sparent, plast, slast,
+    Int nsuper, d, n, j, k, s, mark, parent, p, pend, k1, k2, packed,
+        ndrow1, ndrow2, stype, sparent, plast, slast,
         csize, maxcsize, ss, nscol0, nscol1, ns, nfsuper, newzeros, totzeros,
         merge, snext, esize, maxesize, nrelax0, nrelax1, nrelax2, Asorted ;
     int find_xsize ;
@@ -527,7 +527,7 @@ int CHOLMOD(super_symbolic2)
         }
         else
         {
-            // use double to avoid integer overflow
+            // use double to avoid integer overflow; approximations are OK
             double lnz0 = Snz [s] ;     // # entries in leading column of s
             double xnewzeros = nscol0 * (lnz1 + nscol0 - lnz0) ;
 
@@ -649,52 +649,42 @@ int CHOLMOD(super_symbolic2)
     // determine the size of L->s and L->x
     //--------------------------------------------------------------------------
 
-    ssize = 0 ;
-    xsize = 0 ;
-    xxsize = 0 ;
+    size_t ssize = 0 ;
+    size_t xsize = 0 ;
     find_xsize = for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
                  for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU ;
     for (s = 0 ; s < nsuper ; s++)
     {
-        nscol = Super [s+1] - Super [s] ;
-        nsrow = Snz [s] ;
-        ASSERT (nscol > 0) ;
-        ssize += nsrow ;
+        // do the computations in 64-bits to guard against integer overflow
+        uint64_t nscol = (uint64_t) (Super [s+1] - Super [s]) ;
+        uint64_t nsrow = (uint64_t) Snz [s] ;
+        // ssize += nsrow
+        ssize = CHOLMOD(add_size_t) (ssize, (size_t) nsrow, &ok) ;
         if (find_xsize)
         {
-            xsize += nscol * nsrow ;
-            // also compute xsize in double to guard against Int overflow
-            xxsize += ((double) nscol) * ((double) nsrow) ;
+            // c = nscol * nsrow
+            uint64_t c = 0 ;
+            ok = ok && cholmod_mult_uint64_t (&c, nscol, nsrow) ;
+            // xsize += c
+            xsize = CHOLMOD(add_size_t) (xsize, c, &ok) ;
         }
-        if (ssize < 0 ||(find_xsize && xxsize > (double) Int_max))
-        {
-            // Int overflow, clear workspace and return.
-            // QR factorization will not use xxsize, so that error is ignored.
-            // For Cholesky factorization, however, memory of space xxsize
-            // will be allocated, so this is a failure.  Both QR and Cholesky
-            // fail if ssize overflows.
-GOTCHA
-            ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
-            FREE_WORKSPACE ;
-            return (FALSE) ;
-        }
-        ASSERT (ssize > 0) ;
-        ASSERT (IMPLIES (find_xsize, xsize > 0)) ;
     }
-    xsize = MAX (1, xsize) ;
-    ssize = MAX (1, ssize) ;
-    PRINT1 (("ix sizes: "ID" "ID" nsuper "ID"\n", ssize, xsize, nsuper)) ;
+
+    ok = ok && (ssize < Int_max) && (xsize < Int_max) ;
+    L->ssize = (ok) ? MAX (1, ssize) : SIZE_MAX ;
+    L->xsize = (ok) ? MAX (1, xsize) : SIZE_MAX ;
+    Common->status = (ok) ? CHOLMOD_OK : CHOLMOD_TOO_LARGE ;
+    L->nsuper = nsuper ;
 
     //--------------------------------------------------------------------------
     // allocate L (all except real part L->x)
     //--------------------------------------------------------------------------
 
-    L->ssize = ssize ;
-    L->xsize = xsize ;
-    L->nsuper = nsuper ;
-
-    CHOLMOD(change_factor) (CHOLMOD_PATTERN, TRUE, TRUE, TRUE, TRUE, L,
-        Common) ;
+    if (ok)
+    {
+        CHOLMOD(change_factor) (CHOLMOD_PATTERN, TRUE, TRUE, TRUE, TRUE, L,
+            Common) ;
+    }
 
     if (Common->status < CHOLMOD_OK)
     {
@@ -741,6 +731,10 @@ GOTCHA
     // construct pointers for supernodal values (L->px)
     //--------------------------------------------------------------------------
 
+    // L->px is not needed for non-GPU accelerated QR factorization.
+    // Use a magic number to tell cholmod_check_factor to ignore Lpx.
+    Lpx [0] = 123456 ;
+
     if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
         for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU)
     {
@@ -748,21 +742,13 @@ GOTCHA
         p = 0 ;
         for (s = 0 ; s < nsuper ; s++)
         {
-            nscol = Super [s+1] - Super [s] ;   // number of columns in s
-            nsrow = Snz [s] ;           // # of rows, incl triangular part
+            Int nscol = Super [s+1] - Super [s] ;   // number of columns in s
+            Int nsrow = Snz [s] ;       // # of rows, incl triangular part
             Lpx [s] = p ;               // pointer to numerical part of s
             p += nscol * nsrow ;
         }
         Lpx [s] = p ;
         ASSERT ((Int) (L->xsize) == MAX (1,p)) ;
-    }
-    else
-    {
-        // L->px is not needed for non-GPU accelerated QR factorization (it may
-        // lead to Int overflow, anyway, if xsize caused Int overflow above).
-        // Use a magic number to tell cholmod_check_factor to ignore Lpx.
-GOTCHA
-        Lpx [0] = 123456 ;
     }
 
     // Snz no longer needed ]
@@ -902,15 +888,13 @@ GOTCHA
     maxcsize = 1 ;
     maxesize = 1 ;
 
-    // Do not need to guard csize against Int overflow since xsize is OK.
-
     if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY ||
         for_whom == CHOLMOD_ANALYZE_FOR_SPQRGPU)
     {
         // this is not needed for non-GPU accelerated QR factorization
         for (d = 0 ; d < nsuper ; d++)
         {
-            nscol = Super [d+1] - Super [d] ;
+            Int nscol = Super [d+1] - Super [d] ;
             p = Lpi [d] + nscol ;
             plast = p ;
             pend = Lpi [d+1] ;

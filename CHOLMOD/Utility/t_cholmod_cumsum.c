@@ -36,7 +36,6 @@ int64_t CHOLMOD(cumsum)
         p += Cnz [k] ;
         if (p < 0)
         {
-GOTCHA
             // integer overflow has occured
             return (EMPTY) ;
         }

@@ -18,7 +18,7 @@
 // are based on the double or float type, and are not selected here.  They are
 // typically selected via template routines.
 
-// -----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
 #undef Int
 #undef UInt
@@ -87,4 +87,27 @@
     }
 
 #endif
+
+//------------------------------------------------------------------------------
+// check for BLAS integer overflow
+//------------------------------------------------------------------------------
+
+// The conversion of a CHOLMOD integer (Int) to a BLAS/LAPACK integer (the
+// SUITESPARSE_BLAS_INT can result in an integer overflow.  This is detected by
+// the SUITESPARSE_TO_BLAS_INT macro in SuiteSparse_config.h.  If the error
+// condition occurs, that macro sets Common->blas_ok to false, and that call
+// and any subsequent calls to the BLAS/LAPACK will be skipped.  From that
+// point on, Common->blas_ok will remain false for that call to CHOLMOD.  The
+// following macro sets CHOLMOD status to CHOLMOD_TOO_LARGE if the BLAS
+// conversion has failed.  This is done only once for a particular call to any
+// given CHOLMOD method.
+
+#define CHECK_FOR_BLAS_INTEGER_OVERFLOW                         \
+{                                                               \
+    if ((sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int)) &&       \
+        (Common->status == CHOLMOD_OK) && !(Common->blas_ok))   \
+    {                                                           \
+        ERROR (CHOLMOD_TOO_LARGE, "BLAS integer overflow") ;    \
+    }                                                           \
+}
 

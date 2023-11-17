@@ -221,7 +221,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
     }
     if (L->dtype != B->dtype)
     {
-GOTCHA
+GOTCHA  // L and B dtype must match
         ERROR (CHOLMOD_INVALID, "dtype of L and B must match") ;
         return (FALSE) ;
     }
@@ -240,7 +240,7 @@ GOTCHA
     {
         if (nrhs != 1)
         {
-GOTCHA
+GOTCHA  // B->ncol must be 1
             ERROR (CHOLMOD_INVALID, "Bset requires a single right-hand side") ;
             return (FALSE) ;
         }
@@ -332,7 +332,7 @@ GOTCHA
                 L, Common) ;
             if (Common->status < CHOLMOD_OK)
             {
-GOTCHA
+GOTCHA  // out of memory for cholmod_change_factor
                 // out of memory, L is returned unchanged
                 return (FALSE) ;
             }
@@ -345,7 +345,7 @@ GOTCHA
             Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA
+GOTCHA  // out of memory for cholmod_ensure_dense
             // out of memory
             return (FALSE) ;
         }
@@ -368,7 +368,7 @@ GOTCHA
                 L->IPerm = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
                 if (Common->status < CHOLMOD_OK)
                 {
-GOTCHA
+GOTCHA  // out of memory for cholmod_malloc
                     // out of memory
                     return (FALSE) ;
                 }
@@ -384,7 +384,7 @@ GOTCHA
 
         if (sys == CHOLMOD_P)
         {
-GOTCHA
+GOTCHA  // sys is CHOLMOD_P
             // x=Pb needs to turn off the subsequent x=P'b permutation
             Perm = NULL ;
         }
@@ -411,7 +411,7 @@ GOTCHA
         Xset->stype = 0 ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA
+GOTCHA  // out of memory for Xset
             // out of memory
             return (FALSE) ;
         }
@@ -424,7 +424,7 @@ GOTCHA
         CHOLMOD(allocate_work) (n, 3*n, 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA
+GOTCHA  // out of memory for workspace
             // out of memory
             return (FALSE) ;
         }
@@ -514,7 +514,7 @@ GOTCHA
         {
             if (!CHOLMOD(lsolve_pattern) (C, L, Yset, Common))
             {
-GOTCHA
+GOTCHA  // lsolve_pattern failed
                 Common->no_workspace_reallocate = save_realloc_state ;
                 return (FALSE) ;
             }
@@ -726,17 +726,6 @@ GOTCHA
             s_iperm (Y, Perm, 0, nrhs, X) ;                 // X = P'*Y
         }
 
-        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
-        {
-            // Integer overflow in the BLAS.  This is probably impossible,
-            // since the BLAS were used to create the supernodal factorization.
-            // It might be possible for the calls to the BLAS to differ between
-            // factorization and forward/backsolves, however.  This statement
-            // cannot be tested.
-GOTCHA
-            return (FALSE) ;
-        }
-
         #else
         // CHOLMOD Supernodal module not installed
         ERROR (CHOLMOD_NOT_INSTALLED,"Supernodal module not installed") ;
@@ -847,7 +836,7 @@ GOTCHA
     }
 
     DEBUG (CHOLMOD(dump_dense) (X, "X result", Common)) ;
-    return (TRUE) ;
+    return (Common->status == CHOLMOD_OK) ;
 }
 #endif
 

@@ -29,7 +29,7 @@ static inline uint64_t cm_rand15 (uint64_t *seed)
 // return a random uint64_t, in range 0 to 2^60
 static inline uint64_t cm_rand (uint64_t *seed)
 {
-GOTCHA
+GOTCHA  // cm_rand (A->nrows > 32767 is required to test this)
     uint64_t i = cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;
     i = CM_RAND_MAX * i + cm_rand15 (seed) ;

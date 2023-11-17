@@ -498,9 +498,10 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         }
         else
         {
+            // restore Lpos from prior failed supernode
             for (d = Head [s] ; d != EMPTY ; d = Next [d])
             {
-GOTCHA
+GOTCHA          // restore Lpos from failed supernode
                 Lpos [d] = Lpos_save [d] ;
                 Next [d] = Next_save [d] ;
             }
@@ -1021,11 +1022,7 @@ GOTCHA
         // info is set to one in SUITESPARSE_LAPACK_*potrf if blas_ok is FALSE.
         // It is set to zero in dpotrf/zpotrf if the factorization was
         // successful.
-        if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
-        {
-GOTCHA
-            ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
-        }
+        CHECK_FOR_BLAS_INTEGER_OVERFLOW ;
 
         if (info != 0)
         {
@@ -1159,11 +1156,7 @@ GOTCHA
                 #endif
             }
 
-            if (!Common->blas_ok)
-            {
-GOTCHA
-                ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
-            }
+            CHECK_FOR_BLAS_INTEGER_OVERFLOW ;
 
             if (!repeat_supernode)
             {

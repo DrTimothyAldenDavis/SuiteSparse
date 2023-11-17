@@ -134,11 +134,7 @@ int CHOLMOD(super_lsolve)   // TRUE if OK, FALSE if BLAS overflow occured
     // return result
     //--------------------------------------------------------------------------
 
-    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
-    {
-GOTCHA
-        ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
-    }
+    CHECK_FOR_BLAS_INTEGER_OVERFLOW ;
     return (Common->blas_ok) ;
 }
 
@@ -239,11 +235,7 @@ int CHOLMOD(super_ltsolve)  // TRUE if OK, FALSE if BLAS overflow occured
     // return result
     //--------------------------------------------------------------------------
 
-    if (sizeof (SUITESPARSE_BLAS_INT) < sizeof (Int) && !Common->blas_ok)
-    {
-GOTCHA
-        ERROR (CHOLMOD_TOO_LARGE, "problem too large for the BLAS") ;
-    }
+    CHECK_FOR_BLAS_INTEGER_OVERFLOW ;
     return (Common->blas_ok) ;
 }
 

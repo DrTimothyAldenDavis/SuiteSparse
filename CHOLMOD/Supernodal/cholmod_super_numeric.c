@@ -176,7 +176,7 @@ int CHOLMOD(super_numeric)
         }
         if (A->dtype != L->dtype)
         {
-GOTCHA
+GOTCHA  // A and L must have same dtype
             ERROR (CHOLMOD_INVALID, "A and L must have the same dtype") ;
             return (FALSE) ;
         }

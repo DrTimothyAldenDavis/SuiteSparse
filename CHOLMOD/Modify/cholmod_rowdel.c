@@ -147,7 +147,7 @@ int CHOLMOD(rowdel_mark)
         if (L->xtype == CHOLMOD_PATTERN)
         {
             // L will change to match the dtype of X and DeltaB
-GOTCHA
+GOTCHA      // L is pattern, change its dtype to X->dtype 
             L_dtype = X->dtype ;
         }
         if (X->nrow != L->n || X->ncol != 1 ||

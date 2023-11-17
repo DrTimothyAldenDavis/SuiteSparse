@@ -17,12 +17,6 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
     double maxerr = 0 ;
     int64_t anz = CHOLMOD(nnz) (A_input, cm) ;
 
-// FIXME
-// int ss = cm->print ;
-// cm->print = 5 ;
-// CHOLMOD(print_sparse) (A_input, "A tofrom tests", cm) ;
-// cm->print = ss ;
-
     if (nrow > 1000 || ncol > 1000)
     {
         // test skipped

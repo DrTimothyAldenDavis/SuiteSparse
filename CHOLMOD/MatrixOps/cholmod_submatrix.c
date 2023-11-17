@@ -347,7 +347,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
         switch ((C->xtype + C->dtype) % 8)
         {
             default:
-GOTCHA  // case p
+GOTCHA  // submatrix: case p
                 p_cholmod_submatrix_worker (C, A, nr, nc, cset, Head, Rnext) ;
                 break ;
 

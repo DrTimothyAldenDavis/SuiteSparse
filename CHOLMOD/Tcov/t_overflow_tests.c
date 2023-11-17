@@ -15,7 +15,7 @@ void overflow_tests (cholmod_common *cm)
     // cholmod_read_triplet
     //--------------------------------------------------------------------------
 
-    FILE *f = fopen ("Matrix/overflow.tri", "r") ;
+    FILE *f = fopen ("Matrix/overflow.tri", "r") ;  // FIXME: .gitignored
     if (f != NULL)
     {
         cholmod_triplet *T = CHOLMOD(read_triplet) (f, cm) ;
@@ -153,16 +153,45 @@ void overflow_tests (cholmod_common *cm)
         cm->status = CHOLMOD_OK ;
 
         //----------------------------------------------------------------------
-        // cholmod_super_symbolic TODO
+        // cholmod_super_symbolic
         //----------------------------------------------------------------------
 
-        //----------------------------------------------------------------------
-        // cholmod_cumsum TODO
-        //----------------------------------------------------------------------
+        A->ncol = SIZE_MAX ;
+        A->nrow = SIZE_MAX ;
+        A->stype = 1 ;
+        L->n = SIZE_MAX ;
+
+        ok = CHOLMOD(super_symbolic) (A, NULL, P, L, cm) ;
+        NOT (ok) ;
+        OK (cm->status == CHOLMOD_TOO_LARGE) ;
+        cm->status = CHOLMOD_OK ;
+
+        L->n = n_save ;
+        A->ncol = ncol_save ;
+        A->nrow = nrow_save ;
+        A->stype = stype_save ;
 
         //----------------------------------------------------------------------
-        // cholmod_ensure_dense TODO
+        // cholmod_cumsum
         //----------------------------------------------------------------------
+
+        Int Result [5] ;
+        Int Set [4] = { 0, Int_max/2, Int_max/2, Int_max } ;
+        int64_t sum = CHOLMOD(cumsum) (Result, Set, 5) ;
+        OK (sum == EMPTY) ;
+
+        //----------------------------------------------------------------------
+        // cholmod_ensure_dense
+        //----------------------------------------------------------------------
+
+        cholmod_dense *Y = NULL ;
+        cholmod_dense *Z = CHOLMOD(ensure_dense) (&Y, SIZE_MAX, SIZE_MAX,
+            SIZE_MAX, CHOLMOD_REAL + DTYPE, cm) ;
+        printf ("status %d\n", cm->status) ;
+        OK (Z == NULL) ;
+        OK (Y == NULL) ;
+        OK (cm->status == CHOLMOD_TOO_LARGE) ;
+        cm->status = CHOLMOD_OK ;
 
         //----------------------------------------------------------------------
         // cholmod_alloc_factor
@@ -178,9 +207,12 @@ void overflow_tests (cholmod_common *cm)
         //----------------------------------------------------------------------
 
         Real X [2] ;
-        L->n = A->nrow ;
-        A->ncol = A->nrow ;
+
+        A->ncol = SIZE_MAX ;
+        A->nrow = SIZE_MAX ;
         A->stype = 0 ;
+
+        L->n = SIZE_MAX ;
         L->xtype = CHOLMOD_REAL ;
         L->x = X ;
 
@@ -190,9 +222,10 @@ void overflow_tests (cholmod_common *cm)
         OK (cm->status == CHOLMOD_TOO_LARGE) ;
         cm->status = CHOLMOD_OK ;
 
-        L->n = n_save ;
+        A->nrow = nrow_save ;
         A->ncol = ncol_save ;
         A->stype = stype_save ;
+        L->n = n_save ;
         L->xtype = L_xtype_save ;
         L->x = NULL ;
 
@@ -200,9 +233,11 @@ void overflow_tests (cholmod_common *cm)
         // cholmod_resymbol
         //----------------------------------------------------------------------
 
-        L->n = A->nrow ;
-        A->ncol = A->nrow ;
+        A->nrow = SIZE_MAX ;
+        A->ncol = SIZE_MAX ;
         A->stype = 0 ;
+
+        L->n = SIZE_MAX ;
         L->xtype = CHOLMOD_REAL ;
         L->x = X ;
 
@@ -212,9 +247,11 @@ void overflow_tests (cholmod_common *cm)
         OK (cm->status == CHOLMOD_TOO_LARGE) ;
         cm->status = CHOLMOD_OK ;
 
-        L->n = n_save ;
+        A->nrow = nrow_save ;
         A->ncol = ncol_save ;
         A->stype = stype_save ;
+
+        L->n = n_save ;
         L->xtype = L_xtype_save ;
         L->x = NULL ;
 

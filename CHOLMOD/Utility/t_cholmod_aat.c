@@ -29,12 +29,14 @@
 #include "cholmod_internal.h"
 
 #define RETURN_IF_ERROR                             \
+{                                                   \
     if (Common->status < CHOLMOD_OK)                \
     {                                               \
         CHOLMOD(free_sparse) (&C, Common) ;         \
         CHOLMOD(free_sparse) (&F, Common) ;         \
         return (NULL) ;                             \
-    }
+    }                                               \
+}
 
 //------------------------------------------------------------------------------
 // t_cholmod_aat_worker template
@@ -148,8 +150,10 @@ cholmod_sparse *CHOLMOD(aat)
     // cnz = nnz (C)
     //--------------------------------------------------------------------------
 
-    int64_t cnz = 0 ;
-    for (Int j = 0 ; j < n ; j++)
+    int ok = TRUE ;
+    size_t cnz = 0 ;
+    size_t cnzmax = SIZE_MAX - A->nrow ;
+    for (Int j = 0 ; ok && (j < n) ; j++)
     {
 
         //----------------------------------------------------------------------
@@ -191,25 +195,23 @@ cholmod_sparse *CHOLMOD(aat)
         }
 
         //----------------------------------------------------------------------
-        // check for integer overflow
+        // check if nearing integer overflow
         //----------------------------------------------------------------------
 
-        if (cnz < 0 || cnz >= Int_max / sizeof (Int))
-        {
-GOTCHA
-            Common->status = CHOLMOD_TOO_LARGE ;
-            break ;
-        }
+        ok = (cnz < cnzmax) ;
     }
-
-    RETURN_IF_ERROR ;
 
     //--------------------------------------------------------------------------
     // allocate C
     //--------------------------------------------------------------------------
 
-    size_t cnzmax = cnz + ((mode == -2) ? (cnz/2 + n) : 0) ;
-    C = CHOLMOD(allocate_sparse) (n, n, cnzmax,
+    if (mode == -2 && ok)
+    {
+        // add some extra space
+        cnz = CHOLMOD(add_size_t) (cnz, cnz/2, &ok) ;
+        cnz = CHOLMOD(add_size_t) (cnz, A->nrow, &ok) ;
+    }
+    C = CHOLMOD(allocate_sparse) (n, n, ok ? cnz : SIZE_MAX,
         /* C is not sorted: */ FALSE, /* C is packed: */ TRUE,
         /* C stype: */ 0, axtype + A->dtype, Common) ;
     RETURN_IF_ERROR ;

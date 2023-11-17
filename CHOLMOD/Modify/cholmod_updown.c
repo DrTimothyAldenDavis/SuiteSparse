@@ -368,7 +368,7 @@ int CHOLMOD(updown_mask)
     cholmod_common *Common
 )
 {
-GOTCHA
+GOTCHA  // updown_mask
     Int maskmark = 0 ;
     return (CHOLMOD(updown_mask2) (update, C, colmark, mask, maskmark,
         L, X, DeltaB, Common)) ;
@@ -480,7 +480,7 @@ int CHOLMOD(updown_mask2)
         // can only update/downdate a simplicial LDL' factorization
         if (L->xtype == CHOLMOD_PATTERN)
         {
-GOTCHA
+GOTCHA      // L is pattern, change its dtype to C->dtype 
             L->dtype = C->dtype ;
         }
         CHOLMOD(change_factor) (CHOLMOD_REAL, FALSE, FALSE, FALSE, FALSE, L,

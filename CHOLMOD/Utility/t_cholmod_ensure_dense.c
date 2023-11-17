@@ -65,8 +65,7 @@ cholmod_dense *CHOLMOD(ensure_dense)
     size_t nzmax_required = CHOLMOD(mult_size_t) (d, ncol, &ok) ;
     if (!ok)
     {
-GOTCHA
-        ERROR (CHOLMOD_INVALID, "problem too large") ;
+        ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (NULL) ;
     }
 

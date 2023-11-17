@@ -160,6 +160,21 @@ static void dumpgraph (idx_t *Mp, idx_t *Mi, int64_t n,
 #endif
 
 //------------------------------------------------------------------------------
+// error handling
+//------------------------------------------------------------------------------
+
+#define RETURN_IF_METIS_FAILED(metis_result, error)                 \
+{                                                                   \
+    if (metis_result != METIS_OK)                                   \
+    {                                                               \
+        int status = (metis_result == METIS_ERROR_MEMORY) ?         \
+            CHOLMOD_OUT_OF_MEMORY : CHOLMOD_INVALID ;               \
+        ERROR (status, "METIS failed") ;                            \
+        return (error) ;                                            \
+    }                                                               \
+}
+
+//------------------------------------------------------------------------------
 // metis_memory_ok
 //------------------------------------------------------------------------------
 
@@ -270,7 +285,6 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
     idx_t *Mp, *Mi, *Mnw, *Mpart ;
     Int n, nleft, nright, j, p, csep, total_weight, lightest, nz ;
     idx_t nn, csp ;
-    int ok ;
     DEBUG (Int nsep) ;
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
@@ -337,17 +351,17 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
         }
         for (p = 0 ; p < nz ; p++)
         {
-            Mi [p] = Ai [p] ;
+            Mi [p] = (idx_t) Ai [p] ;
         }
         for (j = 0 ; j <= n ; j++)
         {
-            Mp [j] = Ap [j] ;
+            Mp [j] = (idx_t) Ap [j] ;
         }
         if (Anw != NULL)
         {
             for (j = 0 ; j <  n ; j++)
             {
-                Mnw [j] = Anw [j] ;
+                Mnw [j] = (idx_t) Anw [j] ;
             }
         }
     }
@@ -400,8 +414,8 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
 
     nn = n ;
     TEST_COVERAGE_PAUSE ;
-    ok = SuiteSparse_metis_METIS_ComputeVertexSeparator (&nn, Mp, Mi, Mnw,
-        NULL, &csp, Mpart) ;
+    int metis_result = SuiteSparse_metis_METIS_ComputeVertexSeparator (&nn,
+        Mp, Mi, Mnw, NULL, &csp, Mpart) ;
     TEST_COVERAGE_RESUME ;
     csep = csp ;
 
@@ -411,7 +425,7 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
     // copy the results back from idx_t, if required
     //--------------------------------------------------------------------------
 
-    if (ok == METIS_OK && (sizeof (Int) != sizeof (idx_t)))
+    if (metis_result == METIS_OK && (sizeof (Int) != sizeof (idx_t)))
     {
         for (j = 0 ; j < n ; j++)
         {
@@ -420,7 +434,7 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
     }
 
     //--------------------------------------------------------------------------
-    // free the workspace for METIS, if allocated
+    // free workspace and check for METIS error
     //--------------------------------------------------------------------------
 
     if (sizeof (Int) != sizeof (idx_t))
@@ -431,24 +445,7 @@ int64_t CHOLMOD(metis_bisector) // returns separator size
         CHOLMOD(free) (n,  sizeof (idx_t), Mpart, Common) ;
     }
 
-    if (ok == METIS_ERROR_MEMORY)
-    {
-GOTCHA
-        ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory in METIS") ;
-        return (EMPTY) ;
-    }
-    else if (ok == METIS_ERROR_INPUT)
-    {
-GOTCHA
-        ERROR (CHOLMOD_INVALID, "invalid input to METIS") ;
-        return (EMPTY) ;
-    }
-    else if (ok == METIS_ERROR)
-    {
-GOTCHA
-        ERROR (CHOLMOD_INVALID, "unspecified METIS error") ;
-        return (EMPTY) ;
-    }
+    RETURN_IF_METIS_FAILED (metis_result, EMPTY) ;
 
     //--------------------------------------------------------------------------
     // ensure a reasonable separator
@@ -752,6 +749,8 @@ int CHOLMOD(metis)
     // find the permutation
     //--------------------------------------------------------------------------
 
+    int metis_result = METIS_OK ;
+
     if (identity)
     {
         // no need to do the postorder
@@ -780,15 +779,15 @@ int CHOLMOD(metis)
 
         nn = n ;
         TEST_COVERAGE_PAUSE ;
-        SuiteSparse_metis_METIS_NodeND (&nn, Mp, Mi, NULL, NULL,
-            Mperm, Miperm) ;
+        metis_result = SuiteSparse_metis_METIS_NodeND (&nn, Mp, Mi,
+            NULL, NULL, Mperm, Miperm) ;
         TEST_COVERAGE_RESUME ;
 
         PRINT0 (("METIS_NodeND done\n")) ;
     }
 
     //--------------------------------------------------------------------------
-    // free the METIS input arrays
+    // free workspace and check for METIS error
     //--------------------------------------------------------------------------
 
     if (sizeof (Int) != sizeof (idx_t))
@@ -804,6 +803,8 @@ int CHOLMOD(metis)
     }
 
     CHOLMOD(free_sparse) (&B, Common) ;
+
+    RETURN_IF_METIS_FAILED (metis_result, false) ;
 
     //--------------------------------------------------------------------------
     // etree or column-etree postordering, using the Cholesky Module

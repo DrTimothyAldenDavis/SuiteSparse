@@ -805,30 +805,10 @@ go: ccode
 	$(V) ./si_test -e3  < Matrix/5by50    > $(T)/si_test_5by50.out
 	$(V) ./sl_test -e3  < Matrix/5by50    > $(T)/sl_test_5by50.out
 	- $(COVER)
-	$(V) ./di_test -e11 < Matrix/r5lo     > $(T)/di_test_r5lo.out
-	$(V) ./dl_test -e11 < Matrix/r5lo     > $(T)/dl_test_r5lo.out
-	$(V) ./si_test -e2  < Matrix/r5lo     > $(T)/si_test_r5lo.out
-	$(V) ./sl_test -e2  < Matrix/r5lo     > $(T)/sl_test_r5lo.out
-	- $(COVER)
-	$(V) ./di_test -e11 < Matrix/r5up     > $(T)/di_test_r5up.out
-	$(V) ./dl_test -e11 < Matrix/r5up     > $(T)/dl_test_r5up.out
-	$(V) ./si_test -e2  < Matrix/r5up     > $(T)/si_test_r5up.out
-	$(V) ./sl_test -e2  < Matrix/r5up     > $(T)/sl_test_r5up.out
-	- $(COVER)
-	$(V) ./di_test -e14 < Matrix/z5up2    > $(T)/di_test_z5up2.out
-	$(V) ./dl_test -e14 < Matrix/z5up2    > $(T)/dl_test_z5up2.out
-	$(V) ./si_test -e5  < Matrix/z5up2    > $(T)/si_test_z5up2.out
-	$(V) ./sl_test -e5  < Matrix/z5up2    > $(T)/sl_test_z5up2.out
-	- $(COVER)
 	$(V) ./di_test -e8  < Matrix/ibm32    > $(T)/di_test_ibm.out
 	$(V) ./dl_test -e8  < Matrix/ibm32    > $(T)/dl_test_ibm.out
 	$(V) ./si_test      < Matrix/ibm32    > $(T)/si_test_ibm.out
 	$(V) ./sl_test      < Matrix/ibm32    > $(T)/sl_test_ibm.out
-	- $(COVER)
-	$(V) ./di_test -m -e14 < Matrix/c5lo  > $(T)/di_test_c5lo.out
-	$(V) ./dl_test -m -e14 < Matrix/c5lo  > $(T)/dl_test_c5lo.out
-	$(V) ./si_test -m -e5  < Matrix/c5lo  > $(T)/si_test_c5lo.out
-	$(V) ./sl_test -m -e5  < Matrix/c5lo  > $(T)/sl_test_c5lo.out
 	- $(COVER)
 	$(V) ./di_test -m -e14 < Matrix/z5up  > $(T)/di_test_z5up.out
 	$(V) ./dl_test -m -e14 < Matrix/z5up  > $(T)/dl_test_z5up.out
@@ -910,6 +890,21 @@ go: ccode
 	- $(COVER)
 
 unused:
+	$(V) ./di_test -m -e14 < Matrix/c5lo  > $(T)/di_test_c5lo.out
+	$(V) ./dl_test -m -e14 < Matrix/c5lo  > $(T)/dl_test_c5lo.out
+	$(V) ./si_test -m -e5  < Matrix/c5lo  > $(T)/si_test_c5lo.out
+	$(V) ./sl_test -m -e5  < Matrix/c5lo  > $(T)/sl_test_c5lo.out
+	- $(COVER)
+	$(V) ./di_test -e14 < Matrix/z5up2    > $(T)/di_test_z5up2.out
+	$(V) ./dl_test -e14 < Matrix/z5up2    > $(T)/dl_test_z5up2.out
+	$(V) ./si_test -e5  < Matrix/z5up2    > $(T)/si_test_z5up2.out
+	$(V) ./sl_test -e5  < Matrix/z5up2    > $(T)/sl_test_z5up2.out
+	- $(COVER)
+	$(V) ./di_test -e11 < Matrix/r5up     > $(T)/di_test_r5up.out
+	$(V) ./dl_test -e11 < Matrix/r5up     > $(T)/dl_test_r5up.out
+	$(V) ./si_test -e2  < Matrix/r5up     > $(T)/si_test_r5up.out
+	$(V) ./sl_test -e2  < Matrix/r5up     > $(T)/sl_test_r5up.out
+	- $(COVER)
 	$(V) ./di_demo < ../Demo/Matrix/c.tri         > $(T)/di_demo_c.out
 	$(V) ./dl_demo < ../Demo/Matrix/c.tri         > $(T)/dl_demo_c.out
 	$(V) ./dl_demo   ../Demo/Matrix/c.tri 1       > $(T)/dl_demo_c_z.out
