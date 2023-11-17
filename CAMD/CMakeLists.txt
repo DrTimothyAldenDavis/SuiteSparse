@@ -92,7 +92,7 @@ target_include_directories ( CAMD
 # static camd library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( CAMD_static STATIC ${CAMD_SOURCES} )
 
     set_target_properties ( CAMD_static PROPERTIES
@@ -119,7 +119,7 @@ endif ( )
 target_link_libraries ( CAMD PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( CAMD PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( CAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -130,7 +130,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( CAMD PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( CAMD_STATIC_LIBS "${CAMD_STATIC_LIBS} -lm" )
         target_link_libraries ( CAMD_static PUBLIC m )
     endif ( )
@@ -148,7 +148,7 @@ install ( TARGETS CAMD
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS CAMD_static
         EXPORT CAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
