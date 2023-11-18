@@ -644,11 +644,12 @@ Compilation options
 
 You can set specific options for CMake with the command (for example):
 
-    cmake -DNPARTITION=ON -DNSTATIC=ON -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DNPARTITION=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
 Module (because of `-DNPARTITION=ON`).  Debug mode will be used (the build
-type).  The static libraries will not be built (since `-DNSTATIC=ON` is set).
+type).  The static libraries will not be built (since `-DBUILD_STATIC_LIBS=OFF`
+is set).
 
 * `SUITESPARSE_ENABLE_PROJECTS`:
 
@@ -679,11 +680,11 @@ type).  The static libraries will not be built (since `-DNSTATIC=ON` is set).
     sudo cmake --install .
 ```
 
-* `NSTATIC`:
+* `BUILD_STATIC_LIBS`:
 
-  If `ON`, static libraries are not built.
-  Default: `OFF`, except for GraphBLAS, which takes a long time to compile so
-  the default for GraphBLAS is `ON`.
+  If `ON`, static libraries are also built.
+  Default: `ON`, except for GraphBLAS, which takes a long time to compile so
+  the default for GraphBLAS is `OFF`.
 
 * `SUITESPARSE_CUDA_ARCHITECTURES`:
 
