@@ -106,13 +106,6 @@ else ( )
     endif ( )
 endif ( )
 
-# FIXME: Remove the following when NSTATIC is no longer used in any SuiteSparse library.
-if ( BUILD_STATIC_LIBS )
-    set ( NSTATIC OFF )
-else ( )
-    set ( NSTATIC ON )
-endif ( )
-
 # installation options
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.19.0" )
     # the LOCAL_INSTALL option requires cmake 3.19.0 or later
