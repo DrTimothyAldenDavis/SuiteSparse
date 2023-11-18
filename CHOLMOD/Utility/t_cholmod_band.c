@@ -16,6 +16,10 @@
 // The diagonal can be ignored, if the ignore_diag flag is true.
 // C can optionally be constructed as a pattern matrix.
 
+// The stype is not changed, and no transpose takes place, so a mode of 1 and 2
+// have the same effect (unlike cholmod_tranpose, cholmod_copy, cholmod_aat,
+// cholmod_vertcat, cholmod_horzcat, ...
+
 #include "cholmod_internal.h"
 
 #define RETURN_IF_ERROR                             \
@@ -193,6 +197,7 @@ cholmod_sparse *CHOLMOD(band)   // return a new matrix C
     cholmod_common *Common
 )
 {
+    mode = RANGE (mode, -1, 1) ;
     bool values = (mode > 0) ;
     bool inplace = FALSE ;
     bool ignore_diag = (mode < 0) ;
@@ -214,6 +219,7 @@ int CHOLMOD(band_inplace)
     cholmod_common *Common
 )
 {
+    mode = RANGE (mode, -1, 1) ;
     bool values = (mode > 0) ;
     bool inplace = TRUE ;
     bool ignore_diag = (mode < 0) ;

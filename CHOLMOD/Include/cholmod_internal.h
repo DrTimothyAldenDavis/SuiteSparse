@@ -263,8 +263,8 @@ void cholmod_l_to_simplicial_sym
 #define CS_TEMPLATE(name)                       cs_ ## name
 #define CS_T_TEMPLATE(name)                     cs_t_ ## name
 
-#define C_ABS(x,z,p) \
-    SuiteSparse_config_hypot ((double) (x [2*(p)]), (double) (x [2*(p)+1]))
+#define C_ABS(x,z,p) SuiteSparse_config_hypot ((double) (x [2*(p)]), \
+    (double) (x [2*(p)+1]))
 
 #define C_ASSEMBLE(x,z,p,ax,az,q) \
     x [2*(p)  ] += ax [2*(q)  ] ; \
@@ -374,8 +374,8 @@ void cholmod_l_to_simplicial_sym
 #define ZS_TEMPLATE(name)                       zs_ ## name
 #define ZS_T_TEMPLATE(name)                     zs_t_ ## name
 
-#define Z_ABS(x,z,p) \
-    SuiteSparse_config_hypot ((double) (x [p]), (double) (z [p]))
+#define Z_ABS(x,z,p) SuiteSparse_config_hypot ((double) (x [p]), \
+    (double) (z [p]))
 
 #define Z_ASSEMBLE(x,z,p,ax,az,q) \
     x [p] += ax [q] ; \
@@ -561,7 +561,6 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     int nthreads_max = Common->nthreads_max ;   // max # of threads to use
     if (nthreads_max <= 0)
     {
-// GOTCHA
         nthreads_max = SUITESPARSE_OPENMP_MAX_THREADS ;
     }
     work  = MAX (work, 1) ;
@@ -579,7 +578,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 //==== debugging definitions ===================================================
 //==============================================================================
 
-#if 1
+#if 0
 #define GOTCHA ;
 #else
 #define GOTCHA                                          \

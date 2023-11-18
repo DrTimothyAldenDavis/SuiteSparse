@@ -72,7 +72,8 @@ int CHOLMOD(transpose_sym)
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
                         // <= 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,p)', or NULL
     // input/output:
@@ -89,6 +90,8 @@ int CHOLMOD(transpose_sym)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, FALSE) ;
     RETURN_IF_NULL (C, FALSE) ;
     Common->status = CHOLMOD_OK ;
+
+    mode = RANGE (mode, 0, 2) ;
 
     if (A->xtype == CHOLMOD_PATTERN || C->xtype == CHOLMOD_PATTERN)
     {
@@ -169,7 +172,7 @@ int CHOLMOD(transpose_sym)
     // compute the pattern and values of C
     //--------------------------------------------------------------------------
 
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     switch ((C->xtype + C->dtype) % 8)
     {

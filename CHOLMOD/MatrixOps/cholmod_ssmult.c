@@ -31,7 +31,7 @@
 //      allocates temporary copies for A, B, and C, if required.
 //
 // Matrices of any xtype and dtype supported, but the xtype and dtype of
-// A and B must match (unless values is FALSE).
+// A and B must match (unless mode is zero).
 
 #include "cholmod_internal.h"
 
@@ -72,7 +72,9 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     cholmod_sparse *A,  // left matrix to multiply
     cholmod_sparse *B,  // right matrix to multiply
     int stype,          // requested stype of C
-    int values,         // TRUE: do numerical values, FALSE: pattern only
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric
+                        // 1: numerical (non-conj.) if A and/or B are symmetric
+                        // 0: pattern
     int sorted,         // if TRUE then return C with sorted columns
     cholmod_common *Common
 )
@@ -87,8 +89,11 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (B, NULL) ;
-    values = values &&
-        (A->xtype != CHOLMOD_PATTERN) && (B->xtype != CHOLMOD_PATTERN) ;
+    mode = RANGE (mode, 0, 2) ;
+    if (A->xtype == CHOLMOD_PATTERN || B->xtype == CHOLMOD_PATTERN)
+    {
+        mode = 0 ;
+    }
     RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
     RETURN_IF_XTYPE_INVALID (B, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
     if (A->ncol != B->nrow)
@@ -98,9 +103,10 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
         return (NULL) ;
     }
 
+    bool values = (mode != 0) ;
     if (values && (A->xtype != B->xtype || A->dtype != B->dtype))
     {
-        // A and B must have the same numerical type if values is TRUE
+        // A and B must have the same numerical type if mode != 0
         ERROR (CHOLMOD_INVALID, "A and B must have the same xtype and dtype") ;
         return (NULL) ;
     }
@@ -145,7 +151,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     if (A->stype)
     {
         // workspace: Iwork (max (A->nrow,A->ncol))
-        A2 = CHOLMOD(copy) (A, 0, values ? 2 : 0, Common) ;
+        A2 = CHOLMOD(copy) (A, 0, mode, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -159,7 +165,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     if (B->stype)
     {
         // workspace: Iwork (max (B->nrow,B->ncol))
-        B2 = CHOLMOD(copy) (B, 0, values ? 2 : 0, Common) ;
+        B2 = CHOLMOD(copy) (B, 0, mode, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -190,7 +196,7 @@ cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
     Int ncol = B->ncol ;
 
     // get workspace
-    void *W = Common->Xwork ;   // size nrow, unused if values is FALSE
+    void *W = Common->Xwork ;   // size nrow, unused if values is false
     Int *Flag = Common->Flag ;  // size nrow, Flag [0..nrow-1] < mark on input
 
     //--------------------------------------------------------------------------

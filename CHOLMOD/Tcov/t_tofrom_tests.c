@@ -50,14 +50,14 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
         }
 
         // E = A-C
-        cholmod_sparse *E = CHOLMOD(add) (A, C, one, minusone, true, true, cm) ;
+        cholmod_sparse *E = CHOLMOD(add) (A, C, one, minusone, 2, true, cm) ;
         double anorm = CHOLMOD(norm_sparse) (A, 0, cm) ;
         double enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
         MAXERR (maxerr, enorm, anorm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
 
         // E = A-G
-        E = CHOLMOD(add) (A, G, one, minusone, true, true, cm) ;
+        E = CHOLMOD(add) (A, G, one, minusone, 2, true, cm) ;
         enorm = CHOLMOD(norm_sparse) (E, 0, cm) ;
         MAXERR (maxerr, enorm, anorm) ;
         CHOLMOD(free_sparse) (&E, cm) ;
@@ -72,7 +72,7 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
         CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, S2, cm) ;
 
         // E = S1-S2
-        E = CHOLMOD(add) (S1, S2, one, minusone, true, true, cm) ;
+        E = CHOLMOD(add) (S1, S2, one, minusone, 1, true, cm) ;
         CHOLMOD(drop) (0, E, cm) ;
         int64_t enz = CHOLMOD(nnz) (E, cm) ;
         CHOLMOD(free_sparse) (&E, cm) ;

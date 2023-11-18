@@ -72,8 +72,10 @@ cholmod_sparse *CHOLMOD(aat)
     cholmod_sparse *A,  // input matrix
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag),
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 )
@@ -92,6 +94,8 @@ cholmod_sparse *CHOLMOD(aat)
         ERROR (CHOLMOD_INVALID, "input matrix must be unsymmetric") ;
         return (NULL) ;
     }
+
+    mode = RANGE (mode, -2, 2) ;
 
     ASSERT (CHOLMOD(dump_sparse) (A, "aat:A", Common) >= 0) ;
 

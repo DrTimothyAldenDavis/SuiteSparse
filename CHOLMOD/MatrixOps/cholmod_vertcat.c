@@ -17,7 +17,7 @@
 // workspace: Iwork (max (A->nrow, A->ncol, B->nrow, B->ncol)).
 //      allocates temporary copies of A and B if they are symmetric.
 //
-// A and B must have the same xtype and dtype, unless values is FALSE.
+// A and B must have the same xtype and dtype, unless mode is 0.
 
 #include "cholmod_internal.h"
 
@@ -57,7 +57,9 @@ cholmod_sparse *CHOLMOD(vertcat)
     // input:
     cholmod_sparse *A,  // top matrix to concatenate
     cholmod_sparse *B,  // bottom matrix to concatenate
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric
+                        // 1: numerical (non-conj.) if A and/or B are symmetric
+                        // 0: pattern
     cholmod_common *Common
 )
 {
@@ -71,8 +73,14 @@ cholmod_sparse *CHOLMOD(vertcat)
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (B, NULL) ;
-    values = values &&
-        (A->xtype != CHOLMOD_PATTERN) && (B->xtype != CHOLMOD_PATTERN) ;
+
+    mode = RANGE (mode, 0, 2) ;
+    if (A->xtype == CHOLMOD_PATTERN || B->xtype == CHOLMOD_PATTERN)
+    {
+        mode = 0 ;
+    }
+    bool values = (mode != 0) ;
+
     RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
     RETURN_IF_XTYPE_INVALID (B, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
     if (A->ncol != B->ncol)
@@ -81,9 +89,9 @@ cholmod_sparse *CHOLMOD(vertcat)
         ERROR (CHOLMOD_INVALID, "A and B must have same # of columns") ;
         return (NULL) ;
     }
-    if (values && (A->xtype != B->xtype || A->dtype != A->dtype))
+    if (mode != 0 && (A->xtype != B->xtype || A->dtype != A->dtype))
     {
-        // A and B must have the same xtype and dtype if values is TRUE
+        // A and B must have the same xtype and dtype if mode is 0
         ERROR (CHOLMOD_INVALID, "A and B must have same xtype and dtype") ;
         return (NULL) ;
     }
@@ -113,7 +121,7 @@ cholmod_sparse *CHOLMOD(vertcat)
     if (A->stype != 0)
     {
         // workspace: Iwork (max (A->nrow,A->ncol))
-        A2 = CHOLMOD(copy) (A, 0, values, Common) ;
+        A2 = CHOLMOD(copy) (A, 0, mode, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -127,7 +135,7 @@ cholmod_sparse *CHOLMOD(vertcat)
     if (B->stype != 0)
     {
         // workspace: Iwork (max (B->nrow,B->ncol))
-        B2 = CHOLMOD(copy) (B, 0, values, Common) ;
+        B2 = CHOLMOD(copy) (B, 0, mode, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory

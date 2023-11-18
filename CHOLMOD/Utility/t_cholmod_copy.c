@@ -104,8 +104,10 @@ cholmod_sparse *CHOLMOD(copy)
     // input:
     cholmod_sparse *A,  // input matrix, not modified
     int stype,          // stype of C
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag)
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 )
@@ -134,11 +136,12 @@ cholmod_sparse *CHOLMOD(copy)
     // get inputs
     //--------------------------------------------------------------------------
 
+    mode = RANGE (mode, -2, 2) ;
     bool ignore_diag = (mode < 0) ;
     bool up = (astype > 0) ;
     bool lo = (astype < 0) ;
     bool values = (mode > 0) && (A->xtype != CHOLMOD_PATTERN) ;
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     //--------------------------------------------------------------------------
     // copy the matrix

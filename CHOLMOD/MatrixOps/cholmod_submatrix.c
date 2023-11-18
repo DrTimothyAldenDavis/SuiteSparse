@@ -8,10 +8,11 @@
 
 //------------------------------------------------------------------------------
 
-// C = A (rset,cset), where C becomes length(rset)-by-length(cset) in dimension.
-// rset and cset can have duplicate entries.  A and C must be unsymmetric.   C
-// is packed.  If the sorted flag is TRUE on input, or rset is sorted and A is
-// sorted, then C is sorted; otherwise C is unsorted.
+// C = A (rset,cset), where C becomes length(rset)-by-length(cset) in
+// dimension.  rset and cset can have duplicate entries.  A can be symmetric;
+// C is returned as unsymmetric.   C is packed.  If the sorted flag is TRUE on
+// input, or rset is sorted and A is sorted, then C is sorted; otherwise C is
+// unsorted.
 //
 // A NULL rset or cset means "[ ]" in MATLAB notation.
 // If the length of rset or cset is negative, it denotes ":" in MATLAB notation.
@@ -94,7 +95,9 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     int64_t rsize,      // size of rset, or -1 for ":"
     Int *cset,          // set of column indices, duplicates OK
     int64_t csize,      // size of cset, or -1 for ":"
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A is symmetric, NEW
+                        // 1: numerical (non-conj.) if A is symmetric
+                        // 0: pattern
     int sorted,         // if TRUE then return C with sorted columns
     cholmod_common *Common
 )
@@ -104,17 +107,18 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     // check inputs
     //--------------------------------------------------------------------------
 
-    cholmod_sparse *C = NULL ;
+    cholmod_sparse *C = NULL, *A2 = NULL ;
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
-    values = (values && (A->xtype != CHOLMOD_PATTERN)) ;
     RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
-    if (A->stype != 0)
+
+    mode = RANGE (mode, 0, 2) ;
+    if (A->xtype == CHOLMOD_PATTERN)
     {
-        // A must be unsymmetric
-        ERROR (CHOLMOD_INVALID, "symmetric upper or lower case not supported") ;
-        return (NULL) ;
+        mode = 0 ;
     }
+    bool values = (mode != 0) ;
+
     if (rsize > Int_max || csize > Int_max)
     {
         ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
@@ -157,7 +161,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
 
         // workspace: Iwork (max (C->nrow,C->ncol))
         PRINT1 (("submatrix C = A (:,:)\n")) ;
-        C = CHOLMOD(copy) (A, 0, values, Common) ;
+        C = CHOLMOD(copy) (A, 0, mode, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
             // out of memory
@@ -194,6 +198,49 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
 
     //--------------------------------------------------------------------------
+    // check rset and cset
+    //--------------------------------------------------------------------------
+
+    PRINT1 (("nr "ID" nc "ID"\n", nr, nc)) ;
+    PRINT1 (("anrow "ID" ancol "ID"\n", anrow, ancol)) ;
+    PRINT1 (("cnrow "ID" cncol "ID"\n", cnrow, cncol)) ;
+    DEBUG (for (Int i = 0 ; i < nr ; i++)
+        PRINT2 (("rset ["ID"] = "ID"\n", i, rset [i])));
+    DEBUG (for (Int i = 0 ; i < nc ; i++)
+        PRINT2 (("cset ["ID"] = "ID"\n", i, cset [i])));
+
+    if (!check_subset (rset, nr, anrow))
+    {
+        ERROR (CHOLMOD_INVALID, "invalid rset") ;
+        return (NULL) ;
+    }
+
+    if (!check_subset (cset, nc, ancol))
+    {
+        ERROR (CHOLMOD_INVALID, "invalid cset") ;
+        return (NULL) ;
+    }
+
+    //--------------------------------------------------------------------------
+    // convert A if necessary
+    //--------------------------------------------------------------------------
+
+    // convert A to unsymmetric, if necessary
+    if (A->stype != 0)
+    {
+        // workspace: Iwork (max (A->nrow,A->ncol))
+        A2 = CHOLMOD(copy) (A, 0, mode, Common) ;
+        if (Common->status < CHOLMOD_OK)
+        {
+            // out of memory
+            return (NULL) ;
+        }
+        A = A2 ;
+    }
+
+    ASSERT (A->stype == 0) ;
+
+    //--------------------------------------------------------------------------
     // get inputs
     //--------------------------------------------------------------------------
 
@@ -215,28 +262,8 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     // construct inverse of rset and compute nnz (C)
     //--------------------------------------------------------------------------
 
-    PRINT1 (("nr "ID" nc "ID"\n", nr, nc)) ;
-    PRINT1 (("anrow "ID" ancol "ID"\n", anrow, ancol)) ;
-    PRINT1 (("cnrow "ID" cncol "ID"\n", cnrow, cncol)) ;
-    DEBUG (for (Int i = 0 ; i < nr ; i++)
-        PRINT2 (("rset ["ID"] = "ID"\n", i, rset [i])));
-    DEBUG (for (Int i = 0 ; i < nc ; i++)
-        PRINT2 (("cset ["ID"] = "ID"\n", i, cset [i])));
-
     // C is sorted if A and rset are sorted, or if C has one row or less
     bool csorted = A->sorted || (cnrow <= 1) ;
-
-    if (!check_subset (rset, nr, anrow))
-    {
-        ERROR (CHOLMOD_INVALID, "invalid rset") ;
-        return (NULL) ;
-    }
-
-    if (!check_subset (cset, nc, ancol))
-    {
-        ERROR (CHOLMOD_INVALID, "invalid cset") ;
-        return (NULL) ;
-    }
 
     Int nnz = 0 ;
     if (nr < 0)
@@ -326,6 +353,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
             Head [i] = EMPTY ;
         }
         ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
+        CHOLMOD(free_sparse) (&A2, Common) ;
         return (NULL) ;
     }
 
@@ -402,6 +430,7 @@ GOTCHA  // submatrix: case p
     // return result
     //--------------------------------------------------------------------------
 
+    CHOLMOD(free_sparse) (&A2, Common) ;
     ASSERT (CHOLMOD(dump_sparse) (C , "Final C", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, 0, 0, Common)) ;
     return (C) ;

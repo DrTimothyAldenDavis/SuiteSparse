@@ -60,7 +60,9 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     cholmod_sparse *B,  // input matrix
     double alpha [2],   // scale factor for A (two entries used if complex)
     double beta [2],    // scale factor for B (two entries used if complex)
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric,
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     int sorted,         // ignored; C is now always returned as sorted
     cholmod_common *Common
 )
@@ -82,12 +84,14 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         return (NULL) ;
     }
 
+    mode = RANGE (mode, 0, 2) ;
+
     int axtype = A->xtype ;
     int bxtype = B->xtype ;
-    if (!values || axtype == CHOLMOD_PATTERN || bxtype == CHOLMOD_PATTERN)
+    if (mode == 0 || axtype == CHOLMOD_PATTERN || bxtype == CHOLMOD_PATTERN)
     {
         // treat A and B as if they are pattern-only matrices; C is pattern
-        values = FALSE ;
+        mode = 0 ;
         axtype = CHOLMOD_PATTERN ;
         bxtype = CHOLMOD_PATTERN ;
     }
@@ -98,7 +102,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         return (NULL) ;
     }
 
-    if (values && A->dtype != B->dtype)
+    if (mode != 0 && A->dtype != B->dtype)
     {
         ERROR (CHOLMOD_INVALID, "A and B dtypes do not match") ;
         return (NULL) ;
@@ -106,7 +110,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     int xtype = axtype ;
     int dtype = A->dtype ;
-
 
     ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
@@ -124,8 +127,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     //--------------------------------------------------------------------------
     // convert/sort A and/or B, if needed
     //--------------------------------------------------------------------------
-
-    int mode = values ? 2 : 0 ;
 
     if (A->stype == B->stype)
     {
@@ -208,6 +209,10 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // C = alpha*A + beta*B
     //--------------------------------------------------------------------------
 
+// CHOLMOD(print_sparse) (A, "A for add", Common) ;
+// CHOLMOD(print_sparse) (B, "C for add", Common) ;
+// CHOLMOD(print_sparse) (C, "C input for add", Common) ;
+
     switch ((xtype + dtype) % 8)
     {
         default:
@@ -258,6 +263,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // return result
     //--------------------------------------------------------------------------
 
+// CHOLMOD(print_sparse) (C, "C output for add", Common) ;
     ASSERT (CHOLMOD(dump_sparse) (C, "add:C", Common) >= 0) ;
     return (C) ;
 }

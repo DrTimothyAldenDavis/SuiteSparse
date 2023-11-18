@@ -100,8 +100,9 @@ int CHOLMOD(transpose_unsym)
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,f)', or NULL
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
@@ -120,6 +121,8 @@ int CHOLMOD(transpose_unsym)
     RETURN_IF_NULL (C, FALSE) ;
     Common->status = CHOLMOD_OK ;
 
+    mode = RANGE (mode, 0, 2) ;
+
     if (A->xtype == CHOLMOD_PATTERN || C->xtype == CHOLMOD_PATTERN)
     {
         // A or C is pattern: C must be pattern, so mode can only be zero
@@ -135,7 +138,7 @@ int CHOLMOD(transpose_unsym)
         return (FALSE) ;
     }
 
-    if ((C->xtype != ((mode <= 0) ? CHOLMOD_PATTERN : A->xtype)) ||
+    if ((C->xtype != ((mode == 0) ? CHOLMOD_PATTERN : A->xtype)) ||
         (C->dtype != A->dtype) || (nrow != C->ncol) || (ncol != C->nrow) ||
         (C->stype != 0))
     {
@@ -328,7 +331,7 @@ int CHOLMOD(transpose_unsym)
     // compute the pattern and values of C
     //--------------------------------------------------------------------------
 
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     switch ((C->xtype + C->dtype) % 8)
     {

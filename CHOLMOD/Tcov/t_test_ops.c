@@ -725,10 +725,10 @@ double test_ops (cholmod_sparse *A)
     CHOLMOD(band_inplace) (-nrow, -1, 1, F, cm) ;
 
     // G = E+F
-    G = CHOLMOD(add) (E, F, one, one, TRUE, TRUE, cm) ;
+    G = CHOLMOD(add) (E, F, one, one, 2, true, cm) ;
 
     // D = A-G, which should be empty
-    D = CHOLMOD(add) (G, A, one, minusone, TRUE, TRUE, cm) ;
+    D = CHOLMOD(add) (G, A, one, minusone, 2, true, cm) ;
 
     CHOLMOD(drop) (0, D, cm) ;
     nz = CHOLMOD(nnz) (D, cm) ;
@@ -775,7 +775,7 @@ double test_ops (cholmod_sparse *A)
             E = CHOLMOD(copy) (A, 1, 2, cm) ;
 
             // Minus1 = -1
-            cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm) ;
+            cholmod_dense *Minus1 = CHOLMOD(zeros) (1, 1, A->xtype + DTYPE, cm);
             if (Minus1 != NULL)
             {
                 ((Real *) (Minus1->x)) [0] = -1 ;
@@ -791,7 +791,7 @@ double test_ops (cholmod_sparse *A)
             C = CHOLMOD(copy_sparse) (F, cm) ;
 
             // G = E+C
-            G = CHOLMOD(add) (E, C, one, one, TRUE, FALSE, cm) ;
+            G = CHOLMOD(add) (E, C, one, one, 2, false, cm) ;
             CHOLMOD(sort) (G, cm) ;
 
             CHOLMOD(drop) (0, G, cm) ;
@@ -1094,9 +1094,9 @@ double test_ops (cholmod_sparse *A)
     for (stype = -1 ; stype <= 1 ; stype++)
     {
         if (n > NLARGE) progress (1, '.') ;
-        E = CHOLMOD(ssmult) (A, AT, stype, TRUE, TRUE, cm) ;
+        E = CHOLMOD(ssmult) (A, AT, stype, 2, false, cm) ;
         if (n > NLARGE) progress (1, '.') ;
-        G = CHOLMOD(add) (C, E, one, minusone, TRUE, FALSE, cm) ;
+        G = CHOLMOD(add) (C, E, one, minusone, 2, false, cm) ;
         if (n > NLARGE) progress (1, '.') ;
         r = CHOLMOD(norm_sparse) (G, 0, cm) ;
         if (G != NULL)

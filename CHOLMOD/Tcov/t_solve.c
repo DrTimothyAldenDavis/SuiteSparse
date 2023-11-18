@@ -461,10 +461,10 @@ double solve (cholmod_sparse *A)
         // compute norm of A*C-I
 
         // E = A*C
-        E = CHOLMOD(ssmult) (A, C, 0, TRUE, FALSE, cm) ;
+        E = CHOLMOD(ssmult) (A, C, 0, 2, false, cm) ;
 
         // r = norm (E-I)
-        F = CHOLMOD(add) (E, I, minusone, one, TRUE, FALSE, cm) ;
+        F = CHOLMOD(add) (E, I, minusone, one, 2, false, cm) ;
         r = CHOLMOD(norm_sparse) (F, 1, cm) ;
         CHOLMOD(free_sparse) (&F, cm) ;
 

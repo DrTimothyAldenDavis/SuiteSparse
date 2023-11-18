@@ -1095,12 +1095,15 @@ cholmod_sparse *cholmod_l_spzeros (size_t, size_t, size_t, int,
 // cholmod_transpose: transpose a sparse matrix
 //------------------------------------------------------------------------------
 
+// FIXME:  use #define's for mode
+
 cholmod_sparse *cholmod_transpose       // return new sparse matrix C
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)      NEW: same effect, new name
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
     cholmod_common *Common
 ) ;
 cholmod_sparse *cholmod_l_transpose (cholmod_sparse *, int, cholmod_common *) ;
@@ -1117,8 +1120,9 @@ int cholmod_transpose_unsym
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)      NEW: same effect, new name
+                        // 1: numerical (non-conj.),
+                        // 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,f)', or NULL
     int32_t *fset,      // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
@@ -1141,8 +1145,9 @@ int cholmod_transpose_sym
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)      NEW: same effect, new name
+                        // 1: numerical (non-conj.),
+                        // 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,p)', or NULL
     // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
@@ -1159,8 +1164,9 @@ cholmod_sparse *cholmod_ptranspose      // return new sparse matrix C
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)  NOTE: same effect, new name
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,f)', or NULL
     int32_t *fset,      // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
@@ -1240,8 +1246,10 @@ cholmod_sparse *cholmod_aat     // return sparse matrix C
     cholmod_sparse *A,  // input matrix
     int32_t *fset,      // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)      NEW
+                        // 1: numerical (non-conj.),
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag),
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 ) ;
@@ -1273,8 +1281,10 @@ cholmod_sparse *cholmod_copy        // return new sparse matrix
     // input:
     cholmod_sparse *A,  // input matrix, not modified
     int stype,          // stype of C
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)      NEW
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag)
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 ) ;
@@ -1291,7 +1301,9 @@ cholmod_sparse *cholmod_add     // return C = alpha*A + beta*B
     cholmod_sparse *B,  // input matrix
     double alpha [2],   // scale factor for A (two entires used if complex)
     double beta [2],    // scale factor for A (two entires used if complex)
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric, NEW
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     int sorted,         // ignored; C is now always returned as sorted
     cholmod_common *Common
 ) ;
@@ -1728,7 +1740,8 @@ cholmod_sparse *cholmod_dense_to_sparse         // return a sparse matrix C
 (
     // input:
     cholmod_dense *X,       // input matrix
-    int values,             // if true, copy the values; if false, C is pattern
+    int mode,               // 1: copy the values   NEW
+                            // 0: C is pattern
     cholmod_common *Common
 ) ;
 cholmod_sparse *cholmod_l_dense_to_sparse (cholmod_dense *, int,
@@ -3015,12 +3028,18 @@ double cholmod_l_norm_sparse (cholmod_sparse *, int, cholmod_common *) ;
 // cholmod_horzcat:  C = [A,B]
 //------------------------------------------------------------------------------
 
+// C is returned as an unsymmetric matrix with C->stype of zero.  If A and/or
+// B are symmetric, they are converted first to unsymmetric, and the conversion
+// is governed by the mode input parameter.
+
 cholmod_sparse *cholmod_horzcat     // returns C = [A B]
 (
     // input:
     cholmod_sparse *A,  // left matrix to concatenate
     cholmod_sparse *B,  // right matrix to concatenate
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric, NEW
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     cholmod_common *Common
 ) ;
 cholmod_sparse *cholmod_l_horzcat (cholmod_sparse *, cholmod_sparse *, int,
@@ -3072,7 +3091,10 @@ int cholmod_l_sdmult (cholmod_sparse *, int, double *, double *,
 // cholmod_ssmult:  C = A*B
 //------------------------------------------------------------------------------
 
-// Sparse matrix times sparse matrix
+// Sparse matrix times sparse matrix.
+
+// If A and/or B are symmetric, they are converted first to unsymmetric, and
+// the conversion is governed by the mode input parameter.
 
 cholmod_sparse *cholmod_ssmult      // return C=A*B
 (
@@ -3080,7 +3102,9 @@ cholmod_sparse *cholmod_ssmult      // return C=A*B
     cholmod_sparse *A,  // left matrix to multiply
     cholmod_sparse *B,  // right matrix to multiply
     int stype,          // requested stype of C
-    int values,         // TRUE: do numerical values, FALSE: pattern only
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric, NEW
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     int sorted,         // if TRUE then return C with sorted columns
     cholmod_common *Common
 ) ;
@@ -3096,6 +3120,10 @@ cholmod_sparse *cholmod_l_ssmult (cholmod_sparse *, cholmod_sparse *, int, int,
 // denotes "[ ]" in MATLAB notation (the empty set).
 // Similar rules hold for csize.
 
+// C is returned as an unsymmetric matrix with C->stype of zero.  If A and/or
+// B are symmetric, they are converted first to unsymmetric, and the conversion
+// is governed by the mode input parameter.
+
 cholmod_sparse *cholmod_submatrix   // return C = A (rset,cset)
 (
     // input:
@@ -3104,7 +3132,9 @@ cholmod_sparse *cholmod_submatrix   // return C = A (rset,cset)
     int64_t rsize,      // size of rset, or -1 for ":"
     int32_t *cset,      // set of column indices, duplicates OK
     int64_t csize,      // size of cset, or -1 for ":"
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric, NEW
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     int sorted,         // if TRUE then return C with sorted columns
     cholmod_common *Common
 ) ;
@@ -3115,12 +3145,18 @@ cholmod_sparse *cholmod_l_submatrix (cholmod_sparse *, int64_t *,
 // cholmod_vertcat:  C = [A ; B]
 //------------------------------------------------------------------------------
 
+// C is returned as an unsymmetric matrix with C->stype of zero.  If A and/or
+// B are symmetric, they are converted first to unsymmetric, and the conversion
+// is governed by the mode input parameter.
+
 cholmod_sparse *cholmod_vertcat     // returns C = [A ; B]
 (
     // input:
     cholmod_sparse *A,  // top matrix to concatenate
     cholmod_sparse *B,  // bottom matrix to concatenate
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric, NEW
+                        // 1: numerical (non-conj.) if A and/or B are symmetric
+                        // 0: pattern
     cholmod_common *Common
 ) ;
 cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,

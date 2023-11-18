@@ -14,6 +14,8 @@
 //      cmread matrixfile
 //      cmread < matrixfile
 
+// FIXME: write it out, read it back in, and compare
+
 #include "cholmod.h"
 
 #ifdef CHOLMOD_INT64

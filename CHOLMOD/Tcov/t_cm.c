@@ -1502,7 +1502,7 @@ int main (int argc, char **argv)
     }
     else
     {
-        fprintf (stderr, "Test FAIL\n") ;
+        fprintf (stderr, ", Test FAIL\n") ;
         test_result = 1 ;
     }
 
