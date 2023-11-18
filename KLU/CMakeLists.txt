@@ -144,7 +144,7 @@ target_include_directories ( KLU
 # static klu library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( KLU_static STATIC ${KLU_SOURCES} )
 
     set_target_properties ( KLU_static PROPERTIES
@@ -186,7 +186,7 @@ if ( NOT NCHOLMOD )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         add_library ( KLU_CHOLMOD_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
         set_target_properties ( KLU_CHOLMOD_static PROPERTIES
@@ -214,7 +214,7 @@ endif ( )
 
 # SuiteSparseConfig:
 target_link_libraries ( KLU PRIVATE SuiteSparse::SuiteSparseConfig )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -225,7 +225,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( KLU PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( KLU_STATIC_LIBS "${KLU_STATIC_LIBS} -lm" )
         target_link_libraries ( KLU_static PUBLIC m )
     endif ( )
@@ -235,7 +235,7 @@ endif ( )
 target_link_libraries ( KLU PRIVATE SuiteSparse::AMD )
 target_include_directories ( KLU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::AMD_static )
     else ( )
@@ -247,7 +247,7 @@ endif ( )
 target_link_libraries ( KLU PRIVATE SuiteSparse::COLAMD )
 target_include_directories ( KLU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::COLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
@@ -259,7 +259,7 @@ endif ( )
 target_link_libraries ( KLU PRIVATE SuiteSparse::BTF )
 target_include_directories ( KLU PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::BTF,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::BTF_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::BTF_static )
     else ( )
@@ -273,7 +273,7 @@ if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     # CHOLMOD without CUDA
     target_link_libraries ( KLU_CHOLMOD PRIVATE SuiteSparse::CHOLMOD )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
        set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
        if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -284,7 +284,7 @@ if ( NOT NCHOLMOD )
 
     # klu:
     target_link_libraries ( KLU_CHOLMOD PRIVATE KLU )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( KLU_CHOLMOD_static PUBLIC KLU_static )
         if ( TARGET SuiteSparse::BTF_static )
             target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::BTF_static )
@@ -308,7 +308,7 @@ install ( TARGETS KLU
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS KLU_static
         EXPORT KLUTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
@@ -388,7 +388,7 @@ if ( NOT NCHOLMOD )
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         install ( TARGETS KLU_CHOLMOD_static
             EXPORT KLU_CHOLMODTargets
             ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

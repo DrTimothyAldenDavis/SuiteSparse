@@ -122,7 +122,7 @@ target_include_directories ( CXSparse
 # static cxsparse library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( CXSparse_static STATIC ${CXSPARSE_SOURCES} )
 
     set_target_properties ( CXSparse_static PROPERTIES
@@ -149,7 +149,7 @@ endif ( )
 target_link_libraries ( CXSparse PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( CXSparse PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( CXSparse_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -160,7 +160,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( CXSparse PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( CXSPARSE_STATIC_LIBS "${CXSPARSE_STATIC_LIBS} -lm" )
         target_link_libraries ( CXSparse_static PUBLIC m )
     endif ( )
@@ -178,7 +178,7 @@ install ( TARGETS CXSparse
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS CXSparse_static
         EXPORT CXSparseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

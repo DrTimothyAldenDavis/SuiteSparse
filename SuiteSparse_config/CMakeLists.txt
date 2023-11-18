@@ -103,7 +103,7 @@ target_include_directories ( SuiteSparseConfig
 # static SuiteSparseConfig library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( SuiteSparseConfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
     set_target_properties ( SuiteSparseConfig_static PROPERTIES
@@ -129,7 +129,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( SuiteSparseConfig PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
     endif ( )
 endif ( )
@@ -140,7 +140,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
@@ -175,7 +175,7 @@ install ( FILES
     ${SUITESPARSE_CMAKE_MODULES}
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse
     COMPONENT Development )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS SuiteSparseConfig_static
         EXPORT SuiteSparse_configTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

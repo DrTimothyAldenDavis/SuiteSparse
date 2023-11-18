@@ -165,7 +165,7 @@ target_include_directories ( UMFPACK
 # static umfpack library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( UMFPACK_static STATIC ${UMFPACK_SOURCES} )
 
     set_target_properties ( UMFPACK_static PROPERTIES
@@ -193,7 +193,7 @@ endif ( )
 target_link_libraries ( UMFPACK PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( UMFPACK PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -207,7 +207,7 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     target_link_libraries ( UMFPACK PRIVATE ${OpenMP_C_LIBRARIES} )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( UMFPACK_static PUBLIC ${OpenMP_C_LIBRARIES} )
         list ( APPEND UMFPACK_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
@@ -218,7 +218,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( UMFPACK PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         list ( APPEND UMFPACK_STATIC_LIBS "m" )
         target_link_libraries ( UMFPACK_static PUBLIC m )
     endif ( )
@@ -228,7 +228,7 @@ endif ( )
 target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
 target_include_directories ( UMFPACK PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD_static )
     else ( )
@@ -241,7 +241,7 @@ message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
 target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     list ( APPEND UMFPACK_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
@@ -251,7 +251,7 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
         if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -274,7 +274,7 @@ install ( TARGETS UMFPACK
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS UMFPACK_static
         EXPORT UMFPACKTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

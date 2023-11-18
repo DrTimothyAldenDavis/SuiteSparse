@@ -197,7 +197,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     # Build the Mongoose library
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
 #   set_property ( TARGET Mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
@@ -257,10 +257,10 @@ endif ( )
 add_executable ( mongoose_exe ${EXE_FILES} )
 set_target_properties ( mongoose_exe PROPERTIES
         OUTPUT_NAME mongoose )
-if ( NSTATIC )
-    target_link_libraries ( mongoose_exe Mongoose )
-else ( )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( mongoose_exe Mongoose_static )
+else ( )
+    target_link_libraries ( mongoose_exe Mongoose )
 endif ( )
 if ( TARGET SuiteSparse::SuiteSparseConfig_static )
     target_link_libraries ( mongoose_exe SuiteSparse::SuiteSparseConfig_static )
@@ -272,10 +272,10 @@ endif ( )
 add_executable ( demo_exe ${DEMO_FILES} )
 set_target_properties ( demo_exe PROPERTIES
         OUTPUT_NAME demo )
-if ( NSTATIC )
-    target_link_libraries ( demo_exe Mongoose )
-else ( )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( demo_exe Mongoose_static )
+else ( )
+    target_link_libraries ( demo_exe Mongoose )
 endif ( )
 if ( TARGET SuiteSparse::SuiteSparseConfig_static )
     target_link_libraries ( demo_exe SuiteSparse::SuiteSparseConfig_static )
@@ -351,10 +351,10 @@ if ( Python_Interpreter_FOUND )
     add_executable ( mongoose_test_performance
         Tests/Mongoose_Test_Performance.cpp
         Tests/Mongoose_Test_Performance_exe.cpp )
-    if ( NSTATIC )
-        target_link_libraries ( mongoose_test_performance Mongoose )
-    else ( )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( mongoose_test_performance Mongoose_static )
+    else ( )
+        target_link_libraries ( mongoose_test_performance Mongoose )
     endif ( )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( mongoose_test_performance SuiteSparse::SuiteSparseConfig_static )
@@ -379,10 +379,10 @@ endif ( )
 add_executable ( mongoose_test_reference
     Tests/Mongoose_Test_Reference.cpp
     Tests/Mongoose_Test_Reference_exe.cpp )
-if ( NSTATIC )
-    target_link_libraries ( mongoose_test_reference Mongoose )
-else ( )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( mongoose_test_reference Mongoose_static )
+else ( )
+    target_link_libraries ( mongoose_test_reference Mongoose )
 endif ( )
 if ( TARGET SuiteSparse::SuiteSparseConfig_static )
     target_link_libraries ( mongoose_test_reference SuiteSparse::SuiteSparseConfig_static )
@@ -488,7 +488,7 @@ set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph mongoose_
 
 set ( CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1 ) # Necessary for gcov - prevents file.cpp.gcda instead of file.gcda
 
-# if ( NOT NSTATIC )
+# if ( BUILD_STATIC_LIBS )
 #   add_custom_command ( TARGET Mongoose_static
 #           POST_BUILD
 #           COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Mongoose_static> ${PROJECT_SOURCE_DIR}/Lib
@@ -536,7 +536,7 @@ install ( TARGETS Mongoose
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS Mongoose_static
         EXPORT MongooseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

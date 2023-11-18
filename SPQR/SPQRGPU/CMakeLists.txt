@@ -38,7 +38,7 @@ set_target_properties ( SPQR_CUDA PROPERTIES
     OUTPUT_NAME spqr_cuda
     SOVERSION ${SPQR_VERSION_MAJOR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( SPQR_CUDA_static STATIC ${SPQR_CUDA_SOURCES} )
 
     set_target_properties ( SPQR_CUDA_static PROPERTIES
@@ -74,7 +74,7 @@ target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
     CUDA::nvToolsExt CUDA::cublas )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     target_include_directories ( SPQR_CUDA_static PRIVATE
         "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
         "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
@@ -110,7 +110,7 @@ install ( TARGETS SPQR_CUDA
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS SPQR_CUDA_static
         EXPORT SPQR_CUDATargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )

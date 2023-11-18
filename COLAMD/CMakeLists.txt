@@ -89,7 +89,7 @@ target_include_directories ( COLAMD
 # static colamd library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( COLAMD_static STATIC ${COLAMD_SOURCES} )
 
     set_target_properties ( COLAMD_static PROPERTIES
@@ -116,7 +116,7 @@ endif ( )
 target_link_libraries ( COLAMD PRIVATE SuiteSparse::SuiteSparseConfig )
 target_include_directories ( COLAMD PUBLIC
     "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( COLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -127,7 +127,7 @@ endif ( )
 # libm:
 if ( NOT WIN32 )
     target_link_libraries ( COLAMD PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_STATIC_LIBS )
         set ( COLAMD_STATIC_LIBS "${COLAMD_STATIC_LIBS} -lm" )
         target_link_libraries ( COLAMD_static PUBLIC m )
     endif ( )
@@ -145,7 +145,7 @@ install ( TARGETS COLAMD
     ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
     PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS COLAMD_static
         EXPORT COLAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
