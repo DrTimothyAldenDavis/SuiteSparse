@@ -1092,10 +1092,39 @@ double solve (cholmod_sparse *A)
         }
         CHOLMOD(free_dense) (&X, cm) ;
 
+#if 0
+int sav = cm->print ;
+cm->print = 5 ;
+CHOLMOD(print_factor) (L, "L for with Px=b", cm) ;
+CHOLMOD(print_sparse) (Bset, "Bset for with Px=b", cm) ;
+CHOLMOD(print_dense) (B, "B for with Px=b", cm) ;
+        // solve Px=b and compare with sparse solve
+        X = CHOLMOD(solve) (CHOLMOD_P, L, B, cm) ;
+        if (X != NULL)
+        {
+            CHOLMOD(solve2) (CHOLMOD_P, L, B, Bset, &X2, &Xset,
+                &Ywork, &Ework, cm) ;
+            if (X2 != NULL)
+            {
+CHOLMOD(print_dense) (X2, "X2 with Px=b", cm) ;
+CHOLMOD(print_dense) (X,  "X with Px=b", cm) ;
+                X2x = X2->x ;
+                X1x = X->x ;
+                r = fabs (X2x [0] - X1x [0]) ;
+                if (cm->print > 1) printf ("solve2 Px=b err %g\n", r) ;
+                MAXERR (maxerr, r, 1) ;
+                OK (r < 0.1) ;
+            }
+        }
+        CHOLMOD(free_dense) (&X, cm) ;
+cm->print = sav ;
+#endif
+
         CHOLMOD(free_sparse) (&Xset, cm) ;
         CHOLMOD(free_dense) (&X2, cm) ;
         CHOLMOD(free_dense) (&Ywork, cm) ;
         CHOLMOD(free_dense) (&Ework, cm) ;
+
     }
 
     CHOLMOD(free_sparse) (&Bset, cm) ;

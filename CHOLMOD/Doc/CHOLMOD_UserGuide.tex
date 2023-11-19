@@ -2756,9 +2756,10 @@ dense, but it is assumed to be zero except for row indices specified in {\tt
 Bset}.  The vector {\tt Bset} must be a sparse column vector, of dimension the
 same as {\tt B}.  Only the pattern of {\tt Bset} is used.  The solution {\tt X}
 (a dense column vector) is modified on output, but is defined only in the rows
-defined by the sparse vector {\tt Xset}.  The entries in {\tt Bset} are a
-subset of {\tt Xset} (except if {\tt sys} is {\tt CHOLMOD\_P} or {\tt
-CHOLMOD\_Pt}).
+defined by the sparse vector {\tt Xset}.  {\tt Bset} is ignored when solving
+with {\tt sys} equal to {\tt CHOLMOD\_P} or {\tt CHOLMOD\_Pt}).  The entries in
+{\tt Bset} are a subset of {\tt Xset} (except if {\tt sys} is {\tt CHOLMOD\_P}
+or {\tt CHOLMOD\_Pt}).
 
 No memory allocations are done if the outputs and internal
 workspaces ({\tt X}, {\tt Xset}, {\tt Y}, and {\tt E}) have been allocated

@@ -106,12 +106,10 @@ cholmod_dense *CHOLMOD(solve)   // returns solution X
 )
 {
 
-    cholmod_dense *Y = NULL, *X = NULL ;
-    cholmod_dense *E = NULL ;
-    int ok ;
+    cholmod_dense *Y = NULL, *X = NULL, *E = NULL ;
 
     // do the solve, allocating workspaces as needed
-    ok = CHOLMOD (solve2) (sys, L, B, NULL, &X, NULL, &Y, &E, Common) ;
+    int ok = CHOLMOD (solve2) (sys, L, B, NULL, &X, NULL, &Y, &E, Common) ;
 
     // free workspaces if allocated, and free result if an error occured
     CHOLMOD(free_dense) (&Y, Common) ;
@@ -207,7 +205,6 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
     Int *Perm = NULL, *IPerm = NULL ;
     Int n, nrhs, ncols, k1, nr, ytype, k, blen, p, i, d, nrow ;
     Int Cp [2], Ysetp [2], *Ci, *Yseti, ysetlen ;
-    Int *Bsetp, *Bseti, *Bsetnz, *Iwork ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (L, FALSE) ;
@@ -235,6 +232,13 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         ERROR (CHOLMOD_INVALID, "dimensions of L and B do not match") ;
         return (FALSE) ;
     }
+
+    if (sys == CHOLMOD_P || sys == CHOLMOD_Pt)
+    {
+        // Bset is ignored when solving Px=b or P'x=b
+        Bset = NULL ;
+    }
+
     if (Bset)
     {
         if (nrhs != 1)
@@ -309,8 +313,6 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
         // solve for a subset of x, with a sparse b
         //----------------------------------------------------------------------
 
-        Int save_realloc_state ;
-
         #ifndef NSUPERNODAL
         // convert a supernodal L to simplicial when using Bset
         if (L->is_super)
@@ -330,7 +332,6 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
                 L, Common) ;
             if (Common->status < CHOLMOD_OK)
             {
-GOTCHA  // out of memory for cholmod_change_factor (super -> simpl, with Bset)
                 // out of memory, L is returned unchanged
                 return (FALSE) ;
             }
@@ -343,7 +344,6 @@ GOTCHA  // out of memory for cholmod_change_factor (super -> simpl, with Bset)
             Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for cholmod_ensure_dense (with Bset)
             // out of memory
             return (FALSE) ;
         }
@@ -366,7 +366,6 @@ GOTCHA  // out of memory for cholmod_ensure_dense (with Bset)
                 L->IPerm = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
                 if (Common->status < CHOLMOD_OK)
                 {
-GOTCHA  // out of memory for cholmod_malloc (with Bset)
                     // out of memory
                     return (FALSE) ;
                 }
@@ -378,13 +377,6 @@ GOTCHA  // out of memory for cholmod_malloc (with Bset)
             }
             // x=A\b and x=Pb both need IPerm
             IPerm = L->IPerm ;
-        }
-
-        if (sys == CHOLMOD_P)
-        {
-GOTCHA  // sys is CHOLMOD_P (with Bset)
-            // x=Pb needs to turn off the subsequent x=P'b permutation
-            Perm = NULL ;
         }
 
         DEBUG (CHOLMOD (dump_perm) (Perm,  n,n, "Perm",  Common)) ;
@@ -405,14 +397,13 @@ GOTCHA  // sys is CHOLMOD_P (with Bset)
                 CHOLMOD_PATTERN, Common) ;
             (*Xset_Handle) = Xset ;
         }
-        Xset->sorted = FALSE ;
-        Xset->stype = 0 ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for Xset (Bset)
             // out of memory
             return (FALSE) ;
         }
+        Xset->sorted = FALSE ;
+        Xset->stype = 0 ;
 
         //----------------------------------------------------------------------
         // ensure Flag of size n, and 3*n Int workspace is available
@@ -422,20 +413,19 @@ GOTCHA  // out of memory for Xset (Bset)
         CHOLMOD(allocate_work) (n, 3*n, 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for workspace (with Bset)
             // out of memory
             return (FALSE) ;
         }
 
         // [ use Iwork (n:3n-1) for Ci and Yseti
-        Iwork = Common->Iwork ;
+        Int *Iwork = Common->Iwork ;
         // Iwork (0:n-1) is not used because it is used by check_perm,
         // print_perm, check_sparse, and print_sparse
         Ci = Iwork + n ;
         Yseti = Ci + n ;
 
         // reallocating workspace would break Ci and Yseti
-        save_realloc_state = Common->no_workspace_reallocate ;
+        int save_realloc_state = Common->no_workspace_reallocate ;
         Common->no_workspace_reallocate = TRUE ;
 
         //----------------------------------------------------------------------
@@ -445,9 +435,9 @@ GOTCHA  // out of memory for workspace (with Bset)
         // C = IPerm (Bset)
         DEBUG (CHOLMOD(dump_sparse) (Bset, "Bset", Common)) ;
 
-        Bsetp = Bset->p ;
-        Bseti = Bset->i ;
-        Bsetnz = Bset->nz ;
+        Int *Bsetp = Bset->p ;
+        Int *Bseti = Bset->i ;
+        Int *Bsetnz = Bset->nz ;
         blen = (Bset->packed) ? Bsetp [1] : Bsetnz [0] ;
 
         // C = spones (P*B) or C = spones (B) if IPerm is NULL
@@ -500,6 +490,7 @@ GOTCHA  // out of memory for workspace (with Bset)
         //----------------------------------------------------------------------
 
         // this takes O(ysetlen) time
+        int ok = true ;
         if (sys == CHOLMOD_P || sys == CHOLMOD_Pt || sys == CHOLMOD_D)
         {
             Ysetp [1] = blen ;
@@ -510,119 +501,120 @@ GOTCHA  // out of memory for workspace (with Bset)
         }
         else
         {
-            if (!CHOLMOD(lsolve_pattern) (C, L, Yset, Common))
-            {
-GOTCHA  // lsolve_pattern failed (with Bset)
-                Common->no_workspace_reallocate = save_realloc_state ;
-                return (FALSE) ;
-            }
-        }
-        DEBUG (CHOLMOD (dump_sparse) (Yset, "Yset", Common)) ;
-
-        //----------------------------------------------------------------------
-        // Y (C) = B (Bset)
-        //----------------------------------------------------------------------
-
-        switch ((L->xtype + L->dtype) % 8)
-        {
-            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
-                rs_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
-
-            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
-                cs_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
-
-            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
-                zs_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
-
-            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
-                rd_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
-
-            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
-                cd_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
-
-            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
-                zd_bset_perm (B, Bset, Yset, C, Y) ;
-                break ;
+            ok = CHOLMOD(lsolve_pattern) (C, L, Yset, Common) ;
         }
 
-        DEBUG (CHOLMOD (dump_dense) (Y, "Y (C) = B (Bset)", Common)) ;
-
-        //----------------------------------------------------------------------
-        // solve Y = (L' \ (L \ Y'))', or other system, with template
-        //----------------------------------------------------------------------
-
-        // the solve only iterates over columns in Yseti [0...ysetlen-1]
-
-        if (! (sys == CHOLMOD_P || sys == CHOLMOD_Pt))
+        if (ok)
         {
+
+            DEBUG (CHOLMOD (dump_sparse) (Yset, "Yset", Common)) ;
+
+            //------------------------------------------------------------------
+            // Y (C) = B (Bset)
+            //------------------------------------------------------------------
+
             switch ((L->xtype + L->dtype) % 8)
             {
                 case CHOLMOD_REAL    + CHOLMOD_SINGLE:
-                    rs_simplicial_solver (sys, L, Y, Yset) ;
+                    rs_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
 
                 case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
-                    cs_simplicial_solver (sys, L, Y, Yset) ;
+                    cs_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
 
                 case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
-                    zs_simplicial_solver (sys, L, Y, Yset) ;
+                    zs_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
 
                 case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
-                    rd_simplicial_solver (sys, L, Y, Yset) ;
+                    rd_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
 
                 case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
-                    cd_simplicial_solver (sys, L, Y, Yset) ;
+                    cd_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
 
                 case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
-                    zd_simplicial_solver (sys, L, Y, Yset) ;
+                    zd_bset_perm (B, Bset, Yset, C, Y) ;
                     break ;
             }
+
+            DEBUG (CHOLMOD (dump_dense) (Y, "Y (C) = B (Bset)", Common)) ;
+
+            //------------------------------------------------------------------
+            // solve Y = (L' \ (L \ Y'))', or other system, with template
+            //------------------------------------------------------------------
+
+            // the solve only iterates over columns in Yseti [0...ysetlen-1]
+
+            if (! (sys == CHOLMOD_P || sys == CHOLMOD_Pt))
+            {
+                switch ((L->xtype + L->dtype) % 8)
+                {
+                    case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+                        rs_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+
+                    case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+                        cs_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+
+                    case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+                        zs_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+
+                    case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+                        rd_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+
+                    case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+                        cd_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+
+                    case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+                        zd_simplicial_solver (sys, L, Y, Yset) ;
+                        break ;
+                }
+            }
+
+            DEBUG (CHOLMOD (dump_dense) (Y, "Y after solve", Common)) ;
+
+            //------------------------------------------------------------------
+            // X = P'*Y, but only for rows in Yset, and create Xset
+            //------------------------------------------------------------------
+
+            switch ((L->xtype + L->dtype) % 8)
+            {
+                case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+                    rs_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+
+                case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+                    cs_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+
+                case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+                    zs_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+
+                case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+                    rd_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+
+                case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+                    cd_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+
+                case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+                    zd_bset_iperm (Y, Yset, Perm, X, Xset) ;
+                    break ;
+            }
+
+            DEBUG (CHOLMOD(dump_sparse) (Xset, "Xset", Common)) ;
+            DEBUG (CHOLMOD(dump_dense) (X, "X", Common)) ;
         }
 
-        DEBUG (CHOLMOD (dump_dense) (Y, "Y after solve", Common)) ;
-
-        //----------------------------------------------------------------------
-        // X = P'*Y, but only for rows in Yset, and create Xset
-        //----------------------------------------------------------------------
-
-        switch ((L->xtype + L->dtype) % 8)
-        {
-            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
-                rs_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-
-            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
-                cs_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-
-            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
-                zs_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-
-            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
-                rd_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-
-            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
-                cd_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-
-            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
-                zd_bset_iperm (Y, Yset, Perm, X, Xset) ;
-                break ;
-        }
-
-        DEBUG (CHOLMOD(dump_sparse) (Xset, "Xset", Common)) ;
-        DEBUG (CHOLMOD(dump_dense) (X, "X", Common)) ;
         Common->no_workspace_reallocate = save_realloc_state ;
         // done using Iwork (n:3n-1) for Ci and Yseti ]
 
