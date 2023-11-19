@@ -60,6 +60,10 @@ endif ( )
 
 message ( STATUS "Build type:    " ${CMAKE_BUILD_TYPE} )
 
+# BUILD_SHARED_LIBS and BUILD_STATIC_LIBS options
+option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
+option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
 #-------------------------------------------------------------------------------
@@ -81,15 +85,17 @@ include_directories ( Source Include )
 
 file ( GLOB CSPARSE_SOURCES "Source/*.c" )
 
-add_library ( csparse SHARED ${CSPARSE_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( csparse SHARED ${CSPARSE_SOURCES} )
 
-set_target_properties ( csparse PROPERTIES
-    VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
-    C_STANDARD 11
-    C_STANDARD_REQUIRED ON
-    SOVERSION ${CSPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/cs.h"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    set_target_properties ( csparse PROPERTIES
+        VERSION ${CSPARSE_VERSION_MAJOR}.${CSPARSE_VERSION_MINOR}.${CSPARSE_VERSION_SUB}
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        SOVERSION ${CSPARSE_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/cs.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static csparse library properties
@@ -116,7 +122,9 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( csparse PRIVATE m )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( csparse PRIVATE m )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         set ( CSPARSE_STATIC_LIBS "${CSPARSE_STATIC_LIBS} -lm" )
         target_link_libraries ( csparse_static PUBLIC m )
@@ -175,9 +183,15 @@ if ( DEMO )
     add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cs_demo1 PUBLIC csparse )
-    target_link_libraries ( cs_demo2 PUBLIC csparse )
-    target_link_libraries ( cs_demo3 PUBLIC csparse )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( cs_demo1 PUBLIC csparse )
+        target_link_libraries ( cs_demo2 PUBLIC csparse )
+        target_link_libraries ( cs_demo3 PUBLIC csparse )
+    else ( )
+        target_link_libraries ( cs_demo1 PUBLIC csparse_static )
+        target_link_libraries ( cs_demo2 PUBLIC csparse_static )
+        target_link_libraries ( cs_demo3 PUBLIC csparse_static )
+    endif ( )
 
 else ( )
 
