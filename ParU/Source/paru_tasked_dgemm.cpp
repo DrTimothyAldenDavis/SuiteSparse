@@ -28,7 +28,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
     int64_t L = Control->worthwhile_dgemm;
 #pragma omp atomic read
     naft = Work->naft;
-    const int64_t max_threads = Control->paru_max_threads;
+    const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
     {
         BLAS_set_num_threads(max_threads);

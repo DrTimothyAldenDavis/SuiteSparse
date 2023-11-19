@@ -25,7 +25,7 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
     // int64_t naft; //number of active frontal tasks
     // pragma omp atomic read
     // naft = Num->naft;
-    // const int64_t max_threads = Control->paru_max_threads;
+    // const int32_t max_threads = Control->paru_max_threads;
     // if ( (naft == 1) && (n > 1024) )
     // printf ("naft=" LD ", max_threads=" LD " num_tasks=" LD " n =" LD " \n",
     //        naft, max_threads, max_threads/(naft), n);

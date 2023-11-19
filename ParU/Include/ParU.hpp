@@ -237,7 +237,7 @@ struct ParU_Control
     int64_t trivial = 4; //dgemms with sizes less than trivial doesn't call BLAS
     int64_t worthwhile_dgemm = 512;  // dgemms bigger than worthwhile are tasked
     int64_t worthwhile_trsm = 4096;  // trsm bigger than worthwhile are tasked
-    int64_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
+    int32_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
                                  // if the user do not provide a smaller number
 };
 // =============================================================================

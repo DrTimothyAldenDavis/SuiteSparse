@@ -44,7 +44,7 @@ typedef struct ParU_C_Control_struct
     int64_t trivial;  // dgemms with sizes less than trivial doesn't call BLAS
     int64_t worthwhile_dgemm;  // dgemms bigger than worthwhile are tasked
     int64_t worthwhile_trsm;  // trsm bigger than worthwhile are tasked
-    int64_t paru_max_threads;    // It will be initialized with omp_max_threads
+    int32_t paru_max_threads;    // It will be initialized with omp_max_threads
     // if the user do not provide a smaller number
 } ParU_C_Control;
 

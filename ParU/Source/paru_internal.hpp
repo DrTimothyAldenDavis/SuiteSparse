@@ -311,7 +311,7 @@ inline int32_t control_nthreads (ParU_Control *Control)
     }
     else
     {
-        return std::min(max_threads, static_cast<int32_t>(Control->paru_max_threads));
+        return std::min(max_threads, Control->paru_max_threads);
     }
 }
 

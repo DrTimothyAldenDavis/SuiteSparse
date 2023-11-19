@@ -245,7 +245,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         if (worthwhile_dgemm < 0) my_Control.worthwhile_dgemm = 512;
         int64_t worthwhile_trsm = my_Control.worthwhile_trsm;
         if (worthwhile_trsm < 0) my_Control.worthwhile_trsm = 4096;
-        int64_t max_threads = PARU_OPENMP_MAX_THREADS;
+        int32_t max_threads = PARU_OPENMP_MAX_THREADS;
         if (my_Control.paru_max_threads > 0)
             my_Control.paru_max_threads =
                 std::min(max_threads, my_Control.paru_max_threads);
@@ -346,7 +346,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 #if ! defined ( PARU_GCC_WINDOWS )
     // The parallel factorization gets stuck intermittently on Windows with GCC.
     // Use the sequential factorization unconditionally in that case.
-    if ((int64_t)task_Q.size() * 2 > Control->paru_max_threads)
+    if (task_Q.size() * 2 > Control->paru_max_threads)
     {
         printf ("Parallel:\n") ;    // FIXME
         PRLEVEL(1, ("Parallel\n"));

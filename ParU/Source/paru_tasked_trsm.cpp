@@ -25,7 +25,7 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
 #endif
 #pragma omp atomic read
     naft = Work->naft;
-    const int64_t max_threads = Control->paru_max_threads;
+    const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
     {
         BLAS_set_num_threads(max_threads);
