@@ -592,6 +592,12 @@ compile:  ccode
 
 go: ccode
 	mkdir -p $(T)
+	# 14 3400 z5up:
+	$(V) ./di_test -m -e14 < Matrix/z5up  > $(T)/di_test_z5up.out
+	$(V) ./dl_test -m -e14 < Matrix/z5up  > $(T)/dl_test_z5up.out
+	$(V) ./si_test -m -e5  < Matrix/z5up  > $(T)/si_test_z5up.out
+	$(V) ./sl_test -m -e5  < Matrix/z5up  > $(T)/sl_test_z5up.out
+	- $(COVER)
 	# time: 8 coverage: 30000  matrix: c5up2
 	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
 	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
@@ -614,12 +620,7 @@ go: ccode
 	$(V) ./si_test -e2  < Matrix/pi       > $(T)/si_test_pi.out
 	$(V) ./sl_test -e2  < Matrix/pi       > $(T)/sl_test_pi.out
 	- $(COVER)
-	# 14 3400 z5up:
-	$(V) ./di_test -m -e14 < Matrix/z5up  > $(T)/di_test_z5up.out
-	$(V) ./dl_test -m -e14 < Matrix/z5up  > $(T)/dl_test_z5up.out
-	$(V) ./si_test -m -e5  < Matrix/z5up  > $(T)/si_test_z5up.out
-	$(V) ./sl_test -m -e5  < Matrix/z5up  > $(T)/sl_test_z5up.out
-	- $(COVER)
+	#
 	# 20 5438 r5lo:
 	$(V) ./di_test -e11 < Matrix/r5lo     > $(T)/di_test_r5lo.out
 	$(V) ./dl_test -e11 < Matrix/r5lo     > $(T)/dl_test_r5lo.out

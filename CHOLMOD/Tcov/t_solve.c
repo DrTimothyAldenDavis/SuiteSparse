@@ -279,8 +279,8 @@ double solve (cholmod_sparse *A)
 
     CHOLMOD(factorize) (A, L, cm) ;
 
-    CHOLMOD(print_sparse) (A, "A here::", cm) ;
-    CHOLMOD(print_factor) (L, "L here::", cm) ;
+//  CHOLMOD(print_sparse) (A, "A here::", cm) ;
+//  CHOLMOD(print_factor) (L, "L here::", cm) ;
 
     // make a of copy of L->Perm, just for testing
     Int *PP = CHOLMOD(malloc) (nrow, sizeof (Int), cm) ;
@@ -912,9 +912,12 @@ double solve (cholmod_sparse *A)
     // test the sparse solve
     //--------------------------------------------------------------------------
 
-    // turn off memory tests [
-    save3 = my_tries ;
-    my_tries = -1 ;
+    // turn off memory tests for large matrices [
+    if (n > 10)
+    {
+        save3 = my_tries ;
+        my_tries = -1 ;
+    }
 
     // get ready for sparse solve
     Bset = CHOLMOD(allocate_sparse) (n, 1, 1, FALSE, TRUE, 0,
@@ -961,6 +964,7 @@ double solve (cholmod_sparse *A)
         {
             r = resid (A, X, B) ;
             MAXERR (maxerr, r, 1) ;
+            CHOLMOD(free_work) (cm) ;
             CHOLMOD(solve2) (CHOLMOD_A, L, B, Bset, &X2, &Xset,
                 &Ywork, &Ework, cm) ;
             if (X2 != NULL)
@@ -1097,7 +1101,10 @@ double solve (cholmod_sparse *A)
     CHOLMOD(free_sparse) (&Bset, cm) ;
 
     // turn memory tests back on, where we left off ]
-    my_tries = save3 ;
+    if (n > 10)
+    {
+        my_tries = save3 ;
+    }
 
     CHOLMOD(free_sparse) (&I, cm) ;
     CHOLMOD(free_sparse) (&D, cm) ;
@@ -1496,8 +1503,8 @@ double solve (cholmod_sparse *A)
         k = n/2 ;
         S = CHOLMOD(copy) (A, 0, 1, cm) ;
         RowK = CHOLMOD(submatrix) (S, NULL, -1, &k, 1, TRUE, TRUE, cm) ;
-        CHOLMOD(print_sparse) (S, "S", cm) ;
-        CHOLMOD(print_sparse) (RowK, "RowK of S", cm) ;
+//      CHOLMOD(print_sparse) (S, "S", cm) ;
+//      CHOLMOD(print_sparse) (RowK, "RowK of S", cm) ;
         CHOLMOD(free_sparse) (&RowK, cm) ;
         prune_row (S, k) ;
         if (S != NULL)
