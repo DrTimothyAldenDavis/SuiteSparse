@@ -680,11 +680,16 @@ is set).
     sudo cmake --install .
 ```
 
+* `BUILD_SHARED_LIBS`:
+
+  If `ON`, shared libraries are built.
+  Default: `ON`.
+
 * `BUILD_STATIC_LIBS`:
 
-  If `ON`, static libraries are also built.
+  If `ON`, static libraries are built.
   Default: `ON`, except for GraphBLAS, which takes a long time to compile so
-  the default for GraphBLAS is `OFF`.
+  the default for GraphBLAS is `OFF` unless `BUILD_SHARED_LIBS` is `OFF`.
 
 * `SUITESPARSE_CUDA_ARCHITECTURES`:
 
