@@ -26,9 +26,6 @@ static void TEMPLATE (cholmod_submatrix_worker)
     // get inputs
     //--------------------------------------------------------------------------
 
-PI_GOTCHA
-PL_GOTCHA
-
     Int *Ap = A->p ;
     Int *Ai = A->i ;
     Int *Anz = A->nz ;
@@ -51,19 +48,10 @@ PL_GOTCHA
     if (nr < 0)
     {
 
-PI_GOTCHA
-PL_GOTCHA
-
-ZSI_GOTCHA
-ZSL_GOTCHA
-CSI_GOTCHA
-CSL_GOTCHA
-ZDI_GOTCHA
-ZDL_GOTCHA
-CDI_GOTCHA
-CDL_GOTCHA
-
+        //----------------------------------------------------------------------
         // C = A (:,cset), where cset is not empty
+        //----------------------------------------------------------------------
+
         for (Int cj = 0 ; cj < cncol ; cj++)
         {
             // construct column cj of C, which is column j of A
@@ -80,13 +68,15 @@ CDL_GOTCHA
                 ASSERT (pc <= C->nzmax) ;
             }
         }
+
     }
     else
     {
 
-PI_GOTCHA
-PL_GOTCHA
+        //----------------------------------------------------------------------
         // C = A (rset,cset), where rset is not empty but cset might be empty
+        //----------------------------------------------------------------------
+
         for (Int cj = 0 ; cj < cncol ; cj++)
         {
             // construct column cj of C, which is column j of A

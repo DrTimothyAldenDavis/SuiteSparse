@@ -285,8 +285,49 @@ void error_tests (cholmod_sparse *A_input, cholmod_common *cm)
     size_t siz = 0 ;
     ok = CHOLMOD(realloc_multiple) (2, 2, CHOLMOD_PATTERN + DTYPE,
         NULL, NULL, NULL, NULL, &siz, cm) ;
+    NOT (ok) ;
     OK (cm->status == CHOLMOD_INVALID) ;
     cm->status = CHOLMOD_OK ;
+
+    //--------------------------------------------------------------------------
+    // solve2
+    //--------------------------------------------------------------------------
+
+    cholmod_factor *L = CHOLMOD(analyze) (A, cm) ;
+    ok = CHOLMOD(factorize) (A, L, cm) ;
+    OK (ok) ;
+    cholmod_dense *B = CHOLMOD(ones) (nrow, 1, xtype + other_dtype, cm) ;
+    cholmod_dense *X = CHOLMOD(solve) (CHOLMOD_A, L, B, cm) ;
+    NOP (X) ;
+    OK (cm->status == CHOLMOD_INVALID) ;
+    cm->status = CHOLMOD_OK ;
+    CHOLMOD(free_dense) (&B, cm) ;
+
+    cholmod_sparse *Xset = NULL ;
+    cholmod_dense *Y = NULL, *E = NULL ;
+    cholmod_sparse *Bset = CHOLMOD(speye) (nrow, 1, xtype + DTYPE, cm) ;
+    B = CHOLMOD(ones) (nrow, 2, xtype + DTYPE, cm) ;
+    X = CHOLMOD(ones) (nrow, 1, xtype + DTYPE, cm) ;
+    ok = CHOLMOD(solve2) (CHOLMOD_A, L, B, Bset, &X, &Xset, &Y, &E, cm) ;
+    NOT (ok) ;
+    OK (cm->status == CHOLMOD_INVALID) ;
+    cm->status = CHOLMOD_OK ;
+    CHOLMOD(free_dense) (&B, cm) ;
+
+    B = CHOLMOD(ones) (nrow, 1, other_xtype + DTYPE, cm) ;
+    ok = CHOLMOD(solve2) (CHOLMOD_A, L, B, Bset, &X, &Xset, &Y, &E, cm) ;
+    NOT (ok) ;
+    OK (cm->status == CHOLMOD_INVALID) ;
+    cm->status = CHOLMOD_OK ;
+    CHOLMOD(free_dense) (&B, cm) ;
+
+    CHOLMOD(free_sparse) (&Xset, cm) ;
+    CHOLMOD(free_sparse) (&Bset, cm) ;
+    CHOLMOD(free_dense) (&E, cm) ;
+    CHOLMOD(free_dense) (&Y, cm) ;
+    CHOLMOD(free_dense) (&X, cm) ;
+    CHOLMOD(free_dense) (&B, cm) ;
+    CHOLMOD(free_factor) (&L, cm) ;
 
     //--------------------------------------------------------------------------
     // free matrices and restore error handling

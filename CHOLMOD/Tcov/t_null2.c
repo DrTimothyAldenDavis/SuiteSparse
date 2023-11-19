@@ -421,9 +421,6 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     C = CHOLMOD(add) (A, NULL, one, one, 1, true, cm) ;           NOP (C) ;
     C = CHOLMOD(add) (NULL, AT, one, one, 1, true, cm) ;          NOP (C) ;
 
-// FIXME
-// int sav = cm->print ; cm->print = 5 ;
-
     if (A->nrow == A->ncol)
     {
         // C = A+AT
@@ -443,16 +440,8 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
 
             // F = C-E
             F = CHOLMOD(add) (C, E, one, minusone, 2, true, cm) ;
-
-// CHOLMOD(print_sparse) (C, "C", cm) ;
-// CHOLMOD(print_sparse) (E, "E", cm) ;
-// CHOLMOD(print_sparse) (F, "F predrop", cm) ;
-
             CHOLMOD(drop) (0., F, cm) ;
-// CHOLMOD(print_sparse) (F, "F", cm) ;
             nz = CHOLMOD(nnz) (F, cm) ;
-
-// printf ("nz %g\n", (double) nz) ;
 
             OK (nz == 0) ;
             CHOLMOD(free_sparse) (&E, cm) ;
@@ -552,7 +541,6 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
         }
         CHOLMOD(free_sparse) (&C, cm) ;
     }
-// cm->print = sav ;
 
     Axbad = CHOLMOD(copy_sparse) (A, cm) ;       // [
     Axbad_type = Axbad->xtype ;
@@ -771,19 +759,6 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     //--------------------------------------------------------------------------
     // submatrix
     //--------------------------------------------------------------------------
-
-#if 0
-    if (A->nrow == A->ncol)
-    {
-        // submatrix cannot operation on symmetric matrices FIXME yes it can
-        C = CHOLMOD(copy) (A, 1, 0, cm) ;
-        OKP (C) ;
-        E = CHOLMOD(submatrix) (C, NULL, -1, NULL, -1, TRUE, TRUE, cm) ;
-        NOP (E) ;
-        ok = CHOLMOD(free_sparse) (&C, cm) ;
-        OK (ok) ;
-    }
-#endif
 
     E = CHOLMOD(submatrix) (Abad2, NULL, -1, NULL, -1, TRUE, TRUE, cm) ;
     NOP (E) ;
@@ -2236,89 +2211,116 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
         OK (ok1) ;
         rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond > 0) ;
 
-// FIXME: indent
-// generate intentional nan's, to test the nan-handling of cholmod_rcond
-if (do_nantests)
-{
+        //----------------------------------------------------------------------
+        // generate intentional nan's, to test the nan-handling of cholmod_rcond
+        //----------------------------------------------------------------------
 
-        xnan = xnan/xnan ;
-
-        // C(2,2) = nan
-        x = C->x ;
-        i = 2 ;
-        if (xtype2 == CHOLMOD_REAL || xtype2 == CHOLMOD_ZOMPLEX)
+        if (do_nantests)
         {
-            x [i + 4*i] = xnan ;
+            xnan = xnan/xnan ;
+
+            // C(2,2) = nan
+            x = C->x ;
+            i = 2 ;
+            if (xtype2 == CHOLMOD_REAL || xtype2 == CHOLMOD_ZOMPLEX)
+            {
+                x [i + 4*i] = xnan ;
+            }
+            else // complex
+            {
+                x [2*(i + 4*i)] = xnan ;
+            }
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+            ok1 = (cm->status == CHOLMOD_OK) ;
+            ok = CHOLMOD(print_factor)(L6, "L6 nan2", cm) ;
+            OK (ok) ;
+            printf ("rcond %g\n", rcond) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
+            CHOLMOD(free_factor)(&L6, cm) ;
+
+            // C(2,2) = nan, LDL'
+            cm->supernodal = CHOLMOD_SIMPLICIAL ;
+            cm->final_ll = TRUE ;
+            L6 = CHOLMOD(analyze)(C, cm) ;
+            OKP (L6) ;
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+            ok1 = (cm->status == CHOLMOD_OK) ;
+            ok = CHOLMOD(print_factor)(L6, "LDL6 nan2", cm) ;
+            OK (ok) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
+            CHOLMOD(free_factor)(&L6, cm) ;
+
+            // C(2,2) = nan, supernodal
+            cm->supernodal = CHOLMOD_SUPERNODAL ;
+            cm->final_ll = FALSE ;
+            L6 = CHOLMOD(analyze)(C, cm) ;
+            OKP (L6) ;
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+
+            // sometimes LAPACK says NaN is not pos.def, sometimes it doesn't
+            ok1 = (cm->status == CHOLMOD_OK ||
+                   cm->status == CHOLMOD_NOT_POSDEF) ;
+            ok = CHOLMOD(print_factor)(L6, "L6 supernan2", cm) ;
+            OK (ok) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
+            CHOLMOD(free_factor)(&L6, cm) ;
+
+            // C(0,0) = nan
+            cm->supernodal = CHOLMOD_SIMPLICIAL ;
+            cm->final_ll = FALSE ;
+            x [0] = xnan ;
+            L6 = CHOLMOD(analyze)(C, cm) ;
+            OKP (L6) ;
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+            ok1 = (cm->status == CHOLMOD_OK) ;
+            ok = CHOLMOD(print_factor)(L6, "L6 nan0", cm) ;
+            OK (ok) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
+            CHOLMOD(free_factor)(&L6, cm) ;
+
+            // C(0,0) = nan, LDL'
+            cm->supernodal = CHOLMOD_SIMPLICIAL ;
+            cm->final_ll = TRUE ;
+            L6 = CHOLMOD(analyze)(C, cm) ;
+            OKP (L6) ;
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+            ok1 = (cm->status == CHOLMOD_OK) ;
+            ok = CHOLMOD(print_factor)(L6, "LDL6 nan0", cm) ;
+            OK (ok) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
+            CHOLMOD(free_factor)(&L6, cm) ;
+
+            // C(0,0) = nan, supernodal
+            cm->supernodal = CHOLMOD_SUPERNODAL ;
+            cm->final_ll = FALSE ;
+            L6 = CHOLMOD(analyze)(C, cm) ;
+            OKP (L6) ;
+            ok = CHOLMOD(factorize)(C, L6, cm) ;
+            OK (ok) ;
+            // sometimes LAPACK says NaN is not pos.def, sometimes it doesn't...
+            ok1 = (cm->status == CHOLMOD_OK ||
+                   cm->status == CHOLMOD_NOT_POSDEF) ;
+            ok = CHOLMOD(print_factor)(L6, "L6 supernan0", cm) ;
+            OK (ok) ;
+            OK (ok1) ;
+            rcond = CHOLMOD(rcond) (L6, cm) ;
+            OK (rcond == 0) ;
         }
-        else // complex
-        {
-            x [2*(i + 4*i)] = xnan ;
-        }
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        ok1 = (cm->status == CHOLMOD_OK) ;
-        ok = CHOLMOD(print_factor)(L6, "L6 nan2", cm) ;             OK (ok) ;
-        printf ("rcond %g\n", rcond) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-        CHOLMOD(free_factor)(&L6, cm) ;
-
-        // C(2,2) = nan, LDL'
-        cm->supernodal = CHOLMOD_SIMPLICIAL ;
-        cm->final_ll = TRUE ;
-        L6 = CHOLMOD(analyze)(C, cm) ;                              OKP (L6) ;
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        ok1 = (cm->status == CHOLMOD_OK) ;
-        ok = CHOLMOD(print_factor)(L6, "LDL6 nan2", cm) ;           OK (ok) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-        CHOLMOD(free_factor)(&L6, cm) ;
-
-        // C(2,2) = nan, supernodal
-        cm->supernodal = CHOLMOD_SUPERNODAL ;
-        cm->final_ll = FALSE ;
-        L6 = CHOLMOD(analyze)(C, cm) ;                              OKP (L6) ;
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        // sometimes LAPACK says NaN is not pos.def, sometimes it doesn't...
-        ok1 = (cm->status == CHOLMOD_OK || cm->status == CHOLMOD_NOT_POSDEF) ;
-        ok = CHOLMOD(print_factor)(L6, "L6 supernan2", cm) ;        OK (ok) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-        CHOLMOD(free_factor)(&L6, cm) ;
-
-        // C(0,0) = nan
-        cm->supernodal = CHOLMOD_SIMPLICIAL ;
-        cm->final_ll = FALSE ;
-        x [0] = xnan ;
-        L6 = CHOLMOD(analyze)(C, cm) ;                              OKP (L6) ;
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        ok1 = (cm->status == CHOLMOD_OK) ;
-        ok = CHOLMOD(print_factor)(L6, "L6 nan0", cm) ;             OK (ok) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-        CHOLMOD(free_factor)(&L6, cm) ;
-
-        // C(0,0) = nan, LDL'
-        cm->supernodal = CHOLMOD_SIMPLICIAL ;
-        cm->final_ll = TRUE ;
-        L6 = CHOLMOD(analyze)(C, cm) ;                              OKP (L6) ;
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        ok1 = (cm->status == CHOLMOD_OK) ;
-        ok = CHOLMOD(print_factor)(L6, "LDL6 nan0", cm) ;           OK (ok) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-        CHOLMOD(free_factor)(&L6, cm) ;
-
-        // C(0,0) = nan, supernodal
-        cm->supernodal = CHOLMOD_SUPERNODAL ;
-        cm->final_ll = FALSE ;
-        L6 = CHOLMOD(analyze)(C, cm) ;                              OKP (L6) ;
-        ok = CHOLMOD(factorize)(C, L6, cm) ;                        OK (ok) ;
-        // sometimes LAPACK says NaN is not pos.def, sometimes it doesn't...
-        ok1 = (cm->status == CHOLMOD_OK || cm->status == CHOLMOD_NOT_POSDEF) ;
-        ok = CHOLMOD(print_factor)(L6, "L6 supernan0", cm) ;        OK (ok) ;
-        OK (ok1) ;
-        rcond = CHOLMOD(rcond) (L6, cm) ;                   OK (rcond == 0) ;
-}
 
         CHOLMOD(free_factor)(&L6, cm) ;
         CHOLMOD(free_sparse)(&C, cm) ;

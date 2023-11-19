@@ -221,7 +221,6 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
     }
     if (L->dtype != B->dtype)
     {
-GOTCHA  // L and B dtype must match
         ERROR (CHOLMOD_INVALID, "dtype of L and B must match") ;
         return (FALSE) ;
     }
@@ -240,13 +239,11 @@ GOTCHA  // L and B dtype must match
     {
         if (nrhs != 1)
         {
-GOTCHA  // B->ncol must be 1
             ERROR (CHOLMOD_INVALID, "Bset requires a single right-hand side") ;
             return (FALSE) ;
         }
         if (L->xtype != B->xtype)
         {
-GOTCHA  // B and L xtype must match
             ERROR (CHOLMOD_INVALID, "Bset requires xtype of L and B to match") ;
             return (FALSE) ;
         }
@@ -333,7 +330,7 @@ GOTCHA  // B and L xtype must match
                 L, Common) ;
             if (Common->status < CHOLMOD_OK)
             {
-GOTCHA  // out of memory for cholmod_change_factor
+GOTCHA  // out of memory for cholmod_change_factor (super -> simpl, with Bset)
                 // out of memory, L is returned unchanged
                 return (FALSE) ;
             }
@@ -346,7 +343,7 @@ GOTCHA  // out of memory for cholmod_change_factor
             Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for cholmod_ensure_dense
+GOTCHA  // out of memory for cholmod_ensure_dense (with Bset)
             // out of memory
             return (FALSE) ;
         }
@@ -369,7 +366,7 @@ GOTCHA  // out of memory for cholmod_ensure_dense
                 L->IPerm = CHOLMOD(malloc) (n, sizeof (Int), Common) ;
                 if (Common->status < CHOLMOD_OK)
                 {
-GOTCHA  // out of memory for cholmod_malloc
+GOTCHA  // out of memory for cholmod_malloc (with Bset)
                     // out of memory
                     return (FALSE) ;
                 }
@@ -385,7 +382,7 @@ GOTCHA  // out of memory for cholmod_malloc
 
         if (sys == CHOLMOD_P)
         {
-GOTCHA  // sys is CHOLMOD_P
+GOTCHA  // sys is CHOLMOD_P (with Bset)
             // x=Pb needs to turn off the subsequent x=P'b permutation
             Perm = NULL ;
         }
@@ -412,7 +409,7 @@ GOTCHA  // sys is CHOLMOD_P
         Xset->stype = 0 ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for Xset
+GOTCHA  // out of memory for Xset (Bset)
             // out of memory
             return (FALSE) ;
         }
@@ -425,7 +422,7 @@ GOTCHA  // out of memory for Xset
         CHOLMOD(allocate_work) (n, 3*n, 0, Common) ;
         if (Common->status < CHOLMOD_OK)
         {
-GOTCHA  // out of memory for workspace
+GOTCHA  // out of memory for workspace (with Bset)
             // out of memory
             return (FALSE) ;
         }
@@ -515,7 +512,7 @@ GOTCHA  // out of memory for workspace
         {
             if (!CHOLMOD(lsolve_pattern) (C, L, Yset, Common))
             {
-GOTCHA  // lsolve_pattern failed
+GOTCHA  // lsolve_pattern failed (with Bset)
                 Common->no_workspace_reallocate = save_realloc_state ;
                 return (FALSE) ;
             }

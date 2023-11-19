@@ -592,17 +592,17 @@ compile:  ccode
 
 go: ccode
 	mkdir -p $(T)
-	# time: 0 coverage: high   matrix: zero:
-	$(V) ./di_test    < Matrix/zero       > $(T)/di_test_zero.out
-	$(V) ./dl_test    < Matrix/zero       > $(T)/dl_test_zero.out
-	$(V) ./si_test    < Matrix/zero       > $(T)/si_test_zero.out
-	$(V) ./sl_test    < Matrix/zero       > $(T)/sl_test_zero.out
-	- $(COVER)
 	# time: 8 coverage: 30000  matrix: c5up2
 	$(V) ./di_test -e14 < Matrix/c5up2    > $(T)/di_test_c5up2.out
 	$(V) ./dl_test -e14 < Matrix/c5up2    > $(T)/dl_test_c5up2.out
 	$(V) ./si_test -e5  < Matrix/c5up2    > $(T)/si_test_c5up2.out
 	$(V) ./sl_test -e5  < Matrix/c5up2    > $(T)/sl_test_c5up2.out
+	- $(COVER)
+	# time: 0 coverage: high   matrix: zero:
+	$(V) ./di_test    < Matrix/zero       > $(T)/di_test_zero.out
+	$(V) ./dl_test    < Matrix/zero       > $(T)/dl_test_zero.out
+	$(V) ./si_test    < Matrix/zero       > $(T)/si_test_zero.out
+	$(V) ./sl_test    < Matrix/zero       > $(T)/sl_test_zero.out
 	- $(COVER)
 	# 11 10000 write:
 	$(V) ./di_test -e5 < Matrix/write.tri > $(T)/di_test_write.out
