@@ -469,7 +469,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #elif defined ( BLAS_UNDERSCORE )
 
-    // append an undescore, use lower case
+    // append an underscore, use lower case
     #define SUITESPARSE_FORTRAN(name,NAME)  name ## _
     #define SUITESPARSE__FORTRAN(name,NAME) name ## _
 
