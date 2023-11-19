@@ -58,6 +58,15 @@ set ( _target_shared SuiteSparse::LAGraph )
 set ( _target_static SuiteSparse::LAGraph_static )
 set ( _var_prefix "LAGRAPH" )
 
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET SuiteSparse::LAGraphX )
+    # make sure there is always an import target without suffix )
+    add_library ( SuiteSparse::LAGraphX ALIAS SuiteSparse::LAGraphX_static )
+endif ( )
+
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )
     # First item in SuiteSparse targets contains the "main" header directory.

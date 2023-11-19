@@ -37,44 +37,52 @@ endif ( )
 # dynamic lagraphtest library properties
 #-------------------------------------------------------------------------------
 
-add_library ( lagraphtest SHARED ${LAGRAPHTEST_LIB_SOURCES} )
-SET_TARGET_PROPERTIES ( lagraphtest PROPERTIES
-    VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
-    SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED ON
-    C_STANDARD 11
-    RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
-target_link_libraries ( lagraphtest PRIVATE LAGraph GraphBLAS::GraphBLAS )
-target_compile_definitions ( lagraphtest PRIVATE LG_TEST_LIBRARY )
-target_compile_definitions ( lagraphtest PUBLIC LG_TEST_DLL )
+if ( BUILD_SHARED_LIBS )
+    add_library ( lagraphtest SHARED ${LAGRAPHTEST_LIB_SOURCES} )
+    set_target_properties ( lagraphtest PROPERTIES
+        VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
+        SOVERSION ${LAGraph_VERSION_MAJOR}
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
+    target_link_libraries ( lagraphtest PRIVATE LAGraph GraphBLAS::GraphBLAS )
+    target_compile_definitions ( lagraphtest PRIVATE LG_TEST_LIBRARY )
+    target_compile_definitions ( lagraphtest PUBLIC LG_TEST_DLL )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static lagraphtest library properties
 #-------------------------------------------------------------------------------
 
-add_library ( lagraphtest_static STATIC ${LAGRAPHTEST_LIB_SOURCES} )
-SET_TARGET_PROPERTIES ( lagraphtest_static PROPERTIES
-    VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
-    OUTPUT_NAME lagraphtest
-    POSITION_INDEPENDENT_CODE OFF
-    SOVERSION ${LAGraph_VERSION_MAJOR}
-    C_STANDARD_REQUIRED ON
-    C_STANDARD 11 )
-
-if ( MSVC )
+if ( BUILD_STATIC_LIBS )
+    add_library ( lagraphtest_static STATIC ${LAGRAPHTEST_LIB_SOURCES} )
     set_target_properties ( lagraphtest_static PROPERTIES
-        OUTPUT_NAME lagraphtest_static )
-endif ( )
+        VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
+        OUTPUT_NAME lagraphtest
+        POSITION_INDEPENDENT_CODE OFF
+        SOVERSION ${LAGraph_VERSION_MAJOR}
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11 )
 
-target_link_libraries ( lagraphtest_static PUBLIC LAGraph GraphBLAS::GraphBLAS )
+    if ( MSVC )
+        set_target_properties ( lagraphtest_static PROPERTIES
+            OUTPUT_NAME lagraphtest_static )
+    endif ( )
+
+    target_link_libraries ( lagraphtest_static PUBLIC LAGraph_static GraphBLAS::GraphBLAS )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # add OpenMP
 #-------------------------------------------------------------------------------
 
 if ( OPENMP_C_FOUND )
-    target_link_libraries ( lagraphtest PRIVATE OpenMP::OpenMP_C )
-    target_link_libraries ( lagraphtest_static PUBLIC OpenMP::OpenMP_C )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( lagraphtest PRIVATE OpenMP::OpenMP_C )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_link_libraries ( lagraphtest_static PUBLIC OpenMP::OpenMP_C )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -90,13 +98,22 @@ foreach( testsourcefile ${TEST_SOURCES} )
     set_target_properties ( ${testname} PROPERTIES
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
-    target_link_libraries( ${testname} LAGraph LAGraphX lagraphtest GraphBLAS::GraphBLAS )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries( ${testname} LAGraph LAGraphX lagraphtest GraphBLAS::GraphBLAS )
+    else ( )
+        target_link_libraries( ${testname} LAGraph_static LAGraphX_static lagraphtest_static GraphBLAS::GraphBLAS )
+    endif ( )
     string( REPLACE "test_" "LAGraph_" ctestname ${testname})
     add_test( NAME ${ctestname} COMMAND $<TARGET_FILE:${testname}> )
 #   add_test( NAME ${ctestname} COMMAND valgrind $<TARGET_FILE:${testname}> )
     if (WIN32)
-        set_tests_properties ( ${ctestname} PROPERTIES
-            ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphtest>" )
+        if ( BUILD_SHARED_LIBS )
+            set_tests_properties ( ${ctestname} PROPERTIES
+                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphtest>" )
+        else ( )
+            set_tests_properties ( ${ctestname} PROPERTIES
+                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>>" )
+        endif ( )
     endif ( )
 endforeach( testsourcefile ${TEST_SOURCES} )
 
