@@ -82,34 +82,36 @@ set ( GPUQRENGINE_INCLUDES Include Include/Kernel
 # dynamic gpuqrengine library properties
 #-------------------------------------------------------------------------------
 
-add_library ( GPUQREngine SHARED ${GPUQRENGINE_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( GPUQREngine SHARED ${GPUQRENGINE_SOURCES} )
 
-set_target_properties ( GPUQREngine PROPERTIES
-    VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
-    CXX_STANDARD 17
-    CXX_STANDARD_REQUIRED ON
-    OUTPUT_NAME gpuqrengine
-    SOVERSION ${GPUQRENGINE_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/GPUQREngine.hpp"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    set_target_properties ( GPUQREngine PROPERTIES
+        VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
+        CXX_STANDARD 17
+        CXX_STANDARD_REQUIRED ON
+        OUTPUT_NAME gpuqrengine
+        SOVERSION ${GPUQRENGINE_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/GPUQREngine.hpp"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( GPUQREngine PRIVATE
-    ${GPUQRENGINE_INCLUDES}
-    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>"
-    "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
+    target_include_directories ( GPUQREngine PRIVATE
+        ${GPUQRENGINE_INCLUDES}
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>"
+        "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-set_target_properties ( GPUQREngine PROPERTIES
-    POSITION_INDEPENDENT_CODE ON
-    CUDA_SEPARABLE_COMPILATION ON
-    CUDA_RESOLVE_DEVICE_SYMBOLS ON
-    CUDA_RUNTIME_LIBRARY Static )
-target_link_libraries ( GPUQREngine PRIVATE
-    CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
-target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
+    set_target_properties ( GPUQREngine PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+        CUDA_SEPARABLE_COMPILATION ON
+        CUDA_RESOLVE_DEVICE_SYMBOLS ON
+        CUDA_RUNTIME_LIBRARY Static )
+    target_link_libraries ( GPUQREngine PRIVATE
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+    target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
 
-target_include_directories ( GPUQREngine
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+    target_include_directories ( GPUQREngine
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static gpuqrengine library properties
@@ -133,7 +135,7 @@ if ( BUILD_STATIC_LIBS )
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES}
         $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>
-        $<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES> )
+        $<TARGET_PROPERTY:GPURuntime_static,INTERFACE_INCLUDE_DIRECTORIES> )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -155,12 +157,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS GPUQREngine
-    EXPORT GPUQREngineTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS GPUQREngine
+        EXPORT GPUQREngineTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS GPUQREngine_static
         EXPORT GPUQREngineTargets
@@ -240,8 +244,15 @@ if ( DEMO AND DEMO_OK )
     add_executable ( gpuqrengine_demo "Demo/gpuqrengine_demo.cpp" )
 
     # Libraries required for Demo programs
-    target_link_libraries ( gpuqrengine_demo PUBLIC GPUQREngine GPURuntime
-        SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( gpuqrengine_demo
+            PUBLIC GPUQREngine GPURuntime )
+    else ( )
+        target_link_libraries ( gpuqrengine_demo
+            PUBLIC GPUQREngine_static GPURuntime_static )
+    endif ( )
+    target_link_libraries ( gpuqrengine_demo
+        PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
 
 else ( )
 
