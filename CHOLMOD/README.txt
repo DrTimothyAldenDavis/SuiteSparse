@@ -13,9 +13,8 @@ http://www.suitesparse.com
     C and MATLAB interfaces.  This code works on Microsoft Windows and many
     versions of Unix and Linux.
 
-CHOLMOD v5.0.0 introduces the first part of support for single precision
-sparse matrices, with the introduction of the new CHOLMOD:Utility Module.
-Single precision is not yet incorporated into the remaining Modules, however.
+CHOLMOD v5.1 and later support single precision sparse matrices (both real and
+complex), with the introduction of the new CHOLMOD:Utility Module.
 
 One CHOLMOD Module is copyrighted by the University of Florida (the
 Partition Module).  The rest are copyrighted by the authors:
