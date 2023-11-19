@@ -83,6 +83,11 @@ set ( _target_shared SuiteSparse::KLU_CHOLMOD )
 set ( _target_static SuiteSparse::KLU_CHOLMOD_static )
 set ( _var_prefix "KLU_CHOLMOD" )
 
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
+
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )
     # First item in SuiteSparse targets contains the "main" header directory.
