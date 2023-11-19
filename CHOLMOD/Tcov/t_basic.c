@@ -97,5 +97,23 @@ void basic1 (cholmod_common *cm)
     OK (bzero) ;
     printf ("c: %g %g\n", cx, cz) ;
     OK (isnan (cx)) ;
+
+    //--------------------------------------------------------------------------
+    // descendant score
+    //--------------------------------------------------------------------------
+
+    struct cholmod_descendant_score_t s1, s2 ;
+    s1.d = 0 ;
+    s2.d = 0 ;
+    for (int k1 = -4 ; k1 < 4 ; k1++)
+    {
+        s1.score = (double) k1 ;
+        for (int k2 = -4 ; k2 < 4 ; k2++)
+        {
+            s2.score = (double) k2 ;
+            int result = CHOLMOD(score_comp) (&s1, &s2) ;
+            OK (result == (k1 < k2) ? 1 : -1) ;
+        }
+    }
 }
 
