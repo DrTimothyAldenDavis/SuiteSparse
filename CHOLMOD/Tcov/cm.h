@@ -186,6 +186,7 @@ double dtype_tests (cholmod_sparse *A, cholmod_common *cm) ;
 void common_tests (cholmod_common *cm) ;
 void error_tests (cholmod_sparse *A, cholmod_common *cm) ;
 double tofrom_tests (cholmod_sparse *A, cholmod_common *cm) ;
+double suitesparse_tests (void) ;
 
 //------------------------------------------------------------------------------
 // AMD, COLAMD, and CCOLAMD

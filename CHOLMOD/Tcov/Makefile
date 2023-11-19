@@ -168,6 +168,7 @@ TEMPLATES =             \
     t_common_tests.c    \
     t_error_tests.c     \
     t_tofrom_tests.c    \
+    t_suitesparse.c     \
     t_unpack.c
 
 DL_TEST = dl_test.c dl_amdtest.c dl_camdtest.c dl_huge.c

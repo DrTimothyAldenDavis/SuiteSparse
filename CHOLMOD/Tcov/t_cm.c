@@ -1120,8 +1120,10 @@ int main (int argc, char **argv)
     printf ("do_memory: %d singular: %d\n", do_memory, singular) ;
 
     //--------------------------------------------------------------------------
-    // test SuiteSparse malloc functions
+    // test SuiteSparse_config
     //--------------------------------------------------------------------------
+
+    suitesparse_tests ( ) ;
 
     p = SuiteSparse_malloc (0, 0) ;
     OKP (p) ;
