@@ -30,16 +30,18 @@ message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c"
     "cholmod_gpu_kernels.cu" )
 
-add_library ( CHOLMOD_CUDA SHARED ${CHOLMOD_CUDA_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( CHOLMOD_CUDA SHARED ${CHOLMOD_CUDA_SOURCES} )
 
-set_target_properties ( CHOLMOD_CUDA PROPERTIES
-    VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
-    CXX_STANDARD_REQUIRED ON
-    CXX_STANDARD 17
-    C_STANDARD_REQUIRED ON
-    C_STANDARD 11
-    OUTPUT_NAME cholmod_cuda
-    SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+    set_target_properties ( CHOLMOD_CUDA PROPERTIES
+        VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        OUTPUT_NAME cholmod_cuda
+        SOVERSION ${CHOLMOD_VERSION_MAJOR} )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     add_library ( CHOLMOD_CUDA_static STATIC ${CHOLMOD_CUDA_SOURCES} )
@@ -68,12 +70,14 @@ set ( CHOLMOD_CUDA_INCLUDES
 
 include_directories ( ${CHOLMOD_CUDA_INCLUDES} ${CUDAToolkit_INCLUDE_DIRS} )
 
-target_include_directories ( CHOLMOD_CUDA PRIVATE
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( CHOLMOD_CUDA PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
-set_target_properties ( CHOLMOD_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( CHOLMOD_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-target_compile_definitions ( CHOLMOD_CUDA PUBLIC "SUITESPARSE_CUDA" )
+    set_target_properties ( CHOLMOD_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( CHOLMOD_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    target_compile_definitions ( CHOLMOD_CUDA PUBLIC "SUITESPARSE_CUDA" )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     target_include_directories ( CHOLMOD_CUDA_static PRIVATE
@@ -84,8 +88,10 @@ if ( BUILD_STATIC_LIBS )
     target_compile_definitions ( CHOLMOD_CUDA_static PUBLIC "SUITESPARSE_CUDA" )
 endif ( )
 
-target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( CHOLMOD_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     target_link_libraries ( CHOLMOD_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
         CUDA::nvToolsExt CUDA::cublas )
@@ -97,19 +103,20 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS CHOLMOD_CUDA
-    EXPORT CHOLMOD_CUDATargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS CHOLMOD_CUDA
+        EXPORT CHOLMOD_CUDATargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS CHOLMOD_CUDA_static
         EXPORT CHOLMOD_CUDATargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-
 
 # create (temporary) export target file during build
 export ( EXPORT CHOLMOD_CUDATargets
