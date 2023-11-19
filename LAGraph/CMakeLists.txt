@@ -125,7 +125,11 @@ endif ( )
 
 if ( SUITESPARSE_ROOT_CMAKELISTS )
 
-    add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS )
+    if ( TARGET GraphBLAS )
+        add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS )
+    else ( )
+        add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS_static )
+    endif ( )
     if ( TARGET GraphBLAS_static )
         add_library ( GraphBLAS::GraphBLAS_static ALIAS GraphBLAS_static )
     endif ( )
