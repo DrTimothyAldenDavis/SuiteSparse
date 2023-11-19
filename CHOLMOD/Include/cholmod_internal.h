@@ -578,17 +578,6 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
 //==== debugging definitions ===================================================
 //==============================================================================
 
-#if 1
-#define GOTCHA ;
-#else
-#define GOTCHA                                          \
-{                                                       \
-    printf ("Gotcha! %d:%s\n", __LINE__, __FILE__) ;    \
-    fflush (stdout) ;                                   \
-    abort ( ) ;                                         \
-}
-#endif
-
 #ifndef NDEBUG
 
 #include <assert.h>
@@ -652,7 +641,11 @@ int  cholmod_l_dump_partition (int64_t, int64_t *,
 int  cholmod_l_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
 #define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
+#ifdef MATLAB_MEX_FILE
+#define ASSERT(expression) (mxAssert ((expression), ""))
+#else
 #define ASSERT(expression) (assert (expression))
+#endif
 
 #define PRK(k,params)                                           \
 {                                                               \
@@ -726,6 +719,17 @@ static bool check_flag (cholmod_common *Common)
 #define PRINTM(params)
 #define ASSERT(expression)
 #define DEBUG(statement)
+#endif
+
+#if 1
+#define GOTCHA ;
+#else
+#define GOTCHA                                          \
+{                                                       \
+    printf ("Gotcha! %d:%s\n", __LINE__, __FILE__) ;    \
+    fflush (stdout) ;                                   \
+    ASSERT (0) ;                                        \
+}
 #endif
 
 #endif
