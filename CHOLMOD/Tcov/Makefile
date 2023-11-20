@@ -663,11 +663,11 @@ go: ccode
 	$(V) ./si_test -e4    < Matrix/z30lo  > $(T)/si_test_z30lo.out
 	$(V) ./sl_test -e4    < Matrix/z30lo  > $(T)/sl_test_z30lo.out
 	- $(COVER)
-	# 47 56 c30lo:
-	$(V) ./di_test    -e12 < Matrix/c30lo > $(T)/di_test_c30lo.out
-	$(V) ./dl_test    -e12 < Matrix/c30lo > $(T)/dl_test_c30lo.out
-	$(V) ./si_test    -e4  < Matrix/c30lo > $(T)/si_test_c30lo.out
-	$(V) ./sl_test    -e4  < Matrix/c30lo > $(T)/sl_test_c30lo.out
+	# 40 224 c30lo_singular:
+	$(V) ./di_test -s < Matrix/c30lo_singular > $(T)/di_test_c30lo.out
+	$(V) ./dl_test -s < Matrix/c30lo_singular > $(T)/dl_test_c30lo.out
+	$(V) ./si_test -s < Matrix/c30lo_singular > $(T)/si_test_c30lo.out
+	$(V) ./sl_test -s < Matrix/c30lo_singular > $(T)/sl_test_c30lo.out
 	- $(COVER)
 	# 52 42 z10:
 	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out

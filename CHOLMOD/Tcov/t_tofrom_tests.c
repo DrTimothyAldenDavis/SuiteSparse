@@ -30,7 +30,13 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
     for (int to_xtype = 0 ; to_xtype <= 3 ; to_xtype++)
     {
 
-        cholmod_sparse *A = CHOLMOD(copy_sparse) (A_input, cm) ;
+        // create the test matrix.  Explicit zeros are dropped because
+        // otherwise the pattern-only tests will fail (the pattern-only
+        // conversions will keep explicit zeros, but converting to/from dense
+        // will drop them).
+        cholmod_sparse *A2 = CHOLMOD(copy_sparse) (A_input, cm) ;
+        CHOLMOD(drop) (0, A2, cm) ;
+        cholmod_sparse *A = CHOLMOD(copy_sparse) (A2, cm) ;
         CHOLMOD(sparse_xtype) (to_xtype + DTYPE, A, cm) ;
 
         // C = sparse (dense (sparse (triplet (A))))
@@ -67,7 +73,7 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
         CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, S1, cm) ;
 
         // S2 = real (pattern (A))
-        cholmod_sparse *S2 = CHOLMOD(copy_sparse) (A_input, cm) ;
+        cholmod_sparse *S2 = CHOLMOD(copy_sparse) (A2, cm) ;
         CHOLMOD(sparse_xtype) (CHOLMOD_PATTERN + DTYPE, S2, cm) ;
         CHOLMOD(sparse_xtype) (CHOLMOD_REAL + DTYPE, S2, cm) ;
 
@@ -79,6 +85,7 @@ double tofrom_tests (cholmod_sparse *A_input, cholmod_common *cm)
         OK (enz == 0) ;
 
         CHOLMOD(free_sparse) (&A, cm) ;
+        CHOLMOD(free_sparse) (&A2, cm) ;
         CHOLMOD(free_sparse) (&B, cm) ;
         CHOLMOD(free_sparse) (&C, cm) ;
         CHOLMOD(free_sparse) (&G, cm) ;

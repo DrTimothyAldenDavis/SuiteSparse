@@ -487,6 +487,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
         if (!repeat_supernode)
         {
+
             // Save the list of pending descendants in case s is not positive
             // definite.  Also save Lpos for each descendant d, so that we can
             // find which part of d is used to update s.
@@ -501,7 +502,6 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             // restore Lpos from prior failed supernode
             for (d = Head [s] ; d != EMPTY ; d = Next [d])
             {
-GOTCHA          // restore Lpos from failed supernode
                 Lpos [d] = Lpos_save [d] ;
                 Next [d] = Next_save [d] ;
             }
