@@ -1,19 +1,19 @@
-#===============================================================================
+#-------------------------------------------------------------------------------
 # CHOLMOD/Tcov/Makefile
-#===============================================================================
+#-------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 # CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
-# ------------------------------------------------------------------------------
+#-------------------------------------------------------------------------------
 
 # To compile and run: use "make".
 # This test only works in Linux.
 
 default: go
 
-################################################################################
+#-------------------------------------------------------------------------------
 
     # SuiteSparse root directory
     SUITESPARSE ?= $(realpath $(CURDIR)/../..)
@@ -73,7 +73,7 @@ default: go
     # location of TCOV test output
     TCOV_TMP ?= ../build
 
-################################################################################
+#-------------------------------------------------------------------------------
 
 # without valgrind
 V =
@@ -592,7 +592,7 @@ compile:  ccode
 
 go: ccode
 	mkdir -p $(T)
-	#
+	# total test time: about 22 minutes including compilation:
 	$(V) ./di_read -x Matrix/crud1            > $(T)/di_read_crud1.out
 	$(V) ./dl_read -x Matrix/crud1            > $(T)/dl_read_crud1.out
 	$(V) ./si_read -x Matrix/crud1            > $(T)/si_read_crud1.out
@@ -648,25 +648,25 @@ go: ccode
 	$(V) ./si_read Matrix/rza.mtx             > $(T)/si_read_rza.out
 	$(V) ./sl_read Matrix/rza.mtx             > $(T)/sl_read_rza.out
 	#
-	$(V) ./di_read -x ../Demo/Matrix/mangle1.mtx   > $(T)/di_read_mangle1.out
-	$(V) ./dl_read -x ../Demo/Matrix/mangle1.mtx   > $(T)/dl_read_mangle1.out
-	$(V) ./si_read -x ../Demo/Matrix/mangle1.mtx   > $(T)/si_read_mangle1.out
-	$(V) ./sl_read -x ../Demo/Matrix/mangle1.mtx   > $(T)/sl_read_mangle1.out
+	$(V) ./di_read -x ../Demo/Matrix/mangle1.mtx > $(T)/di_read_mangle1.out
+	$(V) ./dl_read -x ../Demo/Matrix/mangle1.mtx > $(T)/dl_read_mangle1.out
+	$(V) ./si_read -x ../Demo/Matrix/mangle1.mtx > $(T)/si_read_mangle1.out
+	$(V) ./sl_read -x ../Demo/Matrix/mangle1.mtx > $(T)/sl_read_mangle1.out
 	#
-	$(V) ./di_read -x ../Demo/Matrix/mangle2.mtx   > $(T)/di_read_mangle2.out
-	$(V) ./dl_read -x ../Demo/Matrix/mangle2.mtx   > $(T)/dl_read_mangle2.out
-	$(V) ./si_read -x ../Demo/Matrix/mangle2.mtx   > $(T)/si_read_mangle2.out
-	$(V) ./sl_read -x ../Demo/Matrix/mangle2.mtx   > $(T)/sl_read_mangle2.out
+	$(V) ./di_read -x ../Demo/Matrix/mangle2.mtx > $(T)/di_read_mangle2.out
+	$(V) ./dl_read -x ../Demo/Matrix/mangle2.mtx > $(T)/dl_read_mangle2.out
+	$(V) ./si_read -x ../Demo/Matrix/mangle2.mtx > $(T)/si_read_mangle2.out
+	$(V) ./sl_read -x ../Demo/Matrix/mangle2.mtx > $(T)/sl_read_mangle2.out
 	#
-	$(V) ./di_read -x ../Demo/Matrix/mangle3.mtx   > $(T)/di_read_mangle3.out
-	$(V) ./dl_read -x ../Demo/Matrix/mangle3.mtx   > $(T)/dl_read_mangle3.out
-	$(V) ./si_read -x ../Demo/Matrix/mangle3.mtx   > $(T)/si_read_mangle3.out
-	$(V) ./sl_read -x ../Demo/Matrix/mangle3.mtx   > $(T)/sl_read_mangle3.out
+	$(V) ./di_read -x ../Demo/Matrix/mangle3.mtx > $(T)/di_read_mangle3.out
+	$(V) ./dl_read -x ../Demo/Matrix/mangle3.mtx > $(T)/dl_read_mangle3.out
+	$(V) ./si_read -x ../Demo/Matrix/mangle3.mtx > $(T)/si_read_mangle3.out
+	$(V) ./sl_read -x ../Demo/Matrix/mangle3.mtx > $(T)/sl_read_mangle3.out
 	#
-	$(V) ./di_read -x ../Demo/Matrix/mangle4.mtx   > $(T)/di_read_mangle4.out
-	$(V) ./dl_read -x ../Demo/Matrix/mangle4.mtx   > $(T)/dl_read_mangle4.out
-	$(V) ./si_read -x ../Demo/Matrix/mangle4.mtx   > $(T)/si_read_mangle4.out
-	$(V) ./sl_read -x ../Demo/Matrix/mangle4.mtx   > $(T)/sl_read_mangle4.out
+	$(V) ./di_read -x ../Demo/Matrix/mangle4.mtx > $(T)/di_read_mangle4.out
+	$(V) ./dl_read -x ../Demo/Matrix/mangle4.mtx > $(T)/dl_read_mangle4.out
+	$(V) ./si_read -x ../Demo/Matrix/mangle4.mtx > $(T)/si_read_mangle4.out
+	$(V) ./sl_read -x ../Demo/Matrix/mangle4.mtx > $(T)/sl_read_mangle4.out
 	#
 	$(V) ./di_read -x ../Demo/Matrix/mangle5.tri > $(T)/di_read_mangle5.out
 	$(V) ./dl_read -x ../Demo/Matrix/mangle5.tri > $(T)/dl_read_mangle5.out
@@ -718,19 +718,19 @@ go: ccode
 	$(V) ./si_read Matrix/1e99                > $(T)/si_read_1e99.out
 	$(V) ./sl_read Matrix/1e99                > $(T)/sl_read_1e99.out
 	$(COVER)
-	# time: - coverage: 5 demo k01:
+	# time: - coverage: ~4910 demo bcsstk01:
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/di_demo_k1.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/dl_demo_k1.out
 	$(V) ./si_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/si_demo_k1.out
 	$(V) ./sl_demo   ../Demo/Matrix/bcsstk01.tri  > $(T)/sl_demo_k1.out
 	$(COVER)
-	# time: - coverage: 60 demo k2:
+	# time: - coverage: ~2550 demo bcsstk02:
 	$(V) ./di_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/di_demo_k2.out
 	$(V) ./dl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/dl_demo_k2.out
 	$(V) ./si_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/si_demo_k2.out
 	$(V) ./sl_demo   ../Demo/Matrix/bcsstk02.tri  > $(T)/sl_demo_k2.out
 	$(COVER)
-	# time: - coverage: 4 demo d:
+	# time: - coverage: ~1560 demo d:
 	$(V) ./di_demo < ../Demo/Matrix/d.tri         > $(T)/di_demo_d.out
 	$(V) ./dl_demo < ../Demo/Matrix/d.tri         > $(T)/dl_demo_d.out
 	$(V) ./dl_demo   ../Demo/Matrix/d.tri 1       > $(T)/dl_demo_d.out
@@ -738,7 +738,7 @@ go: ccode
 	$(V) ./sl_demo < ../Demo/Matrix/d.tri         > $(T)/sl_demo_d.out
 	$(V) ./sl_demo   ../Demo/Matrix/d.tri 1       > $(T)/sl_demo_d.out
 	$(COVER)
-	# time: - coverage: 2 demo up:
+	# time: - coverage: 30 demo up:
 	$(V) ./di_demo < ../Demo/Matrix/up.tri        > $(T)/di_demo_up.out
 	$(V) ./dl_demo < ../Demo/Matrix/up.tri        > $(T)/dl_demo_up.out
 	$(V) ./dl_demo   ../Demo/Matrix/up.tri 1      > $(T)/dl_demo_up_z.out
@@ -770,7 +770,7 @@ go: ccode
 	$(V) ./si_test -s < Matrix/cza        > $(T)/si_test_cza.out
 	$(V) ./sl_test -s < Matrix/cza        > $(T)/sl_test_cza.out
 	$(COVER)
-	# time: 14 coverage: ~3170 z5up:
+	# time: 16 coverage: ~3170 z5up:
 	$(V) ./di_test -m -e14 < Matrix/z5up  > $(T)/di_test_z5up.out
 	$(V) ./dl_test -m -e14 < Matrix/z5up  > $(T)/dl_test_z5up.out
 	$(V) ./si_test -m -e5  < Matrix/z5up  > $(T)/si_test_z5up.out
@@ -816,7 +816,7 @@ go: ccode
 	$(V) ./si_test -m -e3 < Matrix/ex5lo  > $(T)/si_test_ex5lo.out
 	$(V) ./sl_test -m -e3 < Matrix/ex5lo  > $(T)/sl_test_ex5lo.out
 	$(COVER)
-	# time: 25 coverage: 22 c10:
+	# time: 20 coverage: 22 c10:
 	$(V) ./di_test -e12 < Matrix/c10      > $(T)/di_test_c10.out
 	$(V) ./dl_test -e12 < Matrix/c10      > $(T)/dl_test_c10.out
 	$(V) ./si_test -e4  < Matrix/c10      > $(T)/si_test_c10.out
@@ -834,19 +834,13 @@ go: ccode
 	$(V) ./si_test -s < Matrix/c30lo_singular > $(T)/si_test_c30lo.out
 	$(V) ./sl_test -s < Matrix/c30lo_singular > $(T)/sl_test_c30lo.out
 	$(COVER)
-	# time: 48 coverage: 8 c30up:
+	# time: 46 coverage: 14 c30up:
 	$(V) ./di_test -e12 < Matrix/c30up > $(T)/di_test_c30up.out
 	$(V) ./dl_test -e12 < Matrix/c30up > $(T)/dl_test_c30up.out
 	$(V) ./si_test -e4  < Matrix/c30up > $(T)/si_test_c30up.out
 	$(V) ./sl_test -e4  < Matrix/c30up > $(T)/sl_test_c30up.out
 	$(COVER)
-	# time: 52 coverage: 18 z10:
-	$(V) ./di_test -e11 < Matrix/z10   > $(T)/di_test_z10.out
-	$(V) ./dl_test -e11 < Matrix/z10   > $(T)/dl_test_z10.out
-	$(V) ./si_test -e4  < Matrix/z10   > $(T)/si_test_z10.out
-	$(V) ./sl_test -e4  < Matrix/z10   > $(T)/sl_test_z10.out
-	$(COVER)
-	# time: 52 coverage: 18 z10:
+	# time: 58 coverage: 18 z10:
 	$(V) ./di_test -m -e11 < Matrix/z10   > $(T)/di_test_z10.out
 	$(V) ./dl_test -m -e11 < Matrix/z10   > $(T)/dl_test_z10.out
 	$(V) ./si_test -m -e4  < Matrix/z10   > $(T)/si_test_z10.out
@@ -858,19 +852,19 @@ go: ccode
 	$(V) ./si_test -e2 < Matrix/galenet   > $(T)/si_test_galenet.out
 	$(V) ./sl_test -e2 < Matrix/galenet   > $(T)/sl_test_galenet.out
 	$(COVER)
-	# time: 72 coverage: 44 20lo:
+	# time: 76 coverage: 44 20lo:
 	$(V) ./di_test -e12 < Matrix/20lo     > $(T)/di_test_20lo.out
 	$(V) ./dl_test -e12 < Matrix/20lo     > $(T)/dl_test_20lo.out
 	$(V) ./si_test -e3  < Matrix/20lo     > $(T)/si_test_20lo.out
 	$(V) ./sl_test -e3  < Matrix/20lo     > $(T)/sl_test_20lo.out
 	$(COVER)
-	# time: 108 coverage: 358 ibm32:
+	# time: 112 coverage: 400 ibm32:
 	$(V) ./di_test -e8  < Matrix/ibm32    > $(T)/di_test_ibm.out
 	$(V) ./dl_test -e8  < Matrix/ibm32    > $(T)/dl_test_ibm.out
 	$(V) ./si_test      < Matrix/ibm32    > $(T)/si_test_ibm.out
 	$(V) ./sl_test      < Matrix/ibm32    > $(T)/sl_test_ibm.out
 	$(COVER)
-	# time: 100 coverage: 10 C9840:
+	# time: 106 coverage: 10 C9840:
 	$(V) ./di_test -e11 < Matrix/C9840    > $(T)/di_test_C9840.out
 	$(V) ./dl_test -e11 < Matrix/C9840    > $(T)/dl_test_C9840.out
 	$(V) ./si_test -e2  < Matrix/C9840    > $(T)/si_test_C9840.out
@@ -882,19 +876,11 @@ go: ccode
 	$(V) ./si_test -m -e2  < Matrix/afiro > $(T)/si_test_afiro.out
 	$(V) ./sl_test -m -e2  < Matrix/afiro > $(T)/sl_test_afiro.out
 	$(COVER)
-	# time: 360 coverage: 6 k01up:
+	# time: 260 coverage: 6 k01up:
 	$(V) ./di_test -m -e10 < Matrix/k01up > $(T)/di_test_k01up.out
 	$(V) ./dl_test -m -e10 < Matrix/k01up > $(T)/dl_test_k01up.out
 	$(V) ./si_test -m -e4  < Matrix/k01up > $(T)/si_test_k01up.out
 	$(V) ./sl_test -m -e4  < Matrix/k01up > $(T)/sl_test_k01up.out
-	$(COVER)
-
-unused:
-	# time: 111 coverage: 8 c30up:
-	$(V) ./di_test -m -e12 < Matrix/c30up > $(T)/di_test_c30up.out
-	$(V) ./dl_test -m -e12 < Matrix/c30up > $(T)/dl_test_c30up.out
-	$(V) ./si_test -m -e4  < Matrix/c30up > $(T)/si_test_c30up.out
-	$(V) ./sl_test -m -e4  < Matrix/c30up > $(T)/sl_test_c30up.out
 	$(COVER)
 
 cov:
