@@ -161,7 +161,7 @@
 
 static void print_value
 (
-    Int print,
+    int print,
     int xtype,      // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
     int dtype,      // CHOLMOD_SINGLE or _DOUBLE
     void *Xx,       // pointer to float or double (real part)
@@ -200,7 +200,7 @@ static void print_value
 
 static int check_common
 (
-    Int print,
+    int print,
     const char *name,
     cholmod_common *Common
 )
@@ -208,7 +208,7 @@ static int check_common
     double fl, lnz ;
     Int *Flag, *Head ;
     int64_t mark ;
-    Int i, nrow, nmethods, ordering, xworksize, amd_backup, init_print ;
+    Int i, nrow, nmethods, ordering, amd_backup ;
     const char *type = "common" ;
 
     //--------------------------------------------------------------------------
@@ -216,7 +216,7 @@ static int check_common
     //--------------------------------------------------------------------------
 
     RETURN_IF_NULL_COMMON (FALSE) ;
-    init_print = print ;
+    int init_print = print ;
 
     P2 ("%s", "\n") ;
 
@@ -561,15 +561,15 @@ static int check_common
         }
     }
 
-    xworksize = Common->xworkbytes ;
+    size_t xworkbytes = Common->xworkbytes ;
     uint8_t *Xwork = Common->Xwork ;
-    if (xworksize > 0)
+    if (xworkbytes > 0)
     {
         if (Xwork == NULL)
         {
             ERR ("workspace corrupted (Xwork missing)") ;
         }
-        for (i = 0 ; i < xworksize ; i++)
+        for (i = 0 ; i < xworkbytes ; i++)
         {
             if (Xwork [i] != 0.)
             {
@@ -600,7 +600,7 @@ int CHOLMOD(print_common)
     cholmod_common *Common
 )
 {
-    Int print = (Common == NULL) ? 3 : (Common->print) ;
+    int print = (Common == NULL) ? 3 : (Common->print) ;
     return (check_common (print, name, Common)) ;
 }
 
@@ -668,7 +668,7 @@ int CHOLMOD(gpu_stats)
 static int64_t check_sparse
 (
     Int *Wi,
-    Int print,
+    int print,
     const char *name,
     cholmod_sparse *A,
     int64_t *nnzdiag,
@@ -941,7 +941,7 @@ int CHOLMOD(print_sparse)
 
 static int check_dense
 (
-    Int print,
+    int print,
     const char *name,
     cholmod_dense *X,
     cholmod_common *Common
@@ -1083,7 +1083,7 @@ static int check_subset
     Int *S,
     int64_t len,
     size_t n,
-    Int print,
+    int print,
     const char *name,
     cholmod_common *Common
 )
@@ -1201,7 +1201,7 @@ int CHOLMOD(print_subset)
 static int check_perm
 (
     Int *Wi,
-    Int print,
+    int print,
     const char *name,
     Int *Perm,
     size_t len,
@@ -1381,7 +1381,7 @@ static int check_parent
 (
     Int *Parent,
     size_t n,
-    Int print,
+    int print,
     const char *name,
     cholmod_common *Common
 )
@@ -1461,7 +1461,7 @@ int CHOLMOD(print_parent)
 static int check_factor
 (
     Int *Wi,
-    Int print,
+    int print,
     const char *name,
     cholmod_factor *L,
     cholmod_common *Common
@@ -2022,7 +2022,7 @@ int CHOLMOD(print_factor)
 
 static int check_triplet
 (
-    Int print,
+    int print,
     const char *name,
     cholmod_triplet *T,
     cholmod_common *Common

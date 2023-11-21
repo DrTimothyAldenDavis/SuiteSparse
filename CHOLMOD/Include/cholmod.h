@@ -21,14 +21,16 @@
 // CHOLMOD/Tcov:       SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
-// CHOLMOD consists of a set of Modules, each with their own license: either
-// LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes defintions of the
-// CHOLMOD API for all Modules, and this cholmod.h file itself is provided to
-// you with a permissive license (Apache-2.0).  You are permitted to provide
-// the hooks for an optional interface to CHOLMOD in a non-GPL/non-LGPL code,
-// without requiring you to agree to the GPL/LGPL license of the Modules, as
-// long as you don't use the *.c files in the relevant Modules.  The Modules
-// themselves can only be functional if their GPL or LGPL licenses are used.
+// CHOLMOD consists of a set of Modules, each with their own Copyright and
+// license: either LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes
+// defintions of the CHOLMOD API for all Modules, and this cholmod.h file
+// itself is provided to you with a permissive license (Apache-2.0).  You are
+// permitted to provide the hooks for an optional interface to CHOLMOD in a
+// non-GPL/non-LGPL code, without requiring you to agree to the GPL/LGPL
+// license of the Modules, as long as you don't use the *.c files in the
+// relevant Modules.  The Modules themselves can only be functional if their
+// GPL or LGPL licenses are used, or if you obtain a different license from the
+// respective copyright holders.
 //
 // The Modify Module is co-authored by William W. Hager.
 //
@@ -38,14 +40,20 @@
 // CHOLMOD's Partition Module.
 // -----------------------------------------------------------------------------
 
-// Each routine in CHOLMOD has a consistent interface.
+#ifndef CHOLMOD_H
+#define CHOLMOD_H
+
+//------------------------------------------------------------------------------
+// CHOLMOD conventions
+//------------------------------------------------------------------------------
+
+// Each routine in CHOLMOD follows the following conventions:
 //
 // Naming convention:
 // ------------------
 //
-//  All routine names, data types, and CHOLMOD library files use the
-//  cholmod_ prefix.  All macros and other #define's use the CHOLMOD
-//  prefix.
+//  All routine names, data types, and CHOLMOD library files use the cholmod_
+//  prefix.  All macros and other #define's use the CHOLMOD prefix.
 //
 // Return value:
 // -------------
@@ -85,12 +93,152 @@
 //  The cholmod_common *Common parameter always appears as the last
 //  parameter.  It is always an input/output parameter.
 
-#ifndef CHOLMOD_H
-#define CHOLMOD_H
+//------------------------------------------------------------------------------
+// CHOLMOD matrix formats   NEW
+//------------------------------------------------------------------------------
 
-//==============================================================================
+// A CHOLMOD sparse, dense, or triplet matrix A, or a sparse factorization L
+// can hold numeric values of 8 different types, according to its A->xtype and
+// A->dtype parameters (or L->xtype and L->dtype for a sparse factor object).
+// These values are held in the A->x array, and also A->z for "zomplex"
+// matrices.
+//
+//  A->xtype:   the matrix is real, complex, "zomplex", or pattern-only.
+//
+//      (0): CHOLMOD_PATTERN:   A->x and A->z are NULL.  The matrix has no
+//                              numerical values.  Only the pattern is stored.
+//
+//      (1): CHOLMOD_REAL:      The matrix is real, and the values are held in
+//                              A->x, whose size (in terms of double or float
+//                              values) is given by A->nzmax.  The kth value in
+//                              the matrix is held in A->x [k].
+//
+//      (2): CHOLMOD_COMPLEX:   The matrix is complex, with interleaved real and
+//                              imaginary parts.  The kth value in the matrix
+//                              is held in A->x [2*k] and A->x [2*k+1], where
+//                              A->x can hold up to 2*A->nzmax values.
+//
+//      (3): CHOLMOD_ZOMPLEX:   The matrix is complex, with separate array for
+//                              the real and imaginary parts.  The kth value in
+//                              the matrix is held in A->x [k], where A->x and
+//                              A->z can hold up to A->nzmax values each.
+//
+
+    // A->xtype values:
+    #define CHOLMOD_PATTERN 0
+    #define CHOLMOD_REAL    1
+    #define CHOLMOD_COMPLEX 2
+    #define CHOLMOD_ZOMPLEX 3
+
+//  A->dtype:   this parameter determines the type of values in A->x (and A->z
+//              if zomplex).
+//
+//      (0) CHOLMOD_DOUBLE:     A->x (and A->z for zomplex matrices) is double.
+//                              If A is real, A->x has a size of A->nzmax *
+//                              sizeof (double).  If A is complex, A->x has
+//                              size A->nzmax * 2 * sizeof (double).  If
+//                              zomplex, both A->x and A->z have size A->nzmax
+//                              * sizeof (double).
+//
+//      (1) CHOLMOD_SINGLE:     A->x (and A->z for zomplex matrices) is float.
+//                              If A is real, A->x has a size of A->nzmax *
+//                              sizeof (float).  If A is complex, A->x has size
+//                              A->nzmax * 2 * sizeof (float).  If zomplex,
+//                              both A->x and A->z have size A->nzmax * sizeof
+//                              (float).  This feature is new to CHOLMOD v5.
+//
+
+    // A->dtype values:
+    #define CHOLMOD_DOUBLE 0
+    #define CHOLMOD_SINGLE 4
+
+// Unless stated otherwise, the xtype and dtypes of all inputs to a method must
+// be the same.
+//
+// Many methods accept an xdtype parameter, which is simply xtype + dtype,
+// combining the two parameters into a single number handling all 8 cases:
+//
+//      (0) CHOLMOD_DOUBLE + CHOLMOD_PATTERN    a pattern-only matrix
+//      (1) CHOLMOD_DOUBLE + CHOLMOD_REAL       a double real matrix
+//      (2) CHOLMOD_DOUBLE + CHOLMOD_COMPLEX    a double complex matrix
+//      (3) CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX    a double zomplex matrix
+//      (4) CHOLMOD_SINGLE + CHOLMOD_PATTERN    a pattern-only matrix
+//      (5) CHOLMOD_SINGLE + CHOLMOD_REAL       a float real matrix
+//      (6) CHOLMOD_SINGLE + CHOLMOD_COMPLEX    a float complex matrix
+//      (7) CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX    a float zomplex matrix
+//
+// This approach was selected for backward compatibility with CHOLMOD v4 and
+// earlier, where only the first four values were supported, and where the
+// parameter was called "xtype" instead of "xdtype".  Several function names
+// reflect the older parameter name (cholmod_*_xtype), but they have not been
+// renamed "_xdtype", for backward compatibility.
+//
+// A CHOLMOD sparse or triplet matrix A can held in three symmetry formats
+// according to its A->stype parameter.  Dense matrices do not have this
+// parameter and are always treated as unsymmetric.  A sparse factor object L
+// is always held in lower triangular form, with no entries ever held in the
+// strictly upper triangular part.
+//
+//      0:  the matrix is unsymmetric with both lower and upper parts stored.
+//
+//      <0: the matrix is symmetric, with just the lower triangular part and
+//          diagonal stored.  Any entries in the upper part are ignored.
+//
+//      >0: the matrix is symmetric, with just the upper triangular part stored
+//          and diagonal.  Any entries in the upper part are ignored.
+//
+// If a sparse or triplet matrix A is complex or zomplex, most methods treat
+// the matrix as Hermitian, where A(i,j) is the complex conjugate of A(j,i),
+// when i is not equal to j.  Some methods can also interpret the matrix as
+// complex symmetric, where A(i,j) == A(j,i) when i != j.  This is not
+// determined by the matrix itself, but by a "mode" parameter of the function.
+// This mode parameter also determines if the values of any matrix are to be
+// ignored entirely, in which case only the pattern is operated on.  Any output
+// matrix will have an xtype of CHOLMOD_PATTERN.
+//
+// The valid mode values are given below, except that many methods do not
+// handle the negative cases.  Values below the range accepted by the method
+// are treated as its lowest accepted value, and values above the range
+// accepted by the method are treated as its highest accepted value.
+//
+//  mode = 2:   the numerical values of a real, complex, or zomplex matrix are
+//              handled.  If the matrix is complex or zomplex, an entry A(i,j)
+//              that not stored (or in the ignored part) is treated as the
+//              complex conjugate of A (j,i).  Use this mode to treat a
+//              complex or zomplex matrix as Hermitian.
+//
+//  mode = 1:   the numerical values of a real, complex, or zomplex matrix are
+//              handled.  If the matrix is complex or zomplex, an entry A(i,j)
+//              that not stored (or in the ignored part) is treated as equal A
+//              (j,i).  Use this mode to treat a complex or zomplex matrix as
+//              complex symmetric.
+//
+//  mode = 0:   the numerical values are ignored.  Any output matrix will have
+//              an xtype of CHOLMOD_PATTERN.  This mode allows inputs to have
+//              different dtypes.
+//
+//  mode = -1:  the same as mode = 0, except that the diagonal entries are
+//              ignored, and do not appear in any output matrix.
+//
+//  mode = -2:  the same as mode = -1, except that the output matrix is given an
+//              additional slack space so that it can hold about 50% more
+//              entries.  This mode is documented here but it is primarily
+//              meant for internal use, for CHOLMOD's interface to the AMD,
+//              CAMD, COLAMD, and CCOLAMD ordering methods.
+//
+// The integer arrays in all objects are either int32 or int64, as determined
+// by A->type.  This integer type must be identical for all inputs, and must
+// also match both the function name (cholmod_method for int32, or
+// cholmod_l_method for int64) and the Common->itype as defined when CHOLMOD
+// was initialized (via cholmod_start for int32, or cholmod_l_start for int64).
+
+    // itype values:
+    #define CHOLMOD_INT  0    /* int32, for cholmod_* methods (no _l_) */
+    #define CHOLMOD_LONG 2    /* int64, for cholmod_l_* methods        */
+
+//------------------------------------------------------------------------------
 // version control
-//==============================================================================
+//------------------------------------------------------------------------------
 
 #define CHOLMOD_DATE "Nov 30, 2023"
 #define CHOLMOD_MAIN_VERSION   5
@@ -120,9 +268,9 @@ int cholmod_l_version (int version [3]) ;
 }
 #endif
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // Large file support
-//==============================================================================
+//------------------------------------------------------------------------------
 
 // CHOLMOD assumes large file support.  If problems occur, compile with
 // -DNLARGEFILE
@@ -148,15 +296,15 @@ int cholmod_l_version (int version [3]) ;
     #endif
 #endif
 
-//==============================================================================
-// SuiteSparse_config
-//==============================================================================
+//------------------------------------------------------------------------------
+// SuiteSparse_config: definitions for all SuiteSparse packages
+//------------------------------------------------------------------------------
 
 #include "SuiteSparse_config.h"
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // CHOLMOD configuration
-//==============================================================================
+//------------------------------------------------------------------------------
 
 // You do not have to edit any CHOLMOD files to compile and install CHOLMOD.
 // However, if you do not use all of CHOLMOD's modules, you need to compile
@@ -231,82 +379,15 @@ int cholmod_l_version (int version [3]) ;
 //------------------------------------------------------------------------------
 
 // CHOLMOD object enums
-#define CHOLMOD_COMMON 0
-#define CHOLMOD_SPARSE 1
-#define CHOLMOD_FACTOR 2
-#define CHOLMOD_DENSE 3
-#define CHOLMOD_TRIPLET 4
-
-// enums used by cholmod_symmetry and cholmod_write
-#define CHOLMOD_MM_RECTANGULAR       1
-#define CHOLMOD_MM_UNSYMMETRIC       2
-#define CHOLMOD_MM_SYMMETRIC         3
-#define CHOLMOD_MM_HERMITIAN         4
-#define CHOLMOD_MM_SKEW_SYMMETRIC    5
-#define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
-#define CHOLMOD_MM_HERMITIAN_POSDIAG 7
+#define CHOLMOD_COMMON  0   /* parameters, statistics, and workspace */
+#define CHOLMOD_SPARSE  1   /* a sparse matrix in CSC form (and variants) */
+#define CHOLMOD_FACTOR  2   /* a sparse factorization */
+#define CHOLMOD_DENSE   3   /* a dense matrix in column-oriented form */
+#define CHOLMOD_TRIPLET 4   /* a sparse matrix in triplet form */
 
 //------------------------------------------------------------------------------
 // CHOLMOD Common object
 //------------------------------------------------------------------------------
-
-// itype: integer sizes
-// The itype is held in the Common object and must match the method used.
-#define CHOLMOD_INT  0    /* int32, for cholmod_* methods (no _l_) */
-#define CHOLMOD_LONG 2    /* int64, for cholmod_l_* methods        */
-
-// dtype: floating point sizes (double or float)
-// The dtype of all parameters for all CHOLMOD routines must match.
-// NOTE: CHOLMOD_SINGLE is still under development.
-#define CHOLMOD_DOUBLE 0  /* matrix or factorization is double precision */
-#define CHOLMOD_SINGLE 4  /* matrix or factorization is single precision */
-
-// xtype: pattern, real, complex, or zomplex
-#define CHOLMOD_PATTERN 0 /* no numerical values                            */
-#define CHOLMOD_REAL    1 /* real (double or single), not complex           */
-#define CHOLMOD_COMPLEX 2 /* complex (double or single), interleaved        */
-#define CHOLMOD_ZOMPLEX 3 /* complex (double or single), with real and imag */
-                          /* parts held in different arrays                 */
-
-// xdtype is (xtype + dtype), which combines the two type parameters into
-// a single number handling all 8 cases:
-//
-//  (0) CHOLMOD_DOUBLE + CHOLMOD_PATTERN    a pattern-only matrix
-//  (1) CHOLMOD_DOUBLE + CHOLMOD_REAL       a double real matrix
-//  (2) CHOLMOD_DOUBLE + CHOLMOD_COMPLEX    a double complex matrix
-//  (3) CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX    a double zomplex matrix
-//  (4) CHOLMOD_SINGLE + CHOLMOD_PATTERN    a pattern-only matrix
-//  (5) CHOLMOD_SINGLE + CHOLMOD_REAL       a float real matrix
-//  (6) CHOLMOD_SINGLE + CHOLMOD_COMPLEX    a float complex matrix
-//  (7) CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX    a float zomplex matrix
-
-// max # of ordering methods in Common
-#define CHOLMOD_MAXMETHODS 9
-
-// Common->status for error handling: 0 is ok, negative is a fatal error,
-// and positive is a warning
-#define CHOLMOD_OK            (0)
-#define CHOLMOD_NOT_INSTALLED (-1) /* module not installed                  */
-#define CHOLMOD_OUT_OF_MEMORY (-2) /* malloc, calloc, or realloc failed     */
-#define CHOLMOD_TOO_LARGE     (-3) /* integer overflow                      */
-#define CHOLMOD_INVALID       (-4) /* input invalid                         */
-#define CHOLMOD_GPU_PROBLEM   (-5) /* CUDA error                            */
-#define CHOLMOD_NOT_POSDEF    (1)  /* matrix not positive definite          */
-#define CHOLMOD_DSMALL        (2)  /* diagonal entry very small             */
-
-// ordering method
-#define CHOLMOD_NATURAL     0 /* no preordering                             */
-#define CHOLMOD_GIVEN       1 /* user-provided permutation                  */
-#define CHOLMOD_AMD         2 /* AMD: approximate minimum degree            */
-#define CHOLMOD_METIS       3 /* METIS: mested dissection                   */
-#define CHOLMOD_NESDIS      4 /* CHOLMOD's nested dissection                */
-#define CHOLMOD_COLAMD      5 /* AMD for A, COLAMD for AA' or A'A           */
-#define CHOLMOD_POSTORDERED 6 /* natural then postordered                   */
-
-// supernodal strategy
-#define CHOLMOD_SIMPLICIAL 0 /* always use simplicial method                */
-#define CHOLMOD_AUTO       1 /* auto select simplicial vs supernodal        */
-#define CHOLMOD_SUPERNODAL 2 /* always use supernoda method                 */
 
 #ifdef __cplusplus
 extern "C" {
@@ -321,22 +402,22 @@ typedef struct cholmod_common_struct
 
     double dbound ; // Bounds the diagonal entries of D for LDL'
         // factorization and update/downdate/rowadd.  Entries outside this
-        // bound are replaced with dbound.  Default: 0.
-        // dbound is used for double precision factorization only.
-        // See sbound for single precision factorization.
+        // bound are replaced with dbound.  Default: 0.  dbound is used for
+        // double precision factorization only.  See sbound for single
+        // precision factorization.
 
     double grow0 ;      // default: 1.2
     double grow1 ;      // default: 1.2
     size_t grow2 ;      // default: 5
         // Initial space for simplicial factorization is max(grow0,1) times the
-        // required space.  If space is exhausted, L is grown by
-        // max(grow0,1.2) times the required space.  grow1 and grow2 control
-        // how each column of L can grow in an update/downdate; if space runs
-        // out, then grow1*(required space) + grow2 is allocated.
+        // required space.  If space is exhausted, L is grown by max(grow0,1.2)
+        // times the required space.  grow1 and grow2 control how each column
+        // of L can grow in an update/downdate; if space runs out, then
+        // grow1*(required space) + grow2 is allocated.
 
     size_t maxrank ;    // maximum rank for update/downdate.  Valid values are
-        // 2, 4, and 8.  Default is 8.  If a larger update/downdate is done,
-        // it is done in steps of maxrank.
+        // 2, 4, and 8.  Default is 8.  If a larger update/downdate is done, it
+        // is done in steps of maxrank.
 
     double supernodal_switch ;  // default: 40
     int supernodal ;            // default: CHOLMOD_AUTO.
@@ -345,6 +426,10 @@ typedef struct cholmod_common_struct
         // is always done; if CHOLMOD_SUPERNODAL, a supernodal factorization is
         // always done.  If CHOLMOD_AUTO, then a simplicial factorization is
         // down if flops/nnz(L) < Common->supernodal_switch.
+
+        #define CHOLMOD_SIMPLICIAL 0 /* always use simplicial method         */
+        #define CHOLMOD_AUTO       1 /* auto select simplicial vs supernodal */
+        #define CHOLMOD_SUPERNODAL 2 /* always use supernoda method          */
 
     int final_asis ;    // if true, other final_* parameters are ignored,
         // except for final_pack and the factors are left as-is when done.
@@ -547,11 +632,20 @@ typedef struct cholmod_common_struct
             // components is partitioned separately.  If false, the whole
             // subgraph is partitioned.  Default: false.
 
-        int ordering ;  // ordering method to use
+        int ordering ;  // ordering method to use:
+
+            #define CHOLMOD_NATURAL     0 /* no preordering                    */
+            #define CHOLMOD_GIVEN       1 /* user-provided permutation         */
+            #define CHOLMOD_AMD         2 /* AMD: approximate minimum degree   */
+            #define CHOLMOD_METIS       3 /* METIS: mested dissection          */
+            #define CHOLMOD_NESDIS      4 /* CHOLMOD's nested dissection       */
+            #define CHOLMOD_COLAMD      5 /* AMD for A, COLAMD for AA' or A'A  */
+            #define CHOLMOD_POSTORDERED 6 /* natural then postordered          */
 
         size_t other_3 [4] ;    // unused, for future expansion
 
     }
+    #define CHOLMOD_MAXMETHODS 9    /* max # of methods in Common->method */
     method [CHOLMOD_MAXMETHODS + 1] ;
 
     int postorder ; // if true, CHOLMOD performs a weighted postordering
@@ -617,7 +711,7 @@ typedef struct cholmod_common_struct
         // The itype of the Common object must match the function name
         // and all objects passed to it.
 
-    int other_5 ;   // unused: for future expansion // NEW was dtype; not needed
+    int other_5 ;   // unused: for future expansion
 
     int no_workspace_reallocate ;   // an internal flag, usually false.
         // This is set true to disable any reallocation of the workspace
@@ -627,7 +721,19 @@ typedef struct cholmod_common_struct
     // statistics
     //--------------------------------------------------------------------------
 
-    int status ;    // status code (0: ok, negative: error, pos: warning
+    int status ;    // status code (0: ok, negative: error, pos: warning)
+
+        // Common->status for error handling: 0 is ok, negative is a fatal error,
+        // and positive is a warning
+        #define CHOLMOD_OK            (0)
+        #define CHOLMOD_NOT_INSTALLED (-1) /* module not installed          */
+        #define CHOLMOD_OUT_OF_MEMORY (-2) /* malloc/calloc/realloc failed  */
+        #define CHOLMOD_TOO_LARGE     (-3) /* integer overflow              */
+        #define CHOLMOD_INVALID       (-4) /* input invalid                 */
+        #define CHOLMOD_GPU_PROBLEM   (-5) /* CUDA error                    */
+        #define CHOLMOD_NOT_POSDEF    (1)  /* matrix not positive definite  */
+        #define CHOLMOD_DSMALL        (2)  /* diagonal entry very small     */
+
     double fl ;     // flop count from last analysis
     double lnz ;    // nnz(L) from last analysis
     double anz ;    // in last analysis: nnz(tril(A)) or nnz(triu(A)) if A
@@ -804,11 +910,6 @@ typedef struct cholmod_common_struct
 #define CHOLMOD_GPU_POTRF_TIME      cholmod_gpu_potrf_time
 #define CHOLMOD_ASSEMBLE_TIME       cholmod_assemble_time
 #define CHOLMOD_ASSEMBLE_TIME2      cholmod_assemble_time2
-
-// for supernodal analysis:
-#define CHOLMOD_ANALYZE_FOR_SPQR     0
-#define CHOLMOD_ANALYZE_FOR_CHOLESKY 1
-#define CHOLMOD_ANALYZE_FOR_SPQRGPU  2
 
 //------------------------------------------------------------------------------
 // cholmod_start:  first call to CHOLMOD
@@ -1095,8 +1196,6 @@ cholmod_sparse *cholmod_l_spzeros (size_t, size_t, size_t, int,
 // cholmod_transpose: transpose a sparse matrix
 //------------------------------------------------------------------------------
 
-// FIXME:  use #define's for mode
-
 cholmod_sparse *cholmod_transpose       // return new sparse matrix C
 (
     // input:
@@ -1164,7 +1263,7 @@ cholmod_sparse *cholmod_ptranspose      // return new sparse matrix C
 (
     // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj)  NOTE: same effect, new name
+    int mode,           // 2: numerical (conj)  NEW: same effect, new name
                         // 1: numerical (non-conj.)
                         // 0: pattern (with diag)
     int32_t *Perm,      // permutation for C=A(p,f)', or NULL
@@ -1511,7 +1610,8 @@ int cholmod_l_reallocate_factor (size_t, cholmod_factor *, cholmod_common *) ;
 int cholmod_change_factor
 (
     // input:
-    int to_xtype,       // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
+    int to_xtype,       // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX;
+                        // L->dtype remains unchanged.
     int to_ll,          // if true: convert to LL'; else to LDL'
     int to_super,       // if true: convert to supernodal; else to simplicial
     int to_packed,      // if true: pack simplicial columns' else: do not pack
@@ -1927,9 +2027,9 @@ int cholmod_triplet_xtype
 ) ;
 int cholmod_l_triplet_xtype (int, cholmod_triplet *, cholmod_common *) ;
 
-//==============================================================================
-// memory allocation
-//==============================================================================
+//------------------------------------------------------------------------------
+// memory allocation: malloc/calloc/realloc/free
+//------------------------------------------------------------------------------
 
 // These methods act like malloc/calloc/realloc/free, with some differences.
 // They are simple wrappers around the memory management functions in
@@ -2002,9 +2102,9 @@ int cholmod_realloc_multiple    // returns true if successful, false otherwise
 int cholmod_l_realloc_multiple (size_t, int, int, void **, void **, void **,
     void **, size_t *, cholmod_common *) ;
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // numerical comparisons
-//==============================================================================
+//------------------------------------------------------------------------------
 
 // These macros were different on Windows for older versions of CHOLMOD.
 // They are no longer needed but are kept for backward compatibility.
@@ -2412,7 +2512,16 @@ void *cholmod_l_read_matrix2 (FILE *, int, int, int *, cholmod_common *) ;
 // cholmod_write_sparse: write a sparse matrix to a file
 //------------------------------------------------------------------------------
 
-int cholmod_write_sparse    // returns the same result as cholmod_symmetry
+// return values of cholmod_symmetry and cholmod_write:
+#define CHOLMOD_MM_RECTANGULAR       1
+#define CHOLMOD_MM_UNSYMMETRIC       2
+#define CHOLMOD_MM_SYMMETRIC         3
+#define CHOLMOD_MM_HERMITIAN         4
+#define CHOLMOD_MM_SKEW_SYMMETRIC    5
+#define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
+#define CHOLMOD_MM_HERMITIAN_POSDIAG 7
+
+int cholmod_write_sparse    // see above, or -1 on error
 (
     // input:
     FILE *f,                // file to write to, must already be open
@@ -2428,8 +2537,8 @@ int cholmod_l_write_sparse (FILE *, cholmod_sparse *, cholmod_sparse *,
 // cholmod_write_dense: write a dense matrix to a file
 //------------------------------------------------------------------------------
 
-int cholmod_write_dense
-(
+int cholmod_write_dense     // CHOLMOD_MM_UNSYMMETRIC or _RECTANGULAR, or
+(                           // -1 on error
     // input:
     FILE *f,                // file to write to, must already be open
     cholmod_dense *X,       // matrix to print
@@ -3166,7 +3275,16 @@ cholmod_sparse *cholmod_l_vertcat (cholmod_sparse *, cholmod_sparse *, int,
 // cholmod_symmetry: determine if a sparse matrix is symmetric
 //------------------------------------------------------------------------------
 
-int cholmod_symmetry            // returns CHOLMOD_MM_* (see above)
+// return values of cholmod_symmetry and cholmod_write:
+// #define CHOLMOD_MM_RECTANGULAR       1
+// #define CHOLMOD_MM_UNSYMMETRIC       2
+// #define CHOLMOD_MM_SYMMETRIC         3
+// #define CHOLMOD_MM_HERMITIAN         4
+// #define CHOLMOD_MM_SKEW_SYMMETRIC    5
+// #define CHOLMOD_MM_SYMMETRIC_POSDIAG 6
+// #define CHOLMOD_MM_HERMITIAN_POSDIAG 7
+
+int cholmod_symmetry            // returns the matrix symmetry (see above)
 (
     // input:
     cholmod_sparse *A,
@@ -3190,7 +3308,7 @@ int cholmod_l_symmetry (cholmod_sparse *, int, int64_t *, int64_t *, int64_t *,
 #ifndef NMODIFY
 
 //------------------------------------------------------------------------------
-// CHOLMOD:Modify Module. Copyright (C) 2005-2006, Timothy A. Davis and William
+// CHOLMOD:Modify Module. Copyright (C) 2005-2023, Timothy A. Davis and William
 // W. Hager.  http://www.suitesparse.com
 //------------------------------------------------------------------------------
 
@@ -3479,11 +3597,14 @@ int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *, int64_t *,
 // CHOLMOD:Partition Module (CAMD, CCOLAMD, and CSYMAMD)
 //==============================================================================
 
-#ifndef NCAMD
+//------------------------------------------------------------------------------
+// CHOLMOD/Partition:
+// Copyright (C) 2005-2023, Univ. of Florida.  Author: Timothy A. Davis
+//------------------------------------------------------------------------------
 
-// CHOLMOD Partition module, interface to CAMD, CCOLAMD, and CSYMAMD
-//
-// An interface to CCOLAMD and CSYMAMD, constrained minimum degree ordering
+// CHOLMOD Partition module, interface to CAMD, CCOLAMD, CSYMAMD, and METIS,
+// and graph partitioning and graph-partition-based orderings.  Includes an
+// interface to CCOLAMD and CSYMAMD, constrained minimum degree ordering
 // methods which order a matrix following constraints determined via nested
 // dissection.
 //
@@ -3493,8 +3614,16 @@ int cholmod_l_rowdel_mark (size_t, cholmod_sparse *, double *, int64_t *,
 // cholmod_csymamd      interface to CSYMAMD ordering
 // cholmod_camd         interface to CAMD ordering
 //
-// Requires the Utility and Cholesky modules, and two packages: CAMD,
-// and CCOLAMD.  Used by functions in the Partition Module.
+// These functions require METIS:
+// cholmod_nested_dissection    CHOLMOD nested dissection ordering
+// cholmod_metis                METIS nested dissection ordering (METIS_NodeND)
+// cholmod_bisect               graph partitioner (currently based on METIS)
+// cholmod_metis_bisector       direct interface to METIS_ComputeVertexSeparator
+//
+// Requires the Utility and Cholesky modules, and three packages: METIS, CAMD,
+// and CCOLAMD.  Optionally used by the Cholesky module.
+
+#ifndef NCAMD
 
 //------------------------------------------------------------------------------
 // cholmod_ccolamd
@@ -3558,34 +3687,14 @@ int cholmod_l_camd (cholmod_sparse *, int64_t *, size_t, int64_t *, int64_t *,
 
 #endif
 
-//==============================================================================
+//------------------------------------------------------------------------------
 // CHOLMOD:Partition Module (graph partition methods)
-//==============================================================================
+//------------------------------------------------------------------------------
 
 // These routines still exist if CHOLMOD is compiled with -DNPARTITION,
 // but they return Common->status = CHOLMOD_NOT_INSTALLED in that case.
+
 #if 1
-
-//------------------------------------------------------------------------------
-// CHOLMOD/Partition:
-// Copyright (C) 2005-2013, Univ. of Florida.  Author: Timothy A. Davis
-//------------------------------------------------------------------------------
-
-// CHOLMOD Partition module.
-//
-// Graph partitioning and graph-partition-based orderings.  Includes an
-// interface to CCOLAMD and CSYMAMD, constrained minimum degree ordering
-// methods which order a matrix following constraints determined via nested
-// dissection.
-//
-// These functions require METIS:
-// cholmod_nested_dissection    CHOLMOD nested dissection ordering
-// cholmod_metis                METIS nested dissection ordering (METIS_NodeND)
-// cholmod_bisect               graph partitioner (currently based on METIS)
-// cholmod_metis_bisector       direct interface to METIS_ComputeVertexSeparator
-//
-// Requires the Utility and Cholesky modules, and three packages: METIS, CAMD,
-// and CCOLAMD.  Optionally used by the Cholesky module.
 
 //------------------------------------------------------------------------------
 // cholmod_nested_dissection
@@ -3769,6 +3878,10 @@ int cholmod_l_super_symbolic (cholmod_sparse *, cholmod_sparse *, int64_t *,
 //------------------------------------------------------------------------------
 
 // Analyze for supernodal Cholesky or multifrontal QR
+
+#define CHOLMOD_ANALYZE_FOR_SPQR     0
+#define CHOLMOD_ANALYZE_FOR_CHOLESKY 1
+#define CHOLMOD_ANALYZE_FOR_SPQRGPU  2
 
 int cholmod_super_symbolic2
 (
