@@ -93,8 +93,8 @@ for kkk = 1:length(f)
 	%   k2 = Inf ;
 	%   t2 = Inf ;
 	% end
-	fprintf ('cholmod2: t: %10.5f e: %6.1e  mflop %6.0f\n', ...
-	    t2, e2, 1e-6 * fl / t2) ;
+	fprintf ('cholmod2: t: %10.5f e: %6.1e  gflop %6.1f\n', ...
+	    t2, e2, 1e-9 * fl / t2) ;
 
 	% try
 	    k1 = 0 ;
@@ -113,8 +113,8 @@ for kkk = 1:length(f)
 	%   k1 = Inf ;
 	%   t1 = Inf ;
 	% end
-	fprintf ('matlab:  t: %10.5f e: %6.1e  mflop %6.0f', ...
-	    t1, e1, 1e-6 * fl / t1) ;
+	fprintf ('matlab:   t: %10.5f e: %6.1e  gflop %6.1f', ...
+	    t1, e1, 1e-9 * fl / t1) ;
 
 	fprintf ('   cholmod2 speedup: %5.1f\n', t1/t2) ;
 

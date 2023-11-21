@@ -11,7 +11,7 @@ function cholmod_make
 %   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
 %   symbfact2, mread, mwrite, ldlrowmod
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 details = 0 ;	    % 1 if details of each command are to be printed
@@ -27,7 +27,10 @@ catch                                                                       %#ok
     mac = 0 ;
 end
 
-flags = '' ;
+%% FIXME
+%% flags = '-O ' ;
+flags = '-g ' ;
+
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)
     % 64-bit MATLAB
@@ -69,12 +72,12 @@ else
     include = ['-DNPARTITION ' include] ;
 end
 
- %---------------------------------------------------------------------------
- % BLAS option
- %---------------------------------------------------------------------------
+%---------------------------------------------------------------------------
+% BLAS option
+%---------------------------------------------------------------------------
 
- % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
- % find the LAPACK and BLAS libraries, which is a real portability nightmare.
+% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
+% find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
     % BLAS/LAPACK functions have no underscore on Windows
@@ -107,7 +110,7 @@ if (~(pc || mac))
     lapack = [lapack ' -lrt'] ;
 end
 
- %-------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------
 
 config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
@@ -277,7 +280,7 @@ else
     obj_extension = '.o' ;
 end
 
- % compile each library source file
+% compile each library source file
 obj = '' ;
 
 source = [ordering_src config_src cholmod_src cholmod_matlab] ;
@@ -296,25 +299,25 @@ for f = source
     % fprintf ('%s\n', o) ;
     o = [o obj_extension] ;
     obj = [obj  ' ' o] ;					            %#ok
-    s = sprintf ('mex %s -O %s -c %s.c', flags, include, ff) ;
+    s = sprintf ('mex %s %s -c %s.c', flags, include, ff) ;
     kk = do_cmd (s, kk, details) ;
 end
 
- % compile each mexFunction
+% compile each mexFunction
 for f = cholmod_mex_src
-    s = sprintf ('mex %s -O %s %s.c', flags, include, f{1}) ;
+    s = sprintf ('mex %s %s %s.c', flags, include, f{1}) ;
     s = [s obj ' ' lapack] ;						    %#ok
     kk = do_cmd (s, kk, details) ;
 end
 
- % clean up
+% clean up
 s = ['delete ' obj] ;
 do_cmd (s, kk, details) ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
- %------------------------------------------------------------------------------
+%------------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details)
- %DO_CMD: evaluate a command, and either print it or print a "."
+%DO_CMD: evaluate a command, and either print it or print a "."
 if (details)
     fprintf ('%s\n', s) ;
 else
@@ -325,3 +328,4 @@ else
     fprintf ('.') ;
 end
 eval (s) ;
+

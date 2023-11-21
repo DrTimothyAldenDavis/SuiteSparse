@@ -106,14 +106,14 @@ fl = sum (lnz.^2) ;
 tic
 L = lchol (S) ;		    %#ok
 t1 = toc ;
-fprintf ('CHOLMOD lchol(sparse(A))       time: %6.2f    mflop %8.1f\n', ...
-    t1, 1e-6 * fl / t1) ;
+fprintf ('CHOLMOD lchol(sparse(A))       time: %6.2f    gflop %8.2f\n', ...
+    t1, 1e-9 * fl / t1) ;
 
 tic
 LD = ldlchol (S) ;		%#ok
 t2 = toc ;
-fprintf ('CHOLMOD ldlchol(sparse(A))     time: %6.2f    mflop %8.1f\n', ...
-    t2, 1e-6 * fl / t2) ;
+fprintf ('CHOLMOD ldlchol(sparse(A))     time: %6.2f    gflop %8.2f\n', ...
+    t2, 1e-9 * fl / t2) ;
 
 tic
 LD2 = ldlupdate (LD,C) ;
@@ -148,15 +148,15 @@ fprintf ('err: %g\n', err) ;
 tic
 R = chol (S) ;		    %#ok
 s1 = toc ;
-fprintf ('MATLAB  chol(sparse(A))        time: %6.2f    mflop %8.1f\n', ...
-    s1, 1e-6 * fl / s1) ;
+fprintf ('MATLAB  chol(sparse(A))        time: %6.2f    gflop %8.2f\n', ...
+    s1, 1e-9 * fl / s1) ;
 
 E = full (A) ;
 tic
 R = chol (E) ;
 s2 = toc ;
-fprintf ('MATLAB  chol(full(A))          time: %6.2f    mflop %8.1f\n', ...
-    s2, 1e-6 * fl / s2) ;
+fprintf ('MATLAB  chol(full(A))          time: %6.2f    gflop %8.2f\n', ...
+    s2, 1e-9 * fl / s2) ;
 
 Z = full (R) ;
 tic

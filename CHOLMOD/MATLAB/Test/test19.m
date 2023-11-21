@@ -18,7 +18,7 @@ tic
 L = lchol (A) ;
 t = toc ;
 fl = sum (count.^2) ;
-fprintf ('mflop rate: %8.2f\n', 1e-6*fl/t) ;
+fprintf ('gflop rate: %8.2f\n', 1e-9*fl/t) ;
 n = size (L,1) ;
 for k = 1:n
     if (any (isnan (L (:,k))))

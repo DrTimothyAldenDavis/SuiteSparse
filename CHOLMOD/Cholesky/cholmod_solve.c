@@ -394,7 +394,7 @@ int CHOLMOD(solve2)         // returns TRUE on success, FALSE on failure
             // this is done only once, for the 1st call to cholmod_solve
             CHOLMOD(free_sparse) (Xset_Handle, Common) ;
             Xset = CHOLMOD(allocate_sparse) (n, 1, n, FALSE, TRUE, 0,
-                CHOLMOD_PATTERN, Common) ;
+                CHOLMOD_PATTERN + L->dtype, Common) ;
             (*Xset_Handle) = Xset ;
         }
         if (Common->status < CHOLMOD_OK)

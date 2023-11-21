@@ -53,8 +53,8 @@ void mexFunction
     const mxArray *pargin [ ]
 )
 {
-    double dummy = 0, *Px, *Xsetx ;
-    int64_t *Lp, *Lnz, *Xp, *Xi, xnz, *Perm, *Lprev, *Lnext, *Xsetp ;
+    double dummy = 0, *Px ;
+    int64_t *Lp, *Lnz, *Xp, *Xi, xnz, *Perm, *Lprev, *Lnext ;
     cholmod_sparse *Bset, Bmatrix, *Xset ;
     cholmod_dense *Bdense, *X, *Y, *E ;
     cholmod_factor *L ;
@@ -218,15 +218,35 @@ void mexFunction
     pargout [0] = sputil_put_dense (&X, cm) ;
 
     /* fill numerical values of Xset with one's */
-    Xsetp = Xset->p ;
-    xsetlen = Xsetp [1] ;
-    Xset->x = cholmod_l_malloc (xsetlen, sizeof (double), cm) ;
-    Xsetx = Xset->x ;
-    for (k = 0 ; k < xsetlen ; k++)
+    if (Xset == NULL)
     {
-        Xsetx [k] = 1 ;
+        // Px=b and P'x=b do not return Xset.  Create Xset = 0:n-1
+        Xset = cholmod_l_spzeros (n, 1, n, CHOLMOD_REAL, cm) ;
+        int64_t *Xsetp = Xset->p ;
+        int64_t *Xseti = Xset->i ;
+        double  *Xsetx = Xset->x ;
+        Xsetp [0] = 0 ;
+        Xsetp [1] = n ;
+        for (k = 0 ; k < n ; k++)
+        {
+            Xseti [k] = k ;
+            Xsetx [k] = 1 ;
+        }
     }
-    Xset->xtype = CHOLMOD_REAL ;
+    else
+    {
+        // Xset is returned, but needs to be converted from PATTERN to REAL
+        // FIXME: use cholmod_l_sparse_xtype
+        int64_t *Xsetp = Xset->p ;
+        xsetlen = Xsetp [1] ;
+        Xset->x = cholmod_l_malloc (xsetlen, sizeof (double), cm) ;
+        double *Xsetx = Xset->x ;
+        for (k = 0 ; k < xsetlen ; k++)
+        {
+            Xsetx [k] = 1 ;
+        }
+        Xset->xtype = CHOLMOD_REAL ;
+    }
 
     pargout [1] = sputil_put_sparse (&Xset, cm) ;
 
