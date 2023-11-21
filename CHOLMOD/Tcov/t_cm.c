@@ -1528,11 +1528,11 @@ int main (int argc, char **argv)
     if (nrow > ncol)
     {
         // maxerr should be NaN, so don't print it
-        printf ("All tests successful: time %.1g\n", t) ;
+        printf ("All tests passed: time %.1g\n", t) ;
     }
     else
     {
-        printf ("All tests successful: max error %.1g time: %.1g\n", maxerr, t);
+        printf ("All tests passed: max error %.1g time: %.1g\n", maxerr, t);
     }
 
     SuiteSparse_finish ( ) ;

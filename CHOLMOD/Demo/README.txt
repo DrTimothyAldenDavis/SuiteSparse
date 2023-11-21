@@ -1,7 +1,9 @@
 Demos for CHOLMOD
 
-    cholmod_demo.c          a long demo
-    cholmod_l_demo.c        same as cholmod_demo, but with long integers
+    cholmod_di_demo.c       double/int32 demo
+    cholmod_dl_demo.c       double/int64 demo
+    cholmod_si_demo.c       float/int32 demo
+    cholmod_sl_demo.c       float/int64 demo
 
     cholmod_demo.h          include file for cholmod*demo.c
 

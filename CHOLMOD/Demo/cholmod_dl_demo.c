@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Demo/cholmod_l_demo: demo program for CHOLMOD
+// CHOLMOD/Demo/cholmod_dl_demo: demo program for CHOLMOD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis,
@@ -17,8 +17,8 @@
 // finite-element form.
 //
 // Usage:
-//      cholmod_l_demo matrixfile
-//      cholmod_l_demo < matrixfile
+//      cholmod_dl_demo matrixfile
+//      cholmod_dl_demo < matrixfile
 //
 // The matrix is assumed to be positive definite (a supernodal LL' or simplicial
 // LDL' factorization is used).
@@ -31,10 +31,10 @@
 //
 // There are 4 versions of this demo:
 //
-// cholmod_demo:    int32_t integers, double or double complex values
-// cholmod_l_demo:  int64_t integers, double or double complex values
-// cholmod_s_demo:  int32_t integers, float or float complex values
-// cholmod_sl_demo: int64_t integers, float or float complex values
+// cholmod_di_demo: double or double complex values, int32_t integers
+// cholmod_dl_demo: double or double complex values, int64_t integers
+// cholmod_si_demo: float or float complex values, int32_t integers
+// cholmod_sl_demo: float or float complex values, int64_t integers
 
 #include "cholmod_demo.h"
 #define NTRIALS 100
@@ -139,7 +139,7 @@ int main (int argc, char **argv)
     // read in a matrix
     //--------------------------------------------------------------------------
 
-    printf ("\n---------------------------------- cholmod_l_demo:\n") ;
+    printf ("\n---------------------------------- cholmod_dl_demo:\n") ;
     cholmod_l_version (ver) ;
     printf ("cholmod version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
     SuiteSparse_version (ver) ;

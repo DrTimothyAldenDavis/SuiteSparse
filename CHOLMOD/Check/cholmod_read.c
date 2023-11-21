@@ -948,7 +948,7 @@ static cholmod_dense *read_dense
     if (nrow == 0 || ncol == 0)
     {
         // return an empty dense matrix
-        return (CHOLMOD(zeros) (nrow, ncol, CHOLMOD_REAL, Common)) ;
+        return (CHOLMOD(zeros) (nrow, ncol, CHOLMOD_REAL + dtype, Common)) ;
     }
 
     //--------------------------------------------------------------------------

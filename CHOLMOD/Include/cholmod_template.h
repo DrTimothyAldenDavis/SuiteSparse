@@ -373,147 +373,151 @@
 // These macros are xtype and/or dtype-type specific versions of the GOTCHA
 // macro #defined in cholmod_internal.h.
 
-#undef PI_GOTCHA
-#undef PL_GOTCHA
+#if 0
 
-#undef PDI_GOTCHA
-#undef RDI_GOTCHA
-#undef CDI_GOTCHA
-#undef ZDI_GOTCHA
+    #undef PI_GOTCHA
+    #undef PL_GOTCHA
 
-#undef PDL_GOTCHA
-#undef RDL_GOTCHA
-#undef CDL_GOTCHA
-#undef ZDL_GOTCHA
+    #undef PDI_GOTCHA
+    #undef RDI_GOTCHA
+    #undef CDI_GOTCHA
+    #undef ZDI_GOTCHA
 
-#undef PSI_GOTCHA
-#undef RSI_GOTCHA
-#undef CSI_GOTCHA
-#undef ZSI_GOTCHA
+    #undef PDL_GOTCHA
+    #undef RDL_GOTCHA
+    #undef CDL_GOTCHA
+    #undef ZDL_GOTCHA
 
-#undef PSL_GOTCHA
-#undef RSL_GOTCHA
-#undef CSL_GOTCHA
-#undef ZSL_GOTCHA
+    #undef PSI_GOTCHA
+    #undef RSI_GOTCHA
+    #undef CSI_GOTCHA
+    #undef ZSI_GOTCHA
 
-#ifdef DOUBLE
+    #undef PSL_GOTCHA
+    #undef RSL_GOTCHA
+    #undef CSL_GOTCHA
+    #undef ZSL_GOTCHA
 
-    #ifdef CHOLMOD_INT64
+    #ifdef DOUBLE
 
-        #if defined ( PATTERN )
-            #define PL_GOTCHA GOTCHA
-            #define PDL_GOTCHA GOTCHA
-        #elif defined ( REAL )
-            #define RDL_GOTCHA GOTCHA
-        #elif defined ( COMPLEX )
-            #define CDL_GOTCHA GOTCHA
-        #elif defined ( ZOMPLEX )
-            #define ZDL_GOTCHA GOTCHA
+        #ifdef CHOLMOD_INT64
+
+            #if defined ( PATTERN )
+                #define PL_GOTCHA GOTCHA
+                #define PDL_GOTCHA GOTCHA
+            #elif defined ( REAL )
+                #define RDL_GOTCHA GOTCHA
+            #elif defined ( COMPLEX )
+                #define CDL_GOTCHA GOTCHA
+            #elif defined ( ZOMPLEX )
+                #define ZDL_GOTCHA GOTCHA
+            #endif
+
+        #else
+
+            #if defined ( PATTERN )
+                #define PI_GOTCHA GOTCHA
+                #define PDI_GOTCHA GOTCHA
+            #elif defined ( REAL )
+                #define RDI_GOTCHA GOTCHA
+            #elif defined ( COMPLEX )
+                #define CDI_GOTCHA GOTCHA
+            #elif defined ( ZOMPLEX )
+                #define ZDI_GOTCHA GOTCHA
+            #endif
+
         #endif
 
     #else
 
-        #if defined ( PATTERN )
-            #define PI_GOTCHA GOTCHA
-            #define PDI_GOTCHA GOTCHA
-        #elif defined ( REAL )
-            #define RDI_GOTCHA GOTCHA
-        #elif defined ( COMPLEX )
-            #define CDI_GOTCHA GOTCHA
-        #elif defined ( ZOMPLEX )
-            #define ZDI_GOTCHA GOTCHA
-        #endif
+        #ifdef CHOLMOD_INT64
 
+            #if defined ( PATTERN )
+                #define PL_GOTCHA GOTCHA
+                #define PSL_GOTCHA GOTCHA
+            #elif defined ( REAL )
+                #define RSL_GOTCHA GOTCHA
+            #elif defined ( COMPLEX )
+                #define CSL_GOTCHA GOTCHA
+            #elif defined ( ZOMPLEX )
+                #define ZSL_GOTCHA GOTCHA
+            #endif
+
+        #else
+
+            #if defined ( PATTERN )
+                #define PI_GOTCHA GOTCHA
+                #define PSI_GOTCHA GOTCHA
+            #elif defined ( REAL )
+                #define RSI_GOTCHA GOTCHA
+            #elif defined ( COMPLEX )
+                #define CSI_GOTCHA GOTCHA
+            #elif defined ( ZOMPLEX )
+                #define ZSI_GOTCHA GOTCHA
+            #endif
+
+        #endif
     #endif
 
-#else
-
-    #ifdef CHOLMOD_INT64
-
-        #if defined ( PATTERN )
-            #define PL_GOTCHA GOTCHA
-            #define PSL_GOTCHA GOTCHA
-        #elif defined ( REAL )
-            #define RSL_GOTCHA GOTCHA
-        #elif defined ( COMPLEX )
-            #define CSL_GOTCHA GOTCHA
-        #elif defined ( ZOMPLEX )
-            #define ZSL_GOTCHA GOTCHA
-        #endif
-
-    #else
-
-        #if defined ( PATTERN )
-            #define PI_GOTCHA GOTCHA
-            #define PSI_GOTCHA GOTCHA
-        #elif defined ( REAL )
-            #define RSI_GOTCHA GOTCHA
-        #elif defined ( COMPLEX )
-            #define CSI_GOTCHA GOTCHA
-        #elif defined ( ZOMPLEX )
-            #define ZSI_GOTCHA GOTCHA
-        #endif
-
+    #ifndef PI_GOTCHA
+    #define PI_GOTCHA ;
     #endif
-#endif
 
-#ifndef PI_GOTCHA
-#define PI_GOTCHA ;
-#endif
+    #ifndef PL_GOTCHA
+    #define PL_GOTCHA ;
+    #endif
 
-#ifndef PL_GOTCHA
-#define PL_GOTCHA ;
-#endif
+    #ifndef PDI_GOTCHA
+    #define PDI_GOTCHA ;
+    #endif
+    #ifndef RDI_GOTCHA
+    #define RDI_GOTCHA ;
+    #endif
+    #ifndef CDI_GOTCHA
+    #define CDI_GOTCHA ;
+    #endif
+    #ifndef ZDI_GOTCHA
+    #define ZDI_GOTCHA ;
+    #endif
 
-#ifndef PDI_GOTCHA
-#define PDI_GOTCHA ;
-#endif
-#ifndef RDI_GOTCHA
-#define RDI_GOTCHA ;
-#endif
-#ifndef CDI_GOTCHA
-#define CDI_GOTCHA ;
-#endif
-#ifndef ZDI_GOTCHA
-#define ZDI_GOTCHA ;
-#endif
+    #ifndef PDL_GOTCHA
+    #define PDL_GOTCHA ;
+    #endif
+    #ifndef RDL_GOTCHA
+    #define RDL_GOTCHA ;
+    #endif
+    #ifndef CDL_GOTCHA
+    #define CDL_GOTCHA ;
+    #endif
+    #ifndef ZDL_GOTCHA
+    #define ZDL_GOTCHA ;
+    #endif
 
-#ifndef PDL_GOTCHA
-#define PDL_GOTCHA ;
-#endif
-#ifndef RDL_GOTCHA
-#define RDL_GOTCHA ;
-#endif
-#ifndef CDL_GOTCHA
-#define CDL_GOTCHA ;
-#endif
-#ifndef ZDL_GOTCHA
-#define ZDL_GOTCHA ;
-#endif
+    #ifndef PSI_GOTCHA
+    #define PSI_GOTCHA ;
+    #endif
+    #ifndef RSI_GOTCHA
+    #define RSI_GOTCHA ;
+    #endif
+    #ifndef CSI_GOTCHA
+    #define CSI_GOTCHA ;
+    #endif
+    #ifndef ZSI_GOTCHA
+    #define ZSI_GOTCHA ;
+    #endif
 
-#ifndef PSI_GOTCHA
-#define PSI_GOTCHA ;
-#endif
-#ifndef RSI_GOTCHA
-#define RSI_GOTCHA ;
-#endif
-#ifndef CSI_GOTCHA
-#define CSI_GOTCHA ;
-#endif
-#ifndef ZSI_GOTCHA
-#define ZSI_GOTCHA ;
-#endif
+    #ifndef PSL_GOTCHA
+    #define PSL_GOTCHA ;
+    #endif
+    #ifndef RSL_GOTCHA
+    #define RSL_GOTCHA ;
+    #endif
+    #ifndef CSL_GOTCHA
+    #define CSL_GOTCHA ;
+    #endif
+    #ifndef ZSL_GOTCHA
+    #define ZSL_GOTCHA ;
+    #endif
 
-#ifndef PSL_GOTCHA
-#define PSL_GOTCHA ;
-#endif
-#ifndef RSL_GOTCHA
-#define RSL_GOTCHA ;
-#endif
-#ifndef CSL_GOTCHA
-#define CSL_GOTCHA ;
-#endif
-#ifndef ZSL_GOTCHA
-#define ZSL_GOTCHA ;
 #endif
 

@@ -64,22 +64,26 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
-	./build/cholmod_demo     ./Demo/Matrix/bcsstk01.tri  > ./build/bcsstk01_out.txt
-	./build/cholmod_l_demo   ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
-	./build/cholmod_s_demo   ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
-	./build/cholmod_sl_demo  ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
-	./build/cholmod_demo     ./Demo/Matrix/lp_afiro.tri  > ./build/lp_afiro_out.txt
-	./build/cholmod_l_demo   ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
-	./build/cholmod_s_demo   ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
-	./build/cholmod_sl_demo  ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
-	./build/cholmod_demo     ./Demo/Matrix/can___24.mtx  > ./build/can24_out.txt
-	./build/cholmod_l_demo   ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
-	./build/cholmod_s_demo   ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
-	./build/cholmod_sl_demo  ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
-	./build/cholmod_demo     ./Demo/Matrix/c.tri         > ./build/complex_out.txt
-	./build/cholmod_l_demo   ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
-	./build/cholmod_s_demo   ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
-	./build/cholmod_sl_demo  ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	./build/cholmod_di_demo ./Demo/Matrix/bcsstk01.tri  > ./build/bcsstk01_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/lp_afiro.tri  > ./build/lp_afiro_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/can___24.mtx  > ./build/can24_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/c.tri         > ./build/complex_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	#
 	./build/cholmod_simple   < ./Demo/Matrix/c.tri         > ./build/simple_out.txt
 	./build/cholmod_s_simple < ./Demo/Matrix/c.tri        >> ./build/simple_out.txt
 	./build/cholmod_simple   < ./Demo/Matrix/can___24.mtx >> ./build/simple_out.txt

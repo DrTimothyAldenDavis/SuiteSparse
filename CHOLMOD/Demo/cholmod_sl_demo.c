@@ -31,10 +31,10 @@
 //
 // There are 4 versions of this demo:
 //
-// cholmod_demo:    int32_t integers, double or double complex values
-// cholmod_l_demo:  int64_t integers, double or double complex values
-// cholmod_s_demo:  int32_t integers, float or float complex values
-// cholmod_sl_demo: int64_t integers, float or float complex values
+// cholmod_di_demo: double or double complex values, int32_t integers
+// cholmod_dl_demo: double or double complex values, int64_t integers
+// cholmod_si_demo: float or float complex values, int32_t integers
+// cholmod_sl_demo: float or float complex values, int64_t integers
 
 #include "cholmod_demo.h"
 #define NTRIALS 100
@@ -162,7 +162,6 @@ int main (int argc, char **argv)
         // Convert to zomplex, just for testing.  In a zomplex matrix,
         // the real and imaginary parts are in separate arrays.  MATLAB
         // uses zomplex matrix exclusively.
-        cholmod_l_print_sparse (A, "A", cm) ;
         cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX + A->dtype, A, cm) ;
     }
 

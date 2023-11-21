@@ -151,14 +151,6 @@ static void TEMPLATE (cholmod_resymbol_worker)
         else
         {
             // leave column k in place, just reduce Lnz [k]
-ZSI_GOTCHA
-ZSL_GOTCHA
-CSI_GOTCHA
-CSL_GOTCHA
-ZDI_GOTCHA
-ZDL_GOTCHA
-CDI_GOTCHA
-CDL_GOTCHA
             pdest = p ;
         }
 

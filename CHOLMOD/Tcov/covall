@@ -10,3 +10,4 @@
 ./covs *.gcov > covs.out
 echo -n "statements not yet tested: "
 grep -c "#####" covs.out
+exit 0

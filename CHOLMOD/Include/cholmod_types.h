@@ -27,8 +27,8 @@
 #undef ITYPE
 #undef ID
 #undef CLEAR_FLAG
-#undef I_GOTCHA
-#undef L_GOTCHA
+// #undef I_GOTCHA
+// #undef L_GOTCHA
 
 #if defined ( CHOLMOD_INT64 )
 
@@ -43,8 +43,8 @@
     #define ITYPE CHOLMOD_LONG
     #define ID "%" PRId64
 
-    #define L_GOTCHA GOTCHA
-    #define I_GOTCHA ;
+    // #define L_GOTCHA GOTCHA
+    // #define I_GOTCHA ;
 
     #define CLEAR_FLAG(Common)                  \
     {                                           \
@@ -73,8 +73,8 @@
     #define ITYPE CHOLMOD_INT
     #define ID "%d"
 
-    #define L_GOTCHA ;
-    #define I_GOTCHA GOTCHA
+    // #define L_GOTCHA ;
+    // #define I_GOTCHA GOTCHA
 
     #define CLEAR_FLAG(Common)                              \
     {                                                       \

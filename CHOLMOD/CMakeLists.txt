@@ -631,9 +631,9 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( cholmod_demo       "Demo/cholmod_demo.c" )
-    add_executable ( cholmod_s_demo     "Demo/cholmod_s_demo.c" )
-    add_executable ( cholmod_l_demo     "Demo/cholmod_l_demo.c" )
+    add_executable ( cholmod_di_demo    "Demo/cholmod_di_demo.c" )
+    add_executable ( cholmod_dl_demo    "Demo/cholmod_dl_demo.c" )
+    add_executable ( cholmod_si_demo    "Demo/cholmod_si_demo.c" )
     add_executable ( cholmod_sl_demo    "Demo/cholmod_sl_demo.c" )
     add_executable ( cholmod_simple     "Demo/cholmod_simple.c" )
     add_executable ( cholmod_s_simple   "Demo/cholmod_s_simple.c" )
@@ -645,17 +645,17 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cholmod_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_demo PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
-    target_link_libraries ( cholmod_s_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_s_demo PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
-    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
     target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
@@ -671,47 +671,47 @@ if ( DEMO )
     endif ( )
 
     add_test ( NAME int32_double_bcsstk01
-        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int64_double_bcsstk01
-        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int32_single_bcsstk01
-        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int64_single_bcsstk01
         COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
 
     add_test ( NAME int32_double_lp_afiro
-        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int64_double_lp_afiro
-        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int32_single_lp_afiro
-        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int64_single_lp_afiro
         COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
 
     add_test ( NAME int32_double_can24
-        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int64_double_can24
-        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int32_single_can24
-        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int64_single_can24
         COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
 
     add_test ( NAME int32_double_complex
-        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int64_double_complex
-        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int32_single_complex
-        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int64_single_complex
         COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
 
     add_test ( NAME int32_double_supernodal
-        COMMAND cholmod_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int64_double_supernodal
-        COMMAND cholmod_l_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int32_single_supernodal
-        COMMAND cholmod_s_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int64_single_supernodal
         COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 

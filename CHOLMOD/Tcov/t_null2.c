@@ -1980,7 +1980,25 @@ void null2 (cholmod_triplet *Tok, int do_nantests)
     ok = CHOLMOD(resymbol)(Abad2, NULL, 0, TRUE, L2, cm) ;          NOT (ok) ;
 
     ok = CHOLMOD(resymbol_noperm)(Acopy, NULL, 0, TRUE, NULL, cm) ; NOT (ok) ;
-    ok = CHOLMOD(resymbol)(Acopy, NULL, 0, TRUE, L2, cm) ;          OK (ok) ;
+
+    printf ("resymbol, no pack:\n") ;
+    if (L2 != NULL && L2->xtype == CHOLMOD_COMPLEX)
+    {
+        L3 = CHOLMOD(copy_factor)(L2, cm) ;
+        OKP (L3) ;
+        ok = CHOLMOD(factor_xtype)(CHOLMOD_ZOMPLEX + L2->dtype, L3, cm) ;
+        OK (ok) ;
+        ok = CHOLMOD(print_factor) (L3, "L3 before zomplex resymbol", cm) ;
+        OK (ok) ;
+        ok = CHOLMOD(resymbol)(Acopy, NULL, 0, false, L3, cm) ;
+        OK (ok) ;
+        ok = CHOLMOD(print_factor) (L3, "L3: zomplex resymbol, no pack", cm) ;
+        OK (ok) ;
+        ok = CHOLMOD(free_factor) (&L3, cm) ;
+        OK (ok) ;
+    }
+    ok = CHOLMOD(resymbol)(Acopy, NULL, 0, false, L2, cm) ;
+    OK (ok) ;
 
     if (ncol > 0)
     {

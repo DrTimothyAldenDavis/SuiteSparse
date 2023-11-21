@@ -1,6 +1,9 @@
 FIXME TODO: for CHOLMOD 5.1.0:
 
-Tcov/*      add single tests
+code:
+    add #define's for mode
+
+Tcov/*      clean up
 
 MATLAB/*    add a flag to convert double to single, just for testing
             (return results as double)
