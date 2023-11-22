@@ -10,11 +10,11 @@ function test2
 fprintf ('=================================================================\n');
 fprintf ('test2: test sparse2\n') ;
 
-i = [ 2 3 ]								    %#ok
-j = [ 3 4 ]								    %#ok
-s = [11.4 9.2] + 1i * [3.4 1.2]						    %#ok
-sparse (i,j,s)								    %#ok
-sparse2 (i,j,s)								    %#ok
+i = [ 2 3 ]                                                                 %#ok
+j = [ 3 4 ]                                                                 %#ok
+s = [11.4 9.2] + 1i * [3.4 1.2]                                             %#ok
+sparse (i,j,s)                                                              %#ok
+sparse2 (i,j,s)                                                             %#ok
 
 n = 100 ;
 nz = 4000 ;
@@ -27,7 +27,7 @@ B = sparse2 (i,j,s,n,n) ;
 nnz(A)
 
 if (norm (A-B,1) > 1e-14)
-    A_minus_B = A-B							    %#ok
+    A_minus_B = A-B                                                         %#ok
     error ('!') ;
 end
 
@@ -35,7 +35,7 @@ C = sparse (A) ;
 D = sparse2 (B) ;
 
 if (norm (C-D,1) > 1e-14)
-    C_minus_D = C-D							    %#ok
+    C_minus_D = C-D                                                         %#ok
     error ('!') ;
 end
 % spy(C)

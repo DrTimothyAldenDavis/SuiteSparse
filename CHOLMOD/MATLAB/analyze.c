@@ -16,18 +16,18 @@
  *
  * Usage:
  *
- *	[p count] = analyze (A)		orders A, using just tril(A)
- *	[p count] = analyze (A,'sym')	orders A, using just tril(A)
- *	[p count] = analyze (A,'row')	orders A*A'
- *	[p count] = analyze (A,'col')	orders A'*A
+ *      [p count] = analyze (A)         orders A, using just tril(A)
+ *      [p count] = analyze (A,'sym')   orders A, using just tril(A)
+ *      [p count] = analyze (A,'row')   orders A*A'
+ *      [p count] = analyze (A,'col')   orders A'*A
  *
  * with an optional 3rd parameter:
  *
- *	[p count] = analyze (A,'sym',k)	orders A, using just tril(A)
- *	[p count] = analyze (A,'row',k)	orders A*A'
- *	[p count] = analyze (A,'col',k)	orders A'*A
+ *      [p count] = analyze (A,'sym',k) orders A, using just tril(A)
+ *      [p count] = analyze (A,'row',k) orders A*A'
+ *      [p count] = analyze (A,'col',k) orders A'*A
  *
- *	k=0 is the default.  k != 0 selects the ordering strategy.
+ *      k=0 is the default.  k != 0 selects the ordering strategy.
  *
  * See analyze.m for more details.
  */
@@ -66,32 +66,32 @@ void mexFunction
 
     if (nargout > 2 || nargin < 1 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: [p count] = analyze (A, mode)") ;
+        mexErrMsgTxt ("Usage: [p count] = analyze (A, mode)") ;
     }
     if (nargin == 3)
     {
-	cm->nmethods = mxGetScalar (pargin [2]) ;
-	if (cm->nmethods == -1 || cm->nmethods == 1 || cm->nmethods == 2)
-	{
-	    /* use AMD only */
-	    cm->nmethods = 1 ;
-	    cm->method [0].ordering = CHOLMOD_AMD ;
-	    cm->postorder = TRUE ;
-	}
-	else if (cm->nmethods == -2)
-	{
-	    /* use METIS only */
-	    cm->nmethods = 1 ;
-	    cm->method [0].ordering = CHOLMOD_METIS ;
-	    cm->postorder = TRUE ;
-	}
-	else if (cm->nmethods == -3)
-	{
-	    /* use NESDIS only */
-	    cm->nmethods = 1 ;
-	    cm->method [0].ordering = CHOLMOD_NESDIS ;
-	    cm->postorder = TRUE ;
-	}
+        cm->nmethods = mxGetScalar (pargin [2]) ;
+        if (cm->nmethods == -1 || cm->nmethods == 1 || cm->nmethods == 2)
+        {
+            /* use AMD only */
+            cm->nmethods = 1 ;
+            cm->method [0].ordering = CHOLMOD_AMD ;
+            cm->postorder = TRUE ;
+        }
+        else if (cm->nmethods == -2)
+        {
+            /* use METIS only */
+            cm->nmethods = 1 ;
+            cm->method [0].ordering = CHOLMOD_METIS ;
+            cm->postorder = TRUE ;
+        }
+        else if (cm->nmethods == -3)
+        {
+            /* use NESDIS only */
+            cm->nmethods = 1 ;
+            cm->method [0].ordering = CHOLMOD_NESDIS ;
+            cm->postorder = TRUE ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -110,51 +110,51 @@ void mexFunction
 
     if (nargin > 1)
     {
-	buf [0] = '\0' ;
-	if (mxIsChar (pargin [1]))
-	{
-	    mxGetString (pargin [1], buf, LEN) ;
-	}
-	c = buf [0] ;
-	if (tolower (c) == 'r')
-	{
-	    /* unsymmetric case (A*A') if string starts with 'r' */
-	    transpose = FALSE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 'c')
-	{
-	    /* unsymmetric case (A'*A) if string starts with 'c' */
-	    transpose = TRUE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 's')
-	{
-	    /* symmetric case (A) if string starts with 's' */
-	    transpose = FALSE ;
-	    A->stype = -1 ;
-	}
-	else
-	{
-	    mexErrMsgTxt ("analyze: unrecognized mode") ;
-	}
+        buf [0] = '\0' ;
+        if (mxIsChar (pargin [1]))
+        {
+            mxGetString (pargin [1], buf, LEN) ;
+        }
+        c = buf [0] ;
+        if (tolower (c) == 'r')
+        {
+            /* unsymmetric case (A*A') if string starts with 'r' */
+            transpose = FALSE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 'c')
+        {
+            /* unsymmetric case (A'*A) if string starts with 'c' */
+            transpose = TRUE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 's')
+        {
+            /* symmetric case (A) if string starts with 's' */
+            transpose = FALSE ;
+            A->stype = -1 ;
+        }
+        else
+        {
+            mexErrMsgTxt ("analyze: unrecognized mode") ;
+        }
     }
 
     if (A->stype && A->nrow != A->ncol)
     {
-	mexErrMsgTxt ("analyze: A must be square") ;
+        mexErrMsgTxt ("analyze: A must be square") ;
     }
 
     C = NULL ;
     if (transpose)
     {
-	/* C = A', and then order C*C' */
-	C = cholmod_l_transpose (A, 0, cm) ;
-	if (C == NULL)
-	{
-	    mexErrMsgTxt ("analyze failed") ;
-	}
-	A = C ;
+        /* C = A', and then order C*C' */
+        C = cholmod_l_transpose (A, 0, cm) ;
+        if (C == NULL)
+        {
+            mexErrMsgTxt ("analyze failed") ;
+        }
+        A = C ;
     }
 
     n = A->nrow ;
@@ -172,7 +172,7 @@ void mexFunction
     pargout [0] = sputil_put_int (L->Perm, n, 1) ;
     if (nargout > 1)
     {
-	pargout [1] = sputil_put_int (L->ColCount, n, 0) ;
+        pargout [1] = sputil_put_int (L->ColCount, n, 0) ;
     }
 
     /* ---------------------------------------------------------------------- */

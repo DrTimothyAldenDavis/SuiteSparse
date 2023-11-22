@@ -12,7 +12,7 @@
  *
  * Usage:
  *
- *	x = ldlsolve (LD,b)
+ *      x = ldlsolve (LD,b)
  *
  * b can be dense or sparse.
  */
@@ -49,7 +49,7 @@ void mexFunction
 
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("Usage: x = ldlsolve (LD, b)") ; 
+        mexErrMsgTxt ("Usage: x = ldlsolve (LD, b)") ; 
     }
 
     n = mxGetN (pargin [0]) ;
@@ -57,11 +57,11 @@ void mexFunction
 
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
-	mexErrMsgTxt ("ldlsolve: LD must be sparse and square") ;
+        mexErrMsgTxt ("ldlsolve: LD must be sparse and square") ;
     }
     if (n != mxGetM (pargin [1]))
     {
-	mexErrMsgTxt ("ldlsolve: b wrong dimension") ;
+        mexErrMsgTxt ("ldlsolve: b wrong dimension") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -74,13 +74,13 @@ void mexFunction
     B_is_sparse = mxIsSparse (pargin [1]) ;
     if (B_is_sparse)
     {
-	/* get sparse matrix B (unsymmetric) */
-	Bs = sputil_get_sparse (pargin [1], &Bspmatrix, &dummy, 0) ;
+        /* get sparse matrix B (unsymmetric) */
+        Bs = sputil_get_sparse (pargin [1], &Bspmatrix, &dummy, 0) ;
     }
     else
     {
-	/* get dense matrix B */
-	B = sputil_get_dense (pargin [1], &Bmatrix, &dummy) ;
+        /* get dense matrix B */
+        B = sputil_get_dense (pargin [1], &Bmatrix, &dummy) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -105,7 +105,7 @@ void mexFunction
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
-	Lnz [j] = Lp [j+1] - Lp [j] ;
+        Lnz [j] = Lp [j+1] - Lp [j] ;
     }
     L->prev = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
     L->next = cholmod_l_malloc (n+2, sizeof (int64_t), cm) ;
@@ -120,8 +120,8 @@ void mexFunction
     Lprev [tail] = n-1 ;
     for (j = 0 ; j < n ; j++)
     {
-	Lnext [j] = j+1 ;
-	Lprev [j] = j-1 ;
+        Lnext [j] = j+1 ;
+        Lprev [j] = j-1 ;
     }
     Lprev [0] = head ;
 
@@ -134,26 +134,26 @@ void mexFunction
 
     if (B_is_sparse)
     {
-	/* solve LDL'X=B with sparse X and B; return sparse X to MATLAB */
-	Xs = cholmod_l_spsolve (CHOLMOD_LDLt, L, Bs, cm) ;
-	pargout [0] = sputil_put_sparse (&Xs, cm) ;
+        /* solve LDL'X=B with sparse X and B; return sparse X to MATLAB */
+        Xs = cholmod_l_spsolve (CHOLMOD_LDLt, L, Bs, cm) ;
+        pargout [0] = sputil_put_sparse (&Xs, cm) ;
     }
     else
     {
-	/* solve AX=B with dense X and B; return dense X to MATLAB */
-	X = cholmod_l_solve (CHOLMOD_LDLt, L, B, cm) ;
-	pargout [0] = sputil_put_dense (&X, cm) ;
+        /* solve AX=B with dense X and B; return dense X to MATLAB */
+        X = cholmod_l_solve (CHOLMOD_LDLt, L, B, cm) ;
+        pargout [0] = sputil_put_dense (&X, cm) ;
     }
 
     rcond = cholmod_l_rcond (L, cm) ;
     if (rcond == 0)
     {
-	mexWarnMsgTxt ("Matrix is indefinite or singular to working precision");
+        mexWarnMsgTxt ("Matrix is indefinite or singular to working precision");
     }
     else if (rcond < DBL_EPSILON)
     {
-	mexWarnMsgTxt ("Matrix is close to singular or badly scaled.") ;
-	mexPrintf ("         Results may be inaccurate. RCOND = %g.\n", rcond) ;
+        mexWarnMsgTxt ("Matrix is close to singular or badly scaled.") ;
+        mexPrintf ("         Results may be inaccurate. RCOND = %g.\n", rcond) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -169,7 +169,7 @@ void mexFunction
     cholmod_l_print_common (" ", cm) ;
     /*
     if (cm->malloc_count !=
-	(mxIsComplex (pargout [0]) + (mxIsSparse (pargout[0]) ? 3:1)))
-	mexErrMsgTxt ("!") ;
+        (mxIsComplex (pargout [0]) + (mxIsSparse (pargout[0]) ? 3:1)))
+        mexErrMsgTxt ("!") ;
     */
 }

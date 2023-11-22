@@ -18,14 +18,14 @@ for do_complex = 0:1
     rand  ('state', 0) ;
 
     % Prob = ssget (437)
-    Prob = ssget (749)							    %#ok
+    Prob = ssget (749)                                                      %#ok
     A = Prob.A ;
-    [m n] = size (A) ;							    %#ok
+    [m n] = size (A) ;                                                      %#ok
 
     if (do_complex)
-%	A = A + 1i*sprand(A) ;
-%	patch for MATLAB 7.2
-	A = A + sparse(1:m,1:m,1i)*sprand(A) ;
+%       A = A + 1i*sprand(A) ;
+%       patch for MATLAB 7.2
+        A = A + sparse(1:m,1:m,1i)*sprand(A) ;
     end
 
     tic
@@ -61,12 +61,12 @@ for do_complex = 0:1
 
     err = norm(A-B,1) ;
     if (err > 0)
-	error ('dtri2 1') ;
+        error ('dtri2 1') ;
     end
 
     err = norm(A-C,1) ;
     if (err > 0)
-	error ('dtri2 1') ;
+        error ('dtri2 1') ;
     end
 
     nz = length (x) ;
@@ -74,7 +74,7 @@ for do_complex = 0:1
 
     i2 = i(p) ;
     j2 = j(p) ;
-    x2 = x(p) ;							    %#ok
+    x2 = x(p) ;                                                     %#ok
 
     tic ;
     B = sparse2 (i,j,x,m,n) ;
@@ -87,19 +87,19 @@ for do_complex = 0:1
 
     err = norm(A-B,1) ;
     if (err > 0)
-	error ('dtri2 2') ;
+        error ('dtri2 2') ;
     end
 
     err = norm(A-C,1) ;
     if (err > 0)
-	error ('dtri2 1') ;
+        error ('dtri2 1') ;
     end
 
     ii = [i2 ; i2] ;
     jj = [j2 ; j2] ;
     xx = rand (2*nz,1) ;
     if (do_complex)
-	xx = xx + 1i* rand (2*nz,1) ;
+        xx = xx + 1i* rand (2*nz,1) ;
     end
 
     tic ;
@@ -110,7 +110,7 @@ for do_complex = 0:1
     t2 = toc ;
     err = norm (C-D,1) ;
     if (err > 0)
-	error ('dtri2 3') ;
+        error ('dtri2 3') ;
     end
     fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (duplicates)\n', t1, t2) ;
 
@@ -125,9 +125,9 @@ for do_complex = 0:1
     tic ;
     F = sparse (i2, j2, xx, n, n) ;
     t2 = toc ;
-    err = norm (E-F,1)							    %#ok
+    err = norm (E-F,1)                                                      %#ok
     if (err > 1e-13)
-	error ('dtri2 4') ;
+        error ('dtri2 4') ;
     end
     fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (upper)\n', t1, t2) ;
 
@@ -140,9 +140,9 @@ for do_complex = 0:1
     tic ;
     F = sparse (i2, j2, xx, n, n) ;
     t2 = toc ;
-    err = norm (E-F,1)							    %#ok
+    err = norm (E-F,1)                                                      %#ok
     if (err > 1e-13)
-	error ('dtri2 5') ;
+        error ('dtri2 5') ;
     end
     fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (lower)\n', t1, t2) ;
 
@@ -159,7 +159,7 @@ for do_complex = 0:1
     t2 = toc ;
     err = norm (C-D,1) ;
     if (err > 0)
-	error ('dtri2 6') ;
+        error ('dtri2 6') ;
     end
     fprintf ('dtri time: cholmod2 %8.6f  matlab %8.6f (sorted, dupl)\n', t1, t2) ;
 

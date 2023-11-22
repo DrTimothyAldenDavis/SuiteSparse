@@ -16,9 +16,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {
@@ -41,11 +41,11 @@ void mexFunction
 
     if (nargin > 2 || nargin < 1 || nargout > 5)
     {
-	mexErrMsgTxt ("usage: [s xmatch pmatch nzoff nzd] = spsym (A,quick)") ;
+        mexErrMsgTxt ("usage: [s xmatch pmatch nzoff nzd] = spsym (A,quick)") ;
     }
     if (!mxIsSparse (pargin [0]))
     {
-    	mexErrMsgTxt ("A must be sparse and double") ;
+        mexErrMsgTxt ("A must be sparse and double") ;
     }
 
     /* get sparse matrix A */
@@ -56,15 +56,15 @@ void mexFunction
 
     if (nargout > 1)
     {
-	option = 2 ;
+        option = 2 ;
     }
     else if (quick)
     {
-	option = 0 ;
+        option = 0 ;
     }
     else
     {
-	option = 1 ;
+        option = 1 ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -77,7 +77,7 @@ void mexFunction
     nzdiag = 0 ;
 
     result = cholmod_l_symmetry (A, option, &xmatched, &pmatched, &nzoffdiag,
-	&nzdiag, cm) ;
+        &nzdiag, cm) ;
 
     /* ---------------------------------------------------------------------- */
     /* return results to MATLAB */

@@ -26,8 +26,8 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     x = repmat (0:n-1, n, 1) ;
     y = repmat (((n-1):-1:0)', 1, n)  ;
     A = delsq (g) ;
-    x = x (find (g)) ;							    %#ok
-    y = y (find (g)) ;							    %#ok
+    x = x (find (g)) ;                                                      %#ok
+    y = y (find (g)) ;                                                      %#ok
 
     % plot the original grid
     clf

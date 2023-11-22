@@ -12,9 +12,9 @@
  *
  * Usage:
  *
- *	LD = ldlupdate (LD,C)		update an LDL' factorization
- *	LD = ldlupdate (LD,C,'+')	update an LDL' factorization
- *	LD = ldlupdate (LD,C,'-')	downdate an LDL' factorization
+ *      LD = ldlupdate (LD,C)           update an LDL' factorization
+ *      LD = ldlupdate (LD,C,'+')       update an LDL' factorization
+ *      LD = ldlupdate (LD,C,'-')       downdate an LDL' factorization
  *
  * See ldlupdate.m for details.  LD and C must be real and sparse.
  *
@@ -55,18 +55,18 @@ void mexFunction
 
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: L = ldlupdate (L, C, '+')") ; 
+        mexErrMsgTxt ("Usage: L = ldlupdate (L, C, '+')") ; 
     }
 
     n = mxGetN (pargin [0]) ;
     k = mxGetN (pargin [1]) ;
 
     if (!mxIsSparse (pargin [0]) || !mxIsSparse (pargin [1])
-	    || n != mxGetM (pargin [0]) || n != mxGetM (pargin [1])
-	    || mxIsComplex (pargin [0]) || mxIsComplex (pargin [1]))
+            || n != mxGetM (pargin [0]) || n != mxGetM (pargin [1])
+            || mxIsComplex (pargin [0]) || mxIsComplex (pargin [1]))
     {
-	mexErrMsgTxt ("ldlupdate: C and/or L not sparse, complex, or wrong"
-		" dimensions") ;
+        mexErrMsgTxt ("ldlupdate: C and/or L not sparse, complex, or wrong"
+                " dimensions") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -76,15 +76,15 @@ void mexFunction
     update = TRUE ;
     if (nargin > 2 && mxIsChar (pargin [2]))
     {
-	mxGetString (pargin [2], buf, LEN) ;
-	if (buf [0] == '-')
-	{
-	    update = FALSE ;
-	}
-	else if (buf [0] != '+')
-	{
-	    mexErrMsgTxt ("ldlupdate: update string must be '+' or '-'") ;
-	}
+        mxGetString (pargin [2], buf, LEN) ;
+        if (buf [0] == '-')
+        {
+            update = FALSE ;
+        }
+        else if (buf [0] != '+')
+        {
+            mexErrMsgTxt ("ldlupdate: update string must be '+' or '-'") ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -108,7 +108,7 @@ void mexFunction
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
     {
-	ColCount [j] = Lp [j+1] - Lp [j] ;
+        ColCount [j] = Lp [j+1] - Lp [j] ;
     }
 
     /* allocate space for a CHOLMOD LDL' packed factor */
@@ -122,19 +122,19 @@ void mexFunction
     lnz = L->nzmax ;
     for (j = 0 ; j <= n ; j++)
     {
-	Lp2 [j] = Lp [j] ;
+        Lp2 [j] = Lp [j] ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	Lnz2 [j] = Lp [j+1] - Lp [j] ;
+        Lnz2 [j] = Lp [j+1] - Lp [j] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Li2 [s] = Li [s] ;
+        Li2 [s] = Li [s] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Lx2 [s] = Lx [s] ;
+        Lx2 [s] = Lx [s] ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -143,7 +143,7 @@ void mexFunction
 
     if (!cholmod_l_updown (update, C, L, cm))
     {
-	mexErrMsgTxt ("ldlupdate failed\n") ;
+        mexErrMsgTxt ("ldlupdate failed\n") ;
     }
 
     /* ---------------------------------------------------------------------- */

@@ -1,4 +1,4 @@
-function [L,D] = ldlsplit (LD)						    %#ok
+function [L,D] = ldlsplit (LD)                                              %#ok
 %LDLSPLIT split an LDL' factorization into L and D.
 %
 %   Example:

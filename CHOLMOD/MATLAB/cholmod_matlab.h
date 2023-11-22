@@ -35,6 +35,7 @@
 #define ERROR_LENGTH 5
 #define ERROR_INVALID_TYPE 6
 #define ERROR_OUT_OF_MEMORY 7
+#define ERROR_NOT_SPARSE 8
 
 /* getting spumoni at run-time takes way too much time */
 #ifndef SPUMONI
@@ -116,11 +117,62 @@ cholmod_sparse *sputil_get_sparse
     int64_t stype           /* -1: lower, 0: unsymmetric, 1: upper */
 ) ;
 
+cholmod_sparse *sputil_get_sparse2  // create a CHOLMOD copy of a MATLAB matrix
+(
+    // input:
+    const mxArray *Amatlab, // MATLAB version of the matrix
+    int stype,              // assumed A->stype (-1: lower, 0: unsym, 1: upper)
+    int dtype,              // requested A->dtype (0: double, nonzero: single)
+    // input/output:
+    cholmod_sparse *A,      // the header of A on input, contents not
+                            // initialized.  Contains the CHOLMOD sparse A on
+                            // output.
+    // output:
+    size_t *xsize,          // if > 0, A->x has size xsize bytes, and it is a
+                            // deep copy and must be freed by
+                            // sputil_free_sparse2.
+    cholmod_common *cm
+) ;
+
+void sputil_free_sparse2    // free a matrix created by sputil_get_sparse2
+(
+    // input/output:
+    cholmod_sparse *A,      // the header of A, contents not initialized
+    // input:
+    size_t xsize,           // from sputil_get_sparse2 when A was created
+    cholmod_common *cm
+) ;
+
 cholmod_dense *sputil_get_dense
 (
     const mxArray *Amatlab, /* MATLAB version of the matrix */
     cholmod_dense *A,       /* CHOLMOD version of the matrix */
     double *dummy           /* a pointer to a valid scalar double */
+) ;
+
+cholmod_dense *sputil_get_dense2  // create a CHOLMOD copy of a MATLAB matrix
+(
+    // input:
+    const mxArray *Xmatlab, // MATLAB version of the matrix
+    int dtype,              // requested X->dtype (0: double, nonzero: single)
+    // input/output:
+    cholmod_dense *X,       // the header of X on input, contents not
+                            // initialized.  Contains the CHOLMOD dense X on
+                            // output.
+    // output:
+    size_t *xsize,          // if > 0, X->x has size xsize bytes, and it is a
+                            // deep copy and must be freed by
+                            // sputil_free_dense2.
+    cholmod_common *cm
+) ;
+
+void sputil_free_dense2    // free a matrix created by sputil_get_dense2
+(
+    // input/output:
+    cholmod_dense *X,      // a CHOLMOD matrix created by sputil_get_dense2
+    // input:
+    size_t xsize,          // from sputil_get_dense2 when X was created
+    cholmod_common *cm
 ) ;
 
 mxArray *sputil_put_dense   /* returns the MATLAB version */
@@ -129,9 +181,27 @@ mxArray *sputil_put_dense   /* returns the MATLAB version */
     cholmod_common *cm
 ) ;
 
+mxArray *sputil_put_dense2      // return MATLAB version of the matrix
+(
+    cholmod_dense **Xhandle,    // CHOLMOD version of the matrix
+    mxClassID mxclass,          // requested class of the MATLAB matrix:
+                                // mxDOUBLE_CLASS, mxSINGLE_CLASS, or
+                                // mxLOGICAL_CLASS
+    cholmod_common *cm
+) ;
+
 mxArray *sputil_put_sparse
 (
     cholmod_sparse **Ahandle,   /* CHOLMOD version of the matrix */
+    cholmod_common *cm
+) ;
+
+mxArray *sputil_put_sparse2     // return MATLAB version of the matrix
+(
+    cholmod_sparse **Ahandle,   // CHOLMOD version of the matrix
+    mxClassID mxclass,          // requested class of the MATLAB matrix:
+                                // mxDOUBLE_CLASS, mxSINGLE_CLASS, or
+                                // mxLOGICAL_CLASS
     cholmod_common *cm
 ) ;
 

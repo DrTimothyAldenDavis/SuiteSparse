@@ -31,21 +31,21 @@ for k = 1:nmat
     [m n] = size (A) ;
 
     if (m ~= n)
-	continue ;
+        continue ;
     end
 
     fprintf ('%35s: ', Prob.name) ;
 
     if (m == n)
-	mode = 'sym' ;
-	A = A + A' ;
-	len = n ;
+        mode = 'sym' ;
+        A = A + A' ;
+        len = n ;
     elseif (m < n)
-	mode = 'row' ;
-	len = m ;
+        mode = 'row' ;
+        len = m ;
     else
-	mode = 'col' ;
-	len = n ;
+        mode = 'col' ;
+        len = n ;
     end
     
     fprintf (' %s ', mode) ;
@@ -70,27 +70,27 @@ for k = 1:nmat
     tm = toc ;
 
     if (any (sort (p1) ~= 1:len))
-	error ('p1!') ;
+        error ('p1!') ;
     end
 
     if (any (sort (p2) ~= 1:len))
-	error ('p2!') ;
+        error ('p2!') ;
     end
 
     % compare ordering quality
 
     if (m == n)
-	c2 = symbfact2 (A (p2,p2), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
-	c1 = symbfact2 (A (p1,p1), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
-	cm = symbfact2 (A (pm,pm), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
+        c2 = symbfact2 (A (p2,p2), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
+        c1 = symbfact2 (A (p1,p1), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
+        cm = symbfact2 (A (pm,pm), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
     elseif (m < n)
-	c2 = symbfact2 (A (p2, :), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
-	c1 = symbfact2 (A (p1, :), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
-	cm = symbfact2 (A (pm, :), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
+        c2 = symbfact2 (A (p2, :), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
+        c1 = symbfact2 (A (p1, :), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
+        cm = symbfact2 (A (pm, :), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
     else
-	c2 = symbfact2 (A ( :,p2), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
-	c1 = symbfact2 (A ( :,p1), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
-	cm = symbfact2 (A ( :,pm), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
+        c2 = symbfact2 (A ( :,p2), mode) ; fl2 = sum (c2.^2) ; c2 = sum (c2) ;
+        c1 = symbfact2 (A ( :,p1), mode) ; fl1 = sum (c1.^2) ; c1 = sum (c1) ;
+        cm = symbfact2 (A ( :,pm), mode) ; flm = sum (cm.^2) ; cm = sum (cm) ;
     end
 
     T1 (k) = t1 ;
@@ -108,11 +108,11 @@ for k = 1:nmat
     flmax =max ([max(Fl1 (1:k)) max(Fl2 (1:k)) max(FlM (1:k))]) ;
 
     fprintf (...
-	'time %8.2f %8.2f %8.2f speedup %8.2f  flop %8.2e %8.2e %8.2e ratio %8.2f\n', ...
-	t2, t1, tm, tm/t1, fl2, fl1, flm, flm/fl1) ;
+        'time %8.2f %8.2f %8.2f speedup %8.2f  flop %8.2e %8.2e %8.2e ratio %8.2f\n', ...
+        t2, t1, tm, tm/t1, fl2, fl1, flm, flm/fl1) ;
 
     if (mod (k, 20) ~= 0)
-	continue 
+        continue 
     end
 
     subplot (3,3,1) ;
@@ -120,21 +120,21 @@ for k = 1:nmat
     semilogy (1:k, x, 'o', [1 k], [1 1], 'r-') ;
     axis tight
     title (sprintf ('(nesdis default)/(with split) time, median: %g', ...
-	median (x))) ;
+        median (x))) ;
 
     subplot (3,3,2) ;
     x = (Lnz1 (1:k) ./ Lnz2 (1:k)) ;
     semilogy (1:k, x, 'o', [1 k], [1 1], 'r-') ;
     axis tight
     title (sprintf ('(nesdis default)/(with split) lnz, median: %g', ...
-	median (x))) ;
+        median (x))) ;
 
     subplot (3,3,3) ;
     x = (Fl1 (1:k) ./ Fl2 (1:k)) ;
     semilogy (1:k, x, 'o', [1 k], [1 1], 'r-') ;
     axis tight
     title (sprintf ('(nesdis default)/(with split) flops, median: %g', ...
-	median (x))) ;
+        median (x))) ;
 
     subplot (3,3,4) ;
     x = T1 (1:k) ./ TM (1:k) ;

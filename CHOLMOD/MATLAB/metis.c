@@ -15,10 +15,10 @@
  *
  * Usage:
  *
- *	p = metis (A)		orders A, using just tril(A)
- *	p = metis (A,'sym')	orders A, using just tril(A)
- *	p = metis (A,'row')	orders A*A'
- *	p = metis (A,'col')	orders A'*A
+ *      p = metis (A)           orders A, using just tril(A)
+ *      p = metis (A,'sym')     orders A, using just tril(A)
+ *      p = metis (A,'row')     orders A*A'
+ *      p = metis (A,'col')     orders A'*A
  *
  * METIS_NodeND's ordering is followed by CHOLMOD's etree or column etree
  * postordering.  Requires METIS and the CHOLMOD Partition Module.
@@ -56,7 +56,7 @@ void mexFunction
 
     if (nargout > 1 || nargin < 1 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: p = metis (A, mode)") ;
+        mexErrMsgTxt ("Usage: p = metis (A, mode)") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -75,51 +75,51 @@ void mexFunction
 
     if (nargin > 1)
     {
-	buf [0] = '\0' ;
-	if (mxIsChar (pargin [1]))
-	{
-	    mxGetString (pargin [1], buf, LEN) ;
-	}
-	c = buf [0] ;
-	if (tolower (c) == 'r')
-	{
-	    /* unsymmetric case (A*A') if string starts with 'r' */
-	    transpose = FALSE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 'c')
-	{
-	    /* unsymmetric case (A'*A) if string starts with 'c' */
-	    transpose = TRUE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 's')
-	{
-	    /* symmetric case (A) if string starts with 's' */
-	    transpose = FALSE ;
-	    A->stype = -1 ;
-	}
-	else
-	{
-	    mexErrMsgTxt ("metis: p=metis(A,mode) ; unrecognized mode") ;
-	}
+        buf [0] = '\0' ;
+        if (mxIsChar (pargin [1]))
+        {
+            mxGetString (pargin [1], buf, LEN) ;
+        }
+        c = buf [0] ;
+        if (tolower (c) == 'r')
+        {
+            /* unsymmetric case (A*A') if string starts with 'r' */
+            transpose = FALSE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 'c')
+        {
+            /* unsymmetric case (A'*A) if string starts with 'c' */
+            transpose = TRUE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 's')
+        {
+            /* symmetric case (A) if string starts with 's' */
+            transpose = FALSE ;
+            A->stype = -1 ;
+        }
+        else
+        {
+            mexErrMsgTxt ("metis: p=metis(A,mode) ; unrecognized mode") ;
+        }
     }
 
     if (A->stype && A->nrow != A->ncol)
     {
-	mexErrMsgTxt ("metis: A must be square") ;
+        mexErrMsgTxt ("metis: A must be square") ;
     }
 
     C = NULL ;
     if (transpose)
     {
-	/* C = A', and then order C*C' with METIS */
-	C = cholmod_l_transpose (A, 0, cm) ;
-	if (C == NULL)
-	{
-	    mexErrMsgTxt ("metis failed") ;
-	}
-	A = C ;
+        /* C = A', and then order C*C' with METIS */
+        C = cholmod_l_transpose (A, 0, cm) ;
+        if (C == NULL)
+        {
+            mexErrMsgTxt ("metis failed") ;
+        }
+        A = C ;
     }
 
     n = A->nrow ;
@@ -137,8 +137,8 @@ void mexFunction
     postorder = (nargin < 3) ;
     if (!cholmod_l_metis (A, NULL, 0, postorder, Perm, cm))
     {
-	mexErrMsgTxt ("metis failed") ;
-	return ;
+        mexErrMsgTxt ("metis failed") ;
+        return ;
     }
 
     /* ---------------------------------------------------------------------- */

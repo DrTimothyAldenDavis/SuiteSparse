@@ -30,9 +30,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {
@@ -60,21 +60,21 @@ void mexFunction
 
     if (nargin < 1 || nargin > 2 || nargout > 2)
     {
-	mexErrMsgTxt ("usage: [A Z] = mread (filename, prefer_binary)") ;
+        mexErrMsgTxt ("usage: [A Z] = mread (filename, prefer_binary)") ;
     }
     if (!mxIsChar (pargin [0]))
     {
-	mexErrMsgTxt ("mread requires a filename") ;
+        mexErrMsgTxt ("mread requires a filename") ;
     }
     mxGetString (pargin [0], filename, MAXLEN) ;
     sputil_file = fopen (filename, "r") ;
     if (sputil_file == NULL)
     {
-	mexErrMsgTxt ("cannot open file") ;
+        mexErrMsgTxt ("cannot open file") ;
     }
     if (nargin > 1)
     {
-	cm->prefer_binary = (mxGetScalar (pargin [1]) != 0) ;
+        cm->prefer_binary = (mxGetScalar (pargin [1]) != 0) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -86,43 +86,43 @@ void mexFunction
     sputil_file = NULL ;
     if (G == NULL)
     {
-	mexErrMsgTxt ("could not read file") ;
+        mexErrMsgTxt ("could not read file") ;
     }
 
     /* get the specific matrix (A or X), and change to zomplex if needed */
     if (mtype == CHOLMOD_SPARSE)
     {
-	A = (cholmod_sparse *) G ;
-	nrow = A->nrow ;
-	ncol = A->ncol ;
-	is_complex = (A->xtype == CHOLMOD_COMPLEX) ;
-	Ap = A->p ;
-	Ai = A->i ;
-	if (is_complex)
-	{
-	    /* if complex, ensure A is zomplex */
-	    cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
-	}
-	Ax = A->x ;
-	Az = A->z ;
+        A = (cholmod_sparse *) G ;
+        nrow = A->nrow ;
+        ncol = A->ncol ;
+        is_complex = (A->xtype == CHOLMOD_COMPLEX) ;
+        Ap = A->p ;
+        Ai = A->i ;
+        if (is_complex)
+        {
+            /* if complex, ensure A is zomplex */
+            cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, A, cm) ;
+        }
+        Ax = A->x ;
+        Az = A->z ;
     }
     else if (mtype == CHOLMOD_DENSE)
     {
-	X = (cholmod_dense *) G ;
-	nrow = X->nrow ;
-	ncol = X->ncol ;
-	is_complex = (X->xtype == CHOLMOD_COMPLEX) ;
-	if (is_complex)
-	{
-	    /* if complex, ensure X is zomplex */
-	    cholmod_l_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
-	}
-	Ax = X->x ;
-	Az = X->z ;
+        X = (cholmod_dense *) G ;
+        nrow = X->nrow ;
+        ncol = X->ncol ;
+        is_complex = (X->xtype == CHOLMOD_COMPLEX) ;
+        if (is_complex)
+        {
+            /* if complex, ensure X is zomplex */
+            cholmod_l_dense_xtype (CHOLMOD_ZOMPLEX, X, cm) ;
+        }
+        Ax = X->x ;
+        Az = X->z ;
     }
     else
     {
-	mexErrMsgTxt ("invalid file") ;
+        mexErrMsgTxt ("invalid file") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -131,16 +131,16 @@ void mexFunction
 
     if (nargout > 1)
     {
-	if (mtype == CHOLMOD_SPARSE)
-	{
-	    /* A is a sparse real/zomplex double matrix */
-	    Z = sputil_extract_zeros (A, cm) ;
-	}
-	else
-	{
-	    /* input is full; just return an empty Z matrix */
-	    Z = cholmod_l_spzeros (nrow, ncol, 0, CHOLMOD_REAL, cm) ;
-	}
+        if (mtype == CHOLMOD_SPARSE)
+        {
+            /* A is a sparse real/zomplex double matrix */
+            Z = sputil_extract_zeros (A, cm) ;
+        }
+        else
+        {
+            /* input is full; just return an empty Z matrix */
+            Z = cholmod_l_spzeros (nrow, ncol, 0, CHOLMOD_REAL, cm) ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -149,8 +149,8 @@ void mexFunction
 
     if (mtype == CHOLMOD_SPARSE)
     {
-	sputil_drop_zeros (A) ;
-	cholmod_l_reallocate_sparse (cholmod_l_nnz (A, cm), A, cm) ;
+        sputil_drop_zeros (A) ;
+        cholmod_l_reallocate_sparse (cholmod_l_nnz (A, cm), A, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -159,35 +159,35 @@ void mexFunction
 
     if (is_complex)
     {
-	if (mtype == CHOLMOD_SPARSE)
-	{
-	    nz = Ap [ncol] ;
-	}
-	else
-	{
-	    nz = nrow * ncol ;
-	}
-	allzero = TRUE ;
-	for (k = 0 ; k < nz ; k++)
-	{
-	    if (Az [k] != 0)
-	    {
-		allzero = FALSE ;
-		break ;
-	    }
-	}
-	if (allzero)
-	{
-	    /* discard the all-zero imaginary part */
-	    if (mtype == CHOLMOD_SPARSE)
-	    {
-		cholmod_l_sparse_xtype (CHOLMOD_REAL, A, cm) ;
-	    }
-	    else
-	    {
-		cholmod_l_dense_xtype (CHOLMOD_REAL, X, cm) ;
-	    }
-	}
+        if (mtype == CHOLMOD_SPARSE)
+        {
+            nz = Ap [ncol] ;
+        }
+        else
+        {
+            nz = nrow * ncol ;
+        }
+        allzero = TRUE ;
+        for (k = 0 ; k < nz ; k++)
+        {
+            if (Az [k] != 0)
+            {
+                allzero = FALSE ;
+                break ;
+            }
+        }
+        if (allzero)
+        {
+            /* discard the all-zero imaginary part */
+            if (mtype == CHOLMOD_SPARSE)
+            {
+                cholmod_l_sparse_xtype (CHOLMOD_REAL, A, cm) ;
+            }
+            else
+            {
+                cholmod_l_dense_xtype (CHOLMOD_REAL, X, cm) ;
+            }
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -196,15 +196,15 @@ void mexFunction
 
     if (mtype == CHOLMOD_SPARSE)
     {
-	pargout [0] = sputil_put_sparse (&A, cm) ;
+        pargout [0] = sputil_put_sparse (&A, cm) ;
     }
     else
     {
-	pargout [0] = sputil_put_dense (&X, cm) ;
+        pargout [0] = sputil_put_dense (&X, cm) ;
     }
     if (nargout > 1)
     {
-	pargout [1] = sputil_put_sparse (&Z, cm) ;
+        pargout [1] = sputil_put_sparse (&Z, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */

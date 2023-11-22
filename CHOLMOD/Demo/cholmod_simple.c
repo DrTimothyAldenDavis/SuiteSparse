@@ -35,7 +35,7 @@ int main (void)
     A = cholmod_read_sparse2 (stdin, dtype, &c) ;   // read in a matrix
 //  A = cholmod_read_sparse (stdin, &c) ;           // (same, default is double)
     c.precise = true ;
-    c.print = (A->nrow > 5) ? 4 : 5 ;
+    c.print = (A->nrow > 5) ? 3 : 5 ;
     cholmod_print_sparse (A, "A", &c) ;             // print the matrix
     if (A == NULL || A->stype == 0)                 // A must be symmetric
     {
@@ -68,6 +68,8 @@ int main (void)
     cholmod_free_dense (&r, &c) ;
     cholmod_free_dense (&x, &c) ;
     cholmod_free_dense (&b, &c) ;
+    cholmod_print_common ("common", &c) ;
+    cholmod_gpu_stats (&c) ;
     cholmod_finish (&c) ;                           // finish CHOLMOD
     return (0) ;
 }

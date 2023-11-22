@@ -14,7 +14,7 @@ randn ('state', 0) ;
 rand  ('state', 0) ;
 
 % Prob = ssget (437)
-Prob = ssget (750)							    %#ok
+Prob = ssget (750)                                                          %#ok
 A = Prob.A ;
 [m n] = size (A) ;
 
@@ -24,17 +24,17 @@ t = toc ;
 fprintf ('find time %8.4f\n', t) ;
 
 tic ;
-B = sparse2 (i,j,x,m,n) ;						    %#ok
+B = sparse2 (i,j,x,m,n) ;                                                   %#ok
 t1 = toc ;
 fprintf ('tot: %8.6f\n', t1)
 
 tic ;
-B = sparse2 (i,j,x,m,n) ;						    %#ok
+B = sparse2 (i,j,x,m,n) ;                                                   %#ok
 t1 = toc ;
 fprintf ('tot: %8.6f again \n', t1) ;
 
 tic ;
-B1 = sparse2 (i,j,x) ;							    %#ok
+B1 = sparse2 (i,j,x) ;                                                      %#ok
 t1 = toc ;
 fprintf ('tot: %8.6f (i,j,x)\n', t1) ;
 
@@ -43,10 +43,10 @@ p = randperm (nz) ;
 
 i2 = i(p) ;
 j2 = j(p) ;
-x2 = x(p) ;								    %#ok
+x2 = x(p) ;                                                                 %#ok
 
 tic ;
-B = sparse2 (i,j,x,m,n) ;						    %#ok
+B = sparse2 (i,j,x,m,n) ;                                                   %#ok
 t1 = toc ;
 
 fprintf ('tot: %8.6f  (jumbled)\n', t1) ;
@@ -56,7 +56,7 @@ jj = [j2 ; j2] ;
 xx = rand (2*nz,1) ;
 
 tic ;
-D = sparse2 (ii,jj,xx,m,n) ;						    %#ok
+D = sparse2 (ii,jj,xx,m,n) ;                                                %#ok
 t1 = toc ;
 
 fprintf ('tot %8.6f  (duplicates)\n', t1) ;

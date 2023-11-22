@@ -1,4 +1,4 @@
-function S = sparse2 (i,j,s,m,n,nzmax)					    %#ok
+function S = sparse2 (i,j,s,m,n,nzmax)                                      %#ok
 %SPARSE2 replacement for SPARSE
 %
 %   Example:

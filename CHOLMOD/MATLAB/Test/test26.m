@@ -56,19 +56,19 @@ if (do_metis)
     s1 = bisect (A) ;
     s2 = bisect (C) ;
     if (any (s1 ~= s2))
-	error ('test 26 failed (bisect)!') ;
+        error ('test 26 failed (bisect)!') ;
     end
 
     p1 = metis (A) ;
     p2 = metis (C) ;
     if (any (p1 ~= p2))
-	error ('test 26 failed (metis)!') ;
+        error ('test 26 failed (metis)!') ;
     end
 
     p1 = nesdis (A) ;
     p2 = nesdis (C) ;
     if (any (p1 ~= p2))
-	error ('test 26 failed (nesdis)!') ;
+        error ('test 26 failed (nesdis)!') ;
     end
 
 end

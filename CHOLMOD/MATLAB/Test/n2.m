@@ -22,15 +22,15 @@ for i = f
     clear Prob
 
     if (m == n)
-	mode = 'sym' ;
-	A = A + A' ;
-	len = n ;
+        mode = 'sym' ;
+        A = A + A' ;
+        len = n ;
     elseif (m < n)
-	mode = 'row' ;
-	len = m ;
+        mode = 'row' ;
+        len = m ;
     else
-	mode = 'col' ;
-	len = n ;
+        mode = 'col' ;
+        len = n ;
     end
 
     [p cp cmem] = nesdis (A, mode) ;
@@ -38,15 +38,15 @@ for i = f
     subplot (2,4,1) ;
     treeplot (cp) ;
 
-    [cp2 cmem2] = septree (cp, cmem, 0.5, 200) ;	    %#ok
+    [cp2 cmem2] = septree (cp, cmem, 0.5, 200) ;            %#ok
     subplot (2,4,2) ;
     treeplot (cp2) ;
 
-    [cp3 cmem3] = septree (cp, cmem, 0.2, 300) ;	    %#ok
+    [cp3 cmem3] = septree (cp, cmem, 0.2, 300) ;            %#ok
     subplot (2,4,3) ;
     treeplot (cp3) ;
 
-    [cp4 cmem4] = septree (cp, cmem, 0.12, 500) ;	    %#ok
+    [cp4 cmem4] = septree (cp, cmem, 0.12, 500) ;           %#ok
     subplot (2,4,4) ;
     treeplot (cp4) ;
 
@@ -56,15 +56,15 @@ for i = f
     subplot (2,4,5) ;
     treeplot (cp) ;
 
-    [cp2 cmem2] = septree (cp, cmem, 0.5, 200) ;	    %#ok
+    [cp2 cmem2] = septree (cp, cmem, 0.5, 200) ;            %#ok
     subplot (2,4,6) ;
     treeplot (cp2) ;
 
-    [cp3 cmem3] = septree (cp, cmem, 0.2, 300) ;	    %#ok
+    [cp3 cmem3] = septree (cp, cmem, 0.2, 300) ;            %#ok
     subplot (2,4,7) ;
     treeplot (cp3) ;
 
-    [cp4 cmem4] = septree (cp, cmem, 0.12, 500) ;	    %#ok
+    [cp4 cmem4] = septree (cp, cmem, 0.12, 500) ;           %#ok
     subplot (2,4,8) ;
     treeplot (cp4) ;
 

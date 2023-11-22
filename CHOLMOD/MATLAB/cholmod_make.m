@@ -14,7 +14,7 @@ function cholmod_make
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
-details = 0 ;	    % 1 if details of each command are to be printed
+details = 0 ;       % 1 if details of each command are to be printed
 
 v = version ;
 try
@@ -27,9 +27,8 @@ catch                                                                       %#ok
     mac = 0 ;
 end
 
-%% FIXME
-%% flags = '-O ' ;
-flags = '-g ' ;
+flags = '-O ' ;
+% flags = '-g ' ;
 
 is64 = ~isempty (strfind (computer, '64')) ;
 if (is64)
@@ -298,34 +297,34 @@ for f = source
     o = ff (slash:end) ;
     % fprintf ('%s\n', o) ;
     o = [o obj_extension] ;
-    obj = [obj  ' ' o] ;					            %#ok
+    obj = [obj  ' ' o] ;                                                    %#ok
     s = sprintf ('mex %s %s -c %s.c', flags, include, ff) ;
-    kk = do_cmd (s, kk, details) ;
+    kk = do_cmd (s, kk, details, '.') ;
 end
 
 % compile each mexFunction
 for f = cholmod_mex_src
     s = sprintf ('mex %s %s %s.c', flags, include, f{1}) ;
-    s = [s obj ' ' lapack] ;						    %#ok
-    kk = do_cmd (s, kk, details) ;
+    s = [s obj ' ' lapack] ;                                                %#ok
+    kk = do_cmd (s, kk, details, ':') ;
 end
 
 % clean up
 s = ['delete ' obj] ;
-do_cmd (s, kk, details) ;
+do_cmd (s, kk, details, '.') ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
 %------------------------------------------------------------------------------
-function kk = do_cmd (s, kk, details)
+function kk = do_cmd (s, kk, details, progress)
 %DO_CMD: evaluate a command, and either print it or print a "."
 if (details)
     fprintf ('%s\n', s) ;
 else
     if (mod (kk, 60) == 0)
-	fprintf ('\n') ;
+        fprintf ('\n') ;
     end
     kk = kk + 1 ;
-    fprintf ('.') ;
+    fprintf (progress) ;
 end
 eval (s) ;
 

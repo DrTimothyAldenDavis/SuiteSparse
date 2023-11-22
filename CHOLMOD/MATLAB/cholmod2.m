@@ -1,4 +1,4 @@
-function [x,stats] = cholmod2 (A, b, ordering)				    %#ok
+function [x,stats] = cholmod2 (A, b, ordering)                              %#ok
 %CHOLMOD2 supernodal sparse Cholesky backslash, x = A\b
 %
 %   Example:

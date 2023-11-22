@@ -16,10 +16,10 @@
  *
  * Usage:
  *
- *	s = bisect (A)		bisects A, uses tril(A)
- *	s = bisect (A, 'sym')	bisects A, uses tril(A)
- *	s = bisect (A, 'row')	bisects A*A'
- *	s = bisect (A, 'col')	bisects A'*A
+ *      s = bisect (A)          bisects A, uses tril(A)
+ *      s = bisect (A, 'sym')   bisects A, uses tril(A)
+ *      s = bisect (A, 'row')   bisects A*A'
+ *      s = bisect (A, 'col')   bisects A'*A
  *
  * Node i of the graph is in the left graph if s(i)=0, the right graph if
  * s(i)=1, and in the separator if s(i)=2.
@@ -61,7 +61,7 @@ void mexFunction
 
     if (nargout > 1 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: p = bisect (A, mode)") ;
+        mexErrMsgTxt ("Usage: p = bisect (A, mode)") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -80,51 +80,51 @@ void mexFunction
 
     if (nargin > 1)
     {
-	buf [0] = '\0' ;
-	if (mxIsChar (pargin [1]))
-	{
-	    mxGetString (pargin [1], buf, LEN) ;
-	}
-	c = buf [0];
-	if (tolower (c) == 'r')
-	{
-	    /* unsymmetric case (A*A') if string starts with 'r' */
-	    transpose = FALSE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 'c')
-	{
-	    /* unsymmetric case (A'*A) if string starts with 'c' */
-	    transpose = TRUE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 's')
-	{
-	    /* symmetric case (A) if string starts with 's' */
-	    transpose = FALSE ;
-	    A->stype = -1 ;
-	}
-	else
-	{
-	    mexErrMsgTxt ("bisect: p=bisect(A,mode) ; unrecognized mode") ;
-	}
+        buf [0] = '\0' ;
+        if (mxIsChar (pargin [1]))
+        {
+            mxGetString (pargin [1], buf, LEN) ;
+        }
+        c = buf [0];
+        if (tolower (c) == 'r')
+        {
+            /* unsymmetric case (A*A') if string starts with 'r' */
+            transpose = FALSE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 'c')
+        {
+            /* unsymmetric case (A'*A) if string starts with 'c' */
+            transpose = TRUE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 's')
+        {
+            /* symmetric case (A) if string starts with 's' */
+            transpose = FALSE ;
+            A->stype = -1 ;
+        }
+        else
+        {
+            mexErrMsgTxt ("bisect: p=bisect(A,mode) ; unrecognized mode") ;
+        }
     }
 
     if (A->stype && A->nrow != A->ncol)
     {
-	mexErrMsgTxt ("bisect: A must be square") ;
+        mexErrMsgTxt ("bisect: A must be square") ;
     }
 
     C = NULL ;
     if (transpose)
     {
-	/* C = A', and then bisect C*C' */
-	C = cholmod_l_transpose (A, 0, cm) ;
-	if (C == NULL)
-	{
-	    mexErrMsgTxt ("bisect failed") ;
-	}
-	A = C ;
+        /* C = A', and then bisect C*C' */
+        C = cholmod_l_transpose (A, 0, cm) ;
+        if (C == NULL)
+        {
+            mexErrMsgTxt ("bisect failed") ;
+        }
+        A = C ;
     }
 
     n = A->nrow ;
@@ -141,7 +141,7 @@ void mexFunction
 
     if (cholmod_l_bisect (A, NULL, 0, TRUE, Partition, cm) < 0)
     {
-	mexErrMsgTxt ("bisect failed") ;
+        mexErrMsgTxt ("bisect failed") ;
     }
 
     /* ---------------------------------------------------------------------- */

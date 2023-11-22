@@ -11,18 +11,18 @@ fprintf ('=================================================================\n');
 fprintf ('test21: test cholmod2 on diagonal or ill-conditioned matrices\n') ;
 
 f = [
- 72	% HB/bcsstm22
- 315	% Bai/mhdb416
- 64	% HB/bcsstm09
- 71	% HB/bcsstm21
- 1207	% Oberwolfach/t2dal_e
- 354	% Boeing/crystm02
- 1211	% Oberwolfach/t3dl_e
+ 72     % HB/bcsstm22
+ 315    % Bai/mhdb416
+ 64     % HB/bcsstm09
+ 71     % HB/bcsstm21
+ 1207   % Oberwolfach/t2dal_e
+ 354    % Boeing/crystm02
+ 1211   % Oberwolfach/t3dl_e
  ]' ;
 
 for i = f
 
-    Prob = ssget (i)							    %#ok
+    Prob = ssget (i)                                                        %#ok
     A = Prob.A ;
     n = size (A,1) ;
     x = ones (n,2) ;

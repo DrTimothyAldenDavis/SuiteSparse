@@ -9,7 +9,7 @@
 //------------------------------------------------------------------------------
 
 /* Usage:
- *	L = resymbol (L, A)
+ *      L = resymbol (L, A)
  *
  * Recompute the symbolic Cholesky factorization of the matrix A.  A must be
  * symmetric.  Only tril(A) is used.  Entries in L that are not in the Cholesky
@@ -52,17 +52,17 @@ void mexFunction
 
     if (nargout > 1 || nargin != 2)
     {
-	mexErrMsgTxt ("usage: L = resymbol (L, A)\n") ;
+        mexErrMsgTxt ("usage: L = resymbol (L, A)\n") ;
     }
 
     n = mxGetN (pargin [0]) ;
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
-	mexErrMsgTxt ("resymbol: L must be sparse and square") ;
+        mexErrMsgTxt ("resymbol: L must be sparse and square") ;
     }
     if (n != mxGetM (pargin [1]) || n != mxGetN (pargin [1]))
     {
-	mexErrMsgTxt ("resymbol: A and L must have same dimensions") ;
+        mexErrMsgTxt ("resymbol: A and L must have same dimensions") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -93,13 +93,13 @@ void mexFunction
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
     {
-	ColCount [j] = Lp [j+1] - Lp [j] ;
+        ColCount [j] = Lp [j+1] - Lp [j] ;
     }
 
     /* allocate space for a CHOLMOD LDL' packed factor */
     /* (LL' and LDL' are treated identically) */
     cholmod_l_change_factor (is_complex ? CHOLMOD_ZOMPLEX : CHOLMOD_REAL,
-	    FALSE, FALSE, TRUE, TRUE, L, cm) ;
+            FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
     /* copy MATLAB L into CHOLMOD L */
     Lp2 = L->p ;
@@ -110,26 +110,26 @@ void mexFunction
     lnz = L->nzmax ;
     for (j = 0 ; j <= n ; j++)
     {
-	Lp2 [j] = Lp [j] ;
+        Lp2 [j] = Lp [j] ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	Lnz2 [j] = Lp [j+1] - Lp [j] ;
+        Lnz2 [j] = Lp [j+1] - Lp [j] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Li2 [s] = Li [s] ;
+        Li2 [s] = Li [s] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Lx2 [s] = Lx [s] ;
+        Lx2 [s] = Lx [s] ;
     }
     if (is_complex)
     {
-	for (s = 0 ; s < lnz ; s++)
-	{
-	    Lz2 [s] = Lz [s] ;
-	}
+        for (s = 0 ; s < lnz ; s++)
+        {
+            Lz2 [s] = Lz [s] ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */

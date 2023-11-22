@@ -10,7 +10,7 @@ function test19
 fprintf ('=================================================================\n');
 fprintf ('test19: look for NaN''s from lchol (caused by Intel MKL 7.x bug)\n') ;
 
-Prob = ssget (936)							    %#ok
+Prob = ssget (936)                                                          %#ok
 A = Prob.A ;
 [p count] = analyze (A) ;
 A = A (p,p) ;
@@ -22,8 +22,8 @@ fprintf ('gflop rate: %8.2f\n', 1e-9*fl/t) ;
 n = size (L,1) ;
 for k = 1:n
     if (any (isnan (L (:,k))))
-	k								    %#ok
-	error ('!') ;
+        k                                                                   %#ok
+        error ('!') ;
     end
 end
 

@@ -1,4 +1,4 @@
-function p = metis (A, mode)						    %#ok
+function p = metis (A, mode)                                                %#ok
 %METIS nested dissection ordering via METIS_NodeND.
 %
 %   Example:

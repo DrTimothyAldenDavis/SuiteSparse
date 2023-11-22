@@ -1,4 +1,4 @@
-function [count, h, parent, post, L] = symbfact2 (A, mode, Lmode)	    %#ok
+function [count, h, parent, post, L] = symbfact2 (A, mode, Lmode)           %#ok
 %SYMBFACT2  symbolic factorization
 %
 %   Analyzes the Cholesky factorization of A, A'*A, or A*A'.

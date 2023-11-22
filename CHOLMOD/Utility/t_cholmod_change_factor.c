@@ -1092,6 +1092,8 @@ static int super_sym_to_super_num
     size_t e = (L->dtype == CHOLMOD_SINGLE) ? sizeof (float) : sizeof (double) ;
     size_t ex = e * ((to_xtype == CHOLMOD_COMPLEX) ? 2 : 1) ;
     size_t xs = L->xsize ;
+// FIXME
+printf ("L->xsize: %lu\n", xs) ;
 
     //--------------------------------------------------------------------------
     // allocate the space

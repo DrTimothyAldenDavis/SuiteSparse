@@ -1,0 +1,54 @@
+CHOLMOD sparse:  A:  36000-by-36000, nz 7128473, upper.  OK
+L->xsize: 156065935
+factorize worker time: 2.28419
+CHOLMOD factor:  L:  36000-by-36000  supernodal, LL'.  nz 120751021  OK
+CHOLMOD dense:   x:  36000-by-1,   OK
+
+double precision results:
+norm(b-Ax)  1.4e-08
+norm(A)     2.1e+02
+resid: norm(b-Ax)/norm(A)  6.8e-11
+
+CHOLMOD version 5.1.0, Nov 30, 2023: common: status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      4 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 4 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 5.0111e+11
+    Nonzeros in L:       1.1645e+08
+  memory blocks in use:           4
+  memory in use (MB):           1.4
+  peak memory usage (MB):    1600.5
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 1.0108e+12
+        nnz(L):     1.6063e+08
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 5.0111e+11
+        nnz(L):     1.1645e+08
+  OK
+
+CHOLMOD GPU/CPU statistics:
+SYRK  CPU calls         1783 time   6.8629e-01
+      GPU calls            0 time   0.0000e+00
+GEMM  CPU calls         1450 time   4.2840e-01
+      GPU calls            0 time   0.0000e+00
+POTRF CPU calls          334 time   3.0719e-01
+      GPU calls            0 time   0.0000e+00
+TRSM  CPU calls          333 time   2.2369e-01
+      GPU calls            0 time   0.0000e+00
+time in the BLAS: CPU   1.6456e+00 GPU   0.0000e+00 total:   1.6456e+00
+assembly time   0.0000e+00    0.0000e+00

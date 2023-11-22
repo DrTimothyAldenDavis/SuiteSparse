@@ -46,7 +46,7 @@ p = randperm (nz) ;
 
 i2 = i(p) ;
 j2 = j(p) ;
-x2 = x(p) ;								    %#ok
+x2 = x(p) ;                                                                 %#ok
 
 B = sparse2 (i,j,x,m,n) ;
 err = norm(A-B,1) ;
@@ -81,7 +81,7 @@ if (err > 0)
     error ('dtri 5') ;
 end
 
-[i1 j1 x1] = find (F) ;							    %#ok
+[i1 j1 x1] = find (F) ;                                                     %#ok
 % [i2 j2 x2] = cholmod_find (F) ;
 % if (any (i1 ~= i2))
 %     error ('i!') ;

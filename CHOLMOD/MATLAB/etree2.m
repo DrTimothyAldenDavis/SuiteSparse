@@ -1,4 +1,4 @@
-function [parent, post] = etree2 (A, mode)				    %#ok
+function [parent, post] = etree2 (A, mode)                                  %#ok
 %ETREE2  sparse elimination tree.
 %   Finds the elimination tree of A, A'*A, or A*A', and optionaly postorders
 %   the tree.  parent(j) is the parent of node j in the tree, or 0 if j is a

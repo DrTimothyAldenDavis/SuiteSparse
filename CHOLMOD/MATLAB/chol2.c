@@ -12,9 +12,9 @@
  * and use less memory.  The R'R factorization methods use triu(A), just like
  * MATLAB's built-in chol.
  *
- * R = chol2 (A)		same as R = chol (A), just faster
- * [R,p] = chol2 (A)		save as [R,p] = chol(A), just faster
- * [R,p,q] = chol2 (A)		factorizes A(q,q) into R'*R
+ * R = chol2 (A)                same as R = chol (A), just faster
+ * [R,p] = chol2 (A)            save as [R,p] = chol(A), just faster
+ * [R,p,q] = chol2 (A)          factorizes A(q,q) into R'*R
  *
  * A must be sparse.  It can be complex or real.
  *
@@ -29,9 +29,9 @@
 
 void mexFunction
 (
-    int	nargout,
+    int nargout,
     mxArray *pargout [ ],
-    int	nargin,
+    int nargin,
     const mxArray *pargin [ ]
 )
 {
@@ -68,14 +68,14 @@ void mexFunction
 
     if (nargin != 1 || nargout > 3)
     {
-	mexErrMsgTxt ("usage: [R,p,q] = chol2 (A)") ;
+        mexErrMsgTxt ("usage: [R,p,q] = chol2 (A)") ;
     }
 
     n = mxGetN (pargin [0]) ;
 
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
-    	mexErrMsgTxt ("A must be square and sparse") ;
+        mexErrMsgTxt ("A must be square and sparse") ;
     }
 
     /* get input sparse matrix A.  Use triu(A) only */
@@ -84,9 +84,9 @@ void mexFunction
     /* use natural ordering if no q output parameter */
     if (nargout < 3)
     {
-	cm->nmethods = 1 ;
-	cm->method [0].ordering = CHOLMOD_NATURAL ;
-	cm->postorder = FALSE ;
+        cm->nmethods = 1 ;
+        cm->method [0].ordering = CHOLMOD_NATURAL ;
+        cm->postorder = FALSE ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -98,7 +98,7 @@ void mexFunction
 
     if (nargout < 2 && cm->status != CHOLMOD_OK)
     {
-	mexErrMsgTxt ("matrix is not positive definite") ;
+        mexErrMsgTxt ("matrix is not positive definite") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -110,14 +110,14 @@ void mexFunction
     Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
     if (Lsparse->xtype == CHOLMOD_COMPLEX)
     {
-	/* convert Lsparse from complex to zomplex */
-	cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, Lsparse, cm) ;
+        /* convert Lsparse from complex to zomplex */
+        cholmod_l_sparse_xtype (CHOLMOD_ZOMPLEX, Lsparse, cm) ;
     }
 
     if (minor < n)
     {
-	/* remove columns minor to n-1 from Lsparse */
-	sputil_trim (Lsparse, minor, cm) ;
+        /* remove columns minor to n-1 from Lsparse */
+        sputil_trim (Lsparse, minor, cm) ;
     }
 
     /* drop zeros from Lsparse */
@@ -137,15 +137,15 @@ void mexFunction
     /* return minor (translate to MATLAB convention) */
     if (nargout > 1)
     {
-	pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
-	px = mxGetPr (pargout [1]) ;
-	px [0] = ((minor == n) ? 0 : (minor+1)) ;
+        pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
+        px = mxGetPr (pargout [1]) ;
+        px [0] = ((minor == n) ? 0 : (minor+1)) ;
     }
 
     /* return permutation */
     if (nargout > 2)
     {
-	pargout [2] = sputil_put_int (L->Perm, n, 1) ;
+        pargout [2] = sputil_put_int (L->Perm, n, 1) ;
     }
 
     /* ---------------------------------------------------------------------- */

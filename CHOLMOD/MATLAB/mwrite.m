@@ -1,4 +1,4 @@
-function mtype = mwrite (filename, A, Z, comments_filename)		    %#ok
+function mtype = mwrite (filename, A, Z, comments_filename)                 %#ok
 %MWRITE write a matrix to a file in Matrix Market form.
 %
 %   Example:

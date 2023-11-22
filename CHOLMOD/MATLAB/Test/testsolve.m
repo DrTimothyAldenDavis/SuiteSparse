@@ -22,7 +22,7 @@ tic
 e1 = norm (A*x1-b,1) ;
 t3 = toc ;
 e2 = norm (A*x2-b,1) ;
-if (e2 == 0 | e1 == 0)							    %#ok
+if (e2 == 0 | e1 == 0)                                                      %#ok
     e12 = 0 ;
 else
     e12 = log2 (e1/e2) ;
@@ -33,9 +33,9 @@ else
     t12 = t1 / t2 ;
 end
 if (t2 == 0)
-    t32 = 1 ;								    %#ok
+    t32 = 1 ;                                                               %#ok
 else
-    t32 = t3 / t2 ;							    %#ok
+    t32 = t3 / t2 ;                                                         %#ok
 end
 fprintf (' [e1: %5.0e : %5.1f] [t1: %8.2f t2 %8.2f : %5.1f]\n', ...
     e1, e12, t1, t2, t12) ;

@@ -1,4 +1,4 @@
-function x = ldlsolve (LD,b)						    %#ok
+function x = ldlsolve (LD,b)                                                %#ok
 %LDLSOLVE solve LDL'x=b using a sparse LDL' factorization
 %
 %   Example:

@@ -53,22 +53,22 @@ void mexFunction
 
     if (nargin != 2 || nargout > 1)
     {
-	mexErrMsgTxt ("usage: xpattern = lxbpattern (L,b)") ;
+        mexErrMsgTxt ("usage: xpattern = lxbpattern (L,b)") ;
     }
 
     n = mxGetN (pargin [0]) ;
 
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
-	mexErrMsgTxt ("lxbpattern: L must be sparse and square") ;
+        mexErrMsgTxt ("lxbpattern: L must be sparse and square") ;
     }
     if (n != mxGetM (pargin [1]) || mxGetN (pargin [1]) != 1)
     {
-	mexErrMsgTxt ("lxbpattern: b wrong dimension") ;
+        mexErrMsgTxt ("lxbpattern: b wrong dimension") ;
     }
     if (!mxIsSparse (pargin [1]))
     {
-	mexErrMsgTxt ("lxbpattern: b must be sparse") ;
+        mexErrMsgTxt ("lxbpattern: b must be sparse") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -100,7 +100,7 @@ void mexFunction
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
-	Lnz [j] = Lp [j+1] - Lp [j] ;
+        Lnz [j] = Lp [j+1] - Lp [j] ;
     }
 
     /* L is not truly a valid CHOLMOD sparse factor, since L->prev and next are

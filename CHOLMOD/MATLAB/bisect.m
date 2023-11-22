@@ -1,4 +1,4 @@
-function p = bisect (A, mode)						    %#ok
+function p = bisect (A, mode)                                               %#ok
 %BISECT computes a node separator based on METIS_ComputeVertexSeparator.
 %
 %   Example:

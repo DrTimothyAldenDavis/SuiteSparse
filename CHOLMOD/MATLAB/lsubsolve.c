@@ -19,15 +19,15 @@
  * Given L or LD, a permutation P, and a sparse right-hand size b,
  * solve one of the following systems:
  *
- *	Ax=b	    0: CHOLMOD_A	also applies the permutation L->Perm
- *	LDL'x=b	    1: CHOLMOD_LDLt	does not apply L->Perm
- *	LDx=b	    2: CHOLMOD_LD
- *	DL'x=b	    3: CHOLMOD_DLt
- *	Lx=b	    4: CHOLMOD_L
- *	L'x=b	    5: CHOLMOD_Lt
- *	Dx=b	    6: CHOLMOD_D
- *	x=Pb	    7: CHOLMOD_P	apply a permutation (P is L->Perm)
- *	x=P'b	    8: CHOLMOD_Pt	apply an inverse permutation
+ *      Ax=b        0: CHOLMOD_A        also applies the permutation L->Perm
+ *      LDL'x=b     1: CHOLMOD_LDLt     does not apply L->Perm
+ *      LDx=b       2: CHOLMOD_LD
+ *      DL'x=b      3: CHOLMOD_DLt
+ *      Lx=b        4: CHOLMOD_L
+ *      L'x=b       5: CHOLMOD_Lt
+ *      Dx=b        6: CHOLMOD_D
+ *      x=Pb        7: CHOLMOD_P        apply a permutation (P is L->Perm)
+ *      x=P'b       8: CHOLMOD_Pt       apply an inverse permutation
  *
  * The solution x is a dense vector, but it is a subset of the entire solution, 
  * x is zero except where xset is 1.  xset is reach of b (or P*b) in the graph
@@ -76,36 +76,36 @@ void mexFunction
 
     if (nargin != 5 || nargout > 2)
     {
-	mexErrMsgTxt ("usage: [x xset] = lsubsolve (L,kind,P,b,system)") ;
+        mexErrMsgTxt ("usage: [x xset] = lsubsolve (L,kind,P,b,system)") ;
     }
 
     n = mxGetN (pargin [0]) ;
     if (!mxIsSparse (pargin [0]) || n != mxGetM (pargin [0]))
     {
-	mexErrMsgTxt ("lsubsolve: L must be sparse and square") ;
+        mexErrMsgTxt ("lsubsolve: L must be sparse and square") ;
     }
     if (mxGetNumberOfElements (pargin [1]) != 1)
     {
-	mexErrMsgTxt ("lsubsolve: kind must be a scalar") ;
+        mexErrMsgTxt ("lsubsolve: kind must be a scalar") ;
     }
 
     if (mxIsSparse (pargin [2]) ||
        !(mxIsEmpty (pargin [2]) || mxGetNumberOfElements (pargin [2]) == n))
     {
-	mexErrMsgTxt ("lsubsolve: P must be size n, or empty") ;
+        mexErrMsgTxt ("lsubsolve: P must be size n, or empty") ;
     }
 
     if (mxGetM (pargin [3]) != n || mxGetN (pargin [3]) != 1)
     {
-	mexErrMsgTxt ("lsubsolve: b wrong dimension") ;
+        mexErrMsgTxt ("lsubsolve: b wrong dimension") ;
     }
     if (!mxIsSparse (pargin [3]))
     {
-	mexErrMsgTxt ("lxbpattern: b must be sparse") ;
+        mexErrMsgTxt ("lxbpattern: b must be sparse") ;
     }
     if (mxGetNumberOfElements (pargin [4]) != 1)
     {
-	mexErrMsgTxt ("lsubsolve: system must be a scalar") ;
+        mexErrMsgTxt ("lsubsolve: system must be a scalar") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -148,7 +148,7 @@ void mexFunction
     Lnz = L->nz ;
     for (j = 0 ; j < n ; j++)
     {
-	Lnz [j] = Lp [j+1] - Lp [j] ;
+        Lnz [j] = Lp [j+1] - Lp [j] ;
     }
 
     /* these pointers are not accessed in cholmod_solve2 */
@@ -165,8 +165,8 @@ void mexFunction
     Lprev [tail] = n-1 ;
     for (j = 0 ; j < n ; j++)
     {
-	Lnext [j] = j+1 ;
-	Lprev [j] = j-1 ;
+        Lnext [j] = j+1 ;
+        Lprev [j] = j-1 ;
     }
     Lprev [0] = head ;
 
@@ -193,9 +193,6 @@ void mexFunction
 
     /* set the kind, LL' or LDL' */
     L->is_ll = (kind == 0) ;
-    /*
-    cholmod_l_print_factor (L, "L", cm) ;
-    */
 
     /* ---------------------------------------------------------------------- */
     /* solve the system */

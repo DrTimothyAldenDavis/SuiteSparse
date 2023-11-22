@@ -1,4 +1,4 @@
-function LD = ldlrowmod (LD,k,C)					    %#ok
+function LD = ldlrowmod (LD,k,C)                                            %#ok
 %LDLROWMOD add/delete a row from a sparse LDL' factorization.
 %
 %   On input, LD contains the LDL' factorization of A (L*D*L'=A or A(q,q)).
@@ -12,7 +12,7 @@ function LD = ldlrowmod (LD,k,C)					    %#ok
 %   With this LD, either of the following MATLAB statements,
 %
 %   Example:
-% 	LD = ldlrowmod (LD,k,C)		add row k to an LDL' factorization
+%       LD = ldlrowmod (LD,k,C)         add row k to an LDL' factorization
 %
 %   returns the LDL' factorization of S, where S = A except for S(:,k) = C
 %   and S (k,:) = C.  The kth row of A is assumed to initially be equal to

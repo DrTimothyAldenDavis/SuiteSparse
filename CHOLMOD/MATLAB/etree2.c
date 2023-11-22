@@ -10,13 +10,13 @@
 
 /* Usage:
  *
- *	parent = etree2 (A)	      returns etree of A, uses triu(A)
- *	parent = etree2 (A, 'col')    returns etree of A'*A
- *	parent = etree2 (A, 'sym')    same as etree2 (A)
- *	parent = etree2 (A, 'row')    same as etree2 (A', 'col')
- *	parent = etree2 (A, 'lo')     returns etree of A, uses tril(A)
+ *      parent = etree2 (A)           returns etree of A, uses triu(A)
+ *      parent = etree2 (A, 'col')    returns etree of A'*A
+ *      parent = etree2 (A, 'sym')    same as etree2 (A)
+ *      parent = etree2 (A, 'row')    same as etree2 (A', 'col')
+ *      parent = etree2 (A, 'lo')     returns etree of A, uses tril(A)
  *
- *	[parent post] = etree2(...)   also returns a postorder of the tree
+ *      [parent post] = etree2(...)   also returns a postorder of the tree
  *
  * etree2 (A, 'col') does not form A'*A and is thus faster than etree2 (A'*A)
  * and takes less memory.  Likewise, etree (A, 'row') does not
@@ -54,7 +54,7 @@ void mexFunction
 
     if (nargout > 2 || nargin < 1 || nargin > 2)
     {
-	mexErrMsgTxt ("Usage: [parent post] = etree2 (A, mode)") ;
+        mexErrMsgTxt ("Usage: [parent post] = etree2 (A, mode)") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -73,43 +73,43 @@ void mexFunction
     coletree = FALSE ;
     if (nargin > 1)
     {
-	buf [0] = '\0' ;
-	if (mxIsChar (pargin [1]))
-	{
-	    mxGetString (pargin [1], buf, LEN) ;
-	}
-	c = buf [0] ;
-	if (tolower (c) == 'r')
-	{
-	    /* unsymmetric case (A*A') if string starts with 'r' */
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 'c')
-	{
-	    /* unsymmetric case (A'*A) if string starts with 'c' */
-	    n = A->ncol ;
-	    coletree = TRUE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 's')
-	{
-	    /* symmetric upper case (A) if string starts with 's' */
-	    A->stype = 1 ;
-	}
-	else if (tolower (c) == 'l')
-	{
-	    /* symmetric lower case (A) if string starts with 'l' */
-	    A->stype = -1 ;
-	}
-	else
-	{
-	    mexErrMsgTxt ("etree2: unrecognized mode") ;
-	}
+        buf [0] = '\0' ;
+        if (mxIsChar (pargin [1]))
+        {
+            mxGetString (pargin [1], buf, LEN) ;
+        }
+        c = buf [0] ;
+        if (tolower (c) == 'r')
+        {
+            /* unsymmetric case (A*A') if string starts with 'r' */
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 'c')
+        {
+            /* unsymmetric case (A'*A) if string starts with 'c' */
+            n = A->ncol ;
+            coletree = TRUE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 's')
+        {
+            /* symmetric upper case (A) if string starts with 's' */
+            A->stype = 1 ;
+        }
+        else if (tolower (c) == 'l')
+        {
+            /* symmetric lower case (A) if string starts with 'l' */
+            A->stype = -1 ;
+        }
+        else
+        {
+            mexErrMsgTxt ("etree2: unrecognized mode") ;
+        }
     }
 
     if (A->stype && A->nrow != A->ncol)
     {
-	mexErrMsgTxt ("etree2: A must be square") ;
+        mexErrMsgTxt ("etree2: A must be square") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -119,25 +119,25 @@ void mexFunction
     Parent = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
     if (A->stype == 1 || coletree)
     {
-	/* symmetric case: find etree of A, using triu(A) */
-	/* column case: find column etree of A, which is etree of A'*A */
-	cholmod_l_etree (A, Parent, cm) ;
+        /* symmetric case: find etree of A, using triu(A) */
+        /* column case: find column etree of A, which is etree of A'*A */
+        cholmod_l_etree (A, Parent, cm) ;
     }
     else
     {
-	/* symmetric case: find etree of A, using tril(A) */
-	/* row case: find row etree of A, which is etree of A*A' */
-	/* R = A' */
-	cholmod_sparse *R ;
-	R = cholmod_l_transpose (A, 0, cm) ;
-	cholmod_l_etree (R, Parent, cm) ;
-	cholmod_l_free_sparse (&R, cm) ;
+        /* symmetric case: find etree of A, using tril(A) */
+        /* row case: find row etree of A, which is etree of A*A' */
+        /* R = A' */
+        cholmod_sparse *R ;
+        R = cholmod_l_transpose (A, 0, cm) ;
+        cholmod_l_etree (R, Parent, cm) ;
+        cholmod_l_free_sparse (&R, cm) ;
     }
 
     if (cm->status < CHOLMOD_OK)
     {
-	/* out of memory or matrix invalid */
-	mexErrMsgTxt ("etree2 failed: matrix corrupted!") ;
+        /* out of memory or matrix invalid */
+        mexErrMsgTxt ("etree2 failed: matrix corrupted!") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -152,15 +152,15 @@ void mexFunction
 
     if (nargout > 1)
     {
-	int64_t *Post ;
-	Post = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
-	if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
-	{
-	    /* out of memory or Parent invalid */
-	    mexErrMsgTxt ("etree2 postorder failed!") ;
-	}
-	pargout [1] = sputil_put_int (Post, n, 1) ;
-	cholmod_l_free (n, sizeof (int64_t), Post, cm) ;
+        int64_t *Post ;
+        Post = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
+        if (cholmod_l_postorder (Parent, n, NULL, Post, cm) != n)
+        {
+            /* out of memory or Parent invalid */
+            mexErrMsgTxt ("etree2 postorder failed!") ;
+        }
+        pargout [1] = sputil_put_int (Post, n, 1) ;
+        cholmod_l_free (n, sizeof (int64_t), Post, cm) ;
     }
 
     /* ---------------------------------------------------------------------- */

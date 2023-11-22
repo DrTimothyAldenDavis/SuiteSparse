@@ -1,4 +1,4 @@
-function [A, Z] = mread (filename,prefer_binary)			    %#ok
+function [A, Z] = mread (filename,prefer_binary)                            %#ok
 %MREAD read a sparse matrix from a file in Matrix Market format.
 %
 %   Example:

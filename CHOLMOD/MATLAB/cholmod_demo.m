@@ -104,13 +104,13 @@ lnz = symbfact2 (S) ;
 fl = sum (lnz.^2) ;
 
 tic
-L = lchol (S) ;		    %#ok
+L = lchol (S) ;             %#ok
 t1 = toc ;
 fprintf ('CHOLMOD lchol(sparse(A))       time: %6.2f    gflop %8.2f\n', ...
     t1, 1e-9 * fl / t1) ;
 
 tic
-LD = ldlchol (S) ;		%#ok
+LD = ldlchol (S) ;              %#ok
 t2 = toc ;
 fprintf ('CHOLMOD ldlchol(sparse(A))     time: %6.2f    gflop %8.2f\n', ...
     t2, 1e-9 * fl / t2) ;
@@ -146,7 +146,7 @@ err = norm (S2 - L*D*L', 1) / norm (S,1) ;
 fprintf ('err: %g\n', err) ;
 
 tic
-R = chol (S) ;		    %#ok
+R = chol (S) ;              %#ok
 s1 = toc ;
 fprintf ('MATLAB  chol(sparse(A))        time: %6.2f    gflop %8.2f\n', ...
     s1, 1e-9 * fl / s1) ;

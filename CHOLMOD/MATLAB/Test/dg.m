@@ -18,7 +18,7 @@ A = GB_spones_mex (A) ;
 C = A (p,:) ;
 qmin = zeros (1,n) ;
 for j = 1:n
-    qmin (j) = min (find (C (:,j))) ;		%#ok
+    qmin (j) = min (find (C (:,j))) ;           %#ok
 end
 [ignore q] = sort (qmin) ;
 

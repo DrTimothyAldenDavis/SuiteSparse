@@ -13,9 +13,9 @@
  *
  * Usage:
  *
- *	C = sdmult (S,F) ;		C = S*F
- *	C = sdmult (S,F,0) ;		C = S*F
- *	C = sdmult (S,F,1) ;		C = S'*F
+ *      C = sdmult (S,F) ;              C = S*F
+ *      C = sdmult (S,F,0) ;            C = S*F
+ *      C = sdmult (S,F,1) ;            C = S'*F
  */
 
 #include "cholmod_matlab.h"
@@ -48,7 +48,7 @@ void mexFunction
 
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: C = sdmult (S,F,transpose)") ; 
+        mexErrMsgTxt ("Usage: C = sdmult (S,F,transpose)") ; 
     }
 
     srow = mxGetM (pargin [0]) ;
@@ -60,12 +60,12 @@ void mexFunction
 
     if (frow != (transpose ? srow : scol))
     {
-	mexErrMsgTxt ("invalid inner dimensions") ;
+        mexErrMsgTxt ("invalid inner dimensions") ;
     }
 
     if (!mxIsSparse (pargin [0]) || mxIsSparse (pargin [1]))
     {
-	mexErrMsgTxt ("sdmult (S,F): S must be sparse, F must be full") ;
+        mexErrMsgTxt ("sdmult (S,F): S must be sparse, F must be full") ;
     }
 
     /* ---------------------------------------------------------------------- */

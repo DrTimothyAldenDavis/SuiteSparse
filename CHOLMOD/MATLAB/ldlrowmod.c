@@ -26,8 +26,8 @@
  *
  * Usage:
  *
- *	LD = ldlrowmod (LD,k,C)		add row k to an LDL' factorization
- *	LD = ldlrowmod (LD,k)	        delete row k from an LDL' factorization
+ *      LD = ldlrowmod (LD,k,C)         add row k to an LDL' factorization
+ *      LD = ldlrowmod (LD,k)           delete row k from an LDL' factorization
  *
  * See ldlrowmod.m for details.  LD and C must be real and sparse.
  * C is a column vector that is the new column A(:,k).
@@ -69,7 +69,7 @@ void mexFunction
 
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: LD = ldlrowmod (LD,k,C) or ldlrowmod (LD,k)") ; 
+        mexErrMsgTxt ("Usage: LD = ldlrowmod (LD,k,C) or ldlrowmod (LD,k)") ; 
     }
 
     n = mxGetN (pargin [0]) ;
@@ -77,10 +77,10 @@ void mexFunction
     k = k - 1 ;         /* change from 1-based to 0-based */
 
     if (!mxIsSparse (pargin [0])
-	    || n != mxGetM (pargin [0])
-	    || mxIsComplex (pargin [0]))
+            || n != mxGetM (pargin [0])
+            || mxIsComplex (pargin [0]))
     {
-	mexErrMsgTxt ("ldlrowmod: L must be real, square, and sparse") ;
+        mexErrMsgTxt ("ldlrowmod: L must be real, square, and sparse") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -122,7 +122,7 @@ void mexFunction
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
     {
-	ColCount [j] = Lp [j+1] - Lp [j] ;
+        ColCount [j] = Lp [j+1] - Lp [j] ;
     }
 
     /* allocate space for a CHOLMOD LDL' packed factor */
@@ -136,19 +136,19 @@ void mexFunction
     lnz = L->nzmax ;
     for (j = 0 ; j <= n ; j++)
     {
-	Lp2 [j] = Lp [j] ;
+        Lp2 [j] = Lp [j] ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	Lnz2 [j] = Lp [j+1] - Lp [j] ;
+        Lnz2 [j] = Lp [j+1] - Lp [j] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Li2 [s] = Li [s] ;
+        Li2 [s] = Li [s] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Lx2 [s] = Lx [s] ;
+        Lx2 [s] = Lx [s] ;
     }
 
     /* ---------------------------------------------------------------------- */

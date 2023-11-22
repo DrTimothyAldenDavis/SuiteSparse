@@ -10,7 +10,7 @@
 
 /* Write a matrix to a file in Matrix Market form.
  *
- *	symmetry = mwrite (filename, A, Z, comments_filename)
+ *      symmetry = mwrite (filename, A, Z, comments_filename)
  *
  * A can be sparse or full.
  *
@@ -62,7 +62,7 @@ void mexFunction
 
     if (nargin < 2 || nargin > 4 || nargout > 1)
     {
-	mexErrMsgTxt ("Usage: mwrite (filename, A, Z, comments_filename)") ;
+        mexErrMsgTxt ("Usage: mwrite (filename, A, Z, comments_filename)") ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -71,7 +71,7 @@ void mexFunction
 
     if (!mxIsChar (pargin [0]))
     {
-	mexErrMsgTxt ("first parameter must be a filename") ;
+        mexErrMsgTxt ("first parameter must be a filename") ;
     }
     mxGetString (pargin [0], filename, MAXLEN) ;
 
@@ -81,13 +81,13 @@ void mexFunction
 
     if (mxIsSparse (pargin [1]))
     {
-	A = sputil_get_sparse (pargin [1], &Amatrix, &dummy, 0) ;
-	X = NULL ;
+        A = sputil_get_sparse (pargin [1], &Amatrix, &dummy, 0) ;
+        X = NULL ;
     }
     else
     {
-	X = sputil_get_dense (pargin [1], &Xmatrix, &dummy) ;
-	A = NULL ;
+        X = sputil_get_dense (pargin [1], &Xmatrix, &dummy) ;
+        A = NULL ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -96,29 +96,29 @@ void mexFunction
 
     if (nargin == 3)
     {
-	if (mxIsChar (pargin [2]))
-	{
-	    /* mwrite (file, A, comments) */
-	    arg_z = -1 ;
-	    arg_comments = 2 ;
-	}
-	else
-	{
-	    /* mwrite (file, A, Z).  Ignore Z if A is full */
-	    arg_z = (A == NULL) ? -1 : 2 ;
-	    arg_comments = -1 ;
-	}
+        if (mxIsChar (pargin [2]))
+        {
+            /* mwrite (file, A, comments) */
+            arg_z = -1 ;
+            arg_comments = 2 ;
+        }
+        else
+        {
+            /* mwrite (file, A, Z).  Ignore Z if A is full */
+            arg_z = (A == NULL) ? -1 : 2 ;
+            arg_comments = -1 ;
+        }
     }
     else if (nargin == 4)
     {
-	/* mwrite (file, A, Z, comments).  Ignore Z is A is full */
-	arg_z = (A == NULL) ? -1 : 2 ;
-	arg_comments = 3 ;
+        /* mwrite (file, A, Z, comments).  Ignore Z is A is full */
+        arg_z = (A == NULL) ? -1 : 2 ;
+        arg_comments = 3 ;
     }
     else
     {
-	arg_z = -1 ;
-	arg_comments = -1 ;
+        arg_z = -1 ;
+        arg_comments = -1 ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -126,19 +126,19 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     if (arg_z == -1 ||
-	mxGetM (pargin [arg_z]) == 0 || mxGetN (pargin [arg_z]) == 0)
+        mxGetM (pargin [arg_z]) == 0 || mxGetN (pargin [arg_z]) == 0)
     {
-	/* A is dense, Z is not present, or Z is empty.  Ignore Z. */
-	Z = NULL ;
+        /* A is dense, Z is not present, or Z is empty.  Ignore Z. */
+        Z = NULL ;
     }
     else
     {
-	/* A is sparse and Z is present and not empty */
-	if (!mxIsSparse (pargin [arg_z]))
-	{
-	    mexErrMsgTxt ("Z must be sparse") ;
-	}
-	Z = sputil_get_sparse (pargin [arg_z], &Zmatrix, &dummy, 0) ;
+        /* A is sparse and Z is present and not empty */
+        if (!mxIsSparse (pargin [arg_z]))
+        {
+            mexErrMsgTxt ("Z must be sparse") ;
+        }
+        Z = sputil_get_sparse (pargin [arg_z], &Zmatrix, &dummy, 0) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -148,11 +148,11 @@ void mexFunction
     comments [0] = '\0' ;
     if (arg_comments != -1)
     {
-	if (!mxIsChar (pargin [arg_comments]))
-	{
-	    mexErrMsgTxt ("comments filename must be a string") ;
-	}
-	mxGetString (pargin [arg_comments], comments, MAXLEN) ;
+        if (!mxIsChar (pargin [arg_comments]))
+        {
+            mexErrMsgTxt ("comments filename must be a string") ;
+        }
+        mxGetString (pargin [arg_comments], comments, MAXLEN) ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -162,21 +162,21 @@ void mexFunction
     sputil_file = fopen (filename, "w") ;
     if (sputil_file == NULL)
     {
-	mexErrMsgTxt ("error opening file") ;
+        mexErrMsgTxt ("error opening file") ;
     }
     if (A != NULL)
     {
-	sym = cholmod_l_write_sparse (sputil_file, A, Z, comments, cm) ;
+        sym = cholmod_l_write_sparse (sputil_file, A, Z, comments, cm) ;
     }
     else
     {
-	sym = cholmod_l_write_dense (sputil_file, X, comments, cm) ;
+        sym = cholmod_l_write_dense (sputil_file, X, comments, cm) ;
     }
     fclose (sputil_file) ;
     sputil_file = NULL ;
     if (sym < 0)
     {
-	mexErrMsgTxt ("mwrite failed") ;
+        mexErrMsgTxt ("mwrite failed") ;
     }
 
     /* ---------------------------------------------------------------------- */

@@ -1,4 +1,4 @@
-function LD = ldlupdate (LD,C,updown)					    %#ok
+function LD = ldlupdate (LD,C,updown)                                       %#ok
 %LDLUPDATE multiple-rank update or downdate of a sparse LDL' factorization.
 %
 %   On input, LD contains the LDL' factorization of A (L*D*L'=A or A(q,q)).

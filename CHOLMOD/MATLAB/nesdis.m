@@ -1,4 +1,4 @@
-function [p, cparent, cmember] = nesdis (A, mode, opts)			    %#ok
+function [p, cparent, cmember] = nesdis (A, mode, opts)                     %#ok
 %NESDIS nested dissection ordering via CHOLMOD's nested dissection.
 %
 %   Example:

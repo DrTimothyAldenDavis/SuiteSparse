@@ -16,10 +16,10 @@
  *
  * Usage:
  *
- *	[p, cp, cmember] = nesdis (A)		orders A, using tril(A)
- *	[p, cp, cmember] = nesdis (A,'sym')	orders A, using tril(A)
- *	[p, cp, cmember] = nesdis (A,'row')	orders A*A'
- *	[p, cp, cmember] = nesdis (A,'col')	orders A'*A
+ *      [p, cp, cmember] = nesdis (A)           orders A, using tril(A)
+ *      [p, cp, cmember] = nesdis (A,'sym')     orders A, using tril(A)
+ *      [p, cp, cmember] = nesdis (A,'row')     orders A*A'
+ *      [p, cp, cmember] = nesdis (A,'col')     orders A'*A
  *
  * Nested dissection ordering.  Returns a permutation p such that the Cholesky
  * factorization of A(p,p), A(p,:)*A(p,:)', or A(:,p)'*A(:,p) is sparser than
@@ -27,7 +27,7 @@
  *
  * An optional 3rd input argument:
  *
- *	nesdis (A,mode,opts)
+ *      nesdis (A,mode,opts)
  *
  * specifies control parameters.  opts(1) is the smallest subgraph that should
  * not be partitioned (default is 200), opts(2) is 1 if connected components are
@@ -82,16 +82,16 @@ void mexFunction
 
     if (nargout > 3 || nargin < 1 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: [p cp cmember] = nesdis (A, mode, opts)") ;
+        mexErrMsgTxt ("Usage: [p cp cmember] = nesdis (A, mode, opts)") ;
     }
     if (nargin > 2)
     {
-	double *x = mxGetPr (pargin [2]) ;
-	n = mxGetNumberOfElements (pargin [2]) ;
-	if (n > 0) cm->method [0].nd_small = x [0] ;
-	if (n > 1) cm->method [0].nd_components = x [1] ;
-	if (n > 2) cm->method [0].nd_oksep = x [2] ;
-	if (n > 3) cm->method [0].nd_camd = x [3] ;
+        double *x = mxGetPr (pargin [2]) ;
+        n = mxGetNumberOfElements (pargin [2]) ;
+        if (n > 0) cm->method [0].nd_small = x [0] ;
+        if (n > 1) cm->method [0].nd_components = x [1] ;
+        if (n > 2) cm->method [0].nd_oksep = x [2] ;
+        if (n > 3) cm->method [0].nd_camd = x [3] ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -110,51 +110,51 @@ void mexFunction
 
     if (nargin > 1)
     {
-	buf [0] = '\0' ;
-	if (mxIsChar (pargin [1]))
-	{
-	    mxGetString (pargin [1], buf, LEN) ;
-	}
-	c = buf [0] ;
-	if (tolower (c) == 'r')
-	{
-	    /* unsymmetric case (A*A') if string starts with 'r' */
-	    transpose = FALSE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 'c')
-	{
-	    /* unsymmetric case (A'*A) if string starts with 'c' */
-	    transpose = TRUE ;
-	    A->stype = 0 ;
-	}
-	else if (tolower (c) == 's')
-	{
-	    /* symmetric case (A) if string starts with 's' */
-	    transpose = FALSE ;
-	    A->stype = -1 ;
-	}
-	else
-	{
-	    mexErrMsgTxt ("nesdis: unrecognized mode") ;
-	}
+        buf [0] = '\0' ;
+        if (mxIsChar (pargin [1]))
+        {
+            mxGetString (pargin [1], buf, LEN) ;
+        }
+        c = buf [0] ;
+        if (tolower (c) == 'r')
+        {
+            /* unsymmetric case (A*A') if string starts with 'r' */
+            transpose = FALSE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 'c')
+        {
+            /* unsymmetric case (A'*A) if string starts with 'c' */
+            transpose = TRUE ;
+            A->stype = 0 ;
+        }
+        else if (tolower (c) == 's')
+        {
+            /* symmetric case (A) if string starts with 's' */
+            transpose = FALSE ;
+            A->stype = -1 ;
+        }
+        else
+        {
+            mexErrMsgTxt ("nesdis: unrecognized mode") ;
+        }
     }
 
     if (A->stype && A->nrow != A->ncol)
     {
-	mexErrMsgTxt ("nesdis: A must be square") ;
+        mexErrMsgTxt ("nesdis: A must be square") ;
     }
 
     C = NULL ;
     if (transpose)
     {
-	/* C = A', and then order C*C' with cholmod_l_nested_dissection */
-	C = cholmod_l_transpose (A, 0, cm) ;
-	if (C == NULL)
-	{
-	    mexErrMsgTxt ("nesdis failed") ;
-	}
-	A = C ;
+        /* C = A', and then order C*C' with cholmod_l_nested_dissection */
+        C = cholmod_l_transpose (A, 0, cm) ;
+        if (C == NULL)
+        {
+            mexErrMsgTxt ("nesdis failed") ;
+        }
+        A = C ;
     }
 
     n = A->nrow ;
@@ -174,8 +174,8 @@ void mexFunction
     ncomp = cholmod_l_nested_dissection (A, NULL, 0, Perm, CParent, Cmember,cm);
     if (ncomp < 0)
     {
-	mexErrMsgTxt ("nesdis failed") ;
-	return ;
+        mexErrMsgTxt ("nesdis failed") ;
+        return ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -185,11 +185,11 @@ void mexFunction
     pargout [0] = sputil_put_int (Perm, n, 1) ;
     if (nargout > 1)
     {
-	pargout [1] = sputil_put_int (CParent, ncomp, 1) ;
+        pargout [1] = sputil_put_int (CParent, ncomp, 1) ;
     }
     if (nargout > 2)
     {
-	pargout [2] = sputil_put_int (Cmember, n, 1) ;
+        pargout [2] = sputil_put_int (Cmember, n, 1) ;
     }
 
     /* ---------------------------------------------------------------------- */

@@ -15,7 +15,7 @@
  *
  * Usage:
  *
- *	[cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small) ;
+ *      [cp_new, cmember_new] = septree (cp, cmember, nd_oksep, nd_small) ;
  *
  * cp and cmember are outputs of the nesdis mexFunction.
  *
@@ -64,8 +64,8 @@ void mexFunction
 
     if (nargout > 2 || nargin != 4)
     {
-	mexErrMsgTxt ("Usage: [cp_new, cmember_new] = "
-		"septree (cp, cmember, nd_oksep, nd_small)") ;
+        mexErrMsgTxt ("Usage: [cp_new, cmember_new] = "
+                "septree (cp, cmember, nd_oksep, nd_small)") ;
     }
 
     nc = mxGetNumberOfElements (pargin [0]) ;
@@ -75,7 +75,7 @@ void mexFunction
 
     if (n < nc)
     {
-	mexErrMsgTxt ("invalid inputs") ;
+        mexErrMsgTxt ("invalid inputs") ;
     }
 
     CParent = cholmod_l_malloc (nc, sizeof (int64_t), cm) ;
@@ -84,21 +84,21 @@ void mexFunction
     p = mxGetPr (pargin [0]) ;
     for (c = 0 ; c < nc ; c++)
     {
-	CParent [c] = p [c] - 1 ;
-	if (CParent [c] < EMPTY || CParent [c] > nc)
-	{
-	    mexErrMsgTxt ("cp invalid") ;
-	}
+        CParent [c] = p [c] - 1 ;
+        if (CParent [c] < EMPTY || CParent [c] > nc)
+        {
+            mexErrMsgTxt ("cp invalid") ;
+        }
     }
 
     p = mxGetPr (pargin [1]) ;
     for (j = 0 ; j < n ; j++)
     {
-	Cmember [j] = p [j] - 1 ;
-	if (Cmember [j] < 0 || Cmember [j] > nc)
-	{
-	    mexErrMsgTxt ("cmember invalid") ;
-	}
+        Cmember [j] = p [j] - 1 ;
+        if (Cmember [j] < 0 || Cmember [j] > nc)
+        {
+            mexErrMsgTxt ("cmember invalid") ;
+        }
     }
 
     /* ---------------------------------------------------------------------- */
@@ -106,11 +106,11 @@ void mexFunction
     /* ---------------------------------------------------------------------- */
 
     nc_new = cholmod_l_collapse_septree (n, nc, nd_oksep, nd_small, CParent,
-	Cmember, cm) ; 
+        Cmember, cm) ; 
     if (nc_new < 0)
     {
-	mexErrMsgTxt ("septree failed") ;
-	return ;
+        mexErrMsgTxt ("septree failed") ;
+        return ;
     }
 
     /* ---------------------------------------------------------------------- */
@@ -120,7 +120,7 @@ void mexFunction
     pargout [0] = sputil_put_int (CParent, nc_new, 1) ;
     if (nargout > 1)
     {
-	pargout [1] = sputil_put_int (Cmember, n, 1) ;
+        pargout [1] = sputil_put_int (Cmember, n, 1) ;
     }
 
     /* ---------------------------------------------------------------------- */
