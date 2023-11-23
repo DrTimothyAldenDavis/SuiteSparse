@@ -84,12 +84,31 @@ demos: library
 	./build/cholmod_si_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
 	./build/cholmod_sl_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
 	#
-	./build/cholmod_simple   < ./Demo/Matrix/c.tri         > ./build/simple_out.txt
-	./build/cholmod_s_simple < ./Demo/Matrix/c.tri        >> ./build/simple_out.txt
-	./build/cholmod_simple   < ./Demo/Matrix/can___24.mtx >> ./build/simple_out.txt
-	./build/cholmod_s_simple < ./Demo/Matrix/can___24.mtx >> ./build/simple_out.txt
-	./build/cholmod_simple   < ./Demo/Matrix/bcsstk01.tri >> ./build/simple_out.txt
-	./build/cholmod_s_simple < ./Demo/Matrix/bcsstk01.tri >> ./build/simple_out.txt
+	./build/cholmod_di_simple < ./Demo/Matrix/bcsstk01.tri > ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/bcsstk01.tri > ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/bcsstk01.tri > ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/bcsstk01.tri > ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/can___24.mtx >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/can___24.mtx >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/can___24.mtx >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/can___24.mtx >> ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/c.tri        >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/c.tri        >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/c.tri        >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/c.tri        >> ./build/sl_simple.out.txt
+
+large: library
+	./build/cholmod_di_simple < ~/nd12k.mtx > ./build/di_nd12k.out.txt
+	./build/cholmod_dl_simple < ~/nd12k.mtx > ./build/dl_nd12k.out.txt
+	./build/cholmod_si_simple < ~/nd12k.mtx > ./build/si_nd12k.out.txt
+	./build/cholmod_sl_simple < ~/nd12k.mtx > ./build/sl_nd12k.out.txt
 
 test: library
 	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
