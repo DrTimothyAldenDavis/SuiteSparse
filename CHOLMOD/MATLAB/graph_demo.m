@@ -8,7 +8,7 @@ function graph_demo (n)
 %
 %   See also DELSQ, NUMGRID, GPLOT, TREEPLOT
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
@@ -40,6 +40,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     % bisect the graph
     s = bisect (A) ;
     [i j] = find (A) ;
+
     subplot (2,2,2)
     my_gplot (sparse (i, j, s(i) == s(j)), x, y) ;
     title ('node bisection') ;
@@ -77,7 +78,6 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 
         drawnow
         pause (0.1)
-
         if (defaults)
             break ;
         end
@@ -91,7 +91,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 end
 
 function my_gplot (A, x, y)
-    % my_gplot : like gplot, just a lot faster
+% my_gplot : like gplot, just a lot faster
 [i, j] = find (A) ;
 [ignore, p] = sort (max(i, j)) ;
 i = i (p) ;

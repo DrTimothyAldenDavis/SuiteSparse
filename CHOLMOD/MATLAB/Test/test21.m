@@ -4,7 +4,7 @@ function test21
 %   test21
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -33,8 +33,8 @@ for i = f
     x2 = cholmod2 (A,b) ;
 
     s = norm (A,1) * norm (x,1) + norm (b,1) ;
-    resid1 = norm (A*x1-b,1) / s ; 
-    resid2 = norm (A*x2-b,1) / s ; 
+    resid1 = norm (A*x1-b,1) / s ;
+    resid2 = norm (A*x2-b,1) / s ;
 
     err1 = norm (x-x1,1) ;
     err2 = norm (x-x2,1) ;

@@ -12,7 +12,7 @@ function C = sdmult (S,F,transpose)                                         %#ok
 %
 %   See also MTIMES
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 error ('sdmult mexFunction not found') ;

@@ -8,16 +8,13 @@ function cholmod_install
 % optionally use CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD,
 % and METIS are used.
 %
-% See http://www-users.cs.umn.edu/~karypis/metis for a copy of METIS 5.1.0.
-% SuiteSparse uses a slightly-modified version of METIS 5.1.0.
-%
 % You can only use cholmod_install while in the CHOLMOD/MATLAB directory.
 %
 % See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol, ldlsolve,
-%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
-%   symbfact2, mread, mwrite, amd2, colamd2, camd, ccolamd, ldlrowmod
+%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, symbfact2,
+%   mread, mwrite, amd2, colamd2, camd, ccolamd, ldlrowmod
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 % compile CHOLMOD and add to the path

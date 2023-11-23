@@ -7,7 +7,7 @@ function [A, Z] = mread (filename,prefer_binary)                            %#ok
 %
 %   Unlike MMREAD, only the matrix is returned; the file format is not
 %   returned.  Explicit zero entries can be present in the file; these are not
-%   included in A.  They appear as the nonzero pattern of the binary matrix Z. 
+%   included in A.  They appear as the nonzero pattern of the binary matrix Z.
 %
 %   If prefer_binary is not present, or zero, a symmetric pattern-only matrix
 %   is returned with A(i,i) = 1+length(find(A(:,i))) if it is present in the
@@ -18,7 +18,7 @@ function [A, Z] = mread (filename,prefer_binary)                            %#ok
 %
 %   See also load
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 error ('mread mexFunction not found') ;

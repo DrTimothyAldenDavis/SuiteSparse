@@ -4,7 +4,7 @@ function test14 (nmat)
 %   test14(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -45,7 +45,7 @@ for i = f
         [m n] = size (A) ;
 
         if (m == n)
-            S = spones (A) ; 
+            S = spones (A) ;
         else
             n = min (m,n) ;
             S = spones (A (1:n,1:n)) ;

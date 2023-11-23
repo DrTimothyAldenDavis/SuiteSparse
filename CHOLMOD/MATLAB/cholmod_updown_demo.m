@@ -9,7 +9,7 @@ function cholmod_updown_demo
 %
 % See also CHOLMOD_DEMO
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('\n\n------------------------------------------------------------\n') ;
@@ -41,7 +41,7 @@ x = A\b ;
 t1 = toc ;
 err = norm (A*x-b) ;
 fprintf ('norm (A*x-b) using backslash:  %g\n', err) ;
-fprintf ('time for x=A\\b: %g\n', t1) ; 
+fprintf ('time for x=A\\b: %g\n', t1) ;
 if (err > 1e-12)
     error ('!')
 end
@@ -82,7 +82,7 @@ fprintf ('norm (A*x-b) using ldlsolve:   %g\n', err) ;
 if (err > 1e-12)
     error ('!')
 end
-fprintf ('time to solve x=A\\b using update: %g\n', t2 + t3) ; 
+fprintf ('time to solve x=A\\b using update: %g\n', t2 + t3) ;
 
 % solve again, just using backslash
 tic
@@ -93,7 +93,7 @@ fprintf ('norm (A*x-b) using backslash:  %g\n', err) ;
 if (err > 1e-12)
     error ('!')
 end
-fprintf ('time for x=A\\b: %g\n', t1) ; 
+fprintf ('time for x=A\\b: %g\n', t1) ;
 fprintf ('speedup of update vs backslash: %g\n', t1 / (t2 + t3)) ;
 
 % invert the permutation
@@ -143,7 +143,7 @@ t1 = toc ;
 err = norm (A3*x-b) ;
 fprintf ('norm (A3*x-b) with backslash:  %g\n', err) ;
 fprintf ('time for x=A\\b with backslash %g\n', t1) ;
-fprintf ('time for x=A\\b using rowdel:  %g\n', t2 + t3) ; 
+fprintf ('time for x=A\\b using rowdel:  %g\n', t2 + t3) ;
 fprintf ('speedup of rowdel vs backslash: %g\n', t1 / (t2 + t3)) ;
 
 % add row 3 back to A3 to get A4.  This corresponds to row invp(3) in S and LDL
@@ -193,6 +193,6 @@ if (err > 1e-12)
 end
 
 fprintf ('time for x=A\\b with backslash %g\n', t1) ;
-fprintf ('time for x=A\\b using rowadd:  %g\n', t2 + t3) ; 
+fprintf ('time for x=A\\b using rowadd:  %g\n', t2 + t3) ;
 fprintf ('speedup of rowadd vs backslash: %g\n', t1 / (t2 + t3)) ;
 

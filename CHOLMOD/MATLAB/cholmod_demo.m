@@ -14,7 +14,7 @@ function cholmod_demo
 %
 % See also BENCH
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 help cholmod_demo
@@ -55,7 +55,7 @@ t1 = toc ;
 e1 = norm (A*x-b) ;
 
 tic ;
-x = cholmod2 (A,b) ; 
+x = cholmod2 (A,b) ;
 t2 = toc ;
 e2 = norm (A*x-b) ;
 

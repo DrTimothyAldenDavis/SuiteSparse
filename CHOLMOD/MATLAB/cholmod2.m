@@ -36,7 +36,7 @@ function [x,stats] = cholmod2 (A, b, ordering)                              %#ok
 %
 %   See also CHOL, MLDIVIDE.
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 error ('cholmod2 mexFunction not found\n') ;

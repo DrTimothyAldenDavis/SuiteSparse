@@ -4,7 +4,7 @@
 %   nn
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 index = ssget ;
@@ -47,7 +47,7 @@ for k = 1:nmat
         mode = 'col' ;
         len = n ;
     end
-    
+
     fprintf (' %s ', mode) ;
 
     % try nesdis using camd, and splitting connected components
@@ -112,7 +112,7 @@ for k = 1:nmat
         t2, t1, tm, tm/t1, fl2, fl1, flm, flm/fl1) ;
 
     if (mod (k, 20) ~= 0)
-        continue 
+        continue
     end
 
     subplot (3,3,1) ;

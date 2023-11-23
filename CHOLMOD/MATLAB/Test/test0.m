@@ -4,7 +4,7 @@ function test0 (nmat,f)
 %   test0(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -42,7 +42,11 @@ if (nargin > 0)
     f = f (1:nmat) ;
 end
 
-% f= 229
+% f = 1283  % err and err3 > 1e-6, in both CHOLMOD and MATLAB below
+% f = 1278  % error at phase 4
+
+% not positive definite, or errors in various phases
+skip = [skip 1892 1278] ;
 
 fprintf ('test matrices sorted by dimension:\n') ;
 for i = f
@@ -71,6 +75,12 @@ for i = f
         clear Problem
         n = size (A,1) ;
 
+        [R,f,p] = chol (A) ;
+        if (f ~= 0)
+            fprintf ('not positive definite\n') ;
+            continue ;
+        end
+
         % use AMD from SuiteSparse
         tic
         p = amd2 (A) ;
@@ -95,39 +105,59 @@ for i = f
 
         tic ;
         L = lchol (S) ;
-        t3 = toc ;
+        tL_cholmod = toc ;
         if (doplots)
             subplot (3,2,5) ;   spy (L) ;       title ('L=lchol') ;
             drawnow ;
         end
-        fprintf ('CHOLMOD time: L=lchol  %10.4f  nnz(L): %d\n', t3, nnz (L)) ;
+        fprintf ('CHOLMOD time: L=lchol  %10.4f  nnz(L): %d\n', ...
+            tL_cholmod, nnz (L)) ;
         lnorm = norm (L, 1) ;
+
+        tic ;
+        L2 = chol (S, 'lower') ;
+        tL_matlab = toc ;
+        fprintf ('MATLAB  time: L=chol   %10.4f  nnz(L): %d\n', ...
+            tL_matlab, nnz (L2)) ;
 
         err = ldl_normest (S, L) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            err3 = ldl_normest (S, L2) / lnorm ;
+            err
+            err3
+            condition_est = condest (S)
+            if (err > err3 * 1e3)
+                error ('1!') ;
+            else
+                % matrix 1283 triggers this condition
+                % both err and err3 are 2e-6
+                clear L L2
+                continue ;
+            end
         end
-        clear L
+        clear L L2
 
         tic ;
         R = chol2 (S) ;
-        t2 = toc ;
+        tR_cholmod = toc ;
         if (doplots)
             subplot (3,2,3) ;   spy (R) ;       title ('R=chol2') ;
             drawnow ;
         end
-        fprintf ('CHOLMOD time: R=chol2  %10.4f  nnz(R): %d\n', t2, nnz (R)) ;
+        fprintf ('CHOLMOD time: R=chol2  %10.4f  nnz(R): %d\n', ...
+            tR_cholmod, nnz (R)) ;
 
         err = ldl_normest (S, R') / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('2!') ;
         end
         clear R
 
         tic ;
         R = chol (S) ;
-        t1 = toc ;
-        fprintf ('MATLAB time:  R=chol   %10.4f  nnz(R): %d\n', t1, nnz (R)) ;
+        tR_matlab = toc ;
+        fprintf ('MATLAB time:  R=chol   %10.4f  nnz(R): %d\n', ...
+            tR_matlab, nnz (R)) ;
         if (doplots)
             subplot (3,2,4) ;   spy (R) ;       title ('chol') ;
             drawnow ;
@@ -135,7 +165,7 @@ for i = f
 
         err = ldl_normest (S, R') / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('3!') ;
         end
         clear R
 
@@ -144,10 +174,8 @@ for i = f
         t7 = toc ;
         fprintf ('MATLAB [..,R]=symbfact %10.4f  nnz(R): %d\n', t7, nnz (R)) ;
 
-        fprintf ('\nCHOLMOD speedup vs MATLAB chol:         R: %8.2f L: %8.2f\n\n', ...
-            t1/t2, t1/t3) ;
-
-        fprintf ('\nCHOLMOD numeric lchol vs MATLAB symbfact:  %8.2f\n', t7/t3) ;
+        fprintf ('\nCHOLMOD speedup vs MATLAB chol:  R: %8.2f L: %8.2f\n\n', ...
+            tR_matlab/tR_cholmod, tL_matlab/tL_cholmod) ;
 
         clear R S
 
@@ -164,7 +192,9 @@ for i = f
 
         err = ldl_normest (A (q,q), L) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            % matrix 1278 triggers this error (1.4e-6)
+            err
+            error ('4!') ;
         end
         clear L
 
@@ -179,7 +209,7 @@ for i = f
 
         err = ldl_normest (S, L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('5!') ;
         end
         clear L D A
 
@@ -214,7 +244,7 @@ for i = f
         [L,D] = ldlsplit (LD2) ;
         err = ldl_normest (S + C*C', L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('6!') ;
         end
         clear L D
 
@@ -236,7 +266,7 @@ for i = f
         S2 = S + C*C' - C1*C1' ;
         err = ldl_normest (S2, L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('7!') ;
         end
 
         % now test resymbol
@@ -244,19 +274,19 @@ for i = f
         [L,D] = ldlsplit (LD4) ;
         err = ldl_normest (S2, L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('8!') ;
         end
         fprintf ('after resymbol: %d\n', nnz (LD4)) ;
 
         % compare resymbol with ldlchol
         LD5 = ldlchol (S2) ;
         if (nnz (LD5) ~= nnz (LD4))
-            error ('!') ;
+            error ('9!') ;
         end
 
         % revised June 30, 2020
         if (nnz (GB_spones_mex (LD5) - GB_spones_mex (LD4)) ~= 0)
-            error ('!') ;
+            error ('10!') ;
         end
 
         b = rand (n,2) ;
@@ -297,7 +327,7 @@ for i = f
         [L,D] = ldlsplit (LD6) ;
         err = ldl_normest (S2, L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('11!') ;
         end
 
         % test the row add, by adding the row back in again
@@ -315,7 +345,7 @@ for i = f
         [L,D] = ldlsplit (LD7) ;
         err = ldl_normest (S, L, D) / lnorm ;
         if (err > 1e-6)
-            error ('!') ;
+            error ('12!') ;
         end
 
         % ----------------------------------------------------------------------

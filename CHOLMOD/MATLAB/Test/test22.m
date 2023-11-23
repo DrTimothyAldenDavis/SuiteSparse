@@ -6,7 +6,7 @@ function test22(nmat)
 % if nmat <= 0, just test problematic matrices
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');

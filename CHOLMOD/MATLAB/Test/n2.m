@@ -3,7 +3,7 @@
 %   n2
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 index = ssget ;
@@ -13,7 +13,7 @@ f = f (i) ;
 nmat = length (f) ;
 
 for i = f
-    
+
     Prob = ssget (i, index) ;
     disp (Prob) ;
     A = spones (Prob.A) ;

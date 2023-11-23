@@ -2,17 +2,16 @@
 // CHOLMOD/MATLAB/spsym: MATLAB interface to CHOLMOD sparse symmetry metrics
 //------------------------------------------------------------------------------
 
-// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* [result xmatched pmatched nzoffdiag nzdiag] = spsym (A, quick).
- * See the spsym.m file for a description of what it computes.
- */
+// [result xmatched pmatched nzoffdiag nzdiag] = spsym (A, quick).
+// See the spsym.m file for a description of what it computes.
 
-#include "cholmod_matlab.h"
+#include "sputil2.h"
 
 void mexFunction
 (
@@ -27,17 +26,17 @@ void mexFunction
     cholmod_common Common, *cm ;
     int64_t result, quick, option, xmatched, pmatched, nzoffdiag, nzdiag ;
 
-    /* ---------------------------------------------------------------------- */
-    /* start CHOLMOD and set parameters */ 
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // start CHOLMOD and set parameters
+    //--------------------------------------------------------------------------
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    sputil_config (SPUMONI, cm) ;
+    sputil2_config (SPUMONI, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
     if (nargin > 2 || nargin < 1 || nargout > 5)
     {
@@ -48,10 +47,12 @@ void mexFunction
         mexErrMsgTxt ("A must be sparse and double") ;
     }
 
-    /* get sparse matrix A */
-    A = sputil_get_sparse (pargin [0], &Amatrix, &dummy, 0) ;
+    // get sparse matrix A
+    size_t A_xsize = 0 ;
+    A = sputil2_get_sparse (pargin [0], 0, CHOLMOD_DOUBLE, &Amatrix,
+        &A_xsize, cm) ;
 
-    /* get the "quick" parameter */
+    // get the "quick" parameter
     quick = (nargin > 1) ? (mxGetScalar (pargin [1]) != 0) : FALSE ;
 
     if (nargout > 1)
@@ -67,9 +68,9 @@ void mexFunction
         option = 1 ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* determine symmetry */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // determine symmetry
+    //--------------------------------------------------------------------------
 
     xmatched = 0 ;
     pmatched = 0 ;
@@ -79,21 +80,23 @@ void mexFunction
     result = cholmod_l_symmetry (A, option, &xmatched, &pmatched, &nzoffdiag,
         &nzdiag, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* return results to MATLAB */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // return results to MATLAB
+    //--------------------------------------------------------------------------
 
-    pargout [0] = sputil_put_int (&result, 1, 0) ;
+    pargout [0] = sputil2_put_int (&result, 1, 0) ;
 
-    if (nargout > 1) pargout [1] = sputil_put_int (&xmatched, 1, 0) ;
-    if (nargout > 2) pargout [2] = sputil_put_int (&pmatched, 1, 0) ;
-    if (nargout > 3) pargout [3] = sputil_put_int (&nzoffdiag, 1, 0) ;
-    if (nargout > 4) pargout [4] = sputil_put_int (&nzdiag, 1, 0) ;
+    if (nargout > 1) pargout [1] = sputil2_put_int (&xmatched, 1, 0) ;
+    if (nargout > 2) pargout [2] = sputil2_put_int (&pmatched, 1, 0) ;
+    if (nargout > 3) pargout [3] = sputil2_put_int (&nzoffdiag, 1, 0) ;
+    if (nargout > 4) pargout [4] = sputil2_put_int (&nzdiag, 1, 0) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free workspace */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free workspace
+    //--------------------------------------------------------------------------
 
+    sputil2_free_sparse (&A, &Amatrix, A_xsize, cm) ;
     cholmod_l_finish (cm) ;
-    cholmod_l_print_common (" ", cm) ;
+    if (SPUMONI > 0) cholmod_l_print_common (" ", cm) ;
 }
+

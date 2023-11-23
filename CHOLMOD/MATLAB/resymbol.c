@@ -2,25 +2,22 @@
 // CHOLMOD/MATLAB/resymbol: MATLAB interface for CHOLMOD symbolic re-analysis
 //------------------------------------------------------------------------------
 
-// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Usage:
- *      L = resymbol (L, A)
- *
- * Recompute the symbolic Cholesky factorization of the matrix A.  A must be
- * symmetric.  Only tril(A) is used.  Entries in L that are not in the Cholesky
- * factorization of A are removed from L.  L can be from an LL' or LDL'
- * factorization.  The numerical values of A are ignored; only its nonzero
- * pattern is used.
- */
+// Usage:
+//      L = resymbol (L, A)
+//
+// Recompute the symbolic Cholesky factorization of the matrix A.  A must be
+// symmetric.  Only tril(A) is used.  Entries in L that are not in the Cholesky
+// factorization of A are removed from L.  L can be from an LL' or LDL'
+// factorization.  The numerical values of A are ignored; only its nonzero
+// pattern is used.
 
-/* ========================================================================== */
-
-#include "cholmod_matlab.h"
+#include "sputil2.h"
 
 void mexFunction
 (
@@ -31,24 +28,24 @@ void mexFunction
 )
 {
     double dummy = 0 ;
-    double *Lx, *Lx2, *Lz, *Lz2 ;
+    double *Lx, *Lx2 ;
     int64_t *Li, *Lp, *Lnz2, *Li2, *Lp2, *ColCount ;
-    cholmod_sparse *A, Amatrix, *Lsparse, *S ;
+    cholmod_sparse *A, Amatrix, *Lsparse ;
     cholmod_factor *L ;
     cholmod_common Common, *cm ;
     int64_t j, s, n, lnz, is_complex ;
 
-    /* ---------------------------------------------------------------------- */
-    /* start CHOLMOD and set parameters */ 
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // start CHOLMOD and set parameters
+    //--------------------------------------------------------------------------
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    sputil_config (SPUMONI, cm) ;
+    sputil2_config (SPUMONI, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
 
     if (nargout > 1 || nargin != 2)
     {
@@ -65,29 +62,25 @@ void mexFunction
         mexErrMsgTxt ("resymbol: A and L must have same dimensions") ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* get the sparse matrix A */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get the sparse matrix A
+    //--------------------------------------------------------------------------
 
-    A = sputil_get_sparse_pattern (pargin [1], &Amatrix, &dummy, cm) ;
-    S = (A == &Amatrix) ? NULL : A ;
-
+    A = sputil2_get_sparse_pattern (pargin [1], CHOLMOD_DOUBLE, &Amatrix, cm) ;
     A->stype = -1 ;
 
-    /* A = sputil_get_sparse (pargin [1], &Amatrix, &dummy, -1) ; */
+    //--------------------------------------------------------------------------
+    // construct a copy of the input sparse matrix L
+    //--------------------------------------------------------------------------
 
-    /* ---------------------------------------------------------------------- */
-    /* construct a copy of the input sparse matrix L */
-    /* ---------------------------------------------------------------------- */
-
-    /* get the MATLAB L */
+    // get the MATLAB L
     Lp = (int64_t *) mxGetJc (pargin [0]) ;
     Li = (int64_t *) mxGetIr (pargin [0]) ;
-    Lx = mxGetPr (pargin [0]) ;
-    Lz = mxGetPi (pargin [0]) ;
+    Lx = mxGetData (pargin [0]) ;
+
     is_complex = mxIsComplex (pargin [0]) ;
 
-    /* allocate the CHOLMOD symbolic L */
+    // allocate the CHOLMOD symbolic L
     L = cholmod_l_allocate_factor (n, cm) ;
     L->ordering = CHOLMOD_NATURAL ;
     ColCount = L->ColCount ;
@@ -96,18 +89,18 @@ void mexFunction
         ColCount [j] = Lp [j+1] - Lp [j] ;
     }
 
-    /* allocate space for a CHOLMOD LDL' packed factor */
-    /* (LL' and LDL' are treated identically) */
-    cholmod_l_change_factor (is_complex ? CHOLMOD_ZOMPLEX : CHOLMOD_REAL,
+    // allocate space for a CHOLMOD LDL' packed factor
+    // (LL' and LDL' are treated identically)
+    cholmod_l_change_factor (is_complex ? CHOLMOD_COMPLEX : CHOLMOD_REAL,
             FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
-    /* copy MATLAB L into CHOLMOD L */
+    // copy MATLAB L into CHOLMOD L
     Lp2 = L->p ;
     Li2 = L->i ;
     Lx2 = L->x ;
-    Lz2 = L->z ;
     Lnz2 = L->nz ;
     lnz = L->nzmax ;
+    // FIXME: use memcpy here
     for (j = 0 ; j <= n ; j++)
     {
         Lp2 [j] = Lp [j] ;
@@ -120,42 +113,37 @@ void mexFunction
     {
         Li2 [s] = Li [s] ;
     }
-    for (s = 0 ; s < lnz ; s++)
+    int64_t lnz2 = (is_complex) ? (2*lnz) : lnz ;
+    for (s = 0 ; s < lnz2 ; s++)
     {
         Lx2 [s] = Lx [s] ;
     }
-    if (is_complex)
-    {
-        for (s = 0 ; s < lnz ; s++)
-        {
-            Lz2 [s] = Lz [s] ;
-        }
-    }
 
-    /* ---------------------------------------------------------------------- */
-    /* resymbolic factorization */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // resymbolic factorization
+    //--------------------------------------------------------------------------
 
     cholmod_l_resymbol (A, NULL, 0, TRUE, L, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* copy the results back to MATLAB */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // copy the results back to MATLAB
+    //--------------------------------------------------------------------------
 
     Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
 
-    /* return L as a sparse matrix */
-    pargout [0] = sputil_put_sparse (&Lsparse, cm) ;
+    // return L as a sparse matrix; it may contain numerically zero entries,
+    // which must be kept to allow update/downdate to work.
+    pargout [0] = sputil2_put_sparse (&Lsparse, mxDOUBLE_CLASS,
+        /* return L with explicit zeros kept */ false, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free workspace and the CHOLMOD L, except for what is copied to MATLAB
+    //--------------------------------------------------------------------------
 
+    sputil2_free_sparse (&A, &Amatrix, 0, cm) ;
     cholmod_l_free_factor (&L, cm) ;
-    cholmod_l_free_sparse (&S, cm) ;
     cholmod_l_finish (cm) ;
     cholmod_l_print_common (" ", cm) ;
-    /*
-    if (cm->malloc_count != 3 + mxIsComplex (pargout[0])) mexErrMsgTxt ("!") ;
-    */
+    if (SPUMONI > 0) cholmod_l_print_common (" ", cm) ;
 }
+

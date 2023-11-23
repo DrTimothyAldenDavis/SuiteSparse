@@ -5,7 +5,7 @@ function test8 (nmat)
 %   test8(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -28,7 +28,7 @@ f = find (...
     & (index.nnzdiag == index.nrows) ...
     & (index.nrows < 600000) & (index.nnz > index.nrows)) ;
 
-for k = 1:length (f) 
+for k = 1:length (f)
     names {k} = index.Name {f(k)} ;                     %#ok
 end
 
@@ -64,7 +64,7 @@ junk = sparse (1) ;
 for k = 1:length (f)
 
     Problem = ssget (f(k)) ;
-    A = Problem.A ; 
+    A = Problem.A ;
     fprintf ('\n================== Problem: %s  n: %d nnz: %d\n', ...
         Problem.name, size (A,1), nnz (A)) ;
     fprintf ('title: %s\n\n', Problem.title) ;

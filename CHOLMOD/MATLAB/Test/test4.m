@@ -4,7 +4,7 @@ function test4
 %   test4
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -16,7 +16,7 @@ n = size (A,1) ;
 b = rand (n,1) ;
 x = cholmod2 (A,b) ;
 m2 = norm (A*x-b,1) ;
-b = sparse (b) ; 
+b = sparse (b) ;
 x = cholmod2 (A,b) ;
 m2 = max (m2, norm (A*x-b,1)) ;
 m1 = 0 ;

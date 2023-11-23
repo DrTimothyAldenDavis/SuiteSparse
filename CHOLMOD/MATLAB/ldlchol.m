@@ -28,11 +28,11 @@ function [LD,p,q] = ldlchol (A,beta)                                        %#ok
 %   You MAY modify LD in MATLAB if you do not pass it back to ldlupdate or
 %   ldlsolve.  Just be aware that LD contains explicit zero entries, contrary
 %   to the standard practice in MATLAB of removing those entries from all
-%   sparse matrices.  LD = sparse2 (LD) will remove any zero entries in LD.
+%   sparse matrices.  LD = sparse (LD) will remove any zero entries in LD.
 %
 %   See also LDLUPDATE, LDLSOLVE, LDLSPLIT, CHOL2, LCHOL, CHOL, SPARSE2
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlchol mexFunction not found') ;

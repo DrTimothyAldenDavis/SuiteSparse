@@ -15,7 +15,6 @@
 %   bisect          - computes a node separator based on METIS_ComputeVertexSeparator.
 %   analyze         - order and analyze a matrix using CHOLMOD's best-effort ordering.
 %   etree2          - sparse elimination tree.
-%   sparse2         - replacement for SPARSE
 %   symbfact2       - symbolic factorization
 %   sdmult          - sparse matrix times dense matrix
 %   mread           - read a sparse matrix from a file in Matrix Market format.
@@ -35,5 +34,5 @@
 % Note: cholmod has been renamed cholmod2, so as not to conflict with itself
 % (the MATLAB built-in cholmod function).
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+

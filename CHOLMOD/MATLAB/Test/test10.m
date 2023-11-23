@@ -4,7 +4,7 @@ function test10 (nmat)
 %   test10(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -59,7 +59,7 @@ for nn = f
             elseif (nn == 0)
 
                 i = 1i ;
-                A = [ 11  4-i 1+i 2+2*i 
+                A = [ 11  4-i 1+i 2+2*i
                       4+i  22  0   0
                       1-i  0  33   0
                       2-2*i 0 0   44 ] ;

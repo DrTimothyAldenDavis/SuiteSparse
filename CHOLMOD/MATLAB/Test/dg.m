@@ -5,7 +5,7 @@ function dg(A)
 %   dg(A)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 A = GB_spones_mex (A) ;
@@ -70,6 +70,6 @@ drawnow
 % hold on
 % for j = cboundaries
 %     plot ([1 n], [j j], 'r', [j j], [1 n], 'r') ;
-% end    
+% end
 
 

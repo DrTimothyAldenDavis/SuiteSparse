@@ -49,7 +49,7 @@ function LD = ldlrowmod (LD,k,C)                                            %#ok
 %   solve, so ldlrowmod and ldlsolve simply assume the propertly holds.
 %   ===========================================================================
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlrowmod mexFunction not found') ;

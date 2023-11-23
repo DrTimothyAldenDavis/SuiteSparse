@@ -47,7 +47,7 @@
 //                  computed from stats(3) (roughly 4*nnz(L)*size(b,2)).
 // stats(5)     memory usage in MB.
 
-#include "cholmod_matlab.h"
+#include "sputil2.h"
 
 void mexFunction
 (
@@ -64,19 +64,13 @@ void mexFunction
     cholmod_common Common, *cm ;
     int64_t n, B_is_sparse, ordering, k, *Perm ;
 
-// FIXME:
-double t0 = SuiteSparse_time ( ) ;
-
     //--------------------------------------------------------------------------
     // start CHOLMOD and set parameters
     //--------------------------------------------------------------------------
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-// FIXME
-//  sputil_config (SPUMONI, cm) ;
-    sputil_config (1, cm) ;
-    cm->print = 0 ;
+    sputil2_config (SPUMONI, cm) ;
 
     // There is no supernodal LDL'.  If cm->final_ll = FALSE (the default), then
     // this mexFunction will use a simplicial LDL' when flops/lnz < 40, and a
@@ -123,7 +117,7 @@ double t0 = SuiteSparse_time ( ) ;
 
     // get sparse matrix A.  Use triu(A) only.
     size_t A_xsize = 0 ;
-    A = sputil_get_sparse2 (pargin [0], 1, dtype, &Amatrix, &A_xsize, cm) ;
+    A = sputil2_get_sparse (pargin [0], 1, dtype, &Amatrix, &A_xsize, cm) ;
 
     // get sparse or dense matrix B
     B = NULL ;
@@ -133,13 +127,13 @@ double t0 = SuiteSparse_time ( ) ;
     if (B_is_sparse)
     {
         // get sparse matrix B (unsymmetric)
-        Bs = sputil_get_sparse2 (pargin [1], 1, dtype, &Bspmatrix, &B_xsize,
+        Bs = sputil2_get_sparse (pargin [1], 0, dtype, &Bspmatrix, &B_xsize,
             cm) ;
     }
     else
     {
         // get dense matrix B
-        B = sputil_get_dense2 (pargin [1], dtype, &Bmatrix, &B_xsize, cm) ;
+        B = sputil2_get_dense (pargin [1], dtype, &Bmatrix, &B_xsize, cm) ;
     }
 
     // get the ordering option
@@ -238,33 +232,14 @@ double t0 = SuiteSparse_time ( ) ;
         mexErrMsgTxt ("invalid ordering option") ;
     }
 
-// FIXME:
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("get time: %g\n", t0) ;
-t0 = SuiteSparse_time ( ) ;
-
     //--------------------------------------------------------------------------
     // analyze and factorize
     //--------------------------------------------------------------------------
 
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
-
-// FIXME:
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("analyze time: %g\n", t0) ;
-t0 = SuiteSparse_time ( ) ;
-
     cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
     cholmod_l_factorize (A, L, cm) ;
-
-// FIXME:
-printf ("A->dtype %d L->dtype %d\n", A->dtype, L->dtype) ;
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("factorize time: %g\n", t0) ;
-t0 = SuiteSparse_time ( ) ;
-
     rcond = cholmod_l_rcond (L, cm) ;
-
     if (rcond == 0)
     {
         mexWarnMsgTxt ("Matrix is indefinite or singular to working precision");
@@ -284,27 +259,17 @@ t0 = SuiteSparse_time ( ) ;
         // solve AX=B with sparse X and B; return sparse X to MATLAB.
         // The sparse X must be returned to MATLAB as double since MATLAB
         // does not (yet) support sparse single precision matrices.
+        // cholmod_l_spsolve returns Xs with no explicit zeros.
         Xs = cholmod_l_spsolve (CHOLMOD_A, L, Bs, cm) ;
-
-// FIXME:
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("sparse solve time: %g\n", t0) ;
-t0 = SuiteSparse_time ( ) ;
-
-        pargout [0] = sputil_put_sparse2 (&Xs, mxDOUBLE_CLASS, cm) ;
+        pargout [0] = sputil2_put_sparse (&Xs, mxDOUBLE_CLASS,
+            /* already done by cholmod_l_spsolve: */ false, cm) ;
     }
     else
     {
         // solve AX=B with dense X and B; return dense X to MATLAB
         X = cholmod_l_solve (CHOLMOD_A, L, B, cm) ;
-
-// FIXME:
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("dense solve time: %g\n", t0) ;
-t0 = SuiteSparse_time ( ) ;
-
         // the dense X can be returned in its current type
-        pargout [0] = sputil_put_dense2 (&X, mxdtype, cm) ;
+        pargout [0] = sputil2_put_dense (&X, mxdtype, cm) ;
     }
 
     // return statistics, if requested
@@ -323,26 +288,12 @@ t0 = SuiteSparse_time ( ) ;
     // free workspace and return result
     //--------------------------------------------------------------------------
 
-// FIXME:
-t0 = SuiteSparse_time ( ) - t0 ;
-printf ("put time: %g\n", t0) ;
-
-    sputil_free_sparse2 (A, A_xsize, cm) ;
-    sputil_free_sparse2 (Bs, B_xsize, cm) ;
-    sputil_free_dense2  (B, B_xsize, cm) ;
+    sputil2_free_sparse (&A,  &Amatrix,   A_xsize, cm) ;
+    sputil2_free_sparse (&Bs, &Bspmatrix, B_xsize, cm) ;
+    sputil2_free_dense  (&B,  &Bmatrix,   B_xsize, cm) ;
     cholmod_l_free_factor (&L, cm) ;
     cholmod_l_finish (cm) ;
-
-// FIXME:
-cm->print = 5 ;
-
-    cholmod_l_print_common (" ", cm) ;
-
-// FIXME:
-cholmod_l_gpu_stats (cm) ;
-
-//  if (cm->malloc_count !=
-//      (mxIsComplex (pargout [0]) + (mxIsSparse (pargout[0]) ? 3:1)))
-//      mexErrMsgTxt ("memory leak!") ;
+    if (SPUMONI > 0) cholmod_l_print_common (" ", cm) ;
+    if (SPUMONI > 1) cholmod_l_gpu_stats (cm) ;
 }
 

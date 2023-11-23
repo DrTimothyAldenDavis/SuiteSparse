@@ -37,7 +37,7 @@ tic
 x3 = cholmod2 (A, b2, 'single') ;
 toc
 
-anorm = norm (A,1) 
+anorm = norm (A,1)
 norm (A*x1-b,1) / anorm
 norm (A*x2-b,1) / anorm
 norm (A*double (x3) - b, 1) / anorm
