@@ -50,9 +50,9 @@
 int CHOLMOD(drop)
 (
     // input:
-    double tol,         // keep entries with absolute value > to
+    double tol,         // keep entries with absolute value > tol
     // input/output:
-    cholmod_sparse *A,  // matrix to drop entries fro
+    cholmod_sparse *A,  // matrix to drop entries from
     cholmod_common *Common
 )
 {

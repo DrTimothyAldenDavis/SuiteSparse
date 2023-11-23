@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Demo/cholmod_s_simple: simple demo program for CHOLMOD
+// CHOLMOD/Demo/cholmod_di_simple: simple demo program for CHOLMOD
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis,
@@ -10,13 +10,14 @@
 
 // Read in a real symmetric or complex Hermitian matrix from stdin in
 // MatrixMarket format, solve Ax=b where b=[1 1 ... 1]', and print the residual.
-// The matrix and its factorization are all in single precision.  Compare with
-// cholmod_simple.  Note that all scalars (one, m1, rnorm, anorm) are passed
-// to CHOLMOD in double precision, and returned as double.  However, all
-// internal computations below are done in single precision.  For input/output
-// parameters, scalars are typecast to/from the internal float computations.
 //
-// Usage: cholmod_s_simple < matrixfile
+// Usage: cholmod_di_simple < matrixfile
+//
+// There are four versions of this demo:
+// cholmod_di_simple:   double, int32
+// cholmod_dl_simple:   double, int64
+// cholmod_si_simple:   float, int32
+// cholmod_sl_simple:   float, int64
 
 #include "cholmod.h"
 int main (void)
@@ -27,7 +28,7 @@ int main (void)
     double one [2] = {1,0}, m1 [2] = {-1,0} ;       // basic scalars
     cholmod_common c ;
     cholmod_start (&c) ;                            // start CHOLMOD
-    int dtype = CHOLMOD_SINGLE ;                    // use single precision
+    int dtype = CHOLMOD_DOUBLE ;                    // use double precision
     A = cholmod_read_sparse2 (stdin, dtype, &c) ;   // read in a matrix
     c.precise = true ;
     c.print = (A->nrow > 5) ? 3 : 5 ;
@@ -39,10 +40,22 @@ int main (void)
         return (0) ;
     }
     b = cholmod_ones (A->nrow, 1, A->xtype + dtype, &c) ;   // b = ones(n,1)
+
+    double t1 = SuiteSparse_time ( ) ;
     L = cholmod_analyze (A, &c) ;                   // analyze
+    t1 = SuiteSparse_time ( ) - t1 ;
+    double t2 = SuiteSparse_time ( ) ;
     cholmod_factorize (A, L, &c) ;                  // factorize
-    cholmod_print_factor (L, "L", &c) ;             // print the factorization
+    t2 = SuiteSparse_time ( ) - t2 ;
+    double t3 = SuiteSparse_time ( ) ;
     x = cholmod_solve (CHOLMOD_A, L, b, &c) ;       // solve Ax=b
+    t3 = SuiteSparse_time ( ) - t3 ;
+    printf ("analyze   time: %10.3f sec\n", t1) ;
+    printf ("factorize time: %10.3f sec\n", t2) ;
+    printf ("solve     time: %10.3f sec\n", t3) ;
+    printf ("total     time: %10.3f sec\n", t1 + t2 + t3) ;
+
+    cholmod_print_factor (L, "L", &c) ;             // print the factorization
     cholmod_print_dense (x, "x", &c) ;              // print the solution
     r = cholmod_copy_dense (b, &c) ;                // r = b
 #ifndef NMATRIXOPS
@@ -68,3 +81,4 @@ int main (void)
     cholmod_finish (&c) ;                           // finish CHOLMOD
     return (0) ;
 }
+

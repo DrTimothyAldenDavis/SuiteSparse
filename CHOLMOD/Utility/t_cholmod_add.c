@@ -209,10 +209,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // C = alpha*A + beta*B
     //--------------------------------------------------------------------------
 
-// CHOLMOD(print_sparse) (A, "A for add", Common) ;
-// CHOLMOD(print_sparse) (B, "C for add", Common) ;
-// CHOLMOD(print_sparse) (C, "C input for add", Common) ;
-
     switch ((xtype + dtype) % 8)
     {
         default:
@@ -263,7 +259,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     // return result
     //--------------------------------------------------------------------------
 
-// CHOLMOD(print_sparse) (C, "C output for add", Common) ;
     ASSERT (CHOLMOD(dump_sparse) (C, "add:C", Common) >= 0) ;
     return (C) ;
 }

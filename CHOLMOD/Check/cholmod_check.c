@@ -623,23 +623,35 @@ int CHOLMOD(gpu_stats)
     RETURN_IF_NULL_COMMON (FALSE) ;
     print = Common->print ;
 
+    #ifdef SUITESPARSE_CUDA
     P2 ("%s", "\nCHOLMOD GPU/CPU statistics:\n") ;
+    #else
+    P2 ("%s", "\nCHOLMOD BLAS statistics:\n") ;
+    #endif
     P2 ("SYRK  CPU calls %12.0f", (double) Common->CHOLMOD_CPU_SYRK_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_CPU_SYRK_TIME) ;
+    #ifdef SUITESPARSE_CUDA
     P2 ("      GPU calls %12.0f", (double) Common->CHOLMOD_GPU_SYRK_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_GPU_SYRK_TIME) ;
+    #endif
     P2 ("GEMM  CPU calls %12.0f", (double) Common->CHOLMOD_CPU_GEMM_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_CPU_GEMM_TIME) ;
+    #ifdef SUITESPARSE_CUDA
     P2 ("      GPU calls %12.0f", (double) Common->CHOLMOD_GPU_GEMM_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_GPU_GEMM_TIME) ;
+    #endif
     P2 ("POTRF CPU calls %12.0f", (double) Common->CHOLMOD_CPU_POTRF_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_CPU_POTRF_TIME) ;
+    #ifdef SUITESPARSE_CUDA
     P2 ("      GPU calls %12.0f", (double) Common->CHOLMOD_GPU_POTRF_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_GPU_POTRF_TIME) ;
+    #endif
     P2 ("TRSM  CPU calls %12.0f", (double) Common->CHOLMOD_CPU_TRSM_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_CPU_TRSM_TIME) ;
+    #ifdef SUITESPARSE_CUDA
     P2 ("      GPU calls %12.0f", (double) Common->CHOLMOD_GPU_TRSM_CALLS) ;
     P2 (" time %12.4e\n", Common->CHOLMOD_GPU_TRSM_TIME) ;
+    #endif
 
     cpu_time = Common->CHOLMOD_CPU_SYRK_TIME + Common->CHOLMOD_CPU_TRSM_TIME +
                Common->CHOLMOD_CPU_GEMM_TIME + Common->CHOLMOD_CPU_POTRF_TIME ;
@@ -647,12 +659,16 @@ int CHOLMOD(gpu_stats)
     gpu_time = Common->CHOLMOD_GPU_SYRK_TIME + Common->CHOLMOD_GPU_TRSM_TIME +
                Common->CHOLMOD_GPU_GEMM_TIME + Common->CHOLMOD_GPU_POTRF_TIME ;
 
+    #ifdef SUITESPARSE_CUDA
     P2 ("time in the BLAS: CPU %12.4e", cpu_time) ;
     P2 (" GPU %12.4e", gpu_time) ;
     P2 (" total: %12.4e\n", cpu_time + gpu_time) ;
+    #else
+    P2 ("total time in the BLAS: %12.4e\n", cpu_time) ;
+    #endif
 
-    P2 ("assembly time %12.4e", Common->CHOLMOD_ASSEMBLE_TIME) ;
-    P2 ("  %12.4e\n", Common->CHOLMOD_ASSEMBLE_TIME2) ;
+//  P2 ("assembly time %12.4e", Common->CHOLMOD_ASSEMBLE_TIME) ;
+//  P2 ("  %12.4e\n", Common->CHOLMOD_ASSEMBLE_TIME2) ;
     return (TRUE) ;
 }
 

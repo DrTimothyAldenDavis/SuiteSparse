@@ -294,9 +294,6 @@ int CHOLMOD(super_numeric)
     s_beta [0] = (float) beta [0] ;
     s_beta [1] = (float) beta [1] ;
 
-// FIXME
-double tt = SuiteSparse_time ( ) ;
-
     switch ((A->xtype + A->dtype) % 8)
     {
         case CHOLMOD_REAL    + CHOLMOD_SINGLE:
@@ -325,10 +322,6 @@ double tt = SuiteSparse_time ( ) ;
             ok = zd_cholmod_super_numeric_worker (A, F, beta, L, C, Common) ;
             break ;
     }
-
-// FIXME
-tt = SuiteSparse_time ( ) - tt ;
-printf ("factorize worker time: %g\n", tt) ;
 
     //--------------------------------------------------------------------------
     // clear Common workspace, free temp workspace C, and return
