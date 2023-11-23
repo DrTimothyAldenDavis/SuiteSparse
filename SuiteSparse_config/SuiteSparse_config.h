@@ -507,7 +507,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 #else
 
     // let CMake determine the size of the integer in the Fortran BLAS
-    #define SUITESPARSE_BLAS_INT int32_t
+    #define SUITESPARSE_BLAS_INT int64_t
 
 #endif
 
