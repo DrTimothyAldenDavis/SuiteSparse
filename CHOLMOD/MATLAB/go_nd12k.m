@@ -1,21 +1,24 @@
 
-clear all
-clear mex
-format compact
+% clear all
+% clear mex
+% format compact
+
+fprintf ('testing a small problem:\n') ;
 Prob = ssget (1440)
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;
 x1 = A\b ;
-norm (A*x1-b)
-x2 = cholmod2 (A,b)
-norm (A*x2-b)
-
-x3 = cholmod2 (A,b, 'single')
+err1 = norm (A*x1-b)
+x2 = cholmod2 (A,b) ;
+err2 = norm (A*x2-b)
+x3 = cholmod2 (A,b, 'single') ;
+err3 = norm (A*double(x3)-b)
 whos
-norm (A*double(x3)-b)
 
-Prob = ssget (938) ;
+fprintf ('testing a large problem (nd12k):\n') ;
+
+Prob = ssget (938)
 A = Prob.A ;
 n = size (A,1) ;
 b = rand (n,1) ;
@@ -26,16 +29,20 @@ A = A + 100*I ;
 
 tic
 x1 = A\b ;
-toc
+t = toc ;
+fprintf ('time for x=A\\b (in double):        %g sec\n', t) ;
 
 tic
 x2 = cholmod2 (A, b) ;
-toc
+t = toc ;
+fprintf ('time for x=cholmod2(A,b) (double): %g sec\n', t) ;
 
+fprintf ('... please wait ...\n') ;
 b2 = single (b) ;
 tic
 x3 = cholmod2 (A, b2, 'single') ;
-toc
+t = toc ;
+fprintf ('time for x=cholmod2(A,b) (single): %g sec\n', t) ;
 
 anorm = norm (A,1)
 norm (A*x1-b,1) / anorm

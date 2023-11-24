@@ -1,0 +1,596 @@
+go_nd12k
+testing a small problem:
+Prob = 
+  struct with fields:
+
+      name: 'Oberwolfach/LFAT5'
+     title: 'Oberwolfach: linear 1D beam'
+         A: [14x14 double]
+        id: 1440
+     notes: 'Primary matrix in this model reduction problem is the Oberwolfach K matrix'
+       aux: [1x1 struct]
+      date: '2004'
+    author: 'J. Lienemann, A. Greiner, J. Korvink'
+        ed: 'E. Rudnyi'
+      kind: 'model reduction problem'
+err1 =
+   3.9170e-14
+analyze time: 3.3027e-05 sec
+factorize time: 1.09728e-05 sec
+solve time: 1.46353e-05 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 91
+    Nonzeros in L:       33
+  memory blocks in use:           1
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 91
+        nnz(L):     33
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls            0 time   0.0000e+00
+GEMM  CPU calls            0 time   0.0000e+00
+POTRF CPU calls            0 time   0.0000e+00
+TRSM  CPU calls            0 time   0.0000e+00
+total time in the BLAS:   0.0000e+00
+err2 =
+   3.9170e-14
+analyze time: 2.17031e-05 sec
+factorize time: 9.04175e-06 sec
+solve time: 1.4957e-05 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 91
+    Nonzeros in L:       33
+  memory blocks in use:           1
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 91
+        nnz(L):     33
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls            0 time   0.0000e+00
+GEMM  CPU calls            0 time   0.0000e+00
+POTRF CPU calls            0 time   0.0000e+00
+TRSM  CPU calls            0 time   0.0000e+00
+total time in the BLAS:   0.0000e+00
+err3 =
+   2.7179e-05
+  Name           Size                Bytes  Class     Attributes
+
+  A             14x14                  856  double    sparse    
+  I          36000x36000            864008  double    sparse    
+  Prob           1x1                  5476  struct              
+  anorm          1x1                     8  double              
+  ans            1x45                   90  char                
+  b             14x1                   112  double              
+  b2         36000x1                144000  single              
+  err1           1x1                     8  double              
+  err2           1x1                     8  double              
+  err3           1x1                     8  double              
+  n              1x1                     8  double              
+  stats          1x5                    40  double              
+  t              1x1                     8  double              
+  x1            14x1                   112  double              
+  x2            14x1                   112  double              
+  x3            14x1                    56  single              
+
+testing a large problem (nd12k):
+Prob = 
+  struct with fields:
+
+         A: [36000x36000 double]
+      name: 'ND/nd12k'
+     title: 'ND problem set, matrix nd12k'
+        id: 938
+      date: '2003'
+    author: 'author unknown'
+        ed: 'T. Davis'
+      kind: '2D/3D problem'
+time for x=A\b (in double):        9.87553 sec
+analyze time: 2.52259 sec
+factorize time: 6.63501 sec
+solve time: 0.13058 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 5.0111e+11
+    Nonzeros in L:       1.1645e+08
+  memory blocks in use:           1
+  memory in use (MB):           0.3
+  peak memory usage (MB):    1656.9
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 1.0108e+12
+        nnz(L):     1.6063e+08
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 5.0111e+11
+        nnz(L):     1.1645e+08
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls         1783 time   1.8961e+00
+GEMM  CPU calls         1450 time   1.1456e+00
+POTRF CPU calls          334 time   1.5656e+00
+TRSM  CPU calls          333 time   6.5322e-01
+total time in the BLAS:   5.2605e+00
+time for x=cholmod2(A,b) (double): 9.35035 sec
+... please wait ...
+analyze time: 2.81832 sec
+factorize time: 143.532 sec
+solve time: 0.0898259 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 5.0111e+11
+    Nonzeros in L:       1.1645e+08
+  memory blocks in use:           1
+  memory in use (MB):           0.1
+  peak memory usage (MB):     939.9
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 1.0108e+12
+        nnz(L):     1.6063e+08
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 5.0111e+11
+        nnz(L):     1.1645e+08
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls         1783 time   5.9761e+01
+GEMM  CPU calls         1450 time   2.3756e+01
+POTRF CPU calls          334 time   4.1012e+01
+TRSM  CPU calls          333 time   1.7967e+01
+total time in the BLAS:   1.4250e+02
+time for x=cholmod2(A,b) (single): 146.484 sec
+anorm =
+  312.0710
+ans =
+   8.3560e-14
+ans =
+   8.4181e-14
+ans =
+   1.8056e-05
+!mv blas_dump.txt 3.txt
+
+
+cholmod_make
+Compiling CHOLMOD with METIS for MATLAB Version 9.12.0.1884302 (R2022a)
+
+............................................................
+............................................................
+.............:::::::::::::::::::::.
+CHOLMOD successfully compiled
+go_nd12k
+testing a small problem:
+Prob = 
+  struct with fields:
+
+      name: 'Oberwolfach/LFAT5'
+     title: 'Oberwolfach: linear 1D beam'
+         A: [14x14 double]
+        id: 1440
+     notes: 'Primary matrix in this model reduction problem is the Oberwolfach K matrix'
+       aux: [1x1 struct]
+      date: '2004'
+    author: 'J. Lienemann, A. Greiner, J. Korvink'
+        ed: 'E. Rudnyi'
+      kind: 'model reduction problem'
+err1 =
+   2.6228e-14
+analyze time: 2.82382e-05 sec
+factorize time: 7.45803e-06 sec
+solve time: 9.33325e-06 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 91
+    Nonzeros in L:       33
+  memory blocks in use:           1
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 91
+        nnz(L):     33
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls            0 time   0.0000e+00
+GEMM  CPU calls            0 time   0.0000e+00
+POTRF CPU calls            0 time   0.0000e+00
+TRSM  CPU calls            0 time   0.0000e+00
+total time in the BLAS:   0.0000e+00
+err2 =
+   2.6228e-14
+analyze time: 1.39782e-05 sec
+factorize time: 6.38701e-06 sec
+solve time: 7.75931e-06 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 91
+    Nonzeros in L:       33
+  memory blocks in use:           1
+  memory in use (MB):           0.0
+  peak memory usage (MB):       0.0
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 91
+        nnz(L):     33
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls            0 time   0.0000e+00
+GEMM  CPU calls            0 time   0.0000e+00
+POTRF CPU calls            0 time   0.0000e+00
+TRSM  CPU calls            0 time   0.0000e+00
+total time in the BLAS:   0.0000e+00
+err3 =
+   1.8948e-05
+  Name           Size                Bytes  Class     Attributes
+
+  A             14x14                  856  double    sparse    
+  I          36000x36000            864008  double    sparse    
+  Prob           1x1                  5476  struct              
+  anorm          1x1                     8  double              
+  ans            1x1                     8  double              
+  b             14x1                   112  double              
+  b2         36000x1                144000  single              
+  err1           1x1                     8  double              
+  err2           1x1                     8  double              
+  err3           1x1                     8  double              
+  n              1x1                     8  double              
+  stats          1x5                    40  double              
+  t              1x1                     8  double              
+  x1            14x1                   112  double              
+  x2            14x1                   112  double              
+  x3            14x1                    56  single              
+
+testing a large problem (nd12k):
+Prob = 
+  struct with fields:
+
+         A: [36000x36000 double]
+      name: 'ND/nd12k'
+     title: 'ND problem set, matrix nd12k'
+        id: 938
+      date: '2003'
+    author: 'author unknown'
+        ed: 'T. Davis'
+      kind: '2D/3D problem'
+time for x=A\b (in double):        11.8362 sec
+analyze time: 2.71576 sec
+factorize time: 7.13277 sec
+solve time: 0.121765 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 5.0111e+11
+    Nonzeros in L:       1.1645e+08
+  memory blocks in use:           1
+  memory in use (MB):           0.3
+  peak memory usage (MB):    1656.9
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 1.0108e+12
+        nnz(L):     1.6063e+08
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 5.0111e+11
+        nnz(L):     1.1645e+08
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls         1783 time   1.9415e+00
+GEMM  CPU calls         1450 time   1.3477e+00
+POTRF CPU calls          334 time   1.4915e+00
+TRSM  CPU calls          333 time   7.8456e-01
+total time in the BLAS:   5.5653e+00
+time for x=cholmod2(A,b) (double): 10.031 sec
+... please wait ...
+analyze time: 2.75855 sec
+factorize time: 141.534 sec
+solve time: 0.0894236 sec
+
+CHOLMOD version 5.1.0, Nov 30, 2023:  : status: OK
+  Architecture:
+    sizeof(int):      4
+    sizeof(int64_t):  8
+    sizeof(void *):   8
+    sizeof(double):   8
+    sizeof(Int):      8 (CHOLMOD's basic integer)
+    sizeof(SUITESPARSE_BLAS_INT): 8 (integer used in the BLAS)
+  Results from most recent analysis:
+    Cholesky flop count: 5.0111e+11
+    Nonzeros in L:       1.1645e+08
+  memory blocks in use:           1
+  memory in use (MB):           0.1
+  peak memory usage (MB):     939.9
+  maxrank:    update/downdate rank:   8
+  supernodal control: 1 40 (supernodal if flops/lnz >= 40)
+  nmethods=0: default strategy:  Try user permutation if given.  Try AMD.
+    Try METIS if AMD reports flops/nnz(L) >= 500 and nnz(L)/nnz(A) >= 5.
+    Select best ordering tried.
+    method 0: user permutation (if given)
+    method 1: AMD (or COLAMD if factorizing AA')
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 1.0108e+12
+        nnz(L):     1.6063e+08
+    method 2: METIS_NodeND nested dissection
+        prune_dense: for pruning dense nodes:   10
+        a dense node has degree >= max(16,(10)*sqrt(n))
+        flop count: 5.0111e+11
+        nnz(L):     1.1645e+08
+  final_asis: TRUE, leave as is
+  dbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than dbound are replaced with +/- dbound.
+    (for double precision case)
+  sbound:  LDL' diagonal threshold:  0
+    Entries with abs. value less than sbound are replaced with +/- sbound.
+    (for single precision case)
+  grow0: memory reallocation:  1.2
+  grow1: memory reallocation:  1.2
+  grow2: memory reallocation: 5
+  nrelax, zrelax:  supernodal amalgamation rule:
+    s = # columns in two adjacent supernodes
+    z = % of zeros in new supernode if they are merged.
+    Two supernodes are merged if (s <= 4) or (no new zero entries) or
+    (s <= 16 and z < 80%) or (s <= 48 and z < 10%) or (z < 5%)
+  OK
+
+
+CHOLMOD BLAS statistics:
+SYRK  CPU calls         1783 time   5.9055e+01
+GEMM  CPU calls         1450 time   2.3151e+01
+POTRF CPU calls          334 time   4.0736e+01
+TRSM  CPU calls          333 time   1.7581e+01
+total time in the BLAS:   1.4052e+02
+time for x=cholmod2(A,b) (single): 144.443 sec
+anorm =
+  312.0710
+ans =
+   8.3661e-14
+ans =
+   8.2954e-14
+ans =
+   1.8159e-05
+
+diary diary2

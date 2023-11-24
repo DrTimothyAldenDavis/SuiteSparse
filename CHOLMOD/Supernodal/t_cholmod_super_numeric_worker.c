@@ -84,6 +84,46 @@
 #endif
 
 //------------------------------------------------------------------------------
+// blas_dump
+//------------------------------------------------------------------------------
+
+#undef BLAS_DUMP_TO_FILE
+#undef WHICH
+
+#ifdef BLAS_DUMP
+
+    #if (defined (DOUBLE) && defined (REAL))
+    #define WHICH 0
+    #elif (defined (SINGLE) && defined (REAL))
+    #define WHICH 1
+    #elif (defined (DOUBLE) && !defined (REAL))
+    #define WHICH 2
+    #elif (defined (SINGLE) && !defined (REAL))
+    #define WHICH 3
+    #endif
+
+    #define BLAS_DUMP_TO_FILE(kernel,m,n,k,lda,ldb,ldc)                     \
+    {                                                                       \
+        if (Common->blas_dump != NULL)                                      \
+        {                                                                   \
+            fprintf (Common->blas_dump,                                     \
+                "%2d %d %d %6d %6d %6d %6d %6d %6d %12.4e\n",               \
+                kernel + WHICH,                 /* dgemm, sgemm, etc.    */ \
+                (int) sizeof (SUITESPARSE_BLAS_INT),  /* BLAS integer  */   \
+                (int) sizeof (Int),                   /* CHOLMOD index */   \
+                (int) m, (int) n, (int) k,          /* problem size */      \
+                (int) lda, (int) ldb, (int) ldc,    /* leading dimensions */\
+                blas_time) ;                    /* time taken */            \
+        }                                                                   \
+    }
+
+#else
+
+    #define BLAS_DUMP_TO_FILE(kernel,m,n,k,lda,ldb,ldc)
+
+#endif
+
+//------------------------------------------------------------------------------
 // t_cholmod_super_numeric
 //------------------------------------------------------------------------------
 
@@ -101,7 +141,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     // workspace:
     cholmod_dense *Cwork,       // size (L->maxcsize)-by-1
     cholmod_common *Common
-    )
+)
 {
 
     //--------------------------------------------------------------------------
@@ -109,7 +149,9 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     //--------------------------------------------------------------------------
 
     Real one [2], zero [2] ;
-    double tstart ;
+    #ifdef BLAS_TIMER
+    double tstart, blas_time ;
+    #endif
     Real *Lx, *Ax, *Fx, *Az, *Fz, *C ;
     Int *Super, *Head, *Ls, *Lpi, *Lpx, *Map, *SuperMap, *RelativeMap, *Next,
         *Lpos, *Fp, *Fi, *Fnz, *Ap, *Ai, *Anz, *Iwork, *Next_save, *Lpos_save,
@@ -201,7 +243,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     // fprintf (stderr, "local useGPU %d\n", useGPU) ;
     #endif
 
-    #ifndef NTIMER
+    #ifdef BLAS_TIMER
     // clear GPU / CPU statistics
     Common->CHOLMOD_CPU_GEMM_CALLS  = 0 ;
     Common->CHOLMOD_CPU_SYRK_CALLS  = 0 ;
@@ -717,7 +759,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             {
                 // GPU not installed, or not used
 
-                #ifndef NTIMER
+                #ifdef BLAS_TIMER
                 Common->CHOLMOD_CPU_SYRK_CALLS++ ;
                 tstart = SuiteSparse_time () ;
                 #endif
@@ -759,8 +801,12 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                     Common->blas_ok) ;
                 #endif
 
-                #ifndef NTIMER
-                Common->CHOLMOD_CPU_SYRK_TIME += SuiteSparse_time () - tstart ;
+                #ifdef BLAS_TIMER
+                blas_time = SuiteSparse_time () - tstart ;
+                Common->CHOLMOD_CPU_SYRK_TIME += blas_time ;
+                BLAS_DUMP_TO_FILE (0,           // dsyrk ("L", "N", ...)
+                    ndrow1, ndcol, 0,           // N, K, 0
+                    ndrow,  ndrow2, 0) ;        // LDA, LDC, 0
                 #endif
 
                 // compute remaining (ndrow2-ndrow1)-by-ndrow1 block of C,
@@ -768,7 +814,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 if (ndrow3 > 0)
                 {
 
-                    #ifndef NTIMER
+                    #ifdef BLAS_TIMER
                     Common->CHOLMOD_CPU_GEMM_CALLS++ ;
                     tstart = SuiteSparse_time () ;
                     #endif
@@ -826,9 +872,12 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                         Common->blas_ok) ;
                     #endif
 
-                    #ifndef NTIMER
-                    Common->CHOLMOD_CPU_GEMM_TIME +=
-                        SuiteSparse_time () - tstart ;
+                    #ifdef BLAS_TIMER
+                    blas_time = SuiteSparse_time () - tstart ;
+                    Common->CHOLMOD_CPU_GEMM_TIME += blas_time ;
+                    BLAS_DUMP_TO_FILE (4,           // dgemm ("N", "C", ...)
+                        ndrow3, ndrow1, ndcol,      // M, N, K
+                        ndrow,  ndrow,  ndrow2) ;   // LDA, LDB, LDC
                     #endif
                 }
 
@@ -961,7 +1010,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             #if (defined (SUITESPARSE_CUDA) && defined (DOUBLE))
             supernodeUsedGPU = 0;
             #endif
-            #ifndef NTIMER
+            #ifdef BLAS_TIMER
             Common->CHOLMOD_CPU_POTRF_CALLS++ ;
             tstart = SuiteSparse_time () ;
             #endif
@@ -995,8 +1044,12 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 Common->blas_ok) ;
             #endif
 
-            #ifndef NTIMER
-            Common->CHOLMOD_CPU_POTRF_TIME += SuiteSparse_time ()- tstart ;
+            #ifdef BLAS_TIMER
+            blas_time = SuiteSparse_time () - tstart ;
+            Common->CHOLMOD_CPU_POTRF_TIME += blas_time ;
+            BLAS_DUMP_TO_FILE (8,           // dpotrf ("L", ... )
+                nscol2, 0, 0,               // N, 0, 0
+                nsrow,  0, 0) ;             // LDA, 0, 0
             #endif
         }
 
@@ -1109,7 +1162,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                         (nsrow2, nscol2, nsrow, psx, Lx, Common, gpu_p))
                 #endif
             {
-                #ifndef NTIMER
+                #ifdef BLAS_TIMER
                 Common->CHOLMOD_CPU_TRSM_CALLS++ ;
                 tstart = SuiteSparse_time () ;
                 #endif
@@ -1151,8 +1204,12 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                     Common->blas_ok) ;
                 #endif
 
-                #ifndef NTIMER
-                Common->CHOLMOD_CPU_TRSM_TIME += SuiteSparse_time () - tstart ;
+                #ifdef BLAS_TIMER
+                blas_time = SuiteSparse_time () - tstart ;
+                Common->CHOLMOD_CPU_TRSM_TIME += blas_time ;
+                BLAS_DUMP_TO_FILE (12,          // dtrsm ("R", "L", "C", "N"...)
+                    nsrow2, nscol2, 0,          // M, N
+                    nsrow,  nsrow,  0) ;        // LDA, LDB
                 #endif
             }
 

@@ -32,9 +32,7 @@ catch                                                                       %#ok
 end
 
 % -R2018a: interleaved complex is required
-% FIXME
-  flags = '-g -R2018a -silent ' ;
-% flags = '-O -R2018a -silent ' ;
+flags = '-O -R2018a -silent ' ;
 
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 

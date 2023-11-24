@@ -634,13 +634,13 @@ typedef struct cholmod_common_struct
 
         int ordering ;  // ordering method to use:
 
-            #define CHOLMOD_NATURAL     0 /* no preordering                    */
-            #define CHOLMOD_GIVEN       1 /* user-provided permutation         */
-            #define CHOLMOD_AMD         2 /* AMD: approximate minimum degree   */
-            #define CHOLMOD_METIS       3 /* METIS: mested dissection          */
-            #define CHOLMOD_NESDIS      4 /* CHOLMOD's nested dissection       */
-            #define CHOLMOD_COLAMD      5 /* AMD for A, COLAMD for AA' or A'A  */
-            #define CHOLMOD_POSTORDERED 6 /* natural then postordered          */
+            #define CHOLMOD_NATURAL     0 /* no preordering                   */
+            #define CHOLMOD_GIVEN       1 /* user-provided permutation        */
+            #define CHOLMOD_AMD         2 /* AMD: approximate minimum degree  */
+            #define CHOLMOD_METIS       3 /* METIS: mested dissection         */
+            #define CHOLMOD_NESDIS      4 /* CHOLMOD's nested dissection      */
+            #define CHOLMOD_COLAMD      5 /* AMD for A, COLAMD for AA' or A'A */
+            #define CHOLMOD_POSTORDERED 6 /* natural then postordered         */
 
         size_t other_3 [4] ;    // unused, for future expansion
 
@@ -723,8 +723,8 @@ typedef struct cholmod_common_struct
 
     int status ;    // status code (0: ok, negative: error, pos: warning)
 
-        // Common->status for error handling: 0 is ok, negative is a fatal error,
-        // and positive is a warning
+        // Common->status for error handling: 0 is ok, negative is a fatal
+        // error, and positive is a warning
         #define CHOLMOD_OK            (0)
         #define CHOLMOD_NOT_INSTALLED (-1) /* module not installed          */
         #define CHOLMOD_OUT_OF_MEMORY (-2) /* malloc/calloc/realloc failed  */
@@ -886,6 +886,8 @@ typedef struct cholmod_common_struct
 
     int nthreads_max ; // max # of OpenMP threads to use in CHOLMOD.
         // Defaults to SUITESPARSE_OPENMP_MAX_THREADS.
+
+    FILE *blas_dump ;  // only used if CHOLMOD is compiled with -DBLAS_DUMP
 
 } cholmod_common ;
 

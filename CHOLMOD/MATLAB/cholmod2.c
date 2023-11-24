@@ -49,6 +49,9 @@
 
 #include "sputil2.h"
 
+#undef  SPUMONI
+#define SPUMONI 2
+
 void mexFunction
 (
     int nargout,
@@ -236,9 +239,18 @@ void mexFunction
     // analyze and factorize
     //--------------------------------------------------------------------------
 
+// FIXME:
+double t = SuiteSparse_time ( ) ;
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
+t = SuiteSparse_time ( ) - t ;
+printf ("analyze time: %g sec\n", t) ;
+
     cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
+t = SuiteSparse_time ( ) ;
     cholmod_l_factorize (A, L, cm) ;
+t = SuiteSparse_time ( ) - t ;
+printf ("factorize time: %g sec\n", t) ;
+
     rcond = cholmod_l_rcond (L, cm) ;
     if (rcond == 0)
     {
@@ -253,6 +265,9 @@ void mexFunction
     //--------------------------------------------------------------------------
     // solve and return solution to MATLAB
     //--------------------------------------------------------------------------
+
+// FIXME:
+t = SuiteSparse_time ( ) ;
 
     if (B_is_sparse)
     {
@@ -271,6 +286,10 @@ void mexFunction
         // the dense X can be returned in its current type
         pargout [0] = sputil2_put_dense (&X, mxdtype, cm) ;
     }
+
+// FIXME:
+t = SuiteSparse_time ( ) - t ;
+printf ("solve time: %g sec\n", t) ;
 
     // return statistics, if requested
     if (nargout > 1)

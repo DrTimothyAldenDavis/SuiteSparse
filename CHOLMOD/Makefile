@@ -105,10 +105,12 @@ demos: library
 	./build/cholmod_sl_simple < ./Demo/Matrix/c.tri        >> ./build/sl_simple.out.txt
 
 large: library
-	./build/cholmod_di_simple < ~/nd12k.mtx > ./build/di_nd12k.out.txt
 	./build/cholmod_dl_simple < ~/nd12k.mtx > ./build/dl_nd12k.out.txt
-	./build/cholmod_si_simple < ~/nd12k.mtx > ./build/si_nd12k.out.txt
 	./build/cholmod_sl_simple < ~/nd12k.mtx > ./build/sl_nd12k.out.txt
+
+ilarge: library
+	./build/cholmod_di_simple < ~/nd12k.mtx > ./build/di_nd12k.out.txt
+	./build/cholmod_si_simple < ~/nd12k.mtx > ./build/si_nd12k.out.txt
 
 test: library
 	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )

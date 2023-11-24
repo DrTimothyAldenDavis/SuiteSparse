@@ -17,6 +17,15 @@
 
 int CHOLMOD(finish) (cholmod_common *Common)
 {
+
+    #ifdef BLAS_DUMP
+    if (Common->blas_dump != NULL)
+    {
+        fclose (Common->blas_dump) ;
+        Common->blas_dump = NULL ;
+    }
+    #endif
+
     return (CHOLMOD(free_work) (Common)) ;
 }
 

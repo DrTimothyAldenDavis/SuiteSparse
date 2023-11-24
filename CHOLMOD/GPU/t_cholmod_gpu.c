@@ -431,7 +431,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     int icol, irow;
     int iHostBuff, iDevBuff ;
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     double tstart = 0;
 #endif
 
@@ -444,7 +444,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
 
     ndrow3 = ndrow2 - ndrow1 ;
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->syrkStart = SuiteSparse_time ( ) ;
     Common->CHOLMOD_GPU_SYRK_CALLS++ ;
 #endif
@@ -553,7 +553,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
         ERROR (CHOLMOD_GPU_PROBLEM, "GPU CUBLAS routine failure") ;
     }
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_SYRK_TIME += SuiteSparse_time() - Common->syrkStart;
 #endif
 
@@ -561,7 +561,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     /* compute remaining (ndrow2-ndrow1)-by-ndrow1 block of C, C2 = L2*L1'    */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_GEMM_CALLS++ ;
     tstart = SuiteSparse_time();
 #endif
@@ -612,7 +612,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
 
     }
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_GEMM_TIME += SuiteSparse_time() - tstart;
 #endif
 
@@ -818,7 +818,7 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
     int64_t j, nsrow2, nb, n, gpu_lda, lda, gpu_ldb ;
     int ilda, ijb ;
     int64_t iinfo ;
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     double tstart ;
 #endif
 
@@ -828,7 +828,7 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
         return (0) ;
     }
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     tstart = SuiteSparse_time ( ) ;
     Common->CHOLMOD_GPU_POTRF_CALLS++ ;
 #endif
@@ -1146,7 +1146,7 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
         }
     }
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_POTRF_TIME += SuiteSparse_time ( ) - tstart ;
 #endif
 
@@ -1194,7 +1194,7 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
     int64_t iidx;
     int iwrap;
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     double tstart ;
 #endif
 
@@ -1211,7 +1211,7 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
         return (0) ;
     }
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     tstart = SuiteSparse_time ( ) ;
     Common->CHOLMOD_GPU_TRSM_CALLS++ ;
 #endif
@@ -1400,7 +1400,7 @@ private ( iidx ) if ( nscol2 > 32 )
     /* return */
     /* ---------------------------------------------------------------------- */
 
-#ifndef NTIMER
+#ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_TRSM_TIME += SuiteSparse_time ( ) - tstart ;
 #endif
 

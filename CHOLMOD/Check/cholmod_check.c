@@ -617,11 +617,11 @@ int CHOLMOD(gpu_stats)
     cholmod_common *Common      // input
 )
 {
-    double cpu_time, gpu_time ;
-    int print ;
-
     RETURN_IF_NULL_COMMON (FALSE) ;
-    print = Common->print ;
+
+#ifdef BLAS_TIMER
+    int print = Common->print ;
+    double cpu_time, gpu_time ;
 
     #ifdef SUITESPARSE_CUDA
     P2 ("%s", "\nCHOLMOD GPU/CPU statistics:\n") ;
@@ -669,6 +669,7 @@ int CHOLMOD(gpu_stats)
 
 //  P2 ("assembly time %12.4e", Common->CHOLMOD_ASSEMBLE_TIME) ;
 //  P2 ("  %12.4e\n", Common->CHOLMOD_ASSEMBLE_TIME2) ;
+#endif
     return (TRUE) ;
 }
 
