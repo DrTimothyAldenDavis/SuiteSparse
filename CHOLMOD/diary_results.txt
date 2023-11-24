@@ -83,13 +83,17 @@ ntrsm =
 
 Worst case ssyrk:
     n 4637 k 2658         inside:    34.969000 sec  outside:     0.210050 sec
+    same in dsyrk: inside     0.590920 sec, outside     0.398930
 
 Worst case sgemm:
     m 2871 n 2658 k 1563  inside:    10.906000 sec  outside:     0.088699 sec
+    same in dgemm: inside     0.236190 sec, outside     0.162510
 
 Worst case spotrf:
     n 7164                inside:    39.101000 sec  outside:     0.458320 sec
+    same in dpotrm: inside     1.403300 sec, outside     0.909020
 
 Worst case strsm:
     m 4637 n 2658         inside:    14.874000 sec  outside:     0.116260 sec
+    same in strrm: inside     0.331150 sec, outside     0.224450
 diary off
