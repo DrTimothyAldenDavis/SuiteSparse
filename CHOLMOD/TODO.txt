@@ -16,7 +16,7 @@ Instructions for BLAS benchmarking:
 
         git clone https://github.com/DrTimothyAldenDavis/SuiteSparse.git
         cd SuiteSparse
-        git checkout singledev2
+        git checkout blasdev2
         make
 
     The 'make' will take a while to build GraphBLAS: you can skip
