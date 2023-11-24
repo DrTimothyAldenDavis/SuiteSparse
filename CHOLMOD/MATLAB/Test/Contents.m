@@ -1,9 +1,8 @@
 % CHOLMOD TEST functions
 %
 %   cholmod_test  - test the CHOLMOD mexFunctions
-%   dg            - order and plot A*A', using CHOLMOD's nested dissection
-%   n2            - script to test CHOLMOD septree function
-%   nn            - Compare nesdis with metis, in both quality and run time
+%   other1        - Compare nesdis with metis, in both quality and run time
+%   other2        - script to test CHOLMOD septree function
 %   test0         - test most CHOLMOD functions
 %   test3         - test sparse on int8, int16, and logical
 %   test4         - test cholmod2 with multiple and sparse right-hand-sides
@@ -31,6 +30,7 @@
 %   test27        - test nesdis with one matrix (HB/west0479)
 %   test28        - test nesdis
 %   testmm        - compare mread and mmread for entire Matrix Market collection
+%   testnd        - order and plot A*A', using CHOLMOD's nested dissection
 %   testsolve     - test CHOLMOD and compare with x=A\b
 %   ltest         - test lxbpattern
 %   lxtest        - test lsubsolve

@@ -44,12 +44,13 @@
 // Uncomment this line to enable debugging.  CHOLMOD will be very slow.
 // #undef NDEBUG
 
-// Uncomment this line to get a summary of the time spent in the BLAS
+// Uncomment this line to get a summary of the time spent in the BLAS,
+// for development diagnostics only:
 // #define BLAS_TIMER
 
-// Uncomment this line to get a long dump as a csv file, for each call to the
-// BLAS:
-#define BLAS_DUMP
+// Uncomment this line to get a long dump as a text file (blas_dump.txt), that
+// records each call to the BLAS, for development diagnostics only:
+// #define BLAS_DUMP
 
 // if BLAS_DUMP is enabled, the BLAS_TIMER must also be enabled.
 #if defined ( BLAS_DUMP ) && ! defined ( BLAS_TIMER )

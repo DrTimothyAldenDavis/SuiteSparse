@@ -115,7 +115,7 @@ void mexFunction
     // get the MATLAB L
     Lp = (int64_t *) mxGetJc (pargin [0]) ;
     Li = (int64_t *) mxGetIr (pargin [0]) ;
-    Lx = mxGetPr (pargin [0]) ;
+    Lx = (double *) mxGetData (pargin [0]) ;
 
     // allocate the CHOLMOD symbolic L
     L = cholmod_l_allocate_factor (n, cm) ;

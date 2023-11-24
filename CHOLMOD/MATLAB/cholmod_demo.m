@@ -43,9 +43,9 @@ for n = [100 2000]
 end
 
 fprintf ('\n--------------------------------------------------------------\n') ;
-fprintf ('\nWith the matrix used in the MATLAB 7.2 "bench" program.\n') ;
+fprintf ('\nWith the matrix used in the MATLAB bench.\n') ;
 
-n = 300 ;
+n = 600 ;
 A = delsq (numgrid ('L', n)) ;
 b = sum (A)' ;
 

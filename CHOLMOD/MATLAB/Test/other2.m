@@ -1,6 +1,6 @@
-%N2 script to test CHOLMOD septree function
+%OTHER2 script to test CHOLMOD septree function
 % Example:
-%   n2
+%   other2
 % See also cholmod_test
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.

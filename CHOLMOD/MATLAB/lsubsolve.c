@@ -183,10 +183,11 @@ void mexFunction
     }
     else
     {
+        // convert from double to int64_t, and from 1-based to 0-based
         L->ordering = CHOLMOD_GIVEN ;
         L->Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
         Perm = L->Perm ;
-        Px = mxGetPr (pargin [2]) ;
+        Px = (double *) mxGetData (pargin [2]) ;
         for (k = 0 ; k < n ; k++)
         {
             Perm [k] = ((int64_t) Px [k]) - 1 ;
@@ -235,7 +236,6 @@ void mexFunction
     else
     {
         // Xset is returned, but needs to be converted from PATTERN to REAL
-        // FIXME: use cholmod_l_sparse_xtype
         int64_t *Xsetp = Xset->p ;
         xsetlen = Xsetp [1] ;
         Xset->x = cholmod_l_malloc (xsetlen, sizeof (double), cm) ;

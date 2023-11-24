@@ -11,6 +11,6 @@ fprintf ('=================================================================\n');
 fprintf ('test27: test nesdis\n') ;
 
 Prob = ssget ('HB/west0479') ;
-dg (Prob.A) ;
+testnd (Prob.A) ;
 
 fprintf ('test27 passed\n') ;

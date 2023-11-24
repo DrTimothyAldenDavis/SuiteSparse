@@ -85,7 +85,7 @@ void mexFunction
     }
     if (nargin > 2)
     {
-        double *x = mxGetPr (pargin [2]) ;
+        double *x = (double *) mxGetData (pargin [2]) ;
         n = mxGetNumberOfElements (pargin [2]) ;
         if (n > 0) cm->method [0].nd_small = x [0] ;
         if (n > 1) cm->method [0].nd_components = x [1] ;

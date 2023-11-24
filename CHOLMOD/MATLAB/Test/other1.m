@@ -1,7 +1,7 @@
-%NN Compare nesdis with metis, in both quality and run time
+%OTHER1 Compare nesdis with metis, in both quality and run time
 %
 % Example:
-%   nn
+%   other1
 % See also cholmod_test
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.

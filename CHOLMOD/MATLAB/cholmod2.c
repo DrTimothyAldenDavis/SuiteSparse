@@ -24,7 +24,8 @@
 //
 // A final string argument determines the precision to use: 'double' for
 // double precision (real or complex) or 'single' for single precision
-// (either real or complex).  The default is 'double'.
+// (either real or complex).  The default is 'double', even if all inputs
+// are single.
 //
 // Other options for the ordering parameter:
 //
@@ -48,9 +49,6 @@
 // stats(5)     memory usage in MB.
 
 #include "sputil2.h"
-
-#undef  SPUMONI
-#define SPUMONI 2
 
 void mexFunction
 (
@@ -214,7 +212,7 @@ void mexFunction
             mexErrMsgTxt ("invalid input permutation") ;
         }
         // copy from double to integer, and convert to 0-based
-        p = mxGetPr (pargin [2]) ;
+        p = (double *) mxGetData (pargin [2]) ;
         Perm = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
         for (k = 0 ; k < n ; k++)
         {
@@ -239,17 +237,9 @@ void mexFunction
     // analyze and factorize
     //--------------------------------------------------------------------------
 
-// FIXME:
-double t = SuiteSparse_time ( ) ;
     L = cholmod_l_analyze_p (A, Perm, NULL, 0, cm) ;
-t = SuiteSparse_time ( ) - t ;
-printf ("analyze time: %g sec\n", t) ;
-
     cholmod_l_free (n, sizeof (int64_t), Perm, cm) ;
-t = SuiteSparse_time ( ) ;
     cholmod_l_factorize (A, L, cm) ;
-t = SuiteSparse_time ( ) - t ;
-printf ("factorize time: %g sec\n", t) ;
 
     rcond = cholmod_l_rcond (L, cm) ;
     if (rcond == 0)
@@ -265,9 +255,6 @@ printf ("factorize time: %g sec\n", t) ;
     //--------------------------------------------------------------------------
     // solve and return solution to MATLAB
     //--------------------------------------------------------------------------
-
-// FIXME:
-t = SuiteSparse_time ( ) ;
 
     if (B_is_sparse)
     {
@@ -287,15 +274,11 @@ t = SuiteSparse_time ( ) ;
         pargout [0] = sputil2_put_dense (&X, mxdtype, cm) ;
     }
 
-// FIXME:
-t = SuiteSparse_time ( ) - t ;
-printf ("solve time: %g sec\n", t) ;
-
     // return statistics, if requested
     if (nargout > 1)
     {
         pargout [1] = mxCreateDoubleMatrix (1, 5, mxREAL) ;
-        p = mxGetPr (pargout [1]) ;
+        p = (double *) mxGetData (pargout [1]) ;
         p [0] = rcond ;
         p [1] = L->ordering ;
         p [2] = cm->lnz ;

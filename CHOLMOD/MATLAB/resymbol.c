@@ -100,7 +100,6 @@ void mexFunction
     Lx2 = L->x ;
     Lnz2 = L->nz ;
     lnz = L->nzmax ;
-    // FIXME: use memcpy here
     for (j = 0 ; j <= n ; j++)
     {
         Lp2 [j] = Lp [j] ;

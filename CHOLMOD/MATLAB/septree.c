@@ -80,7 +80,7 @@ void mexFunction
     CParent = cholmod_l_malloc (nc, sizeof (int64_t), cm) ;
     Cmember = cholmod_l_malloc (n, sizeof (int64_t), cm) ;
 
-    p = mxGetPr (pargin [0]) ;
+    p = (double *) mxGetData (pargin [0]) ;
     for (c = 0 ; c < nc ; c++)
     {
         CParent [c] = p [c] - 1 ;
@@ -90,7 +90,7 @@ void mexFunction
         }
     }
 
-    p = mxGetPr (pargin [1]) ;
+    p = (double *) mxGetData (pargin [1]) ;
     for (j = 0 ; j < n ; j++)
     {
         Cmember [j] = p [j] - 1 ;

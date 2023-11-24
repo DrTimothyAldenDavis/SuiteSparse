@@ -770,9 +770,15 @@ mxArray *sputil2_put_sparse     // return MATLAB version of the matrix
 
     if (drop)
     {
+        // drop zeros
         cholmod_l_drop (0, A, cm) ;
-        // FIXME: revise A->nzmax via the following?
-        // cholmod_l_reallocate_sparse (cholmod_l_nnz (A, cm), A, cm) ;
+        // reduce the space taken by A->i and A->x
+        int64_t anz = cholmod_l_nnz (A, cm) ;
+        int64_t anzmax = A->nzmax ;
+        if (anz < anzmax && anzmax > 4)
+        {
+            cholmod_l_reallocate_sparse (anz, A, cm) ;
+        }
     }
 
     //--------------------------------------------------------------------------

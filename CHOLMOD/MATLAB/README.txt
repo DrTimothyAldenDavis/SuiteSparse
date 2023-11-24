@@ -12,7 +12,7 @@ your MATLAB command window to test your newly compiling CHOLMOD functions.
 Test/cholmod_test.m runs the test suite for the MATLAB interface to CHOLMOD.
 It requires the "ssget" interface to the SuiteSparse matrix collection, but
 provides a more extensive test for CHOLMOD.  To obtain a copy of ssget, see
-http://sparse.tamu.edu.
+http://sparse.tamu.edu, or see SuiteSparse/ssget.
 
 ----------------------------------------
 Using AMD, CCOLAMD, and COLAMD in MATLAB

@@ -101,7 +101,7 @@ void mexFunction
     // get the MATLAB L
     Lp = (int64_t *) mxGetJc (pargin [0]) ;
     Li = (int64_t *) mxGetIr (pargin [0]) ;
-    Lx = mxGetPr (pargin [0]) ;
+    Lx = (double *) mxGetData (pargin [0]) ;
 
     // allocate the CHOLMOD symbolic L
     L = cholmod_l_allocate_factor (n, cm) ;
@@ -121,7 +121,6 @@ void mexFunction
     Lx2 = L->x ;
     Lnz2 = L->nz ;
     lnz = L->nzmax ;
-    // FIXME: use memcpy here
     for (j = 0 ; j <= n ; j++)
     {
         Lp2 [j] = Lp [j] ;

@@ -135,7 +135,7 @@ void mexFunction
     if (nargout > 1)
     {
         pargout [1] = mxCreateDoubleMatrix (1, 1, mxREAL) ;
-        px = mxGetPr (pargout [1]) ;
+        px = (double *) mxGetData (pargout [1]) ;
         px [0] = ((minor == n) ? 0 : (minor+1)) ;
     }
 

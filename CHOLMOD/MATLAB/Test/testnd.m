@@ -1,8 +1,8 @@
-function dg(A)
+function testnd(A)
 %DG order and plot A*A', using CHOLMOD's nested dissection
 % used by test27.m
 % Example:
-%   dg(A)
+%   testnd(A)
 % See also cholmod_test
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.

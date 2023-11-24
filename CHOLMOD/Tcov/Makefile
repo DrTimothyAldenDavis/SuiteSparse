@@ -45,8 +45,8 @@ default: go
     else
         # with CUDA for CHOLMOD and SPQR
         GPU_BLAS_PATH = $(CUDA_PATH)
-        # GPU_CONFIG must include -DSUITESPARSE_CUDA to compile SuiteSparse for the
-        # GPU.  You can add additional GPU-related flags to it as well.
+        # GPU_CONFIG must include -DSUITESPARSE_CUDA to compile SuiteSparse for
+        # the GPU.  You can add additional GPU-related flags to it as well.
         # with 4 cores (default):
         GPU_CONFIG    = -DSUITESPARSE_CUDA
         # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
@@ -2028,9 +2028,10 @@ l_super_solve.o: ../Supernodal/cholmod_l_super_solve.c
 	- ln -s $< l_super_solve.c
 	$(C) -c $(I) l_super_solve.c
 
+#-------------------------------------------------------------------------------
+
 # GPU kernels only use int64_t:
 l_gpu_kernels.o: ../GPU/cholmod_gpu_kernels.cu
 	- ln -s $< l_gpu_kernels.cu
 	$(NVCC) $(CHOLMOD_CONFIG) -I../../SuiteSparse_config -Xcompiler -fPIC -O3 -c l_gpu_kernels.cu
 
-#-------------------------------------------------------------------------------
