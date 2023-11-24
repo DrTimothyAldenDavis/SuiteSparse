@@ -5,14 +5,14 @@ function cholmod_install
 %   cholmod_install                 % compiles using METIS
 %
 % CHOLMOD relies on AMD and COLAMD, for its ordering options, and can
-% optionally use CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD, CAMD,
-% and METIS are used.
+% optionally use CCOLAMD, CAMD, and METIS as well.  By default, CCOLAMD,
+% CAMD, and METIS are used.
 %
 % You can only use cholmod_install while in the CHOLMOD/MATLAB directory.
 %
-% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol, ldlsolve,
-%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, symbfact2,
-%   mread, mwrite, amd2, colamd2, camd, ccolamd, ldlrowmod
+% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol,
+%   ldlsolve, ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult,
+%   symbfact2, mread, mwrite, amd2, colamd2, camd, ccolamd, ldlrowmod.
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+

@@ -4,12 +4,13 @@ function cholmod_make
 % Example:
 %   cholmod_make
 %
-% CHOLMOD relies on AMD and COLAMD, and optionally CCOLAMD, CAMD, and METIS.
-% You must type the cholmod_make command while in the CHOLMOD/MATLAB directory.
+% CHOLMOD relies on AMD and COLAMD, and optionally CCOLAMD, CAMD, and
+% METIS.  You must type the cholmod_make command while in the
+% CHOLMOD/MATLAB directory.
 %
-% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol, ldlsolve,
-%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, symbfact2,
-%   mread, mwrite, ldlrowmod
+% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol,
+%   ldlsolve, ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult,
+%   symbfact2, mread, mwrite, ldlrowmod.
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
@@ -25,7 +26,7 @@ try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
     mac = ismac ;
-catch                                                                       %#ok
+catch
     % if ispc fails, assume we are on a Windows PC if it's not unix
     pc = ~isunix ;
     mac = 0 ;
@@ -269,7 +270,7 @@ for f = source
     end
     o = ff (slash:end) ;
     % fprintf ('%s\n', o) ;
-    o = [o obj_extension] ;
+    o = [o obj_extension] ;                                                 %#ok
     obj = [obj  ' ' o] ;                                                    %#ok
     s = sprintf ('mex %s %s -c %s.c', flags, include, ff) ;
     kk = do_cmd (s, kk, details, '.') ;

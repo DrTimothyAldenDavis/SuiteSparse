@@ -20,8 +20,8 @@ Using AMD, CCOLAMD, and COLAMD in MATLAB
 
 The following steps are not required to use CHOLMOD in MATLAB.
 
-To use AMD in MATLAB, go to the AMD/MATLAB directory and either type "amd_install"
-in the MATLAB command window, or type "make" in the Unix shell.
+To use AMD in MATLAB, go to the AMD/MATLAB directory and either type
+"amd_install" in the MATLAB command window, or type "make" in the Unix shell.
 
 To use CCOLAMD in MATLAB, go to the CCOLAMD directory and type ccolamd_install.
 

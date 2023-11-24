@@ -1,12 +1,12 @@
 function graph_demo (n)
 %GRAPH_DEMO graph partitioning demo
-%   graph_demo(n) constructs an set of n-by-n 2D grids, partitions them, and
-%   plots them in one-second intervals.  n is optional; it defaults to 60.
+% graph_demo(n) constructs an set of n-by-n 2D grids, partitions them, and
+% plots them in one-second intervals.  n is optional; it defaults to 60.
 %
-%   Example:
+% Example:
 %       graph_demo
 %
-%   See also DELSQ, NUMGRID, GPLOT, TREEPLOT
+% See also delsq, numgrid, gplot, treeplot.
 
 % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
@@ -39,7 +39,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
 
     % bisect the graph
     s = bisect (A) ;
-    [i j] = find (A) ;
+    [i,j] = find (A) ;
 
     subplot (2,2,2)
     my_gplot (sparse (i, j, s(i) == s(j)), x, y) ;
@@ -53,9 +53,9 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     while (1)
         if (defaults)
             % use defaults
-            [p cp cmember] = nesdis (A) ;
+            [p, cp, cmember] = nesdis (A) ;                                 %#ok
         else
-            [p cp cmember] = nesdis (A, 'sym', nsmall) ;
+            [p, cp, cmember] = nesdis (A, 'sym', nsmall) ;                  %#ok
         end
 
         % plot the components
@@ -93,10 +93,11 @@ end
 function my_gplot (A, x, y)
 % my_gplot : like gplot, just a lot faster
 [i, j] = find (A) ;
-[ignore, p] = sort (max(i, j)) ;
+[~, p] = sort (max(i, j)) ;
 i = i (p) ;
 j = j (p) ;
-nans = repmat (NaN, size (i)) ;
+nans = repmat (NaN, size (i)) ; %#ok
 x = [ x(i) x(j) nans ]' ;
 y = [ y(i) y(j) nans ]' ;
 plot (x (:), y (:)) ;
+
