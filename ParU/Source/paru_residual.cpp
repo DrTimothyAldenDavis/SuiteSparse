@@ -17,6 +17,8 @@
  * @author Aznaveh
  * */
 
+#include <algorithm>
+
 #include "paru_internal.hpp" 
 
 ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
@@ -141,7 +143,7 @@ ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B, int64_t m,
         paru_gaxpy(A, X + m * l, AX_B + m * l, -1);
         double res = paru_vec_1norm(AX_B + m * l, m);
         PRLEVEL(1, ("%% res=%lf\n", res));
-        resid = MAX(resid, res);
+        resid = std::max(resid, res);
     }
     paru_free(m*nrhs, sizeof(double), AX_B);
     return PARU_SUCCESS;

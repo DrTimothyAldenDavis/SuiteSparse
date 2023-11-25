@@ -134,7 +134,7 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         #pragma omp atomic read
         naft = Work->naft;
         ParU_Control *Control = Num->Control;
-        const int64_t max_threads = Control->paru_max_threads;
+        const int32_t max_threads = Control->paru_max_threads;
 
         if (el->nrowsleft * el->ncolsleft < 4096 || el->nrowsleft < 1024
             #ifndef PARU_COVERAGE
@@ -357,7 +357,7 @@ void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     // int64_t naft; //number of active frontal tasks
     // pragma omp atomic read
     // naft = Num->naft;
-    // const int64_t max_threads = Num->paru_max_threads;
+    // const int32_t max_threads = Num->paru_max_threads;
     ////int64_t *Depth = Sym->Depth;
     // pragma omp parallel proc_bind(close) num_threads(max_threads/naft)
     // if (naft < max_threads/2 &&
@@ -642,9 +642,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         PRLEVEL(1, ("%% fcolind=" LD " \n", fcolind));
         double *dC = curEl_Num + fcolind * curEl->nrows;
 
-        for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+        for (int64_t i1 : tempRow)
         {
-            int64_t i1 = tempRow[ii];
             int64_t rowInd = el_rowIndex[i1];
             int64_t ri = isRowInFront[rowInd];
 
@@ -660,9 +659,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     }
 
     // invalidating assembled rows
-    for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+    for (int64_t i2 : tempRow)
     {
-        int64_t i2 = tempRow[ii];
         el_rowIndex[i2] = -1;
         rowRelIndex[i2] = -1;
     }

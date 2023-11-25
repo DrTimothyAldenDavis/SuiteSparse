@@ -13,6 +13,8 @@
  *
  * @author Aznaveh
  */
+#include <algorithm>
+
 #include "paru_internal.hpp"
 
 //------------------------------------------------------------------------------
@@ -243,10 +245,10 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
         if (worthwhile_dgemm < 0) my_Control.worthwhile_dgemm = 512;
         int64_t worthwhile_trsm = my_Control.worthwhile_trsm;
         if (worthwhile_trsm < 0) my_Control.worthwhile_trsm = 4096;
-        int64_t max_threads = PARU_OPENMP_MAX_THREADS;
+        int32_t max_threads = PARU_OPENMP_MAX_THREADS;
         if (my_Control.paru_max_threads > 0)
             my_Control.paru_max_threads =
-                MIN(max_threads, my_Control.paru_max_threads);
+                std::min(max_threads, my_Control.paru_max_threads);
         else
             my_Control.paru_max_threads = max_threads;
 
@@ -344,7 +346,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 #if ! defined ( PARU_GCC_WINDOWS )
     // The parallel factorization gets stuck intermittently on Windows with GCC.
     // Use the sequential factorization unconditionally in that case.
-    if ((int64_t)task_Q.size() * 2 > Control->paru_max_threads)
+    if (task_Q.size() * 2 > Control->paru_max_threads)
     {
         printf ("Parallel:\n") ;    // FIXME
         PRLEVEL(1, ("Parallel\n"));
@@ -501,14 +503,14 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
                 int64_t col1 = Super[f];
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
-                max_rc = MAX(max_rc, rowCount);
-                max_cc = MAX(max_cc, colCount + fp);
+                max_rc = std::max(max_rc, rowCount);
+                max_cc = std::max(max_cc, colCount + fp);
                 double *X = LUs[f].p;
                 for (int64_t i = 0; i < fp; i++)
                 {
                     double udiag = fabs(X[rowCount * i + i]);
-                    min_udiag = MIN(min_udiag, udiag);
-                    max_udiag = MAX(max_udiag, udiag);
+                    min_udiag = std::min(min_udiag, udiag);
+                    max_udiag = std::max(max_udiag, udiag);
                 }
             }
         }
@@ -525,8 +527,8 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
                 int64_t col1 = Super[f];
                 int64_t col2 = Super[f + 1];
                 int64_t fp = col2 - col1;
-                max_rc = MAX(max_rc, rowCount);
-                max_cc = MAX(max_cc, colCount + fp);
+                max_rc = std::max(max_rc, rowCount);
+                max_cc = std::max(max_cc, colCount + fp);
             }
 
             for (int64_t f = 0; f < nf; f++)
@@ -542,8 +544,8 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
                 for (int64_t i = 0; i < fp; i++)
                 {
                     double udiag = fabs(X[rowCount * i + i]);
-                    min_udiag = MIN(min_udiag, udiag);
-                    max_udiag = MAX(max_udiag, udiag);
+                    min_udiag = std::min(min_udiag, udiag);
+                    max_udiag = std::max(max_udiag, udiag);
                 }
             }
         }

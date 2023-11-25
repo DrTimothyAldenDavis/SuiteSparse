@@ -6,6 +6,8 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GNU GPL 3.0
 
+#include <algorithm>
+
 #include "paru_internal.hpp"
 
 ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
@@ -81,7 +83,7 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     PRLEVEL(PR, (" \n"));
     PR = 1;
     PRLEVEL(PR, ("%% n1=" LD " Final row permutaion is:\n%%", n1));
-    for (int64_t k = 0; k < MIN(77, m); k++) PRLEVEL(PR, ("" LD " ", Pfin[k]));
+    for (int64_t k = 0; k < std::min(77, m); k++) PRLEVEL(PR, ("" LD " ", Pfin[k]));
     PRLEVEL(PR, (" \n"));
 #endif
     return PARU_SUCCESS;

@@ -15,6 +15,7 @@
  *
  * @author Aznaveh
  * */
+#include <algorithm>
 
 #include "paru_internal.hpp"
 
@@ -65,7 +66,7 @@ ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("x2 = [ "));
-    for (int64_t i = 0; i < MIN(m, 10); ++i) PRLEVEL(PR, ("%lf ", b[i]));
+    for (int64_t i = 0; i < std::min(m, 10); ++i) PRLEVEL(PR, ("%lf ", b[i]));
     PRLEVEL(PR, (" ...]\n"));
 #endif
 

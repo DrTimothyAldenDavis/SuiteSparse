@@ -16,6 +16,8 @@
  *
  * @author Aznaveh
  */
+#include <algorithm>
+
 #include "paru_internal.hpp"
 
 ParU_Ret paru_init_rowFronts(paru_work *Work,
@@ -265,7 +267,7 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
             for (int64_t p = Ap[oldcol]; p < Ap[oldcol + 1]; p++)
             {
                 int64_t oldrow = Ai[p];
-                Rs[oldrow] = MAX(Rs[oldrow], fabs(Ax[p]));
+                Rs[oldrow] = std::max(Rs[oldrow], fabs(Ax[p]));
             }
         }
     }
@@ -389,11 +391,11 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
 #ifndef NDEBUG
         PR = 1;
         PRLEVEL(PR, ("init_row Diag_map (" LD ") =\n", Sym->n));
-        for (int64_t i = 0; i < MIN(64, Sym->n); i++)
+        for (int64_t i = 0; i < std::min(64, Sym->n); i++)
             PRLEVEL(PR, ("" LD " ", Diag_map[i]));
         PRLEVEL(PR, ("\n"));
         PRLEVEL(PR, ("inv_Diag_map =\n"));
-        for (int64_t i = 0; i < MIN(64, Sym->n); i++)
+        for (int64_t i = 0; i < std::min(64, Sym->n); i++)
             PRLEVEL(PR, ("" LD " ", inv_Diag_map[i]));
         PRLEVEL(PR, ("\n"));
         for (int64_t i = 0; i < Sym->n; i++)

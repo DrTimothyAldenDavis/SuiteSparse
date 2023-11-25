@@ -132,18 +132,11 @@ static int print_level = 0;   // FIXME
 // basic macros
 // -----------------------------------------------------------------------------
 
-#define MIN(a, b) (((a) < (b)) ? (a) : (b))
-#define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define EMPTY (-1)
 // already defined in amd
 // define TRUE 1
 // define FALSE 0
 #define IMPLIES(p, q) (!(p) || (q))
-
-// NULL should already be defined, but ensure it is here.
-#ifndef NULL
-    #define NULL ((void *)0)
-#endif
 
 #define Size_max ((size_t)(-1))  // the largest value of size_t
 
@@ -318,7 +311,7 @@ inline int32_t control_nthreads (ParU_Control *Control)
     }
     else
     {
-        return (MIN (max_threads, Control->paru_max_threads)) ;
+        return std::min(max_threads, Control->paru_max_threads);
     }
 }
 

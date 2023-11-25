@@ -136,8 +136,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #ifndef NDEBUG
     PR = 1;
     PRLEVEL(PR, ("%% pivotal columns eli(" LD "): ", eli));
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
-        PRLEVEL(PR, ("" LD " ", pivotal_elements[i]));
+    for (int64_t e : pivotal_elements)
+        PRLEVEL(PR, ("" LD " ", e));
     PRLEVEL(PR, ("\n"));
     std::set<int64_t> stl_rowSet;
     std::set<int64_t>::iterator it;
@@ -151,9 +151,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     int64_t rowCount = 0;
 
     /*************** finding set of rows in current front *********************/
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_element *el = elementList[e];
         ASSERT(el != NULL);
 
@@ -322,7 +321,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     // No support for max and min in OpenMP C++
     //pragma omp atomic capture 
     //{
-    //    Num->max_row_count = MAX(Num->max_row_count, rowCount);
+    //    Num->max_row_count = std::max(Num->max_row_count, rowCount);
     //}
 
 #ifndef NDEBUG /* Checking if pivotal rows are correct */
@@ -417,13 +416,12 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
      * */
 
     int64_t ii = 0;  // using for resizing pivotal_elements
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_full_summed(e, f, Work, Num);
         if (elementList[e] != NULL)
         {  // keeping the element
-            pivotal_elements[ii++] = pivotal_elements[i];
+            pivotal_elements[ii++] = e;
         }
     }
 
@@ -441,9 +439,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     int64_t num_children_with0 = 0;
     int64_t num_children_with0_which_fit = 0;
 
-    for (int64_t i = 0; i < (int64_t)pivotal_elements.size(); i++)
+    for (int64_t e : pivotal_elements)
     {
-        int64_t e = pivotal_elements[i];
         paru_element *el = elementList[e];
         if (el->nzr_pc > 0)  // an elemen that has at least one zero row
         {
