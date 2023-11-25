@@ -2186,15 +2186,15 @@ Reallocates the space allotted to a single column of $\m{L}$.
 %---------------------------------------
 
 \input{_factor_to_sparse.tex}
-Returns a column-oriented sparse matrix containing the pattern and values
-of a simplicial or supernodal numerical factor, and then converts the factor
-into a simplicial symbolic factor.  If {\tt L} is already packed, monotonic,
-and simplicial (which is the case when {\tt cholmod\_factorize} uses the simplicial
+Returns a column-oriented sparse matrix containing the pattern and values of a
+simplicial or supernodal numerical factor, and then converts the factor into a
+simplicial symbolic factor.  If {\tt L} is already packed, monotonic, and
+simplicial (which is the case when {\tt cholmod\_factorize} uses the simplicial
 Cholesky factorization algorithm) then this routine requires only a small
-amount of time and memory, independent of {\tt n}.
-It only operates on numeric factors (real, complex, or zomplex).  It does not
-change {\tt L->xtype} (the resulting sparse matrix has the same {\tt xtype}
-as {\tt L}).  If this routine fails, {\tt L} is left unmodified.
+amount of time and memory, independent of {\tt n}.  It only operates on numeric
+factors (real, complex, or zomplex).  It does not change {\tt L->xtype} (the
+resulting sparse matrix has the same {\tt xtype} as {\tt L}).  If this routine
+fails, {\tt L} is left unmodified.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_copy\_factor}: copy factor}
@@ -2211,6 +2211,110 @@ Returns an exact copy of a factor.
 Changes the {\tt xtype} of a factor, to pattern, real, complex, or zomplex.
 Changing from complex or zomplex to real discards the imaginary part.
 You cannot change a supernodal factor to the zomplex xtype.
+ 
+%---------------------------------------
+\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
+%---------------------------------------
+
+This is perhaps a surprisingly complex question to ask.
+
+For a sparse Cholesky factorization in CHOLMOD, there are at least 6 ways to
+answer this question.  First of all, the kind of factorization ($LL'$ or
+$LDL'$) doesn't affect this answer, if the $n$ entries in unit diagonal of $L$
+in the $LDL'$ factorization are excluded.  So all of the discussion here
+includes this simplification, and ``\verb'L''' can be considered the same
+as ``\verb'LD'.''
+
+In strictly increasing order of size (except that definition 5 can be large or
+smaller than 3 and/or 4):
+
+\begin{enumerate}
+
+\item
+The number of entries not numerically equal to zero. This is a bit ephemeral
+since it's affected by roundoff, denormals flushing to zero, and so on.
+Computing this requires converting a factor to sparse matrix with
+\verb'cholmod_factor_to_sparse', followed by \verb'cholmod_drop' with a
+\verb'tol' of zero, and then a call to \verb'cholmod_nnz'.  There is no method
+in CHOLMOD to compute this otherwise.
+
+\item
+The number of entries in the filled graph of \verb'L'. This is a very stable
+number, and doesn't depend on roundoff, data structures, or factorization
+method used.  It only depends on the symbolic pattern of \verb'A', and the
+fill-reducing ordering.  Some entries can be exactly zero because of roundoff
+but this is ignored.  This is returned as \verb'Common->lnz' after the call to
+\verb'cholmod_analyze'.  The value is not saved in \verb'L' itself because it
+can change with update/downdates.
+
+\item
+The number of entries in the supernodal \verb'L', which is like (2) but with
+added entries because of relaxed amalgamation. This affected by everything in
+(2), but also the relaxed amalgamation parameters.  Entries in the upper
+trianglar part of each supernode are excluded, since mathematically, each
+supernode is lower trapezoidal (with a square lower triangular part stacked on
+top of a rectangular part).  This number is computed internally during
+the computation to change a factor from a \verb'cholmod_factor' to a
+\verb'cholmod_sparse' object, in \verb'cholmod_factor_to_sparse'
+and \verb'cholmod_change_factor', when \verb'L' is converted to a
+simplicial form that is packed and monotonic.
+
+\item
+The same as (3), but with entries in the upper triangular part included.  This
+is the bare minimum space required to hold \verb'L' in supernodal form.  The
+value \verb'L->xsize' is a tight bound on this number (almost always identical
+to this value, but I can't guarantee this will always be true).
+
+\item
+The number of entries in \verb'L' after any update/downdates.  The
+factorization would no longer be supernodal, since doing any update/downdate
+converts a superondal \verb'L' into a simplicial one (supernodes are exploited
+to reduce the time for each update/downdate, however, but this is done
+dynamically).  A downdate can delete entries but I don't keep track of when
+this happens.  I would need to keep \verb'L' as a collection of multisets, and
+update/downdate the multiplicity of each entry.  I actually did this for a
+while but it's costly.  So instead I have a \verb'cholmod_resymbol' method to
+prune these down to (2).  This number can be computed by
+\verb'sum(L->nz[0..n-1])', if \verb'L' is simplicial.
+
+\item
+The size of the data structure to hold the entries of \verb'L'.  This
+number if \verb'L->xsize' for the supernodal case, and \verb'L->nzmax'
+otherwise. For a supernodal \verb'L', \verb'L->xsize' treats each supernode as
+rectangular, not lower trapezoidal. For a simplicial \verb'L,' after
+update/downdate, I can include gaps in the columns of \verb'L' to allow for
+room for growth.  This value can be obtained from any factor object,
+either supernodal or simplicial,  and either symbolic or numeric, with the
+following expression:
+
+\begin{verbatim}
+    (L->is_super) ? L->xsize : L->nzmax
+\end{verbatim}
+
+If \verb'L' is simplicial, this number can change when \verb'L' converted from
+symbolic to numeric, depending on the \verb'to_packed' parameter.  However, at
+any stage this value does give the size of the \verb'L->x' array (and the
+\verb'L->z' array if zomplex) that holds the numerical values.  If \verb'L' is
+symbolic (supernodal or simplicial) these arrays are not yet allocated, and
+both \verb'L->x' and \verb'L->z' are \verb'NULL'.  This number is in terms of
+entires, not bytes, so to get the number of bytes, multiply by
+\verb'sizeof(float)' if \verb'L->dtype' is \verb'CHOLMOD_SINGLE', by
+\verb'sizeof(double)' if \verb'L->dtype' is \verb'CHOLMOD_DOUBLE', and again by
+another factor of 2 if the matrix to factorize is complex or zomplex.
+
+\end{enumerate}
+
+Except for the simple expressions for:
+
+\begin{itemize}
+\item
+(2) \verb'Common->lnz'
+\item
+and (5) \verb'(L->is_super) ? L->xsize : L->nzmax',
+\end{itemize}
+
+there is no user-callable method in CHOLMOD to compute these values.
+I may consider adding such a method in a future release.
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: {\tt cholmod\_dense} object}

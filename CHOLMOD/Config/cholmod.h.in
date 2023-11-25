@@ -1609,7 +1609,7 @@ int cholmod_change_factor
                         // L->dtype remains unchanged.
     int to_ll,          // if true: convert to LL'; else to LDL'
     int to_super,       // if true: convert to supernodal; else to simplicial
-    int to_packed,      // if true: pack simplicial columns' else: do not pack
+    int to_packed,      // if true: pack simplicial columns; else: do not pack
     int to_monotonic,   // if true, put simplicial columns in order
     // input/output:
     cholmod_factor *L,  // factor to change.
