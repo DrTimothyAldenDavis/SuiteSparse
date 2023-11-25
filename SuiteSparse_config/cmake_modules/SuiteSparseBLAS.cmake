@@ -25,9 +25,8 @@ set ( BLA_VENDOR "ANY" CACHE STRING
     "if ANY (default): searches for any BLAS. Otherwise: search for a specific BLAS" )
 
 # To allow the use of a BLAS with 64-bit integers, set this to true
-# FIXME: set default to off
 option ( ALLOW_64BIT_BLAS
-    "OFF (default): use only 32-bit BLAS.  ON: look for 32 or 64-bit BLAS" on )
+    "OFF (default): use only 32-bit BLAS.  ON: look for 32 or 64-bit BLAS" off )
 
 # dynamic/static linking with BLAS
 option ( BLA_STATIC
