@@ -4,7 +4,7 @@
 % See also mread.
 % Requires the mmread MATLAB m-file from http://www.nist.gov
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 matrices = {
@@ -520,31 +520,31 @@ for i = 1:length(matrices)
     [A,rows,cols,entries,rep,field,symm] = mmread(filename) ;
     t1 = toc ;
     fprintf ('    %d by %d, nz %d %s %s %s\n', ...
-	rows, cols, entries, rep, field, symm) ;
+        rows, cols, entries, rep, field, symm) ;
 %    try
      tic
-	B = mread (filename) ;
+        B = mread (filename) ;
      t2 = toc ;
 %    catch
-%	B = [ ] ;
+%       B = [ ] ;
 %    end
 
     fprintf ('speedup %6.2f  nnz %d\n', t1/t2, nnz(A)) ;
 
     % mread add values to a pattern-only matrix.  Remove them
     if (strcmp (field, 'pattern'))
-	B = spones (B) ;
+        B = spones (B) ;
     end
 
     if (isempty (B))
-	fprintf ('============================ could not read with CHOLMOD\n') ;
-	error ('!') ;
+        fprintf ('============================ could not read with CHOLMOD\n') ;
+        error ('!') ;
     else
-	err = norm (A-B,1) ;
-	if (err ~= 0)
-	    fprintf ('=================================== %8.1e\n', err) ;
-	    error ('!') ;
-	end
+        err = norm (A-B,1) ;
+        if (err ~= 0)
+            fprintf ('=================================== %8.1e\n', err) ;
+            error ('!') ;
+        end
     end
 end
 

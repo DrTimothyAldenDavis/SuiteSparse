@@ -132,12 +132,12 @@ static Int grow_L (Int lnz, double grow0, Int n)
 {
     double xlnz = (double) lnz ;
     xlnz *= grow0 ;
-    xlnz = MIN (xlnz, (double) SIZE_MAX) ;
+    xlnz = MIN (xlnz, (double) Int_max) ;
     double d = (double) n ;
     d = (d*d + d) / 2 ;
     xlnz = MIN (xlnz, d) ;
-    lnz = (Int) xlnz ;
-    return (lnz) ;
+    Int newlnz = MAX (lnz, (Int) xlnz) ;
+    return (newlnz) ;
 }
 
 //------------------------------------------------------------------------------
@@ -513,7 +513,7 @@ static void simplicial_sym_to_simplicial_num
         // initialize the packed LL' or LDL' case (L is identity)
         //----------------------------------------------------------------------
 
-        for (Int j = 0 ; j < n ; j++)
+        for (Int j = 0 ; ok && (j < n) ; j++)
         {
             // ensure ColCount [j] is in the range 1 to n-j
             Int len = ColCount [j] ;
@@ -521,7 +521,6 @@ static void simplicial_sym_to_simplicial_num
             len = MIN (len, n-j) ;
             lnz += len ;
             ok = (lnz >= 0) ;
-            if (!ok) break ;
         }
         // each column L(:,j) holds a single diagonal entry
         for (Int j = 0 ; j <= n ; j++)
@@ -549,7 +548,7 @@ static void simplicial_sym_to_simplicial_num
         grow1 = isnan (grow1) ? 1 : grow1 ;
         Int grow = (grow0 >= 1.0) && (grow1 >= 1.0) && (grow2 > 0) ;
 
-        for (Int j = 0 ; j < n ; j++)
+        for (Int j = 0 ; ok && (j < n) ; j++)
         {
 
             //------------------------------------------------------------------
@@ -577,7 +576,6 @@ static void simplicial_sym_to_simplicial_num
             }
             lnz += len ;
             ok = (lnz >= 0) ;
-            if (!ok) break ;
         }
 
         //----------------------------------------------------------------------
@@ -601,6 +599,7 @@ static void simplicial_sym_to_simplicial_num
     ASSERT (L->nzmax == 0) ;
     lnz = MAX (1, lnz) ;
     int nint = 1 ;
+    Common->status = (ok) ? CHOLMOD_OK : CHOLMOD_TOO_LARGE ;
     if (!ok || !CHOLMOD(realloc_multiple) (lnz, nint, to_xtype + L->dtype,
         &(L->i), NULL, &(L->x), &(L->z), &(L->nzmax), Common))
     {
@@ -618,31 +617,30 @@ static void simplicial_sym_to_simplicial_num
 
     if (packed >= 0)
     {
-
         switch ((L->xtype + L->dtype) % 8)
         {
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+                rs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+                cs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+                zs_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+                rd_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+                cd_cholmod_change_factor_1_worker (L) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_cholmod_change_factor_1_worker (L) ;
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+                zd_cholmod_change_factor_1_worker (L) ;
                 break ;
         }
     }
@@ -750,7 +748,8 @@ static void change_simplicial_num
         // compute the new space for each column of L
         //----------------------------------------------------------------------
 
-        for (Int j = 0 ; j < n ; j++)
+        bool ok = true ;
+        for (Int j = 0 ; ok && (j < n) ; j++)
         {
             Int len = Lnz [j] ;
             ASSERT (len >= 1 && len <= n-j) ;
@@ -760,31 +759,37 @@ static void change_simplicial_num
             }
             ASSERT (len >= Lnz [j] && len <= n-j) ;
             lnz += len ;
-            if (lnz <= 0)
-            {
-                ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
-                return ;
-            }
+            ok = (lnz >= 0) ;
         }
 
-        //----------------------------------------------------------------------
-        // add additional space at the end of L, if requested
-        //----------------------------------------------------------------------
-
-        if (grow)
+        Common->status = (ok) ? CHOLMOD_OK : CHOLMOD_TOO_LARGE ;
+        if (ok)
         {
-            lnz = grow_L (lnz, grow0, n) ;
+
+            //------------------------------------------------------------------
+            // add additional space at the end of L, if requested
+            //------------------------------------------------------------------
+
+            if (grow)
+            {
+                lnz = grow_L (lnz, grow0, n) ;
+            }
+
+            //------------------------------------------------------------------
+            // allocate Li2, Lx2, and Lz2 (as newly allocated space)
+            //------------------------------------------------------------------
+
+            lnz = MAX (1, lnz) ;
+            int nint = 1 ;
+            size_t nzmax0 = 0 ;
+            CHOLMOD(realloc_multiple) (lnz, nint, L->xtype + L->dtype, &Li2,
+                NULL, &Lx2, &Lz2, &nzmax0, Common) ;
         }
 
         //----------------------------------------------------------------------
-        // allocate Li2, Lx2, and Lz2 (as newly allocated space)
+        // return if out of memory or problem too large
         //----------------------------------------------------------------------
 
-        lnz = MAX (1, lnz) ;
-        int nint = 1 ;
-        size_t nzmax0 = 0 ;
-        CHOLMOD(realloc_multiple) (lnz, nint, L->xtype + L->dtype, &Li2,
-            NULL, &Lx2, &Lz2, &nzmax0, Common) ;
         RETURN_IF_ERROR () ;
     }
 
@@ -794,38 +799,38 @@ static void change_simplicial_num
 
     switch ((L->xtype + L->dtype) % 8)
     {
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_change_factor_2_worker (L, to_packed, Li2, Lx2, Lz2,
                 lnz, grow, grow1, grow2, make_ll, out_of_place, make_ldl,
                 Common) ;
             break ;
@@ -1014,19 +1019,19 @@ static void super_num_to_simplicial_num
     switch ((L->xtype + L->dtype) % 8)
     {
         case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
+            rs_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
             break ;
 
         case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
+            cs_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
+            rd_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
             break ;
 
         case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
+            cd_cholmod_change_factor_3_worker (L, to_packed, to_ll, Common) ;
             break ;
     }
 
@@ -1119,7 +1124,7 @@ int CHOLMOD(change_factor)
     int to_xtype,       // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
     int to_ll,          // if true: convert to LL'; else to LDL'
     int to_super,       // if true: convert to supernodal; else to simplicial
-    int to_packed,      // if true: pack simplicial columns' else: do not pack
+    int to_packed,      // if true: pack simplicial columns; else: do not pack
     int to_monotonic,   // if true, put simplicial columns in order
     cholmod_factor *L,  // factor to change
     cholmod_common *Common

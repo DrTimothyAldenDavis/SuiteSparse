@@ -12,6 +12,7 @@
 
 int CHOLMOD(free_dense)
 (
+    // input/output:
     cholmod_dense **X,          // handle of dense matrix to free
     cholmod_common *Common
 )

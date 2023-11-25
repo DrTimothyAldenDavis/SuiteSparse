@@ -12,3 +12,15 @@ n_*.c
 ui_*.c
 ul_*.c
 o*
+di_demo*
+si_demo*
+dl_demo*
+sl_demo*
+di_test
+si_test
+dl_test
+sl_test
+di_read
+si_read
+dl_read
+sl_read

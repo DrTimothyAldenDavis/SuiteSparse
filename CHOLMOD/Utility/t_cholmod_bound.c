@@ -22,6 +22,7 @@
 
 Real CHOLMOD_BOUND_FUNCTION     // returns modified diagonal entry D(j,j)
 (
+    // input:
     Real djj,                   // input diagonal entry D(j,j)
     cholmod_common *Common
 )

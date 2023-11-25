@@ -14,7 +14,9 @@
 
 int CHOLMOD(reallocate_sparse)
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the sparse matrix can hold
+    // input/output:
     cholmod_sparse *A,  // sparse matrix to reallocate
     cholmod_common *Common
 )

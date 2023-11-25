@@ -4,59 +4,45 @@ function cholmod_make
 % Example:
 %   cholmod_make
 %
-% CHOLMOD relies on AMD and COLAMD, and optionally CCOLAMD, CAMD, and METIS.
-% You must type the cholmod_make command while in the CHOLMOD/MATLAB directory.
+% CHOLMOD relies on AMD and COLAMD, and optionally CCOLAMD, CAMD, and
+% METIS.  You must type the cholmod_make command while in the
+% CHOLMOD/MATLAB directory.
 %
-% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol, ldlsolve,
-%   ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult, sparse2,
-%   symbfact2, mread, mwrite, ldlrowmod
+% See also analyze, bisect, chol2, cholmod2, etree2, lchol, ldlchol,
+%   ldlsolve, ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult,
+%   symbfact2, mread, mwrite, ldlrowmod.
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
-details = 0 ;	    % 1 if details of each command are to be printed
+if verLessThan ('matlab', '9.4')
+    error ('MATLAB 9.4 (R2018a) or later is required') ;
+end
+
+details = 0 ;       % 1 if details of each command are to be printed
 
 v = version ;
 try
     % ispc does not appear in MATLAB 5.3
     pc = ispc ;
     mac = ismac ;
-catch                                                                       %#ok
+catch
     % if ispc fails, assume we are on a Windows PC if it's not unix
     pc = ~isunix ;
     mac = 0 ;
 end
 
-flags = '' ;
-is64 = ~isempty (strfind (computer, '64')) ;
-if (is64)
-    % 64-bit MATLAB
-    flags = '-largeArrayDims' ;
-else
-    error ('32-bit version no longer supported') ;
-end
-
-% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
-if (~verLessThan ('matlab', '8.3.0'))
-    flags = ['-silent ' flags] ;
-end
+ % -R2018a: interleaved complex is required
+flags = '-O -R2018a -silent ' ;
 
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 
-if (verLessThan ('matlab', '7.0'))
-    % do not attempt to compile CHOLMOD with large file support
-    include = [include ' -DNLARGEFILE'] ;
-elseif (~pc)
+if (~pc)
     % Linux/Unix require these flags for large file support
     include = [include ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
 end
 
-if (verLessThan ('matlab', '6.5'))
-    % logical class does not exist in MATLAB 6.1 or earlier
-    include = [include ' -DMATLAB6p1_OR_EARLIER'] ;
-end
-
-% Determine if METIS is available
+ % Determine if METIS is available
 have_metis = exist ('../SuiteSparse_metis', 'dir') ;
 
 if (have_metis)
@@ -79,9 +65,7 @@ end
 if (pc)
     % BLAS/LAPACK functions have no underscore on Windows
     flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
-    if (verLessThan ('matlab', '7.5'))
-        lapack = 'libmwlapack.lib' ;
-    elseif (verLessThan ('matlab', '9.5'))
+    if (verLessThan ('matlab', '9.5'))
         lapack = 'libmwlapack.lib libmwblas.lib' ;
     else
         lapack = '-lmwlapack -lmwblas' ;
@@ -89,25 +73,18 @@ if (pc)
 else
     % BLAS/LAPACK functions have an underscore suffix
     flags = [flags ' -DBLAS_UNDERSCORE'] ;
-    if (verLessThan ('matlab', '7.5'))
-        lapack = '-lmwlapack' ;
-    else
-        lapack = '-lmwlapack -lmwblas' ;
-    end
+    lapack = '-lmwlapack -lmwblas' ;
 end
 
-if (~verLessThan ('matlab', '7.8'))
-    % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
-    fprintf ('with 64-bit BLAS\n') ;
-    flags = [flags ' -DBLAS64'] ;
-end
+ % using the 64-bit BLAS
+flags = [flags ' -DBLAS64'] ;
 
 if (~(pc || mac))
     % for POSIX timing routine
     lapack = [lapack ' -lrt'] ;
 end
 
- %-------------------------------------------------------------------------------
+ %------------------------------------------------------------------------------
 
 config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
@@ -138,7 +115,7 @@ ordering_src = { ...
     '../../COLAMD/Source/colamd_l', ...
     '../../CCOLAMD/Source/ccolamd_l' } ;
 
-cholmod_matlab = { 'cholmod_matlab' } ;
+sputil2 = { 'sputil2' } ;
 
 cholmod_src = {
     '../Utility/cholmod_l_aat', ...
@@ -265,7 +242,6 @@ cholmod_mex_src = { ...
     'septree', ...
     'resymbol', ...
     'sdmult', ...
-    'sparse2', ...
     'symbfact2', ...
     'mread', ...
     'mwrite', ...
@@ -280,7 +256,7 @@ end
  % compile each library source file
 obj = '' ;
 
-source = [ordering_src config_src cholmod_src cholmod_matlab] ;
+source = [sputil2 ordering_src config_src cholmod_src ] ;
 
 kk = 0 ;
 
@@ -294,34 +270,35 @@ for f = source
     end
     o = ff (slash:end) ;
     % fprintf ('%s\n', o) ;
-    o = [o obj_extension] ;
-    obj = [obj  ' ' o] ;					            %#ok
-    s = sprintf ('mex %s -O %s -c %s.c', flags, include, ff) ;
-    kk = do_cmd (s, kk, details) ;
+    o = [o obj_extension] ;                                                 %#ok
+    obj = [obj  ' ' o] ;                                                    %#ok
+    s = sprintf ('mex %s %s -c %s.c', flags, include, ff) ;
+    kk = do_cmd (s, kk, details, '.') ;
 end
 
  % compile each mexFunction
 for f = cholmod_mex_src
-    s = sprintf ('mex %s -O %s %s.c', flags, include, f{1}) ;
-    s = [s obj ' ' lapack] ;						    %#ok
-    kk = do_cmd (s, kk, details) ;
+    s = sprintf ('mex %s %s %s.c', flags, include, f{1}) ;
+    s = [s obj ' ' lapack] ;                                                %#ok
+    kk = do_cmd (s, kk, details, ':') ;
 end
 
  % clean up
 s = ['delete ' obj] ;
-do_cmd (s, kk, details) ;
+do_cmd (s, kk, details, '.') ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
- %------------------------------------------------------------------------------
-function kk = do_cmd (s, kk, details)
+ %-----------------------------------------------------------------------------
+function kk = do_cmd (s, kk, details, progress)
  %DO_CMD: evaluate a command, and either print it or print a "."
 if (details)
     fprintf ('%s\n', s) ;
 else
     if (mod (kk, 60) == 0)
-	fprintf ('\n') ;
+        fprintf ('\n') ;
     end
     kk = kk + 1 ;
-    fprintf ('.') ;
+    fprintf (progress) ;
 end
 eval (s) ;
+

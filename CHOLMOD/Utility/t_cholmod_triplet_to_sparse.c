@@ -55,6 +55,7 @@
 
 cholmod_sparse *CHOLMOD(triplet_to_sparse)      // return sparse matrix A
 (
+    // input:
     cholmod_triplet *T,     // input triplet matrix
     size_t nzmax,           // allocate space for max(nzmax,nnz(A)) entries
     cholmod_common *Common
@@ -160,28 +161,28 @@ cholmod_sparse *CHOLMOD(triplet_to_sparse)      // return sparse matrix A
             anz = p_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            anz = r_s_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            anz = rs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            anz = c_s_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            anz = cs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            anz = z_s_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            anz = zs_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            anz = r_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            anz = rd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            anz = c_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            anz = cd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            anz = z_cholmod_triplet_to_sparse_worker (T, R, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            anz = zd_cholmod_triplet_to_sparse_worker (T, R, Common) ;
             break ;
     }
 

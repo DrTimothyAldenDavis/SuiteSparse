@@ -14,7 +14,9 @@
 
 int CHOLMOD(reallocate_triplet)
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the triplet matrix can hold
+    // input/output:
     cholmod_triplet *T, // triplet matrix to reallocate
     cholmod_common *Common
 )

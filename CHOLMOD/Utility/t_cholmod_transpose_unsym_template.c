@@ -14,7 +14,7 @@
 
 // define PACKED: if A->packed is true, undefine if A->packed is false
 
-// define NUMERIC: if computing values and pattern of C, undefine it if 
+// define NUMERIC: if computing values and pattern of C, undefine it if
 //      computing just the column counts of C.
 
 //------------------------------------------------------------------------------
@@ -36,7 +36,7 @@
         //----------------------------------------------------------------------
 
         #ifdef FSET
-	Int j = fset [k] ;
+        Int j = fset [k] ;
         #else
         Int j = k ;
         #endif
@@ -45,27 +45,27 @@
         // get A(:,k)
         //----------------------------------------------------------------------
 
-	Int p = Ap [j] ;
+        Int p = Ap [j] ;
         #ifdef PACKED
-	Int pend = Ap [j+1] ;
+        Int pend = Ap [j+1] ;
         #else
-	Int pend = p + Anz [j] ;
+        Int pend = p + Anz [j] ;
         #endif
 
         //----------------------------------------------------------------------
         // scan entries in A(:,k)
         //----------------------------------------------------------------------
 
-	for ( ; p < pend ; p++)
-	{
+        for ( ; p < pend ; p++)
+        {
             // get A(i,j) and count it or get its place in C
-	    Int pc = Wi [Ai [p]]++ ;
+            Int pc = Wi [Ai [p]]++ ;
             #ifdef NUMERIC
             // C(j,i) = conj (A(i,j))
-	    ASSIGN_CONJ_OR_NCONJ (Cx, Cz, pc, Ax, Az, p) ;
-	    Ci [pc] = j ;
+            ASSIGN_CONJ_OR_NCONJ (Cx, Cz, pc, Ax, Az, p) ;
+            Ci [pc] = j ;
             #endif
-	}
+        }
     }
 }
 

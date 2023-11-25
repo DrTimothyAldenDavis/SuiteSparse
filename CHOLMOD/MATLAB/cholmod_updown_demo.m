@@ -1,5 +1,5 @@
 function cholmod_updown_demo
-%CHOLMOD_UPDOWN_DEMO a demo for CHOLMOD's update/downdate and row add/delete
+%CHOLMOD_UPDOWN_DEMO a demo for CHOLMOD's update/downdate & row add/delete
 %
 % Provides a short demo of CHOLMOD's update/downdate and row add/delete
 % functions.
@@ -7,9 +7,9 @@ function cholmod_updown_demo
 % Example:
 %   cholmod_updown_demo
 %
-% See also CHOLMOD_DEMO
+% See also cholmod_demo
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('\n\n------------------------------------------------------------\n') ;
@@ -23,7 +23,7 @@ n = size (A,1) ;
 b = rand (n,1) / n ;
 
 % L*D*L' = A(p,p).  The 2nd argument is zero if A is positive definite.
-[LD,ignore,p] = ldlchol (A) ;
+[LD,ignore,p] = ldlchol (A) ;                                               %#ok
 
 % solve Ax=b using the L*D*L' factorization of A(p,p)
 c = b (p) ;
@@ -41,23 +41,23 @@ x = A\b ;
 t1 = toc ;
 err = norm (A*x-b) ;
 fprintf ('norm (A*x-b) using backslash:  %g\n', err) ;
-fprintf ('time for x=A\\b: %g\n', t1) ; 
+fprintf ('time for x=A\\b: %g\n', t1) ;
 if (err > 1e-12)
     error ('!')
 end
 
 % check the norm of LDL'-S
-[L,D] = ldlsplit (LD) ;
+[L,D] = ldlsplit (LD) ;                                                     %#ok
 S = A (p,p) ;
-err = norm (L*D*L' - S, 1) ;
+% err = norm (L*D*L' - S, 1) ;
 fprintf ('nnz (L) for original matrix:   %d\n', nnz (L)) ;
 
 % rank-1 update of the L*D*L' factorization
 % A becomes A2=A+W*W', and S becomes S2=S+C*C'.  Some fillin occurs.
 fprintf ('\n\n------------------------------------------------------------\n') ;
 fprintf ('Update A to A+W*W'', and the permuted S=A(p,p) becomes S+C*C'':\n') ;
-W = sparse ([1 2 3 152], [1 1 1 1], [5 -1 -1 -1], n, 1)
-C = W (p,:)
+W = sparse ([1 2 3 152], [1 1 1 1], [5 -1 -1 -1], n, 1)                     %#ok
+C = W (p,:)                                                                 %#ok
 tic
 LD2 = ldlupdate (LD, C, '+') ;
 t2 = toc ;
@@ -82,7 +82,7 @@ fprintf ('norm (A*x-b) using ldlsolve:   %g\n', err) ;
 if (err > 1e-12)
     error ('!')
 end
-fprintf ('time to solve x=A\\b using update: %g\n', t2 + t3) ; 
+fprintf ('time to solve x=A\\b using update: %g\n', t2 + t3) ;
 
 % solve again, just using backslash
 tic
@@ -93,7 +93,7 @@ fprintf ('norm (A*x-b) using backslash:  %g\n', err) ;
 if (err > 1e-12)
     error ('!')
 end
-fprintf ('time for x=A\\b: %g\n', t1) ; 
+fprintf ('time for x=A\\b: %g\n', t1) ;
 fprintf ('speedup of update vs backslash: %g\n', t1 / (t2 + t3)) ;
 
 % invert the permutation
@@ -143,7 +143,7 @@ t1 = toc ;
 err = norm (A3*x-b) ;
 fprintf ('norm (A3*x-b) with backslash:  %g\n', err) ;
 fprintf ('time for x=A\\b with backslash %g\n', t1) ;
-fprintf ('time for x=A\\b using rowdel:  %g\n', t2 + t3) ; 
+fprintf ('time for x=A\\b using rowdel:  %g\n', t2 + t3) ;
 fprintf ('speedup of rowdel vs backslash: %g\n', t1 / (t2 + t3)) ;
 
 % add row 3 back to A3 to get A4.  This corresponds to row invp(3) in S and LDL
@@ -193,6 +193,6 @@ if (err > 1e-12)
 end
 
 fprintf ('time for x=A\\b with backslash %g\n', t1) ;
-fprintf ('time for x=A\\b using rowadd:  %g\n', t2 + t3) ; 
+fprintf ('time for x=A\\b using rowadd:  %g\n', t2 + t3) ;
 fprintf ('speedup of rowadd vs backslash: %g\n', t1 / (t2 + t3)) ;
 

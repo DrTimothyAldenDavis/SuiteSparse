@@ -12,8 +12,10 @@
 
 void *CHOLMOD(free)     // returns NULL to simplify its usage
 (
+    // input:
     size_t n,           // number of items
     size_t size,        // size of each item
+    // input/output:
     void *p,            // memory to free
     cholmod_common *Common
 )

@@ -1,20 +1,20 @@
-function L = resymbol (L, A)						    %#ok
-%RESYMBOL recomputes the symbolic Cholesky factorization of the matrix A.
+function L = resymbol (L, A)                                          %#ok
+%RESYMBOL recomputes the symbolic Cholesky factorization of the matrix A
 %
-%   Example:
+% Example:
 %   L = resymbol (L, A)
 %
-%   Recompute the symbolic Cholesky factorization of the matrix A.  A must be
-%   symmetric.  Only tril(A) is used.  Entries in L that are not in the Cholesky
-%   factorization of A are removed from L.  L can be from an LL' or LDL'
-%   factorization (lchol or ldlchol).  resymbol is useful after a series of
-%   downdates via ldlupdate or ldlrowmod, since downdates do not remove any
-%   entries in L.  The numerical values of A are ignored; only its nonzero
-%   pattern is used.
+% Recompute the symbolic Cholesky factorization of the matrix A.  A must
+% be symmetric.  Only tril(A) is used.  Entries in L that are not in the
+% Cholesky factorization of A are removed from L.  L can be from an LL'
+% or LDL' factorization (lchol or ldlchol).  resymbol is useful after a
+% series of downdates via ldlupdate or ldlrowmod, since downdates do not
+% remove any entries in L.  The numerical values of A are ignored; only
+% its nonzero pattern is used.
 %
-% See also LCHOL, LDLUPDATE, LDLROWMOD
+% See also lchol, ldlupdate, ldlrowmod.
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('resymbol not found') ;

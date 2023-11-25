@@ -5,7 +5,7 @@ function [err x1 x2 xset] = ltest2 (LD, L, D, L2, P, p, b, err)
 %
 % See also cholmod_test, ltest, ltest2
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 if (~isreal (L))
@@ -32,7 +32,7 @@ for sys = 0:8
 
         case 3
             x1 =      (L' \ (D \ (    (    b)))) ;        % solve DL'x = b
-            
+
         case 4
             x1 =      (     (    (L \ (    b)))) ;        % solve Lx = b
 
@@ -80,7 +80,7 @@ for sys = 0:8
 
         case 3
             x1 =      (L2' \ (    (     (    b)))) ;        % solve L2'x = b
-            
+
         case 4
             x1 =      (      (    (L2 \ (    b)))) ;        % solve L2x = b
 

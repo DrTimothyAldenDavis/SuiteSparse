@@ -55,11 +55,14 @@
 
 cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     cholmod_sparse *B,  // input matrix
-    double alpha [2],   // scale factor for A (two entires used if complex)
+    double alpha [2],   // scale factor for A (two entries used if complex)
     double beta [2],    // scale factor for B (two entries used if complex)
-    int values,         // if TRUE compute the numerical values of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric,
+                        // 1: numerical (non-conj.) if A and/or B are symmetric.
+                        // 0: pattern
     int sorted,         // ignored; C is now always returned as sorted
     cholmod_common *Common
 )
@@ -72,8 +75,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_SPARSE_MATRIX_INVALID (A, NULL) ;
     RETURN_IF_SPARSE_MATRIX_INVALID (B, NULL) ;
-    ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
-    ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
     Common->status = CHOLMOD_OK ;
     cholmod_sparse *A2 = NULL, *B2 = NULL, *C = NULL ;
 
@@ -83,12 +84,14 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         return (NULL) ;
     }
 
+    mode = RANGE (mode, 0, 2) ;
+
     int axtype = A->xtype ;
     int bxtype = B->xtype ;
-    if (!values || axtype == CHOLMOD_PATTERN || bxtype == CHOLMOD_PATTERN)
+    if (mode == 0 || axtype == CHOLMOD_PATTERN || bxtype == CHOLMOD_PATTERN)
     {
         // treat A and B as if they are pattern-only matrices; C is pattern
-        values = FALSE ;
+        mode = 0 ;
         axtype = CHOLMOD_PATTERN ;
         bxtype = CHOLMOD_PATTERN ;
     }
@@ -99,7 +102,7 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
         return (NULL) ;
     }
 
-    if (values && A->dtype != B->dtype)
+    if (mode != 0 && A->dtype != B->dtype)
     {
         ERROR (CHOLMOD_INVALID, "A and B dtypes do not match") ;
         return (NULL) ;
@@ -107,6 +110,9 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
 
     int xtype = axtype ;
     int dtype = A->dtype ;
+
+    ASSERT (CHOLMOD(dump_sparse) (A, "add:A", Common) >= 0) ;
+    ASSERT (CHOLMOD(dump_sparse) (B, "add:B", Common) >= 0) ;
 
     //--------------------------------------------------------------------------
     // get the sizes of the entries of C, A, and B
@@ -121,8 +127,6 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
     //--------------------------------------------------------------------------
     // convert/sort A and/or B, if needed
     //--------------------------------------------------------------------------
-
-    int mode = values ? 1 : 0 ;
 
     if (A->stype == B->stype)
     {
@@ -211,28 +215,28 @@ cholmod_sparse *CHOLMOD(add)    // return C = alpha*A + beta*B
             p_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_add_worker (C, A, B, alpha, beta, Common) ;
             break ;
     }
 

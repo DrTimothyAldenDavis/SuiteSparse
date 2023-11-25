@@ -2,486 +2,343 @@
 // CHOLMOD/MatrixOps/cholmod_ssmult: sparse-times-sparse matrix
 //------------------------------------------------------------------------------
 
-// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* C = A*B.  Multiply two sparse matrices.
- *
- * A and B can be packed or unpacked, sorted or unsorted, and of any stype.
- * If A or B are symmetric, an internal unsymmetric copy is made first, however.
- * C is computed as if A and B are unsymmetric, and then if the stype input
- * parameter requests a symmetric form (upper or lower) the matrix is converted
- * into that form.
- *
- * C is returned as packed, and either unsorted or sorted, depending on the
- * "sorted" input parameter.  If C is returned sorted, then either C = (B'*A')'
- * or C = (A*B)'' is computed, depending on the number of nonzeros in A, B, and
- * C.
- *
- * workspace:
- *	if C unsorted: Flag (A->nrow), W (A->nrow) if values
- *	if C sorted:   Flag (B->ncol), W (B->ncol) if values
- *	Iwork (max (A->ncol, A->nrow, B->nrow, B->ncol))
- *	allocates temporary copies for A, B, and C, if required.
- *
- * Only pattern and real matrices are supported.  Complex and zomplex matrices
- * are supported only when the numerical values are not computed ("values"
- * is FALSE).
- */
+// C = A*B.  Multiply two sparse matrices.
+//
+// A and B can be packed or unpacked, sorted or unsorted, and of any stype.  If
+// A or B are symmetric, an internal unsymmetric copy is made first, however.
+// For the complex case, if A and/or B are symmetric with just their lower or
+// upper part stored, they are assumed to be Hermitian when converted.
+//
+// C is computed as if A and B are unsymmetric, and then if the stype input
+// parameter requests a symmetric form (upper or lower) the matrix is converted
+// into that form.
+//
+// C is returned as packed, and either unsorted or sorted, depending on the
+// "sorted" input parameter.  If C is returned sorted, then either C = (B'*A')'
+// or C = (A*B)'' is computed, depending on the number of nonzeros in A, B, and
+// C.
+//
+// workspace:
+//      if C unsorted: Flag (A->nrow), W (A->nrow) if values
+//      if C sorted:   Flag (B->ncol), W (B->ncol) if values
+//      Iwork (max (A->ncol, A->nrow, B->nrow, B->ncol))
+//      allocates temporary copies for A, B, and C, if required.
+//
+// Matrices of any xtype and dtype supported, but the xtype and dtype of
+// A and B must match (unless mode is zero).
 
 #include "cholmod_internal.h"
 
 #ifndef NGPL
 #ifndef NMATRIXOPS
 
-/* ========================================================================== */
-/* === cholmod_ssmult ======================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// t_cholmod_ssmult_worker template
+//------------------------------------------------------------------------------
 
-cholmod_sparse *CHOLMOD(ssmult)
+#define PATTERN
+#include "t_cholmod_ssmult_worker.c"
+
+#define DOUBLE
+#define REAL
+#include "t_cholmod_ssmult_worker.c"
+#define COMPLEX
+#include "t_cholmod_ssmult_worker.c"
+#define ZOMPLEX
+#include "t_cholmod_ssmult_worker.c"
+
+#undef  DOUBLE
+#define SINGLE
+#define REAL
+#include "t_cholmod_ssmult_worker.c"
+#define COMPLEX
+#include "t_cholmod_ssmult_worker.c"
+#define ZOMPLEX
+#include "t_cholmod_ssmult_worker.c"
+
+//------------------------------------------------------------------------------
+// cholmod_ssmult
+//------------------------------------------------------------------------------
+
+cholmod_sparse *CHOLMOD(ssmult)     // return C=A*B
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* left matrix to multiply */
-    cholmod_sparse *B,	/* right matrix to multiply */
-    int stype,		/* requested stype of C */
-    int values,		/* TRUE: do numerical values, FALSE: pattern only */
-    int sorted,		/* if TRUE then return C with sorted columns */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // left matrix to multiply
+    cholmod_sparse *B,  // right matrix to multiply
+    int stype,          // requested stype of C
+    int mode,           // 2: numerical (conj) if A and/or B are symmetric
+                        // 1: numerical (non-conj.) if A and/or B are symmetric
+                        // 0: pattern
+    int sorted,         // if TRUE then return C with sorted columns
     cholmod_common *Common
 )
 {
-    double bjt ;
-    double *Ax, *Bx, *Cx, *W ;
-    Int *Ap, *Anz, *Ai, *Bp, *Bnz, *Bi, *Cp, *Ci, *Flag ;
-    cholmod_sparse *C, *A2, *B2, *A3, *B3, *C2 ;
-    Int apacked, bpacked, j, i, pa, paend, pb, pbend, ncol, mark, cnz, t, p,
-	nrow, anz, bnz, do_swap_and_transpose, n1, n2 ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
+    cholmod_sparse *C = NULL, *A2 = NULL, *B2 = NULL, *C2 = NULL ;
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
     RETURN_IF_NULL (B, NULL) ;
-    values = values &&
-	(A->xtype != CHOLMOD_PATTERN) && (B->xtype != CHOLMOD_PATTERN) ;
-    RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, 
-	    values ? CHOLMOD_REAL : CHOLMOD_ZOMPLEX, NULL) ;
-    RETURN_IF_XTYPE_INVALID (B, CHOLMOD_PATTERN, 
-	    values ? CHOLMOD_REAL : CHOLMOD_ZOMPLEX, NULL) ;
+    mode = RANGE (mode, 0, 2) ;
+    if (A->xtype == CHOLMOD_PATTERN || B->xtype == CHOLMOD_PATTERN)
+    {
+        mode = 0 ;
+    }
+    RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
+    RETURN_IF_XTYPE_INVALID (B, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, NULL) ;
     if (A->ncol != B->nrow)
     {
-	/* inner dimensions must agree */
-	ERROR (CHOLMOD_INVALID, "A and B inner dimensions must match") ;
-	return (NULL) ;
+        // inner dimensions must agree
+        ERROR (CHOLMOD_INVALID, "A and B inner dimensions must match") ;
+        return (NULL) ;
     }
-    /* A and B must have the same numerical type if values is TRUE (both must
-     * be CHOLMOD_REAL, this is implicitly checked above) */
+
+    bool values = (mode != 0) ;
+    if (values && (A->xtype != B->xtype || A->dtype != B->dtype))
+    {
+        // A and B must have the same numerical type if mode != 0
+        ERROR (CHOLMOD_INVALID, "A and B must have the same xtype and dtype") ;
+        return (NULL) ;
+    }
+
     Common->status = CHOLMOD_OK ;
 
-    /* ---------------------------------------------------------------------- */
-    /* allocate workspace */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // allocate workspace
+    //--------------------------------------------------------------------------
 
     if (A->nrow <= 1)
     {
-	/* C will be implicitly sorted, so no need to sort it here */
-	sorted = FALSE ;
+        // C will be implicitly sorted, so no need to sort it here
+        sorted = FALSE ;
     }
+    size_t n1 ;
     if (sorted)
     {
-	n1 = MAX (A->nrow, B->ncol) ;
+        n1 = MAX (A->nrow, B->ncol) ;
     }
     else
     {
-	n1 = A->nrow ;
+        n1 = A->nrow ;
     }
-    n2 = MAX4 (A->ncol, A->nrow, B->nrow, B->ncol) ;
-    CHOLMOD(allocate_work) (n1, n2, values ? n1 : 0, Common) ;
+    size_t n2 = (size_t) MAX4 (A->ncol, A->nrow, B->nrow, B->ncol) ;
+    size_t nw = ((A->xtype >= CHOLMOD_COMPLEX) ? 2 : 1) * (values ? n1 : 0) ;
+    CHOLMOD(alloc_work) (n1, n2, nw, A->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
-	/* out of memory */
-	return (NULL) ;
+        // out of memory
+        return (NULL) ;
     }
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1 : 0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
-    /* convert A to unsymmetric, if necessary */
+    // convert A to unsymmetric, if necessary
     A2 = NULL ;
     B2 = NULL ;
     if (A->stype)
     {
-	/* workspace: Iwork (max (A->nrow,A->ncol)) */
-	A2 = CHOLMOD(copy) (A, 0, values, Common) ;
-	if (Common->status < CHOLMOD_OK)
-	{
-	    /* out of memory */
-	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
-	    return (NULL) ;
-	}
-	A = A2 ;
+        // workspace: Iwork (max (A->nrow,A->ncol))
+        A2 = CHOLMOD(copy) (A, 0, mode, Common) ;
+        if (Common->status < CHOLMOD_OK)
+        {
+            // out of memory
+            ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
+            return (NULL) ;
+        }
+        A = A2 ;
     }
 
-    /* convert B to unsymmetric, if necessary */
+    // convert B to unsymmetric, if necessary
     if (B->stype)
     {
-	/* workspace: Iwork (max (B->nrow,B->ncol)) */
-	B2 = CHOLMOD(copy) (B, 0, values, Common) ;
-	if (Common->status < CHOLMOD_OK)
-	{
-	    /* out of memory */
-	    CHOLMOD(free_sparse) (&A2, Common) ;
-	    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
-	    return (NULL) ;
-	}
-	B = B2 ;
+        // workspace: Iwork (max (B->nrow,B->ncol))
+        B2 = CHOLMOD(copy) (B, 0, mode, Common) ;
+        if (Common->status < CHOLMOD_OK)
+        {
+            // out of memory
+            CHOLMOD(free_sparse) (&A2, Common) ;
+            ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
+            return (NULL) ;
+        }
+        B = B2 ;
     }
 
     ASSERT (CHOLMOD(dump_sparse) (A, "A", Common) >= 0) ;
     ASSERT (CHOLMOD(dump_sparse) (B, "B", Common) >= 0) ;
 
-    /* get the A matrix */
-    Ap  = A->p ;
-    Anz = A->nz ;
-    Ai  = A->i ;
-    Ax  = A->x ;
-    apacked = A->packed ;
+    // get the A matrix
+    Int *Ap  = A->p ;
+    Int *Anz = A->nz ;
+    Int *Ai  = A->i ;
+    bool apacked = A->packed ;
 
-    /* get the B matrix */
-    Bp  = B->p ;
-    Bnz = B->nz ;
-    Bi  = B->i ;
-    Bx  = B->x ;
-    bpacked = B->packed ;
+    // get the B matrix
+    Int *Bp  = B->p ;
+    Int *Bnz = B->nz ;
+    Int *Bi  = B->i ;
+    bool bpacked = B->packed ;
 
-    /* get the size of C */
-    nrow = A->nrow ;
-    ncol = B->ncol ;
+    // get the size of C
+    Int nrow = A->nrow ;
+    Int ncol = B->ncol ;
 
-    /* get workspace */
-    W = Common->Xwork ;		/* size nrow, unused if values is FALSE */
-    Flag = Common->Flag ;	/* size nrow, Flag [0..nrow-1] < mark on input*/
+    // get workspace
+    void *W = Common->Xwork ;   // size nrow, unused if values is false
+    Int *Flag = Common->Flag ;  // size nrow, Flag [0..nrow-1] < mark on input
 
-    /* ---------------------------------------------------------------------- */
-    /* count the number of entries in the result C */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // count the number of entries in the result C
+    //--------------------------------------------------------------------------
 
-    cnz = 0 ;
-    for (j = 0 ; j < ncol ; j++)
+    int ok = TRUE ;
+    size_t cnz = 0 ;
+    size_t cnzmax = SIZE_MAX - A->nrow ;
+    for (Int j = 0 ; ok && (j < ncol) ; j++)
     {
-	/* clear the Flag array */
-	/* mark = CHOLMOD(clear_flag) (Common) ; */
-	CLEAR_FLAG (Common) ;
-	mark = Common->mark ;
+        // clear the Flag array
+        CLEAR_FLAG (Common) ;
+        Int mark = Common->mark ;
 
-	/* for each nonzero B(t,j) in column j, do: */
-	pb = Bp [j] ;
-	pbend = (bpacked) ? (Bp [j+1]) : (pb + Bnz [j]) ;
-	for ( ; pb < pbend ; pb++)
-	{
-	    /* B(t,j) is nonzero */
-	    t = Bi [pb] ;
+        // for each nonzero B(k,j) in column j, do:
+        Int pb = Bp [j] ;
+        Int pbend = (bpacked) ? (Bp [j+1]) : (pb + Bnz [j]) ;
+        for ( ; pb < pbend ; pb++)
+        {
+            // B(k,j) is nonzero
+            Int k = Bi [pb] ;
 
-	    /* add the nonzero pattern of A(:,t) to the pattern of C(:,j) */
-	    pa = Ap [t] ;
-	    paend = (apacked) ? (Ap [t+1]) : (pa + Anz [t]) ;
-	    for ( ; pa < paend ; pa++)
-	    {
-		i = Ai [pa] ;
-		if (Flag [i] != mark)
-		{
-		    Flag [i] = mark ;
-		    cnz++ ;
-		}
-	    }
-	}
-	if (cnz < 0)
-	{
-	    break ;	    /* integer overflow case */
-	}
+            // add the nonzero pattern of A(:,k) to the pattern of C(:,j)
+            Int pa = Ap [k] ;
+            Int paend = (apacked) ? (Ap [k+1]) : (pa + Anz [k]) ;
+            for ( ; pa < paend ; pa++)
+            {
+                Int i = Ai [pa] ;
+                if (Flag [i] != mark)
+                {
+                    Flag [i] = mark ;
+                    cnz++ ;
+                }
+            }
+        }
+        ok = (cnz < cnzmax) ;
     }
 
-    /* mark = CHOLMOD(clear_flag) (Common) ; */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    mark = Common->mark ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check for integer overflow */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // allocate C
+    //--------------------------------------------------------------------------
 
-    if (cnz < 0)
-    {
-	ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
-	CHOLMOD(free_sparse) (&A2, Common) ;
-	CHOLMOD(free_sparse) (&B2, Common) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
-	return (NULL) ;
-    }
-
-    /* ---------------------------------------------------------------------- */
-    /* Determine how to return C sorted (if requested) */
-    /* ---------------------------------------------------------------------- */
-
-    do_swap_and_transpose = FALSE ;
-
-    if (sorted)
-    {
-	/* Determine the best way to return C with sorted columns.  Computing
-	 * C = (B'*A')' takes cnz + anz + bnz time (ignoring O(n) terms).
-	 * Sorting C when done, C = (A*B)'', takes 2*cnz time.  Pick the one
-	 * with the least amount of work. */
-
-	anz = CHOLMOD(nnz) (A, Common) ;
-	bnz = CHOLMOD(nnz) (B, Common) ;
-
-	do_swap_and_transpose = (anz + bnz < cnz) ;
-
-	if (do_swap_and_transpose)
-	{
-
-	    /* -------------------------------------------------------------- */
-	    /* C = (B'*A')' */
-	    /* -------------------------------------------------------------- */
-
-	    /* workspace: Iwork (A->nrow) */
-	    A3 = CHOLMOD(ptranspose) (A, values, NULL, NULL, 0, Common) ;
-	    CHOLMOD(free_sparse) (&A2, Common) ;
-	    A2 = A3 ;
-	    if (Common->status < CHOLMOD_OK)
-	    {
-		/* out of memory */
-		CHOLMOD(free_sparse) (&A2, Common) ;
-		CHOLMOD(free_sparse) (&B2, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
-		return (NULL) ;
-	    }
-	    /* workspace: Iwork (B->nrow) */
-	    B3 = CHOLMOD(ptranspose) (B, values, NULL, NULL, 0, Common) ;
-	    CHOLMOD(free_sparse) (&B2, Common) ;
-	    B2 = B3 ;
-	    if (Common->status < CHOLMOD_OK)
-	    {
-		/* out of memory */
-		CHOLMOD(free_sparse) (&A2, Common) ;
-		CHOLMOD(free_sparse) (&B2, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
-		return (NULL) ;
-	    }
-	    A = B2 ;
-	    B = A2 ;
-
-	    /* get the new A matrix */
-	    Ap  = A->p ;
-	    Anz = A->nz ;
-	    Ai  = A->i ;
-	    Ax  = A->x ;
-	    apacked = A->packed ;
-
-	    /* get the new B matrix */
-	    Bp  = B->p ;
-	    Bnz = B->nz ;
-	    Bi  = B->i ;
-	    Bx  = B->x ;
-	    bpacked = B->packed ;
-
-	    /* get the size of C' */
-	    nrow = A->nrow ;
-	    ncol = B->ncol ;
-	}
-    }
-
-    /* ---------------------------------------------------------------------- */
-    /* allocate C */
-    /* ---------------------------------------------------------------------- */
-
-    C = CHOLMOD(allocate_sparse) (nrow, ncol, cnz, FALSE, TRUE, 0,
-	    values ? A->xtype : CHOLMOD_PATTERN, Common) ;
+    C = CHOLMOD(allocate_sparse) (nrow, ncol, ok ? cnz : SIZE_MAX, FALSE, TRUE,
+        0, (values ? A->xtype : CHOLMOD_PATTERN) + A->dtype, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
-	/* out of memory */
-	CHOLMOD(free_sparse) (&A2, Common) ;
-	CHOLMOD(free_sparse) (&B2, Common) ;
-	ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
-	return (NULL) ;
+        // out of memory
+        CHOLMOD(free_sparse) (&A2, Common) ;
+        CHOLMOD(free_sparse) (&B2, Common) ;
+        ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
+        return (NULL) ;
     }
 
-    Cp = C->p ;
-    Ci = C->i ;
-    Cx = C->x ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* C = A*B */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // C = A*B
+    //--------------------------------------------------------------------------
 
-    cnz = 0 ;
-
-    if (values)
+    switch ((C->xtype + C->dtype) % 8)
     {
+        default:
+            p_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-	/* pattern and values */
-	for (j = 0 ; j < ncol ; j++)
-	{
-	    /* clear the Flag array */
-	    /* mark = CHOLMOD(clear_flag (Common)) ; */
-	    CLEAR_FLAG (Common) ;
-	    mark = Common->mark ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-	    /* start column j of C */
-	    Cp [j] = cnz ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-	    /* for each nonzero B(t,j) in column j, do: */
-	    pb = Bp [j] ;
-	    pbend = (bpacked) ? (Bp [j+1]) : (pb + Bnz [j]) ;
-	    for ( ; pb < pbend ; pb++)
-	    {
-		/* B(t,j) is nonzero */
-		t = Bi [pb] ;
-		bjt = Bx [pb] ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-		/* add the nonzero pattern of A(:,t) to the pattern of C(:,j)
-		 * and scatter the values into W */
-		pa = Ap [t] ;
-		paend = (apacked) ? (Ap [t+1]) : (pa + Anz [t]) ;
-		for ( ; pa < paend ; pa++)
-		{
-		    i = Ai [pa] ;
-		    if (Flag [i] != mark)
-		    {
-			Flag [i] = mark ;
-			Ci [cnz++] = i ;
-		    }
-		    W [i] += Ax [pa] * bjt ;
-		}
-	    }
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-	    /* gather the values into C(:,j) */
-	    for (p = Cp [j] ; p < cnz ; p++)
-	    {
-		i = Ci [p] ;
-		Cx [p] = W [i] ;
-		W [i] = 0 ;
-	    }
-	}
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
 
-    }
-    else
-    {
-
-	/* pattern only */
-	for (j = 0 ; j < ncol ; j++)
-	{
-	    /* clear the Flag array */
-	    /* mark = CHOLMOD(clear_flag) (Common) ; */
-	    CLEAR_FLAG (Common) ;
-	    mark = Common->mark ;
-
-	    /* start column j of C */
-	    Cp [j] = cnz ;
-
-	    /* for each nonzero B(t,j) in column j, do: */
-	    pb = Bp [j] ;
-	    pbend = (bpacked) ? (Bp [j+1]) : (pb + Bnz [j]) ;
-	    for ( ; pb < pbend ; pb++)
-	    {
-		/* B(t,j) is nonzero */
-		t = Bi [pb] ;
-
-		/* add the nonzero pattern of A(:,t) to the pattern of C(:,j) */
-		pa = Ap [t] ;
-		paend = (apacked) ? (Ap [t+1]) : (pa + Anz [t]) ;
-		for ( ; pa < paend ; pa++)
-		{
-		    i = Ai [pa] ;
-		    if (Flag [i] != mark)
-		    {
-			Flag [i] = mark ;
-			Ci [cnz++] = i ;
-		    }
-		}
-	    }
-	}
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_ssmult_worker (C, A, B, Common) ;
+            break ;
     }
 
-    Cp [ncol] = cnz ;
-    ASSERT (MAX (1,cnz) == C->nzmax) ;
-
-    /* ---------------------------------------------------------------------- */
-    /* clear workspace and free temporary matrices */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // clear workspace and free temporary matrices
+    //--------------------------------------------------------------------------
 
     CHOLMOD(free_sparse) (&A2, Common) ;
     CHOLMOD(free_sparse) (&B2, Common) ;
-    /* CHOLMOD(clear_flag) (Common) ; */
     CLEAR_FLAG (Common) ;
     ASSERT (check_flag (Common)) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* convert C to a symmetric upper/lower matrix if requested */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // convert C to a symmetric upper/lower matrix if requested
+    //--------------------------------------------------------------------------
 
-    /* convert C in place, which cannot fail since no memory is allocated */
+    // convert C in place, which cannot fail since no memory is allocated
     if (stype > 0)
     {
-	/* C = triu (C), in place */
-	(void) CHOLMOD(band_inplace) (0, ncol, values, C, Common) ;
-	C->stype = 1 ;
+        // C = triu (C), in place
+        (void) CHOLMOD(band_inplace) (0, ncol, values, C, Common) ;
+        C->stype = 1 ;
     }
     else if (stype < 0)
     {
-	/* C = tril (C), in place */
-	(void) CHOLMOD(band_inplace) (-nrow, 0, values, C, Common) ;
-	C->stype = -1 ;
+        // C = tril (C), in place
+        (void) CHOLMOD(band_inplace) (-nrow, 0, values, C, Common) ;
+        C->stype = -1 ;
     }
     ASSERT (Common->status >= CHOLMOD_OK) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* sort C, if requested */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // sort C, if requested
+    //--------------------------------------------------------------------------
 
     if (sorted)
     {
-	if (do_swap_and_transpose)
-	{
-	    /* workspace: Iwork (C->ncol), which is A->nrow since C=(B'*A') */
-	    C2 = CHOLMOD(ptranspose) (C, values, NULL, NULL, 0, Common) ;
-	    CHOLMOD(free_sparse) (&C, Common) ;
-	    if (Common->status < CHOLMOD_OK)
-	    {
-		/* out of memory */
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
-		return (NULL) ;
-	    }
-	    C = C2 ;
-	}
-	else
-	{
-	    /* workspace: Iwork (max (C->nrow,C->ncol)) */
-	    if (!CHOLMOD(sort) (C, Common))
-	    {
-		/* out of memory */
-		CHOLMOD(free_sparse) (&C, Common) ;
-		ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common));
-		return (NULL) ;
-	    }
-	}
+        // this cannot fail (no workspace; sort is done in-place)
+        CHOLMOD(sort) (C, Common) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* return result */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // return result
+    //--------------------------------------------------------------------------
 
     ASSERT (CHOLMOD(dump_sparse) (C, "ssmult", Common) >= 0) ;
-    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, values ? n1:0, Common)) ;
+    ASSERT (CHOLMOD(dump_work) (TRUE, TRUE, nw, A->dtype, Common)) ;
     return (C) ;
 }
+
 #endif
 #endif
+

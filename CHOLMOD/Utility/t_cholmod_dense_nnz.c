@@ -39,6 +39,7 @@
 
 int64_t CHOLMOD(dense_nnz)      // return # of entries in the dense matrix
 (
+    // input:
     cholmod_dense *X,       // input matrix
     cholmod_common *Common
 )
@@ -60,29 +61,28 @@ int64_t CHOLMOD(dense_nnz)      // return # of entries in the dense matrix
     int xnz = 0 ;
     switch ((X->xtype + X->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            xnz = r_s_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            xnz = rs_cholmod_dense_nnz_worker (X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            xnz = c_s_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            xnz = cs_cholmod_dense_nnz_worker (X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            xnz = z_s_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            xnz = zs_cholmod_dense_nnz_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            xnz = r_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            xnz = rd_cholmod_dense_nnz_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            xnz = c_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            xnz = cd_cholmod_dense_nnz_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            xnz = z_cholmod_dense_nnz_worker (X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            xnz = zd_cholmod_dense_nnz_worker (X) ;
             break ;
     }
 

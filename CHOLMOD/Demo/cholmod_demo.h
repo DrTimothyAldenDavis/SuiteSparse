@@ -2,7 +2,7 @@
 // CHOLMOD/Demo/cholmod_demo.h: include file for CHOLMOD demos
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis,
+// CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
