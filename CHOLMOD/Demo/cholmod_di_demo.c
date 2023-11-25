@@ -55,6 +55,8 @@ static void my_handler (int status, const char *file, int line,
     }
 }
 
+#include <unistd.h>
+
 int main (int argc, char **argv)
 {
     double
@@ -85,12 +87,20 @@ int main (int argc, char **argv)
     // get the file containing the input matrix
     //--------------------------------------------------------------------------
 
+    char cwd [PATH_MAX] ;
+    if (getcwd (cwd, PATH_MAX) != NULL)
+    {
+        fprintf (stderr, "cwd: %s\n", cwd) ;
+        printf ("cwd: %s\n", cwd) ;
+    }
+
     ff = NULL ;
     prefer_zomplex = 0 ;
     if (argc > 1)
     {
         if ((f = fopen (argv [1], "r")) == NULL)
         {
+
             my_handler (CHOLMOD_INVALID, __FILE__, __LINE__,
                     "unable to open file") ;
         }
