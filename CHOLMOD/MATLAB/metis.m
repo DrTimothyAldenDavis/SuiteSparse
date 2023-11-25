@@ -18,7 +18,7 @@ function p = metis (A, mode)                                          %#ok
 %
 % See also nesdis, bisect.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('metis mexFunction not found') ;

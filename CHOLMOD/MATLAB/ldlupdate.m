@@ -36,6 +36,7 @@ function LD = ldlupdate (LD,C,updown)                                 %#ok
 % ========================================================================
 % ============================ WARNING ===================================
 % ========================================================================
+%
 % MATLAB drops zero entries from its sparse matrices.  LD can contain
 % numerically zero entries that are symbolically present in the sparse
 % matrix data structure.  These are essential for ldlupdate and ldlsolve
@@ -47,10 +48,9 @@ function LD = ldlupdate (LD,C,updown)                                 %#ok
 % MATLAB).  It takes much more time to ensure this property holds than
 % the time it takes to do the update/downdate or the solve, so ldlupdate
 % and ldlsolve simply assume the propertly holds.
-% ========================================================================
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlupdate mexFunction not found') ;
 

@@ -15,7 +15,7 @@ function x = ldlsolve (LD,b)                                          %#ok
 %
 % See also ldlchol, ldlupdate, ldlsplit, ldlrowmod.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlsolve mexFunction not found') ;

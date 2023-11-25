@@ -12,8 +12,8 @@ function cholmod_make
 %   ldlsolve, ldlupdate, metis, spsym, nesdis, septree, resymbol, sdmult,
 %   symbfact2, mread, mwrite, ldlrowmod.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 if verLessThan ('matlab', '9.4')
     error ('MATLAB 9.4 (R2018a) or later is required') ;
@@ -32,7 +32,7 @@ catch
     mac = 0 ;
 end
 
-% -R2018a: interleaved complex is required
+ % -R2018a: interleaved complex is required
 flags = '-O -R2018a -silent ' ;
 
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
@@ -42,7 +42,7 @@ if (~pc)
     include = [include ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
 end
 
-% Determine if METIS is available
+ % Determine if METIS is available
 have_metis = exist ('../SuiteSparse_metis', 'dir') ;
 
 if (have_metis)
@@ -55,12 +55,12 @@ else
     include = ['-DNPARTITION ' include] ;
 end
 
-%---------------------------------------------------------------------------
-% BLAS option
-%---------------------------------------------------------------------------
+ %---------------------------------------------------------------------------
+ % BLAS option
+ %---------------------------------------------------------------------------
 
-% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
-% find the LAPACK and BLAS libraries, which is a real portability nightmare.
+ % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
+ % find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
 if (pc)
     % BLAS/LAPACK functions have no underscore on Windows
@@ -76,7 +76,7 @@ else
     lapack = '-lmwlapack -lmwblas' ;
 end
 
-% using the 64-bit BLAS
+ % using the 64-bit BLAS
 flags = [flags ' -DBLAS64'] ;
 
 if (~(pc || mac))
@@ -84,7 +84,7 @@ if (~(pc || mac))
     lapack = [lapack ' -lrt'] ;
 end
 
-%-------------------------------------------------------------------------------
+ %------------------------------------------------------------------------------
 
 config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
@@ -253,7 +253,7 @@ else
     obj_extension = '.o' ;
 end
 
-% compile each library source file
+ % compile each library source file
 obj = '' ;
 
 source = [sputil2 ordering_src config_src cholmod_src ] ;
@@ -276,21 +276,21 @@ for f = source
     kk = do_cmd (s, kk, details, '.') ;
 end
 
-% compile each mexFunction
+ % compile each mexFunction
 for f = cholmod_mex_src
     s = sprintf ('mex %s %s %s.c', flags, include, f{1}) ;
     s = [s obj ' ' lapack] ;                                                %#ok
     kk = do_cmd (s, kk, details, ':') ;
 end
 
-% clean up
+ % clean up
 s = ['delete ' obj] ;
 do_cmd (s, kk, details, '.') ;
 fprintf ('\nCHOLMOD successfully compiled\n') ;
 
-%------------------------------------------------------------------------------
+ %-----------------------------------------------------------------------------
 function kk = do_cmd (s, kk, details, progress)
-%DO_CMD: evaluate a command, and either print it or print a "."
+ %DO_CMD: evaluate a command, and either print it or print a "."
 if (details)
     fprintf ('%s\n', s) ;
 else

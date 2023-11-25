@@ -8,8 +8,8 @@ function graph_demo (n)
 %
 % See also delsq, numgrid, gplot, treeplot.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 if (nargin < 1)
     % construct a 60-by-60 grid
@@ -90,8 +90,7 @@ for regions = {'Square', 'C' 'Disc', 'Annulus', 'Heart', 'Butterfly', 'L'}
     end
 end
 
-function my_gplot (A, x, y)
-% my_gplot : like gplot, just a lot faster
+function my_gplot (A, x, y) % like gplot, just a lot faster
 [i, j] = find (A) ;
 [~, p] = sort (max(i, j)) ;
 i = i (p) ;

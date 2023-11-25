@@ -20,7 +20,7 @@ function [A, Z] = mread (filename,prefer_binary)                      %#ok
 %
 % See also load.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('mread mexFunction not found') ;

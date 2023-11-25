@@ -15,7 +15,7 @@ function [R,p,q] = chol2 (A)                                          %#ok
 %
 % See also lchol, ldlchol, chol, ldlupdate.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('chol2 mexFunction not found') ;

@@ -422,7 +422,7 @@ static void TEMPLATE (cholmod_sdmult_worker)
     {
 
         //----------------------------------------------------------------------
-        // Y += alpha * (A or A') * x, symmetric case (upper/lower)
+        // Y += alpha * A * x, symmetric case (upper/lower)
         //----------------------------------------------------------------------
 
         // Only the upper/lower triangular part and the diagonal of A is used.

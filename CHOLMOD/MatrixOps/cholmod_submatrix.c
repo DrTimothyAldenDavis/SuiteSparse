@@ -95,7 +95,7 @@ cholmod_sparse *CHOLMOD(submatrix)  // return C = A (rset,cset)
     int64_t rsize,      // size of rset, or -1 for ":"
     Int *cset,          // set of column indices, duplicates OK
     int64_t csize,      // size of cset, or -1 for ":"
-    int mode,           // 2: numerical (conj) if A is symmetric, NEW
+    int mode,           // 2: numerical (conj) if A is symmetric,
                         // 1: numerical (non-conj.) if A is symmetric
                         // 0: pattern
     int sorted,         // if TRUE then return C with sorted columns

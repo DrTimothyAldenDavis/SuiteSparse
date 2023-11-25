@@ -11,22 +11,22 @@ function cholmod_demo
 % Example:
 %   cholmod_demo
 %
-% See also bench
+% See also bench.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 help cholmod_demo
 
-% matrix from bench (n = 600 is used in 'bench'):
+ % matrix from bench (n = 600 is used in 'bench'):
 for n = [600 1200]
     A = delsq (numgrid ('L', n)) ;
     try_matrix (A) ;
 end
 
-%-------------------------------------------------------------------------
+ %-------------------------------------------------------------------------
 function try_matrix (A)
-% try_matrix: try a matrix with CHOLMOD
+ % try_matrix: try a matrix with CHOLMOD
 
 n = size (A,1) ;
 S = sparse (A) ;
@@ -75,7 +75,7 @@ t3 = toc ;
 fprintf ('CHOLMOD ldlupdate(sparse(A),C) time: %6.2f (rank-1, C dense)\n', t3) ;
 
 [L,D] = ldlsplit (LD2) ;
-% err = norm ((S+C*C') - L*D*L', 1) / norm (S,1) ;
+ % err = norm ((S+C*C') - L*D*L', 1) / norm (S,1) ;
 err = ldl_normest ((S+C*C'), L, D) / norm (S,1) ;
 fprintf ('err: %g\n', err) ;
 
@@ -89,13 +89,13 @@ S2 = S ;
 I = speye (n) ;
 S2 (k,:) = I (k,:) ;
 S2 (:,k) = I (:,k) ;
-% err = norm (S2 - L*D*L', 1) / norm (S,1) ;
+ % err = norm (S2 - L*D*L', 1) / norm (S,1) ;
 err = ldl_normest (S2, L, D) / norm (S,1) ;
 fprintf ('err: %g\n', err) ;
 
 LD4 = ldlchol (S2) ;
 [L,D] = ldlsplit (LD4) ;
-% err = norm (S2 - L*D*L', 1) / norm (S,1) ;
+ % err = norm (S2 - L*D*L', 1) / norm (S,1) ;
 err = ldl_normest (S2, L, D) / norm (S,1) ;
 fprintf ('err: %g\n', err) ;
 
@@ -129,7 +129,7 @@ if (n > 4000)
     return ;
 end
 
-% tests with full matrices:
+ % tests with full matrices:
 X = full (C) ;
 E = full (A) ;
 tic

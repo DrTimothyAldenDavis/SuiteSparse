@@ -58,9 +58,9 @@ function [p, count] = analyze (A, mode, k)                            %#ok
 %       k = 9: also try COLAMD if ordering A'*A or A*A', AMD if ordering A
 %       k > 9 is treated as k = 9
 %
-% See also metis, nesdis, bisect, symbfact, amd
+% See also metis, nesdis, bisect, symbfact, amd.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('analyze mexFunction not found') ;

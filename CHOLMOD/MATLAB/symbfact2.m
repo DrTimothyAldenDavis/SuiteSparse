@@ -42,8 +42,8 @@ function [count, h, parent, post, L] = symbfact2 (A, mode, Lmode)     %#ok
 %
 % See also chol, etree, treelayout, symbfact.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('symbfact2 mexFunction not found!') ;
 

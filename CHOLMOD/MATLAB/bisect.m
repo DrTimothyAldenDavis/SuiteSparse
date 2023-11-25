@@ -17,9 +17,9 @@ function p = bisect (A, mode)                                         %#ok
 % Requires METIS, authored by George Karypis, Univ. of Minnesota.  This
 % MATLAB interface, via CHOLMOD, is by Tim Davis.
 %
-% See also metis, nesdis
+% See also metis, nesdis.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('bisect mexFunction not found') ;

@@ -37,6 +37,7 @@ function LD = ldlrowmod (LD,k,C)                                      %#ok
 % ========================================================================
 % ============================ WARNING ===================================
 % ========================================================================
+%
 % MATLAB drops zero entries from its sparse matrices.  LD can contain
 % numerically zero entries that are symbolically present in the sparse
 % matrix data structure.  These are essential for ldlrowmod and ldlsolve
@@ -48,10 +49,9 @@ function LD = ldlrowmod (LD,k,C)                                      %#ok
 % MATLAB).  It takes much more time to ensure this property holds than
 % the time it takes to do the row add/delete or the solve, so ldlrowmod
 % and ldlsolve simply assume the propertly holds.
-% ========================================================================
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlrowmod mexFunction not found') ;
 

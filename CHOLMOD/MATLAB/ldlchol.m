@@ -9,8 +9,7 @@ function [LD,p,q] = ldlchol (A,beta)                                  %#ok
 %   [LD,p] = ldlchol (A)        similar [R,p] = chol(A), but for L*D*L'
 %   [LD,p,q] = ldlchol (A)      factorizes A(q,q) into L*D*L', where q is
 %                               a fill-reducing ordering
-%   LD = ldlchol (A,beta)       return the LDL' factorization of
-%                               A*A'+beta*I
+%   LD = ldlchol (A,beta)       LDL' factorization of A*A'+beta*I
 %   [LD,p] = ldlchol (A,beta)   like [R,p] = chol(A*A'+beta+I)
 %   [LD,p,q] = ldlchol (A,beta) factorizes A(q,:)*A(q,:)'+beta*I = L*D*L'
 %
@@ -35,7 +34,7 @@ function [LD,p,q] = ldlchol (A,beta)                                  %#ok
 %
 % See also ldlupdate, ldlsolve, ldlsplit, chol2, lchol, chol.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlchol mexFunction not found') ;

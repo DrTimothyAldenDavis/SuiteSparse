@@ -51,7 +51,7 @@ function [p, cparent, cmember] = nesdis (A, mode, opts)               %#ok
 %
 % See also metis, bisect, amd.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('nesdis mexFunction not found') ;

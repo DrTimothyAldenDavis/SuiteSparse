@@ -12,8 +12,8 @@ function [L,p,q] = lchol (A)                                          %#ok
 %
 % See also chol2, ldlchol, chol.
 
-% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('lchol mexFunction not found') ;
 
