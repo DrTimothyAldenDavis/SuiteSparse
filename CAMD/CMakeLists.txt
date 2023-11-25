@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( CAMD_DATE "Sept 18, 2023" )
+set ( CAMD_DATE "Nov 30, 2023" )
 set ( CAMD_VERSION_MAJOR 3 )
 set ( CAMD_VERSION_MINOR 2 )
-set ( CAMD_VERSION_SUB   1 )
+set ( CAMD_VERSION_SUB   2 )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -42,10 +42,10 @@ project ( camd
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.4.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.4.0 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------

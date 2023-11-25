@@ -1124,7 +1124,7 @@ int CHOLMOD(change_factor)
     int to_xtype,       // CHOLMOD_PATTERN, _REAL, _COMPLEX, or _ZOMPLEX
     int to_ll,          // if true: convert to LL'; else to LDL'
     int to_super,       // if true: convert to supernodal; else to simplicial
-    int to_packed,      // if true: pack simplicial columns' else: do not pack
+    int to_packed,      // if true: pack simplicial columns; else: do not pack
     int to_monotonic,   // if true, put simplicial columns in order
     cholmod_factor *L,  // factor to change
     cholmod_common *Common

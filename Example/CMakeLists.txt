@@ -12,10 +12,10 @@
 cmake_minimum_required ( VERSION 3.20 )
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Oct 23, 2023" )
+set ( MY_DATE "Nov 30, 2023" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 4 )
-set ( MY_VERSION_PATCH 3 )
+set ( MY_VERSION_PATCH 4 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -61,13 +61,13 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.3.0 REQUIRED )
-find_package ( AMD 3.2.1 REQUIRED )
+find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+find_package ( AMD 3.2.2 REQUIRED )
 find_package ( BTF 2.2.1 REQUIRED )
-find_package ( CAMD 3.2.1 REQUIRED )
+find_package ( CAMD 3.2.2 REQUIRED )
 find_package ( CCOLAMD 3.2.1 REQUIRED )
 find_package ( COLAMD 3.2.1 REQUIRED )
-find_package ( CHOLMOD 5.0.0 REQUIRED )
+find_package ( CHOLMOD 5.1.0 REQUIRED )
 find_package ( CXSparse 4.2.1 REQUIRED )
 find_package ( GraphBLAS 8.2.1 )
 find_package ( KLU 2.2.2 REQUIRED )
