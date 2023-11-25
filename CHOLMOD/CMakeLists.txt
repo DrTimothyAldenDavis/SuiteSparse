@@ -90,10 +90,10 @@ if ( NOT TARGET SuiteSparse::COLAMD )
     find_package ( COLAMD 3.2.1 REQUIRED )
 endif ( )
 
-find_package ( AMD 3.2.1
+find_package ( AMD 3.2.2
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.1 REQUIRED )
+    find_package ( AMD 3.2.2 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -196,10 +196,10 @@ endif ( )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.2.1
+        find_package ( CAMD 3.2.2
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.2.1 )
+            find_package ( CAMD 3.2.2 )
         endif ( )
 
         find_package ( CCOLAMD 3.2.1
