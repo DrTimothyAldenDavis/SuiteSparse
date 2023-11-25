@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLMOD/CMakeLists.txt:  cmake for CHOLMOD
 #-------------------------------------------------------------------------------
 
-# CHOLMOD: Copyright (c) 2005-2022, Timothy A. Davis.
+# CHOLMOD: Copyright (c) 2005-2023, Timothy A. Davis.
 # Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Oct 31, 2023" )
+set ( CHOLMOD_DATE "Nov 30, 2023" )
 set ( CHOLMOD_VERSION_MAJOR 5 )
-set ( CHOLMOD_VERSION_MINOR 0 )
-set ( CHOLMOD_VERSION_SUB   1 )
+set ( CHOLMOD_VERSION_MINOR 1 )
+set ( CHOLMOD_VERSION_SUB   0 )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -90,10 +90,10 @@ if ( NOT TARGET SuiteSparse::COLAMD )
     find_package ( COLAMD 3.2.1 REQUIRED )
 endif ( )
 
-find_package ( AMD 3.2.1
+find_package ( AMD 3.2.2
     PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::AMD )
-    find_package ( AMD 3.2.1 REQUIRED )
+    find_package ( AMD 3.2.2 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -196,10 +196,10 @@ endif ( )
 
     if ( NOT NCAMD )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.2.1
+        find_package ( CAMD 3.2.2
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.2.1 )
+            find_package ( CAMD 3.2.2 )
         endif ( )
 
         find_package ( CCOLAMD 3.2.1
@@ -616,8 +616,10 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." on )
 if ( DEMO )
+
+    enable_testing ( )
 
     #---------------------------------------------------------------------------
     # demo library
@@ -629,9 +631,15 @@ if ( DEMO )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( cholmod_demo   "Demo/cholmod_demo.c" )
-    add_executable ( cholmod_l_demo "Demo/cholmod_l_demo.c" )
-    add_executable ( cholmod_simple "Demo/cholmod_simple.c" )
+    add_executable ( cholmod_di_demo    "Demo/cholmod_di_demo.c" )
+    add_executable ( cholmod_dl_demo    "Demo/cholmod_dl_demo.c" )
+    add_executable ( cholmod_si_demo    "Demo/cholmod_si_demo.c" )
+    add_executable ( cholmod_sl_demo    "Demo/cholmod_sl_demo.c" )
+
+    add_executable ( cholmod_di_simple  "Demo/cholmod_di_simple.c" )
+    add_executable ( cholmod_dl_simple  "Demo/cholmod_dl_simple.c" )
+    add_executable ( cholmod_si_simple  "Demo/cholmod_si_simple.c" )
+    add_executable ( cholmod_sl_simple  "Demo/cholmod_sl_simple.c" )
 
     if ( NOT NFORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
@@ -640,18 +648,84 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( cholmod_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_demo PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
-    target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_l_demo PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
-    target_link_libraries ( cholmod_simple PUBLIC CHOLMOD )
+    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_simple PUBLIC CHOLMOD_CUDA )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_CUDA )
     endif ( )
+    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_CUDA )
+    endif ( )
+
+    target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA )
+    endif ( )
+    target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+    if ( SUITESPARSE_CUDA )
+        target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA )
+    endif ( )
+
+    add_test ( NAME int32_double_bcsstk01
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int64_double_bcsstk01
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int32_single_bcsstk01
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME int64_single_bcsstk01
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+
+    add_test ( NAME int32_double_lp_afiro
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int64_double_lp_afiro
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int32_single_lp_afiro
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME int64_single_lp_afiro
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+
+    add_test ( NAME int32_double_can24
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int64_double_can24
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int32_single_can24
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME int64_single_can24
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+
+    add_test ( NAME int32_double_complex
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int64_double_complex
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int32_single_complex
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME int64_single_complex
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+
+    add_test ( NAME int32_double_supernodal
+        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int64_double_supernodal
+        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int32_single_supernodal
+        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME int64_single_supernodal
+        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 
 else ( )
 

@@ -25,6 +25,7 @@
 
 cholmod_factor *CHOLMOD(alloc_factor)       // return the new factor L
 (
+    // input:
     size_t n,               // L is factorization of an n-by-n matrix
     int dtype,              // CHOLMOD_SINGLE or CHOLMOD_DOUBLE
     cholmod_common *Common

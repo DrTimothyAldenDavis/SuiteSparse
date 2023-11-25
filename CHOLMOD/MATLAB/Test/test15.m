@@ -4,7 +4,7 @@ function test15 (nmat)
 %   test15(nmat)
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -32,119 +32,119 @@ for i = f
 
     % try
 
-	Problem = ssget (i) ;
-	A = spones (Problem.A) ;
-	[m n] = size (A) ;
-	fprintf ('\n%4d: %-20s nrow: %6d ncol: %6d nnz: %10d\n', ...
-	    i, Problem.name, m, n, nnz(A)) ;
+        Problem = ssget (i) ;
+        A = spones (Problem.A) ;
+        [m n] = size (A) ;
+        fprintf ('\n%4d: %-20s nrow: %6d ncol: %6d nnz: %10d\n', ...
+            i, Problem.name, m, n, nnz(A)) ;
 
-	% warmup, for accurate timing
-	etree (sparse (1)) ;
-	etree2 (sparse (1)) ;
-	amd2 (sparse (1)) ;
-	symbfact (sparse (1)) ;
-	symbfact2 (sparse (1)) ;
+        % warmup, for accurate timing
+        etree (sparse (1)) ;
+        etree2 (sparse (1)) ;
+        amd2 (sparse (1)) ;
+        symbfact (sparse (1)) ;
+        symbfact2 (sparse (1)) ;
 
-	% test symmetric case
-	if (m == n)
+        % test symmetric case
+        if (m == n)
 
-	    % permute the matrix first
-	    p = amd2 (A) ;
-	    A = A (p,p) ;
+            % permute the matrix first
+            p = amd2 (A) ;
+            A = A (p,p) ;
 
-	    % test with triu(A)
-	    tic
-	    co = symbfact (A) ;
-	    t1 = toc ;
-	    tic
-	    co2 = symbfact2 (A) ;
-	    t2 = toc ;
+            % test with triu(A)
+            tic
+            co = symbfact (A) ;
+            t1 = toc ;
+            tic
+            co2 = symbfact2 (A) ;
+            t2 = toc ;
 
-	    fprintf ('c=symbfact(A):         %10.4f %10.4f  speedup %8.2f lnz %d\n', ...
-		t1, t2, t1/t2, sum (co)) ;
+            fprintf ('c=symbfact(A):         %10.4f %10.4f  speedup %8.2f lnz %d\n', ...
+                t1, t2, t1/t2, sum (co)) ;
 
-	    if (any (co ~= co2))
-		error ('!') ;
-	    end
+            if (any (co ~= co2))
+                error ('!') ;
+            end
 
-	    tic
-	    [co h parent post R] = symbfact (A) ;
-	    t1 = toc ;
-	    tic
-	    [co2 h2 parent2 post2 R2] = symbfact2 (A) ;
-	    t2 = toc ;
+            tic
+            [co h parent post R] = symbfact (A) ;
+            t1 = toc ;
+            tic
+            [co2 h2 parent2 post2 R2] = symbfact2 (A) ;
+            t2 = toc ;
 
-	    fprintf ('R=symbfact(A):         %10.4f %10.4f  speedup %8.2f\n',...
-		t1, t2, t1/t2) ;
+            fprintf ('R=symbfact(A):         %10.4f %10.4f  speedup %8.2f\n',...
+                t1, t2, t1/t2) ;
 
-	    checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
+            checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
-	    % test with tril(A)
-	    tic
-	    co = symbfact (A') ;
-	    t1 = toc ;
-	    tic
-	    co2 = symbfact2 (A,'lo') ;
-	    t2 = toc ;
+            % test with tril(A)
+            tic
+            co = symbfact (A') ;
+            t1 = toc ;
+            tic
+            co2 = symbfact2 (A,'lo') ;
+            t2 = toc ;
 
-	    fprintf (...
-	    'c=symbfact(A''):        %10.4f %10.4f  speedup %8.2f lnz %d\n',...
-		t1, t2, t1/t2, sum (co)) ;
+            fprintf (...
+            'c=symbfact(A''):        %10.4f %10.4f  speedup %8.2f lnz %d\n',...
+                t1, t2, t1/t2, sum (co)) ;
 
-	    if (any (co ~= co2))
-		error ('!') ;
-	    end
+            if (any (co ~= co2))
+                error ('!') ;
+            end
 
-	    tic
-	    [co h parent post R] = symbfact (A') ;
-	    t1 = toc ;
-	    tic
-	    [co2 h2 parent2 post2 R2] = symbfact2 (A,'lo') ;
-	    t2 = toc ;
+            tic
+            [co h parent post R] = symbfact (A') ;
+            t1 = toc ;
+            tic
+            [co2 h2 parent2 post2 R2] = symbfact2 (A,'lo') ;
+            t2 = toc ;
 
-	    fprintf (...
-		'R=symbfact(A''):        %10.4f %10.4f  speedup %8.2f\n',...
-		t1, t2, t1/t2) ;
+            fprintf (...
+                'R=symbfact(A''):        %10.4f %10.4f  speedup %8.2f\n',...
+                t1, t2, t1/t2) ;
 
-	    checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
+            checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
-	end
+        end
 
-	% permute the matrix first
-	p = colamd (A) ;
-	[parent post] = etree2 (A (:,p), 'col') ;
-	p = p (post) ;
-	A = A (:,p) ;
+        % permute the matrix first
+        p = colamd (A) ;
+        [parent post] = etree2 (A (:,p), 'col') ;
+        p = p (post) ;
+        A = A (:,p) ;
 
-	% test column case
-	tic
-	co = symbfact (A,'col') ;
-	t1 = toc ;
-	tic
-	co2 = symbfact2 (A,'col') ;
-	t2 = toc ;
+        % test column case
+        tic
+        co = symbfact (A,'col') ;
+        t1 = toc ;
+        tic
+        co2 = symbfact2 (A,'col') ;
+        t2 = toc ;
 
-	fprintf ('c=symbfact(A,''col''):   %10.4f %10.4f  speedup %8.2f lnz %d\n', ...
-	    t1, t2, t1/t2, sum (co)) ;
+        fprintf ('c=symbfact(A,''col''):   %10.4f %10.4f  speedup %8.2f lnz %d\n', ...
+            t1, t2, t1/t2, sum (co)) ;
 
-	if (any (co ~= co2))
-	    error ('!') ;
-	end
+        if (any (co ~= co2))
+            error ('!') ;
+        end
 
-	tic
-	[co h parent post R] = symbfact (A,'col') ;
-	t1 = toc ;
-	tic
-	[co2 h2 parent2 post2 R2] = symbfact2 (A,'col') ;
-	t2 = toc ;
+        tic
+        [co h parent post R] = symbfact (A,'col') ;
+        t1 = toc ;
+        tic
+        [co2 h2 parent2 post2 R2] = symbfact2 (A,'col') ;
+        t2 = toc ;
 
-	fprintf ('R=symbfact(A,''col''):   %10.4f %10.4f  speedup %8.2f\n', ...
-	    t1, t2, t1/t2) ;
+        fprintf ('R=symbfact(A,''col''):   %10.4f %10.4f  speedup %8.2f\n', ...
+            t1, t2, t1/t2) ;
 
-	checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
+        checkem(co,co2,parent,parent2,post,post2,R,R2,h,h2) ;
 
 %    catch
-%    	fprintf ('%d failed\n', i) ;
+%       fprintf ('%d failed\n', i) ;
 %    end
 end
 

@@ -2,30 +2,29 @@
 // CHOLMOD/Include/cholmod_internal.h
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Include/cholmod_internal.h. Copyright (C) 2005-2022,
+// CHOLMOD/Include/cholmod_internal.h. Copyright (C) 2005-2023,
 // Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-/* CHOLMOD internal include file.
- *
- * This file contains internal definitions for CHOLMOD, not meant to be included
- * in user code.  They define macros that are not prefixed with CHOLMOD_.  This
- * file can safely #include'd in user code if you want to make use of the
- * macros defined here, and don't mind the possible name conflicts with your
- * code, however.
- *
- * Required by all CHOLMOD routines.  Not required by any user routine that
- * uses CHOLMOMD.  Unless debugging is enabled, this file does not require any
- * CHOLMOD module (not even the Utility module).
- *
- * If debugging is enabled, all CHOLMOD modules require the Check module.
- * Enabling debugging requires that this file be editted.  Debugging cannot be
- * enabled with a compiler flag.  This is because CHOLMOD is exceedingly slow
- * when debugging is enabled.  Debugging is meant for development of CHOLMOD
- * itself, not by users of CHOLMOD.
- */
+// CHOLMOD internal include file.
+//
+// This file contains internal definitions for CHOLMOD, not meant to be
+// included in user code.  They define macros that are not prefixed with
+// CHOLMOD_.  This file can safely #include'd in user code if you want to make
+// use of the macros defined here, and don't mind the possible name conflicts
+// with your code, however.
+//
+// Required by all CHOLMOD routines.  Not required by any user routine that
+// uses CHOLMOMD.  Unless debugging is enabled, this file does not require any
+// CHOLMOD module (not even the Utility module).
+//
+// If debugging is enabled, all CHOLMOD modules require the Check module.
+// Enabling debugging requires that this file be editted.  Debugging cannot be
+// enabled with a compiler flag.  This is because CHOLMOD is exceedingly slow
+// when debugging is enabled.  Debugging is meant for development of CHOLMOD
+// itself, not by users of CHOLMOD.
 
 #ifndef CHOLMOD_INTERNAL_H
 #define CHOLMOD_INTERNAL_H
@@ -33,43 +32,55 @@
 #define SUITESPARSE_BLAS_DEFINITIONS
 #include "cholmod.h"
 
-/* ========================================================================== */
-/* === debugging and basic includes ========================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// debugging and basic includes
+//------------------------------------------------------------------------------
 
-/* turn off debugging */
+// turn off debugging
 #ifndef NDEBUG
 #define NDEBUG
 #endif
 
-/* Uncomment this line to enable debugging.  CHOLMOD will be very slow.
-#undef NDEBUG
- */
+// Uncomment this line to enable debugging.  CHOLMOD will be very slow.
+// #undef NDEBUG
 
-/* ========================================================================== */
-/* === basic definitions ==================================================== */
-/* ========================================================================== */
+// Uncomment this line to get a summary of the time spent in the BLAS,
+// for development diagnostics only:
+// #define BLAS_TIMER
 
-/* Some non-conforming compilers insist on defining TRUE and FALSE. */
+// Uncomment this line to get a long dump as a text file (blas_dump.txt), that
+// records each call to the BLAS, for development diagnostics only:
+// #define BLAS_DUMP
+
+// if BLAS_DUMP is enabled, the BLAS_TIMER must also be enabled.
+#if defined ( BLAS_DUMP ) && ! defined ( BLAS_TIMER )
+#define BLAS_TIMER
+#endif
+
+//------------------------------------------------------------------------------
+// basic definitions
+//------------------------------------------------------------------------------
+
+// Some non-conforming compilers insist on defining TRUE and FALSE.
 #undef TRUE
 #undef FALSE
 #define TRUE 1
 #define FALSE 0
 
-/* NULL should already be defined, but ensure it is here. */
+// NULL should already be defined, but ensure it is here.
 #ifndef NULL
 #define NULL ((void *) 0)
 #endif
 
-/* FLIP is a "negation about -1", and is used to mark an integer i that is
- * normally non-negative.  FLIP (EMPTY) is EMPTY.  FLIP of a number > EMPTY
- * is negative, and FLIP of a number < EMTPY is positive.  FLIP (FLIP (i)) = i
- * for all integers i.  UNFLIP (i) is >= EMPTY. */
+// FLIP is a "negation about -1", and is used to mark an integer i that is
+// normally non-negative.  FLIP (EMPTY) is EMPTY.  FLIP of a number > EMPTY
+// is negative, and FLIP of a number < EMTPY is positive.  FLIP (FLIP (i)) = i
+// for all integers i.  UNFLIP (i) is >= EMPTY.
 #define EMPTY (-1)
 #define FLIP(i) (-(i)-2)
 #define UNFLIP(i) (((i) < EMPTY) ? FLIP (i) : (i))
 
-/* MAX and MIN are not safe to use for NaN's */
+// MAX and MIN are not safe to use for NaN's
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MAX3(a,b,c) (((a) > (b)) ? (MAX (a,c)) : (MAX (b,c)))
 #define MAX4(a,b,c,d) (((a) > (b)) ? (MAX3 (a,c,d)) : (MAX3 (b,c,d)))
@@ -81,49 +92,49 @@
     (((k) < (lo)) ? (lo) :      \
     (((k) > (hi)) ? (hi) : (k)))
 
-/* find the sign: -1 if x < 0, 1 if x > 0, zero otherwise.
- * Not safe for NaN's */
+// find the sign: -1 if x < 0, 1 if x > 0, zero otherwise.
+// Not safe for NaN's
 #define SIGN(x) (((x) < 0) ? (-1) : (((x) > 0) ? 1 : 0))
 
-/* round up an integer x to a multiple of s */
+// round up an integer x to a multiple of s
 #define ROUNDUP(x,s) ((s) * (((x) + ((s) - 1)) / (s)))
 
 #define ERROR(status,msg) \
     CHOLMOD(error) (status, __FILE__, __LINE__, msg, Common)
 
-/* Check a pointer and return if null.  Set status to invalid, unless the
- * status is already "out of memory" */
-#define RETURN_IF_NULL(A,result) \
-{ \
-    if ((A) == NULL) \
-    { \
-        if (Common->status != CHOLMOD_OUT_OF_MEMORY) \
-        { \
-            ERROR (CHOLMOD_INVALID, "argument missing") ; \
-        } \
-        return (result) ; \
-    } \
+// Check a pointer and return if null.  Set status to invalid, unless the
+// status is already "out of memory"
+#define RETURN_IF_NULL(A,result)                            \
+{                                                           \
+    if ((A) == NULL)                                        \
+    {                                                       \
+        if (Common->status != CHOLMOD_OUT_OF_MEMORY)        \
+        {                                                   \
+            ERROR (CHOLMOD_INVALID, "argument missing") ;   \
+        }                                                   \
+        return (result) ;                                   \
+    }                                                       \
 }
 
-/* Return if Common is NULL or invalid */
-#define RETURN_IF_NULL_COMMON(result) \
-{ \
-    if (Common == NULL) \
-    { \
-        return (result) ; \
-    } \
-    if (Common->itype != ITYPE) \
-    { \
-        Common->status = CHOLMOD_INVALID ; \
-        return (result) ; \
-    } \
+// Return if Common is NULL or invalid
+#define RETURN_IF_NULL_COMMON(result)                       \
+{                                                           \
+    if (Common == NULL)                                     \
+    {                                                       \
+        return (result) ;                                   \
+    }                                                       \
+    if (Common->itype != ITYPE)                             \
+    {                                                       \
+        Common->status = CHOLMOD_INVALID ;                  \
+        return (result) ;                                   \
+    }                                                       \
 }
 
-/* 1e308 is a huge number that doesn't take many characters to print in a
- * file, in CHOLMOD/Check/cholmod_read and _write.  Numbers larger than this
- * are interpretted as Inf, since sscanf doesn't read in Inf's properly.
- * This assumes IEEE double precision arithmetic.  DBL_MAX would be a little
- * better, except that it takes too many digits to print in a file. */
+// 1e308 is a huge number that doesn't take many characters to print in a
+// file, in CHOLMOD/Check/cholmod_read and _write.  Numbers larger than this
+// are interpretted as Inf, since sscanf doesn't read in Inf's properly.
+// This assumes IEEE double precision arithmetic.  DBL_MAX would be a little
+// better, except that it takes too many digits to print in a file.
 #define HUGE_DOUBLE 1e308
 
 //==============================================================================
@@ -181,54 +192,54 @@ void cholmod_l_set_empty
 
 void cholmod_to_simplicial_sym
 (
-    cholmod_factor *L,          // sparse factorization to modify 
+    cholmod_factor *L,          // sparse factorization to modify
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 ) ;
 
 void cholmod_l_to_simplicial_sym
 (
-    cholmod_factor *L,          // sparse factorization to modify 
+    cholmod_factor *L,          // sparse factorization to modify
     int to_ll,                  // change L to hold a LL' or LDL' factorization
     cholmod_common *Common
 ) ;
 
-/* ========================================================================== */
-/* === Include/cholmod_complexity.h ========================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// operations for pattern/real/complex/zomplex
+//------------------------------------------------------------------------------
 
-/* Define operations on pattern, real, complex, and zomplex objects.
- *
- * The xtype of an object defines it numerical type.  A qttern object has no
- * numerical values (A->x and A->z are NULL).  A real object has no imaginary
- * qrt (A->x is used, A->z is NULL).  A complex object has an imaginary qrt
- * that is stored interleaved with its real qrt (A->x is of size 2*nz, A->z
- * is NULL).  A zomplex object has both real and imaginary qrts, which are
- * stored seqrately, as in MATLAB (A->x and A->z are both used).
- *
- * XTYPE is CHOLMOD_PATTERN, _REAL, _COMPLEX or _ZOMPLEX, and is the xtype of
- * the template routine under construction.  XTYPE2 is equal to XTYPE, except
- * if XTYPE is CHOLMOD_PATTERN, in which case XTYPE is CHOLMOD_REAL.
- * XTYPE and XTYPE2 are defined in cholmod_template.h.  
- */
+// Define operations on pattern, real, complex, and zomplex objects.
+//
+// The xtype of an object defines it numerical type.  A qttern object has no
+// numerical values (A->x and A->z are NULL).  A real object has no imaginary
+// qrt (A->x is used, A->z is NULL).  A complex object has an imaginary qrt
+// that is stored interleaved with its real qrt (A->x is of size 2*nz, A->z
+// is NULL).  A zomplex object has both real and imaginary qrts, which are
+// stored seqrately, as in MATLAB (A->x and A->z are both used).
+//
+// XTYPE is CHOLMOD_PATTERN, _REAL, _COMPLEX or _ZOMPLEX, and is the xtype of
+// the template routine under construction.  XTYPE2 is equal to XTYPE, except
+// if XTYPE is CHOLMOD_PATTERN, in which case XTYPE is CHOLMOD_REAL.
+// XTYPE and XTYPE2 are defined in cholmod_template.h.
 
 //------------------------------------------------------------------------------
 // pattern: single or double
 //------------------------------------------------------------------------------
 
-#define P_TEMPLATE(name)                p_ ## name
-#define P_S_TEMPLATE(name)              p_s_ ## name
+#define P_TEMPLATE(name)                        p_ ## name
+#define PS_TEMPLATE(name)                       ps_ ## name
 
-#define P_ASSIGN2(x,z,p,ax,az,q)        x [p] = 1
-#define P_PRINT(k,x,z,p)                PRK(k, ("1"))
+#define P_ASSIGN2(x,z,p,ax,az,q)                x [p] = 1
+#define P_PRINT(k,x,z,p)                        PRK(k, ("1"))
 
 //------------------------------------------------------------------------------
 // real: single or double
 //------------------------------------------------------------------------------
 
-#define R_TEMPLATE(name)                        r_ ## name
-#define R_S_TEMPLATE(name)                      r_s_ ## name
+#define RD_TEMPLATE(name)                       rd_ ## name
+#define RS_TEMPLATE(name)                       rs_ ## name
 
+#define R_ABS(x,z,p)                            fabs ((double) (x [p]))
 #define R_ASSEMBLE(x,z,p,ax,az,q)               x [p] += ax [q]
 #define R_ASSIGN(x,z,p,ax,az,q)                 x [p]  = ax [q]
 #define R_ASSIGN_CONJ(x,z,p,ax,az,q)            x [p]  = ax [q]
@@ -259,11 +270,14 @@ void cholmod_l_to_simplicial_sym
 // complex: single or double
 //------------------------------------------------------------------------------
 
-#define C_TEMPLATE(name)                c_ ## name
-#define CT_TEMPLATE(name)               ct_ ## name
+#define CD_TEMPLATE(name)                       cd_ ## name
+#define CD_T_TEMPLATE(name)                     cd_t_ ## name
 
-#define C_S_TEMPLATE(name)              c_s_ ## name
-#define CT_S_TEMPLATE(name)             ct_s_ ## name
+#define CS_TEMPLATE(name)                       cs_ ## name
+#define CS_T_TEMPLATE(name)                     cs_t_ ## name
+
+#define C_ABS(x,z,p) SuiteSparse_config_hypot ((double) (x [2*(p)]), \
+    (double) (x [2*(p)+1]))
 
 #define C_ASSEMBLE(x,z,p,ax,az,q) \
     x [2*(p)  ] += ax [2*(q)  ] ; \
@@ -302,12 +316,12 @@ void cholmod_l_to_simplicial_sym
     x [2*(p)  ] -= ax [2*(q)  ] * bx [2*(r)] - ax [2*(q)+1] * bx [2*(r)+1] ; \
     x [2*(p)+1] -= ax [2*(q)+1] * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
-/* s += conj(a)*b */
+// s += conj(a)*b
 #define C_MULTADDCONJ(x,z,p, ax,az,q, bx,bz,r) \
     x [2*(p)  ] +=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ;\
     x [2*(p)+1] += (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
 
-/* s -= conj(a)*b */
+// s -= conj(a)*b
 #define C_MULTSUBCONJ(x,z,p, ax,az,q, bx,bz,r) \
     x [2*(p)  ] -=   ax [2*(q)  ]  * bx [2*(r)] + ax [2*(q)+1] * bx [2*(r)+1] ;\
     x [2*(p)+1] -= (-ax [2*(q)+1]) * bx [2*(r)] + ax [2*(q)  ] * bx [2*(r)+1]
@@ -345,7 +359,7 @@ void cholmod_l_to_simplicial_sym
     x [2*(p)+1] = (float) ci ;                                  \
 }
 
-/* s -= conj(a)*a ; note that the result of conj(a)*a is real */
+// s -= conj(a)*a ; note that the result of conj(a)*a is real
 #define C_LLDOT(x,p, ax,az,q) \
     x [2*(p)] -= ax [2*(q)] * ax [2*(q)] + ax [2*(q)+1] * ax [2*(q)+1]
 
@@ -359,7 +373,7 @@ void cholmod_l_to_simplicial_sym
     x [2*(p)  ] = ax [2*(q)  ] * bx [2*(r)] ; \
     x [2*(p)+1] = ax [2*(q)+1] * bx [2*(r)]
 
-/* s -= conj(a)*a/t */
+// s -= conj(a)*a/t
 #define C_LDLDOT(x,p, ax,az,q, bx,r) \
     x [2*(p)] -= (ax [2*(q)] * ax [2*(q)] + ax [2*(q)+1] * ax [2*(q)+1]) / bx[r]
 
@@ -367,11 +381,14 @@ void cholmod_l_to_simplicial_sym
 // zomplex: single or double
 //------------------------------------------------------------------------------
 
-#define Z_TEMPLATE(name)                z_ ## name
-#define ZT_TEMPLATE(name)               zt_ ## name
+#define ZD_TEMPLATE(name)                       zd_ ## name
+#define ZD_T_TEMPLATE(name)                     zd_t_ ## name
 
-#define Z_S_TEMPLATE(name)              z_s_ ## name
-#define ZT_S_TEMPLATE(name)             zt_s_ ## name
+#define ZS_TEMPLATE(name)                       zs_ ## name
+#define ZS_T_TEMPLATE(name)                     zs_t_ ## name
+
+#define Z_ABS(x,z,p) SuiteSparse_config_hypot ((double) (x [p]), \
+    (double) (z [p]))
 
 #define Z_ASSEMBLE(x,z,p,ax,az,q) \
     x [p] += ax [q] ; \
@@ -448,7 +465,7 @@ void cholmod_l_to_simplicial_sym
     z [p] = (float) ci ;                                        \
 }
 
-/* s -= conj(a)*a ; note that the result of conj(a)*a is real */
+// s -= conj(a)*a ; note that the result of conj(a)*a is real
 #define Z_LLDOT(x,p, ax,az,q) \
     x [p] -= ax [q] * ax [q] + az [q] * az [q]
 
@@ -462,7 +479,7 @@ void cholmod_l_to_simplicial_sym
     x [p] = ax [q] * bx [r] ; \
     z [p] = az [q] * bx [r]
 
-/* s -= conj(a)*a/t */
+// s -= conj(a)*a/t
 #define Z_LDLDOT(x,p, ax,az,q, bx,r) \
     x [p] -= (ax [q] * ax [q] + az [q] * az [q]) / bx[r]
 
@@ -506,9 +523,9 @@ void cholmod_l_to_simplicial_sym
     {                                                                       \
         if (Common->status != CHOLMOD_OUT_OF_MEMORY)                        \
         {                                                                   \
-	    ERROR (CHOLMOD_INVALID, "dense matrix invalid") ;               \
+            ERROR (CHOLMOD_INVALID, "dense matrix invalid") ;               \
         }                                                                   \
-	return (result) ;                                                   \
+        return (result) ;                                                   \
     }
 
 #define RETURN_IF_SPARSE_MATRIX_INVALID(A,result)                           \
@@ -521,7 +538,7 @@ void cholmod_l_to_simplicial_sym
         {                                                                   \
             ERROR (CHOLMOD_INVALID, "sparse matrix invalid") ;              \
         }                                                                   \
-	return (result) ;                                                   \
+        return (result) ;                                                   \
     }
 
 #define RETURN_IF_TRIPLET_MATRIX_INVALID(T,result)                          \
@@ -535,73 +552,12 @@ void cholmod_l_to_simplicial_sym
         {                                                                   \
             ERROR (CHOLMOD_INVALID, "triplet matrix invalid") ;             \
         }                                                                   \
-	return (result) ;                                                   \
+        return (result) ;                                                   \
     }
 
 #define RETURN_IF_FACTOR_INVALID(L,result)                                  \
     RETURN_IF_NULL (L, result) ;                                            \
     RETURN_IF_XTYPE_INVALID (L, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, result) ;
-
-//==============================================================================
-// Architecture and BLAS
-//==============================================================================
-
-#if defined (__sun) || defined (MSOL2) || defined (ARCH_SOL2)
-
-    #define CHOLMOD_SOL2
-    #define CHOLMOD_ARCHITECTURE "Sun Solaris"
-
-#elif defined (__sgi) || defined (MSGI) || defined (ARCH_SGI)
-
-    #define CHOLMOD_SGI
-    #define CHOLMOD_ARCHITECTURE "SGI Irix"
-
-#elif defined (__linux) || defined (MGLNX86) || defined (ARCH_GLNX86)
-
-    #define CHOLMOD_LINUX
-    #define CHOLMOD_ARCHITECTURE "Linux"
-
-#elif defined (__APPLE__)
-
-    #define CHOLMOD_MAC
-    #define CHOLMOD_ARCHITECTURE "Mac"
-
-#elif defined (_AIX) || defined (MIBM_RS) || defined (ARCH_IBM_RS)
-
-    #define CHOLMOD_AIX
-    #define CHOLMOD_ARCHITECTURE "IBM AIX"
-
-#elif defined (__alpha) || defined (MALPHA) || defined (ARCH_ALPHA)
-
-    #define CHOLMOD_ALPHA
-    #define CHOLMOD_ARCHITECTURE "Compaq Alpha"
-
-#elif defined (_WIN32) || defined (WIN32) || defined (_WIN64) || defined (WIN64)
-
-    #if defined (__MINGW32__) || defined (__MINGW32__)
-        #define CHOLMOD_MINGW
-    #elif defined (__CYGWIN32__) || defined (__CYGWIN32__)
-        #define CHOLMOD_CYGWIN
-    #else
-        #define CHOLMOD_WINDOWS
-    #endif
-    #define CHOLMOD_ARCHITECTURE "Microsoft Windows"
-
-#elif defined (__hppa) || defined (__hpux) || defined (MHPUX) || defined (ARCH_HPUX)
-
-    #define CHOLMOD_HP
-    #define CHOLMOD_ARCHITECTURE "HP Unix"
-
-#elif defined (__hp700) || defined (MHP700) || defined (ARCH_HP700)
-
-    #define CHOLMOD_HP
-    #define CHOLMOD_ARCHITECTURE "HP 700 Unix"
-
-#else
-
-    #define CHOLMOD_ARCHITECTURE "unknown"
-
-#endif
 
 //==============================================================================
 //=== openmp support ===========================================================
@@ -612,7 +568,7 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     double work,                    // total work to do
     cholmod_common *Common
 )
-{ 
+{
     #ifdef _OPENMP
     double chunk = Common->chunk ;  // give each thread at least this much work
     int nthreads_max = Common->nthreads_max ;   // max # of threads to use
@@ -631,25 +587,38 @@ static inline int cholmod_nthreads  // returns # of OpenMP threads to use
     #endif
 }
 
-/* ========================================================================== */
-/* === debugging definitions ================================================ */
-/* ========================================================================== */
+//==============================================================================
+//==== debugging definitions ===================================================
+//==============================================================================
+
+#if 0
+#if 0
+#define GOTCHA ;
+#else
+#define GOTCHA                                          \
+{                                                       \
+    printf ("Gotcha! %d:%s\n", __LINE__, __FILE__) ;    \
+    fflush (stdout) ;                                   \
+    abort ( ) ;                                         \
+}
+#endif
+#endif
 
 #ifndef NDEBUG
 
 #include <assert.h>
 
-/* The cholmod_dump routines are in the Check module.  No CHOLMOD routine
- * calls the cholmod_check_* or cholmod_print_* routines in the Check module,
- * since they use Common workspace that may already be in use.  Instead, they
- * use the cholmod_dump_* routines defined there, which allocate their own
- * workspace if they need it. */
+// The cholmod_dump routines are in the Check module.  No CHOLMOD routine
+// calls the cholmod_check_* or cholmod_print_* routines in the Check module,
+// since they use Common workspace that may already be in use.  Instead, they
+// use the cholmod_dump_* routines defined there, which allocate their own
+// workspace if they need it.
 
 #ifndef EXTERN
 #define EXTERN extern
 #endif
 
-/* double, int */
+// int32_t
 EXTERN int cholmod_dump ;
 EXTERN int cholmod_dump_malloc ;
 int64_t cholmod_dump_sparse (cholmod_sparse  *, const char *,
@@ -663,15 +632,15 @@ int  cholmod_dump_perm (int *, size_t, size_t, const char *, cholmod_common *) ;
 int  cholmod_dump_parent (int *, size_t, const char *, cholmod_common *) ;
 void cholmod_dump_init (const char *, cholmod_common *) ;
 int  cholmod_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_dump_real (const char *, double *, int64_t,
+void cholmod_dump_real (const char *, void *, int, int64_t,
     int64_t, int, int, cholmod_common *) ;
-void cholmod_dump_super (int64_t, int *, int *, int *, int *, double *,
+void cholmod_dump_super (int64_t, int *, int *, int *, int *, void *, int,
     int, cholmod_common *) ;
 int  cholmod_dump_partition (int64_t, int *, int *, int *, int *,
     int64_t, cholmod_common *) ;
-int  cholmod_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
-/* double, int64_t */
+// int64_t
 EXTERN int cholmod_l_dump ;
 EXTERN int cholmod_l_dump_malloc ;
 int64_t cholmod_l_dump_sparse (cholmod_sparse  *, const char *,
@@ -687,18 +656,22 @@ int  cholmod_l_dump_parent (int64_t *, size_t, const char *,
     cholmod_common *) ;
 void cholmod_l_dump_init (const char *, cholmod_common *) ;
 int  cholmod_l_dump_mem (const char *, int64_t, cholmod_common *) ;
-void cholmod_l_dump_real (const char *, double *, int64_t,
+void cholmod_l_dump_real (const char *, void *, int, int64_t,
     int64_t, int, int, cholmod_common *) ;
 void cholmod_l_dump_super (int64_t, int64_t *,
     int64_t *, int64_t *, int64_t *,
-    double *, int, cholmod_common *) ;
+    void *, int, int, cholmod_common *) ;
 int  cholmod_l_dump_partition (int64_t, int64_t *,
     int64_t *, int64_t *,
     int64_t *, int64_t, cholmod_common *) ;
-int  cholmod_l_dump_work(int, int, int64_t, cholmod_common *) ;
+int  cholmod_l_dump_work(int, int, int64_t, int, cholmod_common *) ;
 
 #define DEBUG_INIT(s,Common)  { CHOLMOD(dump_init)(s, Common) ; }
+#ifdef MATLAB_MEX_FILE
+#define ASSERT(expression) (mxAssert ((expression), ""))
+#else
 #define ASSERT(expression) (assert (expression))
+#endif
 
 #define PRK(k,params)                                           \
 {                                                               \
@@ -726,29 +699,15 @@ size_t CM_memtable_size (void *p) ;
 bool CM_memtable_find (void *p) ;
 void CM_memtable_remove (void *p) ;
 
-#define PRINTM(params) \
-{ \
-    if (CHOLMOD(dump_malloc) > 0) \
-    { \
-        printf params ; \
-    } \
+#define PRINTM(params)              \
+{                                   \
+    if (CHOLMOD(dump_malloc) > 0)   \
+    {                               \
+        printf params ;             \
+    }                               \
 }
 
 #define DEBUG(statement) statement
-
-#else
-
-/* Debugging disabled (the normal case) */
-#define PRK(k,params)
-#define DEBUG_INIT(s,Common)
-#define PRINT0(params)
-#define PRINT1(params)
-#define PRINT2(params)
-#define PRINT3(params)
-#define PRINTM(params)
-#define ASSERT(expression)
-#define DEBUG(statement)
-#endif
 
 static bool check_flag (cholmod_common *Common)
 {
@@ -773,5 +732,19 @@ static bool check_flag (cholmod_common *Common)
     }
     return (true) ;
 }
+
+#else
+
+// Debugging disabled (the normal case)
+#define PRK(k,params)
+#define DEBUG_INIT(s,Common)
+#define PRINT0(params)
+#define PRINT1(params)
+#define PRINT2(params)
+#define PRINT3(params)
+#define PRINTM(params)
+#define ASSERT(expression)
+#define DEBUG(statement)
+#endif
 
 #endif

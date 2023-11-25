@@ -2,54 +2,53 @@
 // CHOLMOD/Partition/cholmod_csymamd: CHOLMOD interface to CSYMAMD
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Partition Module.  Copyright (C) 2005-2022, University of Florida.
+// CHOLMOD/Partition Module.  Copyright (C) 2005-2023, University of Florida.
 // All Rights Reserved.  Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
 
-/* CHOLMOD interface to the CSYMAMD ordering routine.  Finds a permutation
- * p such that the Cholesky factorization of PAP' is sparser than A.
- * The column etree is found and postordered, and the CSYMAMD
- * ordering is then combined with its postordering.  If A is unsymmetric,
- * A+A' is ordered (A must be square).
- *
- * workspace: Head (nrow+1)
- *
- * Supports any xtype (pattern, real, complex, or zomplex).
- */
+// CHOLMOD interface to the CSYMAMD ordering routine.  Finds a permutation
+// p such that the Cholesky factorization of PAP' is sparser than A.
+// The column etree is found and postordered, and the CSYMAMD
+// ordering is then combined with its postordering.  If A is unsymmetric,
+// A+A' is ordered (A must be square).
+//
+// workspace: Head (nrow+1)
+//
+// Supports any xtype (pattern, real, complex, or zomplex) and any dtype.
 
 #include "cholmod_internal.h"
 
 #ifndef NCAMD
 
 #include "ccolamd.h"
-#if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (2,5))
-#error "CCOLAMD v2.0 or later is required"
+#if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (3,0))
+#error "CCOLAMD v3.0 or later is required"
 #endif
 
-/* ========================================================================== */
-/* === cholmod_csymamd ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cholmod_csymamd
+//------------------------------------------------------------------------------
 
 int CHOLMOD(csymamd)
 (
-    /* ---- input ---- */
-    cholmod_sparse *A,	/* matrix to order */
-    /* ---- output --- */
-    Int *Cmember,	/* size nrow.  see cholmod_ccolamd.c for description */
-    Int *Perm,		/* size A->nrow, output permutation */
-    /* --------------- */
+    // input:
+    cholmod_sparse *A,  // matrix to order
+    // output:
+    Int *Cmember,       // size nrow.  see cholmod_ccolamd.c for description
+    Int *Perm,          // size A->nrow, output permutation
     cholmod_common *Common
 )
 {
+
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
+
     double knobs [CCOLAMD_KNOBS] ;
     Int *perm, *Head ;
     Int ok, i, nrow, stats [CCOLAMD_STATS] ;
-
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
@@ -59,33 +58,33 @@ int CHOLMOD(csymamd)
 
     if (A->nrow != A->ncol || !(A->packed))
     {
-	ERROR (CHOLMOD_INVALID, "matrix must be square and packed") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "matrix must be square and packed") ;
+        return (FALSE) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
     nrow = A->nrow ;
 
-    /* ---------------------------------------------------------------------- */
-    /* allocate workspace */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // allocate workspace
+    //--------------------------------------------------------------------------
 
     CHOLMOD(allocate_work) (nrow, 0, 0, Common) ;
     if (Common->status < CHOLMOD_OK)
     {
-	return (FALSE) ;
+        return (FALSE) ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* order the matrix (does not affect A->p or A->i) */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // order the matrix (does not affect A->p or A->i)
+    //--------------------------------------------------------------------------
 
-    perm = Common->Head ;	/* size nrow+1 (i/l/l) */
+    perm = Common->Head ;       // size nrow+1
 
-    /* get parameters */
+    // get parameters
 #if defined ( CHOLMOD_INT64 )
     ccolamd_l_set_defaults (knobs) ;
 #else
@@ -93,9 +92,9 @@ int CHOLMOD(csymamd)
 #endif
     if (Common->current >= 0 && Common->current < CHOLMOD_MAXMETHODS)
     {
-	/* get the knobs from the Common parameters */
-	knobs [CCOLAMD_DENSE_ROW] =Common->method[Common->current].prune_dense ;
-	knobs [CCOLAMD_AGGRESSIVE]=Common->method[Common->current].aggressive ;
+        // get the knobs from the Common parameters
+        knobs [CCOLAMD_DENSE_ROW] =Common->method[Common->current].prune_dense ;
+        knobs [CCOLAMD_AGGRESSIVE]=Common->method[Common->current].aggressive ;
     }
     {
         void * (*calloc_func) (size_t, size_t) ;
@@ -104,42 +103,44 @@ int CHOLMOD(csymamd)
         free_func   = SuiteSparse_config_free_func_get ( ) ;
 
 #if defined ( CHOLMOD_INT64 )
-	csymamd_l (nrow, A->i, A->p, perm, knobs, stats,
+        csymamd_l (nrow, A->i, A->p, perm, knobs, stats,
                 calloc_func,
                 free_func,
                 Cmember, A->stype) ;
 #else
-	csymamd (nrow, A->i, A->p, perm, knobs, stats,
+        csymamd (nrow, A->i, A->p, perm, knobs, stats,
                 calloc_func,
                 free_func,
                 Cmember, A->stype) ;
 #endif
-	ok = stats [CCOLAMD_STATUS] ;
+        ok = stats [CCOLAMD_STATUS] ;
     }
 
     if (ok == CCOLAMD_ERROR_out_of_memory)
     {
-	ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory") ; 
+        ERROR (CHOLMOD_OUT_OF_MEMORY, "out of memory") ;
     }
     ok = (ok == CCOLAMD_OK || ok == CCOLAMD_OK_BUT_JUMBLED) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free the workspace and return result */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free the workspace and return result
+    //--------------------------------------------------------------------------
 
-    /* permutation returned in perm [0..n-1] */
+    // permutation returned in perm [0..n-1]
     for (i = 0 ; i < nrow ; i++)
     {
-	Perm [i] = perm [i] ;
+        Perm [i] = perm [i] ;
     }
 
-    /* clear Head workspace (used for perm, in csymamd): */
+    // clear Head workspace (used for perm, in csymamd):
     Head = Common->Head ;
     for (i = 0 ; i <= nrow ; i++)
     {
-	Head [i] = EMPTY ;
+        Head [i] = EMPTY ;
     }
 
     return (ok) ;
 }
+
 #endif
+

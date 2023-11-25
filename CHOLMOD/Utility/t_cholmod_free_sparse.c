@@ -12,6 +12,7 @@
 
 int CHOLMOD(free_sparse)
 (
+    // input/output:
     cholmod_sparse **A,         // handle of sparse matrix to free
     cholmod_common *Common
 )

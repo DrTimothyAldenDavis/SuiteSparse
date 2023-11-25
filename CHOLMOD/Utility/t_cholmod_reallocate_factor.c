@@ -15,7 +15,9 @@
 
 int CHOLMOD(reallocate_factor)
 (
+    // input:
     size_t nznew,       // new max # of nonzeros the factor matrix can hold
+    // input/output:
     cholmod_factor *L,  // factor to reallocate
     cholmod_common *Common
 )

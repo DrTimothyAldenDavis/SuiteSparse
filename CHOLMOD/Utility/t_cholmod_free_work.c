@@ -37,7 +37,7 @@ int CHOLMOD(free_work) (cholmod_common *Common)
     Common->iworksize = 0 ;
 
     //--------------------------------------------------------------------------
-    // free Xwork, of size xworksize bytes
+    // free Xwork, of size xworkbytes
     //--------------------------------------------------------------------------
 
     Common->Xwork = CHOLMOD(free) (Common->xworkbytes, sizeof (uint8_t),

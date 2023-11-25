@@ -16,6 +16,7 @@
 
 int64_t CHOLMOD(nnz)            // return # of entries in the sparse matrix
 (
+    // input:
     cholmod_sparse *A,          // sparse matrix to query
     cholmod_common *Common
 )

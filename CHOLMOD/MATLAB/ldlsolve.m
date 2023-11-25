@@ -1,21 +1,21 @@
-function x = ldlsolve (LD,b)						    %#ok
+function x = ldlsolve (LD,b)                                          %#ok
 %LDLSOLVE solve LDL'x=b using a sparse LDL' factorization
 %
-%   Example:
+% Example:
 %   x = ldlsolve (LD,b)
 %
-%   solves the system L*D*L'*x=b for x.  This is equivalent to
+% solves the system L*D*L'*x=b for x.  This is equivalent to
 %
 %   [L,D] = ldlsplit (LD) ;
 %   x = L' \ (D \ (L \ b)) ;
 %
-%   LD is from ldlchol, or as updated by ldlupdate or ldlrowmod.  You must not
-%   modify LD as obtained from ldlchol, ldlupdate, or ldlrowmod prior to passing
-%   it to this function.  See ldlupdate for more details.
+% LD is from ldlchol, or as updated by ldlupdate or ldlrowmod.  You must
+% not modify LD as obtained from ldlchol, ldlupdate, or ldlrowmod prior
+% to passing it to this function.  See ldlupdate for more details.
 %
-%   See also LDLCHOL, LDLUPDATE, LDLSPLIT, LDLROWMOD
+% See also ldlchol, ldlupdate, ldlsplit, ldlrowmod.
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
-% SPDX-License-Identifier: GPL-2.0+
+ % Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
+ % SPDX-License-Identifier: GPL-2.0+
 
 error ('ldlsolve mexFunction not found') ;

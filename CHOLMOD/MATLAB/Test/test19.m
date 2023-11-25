@@ -4,13 +4,13 @@ function test19
 %   test19
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
 fprintf ('test19: look for NaN''s from lchol (caused by Intel MKL 7.x bug)\n') ;
 
-Prob = ssget (936)							    %#ok
+Prob = ssget (936)                                                          %#ok
 A = Prob.A ;
 [p count] = analyze (A) ;
 A = A (p,p) ;
@@ -18,12 +18,12 @@ tic
 L = lchol (A) ;
 t = toc ;
 fl = sum (count.^2) ;
-fprintf ('mflop rate: %8.2f\n', 1e-6*fl/t) ;
+fprintf ('gflop rate: %8.2f\n', 1e-9*fl/t) ;
 n = size (L,1) ;
 for k = 1:n
     if (any (isnan (L (:,k))))
-	k								    %#ok
-	error ('!') ;
+        k                                                                   %#ok
+        error ('!') ;
     end
 end
 

@@ -2,7 +2,7 @@
 # SuiteSparse/CHOLOMD/Makefile
 #-------------------------------------------------------------------------------
 
-# This CHOLMOD/Makefile: Copyright (c) 2005-2022, Timothy A. Davis.
+# This CHOLMOD/Makefile: Copyright (c) 2005-2023, Timothy A. Davis.
 # CHOLMOD: Copyright and license varies by module.
 
 #-------------------------------------------------------------------------------
@@ -64,17 +64,56 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
-	./build/cholmod_demo   < ./Demo/Matrix/bcsstk01.tri
-	./build/cholmod_l_demo < ./Demo/Matrix/bcsstk01.tri
-	./build/cholmod_demo   < ./Demo/Matrix/lp_afiro.tri
-	./build/cholmod_l_demo < ./Demo/Matrix/lp_afiro.tri
-	./build/cholmod_demo   < ./Demo/Matrix/can___24.mtx
-	./build/cholmod_l_demo < ./Demo/Matrix/can___24.mtx
-	./build/cholmod_demo   < ./Demo/Matrix/c.tri
-	./build/cholmod_l_demo < ./Demo/Matrix/c.tri
-	./build/cholmod_simple < ./Demo/Matrix/c.tri
-	./build/cholmod_simple < ./Demo/Matrix/can___24.mtx
-	./build/cholmod_simple < ./Demo/Matrix/bcsstk01.tri
+	./build/cholmod_di_demo ./Demo/Matrix/bcsstk01.tri  > ./build/bcsstk01_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/lp_afiro.tri  > ./build/lp_afiro_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/lp_afiro.tri >> ./build/lp_afiro_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/can___24.mtx  > ./build/can24_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/can___24.mtx >> ./build/can24_out.txt
+	#
+	./build/cholmod_di_demo ./Demo/Matrix/c.tri         > ./build/complex_out.txt
+	./build/cholmod_dl_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	./build/cholmod_si_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	./build/cholmod_sl_demo ./Demo/Matrix/c.tri        >> ./build/complex_out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/bcsstk01.tri > ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/bcsstk01.tri > ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/bcsstk01.tri > ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/bcsstk01.tri > ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/lp_afiro.tri >> ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/can___24.mtx >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/can___24.mtx >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/can___24.mtx >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/can___24.mtx >> ./build/sl_simple.out.txt
+	#
+	./build/cholmod_di_simple < ./Demo/Matrix/c.tri        >> ./build/di_simple.out.txt
+	./build/cholmod_dl_simple < ./Demo/Matrix/c.tri        >> ./build/dl_simple.out.txt
+	./build/cholmod_si_simple < ./Demo/Matrix/c.tri        >> ./build/si_simple.out.txt
+	./build/cholmod_sl_simple < ./Demo/Matrix/c.tri        >> ./build/sl_simple.out.txt
+
+large: library
+	./build/cholmod_dl_simple < ~/nd12k.mtx > ./build/dl_nd12k.out.txt
+	./build/cholmod_sl_simple < ~/nd12k.mtx > ./build/sl_nd12k.out.txt
+
+ilarge: library
+	./build/cholmod_di_simple < ~/nd12k.mtx > ./build/di_nd12k.out.txt
+	./build/cholmod_si_simple < ~/nd12k.mtx > ./build/si_nd12k.out.txt
+
+test: library
+	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
 
 cov:
 	( cd Tcov && $(MAKE) )

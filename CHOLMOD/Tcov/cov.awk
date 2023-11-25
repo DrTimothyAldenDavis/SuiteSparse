@@ -11,7 +11,7 @@
 
     if ((p+0) != 100)
     {
-	printf "%8s %s\n", p, f
+        printf "%8s %s\n", p, f
     }
 }
 

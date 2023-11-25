@@ -31,7 +31,7 @@ static void TEMPLATE (cholmod_band_worker)
     Int  *Anz = (Int  *) A->nz ;
     Int  *Ai  = (Int  *) A->i ;
     Real *Ax  = (Real *) A->x ;
-    Real *Az  = (Real *) A->x ;
+    Real *Az  = (Real *) A->z ;
     bool packed = A->packed ;
 
     Int  *Cp = (Int  *) C->p ;

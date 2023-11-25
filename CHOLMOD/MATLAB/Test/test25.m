@@ -4,7 +4,7 @@ function test25
 %   test25
 % See also cholmod_test
 
-% Copyright 2006-2022, Timothy A. Davis, All Rights Reserved.
+% Copyright 2006-2023, Timothy A. Davis, All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
 fprintf ('=================================================================\n');
@@ -35,11 +35,11 @@ for k = [0:10 10:10:50 100:100:500]
 
     err = norm (C-D,1) ;
     fprintf (...
-	'k: %3d time: MATLAB %8.2f CHOLMOD %8.2f speedup %8.2f err %6.0e',...
-	k, t1, t2, t1/t2, err) ;
+        'k: %3d time: MATLAB %8.2f CHOLMOD %8.2f speedup %8.2f err %6.0e',...
+        k, t1, t2, t1/t2, err) ;
     fl = 2*nz*k ;
-    fprintf ('  mflop: MATLAB %8.1f CHOLMOD %8.1f\n', 1e-6*fl/t1, 1e-6*fl/t2) ;
-	
+    fprintf ('  gflop: MATLAB %8.2f CHOLMOD %8.2f\n', 1e-9*fl/t1, 1e-9*fl/t2) ;
+
     clear C D X
 end
 

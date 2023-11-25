@@ -12,6 +12,7 @@
 
 int CHOLMOD(realloc_multiple)   // returns true if successful, false otherwise
 (
+    // input:
     size_t nnew,    // # of items in newly reallocate memory
     int nint,       // 0: do not allocate I or J, 1: just I, 2: both I and J
     int xdtype,     // xtype + dtype of the matrix:
@@ -66,6 +67,7 @@ int CHOLMOD(realloc_multiple)   // returns true if successful, false otherwise
         (ex   > 0 && X == NULL) ||
         (ez   > 0 && Z == NULL))
     {
+        // input argument missing
         if (Common->status != CHOLMOD_OUT_OF_MEMORY)
         {
             ERROR (CHOLMOD_INVALID, "argument missing") ;

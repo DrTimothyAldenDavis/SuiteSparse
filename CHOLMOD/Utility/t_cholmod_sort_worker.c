@@ -163,7 +163,7 @@ static void TEMPLATE (cm_qsrt)     // sort A [0:n-1]
         Int k = CM_PART (Ai, Ax, Az, n, seed) ;
 
         // sort each partition
-        CM_QSRT (Ai, Ax, Ax, 0, k,   seed) ;  // sort A [0:k-1]
+        CM_QSRT (Ai, Ax, Az, 0, k,   seed) ;  // sort A [0:k-1]
         CM_QSRT (Ai, Ax, Az, k, n-k, seed) ;  // sort A [k+1:n-1]
     }
 }

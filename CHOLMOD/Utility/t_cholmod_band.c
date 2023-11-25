@@ -16,6 +16,10 @@
 // The diagonal can be ignored, if the ignore_diag flag is true.
 // C can optionally be constructed as a pattern matrix.
 
+// The stype is not changed, and no transpose takes place, so a mode of 1 and 2
+// have the same effect (unlike cholmod_tranpose, cholmod_copy, cholmod_aat,
+// cholmod_vertcat, cholmod_horzcat, ...
+
 #include "cholmod_internal.h"
 
 #define RETURN_IF_ERROR                             \
@@ -58,7 +62,7 @@ static cholmod_sparse *band_helper
     cholmod_sparse *A,
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
-    bool values,            // if true and A numerical, C is numerical 
+    bool values,            // if true and A numerical, C is numerical
     bool inplace,           // if true, convert A in place (A cannot be packed)
     bool ignore_diag,       // if true, ignore diagonal
     cholmod_common *Common
@@ -131,30 +135,30 @@ static cholmod_sparse *band_helper
     {
         default:
             p_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
-            break ; 
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
+            break ;
+
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_band_worker (C, A, k1, k2, ignore_diag) ;
             break ;
     }
 
@@ -185,6 +189,7 @@ static cholmod_sparse *band_helper
 
 cholmod_sparse *CHOLMOD(band)   // return a new matrix C
 (
+    // input:
     cholmod_sparse *A,      // input matrix
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
@@ -192,6 +197,7 @@ cholmod_sparse *CHOLMOD(band)   // return a new matrix C
     cholmod_common *Common
 )
 {
+    mode = RANGE (mode, -1, 1) ;
     bool values = (mode > 0) ;
     bool inplace = FALSE ;
     bool ignore_diag = (mode < 0) ;
@@ -204,13 +210,16 @@ cholmod_sparse *CHOLMOD(band)   // return a new matrix C
 
 int CHOLMOD(band_inplace)
 (
+    // input:
     int64_t k1,             // count entries in k1:k2 diagonals
     int64_t k2,
     int mode,               // >0: numerical, 0: pattern, <0: pattern (no diag)
+    // input/output:
     cholmod_sparse *A,      // input/output matrix
     cholmod_common *Common
 )
 {
+    mode = RANGE (mode, -1, 1) ;
     bool values = (mode > 0) ;
     bool inplace = TRUE ;
     bool ignore_diag = (mode < 0) ;
