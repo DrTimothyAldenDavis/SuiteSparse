@@ -72,10 +72,24 @@ endif ( )
 
 if ( GraphBLAS_FOUND )
     if ( TARGET SuiteSparse::GraphBLAS )
-        add_library ( GraphBLAS::GraphBLAS ALIAS SuiteSparse::GraphBLAS )
+        # It's not possible to create an alias of an alias.
+        get_property ( _graphblas_aliased TARGET SuiteSparse::GraphBLAS
+            PROPERTY ALIASED_TARGET )
+        if ( "${_graphblas_aliased}" STREQUAL "" )
+            add_library ( GraphBLAS::GraphBLAS ALIAS SuiteSparse::GraphBLAS )
+        else ( )
+            add_library ( GraphBLAS::GraphBLAS ALIAS ${_graphblas_aliased} )
+        endif ( )
     endif ( )
     if ( TARGET SuiteSparse::GraphBLAS_static )
-        add_library ( GraphBLAS::GraphBLAS_static ALIAS SuiteSparse::GraphBLAS_static )
+        # It's not possible to create an alias of an alias.
+        get_property ( _graphblas_aliased TARGET SuiteSparse::GraphBLAS_static
+            PROPERTY ALIASED_TARGET )
+        if ( "${_graphblas_aliased}" STREQUAL "" )
+            add_library ( GraphBLAS::GraphBLAS_static ALIAS SuiteSparse::GraphBLAS_static )
+        else ( )
+            add_library ( GraphBLAS::GraphBLAS_static ALIAS ${_graphblas_aliased} )
+        endif ( )
     endif ( )
     return ( )
 endif ( )

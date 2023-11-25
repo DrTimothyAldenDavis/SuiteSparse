@@ -125,7 +125,11 @@ endif ( )
 
 if ( SUITESPARSE_ROOT_CMAKELISTS )
 
-    add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS )
+    if ( TARGET GraphBLAS )
+        add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS )
+    else ( )
+        add_library ( GraphBLAS::GraphBLAS ALIAS GraphBLAS_static )
+    endif ( )
     if ( TARGET GraphBLAS_static )
         add_library ( GraphBLAS::GraphBLAS_static ALIAS GraphBLAS_static )
     endif ( )
@@ -273,12 +277,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS LAGraph LAGraphX
-    EXPORT LAGraphTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS LAGraph LAGraphX
+        EXPORT LAGraphTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS LAGraph_static LAGraphX_static

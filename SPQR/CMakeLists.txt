@@ -103,6 +103,7 @@ configure_file ( "Config/spqr_version.tex.in"
 
 file ( GLOB SPQR_SOURCES "Source/spqr_*.cpp" "Source/SuiteSparseQR*.cpp" )
 
+if ( BUILD_SHARED_LIBS )
 add_library ( SPQR SHARED ${SPQR_SOURCES} )
 
 set_target_properties ( SPQR PROPERTIES
@@ -119,6 +120,7 @@ target_include_directories ( SPQR
     PRIVATE Source Include
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
               $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static spqr library properties
@@ -143,7 +145,6 @@ if ( BUILD_STATIC_LIBS )
         PRIVATE Source Include
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
-
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -151,7 +152,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( SPQR PRIVATE SuiteSparse::SuiteSparseConfig )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( SPQR PRIVATE SuiteSparse::SuiteSparseConfig )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
@@ -162,7 +165,9 @@ endif ( )
 
 # OpenMP:
 if ( OPENMP_FOUND )
-    target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SPQR_static PUBLIC OpenMP::OpenMP_CXX )
         list ( APPEND SPQR_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
@@ -171,7 +176,9 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( SPQR PRIVATE m )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SPQR PRIVATE m )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         list ( APPEND SPQR_STATIC_LIBS "m" )
         target_link_libraries ( SPQR_static PUBLIC m )
@@ -182,8 +189,10 @@ endif ( )
 message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
 message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
 message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
-target_include_directories ( SPQR PRIVATE ${LAPACK_INCLUDE_DIR} )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( SPQR PRIVATE ${LAPACK_LIBRARIES} )
+    target_include_directories ( SPQR PRIVATE ${LAPACK_INCLUDE_DIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${LAPACK_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${LAPACK_LIBRARIES} )
@@ -194,8 +203,10 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
-target_include_directories ( SPQR PRIVATE ${BLAS_INCLUDE_DIRS} )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( SPQR PRIVATE ${BLAS_LIBRARIES} )
+    target_include_directories ( SPQR PRIVATE ${BLAS_INCLUDE_DIRS} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
@@ -204,7 +215,9 @@ endif ( )
 
 # CHOLMOD:
 # link with CHOLMOD and its dependencies
-target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::CHOLMOD_static )
         target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
@@ -215,9 +228,11 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # CUDA
-    target_link_libraries ( SPQR PRIVATE
-        SuiteSparse::CHOLMOD_CUDA SPQR_CUDA GPUQREngine GPURuntime )
-    target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SPQR PRIVATE
+            SuiteSparse::CHOLMOD_CUDA SPQR_CUDA GPUQREngine GPURuntime )
+        target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
+    endif ( )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
     if ( BUILD_STATIC_LIBS )
         if ( TARGET SuiteSparse::CHOLMOD_CUDA_static )
@@ -237,11 +252,13 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS SPQR
-    EXPORT SPQRTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS SPQR
+        EXPORT SPQRTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS SPQR_static
         EXPORT SPQRTargets
@@ -375,22 +392,50 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( qrsimple  PUBLIC SPQR SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrsimplec PUBLIC SPQR SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemo    PUBLIC SPQR SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemoc   PUBLIC SPQR SuiteSparse::CHOLMOD )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( qrsimple PUBLIC SPQR )
+        target_link_libraries ( qrsimplec PUBLIC SPQR )
+        target_link_libraries ( qrdemo PUBLIC SPQR )
+        target_link_libraries ( qrdemoc PUBLIC SPQR )
 
-    target_link_libraries ( qrsimplec_int32 PUBLIC SPQR SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemoc_int32   PUBLIC SPQR SuiteSparse::CHOLMOD )
-    target_link_libraries ( qrdemo_int32    PUBLIC SPQR SuiteSparse::CHOLMOD )
+        target_link_libraries ( qrsimplec_int32 PUBLIC SPQR )
+        target_link_libraries ( qrdemoc_int32 PUBLIC SPQR )
+        target_link_libraries ( qrdemo_int32 PUBLIC SPQR )
+    else ( )
+        target_link_libraries ( qrsimple PUBLIC SPQR_static )
+        target_link_libraries ( qrsimplec PUBLIC SPQR_static )
+        target_link_libraries ( qrdemo PUBLIC SPQR_static )
+        target_link_libraries ( qrdemoc PUBLIC SPQR_static )
+
+        target_link_libraries ( qrsimplec_int32 PUBLIC SPQR_static )
+        target_link_libraries ( qrdemoc_int32 PUBLIC SPQR_static )
+        target_link_libraries ( qrdemo_int32 PUBLIC SPQR_static )
+    endif ( )
+    target_link_libraries ( qrsimple PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrsimplec PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc PUBLIC SuiteSparse::CHOLMOD )
+
+    target_link_libraries ( qrsimplec_int32 PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemoc_int32 PUBLIC SuiteSparse::CHOLMOD )
+    target_link_libraries ( qrdemo_int32 PUBLIC SuiteSparse::CHOLMOD )
 
     if ( SUITESPARSE_CUDA )
-        target_link_libraries ( qrdemo_gpu PUBLIC SPQR SPQR_CUDA
-            SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
-        target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR SPQR_CUDA
-            SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
-        target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR SPQR_CUDA
-            SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+        if ( BUILD_SHARED_LIBS )
+            target_link_libraries ( qrdemo_gpu PUBLIC SPQR SPQR_CUDA )
+            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR SPQR_CUDA )
+            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR SPQR_CUDA )
+        else ( )
+            target_link_libraries ( qrdemo_gpu PUBLIC SPQR_static SPQR_CUDA_static )
+            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR_static SPQR_CUDA_static )
+            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR_static SPQR_CUDA_static )
+        endif ( )
+        target_link_libraries ( qrdemo_gpu
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( qrdemo_gpu2
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( qrdemo_gpu3
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
     endif ( )
 
 else ( )

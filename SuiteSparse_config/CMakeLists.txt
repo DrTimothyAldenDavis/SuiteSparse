@@ -85,19 +85,21 @@ configure_file ( "Config/README.md.in"
 
 file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
-add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
-set_target_properties ( SuiteSparseConfig PROPERTIES
-    VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
-    C_STANDARD 11
-    C_STANDARD_REQUIRED ON
-    OUTPUT_NAME suitesparseconfig
-    SOVERSION ${SUITESPARSE_VERSION_MAJOR}
-    PUBLIC_HEADER "SuiteSparse_config.h"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+if ( BUILD_SHARED_LIBS )
+    add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
+    set_target_properties ( SuiteSparseConfig PROPERTIES
+        VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        OUTPUT_NAME suitesparseconfig
+        SOVERSION ${SUITESPARSE_VERSION_MAJOR}
+        PUBLIC_HEADER "SuiteSparse_config.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( SuiteSparseConfig
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+    target_include_directories ( SuiteSparseConfig
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static SuiteSparseConfig library properties
@@ -128,7 +130,9 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( SuiteSparseConfig PRIVATE m )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SuiteSparseConfig PRIVATE m )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
     endif ( )
@@ -139,7 +143,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
     endif ( )
@@ -165,22 +171,24 @@ include ( CMakePackageConfigHelpers )
 
 file ( GLOB SUITESPARSE_CMAKE_MODULES "cmake_modules/*" )
 
-install ( TARGETS SuiteSparseConfig
-    EXPORT SuiteSparse_configTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-install ( FILES
-    ${SUITESPARSE_CMAKE_MODULES}
-    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse
-    COMPONENT Development )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS SuiteSparseConfig
+        EXPORT SuiteSparse_configTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS SuiteSparseConfig_static
         EXPORT SuiteSparse_configTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
+install ( FILES
+    ${SUITESPARSE_CMAKE_MODULES}
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse
+    COMPONENT Development )
 
 # create (temporary) export target file during build
 export ( EXPORT SuiteSparse_configTargets

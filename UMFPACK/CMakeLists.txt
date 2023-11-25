@@ -146,20 +146,22 @@ include_directories ( Source Include )
 
 file ( GLOB UMFPACK_SOURCES "Source2/*.c" )
 
-add_library ( UMFPACK SHARED ${UMFPACK_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( UMFPACK SHARED ${UMFPACK_SOURCES} )
 
-set_target_properties ( UMFPACK PROPERTIES
-    VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
-    C_STANDARD 11
-    C_STANDARD_REQUIRED ON
-    OUTPUT_NAME umfpack
-    SOVERSION ${UMFPACK_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/umfpack.h"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+    set_target_properties ( UMFPACK PROPERTIES
+        VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        OUTPUT_NAME umfpack
+        SOVERSION ${UMFPACK_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/umfpack.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( UMFPACK 
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+    target_include_directories ( UMFPACK 
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static umfpack library properties
@@ -182,7 +184,6 @@ if ( BUILD_STATIC_LIBS )
     target_include_directories ( UMFPACK_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
-
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -190,9 +191,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( UMFPACK PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( UMFPACK PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::SuiteSparseConfig )
+    target_include_directories ( UMFPACK PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
@@ -206,7 +209,9 @@ if ( OPENMP_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    target_link_libraries ( UMFPACK PRIVATE ${OpenMP_C_LIBRARIES} )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( UMFPACK PRIVATE ${OpenMP_C_LIBRARIES} )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( UMFPACK_static PUBLIC ${OpenMP_C_LIBRARIES} )
         list ( APPEND UMFPACK_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
@@ -217,7 +222,9 @@ endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( UMFPACK PRIVATE m )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( UMFPACK PRIVATE m )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         list ( APPEND UMFPACK_STATIC_LIBS "m" )
         target_link_libraries ( UMFPACK_static PUBLIC m )
@@ -225,9 +232,11 @@ if ( NOT WIN32 )
 endif ( )
 
 # AMD:
-target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
-target_include_directories ( UMFPACK PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
+    target_include_directories ( UMFPACK PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD_static )
@@ -240,7 +249,9 @@ endif ( )
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND UMFPACK_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
@@ -250,7 +261,9 @@ include_directories ( ${BLAS_INCLUDE_DIRS} )
 # CHOLMOD:
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
-    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
+    endif ( )
     if ( BUILD_STATIC_LIBS )
         set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
         if ( TARGET SuiteSparse::CHOLMOD_static )
@@ -259,7 +272,6 @@ if ( NOT NCHOLMOD )
             target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
-
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -268,12 +280,14 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS UMFPACK
-    EXPORT UMFPACKTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS UMFPACK
+        EXPORT UMFPACKTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS UMFPACK_static
         EXPORT UMFPACKTargets
@@ -412,11 +426,20 @@ if ( DEMO )
     endif ( )
 
     # Libraries required for Demo programs
-    target_link_libraries ( umfpack_simple  PUBLIC UMFPACK SuiteSparse::SuiteSparseConfig )
-    target_link_libraries ( umfpack_di_demo PUBLIC UMFPACK )
-    target_link_libraries ( umfpack_dl_demo PUBLIC UMFPACK )
-    target_link_libraries ( umfpack_zi_demo PUBLIC UMFPACK )
-    target_link_libraries ( umfpack_zl_demo PUBLIC UMFPACK )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( umfpack_simple PUBLIC UMFPACK )
+        target_link_libraries ( umfpack_di_demo PUBLIC UMFPACK )
+        target_link_libraries ( umfpack_dl_demo PUBLIC UMFPACK )
+        target_link_libraries ( umfpack_zi_demo PUBLIC UMFPACK )
+        target_link_libraries ( umfpack_zl_demo PUBLIC UMFPACK )
+    else ( )
+        target_link_libraries ( umfpack_simple PUBLIC UMFPACK_static )
+        target_link_libraries ( umfpack_di_demo PUBLIC UMFPACK_static )
+        target_link_libraries ( umfpack_dl_demo PUBLIC UMFPACK_static )
+        target_link_libraries ( umfpack_zi_demo PUBLIC UMFPACK_static )
+        target_link_libraries ( umfpack_zl_demo PUBLIC UMFPACK_static )
+    endif ( )
+    target_link_libraries ( umfpack_simple  PUBLIC SuiteSparse::SuiteSparseConfig )
     if ( NOT WIN32 )
         # This is only needed because the demos might be linked before those
         # libraries are installed. Would it be better to set the rpath instead?
@@ -431,11 +454,20 @@ if ( DEMO )
     endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
-        target_link_libraries ( umf4            PUBLIC UMFPACK SuiteSparse::AMD )
-        target_link_libraries ( umf4hb          PUBLIC UMFPACK )
-        target_link_libraries ( umf4zhb         PUBLIC UMFPACK )
-        target_link_libraries ( umf4hb64        PUBLIC UMFPACK )
-        target_link_libraries ( umf4zhb64       PUBLIC UMFPACK )
+        if ( BUILD_SHARED_LIBS )
+            target_link_libraries ( umf4 PUBLIC UMFPACK )
+            target_link_libraries ( umf4hb PUBLIC UMFPACK )
+            target_link_libraries ( umf4zhb PUBLIC UMFPACK )
+            target_link_libraries ( umf4hb64 PUBLIC UMFPACK )
+            target_link_libraries ( umf4zhb64 PUBLIC UMFPACK )
+        else ( )
+            target_link_libraries ( umf4 PUBLIC UMFPACK_static )
+            target_link_libraries ( umf4hb PUBLIC UMFPACK_static )
+            target_link_libraries ( umf4zhb PUBLIC UMFPACK_static )
+            target_link_libraries ( umf4hb64 PUBLIC UMFPACK_static )
+            target_link_libraries ( umf4zhb64 PUBLIC UMFPACK_static )
+        endif ( )
+        target_link_libraries ( umf4 PUBLIC SuiteSparse::AMD )
         if ( NOT WIN32 )
             # This is only needed because the demos might be linked before
             # those libraries are installed. Would it be better to set the

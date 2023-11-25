@@ -27,16 +27,18 @@ message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
 
 file ( GLOB SPQR_CUDA_SOURCES "spqrgpu_*.cpp" )
 
-add_library ( SPQR_CUDA SHARED ${SPQR_CUDA_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( SPQR_CUDA SHARED ${SPQR_CUDA_SOURCES} )
 
-set_target_properties ( SPQR_CUDA PROPERTIES
-    VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
-    CXX_STANDARD_REQUIRED ON
-    CXX_STANDARD 17
-    C_STANDARD_REQUIRED ON
-    C_STANDARD 11
-    OUTPUT_NAME spqr_cuda
-    SOVERSION ${SPQR_VERSION_MAJOR} )
+    set_target_properties ( SPQR_CUDA PROPERTIES
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
+        CXX_STANDARD_REQUIRED ON
+        CXX_STANDARD 17
+        C_STANDARD_REQUIRED ON
+        C_STANDARD 11
+        OUTPUT_NAME spqr_cuda
+        SOVERSION ${SPQR_VERSION_MAJOR} )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     add_library ( SPQR_CUDA_static STATIC ${SPQR_CUDA_SOURCES} )
@@ -54,34 +56,30 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-set ( SPQR_CUDA_INCLUDES ../Include )
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( SPQR_CUDA PRIVATE
+        "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
+        "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>"
+        "$<TARGET_PROPERTY:SPQR,INTERFACE_INCLUDE_DIRECTORIES>"
+        ${CUDAToolkit_INCLUDE_DIRS}
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-target_include_directories ( SPQR_CUDA PRIVATE
-    "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
-    "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
+    set_target_properties ( SPQR_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( SPQR_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+    target_compile_definitions ( SPQR_CUDA PRIVATE "SUITESPARSE_CUDA" )
 
-target_include_directories ( SPQR_CUDA PRIVATE
-    ${CUDAToolkit_INCLUDE_DIRS}
-    ${SPQR_CUDA_INCLUDES}
-    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 
-set_target_properties ( SPQR_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( SPQR_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-target_compile_definitions ( SPQR_CUDA PRIVATE "SUITESPARSE_CUDA" )
-
-target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
-
-target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
-    CUDA::nvToolsExt CUDA::cublas )
+    target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
+        CUDA::nvToolsExt CUDA::cublas )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     target_include_directories ( SPQR_CUDA_static PRIVATE
-        "$<TARGET_PROPERTY:GPUQREngine,INTERFACE_INCLUDE_DIRECTORIES>"
-        "$<TARGET_PROPERTY:GPURuntime,INTERFACE_INCLUDE_DIRECTORIES>" )
-
-    target_include_directories ( SPQR_CUDA_static PRIVATE
+        "$<TARGET_PROPERTY:GPUQREngine_static,INTERFACE_INCLUDE_DIRECTORIES>"
+        "$<TARGET_PROPERTY:GPURuntime_static,INTERFACE_INCLUDE_DIRECTORIES>"
+        "$<TARGET_PROPERTY:SPQR_static,INTERFACE_INCLUDE_DIRECTORIES>"
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SPQR_CUDA_INCLUDES}
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
     set_target_properties ( SPQR_CUDA_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
@@ -104,11 +102,13 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS SPQR_CUDA
-    EXPORT SPQR_CUDATargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS SPQR_CUDA
+        EXPORT SPQR_CUDATargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
+endif ( )
 
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS SPQR_CUDA_static

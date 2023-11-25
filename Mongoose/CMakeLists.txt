@@ -221,24 +221,26 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# Build the Mongoose library for dynamic linking
-add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
-set_property ( TARGET Mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
-set_target_properties ( Mongoose PROPERTIES
-    OUTPUT_NAME mongoose
-    SOVERSION ${Mongoose_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/Mongoose.hpp"
-    WINDOWS_EXPORT_ALL_SYMBOLS ON )
+if ( BUILD_SHARED_LIBS )
+    # Build the Mongoose library for dynamic linking
+    add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
+    set_property ( TARGET Mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
+    set_target_properties ( Mongoose PROPERTIES
+        OUTPUT_NAME mongoose
+        SOVERSION ${Mongoose_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/Mongoose.hpp"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-target_include_directories ( Mongoose
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+    target_include_directories ( Mongoose
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-target_link_libraries ( Mongoose PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( Mongoose PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    target_link_libraries ( Mongoose PRIVATE SuiteSparse::SuiteSparseConfig )
+    target_include_directories ( Mongoose PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
-target_include_directories ( Mongoose PRIVATE . )
+    target_include_directories ( Mongoose PRIVATE . )
+endif ( )
 
 #-------------------------------------------------------------------------------
 
@@ -304,7 +306,7 @@ if ( Python_Interpreter_FOUND )
     add_test ( NAME Mongoose_IO_Test
         COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t io -k )
 
-    if ( WIN32 )
+    if ( WIN32 AND BUILD_SHARED_LIBS )
         set_tests_properties ( Mongoose_IO_Test PROPERTIES
             ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>" )
     endif ( )
@@ -326,7 +328,7 @@ if ( Python_Interpreter_FOUND )
     add_test ( NAME Mongoose_Target_Split_Test
         COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t edgesep -s 0.3 )
 
-    if ( WIN32 )
+    if ( WIN32 AND BUILD_SHARED_LIBS )
         set_tests_properties ( Mongoose_Edge_Separator_Test Mongoose_Edge_Separator_Test_2 Mongoose_Weighted_Edge_Separator_Test Mongoose_Target_Split_Test PROPERTIES
             ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>" )
     endif ( )
@@ -342,7 +344,7 @@ if ( Python_Interpreter_FOUND )
     add_test ( NAME Mongoose_Memory_Test
         COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -min 1 -max 15 -t memory )
 
-    if ( WIN32 )
+    if ( WIN32 AND BUILD_SHARED_LIBS )
         set_tests_properties ( Mongoose_Memory_Test PROPERTIES
             ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>" )
     endif ( )
@@ -369,7 +371,7 @@ if ( Python_Interpreter_FOUND )
     add_test ( NAME Mongoose_Performance_Test_2
         COMMAND ${Python_EXECUTABLE} ${PROJECT_SOURCE_DIR}/Tests/runTests -t performance -i 21 39 1557 1562 353 2468 1470 1380 505 182 201 2331 760 1389 2401 2420 242 250 1530 1533 -p )
 
-    if ( WIN32 )
+    if ( WIN32 AND BUILD_SHARED_LIBS )
         set_tests_properties ( Mongoose_Performance_Test Mongoose_Performance_Test_2 PROPERTIES
             ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>" )
     endif ( )
@@ -416,7 +418,7 @@ add_test ( NAME Mongoose_Unit_Test_EdgeSep
     COMMAND ${TESTING_OUTPUT_PATH}/mongoose_unit_test_edgesep
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/Tests )
 
-if (WIN32)
+if ( WIN32 AND BUILD_SHARED_LIBS )
     set_tests_properties ( Mongoose_Unit_Test_IO Mongoose_Unit_Test_Graph Mongoose_Unit_Test_EdgeSep PROPERTIES
         ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:Mongoose>" )
 endif ( )
@@ -530,12 +532,14 @@ add_custom_target(userguide
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS Mongoose
-    EXPORT MongooseTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS Mongoose
+        EXPORT MongooseTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS Mongoose_static
         EXPORT MongooseTargets

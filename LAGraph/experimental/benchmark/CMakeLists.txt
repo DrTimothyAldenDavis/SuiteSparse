@@ -26,5 +26,11 @@ foreach( demosourcefile ${DEMO_SOURCES} )
     set_target_properties ( ${demoname} PROPERTIES
         C_STANDARD_REQUIRED ON
         C_STANDARD 11 )
-    target_link_libraries( ${demoname} LAGraphX LAGraph lagraphtest lagraphxtest GraphBLAS::GraphBLAS )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries( ${demoname}
+            LAGraphX LAGraph lagraphtest lagraphxtest GraphBLAS::GraphBLAS )
+    else ( )
+        target_link_libraries( ${demoname}
+            LAGraphX_static LAGraph_static lagraphtest_static lagraphxtest_static GraphBLAS::GraphBLAS )
+    endif ( )
 endforeach( demosourcefile ${DEMO_SOURCES} )
