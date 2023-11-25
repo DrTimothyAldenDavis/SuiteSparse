@@ -710,49 +710,49 @@ if ( DEMO )
     endif ( )
 
     add_test ( NAME int32_double_bcsstk01
-        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int64_double_bcsstk01
-        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int32_single_bcsstk01
-        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
     add_test ( NAME int64_single_bcsstk01
-        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+        COMMAND cholmod_sl_demo ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
 
     add_test ( NAME int32_double_lp_afiro
-        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int64_double_lp_afiro
-        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int32_single_lp_afiro
-        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
     add_test ( NAME int64_single_lp_afiro
-        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+        COMMAND cholmod_sl_demo ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
 
     add_test ( NAME int32_double_can24
-        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_di_demo    ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int64_double_can24
-        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_dl_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int32_single_can24
-        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_si_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
     add_test ( NAME int64_single_can24
-        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+        COMMAND cholmod_sl_demo ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
 
     add_test ( NAME int32_double_complex
-        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int64_double_complex
-        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int32_single_complex
-        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/c.tri )
     add_test ( NAME int64_single_complex
-        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/c.tri )
+        COMMAND cholmod_sl_demo ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/c.tri )
 
     add_test ( NAME int32_double_supernodal
-        COMMAND cholmod_di_demo    ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_di_demo    ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int64_double_supernodal
-        COMMAND cholmod_dl_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_dl_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int32_single_supernodal
-        COMMAND cholmod_si_demo  ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_si_demo  ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
     add_test ( NAME int64_single_supernodal
-        COMMAND cholmod_sl_demo ${CMAKE_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+        COMMAND cholmod_sl_demo ${CMAKE_CURRENT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 
 else ( )
 
