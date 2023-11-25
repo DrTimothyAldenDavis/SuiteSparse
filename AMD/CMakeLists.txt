@@ -2,7 +2,7 @@
 # SuiteSparse/AMD/CMakeLists.txt:  cmake for AMD
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1996-2022, Timothy A. Davis, Patrick Amestoy, Iain Duff.
+# Copyright (c) 1996-2023, Timothy A. Davis, Patrick Amestoy, Iain Duff.
 # All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( AMD_DATE "Sept 18, 2023" )
+set ( AMD_DATE "Nov 30, 2023" )
 set ( AMD_VERSION_MAJOR 3 )
 set ( AMD_VERSION_MINOR 2 )
-set ( AMD_VERSION_SUB   1 )
+set ( AMD_VERSION_SUB   2 )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
@@ -56,10 +56,10 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
+find_package ( SuiteSparse_config 7.4.0
     PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.4.0 REQUIRED )
 endif ( )
 
 #-------------------------------------------------------------------------------
