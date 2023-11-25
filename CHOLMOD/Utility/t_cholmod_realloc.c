@@ -12,8 +12,10 @@
 
 void *CHOLMOD(realloc)  // return newly reallocated block of memory
 (
+    // input:
     size_t nnew,        // # of items in newly reallocate memory
     size_t size,        // size of each item
+    // input/output:
     void *p,            // pointer to memory to reallocate (may be NULL)
     size_t *n,          // # of items in p on input; nnew on output if success
     cholmod_common *Common
@@ -47,8 +49,8 @@ void *CHOLMOD(realloc)  // return newly reallocated block of memory
 
         if (!newly_allocated)
         {
-	    PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n",
-		pold, (double) nold*size, (double) Common->malloc_count-1,
+            PRINTM (("cholmod_free %p %g cnt: %g inuse %g\n",
+                pold, (double) nold*size, (double) Common->malloc_count-1,
                    (double) (Common->memory_inuse - nold*size))) ;
             #ifndef NDEBUG
             size_t size2 = CM_memtable_size (pold) ;

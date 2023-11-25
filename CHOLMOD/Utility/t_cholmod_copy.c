@@ -42,7 +42,7 @@
 //  1       numerical, with non-conjugate transpose
 //  0       pattern, keeping the diagonal
 //  -1      pattern, remove the diagonal
-//  -2      pattern, and add 50% + n extra space to C 
+//  -2      pattern, and add 50% + n extra space to C
 //          as elbow room for AMD and CAMD, when converting
 //          a symmetric matrix A to an unsymmetric matrix C
 
@@ -101,10 +101,13 @@
 
 cholmod_sparse *CHOLMOD(copy)
 (
+    // input:
     cholmod_sparse *A,  // input matrix, not modified
     int stype,          // stype of C
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag)
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 )
@@ -133,11 +136,12 @@ cholmod_sparse *CHOLMOD(copy)
     // get inputs
     //--------------------------------------------------------------------------
 
+    mode = RANGE (mode, -2, 2) ;
     bool ignore_diag = (mode < 0) ;
     bool up = (astype > 0) ;
     bool lo = (astype < 0) ;
     bool values = (mode > 0) && (A->xtype != CHOLMOD_PATTERN) ;
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     //--------------------------------------------------------------------------
     // copy the matrix
@@ -161,8 +165,8 @@ cholmod_sparse *CHOLMOD(copy)
         // A is unsymmetric; C is symmetric upper or lower
         //----------------------------------------------------------------------
 
-        size_t nlo = (stype > 0) ? 0 : (-nrow) ; 
-        size_t nup = (stype > 0) ? ncol : 0 ; 
+        size_t nlo = (stype > 0) ? 0 : (-nrow) ;
+        size_t nup = (stype > 0) ? ncol : 0 ;
         C = CHOLMOD(band) (A, nlo, nup, mode, Common) ;
         RETURN_IF_ERROR ;
         C->stype = stype ;
@@ -267,55 +271,55 @@ cholmod_sparse *CHOLMOD(copy)
                 p_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+                rs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
                 if (conj)
                 {
-                    c_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    ct_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cs_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
                 if (conj)
                 {
-                    z_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zs_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    zt_s_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zs_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+                rd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
                 if (conj)
                 {
-                    c_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    ct_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    cd_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
                 if (conj)
                 {
-                    z_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zd_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 else
                 {
-                    zt_cholmod_copy_worker (C, A, ignore_diag, Common) ;
+                    zd_t_cholmod_copy_worker (C, A, ignore_diag, Common) ;
                 }
                 break ;
         }

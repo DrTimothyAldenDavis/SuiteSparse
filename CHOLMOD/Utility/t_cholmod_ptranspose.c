@@ -24,8 +24,10 @@
 
 cholmod_sparse *CHOLMOD(ptranspose)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
                         // <= 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,f)' or C=A(p,p)', or NULL
     Int *fset,          // a list of column indices in range 0:A->ncol-1
@@ -41,6 +43,7 @@ cholmod_sparse *CHOLMOD(ptranspose)
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_SPARSE_MATRIX_INVALID (A, NULL) ;
     Common->status = CHOLMOD_OK ;
+    mode = RANGE (mode, -1, 2) ;
 
     //--------------------------------------------------------------------------
     // count # of entries in C

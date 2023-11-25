@@ -2,41 +2,40 @@
 // CHOLMOD/MATLAB/ldlrowmod: MATLAB interface to CHOLMOD rowmod method
 //------------------------------------------------------------------------------
 
-// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/MATLAB Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Rank-1 row add/delete of a sparse LDL' factorization.
- *
- * 'Adding' or 'deleting' a row does not change the dimension of L.
- * Instead, deleting a row A(k,:) and the corresponding column A(:,k) means
- * replacing the kth row and column of A with the kth row and column of the
- * identity matrix.  Adding a row is the opposite.  This function then modifies
- * the LDL' factorization of A to reflect this change.
- *
- * To add a row k, the kth row of A is assumed to already be the kth row of
- * identity.  This condition is not checked.
- *
- * On input, LD contains the LDL' factorization of A.  See ldlchol for details.
- * If A has been permuted, then C must reflect that permutation.  In other
- * words, the caller must have already permuted C according the the fill-
- * reducing ordering found by ldlchol.
- *
- * Usage:
- *
- *	LD = ldlrowmod (LD,k,C)		add row k to an LDL' factorization
- *	LD = ldlrowmod (LD,k)	        delete row k from an LDL' factorization
- *
- * See ldlrowmod.m for details.  LD and C must be real and sparse.
- * C is a column vector that is the new column A(:,k).
- *
- * The bulk of the time is spent copying the input LD to the output LD.  This
- * mexFunction could be much faster if it could safely modify its input LD.
- */
+// Rank-1 row add/delete of a sparse LDL' factorization.
+//
+// 'Adding' or 'deleting' a row does not change the dimension of L.
+// Instead, deleting a row A(k,:) and the corresponding column A(:,k) means
+// replacing the kth row and column of A with the kth row and column of the
+// identity matrix.  Adding a row is the opposite.  This function then modifies
+// the LDL' factorization of A to reflect this change.
+//
+// To add a row k, the kth row of A is assumed to already be the kth row of
+// identity.  This condition is not checked.
+//
+// On input, LD contains the LDL' factorization of A.  See ldlchol for details.
+// If A has been permuted, then C must reflect that permutation.  In other
+// words, the caller must have already permuted C according the the fill-
+// reducing ordering found by ldlchol.
+//
+// Usage:
+//
+//      LD = ldlrowmod (LD,k,C)         add row k to an LDL' factorization
+//      LD = ldlrowmod (LD,k)           delete row k from an LDL' factorization
+//
+// See ldlrowmod.m for details.  LD and C must be real and sparse.
+// C is a column vector that is the new column A(:,k).
+//
+// The bulk of the time is spent copying the input LD to the output LD.  This
+// mexFunction could be much faster if it could safely modify its input LD.
 
-#include "cholmod_matlab.h"
+#include "sputil2.h"
 
 void mexFunction
 (
@@ -55,37 +54,37 @@ void mexFunction
     int64_t j, k, s, rowadd, n, lnz ;
     int ok ;
 
-    /* ---------------------------------------------------------------------- */
-    /* start CHOLMOD and set parameters */ 
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // start CHOLMOD and set parameters
+    //--------------------------------------------------------------------------
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    sputil_config (SPUMONI, cm) ;
+    sputil2_config (SPUMONI, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
 
     if (nargout > 1 || nargin < 2 || nargin > 3)
     {
-	mexErrMsgTxt ("Usage: LD = ldlrowmod (LD,k,C) or ldlrowmod (LD,k)") ; 
+        mexErrMsgTxt ("Usage: LD = ldlrowmod (LD,k,C) or ldlrowmod (LD,k)") ;
     }
 
     n = mxGetN (pargin [0]) ;
     k = (int64_t) mxGetScalar (pargin [1]) ;
-    k = k - 1 ;         /* change from 1-based to 0-based */
+    k = k - 1 ;         // change from 1-based to 0-based
 
     if (!mxIsSparse (pargin [0])
-	    || n != mxGetM (pargin [0])
-	    || mxIsComplex (pargin [0]))
+            || n != mxGetM (pargin [0])
+            || mxIsComplex (pargin [0]))
     {
-	mexErrMsgTxt ("ldlrowmod: L must be real, square, and sparse") ;
+        mexErrMsgTxt ("ldlrowmod: L must be real, square, and sparse") ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* determine if we're doing an rowadd or rowdel */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // determine if we're doing an rowadd or rowdel
+    //--------------------------------------------------------------------------
 
     rowadd = (nargin > 2) ;
 
@@ -101,34 +100,36 @@ void mexFunction
         }
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* get C: sparse vector of incoming/outgoing column */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // get C: sparse vector of incoming/outgoing column
+    //--------------------------------------------------------------------------
 
-    C = (rowadd) ? sputil_get_sparse (pargin [2], &Cmatrix, &dummy, 0) : NULL ;
+    size_t C_xsize = 0 ;
+    C = (rowadd) ? sputil2_get_sparse (pargin [2], 0, CHOLMOD_DOUBLE, &Cmatrix,
+        &C_xsize, cm) : NULL ;
 
-    /* ---------------------------------------------------------------------- */
-    /* construct a copy of the input sparse matrix L */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // construct a copy of the input sparse matrix L
+    //--------------------------------------------------------------------------
 
-    /* get the MATLAB L */
+    // get the MATLAB L
     Lp = (int64_t *) mxGetJc (pargin [0]) ;
     Li = (int64_t *) mxGetIr (pargin [0]) ;
-    Lx = mxGetPr (pargin [0]) ;
+    Lx = (double *) mxGetData (pargin [0]) ;
 
-    /* allocate the CHOLMOD symbolic L */
+    // allocate the CHOLMOD symbolic L
     L = cholmod_l_allocate_factor (n, cm) ;
     L->ordering = CHOLMOD_NATURAL ;
     ColCount = L->ColCount ;
     for (j = 0 ; j < n ; j++)
     {
-	ColCount [j] = Lp [j+1] - Lp [j] ;
+        ColCount [j] = Lp [j+1] - Lp [j] ;
     }
 
-    /* allocate space for a CHOLMOD LDL' packed factor */
+    // allocate space for a CHOLMOD LDL' packed factor
     cholmod_l_change_factor (CHOLMOD_REAL, FALSE, FALSE, TRUE, TRUE, L, cm) ;
 
-    /* copy MATLAB L into CHOLMOD L */
+    // copy MATLAB L into CHOLMOD L
     Lp2 = L->p ;
     Li2 = L->i ;
     Lx2 = L->x ;
@@ -136,24 +137,24 @@ void mexFunction
     lnz = L->nzmax ;
     for (j = 0 ; j <= n ; j++)
     {
-	Lp2 [j] = Lp [j] ;
+        Lp2 [j] = Lp [j] ;
     }
     for (j = 0 ; j < n ; j++)
     {
-	Lnz2 [j] = Lp [j+1] - Lp [j] ;
+        Lnz2 [j] = Lp [j+1] - Lp [j] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Li2 [s] = Li [s] ;
+        Li2 [s] = Li [s] ;
     }
     for (s = 0 ; s < lnz ; s++)
     {
-	Lx2 [s] = Lx [s] ;
+        Lx2 [s] = Lx [s] ;
     }
 
-    /* ---------------------------------------------------------------------- */
-    /* rowadd/rowdel the LDL' factorization */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // rowadd/rowdel the LDL' factorization
+    //--------------------------------------------------------------------------
 
     if (rowadd)
     {
@@ -165,26 +166,27 @@ void mexFunction
     }
     if (!ok) mexErrMsgTxt ("ldlrowmod failed\n") ;
 
-    /* ---------------------------------------------------------------------- */
-    /* copy the results back to MATLAB */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // copy the results back to MATLAB
+    //--------------------------------------------------------------------------
 
-    /* change L back to packed LDL' (it may have become unpacked if the
-     * sparsity pattern changed).  This change takes O(n) time if the pattern
-     * of L wasn't updated. */
+    // change L back to packed LDL' (it may have become unpacked if the
+    // sparsity pattern changed).  This change takes O(n) time if the pattern
+    // of L wasn't updated.
     Lsparse = cholmod_l_factor_to_sparse (L, cm) ;
 
-    /* return L as a sparse matrix */
-    pargout [0] = sputil_put_sparse (&Lsparse, cm) ;
+    // return L as a sparse matrix; it may contain numerically zero entries,
+    // which must be kept to allow update/downdate to work.
+    pargout [0] = sputil2_put_sparse (&Lsparse, mxDOUBLE_CLASS,
+        /* return L with explicit zeros kept */ false, cm) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* free workspace and the CHOLMOD L, except for what is copied to MATLAB */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // free workspace and the CHOLMOD L, except for what is copied to MATLAB
+    //--------------------------------------------------------------------------
 
     cholmod_l_free_factor (&L, cm) ;
+    sputil2_free_sparse (&C, &Cmatrix, C_xsize, cm) ;
     cholmod_l_finish (cm) ;
-    cholmod_l_print_common (" ", cm) ;
-    /*
-    if (cm->malloc_count != 3 + mxIsComplex (pargout[0])) mexErrMsgTxt ("!") ;
-    */
+    if (SPUMONI > 0) cholmod_l_print_common (" ", cm) ;
 }
+

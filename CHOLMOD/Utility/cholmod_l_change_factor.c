@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Utility/cholmod_l_change_factor: change format of a factor object 
+// CHOLMOD/Utility/cholmod_l_change_factor: change format of a factor object
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Utility Module. Copyright (C) 2023, Timothy A. Davis, All Rights

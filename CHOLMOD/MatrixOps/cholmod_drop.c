@@ -2,180 +2,120 @@
 // CHOLMOD/MatrixOps/cholmod_drop: drop small entries from a sparse matrix
 //------------------------------------------------------------------------------
 
-// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+// CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2023, Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
 
-/* Drop small entries from A, and entries in the ignored part of A if A
- * is symmetric.  None of the matrix operations drop small numerical entries
- * from a matrix, except for this one.  NaN's and Inf's are kept.
- *
- * workspace: none
- *
- * Supports pattern and real matrices, complex and zomplex not supported.
- */
+// Drop small entries from A, and entries in the ignored part of A if A
+// is symmetric.  None of the matrix operations drop small numerical entries
+// from a matrix, except for this one.  NaN's and Inf's are kept.
+//
+// workspace: none
+//
+// Supports any xtype (pattern, real, complex, zomplex) and any dtype
+// (single or double).
 
 #include "cholmod_internal.h"
 
 #ifndef NGPL
 #ifndef NMATRIXOPS
 
-/* ========================================================================== */
-/* === cholmod_drop ========================================================= */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// t_cholmod_drop_worker
+//------------------------------------------------------------------------------
+
+#define DOUBLE
+#define REAL
+#include "t_cholmod_drop_worker.c"
+#define COMPLEX
+#include "t_cholmod_drop_worker.c"
+#define ZOMPLEX
+#include "t_cholmod_drop_worker.c"
+
+#undef  DOUBLE
+#define SINGLE
+#define REAL
+#include "t_cholmod_drop_worker.c"
+#define COMPLEX
+#include "t_cholmod_drop_worker.c"
+#define ZOMPLEX
+#include "t_cholmod_drop_worker.c"
+
+//------------------------------------------------------------------------------
+// cholmod_drop
+//------------------------------------------------------------------------------
 
 int CHOLMOD(drop)
 (
-    /* ---- input ---- */
-    double tol,		/* keep entries with absolute value > tol */
-    /* ---- in/out --- */
-    cholmod_sparse *A,	/* matrix to drop entries from */
-    /* --------------- */
+    // input:
+    double tol,         // keep entries with absolute value > tol
+    // input/output:
+    cholmod_sparse *A,  // matrix to drop entries from
     cholmod_common *Common
 )
 {
-    double aij ;
-    double *Ax ;
-    Int *Ap, *Ai, *Anz ;
-    Int packed, i, j, nrow, ncol, p, pend, nz, values ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
-    RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_REAL, FALSE) ;
+    RETURN_IF_XTYPE_INVALID (A, CHOLMOD_PATTERN, CHOLMOD_ZOMPLEX, FALSE) ;
     Common->status = CHOLMOD_OK ;
     ASSERT (CHOLMOD(dump_sparse) (A, "A predrop", Common) >= 0) ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // drop small entries from A
+    //--------------------------------------------------------------------------
 
-    Ap = A->p ;
-    Ai = A->i ;
-    Ax = A->x ;
-    Anz = A->nz ;
-    packed = A->packed ;
-    ncol = A->ncol ;
-    nrow = A->nrow ;
-    values = (A->xtype != CHOLMOD_PATTERN) ;
-    nz = 0 ;
-
-    if (values)
+    switch ((A->xtype + A->dtype) % 8)
     {
 
-	/* ------------------------------------------------------------------ */
-	/* drop small numerical entries from A, and entries in ignored part */
-	/* ------------------------------------------------------------------ */
+        default:
+            // pattern only: just drop entries outside the lower/upper part,
+            // if A is symmetric
+            if (A->stype > 0)
+            {
+                CHOLMOD(band_inplace) (0, A->ncol, 0, A, Common) ;
+            }
+            else if (A->stype < 0)
+            {
+                CHOLMOD(band_inplace) (-(A->nrow), 0, 0, A, Common) ;
+            }
+            break ;
 
-	if (A->stype > 0)
-	{
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_drop_worker (tol, A, Common) ;
+            break ;
 
-	    /* -------------------------------------------------------------- */
-	    /* A is symmetric, with just upper triangular part stored */
-	    /* -------------------------------------------------------------- */
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_drop_worker (tol, A, Common) ;
+            break ;
 
-	    for (j = 0 ; j < ncol ; j++)
-	    {
-		p = Ap [j] ;
-		pend = (packed) ? (Ap [j+1]) : (p + Anz [j]) ;
-		Ap [j] = nz ;
-		for ( ; p < pend ; p++)
-		{
-		    i = Ai [p] ;
-		    aij = Ax [p] ;
-		    if (i <= j && (fabs (aij) > tol || isnan (aij)))
-		    {
-			Ai [nz] = i ;
-			Ax [nz] = aij ;
-			nz++ ;
-		    }
-		}
-	    }
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_drop_worker (tol, A, Common) ;
+            break ;
 
-	}
-	else if (A->stype < 0)
-	{
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_drop_worker (tol, A, Common) ;
+            break ;
 
-	    /* -------------------------------------------------------------- */
-	    /* A is symmetric, with just lower triangular part stored */
-	    /* -------------------------------------------------------------- */
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_drop_worker (tol, A, Common) ;
+            break ;
 
-	    for (j = 0 ; j < ncol ; j++)
-	    {
-		p = Ap [j] ;
-		pend = (packed) ? (Ap [j+1]) : (p + Anz [j]) ;
-		Ap [j] = nz ;
-		for ( ; p < pend ; p++)
-		{
-		    i = Ai [p] ;
-		    aij = Ax [p] ;
-		    if (i >= j && (fabs (aij) > tol || isnan (aij)))
-		    {
-			Ai [nz] = i ;
-			Ax [nz] = aij ;
-			nz++ ;
-		    }
-		}
-	    }
-	}
-	else
-	{
-
-	    /* -------------------------------------------------------------- */
-	    /* both parts of A present, just drop small entries */
-	    /* -------------------------------------------------------------- */
-
-	    for (j = 0 ; j < ncol ; j++)
-	    {
-		p = Ap [j] ;
-		pend = (packed) ? (Ap [j+1]) : (p + Anz [j]) ;
-		Ap [j] = nz ;
-		for ( ; p < pend ; p++)
-		{
-		    i = Ai [p] ;
-		    aij = Ax [p] ;
-		    if (fabs (aij) > tol || isnan (aij))
-		    {
-			Ai [nz] = i ;
-			Ax [nz] = aij ;
-			nz++ ;
-		    }
-		}
-	    }
-	}
-	Ap [ncol] = nz ;
-
-	/* reduce A->i and A->x in size */
-	ASSERT (MAX (1,nz) <= A->nzmax) ;
-	CHOLMOD(reallocate_sparse) (nz, A, Common) ;
-	ASSERT (Common->status >= CHOLMOD_OK) ;
-
-    }
-    else
-    {
-
-	/* ------------------------------------------------------------------ */
-	/* consider only the pattern of A */
-	/* ------------------------------------------------------------------ */
-
-	/* Note that cholmod_band_inplace calls cholmod_reallocate_sparse */
-	if (A->stype > 0)
-	{
-	    CHOLMOD(band_inplace) (0, ncol, 0, A, Common) ;
-	}
-	else if (A->stype < 0)
-	{
-	    CHOLMOD(band_inplace) (-nrow, 0, 0, A, Common) ;
-	}
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_drop_worker (tol, A, Common) ;
+            break ;
     }
 
     ASSERT (CHOLMOD(dump_sparse) (A, "A dropped", Common) >= 0) ;
     return (TRUE) ;
 }
+
 #endif
 #endif
+

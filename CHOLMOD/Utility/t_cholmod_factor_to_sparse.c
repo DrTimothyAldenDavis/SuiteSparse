@@ -22,7 +22,8 @@
 
 cholmod_sparse *CHOLMOD(factor_to_sparse)
 (
-    cholmod_factor *L,	// input: factor to convert; output: L is converted
+    // input/output:
+    cholmod_factor *L,  // input: factor to convert; output: L is converted
                         // to a simplicial symbolic factor
     cholmod_common *Common
 )

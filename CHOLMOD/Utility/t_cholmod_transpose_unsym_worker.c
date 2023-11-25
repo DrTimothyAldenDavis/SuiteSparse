@@ -48,12 +48,14 @@ static void TEMPLATE (cholmod_transpose_unsym_worker)
             #define PACKED
             #define FSET
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
         else
         {
             // C = A (p,f)' or A(:,f)' where A is unpacked
             #define FSET
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
     }
     else
@@ -63,11 +65,13 @@ static void TEMPLATE (cholmod_transpose_unsym_worker)
             // C = A (p,:)' or A' where A is packed
             #define PACKED
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
         else
         {
             // C = A (p,:)' or A' where A is unpacked
             #include "t_cholmod_transpose_unsym_template.c"
+            return ;
         }
     }
 }

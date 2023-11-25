@@ -2,8 +2,8 @@
 // CHOLMOD/Utility/cholmod_memdebug: memory debugging
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Utility Module.  Copyright (C) 2023, Timothy A. Davis
-// All Rights Reserved.
+// CHOLMOD/Utility Module.  Copyright (C) 2023, Timothy A. Davis, All Rights
+// Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------

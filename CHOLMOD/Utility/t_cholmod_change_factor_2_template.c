@@ -15,7 +15,7 @@
     // the new L is created in new space: Li2, Lx2, Lz2
     #define Li_NEW Li2
     #define Lx_NEW Lx2
-    #define Lz_NEW Lx2
+    #define Lz_NEW Lz2
 #else
     // L is modified in its existing space: Li, Lx, and Lz
     #define Li_NEW Li

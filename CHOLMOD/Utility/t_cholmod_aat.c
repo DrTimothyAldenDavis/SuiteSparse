@@ -22,19 +22,21 @@
 //  1       numerical, with non-conjugate transpose
 //  0       pattern, keeping the diagonal
 //  -1      pattern, remove the diagonal
-//  -2      pattern, and add 50% + n extra space to C 
+//  -2      pattern, and add 50% + n extra space to C
 //          as elbow room for AMD and CAMD, when converting
 //          a symmetric matrix A to an unsymmetric matrix C
 
 #include "cholmod_internal.h"
 
 #define RETURN_IF_ERROR                             \
+{                                                   \
     if (Common->status < CHOLMOD_OK)                \
     {                                               \
         CHOLMOD(free_sparse) (&C, Common) ;         \
         CHOLMOD(free_sparse) (&F, Common) ;         \
         return (NULL) ;                             \
-    }
+    }                                               \
+}
 
 //------------------------------------------------------------------------------
 // t_cholmod_aat_worker template
@@ -66,11 +68,14 @@
 
 cholmod_sparse *CHOLMOD(aat)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // 0: pattern (with diag), -1: pattern (remove diag),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
+                        // -1: pattern (remove diag),
                         // -2: pattern (remove diag; add ~50% extra space in C)
     cholmod_common *Common
 )
@@ -84,13 +89,15 @@ cholmod_sparse *CHOLMOD(aat)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, NULL) ;
     Common->status = CHOLMOD_OK ;
     cholmod_sparse *C = NULL, *F = NULL ;
-    ASSERT (CHOLMOD(dump_sparse) (A, "aat:A", Common) >= 0) ;
-
     if (A->stype != 0)
     {
         ERROR (CHOLMOD_INVALID, "input matrix must be unsymmetric") ;
         return (NULL) ;
     }
+
+    mode = RANGE (mode, -2, 2) ;
+
+    ASSERT (CHOLMOD(dump_sparse) (A, "aat:A", Common) >= 0) ;
 
     //--------------------------------------------------------------------------
     // get inputs
@@ -147,8 +154,10 @@ cholmod_sparse *CHOLMOD(aat)
     // cnz = nnz (C)
     //--------------------------------------------------------------------------
 
-    int64_t cnz = 0 ;
-    for (Int j = 0 ; j < n ; j++)
+    int ok = TRUE ;
+    size_t cnz = 0 ;
+    size_t cnzmax = SIZE_MAX - A->nrow ;
+    for (Int j = 0 ; ok && (j < n) ; j++)
     {
 
         //----------------------------------------------------------------------
@@ -190,24 +199,23 @@ cholmod_sparse *CHOLMOD(aat)
         }
 
         //----------------------------------------------------------------------
-        // check for integer overflow
+        // check if nearing integer overflow
         //----------------------------------------------------------------------
 
-        if (cnz < 0 || cnz >= Int_max / sizeof (Int))
-        {
-            Common->status = CHOLMOD_TOO_LARGE ;
-            break ;
-        }
+        ok = (cnz < cnzmax) ;
     }
-
-    RETURN_IF_ERROR ;
 
     //--------------------------------------------------------------------------
     // allocate C
     //--------------------------------------------------------------------------
 
-    size_t cnzmax = cnz + ((mode == -2) ? (cnz/2 + n) : 0) ;
-    C = CHOLMOD(allocate_sparse) (n, n, cnzmax,
+    if (mode == -2 && ok)
+    {
+        // add some extra space
+        cnz = CHOLMOD(add_size_t) (cnz, cnz/2, &ok) ;
+        cnz = CHOLMOD(add_size_t) (cnz, A->nrow, &ok) ;
+    }
+    C = CHOLMOD(allocate_sparse) (n, n, ok ? cnz : SIZE_MAX,
         /* C is not sorted: */ FALSE, /* C is packed: */ TRUE,
         /* C stype: */ 0, axtype + A->dtype, Common) ;
     RETURN_IF_ERROR ;
@@ -218,33 +226,32 @@ cholmod_sparse *CHOLMOD(aat)
 
     switch ((C->xtype + C->dtype) % 8)
     {
-
         default:
             p_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_aat_worker (C, A, F, ignore_diag, Common) ;
             break ;
     }
 

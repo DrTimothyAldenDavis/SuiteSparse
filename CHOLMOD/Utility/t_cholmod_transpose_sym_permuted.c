@@ -13,7 +13,7 @@
 // The including file must define or undef PACKED, NUMERIC, and LO.
 // define PACKED: if A->packed is true, undefine if A->packed is false
 // define LO: if A is symmetric lower, undefine it if A is upper
-// define NUMERIC: if computing values and pattern of C, undefine it if 
+// define NUMERIC: if computing values and pattern of C, undefine it if
 //      computing just the column counts of C.
 
 //------------------------------------------------------------------------------
@@ -46,7 +46,7 @@
                 // C(jnew,inew) = conj (A(iold,jold))
                 Int pc = Wi [inew]++ ;
                 #ifdef NUMERIC
-                ASSIGN_CONJ_OR_NCONJ (Cx, Cz, pc, Ax, Az, pa) ; 
+                ASSIGN_CONJ_OR_NCONJ (Cx, Cz, pc, Ax, Az, pa) ;
                 Ci [pc] = jnew ;
                 #endif
             }
@@ -55,7 +55,7 @@
                 // C(inew,jnew) = A(iold,jold)
                 Int pc = Wi [jnew]++ ;
                 #ifdef NUMERIC
-                ASSIGN (Cx, Cz, pc, Ax, Az, pa) ; 
+                ASSIGN (Cx, Cz, pc, Ax, Az, pa) ;
                 Ci [pc] = inew ;
                 #endif
             }

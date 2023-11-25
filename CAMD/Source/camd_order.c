@@ -72,9 +72,9 @@ int CAMD_order
 	return (CAMD_INVALID) ;
     }
 
-    /* check if n or nz will cause size_t overflow */
-    if ((size_t) n >= SIZE_T_MAX / sizeof (Int)
-     || (size_t) nz >= SIZE_T_MAX / sizeof (Int))
+    /* check if n or nz will cause integer overflow */
+    if (((size_t) n) >= Int_MAX / sizeof (Int)
+     || ((size_t) nz) >= Int_MAX / sizeof (Int))
     {
 	if (info) Info [CAMD_STATUS] = CAMD_OUT_OF_MEMORY ;
 	return (CAMD_OUT_OF_MEMORY) ;	    /* problem too large */

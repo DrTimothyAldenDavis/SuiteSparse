@@ -22,6 +22,7 @@
 
 cholmod_dense *CHOLMOD(copy_dense)  // returns new dense matrix
 (
+    // input:
     cholmod_dense *X,   // input dense matrix
     cholmod_common *Common
 )

@@ -14,6 +14,7 @@
 
 int cholmod_divcomplex
 (
+    // input:
     double ar, double ai,       // a (real, imaginary)
     double br, double bi,       // b (real, imaginary)
     double *cr, double *ci      // c (real, imaginary)

@@ -47,6 +47,7 @@
 
 cholmod_dense *CHOLMOD(eye)     // return a dense identity matrix
 (
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     int xdtype,     // xtype + dtype of the matrix:
@@ -76,28 +77,28 @@ cholmod_dense *CHOLMOD(eye)     // return a dense identity matrix
 
     switch (xdtype % 8)
     {
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_eye_worker (X) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_eye_worker (X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_eye_worker (X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_eye_worker (X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_eye_worker (X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_eye_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_eye_worker (X) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_eye_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_eye_worker (X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_eye_worker (X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_eye_worker (X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_eye_worker (X) ;
             break ;
     }
 

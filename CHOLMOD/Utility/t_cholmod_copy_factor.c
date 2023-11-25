@@ -44,6 +44,7 @@
 
 cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
 (
+    // input:
     cholmod_factor *L,      // factor to copy (not modified)
     cholmod_common *Common
 )
@@ -74,7 +75,7 @@ cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
     // allocate the new factor H, H->Perm, and H->ColCount
     //--------------------------------------------------------------------------
 
-    cholmod_factor *H = CHOLMOD(allocate_factor) (n, Common) ;
+    cholmod_factor *H = CHOLMOD(alloc_factor) (n, L->dtype, Common) ;
     RETURN_IF_ERROR ;
 
     //--------------------------------------------------------------------------
@@ -152,29 +153,28 @@ cholmod_factor *CHOLMOD(copy_factor)    // return a copy of the factor
 
         switch ((L->xtype + L->dtype) % 8)
         {
-
-            case CHOLMOD_SINGLE + CHOLMOD_REAL:
-                r_s_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+                rs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-                c_s_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+                cs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-                z_s_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+                zs_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-                r_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+                rd_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-                c_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+                cd_cholmod_copy_factor_worker (L, H) ;
                 break ;
 
-            case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-                z_cholmod_copy_factor_worker (L, H) ;
+            case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+                zd_cholmod_copy_factor_worker (L, H) ;
                 break ;
         }
     }

@@ -12,6 +12,7 @@
 
 int cholmod_l_allocate_work
 (
+    // input:
     size_t nrow,
     size_t iworksize,
     size_t xworksize,
