@@ -2216,8 +2216,7 @@ You cannot change a supernodal factor to the zomplex xtype.
 \subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
 %---------------------------------------
 
-This is perhaps a surprisingly complex question to ask.
-
+This is a simple question perhaps a surprisingly complex question to answer.
 For a sparse Cholesky factorization in CHOLMOD, there are at least 6 ways to
 answer this question.  First of all, the kind of factorization ($LL'$ or
 $LDL'$) doesn't affect this answer, if the $n$ entries in unit diagonal of $L$
@@ -2225,7 +2224,7 @@ in the $LDL'$ factorization are excluded.  So all of the discussion here
 includes this simplification, and ``\verb'L''' can be considered the same
 as ``\verb'LD'.''
 
-In strictly increasing order of size (except that definition 5 can be large or
+In strictly increasing order of size (except that definition 5 can be larger or
 smaller than 3 and/or 4):
 
 \begin{enumerate}
@@ -2236,7 +2235,16 @@ since it's affected by roundoff, denormals flushing to zero, and so on.
 Computing this requires converting a factor to sparse matrix with
 \verb'cholmod_factor_to_sparse', followed by \verb'cholmod_drop' with a
 \verb'tol' of zero, and then a call to \verb'cholmod_nnz'.  There is no method
-in CHOLMOD to compute this otherwise.
+in CHOLMOD to compute this otherwise.  This number is \verb'nnz(L)' in MATLAB
+after the built-in \verb'R=chol(A)' (which uses CHOLMOD and where \verb"R=L'")
+or in my MATLAB interface as \verb'R=chol2(A)' or \verb'L=lchol(A)', since a
+valid MATLAB sparse matrix cannot include any explicit entries that are
+numerically equal to zero.  However, such a matrix cannot be used in an
+update/downdate, nor in my internal solve routines, since those methods require
+the chordal property of \verb'L'.  That property is broken if entries are
+dropped because of exact numerical cancellation.  Zero entries are not dropped
+by \verb'LD=ldlchol(A)', which works fine in practice but the matrix \verb'LD'
+is thus technically not a valid MATLAB sparse matrix.
 
 \item
 The number of entries in the filled graph of \verb'L'. This is a very stable
@@ -2245,7 +2253,31 @@ method used.  It only depends on the symbolic pattern of \verb'A', and the
 fill-reducing ordering.  Some entries can be exactly zero because of roundoff
 but this is ignored.  This is returned as \verb'Common->lnz' after the call to
 \verb'cholmod_analyze'.  The value is not saved in \verb'L' itself because it
-can change with update/downdates.
+can change with update/downdates.  This can be computed in MATLAB via any
+of the following, where any fill-reducing ordering would first need to be
+applied to the input matrix \verb'A':
+
+{\small
+\begin{verbatim}
+    [count] = symbfact (A, ...) ;    % built-in
+    sum (count)
+
+    [count] = symbfact2 (A, ...) ;   % mine, but it's the same as symbfact
+    sum (count)
+
+    [count, h, parent, post, R] = symbfact (A, ...) ;    % built-in
+    nnz (R)
+
+    [count, h, parent, post, R] = symbfact2 (A, ...) ;   % mine, the same
+    nnz (R)
+
+    [count, h, parent, post, L] = symbfact2 (A, ..., 'L') ; % mine, with L not R
+    nnz (L)
+\end{verbatim}}
+
+Internally the built-in MATLAB \verb'symbfact' function calls CHOLMOD.
+The \verb'L' or \verb'R' matrix returned above has the entire pattern,
+but where each entry is equal to one.
 
 \item
 The number of entries in the supernodal \verb'L', which is like (2) but with
@@ -2305,14 +2337,12 @@ another factor of 2 if the matrix to factorize is complex or zomplex.
 \end{enumerate}
 
 Except for the simple expressions for:
-
 \begin{itemize}
 \item
 (2) \verb'Common->lnz'
 \item
 and (5) \verb'(L->is_super) ? L->xsize : L->nzmax',
 \end{itemize}
-
 there is no user-callable method in CHOLMOD to compute these values.
 I may consider adding such a method in a future release.
 
