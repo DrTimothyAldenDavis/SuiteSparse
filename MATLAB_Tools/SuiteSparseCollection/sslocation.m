@@ -10,9 +10,9 @@ function topdir = sslocation
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
-% on backslash.engr.tamu.edu:
-topdir = '/raid/SuiteSparseCollection/html/' ;
+% on backslash.cse.tamu.edu:
+topdir = '/archive/davis/SuiteSparseCollection/' ;
 
-% on hypersparse.engr.tamu.edu:
-topdir = '/raid/SuiteSparseCollection/html/' ;
+% on hypersparse.cse.tamu.edu:
+topdir = '/raid/archive/davis/SuiteSparseCollection/' ;
 

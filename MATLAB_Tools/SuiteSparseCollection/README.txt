@@ -1,4 +1,4 @@
-SuiteSparseCollection, Copyright (c) 2006-2023, Timothy A Davis.
+SuiteSparseCollection, Copyright (c) 2006-2019, Timothy A Davis.
 All Rights Reserved.
 SPDX-License-Identifier: GPL-2.0+
 
@@ -46,6 +46,7 @@ SuiteSparseCollection: software for managing the SuiteSparse Matrix Collection
 
   Requires ssget, CSparse, CHOLMOD, AMD, COLAMD, RBio, and METIS.
 
+
 --------------------------------------------------------------------------------
 Files:
 --------------------------------------------------------------------------------
@@ -80,12 +81,12 @@ Requires most of SuiteSparse (ssget, CHOLMOD, AMD, COLAMD, CSparse, RBio, and
 SuiteSparseCollection), and METIS.
 
 The location of the primary archive of the collection is
-backslash.engr.tamu.edu:/raid/SuiteSparseCollection,
+backslash.cse.tamu.edu:/archive/davis/SuiteSparseCollection,
 which is only accessible to the maintainers of the collection.
 
 A local copy of ssget should be installed where the mat, MM, RB, and svd
 directories are replaced with symbolic links to the directories in
-backslash.engr.tamu.edu:/raid/SuiteSparseCollection.  The
+backslash.cse.tamu.edu:/archive/davis/SuiteSparseCollection.  The
 ssget/files directory should not be a symbolic link.
 
 1) Get the matrix into MATLAB (method depending on how the matrix was
@@ -93,13 +94,13 @@ ssget/files directory should not be a symbolic link.
     written just for that matrix.
 
 2) Add the full matrix name to the end of the file:
-    backslash:/raid/SuiteSparseCollection/files/ss_listing.txt
+    backslash:/archive/davis/SuiteSparseCollection/files/ss_listing.txt
     Each line in the file has the form Group/Name.  The line number in
     ss_listing.txt must match the matrix Problem.id number, and full name
     must match the Problem.name in the MATLAB struct.
 
 3) Create a new directory
-    backslash:/raid/SuiteSparseCollection/mat/Group,
+    backslash:/archive/davis/SuiteSparseCollection/mat/Group,
     where Group is the new matrix group.  Add a README.txt file to this
     directory, the first line of which is a one-line summary that will appear
     in the top-level web page for the collection.  Skip this step if adding a
@@ -122,9 +123,7 @@ ssget/files directory should not be a symbolic link.
     Problem.b	    right-hand-side
     Problem.x	    solution
     Problem.notes   a char array
-    Problem.aux	    auxiliary matrices (contents are problem dependent).
-                    Sequences of k matrices should be held as cell arrays,
-                    of size k-by-1.
+    Problem.aux	    auxiliary matrices (contents are problem dependent)
 
     Save to a MATLAB mat-file.  In the mat directory, do this in MATLAB:
 
@@ -135,7 +134,7 @@ ssget/files directory should not be a symbolic link.
     save (Problem.name, 'Problem', '-v7.3') ;
 
     Move the new *.mat files into
-    backslash:/raid/SuiteSparseCollection/html/mat/Group.
+    backslash:/raid/SuiteSparseCollection/html//mat/Group.
 
 5) Compute matrix statistics and extend the ss_index. Do this in MATLAB:
 
@@ -144,7 +143,7 @@ ssget/files directory should not be a symbolic link.
     where ids is a list of the new matrix id's.  Updated ss_index.mat and
     ssstats.csv files are placed in the current working directory.
     Move the new ss_index.mat and ssstats.csv files to 
-    backslash:/raid/SuiteSparseCollection/files,
+    backslash:/archive/davis/SuiteSparseCollection/files,
     overwriting the old copies there.  Also copy them into
     [path to ssget]/files/ so they will be found by the MATLAB ssget.m.
 
@@ -173,7 +172,7 @@ ssget/files directory should not be a symbolic link.
     sspages (ids)
 
 8) Make the collection world-readable.  In 
-    backslash:/raid/SuiteSparseCollection/ do:
+    backslash:/archive/davis/SuiteSparseCollection/ do:
 
     chmod -R og+rX mat files MM RB
 
