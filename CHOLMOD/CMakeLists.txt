@@ -801,6 +801,32 @@ add_test ( NAME CHOLMOD_int32_single_supernodal
 add_test ( NAME CHOLMOD_int64_single_supernodal
     COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 
+if ( WIN32 AND BUILD_SHARED_LIBS )
+    # Set PATH to pick up the necessary libraries for all tests
+
+    set ( CHOLMOD_CTEST_NAMES 
+        CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
+        CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
+        CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
+        CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
+        CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
+
+    set ( CHOLMOD_DEPENDENCIES
+        CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    if ( NOT NCAMD )
+        list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+    endif ( )
+    set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
+    foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
+        list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
+    endforeach ( )
+    foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
+        set_tests_properties ( ${cholmod_ctest} PROPERTIES
+            ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
+    endforeach ( )
+
+endif ( )
+
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
