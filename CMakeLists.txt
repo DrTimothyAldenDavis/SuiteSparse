@@ -466,7 +466,23 @@ include ( SuiteSparseReport )
 # enable testing facilities
 #-------------------------------------------------------------------------------
 
-# Currently, only LAGraph and Mongoose have ctests.
-# FIXME: Consider converting (some of) the existing demos to ctests.
+# Currently, only LAGraph, Mongoose, and CHOLMOD have ctests.
+
+# FIXME: convert more of the existing demos to ctests.
+
+# Most packages have a ./Tcov folder with a full statement coverage test,
+# but these are not imported into cmake yet.
+
+# Most packages also have a ./Demo folder, with shorter examples.  These would
+# be nice to add as quick ctests.
+
+# CHOLMOD/Tcov takes about 20 minutes to run.  It is also a full coverage
+# test of AMD, CAMD, COLAMD, and CCOLAMD, however.  The current CHOLMOD
+# ctest is based on a few ./Demo programs.  It's fast but not a full coverate
+# test.
+
+# The CSparse/CXSparse Tcov tests are very fast and would be good candidates to
+# add.
 
 enable_testing ( )
+
