@@ -39,7 +39,7 @@
 #define GB_LIB_SUFFIX   ".so"
 #endif
 
-// GB_OBJ_SUFFIX: object suffix (.o for Linux/Unix/Mac, .obj for Windows):
+// GB_OBJ_SUFFIX: object suffix (.o for Linux/Unix/Mac/MinGW, .obj for MSVC):
 #ifndef GB_OBJ_SUFFIX
 #define GB_OBJ_SUFFIX   ".o"
 #endif
@@ -57,12 +57,12 @@
 
 // GB_C_LIBRARIES: libraries to link with when using direct compile/link:
 #ifndef GB_C_LIBRARIES
-#define GB_C_LIBRARIES  " -lm -ldl /usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so /usr/lib/x86_64-linux-gnu/libpthread.so"
+#define GB_C_LIBRARIES  " -lm -ldl -lgomp -lpthread"
 #endif
 
 // GB_CMAKE_LIBRARIES: libraries to link with when using cmake
 #ifndef GB_CMAKE_LIBRARIES
-#define GB_CMAKE_LIBRARIES  "m;dl;/usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so;/usr/lib/x86_64-linux-gnu/libpthread.so"
+#define GB_CMAKE_LIBRARIES  "m;dl;/usr/lib/gcc/x86_64-linux-gnu/7/libgomp.so;/usr/lib/x86_64-linux-gnu/libpthread.so"
 #endif
 
 #endif
