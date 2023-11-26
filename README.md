@@ -41,7 +41,7 @@ appears in LAGraph/Contibutors.txt:
     Michel Pelletier,  Graphegon
     Gabor Szarnyas,    CWI Amsterdam, The Netherlands
     Erik Welch,        Anaconda, NVIDIA
-    Carl Yang,         University of Californie at Davis, Waymo
+    Carl Yang,         University of California at Davis, Waymo
     Yongzhe Zhang,     SOKENDAI, Japan
 
 METIS is authored by George Karypis.
