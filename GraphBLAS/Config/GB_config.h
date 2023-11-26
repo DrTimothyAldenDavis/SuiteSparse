@@ -15,7 +15,7 @@
 
 // GB_C_COMPILER: the C compiler used to compile GraphBLAS:
 #ifndef GB_C_COMPILER
-#define GB_C_COMPILER   "/mingw64/bin/cc.exe"
+#define GB_C_COMPILER   "/usr/bin/cc"
 #endif
 
 // GB_C_FLAGS: the C compiler flags used to compile GraphBLAS.  Used
@@ -36,7 +36,7 @@
 
 // GB_LIB_SUFFIX: library suffix (.so for Linux/Unix, .dylib for Mac, etc):
 #ifndef GB_LIB_SUFFIX
-#define GB_LIB_SUFFIX   ".dll"
+#define GB_LIB_SUFFIX   ".so"
 #endif
 
 // GB_OBJ_SUFFIX: object suffix (.o for Linux/Unix/Mac/MinGW, .obj for MSVC):
@@ -57,12 +57,12 @@
 
 // GB_C_LIBRARIES: libraries to link with when using direct compile/link:
 #ifndef GB_C_LIBRARIES
-#define GB_C_LIBRARIES  " -lgomp -lmingwthrd -lmingwthrd"
+#define GB_C_LIBRARIES  " -lm -ldl -lgomp -lpthread"
 #endif
 
 // GB_CMAKE_LIBRARIES: libraries to link with when using cmake
 #ifndef GB_CMAKE_LIBRARIES
-#define GB_CMAKE_LIBRARIES  "C:/msys64/mingw64/lib/libgomp.dll.a;C:/msys64/mingw64/lib/libmingwthrd.a;C:/msys64/mingw64/lib/libmingwthrd.a"
+#define GB_CMAKE_LIBRARIES  "m;dl;/usr/lib/gcc/x86_64-linux-gnu/7/libgomp.so;/usr/lib/x86_64-linux-gnu/libpthread.so"
 #endif
 
 #endif
