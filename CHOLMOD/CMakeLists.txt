@@ -643,13 +643,14 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
+
 if ( DEMO )
 
-    add_executable ( cholmod_di_simple  "Demo/cholmod_di_simple.c" )
-    add_executable ( cholmod_dl_simple  "Demo/cholmod_dl_simple.c" )
-    add_executable ( cholmod_si_simple  "Demo/cholmod_si_simple.c" )
-    add_executable ( cholmod_sl_simple  "Demo/cholmod_sl_simple.c" )
+    add_executable ( cholmod_di_simple "Demo/cholmod_di_simple.c" )
+    add_executable ( cholmod_dl_simple "Demo/cholmod_dl_simple.c" )
+    add_executable ( cholmod_si_simple "Demo/cholmod_si_simple.c" )
+    add_executable ( cholmod_sl_simple "Demo/cholmod_sl_simple.c" )
 
     if ( NOT NFORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
@@ -657,21 +658,46 @@ if ( DEMO )
         add_executable ( reade      "Demo/reade.f" )
     endif ( )
 
-    target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA )
-    endif ( )
-    target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA )
-    endif ( )
-    target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA )
-    endif ( )
-    target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA )
+    if ( BUILD_SHARED_LIBS )
+
+        # link the demos with shared libraries
+        target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA )
+        endif ( )
+        target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA )
+        endif ( )
+        target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA )
+        endif ( )
+        target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA )
+        endif ( )
+
+    else ( )
+
+        # link the demos with static libraries
+        target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA_static )
+        endif ( )
+        target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA_static )
+        endif ( )
+        target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA_static )
+        endif ( )
+        target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
+        if ( SUITESPARSE_CUDA )
+            target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA_static )
+        endif ( )
+
     endif ( )
 
 endif ( )
@@ -682,10 +708,10 @@ endif ( )
 
 enable_testing ( )
 
-add_executable ( cholmod_di_demo    "Demo/cholmod_di_demo.c" )
-add_executable ( cholmod_dl_demo    "Demo/cholmod_dl_demo.c" )
-add_executable ( cholmod_si_demo    "Demo/cholmod_si_demo.c" )
-add_executable ( cholmod_sl_demo    "Demo/cholmod_sl_demo.c" )
+add_executable ( cholmod_di_demo "Demo/cholmod_di_demo.c" )
+add_executable ( cholmod_dl_demo "Demo/cholmod_dl_demo.c" )
+add_executable ( cholmod_si_demo "Demo/cholmod_si_demo.c" )
+add_executable ( cholmod_sl_demo "Demo/cholmod_sl_demo.c" )
 
 # Libraries required for tests
 if ( BUILD_SHARED_LIBS )
@@ -774,6 +800,32 @@ add_test ( NAME CHOLMOD_int32_single_supernodal
     COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
 add_test ( NAME CHOLMOD_int64_single_supernodal
     COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+
+if ( WIN32 AND BUILD_SHARED_LIBS )
+    # Set PATH to pick up the necessary libraries for all tests
+
+    set ( CHOLMOD_CTEST_NAMES 
+        CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
+        CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
+        CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
+        CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
+        CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
+
+    set ( CHOLMOD_DEPENDENCIES
+        CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    if ( NOT NCAMD )
+        list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+    endif ( )
+    set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
+    foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
+        list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
+    endforeach ( )
+    foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
+        set_tests_properties ( ${cholmod_ctest} PROPERTIES
+            ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
+    endforeach ( )
+
+endif ( )
 
 #-------------------------------------------------------------------------------
 # report status
