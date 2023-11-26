@@ -21,8 +21,8 @@ Module).  The rest are copyrighted by the authors: Timothy A. Davis (all of
 them), and William W. Hager (the Modify Module).
 
 CHOLMOD relies on several other packages:  AMD, CAMD, COLAMD, CCOLAMD,
-SuiteSparse_config, METIS, the BLAS, and LAPACK.  All the BLAS and LAPACK are
-part of SuiteSparse.
+SuiteSparse_config, METIS, the BLAS, and LAPACK.  All but the BLAS and LAPACK
+are part of SuiteSparse.
 
 AMD is authored by T. Davis, Iain Duff, and Patrick Amestoy.  COLAMD is
 authored by T. Davis and Stefan Larimore, with algorithmic design in
