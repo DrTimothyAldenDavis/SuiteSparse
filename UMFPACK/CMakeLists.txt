@@ -440,18 +440,6 @@ if ( DEMO )
         target_link_libraries ( umfpack_zl_demo PUBLIC UMFPACK_static )
     endif ( )
     target_link_libraries ( umfpack_simple  PUBLIC SuiteSparse::SuiteSparseConfig )
-    if ( NOT WIN32 )
-        # This is only needed because the demos might be linked before those
-        # libraries are installed. Would it be better to set the rpath instead?
-        target_link_libraries ( umfpack_di_demo PUBLIC
-            SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-        target_link_libraries ( umfpack_dl_demo PUBLIC
-            SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-        target_link_libraries ( umfpack_zi_demo PUBLIC
-            SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-        target_link_libraries ( umfpack_zl_demo PUBLIC
-            SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    endif ( )
     if ( NOT NFORTRAN )
         # Fortran demos
         if ( BUILD_SHARED_LIBS )
@@ -468,19 +456,6 @@ if ( DEMO )
             target_link_libraries ( umf4zhb64 PUBLIC UMFPACK_static )
         endif ( )
         target_link_libraries ( umf4 PUBLIC SuiteSparse::AMD )
-        if ( NOT WIN32 )
-            # This is only needed because the demos might be linked before
-            # those libraries are installed. Would it be better to set the
-            # rpath instead?
-            target_link_libraries ( umf4hb PUBLIC
-                SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-            target_link_libraries ( umf4zhb PUBLIC
-                SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-            target_link_libraries ( umf4hb64 PUBLIC
-                SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-            target_link_libraries ( umf4zhb64 PUBLIC
-                SuiteSparse::COLAMD SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-        endif ( )
     endif ( )
 
 else ( )
