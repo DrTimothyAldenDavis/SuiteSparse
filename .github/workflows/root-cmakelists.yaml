@@ -212,7 +212,7 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
-    name: msvc (${{ matrix.openmp }} OpenMP)
+    name: msvc (${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA)
 
     defaults:
       run:
@@ -225,9 +225,15 @@ jobs:
 
       matrix:
         openmp: [with, without]
+        cuda: [without]
         include:
           - openmp: without
             openmp-cmake-flags: "-DNOPENMP=ON"
+          - openmp: with
+            cuda: with
+            cuda-cmake-flags:
+              -DENABLE_CUDA=ON
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 
     env:
       CHERE_INVOKING: 1
@@ -283,6 +289,18 @@ jobs:
 
           msystem: UCRT64
 
+      - uses: Jimver/cuda-toolkit@v0.2.11
+        name: install CUDA toolkit
+        if: matrix.cuda == 'with'
+        id: cuda-toolkit
+        with:
+          cuda: '12.2.0'
+          #See https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html#install-the-cuda-software
+          method: 'local'
+          # Do not cache the installer (~3 GiB). It doesn't speed up the
+          # installation significantly. And we need the space for ccache.
+          use-github-cache: 'false'
+
       - name: setup build environment
         # get packages from MSYS2
         # Copy only relevant parts to avoid picking up headers and libraries
@@ -311,7 +329,7 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
@@ -321,8 +339,8 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:msvc:root:${{ matrix.openmp }}:${{ github.ref }}
-            ccache:msvc:root:${{ matrix.openmp }}:
+            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ github.ref }}
+            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -338,6 +356,11 @@ jobs:
 
       - name: configure
         run: |
+          declare -a _extra_config
+          if [ ${{ matrix.cuda }} = 'with' ]; then
+            _extra_config+=(-DCUDAToolkit_ROOT="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")")
+            _extra_config+=(-DCMAKE_CUDA_COMPILER="$(cygpath -m "${{ steps.cuda-toolkit.outputs.CUDA_PATH }}")/bin/nvcc.exe")
+          fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
                 -DCMAKE_BUILD_TYPE="Release" \
@@ -350,6 +373,8 @@ jobs:
                 -DBLA_VENDOR="All" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
                 ${{ matrix.openmp-cmake-flags }} \
+                ${{ matrix.cuda-cmake-flags }} \
+                "${_extra_config[@]}" \
                 ..
 
       - name: build libraries
