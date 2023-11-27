@@ -725,6 +725,23 @@ is set).
     sudo cmake --install .
 ```
 
+* `SUITESPARSE_PKGFILEDIR`:
+
+  Directory where CMake Config and pkg-config files will be installed.  By
+  default, CMake Config files will be installed in the subfolder `cmake` of the
+  directory where the (static) libraries will be installed (e.g., `lib`).  The
+  `.pc` files for pkg-config will be installed in the subfolder `pkgconfig` of
+  the directory where the (static) libraries will be installed.
+
+  This option allows to install them at a location different from the (static)
+  libraries.  This allows to install multiple configurations of the SuiteSparse
+  libraries at the same time (e.g., by also setting a different
+  `CMAKE_RELEASE_POSTFIX` and `CMAKE_INSTALL_LIBDIR` for each of them).  To pick
+  up the respective configuration in downstream projects, set, e.g.,
+  `CMAKE_PREFIX_PATH` (for CMake) or `PKG_CONFIG_PATH` (for build systems using
+  pkg-config) to the path containing the respective CMake Config files or
+  pkg-config files.
+
 * `BUILD_SHARED_LIBS`:
 
   If `ON`, shared libraries are built.
