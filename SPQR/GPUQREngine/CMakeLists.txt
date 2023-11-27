@@ -21,7 +21,7 @@ message ( STATUS "Building SPQR/GPUQRENGINE version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( gpuqrengine
+project ( gpuqrengine 
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES CXX CUDA )
 

@@ -73,7 +73,12 @@ set_target_properties(GraphBLAS_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 # FIXME: use SUITESPARSE_CUDA_ARCHITECTURES
 set_target_properties(GraphBLAS_CUDA PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
-target_link_libraries(GraphBLAS_CUDA CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver CUDA::nvToolsExt )
+target_link_libraries ( GraphBLAS_CUDA CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver )
+
+if ( TARGET CUDA::nvtx3 )
+    target_link_libraries ( GraphBLAS_CUDA CUDA::nvtx3 )
+    target_compile_definitions ( GraphBLAS_CUDA PRIVATE GBNVTX )
+endif ( )
 
 target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
 
