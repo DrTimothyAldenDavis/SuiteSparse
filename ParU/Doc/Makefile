@@ -13,7 +13,7 @@ paru_user_guide.pdf: paru_user_guide.tex paru_user_guide.bib Makefile paru_versi
 	bibtex paru_user_guide
 	pdflatex --shell-escape paru_user_guide.tex
 	pdflatex --shell-escape paru_user_guide.tex
-	- $(RM) -r $(CLEAN) *.out
+	- $(RM) -r $(PURGE) *.out _minted-paru_*
 
 distclean: purge
 
@@ -21,5 +21,5 @@ clean:
 	- $(RM) -r $(CLEAN) 
 
 purge: clean
-	- $(RM) -r $(PURGE) *.out paru_user_guide.pdf _minted-paru_*
+	- $(RM) -r $(PURGE) *.out _minted-paru_*
 
