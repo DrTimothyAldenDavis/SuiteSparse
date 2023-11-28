@@ -43,10 +43,10 @@ cmake_policy ( SET CMP0048 NEW )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of LAGraph
-set ( LAGraph_DATE "Aug 2, 2023" )
+set ( LAGraph_DATE "Dec 30, 2023" )
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
-set ( LAGraph_VERSION_MINOR 0 CACHE STRING "" FORCE )
-set ( LAGraph_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_MINOR 1 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -146,7 +146,7 @@ else ( )
     message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
     message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
 
-    find_package ( GraphBLAS 8.2.1 MODULE REQUIRED )
+    find_package ( GraphBLAS 8.3.0 MODULE REQUIRED )
 
 endif ( )
 

@@ -1,7 +1,7 @@
-Version 1.0.3: IN PROGRESS
+Dec 30, 2023: version 1.1.0
 
-    * cmake build system: revised to work in SuiteSparse, and port to 32-bit
-        platforms
+    * major change to build system: by Markus Mützel
+    * port: to 32-bit systems
 
 Version 1.0.2: Aug 2, 2023
 

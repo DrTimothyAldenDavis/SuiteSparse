@@ -37,10 +37,10 @@
 // See also the LAGraph_Version utility method, which returns these values.
 // These definitions are derived from LAGraph/CMakeLists.txt.
 
-#define LAGRAPH_DATE "Aug 2, 2023"
+#define LAGRAPH_DATE "FIXME:DATE, 2023"
 #define LAGRAPH_VERSION_MAJOR  1
-#define LAGRAPH_VERSION_MINOR  0
-#define LAGRAPH_VERSION_UPDATE 2
+#define LAGRAPH_VERSION_MINOR  1
+#define LAGRAPH_VERSION_UPDATE 0
 
 //==============================================================================
 // include files and helper macros
