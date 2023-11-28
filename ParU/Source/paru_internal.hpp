@@ -70,7 +70,7 @@ extern "C"
 #endif
 
 #ifndef NPR
-static int print_level = 0;   // FIXME
+static int print_level = -1;
     #define PRLEVEL(level, param)                   \
         {                                           \
             if (print_level >= level) printf param; \

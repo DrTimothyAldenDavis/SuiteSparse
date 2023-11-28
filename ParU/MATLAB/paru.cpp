@@ -2,7 +2,8 @@
 // ParU/MATLAB/paru: MATLAB interface to ParU x=A\b
 //------------------------------------------------------------------------------
 
-// ParU Copyright (c) FIXME
+// ParU Copyright (c) 2023, Mohsen Aznaveh and Timothy A. Davis, 
+// All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0+
 
 //------------------------------------------------------------------------------

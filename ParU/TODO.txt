@@ -33,5 +33,5 @@ Notes:
         }
 
 FIXME: remove reliance on umf_internal.h (which also brings in
-amd_internal.h, umf_version.h, umf_config.h, and umf_dump.h)
+umf_version.h, umf_config.h, and umf_dump.h)
 

@@ -25,9 +25,9 @@ typedef enum ParU_Ret
 
 #define PARU_MEM_CHUNK (1024*1024)
 
-#define PARU_DATE "Dec 20, 2022"
-#define PARU_VERSION_MAJOR  1
-#define PARU_VERSION_MINOR  0
+#define PARU_DATE "Dec 30, 2023"
+#define PARU_VERSION_MAJOR  0
+#define PARU_VERSION_MINOR  1
 #define PARU_VERSION_UPDATE 0
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h
