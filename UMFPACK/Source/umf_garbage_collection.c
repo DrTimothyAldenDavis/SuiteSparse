@@ -386,7 +386,7 @@ void UMF_garbage_collection
 	    pdest -= (size + 1) ;
 	    F2 = (Entry *) (pdest + 1) ;
 
-	    ASSERT ((UInt) psrc + 1 + size <= (UInt) pnext) ;
+	    ASSERT ((uintptr_t) psrc + 1 + size <= (uintptr_t) pnext) ;
 	    ASSERT (psrc <= pdest) ;
 	    ASSERT (F1 <= F2) ;
 
@@ -538,7 +538,7 @@ void UMF_garbage_collection
 	    pdest -= (size2 + 1) ;
 
 	    ASSERT (size2 <= size) ;
-	    ASSERT ((UInt) psrc + 1 + size <= (UInt) pnext) ;
+	    ASSERT ((intptr_t) psrc + 1 + size <= (intptr_t) pnext) ;
 	    ASSERT (psrc <= pdest) ;
 
 	    p = pdest + 1 ;

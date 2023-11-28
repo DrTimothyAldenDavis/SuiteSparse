@@ -53,8 +53,8 @@ void *UMF_realloc
     }
     size *= size_of_object ;
 
-    DEBUG0 (("UMF_realloc: "ID" n_objects "ID"  size_of_object "ID"\n",
-	(Int) p, n_objects, (Int) size_of_object)) ;
+    DEBUG0 (("UMF_realloc: %p n_objects "ID"  size_of_object %zu\n",
+	 p, n_objects, size_of_object)) ;
 
     p2 = SuiteSparse_config_realloc (p, size) ;
 
@@ -67,8 +67,8 @@ void *UMF_realloc
     }
 #endif
 
-    DEBUG0 (("UMF_realloc: "ID" new malloc count "ID"\n",
-	(Int) p2, UMF_malloc_count)) ;
+    DEBUG0 (("UMF_realloc: %p new malloc count "ID"\n",
+	p2, UMF_malloc_count)) ;
 
     return (p2) ;
 }

@@ -11,7 +11,6 @@ Name: BTF
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Software package for permuting a matrix into block upper triangular form in SuiteSparse
 Version: @BTF_VERSION_MAJOR@.@BTF_VERSION_MINOR@.@BTF_VERSION_SUB@
-Requires.private: SuiteSparse_config
 Libs: -L${libdir} -lbtf
 Libs.private: @BTF_STATIC_LIBS@
 Cflags: -I${includedir}

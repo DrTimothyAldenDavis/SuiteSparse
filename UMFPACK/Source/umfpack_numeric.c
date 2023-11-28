@@ -393,7 +393,7 @@ int UMFPACK_numeric
      * from size n_col+1 to size ulen + 1.  If ulen is zero, the object does
      * not exist. */
 
-    DEBUG4 (("ulen: "ID" Upattern "ID"\n", ulen, (Int) Numeric->Upattern)) ;
+    DEBUG4 (("ulen: "ID" Upattern %p\n", ulen, Numeric->Upattern)) ;
     ASSERT (IMPLIES (ulen == 0, Numeric->Upattern == (Int *) NULL)) ;
     if (ulen > 0 && ulen < n_col)
     {

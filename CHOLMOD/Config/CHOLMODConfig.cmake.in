@@ -59,10 +59,94 @@ if ( @SUITESPARSE_CUDA@ )
     endif ( )
 endif ( )
 
+# Look for SuiteSparse_config, COLAMD, and AMD targets
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        # First check in a common build tree
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT SuiteSparse_config_FOUND )
+            find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+    if ( NOT TARGET SuiteSparse::AMD )
+        # First check in a common build tree
+        find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT AMD_FOUND )
+            find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+    if ( NOT TARGET SuiteSparse::COLAMD )
+        # First check in a common build tree
+        find_dependency ( COLAMD @COLAMD_VERSION_MAJOR@.@COLAMD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT COLAMD_FOUND )
+            find_dependency ( COLAMD @COLAMD_VERSION_MAJOR@.@COLAMD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+else ( )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+    endif ( )
+    if ( NOT TARGET SuiteSparse::AMD )
+        find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@ )
+    endif ( )
+    if ( NOT TARGET SuiteSparse::COLAMD )
+        find_dependency ( COLAMD @COLAMD_VERSION_MAJOR@.@COLAMD_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+if ( NOT SuiteSparse_config_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
+    set ( _dependencies_found OFF )
+endif ( )
+
+if ( NOT @NCAMD@ )
+    # If CHOLMOD was built with CAMD and CCOLAMD, look for their targets
+
+    if ( @SUITESPARSE_IN_BUILD_TREE@ )
+        if ( NOT TARGET SuiteSparse::CAMD )
+            # First check in a common build tree
+            find_dependency ( CAMD @CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@
+                PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
+            # Then, check in the currently active CMAKE_MODULE_PATH
+            if ( NOT CAMD_FOUND )
+                find_dependency ( CAMD @CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@ )
+            endif ( )
+        endif ( )
+
+        if ( NOT TARGET SuiteSparse::CCOLAMD )
+            # First check in a common build tree
+            find_dependency ( CCOLAMD @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@
+                PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
+            # Then, check in the currently active CMAKE_MODULE_PATH
+            if ( NOT CCOLAMD_FOUND )
+                find_dependency ( CCOLAMD @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@ )
+            endif ( )
+        endif ( )
+    else ( )
+        if ( NOT TARGET SuiteSparse::CAMD )
+            find_dependency ( CAMD @CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@ )
+        endif ( )
+        if ( NOT TARGET SuiteSparse::CCOLAMD )
+            find_dependency ( CCOLAMD @CCOLAMD_VERSION_MAJOR@.@CCOLAMD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+    if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
+       set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
 if ( NOT _dependencies_found )
     set ( CHOLMOD_FOUND OFF )
     return ( )
 endif ( )
+
 
 # Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMODTargets.cmake )
@@ -72,6 +156,11 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMODTargets.cmake )
 set ( _target_shared SuiteSparse::CHOLMOD )
 set ( _target_static SuiteSparse::CHOLMOD_static )
 set ( _var_prefix "CHOLMOD" )
+
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )

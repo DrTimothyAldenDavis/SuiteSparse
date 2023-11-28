@@ -1,0 +1,17 @@
+# ParU, Copyright (c) 2023, Timothy A. Davis.
+# All Rights Reserved.
+# SPDX-License-Identifier: GPL-3.0-or-later
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: ParU
+URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
+Description: Routines for solving sparse linear system via parallel multifrontal LU factorization algorithms in SuiteSparse
+Version: @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@
+Requires.private: SuiteSparse_config UMFPACK
+Libs: -L${libdir} -lparu
+Libs.private: @PARU_STATIC_LIBS@
+Cflags: -I${includedir}

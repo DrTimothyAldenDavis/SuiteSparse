@@ -1,0 +1,200 @@
+name: "CodeQL"
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run job every Saturday at 10:20 UTC
+    - cron: '20 10 * * 6'
+
+concurrency: codeql-${{ github.ref }}
+
+# # See: https://github.com/github/codeql-action/issues/1082
+# env:
+#   CODEQL_ACTION_EXTRA_OPTIONS: '{"database": {"run-queries": ["--off-heap-ram=0"]}}'
+
+
+jobs:
+
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Override automatic language detection by changing the below list
+        # Supported options are ['c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift']
+        language: ['c-cpp']
+        # Learn more...
+        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+        group: [other, graph]
+        include:
+          - group: other
+            build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
+          - group: graph
+            build-libs: GraphBLAS:LAGraph
+
+    name: CodeQL (Ubuntu, ${{ matrix.group }})
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: install dependencies
+        run: |
+          sudo apt -qq update
+          sudo apt install -y g++ gcc autoconf automake cmake \
+            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
+            libopenblas-dev nvidia-cuda-dev nvidia-cuda-toolkit
+
+      - name: create empty libraries
+        # This is to work around a bug in nvlink.
+        # See: https://forums.developer.nvidia.com/t/nvlink-fatal-could-not-open-input-file-when-linking-with-empty-static-library/208517
+        run: |
+          touch empty.c
+          gcc -fPIC -c empty.c -oempty.o
+          ar rcsv libdl.a empty.o
+          ar rcsv librt.a empty.o
+          ar rcsv libpthread.a empty.o
+          # overwrite system libraries with "valid" empty libraries
+          sudo mv ./libdl.a /usr/lib/x86_64-linux-gnu/libdl.a
+          sudo mv ./librt.a /usr/lib/x86_64-linux-gnu/librt.a
+          sudo mv ./libpthread.a /usr/lib/x86_64-linux-gnu/libpthread.a
+
+      - name: initialize CodeQL
+        # Initialize the CodeQL tools for scanning.
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a config file.
+          # By default, queries listed here will override any specified in a config file.
+          # Prefix the list here with "+" to use these queries and those in the config file.
+          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+      - name: build
+        # The analysis with factory kernels of the GraphBLAS library is too
+        # extensive for the free GitHub-hosted runners. Disable them to work
+        # around that. That means they aren't scanned.
+        run: |
+          IFS=':'
+          BUILD_LIBS="${{ matrix.build-libs }}"
+          for lib in ${BUILD_LIBS}; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  -DNSTATIC=ON \
+                  -DCOMPACT=ON \
+                  -DENABLE_CUDA=ON \
+                  -DCUDAToolkit_INCLUDE_DIR="/usr/include" \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
+
+      - name: perform CodeQL analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: ${{ matrix.group }}-64
+
+
+  mingw32:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        # Use MSYS2 as default shell
+        shell: msys2 {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        # Override automatic language detection by changing the below list
+        # Supported options are ['c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift']
+        language: ['c-cpp']
+        # Learn more...
+        # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
+        group: [other, graph]
+        include:
+          - group: other
+            build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
+          - group: graph
+            build-libs: GraphBLAS:LAGraph
+
+    env:
+      CHERE_INVOKING: 1
+
+    name: CodeQL (mingw32, ${{ matrix.group }})
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: install MSYS2 build environment
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          release: false
+
+          install: >-
+            base-devel
+            mingw-w64-i686-autotools
+            mingw-w64-i686-cmake
+            mingw-w64-i686-cc
+            mingw-w64-i686-fc
+            mingw-w64-i686-openblas
+            mingw-w64-i686-omp
+            mingw-w64-i686-gmp
+            mingw-w64-i686-mpfr
+
+          msystem: MINGW32
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: initialize CodeQL
+        # Initialize the CodeQL tools for scanning.
+        uses: github/codeql-action/init@v2
+        with:
+          languages: ${{ matrix.language }}
+          # If you wish to specify custom queries, you can do so here or in a config file.
+          # By default, queries listed here will override any specified in a config file.
+          # Prefix the list here with "+" to use these queries and those in the config file.
+          # queries: ./path/to/local/query, your-org/your-repo/queries@main
+
+      - name: build
+        # The analysis with factory kernels of the GraphBLAS library is too
+        # extensive for the free GitHub-hosted runners. Disable them to work
+        # around that. That means they aren't scanned.
+        run: |
+          BUILD_LIBS="${{ matrix.build-libs }}"
+          IFS=':' read -r -a libs <<< "${BUILD_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
+            echo "::group::Configure $lib"
+            cd ${GITHUB_WORKSPACE}/${lib}/build
+            cmake -DCMAKE_BUILD_TYPE="Release" \
+                  -DCMAKE_INSTALL_PREFIX="${GITHUB_WORKSPACE}" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  -DNSTATIC=ON \
+                  -DCOMPACT=ON \
+                  ..
+            echo "::endgroup::"
+            echo "::group::Build $lib"
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
+
+      - name: perform CodeQL analysis
+        uses: github/codeql-action/analyze@v2
+        with:
+          category: ${{ matrix.group }}-32

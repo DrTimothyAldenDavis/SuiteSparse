@@ -1,0 +1,425 @@
+# Build SuiteSparse using the root CMakeLists.txt
+
+name: root-cmakelists
+
+on:
+  workflow_dispatch:
+  push:
+#   branches-ignore:
+#     - '**/dev2'
+#     - '**/*dev2'
+  pull_request:
+
+concurrency: ci-root-cmakelists-${{ github.ref }}
+
+jobs:
+
+  ubuntu:
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: ubuntu-latest
+
+    name: ubuntu (${{ matrix.compiler }} ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        compiler: [gcc, clang]
+        cuda: [with, without]
+        link: [both]
+        include:
+          - compiler: gcc
+            compiler-pkgs: "g++ gcc"
+            cc: "gcc"
+            cxx: "g++"
+          - compiler: clang
+            compiler-pkgs: "clang libomp-dev"
+            cc: "clang"
+            cxx: "clang++"
+          # Clang seems to generally require less cache size (smaller object files?).
+          - compiler: gcc
+            ccache-max: 600M
+          - compiler: clang
+            ccache-max: 500M
+          - cuda: with
+            cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
+            cuda-cmake-flags:
+              -DENABLE_CUDA=ON
+              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+          - compiler: gcc
+            compiler-pkgs: "g++ gcc"
+            cc: "gcc"
+            cxx: "g++"
+            ccache-max: 600M
+            cuda: with
+            cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
+            cuda-cmake-flags:
+              -DENABLE_CUDA=ON
+              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+            link: static
+            link-cmake-flags:
+              -DBUILD_SHARED_LIBS=OFF
+              -DBUILD_STATIC_LIBS=ON
+
+    env:
+      CC: ${{ matrix.cc }}
+      CXX: ${{ matrix.cxx }}
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: install dependencies
+        env:
+          COMPILER_PKGS: ${{ matrix.compiler-pkgs }}
+          CUDA_PKGS: ${{ matrix.cuda-pkgs }}
+        run: |
+          sudo apt -qq update
+          sudo apt install -y ${COMPILER_PKGS} autoconf automake ccache cmake \
+            dvipng gfortran libgmp-dev liblapack-dev libmpfr-dev \
+            libopenblas-dev ${CUDA_PKGS}
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        run: |
+          echo "key=ccache:ubuntu:root:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v3
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
+          restore-keys: |
+            ccache:ubuntu:root:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
+            ccache:ubuntu:root:${{ matrix.compiler }}:${{ matrix.cuda }}:${{ matrix.link }}
+
+      - name: create empty libraries
+        # This is to work around a bug in nvlink.
+        # See: https://forums.developer.nvidia.com/t/nvlink-fatal-could-not-open-input-file-when-linking-with-empty-static-library/208517
+        if: matrix.cuda == 'with'
+        run: |
+          touch empty.c
+          gcc -fPIC -c empty.c -oempty.o
+          ar rcsv libdl.a empty.o
+          ar rcsv librt.a empty.o
+          ar rcsv libpthread.a empty.o
+          # overwrite system libraries with "valid" empty libraries
+          sudo mv ./libdl.a /usr/lib/x86_64-linux-gnu/libdl.a
+          sudo mv ./librt.a /usr/lib/x86_64-linux-gnu/librt.a
+          sudo mv ./libpthread.a /usr/lib/x86_64-linux-gnu/libpthread.a
+
+      - name: configure ccache
+        env:
+          CCACHE_MAX: ${{ matrix.ccache-max }}
+        run: |
+          test -d ~/.ccache || mkdir ~/.ccache
+          echo "max_size = $CCACHE_MAX" >> ~/.ccache/ccache.conf
+          echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache -s
+          echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: configure
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
+          cmake -DCMAKE_BUILD_TYPE="Release" \
+                -DCMAKE_INSTALL_PREFIX=".." \
+                -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                -DBLA_VENDOR="OpenBLAS" \
+                ${{ matrix.cuda-cmake-flags }} \
+                ${{ matrix.link-cmake-flags }} \
+                ..
+
+      - name: build libraries
+        run: |
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --build .
+
+      - name: build demos
+        run: |
+          printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake -DDEMO=ON ..
+          echo "::endgroup::"
+          printf "::group::   \033[0;32m==>\033[0m Building demos\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --build .
+          echo "::endgroup::"
+          # FIXME: How to run the demos without Makefile?
+
+      - name: ccache status
+        continue-on-error: true
+        run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building.
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        run: |
+          cd ${GITHUB_WORKSPACE}/build
+          ctest . || ctest . --rerun-failed --output-on-failure
+
+      - name: install
+        run: |
+          printf "\033[0;32m==>\033[0m Installing libraries\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --install .
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example/build
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
+            -DBLA_VENDOR="OpenBLAS" \
+            ${{ matrix.cuda-cmake-flags }} \
+            ${{ matrix.link-cmake-flags }} \
+            ..
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          if [ -f ./my_demo -a -f ./my_cxx_demo ]; then
+            printf "\033[1;35m  C binary with shared libraries\033[0m\n"
+            LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+            printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+            LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
+          fi
+          printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
+          ./my_demo_static
+          printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
+          ./my_cxx_demo_static
+          echo "::endgroup::"
+
+
+  msvc:
+    # For available GitHub-hosted runners, see:
+    # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
+    runs-on: windows-latest
+
+    name: msvc (${{ matrix.openmp }} OpenMP)
+
+    defaults:
+      run:
+        # Use bash as default shell
+        shell: bash -el {0}
+
+    strategy:
+      # Allow other runners in the matrix to continue if some fail
+      fail-fast: false
+
+      matrix:
+        openmp: [with, without]
+        include:
+          - openmp: without
+            openmp-cmake-flags: "-DNOPENMP=ON"
+
+    env:
+      CHERE_INVOKING: 1
+
+    steps:
+      - name: get CPU name
+        shell: pwsh
+        run : |
+          Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
+
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+
+      - name: cache conda packages
+        id: conda-cache
+        uses: actions/cache/restore@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: conda:msvc
+
+      - name: install packages with conda
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        run: |
+          echo ${{ steps.conda-cache.outputs.cache-hit }}
+          conda info
+          conda list
+          conda install -y -c intel mkl-devel
+          conda install -y -c conda-forge --override-channels ccache
+
+      - name: save conda cache
+        if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
+        uses: actions/cache/save@v3
+        with:
+          path: C:/Miniconda/envs/test
+          key: ${{ steps.conda-cache.outputs.cache-primary-key }}
+
+      - name: install libraries from MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+
+          # Use pre-installed version to save disc space on partition with source.
+          release: false
+
+          install: >-
+            mingw-w64-ucrt-x86_64-gmp
+            mingw-w64-ucrt-x86_64-mpfr
+            mingw-w64-ucrt-x86_64-python
+
+          msystem: UCRT64
+
+      - name: setup build environment
+        # get packages from MSYS2
+        # Copy only relevant parts to avoid picking up headers and libraries
+        # that are thought for MinGW only.
+        run: |
+          mkdir -p ./dependencies/{bin,lib,include}
+          # GMP
+          cp C:/msys64/ucrt64/bin/libgmp*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/include/gmp.h ./dependencies/include/
+          cp C:/msys64/ucrt64/lib/libgmp.dll.a ./dependencies/lib/gmp.lib
+          # MPFR
+          cp C:/msys64/ucrt64/bin/libmpfr*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/include/mpf2mpfr.h ./dependencies/include/
+          cp C:/msys64/ucrt64/include/mpfr.h ./dependencies/include/
+          cp C:/msys64/ucrt64/lib/libmpfr.dll.a ./dependencies/lib/mpfr.lib
+          # run-time dependencies
+          cp C:/msys64/ucrt64/bin/libgcc_s_seh*.dll ./dependencies/bin/
+          cp C:/msys64/ucrt64/bin/libwinpthread*.dll ./dependencies/bin/
+          # create environment variable for easier access
+          echo "CCACHE=C:/Miniconda/envs/test/Library/bin/ccache.exe" >> ${GITHUB_ENV}
+
+      - name: prepare ccache
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
+        shell: msys2 {0}
+        run: |
+          echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+
+      - name: restore ccache
+        # Setup the GitHub cache used to maintain the ccache from one job to the next
+        uses: actions/cache/restore@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+          # Prefer caches from the same branch. Fall back to caches from the dev branch.
+          restore-keys: |
+            ccache:msvc:root:${{ matrix.openmp }}:${{ github.ref }}
+            ccache:msvc:root:${{ matrix.openmp }}:
+
+      - name: configure ccache
+        # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
+        run: |
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 250M" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          ${CCACHE} -p
+          ${CCACHE} -s
+
+      - name: setup MSVC toolchain
+        uses: ilammy/msvc-dev-cmd@v1
+
+      - name: configure
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
+          cmake -G"Ninja Multi-Config" \
+                -DCMAKE_BUILD_TYPE="Release" \
+                -DCMAKE_INSTALL_PREFIX=".." \
+                -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
+                -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
+                -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
+                -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                -DNFORTRAN=ON \
+                -DBLA_VENDOR="All" \
+                -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
+                ${{ matrix.openmp-cmake-flags }} \
+                ..
+
+      - name: build libraries
+        run: |
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --build . --config Release
+
+      - name: build demos
+        run: |
+          printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake -DDEMO=ON ..
+          echo "::endgroup::"
+          printf "::group::   \033[0;32m==>\033[0m Building demos\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --build . --config Release
+          echo "::endgroup::"
+          # FIXME: How to run the demos without Makefile?
+
+      - name: ccache status
+        continue-on-error: true
+        run: ${CCACHE} -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        # This helps to retain the ccache even if the subsequent steps are failing.
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
+
+      - name: check
+        run: |
+          cd ${GITHUB_WORKSPACE}/build
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;C:/msys64/ucrt64/bin;${PATH}" \
+            ctest -C Release . || ctest -C Release . --rerun-failed --output-on-failure
+
+      - name: install
+        run: |
+          printf "\033[0;32m==>\033[0m Installing libraries\n"
+          cd ${GITHUB_WORKSPACE}/build
+          cmake --install .
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example/build
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
+            -DBLA_VENDOR="All" \
+            ${{ matrix.openmp-cmake-flags }} \
+            ..
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build . --config Release
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary with shared libraries\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+            ./Release/my_demo
+          printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+            ./Release/my_cxx_demo
+          # We don't build a static version of GraphBLAS in CI.
+          # So we need to prepare the environment also for the following tests.
+          # Additionally, gmp, mpfr and BLAS are always shared libraries.
+          printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+            ./Release/my_demo_static
+          printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+            ./Release/my_cxx_demo_static
+          echo "::endgroup::"

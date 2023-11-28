@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo "Test coverage summary" > cov.out
+echo '=============================================================' >> cov.out
+
+for file in ../Source/*
+do
+	gcov -o . $file >& /dev/null
+done
+
+for file in paru_*.?cov
+do
+	echo $file >> cov.out
+	grep "#####" $file | grep -v "__dev" | grep -v "__major" | \
+	    grep -v "#####:[ ]*[0-9]*:[{}]" | grep -v DEAD >> cov.out
+	echo '=========================================================' >> cov.out
+done
+
+echo -n "statements not tested: "
+grep "\#\#\#\#\#:" paru_*v | grep -v DEAD | wc -l
+
+set status=0

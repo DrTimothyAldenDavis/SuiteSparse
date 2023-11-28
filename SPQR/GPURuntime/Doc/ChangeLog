@@ -1,0 +1,46 @@
+Sept 18, 2023: version 3.2.1
+
+    * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
+
+Sept 8, 2023: version 3.2.0
+
+    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
+
+June 16, 2023: version 2.0.4
+
+    * cmake build system updates: update by Markus Muetzel
+
+Jan 17, 2023: version 2.0.3
+
+    * SuiteSparse_config: now v7.0.0
+
+Dec 9, 2022: version 2.0.2
+
+    * minor change to build system
+
+Nov 12, 2022: version 2.0.0
+
+    * using CMake build system
+    * integers: int (32-bit) and SuiteSparse_long (nominally 64-bit) replaced
+        with int32_t and int64_t.
+
+May 4, 2016: version 1.0.5
+
+    * minor changes to Makefile
+
+Apr 1, 2016: version 1.0.4
+
+    * licensing simplified (no other change); refer to
+        SuiteSparse_GPURuntime/Doc/License.txt
+
+Feb 1, 2016: version 1.0.3
+
+    * update to Makefiles
+
+Jan 30, 2016: version 1.0.2
+
+    * modifications to Makefiles
+
+Oct 17, 2014: version 1.0.0
+
+    * first stable release

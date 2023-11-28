@@ -1,3 +1,7 @@
+Dec 30, 2023: version 8.3.0
+
+    * major change to build system: by Markus Mützel
+
 Oct 7, 2023: version 8.2.1
 
     * (49) bug fix: GrB_mxm saxpy4 and saxpy5 had incorrectly handling of

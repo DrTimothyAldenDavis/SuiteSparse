@@ -1,0 +1,33 @@
+%%MatrixMarket matrix coordinate real general
+%-------------------------------------------------------------------------------
+% UF Sparse Matrix Collection, Tim Davis
+% http://www.cise.ufl.edu/research/sparse/matrices/vanHeukelum/cage3
+% name: vanHeukelum/cage3
+% [DNA electrophoresis, 3 monomers in polymer. A. van Heukelum, Utrecht U.]
+% id: 904
+% date: 2003
+% author: A. van Heukelum
+% ed: T. Davis
+% fields: title A name id date author ed kind
+% kind: directed weighted graph
+%-------------------------------------------------------------------------------
+5 5 19
+1 1 .666666666666667
+2 1 .100036889486116
+3 1 .122185332736106
+4 1 .050018444743058
+5 1 .0610926663680531
+1 2 .366555998208319
+2 2 .533407112305565
+4 2 .100036889486116
+1 3 .300110668458348
+3 3 .577703998805546
+5 3 .122185332736106
+1 4 .366555998208319
+2 4 .200073778972232
+4 4 .283314888590275
+5 4 .150055334229174
+1 5 .300110668458348
+3 5 .244370665472212
+4 5 .183277999104159
+5 5 .27224066696528

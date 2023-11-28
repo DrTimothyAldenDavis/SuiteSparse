@@ -1,27 +1,29 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- Building RBIO version: v4.2.1 (Sept 18, 2023)
--- Source:        /home/faculty/d/davis/dev2/SuiteSparse/RBio 
--- Build:         /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
--- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install include: /home/faculty/d/davis/dev2/SuiteSparse/include
--- Install bin:     /home/faculty/d/davis/dev2/SuiteSparse/bin
--- Install rpath:   /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build   rpath:   /home/faculty/d/davis/dev2/SuiteSparse/RBio/build;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Building RBIO version: v4.3.0 (Dec 30, 2023)
+-- Source:        /home/davis/dev2/SuiteSparse/RBio 
+-- Build:         /home/davis/dev2/SuiteSparse/RBio/build 
+-- Install lib:      lib
+-- Install include:  include
+-- Install bin:      bin
+-- Install pkg-file: lib
+-- Install rpath:    
+-- Build   rpath:    /home/davis/dev2/SuiteSparse/RBio/build
 -- Build type:    Release 
 -- Fortran: /usr/bin/f95
 -- CUDA: not enabled
--- SuiteSparse_config version: 7.2.1
--- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
--- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
+-- SuiteSparse_config version: 7.4.0
+-- SuiteSparse_config include: /home/davis/dev2/SuiteSparse/SuiteSparse_config
+-- SuiteSparse_config library: /home/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.4.0
+-- SuiteSparse_config static:  /home/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------
 -- SuiteSparse CMAKE report for: rbio
 -- ------------------------------------------------------------------------
--- inside common SuiteSparse root:  true
--- install in SuiteSparse/lib and SuiteSparse/include: 1
+-- inside common SuiteSparse root:  false
+-- install in SuiteSparse/lib and SuiteSparse/include: OFF
 -- build type:           Release
--- NSTATIC:              false (build static library)
+-- BUILD_SHARED_LIBS:    ON
+-- BUILD_STATIC_LIBS:    ON
 -- use OpenMP:           no 
 -- C compiler:           /usr/bin/cc 
 -- C flags:              
@@ -32,38 +34,51 @@
 -- Fortran compiler:     /usr/bin/f95 
 -- compile definitions:  
 -- ------------------------------------------------------------------------
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/RBio/build
-gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
-[ 37%] Built target RBio
-[ 75%] Built target RBio_static
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/davis/dev2/SuiteSparse/RBio/build
+make[1]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[2]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBio
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBio_static
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+[ 37%] Built target RBio_static
+[ 75%] Built target RBio
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBdemo
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
 [100%] Built target RBdemo
-gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
+make[2]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[1]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
 ( cd build && cmake  -DDEMO=1 .. && cmake --build . --config Release -j8 )
--- Building RBIO version: v4.2.1 (Sept 18, 2023)
--- Source:        /home/faculty/d/davis/dev2/SuiteSparse/RBio 
--- Build:         /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
--- Install lib:     /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install include: /home/faculty/d/davis/dev2/SuiteSparse/include
--- Install bin:     /home/faculty/d/davis/dev2/SuiteSparse/bin
--- Install rpath:   /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build   rpath:   /home/faculty/d/davis/dev2/SuiteSparse/RBio/build;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Building RBIO version: v4.3.0 (Dec 30, 2023)
+-- Source:        /home/davis/dev2/SuiteSparse/RBio 
+-- Build:         /home/davis/dev2/SuiteSparse/RBio/build 
+-- Install lib:      lib
+-- Install include:  include
+-- Install bin:      bin
+-- Install pkg-file: lib
+-- Install rpath:    
+-- Build   rpath:    /home/davis/dev2/SuiteSparse/RBio/build
 -- Build type:    Release 
 -- Fortran: /usr/bin/f95
 -- CUDA: not enabled
--- SuiteSparse_config version: 7.2.1
--- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.2.1
--- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
+-- SuiteSparse_config version: 7.4.0
+-- SuiteSparse_config include: /home/davis/dev2/SuiteSparse/SuiteSparse_config
+-- SuiteSparse_config library: /home/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.4.0
+-- SuiteSparse_config static:  /home/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------
 -- SuiteSparse CMAKE report for: rbio
 -- ------------------------------------------------------------------------
--- inside common SuiteSparse root:  true
--- install in SuiteSparse/lib and SuiteSparse/include: 1
+-- inside common SuiteSparse root:  false
+-- install in SuiteSparse/lib and SuiteSparse/include: OFF
 -- build type:           Release
--- NSTATIC:              false (build static library)
+-- BUILD_SHARED_LIBS:    ON
+-- BUILD_STATIC_LIBS:    ON
 -- use OpenMP:           no 
 -- C compiler:           /usr/bin/cc 
 -- C flags:              
@@ -74,14 +89,25 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 -- Fortran compiler:     /usr/bin/f95 
 -- compile definitions:  
 -- ------------------------------------------------------------------------
--- Configuring done (0.0s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/RBio/build
-gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
-[ 37%] Built target RBio
-[ 75%] Built target RBio_static
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/davis/dev2/SuiteSparse/RBio/build
+make[1]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[2]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBio_static
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBio
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+[ 37%] Built target RBio_static
+[ 75%] Built target RBio
+make[3]: Entering directory '/home/davis/dev2/SuiteSparse/RBio/build'
+Consolidate compiler generated dependencies of target RBdemo
+make[3]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
 [100%] Built target RBdemo
-gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
+make[2]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
+make[1]: Leaving directory '/home/davis/dev2/SuiteSparse/RBio/build'
 ./build/RBdemo < ./RBio/private/west0479.rua
 
 ===========================================================

@@ -37,13 +37,69 @@ set ( SPQR_VERSION "@SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
 
 # Check for dependent targets
 include ( CMakeFindDependencyMacro )
+
 set ( _dependencies_found ON )
+
+# Look for SuiteSparse_config and CHOLMOD targets
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        # First check in a common build tree
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT SuiteSparse_config_FOUND )
+            find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        # First check in a common build tree
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT CHOLMOD_FOUND )
+            find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+else ( )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+    endif ( )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+
+if ( NOT SuiteSparse_config_FOUND OR NOT CHOLMOD_FOUND )
+    set ( _dependencies_found OFF )
+endif ( )
 
 if ( @SUITESPARSE_CUDA@ )
     # Look for imported targets of additional dependency if SPQR was built with CUDA
 
-    if ( NOT SPQR_CUDA_FOUND )
-        if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( @SUITESPARSE_IN_BUILD_TREE@ )
+        if ( NOT SuiteSparse_GPURuntime_FOUND )
+            # First check in a common build tree
+            find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@
+                PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build/GPURuntime NO_DEFAULT_PATH )
+            # Then, check in the currently active CMAKE_MODULE_PATH
+            if ( NOT SuiteSparse_GPURuntime_FOUND )
+                find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
+            endif ( )
+        endif ( )
+
+        if ( NOT GPUQREngine_FOUND )
+            # First check in a common build tree
+            find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@
+                PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build/GPUQREngine NO_DEFAULT_PATH )
+            # Then, check in the currently active CMAKE_MODULE_PATH
+            if ( NOT GPUQREngine_FOUND )
+                find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
+            endif ( )
+        endif ( )
+
+        if ( NOT SPQR_CUDA_FOUND )
             # First check in a common build tree
             find_dependency ( SPQR_CUDA ${SPQR_VERSION}
                 PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build NO_DEFAULT_PATH )
@@ -51,11 +107,19 @@ if ( @SUITESPARSE_CUDA@ )
             if ( NOT SPQR_CUDA_FOUND )
                 find_dependency ( SPQR_CUDA ${SPQR_VERSION} )
             endif ( )
-        else ( )
+        endif ( )
+    else ( )
+        if ( NOT SuiteSparse_GPURuntime_FOUND )
+            find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
+        endif ( )
+        if ( NOT GPUQREngine_FOUND )
+            find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
+        endif ( )
+        if ( NOT SPQR_CUDA_FOUND )
             find_dependency ( SPQR_CUDA ${SPQR_VERSION} )
         endif ( )
     endif ( )
-    if ( NOT SPQR_CUDA_FOUND )
+    if ( NOT SuiteSparse_GPURuntime_FOUND OR NOT GPUQREngine_FOUND OR NOT SPQR_CUDA_FOUND )
         set ( _dependencies_found OFF )
     endif ( )
 endif ( )
@@ -73,6 +137,11 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SPQRTargets.cmake )
 set ( _target_shared SuiteSparse::SPQR )
 set ( _target_static SuiteSparse::SPQR_static )
 set ( _var_prefix "SPQR" )
+
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )

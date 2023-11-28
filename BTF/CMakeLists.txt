@@ -2,7 +2,7 @@
 # SuiteSparse/BTF/CMakeLists.txt:  cmake for BTF
 #-------------------------------------------------------------------------------
 
-# BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+# BTF, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 # Author: Timothy A. Davis.
 # SPDX-License-Identifier: LGPL-2.1+
 
@@ -12,24 +12,15 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( BTF_DATE "Sept 18, 2023" )
-set ( BTF_VERSION_MAJOR 2 )
-set ( BTF_VERSION_MINOR 2 )
-set ( BTF_VERSION_SUB   1 )
+set ( BTF_DATE "Dec 30, 2023" )
+set ( BTF_VERSION_MAJOR 2 CACHE STRING "" FORCE )
+set ( BTF_VERSION_MINOR 3 CACHE STRING "" FORCE )
+set ( BTF_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building BTF version: v"
     ${BTF_VERSION_MAJOR}.
     ${BTF_VERSION_MINOR}.
     ${BTF_VERSION_SUB} " (" ${BTF_DATE} ")" )
-
-#-------------------------------------------------------------------------------
-# SuiteSparse policies
-#-------------------------------------------------------------------------------
-
-set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-    ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
-
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -40,13 +31,24 @@ project ( btf
     LANGUAGES C )
 
 #-------------------------------------------------------------------------------
+# SuiteSparse policies
+#-------------------------------------------------------------------------------
+
+set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
+    ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
+
+include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-find_package ( SuiteSparse_config 7.2.0
-    PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
-if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-    find_package ( SuiteSparse_config 7.2.0 REQUIRED )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    find_package ( SuiteSparse_config 7.4.0
+        PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -68,34 +70,35 @@ include_directories ( Source Include )
 
 file ( GLOB BTF_SOURCES "Source/*.c" )
 
-add_library ( BTF SHARED ${BTF_SOURCES} )
+if ( BUILD_SHARED_LIBS )
+    add_library ( BTF SHARED ${BTF_SOURCES} )
 
-set_target_properties ( BTF PROPERTIES
-    VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
-    C_STANDARD 11
-    C_STANDARD_REQUIRED ON
-    OUTPUT_NAME btf
-    SOVERSION ${BTF_VERSION_MAJOR}
-    PUBLIC_HEADER "Include/btf.h" 
-    WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    set_target_properties ( BTF PROPERTIES
+        VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        OUTPUT_NAME btf
+        SOVERSION ${BTF_VERSION_MAJOR}
+        PUBLIC_HEADER "Include/btf.h"
+        WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-target_include_directories ( BTF
-    INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
-              $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+    target_include_directories ( BTF
+        INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
+                  $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # static btf library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NSTATIC )
+if ( BUILD_STATIC_LIBS )
     add_library ( BTF_static STATIC ${BTF_SOURCES} )
 
     set_target_properties ( BTF_static PROPERTIES
-        VERSION ${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME btf
-        SOVERSION ${BTF_VERSION_MAJOR} )
+        PUBLIC_HEADER "Include/btf.h" )
 
     if ( MSVC )
         set_target_properties ( BTF_static PROPERTIES
@@ -105,7 +108,6 @@ if ( NOT NSTATIC )
     target_include_directories ( BTF_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
-
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -113,21 +115,21 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # SuiteSparseConfig:
-target_link_libraries ( BTF PRIVATE SuiteSparse::SuiteSparseConfig )
-target_include_directories ( BTF PUBLIC
-    "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-if ( NOT NSTATIC )
-    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( BTF_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
-    else ( )
-        target_link_libraries ( BTF_static PUBLIC SuiteSparse::SuiteSparseConfig )
-    endif ( )
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( BTF PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    target_include_directories ( BTF_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
 
 # libm:
 if ( NOT WIN32 )
-    target_link_libraries ( BTF PRIVATE m )
-    if ( NOT NSTATIC )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( BTF PRIVATE m )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
         set ( BTF_STATIC_LIBS "${BTF_STATIC_LIBS} -lm" )
         target_link_libraries ( BTF_static PUBLIC m )
     endif ( )
@@ -139,16 +141,19 @@ endif ( )
 
 include ( CMakePackageConfigHelpers )
 
-install ( TARGETS BTF
-    EXPORT BTFTargets
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
-if ( NOT NSTATIC )
+if ( BUILD_SHARED_LIBS )
+    install ( TARGETS BTF
+        EXPORT BTFTargets
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS BTF_static
         EXPORT BTFTargets
-        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR} )
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
 # create (temporary) export target file during build
@@ -159,21 +164,30 @@ export ( EXPORT BTFTargets
 # install export target, config and version files for find_package
 install ( EXPORT BTFTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
+# generate config file to be used in common build tree
+set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
     Config/BTFConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake )
+
+# generate config file to be installed
+set ( SUITESPARSE_IN_BUILD_TREE OFF )
+configure_package_config_file (
+    Config/BTFConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/BTFConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/BTFConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/target/BTFConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/BTFConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/BTF )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/BTF )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -201,12 +215,13 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/BTF.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
 
-include ( SuiteSparseReport )
-
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include ( SuiteSparseReport )
+endif ( )

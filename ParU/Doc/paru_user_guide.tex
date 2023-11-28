@@ -1,0 +1,449 @@
+\documentclass[12pt]{article}
+\batchmode
+\usepackage{hyperref}
+\usepackage{minted}
+
+\topmargin -0.5in
+\textheight 9.0in
+\oddsidemargin 0pt
+\evensidemargin 0pt
+\textwidth 6.5in
+
+%-------------------------------------------------------------------------------
+% get epsf.tex file, for encapsulated postscript files:
+\input epsf
+%-------------------------------------------------------------------------------
+% macro for Postscript figures the easy way
+% usage:  \postscript{file.ps}{scale}
+% where scale is 1.0 for 100%, 0.5 for 50% reduction, etc.
+%
+\newcommand{\postscript}[2]
+{\setlength{\epsfxsize}{#2\hsize}
+\centerline{\epsfbox{#1}}}
+%-------------------------------------------------------------------------------
+
+\title{User's Guide for ParU, an unsymmetric multifrontal multithreaded sparse
+LU factorization package}
+\author{Mohsen Aznaveh\thanks{
+email: aznaveh@tamu.edu.
+http://www.suitesparse.com.
+},
+Timothy A. Davis}
+
+\input{paru_version.tex}
+
+%-------------------------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------------------------
+\maketitle
+
+\begin{abstract}
+
+ParU is an implementation of the multifrontal sparse LU factorization
+method.  Parallelism is exploited both in the BLAS and across different frontal
+matrices using OpenMP tasking, a shared-memory programming model for modern 
+multicore architectures. The package is written in C++ and real sparse matrices 
+are supported.
+
+ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+All Rights Reserved.
+SPDX-License-Identifier: GNU GPL 3.0
+\end{abstract}
+
+\maketitle
+
+%-------------------------------------------------------------------------------
+\section{Introduction}
+\label{intro}
+%-------------------------------------------------------------------------------
+
+The algorithms used in ParU will be discussed in a companion paper,
+?. This document gives detailed information on the installation
+and use of ParU.
+ParU is a parallel sparse direct solver. This package uses OpenMP
+tasking for parallelism. ParU calls UMFPACK for the symbolic analysis phase,
+after that, some symbolic analysis is done by ParU itself, and  then the numeric
+phase starts. The numeric computation is a task parallel phase using OpenMP, 
+and each task calls parallel BLAS; i.e. nested parallelism. 
+The performance of BLAS has a heavy impact on the performance of ParU. Moreover,
+the way parallel BLAS can be called in a nested environment can also be very
+important for ParU's performance.
+
+
+%-------------------------------------------------------------------------------
+\subsubsection{Instructions on using METIS}
+%-------------------------------------------------------------------------------
+
+SuiteSparse is now on METIS 5.1.0, distributed along with SuiteSparse itself.
+Its use is optional, however. ParU is using AMD as the default ordering. METIS
+tends to give orderings that are good for parallelism. However, the METIS itself
+can be slow. As a result, the symbolic analysis using METIS can be slow, but
+usually, the factorization is faster. Therefore, depending on your use case,
+either use METIS, or you can compile and run your code without using METIS.
+If you are using METIS on an unsymmetric case, UMFPACK has to form the Matrix
+$A^{T}A$. This matrix can be a dense matrix and takes a lot of resources to form
+it. To avoid such conditions, you can use the ordering strategy
+\verb'UMFPACK_ORDERING_METIS_GUARD' that is introduced in UMFPACK version 6.0.
+This ordering strategy use COLAMD instead of METIS in those cases.
+
+Note that METIS is not bug-free; it can occasionally cause segmentation 
+faults, particularly if used when finding basic solutions to underdetermined 
+systems with many more columns than rows. ParU does not solve such 
+systems anyway but you might see some problems with other SuiteSparse packages.
+
+%-------------------------------------------------------------------------------
+\section{Using ParU in C and C++}
+%-------------------------------------------------------------------------------
+
+ParU relies on CHOLMOD for its basic sparse matrix data structure, a compressed 
+sparse column format.  CHOLMOD provides interfaces to the AMD, COLAMD, and METIS
+ordering methods and many other functions. ParU also relies on UMFPACK Version 
+6.0 or higher for symbolic analysis. 
+
+
+%-------------------------------------------------------------------------------
+\subsection{Installing the C/C++ library on Linux/Unix}
+%-------------------------------------------------------------------------------
+In Linux/MacOs, type \verb'make' at the command line in either the 
+\verb'SuiteSparse' directory (which compiles all of SuiteSparse) or in the 
+\verb'SuiteSparse/ParU' directory (which just compiles ParU and the libraries 
+it requires).  ParU will be compiled; you can type \verb'make demos' to run a
+set of simple demos.
+
+The use of \verb'make' is optional.  The top-level \verb'ParU/Makefile' is
+a simple wrapper that uses \verb'cmake' to do the actual build.
+
+To fully test the coverage of the lines ParU, go to the \verb'Tcov'
+directory and type \verb'make'.  This will work for Linux only.
+
+To install the shared library
+into /usr/local/lib and /usr/local/include, do {\tt make install}.
+To uninstall, do {\tt make uninstall}.
+For more options, see the {\tt ParU/README.md} file.
+
+
+
+%-------------------------------------------------------------------------------
+\subsection{C/C++ Example}
+%-------------------------------------------------------------------------------
+
+The C++ interface is written using only real matrices.  
+The simplest function computes the MATLAB equivalent of
+\verb'x=A\b' and is almost as simple:
+Below is a simple C++ program that illustrates the use of ParU.  The
+program reads in a problem from \verb'stdin' in MatrixMarket
+format \cite{BoisvertPozoRemingtonBarrettDongarra97}, solves it, and prints the
+norm of \verb'A' and the residual. 
+Some error testing code is omited to simplify showing how the program works. 
+The full program can be found in 
+\verb'ParU/Demo/paru_demo.cpp'
+\begin{minted}{cpp}
+#include "ParU.hpp"
+int main(int argc, char **argv)
+{
+    cholmod_common Common, *cc;
+    cholmod_sparse *A;
+    ParU_Symbolic *Sym = NULL;
+
+    //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
+    // start CHOLMOD
+    cc = &Common;
+    int mtype;
+    cholmod_l_start(cc);
+
+    // A = mread (stdin) ; read in the sparse matrix A
+    A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+    //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ParU_Control Control;
+    ParU_Ret info;
+    info = ParU_Analyze(A, &Sym, &Control);
+    ParU_Numeric *Num;
+    info = ParU_Factorize(A, Sym, &Num, &Control);
+    double my_time = omp_get_wtime() - my_start_time;
+    //~~~~~~~~~~~~~~~~~~~Test the results ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    int64_t m = Sym->m;
+    if (info == PARU_SUCCESS)
+    {
+        double *b = (double *)malloc(m * sizeof(double));
+        double *xx = (double *)malloc(m * sizeof(double));
+        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+        info = ParU_Solve(Sym, Num, b, xx, &Control);
+        printf("Solve time is %lf seconds.\n", my_solve_time);
+        double resid, anorm, xnorm;
+        info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
+        printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
+                " %.2e.\n", resid, anorm, xnorm, Num->rcond);
+        free(b);
+        free(xx);
+    }
+    //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    int max_threads = omp_get_max_threads();
+    BLAS_set_num_threads(max_threads);
+
+    //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ParU_Freenum(&Num, &Control);
+    ParU_Freesym(&Sym, &Control);
+
+    cholmod_l_free_sparse(&A, cc);
+    cholmod_l_finish(cc);
+}
+\end{minted}
+
+A simple demo for the C interface is shown next. You can see the complete demo
+in \verb'ParU/Demo/paru_simple.c'
+\begin{minted}{c}
+#include "ParU_C.h"
+int main(int argc, char **argv)
+{
+    cholmod_common Common, *cc;
+    cholmod_sparse *A;
+    ParU_C_Symbolic *Sym;
+    //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
+    // start CHOLMOD
+    cc = &Common;
+    int mtype;
+    cholmod_l_start(cc);
+    // A = mread (stdin) ; read in the sparse matrix A
+    A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
+    //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    printf("================= ParU, a simple demo, using C interface : ====\n");
+    ParU_C_Control Control;
+    ParU_C_Init_Control(&Control);
+    ParU_Ret info;
+    info = ParU_C_Analyze(A, &Sym, &Control);
+    printf("Input matrix is %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
+    ParU_C_Numeric *Num;
+    info = ParU_C_Factorize(A, Sym, &Num, &Control);
+
+    if (info != PARU_SUCCESS)
+    {
+        printf("ParU: factorization was NOT successfull.");
+        if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
+        if (info == PARU_INVALID) printf("\nInvalid!\n");
+        if (info == PARU_SINGULAR) printf("\nSingular!\n");
+    }
+    else
+    {
+        printf("ParU: factorization was successfull.\n");
+    }
+
+    //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    if (info == PARU_SUCCESS)
+    {
+        int64_t m = Sym->m;
+        double *b = (double *)malloc(m * sizeof(double));
+        double *xx = (double *)malloc(m * sizeof(double));
+        for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
+        info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
+        double resid, anorm, xnorm;
+        info = ParU_C_Residual_bAx(A, xx, b, m, &resid, &anorm, &Control);
+        printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
+                " %.2e.\n", resid, anorm, xnorm, Num->rcond);
+        free(b);
+        free(xx);
+    }
+    //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    ParU_C_Freenum(&Num, &Control);
+    ParU_C_Freesym(&Sym, &Control);
+
+    cholmod_l_free_sparse(&A, cc);
+    cholmod_l_finish(cc);
+}
+\end{minted}
+
+%-------------------------------------------------------------------------------
+\subsection{C/C++ Syntax}
+%-------------------------------------------------------------------------------
+\verb'ParU_Ret' is the output structure of all ParU routines in C and C++.  The 
+user must check the output before continuing and computing further the result of
+prior routine. You can see the user callable routines in 
+\verb'ParU/Include/ParU.hpp'.
+The following is a list of user-callable C++ functions and what they
+can do:
+
+\begin{enumerate}
+
+    \item \verb'ParU_Version': return the version of the ParU package 
+        you are using.
+
+    \item \verb'ParU_Analyze': Symbolic analysis is done in this routine. 
+        UMFPACK is called here and after that, some more specialized symbolic
+        computation is done for ParU. 
+        \verb'ParU_Analyze' is called once and can be used for different 
+        \verb'ParU_Factorize' calls for the matrices that have the same pattern.
+    \item \verb'ParU_Factorize': 
+        Numeric factorization is done in this routine. Scaling and
+        making $Sx$ (scaled and staircase structure) matrix, computing factors,
+        and permutations are here. \verb'ParU_Symbolic' structure which is 
+        computed in \verb'ParU_Analyze' is an input in this routine.
+
+    \item \verb'ParU_Solve':  
+        Using symbolic analysis and factorization phase output to solve $Ax=b$.
+        In all the solve routines Num structure must come with the same 
+        Sym struct that comes from \verb'ParU_Factorize'. 
+        This routine is overloaded and can solve different systems. It has 
+        versions that keep a copy of x or overwrite it. Also, it can solve 
+        multiple right-hand side problems.
+
+    % FIXME: also for C
+    \item \verb'ParU_Lsolve'
+    \item \verb'ParU_Usolve'
+    \item \verb'ParU_perm' FIXME name
+    \item \verb'ParU_inv_perm' FIXME name
+
+    \item \verb'ParU_Residual':  
+        This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
+        $x$ (or $X$ for multiple right handside).
+
+    \item \verb'ParU_Freenum':  frees the numerical part of factorization.
+
+    \item \verb'ParU_Freesym':  frees the symbolic part of factorization.
+
+\end{enumerate}
+
+The C interface is quite similar to the C++ interface, and you can see the C user 
+callable routines in 
+\verb'ParU/Include/ParU_C.h'.
+The following is a list of user-callable C functions and what they
+can do:
+
+\begin{enumerate}
+
+    \item \verb'ParU_C_Version': return the version of the ParU package 
+        you are using.
+
+    \item \verb'ParU_C_Init_Control': Initialize C Control object before using 
+        it.
+
+    \item \verb'ParU_C_Analyze': Symbolic analysis is done in this routine. 
+        UMFPACK is called here; after that, some more specialized symbolic
+        computation is done for ParU. 
+        \verb'ParU_C_Analyze' is called once and can be used for different 
+        \verb'ParU_C_Factorize' calls for the matrices that have the same pattern.
+    \item \verb'ParU_C_Factorize': 
+        Numeric factorization is done in this routine. Scaling and
+        making $Sx$ (scaled and staircase structure) matrix, computing factors,  
+        and permutations are here. \verb'ParU_C_Symbolic' structure which is 
+        computed in \verb'ParU_C_Analyze' is an input in this routine.
+
+    \item \verb'ParU_C_Solve_Axx',  \verb'ParU_C_Solve_Axb', 
+        \verb'ParU_C_Solve_AXX' and \verb'ParU_C_Solve_AXB',  
+        Using symbolic analysis and factorization phase output to solve $Ax=b$.
+        In all the solve routines Num structure must come with the same 
+        Sym struct that comes from \verb'ParU_C_Factorize'. 
+
+    \item \verb'ParU_C_Residual_bAx':  
+        This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
+        $x$ 
+
+    \item \verb'ParU_C_Residual_BAX':  
+        This function computes $|AX-B|$ one norm of matrix $A$ and one norme of
+        $X$
+
+
+    \item \verb'ParU_C_Freenum':  frees the numerical part of factorization.
+
+
+    \item \verb'ParU_C_Freesym':  frees the symbolic part of factorization.
+
+\end{enumerate}
+
+%-------------------------------------------------------------------------------
+\subsection{Details of the C/C++ Syntax}
+%-------------------------------------------------------------------------------
+
+For further details on how to use the C/C++ syntax, please refer to the
+definitions and descriptions in the following files:
+
+\begin{enumerate}
+\item \verb'SuiteSparse/ParU/Include/ParU.hpp' describes each
+C++ function.  Only \verb'double' and square matrices are supported.
+
+
+\item \verb'SuiteSparse/ParU/Include/ParU_C.h' describes
+the C-callable functions.
+
+\end{enumerate}
+
+There are C/C++ options to control ParU, which is an input argument to several 
+routines. When you make C++ \verb'ParU_Control' object, it is initialized with 
+default values. The user can change the values. When using C  
+\verb'ParU_C_Control', you have to fully initialize it or call
+\verb'ParU_C_Init_Control' before using it.
+
+
+Here is the list of control options (both in C and C++):
+
+\vspace{0.1in}
+{\footnotesize
+\begin{tabular}{|lll|}
+\hline
+    \verb'ParU_Control' & default value & explanation  \\
+\hline\hline
+\verb'mem_chunk' & $1024*1024$ & chunk size for memset and memcpy\\
+\verb'paru_max_threads' & $0$ & initialized with \verb'omp_max_threads' \\
+\hline
+\verb'umfpack_ordering' & \verb'UMFPACK_ORDERING_AMD' & default UMFPACK ordering\\
+\verb'umfpack_strategy' & \verb'UMFPACK_STRATEGY_AUTO'& default UMFPACK strategy\\
+\verb'umfpack_default_singleton' & $1$ & default filter singletons if true\\
+\verb'relaxed_amalgamation_threshold' & 32 & threshold for relaxed amalgamation \\
+\hline
+\verb'scale' & 1 & if 1 matrix will be scaled using \verb'max_row'\\
+\verb'panel_width' & 32 & width of panel for dense factorizaiton\\
+\verb'paru_strategy' & \verb'PARU_STRATEGY_AUTO' & default strategy for ParU\\
+\verb'piv_toler' & $0.1$ & tolerance for accepting sparse pivots\\
+\verb'diag_toler' & $0.001$ & tolerance for accepting symmetric pivots\\
+\verb'trivial' & $4$ & Do not call BLAS for smaller dgemms\\
+\verb'worthwhile_dgemm' & $512$ & dgemms bigger than worthwhile are tasked\\
+\verb'worthwhile_trsm' & $4096$ & trsm bigger than worthwhile are tasked\\
+\hline
+\end{tabular}
+}
+\vspace{0.1in}
+
+The first row of the options is either used in symbolic or numerical analysis.
+The second row of the options is used in the symbolic analysis. In the symbolic 
+analysis phase, only the matrix pattern is probed. 
+The third row of control options shows those that have an impact on numerical 
+analysis.
+
+\verb'paru_max_threads' is initalized by \verb'omp_max_threads' if the user do 
+not provide a smaller number.
+
+If \verb'paru_strategy' is set to \verb'PARU_STRATEGY_AUTO' ParU uses the same 
+strategy as UMFPACK. However, the user can ask UMFPACK for an unsymmetric 
+strategy but use a symmetric strategy for ParU. Usually, UMFPACK chooses a good 
+ordering; however, there might be cases where users prefer unsymmetric ordering on
+UMFPACK but symmetric computation on ParU.
+    
+%-------------------------------------------------------------------------------
+\section{Requirements and Availability}
+\label{summary}
+%-------------------------------------------------------------------------------
+
+ParU requires several Collected Algorithms of the ACM: CHOLMOD
+\cite{ChenDavisHagerRajamanickam09,DavisHager09} (version 1.7 or later), AMD
+\cite{AmestoyDavisDuff96,AmestoyDavisDuff03}, COLAMD
+\cite{DavisGilbertLarimoreNg00_algo,DavisGilbertLarimoreNg00} and UMFPACK 
+\cite{10.1145/992200.992206} for its
+ordering/analysis phase and for its basic sparse matrix data structure, and the
+BLAS \cite{dddh:90} for dense matrix computations on its frontal matrices. 
+An efficient implementation of the BLAS is strongly recommended, either
+vendor-provided (such as the Intel MKL, the AMD ACML, or the 
+Sun Performance Library) or other high-performance BLAS such as those of 
+\cite{GotoVanDeGeijn08}. Note that while ParU uses nested parallelism heavily
+the right options for the BLAS library must be chosen to get a good performance.
+
+The use of OpenMP tasking is optional, but
+without it, only parallelism within the BLAS can be exploited (if available).
+See ParU/Doc/LICENSE for the license.
+Alternative licenses are also
+available; contact the authors for details.
+
+%-------------------------------------------------------------------------------
+% References
+%-------------------------------------------------------------------------------
+
+\bibliographystyle{plain}
+\bibliography{paru_user_guide}
+\end{document}

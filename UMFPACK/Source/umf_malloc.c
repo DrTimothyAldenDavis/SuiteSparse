@@ -65,7 +65,7 @@ void *UMF_malloc
 
     p = SuiteSparse_malloc (n_objects, size_of_object) ;
 
-    DEBUG0 ((ID"\n", (Int) p)) ;
+    DEBUG0 (("%p \n", p)) ;
 
 #if defined (UMF_MALLOC_COUNT) || !defined (NDEBUG)
     if (p)

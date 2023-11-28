@@ -11,9 +11,9 @@ concurrency: ci-arch-emu-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SuiteSparse_GPURuntime:GPUQREngine:SPQR:SPEX"
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
   # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:SPEX"
+  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
 
 
 jobs:
@@ -36,7 +36,9 @@ jobs:
         arch: [x86, aarch64, armv7, ppc64le, s390x]
         include:
           - arch: x86
-            ccache-max: 42M
+            ccache-max: 80M
+            extra-build-libs: ":GraphBLAS:LAGraph"
+            extra-check-libs: ":GraphBLAS:LAGraph"
           - arch: aarch64
             ccache-max: 42M
           - arch: armv7
@@ -66,7 +68,8 @@ jobs:
             m4
             gmp-dev
             mpfr-dev
-            openblas-dev
+            lapack-dev
+            valgrind
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -105,6 +108,7 @@ jobs:
           echo "gcc -dumpmachine"
           gcc -dumpmachine
           IFS=:
+          BUILD_LIBS="${BUILD_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${BUILD_LIBS}; do
             printf "   \033[0;32m==>\033[0m Building library \033[0;32m${lib}\033[0m\n"
             echo "::group::Configure $lib"
@@ -114,7 +118,8 @@ jobs:
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                  -DBLA_VENDOR="OpenBLAS" \
+                  -DBLA_VENDOR="Generic" \
+                  -DCOMPACT=ON \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -123,8 +128,10 @@ jobs:
           done
 
       - name: check
+        timeout-minutes: 30
         run: |
           IFS=':'
+          CHECK_LIBS="${CHECK_LIBS}${{ matrix.extra-check-libs }}"
           for lib in ${CHECK_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
@@ -147,6 +154,7 @@ jobs:
       - name: install
         run: |
           IFS=':'
+          BUILD_LIBS="${BUILD_LIBS}${{ matrix.extra-build-libs }}"
           for lib in ${BUILD_LIBS}; do
             printf "::group::\033[0;32m==>\033[0m Installing library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}/build
@@ -159,13 +167,21 @@ jobs:
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
           cmake \
-            -DBLA_VENDOR="OpenBLAS" \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
+            -DBLA_VENDOR="Generic" \
             ..
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Building example\n"
           cmake --build .
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary with shared libraries\033[0m\n"
           LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+          printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
+          printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
+          ./my_demo_static
+          printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
+          ./my_cxx_demo_static
           echo "::endgroup::"
 

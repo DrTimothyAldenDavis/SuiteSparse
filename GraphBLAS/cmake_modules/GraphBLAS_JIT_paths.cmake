@@ -43,8 +43,8 @@ if ( SUITESPARSE_CUDA )
     set ( COMPACT on )
 endif ( )
 
-option ( COMPACT "ON: do not compile FactoryKernels.  OFF (default): compile FactoryKernels" off )
-option ( NJIT "ON: do not use the CPU JIT.  OFF (default): enable the CPU JIT" off )
+option ( COMPACT "ON: do not compile FactoryKernels.  OFF (default): compile FactoryKernels" OFF )
+option ( NJIT "ON: do not use the CPU JIT.  OFF (default): enable the CPU JIT" OFF )
 
 if ( NJIT )
     # disable the CPU JIT (but keep any PreJIT kernels enabled)

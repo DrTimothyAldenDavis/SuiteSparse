@@ -100,12 +100,12 @@ export ( EXPORT GraphBLAS_CUDATargets
 # install export target and config for find_package
 install ( EXPORT GraphBLAS_CUDATargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GraphBLAS )
 
 configure_package_config_file (
     Config/GraphBLAS_CUDAConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GraphBLAS )
 
 write_basic_package_version_file (
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfigVersion.cmake
@@ -114,7 +114,7 @@ write_basic_package_version_file (
 install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfig.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDAConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_LIBDIR}/cmake/GraphBLAS )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/GraphBLAS )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -142,7 +142,7 @@ if ( NOT MSVC )
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/GraphBLAS_CUDA.pc
-        DESTINATION ${SUITESPARSE_LIBDIR}/pkgconfig )
+        DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
 #-------------------------------------------------------------------------------

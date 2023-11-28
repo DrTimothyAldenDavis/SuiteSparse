@@ -38,6 +38,28 @@ set ( SPQR_CUDA_VERSION "@SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION
 include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
+# Look for CHOLMOD target
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        # First check in a common build tree
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT CHOLMOD_FOUND )
+            find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+else ( )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+
+if ( NOT CHOLMOD_FOUND )
+    set ( _dependencies_found OFF )
+endif ( )
+
 # Look for NVIDIA CUDA toolkit
 if ( NOT CUDAToolkit_FOUND )
     find_dependency ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ )
@@ -59,6 +81,11 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/SPQR_CUDATargets.cmake )
 set ( _target_shared SuiteSparse::SPQR_CUDA )
 set ( _target_static SuiteSparse::SPQR_CUDA_static )
 set ( _var_prefix "SPQR_CUDA" )
+
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )

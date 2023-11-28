@@ -25,7 +25,7 @@ void *UMF_free
     void *p
 )
 {
-    DEBUG0 (("UMF_free: "ID"\n", (Int) p)) ;
+    DEBUG0 (("UMF_free: %p\n", p)) ;
     if (p)
     {
 

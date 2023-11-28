@@ -1,0 +1,89 @@
+name: LAGraph CI
+
+on: [push, pull_request]
+
+jobs:
+  linux:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        config:
+         - {grb_version: 7.1.0, conda_grb_package_hash: h27087fc, conda_extension: tar.bz2}
+         - {grb_version: 7.3.0, conda_grb_package_hash: h27087fc, conda_extension: tar.bz2}
+         - {grb_version: 7.4.1, conda_grb_package_hash: hcb278e6, conda_extension: conda}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.0.0
+    - name: Install tools for build
+      run: |
+        sudo apt install -y lcov
+    - name: Get GraphBLAS binaries
+      run: |
+        mkdir graphblas-binaries
+        cd graphblas-binaries
+        wget --quiet https://anaconda.org/conda-forge/graphblas/${{ matrix.config.grb_version }}/download/linux-64/graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+        if [ ${{ matrix.config.conda_extension }} == "tar.bz2" ]; then
+          tar xf graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+        else
+          unzip graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+          tar xf pkg-graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.tar.zst
+        fi
+        cd ..
+    - name: Build project
+      run: |
+        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include
+        export GRAPHBLAS_LIBRARY=`pwd`/graphblas-binaries/lib/libgraphblas.so
+        cd build
+        cmake .. -DCOVERAGE=1 -DGRAPHBLAS_INCLUDE_DIR=${GRAPHBLAS_INCLUDE_DIR} -DGRAPHBLAS_LIBRARY=${GRAPHBLAS_LIBRARY}
+        JOBS=2 make
+        make test_coverage
+    - name: Deploy
+      uses: JamesIves/github-pages-deploy-action@4.1.1
+      if: matrix.config.grb_version == '7.4.1' && github.event_name == 'push' && github.ref == 'refs/heads/stable'
+      with:
+        branch: gh-pages
+        folder: build/test_coverage/
+        single-commit: true
+    - name: Save output
+      uses: actions/upload-artifact@v2.2.3
+      with:
+        name: test_coverage
+        path: build/test_coverage/
+  macos:
+    runs-on: macos-12
+    strategy:
+      matrix:
+        config:
+         - {grb_version: 7.1.0, conda_grb_package_hash: h7881ed4, conda_extension: tar.bz2}
+         - {grb_version: 7.3.0, conda_grb_package_hash: ha894c9a, conda_extension: tar.bz2}
+         - {grb_version: 7.4.1, conda_grb_package_hash: ha894c9a, conda_extension: conda}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2.0.0
+    - name: Install dependencies
+      run: |
+        brew tap-new libomp/cask
+        brew extract --version=14.0.6 libomp libomp/cask
+        brew install libomp@14.0.6
+    - name: Get GraphBLAS binaries
+      run: |
+        mkdir graphblas-binaries
+        cd graphblas-binaries
+        wget --quiet https://anaconda.org/conda-forge/graphblas/${{ matrix.config.grb_version }}/download/osx-64/graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+        if [ ${{ matrix.config.conda_extension }} == "tar.bz2" ]; then
+          tar xf graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+        else
+          unzip graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.${{ matrix.config.conda_extension }}
+          tar xf pkg-graphblas-${{ matrix.config.grb_version }}-${{ matrix.config.conda_grb_package_hash }}_0.tar.zst
+        fi
+        cd ..
+    - name: Build project
+      run: |
+        export GRAPHBLAS_INCLUDE_DIR=`pwd`/graphblas-binaries/include
+        export GRAPHBLAS_LIBRARY=`pwd`/graphblas-binaries/lib/libgraphblas.dylib
+        # adding an extra line to the CMakeLists.txt file to locate the libomp instance installed by brew
+        echo 'include_directories("/usr/local/opt/libomp/include")' | cat - CMakeLists.txt
+        cd build
+        CC=gcc cmake .. -DGRAPHBLAS_INCLUDE_DIR=${GRAPHBLAS_INCLUDE_DIR} -DGRAPHBLAS_LIBRARY=${GRAPHBLAS_LIBRARY}
+        JOBS=2 make
+        make test
