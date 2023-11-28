@@ -350,7 +350,7 @@ For more information, see:
 /* === Scaffolding code definitions  ======================================== */
 /* ========================================================================== */
 
-/* UMFPACK debugging control moved to amd_internal.h */
+/* UMFPACK debugging control moved to umf_internal.h */
 
 /*
    Our "scaffolding code" philosophy:  In our opinion, well-written library

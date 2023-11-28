@@ -1,5 +1,5 @@
 
-UMFPACK V6.2 (Sept 18, 2023) demo: _zi_ version
+UMFPACK V6.3 (Dec 30, 2023) demo: _zi_ version
 
 UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
@@ -10,9 +10,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.2.1 (Sept 18, 2023): OK
+UMFPACK V6.3.0 (Dec 30, 2023): OK
 
-UMFPACK V6.2.1 (Sept 18, 2023), Control:
+UMFPACK V6.3.0 (Dec 30, 2023), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int32_t
 
@@ -257,7 +257,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -332,7 +332,7 @@ UMFPACK V6.2.1 (Sept 18, 2023), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.02
+    numeric factorization mflops (wallclock):      0.01
 
     solve flops:                                   1.02800e+03
     iterative refinement steps taken:              1
@@ -346,7 +346,7 @@ UMFPACK V6.2.1 (Sept 18, 2023), Info:
 
 UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.2.1 (Sept 18, 2023): OK
+UMFPACK V6.3.0 (Dec 30, 2023): OK
 
 
 x (solution of Ax=b): dense vector, n = 5. 
@@ -362,7 +362,7 @@ maxnorm of residual: 1.77636e-15
 
 UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 
-UMFPACK V6.2.1 (Sept 18, 2023): OK
+UMFPACK V6.3.0 (Dec 30, 2023): OK
 
 determinant: (-1.7814+ (2.3784)i) * 10^(2)
 
@@ -376,7 +376,7 @@ x (solution of Ax=b, solve is split into 3 steps): dense vector, n = 5.
 
 maxnorm of residual: 1.77636e-14
 
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -451,7 +451,7 @@ UMFPACK V6.2.1 (Sept 18, 2023), Info:
     numeric factorization reallocations:           1
     costly numeric factorization reallocations:    0
     numeric factorization wallclock time (sec):    0.00
-    numeric factorization mflops (wallclock):      0.02
+    numeric factorization mflops (wallclock):      0.01
 
     solve flops:                                   4.80000e+02
     iterative refinement steps taken:              0
@@ -605,7 +605,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -852,7 +852,7 @@ diagonal of U: dense vector, n = 5.
 
     Numeric object:  OK
 
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -1300,7 +1300,7 @@ Freeing numeric object:
 Loading numeric object:
 
 Done loading numeric object
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -1509,7 +1509,7 @@ Done copying numeric object
 Numeric blob size: 864
 
 Done serialize/deserialize of numeric object
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -1607,7 +1607,7 @@ maxnorm of residual: 4.88498e-15
 
 
 Solving C'x=b again, using umfpack_zi_wsolve instead:
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int32_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -1705,4 +1705,4 @@ maxnorm of residual: 4.88498e-15
 
 
 umfpack_zi_demo complete.
-Total time:  0.00 seconds (CPU time),  0.00 seconds (wallclock time)
+Total time:  0.01 seconds (CPU time),  0.01 seconds (wallclock time)

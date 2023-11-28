@@ -27,7 +27,7 @@
 #endif
 
 /* -------------------------------------------------------------------------- */
-/* integer type (Int is int32_t or int64_t) defined in amd_internal.h */
+/* integer type (Int is int32_t or int64_t) defined in umf_internal.h */
 /* -------------------------------------------------------------------------- */
 
 #if defined (DLONG) || defined (ZLONG)
