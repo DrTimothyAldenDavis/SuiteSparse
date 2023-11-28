@@ -240,7 +240,7 @@
 // version control
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_DATE "Nov 30, 2023"
+#define CHOLMOD_DATE "Dec 30, 2023"
 #define CHOLMOD_MAIN_VERSION   5
 #define CHOLMOD_SUB_VERSION    1
 #define CHOLMOD_SUBSUB_VERSION 0

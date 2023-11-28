@@ -1,7 +1,7 @@
 AMD demo, with a jumbled version of the 24-by-24
 Harwell/Boeing matrix, can_24:
 
-AMD version 3.2.2, Nov 30, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -144,7 +144,7 @@ Plot of symmetric matrix to be ordered by amd_order:
 23:  . . . . . . X . . . . X X . . . . . . . . . . X
 return value from amd_order: 1 (should be 1)
 
-AMD version 3.2.2, Nov 30, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        102
