@@ -37,12 +37,9 @@
 #define NDEBUG
 #endif
 
-/*
-    To enable debugging, uncomment the following line:
-#undef NDEBUG
-*/
+// To enable debugging, uncomment the following line:
+// #undef NDEBUG
 
-#define SUITESPARSE_LIBRARY
 #include "amd.h"
 
 /* ------------------------------------------------------------------------- */

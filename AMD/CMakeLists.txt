@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( AMD_DATE "Nov 30, 2023" )
+set ( AMD_DATE "Dec 30, 2023" )
 set ( AMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
-set ( AMD_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( AMD_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( AMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
+set ( AMD_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building AMD version: v"
     ${AMD_VERSION_MAJOR}.
