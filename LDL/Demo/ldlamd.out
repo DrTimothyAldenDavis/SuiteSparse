@@ -6,7 +6,7 @@ name: Dense/0  n: 0 entries: 0
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -14,7 +14,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  0
 
@@ -37,7 +37,7 @@ name: Dense/0  n: 0 entries: 0  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -45,7 +45,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  0
 
@@ -68,7 +68,7 @@ name: Dense/1  n: 1 entries: 1
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -76,7 +76,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  1
     nz, number of nonzeros in A:                        1
@@ -119,7 +119,7 @@ name: Dense/1  n: 1 entries: 2  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -127,7 +127,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  1
     nz, number of nonzeros in A:                        1
@@ -170,7 +170,7 @@ name: Dense/2  n: 2 entries: 4
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -178,7 +178,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  2
     nz, number of nonzeros in A:                        4
@@ -221,7 +221,7 @@ name: Dense/2  n: 2 entries: 5  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -229,7 +229,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  2
     nz, number of nonzeros in A:                        4
@@ -272,7 +272,7 @@ name: Dense/3  n: 3 entries: 9
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -280,7 +280,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  3
     nz, number of nonzeros in A:                        9
@@ -323,7 +323,7 @@ name: Dense/3  n: 3 entries: 11  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -331,7 +331,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  3
     nz, number of nonzeros in A:                        9
@@ -374,7 +374,7 @@ name: HB/can_24  n: 24 entries: 160
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -382,7 +382,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -425,7 +425,7 @@ name: HB/can_24  n: 24 entries: 188  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -433,7 +433,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  24
     nz, number of nonzeros in A:                        160
@@ -476,7 +476,7 @@ name: FIDAP/ex5  n: 27 entries: 279
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -484,7 +484,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  27
     nz, number of nonzeros in A:                        279
@@ -527,7 +527,7 @@ name: FIDAP/ex5  n: 27 entries: 325  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -535,7 +535,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  27
     nz, number of nonzeros in A:                        279
@@ -578,7 +578,7 @@ name: HB/bcsstk01  n: 48 entries: 400
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -586,7 +586,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        400
@@ -629,7 +629,7 @@ name: HB/bcsstk01  n: 48 entries: 472  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -637,7 +637,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        400
@@ -680,7 +680,7 @@ name: HB/bcsstm01  n: 48 entries: 24
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -688,7 +688,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        24
@@ -731,7 +731,7 @@ name: HB/bcsstm01  n: 48 entries: 26  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -739,7 +739,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        24
@@ -782,7 +782,7 @@ name: Pothen/mesh1e1  n: 48 entries: 306
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -790,7 +790,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        306
@@ -833,7 +833,7 @@ name: Pothen/mesh1e1  n: 48 entries: 359  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -841,7 +841,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  48
     nz, number of nonzeros in A:                        306
@@ -884,7 +884,7 @@ name: Bai/bfwb62  n: 62 entries: 342
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -892,7 +892,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  62
     nz, number of nonzeros in A:                        342
@@ -935,7 +935,7 @@ name: Bai/bfwb62  n: 62 entries: 407  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -943,7 +943,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  62
     nz, number of nonzeros in A:                        342
@@ -986,7 +986,7 @@ name: HB/bcsstk02  n: 66 entries: 4356
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -994,7 +994,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        4356
@@ -1037,7 +1037,7 @@ name: HB/bcsstk02  n: 66 entries: 5175  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1045,7 +1045,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        4356
@@ -1088,7 +1088,7 @@ name: HB/bcsstm02  n: 66 entries: 66
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1096,7 +1096,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        66
@@ -1139,7 +1139,7 @@ name: HB/bcsstm02  n: 66 entries: 72  (jumbled version)
 --------------------------------------------------------
 
 
-AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
+AMD version 3.3.0, Dec 30, 2023: approximate minimum degree ordering
     dense row parameter: 10
     (rows with more than max (10 * sqrt (n), 16) entries are
     considered "dense", and placed last in output permutation)
@@ -1147,7 +1147,7 @@ AMD version 3.2.1, Sept 18, 2023: approximate minimum degree ordering
     size of AMD integer: 4
 
 
-AMD version 3.2.1, Sept 18, 2023, results:
+AMD version 3.3.0, Dec 30, 2023, results:
     status: OK, but jumbled
     n, dimension of A:                                  66
     nz, number of nonzeros in A:                        66
