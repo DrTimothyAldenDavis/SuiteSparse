@@ -1,3 +1,8 @@
+Dec 30, 2023: version 6.3.0
+
+    * major change to build system: by Markus Mützel
+    * AMD: amd_internal.h removed.
+
 Oct 23, 2023: version 6.2.2
 
     * for SuiteSparse 7.3.0: update for CHOLMOD 5.0.0

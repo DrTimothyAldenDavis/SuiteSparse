@@ -1,3 +1,7 @@
+Dec 30, 2023: version 2.3.0
+
+    * major change to build system: by Markus Mützel
+
 Oct 23, 2023: version 2.2.2
 
     * for SuiteSparse 7.3.0: update for CHOLMOD 5.0.0

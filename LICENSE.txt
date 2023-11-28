@@ -6,7 +6,7 @@ found in the lists below.
 
     SPEX: a Sparse Left-looking Integer-Preserving LU Factorization
 
-    Copyright (c) 2019-2022, Christopher Lourenco, JinHao Chen, Erick Moreno-
+    Copyright (c) 2019-2023, Christopher Lourenco, JinHao Chen, Erick Moreno-
     Centeno, and Timothy A. Davis.
 
     Available at:
@@ -46,7 +46,7 @@ found in the lists below.
 
 ==> AMD/Doc/License.txt <==
 
-    AMD, Copyright (c), 1996-2022, Timothy A. Davis,
+    AMD, Copyright (c), 1996-2023, Timothy A. Davis,
     Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 
     Availability:
@@ -82,7 +82,7 @@ found in the lists below.
         DAMAGE.
 
 ==> BTF/Doc/License.txt <==
-    BTF, Copyright (C) 2004-2022, University of Florida
+    BTF, Copyright (C) 2004-2023, University of Florida
     by Timothy A. Davis and Ekanathan Palamadai.
     BTF is also available under other licenses; contact authors for details.
     http://suitesparse.com
@@ -143,7 +143,7 @@ found in the lists below.
 ==> CCOLAMD/Doc/License.txt <==
 
     CCOLAMD: constrained column approximate minimum degree ordering
-    Copyright (C) 2005-2022, Univ. of Florida.  Authors: Timothy A. Davis,
+    Copyright (C) 2005-2023, Univ. of Florida.  Authors: Timothy A. Davis,
     Sivasankaran Rajamanickam, and Stefan Larimore.  Closely based on COLAMD by
     Davis, Stefan Larimore, in collaboration with Esmond Ng, and John Gilbert.
     http://suitesparse.com
@@ -183,7 +183,7 @@ found in the lists below.
         ==> Check/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Check Module.  Copyright (C) 2005-2022, Timothy A. Davis CHOLMOD is
+            CHOLMOD/Check Module.  Copyright (C) 2005-2023, Timothy A. Davis CHOLMOD is
             also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -210,7 +210,7 @@ found in the lists below.
         ==> Cholesky/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Cholesky module, Copyright (C) 2005-2022, Timothy A. Davis.
+            CHOLMOD/Cholesky module, Copyright (C) 2005-2023, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for
             details.  http://suitesparse.com
 
@@ -267,7 +267,7 @@ found in the lists below.
         ==> Demo/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Demo Module.  Copyright (C) 2005-2022, Timothy A. Davis.  CHOLMOD
+            CHOLMOD/Demo Module.  Copyright (C) 2005-2023, Timothy A. Davis.  CHOLMOD
             is also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -296,22 +296,18 @@ found in the lists below.
         ==> Include/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Include/* files.  Copyright (C) 2005-2022, either Univ. of Florida
-            or T. Davis, depending on the file.
-
-            Each file is licensed separately, according to the Module for which it
-            contains definitions and prototypes:
+            CHOLMOD/Include/* files.  Copyright (C) 2005-2023
 
             Include/cholmod.h               LGPL
             Include/cholmod_internal.h      LGPL
             Include/cholmod_template.h      LGPL
-            Include/cholmod_types.h
+            Include/cholmod_types.h         LGPL
 
         --------------------------------------------------------------------------------
         ==> MATLAB/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/MATLAB Module.  Copyright (C) 2005-2022, Timothy A. Davis.  CHOLMOD
+            CHOLMOD/MATLAB Module.  Copyright (C) 2005-2023, Timothy A. Davis.  CHOLMOD
             is also available under other licenses; contact authors for details.
             MATLAB(tm) is a Registered Trademark of The MathWorks, Inc.
             http://suitesparse.com
@@ -340,7 +336,7 @@ found in the lists below.
         ==> MatrixOps/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+            CHOLMOD/MatrixOps Module.  Copyright (C) 2005-2023, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for
             details.  http://suitesparse.com
 
@@ -369,7 +365,7 @@ found in the lists below.
         ==> Modify/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Modify Module.  Copyright (C) 2005-2022, Timothy A. Davis and
+            CHOLMOD/Modify Module.  Copyright (C) 2005-2023, Timothy A. Davis and
             William W. Hager.  CHOLMOD is also available under other licenses; contact
             authors for details.  http://suitesparse.com
 
@@ -399,7 +395,7 @@ found in the lists below.
         --------------------------------------------------------------------------------
 
             CHOLMOD/Partition Module.
-            Copyright (C) 2005-2022, Univ. of Florida.  Author: Timothy A. Davis
+            Copyright (C) 2005-2023, Univ. of Florida.  Author: Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -429,7 +425,7 @@ found in the lists below.
         --------------------------------------------------------------------------------
 
             CHOLMOD/Supernodal Module.
-            Copyright (C) 2005-2022, Timothy A. Davis
+            Copyright (C) 2005-2023, Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -458,7 +454,7 @@ found in the lists below.
         ==> Tcov/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Tcov Module.  Copyright (C) 2005-2022, Timothy A. Davis
+            CHOLMOD/Tcov Module.  Copyright (C) 2005-2023, Timothy A. Davis
             CHOLMOD is also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -487,7 +483,7 @@ found in the lists below.
         ==> Valgrind/License.txt <==
         --------------------------------------------------------------------------------
 
-            CHOLMOD/Valgrind Module.  Copyright (C) 2005-2022, Timothy A. Davis.
+            CHOLMOD/Valgrind Module.  Copyright (C) 2005-2023, Timothy A. Davis.
             CHOLMOD is also available under other licenses; contact authors for details.
             http://suitesparse.com
 
@@ -513,7 +509,7 @@ found in the lists below.
             Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301, USA.
 
 ==> COLAMD/Doc/License.txt <==
-    COLAMD, Copyright 1998-2022, Timothy A. Davis.  http://suitesparse.com
+    COLAMD, Copyright 1998-2023, Timothy A. Davis.  http://suitesparse.com
     http://suitesparse.com
 
     COLAMD License: BSD 3-clause
@@ -544,7 +540,7 @@ found in the lists below.
 
 ==> CSparse/Doc/License.txt <==
     CSparse: a Concise Sparse matrix package.
-    Copyright (c) 2006-2022, Timothy A. Davis.
+    Copyright (c) 2006-2023, Timothy A. Davis.
     http://suitesparse.com
 
     --------------------------------------------------------------------------------
@@ -565,7 +561,7 @@ found in the lists below.
 
 ==> CXSparse/Doc/License.txt <==
     CXSparse: a Concise Sparse matrix package - Extended.
-    Copyright (c) 2006-2022, Timothy A. Davis.
+    Copyright (c) 2006-2023, Timothy A. Davis.
     http://suitesparse.com
 
     --------------------------------------------------------------------------------
@@ -586,7 +582,7 @@ found in the lists below.
 
 ==> CXSparse_newfiles/Doc/License.txt <==
     CXSparse: a Concise Sparse matrix package - Extended.
-    Copyright (c) 2006-2022, Timothy A. Davis.
+    Copyright (c) 2006-2023, Timothy A. Davis.
     http://suitesparse.com
 
     --------------------------------------------------------------------------------
@@ -605,17 +601,17 @@ found in the lists below.
     License along with this Module; if not, write to the Free Software
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
-==> GPUQREngine/Doc/License.txt <==
-    GPUQREngine Copyright (c) 2013-2022, Timothy A. Davis, Sencer Nuri Yeralan,
+==> SPQR/GPUQREngine/Doc/License.txt <==
+    SPQR/GPUQREngine Copyright (c) 2013-2023, Timothy A. Davis, Sencer Nuri Yeralan,
     and Sanjay Ranka.
     http://suitesparse.com
 
-    GPUQREngine is free software; you can redistribute it and/or modify it under
+    SPQR/GPUQREngine is free software; you can redistribute it and/or modify it under
     the terms of the GNU General Public License as published by the Free Software
     Foundation; either version 2 of the License, or (at your option) any later
     version.
 
-    GPUQREngine is distributed in the hope that it will be useful, but WITHOUT
+    SPQR/GPUQREngine is distributed in the hope that it will be useful, but WITHOUT
     ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
     FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
@@ -625,7 +621,7 @@ found in the lists below.
 
 
 ==> KLU/Doc/License.txt <==
-    KLU, Copyright (C) 2004-2022, University of Florida
+    KLU, Copyright (C) 2004-2023, University of Florida
     by Timothy A. Davis and Ekanathan Palamadai.
     KLU is also available under other licenses; contact authors for details.
     http://suitesparse.com
@@ -647,7 +643,7 @@ found in the lists below.
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 ==> LDL/Doc/License.txt <==
-    LDL Copyright (c) 2005-2022 by Timothy A. Davis.
+    LDL Copyright (c) 2005-2023 by Timothy A. Davis.
     LDL is also available under other licenses; contact the author for details.
     http://suitesparse.com
 
@@ -726,7 +722,7 @@ found in the lists below.
     SSMULT License:
     --------------------------------------------------------------------------------
 
-        SSMULT, Copyright (c) 2007-2022, Timothy A. Davis,
+        SSMULT, Copyright (c) 2007-2023, Timothy A. Davis,
         http://suitesparse.com.
 
         SSMULT is free software; you can redistribute it and/or modify it under the
@@ -745,7 +741,7 @@ found in the lists below.
 
 
 ==> RBio/Doc/License.txt <==
-    RBio toolbox.  Copyright (C) 2006-2022, Timothy A. Davis
+    RBio toolbox.  Copyright (C) 2006-2023, Timothy A. Davis
     RBio is also available under other licenses; contact authors for details.
     http://suitesparse.com
 
@@ -767,7 +763,7 @@ found in the lists below.
 
 
 ==> SPQR/Doc/License.txt <==
-    SPQR, Copyright 2008-2022 by Timothy A. Davis.
+    SPQR, Copyright 2008-2023 by Timothy A. Davis.
     All Rights Reserved.
     SPQR is available under alternate licenses, contact T. Davis for details.
 
@@ -806,18 +802,18 @@ found in the lists below.
         http://suitesparse.com
 
 
-==> SuiteSparse_GPURuntime/Doc/License.txt <==
-    SuiteSparse_GPURuntime Copyright (c) 2013-2022, Timothy A. Davis,
+==> SPQR/GPURuntime/Doc/License.txt <==
+    SPQR/GPURuntime Copyright (c) 2013-2023, Timothy A. Davis,
     Sencer Nuri Yeralan, and Sanjay Ranka.  http://suitesparse.com
 
     --------------------------------------------------------------------------------
 
-    SuiteSparse_GPURuntime is free software; you can redistribute it and/or modify
+    SPQR/GPURuntime is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by the Free
     Software Foundation; either version 2 of the License, or (at your option) any
     later version.
 
-    SuiteSparse_GPURuntime is distributed in the hope that it will be useful, but
+    SPQR/GPURuntime is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
     FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
     details.
@@ -827,7 +823,7 @@ found in the lists below.
     Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 ==> ssget/Doc/License.txt <==
-    Copyright (c), 2009-2022, Timothy A. Davis, All Rights Reserved.
+    Copyright (c), 2009-2023, Timothy A. Davis, All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -855,7 +851,7 @@ found in the lists below.
 
 
 ==> UMFPACK/Doc/License.txt <==
-    UMFPACK, Copyright 1995-2022 by Timothy A. Davis.
+    UMFPACK, Copyright 1995-2023, by Timothy A. Davis.
     All Rights Reserved.
     UMFPACK is available under alternate licenses, contact T. Davis for details.
 
@@ -895,7 +891,7 @@ found in the lists below.
 
 
 ==> CSparse/MATLAB/ssget/Doc/License.txt <==
-    Copyright (c), 2009-2022, Timothy A. Davis, All Rights Reserved.
+    Copyright (c), 2009-2023, Timothy A. Davis, All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -923,7 +919,7 @@ found in the lists below.
 
 
 ==> CXSparse/MATLAB/ssget/Doc/License.txt <==
-    Copyright (c), 2009-2022, Timothy A. Davis, All Rights Reserved.
+    Copyright (c), 2009-2023, Timothy A. Davis, All Rights Reserved.
 
     Redistribution and use in source and binary forms, with or without
     modification, are permitted provided that the following conditions are met:
@@ -990,13 +986,13 @@ found in the lists below.
         SPDX-License-Identifier: GPL-3.0-or-later
 
 ==> Mongoose License <==
-    Mongoose, Copyright 2018-2022, Timothy A. Davis, Scott P. Kolodziej,
+    Mongoose, Copyright 2018-2023, Timothy A. Davis, Scott P. Kolodziej,
     William W. Hager, S. Nuri Yeralan
     Licensed under the GNU GENERAL PUBLIC LICENSE, Version 3, 29 June 2007
 
 ==> Example License <==
 
-Example package, Copyright (c), 2022, Timothy A. Davis, All Rights Reserved.
+Example package, Copyright (c), 2023, Timothy A. Davis, All Rights Reserved.
 SPDX-License-Identifier: BSD-3-clause
 
     Redistribution and use in source and binary forms, with or without
@@ -1022,4 +1018,61 @@ SPDX-License-Identifier: BSD-3-clause
     LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
     DAMAGE.
+
+==> ParU License <==
+
+    ParU package, Copyright (c), 2023, Mohsen Aznaveh and Timothy A. Davis, All
+    Rights Reserved.
+    SPDX-License-Identifier: GPL-3.0-or-later
+
+==> LAGraph License <==
+
+    SPDX-License-Identifier: BSD-2-clause
+
+    File: LICENSE
+
+    LAGraph
+
+    Copyright 2019-2023 LAGraph Contributors. All Rights Reserved.
+    (see Contributors.txt for a full list of Contributors;
+     see ContributionInstructions.txt for information on how you can
+     Contribute to this project).
+
+    BSD
+
+    Redistribution and use in source and binary forms, with or without
+    modification, are permitted provided that the following conditions are met:
+
+    1. Redistributions of source code must retain the above copyright notice, this
+    list of conditions and the following disclaimer.
+
+    2. Redistributions in binary form must reproduce the above copyright notice,
+    this list of conditions and the following disclaimer in the documentation
+    and/or other materials provided with the distribution.
+
+    ACKNOWLEDGMENTS AND DISCLAIMERS:
+
+    This program includes and/or can make use of certain third party source code,
+    object code, documentation and other files ("Third Party Software"). The Third
+    Party Software that is used by this program is dependent upon your system
+    configuration. By using this program, You agree to comply with any and all
+    relevant Third Party Software terms and conditions contained in any such Third
+    Party Software or separate license file distributed with such Third Party
+    Software. The parties who own the Third Party Software ("Third Party
+    Licensors") are intended third party beneficiaries to this License with
+    respect to the terms applicable to their Third Party Software. Third Party
+    Software licenses only apply to the Third Party Software and not any other
+    portion of this program or this program as a whole.
+
+    Created, in part, with funding and support from the United States Government.
+    (see Acknowledgments.txt file).
+
+    NO WARRANTY. THIS MATERIAL IS FURNISHED ON AN "AS-IS" BASIS. THE LAGRAPH
+    CONTRIBUTORS MAKE NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED, AS
+    TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE
+    OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE
+    MATERIAL. THE CONTRIBUTORS DO NOT MAKE ANY WARRANTY OF ANY KIND WITH RESPECT
+    TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+
+    DM22-0790
 
