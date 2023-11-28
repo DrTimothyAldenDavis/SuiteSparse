@@ -72,7 +72,7 @@ public:
     int VThead;              // Index of the first available entry in VTlist
 
     // Constructors
-    void *operator new(long unsigned int, BucketList <Int>* p)
+    void *operator new(size_t, BucketList <Int>* p)
     {
         return p;
     }
