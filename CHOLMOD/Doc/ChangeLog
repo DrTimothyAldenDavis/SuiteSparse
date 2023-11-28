@@ -1,5 +1,6 @@
-Nov 30, 2023, version 5.1.0
+Dec 30, 2023: version 5.1.0
 
+    * major change to build system: by Markus Mützel
     * support for single precision matrices:  for all Modules, except for the
         GPU kernels (which are only supported for double and complex double
         matrices).
