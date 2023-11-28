@@ -17,3 +17,4 @@ Requires.private: @GRAPHBLAS_STATIC_MODULES@
 Libs: -L${libdir} -lgraphblas
 Libs.private: @GRAPHBLAS_STATIC_LIBS@
 Cflags: -I${includedir}
+Cflags.private: -DGB_STATIC
