@@ -1,8 +1,8 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_GPURuntime/CMakeLists.txt
+# SPQR/GPURuntime/CMakeLists.txt
 #-------------------------------------------------------------------------------
 
-# SuiteSparse_GPURuntime, Copyright (c) 2013-2023, Timothy A Davis,
+# SPQR/GPURuntime, Copyright (c) 2013-2023, Timothy A Davis,
 # Sencer Nuri Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -12,22 +12,17 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( SUITESPARSE_GPURUNTIME_DATE "Sept 18, 2023" )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MAJOR 3 CACHE STRING "" FORCE )
-set ( SUITESPARSE_GPURUNTIME_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( SUITESPARSE_GPURUNTIME_VERSION_SUB   1 CACHE STRING "" FORCE )
-
-message ( STATUS "Building SUITESPARSE_GPURUNTIME version: v"
-    ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.
-    ${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.
-    ${SUITESPARSE_GPURUNTIME_VERSION_SUB} " (" ${SUITESPARSE_GPURUNTIME_DATE} ")" )
+message ( STATUS "Building SPQR/GPURUNTIME version: v"
+    ${SPQR_VERSION_MAJOR}.
+    ${SPQR_VERSION_MINOR}.
+    ${SPQR_VERSION_SUB} " (" ${SPQR_DATE} ")" )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
 project ( suitesparse_gpuruntime 
-    VERSION "${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}"
+    VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES C CXX CUDA )
 
 #-------------------------------------------------------------------------------
@@ -65,11 +60,11 @@ if ( BUILD_SHARED_LIBS )
     add_library ( GPURuntime SHARED ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
     set_target_properties ( GPURuntime PROPERTIES
-        VERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}.${SUITESPARSE_GPURUNTIME_VERSION_MINOR}.${SUITESPARSE_GPURUNTIME_VERSION_SUB}
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparse_gpuruntime
-        SOVERSION ${SUITESPARSE_GPURUNTIME_VERSION_MAJOR}
+        SOVERSION ${SPQR_VERSION_MAJOR}
         PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 

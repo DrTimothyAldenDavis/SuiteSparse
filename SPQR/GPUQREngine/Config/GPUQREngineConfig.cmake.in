@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/GPUQREngine/cmake_modules/GPUQREngineConfig.cmake
+# SPQR/GPUQREngine/cmake_modules/GPUQREngineConfig.cmake
 #-------------------------------------------------------------------------------
 
 # The following copyright and license applies to just this file only, not to
@@ -28,12 +28,6 @@
 #-------------------------------------------------------------------------------
 
 @PACKAGE_INIT@
-
-set ( GPUQRENGINE_DATE "@GPUQRENGINE_DATE@" )
-set ( GPUQRENGINE_VERSION_MAJOR @GPUQRENGINE_VERSION_MAJOR@ )
-set ( GPUQRENGINE_VERSION_MINOR @GPUQRENGINE_VERSION_MINOR@ )
-set ( GPUQRENGINE_VERSION_PATCH @GPUQRENGINE_VERSION_SUB@ )
-set ( GPUQRENGINE_VERSION "@GPUQRENGINE_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@.@GPUQRENGINE_VERSION_SUB@" )
 
 include ( ${CMAKE_CURRENT_LIST_DIR}/GPUQREngineTargets.cmake )
 
@@ -120,7 +114,8 @@ endmacro ( )
 suitesparse_check_exist ( GPUQRENGINE_INCLUDE_DIR ${GPUQRENGINE_INCLUDE_DIR} )
 suitesparse_check_exist ( GPUQRENGINE_LIBRARY ${GPUQRENGINE_LIBRARY} )
 
-message ( STATUS "GPUQREngine version: ${GPUQRENGINE_VERSION}" )
+message ( STATUS "GPUQREngine version: ${SPQR_VERSION}" )
 message ( STATUS "GPUQREngine include: ${GPUQRENGINE_INCLUDE_DIR}" )
 message ( STATUS "GPUQREngine library: ${GPUQRENGINE_LIBRARY}" )
 message ( STATUS "GPUQREngine static:  ${GPUQRENGINE_STATIC}" )
+

@@ -1,9 +1,9 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/GPUQREngine/CMakeLists.txt
+# SPQR/GPUQREngine/CMakeLists.txt
 #-------------------------------------------------------------------------------
 
-# GPUQREngine, Copyright (c) 2013-2023, Timothy A Davis, Sencer Nuri Yeralan,
-# and Sanjay Ranka.  All Rights Reserved.
+# SPQR/GPUQREngine, Copyright (c) 2013-2023, Timothy A Davis, Sencer Nuri
+# Yeralan, and Sanjay Ranka.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
 #-------------------------------------------------------------------------------
@@ -12,22 +12,17 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( GPUQRENGINE_DATE "Oct 23, 2023" )
-set ( GPUQRENGINE_VERSION_MAJOR 3 CACHE STRING "" FORCE )
-set ( GPUQRENGINE_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( GPUQRENGINE_VERSION_SUB   2 CACHE STRING "" FORCE )
-
-message ( STATUS "Building GPUQRENGINE version: v"
-    ${GPUQRENGINE_VERSION_MAJOR}.
-    ${GPUQRENGINE_VERSION_MINOR}.
-    ${GPUQRENGINE_VERSION_SUB} " (" ${GPUQRENGINE_DATE} ")" )
+message ( STATUS "Building SPQR/GPUQRENGINE version: v"
+    ${SPQR_VERSION_MAJOR}.
+    ${SPQR_VERSION_MINOR}.
+    ${SPQR_VERSION_SUB} " (" ${SPQR_DATE} ")" )
 
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------
 
 project ( gpuqrengine 
-    VERSION "${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}"
+    VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES CXX CUDA )
 
 #-------------------------------------------------------------------------------
@@ -50,10 +45,10 @@ set ( DEMO_OK false )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND DEMO AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 5.0.0
+    find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.0.0 )
+        find_package ( CHOLMOD 5.1.0 )
     endif ( )
 endif ( )
 
@@ -86,11 +81,11 @@ if ( BUILD_SHARED_LIBS )
     add_library ( GPUQREngine SHARED ${GPUQRENGINE_SOURCES} )
 
     set_target_properties ( GPUQREngine PROPERTIES
-        VERSION ${GPUQRENGINE_VERSION_MAJOR}.${GPUQRENGINE_VERSION_MINOR}.${GPUQRENGINE_VERSION_SUB}
+        VERSION ${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}
         CXX_STANDARD 17
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME gpuqrengine
-        SOVERSION ${GPUQRENGINE_VERSION_MAJOR}
+        SOVERSION ${SPQR_VERSION_MAJOR}
         PUBLIC_HEADER "Include/GPUQREngine.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 

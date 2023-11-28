@@ -62,10 +62,10 @@
         #endif
  */
 
-#define SPQR_DATE "Oct 23, 2023"
+#define SPQR_DATE "Dec 30, 2023"
 #define SPQR_MAIN_VERSION   4
-#define SPQR_SUB_VERSION    2
-#define SPQR_SUBSUB_VERSION 2
+#define SPQR_SUB_VERSION    3
+#define SPQR_SUBSUB_VERSION 0
 
 #define SPQR_VER_CODE(main,sub) ((main) * 1000 + (sub))
 #define SPQR_VERSION SPQR_VER_CODE(SPQR_MAIN_VERSION,SPQR_SUB_VERSION)

@@ -1,3 +1,9 @@
+Dec 30, 2023: version 4.3.0
+
+    * major change to build system: by Markus Mützel
+    * dependent packages: GPUQREngine and SuiteSparse_GPURuntime moved into
+        SPQR as dependent packages, only used in SPQR.
+
 Oct 23, 2023: version 4.2.2
 
     * for SuiteSparse 7.3.0: update for CHOLMOD 5.0.0

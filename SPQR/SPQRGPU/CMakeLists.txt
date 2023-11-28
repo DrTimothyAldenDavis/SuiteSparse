@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SPQR/SPQRGPU/CMakeLists.txt:  cmake for SPQR/SPQRGPU module
+# SPQR/SPQRGPU/CMakeLists.txt:  cmake for SPQR/SPQRGPU module
 #-------------------------------------------------------------------------------
 
 # SPQR/SPQRGPU Module.  Copyright (C) 2005-2022, Timothy A. Davis.

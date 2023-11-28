@@ -81,21 +81,21 @@ if ( @SUITESPARSE_CUDA@ )
     if ( @SUITESPARSE_IN_BUILD_TREE@ )
         if ( NOT SuiteSparse_GPURuntime_FOUND )
             # First check in a common build tree
-            find_dependency ( SuiteSparse_GPURuntime @SUITESPARSE_GPURUNTIME_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@
+            find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@
                 PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build/GPURuntime NO_DEFAULT_PATH )
             # Then, check in the currently active CMAKE_MODULE_PATH
             if ( NOT SuiteSparse_GPURuntime_FOUND )
-                find_dependency ( SuiteSparse_GPURuntime @SUITESPARSE_GPURUNTIME_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@ )
+                find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
             endif ( )
         endif ( )
 
         if ( NOT GPUQREngine_FOUND )
             # First check in a common build tree
-            find_dependency ( GPUQREngine @GPUQRENGINE_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@
+            find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@
                 PATHS ${CMAKE_SOURCE_DIR}/../SPQR/build/GPUQREngine NO_DEFAULT_PATH )
             # Then, check in the currently active CMAKE_MODULE_PATH
             if ( NOT GPUQREngine_FOUND )
-                find_dependency ( GPUQREngine @GPUQRENGINE_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@ )
+                find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
             endif ( )
         endif ( )
 
@@ -110,10 +110,10 @@ if ( @SUITESPARSE_CUDA@ )
         endif ( )
     else ( )
         if ( NOT SuiteSparse_GPURuntime_FOUND )
-            find_dependency ( SuiteSparse_GPURuntime @SUITESPARSE_GPURUNTIME_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@ )
+            find_dependency ( SuiteSparse_GPURuntime @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
         endif ( )
         if ( NOT GPUQREngine_FOUND )
-            find_dependency ( GPUQREngine @GPUQRENGINE_VERSION_MAJOR@.@GPUQRENGINE_VERSION_MINOR@ )
+            find_dependency ( GPUQREngine @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@ )
         endif ( )
         if ( NOT SPQR_CUDA_FOUND )
             find_dependency ( SPQR_CUDA ${SPQR_VERSION} )

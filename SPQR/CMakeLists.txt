@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Oct 23, 2023" )
+set ( SPQR_DATE "Dec 30, 2023" )
 set ( SPQR_VERSION_MAJOR 4 CACHE STRING "" FORCE )
-set ( SPQR_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( SPQR_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( SPQR_VERSION_MINOR 3 CACHE STRING "" FORCE )
+set ( SPQR_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -55,24 +55,24 @@ else ( )
 endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.3.0
+    find_package ( SuiteSparse_config 7.4.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.0.0
+    find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.0.0 REQUIRED )
+        find_package ( CHOLMOD 5.1.0 REQUIRED )
     endif ( )
 endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_CUDA )
-    find_package ( CHOLMOD_CUDA 5.0.0
+    find_package ( CHOLMOD_CUDA 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 5.0.0 REQUIRED )
+        find_package ( CHOLMOD_CUDA 5.1.0 REQUIRED )
     endif ( )
 endif ( )
 
