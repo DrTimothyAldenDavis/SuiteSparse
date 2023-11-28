@@ -1,3 +1,7 @@
+Dec 30, 2023: version 2.3.0
+
+    * major change to build system: by Markus Mützel
+
 Sept 18, 2023: version 2.2.1
 
     * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
