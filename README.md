@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Nov 30, 2023, SuiteSparse VERSION 7.4.0
+Dec 30, 2023, SuiteSparse VERSION 7.4.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -487,6 +487,7 @@ Packages in SuiteSparse, and files in this directory:
                 an unmodified copy METIS.
 
     ParU        a parallel unsymmetric pattern multifrontal method.
+                Currently a pre-release.
                 authors: Mohsen Aznaveh and Tim Davis
 
     RBio        read/write sparse matrices in Rutherford/Boeing format
@@ -505,21 +506,15 @@ Packages in SuiteSparse, and files in this directory:
 
     SPQR        sparse QR factorization.  This the built-in qr and x=A\b in
                 MATLAB.  Also called SuiteSparseQR.
+                Includes two GPU libraries: SPQR/GPUQREngine and
+                SPQR/SuiteSparse_GPURuntime.
                 author of the CPU code: Tim Davis
                 author of GPU modules: Tim Davis, Nuri Yeralan,
                     Wissam Sid-Lakhdar, Sanjay Ranka
 
-    GPUQREngine: GPU support package for SPQR
-                Not needed if CUDA is not enabled.
-                authors: Tim Davis, Nuri Yeralan, Sanjay Ranka,
-                    Wissam Sid-Lakhdar
-
     SuiteSparse_config    configuration file for all the above packages.
                 CSparse and MATLAB_Tools do not use SuiteSparse_config.
                 author: Tim Davis
-
-    SuiteSparse_GPURuntime      GPU support package for SPQR and CHOLMOD
-                Not needed if CUDA is not enabled.
 
     SuiteSparse_install.m       install SuiteSparse for MATLAB
     SuiteSparse_paths.m         set paths for SuiteSparse MATLAB mexFunctions

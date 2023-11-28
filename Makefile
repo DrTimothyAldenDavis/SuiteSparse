@@ -2,6 +2,11 @@
 # Makefile for all SuiteSparse packages
 #-------------------------------------------------------------------------------
 
+# Copyright (c) 2023, Timothy A. Davis, All Rights Reserved.
+# Just this particular file is under the Apache-2.0 license; each package has
+# its own license.
+# SPDX-License-Identifier: Apache-2.0
+
 # edit this variable to pass options to cmake:
 export CMAKE_OPTIONS ?=
 
