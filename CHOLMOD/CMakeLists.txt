@@ -504,13 +504,13 @@ if ( SUITESPARSE_CUDA )
     endif ( )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
+            CUDA::nvtx3 CUDA::cublas )
         target_include_directories ( CHOLMOD INTERFACE
             $<TARGET_PROPERTY:CUDA::cublas,INTERFACE_INCLUDE_DIRECTORIES> )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvToolsExt CUDA::cublas )
+            CUDA::nvtx3 CUDA::cublas )
     endif ( )
 
     set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
@@ -804,7 +804,7 @@ add_test ( NAME CHOLMOD_int64_single_supernodal
 if ( WIN32 AND BUILD_SHARED_LIBS )
     # Set PATH to pick up the necessary libraries for all tests
 
-    set ( CHOLMOD_CTEST_NAMES 
+    set ( CHOLMOD_CTEST_NAMES
         CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
         CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
         CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24

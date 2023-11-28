@@ -21,7 +21,7 @@ message ( STATUS "Building SPQR/GPUQRENGINE version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( gpuqrengine 
+project ( gpuqrengine
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES CXX CUDA )
 
@@ -100,7 +100,7 @@ if ( BUILD_SHARED_LIBS )
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvtx3 CUDA::cublas )
     target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
 
     target_include_directories ( GPUQREngine
@@ -138,7 +138,7 @@ if ( BUILD_STATIC_LIBS )
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine_static PUBLIC
-        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvtx3 CUDA::cublas )
     target_compile_definitions ( GPUQREngine_static PRIVATE "SUITESPARSE_CUDA" )
 
     target_include_directories ( GPUQREngine_static

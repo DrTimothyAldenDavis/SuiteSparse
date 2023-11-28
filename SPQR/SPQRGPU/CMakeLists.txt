@@ -20,7 +20,7 @@ message ( STATUS "Building SPQR_CUDA version: v"
 
 include ( SuiteSparsePolicy )
 
-project ( spqr_cuda 
+project ( spqr_cuda
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES CXX )
 message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
@@ -71,7 +71,7 @@ if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 
     target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvtx3 CUDA::cublas )
 endif ( )
 
 if ( BUILD_STATIC_LIBS )
@@ -93,7 +93,7 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 
     target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvtx3 CUDA::cublas )
 endif ( )
 
 #-------------------------------------------------------------------------------
