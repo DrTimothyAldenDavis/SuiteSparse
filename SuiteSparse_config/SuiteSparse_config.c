@@ -11,7 +11,6 @@
 /* SuiteSparse configuration : memory manager and printf functions.
  */
 
-#define SUITESPARSE_LIBRARY
 #include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
