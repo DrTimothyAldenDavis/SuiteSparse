@@ -304,6 +304,11 @@ if ( BUILD_STATIC_LIBS )
         target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
     endif ( )
 
+    if ( WIN32 )
+        # On Windows, don't use __declspec ( dllimport ) for static library.
+        target_compile_definitions ( GraphBLAS_static PUBLIC GB_STATIC )
+    endif ( )
+
     if ( NOT NJIT )
         # Make sure compressed sources are built before library
         add_dependencies ( GraphBLAS_static grb_jitpackage )
