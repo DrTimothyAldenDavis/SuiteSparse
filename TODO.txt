@@ -1,13 +1,4 @@
 
 FIXME: redo GraphBLAS/Demo/Output/*.out
 FIXME: GraphBLAS/Demo: when running demos, create output in build folder
-FIXME: ParU/Demo: when running demos, create res.txt in build folder
-FIXME: remove (these are all in umfpack.h):
-
-    UMFPACK/Include/umfpack_copy_numeric.h
-    UMFPACK/Include/umfpack_copy_symbolic.h
-    UMFPACK/Include/umfpack_deserialize_numeric.h
-    UMFPACK/Include/umfpack_deserialize_symbolic.h
-    UMFPACK/Include/umfpack_serialize_numeric.h
-    UMFPACK/Include/umfpack_serialize_symbolic.h
 
