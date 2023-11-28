@@ -24,6 +24,8 @@
 #ifndef GPUQRENGINE_LLBUNDLE_HPP
 #define GPUQRENGINE_LLBUNDLE_HPP
 
+#include <cstddef>
+
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
 
@@ -76,7 +78,7 @@ public:
 
     TaskType CurrentTask;
 
-    void *operator new(size_t, LLBundle <Int>* p){ return p; }
+    void *operator new(std::size_t, LLBundle <Int>* p){ return p; }
     //------------------------------------------------------------------------------
     //
     // This file contains the constructor and destructor for the LLBundle class.
