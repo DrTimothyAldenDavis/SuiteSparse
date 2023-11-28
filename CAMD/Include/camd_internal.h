@@ -115,7 +115,6 @@
 /* integer type for CAMD: int32_t or int64_t */
 /* ------------------------------------------------------------------------- */
 
-#define SUITESPARSE_LIBRARY
 #include "camd.h"
 
 #if defined (DLONG) || defined (ZLONG)

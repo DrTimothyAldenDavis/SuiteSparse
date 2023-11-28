@@ -1,5 +1,6 @@
-Nov 30, 2023: version 3.2.2
+Dec 30, 2023: version 3.3.0
 
+    * major change to build system: by Markus Mützel
     * revised test for integer overflow: for CHOLMOD 5.1.0 tests
 
 Sept 18, 2023: version 3.2.1
