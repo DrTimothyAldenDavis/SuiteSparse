@@ -17,9 +17,9 @@
 
 cmake_minimum_required ( VERSION 3.13 )
 
-set ( CSPARSE_DATE "Sept 8, 2023" )
+set ( CSPARSE_DATE "Dec 30, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
-set ( CSPARSE_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( CSPARSE_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CSparse version: v"
