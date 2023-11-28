@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-set ( KLU_DATE "Oct 23, 2023" )
+set ( KLU_DATE "Dec 30, 2023" )
 set ( KLU_VERSION_MAJOR 2 CACHE STRING "" FORCE )
-set ( KLU_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( KLU_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( KLU_VERSION_MINOR 3 CACHE STRING "" FORCE )
+set ( KLU_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building KLU version: v"
     ${KLU_VERSION_MAJOR}.
@@ -50,28 +50,28 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.3.0
+    find_package ( SuiteSparse_config 7.4.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.3.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.2.1
+    find_package ( AMD 3.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.2.1 REQUIRED )
+        find_package ( AMD 3.3.0 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.2.1
+    find_package ( COLAMD 3.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.2.1 REQUIRED )
+        find_package ( COLAMD 3.3.0 REQUIRED )
     endif ( )
 
-    find_package ( BTF 2.2.1
+    find_package ( BTF 2.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::BTF )
-        find_package ( BTF 2.2.1 REQUIRED )
+        find_package ( BTF 2.3.0 REQUIRED )
     endif ( )
 endif ( )
 
@@ -79,10 +79,10 @@ option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 5.0.0
+    find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.0.0 )
+        find_package ( CHOLMOD 5.1.0 )
     endif ( )
 
     if ( NOT CHOLMOD_FOUND )
