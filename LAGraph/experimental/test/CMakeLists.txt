@@ -110,10 +110,10 @@ foreach( testsourcefile ${TEST_SOURCES} )
     if (WIN32)
         if ( BUILD_SHARED_LIBS )
             set_tests_properties ( ${ctestname} PROPERTIES
-                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphxtest>" )
+                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GraphBLAS::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphxtest>" )
         else ( )
             set_tests_properties ( ${ctestname} PROPERTIES
-                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:SuiteSparse::GraphBLAS>" )
+                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GraphBLAS::GraphBLAS>" )
         endif ( )
     endif ( )
 endforeach( testsourcefile ${TEST_SOURCES} )
