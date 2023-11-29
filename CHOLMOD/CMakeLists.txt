@@ -263,18 +263,6 @@ endif ( )
     endif ( )
 
 #-------------------------------------------------------------------------------
-# find CUDA
-#-------------------------------------------------------------------------------
-
-if ( SUITESPARSE_CUDA )
-    # with CUDA
-    add_subdirectory ( GPU )
-    message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
-    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
-    link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
-endif ( )
-
-#-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
 
@@ -493,13 +481,10 @@ endif ( )
 # CHOLMOD_CUDA
 if ( SUITESPARSE_CUDA )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE CHOLMOD_CUDA ${CUDA_LIBRARIES} )
         target_compile_definitions ( CHOLMOD PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
-    set ( CHOLMOD_STATIC_MODULES "${CHOLMOD_STATIC_MODULES} CHOLMOD_CUDA" )
     set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DSUITESPARSE_CUDA" )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( CHOLMOD_static PUBLIC CHOLMOD_CUDA_static ${CUDA_LIBRARIES} )
         target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     if ( BUILD_SHARED_LIBS )
@@ -527,6 +512,18 @@ if ( SUITESPARSE_CUDA )
         endif ( )
     endif ( )
 
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
+if ( SUITESPARSE_CUDA )
+    # with CUDA
+    add_subdirectory ( GPU )
+    message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
+    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
+    link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -662,41 +659,17 @@ if ( DEMO )
 
         # link the demos with shared libraries
         target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA )
-        endif ( )
         target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA )
-        endif ( )
         target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA )
-        endif ( )
         target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA )
-        endif ( )
 
     else ( )
 
         # link the demos with static libraries
         target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_di_simple PUBLIC CHOLMOD_CUDA_static )
-        endif ( )
         target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_si_simple PUBLIC CHOLMOD_CUDA_static )
-        endif ( )
         target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_dl_simple PUBLIC CHOLMOD_CUDA_static )
-        endif ( )
         target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-        if ( SUITESPARSE_CUDA )
-            target_link_libraries ( cholmod_sl_simple PUBLIC CHOLMOD_CUDA_static )
-        endif ( )
 
     endif ( )
 
@@ -718,41 +691,17 @@ if ( BUILD_SHARED_LIBS )
 
     # link the tests with shared libraries
     target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_CUDA )
-    endif ( )
     target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_CUDA )
-    endif ( )
     target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_CUDA )
-    endif ( )
     target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_CUDA )
-    endif ( )
 
 else ( )
 
     # link the tests with static libraries
     target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_CUDA_static )
-    endif ( )
     target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_CUDA_static )
-    endif ( )
     target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_CUDA_static )
-    endif ( )
     target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig )
-    if ( SUITESPARSE_CUDA )
-        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_CUDA_static )
-    endif ( )
 
 endif ( )
 
