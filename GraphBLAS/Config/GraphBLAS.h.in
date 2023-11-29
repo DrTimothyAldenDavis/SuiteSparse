@@ -19,7 +19,7 @@
 // This GraphBLAS.h file contains GraphBLAS definitions for user applications
 // to #include.  A few functions and variables with the prefix GB_ need to be
 // defined in this file and are thus technically visible to the user, but they
-// must not be accessed in user code.  They are here only so that the ANSI C11
+// must not be accessed in user code.  They are here only so that the C11
 // _Generic feature can be used in the user-accessible polymorphic functions,
 // or to implement a fast GxB_Iterator using macros.
 
@@ -110,22 +110,30 @@
     #define GB_GLOBAL extern
 #endif
 
-// GraphBLAS requires an ANSI C11 compiler for its polymorphic functions (using
+// GraphBLAS requires an C11 compiler for its polymorphic functions (using
 // the _Generic keyword), but it can be used in an C90 compiler if those
 // functions are disabled.
 
-// With ANSI C11 and later, _Generic keyword and polymorphic functions can be
+// With C11 and later, _Generic keyword and polymorphic functions can be
 // used.  Earlier versions of the language do not have this feature.
 
 #ifdef __STDC_VERSION__
-// ANSI C17: 201710L
-// ANSI C11: 201112L
-// ANSI C99: 199901L
-// ANSI C95: 199409L
+// C17: 201710L
+// C11: 201112L
+// C99: 199901L
+// C95: 199409L
 #define GxB_STDC_VERSION __STDC_VERSION__
 #else
-// assume ANSI C90 / C89
+// assume C90 / C89
 #define GxB_STDC_VERSION 199001L
+#endif
+
+//------------------------------------------------------------------------------
+// CUDA (currently experimental, not for production use)
+//------------------------------------------------------------------------------
+
+#ifndef SUITESPARSE_CUDA
+#cmakedefine SUITESPARSE_CUDA
 #endif
 
 //------------------------------------------------------------------------------
@@ -138,7 +146,19 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
+    #if defined ( GBCUDA_CPLUSPLUS )
+
+        // C++ complex types for CUDA
+        #include <cmath>
+        #include <complex>
+        #undef I
+        typedef std::complex<float>  GxB_FC32_t ;
+        typedef std::complex<double> GxB_FC64_t ;
+        #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
+        #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
+        #define GB_HAS_CMPLX_MACROS 1
+
+    #elif defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
 
         // Microsoft Windows complex types for C
         #include <complex.h>
@@ -151,13 +171,13 @@
 
     #else
 
-        // ANSI C11 complex types
+        // C11 complex types
         #include <complex.h>
         #undef I
         typedef float  _Complex GxB_FC32_t ;
         typedef double _Complex GxB_FC64_t ;
         #if (defined (CMPLX) && defined (CMPLXF))
-            // use the ANSI C11 CMPLX and CMPLXF macros
+            // use the C11 CMPLX and CMPLXF macros
             #define GxB_CMPLX(r,i) CMPLX (r,i)
             #define GxB_CMPLXF(r,i) CMPLXF (r,i)
             #define GB_HAS_CMPLX_MACROS 1
@@ -185,10 +205,10 @@
     // NVIDIA nvcc
     #define GB_restrict __restrict__
 #elif GxB_STDC_VERSION >= 199901L
-    // ANSI C99 or later
+    // C99 or later
     #define GB_restrict restrict
 #else
-    // ANSI C95 and earlier: no restrict keyword
+    // C95 and earlier: no restrict keyword
     #define GB_restrict
 #endif
 
@@ -885,7 +905,7 @@ GB_GLOBAL GrB_UnaryOp
 // Unary operators for floating-point types only
 //------------------------------------------------------------------------------
 
-// The following floating-point unary operators and their ANSI C11 equivalents,
+// The following floating-point unary operators and their C11 equivalents,
 // are only defined for floating-point (real and complex) types.
 
 GB_GLOBAL GrB_UnaryOp
@@ -949,7 +969,7 @@ GB_GLOBAL GrB_UnaryOp
     GxB_CBRT_FP64,
 
     // frexpx and frexpe return the mantissa and exponent, respectively,
-    // from the ANSI C11 frexp function.  The exponent is returned as a
+    // from the C11 frexp function.  The exponent is returned as a
     // floating-point value, not an integer.
 
     // z = frexpx (x)   z = frexpe (x)
@@ -10737,7 +10757,7 @@ GrB_Info GrB_Matrix_exportHint  // suggest the best export format
 
 // GrB_Matrix_serialize/deserialize are slightly different from their GxB*
 // counterparts.  The blob is allocated by GxB_Matrix_serialize, and must be
-// freed by the same free() method passed to GxB_init (or the ANSI C11 free()
+// freed by the same free() method passed to GxB_init (or the C11 free()
 // if GrB_init was used).  By contrast, the GrB* methods require the user
 // application to pass in a preallocated blob to GrB_Matrix_serialize, whose
 // size can be given by GrB_Matrix_serializeSize (as a loose upper bound).

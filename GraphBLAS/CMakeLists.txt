@@ -71,7 +71,7 @@ if ( SUITESPARSE_CUDA )
     # with CUDA and RMM
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
-    set ( GB_RMM rmm_wrap ${CUDA_LIBRARIES} )
+    set ( GB_RMM RMM_wrap ${CUDA_LIBRARIES} )
     add_subdirectory ( rmm_wrap )
     include_directories ( "rmm_wrap" ${CUDA_INCLUDE_DIRS}
         "/usr/local/cuda/include/cub" )
@@ -259,7 +259,7 @@ if ( BUILD_SHARED_LIBS )
 
     if ( SUITESPARSE_CUDA )
         add_dependencies ( GraphBLAS GraphBLAS_CUDA )
-        # add_dependencies ( GraphBLAS rmm_wrap )
+        add_dependencies ( GraphBLAS RMM_wrap )
         target_compile_definitions ( GraphBLAS PRIVATE "SUITESPARSE_CUDA" )
     endif ( )
 
@@ -300,7 +300,7 @@ if ( BUILD_STATIC_LIBS )
     if ( SUITESPARSE_CUDA )
         add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
         set ( GRAPHBLAS_STATIC_MODULES "${GRAPHBLAS_STATIC_MODULES} GraphBLAS_CUDA" )
-        # add_dependencies ( GraphBLAS_static rmm_wrap )
+        add_dependencies ( GraphBLAS_static RMM_wrap )
         target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
     endif ( )
 

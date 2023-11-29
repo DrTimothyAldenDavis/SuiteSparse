@@ -18,9 +18,10 @@ extern "C"
     #include "GB_compiler.h"
     #include "GB_cpu_features.h"
     #include "GB_warnings.h"
-    #define GB_LIBRARY
-    #include "GraphBLAS.h"
 }
+
+#define GB_LIBRARY
+#include "GraphBLAS.h"
 
 extern "C"
 {
