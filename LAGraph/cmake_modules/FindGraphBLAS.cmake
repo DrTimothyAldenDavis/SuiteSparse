@@ -65,7 +65,7 @@ in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
 ## New versions of SuiteSparse GraphBLAS (8.0.3 and newer) ##
 
 find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG
-    PATHS ${PROJECT_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
+    PATHS ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
 if ( NOT TARGET SuiteSparse::GraphBLAS )
     find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG )
 endif ( )
