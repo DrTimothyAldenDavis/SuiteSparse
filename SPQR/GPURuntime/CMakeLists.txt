@@ -21,7 +21,7 @@ message ( STATUS "Building SPQR/GPURUNTIME version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( suitesparse_gpuruntime 
+project ( suitesparse_gpuruntime
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES C CXX CUDA )
 
@@ -78,10 +78,10 @@ if ( BUILD_SHARED_LIBS )
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvtx3 CUDA::cublas )
     target_compile_definitions ( GPURuntime PRIVATE "SUITESPARSE_CUDA" )
 
-    target_include_directories ( GPURuntime 
+    target_include_directories ( GPURuntime
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
@@ -114,10 +114,10 @@ if ( BUILD_STATIC_LIBS )
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime_static PUBLIC
-        CUDA::nvrtc CUDA::cudart_static CUDA::nvToolsExt CUDA::cublas )
+        CUDA::nvrtc CUDA::cudart_static CUDA::nvtx3 CUDA::cublas )
     target_compile_definitions ( GPURuntime_static PRIVATE "SUITESPARSE_CUDA" )
 
-    target_include_directories ( GPURuntime_static 
+    target_include_directories ( GPURuntime_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )

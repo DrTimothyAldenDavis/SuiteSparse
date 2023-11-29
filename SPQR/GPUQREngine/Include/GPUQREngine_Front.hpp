@@ -53,7 +53,7 @@ public:
     /* Debug Fields */
     bool printMe;
 
-    void* operator new(long unsigned int reqMem, Front* ptr){ return ptr; }
+    void* operator new(size_t reqMem, Front* ptr){ return ptr; }
 
     Front(
         Int fids_arg,                   // the front identifier

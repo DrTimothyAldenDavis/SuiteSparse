@@ -76,7 +76,7 @@ public:
 
     TaskType CurrentTask;
 
-    void *operator new(long unsigned int, LLBundle <Int>* p){ return p; }
+    void *operator new(size_t, LLBundle <Int>* p){ return p; }
     //------------------------------------------------------------------------------
     //
     // This file contains the constructor and destructor for the LLBundle class.

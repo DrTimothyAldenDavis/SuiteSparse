@@ -4,7 +4,7 @@
 ========================= import_test: format 0
 
   67x67 GraphBLAS double matrix, sparse by row
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -40,7 +40,7 @@
 ========================= import_test: format 1
 
   67x67 GraphBLAS double matrix, sparse by row
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -76,7 +76,7 @@
 ========================= import_test: format 2
 
   67x67 GraphBLAS double matrix, sparse by row
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -112,7 +112,7 @@
 ========================= import_test: format 3
 
   67x67 GraphBLAS double matrix, sparse by row
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -150,7 +150,7 @@
 ========================= import_test: format 0
 
   67x67 GraphBLAS double matrix, sparse by col
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -186,7 +186,7 @@
 ========================= import_test: format 1
 
   67x67 GraphBLAS double matrix, sparse by col
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -222,7 +222,7 @@
 ========================= import_test: format 2
 
   67x67 GraphBLAS double matrix, sparse by col
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -258,7 +258,7 @@
 ========================= import_test: format 3
 
   67x67 GraphBLAS double matrix, sparse by col
-  C to export, 294 entries, memory: 5.3 KB
+  C to export, 294 entries, memory: 9.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -296,7 +296,7 @@
 ========================= import_test: format 0
 
   67x67 GraphBLAS double matrix, hypersparse by row
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -332,7 +332,7 @@
 ========================= import_test: format 1
 
   67x67 GraphBLAS double matrix, hypersparse by row
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -368,7 +368,7 @@
 ========================= import_test: format 2
 
   67x67 GraphBLAS double matrix, hypersparse by row
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -404,7 +404,7 @@
 ========================= import_test: format 3
 
   67x67 GraphBLAS double matrix, hypersparse by row
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (0,7)    -0.834182
     (0,12)    1.26582
@@ -442,7 +442,7 @@
 ========================= import_test: format 0
 
   67x67 GraphBLAS double matrix, hypersparse by col
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -478,7 +478,7 @@
 ========================= import_test: format 1
 
   67x67 GraphBLAS double matrix, hypersparse by col
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -514,7 +514,7 @@
 ========================= import_test: format 2
 
   67x67 GraphBLAS double matrix, hypersparse by col
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
@@ -550,7 +550,7 @@
 ========================= import_test: format 3
 
   67x67 GraphBLAS double matrix, hypersparse by col
-  C to export, 294 entries, memory: 5.9 KB
+  C to export, 294 entries, memory: 10.2 KB
 
     (4,0)    -0.278842
     (5,0)    -0.268019
