@@ -38,7 +38,14 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules
     )
 
+option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+
 include ( SuiteSparsePolicy )
+
+if ( SUITESPARSE_CUDA )
+    # ParU with CHOLMOD (which can use CUDA)
+    enable_language ( CUDA )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
