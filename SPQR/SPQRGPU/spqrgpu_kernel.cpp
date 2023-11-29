@@ -414,7 +414,7 @@ void spqrgpu_kernel
                 f, frelp, pid, prelp));
 
             // using placement new
-            Front <Int> *front = new (&fronts[frelp]) Front(frelp, prelp, fm, fn);
+            Front<Int> *front = new (&fronts[frelp]) Front<Int> (frelp, prelp, fm, fn);
             front->fidg = f;
             front->pidg = pid;
 
@@ -478,8 +478,8 @@ void spqrgpu_kernel
                 // only copy the exact CBlock back to the GPU
                 PR (("building child %ld (%ld) with parent %ld (%ld)\n",
                     c, pNextChild, f, frelp));
-                Front <Int> *child = new (&fronts[pNextChild])
-                                   Front(pNextChild, frelp, ccm, ccn);
+                Front<Int> *child = new (&fronts[pNextChild])
+                                   Front<Int> (pNextChild, frelp, ccm, ccn);
                 child->fidg = c;
                 child->pidg = f;
 
