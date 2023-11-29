@@ -1,4 +1,4 @@
-UMFPACK, Copyright (c) 1995-2022 by Timothy A. Davis,
+UMFPACK, Copyright (c) 1995-2023 by Timothy A. Davis,
 http://www.suitesparse.com
 
 UMFPACK :  a set of routines solving sparse linear systems via LU
@@ -7,15 +7,14 @@ UMFPACK :  a set of routines solving sparse linear systems via LU
     SuiteSparse_config.
 
     Includes a C-callable and MATLAB interface, and a basic FORTRAN 77
-    interface to a subset of the C-callable routines.  Requires AMD Version
-    2.0 or later.
+    interface to a subset of the C-callable routines.  Requires AMD.
 
     Unless you compile with -DNCHOLMOD, addtional packages are required:
     CHOLMOD, CAMD, CCOLAMD, COLAMD, and CHOLMOD/SuiteSparse_metis.
 
 The AMD, SuiteSparse_config, and UMFPACK directories must all reside in the
 same parent directory.  If the -DNCHOLMOD is not used, the CHOLMOD, CAMD,
-CCOLAMD, COLAMD, and also also exist in the same parent.
+CCOLAMD, and COLAMD directories must also exist in the same parent.
 
 Quick start:
 

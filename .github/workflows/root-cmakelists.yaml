@@ -5,9 +5,9 @@ name: root-cmakelists
 on:
   workflow_dispatch:
   push:
-#   branches-ignore:
-#     - '**/dev2'
-#     - '**/*dev2'
+    branches-ignore:
+      - '**/dev2'
+      - '**/*dev2'
   pull_request:
 
 concurrency: ci-root-cmakelists-${{ github.ref }}

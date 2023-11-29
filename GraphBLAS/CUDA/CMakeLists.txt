@@ -243,26 +243,26 @@ set_target_properties(graphblascuda_test PROPERTIES CUDA_ARCHITECTURES "52;75;80
 
 include(GoogleTest)
 
-add_dependencies(graphblascuda_test GraphBLAS)
-add_dependencies(graphblascuda_test GraphBLAS_CUDA)
-add_dependencies(graphblascuda_test gtest_main)
-add_dependencies(graphblascuda_test rmm_wrap)
+if ( ENABLE_SHARED_LIBS )
+    target_link_libraries ( graphblascuda_test PUBLIC GraphBLAS  )
+else ( )
+    target_link_libraries ( graphblascuda_test PUBLIC GraphBLAS_static )
+endif ( )
 
-target_link_libraries(graphblascuda_test
-        PUBLIC
-        GraphBLAS
-        GraphBLAS_CUDA
-        rmm_wrap
-        CUDA::cudart_static
-        CUDA::nvrtc
-        ${ADDITIONAL_DEPS}
-        PRIVATE
-        gtest_main)
+target_link_libraries ( graphblascuda_test
+    PUBLIC
+    GraphBLAS_CUDA
+    RMM_wrap
+    CUDA::cudart_static
+    CUDA::nvrtc
+    ${ADDITIONAL_DEPS}
+    PRIVATE
+    gtest_main )
 
-target_include_directories(graphblascuda_test
-        PUBLIC
-        rmm_wrap
-        ${ADDITIONAL_INCLUDES}
-        ${CUDAToolkit_INCLUDE_DIRS}
-        ${GRAPHBLAS_CUDA_INCLUDES})
+target_include_directories ( graphblascuda_test
+    PUBLIC
+    rmm_wrap
+    ${ADDITIONAL_INCLUDES}
+    ${CUDAToolkit_INCLUDE_DIRS}
+    ${GRAPHBLAS_CUDA_INCLUDES} )
 

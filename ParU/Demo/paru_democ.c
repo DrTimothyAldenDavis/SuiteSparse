@@ -284,11 +284,11 @@ int main(int argc, char **argv)
 #endif  // calling umfpack
 
     // Writing results to a file
-#if 1
+#if 0
     if (info == PARU_SUCCESS)
     {
         FILE *res_file;
-        char res_name[] = "../Demo/Res/res.txt";
+        char res_name[] = "../build/Res/res.txt";
         res_file = fopen(res_name, "a");
         if (res_file == NULL)
         {

@@ -96,9 +96,9 @@
         #define GB_GLOBAL extern __declspec ( dllexport )
     #elif defined ( GB_STATIC )
         // Compiling the user application on Windows, importing symbols from
-        // a static GraphBLAS library on Windows. The user application must do:
-        //      #define GB_STATIC
-        //      #include "GraphBLAS.h"
+        // a static GraphBLAS library on Windows. The user application must
+        // define GB_STATIC (e.g., with the pre-processor flag -DGB_STATIC) for
+        // all compilation units that include "GraphBLAS.h".
         #define GB_GLOBAL extern
     #else
         // Compiling the user application on Windows, importing symbols from
