@@ -146,7 +146,7 @@ else ( )
     message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
     message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
 
-    find_package ( GraphBLAS 8.3.0 MODULE REQUIRED )
+    find_package ( GraphBLAS 7.1.0 MODULE REQUIRED )
 
 endif ( )
 
@@ -195,6 +195,10 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 include_directories ( ${PROJECT_SOURCE_DIR}/include
                       ${PROJECT_SOURCE_DIR}/src/utility
                       ${PROJECT_SOURCE_DIR}/test/include )
+
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include_directories ( ${GRAPHBLAS_INCLUDE_DIR} )
+endif ( )
 
 # tell LAGraph where to find its own source (for LAGraph/data files)
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${PROJECT_SOURCE_DIR}" )
