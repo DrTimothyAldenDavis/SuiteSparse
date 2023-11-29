@@ -38,6 +38,19 @@ set ( CHOLMOD_VERSION "@CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_
 include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
+# Look for NVIDIA CUDA toolkit
+if ( @SUITESPARSE_CUDA@ AND NOT CUDAToolkit_FOUND )
+    find_dependency ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ )
+    if ( NOT CUDAToolkit_FOUND )
+        set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
+if ( NOT _dependencies_found )
+    set ( CHOLMOD_FOUND OFF )
+    return ( )
+endif ( )
+
 # Look for SuiteSparse_config, COLAMD, and AMD targets
 if ( @SUITESPARSE_IN_BUILD_TREE@ )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
