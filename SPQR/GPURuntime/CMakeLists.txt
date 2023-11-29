@@ -70,8 +70,9 @@ if ( BUILD_SHARED_LIBS )
 
     target_include_directories ( GPURuntime PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+
+    target_link_libraries ( GPURuntime PRIVATE SuiteSparse::SuiteSparseConfig )
 
     set_target_properties ( GPURuntime PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -106,8 +107,13 @@ if ( BUILD_STATIC_LIBS )
 
     target_include_directories ( GPURuntime_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+    else ( )
+        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig )
+    endif ( )
 
     set_target_properties ( GPURuntime_static PROPERTIES
         POSITION_INDEPENDENT_CODE ON
