@@ -75,7 +75,6 @@ if ( SUITESPARSE_CUDA )
     # with CUDA
     add_subdirectory ( GPURuntime )
     add_subdirectory ( GPUQREngine )
-    add_subdirectory ( SPQRGPU )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -220,15 +219,15 @@ endif ( )
 
 if ( SUITESPARSE_CUDA )
     # CUDA
+    add_subdirectory ( SPQRGPU )
+
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SPQR PRIVATE
-            SPQR_CUDA GPUQREngine GPURuntime )
+        target_link_libraries ( SPQR PRIVATE GPUQREngine GPURuntime )
         target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SPQR_static PUBLIC
-            SPQR_CUDA_static GPUQREngine_static GPURuntime_static )
+        target_link_libraries ( SPQR_static PUBLIC GPUQREngine_static GPURuntime_static )
         target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
 endif ( )
@@ -409,13 +408,13 @@ if ( DEMO )
 
     if ( SUITESPARSE_CUDA )
         if ( BUILD_SHARED_LIBS )
-            target_link_libraries ( qrdemo_gpu PUBLIC SPQR SPQR_CUDA )
-            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR SPQR_CUDA )
-            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR SPQR_CUDA )
+            target_link_libraries ( qrdemo_gpu PUBLIC SPQR )
+            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR )
+            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR )
         else ( )
-            target_link_libraries ( qrdemo_gpu PUBLIC SPQR_static SPQR_CUDA_static )
-            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR_static SPQR_CUDA_static )
-            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR_static SPQR_CUDA_static )
+            target_link_libraries ( qrdemo_gpu PUBLIC SPQR_static )
+            target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR_static )
+            target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR_static )
         endif ( )
         target_link_libraries ( qrdemo_gpu
             PUBLIC SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
