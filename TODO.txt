@@ -1,4 +1,0 @@
-
-FIXME: redo GraphBLAS/Demo/Output/*.out
-FIXME: GraphBLAS/Demo: when running demos, create output in build folder
-

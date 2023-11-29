@@ -13,7 +13,7 @@ if ( "${CMAKE_C_COMPILER_ID}" STREQUAL "GNU" )
     # The -g option is useful for the Intel VTune tool, but it should be
     # removed in production.  Comment this line out if not in use:
     # set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -g" )
-    # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
+    # cmake 2.8 workaround: gcc needs to be told to do C11.
     # cmake 3.0 doesn't have this problem.
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wundef " )
 #   uncomment this to check for all warnings:

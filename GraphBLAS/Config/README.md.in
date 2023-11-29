@@ -36,8 +36,8 @@ QUICK START: To compile and install, do these commands in this directory:
     make
     sudo make install
 
-Please be patient; some files can take several minutes to compile.  Requires an
-ANSI C11 compiler, so cmake will fail if your compiler is not C11 compliant.
+Please be patient; some files can take several minutes to compile.  Requires a
+C11 compiler, so cmake will fail if your compiler is not C11 compliant.
 See the User Guide PDF in Doc/ for directions on how to use another compiler.
 
 For faster compilation, do this instead of just "make", which uses 32

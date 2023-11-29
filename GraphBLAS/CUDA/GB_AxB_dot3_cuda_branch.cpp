@@ -9,6 +9,7 @@
 
 // Decide branch direction for GPU use for the dot-product MxM
 
+#include "GraphBLAS.h"
 extern "C" 
 {
   #include "GB_mxm.h"
