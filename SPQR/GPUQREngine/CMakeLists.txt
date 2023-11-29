@@ -247,7 +247,7 @@ if ( DEMO AND DEMO_OK )
             PUBLIC GPUQREngine_static GPURuntime_static )
     endif ( )
     target_link_libraries ( gpuqrengine_demo
-        PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+        PUBLIC SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
 
 else ( )
 

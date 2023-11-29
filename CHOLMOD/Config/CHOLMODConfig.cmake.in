@@ -38,27 +38,6 @@ set ( CHOLMOD_VERSION "@CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_
 include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
-if ( @SUITESPARSE_CUDA@ )
-    # Look for imported targets of additional dependency if CHOLMOD was built with CUDA
-
-    if ( NOT CHOLMOD_CUDA_FOUND )
-        if ( @SUITESPARSE_IN_BUILD_TREE@ )
-            # First check in a common build tree
-            find_dependency ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@
-                PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-            # Then, check in the currently active CMAKE_MODULE_PATH
-            if ( NOT CHOLMOD_CUDA_FOUND )
-                find_dependency ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ )
-            endif ( )
-        else ( )
-            find_dependency ( CHOLMOD_CUDA @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ )
-        endif ( )
-    endif ( )
-    if ( NOT CHOLMOD_CUDA_FOUND )
-        set ( _dependencies_found OFF )
-    endif ( )
-endif ( )
-
 # Look for SuiteSparse_config, COLAMD, and AMD targets
 if ( @SUITESPARSE_IN_BUILD_TREE@ )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
