@@ -15,9 +15,13 @@
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
 #   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
-#                       Default: true for CHOLMOD, SPQR, and ParU (which uses
-#                       CHOLMOD); false for GraphBLAS (for which CUDA is in
-#                       progress and not ready for production use).
+#                       Default: true for CHOLMOD and SPQR, which use the GPU
+#                       for their numerical factorizsation.  It is also enabled
+#                       for UMFPACK, KLU, and ParU (which use CHOLMOD and this
+#                       require this flag if CHOLMOD has been compiled with
+#                       ENABLE_CUDA).  The flag is false for false for
+#                       GraphBLAS since CUDA for that package is in progress
+#                       and not ready for production use.
 #
 #   LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
