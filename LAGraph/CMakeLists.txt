@@ -52,7 +52,7 @@ set ( LAGraph_VERSION_SUB   0 CACHE STRING "" FORCE )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( lagraph
+project ( LAGraph
           VERSION "${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}" )
 
 #-------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ else ( )
     message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
     message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
 
-    find_package ( GraphBLAS 7.1.0 MODULE REQUIRED )
+    find_package ( GraphBLAS 7.1.0...9.0.1 MODULE REQUIRED )
 
 endif ( )
 
