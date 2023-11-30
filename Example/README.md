@@ -14,7 +14,7 @@ to build a library that depends on SuiteSparse libraries.
     Include/my_internal.h   internal include file
     Config/my.h.in          input file for Include/my.h
     Demo/my_demo.c          demo program that uses 'my' package
-    Demo/my_demo.out        output of my_demo
+    Demo/mydemo.out         output of my_demo
     Source/my.c             library source code (C)
     Source/my_cxx.cc        library source code (C++)
     build                   where the 'my' package is built
