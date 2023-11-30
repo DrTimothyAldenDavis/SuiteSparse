@@ -33,6 +33,15 @@
 #endif
 
 //==============================================================================
+// for C++ applications:
+//==============================================================================
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
+
+//==============================================================================
 // Experimental methods: in experimental/algorithm and experimental/utility
 //==============================================================================
 
@@ -881,5 +890,9 @@ int LAGraph_HelloWorld // a simple algorithm, just for illustration
     LAGraph_Graph G,
     char *msg
 ) ;
+
+#if defined ( __cplusplus )
+}
+#endif
 
 #endif

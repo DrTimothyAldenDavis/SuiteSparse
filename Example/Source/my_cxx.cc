@@ -176,11 +176,11 @@ void my_function (void)
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
 
-#if ! defined (NO_GRAPHBLAS)
     //--------------------------------------------------------------------------
     // GraphBLAS
     //--------------------------------------------------------------------------
 
+    #if ! defined (NO_GRAPHBLAS)
     std::cout << "GraphBLAS: v"
               << GxB_IMPLEMENTATION_MAJOR << "."
               << GxB_IMPLEMENTATION_MINOR << "."
@@ -194,7 +194,28 @@ void my_function (void)
               << version[2] << " "
               << "(in library)" << std::endl;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
-#endif
+    #endif
+
+    //--------------------------------------------------------------------------
+    // LAGraph
+    //--------------------------------------------------------------------------
+
+    #if ! defined (NO_LAGRAPH)
+    char msg [LAGRAPH_MSG_LEN], verstring [LAGRAPH_MSG_LEN] ;
+    std::cout << "LAGraph: v"
+              << LAGRAPH_VERSION_MAJOR << "."
+              << LAGRAPH_VERSION_MINOR << "."
+              << LAGRAPH_VERSION_UPDATE << " "
+              << "(" << LAGRAPH_DATE << ")" << std::endl;
+    OK (LAGraph_Init (msg) == GrB_SUCCESS) ;
+    OK (LAGraph_Version (version, verstring, msg) == GrB_SUCCESS) ;
+    std::cout << "LAGraph: v"
+              << version[0] << "."
+              << version[1] << "."
+              << version[2] << " "
+              << "(in library)" << std::endl;
+    OK (LAGraph_Finalize (msg) == GrB_SUCCESS) ;
+    #endif
 
     //--------------------------------------------------------------------------
     // KLU
