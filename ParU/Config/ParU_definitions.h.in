@@ -2,7 +2,7 @@
 // ======================= ParU_definitions.h =================================/
 // ============================================================================/
 
-// ParU, Mohsen Aznaveh and Timothy A. Davis, (c) 2022, All Rights Reserved.
+// ParU, Mohsen Aznaveh and Timothy A. Davis, (c) 2023, All Rights Reserved.
 // SPDX-License-Identifier: GNU GPL 3.0
 // some defintions that are used both in C and C++
 
@@ -29,6 +29,19 @@ typedef enum ParU_Ret
 #define PARU_VERSION_MAJOR  @PARU_VERSION_MAJOR@
 #define PARU_VERSION_MINOR  @PARU_VERSION_MINOR@
 #define PARU_VERSION_UPDATE @PARU_VERSION_UPDATE@
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_SUB@ requires SuiteSparse_config 7.4.0 or later"
+#endif
+
+#if UMFPACK_VER < SUITESPARSE_VER_CODE(6,3)
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_SUB@ requires UMFPACK 6.3.0 or later"
+#endif
+
+#if CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1)
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_SUB@ requires CHOLMOD 5.1.0 or later"
+#endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h
 #define PARU_STRATEGY_AUTO 0         // decided to use sym. or unsym. strategy

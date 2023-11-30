@@ -3,7 +3,7 @@
 /* ========================================================================== */
 
 /* -----------------------------------------------------------------------------
- * Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+ * Mongoose Graph Partitioning Library, Copyright (C) 2017-2023,
  * Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
  * Mongoose is licensed under Version 3 of the GNU General Public License.
  * Mongoose is also available under other licenses; contact authors for details.
@@ -30,6 +30,11 @@
 
 /* Memory Management */
 #include "SuiteSparse_config.h"
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "Mongoose requires SuiteSparse_config 7.4.0 or later"
+#endif
 
 namespace Mongoose
 {

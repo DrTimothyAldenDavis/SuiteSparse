@@ -2,7 +2,7 @@
 // KLU/Include/klu_internal.h: internal include file for KLU
 //------------------------------------------------------------------------------
 
-// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// KLU, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 // Authors: Timothy A. Davis and Ekanathan Palamadai.
 // SPDX-License-Identifier: LGPL-2.1+
 

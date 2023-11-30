@@ -23,6 +23,11 @@
 #define Mongoose_VERSION_PATCH 0
 #define Mongoose_DATE "Dec 30, 2023"
 
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "Mongoose 3.3. requires SuiteSparse_config 7.4.0 or later"
+#endif
+
 namespace Mongoose
 {
 

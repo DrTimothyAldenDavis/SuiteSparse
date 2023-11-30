@@ -2,7 +2,7 @@
 // SPQR/Include/spqrgpu.hpp
 //------------------------------------------------------------------------------
 
-// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------

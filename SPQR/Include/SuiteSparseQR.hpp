@@ -2,7 +2,7 @@
 // === SuiteSparseQR.hpp =======================================================
 // =============================================================================
 
-// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 // User include file for C++ programs.
@@ -20,8 +20,9 @@
 #define SUITESPARSE_GPU_EXTERN_ON
 extern "C"
 {
-#include "SuiteSparseQR_definitions.h"
+#include "SuiteSparse_config.h"
 #include "cholmod.h"
+#include "SuiteSparseQR_definitions.h"
 }
 #undef SUITESPARSE_GPU_EXTERN_ON
 

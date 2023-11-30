@@ -1,6 +1,11 @@
 name: LAGraph CI
 
-on: [push, pull_request]
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - '**/*dev2'
+  pull_request:
 
 jobs:
   linux:

@@ -2,7 +2,7 @@
 // CAMD/Source/camd_internal.h: internal definitions for CAMD
 //------------------------------------------------------------------------------
 
-// CAMD, Copyright (c) 2007-2022, Timothy A. Davis, Yanqing Chen, Patrick R.
+// CAMD, Copyright (c) 2007-2023, Timothy A. Davis, Yanqing Chen, Patrick R.
 // Amestoy, and Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 

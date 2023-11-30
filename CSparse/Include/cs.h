@@ -1,5 +1,5 @@
 // CSparse/cs.h: include file for CSparse
-// CSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
+// CSparse, Copyright (c) 2006-2023, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #ifndef _CS_H
 #define _CS_H
@@ -16,7 +16,7 @@
 #define CS_SUBVER 3
 #define CS_SUBSUB 0
 #define CS_DATE "Dec 30, 2023"        /* CSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
 
 #ifndef csi
 #define csi int64_t

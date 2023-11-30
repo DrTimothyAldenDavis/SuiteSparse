@@ -245,7 +245,7 @@
 #define CHOLMOD_SUB_VERSION    1
 #define CHOLMOD_SUBSUB_VERSION 0
 
-#define CHOLMOD_VER_CODE(main,sub) ((main) * 1000 + (sub))
+#define CHOLMOD_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define CHOLMOD_VERSION \
     CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
 #define CHOLMOD_HAS_VERSION_FUNCTION
@@ -301,6 +301,11 @@ int cholmod_l_version (int version [3]) ;
 //------------------------------------------------------------------------------
 
 #include "SuiteSparse_config.h"
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "CHOLMOD 5.1.0 requires SuiteSparse_config 7.4 or later"
+#endif
 
 //------------------------------------------------------------------------------
 // CHOLMOD configuration

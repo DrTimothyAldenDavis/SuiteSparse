@@ -2,7 +2,7 @@
 // AMD/Include/amd_internal.h: internal definitions for AMD
 //------------------------------------------------------------------------------
 
-// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// AMD, Copyright (c) 1996-2023, Timothy A. Davis, Patrick R. Amestoy, and
 // Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 

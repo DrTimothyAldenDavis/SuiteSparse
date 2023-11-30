@@ -34,8 +34,8 @@
 #ifndef NCAMD
 
 #include "camd.h"
-#if (CAMD_VERSION < CAMD_VERSION_CODE (3,0))
-#error "CAMD v3.0 or later is required"
+#if (CAMD_VERSION < CAMD_VERSION_CODE (3,3))
+#error "CHOLMOD:Partition requires CAMD 3.3.0 or later"
 #endif
 
 //------------------------------------------------------------------------------

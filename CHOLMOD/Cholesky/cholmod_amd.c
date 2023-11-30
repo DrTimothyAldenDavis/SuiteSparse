@@ -33,9 +33,8 @@
 #ifndef NCHOLESKY
 
 #include "amd.h"
-#if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (3,0)))
-// AMD 3.0 or later required (SuiteSparse 6.0.0 or later)
-#error "AMD v3.0 or later is required"
+#if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (3,3)))
+#error "CHOLMOD:Cholesky requires AMD 3.3.0 or later"
 #endif
 
 //------------------------------------------------------------------------------
