@@ -51,6 +51,19 @@ if ( NOT _dependencies_found )
     return ( )
 endif ( )
 
+# Look for OpenMP
+if ( NOT @NOPENMP@ AND NOT OpenMP_C_FOUND )
+    find_dependency ( OpenMP )
+    if ( NOT OpenMP_C_FOUND )
+        set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
+if ( NOT _dependencies_found )
+    set ( CHOLMOD_FOUND OFF )
+    return ( )
+endif ( )
+
 # Look for SuiteSparse_config, COLAMD, and AMD targets
 if ( @SUITESPARSE_IN_BUILD_TREE@ )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
