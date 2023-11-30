@@ -120,16 +120,14 @@ find_library ( GRAPHBLAS_LIBRARY
   )
 
 if ( MSVC )
-    set ( STATIC_SUFFIX .lib )
     set ( STATIC_NAME graphblas_static )
 else ( )
-    set ( STATIC_SUFFIX .a )
     set ( STATIC_NAME graphblas )
 endif ( )
 
 # static SuiteSparse:GraphBLAS library
 set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
-set ( CMAKE_FIND_LIBRARY_SUFFIXES ${STATIC_SUFFIX} ${CMAKE_FIND_LIBRARY_SUFFIXES} )
+set ( CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX} )
 find_library ( GRAPHBLAS_STATIC
   NAMES ${STATIC_NAME}
   HINTS ${GRAPHBLAS_ROOT}
@@ -140,6 +138,9 @@ find_library ( GRAPHBLAS_STATIC
   PATH_SUFFIXES lib build alternative
   )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
+if ( MINGW AND GRAPHBLAS_STATIC MATCHES ".*\.dll\.a" )
+    set ( GRAPHBLAS_STATIC "" )
+endif ( )
 
 # get version of the library from the dynamic library name
 get_filename_component ( GRAPHBLAS_LIBRARY  ${GRAPHBLAS_LIBRARY} REALPATH )
@@ -149,6 +150,21 @@ string (
     GRAPHBLAS_VERSION
     ${GRAPHBLAS_FILENAME}
   )
+
+if ( GRAPHBLAS_VERSION )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "([0-9]+).[0-9]+.[0-9]+" )
+        set ( GraphBLAS_VERSION_MAJOR ${CMAKE_MATCH_1} )
+    endif ( )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.([0-9]+).[0-9]+" )
+        set ( GraphBLAS_VERSION_MINOR ${CMAKE_MATCH_1} )
+    endif ( )
+    if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.[0-9]+.([0-9]+)" )
+        set ( GraphBLAS_VERSION_PATCH ${CMAKE_MATCH_1} )
+    endif ( )
+    message ( STATUS "major: ${GraphBLAS_VERSION_MAJOR}" )
+    message ( STATUS "minor: ${GraphBLAS_VERSION_MINOR}" )
+    message ( STATUS "patch: ${GraphBLAS_VERSION_PATCH}" )
+endif ( )
 
 # set ( GRAPHBLAS_VERSION "" )
 if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
@@ -162,10 +178,10 @@ if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
     message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
     message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
     message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
-    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MAJOR ${GRAPHBLAS_MAJOR_STR} )
-    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_MINOR ${GRAPHBLAS_MINOR_STR} )
-    string ( REGEX MATCH "[0-9]+" GRAPHBLAS_PATCH ${GRAPHBLAS_PATCH_STR} )
-    set (GRAPHBLAS_VERSION "${GRAPHBLAS_MAJOR}.${GRAPHBLAS_MINOR}.${GRAPHBLAS_PATCH}")
+    string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MAJOR ${GRAPHBLAS_MAJOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MINOR ${GRAPHBLAS_MINOR_STR} )
+    string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_PATCH ${GRAPHBLAS_PATCH_STR} )
+    set (GRAPHBLAS_VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_PATCH}")
 endif ( )
 
 set ( GRAPHBLAS_LIBRARIES ${GRAPHBLAS_LIBRARY} )
@@ -199,13 +215,13 @@ else ( )
 endif ( )
 
 # Create target from information found
-if ( NOT "${GRAPHBLAS_LIBRARY}" STREQUAL "" )
+if ( GRAPHBLAS_LIBRARY )
     add_library ( GraphBLAS::GraphBLAS UNKNOWN IMPORTED )
     set_target_properties ( GraphBLAS::GraphBLAS PROPERTIES
         IMPORTED_LOCATION "${GRAPHBLAS_LIBRARY}"
         IMPORTED_INCLUDE_DIRECTORIES "${GRAPHBLAS_INCLUDE_DIR}" )
 endif ( )
-if ( NOT "${GRAPHBLAS_STATIC}" STREQUAL "" )
+if ( GRAPHBLAS_STATIC )
     add_library ( GraphBLAS::GraphBLAS_static UNKNOWN IMPORTED )
     set_target_properties ( GraphBLAS::GraphBLAS_static PROPERTIES
         IMPORTED_LOCATION "${GRAPHBLAS_STATIC}"
