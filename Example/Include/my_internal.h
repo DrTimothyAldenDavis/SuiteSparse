@@ -20,6 +20,10 @@
 #if ! defined (NO_GRAPHBLAS)
 #  include "GraphBLAS.h"
 #endif
+#if ! defined (NO_LAGRAPH)
+#  include "LAGraph.h"
+#endif
+#include "klu.h"
 #include "klu.h"
 #include "ldl.h"
 #include "RBio.h"

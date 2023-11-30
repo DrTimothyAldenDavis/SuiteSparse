@@ -2,7 +2,7 @@
 // CXSparse/Include/cs.h: include file for CXSparse
 //------------------------------------------------------------------------------
 
-// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved
+// CXSparse, Copyright (c) 2006-2023, Timothy A. Davis, All Rights Reserved
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
@@ -39,7 +39,7 @@
 #define CS_SUBVER 3
 #define CS_SUBSUB 0
 #define CS_DATE "Dec 30, 2023"        /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"

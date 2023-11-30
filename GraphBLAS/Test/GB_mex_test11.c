@@ -161,8 +161,12 @@ if (jit_enabled)
     mxFree (save_c) ;
     save_c = NULL ;
 
+    // test compiler flags
     OK (GxB_Global_Option_get_CHAR (GxB_JIT_C_COMPILER_FLAGS, &s)) ;
     printf ("default flags [%s]\n", s) ;
+    len = strlen (s) ;
+    char *save_flags = mxMalloc (len+2) ;
+    strcpy (save_flags, s) ;
     OK (GxB_set (GxB_JIT_C_COMPILER_FLAGS, "-g")) ;
     OK (GxB_get (GxB_JIT_C_COMPILER_FLAGS, &s)) ;
     CHECK (MATCH (s, "-g")) ;
@@ -171,7 +175,11 @@ if (jit_enabled)
     OK (GxB_Global_Option_set_CHAR (GxB_JIT_C_COMPILER_FLAGS, "-O0")) ;
     OK (GxB_Global_Option_get_CHAR (GxB_JIT_C_COMPILER_FLAGS, &t)) ;
     CHECK (MATCH (t, "-O0")) ;
+    OK (GxB_Global_Option_set_CHAR (GxB_JIT_C_COMPILER_FLAGS, save_flags)) ;
+    mxFree (save_flags) ;
+    save_flags = NULL ;
 
+    // test libraries for cmake
     OK (GxB_get (GxB_JIT_C_CMAKE_LIBS, &s)) ;
     printf ("default C cmake libs [%s]\n", s) ;
     printf ("set cmake libs:\n") ;
@@ -226,6 +234,7 @@ if (jit_enabled)
     OK (GxB_Global_Option_set_CHAR (GxB_JIT_C_PREFACE, "// more stuff here")) ;
     OK (GxB_Global_Option_get_CHAR (GxB_JIT_C_PREFACE, &t)) ;
     CHECK (MATCH (t, "// more stuff here")) ;
+
 
     OK (GxB_Type_new (&MyType, 0, "mytype", "typedef double mytype ;")) ;
     OK (GxB_Type_size (&mysize, MyType)) ;

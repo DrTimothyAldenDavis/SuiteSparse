@@ -68,14 +68,6 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     endif ( )
 endif ( )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_CUDA )
-    find_package ( CHOLMOD_CUDA 5.1.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CHOLMOD_CUDA )
-        find_package ( CHOLMOD_CUDA 5.1.0 REQUIRED )
-    endif ( )
-endif ( )
-
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
@@ -230,16 +222,11 @@ if ( SUITESPARSE_CUDA )
     # CUDA
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPQR PRIVATE
-            SuiteSparse::CHOLMOD_CUDA SPQR_CUDA GPUQREngine GPURuntime )
+            SPQR_CUDA GPUQREngine GPURuntime )
         target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
     if ( BUILD_STATIC_LIBS )
-        if ( TARGET SuiteSparse::CHOLMOD_CUDA_static )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_CUDA_static )
-        else ( )
-            target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_CUDA )
-        endif ( )
         target_link_libraries ( SPQR_static PUBLIC
             SPQR_CUDA_static GPUQREngine_static GPURuntime_static )
         target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
@@ -431,11 +418,11 @@ if ( DEMO )
             target_link_libraries ( qrdemo_gpu3 PUBLIC SPQR_static SPQR_CUDA_static )
         endif ( )
         target_link_libraries ( qrdemo_gpu
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu2
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
         target_link_libraries ( qrdemo_gpu3
-            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::CHOLMOD_CUDA SuiteSparse::SuiteSparseConfig )
+            PUBLIC SuiteSparse::CHOLMOD SuiteSparse::SuiteSparseConfig )
     endif ( )
 
 else ( )
