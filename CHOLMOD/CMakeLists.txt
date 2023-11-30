@@ -357,40 +357,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
-    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
-    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE ${OpenMP_C_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( CHOLMOD_static PUBLIC ${OpenMP_C_LIBRARIES} )
-        list ( APPEND CHOLMOD_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
-    endif ( )
-    set ( CMAKE_C_FLAGS   "${CMAKE_C_FLAGS}   ${OpenMP_C_FLAGS} " )
-    set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
-else ( )
-    # to fix METIS: use threadprivate variables for GKRAND instead globals,
-    # so multiple user threads can call cholmod_analyze in parallel on
-    # different matrices, and avoid global locking of the system rand.
-    include ( SuiteSparse__thread )
-endif ( )
-
-# libm:
-if ( NOT WIN32 )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE m )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND CHOLMOD_STATIC_LIBS "m" )
-        target_link_libraries ( CHOLMOD_static PUBLIC m )
-    endif ( )
-endif ( )
-        list ( APPEND CHOLMOD_STATIC_LIBS "m" )
-
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::AMD )
@@ -413,35 +379,6 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::COLAMD )
     endif ( )
-endif ( )
-
-# BLAS and LAPACK: for the Supernodal Module
-if ( NOT NSUPERNODAL )
-    # LAPACK:
-    message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES} ")
-    message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS} ")
-    message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS} ")
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE ${LAPACK_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND CHOLMOD_STATIC_LIBS ${LAPACK_LIBRARIES} )
-        target_link_libraries ( CHOLMOD_static PUBLIC ${LAPACK_LIBRARIES} )
-    endif ( )
-    include_directories ( ${LAPACK_INCLUDE_DIR} )
-
-    # BLAS:
-    message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-    message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-    message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE ${BLAS_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND CHOLMOD_STATIC_LIBS ${BLAS_LIBRARIES} )
-        target_link_libraries ( CHOLMOD_static PUBLIC ${BLAS_LIBRARIES} )
-    endif ( )
-    include_directories ( ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 # CAMD and CCOLAMD:
@@ -471,6 +408,66 @@ if ( NOT NCAMD )
     endif ( )
 endif ( )
 
+# OpenMP:
+if ( OPENMP_C_FOUND )
+    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
+    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
+    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( CHOLMOD PRIVATE OpenMP::OpenMP_C )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_link_libraries ( CHOLMOD_static PUBLIC OpenMP::OpenMP_C )
+        list ( APPEND CHOLMOD_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
+    endif ( )
+else ( )
+    # to fix METIS: use threadprivate variables for GKRAND instead globals,
+    # so multiple user threads can call cholmod_analyze in parallel on
+    # different matrices, and avoid global locking of the system rand.
+    include ( SuiteSparse__thread )
+endif ( )
+
+# libm:
+if ( NOT WIN32 )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( CHOLMOD PRIVATE m )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND CHOLMOD_STATIC_LIBS "m" )
+        target_link_libraries ( CHOLMOD_static PUBLIC m )
+    endif ( )
+endif ( )
+        list ( APPEND CHOLMOD_STATIC_LIBS "m" )
+
+# BLAS and LAPACK: for the Supernodal Module
+if ( NOT NSUPERNODAL )
+    # LAPACK:
+    message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES}" )
+    message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS}" )
+    message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS}" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( CHOLMOD PRIVATE ${LAPACK_LIBRARIES} )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND CHOLMOD_STATIC_LIBS ${LAPACK_LIBRARIES} )
+        target_link_libraries ( CHOLMOD_static PUBLIC ${LAPACK_LIBRARIES} )
+    endif ( )
+    include_directories ( ${LAPACK_INCLUDE_DIR} )
+
+    # BLAS:
+    message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
+    message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS}" )
+    message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS}" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( CHOLMOD PRIVATE ${BLAS_LIBRARIES} )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND CHOLMOD_STATIC_LIBS ${BLAS_LIBRARIES} )
+        target_link_libraries ( CHOLMOD_static PUBLIC ${BLAS_LIBRARIES} )
+    endif ( )
+    include_directories ( ${BLAS_INCLUDE_DIRS} )
+endif ( )
+
 # METIS and the Partition module:
 if ( NOT NPARTITION )
     include_directories ( SuiteSparse_metis/GKlib )
@@ -488,14 +485,12 @@ if ( SUITESPARSE_CUDA )
         target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvtx3 CUDA::cublas )
+        target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
         target_include_directories ( CHOLMOD INTERFACE
             $<TARGET_PROPERTY:CUDA::cublas,INTERFACE_INCLUDE_DIRECTORIES> )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvtx3 CUDA::cublas )
+        target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     endif ( )
 
     set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
