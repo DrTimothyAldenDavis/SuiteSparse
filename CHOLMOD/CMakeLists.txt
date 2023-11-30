@@ -503,14 +503,12 @@ if ( SUITESPARSE_CUDA )
         target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
     endif ( )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvtx3 CUDA::cublas )
+        target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
         target_include_directories ( CHOLMOD INTERFACE
             $<TARGET_PROPERTY:CUDA::cublas,INTERFACE_INCLUDE_DIRECTORIES> )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-            CUDA::nvtx3 CUDA::cublas )
+        target_link_libraries ( CHOLMOD_static PUBLIC CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     endif ( )
 
     set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )

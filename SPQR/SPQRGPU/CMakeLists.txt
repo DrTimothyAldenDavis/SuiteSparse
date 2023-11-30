@@ -70,8 +70,7 @@ if ( BUILD_SHARED_LIBS )
 
     target_link_libraries ( SPQR_CUDA PRIVATE SuiteSparse::CHOLMOD )
 
-    target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvtx3 CUDA::cublas )
+    target_link_libraries ( SPQR_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
 
 if ( BUILD_STATIC_LIBS )
@@ -92,8 +91,7 @@ if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SPQR_CUDA_static PUBLIC SuiteSparse::CHOLMOD )
     endif ( )
 
-    target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static
-        CUDA::nvtx3 CUDA::cublas )
+    target_link_libraries ( SPQR_CUDA_static PUBLIC CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
 
 #-------------------------------------------------------------------------------
