@@ -53,6 +53,10 @@ default: library
 library:
 	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . --config Release -j${JOBS} )
 
+# install only in SuiteSparse/lib and SuiteSparse/include
+local:
+	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
+
 vanilla:
 	( cd build && cmake $(CMAKE_OPTIONS) -DLAGRAPH_VANILLA=1 .. && cmake --build . --config Release -j${JOBS} )
 

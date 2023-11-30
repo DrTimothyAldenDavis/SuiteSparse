@@ -143,10 +143,15 @@ else ( )
     # or uncomment the next line:
     # set ( ENV{GRAPHBLAS_ROOT} ${PROJECT_SOURCE_DIR}/../GraphBLAS )
 
-    message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
-    message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
+    # The ../GraphBLAS folder is considered by default, if it exists.
 
-    find_package ( GraphBLAS 7.1.0...9.0.1 MODULE REQUIRED )
+#   message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
+#   message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
+
+    # No package version is explicitly stated here; an arbitrary GraphBLAS
+    # library can have any version number.  For SuiteSparse:GraphBLAS, LAGraph
+    # requires v7.1.0 or later, which is checked in LAGraph.h.
+    find_package ( GraphBLAS MODULE REQUIRED )
 
 endif ( )
 
