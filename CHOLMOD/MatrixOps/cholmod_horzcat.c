@@ -89,7 +89,7 @@ cholmod_sparse *CHOLMOD(horzcat)    // return C = [A B]
         ERROR (CHOLMOD_INVALID, "A and B must have same # rows") ;
         return (NULL) ;
     }
-    if (mode != 0 && (A->xtype != B->xtype || A->dtype != A->dtype))
+    if (mode != 0 && (A->xtype != B->xtype || A->dtype != B->dtype))
     {
         // A and B must have the same xtype and dtype if mode is 0
         ERROR (CHOLMOD_INVALID, "A and B must have same xtype and dtype") ;

@@ -98,6 +98,9 @@
 
 #if ( !LAGRAPH_VANILLA ) && defined ( GxB_SUITESPARSE_GRAPHBLAS )
     // use SuiteSparse, and its GxB* extensions
+    #if GxB_IMPLEMENTATION < GxB_VERSION (7,1,0)
+    #error "If using SuiteSparse::GraphBLAS, version 7.1.0 or later s required"
+    #endif
     #define LAGRAPH_SUITESPARSE 1
 #else
     // use any GraphBLAS library (possibly SuiteSparse) but with no GxB*
@@ -366,6 +369,15 @@
         GRB_CATCH (LG_GrB_Info) ;               \
     }                                           \
 }
+
+//==============================================================================
+// for C++ applications:
+//==============================================================================
+
+#if defined ( __cplusplus )
+extern "C"
+{
+#endif
 
 //==============================================================================
 // LAGraph memory management
@@ -2502,5 +2514,9 @@ int LAGr_TriangleCount
     LAGr_TriangleCount_Presort *presort,
     char *msg
 ) ;
+
+#if defined ( __cplusplus )
+}
+#endif
 
 #endif

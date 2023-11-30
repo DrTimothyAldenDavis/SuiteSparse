@@ -5,15 +5,52 @@
 # Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
+# See the section below, "help with building this Example ..." for how to tell
+# this Example library where to find SuiteSparse.
+
+cmake_minimum_required ( VERSION 3.20 )
+
+#-------------------------------------------------------------------------------
+# help with building this Example package and finding SuiteSparse 
+#-------------------------------------------------------------------------------
+
 # To build this example, add the location of the CMake config files to
-# CMAKE_PREFIX_PATH if the SuiteSparse libraries aren't installed at a
-# default location.
+# CMAKE_PREFIX_PATH if the SuiteSparse libraries aren't installed at a default
+# location.  For example, on Linux or Mac, if you have your own a compiled copy
+# of SuiteSparse in /home/me/SuiteSparse that was compiled and installed with
+# LOCAL_INSTALL set to ON, use the following:
+#
+#   export CMAKE_PREFIX_PATH /home/me/SuiteSparse
+#
+# or uncomment and revise one of these examples, on any platform:
+#
+#   set ( CMAKE_PREFIX_PATH /home/me/SuiteSparse )
+#   set ( CMAKE_PREFIX_PATH /opt/SuiteSparse )
+#
+# The following is added, just to simplify building this Example if it is
+# located inside SuiteSparse itself and compiled with LOCAL_INSTALL set to ON.
+# Normally you would not use this in a stand-alone library that relies on
+# SuiteSparse:
+
+    set ( CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${CMAKE_SOURCE_DIR}/.. )
+
+# Next, to build and install this Example library, do the following:
+#
+#   cd Example/build
+#   cmake ..
+#   cmake --build . --config Release
+#   sudo cmake --install .
+#
+# Alternatively, if you have "make", just do this in this directory:
+#
+#   make
+#   sudo make install
+
+message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 
 #-------------------------------------------------------------------------------
 # get the version
 #-------------------------------------------------------------------------------
-
-cmake_minimum_required ( VERSION 3.20 )
 
 # cmake inserts the date and version number into Include/my.h:
 set ( MY_DATE "Dec 30, 2023" )
@@ -596,3 +633,14 @@ if ( BUILD_STATIC_LIBS )
     add_executable ( my_cxx_demo_static "Demo/my_demo.c" )
     target_link_libraries ( my_cxx_demo_static PUBLIC my_cxx_static )
 endif ( )
+
+#-------------------------------------------------------------------------------
+# report
+#-------------------------------------------------------------------------------
+
+message ( STATUS "MY source:         ${CMAKE_SOURCE_DIR} ")
+message ( STATUS "MY build:          ${CMAKE_BINARY_DIR} ")
+message ( STATUS "MY install prefix: ${CMAKE_INSTALL_PREFIX}" )
+message ( STATUS "MY install rpath:  ${CMAKE_INSTALL_RPATH}" )
+message ( STATUS "MY build   rpath:  ${CMAKE_BUILD_RPATH}" )
+

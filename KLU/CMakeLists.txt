@@ -89,9 +89,6 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
         # CHOLMOD not found so disable it
         set ( NCHOLMOD true )
     endif ( )
-    if ( SUITESPARSE_CUDA AND NOT CHOLMOD_CUDA_FOUND )
-        set ( NCHOLMOD true )
-    endif ( )
 endif ( )
 
 if ( NCHOLMOD )

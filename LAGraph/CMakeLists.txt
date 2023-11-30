@@ -36,7 +36,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.13 )
+cmake_minimum_required ( VERSION 3.20 )
 
 cmake_policy ( SET CMP0042 NEW )
 cmake_policy ( SET CMP0048 NEW )
@@ -52,7 +52,7 @@ set ( LAGraph_VERSION_SUB   0 CACHE STRING "" FORCE )
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( lagraph
+project ( LAGraph
           VERSION "${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}" )
 
 #-------------------------------------------------------------------------------
@@ -143,10 +143,15 @@ else ( )
     # or uncomment the next line:
     # set ( ENV{GRAPHBLAS_ROOT} ${PROJECT_SOURCE_DIR}/../GraphBLAS )
 
-    message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
-    message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
+    # The ../GraphBLAS folder is considered by default, if it exists.
 
-    find_package ( GraphBLAS 8.3.0 MODULE REQUIRED )
+#   message ( STATUS "GraphBLAS_ROOT: ${GraphBLAS_ROOT} $ENV{GraphBLAS_ROOT}" )
+#   message ( STATUS "GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT} $ENV{GRAPHBLAS_ROOT}" )
+
+    # No package version is explicitly stated here; an arbitrary GraphBLAS
+    # library can have any version number.  For SuiteSparse:GraphBLAS, LAGraph
+    # requires v7.1.0 or later, which is checked in LAGraph.h.
+    find_package ( GraphBLAS MODULE REQUIRED )
 
 endif ( )
 
@@ -195,7 +200,10 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 include_directories ( ${PROJECT_SOURCE_DIR}/include
                       ${PROJECT_SOURCE_DIR}/src/utility
                       ${PROJECT_SOURCE_DIR}/test/include )
-include_directories ( "/usr/local/include" )
+
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
+    include_directories ( ${GRAPHBLAS_INCLUDE_DIR} )
+endif ( )
 
 # tell LAGraph where to find its own source (for LAGraph/data files)
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${PROJECT_SOURCE_DIR}" )
