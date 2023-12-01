@@ -106,14 +106,12 @@ message ( STATUS "10: ${dirs}" )
 
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
-        set ( NCHOLMOD true )
+        set ( NCHOLMOD ON )
     endif ( )
 endif ( )
 
 if ( NCHOLMOD )
-    # tell UMFPACK that CHOLMOD is not available
     message ( STATUS "CHOLMOD not found or not requested" )
-    add_compile_definitions ( NCHOLMOD )
 else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
@@ -265,6 +263,14 @@ if ( NOT NCHOLMOD )
         else ( )
             target_link_libraries ( UMFPACK_static PRIVATE SuiteSparse::CHOLMOD )
         endif ( )
+    endif ( )
+else ( )
+    # tell UMFPACK that CHOLMOD is not available
+    if ( BUILD_SHARED_LIBS )
+        target_compile_definitions ( UMFPACK PRIVATE NCHOLMOD )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_compile_definitions ( UMFPACK_static PRIVATE NCHOLMOD )
     endif ( )
 endif ( )
 
