@@ -194,6 +194,30 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
+# umfpack:
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( ParU PRIVATE SuiteSparse::UMFPACK )
+    target_include_directories ( ParU PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::UMFPACK,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    if ( TARGET SuiteSparse::UMFPACK_static )
+        target_link_libraries ( ParU_static PUBLIC SuiteSparse::UMFPACK_static )
+    else ( )
+        target_link_libraries ( ParU_static PUBLIC SuiteSparse::UMFPACK )
+    endif ( )
+endif ( )
+
+# cholmod:
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( ParU PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    target_include_directories ( ParU_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+
 # OpenMP:
 if ( OpenMP_CXX_FOUND )
     message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
@@ -219,20 +243,6 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-# umfpack:
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( ParU PRIVATE SuiteSparse::UMFPACK )
-    target_include_directories ( ParU PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::UMFPACK,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    if ( TARGET SuiteSparse::UMFPACK_static )
-        target_link_libraries ( ParU_static PUBLIC SuiteSparse::UMFPACK_static )
-    else ( )
-        target_link_libraries ( ParU_static PUBLIC SuiteSparse::UMFPACK )
-    endif ( )
-endif ( )
-
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
 message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
@@ -243,16 +253,6 @@ if ( BUILD_STATIC_LIBS )
     list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
     include_directories ( ${BLAS_INCLUDE_DIRS} )
-endif ( )
-
-# cholmod:
-if ( BUILD_SHARED_LIBS )
-    target_include_directories ( ParU PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_include_directories ( ParU_static PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
 
 #-------------------------------------------------------------------------------

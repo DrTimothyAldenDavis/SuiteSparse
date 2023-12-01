@@ -223,17 +223,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# libm:
-if ( NOT WIN32 )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( KLU PRIVATE m )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        set ( KLU_STATIC_LIBS "${KLU_STATIC_LIBS} -lm" )
-        target_link_libraries ( KLU_static PUBLIC m )
-    endif ( )
-endif ( )
-
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::AMD )
@@ -306,6 +295,17 @@ if ( NOT NCHOLMOD )
         endif ( )
     endif ( )
 
+endif ( )
+
+# libm:
+if ( NOT WIN32 )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( KLU PRIVATE m )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        set ( KLU_STATIC_LIBS "${KLU_STATIC_LIBS} -lm" )
+        target_link_libraries ( KLU_static PUBLIC m )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
