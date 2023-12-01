@@ -84,38 +84,6 @@ message ( STATUS "4: ${dirs}" )
     if ( NOT TARGET SuiteSparse::AMD )
         find_package ( AMD 3.3.0 REQUIRED )
     endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "5: ${dirs}" )
-
-    if ( DEMO AND NOT WIN32 )
-        find_package ( COLAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::COLAMD )
-            find_package ( COLAMD 3.3.0 REQUIRED )
-        endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "6: ${dirs}" )
-
-        find_package ( CAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.3.0 REQUIRED )
-        endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "7: ${dirs}" )
-
-        find_package ( CCOLAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.3.0 REQUIRED )
-        endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "8: ${dirs}" )
-    endif ( )
 endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
