@@ -70,6 +70,6 @@ if ( BUILD_SHARED_LIBS )
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
 if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( CHOLMOD_static PUBLIC
+    target_link_libraries ( CHOLMOD_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
