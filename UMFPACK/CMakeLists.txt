@@ -201,11 +201,41 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
+# AMD:
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
+    target_include_directories ( UMFPACK PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    if ( TARGET SuiteSparse::AMD_static )
+        target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD_static )
+    else ( )
+        target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD )
+    endif ( )
+endif ( )
+
+# CHOLMOD:
+if ( NOT NCHOLMOD )
+    # link with CHOLMOD and its dependencies, both required and optional
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
+        if ( TARGET SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD_static )
+        else ( )
+            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD )
+        endif ( )
+    endif ( )
+endif ( )
+
 # OpenMP:
 if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
-    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
-    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
+    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
+    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
+    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( UMFPACK PRIVATE ${OpenMP_C_LIBRARIES} )
     endif ( )
@@ -228,24 +258,10 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-# AMD:
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
-    target_include_directories ( UMFPACK PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD_static )
-    else ( )
-        target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD )
-    endif ( )
-endif ( )
-
 # BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS}" )
+message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS}" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
 endif ( )
@@ -254,22 +270,6 @@ if ( BUILD_STATIC_LIBS )
     target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
 endif ( )
 include_directories ( ${BLAS_INCLUDE_DIRS} )
-
-# CHOLMOD:
-if ( NOT NCHOLMOD )
-    # link with CHOLMOD and its dependencies, both required and optional
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
-        if ( TARGET SuiteSparse::CHOLMOD_static )
-            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD_static )
-        else ( )
-            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD )
-        endif ( )
-    endif ( )
-endif ( )
 
 #-------------------------------------------------------------------------------
 # UMFPACK installation location

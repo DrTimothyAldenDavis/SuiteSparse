@@ -154,6 +154,34 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
+# CHOLMOD:
+# link with CHOLMOD and its dependencies
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    if ( TARGET SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
+    else ( )
+        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD )
+    endif ( )
+endif ( )
+
+if ( SUITESPARSE_CUDA )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( SPQR PRIVATE GPUQREngine GPURuntime )
+        target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
+    endif ( )
+    set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
+    if ( BUILD_STATIC_LIBS )
+        target_link_libraries ( SPQR_static PUBLIC GPUQREngine_static GPURuntime_static )
+        target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
+    endif ( )
+
+    # CUDA
+    add_subdirectory ( SPQRGPU )
+endif ( )
+
 # OpenMP:
 if ( OPENMP_FOUND )
     if ( BUILD_SHARED_LIBS )
@@ -202,34 +230,6 @@ if ( BUILD_STATIC_LIBS )
     list ( APPEND SPQR_STATIC_LIBS ${BLAS_LIBRARIES} )
     target_link_libraries ( SPQR_static PUBLIC ${BLAS_LIBRARIES} )
     target_include_directories ( SPQR_static PRIVATE ${BLAS_INCLUDE_DIRS} )
-endif ( )
-
-# CHOLMOD:
-# link with CHOLMOD and its dependencies
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( SPQR PRIVATE SuiteSparse::CHOLMOD )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    if ( TARGET SuiteSparse::CHOLMOD_static )
-        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD_static )
-    else ( )
-        target_link_libraries ( SPQR_static PUBLIC SuiteSparse::CHOLMOD )
-    endif ( )
-endif ( )
-
-if ( SUITESPARSE_CUDA )
-    # CUDA
-    add_subdirectory ( SPQRGPU )
-
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SPQR PRIVATE GPUQREngine GPURuntime )
-        target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
-    endif ( )
-    set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SPQR_static PUBLIC GPUQREngine_static GPURuntime_static )
-        target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
-    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------

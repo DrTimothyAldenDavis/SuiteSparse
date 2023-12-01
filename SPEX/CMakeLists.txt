@@ -83,8 +83,7 @@ configure_file ( "Config/SPEX_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include 
-    SPEX_Left_LU/Demo
-    ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} )
+    SPEX_Left_LU/Demo )
 
 #-------------------------------------------------------------------------------
 # dynamic spex library properties
@@ -177,20 +176,24 @@ endif ( )
 # MPFR:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
+    target_include_directories ( SPEX PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${MPFR_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
+    target_include_directories ( SPEX_static PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
+    target_include_directories ( SPEX PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${GMP_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
+    target_include_directories ( SPEX_static PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 
 # libm:
