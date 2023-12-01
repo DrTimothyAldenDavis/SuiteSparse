@@ -21,7 +21,7 @@ message ( STATUS "Building SPQR/GPURUNTIME version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( suitesparse_gpuruntime
+project ( suitesparse_gpuruntime 
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES C CXX CUDA )
 
@@ -70,8 +70,9 @@ if ( BUILD_SHARED_LIBS )
 
     target_include_directories ( GPURuntime PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+
+    target_link_libraries ( GPURuntime PRIVATE SuiteSparse::SuiteSparseConfig )
 
     set_target_properties ( GPURuntime PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -81,7 +82,7 @@ if ( BUILD_SHARED_LIBS )
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     target_compile_definitions ( GPURuntime PRIVATE "SUITESPARSE_CUDA" )
 
-    target_include_directories ( GPURuntime
+    target_include_directories ( GPURuntime 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
@@ -106,8 +107,13 @@ if ( BUILD_STATIC_LIBS )
 
     target_include_directories ( GPURuntime_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
-        ${SUITESPARSE_GPURUNTIME_INCLUDES}
-        $<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES> )
+        ${SUITESPARSE_GPURUNTIME_INCLUDES} )
+
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+    else ( )
+        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig )
+    endif ( )
 
     set_target_properties ( GPURuntime_static PROPERTIES
         POSITION_INDEPENDENT_CODE ON
@@ -117,7 +123,7 @@ if ( BUILD_STATIC_LIBS )
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     target_compile_definitions ( GPURuntime_static PRIVATE "SUITESPARSE_CUDA" )
 
-    target_include_directories ( GPURuntime_static
+    target_include_directories ( GPURuntime_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )

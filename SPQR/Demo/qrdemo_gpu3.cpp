@@ -63,7 +63,7 @@ int main (int argc, char **argv)
     m = A->nrow ;
     n = A->ncol ;
 
-    long ordering = (argc < 3 ? SPQR_ORDERING_DEFAULT : atoi(argv[2]));
+    int ordering = (argc < 3 ? SPQR_ORDERING_DEFAULT : atoi(argv[2]));
 
     printf ("Matrix %6ld-by-%-6ld nnz: %6ld\n",
         m, n, cholmod_l_nnz (A, cc)) ;
@@ -72,7 +72,7 @@ int main (int argc, char **argv)
     B = cholmod_l_ones (m, 1, A->xtype, cc) ;
 
     double tol = SPQR_NO_TOL ;
-    long econ = 0 ;
+    int64_t econ = 0 ;
 
     // [Q,R,E] = qr (A), but discard Q
     // SuiteSparseQR <double> (ordering, tol, econ, A, &R, &E, cc) ;

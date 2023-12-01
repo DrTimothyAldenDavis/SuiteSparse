@@ -254,7 +254,7 @@ if ( ENABLE_CUDA )
         # with CUDA:
         message ( STATUS "Find CUDA tool kit:" )
         # FindCUDAToolKit needs to have C or CXX enabled first (see above)
-        include ( FindCUDAToolkit )
+        find_package ( CUDAToolkit )
         message ( STATUS "CUDA toolkit found:   " ${CUDAToolkit_FOUND} )
         message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
         message ( STATUS "CUDA toolkit include: " ${CUDAToolkit_INCLUDE_DIRS} )
@@ -262,22 +262,22 @@ if ( ENABLE_CUDA )
         if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
             message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
-            set ( SUITESPARSE_CUDA off )
+            set ( SUITESPARSE_CUDA OFF )
         else ( )
             # CUDA 11.2 or later present
             enable_language ( CUDA )
-            set ( SUITESPARSE_CUDA on )
+            set ( SUITESPARSE_CUDA ON )
         endif ( )
     else ( )
         # without CUDA:
         message ( STATUS "CUDA: not found" )
-        set ( SUITESPARSE_CUDA off )
+        set ( SUITESPARSE_CUDA OFF )
     endif ( )
 
 else ( )
 
     # CUDA is disabled
-    set ( SUITESPARSE_CUDA off )
+    set ( SUITESPARSE_CUDA OFF )
 
 endif ( )
 

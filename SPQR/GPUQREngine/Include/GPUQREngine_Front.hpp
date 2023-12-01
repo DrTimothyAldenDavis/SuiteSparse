@@ -19,6 +19,8 @@
 #ifndef GPUQRENGINE_FRONT_HPP
 #define GPUQRENGINE_FRONT_HPP
 
+#include <cstddef>
+
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_SparseMeta.hpp"
 #include "GPUQREngine_FrontState.hpp"
@@ -53,7 +55,7 @@ public:
     /* Debug Fields */
     bool printMe;
 
-    void* operator new(size_t reqMem, Front* ptr){ return ptr; }
+    void* operator new(std::size_t reqMem, Front* ptr){ return ptr; }
 
     Front(
         Int fids_arg,                   // the front identifier

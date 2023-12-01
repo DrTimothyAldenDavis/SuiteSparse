@@ -748,7 +748,7 @@ add_test ( NAME CHOLMOD_int64_single_supernodal
 if ( WIN32 AND BUILD_SHARED_LIBS )
     # Set PATH to pick up the necessary libraries for all tests
 
-    set ( CHOLMOD_CTEST_NAMES
+    set ( CHOLMOD_CTEST_NAMES 
         CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
         CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
         CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
