@@ -260,9 +260,6 @@ endif ( )
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 message ( STATUS "25: ${dirs}" )
 
-get_target_property(dirs UMFPACK INCLUDE_DIRECTORIES)
-message ( STATUS "umfpack 2: ${dirs}" )
-
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
@@ -355,7 +352,7 @@ install ( FILES
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "30: ${dirs}" )
+message ( STATUS "1: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -389,11 +386,8 @@ if ( NOT MSVC )
         endforeach ( )
     endforeach ( )
 
-get_target_property(dirs UMFPACK INCLUDE_DIRECTORIES)
-message ( STATUS "umfpack 3: ${dirs}" )
-
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "31: ${dirs}" )
+message ( STATUS "1: ${dirs}" )
 
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
@@ -420,7 +414,7 @@ message ( STATUS "31: ${dirs}" )
 endif ( )
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "32: ${dirs}" )
+message ( STATUS "1: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
@@ -507,7 +501,7 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "33: ${dirs}" )
+message ( STATUS "1: ${dirs}" )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     include ( SuiteSparseReport )
