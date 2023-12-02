@@ -48,6 +48,6 @@ if ( BUILD_STATIC_LIBS )
     set_target_properties ( SPQR_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
     target_compile_definitions ( SPQR_static PRIVATE "SUITESPARSE_CUDA" )
 
-    target_link_libraries ( SPQR_static PUBLIC
+    target_link_libraries ( SPQR_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )

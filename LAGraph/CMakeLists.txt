@@ -163,10 +163,10 @@ if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
     if ( NOPENMP )
-        set ( OPENMP_C_FOUND OFF )
+        set ( OpenMP_C_FOUND OFF )
     else ( )
         find_package ( OpenMP )
-        if ( OPENMP_C_FOUND AND BUILD_STATIC_LIBS )
+        if ( OpenMP_C_FOUND AND BUILD_STATIC_LIBS )
             list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         endif ( )
         find_package ( Threads )
@@ -200,10 +200,6 @@ message ( STATUS "CMAKE have OpenMP:         " ${OPENMP_C_FOUND} )
 include_directories ( ${PROJECT_SOURCE_DIR}/include
                       ${PROJECT_SOURCE_DIR}/src/utility
                       ${PROJECT_SOURCE_DIR}/test/include )
-
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include_directories ( ${GRAPHBLAS_INCLUDE_DIR} )
-endif ( )
 
 # tell LAGraph where to find its own source (for LAGraph/data files)
 set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DLGDIR=${PROJECT_SOURCE_DIR}" )

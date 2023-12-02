@@ -69,7 +69,7 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME lagraphtest_static )
     endif ( )
 
-    target_link_libraries ( lagraphtest_static PUBLIC LAGraph_static GraphBLAS::GraphBLAS )
+    target_link_libraries ( lagraphtest_static PRIVATE LAGraph_static GraphBLAS::GraphBLAS )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ if ( OPENMP_C_FOUND )
         target_link_libraries ( lagraphtest PRIVATE OpenMP::OpenMP_C )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( lagraphtest_static PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( lagraphtest_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )
 

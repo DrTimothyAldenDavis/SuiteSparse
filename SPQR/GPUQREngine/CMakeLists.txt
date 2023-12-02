@@ -131,12 +131,12 @@ if ( BUILD_STATIC_LIBS )
         ${CUDAToolkit_INCLUDE_DIRS}
         ${GPUQRENGINE_INCLUDES} )
 
-    target_link_libraries ( GPUQREngine_static PUBLIC GPURuntime_static )
+    target_link_libraries ( GPUQREngine_static PRIVATE GPURuntime_static )
 
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( GPUQREngine_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( GPUQREngine_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( GPUQREngine_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( GPUQREngine_static PRIVATE SuiteSparse::SuiteSparseConfig )
     endif ( )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
@@ -144,7 +144,7 @@ if ( BUILD_STATIC_LIBS )
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
         CUDA_RUNTIME_LIBRARY Static )
-    target_link_libraries ( GPUQREngine_static PUBLIC
+    target_link_libraries ( GPUQREngine_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     target_compile_definitions ( GPUQREngine_static PRIVATE "SUITESPARSE_CUDA" )
 

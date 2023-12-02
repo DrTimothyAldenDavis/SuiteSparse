@@ -70,7 +70,7 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND false )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -351,13 +351,9 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
-        target_include_directories ( CHOLMOD_static PUBLIC
-            "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig_static,INTERFACE_INCLUDE_DIRECTORIES>" )
+        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::SuiteSparseConfig )
-        target_include_directories ( CHOLMOD_static PUBLIC
-            "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+        target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -413,7 +409,7 @@ if ( NOT NCAMD )
 endif ( )
 
 # OpenMP:
-if ( OPENMP_C_FOUND )
+if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
@@ -523,8 +519,6 @@ if ( SUITESPARSE_CUDA )
     # with CUDA
     add_subdirectory ( GPU )
     message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
-    include_directories ( GPU ${CUDAToolkit_INCLUDE_DIRS} )
-    link_directories ( "GPU" "${CUDA_LIBRARIES}" "/usr/local/cuda/lib64/stubs" "/usr/local/cuda/lib64" )
 endif ( )
 
 #-------------------------------------------------------------------------------

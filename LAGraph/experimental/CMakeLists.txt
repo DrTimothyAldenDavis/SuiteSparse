@@ -62,9 +62,9 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 
     if ( TARGET GraphBLAS::GraphBLAS_static )
-        target_link_libraries ( LAGraphX_static PUBLIC GraphBLAS::GraphBLAS_static )
+        target_link_libraries ( LAGraphX_static PRIVATE GraphBLAS::GraphBLAS_static )
     else ( )
-        target_link_libraries ( LAGraphX_static PUBLIC GraphBLAS::GraphBLAS )
+        target_link_libraries ( LAGraphX_static PRIVATE GraphBLAS::GraphBLAS )
     endif ( )
 
     target_include_directories ( LAGraphX_static PUBLIC
@@ -76,12 +76,12 @@ endif ( )
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_C_FOUND )
+if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LAGraphX PRIVATE OpenMP::OpenMP_C )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( LAGraphX_static PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( LAGraphX_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )
 

@@ -127,6 +127,16 @@ endif ( )
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( LDL PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+
+if ( BUILD_STATIC_LIBS )
+    target_include_directories ( LDL_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
@@ -138,15 +148,6 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-if ( BUILD_SHARED_LIBS )
-    target_include_directories ( LDL PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
-
-if ( BUILD_STATIC_LIBS )
-    target_include_directories ( LDL_static PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
 #-------------------------------------------------------------------------------
 # LDL installation location
 #-------------------------------------------------------------------------------

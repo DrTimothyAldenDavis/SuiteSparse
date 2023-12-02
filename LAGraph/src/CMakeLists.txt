@@ -82,12 +82,12 @@ endif ( )
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_C_FOUND )
+if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LAGraph PRIVATE OpenMP::OpenMP_C )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( LAGraph_static PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( LAGraph_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )
 
