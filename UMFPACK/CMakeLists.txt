@@ -41,30 +41,13 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
 option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 include ( SuiteSparsePolicy )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "2: ${dirs}" )
-
-if ( SUITESPARSE_CUDA )
-    # UMFPACK with CHOLMOD (which can use CUDA)
-    enable_language ( CXX CUDA )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
-
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
-    # OpenMP has been disabled
-    set ( OPENMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
-endif ( )
 
 get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
 message ( STATUS "3: ${dirs}" )
@@ -271,26 +254,6 @@ else ( )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_compile_definitions ( UMFPACK_static PRIVATE NCHOLMOD )
-    endif ( )
-endif ( )
-
-get_target_property(dirs UMFPACK INCLUDE_DIRECTORIES)
-message ( STATUS "umfpack 1: ${dirs}" )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "24: ${dirs}" )
-
-# OpenMP:
-if ( OPENMP_C_FOUND )
-    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
-    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
-    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( UMFPACK PRIVATE OpenMP::OpenMP_C )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( UMFPACK_static PRIVATE OpenMP::OpenMP_C )
-        list ( APPEND UMFPACK_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
 endif ( )
 
