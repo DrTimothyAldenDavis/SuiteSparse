@@ -87,6 +87,12 @@ file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
 if ( BUILD_SHARED_LIBS )
     add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    1: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 1: ${dirs}" )
+
     set_target_properties ( SuiteSparseConfig PROPERTIES
         VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
         C_STANDARD 11
@@ -100,6 +106,11 @@ if ( BUILD_SHARED_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    2: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 2: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # static SuiteSparseConfig library properties
@@ -124,6 +135,11 @@ if ( BUILD_STATIC_LIBS )
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
 
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    3: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 3: ${dirs}" )
+
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
@@ -137,6 +153,11 @@ if ( NOT WIN32 )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
     endif ( )
 endif ( )
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    4: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 4: ${dirs}" )
 
 # OpenMP:
 if ( OpenMP_C_FOUND )
@@ -153,6 +174,11 @@ if ( OpenMP_C_FOUND )
     endif ( )
 endif ( )
 
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    5: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 5: ${dirs}" )
+
 # BLAS:
 if ( BLAS_FOUND )
     # SuiteSparse_config does not itself require the BLAS.  It just needs to
@@ -162,6 +188,11 @@ if ( BLAS_FOUND )
     message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
     message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
 endif ( )
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    6: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 6: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # SuiteSparseConfig installation location
@@ -246,6 +277,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
+
+get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+message ( STATUS "inc    7: ${dirs}" )
+get_target_property(dirs SuiteSparseConfig INCLUDE_DIRECTORIES)
+message ( STATUS "target 7: ${dirs}" )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     include ( SuiteSparseReport )
