@@ -30,9 +30,6 @@ project ( umfpack
     VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
     LANGUAGES C )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "1: ${dirs}" )
-
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
 #-------------------------------------------------------------------------------
@@ -49,18 +46,12 @@ include ( SuiteSparsePolicy )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "3: ${dirs}" )
-
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.4.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
         find_package ( SuiteSparse_config 7.4.0 REQUIRED )
     endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "4: ${dirs}" )
 
     find_package ( AMD 3.3.0
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
@@ -71,9 +62,6 @@ endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "9: ${dirs}" )
-
 option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
@@ -83,9 +71,6 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
         find_package ( CHOLMOD 5.1.0 )
     endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "10: ${dirs}" )
 
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
@@ -98,9 +83,6 @@ if ( NCHOLMOD )
 else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "11: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -117,13 +99,7 @@ configure_file ( "Config/umfpack_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "12: ${dirs}" )
-
 include_directories ( Source Include )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "13: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # dynamic umfpack library properties
@@ -131,14 +107,8 @@ message ( STATUS "13: ${dirs}" )
 
 file ( GLOB UMFPACK_SOURCES "Source2/*.c" )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "14: ${dirs}" )
-
 if ( BUILD_SHARED_LIBS )
     add_library ( UMFPACK SHARED ${UMFPACK_SOURCES} )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "15: ${dirs}" )
 
     set_target_properties ( UMFPACK PROPERTIES
         VERSION ${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}
@@ -149,16 +119,10 @@ message ( STATUS "15: ${dirs}" )
         PUBLIC_HEADER "Include/umfpack.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "16: ${dirs}" )
-
     target_include_directories ( UMFPACK 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "17: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # static umfpack library properties
@@ -167,33 +131,21 @@ message ( STATUS "17: ${dirs}" )
 if ( BUILD_STATIC_LIBS )
     add_library ( UMFPACK_static STATIC ${UMFPACK_SOURCES} )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "18: ${dirs}" )
-
     set_target_properties ( UMFPACK_static PROPERTIES
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME umfpack
         PUBLIC_HEADER "Include/umfpack.h" )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "19: ${dirs}" )
-
     if ( MSVC )
         set_target_properties ( UMFPACK_static PROPERTIES
             OUTPUT_NAME umfpack_static )
     endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "20: ${dirs}" )
-
     target_include_directories ( UMFPACK_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "21: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # add the library dependencies
@@ -213,9 +165,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "22: ${dirs}" )
-
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
@@ -229,9 +178,6 @@ if ( BUILD_STATIC_LIBS )
         target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::AMD )
     endif ( )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "23: ${dirs}" )
 
 # CHOLMOD:
 if ( NOT NCHOLMOD )
@@ -257,9 +203,6 @@ else ( )
     endif ( )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "25: ${dirs}" )
-
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
@@ -270,9 +213,6 @@ if ( NOT WIN32 )
         target_link_libraries ( UMFPACK_static PUBLIC m )
     endif ( )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "26: ${dirs}" )
 
 # BLAS:
 message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
@@ -288,20 +228,11 @@ if ( BUILD_STATIC_LIBS )
     target_include_directories ( UMFPACK_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "27: ${dirs}" )
-
 #-------------------------------------------------------------------------------
 # UMFPACK installation location
 #-------------------------------------------------------------------------------
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "28: ${dirs}" )
-
 include ( CMakePackageConfigHelpers )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "29: ${dirs}" )
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS UMFPACK
@@ -351,9 +282,6 @@ install ( FILES
     ${CMAKE_CURRENT_BINARY_DIR}/UMFPACKConfigVersion.cmake
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/UMFPACK )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "1: ${dirs}" )
-
 #-------------------------------------------------------------------------------
 # create pkg-config file
 #-------------------------------------------------------------------------------
@@ -386,9 +314,6 @@ if ( NOT MSVC )
         endforeach ( )
     endforeach ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "1: ${dirs}" )
-
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
     cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
@@ -412,9 +337,6 @@ message ( STATUS "1: ${dirs}" )
         ${CMAKE_CURRENT_BINARY_DIR}/UMFPACK.pc
         DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "1: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
@@ -499,9 +421,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "1: ${dirs}" )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     include ( SuiteSparseReport )
