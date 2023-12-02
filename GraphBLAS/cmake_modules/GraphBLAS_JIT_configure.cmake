@@ -54,6 +54,8 @@ else ( )
 endif ( )
 
 # construct the library list
+if ( MINGW )
+
 # This might be something like:
 #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
 # convert to -l flags to avoid relocation issues, i.e.: "-lgomp -lpthread -lm"
@@ -79,6 +81,22 @@ foreach ( _lib ${GB_CMAKE_LIBRARIES} )
         endif ( )
     endforeach ( )
 endforeach ( )
+
+else ( )
+
+    # original method (before MINGW changes:
+    string ( REPLACE "." "\\." LIBSUFFIX1 ${GB_LIB_SUFFIX} )
+    string ( REPLACE "." "\\." LIBSUFFIX2 ${CMAKE_STATIC_LIBRARY_SUFFIX} )
+    set ( GB_C_LIBRARIES "" )
+    foreach ( LIB_NAME ${GB_CMAKE_LIBRARIES} )
+        if (( LIB_NAME MATCHES ${LIBSUFFIX1} ) OR ( LIB_NAME MATCHES ${LIBSUFFIX2} ))
+            string ( APPEND GB_C_LIBRARIES " " ${LIB_NAME} )
+        else ( )
+            string ( APPEND GB_C_LIBRARIES " -l" ${LIB_NAME} )
+        endif ( )
+    endforeach ( )
+
+endif ( )
 
 if ( NOT NJIT OR ENABLE_CUDA )
     message ( STATUS "------------------------------------------------------------------------" )
