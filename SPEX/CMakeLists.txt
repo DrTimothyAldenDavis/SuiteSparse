@@ -155,9 +155,9 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD_static )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::AMD )
     endif ( )
 endif ( )
 
@@ -167,9 +167,9 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD_static )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::COLAMD_static )
     else ( )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::COLAMD )
     endif ( )
 endif ( )
 
@@ -323,7 +323,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 if ( DEMO )
 
     #---------------------------------------------------------------------------

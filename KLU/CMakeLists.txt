@@ -36,14 +36,7 @@ project ( klu
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
-
 include ( SuiteSparsePolicy )
-
-if ( SUITESPARSE_CUDA )
-    # KLU with CHOLMOD (which can use CUDA)
-    enable_language ( CXX CUDA )
-endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -217,9 +210,9 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( KLU_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( KLU_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( KLU_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( KLU_static PRIVATE SuiteSparse::SuiteSparseConfig )
     endif ( )
 endif ( )
 
@@ -276,9 +269,9 @@ if ( NOT NCHOLMOD )
     if ( BUILD_STATIC_LIBS )
        set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
        if ( TARGET SuiteSparse::CHOLMOD_static )
-            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::CHOLMOD_static )
         else ( )
-            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::CHOLMOD )
+            target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
 
@@ -287,11 +280,11 @@ if ( NOT NCHOLMOD )
         target_link_libraries ( KLU_CHOLMOD PRIVATE KLU )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( KLU_CHOLMOD_static PUBLIC KLU_static )
+        target_link_libraries ( KLU_CHOLMOD_static PRIVATE KLU_static )
         if ( TARGET SuiteSparse::BTF_static )
-            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::BTF_static )
+            target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::BTF_static )
         else ( )
-            target_link_libraries ( KLU_CHOLMOD_static PUBLIC SuiteSparse::BTF )
+            target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::BTF )
         endif ( )
     endif ( )
 

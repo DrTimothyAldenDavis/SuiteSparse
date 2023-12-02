@@ -110,16 +110,16 @@ if ( BUILD_STATIC_LIBS )
         ${SUITESPARSE_GPURUNTIME_INCLUDES} )
 
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
-        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
+        target_link_libraries ( GPURuntime_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
     else ( )
-        target_link_libraries ( GPURuntime_static PUBLIC SuiteSparse::SuiteSparseConfig )
+        target_link_libraries ( GPURuntime_static PRIVATE SuiteSparse::SuiteSparseConfig )
     endif ( )
 
     set_target_properties ( GPURuntime_static PROPERTIES
         POSITION_INDEPENDENT_CODE ON
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RUNTIME_LIBRARY Static )
-    target_link_libraries ( GPURuntime_static PUBLIC
+    target_link_libraries ( GPURuntime_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
     target_compile_definitions ( GPURuntime_static PRIVATE "SUITESPARSE_CUDA" )
 
