@@ -56,11 +56,11 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 if ( NOPENMP )
     # OpenMP has been disabled
     message ( STATUS "OpenMP disabled" )
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -139,18 +139,18 @@ if ( NOT WIN32 )
 endif ( )
 
 # OpenMP:
-if ( OPENMP_FOUND )
+if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SuiteSparseConfig PRIVATE OpenMP::OpenMP_C )
+        target_include_directories ( SuiteSparseConfig PUBLIC
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SuiteSparseConfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SuiteSparseConfig_static PUBLIC OpenMP::OpenMP_C )
     endif ( )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
 # BLAS:
