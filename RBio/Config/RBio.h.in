@@ -292,6 +292,8 @@ int RBok (int64_t nrow, int64_t ncol,
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */
 #endif
 
+void RBio_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

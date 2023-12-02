@@ -98,6 +98,21 @@ int main (void)
 
     int row, col, pp, length, ok ;
 
+    //--------------------------------------------------------------------------
+    // colamd version
+    //--------------------------------------------------------------------------
+
+    int version [3] ;
+    colamd_version (version) ;
+    printf ("COLAMD v%d.%d.%d\n", version [0], version [1], version [2]) ;
+    if ((version [0] != COLAMD_MAIN_VERSION) ||
+        (version [1] != COLAMD_SUB_VERSION) ||
+        (version [2] != COLAMD_SUBSUB_VERSION))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
+
     /* ====================================================================== */
     /* dump the input matrix A */
     /* ====================================================================== */

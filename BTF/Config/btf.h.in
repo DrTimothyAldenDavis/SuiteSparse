@@ -218,6 +218,12 @@ int32_t btf_order       /* returns number of blocks found */
 int64_t btf_l_order (int64_t, int64_t *, int64_t *, double , double *,
     int64_t *, int64_t *, int64_t *, int64_t *, int64_t *) ;
 
+//------------------------------------------------------------------------------
+// btf_version: return BTF version
+//------------------------------------------------------------------------------
+
+void btf_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

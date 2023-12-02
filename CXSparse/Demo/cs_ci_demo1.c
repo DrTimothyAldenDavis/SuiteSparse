@@ -1,4 +1,4 @@
-// CSparse/Demo/cs_demo1: demo program for CXSparse
+// CXSparse/Demo/cs_demo1: demo program for CXSparse
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #include "cs.h"
@@ -6,6 +6,16 @@ int main (void)
 {
     cs_ci *T, *A, *Eye, *AT, *C, *D ;
     int i, m ;
+    int version [3] ;
+    cxsparse_version (version) ;
+    printf ("CXSparse v%d.%d.%d\n", version [0], version [1], version [2]) ;
+    if ((version [0] != CS_VER) || (version [1] != CS_SUBVER) ||
+        (version [2] != CS_SUBSUB))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
+
     T = cs_ci_load (stdin) ;               /* load triplet matrix T from stdin */
     printf ("T:\n") ; cs_ci_print (T, 0) ; /* print T */
     A = cs_ci_compress (T) ;               /* A = compressed-column form of T */

@@ -313,6 +313,10 @@ void amd_l_control  (double Control [ ]) ;
 void amd_info       (double Info [ ]) ;
 void amd_l_info     (double Info [ ]) ;
 
+// amd_version: return AMD version.  The version array is returned with
+// version [0..2] = {AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION}
+void amd_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

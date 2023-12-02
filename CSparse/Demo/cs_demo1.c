@@ -6,6 +6,16 @@ int main (void)
 {
     cs *T, *A, *Eye, *AT, *C, *D ;
     csi i, m ;
+    int version [3] ;
+    csparse_version (version) ;
+    printf ("CSparse v%d.%d.%d\n", version [0], version [1], version [2]) ;
+    if ((version [0] != CS_VER) || (version [1] != CS_SUBVER) ||
+        (version [2] != CS_SUBSUB))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
+
     T = cs_load (stdin) ;               /* load triplet matrix T from stdin */
     printf ("T:\n") ; cs_print (T, 0) ; /* print T */
     A = cs_compress (T) ;               /* A = compressed-column form of T */

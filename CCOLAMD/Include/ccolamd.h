@@ -217,6 +217,7 @@ void csymamd_l_report
     int64_t stats [CCOLAMD_STATS]
 ) ;
 
+void ccolamd_version (int version [3]) ;
 
 /* ========================================================================== */
 /* === Prototypes of "expert" routines ====================================== */

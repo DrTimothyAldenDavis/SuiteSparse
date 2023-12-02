@@ -1,11 +1,22 @@
-// Example library that relies on SuiteSparse packages
+//------------------------------------------------------------------------------
+// SuiteSparse/Example/Source/my_cxx.cc
+//------------------------------------------------------------------------------
+
+// Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
+
+// Example C++ library that relies on SuiteSparse packages
 
 #include <iostream>
 #include <string>
 #include <cmath>
 
+// FIXME: use another filename
 #include "my_internal.h"
 
+// FIXME: return -1
 #define OK(result)                                            \
     if (!(result))                                            \
     {                                                         \
@@ -13,7 +24,8 @@
         abort ( ) ;                                           \
     }
 
-void my_library (int version [3], char date [128])
+// FIXME: use the C code? or rename?
+void my_version (int version [3], char date [128])
 {
     // get the version of this library
     strncpy (date, MY_DATE, 127) ;
@@ -22,7 +34,8 @@ void my_library (int version [3], char date [128])
     version [2] = MY_PATCH_VERSION ;
 }
 
-void my_function (void)
+// FIXME: rename?
+int my_function (void)
 {
 
     //--------------------------------------------------------------------------
@@ -135,7 +148,7 @@ void my_function (void)
     int64_t *Awork = (int64_t *) malloc (Alen * sizeof (int64_t)) ;
     OK (Awork != nullptr) ;
     memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
-    OK (ccolamd_l (n, n, Alen, Awork, P, nullptr, nullptr, Cmem) == CCOLAMD_OK) ;
+    OK (ccolamd_l (n, n, Alen, Awork, P, nullptr, nullptr, Cmem) == CCOLAMD_OK);
     for (int k = 0 ; k < n ; k++)
       std::cout << "P [" << k << "] = " << P [k] << std::endl;
     free (Awork) ;
@@ -394,7 +407,7 @@ void my_function (void)
     (void) umfpack_dl_symbolic (n, n, Ap, Ai, Ax, &Sym, Control, Info) ;
     (void) umfpack_dl_numeric (Ap, Ai, Ax, Sym, &Num, Control, Info) ;
     umfpack_dl_free_symbolic (&Sym) ;
-    result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info) ;
+    result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info);
     umfpack_dl_free_numeric (&Num) ;
     for (int i = 0 ; i < n ; i++)
       std::cout << "x [" << i << "] = " << x [i] << std::endl;
@@ -415,4 +428,6 @@ void my_function (void)
     cs_dl_spfree (A) ;
     A = nullptr ;
     OK (cholmod_l_finish (&cc)) ;
+    return (0) ;
 }
+

@@ -3,6 +3,8 @@ Dec 30, 2023: version 4.3.0
     * major change to build system: by Markus Mützel
     * dependent packages: GPUQREngine and SuiteSparse_GPURuntime moved into
         SPQR as dependent packages, only used in SPQR.
+    * SuiteSparseQR_C_version and SuiteSparseQR_version: added to return
+        version of SPQR
 
 Oct 23, 2023: version 4.2.2
 

@@ -55,6 +55,19 @@ static void my_handler (int status, const char *file, int line,
     }
 }
 
+static void check_version (char *package, int ver [3],
+    int major, int minor, int patch)
+{
+    printf ("%s version %d.%d.%d\n", package, ver [0], ver [1], ver [2]) ;
+    if (ver [0] != major || ver [1] != minor || ver [2] != patch)
+    {
+        printf ("header version differs (%d,%d,%d) from library\n",
+            major, minor, patch) ;
+        my_handler (CHOLMOD_INVALID, __FILE__, __LINE__,
+            "version mismatch") ;
+    }
+}
+
 int main (int argc, char **argv)
 {
     double
@@ -136,14 +149,41 @@ int main (int argc, char **argv)
     beta [1] = 0 ;
 
     //--------------------------------------------------------------------------
-    // read in a matrix
+    // check versions
     //--------------------------------------------------------------------------
 
     printf ("\n---------------------------------- cholmod_si_demo:\n") ;
+
     cholmod_version (ver) ;
-    printf ("cholmod version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
+    check_version ("cholmod", ver, CHOLMOD_MAIN_VERSION,
+        CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION) ;
+
     SuiteSparse_version (ver) ;
-    printf ("SuiteSparse version %d.%d.%d\n", ver [0], ver [1], ver [2]) ;
+    check_version ("SuiteSparse", ver, SUITESPARSE_MAIN_VERSION,
+        SUITESPARSE_SUB_VERSION, SUITESPARSE_SUBSUB_VERSION) ;
+
+    amd_version (ver) ;
+    check_version ("AMD", ver, AMD_MAIN_VERSION,
+        AMD_SUB_VERSION, AMD_SUBSUB_VERSION) ;
+
+    colamd_version (ver) ;
+    check_version ("COLAMD", ver, COLAMD_MAIN_VERSION,
+        COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION) ;
+
+    #ifndef NCAMD
+    camd_version (ver) ;
+    check_version ("CAMD", ver, CAMD_MAIN_VERSION,
+        CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION) ;
+
+    ccolamd_version (ver) ;
+    check_version ("CCOLAMD", ver, CCOLAMD_MAIN_VERSION,
+        CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION) ;
+    #endif
+
+    //--------------------------------------------------------------------------
+    // read in a matrix
+    //--------------------------------------------------------------------------
+
     A = cholmod_read_sparse2 (f, CHOLMOD_SINGLE, cm) ;
     if (ff != NULL)
     {

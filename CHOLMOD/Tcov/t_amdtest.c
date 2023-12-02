@@ -10,6 +10,7 @@
 
 #undef ASSERT
 #include "amd.h"
+#include "colamd.h"
 #include "amd_internal.h"
 
 #undef FLIP
@@ -30,10 +31,30 @@ void amdtest (cholmod_sparse *A)
     Int i, j, n, nrow, ncol, ok, cnz, bnz, p, trial, sorted ;
 
     //--------------------------------------------------------------------------
-    // get inputs
+    // check version
     //--------------------------------------------------------------------------
 
     printf ("\nAMD test\n") ;
+
+    printf ("AMD version %d.%d.%d, date: %s\n",
+        AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
+    int version [3] ;
+    amd_version (version) ;
+    OK ((version [0] == AMD_MAIN_VERSION) &&
+        (version [1] == AMD_SUB_VERSION) &&
+        (version [2] == AMD_SUBSUB_VERSION)) ;
+
+    printf ("COLAMD version %d.%d.%d, date: %s\n",
+        COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
+        COLAMD_DATE) ;
+    colamd_version (version) ;
+    OK ((version [0] == COLAMD_MAIN_VERSION) &&
+        (version [1] == COLAMD_SUB_VERSION) &&
+        (version [2] == COLAMD_SUBSUB_VERSION)) ;
+
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
     if (A == NULL)
     {

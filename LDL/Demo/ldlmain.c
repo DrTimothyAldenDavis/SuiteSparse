@@ -101,6 +101,22 @@ int main (void)
     FILE *f ;
     char s [LEN], filename [LEN] ;
 
+    //--------------------------------------------------------------------------
+    // check the LDL version
+    //--------------------------------------------------------------------------
+
+    printf ("LDL version %d.%d.%d, date: %s\n",
+        LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION, LDL_DATE) ;
+    int version [3] ;
+    ldl_version (version) ;
+    if ((version [0] != LDL_MAIN_VERSION) ||
+        (version [1] != LDL_SUB_VERSION) ||
+        (version [2] != LDL_SUBSUB_VERSION))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
+
     /* ---------------------------------------------------------------------- */
     /* check the error-checking routines with null matrices */
     /* ---------------------------------------------------------------------- */

@@ -1,6 +1,7 @@
 Dec 30, 2023: version 2.3.0
 
     * major change to build system: by Markus Mützel
+    * klu_version: added to return version of KLU
 
 Oct 23, 2023: version 2.2.2
 

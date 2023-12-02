@@ -242,6 +242,8 @@ cholmod_dense *SuiteSparseQR_C_qmult /* returns Y, or NULL on failure */
 
 #endif
 
+void SuiteSparseQR_C_version (int version [3]) ;
+
 /* ========================================================================== */
 
 #ifdef __cplusplus

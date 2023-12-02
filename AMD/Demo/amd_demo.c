@@ -52,14 +52,17 @@ int main (void)
     double Control [AMD_CONTROL], Info [AMD_INFO] ;
     char A [24][24] ;
 
-    /* here is an example of how to use AMD_VERSION.  This code will work in
-     * any version of AMD. */
-#if defined(AMD_VERSION) && (AMD_VERSION >= AMD_VERSION_CODE(1,2))
     printf ("AMD version %d.%d.%d, date: %s\n",
         AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
-#else
-    printf ("AMD version: 1.1 or earlier\n") ;
-#endif
+    int version [3] ;
+    amd_version (version) ;
+    if ((version [0] != AMD_MAIN_VERSION) ||
+        (version [1] != AMD_SUB_VERSION) ||
+        (version [2] != AMD_SUBSUB_VERSION))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
 
     printf ("AMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:\n") ;
 

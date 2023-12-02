@@ -20,9 +20,12 @@
 extern "C" {
 #endif
 
-void my_library (int version [3], char date [128]) ;
-void my_function (void) ;
+void my_version (int version [3], char date [128]) ;
+int my_function (void) ;
+int my_check_version (const char *package, int major, int minor, int patch,
+    const char *date, int version [3]) ;
 
 #ifdef __cplusplus
 }
 #endif
+

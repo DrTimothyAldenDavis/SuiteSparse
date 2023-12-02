@@ -547,6 +547,17 @@ cholmod_dense *SuiteSparseQR_C_qmult
     }
 }
 
+// =============================================================================
+// === SuiteSparseQR_C_version =================================================
+// =============================================================================
+
+void SuiteSparseQR_C_version (int version [3])
+{
+    version [0] = SPQR_MAIN_VERSION ;
+    version [1] = SPQR_SUB_VERSION ;
+    version [2] = SPQR_SUBSUB_VERSION ;
+}
+
 #endif
 
 // =============================================================================

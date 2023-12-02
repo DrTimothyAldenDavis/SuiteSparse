@@ -11,6 +11,9 @@ Dec 30, 2023: version 7.4.0
     * AMD 3.3.0: minor change for CHOLMOD 5.1.0 tests
     * CAMD 3.3.0: minor change for CHOLMOD 5.1.0 tests
     * SuiteSparse_config 7.4.0: added wrappers for single-precision BLAS/LAPACK
+    * *_version: added methods to all package that didn't have them:
+        AMD, CAMD, COLAMD, CCOLAMD, BTF, CSparse, CXSparse, KLU, BTF, RBio,
+        SPEX, SPQR, and UMFPACK.
 
 Oct 31, 2023: version 7.3.1
 

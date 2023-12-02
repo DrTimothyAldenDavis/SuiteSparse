@@ -16,6 +16,7 @@
 #undef ASSERT
 #ifndef NCAMD
 #include "camd.h"
+#include "ccolamd.h"
 #include "camd_internal.h"
 
 //------------------------------------------------------------------------------
@@ -32,10 +33,30 @@ void camdtest (cholmod_sparse *A)
     Int i, j, n, nrow, ncol, ok, cnz, bnz, p, trial, sorted ;
 
     //--------------------------------------------------------------------------
-    // get inputs
+    // check version
     //--------------------------------------------------------------------------
 
     printf ("\nCAMD test\n") ;
+
+    printf ("CAMD version %d.%d.%d, date: %s\n",
+        CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE) ;
+    int version [3] ;
+    camd_version (version) ;
+    OK ((version [0] == CAMD_MAIN_VERSION) &&
+        (version [1] == CAMD_SUB_VERSION) &&
+        (version [2] == CAMD_SUBSUB_VERSION)) ;
+
+    printf ("CCOLAMD version %d.%d.%d, date: %s\n",
+        CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
+        CCOLAMD_DATE) ;
+    ccolamd_version (version) ;
+    OK ((version [0] == CCOLAMD_MAIN_VERSION) &&
+        (version [1] == CCOLAMD_SUB_VERSION) &&
+        (version [2] == CCOLAMD_SUBSUB_VERSION)) ;
+
+    //--------------------------------------------------------------------------
+    // get inputs
+    //--------------------------------------------------------------------------
 
     if (A == NULL)
     {

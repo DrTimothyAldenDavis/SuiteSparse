@@ -10,6 +10,7 @@
 
 //------------------------------------------------------------------------------
 
+#include "Mongoose.hpp"
 #include "Mongoose_Test.hpp"
 
 using namespace Mongoose;
@@ -25,6 +26,14 @@ using namespace Mongoose;
 
 int main(int argn, const char **argv)
 {
+
+    if ((major_version ( ) != Mongoose_VERSION_MAJOR) ||
+        (minor_version ( ) != Mongoose_VERSION_MINOR) ||
+        (patch_version ( ) != Mongoose_VERSION_PATCH))
+    {
+        return EXIT_FAILURE;
+    }
+
     SuiteSparse_start();
 
     if (argn != 2)

@@ -234,6 +234,8 @@ void symamd_l_report
     int64_t stats [COLAMD_STATS]
 ) ;
 
+void colamd_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

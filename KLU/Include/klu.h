@@ -795,6 +795,12 @@ void *klu_l_free (void *, size_t, size_t, klu_l_common *) ;
 
 void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
 
+//------------------------------------------------------------------------------
+// klu_version: return KLU version
+//------------------------------------------------------------------------------
+
+void klu_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

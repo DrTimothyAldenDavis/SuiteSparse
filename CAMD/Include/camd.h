@@ -327,6 +327,10 @@ void camd_l_control  (double Control [ ]) ;
 void camd_info       (double Info [ ]) ;
 void camd_l_info     (double Info [ ]) ;
 
+// camd_version: return CAMD version.  The version array is returned with
+// version [0..2] = {CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION}
+void camd_version (int version [3]) ;
+
 #ifdef __cplusplus
 }
 #endif

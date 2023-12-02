@@ -1893,3 +1893,15 @@ template struct spqr_numeric <Complex, int32_t>;
 
 template struct spqr_numeric <double, int64_t>;
 template struct spqr_numeric <Complex, int64_t>;
+
+// -----------------------------------------------------------------------------
+// SuiteSparseQR_version
+// -----------------------------------------------------------------------------
+
+void SuiteSparseQR_version (int version [3])
+{
+    version [0] = SPQR_MAIN_VERSION ;
+    version [1] = SPQR_SUB_VERSION ;
+    version [2] = SPQR_SUBSUB_VERSION ;
+}
+

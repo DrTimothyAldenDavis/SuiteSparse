@@ -22,6 +22,8 @@
 #define csi int64_t
 #endif
 
+void csparse_version (int version [3]) ;   // return version number
+
 /* --- primary CSparse routines and data structures ------------------------- */
 typedef struct cs_sparse    /* matrix in compressed-column or triplet form */
 {
