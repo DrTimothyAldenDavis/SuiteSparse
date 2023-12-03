@@ -95,8 +95,11 @@ if ( BUILD_SHARED_LIBS )
         OUTPUT_NAME suitesparseconfig
         SOVERSION ${SUITESPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "SuiteSparse_config.h"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON
-        EXPORT_NO_SYSTEM ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SuiteSparseConfig PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( SuiteSparseConfig
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -114,12 +117,15 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparseconfig
-        PUBLIC_HEADER "SuiteSparse_config.h"
-        EXPORT_NO_SYSTEM ON )
+        PUBLIC_HEADER "SuiteSparse_config.h" )
 
     if ( MSVC )
         set_target_properties ( SuiteSparseConfig_static PROPERTIES
             OUTPUT_NAME suitesparseconfig_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SuiteSparseConfig_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( SuiteSparseConfig_static
@@ -148,24 +154,9 @@ if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE OpenMP::OpenMP_C )
-#----
-# old:
-#       target_include_directories ( SuiteSparseConfig PUBLIC
-#           "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
-# new:
-        target_include_directories ( SuiteSparseConfig SYSTEM AFTER PUBLIC
-            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
-#----
     endif ( )
     if ( BUILD_STATIC_LIBS )
-#----
-# old:
-#       target_link_libraries ( SuiteSparseConfig_static PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
-        target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER PUBLIC
-            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
-# new
-#----
     endif ( )
 endif ( )
 

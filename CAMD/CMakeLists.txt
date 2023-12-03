@@ -85,6 +85,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/camd.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CAMD PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( CAMD
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -106,6 +110,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( CAMD_static PROPERTIES
             OUTPUT_NAME camd_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CAMD_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( CAMD_static
