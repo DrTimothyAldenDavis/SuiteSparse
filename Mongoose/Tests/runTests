@@ -275,7 +275,7 @@ def checkLocation():
             "Make sure that... \n\n"
             "  * You are in your build directory (e.g. Mongoose/build) and\n"
             "  * You have built Mongoose ('cmake ..' followed by 'make')\n")
-        sys.exit()
+        sys.exit('Test failed: cannot find Mongoose')
 
     # Check if Mongoose has been built - if not, exit
     if not (os.path.exists('./CMakeFiles/Mongoose_static_dbg.dir/Source/Mongoose_Graph.o')):
@@ -285,7 +285,7 @@ def checkLocation():
             "Make sure that... \n\n"
             "  * You are in your build directory (e.g. Mongoose/build) and\n"
             "  * You have built Mongoose ('cmake ..' followed by 'make')\n")
-        sys.exit()
+        sys.exit('Test failed: cannot find Mongoose')
 
 if __name__=="__main__":
    main()
