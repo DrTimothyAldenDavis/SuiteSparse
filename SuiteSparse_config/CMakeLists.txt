@@ -95,7 +95,8 @@ if ( BUILD_SHARED_LIBS )
         OUTPUT_NAME suitesparseconfig
         SOVERSION ${SUITESPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "SuiteSparse_config.h"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        EXPORT_NO_SYSTEM ON )
 
     target_include_directories ( SuiteSparseConfig
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -113,7 +114,8 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME suitesparseconfig
-        PUBLIC_HEADER "SuiteSparse_config.h" )
+        PUBLIC_HEADER "SuiteSparse_config.h"
+        EXPORT_NO_SYSTEM ON )
 
     if ( MSVC )
         set_target_properties ( SuiteSparseConfig_static PROPERTIES
