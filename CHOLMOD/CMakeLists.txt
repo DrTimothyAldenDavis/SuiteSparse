@@ -305,6 +305,10 @@ if ( BUILD_SHARED_LIBS )
         set_target_properties ( CHOLMOD PROPERTIES POSITION_INDEPENDENT_CODE ON )
     endif ( )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CHOLMOD PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( CHOLMOD
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -331,6 +335,10 @@ if ( BUILD_STATIC_LIBS )
     if ( SUITESPARSE_CUDA )
         set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CHOLMOD_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( CHOLMOD_static

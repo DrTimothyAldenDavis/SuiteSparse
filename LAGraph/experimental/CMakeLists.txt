@@ -33,6 +33,11 @@ if ( BUILD_SHARED_LIBS )
         C_STANDARD 11
         PUBLIC_HEADER "include/LAGraphX.h"
         RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LAGraphX PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_link_libraries ( LAGraphX PRIVATE LAGraph GraphBLAS::GraphBLAS )
 
     target_include_directories ( LAGraphX PUBLIC
@@ -59,6 +64,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( LAGraphX_static PROPERTIES
             OUTPUT_NAME lagraphx_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LAGraphX_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     if ( TARGET GraphBLAS::GraphBLAS_static )

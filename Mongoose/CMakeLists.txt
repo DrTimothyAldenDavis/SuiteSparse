@@ -200,7 +200,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if ( BUILD_STATIC_LIBS )
     # Build the Mongoose library
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
-#   set_property ( TARGET Mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
+
     set_target_properties ( Mongoose_static PROPERTIES
         OUTPUT_NAME mongoose
         PUBLIC_HEADER "Include/Mongoose.hpp" )
@@ -208,6 +208,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( Mongoose_static PROPERTIES
             OUTPUT_NAME mongoose_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( Mongoose_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( Mongoose_static
@@ -224,12 +228,17 @@ endif ( )
 if ( BUILD_SHARED_LIBS )
     # Build the Mongoose library for dynamic linking
     add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
-    set_property ( TARGET Mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
+
     set_target_properties ( Mongoose PROPERTIES
         OUTPUT_NAME mongoose
         SOVERSION ${Mongoose_VERSION_MAJOR}
         PUBLIC_HEADER "Include/Mongoose.hpp"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        POSITION_INDEPENDENT_CODE ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( Mongoose PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( Mongoose
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

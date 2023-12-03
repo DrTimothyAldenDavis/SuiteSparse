@@ -99,6 +99,10 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${SPQR_VERSION_MAJOR}
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SPQR PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( SPQR 
         PRIVATE Source Include
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -122,6 +126,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( SPQR_static PROPERTIES
             OUTPUT_NAME spqr_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SPQR_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( SPQR_static 

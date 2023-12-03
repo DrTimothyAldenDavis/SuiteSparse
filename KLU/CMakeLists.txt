@@ -127,6 +127,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/klu.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( KLU PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( KLU 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -148,6 +152,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( KLU_static PROPERTIES
             OUTPUT_NAME klu_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( KLU_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( KLU_static
@@ -174,6 +182,10 @@ if ( NOT NCHOLMOD )
             SOVERSION ${KLU_VERSION_MAJOR}
             PUBLIC_HEADER "User/klu_cholmod.h" )
 
+        if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+            set_target_properties ( KLU_CHOLMOD PROPERTIES EXPORT_NO_SYSTEM ON )
+        endif ( )
+
         target_include_directories ( KLU_CHOLMOD 
             INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -191,6 +203,10 @@ if ( NOT NCHOLMOD )
         if ( MSVC )
             set_target_properties ( KLU_CHOLMOD_static PROPERTIES
                 OUTPUT_NAME klu_cholmod_static )
+        endif ( )
+
+        if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+            set_target_properties ( KLU_CHOLMOD_static PROPERTIES EXPORT_NO_SYSTEM ON )
         endif ( )
 
         target_include_directories ( KLU_CHOLMOD_static 

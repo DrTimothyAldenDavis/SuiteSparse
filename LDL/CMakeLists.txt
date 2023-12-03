@@ -95,6 +95,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/ldl.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LDL PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( LDL 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -116,6 +120,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( LDL_static PROPERTIES
             OUTPUT_NAME ldl_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LDL_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( LDL_static 

@@ -29,7 +29,7 @@ endif ( )
 
 if ( BUILD_SHARED_LIBS )
     add_library ( LAGraph SHARED ${LAGRAPH_LIB_SOURCES} )
-    SET_TARGET_PROPERTIES ( LAGraph PROPERTIES
+    set_target_properties ( LAGraph PROPERTIES
         VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
         SOVERSION ${LAGraph_VERSION_MAJOR}
         OUTPUT_NAME lagraph
@@ -37,6 +37,11 @@ if ( BUILD_SHARED_LIBS )
         C_STANDARD 11
         PUBLIC_HEADER "include/LAGraph.h"
         RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/dlls )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LAGraph PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
 
     target_include_directories ( LAGraph PUBLIC
@@ -64,6 +69,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( LAGraph_static PROPERTIES
             OUTPUT_NAME lagraph_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LAGraph_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     if ( TARGET GraphBLAS::GraphBLAS_static )

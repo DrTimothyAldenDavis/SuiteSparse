@@ -55,6 +55,17 @@ endif ( )
 
 include ( ${CMAKE_CURRENT_LIST_DIR}/SuiteSparse_configTargets.cmake )
 
+if ( NOT @NOPENMP@ )
+    if ( TARGET SuiteSparse::SuiteSparseConfig )
+        target_include_directories ( SuiteSparse::SuiteSparseConfig SYSTEM AFTER INTERFACE
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+    endif ( )
+    if ( TARGET SuiteSparse::SuiteSparseConfig_static )
+        target_include_directories ( SuiteSparse::SuiteSparseConfig_static SYSTEM AFTER INTERFACE
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+    endif ( )
+endif ( )
+
 # The following is only for backward compatibility with FindSuiteSparse_config.
 
 set ( _target_shared SuiteSparse::SuiteSparseConfig )
