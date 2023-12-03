@@ -22,7 +22,11 @@ import ssl
 import tarfile  # For un-tar/unzipping matrix files
 import csv      # For reading the ssget index
 import shutil   # For using 'which'
-from distutils.spawn import find_executable # For using find_executable
+
+# distutils is deprecated, and is gone as of python 3.12.
+import platform
+print(platform.sys.version)
+# from distutils.spawn import find_executable # For using find_executable
 
 def main():
     # Check to make sure we're in the build directory - if not, exit
@@ -95,7 +99,8 @@ def runTests(args):
                                 sys.exit(status)
                         if args.tests == 'valgrind' or args.tests == 'all':
                             print("Calling Valgrind Test...")
-                            valgrind = find_executable('valgrind')
+                            # valgrind = find_executable('valgrind')
+                            valgrind = shutil.which('valgrind')
                             if valgrind:
                                 status = call([valgrind + " --leak-check=full ./tests/mongoose_test_memory", matrix_path])
                                 if status:
@@ -170,7 +175,8 @@ def runCoverageUtility(args):
     if args.gcov:
         gcov = args.gcov
     else:
-        gcov = find_executable('gcov')
+        # gcov = find_executable('gcov')
+        gcov = shutil.which('gcov')
 
     if gcov:
         # Determine if we are using GCC gcov or LLVM gcov
@@ -180,7 +186,8 @@ def runCoverageUtility(args):
         else:
             call(gcov + " -o=./CMakeFiles/mongoose_lib_dbg.dir/Source ../Source/*.cpp", shell=True)
     
-    gcovr = find_executable('gcovr')
+    # gcovr = find_executable('gcovr')
+    gcovr = shutil.which('gcovr')
     if gcovr:
         if args.html_coverage:
             print("Running gcovr with HTML generation")
