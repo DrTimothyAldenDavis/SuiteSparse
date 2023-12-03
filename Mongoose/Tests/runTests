@@ -182,9 +182,9 @@ def runCoverageUtility(args):
         # Determine if we are using GCC gcov or LLVM gcov
         gcov_version = check_output([gcov, "--version"])
         if gcov_version.find('LLVM') == -1:
-            call([gcov + " -o ./CMakeFiles/mongoose_lib_dbg.dir/Source ../Source/*.cpp"], shell=True)
+            call([gcov + " -o ./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp"], shell=True)
         else:
-            call(gcov + " -o=./CMakeFiles/mongoose_lib_dbg.dir/Source ../Source/*.cpp", shell=True)
+            call(gcov + " -o=./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp", shell=True)
     
     # gcovr = find_executable('gcovr')
     gcovr = shutil.which('gcovr')
@@ -196,11 +196,11 @@ def runCoverageUtility(args):
                   "--html-details", 
                   "--output=coverage.html",
                   "--gcov-executable=" + gcov, 
-                  "--object-directory=CMakeFiles/mongoose_lib_dbg.dir/Source",
+                  "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source",
                   "--root=../Source/"])
         else:
             print("Running gcovr without HTML generation")
-            call([gcovr, "--gcov-executable=" + gcov, "--object-directory=CMakeFiles/mongoose_lib_dbg.dir/Source", "--root=../Source/"])
+            call([gcovr, "--gcov-executable=" + gcov, "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source", "--root=../Source/"])
     else:
         print("\033[91mERROR!\033[0m Cannot generate HTML coverage report, gcovr not found!")
 
@@ -264,7 +264,10 @@ def parseArguments():
 
 def checkLocation():
     # Check if we are in the right location - if not, exit
-    if not (os.path.isdir('./CMakeFiles/mongoose_lib_dbg.dir/Source')
+#old:
+#   if not (os.path.isdir('./CMakeFiles/mongoose_lib_dbg.dir/Source')
+#new: replacing with Mongoose_static_dbg, here and everywhere else:
+    if not (os.path.isdir('./CMakeFiles/Mongoose_static_dbg.dir/Source')
             and os.path.isdir('../Source')):
         print(
             "\n\033[91mERROR!\033[0m Looks like you might not be running this from "
@@ -275,7 +278,7 @@ def checkLocation():
         sys.exit()
 
     # Check if Mongoose has been built - if not, exit
-    if not (os.path.exists('./CMakeFiles/mongoose_lib_dbg.dir/Source/Mongoose_Graph.o')):
+    if not (os.path.exists('./CMakeFiles/Mongoose_static_dbg.dir/Source/Mongoose_Graph.o')):
         print(
             "\n\033[91mERROR!\033[0m Looks like you might not have built Mongoose "
             "yet.\n\n"
