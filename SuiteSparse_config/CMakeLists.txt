@@ -146,11 +146,24 @@ if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE OpenMP::OpenMP_C )
-        target_include_directories ( SuiteSparseConfig PUBLIC
+#----
+# old:
+#       target_include_directories ( SuiteSparseConfig PUBLIC
+#           "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+# new:
+        target_include_directories ( SuiteSparseConfig SYSTEM AFTER PUBLIC
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+#----
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SuiteSparseConfig_static PUBLIC OpenMP::OpenMP_C )
+#----
+# old:
+#       target_link_libraries ( SuiteSparseConfig_static PUBLIC OpenMP::OpenMP_C )
+        target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
+        target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER PUBLIC
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+# new
+#----
     endif ( )
 endif ( )
 
