@@ -240,3 +240,10 @@ debug:
 	( cd GraphBLAS && $(MAKE) cdebug )
 	( cd LAGraph && $(MAKE) debug )
 
+tests:
+	( cd Mongoose && $(MAKE) test )
+	( cd CHOLMOD && $(MAKE) test )
+	( cd LAGraph && $(MAKE) test )
+
+test: tests
+

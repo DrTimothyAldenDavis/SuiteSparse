@@ -4,7 +4,7 @@
 # Mongoose/Tests/runTests
 #-------------------------------------------------------------------------------
 
-# Mongoose Graph Partitioning Library, Copyright (C) 2017-2018,
+# Mongoose Graph Partitioning Library, Copyright (C) 2017-2023,
 # Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
 # Mongoose is licensed under Version 3 of the GNU General Public License.
 # Mongoose is also available under other licenses; contact authors for details.
@@ -92,7 +92,7 @@ def runTests(args):
                             print("Calling ALL Tests...")
                         if args.tests == 'memory' or args.tests == 'all':
                             print("Calling Memory Test...")
-                            status = call(["./tests/mongoose_test_memory", matrix_path])
+                            status = call(["./tests/mongoose_test_memory", matrix_path])    # FIXME
                             if status:
                                 print("Error! Memory Test Failure")
                                 cleanup(args, row, matrix_exists, gzip_path)
@@ -102,7 +102,7 @@ def runTests(args):
                             # valgrind = find_executable('valgrind')
                             valgrind = shutil.which('valgrind')
                             if valgrind:
-                                status = call([valgrind + " --leak-check=full ./tests/mongoose_test_memory", matrix_path])
+                                status = call([valgrind + " --leak-check=full ./tests/mongoose_test_memory", matrix_path])  # FIXME
                                 if status:
                                     print("Error! Valgrind Test Failure")
                                     cleanup(args, row, matrix_exists, gzip_path)
@@ -111,7 +111,7 @@ def runTests(args):
                                 print("\033[91mERROR!\033[0m Unable to find Valgrind. Skipping Valgrind Test...")
                         if args.tests == 'io' or args.tests == 'all':
                             print("Calling I/O Test...")
-                            status = call(["./tests/mongoose_test_io", matrix_path, "1"])
+                            status = call(["./tests/mongoose_test_io", matrix_path, "1"])   # FIXME
                             if status:
                                 print("Error! I/O Test Failure")
                                 cleanup(args, row, matrix_exists, gzip_path)
@@ -119,14 +119,14 @@ def runTests(args):
                         if args.tests == 'edgesep' or args.tests == 'all':
                             print("Calling Edge Separator Test...")
                             target_split = args.target_split
-                            status = call(["./tests/mongoose_test_edgesep", matrix_path, str(target_split)])
+                            status = call(["./tests/mongoose_test_edgesep", matrix_path, str(target_split)])    # FIXME
                             if status:
                                 print("Error! Edge Separator Test Failure")
                                 cleanup(args, row, matrix_exists, gzip_path)
                                 sys.exit(status)
                         if args.tests == 'performance' or args.tests == 'all':
                             print("Calling Performance Test...")
-                            status = call(["./tests/mongoose_test_performance", matrix_path, row[0] + '_' + row[1] + '_performance.txt'])
+                            status = call(["./tests/mongoose_test_performance", matrix_path, row[0] + '_' + row[1] + '_performance.txt'])   # FIXME
                             if status:
                                 print("Error! Performance Test Failure")
                                 cleanup(args, row, matrix_exists, gzip_path)
@@ -182,9 +182,9 @@ def runCoverageUtility(args):
         # Determine if we are using GCC gcov or LLVM gcov
         gcov_version = check_output([gcov, "--version"])
         if gcov_version.find('LLVM') == -1:
-            call([gcov + " -o ./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp"], shell=True)
+            call([gcov + " -o ./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp"], shell=True)    # FIXME
         else:
-            call(gcov + " -o=./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp", shell=True)
+            call(gcov + " -o=./CMakeFiles/Mongoose_static_dbg.dir/Source ../Source/*.cpp", shell=True)  # FIXME
     
     # gcovr = find_executable('gcovr')
     gcovr = shutil.which('gcovr')
@@ -196,11 +196,11 @@ def runCoverageUtility(args):
                   "--html-details", 
                   "--output=coverage.html",
                   "--gcov-executable=" + gcov, 
-                  "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source",
-                  "--root=../Source/"])
+                  "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source",   # FIXME
+                  "--root=../Source/"]) # FIXME
         else:
             print("Running gcovr without HTML generation")
-            call([gcovr, "--gcov-executable=" + gcov, "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source", "--root=../Source/"])
+            call([gcovr, "--gcov-executable=" + gcov, "--object-directory=CMakeFiles/Mongoose_static_dbg.dir/Source", "--root=../Source/"]) # FIXME
     else:
         print("\033[91mERROR!\033[0m Cannot generate HTML coverage report, gcovr not found!")
 
@@ -247,7 +247,7 @@ def parseArguments():
     parser.add_argument('-d', '--matrix-directory', 
                         action='store', 
                         metavar='matrix_dir',
-                        default='../Matrix/',
+                        default='../Matrix/',   # FIXME
                         help='download directory for Matrix Market data files')
     parser.add_argument('-c', '--coverage', 
                         action='store_true',
@@ -267,8 +267,8 @@ def checkLocation():
 #old:
 #   if not (os.path.isdir('./CMakeFiles/mongoose_lib_dbg.dir/Source')
 #new: replacing with Mongoose_static_dbg, here and everywhere else:
-    if not (os.path.isdir('./CMakeFiles/Mongoose_static_dbg.dir/Source')
-            and os.path.isdir('../Source')):
+    if not (os.path.isdir('./CMakeFiles/Mongoose_static_dbg.dir/Source')    # FIXME
+            and os.path.isdir('../Source')):    # FIXME
         print(
             "\n\033[91mERROR!\033[0m Looks like you might not be running this from "
             "your build directory.\n\n"
@@ -278,7 +278,7 @@ def checkLocation():
         sys.exit('Test failed: cannot find Mongoose')
 
     # Check if Mongoose has been built - if not, exit
-    if not (os.path.exists('./CMakeFiles/Mongoose_static_dbg.dir/Source/Mongoose_Graph.o')):
+    if not (os.path.exists('./CMakeFiles/Mongoose_static_dbg.dir/Source/Mongoose_Graph.o')):    # FIXME
         print(
             "\n\033[91mERROR!\033[0m Looks like you might not have built Mongoose "
             "yet.\n\n"
