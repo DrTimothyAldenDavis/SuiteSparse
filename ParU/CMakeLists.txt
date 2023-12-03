@@ -56,11 +56,12 @@ if ( NOPENMP )
     set ( OpenMP_CXX_FOUND OFF )
     set ( OpenMP_C_FOUND OFF )
 else ( )
+    # OpenMP 4.5 or later is required
     find_package ( OpenMP )
     if ( OpenMP_CXX_FOUND AND OpenMP_CXX_VERSION VERSION_LESS 4.5 )
         set ( NOPENMP ON )
     endif ( )
-    if ( DEMO AND OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
+    if ( OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
         set ( NOPENMP ON )
     endif ( )
     if ( NOPENMP )
@@ -165,14 +166,14 @@ endif ( )
 # additional definitions
 #-------------------------------------------------------------------------------
 
-if ( WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
-    # Some parallelization levels don't work correctly with GCC on Windows
-    # (because of emuTLS?). Omit them.
+if ( (APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
+    # Some parallelization levels don't work correctly with GCC on Windows or
+    # Mac (because of emuTLS?). Omit them.
     if ( BUILD_SHARED_LIBS )
-        target_compile_definitions (ParU PRIVATE PARU_GCC_WINDOWS )
+        target_compile_definitions (ParU PRIVATE PARU_1TASK )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_compile_definitions (ParU_static PRIVATE PARU_GCC_WINDOWS )
+        target_compile_definitions (ParU_static PRIVATE PARU_1TASK )
     endif ( )
 endif ( )
 
