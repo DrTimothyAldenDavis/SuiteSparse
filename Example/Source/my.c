@@ -7,7 +7,7 @@
 
 //------------------------------------------------------------------------------
 
-// Example library that relies on SuiteSparse packages
+// Example C library that relies on SuiteSparse packages
 
 // ANSI C include files:
 #include <stdio.h>
@@ -128,7 +128,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     amd_version (version) ;
-    OK (my_check_version ("AMD", 
+    OK (my_check_version ("AMD",
         AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE,
         version)) ;
 
@@ -141,7 +141,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     btf_version (version) ;
-    OK (my_check_version ("BTF", 
+    OK (my_check_version ("BTF",
         BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE,
         version)) ;
 
@@ -160,7 +160,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     camd_version (version) ;
-    OK (my_check_version ("CAMD", 
+    OK (my_check_version ("CAMD",
         CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE,
         version)) ;
 
@@ -174,7 +174,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     ccolamd_version (version) ;
-    OK (my_check_version ("CCOLAMD", 
+    OK (my_check_version ("CCOLAMD",
         CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
         CCOLAMD_DATE, version)) ;
 
@@ -191,7 +191,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     colamd_version (version) ;
-    OK (my_check_version ("COLAMD", 
+    OK (my_check_version ("COLAMD",
         COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
         COLAMD_DATE, version)) ;
 
@@ -208,7 +208,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     v = cholmod_l_version (version) ;
-    OK (my_check_version ("CHOLMOD", 
+    OK (my_check_version ("CHOLMOD",
         CHOLMOD_MAIN_VERSION, CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION,
         CHOLMOD_DATE, version)) ;
 
@@ -247,7 +247,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     klu_version (version) ;
-    OK (my_check_version ("KLU", 
+    OK (my_check_version ("KLU",
         KLU_MAIN_VERSION, KLU_SUB_VERSION, KLU_SUBSUB_VERSION,
         KLU_DATE, version)) ;
 
@@ -281,7 +281,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     ldl_version (version) ;
-    OK (my_check_version ("LDL", 
+    OK (my_check_version ("LDL",
         LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION,
         LDL_DATE, version)) ;
 
@@ -303,7 +303,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     RBio_version (version) ;
-    OK (my_check_version ("RBio", 
+    OK (my_check_version ("RBio",
         RBIO_MAIN_VERSION, RBIO_SUB_VERSION, RBIO_SUBSUB_VERSION,
         RBIO_DATE, version)) ;
 
@@ -339,7 +339,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
 
     OK (SPEX_initialize ( ) == SPEX_OK) ;
     SPEX_version (version) ;
-    OK (my_check_version ("SPEX", 
+    OK (my_check_version ("SPEX",
         SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
         version)) ;
     OK (SPEX_finalize ( ) == SPEX_OK) ;
@@ -349,7 +349,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     SuiteSparseQR_C_version (version) ;
-    OK (my_check_version ("SuiteSparseQR", 
+    OK (my_check_version ("SuiteSparseQR",
         SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE,
         version)) ;
 
@@ -396,7 +396,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     umfpack_version (version) ;
-    OK (my_check_version ("UMFPACK", 
+    OK (my_check_version ("UMFPACK",
         UMFPACK_MAIN_VERSION, UMFPACK_SUB_VERSION, UMFPACK_SUBSUB_VERSION,
         UMFPACK_DATE, version)) ;
 
