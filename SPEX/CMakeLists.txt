@@ -101,7 +101,8 @@ if ( BUILD_SHARED_LIBS )
         OUTPUT_NAME spex
         SOVERSION ${SPEX_VERSION_MAJOR}
         PUBLIC_HEADER "Include/SPEX.h"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        NO_SYSTEM_FROM_IMPORTED ON )
 
     target_include_directories ( SPEX 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -119,7 +120,8 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         C_STANDARD_REQUIRED ON
         OUTPUT_NAME spex
-        PUBLIC_HEADER "Include/SPEX.h" )
+        PUBLIC_HEADER "Include/SPEX.h"
+        NO_SYSTEM_FROM_IMPORTED ON )
 
     if ( MSVC )
         set_target_properties ( SPEX_static PROPERTIES
