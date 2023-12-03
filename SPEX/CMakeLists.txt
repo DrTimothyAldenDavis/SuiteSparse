@@ -176,24 +176,24 @@ endif ( )
 # MPFR:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
-    target_include_directories ( SPEX PUBLIC ${MPFR_INCLUDE_DIR} )
+    target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${MPFR_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
-    target_include_directories ( SPEX_static PUBLIC ${MPFR_INCLUDE_DIR} )
+    target_include_directories ( SPEX_static SYSTEM AFTER PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
-    target_include_directories ( SPEX PUBLIC ${GMP_INCLUDE_DIR} )
+    target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${GMP_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
-    target_include_directories ( SPEX_static PUBLIC ${GMP_INCLUDE_DIR} )
+    target_include_directories ( SPEX_static SYSTEM AFTER PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 
 # libm:
