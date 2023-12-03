@@ -166,6 +166,9 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     endif ( )
 endif ( )
 
+set ( SUITESPARSE_INCLUDEDIR_POSTFIX "suitesparse" CACHE STRING
+    "Postfix for installation target of header from SuiteSparse (default: \"suitesparse\")" )
+
 if ( LOCAL_INSTALL )
     if ( INSIDE_SUITESPARSE )
         # ../lib and ../include exist: the package is inside SuiteSparse.
@@ -179,11 +182,11 @@ if ( LOCAL_INSTALL )
         endif ( )
     endif ( )
     set ( SUITESPARSE_LIBDIR ${SUITESPARSE_LOCAL_PREFIX}/lib )
-    set ( SUITESPARSE_INCLUDEDIR ${SUITESPARSE_LOCAL_PREFIX}/include )
+    set ( SUITESPARSE_INCLUDEDIR ${SUITESPARSE_LOCAL_PREFIX}/include/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${SUITESPARSE_LOCAL_PREFIX}/bin )
 else ( )
     set ( SUITESPARSE_LIBDIR ${CMAKE_INSTALL_LIBDIR} )
-    set ( SUITESPARSE_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR} )
+    set ( SUITESPARSE_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${CMAKE_INSTALL_BINDIR} )
 endif ( )
 
