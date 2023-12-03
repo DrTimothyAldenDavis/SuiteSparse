@@ -291,11 +291,6 @@ file ( GLOB CHOLMOD_SOURCES "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
 if ( BUILD_SHARED_LIBS )
     add_library ( CHOLMOD SHARED ${CHOLMOD_SOURCES} )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    1: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 1: ${dirs}" )
-
     set_target_properties ( CHOLMOD PROPERTIES
         VERSION ${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}
         C_STANDARD 11
@@ -314,11 +309,6 @@ message ( STATUS "target 1: ${dirs}" )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    2: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 2: ${dirs}" )
 
 #-------------------------------------------------------------------------------
 # static cholmod library properties
@@ -349,11 +339,6 @@ if ( BUILD_STATIC_LIBS )
 
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    3: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 3: ${dirs}" )
-
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
@@ -372,11 +357,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    4: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 4: ${dirs}" )
-
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::AMD )
@@ -389,11 +369,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    5: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 5: ${dirs}" )
-
 # COLAMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::COLAMD )
@@ -405,11 +380,6 @@ if ( BUILD_STATIC_LIBS )
         target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::COLAMD )
     endif ( )
 endif ( )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    6: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 6: ${dirs}" )
 
 # CAMD and CCOLAMD:
 if ( NOT NCAMD )
@@ -438,11 +408,6 @@ if ( NOT NCAMD )
     endif ( )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    7: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 7: ${dirs}" )
-
 # OpenMP:
 if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
@@ -462,11 +427,6 @@ else ( )
     include ( SuiteSparse__thread )
 endif ( )
 
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    8: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 8: ${dirs}" )
-
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
@@ -477,12 +437,6 @@ if ( NOT WIN32 )
         target_link_libraries ( CHOLMOD_static PRIVATE m )
     endif ( )
 endif ( )
-        list ( APPEND CHOLMOD_STATIC_LIBS "m" )
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    9: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 9: ${dirs}" )
 
 # BLAS and LAPACK: for the Supernodal Module
 if ( NOT NSUPERNODAL )
@@ -828,11 +782,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
-
-get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
-message ( STATUS "inc    10: ${dirs}" )
-get_target_property(dirs CHOLMOD INCLUDE_DIRECTORIES)
-message ( STATUS "target 10: ${dirs}" )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     include ( SuiteSparseReport )
