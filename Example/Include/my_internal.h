@@ -9,6 +9,12 @@
 
 // Example include file for a user library.
 
+#ifndef MY_INTERNAL_H
+#define MY_INTERNAL_H
+
+#undef  VER3CODE
+#define VER3CODE(major,minor,sub) (((major)*1000ULL + (minor))*1000ULL + (sub))
+
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
 #if !defined (SUITESPARSE_VERSION) || \
@@ -54,15 +60,15 @@
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION(8,3,0)
+        GxB_IMPLEMENTATION < GxB_VERSION (8,3,0)
     #error "This library requires SuiteSparse:GraphBLAS 8.3.0 or later"
     #endif
 #endif
 
 #if ! defined (NO_LAGRAPH)
     #include "LAGraph.h"
-    #if GxB_VERSION (LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,   \
-        LAGRAPH_VERSION_UPDATE) < GxB_VERSION(1,1,0)
+    #if VER3CODE (LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,   \
+        LAGRAPH_VERSION_UPDATE) < VER3CODE(1,1,0)
     #error "This library requires LAGraph 1.1.0 or later"
     #endif
 #endif
@@ -83,8 +89,8 @@
 #endif
 
 #include "SPEX.h"
-#if GxB_VERSION (SPEX_VERSION_MAJOR,SPEX_VERSION_MINOR,   \
-        SPEX_VERSION_SUB) < GxB_VERSION(2,3,0)
+#if VER3CODE (SPEX_VERSION_MAJOR,SPEX_VERSION_MINOR, SPEX_VERSION_SUB) \
+    < VER3CODE(2,3,0)
 #error "This library requires SPEX 2.3.0 or later"
 #endif
 
@@ -103,8 +109,8 @@
     #include "SuiteSparseQR.hpp"
 
     #include "Mongoose.hpp"
-    #if GxB_VERSION (Mongoose_VERSION_MAJOR,Mongoose_VERSION_MINOR,   \
-        Mongoose_VERSION_PATCH) < GxB_VERSION(3,3,0)
+    #if VER3CODE (Mongoose_VERSION_MAJOR,Mongoose_VERSION_MINOR, \
+        Mongoose_VERSION_PATCH) < VER3CODE(3,3,0)
     #error "This library requires Mongoose 3.3.0 or later"
     #endif
 
@@ -115,3 +121,4 @@
 
 #include "my.h"
 
+#endif
