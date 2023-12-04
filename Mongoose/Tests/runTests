@@ -91,6 +91,7 @@ def runTests(args):
                             # Download matrix if it doesn't exist
                             print("Downloading " + matrix_name)
                             url = "https://sparse.tamu.edu/MM/" + matrix_name
+                            print("url: " + url)
                             with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
                                 shutil.copyfileobj(response, out_file)
                             tar = tarfile.open(gzip_path, mode='r:gz')

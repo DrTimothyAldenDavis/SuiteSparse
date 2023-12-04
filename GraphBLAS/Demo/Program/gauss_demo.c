@@ -194,6 +194,7 @@ void printgauss (GrB_Matrix A, char *name)
 int main (void)
 {
     // start GraphBLAS
+    fprintf (stderr, "starting gauss_demo\n") ;
     GrB_Info info ;
     TRY (GrB_init (GrB_NONBLOCKING)) ;
     TRY (GxB_Global_Option_set (GxB_BURBLE, true)) ;

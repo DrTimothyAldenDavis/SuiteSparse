@@ -68,7 +68,7 @@ uninstall:
 
 # run the extensive tests
 test:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; $(MAKE) test )
+	( cd build ; cmake $(CMAKE_OPTIONS) .. ; ctest . )
 
 clean: distclean
 

@@ -102,25 +102,25 @@ int LG_check_sssp
     {
         etypecode = 0 ;
         etypesize = sizeof (int32_t) ;
-        etypeinf  = INT32_MAX ;
+        etypeinf  = (double) INT32_MAX ;
     }
     else if (etype == GrB_INT64)
     {
         etypecode = 1 ;
         etypesize = sizeof (int64_t) ;
-        etypeinf  = INT64_MAX ;
+        etypeinf  = (double) INT64_MAX ;
     }
     else if (etype == GrB_UINT32)
     {
         etypecode = 2 ;
         etypesize = sizeof (uint32_t) ;
-        etypeinf  = UINT32_MAX ;
+        etypeinf  = (double) UINT32_MAX ;
     }
     else if (etype == GrB_UINT64)
     {
         etypecode = 3 ;
         etypesize = sizeof (uint64_t) ;
-        etypeinf  = UINT64_MAX ;
+        etypeinf  = (double) UINT64_MAX ;
     }
     else if (etype == GrB_FP32)
     {

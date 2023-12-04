@@ -966,6 +966,8 @@ GrB_Info GB_jitifyer_set_C_compiler_worker (const char *new_C_compiler)
     // allocate the new GB_jit_C_compiler
     GB_COPY_STUFF (GB_jit_C_compiler, new_C_compiler) ;
     // allocate workspace
+    // FIXME: remove this
+    fprintf (stderr, "set GB_jit_C_compiler to: %s\n", GB_jit_C_compiler) ;
     return (GB_jitifyer_alloc_space ( )) ;
 }
 
@@ -2184,7 +2186,11 @@ void GB_jitifyer_table_free (bool freeall)
 
 static void GB_jitifyer_command (char *command)
 { 
+    // FIXME: remove this printf
+    // printf ("system (\"%s\")\n", command) ;
+    fprintf (stderr, "system: %s\n", command) ;
     int result = system (command) ;
+    fprintf (stderr, "result: %d\n", result) ;
 }
 
 //------------------------------------------------------------------------------
