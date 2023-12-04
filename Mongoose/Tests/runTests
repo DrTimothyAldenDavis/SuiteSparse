@@ -89,11 +89,18 @@ def runTests(args):
                             print(matrix_files)
                         else:
                             # Download matrix if it doesn't exist
-                            print("Downloading " + matrix_name)
-                            url = "https://sparse.tamu.edu/MM/" + matrix_name
-                            print("url: " + url)
-                            with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
-                                shutil.copyfileobj(response, out_file)
+                            try:
+                                print("Downloading " + matrix_name)
+                                url = "https://sparse.tamu.edu/MM/" + matrix_name
+                                print("url: " + url)
+                                with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
+                                    shutil.copyfileobj(response, out_file)
+                            except:
+                                print("Downloading " + matrix_name + "via HTTPS failed. Falling back to HTTP...")
+                                url = "http://sparse.tamu.edu/MM/" + matrix_name
+                                print("url: " + url)
+                                with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
+                                    shutil.copyfileobj(response, out_file)
                             tar = tarfile.open(gzip_path, mode='r:gz')
                             tar.extractall(path=matrix_dir) # Extract the matrix from the tar.gz file
                             tar.close()
@@ -335,15 +342,25 @@ def checkLocation_source_dir():
 #-------------------------------------------------------------------------------
 
 def checkLocation_tests_dir():
+    tests_dir = ""
     tests_dir1 = "./tests/"
     tests_dir2 = "../Mongoose/tests/"
-    if (os.path.isdir(tests_dir1)):
-        # built in SuiteSparse/Mongoose/build (stand-alone)
-        tests_dir = tests_dir1
-    elif (os.path.isdir(tests_dir2)):
-        # built in SuiteSparse/build (via the root SuiteSparse/CMakeLists.txt)
-        tests_dir = tests_dir2
-    else:
+    # List of multi-config configurations (e.g., for MSVC)
+    # FIXME: Add more multi-config configurations to list?
+    # FIXME: Instead of blindly looking for existing directories, check which
+    #        configuration was selected in ctest flag. E.g., `ctest -C Release`
+    config_dirs = ["Release/", "Debug/", ""]
+    for config_dir in config_dirs:
+        print("checking for: " + tests_dir1 + config_dir)
+        if (os.path.isdir(tests_dir1 + config_dir)):
+            # built in SuiteSparse/Mongoose/build (stand-alone)
+            tests_dir = tests_dir1 + config_dir
+            break
+        elif (os.path.isdir(tests_dir2 + config_dir)):
+            # built in SuiteSparse/build (via the root SuiteSparse/CMakeLists.txt)
+            tests_dir = tests_dir2 + config_dir
+            break
+    if not tests_dir:
         print(
             "\n\033[91mERROR!\033[0m Looks like you might not be running this from "
             "your build directory.\n\n"
