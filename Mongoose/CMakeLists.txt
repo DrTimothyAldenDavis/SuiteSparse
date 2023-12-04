@@ -298,14 +298,7 @@ endif ( )
 enable_testing ( )
 set ( TESTING_OUTPUT_PATH ${PROJECT_BINARY_DIR}/tests )
 
-if ( Python_Interpreter_FOUND AND (NOT MSVC) )
-    # MSVC has python, but it cannot download matrices from
-    # https://sparse.tamu.edu, probably because of a strict https policy.  The
-    # matrices are linked to from an https but provided by an AWS http backend.
-    # It complains about the ssl certificate.  So disable these tests when
-    # using MSVC.  Linux, Mac, and MINGW on Windows has no trouble with
-    # downloading matrices from sparse.tamu.edu.
-
+if ( Python_Interpreter_FOUND )
     # I/O Tests
     add_executable ( mongoose_test_io
         Tests/Mongoose_Test_IO.cpp
@@ -495,7 +488,7 @@ set_target_properties ( Mongoose_static_dbg PROPERTIES
     LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 
 # Add debug compile/linker flags
-if ( Python_Interpreter_FOUND AND (NOT MSVC) )
+if ( Python_Interpreter_FOUND )
     set_target_properties ( mongoose_test_io mongoose_test_memory
         mongoose_test_edgesep PROPERTIES
         COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
