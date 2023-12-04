@@ -59,6 +59,7 @@ static void check_version (char *package, int ver [3],
     int major, int minor, int patch)
 {
     printf ("%s version %d.%d.%d\n", package, ver [0], ver [1], ver [2]) ;
+    #ifndef TEST_COVERAGE
     if (ver [0] != major || ver [1] != minor || ver [2] != patch)
     {
         printf ("header version differs (%d,%d,%d) from library\n",
@@ -66,6 +67,7 @@ static void check_version (char *package, int ver [3],
         my_handler (CHOLMOD_INVALID, __FILE__, __LINE__,
             "version mismatch") ;
     }
+    #endif
 }
 
 int main (int argc, char **argv)

@@ -191,6 +191,7 @@ AMDSRC = ../../AMD/Source/amd_1.c \
         ../../AMD/Source/amd_post_tree.c \
         ../../AMD/Source/amd_preprocess.c \
         ../../AMD/Source/amd_valid.c \
+        ../../AMD/Source/amd_version.c \
         ../../AMD/Include/amd.h \
         ../../AMD/Include/amd_internal.h
 
@@ -205,7 +206,8 @@ AMDOBJ = \
         zz_amd_postorder.o \
         zz_amd_post_tree.o \
         zz_amd_preprocess.o \
-        zz_amd_valid.o
+        zz_amd_valid.o \
+        zz_amd_version.o \
         # add this to AMDOBJ if debugging is enabled
         # zz_amd_dump.o \
 
@@ -220,15 +222,14 @@ LAMDOBJ = \
         zl_amd_postorder.o \
         zl_amd_post_tree.o \
         zl_amd_preprocess.o \
-        zl_amd_valid.o
+        zl_amd_valid.o \
+        zz_amd_version.o \
         # add this to LAMDOBJ if debugging is enabled
         # zl_amd_dump.o \
 
-COLAMDSRC = ../../COLAMD/Source/colamd.c
+COLAMDOBJ = zz_colamd.o zz_colamd_version.o
 
-COLAMDOBJ = zz_colamd.o
-
-LCOLAMDOBJ = zl_colamd.o
+LCOLAMDOBJ = zl_colamd.o zz_colamd_version.o
 
 #-------------------------------------------------------------------------------
 # When using the Partition Module:
@@ -237,9 +238,9 @@ CCOLAMDSRC = \
         ../../CCOLAMD/Source/ccolamd.c \
         ../../CCOLAMD/Include/ccolamd.h
 
-CCOLAMDOBJ = zz_ccolamd.o
+CCOLAMDOBJ = zz_ccolamd.o zz_ccolamd_version.o
 
-LCCOLAMDOBJ = zl_ccolamd.o
+LCCOLAMDOBJ = zl_ccolamd.o zz_ccolamd_version.o
 
 $(CCOLAMDOBJ): $(CCOLAMDSRC)
 
@@ -284,7 +285,8 @@ CAMDOBJ = \
         zz_camd_order.o \
         zz_camd_postorder.o \
         zz_camd_preprocess.o \
-        zz_camd_valid.o
+        zz_camd_valid.o \
+        zz_camd_version.o
         # add this to CAMDOBJ if debugging is enabled
         # zz_camd_dump.o \
 
@@ -298,7 +300,8 @@ LCAMDOBJ = \
         zl_camd_order.o \
         zl_camd_postorder.o \
         zl_camd_preprocess.o \
-        zl_camd_valid.o
+        zl_camd_valid.o \
+        zz_camd_version.o
         # add this to LCAMDOBJ if debugging is enabled
         #   zl_camd_dump.o \
 
@@ -985,6 +988,10 @@ zz_amd_valid.o: ../../AMD/Source/amd_valid.c
 	- ln -s $< zz_amd_valid.c
 	$(C) -c $(I) zz_amd_valid.c
 
+zz_amd_version.o: ../../AMD/Source/amd_version.c
+	- ln -s $< zz_amd_version.c
+	$(C) -c $(I) zz_amd_version.c
+
 #-------------------------------------------------------------------------------
 
 zl_amd_1.o: ../../AMD/Source/amd_l1.c
@@ -1083,6 +1090,10 @@ zz_camd_valid.o: ../../CAMD/Source/camd_valid.c
 	- ln -s $< zz_camd_valid.c
 	$(C) -c $(I) zz_camd_valid.c
 
+zz_camd_version.o: ../../CAMD/Source/camd_version.c
+	- ln -s $< zz_camd_version.c
+	$(C) -c $(I) zz_camd_version.c
+
 #-------------------------------------------------------------------------------
 
 zl_camd_1.o: ../../CAMD/Source/camd_l1.c
@@ -1139,6 +1150,10 @@ zl_colamd.o: ../../COLAMD/Source/colamd_l.c
 	- ln -s $< zl_colamd.c
 	$(C) -c $(I) zl_colamd.c
 
+zz_colamd_version.o: ../../COLAMD/Source/colamd_version.c
+	- ln -s $< zz_colamd_version.c
+	$(C) -c $(I) zz_colamd_version.c
+
 #-------------------------------------------------------------------------------
 
 zz_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
@@ -1148,6 +1163,10 @@ zz_ccolamd.o: ../../CCOLAMD/Source/ccolamd.c
 zl_ccolamd.o: ../../CCOLAMD/Source/ccolamd_l.c
 	- ln -s $< zl_ccolamd.c
 	$(C) -c $(I) zl_ccolamd.c
+
+zz_ccolamd_version.o: ../../CCOLAMD/Source/ccolamd_version.c
+	- ln -s $< zz_ccolamd_version.c
+	$(C) -c $(I) zz_ccolamd_version.c
 
 #-------------------------------------------------------------------------------
 
