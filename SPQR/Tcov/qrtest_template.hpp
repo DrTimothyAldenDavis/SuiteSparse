@@ -2487,8 +2487,8 @@ template <typename Entry, typename Int> void qrtest
 
     // attempt to permute A to upper triangular form
     Int *Qtrap ;
-    rank = spqr_trapezoidal <Entry, Int> (n, Ap, Ai, Ax, 0, NULL, FALSE, &Cp, &Ci, &Cx,
-        &Qtrap, cc) ;
+    rank = spqr_trapezoidal <Entry, Int> (n, Ap, Ai, Ax, 0, NULL, FALSE,
+        &Cp, &Ci, &Cx, &Qtrap, cc) ;
     printf ("Rank of A, if A*P permutable to upper trapezoidal: %d\n",
         (int) rank) ;
     if (Cp != NULL)
