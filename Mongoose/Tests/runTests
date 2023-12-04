@@ -77,11 +77,16 @@ def runTests(args):
                         matrix_name = row[0] + '/' + row[1] + '.tar.gz'
                         gzip_path = matrix_dir + row[0] + '_' + row[1] + '.tar.gz'
                         matrix_path = matrix_dir + row[1] + '/' + row[1] + ".mtx"
+                        print("matrix_name: " + matrix_name)
+                        print("gzip_path:   " + gzip_path)
+                        print("matrix_path: " + matrix_path)
 
                         matrix_exists = os.path.isfile(gzip_path)
                         if matrix_exists:
+                            print("matrix exists at gzip_path")
                             tar = tarfile.open(gzip_path, mode='r:gz')
                             matrix_files = tar.getnames()
+                            print(matrix_files)
                         else:
                             # Download matrix if it doesn't exist
                             print("Downloading " + matrix_name)
@@ -162,7 +167,7 @@ def cleanup(args, row, matrix_exists, gzip_path):
 #-------------------------------------------------------------------------------
 
 def getMatrixDirectory():
-    matrix_dir = "Matrix/"
+    matrix_dir = "./Matrix/"
     if (not os.path.exists(matrix_dir)):
         os.makedirs(matrix_dir)
     return matrix_dir
@@ -346,7 +351,7 @@ def checkLocation_tests_dir():
 # default pythonic bizarity: call the main method
 #-------------------------------------------------------------------------------
 
-# Why, python, do you insist on such idiosyncracity?
+# Why, python, do you insist on such idiosyncraticity?
 
 if __name__=="__main__":
     main()
