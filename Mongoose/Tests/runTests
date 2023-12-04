@@ -89,11 +89,18 @@ def runTests(args):
                             print(matrix_files)
                         else:
                             # Download matrix if it doesn't exist
-                            print("Downloading " + matrix_name)
-                            url = "https://sparse.tamu.edu/MM/" + matrix_name
-                            print("url: " + url)
-                            with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
-                                shutil.copyfileobj(response, out_file)
+                            try:
+                                print("Downloading " + matrix_name)
+                                url = "https://sparse.tamu.edu/MM/" + matrix_name
+                                print("url: " + url)
+                                with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
+                                    shutil.copyfileobj(response, out_file)
+                            except:
+                                print("Downloading " + matrix_name + "via HTTPS failed. Falling back to HTTP...")
+                                url = "http://sparse.tamu.edu/MM/" + matrix_name
+                                print("url: " + url)
+                                with urllib.request.urlopen(url) as response, open(gzip_path, 'wb') as out_file:
+                                    shutil.copyfileobj(response, out_file)
                             tar = tarfile.open(gzip_path, mode='r:gz')
                             tar.extractall(path=matrix_dir) # Extract the matrix from the tar.gz file
                             tar.close()
