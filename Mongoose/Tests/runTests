@@ -372,10 +372,8 @@ def checkLocation_tests_dir():
     return tests_dir
 
 #-------------------------------------------------------------------------------
-# default pythonic bizarity: call the main method
+# call the main method
 #-------------------------------------------------------------------------------
-
-# Why, python, do you insist on such idiosyncraticity?
 
 if __name__=="__main__":
     main()

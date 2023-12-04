@@ -966,8 +966,7 @@ GrB_Info GB_jitifyer_set_C_compiler_worker (const char *new_C_compiler)
     // allocate the new GB_jit_C_compiler
     GB_COPY_STUFF (GB_jit_C_compiler, new_C_compiler) ;
     // allocate workspace
-    // FIXME:: remove this printf
-    fprintf (stderr, "set GB_jit_C_compiler to: %s\n", GB_jit_C_compiler) ;
+    fprintf (stderr, "set GB_jit_C_compiler to: %s\n", GB_jit_C_compiler) ; // FIXME:: remove this
     return (GB_jitifyer_alloc_space ( )) ;
 }
 
@@ -1164,6 +1163,9 @@ void GB_jitifyer_set_use_cmake (bool use_cmake)
         #if defined (_MSC_VER)
         // Windows requires cmake
         GB_jit_use_cmake = true ;
+        #elif defined (__MINGW32__)
+        // MINGW requires direct compile
+        GB_jit_use_cmake = false ;
         #else
         // all other platforms have the option to use cmake or a direct compile
         GB_jit_use_cmake = use_cmake ;
@@ -2186,11 +2188,9 @@ void GB_jitifyer_table_free (bool freeall)
 
 static void GB_jitifyer_command (char *command)
 { 
-    // FIXME:: remove this printf
-    // printf ("system (\"%s\")\n", command) ;
-    fprintf (stderr, "system: %s\n", command) ;
+    fprintf (stderr, "system: %s\n", command) ; // FIXME:: remove this
     int result = system (command) ;
-    fprintf (stderr, "result: %d\n", result) ;
+    fprintf (stderr, "result: %d\n", result) ;  // FIXME:: remove this
 }
 
 //------------------------------------------------------------------------------
@@ -2200,7 +2200,10 @@ static void GB_jitifyer_command (char *command)
 // This method does not return any error/success code.  If the compilation
 // fails for any reason, the subsequent load of the compiled kernel will fail.
 
-// This method works on any platform.  For Windows, this method is always used.
+// This method works on most platforms (not yet on MINGW, so it is not used
+// there).  For Windows using MSVC, this method is always used.
+
+// FUTURE: get this method to work in MINGW.
 
 #define GB_BLD_DIR "%s/tmp/%016" PRIx64
 
@@ -2319,7 +2322,11 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
 // This method does not return any error/success code.  If the compilation
 // fails for any reason, the subsequent load of the compiled kernel will fail.
 
-// This method does not work on Windows. 
+// This method does not work on Windows with MSVC.  It works for Linux, Mac,
+// or Windows with MINGW (for which it is currently the only option).
+
+// FUTURE: get this method to work in MSVC, since it's much faster than using
+// cmake on Windows.
 
 void GB_jitifyer_direct_compile (char *kernel_name, uint32_t bucket)
 { 

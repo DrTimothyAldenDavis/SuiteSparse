@@ -141,30 +141,31 @@ void ijgauss (int64_t *z, const gauss *x, GrB_Index i, GrB_Index j,
 // since the matrix is small.
 
 #undef  OK
-#define OK(x)                   \
-{                               \
-    if (!(x))                   \
-    {                           \
-        printf ("info: %d error! File %s, Line %d\n",   \
-            info, __FILE__, __LINE__)  ; \
+#define OK(x)                                                   \
+{                                                               \
+    if (!(x))                                                   \
+    {                                                           \
+        printf ("info: %d error! File %s, Line %d\n",           \
+            info, __FILE__, __LINE__)  ;                        \
         fprintf (stderr, "info: %d error! File %s, Line %d\n",  \
-            info, __FILE__, __LINE__)  ; \
-        fflush (stdout) ;       \
-        fflush (stderr) ;       \
-        abort ( ) ;             \
-    }                           \
+            info, __FILE__, __LINE__)  ;                        \
+        fflush (stdout) ;                                       \
+        fflush (stderr) ;                                       \
+        abort ( ) ;                                             \
+    }                                                           \
 }
 
 #undef  TRY
 #define TRY(method)             \
 {                               \
-    GrB_Info info = method ;    \
+    info = (method) ;           \
     OK (info == GrB_SUCCESS) ;  \
 }
 
 void printgauss (GrB_Matrix A, char *name)
 {
     // print the matrix
+    GrB_Info info = GrB_SUCCESS ;
     GrB_Index m, n ;
     TRY (GrB_Matrix_nrows (&m, A)) ;
     TRY (GrB_Matrix_ncols (&n, A)) ;
@@ -175,7 +176,7 @@ void printgauss (GrB_Matrix A, char *name)
         for (int j = 0 ; j < n ; j++)
         {
             gauss a ;
-            GrB_Info info = GrB_Matrix_extractElement_UDT (&a, A, i, j) ;
+            info = GrB_Matrix_extractElement_UDT (&a, A, i, j) ;
             if (info == GrB_NO_VALUE)
             {
                 printf ("      .     ") ;
@@ -195,14 +196,26 @@ void printgauss (GrB_Matrix A, char *name)
 // gauss main program
 //------------------------------------------------------------------------------
 
+#define LINE \
+"--------------------------------------------------------\n"
+#define LINE2 \
+"============================================================================\n"
+
 int main (void)
 {
+    fprintf (stderr, "\n" LINE2 "gauss_demo:\n" LINE2) ;
+
     // start GraphBLAS
-    fprintf (stderr, "starting gauss_demo\n") ;
-    GrB_Info info ;
+    GrB_Info info = GrB_SUCCESS ;
     TRY (GrB_init (GrB_NONBLOCKING)) ;
     TRY (GxB_Global_Option_set (GxB_BURBLE, true)) ;
+
+    // try using cmake to build all JIT kernels, just as a test.  This setting
+    // is ignored by Windows (for MSVC it is treated as always true, and for
+    // MINGW it is treated as always false).  Only Linux and Mac can change
+    // this setting.
     TRY (GxB_Global_Option_set (GxB_JIT_USE_CMAKE, true)) ;
+
     printf ("Gauss demo.  Note that all transposes are array transposes,\n"
         "not matrix (conjugate) transposes.\n\n") ;
 
