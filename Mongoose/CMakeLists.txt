@@ -298,7 +298,14 @@ endif ( )
 enable_testing ( )
 set ( TESTING_OUTPUT_PATH ${PROJECT_BINARY_DIR}/tests )
 
-if ( Python_Interpreter_FOUND )
+if ( Python_Interpreter_FOUND AND (NOT MSVC) )
+    # MSVC has python, but it cannot download matrices from
+    # https://sparse.tamu.edu, probably because of a strict https policy.  The
+    # matrices are linked to from an https but provided by an AWS http backend.
+    # It complains about the ssl certificate.  So disable these tests when
+    # using MSVC.  Linux, Mac, and MINGW on Windows has no trouble with
+    # downloading matrices from sparse.tamu.edu.
+
     # I/O Tests
     add_executable ( mongoose_test_io
         Tests/Mongoose_Test_IO.cpp
@@ -450,7 +457,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
 #   SET(CMAKE_C_FLAGS_DEBUG "-g")
 #   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
     if ( MONGOOSE_COVERAGE )
-        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" ) 
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" )
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} --coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} --coverage" )
     endif ( )
@@ -469,7 +476,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 #   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
     if ( MONGOOSE_COVERAGE )
         SET (CMAKE_CXX_FLAGS_DEBUG " ${CMAKE_CXX_FLAGS_DEBUG} -Wall -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
-        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" ) 
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
     endif ( )
@@ -489,11 +496,14 @@ set_target_properties ( Mongoose_static_dbg PROPERTIES
 
 # Add debug compile/linker flags
 if ( Python_Interpreter_FOUND )
-    set_target_properties ( mongoose_test_io mongoose_test_memory mongoose_test_edgesep PROPERTIES
+    set_target_properties ( mongoose_test_io mongoose_test_memory
+        mongoose_test_edgesep PROPERTIES
         COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
         LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 endif ( )
-set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph mongoose_unit_test_edgesep PROPERTIES
+
+set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph
+    mongoose_unit_test_edgesep PROPERTIES
     COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
     LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 

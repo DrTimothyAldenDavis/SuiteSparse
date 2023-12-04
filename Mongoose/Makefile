@@ -46,6 +46,7 @@ global:
 	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 # build the Mongoose library (static and dynamic) and run a quick test
+# FIXME: remove 'verbose'
 demos: library
 	( cd build ; ./demo )
 	( cd build && ctest . --verbose || ctest . --rerun-failed --output-on-failure )
