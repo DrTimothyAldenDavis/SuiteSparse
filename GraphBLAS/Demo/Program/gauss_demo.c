@@ -145,8 +145,12 @@ void ijgauss (int64_t *z, const gauss *x, GrB_Index i, GrB_Index j,
 {                               \
     if (!(x))                   \
     {                           \
-        printf ("info: %d error! Line %d\n", info, __LINE__)  ; \
+        printf ("info: %d error! File %s, Line %d\n",   \
+            info, __FILE__, __LINE__)  ; \
+        fprintf (stderr, "info: %d error! File %s, Line %d\n",  \
+            info, __FILE__, __LINE__)  ; \
         fflush (stdout) ;       \
+        fflush (stderr) ;       \
         abort ( ) ;             \
     }                           \
 }
