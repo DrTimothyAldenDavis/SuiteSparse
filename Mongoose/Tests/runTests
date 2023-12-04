@@ -105,7 +105,7 @@ def runTests(args):
                             status = call([Mongoose_tests_dir + "mongoose_test_memory", matrix_path])
                             if status:
                                 print("Error! Memory Test Failure")
-                                cleanup(args, row, matrix_exists, gzip_path)
+                                # cleanup(args, row, matrix_exists, gzip_path)
                                 sys.exit(status)
                         if args.tests == 'valgrind' or args.tests == 'all':
                             print("Calling Valgrind Test...")
@@ -115,7 +115,7 @@ def runTests(args):
                                 status = call([valgrind + " --leak-check=full " + Mongoose_tests_dir + "mongoose_test_memory", matrix_path])
                                 if status:
                                     print("Error! Valgrind Test Failure")
-                                    cleanup(args, row, matrix_exists, gzip_path)
+                                    # cleanup(args, row, matrix_exists, gzip_path)
                                     sys.exit(status)
                             else:
                                 print("\033[91mERROR!\033[0m Unable to find Valgrind. Skipping Valgrind Test...")
@@ -124,7 +124,7 @@ def runTests(args):
                             status = call([Mongoose_tests_dir + "mongoose_test_io", matrix_path, "1"])
                             if status:
                                 print("Error! I/O Test Failure")
-                                cleanup(args, row, matrix_exists, gzip_path)
+                                # cleanup(args, row, matrix_exists, gzip_path)
                                 sys.exit(status)
                         if args.tests == 'edgesep' or args.tests == 'all':
                             print("Calling Edge Separator Test...")
@@ -132,19 +132,19 @@ def runTests(args):
                             status = call([Mongoose_tests_dir + "mongoose_test_edgesep", matrix_path, str(target_split)])
                             if status:
                                 print("Error! Edge Separator Test Failure")
-                                cleanup(args, row, matrix_exists, gzip_path)
+                                # cleanup(args, row, matrix_exists, gzip_path)
                                 sys.exit(status)
                         if args.tests == 'performance' or args.tests == 'all':
                             print("Calling Performance Test...")
                             status = call([Mongoose_tests_dir + "mongoose_test_performance", matrix_path, row[0] + '_' + row[1] + '_performance.txt'])
                             if status:
                                 print("Error! Performance Test Failure")
-                                cleanup(args, row, matrix_exists, gzip_path)
+                                # cleanup(args, row, matrix_exists, gzip_path)
                                 sys.exit(status)
 
                         # Delete the matrix only if we downloaded it and the keep
                         # flag is off
-                        cleanup(args, row, matrix_exists, gzip_path)
+                        # cleanup(args, row, matrix_exists, gzip_path)
 
     # delete the ssstats.csv file
     os.remove(stats_file)
