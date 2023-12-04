@@ -495,7 +495,7 @@ set_target_properties ( Mongoose_static_dbg PROPERTIES
     LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 
 # Add debug compile/linker flags
-if ( Python_Interpreter_FOUND )
+if ( Python_Interpreter_FOUND AND (NOT MSVC) )
     set_target_properties ( mongoose_test_io mongoose_test_memory
         mongoose_test_edgesep PROPERTIES
         COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
