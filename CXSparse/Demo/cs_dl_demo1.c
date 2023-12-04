@@ -9,12 +9,15 @@ int main (void)
     int version [3] ;
     cxsparse_version (version) ;
     printf ("CXSparse v%d.%d.%d\n", version [0], version [1], version [2]) ;
+
+    #ifndef TEST_COVERAGE
     if ((version [0] != CS_VER) || (version [1] != CS_SUBVER) ||
         (version [2] != CS_SUBSUB))
     {
         fprintf (stderr, "version in header does not match library\n") ;
         abort ( ) ;
     }
+    #endif
 
     T = cs_dl_load (stdin) ;               /* load triplet matrix T from stdin */
     printf ("T:\n") ; cs_dl_print (T, 0) ; /* print T */
