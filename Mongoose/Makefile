@@ -39,17 +39,16 @@ library:
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -USUITESPARSE_PKGFILEDIR -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -USUITESPARSE_PKGFILEDIR -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 # build the Mongoose library (static and dynamic) and run a quick test
-# FIXME: remove 'verbose'
 demos: library
 	( cd build ; ./demo )
-	( cd build && ctest . --verbose || ctest . --rerun-failed --output-on-failure )
+	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
 
 # the same as "make library"
 static: library

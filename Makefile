@@ -47,7 +47,7 @@ library:
 	( cd GraphBLAS && $(MAKE) )
 	( cd LAGraph && $(MAKE) )
 
-# compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
+# compile; "make install" only in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local )
 	( cd AMD && $(MAKE) local )

@@ -74,9 +74,20 @@
 #                       explicitly, if the defaults are not appropriate for your
 #                       system.
 #                       Default: false
+#
+#   SUITESPARSE_PKGFILEDIR: where to install the CMake Config and pkg-config
+#                       files.  This defaults to the same directory as where
+#                       the compiled libraries are installed, in a subfolder
+#                       called cmake.  If not already set in the cache,
+#                       LOCAL_INSTALL=0 defines this as "lib", and the
+#                       CMAKE_INSTALL_PREFIX is added.  LOCAL_INSTALL=1 defines
+#                       this as SuiteSparse/lib.  This variable is cached so
+#                       that if it is not set, or unset first, it remains
+#                       unchanged (see "make local" and "make global" in the
+#                       SuiteSparse_config/Makefile for an example).
 
-message ( STATUS "Source:        ${CMAKE_SOURCE_DIR} ")
-message ( STATUS "Build:         ${CMAKE_BINARY_DIR} ")
+message ( STATUS "Source:           ${CMAKE_SOURCE_DIR} ")
+message ( STATUS "Build:            ${CMAKE_BINARY_DIR} ")
 
 cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
 cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
@@ -210,7 +221,7 @@ if ( NOT CMAKE_BUILD_TYPE )
     set ( CMAKE_BUILD_TYPE Release )
 endif ( )
 
-message ( STATUS "Build type:    ${CMAKE_BUILD_TYPE} ")
+message ( STATUS "Build type:       ${CMAKE_BUILD_TYPE} ")
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
@@ -221,16 +232,16 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 include ( CheckLanguage )
 option ( NFORTRAN "ON: do not try to use Fortran. OFF (default): try Fortran" off )
 if ( NFORTRAN )
-    message ( STATUS "Fortran: not enabled" )
+    message ( STATUS "Fortran:          not enabled" )
 else ( )
     check_language ( Fortran )
     if ( CMAKE_Fortran_COMPILER )
         enable_language ( Fortran )
-        message ( STATUS "Fortran: ${CMAKE_Fortran_COMPILER}" )
+        message ( STATUS "Fortran:          ${CMAKE_Fortran_COMPILER}" )
     else ( )
         # Fortran not available:
         set ( NFORTRAN true )
-        message ( STATUS "Fortran: not available" )
+        message ( STATUS "Fortran:          not available" )
     endif ( )
 endif ( )
 
@@ -253,19 +264,19 @@ if ( ENABLE_CUDA )
 
     # try finding CUDA
     check_language ( CUDA )
-    message ( STATUS "Looking for CUDA" )
+    # message ( STATUS "Looking for CUDA" )
     if ( CMAKE_CUDA_COMPILER )
         # with CUDA:
-        message ( STATUS "Find CUDA tool kit:" )
+        # message ( STATUS "Find CUDA tool kit:" )
         # FindCUDAToolKit needs to have C or CXX enabled first (see above)
         find_package ( CUDAToolkit )
-        message ( STATUS "CUDA toolkit found:   " ${CUDAToolkit_FOUND} )
-        message ( STATUS "CUDA toolkit version: " ${CUDAToolkit_VERSION} )
-        message ( STATUS "CUDA toolkit include: " ${CUDAToolkit_INCLUDE_DIRS} )
-        message ( STATUS "CUDA toolkit lib dir: " ${CUDAToolkit_LIBRARY_DIR} )
+        message ( STATUS "CUDA toolkit :    " ${CUDAToolkit_FOUND} )
+        message ( STATUS "CUDA toolkit ver: " ${CUDAToolkit_VERSION} )
+        message ( STATUS "CUDA toolkit inc: " ${CUDAToolkit_INCLUDE_DIRS} )
+        message ( STATUS "CUDA toolkit lib: " ${CUDAToolkit_LIBRARY_DIR} )
         if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
-            message ( STATUS "CUDA: not enabled (CUDA 11.2 or later required)" )
+            message ( STATUS "CUDA:               not enabled (CUDA 11.2 or later required)" )
             set ( SUITESPARSE_CUDA OFF )
         else ( )
             # CUDA 11.2 or later present
@@ -274,7 +285,7 @@ if ( ENABLE_CUDA )
         endif ( )
     else ( )
         # without CUDA:
-        message ( STATUS "CUDA: not found" )
+        message ( STATUS "CUDA:             not found" )
         set ( SUITESPARSE_CUDA OFF )
     endif ( )
 
@@ -286,10 +297,10 @@ else ( )
 endif ( )
 
 if ( SUITESPARSE_CUDA )
-    message ( STATUS "CUDA: enabled" )
+    message ( STATUS "CUDA:             enabled" )
     set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
-    message ( STATUS "CUDA: not enabled" )
+    message ( STATUS "CUDA:             not enabled" )
 endif ( )
 
