@@ -154,12 +154,18 @@ def runTests(args):
 #-------------------------------------------------------------------------------
 
 def cleanup(args, row, matrix_exists, gzip_path):
+    print("cleanup")
     if args.purge or not (args.keep or matrix_exists):
         matrix_dir = getMatrixDirectory()
+        print("cleanup matrix_dir: " + matrix_dir)
         files = os.listdir(matrix_dir + row[1])
+        print(files)
         for file in files:
+            print("remove file: " + file)
             os.remove(os.path.join(matrix_dir + row[1] + '/', file))
+        print("remove dir: " + matrix_dir + row[1])
         os.rmdir(matrix_dir + row[1])
+        print("remove gzip_path: " + gzip_path)
         os.remove(gzip_path)
 
 #-------------------------------------------------------------------------------
