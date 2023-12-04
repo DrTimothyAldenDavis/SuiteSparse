@@ -54,8 +54,8 @@ Refer to each package for license, copyright, and author information.
 Documenation
 -----------------------------------------------------------------------------
 
-Refer to each package for the documentation on each package, typically in
-the Doc subfolder (exceptions: the SuiteSparse_config and Example packages).
+Refer to each package for the documentation on each package, typically in the
+Doc subfolder (exceptions: the `SuiteSparse_config` and Example packages).
 
 -----------------------------------------------------------------------------
 SuiteSparse branches
@@ -425,6 +425,7 @@ Packages in SuiteSparse, and files in this directory:
                 make install    installs in the current directory
                                 (./lib, ./include), and/or in
                                 /usr/local/lib and /usr/local/include,
+                                (the latter defined by CMAKE_INSTALL_PREFIX)
                                 depending on whether "make", "make local",
                                 or "make global" has been done.
 
@@ -531,8 +532,8 @@ Packages in SuiteSparse, and files in this directory:
 
 Some codes optionally use METIS 5.1.0.  This package is located in SuiteSparse
 in the `CHOLMOD/SuiteSparse_metis` directory.  Its use is optional.  To compile
-CHOLMOD without it, use the CMAKE_OPTIONS="-DNPARTITION=1" setting.  The use of
-METIS can improve ordering quality for some matrices, particularly large 3D
+CHOLMOD without it, use the `CMAKE_OPTIONS="-DNPARTITION=1"` setting.  The use
+of METIS can improve ordering quality for some matrices, particularly large 3D
 discretizations.  METIS has been slightly modified for use in SuiteSparse; see
 the `CHOLMOD/SuiteSparse_metis/README.txt` file for details.
 
@@ -556,15 +557,17 @@ Suppose you place SuiteSparse in the `/home/me/SuiteSparse` folder.
 Add the `SuiteSparse/lib` folder to your run-time library path.  On Linux, add
 this to your `~/.bashrc` script, assuming `/home/me/SuiteSparse` is the
 location of your copy of SuiteSparse:
-
+```
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib
     export LD_LIBRARY_PATH
+```
 
 For the Mac, use this instead, in your `~/.zshrc` script, assuming you place
 SuiteSparse in `/Users/me/SuiteSparse`:
-
+```
     DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/Users/me/SuiteSparse/lib
     export DYLD_LIBRARY_PATH
+```
 
 Compile all of SuiteSparse with `make local`.
 
@@ -589,33 +592,36 @@ QUICK START FOR THE C/C++ LIBRARIES:
 
 Type the following in this directory (requires system priviledge to do the
 `sudo make install`):
-
+```
     mkdir -p build && cd build
     cmake ..
     cmake --build .
     sudo cmake --install .
+```
 
 All libraries will be created and installed into the default system-wide folder
 (/usr/local/lib on Linux).  All include files needed by the applications that
-use SuiteSparse are installed into /usr/local/include (on Linux).
+use SuiteSparse are installed into /usr/local/include/suitesparse (on Linux).
 
 To build only a subset of libraries, set `SUITESPARSE_ENABLE_PROJECTS` when
 configuring with CMake.  E.g., to build and install CHOLMOD and CXSparse
 (including their dependencies), use the following commands:
-
+```
     mkdir -p build && cd build
     cmake -DSUITESPARSE_ENABLE_PROJECTS="cholmod;cxsparse" ..
     cmake --build .
     sudo cmake --install .
+```
 
 For Windows (MSVC), import the `CMakeLists.txt` file into MS Visual Studio.
 Be sure to specify the build type as Release; for example, to build SuiteSparse
 on Windows in the command window, run:
-
+```
     mkdir -p build && cd build
     cmake ..
     cmake --build . --config Release
     cmake --install .
+```
 
 Be sure to first install all required libraries:  BLAS and LAPACK for UMFPACK,
 CHOLMOD, and SPQR, and GMP and MPFR for SPEX.  Be sure to use the latest
@@ -625,21 +631,24 @@ see the SPEX user guide for details).
 
 To compile the libraries and install them only in SuiteSparse/lib (not
 /usr/local/lib), do this instead in the top-level of SuiteSparse:
-
+```
     mkdir -p build && cd build
     cmake -DCMAKE_INSTALL_PREFIX=.. ..
     cmake --build .
     cmake --install .
+```
 
 If you add /home/me/SuiteSparse/lib to your library search path
 (`LD_LIBRARY_PATH` in Linux), you can do the following (for example):
-
+```
     S = /home/me/SuiteSparse
-    cc myprogram.c -I$(S)/include -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
+    cc myprogram.c -I$(S)/include/suitesparse -lumfpack -lamd -lcholmod -lsuitesparseconfig -lm
+```
 
 To change the C and C++ compilers, and to compile in parallel use:
-
+```
     cmake -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER==g++ ..
+```
 
 for example, which changes the compiler to gcc and g++.
 
@@ -655,14 +664,16 @@ in the current version of OpenBLAS.  See
 You may also need to add SuiteSparse/lib to your path.  If your copy of
 SuiteSparse is in /home/me/SuiteSparse, for example, then add this to your
 ~/.bashrc file:
-
+```
     LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/me/SuiteSparse/lib
     export LD_LIBRARY_PATH
+```
 
 For the Mac, use this instead:
-
+```
     DYLD_LIBRARY_PATH=$DYLD_LIBRARY_PATH:/home/me/SuiteSparse/lib
     export DYLD_LIBRARY_PATH
+```
 
 -----------------------------------------------------------------------------
 Python and Rust interfaces
@@ -683,8 +694,9 @@ Compilation options
 -----------------------------------------------------------------------------
 
 You can set specific options for CMake with the command (for example):
-
+```
     cmake -DNPARTITION=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
+```
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
 Module (because of `-DNPARTITION=ON`).  Debug mode will be used (the build
@@ -736,6 +748,12 @@ is set).
   `CMAKE_PREFIX_PATH` (for CMake) or `PKG_CONFIG_PATH` (for build systems using
   pkg-config) to the path containing the respective CMake Config files or
   pkg-config files.
+
+* `SUITESPARSE_INCLUDEDIR_POSTFIX`:
+
+  Postfix for installation target of header from SuiteSparse. Default:
+  suitesparse, so the default include directory is:
+  `CMAKE_INSTALL_PREFIX/include/suitesparse`
 
 * `BUILD_SHARED_LIBS`:
 
@@ -818,8 +836,8 @@ is set).
 
 * `USE_SYSTEM_SUITESPARSE_CONFIG`:
 
-  If `ON`, use SuiteSparse_config libraries installed on the build system. If
-  `OFF`, automatically build SuiteSparse_config as dependency if needed.
+  If `ON`, use `SuiteSparse_config` libraries installed on the build system. If
+  `OFF`, automatically build `SuiteSparse_config` as dependency if needed.
   Default: `OFF`.
 
 Additional options are available for specific packages:

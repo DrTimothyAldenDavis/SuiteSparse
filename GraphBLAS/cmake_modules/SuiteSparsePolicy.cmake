@@ -85,6 +85,11 @@
 #                       that if it is not set, or unset first, it remains
 #                       unchanged (see "make local" and "make global" in the
 #                       SuiteSparse_config/Makefile for an example).
+#
+#   SUITESPARSE_INCLUDEDIR_POSTFIX : # Postfix for installation target of
+#                       header from SuiteSparse. Default: suitesparse, so the
+#                       default include directory is:
+#                       CMAKE_INSTALL_PREFIX/include/suitesparse
 
 message ( STATUS "Source:           ${CMAKE_SOURCE_DIR} ")
 message ( STATUS "Build:            ${CMAKE_BINARY_DIR} ")
