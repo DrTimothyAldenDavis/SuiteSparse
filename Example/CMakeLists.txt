@@ -110,7 +110,7 @@ find_package ( LAGraph 1.1.0 )
 find_package ( Mongoose 3.3.0 REQUIRED )
 find_package ( ParU 0.1.0 REQUIRED )
 find_package ( RBio 4.3.0 REQUIRED )
-find_package ( SPEX 2.3.0 REQUIRED )    # requires GMP and MPRF
+find_package ( SPEX 2.3.0 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.0 REQUIRED )
 find_package ( UMFPACK 6.3.0 REQUIRED )
 
