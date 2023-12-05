@@ -227,10 +227,13 @@ void test_minmax (void)
         {
             TEST_CHECK (result == GrB_SUCCESS) ;
         }
+
+        #if 0
         if (emin1 != emin2)
         {
             // failure on MSVC, OpenMP
             // https://github.com/DrTimothyAldenDavis/SuiteSparse/actions/runs/6763376325/job/18380420493?pr=503
+            // now fixed.
             printf ("Test failure, k: %d name: %s\n", k, aname) ;
             printf ("emin1: %30.20g\n", emin1) ;
             printf ("emin2: %30.20g\n", emin2) ;
@@ -245,6 +248,8 @@ void test_minmax (void)
             printf ("emax2 int64: %" PRId64 "\n", emax2_int64) ;
 
         }
+        #endif
+
         TEST_CHECK (emin1 == emin2) ;
 
         result = GrB_Scalar_extractElement_FP64 (&emax2, G->emax) ;
