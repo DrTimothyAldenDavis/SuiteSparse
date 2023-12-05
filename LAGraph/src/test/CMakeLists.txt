@@ -76,7 +76,7 @@ endif ( )
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_C_FOUND )
+if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( lagraphtest PRIVATE OpenMP::OpenMP_C )
     endif ( )
