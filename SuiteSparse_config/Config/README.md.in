@@ -702,6 +702,7 @@ is set).
 
   If set to `ON`, CUDA is enabled for the project.  Default: `ON` for CHOLMOD
   and SPQR; `OFF` otherwise.
+  Ignored for MSVC (CUDA acceleration is disabled on Windows with MSVC).
 
 * `CMAKE_INSTALL_PREFIX`:
 

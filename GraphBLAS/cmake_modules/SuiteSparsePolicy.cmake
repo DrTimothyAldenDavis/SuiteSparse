@@ -19,6 +19,7 @@
 #                       for their numerical factorizsation.  The flag is false
 #                       for GraphBLAS since CUDA for that package is in
 #                       progress and not ready for production use.
+#                       CUDA acceleration not supported on Windows with MSVC.
 #
 #   LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
