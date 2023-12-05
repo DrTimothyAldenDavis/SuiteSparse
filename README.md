@@ -884,6 +884,47 @@ all options default to `OFF`:
 
   If `ON`, do not build the Supernodal module.
 
+-----------------------------------------------------------------------------
+Possible build/install issues
+-----------------------------------------------------------------------------
+
+One common issue can affect all packages:  getting the right #include files
+that match the current libraries being built.  It's possible that your Linux
+distro has an older copy of SuiteSparse headers in /usr/include or
+/usr/local/include, or that Homebrew has installed its suite-sparse bundle into
+/opt/homebrew/include or other places.  Old libraries can appear in in
+/usr/local/lib, /usr/lib, etc.  When building a new copy of SuiteSparse, the
+cmake build system is normally (or always?) able to avoid these, and use the
+right header for the right version of each library.
+
+As an additional guard against this possible error, each time one SuiteSparse
+package #include's a header from another one, it checks the version number in
+the header file, and reports an #error to the compiler if a stale version is
+detected.  In addition, the Example package checks both the header version and
+the library version (by calling a function in each library).  If the versions
+mismatch in any way, the Example package reports an error at run time.
+
+For example, CHOLMOD 5.1.0 requires AMD 3.3.0 or later.  If it detects an
+older one in `amd.h`, it will report an `#error`:
+
+```
+    #include "amd.h"
+    #if ( ... AMD version is stale ... )
+    #error "CHOLMOD 5.1.0 requires AMD 3.3.0 or later"
+    #endif
+```
+
+and the compilation will fail.  The Example package makes another check,
+by calling `amd_version` and comparing it with the versions from the `amd.h`
+header file.
+
+If this error or one like it occurs, check to see if you have an old copy of
+SuiteSparse, and uninstall it before compiling your new copy of SuiteSparse.
+
+There are other many possible build/install issues that are covered by the
+corresponding user guides for each package, such as finding the right BLAS,
+OpenMP, and other libraries, and how to compile on the Mac when using GraphBLAS
+inside MATLAB, and so on.  Refer to the User Guides for more details.
 
 -----------------------------------------------------------------------------
 Acknowledgements
