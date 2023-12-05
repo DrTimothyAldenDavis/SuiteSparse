@@ -103,7 +103,7 @@ if ( GraphBLAS_FOUND )
         endif ( )
         if ( GRAPHBLAS_VERSION LESS "8.3.0" )
             # workaround for SuiteSparse:GraphBLAS 8.2.x (did not have "/Include")
-            get_property ( _inc TARGET GraphBLAS::GraphBLAS PROPERTY
+            get_property ( _inc TARGET GraphBLAS::GraphBLAS_static PROPERTY
                 INTERFACE_INCLUDE_DIRECTORIES )
             include_directories ( ${_inc}/Include )
             message ( STATUS "additional include: ${_inc}/Include" )
