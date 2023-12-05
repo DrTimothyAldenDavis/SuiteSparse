@@ -110,7 +110,7 @@ find_package ( LAGraph 1.1.0 )
 find_package ( Mongoose 3.3.0 REQUIRED )
 find_package ( ParU 0.1.0 REQUIRED )
 find_package ( RBio 4.3.0 REQUIRED )
-find_package ( SPEX 2.3.0 REQUIRED )
+find_package ( SPEX 2.3.0 REQUIRED )    # requires GMP and MPRF
 find_package ( SPQR 4.3.0 REQUIRED )
 find_package ( UMFPACK 6.3.0 REQUIRED )
 
@@ -118,6 +118,9 @@ find_package ( UMFPACK 6.3.0 REQUIRED )
 find_package ( OpenMP REQUIRED )
 find_package ( BLAS REQUIRED )
 find_package ( LAPACK REQUIRED )
+# the SPEX/Find*.cmake packages are installed when SPEX is installed.
+find_package ( GMP 6.1.2 REQUIRED )
+find_package ( MPFR 4.0.2 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -568,6 +571,7 @@ endif ( )
 include_directories ( ${LAPACK_INCLUDE_DIRS} )
 
 # gmp:
+message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
     target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
@@ -579,6 +583,7 @@ endif ( )
 include_directories ( ${GMP_INCLUDE_DIR} )
 
 # mpfr:
+message ( STATUS "MPFR library:        ${MPFR_LIBRARIES}" )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( my PRIVATE ${MPFR_LIBRARIES} )
     target_link_libraries ( my_cxx PRIVATE ${MPFR_LIBRARIES} )
