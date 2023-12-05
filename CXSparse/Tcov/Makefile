@@ -298,4 +298,4 @@ distclean: clean
 	- $(RM) cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
 	- $(RM) cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(RM) cs_idemo cs_ldemo
-	- $(RM) -r cs_*.c *.dSYM
+	- $(RM) -r cs_*.c *.dSYM cxsparse_version.c

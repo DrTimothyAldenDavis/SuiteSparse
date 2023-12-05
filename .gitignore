@@ -127,6 +127,7 @@ CSparse/Tcov/cov.sort
 CSparse/Tcov/cover.out
 CSparse/Tcov/covs.out
 CSparse/Tcov/cs_*.c
+CSparse/Tcov/csparse_version.c
 CSparse/Tcov/cstcov_test
 CSparse/Tcov/*.out
 CSparse/Tcov/cs_demo1
@@ -138,6 +139,7 @@ CXSparse/Tcov/cov.sort
 CXSparse/Tcov/cover.out
 CXSparse/Tcov/covs.out
 CXSparse/Tcov/cs_*.c
+CXSparse/Tcov/cxsparse_version.c
 CXSparse/Tcov/*.out
 CXSparse/Tcov/cs_demo1_ci
 CXSparse/Tcov/cs_demo1_cl
