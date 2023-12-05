@@ -266,7 +266,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( ENABLE_CUDA )
+if ( ENABLE_CUDA AND NOT MSVC )
 
     # try finding CUDA
     check_language ( CUDA )
