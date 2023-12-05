@@ -196,14 +196,9 @@ void printgauss (GrB_Matrix A, char *name)
 // gauss main program
 //------------------------------------------------------------------------------
 
-#define LINE \
-"--------------------------------------------------------\n"
-#define LINE2 \
-"============================================================================\n"
-
 int main (void)
 {
-    fprintf (stderr, "\n" LINE2 "gauss_demo:\n" LINE2) ;
+    fprintf (stderr, "\ngauss_demo:\n") ;
 
     // start GraphBLAS
     GrB_Info info = GrB_SUCCESS ;
@@ -667,14 +662,6 @@ int main (void)
 
     gauss result ;
     TRY (GrB_Matrix_extractElement_UDT (&result, C, 3, 3)) ;
-    if (result.real == 65 && result.imag == 1170)
-    {
-        fprintf (stderr, "gauss_demo: all tests pass\n") ;
-    }
-    else
-    {
-        fprintf (stderr, "gauss_demo: test failure\n") ;
-    }
 
     // free everything and finalize GraphBLAS
     GrB_Matrix_free (&A) ;
@@ -691,5 +678,17 @@ int main (void)
     GrB_Semiring_free (&GaussSemiring) ;
     OK_JIT
     GrB_finalize ( ) ;
+
+    // return result
+    bool ok = (result.real == 65 && result.imag == 1170) ;
+    if (ok)
+    {
+        fprintf (stderr, "gauss_demo: all tests pass\n") ;
+    }
+    else
+    {
+        fprintf (stderr, "gauss_demo: test failure\n") ;
+    }
+    return (ok ? 0 : 1) ;
 }
 

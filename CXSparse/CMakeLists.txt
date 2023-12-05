@@ -43,6 +43,7 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 # MS Visual Studio does not support the complex type for ANSI C11.
+# FIXME: see GraphBLAS for how to use complex types in MS Visual Studio.
 
 if ( MSVC )
     option ( NCOMPLEX "ON (default): complex data type disabled.  OFF: complex data type enabled." on )
@@ -98,6 +99,7 @@ if ( NCOMPLEX )
         "Source/cs_counts.c"
         "Source/cs_cumsum.c"
         "Source/cs_[d-z]*.c"
+        "Source/cxsparse_version.c"
         )
 else ( )
     file ( GLOB CXSPARSE_SOURCES "Source/*.c" )

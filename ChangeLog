@@ -1,7 +1,7 @@
 Dec 30, 2023: version 7.4.0
 
     * major change to build system: by Markus Mützel.  Includes a
-        top-level CMakeLists.txt that builds all packages, and suppor for
+        top-level CMakeLists.txt that builds all packages, and support for
         pkg-config.  Additional changes are listed below. 
     * LAGraph 1.1.0: new package: graph algorithms based on GraphBLAS
     * ParU 0.1.0: new package: parallel unsymmetric multifrontal method,

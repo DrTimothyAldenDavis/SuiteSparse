@@ -190,12 +190,9 @@ void wildmult (wildtype *z, const wildtype *x, const wildtype *y)
 
 #define LINE \
 "--------------------------------------------------------\n"
-#define LINE2 \
-"============================================================================\n"
 
 int main (void)
 {
-    fprintf (stderr, "\n" LINE2 "wildtype_demo:\n" LINE2) ;
 
     // start GraphBLAS
     #if 1
@@ -209,7 +206,7 @@ int main (void)
     GxB_Global_Option_set (GxB_BURBLE, true) ;
     int nthreads ;
     GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads) ;
-    fprintf (stderr, "nthreads %d\n", nthreads) ;
+    fprintf (stderr, "\n" LINE "wildtype_demo: nthreads: %d\n", nthreads ) ;
 
     char *library ;   GxB_Global_Option_get (GxB_LIBRARY_NAME,     &library) ;
     int version [3] ; GxB_Global_Option_get (GxB_LIBRARY_VERSION,  version) ;
@@ -451,5 +448,6 @@ int main (void)
     GrB_Type_free (&WildType) ;
 
     GrB_finalize ( ) ;
+    fprintf (stderr, "\n" LINE) ;
 }
 
