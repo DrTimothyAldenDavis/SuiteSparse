@@ -254,8 +254,26 @@ an old version of AMD with a newer version of UMFPACK can fail.}
 A detailed list of changes is in the {\tt ChangeLog} file.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 6.1.0}
+\subsection{Version 6.3.0 (Dec 30, 2023)}
 %-------------------------------------------------------------------------------
+
+\begin{itemize}
+    \item major change to build system: by Markus M\"{u}tzel
+    \item \verb'umfpack_version': added to return version of UMFPACK
+\end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsection{Version 6.2.0 (Sept 8, 2023)}
+%-------------------------------------------------------------------------------
+
+\begin{itemize}
+    \item cmake updates: SuiteSparse:: namespace by Markus M\"{u}tzel
+\end{itemize}
+
+%-------------------------------------------------------------------------------
+\subsection{Version 6.1.0 (Jan 17, 2023)}
+%-------------------------------------------------------------------------------
+
 
 \begin{itemize}
     \item more changes to the build system, including porting to Windows
@@ -266,7 +284,7 @@ A detailed list of changes is in the {\tt ChangeLog} file.
 \end{itemize}
 
 %-------------------------------------------------------------------------------
-\subsection{Version 6.0.0}
+\subsection{Version 6.0.0 (Nov 12, 2022)}
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
@@ -285,7 +303,7 @@ A detailed list of changes is in the {\tt ChangeLog} file.
 \end{itemize}
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.7.3}
+\subsection{Version 5.7.3 (Jan 30, 2016)}
 %-------------------------------------------------------------------------------
 
 Renamed the MATLAB interface back to {\tt umfpack} from {\tt umpfack2}, since
@@ -293,20 +311,20 @@ it no longer conflicts with any built-in MATLAB function of the same name.
 See the comments for Version 5.0.3 below.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.7.0}
+\subsection{Version 5.7.0 (July 31, 2013)}
 %-------------------------------------------------------------------------------
 
 Replaced memory manager functions and printf with functions
 in {\tt SuiteSparse\_config}.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.6.0}
+\subsection{Version 5.6.0 (Jun 1, 2012)}
 %-------------------------------------------------------------------------------
 
 Replaced {\tt UFconfig} with {\tt SuiteSparse\_config}.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.5.0}
+\subsection{Version 5.5.0 (Nov 30, 2009)}
 %-------------------------------------------------------------------------------
 
 Added more user ordering options (interface to CHOLMOD and METIS orderings,
@@ -315,21 +333,21 @@ Minor change to how the 64-bit BLAS is used.
 Added an option to disable the search for singletons.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.4.0}
+\subsection{Version 5.4.0 (May 20, 2009)}
 %-------------------------------------------------------------------------------
 
 Disabled the 2-by-2 ordering strategy.
 Bug fix for \verb'umfpack_make.m' for Windows.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.3.0}
+\subsection{Version 5.3.0 (March 24, 2009)}
 %-------------------------------------------------------------------------------
 
 A bug fix for structurally singular matrices, and a compiler workaround for
 gcc versions 4.2.(3 and 4).
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.2.0}
+\subsection{Version 5.2.0 (Nov 1, 2007)}
 %-------------------------------------------------------------------------------
 
 Change of default license.
@@ -337,20 +355,20 @@ Note that your license may be entirely different;
 refer to UMFPACK/Doc/License.txt for your actual license.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.1.0}
+\subsection{Version 5.1.0 (May 31, 2007)}
 %-------------------------------------------------------------------------------
 
 Port of MATLAB interface to 64-bit MATLAB.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.0.3}
+\subsection{Version 5.0.3 (Dec 12, 2006)}
 %-------------------------------------------------------------------------------
 
 Renamed the MATLAB function to {\tt umfpack2}, so as not to confict with
 itself (the MATLAB built-in version of UMFPACK).
 
 %-------------------------------------------------------------------------------
-\subsection{Version 5.0}
+\subsection{Version 5.0 (May 5, 2006)}
 %-------------------------------------------------------------------------------
 
 Changed {\tt long} to \verb'UF_long', controlled by the {\tt UFconfig.h}
@@ -358,13 +376,13 @@ file.  A \verb'UF_long' is normally just {\tt long}, except on the Windows 64
 (WIN64) platform.  In that case, it becomes {\tt \_\_int64}.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.6}
+\subsection{Version 4.6 (Oct 10, 2005)}
 %-------------------------------------------------------------------------------
 
 Added additional options to {\tt umf\_solve.c}.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.5}
+\subsection{Version 4.5 (Aug. 30, 2005)}
 %-------------------------------------------------------------------------------
 
 Added function pointers for malloc, calloc, realloc, free, printf, hypot,
@@ -374,7 +392,7 @@ version of UMFPACK at run time or compile time.  UMFPACK requires AMD v2.0
 or later.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.4}
+\subsection{Version 4.4 (Jan. 28, 2005)}
 %-------------------------------------------------------------------------------
 
 Bug fix in strategy selection in {\tt umfpack\_*\_qsymbolic}.
@@ -384,7 +402,7 @@ Added minimal support for Microsoft Visual Studio
 (the {\tt umf\_multicompile.c} file).
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.3.1}
+\subsection{Version 4.3.1 (Jan. 11, 2005)}
 %-------------------------------------------------------------------------------
 
 Minor bug fix in the forward/backsolve.  This bug had the effect of turning
@@ -393,7 +411,7 @@ $\m{A}$.  UMFPACK mexFunction now factorizes $\m{A}\tr$ in its forward-slash
 operation.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.3}
+\subsection{Version 4.3 (Jan. 16, 2004)}
 %-------------------------------------------------------------------------------
 
 No changes are visible to the C or MATLAB user, except the presence of
@@ -402,7 +420,7 @@ and three new statistics in the {\tt Info} array.
 The primary change is the addition of an (optional) drop tolerance.
 
 %-------------------------------------------------------------------------------
-\subsection{Version 4.1}
+\subsection{Version 4.1 (May 6, 2003)}
 %-------------------------------------------------------------------------------
 
 The following is a summary of the main changes that are visible to the C
@@ -1423,8 +1441,10 @@ printed (similar to the MATLAB commands
 
 Three timing routines are provided in UMFPACK Version 4.1 and following,
 {\tt umfpack\_tic}, {\tt umfpack\_toc}, and {\tt umfpack\_timer}.
-These three routines are the only user-callable
-routine that is identical in all four {\tt int}/\verb'int64_t', real/complex
+Version 6.3.0 adds the \verb'umfpack_version' function.
+
+These four routines are the only user-callable
+routines that are identical in all four {\tt int}/\verb'int64_t', real/complex
 versions (there is no {\tt umfpack\_di\_timer} routine, for example).
 
 %-------------------------------------------------------------------------------
@@ -1990,6 +2010,9 @@ double t, s [2] ;
 t = umfpack_timer ( ) ;
 umfpack_tic (s) ;
 umfpack_toc (s) ;
+
+int version [3] ;
+umfpack_version (version) ;
 
 \end{verbatim}
 }
