@@ -42,8 +42,8 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-  set ( ENABLE_CUDA false )
-# set ( ENABLE_CUDA true )
+set ( ENABLE_CUDA OFF )
+# set ( ENABLE_CUDA ON )
 
 include ( SuiteSparsePolicy )
 
@@ -88,7 +88,7 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled.
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -403,7 +403,7 @@ endif ( )
 # add the OpenMP, IPP, CUDA, BLAS, etc libraries
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
+if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
     # revert to ${OpenMP_C_LIBRARIES}:
@@ -534,7 +534,7 @@ if ( DEMO )
     target_link_libraries ( context_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( gauss_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
 
-    if ( OPENMP_C_FOUND )
+    if ( OpenMP_C_FOUND )
         target_link_libraries ( openmp_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( openmp2_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( reduce_demo PUBLIC OpenMP::OpenMP_C )

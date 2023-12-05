@@ -27,7 +27,7 @@ include ( GraphBLAS_version )
 set ( SUITESPARSE_SECOND_LEVEL true )
 
 # CUDA is under development for now, and not deployed in production:
-set ( SUITESPARSE_CUDA off )
+set ( SUITESPARSE_CUDA OFF )
 
 set ( GBMATLAB on )
 set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBMATLAB=1 " )
@@ -46,10 +46,10 @@ project ( graphblas_matlab
 # find OpenMP and cpu_features
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 if ( NOPENMP )
     # OpenMP has been disabled
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -104,7 +104,7 @@ else ( )
 endif ( )
 
 message ( STATUS "C compiler:                 ${CMAKE_C_COMPILER} ")
-message ( STATUS "CMAKE have OpenMP:          ${OPENMP_FOUND}" )
+message ( STATUS "CMAKE have OpenMP:          ${OpenMP_C_FOUND}" )
 
 #-------------------------------------------------------------------------------
 # include directories
@@ -170,7 +170,7 @@ set_target_properties ( graphblas_matlab PROPERTIES
 # select the threading library
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
+if ( OpenMP_C_FOUND )
     set ( USE_OPENMP true )
 endif ( )
 

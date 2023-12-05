@@ -81,7 +81,7 @@ endif ( )
 
 target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
 
-if ( OPENMP_CXX_FOUND )
+if ( OpenMP_CXX_FOUND )
     target_include_directories ( GraphBLAS_CUDA PRIVATE OpenMP::OpenMP_CXX )
 endif ( )
 
