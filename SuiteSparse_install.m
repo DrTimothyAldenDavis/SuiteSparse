@@ -49,7 +49,7 @@ function SuiteSparse_install (do_demo)
 % use in MATLAB.  In the system shell while in the SuiteSparse folder, type
 % "make gbmatlab".  You must then either install the libgraphblas_matlab.so
 % library system-wide ( cd GraphBLAS/GraphBLAS ; make ; sudo make install), or
-% install % your own copy ( make local ; make install ) and then add the
+% install your own copy ( make local ; make install ) and then add the
 % SuiteSparse/lib folder to your LD_LIBRARY_PATH.  Restart MATLAB after
 % compiling libgraphblas_matlab.so.
 %
