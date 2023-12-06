@@ -35,40 +35,96 @@ This module defines the following variables:
 Hints
 ^^^^^
 
-A user may set ``GRAPHBLAS_ROOT`` or ``GraphBLAS_ROOT`` to a GraphBLAS
-installation root to tell this module where to look.
+A user may set ``GraphBLAS_ROOT`` to a GraphBLAS installation root to tell this
+module where to look (for cmake 3.27, you may also use ``GRAPHBLAS_ROOT``).
 
-Otherwise, the first place searched is in ../GraphBLAS, relative to the LAGraph
-source directory.  That is, if GraphBLAS and LAGraph reside in the same parent
-folder, side-by-side, and if it contains GraphBLAS/Include/GraphBLAS.h file and
-GraphBLAS/build/libgraphblas.so (or dylib, etc), then that version is used.
-This takes precedence over the system-wide installation of GraphBLAS, which
-might be an older version.  This method gives the user the ability to compile
-LAGraph with their own copy of GraphBLAS, ignoring the system-wide version.
+First, a GraphBLASConfig.cmake file is searched in the LAGraph/build or
+../GraphBLAS/build folder.  If that is not found, a search is made for
+GraphBLASConfig.cmake in the standard places that CMake looks.
+SuiteSparse::GraphBLAS v8.2.0 and following create a GraphBLASConfig.cmake
+file, and other GraphBLAS libraries may do the same.
 
-If SuiteSparse:GraphBLAS is the GraphBLAS library being utilized,
-all the Find*.cmake files in SuiteSparse are installed by 'make install' into
-/usr/local/lib/cmake/SuiteSparse (where '/usr/local' is the
-${CMAKE_INSTALL_PREFIX}).  To access this file, place the following commands
-in your CMakeLists.txt file.  See also SuiteSparse/Example/CMakeLists.txt:
+If the GraphBLASConfig.cmake file is not found, the GraphBLAS.h include file
+and compiled GraphBLAS library are searched for in the places given by
+GraphBLAS_ROOT, GRAPHBLAS_ROOT, LAGraph/.., LAGraph/../GraphBLAS, or
+LAGraph/../SuiteSparse/GraphBLAS.  This will find SuiteSparse:GraphBLAS
+versions 8.0.x and later, or it may find another GraphBLAS library that does
+not provide a GraphBLASConfig.cmake file.
 
-    set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
-        ${CMAKE_INSTALL_PREFIX}/lib/cmake/SuiteSparse )
+If SuiteSparse:GraphBLAS is used, all the *Config.cmake files in SuiteSparse
+are installed by 'make install' into the default location when compiling
+SuiteSparse.  CMake should know where to find them.
+
+SuiteSparse:GraphBLAS also comes in many Linux distros, spack, brew, conda,
+etc. Try:
+
+    apt search libsuitesparse-dev
+    spack info suite-sparse
+    brew info suite-sparse
+    conda search -c conda-forge graphblas
+
+If GraphBLAS is not found, or if a different version is found than what was
+expected, you can enable the LAGRAPH_DUMP option to display the places where
+CMake looks.
 
 #]=======================================================================]
+
+option ( LAGRAPH_DUMP "ON: display list of places to search. OFF (default): no debug output" OFF )
 
 # NB: this is built around assumptions about one particular GraphBLAS
 # installation (SuiteSparse:GraphBLAS). As other installations become available
 # changes to this will likely be required.
 
+#-------------------------------------------------------------------------------
+# find GraphBLASConfig.make in ../GraphBLAS (typically inside SuiteSparse):
+#-------------------------------------------------------------------------------
 
-## New versions of SuiteSparse GraphBLAS (8.2.0 and newer) ##
-
-message ( STATUS "Looking for SuiteSparse GraphBLAS" )
+if ( LAGRAPH_DUMP AND NOT GraphBLAS_DIR )
+    message ( STATUS "(1) Looking for GraphBLASConfig.cmake in... :
+    CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}
+    PROJECT_SOURCE_DIR/../GraphBLAS/build: ${PROJECT_SOURCE_DIR}/../GraphBLAS/build" )
+endif ( )
 
 find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG
-    PATHS ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
+    PATHS ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../GraphBLAS/build
+    NO_DEFAULT_PATH )
+
 set ( _lagraph_gb_common_tree ON )
+
+#-------------------------------------------------------------------------------
+# if not yet found, look for GraphBLASConfig.cmake in the standard places
+#-------------------------------------------------------------------------------
+
+if ( LAGRAPH_DUMP AND NOT TARGET SuiteSparse::GraphBLAS )
+message ( STATUS "(2) Looking for GraphBLASConfig.cmake in these places (in order):
+    GraphBLAS_ROOT: ${GraphBLAS_ROOT}" )
+if ( CMAKE_VERSION VERSION_GREATER_EQUAL "3.27" )
+    message ( STATUS "
+    GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT}" )
+endif ( )
+    message ( STATUS "
+    ENV GraphBLAS_ROOT: $ENV{GraphBLAS_ROOT}" )
+if ( CMAKE_VERSION VERSION_GREATER_EQUAL "3.27" )
+    message ( STATUS "
+    ENV GRAPHBLAS_ROOT: $ENV{GRAPHBLAS_ROOT}" )
+endif ( )
+message ( STATUS "
+    CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}
+    CMAKE_FRAMEWORK_PATH: ${CMAKE_FRAMEWORK_PATH}
+    CMAKE_APPBUNDLE_PATH: ${CMAKE_APPBUNDLE_PATH}
+    ENV GraphBLAS_DIR: $ENV{GraphBLAS_DIR}
+    ENV CMAKE_PREFIX_PATH: $ENV{CMAKE_PREFIX_PATH}
+    ENV CMAKE_FRAMEWORK_PATH: $ENV{CMAKE_FRAMEWORK_PATH}
+    ENV CMAKE_APPBUNDLE_PATH: $ENV{CMAKE_APPBUNDLE_PATH}
+    ENV PATH: $ENV{PATH}
+    CMake user package registry: (see cmake documentation)
+    CMAKE_SYSTEM_PREFIX_PATH: ${CMAKE_SYSTEM_PREFIX_PATH}
+    CMAKE_SYSTEM_FRAMEWORK_PATH: ${CMAKE_SYSTEM_FRAMEWORK_PATH}
+    CMAKE_SYSTEM_APPBUNDLE_PATH: ${CMAKE_SYSTEM_APPBUNDLE_PATH}
+    CMake system package registry: (see cmake documentation)"
+    )
+endif ( )
+
 if ( NOT TARGET SuiteSparse::GraphBLAS )
     find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG )
     set ( _lagraph_gb_common_tree OFF )
@@ -77,7 +133,6 @@ endif ( )
 if ( GraphBLAS_FOUND )
     if ( TARGET SuiteSparse::GraphBLAS )
         # It's not possible to create an alias of an alias.
-        message ( STATUS "Found SuiteSparse::GraphBLAS" )
         get_property ( _graphblas_aliased TARGET SuiteSparse::GraphBLAS
             PROPERTY ALIASED_TARGET )
         if ( GRAPHBLAS_VERSION LESS "8.3.0" AND _lagraph_gb_common_tree )
@@ -104,7 +159,6 @@ if ( GraphBLAS_FOUND )
         endif ( )
     endif ( )
     if ( TARGET SuiteSparse::GraphBLAS_static )
-        message ( STATUS "Found SuiteSparse::GraphBLAS_static" )
         # It's not possible to create an alias of an alias.
         get_property ( _graphblas_aliased TARGET SuiteSparse::GraphBLAS_static
             PROPERTY ALIASED_TARGET )
@@ -134,33 +188,51 @@ if ( GraphBLAS_FOUND )
     return ( )
 endif ( )
 
+#-------------------------------------------------------------------------------
+# if still not found, look for GraphBLAS.h and compiled libraries directly
+#-------------------------------------------------------------------------------
 
-## Older versions of SuiteSparse GraphBLAS (8.0 or older)
-## or vanilla GraphBLAS libraries
+# Older versions of SuiteSparse GraphBLAS (8.0 or older) or GraphBLAS libraries
+# not from SuiteSparse.
 
-message ( STATUS "Looking for vanilla GraphBLAS (or older SuiteSparse)" )
+if ( LAGRAPH_DUMP )
+    message ( STATUS "Looking for vanilla GraphBLAS (or older SuiteSparse),
+    GraphBLAS.h and the compiled GraphBLAS library in:
+    GraphBLAS_ROOT: ${GraphBLAS_ROOT}
+    ENV GraphBLAS_ROOT $ENV{GraphBLAS_ROOT}
+    GRAPHBLAS_ROOT: ${GRAPHBLAS_ROOT}
+    ENV GRAPHBLAS_ROOT ENV${GRAPHBLAS_ROOT}
+    PROJECT_SOURCE_DIR/..: ${PROJECT_SOURCE_DIR}/..
+    PROJECT_SOURCE_DIR/../GraphBLAS: ${PROJECT_SOURCE_DIR}/../GraphBLAS
+    PROJECT_SOURCE_DIR/../SuiteSparse/GraphBLAS: ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS"
+    )
+endif ( )
 
 # "Include" for SuiteSparse:GraphBLAS
 find_path ( GRAPHBLAS_INCLUDE_DIR
   NAMES GraphBLAS.h
+  HINTS ${GraphBLAS_ROOT}
+  HINTS ENV GraphBLAS_ROOT
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${PROJECT_SOURCE_DIR}/..
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES include Include
-  )
+  NO_DEFAULT_PATH )
 
 # dynamic SuiteSparse:GraphBLAS library
 find_library ( GRAPHBLAS_LIBRARY
   NAMES graphblas
+  HINTS ${GraphBLAS_ROOT}
+  HINTS ENV GraphBLAS_ROOT
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${PROJECT_SOURCE_DIR}/..
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
-  )
+  NO_DEFAULT_PATH )
 
 if ( MSVC )
     set ( STATIC_NAME graphblas_static )
@@ -173,13 +245,16 @@ set ( save ${CMAKE_FIND_LIBRARY_SUFFIXES} )
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${CMAKE_STATIC_LIBRARY_SUFFIX} )
 find_library ( GRAPHBLAS_STATIC
   NAMES ${STATIC_NAME}
+  HINTS ${GraphBLAS_ROOT}
+  HINTS ENV GraphBLAS_ROOT
   HINTS ${GRAPHBLAS_ROOT}
   HINTS ENV GRAPHBLAS_ROOT
   HINTS ${PROJECT_SOURCE_DIR}/..
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
-  )
+  NO_DEFAULT_PATH )
+
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 if ( MINGW AND GRAPHBLAS_STATIC MATCHES ".*\.dll\.a" )
     set ( GRAPHBLAS_STATIC "" )
@@ -204,9 +279,11 @@ if ( GRAPHBLAS_VERSION )
     if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.[0-9]+.([0-9]+)" )
         set ( GraphBLAS_VERSION_PATCH ${CMAKE_MATCH_1} )
     endif ( )
-    message ( STATUS "major: ${GraphBLAS_VERSION_MAJOR}" )
-    message ( STATUS "minor: ${GraphBLAS_VERSION_MINOR}" )
-    message ( STATUS "patch: ${GraphBLAS_VERSION_PATCH}" )
+    if ( LAGRAPH_DUMP )
+        message ( STATUS "major: ${GraphBLAS_VERSION_MAJOR}" )
+        message ( STATUS "minor: ${GraphBLAS_VERSION_MINOR}" )
+        message ( STATUS "patch: ${GraphBLAS_VERSION_PATCH}" )
+    endif ( )
 endif ( )
 
 # set ( GRAPHBLAS_VERSION "" )
@@ -218,9 +295,11 @@ if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
         REGEX "define GxB_IMPLEMENTATION_MINOR" )
     file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_PATCH_STR
         REGEX "define GxB_IMPLEMENTATION_SUB" )
-    message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
-    message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
-    message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    if ( LAGRAPH_DUMP )
+        message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
+        message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
+        message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    endif ( )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MAJOR ${GRAPHBLAS_MAJOR_STR} )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MINOR ${GRAPHBLAS_MINOR_STR} )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_PATCH ${GRAPHBLAS_PATCH_STR} )
