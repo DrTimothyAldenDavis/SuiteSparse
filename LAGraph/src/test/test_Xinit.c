@@ -17,6 +17,7 @@
 
 #include "LAGraph_test.h"
 #include "LAGraphX.h"
+#include "LG_init.h"
 
 //------------------------------------------------------------------------------
 // global variables
@@ -47,6 +48,7 @@ void test_Xinit (void)
 
     OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
     printf ("msg: [%s]\n", msg) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
 
     // LAGr_Init cannot be called twice
     int status = LAGr_Init (GrB_NONBLOCKING,
@@ -56,14 +58,17 @@ void test_Xinit (void)
 
     OK (LAGraph_Finalize (msg)) ;
 
-    // reset and try again
-    OK (LAGr_Reset (msg)) ;
-    OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
+    // the flag is still set after LAGraph_Finalize has been called,
+    // per LAGraph policy
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
 
-    // test the failure mode in LAGr_Reset
-    status = LAGr_Reset (msg) ;
-    printf ("msg: [%s]\n", msg) ;
-    TEST_CHECK (status == GrB_INVALID_VALUE) ;
+    // reset and try again
+    LG_set_LAGr_Init_has_been_called (false) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == false) ;
+    OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
+    OK (LAGraph_Finalize (msg)) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
 }
 
 //------------------------------------------------------------------------------
@@ -136,12 +141,15 @@ void test_Xinit_brutal (void)
         }
     }
 
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
+
     for (int nbrutal = 0 ; nbrutal < 1000 ; nbrutal++)
     {
         LG_brutal = nbrutal ;
         // reset both GraphBLAS and LAGraph
         GB_Global_GrB_init_called_set (false) ;
-        OK (LAGr_Reset (msg)) ;
+        LG_set_LAGr_Init_has_been_called (false) ;
+        TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == false) ;
         // try to initialize GraphBLAS and LAGraph
         int result = LAGr_Init (GrB_NONBLOCKING,
             LG_brutal_malloc, LG_brutal_calloc,
