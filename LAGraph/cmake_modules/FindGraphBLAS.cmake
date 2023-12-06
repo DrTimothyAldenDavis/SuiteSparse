@@ -86,14 +86,16 @@ if ( GraphBLAS_FOUND )
             # (did not have "/Include")
             get_property ( _inc TARGET SuiteSparse::GraphBLAS PROPERTY
                 INTERFACE_INCLUDE_DIRECTORIES )
-            if ( "${_graphblas_aliased}" STREQUAL "" )
-                target_include_directories ( SuiteSparse::GraphBLAS INTERFACE
-                    ${_inc}/Include )
-            else ( )
-                target_include_directories ( ${_graphblas_aliased} INTERFACE
-                    ${_inc}/Include )
+            if ( IS_DIRECTORY ${_inc}/Include )
+                if ( "${_graphblas_aliased}" STREQUAL "" )
+                    target_include_directories ( SuiteSparse::GraphBLAS INTERFACE
+                        ${_inc}/Include )
+                else ( )
+                    target_include_directories ( ${_graphblas_aliased} INTERFACE
+                        ${_inc}/Include )
+                endif ( )
+                message ( STATUS "additional include: ${_inc}/Include" )
             endif ( )
-            message ( STATUS "additional include: ${_inc}/Include" )
         endif ( )
         if ( "${_graphblas_aliased}" STREQUAL "" )
             add_library ( GraphBLAS::GraphBLAS ALIAS SuiteSparse::GraphBLAS )
@@ -112,14 +114,16 @@ if ( GraphBLAS_FOUND )
             # (did not have "/Include")
             get_property ( _inc TARGET SuiteSparse::GraphBLAS_static PROPERTY
                 INTERFACE_INCLUDE_DIRECTORIES )
-            if ( "${_graphblas_aliased}" STREQUAL "" )
-                target_include_directories ( SuiteSparse::GraphBLAS_static INTERFACE
-                    ${_inc}/Include )
-            else ( )
-                target_include_directories ( ${_graphblas_aliased} INTERFACE
-                    ${_inc}/Include )
+            if ( IS_DIRECTORY ${_inc}/Include )
+                if ( "${_graphblas_aliased}" STREQUAL "" )
+                    target_include_directories ( SuiteSparse::GraphBLAS_static INTERFACE
+                        ${_inc}/Include )
+                else ( )
+                    target_include_directories ( ${_graphblas_aliased} INTERFACE
+                        ${_inc}/Include )
+                endif ( )
+                message ( STATUS "additional include: ${_inc}/Include" )
             endif ( )
-            message ( STATUS "additional include: ${_inc}/Include" )
         endif ( )
         if ( "${_graphblas_aliased}" STREQUAL "" )
             add_library ( GraphBLAS::GraphBLAS_static ALIAS SuiteSparse::GraphBLAS_static )
