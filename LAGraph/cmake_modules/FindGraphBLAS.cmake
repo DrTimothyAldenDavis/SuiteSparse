@@ -68,8 +68,10 @@ message ( STATUS "Looking for SuiteSparse GraphBLAS" )
 
 find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG
     PATHS ${CMAKE_BINARY_DIR} ${PROJECT_SOURCE_DIR}/../GraphBLAS/build NO_DEFAULT_PATH )
+set ( _lagraph_gb_common_tree ON )
 if ( NOT TARGET SuiteSparse::GraphBLAS )
     find_package ( GraphBLAS ${GraphBLAS_FIND_VERSION} CONFIG )
+    set ( _lagraph_gb_common_tree OFF )
 endif ( )
 
 if ( GraphBLAS_FOUND )
@@ -83,11 +85,14 @@ if ( GraphBLAS_FOUND )
         else ( )
             add_library ( GraphBLAS::GraphBLAS ALIAS ${_graphblas_aliased} )
         endif ( )
-        if ( GRAPHBLAS_VERSION LESS "8.3.0" )
-            # workaround for SuiteSparse:GraphBLAS 8.2.x (did not have "/Include")
+        if ( GRAPHBLAS_VERSION LESS "8.3.0" AND _lagraph_gb_common_tree )
+            # workaround for incorrect INTERFACE_INCLUDE_DIRECTORIES of
+            # SuiteSparse:GraphBLAS 8.2.x before installation
+            # (did not have "/Include")
             get_property ( _inc TARGET GraphBLAS::GraphBLAS PROPERTY
                 INTERFACE_INCLUDE_DIRECTORIES )
-            include_directories ( ${_inc}/Include )
+            target_include_directories ( GraphBLAS::GraphBLAS INTERFACE
+                ${_inc}/Include )
             message ( STATUS "additional include: ${_inc}/Include" )
         endif ( )
     endif ( )
@@ -101,12 +106,15 @@ if ( GraphBLAS_FOUND )
         else ( )
             add_library ( GraphBLAS::GraphBLAS_static ALIAS ${_graphblas_aliased} )
         endif ( )
-        if ( GRAPHBLAS_VERSION LESS "8.3.0" )
-            # workaround for SuiteSparse:GraphBLAS 8.2.x (did not have "/Include")
+        if ( GRAPHBLAS_VERSION LESS "8.3.0" AND _lagraph_gb_common_tree )
+            # workaround for incorrect INTERFACE_INCLUDE_DIRECTORIES of
+            # SuiteSparse:GraphBLAS 8.2.x before installation
+            # (did not have "/Include")
             get_property ( _inc TARGET GraphBLAS::GraphBLAS_static PROPERTY
                 INTERFACE_INCLUDE_DIRECTORIES )
-            include_directories ( ${_inc}/Include )
-            message ( STATUS "additional include: ${_inc}/Include" )
+            target_include_directories ( GraphBLAS::GraphBLAS_static INTERFACE
+                ${_inc}/Include )
+           message ( STATUS "additional include: ${_inc}/Include" )
         endif ( )
     endif ( )
     return ( )
