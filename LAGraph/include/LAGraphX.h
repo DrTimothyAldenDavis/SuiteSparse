@@ -46,8 +46,10 @@ extern "C"
 //==============================================================================
 
 // Do not rely on these in production.  These methods are still under
-// development, and is intended only for illustration not benchmarking.  Do not
-// use for benchmarking, without asking the authors.
+// development, and is intended only for illustration or testing, not
+// benchmarking.  Do not use for benchmarking without asking the authors.
+
+int LAGr_Reset (char *msg) ;    // primarily for testing
 
 //------------------------------------------------------------------------------
 // LAGraph_Random_*: Random number generator

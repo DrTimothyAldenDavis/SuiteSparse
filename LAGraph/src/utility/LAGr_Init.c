@@ -20,10 +20,14 @@
 #include "LG_internal.h"
 
 //------------------------------------------------------------------------------
-// LAGraph global objects
+// LG_init_has_been_called: a static value accessible within this file only
 //------------------------------------------------------------------------------
 
-bool LG_init_has_been_called = false ;
+static bool LG_init_has_been_called = false ;
+
+//------------------------------------------------------------------------------
+// LAGraph global objects
+//------------------------------------------------------------------------------
 
 // LAGraph_plus_first_T: using the GrB_PLUS_MONOID_T monoid and the
 // corresponding GrB_FIRST_T multiplicative operator.
@@ -111,7 +115,6 @@ int LAGr_Init
     // ensure LAGr_Init has not already been called
     LG_ASSERT_MSG (!LG_init_has_been_called, GrB_INVALID_VALUE,
         "LAGr*_Init can only be called once") ;
-    LG_init_has_been_called = true ;
 
     //--------------------------------------------------------------------------
     // start GraphBLAS
@@ -294,8 +297,37 @@ int LAGr_Init
         GrB_MIN_MONOID_UINT64 , GrB_ONEB_UINT64)) ;
     GRB_TRY (GrB_Semiring_new (&LAGraph_any_one_fp32,
         GrB_MIN_MONOID_FP32   , GrB_ONEB_FP32  )) ;
+    // LAGraph_any_one_fp64 is the last object created:
     GRB_TRY (GrB_Semiring_new (&LAGraph_any_one_fp64,
         GrB_MIN_MONOID_FP64   , GrB_ONEB_FP64  )) ;
 
+    LG_init_has_been_called = true ;
     return (GrB_SUCCESS) ;
 }
+
+//------------------------------------------------------------------------------
+// LAGr_Reset
+//------------------------------------------------------------------------------
+
+// This method is meant primarily for testing.  It can be only called after
+// LAGraph_Finalize has been called; it returns GrB_INVALID otherwise.  The
+// method allows the testing framework to reset the internal flag that says
+// LAGr_Init has been called, so that LAGr_Init can be called again within the
+// test.
+
+int LAGr_Reset (char *msg)
+{
+    LG_CLEAR_MSG ;
+    // check if the last created object has been freed
+    if (LAGraph_any_one_fp64 != NULL)
+    {
+        LG_ASSERT_MSG (false, GrB_INVALID_VALUE,
+            "LAGr_Reset can only be called after LAGraph_Finalize"
+            " or before LAGr_Init") ;
+    }
+    // only set it to false if the object has been cleared.
+    LG_init_has_been_called = false ;
+    // now LAGr_Init can be called again.
+    return (GrB_SUCCESS) ;
+}
+

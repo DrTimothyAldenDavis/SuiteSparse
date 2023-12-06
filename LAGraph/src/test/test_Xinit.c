@@ -16,6 +16,7 @@
 //------------------------------------------------------------------------------
 
 #include "LAGraph_test.h"
+#include "LAGraphX.h"
 
 //------------------------------------------------------------------------------
 // global variables
@@ -30,19 +31,19 @@ char msg [LAGRAPH_MSG_LEN] ;
 void test_Xinit (void)
 {
 
-    printf ("\nTesting LAGr_Init:\n") ;
+    printf ("\nTesting LAGr_Init: with expected errors\n") ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, NULL, NULL, NULL, NULL, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, malloc, NULL, NULL, NULL, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, NULL, NULL, NULL, free, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
     printf ("msg: [%s]\n", msg) ;
@@ -51,9 +52,18 @@ void test_Xinit (void)
     int status = LAGr_Init (GrB_NONBLOCKING,
         malloc, calloc, realloc, free, msg) ;
     TEST_CHECK (status != GrB_SUCCESS) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     OK (LAGraph_Finalize (msg)) ;
+
+    // reset and try again
+    OK (LAGr_Reset (msg)) ;
+    OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
+
+    // test the failure mode in LAGr_Reset
+    status = LAGr_Reset (msg) ;
+    printf ("msg: [%s]\n", msg) ;
+    TEST_CHECK (status == GrB_INVALID_VALUE) ;
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +71,6 @@ void test_Xinit (void)
 //------------------------------------------------------------------------------
 
 #if LAGRAPH_SUITESPARSE
-bool LG_init_has_been_called ;
 void test_Xinit_brutal (void)
 {
     // no brutal memory failures, but test LG_brutal_malloc/calloc/realloc/free
@@ -130,19 +139,23 @@ void test_Xinit_brutal (void)
     for (int nbrutal = 0 ; nbrutal < 1000 ; nbrutal++)
     {
         LG_brutal = nbrutal ;
+        // reset both GraphBLAS and LAGraph
         GB_Global_GrB_init_called_set (false) ;
-        LG_init_has_been_called = false ;
+        OK (LAGr_Reset (msg)) ;
+        // try to initialize GraphBLAS and LAGraph
         int result = LAGr_Init (GrB_NONBLOCKING,
             LG_brutal_malloc, LG_brutal_calloc,
             LG_brutal_realloc, LG_brutal_free, msg) ;
         if (result == 0)
         {
+            // success
             OK (LAGraph_Finalize (msg)) ;
             printf ("LAGr_Init: finally: %d %g\n", nbrutal,
                 (double) LG_nmalloc) ;
             TEST_CHECK (LG_nmalloc == 0) ;
             break ;
         }
+        // failure: free anything partially allocated
         OK (LAGraph_Finalize (msg)) ;
     }
 }
