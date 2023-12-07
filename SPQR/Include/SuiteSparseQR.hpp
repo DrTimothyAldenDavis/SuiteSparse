@@ -2,7 +2,7 @@
 // === SuiteSparseQR.hpp =======================================================
 // =============================================================================
 
-// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 // User include file for C++ programs.
@@ -20,8 +20,9 @@
 #define SUITESPARSE_GPU_EXTERN_ON
 extern "C"
 {
-#include "SuiteSparseQR_definitions.h"
-#include "cholmod.h"
+    #include "SuiteSparse_config.h"
+    #include "cholmod.h"
+    #include "SuiteSparseQR_definitions.h"
 }
 #undef SUITESPARSE_GPU_EXTERN_ON
 
@@ -366,6 +367,8 @@ template <typename Entry, typename Int = int64_t> struct SuiteSparseQR_factoriza
 // =============================================================================
 // === Simple user-callable SuiteSparseQR functions ============================
 // =============================================================================
+
+void SuiteSparseQR_version (int version [3]) ;
 
 //  SuiteSparseQR           Sparse QR factorization and solve
 //  SuiteSparseQR_qmult     Q'*X, Q*X, X*Q', or X*Q for X full or sparse

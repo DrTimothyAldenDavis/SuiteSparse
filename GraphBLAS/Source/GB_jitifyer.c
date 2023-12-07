@@ -1162,6 +1162,9 @@ void GB_jitifyer_set_use_cmake (bool use_cmake)
         #if defined (_MSC_VER)
         // Windows requires cmake
         GB_jit_use_cmake = true ;
+        #elif defined (__MINGW32__)
+        // MINGW requires direct compile
+        GB_jit_use_cmake = false ;
         #else
         // all other platforms have the option to use cmake or a direct compile
         GB_jit_use_cmake = use_cmake ;
@@ -2194,7 +2197,10 @@ static void GB_jitifyer_command (char *command)
 // This method does not return any error/success code.  If the compilation
 // fails for any reason, the subsequent load of the compiled kernel will fail.
 
-// This method works on any platform.  For Windows, this method is always used.
+// This method works on most platforms (not yet on MINGW, so it is not used
+// there).  For Windows using MSVC, this method is always used.
+
+// FUTURE: get this method to work in MINGW.
 
 #define GB_BLD_DIR "%s/tmp/%016" PRIx64
 
@@ -2207,9 +2213,15 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
     char *burble_stdout = GB_Global_burble_get ( ) ? "" : GB_DEV_NULL ;
     char *err_redirect = (strlen (GB_jit_error_log) > 0) ? " 2>> " : "" ;
 
+#if defined (__MINGW32__)
+#define GB_SH_C "sh -c "
+#else
+#define GB_SH_C
+#endif
+
     // remove any prior build folder for this kernel, and all its contents
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
-        "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
+        GB_SH_C "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
     GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
@@ -2267,7 +2279,7 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
 
     // generate the build system for this kernel
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
-        "cmake -S \"" GB_BLD_DIR "\" -B \"" GB_BLD_DIR "\""
+        GB_SH_C "cmake -S \"" GB_BLD_DIR "\" -B \"" GB_BLD_DIR "\""
         " -DCMAKE_C_COMPILER=\"%s\" %s %s %s",
         GB_jit_cache_path, hash,     // -S source path
         GB_jit_cache_path, hash,     // -B build path
@@ -2277,7 +2289,7 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
 
     // compile the library for this kernel
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
-        "cmake --build \"" GB_BLD_DIR "\" --config Release %s %s %s",
+        GB_SH_C "cmake --build \"" GB_BLD_DIR "\" --config Release %s %s %s",
         // can add "--verbose" here too
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
@@ -2285,14 +2297,14 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
 
     // install the library
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
-        "cmake --install \"" GB_BLD_DIR "\" %s %s %s",
+        GB_SH_C "cmake --install \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
     GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
 
     // remove the build folder and all its contents
     snprintf (GB_jit_temp, GB_jit_temp_allocated,
-        "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
+        GB_SH_C "cmake -E remove_directory \"" GB_BLD_DIR "\" %s %s %s",
         GB_jit_cache_path, hash,     // build path
         burble_stdout, err_redirect, GB_jit_error_log) ;
     GB_jitifyer_command (GB_jit_temp) ; // OK: see security comment above
@@ -2307,7 +2319,11 @@ void GB_jitifyer_cmake_compile (char *kernel_name, uint64_t hash)
 // This method does not return any error/success code.  If the compilation
 // fails for any reason, the subsequent load of the compiled kernel will fail.
 
-// This method does not work on Windows. 
+// This method does not work on Windows with MSVC.  It works for Linux, Mac,
+// or Windows with MINGW (for which it is currently the only option).
+
+// FUTURE: get this method to work in MSVC, since it's much faster than using
+// cmake on Windows.
 
 void GB_jitifyer_direct_compile (char *kernel_name, uint32_t bucket)
 { 

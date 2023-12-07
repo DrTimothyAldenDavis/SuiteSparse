@@ -2,7 +2,7 @@
 // CCOLAMD/Include/ccolamd.h:  constrained column approx. min. degree ordering
 //------------------------------------------------------------------------------
 
-// CCOLAMD, Copyright (c) 1996-2022, Timothy A. Davis, Sivasankaran
+// CCOLAMD, Copyright (c) 1996-2023, Timothy A. Davis, Sivasankaran
 // Rajamanickam, and Stefan Larimore.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -15,11 +15,6 @@
 
 #ifndef CCOLAMD_H
 #define CCOLAMD_H
-
-/* make it easy for C++ programs to include CCOLAMD */
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include "SuiteSparse_config.h"
 
@@ -46,9 +41,14 @@ extern "C" {
 #define CCOLAMD_SUB_VERSION    3
 #define CCOLAMD_SUBSUB_VERSION 0
 
-#define CCOLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define CCOLAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define CCOLAMD_VERSION \
 	CCOLAMD_VERSION_CODE(CCOLAMD_MAIN_VERSION,CCOLAMD_SUB_VERSION)
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "CCOLAMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#endif
 
 /* ========================================================================== */
 /* === Knob and statistics definitions ====================================== */
@@ -111,6 +111,11 @@ extern "C" {
 /* ========================================================================== */
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
+
+/* make it easy for C++ programs to include CCOLAMD */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 size_t ccolamd_recommended	/* returns recommended value of Alen, */
 				/* or 0 if input arguments are erroneous */
@@ -212,6 +217,7 @@ void csymamd_l_report
     int64_t stats [CCOLAMD_STATS]
 ) ;
 
+void ccolamd_version (int version [3]) ;
 
 /* ========================================================================== */
 /* === Prototypes of "expert" routines ====================================== */

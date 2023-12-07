@@ -2,7 +2,7 @@
 // LAGraphX.h: include file for LAGraph experimental code
 //------------------------------------------------------------------------------
 
-// LAGraph, (c) 2019-2022 by The LAGraph Contributors, All Rights Reserved.
+// LAGraph, (c) 2019-2023 by The LAGraph Contributors, All Rights Reserved.
 // SPDX-License-Identifier: BSD-2-Clause
 //
 // For additional details (including references to third party source code and
@@ -46,8 +46,8 @@ extern "C"
 //==============================================================================
 
 // Do not rely on these in production.  These methods are still under
-// development, and is intended only for illustration not benchmarking.  Do not
-// use for benchmarking, without asking the authors.
+// development, and is intended only for illustration or testing, not
+// benchmarking.  Do not use for benchmarking without asking the authors.
 
 //------------------------------------------------------------------------------
 // LAGraph_Random_*: Random number generator

@@ -2,7 +2,7 @@
 // LAGraph/src/test/test_Xinit.c:  test LAGr_Init and LAGraph_Global
 //------------------------------------------------------------------------------
 
-// LAGraph, (c) 2019-2022 by The LAGraph Contributors, All Rights Reserved.
+// LAGraph, (c) 2019-2023 by The LAGraph Contributors, All Rights Reserved.
 // SPDX-License-Identifier: BSD-2-Clause
 //
 // For additional details (including references to third party source code and
@@ -16,6 +16,8 @@
 //------------------------------------------------------------------------------
 
 #include "LAGraph_test.h"
+#include "LAGraphX.h"
+#include "LG_init.h"
 
 //------------------------------------------------------------------------------
 // global variables
@@ -30,30 +32,43 @@ char msg [LAGRAPH_MSG_LEN] ;
 void test_Xinit (void)
 {
 
-    printf ("\nTesting LAGr_Init:\n") ;
+    printf ("\nTesting LAGr_Init: with expected errors\n") ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, NULL, NULL, NULL, NULL, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, malloc, NULL, NULL, NULL, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     TEST_CHECK (LAGr_Init (GrB_NONBLOCKING, NULL, NULL, NULL, free, msg)
         == GrB_NULL_POINTER) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
     printf ("msg: [%s]\n", msg) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
 
     // LAGr_Init cannot be called twice
     int status = LAGr_Init (GrB_NONBLOCKING,
         malloc, calloc, realloc, free, msg) ;
     TEST_CHECK (status != GrB_SUCCESS) ;
-    printf ("msg: %s\n", msg) ;
+    printf ("msg: [%s]\n", msg) ;
 
     OK (LAGraph_Finalize (msg)) ;
+
+    // the flag is still set after LAGraph_Finalize has been called,
+    // per LAGraph policy
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
+
+    // reset and try again
+    LG_set_LAGr_Init_has_been_called (false) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == false) ;
+    OK (LAGr_Init (GrB_NONBLOCKING, malloc, calloc, realloc, free, msg)) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
+    OK (LAGraph_Finalize (msg)) ;
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +76,6 @@ void test_Xinit (void)
 //------------------------------------------------------------------------------
 
 #if LAGRAPH_SUITESPARSE
-bool LG_init_has_been_called_from_Xinit ;
 void test_Xinit_brutal (void)
 {
     // no brutal memory failures, but test LG_brutal_malloc/calloc/realloc/free
@@ -127,22 +141,29 @@ void test_Xinit_brutal (void)
         }
     }
 
+    TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == true) ;
+
     for (int nbrutal = 0 ; nbrutal < 1000 ; nbrutal++)
     {
         LG_brutal = nbrutal ;
+        // reset both GraphBLAS and LAGraph
         GB_Global_GrB_init_called_set (false) ;
-        LG_init_has_been_called_from_Xinit = false ;
+        LG_set_LAGr_Init_has_been_called (false) ;
+        TEST_CHECK (LG_get_LAGr_Init_has_been_called ( ) == false) ;
+        // try to initialize GraphBLAS and LAGraph
         int result = LAGr_Init (GrB_NONBLOCKING,
             LG_brutal_malloc, LG_brutal_calloc,
             LG_brutal_realloc, LG_brutal_free, msg) ;
         if (result == 0)
         {
+            // success
             OK (LAGraph_Finalize (msg)) ;
             printf ("LAGr_Init: finally: %d %g\n", nbrutal,
                 (double) LG_nmalloc) ;
             TEST_CHECK (LG_nmalloc == 0) ;
             break ;
         }
+        // failure: free anything partially allocated
         OK (LAGraph_Finalize (msg)) ;
     }
 }

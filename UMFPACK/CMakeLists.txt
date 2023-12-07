@@ -38,27 +38,13 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../CHOLMOD/cmake_modules
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
 option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 include ( SuiteSparsePolicy )
 
-if ( SUITESPARSE_CUDA )
-    # UMFPACK with CHOLMOD (which can use CUDA)
-    enable_language ( CXX CUDA )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
-
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
-    # OpenMP has been disabled
-    set ( OPENMP_FOUND false )
-else ( )
-    find_package ( OpenMP )
-endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.4.0
@@ -71,26 +57,6 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
         find_package ( AMD 3.3.0 REQUIRED )
-    endif ( )
-
-    if ( DEMO AND NOT WIN32 )
-        find_package ( COLAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::COLAMD )
-            find_package ( COLAMD 3.3.0 REQUIRED )
-        endif ( )
-
-        find_package ( CAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.3.0 REQUIRED )
-        endif ( )
-
-        find_package ( CCOLAMD 3.3.0
-            PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
-        if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.3.0 REQUIRED )
-        endif ( )
     endif ( )
 endif ( )
 
@@ -108,14 +74,12 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
 
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
-        set ( NCHOLMOD true )
+        set ( NCHOLMOD ON )
     endif ( )
 endif ( )
 
 if ( NCHOLMOD )
-    # tell UMFPACK that CHOLMOD is not available
     message ( STATUS "CHOLMOD not found or not requested" )
-    add_compile_definitions ( NCHOLMOD )
 else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
@@ -155,6 +119,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/umfpack.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( UMFPACK PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( UMFPACK 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -176,6 +144,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( UMFPACK_static PROPERTIES
             OUTPUT_NAME umfpack_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( UMFPACK_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( UMFPACK_static 
@@ -201,33 +173,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# OpenMP:
-if ( OPENMP_FOUND )
-    message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
-    message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
-    message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( UMFPACK PRIVATE ${OpenMP_C_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( UMFPACK_static PUBLIC ${OpenMP_C_LIBRARIES} )
-        list ( APPEND UMFPACK_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
-    endif ( )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
-endif ( )
-
-# libm:
-if ( NOT WIN32 )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( UMFPACK PRIVATE m )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND UMFPACK_STATIC_LIBS "m" )
-        target_link_libraries ( UMFPACK_static PUBLIC m )
-    endif ( )
-endif ( )
-
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( UMFPACK PRIVATE SuiteSparse::AMD )
@@ -242,19 +187,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS} ")
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    list ( APPEND UMFPACK_STATIC_LIBS ${BLAS_LIBRARIES} )
-    target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
-endif ( )
-include_directories ( ${BLAS_INCLUDE_DIRS} )
-
 # CHOLMOD:
 if ( NOT NCHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
@@ -264,11 +196,44 @@ if ( NOT NCHOLMOD )
     if ( BUILD_STATIC_LIBS )
         set ( UMFPACK_STATIC_MODULES "${UMFPACK_STATIC_MODULES} CHOLMOD" )
         if ( TARGET SuiteSparse::CHOLMOD_static )
-            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD_static )
+            target_link_libraries ( UMFPACK_static PRIVATE SuiteSparse::CHOLMOD_static )
         else ( )
-            target_link_libraries ( UMFPACK_static PUBLIC SuiteSparse::CHOLMOD )
+            target_link_libraries ( UMFPACK_static PRIVATE SuiteSparse::CHOLMOD )
         endif ( )
     endif ( )
+else ( )
+    # tell UMFPACK that CHOLMOD is not available
+    if ( BUILD_SHARED_LIBS )
+        target_compile_definitions ( UMFPACK PRIVATE NCHOLMOD )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_compile_definitions ( UMFPACK_static PRIVATE NCHOLMOD )
+    endif ( )
+endif ( )
+
+# libm:
+if ( NOT WIN32 )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( UMFPACK PRIVATE m )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND UMFPACK_STATIC_LIBS "m" )
+        target_link_libraries ( UMFPACK_static PUBLIC m )
+    endif ( )
+endif ( )
+
+# BLAS:
+message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
+message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS}" )
+message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS}" )
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( UMFPACK PRIVATE ${BLAS_LIBRARIES} )
+    target_include_directories ( UMFPACK PRIVATE ${BLAS_INCLUDE_DIRS} )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    list ( APPEND UMFPACK_STATIC_LIBS ${BLAS_LIBRARIES} )
+    target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
+    target_include_directories ( UMFPACK_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -436,7 +401,7 @@ if ( DEMO )
         target_link_libraries ( umfpack_zi_demo PUBLIC UMFPACK_static )
         target_link_libraries ( umfpack_zl_demo PUBLIC UMFPACK_static )
     endif ( )
-    target_link_libraries ( umfpack_simple  PUBLIC SuiteSparse::SuiteSparseConfig )
+    target_link_libraries ( umfpack_simple PUBLIC SuiteSparse::SuiteSparseConfig )
     if ( NOT NFORTRAN )
         # Fortran demos
         if ( BUILD_SHARED_LIBS )

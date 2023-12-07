@@ -189,9 +189,7 @@ void wildmult (wildtype *z, const wildtype *x, const wildtype *y)
 //------------------------------------------------------------------------------
 
 #define LINE \
-"----------------------------------------------------------------------------\n"
-#define LINE2 \
-"============================================================================\n"
+"--------------------------------------------------------\n"
 
 int main (void)
 {
@@ -208,17 +206,7 @@ int main (void)
     GxB_Global_Option_set (GxB_BURBLE, true) ;
     int nthreads ;
     GxB_Global_Option_get (GxB_GLOBAL_NTHREADS, &nthreads) ;
-    fprintf (stderr, "wildtype demo: nthreads %d\n", nthreads) ;
-
-    /* via #defines:
-    fprintf (stderr, LINE2 "SuiteSparse:GraphBLAS Version %d.%d.%d, %s\n" LINE2
-        "%s" LINE "License: %s" LINE "GraphBLAS API Version %d.%d.%d, %s"
-        " (http://graphblas.org)\n%s" LINE2, GxB_IMPLEMENTATION_MAJOR,
-        GxB_IMPLEMENTATION_MINOR, GxB_IMPLEMENTATION_SUB,
-        GxB_IMPLEMENTATION_DATE,  GxB_IMPLEMENTATION_ABOUT,
-        GxB_IMPLEMENTATION_LICENSE, GxB_SPEC_MAJOR, GxB_SPEC_MINOR,
-        GxB_SPEC_SUB, GxB_SPEC_DATE, GxB_SPEC_ABOUT) ;
-    */
+    fprintf (stderr, "\n" LINE "wildtype_demo: nthreads: %d\n", nthreads ) ;
 
     char *library ;   GxB_Global_Option_get (GxB_LIBRARY_NAME,     &library) ;
     int version [3] ; GxB_Global_Option_get (GxB_LIBRARY_VERSION,  version) ;
@@ -233,9 +221,9 @@ int main (void)
     char *api_about ; GxB_Global_Option_get (GxB_API_ABOUT,        &api_about) ;
     char *api_url ;   GxB_Global_Option_get (GxB_API_URL,          &api_url) ;
 
-    fprintf (stderr, LINE2 "%s Version %d.%d.%d, %s\n" LINE2 "%s"
+    fprintf (stderr, LINE "%s Version %d.%d.%d, %s\n" LINE "%s"
         "(%s)\n" LINE "License:\n%s" LINE "GraphBLAS API Version %d.%d.%d, %s"
-        " (%s)\n%s" LINE2,
+        " (%s)\n%s" LINE,
         library, version [0], version [1], version [2], date, about, url,
         license, api_ver [0], api_ver [1], api_ver [2], api_date, api_url,
         api_about) ;
@@ -460,5 +448,6 @@ int main (void)
     GrB_Type_free (&WildType) ;
 
     GrB_finalize ( ) ;
+    fprintf (stderr, "\n" LINE) ;
 }
 

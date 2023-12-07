@@ -2,7 +2,7 @@
 // KLU/Source/klu.h: include file for KLU
 //------------------------------------------------------------------------------
 
-// KLU, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// KLU, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 // Authors: Timothy A. Davis and Ekanathan Palamadai.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -13,14 +13,14 @@
 #ifndef _KLU_H
 #define _KLU_H
 
+#include "amd.h"
+#include "colamd.h"
+#include "btf.h"
+
 /* make it easy for C++ programs to include KLU */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "amd.h"
-#include "colamd.h"
-#include "btf.h"
 
 /* -------------------------------------------------------------------------- */
 /* Symbolic object - contains the pre-ordering computed by klu_analyze */
@@ -795,6 +795,15 @@ void *klu_l_free (void *, size_t, size_t, klu_l_common *) ;
 
 void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
 
+//------------------------------------------------------------------------------
+// klu_version: return KLU version
+//------------------------------------------------------------------------------
+
+void klu_version (int version [3]) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 /* ========================================================================== */
 /* === KLU version ========================================================== */
@@ -819,10 +828,25 @@ void *klu_l_realloc (size_t, size_t, size_t, void *, klu_l_common *) ;
 #define KLU_SUB_VERSION    @KLU_VERSION_MINOR@
 #define KLU_SUBSUB_VERSION @KLU_VERSION_SUB@
 
-#define KLU_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define KLU_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define KLU_VERSION KLU_VERSION_CODE(KLU_MAIN_VERSION,KLU_SUB_VERSION)
 
-#ifdef __cplusplus
-}
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires SuiteSparse_config 7.4.0 or later"
 #endif
+
+#if AMD_VERSION < SUITESPARSE_VER_CODE(3,3)
+#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires AMD 3.3.0 or later"
 #endif
+
+#if COLAMD_VERSION < SUITESPARSE_VER_CODE(3,3)
+#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires COLAMD 3.3.0 or later"
+#endif
+
+#if BTF_VERSION < SUITESPARSE_VER_CODE(2,3)
+#error "KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires BTF 2.3.0 or later"
+#endif
+
+#endif
+

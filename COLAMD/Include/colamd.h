@@ -2,7 +2,7 @@
 // COLAMD/Source/colamd.h: include file for COLAMD
 //------------------------------------------------------------------------------
 
-// COLAMD, Copyright (c) 1998-2022, Timothy A. Davis and Stefan Larimore,
+// COLAMD, Copyright (c) 1998-2023, Timothy A. Davis and Stefan Larimore,
 // All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -37,11 +37,6 @@
 #ifndef COLAMD_H
 #define COLAMD_H
 
-/* make it easy for C++ programs to include COLAMD */
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 /* ========================================================================== */
 /* === Include files ======================================================== */
 /* ========================================================================== */
@@ -75,9 +70,14 @@ extern "C" {
 #define COLAMD_SUB_VERSION    3
 #define COLAMD_SUBSUB_VERSION 0
 
-#define COLAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define COLAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define COLAMD_VERSION \
         COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "COLAMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#endif
 
 /* ========================================================================== */
 /* === Knob and statistics definitions ====================================== */
@@ -128,6 +128,11 @@ extern "C" {
 /* ========================================================================== */
 /* === Prototypes of user-callable routines ================================= */
 /* ========================================================================== */
+
+/* make it easy for C++ programs to include COLAMD */
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 size_t colamd_recommended       /* returns recommended value of Alen, */
                                 /* or 0 if input arguments are erroneous */
@@ -228,6 +233,8 @@ void symamd_l_report
 (
     int64_t stats [COLAMD_STATS]
 ) ;
+
+void colamd_version (int version [3]) ;
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\batchmode
+% \batchmode
 \usepackage{url}
 \urlstyle{sf}
 \usepackage[svgnames]{xcolor}
@@ -8873,11 +8873,21 @@ comment, which may be helpful to select specific kernels to copy into the
 \label{use_cmake}
 
 Two methods are provided for compiling the JIT kernels: cmake, and a direct
-compiler/link command.  On Windows, only cmake may be used, and this setting
-is ignored (it is always true).  On Linux or Mac, the default is false since
-a direct compile/link is faster.  However, it is possible that some compilers
-are not handled properly with this method, so cmake can also be used on those
-platforms by setting the value of \verb'GxB_JIT_USE_CMAKE' to true.
+compiler/link command.
+
+On Linux or Mac, or the default is false since a direct compile/link is faster.
+However, it is possible that some compilers are not handled properly with this
+method, so cmake can also be used on those platforms by setting the value of
+\verb'GxB_JIT_USE_CMAKE' to true.
+
+On Windows with MS Visual Studio, only cmake may be used, and this setting is
+ignored (it is always true).  Direct compilation without cmake on Windows with
+MSVC is not yet available.
+
+When using MINGW on Windows the opposite is true: cmake may not be used, and
+this setting ignored (it is always false).  The only option is to use a direct
+compile instead of using cmake.  Using cmake to build kernels when using MINGW
+on Windows is not yet available.
 
 Normally the same version of cmake should be used to compile both GraphBLAS and
 the JIT kernels.  However, compiling GraphBLAS itself requires cmake v3.16 or
@@ -16447,6 +16457,12 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Dec 30, 2023: version 8.3.0
+
+    \begin{itemize}
+    \item major change to build system: by Markus M\"{u}tzel
+    \end{itemize}
 
 \item Oct 7, 2023: version 8.2.1
 

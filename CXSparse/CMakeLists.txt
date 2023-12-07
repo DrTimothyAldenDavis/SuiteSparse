@@ -43,6 +43,7 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 # MS Visual Studio does not support the complex type for ANSI C11.
+# FIXME: see GraphBLAS for how to use complex types in MS Visual Studio.
 
 if ( MSVC )
     option ( NCOMPLEX "ON (default): complex data type disabled.  OFF: complex data type enabled." on )
@@ -98,6 +99,7 @@ if ( NCOMPLEX )
         "Source/cs_counts.c"
         "Source/cs_cumsum.c"
         "Source/cs_[d-z]*.c"
+        "Source/cxsparse_version.c"
         )
 else ( )
     file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
@@ -114,6 +116,10 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${CXSPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "Include/cs.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CXSparse PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( CXSparse
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -136,6 +142,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( CXSparse_static PROPERTIES
             OUTPUT_NAME cxsparse_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( CXSparse_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( CXSparse_static

@@ -56,11 +56,11 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
+option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
 if ( NOPENMP )
     # OpenMP has been disabled
     message ( STATUS "OpenMP disabled" )
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -87,6 +87,7 @@ file ( GLOB SUITESPARSECONFIG_SOURCES "*.c" )
 
 if ( BUILD_SHARED_LIBS )
     add_library ( SuiteSparseConfig SHARED ${SUITESPARSECONFIG_SOURCES} )
+
     set_target_properties ( SuiteSparseConfig PROPERTIES
         VERSION ${SUITESPARSE_VERSION_MAJOR}.${SUITESPARSE_VERSION_MINOR}.${SUITESPARSE_VERSION_SUB}
         C_STANDARD 11
@@ -95,6 +96,10 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${SUITESPARSE_VERSION_MAJOR}
         PUBLIC_HEADER "SuiteSparse_config.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SuiteSparseConfig PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( SuiteSparseConfig
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
@@ -119,6 +124,10 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME suitesparseconfig_static )
     endif ( )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SuiteSparseConfig_static PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( SuiteSparseConfig_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -139,18 +148,20 @@ if ( NOT WIN32 )
 endif ( )
 
 # OpenMP:
-if ( OPENMP_FOUND )
+if ( OpenMP_C_FOUND )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES} ")
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS} ")
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS} ")
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SuiteSparseConfig PRIVATE ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SuiteSparseConfig PRIVATE OpenMP::OpenMP_C )
+        target_include_directories ( SuiteSparseConfig SYSTEM AFTER INTERFACE
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SuiteSparseConfig_static PUBLIC ${OpenMP_C_LIBRARIES} )
+        target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
+        target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
+            "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
     endif ( )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 endif ( )
 
 # BLAS:

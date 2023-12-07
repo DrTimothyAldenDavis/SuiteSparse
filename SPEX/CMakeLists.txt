@@ -83,8 +83,7 @@ configure_file ( "Config/SPEX_version.tex.in"
 #-------------------------------------------------------------------------------
 
 include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include 
-    SPEX_Left_LU/Demo
-    ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR} )
+    SPEX_Left_LU/Demo )
 
 #-------------------------------------------------------------------------------
 # dynamic spex library properties
@@ -103,6 +102,10 @@ if ( BUILD_SHARED_LIBS )
         SOVERSION ${SPEX_VERSION_MAJOR}
         PUBLIC_HEADER "Include/SPEX.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SPEX PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( SPEX 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -125,6 +128,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( SPEX_static PROPERTIES
             OUTPUT_NAME spex_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( SPEX_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( SPEX_static 
@@ -156,9 +163,9 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD_static )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::AMD_static )
     else ( )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::AMD )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::AMD )
     endif ( )
 endif ( )
 
@@ -168,29 +175,33 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD_static )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::COLAMD_static )
     else ( )
-        target_link_libraries ( SPEX_static PUBLIC SuiteSparse::COLAMD )
+        target_link_libraries ( SPEX_static PRIVATE SuiteSparse::COLAMD )
     endif ( )
 endif ( )
 
 # MPFR:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${MPFR_LIBRARIES} )
+    target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${MPFR_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${MPFR_STATIC} )
+    target_include_directories ( SPEX_static SYSTEM AFTER PUBLIC ${MPFR_INCLUDE_DIR} )
 endif ( )
 
 # GMP:
 # must occur after MPFR
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( SPEX PRIVATE ${GMP_LIBRARIES} )
+    target_include_directories ( SPEX SYSTEM AFTER PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     list ( APPEND SPEX_STATIC_LIBS ${GMP_STATIC} )
     target_link_libraries ( SPEX_static PUBLIC ${GMP_STATIC} )
+    target_include_directories ( SPEX_static SYSTEM AFTER PUBLIC ${GMP_INCLUDE_DIR} )
 endif ( )
 
 # libm:
@@ -320,7 +331,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 if ( DEMO )
 
     #---------------------------------------------------------------------------

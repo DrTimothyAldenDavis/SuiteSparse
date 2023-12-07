@@ -2,7 +2,7 @@
 // SPEX_Left_LU/Include/SPEX.h: user #include file for SPEX_Left_LU.
 //------------------------------------------------------------------------------
 
-// SPEX_Left_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,
+// SPEX_Left_LU: (c) 2019-2023, Chris Lourenco (US Naval Academy), Jinhao Chen,
 // Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
@@ -259,22 +259,27 @@
 // Version
 //------------------------------------------------------------------------------
 
-// Current version of the code
-// #define SPEX_UTIL_VERSION "1.1.1"
-// #define SPEX_UTIL_VERSION_MAJOR 1
-// #define SPEX_UTIL_VERSION_MINOR 1
-// #define SPEX_UTIL_VERSION_SUB   1
-
 #define SPEX_DATE "@SPEX_DATE@"
 #define SPEX_VERSION "@SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@"
 #define SPEX_VERSION_MAJOR @SPEX_VERSION_MAJOR@
 #define SPEX_VERSION_MINOR @SPEX_VERSION_MINOR@
 #define SPEX_VERSION_SUB   @SPEX_VERSION_SUB@
 
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "SPEX @SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@ requires SuiteSparse_config 7.4.0 or later"
+#endif
+
 #if defined ( __cplusplus )
 extern "C"
 {
 #endif
+
+//------------------------------------------------------------------------------
+// version
+//------------------------------------------------------------------------------
+
+void SPEX_version (int version [3]) ;
 
 //------------------------------------------------------------------------------
 // Error codes
@@ -882,16 +887,6 @@ SPEX_info SPEX_mpfr_log2(mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
 #endif
 
-
-//------------------------------------------------------------------------------
-// Version
-//------------------------------------------------------------------------------
-
-// Current version of the code
-// #define SPEX_LEFT_LU_VERSION "1.1.1"
-// #define SPEX_LEFT_LU_VERSION_MAJOR 1
-// #define SPEX_LEFT_LU_VERSION_MINOR 1
-// #define SPEX_LEFT_LU_VERSION_SUB   1
 
 //------------------------------------------------------------------------------
 // Primary factorization & solve routines

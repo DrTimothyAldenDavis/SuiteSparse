@@ -202,8 +202,8 @@ type {\tt help amd} in the MATLAB command window.
 \label{Cversion}
 %------------------------------------------------------------------------------
 
-The C-callable AMD library consists of seven user-callable routines and one
-include file.  There are two versions of each of the routines, with
+The C-callable AMD library consists of eight user-callable routines and one
+include file.  There are two versions of seven of the routines, with
 \verb'int32_t' and \verb'int64_t' integers.
 The routines with prefix
 {\tt amd\_l\_} use \verb'int64_t' integer arguments; the others use
@@ -302,6 +302,8 @@ The following routines are fully described in Section~\ref{Primary}:
     It does not require the columns of its input matrix to be sorted,
     but it destroys the matrix on output.  Additional workspace must be passed.
     Refer to the source file {\tt AMD/Source/amd\_2.c} for a description.
+
+\item \verb'amd_version': returns the AMD version.
 
 \end{itemize}
 
@@ -477,6 +479,16 @@ status = amd_l_order (n, Ap, Ai, P, Control, Info) ;
 amd_l_control (Control) ;
 amd_l_info (Info) ;
 status = amd_l_valid (n, n, Ap, Ai) ;
+\end{verbatim}
+}
+
+The \verb'amd_version' function uses plain \verb'int':
+
+{\footnotesize
+\begin{verbatim}
+#include "amd.h"
+int version [3] ;
+amd_version (version) ;
 \end{verbatim}
 }
 

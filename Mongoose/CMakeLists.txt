@@ -200,7 +200,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 if ( BUILD_STATIC_LIBS )
     # Build the Mongoose library
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
-#   set_property ( TARGET Mongoose_static PROPERTY POSITION_INDEPENDENT_CODE ON )
+
     set_target_properties ( Mongoose_static PROPERTIES
         OUTPUT_NAME mongoose
         PUBLIC_HEADER "Include/Mongoose.hpp" )
@@ -208,6 +208,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( Mongoose_static PROPERTIES
             OUTPUT_NAME mongoose_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( Mongoose_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( Mongoose_static
@@ -224,12 +228,17 @@ endif ( )
 if ( BUILD_SHARED_LIBS )
     # Build the Mongoose library for dynamic linking
     add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
-    set_property ( TARGET Mongoose PROPERTY POSITION_INDEPENDENT_CODE ON )
+
     set_target_properties ( Mongoose PROPERTIES
         OUTPUT_NAME mongoose
         SOVERSION ${Mongoose_VERSION_MAJOR}
         PUBLIC_HEADER "Include/Mongoose.hpp"
-        WINDOWS_EXPORT_ALL_SYMBOLS ON )
+        WINDOWS_EXPORT_ALL_SYMBOLS ON
+        POSITION_INDEPENDENT_CODE ON )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( Mongoose PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
 
     target_include_directories ( Mongoose
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -441,7 +450,7 @@ if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang" OR "${CMAKE_CXX_COMPILER_ID}" ST
 #   SET(CMAKE_C_FLAGS_DEBUG "-g")
 #   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "-g")
     if ( MONGOOSE_COVERAGE )
-        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" ) 
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} --coverage" )
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} --coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} --coverage" )
     endif ( )
@@ -460,7 +469,7 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 #   SET(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
     if ( MONGOOSE_COVERAGE )
         SET (CMAKE_CXX_FLAGS_DEBUG " ${CMAKE_CXX_FLAGS_DEBUG} -Wall -W -Wshadow -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings ")
-        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" ) 
+        SET ( CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_C_FLAGS_DEBUG   "${CMAKE_C_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
         SET ( CMAKE_EXE_LINKER_FLAGS_DEBUG "${CMAKE_EXE_LINKER_FLAGS_DEBUG} -fprofile-arcs -ftest-coverage" )
     endif ( )
@@ -480,11 +489,14 @@ set_target_properties ( Mongoose_static_dbg PROPERTIES
 
 # Add debug compile/linker flags
 if ( Python_Interpreter_FOUND )
-    set_target_properties ( mongoose_test_io mongoose_test_memory mongoose_test_edgesep PROPERTIES
+    set_target_properties ( mongoose_test_io mongoose_test_memory
+        mongoose_test_edgesep PROPERTIES
         COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
         LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 endif ( )
-set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph mongoose_unit_test_edgesep PROPERTIES
+
+set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph
+    mongoose_unit_test_edgesep PROPERTIES
     COMPILE_FLAGS "${CMAKE_CXX_FLAGS_DEBUG}"
     LINK_FLAGS "${CMAKE_EXE_LINKER_FLAGS_DEBUG}" )
 

@@ -2,7 +2,7 @@
 // LDL/Include/ldl.h: include file for the LDL package
 //------------------------------------------------------------------------------
 
-// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// LDL, Copyright (c) 2005-2023 by Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
@@ -46,6 +46,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void ldl_version (int version [3]) ;
 
 /* ========================================================================== */
 /* === int32_t version ====================================================== */
@@ -115,7 +117,12 @@ int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 #define LDL_SUB_VERSION    @LDL_VERSION_MINOR@
 #define LDL_SUBSUB_VERSION @LDL_VERSION_SUB@
 
-#define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define LDL_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "LDL @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@ requires SuiteSparse_config 7.4 or later"
+#endif
 
 #endif

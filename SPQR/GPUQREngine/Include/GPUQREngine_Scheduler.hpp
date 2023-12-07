@@ -19,6 +19,8 @@
 #ifndef GPUQRENGINE_SCHEDULER_HPP
 #define GPUQRENGINE_SCHEDULER_HPP
 
+#include <cstddef>
+
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_FrontState.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
@@ -97,7 +99,7 @@ public:
     cudaStream_t memoryStreamD2H;
 
     /* Scheduler.cpp */
-    void *operator new(size_t, Scheduler <Int>* p){ return p; }
+    void *operator new(std::size_t, Scheduler <Int>* p){ return p; }
     Scheduler(Front <Int> *fronts, Int numFronts, size_t gpuMemorySize);
     ~Scheduler();
 

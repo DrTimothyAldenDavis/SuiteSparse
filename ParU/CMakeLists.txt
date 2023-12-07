@@ -56,11 +56,12 @@ if ( NOPENMP )
     set ( OpenMP_CXX_FOUND OFF )
     set ( OpenMP_C_FOUND OFF )
 else ( )
+    # OpenMP 4.5 or later is required
     find_package ( OpenMP )
     if ( OpenMP_CXX_FOUND AND OpenMP_CXX_VERSION VERSION_LESS 4.5 )
         set ( NOPENMP ON )
     endif ( )
-    if ( DEMO AND OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
+    if ( OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
         set ( NOPENMP ON )
     endif ( )
     if ( NOPENMP )
@@ -132,6 +133,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( ParU PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( ParU
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -156,6 +161,10 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME ParU_static )
     endif ( )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( ParU_static PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( ParU_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -165,14 +174,14 @@ endif ( )
 # additional definitions
 #-------------------------------------------------------------------------------
 
-if ( WIN32 AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
-    # Some parallelization levels don't work correctly with GCC on Windows
-    # (because of emuTLS?). Omit them.
+if ( (APPLE OR WIN32) AND CMAKE_C_COMPILER_ID STREQUAL "GNU" )
+    # Some parallelization levels don't work correctly with GCC on Windows or
+    # Mac (because of emuTLS?). Omit them.
     if ( BUILD_SHARED_LIBS )
-        target_compile_definitions (ParU PRIVATE PARU_GCC_WINDOWS )
+        target_compile_definitions (ParU PRIVATE PARU_1TASK )
     endif ( )
     if ( BUILD_STATIC_LIBS )
-        target_compile_definitions (ParU_static PRIVATE PARU_GCC_WINDOWS )
+        target_compile_definitions (ParU_static PRIVATE PARU_1TASK )
     endif ( )
 endif ( )
 
@@ -194,31 +203,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# OpenMP:
-if ( OpenMP_CXX_FOUND )
-    message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
-    message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
-    message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( ParU PRIVATE OpenMP::OpenMP_CXX )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND PARU_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
-        target_link_libraries ( ParU_static PUBLIC OpenMP::OpenMP_CXX )
-    endif ( )
-endif ( )
-
-# libm:
-if ( NOT WIN32 )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( ParU PRIVATE m )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        list ( APPEND PARU_STATIC_LIBS m )
-        target_link_libraries ( ParU_static PUBLIC m )
-    endif ( )
-endif ( )
-
 # umfpack:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( ParU PRIVATE SuiteSparse::UMFPACK )
@@ -233,18 +217,6 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-# BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( ParU PRIVATE ${BLAS_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
-    target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
-    include_directories ( ${BLAS_INCLUDE_DIRS} )
-endif ( )
-
 # cholmod:
 if ( BUILD_SHARED_LIBS )
     target_include_directories ( ParU PUBLIC
@@ -253,6 +225,44 @@ endif ( )
 if ( BUILD_STATIC_LIBS )
     target_include_directories ( ParU_static PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::CHOLMOD,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+
+# OpenMP:
+if ( OpenMP_CXX_FOUND )
+    message ( STATUS "OpenMP C++ libraries:    ${OpenMP_CXX_LIBRARIES} ")
+    message ( STATUS "OpenMP C++ include:      ${OpenMP_CXX_INCLUDE_DIRS} ")
+    message ( STATUS "OpenMP C++ flags:        ${OpenMP_CXX_FLAGS} ")
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( ParU PRIVATE OpenMP::OpenMP_CXX )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND PARU_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
+        target_link_libraries ( ParU_static PRIVATE OpenMP::OpenMP_CXX )
+    endif ( )
+endif ( )
+
+# libm:
+if ( NOT WIN32 )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( ParU PRIVATE m )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        list ( APPEND PARU_STATIC_LIBS m )
+        target_link_libraries ( ParU_static PUBLIC m )
+    endif ( )
+endif ( )
+
+# BLAS:
+message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES} ")
+message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS} ")
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( ParU PRIVATE ${BLAS_LIBRARIES} )
+    target_include_directories ( ParU PRIVATE ${BLAS_INCLUDE_DIRS} )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+    list ( APPEND PARU_STATIC_LIBS ${BLAS_LIBRARIES} )
+    target_link_libraries ( ParU_static PUBLIC ${BLAS_LIBRARIES} )
+    target_include_directories ( ParU_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -383,7 +393,7 @@ if ( DEMO )
     #---------------------------------------------------------------------------
 
     if ( OpenMP_CXX_FOUND )
-        add_executable ( paru_demo    "Demo/paru_demo.cpp"   )
+        add_executable ( paru_demo "Demo/paru_demo.cpp" )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( paru_demo PUBLIC ParU )
         else ( )
@@ -394,7 +404,7 @@ if ( DEMO )
     endif ( )
 
     if ( OpenMP_C_FOUND )
-        add_executable ( paru_democ   "Demo/paru_democ.c"    )
+        add_executable ( paru_democ "Demo/paru_democ.c" )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( paru_democ PUBLIC ParU )
         else ( )

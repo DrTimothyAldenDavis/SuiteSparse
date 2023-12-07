@@ -65,17 +65,25 @@ message ( STATUS "GraphBLAS CUDA includes: ${GRAPHBLAS_CUDA_INCLUDES}" )
 # GraphBLAS_CUDA properties
 #-------------------------------------------------------------------------------
 
-target_include_directories(GraphBLAS_CUDA PRIVATE
-        ${CUDAToolkit_INCLUDE_DIRS}
+target_include_directories ( GraphBLAS_CUDA PRIVATE
         ${GRAPHBLAS_CUDA_INCLUDES})
-set_target_properties(GraphBLAS_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON)
-set_target_properties(GraphBLAS_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+set_target_properties ( GraphBLAS_CUDA PROPERTIES POSITION_INDEPENDENT_CODE ON )
+set_target_properties ( GraphBLAS_CUDA PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
 # FIXME: use SUITESPARSE_CUDA_ARCHITECTURES
-set_target_properties(GraphBLAS_CUDA PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
+set_target_properties ( GraphBLAS_CUDA PROPERTIES CUDA_ARCHITECTURES "52;75;80" )
 
-target_link_libraries(GraphBLAS_CUDA CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver CUDA::nvToolsExt )
+target_link_libraries ( GraphBLAS_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver )
+
+if ( TARGET CUDA::nvtx3 )
+    target_link_libraries ( GraphBLAS_CUDA PRIVATE CUDA::nvtx3 )
+    target_compile_definitions ( GraphBLAS_CUDA PRIVATE GBNVTX )
+endif ( )
 
 target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
+
+if ( OpenMP_CXX_FOUND )
+    target_include_directories ( GraphBLAS_CUDA PRIVATE OpenMP::OpenMP_CXX )
+endif ( )
 
 target_include_directories ( GraphBLAS_CUDA
     INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>

@@ -42,8 +42,8 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-  set ( ENABLE_CUDA false )
-# set ( ENABLE_CUDA true )
+set ( ENABLE_CUDA OFF )
+# set ( ENABLE_CUDA ON )
 
 include ( SuiteSparsePolicy )
 
@@ -88,7 +88,7 @@ endif ( )
 option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
 if ( NOPENMP )
     # OpenMP has been disabled.
-    set ( OPENMP_FOUND false )
+    set ( OpenMP_C_FOUND OFF )
 else ( )
     find_package ( OpenMP )
 endif ( )
@@ -253,6 +253,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/GraphBLAS.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( GraphBLAS PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( GraphBLAS
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -291,6 +295,10 @@ if ( BUILD_STATIC_LIBS )
     if ( MSVC )
         set_target_properties ( GraphBLAS_static PROPERTIES
             OUTPUT_NAME graphblas_static )
+    endif ( )
+
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( GraphBLAS_static PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
     target_include_directories ( GraphBLAS_static
@@ -395,12 +403,13 @@ endif ( )
 # add the OpenMP, IPP, CUDA, BLAS, etc libraries
 #-------------------------------------------------------------------------------
 
-if ( OPENMP_FOUND )
+if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
     # revert to ${OpenMP_C_LIBRARIES}:
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE ${OpenMP_C_LIBRARIES} )
+        target_include_directories ( GraphBLAS PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
     endif ( )
     # cannot use OpenMP::OpenMP_C because the JIT is configured with
     # LINK_LIBRARIES.  Those are -l lists passed directly to the
@@ -411,10 +420,10 @@ if ( OPENMP_FOUND )
         list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
         # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
+        target_include_directories ( GraphBLAS_static PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
-    include_directories ( ${OpenMP_C_INCLUDE_DIRS} )
 else ( )
     message  ( WARNING
     "WARNING:  OpenMP was not found (or was disabled with NOPENMP).  See the "
@@ -525,7 +534,7 @@ if ( DEMO )
     target_link_libraries ( context_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( gauss_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
 
-    if ( OPENMP_C_FOUND )
+    if ( OpenMP_C_FOUND )
         target_link_libraries ( openmp_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( openmp2_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( reduce_demo PUBLIC OpenMP::OpenMP_C )

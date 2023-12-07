@@ -55,8 +55,18 @@ int main (void)
     int64_t C [ ] = { 0, 0, 4, 0, 1, 0, 2, 2, 1, 1, 3, 4, 5, 5, 3, 4,
 	5, 2, 5, 3, 4, 2, 1, 0 };
 
-    printf ("CAMD version %d.%d, date: %s\n", CAMD_MAIN_VERSION,
-	CAMD_SUB_VERSION, CAMD_DATE) ;
+    printf ("CAMD version %d.%d.%d, date: %s\n",
+        CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE) ;
+    int version [3] ;
+    camd_version (version) ;
+    if ((version [0] != CAMD_MAIN_VERSION) ||
+        (version [1] != CAMD_SUB_VERSION) ||
+        (version [2] != CAMD_SUBSUB_VERSION))
+    {
+        fprintf (stderr, "version in header does not match library\n") ;
+        abort ( ) ;
+    }
+
     printf ("CAMD demo, with the 24-by-24 Harwell/Boeing matrix, can_24:\n") ;
 
     /* get the default parameters, and print them */

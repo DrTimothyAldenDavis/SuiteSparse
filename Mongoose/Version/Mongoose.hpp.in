@@ -23,6 +23,11 @@
 #define Mongoose_VERSION_PATCH @Mongoose_VERSION_PATCH@
 #define Mongoose_DATE "@Mongoose_DATE@"
 
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "Mongoose @Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_SUB@ requires SuiteSparse_config 7.4.0 or later"
+#endif
+
 namespace Mongoose
 {
 

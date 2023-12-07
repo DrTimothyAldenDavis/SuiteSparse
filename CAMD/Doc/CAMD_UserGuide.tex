@@ -207,8 +207,8 @@ type {\tt help camd} in the MATLAB command window.
 \label{Cversion}
 %------------------------------------------------------------------------------
 
-The C-callable CAMD library consists of seven user-callable routines and one
-include file.  There are two versions of each of the routines, with
+The C-callable CAMD library consists of eight user-callable routines and one
+include file.  There are two versions of seven of the routines, with
 \verb'int32_t' and \verb'int64_t' integers.
 The routines with prefix
 {\tt camd\_l\_} use \verb'int64_t' integer arguments; the others use
@@ -313,6 +313,8 @@ The following routines are fully described in Section~\ref{Primary}:
     It does not require the columns of its input matrix to be sorted,
     but it destroys the matrix on output.  Additional workspace must be passed.
     Refer to the source file {\tt CAMD/Source/camd\_2.c} for a description.
+
+\item \verb'camd_version': returns the CAMD version
 
 \end{itemize}
 
@@ -492,6 +494,16 @@ status = camd_l_order (n, Ap, Ai, P, Control, Info, C) ;
 camd_l_control (Control) ;
 camd_l_info (Info) ;
 status = camd_l_valid (n, n, Ap, Ai) ;
+\end{verbatim}
+}
+
+The \verb'camd_version' function uses plain \verb'int':
+
+{\footnotesize
+\begin{verbatim}
+#include "camd.h"
+int version [3] ;
+camd_version (version) ;
 \end{verbatim}
 }
 

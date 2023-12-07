@@ -43,6 +43,12 @@
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "CXSparse 4.3.0 requires SuiteSparse_config 7.4 or later"
+#endif
+
 #define cs_long_t       int64_t
 #define cs_long_t_id    "%" PRId64
 #define cs_long_t_max   INT64_MAX
@@ -50,6 +56,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void cxsparse_version (int version [3]) ;  // return version
 
 /* -------------------------------------------------------------------------- */
 /* double/int32_t version of CXSparse */

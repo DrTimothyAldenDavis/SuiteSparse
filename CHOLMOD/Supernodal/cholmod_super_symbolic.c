@@ -237,10 +237,11 @@ int CHOLMOD(super_symbolic2)
     #ifdef SUITESPARSE_CUDA
 
     // GPU module is installed
-    if ( for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY )
+    if (for_whom == CHOLMOD_ANALYZE_FOR_CHOLESKY && A->dtype == CHOLMOD_DOUBLE)
     {
-        // only allocate GPU workspace for supernodal Cholesky, and only when
-        // the GPU is requested and available.
+        // only allocate GPU workspace for supernodal Cholesky (double
+        // real/complex/zomples only), and only when the GPU is requested and
+        // available.
 
         max_bytes = 0;
         max_fraction = 0;
@@ -248,7 +249,7 @@ int CHOLMOD(super_symbolic2)
         #ifdef CHOLMOD_INT64
         if ( Common->useGPU == EMPTY )
         {
-            // useGPU not explicity requested by the user, but not explicitly
+            // useGPU not explicitly requested by the user, but not explicitly
             // prohibited either.  Query OS environment variables for request.
             env_use_gpu  = getenv("CHOLMOD_USE_GPU") ;
 

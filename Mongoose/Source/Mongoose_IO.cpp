@@ -49,7 +49,7 @@ Graph *read_graph(const char *filename)
     cs *A = read_matrix(filename, matcode);
     if (!A)
     {
-        LogError("Error reading matrix from file\n");
+        // LogError("Error reading matrix from file\n");
         return NULL;
     }
     cs *sanitized_A = sanitizeMatrix(A, mm_is_symmetric(matcode), false);
@@ -61,7 +61,7 @@ Graph *read_graph(const char *filename)
 
     if (!G)
     {
-        LogError("Ran out of memory in Mongoose::read_graph\n");
+        // LogError("Ran out of memory in Mongoose::read_graph\n");
         cs_spfree(sanitized_A);
         Logger::toc(IOTiming);
         return NULL;
@@ -125,7 +125,7 @@ cs *read_matrix(const char *filename, MM_typecode &matcode)
 
     if (!I || !J || !val)
     {
-        LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
+        // LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
         SuiteSparse_free(I);
         SuiteSparse_free(J);
         SuiteSparse_free(val);
@@ -147,7 +147,7 @@ cs *read_matrix(const char *filename, MM_typecode &matcode)
     cs *A = (cs *)SuiteSparse_malloc(1, sizeof(cs));
     if (!A)
     {
-        LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
+        // LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
         SuiteSparse_free(I);
         SuiteSparse_free(J);
         SuiteSparse_free(val);
@@ -167,7 +167,7 @@ cs *read_matrix(const char *filename, MM_typecode &matcode)
     cs_spfree(A);
     if (!compressed_A)
     {
-        LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
+        // LogError("Error: Ran out of memory in Mongoose::read_matrix\n");
         return NULL;
     }
 

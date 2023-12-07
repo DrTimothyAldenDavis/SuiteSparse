@@ -12,7 +12,8 @@ CFLAGS = -O -g --coverage -fprofile-abs-path \
     	-Wall -W -Wshadow -Wmissing-prototypes -Wstrict-prototypes \
     	-Wredundant-decls -Wnested-externs -Wdisabled-optimization -std=c11 \
         -Wno-unused-but-set-variable \
-	-Wno-unused-parameter -I../Include -I../Demo -I../../SuiteSparse_config
+	-Wno-unused-parameter -I../Include -I../Demo -I../../SuiteSparse_config \
+        -DTEST_COVERAGE
 
 C = $(CC) $(CFLAGS)
 
@@ -24,6 +25,8 @@ all:	cs_demo1_di cs_demo2_di cs_demo3_di cstcov_test_di \
 	cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci \
 	cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl \
 	cs_idemo cs_ldemo
+
+ALLOBJ = cxsparse_version.o
 
 CS_DI = cs_add.o cs_amd.o cs_chol.o cs_cholsol.o cs_counts.o \
 	cs_cumsum.o cs_droptol.o cs_dropzeros.o cs_dupl.o \
@@ -80,7 +83,7 @@ CS_CL = cs_cl_add.o cs_cl_amd.o cs_cl_chol.o cs_cl_cholsol.o cs_cl_compress.o \
         cs_cl_usolve.o cs_cl_util.o cs_cl_utsolve.o \
         cstcov_malloc_test_cl.o
 
-OBJ = $(CS_DI) $(CS_DL) $(CS_CI) $(CS_CL) cs_convert.o
+OBJ = $(CS_DI) $(CS_DL) $(CS_CI) $(CS_CL) cs_convert.o $(ALLOBJ)
 
 $(OBJ): ../Include/cs.h cstcov_malloc_test.h Makefile
 
@@ -102,6 +105,10 @@ $(OBJ): ../Include/cs.h cstcov_malloc_test.h Makefile
 cs_%.c:
 	- ln -s ../Source/cs_$*.c
 
+cxsparse_version.o:
+	- ln -s ../Source/cxsparse_version.c
+	$(C) -c cxsparse_version.c
+
 cs_%.o: cs_%.c
 	$(C) -c $<
 
@@ -115,56 +122,56 @@ cs_ldemo: $(OBJ) cs_ldemo.c
 	$(C) -o cs_ldemo cs_ldemo.c $(OBJ) -lm
 
 
-cs_demo1_di: $(CS_DI) cs_di_demo1.c
-	$(C) -o cs_demo1_di cs_di_demo1.c $(CS_DI) -lm
+cs_demo1_di: $(CS_DI) $(ALLOBJ) cs_di_demo1.c
+	$(C) -o cs_demo1_di cs_di_demo1.c $(CS_DI) $(ALLOBJ) -lm
 
-cs_demo2_di: $(CS_DI) cs_di_demo2.c cs_di_demo.c
-	$(C) -o cs_demo2_di cs_di_demo2.c cs_di_demo.c $(CS_DI) -lm
+cs_demo2_di: $(CS_DI) $(ALLOBJ) cs_di_demo2.c cs_di_demo.c
+	$(C) -o cs_demo2_di cs_di_demo2.c cs_di_demo.c $(CS_DI) $(ALLOBJ) -lm
 
-cs_demo3_di: $(CS_DI) cs_di_demo3.c cs_di_demo.c
-	$(C) -o cs_demo3_di cs_di_demo3.c cs_di_demo.c $(CS_DI) -lm
+cs_demo3_di: $(CS_DI) $(ALLOBJ) cs_di_demo3.c cs_di_demo.c
+	$(C) -o cs_demo3_di cs_di_demo3.c cs_di_demo.c $(CS_DI) $(ALLOBJ) -lm
 
-cstcov_test_di: $(CS_DI) cstcov_test.c cs_di_demo.c
-	$(C) -o cstcov_test_di cstcov_test.c cs_di_demo.c $(CS_DI) -lm
-
-
-cs_demo1_dl: $(CS_DL) cs_dl_demo1.c
-	$(C) -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) -lm
-
-cs_demo2_dl: $(CS_DL) cs_dl_demo2.c cs_dl_demo.c
-	$(C) -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) -lm
-
-cs_demo3_dl: $(CS_DL) cs_dl_demo3.c cs_dl_demo.c
-	$(C) -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) -lm
-
-cstcov_test_dl: $(CS_DL) cstcov_test_dl.c cs_dl_demo.c
-	$(C) -o cstcov_test_dl cstcov_test_dl.c cs_dl_demo.c $(CS_DL) -lm
+cstcov_test_di: $(CS_DI) $(ALLOBJ) cstcov_test.c cs_di_demo.c
+	$(C) -o cstcov_test_di cstcov_test.c cs_di_demo.c $(CS_DI) $(ALLOBJ) -lm
 
 
-cs_demo1_ci: $(CS_CI) cs_ci_demo1.c
-	$(C) -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) -lm
+cs_demo1_dl: $(CS_DL) $(ALLOBJ) cs_dl_demo1.c
+	$(C) -o cs_demo1_dl cs_dl_demo1.c $(CS_DL) $(ALLOBJ) -lm
 
-cs_demo2_ci: $(CS_CI) cs_ci_demo2.c cs_ci_demo.c
-	$(C) -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) -lm
+cs_demo2_dl: $(CS_DL) $(ALLOBJ) cs_dl_demo2.c cs_dl_demo.c
+	$(C) -o cs_demo2_dl cs_dl_demo2.c cs_dl_demo.c $(CS_DL) $(ALLOBJ) -lm
 
-cs_demo3_ci: $(CS_CI) cs_ci_demo3.c cs_ci_demo.c
-	$(C) -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) -lm
+cs_demo3_dl: $(CS_DL) $(ALLOBJ) cs_dl_demo3.c cs_dl_demo.c
+	$(C) -o cs_demo3_dl cs_dl_demo3.c cs_dl_demo.c $(CS_DL) $(ALLOBJ) -lm
 
-cstcov_test_ci: $(CS_CI) cstcov_test_ci.c cs_ci_demo.c
-	$(C) -o cstcov_test_ci cstcov_test_ci.c cs_ci_demo.c $(CS_CI) -lm
+cstcov_test_dl: $(CS_DL) $(ALLOBJ) cstcov_test_dl.c cs_dl_demo.c
+	$(C) -o cstcov_test_dl cstcov_test_dl.c cs_dl_demo.c $(CS_DL) $(ALLOBJ) -lm
 
 
-cs_demo1_cl: $(CS_CL) cs_cl_demo1.c
-	$(C) -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) -lm
+cs_demo1_ci: $(CS_CI) $(ALLOBJ) cs_ci_demo1.c
+	$(C) -o cs_demo1_ci cs_ci_demo1.c $(CS_CI) $(ALLOBJ) -lm
 
-cs_demo2_cl: $(CS_CL) cs_cl_demo2.c cs_cl_demo.c
-	$(C) -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) -lm
+cs_demo2_ci: $(CS_CI) $(ALLOBJ) cs_ci_demo2.c cs_ci_demo.c
+	$(C) -o cs_demo2_ci cs_ci_demo2.c cs_ci_demo.c $(CS_CI) $(ALLOBJ) -lm
 
-cs_demo3_cl: $(CS_CL) cs_cl_demo3.c cs_cl_demo.c
-	$(C) -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) -lm
+cs_demo3_ci: $(CS_CI) $(ALLOBJ) cs_ci_demo3.c cs_ci_demo.c
+	$(C) -o cs_demo3_ci cs_ci_demo3.c cs_ci_demo.c $(CS_CI) $(ALLOBJ) -lm
 
-cstcov_test_cl: $(CS_CL) cstcov_test_cl.c cs_cl_demo.c
-	$(C) -o cstcov_test_cl cstcov_test_cl.c cs_cl_demo.c $(CS_CL) -lm
+cstcov_test_ci: $(CS_CI) $(ALLOBJ) cstcov_test_ci.c cs_ci_demo.c
+	$(C) -o cstcov_test_ci cstcov_test_ci.c cs_ci_demo.c $(CS_CI) $(ALLOBJ) -lm
+
+
+cs_demo1_cl: $(CS_CL) $(ALLOBJ) cs_cl_demo1.c
+	$(C) -o cs_demo1_cl cs_cl_demo1.c $(CS_CL) $(ALLOBJ) -lm
+
+cs_demo2_cl: $(CS_CL) $(ALLOBJ) cs_cl_demo2.c cs_cl_demo.c
+	$(C) -o cs_demo2_cl cs_cl_demo2.c cs_cl_demo.c $(CS_CL) $(ALLOBJ) -lm
+
+cs_demo3_cl: $(CS_CL) $(ALLOBJ) cs_cl_demo3.c cs_cl_demo.c
+	$(C) -o cs_demo3_cl cs_cl_demo3.c cs_cl_demo.c $(CS_CL) $(ALLOBJ) -lm
+
+cstcov_test_cl: $(CS_CL) $(ALLOBJ) cstcov_test_cl.c cs_cl_demo.c
+	$(C) -o cstcov_test_cl cstcov_test_cl.c cs_cl_demo.c $(CS_CL) $(ALLOBJ) -lm
 
 
 run_convert: cs_idemo cs_ldemo
@@ -291,4 +298,4 @@ distclean: clean
 	- $(RM) cs_demo1_ci cs_demo2_ci cs_demo3_ci cstcov_test_ci
 	- $(RM) cs_demo1_cl cs_demo2_cl cs_demo3_cl cstcov_test_cl
 	- $(RM) cs_idemo cs_ldemo
-	- $(RM) -r cs_*.c *.dSYM
+	- $(RM) -r cs_*.c *.dSYM cxsparse_version.c

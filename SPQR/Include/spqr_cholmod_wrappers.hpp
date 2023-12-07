@@ -1,3 +1,12 @@
+//------------------------------------------------------------------------------
+// SPQR/Include/spqr_cholmod_wrappers.hpp
+//------------------------------------------------------------------------------
+
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
+// SPDX-License-Identifier: GPL-2.0+
+
+//------------------------------------------------------------------------------
+
 #include "spqr.hpp"
 
 template <typename Int> int spqr_start

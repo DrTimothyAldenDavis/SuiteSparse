@@ -2,7 +2,7 @@
 // CAMD/Include/camd.h:  constrained approximate minimum degree ordering
 //------------------------------------------------------------------------------
 
-// CAMD, Copyright (c) 1996-2022, Timothy A. Davis, Yanqing Chen,
+// CAMD, Copyright (c) 1996-2023, Timothy A. Davis, Yanqing Chen,
 // Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -23,12 +23,12 @@
 #ifndef CAMD_H
 #define CAMD_H
 
+#include "SuiteSparse_config.h"
+
 /* make it easy for C++ programs to include CAMD */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "SuiteSparse_config.h"
 
 int camd_order /* returns CAMD_OK, CAMD_OK_BUT_JUMBLED,
                              * CAMD_INVALID, or CAMD_OUT_OF_MEMORY */
@@ -327,6 +327,14 @@ void camd_l_control  (double Control [ ]) ;
 void camd_info       (double Info [ ]) ;
 void camd_l_info     (double Info [ ]) ;
 
+// camd_version: return CAMD version.  The version array is returned with
+// version [0..2] = {CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION}
+void camd_version (int version [3]) ;
+
+#ifdef __cplusplus
+}
+#endif
+
 #define CAMD_CONTROL 5      /* size of Control array */
 #define CAMD_INFO 20        /* size of Info array */
 
@@ -389,11 +397,12 @@ void camd_l_info     (double Info [ ]) ;
 #define CAMD_SUB_VERSION    @CAMD_VERSION_MINOR@
 #define CAMD_SUBSUB_VERSION @CAMD_VERSION_SUB@
 
-#define CAMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define CAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
 
-#ifdef __cplusplus
-}
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "CAMD @CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@.@CAMD_VERSION_SUB@ requires SuiteSparse_config 7.4 or later"
 #endif
 
 #endif

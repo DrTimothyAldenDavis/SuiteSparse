@@ -1,4 +1,13 @@
-// Example library that relies on SuiteSparse packages
+//------------------------------------------------------------------------------
+// SuiteSparse/Example/Source/my.c
+//------------------------------------------------------------------------------
+
+// Copyright (c) 2022-2023, Timothy A. Davis, All Rights Reserved.
+// SPDX-License-Identifier: BSD-3-clause
+
+//------------------------------------------------------------------------------
+
+// Example C library that relies on SuiteSparse packages
 
 // ANSI C include files:
 #include <stdio.h>
@@ -7,14 +16,23 @@
 
 #include "my_internal.h"
 
-#define OK(result)                                      \
-    if (!(result))                                      \
-    {                                                   \
-        printf ("abort line %d\n", __LINE__) ;          \
-        abort ( ) ;                                     \
+//------------------------------------------------------------------------------
+// OK: check a result and return an error if it fails
+//------------------------------------------------------------------------------
+
+#define OK(result)                              \
+    if (!(result))                              \
+    {                                           \
+        printf ("FAILURE file: %s line %d\n",   \
+            __FILE__, __LINE__) ;               \
+        return (-1) ;                           \
     }
 
-void my_library (int version [3], char date [128])
+//------------------------------------------------------------------------------
+// my_version: version of MY library
+//------------------------------------------------------------------------------
+
+void my_version (int version [3], char date [128])
 {
     // get the version of this library
     strncpy (date, MY_DATE, 127) ;
@@ -23,27 +41,68 @@ void my_library (int version [3], char date [128])
     version [2] = MY_PATCH_VERSION ;
 }
 
-void my_function (void)
+//------------------------------------------------------------------------------
+// my_check_version: check library version
+//------------------------------------------------------------------------------
+
+int my_check_version (const char *package, int major, int minor, int patch,
+    const char *date, int version [3])
 {
+    // version and date in package header file:
+    printf ("\n------------------------------------------------------------"
+    "\n%s: v%d.%d.%d (%s)\n", package, major, minor, patch, date) ;
+
+    // version in library itself:
+    printf ("%s: v%d.%d.%d (in library)\n", package,
+        version [0], version [1], version [2]) ;
+
+    // make sure the versions match
+    int ok = (major == version [0]) &&
+             (minor == version [1]) &&
+             (patch == version [2]) ;
+    if (!ok) printf ("%s: version in header (%d.%d.%d) "
+        "does not match library (%d.%d.%d)\n", package,
+        major, minor, patch, version [0], version [1], version [2]) ;
+    return (ok) ;
+}
+
+//------------------------------------------------------------------------------
+// my_function: try each library in SuiteSparse
+//------------------------------------------------------------------------------
+
+int my_function (void)      // returns 0 on success, -1 on failure
+{
+
+    int version [3] ;
+
+    //--------------------------------------------------------------------------
+    // My package
+    //--------------------------------------------------------------------------
+
+    char my_date [128] ;
+    my_version (version, my_date) ;
+    OK (my_check_version ("MY", MY_MAJOR_VERSION, MY_MINOR_VERSION,
+        MY_PATCH_VERSION, MY_DATE, version)) ;
+    printf ("MY date: %s\n", my_date) ;
+    OK (strcmp (my_date, MY_DATE) == 0) ;
 
     //--------------------------------------------------------------------------
     // SuiteSparse_config
     //--------------------------------------------------------------------------
 
-    printf ("SuiteSparse: v%d.%d.%d (%s)\n",
-        SUITESPARSE_MAIN_VERSION, SUITESPARSE_SUB_VERSION,
-        SUITESPARSE_SUBSUB_VERSION, SUITESPARSE_DATE) ;
-    int version [3] ;
     int v = SuiteSparse_version (version) ;
-    printf ("SuiteSparse: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    OK (my_check_version ("SuiteSparse_config",
+        SUITESPARSE_MAIN_VERSION, SUITESPARSE_SUB_VERSION,
+        SUITESPARSE_SUBSUB_VERSION, SUITESPARSE_DATE, version)) ;
 
     //--------------------------------------------------------------------------
     // CXSparse
     //--------------------------------------------------------------------------
 
-    printf ("CXSparse: v%d.%d.%d (%s)\n",
-        CS_VER, CS_SUBVER, CS_SUBSUB, CS_DATE) ;
+    cxsparse_version (version) ;
+    OK (my_check_version ("CXSparse", CS_VER, CS_SUBVER, CS_SUBSUB, CS_DATE,
+        version)) ;
+
     cs_dl *A = NULL ;
 
     // create a dense 2-by-2 matrix
@@ -68,8 +127,11 @@ void my_function (void)
     // AMD
     //--------------------------------------------------------------------------
 
-    printf ("AMD: v%d.%d.%d (%s)\n",
-        AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE) ;
+    amd_version (version) ;
+    OK (my_check_version ("AMD",
+        AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE,
+        version)) ;
+
     int64_t P [N] ;
     OK (amd_l_order (n, Ap, Ai, P, NULL, NULL) == AMD_OK) ;
     for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
@@ -78,8 +140,11 @@ void my_function (void)
     // BTF
     //--------------------------------------------------------------------------
 
-    printf ("BTF: v%d.%d.%d (%s)\n",
-        BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE) ;
+    btf_version (version) ;
+    OK (my_check_version ("BTF",
+        BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE,
+        version)) ;
+
     double work ;
     int64_t nmatch ;
     int64_t Q [N], R [N+1], Work [5*N] ;
@@ -94,8 +159,11 @@ void my_function (void)
     // CAMD
     //--------------------------------------------------------------------------
 
-    printf ("CAMD: v%d.%d.%d (%s)\n",
-        CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE) ;
+    camd_version (version) ;
+    OK (my_check_version ("CAMD",
+        CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE,
+        version)) ;
+
     int64_t Cmem [N] ;
     for (int k = 0 ; k < n ; k++) Cmem [k] = 0 ;
     OK (camd_l_order (n, Ap, Ai, P, NULL, NULL, Cmem) == CAMD_OK) ;
@@ -105,9 +173,11 @@ void my_function (void)
     // CCOLAMD
     //--------------------------------------------------------------------------
 
-    printf ("CCOLAMD: v%d.%d.%d (%s)\n",
+    ccolamd_version (version) ;
+    OK (my_check_version ("CCOLAMD",
         CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
-        CCOLAMD_DATE) ;
+        CCOLAMD_DATE, version)) ;
+
     int64_t Alen = ccolamd_l_recommended (NNZ, n, n) ;
     int64_t *Awork = malloc (Alen * sizeof (int64_t)) ;
     OK (Awork != NULL) ;
@@ -120,9 +190,11 @@ void my_function (void)
     // COLAMD
     //--------------------------------------------------------------------------
 
-    printf ("COLAMD: v%d.%d.%d (%s)\n",
+    colamd_version (version) ;
+    OK (my_check_version ("COLAMD",
         COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
-        COLAMD_DATE) ;
+        COLAMD_DATE, version)) ;
+
     Alen = ccolamd_l_recommended (NNZ, n, n) ;
     Awork = malloc (Alen * sizeof (int64_t)) ;
     OK (Awork != NULL) ;
@@ -135,12 +207,11 @@ void my_function (void)
     // CHOLMOD
     //--------------------------------------------------------------------------
 
-    printf ("CHOLMOD: v%d.%d.%d (%s)\n",
-        CHOLMOD_MAIN_VERSION, CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION,
-        CHOLMOD_DATE) ;
     v = cholmod_l_version (version) ;
-    printf ("CHOLMOD: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    OK (my_check_version ("CHOLMOD",
+        CHOLMOD_MAIN_VERSION, CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION,
+        CHOLMOD_DATE, version)) ;
+
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
 
@@ -150,12 +221,10 @@ void my_function (void)
 
     #if ! defined (NO_GRAPHBLAS)
     OK (GrB_init (GrB_NONBLOCKING) == GrB_SUCCESS) ;
-    printf ("GraphBLAS: v%d.%d.%d (%s)\n",
-        GxB_IMPLEMENTATION_MAJOR, GxB_IMPLEMENTATION_MINOR,
-        GxB_IMPLEMENTATION_SUB, GxB_IMPLEMENTATION_DATE) ;
     OK (GxB_Global_Option_get (GxB_LIBRARY_VERSION, version) == GrB_SUCCESS) ;
-    printf ("GraphBLAS: v%d.%d.%d (in library)\n",
-        version [0], version [1], version [2]) ;
+    OK (my_check_version ("GraphBLAS",
+        GxB_IMPLEMENTATION_MAJOR, GxB_IMPLEMENTATION_MINOR,
+        GxB_IMPLEMENTATION_SUB, GxB_IMPLEMENTATION_DATE, version)) ;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
     #endif
 
@@ -165,13 +234,11 @@ void my_function (void)
 
     #if ! defined (NO_LAGRAPH)
     char msg [LAGRAPH_MSG_LEN], verstring [LAGRAPH_MSG_LEN] ;
-    printf ("LAGraph: v%d.%d.%d (%s)\n",
-        LAGRAPH_VERSION_MAJOR, LAGRAPH_VERSION_MINOR, LAGRAPH_VERSION_UPDATE,
-        LAGRAPH_DATE) ;
     OK (LAGraph_Init (msg) == GrB_SUCCESS) ;
     OK (LAGraph_Version (version, verstring, msg) == GrB_SUCCESS) ;
-    printf ("LAGraph: v%d.%d.%d (%s) (in library)\n",
-        version [0], version [1], version [2], verstring) ;
+    OK (my_check_version ("LAGraph",
+        LAGRAPH_VERSION_MAJOR, LAGRAPH_VERSION_MINOR, LAGRAPH_VERSION_UPDATE,
+        LAGRAPH_DATE, version)) ;
     OK (LAGraph_Finalize (msg) == GrB_SUCCESS) ;
     #endif
 
@@ -179,8 +246,11 @@ void my_function (void)
     // KLU
     //--------------------------------------------------------------------------
 
-    printf ("KLU: v%d.%d.%d (%s)\n",
-        KLU_MAIN_VERSION, KLU_SUB_VERSION, KLU_SUBSUB_VERSION, KLU_DATE) ;
+    klu_version (version) ;
+    OK (my_check_version ("KLU",
+        KLU_MAIN_VERSION, KLU_SUB_VERSION, KLU_SUBSUB_VERSION,
+        KLU_DATE, version)) ;
+
     double b [N] = {8., 45.} ;
     double xgood [N] = {36.4, -32.7} ;
     double x [N] ;
@@ -210,8 +280,11 @@ void my_function (void)
     // LDL
     //--------------------------------------------------------------------------
 
-    printf ("LDL: v%d.%d.%d (%s)\n",
-        LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION, LDL_DATE) ;
+    ldl_version (version) ;
+    OK (my_check_version ("LDL",
+        LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION,
+        LDL_DATE, version)) ;
+
     double x2 [N] ;
     P [0] = 0 ;
     P [1] = 1 ;
@@ -229,8 +302,11 @@ void my_function (void)
     // RBio
     //--------------------------------------------------------------------------
 
-    printf ("RBio: v%d.%d.%d (%s)\n",
-        RBIO_MAIN_VERSION, RBIO_SUB_VERSION, RBIO_SUBSUB_VERSION, RBIO_DATE) ;
+    RBio_version (version) ;
+    OK (my_check_version ("RBio",
+        RBIO_MAIN_VERSION, RBIO_SUB_VERSION, RBIO_SUBSUB_VERSION,
+        RBIO_DATE, version)) ;
+
     char mtype [4], key [8], title [80] ;
     strncpy (key, "simple", 8) ;
     strncpy (title, "2-by-2 matrix", 80) ;
@@ -261,17 +337,22 @@ void my_function (void)
     // SPEX
     //--------------------------------------------------------------------------
 
-    printf ("SPEX: v%d.%d.%d (%s)\n",
-        SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE) ;
     OK (SPEX_initialize ( ) == SPEX_OK) ;
+    SPEX_version (version) ;
+    OK (my_check_version ("SPEX",
+        SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
+        version)) ;
     OK (SPEX_finalize ( ) == SPEX_OK) ;
 
     //--------------------------------------------------------------------------
     // SPQR
     //--------------------------------------------------------------------------
 
-    printf ("SPQR: v%d.%d.%d (%s)\n",
-        SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE) ;
+    SuiteSparseQR_C_version (version) ;
+    OK (my_check_version ("SuiteSparseQR",
+        SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE,
+        version)) ;
+
     cholmod_sparse *A2, A2_struct ;
     cholmod_dense  *B2, B2_struct ;
     cholmod_dense  *X2 ;
@@ -314,9 +395,10 @@ void my_function (void)
     // UMFPACK
     //--------------------------------------------------------------------------
 
-    printf ("UMFPACK: v%d.%d.%d (%s)\n",
+    umfpack_version (version) ;
+    OK (my_check_version ("UMFPACK",
         UMFPACK_MAIN_VERSION, UMFPACK_SUB_VERSION, UMFPACK_SUBSUB_VERSION,
-        UMFPACK_DATE) ;
+        UMFPACK_DATE, version)) ;
 
     printf ("%s\n", UMFPACK_VERSION) ;
     printf ("%s", UMFPACK_COPYRIGHT) ;
@@ -334,7 +416,7 @@ void my_function (void)
     (void) umfpack_dl_symbolic (n, n, Ap, Ai, Ax, &Sym, Control, Info) ;
     (void) umfpack_dl_numeric (Ap, Ai, Ax, Sym, &Num, Control, Info) ;
     umfpack_dl_free_symbolic (&Sym) ;
-    result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info) ;
+    result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info);
     umfpack_dl_free_numeric (&Num) ;
     for (int i = 0 ; i < n ; i++) printf ("x [%d] = %g\n", i, x [i]) ;
     err = 0 ;
@@ -348,11 +430,12 @@ void my_function (void)
     umfpack_dl_report_info (Control, Info) ;
 
     //--------------------------------------------------------------------------
-    // free workspace
+    // free workspace and return result
     //--------------------------------------------------------------------------
 
     cs_dl_spfree (A) ;
     A = NULL ;
     OK (cholmod_l_finish (&cc)) ;
+    return (0) ;
 }
 

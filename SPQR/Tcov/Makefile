@@ -163,7 +163,7 @@ endif
 
 $(OBJ): $(INC)
 
-I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include \
+I = -I../../CHOLMOD/Include -I../../SuiteSparse_config -I../Include -I../../include/suitesparse
 
 ifneq ($(GPU_CONFIG),)
     I += -I../../SuiteSparse_GPURuntime/Include \
@@ -175,7 +175,7 @@ C = $(CXX) $(CF) $(I) $(GPU_CONFIG)
 LIBS = -L../../lib $(FLIB) $(CLIB) $(CUDA_LIB) \
     -Wl,--rpath=$(SUITESPARSE)/lib -lm -lrt
 
-qrtestc.o: qrtestc.c $(INC)
+qrtestc.o: qrtestc.c $(INC) qrtestc_template.c
 	$(CC) $(CF) -std=c11 $(I) -c $<
 
 qrtest: qrtest.cpp $(INC) $(OBJ)
@@ -206,9 +206,12 @@ ifneq ($(GPU_CONFIG),)
 	$(C) ../Demo/qrdemo_gpu.cpp -o qrdemo_gpu $(OBJ) $(LIBS)
 endif
 
-go: qrtest qrtest32 gpu qrdemo_gpu
-	- ./qrtest32 matrixlist.txt > qrtest_out32.txt
+go0: qrtest qrtest32 gpu qrdemo_gpu
 	- ./qrtest matrixlist.txt > qrtest_out.txt
+
+go: qrtest qrtest32 gpu qrdemo_gpu
+	- ./qrtest matrixlist.txt > qrtest_out.txt
+	- ./qrtest32 matrixlist.txt > qrtest_out32.txt
 	- ./cov
 
 go1: qrtest qrtest32

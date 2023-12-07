@@ -2,6 +2,7 @@ Dec 30, 2023: version 6.3.0
 
     * major change to build system: by Markus Mützel
     * AMD: amd_internal.h removed from UMFPACK/Source.
+    * umfpack_version: added to return version of UMFPACK
 
 Oct 23, 2023: version 6.2.2
 

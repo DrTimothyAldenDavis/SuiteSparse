@@ -1,6 +1,7 @@
 Dec 30, 2023: version 2.3.0
 
     * major change to build system: by Markus Mützel
+    * SPEX_version: added to return version of SPEX
 
 Sept 18, 2023: version 2.2.1
 

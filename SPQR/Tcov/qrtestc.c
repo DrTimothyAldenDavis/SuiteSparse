@@ -13,21 +13,22 @@
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 
+#define Real double
+
 //------------------------------------------------------------------------------
 // qrtest_c64: int64_t version
 //------------------------------------------------------------------------------
 
-#define DLONG
+#define CHOLMOD_INT64
 #define QRTESTC qrtest_c64
 #include "qrtestc_template.c"
-#undef DLONG
-#undef QRTESTC
 
 //------------------------------------------------------------------------------
 // qrtest_c32: int32_t version
 //------------------------------------------------------------------------------
 
-#define DINT
+#undef CHOLMOD_INT64
+#undef QRTESTC
 #define QRTESTC qrtest_c32
 #include "qrtestc_template.c"
 

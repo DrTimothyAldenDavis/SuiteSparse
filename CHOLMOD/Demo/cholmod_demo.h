@@ -9,6 +9,12 @@
 //------------------------------------------------------------------------------
 
 #include "cholmod.h"
+#include "amd.h"
+#include "colamd.h"
+#ifndef NCAMD
+#include "camd.h"
+#include "ccolamd.h"
+#endif
 #include <time.h>
 #define TRUE 1
 #define FALSE 0

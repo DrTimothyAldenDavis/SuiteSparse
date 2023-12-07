@@ -28,12 +28,13 @@ default: library
 # (or whatever your CMAKE_INSTALL_PREFIX is)
 library:
 	( cd SuiteSparse_config && $(MAKE) )
-	( cd Mongoose && $(MAKE) )
 	( cd AMD && $(MAKE) )
+	( cd COLAMD && $(MAKE) )
+	( cd SPEX && $(MAKE) )
+	( cd Mongoose && $(MAKE) )
 	( cd BTF && $(MAKE) )
 	( cd CAMD && $(MAKE) )
 	( cd CCOLAMD && $(MAKE) )
-	( cd COLAMD && $(MAKE) )
 	( cd CHOLMOD && $(MAKE) )
 	( cd CSparse && $(MAKE) )
 	( cd CXSparse && $(MAKE) )
@@ -43,19 +44,19 @@ library:
 	( cd ParU && $(MAKE) )
 	( cd RBio && $(MAKE) )
 	( cd SPQR && $(MAKE) )
-	( cd SPEX && $(MAKE) )
 	( cd GraphBLAS && $(MAKE) )
 	( cd LAGraph && $(MAKE) )
 
-# compile; "make install" only in  SuiteSparse/lib and SuiteSparse/include
+# compile; "make install" only in SuiteSparse/lib and SuiteSparse/include
 local:
 	( cd SuiteSparse_config && $(MAKE) local )
-	( cd Mongoose && $(MAKE) local )
 	( cd AMD && $(MAKE) local )
+	( cd COLAMD && $(MAKE) local )
+	( cd SPEX && $(MAKE) local )
+	( cd Mongoose && $(MAKE) local )
 	( cd BTF && $(MAKE) local )
 	( cd CAMD && $(MAKE) local )
 	( cd CCOLAMD && $(MAKE) local )
-	( cd COLAMD && $(MAKE) local )
 	( cd CHOLMOD && $(MAKE) local )
 	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) local )
@@ -65,7 +66,6 @@ local:
 	( cd ParU && $(MAKE) local )
 	( cd RBio && $(MAKE) local )
 	( cd SPQR && $(MAKE) local )
-	( cd SPEX && $(MAKE) local )
 	( cd GraphBLAS && $(MAKE) local )
 	( cd LAGraph && $(MAKE) local )
 
@@ -73,12 +73,13 @@ local:
 # (or whatever your CMAKE_INSTALL_PREFIX is)
 global:
 	( cd SuiteSparse_config && $(MAKE) global )
-	( cd Mongoose && $(MAKE) global )
 	( cd AMD && $(MAKE) global )
+	( cd COLAMD && $(MAKE) global )
+	( cd SPEX && $(MAKE) global )
+	( cd Mongoose && $(MAKE) global )
 	( cd BTF && $(MAKE) global )
 	( cd CAMD && $(MAKE) global )
 	( cd CCOLAMD && $(MAKE) global )
-	( cd COLAMD && $(MAKE) global )
 	( cd CHOLMOD && $(MAKE) global )
 	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) global )
@@ -88,19 +89,19 @@ global:
 	( cd ParU && $(MAKE) global )
 	( cd RBio && $(MAKE) global )
 	( cd SPQR && $(MAKE) global )
-	( cd SPEX && $(MAKE) global )
 	( cd GraphBLAS && $(MAKE) global )
 	( cd LAGraph && $(MAKE) global )
 
 # install all packages.  Location depends on prior "make", "make global" etc
 install:
 	( cd SuiteSparse_config && $(MAKE) install )
-	( cd Mongoose  && $(MAKE) install )
 	( cd AMD && $(MAKE) install )
+	( cd COLAMD && $(MAKE) install )
+	( cd SPEX && $(MAKE) install )
+	( cd Mongoose  && $(MAKE) install )
 	( cd BTF && $(MAKE) install )
 	( cd CAMD && $(MAKE) install )
 	( cd CCOLAMD && $(MAKE) install )
-	( cd COLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
 	( cd CXSparse && $(MAKE) install ) # CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
@@ -109,17 +110,17 @@ install:
 	( cd ParU && $(MAKE) install )
 	( cd RBio && $(MAKE) install )
 	( cd SPQR && $(MAKE) install )
-	( cd SPEX && $(MAKE) install )
 	( cd GraphBLAS && $(MAKE) install )
 	( cd LAGraph && $(MAKE) install )
 
 # uninstall all packages
 uninstall:
 	( cd SuiteSparse_config && $(MAKE) uninstall )
-	( cd Mongoose  && $(MAKE) uninstall )
 	( cd AMD && $(MAKE) uninstall )
-	( cd CAMD && $(MAKE) uninstall )
 	( cd COLAMD && $(MAKE) uninstall )
+	( cd SPEX && $(MAKE) uninstall )
+	( cd Mongoose  && $(MAKE) uninstall )
+	( cd CAMD && $(MAKE) uninstall )
 	( cd BTF && $(MAKE) uninstall )
 	( cd KLU && $(MAKE) uninstall )
 	( cd LDL && $(MAKE) uninstall )
@@ -130,7 +131,6 @@ uninstall:
 	( cd CXSparse && $(MAKE) uninstall )
 	( cd RBio && $(MAKE) uninstall )
 	( cd SPQR && $(MAKE) uninstall )
-	( cd SPEX && $(MAKE) uninstall )
 	( cd GraphBLAS && $(MAKE) uninstall )
 	( cd LAGraph && $(MAKE) uninstall )
 
@@ -141,9 +141,10 @@ distclean: purge
 purge:
 	- ( cd SuiteSparse_config && $(MAKE) purge )
 	- ( cd AMD && $(MAKE) purge )
+	- ( cd COLAMD && $(MAKE) purge )
+	- ( cd SPEX && $(MAKE) purge )
 	- ( cd Mongoose  && $(MAKE) purge )
 	- ( cd CAMD && $(MAKE) purge )
-	- ( cd COLAMD && $(MAKE) purge )
 	- ( cd BTF && $(MAKE) purge )
 	- ( cd KLU && $(MAKE) purge )
 	- ( cd LDL && $(MAKE) purge )
@@ -158,7 +159,6 @@ purge:
 	- $(RM) MATLAB_Tools/*/*.o    MATLAB_Tools/*/*/*.o
 	- $(RM) -r Example/build/*
 	- ( cd GraphBLAS && $(MAKE) purge )
-	- ( cd SPEX && $(MAKE) purge )
 	- ( cd ParU && $(MAKE) purge )
 	- ( cd LAGraph && $(MAKE) purge )
 	- $(RM) -r include/* bin/* lib/*
@@ -169,10 +169,11 @@ clean: purge
 # Run all demos
 demos:
 	- ( cd SuiteSparse_config && $(MAKE) demos )
-	- ( cd Mongoose && $(MAKE) demos )
 	- ( cd AMD && $(MAKE) demos )
-	- ( cd CAMD && $(MAKE) demos )
 	- ( cd COLAMD && $(MAKE) demos )
+	- ( cd SPEX && $(MAKE) demos )
+	- ( cd Mongoose && $(MAKE) demos )
+	- ( cd CAMD && $(MAKE) demos )
 	- ( cd BTF && $(MAKE) demos )
 	- ( cd KLU && $(MAKE) demos )
 	- ( cd LDL && $(MAKE) demos )
@@ -184,7 +185,6 @@ demos:
 	- ( cd RBio && $(MAKE) demos )
 	- ( cd SPQR && $(MAKE) demos )
 	- ( cd GraphBLAS && $(MAKE) demos )
-	- ( cd SPEX && $(MAKE) demos )
 	- ( cd ParU && $(MAKE) demos )
 	- ( cd LAGraph && $(MAKE) demos )
 
@@ -239,4 +239,11 @@ debug:
 	( cd SPEX && $(MAKE) debug )
 	( cd GraphBLAS && $(MAKE) cdebug )
 	( cd LAGraph && $(MAKE) debug )
+
+tests:
+	( cd Mongoose && $(MAKE) test )
+	( cd CHOLMOD && $(MAKE) test )
+	( cd LAGraph && $(MAKE) test )
+
+test: tests
 

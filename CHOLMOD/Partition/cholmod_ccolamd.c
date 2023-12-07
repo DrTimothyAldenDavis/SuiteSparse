@@ -24,8 +24,8 @@
 #ifndef NCAMD
 
 #include "ccolamd.h"
-#if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (3,0))
-#error "CCOLAMD v3.0 or later is required"
+#if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (3,3))
+#error "CHOLMOD:Partition requires CCOLAMD 3.3.0 or later"
 #endif
 
 //------------------------------------------------------------------------------

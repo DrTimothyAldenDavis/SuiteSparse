@@ -1,3 +1,4 @@
+LDL version 3.3.0, date: Dec 30, 2023
 
 
 --------------------------------------------------------
@@ -107,10 +108,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 0
+relative maxnorm of residual: 1.97627e-17
 Factorize A=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 0
+relative maxnorm of residual: 1.97627e-17
 
 
 --------------------------------------------------------
@@ -158,10 +159,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 8.32667e-17
+relative maxnorm of residual: 5.51017e-17
 Factorize A=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 8.32667e-17
+relative maxnorm of residual: 5.51017e-17
 
 
 --------------------------------------------------------
@@ -209,10 +210,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 1  Flop count: 3
-relative maxnorm of residual: 5.55112e-17
+relative maxnorm of residual: 2.53452e-17
 Factorize A=LDL' and solve Ax=b
 Nz in L: 1  Flop count: 3
-relative maxnorm of residual: 5.55112e-17
+relative maxnorm of residual: 2.53452e-17
 
 
 --------------------------------------------------------
@@ -260,10 +261,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 1  Flop count: 3
-relative maxnorm of residual: 1.11022e-16
+relative maxnorm of residual: 1.08019e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 1  Flop count: 3
-relative maxnorm of residual: 1.11022e-16
+relative maxnorm of residual: 1.08019e-16
 
 
 --------------------------------------------------------
@@ -311,10 +312,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 3  Flop count: 11
-relative maxnorm of residual: 1.11022e-16
+relative maxnorm of residual: 1.5077e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 3  Flop count: 11
-relative maxnorm of residual: 1.11022e-16
+relative maxnorm of residual: 1.5077e-16
 
 
 --------------------------------------------------------
@@ -362,10 +363,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 3  Flop count: 11
-relative maxnorm of residual: 1.38778e-16
+relative maxnorm of residual: 1.27147e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 3  Flop count: 11
-relative maxnorm of residual: 1.38778e-16
+relative maxnorm of residual: 1.27147e-16
 
 
 --------------------------------------------------------
@@ -515,10 +516,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 126  Flop count: 954
-relative maxnorm of residual: 2.59625e-10
+relative maxnorm of residual: 1.95957e-10
 Factorize A=LDL' and solve Ax=b
 Nz in L: 276  Flop count: 4206
-relative maxnorm of residual: 2.72848e-10
+relative maxnorm of residual: 2.29324e-10
 
 
 --------------------------------------------------------
@@ -566,10 +567,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 126  Flop count: 954
-relative maxnorm of residual: 3.27418e-10
+relative maxnorm of residual: 2.56588e-10
 Factorize A=LDL' and solve Ax=b
 Nz in L: 276  Flop count: 4206
-relative maxnorm of residual: 2.32376e-10
+relative maxnorm of residual: 2.49687e-10
 
 
 --------------------------------------------------------
@@ -617,10 +618,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 441  Flop count: 5961
-relative maxnorm of residual: 2.38712e-13
+relative maxnorm of residual: 1.85693e-13
 Factorize A=LDL' and solve Ax=b
 Nz in L: 829  Flop count: 20103
-relative maxnorm of residual: 2.27374e-13
+relative maxnorm of residual: 3.17781e-13
 
 
 --------------------------------------------------------
@@ -668,10 +669,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 441  Flop count: 5961
-relative maxnorm of residual: 2.27374e-13
+relative maxnorm of residual: 2.75176e-13
 Factorize A=LDL' and solve Ax=b
 Nz in L: 829  Flop count: 20103
-relative maxnorm of residual: 3.83693e-13
+relative maxnorm of residual: 3.12705e-13
 
 
 --------------------------------------------------------
@@ -821,10 +822,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 288  Flop count: 2630
-relative maxnorm of residual: 5.96745e-16
+relative maxnorm of residual: 5.6363e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 511  Flop count: 7383
-relative maxnorm of residual: 6.93889e-16
+relative maxnorm of residual: 7.07792e-16
 
 
 --------------------------------------------------------
@@ -872,10 +873,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 288  Flop count: 2630
-relative maxnorm of residual: 5.55112e-16
+relative maxnorm of residual: 5.57005e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 511  Flop count: 7383
-relative maxnorm of residual: 5.55112e-16
+relative maxnorm of residual: 8.6996e-16
 
 
 --------------------------------------------------------
@@ -923,10 +924,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 226  Flop count: 1472
-relative maxnorm of residual: 5.55112e-16
+relative maxnorm of residual: 5.39685e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 662  Flop count: 11350
-relative maxnorm of residual: 1.11022e-15
+relative maxnorm of residual: 8.70386e-16
 
 
 --------------------------------------------------------
@@ -974,10 +975,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 226  Flop count: 1472
-relative maxnorm of residual: 5.68434e-14
+relative maxnorm of residual: 3.00082e-14
 Factorize A=LDL' and solve Ax=b
 Nz in L: 662  Flop count: 11350
-relative maxnorm of residual: 2.15827e-12
+relative maxnorm of residual: 1.64732e-12
 
 
 --------------------------------------------------------
@@ -1025,10 +1026,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 2145  Flop count: 97955
-relative maxnorm of residual: 7.50219e-13
+relative maxnorm of residual: 6.01798e-13
 Factorize A=LDL' and solve Ax=b
 Nz in L: 2145  Flop count: 97955
-relative maxnorm of residual: 7.50219e-13
+relative maxnorm of residual: 6.01798e-13
 
 
 --------------------------------------------------------
@@ -1076,10 +1077,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 2145  Flop count: 97955
-relative maxnorm of residual: 8.59759e-13
+relative maxnorm of residual: 5.76924e-13
 Factorize A=LDL' and solve Ax=b
 Nz in L: 2145  Flop count: 97955
-relative maxnorm of residual: 8.59759e-13
+relative maxnorm of residual: 5.76924e-13
 
 
 --------------------------------------------------------
@@ -1127,10 +1128,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 2.22045e-16
+relative maxnorm of residual: 1.3857e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 2.22045e-16
+relative maxnorm of residual: 1.3857e-16
 
 
 --------------------------------------------------------
@@ -1178,10 +1179,10 @@ AMD version 3.3.0, Dec 30, 2023, results:
 
 Factorize PAP'=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 2.22045e-16
+relative maxnorm of residual: 1.3857e-16
 Factorize A=LDL' and solve Ax=b
 Nz in L: 0  Flop count: 0
-relative maxnorm of residual: 2.22045e-16
+relative maxnorm of residual: 1.3857e-16
 
 
 --------------------------------------------------------
@@ -1231,6 +1232,6 @@ name: Dense/3  n: 3 entries: 9 (invalid Ai)
 
 ldlamd: invalid matrix and/or permutation
 
-Largest residual during all tests: 3.27418e-10
+Largest residual during all tests: 2.56588e-10
 
 ldlamd: all tests passed

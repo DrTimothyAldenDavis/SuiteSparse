@@ -2,7 +2,7 @@
 // LAGraph.h: user-visible include file for LAGraph
 //------------------------------------------------------------------------------
 
-// LAGraph, (c) 2019-2022 by The LAGraph Contributors, All Rights Reserved.
+// LAGraph, (c) 2019-2023 by The LAGraph Contributors, All Rights Reserved.
 // SPDX-License-Identifier: BSD-2-Clause
 //
 // For additional details (including references to third party source code and
@@ -99,7 +99,7 @@
 #if ( !LAGRAPH_VANILLA ) && defined ( GxB_SUITESPARSE_GRAPHBLAS )
     // use SuiteSparse, and its GxB* extensions
     #if GxB_IMPLEMENTATION < GxB_VERSION (7,1,0)
-    #error "If using SuiteSparse::GraphBLAS, version 7.1.0 or later s required"
+    #error "If using SuiteSparse::GraphBLAS, version 7.1.0 or later is required"
     #endif
     #define LAGRAPH_SUITESPARSE 1
 #else

@@ -95,6 +95,10 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/ldl.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LDL PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( LDL 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -118,6 +122,10 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME ldl_static )
     endif ( )
 
+    if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
+        set_target_properties ( LDL_static PROPERTIES EXPORT_NO_SYSTEM ON )
+    endif ( )
+
     target_include_directories ( LDL_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
@@ -126,6 +134,16 @@ endif ( )
 #-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
+
+if ( BUILD_SHARED_LIBS )
+    target_include_directories ( LDL PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
+
+if ( BUILD_STATIC_LIBS )
+    target_include_directories ( LDL_static PUBLIC
+        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+endif ( )
 
 # libm:
 if ( NOT WIN32 )
@@ -138,15 +156,6 @@ if ( NOT WIN32 )
     endif ( )
 endif ( )
 
-if ( BUILD_SHARED_LIBS )
-    target_include_directories ( LDL PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
-
-if ( BUILD_STATIC_LIBS )
-    target_include_directories ( LDL_static PUBLIC
-        "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
-endif ( )
 #-------------------------------------------------------------------------------
 # LDL installation location
 #-------------------------------------------------------------------------------

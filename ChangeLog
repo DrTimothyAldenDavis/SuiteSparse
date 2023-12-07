@@ -1,7 +1,7 @@
 Dec 30, 2023: version 7.4.0
 
     * major change to build system: by Markus Mützel.  Includes a
-        top-level CMakeLists.txt that builds all packages, and suppor for
+        top-level CMakeLists.txt that builds all packages, and support for
         pkg-config.  Additional changes are listed below. 
     * LAGraph 1.1.0: new package: graph algorithms based on GraphBLAS
     * ParU 0.1.0: new package: parallel unsymmetric multifrontal method,
@@ -11,6 +11,9 @@ Dec 30, 2023: version 7.4.0
     * AMD 3.3.0: minor change for CHOLMOD 5.1.0 tests
     * CAMD 3.3.0: minor change for CHOLMOD 5.1.0 tests
     * SuiteSparse_config 7.4.0: added wrappers for single-precision BLAS/LAPACK
+    * *_version: added methods to all package that didn't have them:
+        AMD, CAMD, COLAMD, CCOLAMD, BTF, CSparse, CXSparse, KLU, BTF, RBio,
+        SPEX, SPQR, and UMFPACK.
 
 Oct 31, 2023: version 7.3.1
 
