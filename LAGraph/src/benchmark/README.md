@@ -1,7 +1,7 @@
 # LAGraph/src/benchmark:  Demo programs that use LAGraph and GraphBLAS
 # to run all of the GAP Benchmark problems.
 
-LAGraph, (c) 2021-2022 by The LAGraph Contributors, All Rights Reserved.
+LAGraph, (c) 2021-2023 by The LAGraph Contributors, All Rights Reserved.
 SPDX-License-Identifier: BSD-2-Clause
 See additional acknowledgments in the LICENSE file,
 or contact permission@sei.cmu.edu for the full terms.
@@ -14,19 +14,12 @@ impact on performance.  Also, please contact the authors of the library if you
 have any questions about benchmarking.  (Tim Davis: davis@tamu.edu, in
 particular).
 
-LAGraph is a draft package (not yet v1.0), and its performance is not yet
-stable.  It includes many draft algorithms that are sometimes posted on github
-in debug mode, or with known suboptimal performance.  We ask that you not
-benchmark LAGraph on your own without contacting the authors to make sure you
-have the right version, and the right version of SuiteSparse:GraphBLAS to go
-with it.
-
 If you run in vanilla mode, by compiling LAGraph with
 
     cmake -DLAGRAPH_VANILLA=1 ..
 
 Then performance can be quite low since in this case LAGraph does not use
-any SuiteSparse:GraphBLAS GxB extensions.  We are still developing the
+any SuiteSparse:GraphBLAS extensions.  We are still developing the
 pure GrB implementations of these algorithms.
 
 However, assuming things are stable, follow the instructions in the
