@@ -11,6 +11,6 @@ Name: CSparse
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Direct methods for sparse linear systems in SuiteSparse
 Version: @CSPARSE_VERSION_MAJOR@.@CSPARSE_VERSION_MINOR@.@CSPARSE_VERSION_SUB@
-Libs: -L${libdir} -lcsparse
+Libs: -L${libdir} -lcsparse@CMAKE_RELEASE_POSTFIX@
 Libs.private: @CSPARSE_STATIC_LIBS@
 Cflags: -I${includedir}
