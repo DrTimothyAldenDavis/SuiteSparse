@@ -336,10 +336,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:UMFPACK> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:UMFPACK_static> )
+    endif ( )
     configure_file (
         Config/UMFPACK.pc.in
-        UMFPACK.pc
+        UMFPACK.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT UMFPACK.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/UMFPACK.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/UMFPACK.pc

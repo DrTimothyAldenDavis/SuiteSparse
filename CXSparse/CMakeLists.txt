@@ -254,10 +254,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:CXSparse> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:CXSparse_static> )
+    endif ( )
     configure_file (
         Config/CXSparse.pc.in
-        CXSparse.pc
+        CXSparse.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT CXSparse.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/CXSparse.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/CXSparse.pc

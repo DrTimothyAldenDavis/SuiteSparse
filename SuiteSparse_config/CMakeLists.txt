@@ -244,10 +244,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:SuiteSparseConfig> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:SuiteSparseConfig_static> )
+    endif ( )
     configure_file (
         Config/SuiteSparse_config.pc.in
-        SuiteSparse_config.pc
+        SuiteSparse_config.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT SuiteSparse_config.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_config.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_config.pc

@@ -340,15 +340,68 @@ endif ( )
 
 if ( GRAPHBLAS_LIBRARY )
     message ( STATUS "Create target GraphBLAS::GraphBLAS" )
+    # Get library name from filename of library
+    # This might be something like:
+    #   /usr/lib/libgraphblas.so or /usr/lib/libgraphblas.a or graphblas64
+    # convert to library name that can be used with -l flags for pkg-config
+    set ( GRAPHBLAS_LIBRARY_TMP ${GRAPHBLAS_LIBRARY} )
+    string ( FIND ${GRAPHBLAS_LIBRARY} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( _graphblas_library_name ${GRAPHBLAS_LIBRARY} )
+    else ( )
+      set ( _kinds "SHARED" "STATIC" )
+      if ( WIN32 )
+          list ( PREPEND _kinds "IMPORT" )
+      endif ( )
+      foreach ( _kind IN LISTS _kinds )
+          set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+          if ( ${GRAPHBLAS_LIBRARY} MATCHES ${_regex} )
+              string ( REGEX REPLACE ${_regex} "\\2" _libname ${GRAPHBLAS_LIBRARY} )
+              if ( NOT "${_libname}" STREQUAL "" )
+                  set ( _graphblas_library_name ${_libname} )
+                  break ()
+              endif ( )
+          endif ( )
+      endforeach ( )
+    endif ( )
+
     add_library ( GraphBLAS::GraphBLAS UNKNOWN IMPORTED )
     set_target_properties ( GraphBLAS::GraphBLAS PROPERTIES
         IMPORTED_LOCATION "${GRAPHBLAS_LIBRARY}"
-        INTERFACE_INCLUDE_DIRECTORIES "${GRAPHBLAS_INCLUDE_DIR}" )
+        INTERFACE_INCLUDE_DIRECTORIES "${GRAPHBLAS_INCLUDE_DIR}"
+        OUTPUT_NAME ${_graphblas_library_name} )
 endif ( )
+
 if ( GRAPHBLAS_STATIC )
     message ( STATUS "Create target GraphBLAS::GraphBLAS_static" )
+    # Get library name from filename of library
+    # This might be something like:
+    #   /usr/lib/libgraphblas.so or /usr/lib/libgraphblas.a or graphblas64
+    # convert to library name that can be used with -l flags for pkg-config
+    set ( GRAPHBLAS_LIBRARY_TMP ${GRAPHBLAS_STATIC} )
+    string ( FIND ${GRAPHBLAS_STATIC} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( _graphblas_library_name ${GRAPHBLAS_STATIC} )
+    else ( )
+      set ( _kinds "SHARED" "STATIC" )
+      if ( WIN32 )
+          list ( PREPEND _kinds "IMPORT" )
+      endif ( )
+      foreach ( _kind IN LISTS _kinds )
+          set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+          if ( ${GRAPHBLAS_STATIC} MATCHES ${_regex} )
+              string ( REGEX REPLACE ${_regex} "\\2" _libname ${GRAPHBLAS_STATIC} )
+              if ( NOT "${_libname}" STREQUAL "" )
+                  set ( _graphblas_library_name ${_libname} )
+                  break ()
+              endif ( )
+          endif ( )
+      endforeach ( )
+    endif ( )
+
     add_library ( GraphBLAS::GraphBLAS_static UNKNOWN IMPORTED )
     set_target_properties ( GraphBLAS::GraphBLAS_static PROPERTIES
         IMPORTED_LOCATION "${GRAPHBLAS_STATIC}"
-        INTERFACE_INCLUDE_DIRECTORIES "${GRAPHBLAS_INCLUDE_DIR}" )
+        INTERFACE_INCLUDE_DIRECTORIES "${GRAPHBLAS_INCLUDE_DIR}"
+        OUTPUT_NAME ${_graphblas_library_name} )
 endif ( )
