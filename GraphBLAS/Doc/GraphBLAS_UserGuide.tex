@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-% \batchmode
+\batchmode
 \usepackage{url}
 \urlstyle{sf}
 \usepackage[svgnames]{xcolor}
@@ -16458,6 +16458,13 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Dec 30, 2023: version 8.3.1
+
+    \begin{itemize}
+    \item remove \verb'#undef I' from \verb'GraphBLAS.h', so as not to conflict
+        with the definition of \verb'I' from \verb'complex.h'.
+    \end{itemize}
 
 \item Dec 30, 2023: version 8.3.0
 
