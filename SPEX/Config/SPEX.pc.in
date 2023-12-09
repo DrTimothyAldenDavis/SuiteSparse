@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Software package for SParse EXact algebra in SuiteSparse
 Version: @SPEX_VERSION_MAJOR@.@SPEX_VERSION_MINOR@.@SPEX_VERSION_SUB@
 Requires.private: SuiteSparse_config AMD COLAMD
-Libs: -L${libdir} -lspex
+Libs: -L${libdir} -lspex@CMAKE_RELEASE_POSTFIX@
 Libs.private: @SPEX_STATIC_LIBS@
 Cflags: -I${includedir}

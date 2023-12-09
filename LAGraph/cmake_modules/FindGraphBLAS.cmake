@@ -219,7 +219,7 @@ find_path ( GRAPHBLAS_INCLUDE_DIR
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES include Include
-  )
+  NO_DEFAULT_PATH )
 
 # dynamic SuiteSparse:GraphBLAS library
 find_library ( GRAPHBLAS_LIBRARY
@@ -232,7 +232,7 @@ find_library ( GRAPHBLAS_LIBRARY
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
-  )
+  NO_DEFAULT_PATH )
 
 if ( MSVC )
     set ( STATIC_NAME graphblas_static )
@@ -253,7 +253,8 @@ find_library ( GRAPHBLAS_STATIC
   HINTS ${PROJECT_SOURCE_DIR}/../GraphBLAS
   HINTS ${PROJECT_SOURCE_DIR}/../SuiteSparse/GraphBLAS
   PATH_SUFFIXES lib build alternative
-  )
+  NO_DEFAULT_PATH )
+
 set ( CMAKE_FIND_LIBRARY_SUFFIXES ${save} )
 if ( MINGW AND GRAPHBLAS_STATIC MATCHES ".*\.dll\.a" )
     set ( GRAPHBLAS_STATIC "" )
@@ -278,9 +279,11 @@ if ( GRAPHBLAS_VERSION )
     if ( ${GRAPHBLAS_VERSION} MATCHES "[0-9]+.[0-9]+.([0-9]+)" )
         set ( GraphBLAS_VERSION_PATCH ${CMAKE_MATCH_1} )
     endif ( )
-    message ( STATUS "major: ${GraphBLAS_VERSION_MAJOR}" )
-    message ( STATUS "minor: ${GraphBLAS_VERSION_MINOR}" )
-    message ( STATUS "patch: ${GraphBLAS_VERSION_PATCH}" )
+    if ( LAGRAPH_DUMP )
+        message ( STATUS "major: ${GraphBLAS_VERSION_MAJOR}" )
+        message ( STATUS "minor: ${GraphBLAS_VERSION_MINOR}" )
+        message ( STATUS "patch: ${GraphBLAS_VERSION_PATCH}" )
+    endif ( )
 endif ( )
 
 # set ( GRAPHBLAS_VERSION "" )
@@ -292,9 +295,11 @@ if ( EXISTS "${GRAPHBLAS_INCLUDE_DIR}" AND NOT GRAPHBLAS_VERSION )
         REGEX "define GxB_IMPLEMENTATION_MINOR" )
     file ( STRINGS ${GRAPHBLAS_INCLUDE_DIR}/GraphBLAS.h GRAPHBLAS_PATCH_STR
         REGEX "define GxB_IMPLEMENTATION_SUB" )
-    message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
-    message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
-    message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    if ( LAGRAPH_DUMP )
+        message ( STATUS "major: ${GRAPHBLAS_MAJOR_STR}" )
+        message ( STATUS "minor: ${GRAPHBLAS_MINOR_STR}" )
+        message ( STATUS "patch: ${GRAPHBLAS_PATCH_STR}" )
+    endif ( )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MAJOR ${GRAPHBLAS_MAJOR_STR} )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_MINOR ${GRAPHBLAS_MINOR_STR} )
     string ( REGEX MATCH "[0-9]+" GraphBLAS_VERSION_PATCH ${GRAPHBLAS_PATCH_STR} )

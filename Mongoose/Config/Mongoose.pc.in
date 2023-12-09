@@ -12,5 +12,5 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Graph partitioning library in SuiteSparse
 Version: @Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lmongoose
+Libs: -L${libdir} -lmongoose@CMAKE_RELEASE_POSTFIX@
 Cflags: -I${includedir}
