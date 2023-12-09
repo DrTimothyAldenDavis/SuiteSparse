@@ -582,12 +582,13 @@ GrB_Info LAGraph_BF_full_mxv
  * @param[in]   s        index of the source
  * @param[in]   n        number of nodes
  * @param[in]   nz       number of edges
- * @param[in]   I        row index vector (size n)
+ * @param[in]   Ilist    row index vector (size n)
  * @param[in]   J        column index vector (size nz)
- * @param[in]   W        weight vector (size nz), W(i) = weight of edge (I(i),J(i))
+ * @param[in]   W        weight vector (size nz), W(i) = weight of edge 
+ *                       (Ilist(i),J(i))
  *
  * @retval GrB_SUCCESS        if completed successfully
- * @retval GrB_NULL_POINTER   If pd, ppi, I, J, or W is NULL
+ * @retval GrB_NULL_POINTER   If pd, ppi, Ilist, J, or W is NULL
  * @retval GrB_INVALID_VALUE  if s is not a valid vertex index
  * @retval GrB_OUT_OF_MEMORY  if allocation fails.
  * @retval GrB_NO_VALUE       if A has a negative weight cycle
@@ -603,7 +604,7 @@ GrB_Info LAGraph_BF_pure_c
     const int64_t s,
     const int64_t n,
     const int64_t nz,
-    const int64_t *I,
+    const int64_t *Ilist,
     const int64_t *J,
     const int32_t *W
 ) ;
@@ -619,12 +620,13 @@ GrB_Info LAGraph_BF_pure_c
  * @param[in]   s        index of the source
  * @param[in]   n        number of nodes
  * @param[in]   nz       number of edges
- * @param[in]   I        row index vector (size n)
+ * @param[in]   Ilist    row index vector (size n)
  * @param[in]   J        column index vector (size nz)
- * @param[in]   W        weight vector (size nz), W(i) = weight of edge (I(i),J(i))
+ * @param[in]   W        weight vector (size nz), W(i) = weight of edge
+ *                       (Ilist(i),J(i))
  *
  * @retval GrB_SUCCESS        if completed successfully
- * @retval GrB_NULL_POINTER   If pd, ppi, I, J, or W is NULL
+ * @retval GrB_NULL_POINTER   If pd, ppi, Ilist, J, or W is NULL
  * @retval GrB_INVALID_VALUE  if s is not a valid vertex index
  * @retval GrB_OUT_OF_MEMORY  if allocation fails.
  * @retval GrB_NO_VALUE       if A has a negative weight cycle
@@ -640,7 +642,7 @@ GrB_Info LAGraph_BF_pure_c_double
     const int64_t s,
     const int64_t n,
     const int64_t nz,
-    const int64_t *I,
+    const int64_t *Ilist,
     const int64_t *J,
     const double  *W
 ) ;

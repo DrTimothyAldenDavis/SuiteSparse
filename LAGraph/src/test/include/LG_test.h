@@ -16,6 +16,7 @@
 
 #include <GraphBLAS.h>
 #include <LAGraph.h>
+#undef I
 
 #if ( _MSC_VER && !__INTEL_COMPILER && LG_TEST_DLL )
     #ifdef LG_TEST_LIBRARY

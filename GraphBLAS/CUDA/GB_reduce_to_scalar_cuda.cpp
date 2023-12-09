@@ -15,6 +15,7 @@
 // and calls itself recursively to continue the reduction.
 
 #include "GraphBLAS.h"
+#undef I
 extern "C"
 {
     #include "GB_reduce.h"

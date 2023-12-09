@@ -1,6 +1,7 @@
-Dec 30, 2023: version 8.3.0
+Dec 30, 2023: version 8.3.1
 
     * major change to build system: by Markus Mützel
+    * GraphBLAS.h: remove "undef I" 
 
 Oct 7, 2023: version 8.2.1
 

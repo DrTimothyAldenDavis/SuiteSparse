@@ -151,7 +151,6 @@
         // C++ complex types for CUDA
         #include <cmath>
         #include <complex>
-        #undef I
         typedef std::complex<float>  GxB_FC32_t ;
         typedef std::complex<double> GxB_FC64_t ;
         #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
@@ -162,7 +161,6 @@
 
         // Microsoft Windows complex types for C
         #include <complex.h>
-        #undef I
         typedef _Fcomplex GxB_FC32_t ;
         typedef _Dcomplex GxB_FC64_t ;
         #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
@@ -173,7 +171,6 @@
 
         // C11 complex types
         #include <complex.h>
-        #undef I
         typedef float  _Complex GxB_FC32_t ;
         typedef double _Complex GxB_FC64_t ;
         #if (defined (CMPLX) && defined (CMPLXF))
@@ -2457,7 +2454,7 @@ GrB_Info GrB_Vector_free    // free a vector
 GrB_Info GrB_Vector_build_BOOL      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const bool *X,                  // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2466,7 +2463,7 @@ GrB_Info GrB_Vector_build_BOOL      // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_INT8      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const int8_t *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2475,7 +2472,7 @@ GrB_Info GrB_Vector_build_INT8      // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_UINT8     // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const uint8_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2484,7 +2481,7 @@ GrB_Info GrB_Vector_build_UINT8     // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_INT16     // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const int16_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2493,7 +2490,7 @@ GrB_Info GrB_Vector_build_INT16     // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_UINT16    // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const uint16_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2502,7 +2499,7 @@ GrB_Info GrB_Vector_build_UINT16    // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_INT32     // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const int32_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2511,7 +2508,7 @@ GrB_Info GrB_Vector_build_INT32     // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_UINT32    // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const uint32_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2520,7 +2517,7 @@ GrB_Info GrB_Vector_build_UINT32    // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_INT64     // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const int64_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2529,7 +2526,7 @@ GrB_Info GrB_Vector_build_INT64     // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_UINT64    // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const uint64_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2538,7 +2535,7 @@ GrB_Info GrB_Vector_build_UINT64    // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_FP32      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const float *X,                 // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2547,7 +2544,7 @@ GrB_Info GrB_Vector_build_FP32      // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_FP64      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const double *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2556,7 +2553,7 @@ GrB_Info GrB_Vector_build_FP64      // build a vector from (I,X) tuples
 GrB_Info GxB_Vector_build_FC32      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const GxB_FC32_t *X,            // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2565,7 +2562,7 @@ GrB_Info GxB_Vector_build_FC32      // build a vector from (I,X) tuples
 GrB_Info GxB_Vector_build_FC64      // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const GxB_FC64_t *X,            // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2574,7 +2571,7 @@ GrB_Info GxB_Vector_build_FC64      // build a vector from (I,X) tuples
 GrB_Info GrB_Vector_build_UDT       // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const void *X,                  // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2583,7 +2580,7 @@ GrB_Info GrB_Vector_build_UDT       // build a vector from (I,X) tuples
 GrB_Info GxB_Vector_build_Scalar    // build a vector from (i,scalar) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     GrB_Scalar scalar,              // value for all tuples
     GrB_Index nvals                 // number of tuples
 ) ;
@@ -2596,7 +2593,7 @@ GrB_Info GxB_Vector_build_Scalar    // build a vector from (i,scalar) tuples
 GrB_Info GrB_Vector_build           // build a vector from (I,X) tuples
 (
     GrB_Vector w,                   // vector to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,         // array of row indices of tuples
     const <type> *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
     const GrB_BinaryOp dup          // binary function to assemble duplicates
@@ -2605,13 +2602,13 @@ GrB_Info GrB_Vector_build           // build a vector from (I,X) tuples
 */
 
 #if GxB_STDC_VERSION >= 201112L
-#define GrB_Vector_build(w,I,X,nvals,dup)               \
+#define GrB_Vector_build(w,Ilist,X,nvals,dup)           \
     _Generic                                            \
     (                                                   \
         (X),                                            \
             GB_PCASES (GrB, Vector_build)               \
     )                                                   \
-    (w, I, ((const void *) (X)), nvals, dup)
+    (w, Ilist, ((const void *) (X)), nvals, dup)
 #endif
 
 //------------------------------------------------------------------------------
@@ -2921,7 +2918,7 @@ GrB_Info GrB_Vector_removeElement
 
 GrB_Info GrB_Vector_extractTuples_BOOL      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     bool *X,                    // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2929,7 +2926,7 @@ GrB_Info GrB_Vector_extractTuples_BOOL      // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_INT8      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     int8_t *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2937,7 +2934,7 @@ GrB_Info GrB_Vector_extractTuples_INT8      // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_UINT8     // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     uint8_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2945,7 +2942,7 @@ GrB_Info GrB_Vector_extractTuples_UINT8     // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_INT16     // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     int16_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2953,7 +2950,7 @@ GrB_Info GrB_Vector_extractTuples_INT16     // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_UINT16    // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     uint16_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2961,7 +2958,7 @@ GrB_Info GrB_Vector_extractTuples_UINT16    // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_INT32     // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     int32_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2969,7 +2966,7 @@ GrB_Info GrB_Vector_extractTuples_INT32     // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_UINT32    // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     uint32_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2977,7 +2974,7 @@ GrB_Info GrB_Vector_extractTuples_UINT32    // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_INT64     // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     int64_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2985,7 +2982,7 @@ GrB_Info GrB_Vector_extractTuples_INT64     // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_UINT64    // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     uint64_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -2993,7 +2990,7 @@ GrB_Info GrB_Vector_extractTuples_UINT64    // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_FP32      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     float *X,                   // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3001,7 +2998,7 @@ GrB_Info GrB_Vector_extractTuples_FP32      // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_FP64      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     double *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3009,7 +3006,7 @@ GrB_Info GrB_Vector_extractTuples_FP64      // [I,~,X] = find (v)
 
 GrB_Info GxB_Vector_extractTuples_FC32      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GxB_FC32_t *X,              // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3017,7 +3014,7 @@ GrB_Info GxB_Vector_extractTuples_FC32      // [I,~,X] = find (v)
 
 GrB_Info GxB_Vector_extractTuples_FC64      // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GxB_FC64_t *X,              // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3025,7 +3022,7 @@ GrB_Info GxB_Vector_extractTuples_FC64      // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples_UDT       // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     void *X,                    // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3038,7 +3035,7 @@ GrB_Info GrB_Vector_extractTuples_UDT       // [I,~,X] = find (v)
 
 GrB_Info GrB_Vector_extractTuples           // [I,~,X] = find (v)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     <type> *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I, X size on input; # tuples on output
     const GrB_Vector v          // vector to extract tuples from
@@ -3047,13 +3044,13 @@ GrB_Info GrB_Vector_extractTuples           // [I,~,X] = find (v)
 */
 
 #if GxB_STDC_VERSION >= 201112L
-#define GrB_Vector_extractTuples(I,X,nvals,v)           \
+#define GrB_Vector_extractTuples(Ilist,X,nvals,v)           \
     _Generic                                            \
     (                                                   \
         (X),                                            \
             GB_PCASES (GrB, Vector_extractTuples)       \
     )                                                   \
-    (I, X, nvals, v)
+    (Ilist, X, nvals, v)
 #endif
 
 //==============================================================================
@@ -3142,7 +3139,7 @@ GrB_Info GrB_Matrix_free    // free a matrix
 GrB_Info GrB_Matrix_build_BOOL      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const bool *X,                  // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3152,7 +3149,7 @@ GrB_Info GrB_Matrix_build_BOOL      // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_INT8      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const int8_t *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3162,7 +3159,7 @@ GrB_Info GrB_Matrix_build_INT8      // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_UINT8     // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const uint8_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3172,7 +3169,7 @@ GrB_Info GrB_Matrix_build_UINT8     // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_INT16     // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const int16_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3182,7 +3179,7 @@ GrB_Info GrB_Matrix_build_INT16     // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_UINT16    // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const uint16_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3192,7 +3189,7 @@ GrB_Info GrB_Matrix_build_UINT16    // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_INT32     // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const int32_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3202,7 +3199,7 @@ GrB_Info GrB_Matrix_build_INT32     // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_UINT32    // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const uint32_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3212,7 +3209,7 @@ GrB_Info GrB_Matrix_build_UINT32    // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_INT64     // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const int64_t *X,               // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3222,7 +3219,7 @@ GrB_Info GrB_Matrix_build_INT64     // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_UINT64    // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const uint64_t *X,              // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3232,7 +3229,7 @@ GrB_Info GrB_Matrix_build_UINT64    // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_FP32      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const float *X,                 // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3242,7 +3239,7 @@ GrB_Info GrB_Matrix_build_FP32      // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_FP64      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const double *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3252,7 +3249,7 @@ GrB_Info GrB_Matrix_build_FP64      // build a matrix from (I,J,X) tuples
 GrB_Info GxB_Matrix_build_FC32      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const GxB_FC32_t *X,            // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3262,7 +3259,7 @@ GrB_Info GxB_Matrix_build_FC32      // build a matrix from (I,J,X) tuples
 GrB_Info GxB_Matrix_build_FC64      // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const GxB_FC64_t *X,            // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3272,7 +3269,7 @@ GrB_Info GxB_Matrix_build_FC64      // build a matrix from (I,J,X) tuples
 GrB_Info GrB_Matrix_build_UDT       // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const void *X,                  // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3282,7 +3279,7 @@ GrB_Info GrB_Matrix_build_UDT       // build a matrix from (I,J,X) tuples
 GrB_Info GxB_Matrix_build_Scalar    // build a matrix from (I,J,scalar) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     GrB_Scalar scalar,              // value for all tuples
     GrB_Index nvals                 // number of tuples
@@ -3296,7 +3293,7 @@ GrB_Info GxB_Matrix_build_Scalar    // build a matrix from (I,J,scalar) tuples
 GrB_Info GrB_Matrix_build           // build a matrix from (I,J,X) tuples
 (
     GrB_Matrix C,                   // matrix to build
-    const GrB_Index *I,             // array of row indices of tuples
+    const GrB_Index *Ilist,             // array of row indices of tuples
     const GrB_Index *J,             // array of column indices of tuples
     const <type> *X,                // array of values of tuples
     GrB_Index nvals,                // number of tuples
@@ -3306,13 +3303,13 @@ GrB_Info GrB_Matrix_build           // build a matrix from (I,J,X) tuples
 */
 
 #if GxB_STDC_VERSION >= 201112L
-#define GrB_Matrix_build(C,I,J,X,nvals,dup)             \
+#define GrB_Matrix_build(C,Ilist,J,X,nvals,dup)             \
     _Generic                                            \
     (                                                   \
         (X),                                            \
             GB_PCASES (GrB, Matrix_build)               \
     )                                                   \
-    (C, I, J, ((const void *) (X)), nvals, dup)
+    (C, Ilist, J, ((const void *) (X)), nvals, dup)
 #endif
 
 //------------------------------------------------------------------------------
@@ -3656,7 +3653,7 @@ GrB_Info GrB_Matrix_removeElement
 
 GrB_Info GrB_Matrix_extractTuples_BOOL      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     bool *X,                    // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3665,7 +3662,7 @@ GrB_Info GrB_Matrix_extractTuples_BOOL      // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_INT8      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     int8_t *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3674,7 +3671,7 @@ GrB_Info GrB_Matrix_extractTuples_INT8      // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_UINT8     // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     uint8_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3683,7 +3680,7 @@ GrB_Info GrB_Matrix_extractTuples_UINT8     // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_INT16     // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     int16_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3692,7 +3689,7 @@ GrB_Info GrB_Matrix_extractTuples_INT16     // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_UINT16    // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     uint16_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3701,7 +3698,7 @@ GrB_Info GrB_Matrix_extractTuples_UINT16    // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_INT32     // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     int32_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3710,7 +3707,7 @@ GrB_Info GrB_Matrix_extractTuples_INT32     // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_UINT32    // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     uint32_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3719,7 +3716,7 @@ GrB_Info GrB_Matrix_extractTuples_UINT32    // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_INT64     // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     int64_t *X,                 // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3728,7 +3725,7 @@ GrB_Info GrB_Matrix_extractTuples_INT64     // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_UINT64    // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     uint64_t *X,                // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3737,7 +3734,7 @@ GrB_Info GrB_Matrix_extractTuples_UINT64    // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_FP32      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     float *X,                   // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3746,7 +3743,7 @@ GrB_Info GrB_Matrix_extractTuples_FP32      // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_FP64      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     double *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3755,7 +3752,7 @@ GrB_Info GrB_Matrix_extractTuples_FP64      // [I,J,X] = find (A)
 
 GrB_Info GxB_Matrix_extractTuples_FC32      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     GxB_FC32_t *X,              // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3764,7 +3761,7 @@ GrB_Info GxB_Matrix_extractTuples_FC32      // [I,J,X] = find (A)
 
 GrB_Info GxB_Matrix_extractTuples_FC64      // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     GxB_FC64_t *X,              // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3773,7 +3770,7 @@ GrB_Info GxB_Matrix_extractTuples_FC64      // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples_UDT       // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     void *X,                    // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3787,7 +3784,7 @@ GrB_Info GrB_Matrix_extractTuples_UDT       // [I,J,X] = find (A)
 
 GrB_Info GrB_Matrix_extractTuples           // [I,J,X] = find (A)
 (
-    GrB_Index *I,               // array for returning row indices of tuples
+    GrB_Index *Ilist,           // array for returning row indices of tuples
     GrB_Index *J,               // array for returning col indices of tuples
     <type> *X,                  // array for returning values of tuples
     GrB_Index *nvals,           // I,J,X size on input; # tuples on output
@@ -3797,13 +3794,13 @@ GrB_Info GrB_Matrix_extractTuples           // [I,J,X] = find (A)
 */
 
 #if GxB_STDC_VERSION >= 201112L
-#define GrB_Matrix_extractTuples(I,J,X,nvals,A)         \
+#define GrB_Matrix_extractTuples(Ilist,J,X,nvals,A)     \
     _Generic                                            \
     (                                                   \
         (X),                                            \
             GB_PCASES (GrB, Matrix_extractTuples)       \
     )                                                   \
-    (I, J, X, nvals, A)
+    (Ilist, J, X, nvals, A)
 #endif
 
 //------------------------------------------------------------------------------
@@ -5037,7 +5034,7 @@ GrB_Info GrB_Vector_extract         // w<mask> = accum (w, u(I))
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
     const GrB_Vector u,             // first input:  vector u
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,             // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5048,7 +5045,7 @@ GrB_Info GrB_Matrix_extract         // C<Mask> = accum (C, A(I,J))
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C,T)
     const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,             // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5061,7 +5058,7 @@ GrB_Info GrB_Col_extract            // w<mask> = accum (w, A(I,j))
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w,t)
     const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,             // row indices
     GrB_Index ni,                   // number of row indices
     GrB_Index j,                    // column index
     const GrB_Descriptor desc       // descriptor for w, mask, and A
@@ -5147,7 +5144,7 @@ GrB_Info GxB_Vector_subassign       // w(I)<mask> = accum (w(I),u)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w(I),t)
     const GrB_Vector u,             // first input:  vector u
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5158,7 +5155,7 @@ GrB_Info GxB_Matrix_subassign       // C(I,J)<Mask> = accum (C(I,J),A)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),T)
     const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5171,7 +5168,7 @@ GrB_Info GxB_Col_subassign          // C(I,j)<mask> = accum (C(I,j),u)
     const GrB_Vector mask,          // optional mask for C(I,j), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(C(I,j),t)
     const GrB_Vector u,             // input vector
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     GrB_Index j,                    // column index
     const GrB_Descriptor desc       // descriptor for C(I,j) and mask
@@ -5203,7 +5200,7 @@ GrB_Info GxB_Vector_subassign_BOOL  // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w(I),x)
     bool x,                         // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5214,7 +5211,7 @@ GrB_Info GxB_Vector_subassign_INT8  // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int8_t x,                       // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5225,7 +5222,7 @@ GrB_Info GxB_Vector_subassign_UINT8 // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint8_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5236,7 +5233,7 @@ GrB_Info GxB_Vector_subassign_INT16 // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int16_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5247,7 +5244,7 @@ GrB_Info GxB_Vector_subassign_UINT16   // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint16_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5258,7 +5255,7 @@ GrB_Info GxB_Vector_subassign_INT32    // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int32_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5269,7 +5266,7 @@ GrB_Info GxB_Vector_subassign_UINT32   // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint32_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5280,7 +5277,7 @@ GrB_Info GxB_Vector_subassign_INT64    // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int64_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5291,7 +5288,7 @@ GrB_Info GxB_Vector_subassign_UINT64   // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint64_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5302,7 +5299,7 @@ GrB_Info GxB_Vector_subassign_FP32     // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     float x,                        // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5313,7 +5310,7 @@ GrB_Info GxB_Vector_subassign_FP64     // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     double x,                       // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5324,7 +5321,7 @@ GrB_Info GxB_Vector_subassign_FC32     // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GxB_FC32_t x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5335,7 +5332,7 @@ GrB_Info GxB_Vector_subassign_FC64     // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GxB_FC64_t x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5346,7 +5343,7 @@ GrB_Info GxB_Vector_subassign_UDT      // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     void *x,                        // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5357,7 +5354,7 @@ GrB_Info GxB_Vector_subassign_Scalar   // w(I)<mask> = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w(I), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GrB_Scalar x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w(I) and mask
 ) ;
@@ -5376,7 +5373,7 @@ GrB_Info GxB_Matrix_subassign_BOOL  // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     bool x,                         // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5389,7 +5386,7 @@ GrB_Info GxB_Matrix_subassign_INT8  // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int8_t x,                       // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5402,7 +5399,7 @@ GrB_Info GxB_Matrix_subassign_UINT8 // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint8_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5415,7 +5412,7 @@ GrB_Info GxB_Matrix_subassign_INT16 // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int16_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5428,7 +5425,7 @@ GrB_Info GxB_Matrix_subassign_UINT16   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint16_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5441,7 +5438,7 @@ GrB_Info GxB_Matrix_subassign_INT32    // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int32_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5454,7 +5451,7 @@ GrB_Info GxB_Matrix_subassign_UINT32   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint32_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5467,7 +5464,7 @@ GrB_Info GxB_Matrix_subassign_INT64    // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int64_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5480,7 +5477,7 @@ GrB_Info GxB_Matrix_subassign_UINT64   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint64_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5493,7 +5490,7 @@ GrB_Info GxB_Matrix_subassign_FP32     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     float x,                        // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5506,7 +5503,7 @@ GrB_Info GxB_Matrix_subassign_FP64     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     double x,                       // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5519,7 +5516,7 @@ GrB_Info GxB_Matrix_subassign_FC32     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GxB_FC32_t x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5532,7 +5529,7 @@ GrB_Info GxB_Matrix_subassign_FC64     // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GxB_FC64_t x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5545,7 +5542,7 @@ GrB_Info GxB_Matrix_subassign_UDT      // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     void *x,                        // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5558,7 +5555,7 @@ GrB_Info GxB_Matrix_subassign_Scalar   // C(I,J)<Mask> = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C(I,J), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GrB_Scalar x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5625,7 +5622,7 @@ GrB_Info GrB_Vector_assign          // w<mask>(I) = accum (w(I),u)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w(I),t)
     const GrB_Vector u,             // first input:  vector u
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5636,7 +5633,7 @@ GrB_Info GrB_Matrix_assign          // C<Mask>(I,J) = accum (C(I,J),A)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),T)
     const GrB_Matrix A,             // first input:  matrix A
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5649,7 +5646,7 @@ GrB_Info GrB_Col_assign             // C<mask>(I,j) = accum (C(I,j),u)
     const GrB_Vector mask,          // optional mask for C(:,j), unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(C(I,j),t)
     const GrB_Vector u,             // input vector
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     GrB_Index j,                    // column index
     const GrB_Descriptor desc       // descriptor for C(:,j) and mask
@@ -5681,7 +5678,7 @@ GrB_Info GrB_Vector_assign_BOOL     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for z=accum(w(I),x)
     bool x,                         // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5692,7 +5689,7 @@ GrB_Info GrB_Vector_assign_INT8     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int8_t x,                       // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5703,7 +5700,7 @@ GrB_Info GrB_Vector_assign_UINT8    // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint8_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5714,7 +5711,7 @@ GrB_Info GrB_Vector_assign_INT16    // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int16_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5725,7 +5722,7 @@ GrB_Info GrB_Vector_assign_UINT16   // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint16_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5736,7 +5733,7 @@ GrB_Info GrB_Vector_assign_INT32    // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int32_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5747,7 +5744,7 @@ GrB_Info GrB_Vector_assign_UINT32   // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint32_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5758,7 +5755,7 @@ GrB_Info GrB_Vector_assign_INT64    // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     int64_t x,                      // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5769,7 +5766,7 @@ GrB_Info GrB_Vector_assign_UINT64   // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     uint64_t x,                     // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5780,7 +5777,7 @@ GrB_Info GrB_Vector_assign_FP32     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     float x,                        // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5791,7 +5788,7 @@ GrB_Info GrB_Vector_assign_FP64     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     double x,                       // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5802,7 +5799,7 @@ GrB_Info GxB_Vector_assign_FC32     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GxB_FC32_t x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5813,7 +5810,7 @@ GrB_Info GxB_Vector_assign_FC64     // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GxB_FC64_t x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5824,7 +5821,7 @@ GrB_Info GrB_Vector_assign_UDT      // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     void *x,                        // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5835,7 +5832,7 @@ GrB_Info GrB_Vector_assign_Scalar   // w<mask>(I) = accum (w(I),x)
     const GrB_Vector mask,          // optional mask for w, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(w(I),x)
     GrB_Scalar x,                   // scalar to assign to w(I)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Descriptor desc       // descriptor for w and mask
 ) ;
@@ -5854,7 +5851,7 @@ GrB_Info GrB_Matrix_assign_BOOL     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     bool x,                         // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5867,7 +5864,7 @@ GrB_Info GrB_Matrix_assign_INT8     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int8_t x,                       // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5880,7 +5877,7 @@ GrB_Info GrB_Matrix_assign_UINT8    // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint8_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5893,7 +5890,7 @@ GrB_Info GrB_Matrix_assign_INT16    // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int16_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5906,7 +5903,7 @@ GrB_Info GrB_Matrix_assign_UINT16   // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint16_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5919,7 +5916,7 @@ GrB_Info GrB_Matrix_assign_INT32    // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int32_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5932,7 +5929,7 @@ GrB_Info GrB_Matrix_assign_UINT32   // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint32_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5945,7 +5942,7 @@ GrB_Info GrB_Matrix_assign_INT64    // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     int64_t x,                      // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5958,7 +5955,7 @@ GrB_Info GrB_Matrix_assign_UINT64   // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     uint64_t x,                     // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5971,7 +5968,7 @@ GrB_Info GrB_Matrix_assign_FP32     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     float x,                        // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5984,7 +5981,7 @@ GrB_Info GrB_Matrix_assign_FP64     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     double x,                       // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -5997,7 +5994,7 @@ GrB_Info GxB_Matrix_assign_FC32     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GxB_FC32_t x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -6010,7 +6007,7 @@ GrB_Info GxB_Matrix_assign_FC64     // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GxB_FC64_t x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -6023,7 +6020,7 @@ GrB_Info GrB_Matrix_assign_UDT      // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     void *x,                        // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices
@@ -6036,7 +6033,7 @@ GrB_Info GrB_Matrix_assign_Scalar   // C<Mask>(I,J) = accum (C(I,J),x)
     const GrB_Matrix Mask,          // optional mask for C, unused if NULL
     const GrB_BinaryOp accum,       // optional accum for Z=accum(C(I,J),x)
     GrB_Scalar x,                   // scalar to assign to C(I,J)
-    const GrB_Index *I,             // row indices
+    const GrB_Index *Ilist,         // row indices
     GrB_Index ni,                   // number of row indices
     const GrB_Index *J,             // column indices
     GrB_Index nj,                   // number of column indices

@@ -12062,6 +12062,7 @@ and suppose \verb'y' is a vector of length 2 with the values \verb'[5 7]'.
 {\small
 \begin{verbatim}
     #include "GraphBLAS.h"
+    #undef I    /* complex.h #define's I, used below as an array */
     #include <stdio.h>
     int main (void)
     {
