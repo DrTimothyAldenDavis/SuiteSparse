@@ -146,18 +146,7 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if defined ( GBCUDA_CPLUSPLUS )
-
-        // C++ complex types for CUDA
-        #include <cmath>
-        #include <complex>
-        typedef std::complex<float>  GxB_FC32_t ;
-        typedef std::complex<double> GxB_FC64_t ;
-        #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
-        #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
-        #define GB_HAS_CMPLX_MACROS 1
-
-    #elif defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
+    #if defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
 
         // Microsoft Windows complex types for C
         #include <complex.h>

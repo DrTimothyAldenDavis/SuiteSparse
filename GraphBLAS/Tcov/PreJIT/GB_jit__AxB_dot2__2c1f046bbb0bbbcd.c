@@ -105,7 +105,7 @@ GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query) ;
 GB_JIT_GLOBAL GB_JIT_QUERY_PROTO (GB_jit_query)
 {
     (*hash) = 0xdf8cbb0c0ac7ce22 ;
-    v [0] = 8 ; v [1] = 3 ; v [2] = 0 ;     // keep at current version
+    v [0] = 8 ; v [1] = 3 ; v [2] = 1 ;     // keep at current version
     defn [0] = NULL ;
     defn [1] = NULL ;
     defn [2] = NULL ;
