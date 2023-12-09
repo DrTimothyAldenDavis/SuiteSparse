@@ -341,7 +341,6 @@ if ( NOT MSVC )
         if ( NOT WIN32 )
             list ( APPEND LAGRAPH_STATIC_LIBS "m" )
         endif ( )
-        list ( APPEND LAGRAPH_STATIC_LIBS ${GRAPHBLAS_LIBRARY} )
     endif ( )
     # This might be something like:
     #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
@@ -369,6 +368,9 @@ if ( NOT MSVC )
             endif ( )
         endforeach ( )
     endforeach ( )
+    if ( BUILD_STATIC_LIBS )
+        set ( LAGRAPH_STATIC_LIBS "-l$<TARGET_FILE_BASE_NAME:GraphBLAS::GraphBLAS> ${LAGRAPH_STATIC_LIBS}" )
+    endif ( )
 
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
