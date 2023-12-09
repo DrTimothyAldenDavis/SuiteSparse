@@ -384,10 +384,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:LAGraph> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:LAGraph_static> )
+    endif ( )
     configure_file (
         config/LAGraph.pc.in
-        LAGraph.pc
+        LAGraph.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT LAGraph.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/LAGraph.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/LAGraph.pc

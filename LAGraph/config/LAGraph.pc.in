@@ -12,7 +12,7 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Library plus test harness for collecting algorithms that use GraphBLAS in SuiteSparse
 Version: @LAGraph_VERSION_MAJOR@.@LAGraph_VERSION_MINOR@.@LAGraph_VERSION_SUB@
 Requires.private: GraphBLAS
-Libs: -L${libdir} -llagraph@CMAKE_RELEASE_POSTFIX@
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: -lgraphblas @LAGRAPH_STATIC_LIBS@
 Cflags: -I${includedir} -DLG_DLL
 Cflags.private: -ULG_DLL

@@ -613,10 +613,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:Mongoose> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:Mongoose_static> )
+    endif ( )
     configure_file (
         Config/Mongoose.pc.in
-        Mongoose.pc
+        Mongoose.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT Mongoose.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/Mongoose.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/Mongoose.pc
