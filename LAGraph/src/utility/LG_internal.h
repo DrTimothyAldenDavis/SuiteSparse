@@ -27,6 +27,7 @@
 
 #include <ctype.h>
 #include "LAGraph.h"
+#undef I
 
 #if defined ( __linux__ )
 #include <malloc.h>

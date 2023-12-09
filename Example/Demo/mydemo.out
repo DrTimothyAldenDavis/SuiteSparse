@@ -3,9 +3,19 @@ Date from #include 'my.h':  Dec 30, 2023
 Date from compiled library: Dec 30, 2023
 version from #include 'my.h.': 1.5.0
 version from compiled library: 1.5.0
-SuiteSparse: v7.4.0 (Dec 30, 2023)
-SuiteSparse: v7.4.0 (in library)
+
+------------------------------------------------------------
+MY: v1.5.0 (Dec 30, 2023)
+MY: v1.5.0 (in library)
+MY date: Dec 30, 2023
+
+------------------------------------------------------------
+SuiteSparse_config: v7.4.0 (Dec 30, 2023)
+SuiteSparse_config: v7.4.0 (in library)
+
+------------------------------------------------------------
 CXSparse: v4.3.0 (Dec 30, 2023)
+CXSparse: v4.3.0 (in library)
 CXSparse Version 4.3.0, Dec 30, 2023.  Copyright (c) Timothy A. Davis, 2006-2023
 2-by-2, nzmax: 4 nnz: 4, 1-norm: 34
     col 0 : locations 0 to 1
@@ -14,39 +24,69 @@ CXSparse Version 4.3.0, Dec 30, 2023.  Copyright (c) Timothy A. Davis, 2006-2023
     col 1 : locations 2 to 3
       0 : 12
       1 : 22
+
+------------------------------------------------------------
 AMD: v3.3.0 (Dec 30, 2023)
+AMD: v3.3.0 (in library)
 P [0] = 0
 P [1] = 1
+
+------------------------------------------------------------
 BTF: v2.3.0 (Dec 30, 2023)
+BTF: v2.3.0 (in library)
 P [0] = 0
 P [1] = 1
 Q [0] = 0
 Q [1] = 1
 nblocks 1
+
+------------------------------------------------------------
 CAMD: v3.3.0 (Dec 30, 2023)
+CAMD: v3.3.0 (in library)
 P [0] = 0
 P [1] = 1
+
+------------------------------------------------------------
 CCOLAMD: v3.3.0 (Dec 30, 2023)
+CCOLAMD: v3.3.0 (in library)
 P [0] = 0
 P [1] = 1
+
+------------------------------------------------------------
 COLAMD: v3.3.0 (Dec 30, 2023)
+COLAMD: v3.3.0 (in library)
 P [0] = 0
 P [1] = 1
+
+------------------------------------------------------------
 CHOLMOD: v5.1.0 (Dec 30, 2023)
 CHOLMOD: v5.1.0 (in library)
-GraphBLAS: v8.3.0 (Dec 30, 2023)
-GraphBLAS: v8.3.0 (in library)
+
+------------------------------------------------------------
+GraphBLAS: v8.3.1 (Dec 30, 2023)
+GraphBLAS: v8.3.1 (in library)
+
+------------------------------------------------------------
 LAGraph: v1.1.0 (Dec 30, 2023)
-LAGraph: v1.1.0 (Dec 30, 2023) (in library)
+LAGraph: v1.1.0 (in library)
+
+------------------------------------------------------------
 KLU: v2.3.0 (Dec 30, 2023)
+KLU: v2.3.0 (in library)
 x [0] = 36.4
 x [1] = -32.7
 error: 7.10543e-14
+
+------------------------------------------------------------
 LDL: v3.3.0 (Dec 30, 2023)
+LDL: v3.3.0 (in library)
 x2 [0] = 36.4
 x2 [1] = -32.7
 error: 0
+
+------------------------------------------------------------
 RBio: v4.3.0 (Dec 30, 2023)
+RBio: v4.3.0 (in library)
 njumbled 0, nzeros 0
 result 0
 mtype: iua
@@ -57,8 +97,14 @@ iua                        2             2             4             0
  1 3 5
  1 2 1 2
  11 21 12 22
+
+------------------------------------------------------------
 SPEX: v2.3.0 (Dec 30, 2023)
-SPQR: v4.3.0 (Dec 30, 2023)
+SPEX: v2.3.0 (in library)
+
+------------------------------------------------------------
+SuiteSparseQR: v4.3.0 (Dec 30, 2023)
+SuiteSparseQR: v4.3.0 (in library)
 
 CHOLMOD dense:   X from QR:  2-by-1, 
   leading dimension 2, nzmax 2, real, double
@@ -67,7 +113,10 @@ CHOLMOD dense:   X from QR:  2-by-1,
          1: -32.7 
   OK
 
+
+------------------------------------------------------------
 UMFPACK: v6.3.0 (Dec 30, 2023)
+UMFPACK: v6.3.0 (in library)
 UMFPACK V6.3.0 (Dec 30, 2023)
 UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.
 

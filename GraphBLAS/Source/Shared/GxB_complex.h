@@ -17,11 +17,21 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if ( _MSC_VER && !(__INTEL_COMPILER || __INTEL_CLANG_COMPILER) )
+    #if defined ( GBCUDA_CPLUSPLUS )
+
+        // C++ complex types for CUDA
+        #include <cmath>
+        #include <complex>
+        typedef std::complex<float>  GxB_FC32_t ;
+        typedef std::complex<double> GxB_FC64_t ;
+        #define GxB_CMPLXF(r,i) GxB_FC32_t(r,i)
+        #define GxB_CMPLX(r,i)  GxB_FC64_t(r,i)
+        #define GB_HAS_CMPLX_MACROS 1
+
+    #elif defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
 
         // Microsoft Windows complex types for C
         #include <complex.h>
-        #undef I
         typedef _Fcomplex GxB_FC32_t ;
         typedef _Dcomplex GxB_FC64_t ;
         #define GxB_CMPLXF(r,i) (_FCbuild (r,i))
@@ -30,13 +40,12 @@
 
     #else
 
-        // ANSI C11 complex types
+        // C11 complex types
         #include <complex.h>
-        #undef I
         typedef float  _Complex GxB_FC32_t ;
         typedef double _Complex GxB_FC64_t ;
         #if (defined (CMPLX) && defined (CMPLXF))
-            // use the ANSI C11 CMPLX and CMPLXF macros
+            // use the C11 CMPLX and CMPLXF macros
             #define GxB_CMPLX(r,i) CMPLX (r,i)
             #define GxB_CMPLXF(r,i) CMPLXF (r,i)
             #define GB_HAS_CMPLX_MACROS 1
