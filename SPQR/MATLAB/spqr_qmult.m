@@ -7,6 +7,11 @@ function Y = spqr_qmult (H,X,method)                                        %#ok
 %   method = 2: Y = X*Q'
 %   method = 3: Y = X*Q
 %
+% where Q is the struct from [Q,R,E] = spqr (A,opts) with
+% opts.Q = 'Householder'.  The struct Q always represents a square
+% orthonormal matrix, regardless of opts.econ.  spqr_qmult applies this
+% square matrix to compute Y.
+%
 % Example:
 %   These two examples both compute the min-norm solution to an
 %   under determined system, but the latter is much more efficient:
