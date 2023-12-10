@@ -92,7 +92,9 @@ function [Q,R,P,info] = spqr (A,arg2,arg3)                                  %#ok
 %   [Q,R,P]=spqr(A) where spqr finds P and Q is discarded instead). 'matrix'
 %   returns Q as a sparse matrix where A=Q*R or A*P=Q*R.  'Householder' returns
 %   Q as a struct containing the Householder reflections applied to A to obtain
-%   R, resulting in a far sparser Q than the 'matrix' option.  
+%   R, resulting in a far sparser Q than the 'matrix' option.  When returned as
+%   a struct, Q always represents a square orthonormal matrix, regardless of
+%   opts.econ.
 %
 %   opts.permutation: a string describing how P is to be returned.  The default
 %   is 'matrix', so that A*P=Q*R.  'vector' gives A(:,P)=Q*R instead.

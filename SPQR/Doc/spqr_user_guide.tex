@@ -533,11 +533,14 @@ can do:
 
     \item \verb'SuiteSparseQR_qmult': provides the same function as
     \verb'spqr_qmult' in the MATLAB interface, computing
-    \verb"Q'*x", \verb"Q*x", \verb"x*Q'", or \verb"x*Q".
-    It uses either a QR factorization
-    in MATLAB-style sparse matrix format, or the QR factorization object
-    returned by \newline \verb'SuiteSparseQR_factorize' or
-    \verb'SuiteSparseQR_numeric'.
+    \verb"y=Q'*x", \verb"y=Q*x", \verb"y=x*Q'", or \verb"y=x*Q".
+    It uses the efficient Householder reprensentation of \verb'Q', which
+    represents a square orthonormal matrix computed by
+    \verb'SuiteSparseQR_factorize' or \verb'SuiteSparseQR_numeric'.  The
+    Householder representation always represents a square orthonormal matrix,
+    regardless of whether \verb'Q' is a full or economy factor.
+    \verb'SuiteSparseQR_qmult' applies this square matrix to compute its result
+    \verb'y'.
 
     \item \verb'SuiteSparseQR_min2norm': finds the minimum 2-norm solution to
     an underdetermined linear system.
