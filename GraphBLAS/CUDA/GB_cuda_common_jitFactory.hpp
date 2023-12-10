@@ -25,6 +25,7 @@ extern "C"
 {
     #include "GB.h"
     #include "GraphBLAS.h"
+    #undef I
     #include "GB_stringify.h"
 }
 

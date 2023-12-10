@@ -13,5 +13,5 @@ Name: GPUQREngine
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: GPU-accelerated QR factorization engine supporting SuiteSparseQR in SuiteSparse
 Version: @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
-Libs: -L${libdir} -lgpuqrengine
+Libs: -L${libdir} -lgpuqrengine@CMAKE_RELEASE_POSTFIX@
 Cflags: -I${includedir}

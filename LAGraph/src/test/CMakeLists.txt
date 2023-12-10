@@ -112,7 +112,7 @@ foreach( testsourcefile ${TEST_SOURCES} )
                 ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GraphBLAS::GraphBLAS>;PATH=path_list_prepend:$<TARGET_FILE_DIR:lagraphtest>" )
         else ( )
             set_tests_properties ( ${ctestname} PROPERTIES
-                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GraphBLAS::GraphBLAS>>" )
+                ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:$<TARGET_FILE_DIR:GraphBLAS::GraphBLAS>" )
         endif ( )
     endif ( )
 endforeach( testsourcefile ${TEST_SOURCES} )

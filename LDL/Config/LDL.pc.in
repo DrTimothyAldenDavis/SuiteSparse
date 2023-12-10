@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: A sparse LDL' factorization and solve package in SuiteSparse
 Version: @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@
 Requires.private: AMD SuiteSparse_config
-Libs: -L${libdir} -lldl
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @LDL_STATIC_LIBS@
 Cflags: -I${includedir}

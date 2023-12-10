@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for permuting sparse matrices prior to factorization in SuiteSparse
 Version: @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lamd
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @AMD_STATIC_LIBS@
 Cflags: -I${includedir}

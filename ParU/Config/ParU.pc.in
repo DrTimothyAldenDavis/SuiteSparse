@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for solving sparse linear system via parallel multifrontal LU factorization algorithms in SuiteSparse
 Version: @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@
 Requires.private: SuiteSparse_config UMFPACK
-Libs: -L${libdir} -lparu
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @PARU_STATIC_LIBS@
 Cflags: -I${includedir}

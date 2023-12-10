@@ -15,6 +15,7 @@
 // All built-in types pass this rule.
 
 #include "GraphBLAS.h"
+#undef I
 extern "C" 
 {
     #include "GB.h"

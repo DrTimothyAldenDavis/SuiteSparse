@@ -14,5 +14,5 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Helper functions for the GPU in SuiteSparse
 Version: @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lsuitesparse_gpuruntime
+Libs: -L${libdir} -lsuitesparse_gpuruntime@CMAKE_RELEASE_POSTFIX@
 Cflags: -I${includedir}

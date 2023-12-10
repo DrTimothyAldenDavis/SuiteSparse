@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Direct methods for sparse linear systems for real and complex matrices in SuiteSparse
 Version: @CXSPARSE_VERSION_MAJOR@.@CXSPARSE_VERSION_MINOR@.@CXSPARSE_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lcxsparse
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @CXSPARSE_STATIC_LIBS@
 Cflags: -I${includedir}

@@ -25,6 +25,7 @@
 
 #include "GB_jit_cache.h"
 #include "GraphBLAS.h"
+#undef I
 // from GraphBLAS.h (for example):
 // #define GxB_IMPLEMENTATION_MAJOR 6
 // #define GxB_IMPLEMENTATION_MINOR 0

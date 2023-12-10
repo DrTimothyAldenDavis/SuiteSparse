@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: MATLAB Toolbox for reading/writing sparse matrices in Rutherford/Boeing format in SuiteSparse
 Version: @RBIO_VERSION_MAJOR@.@RBIO_VERSION_MINOR@.@RBIO_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lrbio
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @RBIO_STATIC_LIBS@
 Cflags: -I${includedir}

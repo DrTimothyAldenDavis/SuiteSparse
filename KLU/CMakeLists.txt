@@ -391,10 +391,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:KLU> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:KLU_static> )
+    endif ( )
     configure_file (
         Config/KLU.pc.in
-        KLU.pc
+        KLU.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT KLU.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/KLU.pc
@@ -473,10 +482,19 @@ if ( NOT NCHOLMOD )
         else ( )
             set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
         endif ( )
+        if ( BUILD_SHARED_LIBS )
+            set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:KLU_CHOLMOD> )
+        else ( )
+            set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:KLU_CHOLMOD_static> )
+        endif ( )
         configure_file (
             Config/KLU_CHOLMOD.pc.in
-            KLU_CHOLMOD.pc
+            KLU_CHOLMOD.pc.out
             @ONLY
+            NEWLINE_STYLE LF )
+        file ( GENERATE
+            OUTPUT KLU_CHOLMOD.pc
+            INPUT ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMOD.pc.out
             NEWLINE_STYLE LF )
         install ( FILES
             ${CMAKE_CURRENT_BINARY_DIR}/KLU_CHOLMOD.pc
