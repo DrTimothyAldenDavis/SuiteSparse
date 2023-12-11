@@ -42,7 +42,7 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-set ( ENABLE_CUDA OFF )
+  set ( ENABLE_CUDA OFF )
 # set ( ENABLE_CUDA ON )
 
 include ( SuiteSparsePolicy )
@@ -274,7 +274,7 @@ if ( BUILD_SHARED_LIBS )
 
     if ( NOT NJIT )
         # Make sure compressed sources are built before library
-        add_dependencies ( GraphBLAS grb_jitpackage )
+        add_dependencies ( GraphBLAS grb_jitpackage_source )
     endif ( )
 endif ( )
 
@@ -319,7 +319,7 @@ if ( BUILD_STATIC_LIBS )
 
     if ( NOT NJIT )
         # Make sure compressed sources are built before library
-        add_dependencies ( GraphBLAS_static grb_jitpackage )
+        add_dependencies ( GraphBLAS_static grb_jitpackage_source )
     endif ( )
 
 endif ( )
