@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 
 cmake_minimum_required ( VERSION 3.16 )
-project ( grb_jitpackage LANGUAGES C )
+project ( jitpackage LANGUAGES C )
 include_directories ( ../zstd ../zstd/zstd_subset )
 add_executable ( grb_jitpackage  "Source/grb_jitpackage.c" )
 if ( NOT WIN32 )
@@ -20,11 +20,14 @@ file ( GLOB GRB_SOURCE_FILES
     "../Include/GraphBLAS.h"
     "../Source/Template/*.[ch]"
     "../Source/JitKernels/*.[ch]"
+    "../CUDA/Template/*h"
+    "../CUDA/JitKernels/*h"
     "../Source/Shared/*.h" )
 
-add_custom_command ( TARGET grb_jitpackage POST_BUILD
-    COMMAND $<TARGET_FILE:grb_jitpackage>
-    ARGS ${GRB_SOURCE_FILES}
+add_custom_target ( grb_jitpackage_source ALL
+    COMMAND $<TARGET_FILE:grb_jitpackage> ${GRB_SOURCE_FILES}
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    DEPENDS ${GRB_SOURCE_FILES}
     COMMENT "Generating compressed sources for JIT compiler..."
 )
+

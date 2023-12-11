@@ -9094,6 +9094,19 @@ cache path for MATLAB using \verb'GrB.jit' in MATLAB, or using \verb'GxB_set'
 in the C interface for your native Arm64 binaries.
 
 %-------------------------------------------------------------------------------
+\subsection{Updating the JIT when GraphBLAS source code changes}
+%-------------------------------------------------------------------------------
+
+If you edit the GraphBLAS source code itself or add any files to
+\verb'GraphBLAS/PreJIT', read the instructions in
+\verb'GraphBLAS/JITpackage/README.txt' for details on how to update the JIT
+source code.
+
+If your cache folder (\verb'~/.SuiteSparse/GrBx.y.z') changes in any way
+except via GraphBLAS itself, simply delete your cache folder.  GraphBLAS will
+then reconstruct the kernels there as needed.
+
+%-------------------------------------------------------------------------------
 \subsection{Future plans for the {\sf JIT} and {\sf PreJIT}}
 %-------------------------------------------------------------------------------
 \label{jit_future}
