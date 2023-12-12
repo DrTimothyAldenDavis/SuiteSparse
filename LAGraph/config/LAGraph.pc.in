@@ -8,8 +8,8 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: LAGraph
-URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
-Description: Library plus test harness for collecting algorithms that use GraphBLAS in SuiteSparse
+URL: https://github.com/GraphBLAS/LAGraph
+Description: Library plus test harness for collecting algorithms that use GraphBLAS
 Version: @LAGraph_VERSION_MAJOR@.@LAGraph_VERSION_MINOR@.@LAGraph_VERSION_SUB@
 Requires.private: GraphBLAS
 Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
