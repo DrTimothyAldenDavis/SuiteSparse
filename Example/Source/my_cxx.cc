@@ -446,6 +446,19 @@ int my_function (void)
     umfpack_dl_report_info (Control, Info) ;
 
     //--------------------------------------------------------------------------
+    // Mongoose
+    //--------------------------------------------------------------------------
+
+    version [0] = Mongoose::major_version ( ) ;
+    version [1] = Mongoose::minor_version ( ) ;
+    version [2] = Mongoose::patch_version ( ) ;
+    OK (my_check_version ("Mongoose", Mongoose_VERSION_MAJOR,
+        Mongoose_VERSION_MINOR, Mongoose_VERSION_PATCH, Mongoose_DATE,
+        version)) ;
+    std::cout << "Mongoose::mongoose_version(): " <<
+        Mongoose::mongoose_version ( ) << std::endl;
+
+    //--------------------------------------------------------------------------
     // free workspace
     //--------------------------------------------------------------------------
 

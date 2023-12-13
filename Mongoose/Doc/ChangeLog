@@ -1,6 +1,16 @@
 Dec 30, 2023: version 3.3.0
 
     * major change to build system: by Markus Mützel
+    * library name change: compiled library renamed from libmongoose.so (dylib,
+        etc) to libsuitesparse_mongoose.so, to avoid name conflict with the
+        mongoose web server (https://github.com/cesanta/mongoose).  That
+        package is in C, and its user-visible functions are all prefixed mg_*,
+        and an #include file of mongoose.h.  This SuiteSparse/Mongoose library
+        is in C++, with a namespace of Mongoose::, and an #include file of
+        Mongoose.hpp.  So the function names and include files do not conflict.
+        The web mongoose project does not create any *Config.cmake files, but
+        they might in the future, so the cmake and pkg-config files here have
+        been renamed from Mongoose*.cmake, etc, to SuiteSparse_Mongoose*.cmake.
 
 Sept 18, 2023: version 3.2.1
 

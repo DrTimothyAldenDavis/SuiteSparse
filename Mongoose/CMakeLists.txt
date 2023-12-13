@@ -1,8 +1,8 @@
 #-------------------------------------------------------------------------------
-# Mongoose/CMakeLists.txt: instructions for building Mongoose with cmake
+# SuiteSparse/Mongoose/CMakeLists.txt: building SuiteSparse_Mongoose with cmake
 #-------------------------------------------------------------------------------
 #
-# Mongoose, Copyright (c) 2018-2023, All Rights Reserved.
+# SuiteSparse_Mongoose, Copyright (c) 2018-2023, All Rights Reserved.
 #   Nuri Yeralan, Microsoft Research
 #   Scott Kolodziej, Texas A&M University
 #   Tim Davis, Texas A&M University
@@ -12,11 +12,11 @@
 #
 # http://suitesparse.com   See Mongoose/Doc/License.txt for license.
 #
-# To compile the Mongoose library and demo programs just do "make"
+# To compile the SuiteSparse_Mongoose library and demo programs just do "make"
 # in this directory.  The Mongoose/Makefile will then run cmake
 # in the build directory.
 #
-# To install Mongoose in /usr/local/lib and /usr/local/include,
+# To install SuiteSparse_Mongoose in /usr/local/lib and /usr/local/include,
 # and also in ../lib, ../include, and ../bin:
 #
 #   sudo make install
@@ -202,12 +202,12 @@ if ( BUILD_STATIC_LIBS )
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
 
     set_target_properties ( Mongoose_static PROPERTIES
-        OUTPUT_NAME mongoose
+        OUTPUT_NAME suitesparse_mongoose
         PUBLIC_HEADER "Include/Mongoose.hpp" )
 
     if ( MSVC )
         set_target_properties ( Mongoose_static PROPERTIES
-            OUTPUT_NAME mongoose_static )
+            OUTPUT_NAME suitesparse_mongoose_static )
     endif ( )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
@@ -230,7 +230,7 @@ if ( BUILD_SHARED_LIBS )
     add_library ( Mongoose SHARED ${MONGOOSE_LIB_FILES} )
 
     set_target_properties ( Mongoose PROPERTIES
-        OUTPUT_NAME mongoose
+        OUTPUT_NAME suitesparse_mongoose
         SOVERSION ${Mongoose_VERSION_MAJOR}
         PUBLIC_HEADER "Include/Mongoose.hpp"
         WINDOWS_EXPORT_ALL_SYMBOLS ON
@@ -256,7 +256,7 @@ endif ( )
 # Build the Mongoose debug/test library
 add_library ( Mongoose_static_dbg STATIC ${MONGOOSE_LIB_FILES} )
 set_target_properties ( Mongoose_static_dbg PROPERTIES
-        OUTPUT_NAME mongoose_dbg )
+        OUTPUT_NAME suitesparse_mongoose_dbg )
 
 if ( TARGET SuiteSparse::SuiteSparseConfig_static )
     target_link_libraries ( Mongoose_static_dbg SuiteSparse::SuiteSparseConfig_static )
@@ -267,7 +267,7 @@ endif ( )
 # Build the Mongoose executable
 add_executable ( mongoose_exe ${EXE_FILES} )
 set_target_properties ( mongoose_exe PROPERTIES
-        OUTPUT_NAME mongoose )
+        OUTPUT_NAME suitesparse_mongoose )
 if ( BUILD_STATIC_LIBS )
     target_link_libraries ( mongoose_exe Mongoose_static )
 else ( )
@@ -546,7 +546,7 @@ include ( CMakePackageConfigHelpers )
 
 if ( BUILD_SHARED_LIBS )
     install ( TARGETS Mongoose
-        EXPORT MongooseTargets
+        EXPORT SuiteSparse_MongooseTargets
         LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
@@ -554,7 +554,7 @@ if ( BUILD_SHARED_LIBS )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     install ( TARGETS Mongoose_static
-        EXPORT MongooseTargets
+        EXPORT SuiteSparse_MongooseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
@@ -562,37 +562,37 @@ install ( TARGETS mongoose_exe
     RUNTIME DESTINATION ${SUITESPARSE_BINDIR} )
 
 # create (temporary) export target file during build
-export ( EXPORT MongooseTargets
+export ( EXPORT SuiteSparse_MongooseTargets
     NAMESPACE SuiteSparse::
-    FILE ${CMAKE_CURRENT_BINARY_DIR}/MongooseTargets.cmake )
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_MongooseTargets.cmake )
 
 # install export target, config and version files for find_package
-install ( EXPORT MongooseTargets
+install ( EXPORT SuiteSparse_MongooseTargets
     NAMESPACE SuiteSparse::
-    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/Mongoose )
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse_Mongoose )
 
 # generate config file to be used in common build tree
 set ( SUITESPARSE_IN_BUILD_TREE ON )
 configure_package_config_file (
-    Config/MongooseConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake
-    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfig.cmake )
+    Config/SuiteSparse_MongooseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_MongooseConfig.cmake
+    INSTALL_DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_MongooseConfig.cmake )
 
 # generate config file to be installed
 set ( SUITESPARSE_IN_BUILD_TREE OFF )
 configure_package_config_file (
-    Config/MongooseConfig.cmake.in
-    ${CMAKE_CURRENT_BINARY_DIR}/target/MongooseConfig.cmake
-    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/Mongoose )
+    Config/SuiteSparse_MongooseConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/target/SuiteSparse_MongooseConfig.cmake
+    INSTALL_DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse_Mongoose )
 
 write_basic_package_version_file (
-    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfigVersion.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_MongooseConfigVersion.cmake
     COMPATIBILITY SameMajorVersion )
 
 install ( FILES
-    ${CMAKE_CURRENT_BINARY_DIR}/target/MongooseConfig.cmake
-    ${CMAKE_CURRENT_BINARY_DIR}/MongooseConfigVersion.cmake
-    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/Mongoose )
+    ${CMAKE_CURRENT_BINARY_DIR}/target/SuiteSparse_MongooseConfig.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_MongooseConfigVersion.cmake
+    DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SuiteSparse_Mongoose )
 
 #-------------------------------------------------------------------------------
 # create pkg-config file
@@ -619,16 +619,16 @@ if ( NOT MSVC )
         set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:Mongoose_static> )
     endif ( )
     configure_file (
-        Config/Mongoose.pc.in
-        Mongoose.pc.out
+        Config/SuiteSparse_Mongoose.pc.in
+        SuiteSparse_Mongoose.pc.out
         @ONLY
         NEWLINE_STYLE LF )
     file ( GENERATE
-        OUTPUT Mongoose.pc
-        INPUT ${CMAKE_CURRENT_BINARY_DIR}/Mongoose.pc.out
+        OUTPUT SuiteSparse_Mongoose.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_Mongoose.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
-        ${CMAKE_CURRENT_BINARY_DIR}/Mongoose.pc
+        ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_Mongoose.pc
         DESTINATION ${SUITESPARSE_PKGFILEDIR}/pkgconfig )
 endif ( )
 
