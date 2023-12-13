@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/Mongoose/cmake_modules/MongooseConfig.cmake
+# SuiteSparse/Mongoose/cmake_modules/SuiteSparse_MongooseConfig.cmake
 #-------------------------------------------------------------------------------
 
 # The following copyright and license applies to just this file only, not to
@@ -9,18 +9,18 @@
 
 #-------------------------------------------------------------------------------
 
-# Finds the Mongoose include file and compiled library.
+# Finds the SuiteSparse_Mongoose include file and compiled library.
 # The following targets are defined:
 #   SuiteSparse::Mongoose           - for the shared library (if available)
 #   SuiteSparse::Mongoose_static    - for the static library (if available)
 
 # For backward compatibility the following variables are set:
 
-# MONGOOSE_INCLUDE_DIR - where to find Mongoose.hpp
-# MONGOOSE_LIBRARY     - dynamic Mongoose library
-# MONGOOSE_STATIC      - static Mongoose library
-# MONGOOSE_LIBRARIES   - libraries when using Mongoose
-# MONGOOSE_FOUND       - true if Mongoose found
+# SUITESPARSE_MONGOOSE_INCLUDE_DIR - where to find Mongoose.hpp
+# SUITESPARSE_MONGOOSE_LIBRARY     - dynamic Mongoose library
+# SUITESPARSE_MONGOOSE_STATIC      - static Mongoose library
+# SUITESPARSE_MONGOOSE_LIBRARIES   - libraries when using Mongoose
+# SuiteSparse_Mongoose_FOUND       - true if Mongoose found
 
 # Set ``CMAKE_MODULE_PATH`` to the parent folder where this module file is
 # installed.
@@ -33,7 +33,7 @@ set ( MONGOOSE_DATE "@Mongoose_DATE@" )
 set ( MONGOOSE_VERSION_MAJOR @Mongoose_VERSION_MAJOR@ )
 set ( MONGOOSE_VERSION_MINOR @Mongoose_VERSION_MINOR@ )
 set ( MONGOOSE_VERSION_PATCH @Mongoose_VERSION_PATCH@ )
-set ( MONGOOSE_VERSION "@Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@" )
+set ( SUITESPARSE_MONGOOSE_VERSION "@Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@" )
 
 # Check for dependent targets
 include ( CMakeFindDependencyMacro )
@@ -55,19 +55,19 @@ else ( )
     endif ( )
 endif ( )
 if ( NOT SuiteSparse_config_FOUND )
-    set ( Mongoose_FOUND OFF )
+    set ( SuiteSparse_Mongoose_FOUND OFF )
     return ( )
 endif ( )
 
 
 # Import target
-include ( ${CMAKE_CURRENT_LIST_DIR}/MongooseTargets.cmake )
+include ( ${CMAKE_CURRENT_LIST_DIR}/SuiteSparse_MongooseTargets.cmake )
 
 # The following is only for backward compatibility with FindMongoose.
 
 set ( _target_shared SuiteSparse::Mongoose )
 set ( _target_static SuiteSparse::Mongoose_static )
-set ( _var_prefix "MONGOOSE" )
+set ( _var_prefix "SUITESPARSE_MONGOOSE" )
 
 if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
     # make sure there is always an import target without suffix )
@@ -130,7 +130,7 @@ foreach ( _config ${_config_types} )
     endif ( )
 endforeach ( )
 
-set ( MONGOOSE_LIBRARIES ${MONGOOSE_LIBRARY} )
+set ( SUITESPARSE_MONGOOSE_LIBRARIES ${SUITESPARSE_MONGOOSE_LIBRARY} )
 
 macro ( suitesparse_check_exist _var _files )
   # ignore generator expressions
@@ -143,10 +143,10 @@ macro ( suitesparse_check_exist _var _files )
   endforeach ()
 endmacro ( )
 
-suitesparse_check_exist ( MONGOOSE_INCLUDE_DIR ${MONGOOSE_INCLUDE_DIR} )
-suitesparse_check_exist ( MONGOOSE_LIBRARY ${MONGOOSE_LIBRARY} )
+suitesparse_check_exist ( SUITESPARSE_MONGOOSE_INCLUDE_DIR ${SUITESPARSE_MONGOOSE_INCLUDE_DIR} )
+suitesparse_check_exist ( SUITESPARSE_MONGOOSE_LIBRARY ${SUITESPARSE_MONGOOSE_LIBRARY} )
 
-message ( STATUS "Mongoose version: ${MONGOOSE_VERSION}" )
-message ( STATUS "Mongoose include: ${MONGOOSE_INCLUDE_DIR}" )
-message ( STATUS "Mongoose library: ${MONGOOSE_LIBRARY}" )
-message ( STATUS "Mongoose static:  ${MONGOOSE_STATIC}" )
+message ( STATUS "SuiteSparse_Mongoose version: ${SUITESPARSE_MONGOOSE_VERSION}" )
+message ( STATUS "SuiteSparse_Mongoose include: ${SUITESPARSE_MONGOOSE_INCLUDE_DIR}" )
+message ( STATUS "SuiteSparse_Mongoose library: ${SUITESPARSE_MONGOOSE_LIBRARY}" )
+message ( STATUS "SuiteSparse_Mongoose static:  ${SUITESPARSE_MONGOOSE_STATIC}" )
