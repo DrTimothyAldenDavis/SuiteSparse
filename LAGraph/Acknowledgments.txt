@@ -16,7 +16,7 @@ THIS WORK IS FUNDED IN PART BY:
 THIS WORK BUILDS UPON THE FOLLOWING PRIOR WORKS:
 1.  SuiteSparse:GraphBLAS, 
     (http://faculty.cse.tamu.edu/davis/GraphBLAS.html) 
-    Copyright 2017-2022  Timothy A. Davis (Author), AldenMath.com.
+    Copyright 2017-2023  Timothy A. Davis (Author), AldenMath.com.
     By Tim Davis, Texas A&M University. Note that while SuiteSparse:GraphBLAS
     is itself under the Apache 2 license, any contributions derived from
     SuiteSparse:GraphBLAS and incorporated by the Author into LAGraph are

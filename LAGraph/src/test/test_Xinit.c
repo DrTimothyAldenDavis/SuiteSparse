@@ -17,7 +17,10 @@
 
 #include "LAGraph_test.h"
 #include "LAGraphX.h"
-#include "LG_init.h"
+
+// functions defined in LAGr_Init.c:
+LAGRAPH_PUBLIC void LG_set_LAGr_Init_has_been_called (bool setting) ;
+LAGRAPH_PUBLIC bool LG_get_LAGr_Init_has_been_called (void) ;
 
 //------------------------------------------------------------------------------
 // global variables

@@ -4,7 +4,8 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# LAGraphConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# LAGraphConfig.cmake, Copyright (c) 2019-2023, LAGraph Contributors. All
+# Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
