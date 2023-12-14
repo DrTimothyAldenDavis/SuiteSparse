@@ -31,10 +31,12 @@
 
 static bool LG_LAGr_Init_has_been_called = false ;
 
-// LG_LAGr_Init_has_been_called is only modified or accessed by these two
-// routines (even in this file):
+// LG_LAGr_Init_has_been_called is only modified or accessed by the following
+// two routines (even in this file).  The two functions are made accessible via
+// LAGRAPH_PUBLIC, only for testing purposes by src/test/test_Xinit.c.
 
-#include "LG_init.h"
+LAGRAPH_PUBLIC void LG_set_LAGr_Init_has_been_called (bool setting) ;
+LAGRAPH_PUBLIC bool LG_get_LAGr_Init_has_been_called (void) ;
 
 LAGRAPH_PUBLIC
 void LG_set_LAGr_Init_has_been_called (bool setting)

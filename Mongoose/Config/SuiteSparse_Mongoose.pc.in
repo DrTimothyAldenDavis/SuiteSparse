@@ -1,4 +1,6 @@
-# Mongoose, Copyright (c) 2018-2023, Timothy A. Davis.
+# SuiteSparse/Mongoose, Copyright (c) 2017-2023,
+# Scott P. Kolodziej, Nuri S. Yeralan, Timothy A. Davis, William W. Hager
+# Timothy A. Davis
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-3.0-only
 
@@ -7,7 +9,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-Name: Mongoose
+Name: SuiteSparse_Mongoose
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Graph partitioning library in SuiteSparse
 Version: @Mongoose_VERSION_MAJOR@.@Mongoose_VERSION_MINOR@.@Mongoose_VERSION_PATCH@
