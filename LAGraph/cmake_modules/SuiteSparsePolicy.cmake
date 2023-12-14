@@ -153,11 +153,15 @@ endif ( )
 
 # add the ./build folder to the runpath so other SuiteSparse packages can
 # find this one without "make install"
-set ( CMAKE_BUILD_RPATH ${CMAKE_BUILD_RPATH} ${CMAKE_BINARY_DIR} )
+list ( FIND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} _idx )
+if ( _idx LESS 0 )
+    # not yet included in CMAKE_INSTALL_RPATH
+    list ( APPEND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} )
+endif ( )
 
+set ( INSIDE_SUITESPARSE OFF )
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     # determine if this Package is inside the SuiteSparse folder
-    set ( INSIDE_SUITESPARSE false )
     if ( LOCAL_INSTALL )
         # if you do not want to install local copies of SuiteSparse
         # packages in SuiteSparse/lib and SuiteSparse/, set
@@ -199,18 +203,32 @@ if ( LOCAL_INSTALL )
         endif ( )
     endif ( )
     set ( SUITESPARSE_LIBDIR ${SUITESPARSE_LOCAL_PREFIX}/lib )
+    set ( SUITESPARSE_FULL_LIBDIR ${SUITESPARSE_LIBDIR} )
     set ( SUITESPARSE_INCLUDEDIR ${SUITESPARSE_LOCAL_PREFIX}/include/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${SUITESPARSE_LOCAL_PREFIX}/bin )
 else ( )
     set ( SUITESPARSE_LIBDIR ${CMAKE_INSTALL_LIBDIR} )
+    set ( SUITESPARSE_FULL_LIBDIR ${CMAKE_INSTALL_FULL_LIBDIR} )
     set ( SUITESPARSE_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${CMAKE_INSTALL_BINDIR} )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
     # append ../lib to the install and build runpaths
-    set ( CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_RPATH} ${SUITESPARSE_LIBDIR} )
-    set ( CMAKE_BUILD_RPATH   ${CMAKE_BUILD_RPATH}   ${SUITESPARSE_LIBDIR} )
+    list ( APPEND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} )
+    list ( APPEND CMAKE_BUILD_RPATH ${SUITESPARSE_LIBDIR} )
+else ( )
+    # Set reasonable RPATH for installed binaries
+    # That should be fine as long as DESTDIR isn't set when installing.
+    list ( FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES ${SUITESPARSE_FULL_LIBDIR} _idx )
+    if ( _idx LESS 0 )
+        # installation is not to a system prefix
+        list ( FIND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} _idx )
+        if ( _idx LESS 0 )
+            # RPATH is not yet included in CMAKE_INSTALL_RPATH
+            list ( APPEND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} )
+        endif ( )
+    endif ( )
 endif ( )
 
 set ( SUITESPARSE_PKGFILEDIR ${SUITESPARSE_LIBDIR} CACHE STRING
