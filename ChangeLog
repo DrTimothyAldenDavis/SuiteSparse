@@ -2,7 +2,17 @@ Dec 30, 2023: version 7.4.0
 
     * major change to build system: by Markus Mützel.  Includes a
         top-level CMakeLists.txt that builds all packages, and support for
-        pkg-config.  Additional changes are listed below. 
+        pkg-config. Default location of files is now listed below, where
+        PACKAGE is one of the packages in SuiteSparse:
+        * CMAKE_INSTALL_PREFIX/include/suitesparse: include files
+        * CMAKE_INSTALL_PREFIX/lib: compiled libraries
+        * CMAKE_INSTALL_PREFIX/lib/cmake/SuiteSparse: *Config.cmake scripts
+            for all of SuiteSparse
+        * CMAKE_INSTALL_PREFIX/lib/cmake/PACKAGE: *Config.cmake scripts for a
+            specific package
+        * CMAKE_INSTALL_PREFIX/lib/pkgconfig/PACKAGE.pc: *.pc scripts for
+            a specific package pkgconfig
+        Additional changes are listed below.
     * LAGraph 1.1.0: new package: graph algorithms based on GraphBLAS
     * ParU 0.1.0: new package: parallel unsymmetric multifrontal method,
         with Mohsen Aznaveh.  This is a stable package but is tagged as 0.1.0
@@ -192,7 +202,7 @@ Mar 14, 2022, SuiteSparse 5.11.0
             v1.9.3, Copyright (c) 2011-2016, Yann Collet, All Rights Reserved.
         * iso-valued matrices and vectors: to exploit the common case of
             an unweighted graph
-        * bug fixes: 4 bugs fixed since SuiteSparse 5.10.1 with 
+        * bug fixes: 4 bugs fixed since SuiteSparse 5.10.1 with
             GraphBLAS v5.0.5.  12 other bugs appeared in the interim but
             appeared in versions after v5.0.5 but fixed before ever
             affecting SuiteSparse itself.
@@ -560,7 +570,7 @@ June 20, 2012: SuiteSparse version 4.0.1
     * UMFPACK 5.6.1:
         minor fix to MATLAB install; no change to C except version nubmer
     * MATLAB_Tools:
-        update to UFcollection (filesep) 
+        update to UFcollection (filesep)
 
 
 June 1, 2012: SuiteSparse version 4.0.0

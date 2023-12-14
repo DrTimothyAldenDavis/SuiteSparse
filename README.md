@@ -633,6 +633,18 @@ For the Mac, use this instead:
     export DYLD_LIBRARY_PATH
 ```
 
+Default install location of files is below, where PACKAGE is one of the
+packages in SuiteSparse:
+
+    * CMAKE_INSTALL_PREFIX/include/suitesparse/: include files
+    * CMAKE_INSTALL_PREFIX/lib/: compiled libraries
+    * CMAKE_INSTALL_PREFIX/lib/cmake/SuiteSparse/: *.cmake scripts
+        for all of SuiteSparse
+    * CMAKE_INSTALL_PREFIX/lib/cmake/PACKAGE/: *Config.cmake scripts for a
+        specific package
+    * CMAKE_INSTALL_PREFIX/lib/pkgconfig/PACKAGE.pc: *.pc scripts for
+        a specific package pkgconfig
+
 -----------------------------------------------------------------------------
 QUICK START FOR MATLAB USERS (Linux or Mac):
 -----------------------------------------------------------------------------
