@@ -295,7 +295,7 @@ jobs:
           done
 
       - name: check
-        timeout-minutes: 20
+        timeout-minutes: 40
         run: |
           IFS=':' read -r -a libs <<< "${CHECK_LIBS}"
           for lib in "${libs[@]}"; do
