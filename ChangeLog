@@ -6,12 +6,12 @@ Dec 30, 2023: version 7.4.0
         PACKAGE is one of the packages in SuiteSparse:
         * CMAKE_INSTALL_PREFIX/include/suitesparse: include files
         * CMAKE_INSTALL_PREFIX/lib: compiled libraries
-        * CMAKE_INSTALL_PREFIX/lib/cmake/SuiteSparse: *Config.cmake scripts
+        * CMAKE_INSTALL_PREFIX/lib/cmake/SuiteSparse: helper *.cmake scripts
             for all of SuiteSparse
         * CMAKE_INSTALL_PREFIX/lib/cmake/PACKAGE: *Config.cmake scripts for a
             specific package
-        * CMAKE_INSTALL_PREFIX/lib/pkgconfig/PACKAGE.pc: *.pc scripts for
-            a specific package pkgconfig
+        * CMAKE_INSTALL_PREFIX/lib/pkgconfig/PACKAGE.pc: *.pc pkg-config
+            files with information for a specific package
         Additional changes are listed below.
     * LAGraph 1.1.0: new package: graph algorithms based on GraphBLAS
     * ParU 0.1.0: new package: parallel unsymmetric multifrontal method,
