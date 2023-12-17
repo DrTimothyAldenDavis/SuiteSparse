@@ -178,9 +178,10 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 //if (curCol < col2 && curCol >= col1) continue;
                 ASSERT(curCol >= col2 || curCol < col1); 
 
-                if (stl_colSet.find(curCol) == stl_colSet.end())
+                auto insertResult = stl_colSet.insert(curCol);
+                // inserted to stl_colSet => insert to stl_newColSet
+                if (insertResult.second)
                 {
-                    stl_colSet.insert(curCol);
                     stl_newColSet.insert(curCol);
                     colCount++;
                 }
