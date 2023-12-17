@@ -12,10 +12,6 @@ concurrency: ci-${{ github.ref }}
 env:
   # string with name of libraries to be built
   BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
-  # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
-  CHECK_LIBS_MAC: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
-
 
 jobs:
 
@@ -88,24 +84,6 @@ jobs:
             cmake --build . --config Release
             echo "::endgroup::"
           done
-
-#     - name: check
-#       timeout-minutes: 20
-#       run: |
-#         # this check seems to hang intermittently at this point, before
-#         # printing the IFS statement and before running any 'make demos'.
-#         # Adding some debug echo statements here:
-#         echo "::group::Starting check (1)"
-#         echo "::endgroup::"
-#         echo "::group::Starting check (2)"
-#         IFS=':' read -r -a libs <<< "${CHECK_LIBS_MAC}"
-#         echo "::endgroup::"
-#         for lib in "${libs[@]}"; do
-#           printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
-#           cd ${GITHUB_WORKSPACE}/${lib}
-#           make demos
-#           echo "::endgroup::"
-#         done
 
       - name: check_Mongoose
         run: |
@@ -188,6 +166,11 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/LAGraph/build
           ctest .
+
+      - name: check_ParU
+        run: |
+          cd ${GITHUB_WORKSPACE}/ParU
+          make demos
 
       - name: ccache status
         continue-on-error: true
