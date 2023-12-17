@@ -77,7 +77,7 @@ verbose_test: library
 	( cd build && ctest . --verbose || ctest . --rerun-failed --output-on-failure )
 
 # target used in CI
-demos: verbose_test
+demos: test
 
 # just compile after running cmake; do not run cmake again
 remake:
