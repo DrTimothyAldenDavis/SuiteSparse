@@ -62,7 +62,7 @@ jobs:
             ccache-max: 600M
             cuda: without
             openmp: without
-            openmp-cmake-flags: "-DNOPENMP=ON"
+            openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
             cc: "gcc"
