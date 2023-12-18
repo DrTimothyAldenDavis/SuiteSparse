@@ -407,24 +407,14 @@ endif ( )
 if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
-    # revert to ${OpenMP_C_LIBRARIES}:
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( GraphBLAS PRIVATE ${OpenMP_C_LIBRARIES} )
-        target_include_directories ( GraphBLAS PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    # cannot use OpenMP::OpenMP_C because the JIT is configured with
-    # LINK_LIBRARIES.  Those are -l lists passed directly to the
-    # C compiler, and this is converted into "-lOpenMP::OpenMP_C".
-    # So this breaks:
-    # target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
-        target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
-        # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
-        target_include_directories ( GraphBLAS_static PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
 else ( )
     message  ( WARNING
     "WARNING:  OpenMP was not found (or was disabled with "
