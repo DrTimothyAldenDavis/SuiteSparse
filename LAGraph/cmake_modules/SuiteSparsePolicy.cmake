@@ -155,7 +155,7 @@ endif ( )
 # find this one without "make install"
 list ( FIND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} _idx )
 if ( _idx LESS 0 )
-    # not yet included in CMAKE_INSTALL_RPATH
+    # not yet included in CMAKE_BUILD_RPATH
     list ( APPEND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} )
 endif ( )
 
