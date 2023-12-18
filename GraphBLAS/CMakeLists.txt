@@ -85,12 +85,13 @@ else ( )
 endif ( )
 
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( GRAPHBLAS_USE_OPENMP )
+    find_package ( OpenMP )
+else ( )
     # OpenMP has been disabled.
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 if ( NOT GBNCPUFEAT )
@@ -426,15 +427,16 @@ if ( OpenMP_C_FOUND )
     set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
 else ( )
     message  ( WARNING
-    "WARNING:  OpenMP was not found (or was disabled with NOPENMP).  See the "
-    "GrapBLAS user guide on the consequences of compiling GraphBLAS without "
-    "OpenMP. GraphBLAS will work but may not be thread-safe, since it relies "
-    "on '#pragma omp flush' to ensure the work performed by one user thread is "
-    "available to another, in GrB_wait.  If OpenMP is not in use, the "
-    "thread-safety of GrB_wait becomes the responsibilty of the user "
-    "application (perhaps through a pthreads construct).  Compiling GraphBLAS "
-    "without OpenMP is not recommended for installation in a package manager "
-    "(Linux, conda-forge, spack, brew, vcpkg, etc). " )
+    "WARNING:  OpenMP was not found (or was disabled with "
+    "GRAPHBLAS_USE_OPENMP).  See the GrapBLAS user guide on the consequences "
+    "of compiling GraphBLAS without OpenMP. GraphBLAS will work but may not be "
+    "thread-safe, since it relies on '#pragma omp flush' to ensure the work "
+    "performed by one user thread is available to another, in GrB_wait.  If "
+    "OpenMP is not in use, the thread-safety of GrB_wait becomes the "
+    "responsibilty of the user application (perhaps through a pthreads "
+    "construct).  Compiling GraphBLAS without OpenMP is not recommended for "
+    "installation in a package manager (Linux, conda-forge, spack, brew, "
+    "vcpkg, etc). " )
     # check for __thread, __declspec(thread), and _Thread_local keywords
     include ( SuiteSparse__thread )
     if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD

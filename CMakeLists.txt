@@ -57,8 +57,12 @@ foreach ( proj ${SUITESPARSE_ENABLE_PROJECTS} )
   endif ( )
 endforeach ( )
 
-# Use OpenMP in CHOLMOD, GraphBLAS, LAGraph, and SuiteSparse_config
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
+# Use OpenMP in CHOLMOD, GraphBLAS, LAGraph, ParU, and SuiteSparse_config
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+option ( LAGRAPH_USE_OPENMP "ON: Use OpenMP in LAGraph if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 
 # CHOLMOD options affecting dependencies
 option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
@@ -98,14 +102,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
 
 include ( SuiteSparsePolicy )
-
-if ( NOPENMP )
-    # OpenMP has been disabled
-    message ( STATUS "OpenMP disabled" )
-    set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
-endif ( )
 
 #-------------------------------------------------------------------------------
 # check/add project dependencies

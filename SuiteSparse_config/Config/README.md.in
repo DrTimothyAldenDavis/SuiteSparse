@@ -778,11 +778,11 @@ is set).
 
   If `ON`, look for a 64-bit BLAS.  If `OFF`: 32-bit only.  Default: `OFF`.
 
-* `NOPENMP`:
+* `SUITESPARSE_USE_OPENMP`:
 
-  If `ON`, OpenMP is not used.  Default: `OFF`.
+  If `ON`, OpenMP is used if it is available.  Default: `OFF`.
 
-  UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow.
+  UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow if OpenMP is not used.
 
   Note that BLAS and LAPACK may still use OpenMP internally; if you wish to
   disable OpenMP in an entire application, select a single-threaded
@@ -790,6 +790,26 @@ is set).
 
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP (see the
   User Guide for details).
+
+* `CHOLMOD_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in CHOLMOD if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `GRAPHBLAS_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in GraphBLAS if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `LAGRAPH_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in LAGraph if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `PARU_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in ParU if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
 
 * `DEMO`:
   If `ON`, build the demo programs for each package.  Default: `OFF`.

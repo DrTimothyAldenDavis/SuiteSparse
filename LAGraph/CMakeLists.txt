@@ -69,8 +69,6 @@ include ( SuiteSparsePolicy )
 
 enable_language ( C )
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-
 # configure LAGraph.h with the LAGraph date and version
 configure_file (
     "config/LAGraph.h.in"
@@ -159,17 +157,19 @@ endif ( )
 # determine what user threading model to use
 #-------------------------------------------------------------------------------
 
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( LAGRAPH_USE_OPENMP "ON: Use OpenMP in LAGraph if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
-    if ( NOPENMP )
-        set ( OpenMP_C_FOUND OFF )
-    else ( )
+    if ( LAGRAPH_USE_OPENMP )
         find_package ( OpenMP )
         if ( OpenMP_C_FOUND AND BUILD_STATIC_LIBS )
             list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         endif ( )
         find_package ( Threads )
+    else ( )
+        set ( OpenMP_C_FOUND OFF )
     endif ( )
 endif ( )
 
