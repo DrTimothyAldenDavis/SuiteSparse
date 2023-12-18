@@ -404,9 +404,20 @@ endif ( )
 # add the OpenMP, IPP, CUDA, BLAS, etc libraries
 #-------------------------------------------------------------------------------
 
+# get the current library list, before linking with OpenMP, CUDA and rmm
+if ( BUILD_SHARED_LIBS )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
+else ( )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
+endif ( )
+if ( NOT GB_CMAKE_LIBRARIES )
+    set ( GB_CMAKE_LIBRARIES "" )
+endif ( )
+
 if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
+    list ( APPEND GB_CMAKE_LIBRARIES ${OpenMP_C_LIBRARIES} )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     endif ( )
@@ -435,16 +446,6 @@ else ( )
         "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )
-endif ( )
-
-# get the current library list, before linking with cuda and rmm
-if ( BUILD_SHARED_LIBS )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
-else ( )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
-endif ( )
-if ( NOT GB_CMAKE_LIBRARIES )
-    set ( GB_CMAKE_LIBRARIES "" )
 endif ( )
 
 if ( SUITESPARSE_CUDA )

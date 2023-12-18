@@ -62,7 +62,7 @@ endif ( )
 
 option ( GRAPHBLAS_JIT_ENABLE_RELOCATE
     "ON: Enable relocation of libraries for JIT. OFF: Keep libraries with full path for JIT."
-    default_jit_enable_relocate )
+    ${default_jit_enable_relocate} )
 
 if ( GRAPHBLAS_JIT_ENABLE_RELOCATE )
 
