@@ -76,18 +76,17 @@
 #                       system.
 #                       Default: false
 #
-#   SUITESPARSE_PKGFILEDIR: where to install the CMake Config and pkg-config
-#                       files.  This defaults to the same directory as where
-#                       the compiled libraries are installed, in a subfolder
-#                       called pkgconfig.  If not already set in the cache,
-#                       LOCAL_INSTALL=0 defines this as "lib", and the
-#                       CMAKE_INSTALL_PREFIX is added.  LOCAL_INSTALL=1 defines
-#                       this as SuiteSparse/lib.  This variable is cached so
-#                       that if it is not set, or unset first, it remains
-#                       unchanged (see "make local" and "make global" in the
-#                       SuiteSparse_config/Makefile for an example).
+#   SUITESPARSE_PKGFILEDIR: Directory where CMake Config and pkg-config files
+#                       will be installed.  By default, CMake Config files will
+#                       be installed in the subfolder `cmake` of the directory
+#                       where the (static) libraries will be installed (e.g.,
+#                       `lib`).  The `.pc` files for pkg-config will be
+#                       installed in the subfolder `pkgconfig` of the directory
+#                       where the (static) libraries will be installed.
+#                       Default: CMAKE_INSTALL_PREFIX, or SuiteSparse/lib if
+#                       LOCAL_INSTALL is enabled.
 #
-#   SUITESPARSE_INCLUDEDIR_POSTFIX : # Postfix for installation target of
+#   SUITESPARSE_INCLUDEDIR_POSTFIX : Postfix for installation target of
 #                       header from SuiteSparse. Default: suitesparse, so the
 #                       default include directory is:
 #                       CMAKE_INSTALL_PREFIX/include/suitesparse
