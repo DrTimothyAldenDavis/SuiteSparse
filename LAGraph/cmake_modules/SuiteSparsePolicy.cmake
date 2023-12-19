@@ -79,7 +79,7 @@
 #   SUITESPARSE_PKGFILEDIR: where to install the CMake Config and pkg-config
 #                       files.  This defaults to the same directory as where
 #                       the compiled libraries are installed, in a subfolder
-#                       called cmake.  If not already set in the cache,
+#                       called pkgconfig.  If not already set in the cache,
 #                       LOCAL_INSTALL=0 defines this as "lib", and the
 #                       CMAKE_INSTALL_PREFIX is added.  LOCAL_INSTALL=1 defines
 #                       this as SuiteSparse/lib.  This variable is cached so
@@ -95,9 +95,6 @@
 message ( STATUS "Source:           ${CMAKE_SOURCE_DIR} ")
 message ( STATUS "Build:            ${CMAKE_BINARY_DIR} ")
 
-cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
-cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
-cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0" )
     cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 endif ( )

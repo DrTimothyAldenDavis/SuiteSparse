@@ -38,8 +38,6 @@
 
 cmake_minimum_required ( VERSION 3.20 )
 
-cmake_policy ( SET CMP0042 NEW )
-cmake_policy ( SET CMP0048 NEW )
 set ( CMAKE_MACOSX_RPATH TRUE )
 
 # version of LAGraph
