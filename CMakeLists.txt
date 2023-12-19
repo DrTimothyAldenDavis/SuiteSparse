@@ -30,11 +30,6 @@ project ( "SuiteSparse" )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
-
-# SuiteSparsePolicy enables SUITESPARSE_CUDA if a CUDA compiler can be found.
-include ( SuiteSparsePolicy )
-
 #-------------------------------------------------------------------------------
 # build options
 #-------------------------------------------------------------------------------
