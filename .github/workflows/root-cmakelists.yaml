@@ -228,7 +228,7 @@ jobs:
         cuda: [without]
         include:
           - openmp: without
-            openmp-cmake-flags: "-DNOPENMP=ON"
+            openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
 #         - openmp: with
 #           cuda: with
 #           cuda-cmake-flags:

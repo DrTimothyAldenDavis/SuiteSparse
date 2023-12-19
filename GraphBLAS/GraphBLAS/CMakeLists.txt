@@ -46,12 +46,13 @@ project ( graphblas_matlab
 # find OpenMP and cpu_features
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( GRAPHBLAS_USE_OPENMP )
+    find_package ( OpenMP )
+else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 if ( NOT GBNCPUFEAT )

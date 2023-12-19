@@ -38,6 +38,7 @@ set ( LAGRAPH_VERSION "@LAGraph_VERSION_MAJOR@.@LAGraph_VERSION_MINOR@.@LAGraph_
 
 # Check for dependent targets
 include ( CMakeFindDependencyMacro )
+set ( _dependencies_found ON )
 
 if ( NOT TARGET GraphBLAS::GraphBLAS )
     # Look GraphBLAS 
@@ -50,8 +51,46 @@ if ( NOT GraphBLAS_FOUND )
     return ( )
 endif ( )
 
+# Look for OpenMP
+if ( @LAGRAPH_USE_OPENMP@ AND NOT OpenMP_C_FOUND )
+    find_dependency ( OpenMP )
+    if ( NOT OpenMP_C_FOUND )
+        set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
+if ( NOT _dependencies_found )
+    set ( LAGraph_FOUND OFF )
+    return ( )
+endif ( )
+
 # Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/LAGraphTargets.cmake )
+
+if ( @LAGRAPH_USE_OPENMP@ )
+    if ( TARGET SuiteSparse::LAGraph )
+        get_property ( _lagraph_aliased TARGET SuiteSparse::LAGraph
+            PROPERTY ALIASED_TARGET )
+        if ( "${_lagraph_aliased}" STREQUAL "" )
+            target_include_directories ( SuiteSparse::LAGraph SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        else ( )
+            target_include_directories ( ${_lagraph_aliased} SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        endif ( )
+    endif ( )
+    if ( TARGET SuiteSparse::LAGraph_static )
+        get_property ( _lagraph_aliased TARGET SuiteSparse::LAGraph_static
+            PROPERTY ALIASED_TARGET )
+        if ( "${_lagraph_aliased}" STREQUAL "" )
+            target_include_directories ( SuiteSparse::LAGraph_static SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        else ( )
+            target_include_directories ( ${_lagraph_aliased} SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        endif ( )
+    endif ( )
+endif ( )
 
 # The following is only for backward compatibility with FindLAGraph.
 

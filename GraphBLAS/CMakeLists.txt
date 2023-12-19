@@ -85,12 +85,13 @@ else ( )
 endif ( )
 
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( GRAPHBLAS_USE_OPENMP )
+    find_package ( OpenMP )
+else ( )
     # OpenMP has been disabled.
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 if ( NOT GBNCPUFEAT )
@@ -403,38 +404,40 @@ endif ( )
 # add the OpenMP, IPP, CUDA, BLAS, etc libraries
 #-------------------------------------------------------------------------------
 
+# get the current library list, before linking with OpenMP, CUDA and rmm
+if ( BUILD_SHARED_LIBS )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
+else ( )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
+endif ( )
+if ( NOT GB_CMAKE_LIBRARIES )
+    set ( GB_CMAKE_LIBRARIES "" )
+endif ( )
+
 if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
-    # revert to ${OpenMP_C_LIBRARIES}:
+    list ( APPEND GB_CMAKE_LIBRARIES ${OpenMP_C_LIBRARIES} )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( GraphBLAS PRIVATE ${OpenMP_C_LIBRARIES} )
-        target_include_directories ( GraphBLAS PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    # cannot use OpenMP::OpenMP_C because the JIT is configured with
-    # LINK_LIBRARIES.  Those are -l lists passed directly to the
-    # C compiler, and this is converted into "-lOpenMP::OpenMP_C".
-    # So this breaks:
-    # target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
-        target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
-        # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
-        target_include_directories ( GraphBLAS_static PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
 else ( )
     message  ( WARNING
-    "WARNING:  OpenMP was not found (or was disabled with NOPENMP).  See the "
-    "GrapBLAS user guide on the consequences of compiling GraphBLAS without "
-    "OpenMP. GraphBLAS will work but may not be thread-safe, since it relies "
-    "on '#pragma omp flush' to ensure the work performed by one user thread is "
-    "available to another, in GrB_wait.  If OpenMP is not in use, the "
-    "thread-safety of GrB_wait becomes the responsibilty of the user "
-    "application (perhaps through a pthreads construct).  Compiling GraphBLAS "
-    "without OpenMP is not recommended for installation in a package manager "
-    "(Linux, conda-forge, spack, brew, vcpkg, etc). " )
+    "WARNING:  OpenMP was not found (or was disabled with "
+    "GRAPHBLAS_USE_OPENMP).  See the GrapBLAS user guide on the consequences "
+    "of compiling GraphBLAS without OpenMP. GraphBLAS will work but may not be "
+    "thread-safe, since it relies on '#pragma omp flush' to ensure the work "
+    "performed by one user thread is available to another, in GrB_wait.  If "
+    "OpenMP is not in use, the thread-safety of GrB_wait becomes the "
+    "responsibilty of the user application (perhaps through a pthreads "
+    "construct).  Compiling GraphBLAS without OpenMP is not recommended for "
+    "installation in a package manager (Linux, conda-forge, spack, brew, "
+    "vcpkg, etc). " )
     # check for __thread, __declspec(thread), and _Thread_local keywords
     include ( SuiteSparse__thread )
     if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD
@@ -443,16 +446,6 @@ else ( )
         "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )
-endif ( )
-
-# get the current library list, before linking with cuda and rmm
-if ( BUILD_SHARED_LIBS )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
-else ( )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
-endif ( )
-if ( NOT GB_CMAKE_LIBRARIES )
-    set ( GB_CMAKE_LIBRARIES "" )
 endif ( )
 
 if ( SUITESPARSE_CUDA )

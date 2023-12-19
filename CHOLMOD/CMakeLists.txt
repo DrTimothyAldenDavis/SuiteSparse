@@ -67,12 +67,13 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
-if ( NOPENMP )
-    # OpenMP has been disabled
-    set ( OpenMP_C_FOUND false )
-else ( )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( CHOLMOD_USE_OPENMP )
     find_package ( OpenMP )
+else ( )
+    # OpenMP has been disabled
+    set ( OpenMP_C_FOUND OFF )
 endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
