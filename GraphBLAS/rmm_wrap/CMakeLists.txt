@@ -6,7 +6,7 @@
 
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 
 project ( rmm_wrap VERSION 0.1 )
 

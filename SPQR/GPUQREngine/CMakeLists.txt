@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 message ( STATUS "Building SPQR/GPUQRENGINE version: v"
     ${SPQR_VERSION_MAJOR}.

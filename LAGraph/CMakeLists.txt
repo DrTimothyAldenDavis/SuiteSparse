@@ -36,7 +36,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
 
 set ( CMAKE_MACOSX_RPATH TRUE )
 

@@ -8,7 +8,7 @@
 # See the section below, "help with building this Example ..." for how to tell
 # this Example library where to find SuiteSparse.
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 #-------------------------------------------------------------------------------
 # help with building this Example package and finding SuiteSparse 

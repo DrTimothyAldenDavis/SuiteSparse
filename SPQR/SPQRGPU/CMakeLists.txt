@@ -11,7 +11,7 @@
 #-------------------------------------------------------------------------------
 
 # cmake 3.22 is required to find the BLAS/LAPACK
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 message ( STATUS "Building SPQR_CUDA version: v"
     ${SPQR_VERSION_MAJOR}.

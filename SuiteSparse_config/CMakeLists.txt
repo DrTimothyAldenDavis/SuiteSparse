@@ -10,7 +10,8 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.22 is required to find the BLAS
+# cmake 3.22 is required to find BLAS/LAPACK for UMFPACK, CHOLMOD, SPQR,
+# and ParU:
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config

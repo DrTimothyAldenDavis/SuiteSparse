@@ -7,7 +7,7 @@
 
 # See the User Guide for details on how to compile SuiteSparse:GraphBLAS.
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 
 #-------------------------------------------------------------------------------
 # define the project

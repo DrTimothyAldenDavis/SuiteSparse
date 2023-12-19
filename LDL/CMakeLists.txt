@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( LDL_DATE "Dec 30, 2023" )
 set ( LDL_VERSION_MAJOR 3 CACHE STRING "" FORCE )

@@ -7,9 +7,19 @@
 # its own license.
 # SPDX-License-Identifier: Apache-2.0
 
-# The actually required minimum CMake version might be higher depending on the
-# selected SuiteSparse projects.
-cmake_minimum_required ( VERSION 3.20 )
+# This file and most packages in SuiteSparse require cmake 3.22 or later.  Some
+# packages can be built as stand-alone packages with their own CMakeLists.txt
+# files, with older versions of cmake (GraphBLAS, LAGraph, and CSparse):
+#
+#   GraphBLAS and LAGraph: 3.20
+#   CSparse: 3.13
+#   GraphBLAS jitifyer (for end user JIT kernels): 3.13
+#
+# Other CMakeLists.txt files inside SuiteSparse are from dependent packages
+# (LAGraph/deps/json_h, GraphBLAS/cpu_features, and CHOLMOD/SuiteSparse_metis
+# which is a slightly revised copy of METIS 5.0.1) but none of those
+# CMakeLists.txt files are used to build any package in SuiteSparse.
+cmake_minimum_required ( VERSION 3.22 )
 
 project ( "SuiteSparse" )
 

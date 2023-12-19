@@ -15,7 +15,8 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.13 )
+# Note that CSparse can use an older cmake version than most of SuiteSparse.
+cmake_minimum_required ( VERSION 3.13 )     # CSparse can be built stand-alone
 
 set ( CSPARSE_DATE "Dec 30, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
