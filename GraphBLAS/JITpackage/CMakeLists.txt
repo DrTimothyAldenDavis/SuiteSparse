@@ -9,10 +9,10 @@
 
 cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 project ( jitpackage LANGUAGES C )
-include_directories ( ../zstd ../zstd/zstd_subset )
-add_executable ( grb_jitpackage  "Source/grb_jitpackage.c" )
+add_executable ( grb_jitpackage "Source/grb_jitpackage.c" )
+target_include_directories ( grb_jitpackage PRIVATE ../zstd/zstd_subset )
 if ( NOT WIN32 )
-    target_link_libraries ( grb_jitpackage PUBLIC m )
+    target_link_libraries ( grb_jitpackage PRIVATE m )
 endif ( )
 
 file ( GLOB GRB_SOURCE_FILES
