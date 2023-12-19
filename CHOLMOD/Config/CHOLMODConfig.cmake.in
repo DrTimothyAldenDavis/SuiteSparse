@@ -111,7 +111,7 @@ if ( NOT SuiteSparse_config_FOUND OR NOT AMD_FOUND OR NOT COLAMD_FOUND )
     set ( _dependencies_found OFF )
 endif ( )
 
-if ( NOT @NCAMD@ )
+if ( @CHOLMOD_CAMD@ )
     # If CHOLMOD was built with CAMD and CCOLAMD, look for their targets
 
     if ( @SUITESPARSE_IN_BUILD_TREE@ )

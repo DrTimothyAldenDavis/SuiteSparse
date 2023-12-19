@@ -689,13 +689,13 @@ Compilation options
 
 You can set specific options for CMake with the command (for example):
 ```
-    cmake -DNPARTITION=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DCHOLMOD_PARTITION=OFF -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
-Module (because of `-DNPARTITION=ON`).  Debug mode will be used (the build
-type).  The static libraries will not be built (since `-DBUILD_STATIC_LIBS=OFF`
-is set).
+Module (because of `-DCHOLMOD_PARTITION=OFF`).  Debug mode will be used (the
+build type).  The static libraries will not be built (since
+`-DBUILD_STATIC_LIBS=OFF` is set).
 
 * `SUITESPARSE_ENABLE_PROJECTS`:
 
@@ -863,41 +863,41 @@ Additional options are available for specific packages:
   ordering options.
 
 CHOLMOD is composed of a set of Modules that can be independently selected;
-all options default to `OFF`:
+all options default to `ON`:
 
-* `NGPL`
+* `CHOLMOD_GPL`
 
-  If `ON`, do not build any GPL-licensed module (MatrixOps, Modify, Supernodal,
+  If `OFF`, do not build any GPL-licensed module (MatrixOps, Modify, Supernodal,
   and GPU modules)
 
-* `NCHECK`
+* `CHOLMOD_CHECK`
 
-  If `ON`, do not build the Check module.
+  If `OFF`, do not build the Check module.
 
-* `NMATRIXOPS`
+* `CHOLMOD_MATRIXOPS`
 
-  If `ON`, do not build the MatrixOps module.
+  If `OFF`, do not build the MatrixOps module.
 
-* `NCHOLESKY`
-  If `ON`, do not build the Cholesky module. This also disables the Supernodal
+* `CHOLMOD_CHOLESKY`
+  If `OFF`, do not build the Cholesky module. This also disables the Supernodal
   and Modify modules.
 
-* `NMODIFY`
+* `CHOLMOD_MODIFY`
 
-  If `ON`, do not build the Modify module.
+  If `OFF`, do not build the Modify module.
 
-* `NCAMD`
+* `CHOLMOD_CAMD`
 
-  If `ON`, do not link against CAMD and CCOLAMD. This also disables the
+  If `OFF`, do not link against CAMD and CCOLAMD. This also disables the
   Partition module.
 
-* `NPARTITION`
+* `CHOLMOD_PARTITION`
 
-  If `ON`, do not build the Partition module.
+  If `OFF`, do not build the Partition module.
 
-* `NSUPERNODAL`
+* `CHOLMOD_SUPERNODAL`
 
-  If `ON`, do not build the Supernodal module.
+  If `OFF`, do not build the Supernodal module.
 
 -----------------------------------------------------------------------------
 Possible build/install issues

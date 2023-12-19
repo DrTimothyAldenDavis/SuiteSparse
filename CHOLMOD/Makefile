@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/CHOLOMD/Makefile
+# SuiteSparse/CHOLMOD/Makefile
 #-------------------------------------------------------------------------------
 
 # This CHOLMOD/Makefile: Copyright (c) 2005-2023, Timothy A. Davis.
@@ -15,9 +15,9 @@
 #
 #       make CC=gcc CXX=g++
 #
-# To compile with any GPL modules (MatrixOps, Modify, and Supernodal):
+# To compile with no GPL-licensed modules (MatrixOps, Modify, and Supernodal):
 #
-#       make CMAKE_OPTIONS='-DNGPL=1'
+#       make CMAKE_OPTIONS='-DCHOLMOD_GPL=OFF'
 #
 # To compile/install for system-wide usage:
 #
