@@ -164,8 +164,8 @@ jobs:
 
       - name: check_LAGraph
         run: |
-          cd ${GITHUB_WORKSPACE}/LAGraph/build
-          ctest .
+          cd ${GITHUB_WORKSPACE}/LAGraph
+          make demos
 
       - name: check_ParU
         run: |
