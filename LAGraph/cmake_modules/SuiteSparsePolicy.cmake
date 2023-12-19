@@ -151,14 +151,6 @@ else ( )
         ${CMAKE_SOURCE_DIR}/../lib/cmake )
 endif ( )
 
-# add the ./build folder to the runpath so other SuiteSparse packages can
-# find this one without "make install"
-list ( FIND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} _idx )
-if ( _idx LESS 0 )
-    # not yet included in CMAKE_BUILD_RPATH
-    list ( APPEND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} )
-endif ( )
-
 set ( INSIDE_SUITESPARSE OFF )
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     # determine if this Package is inside the SuiteSparse folder
