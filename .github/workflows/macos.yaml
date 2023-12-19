@@ -7,7 +7,7 @@ on:
       - '**/*dev2'
   pull_request:
 
-concurrency: ci-${{ github.ref }}
+concurrency: ci-macos-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
@@ -35,7 +35,7 @@ jobs:
         # re-installed.
         run: |
           brew update
-          brew install --overwrite python@3.10 python@3.11
+          brew install --overwrite python@3.10 python@3.11 python@3.12
           brew reinstall gcc
           brew install autoconf automake ccache cmake gmp lapack libomp mpfr openblas
 
@@ -164,8 +164,8 @@ jobs:
 
       - name: check_LAGraph
         run: |
-          cd ${GITHUB_WORKSPACE}/LAGraph/build
-          ctest .
+          cd ${GITHUB_WORKSPACE}/LAGraph
+          make demos
 
       - name: check_ParU
         run: |
