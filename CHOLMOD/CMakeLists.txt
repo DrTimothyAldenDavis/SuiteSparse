@@ -663,7 +663,7 @@ if ( DEMO )
     add_executable ( cholmod_si_simple "Demo/cholmod_si_simple.c" )
     add_executable ( cholmod_sl_simple "Demo/cholmod_sl_simple.c" )
 
-    if ( NOT NFORTRAN )
+    if ( SUITESPARSE_USE_FORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
         add_executable ( readhb2    "Demo/readhb2.f" )
         add_executable ( reade      "Demo/reade.f" )

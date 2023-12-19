@@ -855,6 +855,14 @@ build type).  The static libraries will not be built (since
   `OFF`, automatically build `SuiteSparse_config` as dependency if needed.
   Default: `OFF`.
 
+* `SUITESPARSE_USE_FORTRAN`
+
+  If `ON`, use the Fortran compiler to determine how C calls Fortan, and to
+  build several optional Fortran routines. If `OFF`, use
+  `SUITESPARSE_C_TO_FORTRAN` to define how C calls Fortran (see
+  `SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake` for details).
+  Default: `ON`.
+
 Additional options are available for specific packages:
 
 * `NCHOLMOD`:

@@ -68,13 +68,13 @@
 #                       This setting is only used if no Fortran compiler is
 #                       found.
 #
-#   NFORTRAN:           if true, no Fortan files are compiled, and the Fortran
-#                       language is not enabled in any cmake scripts.  The
-#                       built-in cmake script FortranCInterface is skipped.
-#                       This will require SUITESPARSE_C_TO_FORTRAN to be defined
-#                       explicitly, if the defaults are not appropriate for your
-#                       system.
-#                       Default: false
+#   SUITESPARSE_USE_FORTRAN:  if OFF, no Fortan files are compiled, and the
+#                       Fortran language is not enabled in any cmake scripts.
+#                       The built-in cmake script FortranCInterface is skipped.
+#                       This will require SUITESPARSE_C_TO_FORTRAN to be
+#                       defined explicitly, if the defaults are not appropriate
+#                       for your system.
+#                       Default: ON
 #
 #   SUITESPARSE_PKGFILEDIR: Directory where CMake Config and pkg-config files
 #                       will be installed.  By default, CMake Config files will
@@ -228,19 +228,19 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 #-------------------------------------------------------------------------------
 
 include ( CheckLanguage )
-option ( NFORTRAN "ON: do not try to use Fortran. OFF (default): try Fortran" off )
-if ( NFORTRAN )
-    message ( STATUS "Fortran:          not enabled" )
-else ( )
+option ( SUITESPARSE_USE_FORTRAN "ON (default): use Fortran. OFF: do not use Fortran" ON )
+if ( SUITESPARSE_USE_FORTRAN )
     check_language ( Fortran )
     if ( CMAKE_Fortran_COMPILER )
         enable_language ( Fortran )
         message ( STATUS "Fortran:          ${CMAKE_Fortran_COMPILER}" )
     else ( )
         # Fortran not available:
-        set ( NFORTRAN true )
+        set ( SUITESPARSE_USE_FORTRAN OFF )
         message ( STATUS "Fortran:          not available" )
     endif ( )
+else ( )
+    message ( STATUS "Fortran:          not enabled" )
 endif ( )
 
 # default C-to-Fortran name mangling if Fortran compiler not found

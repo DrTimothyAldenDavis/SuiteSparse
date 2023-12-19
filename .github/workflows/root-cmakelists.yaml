@@ -369,7 +369,7 @@ jobs:
                 -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                -DNFORTRAN=ON \
+                -DSUITESPARSE_USE_FORTRAN=OFF \
                 -DBLA_VENDOR="All" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
                 ${{ matrix.openmp-cmake-flags }} \
