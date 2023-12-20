@@ -25,7 +25,7 @@ set ( BLA_VENDOR "ANY" CACHE STRING
     "if ANY (default): searches for any BLAS. Otherwise: search for a specific BLAS" )
 
 # To allow the use of a BLAS with 64-bit integers, set this to true
-option ( ALLOW_64BIT_BLAS
+option ( SUITESPARSE_ALLOW_64BIT_BLAS
     "OFF (default): use only 32-bit BLAS.  ON: look for 32 or 64-bit BLAS" off )
 
 # dynamic/static linking with BLAS
@@ -41,23 +41,23 @@ option ( BLA_STATIC
 #   CMAKE_OPTIONS="-DBLA_VENDOR=Apple" make
 #   cd build ; cmake -DBLA_VENDOR=Apple .. ; make
 #
-# Use the ALLOW_64BIT_BLAS to select 64-bit or 32-bit BLAS.  This setting is
+# Use the SUITESPARSE_ALLOW_64BIT_BLAS to select 64-bit or 32-bit BLAS.  This setting is
 # strictly enforced.  If set to true, then only a 64-bit BLAS is allowed.
 # If this is not found, no 32-bit BLAS is considered, and the build will fail.
 #
-# If the BLA_VENDOR string implies a 64-bit BLAS, then ALLOW_64BIT_BLAS is set
+# If the BLA_VENDOR string implies a 64-bit BLAS, then SUITESPARSE_ALLOW_64BIT_BLAS is set
 # to true, ignoring the setting from the user (Intel10_64ilp* and Arm_64ilp*).
 #
-# The default for ALLOW_64BIT_BLAS is false.
+# The default for SUITESPARSE_ALLOW_64BIT_BLAS is false.
 
 if ( NOT (BLA_VENDOR STREQUAL "ANY" ) )
     # only look for the BLAS from a single vendor
     if ( ( BLA_VENDOR MATCHES "64ilp" ) OR
          ( BLA_VENDOR MATCHES "ilp64" ) )
         # Intel10_64ilp* or Arm_ilp64*
-        set ( ALLOW_64BIT_BLAS true )
+        set ( SUITESPARSE_ALLOW_64BIT_BLAS true )
     endif ( )
-    if ( ALLOW_64BIT_BLAS )
+    if ( SUITESPARSE_ALLOW_64BIT_BLAS )
         # only look for 64-bit BLAS
         set ( BLA_SIZEOF_INTEGER 8 )
         message ( STATUS "Looking for 64-BLAS: "  ${BLA_VENDOR} )
@@ -83,10 +83,10 @@ endif ( )
 # Look for any 64-bit BLAS, if allowed
 #-------------------------------------------------------------------------------
 
-# If ALLOW_64BIT_BLAS is true, then a 64-bit BLAS is preferred.
+# If SUITESPARSE_ALLOW_64BIT_BLAS is true, then a 64-bit BLAS is preferred.
 # If not found, a 32-bit BLAS is sought (below)
 
-if ( ALLOW_64BIT_BLAS )
+if ( SUITESPARSE_ALLOW_64BIT_BLAS )
 
     # Look for Intel MKL BLAS with 64-bit integers
     message ( STATUS "Looking for Intel 64-bit BLAS" )

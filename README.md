@@ -525,8 +525,8 @@ the use of 32-bit integers in the BLAS).
 When distributed in a binary form (such as a Debian, Ubuntu, Spack, or Brew
 package), SuiteSparse should probably be compiled to expect a 32-bit BLAS,
 since this is the most common case.  The default is to use a 32-bit BLAS, but
-this can be changed in SuiteSparseBLAS.cmake or by compiling with
-`-DALLOW_64BIT_BLAS=1`.
+this can be changed by setting the cmake variable
+`SUITESPARSE_ALLOW_64BIT_BLAS` to `ON`.
 
 By default, SuiteSparse hunts for a suitable BLAS library.  To enforce a
 particular BLAS library use either:
@@ -535,14 +535,14 @@ particular BLAS library use either:
     cd Package ; cmake -DBLA_VENDOR=OpenBLAS .. make
 
 To use the default (hunt for a BLAS), do not set `BLA_VENDOR`, or set it to
-ANY.  In this case, if `ALLOW_64BIT_BLAS` is set, preference is given to a
-64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit library is
-found.
+ANY.  In this case, if `SUITESPARSE_ALLOW_64BIT_BLAS` is set, preference is
+given to a 64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit
+library is found.
 
-When selecting a particular BLAS library, the `ALLOW_64BIT_BLAS` setting is
-strictly followed.  If set to true, only a 64-bit BLAS library will be used.
-If false (the default), only a 32-bit BLAS library will be used.  If no such
-BLAS is found, the build will fail.
+When selecting a particular BLAS library, the `SUITESPARSE_ALLOW_64BIT_BLAS`
+setting is strictly followed.  If set to true, only a 64-bit BLAS library will
+be used.  If false (the default), only a 32-bit BLAS library will be used.  If
+no such BLAS is found, the build will fail.
 
 -----------------------------------------------------------------------------
 QUICK START FOR THE C/C++ LIBRARIES:
@@ -783,7 +783,7 @@ build type).  The static libraries will not be built (since
   See:
   https://cmake.org/cmake/help/latest/module/FindBLAS.html#blas-lapack-vendors
 
-* `ALLOW_64BIT_BLAS`:
+* `SUITESPARSE_ALLOW_64BIT_BLAS`:
 
   If `ON`, look for a 64-bit BLAS.  If `OFF`: 32-bit only.  Default: `OFF`.
 

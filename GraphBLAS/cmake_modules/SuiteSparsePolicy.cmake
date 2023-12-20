@@ -52,9 +52,9 @@
 #   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
 #                       Default: false
 #
-#   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
-#                       64-bit BLAS.  If false, only 32-bit BLAS will be
-#                       searched for.  Ignored if BLA_VENDOR and
+#   SUITESPARSE_ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both
+#                       32-bit and 64-bit BLAS.  If false, only 32-bit BLAS
+#                       will be searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
 #
 #   SUITESPARSE_C_TO_FORTRAN:  a string that defines how C calls Fortran.
