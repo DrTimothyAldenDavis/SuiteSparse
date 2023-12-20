@@ -89,10 +89,10 @@ else ( )
 endif ( )
 
 if ( KLU_HAS_CHOLMOD )
+    message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
+else ( )
     add_compile_definitions ( NCHOLMOD )
     message ( STATUS "CHOLMOD not found or not requested" )
-else ( )
-    message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
 
 #-------------------------------------------------------------------------------
