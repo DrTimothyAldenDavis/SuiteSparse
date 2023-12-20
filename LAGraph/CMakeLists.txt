@@ -265,7 +265,7 @@ message ( STATUS "CMAKE C flags: " ${CMAKE_C_FLAGS} )
 # enable testing and add subdirectories
 #-------------------------------------------------------------------------------
 
-enable_testing ( )
+include ( CTest )
 
 add_subdirectory ( src )
 add_subdirectory ( experimental )
