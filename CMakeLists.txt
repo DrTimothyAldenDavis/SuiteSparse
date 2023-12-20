@@ -503,5 +503,5 @@ include ( SuiteSparseReport )
 # The CSparse/CXSparse Tcov tests are very fast and would be good candidates to
 # add.
 
-enable_testing ( )
+include ( CTest )
 

@@ -694,109 +694,113 @@ endif ( )
 # testing
 #-------------------------------------------------------------------------------
 
-enable_testing ( )
+include ( CTest )
 
-add_executable ( cholmod_di_demo "Demo/cholmod_di_demo.c" )
-add_executable ( cholmod_dl_demo "Demo/cholmod_dl_demo.c" )
-add_executable ( cholmod_si_demo "Demo/cholmod_si_demo.c" )
-add_executable ( cholmod_sl_demo "Demo/cholmod_sl_demo.c" )
+if ( SUITESPARSE_DEMOS OR BUILD_TESTING )
 
-# Libraries required for tests
-if ( BUILD_SHARED_LIBS )
+    add_executable ( cholmod_di_demo "Demo/cholmod_di_demo.c" )
+    add_executable ( cholmod_dl_demo "Demo/cholmod_dl_demo.c" )
+    add_executable ( cholmod_si_demo "Demo/cholmod_si_demo.c" )
+    add_executable ( cholmod_sl_demo "Demo/cholmod_sl_demo.c" )
 
-    # link the tests with shared libraries
-    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    # Libraries required for tests
+    if ( BUILD_SHARED_LIBS )
 
-else ( )
+        # link the tests with shared libraries
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
 
-    # link the tests with static libraries
-    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    else ( )
 
-endif ( )
+        # link the tests with static libraries
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
 
-if ( CHOLMOD_CAMD )
-
-    target_link_libraries ( cholmod_di_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-
-endif ( )
-
-add_test ( NAME CHOLMOD_int32_double_bcsstk01
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int64_double_bcsstk01
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int32_single_bcsstk01
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int64_single_bcsstk01
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-
-add_test ( NAME CHOLMOD_int32_double_lp_afiro
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int64_double_lp_afiro
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int32_single_lp_afiro
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int64_single_lp_afiro
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-
-add_test ( NAME CHOLMOD_int32_double_can24
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int64_double_can24
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int32_single_can24
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int64_single_can24
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-
-add_test ( NAME CHOLMOD_int32_double_complex
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int64_double_complex
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int32_single_complex
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int64_single_complex
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-
-add_test ( NAME CHOLMOD_int32_double_supernodal
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int64_double_supernodal
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int32_single_supernodal
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int64_single_supernodal
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-
-if ( WIN32 AND BUILD_SHARED_LIBS )
-    # Set PATH to pick up the necessary libraries for all tests
-
-    set ( CHOLMOD_CTEST_NAMES 
-        CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
-        CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
-        CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
-        CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
-        CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
-
-    set ( CHOLMOD_DEPENDENCIES
-        CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    if ( CHOLMOD_CAMD )
-        list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
     endif ( )
-    set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
-    foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
-        list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
-    endforeach ( )
-    foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
-        set_tests_properties ( ${cholmod_ctest} PROPERTIES
-            ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
-    endforeach ( )
+
+    if ( CHOLMOD_CAMD )
+
+        target_link_libraries ( cholmod_di_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+
+    endif ( )
+
+    add_test ( NAME CHOLMOD_int32_double_bcsstk01
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int64_double_bcsstk01
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int32_single_bcsstk01
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int64_single_bcsstk01
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_lp_afiro
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int64_double_lp_afiro
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int32_single_lp_afiro
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int64_single_lp_afiro
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_can24
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int64_double_can24
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int32_single_can24
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int64_single_can24
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+
+    add_test ( NAME CHOLMOD_int32_double_complex
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int64_double_complex
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int32_single_complex
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int64_single_complex
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_supernodal
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int64_double_supernodal
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int32_single_supernodal
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int64_single_supernodal
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+
+    if ( WIN32 AND BUILD_SHARED_LIBS )
+        # Set PATH to pick up the necessary libraries for all tests
+
+        set ( CHOLMOD_CTEST_NAMES 
+            CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
+            CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
+            CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
+            CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
+            CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
+
+        set ( CHOLMOD_DEPENDENCIES
+            CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        if ( CHOLMOD_CAMD )
+            list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        endif ( )
+        set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
+        foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
+            list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
+        endforeach ( )
+        foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
+            set_tests_properties ( ${cholmod_ctest} PROPERTIES
+                ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
+        endforeach ( )
+
+    endif ( )
 
 endif ( )
 
