@@ -657,9 +657,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
-
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     add_executable ( cholmod_di_simple "Demo/cholmod_di_simple.c" )
     add_executable ( cholmod_dl_simple "Demo/cholmod_dl_simple.c" )

@@ -41,7 +41,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 # Demo disabled for GPUQREngine v2.x
 set ( DEMO_OK false )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND DEMO AND DEMO_OK )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_DEMOS AND DEMO_OK )
     # for the demo only:
     find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
@@ -229,7 +229,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-if ( DEMO AND DEMO_OK )
+if ( SUITESPARSE_DEMOS AND DEMO_OK )
 
     #---------------------------------------------------------------------------
     # demo library

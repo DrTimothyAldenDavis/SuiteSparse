@@ -820,7 +820,8 @@ build type).  The static libraries will not be built (since
   If `ON`, OpenMP is used in ParU if it is available.  Default:
   `SUITESPARSE_USE_OPENMP`.
 
-* `DEMO`:
+* `SUITESPARSE_DEMOS`:
+
   If `ON`, build the demo programs for each package.  Default: `OFF`.
 
 * `SUITESPARSE_USE_SYSTEM_BTF`:

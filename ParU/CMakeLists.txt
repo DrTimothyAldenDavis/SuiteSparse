@@ -46,7 +46,7 @@ include ( SuiteSparsePolicy )
 
 enable_language ( CXX )
 
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
     enable_language ( C )
 endif ( )
 
@@ -390,7 +390,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library

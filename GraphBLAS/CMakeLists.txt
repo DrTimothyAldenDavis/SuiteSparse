@@ -468,8 +468,7 @@ message ( STATUS "CMAKE C flags: ${CMAKE_C_FLAGS} " )
 # Demo programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     message ( STATUS "Also compiling the demos in GraphBLAS/Demo" )
 

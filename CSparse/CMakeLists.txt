@@ -162,8 +162,8 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+option ( CSPARSE_DEMOS "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
+if ( CSPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library
