@@ -162,37 +162,18 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( CSPARSE_DEMOS "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( CSPARSE_DEMOS )
+add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
+add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
+add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
 
-    #---------------------------------------------------------------------------
-    # demo library
-    #---------------------------------------------------------------------------
-
-    message ( STATUS "Also compiling the demos in CSparse/Demo" )
-
-    #---------------------------------------------------------------------------
-    # Demo programs
-    #---------------------------------------------------------------------------
-
-    add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
-
-    # Libraries required for Demo programs
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( cs_demo1 PUBLIC csparse )
-        target_link_libraries ( cs_demo2 PUBLIC csparse )
-        target_link_libraries ( cs_demo3 PUBLIC csparse )
-    else ( )
-        target_link_libraries ( cs_demo1 PUBLIC csparse_static )
-        target_link_libraries ( cs_demo2 PUBLIC csparse_static )
-        target_link_libraries ( cs_demo3 PUBLIC csparse_static )
-    endif ( )
-
+# Libraries required for Demo programs
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( cs_demo1 PUBLIC csparse )
+    target_link_libraries ( cs_demo2 PUBLIC csparse )
+    target_link_libraries ( cs_demo3 PUBLIC csparse )
 else ( )
-
-    message ( STATUS "Skipping the demos in CSparse/Demo" )
-
+    target_link_libraries ( cs_demo1 PUBLIC csparse_static )
+    target_link_libraries ( cs_demo2 PUBLIC csparse_static )
+    target_link_libraries ( cs_demo3 PUBLIC csparse_static )
 endif ( )
 
