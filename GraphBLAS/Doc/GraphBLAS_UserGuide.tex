@@ -9483,7 +9483,7 @@ The library will be thread-safe, with one exception.  \verb'GrB_wait' is
 intended to provide thread-safety by flushing the cache of one user thread
 so the object can be safely read by another thread.  This is accomplished
 with \verb'pragma omp flush', but if OpenMP is not available, this does
-nothing.  If OpenMP is not available or \verb'-DNOPEMP=1' is used, then
+nothing.  If OpenMP is not available or \verb'-DNOPENMP=1' is used, then
 user applications need to ensure their own thread safety when one user thread
 computes a result that is then read by another thread.
 
