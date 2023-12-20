@@ -225,13 +225,15 @@ if ( GRAPHBLAS_USE_JIT )
     add_subdirectory ( JITpackage )
     if ( GRAPHBLAS_COMPACT )
         # with the JIT; but do not compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" 
-            "JITpackage/*.c" )
+        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" )
     else ( )
         # with the JIT and the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
-            "JITpackage/*.c" "Source/FactoryKernels/*.c" )
+            "Source/FactoryKernels/*.c" )
     endif ( )
+    # GLOB does not include files that do not yet exist, so prepend
+    # the GB_JITpackage.c file here:
+    list ( PREPEND GRAPHBLAS_SOURCES "JITpackage/GB_JITpackage.c" )
 else ( )
     if ( GRAPHBLAS_COMPACT )
         # no JIT, do not compile the FactoryKernels
@@ -242,6 +244,8 @@ else ( )
             "Source/FactoryKernels/*.c" )
     endif ( )
 endif ( )
+
+message ( STATUS ${GRAPHBLAS_SOURCES} )
 
 if ( BUILD_SHARED_LIBS )
     add_library ( GraphBLAS SHARED ${GRAPHBLAS_SOURCES} )
