@@ -823,42 +823,42 @@ build type).  The static libraries will not be built (since
 * `DEMO`:
   If `ON`, build the demo programs for each package.  Default: `OFF`.
 
-* `USE_SYSTEM_BTF`:
+* `SUITESPARSE_USE_SYSTEM_BTF`:
 
   If `ON`, use BTF libraries installed on the build system. If `OFF`,
   automatically build BTF as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CHOLMOD`:
+* `SUITESPARSE_USE_SYSTEM_CHOLMOD`:
 
   If `ON`, use CHOLMOD libraries installed on the build system. If `OFF`,
   automatically build CHOLMOD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_AMD`:
+* `SUITESPARSE_USE_SYSTEM_AMD`:
 
   If `ON`, use AMD libraries installed on the build system. If `OFF`,
   automatically build AMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_COLAMD`:
+* `SUITESPARSE_USE_SYSTEM_COLAMD`:
 
   If `ON`, use COLAMD libraries installed on the build system. If `OFF`,
   automatically build COLAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CAMD`:
+* `SUITESPARSE_USE_SYSTEM_CAMD`:
 
   If `ON`, use CAMD libraries installed on the build system. If `OFF`,
   automatically build CAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CCOLAMD`:
+* `SUITESPARSE_USE_SYSTEM_CCOLAMD`:
 
   If `ON`, use CCOLAMD libraries installed on the build system. If `OFF`,
   automatically build CCOLAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_GRAPHBLAS`:
+* `SUITESPARSE_USE_SYSTEM_GRAPHBLAS`:
 
   If `ON`, use GraphBLAS libraries installed on the build system. If `OFF`,
   automatically build GraphBLAS as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_SUITESPARSE_CONFIG`:
+* `SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG`:
 
   If `ON`, use `SuiteSparse_config` libraries installed on the build system. If
   `OFF`, automatically build `SuiteSparse_config` as dependency if needed.
