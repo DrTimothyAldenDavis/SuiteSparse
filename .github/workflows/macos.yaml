@@ -21,6 +21,11 @@ jobs:
     runs-on: macos-latest
 
     steps:
+      - name: get runner hardware information
+        run: |
+          sysctl hw
+          sysctl machdep
+
       - name: checkout repository
         uses: actions/checkout@v3
 
