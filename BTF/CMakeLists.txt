@@ -95,7 +95,7 @@ endif ( )
 # static btf library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( BTF_static STATIC ${BTF_SOURCES} )
 
     set_target_properties ( BTF_static PROPERTIES
@@ -127,7 +127,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( BTF PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     target_include_directories ( BTF_static PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
@@ -137,7 +137,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( BTF PRIVATE m )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         set ( BTF_STATIC_LIBS "${BTF_STATIC_LIBS} -lm" )
         target_link_libraries ( BTF_static PUBLIC m )
     endif ( )
@@ -157,7 +157,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     install ( TARGETS BTF_static
         EXPORT BTFTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

@@ -95,7 +95,7 @@ endif ( )
 # static colamd library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( COLAMD_static STATIC ${COLAMD_SOURCES} )
 
     set_target_properties ( COLAMD_static PROPERTIES
@@ -127,7 +127,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( COLAMD PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( COLAMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -140,7 +140,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( COLAMD PRIVATE m )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         set ( COLAMD_STATIC_LIBS "${COLAMD_STATIC_LIBS} -lm" )
         target_link_libraries ( COLAMD_static PUBLIC m )
     endif ( )
@@ -160,7 +160,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     install ( TARGETS COLAMD_static
         EXPORT COLAMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

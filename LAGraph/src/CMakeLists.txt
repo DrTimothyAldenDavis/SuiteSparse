@@ -57,7 +57,7 @@ endif ( )
 # static lagraph library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( LAGraph_static STATIC ${LAGRAPH_LIB_SOURCES} )
     SET_TARGET_PROPERTIES ( LAGraph_static PROPERTIES
         OUTPUT_NAME lagraph
@@ -95,7 +95,7 @@ if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LAGraph PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         target_link_libraries ( LAGraph_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )

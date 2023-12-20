@@ -63,7 +63,7 @@ jobs:
             link: static
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
-              -DBUILD_STATIC_LIBS=ON
+              -DSUITESPARSE_BUILD_STATIC_LIBS=ON
 
     env:
       CC: ${{ matrix.cc }}
@@ -148,7 +148,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DDEMO=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build
@@ -386,7 +386,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DDEMO=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build

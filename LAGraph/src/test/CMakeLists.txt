@@ -54,7 +54,7 @@ endif ( )
 # static lagraphtest library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( lagraphtest_static STATIC ${LAGRAPHTEST_LIB_SOURCES} )
     set_target_properties ( lagraphtest_static PROPERTIES
         VERSION ${LAGraph_VERSION_MAJOR}.${LAGraph_VERSION_MINOR}.${LAGraph_VERSION_SUB}
@@ -80,7 +80,7 @@ if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( lagraphtest PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         target_link_libraries ( lagraphtest_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )

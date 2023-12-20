@@ -111,7 +111,7 @@ endif ( )
 # static gpuqrengine library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( GPUQREngine_static STATIC ${GPUQRENGINE_SOURCES} )
 
     set_target_properties ( GPUQREngine_static PROPERTIES
@@ -165,7 +165,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     install ( TARGETS GPUQREngine_static
         EXPORT GPUQREngineTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

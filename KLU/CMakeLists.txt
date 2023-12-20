@@ -143,7 +143,7 @@ endif ( )
 # static klu library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( KLU_static STATIC ${KLU_SOURCES} )
 
     set_target_properties ( KLU_static PROPERTIES
@@ -194,7 +194,7 @@ if ( KLU_HAS_CHOLMOD )
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
     endif ( )
 
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         add_library ( KLU_CHOLMOD_static STATIC ${KLU_CHOLMOD_SOURCES} )
 
         set_target_properties ( KLU_CHOLMOD_static PROPERTIES
@@ -227,7 +227,7 @@ endif ( )
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( KLU PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( KLU_static PRIVATE SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -241,7 +241,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( KLU PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::AMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::AMD_static )
     else ( )
@@ -255,7 +255,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( KLU PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::COLAMD,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::COLAMD_static )
     else ( )
@@ -269,7 +269,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( KLU PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::BTF,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::BTF_static )
         target_link_libraries ( KLU_static PUBLIC SuiteSparse::BTF_static )
     else ( )
@@ -285,7 +285,7 @@ if ( KLU_HAS_CHOLMOD )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( KLU_CHOLMOD PRIVATE SuiteSparse::CHOLMOD )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
        set ( KLU_STATIC_MODULES "${KLU_STATIC_MODULES} CHOLMOD" )
        if ( TARGET SuiteSparse::CHOLMOD_static )
             target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::CHOLMOD_static )
@@ -298,7 +298,7 @@ if ( KLU_HAS_CHOLMOD )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( KLU_CHOLMOD PRIVATE KLU )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         target_link_libraries ( KLU_CHOLMOD_static PRIVATE KLU_static )
         if ( TARGET SuiteSparse::BTF_static )
             target_link_libraries ( KLU_CHOLMOD_static PRIVATE SuiteSparse::BTF_static )
@@ -314,7 +314,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( KLU PRIVATE m )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         set ( KLU_STATIC_LIBS "${KLU_STATIC_LIBS} -lm" )
         target_link_libraries ( KLU_static PUBLIC m )
     endif ( )
@@ -335,7 +335,7 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     install ( TARGETS KLU_static
         EXPORT KLUTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
@@ -426,7 +426,7 @@ if ( KLU_HAS_CHOLMOD )
             RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
             PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         install ( TARGETS KLU_CHOLMOD_static
             EXPORT KLU_CHOLMODTargets
             ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

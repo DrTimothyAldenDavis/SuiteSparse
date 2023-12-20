@@ -71,9 +71,9 @@ option ( KLU_USE_CHOLMOD "ON (default): use CHOLMOD in KLU.  OFF: do not use CHO
 # UMFPACK options affecting dependencies
 option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
-# overwrite BUILD_STATIC_LIBS specifically for GraphBLAS because building the
+# overwrite SUITESPARSE_BUILD_STATIC_LIBS specifically for GraphBLAS because building the
 # library takes a long time
-option ( GRAPHBLAS_BUILD_STATIC_LIBS "OFF (default): Do not build static libraries for GraphBLAS project.  ON: Use same value of BUILD_STATIC_LIBS for GraphBLAS like in the other projects" OFF )
+option ( GRAPHBLAS_BUILD_STATIC_LIBS "OFF (default): Do not build static libraries for GraphBLAS project.  ON: Use same value of SUITESPARSE_BUILD_STATIC_LIBS for GraphBLAS like in the other projects" OFF )
 
 # options to build with libraries installed on the system instead of building
 # dependencies automatically

@@ -689,13 +689,13 @@ Compilation options
 
 You can set specific options for CMake with the command (for example):
 ```
-    cmake -DCHOLMOD_PARTITION=OFF -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DCHOLMOD_PARTITION=OFF -DSUITESPARSE_BUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
 Module (because of `-DCHOLMOD_PARTITION=OFF`).  Debug mode will be used (the
 build type).  The static libraries will not be built (since
-`-DBUILD_STATIC_LIBS=OFF` is set).
+`-DSUITESPARSE_BUILD_STATIC_LIBS=OFF` is set).
 
 * `SUITESPARSE_ENABLE_PROJECTS`:
 
@@ -764,7 +764,7 @@ build type).  The static libraries will not be built (since
   If `ON`, shared libraries are built.
   Default: `ON`.
 
-* `BUILD_STATIC_LIBS`:
+* `SUITESPARSE_BUILD_STATIC_LIBS`:
 
   If `ON`, static libraries are built.
   Default: `ON`, except for GraphBLAS, which takes a long time to compile so

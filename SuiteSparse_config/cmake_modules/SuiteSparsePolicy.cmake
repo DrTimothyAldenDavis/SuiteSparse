@@ -30,7 +30,7 @@
 #   BUILD_SHARED_LIBS:  if true, shared libraries are built.
 #                       Default: true.
 #
-#   BUILD_STATIC_LIBS:  if true, static libraries are built.
+#   SUITESPARSE_BUILD_STATIC_LIBS:  if true, static libraries are built.
 #                       Default: true, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
 #                       GraphBLAS is false.
@@ -111,22 +111,22 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 # build the demos
 option ( SUITESPARSE_DEMOS "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
-# BUILD_SHARED_LIBS and BUILD_STATIC_LIBS options
+# BUILD_SHARED_LIBS and SUITESPARSE_BUILD_STATIC_LIBS options
 option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
 
 if ( BUILD_STATIC_LIBS_DEFAULT_OFF )
-    option ( BUILD_STATIC_LIBS "OFF (default): do not build static libraries.  ON: build static libraries" OFF )
+    option ( SUITESPARSE_BUILD_STATIC_LIBS "OFF (default): do not build static libraries.  ON: build static libraries" OFF )
 else ( )
     # For backwards compatibility, use NSTATIC if it is set.
     if ( NSTATIC )
-        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" OFF )
+        option ( SUITESPARSE_BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" OFF )
     else ( )
-        option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+        option ( SUITESPARSE_BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
     endif ( )
 endif ( )
 
-if ( NOT BUILD_SHARED_LIBS AND NOT BUILD_STATIC_LIBS )
-    message ( FATAL_ERROR "At least one of BUILD_SHARED_LIBS or BUILD_STATIC_LIBS must be set to ON." )
+if ( NOT BUILD_SHARED_LIBS AND NOT SUITESPARSE_BUILD_STATIC_LIBS )
+    message ( FATAL_ERROR "At least one of BUILD_SHARED_LIBS or SUITESPARSE_BUILD_STATIC_LIBS must be set to ON." )
 endif ( )
 
 # installation options

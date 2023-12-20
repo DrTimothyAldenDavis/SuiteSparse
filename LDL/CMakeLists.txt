@@ -107,7 +107,7 @@ endif ( )
 # static ldl library properties
 #-------------------------------------------------------------------------------
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     add_library ( LDL_static STATIC ${LDL_SOURCES} )
 
     set_target_properties ( LDL_static PROPERTIES
@@ -139,7 +139,7 @@ if ( BUILD_SHARED_LIBS )
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
 
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     target_include_directories ( LDL_static PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
@@ -149,7 +149,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LDL PRIVATE m )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
+    if ( SUITESPARSE_BUILD_STATIC_LIBS )
         set ( LDL_STATIC_LIBS "${LDL_STATIC_LIBS} -lm" )
         target_link_libraries ( LDL_static PUBLIC m )
     endif ( )
@@ -169,7 +169,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( BUILD_STATIC_LIBS )
+if ( SUITESPARSE_BUILD_STATIC_LIBS )
     install ( TARGETS LDL_static
         EXPORT LDLTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
