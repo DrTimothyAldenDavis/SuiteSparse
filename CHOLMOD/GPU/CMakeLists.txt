@@ -32,7 +32,7 @@ if ( BUILD_SHARED_LIBS )
     target_sources ( CHOLMOD PRIVATE ${CHOLMOD_CUDA_SOURCES} )
 endif ( )
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_sources ( CHOLMOD_static PRIVATE ${CHOLMOD_CUDA_SOURCES} )
 endif ( )
 
@@ -56,7 +56,7 @@ if ( BUILD_SHARED_LIBS )
     target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
 endif ( )
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_include_directories ( CHOLMOD_static PRIVATE
         ${CUDAToolkit_INCLUDE_DIRS}
         ${CHOLMOD_CUDA_INCLUDES} )
@@ -69,7 +69,7 @@ if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( CHOLMOD_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )

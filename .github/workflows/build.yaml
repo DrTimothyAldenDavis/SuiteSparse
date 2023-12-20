@@ -78,7 +78,7 @@ jobs:
             link: static
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
-              -DSUITESPARSE_BUILD_STATIC_LIBS=ON
+              -DBUILD_STATIC_LIBS=ON
 
     env:
       CC: ${{ matrix.cc }}

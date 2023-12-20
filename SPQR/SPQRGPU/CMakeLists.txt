@@ -30,7 +30,7 @@ if ( BUILD_SHARED_LIBS )
     target_sources ( SPQR PRIVATE ${SPQR_CUDA_SOURCES} )
 endif ( )
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_sources ( SPQR_static PRIVATE ${SPQR_CUDA_SOURCES} )
 endif ( )
 
@@ -43,7 +43,7 @@ if ( BUILD_SHARED_LIBS )
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
 endif ( )
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     set_target_properties ( SPQR_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
     set_target_properties ( SPQR_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
     target_compile_definitions ( SPQR_static PRIVATE "SPQR_HAS_CUDA" )

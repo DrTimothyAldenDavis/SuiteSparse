@@ -52,7 +52,7 @@ endif ( )
 # static lagraphx library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     add_library ( LAGraphX_static STATIC ${LAGRAPHX_LIB_SOURCES} )
     set_target_properties ( LAGraphX_static PROPERTIES
         OUTPUT_NAME lagraphx
@@ -89,7 +89,7 @@ if ( OpenMP_C_FOUND )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LAGraphX PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( LAGraphX_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
 endif ( )

@@ -57,9 +57,9 @@ endif ( )
 
 message ( STATUS "Build type:    " ${CMAKE_BUILD_TYPE} )
 
-# BUILD_SHARED_LIBS and CSPARSE_BUILD_STATIC_LIBS options
+# BUILD_SHARED_LIBS and BUILD_STATIC_LIBS options
 option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
-option ( CSPARSE_BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number
@@ -98,7 +98,7 @@ endif ( )
 # static csparse library properties
 #-------------------------------------------------------------------------------
 
-if ( CSPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     add_library ( csparse_static STATIC ${CSPARSE_SOURCES} )
 
     set_target_properties ( csparse_static PROPERTIES
@@ -122,7 +122,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( csparse PRIVATE m )
     endif ( )
-    if ( CSPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         set ( CSPARSE_STATIC_LIBS "${CSPARSE_STATIC_LIBS} -lm" )
         target_link_libraries ( csparse_static PUBLIC m )
     endif ( )

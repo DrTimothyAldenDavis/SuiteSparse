@@ -162,7 +162,7 @@ if ( COVERAGE )
 else ( )
     if ( LAGRAPH_USE_OPENMP )
         find_package ( OpenMP )
-        if ( OpenMP_C_FOUND AND SUITESPARSE_BUILD_STATIC_LIBS )
+        if ( OpenMP_C_FOUND AND BUILD_STATIC_LIBS )
             list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         endif ( )
         find_package ( Threads )
@@ -288,7 +288,7 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS LAGraph_static LAGraphX_static
         EXPORT LAGraphTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
@@ -335,7 +335,7 @@ install ( FILES
 #-------------------------------------------------------------------------------
 
 if ( NOT MSVC )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         if ( NOT WIN32 )
             list ( APPEND LAGRAPH_STATIC_LIBS "m" )
         endif ( )
@@ -366,7 +366,7 @@ if ( NOT MSVC )
             endif ( )
         endforeach ( )
     endforeach ( )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         set ( LAGRAPH_STATIC_LIBS "-l$<TARGET_FILE_BASE_NAME:GraphBLAS::GraphBLAS> ${LAGRAPH_STATIC_LIBS}" )
     endif ( )
 
