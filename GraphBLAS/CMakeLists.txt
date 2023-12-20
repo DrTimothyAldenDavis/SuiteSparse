@@ -245,8 +245,6 @@ else ( )
     endif ( )
 endif ( )
 
-message ( STATUS ${GRAPHBLAS_SOURCES} )
-
 if ( BUILD_SHARED_LIBS )
     add_library ( GraphBLAS SHARED ${GRAPHBLAS_SOURCES} )
 

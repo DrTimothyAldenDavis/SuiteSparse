@@ -51,7 +51,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	( cd build && ./umfpack_simple )
 	- ( cd build && ./umfpack_di_demo > umfpack_di_demo.out && ( command -v d2u && d2u umfpack_di_demo.out || true ) && diff umfpack_di_demo.out ../Demo/umfpack_di_demo.out )
 	- ( cd build && ./umfpack_dl_demo > umfpack_dl_demo.out && ( command -v d2u && d2u umfpack_dl_demo.out || true ) && diff umfpack_dl_demo.out ../Demo/umfpack_dl_demo.out )
@@ -60,7 +60,7 @@ demos: library
 
 # demos requiring a Fortran compiler
 fdemos: demos
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	( cd build && ./readhb_nozeros < ../Demo/HB/can_24.psa > tmp_A          )
 	( cd build && ./readhb_size    < ../Demo/HB/can_24.psa > tmp_Asize      )
 	( cd build && ./umf4                                                    )

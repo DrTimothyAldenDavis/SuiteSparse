@@ -52,7 +52,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/colamd_example > ./build/colamd_example.out
 	- diff --strip-trailing-cr ./Demo/colamd_example.out ./build/colamd_example.out
 	- ./build/colamd_l_example > ./build/colamd_l_example.out

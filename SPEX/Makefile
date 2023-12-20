@@ -52,7 +52,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	( cd SPEX_Left_LU/Demo && ../../build/example  )
 	( cd SPEX_Left_LU/Demo && ../../build/example2 )
 	( cd SPEX_Left_LU/Demo && ../../build/spexlu_demo )

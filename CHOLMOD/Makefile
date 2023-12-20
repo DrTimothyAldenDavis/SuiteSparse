@@ -63,7 +63,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	./build/cholmod_di_demo ./Demo/Matrix/bcsstk01.tri  > ./build/bcsstk01_out.txt
 	./build/cholmod_dl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
 	./build/cholmod_si_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt

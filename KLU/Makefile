@@ -52,7 +52,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/klu_simple
 	- ./build/kludemo  < ./Matrix/1c.mtx
 	- ./build/kludemo  < ./Matrix/arrowc.mtx

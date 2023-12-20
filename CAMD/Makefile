@@ -52,7 +52,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	./build/camd_demo > build/camd_demo.out
 	- diff --strip-trailing-cr Demo/camd_demo.out build/camd_demo.out
 	./build/camd_l_demo > build/camd_l_demo.out

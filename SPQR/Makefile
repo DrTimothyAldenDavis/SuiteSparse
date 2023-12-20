@@ -61,7 +61,7 @@ all: library
 demos: demos64 demos32 
 
 demos64: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/qrdemo < Matrix/a00.mtx
 	- ./build/qrdemo < Matrix/a01.mtx
 	- ./build/qrdemo < Matrix/a10.mtx
@@ -127,7 +127,7 @@ demos64: library
 	- ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
 
 demos32: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/qrdemo_int32 < Matrix/a00.mtx
 	- ./build/qrdemo_int32 < Matrix/a01.mtx
 	- ./build/qrdemo_int32 < Matrix/a10.mtx

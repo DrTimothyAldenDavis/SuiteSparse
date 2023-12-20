@@ -32,11 +32,11 @@ debug:
 
 # compile without FactoryKernels
 compact:
-	( cd build && cmake $(CMAKE_OPTIONS) -DCOMPACT=1 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGRAPHBLAS_COMPACT=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # compile with -g, and without FactoryKernels
 cdebug:
-	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DCOMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . --config Debug -j$(JOBS) )
+	( cd build && cmake -DCMAKE_BUILD_TYPE=Debug -DGRAPHBLAS_COMPACT=1 $(CMAKE_OPTIONS) .. && cmake --build . --config Debug -j$(JOBS) )
 
 # just do 'make' in build; do not rerun the cmake script
 remake:

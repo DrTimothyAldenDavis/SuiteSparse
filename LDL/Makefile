@@ -51,7 +51,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	./build/ldlsimple > ./build/ldlsimple.out
 	- diff --strip-trailing-cr ./Demo/ldlsimple.out ./build/ldlsimple.out
 	./build/ldllsimple > ./build/ldllsimple.out
