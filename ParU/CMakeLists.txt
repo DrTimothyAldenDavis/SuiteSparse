@@ -54,7 +54,7 @@ option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do
 option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required
-    find_package ( OpenMP )
+    find_package ( OpenMP GLOBAL )
     if ( OpenMP_CXX_FOUND AND OpenMP_CXX_VERSION VERSION_LESS 4.5 )
         set ( PARU_USE_OPENMP OFF )
     endif ( )
