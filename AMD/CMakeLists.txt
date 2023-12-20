@@ -105,7 +105,7 @@ endif ( )
 # static amd library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     add_library ( AMD_static STATIC ${AMD_SOURCES} )
     set_target_properties ( AMD_static PROPERTIES
         C_STANDARD 11
@@ -138,7 +138,7 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( AMD PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
         target_link_libraries ( AMD_static PUBLIC SuiteSparse::SuiteSparseConfig_static )
     else ( )
@@ -151,7 +151,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( AMD PRIVATE m )
     endif ( )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         set ( AMD_STATIC_LIBS "${AMD_STATIC_LIBS} -lm" )
         target_link_libraries ( AMD_static PUBLIC m )
     endif ( )
@@ -171,7 +171,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS AMD_static
         EXPORT AMDTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

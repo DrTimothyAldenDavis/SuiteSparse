@@ -111,7 +111,7 @@ endif ( )
 # static SuiteSparseConfig library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     add_library ( SuiteSparseConfig_static STATIC ${SUITESPARSECONFIG_SOURCES} )
 
     set_target_properties ( SuiteSparseConfig_static PROPERTIES
@@ -143,7 +143,7 @@ if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE m )
     endif ( )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
     endif ( )
 endif ( )
@@ -158,7 +158,7 @@ if ( OpenMP_C_FOUND )
         target_include_directories ( SuiteSparseConfig SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
     endif ( )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
         target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
@@ -191,7 +191,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS SuiteSparseConfig_static
         EXPORT SuiteSparse_configTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

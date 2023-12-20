@@ -89,7 +89,7 @@ endif ( )
 # static suitesparse_gpuruntime library properties
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     add_library ( GPURuntime_static STATIC ${SUITESPARSE_GPURUNTIME_SOURCES} )
 
     set_target_properties ( GPURuntime_static PROPERTIES
@@ -140,7 +140,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS GPURuntime_static
         EXPORT SuiteSparse_GPURuntimeTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}

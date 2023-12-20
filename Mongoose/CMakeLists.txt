@@ -197,7 +197,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 # set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     # Build the Mongoose library
     add_library ( Mongoose_static STATIC ${MONGOOSE_LIB_FILES} )
 
@@ -268,7 +268,7 @@ endif ( )
 add_executable ( mongoose_exe ${EXE_FILES} )
 set_target_properties ( mongoose_exe PROPERTIES
         OUTPUT_NAME suitesparse_mongoose )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( mongoose_exe Mongoose_static )
 else ( )
     target_link_libraries ( mongoose_exe Mongoose )
@@ -283,7 +283,7 @@ endif ( )
 add_executable ( demo_exe ${DEMO_FILES} )
 set_target_properties ( demo_exe PROPERTIES
         OUTPUT_NAME demo )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( demo_exe Mongoose_static )
 else ( )
     target_link_libraries ( demo_exe Mongoose )
@@ -362,7 +362,7 @@ if ( Python_Interpreter_FOUND )
     add_executable ( mongoose_test_performance
         Tests/Mongoose_Test_Performance.cpp
         Tests/Mongoose_Test_Performance_exe.cpp )
-    if ( SUITESPARSE_BUILD_STATIC_LIBS )
+    if ( BUILD_STATIC_LIBS )
         target_link_libraries ( mongoose_test_performance Mongoose_static )
     else ( )
         target_link_libraries ( mongoose_test_performance Mongoose )
@@ -390,7 +390,7 @@ endif ( )
 add_executable ( mongoose_test_reference
     Tests/Mongoose_Test_Reference.cpp
     Tests/Mongoose_Test_Reference_exe.cpp )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     target_link_libraries ( mongoose_test_reference Mongoose_static )
 else ( )
     target_link_libraries ( mongoose_test_reference Mongoose )
@@ -502,7 +502,7 @@ set_target_properties ( mongoose_unit_test_io mongoose_unit_test_graph
 
 set ( CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1 ) # Necessary for gcov - prevents file.cpp.gcda instead of file.gcda
 
-# if ( SUITESPARSE_BUILD_STATIC_LIBS )
+# if ( BUILD_STATIC_LIBS )
 #   add_custom_command ( TARGET Mongoose_static
 #           POST_BUILD
 #           COMMAND ${CMAKE_COMMAND} -E copy $<TARGET_FILE:Mongoose_static> ${PROJECT_SOURCE_DIR}/Lib
@@ -552,7 +552,7 @@ if ( BUILD_SHARED_LIBS )
         RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
-if ( SUITESPARSE_BUILD_STATIC_LIBS )
+if ( BUILD_STATIC_LIBS )
     install ( TARGETS Mongoose_static
         EXPORT SuiteSparse_MongooseTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
