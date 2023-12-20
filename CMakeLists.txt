@@ -138,13 +138,12 @@ if ( SUITESPARSE_USE_SYSTEM_CHOLMOD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "cholmod" )
     find_package ( CHOLMOD REQUIRED )
 else ( )
-    if ( ( ( KLU_USE_CHOLMOD OR UMFPACK_USE_CHOLMOD ) AND
-              ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-                OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
+    if ( ( KLU_USE_CHOLMOD AND "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            OR ( UMFPACK_USE_CHOLMOD AND "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # SPQR and ParU both require CHOLMOD.  KLU and UMFPACK can optionally
-        # use CHOLMOD.  Add CHOLMOD to the list of projects, if it has bee
+        # use CHOLMOD.  Add CHOLMOD to the list of projects, if it has been
         # requested by SPQR, ParU, KLU, or UMFPACK, if not already there.
         if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"cholmod\" to the list of built targets." )
