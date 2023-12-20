@@ -32,9 +32,7 @@ project ( suitesparse_gpuruntime
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
-
-include ( SuiteSparsePolicy )
+# include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -80,7 +78,7 @@ if ( BUILD_SHARED_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPURuntime PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( GPURuntime PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPURuntime 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -121,7 +119,7 @@ if ( BUILD_STATIC_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPURuntime_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPURuntime_static PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( GPURuntime_static PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPURuntime_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

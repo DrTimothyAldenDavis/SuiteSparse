@@ -27,7 +27,7 @@ include ( GraphBLAS_version )
 set ( SUITESPARSE_SECOND_LEVEL true )
 
 # CUDA is under development for now, and not deployed in production:
-set ( SUITESPARSE_CUDA OFF )
+set ( GRAPHBLAS_USE_CUDA OFF )
 
 set ( GBMATLAB on )
 set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBMATLAB=1 " )

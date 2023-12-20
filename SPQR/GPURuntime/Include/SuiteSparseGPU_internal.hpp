@@ -11,7 +11,7 @@
 #ifndef SUITESPARSEGPU_INTERNAL_HPP
 #define SUITESPARSEGPU_INTERNAL_HPP
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
     #include "cuda_runtime.h"
     #include "SuiteSparse_config.h"

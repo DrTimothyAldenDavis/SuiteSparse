@@ -1092,7 +1092,7 @@ template <typename Entry, typename Int = int64_t> int spqr_rmap
 // === spqrgpu features ========================================================
 // =============================================================================
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 #include "spqrgpu.hpp"
 #endif
 

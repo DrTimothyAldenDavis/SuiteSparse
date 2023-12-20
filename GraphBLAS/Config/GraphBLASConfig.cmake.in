@@ -39,7 +39,7 @@ set ( GRAPHBLAS_VERSION "@GraphBLAS_VERSION_MAJOR@.@GraphBLAS_VERSION_MINOR@.@Gr
 include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
-if ( @SUITESPARSE_CUDA@ )
+if ( @GRAPHBLAS_HAS_CUDA@ )
     # Look for imported targets of additional dependency if GraphBLAS was built with CUDA
 
     if ( NOT GraphBLAS_CUDA_FOUND )

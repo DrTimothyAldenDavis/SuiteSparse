@@ -21,8 +21,8 @@ message ( STATUS "Building CHOLMOD_CUDA version: v"
 include ( SuiteSparsePolicy )
 
 enable_language ( CUDA )
-set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DSUITESPARSE_CUDA" )
-set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSUITESPARSE_CUDA" )
+set ( CMAKE_CUDA_FLAGS "-cudart=static -lineinfo -DCHOLMOD_HAS_CUDA" )
+set ( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DCHOLMOD_HAS_CUDA" )
 message ( STATUS "C++ flags for CUDA:  ${CMAKE_CXX_FLAGS}" )
 message ( STATUS "nvcc flags for CUDA: ${CMAKE_CUDA_FLAGS}" )
 file ( GLOB CHOLMOD_CUDA_SOURCES "cholmod_gpu.c" "cholmod_l_gpu.c"
@@ -53,7 +53,7 @@ if ( BUILD_SHARED_LIBS )
         ${CHOLMOD_CUDA_INCLUDES} )
     set_target_properties ( CHOLMOD PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( CHOLMOD PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_compile_definitions ( CHOLMOD PUBLIC "SUITESPARSE_CUDA" )
+    target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
 endif ( )
 
 if ( BUILD_STATIC_LIBS )
@@ -62,7 +62,7 @@ if ( BUILD_STATIC_LIBS )
         ${CHOLMOD_CUDA_INCLUDES} )
     set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
     set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
-    target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
+    target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
 endif ( )
 
 if ( BUILD_SHARED_LIBS )

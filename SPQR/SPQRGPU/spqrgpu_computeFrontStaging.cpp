@@ -14,7 +14,7 @@
 
 #include "spqr.hpp"
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 #include "GPUQREngine_Scheduler.hpp"
 
 template <typename Int>

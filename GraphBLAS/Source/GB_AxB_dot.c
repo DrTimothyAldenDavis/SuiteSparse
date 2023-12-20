@@ -186,7 +186,7 @@ GrB_Info GB_AxB_dot                 // dot product (multiple methods)
             GB_sparsity_char_matrix (A),
             GB_sparsity_char_matrix (B)) ;
 
-        #if defined ( SUITESPARSE_CUDA )
+        #if defined ( GRAPHBLAS_HAS_CUDA )
         if (!C_iso &&   // fixme for CUDA, remove and create C iso on output
             GB_AxB_dot3_cuda_branch (M, Mask_struct, A, B, semiring, flipxy))
         {

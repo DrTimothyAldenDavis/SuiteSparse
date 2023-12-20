@@ -78,7 +78,7 @@ GrB_Info GB_init            // start up GraphBLAS
     // establish malloc/calloc/realloc/free
     //--------------------------------------------------------------------------
 
-    #if defined ( SUITESPARSE_CUDA )
+    #if defined ( GRAPHBLAS_HAS_CUDA )
     if (mode == GxB_NONBLOCKING_GPU || mode == GxB_BLOCKING_GPU)
     {
         // ignore the memory management function pointers and use rmm_wrap_*
@@ -143,7 +143,7 @@ GrB_Info GB_init            // start up GraphBLAS
     // initialize the GPUs, if present
     //--------------------------------------------------------------------------
 
-    #if defined ( SUITESPARSE_CUDA )
+    #if defined ( GRAPHBLAS_HAS_CUDA )
     if (mode == GxB_BLOCKING_GPU || mode == GxB_NONBLOCKING_GPU)
     {
         // initialize the GPUs

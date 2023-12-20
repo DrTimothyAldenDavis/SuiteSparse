@@ -14,7 +14,7 @@
 /* === include files and definitions ======================================== */
 /* ========================================================================== */
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
 #include <string.h>
 #include "cholmod_template.h"

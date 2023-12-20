@@ -39,7 +39,7 @@ include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
 # Look for NVIDIA CUDA toolkit
-if ( @SUITESPARSE_CUDA@ AND NOT CUDAToolkit_FOUND )
+if ( @CHOLMOD_HAS_CUDA@ AND NOT CUDAToolkit_FOUND )
     find_dependency ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ )
     if ( NOT CUDAToolkit_FOUND )
         set ( _dependencies_found OFF )

@@ -14,7 +14,7 @@
 #include "GB_Global.h"
 #include "GB_printf.h"
 #include "GB_assert.h"
-#if defined ( SUITESPARSE_CUDA )
+#if defined ( GRAPHBLAS_HAS_CUDA )
 #include "rmm_wrap.h"
 #endif
 #include "GB_static_header.h"

@@ -18,7 +18,7 @@
 
 #include "cholmod_internal.h"
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
@@ -41,7 +41,7 @@
 
 static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
 {
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
@@ -87,7 +87,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
         return (0) ;                    /* not using the GPU at all */
     }
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
     /* find the total amount of free memory */
     t = SuiteSparse_time ( ) ;
@@ -159,7 +159,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 int CHOLMOD(gpu_probe) ( cholmod_common *Common )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     int ngpus, idevice;
     double tstart, tend;
     struct cudaDeviceProp gpuProp;
@@ -201,7 +201,7 @@ int CHOLMOD(gpu_deallocate)
 )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     cudaError_t cudaErr;
 
     if ( Common->dev_mempool )
@@ -247,7 +247,7 @@ void CHOLMOD(gpu_end)
     cholmod_common *Common
 )
 {
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     int k ;
 
     /* ------------------------------------------------------------------ */
@@ -354,7 +354,7 @@ void CHOLMOD(gpu_end)
 int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
     int k;
     size_t fdm, tdm;

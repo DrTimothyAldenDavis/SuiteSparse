@@ -14,9 +14,9 @@
 // #include'd in GraphBLAS/CUDA/GB_cuda.h, for use by the CUDA/GB_cuda_*.cu
 // gateway functions.
 
-// If SUITESPARSE_CUDA is defined in GraphBLAS/CMakeLists.txt, then GraphBLAS can call
+// If GRAPHBLAS_HAS_CUDA is defined in GraphBLAS/CMakeLists.txt, then GraphBLAS can call
 // the C-callable gateway functions defined in GraphBLAS/CUDA/*.cu source
-// files.  If SUITESPARSE_CUDA is not defined, then these functions are not called.  The
+// files.  If GRAPHBLAS_HAS_CUDA is not defined, then these functions are not called.  The
 // typedef always appears, since it is part of the GB_Global struct, whether
 // or not CUDA is used.
 

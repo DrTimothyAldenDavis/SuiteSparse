@@ -38,7 +38,7 @@ endif ( )
 # NJIT and COMPACT options
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
     set ( COMPACT on )
 endif ( )

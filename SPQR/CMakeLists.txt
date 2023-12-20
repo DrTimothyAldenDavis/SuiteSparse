@@ -38,7 +38,8 @@ project ( spqr
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
+option ( SUITESPARSE_USE_CUDA "Enable CUDA acceleration for SuiteSparse" ON )
+option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ON )
 
 include ( SuiteSparsePolicy )
 
@@ -63,10 +64,13 @@ endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND SPQR_USE_CUDA )
     # with CUDA
+    set ( SPQR_HAS_CUDA ON )
     add_subdirectory ( GPURuntime )
     add_subdirectory ( GPUQREngine )
+else ( )
+    set ( SPQR_HAS_CUDA OFF )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -167,19 +171,19 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SPQR_HAS_CUDA )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPQR PRIVATE GPUQREngine GPURuntime )
-        target_compile_definitions ( SPQR PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( SPQR PUBLIC "SPQR_HAS_CUDA" )
     endif ( )
-    set ( SPQR_CFLAGS "-DSUITESPARSE_CUDA" )
+    set ( SPQR_CFLAGS "-DSPQR_HAS_CUDA" )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SPQR_static PRIVATE GPUQREngine_static GPURuntime_static )
-        target_compile_definitions ( SPQR_static PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( SPQR_static PUBLIC "SPQR_HAS_CUDA" )
     endif ( )
-
-    # CUDA
     add_subdirectory ( SPQRGPU )
+else ( ) 
+    set ( SPQR_CFLAGS "" )
 endif ( )
 
 # OpenMP:
@@ -379,8 +383,7 @@ if ( DEMO )
     add_executable ( qrdemo_int32    "Demo/qrdemo_int32.cpp" )
     add_executable ( qrdemoc_int32   "Demo/qrdemoc_int32.c" )
 
-
-    if ( SUITESPARSE_CUDA )
+    if ( SPQR_HAS_CUDA )
         add_executable ( qrdemo_gpu  "Demo/qrdemo_gpu.cpp" )
         add_executable ( qrdemo_gpu2 "Demo/qrdemo_gpu2.cpp" )
         add_executable ( qrdemo_gpu3 "Demo/qrdemo_gpu3.cpp" )
@@ -415,7 +418,7 @@ if ( DEMO )
     target_link_libraries ( qrdemoc_int32 PUBLIC SuiteSparse::CHOLMOD )
     target_link_libraries ( qrdemo_int32 PUBLIC SuiteSparse::CHOLMOD )
 
-    if ( SUITESPARSE_CUDA )
+    if ( SPQR_HAS_CUDA )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( qrdemo_gpu PUBLIC SPQR )
             target_link_libraries ( qrdemo_gpu2 PUBLIC SPQR )

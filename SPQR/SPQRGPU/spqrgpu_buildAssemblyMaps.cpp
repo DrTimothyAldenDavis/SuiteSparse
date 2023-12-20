@@ -11,7 +11,7 @@
 
 #include "spqr.hpp"
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
 template <typename Int>
 void spqrgpu_buildAssemblyMaps

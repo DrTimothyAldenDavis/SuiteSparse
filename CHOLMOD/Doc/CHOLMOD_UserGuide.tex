@@ -528,9 +528,10 @@ acceleration (both real and complex).
 %-------------------------------------------------------------------------------
 
 In order to support GPU processing, CHOLMOD must be compiled with the
-preprocessor macro \verb'SUITESPARSE_CUDA' defined.  It is enabled by default
+preprocessor macro \verb'CHOLMOD_HAS_CUDA' defined.  It is enabled by default
 in {\tt cmake} if you have a GPU, but this can be disabled by setting this to
-false when using cmake.
+false when using cmake, via the cmake variables \verb'CHOLMOD_USE_CUDA'
+or \verb'SUITESPARSE_USE_CUDA'.
 
 %-------------------------------------------------------------------------------
 \subsection{Enabling GPU acceleration in CHOLMOD}

@@ -61,7 +61,7 @@
 
 #define DOUBLE
 #ifdef CHOLMOD_INT64
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 #include "cholmod_gpu_kernels.h"
 #define REAL
 #include "../GPU/t_cholmod_gpu.c"

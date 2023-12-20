@@ -132,8 +132,8 @@
 // CUDA (currently experimental, not for production use)
 //------------------------------------------------------------------------------
 
-#ifndef SUITESPARSE_CUDA
-#cmakedefine SUITESPARSE_CUDA
+#ifndef GRAPHBLAS_HAS_CUDA
+#cmakedefine GRAPHBLAS_HAS_CUDA
 #endif
 
 //------------------------------------------------------------------------------

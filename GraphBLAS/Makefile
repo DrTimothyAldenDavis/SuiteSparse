@@ -40,7 +40,7 @@ global:
 
 # enable CUDA (NOTE: not ready for production use)
 cuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DGRAPHBLAS_USE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # compile with -g 
 debug:

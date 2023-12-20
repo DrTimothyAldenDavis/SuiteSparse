@@ -42,8 +42,8 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-  set ( ENABLE_CUDA OFF )
-# set ( ENABLE_CUDA ON )
+  set ( GRAPHBLAS_USE_CUDA OFF )
+# set ( GRAPHBLAS_USE_CUDA ON )
 
 include ( SuiteSparsePolicy )
 
@@ -52,13 +52,15 @@ if ( NOT GRAPHBLAS_BUILD_STATIC_LIBS AND BUILD_SHARED_LIBS )
     set ( BUILD_STATIC_LIBS OFF )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
     set ( COMPACT ON )
     message ( STATUS "GraphBLAS CUDA JIT: enabled")
     enable_language ( CUDA )
+    set ( GRAPHBLAS_HAS_CUDA ON )
 else ( )
     message ( STATUS "GraphBLAS CUDA JIT: disabled")
+    set ( GRAPHBLAS_HAS_CUDA OFF )
 endif ( )
 
 include ( GraphBLAS_JIT_paths )
@@ -67,7 +69,7 @@ include ( GraphBLAS_JIT_paths )
 # find OpenMP, CUDA, RMM, and cpu_features
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # with CUDA and RMM
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
@@ -262,10 +264,10 @@ if ( BUILD_SHARED_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-    if ( SUITESPARSE_CUDA )
+    if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
         add_dependencies ( GraphBLAS GraphBLAS_CUDA )
         add_dependencies ( GraphBLAS RMM_wrap )
-        target_compile_definitions ( GraphBLAS PRIVATE "SUITESPARSE_CUDA" )
+        target_compile_definitions ( GraphBLAS PRIVATE "GRAPHBLAS_HAS_CUDA" )
     endif ( )
 
     if ( WIN32 )
@@ -306,11 +308,11 @@ if ( BUILD_STATIC_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-    if ( SUITESPARSE_CUDA )
+    if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
         add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
         set ( GRAPHBLAS_STATIC_MODULES "${GRAPHBLAS_STATIC_MODULES} GraphBLAS_CUDA" )
         add_dependencies ( GraphBLAS_static RMM_wrap )
-        target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
+        target_compile_definitions ( GraphBLAS_static PRIVATE "GRAPHBLAS_HAS_CUDA" )
     endif ( )
 
     if ( WIN32 )
@@ -448,7 +450,7 @@ else ( )
     endif ( )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE ${GB_CUDA} ${GB_RMM} )
     endif ( )

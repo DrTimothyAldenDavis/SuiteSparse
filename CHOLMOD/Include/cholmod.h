@@ -370,7 +370,7 @@ int cholmod_l_version (int version [3]) ;
 
 // Define buffering parameters for GPU processing
 #ifndef SUITESPARSE_GPU_EXTERN_ON
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 #include <cublas_v2.h>
 #endif
 #endif
@@ -832,7 +832,7 @@ typedef struct cholmod_common_struct
     int64_t gpuFlops ;          // Number of flops performed by the GPU
     int gpuNumKernelLaunches ;  // Number of GPU kernel launches
 
-    #ifdef SUITESPARSE_CUDA
+    #ifdef CHOLMOD_HAS_CUDA
         // these three types are pointers defined by CUDA:
         #define CHOLMOD_CUBLAS_HANDLE cublasHandle_t
         #define CHOLMOD_CUDASTREAM    cudaStream_t
@@ -4004,7 +4004,7 @@ int cholmod_l_score_comp (struct cholmod_descendant_score_t *i,
 // remainder of SupernodalGPU Module
 //------------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
 #include "omp.h"
 #include <fenv.h>

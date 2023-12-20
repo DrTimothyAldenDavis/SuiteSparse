@@ -37,7 +37,7 @@ endif ( )
 if ( BUILD_SHARED_LIBS )
     set_target_properties ( SPQR PROPERTIES POSITION_INDEPENDENT_CODE ON )
     set_target_properties ( SPQR PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
-    target_compile_definitions ( SPQR PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( SPQR PRIVATE "SPQR_HAS_CUDA" )
 
     target_link_libraries ( SPQR PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
@@ -46,7 +46,7 @@ endif ( )
 if ( BUILD_STATIC_LIBS )
     set_target_properties ( SPQR_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
     set_target_properties ( SPQR_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
-    target_compile_definitions ( SPQR_static PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( SPQR_static PRIVATE "SPQR_HAS_CUDA" )
 
     target_link_libraries ( SPQR_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )

@@ -32,9 +32,7 @@ project ( gpuqrengine
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
-
-include ( SuiteSparsePolicy )
+# include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
@@ -52,7 +50,7 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND DEMO AND DEMO_OK )
     endif ( )
 endif ( )
 
-if ( SUITESPARSE_CUDA AND CHOLMOD_FOUND )
+if ( CHOLMOD_FOUND )
     set ( DEMO_OK true )
 else ( )
     set ( DEMO_OK false )
@@ -102,7 +100,7 @@ if ( BUILD_SHARED_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPUQREngine PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( GPUQREngine PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPUQREngine
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -146,7 +144,7 @@ if ( BUILD_STATIC_LIBS )
         CUDA_RUNTIME_LIBRARY Static )
     target_link_libraries ( GPUQREngine_static PRIVATE
         CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
-    target_compile_definitions ( GPUQREngine_static PRIVATE "SUITESPARSE_CUDA" )
+    target_compile_definitions ( GPUQREngine_static PRIVATE "SPQR_HAS_CUDA" )
 
     target_include_directories ( GPUQREngine_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>

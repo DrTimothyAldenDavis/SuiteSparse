@@ -132,8 +132,8 @@
 // CUDA (currently experimental, not for production use)
 //------------------------------------------------------------------------------
 
-#ifndef SUITESPARSE_CUDA
-/* #undef SUITESPARSE_CUDA */
+#ifndef GRAPHBLAS_HAS_CUDA
+/* #undef GRAPHBLAS_HAS_CUDA */
 #endif
 
 //------------------------------------------------------------------------------

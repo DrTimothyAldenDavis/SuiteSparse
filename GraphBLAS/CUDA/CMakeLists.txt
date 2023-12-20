@@ -79,7 +79,7 @@ if ( TARGET CUDA::nvtx3 )
     target_compile_definitions ( GraphBLAS_CUDA PRIVATE GBNVTX )
 endif ( )
 
-target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
+target_compile_definitions ( GraphBLAS_CUDA PUBLIC "GRAPHBLAS_HAS_CUDA" )
 
 if ( OpenMP_CXX_FOUND )
     target_include_directories ( GraphBLAS_CUDA PRIVATE OpenMP::OpenMP_CXX )

@@ -38,8 +38,8 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/cmake_modules
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "ON (default): enable CUDA acceleration, OFF: do not use CUDA" ON )
-
+option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
+option ( CHOLMOD_USE_CUDA "ON (default): enable CUDA acceleration for CHOLMOD, OFF: do not use CUDA" ON )
 option ( CHOLMOD_GPL "ON (default): enable GPL-licensed modules, OFF: do not use any CHOLMOD GPL-licensed modules" ON )
 
 if ( NOT CHOLMOD_GPL )
@@ -47,7 +47,7 @@ if ( NOT CHOLMOD_GPL )
     set ( CHOLMOD_MATRIXOPS OFF )
     set ( CHOLMOD_MODIFY OFF )
     set ( CHOLMOD_SUPERNODAL OFF )
-    set ( ENABLE_CUDA OFF )
+    set ( CHOLMOD_USE_CUDA OFF )
     add_compile_definitions ( NGPL )
 endif ( )
 
@@ -60,9 +60,12 @@ if ( NOT HAVE_SSIZE_T )
     add_compile_definitions ( NO_SSIZE_T )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND CHOLMOD_USE_CUDA )
     # CHOLMOD with CUDA
     enable_language ( CUDA CXX )
+    set ( CHOLMOD_HAS_CUDA ON )
+else ( )
+    set ( CHOLMOD_HAS_CUDA OFF )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -303,7 +306,7 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/cholmod.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-    if ( SUITESPARSE_CUDA )
+    if ( CHOLMOD_HAS_CUDA )
         set_target_properties ( CHOLMOD PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
         set_target_properties ( CHOLMOD PROPERTIES POSITION_INDEPENDENT_CODE ON )
     endif ( )
@@ -335,7 +338,7 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME cholmod_static )
     endif ( )
 
-    if ( SUITESPARSE_CUDA )
+    if ( CHOLMOD_HAS_CUDA )
         set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
     endif ( )
@@ -486,13 +489,13 @@ if ( CHOLMOD_PARTITION )
 endif ( )
 
 # CHOLMOD_CUDA
-if ( SUITESPARSE_CUDA )
+if ( CHOLMOD_HAS_CUDA )
     if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( CHOLMOD PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
     endif ( )
-    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DSUITESPARSE_CUDA" )
+    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DCHOLMOD_HAS_CUDA" )
     if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
     endif ( )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
@@ -525,7 +528,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
+if ( CHOLMOD_HAS_CUDA )
     # with CUDA
     add_subdirectory ( GPU )
     message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )

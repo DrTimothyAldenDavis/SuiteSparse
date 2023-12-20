@@ -710,11 +710,20 @@ build type).  The static libraries will not be built (since
 
   Default: `Release`, use `Debug` for debugging.
 
-* `ENABLE_CUDA`:
+* `SUITESPARSE_USE_CUDA`:
 
-  If set to `ON`, CUDA is enabled for the project.  Default: `ON` for CHOLMOD
-  and SPQR; `OFF` otherwise.
+  If set to `ON`, CUDA is enabled for all of SuiteSparse.  Default: `ON`.
   Ignored for MSVC (CUDA acceleration is disabled on Windows with MSVC).
+
+* `CHOLMOD_USE_CUDA`:
+
+  Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `CHOLMOD_USE_CUDA` must be
+  enabled to use CUDA in CHOLMOD.
+
+* `SPQR_USE_CUDA`:
+
+  Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `SPQR_USE_CUDA` must be
+  enabled to use CUDA in SPQR.
 
 * `CMAKE_INSTALL_PREFIX`:
 

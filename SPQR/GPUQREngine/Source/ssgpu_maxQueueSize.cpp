@@ -7,7 +7,8 @@
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
-#ifdef SUITESPARSE_CUDA
+
+#ifdef SPQR_HAS_CUDA
 #include "GPUQREngine_Scheduler.hpp"
 #define MIN_QUEUE_SIZE 50000
 

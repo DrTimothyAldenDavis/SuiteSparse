@@ -982,7 +982,7 @@ template <> double spqr_norm_dense <int64_t>
 // spqr_gpu_memorysize
 //------------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
 template <> int spqr_gpu_memorysize <int32_t>
 (

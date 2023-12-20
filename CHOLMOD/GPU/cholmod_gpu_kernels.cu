@@ -8,7 +8,7 @@
 // SPDX-License-Identifier: GPL-2.0+
 //------------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
 #include <stdio.h>
 #include "SuiteSparse_config.h"

@@ -108,7 +108,7 @@ else ( )
 
 endif ( )
 
-if ( NOT NJIT OR ENABLE_CUDA )
+if ( NOT NJIT OR GRAPHBLAS_USE_CUDA )
     message ( STATUS "------------------------------------------------------------------------" )
     message ( STATUS "JIT configuration:" )
     message ( STATUS "------------------------------------------------------------------------" )

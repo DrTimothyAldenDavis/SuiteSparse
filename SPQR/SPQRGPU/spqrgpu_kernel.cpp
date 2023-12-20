@@ -28,7 +28,7 @@
 // numfronts_in_stage
 // -----------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 template <typename Int>
 void numfronts_in_stage
 (
@@ -80,7 +80,7 @@ void spqrgpu_kernel
 
     cholmod_common *cc = Blob->cc ;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
     INIT_TIME(complete);
     TIC(complete);

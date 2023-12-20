@@ -14,12 +14,9 @@
 #                       To use the "Debug" policy, precede this with
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
-#   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
-#                       Default: true for CHOLMOD and SPQR, which use the GPU
-#                       for their numerical factorizsation.  The flag is false
-#                       for GraphBLAS since CUDA for that package is in
-#                       progress and not ready for production use.
-#                       CUDA acceleration not supported on Windows with MSVC.
+#   SUITESPARSE_USE_CUDA: if OFF, CUDA is disabled.  if ON, CUDA is enabled,
+#                       if available.
+#                       Default: ON.
 #
 #   LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
@@ -258,7 +255,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( ENABLE_CUDA AND NOT MSVC )
+if ( SUITESPARSE_USE_CUDA AND NOT MSVC )
 
     # try finding CUDA
     check_language ( CUDA )
@@ -275,26 +272,26 @@ if ( ENABLE_CUDA AND NOT MSVC )
         if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
             message ( STATUS "CUDA:               not enabled (CUDA 11.2 or later required)" )
-            set ( SUITESPARSE_CUDA OFF )
+            set ( SUITSPARSE_HAS_CUDA OFF )
         else ( )
             # CUDA 11.2 or later present
             enable_language ( CUDA )
-            set ( SUITESPARSE_CUDA ON )
+            set ( SUITSPARSE_HAS_CUDA ON )
         endif ( )
     else ( )
         # without CUDA:
         message ( STATUS "CUDA:             not found" )
-        set ( SUITESPARSE_CUDA OFF )
+        set ( SUITSPARSE_HAS_CUDA OFF )
     endif ( )
 
 else ( )
 
     # CUDA is disabled
-    set ( SUITESPARSE_CUDA OFF )
+    set ( SUITSPARSE_HAS_CUDA OFF )
 
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITSPARSE_HAS_CUDA )
     message ( STATUS "CUDA:             enabled" )
     set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )

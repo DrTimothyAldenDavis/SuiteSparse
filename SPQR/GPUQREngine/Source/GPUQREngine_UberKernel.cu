@@ -16,7 +16,7 @@
 // 
 // =============================================================================
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
 #define CUDA_INCLUDE
 #include "Kernel/uberKernel.cu"

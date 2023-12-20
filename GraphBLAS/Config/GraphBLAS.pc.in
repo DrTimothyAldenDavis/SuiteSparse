@@ -17,4 +17,4 @@ Requires.private: @GRAPHBLAS_STATIC_MODULES@
 Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @GRAPHBLAS_STATIC_LIBS@
 Cflags: -I${includedir}
-Cflags.private: -DGB_STATIC
+Cflags.private: -DGB_STATIC @GRAPHBLAS_CFLAGS@
