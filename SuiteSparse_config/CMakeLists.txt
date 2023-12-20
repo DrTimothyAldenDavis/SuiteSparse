@@ -59,7 +59,7 @@ endif ( )
 
 option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 if ( SUITESPARSE_USE_OPENMP )
-    find_package ( OpenMP )
+    find_package ( OpenMP GLOBAL )
 else ( )
     # OpenMP has been disabled
     message ( STATUS "OpenMP disabled" )
