@@ -70,22 +70,27 @@ endif ( )
 
 option ( KLU_USE_CHOLMOD "ON (default): use CHOLMOD in KLU.  OFF: do not use CHOLMOD in KLU" ON )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND KLU_USE_CHOLMOD )
-    # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 5.1.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.1.0 )
-    endif ( )
-
-    if ( NOT CHOLMOD_FOUND )
-        # CHOLMOD not found so disable it
-        set ( KLU_HAS_CHOLMOD OFF )
-    else ( )
-        set ( KLU_HAS_CHOLMOD ON )
-    endif ( )
+if ( SUITESPARSE_ROOT_CMAKELISTS )
+    # if KLU_USE_CHOLMOD is true, then CHOLMOD has been added to the
+    # list of packages to compile in the root CMakeLists.txt.
+    set ( KLU_HAS_CHOLMOD ${KLU_USE_CHOLMOD} )
 else ( )
-    set ( KLU_HAS_CHOLMOD OFF )
+    if ( KLU_USE_CHOLMOD )
+        # look for CHOLMOD (optional fill-reducing orderings)
+        find_package ( CHOLMOD 5.1.0
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::CHOLMOD )
+            find_package ( CHOLMOD 5.1.0 )
+        endif ( )
+        if ( NOT CHOLMOD_FOUND )
+            # CHOLMOD not found so disable it
+            set ( KLU_HAS_CHOLMOD OFF )
+        else ( )
+            set ( KLU_HAS_CHOLMOD ON )
+        endif ( )
+    else ( )
+        set ( KLU_HAS_CHOLMOD OFF )
+    endif ( )
 endif ( )
 
 if ( KLU_HAS_CHOLMOD )

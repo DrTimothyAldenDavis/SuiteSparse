@@ -62,28 +62,33 @@ include ( SuiteSparseBLAS )     # requires cmake 3.22
 
 option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND UMFPACK_USE_CHOLMOD )
-    # look for CHOLMOD (optional fill-reducing orderings)
-    find_package ( CHOLMOD 5.1.0
-        PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
-    if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.1.0 )
-    endif ( )
-
-    if ( NOT CHOLMOD_FOUND )
-        # CHOLMOD not found so disable it
-        set ( UMFPACK_HAS_CHOLMOD OFF )
-    else ( )
-        set ( UMFPACK_HAS_CHOLMOD ON )
-    endif ( )
+if ( SUITESPARSE_ROOT_CMAKELISTS )
+    # if UMFPACK_USE_CHOLMOD is true, then CHOLMOD has been added to the
+    # list of packages to compile in the root CMakeLists.txt.
+    set ( UMFPACK_HAS_CHOLMOD ${UMFPACK_USE_CHOLMOD} )
 else ( )
-    set ( UMFPACK_HAS_CHOLMOD OFF )
+    if ( UMFPACK_USE_CHOLMOD )
+        # look for CHOLMOD (optional fill-reducing orderings)
+        find_package ( CHOLMOD 5.1.0
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        if ( NOT TARGET SuiteSparse::CHOLMOD )
+            find_package ( CHOLMOD 5.1.0 )
+        endif ( )
+        if ( NOT CHOLMOD_FOUND )
+            # CHOLMOD not found so disable it
+            set ( UMFPACK_HAS_CHOLMOD OFF )
+        else ( )
+            set ( UMFPACK_HAS_CHOLMOD ON )
+        endif ( )
+    else ( )
+        set ( UMFPACK_HAS_CHOLMOD OFF )
+    endif ( )
 endif ( )
 
 if ( UMFPACK_HAS_CHOLMOD )
-    message ( STATUS "CHOLMOD not found or not requested" )
-else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
+else ( )
+    message ( STATUS "CHOLMOD not found or not requested" )
 endif ( )
 
 #-------------------------------------------------------------------------------
