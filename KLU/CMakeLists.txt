@@ -68,9 +68,9 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     endif ( )
 endif ( )
 
-option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
+option ( KLU_USE_CHOLMOD "ON (default): use CHOLMOD in KLU.  OFF: do not use CHOLMOD in KLU" ON )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND KLU_USE_CHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
@@ -80,14 +80,17 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
 
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
-        set ( NCHOLMOD true )
+        set ( KLU_HAS_CHOLMOD OFF )
+    else ( )
+        set ( KLU_HAS_CHOLMOD ON )
     endif ( )
+else ( )
+    set ( KLU_HAS_CHOLMOD OFF )
 endif ( )
 
-if ( NCHOLMOD )
-    # tell KLU that CHOLMOD is not available
-    message ( STATUS "CHOLMOD not found or not requested" )
+if ( KLU_HAS_CHOLMOD )
     add_compile_definitions ( NCHOLMOD )
+    message ( STATUS "CHOLMOD not found or not requested" )
 else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 endif ( )
@@ -167,7 +170,7 @@ endif ( )
 # klu_cholmod library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NCHOLMOD )
+if ( KLU_HAS_CHOLMOD )
 
     file ( GLOB KLU_CHOLMOD_SOURCES "User/*.c" )
 
@@ -274,7 +277,7 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 endif ( )
 
-if ( NOT NCHOLMOD )
+if ( KLU_HAS_CHOLMOD )
 
     # CHOLMOD:
     # link with CHOLMOD and its dependencies, both required and optional
@@ -414,7 +417,7 @@ endif ( )
 # KLU_CHOLMOD installation
 #-------------------------------------------------------------------------------
 
-if ( NOT NCHOLMOD )
+if ( KLU_HAS_CHOLMOD )
     if ( BUILD_SHARED_LIBS )
         install ( TARGETS KLU_CHOLMOD
             EXPORT KLU_CHOLMODTargets
@@ -520,7 +523,7 @@ if ( DEMO )
     #---------------------------------------------------------------------------
 
     add_executable ( klu_simple  "Demo/klu_simple.c" )
-    if ( NOT NCHOLMOD )
+    if ( KLU_HAS_CHOLMOD )
         add_executable ( kludemo     "Demo/kludemo.c" )
         add_executable ( kluldemo    "Demo/kluldemo.c" )
     endif ( )
@@ -531,7 +534,7 @@ if ( DEMO )
     else ( )
         target_link_libraries ( klu_simple PUBLIC KLU_static )
     endif ( )
-    if ( NOT NCHOLMOD )
+    if ( KLU_HAS_CHOLMOD )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( kludemo PUBLIC KLU_CHOLMOD KLU SuiteSparse::CHOLMOD )
             target_link_libraries ( kluldemo PUBLIC KLU_CHOLMOD KLU SuiteSparse::CHOLMOD )

@@ -241,10 +241,11 @@ is required by UMFPACK.  UMFPACK can be compiled without the
 BLAS
 but your performance will be much less than what it should be.
 
-UMFPACK also requires CHOLMOD, CCAMD, CCOLAMD, COLAMD, and
-\verb'SuiteSparse_metis' (a slightly modified version of the original
-METIS v5.1.0) by default.  You can remove this dependency by compiling with
-\verb'-DNCHOLMOD'; see the \verb'CMakeLists.txt' file.
+UMFPACK can optionally use CHOLMOD, CCAMD, CCOLAMD, COLAMD, and
+\verb'SuiteSparse_metis' (a slightly modified version of the original METIS
+v5.1.0) by default.  You can remove this dependency by compiling with the cmake
+variable \verb'UMFPACK_USE_CHOLMOD' set to \verb'OFF'; see the
+\verb'CMakeLists.txt' file.
 
 CMake is used to build the UMFPACK library.  An optional top-level Makefile
 simplifies its use.  To compile and install the library for system-wide usage:

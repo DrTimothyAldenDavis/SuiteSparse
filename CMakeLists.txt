@@ -65,8 +65,11 @@ endforeach ( )
 # CHOLMOD options affecting dependencies
 option ( CHOLMOD_CAMD "ON (default): use CAMD/CCOLAMD.  OFF: do not use CAMD/CCOLAMD" ON )
 
-# KLU and UMFPACK options affecting dependencies
-option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): use CHOLMOD" OFF )
+# KLU options affecting dependencies
+option ( KLU_USE_CHOLMOD "ON (default): use CHOLMOD in KLU.  OFF: do not use CHOLMOD in KLU" ON )
+
+# UMFPACK options affecting dependencies
+option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
 # overwrite BUILD_STATIC_LIBS specifically for GraphBLAS because building the
 # library takes a long time
@@ -110,6 +113,7 @@ if ( USE_SYSTEM_GRAPHBLAS )
     find_package ( GraphBLAS REQUIRED )
 else ( )
     if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # LAGraph requires GraphBLAS.
         if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"graphblas\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
@@ -122,6 +126,7 @@ if ( USE_SYSTEM_BTF )
     find_package ( BTF REQUIRED )
 else ( )
     if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # KLU requires BTF.
         if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"btf\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
@@ -133,11 +138,14 @@ if ( USE_SYSTEM_CHOLMOD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "cholmod" )
     find_package ( CHOLMOD REQUIRED )
 else ( )
-    if ( ( NOT NCHOLMOD AND
+    if ( ( ( KLU_USE_CHOLMOD OR UMFPACK_USE_CHOLMOD ) AND
               ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
                 OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
             OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # SPQR and ParU both require CHOLMOD.  KLU and UMFPACK can optionally
+        # use CHOLMOD.  Add CHOLMOD to the list of projects, if it has bee
+        # requested by SPQR, ParU, KLU, or UMFPACK, if not already there.
         if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"cholmod\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
@@ -153,6 +161,7 @@ else ( )
             OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD, LDL, UMFPACK, and SPEX require AMD.
         if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"amd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
@@ -166,6 +175,7 @@ if ( USE_SYSTEM_COLAMD )
 else ( )
     if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD and SPEX require COLAMD.
         if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"colamd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
@@ -178,6 +188,7 @@ if ( USE_SYSTEM_CAMD )
     find_package ( CAMD REQUIRED )
 else ( )
     if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD can optionally use CAMD.
         if ( NOT USE_SYSTEM_CAMD AND NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"camd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
@@ -190,6 +201,7 @@ if ( USE_SYSTEM_CCOLAMD )
     find_package ( CCOLAMD REQUIRED )
 else ( )
     if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD can optionally use CCOLAMD.
         if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
@@ -216,6 +228,7 @@ else ( )
             OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # All but CSparse, GraphBLAS, and LAGraph require SuiteSparse_config.
         if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )

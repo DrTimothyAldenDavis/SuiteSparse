@@ -874,10 +874,15 @@ build type).  The static libraries will not be built (since
 
 Additional options are available for specific packages:
 
-* `NCHOLMOD`:
+* `UMFPACK_USE_CHOLMOD`:
 
-  If `ON`, UMFPACK and KLU do not use CHOLMOD for additional (optional)
-  ordering options.
+  If `ON`, UMFPACK uses CHOLMOD for additional (optional)
+  ordering options.  Default: `ON`.
+
+* `KLU_USE_CHOLMOD`:
+
+  If `ON`, KLU uses CHOLMOD for additional (optional)
+  ordering options.  Default: `ON`.
 
 CHOLMOD is composed of a set of Modules that can be independently selected;
 all options default to `ON`:

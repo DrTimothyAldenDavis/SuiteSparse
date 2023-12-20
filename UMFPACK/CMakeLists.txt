@@ -62,9 +62,9 @@ endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
-option ( NCHOLMOD "ON: do not use CHOLMOD.  OFF (default): use CHOLMOD" OFF )
+option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
+if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND UMFPACK_USE_CHOLMOD )
     # look for CHOLMOD (optional fill-reducing orderings)
     find_package ( CHOLMOD 5.1.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
@@ -74,11 +74,15 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND NOT NCHOLMOD )
 
     if ( NOT CHOLMOD_FOUND )
         # CHOLMOD not found so disable it
-        set ( NCHOLMOD ON )
+        set ( UMFPACK_HAS_CHOLMOD OFF )
+    else ( )
+        set ( UMFPACK_HAS_CHOLMOD ON )
     endif ( )
+else ( )
+    set ( UMFPACK_HAS_CHOLMOD OFF )
 endif ( )
 
-if ( NCHOLMOD )
+if ( UMFPACK_HAS_CHOLMOD )
     message ( STATUS "CHOLMOD not found or not requested" )
 else ( )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
@@ -188,7 +192,7 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # CHOLMOD:
-if ( NOT NCHOLMOD )
+if ( UMFPACK_HAS_CHOLMOD )
     # link with CHOLMOD and its dependencies, both required and optional
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( UMFPACK PRIVATE SuiteSparse::CHOLMOD )
