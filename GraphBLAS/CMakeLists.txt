@@ -265,7 +265,7 @@ if ( GRAPHBLAS_USE_JIT )
     endif ( )
     # GLOB does not include files that do not yet exist, so prepend
     # the GB_JITpackage.c file here:
-    list ( PREPEND GRAPHBLAS_SOURCES "JITpackage/GB_JITpackage.c" )
+    list ( PREPEND GRAPHBLAS_SOURCES $<TARGET_PROPERTY:GB_JITpackage,GENERATED_FILE> )
 else ( )
     if ( GRAPHBLAS_COMPACT )
         # no JIT, do not compile the FactoryKernels
