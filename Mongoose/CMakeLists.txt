@@ -520,22 +520,22 @@ if ( BUILD_TESTING )
 
 endif ( )
 
-add_custom_target ( purge
-        COMMAND rm -rf ${PROJECT_BINARY_DIR}/*
-#       COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex.aux
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.idx
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.log
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.out
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.aux
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.toc
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.bbl
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.blg
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.tar.gz
-        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.csv
-        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
-        )
+#add_custom_target ( purge
+#        COMMAND rm -rf ${PROJECT_BINARY_DIR}/*
+##       COMMAND rm -f ${PROJECT_SOURCE_DIR}/Lib/libmongoose.*
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/title-info.tex.aux
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.idx
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.log
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.out
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.aux
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.toc
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.bbl
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Doc/Mongoose_UserGuide.blg
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.tar.gz
+#        COMMAND rm -f ${PROJECT_SOURCE_DIR}/Matrix/*.csv
+#        WORKING_DIRECTORY ${PROJECT_BINARY_DIR}
+#        )
 
 add_custom_target(userguide
         COMMAND make
