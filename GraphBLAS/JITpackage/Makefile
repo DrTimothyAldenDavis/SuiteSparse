@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 
 go:
-	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . )
+	( cd build && cmake $(CMAKE_OPTIONS) .. && cmake --build . && cmake --build . --target GB_JITpackage )
 
 clean: distclean
 
