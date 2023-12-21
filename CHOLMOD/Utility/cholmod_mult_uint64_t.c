@@ -22,7 +22,7 @@
 
 bool cholmod_mult_uint64_t      // c = a*b, return true if ok
 (
-    uint64_t *restrict c,
+    uint64_t *c,
     const uint64_t a,
     const uint64_t b
 )
