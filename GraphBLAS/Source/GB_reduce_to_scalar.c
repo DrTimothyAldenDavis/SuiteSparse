@@ -105,7 +105,7 @@ GrB_Info GB_reduce_to_scalar    // z = reduce_to_scalar (A)
 
     info = GrB_NO_VALUE ;
 
-    #if defined ( SUITESPARSE_CUDA )
+    #if defined ( GRAPHBLAS_HAS_CUDA )
     if (GB_reduce_to_scalar_cuda_branch (monoid, A))
     {
 

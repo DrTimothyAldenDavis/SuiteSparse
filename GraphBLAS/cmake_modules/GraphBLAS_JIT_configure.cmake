@@ -62,7 +62,7 @@ endif ( )
 
 option ( GRAPHBLAS_JIT_ENABLE_RELOCATE
     "ON: Enable relocation of libraries for JIT. OFF: Keep libraries with full path for JIT."
-    default_jit_enable_relocate )
+    ${default_jit_enable_relocate} )
 
 if ( GRAPHBLAS_JIT_ENABLE_RELOCATE )
 
@@ -108,7 +108,7 @@ else ( )
 
 endif ( )
 
-if ( NOT NJIT OR ENABLE_CUDA )
+if ( GRAPHBLAS_USE_JIT OR GRAPHBLAS_USE_CUDA )
     message ( STATUS "------------------------------------------------------------------------" )
     message ( STATUS "JIT configuration:" )
     message ( STATUS "------------------------------------------------------------------------" )

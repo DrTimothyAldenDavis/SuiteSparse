@@ -308,13 +308,13 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
     * GraphBLAS takes a long time to compile because it creates many fast
         "FactoryKernels" at compile-time.  If you want to reduce the compile
-        time and library size, enable the COMPACT mode, but keep the JIT
-        enabled.  Then GraphBLAS will compile the kernels it needs at run-time,
-        via its JIT.  Performance will be the same as the FactoryKernels once
-        the JIT kernels are compiled.  User compiled kernels are placed in
-        ~/.SuiteSparse, by default.  You do not need to distribute the source
-        for GraphBLAS to enable the JIT: just libgraphblas.so and GraphBLAS.h
-        is enough.
+        time and library size, enable the GRAPHBLAS_COMPACT mode, but keep the
+        JIT enabled.  Then GraphBLAS will compile the kernels it needs at
+        run-time, via its JIT.  Performance will be the same as the
+        FactoryKernels once the JIT kernels are compiled.  User compiled
+        kernels are placed in ~/.SuiteSparse, by default.  You do not need to
+        distribute the source for GraphBLAS to enable the JIT: just
+        libgraphblas.so and GraphBLAS.h is enough.
 
     * GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
         distribute it with OpenMP enabled.  Performance will suffer
@@ -525,8 +525,8 @@ the use of 32-bit integers in the BLAS).
 When distributed in a binary form (such as a Debian, Ubuntu, Spack, or Brew
 package), SuiteSparse should probably be compiled to expect a 32-bit BLAS,
 since this is the most common case.  The default is to use a 32-bit BLAS, but
-this can be changed in SuiteSparseBLAS.cmake or by compiling with
-`-DALLOW_64BIT_BLAS=1`.
+this can be changed by setting the cmake variable
+`SUITESPARSE_ALLOW_64BIT_BLAS` to `ON`.
 
 By default, SuiteSparse hunts for a suitable BLAS library.  To enforce a
 particular BLAS library use either:
@@ -535,14 +535,14 @@ particular BLAS library use either:
     cd Package ; cmake -DBLA_VENDOR=OpenBLAS .. make
 
 To use the default (hunt for a BLAS), do not set `BLA_VENDOR`, or set it to
-ANY.  In this case, if `ALLOW_64BIT_BLAS` is set, preference is given to a
-64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit library is
-found.
+ANY.  In this case, if `SUITESPARSE_ALLOW_64BIT_BLAS` is set, preference is
+given to a 64-bit BLAS, but a 32-bit BLAS library will be used if no 64-bit
+library is found.
 
-When selecting a particular BLAS library, the `ALLOW_64BIT_BLAS` setting is
-strictly followed.  If set to true, only a 64-bit BLAS library will be used.
-If false (the default), only a 32-bit BLAS library will be used.  If no such
-BLAS is found, the build will fail.
+When selecting a particular BLAS library, the `SUITESPARSE_ALLOW_64BIT_BLAS`
+setting is strictly followed.  If set to true, only a 64-bit BLAS library will
+be used.  If false (the default), only a 32-bit BLAS library will be used.  If
+no such BLAS is found, the build will fail.
 
 -----------------------------------------------------------------------------
 QUICK START FOR THE C/C++ LIBRARIES:
@@ -689,13 +689,13 @@ Compilation options
 
 You can set specific options for CMake with the command (for example):
 ```
-    cmake -DNPARTITION=ON -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
+    cmake -DCHOLMOD_PARTITION=OFF -DBUILD_STATIC_LIBS=OFF -DCMAKE_BUILD_TYPE=Debug ..
 ```
 
 That command will compile all of SuiteSparse except for CHOLMOD/Partition
-Module (because of `-DNPARTITION=ON`).  Debug mode will be used (the build
-type).  The static libraries will not be built (since `-DBUILD_STATIC_LIBS=OFF`
-is set).
+Module (because of `-DCHOLMOD_PARTITION=OFF`).  Debug mode will be used (the
+build type).  The static libraries will not be built (since
+`-DBUILD_STATIC_LIBS=OFF` is set).
 
 * `SUITESPARSE_ENABLE_PROJECTS`:
 
@@ -710,11 +710,20 @@ is set).
 
   Default: `Release`, use `Debug` for debugging.
 
-* `ENABLE_CUDA`:
+* `SUITESPARSE_USE_CUDA`:
 
-  If set to `ON`, CUDA is enabled for the project.  Default: `ON` for CHOLMOD
-  and SPQR; `OFF` otherwise.
+  If set to `ON`, CUDA is enabled for all of SuiteSparse.  Default: `ON`.
   Ignored for MSVC (CUDA acceleration is disabled on Windows with MSVC).
+
+* `CHOLMOD_USE_CUDA`:
+
+  Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `CHOLMOD_USE_CUDA` must be
+  enabled to use CUDA in CHOLMOD.
+
+* `SPQR_USE_CUDA`:
+
+  Default: `ON`.  Both `SUITESPARSE_USE_CUDA` and `SPQR_USE_CUDA` must be
+  enabled to use CUDA in SPQR.
 
 * `CMAKE_INSTALL_PREFIX`:
 
@@ -774,15 +783,15 @@ is set).
   See:
   https://cmake.org/cmake/help/latest/module/FindBLAS.html#blas-lapack-vendors
 
-* `ALLOW_64BIT_BLAS`:
+* `SUITESPARSE_ALLOW_64BIT_BLAS`:
 
   If `ON`, look for a 64-bit BLAS.  If `OFF`: 32-bit only.  Default: `OFF`.
 
-* `NOPENMP`:
+* `SUITESPARSE_USE_OPENMP`:
 
-  If `ON`, OpenMP is not used.  Default: `OFF`.
+  If `ON`, OpenMP is used if it is available.  Default: `OFF`.
 
-  UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow.
+  UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow if OpenMP is not used.
 
   Note that BLAS and LAPACK may still use OpenMP internally; if you wish to
   disable OpenMP in an entire application, select a single-threaded
@@ -791,93 +800,127 @@ is set).
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP (see the
   User Guide for details).
 
-* `DEMO`:
+* `CHOLMOD_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in CHOLMOD if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `GRAPHBLAS_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in GraphBLAS if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `LAGRAPH_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in LAGraph if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `PARU_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in ParU if it is available.  Default:
+  `SUITESPARSE_USE_OPENMP`.
+
+* `SUITESPARSE_DEMOS`:
+
   If `ON`, build the demo programs for each package.  Default: `OFF`.
 
-* `USE_SYSTEM_BTF`:
+* `SUITESPARSE_USE_SYSTEM_BTF`:
 
   If `ON`, use BTF libraries installed on the build system. If `OFF`,
   automatically build BTF as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CHOLMOD`:
+* `SUITESPARSE_USE_SYSTEM_CHOLMOD`:
 
   If `ON`, use CHOLMOD libraries installed on the build system. If `OFF`,
   automatically build CHOLMOD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_AMD`:
+* `SUITESPARSE_USE_SYSTEM_AMD`:
 
   If `ON`, use AMD libraries installed on the build system. If `OFF`,
   automatically build AMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_COLAMD`:
+* `SUITESPARSE_USE_SYSTEM_COLAMD`:
 
   If `ON`, use COLAMD libraries installed on the build system. If `OFF`,
   automatically build COLAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CAMD`:
+* `SUITESPARSE_USE_SYSTEM_CAMD`:
 
   If `ON`, use CAMD libraries installed on the build system. If `OFF`,
   automatically build CAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_CCOLAMD`:
+* `SUITESPARSE_USE_SYSTEM_CCOLAMD`:
 
   If `ON`, use CCOLAMD libraries installed on the build system. If `OFF`,
   automatically build CCOLAMD as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_GRAPHBLAS`:
+* `SUITESPARSE_USE_SYSTEM_GRAPHBLAS`:
 
   If `ON`, use GraphBLAS libraries installed on the build system. If `OFF`,
   automatically build GraphBLAS as dependency if needed. Default: `OFF`.
 
-* `USE_SYSTEM_SUITESPARSE_CONFIG`:
+* `SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG`:
 
   If `ON`, use `SuiteSparse_config` libraries installed on the build system. If
   `OFF`, automatically build `SuiteSparse_config` as dependency if needed.
   Default: `OFF`.
 
+* `SUITESPARSE_USE_FORTRAN`
+
+  If `ON`, use the Fortran compiler to determine how C calls Fortan, and to
+  build several optional Fortran routines. If `OFF`, use
+  `SUITESPARSE_C_TO_FORTRAN` to define how C calls Fortran (see
+  `SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake` for details).
+  Default: `ON`.
+
 Additional options are available for specific packages:
 
-* `NCHOLMOD`:
+* `UMFPACK_USE_CHOLMOD`:
 
-  If `ON`, UMFPACK and KLU do not use CHOLMOD for additional (optional)
-  ordering options.
+  If `ON`, UMFPACK uses CHOLMOD for additional (optional)
+  ordering options.  Default: `ON`.
+
+* `KLU_USE_CHOLMOD`:
+
+  If `ON`, KLU uses CHOLMOD for additional (optional)
+  ordering options.  Default: `ON`.
 
 CHOLMOD is composed of a set of Modules that can be independently selected;
-all options default to `OFF`:
+all options default to `ON`:
 
-* `NGPL`
+* `CHOLMOD_GPL`
 
-  If `ON`, do not build any GPL-licensed module (MatrixOps, Modify, Supernodal,
+  If `OFF`, do not build any GPL-licensed module (MatrixOps, Modify, Supernodal,
   and GPU modules)
 
-* `NCHECK`
+* `CHOLMOD_CHECK`
 
-  If `ON`, do not build the Check module.
+  If `OFF`, do not build the Check module.
 
-* `NMATRIXOPS`
+* `CHOLMOD_MATRIXOPS`
 
-  If `ON`, do not build the MatrixOps module.
+  If `OFF`, do not build the MatrixOps module.
 
-* `NCHOLESKY`
-  If `ON`, do not build the Cholesky module. This also disables the Supernodal
+* `CHOLMOD_CHOLESKY`
+  If `OFF`, do not build the Cholesky module. This also disables the Supernodal
   and Modify modules.
 
-* `NMODIFY`
+* `CHOLMOD_MODIFY`
 
-  If `ON`, do not build the Modify module.
+  If `OFF`, do not build the Modify module.
 
-* `NCAMD`
+* `CHOLMOD_CAMD`
 
-  If `ON`, do not link against CAMD and CCOLAMD. This also disables the
+  If `OFF`, do not link against CAMD and CCOLAMD. This also disables the
   Partition module.
 
-* `NPARTITION`
+* `CHOLMOD_PARTITION`
 
-  If `ON`, do not build the Partition module.
+  If `OFF`, do not build the Partition module.
 
-* `NSUPERNODAL`
+* `CHOLMOD_SUPERNODAL`
 
-  If `ON`, do not build the Supernodal module.
+  If `OFF`, do not build the Supernodal module.
 
 -----------------------------------------------------------------------------
 Possible build/install issues

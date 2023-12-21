@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( RBIO_DATE "Dec 30, 2023" )
 set ( RBIO_VERSION_MAJOR 4 CACHE STRING "" FORCE )
@@ -243,8 +243,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library

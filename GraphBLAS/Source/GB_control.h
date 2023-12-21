@@ -7,11 +7,12 @@
 
 //------------------------------------------------------------------------------
 
-// The maximal way to reduce code size and compile time is to use the COMPACT
-// cmake option (-DCOMPACT=1).  That setting disables all FactoryKernels.
+// The maximal way to reduce code size and compile time is to turn ON the
+// GRAPHBLAS_COMPACT cmake option.  That setting disables all FactoryKernels.
 // Performance will then rely on the JIT kernels, once they are compiled at run
 // time, or from an PreJIT kernels.  See the User Guide for details.  If
-// COMPACT is enabled, the settings in this file have no additional effect.
+// GRAPHBLAS_COMPACT is enabled, the settings in this file have no additional
+// effect.
 
 // The installer of SuiteSparse:GraphBLAS can edit this file to reduce the code
 // size of the compiled library, by seletively disabling the corresponding

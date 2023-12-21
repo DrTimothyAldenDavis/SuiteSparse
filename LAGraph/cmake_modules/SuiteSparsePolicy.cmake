@@ -14,12 +14,9 @@
 #                       To use the "Debug" policy, precede this with
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
-#   ENABLE_CUDA:        if set to true, CUDA is enabled for the project.
-#                       Default: true for CHOLMOD and SPQR, which use the GPU
-#                       for their numerical factorizsation.  The flag is false
-#                       for GraphBLAS since CUDA for that package is in
-#                       progress and not ready for production use.
-#                       CUDA acceleration not supported on Windows with MSVC.
+#   SUITESPARSE_USE_CUDA: if OFF, CUDA is disabled.  if ON, CUDA is enabled,
+#                       if available.
+#                       Default: ON.
 #
 #   LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
@@ -55,9 +52,9 @@
 #   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
 #                       Default: false
 #
-#   ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both 32-bit and
-#                       64-bit BLAS.  If false, only 32-bit BLAS will be
-#                       searched for.  Ignored if BLA_VENDOR and
+#   SUITESPARSE_ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both
+#                       32-bit and 64-bit BLAS.  If false, only 32-bit BLAS
+#                       will be searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
 #
 #   SUITESPARSE_C_TO_FORTRAN:  a string that defines how C calls Fortran.
@@ -68,26 +65,25 @@
 #                       This setting is only used if no Fortran compiler is
 #                       found.
 #
-#   NFORTRAN:           if true, no Fortan files are compiled, and the Fortran
-#                       language is not enabled in any cmake scripts.  The
-#                       built-in cmake script FortranCInterface is skipped.
-#                       This will require SUITESPARSE_C_TO_FORTRAN to be defined
-#                       explicitly, if the defaults are not appropriate for your
-#                       system.
-#                       Default: false
+#   SUITESPARSE_USE_FORTRAN:  if OFF, no Fortan files are compiled, and the
+#                       Fortran language is not enabled in any cmake scripts.
+#                       The built-in cmake script FortranCInterface is skipped.
+#                       This will require SUITESPARSE_C_TO_FORTRAN to be
+#                       defined explicitly, if the defaults are not appropriate
+#                       for your system.
+#                       Default: ON
 #
-#   SUITESPARSE_PKGFILEDIR: where to install the CMake Config and pkg-config
-#                       files.  This defaults to the same directory as where
-#                       the compiled libraries are installed, in a subfolder
-#                       called cmake.  If not already set in the cache,
-#                       LOCAL_INSTALL=0 defines this as "lib", and the
-#                       CMAKE_INSTALL_PREFIX is added.  LOCAL_INSTALL=1 defines
-#                       this as SuiteSparse/lib.  This variable is cached so
-#                       that if it is not set, or unset first, it remains
-#                       unchanged (see "make local" and "make global" in the
-#                       SuiteSparse_config/Makefile for an example).
+#   SUITESPARSE_PKGFILEDIR: Directory where CMake Config and pkg-config files
+#                       will be installed.  By default, CMake Config files will
+#                       be installed in the subfolder `cmake` of the directory
+#                       where the (static) libraries will be installed (e.g.,
+#                       `lib`).  The `.pc` files for pkg-config will be
+#                       installed in the subfolder `pkgconfig` of the directory
+#                       where the (static) libraries will be installed.
+#                       Default: CMAKE_INSTALL_PREFIX, or SuiteSparse/lib if
+#                       LOCAL_INSTALL is enabled.
 #
-#   SUITESPARSE_INCLUDEDIR_POSTFIX : # Postfix for installation target of
+#   SUITESPARSE_INCLUDEDIR_POSTFIX : Postfix for installation target of
 #                       header from SuiteSparse. Default: suitesparse, so the
 #                       default include directory is:
 #                       CMAKE_INSTALL_PREFIX/include/suitesparse
@@ -95,9 +91,6 @@
 message ( STATUS "Source:           ${CMAKE_SOURCE_DIR} ")
 message ( STATUS "Build:            ${CMAKE_BINARY_DIR} ")
 
-cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
-cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
-cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0" )
     cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 endif ( )
@@ -114,6 +107,9 @@ include ( GNUInstallDirs )
 # add the cmake_modules folder for this package to the module path
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
+
+# build the demos
+option ( SUITESPARSE_DEMOS "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 # BUILD_SHARED_LIBS and BUILD_STATIC_LIBS options
 option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
@@ -149,14 +145,6 @@ else ( )
     # most packages in SuiteSparse are located in SuiteSparse/Package
     set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
         ${CMAKE_SOURCE_DIR}/../lib/cmake )
-endif ( )
-
-# add the ./build folder to the runpath so other SuiteSparse packages can
-# find this one without "make install"
-list ( FIND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} _idx )
-if ( _idx LESS 0 )
-    # not yet included in CMAKE_INSTALL_RPATH
-    list ( APPEND CMAKE_BUILD_RPATH ${CMAKE_BINARY_DIR} )
 endif ( )
 
 set ( INSIDE_SUITESPARSE OFF )
@@ -203,32 +191,18 @@ if ( LOCAL_INSTALL )
         endif ( )
     endif ( )
     set ( SUITESPARSE_LIBDIR ${SUITESPARSE_LOCAL_PREFIX}/lib )
-    set ( SUITESPARSE_FULL_LIBDIR ${SUITESPARSE_LIBDIR} )
     set ( SUITESPARSE_INCLUDEDIR ${SUITESPARSE_LOCAL_PREFIX}/include/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${SUITESPARSE_LOCAL_PREFIX}/bin )
 else ( )
     set ( SUITESPARSE_LIBDIR ${CMAKE_INSTALL_LIBDIR} )
-    set ( SUITESPARSE_FULL_LIBDIR ${CMAKE_INSTALL_FULL_LIBDIR} )
     set ( SUITESPARSE_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR}/${SUITESPARSE_INCLUDEDIR_POSTFIX} )
     set ( SUITESPARSE_BINDIR ${CMAKE_INSTALL_BINDIR} )
 endif ( )
 
 if ( INSIDE_SUITESPARSE )
     # append ../lib to the install and build runpaths
-    list ( APPEND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} )
+    list ( APPEND CMAKE_INSTALL_RPATH ${SUITESPARSE_LIBDIR} )
     list ( APPEND CMAKE_BUILD_RPATH ${SUITESPARSE_LIBDIR} )
-else ( )
-    # Set reasonable RPATH for installed binaries
-    # That should be fine as long as DESTDIR isn't set when installing.
-    list ( FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES ${SUITESPARSE_FULL_LIBDIR} _idx )
-    if ( _idx LESS 0 )
-        # installation is not to a system prefix
-        list ( FIND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} _idx )
-        if ( _idx LESS 0 )
-            # RPATH is not yet included in CMAKE_INSTALL_RPATH
-            list ( APPEND CMAKE_INSTALL_RPATH ${SUITESPARSE_FULL_LIBDIR} )
-        endif ( )
-    endif ( )
 endif ( )
 
 set ( SUITESPARSE_PKGFILEDIR ${SUITESPARSE_LIBDIR} CACHE STRING
@@ -254,19 +228,19 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 #-------------------------------------------------------------------------------
 
 include ( CheckLanguage )
-option ( NFORTRAN "ON: do not try to use Fortran. OFF (default): try Fortran" off )
-if ( NFORTRAN )
-    message ( STATUS "Fortran:          not enabled" )
-else ( )
+option ( SUITESPARSE_USE_FORTRAN "ON (default): use Fortran. OFF: do not use Fortran" ON )
+if ( SUITESPARSE_USE_FORTRAN )
     check_language ( Fortran )
     if ( CMAKE_Fortran_COMPILER )
         enable_language ( Fortran )
         message ( STATUS "Fortran:          ${CMAKE_Fortran_COMPILER}" )
     else ( )
         # Fortran not available:
-        set ( NFORTRAN true )
+        set ( SUITESPARSE_USE_FORTRAN OFF )
         message ( STATUS "Fortran:          not available" )
     endif ( )
+else ( )
+    message ( STATUS "Fortran:          not enabled" )
 endif ( )
 
 # default C-to-Fortran name mangling if Fortran compiler not found
@@ -284,7 +258,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( ENABLE_CUDA AND NOT MSVC )
+if ( SUITESPARSE_USE_CUDA AND NOT MSVC )
 
     # try finding CUDA
     check_language ( CUDA )
@@ -301,26 +275,26 @@ if ( ENABLE_CUDA AND NOT MSVC )
         if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
             message ( STATUS "CUDA:               not enabled (CUDA 11.2 or later required)" )
-            set ( SUITESPARSE_CUDA OFF )
+            set ( SUITSPARSE_HAS_CUDA OFF )
         else ( )
             # CUDA 11.2 or later present
             enable_language ( CUDA )
-            set ( SUITESPARSE_CUDA ON )
+            set ( SUITSPARSE_HAS_CUDA ON )
         endif ( )
     else ( )
         # without CUDA:
         message ( STATUS "CUDA:             not found" )
-        set ( SUITESPARSE_CUDA OFF )
+        set ( SUITSPARSE_HAS_CUDA OFF )
     endif ( )
 
 else ( )
 
     # CUDA is disabled
-    set ( SUITESPARSE_CUDA OFF )
+    set ( SUITSPARSE_HAS_CUDA OFF )
 
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITSPARSE_HAS_CUDA )
     message ( STATUS "CUDA:             enabled" )
     set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )

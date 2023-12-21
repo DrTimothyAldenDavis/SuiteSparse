@@ -37,8 +37,6 @@ CHOLMOD is optional.  A copy is in SuiteSparse/SuiteSparse_metis, and it is
 slightly modified from the original METIS 5.1.0 to incorporate it into
 SuiteSparse.
 
-If you do not wish to use METIS, compile with -DNPARTITION.
-
 For use in MATLAB (on any system, including Windows):  start MATLAB, cd to the
 CHOLMOD/MATLAB directory, and type cholmod_make in the MATLAB Command Window.
 

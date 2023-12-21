@@ -86,7 +86,7 @@ jobs:
                   -DBLA_VENDOR="OpenBLAS" \
                   -DNSTATIC=ON \
                   -DCOMPACT=ON \
-                  -DENABLE_CUDA=ON \
+                  -DSUITESPARSE_USE_CUDA=ON \
                   -DCUDAToolkit_INCLUDE_DIR="/usr/include" \
                   ..
             echo "::endgroup::"

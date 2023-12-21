@@ -38,14 +38,16 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/cmake_modules
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( ENABLE_CUDA "Enable CUDA acceleration" on )
+option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
+option ( CHOLMOD_USE_CUDA "ON (default): enable CUDA acceleration for CHOLMOD, OFF: do not use CUDA" ON )
+option ( CHOLMOD_GPL "ON (default): enable GPL-licensed modules, OFF: do not use any CHOLMOD GPL-licensed modules" ON )
 
-if ( NGPL )
-    # NGPL: if true, do not include any GPL-licensed module
-    set ( NMATRIXOPS true )
-    set ( NMODIFY true )
-    set ( NSUPERNODAL true )
-    set ( ENABLE_CUDA false )
+if ( NOT CHOLMOD_GPL )
+    # CHOLMOD_GPL: if OFF, do not include any GPL-licensed module
+    set ( CHOLMOD_MATRIXOPS OFF )
+    set ( CHOLMOD_MODIFY OFF )
+    set ( CHOLMOD_SUPERNODAL OFF )
+    set ( CHOLMOD_USE_CUDA OFF )
     add_compile_definitions ( NGPL )
 endif ( )
 
@@ -58,21 +60,25 @@ if ( NOT HAVE_SSIZE_T )
     add_compile_definitions ( NO_SSIZE_T )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND CHOLMOD_USE_CUDA )
     # CHOLMOD with CUDA
     enable_language ( CUDA CXX )
+    set ( CHOLMOD_HAS_CUDA ON )
+else ( )
+    set ( CHOLMOD_HAS_CUDA OFF )
 endif ( )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
-if ( NOPENMP )
-    # OpenMP has been disabled
-    set ( OpenMP_C_FOUND false )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( CHOLMOD_USE_OPENMP )
+    find_package ( OpenMP GLOBAL )
 else ( )
-    find_package ( OpenMP )
+    # OpenMP has been disabled
+    set ( OpenMP_C_FOUND OFF )
 endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
@@ -103,32 +109,32 @@ endif ( )
 # not build a module, simply delete or rename the entire folder before building
 # CHOLMOD, or pass the corresponding flag when using cmake:
 
-#   -DNGPL=1        if true: do not build any GPL-licensed module (MatrixOps,
-#                   Modify, Supernodal, and GPU modules). See above.
-#   -DNCHECK=1      if true: do not build the Check module.
-#   -DNMATRIXOPS=1  if true: do not build the MatrixOps module.
-#   -DNCHOLESKY=1   if true: do not build the Cholesky module.
-#                   This also disables the Supernodal and Modify modules.
-#   -DNMODIFY=1     if true: do not build the Modify module.
-#   -DNCAMD=1       if true: do not link against CAMD and CCOLAMD.
-#                   This also disables the Partition module.
-#   -DNPARTITION=1  if true: do not build the Partition module.
-#   -DNSUPERNODAL=1 if true: do not build the Supernodal module.
+#   -DCHOLMOD_GPL=0        if OFF: do not build any GPL-licensed module
+#                          (MatrixOps, Modify, Supernodal, and GPU modules).
+#   -DCHOLMOD_CHECK=0      if OFF: do not build the Check module.
+#   -DCHOLMOD_MATRIXOPS=0  if OFF: do not build the MatrixOps module.
+#   -DCHOLMOD_CHOLESKY=0   if OFF: do not build the Cholesky module.
+#                          This also disables the Supernodal and Modify modules.
+#   -DCHOLMOD_MODIFY=0     if OFF: do not build the Modify module.
+#   -DCHOLMOD_CAMD=0       if OFF: do not link against CAMD and CCOLAMD.
+#                          This also disables the Partition module.
+#   -DCHOLMOD_PARTITION=0  if OFF: do not build the Partition module.
+#   -DCHOLMOD_SUPERNODAL=0 if OFF: do not build the Supernodal module.
 
-# By default, all "N..." flags are false, if not defined explicitly.
+# By default, all the above flags are ON, if not defined explicitly.
 
     #---------------------------------------------------------------------------
     # Check module
     #---------------------------------------------------------------------------
 
-    option ( NCHECK "ON: do not use Check Module.  OFF (default): use Check Module" off )
+    option ( CHOLMOD_CHECK "ON (default): use Check Module.  OFF: do not use Check Module" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Check )
         # Check module does not appear so don't use it
-        set ( NCHECK true )
+        set ( CHOLMOD_CHECK OFF )
     endif ( )
-    if ( NCHECK )
-        # if NCHECK is true: do not build the Check module
+    if ( NOT CHOLMOD_CHECK )
+        # if CHOLMOD_CHECK is OFF: do not build the Check module
         add_compile_definitions ( NCHECK )
     endif ( )
 
@@ -136,14 +142,14 @@ endif ( )
     # MatrixOps module
     #---------------------------------------------------------------------------
 
-    option ( NMATRIXOPS "ON: do not use MatrixOps Module.  OFF (default): use MatrixOps Module" off )
+    option ( CHOLMOD_MATRIXOPS "ON (default): use MatrixOps Module.  OFF: do not use MatrixOps Module" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/MatrixOps )
         # MatrixOps module does not appear so don't use it
-        set ( NMATRIXOPS true )
+        set ( CHOLMOD_MATRIXOPS OFF )
     endif ( )
-    if ( NMATRIXOPS )
-        # if NMATRIXOPS is true: do not build the Check module
+    if ( NOT CHOLMOD_MATRIXOPS )
+        # if CHOLMOD_MATRIXOPS is OFF: do not build the Check module
         add_compile_definitions ( NMATRIXOPS )
     endif ( )
 
@@ -151,17 +157,17 @@ endif ( )
     # Cholesky module: requires AMD, COLAMD
     #---------------------------------------------------------------------------
 
-    option ( NCHOLESKY "ON: do not use Cholesky Module.  OFF (default): use Cholesky Module" off )
+    option ( CHOLMOD_CHOLESKY "ON (default): use Cholesky Module.  OFF: do not use Cholesky Module" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Cholesky )
         # Cholesky module does not appear so don't use it
-        set ( NCHOLESKY true )
+        set ( CHOLMOD_CHOLESKY OFF )
     endif ( )
-    if ( NCHOLESKY )
-        # if NCHOLESKY is true: do not build the Cholesky module, and do not
+    if ( NOT CHOLMOD_CHOLESKY )
+        # if CHOLMOD_CHOLESKY is OFF: do not build the Cholesky module, and do not
         # build the Supernodal or Modify modules that depend on it.
-        set ( NSUPERNODAL true )
-        set ( NMODIFY true )
+        set ( CHOLMOD_SUPERNODAL OFF )
+        set ( CHOLMOD_MODIFY OFF )
         add_compile_definitions ( NCHOLESKY )
     endif ( )
 
@@ -169,14 +175,14 @@ endif ( )
     # Modify module: requires Cholesky
     #---------------------------------------------------------------------------
 
-    option ( NMODIFY "ON: do not use Modify Module.  OFF (default): use Modify Module" off )
+    option ( CHOLMOD_MODIFY "ON (default): use Modify Module.  OFF: do not use Modify Module" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Modify )
         # Modify module does not appear so don't use it
-        set ( NMODIFY true )
+        set ( CHOLMOD_MODIFY OFF )
     endif ( )
-    if ( NMODIFY )
-        # if NMODIFY is true: do not build the Modify module
+    if ( NOT CHOLMOD_MODIFY )
+        # if CHOLMOD_MODIFY is OFF: do not build the Modify module
         add_compile_definitions ( NMODIFY )
     endif ( )
 
@@ -184,7 +190,7 @@ endif ( )
     # interfaces to CAMD and CCOLAMD
     #---------------------------------------------------------------------------
 
-    option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
+    option ( CHOLMOD_CAMD "ON (default): use CAMD/CCOLAMD.  OFF: do not use CAMD/CCOLAMD" ON )
 
     # The CHOLMOD interfaces to CAMD and CCOLAMD are in the Partition module
     # (cholmod_camd, cholmod_ccolamd, cholmod_csymamd).  The Partition module
@@ -193,7 +199,7 @@ endif ( )
     # future, the CAMD and CCOLAMD interfaces will be split into their own
     # module to make this dependency more clear.
 
-    if ( NOT NCAMD AND NOT SUITESPARSE_ROOT_CMAKELISTS )
+    if ( CHOLMOD_CAMD AND NOT SUITESPARSE_ROOT_CMAKELISTS )
         # find CAMD and CCOLAMD
         find_package ( CAMD 3.3.0
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
@@ -209,36 +215,36 @@ endif ( )
 
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
             # CAMD and/or CCOLAMD not found
-            set ( NCAMD true )
+            set ( CHOLMOD_CAMD OFF )
         endif ( )
     endif ( )
 
-    if ( NCAMD )
+    if ( NOT CHOLMOD_CAMD )
         # Partition module requires CAMD and CCOLAMD, so if CAMD and CCOLAMD
         # are disabled, then do not build the Partition module
-        set ( NPARTITION true )
+        set ( CHOLMOD_PARTITION OFF )
     endif ( )
 
     #---------------------------------------------------------------------------
     # Partition module: requires Cholesky, CAMD, CCOLAMD, and METIS
     #---------------------------------------------------------------------------
 
-    option ( NPARTITION "ON: do not use METIS.  OFF (default): use METIS" off )
+    option ( CHOLMOD_PARTITION "ON (default): use METIS.  OFF: do not use METIS" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Partition )
-        # Partition module does not appear so don't use it.  Since this
-        # folder also includes the CAMD and CCOLAMD interfaces, NCAMD must
-        # be set true here as well.
-        set ( NPARTITION true )
-        set ( NCAMD true )
+        # Partition module does not appear so don't use it.  Since this folder
+        # also includes the CAMD and CCOLAMD interfaces, CHOLMOD_CAMD must be
+        # set OFF here as well.
+        set ( CHOLMOD_PARTITION OFF )
+        set ( CHOLMOD_CAMD OFF )
     endif ( )
-    if ( NPARTITION )
-        # if NPARTITION is true: do not build the Partition module
+    if ( NOT CHOLMOD_PARTITION )
+        # if CHOLMOD_PARTITION is OFF: do not build the Partition module
         add_compile_definitions ( NPARTITION )
     endif ( )
 
-    if ( NCAMD )
-        # if NCAMD is true: do not build the CAMD and CCOLAMD interfaces
+    if ( NOT CHOLMOD_CAMD )
+        # if CHOLMOD_CAMD is OFF: do not build the CAMD and CCOLAMD interfaces
         add_compile_definitions ( NCAMD )
     endif ( )
 
@@ -246,18 +252,18 @@ endif ( )
     # Supernodal module: requires Cholesky, BLAS, and LAPACK
     #---------------------------------------------------------------------------
 
-    option ( NSUPERNODAL "ON: do not use Supernodal Module.  OFF (default): use Supernodal Module" off )
+    option ( CHOLMOD_SUPERNODAL "ON (default): use Supernodal Module.  OFF: do not use Supernodal Module" ON )
 
     if ( NOT EXISTS ${PROJECT_SOURCE_DIR}/Supernodal )
         # Supernodal module does not appear so don't use it
-        set ( NSUPERNODAL true )
+        set ( CHOLMOD_SUPERNODAL OFF )
     endif ( )
 
-    if ( NSUPERNODAL )
-        # if NSUPERNODAL is true: do not link against CAMD and CCOLAMD
+    if ( NOT CHOLMOD_SUPERNODAL )
+        # if CHOLMOD_SUPERNODAL is OFF: do not build Supernodal module
         add_compile_definitions ( NSUPERNODAL )
     else ( )
-        # if NSUPERNODAL is false: build Supernodal, needs BLAS and LAPACK
+        # if CHOLMOD_SUPERNODAL is ON: build Supernodal, needs BLAS and LAPACK
         include ( SuiteSparseBLAS )     # requires cmake 3.22
         include ( SuiteSparseLAPACK )   # requires cmake 3.22
     endif ( )
@@ -300,7 +306,7 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER "Include/cholmod.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-    if ( SUITESPARSE_CUDA )
+    if ( CHOLMOD_HAS_CUDA )
         set_target_properties ( CHOLMOD PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
         set_target_properties ( CHOLMOD PROPERTIES POSITION_INDEPENDENT_CODE ON )
     endif ( )
@@ -332,7 +338,7 @@ if ( BUILD_STATIC_LIBS )
             OUTPUT_NAME cholmod_static )
     endif ( )
 
-    if ( SUITESPARSE_CUDA )
+    if ( CHOLMOD_HAS_CUDA )
         set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
         set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
     endif ( )
@@ -390,7 +396,7 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # CAMD and CCOLAMD:
-if ( NOT NCAMD )
+if ( CHOLMOD_CAMD )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::CAMD )
     endif ( )
@@ -447,7 +453,7 @@ if ( NOT WIN32 )
 endif ( )
 
 # BLAS and LAPACK: for the Supernodal Module
-if ( NOT NSUPERNODAL )
+if ( CHOLMOD_SUPERNODAL )
     # LAPACK:
     message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES}" )
     message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS}" )
@@ -476,20 +482,20 @@ if ( NOT NSUPERNODAL )
 endif ( )
 
 # METIS and the Partition module:
-if ( NOT NPARTITION )
+if ( CHOLMOD_PARTITION )
     include_directories ( SuiteSparse_metis/GKlib )
     include_directories ( SuiteSparse_metis/libmetis )
     include_directories ( SuiteSparse_metis/include )
 endif ( )
 
 # CHOLMOD_CUDA
-if ( SUITESPARSE_CUDA )
+if ( CHOLMOD_HAS_CUDA )
     if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( CHOLMOD PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( CHOLMOD PUBLIC "CHOLMOD_HAS_CUDA" )
     endif ( )
-    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DSUITESPARSE_CUDA" )
+    set ( CHOLMOD_CFLAGS "${CHOLMOD_CFLAGS} -DCHOLMOD_HAS_CUDA" )
     if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( CHOLMOD_static PUBLIC "SUITESPARSE_CUDA" )
+        target_compile_definitions ( CHOLMOD_static PUBLIC "CHOLMOD_HAS_CUDA" )
     endif ( )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
@@ -522,7 +528,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
+if ( CHOLMOD_HAS_CUDA )
     # with CUDA
     add_subdirectory ( GPU )
     message ( STATUS "CUDA libraries: " ${CUDA_LIBRARIES} )
@@ -651,16 +657,14 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
-
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     add_executable ( cholmod_di_simple "Demo/cholmod_di_simple.c" )
     add_executable ( cholmod_dl_simple "Demo/cholmod_dl_simple.c" )
     add_executable ( cholmod_si_simple "Demo/cholmod_si_simple.c" )
     add_executable ( cholmod_sl_simple "Demo/cholmod_sl_simple.c" )
 
-    if ( NOT NFORTRAN )
+    if ( SUITESPARSE_USE_FORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
         add_executable ( readhb2    "Demo/readhb2.f" )
         add_executable ( reade      "Demo/reade.f" )
@@ -690,109 +694,113 @@ endif ( )
 # testing
 #-------------------------------------------------------------------------------
 
-enable_testing ( )
+include ( CTest )
 
-add_executable ( cholmod_di_demo "Demo/cholmod_di_demo.c" )
-add_executable ( cholmod_dl_demo "Demo/cholmod_dl_demo.c" )
-add_executable ( cholmod_si_demo "Demo/cholmod_si_demo.c" )
-add_executable ( cholmod_sl_demo "Demo/cholmod_sl_demo.c" )
+if ( SUITESPARSE_DEMOS OR BUILD_TESTING )
 
-# Libraries required for tests
-if ( BUILD_SHARED_LIBS )
+    add_executable ( cholmod_di_demo "Demo/cholmod_di_demo.c" )
+    add_executable ( cholmod_dl_demo "Demo/cholmod_dl_demo.c" )
+    add_executable ( cholmod_si_demo "Demo/cholmod_si_demo.c" )
+    add_executable ( cholmod_sl_demo "Demo/cholmod_sl_demo.c" )
 
-    # link the tests with shared libraries
-    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    # Libraries required for tests
+    if ( BUILD_SHARED_LIBS )
 
-else ( )
+        # link the tests with shared libraries
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
 
-    # link the tests with static libraries
-    target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+    else ( )
 
-endif ( )
+        # link the tests with static libraries
+        target_link_libraries ( cholmod_di_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC CHOLMOD_static SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
 
-if ( NOT NCAMD )
-
-    target_link_libraries ( cholmod_di_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_si_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_dl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-    target_link_libraries ( cholmod_sl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
-
-endif ( )
-
-add_test ( NAME CHOLMOD_int32_double_bcsstk01
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int64_double_bcsstk01
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int32_single_bcsstk01
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-add_test ( NAME CHOLMOD_int64_single_bcsstk01
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
-
-add_test ( NAME CHOLMOD_int32_double_lp_afiro
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int64_double_lp_afiro
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int32_single_lp_afiro
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-add_test ( NAME CHOLMOD_int64_single_lp_afiro
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
-
-add_test ( NAME CHOLMOD_int32_double_can24
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int64_double_can24
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int32_single_can24
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-add_test ( NAME CHOLMOD_int64_single_can24
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
-
-add_test ( NAME CHOLMOD_int32_double_complex
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int64_double_complex
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int32_single_complex
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-add_test ( NAME CHOLMOD_int64_single_complex
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
-
-add_test ( NAME CHOLMOD_int32_double_supernodal
-    COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int64_double_supernodal
-    COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int32_single_supernodal
-    COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-add_test ( NAME CHOLMOD_int64_single_supernodal
-    COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
-
-if ( WIN32 AND BUILD_SHARED_LIBS )
-    # Set PATH to pick up the necessary libraries for all tests
-
-    set ( CHOLMOD_CTEST_NAMES 
-        CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
-        CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
-        CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
-        CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
-        CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
-
-    set ( CHOLMOD_DEPENDENCIES
-        CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
-    if ( NOT NCAMD )
-        list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
     endif ( )
-    set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
-    foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
-        list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
-    endforeach ( )
-    foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
-        set_tests_properties ( ${cholmod_ctest} PROPERTIES
-            ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
-    endforeach ( )
+
+    if ( CHOLMOD_CAMD )
+
+        target_link_libraries ( cholmod_di_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_si_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_dl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        target_link_libraries ( cholmod_sl_demo PUBLIC SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+
+    endif ( )
+
+    add_test ( NAME CHOLMOD_int32_double_bcsstk01
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int64_double_bcsstk01
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int32_single_bcsstk01
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+    add_test ( NAME CHOLMOD_int64_single_bcsstk01
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk01.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_lp_afiro
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int64_double_lp_afiro
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int32_single_lp_afiro
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+    add_test ( NAME CHOLMOD_int64_single_lp_afiro
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/lp_afiro.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_can24
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int64_double_can24
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int32_single_can24
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+    add_test ( NAME CHOLMOD_int64_single_can24
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/can___24.mtx )
+
+    add_test ( NAME CHOLMOD_int32_double_complex
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int64_double_complex
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int32_single_complex
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+    add_test ( NAME CHOLMOD_int64_single_complex
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/c.tri )
+
+    add_test ( NAME CHOLMOD_int32_double_supernodal
+        COMMAND cholmod_di_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int64_double_supernodal
+        COMMAND cholmod_dl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int32_single_supernodal
+        COMMAND cholmod_si_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+    add_test ( NAME CHOLMOD_int64_single_supernodal
+        COMMAND cholmod_sl_demo ${PROJECT_SOURCE_DIR}/Demo/Matrix/bcsstk02.tri )
+
+    if ( WIN32 AND BUILD_SHARED_LIBS )
+        # Set PATH to pick up the necessary libraries for all tests
+
+        set ( CHOLMOD_CTEST_NAMES 
+            CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
+            CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
+            CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24
+            CHOLMOD_int32_double_complex CHOLMOD_int64_double_complex CHOLMOD_int32_single_complex CHOLMOD_int64_single_complex
+            CHOLMOD_int32_double_supernodal CHOLMOD_int64_double_supernodal CHOLMOD_int32_single_supernodal CHOLMOD_int64_single_supernodal )
+
+        set ( CHOLMOD_DEPENDENCIES
+            CHOLMOD SuiteSparse::SuiteSparseConfig SuiteSparse::AMD SuiteSparse::COLAMD )
+        if ( CHOLMOD_CAMD )
+            list ( APPEND CHOLMOD_DEPENDENCIES SuiteSparse::CAMD SuiteSparse::CCOLAMD )
+        endif ( )
+        set ( CHOLMOD_CTEST_PATH_MODIFICATION "" )
+        foreach ( cholmod_dependency ${CHOLMOD_DEPENDENCIES} )
+            list ( APPEND CHOLMOD_CTEST_PATH_MODIFICATION PATH=path_list_prepend:$<TARGET_FILE_DIR:${cholmod_dependency}> )
+        endforeach ( )
+        foreach( cholmod_ctest ${CHOLMOD_CTEST_NAMES} )
+            set_tests_properties ( ${cholmod_ctest} PROPERTIES
+                ENVIRONMENT_MODIFICATION "${CHOLMOD_CTEST_PATH_MODIFICATION}" )
+        endforeach ( )
+
+    endif ( )
 
 endif ( )
 

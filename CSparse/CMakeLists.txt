@@ -15,7 +15,8 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.13 )
+# Note that CSparse can use an older cmake version than most of SuiteSparse.
+cmake_minimum_required ( VERSION 3.13 )     # CSparse can be built stand-alone
 
 set ( CSPARSE_DATE "Dec 30, 2023" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
@@ -41,10 +42,6 @@ project ( csparse
 
 message ( STATUS "Source:        " ${PROJECT_SOURCE_DIR} )
 message ( STATUS "Build:         " ${CMAKE_BINARY_DIR} )
-
-cmake_policy ( SET CMP0042 NEW )    # enable MACOSX_RPATH by default
-cmake_policy ( SET CMP0048 NEW )    # VERSION variable policy
-cmake_policy ( SET CMP0054 NEW )    # if ( expression ) handling policy
 
 if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
@@ -165,37 +162,18 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
+add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
+add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
 
-    #---------------------------------------------------------------------------
-    # demo library
-    #---------------------------------------------------------------------------
-
-    message ( STATUS "Also compiling the demos in CSparse/Demo" )
-
-    #---------------------------------------------------------------------------
-    # Demo programs
-    #---------------------------------------------------------------------------
-
-    add_executable ( cs_demo1 "Demo/cs_demo1.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo2 "Demo/cs_demo2.c" "Demo/cs_demo.c" )
-    add_executable ( cs_demo3 "Demo/cs_demo3.c" "Demo/cs_demo.c" )
-
-    # Libraries required for Demo programs
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( cs_demo1 PUBLIC csparse )
-        target_link_libraries ( cs_demo2 PUBLIC csparse )
-        target_link_libraries ( cs_demo3 PUBLIC csparse )
-    else ( )
-        target_link_libraries ( cs_demo1 PUBLIC csparse_static )
-        target_link_libraries ( cs_demo2 PUBLIC csparse_static )
-        target_link_libraries ( cs_demo3 PUBLIC csparse_static )
-    endif ( )
-
+# Libraries required for Demo programs
+if ( BUILD_SHARED_LIBS )
+    target_link_libraries ( cs_demo1 PUBLIC csparse )
+    target_link_libraries ( cs_demo2 PUBLIC csparse )
+    target_link_libraries ( cs_demo3 PUBLIC csparse )
 else ( )
-
-    message ( STATUS "Skipping the demos in CSparse/Demo" )
-
+    target_link_libraries ( cs_demo1 PUBLIC csparse_static )
+    target_link_libraries ( cs_demo2 PUBLIC csparse_static )
+    target_link_libraries ( cs_demo3 PUBLIC csparse_static )
 endif ( )
 

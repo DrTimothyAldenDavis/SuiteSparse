@@ -7,9 +7,19 @@
 # its own license.
 # SPDX-License-Identifier: Apache-2.0
 
-# The actually required minimum CMake version might be higher depending on the
-# selected SuiteSparse projects.
-cmake_minimum_required ( VERSION 3.20 )
+# This file and most packages in SuiteSparse require cmake 3.22 or later.  Some
+# packages can be built as stand-alone packages with their own CMakeLists.txt
+# files, with older versions of cmake (GraphBLAS, LAGraph, and CSparse):
+#
+#   GraphBLAS and LAGraph: 3.20
+#   CSparse: 3.13
+#   GraphBLAS jitifyer (for end user JIT kernels): 3.13
+#
+# Other CMakeLists.txt files inside SuiteSparse are from dependent packages
+# (LAGraph/deps/json_h, GraphBLAS/cpu_features, and CHOLMOD/SuiteSparse_metis
+# which is a slightly revised copy of METIS 5.0.1) but none of those
+# CMakeLists.txt files are used to build any package in SuiteSparse.
+cmake_minimum_required ( VERSION 3.22 )
 
 project ( "SuiteSparse" )
 
@@ -19,11 +29,6 @@ project ( "SuiteSparse" )
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/SuiteSparse_config/cmake_modules )
-
-option ( ENABLE_CUDA "Enable CUDA acceleration" ON )
-
-# SuiteSparsePolicy enables SUITESPARSE_CUDA if a CUDA compiler can be found.
-include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
 # build options
@@ -57,14 +62,14 @@ foreach ( proj ${SUITESPARSE_ENABLE_PROJECTS} )
   endif ( )
 endforeach ( )
 
-# Use OpenMP in CHOLMOD, GraphBLAS, LAGraph, and SuiteSparse_config
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-
 # CHOLMOD options affecting dependencies
-option ( NCAMD "ON: do not use CAMD/CCOLAMD.  OFF (default): use CAMD/CCOLAMD" OFF )
+option ( CHOLMOD_CAMD "ON (default): use CAMD/CCOLAMD.  OFF: do not use CAMD/CCOLAMD" ON )
 
-# KLU and UMFPACK options affecting dependencies
-option ( NCHOLMOD "ON: do not use CHOLMOD in KLU and UMFPACK.  OFF (default): use CHOLMOD" OFF )
+# KLU options affecting dependencies
+option ( KLU_USE_CHOLMOD "ON (default): use CHOLMOD in KLU.  OFF: do not use CHOLMOD in KLU" ON )
+
+# UMFPACK options affecting dependencies
+option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
 # overwrite BUILD_STATIC_LIBS specifically for GraphBLAS because building the
 # library takes a long time
@@ -72,14 +77,14 @@ option ( GRAPHBLAS_BUILD_STATIC_LIBS "OFF (default): Do not build static librari
 
 # options to build with libraries installed on the system instead of building
 # dependencies automatically
-option ( USE_SYSTEM_BTF "ON: use BTF libraries installed on the build system.  OFF (default): Automatically build BTF as dependency if needed." OFF )
-option ( USE_SYSTEM_CHOLMOD "ON: use CHOLMOD libraries installed on the build system.  OFF (default): Automatically build CHOLMOD as dependency if needed." OFF )
-option ( USE_SYSTEM_AMD "ON: use AMD libraries installed on the build system.  OFF (default): Automatically build AMD as dependency if needed." OFF )
-option ( USE_SYSTEM_COLAMD "ON: use COLAMD libraries installed on the build system.  OFF (default): Automatically build COLAMD as dependency if needed." OFF )
-option ( USE_SYSTEM_CAMD "ON: use CAMD libraries installed on the build system.  OFF (default): Automatically build CAMD as dependency if needed." OFF )
-option ( USE_SYSTEM_CCOLAMD "ON: use CCOLAMD libraries installed on the build system.  OFF (default): Automatically build CCOLAMD as dependency if needed." OFF )
-option ( USE_SYSTEM_GRAPHBLAS "ON: use GraphBLAS libraries installed on the build system.  OFF (default): Automatically build GraphBLAS as dependency if needed." OFF )
-option ( USE_SYSTEM_SUITESPARSE_CONFIG "ON: use SuiteSparse_config libraries installed on the build system.  OFF (default): Automatically build SuiteSparse_config as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_BTF "ON: use BTF libraries installed on the build system.  OFF (default): Automatically build BTF as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_CHOLMOD "ON: use CHOLMOD libraries installed on the build system.  OFF (default): Automatically build CHOLMOD as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_AMD "ON: use AMD libraries installed on the build system.  OFF (default): Automatically build AMD as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_COLAMD "ON: use COLAMD libraries installed on the build system.  OFF (default): Automatically build COLAMD as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_CAMD "ON: use CAMD libraries installed on the build system.  OFF (default): Automatically build CAMD as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_CCOLAMD "ON: use CCOLAMD libraries installed on the build system.  OFF (default): Automatically build CCOLAMD as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS "ON: use GraphBLAS libraries installed on the build system.  OFF (default): Automatically build GraphBLAS as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG "ON: use SuiteSparse_config libraries installed on the build system.  OFF (default): Automatically build SuiteSparse_config as dependency if needed." OFF )
 
 #-------------------------------------------------------------------------------
 # global variables
@@ -99,23 +104,16 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-if ( NOPENMP )
-    # OpenMP has been disabled
-    message ( STATUS "OpenMP disabled" )
-    set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # check/add project dependencies
 #-------------------------------------------------------------------------------
 
-if ( USE_SYSTEM_GRAPHBLAS )
+if ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "graphblas" )
     find_package ( GraphBLAS REQUIRED )
 else ( )
     if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # LAGraph requires GraphBLAS.
         if ( NOT "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"graphblas\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "graphblas" )
@@ -123,11 +121,12 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_BTF )
+if ( SUITESPARSE_USE_SYSTEM_BTF )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "btf" )
     find_package ( BTF REQUIRED )
 else ( )
     if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # KLU requires BTF.
         if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"btf\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
@@ -135,15 +134,17 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_CHOLMOD )
+if ( SUITESPARSE_USE_SYSTEM_CHOLMOD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "cholmod" )
     find_package ( CHOLMOD REQUIRED )
 else ( )
-    if ( ( NOT NCHOLMOD AND
-              ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS
-                OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS ) )
+    if ( ( KLU_USE_CHOLMOD AND "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            OR ( UMFPACK_USE_CHOLMOD AND "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # SPQR and ParU both require CHOLMOD.  KLU and UMFPACK can optionally
+        # use CHOLMOD.  Add CHOLMOD to the list of projects, if it has been
+        # requested by SPQR, ParU, KLU, or UMFPACK, if not already there.
         if ( NOT "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"cholmod\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "cholmod" )
@@ -151,7 +152,7 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_AMD )
+if ( SUITESPARSE_USE_SYSTEM_AMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "amd" )
     find_package ( AMD REQUIRED )
 else ( )
@@ -159,6 +160,7 @@ else ( )
             OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD, LDL, UMFPACK, and SPEX require AMD.
         if ( NOT "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"amd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "amd" )
@@ -166,12 +168,13 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_COLAMD )
+if ( SUITESPARSE_USE_SYSTEM_COLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "colamd" )
     find_package ( COLAMD REQUIRED )
 else ( )
     if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD and SPEX require COLAMD.
         if ( NOT "colamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"colamd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "colamd" )
@@ -179,23 +182,25 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_CAMD )
+if ( SUITESPARSE_USE_SYSTEM_CAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "camd" )
     find_package ( CAMD REQUIRED )
 else ( )
-    if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
-        if ( NOT USE_SYSTEM_CAMD AND NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD can optionally use CAMD.
+        if ( NOT SUITESPARSE_USE_SYSTEM_CAMD AND NOT "camd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"camd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "camd" )
         endif ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_CCOLAMD )
+if ( SUITESPARSE_USE_SYSTEM_CCOLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
     find_package ( CCOLAMD REQUIRED )
 else ( )
-    if ( NOT NCAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+    if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # CHOLMOD can optionally use CCOLAMD.
         if ( NOT "ccolamd" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"ccolamd\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
@@ -203,7 +208,7 @@ else ( )
     endif ( )
 endif ( )
 
-if ( USE_SYSTEM_SUITESPARSE_CONFIG )
+if ( SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
     find_package ( SuiteSparse_config REQUIRED )
 else ( )
@@ -222,6 +227,7 @@ else ( )
             OR "rbio" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spqr" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # All but CSparse, GraphBLAS, and LAGraph require SuiteSparse_config.
         if ( NOT "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"suitesparse_config\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
@@ -497,5 +503,5 @@ include ( SuiteSparseReport )
 # The CSparse/CXSparse Tcov tests are very fast and would be good candidates to
 # add.
 
-enable_testing ( )
+include ( CTest )
 

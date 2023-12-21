@@ -66,7 +66,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     double *Flops, *Flops_subtree ;
     Int *Sp, *Sj;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
     spqr_gpu_impl <Int> *QRgpu ;
     Int *RjmapOffsets, *RimapOffsets ;
     Int RjmapSize, RimapSize;
@@ -106,7 +106,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     // GPU selection
     // -------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
     // See if the user wants to use GPU acceleration.
     bool useGPU ;
 
@@ -409,7 +409,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
     // allocated later (or skipped if not using GPU)
     QRsym->QRgpu = NULL ;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
     QRgpu = NULL ;
     RjmapOffsets = NULL ;
@@ -856,7 +856,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
         ASSERT (cm_min <= cm_max) ;
         ASSERT (csize_min <= csize_max) ;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
         if(useGPU)
         {
             // Compute Rjmap Offsets.
@@ -969,7 +969,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
         }
     }
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
     if(useGPU)
     {
         /* Save GPU size members. */
@@ -1064,7 +1064,7 @@ template <typename Int> spqr_symbolic <Int> *spqr_analyze
 
     PR (("flops %g\n", total_flops)) ;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
     // -------------------------------------------------------------------------
     // if we're using GPU acceleration, construct static gpu stages

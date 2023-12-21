@@ -52,7 +52,7 @@ jobs:
           - cuda: with
             cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
             cuda-cmake-flags:
-              -DENABLE_CUDA=On
+              -DSUITESPARSE_USE_CUDA=ON
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
           - compiler: gcc
@@ -62,7 +62,7 @@ jobs:
             ccache-max: 600M
             cuda: without
             openmp: without
-            openmp-cmake-flags: "-DNOPENMP=ON"
+            openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
             cc: "gcc"
@@ -71,7 +71,7 @@ jobs:
             cuda: with
             cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
             cuda-cmake-flags:
-              -DENABLE_CUDA=On
+              -DSUITESPARSE_USE_CUDA=ON
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             openmp: with

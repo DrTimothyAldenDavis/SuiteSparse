@@ -52,7 +52,7 @@ Dec 9, 2022: version 4.0.2
 
     * minor change to build system
     * Fortran: no longer required to build CHOLMOD
-    * NPARTITION: if CHOLMOD is compiled with -DNPARTION, then
+    * NPARTITION: if CHOLMOD is compiled with -DNPARTITION, then
         METIS is not compiled.  However, the CHOLMOD interface to METIS is
         still present; they simply return CHOLMOD_NOT_INSTALLED.  This
         allows methods that depend on CHOLMOD's METIS interface to use

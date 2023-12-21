@@ -14,7 +14,7 @@
 // include files
 // -----------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 #include <cublas_v2.h>
 #endif
 #define SUITESPARSE_GPU_EXTERN_ON
@@ -214,8 +214,8 @@ template <typename Int = int64_t> struct spqr_symbolic
     // -------------------------------------------------------------------------
 
     // This is NULL if the GPU is not in use.  The GPU must be enabled at
-    // compile time (-DSUITESPARSE_CUDA enables the GPU).  If the Householder vectors
-    // are requested or if rank detection is requested, then the GPU is
+    // compile time (-DSPQR_HAS_CUDA enables the GPU).  If the Householder
+    // vectors are requested or if rank detection is requested, then the GPU is
     // disabled.
 
     spqr_gpu_impl <Int> *QRgpu ;

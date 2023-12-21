@@ -60,7 +60,7 @@ if ( @SUITESPARSE_IN_BUILD_TREE@ )
         endif ( )
     endif ( )
 
-    if ( NOT @NCHOLMOD@ )
+    if ( @UMFPACK_HAS_CHOLMOD@ )
         if ( NOT TARGET SuiteSparse::CHOLMOD )
             # First check in a common build tree
             find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@
@@ -79,7 +79,7 @@ else ( )
     if ( NOT TARGET SuiteSparse::AMD )
         find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@ )
     endif ( )
-    if ( NOT @NCHOLMOD@ AND NOT TARGET SuiteSparse::CHOLMOD )
+    if ( @UMFPACK_HAS_CHOLMOD@ AND NOT TARGET SuiteSparse::CHOLMOD )
         find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
     endif ( )
 endif ( )
@@ -87,11 +87,10 @@ endif ( )
 # FIXME: Also check for BLAS libraries here?
 
 if ( NOT SuiteSparse_config_FOUND OR NOT AMD_FOUND 
-     OR ( NOT @NCHOLMOD@ AND NOT CHOLMOD_FOUND ) )
+     OR ( @UMFPACK_HAS_CHOLMOD@ AND NOT CHOLMOD_FOUND ) )
     set ( UMFPACK_FOUND OFF )
     return ( )
 endif ( )
-
 
 include ( ${CMAKE_CURRENT_LIST_DIR}/UMFPACKTargets.cmake )
 

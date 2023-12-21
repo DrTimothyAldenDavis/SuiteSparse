@@ -45,12 +45,12 @@ default: go
     else
         # with CUDA for CHOLMOD and SPQR
         GPU_BLAS_PATH = $(CUDA_PATH)
-        # GPU_CONFIG must include -DSUITESPARSE_CUDA to compile SuiteSparse for
+        # GPU_CONFIG must include -DCHOLMOD_HAS_CUDA to compile SuiteSparse for
         # the GPU.  You can add additional GPU-related flags to it as well.
         # with 4 cores (default):
-        GPU_CONFIG    = -DSUITESPARSE_CUDA
+        GPU_CONFIG    = -DCHOLMOD_HAS_CUDA
         # For example, to compile CHOLMOD for 10 CPU cores when using the GPU:
-        # GPU_CONFIG  = -DSUITESPARSE_CUDA
+        # GPU_CONFIG  = -DCHOLMOD_HAS_CUDA
         CUDART_LIB    = $(CUDA_PATH)/lib64/libcudart.so
         CUBLAS_LIB    = $(CUDA_PATH)/lib64/libcublas.so
         CUDA_INC_PATH = $(CUDA_PATH)/include/

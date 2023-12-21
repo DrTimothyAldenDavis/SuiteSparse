@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( LDL_DATE "Dec 30, 2023" )
 set ( LDL_VERSION_MAJOR 3 CACHE STRING "" FORCE )
@@ -42,7 +42,6 @@ include ( SuiteSparsePolicy )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.4.0
@@ -51,7 +50,7 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( SuiteSparse_config 7.4.0 REQUIRED )
     endif ( )
 
-    if ( DEMO )
+    if ( SUITESPARSE_DEMOS )
         find_package ( AMD 3.3.0
             PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::AMD )
@@ -252,7 +251,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library

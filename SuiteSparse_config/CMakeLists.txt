@@ -10,7 +10,8 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-# cmake 3.22 is required to find the BLAS
+# cmake 3.22 is required to find BLAS/LAPACK for UMFPACK, CHOLMOD, SPQR,
+# and ParU:
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
@@ -44,7 +45,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-if ( NOT NFORTRAN )
+if ( SUITESPARSE_USE_FORTRAN )
     include ( FortranCInterface )
 else ( )
     # No Fortran compiler available or enabled, configuration is not automatic.
@@ -56,13 +57,13 @@ endif ( )
 # find library dependencies
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+if ( SUITESPARSE_USE_OPENMP )
+    find_package ( OpenMP GLOBAL )
+else ( )
     # OpenMP has been disabled
     message ( STATUS "OpenMP disabled" )
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 include ( SuiteSparseBLAS )

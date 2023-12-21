@@ -13,7 +13,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.16 )
+cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/../cmake_modules )
@@ -27,7 +27,7 @@ include ( GraphBLAS_version )
 set ( SUITESPARSE_SECOND_LEVEL true )
 
 # CUDA is under development for now, and not deployed in production:
-set ( SUITESPARSE_CUDA OFF )
+set ( GRAPHBLAS_USE_CUDA OFF )
 
 set ( GBMATLAB on )
 set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBMATLAB=1 " )
@@ -46,12 +46,13 @@ project ( graphblas_matlab
 # find OpenMP and cpu_features
 #-------------------------------------------------------------------------------
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( GRAPHBLAS_USE_OPENMP )
+    find_package ( OpenMP )
+else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 if ( NOT GBNCPUFEAT )
@@ -112,7 +113,7 @@ message ( STATUS "CMAKE have OpenMP:          ${OpenMP_C_FOUND}" )
 
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
-if ( COMPACT )
+if ( GRAPHBLAS_COMPACT )
     # do not compile the FactoryKernels
     include_directories ( ../Source/Template ../Source ../Include rename
         ../Source/Shared Config ../Source/JitKernels ../JITpackage
@@ -134,19 +135,8 @@ include ( GraphBLAS_compiler_options )
 # dynamic graphblas_matlab library properties
 #-------------------------------------------------------------------------------
 
-if ( NJIT )
-    if ( COMPACT )
-        # no JIT, do not compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c"
-            "../PreJIT/*.c" "../Config/GB_prejit.c" )
-    else ( )
-        # no JIT, but do compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" 
-            "../PreJIT/*.c" "../Config/GB_prejit.c"
-            "../Source/FactoryKernels/*.c" )
-    endif ( )
-else ( )
-    if ( COMPACT )
+if ( GRAPHBLAS_USE_JIT )
+    if ( GRAPHBLAS_COMPACT )
         # with the JIT; but do not compile the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" 
             "../PreJIT/*.c" "../Config/GB_prejit.c" "../JITpackage/*.c" )
@@ -154,6 +144,17 @@ else ( )
         # with the JIT and the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" 
             "../PreJIT/*.c" "../Config/GB_prejit.c" "../JITpackage/*.c"
+            "../Source/FactoryKernels/*.c" )
+    endif ( )
+else ( )
+    if ( GRAPHBLAS_COMPACT )
+        # no JIT, do not compile the FactoryKernels
+        file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c"
+            "../PreJIT/*.c" "../Config/GB_prejit.c" )
+    else ( )
+        # no JIT, but do compile the FactoryKernels
+        file ( GLOB GRAPHBLAS_SOURCES "../Source/*.c" 
+            "../PreJIT/*.c" "../Config/GB_prejit.c"
             "../Source/FactoryKernels/*.c" )
     endif ( )
 endif ( )

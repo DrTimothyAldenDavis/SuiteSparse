@@ -48,7 +48,7 @@ int CHOLMOD(free_work) (cholmod_common *Common)
     // free GPU workspace
     //--------------------------------------------------------------------------
 
-    #ifdef SUITESPARSE_CUDA
+    #ifdef CHOLMOD_HAS_CUDA
         CHOLMOD(gpu_deallocate) (Common) ;
     #endif
 

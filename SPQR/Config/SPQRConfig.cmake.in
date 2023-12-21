@@ -41,7 +41,7 @@ include ( CMakeFindDependencyMacro )
 set ( _dependencies_found ON )
 
 # Look for NVIDIA CUDA toolkit
-if ( @SUITESPARSE_CUDA@ AND NOT CUDAToolkit_FOUND )
+if ( @SPQR_HAS_CUDA@ AND NOT CUDAToolkit_FOUND )
     find_dependency ( CUDAToolkit @CUDAToolkit_VERSION_MAJOR@ )
     if ( NOT CUDAToolkit_FOUND )
         set ( _dependencies_found OFF )
@@ -88,7 +88,7 @@ if ( NOT SuiteSparse_config_FOUND OR NOT CHOLMOD_FOUND )
     set ( _dependencies_found OFF )
 endif ( )
 
-if ( @SUITESPARSE_CUDA@ )
+if ( @SPQR_HAS_CUDA@ )
     # Look for imported targets of additional dependency if SPQR was built with CUDA
 
     if ( @SUITESPARSE_IN_BUILD_TREE@ )

@@ -9,7 +9,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( CXSPARSE_DATE "Dec 30, 2023" )
 set ( CXSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
@@ -46,18 +46,18 @@ include ( SuiteSparsePolicy )
 # FIXME: see GraphBLAS for how to use complex types in MS Visual Studio.
 
 if ( MSVC )
-    option ( NCOMPLEX "ON (default): complex data type disabled.  OFF: complex data type enabled." on )
+    option ( CXSPARSE_USE_COMPLEX "ON: complex data type enabled.  OFF (default): complex data type disabled." OFF )
 else ( )
-    option ( NCOMPLEX "ON: complex data type disabled.  OFF (default): complex data type enabled." off )
+    option ( CXSPARSE_USE_COMPLEX "ON (default): complex data type enabled.  OFF: complex data type disabled." ON )
 endif ( )
 
-if ( NCOMPLEX )
+if ( CXSPARSE_USE_COMPLEX )
+    message ( STATUS "complex data type: enabled" )
+    set ( CXSPARSE_USE_COMPLEX_ENABLED 1 )
+else ( )
     message ( STATUS "complex data type: disabled" )
     add_compile_definitions ( NCOMPLEX )
-    set ( CXSPARSE_USE_COMPLEX 0 )
-else ( )
-    message ( STATUS "complex data type: enabled" )
-    set ( CXSPARSE_USE_COMPLEX 1 )
+    set ( CXSPARSE_USE_COMPLEX_ENABLED 0 )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -90,7 +90,9 @@ include_directories ( Source Include )
 # dynamic cxsparse library properties
 #-------------------------------------------------------------------------------
 
-if ( NCOMPLEX )
+if ( CXSPARSE_USE_COMPLEX )
+    file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
+else ( )
     # exclude functions that work on complex data types
     file ( GLOB CXSPARSE_SOURCES
         "Source/cs_a*.c"
@@ -101,8 +103,6 @@ if ( NCOMPLEX )
         "Source/cs_[d-z]*.c"
         "Source/cxsparse_version.c"
         )
-else ( )
-    file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
 endif ( )
 
 if ( BUILD_SHARED_LIBS )
@@ -277,8 +277,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library
@@ -302,7 +301,7 @@ if ( DEMO )
     add_executable ( cs_dl_demo2 "Demo/cs_dl_demo2.c" "Demo/cs_dl_demo.c" )
     add_executable ( cs_dl_demo3 "Demo/cs_dl_demo3.c" "Demo/cs_dl_demo.c" )
 
-    if ( NOT NCOMPLEX )
+    if ( CXSPARSE_USE_COMPLEX )
         add_executable ( cs_ci_demo1 "Demo/cs_ci_demo1.c" "Demo/cs_ci_demo.c" )
         add_executable ( cs_ci_demo2 "Demo/cs_ci_demo2.c" "Demo/cs_ci_demo.c" )
         add_executable ( cs_ci_demo3 "Demo/cs_ci_demo3.c" "Demo/cs_ci_demo.c" )
@@ -342,7 +341,7 @@ if ( DEMO )
         target_link_libraries ( cs_dl_demo3 PUBLIC CXSparse_static )
     endif ( )
 
-    if ( NOT NCOMPLEX )
+    if ( CXSPARSE_USE_COMPLEX )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( cs_ci_demo1 PUBLIC CXSparse )
             target_link_libraries ( cs_ci_demo2 PUBLIC CXSparse )

@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( AMD_DATE "Dec 30, 2023" )
 set ( AMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
@@ -39,7 +39,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-if ( NOT NFORTRAN )
+if ( SUITESPARSE_USE_FORTRAN )
     # Fortan is available and enabled
     enable_language ( Fortran )
 endif ( )
@@ -75,7 +75,7 @@ include_directories ( Source Include )
 # dynamic amd library properties
 #-------------------------------------------------------------------------------
 
-if ( NOT NFORTRAN )
+if ( SUITESPARSE_USE_FORTRAN )
     file ( GLOB AMD_SOURCES "Source/*.c" "Source/*.f" )
 else ( )
     file ( GLOB AMD_SOURCES "Source/*.c" )
@@ -253,8 +253,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library
@@ -270,7 +269,7 @@ if ( DEMO )
     add_executable ( amd_l_demo    "Demo/amd_l_demo.c" )
     add_executable ( amd_demo2     "Demo/amd_demo2.c" )
     add_executable ( amd_simple    "Demo/amd_simple.c" )
-    if ( NOT NFORTRAN )
+    if ( SUITESPARSE_USE_FORTRAN )
         add_executable ( amd_f77demo   "Demo/amd_f77demo.f" )
         add_executable ( amd_f77simple "Demo/amd_f77simple.f" )
     endif ( )
@@ -281,7 +280,7 @@ if ( DEMO )
         target_link_libraries ( amd_l_demo PUBLIC AMD )
         target_link_libraries ( amd_demo2 PUBLIC AMD )
         target_link_libraries ( amd_simple PUBLIC AMD )
-        if ( NOT NFORTRAN )
+        if ( SUITESPARSE_USE_FORTRAN )
             target_link_libraries ( amd_f77demo PUBLIC AMD )
             target_link_libraries ( amd_f77simple PUBLIC AMD )
         endif ( )
@@ -290,7 +289,7 @@ if ( DEMO )
         target_link_libraries ( amd_l_demo PUBLIC AMD_static )
         target_link_libraries ( amd_demo2 PUBLIC AMD_static )
         target_link_libraries ( amd_simple PUBLIC AMD_static )
-        if ( NOT NFORTRAN )
+        if ( SUITESPARSE_USE_FORTRAN )
             target_link_libraries ( amd_f77demo PUBLIC AMD_static )
             target_link_libraries ( amd_f77simple PUBLIC AMD_static )
         endif ( )

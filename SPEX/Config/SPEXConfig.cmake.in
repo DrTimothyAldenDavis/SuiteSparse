@@ -2,10 +2,10 @@
 # SuiteSparse/SPEX/cmake_modules/SPEXConfig.cmake
 #-------------------------------------------------------------------------------
 
-# The following copyright and license applies to just this file only, not to
-# the library itself:
-# SPEXConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# SPEX, Copyright (c) 2019-2023, Chris Lourenco (US Naval Academy), Jinhao
+# Chen, Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights
+# Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 #-------------------------------------------------------------------------------
 

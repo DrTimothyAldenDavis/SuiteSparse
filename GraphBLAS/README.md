@@ -207,13 +207,13 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
     * GraphBLAS takes a long time to compile because it creates many fast
         "FactoryKernels" at compile-time.  If you want to reduce the compile
-        time and library size, enable the COMPACT mode, but keep the JIT
-        enabled.  Then GraphBLAS will compile the kernels it needs at run-time,
-        via its JIT.  Performance will be the same as the FactoryKernels once
-        the JIT kernels are compiled.  User compiled kernels are placed in
-        ~/.SuiteSparse, by default.  You do not need to distribute the source
-        for GraphBLAS to enable the JIT: just libgraphblas.so and GraphBLAS.h
-        is enough.
+        time and library size, enable the GRAPHBLAS_COMPACT mode, but keep the
+        JIT enabled.  Then GraphBLAS will compile the kernels it needs at
+        run-time, via its JIT.  Performance will be the same as the
+        FactoryKernels once the JIT kernels are compiled.  User compiled
+        kernels are placed in ~/.SuiteSparse, by default.  You do not need to
+        distribute the source for GraphBLAS to enable the JIT: just
+        libgraphblas.so and GraphBLAS.h is enough.
 
     * GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
         distribute it with OpenMP enabled.  Performance will suffer

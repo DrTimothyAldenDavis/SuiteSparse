@@ -51,7 +51,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/cs_demo1 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/t1
 	- ./build/cs_demo2 < ./Matrix/ash219

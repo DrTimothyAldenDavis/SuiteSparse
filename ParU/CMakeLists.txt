@@ -46,29 +46,30 @@ include ( SuiteSparsePolicy )
 
 enable_language ( CXX )
 
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
     enable_language ( C )
 endif ( )
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" OFF )
-if ( NOPENMP )
-    # OpenMP has been disabled
-    set ( OpenMP_CXX_FOUND OFF )
-    set ( OpenMP_C_FOUND OFF )
-else ( )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required
-    find_package ( OpenMP )
+    find_package ( OpenMP GLOBAL )
     if ( OpenMP_CXX_FOUND AND OpenMP_CXX_VERSION VERSION_LESS 4.5 )
-        set ( NOPENMP ON )
+        set ( PARU_USE_OPENMP OFF )
     endif ( )
     if ( OpenMP_C_FOUND AND OpenMP_C_VERSION VERSION_LESS 4.5 )
-        set ( NOPENMP ON )
+        set ( PARU_USE_OPENMP OFF )
     endif ( )
-    if ( NOPENMP )
-        message ( STATUS "Version of OpenMP is too old." )
+    if ( NOT PARU_USE_OPENMP )
+        message ( STATUS "Version of OpenMP is too old for ParU." )
         set ( OpenMP_CXX_FOUND OFF )
         set ( OpenMP_C_FOUND OFF )
     endif ( )
+else ( )
+    # OpenMP has been disabled
+    set ( OpenMP_CXX_FOUND OFF )
+    set ( OpenMP_C_FOUND OFF )
 endif ( )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
@@ -389,7 +390,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library

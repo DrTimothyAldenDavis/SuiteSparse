@@ -7,7 +7,7 @@
 
 # See the User Guide for details on how to compile SuiteSparse:GraphBLAS.
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -42,8 +42,8 @@ if ( NOT BUILD_SHARED_LIBS )
 endif ( )
 
 # CUDA is under development for now, and not deployed in production:
-  set ( ENABLE_CUDA OFF )
-# set ( ENABLE_CUDA ON )
+  set ( GRAPHBLAS_USE_CUDA OFF )
+# set ( GRAPHBLAS_USE_CUDA ON )
 
 include ( SuiteSparsePolicy )
 
@@ -52,13 +52,15 @@ if ( NOT GRAPHBLAS_BUILD_STATIC_LIBS AND BUILD_SHARED_LIBS )
     set ( BUILD_STATIC_LIBS OFF )
 endif ( )
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
-    set ( COMPACT ON )
+    set ( GRAPHBLAS_COMPACT ON )
     message ( STATUS "GraphBLAS CUDA JIT: enabled")
     enable_language ( CUDA )
+    set ( GRAPHBLAS_HAS_CUDA ON )
 else ( )
     message ( STATUS "GraphBLAS CUDA JIT: disabled")
+    set ( GRAPHBLAS_HAS_CUDA OFF )
 endif ( )
 
 include ( GraphBLAS_JIT_paths )
@@ -67,7 +69,7 @@ include ( GraphBLAS_JIT_paths )
 # find OpenMP, CUDA, RMM, and cpu_features
 #-------------------------------------------------------------------------------
 
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # with CUDA and RMM
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
@@ -85,12 +87,13 @@ else ( )
 endif ( )
 
 
-option ( NOPENMP "ON: do not use OpenMP.  OFF (default): use OpenMP" off )
-if ( NOPENMP )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( GRAPHBLAS_USE_OPENMP )
+    find_package ( OpenMP GLOBAL )
+else ( )
     # OpenMP has been disabled.
     set ( OpenMP_C_FOUND OFF )
-else ( )
-    find_package ( OpenMP )
 endif ( )
 
 if ( NOT GBNCPUFEAT )
@@ -174,7 +177,7 @@ configure_file ( "CUDA/Config/GB_cuda_common_jitFactory.hpp.in"
 # include directories for both graphblas and the demos
 #-------------------------------------------------------------------------------
 
-if ( COMPACT )
+if ( GRAPHBLAS_COMPACT )
     # do not compile the FactoryKernels
     include_directories ( Source/Template Source Include Source/Shared
         Config xxHash Config lz4 zstd zstd/zstd_subset JITpackage
@@ -217,27 +220,28 @@ include ( GraphBLAS_compiler_options )
 #   - a public enum is extended (by adding a new item at the end, but without
 #       changing the already existing items)
 
-if ( NJIT )
-    if ( COMPACT )
+if ( GRAPHBLAS_USE_JIT )
+    # generate compressed JIT sources
+    add_subdirectory ( JITpackage )
+    if ( GRAPHBLAS_COMPACT )
+        # with the JIT; but do not compile the FactoryKernels
+        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" )
+    else ( )
+        # with the JIT and the FactoryKernels
+        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
+            "Source/FactoryKernels/*.c" )
+    endif ( )
+    # GLOB does not include files that do not yet exist, so prepend
+    # the GB_JITpackage.c file here:
+    list ( PREPEND GRAPHBLAS_SOURCES "JITpackage/GB_JITpackage.c" )
+else ( )
+    if ( GRAPHBLAS_COMPACT )
         # no JIT, do not compile the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" )
     else ( )
         # no JIT, but do compile the FactoryKernels
         file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
             "Source/FactoryKernels/*.c" )
-    endif ( )
-else ( )
-    # generate compressed JIT sources
-    add_subdirectory ( JITpackage )
-
-    if ( COMPACT )
-        # with the JIT; but do not compile the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c" 
-            "JITpackage/*.c" )
-    else ( )
-        # with the JIT and the FactoryKernels
-        file ( GLOB GRAPHBLAS_SOURCES "Source/*.c" "Config/*.c" "PreJIT/*.c"
-            "JITpackage/*.c" "Source/FactoryKernels/*.c" )
     endif ( )
 endif ( )
 
@@ -261,10 +265,10 @@ if ( BUILD_SHARED_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-    if ( SUITESPARSE_CUDA )
+    if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
         add_dependencies ( GraphBLAS GraphBLAS_CUDA )
         add_dependencies ( GraphBLAS RMM_wrap )
-        target_compile_definitions ( GraphBLAS PRIVATE "SUITESPARSE_CUDA" )
+        target_compile_definitions ( GraphBLAS PRIVATE "GRAPHBLAS_HAS_CUDA" )
     endif ( )
 
     if ( WIN32 )
@@ -272,9 +276,9 @@ if ( BUILD_SHARED_LIBS )
         target_compile_definitions ( GraphBLAS PRIVATE GB_DLL_EXPORT )
     endif ( )
 
-    if ( NOT NJIT )
+    if ( GRAPHBLAS_USE_JIT )
         # Make sure compressed sources are built before library
-        add_dependencies ( GraphBLAS grb_jitpackage_source )
+        add_dependencies ( GraphBLAS GB_JITpackage )
     endif ( )
 endif ( )
 
@@ -305,11 +309,11 @@ if ( BUILD_STATIC_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
-    if ( SUITESPARSE_CUDA )
+    if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
         add_dependencies ( GraphBLAS_static GraphBLAS_CUDA )
         set ( GRAPHBLAS_STATIC_MODULES "${GRAPHBLAS_STATIC_MODULES} GraphBLAS_CUDA" )
         add_dependencies ( GraphBLAS_static RMM_wrap )
-        target_compile_definitions ( GraphBLAS_static PRIVATE "SUITESPARSE_CUDA" )
+        target_compile_definitions ( GraphBLAS_static PRIVATE "GRAPHBLAS_HAS_CUDA" )
     endif ( )
 
     if ( WIN32 )
@@ -317,9 +321,9 @@ if ( BUILD_STATIC_LIBS )
         target_compile_definitions ( GraphBLAS_static PUBLIC GB_STATIC )
     endif ( )
 
-    if ( NOT NJIT )
+    if ( GRAPHBLAS_USE_JIT )
         # Make sure compressed sources are built before library
-        add_dependencies ( GraphBLAS_static grb_jitpackage_source )
+        add_dependencies ( GraphBLAS_static GB_JITpackage )
     endif ( )
 
 endif ( )
@@ -403,38 +407,40 @@ endif ( )
 # add the OpenMP, IPP, CUDA, BLAS, etc libraries
 #-------------------------------------------------------------------------------
 
+# get the current library list, before linking with OpenMP, CUDA and rmm
+if ( BUILD_SHARED_LIBS )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
+else ( )
+    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
+endif ( )
+if ( NOT GB_CMAKE_LIBRARIES )
+    set ( GB_CMAKE_LIBRARIES "" )
+endif ( )
+
 if ( OpenMP_C_FOUND )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
-    # revert to ${OpenMP_C_LIBRARIES}:
+    list ( APPEND GB_CMAKE_LIBRARIES ${OpenMP_C_LIBRARIES} )
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( GraphBLAS PRIVATE ${OpenMP_C_LIBRARIES} )
-        target_include_directories ( GraphBLAS PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     endif ( )
-    # cannot use OpenMP::OpenMP_C because the JIT is configured with
-    # LINK_LIBRARIES.  Those are -l lists passed directly to the
-    # C compiler, and this is converted into "-lOpenMP::OpenMP_C".
-    # So this breaks:
-    # target_link_libraries ( GraphBLAS PRIVATE OpenMP::OpenMP_C )
     if ( BUILD_STATIC_LIBS )
         list ( APPEND GRAPHBLAS_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
-        target_link_libraries ( GraphBLAS_static PUBLIC ${OpenMP_C_LIBRARIES} )
-        # target_link_libraries ( GraphBLAS_static PUBLIC OpenMP::OpenMP_C )
-        target_include_directories ( GraphBLAS_static PRIVATE ${OpenMP_C_INCLUDE_DIRS} )
+        target_link_libraries ( GraphBLAS_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
-    set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS} " )
 else ( )
     message  ( WARNING
-    "WARNING:  OpenMP was not found (or was disabled with NOPENMP).  See the "
-    "GrapBLAS user guide on the consequences of compiling GraphBLAS without "
-    "OpenMP. GraphBLAS will work but may not be thread-safe, since it relies "
-    "on '#pragma omp flush' to ensure the work performed by one user thread is "
-    "available to another, in GrB_wait.  If OpenMP is not in use, the "
-    "thread-safety of GrB_wait becomes the responsibilty of the user "
-    "application (perhaps through a pthreads construct).  Compiling GraphBLAS "
-    "without OpenMP is not recommended for installation in a package manager "
-    "(Linux, conda-forge, spack, brew, vcpkg, etc). " )
+    "WARNING:  OpenMP was not found (or was disabled with "
+    "GRAPHBLAS_USE_OPENMP).  See the GrapBLAS user guide on the consequences "
+    "of compiling GraphBLAS without OpenMP. GraphBLAS will work but may not be "
+    "thread-safe, since it relies on '#pragma omp flush' to ensure the work "
+    "performed by one user thread is available to another, in GrB_wait.  If "
+    "OpenMP is not in use, the thread-safety of GrB_wait becomes the "
+    "responsibilty of the user application (perhaps through a pthreads "
+    "construct).  Compiling GraphBLAS without OpenMP is not recommended for "
+    "installation in a package manager (Linux, conda-forge, spack, brew, "
+    "vcpkg, etc). " )
     # check for __thread, __declspec(thread), and _Thread_local keywords
     include ( SuiteSparse__thread )
     if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD
@@ -445,17 +451,7 @@ else ( )
     endif ( )
 endif ( )
 
-# get the current library list, before linking with cuda and rmm
-if ( BUILD_SHARED_LIBS )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS LINK_LIBRARIES )
-else ( )
-    get_target_property ( GB_CMAKE_LIBRARIES GraphBLAS_static LINK_LIBRARIES )
-endif ( )
-if ( NOT GB_CMAKE_LIBRARIES )
-    set ( GB_CMAKE_LIBRARIES "" )
-endif ( )
-
-if ( SUITESPARSE_CUDA )
+if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE ${GB_CUDA} ${GB_RMM} )
     endif ( )
@@ -474,8 +470,7 @@ message ( STATUS "CMAKE C flags: ${CMAKE_C_FLAGS} " )
 # Demo programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." off )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     message ( STATUS "Also compiling the demos in GraphBLAS/Demo" )
 

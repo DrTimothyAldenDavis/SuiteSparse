@@ -24,8 +24,8 @@ int main(int argn, char **argv)
 // various sizes.  This is the demo for this 'dense' usage case.
 // The 'sparse' case is exercised by SuiteSparseQR.
 
-#ifndef SUITESPARSE_CUDA
-#define SUITESPARSE_CUDA
+#ifndef SPQR_HAS_CUDA
+#define SPQR_HAS_CUDA
 #endif
 
 #include "GPUQREngine_SuiteSparse.hpp"

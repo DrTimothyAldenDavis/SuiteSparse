@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/CHOLOMD/Makefile
+# SuiteSparse/CHOLMOD/Makefile
 #-------------------------------------------------------------------------------
 
 # This CHOLMOD/Makefile: Copyright (c) 2005-2023, Timothy A. Davis.
@@ -15,9 +15,9 @@
 #
 #       make CC=gcc CXX=g++
 #
-# To compile with any GPL modules (MatrixOps, Modify, and Supernodal):
+# To compile with no GPL-licensed modules (MatrixOps, Modify, and Supernodal):
 #
-#       make CMAKE_OPTIONS='-DNGPL=1'
+#       make CMAKE_OPTIONS='-DCHOLMOD_GPL=OFF'
 #
 # To compile/install for system-wide usage:
 #
@@ -51,11 +51,11 @@ global:
 
 # enable CUDA (this is the default, if CUDA is available)
 cuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCHOLMOD_USE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # disable CUDA
 nocuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=0 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCHOLMOD_USE_CUDA=0 .. && cmake --build . --config Release -j$(JOBS) )
 
 debug:
 	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . --config Debug -j${JOBS} )
@@ -63,7 +63,7 @@ debug:
 all: library
 
 demos: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	./build/cholmod_di_demo ./Demo/Matrix/bcsstk01.tri  > ./build/bcsstk01_out.txt
 	./build/cholmod_dl_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt
 	./build/cholmod_si_demo ./Demo/Matrix/bcsstk01.tri >> ./build/bcsstk01_out.txt

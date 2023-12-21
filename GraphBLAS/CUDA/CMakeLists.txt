@@ -10,7 +10,7 @@
 
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.19 )
+cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 
 # CMake build for generating googletest c++ files that can be compiled and
 # executed in parallel.  Build can be customized to speed up development by
@@ -79,7 +79,7 @@ if ( TARGET CUDA::nvtx3 )
     target_compile_definitions ( GraphBLAS_CUDA PRIVATE GBNVTX )
 endif ( )
 
-target_compile_definitions ( GraphBLAS_CUDA PUBLIC "SUITESPARSE_CUDA" )
+target_compile_definitions ( GraphBLAS_CUDA PUBLIC "GRAPHBLAS_HAS_CUDA" )
 
 if ( OpenMP_CXX_FOUND )
     target_include_directories ( GraphBLAS_CUDA PRIVATE OpenMP::OpenMP_CXX )

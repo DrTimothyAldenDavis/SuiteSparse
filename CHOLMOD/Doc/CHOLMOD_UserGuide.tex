@@ -309,13 +309,14 @@ Three other packages are required for optimal performance:
 You must first obtain and install LAPACK, and the BLAS.
 
 \noindent
-CHOLMOD's specific settings are revised by the following compile-time flags:
+CHOLMOD's specific settings are revised by the following compile-time flags
+for the compiler:
 \begin{itemize}
 \item {\tt -DNCHECK}:       do not include the Check module.
 \item {\tt -DNCHOLESKY}:    do not include the Cholesky module.
 \item {\tt -DNPARTITION}:   do not include the interface to METIS in
                             the Partition module.
-\item {\tt -DCAMD}:         do not include the interfaces to CAMD, CCOLAMD,
+\item {\tt -DNCAMD}:         do not include the interfaces to CAMD, CCOLAMD,
                             and CSYMAMD in the Partition module.
 \item {\tt -DNMATRIXOPS}:   do not include the MatrixOps module.
                             Note that the Demo requires the MatrixOps module.
@@ -324,9 +325,27 @@ CHOLMOD's specific settings are revised by the following compile-time flags:
 \item {\tt -DNPRINT}:       do not print anything.
 \end{itemize}
 
+These settings are controlled in cmake by the following variables, which 
+are all \verb'ON' by default:
+\begin{itemize}
+\item \verb'CHOLMOD_CHECK':      if \verb'OFF': do not use the Check module.
+\item \verb'CHOLMOD_CHOLESKY':   if \verb'OFF': do not use the Cholesky module.
+\item \verb'CHOLMOD_PARTITION':  if \verb'OFF': do not use the interface to METIS in
+                                 the Partition module.
+\item \verb'CHOLMOD_CAMD':       if \verb'OFF':    do not use the interfaces to CAMD, CCOLAMD,
+                                 and CSYMAMD in the Partition module.
+\item \verb'CHOLMOD_MATRIXOPS':  if \verb'OFF':   do not use the MatrixOps module.
+\item \verb'CHOLMOD_MODIFY':     if \verb'OFF':  do not use the Modify module.
+\item \verb'CHOLMOD_SUPERNODAL': if \verb'OFF':   do not use the Supernodal module.
+\item \verb'CHOLMOD_GPL':   if \verb'OFF': do not use any GPL-licensed module
+    (MatrixOps, Modify, Supernodal, and GPU-module).
+\end{itemize}
+
 SuiteSparse now has a complete \verb'cmake'-based build system.  Each package
 (SuiteSparse\_congig, AMD, CAMD, CCOLAMD, CAMD, and CHOLMOD) has its own
 \verb'CMakeLists.txt'.  Use \verb'cmake' to build each package in that order.
+Alternatively, you can use a single top-level \verb'CMakeLists.txt' file to
+build all packages in SuiteSparse.
 
 An optional \verb'Makefile' is provided at the top-level of \verb'SuiteSparse'
 Type {\tt make} in that directory.  The AMD, COLAMD, CAMD, CCOLAMD, and {\tt
@@ -338,8 +357,8 @@ CHOLMOD is now ready for use in your own applications.  You must link your
 programs with the {\tt libcholmod.*}, {\tt libamd.*}, {\tt libcolamd.*},
 LAPACK, and BLAS libraries.  Unless {\tt -DNCAMD} is present at compile time,
 you must link with {\tt CAMD/libcamd.*}, and {\tt CCOLAMD/libccolamd.*}.  Each
-library has its own \verb'Find*.cmake' script to use in the \verb'cmake'
-\verb'find_library' command.
+library has its own \verb'*Config.cmake' script to use in the \verb'cmake'
+\verb'find_package' command.
 
 To install CHOLMOD in default locations use {\tt make install}.  To remove
 CHOLMOD, do {\tt make uninstall}.
@@ -509,9 +528,10 @@ acceleration (both real and complex).
 %-------------------------------------------------------------------------------
 
 In order to support GPU processing, CHOLMOD must be compiled with the
-preprocessor macro \verb'SUITESPARSE_CUDA' defined.  It is enabled by default
+preprocessor macro \verb'CHOLMOD_HAS_CUDA' defined.  It is enabled by default
 in {\tt cmake} if you have a GPU, but this can be disabled by setting this to
-false when using cmake.
+false when using cmake, via the cmake variables \verb'CHOLMOD_USE_CUDA'
+or \verb'SUITESPARSE_USE_CUDA'.
 
 %-------------------------------------------------------------------------------
 \subsection{Enabling GPU acceleration in CHOLMOD}

@@ -12,7 +12,7 @@
 // and free memory on the CPU and/or GPU, and to transfer data between the
 // CPU and GPU.
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
 #include "SuiteSparseGPU_internal.hpp"
 

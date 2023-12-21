@@ -14,7 +14,7 @@
 //
 // =============================================================================
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
 #include "GPUQREngine_Internal.hpp"
 #include "GPUQREngine_Scheduler.hpp"

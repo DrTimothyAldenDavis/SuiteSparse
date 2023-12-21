@@ -46,7 +46,7 @@ jobs:
           - cuda: with
             cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
             cuda-cmake-flags:
-              -DENABLE_CUDA=ON
+              -DSUITESPARSE_USE_CUDA=ON
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
           - compiler: gcc
@@ -57,7 +57,7 @@ jobs:
             cuda: with
             cuda-pkgs: "nvidia-cuda-dev nvidia-cuda-toolkit"
             cuda-cmake-flags:
-              -DENABLE_CUDA=ON
+              -DSUITESPARSE_USE_CUDA=ON
               -DCUDAToolkit_INCLUDE_DIR="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: static
@@ -148,7 +148,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DDEMO=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build
@@ -228,11 +228,11 @@ jobs:
         cuda: [without]
         include:
           - openmp: without
-            openmp-cmake-flags: "-DNOPENMP=ON"
+            openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
 #         - openmp: with
 #           cuda: with
 #           cuda-cmake-flags:
-#             -DENABLE_CUDA=ON
+#             -DSUITESPARSE_USE_CUDA=ON
 #             -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 
     env:
@@ -369,7 +369,7 @@ jobs:
                 -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
-                -DNFORTRAN=ON \
+                -DSUITESPARSE_USE_FORTRAN=OFF \
                 -DBLA_VENDOR="All" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
                 ${{ matrix.openmp-cmake-flags }} \
@@ -386,7 +386,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DDEMO=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build

@@ -10,7 +10,7 @@
 # get the version
 #-------------------------------------------------------------------------------
 
-cmake_minimum_required ( VERSION 3.20 )
+cmake_minimum_required ( VERSION 3.22 )
 
 set ( SPEX_DATE "Dec 30, 2023" )
 set ( SPEX_VERSION_MAJOR 2 CACHE STRING "" FORCE )
@@ -340,8 +340,7 @@ endif ( )
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
-option ( DEMO "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
-if ( DEMO )
+if ( SUITESPARSE_DEMOS )
 
     #---------------------------------------------------------------------------
     # demo library

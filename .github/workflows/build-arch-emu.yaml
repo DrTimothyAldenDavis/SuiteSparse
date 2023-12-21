@@ -119,7 +119,7 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="Generic" \
-                  -DCOMPACT=ON \
+                  -DGRAPHBLAS_COMPACT=ON \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"

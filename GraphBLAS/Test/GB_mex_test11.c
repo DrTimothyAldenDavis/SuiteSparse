@@ -76,7 +76,7 @@ void mexFunction
     system ("rm -rf /tmp/grb_cache") ;
 
     //--------------------------------------------------------------------------
-    // determine if GraphBLAS was compiled with NJIT
+    // determine if GraphBLAS was compiled with GRAPHBLAS_USE_JIT
     //--------------------------------------------------------------------------
 
     OK (GxB_set (GxB_JIT_C_CONTROL, GxB_JIT_ON)) ;
