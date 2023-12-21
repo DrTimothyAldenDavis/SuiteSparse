@@ -505,3 +505,19 @@ include ( SuiteSparseReport )
 
 include ( CTest )
 
+#-------------------------------------------------------------------------------
+# rule to remove all files in build directory
+#-------------------------------------------------------------------------------
+
+file ( GLOB SUITESPARSE_BUILT_FILES ${PROJECT_BINARY_DIR}/* )
+file ( REAL_PATH ${PROJECT_SOURCE_DIR} _real_project_source_dir )
+file ( REAL_PATH ${PROJECT_BINARY_DIR} _real_project_binary_dir )
+if ( _real_project_source_dir STREQUAL _real_project_binary_dir )
+    add_custom_target ( purge
+        COMMENT "The target 'purge' is a no-op for in-tree builds.  Consider building out of the source tree." )
+else ( )
+    add_custom_target ( purge
+        COMMAND ${CMAKE_COMMAND} -E echo "Removing files..."
+        COMMAND ${CMAKE_COMMAND} -E rm -rf ${SUITESPARSE_BUILT_FILES}
+        COMMENT "Purge all files in the build tree" )
+endif ( )
