@@ -58,6 +58,10 @@ if ( NOT HAVE_SSIZE_T )
     add_compile_definitions ( NO_SSIZE_T )
 endif ( )
 
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
 if ( SUITESPARSE_HAS_CUDA AND CHOLMOD_USE_CUDA )
     # CHOLMOD with CUDA
     enable_language ( CUDA CXX )
@@ -66,11 +70,15 @@ else ( )
     set ( CHOLMOD_HAS_CUDA OFF )
 endif ( )
 
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND CHOLMOD_USE_CUDA AND NOT CHOLMOD_HAS_CUDA )
+    message ( FATAL_ERROR "CUDA required for CHOLMOD but not found" )
+endif ( )
+
 #-------------------------------------------------------------------------------
-# find library dependencies
+# find OpenMP
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( CHOLMOD_USE_OPENMP )
     find_package ( OpenMP GLOBAL )
@@ -78,6 +86,21 @@ else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+
+if ( OpenMP_C_FOUND )
+    set ( CHOLMOD_HAS_OPENMP ON )
+else ( )
+    set ( CHOLMOD_HAS_OPENMP OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND CHOLMOD_USE_OPENMP AND NOT CHOLMOD_HAS_OPENMP )
+    message ( FATAL_ERROR "OpenMP required for CHOLMOD but not found" )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find other library dependencies
+#-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.4.0
@@ -421,7 +444,7 @@ if ( CHOLMOD_CAMD )
 endif ( )
 
 # OpenMP:
-if ( OpenMP_C_FOUND )
+if ( CHOLMOD_HAS_OPENMP )
     message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )

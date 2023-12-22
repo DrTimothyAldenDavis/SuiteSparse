@@ -33,7 +33,17 @@ set ( GBMATLAB on )
 set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -DGBMATLAB=1 " )
 
 include ( SuiteSparsePolicy )
+
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
 include ( GraphBLAS_JIT_paths )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_CUDA AND NOT GRAPHBLAS_HAS_CUDA )
+    message ( FATAL_ERROR "CUDA required for GraphBLAS but not found" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -43,10 +53,9 @@ project ( graphblas_matlab
     VERSION "${GraphBLAS_VERSION_MAJOR}.${GraphBLAS_VERSION_MINOR}.${GraphBLAS_VERSION_SUB}" LANGUAGES C )
 
 #-------------------------------------------------------------------------------
-# find OpenMP and cpu_features
+# find OpenMP
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( GRAPHBLAS_USE_OPENMP )
     find_package ( OpenMP )
@@ -54,6 +63,21 @@ else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+
+if ( OpenMP_C_FOUND )
+    set ( GRAPHBLAS_HAS_OPENMP ON )
+else ( )
+    set ( GRAPHBLAS_HAS_OPENMP OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_OPENMP AND NOT GRAPHBLAS_HAS_OPENMP )
+    message ( FATAL_ERROR "OpenMP required for GraphBLAS but not found" )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find cpu_features
+#-------------------------------------------------------------------------------
 
 if ( NOT GBNCPUFEAT )
     # default: enable Google's cpu_features package
@@ -168,14 +192,6 @@ set_target_properties ( graphblas_matlab PROPERTIES
     PUBLIC_HEADER "../Include/GraphBLAS.h" )
 
 #-------------------------------------------------------------------------------
-# select the threading library
-#-------------------------------------------------------------------------------
-
-if ( OpenMP_C_FOUND )
-    set ( USE_OPENMP true )
-endif ( )
-
-#-------------------------------------------------------------------------------
 # select the math library (not required for Microsoft Visual Studio)
 #-------------------------------------------------------------------------------
 
@@ -198,7 +214,7 @@ endif ( )
 # add library dependencies
 #-------------------------------------------------------------------------------
 
-if ( USE_OPENMP )
+if ( GRAPHBLAS_HAS_OPENMP )
     message ( STATUS "CMAKE OpenMP libraries:    " ${OpenMP_C_LIBRARIES} )
     message ( STATUS "CMAKE OpenMP include:      " ${OpenMP_C_INCLUDE_DIRS} )
     target_link_libraries ( graphblas_matlab PUBLIC ${OpenMP_C_LIBRARIES} )

@@ -40,8 +40,6 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ${SUITESPARSE_USE_CUDA} )
-
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------
@@ -63,6 +61,12 @@ endif ( )
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 include ( SuiteSparseLAPACK )   # requires cmake 3.22
 
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
+option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ${SUITESPARSE_USE_CUDA} )
+
 if ( SUITESPARSE_HAS_CUDA AND SPQR_USE_CUDA )
     # with CUDA
     set ( SPQR_HAS_CUDA ON )
@@ -70,6 +74,11 @@ if ( SUITESPARSE_HAS_CUDA AND SPQR_USE_CUDA )
     add_subdirectory ( GPUQREngine )
 else ( )
     set ( SPQR_HAS_CUDA OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SPQR_USE_CUDA AND NOT SPQR_HAS_CUDA )
+    message ( FATAL_ERROR "CUDA required for SPQR but not found" )
 endif ( )
 
 #-------------------------------------------------------------------------------

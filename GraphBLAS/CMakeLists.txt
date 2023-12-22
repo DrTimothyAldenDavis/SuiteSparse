@@ -52,6 +52,10 @@ if ( NOT GRAPHBLAS_BUILD_STATIC_LIBS AND BUILD_SHARED_LIBS )
     set ( BUILD_STATIC_LIBS OFF )
 endif ( )
 
+#-------------------------------------------------------------------------------
+# find CUDA
+#-------------------------------------------------------------------------------
+
 if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
     set ( GRAPHBLAS_COMPACT ON )
@@ -63,13 +67,14 @@ else ( )
     set ( GRAPHBLAS_HAS_CUDA OFF )
 endif ( )
 
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_CUDA AND NOT GRAPHBLAS_HAS_CUDA )
+    message ( FATAL_ERROR "CUDA required for GraphBLAS but not found" )
+endif ( )
+
 include ( GraphBLAS_JIT_paths )
 
-#-------------------------------------------------------------------------------
-# find OpenMP, CUDA, RMM, and cpu_features
-#-------------------------------------------------------------------------------
-
-if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
+if ( GRAPHBLAS_HAS_CUDA )
     # with CUDA and RMM
     add_subdirectory ( CUDA )
     set ( GB_CUDA GraphBLAS_CUDA  ${CUDA_LIBRARIES} )
@@ -86,8 +91,10 @@ else ( )
     set ( GB_RMM )
 endif ( )
 
+#-------------------------------------------------------------------------------
+# find OpenMP
+#-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( GRAPHBLAS_USE_OPENMP )
     find_package ( OpenMP GLOBAL )
@@ -95,6 +102,21 @@ else ( )
     # OpenMP has been disabled.
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+
+if ( OpenMP_C_FOUND )
+    set ( GRAPHBLAS_HAS_OPENMP ON )
+else ( )
+    set ( GRAPHBLAS_HAS_OPENMP OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_OPENMP AND NOT GRAPHBLAS_HAS_OPENMP )
+    message ( FATAL_ERROR "OpenMP required for GraphBLAS but not found" )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find cpu_features
+#-------------------------------------------------------------------------------
 
 if ( NOT GBNCPUFEAT )
     # default: enable Google's cpu_features package
@@ -417,7 +439,7 @@ if ( NOT GB_CMAKE_LIBRARIES )
     set ( GB_CMAKE_LIBRARIES "" )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( GRAPHBLAS_HAS_OPENMP )
     message ( STATUS "CMAKE OpenMP libraries:    ${OpenMP_C_LIBRARIES}" )
     message ( STATUS "CMAKE OpenMP include:      ${OpenMP_C_INCLUDE_DIRS}" )
     list ( APPEND GB_CMAKE_LIBRARIES ${OpenMP_C_LIBRARIES} )
@@ -529,7 +551,7 @@ if ( SUITESPARSE_DEMOS )
     target_link_libraries ( context_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
     target_link_libraries ( gauss_demo PUBLIC ${GB_M} ${GB_CUDA} ${GB_RMM} )
 
-    if ( OpenMP_C_FOUND )
+    if ( GRAPHBLAS_HAS_OPENMP )
         target_link_libraries ( openmp_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( openmp2_demo PUBLIC OpenMP::OpenMP_C )
         target_link_libraries ( reduce_demo PUBLIC OpenMP::OpenMP_C )

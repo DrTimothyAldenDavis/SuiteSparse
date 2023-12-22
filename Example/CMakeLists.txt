@@ -18,7 +18,7 @@ cmake_minimum_required ( VERSION 3.22 )
 # CMAKE_PREFIX_PATH if the SuiteSparse libraries aren't installed at a default
 # location.  For example, on Linux or Mac, if you have your own a compiled copy
 # of SuiteSparse in /home/me/SuiteSparse that was compiled and installed with
-# LOCAL_INSTALL set to ON, use the following:
+# SUITESPARSE_LOCAL_INSTALL set to ON, use the following:
 #
 #   export CMAKE_PREFIX_PATH /home/me/SuiteSparse
 #
@@ -28,7 +28,7 @@ cmake_minimum_required ( VERSION 3.22 )
 #   set ( CMAKE_PREFIX_PATH /opt/SuiteSparse )
 #
 # The following is added, just to simplify building this Example if it is
-# located inside SuiteSparse itself and compiled with LOCAL_INSTALL set to ON.
+# located inside SuiteSparse itself and compiled with SUITESPARSE_LOCAL_INSTALL set to ON.
 # Normally you would not use this in a stand-alone library that relies on
 # SuiteSparse:
 

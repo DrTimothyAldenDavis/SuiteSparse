@@ -41,7 +41,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 include ( SuiteSparsePolicy )
 
 #-------------------------------------------------------------------------------
-# find library dependencies
+# find languages
 #-------------------------------------------------------------------------------
 
 enable_language ( CXX )
@@ -50,7 +50,10 @@ if ( SUITESPARSE_DEMOS )
     enable_language ( C )
 endif ( )
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+#-------------------------------------------------------------------------------
+# find OpenMP
+#-------------------------------------------------------------------------------
+
 option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 
 if ( PARU_USE_OPENMP )
@@ -78,6 +81,15 @@ else ( )
     set ( OpenMP_CXX_FOUND OFF )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND PARU_USE_OPENMP AND NOT PARU_HAS_OPENMP )
+    message ( FATAL_ERROR "OpenMP 4.5 required for ParU but not found" )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find other dependencies
+#-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( SuiteSparse_config 7.4.0
