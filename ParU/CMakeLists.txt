@@ -54,7 +54,6 @@ endif ( )
 # find OpenMP
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 
 if ( PARU_USE_OPENMP )

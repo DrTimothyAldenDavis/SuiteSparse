@@ -155,7 +155,6 @@ endif ( )
 # determine what user threading model to use
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 option ( LAGRAPH_USE_OPENMP "ON: Use OpenMP in LAGraph if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
 if ( COVERAGE )
     set ( LAGRAPH_USE_OPENMP OFF )  # OK: test coverage is enabled

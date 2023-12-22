@@ -121,6 +121,9 @@ include ( GNUInstallDirs )
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
+# Use OpenMP
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+
 # strict usage
 option ( SUITESPARSE_USE_STRICT "ON: treat all _USE__ settings as strict if they are ON. OFF (default): consider *_USE_* as preferences, not strict" OFF )
 

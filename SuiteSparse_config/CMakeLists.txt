@@ -57,7 +57,6 @@ endif ( )
 # find OpenMP
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
 if ( SUITESPARSE_USE_OPENMP )
     find_package ( OpenMP GLOBAL )
 else ( )
