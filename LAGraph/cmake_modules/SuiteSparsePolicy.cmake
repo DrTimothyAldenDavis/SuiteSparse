@@ -259,6 +259,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
+option ( SUITESPARSE_USE_CUDA "Enable CUDA acceleration for SuiteSparse" ON )
 if ( SUITESPARSE_USE_CUDA AND NOT MSVC )
 
     # try finding CUDA
@@ -276,26 +277,26 @@ if ( SUITESPARSE_USE_CUDA AND NOT MSVC )
         if ( CUDAToolkit_VERSION VERSION_LESS "11.2" )
             # CUDA is present but too old
             message ( STATUS "CUDA:               not enabled (CUDA 11.2 or later required)" )
-            set ( SUITSPARSE_HAS_CUDA OFF )
+            set ( SUITESPARSE_HAS_CUDA OFF )
         else ( )
             # CUDA 11.2 or later present
             enable_language ( CUDA )
-            set ( SUITSPARSE_HAS_CUDA ON )
+            set ( SUITESPARSE_HAS_CUDA ON )
         endif ( )
     else ( )
         # without CUDA:
         message ( STATUS "CUDA:             not found" )
-        set ( SUITSPARSE_HAS_CUDA OFF )
+        set ( SUITESPARSE_HAS_CUDA OFF )
     endif ( )
 
 else ( )
 
     # CUDA is disabled
-    set ( SUITSPARSE_HAS_CUDA OFF )
+    set ( SUITESPARSE_HAS_CUDA OFF )
 
 endif ( )
 
-if ( SUITSPARSE_HAS_CUDA )
+if ( SUITESPARSE_HAS_CUDA )
     message ( STATUS "CUDA:             enabled" )
     set ( SUITESPARSE_CUDA_ARCHITECTURES "52;75;80" CACHE STRING "CUDA architectures" )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )

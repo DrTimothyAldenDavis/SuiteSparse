@@ -38,10 +38,10 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/cmake_modules
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
-option ( CHOLMOD_USE_CUDA "ON (default): enable CUDA acceleration for CHOLMOD, OFF: do not use CUDA" ON )
-option ( CHOLMOD_GPL "ON (default): enable GPL-licensed modules, OFF: do not use any CHOLMOD GPL-licensed modules" ON )
+include ( SuiteSparsePolicy )
 
+option ( CHOLMOD_USE_CUDA "ON (default): enable CUDA acceleration for CHOLMOD, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
+option ( CHOLMOD_GPL "ON (default): enable GPL-licensed modules, OFF: do not use any CHOLMOD GPL-licensed modules" ON )
 if ( NOT CHOLMOD_GPL )
     # CHOLMOD_GPL: if OFF, do not include any GPL-licensed module
     set ( CHOLMOD_MATRIXOPS OFF )
@@ -50,8 +50,6 @@ if ( NOT CHOLMOD_GPL )
     set ( CHOLMOD_USE_CUDA OFF )    # OK: disabled by user-setting of CHOLMOD_GPL
     add_compile_definitions ( NGPL )
 endif ( )
-
-include ( SuiteSparsePolicy )
 
 include ( CheckTypeSize )
 check_type_size ( "ssize_t" SSIZE_T )

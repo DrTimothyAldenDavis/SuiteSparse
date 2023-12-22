@@ -38,10 +38,9 @@ project ( spqr
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${PROJECT_SOURCE_DIR}/../SuiteSparse_config/cmake_modules )
 
-option ( SUITESPARSE_USE_CUDA "Enable CUDA acceleration for SuiteSparse" ON )
-option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ON )
-
 include ( SuiteSparsePolicy )
+
+option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ${SUITESPARSE_USE_CUDA} )
 
 #-------------------------------------------------------------------------------
 # find library dependencies
