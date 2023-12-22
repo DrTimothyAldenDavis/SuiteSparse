@@ -14,6 +14,12 @@ set ( GRAPHBLAS_CROSS_TOOLCHAIN_FLAGS_NATIVE "" CACHE STRING
     "list of configuration flags used for building native generator binaries when cross-compiling" )
 
 if ( CMAKE_CROSSCOMPILING )
+
+    cmake_path ( GET PROJECT_BINARY_DIR FILENAME _subdir )
+    if ( ${_subdir} STREQUAL "native" )
+        message ( FATAL_ERROR "Native toolchain not configured correctly" )
+    endif ( )
+
     include ( ExternalProject )
 
     # Try to call CMake on this file with a native toolchain
