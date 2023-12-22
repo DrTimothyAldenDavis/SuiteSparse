@@ -1,11 +1,19 @@
 name: macos
 on:
   workflow_dispatch:
-  push:
-    branches-ignore:
-      - '**/dev2'
-      - '**/*dev2'
-  pull_request:
+# push:
+#   branches-ignore:
+#     - '**/dev2'
+#     - '**/*dev2'
+# pull_request:
+
+# This workflow hangs intermittently at random places, after building a demo
+# program and just before running it.  Something is broken but it's not
+# SuiteSparse; it's github.  Tests on an M1 Mac and Intel Mac have never shown
+# this behavior outside of github.  As a result, this workflow has been
+# relegated to a "workflow_dispatch" only.  It is not run on push or pull
+# requests.  The hang has nothing to do with parallelism; it can hang in
+# check_AMD, which does not use OpenMP.
 
 concurrency: ci-macos-${{ github.ref }}
 
