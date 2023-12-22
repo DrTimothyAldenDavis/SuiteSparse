@@ -45,7 +45,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include ( SuiteSparsePolicy )
 
-if ( SUITESPARSE_USE_FORTRAN )
+if ( SUITESPARSE_HAS_FORTRAN )
     include ( FortranCInterface )
 else ( )
     # No Fortran compiler available or enabled, configuration is not automatic.

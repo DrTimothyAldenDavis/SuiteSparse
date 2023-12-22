@@ -53,11 +53,11 @@ endif ( )
 
 if ( CXSPARSE_USE_COMPLEX )
     message ( STATUS "complex data type: enabled" )
-    set ( CXSPARSE_USE_COMPLEX_ENABLED 1 )
+    set ( CXSPARSE_HAS_COMPLEX 1 )
 else ( )
     message ( STATUS "complex data type: disabled" )
     add_compile_definitions ( NCOMPLEX )
-    set ( CXSPARSE_USE_COMPLEX_ENABLED 0 )
+    set ( CXSPARSE_HAS_COMPLEX 0 )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ include_directories ( Source Include )
 # dynamic cxsparse library properties
 #-------------------------------------------------------------------------------
 
-if ( CXSPARSE_USE_COMPLEX )
+if ( CXSPARSE_HAS_COMPLEX )
     file ( GLOB CXSPARSE_SOURCES "Source/*.c" )
 else ( )
     # exclude functions that work on complex data types
@@ -301,7 +301,7 @@ if ( SUITESPARSE_DEMOS )
     add_executable ( cs_dl_demo2 "Demo/cs_dl_demo2.c" "Demo/cs_dl_demo.c" )
     add_executable ( cs_dl_demo3 "Demo/cs_dl_demo3.c" "Demo/cs_dl_demo.c" )
 
-    if ( CXSPARSE_USE_COMPLEX )
+    if ( CXSPARSE_HAS_COMPLEX )
         add_executable ( cs_ci_demo1 "Demo/cs_ci_demo1.c" "Demo/cs_ci_demo.c" )
         add_executable ( cs_ci_demo2 "Demo/cs_ci_demo2.c" "Demo/cs_ci_demo.c" )
         add_executable ( cs_ci_demo3 "Demo/cs_ci_demo3.c" "Demo/cs_ci_demo.c" )
@@ -341,7 +341,7 @@ if ( SUITESPARSE_DEMOS )
         target_link_libraries ( cs_dl_demo3 PUBLIC CXSparse_static )
     endif ( )
 
-    if ( CXSPARSE_USE_COMPLEX )
+    if ( CXSPARSE_HAS_COMPLEX )
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( cs_ci_demo1 PUBLIC CXSparse )
             target_link_libraries ( cs_ci_demo2 PUBLIC CXSparse )
