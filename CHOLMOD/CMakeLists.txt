@@ -47,7 +47,7 @@ if ( NOT CHOLMOD_GPL )
     set ( CHOLMOD_MATRIXOPS OFF )
     set ( CHOLMOD_MODIFY OFF )
     set ( CHOLMOD_SUPERNODAL OFF )
-    set ( CHOLMOD_USE_CUDA OFF )
+    set ( CHOLMOD_USE_CUDA OFF )    # OK: disabled by user-setting of CHOLMOD_GPL
     add_compile_definitions ( NGPL )
 endif ( )
 
@@ -664,7 +664,7 @@ if ( SUITESPARSE_DEMOS )
     add_executable ( cholmod_si_simple "Demo/cholmod_si_simple.c" )
     add_executable ( cholmod_sl_simple "Demo/cholmod_sl_simple.c" )
 
-    if ( SUITESPARSE_USE_FORTRAN )
+    if ( SUITESPARSE_HAS_FORTRAN )
         add_executable ( readhb     "Demo/readhb.f" )
         add_executable ( readhb2    "Demo/readhb2.f" )
         add_executable ( reade      "Demo/reade.f" )

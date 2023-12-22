@@ -384,7 +384,7 @@ if ( SUITESPARSE_DEMOS )
     add_executable ( umfpack_zi_demo "Demo/umfpack_zi_demo.c" )
     add_executable ( umfpack_zl_demo "Demo/umfpack_zl_demo.c" )
 
-    if ( SUITESPARSE_USE_FORTRAN )
+    if ( SUITESPARSE_HAS_FORTRAN )
         # Fortran demos
         add_executable ( umf4            "Demo/umf4.c" )
         add_executable ( umfreadhb       "Demo/readhb.f" )
@@ -419,7 +419,7 @@ if ( SUITESPARSE_DEMOS )
     endif ( )
     target_link_libraries ( umfpack_simple PUBLIC SuiteSparse::SuiteSparseConfig )
 
-    if ( SUITESPARSE_USE_FORTRAN )
+    if ( SUITESPARSE_HAS_FORTRAN )
         # Fortran demos
         if ( BUILD_SHARED_LIBS )
             target_link_libraries ( umf4 PUBLIC UMFPACK )
