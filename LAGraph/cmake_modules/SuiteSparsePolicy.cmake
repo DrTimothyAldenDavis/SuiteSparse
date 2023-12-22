@@ -15,23 +15,23 @@
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
 #   SUITESPARSE_USE_CUDA: if OFF, CUDA is disabled.  if ON, CUDA is enabled,
-#                       if available.
+#                       if available.  Ignored for MSVC.
 #                       Default: ON.
 #
-#   LOCAL_INSTALL:      if true, "cmake --install" will install
+#   SUITESPARSE_LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
 #                       if false, "cmake --install" will install into the
 #                       default prefix (or the one configured with
 #                       CMAKE_INSTALL_PREFIX).  Requires cmake 3.19.
 #                       This is ignored when using the root CMakeLists.txt.
 #                       Set CMAKE_INSTALL_PREFIX instead.
-#                       Default: false
+#                       Default: OFF
 #
 #   BUILD_SHARED_LIBS:  if true, shared libraries are built.
-#                       Default: true.
+#                       Default: ON.
 #
 #   BUILD_STATIC_LIBS:  if true, static libraries are built.
-#                       Default: true, except for GraphBLAS, which
+#                       Default: ON, except for GraphBLAS, which
 #                       takes a long time to compile so the default for
 #                       GraphBLAS is false.
 #
@@ -49,10 +49,10 @@
 #                       Both settings must appear, or neither.
 #                       Default: neither are defined.
 #
-#   BLA_STATIC:         if true, use static linkage for BLAS and LAPACK.
-#                       Default: false
+#   BLA_STATIC:         if ON, use static linkage for BLAS and LAPACK.
+#                       Default: not set (that is, the same as OFF)
 #
-#   SUITESPARSE_ALLOW_64BIT_BLAS    if true, SuiteSparse will search for both
+#   SUITESPARSE_USE_64BIT_BLAS    if true, SuiteSparse will search for both
 #                       32-bit and 64-bit BLAS.  If false, only 32-bit BLAS
 #                       will be searched for.  Ignored if BLA_VENDOR and
 #                       BLA_SIZEOF_INTEGER are defined.
@@ -81,12 +81,25 @@
 #                       installed in the subfolder `pkgconfig` of the directory
 #                       where the (static) libraries will be installed.
 #                       Default: CMAKE_INSTALL_PREFIX, or SuiteSparse/lib if
-#                       LOCAL_INSTALL is enabled.
+#                       SUITESPARSE_LOCAL_INSTALL is enabled.
 #
 #   SUITESPARSE_INCLUDEDIR_POSTFIX : Postfix for installation target of
 #                       header from SuiteSparse. Default: suitesparse, so the
 #                       default include directory is:
 #                       CMAKE_INSTALL_PREFIX/include/suitesparse
+#
+#   SUITESPARSE_USE_STRICT: SuiteSparse has many user-definable settings of the
+#                       form SUITESPARSE_USE_* or (package)_USE_* for some
+#                       particular package.  In general, these settings are not
+#                       strict.  For example, if SUITESPARSE_USE_OPENMP is
+#                       ON then OpenMP is preferred, but SuiteSparse can be
+#                       used without OpenMP so no error is generated if OpenMP
+#                       is not found.  However, if SUITESPARSE_USE_STRICT is
+#                       ON then all *_USE_* settings are treated strictly
+#                       and an error occurs if any are set to ON but the
+#                       corresponding package or setting is not available.  The
+#                       *_USE_SYSTEM_* settings are always treated as strict.
+#                       Default: OFF.
 
 message ( STATUS "Source:           ${CMAKE_SOURCE_DIR} ")
 message ( STATUS "Build:            ${CMAKE_BINARY_DIR} ")
@@ -107,6 +120,9 @@ include ( GNUInstallDirs )
 # add the cmake_modules folder for this package to the module path
 set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
+
+# strict usage
+option ( SUITESPARSE_USE_STRICT "ON: treat all _USE__ settings as strict if they are ON. OFF (default): consider *_USE_* as preferences, not strict" OFF )
 
 # build the demos
 option ( SUITESPARSE_DEMOS "ON: Build the demo programs.  OFF (default): do not build the demo programs." OFF )
@@ -131,10 +147,10 @@ endif ( )
 
 # installation options
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.19.0" )
-    # the LOCAL_INSTALL option requires cmake 3.19.0 or later
-    option ( LOCAL_INSTALL "Install in SuiteSparse/lib" OFF )
+    # the SUITESPARSE_LOCAL_INSTALL option requires cmake 3.19.0 or later
+    option ( SUITESPARSE_LOCAL_INSTALL "Install in SuiteSparse/lib" OFF )
 else ( )
-    set ( LOCAL_INSTALL OFF )
+    set ( SUITESPARSE_LOCAL_INSTALL OFF )
 endif ( )
 
 if ( SUITESPARSE_SECOND_LEVEL )
@@ -150,10 +166,10 @@ endif ( )
 set ( INSIDE_SUITESPARSE OFF )
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     # determine if this Package is inside the SuiteSparse folder
-    if ( LOCAL_INSTALL )
+    if ( SUITESPARSE_LOCAL_INSTALL )
         # if you do not want to install local copies of SuiteSparse
         # packages in SuiteSparse/lib and SuiteSparse/, set
-        # LOCAL_INSTALL to false in your CMake options.
+        # SUITESPARSE_LOCAL_INSTALL to false in your CMake options.
         if ( SUITESPARSE_SECOND_LEVEL )
             # the package is normally located at the 2nd level inside SuiteSparse
             # (SuiteSparse/GraphBLAS/GraphBLAS/ for example)
@@ -169,7 +185,7 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         endif ( )
 
         if ( NOT INSIDE_SUITESPARSE )
-            message ( FATAL_ERROR "Unsupported layout for local installation. Correct the directory layout or unset LOCAL_INSTALL." )
+            message ( FATAL_ERROR "Unsupported layout for local installation. Correct the directory layout or unset SUITESPARSE_LOCAL_INSTALL." )
         endif ( )
 
     endif ( )
@@ -178,7 +194,7 @@ endif ( )
 set ( SUITESPARSE_INCLUDEDIR_POSTFIX "suitesparse" CACHE STRING
     "Postfix for installation target of header from SuiteSparse (default: \"suitesparse\")" )
 
-if ( LOCAL_INSTALL )
+if ( SUITESPARSE_LOCAL_INSTALL )
     if ( INSIDE_SUITESPARSE )
         # ../lib and ../include exist: the package is inside SuiteSparse.
         # find ( REAL_PATH ...) requires cmake 3.19.
@@ -242,6 +258,12 @@ if ( SUITESPARSE_USE_FORTRAN )
     endif ( )
 else ( )
     message ( STATUS "Fortran:          not enabled" )
+    set ( SUITESPARSE_HAS_FORTRAN OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_FORTRAN AND NOT SUITESPARSE_HAS_FORTRAN )
+    message ( FATAL_ERROR "Fortran required for SuiteSparse but not found" )
 endif ( )
 
 # default C-to-Fortran name mangling if Fortran compiler not found
@@ -259,8 +281,14 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-option ( SUITESPARSE_USE_CUDA "Enable CUDA acceleration for SuiteSparse" ON )
-if ( SUITESPARSE_USE_CUDA AND NOT MSVC )
+if ( MSVC )
+    # do not attempt to use CUDA on MSVC
+    set ( SUITESPARSE_USE_CUDA OFF )
+else ( )
+    option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
+endif ( )
+
+if ( SUITESPARSE_USE_CUDA )
 
     # try finding CUDA
     check_language ( CUDA )
@@ -302,5 +330,10 @@ if ( SUITESPARSE_HAS_CUDA )
     set ( CMAKE_CUDA_ARCHITECTURES ${SUITESPARSE_CUDA_ARCHITECTURES} )
 else ( )
     message ( STATUS "CUDA:             not enabled" )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_CUDA AND NOT SUITESPARSE_HAS_CUDA )
+    message ( FATAL_ERROR "CUDA required for SuiteSparse but not found" )
 endif ( )
 

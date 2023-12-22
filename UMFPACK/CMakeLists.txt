@@ -60,6 +60,10 @@ endif ( )
 
 include ( SuiteSparseBLAS )     # requires cmake 3.22
 
+#-------------------------------------------------------------------------------
+# find CHOLMOD
+#-------------------------------------------------------------------------------
+
 option ( UMFPACK_USE_CHOLMOD "ON (default): use CHOLMOD in UMFPACK.  OFF: do not use CHOLMOD in UMFPACK" ON )
 
 if ( SUITESPARSE_ROOT_CMAKELISTS )
@@ -89,6 +93,11 @@ if ( UMFPACK_HAS_CHOLMOD )
     message ( STATUS "Using CHOLMOD for addtional pre-ordering options" )
 else ( )
     message ( STATUS "CHOLMOD not found or not requested" )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND UMFPACK_USE_CHOLMOD AND NOT UMFPACK_HAS_CHOLMOD )
+    message ( FATAL_ERROR "CHOLMOD required for UMFPACK but not found" )
 endif ( )
 
 #-------------------------------------------------------------------------------

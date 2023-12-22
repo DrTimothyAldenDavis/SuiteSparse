@@ -100,6 +100,11 @@ else ( )
     message ( STATUS "CHOLMOD not found or not requested" )
 endif ( )
 
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND KLU_USE_CHOLMOD AND NOT KLU_HAS_CHOLMOD )
+    message ( FATAL_ERROR "CHOLMOD required for KLU but not found" )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------

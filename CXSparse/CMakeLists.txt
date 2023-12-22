@@ -60,6 +60,11 @@ else ( )
     set ( CXSPARSE_HAS_COMPLEX 0 )
 endif ( )
 
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND CXSPARSE_USE_COMPLEX AND NOT CXSPARSE_HAS_COMPLEX )
+    message ( FATAL_ERROR "complex types required for CXSparse but not available" )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # find library dependencies
 #-------------------------------------------------------------------------------

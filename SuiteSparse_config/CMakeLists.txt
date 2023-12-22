@@ -54,7 +54,7 @@ else ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
-# find library dependencies
+# find OpenMP
 #-------------------------------------------------------------------------------
 
 option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
@@ -65,6 +65,21 @@ else ( )
     message ( STATUS "OpenMP disabled" )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+
+if ( OpenMP_C_FOUND )
+    set ( SUITESPARSE_HAS_OPENMP ON )
+else ( )
+    set ( SUITESPARSE_HAS_OPENMP OFF )
+endif ( )
+
+# check for strict usage
+if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_OPENMP AND NOT SUITESPARSE_HAS_OPENMP )
+    message ( FATAL_ERROR "OpenMP required for SuiteSparse but not found" )
+endif ( )
+
+#-------------------------------------------------------------------------------
+# find the BLAS
+#-------------------------------------------------------------------------------
 
 include ( SuiteSparseBLAS )
 
