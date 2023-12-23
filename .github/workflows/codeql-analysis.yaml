@@ -87,7 +87,7 @@ jobs:
                   -DNSTATIC=ON \
                   -DCOMPACT=ON \
                   -DSUITESPARSE_USE_CUDA=ON \
-                  -DCUDAToolkit_INCLUDE_DIR="/usr/include" \
+                  -DCUDAToolkit_INCLUDE_DIRS="/usr/include" \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"

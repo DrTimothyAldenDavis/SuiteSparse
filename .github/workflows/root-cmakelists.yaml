@@ -48,7 +48,7 @@ jobs:
             cuda-cmake-flags:
               -DSUITESPARSE_USE_CUDA=ON
               -DSUITESPARSE_USE_STRICT=ON
-              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCUDAToolkit_INCLUDE_DIRS="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
@@ -60,7 +60,7 @@ jobs:
             cuda-cmake-flags:
               -DSUITESPARSE_USE_CUDA=ON
               -DSUITESPARSE_USE_STRICT=ON
-              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCUDAToolkit_INCLUDE_DIRS="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: static
             link-cmake-flags:
