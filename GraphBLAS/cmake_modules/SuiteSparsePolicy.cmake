@@ -15,8 +15,7 @@
 #                       set ( CMAKE_BUILD_TYPE Debug )
 #
 #   SUITESPARSE_USE_CUDA: if OFF, CUDA is disabled.  if ON, CUDA is enabled,
-#                       if available.  Ignored for MSVC.
-#                       Default: ON.
+#                       if available.  Default: ON.
 #
 #   SUITESPARSE_LOCAL_INSTALL:      if true, "cmake --install" will install
 #                       into SuiteSparse/lib and SuiteSparse/include.
@@ -285,8 +284,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( MSVC )
-    # do not attempt to use CUDA on MSVC
-    set ( SUITESPARSE_USE_CUDA OFF )
+    option ( SUITESPARSE_USE_CUDA "ON: enable CUDA acceleration for SuiteSparse, OFF (default): do not use CUDA" OFF )
+    message ( STATUS "CUDA on MSVC is under development and may not be fully functional (it is disabled by default)" )
 else ( )
     option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
 endif ( )
