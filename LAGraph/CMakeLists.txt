@@ -156,8 +156,11 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( LAGRAPH_USE_OPENMP "ON: Use OpenMP in LAGraph if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( NOT SUITESPARSE_USE_OPENMP )
+    set ( LAGRAPH_USE_OPENMP "OFF" CACHE STRING "" FORCE )
+endif ( )
 if ( COVERAGE )
-    set ( LAGRAPH_USE_OPENMP OFF )  # OK: test coverage is enabled
+    set ( LAGRAPH_USE_OPENMP "OFF" CACHE STRING "" FORCE ) # OK: test coverage is enabled
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
     if ( LAGRAPH_USE_OPENMP )

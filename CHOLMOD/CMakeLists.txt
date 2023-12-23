@@ -41,13 +41,17 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 include ( SuiteSparsePolicy )
 
 option ( CHOLMOD_USE_CUDA "ON (default): enable CUDA acceleration for CHOLMOD, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
+if ( NOT SUITESPARSE_USE_CUDA )
+    set ( CHOLMOD_USE_CUDA "OFF" CACHE STRING "" FORCE )
+endif ( )
+
 option ( CHOLMOD_GPL "ON (default): enable GPL-licensed modules, OFF: do not use any CHOLMOD GPL-licensed modules" ON )
 if ( NOT CHOLMOD_GPL )
     # CHOLMOD_GPL: if OFF, do not include any GPL-licensed module
     set ( CHOLMOD_MATRIXOPS OFF )
     set ( CHOLMOD_MODIFY OFF )
     set ( CHOLMOD_SUPERNODAL OFF )
-    set ( CHOLMOD_USE_CUDA OFF )    # OK: disabled by user-setting of CHOLMOD_GPL
+    set ( CHOLMOD_USE_CUDA "OFF" CACHE STRING "" FORCE ) # OK: disabled by user-setting of CHOLMOD_GPL
     add_compile_definitions ( NGPL )
 endif ( )
 
@@ -80,6 +84,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( NOT SUITESPARSE_USE_OPENMP )
+    set ( CHOLMOD_USE_OPENMP "OFF" CACHE STRING "" FORCE )
+endif ( )
 if ( CHOLMOD_USE_OPENMP )
     find_package ( OpenMP GLOBAL )
 else ( )

@@ -55,6 +55,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( NOT SUITESPARSE_USE_OPENMP )
+    set ( PARU_USE_OPENMP "OFF" CACHE STRING "" FORCE )
+endif ( )
 
 if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required

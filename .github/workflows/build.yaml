@@ -53,7 +53,7 @@ jobs:
             cuda-cmake-flags:
               -DSUITESPARSE_USE_CUDA=ON
               -DSUITESPARSE_USE_STRICT=ON
-              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCUDAToolkit_INCLUDE_DIRS="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
           - compiler: gcc
             compiler-pkgs: "g++ gcc"
@@ -73,7 +73,7 @@ jobs:
             cuda-cmake-flags:
               -DSUITESPARSE_USE_CUDA=ON
               -DSUITESPARSE_USE_STRICT=ON
-              -DCUDAToolkit_INCLUDE_DIR="/usr/include"
+              -DCUDAToolkit_INCLUDE_DIRS="/usr/include"
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             openmp: with
             link: static
@@ -218,9 +218,9 @@ jobs:
           printf "::group::\033[0;32m==>\033[0m Executing example\n"
           if [ -f ./my_demo -a -f ./my_cxx_demo ]; then
             printf "\033[1;35m  C binary with shared libraries\033[0m\n"
-            LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+            ./my_demo
             printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
-            LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
+            ./my_cxx_demo
           fi
           printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
           ./my_demo_static
