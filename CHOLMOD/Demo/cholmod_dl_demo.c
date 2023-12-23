@@ -279,6 +279,9 @@ int main (int argc, char **argv)
     // analyze and factorize
     //--------------------------------------------------------------------------
 
+    // The analysis and factorizations are repeated, to get accurate timings
+    // and to exercise that particular feature.
+
     double maxresid = 0 ;
 
 for (int overall_trials = 0 ; overall_trials <= 1 ; overall_trials++)
@@ -290,23 +293,28 @@ for (int overall_trials = 0 ; overall_trials <= 1 ; overall_trials++)
     ta = CPUTIME - t ;
     ta = MAX (ta, 0) ;
 
-    printf ("Analyze: flop %g lnz %g\n", cm->fl, cm->lnz) ;
+    printf ("Analyze: flop %g lnz %g, time: %g\n", cm->fl, cm->lnz, ta) ;
 
-    if (A->stype == 0)
+    for (int factor_trials = 0 ; factor_trials <= 2 ; factor_trials++)
     {
-        printf ("Factorizing A*A'+beta*I\n") ;
-        t = CPUTIME ;
-        cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
-        tf = CPUTIME - t ;
-        tf = MAX (tf, 0) ;
-    }
-    else
-    {
-        printf ("Factorizing A\n") ;
-        t = CPUTIME ;
-        cholmod_l_factorize (A, L, cm) ;
-        tf = CPUTIME - t ;
-        tf = MAX (tf, 0) ;
+        if (A->stype == 0)
+        {
+            t = CPUTIME ;
+            cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
+            tf = CPUTIME - t ;
+            tf = MAX (tf, 0) ;
+            printf ("factor_trial: %d, Factorizing A*A'+beta*I, time: %g\n",
+                factor_trials, tf) ;
+        }
+        else
+        {
+            t = CPUTIME ;
+            cholmod_l_factorize (A, L, cm) ;
+            tf = CPUTIME - t ;
+            tf = MAX (tf, 0) ;
+            printf ("factor trial: %d, Factorizing A, time: %g\n",
+                factor_trials, tf) ;
+        }
     }
 
     cholmod_l_print_factor (L, "L", cm) ;
