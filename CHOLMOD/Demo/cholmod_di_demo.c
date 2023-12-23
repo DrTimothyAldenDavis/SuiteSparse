@@ -123,7 +123,7 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_start (cm) ;
-    cm->print = 4 ;
+    cm->print = 3 ;
 
     cm->prefer_zomplex = prefer_zomplex ;
 
@@ -278,6 +278,12 @@ int main (int argc, char **argv)
     //--------------------------------------------------------------------------
     // analyze and factorize
     //--------------------------------------------------------------------------
+
+    double maxresid = 0 ;
+
+for (int overall_trials = 0 ; overall_trials <= 1 ; overall_trials++)
+{
+    printf ("\n=== Overall Trial: %d\n", overall_trials) ;
 
     t = CPUTIME ;
     L = cholmod_analyze (A, cm) ;
@@ -704,21 +710,20 @@ int main (int argc, char **argv)
     {
         printf ("nnz(L) / nnz(A): %8.1f\n", cm->lnz / cm->anz) ;
     }
-    printf ("analyze cputime:  %12.4f\n", ta) ;
-    printf ("factor  cputime:   %12.4f mflop: %8.1f\n", tf,
+    printf ("analyze time:  %12.4f\n", ta) ;
+    printf ("factor  time:   %12.4f mflop: %8.1f\n", tf,
         (tf == 0) ? 0 : (1e-6*cm->fl / tf)) ;
-    printf ("solve   cputime:   %12.4f mflop: %8.1f\n", ts [0],
+    printf ("solve   time:   %12.4f mflop: %8.1f\n", ts [0],
         (ts [0] == 0) ? 0 : (1e-6*4*cm->lnz / ts [0])) ;
-    printf ("overall cputime:   %12.4f mflop: %8.1f\n",
+    printf ("overall time:   %12.4f mflop: %8.1f\n",
             tot, (tot == 0) ? 0 : (1e-6 * (cm->fl + 4 * cm->lnz) / tot)) ;
-    printf ("solve   cputime:   %12.4f mflop: %8.1f (%d trials)\n", ts [1],
+    printf ("solve   time:   %12.4f mflop: %8.1f (%d trials)\n", ts [1],
         (ts [1] == 0) ? 0 : (1e-6*4*cm->lnz / ts [1]), NTRIALS) ;
-    printf ("solve2  cputime:   %12.4f mflop: %8.1f (%d trials)\n", ts [2],
+    printf ("solve2  time:   %12.4f mflop: %8.1f (%d trials)\n", ts [2],
         (ts [2] == 0) ? 0 : (1e-6*4*cm->lnz / ts [2]), NTRIALS) ;
     printf ("peak memory usage: %12.0f (MB)\n",
             (double) (cm->memory_usage) / 1048576.) ;
     printf ("residual (|Ax-b|/(|A||x|+|b|)): ") ;
-    double maxresid = 0 ;
     for (method = 0 ; method <= nmethods ; method++)
     {
         printf ("%8.2e ", resid [method]) ;
@@ -743,6 +748,7 @@ int main (int argc, char **argv)
 
     cholmod_free_factor (&L, cm) ;
     cholmod_free_dense (&X, cm) ;
+}
 
     //--------------------------------------------------------------------------
     // free matrices and finish CHOLMOD
