@@ -17,12 +17,12 @@
 
 void umfpack_tic (double stats [2])
 {
-    stats [0] = SuiteSparse_time ( ) ;
+    stats [0] = SUITESPARSE_TIME ;
     stats [1] = stats [0] ;
 }
 
 void umfpack_toc (double stats [2])
 {
-    stats [0] = SuiteSparse_time ( ) - stats [0] ;
+    stats [0] = SUITESPARSE_TIME - stats [0] ;
     stats [1] = stats [0] ;
 }

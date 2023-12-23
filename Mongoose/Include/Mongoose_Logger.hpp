@@ -134,7 +134,7 @@ inline void Logger::tic(TimingType timingType)
 {
     if (timingOn)
     {
-        clocks[timingType] = SuiteSparse_time ();
+        clocks[timingType] = SUITESPARSE_TIME;
     }
 }
 
@@ -157,7 +157,7 @@ inline void Logger::toc(TimingType timingType)
     if (timingOn)
     {
         times[timingType]
-            += (float) (SuiteSparse_time () - clocks[timingType]) ;
+            += (float) (SUITESPARSE_TIME - clocks[timingType]) ;
     }
 }
 

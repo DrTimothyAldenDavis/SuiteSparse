@@ -83,9 +83,9 @@ int main(int argn, const char **argv)
     std::cout << "********************************************************************************" << std::endl;
 
     // An edge separator should be computed with default options
-    t = SuiteSparse_time ();
+    t = SUITESPARSE_TIME;
     EdgeCut *result = edge_cut(graph, options);
-    t = SuiteSparse_time () - t;
+    t = SUITESPARSE_TIME - t;
 
     if (!result)
     {

@@ -147,7 +147,7 @@ void UMFPACK_report_info
 	(Int) (sizeof (SUITESPARSE_BLAS_INT)))) ;
 #endif
 
-    PRINTF (("    MATLAB:                           ")) ;
+    PRINTF (("    MATLAB: ")) ;
 #ifdef MATLAB_MEX_FILE
     PRINTF (("yes.\n")) ;
 #else
@@ -158,11 +158,15 @@ void UMFPACK_report_info
 #endif
 #endif
 
-    PRINTF (("    CPU timer:                        ")) ;
+    PRINTF (("    CPU timer: ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (("SuiteSparse_time ( ) routine.\n")) ;
+    #ifdef _OPENMP
+        PRINTF (("omp_get_wtime ( )\n")) ;
+    #else
+        PRINTF (("SuiteSparse_time ( )\n")) ;
+    #endif
 #else
-    PRINTF (("none.\n")) ;
+    PRINTF (("no timer used.\n")) ;
 #endif
 
     /* ---------------------------------------------------------------------- */
