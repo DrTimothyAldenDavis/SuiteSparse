@@ -38,12 +38,20 @@ include ( SuiteSparsePolicy )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-include ( GraphBLAS_JIT_paths )
+# in the future, when GraphBLAS can use CUDA in production:
+# option ( GRAPHBLAS_USE_CUDA "ON (default): enable CUDA acceleration for GraphBLAS, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
+# if ( NOT SUITESPARSE_USE_CUDA )
+#     set ( GRAPHBLAS_USE_CUDA "OFF" CACHE STRING "" FORCE )
+# endif ( )
+
+set ( GRAPHBLAS_HAS_CUDA OFF )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_CUDA AND NOT GRAPHBLAS_HAS_CUDA )
     message ( FATAL_ERROR "CUDA required for GraphBLAS but not found" )
 endif ( )
+
+include ( GraphBLAS_JIT_paths )
 
 #-------------------------------------------------------------------------------
 # define the project
@@ -57,6 +65,9 @@ project ( graphblas_matlab
 #-------------------------------------------------------------------------------
 
 option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
+if ( NOT SUITESPARSE_USE_OPENMP )
+    set ( GRAPHBLAS_USE_OPENMP "OFF" CACHE STRING "" FORCE )
+endif ( )
 if ( GRAPHBLAS_USE_OPENMP )
     find_package ( OpenMP )
 else ( )

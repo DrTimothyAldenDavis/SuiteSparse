@@ -65,7 +65,10 @@ include ( SuiteSparseLAPACK )   # requires cmake 3.22
 # find CUDA
 #-------------------------------------------------------------------------------
 
-option ( SPQR_USE_CUDA "Enable CUDA acceleration for SPQR" ${SUITESPARSE_USE_CUDA} )
+option ( SPQR_USE_CUDA "ON (default): enable CUDA acceleration for SPQR, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
+if ( NOT SUITESPARSE_USE_CUDA )
+    set ( SPQR_USE_CUDA "OFF" CACHE STRING "" FORCE )
+endif ( )
 
 if ( SUITESPARSE_HAS_CUDA AND SPQR_USE_CUDA )
     # with CUDA
