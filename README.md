@@ -728,8 +728,10 @@ build type).  The static libraries will not be built (since
 
 * `SUITESPARSE_USE_CUDA`:
 
-  If set to `ON`, CUDA is enabled for all of SuiteSparse.  Default: `ON`.
-  Ignored for MSVC (CUDA acceleration is disabled on Windows with MSVC).
+  If set to `ON`, CUDA is enabled for all of SuiteSparse.  Default: `ON`, 
+  except for MSVC.  CUDA on Windows with MSVC is enabled, but under
+  development.  It may not be fully functional.  If you encounter issues,
+  disable CUDA and post this as an issue on githup.
 
 * `CHOLMOD_USE_CUDA`:
 
