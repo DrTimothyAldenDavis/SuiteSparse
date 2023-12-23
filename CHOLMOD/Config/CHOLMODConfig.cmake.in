@@ -52,7 +52,7 @@ if ( NOT _dependencies_found )
 endif ( )
 
 # Look for OpenMP
-if ( @CHOLMOD_USE_OPENMP@ AND NOT OpenMP_C_FOUND )
+if ( @CHOLMOD_HAS_OPENMP@ AND NOT OpenMP_C_FOUND )
     find_dependency ( OpenMP )
     if ( NOT OpenMP_C_FOUND )
         set ( _dependencies_found OFF )
@@ -156,7 +156,7 @@ endif ( )
 # Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/CHOLMODTargets.cmake )
 
-if ( @CHOLMOD_USE_OPENMP@ )
+if ( @CHOLMOD_HAS_OPENMP@ )
     if ( TARGET SuiteSparse::CHOLMOD )
         get_property ( _cholmod_aliased TARGET SuiteSparse::CHOLMOD
             PROPERTY ALIASED_TARGET )
