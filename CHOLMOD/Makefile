@@ -118,6 +118,9 @@ test: library
 cov:
 	( cd Tcov && $(MAKE) )
 
+gpu: library
+	( cd Demo && ./gpu.sh )
+
 # just compile after running cmake; do not run cmake again
 remake:
 	( cd build && cmake --build . -j${JOBS} )

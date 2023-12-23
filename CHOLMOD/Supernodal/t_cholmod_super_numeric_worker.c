@@ -156,10 +156,10 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     Int *Super, *Head, *Ls, *Lpi, *Lpx, *Map, *SuperMap, *RelativeMap, *Next,
         *Lpos, *Fp, *Fi, *Fnz, *Ap, *Ai, *Anz, *Iwork, *Next_save, *Lpos_save,
         *Previous;
-    Int nsuper, n, j, i, k, s, p, pend, k1, k2, nscol, psi, psx, psend, nsrow,
-        pj, d, kd1, kd2, info, ndcol, ndrow, pdi, pdx, pdend, pdi1, pdi2, pdx1,
-        ndrow1, ndrow2, px, dancestor, sparent, dnext, nsrow2, ndrow3, pk, pf,
-        pfend, stype, Apacked, Fpacked, q, imap, repeat_supernode, nscol2, ss,
+    Int nsuper, n, s, k1, k2, nscol, psi, psx, psend, nsrow,
+        pj, d, kd1, kd2, info, ndcol, ndrow, pdi, pdx, pdend, pdi1, pdi2,
+        ndrow1, ndrow2, dancestor, sparent, dnext, nsrow2, ndrow3,
+        stype, Apacked, Fpacked, repeat_supernode, nscol2, ss,
         tail, nscol_new = 0;
     info = 0 ;
 
@@ -302,11 +302,12 @@ static int TEMPLATE (cholmod_super_numeric_worker)
     int nthreads = cholmod_nthreads ((double) n, Common) ;
     #endif
 
+    Int ii ;
     #pragma omp parallel for num_threads(nthreads) \
         if ( n > 128 ) schedule (static)
-    for (i = 0 ; i < n ; i++)
+    for (ii = 0 ; ii < n ; ii++)
     {
-        Map [i] = EMPTY ;
+        Map [ii] = EMPTY ;
     }
 
     // If the matrix is not positive definite, the supernode s containing the
@@ -356,19 +357,19 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
         ASSERT ((size_t) (psx + nsrow*nscol) <= L->xsize) ;
 
-        pend = psx + nsrow * nscol ;        // s is nsrow-by-nscol
-
         #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
         if ( !useGPU )
         #endif
         {
             // Case of no GPU, zero individual supernodes
+            Int pend = psx + nsrow * nscol ;        // s is nsrow-by-nscol
 
             #ifdef _OPENMP
             double work = (double) (pend - psx) * L_ENTRY ;
             int nthreads = cholmod_nthreads (work, Common) ;
             #endif
 
+            Int p ;
             #pragma omp parallel for num_threads(nthreads)   \
                 schedule (static) if ( pend - psx > 1024 )
             for (p = psx ; p < pend ; p++)
@@ -388,6 +389,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         int nthreads = cholmod_nthreads ((double) nsrow, Common) ;
         #endif
 
+        Int k ;
         #pragma omp parallel for num_threads(nthreads)  \
             if ( nsrow > 128 )
         for (k = 0 ; k < nsrow ; k++)
@@ -414,7 +416,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         // copy matrix into supernode s (lower triangular part only)
         //----------------------------------------------------------------------
 
-        pk = psx ;
+        Int pk = psx ;
 
         #ifdef _OPENMP
         double work ;
@@ -434,7 +436,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         #endif
 
         #pragma omp parallel for num_threads(nthreads) \
-            private ( p, pend, pfend, pf, i, j, imap, q ) if ( k2-k1 > 64 )
+            if ( k2-k1 > 64 )
         for (k = k1 ; k < k2 ; k++)
         {
             if (stype != 0)
@@ -444,21 +446,20 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 // copy the kth column of A into the supernode
                 //--------------------------------------------------------------
 
-                p = Ap [k] ;
-                pend = (Apacked) ? (Ap [k+1]) : (p + Anz [k]) ;
+                Int p = Ap [k] ;
+                Int pend = (Apacked) ? (Ap [k+1]) : (p + Anz [k]) ;
                 for ( ; p < pend ; p++)
                 {
                     // row i of L is located in row Map [i] of s
-                    i = Ai [p] ;
+                    Int i = Ai [p] ;
                     if (i >= k)
                     {
-                        // This test is here simply to avoid a segfault.  If
-                        // the test is false, the numeric factorization of A
-                        // is undefined.  It does not detect all invalid
+                        // If the test is false, the numeric factorization of A
+                        // is undefined.  The test does not detect all invalid
                         // entries, only some of them (when debugging is
                         // enabled, and Map is cleared after each step, then
                         // all entries not in the pattern of L are detected).
-                        imap = Map [i] ;
+                        Int imap = Map [i] ;
                         if (imap >= 0 && imap < nsrow)
                         {
                             // Lx [Map [i] + pk] = Ax [p]
@@ -474,25 +475,25 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 // copy the kth column of A*F into the supernode
                 //--------------------------------------------------------------
 
-                Real fjk[2] ;
-                pf = Fp [k] ;
-                pfend = (Fpacked) ? (Fp [k+1]) : (pf + Fnz [k]) ;
+                Real fjk [2] ;
+                Int pf = Fp [k] ;
+                Int pfend = (Fpacked) ? (Fp [k+1]) : (pf + Fnz [k]) ;
                 for ( ; pf < pfend ; pf++)
                 {
-                    j = Fi [pf] ;
+                    Int j = Fi [pf] ;
 
                     // fjk = Fx [pf]
                     L_ASSIGN (fjk,0, Fx,Fz,pf) ;
 
-                    p = Ap [j] ;
-                    pend = (Apacked) ? (Ap [j+1]) : (p + Anz [j]) ;
+                    Int p = Ap [j] ;
+                    Int pend = (Apacked) ? (Ap [j+1]) : (p + Anz [j]) ;
                     for ( ; p < pend ; p++)
                     {
-                        i = Ai [p] ;
+                        Int i = Ai [p] ;
                         if (i >= k)
                         {
                             // See the discussion of imap above.
-                            imap = Map [i] ;
+                            Int imap = Map [i] ;
                             if (imap >= 0 && imap < nsrow)
                             {
                                 // Lx [Map [i] + pk] += Ax [p] * fjk
@@ -509,8 +510,8 @@ static int TEMPLATE (cholmod_super_numeric_worker)
         if (beta [0] != 0.0)
         {
             // note that only the real part of beta is used
-            pk = psx ;
-            for (k = k1 ; k < k2 ; k++)
+            Int pk = psx ;
+            for (Int k = k1 ; k < k2 ; k++)
             {
                 // Lx [pk] += beta [0]
                 L_ASSEMBLE (Lx,pk, beta) ;
@@ -682,9 +683,9 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             // find the range of rows of d that affect rows k1 to k2-1 of s
             //------------------------------------------------------------------
 
-            p = Lpos [d] ;          // offset of 1st row of d affecting s
-            pdi1 = pdi + p ;        // ptr to 1st row of d affecting s in Ls
-            pdx1 = pdx + p ;        // ptr to 1st row of d affecting s in Lx
+            Int p = Lpos [d] ;      // offset of 1st row of d affecting s
+            Int pdi1 = pdi + p ;    // ptr to 1st row of d affecting s in Ls
+            Int pdx1 = pdx + p ;    // ptr to 1st row of d affecting s in Lx
 
             // there must be at least one row remaining in d to update s
             ASSERT (pdi1 < pdend) ;
@@ -892,6 +893,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 int nthreads = cholmod_nthreads ((double) ndrow2, Common) ;
                 #endif
 
+                Int i ;
                 #pragma omp parallel for num_threads(nthreads)   \
                     if ( ndrow2 > 64 )
                 for (i = 0 ; i < ndrow2 ; i++)
@@ -909,24 +911,26 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 nthreads = cholmod_nthreads (work, Common) ;
                 #endif
 
+                Int j ;
                 #pragma omp parallel for num_threads(nthreads) \
-                    private ( j, i, px, q ) if (ndrow1 > 64 )
+                    if (ndrow1 > 64 )
                 for (j = 0 ; j < ndrow1 ; j++)              // cols k1:k2-1
                 {
                     ASSERT (RelativeMap [j] == Map [Ls [pdi1 + j]]) ;
                     ASSERT (RelativeMap [j] >= 0 && RelativeMap [j] < nscol) ;
-                    px = psx + RelativeMap [j] * nsrow ;
-                    for (i = j ; i < ndrow2 ; i++)          // rows k1:n-1
+                    Int px = psx + RelativeMap [j] * nsrow ;
+                    for (Int i = j ; i < ndrow2 ; i++)          // rows k1:n-1
                     {
                         ASSERT (RelativeMap [i] == Map [Ls [pdi1 + i]]) ;
                         ASSERT (RelativeMap [i] >= j && RelativeMap[i] < nsrow);
                         // Lx [px + RelativeMap [i]] -= C [i + pj]
-                        q = px + RelativeMap [i] ;
+                        Int q = px + RelativeMap [i] ;
                         L_ASSEMBLESUB (Lx,q, C, i+ndrow2*j) ;
                     }
                 }
 
             }
+
             #if (defined (CHOLMOD_HAS_CUDA) && defined (DOUBLE))
             else
             {
@@ -1063,8 +1067,8 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             info = 0 ;
 
             // zero out the rest of this supernode
-            p = psx + nsrow * nscol_new ;
-            pend = psx + nsrow * nscol ;            // s is nsrow-by-nscol
+            Int p = psx + nsrow * nscol_new ;
+            Int pend = psx + nsrow * nscol ;            // s is nsrow-by-nscol
             for ( ; p < pend ; p++)
             {
                 // Lx [p] = 0
@@ -1097,8 +1101,8 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             }
 
             // zero this supernode, and all remaining supernodes
-            pend = L->xsize ;
-            for (p = psx ; p < pend ; p++)
+            Int pend = L->xsize ;
+            for (Int p = psx ; p < pend ; p++)
             {
                 // Lx [p] = 0
                 L_CLEAR (Lx,p) ;

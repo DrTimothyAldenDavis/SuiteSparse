@@ -72,6 +72,9 @@ jobs:
       CXX: ${{ matrix.cxx }}
 
     steps:
+      - name: get CPU information
+        run: lscpu
+
       - name: checkout repository
         uses: actions/checkout@v3
 

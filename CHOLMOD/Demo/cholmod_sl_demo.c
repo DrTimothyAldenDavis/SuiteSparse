@@ -123,7 +123,7 @@ int main (int argc, char **argv)
 
     cm = &Common ;
     cholmod_l_start (cm) ;
-    cm->print = 4 ;
+    cm->print = 3 ;
 
     cm->prefer_zomplex = prefer_zomplex ;
 
@@ -279,28 +279,42 @@ int main (int argc, char **argv)
     // analyze and factorize
     //--------------------------------------------------------------------------
 
+    // The analysis and factorizations are repeated, to get accurate timings
+    // and to exercise that particular feature.
+
+    double maxresid = 0 ;
+
+for (int overall_trials = 0 ; overall_trials <= 1 ; overall_trials++)
+{
+    printf ("\n=== Overall Trial: %d\n", overall_trials) ;
+
     t = CPUTIME ;
     L = cholmod_l_analyze (A, cm) ;
     ta = CPUTIME - t ;
     ta = MAX (ta, 0) ;
 
-    printf ("Analyze: flop %g lnz %g\n", cm->fl, cm->lnz) ;
+    printf ("Analyze: flop %g lnz %g, time: %g\n", cm->fl, cm->lnz, ta) ;
 
-    if (A->stype == 0)
+    for (int factor_trials = 0 ; factor_trials <= 2 ; factor_trials++)
     {
-        printf ("Factorizing A*A'+beta*I\n") ;
-        t = CPUTIME ;
-        cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
-        tf = CPUTIME - t ;
-        tf = MAX (tf, 0) ;
-    }
-    else
-    {
-        printf ("Factorizing A\n") ;
-        t = CPUTIME ;
-        cholmod_l_factorize (A, L, cm) ;
-        tf = CPUTIME - t ;
-        tf = MAX (tf, 0) ;
+        if (A->stype == 0)
+        {
+            t = CPUTIME ;
+            cholmod_l_factorize_p (A, beta, NULL, 0, L, cm) ;
+            tf = CPUTIME - t ;
+            tf = MAX (tf, 0) ;
+            printf ("factor_trial: %d, Factorizing A*A'+beta*I, time: %g\n",
+                factor_trials, tf) ;
+        }
+        else
+        {
+            t = CPUTIME ;
+            cholmod_l_factorize (A, L, cm) ;
+            tf = CPUTIME - t ;
+            tf = MAX (tf, 0) ;
+            printf ("factor trial: %d, Factorizing A, time: %g\n",
+                factor_trials, tf) ;
+        }
     }
 
     cholmod_l_print_factor (L, "L", cm) ;
@@ -704,21 +718,20 @@ int main (int argc, char **argv)
     {
         printf ("nnz(L) / nnz(A): %8.1f\n", cm->lnz / cm->anz) ;
     }
-    printf ("analyze cputime:  %12.4f\n", ta) ;
-    printf ("factor  cputime:   %12.4f mflop: %8.1f\n", tf,
+    printf ("analyze time:  %12.4f\n", ta) ;
+    printf ("factor  time:   %12.4f mflop: %8.1f\n", tf,
         (tf == 0) ? 0 : (1e-6*cm->fl / tf)) ;
-    printf ("solve   cputime:   %12.4f mflop: %8.1f\n", ts [0],
+    printf ("solve   time:   %12.4f mflop: %8.1f\n", ts [0],
         (ts [0] == 0) ? 0 : (1e-6*4*cm->lnz / ts [0])) ;
-    printf ("overall cputime:   %12.4f mflop: %8.1f\n",
+    printf ("overall time:   %12.4f mflop: %8.1f\n",
             tot, (tot == 0) ? 0 : (1e-6 * (cm->fl + 4 * cm->lnz) / tot)) ;
-    printf ("solve   cputime:   %12.4f mflop: %8.1f (%d trials)\n", ts [1],
+    printf ("solve   time:   %12.4f mflop: %8.1f (%d trials)\n", ts [1],
         (ts [1] == 0) ? 0 : (1e-6*4*cm->lnz / ts [1]), NTRIALS) ;
-    printf ("solve2  cputime:   %12.4f mflop: %8.1f (%d trials)\n", ts [2],
+    printf ("solve2  time:   %12.4f mflop: %8.1f (%d trials)\n", ts [2],
         (ts [2] == 0) ? 0 : (1e-6*4*cm->lnz / ts [2]), NTRIALS) ;
     printf ("peak memory usage: %12.0f (MB)\n",
             (double) (cm->memory_usage) / 1048576.) ;
     printf ("residual (|Ax-b|/(|A||x|+|b|)): ") ;
-    double maxresid = 0 ;
     for (method = 0 ; method <= nmethods ; method++)
     {
         printf ("%8.2e ", resid [method]) ;
@@ -743,6 +756,7 @@ int main (int argc, char **argv)
 
     cholmod_l_free_factor (&L, cm) ;
     cholmod_l_free_dense (&X, cm) ;
+}
 
     //--------------------------------------------------------------------------
     // free matrices and finish CHOLMOD
