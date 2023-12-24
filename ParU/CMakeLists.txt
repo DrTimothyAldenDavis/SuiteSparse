@@ -84,6 +84,7 @@ else ( )
     set ( OpenMP_CXX_FOUND OFF )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
+message ( STATUS "ParU has OpenMP: ${PARU_HAS_OPENMP}" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND PARU_USE_OPENMP AND NOT PARU_HAS_OPENMP )

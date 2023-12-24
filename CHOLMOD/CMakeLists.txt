@@ -99,6 +99,7 @@ if ( OpenMP_C_FOUND )
 else ( )
     set ( CHOLMOD_HAS_OPENMP OFF )
 endif ( )
+message ( STATUS "CHOLMOD has OpenMP: ${CHOLMOD_HAS_OPENMP}" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND CHOLMOD_USE_OPENMP AND NOT CHOLMOD_HAS_OPENMP )

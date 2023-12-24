@@ -117,6 +117,7 @@ if ( OpenMP_C_FOUND )
 else ( )
     set ( GRAPHBLAS_HAS_OPENMP OFF )
 endif ( )
+message ( STATUS "GraphBLAS has OpenMP: ${GRAPHBLAS_HAS_OPENMP}" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_OPENMP AND NOT GRAPHBLAS_HAS_OPENMP )
