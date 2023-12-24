@@ -290,12 +290,7 @@ endif ( )
 # find CUDA
 #-------------------------------------------------------------------------------
 
-if ( MSVC )
-    option ( SUITESPARSE_USE_CUDA "ON: enable CUDA acceleration for SuiteSparse, OFF (default): do not use CUDA" OFF )
-    message ( STATUS "CUDA on MSVC is under development and may not be fully functional (it is disabled by default)" )
-else ( )
-    option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
-endif ( )
+option ( SUITESPARSE_USE_CUDA "ON (default): enable CUDA acceleration for SuiteSparse, OFF: do not use CUDA" ON )
 
 if ( SUITESPARSE_USE_CUDA )
 
