@@ -733,11 +733,13 @@ build type).  The static libraries will not be built (since
   default is `OFF`.
 
   CUDA on Windows with MSVC appears to be working with this release, but it
-  should be consider as a prototype and may not be fully functional in this
-  release.  I have limited resources for testing CUDA on Windows.  It thus
-  disabled by default.  However, please feel free to try it out by setting this
-  option `ON`.  If you encounter issues, revert to the default and disable
-  CUDA, and post this as an issue on github.
+  should be consider as a prototype and may not be fully functional.  I have
+  limited resources for testing CUDA on Windows.  It thus disabled by default.
+  However, please feel free to try it out by setting this option `ON`.  If you
+  encounter issues, revert to the default and disable CUDA, and post this as an
+  issue on github.  Let me know if it works for you in production; if I get
+  enough feedback that it's working, I can enable it by default in a future
+  relese.
 
 * `CHOLMOD_USE_CUDA`:
 
