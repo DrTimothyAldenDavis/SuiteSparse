@@ -8,7 +8,7 @@
 */
 
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 /* Byte-wise swap two items of size SIZE. */
 #define QSSWAP(a, b, stmp) do { stmp = (a); (a) = (b); (b) = stmp; } while (0)

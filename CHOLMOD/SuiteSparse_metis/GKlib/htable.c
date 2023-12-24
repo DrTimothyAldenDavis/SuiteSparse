@@ -8,7 +8,7 @@
  *
  */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 /******************************************************************************
 * This function creates the hash-table

@@ -94,7 +94,7 @@ void mexFunction
         char str [LEN] ;
         str [0] = '\0' ;
         mxGetString (pargin [nargin-1], str, LEN) ;
-        if (str [0] == 's') ;
+        if (str [0] == 's')
         {
             dtype = CHOLMOD_SINGLE ;
             mxdtype = mxSINGLE_CLASS ;

@@ -7,7 +7,7 @@
 \version\verbatim $Id: strings.c 10711 2011-08-31 22:23:04Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 
 /*************************************************************************/

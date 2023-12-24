@@ -7,7 +7,7 @@
  * \version\verbatim $Id: csr.c 13437 2013-01-11 21:54:10Z karypis $ \endverbatim
  */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 #define OMPMINOPS       50000
 
