@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SuiteSparse_config/SuiteSparseReport.cmake
+# GraphBLAS/cmake_modules/GraphBLASReport.cmake
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2012-2023, Timothy A. Davis.  All Rights Reserved.
@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 
 message ( STATUS "------------------------------------------------------------------------" )
-message ( STATUS "SuiteSparse CMAKE report for: ${CMAKE_PROJECT_NAME}" )
+message ( STATUS "CMAKE report for: ${CMAKE_PROJECT_NAME}" )
 message ( STATUS "------------------------------------------------------------------------" )
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     message ( STATUS "inside common SuiteSparse root:  ${INSIDE_SUITESPARSE}" )
@@ -19,7 +19,7 @@ endif ( )
 message ( STATUS "build type:           ${CMAKE_BUILD_TYPE}" )
 message ( STATUS "BUILD_SHARED_LIBS:    ${BUILD_SHARED_LIBS}" )
 message ( STATUS "BUILD_STATIC_LIBS:    ${BUILD_STATIC_LIBS}" )
-if ( SUITESPARSE_HAS_OPENMP )
+if ( GRAPHBLAS_HAS_OPENMP )
     message ( STATUS "use OpenMP:           yes ")
 else ( )
     message ( STATUS "use OpenMP:           no ")

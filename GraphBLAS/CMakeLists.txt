@@ -732,5 +732,5 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
+    include ( GraphBLASReport )
 endif ( )
