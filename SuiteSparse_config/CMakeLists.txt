@@ -83,6 +83,8 @@ else ( )
     set ( SUITESPARSE_HAS_OPENMP OFF )
     set ( SUITESPARSE_CONFIG_HAS_OPENMP OFF )
 endif ( )
+message ( STATUS "SuiteSparse has OpenMP:        ${SUITESPARSE_HAS_OPENMP}" )
+message ( STATUS "SuiteSparse_config has OpenMP: ${SUITESPARSE_CONFIG_HAS_OPENMP}" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_OPENMP AND NOT SUITESPARSE_HAS_OPENMP )

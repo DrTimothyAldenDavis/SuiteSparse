@@ -179,6 +179,7 @@ if ( OpenMP_C_FOUND )
 else ( )
     set ( LAGRAPH_HAS_OPENMP OFF )
 endif ( )
+message ( STATUS "LAGraph has OpenMP: ${LAGRAPH_HAS_OPENMP}" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND LAGRAPH_USE_OPENMP AND NOT LAGRAPH_HAS_OPENMP )
