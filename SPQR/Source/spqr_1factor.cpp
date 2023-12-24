@@ -113,7 +113,7 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
         n1cols, n2, Bsparse, d, iold, inew, m, n ;
     cholmod_sparse *Y = NULL ;
 
-    double t0 = SuiteSparse_time ( ) ;
+    double t0 = SUITESPARSE_TIME ;
     double t1, t2 ;
 
     // -------------------------------------------------------------------------
@@ -632,7 +632,7 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
         // factorize A, with fill-reducing ordering already given in Q1fill
         QRsym = spqr_analyze (A, SPQR_ORDERING_GIVEN, Q1fill,
             tol >= 0, keepH, cc) ;
-        t1 = SuiteSparse_time ( ) ;
+        t1 = SUITESPARSE_TIME ;
         QRnum = spqr_factorize <Entry, Int> (&A, FALSE, tol, n, QRsym, cc) ;
     }
     else
@@ -640,7 +640,7 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
         // fill-reducing ordering is already applied to Y; free Y when loaded
         QRsym = spqr_analyze <Int> (Y, SPQR_ORDERING_FIXED, NULL,
             tol >= 0, keepH, cc) ;
-        t1 = SuiteSparse_time ( ) ;
+        t1 = SUITESPARSE_TIME ;
         QRnum = spqr_factorize <Entry, Int> (&Y, TRUE, tol, n2, QRsym, cc) ;
         // Y has been freed
         ASSERT (Y == NULL) ;
@@ -747,7 +747,7 @@ template <typename Entry, typename Int> SuiteSparseQR_factorization <Entry, Int>
     cc->SPQR_istat [6] = n1rows ;           // number of singleton rows
     cc->SPQR_tol_used = tol ;               // tol used
 
-    t2 = SuiteSparse_time ( ) ;
+    t2 = SUITESPARSE_TIME ;
     cc->SPQR_analyze_time = t1 - t0 ;   // analyze time, including singletons
     cc->SPQR_factorize_time = t2 - t1 ; // factorize time
 

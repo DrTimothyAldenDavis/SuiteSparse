@@ -16,8 +16,8 @@
 
 #ifdef SUITESPARSE_TIMER_ENANBLED
 #define INIT_TIME(x)    double x = 0.0; double time_ ## x;
-#define TIC(x)          time_ ## x = SuiteSparse_time();
-#define TOC(x)          x += SuiteSparse_time() - time_ ## x;
+#define TIC(x)          time_ ## x = SUITESPARSE_TIME;
+#define TOC(x)          x += SUITESPARSE_TIME - time_ ## x;
 #else
 #define INIT_TIME(x)
 #define TIC(x)

@@ -417,7 +417,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     ndrow3 = ndrow2 - ndrow1 ;
 
 #ifdef BLAS_TIMER
-    Common->syrkStart = SuiteSparse_time ( ) ;
+    Common->syrkStart = SUITESPARSE_TIME ;
     Common->CHOLMOD_GPU_SYRK_CALLS++ ;
 #endif
 
@@ -532,7 +532,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     }
 
 #ifdef BLAS_TIMER
-    Common->CHOLMOD_GPU_SYRK_TIME += SuiteSparse_time() - Common->syrkStart;
+    Common->CHOLMOD_GPU_SYRK_TIME += SUITESPARSE_TIME - Common->syrkStart;
 #endif
 
     /* ---------------------------------------------------------------------- */
@@ -541,7 +541,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
 
 #ifdef BLAS_TIMER
     Common->CHOLMOD_GPU_GEMM_CALLS++ ;
-    tstart = SuiteSparse_time();
+    tstart = SUITESPARSE_TIME;
 #endif
 
     if (ndrow3 > 0)
@@ -591,7 +591,7 @@ int TEMPLATE2 (CHOLMOD (gpu_updateC))
     }
 
 #ifdef BLAS_TIMER
-    Common->CHOLMOD_GPU_GEMM_TIME += SuiteSparse_time() - tstart;
+    Common->CHOLMOD_GPU_GEMM_TIME += SUITESPARSE_TIME - tstart;
 #endif
 
     /* ------------------------------------------------------------------ */
@@ -812,7 +812,7 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
     }
 
 #ifdef BLAS_TIMER
-    tstart = SuiteSparse_time ( ) ;
+    tstart = SUITESPARSE_TIME ;
     Common->CHOLMOD_GPU_POTRF_CALLS++ ;
 #endif
 
@@ -1130,7 +1130,7 @@ int TEMPLATE2 (CHOLMOD (gpu_lower_potrf))
     }
 
 #ifdef BLAS_TIMER
-    Common->CHOLMOD_GPU_POTRF_TIME += SuiteSparse_time ( ) - tstart ;
+    Common->CHOLMOD_GPU_POTRF_TIME += SUITESPARSE_TIME - tstart ;
 #endif
 
     return (1) ;
@@ -1193,7 +1193,7 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
     }
 
 #ifdef BLAS_TIMER
-    tstart = SuiteSparse_time ( ) ;
+    tstart = SUITESPARSE_TIME ;
     Common->CHOLMOD_GPU_TRSM_CALLS++ ;
 #endif
 
@@ -1388,7 +1388,7 @@ int TEMPLATE2 (CHOLMOD (gpu_triangular_solve))
     /* ---------------------------------------------------------------------- */
 
 #ifdef BLAS_TIMER
-    Common->CHOLMOD_GPU_TRSM_TIME += SuiteSparse_time ( ) - tstart ;
+    Common->CHOLMOD_GPU_TRSM_TIME += SUITESPARSE_TIME - tstart ;
 #endif
 
     return (1) ;

@@ -762,7 +762,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
                 #ifdef BLAS_TIMER
                 Common->CHOLMOD_CPU_SYRK_CALLS++ ;
-                tstart = SuiteSparse_time () ;
+                tstart = SUITESPARSE_TIME ;
                 #endif
 
                 #if (defined (DOUBLE) && defined (REAL))
@@ -803,7 +803,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 #endif
 
                 #ifdef BLAS_TIMER
-                blas_time = SuiteSparse_time () - tstart ;
+                blas_time = SUITESPARSE_TIME - tstart ;
                 Common->CHOLMOD_CPU_SYRK_TIME += blas_time ;
                 BLAS_DUMP_TO_FILE (0,           // dsyrk ("L", "N", ...)
                     ndrow1, ndcol, 0,           // N, K, 0
@@ -817,7 +817,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
 
                     #ifdef BLAS_TIMER
                     Common->CHOLMOD_CPU_GEMM_CALLS++ ;
-                    tstart = SuiteSparse_time () ;
+                    tstart = SUITESPARSE_TIME ;
                     #endif
 
                     #if (defined (DOUBLE) && defined (REAL))
@@ -874,7 +874,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                     #endif
 
                     #ifdef BLAS_TIMER
-                    blas_time = SuiteSparse_time () - tstart ;
+                    blas_time = SUITESPARSE_TIME - tstart ;
                     Common->CHOLMOD_CPU_GEMM_TIME += blas_time ;
                     BLAS_DUMP_TO_FILE (4,           // dgemm ("N", "C", ...)
                         ndrow3, ndrow1, ndcol,      // M, N, K
@@ -1016,7 +1016,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             #endif
             #ifdef BLAS_TIMER
             Common->CHOLMOD_CPU_POTRF_CALLS++ ;
-            tstart = SuiteSparse_time () ;
+            tstart = SUITESPARSE_TIME ;
             #endif
 
             #if (defined (DOUBLE) && defined (REAL))
@@ -1049,7 +1049,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             #endif
 
             #ifdef BLAS_TIMER
-            blas_time = SuiteSparse_time () - tstart ;
+            blas_time = SUITESPARSE_TIME - tstart ;
             Common->CHOLMOD_CPU_POTRF_TIME += blas_time ;
             BLAS_DUMP_TO_FILE (8,           // dpotrf ("L", ... )
                 nscol2, 0, 0,               // N, 0, 0
@@ -1168,7 +1168,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
             {
                 #ifdef BLAS_TIMER
                 Common->CHOLMOD_CPU_TRSM_CALLS++ ;
-                tstart = SuiteSparse_time () ;
+                tstart = SUITESPARSE_TIME ;
                 #endif
 
                 #if (defined (DOUBLE) && defined (REAL))
@@ -1209,7 +1209,7 @@ static int TEMPLATE (cholmod_super_numeric_worker)
                 #endif
 
                 #ifdef BLAS_TIMER
-                blas_time = SuiteSparse_time () - tstart ;
+                blas_time = SUITESPARSE_TIME - tstart ;
                 Common->CHOLMOD_CPU_TRSM_TIME += blas_time ;
                 BLAS_DUMP_TO_FILE (12,          // dtrsm ("R", "L", "C", "N"...)
                     nsrow2, nscol2, 0,          // M, N

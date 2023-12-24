@@ -41,15 +41,15 @@ int main (void)
     }
     b = cholmod_l_ones (A->nrow, 1, A->xtype + dtype, &c) ;   // b = ones(n,1)
 
-    double t1 = SuiteSparse_time ( ) ;
+    double t1 = SUITESPARSE_TIME ;
     L = cholmod_l_analyze (A, &c) ;                   // analyze
-    t1 = SuiteSparse_time ( ) - t1 ;
-    double t2 = SuiteSparse_time ( ) ;
+    t1 = SUITESPARSE_TIME - t1 ;
+    double t2 = SUITESPARSE_TIME ;
     cholmod_l_factorize (A, L, &c) ;                  // factorize
-    t2 = SuiteSparse_time ( ) - t2 ;
-    double t3 = SuiteSparse_time ( ) ;
+    t2 = SUITESPARSE_TIME - t2 ;
+    double t3 = SUITESPARSE_TIME ;
     x = cholmod_l_solve (CHOLMOD_A, L, b, &c) ;       // solve Ax=b
-    t3 = SuiteSparse_time ( ) - t3 ;
+    t3 = SUITESPARSE_TIME - t3 ;
     printf ("analyze   time: %10.3f sec\n", t1) ;
     printf ("factorize time: %10.3f sec\n", t2) ;
     printf ("solve     time: %10.3f sec\n", t3) ;

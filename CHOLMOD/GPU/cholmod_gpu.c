@@ -45,20 +45,15 @@ static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
-    // double t = SuiteSparse_time ( ) ;
     if (s == 0)
     {
         return (FALSE) ;
     }
     if (cudaMalloc (&p, s) != cudaSuccess)
     {
-        // t = SuiteSparse_time ( ) - t ;
-        // printf ("poll s %lu failed, time %g\n", s, t) ;
         return (FALSE) ;
     }
     cudaFree (p) ;
-    // t = SuiteSparse_time ( ) - t ;
-    // printf ("poll s %lu OK time %g\n", s, t) ;
     return (TRUE) ;
 #else
     return (FALSE) ;
@@ -74,7 +69,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 {
     size_t good, bad, s, total_free, total_memory ;
     int k ;
-    double t ;
 
     *total_mem = 0;
     *available_mem = 0;
@@ -90,10 +84,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 #ifdef CHOLMOD_HAS_CUDA
 
     /* find the total amount of free memory */
-    t = SuiteSparse_time ( ) ;
     cudaMemGetInfo (&total_free, &total_memory) ;
-    t = SuiteSparse_time ( ) - t ;
-// printf ("free %lu tot %lu time %g\n", total_free, total_memory, t) ;
 
     *total_mem = total_memory;
 

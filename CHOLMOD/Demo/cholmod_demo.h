@@ -19,7 +19,7 @@
 #define TRUE 1
 #define FALSE 0
 
-#define CPUTIME (SuiteSparse_time ( ))
+#define CPUTIME SUITESPARSE_TIME
 
 #define MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))

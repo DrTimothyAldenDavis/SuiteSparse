@@ -169,7 +169,7 @@ generic = { 'timer', 'tictoc' } ;
 
 M = cell (0) ;
 
-% add the SuiteSparse_timer function
+% add the SuiteSparse_time function
 other_source = { '../../SuiteSparse_config/SuiteSparse_config' } ;
 
 % add CHOLMOD and its supporting libraries

@@ -2655,9 +2655,9 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     cc->useGPU = TRUE ;
     // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
     size_t totmem, availmem ;
-    double t = SuiteSparse_time ( ) ;
+    double t = SUITESPARSE_TIME ;
     spqr_gpu_memorysize (&totmem, &availmem, cc) ;
-    t = SuiteSparse_time ( ) - t ;
+    t = SUITESPARSE_TIME - t ;
     cc->gpuMemorySize = availmem ;
     printf ("\nBeginning GPU tests, GPU memory %g MB warmup time %g[\n",
         (double) (cc->gpuMemorySize) / (1024*1024), t) ;

@@ -37,10 +37,10 @@ int main (int argc, char **argv)
     // warmup the GPU.  This can take some time, but only needs
     // to be done once
     cc->useGPU = false ;
-    t = SuiteSparse_time ( ) ;
+    t = SUITESPARSE_TIME ;
     cholmod_l_gpu_memorysize (&total_mem, &available_mem, cc) ;
     cc->gpuMemorySize = available_mem ;
-    t = SuiteSparse_time ( ) - t ;
+    t = SUITESPARSE_TIME - t ;
     if (cc->gpuMemorySize <= 1)
     {
         printf ("no GPU available\n") ;

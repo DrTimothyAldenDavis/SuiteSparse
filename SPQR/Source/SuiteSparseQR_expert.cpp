@@ -60,7 +60,7 @@ SuiteSparseQR_factorization <Entry, Int> *SuiteSparseQR_symbolic
     cholmod_common *cc      // workspace and parameters
 )
 {
-    double t0 = SuiteSparse_time ( ) ;
+    double t0 = SUITESPARSE_TIME ;
 
     RETURN_IF_NULL_COMMON (NULL) ;
     RETURN_IF_NULL (A, NULL) ;
@@ -149,7 +149,7 @@ SuiteSparseQR_factorization <Entry, Int> *SuiteSparseQR_symbolic
         }
     }
 
-    double t1 = SuiteSparse_time ( ) ;
+    double t1 = SUITESPARSE_TIME ;
     cc->SPQR_analyze_time = t1 - t0 ;
 
     return (QR) ;
@@ -222,7 +222,7 @@ template <typename Entry, typename Int> int SuiteSparseQR_numeric
     cholmod_common *cc      // workspace and parameters
 )
 {
-    double t0 = SuiteSparse_time ( ) ;
+    double t0 = SUITESPARSE_TIME ;
 
     RETURN_IF_NULL_COMMON (FALSE) ;
     RETURN_IF_NULL (A, FALSE) ;
@@ -297,7 +297,7 @@ template <typename Entry, typename Int> int SuiteSparseQR_numeric
     cc->SPQR_istat [4] = QR->rank ;         // estimated rank of A
     cc->SPQR_tol_used = tol ;               // tol used
 
-    double t1 = SuiteSparse_time ( ) ;
+    double t1 = SUITESPARSE_TIME ;
     cc->SPQR_factorize_time = t1 - t0 ;
 
     return (TRUE) ;
@@ -1751,7 +1751,7 @@ template <typename Entry, typename Int> cholmod_dense *SuiteSparseQR_min2norm
     if (A->nrow < A->ncol)
     {
 
-        double t0 = SuiteSparse_time ( ) ;
+        double t0 = SUITESPARSE_TIME ;
 
         // x=A\B, using a QR factorization of A'
         SuiteSparseQR_factorization <Entry, Int> *QR ;
@@ -1768,7 +1768,7 @@ template <typename Entry, typename Int> cholmod_dense *SuiteSparseQR_min2norm
         spqr_free_dense <Int> (&Y, cc) ;
         spqr_freefac (&QR, cc) ;
 
-        double t3 = SuiteSparse_time ( ) ;
+        double t3 = SUITESPARSE_TIME ;
         double total_time = t3 - t0 ;
         cc->SPQR_solve_time =
             total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;
@@ -1841,7 +1841,7 @@ template <typename Entry, typename Int> cholmod_sparse *SuiteSparseQR_min2norm /
     cholmod_common *cc
 )
 {
-    double t0 = SuiteSparse_time ( ) ;
+    double t0 = SUITESPARSE_TIME ;
 
     cholmod_dense *Bdense, *Xdense ;
     cholmod_sparse *Xsparse = NULL ;
@@ -1864,7 +1864,7 @@ template <typename Entry, typename Int> cholmod_sparse *SuiteSparseQR_min2norm /
         cc->status = CHOLMOD_OUT_OF_MEMORY ;
     }
 
-    double t3 = SuiteSparse_time ( ) ;
+    double t3 = SUITESPARSE_TIME ;
     double total_time = t3 - t0 ;
     cc->SPQR_solve_time =
         total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;

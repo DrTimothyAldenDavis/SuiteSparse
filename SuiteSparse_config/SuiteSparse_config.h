@@ -368,13 +368,25 @@ int SuiteSparse_divcomplex
 
 // determine which timer to use, if any
 #ifndef NTIMER
+    // SuiteSparse_config itself can be compiled without OpenMP,
+    // but other packages can themselves use OpenMP.  In this case,
+    // those packages should use omp_get_wtime() directly.  This can
+    // be done via the SUITESPARSE_TIME macro, defined below:
     #if defined ( _OPENMP )
         #define SUITESPARSE_TIMER_ENABLED
+        #define SUITESPARSE_TIME (omp_get_wtime ( ))
     #elif defined ( _POSIX_C_SOURCE )
         #if _POSIX_C_SOURCE >= 199309L
         #define SUITESPARSE_TIMER_ENABLED
+        #define SUITESPARSE_TIME (SuiteSparse_time ( ))
         #endif
+    #else
+        // No timer is available
+        #define SUITESPARSE_TIME (0)
     #endif
+#else
+    // The timer is explictly disabled
+    #define SUITESPARSE_TIME (0)
 #endif
 
 // SuiteSparse printf macro
