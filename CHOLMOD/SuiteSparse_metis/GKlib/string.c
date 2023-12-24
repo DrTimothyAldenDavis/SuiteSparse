@@ -13,7 +13,7 @@ of standard functions (but with enhanced functionality).
 */
 /************************************************************************/
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 
 

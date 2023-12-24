@@ -11,7 +11,7 @@ the filesystem in a portable way.
 */
 
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 
 

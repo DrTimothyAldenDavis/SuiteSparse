@@ -7,7 +7,7 @@
  *
  */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 #ifdef GK_NOOPENMP  /* remove those for now */
 #if !defined(_OPENMP)

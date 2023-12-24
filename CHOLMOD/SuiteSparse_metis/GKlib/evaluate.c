@@ -7,7 +7,7 @@
   \version\verbatim $Id: evaluate.c 13328 2012-12-31 14:57:40Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 /**********************************************************************
  * This function computes the max accuracy score of a ranked list,

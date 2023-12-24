@@ -7,7 +7,7 @@
 \version \verbatim $Id: rw.c 11387 2012-01-21 23:36:23Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 /*************************************************************************/
 /*! Data structures for the code */
