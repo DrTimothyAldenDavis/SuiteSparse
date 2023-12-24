@@ -57,9 +57,9 @@ endif ( )
 # CUDA warning on Windows with MSVC
 #-------------------------------------------------------------------------------
 
-# if ( SUITESPARSE_HAS_CUDA AND MSVC )
+if ( SUITESPARSE_HAS_CUDA AND MSVC )
     message ( WARNING "NOTE: CUDA on MSVC has only recently been revised.  It appears to be functional but has not been as rigorously tested as I would like (I have limited resources for testing CUDA on Windows).  If you encounter issues, set the cmake option SUITESPARSE_USE_CUDA to OFF and post an issue on github." )
-# endif ( )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # find OpenMP
