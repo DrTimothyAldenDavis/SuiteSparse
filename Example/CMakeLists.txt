@@ -71,8 +71,6 @@ if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
 endif ( )
 
-set ( CMAKE_MACOSX_RPATH TRUE )
-
 option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
 option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
 

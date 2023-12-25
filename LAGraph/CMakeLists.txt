@@ -38,8 +38,6 @@
 
 cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
 
-set ( CMAKE_MACOSX_RPATH TRUE )
-
 # version of LAGraph
 set ( LAGraph_DATE "Dec 30, 2023" )
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )

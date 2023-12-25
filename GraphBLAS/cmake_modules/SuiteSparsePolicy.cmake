@@ -112,7 +112,6 @@ if ( WIN32 )
     add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )
 endif ( )
 
-set ( CMAKE_MACOSX_RPATH TRUE )
 enable_language ( C )
 include ( GNUInstallDirs )
 
