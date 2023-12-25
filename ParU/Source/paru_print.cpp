@@ -12,7 +12,7 @@
  */
 
 #include "paru_internal.hpp"
-void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num)
+void paru_print_element(int64_t e, paru_work *Work, const ParU_Numeric *Num)
 {
     // print out contribution blocks
     paru_element **elementList;
@@ -70,7 +70,7 @@ void paru_print_element(int64_t e, paru_work *Work, ParU_Numeric *Num)
     }
 }
 
-void paru_print_paru_tupleList(paru_tupleList *listSet, int64_t index)
+void paru_print_paru_tupleList(const paru_tupleList *listSet, int64_t index)
 {
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% listSet =%p\n", listSet));

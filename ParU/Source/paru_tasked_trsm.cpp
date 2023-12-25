@@ -12,12 +12,12 @@
  * @author Aznaveh
  */
 #include "paru_internal.hpp"
-int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *a, int64_t lda,
-                     double *b, int64_t ldb, paru_work *Work, ParU_Numeric *Num)
+int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, const double *a, int64_t lda,
+                     double *b, int64_t ldb, const paru_work *Work, const ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
     int64_t naft;
-    ParU_Control *Control = Num->Control;
+    const ParU_Control *Control = Num->Control;
     int64_t L = Control->worthwhile_trsm;
     int64_t blas_ok = TRUE;
 #ifdef PARU_COVERAGE

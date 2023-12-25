@@ -29,7 +29,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b,
 // ParU_Solve: x = A\b
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
+ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, const double *b, double *x,
                     ParU_Control *Control)
 {
 
@@ -118,7 +118,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
 //------------------------------------------------------------------------------
 
 ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
-    double *B, double *X, ParU_Control *Control)
+    const double *B, double *X, ParU_Control *Control)
 {
     // Note: B and X can be aliased
     DEBUGLEVEL(0);

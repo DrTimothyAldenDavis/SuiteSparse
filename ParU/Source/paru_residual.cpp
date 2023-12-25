@@ -21,7 +21,7 @@
 
 #include "paru_internal.hpp" 
 
-ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
+ParU_Ret ParU_Residual (cholmod_sparse *A, const double *x, const double *b, int64_t m,
     double &resid, double &anorm, double &xnorm, ParU_Control *Control)
 {
     DEBUGLEVEL(0);
@@ -81,7 +81,7 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
  * resid = norm1(b-A*x) / norm1(A)
  *
  * */
-ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B, int64_t m,
+ParU_Ret ParU_Residual(cholmod_sparse *A, const double *X, const double *B, int64_t m,
     int64_t nrhs,  
    double &resid, double &anorm, double &xnorm, ParU_Control *Control)
 {
