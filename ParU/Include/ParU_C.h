@@ -107,7 +107,7 @@ ParU_Ret ParU_C_Analyze(
         // output:
         ParU_C_Symbolic **Sym_handle,  // output, symbolic analysis
         // control:
-        ParU_C_Control *Control);
+        const ParU_C_Control *Control);
 
 //------------------------------------------------------------------------------
 // ParU_C_Factorize: Numeric factorization is done in this routine. Scaling and
@@ -122,7 +122,7 @@ ParU_Ret ParU_C_Factorize(
         // output:
         ParU_C_Numeric **Num_handle,
         // control:
-        ParU_C_Control *Control);
+        const ParU_C_Control *Control);
 
 //------------------------------------------------------------------------------
 //--------------------- Solve routines -----------------------------------------
@@ -138,7 +138,7 @@ ParU_Ret ParU_C_Solve_Axx(
     // input/output:
     double *b,              // vector of size m-by-1
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 //-------- Ax = b --------------------------------------------------------------
 ParU_Ret ParU_C_Solve_Axb(
@@ -148,7 +148,7 @@ ParU_Ret ParU_C_Solve_Axb(
     // output
     double *x,              // vector of size m-by-1
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 //-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
 ParU_Ret ParU_C_Solve_AXX(
@@ -157,7 +157,7 @@ ParU_Ret ParU_C_Solve_AXX(
     // input/output:
     double *B,  // m(num_rows of A) x nrhs
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 //-------- AX = B  (multiple rhs)-----------------------------------------------
 ParU_Ret ParU_C_Solve_AXB(
@@ -167,7 +167,7 @@ ParU_Ret ParU_C_Solve_AXB(
     // output:
     double *X,  // m(num_rows of A) x nrhs
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 // FIXME: add Lsolve, perms etc
 
@@ -183,7 +183,7 @@ ParU_Ret ParU_C_Residual_bAx(
     // output:
     double *resid, double *anorm, double *xnorm,
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 // resid = norm1(B-A*X) / (norm1(A) * norm1 (X))
 // (multiple rhs)
@@ -193,14 +193,14 @@ ParU_Ret ParU_C_Residual_BAX(
     // output:
     double *resid, double *anorm, double *xnorm,
     // control:
-    ParU_C_Control *Control);
+    const ParU_C_Control *Control);
 
 //------------------------------------------------------------------------------
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_C_Freenum(ParU_C_Numeric **Num_handle, ParU_C_Control *Control);
-ParU_Ret ParU_C_Freesym(ParU_C_Symbolic **Sym_handle, ParU_C_Control *Control);
+ParU_Ret ParU_C_Freenum(ParU_C_Numeric **Num_handle, const ParU_C_Control *Control);
+ParU_Ret ParU_C_Freesym(ParU_C_Symbolic **Sym_handle, const ParU_C_Control *Control);
 
 #ifdef __cplusplus
 }

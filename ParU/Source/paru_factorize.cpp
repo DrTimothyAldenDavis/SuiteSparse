@@ -190,7 +190,7 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
 //------------------------------------------------------------------------------
 
 ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
-                        ParU_Numeric **Num_handle, ParU_Control *user_Control)
+                        ParU_Numeric **Num_handle, const ParU_Control *user_Control)
 {
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME

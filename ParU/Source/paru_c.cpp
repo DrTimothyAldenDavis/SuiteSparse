@@ -60,7 +60,7 @@ ParU_Ret ParU_C_Init_Control (ParU_C_Control *Control_C)
 // paru_cp_control: copy the inside of the C structrue to the Cpp structure
 //------------------------------------------------------------------------------
 
-void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C)
+void paru_cp_control (ParU_Control *Control, const ParU_C_Control *Control_C)
 {
     Control->mem_chunk = Control_C->mem_chunk;
 
@@ -97,7 +97,7 @@ ParU_Ret ParU_C_Analyze(
         // output:
         ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
         // control:
-        ParU_C_Control *Control_C)
+        const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -133,7 +133,7 @@ ParU_Ret ParU_C_Factorize (
         // output:
         ParU_C_Numeric **Num_handle_C,
         // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -170,7 +170,7 @@ ParU_Ret ParU_C_Solve_Axx (
     // input/output:
     double *b,
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 {
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -185,7 +185,7 @@ ParU_Ret ParU_C_Solve_Axb (
     // output
     double *x,
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -200,7 +200,7 @@ ParU_Ret ParU_C_Solve_AXX (
     // input/output:
     double *B,  // m(num_rows of A) x nrhs
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -215,7 +215,7 @@ ParU_Ret ParU_C_Solve_AXB (
     // output:
     double *X,
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -236,7 +236,7 @@ ParU_Ret ParU_C_Residual_bAx (
     // output:
     double *residc, double *anormc, double *xnormc,
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -257,7 +257,7 @@ ParU_Ret ParU_C_Residual_BAX (
     // output:
     double *residc, double *anormc, double *xnormc,
     // control:
-    ParU_C_Control *Control_C)
+    const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -275,7 +275,7 @@ ParU_Ret ParU_C_Residual_BAX (
 //------------------------------------------------------------------------------
 
 ParU_Ret ParU_C_Freenum (
-        ParU_C_Numeric **Num_handle_C, ParU_C_Control *Control_C)
+        ParU_C_Numeric **Num_handle_C, const ParU_C_Control *Control_C)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
@@ -288,7 +288,7 @@ ParU_Ret ParU_C_Freenum (
 }
  
 ParU_Ret ParU_C_Freesym (
-        ParU_C_Symbolic **Sym_handle_C, ParU_C_Control *Control_C)
+        ParU_C_Symbolic **Sym_handle_C, const ParU_C_Control *Control_C)
 {
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);

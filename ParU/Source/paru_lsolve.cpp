@@ -39,7 +39,7 @@
  * */
 #include "paru_internal.hpp"
 
-ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Control *Control)
+ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, const ParU_Control *Control)
 {
     DEBUGLEVEL(0);
     if (!x) return PARU_INVALID;
@@ -198,7 +198,7 @@ ParU_Ret ParU_Lsolve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *x, ParU_Cont
 //////////////// ParU_Lsolve ///multiple right hand side mRHS///////////////////
 ParU_Ret ParU_Lsolve( ParU_Symbolic *Sym, ParU_Numeric *Num,
     double *X, int64_t nrhs,   // X is m-by-nrhs, where A is m-by-m
-    ParU_Control *Control)
+    const ParU_Control *Control)
 {
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;

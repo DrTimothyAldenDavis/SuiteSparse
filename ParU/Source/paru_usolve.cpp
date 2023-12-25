@@ -40,7 +40,7 @@
 #include "paru_internal.hpp"
 
 ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
-    double *x, ParU_Control *Control)
+    double *x, const ParU_Control *Control)
 {
     DEBUGLEVEL(0);
     // check if input is read
@@ -181,7 +181,7 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
 
 //////////////// ParU_Usolve ///multiple right hand side mRHS///////////////////
 ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
-    double *X, int64_t nrhs, ParU_Control *Control)
+    double *X, int64_t nrhs, const ParU_Control *Control)
 {
     DEBUGLEVEL(0);
     // check if input is read

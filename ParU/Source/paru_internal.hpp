@@ -301,7 +301,7 @@ inline int64_t lac_el(paru_element **elementList, int64_t eli)
     }
 }
 
-inline int32_t control_nthreads (ParU_Control *Control)
+inline int32_t control_nthreads (const ParU_Control *Control)
 {
     int32_t max_threads = PARU_OPENMP_MAX_THREADS ;
     if (Control == NULL || Control->paru_max_threads <= 0)
