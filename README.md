@@ -811,34 +811,42 @@ build type).  The static libraries will not be built (since
 
   If `ON`, OpenMP is used if it is available.  Default: `OFF`.
 
-  UMFPACK, CHOLMOD, SPQR, and GraphBLAS will be slow if OpenMP is not used.
+  GraphBLAS, LAGraph, and ParU will be slow if OpenMP is not used.
+  Other packages (UMFPACK, CHOLMOD, SPQR) may use OpenMP in the BLAS/LAPACK,
+  which is essential for performance.
 
   Note that BLAS and LAPACK may still use OpenMP internally; if you wish to
   disable OpenMP in an entire application, select a single-threaded
   BLAS/LAPACK.
 
-  WARNING: GraphBLAS may not be thread-safe if built without OpenMP (see the
-  User Guide for details).
+  WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads
+  (see the User Guide for details).
+
+* `SUITESPARSE_CONFIG_USE_OPENMP`:
+
+  If `ON`, `SuiteSparse_config` uses OpenMP is used if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
+  It is not essential and only used to let `SuiteSparse_time` call `omp_get_wtime`.
 
 * `CHOLMOD_USE_OPENMP`:
 
-  If `ON`, OpenMP is used in CHOLMOD if it is available.  Default:
-  `SUITESPARSE_USE_OPENMP`.
+  If `ON`, OpenMP is used in CHOLMOD if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
 
 * `GRAPHBLAS_USE_OPENMP`:
 
-  If `ON`, OpenMP is used in GraphBLAS if it is available.  Default:
-  `SUITESPARSE_USE_OPENMP`.
+  If `ON`, OpenMP is used in GraphBLAS if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
 
 * `LAGRAPH_USE_OPENMP`:
 
-  If `ON`, OpenMP is used in LAGraph if it is available.  Default:
-  `SUITESPARSE_USE_OPENMP`.
+  If `ON`, OpenMP is used in LAGraph if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
 
 * `PARU_USE_OPENMP`:
 
-  If `ON`, OpenMP is used in ParU if it is available.  Default:
-  `SUITESPARSE_USE_OPENMP`.
+  If `ON`, OpenMP is used in ParU if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
 
 * `SUITESPARSE_DEMOS`:
 
