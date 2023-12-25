@@ -102,7 +102,7 @@ ParU_Ret ParU_C_Analyze(
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C =
-        (ParU_C_Symbolic *)paru_alloc(1, sizeof(ParU_C_Symbolic));
+        static_cast<ParU_C_Symbolic*>(paru_alloc(1, sizeof(ParU_C_Symbolic)));
     if (!Sym_C)
     {
         return PARU_OUT_OF_MEMORY;
@@ -112,7 +112,7 @@ ParU_Ret ParU_C_Analyze(
     info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
         return info; //To avoid playing with wrong ponters
-    Sym_C->sym_handle = (void*) Sym;
+    Sym_C->sym_handle = static_cast<void*>(Sym);
     *Sym_handle_C = Sym_C;
     Sym_C->m = Sym->m;
     Sym_C->n = Sym->n;
@@ -137,9 +137,9 @@ ParU_Ret ParU_C_Factorize (
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    ParU_Symbolic *Sym = (ParU_Symbolic *) Sym_C->sym_handle;
+    ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
     ParU_C_Numeric *Num_C = 
-        (ParU_C_Numeric *)paru_alloc(1, sizeof(ParU_C_Numeric));
+        static_cast<ParU_C_Numeric*>(paru_alloc(1, sizeof(ParU_C_Numeric)));
     if (!Num_C)
     {
         return PARU_OUT_OF_MEMORY;
@@ -150,7 +150,7 @@ ParU_Ret ParU_C_Factorize (
     info = ParU_Factorize(A, Sym, &Num, &Control);
     if (info != PARU_SUCCESS)
         return info;
-    Num_C->num_handle = (void *) Num;
+    Num_C->num_handle = static_cast<void*>(Num);
     *Num_handle_C = Num_C;
     Num_C->rcond = Num->rcond;
     return info;
@@ -174,8 +174,9 @@ ParU_Ret ParU_C_Solve_Axx (
 {
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return ParU_Solve ((ParU_Symbolic *) Sym_C->sym_handle, 
-            (ParU_Numeric *) Num_C->num_handle, b, &Control);
+    return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
+                       static_cast<ParU_Numeric*>(Num_C->num_handle),
+                       b, &Control);
 }
 
 //-------- Ax = b --------------------------------------------------------------
@@ -189,8 +190,9 @@ ParU_Ret ParU_C_Solve_Axb (
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return ParU_Solve ((ParU_Symbolic *) Sym_C->sym_handle,
-            (ParU_Numeric *)Num_C->num_handle, b, x, &Control);
+    return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
+                       static_cast<ParU_Numeric*>(Num_C->num_handle),
+                       b, x, &Control);
 }
 
 //-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
@@ -204,8 +206,9 @@ ParU_Ret ParU_C_Solve_AXX (
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return ParU_Solve ((ParU_Symbolic *) Sym_C->sym_handle,
-            (ParU_Numeric *)Num_C->num_handle, B, &Control);
+    return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
+                       static_cast<ParU_Numeric*>(Num_C->num_handle),
+                       B, &Control);
 }
 
 //-------- AX = B  (multiple rhs)-----------------------------------------------
@@ -219,8 +222,9 @@ ParU_Ret ParU_C_Solve_AXB (
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
-    return ParU_Solve ((ParU_Symbolic *) Sym_C->sym_handle,
-            (ParU_Numeric *)Num_C->num_handle, nrhs, B, X, &Control);
+    return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
+                       static_cast<ParU_Numeric*>(Num_C->num_handle),
+                       nrhs, B, X, &Control);
 }
 
 //------------------------------------------------------------------------------
@@ -280,7 +284,7 @@ ParU_Ret ParU_C_Freenum (
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Numeric *Num_C = *Num_handle_C;
-    ParU_Numeric *Num = (ParU_Numeric *) (Num_C->num_handle);
+    ParU_Numeric *Num = static_cast<ParU_Numeric*>(Num_C->num_handle);
     ParU_Ret info;
     info = ParU_Freenum(&Num, &Control);
     paru_free(1, sizeof(ParU_C_Numeric), *Num_handle_C);
@@ -293,7 +297,7 @@ ParU_Ret ParU_C_Freesym (
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C = *Sym_handle_C;
-    ParU_Symbolic *Sym = (ParU_Symbolic *)(Sym_C->sym_handle);
+    ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
     ParU_Ret info;
     info = ParU_Freesym(&Sym, &Control);
     paru_free(1, sizeof(ParU_C_Symbolic), *Sym_handle_C);

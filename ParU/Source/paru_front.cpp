@@ -69,7 +69,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
 
         int64_t fm = Sym->Fm[f]; /* Upper bound number of rows of F */
         PRLEVEL(1, ("%% the size of fm is " LD "\n", fm));
-        int64_t *frowList = (int64_t *)paru_alloc(fm, sizeof(int64_t));
+        int64_t *frowList = static_cast<int64_t*>(paru_alloc(fm, sizeof(int64_t)));
         if (frowList == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to allocate"
@@ -263,7 +263,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         if (fn != 0)
         {
             PRLEVEL(1, ("%% fp=" LD " fn=" LD " \n", fp, fn));
-            fcolList = (int64_t *)paru_calloc(stl_colSet.size(), sizeof(int64_t));
+            fcolList = static_cast<int64_t*>(paru_calloc(stl_colSet.size(), sizeof(int64_t)));
 
             if (fcolList == NULL)
             {
@@ -346,7 +346,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         /**** 5 ** assemble U part         Row by Row                      ****/
 
         // consider a parallel calloc
-        double *uPart = (double *)paru_calloc(fp * colCount, sizeof(double));
+        double *uPart = static_cast<double*>(paru_calloc(fp * colCount, sizeof(double)));
         if (uPart == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory when tried to"

@@ -947,7 +947,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     // Making Children list and computing the bound sizes
     if (nf > 0)
     {
-        Childp = (int64_t *)paru_calloc((nf + 2), sizeof(int64_t));
+        Childp = static_cast<int64_t*>(paru_calloc(nf + 2, sizeof(int64_t)));
         Sym->Childp = Childp;
         if (Childp == NULL)
         {
@@ -1001,7 +1001,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #endif
     if (nf > 0)
     {
-        Child = (int64_t *)paru_calloc((nf + 1), sizeof(int64_t));
+        Child = static_cast<int64_t*>(paru_calloc(nf + 1, sizeof(int64_t)));
         Sym->Child = Child;
         if (Child == NULL)
         {
@@ -1012,7 +1012,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
         }
     }
     // copy of Childp using Work for other places also
-    Work = (int64_t *)paru_alloc(std::max(m, n) + 2, sizeof(int64_t));
+    Work = static_cast<int64_t*>(paru_alloc(std::max(m, n) + 2, sizeof(int64_t)));
     int64_t *cChildp = Work;
     if (cChildp == NULL)
     {
@@ -1045,9 +1045,9 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
     /*                   computing the Staircase structures                   */
     /* ---------------------------------------------------------------------- */
 
-    Sp = Sym->Sp = (int64_t *)paru_calloc(m + 1 - n1, sizeof(int64_t));
-    Sleft = Sym->Sleft = (int64_t *)paru_alloc(n + 2 - n1, sizeof(int64_t));
-    Pinv = (int64_t *)paru_alloc(m + 1, sizeof(int64_t));
+    Sp = Sym->Sp = static_cast<int64_t*>(paru_calloc(m + 1 - n1, sizeof(int64_t)));
+    Sleft = Sym->Sleft = static_cast<int64_t*>(paru_alloc(n + 2 - n1, sizeof(int64_t)));
+    Pinv = static_cast<int64_t*>(paru_alloc(m + 1, sizeof(int64_t)));
 
     if (Sp == NULL || Sleft == NULL || Pinv == NULL)
     {
