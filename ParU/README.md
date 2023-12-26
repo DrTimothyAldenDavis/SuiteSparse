@@ -15,19 +15,28 @@ Stay tuned.
 
 ## Introduction
 
-ParU: is a set of routings for solving sparse linear system via parallel
-multifrontal LU factorization algorithms.  Requires OpenMP 4.0+, BLAS, CHOLMOD,
+ParU is a set of routines for solving sparse linear system via parallel
+multifrontal LU factorization algorithms.  Requires OpenMP 4.5+, BLAS, CHOLMOD,
 UMFPACK, AMD, COLAMD, CAMD, CCOLAMD, and METIS (in particular, the
-CHOLMOD/SuiteSparse_metis variant; see the CHOLMOD documentation for details).
+`CHOLMOD/SuiteSparse_metis` variant; see the CHOLMOD documentation for
+details).
 
 ##  How to install
 
-You should first install all dependencies for ParU which is UMFPACK and all its 
-dependencies (AMD, CHOLMOD, ...). By default ParU also needs metis. The 
-configuration of ParU is mostly done via SuiteSparse config file (BLAS library,
-OpenMP settings and ...) which is in SuiteSparse/SuiteSparse_config.
-All SuiteSparse dependencies should be in the same directory as in ParU.
-After that simply call make.
+See the SuiteSparse/README.md for instructions on building all of SuiteSparse
+via the SuiteSparse/CMakeLists.txt file.  You may also build each individual
+package that ParU depends on (`SuiteSparse_config`, AMD, COLAMD, CCAMD,
+CCOLAMD, CHOLMOD, and UMFPACK).  Then simply do:
+
+```
+    cd ParU/build
+    cmake ..
+    cmake --build . --config Release
+    sudo cmake --install .
+```
+
+Alternatively, on Linux, Mac, or MINGW, simply type `make` in the ParU
+folder, then `sudo make install`.
 
 ##  How to use
 
