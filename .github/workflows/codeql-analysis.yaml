@@ -26,12 +26,15 @@ jobs:
         language: ['c-cpp']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
-        group: [other, graph]
+        group: [other]
+#       GraphBLAS and LAGraph disabled (the runners run out of memory or
+#       disk space)
+#       group: [other, graph]
         include:
           - group: other
             build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
-          - group: graph
-            build-libs: GraphBLAS:LAGraph
+#         - group: graph
+#           build-libs: GraphBLAS:LAGraph
 
     name: CodeQL (Ubuntu, ${{ matrix.group }})
 
@@ -119,12 +122,13 @@ jobs:
         language: ['c-cpp']
         # Learn more...
         # https://docs.github.com/en/github/finding-security-vulnerabilities-and-errors-in-your-code/configuring-code-scanning#overriding-automatic-language-detection
-        group: [other, graph]
+        group: [other]
+#       group: [other, graph]
         include:
           - group: other
             build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
-          - group: graph
-            build-libs: GraphBLAS:LAGraph
+#         - group: graph
+#           build-libs: GraphBLAS:LAGraph
 
     env:
       CHERE_INVOKING: 1
