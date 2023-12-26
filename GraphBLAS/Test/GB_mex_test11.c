@@ -511,6 +511,7 @@ if (jit_enabled)
     OK (GxB_Context_set_INT32 (context1, GxB_CONTEXT_GPU_ID, 40)) ;
     OK (GxB_Context_get_INT32 (context1, GxB_CONTEXT_GPU_ID, &id1)) ;
 
+    OK (GxB_Context_disengage (NULL)) ;
     GrB_free (&context1) ;
     GrB_free (&context2) ;
 
