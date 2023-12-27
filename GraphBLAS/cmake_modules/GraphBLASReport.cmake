@@ -3,7 +3,7 @@
 #-------------------------------------------------------------------------------
 
 # Copyright (c) 2012-2023, Timothy A. Davis.  All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# SPDX-License-Identifier: Apache-2.0.
 
 #-------------------------------------------------------------------------------
 # report status and compile flags
