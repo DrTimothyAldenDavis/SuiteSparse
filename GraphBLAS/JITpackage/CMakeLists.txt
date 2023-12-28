@@ -9,29 +9,98 @@
 
 cmake_minimum_required ( VERSION 3.20 ) # GraphBLAS can be built stand-alone
 project ( jitpackage LANGUAGES C )
-add_executable ( grb_jitpackage "Source/grb_jitpackage.c" )
-target_include_directories ( grb_jitpackage PRIVATE ../zstd/zstd_subset
-    ../zstd )
-if ( NOT WIN32 )
-    target_link_libraries ( grb_jitpackage PRIVATE m )
+
+set ( GRAPHBLAS_CROSS_TOOLCHAIN_FLAGS_NATIVE "" CACHE STRING
+    "list of configuration flags used for building native generator binaries when cross-compiling" )
+
+if ( CMAKE_CROSSCOMPILING )
+
+    cmake_path ( GET PROJECT_BINARY_DIR FILENAME _subdir )
+    if ( ${_subdir} STREQUAL "native" )
+        message ( FATAL_ERROR "Native toolchain not configured correctly" )
+    endif ( )
+
+    include ( ExternalProject )
+
+    # Try to call CMake on this file with a native toolchain
+    ExternalProject_Add ( jitpackage_generator_native
+        SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}
+        BINARY_DIR ${PROJECT_BINARY_DIR}/native
+        CMAKE_ARGS ${GRAPHBLAS_CROSS_TOOLCHAIN_FLAGS_NATIVE}
+        INSTALL_COMMAND "" )
+
+    # The following package won't be found on the first run (before the native
+    # grb_jitpackage has been built). But it should be found after the above
+    # external project has built it.
+    find_package ( GrBJITPackageGenerator
+        PATHS ${PROJECT_BINARY_DIR}/native NO_DEFAULT_PATH )
+
+    if ( NOT TARGET grb_jitpackage )
+        # target to rerun cmake after jitpackage_generator_native was built
+        # FIXME: This likely won't work with the Ninja generator or other
+        #        generators that lock their own files. But it should work
+        #        with a "* Makefiles" generator (which is the default on
+        #        most platforms apart from Windows).
+        add_custom_target ( Reconfigure
+            ${CMAKE_COMMAND} -S ${CMAKE_SOURCE_DIR} -B ${CMAKE_BINARY_DIR}
+            DEPENDS jitpackage_generator_native )
+    endif ( )
+
+else ( )
+
+    # Native build rules for the generator
+    add_executable ( grb_jitpackage "Source/grb_jitpackage.c" )
+    target_include_directories ( grb_jitpackage PRIVATE
+        ../zstd/zstd_subset ../zstd )
+    if ( NOT WIN32 )
+        target_link_libraries ( grb_jitpackage PRIVATE m )
+    endif ( )
+
+    # Generate an import target to be able to run the native executable when
+    # cross-compiling.
+    export ( TARGETS grb_jitpackage FILE
+        "${CMAKE_BINARY_DIR}/GrBJITPackageGeneratorConfig.cmake")
+
 endif ( )
 
-file ( GLOB GRB_SOURCE_FILES
-    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-    "../Include/GraphBLAS.h"
-    "../Source/Template/*.[ch]"
-    "../Source/JitKernels/*.[ch]"
-    "../CUDA/Template/*h"
-    "../CUDA/JitKernels/*h"
-    "../Source/Shared/*.h" )
+if ( TARGET grb_jitpackage )
+    # This target might not exist on the first configuration run when
+    # cross-compiling. But is should exist for native builds and on the second
+    # configuration run when cross-compiling.
 
-add_custom_command ( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c
-    COMMAND $<TARGET_FILE:grb_jitpackage>
-    ARGS ${GRB_SOURCE_FILES}
-    WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    DEPENDS ${GRB_SOURCE_FILES}
-    COMMENT "Generating compressed sources for JIT compiler..."
-)
+    file ( GLOB GRB_SOURCE_FILES
+        RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+        "../Include/GraphBLAS.h"
+        "../Source/Template/*.[ch]"
+        "../Source/JitKernels/*.[ch]"
+        "../CUDA/Template/*h"
+        "../CUDA/JitKernels/*h"
+        "../Source/Shared/*.h" )
 
-add_custom_target ( GB_JITpackage
-    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c )
+    add_custom_command ( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c
+        COMMAND $<TARGET_FILE:grb_jitpackage>
+        ARGS ${GRB_SOURCE_FILES}
+        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        DEPENDS ${GRB_SOURCE_FILES}
+        COMMENT "Generating compressed sources for JIT compiler..." )
+
+    # target to make sure the file exists when building libgraphblas
+    add_custom_target ( GB_JITpackage
+        DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c )
+    set_target_properties ( GB_JITpackage PROPERTIES
+        GENERATED_FILE ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c )
+
+else ( )
+
+    # dummy target when cross-compiling before the (native) grb_jitpackage
+    # has been built
+    add_custom_target ( GB_JITpackage )
+    set_target_properties ( GB_JITpackage PROPERTIES
+        GENERATED_FILE "" )
+
+    if ( CMAKE_CROSSCOMPILING )
+        # configure again after the native grb_jitpackage has been built
+        add_dependencies ( GB_JITpackage Reconfigure )
+    endif ( )
+endif ( )
+
