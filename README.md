@@ -371,7 +371,7 @@ Packages in SuiteSparse, and files in this directory:
   * `SSMULT`
 
     `C=A*B` where `A` and `B` are both sparse.
-    This was the basis for the built-n `C=A*B` in MATLAB, until it was
+    This was the basis for the built-in `C=A*B` in MATLAB, until it was
     superseded by GraphBLAS in MATLAB R2021a.
 
   * `SuiteSparseCollection`
