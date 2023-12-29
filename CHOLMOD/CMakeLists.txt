@@ -26,7 +26,7 @@ message ( STATUS "Building CHOLMOD version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( cholmod
+project ( CHOLMOD
         VERSION "${CHOLMOD_VERSION_MAJOR}.${CHOLMOD_VERSION_MINOR}.${CHOLMOD_VERSION_SUB}"
         LANGUAGES C )
 
@@ -837,6 +837,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

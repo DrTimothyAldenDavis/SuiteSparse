@@ -25,7 +25,7 @@ message ( STATUS "Building CCOLAMD version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( ccolamd
+project ( CCOLAMD
     VERSION "${CCOLAMD_VERSION_MAJOR}.${CCOLAMD_VERSION_MINOR}.${CCOLAMD_VERSION_SUB}"
     LANGUAGES C )
 
@@ -276,6 +276,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

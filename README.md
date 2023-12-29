@@ -76,229 +76,410 @@ SuiteSparse Packages
 
 Packages in SuiteSparse, and files in this directory:
 
-    AMD         approximate minimum degree ordering.  This is the built-in AMD
-                function in MATLAB.
-                authors: Tim Davis, Patrick Amestoy, Iain Duff
+* `AMD`
 
-    bin         where programs are placed when compiled, for `make local`
+  approximate minimum degree ordering.  This is the built-in AMD function in
+  MATLAB.
 
-    BTF         permutation to block triangular form
-                authors: Tim Davis, Ekanathan Palamadai
+  authors: Tim Davis, Patrick Amestoy, Iain Duff
 
-    build       default build folder
+* `bin`
 
-    CAMD        constrained approximate minimum degree ordering
-                authors: Tim Davis, Patrick Amestoy, Iain Duff, Yanqing Chen
+  where programs are placed when compiled, for `make local`
 
-    CCOLAMD     constrained column approximate minimum degree ordering
-                authors: Tim Davis, Sivasankaran Rajamanickam, Stefan Larimore.
-                    Algorithm design collaborators: Esmond Ng, John Gilbert
-                    (for COLAMD)
+* `BTF`
 
-    ChangeLog   a summary of changes to SuiteSparse.  See */Doc/ChangeLog
-                for details for each package.
+  permutation to block triangular form
 
-    CHOLMOD     sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD,
-                the BLAS, and LAPACK.  Optionally uses METIS.  This is chol and
-                x=A\b in MATLAB.
-                author for all modules: Tim Davis
-                CHOLMOD/Modify module authors: Tim Davis and William W. Hager
+  authors: Tim Davis, Ekanathan Palamadai
 
-                CHOLMOD/SuiteSparse_metis: a modified version of METIS,
-                embedded into the CHOLMOD library.  See the README.txt files
-                for details.  author: George Karypis.  This is a slightly
-                modified copy included with SuiteSparse via the open-source
-                license provided by George Karypis.  SuiteSparse cannot use an
-                unmodified copy METIS.
+* `build`
 
-    CITATION.bib    citations for SuiteSparse packages, in bibtex format.
+  folder for default build tree
 
-    CMakeLists.txt  optional, to compile all of SuiteSparse.  See below.
+* `CAMD`
 
-    CODE_OF_CONDUCT.md  community guidelines
+  constrained approximate minimum degree ordering
 
-    COLAMD      column approximate minimum degree ordering.  This is the
-                built-in COLAMD function in MATLAB.
-                authors (of the code): Tim Davis and Stefan Larimore
-                Algorithm design collaborators: Esmond Ng, John Gilbert
+  authors: Tim Davis, Patrick Amestoy, Iain Duff, Yanqing Chen
 
-    Contents.m  a list of contents for 'help SuiteSparse' in MATLAB.
+* `CCOLAMD`
 
-    CONTRIBUTING.md how to contribute to SuiteSparse
-    CONTRIBUTOR-LICENSE.txt   required contributor agreement
+  constrained column approximate minimum degree ordering
 
-    CSparse     a concise sparse matrix package, developed for my
-                book, "Direct Methods for Sparse Linear Systems",
-                published by SIAM.  Intended primarily for teaching.
-                Note that the code is (c) Tim Davis, as stated in the book.
-                For production, use CXSparse instead.  In particular, both
-                CSparse and CXSparse have the same include filename: cs.h.
-                This package is used for the built-in DMPERM in MATLAB.
-                author: Tim Davis
+  authors: Tim Davis, Sivasankaran Rajamanickam, Stefan Larimore.
 
-    CXSparse    CSparse Extended.  Includes support for complex matrices
-                and both int or long integers.  Use this instead of CSparse
-                for production use; it creates a libcsparse.so (or *dylib on
-                the Mac) with the same name as CSparse.  It is a superset
-                of CSparse.  Any code that links against CSparse should
-                also be able to link against CXSparse instead.
-                author: Tim Davis, David Bateman
+  Algorithm design collaborators: Esmond Ng, John Gilbert (for COLAMD)
 
-    Example     a simple package that relies on almost all of SuiteSpasre
+* `ChangeLog`
 
-    .github     workflows for CI testing in github.
+  a summary of changes to SuiteSparse.  See `*/Doc/ChangeLog` for details for
+  each package.
 
-    GraphBLAS   graph algorithms in the language of linear algebra.
-                https://graphblas.org
-                authors: Tim Davis, Joe Eaton, Corey Nolet
+* `CHOLMOD`
 
-    include     `make install` places user-visible include files for each
-                package here, after `make local`
+  sparse Cholesky factorization.  Requires AMD, COLAMD, CCOLAMD, the BLAS, and
+  LAPACK.  Optionally uses METIS.  This is `chol` and `x=A\b` in MATLAB.
 
-    KLU         sparse LU factorization, primarily for circuit simulation.
-                Requires AMD, COLAMD, and BTF.  Optionally uses CHOLMOD,
-                CAMD, CCOLAMD, and METIS.
-                authors: Tim Davis, Ekanathan Palamadai
+  author for all modules: Tim Davis
 
-    LAGraph     a graph algorithms library based on GraphBLAS.  See also
-                https://github.com/GraphBLAS/LAGraph
-                Authors: many.
+  CHOLMOD/Modify module authors: Tim Davis and William W. Hager
 
-    LDL         a very concise LDL' factorization package
-                author: Tim Davis
+  CHOLMOD/SuiteSparse_metis: a modified version of METIS, embedded into the
+  CHOLMOD library.  See the README.txt files for details.  author: George
+  Karypis.  This is a slightly modified copy included with SuiteSparse via the
+  open-source license provided by George Karypis.  SuiteSparse cannot use an
+  unmodified copy of METIS.
 
-    lib         `make install` places shared libraries for each package
-                here, after `make local`
+* `CITATION.bib`
 
-    LICENSE.txt collected licenses for each package.
+  citations for SuiteSparse packages, in bibtex format.
 
-    Makefile    optional, to compile all of SuiteSparse using `make`,
-                which is used as a simple wrapper for `cmake`.
+* `CMakeLists.txt`
 
-                make            compiles SuiteSparse libraries.
-                                Subsequent "make install" will install
-                                in just CMAKE_INSTALL_PATH (defaults to
-                                /usr/local/lib on Linux or Mac).
+  optional, to compile all of SuiteSparse.  See below.
 
-                make local      compiles SuiteSparse.
-                                Subsequent "make install" will install only
-                                in ./lib, ./include only.
-                                Does not install in CMAKE_INSTALL_PATH.
+* `CODE_OF_CONDUCT.md`
 
-                make global     compiles SuiteSparse libraries.
-                                Subsequent "make install" will install in
-                                just /usr/local/lib (or whatever your
-                                CMAKE_INSTALL_PREFIX is).
-                                Does not install in ./lib and ./include.
+  community guidelines
 
-                make install    installs in the current directory
-                                (./lib, ./include), and/or in
-                                /usr/local/lib and /usr/local/include,
-                                (the latter defined by CMAKE_INSTALL_PREFIX)
-                                depending on whether "make", "make local",
-                                or "make global" has been done.
+* `COLAMD`
 
-                make uninstall  undoes 'make install'
+  column approximate minimum degree ordering.  This is the built-in COLAMD
+  function in MATLAB.
 
-                make distclean  removes all files not in distribution, including
-                                ./bin, ./share, ./lib, and ./include.
+  authors (of the code): Tim Davis and Stefan Larimore
 
-                make purge      same as 'make distclean'
+  Algorithm design collaborators: Esmond Ng, John Gilbert
 
-                make clean      removes all files not in distribution, but
-                                keeps compiled libraries and demoes, ./lib,
-                                ./share, and ./include.
+* `Contents.m`
 
-                Each individual package also has each of the above 'make'
-                targets.
+  a list of contents for 'help SuiteSparse' in MATLAB.
 
-                Things you don't need to do:
-                make docs       creates user guides from LaTeX files
-                make cov        runs statement coverage tests (Linux only)
+* `CONTRIBUTING.md`
 
-    MATLAB_Tools    various m-files for use in MATLAB
-                author: Tim Davis (all parts)
-                for spqr_rank: author Les Foster and Tim Davis
+  how to contribute to SuiteSparse
 
-                Contents.m      list of contents
-                dimacs10        loads matrices for DIMACS10 collection
-                Factorize       object-oriented x=A\b for MATLAB
-                find_components finds connected components in an image
-                GEE             simple Gaussian elimination
-                getversion.m    determine MATLAB version
-                gipper.m        create MATLAB archive
-                hprintf.m       print hyperlinks in command window
-                LINFACTOR       predecessor to Factorize package
-                MESHND          nested dissection ordering of regular meshes
-                pagerankdemo.m  illustrates how PageRank works
-                SFMULT          C=S*F where S is sparse and F is full
-                shellgui        display a seashell
-                sparseinv       sparse inverse subset
-                spok            check if a sparse matrix is valid
-                spqr_rank       SPQR_RANK package.  MATLAB toolbox for rank
-                                deficient sparse matrices: null spaces,
-                                reliable factorizations, etc.  With Leslie
-                                Foster, San Jose State Univ.
-                SSMULT          C=A*B where A and B are both sparse
-                SuiteSparseCollection    for the SuiteSparse Matrix Collection
-                waitmex         waitbar for use inside a mexFunction
+* `CONTRIBUTOR-LICENSE.txt`
 
-                The SSMULT and SFMULT functions are the basis for the
-                built-in C=A*B functions in MATLAB.
+  required contributor agreement
 
-    Mongoose    graph partitioning.
-                authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
+* `CSparse`
 
-    ParU        a parallel unsymmetric pattern multifrontal method.
-                Currently a pre-release.
-                authors: Mohsen Aznaveh and Tim Davis
+  a concise sparse matrix package, developed for my book, "Direct Methods for
+  Sparse Linear Systems", published by SIAM.  Intended primarily for teaching.
+  Note that the code is (c) Tim Davis, as stated in the book.
 
-    RBio        read/write sparse matrices in Rutherford/Boeing format
-                author: Tim Davis
+  For production, use CXSparse instead.  In particular, both CSparse and
+  CXSparse have the same include filename: `cs.h`.  This package is used for
+  the built-in DMPERM in MATLAB.
 
-    README.md   this file
+  author: Tim Davis
 
-    SPEX        solves sparse linear systems in exact arithmetic.
-                Requires the GNU GMP and MPRF libraries.
-                This will be soon replaced by a more general package, SPEX v3
-                that includes this method (exact sparse LU) and others (sparse
-                exact Cholesky, and sparse exact update/downdate).  The API
-                of v3 will be changing significantly.
-                authors: Chris Lourenco, Jinhao Chen, Erick Moreno-Centeno,
-                Lorena Lorena Mejia Domenzain, and Tim Davis.
-                See https://github.com/clouren/SPEX for the latest version.
+* `CXSparse`
 
-    SPQR        sparse QR factorization.  This the built-in qr and x=A\b in
-                MATLAB.  Also called SuiteSparseQR.
-                Includes two GPU libraries: SPQR/GPUQREngine and
-                SPQR/SuiteSparse_GPURuntime.
-                author of the CPU code: Tim Davis
-                author of GPU modules: Tim Davis, Nuri Yeralan,
-                    Wissam Sid-Lakhdar, Sanjay Ranka
+  CSparse Extended.  Includes support for complex matrices and both int or long
+  integers.  Use this instead of CSparse for production use; it creates a
+  libcsparse.so (or *dylib on the Mac) with the same name as CSparse.  It is a
+  superset of CSparse.  Any code that links against CSparse should also be able
+  to link against CXSparse instead.
 
-    ssget       MATLAB interface to the SuiteSparse Matrix Collection
-                author: Tim Davis
+  author: Tim Davis, David Bateman
 
-    SuiteSparse_config    configuration file for all the above packages.
-                CSparse and MATLAB_Tools do not use SuiteSparse_config.
-                author: Tim Davis
+* `Example`
 
-    SuiteSparse_demo.m          a demo of SuiteSparse for MATLAB
-    SuiteSparse_install.m       install SuiteSparse for MATLAB
-    SuiteSparse_paths.m         set paths for SuiteSparse MATLAB mexFunctions
-    SuiteSparse_test.m          exhaustive test for SuiteSparse in MATLAB
+  a simple package that relies on almost all of SuiteSparse
 
-    UMFPACK     sparse LU factorization.  Requires AMD and the BLAS.
-                This is the built-in lu and x=A\b in MATLAB.
-                author: Tim Davis
-                algorithm design collaboration: Iain Duff
+* `.github`
+
+  workflows for CI testing on GitHub.
+
+* `GraphBLAS`
+
+  graph algorithms in the language of linear algebra.
+
+  https://graphblas.org
+
+  authors: Tim Davis, Joe Eaton, Corey Nolet
+
+* `include`
+
+  `make install` places user-visible include files for each package here, after
+  `make local`.
+
+* `KLU`
+
+  sparse LU factorization, primarily for circuit simulation.  Requires AMD,
+  COLAMD, and BTF.  Optionally uses CHOLMOD, CAMD, CCOLAMD, and METIS.
+
+  authors: Tim Davis, Ekanathan Palamadai
+
+* `LAGraph`
+
+  a graph algorithms library based on GraphBLAS.  See also
+  https://github.com/GraphBLAS/LAGraph
+
+  Authors: many.
+
+* `LDL`
+
+  a very concise LDL' factorization package
+
+  author: Tim Davis
+
+* `lib`
+
+  `make install` places shared libraries for each package here, after
+  `make local`.
+
+* `LICENSE.txt`
+
+  collected licenses for each package.
+
+* `Makefile`
+
+  optional, to compile all of SuiteSparse using `make`, which is used as a
+  simple wrapper for `cmake` in each subproject.
+
+  * `make`
+
+    compiles SuiteSparse libraries.  Subsequent `make install` will install
+    in `CMAKE_INSTALL_PATH` (might default to `/usr/local/lib` on Linux or Mac).
+
+  * `make local`
+
+    compiles SuiteSparse.  Subsequent `make install` will install in `./lib`,
+    `./include`.  Does not install in `CMAKE_INSTALL_PATH`.
+
+  * `make global`
+
+    compiles SuiteSparse libraries.  Subsequent `make install` will install in
+    `/usr/local/lib` (or whatever the configured `CMAKE_INSTALL_PREFIX` is).
+    Does not install in `./lib` and `./include`.
+
+  * `make install`
+
+    installs in the current directory (`./lib`, `./include`), or in
+    `/usr/local/lib` and `/usr/local/include`, (the latter defined by
+    `CMAKE_INSTALL_PREFIX`) depending on whether `make`, `make local`, or
+    `make global` has been done.
+
+  * `make uninstall`
+
+    undoes `make install`.
+
+  * `make distclean`
+
+    removes all files not in distribution, including `./bin`, `./share`,
+    `./lib`, and `./include`.
+
+  * `make purge`
+
+    same as `make distclean`.
+
+  * `make clean`
+
+    removes all files not in distribution, but keeps compiled libraries and
+    demos, `./lib`, `./share`, and `./include`.
+
+  Each individual subproject also has each of the above `make` targets.
+
+  Things you don't need to do:
+
+  * `make docs`
+
+    creates user guides from LaTeX files
+
+  * `make cov`
+
+    runs statement coverage tests (Linux only)
+
+* `MATLAB_Tools`
+
+  various m-files for use in MATLAB
+
+  author: Tim Davis (all parts)
+
+  for spqr_rank: author Les Foster and Tim Davis
+
+  * `Contents.m`
+
+    list of contents
+
+  * `dimacs10`
+
+    loads matrices for DIMACS10 collection
+
+  * `Factorize`
+
+    object-oriented `x=A\b` for MATLAB
+
+  * `find_components`
+
+    finds connected components in an image
+
+  * `GEE`
+
+    simple Gaussian elimination
+
+  * `getversion.m`
+
+    determine MATLAB version
+
+  * `gipper.m`
+
+    create MATLAB archive
+
+  * `hprintf.m`
+
+    print hyperlinks in command window
+
+  * `LINFACTOR`
+
+    predecessor to `Factorize` package
+
+  * `MESHND`
+
+    nested dissection ordering of regular meshes
+
+  * `pagerankdemo.m`
+
+    illustrates how PageRank works
+
+  * `SFMULT`
+
+    `C=S*F` where `S` is sparse and `F` is full
+
+  * `shellgui`
+
+    display a seashell
+
+  * `sparseinv`
+
+    sparse inverse subset
+
+  * `spok`
+
+    check if a sparse matrix is valid
+
+  * `spqr_rank`
+
+    SPQR_RANK package.  MATLAB toolbox for rank deficient sparse matrices: null
+    spaces, reliable factorizations, etc.  With Leslie Foster, San Jose State
+    Univ.
+
+  * `SSMULT`
+
+    `C=A*B` where `A` and `B` are both sparse.
+    This was the basis for the built-in `C=A*B` in MATLAB, until it was
+    superseded by GraphBLAS in MATLAB R2021a.
+
+  * `SuiteSparseCollection`
+
+    for the SuiteSparse Matrix Collection
+
+  * `waitmex`
+
+    waitbar for use inside a mexFunction
+
+* `Mongoose`
+
+  graph partitioning.
+
+  authors: Nuri Yeralan, Scott Kolodziej, William Hager, Tim Davis
+
+* `ParU`
+
+  a parallel unsymmetric pattern multifrontal method.
+
+  Currently a pre-release.
+
+  authors: Mohsen Aznaveh and Tim Davis
+
+* `RBio`
+
+  read/write sparse matrices in Rutherford/Boeing format
+
+  author: Tim Davis
+
+* `README.md`
+
+  this file
+
+* `SPEX`
+
+  solves sparse linear systems in exact arithmetic.
+
+  Requires the GNU GMP and MPRF libraries.
+
+  This will be soon replaced by a more general package, SPEX v3 that includes
+  this method (exact sparse LU) and others (sparse exact Cholesky, and sparse
+  exact update/downdate).  The API of v3 will be changing significantly.
+
+  authors: Chris Lourenco, Jinhao Chen, Erick Moreno-Centeno,
+  Lorena Lorena Mejia Domenzain, and Tim Davis.
+
+  See https://github.com/clouren/SPEX for the latest version.
+
+* `SPQR`
+
+  sparse QR factorization.  This the built-in `qr` and `x=A\b` in MATLAB.  Also
+  called SuiteSparseQR.
+
+  Includes two GPU libraries: `SPQR/GPUQREngine` and
+  `SPQR/SuiteSparse_GPURuntime`.
+
+  author of the CPU code: Tim Davis
+
+  author of GPU modules: Tim Davis, Nuri Yeralan, Wissam Sid-Lakhdar,
+  Sanjay Ranka
+
+* `ssget`
+
+  MATLAB interface to the SuiteSparse Matrix Collection
+
+  author: Tim Davis
+
+* `SuiteSparse_config`
+
+  library with common functions and configuration for all the above packages.
+  `CSparse`, `GraphBLAS`, `LAGraph`, and `MATLAB_Tools` do not use
+  `SuiteSparse_config`.
+
+  author: Tim Davis
+
+* `SuiteSparse_demo.m`
+
+  a demo of SuiteSparse for MATLAB
+
+* `SuiteSparse_install.m`
+
+  install SuiteSparse for MATLAB
+
+* `SuiteSparse_paths.m`
+
+  set paths for SuiteSparse MATLAB mexFunctions
+
+* `SuiteSparse_test.m`
+
+  exhaustive test for SuiteSparse in MATLAB
+
+* `UMFPACK`
+
+  sparse LU factorization.  Requires `AMD` and the `BLAS`.
+
+  This is the built-in `lu` and `x=A\b` in MATLAB.
+
+  author: Tim Davis
+
+  algorithm design collaboration: Iain Duff
 
 Refer to each package for license, copyright, and author information.  All
 codes are authored or co-authored by Timothy A. Davis (email: davis@tamu.edu),
 except for METIS (by George Karypis), `GraphBLAS/cpu_features` (by Google),
 GraphBLAS/lz4, zstd, and xxHash (by Yann Collet, now at Facebook), and
 GraphBLAS/CUDA/jitify.hpp (by NVIDIA).  Parts of GraphBLAS/CUDA are
-Copyright (c) by NVIDIA. Please refer to each of these licenses.
+Copyright (c) by NVIDIA.  Please refer to each of these licenses.
 
 -----------------------------------------------------------------------------
 For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
@@ -306,27 +487,24 @@ For distro maintainers (Linux, homebrew, spack, R, Octave, Trilinos, ...):
 
 Thanks for packaging SuiteSparse!  Here are some suggestions:
 
-    * GraphBLAS takes a long time to compile because it creates many fast
-        "FactoryKernels" at compile-time.  If you want to reduce the compile
-        time and library size, enable the GRAPHBLAS_COMPACT mode, but keep the
-        JIT enabled.  Then GraphBLAS will compile the kernels it needs at
-        run-time, via its JIT.  Performance will be the same as the
-        FactoryKernels once the JIT kernels are compiled.  User compiled
-        kernels are placed in ~/.SuiteSparse, by default.  You do not need to
-        distribute the source for GraphBLAS to enable the JIT: just
-        libgraphblas.so and GraphBLAS.h is enough.
+* GraphBLAS takes a long time to compile because it creates many fast
+  "FactoryKernels" at compile-time.  If you want to reduce the compile time and
+  library size, enable the GRAPHBLAS_COMPACT mode, but keep the JIT compiler
+  enabled.  Then GraphBLAS will compile the kernels it needs at run-time, via
+  its JIT compiler.  Performance will be the same as the FactoryKernels once
+  the JIT kernels are compiled.  User compiled kernels are placed in
+  `~/.SuiteSparse`, by default.  You do not need to distribute the source for
+  GraphBLAS to enable the JIT compiler: just `libgraphblas.so` and
+  `GraphBLAS.h` is enough.
 
-    * GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
-        distribute it with OpenMP enabled.  Performance will suffer
-        otherwise.
+* GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
+  distribute it with OpenMP enabled.  Performance will suffer otherwise.
 
-    * CUDA acceleration:  CHOLMOD and SPQR can benefit from their CUDA
-        kernels.  If you do not have CUDA or do not want to include it in
-        your distro, this version of SuiteSparse skips the building of
-        the CHOLMOD_CUDA and SPQR_CUDA libraries, and does not link
-        against the GPUQREngine and SuiteSparse_GPURuntime libraries.
-        The latter can be excluded from your distro (the "make" command
-        will build them, but they will be empty).
+* CUDA acceleration:  CHOLMOD and SPQR can benefit from their CUDA kernels.  If
+  you do not have CUDA or do not want to include it in your distro, this
+  version of SuiteSparse skips the building of the CHOLMOD_CUDA and SPQR_CUDA
+  libraries, and does not link against the `GPUQREngine` and
+  `SuiteSparse_GPURuntime` libraries.
 
 -----------------------------------------------------------------------------
 How to cite the SuiteSparse meta-package and its component packages:
@@ -811,22 +989,25 @@ build type).  The static libraries will not be built (since
 
   If `ON`, OpenMP is used if it is available.  Default: `OFF`.
 
-  GraphBLAS, LAGraph, and ParU will be slow if OpenMP is not used.
-  Other packages (UMFPACK, CHOLMOD, SPQR) may use OpenMP in the BLAS/LAPACK,
-  which is essential for performance.
-
-  Note that BLAS and LAPACK may still use OpenMP internally; if you wish to
-  disable OpenMP in an entire application, select a single-threaded
-  BLAS/LAPACK.
+  GraphBLAS, LAGraph, and ParU will vastly slower if OpenMP is not used.
+  CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
+  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
+  heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP
+  internally.  If you wish to disable OpenMP in an entire application, select a
+  single-threaded BLAS/LAPACK, or a parallel BLAS/LAPACK that does not use
+  OpenMP (such as the Apple Accelerate Framework).  Using a single-threaded
+  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and SPQR to be vastly
+  slower.
 
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads
-  (see the User Guide for details).
+  (see the GraphBLAS User Guide for details).
 
 * `SUITESPARSE_CONFIG_USE_OPENMP`:
 
-  If `ON`, `SuiteSparse_config` uses OpenMP is used if it is available.
+  If `ON`, `SuiteSparse_config` uses OpenMP if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
-  It is not essential and only used to let `SuiteSparse_time` call `omp_get_wtime`.
+  It is not essential and only used to let `SuiteSparse_time` call
+  `omp_get_wtime`.
 
 * `CHOLMOD_USE_OPENMP`:
 

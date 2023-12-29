@@ -20,6 +20,12 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
+if ( DEFINED LAPACK_LIBRARIES OR DEFINED LAPACK_INCLUDE_DIRS )
+    # User supplied variables for libraries and/or include directories.
+    # Use them as-is.
+    return ( )
+endif ( )
+
 if ( BLA_VENDOR STREQUAL "FLAME" )
 
     find_library ( LAPACK_LIBRARY

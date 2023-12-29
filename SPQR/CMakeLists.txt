@@ -27,7 +27,7 @@ message ( STATUS "Building SPQR version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( spqr
+project ( SPQR
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
     LANGUAGES C CXX )
 
@@ -456,6 +456,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

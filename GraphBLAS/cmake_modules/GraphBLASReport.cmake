@@ -10,7 +10,7 @@
 #-------------------------------------------------------------------------------
 
 message ( STATUS "------------------------------------------------------------------------" )
-message ( STATUS "CMAKE report for: ${CMAKE_PROJECT_NAME}" )
+message ( STATUS "CMAKE report for: ${PROJECT_NAME}" )
 message ( STATUS "------------------------------------------------------------------------" )
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     message ( STATUS "inside common SuiteSparse root:  ${INSIDE_SUITESPARSE}" )

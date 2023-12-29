@@ -16,7 +16,7 @@ set ( RBIO_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( RBIO_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( RBIO_VERSION_SUB   0 CACHE STRING "" FORCE )
 
-message ( STATUS "Building RBIO version: v"
+message ( STATUS "Building RBio version: v"
     ${RBIO_VERSION_MAJOR}.
     ${RBIO_VERSION_MINOR}.
     ${RBIO_VERSION_SUB} " (" ${RBIO_DATE} ")" )
@@ -25,7 +25,7 @@ message ( STATUS "Building RBIO version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( rbio
+project ( RBio
     VERSION "${RBIO_VERSION_MAJOR}.${RBIO_VERSION_MINOR}.${RBIO_VERSION_SUB}"
     LANGUAGES C )
 
@@ -274,6 +274,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

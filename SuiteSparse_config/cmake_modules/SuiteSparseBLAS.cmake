@@ -32,6 +32,17 @@ option ( SUITESPARSE_USE_64BIT_BLAS
 option ( BLA_STATIC
     "OFF (default): dynamic linking of BLAS.  ON: static linking of BLAS" OFF )
 
+if ( DEFINED BLAS_LIBRARIES OR DEFINED BLAS_INCLUDE_DIRS )
+    # User supplied variables for libraries and/or include directories.
+    # Use them as-is.
+    if ( SUITESPARSE_USE_64BIT_BLAS )
+        set ( SuiteSparse_BLAS_integer "int64_t" )
+    else ( )
+        set ( SuiteSparse_BLAS_integer "int32_t" )
+    endif ( )
+    return ( )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # look for a specific BLAS library
 #-------------------------------------------------------------------------------
