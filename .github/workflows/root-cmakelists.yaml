@@ -234,6 +234,11 @@ jobs:
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
+          - openmp: with
+            cuda: with
+            cuda-cmake-flags:
+              -DSUITESPARSE_USE_CUDA=ON
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 
     env:
       CHERE_INVOKING: 1
