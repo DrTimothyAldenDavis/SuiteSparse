@@ -201,7 +201,7 @@ jobs:
             echo "::endgroup::"
           done
 
-      - name: build example
+      - name: build example using CMake
         run: |
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
@@ -226,6 +226,31 @@ jobs:
           ./my_demo_static
           printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
           ./my_cxx_demo_static
+          echo "::endgroup::"
+
+      - name: build example using autotools
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          autoreconf -fi
+          mkdir build-autotools
+          cd build-autotools
+          if [ "${{ matrix.link }}" = static ]; then
+            _extra_config_flags="--enable-static --disable-shared"
+          else
+            _extra_config_flags="--enable-shared --disable-static"
+          fi
+          PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \
+            ../configure ${_extra_config_flags}
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          make all
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary\033[0m\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+          printf "\033[1;35m  C++ binary\033[0m\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
           echo "::endgroup::"
 
   mingw:
@@ -372,7 +397,7 @@ jobs:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
 
-      - name: build example
+      - name: build example using CMake
         run: |
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
@@ -398,4 +423,26 @@ jobs:
           printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
           PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
             ./my_cxx_demo_static
+          echo "::endgroup::"
+
+      - name: build example using autotools
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          autoreconf -fi
+          mkdir build-autotools
+          cd build-autotools
+          PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \
+            ../configure --enable-shared --disable-static
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          make all
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
+            ./my_demo
+          printf "\033[1;35m  C++ binary\033[0m\n"
+          PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
+            ./my_cxx_demo
           echo "::endgroup::"
