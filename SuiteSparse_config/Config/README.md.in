@@ -370,7 +370,9 @@ Packages in SuiteSparse, and files in this directory:
 
   * `SSMULT`
 
-    `C=A*B` where `A` and `B` are both sparse
+    `C=A*B` where `A` and `B` are both sparse.
+    This was the basis for the built-n `C=A*B` in MATLAB, until it was
+    superseded by GraphBLAS in MATLAB R2021a.
 
   * `SuiteSparseCollection`
 
@@ -379,9 +381,6 @@ Packages in SuiteSparse, and files in this directory:
   * `waitmex`
 
     waitbar for use inside a mexFunction
-
-  The `SSMULT` and `SFMULT` functions are the basis for the built-in `C=A*B`
-  functions in MATLAB.
 
 * `Mongoose`
 
@@ -990,16 +989,18 @@ build type).  The static libraries will not be built (since
 
   If `ON`, OpenMP is used if it is available.  Default: `OFF`.
 
-  GraphBLAS, LAGraph, and ParU will be slow if OpenMP is not used.
-  Other packages (UMFPACK, CHOLMOD, SPQR) may use OpenMP in the BLAS/LAPACK,
-  which is essential for performance.
-
-  Note that BLAS and LAPACK may still use OpenMP internally; if you wish to
-  disable OpenMP in an entire application, select a single-threaded
-  BLAS/LAPACK.
+  GraphBLAS, LAGraph, and ParU will vastly slower if OpenMP is not used.
+  CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
+  parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
+  heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP
+  internally.  If you wish to disable OpenMP in an entire application, select a
+  single-threaded BLAS/LAPACK, or a parallel BLAS/LAPACK that does not use
+  OpenMP (such as the Apple Accelerate Framework).  Using a single-threaded
+  BLAS/LAPACK library will cause UMFPACK, CHOLMOD, and SPQR to be vastly
+  slower.
 
   WARNING: GraphBLAS may not be thread-safe if built without OpenMP or pthreads
-  (see the User Guide for details).
+  (see the GraphBLAS User Guide for details).
 
 * `SUITESPARSE_CONFIG_USE_OPENMP`:
 
