@@ -25,6 +25,8 @@ GrB_Info GrB_Descriptor_free            // free a descriptor
         if (desc != NULL)
         {
             size_t header_size = desc->header_size ;
+            // free the Descriptor user_name
+            GB_FREE (&(desc->user_name), desc->user_name_size) ;
             if (header_size > 0)
             { 
                 GB_FREE (&(desc->logger), desc->logger_size) ;

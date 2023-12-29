@@ -547,20 +547,12 @@ void mexFunction
     OK (GrB_IndexUnaryOp_wait_ (Banded, GrB_MATERIALIZE)) ;
     OK (GxB_IndexUnaryOp_fprint (Banded, "banded", 3, NULL)) ;
 
-//  #undef GrB_IndexUnaryOp_new
-//  #undef GrM_IndexUnaryOp_new
-//  OK (GRB (IndexUnaryOp_new) (&UpperBanded,
-//      (GxB_index_unary_function) upperbanded_idx,
-//      GrB_BOOL, GrB_INT64, GrB_INT64)) ;
     OK (GxB_IndexUnaryOp_new (&UpperBanded,
         (GxB_index_unary_function) upperbanded_idx,
         GrB_BOOL, GrB_INT64, GrB_INT64,
         "upperbanded_idx", UPPERBANDED_IDX_DEFN)) ;
     OK (GxB_IndexUnaryOp_fprint (UpperBanded, "upperbanded", 3, NULL)) ;
 
-//  OK (GRB (IndexUnaryOp_new) (&UpperBanded_int64, 
-//      (GxB_index_unary_function) upperbanded_idx_int64,
-//      GrB_INT64, GrB_INT64, GrB_INT64)) ;
     OK (GxB_IndexUnaryOp_new (&UpperBanded_int64, 
         (GxB_index_unary_function) upperbanded_idx_int64,
         GrB_INT64, GrB_INT64, GrB_INT64,
@@ -1240,7 +1232,7 @@ void mexFunction
     expected = GrB_DOMAIN_MISMATCH ;
 
     printf ("(1)------------------------------------------------\n") ;
-    OK (GRB (IndexUnaryOp_new) (&Gunk, 
+    OK (GrB_IndexUnaryOp_new (&Gunk, 
         (GxB_index_unary_function) donothing, MyType, MyType, MyType)) ;
     ERR (GrB_Matrix_select_Scalar (A, NULL, NULL, Gunk, A, scalar, NULL)) ;
     OK (GrB_Matrix_error_ (&err, A)) ;
@@ -1248,7 +1240,7 @@ void mexFunction
     OK (GrB_IndexUnaryOp_free_ (&Gunk)) ;
 
     printf ("(2)------------------------------------------------\n") ;
-    OK (GRB (IndexUnaryOp_new) (&Gunk, 
+    OK (GrB_IndexUnaryOp_new (&Gunk, 
         (GxB_index_unary_function) donothing, GrB_BOOL, MyType, MyType)) ;
     ERR (GrB_Matrix_select_Scalar (A, NULL, NULL, Gunk, A, scalar, NULL)) ;
     OK (GrB_Matrix_error_ (&err, A)) ;
@@ -1256,7 +1248,7 @@ void mexFunction
     OK (GrB_IndexUnaryOp_free_ (&Gunk)) ;
 
     printf ("(3)------------------------------------------------\n") ;
-    OK (GRB (IndexUnaryOp_new) (&Gunk, 
+    OK (GrB_IndexUnaryOp_new (&Gunk, 
         (GxB_index_unary_function) donothing, GrB_BOOL, GrB_FP64, MyType)) ;
     ERR (GrB_Matrix_select_Scalar (A, NULL, NULL, Gunk, A, scalar, NULL)) ;
     OK (GrB_Matrix_error_ (&err, A)) ;
@@ -1264,7 +1256,7 @@ void mexFunction
     OK (GrB_IndexUnaryOp_free_ (&Gunk)) ;
 
     printf ("(4)------------------------------------------------\n") ;
-    OK (GRB (IndexUnaryOp_new) (&Gunk, 
+    OK (GrB_IndexUnaryOp_new (&Gunk, 
         (GxB_index_unary_function) donothing, MyType, GrB_FP64, GrB_FP64)) ;
     ERR (GrB_Matrix_select_Scalar (A, NULL, NULL, Gunk, A, scalar, NULL)) ;
     OK (GrB_Matrix_error_ (&err, A)) ;

@@ -41,6 +41,8 @@ GrB_Info GxB_Context_new            // create a new Context
 
     Context->magic = GB_MAGIC ;
     Context->header_size = header_size ;
+    Context->user_name = NULL ;             // user_name for GrB_get/GrB_set
+    Context->user_name_size = 0 ;
 
     // initialize the Context with the same settings as GxB_CONTEXT_WORLD
     Context->nthreads_max = GB_Context_nthreads_max_get (NULL) ;

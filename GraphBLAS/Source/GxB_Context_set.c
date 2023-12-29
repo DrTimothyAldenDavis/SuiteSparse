@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// GxB_Context_set: set a field in a Context
+// GxB_Context_set: set a field in Context (HISTORICAL; do not use for new code)
 //------------------------------------------------------------------------------
 
 // SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.

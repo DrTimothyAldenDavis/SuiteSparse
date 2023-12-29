@@ -3868,10 +3868,7 @@ void mexFunction
     ERR (GB_Type_check (Tcrud, "Tcrud", G1, ff)) ;
 
     CHECK (T == NULL) ;
-    // test the function instead of the macro:
-    #undef GrB_Type_new
-    #undef GrM_Type_new
-    OK (GRB (Type_new) (&T, sizeof (int))) ;
+    OK (GrB_Type_new (&T, sizeof (int))) ;
 
     Werk->where = "GB_Type_check" ;
     OK (GB_Type_check (T, "T ok (via function)", G3, ff)) ;
@@ -3913,10 +3910,7 @@ void mexFunction
     CHECK (info == GrB_NULL_POINTER) ;
 
     CHECK (op1b == NULL) ;
-    // test the function instead of the macro:
-    #undef GrB_UnaryOp_new
-    #undef GrM_UnaryOp_new
-    OK (GRB (UnaryOp_new) (&op1b, (GxB_unary_function) f1, GrB_FP64, GrB_UINT32)) ;
+    OK (GrB_UnaryOp_new (&op1b, (GxB_unary_function) f1, GrB_FP64, GrB_UINT32)) ;
     CHECK (op1b != NULL) ;
     OK (GrB_UnaryOp_wait_(op1b, GrB_MATERIALIZE)) ;
 
@@ -3961,10 +3955,7 @@ void mexFunction
     CHECK (info == GrB_NULL_POINTER) ;
 
     CHECK (op2b == NULL) ;
-    // test the function instead of the macro:
-    #undef GrB_BinaryOp_new
-    #undef GrM_BinaryOp_new
-    OK (GRB (BinaryOp_new) (&op2b, (GxB_binary_function) f2, GrB_INT32, GrB_UINT8, GrB_INT16)) ;
+    OK (GrB_BinaryOp_new (&op2b, (GxB_binary_function) f2, GrB_INT32, GrB_UINT8, GrB_INT16)) ;
     CHECK (op2b != NULL) ;
 
     Werk->where = "GB_BinaryOp_check" ;
@@ -3999,54 +3990,6 @@ void mexFunction
     op2b->ytype = GrB_UINT16 ;
 
     printf ("\nAll GB_BinaryOp_check tests passed (errors expected)\n") ;
-
-    //--------------------------------------------------------------------------
-    // SelectOp check
-    //--------------------------------------------------------------------------
-
-#if 0
-    printf ("\n-------------- GB_SelectOp_check:\n") ;
-
-    Werk->where = "GB_SelectOp_check" ;
-
-    info = GB_SelectOp_check (NULL, "null selectop", G3, ff) ;
-    CHECK (info == GrB_NULL_POINTER) ;
-
-    CHECK (selectop == NULL) ;
-    // test the function instead of the macro:
-    #undef GxB_SelectOp_new
-    #undef GxM_SelectOp_new
-    OK (GXB (SelectOp_new) (&selectop, (GxB_select_function) fselect, GrB_FP64, GrB_FP64)) ;
-    CHECK (selectop != NULL) ;
-
-    Werk->where = "GB_SelectOp_check" ;
-    OK (GB_SelectOp_check (selectop, "user selectop ok (via function)", G3,
-        ff)) ;
-
-    expected = GrB_UNINITIALIZED_OBJECT ;
-
-    selectop->magic = GB_FREED ;
-    ERR (GB_SelectOp_check (selectop, "selectop freed", G1, ff)) ;
-    selectop->magic = GB_MAGIC ;
-
-    expected = GrB_INVALID_OBJECT ;
-
-    selectop->selop_function = NULL ;
-    ERR (GB_SelectOp_check (selectop, "selectop invalid function", G1, ff)) ;
-    selectop->selop_function = (GxB_select_function) fselect ;
-
-    selectop->opcode = 9999 ;
-    ERR (GB_SelectOp_check (selectop, "selectop invalid opcode", G1, ff)) ;
-    selectop->opcode = GB_USER_selop_code ;
-
-    selectop->xtype = Tcrud ;
-    ERR (GB_SelectOp_check (selectop, "selectop invalid xtype", G1, ff)) ;
-    selectop->xtype = GrB_FP64 ;
-
-    OK (GB_SelectOp_check (selectop, "user selectop ok", G3, ff)) ;
-
-    printf ("\nAll GB_SelectOp_check tests passed (errors expected)\n") ;
-#endif
 
     //--------------------------------------------------------------------------
     // Monoid check

@@ -268,7 +268,7 @@ const char *GB_macrofy_cast_expression  // return cast expression
     { 
 
         //----------------------------------------------------------------------
-        // all other cases: use ANSI C11 typecasting rules
+        // all other cases: use C11 typecasting rules
         //----------------------------------------------------------------------
 
         f = NULL ;

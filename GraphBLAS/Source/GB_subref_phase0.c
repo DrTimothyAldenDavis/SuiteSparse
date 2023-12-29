@@ -327,10 +327,10 @@ GrB_Info GB_subref_phase0
         GB_OK (GB_hyper_hash_build (A, Werk)) ;
     }
 
-    const int64_t *restrict A_Yp = (use_hyper_hash) ? A->Y->p : NULL ;
-    const int64_t *restrict A_Yi = (use_hyper_hash) ? A->Y->i : NULL ;
-    const int64_t *restrict A_Yx = (use_hyper_hash) ? A->Y->x : NULL ;
-    const int64_t A_hash_bits = (use_hyper_hash) ? (A->Y->vdim - 1) : 0 ;
+    const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+    const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+    const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+    const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
 
     //--------------------------------------------------------------------------
     // determine # of threads to use
@@ -486,7 +486,7 @@ GrB_Info GB_subref_phase0
                 { 
                     // find jA using the hyper_hash
                     int64_t ignore1, ignore2 ;
-                    kA = GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx,
+                    kA = GB_hyper_hash_lookup (Ah, anvec, Ap, A_Yp, A_Yi, A_Yx,
                         A_hash_bits, jA, &ignore1, &ignore2) ;
                     found = (kA >= 0) ;
                 }
@@ -683,7 +683,7 @@ GrB_Info GB_subref_phase0
                 { 
                     // find jA using the hyper_hash
                     int64_t ignore1, ignore2 ;
-                    kA = GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx,
+                    kA = GB_hyper_hash_lookup (Ah, anvec, Ap, A_Yp, A_Yi, A_Yx,
                         A_hash_bits, jA, &ignore1, &ignore2) ;
                     found = (kA >= 0) ;
                 }

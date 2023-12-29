@@ -70,19 +70,19 @@ GrB_Info GB_assign_zombie4
     //--------------------------------------------------------------------------
 
     const int64_t *restrict Mp = M->p ;
-//  const int64_t *restrict Mh = M->h ;
+    const int64_t *restrict Mh = M->h ;
     const int8_t  *restrict Mb = M->b ;
     const GB_M_TYPE *restrict Mx = (GB_M_TYPE *) (Mask_struct ? NULL : (M->x)) ;
     const size_t msize = M->type->size ;
-//  const int64_t Mnvec = M->nvec ;
+    const int64_t Mnvec = M->nvec ;
     ASSERT (M->vlen == 1) ;
     const bool M_is_hyper = GB_IS_HYPERSPARSE (M) ;
     const bool M_is_bitmap = GB_IS_BITMAP (M) ;
     const bool M_is_full = GB_IS_FULL (M) ;
-    const int64_t *restrict M_Yp = (M_is_hyper) ? M->Y->p : NULL ;
-    const int64_t *restrict M_Yi = (M_is_hyper) ? M->Y->i : NULL ;
-    const int64_t *restrict M_Yx = (M_is_hyper) ? M->Y->x : NULL ;
-    const int64_t M_hash_bits = (M_is_hyper) ? (M->Y->vdim - 1) : 0 ;
+    const int64_t *restrict M_Yp = (M->Y == NULL) ? NULL : M->Y->p ;
+    const int64_t *restrict M_Yi = (M->Y == NULL) ? NULL : M->Y->i ;
+    const int64_t *restrict M_Yx = (M->Y == NULL) ? NULL : M->Y->x ;
+    const int64_t M_hash_bits = (M->Y == NULL) ? 0 : (M->Y->vdim - 1) ;
 
     //--------------------------------------------------------------------------
     // determine the number of threads to use
@@ -158,8 +158,8 @@ GrB_Info GB_assign_zombie4
                         if (M_is_hyper)
                         { 
                             // M is hypersparse
-                            GB_hyper_hash_lookup (Mp, M_Yp, M_Yi, M_Yx,
-                                M_hash_bits, j, &pM, &pM_end) ;
+                            GB_hyper_hash_lookup (Mh, Mnvec, Mp, M_Yp, M_Yi,
+                                M_Yx, M_hash_bits, j, &pM, &pM_end) ;
                         }
                         else
                         { 

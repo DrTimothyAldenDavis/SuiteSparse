@@ -1,3 +1,8 @@
+Jan 1, 2024: version 7.5.0
+
+    * GraphBLAS 9.0.0: supporting the v2.1 C API;
+        see https://github.com/GraphBLAS/graphblas-api-c
+
 Dec 30, 2023: version 7.4.0
 
     * major change to build system: by Markus Mützel.  Includes a

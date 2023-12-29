@@ -63,6 +63,8 @@ GrB_Info GxB_IndexUnaryOp_new   // create a named user-created IndexUnaryOp
     //--------------------------------------------------------------------------
 
     op->magic = GB_MAGIC ;
+    op->user_name = NULL ;
+    op->user_name_size = 0 ;
     op->ztype = ztype ;
     op->xtype = xtype ;
     op->ytype = ytype ;      // thunk type
@@ -87,7 +89,7 @@ GrB_Info GxB_IndexUnaryOp_new   // create a named user-created IndexUnaryOp
         // output:
         op->name, &(op->name_len), &(op->hash), &(op->defn), &(op->defn_size),
         // input:
-        idxop_name, idxop_defn, "GxB_index_unary_function", 24, true, jitable) ;
+        idxop_name, idxop_defn, true, jitable) ;
     if (info != GrB_SUCCESS)
     { 
         // out of memory

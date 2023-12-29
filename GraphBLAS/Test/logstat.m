@@ -142,8 +142,13 @@ for control_trial = 1:length (jit_controls)
         fprintf (f, '%s %-11s %7.1f sec ', s, testscript, t) ;
 
         if (~isempty (strfind (pwd, 'Tcov')))
-            global GraphBLAS_debug GraphBLAS_grbcov
-            save grbstat GraphBLAS_debug GraphBLAS_grbcov testscript
+            global GraphBLAS_debug GraphBLAS_grbcov GraphBLAS_grbcovs ...
+                GraphBLAS_scripts GraphBLAS_times
+            GraphBLAS_grbcovs {end+1} = GraphBLAS_grbcov (1:n) ;
+            GraphBLAS_scripts {end+1} = testscript ;
+            GraphBLAS_times   {end+1} = t ;
+            save grbstat GraphBLAS_debug GraphBLAS_grbcov GraphBLAS_grbcovs ...
+                GraphBLAS_scripts GraphBLAS_times
             if (isempty (GraphBLAS_debug))
                 GraphBLAS_debug = false ;
             end

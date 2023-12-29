@@ -76,3 +76,4 @@ GrB_Info GxB_Scalar_setElement_UINT64 (GrB_Scalar s, uint64_t x) { return (GrB_S
 GrB_Info GxB_Scalar_setElement_FP32   (GrB_Scalar s, float    x) { return (GrB_Scalar_setElement_FP32   (s,x)) ; }
 GrB_Info GxB_Scalar_setElement_FP64   (GrB_Scalar s, double   x) { return (GrB_Scalar_setElement_FP64   (s,x)) ; }
 GrB_Info GxB_Scalar_setElement_UDT    (GrB_Scalar s, void    *x) { return (GrB_Scalar_setElement_UDT    (s,x)) ; }
+

@@ -23,7 +23,7 @@
 // Those 6 names are in GraphBLAS but the pairs of names are equivalent.
 
 // GraphBLAS includes a built-in GrB_DIV_BOOL operator, so boolean division
-// must be defined.  ANSI C11 does not provide a definition either, and
+// must be defined.  C11 does not provide a definition either, and
 // dividing by zero (boolean false) will typically terminate an application.
 // In this GraphBLAS implementation, boolean division is treated as if it were
 // int1, where 1/1 = 1, 0/1 = 0, 0/0 = integer NaN = 0, 1/0 = +infinity = 1.

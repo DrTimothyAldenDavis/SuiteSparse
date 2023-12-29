@@ -49,7 +49,11 @@ GrB_Info GB_IndexUnaryOp_check  // check a GraphBLAS index_unary operator
     { 
         GBPR0 ("(built-in): ") ;
     }
-    GBPR0 ("z=%s(x,i,j,y)\n", op->name) ;
+
+    int32_t name_len = op->name_len ;
+    int32_t actual_len = (int32_t) strlen (op->name) ;
+    char *op_name = (actual_len > 0) ? op->name : "f" ;
+    GBPR0 ("z=%s(x,i,j,y)\n", op_name) ;
 
     if (op->idxunop_function == NULL)
     { 
@@ -57,8 +61,6 @@ GrB_Info GB_IndexUnaryOp_check  // check a GraphBLAS index_unary operator
         return (GrB_INVALID_OBJECT) ;
     }
 
-    int32_t name_len = op->name_len ;
-    int32_t actual_len = (int32_t) strlen (op->name) ;
     if (opcode == GB_USER_idxunop_code && name_len != actual_len)
     { 
         GBPR0 ("    IndexUnaryOp has an invalid name_len\n") ;

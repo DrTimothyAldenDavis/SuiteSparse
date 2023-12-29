@@ -222,20 +222,20 @@ switch opname
         z = pow2 (x,y) ;
 
     case { 'fmod', 'rem' }
-        % see ANSI C11 fmod function
-        % the built-in rem differs slightly from the ANSI C11 fmod,
+        % see C11 fmod function
+        % the built-in rem differs slightly from the C11 fmod,
         % if x/y is O(eps) smaller than an integer.
         z = rem (x,y) ;
 
     case { 'remainder' }
-        % see ANSI C11 remainder function
+        % see C11 remainder function
         m = (y ~= 0 & x ~= y)  ;
         z = nan (size (x), ztype) ;
         z (x == y) = 0 ;
         z (m) = x (m) - round (x (m) ./ y (m)) .* y (m) ;
 
     case { 'copysign' }
-        % see ANSI C11 copysign function
+        % see C11 copysign function
         z = abs (x) .* (2 * double (y >= 0) - 1) ;
 
     case { 'complex', 'cmplx' }

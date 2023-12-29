@@ -14,6 +14,7 @@
 // estimate the size of the blob for GrB_Matrix_serializeSize.
 
 #include "GB.h"
+#include "GB_get_set.h"
 #include "GB_serialize.h"
 
 #define GB_FREE_WORKSPACE                       \
@@ -243,6 +244,14 @@ GrB_Info GB_serialize               // serialize a matrix into a blob
     s += Ai_compressed_size ;
     s += Ax_compressed_size ;
 
+    // size of the GrB_NAME and GrB_EL_TYPE_STRING, including one nul byte each
+    char *user_name = A->user_name ;
+    size_t user_name_len = (user_name == NULL) ? 0 : strlen (user_name) ;
+    const char *eltype_string = GB_type_name_get (A->type) ;
+    size_t eltype_string_len = (eltype_string == NULL) ? 0 :
+        strlen (eltype_string) ;
+    s += (user_name_len + 1) + (eltype_string_len + 1) ;
+
     //--------------------------------------------------------------------------
     // return the upper bound estimate of the blob size, for dryrun
     //--------------------------------------------------------------------------
@@ -361,6 +370,28 @@ GrB_Info GB_serialize               // serialize a matrix into a blob
         nthreads_max) ;
     GB_serialize_to_blob (blob, &s, Ax_Blocks, Ax_Sblocks+1, Ax_nblocks,
         nthreads_max) ;
+
+    //--------------------------------------------------------------------------
+    // append the GrB_NAME and GrB_EL_TYPE_STRING to the blob
+    //--------------------------------------------------------------------------
+
+    if (user_name != NULL)
+    { 
+        // write the GrB_NAME of the matrix (including the nul byte)
+//      printf ("serialize user_name %lu:[%s]\n", s, user_name) ;
+        strcpy ((char *) (blob + s), user_name) ;
+        s += user_name_len ;
+    }
+    blob [s++] = 0 ;    // terminate the GrB_NAME with a nul byte
+
+    if (eltype_string != NULL)
+    { 
+        // write the EL_TYPE_STRING of the matrix type (including the nul byte)
+//      printf ("serialize eltype_string %lu:[%s]\n", s, eltype_string) ;
+        strcpy ((char *) (blob + s), eltype_string) ;
+        s += eltype_string_len ;
+    }
+    blob [s++] = 0 ;    // terminate the GrB_EL_TYPE_STRING with a nul byte
 
     ASSERT (s == blob_size_required) ;
 

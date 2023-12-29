@@ -82,10 +82,10 @@
 
 #define GB_GET_C_HYPER_HASH                                                 \
     GB_OK (GB_hyper_hash_build (C, Werk)) ;                                 \
-    const int64_t *restrict C_Yp = (C_is_hyper) ? C->Y->p : NULL ;          \
-    const int64_t *restrict C_Yi = (C_is_hyper) ? C->Y->i : NULL ;          \
-    const int64_t *restrict C_Yx = (C_is_hyper) ? C->Y->x : NULL ;          \
-    const int64_t C_hash_bits = (C_is_hyper) ? (C->Y->vdim - 1) : 0 ;
+    const int64_t *restrict C_Yp = (C->Y == NULL) ? NULL : C->Y->p ;        \
+    const int64_t *restrict C_Yi = (C->Y == NULL) ? NULL : C->Y->i ;        \
+    const int64_t *restrict C_Yx = (C->Y == NULL) ? NULL : C->Y->x ;        \
+    const int64_t C_hash_bits = (C->Y == NULL) ? 0 : (C->Y->vdim - 1) ;
 
 //------------------------------------------------------------------------------
 // GB_GET_MASK: get the mask matrix M
@@ -111,10 +111,10 @@
 
 #define GB_GET_MASK_HYPER_HASH                                              \
     GB_OK (GB_hyper_hash_build (M, Werk)) ;                                 \
-    const int64_t *restrict M_Yp = (M_is_hyper) ? M->Y->p : NULL ;          \
-    const int64_t *restrict M_Yi = (M_is_hyper) ? M->Y->i : NULL ;          \
-    const int64_t *restrict M_Yx = (M_is_hyper) ? M->Y->x : NULL ;          \
-    const int64_t M_hash_bits = (M_is_hyper) ? (M->Y->vdim - 1) : 0 ;
+    const int64_t *restrict M_Yp = (M->Y == NULL) ? NULL : M->Y->p ;        \
+    const int64_t *restrict M_Yi = (M->Y == NULL) ? NULL : M->Y->i ;        \
+    const int64_t *restrict M_Yx = (M->Y == NULL) ? NULL : M->Y->x ;        \
+    const int64_t M_hash_bits = (M->Y == NULL) ? 0 : (M->Y->vdim - 1) ;
 
 //------------------------------------------------------------------------------
 // GB_GET_ACCUM: get the accumulator op and its related typecasting functions
@@ -220,10 +220,10 @@
     const int64_t Svlen = S->vlen ;                                         \
     const int64_t Snvec = S->nvec ;                                         \
     const bool S_is_hyper = GB_IS_HYPERSPARSE (S) ;                         \
-    const int64_t *restrict S_Yp = (S_is_hyper) ? S->Y->p : NULL ;          \
-    const int64_t *restrict S_Yi = (S_is_hyper) ? S->Y->i : NULL ;          \
-    const int64_t *restrict S_Yx = (S_is_hyper) ? S->Y->x : NULL ;          \
-    const int64_t S_hash_bits = (S_is_hyper) ? (S->Y->vdim - 1) : 0 ;
+    const int64_t *restrict S_Yp = (S->Y == NULL) ? NULL : S->Y->p ;        \
+    const int64_t *restrict S_Yi = (S->Y == NULL) ? NULL : S->Y->i ;        \
+    const int64_t *restrict S_Yx = (S->Y == NULL) ? NULL : S->Y->x ;        \
+    const int64_t S_hash_bits = (S->Y == NULL) ? 0 : (S->Y->vdim - 1) ;
 
 //------------------------------------------------------------------------------
 // basic actions
@@ -1277,8 +1277,8 @@
 {                                                                       \
     if (X ## _is_hyper)                                                 \
     {                                                                   \
-        GB_hyper_hash_lookup (X ## p, X ## _Yp, X ## _Yi, X ## _Yx,     \
-            X ## _hash_bits, j, &pX_start, &pX_end) ;                   \
+        GB_hyper_hash_lookup (X ## h, X ## nvec, X ## p, X ## _Yp,      \
+            X ## _Yi, X ## _Yx, X ## _hash_bits, j, &pX_start, &pX_end) ;   \
     }                                                                   \
     else                                                                \
     {                                                                   \

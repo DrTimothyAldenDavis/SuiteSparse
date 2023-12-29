@@ -10,6 +10,7 @@
 // A parallel decompression of a serialized blob into a GrB_Matrix.
 
 #include "GB.h"
+#include "GB_get_set.h"
 #include "GB_serialize.h"
 
 #define GB_FREE_ALL                         \
@@ -217,6 +218,41 @@ GrB_Info GB_deserialize             // deserialize a matrix from a blob
         C->nvals = C->p [C->nvec] ;
     }
     C->magic = GB_MAGIC ;
+
+    //--------------------------------------------------------------------------
+    // get the GrB_NAME and GrB_EL_TYPE_STRING
+    //--------------------------------------------------------------------------
+
+    // v8.1.0 adds two nul-terminated uncompressed strings to the end of the
+    // blob.  If the strings are empty, the nul terminators still appear.
+
+    if (version >= GxB_VERSION (8,1,0))
+    { 
+
+        //----------------------------------------------------------------------
+        // look for the two nul bytes in blob [s : blob_size-1]
+        //----------------------------------------------------------------------
+
+        int nfound = 0 ;
+        size_t ss [2] ;
+        for (size_t p = s ; p < blob_size && nfound < 2 ; p++)
+        {
+            if (blob [p] == 0)
+            { 
+                ss [nfound++] = p ;
+            }
+        }
+
+        if (nfound == 2)
+        { 
+            // extract the GrB_NAME and GrB_EL_TYPE_STRING from the blob
+            char *user_name = (char *) (blob + s) ;
+//          char *eltype_string = (char *) (blob + ss [0] + 1) ;
+//          printf ("deserialize user_name [%s] eltype [%s]\n", user_name,
+//              eltype_string) ;
+            GB_OK (GB_matvec_name_set (C, user_name, GrB_NAME)) ;
+        }
+    }
 
     //--------------------------------------------------------------------------
     // return result

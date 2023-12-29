@@ -30,6 +30,7 @@ const char *GB_status_code (GrB_Info info)
         case GrB_INDEX_OUT_OF_BOUNDS  : return ("GrB_INDEX_OUT_OF_BOUNDS") ;
         case GrB_PANIC                : return ("GrB_PANIC") ;
         case GrB_NOT_IMPLEMENTED      : return ("GrB_NOT_IMPLEMENTED") ;
+        case GrB_ALREADY_SET          : return ("GrB_ALREADY_SET") ;
         case GrB_EMPTY_OBJECT         : return ("GrB_EMPTY_OBJECT") ;
         default                       : return ("unknown GrB_Info value!") ;
     }

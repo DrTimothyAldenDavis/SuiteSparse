@@ -11,6 +11,10 @@
 #define GB_PENDING_H
 #include "GB.h"
 
+// FUTURE: remove this once GxB_Matrix_pending is revised (see PR #172)
+// true if a matrix is hypersparse and needs its hyper_hash built
+#define GB_NEED_HYPER_HASH(A) GB_hyper_hash_need (A)
+
 //------------------------------------------------------------------------------
 // GB_Pending functions
 //------------------------------------------------------------------------------

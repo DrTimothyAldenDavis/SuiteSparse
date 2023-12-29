@@ -19,7 +19,7 @@
 
 // Examples:
 //
-// To use GraphBLAS with the ANSI C11 functions (or to another library
+// To use GraphBLAS with the C11 functions (or to another library
 // linked in that replaces them): 
 //
 //      // either use:

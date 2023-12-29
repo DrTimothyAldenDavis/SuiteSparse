@@ -87,7 +87,7 @@ function binopinfo (op, optype)
 % and returns the double value 1.0 if true, or 0.0 if false.
 %
 % The following operators are avaiable for single and double (real); their
-% definitions are identical to the ANSI C11 versions of these functions:
+% definitions are identical to the C11 versions of these functions:
 % atan2, hypot, fmod, remainder, copysign, ldxep (also called 'pow2').
 % All produce the same type as the input, on output.
 %
