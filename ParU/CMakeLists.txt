@@ -27,7 +27,7 @@ message ( STATUS "Building PARU version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( paru
+project ( ParU
     VERSION "${PARU_VERSION_MAJOR}.${PARU_VERSION_MINOR}.${PARU_VERSION_UPDATE}" )
 
 #-------------------------------------------------------------------------------
@@ -467,6 +467,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

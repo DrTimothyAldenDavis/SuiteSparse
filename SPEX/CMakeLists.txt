@@ -26,7 +26,7 @@ message ( STATUS "Building SPEX version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( spex
+project ( SPEX
     VERSION "${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}"
     LANGUAGES C )
 
@@ -379,6 +379,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

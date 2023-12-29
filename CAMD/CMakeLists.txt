@@ -25,7 +25,7 @@ message ( STATUS "Building CAMD version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( camd
+project ( CAMD
     VERSION "${CAMD_VERSION_MAJOR}.${CAMD_VERSION_MINOR}.${CAMD_VERSION_SUB}"
     LANGUAGES C )
 
@@ -285,6 +285,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

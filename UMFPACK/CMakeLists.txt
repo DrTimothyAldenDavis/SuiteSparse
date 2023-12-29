@@ -26,7 +26,7 @@ message ( STATUS "Building UMFPACK version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( umfpack
+project ( UMFPACK
     VERSION "${UMFPACK_VERSION_MAJOR}.${UMFPACK_VERSION_MINOR}.${UMFPACK_VERSION_SUB}"
     LANGUAGES C )
 
@@ -456,6 +456,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )
