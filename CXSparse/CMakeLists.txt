@@ -25,7 +25,7 @@ message ( STATUS "Building CXSparse version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( cxsparse
+project ( CXSparse
     VERSION "${CXSPARSE_VERSION_MAJOR}.${CXSPARSE_VERSION_MINOR}.${CXSPARSE_VERSION_SUB}"
     LANGUAGES C )
 
@@ -394,6 +394,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

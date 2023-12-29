@@ -50,9 +50,9 @@ message ( STATUS "Building Mongoose version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project(Mongoose
-        VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
-        LANGUAGES CXX C)
+project ( Mongoose
+    VERSION "${Mongoose_VERSION_MAJOR}.${Mongoose_VERSION_MINOR}.${Mongoose_VERSION_PATCH}"
+    LANGUAGES CXX C )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -640,6 +640,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

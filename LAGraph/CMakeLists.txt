@@ -44,6 +44,11 @@ set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_SUB   0 CACHE STRING "" FORCE )
 
+message ( STATUS "Building LAGraph version: v"
+    ${LAGraph_VERSION_MAJOR}.
+    ${LAGraph_VERSION_MINOR}.
+    ${LAGraph_VERSION_SUB} " (" ${LAGraph_DATE} ")" )
+
 #-------------------------------------------------------------------------------
 # define the project
 #-------------------------------------------------------------------------------

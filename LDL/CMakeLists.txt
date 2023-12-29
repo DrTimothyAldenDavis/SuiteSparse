@@ -25,7 +25,7 @@ message ( STATUS "Building LDL version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( ldl
+project ( LDL
     VERSION "${LDL_VERSION_MAJOR}.${LDL_VERSION_MINOR}.${LDL_VERSION_SUB}"
     LANGUAGES C )
 
@@ -307,6 +307,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

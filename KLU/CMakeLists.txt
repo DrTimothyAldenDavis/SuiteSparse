@@ -26,7 +26,7 @@ message ( STATUS "Building KLU version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( klu
+project ( KLU
     VERSION "${KLU_VERSION_MAJOR}.${KLU_VERSION_MINOR}.${KLU_VERSION_SUB}"
     LANGUAGES C )
 #-------------------------------------------------------------------------------
@@ -567,6 +567,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

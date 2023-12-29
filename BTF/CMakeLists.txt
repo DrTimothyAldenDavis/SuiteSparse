@@ -26,7 +26,7 @@ message ( STATUS "Building BTF version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( btf
+project ( BTF
     VERSION "${BTF_VERSION_MAJOR}.${BTF_VERSION_MINOR}.${BTF_VERSION_SUB}"
     LANGUAGES C )
 
@@ -239,6 +239,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )

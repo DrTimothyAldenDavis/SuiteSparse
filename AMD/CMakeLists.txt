@@ -26,7 +26,7 @@ message ( STATUS "Building AMD version: v"
 # define the project
 #-------------------------------------------------------------------------------
 
-project ( amd
+project ( AMD
     VERSION "${AMD_VERSION_MAJOR}.${AMD_VERSION_MINOR}.${AMD_VERSION_SUB}"
     LANGUAGES C )
 
@@ -305,6 +305,4 @@ endif ( )
 # report status
 #-------------------------------------------------------------------------------
 
-if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    include ( SuiteSparseReport )
-endif ( )
+include ( SuiteSparseReport )
