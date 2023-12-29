@@ -1003,9 +1003,10 @@ build type).  The static libraries will not be built (since
 
 * `SUITESPARSE_CONFIG_USE_OPENMP`:
 
-  If `ON`, `SuiteSparse_config` uses OpenMP is used if it is available.
+  If `ON`, `SuiteSparse_config` uses OpenMP if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
-  It is not essential and only used to let `SuiteSparse_time` call `omp_get_wtime`.
+  It is not essential and only used to let `SuiteSparse_time` call
+  `omp_get_wtime`.
 
 * `CHOLMOD_USE_OPENMP`:
 
