@@ -88,6 +88,14 @@ if ( NOT SuiteSparse_config_FOUND OR NOT CHOLMOD_FOUND OR NOT UMFPACK_FOUND )
     set ( _dependencies_found OFF )
 endif ( )
 
+# Look for OpenMP
+if ( @PARU_HAS_OPENMP@ AND NOT OpenMP_CXX_FOUND )
+    find_dependency ( OpenMP COMPONENTS CXX )
+    if ( NOT OpenMP_CXX_FOUND )
+        set ( _dependencies_found OFF )
+    endif ( )
+endif ( )
+
 if ( NOT _dependencies_found )
     set ( ParU_FOUND OFF )
     return ( )
@@ -95,6 +103,31 @@ endif ( )
 
 # Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/ParUTargets.cmake )
+
+if ( @PARU_HAS_OPENMP@ )
+    if ( TARGET SuiteSparse::ParU )
+        get_property ( _paru_aliased TARGET SuiteSparse::ParU
+            PROPERTY ALIASED_TARGET )
+        if ( "${_paru_aliased}" STREQUAL "" )
+            target_include_directories ( SuiteSparse::ParU SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_CXX,INTERFACE_INCLUDE_DIRECTORIES>" )
+        else ( )
+            target_include_directories ( ${_paru_aliased} SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_CXX,INTERFACE_INCLUDE_DIRECTORIES>" )
+        endif ( )
+    endif ( )
+    if ( TARGET SuiteSparse::ParU_static )
+        get_property ( _paru_aliased TARGET SuiteSparse::ParU_static
+            PROPERTY ALIASED_TARGET )
+        if ( "${_paru_aliased}" STREQUAL "" )
+            target_include_directories ( SuiteSparse::ParU_static SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_CXX,INTERFACE_INCLUDE_DIRECTORIES>" )
+        else ( )
+            target_include_directories ( ${_paru_aliased} SYSTEM AFTER INTERFACE
+                "$<TARGET_PROPERTY:OpenMP::OpenMP_CXX,INTERFACE_INCLUDE_DIRECTORIES>" )
+        endif ( )
+    endif ( )
+endif ( )
 
 # The following is only for backward compatibility with FindParU.
 
