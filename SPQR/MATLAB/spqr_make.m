@@ -25,16 +25,6 @@ details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 v = version ;
 fprintf ('Compiling SuiteSparseQR on MATLAB Version %s\n', v);
 
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-    mac = ismac ;
-catch                                                                       %#ok
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-    mac = 0 ;
-end
-
 flags = '' ;
 is64 = (~isempty (strfind (computer, '64'))) ;
 if (is64)
@@ -49,7 +39,7 @@ if (~verLessThan ('matlab', '8.3.0'))
     flags = ['-silent ' flags] ;
 end
 
-if (pc)
+if (ispc)
     % MSVC does not define ssize_t
     flags = [flags ' -DNO_SSIZE_T'] ;
 end
@@ -76,7 +66,7 @@ include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMO
 % find the LAPACK and BLAS libraries, which is a real portability nightmare.
 % The correct option is highly variable and depends on the MATLAB version.
 
-if (pc)
+if (ispc)
     % BLAS/LAPACK functions have no underscore on Windows
     flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '6.5'))
@@ -115,7 +105,7 @@ end
 % GPU not yet supported for the spqr MATLAB mexFunction
 % flags = [flags ' -DSPQR_HAS_CUDA'] ;
 
-if (~(pc || mac))
+if (~(ispc || ismac))
     % for POSIX timing routine
     lib = [lib ' -lrt'] ;
 end
@@ -440,7 +430,7 @@ spqr_c_mx_src = { '../MATLAB/spqr_mx_error' } ;
 % SuiteSparseQR mexFunctions
 spqr_mex_cpp_src = { 'spqr', 'spqr_qmult', 'spqr_solve', 'spqr_singletons' } ;
 
-if (pc)
+if (ispc)
     obj_extension = '.obj' ;
 else
     obj_extension = '.o' ;
