@@ -25,8 +25,8 @@ ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num)
     int64_t *Ps = NULL;
     int64_t *Pinit = Sym->Pinit;
 
-    Num->Pfin = Pfin = (int64_t *)paru_alloc(m, sizeof(int64_t));
-    Num->Ps = Ps = (int64_t *)paru_alloc(m, sizeof(int64_t));
+    Num->Pfin = Pfin = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
+    Num->Ps = Ps = static_cast<int64_t*>(paru_alloc(m, sizeof(int64_t)));
 
     PRLEVEL(1, ("%% Inside Perm\n"));
     if (Pfin == NULL || Ps == NULL)
