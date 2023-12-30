@@ -61,7 +61,7 @@ endif ( )
 
 if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required
-    find_package ( OpenMP GLOBAL )
+    find_package ( OpenMP COMPONENTS C CXX GLOBAL )
     if ( OpenMP_CXX_FOUND AND OpenMP_C_FOUND )
         set ( PARU_HAS_OPENMP ON )
         if (( OpenMP_CXX_VERSION VERSION_LESS 4.5 ) OR
