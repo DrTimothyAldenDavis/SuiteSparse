@@ -23,7 +23,7 @@ message ( STATUS "Building SPQR/GPURUNTIME version: v"
 
 project ( suitesparse_gpuruntime 
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-    LANGUAGES C CXX CUDA )
+    LANGUAGES CXX )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
