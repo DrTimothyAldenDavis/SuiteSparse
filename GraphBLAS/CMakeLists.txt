@@ -461,9 +461,9 @@ if ( GRAPHBLAS_HAS_OPENMP )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
 else ( )
-    message  ( WARNING
+    message ( WARNING
     "WARNING:  OpenMP was not found (or was disabled with "
-    "GRAPHBLAS_USE_OPENMP).  See the GrapBLAS user guide on the consequences "
+    "GRAPHBLAS_USE_OPENMP).  See the GraphBLAS user guide on the consequences "
     "of compiling GraphBLAS without OpenMP. GraphBLAS will work but may not be "
     "thread-safe, since it relies on '#pragma omp flush' to ensure the work "
     "performed by one user thread is available to another, in GrB_wait.  If "
@@ -476,7 +476,7 @@ else ( )
     include ( SuiteSparse__thread )
     if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD
         AND NOT HAVE_KEYWORD__THREAD_LOCAL )
-        message  ( WARNING
+        message ( WARNING
         "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )
