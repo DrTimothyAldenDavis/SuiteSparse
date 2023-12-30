@@ -177,6 +177,7 @@ if ( NOT WIN32 )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
+        list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS "m" )
     endif ( )
 endif ( )
 
@@ -194,6 +195,7 @@ if ( SUITESPARSE_CONFIG_USE_OPENMP )
         target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
         target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
 endif ( )
 
@@ -263,6 +265,33 @@ install ( FILES
 #-------------------------------------------------------------------------------
 
 if ( NOT MSVC )
+    # This might be something like:
+    #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+    # convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+    set ( SUITESPARSE_CONFIG_STATIC_LIBS_LIST ${SUITESPARSE_CONFIG_STATIC_LIBS} )
+    set ( SUITESPARSE_CONFIG_STATIC_LIBS "" )
+    foreach ( _lib ${SUITESPARSE_CONFIG_STATIC_LIBS_LIST} )
+        string ( FIND ${_lib} "." _pos REVERSE )
+        if ( ${_pos} EQUAL "-1" )
+            set ( SUITESPARSE_CONFIG_STATIC_LIBS "${SUITESPARSE_CONFIG_STATIC_LIBS} -l${_lib}" )
+            continue ()
+        endif ( )
+        set ( _kinds "SHARED" "STATIC" )
+        if ( WIN32 )
+            list ( PREPEND _kinds "IMPORT" )
+        endif ( )
+        foreach ( _kind IN LISTS _kinds )
+            set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+            if ( ${_lib} MATCHES ${_regex} )
+                string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+                if ( NOT "${_libname}" STREQUAL "" )
+                    set ( SUITESPARSE_CONFIG_STATIC_LIBS "${SUITESPARSE_CONFIG_STATIC_LIBS} -l${_libname}" )
+                    break ()
+                endif ( )
+            endif ( )
+        endforeach ( )
+    endforeach ( )
+
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
     cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
