@@ -49,6 +49,11 @@ if (~verLessThan ('matlab', '8.3.0'))
     flags = ['-silent ' flags] ;
 end
 
+if (pc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
+end
+
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
 % Determine if METIS is available (not available on Windows)
