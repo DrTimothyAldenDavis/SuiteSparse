@@ -22,7 +22,9 @@
 
 cholmod_dense *CHOLMOD(ensure_dense)
 (
+    // input/output:
     cholmod_dense **X,  // matrix to resize as needed (*X may be NULL)
+    // input:
     size_t nrow,    // # of rows
     size_t ncol,    // # of columns
     size_t d,       // leading dimension
@@ -63,7 +65,7 @@ cholmod_dense *CHOLMOD(ensure_dense)
     size_t nzmax_required = CHOLMOD(mult_size_t) (d, ncol, &ok) ;
     if (!ok)
     {
-        ERROR (CHOLMOD_INVALID, "problem too large") ;
+        ERROR (CHOLMOD_TOO_LARGE, "problem too large") ;
         return (NULL) ;
     }
 
@@ -89,6 +91,7 @@ cholmod_dense *CHOLMOD(ensure_dense)
         // free the matrix and reallocate it with the right properties
         CHOLMOD(free_dense) (X, Common) ;
         (*X) = CHOLMOD(allocate_dense) (nrow, ncol, d, xdtype, Common) ;
+
     }
 
     //--------------------------------------------------------------------------

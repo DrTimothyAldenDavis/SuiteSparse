@@ -4,7 +4,7 @@ SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 
 SPDX-License-Identifier: Apache-2.0
 
-VERSION 8.2.1, Oct 7, 2023
+VERSION 8.3.1, Dec 30, 2023
 
 SuiteSparse:GraphBLAS is a complete implementation of the GraphBLAS standard,
 which defines a set of sparse matrix operations on an extended algebra of
@@ -36,8 +36,8 @@ QUICK START: To compile and install, do these commands in this directory:
     make
     sudo make install
 
-Please be patient; some files can take several minutes to compile.  Requires an
-ANSI C11 compiler, so cmake will fail if your compiler is not C11 compliant.
+Please be patient; some files can take several minutes to compile.  Requires a
+C11 compiler, so cmake will fail if your compiler is not C11 compliant.
 See the User Guide PDF in Doc/ for directions on how to use another compiler.
 
 For faster compilation, do this instead of just "make", which uses 32
@@ -207,13 +207,13 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
     * GraphBLAS takes a long time to compile because it creates many fast
         "FactoryKernels" at compile-time.  If you want to reduce the compile
-        time and library size, enable the COMPACT mode, but keep the JIT
-        enabled.  Then GraphBLAS will compile the kernels it needs at run-time,
-        via its JIT.  Performance will be the same as the FactoryKernels once
-        the JIT kernels are compiled.  User compiled kernels are placed in
-        ~/.SuiteSparse, by default.  You do not need to distribute the source
-        for GraphBLAS to enable the JIT: just libgraphblas.so and GraphBLAS.h
-        is enough.
+        time and library size, enable the GRAPHBLAS_COMPACT mode, but keep the
+        JIT enabled.  Then GraphBLAS will compile the kernels it needs at
+        run-time, via its JIT.  Performance will be the same as the
+        FactoryKernels once the JIT kernels are compiled.  User compiled
+        kernels are placed in ~/.SuiteSparse, by default.  You do not need to
+        distribute the source for GraphBLAS to enable the JIT: just
+        libgraphblas.so and GraphBLAS.h is enough.
 
     * GraphBLAS needs OpenMP!  It's fundamentally a parallel code so please
         distribute it with OpenMP enabled.  Performance will suffer

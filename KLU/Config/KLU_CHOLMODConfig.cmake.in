@@ -35,6 +35,46 @@ set ( KLU_CHOLMOD_VERSION_MINOR @KLU_VERSION_MINOR@ )
 set ( KLU_CHOLMOD_VERSION_PATCH @KLU_VERSION_SUB@ )
 set ( KLU_CHOLMOD_VERSION "@KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@" )
 
+# Check for dependent targets
+include ( CMakeFindDependencyMacro )
+
+# Look for KLU and CHOLMOD targets
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::KLU )
+        # First check in a common build tree
+        find_dependency ( KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../KLU/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT KLU_FOUND )
+            find_dependency ( KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        # First check in a common build tree
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT CHOLMOD_FOUND )
+            find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+
+else ( )
+    if ( NOT TARGET SuiteSparse::KLU )
+        find_dependency ( KLU @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@ )
+    endif ( )
+    if ( NOT TARGET SuiteSparse::CHOLMOD )
+        find_dependency ( CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+
+if ( NOT KLU_FOUND OR NOT CHOLMOD_FOUND )
+    set ( KLU_CHOLMOD_FOUND OFF )
+    return ( )
+endif ( )
+
+
 include ( ${CMAKE_CURRENT_LIST_DIR}/KLU_CHOLMODTargets.cmake )
 
 # The following is only for backward compatibility with FindKLU_CHOLMOD.
@@ -42,6 +82,11 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/KLU_CHOLMODTargets.cmake )
 set ( _target_shared SuiteSparse::KLU_CHOLMOD )
 set ( _target_static SuiteSparse::KLU_CHOLMOD_static )
 set ( _var_prefix "KLU_CHOLMOD" )
+
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )

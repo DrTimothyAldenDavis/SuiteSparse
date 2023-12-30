@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 #include "GraphBLAS.h"
+#undef I
 #if defined ( _OPENMP )
 #include <omp.h>
 #endif

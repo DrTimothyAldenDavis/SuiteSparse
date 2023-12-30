@@ -14,21 +14,21 @@
 #ifndef _LIBMETIS_METISLIB_H_
 #define _LIBMETIS_METISLIB_H_
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 #if defined(ENABLE_OPENMP)
   #include <omp.h>
 #endif
 
 
-#include <metis.h>
-#include <rename.h>
-#include <gklib_defs.h>
+#include "metis.h"
+#include "rename.h"
+#include "gklib_defs.h"
 
-#include <defs.h>
-#include <struct.h>
-#include <macros.h>
-#include <proto.h>
+#include "defs.h"
+#include "struct.h"
+#include "macros.h"
+#include "proto.h"
 
 
 #if defined(COMPILER_MSC)

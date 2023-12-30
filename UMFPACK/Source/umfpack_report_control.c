@@ -379,10 +379,15 @@ void UMFPACK_report_control
     PRINTF (("    compiled for ANSI C\n")) ;
 #endif
 
+    PRINTF (("    CPU timer: ")) ;
 #ifdef SUITESPARSE_TIMER_ENABLED
-    PRINTF (("    SuiteSparse_time ( )\n")) ;
+    #ifdef _OPENMP
+        PRINTF (("omp_get_wtime ( )\n")) ;
+    #else
+        PRINTF (("SuiteSparse_time ( )\n")) ;
+    #endif
 #else
-    PRINTF (("    no timer used.\n")) ;
+    PRINTF (("no timer used.\n")) ;
 #endif
 
 #ifdef NCHOLMOD

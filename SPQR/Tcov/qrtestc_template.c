@@ -10,15 +10,10 @@
 //------------------------------------------------------------------------------
 
 // The #include'ing file must define the following macros:
-// QRTEST:  the name of the function
 
-// and one of:
-// SINT:    float (and float complex), int32
-// SLONG:   float (and float complex), int64
-// DINT:    double (and double complex), int32
-// DLONG:   double (and double complex), int64
-
-// the SINT and SLONG cases are not yet used.
+// QRTEST:          the name of the function
+// Real:            double or float (only double currently supported)
+// CHOLMOD_INT64:   int64_t if defined, int32_t otherwise
 
 #include "cholmod_types.h"
 

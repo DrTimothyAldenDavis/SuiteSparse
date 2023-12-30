@@ -22,7 +22,7 @@ LDLIBS = -L../../lib \
     -lm -lrt \
     -Wl,-rpath=../../lib -lstdc++
 
-I = -I../../include -I../Include -I../User -I../../BTF/Include -I../Source
+I = -I../../include/suitesparse -I../Include -I../User -I../../BTF/Include -I../Source
 
 all: klutest klultest
 	- ./klultests > klultests.out

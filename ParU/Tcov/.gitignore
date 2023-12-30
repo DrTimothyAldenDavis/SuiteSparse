@@ -1,0 +1,5 @@
+# Ignore these files:
+*.o
+*.out
+x_*
+*out.txt

@@ -2487,8 +2487,8 @@ template <typename Entry, typename Int> void qrtest
 
     // attempt to permute A to upper triangular form
     Int *Qtrap ;
-    rank = spqr_trapezoidal <Entry, Int> (n, Ap, Ai, Ax, 0, NULL, FALSE, &Cp, &Ci, &Cx,
-        &Qtrap, cc) ;
+    rank = spqr_trapezoidal <Entry, Int> (n, Ap, Ai, Ax, 0, NULL, FALSE,
+        &Cp, &Ci, &Cx, &Qtrap, cc) ;
     printf ("Rank of A, if A*P permutable to upper trapezoidal: %d\n",
         (int) rank) ;
     if (Cp != NULL)
@@ -2651,13 +2651,13 @@ int do_matrix (int kind, FILE *file, cholmod_common *cc)
     printf ("\nCPU tests done ]\n") ;
 
     // test the GPU, if installed
-    #ifdef SUITESPARSE_CUDA
+    #ifdef SPQR_HAS_CUDA
     cc->useGPU = TRUE ;
     // was 3.5 * ((size_t) 1024 * 1024 * 1024) ;
     size_t totmem, availmem ;
-    double t = SuiteSparse_time ( ) ;
+    double t = SUITESPARSE_TIME ;
     spqr_gpu_memorysize (&totmem, &availmem, cc) ;
-    t = SuiteSparse_time ( ) - t ;
+    t = SUITESPARSE_TIME - t ;
     cc->gpuMemorySize = availmem ;
     printf ("\nBeginning GPU tests, GPU memory %g MB warmup time %g[\n",
         (double) (cc->gpuMemorySize) / (1024*1024), t) ;

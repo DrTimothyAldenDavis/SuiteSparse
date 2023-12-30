@@ -16,6 +16,7 @@
 
 cholmod_factor *cholmod_l_allocate_factor       // return the new factor L
 (
+    // input:
     size_t n,               // L is factorization of an n-by-n matrix
     cholmod_common *Common
 )

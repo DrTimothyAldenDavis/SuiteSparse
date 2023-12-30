@@ -37,7 +37,7 @@ int CHOLMOD(free_work) (cholmod_common *Common)
     Common->iworksize = 0 ;
 
     //--------------------------------------------------------------------------
-    // free Xwork, of size xworksize bytes
+    // free Xwork, of size xworkbytes
     //--------------------------------------------------------------------------
 
     Common->Xwork = CHOLMOD(free) (Common->xworkbytes, sizeof (uint8_t),
@@ -48,7 +48,7 @@ int CHOLMOD(free_work) (cholmod_common *Common)
     // free GPU workspace
     //--------------------------------------------------------------------------
 
-    #ifdef SUITESPARSE_CUDA
+    #ifdef CHOLMOD_HAS_CUDA
         CHOLMOD(gpu_deallocate) (Common) ;
     #endif
 

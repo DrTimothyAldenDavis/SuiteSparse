@@ -340,7 +340,7 @@ template <typename Entry, typename Int> Int SuiteSparseQR
     cholmod_sparse *Xsparse, *Zsparse, *R, *H ;
     cholmod_dense *Zdense, *HTau ;
 
-    double t0 = SuiteSparse_time ( ) ;
+    double t0 = SUITESPARSE_TIME ;
 
     int ok = TRUE ;
 
@@ -1205,7 +1205,7 @@ template <typename Entry, typename Int> Int SuiteSparseQR
         *p_E = E ;
     }
 
-    double t3 = SuiteSparse_time ( ) ;
+    double t3 = SUITESPARSE_TIME ;
     double total_time = t3 - t0 ;
     cc->SPQR_solve_time =
         total_time - cc->SPQR_analyze_time - cc->SPQR_factorize_time ;
@@ -1893,3 +1893,15 @@ template struct spqr_numeric <Complex, int32_t>;
 
 template struct spqr_numeric <double, int64_t>;
 template struct spqr_numeric <Complex, int64_t>;
+
+// -----------------------------------------------------------------------------
+// SuiteSparseQR_version
+// -----------------------------------------------------------------------------
+
+void SuiteSparseQR_version (int version [3])
+{
+    version [0] = SPQR_MAIN_VERSION ;
+    version [1] = SPQR_SUB_VERSION ;
+    version [2] = SPQR_SUBSUB_VERSION ;
+}
+

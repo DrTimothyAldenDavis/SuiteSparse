@@ -8,7 +8,7 @@
 \version\verbatim $Id: random.c 11793 2012-04-04 21:03:02Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 
 /*************************************************************************/

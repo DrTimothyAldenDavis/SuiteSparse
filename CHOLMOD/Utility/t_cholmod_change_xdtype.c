@@ -88,7 +88,9 @@ static int change_xdtype
 
 int CHOLMOD(sparse_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_sparse *A,  // sparse matrix to change
     cholmod_common *Common
 )
@@ -118,7 +120,9 @@ int CHOLMOD(sparse_xtype)
 
 int CHOLMOD(triplet_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_triplet *T, // triplet matrix to change
     cholmod_common *Common
 )
@@ -148,7 +152,9 @@ int CHOLMOD(triplet_xtype)
 
 int CHOLMOD(dense_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_dense *X,   // dense matrix to change
     cholmod_common *Common
 )
@@ -172,7 +178,7 @@ int CHOLMOD(dense_xtype)
     {
         // output_xtype not supported
         ERROR (CHOLMOD_INVALID, "invalid xtype") ;
-        return (FALSE) ; 
+        return (FALSE) ;
     }
 
     return (change_xdtype (X->nzmax, &(X->xtype), output_xtype,
@@ -185,7 +191,9 @@ int CHOLMOD(dense_xtype)
 
 int CHOLMOD(factor_xtype)
 (
+    // input:
     int to_xdtype,      // requested xtype and dtype
+    // input/output:
     cholmod_factor *L,  // factor to change
     cholmod_common *Common
 )
@@ -205,12 +213,12 @@ int CHOLMOD(factor_xtype)
     int output_xtype = to_xdtype & 3 ;  // real, complex, or zomplex
     int output_dtype = to_xdtype & 4 ;  // double or single
 
-    if (output_xtype <= CHOLMOD_PATTERN || 
+    if (output_xtype <= CHOLMOD_PATTERN ||
         L->is_super && output_xtype == CHOLMOD_ZOMPLEX)
     {
         // output_xtype not supported
         ERROR (CHOLMOD_INVALID, "invalid xtype") ;
-        return (FALSE) ; 
+        return (FALSE) ;
     }
 
     Int nzmax = L->is_super ? L->xsize : L->nzmax ;

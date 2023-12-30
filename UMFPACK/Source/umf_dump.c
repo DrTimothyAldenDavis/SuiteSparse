@@ -713,7 +713,7 @@ void UMF_dump_memory
 	return ;
     }
 
-    DEBUG6 (("S: "ID"\n", (Int) Numeric)) ;
+    DEBUG6 (("S: %p\n", Numeric)) ;
     DEBUG6 (("S->ihead           : "ID"\n", Numeric->ihead)) ;
     DEBUG6 (("S->itail           : "ID"\n", Numeric->itail)) ;
     DEBUG6 (("S->size            : "ID"\n", Numeric->size)) ;
@@ -810,7 +810,7 @@ void UMF_dump_packed_memory
 	DEBUG6 (("No memory space S allocated\n")) ;
 	return ;
     }
-    DEBUG6 (("S: "ID"\n", (Int) Numeric)) ;
+    DEBUG6 (("S: %p\n", Numeric)) ;
     DEBUG6 (("S->ihead           : "ID"\n", Numeric->ihead)) ;
     DEBUG6 (("S->itail           : "ID"\n", Numeric->itail)) ;
     DEBUG6 (("S->size            : "ID"\n", Numeric->size)) ;

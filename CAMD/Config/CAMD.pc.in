@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for permuting sparse matrices prior to factorization in SuiteSparse
 Version: @CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@.@CAMD_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lcamd
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @CAMD_STATIC_LIBS@
 Cflags: -I${includedir}

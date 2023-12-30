@@ -2,7 +2,7 @@
 // AMD/Include/amd.h:  approximate minimum degree ordering
 //------------------------------------------------------------------------------
 
-// AMD, Copyright (c) 1996-2022, Timothy A. Davis, Patrick R. Amestoy, and
+// AMD, Copyright (c) 1996-2023, Timothy A. Davis, Patrick R. Amestoy, and
 // Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -35,12 +35,12 @@
 #ifndef AMD_H
 #define AMD_H
 
+#include "SuiteSparse_config.h"
+
 /* make it easy for C++ programs to include AMD */
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#include "SuiteSparse_config.h"
 
 int amd_order  /* returns AMD_OK, AMD_OK_BUT_JUMBLED,
                                     * AMD_INVALID, or AMD_OUT_OF_MEMORY */
@@ -313,6 +313,14 @@ void amd_l_control  (double Control [ ]) ;
 void amd_info       (double Info [ ]) ;
 void amd_l_info     (double Info [ ]) ;
 
+// amd_version: return AMD version.  The version array is returned with
+// version [0..2] = {AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION}
+void amd_version (int version [3]) ;
+
+#ifdef __cplusplus
+}
+#endif
+
 #define AMD_CONTROL 5          /* size of Control array */
 #define AMD_INFO 20            /* size of Info array */
 
@@ -379,11 +387,12 @@ void amd_l_info     (double Info [ ]) ;
 #define AMD_SUB_VERSION    @AMD_VERSION_MINOR@
 #define AMD_SUBSUB_VERSION @AMD_VERSION_SUB@
 
-#define AMD_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define AMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define AMD_VERSION AMD_VERSION_CODE(AMD_MAIN_VERSION,AMD_SUB_VERSION)
 
-#ifdef __cplusplus
-}
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@.@AMD_VERSION_SUB@ requires SuiteSparse_config 7.4 or later"
 #endif
 
 #endif

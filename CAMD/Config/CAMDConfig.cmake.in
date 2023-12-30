@@ -35,6 +35,32 @@ set ( CAMD_VERSION_MINOR @CAMD_VERSION_MINOR@ )
 set ( CAMD_VERSION_PATCH @CAMD_VERSION_SUB@ )
 set ( CAMD_VERSION "@CAMD_VERSION_MAJOR@.@CAMD_VERSION_MINOR@.@CAMD_VERSION_SUB@" )
 
+# Check for dependent targets
+include ( CMakeFindDependencyMacro )
+
+# Look for SuiteSparse_config target
+if ( @SUITESPARSE_IN_BUILD_TREE@ )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        # First check in a common build tree
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@
+            PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
+        # Then, check in the currently active CMAKE_MODULE_PATH
+        if ( NOT SuiteSparse_config_FOUND )
+            find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+        endif ( )
+    endif ( )
+else ( )
+    if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
+        find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
+    endif ( )
+endif ( )
+if ( NOT SuiteSparse_config_FOUND )
+    set ( CAMD_FOUND OFF )
+    return ( )
+endif ( )
+
+
+# Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/CAMDTargets.cmake )
 
 # The following is only for backward compatibility with FindCAMD.
@@ -42,6 +68,11 @@ include ( ${CMAKE_CURRENT_LIST_DIR}/CAMDTargets.cmake )
 set ( _target_shared SuiteSparse::CAMD )
 set ( _target_static SuiteSparse::CAMD_static )
 set ( _var_prefix "CAMD" )
+
+if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
+    # make sure there is always an import target without suffix )
+    add_library ( ${_target_shared} ALIAS ${_target_static} )
+endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
 if ( ${_var_prefix}_INCLUDE_DIR )

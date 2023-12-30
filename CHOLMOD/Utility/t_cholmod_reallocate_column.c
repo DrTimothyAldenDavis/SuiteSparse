@@ -51,8 +51,10 @@
 
 int CHOLMOD(reallocate_column)
 (
+    // input:
     size_t j,                   // reallocate L(:,j)
     size_t need,                // space in L(:,j) for this # of entries
+    // input/output:
     cholmod_factor *L,          // L factor modified, L(:,j) resized
     cholmod_common *Common
 )
@@ -163,31 +165,28 @@ int CHOLMOD(reallocate_column)
 
     switch ((L->xtype + L->dtype) % 8)
     {
-        default:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
-            break ;
-
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_reallocate_column_worker (L, j, pdest, psrc) ;
             break ;
     }
 

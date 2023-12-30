@@ -8700,9 +8700,10 @@ in the old cache folder are not copied over.  New ones are compiled instead.
 The usage of the CPU JIT can be controlled via \verb'GxB_get/set' using the
 \verb'GxB_JIT_C_CONTROL' setting.  If the JIT is enabled at compile time, the
 initial setting is \verb'GxB_JIT_ON'.  If the JIT is disabled at compile time
-(via \verb'NJIT'), the initial setting is \verb'GxB_JIT_RUN', so that any
-PreJIT kernels can be run.  This setting can be modified; for example to
-disable the JIT and clear all loaded JIT kernels from memory, use:
+(by setting the cmake variable \verb'GRAPHBLAS_USE_JIT' to \verb'OFF'), the
+initial setting is \verb'GxB_JIT_RUN', so that any PreJIT kernels can be run.
+This setting can be modified; for example to disable the JIT and clear all
+loaded JIT kernels from memory, use:
 
 \begin{verbatim}
     GxB_set (GxB_JIT_C_CONTROL, GxB_JIT_OFF) ;
@@ -8731,11 +8732,11 @@ typedef enum
 GxB_JIT_Control ;
 \end{verbatim} }
 
-If the JIT is disabled at compile time via the \verb'NJIT' option,
-\verb'PreJIT' kernels are still available, and can be controlled via the
-\verb'GxB_JIT_OFF', \verb'GxB_JIT_PAUSE', or \verb'GxB_JIT_RUN' settings
-listed above.  If the application tries to set the control to
-\verb'GxB_JIT_LOAD' or \verb'GxB_JIT_ON', the setting is changed to
+If the JIT is disabled at compile time via setting the \verb'GRAPHBLAS_USE_JIT'
+option \verb'OFF', \verb'PreJIT' kernels are still available, and can be
+controlled via the \verb'GxB_JIT_OFF', \verb'GxB_JIT_PAUSE', or
+\verb'GxB_JIT_RUN' settings listed above.  If the application tries to set the
+control to \verb'GxB_JIT_LOAD' or \verb'GxB_JIT_ON', the setting is changed to
 \verb'GxB_JIT_RUN' instead.  This is not an error condition.  The resulting
 setting can be queried via \verb'GxB_get', if desired.
 
@@ -8873,11 +8874,21 @@ comment, which may be helpful to select specific kernels to copy into the
 \label{use_cmake}
 
 Two methods are provided for compiling the JIT kernels: cmake, and a direct
-compiler/link command.  On Windows, only cmake may be used, and this setting
-is ignored (it is always true).  On Linux or Mac, the default is false since
-a direct compile/link is faster.  However, it is possible that some compilers
-are not handled properly with this method, so cmake can also be used on those
-platforms by setting the value of \verb'GxB_JIT_USE_CMAKE' to true.
+compiler/link command.
+
+On Linux or Mac, or the default is false since a direct compile/link is faster.
+However, it is possible that some compilers are not handled properly with this
+method, so cmake can also be used on those platforms by setting the value of
+\verb'GxB_JIT_USE_CMAKE' to true.
+
+On Windows with MS Visual Studio, only cmake may be used, and this setting is
+ignored (it is always true).  Direct compilation without cmake on Windows with
+MSVC is not yet available.
+
+When using MINGW on Windows the opposite is true: cmake may not be used, and
+this setting ignored (it is always false).  The only option is to use a direct
+compile instead of using cmake.  Using cmake to build kernels when using MINGW
+on Windows is not yet available.
 
 Normally the same version of cmake should be used to compile both GraphBLAS and
 the JIT kernels.  However, compiling GraphBLAS itself requires cmake v3.16 or
@@ -8908,44 +8919,46 @@ exists, and initializes the cache path with that value instead of using the
 default.
 
 %-------------------------------------------------------------------------------
-\subsection{Compilation options: {\sf NJIT} and {\sf COMPACT}}
+\subsection{Compilation options: {\sf GRAPHBLAS\_USE\_JIT} and {\sf GRAPHBLAS\_COMPACT}}
 %-------------------------------------------------------------------------------
 
-The CPU JIT can be disabled at compile time by setting the \verb'NJIT' option
-\verb'on' in the cmake build options.  Good performance will be obtained only
-by using the \verb'FactoryKernels' or the \verb'PreJIT' kernels that are
-compiled into GraphBLAS when it is first compiled with \verb'cmake'.  By
-default, \verb'NJIT' is off, to enable the CPU JIT.
+The CPU JIT can be disabled at compile time by setting the
+\verb'GRAPHBLAS_USE_NIT' option \verb'OFF' in the cmake build options.  Good
+performance will be obtained only by using the \verb'FactoryKernels' or the
+\verb'PreJIT' kernels that are compiled into GraphBLAS when it is first
+compiled with \verb'cmake'.  By default, \verb'GRAPHBLAS_USE_JIT' is \verb'ON',
+to enable the CPU JIT.
 
 With the introduction of the JIT kernels, it is now possible to obtain good
 performance in GraphBLAS without compiling the many {\em factory kernels} that
 appear in the \verb'GraphBLAS/Source/FactoryKernels' directory.  If the JIT is
 enabled, GraphBLAS will still be fast, once the JIT kernels are compiled, or by
 using any \verb'PreJIT' kernels.  To compile GraphBLAS without its
-\verb'FactoryKernels', enable the \verb'COMPACT' option in the cmake build
-options.  By default, \verb'COMPACT' is off, to enable the
+\verb'FactoryKernels', enable the \verb'GRAPHBLAS_COMPACT' option in the cmake
+build options.  By default, \verb'GRAPHBLAS_COMPACT' is off, to enable the
 \verb'FactoryKernels'.
 
-When GraphBLAS is compiled with \verb'NJIT', the \verb'GxB_JIT_C_CONTROL' may be
-set to \verb'GxB_JIT_OFF', \verb'GxB_JIT_PAUSE', or \verb'GxB_JIT_RUN'.  No
-kernels will be loaded at run-time (the \verb'GxB_JIT_LOAD' setting is disabled
-and treated as \verb'GxB_JIT_RUN'), and no new kernels will be compiled at
-run-time (the \verb'GxB_JIT_ON' is disabled and treated as \verb'GxB_JIT_RUN').
-Only pre-existing \verb'PreJIT' kernels can be run, described in
+When GraphBLAS is compiled with \verb'GRAPHBLAS_USE_JIT' set to \verb'OFF', the
+\verb'GxB_JIT_C_CONTROL' may be set to \verb'GxB_JIT_OFF',
+\verb'GxB_JIT_PAUSE', or \verb'GxB_JIT_RUN'.  No kernels will be loaded at
+run-time (the \verb'GxB_JIT_LOAD' setting is disabled and treated as
+\verb'GxB_JIT_RUN'), and no new kernels will be compiled at run-time (the
+\verb'GxB_JIT_ON' is disabled and treated as \verb'GxB_JIT_RUN').  Only
+pre-existing \verb'PreJIT' kernels can be run, described in
 Section~\ref{prejit}.
 
-If both \verb'NJIT' and \verb'COMPACT' options are enabled, all features of
-GraphBLAS will be functional.  The only fast kernels available will be the
-\verb'PreJIT' kernels (if any).  Otherwise, generic kernels will be used, in
-which every single operator is implemented with a function pointer, and every
-scalar assignment requires a \verb'memcpy'.  Generic kernels are slow, so using
-both \verb'NJIT' and \verb'COMPACT' options enabled is not recommended when
-preparing GraphBLAS for production use, benchmarking, or for a Linux distro or
-other widely-used distribution, unless you are able to run your application in
-advance and create all the JIT kernels you need, and then copy them into
-\verb'GraphBLAS/PreJIT'.  This would be impossible to do for a general-purpose
-case such as a Linux distro, but feasible for a more targetted application such
-as RedisGraph.
+If both \verb'GRAPHBLAS_USE_JIT' is set \verb'OFF' and
+\verb'GRAPHBLAS_COMPACT' is set \verb'ON', all features of GraphBLAS will be
+functional.  The only fast kernels available will be the \verb'PreJIT' kernels
+(if any).  Otherwise, generic kernels will be used, in which every single
+operator is implemented with a function pointer, and every scalar assignment
+requires a \verb'memcpy'.  Generic kernels are slow, so using this combination
+of options is not recommended when preparing GraphBLAS for production use,
+benchmarking, or for a Linux distro or other widely-used distribution, unless
+you are able to run your application in advance and create all the JIT kernels
+you need, and then copy them into \verb'GraphBLAS/PreJIT'.  This would be
+impossible to do for a general-purpose case such as a Linux distro, but
+feasible for a more targetted application such as RedisGraph.
 
 %-------------------------------------------------------------------------------
 \subsection{Adding {\sf PreJIT} kernels to GraphBLAS}
@@ -8980,7 +8993,7 @@ not needed and will be ignored.  Just copy the \verb'*.c' files.
 If the resulting GraphBLAS library is installed for system-wide usage (say in a
 Linux distro, Python, RedisGraph, etc), the \verb'GraphBLAS/PreJIT' kernels
 will be available to all users of that library.  They are not disabled by the
-\verb'NJIT' option.
+\verb'GRAPHBLAS_USE_JIT' option.
 
 Once these kernels are moved to \verb'GraphBLAS/PreJIT' and GraphBLAS is
 recompiled, they can be deleted from the cache folder.  However, even if they
@@ -9023,10 +9036,10 @@ It is safe to copy only a subset of the JIT kernels from the cache folder into
 GraphBLAS encounters a need for a particular kernel that has been removed from
 \verb'GraphBLAS/PreJIT', it will create it at run-time via the JIT, if
 permitted.  If not permitted, by either compiling GraphBLAS with the
-\verb'NJIT' option, or by using \verb'GxB_JIT_C_CONTROL' at run-time, the
-factory kernel or generic kernel will be used instead.  The generic kernel will
-be slower than the PreJIT or JIT kernel, but GraphBLAS will still be
-functional.
+\verb'GRAPHBLAS_USE_JIT' option set ot \verb'OFF', or by using
+\verb'GxB_JIT_C_CONTROL' at run-time, the factory kernel or generic kernel will
+be used instead.  The generic kernel will be slower than the PreJIT or JIT
+kernel, but GraphBLAS will still be functional.
 
 In addition to a single \verb'README.txt' file, the \verb'GraphBLAS/PreJIT'
 folder includes a \verb'.gitignore' file that prevents any files in the folder
@@ -9082,6 +9095,19 @@ inside MATLAB via Rosetta.  The pure C installation may compile native Arm64
 binaries for its JIT kernels.  Do not mix the two.  In this case, set another
 cache path for MATLAB using \verb'GrB.jit' in MATLAB, or using \verb'GxB_set'
 in the C interface for your native Arm64 binaries.
+
+%-------------------------------------------------------------------------------
+\subsection{Updating the JIT when GraphBLAS source code changes}
+%-------------------------------------------------------------------------------
+
+If you edit the GraphBLAS source code itself or add any files to
+\verb'GraphBLAS/PreJIT', read the instructions in
+\verb'GraphBLAS/JITpackage/README.txt' for details on how to update the JIT
+source code.
+
+If your cache folder (\verb'~/.SuiteSparse/GrBx.y.z') changes in any way
+except via GraphBLAS itself, simply delete your cache folder.  GraphBLAS will
+then reconstruct the kernels there as needed.
 
 %-------------------------------------------------------------------------------
 \subsection{Future plans for the {\sf JIT} and {\sf PreJIT}}
@@ -9457,7 +9483,7 @@ The library will be thread-safe, with one exception.  \verb'GrB_wait' is
 intended to provide thread-safety by flushing the cache of one user thread
 so the object can be safely read by another thread.  This is accomplished
 with \verb'pragma omp flush', but if OpenMP is not available, this does
-nothing.  If OpenMP is not available or \verb'-DNOPEMP=1' is used, then
+nothing.  If OpenMP is not available or \verb'-DNOPENMP=1' is used, then
 user applications need to ensure their own thread safety when one user thread
 computes a result that is then read by another thread.
 
@@ -12052,6 +12078,7 @@ and suppose \verb'y' is a vector of length 2 with the values \verb'[5 7]'.
 {\small
 \begin{verbatim}
     #include "GraphBLAS.h"
+    #undef I    /* complex.h #define's I, used below as an array */
     #include <stdio.h>
     int main (void)
     {
@@ -16447,6 +16474,19 @@ GraphBLAS folder.
 %-------------------------------------------------------------------------------
 
 \begin{itemize}
+
+\item Dec 30, 2023: version 8.3.1
+
+    \begin{itemize}
+    \item remove \verb'#undef I' from \verb'GraphBLAS.h', so as not to conflict
+        with the definition of \verb'I' from \verb'complex.h'.
+    \end{itemize}
+
+\item Dec 30, 2023: version 8.3.0
+
+    \begin{itemize}
+    \item major change to build system: by Markus M\"{u}tzel
+    \end{itemize}
 
 \item Oct 7, 2023: version 8.2.1
 

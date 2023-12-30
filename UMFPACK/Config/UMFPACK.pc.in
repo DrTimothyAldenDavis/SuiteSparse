@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines solving sparse linear systems via LU factorization in SuiteSparse
 Version: @UMFPACK_VERSION_MAJOR@.@UMFPACK_VERSION_MINOR@.@UMFPACK_VERSION_SUB@
 Requires.private: SuiteSparse_config AMD @UMFPACK_STATIC_MODULES@
-Libs: -L${libdir} -lumfpack
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @UMFPACK_STATIC_LIBS@
 Cflags: -I${includedir}

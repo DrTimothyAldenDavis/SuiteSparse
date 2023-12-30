@@ -93,16 +93,20 @@ static void cm_copy_Cnz (Int *Cnz, Int *Wi, Int *Perm, Int nrow)
 }
 
 //------------------------------------------------------------------------------
+// cholmod_transpose_unsym
 //------------------------------------------------------------------------------
 
 int CHOLMOD(transpose_unsym)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
-                        // <= 0: pattern (with diag)
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
+                        // 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,f)', or NULL
     Int *fset,          // a list of column indices in range 0:A->ncol-1
     size_t fsize,       // # of entries in fset
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 )
@@ -116,6 +120,8 @@ int CHOLMOD(transpose_unsym)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, FALSE) ;
     RETURN_IF_NULL (C, FALSE) ;
     Common->status = CHOLMOD_OK ;
+
+    mode = RANGE (mode, 0, 2) ;
 
     if (A->xtype == CHOLMOD_PATTERN || C->xtype == CHOLMOD_PATTERN)
     {
@@ -132,7 +138,7 @@ int CHOLMOD(transpose_unsym)
         return (FALSE) ;
     }
 
-    if ((C->xtype != ((mode <= 0) ? CHOLMOD_PATTERN : A->xtype)) ||
+    if ((C->xtype != ((mode == 0) ? CHOLMOD_PATTERN : A->xtype)) ||
         (C->dtype != A->dtype) || (nrow != C->ncol) || (ncol != C->nrow) ||
         (C->stype != 0))
     {
@@ -169,16 +175,16 @@ int CHOLMOD(transpose_unsym)
     if (Perm != NULL)
     {
         memset (Wi, 0, nrow * sizeof (Int)) ;
-	for (Int k = 0 ; k < nrow ; k++)
-	{
-	    Int i = Perm [k] ;
-	    if (i < 0 || i > nrow || Wi [i] == 1)
-	    {
-		ERROR (CHOLMOD_INVALID, "invalid permutation") ;
-		return (FALSE) ;
-	    }
-	    Wi [i] = 1 ;
-	}
+        for (Int k = 0 ; k < nrow ; k++)
+        {
+            Int i = Perm [k] ;
+            if (i < 0 || i > nrow || Wi [i] == 1)
+            {
+                ERROR (CHOLMOD_INVALID, "invalid permutation") ;
+                return (FALSE) ;
+            }
+            Wi [i] = 1 ;
+        }
     }
 
     ASSERT (CHOLMOD(dump_perm) (Perm, nrow, nrow, "Perm", Common)) ;
@@ -193,17 +199,17 @@ int CHOLMOD(transpose_unsym)
     {
         Int jlast = EMPTY ;
         memset (Wi, 0, ncol * sizeof (Int)) ;
-	for (Int k = 0 ; k < nf ; k++)
+        for (Int k = 0 ; k < nf ; k++)
         {
-	    Int j = fset [k] ;
-	    if (j < 0 || j > ncol || Wi [j] == 1)
-	    {
-		ERROR (CHOLMOD_INVALID, "invalid fset") ;
-		return (FALSE) ;
-	    }
-	    Wi [j] = 1 ;
+            Int j = fset [k] ;
+            if (j < 0 || j > ncol || Wi [j] == 1)
+            {
+                ERROR (CHOLMOD_INVALID, "invalid fset") ;
+                return (FALSE) ;
+            }
+            Wi [j] = 1 ;
             fsorted = fsorted && (j > jlast) ;
-	    jlast = j ;
+            jlast = j ;
         }
     }
 
@@ -238,8 +244,8 @@ int CHOLMOD(transpose_unsym)
         // save the nz counts if C is unpacked, and recount all of A
         //----------------------------------------------------------------------
 
-	if (!(C->packed))
-	{
+        if (!(C->packed))
+        {
 
             cm_copy_Cnz (Cnz, Wi, Perm, nrow) ;
 
@@ -257,7 +263,7 @@ int CHOLMOD(transpose_unsym)
             {
                 #include "t_cholmod_transpose_unsym_template.c"
             }
-	}
+        }
 
     }
     else
@@ -281,10 +287,10 @@ int CHOLMOD(transpose_unsym)
         // save the nz counts if C is unpacked, and recount all of A
         //----------------------------------------------------------------------
 
-	if (!(C->packed))
-	{
+        if (!(C->packed))
+        {
             cm_copy_Cnz (Cnz, Wi, Perm, nrow) ;
-	}
+        }
     }
 
     //--------------------------------------------------------------------------
@@ -302,87 +308,86 @@ int CHOLMOD(transpose_unsym)
     else
     {
         // Cp = cumsum (Wi [Perm])
-	for (Int i = 0 ; i < nrow ; i++)
-	{
-	    Cp [i] = p ;
-	    p += Wi [Perm [i]] ;
-	}
+        for (Int i = 0 ; i < nrow ; i++)
+        {
+            Cp [i] = p ;
+            p += Wi [Perm [i]] ;
+        }
         Cp [nrow] = p ;
         // Wi [Perm [0..nrow-1]] = Cp [0..nrow-1]
-	for (Int i = 0 ; i < nrow ; i++)
-	{
-	    Wi [Perm [i]] = Cp [i] ;
-	}
+        for (Int i = 0 ; i < nrow ; i++)
+        {
+            Wi [Perm [i]] = Cp [i] ;
+        }
     }
 
     if (p > (Int) C->nzmax)
     {
-	ERROR (CHOLMOD_INVALID, "C is too small") ;
-	return (FALSE) ;
+        ERROR (CHOLMOD_INVALID, "C is too small") ;
+        return (FALSE) ;
     }
 
     //--------------------------------------------------------------------------
     // compute the pattern and values of C
     //--------------------------------------------------------------------------
 
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     switch ((C->xtype + C->dtype) % 8)
     {
-
         default:
             p_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
-                c_s_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                cs_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             else
             {
-                ct_s_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                cs_t_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
-                z_s_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                zs_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             else
             {
-                zt_s_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                zs_t_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
-                c_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                cd_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             else
             {
-                ct_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                cd_t_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
-                z_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                zd_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             else
             {
-                zt_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
+                zd_t_cholmod_transpose_unsym_worker (A, fset, nf, C, Wi) ;
             }
             break ;
     }

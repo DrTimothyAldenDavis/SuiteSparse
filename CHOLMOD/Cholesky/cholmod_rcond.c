@@ -2,157 +2,111 @@
 // CHOLMOD/Cholesky/cholmod_rcond: estimate the reciprocal of condition number
 //------------------------------------------------------------------------------
 
-// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2022, Timothy A. Davis
+// CHOLMOD/Cholesky Module.  Copyright (C) 2005-2023, Timothy A. Davis
 // All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
 
-/* Return a rough estimate of the reciprocal of the condition number:
- * the minimum entry on the diagonal of L (or absolute entry of D for an LDL'
- * factorization) divided by the maximum entry (squared for LL').  L can be
- * real, complex, or zomplex.  Returns -1 on error, 0 if the matrix is singular
- * or has a zero entry on the diagonal of L, 1 if the matrix is 0-by-0, or
- * min(diag(L))/max(diag(L)) otherwise.  Never returns NaN; if L has a NaN on
- * the diagonal it returns zero instead.
- *
- * For an LL' factorization,  (min(diag(L))/max(diag(L)))^2 is returned.
- * For an LDL' factorization, (min(diag(D))/max(diag(D))) is returned.
- */
+// Return a rough estimate of the reciprocal of the condition number:
+// the minimum entry on the diagonal of L (or absolute entry of D for an LDL'
+// factorization) divided by the maximum entry (squared for LL').  L can be
+// real, complex, or zomplex.  Returns -1 on error, 0 if the matrix is singular
+// or has a zero entry on the diagonal of L, 1 if the matrix is 0-by-0, or
+// min(diag(L))/max(diag(L)) otherwise.  Never returns NaN; if L has a NaN on
+// the diagonal it returns zero instead.
+//
+// For an LL' factorization,  (min(diag(L))/max(diag(L)))^2 is returned.
+// For an LDL' factorization, (min(diag(D))/max(diag(D))) is returned.
+//
+// The real and zomplex cases are the same, since this method only accesses the
+// the diagonal of L for an LL' factorization, or D for LDL' factorization,
+// and these entries are always real.
 
 #include "cholmod_internal.h"
 
 #ifndef NCHOLESKY
 
-/* ========================================================================== */
-/* === LMINMAX ============================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// t_cholmod_rcond_worker template
+//------------------------------------------------------------------------------
 
-/* Update lmin and lmax for one entry L(j,j) */
+#define DOUBLE
+#define REAL
+#include "t_cholmod_rcond_worker.c"
+#define COMPLEX
+#include "t_cholmod_rcond_worker.c"
 
-#define FIRST_LMINMAX(Ljj,lmin,lmax) \
-{ \
-    double ljj = Ljj ; \
-    if (isnan (ljj)) \
-    { \
-	return (0) ; \
-    } \
-    lmin = ljj ; \
-    lmax = ljj ; \
-}
+#undef  DOUBLE
+#define SINGLE
+#define REAL
+#include "t_cholmod_rcond_worker.c"
+#define COMPLEX
+#include "t_cholmod_rcond_worker.c"
 
-#define LMINMAX(Ljj,lmin,lmax) \
-{ \
-    double ljj = Ljj ; \
-    if (isnan (ljj)) \
-    { \
-	return (0) ; \
-    } \
-    if (ljj < lmin) \
-    { \
-	lmin = ljj ; \
-    } \
-    else if (ljj > lmax) \
-    { \
-	lmax = ljj ; \
-    } \
-}
+//------------------------------------------------------------------------------
+// cholmod_rcond
+//------------------------------------------------------------------------------
 
-/* ========================================================================== */
-/* === cholmod_rcond ======================================================== */
-/* ========================================================================== */
-
-double CHOLMOD(rcond)	    /* return min(diag(L)) / max(diag(L)) */
+double CHOLMOD(rcond)       // return rcond estimate
 (
-    /* ---- input ---- */
-    cholmod_factor *L,
-    /* --------------- */
+    // input:
+    cholmod_factor *L,      // factorization to query; not modified
     cholmod_common *Common
 )
 {
-    double lmin, lmax, rcond ;
-    double *Lx ;
-    Int *Lpi, *Lpx, *Super, *Lp ;
-    Int n, e, nsuper, s, k1, k2, psi, psend, psx, nsrow, nscol, jj, j ;
 
-    /* ---------------------------------------------------------------------- */
-    /* check inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // check inputs
+    //--------------------------------------------------------------------------
 
     RETURN_IF_NULL_COMMON (EMPTY) ;
     RETURN_IF_NULL (L, EMPTY) ;
     RETURN_IF_XTYPE_INVALID (L, CHOLMOD_REAL, CHOLMOD_ZOMPLEX, EMPTY) ;
     Common->status = CHOLMOD_OK ;
 
-    /* ---------------------------------------------------------------------- */
-    /* get inputs */
-    /* ---------------------------------------------------------------------- */
+    //--------------------------------------------------------------------------
+    // handle special cases
+    //--------------------------------------------------------------------------
 
-    n = L->n ;
-    if (n == 0)
+    if (L->n == 0)
     {
-	return (1) ;
+        return (1) ;
     }
     if (L->minor < L->n)
     {
-	return (0) ;
+        return (0) ;
     }
 
-    e = (L->xtype == CHOLMOD_COMPLEX) ? 2 : 1 ;
+    //--------------------------------------------------------------------------
+    // compute rcond
+    //--------------------------------------------------------------------------
 
-    if (L->is_super)
+    double rcond = 0 ;
+
+    switch ((L->xtype + L->dtype) % 8)
     {
-	/* L is supernodal */
-	nsuper = L->nsuper ;	/* number of supernodes in L */
-	Lpi = L->pi ;		/* column pointers for integer pattern */
-	Lpx = L->px ;		/* column pointers for numeric values */
-	Super = L->super ;	/* supernode sizes */
-	Lx = L->x ;		/* numeric values */
-	FIRST_LMINMAX (Lx [0], lmin, lmax) ;	/* first diagonal entry of L */
-	for (s = 0 ; s < nsuper ; s++)
-	{
-	    k1 = Super [s] ;		/* first column in supernode s */
-	    k2 = Super [s+1] ;		/* last column in supernode is k2-1 */
-	    psi = Lpi [s] ;		/* first row index is L->s [psi] */
-	    psend = Lpi [s+1] ;		/* last row index is L->s [psend-1] */
-	    psx = Lpx [s] ;		/* first numeric entry is Lx [psx] */
-	    nsrow = psend - psi ;	/* supernode is nsrow-by-nscol */
-	    nscol = k2 - k1 ;
-	    for (jj = 0 ; jj < nscol ; jj++)
-	    {
-		LMINMAX (Lx [e * (psx + jj + jj*nsrow)], lmin, lmax) ;
-	    }
-	}
+
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            rcond = rs_cholmod_rcond_worker (L) ;
+            break ;
+
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            rcond = cs_cholmod_rcond_worker (L) ;
+            break ;
+
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            rcond = rd_cholmod_rcond_worker (L) ;
+            break ;
+
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            rcond = cd_cholmod_rcond_worker (L) ;
+            break ;
     }
-    else
-    {
-	/* L is simplicial */
-	Lp = L->p ;
-	Lx = L->x ;
-	if (L->is_ll)
-	{
-	    /* LL' factorization */
-	    FIRST_LMINMAX (Lx [Lp [0]], lmin, lmax) ;
-	    for (j = 1 ; j < n ; j++)
-	    {
-		LMINMAX (Lx [e * Lp [j]], lmin, lmax) ;
-	    }
-	}
-	else
-	{
-	    /* LDL' factorization, the diagonal might be negative */
-	    FIRST_LMINMAX (fabs (Lx [Lp [0]]), lmin, lmax) ;
-	    for (j = 1 ; j < n ; j++)
-	    {
-		LMINMAX (fabs (Lx [e * Lp [j]]), lmin, lmax) ;
-	    }
-	}
-    }
-    rcond = lmin / lmax ;
-    if (L->is_ll)
-    {
-	rcond = rcond*rcond ;
-    }
+
     return (rcond) ;
 }
 #endif
+

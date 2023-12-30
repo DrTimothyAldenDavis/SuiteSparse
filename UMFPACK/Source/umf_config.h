@@ -51,7 +51,7 @@
 	    If the pivot is zero, and this flag is set, then no divide-by-zero
 	    occurs.
 
-    The following options are controlled by amd_internal.h:
+    The following options are controlled by umf_internal.h:
 
 	-DMATLAB_MEX_FILE
 

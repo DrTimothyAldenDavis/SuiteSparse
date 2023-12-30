@@ -7,7 +7,7 @@
 \version\verbatim $Id: gksort.c 11058 2011-11-10 00:02:50Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 #define N       10000
 

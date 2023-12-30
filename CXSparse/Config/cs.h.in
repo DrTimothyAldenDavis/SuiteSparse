@@ -2,7 +2,7 @@
 // CXSparse/Include/cs.h: include file for CXSparse
 //------------------------------------------------------------------------------
 
-// CXSparse, Copyright (c) 2006-2022, Timothy A. Davis, All Rights Reserved
+// CXSparse, Copyright (c) 2006-2023, Timothy A. Davis, All Rights Reserved
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
@@ -26,7 +26,7 @@
 #ifndef _CXS_H
 #define _CXS_H
 
-#if @CXSPARSE_USE_COMPLEX@
+#if @CXSPARSE_HAS_COMPLEX@
 #  ifdef __cplusplus
 #    include <complex>
 #  else
@@ -39,10 +39,16 @@
 #define CS_SUBVER @CXSPARSE_VERSION_MINOR@
 #define CS_SUBSUB @CXSPARSE_VERSION_SUB@
 #define CS_DATE "@CXSPARSE_DATE@"        /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2022"
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"
+
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "CXSparse @CXSPARSE_VERSION_MAJOR@.@CXSPARSE_VERSION_MINOR@.@CXSPARSE_VERSION_SUB@ requires SuiteSparse_config 7.4 or later"
+#endif
+
 #define cs_long_t       int64_t
 #define cs_long_t_id    "%" PRId64
 #define cs_long_t_max   INT64_MAX
@@ -50,6 +56,8 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+void cxsparse_version (int version [3]) ;  // return version
 
 /* -------------------------------------------------------------------------- */
 /* double/int32_t version of CXSparse */
@@ -334,7 +342,7 @@ cs_dld *cs_dl_ddone (cs_dld *D, cs_dl *C, void *w, int64_t ok) ;
 /* complex/int32_t version of CXSparse */
 /* -------------------------------------------------------------------------- */
 
-#if @CXSPARSE_USE_COMPLEX@
+#if @CXSPARSE_HAS_COMPLEX@
 
 /* --- primary CSparse routines and data structures ------------------------- */
 
@@ -759,7 +767,7 @@ cs_cld *cs_cl_ddone (cs_cld *D, cs_cl *C, void *w, int64_t ok) ;
 /* Conversion routines */
 /* -------------------------------------------------------------------------- */
 
-#if @CXSPARSE_USE_COMPLEX@
+#if @CXSPARSE_HAS_COMPLEX@
 cs_di *cs_i_real (cs_ci *A, int32_t real) ;
 cs_ci *cs_i_complex (cs_di *A, int32_t real) ;
 cs_dl *cs_l_real (cs_cl *A, int64_t real) ;

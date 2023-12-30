@@ -2,7 +2,7 @@
 // BTF/Include/btf_internsl.h: internal include file for BTF
 //------------------------------------------------------------------------------
 
-// BTF, Copyright (c) 2004-2022, University of Florida.  All Rights Reserved.
+// BTF, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
 // Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
 

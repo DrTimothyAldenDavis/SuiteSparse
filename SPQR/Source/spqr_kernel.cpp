@@ -37,7 +37,7 @@ template <typename Entry, typename Int> void spqr_kernel // _worker
     // if we're using the GPU, reroute into the gpu-accelerated kernel code
     // -------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
     if (QRsym->QRgpu != NULL)
     {
         ASSERT (task == 0) ;

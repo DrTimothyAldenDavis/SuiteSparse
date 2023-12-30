@@ -12,6 +12,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for column approximate minimum degree ordering algorithm in SuiteSparse
 Version: @COLAMD_VERSION_MAJOR@.@COLAMD_VERSION_MINOR@.@COLAMD_VERSION_SUB@
 Requires.private: SuiteSparse_config
-Libs: -L${libdir} -lcolamd
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @COLAMD_STATIC_LIBS@
 Cflags: -I${includedir}

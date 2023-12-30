@@ -2,6 +2,7 @@
 
 extern "C" {
 #include "GraphBLAS.h"
+#undef I
 }
 #include "rmm_wrap.h"
 

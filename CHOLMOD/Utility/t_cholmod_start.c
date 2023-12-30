@@ -56,6 +56,10 @@ int CHOLMOD(start) (cholmod_common *Common)
     Common->fl = EMPTY ;
     Common->lnz = EMPTY ;
 
+    #ifdef BLAS_DUMP
+    Common->blas_dump = fopen ("blas_dump.txt", "a") ;
+    #endif
+
     return (TRUE) ;
 }
 

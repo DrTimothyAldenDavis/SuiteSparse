@@ -74,6 +74,7 @@ static inline uint64_t cm_rand (uint64_t *seed)
 
 int CHOLMOD(sort)
 (
+    // input/output:
     cholmod_sparse *A,      // input/output matrix to sort
     cholmod_common *Common
 )
@@ -97,28 +98,28 @@ int CHOLMOD(sort)
             p_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_sort_worker (A) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_sort_worker (A) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_sort_worker (A) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_sort_worker (A) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_sort_worker (A) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_sort_worker (A) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_sort_worker (A) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_sort_worker (A) ;
             break ;
     }
 

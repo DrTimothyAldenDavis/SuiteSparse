@@ -507,3 +507,17 @@ LDL_int LDL_valid_matrix
     }
     return (1) ;	    /* matrix is valid */
 }
+
+//------------------------------------------------------------------------------
+// ldl_version: return the LDL version
+//------------------------------------------------------------------------------
+
+#ifndef LDL_LONG
+void ldl_version (int version [3])
+{
+    version [0] = LDL_MAIN_VERSION ;
+    version [1] = LDL_SUB_VERSION ;
+    version [2] = LDL_SUBSUB_VERSION ;
+}
+#endif
+

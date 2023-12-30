@@ -10,7 +10,7 @@ Pdb reader (parser).  Loads arrays of pointers for easy backbone access.
 \version $Id: pdb.c 10711 2011-08-31 22:23:04Z karypis $
 */
 /************************************************************************/
-#include <GKlib.h>
+#include "GKlib.h"
 
 /************************************************************************/
 /*! \brief Converts three-letter amino acid codes to one-leter codes.

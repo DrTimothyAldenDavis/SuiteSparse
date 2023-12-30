@@ -18,7 +18,7 @@
 
 #include "cholmod_internal.h"
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 #include <cuda.h>
 #include <cuda_runtime.h>
 #endif
@@ -41,24 +41,19 @@
 
 static int poll_gpu (size_t s)          /* TRUE if OK, FALSE otherwise */
 {
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     /* Returns TRUE if the GPU has a block of memory of size s,
        FALSE otherwise.  The block of memory is immediately freed. */
     void *p = NULL ;
-    // double t = SuiteSparse_time ( ) ;
     if (s == 0)
     {
         return (FALSE) ;
     }
     if (cudaMalloc (&p, s) != cudaSuccess)
     {
-        // t = SuiteSparse_time ( ) - t ;
-        // printf ("poll s %lu failed, time %g\n", s, t) ;
         return (FALSE) ;
     }
     cudaFree (p) ;
-    // t = SuiteSparse_time ( ) - t ;
-    // printf ("poll s %lu OK time %g\n", s, t) ;
     return (TRUE) ;
 #else
     return (FALSE) ;
@@ -74,7 +69,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 {
     size_t good, bad, s, total_free, total_memory ;
     int k ;
-    double t ;
 
     *total_mem = 0;
     *available_mem = 0;
@@ -87,13 +81,10 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
         return (0) ;                    /* not using the GPU at all */
     }
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
     /* find the total amount of free memory */
-    t = SuiteSparse_time ( ) ;
     cudaMemGetInfo (&total_free, &total_memory) ;
-    t = SuiteSparse_time ( ) - t ;
-    // printf ("free %lu tot %lu time %g\n", total_free, total_memory, t) ;
 
     *total_mem = total_memory;
 
@@ -106,7 +97,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
     s = MAX (MINSIZE, total_free*0.98) ;
     if (poll_gpu (s))
     {
-        // printf ("quick %lu\n", s) ;
         *available_mem = s;
         return (0) ;  /* no error */
     }
@@ -133,7 +123,6 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
         }
     }
 
-    // printf ("final %lu\n", good) ;
     *available_mem = good;
 
 #endif
@@ -159,7 +148,7 @@ int CHOLMOD(gpu_memorysize)      /* returns 1 on error, 0 otherwise */
 int CHOLMOD(gpu_probe) ( cholmod_common *Common )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     int ngpus, idevice;
     double tstart, tend;
     struct cudaDeviceProp gpuProp;
@@ -201,7 +190,7 @@ int CHOLMOD(gpu_deallocate)
 )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
     cudaError_t cudaErr;
 
     if ( Common->dev_mempool )
@@ -238,21 +227,105 @@ int CHOLMOD(gpu_deallocate)
     return (0);
 }
 
-/* ========================================================================== */
-/* === cholmod_gpu_end ====================================================== */
-/* ========================================================================== */
+//------------------------------------------------------------------------------
+// cholmod_gpu_start: allocate the cublasHandle and the streams
+//------------------------------------------------------------------------------
+
+int CHOLMOD(gpu_start)
+(
+    cholmod_common *Common
+)
+{
+#ifdef CHOLMOD_HAS_CUDA
+    cudaError_t cudaErr ;
+
+    if (Common->cublasHandle == NULL)
+    {
+
+        //----------------------------------------------------------------------
+        // create cuBlas handle
+        //----------------------------------------------------------------------
+
+        cublasStatus_t cublasErr = cublasCreate (&(Common->cublasHandle)) ;
+        if (cublasErr != CUBLAS_STATUS_SUCCESS)
+        {
+            ERROR (CHOLMOD_GPU_PROBLEM, "CUBLAS initialization") ;
+            CHOLMOD (gpu_end) (Common) ;
+            return (0) ;
+        }
+
+        //----------------------------------------------------------------------
+        // create each CUDA stream
+        //----------------------------------------------------------------------
+
+        for (int k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
+        {
+            cudaErr = cudaStreamCreate ( &(Common->gpuStream[k]) ) ;
+            if (cudaErr != cudaSuccess)
+            {
+                ERROR (CHOLMOD_GPU_PROBLEM, "CUDA stream") ;
+                CHOLMOD (gpu_end) (Common) ;
+                return (0) ;
+            }
+        }
+
+        //----------------------------------------------------------------------
+        // create each CUDA event
+        //----------------------------------------------------------------------
+
+        for (int k = 0 ; k < 3 ; k++)
+        {
+            cudaErr = cudaEventCreateWithFlags
+                (&(Common->cublasEventPotrf [k]), cudaEventDisableTiming) ;
+            if (cudaErr != cudaSuccess)
+            {
+                ERROR (CHOLMOD_GPU_PROBLEM, "CUDA event") ;
+                CHOLMOD (gpu_end) (Common) ;
+                return (0) ;
+            }
+        }
+
+        for (int k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
+        {
+            cudaErr = cudaEventCreateWithFlags
+                (&(Common->updateCBuffersFree[k]), cudaEventDisableTiming) ;
+            if (cudaErr != cudaSuccess)
+            {
+                ERROR (CHOLMOD_GPU_PROBLEM, "CUDA event") ;
+                CHOLMOD (gpu_end) (Common) ;
+                return (0) ;
+            }
+        }
+
+        cudaErr = cudaEventCreateWithFlags ( &(Common->updateCKernelsComplete),
+                                             cudaEventDisableTiming );
+        if (cudaErr != cudaSuccess)
+        {
+            ERROR (CHOLMOD_GPU_PROBLEM, "CUDA updateCKernelsComplete event") ;
+            CHOLMOD (gpu_end) (Common) ;
+            return (0) ;
+        }
+    }
+#endif
+
+    // printf ("cublasHandle created %p\n", Common->cublasHandle) ;
+    return (1) ;
+}
+
+//------------------------------------------------------------------------------
+// cholmod_gpu_end: destroy the cublasHandle and the streams
+//------------------------------------------------------------------------------
 
 void CHOLMOD(gpu_end)
 (
     cholmod_common *Common
 )
 {
-#ifdef SUITESPARSE_CUDA
-    int k ;
+#ifdef CHOLMOD_HAS_CUDA
 
-    /* ------------------------------------------------------------------ */
-    /* destroy Cublas Handle */
-    /* ------------------------------------------------------------------ */
+    //----------------------------------------------------------------------
+    // destroy cublasHandle
+    //----------------------------------------------------------------------
 
     if (Common->cublasHandle)
     {
@@ -262,11 +335,11 @@ void CHOLMOD(gpu_end)
         Common->cublasHandle = NULL ;
     }
 
-    /* ------------------------------------------------------------------ */
-    /* destroy each CUDA stream */
-    /* ------------------------------------------------------------------ */
+    //----------------------------------------------------------------------
+    // destroy each CUDA stream
+    //----------------------------------------------------------------------
 
-    for (k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
+    for (int k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
     {
         if (Common->gpuStream [k])
         {
@@ -278,11 +351,11 @@ void CHOLMOD(gpu_end)
         }
     }
 
-    /* ------------------------------------------------------------------ */
-    /* destroy each CUDA event */
-    /* ------------------------------------------------------------------ */
+    //----------------------------------------------------------------------
+    // destroy each CUDA event
+    //----------------------------------------------------------------------
 
-    for (k = 0 ; k < 3 ; k++)
+    for (int k = 0 ; k < 3 ; k++)
     {
         if (Common->cublasEventPotrf [k])
         {
@@ -294,7 +367,7 @@ void CHOLMOD(gpu_end)
         }
     }
 
-    for (k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
+    for (int k = 0 ; k < CHOLMOD_HOST_SUPERNODE_BUFFERS ; k++)
     {
         if (Common->updateCBuffersFree [k])
         {
@@ -316,7 +389,6 @@ void CHOLMOD(gpu_end)
     }
 #endif
 }
-
 
 /* ========================================================================== */
 /* === cholmod_gpu_allocate ================================================= */
@@ -354,19 +426,22 @@ void CHOLMOD(gpu_end)
 int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
 {
 
-#ifdef SUITESPARSE_CUDA
+#ifdef CHOLMOD_HAS_CUDA
 
-    int k;
     size_t fdm, tdm;
     size_t requestedDeviceMemory, requestedHostMemory;
     double tstart, tend;
     cudaError_t cudaErr;
-    cublasStatus_t cublasErr;
     size_t maxGpuMemBytes;
     double maxGpuMemFraction;
 
-    /* fprintf (stderr, "gpu_allocate useGPU %d\n", Common->useGPU) ; */
     if (Common->useGPU != 1) return (0) ;
+
+    if (Common->dev_mempool != NULL)
+    {
+        // memory pool is already allocated
+        return (0) ;
+    }
 
     maxGpuMemBytes = Common->maxGpuMemBytes;
     maxGpuMemFraction = Common->maxGpuMemFraction;
@@ -426,15 +501,6 @@ int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
     }
 
     CHOLMOD(gpu_deallocate);
-
-    /* create cuBlas handle */
-    if ( ! Common->cublasHandle ) {
-        cublasErr = cublasCreate (&(Common->cublasHandle)) ;
-        if (cublasErr != CUBLAS_STATUS_SUCCESS) {
-            ERROR (CHOLMOD_GPU_PROBLEM, "CUBLAS initialization") ;
-            return 1;
-        }
-    }
 
     /* allocated corresponding pinned host memory */
     requestedHostMemory = requestedDeviceMemory*CHOLMOD_HOST_SUPERNODE_BUFFERS/

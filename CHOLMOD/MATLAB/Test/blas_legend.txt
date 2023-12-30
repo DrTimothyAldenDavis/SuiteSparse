@@ -1,0 +1,64 @@
+Used in supernodal factorization:
+
+    0   dsyrk ("L", "N",    n k 0   lda ldc 0
+    1   ssyrk ("L", "N",    n k 0   lda ldc 0
+    2   zherk ("L", "N",    n k 0   lda ldc 0
+    3   cherk ("L", "N",    n k 0   lda ldc 0
+
+    4   dgemm ("N", "C",    m n k   lda ldb ldc
+    5   sgemm ("N", "C",    m n k   lda ldb ldc
+    6   zgemm ("N", "C",    m n k   lda ldb ldc
+    7   cgemm ("N", "C",    m n k   lda ldb ldc
+
+    8   dpotrf ("L",        n 0 0   lda 0 0
+    9   spotrf ("L",        n 0 0   lda 0 0
+    10  zpotrf ("L",        n 0 0   lda 0 0
+    11  cpotrf ("L",        n 0 0   lda 0 0
+
+    12  dtrsm ("R", "L", "C", "N",      m n 0   lda ldb 0
+    13  strsm ("R", "L", "C", "N",      m n 0   lda ldb 0
+    14  ztrsm ("R", "L", "C", "N",      m n 0   lda ldb 0
+    15  ctrsm ("R", "L", "C", "N",      m n 0   lda ldb 0
+
+Used in supernodal forward/backsolve (not benchmarked):
+
+    16  dgemm ("N", "N",
+    17  sgemm ("N", "N",
+    18  zgemm ("N", "N",
+    19  cgemm ("N", "N",
+
+    20  dgemm ("C", "N",
+    21  sgemm ("C", "N",
+    22  zgemm ("C", "N",
+    23  cgemm ("C", "N",
+
+    24  dgemv ("N",
+    25  sgemv ("N",
+    26  zgemv ("N",
+    27  cgemv ("N",
+
+    28  dgemv ("C",
+    29  sgemv ("C",
+    30  zgemv ("C",
+    31  cgemv ("C",
+
+    32  dtrsm ("L", "L", "N", "N",
+    33  strsm ("L", "L", "N", "N",
+    34  ztrsm ("L", "L", "N", "N",
+    35  ctrsm ("L", "L", "N", "N",
+
+    36  dtrsm ("L", "L", "C", "N",
+    37  strsm ("L", "L", "C", "N",
+    38  ztrsm ("L", "L", "C", "N",
+    39  ctrsm ("L", "L", "C", "N",
+
+    40  dtrsv ("L", "N", "N",
+    41  strsv ("L", "N", "N",
+    42  ztrsv ("L", "N", "N",
+    43  ctrsv ("L", "N", "N",
+
+    44  dtrsv ("L", "C", "N",
+    45  strsv ("L", "C", "N",
+    46  ztrsv ("L", "C", "N",
+    47  ctrsv ("L", "C", "N",
+

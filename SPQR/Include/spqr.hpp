@@ -2,7 +2,7 @@
 // === spqr.hpp ================================================================
 // =============================================================================
 
-// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 // Internal definitions and non-user-callable routines.  This should not be
@@ -1092,7 +1092,7 @@ template <typename Entry, typename Int = int64_t> int spqr_rmap
 // === spqrgpu features ========================================================
 // =============================================================================
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 #include "spqrgpu.hpp"
 #endif
 

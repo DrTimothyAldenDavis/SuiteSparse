@@ -1,0 +1,158 @@
+mtest
+
+matrix: tumorAntiAngiogenesis_2.mtx
+    anorm 5.15e+05  resid 1.64e-16  5.84e-16 5.98e-16
+
+matrix: olm500.mtx
+    anorm 2.30e+04  resid 9.72e-16  2.40e-14 1.38e-14
+
+matrix: adder_dcop_05.mtx
+    anorm 7.71e+00  resid 7.23e-10  1.69e-09 6.05e-10
+
+matrix: bayer10.mtx
+    anorm 1.02e+04  resid 1.56e-11  5.50e-11 9.47e-12
+
+matrix: rajat01.mtx
+    anorm 1.44e+03  resid      NaN       NaN      NaN
+
+matrix: rajat19.mtx
+    anorm 9.17e+01  resid 1.05e-11  1.72e-08 1.30e-10
+
+matrix: west0497.mtx
+    anorm 7.32e+05  resid 9.08e-16  1.74e-15 1.44e-16
+
+matrix: gent113.mtx
+    anorm 2.70e+01  resid      NaN       NaN      NaN
+
+matrix: hangGlider_2.mtx
+    anorm 5.07e+03  resid 1.07e-10  4.17e-09 7.78e-10
+
+matrix: Tina_AskCal.mtx
+    anorm 7.00e+00  resid      NaN       NaN      NaN
+
+matrix: GD98_a.mtx
+    anorm 7.00e+00  resid      NaN       NaN      NaN
+
+matrix: a0.mtx
+    anorm 1.00e+00  resid 0.00e+00  0.00e+00 0.00e+00
+
+matrix: a1.mtx
+    anorm 3.80e+00  resid      NaN       NaN      NaN
+
+matrix: Tina_AskCal_perm.mtx
+    anorm 7.00e+00  resid      NaN       NaN      NaN
+
+matrix: ash219.mtx
+    rectangular
+
+matrix: lp_e226.mtx
+    rectangular
+
+matrix: r2.mtx
+    rectangular
+
+matrix: LFAT5.mtx
+    anorm 2.51e+07  resid 1.44e-21  1.10e-21 4.02e-22
+
+matrix: west0067.mtx
+    anorm 6.14e+00  resid 2.01e-15  7.66e-15 5.26e-15
+
+matrix: arrow.mtx
+    anorm 9.30e+04  resid 0.00e+00  0.00e+00 0.00e+00
+
+matrix: a2.mtx
+    anorm 3.20e+00  resid 0.00e+00  0.00e+00 0.00e+00
+
+matrix: az88.mtx
+    anorm 5.00e+00  resid 0.00e+00  4.44e-17 0.00e+00
+
+matrix: young1c.mtx
+    anorm 4.74e+02  resid 1.39e-15  7.13e-15 8.43e-15
+
+matrix: s32.mtx
+    rectangular
+
+matrix: lp_share1b.mtx
+    rectangular
+
+matrix: cage3.mtx
+    anorm 1.00e+00  resid 2.22e-16  3.33e-16 2.22e-16
+
+matrix: b1_ss.mtx
+    anorm 2.00e+00  resid 7.77e-16  7.77e-16 4.44e-16
+
+matrix: lfat5b.mtx
+    anorm 3.26e+00  resid 3.75e-16  3.75e-16 3.07e-16
+
+matrix: c32.mtx
+    rectangular
+
+matrix: bfwa62.mtx
+    anorm 1.19e+01  resid 2.50e-14  3.37e-14 4.05e-14
+
+matrix: Ragusa16.mtx
+    anorm 2.10e+01  resid      NaN       NaN      NaN
+
+matrix: lp_e226_transposed.mtx
+    rectangular
+
+matrix: row0.mtx
+    anorm 5.00e+00  resid      NaN       NaN      NaN
+
+matrix: Groebner_id2003_aug.mtx
+    rectangular
+
+matrix: c2.mtx
+    anorm 3.42e+00  resid 1.56e-15  1.17e-15 1.17e-15
+
+matrix: a4.mtx
+    rectangular
+
+matrix: problem.mtx
+    rectangular
+
+matrix: permuted_b1_ss.mtx
+    anorm 2.00e+00  resid 1.17e-15  1.17e-15 4.44e-16
+
+matrix: pwr01b.mtx
+    anorm 6.00e+00  resid 1.48e-16  2.78e-16 3.33e-16
+
+matrix: n3c4-b4.mtx
+    rectangular
+
+matrix: Franz6_id1959_aug.mtx
+    rectangular
+
+matrix: Ragusa16_pattern.mtx
+    anorm 1.10e+01  resid      NaN       NaN      NaN
+
+matrix: temp.mtx
+    anorm 5.74e+38  resid 7.05e-40  2.17e-39 1.53e-39
+
+matrix: cage5.mtx
+    anorm 1.00e+00  resid 5.33e-15  4.66e-15 5.55e-15
+
+matrix: lpi_itest6.mtx
+    rectangular
+
+matrix: a04.mtx
+    rectangular
+
+matrix: lpi_galenet.mtx
+    rectangular
+
+matrix: nnc1374.mtx
+    anorm 3.56e+03  resid 6.66e-07  1.01e-06 5.58e-07
+
+matrix: 494_bus.mtx
+    anorm 4.00e+04  resid 2.87e-14  4.34e-14 2.67e-14
+
+matrix: dwt_878.mtx
+    anorm 1.00e+01  resid      NaN       NaN      NaN
+
+matrix: xenon1.mtx
+    anorm 8.50e+28  resid 7.87e-37  1.22e-36 1.21e-36
+
+matrix: c-62.mtx
+    anorm 3.11e+06  resid 2.85e-14  6.57e-14 5.62e-14
+diary off

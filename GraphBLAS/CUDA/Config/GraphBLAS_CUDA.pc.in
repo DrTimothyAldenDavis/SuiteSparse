@@ -13,5 +13,5 @@ Name: GraphBLAS_CUDA
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: CUDA support library for GraphBLAS in SuiteSparse
 Version: @GraphBLAS_VERSION_MAJOR@.@GraphBLAS_VERSION_MINOR@.@GraphBLAS_VERSION_SUB@
-Libs: -L${libdir} -lgraphblascuda
-Cflags: -I${includedir} -DSUITESPARSE_CUDA
+Libs: -L${libdir} -lgraphblascuda@CMAKE_RELEASE_POSTFIX@
+Cflags: -I${includedir} -DGRAPHBLAS_HAS_CUDA

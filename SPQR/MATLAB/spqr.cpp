@@ -48,7 +48,7 @@ void mexFunction
     cholmod_dense *Cdense, Bdmatrix, *Bdense, *HTau ;
     cholmod_common Common, *cc ;
 
-    double t0 = (nargout > 3) ? SuiteSparse_time ( ) : 0 ;
+    double t0 = (nargout > 3) ? SUITESPARSE_TIME : 0 ;
 
     // -------------------------------------------------------------------------
     // start CHOLMOD and set parameters
@@ -484,7 +484,7 @@ void mexFunction
     if (nargout > 3)
     {
         double flops = cc->SPQR_flopcount ;
-        double t = SuiteSparse_time ( ) - t0 ;
+        double t = SUITESPARSE_TIME - t0 ;
         pargout [3] = spqr_mx_info (cc, t, flops) ;
     }
 

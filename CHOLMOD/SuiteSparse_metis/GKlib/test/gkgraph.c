@@ -7,7 +7,7 @@
 \version \verbatim $Id: gkgraph.c 11408 2012-01-25 15:05:58Z karypis $ \endverbatim
 */
 
-#include <GKlib.h>
+#include "GKlib.h"
 
 /*************************************************************************/
 /*! Data structures for the code */

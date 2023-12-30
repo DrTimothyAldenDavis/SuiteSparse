@@ -2,18 +2,13 @@
 // LDL/Include/ldl.h: include file for the LDL package
 //------------------------------------------------------------------------------
 
-// LDL, Copyright (c) 2005-2022 by Timothy A. Davis. All Rights Reserved.
+// LDL, Copyright (c) 2005-2023 by Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
 
 #ifndef LDL_H
 #define LDL_H
-
-/* make it easy for C++ programs to include LDL */
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #include "SuiteSparse_config.h"
 
@@ -46,6 +41,13 @@ extern "C" {
 #define LDL_valid_matrix ldl_valid_matrix
 
 #endif
+
+/* make it easy for C++ programs to include LDL */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void ldl_version (int version [3]) ;
 
 /* ========================================================================== */
 /* === int32_t version ====================================================== */
@@ -102,20 +104,25 @@ int64_t ldl_l_valid_perm (int64_t n, int64_t P [ ], int64_t Flag [ ]) ;
 
 int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 
+#ifdef __cplusplus
+}
+#endif
+
 /* ========================================================================== */
 /* === LDL version ========================================================== */
 /* ========================================================================== */
 
-#define LDL_DATE "Sept 18, 2023"
+#define LDL_DATE "Dec 30, 2023"
 #define LDL_MAIN_VERSION   3
-#define LDL_SUB_VERSION    2
-#define LDL_SUBSUB_VERSION 1
+#define LDL_SUB_VERSION    3
+#define LDL_SUBSUB_VERSION 0
 
-#define LDL_VERSION_CODE(main,sub) ((main) * 1000 + (sub))
+#define LDL_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define LDL_VERSION LDL_VERSION_CODE(LDL_MAIN_VERSION,LDL_SUB_VERSION)
 
-#ifdef __cplusplus
-}
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "LDL 3.3.0 requires SuiteSparse_config 7.4 or later"
 #endif
 
 #endif

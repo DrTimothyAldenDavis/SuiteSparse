@@ -12,5 +12,5 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for sample ordering for KLU in SuiteSparse
 Version: @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@
 Requires.private: KLU BTF CHOLMOD
-Libs: -L${libdir} -lklu_cholmod
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Cflags: -I${includedir}

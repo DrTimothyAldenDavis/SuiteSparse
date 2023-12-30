@@ -14,6 +14,6 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Multithreaded, multifrontal, rank-revealing sparse QR factorization method in SuiteSparse
 Version: @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
 Requires.private: SuiteSparse_config CHOLMOD
-Libs: -L${libdir} -lspqr
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
 Libs.private: @SPQR_STATIC_LIBS@
 Cflags: -I${includedir} @SPQR_CFLAGS@

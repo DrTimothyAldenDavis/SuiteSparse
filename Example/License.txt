@@ -1,4 +1,6 @@
-Example package, Copyright (c), 2022, Timothy A. Davis, All Rights Reserved.
+Example package, Copyright (c), 2022-2023, Timothy A. Davis, All Rights
+Reserved.
+
 SPDX-License-Identifier: BSD-3-clause
 
     Redistribution and use in source and binary forms, with or without

@@ -370,7 +370,7 @@ void* rmm_wrap_get_main_stream(void) {
 // rmm_wrap_malloc: malloc-equivalent method using RMM
 //------------------------------------------------------------------------------
 
-// rmm_wrap_malloc is identical to the ANSI C11 malloc function, except that
+// rmm_wrap_malloc is identical to the C11 malloc function, except that
 // it uses RMM underneath to allocate the space.
 
 void *rmm_wrap_malloc (std::size_t size)
@@ -382,7 +382,7 @@ void *rmm_wrap_malloc (std::size_t size)
 // rmm_wrap_calloc: calloc-equivalent method using RMM
 //------------------------------------------------------------------------------
 
-// rmm_wrap_calloc is identical to the ANSI C11 calloc function, except that
+// rmm_wrap_calloc is identical to the C11 calloc function, except that
 // it uses RMM underneath to allocate the space.
 
 void *rmm_wrap_calloc (std::size_t n, std::size_t size)
@@ -400,7 +400,7 @@ void *rmm_wrap_calloc (std::size_t n, std::size_t size)
 // rmm_wrap_realloc: realloc-equivalent method using RMM
 //------------------------------------------------------------------------------
 
-// rmm_wrap_realloc is identical to the ANSI C11 realloc function, except that
+// rmm_wrap_realloc is identical to the C11 realloc function, except that
 // it uses RMM underneath to allocate the space.
 
 void *rmm_wrap_realloc (void *p, std::size_t newsize)
@@ -463,7 +463,7 @@ void *rmm_wrap_realloc (void *p, std::size_t newsize)
 // rmm_wrap_free: free a block of memory, size not needed
 //------------------------------------------------------------------------------
 
-// rmm_wrap_free is identical to the ANSI C11 free function, except that
+// rmm_wrap_free is identical to the C11 free function, except that
 // it uses RMM underneath to allocate the space.
 
 void rmm_wrap_free (void *p)

@@ -9,8 +9,8 @@
 //------------------------------------------------------------------------------
 
 // Converts a dense matrix X (as input) to a new sparse matrix C (as output).
-// The xtype and dtype are preserved, except if values is false in which case
-// C is returned as a pattern sparse matrix.
+// The xtype and dtype are preserved, except if mode is 0 in which case C is
+// returned as a pattern sparse matrix.
 
 #include "cholmod_internal.h"
 
@@ -48,8 +48,10 @@
 
 cholmod_sparse *CHOLMOD(dense_to_sparse)        // return a sparse matrix C
 (
+    // input:
     cholmod_dense *X,       // input matrix
-    int values,             // if true, copy the values; if false, C is pattern
+    int mode,               // 1: copy the values
+                            // 0: C is pattern
     cholmod_common *Common
 )
 {
@@ -67,8 +69,9 @@ cholmod_sparse *CHOLMOD(dense_to_sparse)        // return a sparse matrix C
     // allocate the sparse matrix result C
     //--------------------------------------------------------------------------
 
+    mode = RANGE (mode, 0, 1) ;
     int cnz = CHOLMOD(dense_nnz) (X, Common) ;
-    int cxtype = values ? X->xtype : CHOLMOD_PATTERN ;
+    int cxtype = (mode == 0) ? CHOLMOD_PATTERN : X->xtype ;
     cholmod_sparse *C = CHOLMOD(allocate_sparse) (X->nrow, X->ncol, cnz,
         /* C is sorted: */ TRUE, /* C is packed: */ TRUE, /* C->stype: */ 0,
         cxtype + X->dtype, Common) ;
@@ -80,29 +83,28 @@ cholmod_sparse *CHOLMOD(dense_to_sparse)        // return a sparse matrix C
 
     switch ((X->xtype + X->dtype) % 8)
     {
-
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_dense_to_sparse_worker (C, X) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_dense_to_sparse_worker (C, X) ;
             break ;
     }
 

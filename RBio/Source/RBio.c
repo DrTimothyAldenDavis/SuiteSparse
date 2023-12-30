@@ -345,6 +345,14 @@ PRIVATE void RB(skipheader)
 /* === functions ============================================================ */
 /* ========================================================================== */
 
+#ifdef INT
+void RBio_version (int version [3])
+{
+    version [0] = RBIO_MAIN_VERSION ;
+    version [1] = RBIO_SUB_VERSION ;
+    version [2] = RBIO_SUBSUB_VERSION ;
+}
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* RBget_entry: get numerical entry in the matrix at position p */

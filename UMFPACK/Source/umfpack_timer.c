@@ -18,5 +18,5 @@
 
 double umfpack_timer ( void )
 {
-    return (SuiteSparse_time ( )) ;
+    return (SUITESPARSE_TIME) ;
 }

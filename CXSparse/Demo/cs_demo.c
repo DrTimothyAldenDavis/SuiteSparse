@@ -1,4 +1,4 @@
-// CSparse/Demo/cs_demo: demo utilities for CXSparse (complex int32_t)
+// CSparse/Demo/cs_demo: demo utilities for CXSparse (double int32_t)
 // CXSparse, Copyright (c) 2006-2022, Timothy A. Davis. All Rights Reserved.
 // SPDX-License-Identifier: LGPL-2.1+
 #include "cs_demo.h"

@@ -2,7 +2,7 @@
 // RBio/Include/RBio.h: include file for RBio
 //------------------------------------------------------------------------------
 
-// RBio, Copyright (c) 2009-2022, Timothy A. Davis.  All Rights Reserved.
+// RBio, Copyright (c) 2009-2023, Timothy A. Davis.  All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -47,10 +47,6 @@
 /* include files */
 /* -------------------------------------------------------------------------- */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include "SuiteSparse_config.h"
 
 /* -------------------------------------------------------------------------- */
@@ -84,9 +80,13 @@ extern "C" {
 #define RBIO_SUB_VERSION    @RBIO_VERSION_MINOR@
 #define RBIO_SUBSUB_VERSION @RBIO_VERSION_SUB@
 
-#define RBIO_VER_CODE(main,sub) ((main) * 1000 + (sub))
+#define RBIO_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define RBIO_VERSION RBIO_VER_CODE(RBIO_MAIN_VERSION,RBIO_SUB_VERSION)
 
+#if !defined (SUITESPARSE_VERSION) || \
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
+#error "RBio @RBIO_VERSION_MAJOR@.@RBIO_VERSION_MINOR@.@RBIO_VERSION_SUB@ requires SuiteSparse_config 7.4.0 or later"
+#endif
 
 /* -------------------------------------------------------------------------- */
 /* user-callable functions */
@@ -110,6 +110,10 @@ extern "C" {
     with int64_t integers.  The default type is int64_t.  Functions for int32_t
     integers have the _i suffix appended to their names.
 */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int RBkind_i        /* 0: OK, < 0: error, > 0: warning */
 (
@@ -287,6 +291,8 @@ int RBok (int64_t nrow, int64_t ncol,
 #ifdef MATLAB_MEX_FILE
 void RBerror (int status) ;     /* only for MATLAB mexFunctions */
 #endif
+
+void RBio_version (int version [3]) ;
 
 #ifdef __cplusplus
 }

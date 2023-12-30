@@ -1,0 +1,37 @@
+
+FIXME: Tcov: match program executables with filenames.cpp
+
+Notes:
+    Changes to more C++ style:
+
+        for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+        {
+            int64_t i1 = tempRow[ii];
+            ...
+        }
+
+    becomes
+
+        for (int64_t i1 : tempRow)
+        {
+            ...
+        }
+
+    and:
+
+        for (int64_t k = 0; k < (int64_t)chHeap->size(); k++)
+        {
+            int64_t e = (*chHeap)[k];
+            ...
+        }
+
+    becomes:
+
+        for (int64_t e : *chHeap)
+        {
+            ...
+        }
+
+FIXME: remove reliance on umf_internal.h (which also brings in
+umf_version.h, umf_config.h, and umf_dump.h)
+

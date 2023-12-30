@@ -70,10 +70,13 @@
 
 int CHOLMOD(transpose_sym)
 (
+    // input:
     cholmod_sparse *A,  // input matrix
-    int mode,           // 2: numerical (conj), 1: numerical (non-conj.),
+    int mode,           // 2: numerical (conj)
+                        // 1: numerical (non-conj.)
                         // <= 0: pattern (with diag)
     Int *Perm,          // permutation for C=A(p,p)', or NULL
+    // input/output:
     cholmod_sparse *C,  // output matrix, must be allocated on input
     cholmod_common *Common
 )
@@ -87,6 +90,8 @@ int CHOLMOD(transpose_sym)
     RETURN_IF_SPARSE_MATRIX_INVALID (A, FALSE) ;
     RETURN_IF_NULL (C, FALSE) ;
     Common->status = CHOLMOD_OK ;
+
+    mode = RANGE (mode, 0, 2) ;
 
     if (A->xtype == CHOLMOD_PATTERN || C->xtype == CHOLMOD_PATTERN)
     {
@@ -167,64 +172,63 @@ int CHOLMOD(transpose_sym)
     // compute the pattern and values of C
     //--------------------------------------------------------------------------
 
-    bool conj = (mode >= 2) ;
+    bool conj = (mode == 2) ;
 
     switch ((C->xtype + C->dtype) % 8)
     {
-
         default:
             p_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
-                c_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                ct_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cs_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
             if (conj)
             {
-                z_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zs_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                zt_s_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zs_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
-                c_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                ct_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                cd_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
             if (conj)
             {
-                z_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zd_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             else
             {
-                zt_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
+                zd_t_cholmod_transpose_sym_worker (C, A, Pinv, Wi) ;
             }
             break ;
     }

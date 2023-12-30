@@ -1,4 +1,4 @@
-LDL 3.2.1 in SuiteSparse 7.2.1
+LDL 3.3.0 in SuiteSparse 7.4.0
 Nonzeros in L, excluding diagonal: 13
 x [0] = 0.1
 x [1] = 0.2

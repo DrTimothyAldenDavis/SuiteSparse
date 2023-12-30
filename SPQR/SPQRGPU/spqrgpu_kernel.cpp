@@ -16,8 +16,8 @@
 
 #ifdef SUITESPARSE_TIMER_ENANBLED
 #define INIT_TIME(x)    double x = 0.0; double time_ ## x;
-#define TIC(x)          time_ ## x = SuiteSparse_time();
-#define TOC(x)          x += SuiteSparse_time() - time_ ## x;
+#define TIC(x)          time_ ## x = SUITESPARSE_TIME;
+#define TOC(x)          x += SUITESPARSE_TIME - time_ ## x;
 #else
 #define INIT_TIME(x)
 #define TIC(x)
@@ -28,7 +28,7 @@
 // numfronts_in_stage
 // -----------------------------------------------------------------------------
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 template <typename Int>
 void numfronts_in_stage
 (
@@ -80,7 +80,7 @@ void spqrgpu_kernel
 
     cholmod_common *cc = Blob->cc ;
 
-#ifdef SUITESPARSE_CUDA
+#ifdef SPQR_HAS_CUDA
 
     INIT_TIME(complete);
     TIC(complete);
@@ -414,7 +414,7 @@ void spqrgpu_kernel
                 f, frelp, pid, prelp));
 
             // using placement new
-            Front <Int> *front = new (&fronts[frelp]) Front(frelp, prelp, fm, fn);
+            Front<Int> *front = new (&fronts[frelp]) Front<Int> (frelp, prelp, fm, fn);
             front->fidg = f;
             front->pidg = pid;
 
@@ -478,8 +478,8 @@ void spqrgpu_kernel
                 // only copy the exact CBlock back to the GPU
                 PR (("building child %ld (%ld) with parent %ld (%ld)\n",
                     c, pNextChild, f, frelp));
-                Front <Int> *child = new (&fronts[pNextChild])
-                                   Front(pNextChild, frelp, ccm, ccn);
+                Front<Int> *child = new (&fronts[pNextChild])
+                                   Front<Int> (pNextChild, frelp, ccm, ccn);
                 child->fidg = c;
                 child->pidg = f;
 

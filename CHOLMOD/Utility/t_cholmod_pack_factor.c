@@ -53,6 +53,7 @@
 
 int CHOLMOD(pack_factor)
 (
+    // input/output:
     cholmod_factor *L,      // factor to pack
     cholmod_common *Common
 )
@@ -70,8 +71,8 @@ int CHOLMOD(pack_factor)
 
     if (L->xtype == CHOLMOD_PATTERN || L->is_super)
     {
-	// nothing to do
-	return (TRUE) ;
+        // nothing to do
+        return (TRUE) ;
     }
 
     //--------------------------------------------------------------------------
@@ -80,31 +81,28 @@ int CHOLMOD(pack_factor)
 
     switch ((L->xtype + L->dtype) % 8)
     {
-        default:
+        case CHOLMOD_REAL    + CHOLMOD_SINGLE:
+            rs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_REAL:
-            r_s_cholmod_pack_factor_worker (L, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_SINGLE:
+            cs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_COMPLEX:
-            c_s_cholmod_pack_factor_worker (L, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_SINGLE:
+            zs_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
-        case CHOLMOD_SINGLE + CHOLMOD_ZOMPLEX:
-            z_s_cholmod_pack_factor_worker (L, Common) ;
+        case CHOLMOD_REAL    + CHOLMOD_DOUBLE:
+            rd_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_REAL:
-            r_cholmod_pack_factor_worker (L, Common) ;
+        case CHOLMOD_COMPLEX + CHOLMOD_DOUBLE:
+            cd_cholmod_pack_factor_worker (L, Common) ;
             break ;
 
-        case CHOLMOD_DOUBLE + CHOLMOD_COMPLEX:
-            c_cholmod_pack_factor_worker (L, Common) ;
-            break ;
-
-        case CHOLMOD_DOUBLE + CHOLMOD_ZOMPLEX:
-            z_cholmod_pack_factor_worker (L, Common) ;
+        case CHOLMOD_ZOMPLEX + CHOLMOD_DOUBLE:
+            zd_cholmod_pack_factor_worker (L, Common) ;
             break ;
     }
 

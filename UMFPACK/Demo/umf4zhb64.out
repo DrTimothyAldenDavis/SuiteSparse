@@ -1,4 +1,4 @@
-UMFPACK V6.2.1 (Sept 18, 2023), Control:
+UMFPACK V6.3.0 (Dec 30, 2023), Control:
     Matrix entry defined as: double complex
     Int (generic integer) defined as: int64_t
 
@@ -38,7 +38,7 @@ UMFPACK V6.2.1 (Sept 18, 2023), Control:
     computer/operating system: Linux
     size of int32_t: 4 int64_t: 8 Int: 8 pointer: 8 double: 8 Entry: 16 (in bytes)
 
-UMFPACK V6.2.1 (Sept 18, 2023), Info:
+UMFPACK V6.3.0 (Dec 30, 2023), Info:
     matrix entry defined as:          double complex
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4
@@ -119,10 +119,10 @@ UMFPACK V6.2.1 (Sept 18, 2023), Info:
     numeric factorization defragmentations:        0
     numeric factorization reallocations:           0
     costly numeric factorization reallocations:    0
-    numeric factorization wallclock time (sec):    0.01
-    numeric factorization mflops (wallclock):      962.67
-    symbolic + numeric wall clock time (sec):      0.02
-    symbolic + numeric mflops (wall clock):        839.26
+    numeric factorization wallclock time (sec):    0.29
+    numeric factorization mflops (wallclock):      50.19
+    symbolic + numeric wall clock time (sec):      0.29
+    symbolic + numeric mflops (wall clock):        49.53
 
     solve flops:                                   3.70332e+05
     iterative refinement steps taken:              0
@@ -134,7 +134,7 @@ UMFPACK V6.2.1 (Sept 18, 2023), Info:
  Matrix key: QC324                         
 symbolic analysis:
    status:     0.
-   time:      0.22E-02 (sec)
+   time:      0.38E-02 (sec)
    estimates (upper bound) for numeric LU:
    size of LU:          1.37 (MB)
    memory needed:       2.97 (MB)
@@ -143,11 +143,11 @@ symbolic analysis:
    nnz (U):           39609.
 numeric factorization:
    status:     0.
-   time:      0.15E-01
+   time:      0.29E+00
    actual numeric LU statistics:
    size of LU:          0.74 (MB)
    memory needed:       1.38 (MB)
    flop count:      0.14E+08
    nnz (L):           23247.
    nnz (U):           23247.
- norm (A*x-b):    2.7037543144102808E-013
+ norm (A*x-b):    2.7082234386269613E-013

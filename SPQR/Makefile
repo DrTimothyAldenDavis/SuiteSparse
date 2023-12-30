@@ -39,19 +39,19 @@ library:
 
 # install only in SuiteSparse/lib and SuiteSparse/include
 local:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -USUITESPARSE_PKGFILEDIR -DSUITESPARSE_LOCAL_INSTALL=1 .. && cmake --build . --config Release -j${JOBS} )
 
 # install only in /usr/local (default)
 global:
-	( cd build && cmake $(CMAKE_OPTIONS) -DLOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -USUITESPARSE_PKGFILEDIR -DSUITESPARSE_LOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 # enable CUDA (this is the default, if CUDA is available)
 cuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSPQR_USE_CUDA=1 .. && cmake --build . --config Release -j$(JOBS) )
 
 # disable CUDA
 nocuda:
-	( cd build && cmake $(CMAKE_OPTIONS) -DENABLE_CUDA=0 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSPQR_USE_CUDA=0 .. && cmake --build . --config Release -j$(JOBS) )
 
 debug:
 	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. && cmake --build . --config Debug -j${JOBS} )
@@ -61,7 +61,7 @@ all: library
 demos: demos64 demos32 
 
 demos64: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/qrdemo < Matrix/a00.mtx
 	- ./build/qrdemo < Matrix/a01.mtx
 	- ./build/qrdemo < Matrix/a10.mtx
@@ -127,7 +127,7 @@ demos64: library
 	- ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
 
 demos32: library
-	( cd build && cmake $(CMAKE_OPTIONS) -DDEMO=1 .. && cmake --build . --config Release -j${JOBS} )
+	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	- ./build/qrdemo_int32 < Matrix/a00.mtx
 	- ./build/qrdemo_int32 < Matrix/a01.mtx
 	- ./build/qrdemo_int32 < Matrix/a10.mtx

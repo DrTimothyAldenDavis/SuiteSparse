@@ -2,7 +2,7 @@
 /* === SuiteSparseQR_C.h ==================================================== */
 /* ========================================================================== */
 
-// SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
+// SPQR, Copyright (c) 2008-2023, Timothy A Davis. All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 /* For inclusion in a C or C++ program. */
@@ -10,6 +10,7 @@
 #ifndef SUITESPARSEQR_C_H
 #define SUITESPARSEQR_C_H
 
+#include "SuiteSparse_config.h"
 #include "cholmod.h"
 #include "SuiteSparseQR_definitions.h"
 
@@ -240,6 +241,8 @@ cholmod_dense *SuiteSparseQR_C_qmult /* returns Y, or NULL on failure */
 ) ;
 
 #endif
+
+void SuiteSparseQR_C_version (int version [3]) ;
 
 /* ========================================================================== */
 

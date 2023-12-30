@@ -7,8 +7,8 @@
   "codeRepository": "https://github.com/ScottKolo/Mongoose",
   "issueTracker": "https://github.com/ScottKolo/Mongoose/issues",
   "license": "https://spdx.org/licenses/GPL-3.0-only.html",
-  "version": "3.2.1",
-  "softwareVersion": "3.2.1",
+  "version": "3.3.0",
+  "softwareVersion": "3.3.0",
   "author": [
     {
       "@type": "Person",
@@ -47,7 +47,7 @@
     },
   "contIntegration": "https://travis-ci.com/ScottKolo/Mongoose",
   "developmentStatus": "active",
-  "downloadUrl": "https://github.com/ScottKolo/Mongoose/archive/v3.2.1.zip",
+  "downloadUrl": "https://github.com/ScottKolo/Mongoose/archive/v3.3.0.zip",
   "funding":"Office of Naval Research grant N00014-11-1-0068",
   "funding":"Office of Naval Research grant N00014-15-1-2048",
   "funding":"Office of Naval Research grant N00014-18-1-2100",
@@ -66,7 +66,7 @@
   ],
   "dateCreated":"2018-04-09",
   "datePublished":"2018-05-25",
-  "dateModified":"2023-09-18",
+  "dateModified":"2023-12-30",
   "programmingLanguage": "C++",
   "programmingLanguage": "MATLAB"
 }
