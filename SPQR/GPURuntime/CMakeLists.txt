@@ -190,10 +190,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPURuntime> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPURuntime_static> )
+    endif ( )
     configure_file (
         Config/SuiteSparse_GPURuntime.pc.in
-        SuiteSparse_GPURuntime.pc
+        SuiteSparse_GPURuntime.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT SuiteSparse_GPURuntime.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc
