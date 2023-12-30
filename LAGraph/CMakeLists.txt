@@ -39,10 +39,10 @@
 cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
 
 # version of LAGraph
-set ( LAGraph_DATE "Dec 30, 2023" )
+set ( LAGraph_DATE "Jan XX, 2024" )
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_MINOR 1 CACHE STRING "" FORCE )
-set ( LAGraph_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( LAGraph_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building LAGraph version: v"
     ${LAGraph_VERSION_MAJOR}.
@@ -167,7 +167,7 @@ if ( COVERAGE )
     message ( STATUS "OpenMP disabled for test coverage" )
 else ( )
     if ( LAGRAPH_USE_OPENMP )
-        find_package ( OpenMP GLOBAL )
+        find_package ( OpenMP COMPONENTS C GLOBAL )
         if ( OpenMP_C_FOUND AND BUILD_STATIC_LIBS )
             list ( APPEND LAGRAPH_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
         endif ( )

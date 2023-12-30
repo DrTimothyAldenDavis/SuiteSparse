@@ -60,6 +60,11 @@ include = [include ' -I../../CHOLMOD/Supernodal '] ;
 % use all of CHOLMOD except for the Modify module
 flags = [flags ' -DNMODIFY -DBLAS64' ] ;
 
+if (ispc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
+end
+
 suitesparse_src = { ...
     '../../SuiteSparse_config/SuiteSparse_config', ...
     '../../AMD/Source/amd_l1', ...

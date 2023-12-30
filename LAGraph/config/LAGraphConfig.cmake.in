@@ -53,7 +53,7 @@ endif ( )
 
 # Look for OpenMP
 if ( @LAGRAPH_HAS_OPENMP@ AND NOT OpenMP_C_FOUND )
-    find_dependency ( OpenMP )
+    find_dependency ( OpenMP COMPONENTS C )
     if ( NOT OpenMP_C_FOUND )
         set ( _dependencies_found OFF )
     endif ( )

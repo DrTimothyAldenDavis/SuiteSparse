@@ -43,10 +43,10 @@ set ( DEMO_OK false )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_DEMOS AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 5.1.0
+    find_package ( CHOLMOD 5.1.1
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.1.0 )
+        find_package ( CHOLMOD 5.1.1 )
     endif ( )
 endif ( )
 
@@ -215,10 +215,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPUQREngine> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPUQREngine_static> )
+    endif ( )
     configure_file (
         Config/GPUQREngine.pc.in
-        GPUQREngine.pc
+        GPUQREngine.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT GPUQREngine.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngine.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/GPUQREngine.pc

@@ -25,14 +25,14 @@ typedef enum ParU_Ret
 
 #define PARU_MEM_CHUNK (1024*1024)
 
-#define PARU_DATE "Dec 30, 2023"
+#define PARU_DATE "Jan XX, 2024"
 #define PARU_VERSION_MAJOR  0
 #define PARU_VERSION_MINOR  1
-#define PARU_VERSION_UPDATE 0
+#define PARU_VERSION_UPDATE 1
 
 #if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "ParU 0.1. requires SuiteSparse_config 7.4.0 or later"
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
+#error "ParU 0.1. requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #if UMFPACK_VER < SUITESPARSE_VER_CODE(6,3)

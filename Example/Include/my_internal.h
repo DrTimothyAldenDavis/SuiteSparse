@@ -18,8 +18,8 @@
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
 #if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "This library requires SuiteSparse_config 7.4.0 or later"
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
+#error "This library requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #include "amd.h"
@@ -43,7 +43,7 @@
 #endif
 
 #include "cholmod.h"
-#if CHOLMOD_VERSION < SUITESPARSE_VER_CODE(3,3)
+#if CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1)
 #error "This library requires CHOLMOD 5.1.0 or later"
 #endif
 
@@ -60,16 +60,16 @@
 #if ! defined (NO_GRAPHBLAS)
     #include "GraphBLAS.h"
     #if !defined ( GxB_SUITESPARSE_GRAPHBLAS ) || \
-        GxB_IMPLEMENTATION < GxB_VERSION (8,3,1)
-    #error "This library requires SuiteSparse:GraphBLAS 8.3.1 or later"
+        GxB_IMPLEMENTATION < GxB_VERSION (9,0,0)
+    #error "This library requires SuiteSparse:GraphBLAS 9.0.0 or later"
     #endif
 #endif
 
 #if ! defined (NO_LAGRAPH)
     #include "LAGraph.h"
     #if VER3CODE (LAGRAPH_VERSION_MAJOR,LAGRAPH_VERSION_MINOR,   \
-        LAGRAPH_VERSION_UPDATE) < VER3CODE(1,1,0)
-    #error "This library requires LAGraph 1.1.0 or later"
+        LAGRAPH_VERSION_UPDATE) < VER3CODE(1,1,1)
+    #error "This library requires LAGraph 1.1.1 or later"
     #endif
 #endif
 
@@ -100,7 +100,7 @@
 #endif
 
 #include "umfpack.h"
-#if UMFPACK_VER < SUITESPARSE_VER_CODE(4,3)
+#if UMFPACK_VER < SUITESPARSE_VER_CODE(6,3)
 #error "This library requires UMFPACK 6.3.0 or later"
 #endif
 

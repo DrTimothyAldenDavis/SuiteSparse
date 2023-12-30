@@ -11,7 +11,7 @@
 // file, since it is constructed from Config/my.h.in by cmake.
 
 // version and date for example user library
-#define MY_DATE "Jan 1, 2024"
+#define MY_DATE "Jan XX, 2024"
 #define MY_MAJOR_VERSION 1
 #define MY_MINOR_VERSION 6
 #define MY_PATCH_VERSION 0

@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Dec 30, 2023" )
+set ( PARU_DATE "Jan XX, 2024" )    # FIXME for 7.5.0
 set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -61,7 +61,7 @@ endif ( )
 
 if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required
-    find_package ( OpenMP GLOBAL )
+    find_package ( OpenMP COMPONENTS C CXX GLOBAL )
     if ( OpenMP_CXX_FOUND AND OpenMP_C_FOUND )
         set ( PARU_HAS_OPENMP ON )
         if (( OpenMP_CXX_VERSION VERSION_LESS 4.5 ) OR
@@ -96,16 +96,16 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.1.0
+    find_package ( CHOLMOD 5.1.1
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.1.0 REQUIRED )
+        find_package ( CHOLMOD 5.1.1 REQUIRED )
     endif ( )
 
     find_package ( UMFPACK 6.3.0

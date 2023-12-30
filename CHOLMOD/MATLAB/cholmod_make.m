@@ -35,6 +35,11 @@ end
  % -R2018a: interleaved complex is required
 flags = '-O -R2018a -silent ' ;
 
+if (pc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
+end
+
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 
 if (~pc)

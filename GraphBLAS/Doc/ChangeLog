@@ -1,4 +1,4 @@
-Jan 1, 2024: version 9.0.0
+Jan XX, 2024: version 9.0.0 FIXME for 7.5.0
 
     * GrB_get/GrB_set: new functions from the v2.1 C API.
     * GrB_Type_new, GrB_UnaryOp_new, GrB_IndexUnaryOp_new: no longer macros,
@@ -17,6 +17,7 @@ Jan 1, 2024: version 9.0.0
         GrB_STORAGE_ORIENTATION_HINT in place of GxB_FORMAT.
     * hyper_hash: constructed only if the # of non-empty vectors in a
         hypersparse matrix is large (> 1024, by default)
+    * minor updates to build system: *.pc files for pkgconfig
 
 Dec 30, 2023: version 8.3.1
 

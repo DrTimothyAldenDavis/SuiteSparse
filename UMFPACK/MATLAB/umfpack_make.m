@@ -34,20 +34,16 @@ if (~verLessThan ('matlab', '8.3.0'))
     flags = ['-silent ' flags] ;
 end
 
-v = version ;
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-    mac = ismac ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-    mac = 0 ;
+if (ispc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
 end
+
+v = version ;
 
 fprintf ('Compiling UMFPACK for MATLAB Version %s\n', v) ;
 
-if (pc)
+if (ispc)
     obj = 'obj' ;
 else
     obj = 'o' ;
@@ -62,7 +58,7 @@ kk = 0 ;
 % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
 % find the LAPACK and BLAS libraries, which is a real portability nightmare.
 
-if (pc)
+if (ispc)
     % BLAS/LAPACK functions have no underscore on Windows
     flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '7.5'))
@@ -91,7 +87,7 @@ else
     flags = [flags ' -DBLAS32'] ;
 end
 
-if (~(pc || mac))
+if (~(ispc || ismac))
     % for POSIX timing routine
     lapack = [lapack ' -lrt'] ;
 end
