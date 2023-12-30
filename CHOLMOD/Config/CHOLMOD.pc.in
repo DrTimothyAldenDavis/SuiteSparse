@@ -7,8 +7,6 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-# FIXME: Which flags do we need to statically link CUDA if needed?
-
 Name: CHOLMOD
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Routines for factorizing sparse symmetric positive definite matrices in SuiteSparse
