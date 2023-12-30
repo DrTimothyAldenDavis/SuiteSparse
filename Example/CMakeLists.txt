@@ -107,14 +107,6 @@ find_package ( SPEX 2.3.0 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.0 REQUIRED )
 find_package ( UMFPACK 6.3.0 REQUIRED )
 
-# look for all external libaries:
-find_package ( OpenMP REQUIRED )
-find_package ( BLAS REQUIRED )
-find_package ( LAPACK REQUIRED )
-# the SPEX/Find*.cmake packages are installed when SPEX is installed.
-find_package ( GMP 6.1.2 REQUIRED )
-find_package ( MPFR 4.0.2 REQUIRED )
-
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
@@ -509,83 +501,6 @@ if ( BUILD_STATIC_LIBS )
         target_link_libraries ( my_cxx_static PUBLIC SuiteSparse::UMFPACK )
     endif ( )
 endif ( )
-
-# OpenMP:
-message ( STATUS "OpenMP C libraries:      ${OpenMP_C_LIBRARIES}" )
-message ( STATUS "OpenMP C include:        ${OpenMP_C_INCLUDE_DIRS}" )
-message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( my PRIVATE OpenMP::OpenMP_C )
-    target_link_libraries ( my_cxx PRIVATE OpenMP::OpenMP_CXX )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( my_static PUBLIC OpenMP::OpenMP_C )
-    target_link_libraries ( my_cxx_static PUBLIC OpenMP::OpenMP_CXX )
-endif ( )
-
-# libm:
-if ( NOT WIN32 )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( my PRIVATE m )
-        target_link_libraries ( my_cxx PRIVATE m )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( my_static PUBLIC m )
-        target_link_libraries ( my_cxx_static PUBLIC m )
-    endif ( )
-endif ( )
-
-# BLAS:
-message ( STATUS "BLAS libraries:      ${BLAS_LIBRARIES}" )
-message ( STATUS "BLAS include:        ${BLAS_INCLUDE_DIRS}" )
-message ( STATUS "BLAS linker flags:   ${BLAS_LINKER_FLAGS}" )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( my PRIVATE ${BLAS_LIBRARIES} )
-    target_link_libraries ( my_cxx PRIVATE ${BLAS_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( my_static PUBLIC ${BLAS_LIBRARIES} )
-    target_link_libraries ( my_cxx_static PUBLIC ${BLAS_LIBRARIES} )
-endif ( )
-include_directories ( ${BLAS_INCLUDE_DIRS} )
-
-# LAPACK:
-message ( STATUS "LAPACK libraries:    ${LAPACK_LIBRARIES}" )
-message ( STATUS "LAPACK include:      ${LAPACK_INCLUDE_DIRS}" )
-message ( STATUS "LAPACK linker flags: ${LAPACK_LINKER_FLAGS}" )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( my PRIVATE ${LAPACK_LIBRARIES} )
-    target_link_libraries ( my_cxx PRIVATE ${LAPACK_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( my_static PUBLIC ${LAPACK_LIBRARIES} )
-    target_link_libraries ( my_cxx_static PUBLIC ${LAPACK_LIBRARIES} )
-endif ( )
-include_directories ( ${LAPACK_INCLUDE_DIRS} )
-
-# gmp:
-message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
-    target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( my_static PUBLIC ${GMP_STATIC} )
-    target_link_libraries ( my_cxx_static PUBLIC ${GMP_STATIC} )
-endif ( )
-include_directories ( ${GMP_INCLUDE_DIR} )
-
-# mpfr:
-message ( STATUS "MPFR library:        ${MPFR_LIBRARIES}" )
-if ( BUILD_SHARED_LIBS )
-    target_link_libraries ( my PRIVATE ${MPFR_LIBRARIES} )
-    target_link_libraries ( my_cxx PRIVATE ${MPFR_LIBRARIES} )
-endif ( )
-if ( BUILD_STATIC_LIBS )
-    target_link_libraries ( my_static PUBLIC ${MPFR_STATIC} )
-    target_link_libraries ( my_cxx_static PUBLIC ${MPFR_STATIC} )
-endif ( )
-include_directories ( ${MPFR_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # installation location
