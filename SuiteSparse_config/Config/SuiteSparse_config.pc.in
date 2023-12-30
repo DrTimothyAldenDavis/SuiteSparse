@@ -12,4 +12,5 @@ URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: Configuration for SuiteSparse
 Version: @SUITESPARSE_VERSION_MAJOR@.@SUITESPARSE_VERSION_MINOR@.@SUITESPARSE_VERSION_SUB@
 Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
+Libs.private: @SUITESPARSE_CONFIG_STATIC_LIBS@
 Cflags: -I${includedir}
