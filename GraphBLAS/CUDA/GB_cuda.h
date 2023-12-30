@@ -1,13 +1,11 @@
 //------------------------------------------------------------------------------
-// GB_cuda.h: definitions for using CUDA in GraphBLAS
+// GraphBLAS/CUDA/GB_cuda.h
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS/CUDA, (c) NVIDIA Corp. 2017-2019, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
-
-// This file is #include'd only in the GraphBLAS/CUDA/GB_cuda*.cu source files.
 
 #ifndef GB_CUDA_H
 #define GB_CUDA_H
@@ -20,9 +18,7 @@ extern "C"
     #include "GB_warnings.h"
 }
 
-#define GB_LIBRARY
-#include "GraphBLAS.h"
-#undef I
+#include "GraphBLAS_cuda.h"
 
 extern "C"
 {

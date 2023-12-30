@@ -1,4 +1,10 @@
+//------------------------------------------------------------------------------
+// GraphBLAS/CUDA/test/cuda_tests_template.cpp
+//------------------------------------------------------------------------------
+
 // SPDX-License-Identifier: Apache-2.0
+
+//------------------------------------------------------------------------------
 
 // Test AxB_dot3_cuda kernels 
 // Using data generators and test classes, cover

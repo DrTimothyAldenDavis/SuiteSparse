@@ -36,6 +36,8 @@ GrB_Scalar GB_Scalar_wrap   // create a new GrB_Scalar with one entry
 
     s->magic = GB_MAGIC ;
     s->header_size = 0 ;
+    s->user_name = NULL ;
+    s->user_name_size = 0 ;
     s->type = (type == NULL) ? GrB_BOOL : type ;
     s->logger = NULL ;
     s->logger_size = 0 ;

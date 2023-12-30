@@ -146,17 +146,15 @@ GrB_Info GB_AxB_dot3                // C<M> = A'*B using dot product method
     ASSERT (A->vlen == B->vlen) ;
     ASSERT (vlen > 0) ;
 
-    const GrB_Matrix A_Y = A->Y ;
-    const int64_t *restrict A_Yp = (A_is_hyper) ? A_Y->p : NULL ;
-    const int64_t *restrict A_Yi = (A_is_hyper) ? A_Y->i : NULL ;
-    const int64_t *restrict A_Yx = (A_is_hyper) ? A_Y->x : NULL ;
-    const int64_t A_hash_bits = (A_is_hyper) ? (A_Y->vdim - 1) : 0 ;
+    const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+    const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+    const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+    const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
 
-    const GrB_Matrix B_Y = B->Y ;
-    const int64_t *restrict B_Yp = (B_is_hyper) ? B_Y->p : NULL ;
-    const int64_t *restrict B_Yi = (B_is_hyper) ? B_Y->i : NULL ;
-    const int64_t *restrict B_Yx = (B_is_hyper) ? B_Y->x : NULL ;
-    const int64_t B_hash_bits = (B_is_hyper) ? (B_Y->vdim - 1) : 0 ;
+    const int64_t *restrict B_Yp = (B->Y == NULL) ? NULL : B->Y->p ;
+    const int64_t *restrict B_Yi = (B->Y == NULL) ? NULL : B->Y->i ;
+    const int64_t *restrict B_Yx = (B->Y == NULL) ? NULL : B->Y->x ;
+    const int64_t B_hash_bits = (B->Y == NULL) ? 0 : (B->Y->vdim - 1) ;
 
     //--------------------------------------------------------------------------
     // allocate C, the same size and # of entries as M

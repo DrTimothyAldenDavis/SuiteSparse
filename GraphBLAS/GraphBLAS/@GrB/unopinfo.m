@@ -71,8 +71,8 @@ function unopinfo (op, type)
 %   erf         z = erf (x)     error function
 %   erfc        z = erfc (x)    complementary error function
 %   cbrt        z = cbrt (x)    cube root
-%   frexpx      z = frexpx (x)  mantissa from ANSI C11 frexp function
-%   frexpe      z = frexpe (x)  exponent from ANSI C11 frexp function;
+%   frexpx      z = frexpx (x)  mantissa from C11 frexp function
+%   frexpe      z = frexpe (x)  exponent from C11 frexp function;
 %                               the built-in [f,e]=log2(x) returns
 %                               f = frexpx (x) and e = frexpe (x).
 %

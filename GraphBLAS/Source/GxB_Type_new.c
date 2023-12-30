@@ -40,7 +40,7 @@ GrB_Info GxB_Type_new
 (
     GrB_Type *type,             // handle of user type to create
     size_t sizeof_type,         // size of the user type
-    const char *type_name,      // name of the user type, or "sizeof (ctype)"
+    const char *type_name,      // name of the user type
     const char *type_defn       // typedef of the C type (any length)
 )
 {
@@ -76,6 +76,8 @@ GrB_Info GxB_Type_new
 
     // initialize the type
     t->header_size = header_size ;
+    t->user_name = NULL ;
+    t->user_name_size = 0 ;
     t->size = sizeof_type ;
     t->code = GB_UDT_code ;         // user-defined type
     memset (t->name, 0, GxB_MAX_NAME_LEN) ;   // no name yet
@@ -83,46 +85,13 @@ GrB_Info GxB_Type_new
     t->defn_size = 0 ;
 
     //--------------------------------------------------------------------------
-    // get the name: as a type_name or "sizeof (type_name)"
+    // get the name
     //--------------------------------------------------------------------------
 
     if (type_name != NULL)
     {
         // copy the type_name into the working name
-        char working [GxB_MAX_NAME_LEN] ;
-        memset (working, 0, GxB_MAX_NAME_LEN) ;
-        strncpy (working, type_name, GxB_MAX_NAME_LEN-1) ;
-
-        // look for "sizeof" in the name
-        char *p = NULL ;
-        p = strstr (working, "sizeof") ;
-        if (p != NULL)
-        { 
-            // "sizeof" appears in the input string, advance past it
-            p += 6 ;
-
-            // find leading "(" if it appears, and advance to one char past it
-            char *p2 = strstr (p, "(") ;
-            if (p2 != NULL) p = p2 + 1 ;
-
-            // find trailing ")" if it appears, and delete it
-            p2 = strstr (p, ")") ;
-            if (p2 != NULL) *p2 = '\0' ;
-
-            // p now contains the final name, copy it to the output name
-            strncpy (t->name, p, GxB_MAX_NAME_LEN-1) ;
-        }
-        else
-        { 
-            // "sizeof" does not appear, take the input type_name as-is
-            memcpy (t->name, working, GxB_MAX_NAME_LEN) ;
-        }
-    }
-    else
-    { 
-        // no type name, so give it a generic name, with the size of type only
-        snprintf (t->name, GxB_MAX_NAME_LEN-1, "user_type_of_size_" GBu,
-            (uint64_t) sizeof_type) ;
+        strncpy (t->name, type_name, GxB_MAX_NAME_LEN-1) ;
     }
 
     // ensure t->name is null-terminated
@@ -132,7 +101,7 @@ GrB_Info GxB_Type_new
     t->name_len = (int32_t) strlen (t->name) ;
     // type can be JIT'd only if it has a name and defn
     t->hash = GB_jitifyer_hash (t->name, t->name_len,
-        (type_name != NULL && type_defn != NULL)) ;
+        (t->name_len > 0 && type_defn != NULL)) ;
 
     //--------------------------------------------------------------------------
     // get the typedef, if present

@@ -74,6 +74,10 @@ set_target_properties ( GraphBLAS_CUDA PROPERTIES CUDA_ARCHITECTURES "52;75;80" 
 
 target_link_libraries ( GraphBLAS_CUDA PRIVATE CUDA::nvrtc CUDA::cudart_static CUDA::cuda_driver )
 
+if ( TARGET CUDA::nvToolsExt )
+    target_link_libraries ( GraphBLAS_CUDA PRIVATE CUDA::nvToolsExt )
+endif ( )
+
 if ( TARGET CUDA::nvtx3 )
     target_link_libraries ( GraphBLAS_CUDA PRIVATE CUDA::nvtx3 )
     target_compile_definitions ( GraphBLAS_CUDA PRIVATE GBNVTX )

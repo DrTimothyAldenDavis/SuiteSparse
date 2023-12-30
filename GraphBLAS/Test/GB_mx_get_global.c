@@ -163,6 +163,16 @@ bool GB_mx_get_global       // true if doing malloc_debug
     Complex_init (builtin_complex [0]) ;
 
     //--------------------------------------------------------------------------
+    // set the hyper_hash control to a small value
+    //--------------------------------------------------------------------------
+
+    GrB_Scalar s ;
+    GrB_Scalar_new (&s, GrB_INT64) ;
+    GrB_Scalar_setElement_INT64 (s, 8) ;
+    GrB_Global_set_Scalar (GrB_GLOBAL, s, GxB_HYPER_HASH) ;
+    GrB_Scalar_free (&s) ;
+
+    //--------------------------------------------------------------------------
     // return malloc debug status
     //--------------------------------------------------------------------------
 

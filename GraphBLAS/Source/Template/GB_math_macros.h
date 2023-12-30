@@ -27,7 +27,7 @@
 // NaN always return false, so if either x or y are NaN, then z = y, for both
 // min(x,y) and max(x,y).
 
-// The ANSI C11 fmin, fminf, fmax, and fmaxf functions have the 'omitnan'
+// The C11 fmin, fminf, fmax, and fmaxf functions have the 'omitnan'
 // behavior.  These are used in SuiteSparse:GraphBLAS v2.3.0 and later.
 
 // for integers only:

@@ -22,6 +22,8 @@ GrB_Info GrB_Monoid_free            // free a user-created monoid
         if (mon != NULL)
         {
             size_t header_size = mon->header_size ;
+            // free the monoid user_name
+            GB_FREE (&(mon->user_name), mon->user_name_size) ;
             if (header_size > 0)
             { 
                 mon->magic = GB_FREED ;  // to help detect dangling pointers

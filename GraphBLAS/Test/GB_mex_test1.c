@@ -84,12 +84,16 @@ void mexFunction
              sizeof (struct GB_Monoid_opaque)) ;
     printf ("sizeof (struct GB_Semiring_opaque) %d\n",
              sizeof (struct GB_Semiring_opaque)) ;
+    printf ("sizeof (struct GB_Scalar_opaque) %d\n",
+             sizeof (struct GB_Scalar_opaque)) ;
     printf ("sizeof (struct GB_Vector_opaque) %d\n",
              sizeof (struct GB_Vector_opaque)) ;
     printf ("sizeof (struct GB_Matrix_opaque) %d\n",
              sizeof (struct GB_Matrix_opaque)) ;
     printf ("sizeof (struct GB_Descriptor_opaque) %d\n",
              sizeof (struct GB_Descriptor_opaque)) ;
+    printf ("sizeof (struct GB_Context_opaque) %d\n",
+             sizeof (struct GB_Context_opaque)) ;
 
     size_t s ;
     GxB_Type_size (&s, GrB_BOOL  ) ; printf ("%d %d\n", s, sizeof (bool      ));

@@ -9,6 +9,7 @@
 
 #include "GB_mex.h"
 #include "GB_mex_errors.h"
+#include "GB_get_set.h"
 
 #define USAGE "GB_mex_test25"
 
@@ -71,6 +72,35 @@ void mexFunction
     CHECK (strlen (s) == 0) ;
     printf ("GxB_Context_error [%s] ok\n", s) ;
     OK (GxB_Context_wait (GxB_CONTEXT_WORLD, GrB_COMPLETE)) ;
+
+    //--------------------------------------------------------------------------
+    // report object sizes
+    //--------------------------------------------------------------------------
+
+    printf ("%4d: sizeof (struct GB_Type_opaque)\n",
+             (int) sizeof (struct GB_Type_opaque)) ;
+    printf ("%4d: sizeof (struct GB_UnaryOp_opaque)\n",
+             (int) sizeof (struct GB_UnaryOp_opaque)) ;
+    printf ("%4d: sizeof (struct GB_BinaryOp_opaque)\n",
+             (int) sizeof (struct GB_BinaryOp_opaque)) ;
+    printf ("%4d: sizeof (struct GB_SelectOp_opaque)\n",
+             (int) sizeof (struct GB_SelectOp_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Monoid_opaque)\n",
+             (int) sizeof (struct GB_Monoid_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Semiring_opaque)\n",
+             (int) sizeof (struct GB_Semiring_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Scalar_opaque)\n",
+             (int) sizeof (struct GB_Scalar_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Vector_opaque)\n",
+             (int) sizeof (struct GB_Vector_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Matrix_opaque)\n",
+             (int) sizeof (struct GB_Matrix_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Descriptor_opaque)\n",
+             (int) sizeof (struct GB_Descriptor_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Context_opaque)\n",
+             (int) sizeof (struct GB_Context_opaque)) ;
+    printf ("%4d: sizeof (struct GB_Global_opaque)\n",
+             (int) sizeof (struct GB_Global_opaque)) ;
 
     //--------------------------------------------------------------------------
     // finalize GraphBLAS

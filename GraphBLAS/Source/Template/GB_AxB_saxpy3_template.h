@@ -24,7 +24,7 @@
     if (M_is_hyper)                                                         \
     {                                                                       \
         /* M is hypersparse: find M(:,j) in the M->Y hyper_hash */          \
-        GB_hyper_hash_lookup (Mp, M_Yp, M_Yi, M_Yx, M_hash_bits,            \
+        GB_hyper_hash_lookup (Mh, mnvec, Mp, M_Yp, M_Yi, M_Yx, M_hash_bits, \
             GBH_B (Bh, kk), &pM_start, &pM_end) ;                           \
     }                                                                       \
     else                                                                    \
@@ -229,7 +229,7 @@
     if (A_is_hyper)                                                         \
     {                                                                       \
         /* A is hypersparse: find A(:,k) in the A->Y hyper_hash */          \
-        GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx, A_hash_bits,            \
+        GB_hyper_hash_lookup (Ah, anvec, Ap, A_Yp, A_Yi, A_Yx, A_hash_bits, \
             k, &pA_start, &pA_end) ;                                        \
     }                                                                       \
     else                                                                    \

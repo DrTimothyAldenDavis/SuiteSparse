@@ -110,7 +110,7 @@ include ( SuiteSparsePolicy )
 
 if ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "graphblas" )
-    find_package ( GraphBLAS 8.3.1 REQUIRED )
+    find_package ( GraphBLAS 9.0.0 REQUIRED )
 else ( )
     if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # LAGraph requires GraphBLAS.
@@ -210,7 +210,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
-    find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.5.0 REQUIRED )
 else ( )
     if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS

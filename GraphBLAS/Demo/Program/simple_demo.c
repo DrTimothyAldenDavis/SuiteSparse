@@ -9,7 +9,7 @@
 
 /*
     A simple test that illustrates the use of simple_rand.
-    This test does not require ANSI C11, nor GraphBLAS.  It only tests the
+    This test does not require C11, nor GraphBLAS.  It only tests the
     simple_* Demo functions.  The output of this test should look like the
     following.  The random numbers should be the same.  On a Mac OSX system:
 

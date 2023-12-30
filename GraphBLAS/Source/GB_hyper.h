@@ -54,9 +54,16 @@ GrB_Info GB_hyper_hash_build    // construct A->Y if not already constructed
     GB_Werk Werk
 ) ;
 
+bool GB_hyper_hash_need         // return true if A needs a hyper hash
+(
+    GrB_Matrix A
+) ;
+
 //------------------------------------------------------------------------------
 // GB_lookup: find k so that j == Ah [k], without using the A->Y hyper_hash
 //------------------------------------------------------------------------------
+
+#ifdef GB_DEBUG
 
 // For a sparse, bitmap, or full matrix j == k.
 // For a hypersparse matrix, find k so that j == Ah [k], if it
@@ -68,8 +75,7 @@ GrB_Info GB_hyper_hash_build    // construct A->Y if not already constructed
 // pstart and pend are defined for all sparsity structures: hypersparse,
 // sparse, bitmap, or full.
 
-// With the introduction of the hyper_hash, this is used only when the
-// hyper_hash is too costly to build.
+// With the introduction of the hyper_hash, this is used only for debugging.
 
 static inline bool GB_lookup        // find j = Ah [k]
 (
@@ -95,14 +101,14 @@ static inline bool GB_lookup        // find j = Ah [k]
         bool found ;
         GB_BINARY_SEARCH (j, Ah, (*pleft), pright, found) ; // ok (historical)
         if (found)
-        { 
+        {
             // j appears in the hyperlist at Ah [pleft]
             // k = (*pleft)
             (*pstart) = Ap [(*pleft)] ;
             (*pend)   = Ap [(*pleft)+1] ;
         }
         else
-        { 
+        {
             // j does not appear in the hyperlist Ah
             // k = -1
             (*pstart) = -1 ;
@@ -119,6 +125,6 @@ static inline bool GB_lookup        // find j = Ah [k]
         return (true) ;
     }
 }
-
+#endif
 #endif
 

@@ -9,7 +9,7 @@ This folder contains the following files:
     GraphBLAS_API_C_2.0.0.pdf   v2.0 C API (see https://graphblas.org)
     GraphBLAS_API_version.tex   the version of the C API that this version
                                 of SuiteSparse:GraphBLAS conforms to.
-    GraphBLAS_UserGuide.pdf     the SuiteSparse:GraphBLAS User Guide 
+    GraphBLAS_UserGuide.pdf     the SuiteSparse:GraphBLAS User Guide
 
     GraphBLAS_UserGuide.tex     LaTeX source of the User Guide
     GraphBLAS_UserGuide.bib

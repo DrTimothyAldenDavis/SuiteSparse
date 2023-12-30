@@ -32,7 +32,7 @@ GrB_Info GrB_Matrix_wait    // finish all work on a matrix
     //--------------------------------------------------------------------------
 
     if (waitmode != GrB_COMPLETE &&
-        (GB_ANY_PENDING_WORK (A) || GB_NEED_HYPER_HASH (A)))
+        (GB_ANY_PENDING_WORK (A) || GB_hyper_hash_need (A)))
     { 
         GrB_Info info ;
         GB_BURBLE_START ("GrB_Matrix_wait") ;
