@@ -3,8 +3,9 @@
 //------------------------------------------------------------------------------
 
 // SPDX-License-Identifier: Apache-2.0
+
 /*
- * Copyright (c) 2017-2019, NVIDIA CORPORATION. All rights reserved.
+ * Copyright (c) 2017-2023, NVIDIA CORPORATION. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -68,7 +69,7 @@ class reduceFactory
     // class properties
     //--------------------------------------------------------------------------
 
-    std::string base_name = "GB_jit";
+    std::string base_name = "GB_cuda_jit";
     std::string kernel_name = "reduce";
 
     int threads_per_block = 320 ;
@@ -144,11 +145,9 @@ class reduceFactory
 
         std::string hashable_name = base_name + "_" + kernel_name;
         std::stringstream string_to_be_jitted ;
-        string_to_be_jitted <<
-        hashable_name << std::endl <<
+        string_to_be_jitted << hashable_name << std::endl <<
         R"(#include "GB_cuda_kernel.h")" << std::endl <<
-        R"(#include ")" << jit::get_user_home_cache_dir() << "/"
-        << reduce_factory_.filename << R"(")" << std::endl <<
+        R"(#include ")" << reduce_factory_.filename << R"(")" << std::endl <<
         R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
         int64_t anvals = GB_nnz_held (A) ;
@@ -198,7 +197,7 @@ class reduceFactory
         jit::launcher(hashable_name + "_" + rcode,
                 string_to_be_jitted.str(),
                 header_names,
-                GB_jit_cuda_compiler_flags,
+                GB_cuda_jit_compiler_flags ( ),
                 file_callback)  // FIXME: where is file_callback defined?
            .set_kernel_inst(  hashable_name ,
                 { A->type->name, monoid->op->ztype->name })

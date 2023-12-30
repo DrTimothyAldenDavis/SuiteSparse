@@ -421,9 +421,9 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Dec 30, 2023"
+#define SUITESPARSE_DATE "Jan 1, 2024"
 #define SUITESPARSE_MAIN_VERSION    7
-#define SUITESPARSE_SUB_VERSION     4
+#define SUITESPARSE_SUB_VERSION     5
 #define SUITESPARSE_SUBSUB_VERSION  0
 
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))

@@ -1,4 +1,10 @@
+//------------------------------------------------------------------------------
+// GraphBLAS/CUDA/test/dataFactory.hpp
+//------------------------------------------------------------------------------
+
 // SPDX-License-Identifier: Apache-2.0
+
+//------------------------------------------------------------------------------
 
 #pragma once
 
@@ -8,10 +14,9 @@
 #include <unordered_set>
 
 #include "GB.h"
-#include "../GB_cuda_type_wrap.hpp"
+#include "GB_cuda_type_wrap.hpp"
 #include "test_utility.hpp"
-#include "../GB_cuda_error.h"
-
+#include "GB_cuda_error.h"
 
 // CAUTION: This assumes our indices are small enough to fit into a 32-bit int.
 inline std::int64_t gen_key(std::int64_t i, std::int64_t j) {

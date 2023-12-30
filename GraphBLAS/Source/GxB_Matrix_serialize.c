@@ -12,7 +12,7 @@
 // This method is similar to GrB_Matrix_serialize.  In contrast with the GrB*
 // method, this method allocates the blob itself, and hands over the allocated
 // space to the user application.  The blob must be freed by the same free
-// function passed in to GxB_init, or by the ANSI C11 free() if GrB_init was
+// function passed in to GxB_init, or by the C11 free() if GrB_init was
 // used.  On input, the blob_size need not be initialized; it is returned as
 // the size of the blob as allocated.
 

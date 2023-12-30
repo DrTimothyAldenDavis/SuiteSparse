@@ -223,6 +223,7 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
 
         int64_t pC_start, pC_end ;
         const int64_t *restrict Ch = C->h ;
+        const int64_t *restrict Cp = C->p ;
         if (C->nvals == 0)
         { 
             // C is empty
@@ -231,28 +232,21 @@ GrB_Info GB_setElement              // set a single entry, C(row,col) = scalar
         else if (Ch != NULL)
         {
             // C is hypersparse, with at least one entry
-            int64_t k ;
-            if (C->Y == NULL)
-            { 
-                // C is hypersparse but does not yet have a hyper_hash
-                k = 0 ;
-                found = GB_lookup (true, Ch, C->p, C->vlen, &k,
-                    C->nvec-1, j, &pC_start, &pC_end) ;
-            }
-            else
-            { 
-                // C is hypersparse, with a hyper_hash that is already built
-                k = GB_hyper_hash_lookup (C->p, C->Y->p, C->Y->i, C->Y->x,
-                    C->Y->vdim-1, j, &pC_start, &pC_end) ;
-                found = (k >= 0) ;
-            }
+            const int64_t *restrict C_Yp = (C->Y == NULL) ? NULL : C->Y->p ;
+            const int64_t *restrict C_Yi = (C->Y == NULL) ? NULL : C->Y->i ;
+            const int64_t *restrict C_Yx = (C->Y == NULL) ? NULL : C->Y->x ;
+            const int64_t C_hash_bits = (C->Y == NULL) ? 0 : (C->Y->vdim - 1) ;
+            const int64_t cnvec = C->nvec ;
+            int64_t k = GB_hyper_hash_lookup (Ch, cnvec, Cp, C_Yp, C_Yi, C_Yx,
+                C_hash_bits, j, &pC_start, &pC_end) ;
+            found = (k >= 0) ;
             ASSERT (GB_IMPLIES (found, j == Ch [k])) ;
         }
         else
         { 
             // C is sparse
-            pC_start = C->p [j] ;
-            pC_end   = C->p [j+1] ;
+            pC_start = Cp [j] ;
+            pC_end   = Cp [j+1] ;
             found = true ;
         }
 

@@ -97,7 +97,7 @@ GrB_Info GB_init            // start up GraphBLAS
 
     GB_Global_GrB_init_called_set (true) ;
 
-    // GrB_init passes in the ANSI C11 malloc/calloc/realloc/free.
+    // GrB_init passes in the C11 malloc/calloc/realloc/free.
 
     GB_Global_malloc_function_set  (malloc_function ) ; // cannot be NULL
     GB_Global_calloc_function_set  (calloc_function ) ; // ok if NULL

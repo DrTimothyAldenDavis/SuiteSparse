@@ -30,6 +30,9 @@ bool     GB_Global_GrB_init_called_get (void) ;
 void     GB_Global_hyper_switch_set (float hyper_switch) ;
 float    GB_Global_hyper_switch_get (void) ;
 
+void     GB_Global_hyper_hash_set (int64_t hyper_hash) ;
+int64_t  GB_Global_hyper_hash_get (void) ;
+
 void     GB_Global_bitmap_switch_set (int k, float b) ;
 float    GB_Global_bitmap_switch_get (int k) ;
 float    GB_Global_bitmap_switch_matrix_get

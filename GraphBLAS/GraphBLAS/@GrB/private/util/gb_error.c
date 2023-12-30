@@ -38,6 +38,7 @@ const char *gb_error        // return an error message from a GrB_Info value
         case GrB_DIMENSION_MISMATCH :   return ("matrix dimensions are invalid") ;
         case GrB_OUTPUT_NOT_EMPTY :     return ("output matrix already has values") ;
         case GrB_NOT_IMPLEMENTED :      return ("method not implemented") ;
+        case GrB_ALREADY_SET :          return ("name already set") ;
         case GrB_OUT_OF_MEMORY :        return ("out of memory") ;
         case GrB_INSUFFICIENT_SPACE :   return ("output array not large enough") ;
         case GrB_INVALID_OBJECT :       return ("object is corrupted") ;

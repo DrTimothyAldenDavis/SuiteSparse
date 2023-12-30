@@ -32,8 +32,6 @@ GrB_Info GB_op_name_and_defn
     // input
     const char *input_name,     // user-provided name, may be NULL
     const char *input_defn,     // user-provided name, may be NULL
-    const char *typecast_name,  // typecast name for function pointer
-    size_t typecast_len,        // length of typecast_name
     bool user_op,               // if true, a user-defined op
     bool jitable                // if true, the op can be JIT'd
 ) ;

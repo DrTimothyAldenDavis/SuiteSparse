@@ -76,21 +76,14 @@ static inline bool GB_removeElement     // return true if found
             // C is hypersparse: look for j in hyperlist C->h [0 ... C->nvec-1]
             //------------------------------------------------------------------
 
-            int64_t k ;
-            if (C->Y == NULL)
-            { 
-                // C is sparse but does not yet have a hyper_hash
-                k = 0 ;
-                found = GB_lookup (true, Ch, Cp, C->vlen, &k,
-                    C->nvec-1, j, &pC_start, &pC_end) ;
-            }
-            else
-            { 
-                // C is sparse, with a hyper_hash that is already built
-                k = GB_hyper_hash_lookup (Cp, C->Y->p, C->Y->i, C->Y->x,
-                    C->Y->vdim-1, j, &pC_start, &pC_end) ;
-                found = (k >= 0) ;
-            }
+            const int64_t *restrict C_Yp = (C->Y == NULL) ? NULL : C->Y->p ;
+            const int64_t *restrict C_Yi = (C->Y == NULL) ? NULL : C->Y->i ;
+            const int64_t *restrict C_Yx = (C->Y == NULL) ? NULL : C->Y->x ;
+            const int64_t C_hash_bits = (C->Y == NULL) ? 0 : (C->Y->vdim - 1) ;
+            const int64_t cnvec = C->nvec ;
+            int64_t k = GB_hyper_hash_lookup (Ch, cnvec, Cp, C_Yp, C_Yi, C_Yx,
+                C_hash_bits, j, &pC_start, &pC_end) ;
+            found = (k >= 0) ;
             if (!found)
             { 
                 // vector j is empty

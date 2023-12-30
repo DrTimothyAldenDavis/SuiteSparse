@@ -91,6 +91,8 @@ GrB_Info GB_new                 // create matrix, except for indices & values
     // basic information
     A->magic = GB_MAGIC2 ;                 // object is not yet valid
     A->type = type ;
+    A->user_name = NULL ;
+    A->user_name_size = 0 ;     // no user_name yet
     A->logger = NULL ;          // no error logged yet
     A->logger_size = 0 ;
 

@@ -1,5 +1,10 @@
 //------------------------------------------------------------------------------
-// GraphBLAS/CUDA/GB_cuda_reduce_factory
+// GraphBLAS/CUDA/GB_cuda_reduce_factory.hpp
+//------------------------------------------------------------------------------
+
+// (c) Nvidia Corp. 2023 All rights reserved
+// SPDX-License-Identifier: Apache-2.0
+
 //------------------------------------------------------------------------------
 
 // Class to manage both stringify functions from mxm, ops and monoids to a
@@ -9,18 +14,13 @@
 // Also provides a iostream callback to deliver the buffer to jitify as
 // if read from a file
 
-// (c) Nvidia Corp. 2020 All rights reserved
-// SPDX-License-Identifier: Apache-2.0
-
-//------------------------------------------------------------------------------
-
 // Implementations of string callbacks
 #pragma once
 
 // FIXME: do we use iostream?
 #include <iostream>
 #include <cstdint>
-#include "GB_jit_cache.h"
+#include "GB_cuda_jitify_cache.h"
 
 extern "C"
 {

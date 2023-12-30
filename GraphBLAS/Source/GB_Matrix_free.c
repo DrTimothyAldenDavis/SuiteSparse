@@ -24,6 +24,7 @@ void GB_Matrix_free             // free a matrix
         if (A != NULL && (A->magic == GB_MAGIC || A->magic == GB_MAGIC2))
         {
             // free all content of A
+            GB_FREE (&(A->user_name), A->user_name_size) ;
             size_t header_size = A->header_size ;
             GB_phybix_free (A) ;
             if (!(A->static_header))

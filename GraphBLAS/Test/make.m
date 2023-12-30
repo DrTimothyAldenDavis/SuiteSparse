@@ -11,7 +11,7 @@ function make (what)
 %                   % in -lgraphblas, use 'make all' if recompilation is needed
 %   make all        % make everything from scratch
 %
-% GraphBLAS requires an ANSI C11 compliant compiler.  On the Mac, clang 8.0
+% GraphBLAS requires an C11 compliant compiler.  On the Mac, clang 8.0
 % suffices.  gcc should be version 4.9.3 or later
 
 % SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.

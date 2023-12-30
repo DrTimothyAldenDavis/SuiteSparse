@@ -42,6 +42,8 @@ GrB_Info GrB_Descriptor_new     // create a new descriptor
     GrB_Descriptor desc = *descriptor ;
     desc->magic = GB_MAGIC ;
     desc->header_size = header_size ;
+    desc->user_name = NULL ;       // user_name for GrB_get/GrB_set
+    desc->user_name_size = 0 ;
     desc->logger = NULL ;          // error string
     desc->logger_size = 0 ;
     desc->out  = GxB_DEFAULT ;     // descriptor for output

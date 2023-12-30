@@ -344,10 +344,10 @@ GrB_Matrix gb_get_shallow   // return a shallow copy of built-in sparse matrix
         }
 
         //----------------------------------------------------------------------
-        // import the A->Y hyper_hash
+        // import the A->Y hyper_hash, if it exists
         //----------------------------------------------------------------------
 
-        if (yvdim > 0)
+        if (nfields == 9)
         {
             // A->Y is sparse, uint64, (A->vdim)-by-yvdim, held by column
             OK (GrB_Matrix_new (&Y, GrB_UINT64, vdim, yvdim)) ;

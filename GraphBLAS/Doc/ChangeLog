@@ -1,3 +1,23 @@
+Jan 1, 2024: version 9.0.0
+
+    * GrB_get/GrB_set: new functions from the v2.1 C API.
+    * GrB_Type_new, GrB_UnaryOp_new, GrB_IndexUnaryOp_new: no longer macros,
+        since GrB_set can be used to set the names of the operators.  These
+        methods no longer extract the name, so the default name is now the
+        empty string.  This is because GrB_get/set can only set these names
+        once.  This is a non-compatible change of behavior for these 3
+        methods, so SuiteSparse:GraphBLAS must become v9.0.0.
+    * historical methods:  many methods are replaced by GrB_get and GrB_set.
+        They remain in SuiteSparse:GraphBLAS but have been declared historical.
+        Terse prototypes exist in GraphBLAS.h, and any discussion is removed
+        from the User Guide:  GxB_get, GxB_set, and the methods they call, and
+        many more.  Use GrB_get/set in place those methods, and for:
+        GxB_*type_name, GxB_*type, GxB_Monoid_operator, GxB_Monoid_identity,
+        GxB_Monoid_terminal, GxB_Semiring_add, GxB_Semiring_multiply.  Use
+        GrB_STORAGE_ORIENTATION_HINT in place of GxB_FORMAT.
+    * hyper_hash: constructed only if the # of non-empty vectors in a
+        hypersparse matrix is large (> 1024, by default)
+
 Dec 30, 2023: version 8.3.1
 
     * major change to build system: by Markus Mützel
@@ -5,6 +25,8 @@ Dec 30, 2023: version 8.3.1
 
 Oct 7, 2023: version 8.2.1
 
+    * (50) bug fix: remove undefined behavior in Source/GB_add.c with
+        Cnvec_nonempty, caught by Yves Vandreissche, Intel
     * (49) bug fix: GrB_mxm saxpy4 and saxpy5 had incorrectly handling of
         typecasting in v8.0.0 to v8.2.0 (caught by Erik Welch)
     * cross-compiler support: replace check_c_source_runs with _compiles,
@@ -105,7 +127,7 @@ Version 7.4.1, Jan 9, 2023
 
 Version 7.4.0, Dec 23, 2022
 
-    * added non-va_arg methods: va_arg-based GxB_get/set methods are ANSI C11
+    * added non-va_arg methods: va_arg-based GxB_get/set methods are C11
         but cause issues for cffi in Python.  As a temporary workaround, new
         methods have been added that do not use va_arg.  The existing
         GxB_get/set methods are not changed.  The new methods are not in the
@@ -618,7 +640,7 @@ Version 3.1.2, Dec 16, 2019
         B is a standard matrix with one or more empty vectors.
     * (14) bug fix for @GrB interface: A(58) and A(:) were conflated.
     * compiler port: changes to allow GraphBLAS to be compiled with older
-        compilers (pre ANSI C11), and Microsoft Visual Studio.
+        compilers (pre C11), and Microsoft Visual Studio.
 
 Version 3.1.1, Oct 21, 2019
 
@@ -719,7 +741,7 @@ Version 2.3.0, Feb 25, 2019
     * added GxB_init: GrB_init with malloc/calloc/realloc/free redefinition
     * _Generic: compilers differ on _Generic(x,int:,const int:). gcc, clang,
         icc 18.0.0 treat int and const int the same; icc 18.0.3 treats them
-        as different.  This is a result of an ambiguity in the ANSI C11
+        as different.  This is a result of an ambiguity in the C11
         specification.  Minor update so that the use of _Generic(...) is
         compatible with all compilers.
     * early exit: for GrB_reduce
@@ -773,7 +795,7 @@ Version 2.2.0 (BETA4), Nov 28, 2018
         Kronecker matrix generator
     * minor changes for gcc -Wall -Wpedantic -Wextra, and icc -w3: to fix or
         silence warnings.  In a few cases, prior versions were relying on
-        extensions to the ANSI C11 standard in gcc, clang, xlc.  The extensions
+        extensions to the C11 standard in gcc, clang, xlc.  The extensions
         are widely supported but best avoided anway.
 
 Version 2.2.0 (BETA3), Nov 23, 2018

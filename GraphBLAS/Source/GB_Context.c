@@ -43,7 +43,7 @@
 
 #elif defined ( HAVE_KEYWORD__THREAD_LOCAL )
 
-    // ANSI C11 threads
+    // C11 threads
     #include <threads.h>
     _Thread_local GxB_Context GB_CONTEXT_THREAD = NULL ;
 

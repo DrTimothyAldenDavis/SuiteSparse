@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# nuke the cached kernels and src
+find ~/.SuiteSparse/GrB9.0.1 -mindepth 1 -delete
+
+# rebuild the JITpackage
+( cd ../JITpackage ; make purge ; make )
+
+# rebuild GraphBLAS
+( cd .. ; make )
+
+# run a demo
+../build/wathen_demo
+

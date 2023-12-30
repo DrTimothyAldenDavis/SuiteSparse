@@ -11,7 +11,7 @@ JIT C flags:      [ -Wundef  -std=c11 -lm -Wno-pragmas  -fexcess-precision=fast 
 JIT C link flags: [ -shared ]
 JIT C libraries:  [ -lm -ldl -lgomp -lpthread]
 JIT C preface:    []
-JIT cache:        [/home/faculty/d/davis/.SuiteSparse/GrB8.3.0]
+JIT cache:        [/home/faculty/d/davis/.SuiteSparse/GrB9.0.0]
 JIT C control:    [4]
 JIT C control:    [4] reset
 -------------------------------------
@@ -29,16 +29,16 @@ JIT C preface (revised):
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_type__0__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/b4/GB_jit__user_type__0__gauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_type__0__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/b4/GB_jit__user_type__0__gauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__user_type__0__gauss.so[0m
 [100%] Built target GB_jit__user_type__0__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/b4/libGB_jit__user_type__0__gauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/b4/libGB_jit__user_type__0__gauss.so
 
-   0.598 sec ]
+   0.586 sec ]
     GraphBLAS type: BadGauss user-defined: [gauss] size: 4
     typedef struct { int32_t real ; } gauss ;
  [ GxB_Type_new (jit: type changed) (jit: loaded but must recompile) (jit: compile and load) (jit: cmake)
@@ -50,20 +50,20 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_type__0__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/b4/GB_jit__user_type__0__gauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_type__0__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/b4/GB_jit__user_type__0__gauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__user_type__0__gauss.so[0m
 [100%] Built target GB_jit__user_type__0__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2be202506bf1b4'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/ce2be202506bf1b4'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/b4/libGB_jit__user_type__0__gauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/b4/libGB_jit__user_type__0__gauss.so
 
-   0.595 sec ]
+   0.603 sec ]
     GraphBLAS type: Gauss user-defined: [gauss] size: 8
     typedef struct { int32_t real ; int32_t imag ; } gauss ;
  [ GxB_Type_new 
-   1.03e-05 sec ]
+   1.09e-05 sec ]
     GraphBLAS type: Gauss user-defined: [gauss] size: 8
     typedef struct { int32_t real ; int32_t imag ; } gauss ;
  [ GxB_BinaryOp_new (jit: compile and load) (jit: cmake)
@@ -75,16 +75,16 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ce2
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_op__0__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/1b/GB_jit__user_op__0__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_op__0__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/1b/GB_jit__user_op__0__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__user_op__0__addgauss.so[0m
 [100%] Built target GB_jit__user_op__0__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/1b/libGB_jit__user_op__0__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/1b/libGB_jit__user_op__0__addgauss.so
 
-   0.608 sec ]
+   0.617 sec ]
 
     GraphBLAS BinaryOp: BadAddGauss (user-defined): z=addgauss(x,y)
     GraphBLAS type: ztype user-defined: [gauss] size: 8
@@ -107,16 +107,16 @@ void addgauss (gauss *z, const gauss *x, const gauss *y)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_op__0__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/1b/GB_jit__user_op__0__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__user_op__0__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/1b/GB_jit__user_op__0__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__user_op__0__addgauss.so[0m
 [100%] Built target GB_jit__user_op__0__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/af7c00a52397011b'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/af7c00a52397011b'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/1b/libGB_jit__user_op__0__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/1b/libGB_jit__user_op__0__addgauss.so
 
-   0.624 sec ]
+   0.598 sec ]
 
     GraphBLAS BinaryOp: AddGauss (user-defined): z=addgauss(x,y)
     GraphBLAS type: ztype user-defined: [gauss] size: 8
@@ -131,7 +131,7 @@ void addgauss (gauss *z, const gauss *x, const gauss *y)
     z->imag = x->imag + y->imag ;                          
 }
  [ GxB_BinaryOp_new 
-   7.3e-06 sec ]
+   8.62e-06 sec ]
 
     GraphBLAS BinaryOp: AddGauss (user-defined): z=addgauss(x,y)
     GraphBLAS type: ztype user-defined: [gauss] size: 8
@@ -216,7 +216,7 @@ row  1:  (   2,   2) (   2,   1) (   2,   0) (   2,  -1)
 row  2:  (   3,   2) (   3,   1) (   3,   0) (   3,  -1)
 row  3:  (   4,   2) (   4,   1) (   4,   0) (   4,  -1)
 
- [ GrB_reduce (A bitmap)  work:16 gpus:0 (jit: compile and load) (jit: cmake)
+ [ GrB_reduce (A bitmap) (jit: compile and load) (jit: cmake)
 -- The C compiler identification is GNU 9.4.0
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
@@ -225,16 +225,16 @@ row  3:  (   4,   2) (   4,   1) (   4,   0) (   4,  -1)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/30e2328e57edb8cc
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/30e2328e57edb8cc'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__reduce__83feee2__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/cc/GB_jit__reduce__83feee2__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/30e2328e57edb8cc
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/30e2328e57edb8cc'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__reduce__83feee2__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/cc/GB_jit__reduce__83feee2__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__reduce__83feee2__addgauss.so[0m
 [100%] Built target GB_jit__reduce__83feee2__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/30e2328e57edb8cc'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/30e2328e57edb8cc'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/cc/libGB_jit__reduce__83feee2__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/cc/libGB_jit__reduce__83feee2__addgauss.so
 
-   0.667 sec ]
+   0.656 sec ]
 
 sum (A) = (39,6)
  [ GrB_mxm C=A*B, saxpy (B = B*B, anz: 15 bnz: 15) (bitmap saxpy) (jit: compile and load) (jit: cmake)
@@ -246,16 +246,16 @@ sum (A) = (39,6)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e335728df7d8fc68
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e335728df7d8fc68'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/68/GB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/e335728df7d8fc68
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/e335728df7d8fc68'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/68/GB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.so[0m
 [100%] Built target GB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e335728df7d8fc68'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/e335728df7d8fc68'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/68/libGB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/68/libGB_jit__AxB_saxbit__03fe100eee0eee8a__addgauss_multgauss.so
 (bitmap to full) 
-   0.774 sec ]
+   0.769 sec ]
 
 
 =============== Gauss A = A^2 matrix:
@@ -266,7 +266,7 @@ row  1:  (  18,  10) (  18,   8) (  20,   0) (  22,  -8)
 row  2:  (  27,  16) (  28,  12) (  30,   0) (  32, -12)
 row  3:  (  36,  22) (  38,  16) (  40,   0) (  42, -16)
 
- [ GrB_reduce (A full)  work:16 gpus:0 (jit: compile and load) (jit: cmake)
+ [ GrB_reduce (A full) (jit: compile and load) (jit: cmake)
 -- The C compiler identification is GNU 9.4.0
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
@@ -275,16 +275,16 @@ row  3:  (  36,  22) (  38,  16) (  40,   0) (  42, -16)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/216cc7a07453b1ee
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/216cc7a07453b1ee'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__reduce__83feee3__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/ee/GB_jit__reduce__83feee3__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/216cc7a07453b1ee
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/216cc7a07453b1ee'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__reduce__83feee3__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/ee/GB_jit__reduce__83feee3__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__reduce__83feee3__addgauss.so[0m
 [100%] Built target GB_jit__reduce__83feee3__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/216cc7a07453b1ee'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/216cc7a07453b1ee'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/ee/libGB_jit__reduce__83feee3__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/ee/libGB_jit__reduce__83feee3__addgauss.so
 
-   0.708 sec ]
+   0.74 sec ]
 
 sum (A^2) = (387,46)
 
@@ -297,11 +297,10 @@ row  2:       .           .           .           .
 row  3:       .           .           .           .     
 
  [ GxB_set (full to sparse) 
-   1.35e-05 sec ]
+   2.34e-05 sec ]
  [ GxB_set (hyper to sparse) 
-   8.36e-06 sec ]
- [ GrB_mxm (iso mask: struct) (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = Sf'*Sf)  work:16 GPUs:0 Not using cuda path.
-nthreads 1 ntasks 1 (jit: compile and load) (jit: cmake)
+   1.51e-05 sec ]
+ [ GrB_mxm (iso mask: struct) (iso wait:M 0 zombies, 4 pending) (iso build) (hyper to sparse) C<M>=A'*B, masked_dot_product (dot3) (S{S} = Sf'*Sf) nthreads 1 ntasks 1 (jit: compile and load) (jit: cmake)
 -- The C compiler identification is GNU 9.4.0
 -- Detecting C compiler ABI info
 -- Detecting C compiler ABI info - done
@@ -310,33 +309,16 @@ nthreads 1 ntasks 1 (jit: compile and load) (jit: cmake)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/67a80190c429079f
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/67a80190c429079f'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/9f/GB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/67a80190c429079f
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/67a80190c429079f'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/9f/GB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.so[0m
 [100%] Built target GB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/67a80190c429079f'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/67a80190c429079f'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/9f/libGB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.so
-(sparse to bitmap) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/be2424ff0149b586
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/be2424ff0149b586'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__convert_s2b__0002ee0eed__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/86/GB_jit__convert_s2b__0002ee0eed__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__convert_s2b__0002ee0eed__gauss.so[0m
-[100%] Built target GB_jit__convert_s2b__0002ee0eed__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/be2424ff0149b586'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/86/libGB_jit__convert_s2b__0002ee0eed__gauss.so
-
-   1.32 sec ]
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/9f/libGB_jit__AxB_dot3__03fe100eee2eee55__addgauss_multgauss.so
+(sparse to bitmap) 
+   0.719 sec ]
 
 
 =============== Gauss C = diag(AA') matrix:
@@ -348,11 +330,11 @@ row  2:       .           .      (2893, 768)      .
 row  3:       .           .           .      (5108,1456)
 
  [ GxB_set 
-   1.61e-06 sec ]
+   1.33e-06 sec ]
  [ GxB_set (hyper to sparse) 
-   9.37e-06 sec ]
+   8.97e-06 sec ]
  [ GrB_select (A dense) 
-   3.26e-05 sec ]
+   5.52e-05 sec ]
 
 
 Gauss D matrix
@@ -371,16 +353,16 @@ row  3:       .           .           .      (  42, -16)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/dd2129670608a0a3
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/dd2129670608a0a3'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__colscale__0100eee0eee45__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/a3/GB_jit__colscale__0100eee0eee45__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/dd2129670608a0a3
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/dd2129670608a0a3'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__colscale__0100eee0eee45__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/a3/GB_jit__colscale__0100eee0eee45__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__colscale__0100eee0eee45__multgauss.so[0m
 [100%] Built target GB_jit__colscale__0100eee0eee45__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/dd2129670608a0a3'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/dd2129670608a0a3'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/a3/libGB_jit__colscale__0100eee0eee45__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/a3/libGB_jit__colscale__0100eee0eee45__multgauss.so
 
-   0.637 sec ]
+   0.622 sec ]
 
 
 =============== Gauss C = D*A matrix:
@@ -392,9 +374,9 @@ row  2:  ( 810, 480) ( 840, 360) ( 900,   0) ( 960,-360)
 row  3:  (1864, 348) (1852,  64) (1680,-640) (1508,-1344)
 
  [ GxB_set 
-   9.27e-07 sec ]
+   1.08e-06 sec ]
  [ GxB_set (sparse to bitmap) 
-   1.75e-05 sec ]
+   1.35e-05 sec ]
 
 
 Gauss D matrix (bitmap)
@@ -407,7 +389,7 @@ row  3:       .           .           .      (  42, -16)
 
   4x4 GraphBLAS gauss matrix, bitmap by row
   sparsity control: bitmap only
-  D, 4 entries, memory: 360 bytes
+  D, 4 entries, memory: 376 bytes
 
     (0,0) [user-defined value]
     (1,1) [user-defined value]
@@ -415,7 +397,7 @@ row  3:       .           .           .      (  42, -16)
     (3,3) [user-defined value]
 
  [ GxB_set (bitmap to sparse) 
-   2.67e-05 sec ]
+   1.5e-05 sec ]
 
 
 Gauss D matrix (back to sparse)
@@ -428,7 +410,7 @@ row  3:       .           .           .      (  42, -16)
 
   4x4 GraphBLAS gauss matrix, sparse by row
   sparsity control: sparse only
-  D, 4 entries, memory: 320 bytes
+  D, 4 entries, memory: 336 bytes
 
     (0,0) [user-defined value]
     (1,1) [user-defined value]
@@ -444,16 +426,16 @@ row  3:       .           .           .      (  42, -16)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/96b50768cfd669a8
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/96b50768cfd669a8'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__rowscale__0100eee0eee45__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/a8/GB_jit__rowscale__0100eee0eee45__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/96b50768cfd669a8
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/96b50768cfd669a8'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__rowscale__0100eee0eee45__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/a8/GB_jit__rowscale__0100eee0eee45__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__rowscale__0100eee0eee45__multgauss.so[0m
 [100%] Built target GB_jit__rowscale__0100eee0eee45__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/96b50768cfd669a8'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/96b50768cfd669a8'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/a8/libGB_jit__rowscale__0100eee0eee45__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/a8/libGB_jit__rowscale__0100eee0eee45__multgauss.so
 
-   0.634 sec ]
+   0.597 sec ]
 
 
 =============== Gauss C = A*D matrix:
@@ -465,7 +447,7 @@ row  2:  ( 179, 252) ( 408, 440) ( 900,   0) (1152,-1016)
 row  3:  ( 236, 342) ( 556, 592) (1200,   0) (1508,-1344)
 
  [ GrB_assign (C iso assign) (pending: 0) Method 21: (C full) = scalar 
-   3.38e-05 sec ]
+   3.96e-05 sec ]
 
 
 =============== Gauss C = (1,-2) matrix:
@@ -495,16 +477,16 @@ row  3:  (  36,  22) (  38,  16) (  40,   0) (  42, -16)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7acb8bd141ca27c9
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7acb8bd141ca27c9'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/c9/GB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7acb8bd141ca27c9
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7acb8bd141ca27c9'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/c9/GB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.so[0m
 [100%] Built target GB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7acb8bd141ca27c9'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7acb8bd141ca27c9'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/c9/libGB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/c9/libGB_jit__AxB_dot4__03fe900eee0eeec5__addgauss_multgauss.so
 (C in place) 
-   0.678 sec ]
+   0.675 sec ]
 
 
 =============== Gauss C += A*A' matrix:
@@ -516,7 +498,7 @@ row  2:  ( 918,  58) (1943, 476) (2894, 766) (3845,1056)
 row  3:  (1221,  88) (2581, 658) (3845,1056) (5109,1454)
 
  [ GrB_assign (C iso assign) (pending: 0) Method 21: (C full) = scalar 
-   2.18e-05 sec ]
+   2.82e-05 sec ]
 
 
 =============== Gauss B = (1,-2) matrix:
@@ -536,16 +518,16 @@ row  3:  (   1,  -2) (   1,  -2) (   1,  -2) (   1,  -2)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5301828568d7f863
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5301828568d7f863'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/63/GB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5301828568d7f863
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5301828568d7f863'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/63/GB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.so[0m
 [100%] Built target GB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5301828568d7f863'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5301828568d7f863'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/63/libGB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/63/libGB_jit__AxB_saxpy4__03fe300eee0eeec7__addgauss_multgauss.so
 (C in place) 
-   1.01 sec ]
+   1.05 sec ]
 
 
 =============== Gauss C += B*A:
@@ -565,16 +547,16 @@ row  3:  (1415, -40) (2748, 509) (3940, 856) (5132,1203)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/c94d1f86a5825b56
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/c94d1f86a5825b56'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/56/GB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/c94d1f86a5825b56
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/c94d1f86a5825b56'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/56/GB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.so[0m
 [100%] Built target GB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/c94d1f86a5825b56'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/c94d1f86a5825b56'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/56/libGB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/56/libGB_jit__AxB_saxpy5__03fe500eee0eeecd__addgauss_multgauss.so
 (C in place) 
-   0.647 sec ]
+   0.644 sec ]
 
 
 =============== Gauss C += A*B:
@@ -594,16 +576,16 @@ row  3:  (1615,-330) (2948, 219) (4140, 566) (5332, 913)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/3b6448d781104419
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/3b6448d781104419'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_bind1st__0000eee0efec1__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/19/GB_jit__apply_bind1st__0000eee0efec1__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/3b6448d781104419
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/3b6448d781104419'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_bind1st__0000eee0efec1__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/19/GB_jit__apply_bind1st__0000eee0efec1__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__apply_bind1st__0000eee0efec1__addgauss.so[0m
 [100%] Built target GB_jit__apply_bind1st__0000eee0efec1__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/3b6448d781104419'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/3b6448d781104419'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/19/libGB_jit__apply_bind1st__0000eee0efec1__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/19/libGB_jit__apply_bind1st__0000eee0efec1__addgauss.so
 
-   0.615 sec ]
+   0.618 sec ]
 
 
 =============== Gauss C = (1,-2) + A:
@@ -623,16 +605,16 @@ row  3:  (  37,  20) (  39,  14) (  41,  -2) (  43, -18)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/42813a1e14cb43c9
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/42813a1e14cb43c9'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_bind2nd__0000eee0eefc4__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/c9/GB_jit__apply_bind2nd__0000eee0eefc4__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/42813a1e14cb43c9
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/42813a1e14cb43c9'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_bind2nd__0000eee0eefc4__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/c9/GB_jit__apply_bind2nd__0000eee0eefc4__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__apply_bind2nd__0000eee0eefc4__multgauss.so[0m
 [100%] Built target GB_jit__apply_bind2nd__0000eee0eefc4__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/42813a1e14cb43c9'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/42813a1e14cb43c9'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/c9/libGB_jit__apply_bind2nd__0000eee0eefc4__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/c9/libGB_jit__apply_bind2nd__0000eee0eefc4__multgauss.so
 
-   0.655 sec ]
+   0.665 sec ]
 
 
 =============== Gauss C = A*(1,-2):
@@ -652,16 +634,16 @@ row  3:  (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/37d33aa629f415d3
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/37d33aa629f415d3'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_bind2nd__0000eee0eef44__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/d3/GB_jit__trans_bind2nd__0000eee0eef44__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/37d33aa629f415d3
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/37d33aa629f415d3'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_bind2nd__0000eee0eef44__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/d3/GB_jit__trans_bind2nd__0000eee0eef44__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__trans_bind2nd__0000eee0eef44__multgauss.so[0m
 [100%] Built target GB_jit__trans_bind2nd__0000eee0eef44__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/37d33aa629f415d3'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/37d33aa629f415d3'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/d3/libGB_jit__trans_bind2nd__0000eee0eef44__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/d3/libGB_jit__trans_bind2nd__0000eee0eef44__multgauss.so
 (full to sparse) 
-   0.668 sec ]
+   0.679 sec ]
 
 
 =============== Gauss C = A'*(1,-2):
@@ -681,16 +663,16 @@ row  3:  (  -1, -23) (   6, -52) (   8, -76) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/07d1cb825d4304d3
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/07d1cb825d4304d3'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_bind1st__0000eee0efe41__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/d3/GB_jit__trans_bind1st__0000eee0efe41__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/07d1cb825d4304d3
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/07d1cb825d4304d3'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_bind1st__0000eee0efe41__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/d3/GB_jit__trans_bind1st__0000eee0efe41__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__trans_bind1st__0000eee0efe41__multgauss.so[0m
 [100%] Built target GB_jit__trans_bind1st__0000eee0efe41__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/07d1cb825d4304d3'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/07d1cb825d4304d3'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/d3/libGB_jit__trans_bind1st__0000eee0efe41__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/d3/libGB_jit__trans_bind1st__0000eee0efe41__multgauss.so
 (full to sparse) 
-   0.673 sec ]
+   0.678 sec ]
 
 
 =============== Gauss C = (1,-2)*A':
@@ -719,19 +701,19 @@ void realgauss (int32_t *z, const gauss *x)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5c78101d6e73dc21
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5c78101d6e73dc21'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_unop__00006e06ef__realgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/21/GB_jit__apply_unop__00006e06ef__realgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5c78101d6e73dc21
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5c78101d6e73dc21'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_unop__00006e06ef__realgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/21/GB_jit__apply_unop__00006e06ef__realgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__apply_unop__00006e06ef__realgauss.so[0m
 [100%] Built target GB_jit__apply_unop__00006e06ef__realgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5c78101d6e73dc21'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/5c78101d6e73dc21'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/21/libGB_jit__apply_unop__00006e06ef__realgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/21/libGB_jit__apply_unop__00006e06ef__realgauss.so
 
-   0.621 sec ]
+   0.639 sec ]
 
   4x4 GraphBLAS int32_t matrix, full by row
-  R, 16 entries, memory: 280 bytes
+  R, 16 entries, memory: 296 bytes
 
     (0,0)   17
     (0,1)   38
@@ -769,19 +751,19 @@ row  3:  (  -1, -23) (   6, -52) (   8, -76) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b799fc2c5b29ec49
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b799fc2c5b29ec49'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__08006e06ef__realgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/49/GB_jit__trans_unop__08006e06ef__realgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/b799fc2c5b29ec49
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/b799fc2c5b29ec49'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__08006e06ef__realgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/49/GB_jit__trans_unop__08006e06ef__realgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__trans_unop__08006e06ef__realgauss.so[0m
 [100%] Built target GB_jit__trans_unop__08006e06ef__realgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b799fc2c5b29ec49'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/b799fc2c5b29ec49'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/49/libGB_jit__trans_unop__08006e06ef__realgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/49/libGB_jit__trans_unop__08006e06ef__realgauss.so
 
-   0.631 sec ]
+   0.616 sec ]
 
   4x4 GraphBLAS int32_t matrix, full by row
-  R, 16 entries, memory: 280 bytes
+  R, 16 entries, memory: 296 bytes
 
     (0,0)   17
     (0,1)   11
@@ -819,21 +801,21 @@ row  3:  (  -1, -23) (   6, -52) (   8, -76) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/4e606820337e573c
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/4e606820337e573c'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_unop__07fe8ee8ef__ijgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/3c/GB_jit__apply_unop__07fe8ee8ef__ijgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/4e606820337e573c
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/4e606820337e573c'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_unop__07fe8ee8ef__ijgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/3c/GB_jit__apply_unop__07fe8ee8ef__ijgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__apply_unop__07fe8ee8ef__ijgauss.so[0m
 [100%] Built target GB_jit__apply_unop__07fe8ee8ef__ijgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/4e606820337e573c'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/4e606820337e573c'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/3c/libGB_jit__apply_unop__07fe8ee8ef__ijgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/3c/libGB_jit__apply_unop__07fe8ee8ef__ijgauss.so
 
-   0.626 sec ]
+   0.644 sec ]
 
 R = ijgauss (C)
 
   4x4 GraphBLAS int64_t matrix, full by row
-  R, 16 entries, memory: 344 bytes
+  R, 16 entries, memory: 360 bytes
 
     (0,0)   18
     (0,1)   38
@@ -852,25 +834,8 @@ R = ijgauss (C)
     (3,2)   10
     (3,3)   11
 
- [ GrB_Matrix_extractTuples (A full) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5660a671ca40c48b
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5660a671ca40c48b'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__apply_unop__0002bb0b8f.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/8b/GB_jit__apply_unop__0002bb0b8f.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__apply_unop__0002bb0b8f.so[0m
-[100%] Built target GB_jit__apply_unop__0002bb0b8f
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/5660a671ca40c48b'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/8b/libGB_jit__apply_unop__0002bb0b8f.so
-
-   0.6 sec ]
+ [ GrB_Matrix_extractTuples (A full) 
+   4.07e-05 sec ]
 R (0,0) = 18
 R (0,1) = 38
 R (0,2) = 58
@@ -906,16 +871,16 @@ row  3:  (  -1, -23) (   6, -52) (   8, -76) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/20f5326f3ffc493d
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/20f5326f3ffc493d'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__0802ee0eef__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/3d/GB_jit__trans_unop__0802ee0eef__gauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/20f5326f3ffc493d
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/20f5326f3ffc493d'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__0802ee0eef__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/3d/GB_jit__trans_unop__0802ee0eef__gauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__trans_unop__0802ee0eef__gauss.so[0m
 [100%] Built target GB_jit__trans_unop__0802ee0eef__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/20f5326f3ffc493d'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/20f5326f3ffc493d'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/3d/libGB_jit__trans_unop__0802ee0eef__gauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/3d/libGB_jit__trans_unop__0802ee0eef__gauss.so
 
-   0.626 sec ]
+   0.644 sec ]
 
 
 =============== C = C'
@@ -927,7 +892,7 @@ row  2:  (  59, -38) (  52, -44) (  30, -60) (   8, -76)
 row  3:  (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 
  [ GxB_set (in-place transpose) (transpose) 
-   2.9e-05 sec ]
+   2.09e-05 sec ]
  [ GxB_Matrix_concat (sparse concat) (transpose) (bitmap/full transpose) (transpose) (transpose) (1-thread bucket transpose) (jit: compile and load) (jit: cmake)
 -- The C compiler identification is GNU 9.4.0
 -- Detecting C compiler ABI info
@@ -937,67 +902,16 @@ row  3:  (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f6daeb95a8060316
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f6daeb95a8060316'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__0802ee0ee5__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/16/GB_jit__trans_unop__0802ee0ee5__gauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/f6daeb95a8060316
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/f6daeb95a8060316'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__trans_unop__0802ee0ee5__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/16/GB_jit__trans_unop__0802ee0ee5__gauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__trans_unop__0802ee0ee5__gauss.so[0m
 [100%] Built target GB_jit__trans_unop__0802ee0ee5__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f6daeb95a8060316'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/f6daeb95a8060316'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/16/libGB_jit__trans_unop__0802ee0ee5__gauss.so
-(transpose) (1-thread bucket transpose) (transpose) (transpose) (bitmap/full transpose) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/48b856264c49fbf7
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/48b856264c49fbf7'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_sparse__0802ee0ee7__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/f7/GB_jit__concat_sparse__0802ee0ee7__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_sparse__0802ee0ee7__gauss.so[0m
-[100%] Built target GB_jit__concat_sparse__0802ee0ee7__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/48b856264c49fbf7'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/f7/libGB_jit__concat_sparse__0802ee0ee7__gauss.so
-(jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b74773f44d3a63e0
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b74773f44d3a63e0'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_sparse__0802ee0ee4__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/e0/GB_jit__concat_sparse__0802ee0ee4__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_sparse__0802ee0ee4__gauss.so[0m
-[100%] Built target GB_jit__concat_sparse__0802ee0ee4__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b74773f44d3a63e0'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/e0/libGB_jit__concat_sparse__0802ee0ee4__gauss.so
-(jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ca722575fc658dc5
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ca722575fc658dc5'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_sparse__0802ee0ee5__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/c5/GB_jit__concat_sparse__0802ee0ee5__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_sparse__0802ee0ee5__gauss.so[0m
-[100%] Built target GB_jit__concat_sparse__0802ee0ee5__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/ca722575fc658dc5'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/c5/libGB_jit__concat_sparse__0802ee0ee5__gauss.so
-
-   2.63 sec ]
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/16/libGB_jit__trans_unop__0802ee0ee5__gauss.so
+(transpose) (1-thread bucket transpose) (transpose) (transpose) (bitmap/full transpose) 
+   0.659 sec ]
 
 
 =============== Z = [C D ; E E ; D C]
@@ -1261,7 +1175,7 @@ row 255:       .           .           .      (  42, -16) (  80, -50) (  70, -60
 
 
   256x8 GraphBLAS gauss matrix, sparse by col
-  Z, 40 entries, memory: 928 bytes
+  Z, 40 entries, memory: 944 bytes
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -1304,25 +1218,8 @@ row 255:       .           .           .      (  42, -16) (  80, -50) (  70, -60
     (254,7) [user-defined value]
     (255,7) [user-defined value]
 
- [ GxB_Matrix_split (sparse/hyper split) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bc6fbb55201f367c
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bc6fbb55201f367c'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__split_sparse__0802ee0ee5__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/7c/GB_jit__split_sparse__0802ee0ee5__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__split_sparse__0802ee0ee5__gauss.so[0m
-[100%] Built target GB_jit__split_sparse__0802ee0ee5__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bc6fbb55201f367c'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/7c/libGB_jit__split_sparse__0802ee0ee5__gauss.so
-
-   0.647 sec ]
+ [ GxB_Matrix_split (sparse/hyper split) 
+   3.36e-05 sec ]
 
 
 =============== C Tile from Z:
@@ -1459,7 +1356,7 @@ row 127:       .           .           .
 
 
   128x3 GraphBLAS gauss matrix, sparse by col
-  CTiles [k], 12 entries, memory: 440 bytes
+  CTiles [k], 12 entries, memory: 456 bytes
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -1610,7 +1507,7 @@ row 127:       .           .           .           .           .
 
 
   128x5 GraphBLAS gauss matrix, sparse by col
-  CTiles [k], 8 entries, memory: 392 bytes
+  CTiles [k], 8 entries, memory: 408 bytes
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -1757,7 +1654,7 @@ row 127:       .           .           .
 
 
   128x3 GraphBLAS gauss matrix, sparse by col
-  CTiles [k], 3 entries, memory: 296 bytes
+  CTiles [k], 3 entries, memory: 312 bytes
 
     (124,0) [user-defined value]
     (125,1) [user-defined value]
@@ -1899,7 +1796,7 @@ row 127:  (  42, -16) (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 
 
   128x5 GraphBLAS gauss matrix, sparse by col
-  CTiles [k], 17 entries, memory: 536 bytes
+  CTiles [k], 17 entries, memory: 552 bytes
 
     (127,0) [user-defined value]
     (124,1) [user-defined value]
@@ -1920,60 +1817,9 @@ row 127:  (  42, -16) (  80, -50) (  70, -60) (  40, -80) (  10,-100)
     (127,4) [user-defined value]
 
  [ GxB_set (in-place transpose) (transpose) 
-   1.6e-05 sec ]
- [ GxB_Matrix_concat (bitmap concat) (transpose) (bitmap/full transpose) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/0c3e9de2e5d73a82
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/0c3e9de2e5d73a82'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_bitmap__0802ee0eeb__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/82/GB_jit__concat_bitmap__0802ee0eeb__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_bitmap__0802ee0eeb__gauss.so[0m
-[100%] Built target GB_jit__concat_bitmap__0802ee0eeb__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/0c3e9de2e5d73a82'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/82/libGB_jit__concat_bitmap__0802ee0eeb__gauss.so
-(transpose) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/068b643968f6613c
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/068b643968f6613c'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_bitmap__0802ee0ee8__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/3c/GB_jit__concat_bitmap__0802ee0ee8__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_bitmap__0802ee0ee8__gauss.so[0m
-[100%] Built target GB_jit__concat_bitmap__0802ee0ee8__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/068b643968f6613c'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/3c/libGB_jit__concat_bitmap__0802ee0ee8__gauss.so
-(transpose) (1-thread bucket transpose) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e363064d750a735e
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e363064d750a735e'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__concat_bitmap__0802ee0ee9__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/5e/GB_jit__concat_bitmap__0802ee0ee9__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__concat_bitmap__0802ee0ee9__gauss.so[0m
-[100%] Built target GB_jit__concat_bitmap__0802ee0ee9__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/e363064d750a735e'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/5e/libGB_jit__concat_bitmap__0802ee0ee9__gauss.so
-(transpose) (1-thread bucket transpose) (transpose) (transpose) (bitmap/full transpose) 
-   1.97 sec ]
+   9.74e-06 sec ]
+ [ GxB_Matrix_concat (bitmap concat) (transpose) (bitmap/full transpose) (transpose) (transpose) (1-thread bucket transpose) (transpose) (1-thread bucket transpose) (transpose) (transpose) (bitmap/full transpose) 
+   7.15e-05 sec ]
 
 
 =============== Z = [C D ; E E ; D C]
@@ -1997,7 +1843,7 @@ row 15:       .           .           .      (  42, -16) (  80, -50) (  70, -60)
 
 
   16x8 GraphBLAS gauss matrix, bitmap by col
-  Z, 40 entries, memory: 1.3 KB
+  Z, 40 entries, memory: 1.4 KB
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -2040,25 +1886,8 @@ row 15:       .           .           .      (  42, -16) (  80, -50) (  70, -60)
     (14,7) [user-defined value]
     (15,7) [user-defined value]
 
- [ GxB_Matrix_split (bitmap split) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f5d9f01d1b2c9447
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f5d9f01d1b2c9447'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__split_bitmap__0802ee0eea__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/47/GB_jit__split_bitmap__0802ee0eea__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__split_bitmap__0802ee0eea__gauss.so[0m
-[100%] Built target GB_jit__split_bitmap__0802ee0eea__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/f5d9f01d1b2c9447'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/47/libGB_jit__split_bitmap__0802ee0eea__gauss.so
-
-   0.614 sec ]
+ [ GxB_Matrix_split (bitmap split) 
+   1.78e-05 sec ]
 
 
 =============== C Tile from Z:
@@ -2075,7 +1904,7 @@ row  7:       .           .           .
 
 
   8x3 GraphBLAS gauss matrix, bitmap by col
-  CTiles [k], 12 entries, memory: 432 bytes
+  CTiles [k], 12 entries, memory: 448 bytes
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -2106,7 +1935,7 @@ row  7:       .           .           .           .           .
 
 
   8x5 GraphBLAS gauss matrix, bitmap by col
-  CTiles [k], 8 entries, memory: 576 bytes
+  CTiles [k], 8 entries, memory: 592 bytes
 
     (0,0) [user-defined value]
     (1,0) [user-defined value]
@@ -2133,7 +1962,7 @@ row  7:       .           .           .
 
 
   8x3 GraphBLAS gauss matrix, bitmap by col
-  CTiles [k], 3 entries, memory: 432 bytes
+  CTiles [k], 3 entries, memory: 448 bytes
 
     (4,0) [user-defined value]
     (5,1) [user-defined value]
@@ -2155,7 +1984,7 @@ row  7:  (  42, -16) (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 
 
   8x5 GraphBLAS gauss matrix, bitmap by col
-  CTiles [k], 17 entries, memory: 576 bytes
+  CTiles [k], 17 entries, memory: 592 bytes
 
     (7,0) [user-defined value]
     (4,1) [user-defined value]
@@ -2184,16 +2013,16 @@ row  7:  (  42, -16) (  80, -50) (  70, -60) (  40, -80) (  10,-100)
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bcb251ed7f212866
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bcb251ed7f212866'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__subassign_22__1000eee0eec8__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/66/GB_jit__subassign_22__1000eee0eec8__addgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/bcb251ed7f212866
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/bcb251ed7f212866'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__subassign_22__1000eee0eec8__addgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/66/GB_jit__subassign_22__1000eee0eec8__addgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__subassign_22__1000eee0eec8__addgauss.so[0m
 [100%] Built target GB_jit__subassign_22__1000eee0eec8__addgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/bcb251ed7f212866'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/bcb251ed7f212866'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/66/libGB_jit__subassign_22__1000eee0eec8__addgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/66/libGB_jit__subassign_22__1000eee0eec8__addgauss.so
 
-   0.639 sec ]
+   0.643 sec ]
 
 
 =============== C = C + ciso
@@ -2205,26 +2034,9 @@ row  2:  (  60, -40) (  53, -46) (  31, -62) (   9, -78)
 row  3:  (  81, -52) (  71, -62) (  41, -82) (  11,-102)
 
  [ GxB_set 
-   6.48e-07 sec ]
- [ GxB_Matrix_split (full split) (jit: compile and load) (jit: cmake)
--- The C compiler identification is GNU 9.4.0
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b25a3ffd809024d5
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b25a3ffd809024d5'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__split_full__0802ee0eef__gauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/d5/GB_jit__split_full__0802ee0eef__gauss.c.o[0m
-[100%] [32m[1mLinking C shared library libGB_jit__split_full__0802ee0eef__gauss.so[0m
-[100%] Built target GB_jit__split_full__0802ee0eef__gauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/b25a3ffd809024d5'
--- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/d5/libGB_jit__split_full__0802ee0eef__gauss.so
-
-   0.612 sec ]
+   7.84e-07 sec ]
+ [ GxB_Matrix_split (full split) 
+   2.92e-05 sec ]
 
 
 =============== S Tile from C:
@@ -2235,7 +2047,7 @@ row  0:  (  18, -16) (  12, -19)
 
   1x2 GraphBLAS gauss matrix, full by row
   sparsity control: full
-  STiles [k], 2 entries, memory: 232 bytes
+  STiles [k], 2 entries, memory: 248 bytes
 
     (0,0) [user-defined value]
     (0,1) [user-defined value]
@@ -2250,7 +2062,7 @@ row  0:  (   6, -22) (   0, -25)
 
   1x2 GraphBLAS gauss matrix, full by row
   sparsity control: full
-  STiles [k], 2 entries, memory: 232 bytes
+  STiles [k], 2 entries, memory: 248 bytes
 
     (0,0) [user-defined value]
     (0,1) [user-defined value]
@@ -2267,7 +2079,7 @@ row  2:  (  81, -52) (  71, -62)
 
   3x2 GraphBLAS gauss matrix, full by row
   sparsity control: full
-  STiles [k], 6 entries, memory: 264 bytes
+  STiles [k], 6 entries, memory: 280 bytes
 
     (0,0) [user-defined value]
     (0,1) [user-defined value]
@@ -2288,7 +2100,7 @@ row  2:  (  41, -82) (  11,-102)
 
   3x2 GraphBLAS gauss matrix, full by row
   sparsity control: full
-  STiles [k], 6 entries, memory: 264 bytes
+  STiles [k], 6 entries, memory: 280 bytes
 
     (0,0) [user-defined value]
     (0,1) [user-defined value]
@@ -2309,7 +2121,7 @@ row  2:  (  60, -40) (  53, -46) (  31, -62) (   9, -78)
 row  3:  (  81, -52) (  71, -62) (  41, -82) (  11,-102)
 
  [ GrB_assign (pending: 0) Method 22: (C full) += scalar (generic C(:,:)+=x assign) 
-   3.18e-05 sec ]
+   3.51e-05 sec ]
 
 
 =============== C = C + ciso (JIT paused):
@@ -2331,7 +2143,7 @@ row  2:  (  61, -42) (  54, -48) (  32, -64) (  10, -80)
 row  3:  (  82, -54) (  72, -64) (  42, -84) (  12,-104)
 
  [ GrB_assign (pending: 0) Method 22: (C full) += scalar (generic C(:,:)+=x assign) 
-   1.81e-05 sec ]
+   1.82e-05 sec ]
 
 
 =============== C = C * ciso (JIT paused):
@@ -2344,7 +2156,7 @@ row  3:  ( -26,-218) ( -56,-208) (-126,-168) (-196,-128)
 
 JIT: run (may not load or compile)
  [ GrB_assign (pending: 0) Method 22: (C full) += scalar 
-   1.4e-05 sec ]
+   1.47e-05 sec ]
 
 
 =============== C = C + ciso (JIT run):
@@ -2356,7 +2168,7 @@ row  2:  ( -22,-166) ( -41,-158) ( -95,-130) (-149,-102)
 row  3:  ( -25,-220) ( -55,-210) (-125,-170) (-195,-130)
 
  [ GrB_assign (pending: 0) Method 22: (C full) += scalar (generic C(:,:)+=x assign) 
-   1.76e-05 sec ]
+   1.82e-05 sec ]
 
 
 =============== C = C * ciso (JIT not loaded):
@@ -2377,16 +2189,16 @@ JIT: on
 -- Detecting C compile features - done
 -- Configuring done (0.3s)
 -- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7a164201169278d1
-gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7a164201169278d1'
-[ 50%] [32mBuilding C object CMakeFiles/GB_jit__subassign_22__1000eee0eec8__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/c/d1/GB_jit__subassign_22__1000eee0eec8__multgauss.c.o[0m
+-- Build files have been written to: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7a164201169278d1
+gmake[1]: Entering directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7a164201169278d1'
+[ 50%] [32mBuilding C object CMakeFiles/GB_jit__subassign_22__1000eee0eec8__multgauss.dir/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/c/d1/GB_jit__subassign_22__1000eee0eec8__multgauss.c.o[0m
 [100%] [32m[1mLinking C shared library libGB_jit__subassign_22__1000eee0eec8__multgauss.so[0m
 [100%] Built target GB_jit__subassign_22__1000eee0eec8__multgauss
-gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB8.3.0/tmp/7a164201169278d1'
+gmake[1]: Leaving directory '/home/faculty/d/davis/.SuiteSparse/GrB9.0.0/tmp/7a164201169278d1'
 -- Install configuration: ""
--- Installing: /home/faculty/d/davis/.SuiteSparse/GrB8.3.0/lib/d1/libGB_jit__subassign_22__1000eee0eec8__multgauss.so
+-- Installing: /home/faculty/d/davis/.SuiteSparse/GrB9.0.0/lib/d1/libGB_jit__subassign_22__1000eee0eec8__multgauss.so
 
-   0.627 sec ]
+   0.661 sec ]
 
 
 =============== C = C * ciso (full JIT):

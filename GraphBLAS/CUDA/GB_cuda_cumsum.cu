@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// GB_cuda_cumsum: cumlative sum of an array using GPU acceleration
+// GraphBLAS/CUDA/GB_cuda_cumsum: cumlative sum of an array on the GPU(s)
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2022, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------

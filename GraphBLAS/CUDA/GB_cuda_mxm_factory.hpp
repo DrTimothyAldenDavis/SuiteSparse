@@ -1,12 +1,14 @@
 //------------------------------------------------------------------------------
-// GB_cuda_mxm_factory: construct code and header file for GrB_mxm jit kernel
+// GraphBLAS/CUDA/GB_cuda_mxm_factory.hpp
+//------------------------------------------------------------------------------
+
+// (c) Nvidia Corp. 2023 All rights reserved
+// SPDX-License-Identifier: Apache-2.0
+
 //------------------------------------------------------------------------------
 
 // Class to manage both stringify functions from mxm, ops and monoids to a
 // header file.
-
-// (c) Nvidia Corp. 2020 All rights reserved
-// SPDX-License-Identifier: Apache-2.0
 
 // Implementations of string callbacks
 #pragma once
@@ -14,7 +16,7 @@
 // FIXME do we need the iostrean any more?
 #include <iostream>
 #include <cstdint>
-#include "GB_jit_cache.h"
+#include "GB_cuda_jitify_cache.h"
 
 extern "C"
 {
