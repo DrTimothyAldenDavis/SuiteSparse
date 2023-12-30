@@ -70,7 +70,7 @@ if ( NOT SUITESPARSE_USE_OPENMP )
     set ( SUITESPARSE_CONFIG_USE_OPENMP "OFF" CACHE STRING "" FORCE )
 endif ( )
 if ( SUITESPARSE_CONFIG_USE_OPENMP OR SUITESPARSE_USE_OPENMP )
-    find_package ( OpenMP GLOBAL )
+    find_package ( OpenMP COMPONENTS C GLOBAL )
 else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )

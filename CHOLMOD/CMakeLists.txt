@@ -88,7 +88,7 @@ if ( NOT SUITESPARSE_USE_OPENMP )
     set ( CHOLMOD_USE_OPENMP "OFF" CACHE STRING "" FORCE )
 endif ( )
 if ( CHOLMOD_USE_OPENMP )
-    find_package ( OpenMP GLOBAL )
+    find_package ( OpenMP COMPONENTS C GLOBAL )
 else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
