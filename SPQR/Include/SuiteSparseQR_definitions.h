@@ -64,21 +64,21 @@
         #endif
  */
 
-#define SPQR_DATE "Dec 30, 2023"
+#define SPQR_DATE "Jan XX, 2023"
 #define SPQR_MAIN_VERSION   4
 #define SPQR_SUB_VERSION    3
-#define SPQR_SUBSUB_VERSION 0
+#define SPQR_SUBSUB_VERSION 1
 
 #define SPQR_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define SPQR_VERSION SPQR_VER_CODE(SPQR_MAIN_VERSION,SPQR_SUB_VERSION)
 
 #if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "SPQR 4.3.0 requires SuiteSparse_config 7.4.0 or later"
+    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
+#error "SPQR 4.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #if (CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1))
-#error "SPQR 4.3.0 requires CHOLMOD 5.1.0 or later"
+#error "SPQR 4.3.1 requires CHOLMOD 5.1.0 or later"
 #endif
 
 #endif

@@ -43,10 +43,10 @@ set ( DEMO_OK false )
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS AND SUITESPARSE_DEMOS AND DEMO_OK )
     # for the demo only:
-    find_package ( CHOLMOD 5.1.0
+    find_package ( CHOLMOD 5.1.1
         PATHS ${CMAKE_SOURCE_DIR}/../../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.1.0 )
+        find_package ( CHOLMOD 5.1.1 )
     endif ( )
 endif ( )
 
