@@ -142,9 +142,17 @@ if ( BUILD_STATIC_LIBS )
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RESOLVE_DEVICE_SYMBOLS ON
         CUDA_RUNTIME_LIBRARY Static )
-    target_link_libraries ( GPUQREngine_static PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
+    target_link_libraries ( GPUQREngine_static PRIVATE CUDA::nvrtc CUDA::cudart_static )
     target_compile_definitions ( GPUQREngine_static PRIVATE "SPQR_HAS_CUDA" )
+    # FIXME: Ok to hardcode CUDA library names like this?
+    set ( GPUQRENGINE_STATIC_LIBS "-L${CUDAToolkit_LIBRARY_DIR} -lcuda -lcudart_static" )
+    if ( TARGET CUDA::cublas_static )
+        target_link_libraries ( GPUQREngine_static PRIVATE CUDA::cublas_static )
+        set ( GPUQRENGINE_STATIC_LIBS "${GPUQRENGINE_STATIC_LIBS} -lcublas_static -lcublasLt_static -lculibos" )
+    else ( )
+        target_link_libraries ( GPUQREngine_static PRIVATE CUDA::cublas )
+        set ( GPUQRENGINE_STATIC_LIBS "${GPUQRENGINE_STATIC_LIBS} -lcublas" )
+    endif ( )
 
     target_include_directories ( GPUQREngine_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
