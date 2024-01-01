@@ -96,8 +96,8 @@ find_package ( CHOLMOD 5.1.1 REQUIRED )
 find_package ( COLAMD 3.3.0 REQUIRED )
 find_package ( CXSparse 4.3.0 REQUIRED )
 find_package ( GraphBLAS 9.0.0 )
-find_package ( KLU 2.3.0 REQUIRED )
-find_package ( KLU_CHOLMOD 2.3.0 REQUIRED )
+find_package ( KLU 2.3.1 REQUIRED )
+find_package ( KLU_CHOLMOD 2.3.1 REQUIRED )
 find_package ( LDL 3.3.0 REQUIRED )
 find_package ( LAGraph 1.1.1 )
 find_package ( SuiteSparse_Mongoose 3.3.0 REQUIRED )
@@ -105,7 +105,7 @@ find_package ( ParU 0.1.1 REQUIRED )
 find_package ( RBio 4.3.0 REQUIRED )
 find_package ( SPEX 2.3.0 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.1 REQUIRED )
-find_package ( UMFPACK 6.3.0 REQUIRED )
+find_package ( UMFPACK 6.3.1 REQUIRED )
 
 #-------------------------------------------------------------------------------
 # configure files

@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Dec 30, 2023" )
+set ( UMFPACK_DATE "Jan XX, 2024" ) # FIXME for 7.5.0
 set ( UMFPACK_VERSION_MAJOR 6 CACHE STRING "" FORCE )
 set ( UMFPACK_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( UMFPACK_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( UMFPACK_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -45,10 +45,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.0
@@ -73,10 +73,10 @@ if ( SUITESPARSE_ROOT_CMAKELISTS )
 else ( )
     if ( UMFPACK_USE_CHOLMOD )
         # look for CHOLMOD (optional fill-reducing orderings)
-        find_package ( CHOLMOD 5.1.0
+        find_package ( CHOLMOD 5.1.1
             PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CHOLMOD )
-            find_package ( CHOLMOD 5.1.0 )
+            find_package ( CHOLMOD 5.1.1 )
         endif ( )
         if ( NOT CHOLMOD_FOUND )
             # CHOLMOD not found so disable it
