@@ -235,6 +235,23 @@ else ( )
     endif ( )
 endif ( )
 
+
+if ( CMAKE_VERSION VERSION_LESS 3.24 )
+    # work around missing GLOBAL option of find_package in older CMake versions
+    # If SuiteSparse is included as a sub-project in other projects, they might
+    # need to manually import the OpenMP targets for older CMake versions, too.
+    if ( "suitesparse_config" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "graphblas" IN_LIST SUITESPARSE_ENABLE_PROJECTS
+            OR "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        find_package ( OpenMP COMPONENTS C )
+    endif ( )
+    if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        find_package ( OpenMP COMPONENTS CXX )
+    endif ( )
+endif ( )
+
+
 #-------------------------------------------------------------------------------
 # include selected projects
 #-------------------------------------------------------------------------------
