@@ -48,7 +48,7 @@ include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include
 
 % Determine if METIS is available (not available on Windows)
 metis_path = '../../CHOLMOD/SuiteSparse_metis' ;
-have_metis = exist (metis_path, 'dir') && ~ispc ;
+have_metis = exist (metis_path, 'dir') ;
 
 if (have_metis)
     include = [include ' -I' metis_path '/include'] ;
