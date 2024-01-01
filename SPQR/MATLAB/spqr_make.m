@@ -46,15 +46,10 @@ end
 
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
-% Determine if METIS is available (not available on Windows)
 metis_path = '../../CHOLMOD/SuiteSparse_metis' ;
-have_metis = exist (metis_path, 'dir') ;
-
-if (have_metis)
-    include = [include ' -I' metis_path '/include'] ;
-    include = [include ' -I' metis_path '/GKlib'] ;
-    include = [include ' -I' metis_path '/libmetis'] ;
-end
+include = [include ' -I' metis_path '/include'] ;
+include = [include ' -I' metis_path '/GKlib'] ;
+include = [include ' -I' metis_path '/libmetis'] ;
 
 include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD' ] ;
 
