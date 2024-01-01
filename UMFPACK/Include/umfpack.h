@@ -2,7 +2,7 @@
 // UMFPACK/Include/umfpack.h: include file for UMFPACK
 //------------------------------------------------------------------------------
 
-// UMFPACK, Copyright (c) 2005-2023, Timothy A. Davis, All Rights Reserved.
+// UMFPACK, Copyright (c) 2005-2024, Timothy A. Davis, All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0+
 
 //------------------------------------------------------------------------------
@@ -40,7 +40,7 @@
 /* -------------------------------------------------------------------------- */
 
 #define UMFPACK_COPYRIGHT \
-"UMFPACK:  Copyright (c) 2005-2023 by Timothy A. Davis.  All Rights Reserved.\n"
+"UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.\n"
 
 #define UMFPACK_LICENSE_PART1 \
 "\nUMFPACK License: SPDX-License-Identifier: GPL-2.0+\n" \
@@ -74,21 +74,21 @@
  * below.
  */
 
-#define UMFPACK_DATE "Dec 30, 2023"
+#define UMFPACK_DATE "Jan XX, 2024"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    3
-#define UMFPACK_SUBSUB_VERSION 0
+#define UMFPACK_SUBSUB_VERSION 1
 
 #define UMFPACK_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
 
 #if !defined (SUITESPARSE_VERSION) || \
     (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "UMFPACK 6.3.0 requires SuiteSparse_config 7.4.0 or later"
+#error "UMFPACK 6.3.1 requires SuiteSparse_config 7.4.0 or later"
 #endif
 
 #if AMD_VERSION < SUITESPARSE_VER_CODE(3,3)
-#error "UMFPACK 6.3.0 requires AMD 3.3.0 or later"
+#error "UMFPACK 6.3.1 requires AMD 3.3.0 or later"
 #endif
 
 // user code should not directly use GB_STR or GB_XSTR

@@ -2,7 +2,7 @@
 // KLU/Source/klu.h: include file for KLU
 //------------------------------------------------------------------------------
 
-// KLU, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
+// KLU, Copyright (c) 2004-2024, University of Florida.  All Rights Reserved.
 // Authors: Timothy A. Davis and Ekanathan Palamadai.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -823,29 +823,29 @@ void klu_version (int version [3]) ;
  *      #endif
  */
 
-#define KLU_DATE "Dec 30, 2023"
+#define KLU_DATE "Jan XX, 2024"
 #define KLU_MAIN_VERSION   2
 #define KLU_SUB_VERSION    3
-#define KLU_SUBSUB_VERSION 0
+#define KLU_SUBSUB_VERSION 1
 
 #define KLU_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define KLU_VERSION KLU_VERSION_CODE(KLU_MAIN_VERSION,KLU_SUB_VERSION)
 
 #if !defined (SUITESPARSE_VERSION) || \
     (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "KLU 2.3.0 requires SuiteSparse_config 7.4.0 or later"
+#error "KLU 2.3.1 requires SuiteSparse_config 7.4.0 or later"
 #endif
 
 #if AMD_VERSION < SUITESPARSE_VER_CODE(3,3)
-#error "KLU 2.3.0 requires AMD 3.3.0 or later"
+#error "KLU 2.3.1 requires AMD 3.3.0 or later"
 #endif
 
 #if COLAMD_VERSION < SUITESPARSE_VER_CODE(3,3)
-#error "KLU 2.3.0 requires COLAMD 3.3.0 or later"
+#error "KLU 2.3.1 requires COLAMD 3.3.0 or later"
 #endif
 
 #if BTF_VERSION < SUITESPARSE_VER_CODE(2,3)
-#error "KLU 2.3.0 requires BTF 2.3.0 or later"
+#error "KLU 2.3.1 requires BTF 2.3.0 or later"
 #endif
 
 #endif
