@@ -1,6 +1,8 @@
 Jan XX, 2024: version 7.5.0 FIXME for 7.5.0
 
     * Suitesparse_config: 7.5.0, to reflect the addition of GraphBLAS 9.0.0.
+        Minor updates to build system, including bug fixes when specifying a
+        specific BLAS/LAPACK library, and configuration of *.pc files.
     * GraphBLAS 9.0.0: supporting the v2.1 C API;
         see https://github.com/GraphBLAS/graphblas-api-c
     * Example 1.6.0: using GraphBLAS 9.0.0 and SuiteSparse_config 7.5.0,
