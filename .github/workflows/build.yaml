@@ -14,6 +14,8 @@ env:
   BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
   # string with name of libraries to be checked
   CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
+  # string with name of libraries that are installed
+  INSTALLED_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
 
 
 jobs:
@@ -227,6 +229,17 @@ jobs:
           printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
           ./my_cxx_demo_static
           echo "::endgroup::"
+          IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Building test with library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/Example/${lib}
+            mkdir build && cd build
+            cmake \
+              -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
+              ..
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
 
       - name: build example using autotools
         run: |
@@ -424,6 +437,17 @@ jobs:
           PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
             ./my_cxx_demo_static
           echo "::endgroup::"
+          IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Building test with library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/Example/${lib}
+            mkdir build && cd build
+            cmake \
+              -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
+              ..
+            cmake --build . --config Release
+            echo "::endgroup::"
+          done
 
       - name: build example using autotools
         run: |
