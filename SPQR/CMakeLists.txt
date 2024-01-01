@@ -198,17 +198,6 @@ else ( )
     set ( SPQR_CFLAGS "" )
 endif ( )
 
-# OpenMP:
-if ( OpenMP_CXX_FOUND )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SPQR_static PRIVATE OpenMP::OpenMP_CXX )
-        list ( APPEND SPQR_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
-    endif ( )
-endif ( )
-
 # libm:
 if ( NOT WIN32 )
     if ( BUILD_SHARED_LIBS )
