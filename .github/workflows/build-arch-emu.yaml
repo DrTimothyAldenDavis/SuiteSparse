@@ -232,3 +232,15 @@ jobs:
           printf "\033[1;35m  C++ binary\033[0m\n"
           LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
           echo "::endgroup::"
+          IFS=:
+          INSTALLED_LIBS="${INSTALLED_LIBS}${{ matrix.extra-build-libs }}"
+          for lib in ${INSTALLED_LIBS}; do
+            printf "::group::   \033[0;32m==>\033[0m Building test with library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            autoreconf -fi
+            mkdir build-autotools && cd build-autotools
+            PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \
+              ../configure --enable-shared --disable-static
+            make all
+            echo "::endgroup::"
+          done
