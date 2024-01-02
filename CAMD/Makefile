@@ -53,14 +53,14 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
-	./build/camd_demo > build/camd_demo.out
-	- diff --strip-trailing-cr Demo/camd_demo.out build/camd_demo.out
-	./build/camd_l_demo > build/camd_l_demo.out
-	- diff --strip-trailing-cr Demo/camd_l_demo.out build/camd_l_demo.out
-	./build/camd_demo2 > build/camd_demo2.out
-	- diff --strip-trailing-cr Demo/camd_demo2.out build/camd_demo2.out
-	./build/camd_simple > build/camd_simple.out
-	- diff --strip-trailing-cr Demo/camd_simple.out build/camd_simple.out
+	./build/camd_demo > build/camd_demo.out && ( command -v d2u && d2u ./build/amd_demo.out || true )
+	- diff Demo/camd_demo.out build/camd_demo.camd_demo
+	./build/camd_l_demo > build/camd_l_demo.out && ( command -v d2u && d2u ./build/camd_l_demo.out || true )
+	- diff Demo/camd_l_demo.out build/camd_l_demo.out
+	./build/camd_demo2 > build/camd_demo2.out && ( command -v d2u && d2u ./build/camd_demo2.out || true )
+	- diff Demo/camd_demo2.out build/camd_demo2.out
+	./build/camd_simple > build/camd_simple.out && ( command -v d2u && d2u ./build/camd_simple.out || true )
+	- diff Demo/camd_simple.out build/camd_simple.out
 
 # just compile after running cmake&& do not run cmake again
 remake:

@@ -53,10 +53,10 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
-	- ./build/ccolamd_example > ./build/ccolamd_example.out
-	- diff --strip-trailing-cr ./Demo/ccolamd_example.out ./build/ccolamd_example.out
-	- ./build/ccolamd_l_example > ./build/ccolamd_l_example.out
-	- diff --strip-trailing-cr ./Demo/ccolamd_l_example.out ./build/ccolamd_l_example.out
+	- ./build/ccolamd_example > ./build/ccolamd_example.out && ( command -v d2u && d2u ./build/ccolamd_example.out || true )
+	- diff ./Demo/ccolamd_example.out ./build/ccolamd_example.out
+	- ./build/ccolamd_l_example > ./build/ccolamd_l_example.out && ( command -v d2u && d2u ./build/ccolamd_l_example.out || true )
+	- diff ./Demo/ccolamd_l_example.out ./build/ccolamd_l_example.out
 
 # just compile after running cmake; do not run cmake again
 remake:
