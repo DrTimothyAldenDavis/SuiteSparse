@@ -1,12 +1,16 @@
 Jan XX, 2024: version 7.5.0 FIXME for 7.5.0
 
     * Suitesparse_config: 7.5.0, to reflect the addition of GraphBLAS 9.0.0.
+        Minor updates to build system, including bug fixes when specifying a
+        specific BLAS/LAPACK library, and configuration of *.pc files.
     * GraphBLAS 9.0.0: supporting the v2.1 C API;
         see https://github.com/GraphBLAS/graphblas-api-c
     * Example 1.6.0: using GraphBLAS 9.0.0 and SuiteSparse_config 7.5.0,
-        remove explicit dependencies on OpenMP, libm, GMP, and MPFR
+        remove explicit dependencies on OpenMP, libm, GMP, and MPFR.
+        Add programs to test the *Config.cmake of each package.
     * CHOLMOD 5.1.1, SPQR 4.3.1, ParU 0.1.1, LAGraph 1.1.1, UMFPACK 6.3.1,
-        KLU 2.3.1: minor updates to build system and MATLAB interfaces
+        KLU 2.3.1, LDL 3.1.1: minor updates to build system
+        and MATLAB interfaces
 
 Dec 30, 2023: version 7.4.0
 

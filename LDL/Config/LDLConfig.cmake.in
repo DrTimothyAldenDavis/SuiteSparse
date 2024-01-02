@@ -50,26 +50,12 @@ if ( @SUITESPARSE_IN_BUILD_TREE@ )
             find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
         endif ( )
     endif ( )
-
-    if ( NOT TARGET SuiteSparse::AMD )
-        # First check in a common build tree
-        find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@
-            PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
-        # Then, check in the currently active CMAKE_MODULE_PATH
-        if ( NOT AMD_FOUND )
-            find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@ )
-        endif ( )
-    endif ( )
-
 else ( )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
         find_dependency ( SuiteSparse_config @SUITESPARSE_CONFIG_VERSION_MAJOR@.@SUITESPARSE_CONFIG_VERSION_MINOR@ )
     endif ( )
-    if ( NOT TARGET SuiteSparse::AMD )
-        find_dependency ( AMD @AMD_VERSION_MAJOR@.@AMD_VERSION_MINOR@ )
-    endif ( )
 endif ( )
-if ( NOT SuiteSparse_config_FOUND OR NOT AMD_FOUND )
+if ( NOT SuiteSparse_config_FOUND )
     set ( _dependencies_found OFF )
 endif ( )
 
