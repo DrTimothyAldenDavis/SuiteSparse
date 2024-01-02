@@ -52,18 +52,18 @@ all: library
 
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
-	./build/ldlsimple > ./build/ldlsimple.out
-	- diff --strip-trailing-cr ./Demo/ldlsimple.out ./build/ldlsimple.out
-	./build/ldllsimple > ./build/ldllsimple.out
-	- diff --strip-trailing-cr ./Demo/ldllsimple.out ./build/ldllsimple.out
-	./build/ldlmain > ./build/ldlmain.out
-	- diff --strip-trailing-cr ./Demo/ldlmain.out ./build/ldlmain.out
-	./build/ldllmain > ./build/ldllmain.out
-	- diff --strip-trailing-cr ./Demo/ldllmain.out ./build/ldllmain.out
-	./build/ldlamd  > ./build/ldlamd.out
-	- diff --strip-trailing-cr ./Demo/ldlamd.out  ./build/ldlamd.out
-	./build/ldllamd  > ./build/ldllamd.out
-	- diff --strip-trailing-cr ./Demo/ldllamd.out  ./build/ldllamd.out
+	./build/ldlsimple > ./build/ldlsimple.out && ( command -v d2u && d2u ./build/ldlsimple.out || true )
+	- diff ./Demo/ldlsimple.out ./build/ldlsimple.out
+	./build/ldllsimple > ./build/ldllsimple.out && ( command -v d2u && d2u ./build/ldllsimple.out || true )
+	- diff ./Demo/ldllsimple.out ./build/ldllsimple.out
+	./build/ldlmain > ./build/ldlmain.out && ( command -v d2u && d2u ./build/ldlmain.out || true )
+	- diff ./Demo/ldlmain.out ./build/ldlmain.out
+	./build/ldllmain > ./build/ldllmain.out && ( command -v d2u && d2u ./build/ldllmain.out || true )
+	- diff ./Demo/ldllmain.out ./build/ldllmain.out
+	./build/ldlamd  > ./build/ldlamd.out && ( command -v d2u && d2u ./build/ldlamd.out || true )
+	- diff ./Demo/ldlamd.out  ./build/ldlamd.out
+	./build/ldllamd  > ./build/ldllamd.out && ( command -v d2u && d2u ./build/ldllamd.out || true )
+	- diff ./Demo/ldllamd.out  ./build/ldllamd.out
 
 # just compile after running cmake; do not run cmake again
 remake:
