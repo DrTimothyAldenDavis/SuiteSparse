@@ -76,6 +76,9 @@ configure_file (
     "${PROJECT_SOURCE_DIR}/include/LAGraph.h"
     NEWLINE_STYLE LF )
 
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+
 #-------------------------------------------------------------------------------
 # code coverage and build type
 #-------------------------------------------------------------------------------
@@ -358,7 +361,7 @@ install ( FILES
 
 if ( NOT MSVC )
     if ( BUILD_STATIC_LIBS )
-        if ( NOT WIN32 )
+        if ( NOT NO_LIBM )
             list ( APPEND LAGRAPH_STATIC_LIBS "m" )
         endif ( )
     endif ( )
