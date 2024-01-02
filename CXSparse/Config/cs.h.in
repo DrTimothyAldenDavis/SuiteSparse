@@ -2,7 +2,7 @@
 // CXSparse/Include/cs.h: include file for CXSparse
 //------------------------------------------------------------------------------
 
-// CXSparse, Copyright (c) 2006-2023, Timothy A. Davis, All Rights Reserved
+// CXSparse, Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
@@ -39,14 +39,15 @@
 #define CS_SUBVER @CXSPARSE_VERSION_MINOR@
 #define CS_SUBSUB @CXSPARSE_VERSION_SUB@
 #define CS_DATE "@CXSPARSE_DATE@"        /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2024"
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "CXSparse @CXSPARSE_VERSION_MAJOR@.@CXSPARSE_VERSION_MINOR@.@CXSPARSE_VERSION_SUB@ requires SuiteSparse_config 7.4 or later"
+#define CXSPARSE__VERSION SUITESPARSE__VERCODE(@CXSPARSE_VERSION_MAJOR@,@CXSPARSE_VERSION_MINOR@,@CXSPARSE_VERSION_SUB@)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "CXSparse @CXSPARSE_VERSION_MAJOR@.@CXSPARSE_VERSION_MINOR@.@CXSPARSE_VERSION_SUB@ requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #define cs_long_t       int64_t

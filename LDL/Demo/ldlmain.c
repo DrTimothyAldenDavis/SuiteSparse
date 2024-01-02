@@ -47,7 +47,7 @@
 #define PROGRAM "ldlamd"
 
 #if (AMD_VERSION < SUITESPARSE_VER_CODE(3,3))
-#error "LDL:AMD @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@ requires AMD 3.3.0 or later"
+#error "LDL:AMD @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@ requires AMD 3.3.1 or later"
 #endif
 
 #else

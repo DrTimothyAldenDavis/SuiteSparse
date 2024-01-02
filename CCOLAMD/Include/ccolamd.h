@@ -2,7 +2,7 @@
 // CCOLAMD/Include/ccolamd.h:  constrained column approx. min. degree ordering
 //------------------------------------------------------------------------------
 
-// CCOLAMD, Copyright (c) 1996-2023, Timothy A. Davis, Sivasankaran
+// CCOLAMD, Copyright (c) 1996-2024, Timothy A. Davis, Sivasankaran
 // Rajamanickam, and Stefan Larimore.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -36,18 +36,18 @@
  *	#endif
  */
 
-#define CCOLAMD_DATE "Dec 30, 2023"
+#define CCOLAMD_DATE "Jan XX, 2024"
 #define CCOLAMD_MAIN_VERSION   3
 #define CCOLAMD_SUB_VERSION    3
-#define CCOLAMD_SUBSUB_VERSION 0
+#define CCOLAMD_SUBSUB_VERSION 1
 
 #define CCOLAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define CCOLAMD_VERSION \
-	CCOLAMD_VERSION_CODE(CCOLAMD_MAIN_VERSION,CCOLAMD_SUB_VERSION)
+#define CCOLAMD_VERSION CCOLAMD_VERSION_CODE(3,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "CCOLAMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#define CCOLAMD__VERSION SUITESPARSE__VERCODE(3,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "CCOLAMD 3.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 /* ========================================================================== */

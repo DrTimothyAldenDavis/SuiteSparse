@@ -2,7 +2,7 @@
 # SuiteSparse/COLAMD/CMakeLists.txt:  cmake for COLAMD
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1998-2023, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 1998-2024, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( COLAMD_DATE "Dec 30, 2023" )
+set ( COLAMD_DATE "Jan XX, 2024" )  # FIXME for 7.5.0
 set ( COLAMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( COLAMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( COLAMD_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( COLAMD_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building COLAMD version: v"
     ${COLAMD_VERSION_MAJOR}.
@@ -43,10 +43,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 endif ( )
 

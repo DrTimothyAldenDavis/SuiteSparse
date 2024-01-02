@@ -2,7 +2,7 @@
 // CAMD/Include/camd.h:  constrained approximate minimum degree ordering
 //------------------------------------------------------------------------------
 
-// CAMD, Copyright (c) 1996-2023, Timothy A. Davis, Yanqing Chen,
+// CAMD, Copyright (c) 1996-2024, Timothy A. Davis, Yanqing Chen,
 // Patrick R. Amestoy, and Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -392,17 +392,18 @@ void camd_version (int version [3]) ;
  *      #endif
  */
 
-#define CAMD_DATE "Dec 30, 2023"
+#define CAMD_DATE "Jan XX, 2024"
 #define CAMD_MAIN_VERSION   3
 #define CAMD_SUB_VERSION    3
-#define CAMD_SUBSUB_VERSION 0
+#define CAMD_SUBSUB_VERSION 1
 
 #define CAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define CAMD_VERSION CAMD_VERSION_CODE(CAMD_MAIN_VERSION,CAMD_SUB_VERSION)
+#define CAMD_VERSION CAMD_VERSION_CODE(3,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "CAMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#define CAMD__VERSION SUITESPARSE__VERCODE(3,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "CAMD 3.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #endif

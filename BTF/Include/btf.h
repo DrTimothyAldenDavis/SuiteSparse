@@ -2,7 +2,7 @@
 // BTF/Include/btf.h: include file for BTF
 //------------------------------------------------------------------------------
 
-// BTF, Copyright (c) 2004-2023, University of Florida.  All Rights Reserved.
+// BTF, Copyright (c) 2004-2024, University of Florida.  All Rights Reserved.
 // Author: Timothy A. Davis.
 // SPDX-License-Identifier: LGPL-2.1+
 
@@ -257,24 +257,25 @@ void btf_version (int version [3]) ;
  *
  * This also works during compile-time:
  *
- *      #if (BTF >= BTF_VERSION_CODE (1,2))
+ *      #if (BTF_VERSION >= BTF_VERSION_CODE (1,2))
  *          printf ("This is version 1.2 or later\n") ;
  *      #else
  *          printf ("This is an early version\n") ;
  *      #endif
  */
 
-#define BTF_DATE "Dec 30, 2023"
+#define BTF_DATE "Jan XX, 2024"
 #define BTF_MAIN_VERSION   2
 #define BTF_SUB_VERSION    3
-#define BTF_SUBSUB_VERSION 0
+#define BTF_SUBSUB_VERSION 1
 
 #define BTF_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define BTF_VERSION BTF_VERSION_CODE(BTF_MAIN_VERSION,BTF_SUB_VERSION)
+#define BTF_VERSION BTF_VERSION_CODE(2,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "BTF 2.3.0 requires SuiteSparse_config 7.4 or later"
+#define BTF__VERSION SUITESPARSE__VERCODE(2,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "BTF 2.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #endif
