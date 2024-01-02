@@ -367,11 +367,11 @@ endif ( )
 # cpu_features settings
 #-------------------------------------------------------------------------------
 
+include ( CheckSymbolExists )
 if ( NOT GBNCPUFEAT )
     if ( UNIX )
         # look for requirements for cpu_features/src/hwcaps.c
         include ( CheckIncludeFile )
-        include ( CheckSymbolExists )
         check_include_file ( dlfcn.h HAVE_DLFCN_H )
         if ( HAVE_DLFCN_H )
             message ( STATUS "cpu_feautures has dlfcn.h" )
@@ -404,7 +404,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT WIN32 )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     set ( GB_M "m" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE m )
