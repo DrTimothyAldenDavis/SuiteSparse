@@ -245,7 +245,7 @@ struct ParU_Control
 // =============================================================================
 // ParU_Numeric contains all the numeric information that user needs for solving
 // a system. The factors are saved as a seried of dense matrices. User can check
-// the ParU_Ret to see if the factorization is successfull. sizes of
+// the ParU_Ret to see if the factorization is successful. sizes of
 // ParU_Numeric is size of S matrix in Symbolic analysis.
 struct ParU_Factors
 {               // dense factorized part pointer

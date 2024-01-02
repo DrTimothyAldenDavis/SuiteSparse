@@ -36,14 +36,14 @@ int main(int argc, char **argv)
 
     if (info != PARU_SUCCESS)
     {
-        printf("ParU: factorization was NOT successfull.");
+        printf("ParU: factorization was NOT successful.");
         if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
         if (info == PARU_INVALID) printf("\nInvalid!\n");
         if (info == PARU_SINGULAR) printf("\nSingular!\n");
     }
     else
     {
-        printf("ParU: factorization was successfull.\n");
+        printf("ParU: factorization was successful.\n");
     }
 
     //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
