@@ -205,7 +205,7 @@ jobs:
           for lib in ${INSTALLED_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
-            mkdir build && cd build
+            cd build
             cmake \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
               ..
