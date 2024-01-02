@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( LDL_DATE "Dec 30, 2023" )
+set ( LDL_DATE "Jan XX, 2024" ) # FIXME for 7.5.0
 set ( LDL_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( LDL_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( LDL_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( LDL_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
