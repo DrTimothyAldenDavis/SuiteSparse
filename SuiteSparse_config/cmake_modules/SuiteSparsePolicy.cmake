@@ -248,6 +248,23 @@ message ( STATUS "Build type:       ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
+# MacOS workaround
+#-------------------------------------------------------------------------------
+
+# Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
+# which conflicts the internal use of those symbols in KLU and CHOLMOD.  This
+# can be disabled with -D__NO_EXTENSTIONS__
+
+if ( APPLE )
+    message ( STATUS "CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}" )
+    message ( STATUS "OSX_ARCHITECTURES: ${OSX_ARCHITECTURES}" )
+    if ( OSX_ARCHITECTURES MATCHES "ppc" )
+        message ( STATUS "Use MacOS workaround for mangled math.h" )
+        add_compile_definitions ( __NO_EXTENSTIONS__ )
+    endif ( )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # check if Fortran is available and enabled
 #-------------------------------------------------------------------------------
 
