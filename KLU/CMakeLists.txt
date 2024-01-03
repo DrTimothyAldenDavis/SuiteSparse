@@ -144,16 +144,9 @@ if ( BUILD_SHARED_LIBS )
         set_target_properties ( KLU PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
-    target_include_directories ( KLU 
+    target_include_directories ( KLU
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
-
-    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
-        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
-        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
-        # This can be disabled with -D__NOEXTENSIONS__
-        target_compile_definitions ( KLU PRIVATE "__NOEXTENSIONS__" )
-    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -181,13 +174,6 @@ if ( BUILD_STATIC_LIBS )
     target_include_directories ( KLU_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
-
-    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
-        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
-        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
-        # This can be disabled with -D__NOEXTENSIONS__
-        target_compile_definitions ( KLU_static PRIVATE "__NOEXTENSIONS__" )
-    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -213,7 +199,7 @@ if ( KLU_HAS_CHOLMOD )
             set_target_properties ( KLU_CHOLMOD PROPERTIES EXPORT_NO_SYSTEM ON )
         endif ( )
 
-        target_include_directories ( KLU_CHOLMOD 
+        target_include_directories ( KLU_CHOLMOD
             INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
     endif ( )
@@ -236,7 +222,7 @@ if ( KLU_HAS_CHOLMOD )
             set_target_properties ( KLU_CHOLMOD_static PROPERTIES EXPORT_NO_SYSTEM ON )
         endif ( )
 
-        target_include_directories ( KLU_CHOLMOD_static 
+        target_include_directories ( KLU_CHOLMOD_static
             INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                       $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
     endif ( )
