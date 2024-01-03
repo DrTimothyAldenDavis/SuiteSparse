@@ -690,8 +690,8 @@ typedef struct cholmod_common_struct
     size_t iworksize ;  // size of Iwork, in Ints (int32 or int64).
                         // This is at most 6*nrow + ncol.
     size_t xworkbytes ; // size of Xwork, in bytes.
-        // NOTE: in CHOLMOD v4 and earlier, xworkwise was in terms
-        // of # of doubles, not # of bytes.
+        // NOTE: in CHOLMOD v4 and earlier, this variable was called xworksize,
+        // and was in terms of # of doubles, not # of bytes.
 
     void *Flag ;    // size nrow.  If this is "cleared" then
         // Flag [i] < mark for all i = 0:nrow-1.  Flag is kept cleared between
