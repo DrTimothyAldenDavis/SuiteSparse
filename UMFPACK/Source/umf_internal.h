@@ -162,6 +162,16 @@
 #endif
 #endif
 
+#if defined (HAVE_PRAGMA_GCC_IVDEP)
+#  define UMFPACK_IVDEP _Pragma("GCC ivdep")
+#elif defined (HAVE_PRAGMA_IVDEP)
+#  define UMFPACK_IVDEP _Pragma("ivdep")
+#elif defined (HAVE_PRAGMA_IVDEP)
+#  define UMFPACK_IVDEP _Pragma("loop( ivdep )")
+#else
+#  define UMFPACK_IVDEP
+#endif
+
 /* ------------------------------------------------------------------------- */
 /* integer type for AMD: int32_t or int64_t */
 /* ------------------------------------------------------------------------- */
