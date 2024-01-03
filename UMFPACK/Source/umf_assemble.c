@@ -112,7 +112,7 @@ PRIVATE void row_assemble
 		/* no columns assembled out this Lson yet */
 		/* -------------------------------------------------- */
 
-#pragma ivdep
+UMFPACK_IVDEP
 		for (j = 0 ; j < ncols ; j++)
 		{
 		    col = Cols [j] ;
@@ -132,7 +132,7 @@ PRIVATE void row_assemble
 		/* some columns have been assembled out of this Lson */
 		/* -------------------------------------------------- */
 
-#pragma ivdep
+UMFPACK_IVDEP
 		for (j = 0 ; j < ncols ; j++)
 		{
 		    col = Cols [j] ;
@@ -263,7 +263,7 @@ PRIVATE void col_assemble
 		/* no rows assembled out of this Uson yet */
 		/* -------------------------------------------------- */
 
-#pragma ivdep
+UMFPACK_IVDEP
 		for (i = 0 ; i < nrows ; i++)
 		{
 		    row = Rows [i] ;
@@ -279,7 +279,7 @@ PRIVATE void col_assemble
 		/* some rows have been assembled out of this Uson */
 		/* -------------------------------------------------- */
 
-#pragma ivdep
+UMFPACK_IVDEP
 		for (i = 0 ; i < nrows ; i++)
 		{
 		    row = Rows [i] ;
@@ -639,7 +639,7 @@ void UMF_assemble_fixq
 
 		/* compute the compressed column offset vector*/
 		/* [ use Wm [0..nrows-1] for offsets */
-#pragma ivdep
+UMFPACK_IVDEP
 		for (i = 0 ; i < nrows ; i++)
 		{
 		    row = Rows [i] ;
@@ -660,7 +660,7 @@ void UMF_assemble_fixq
 			Col_degree [col] -= nrowsleft ;
 #endif
 			Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 			for (i = 0 ; i < nrows ; i++)
 			{
 			    /* Fcol [Wm [i]] += S [i] ; */
@@ -686,7 +686,7 @@ void UMF_assemble_fixq
 			    Col_degree [col] -= nrowsleft ;
 #endif
 			    Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 			    for (i = 0 ; i < nrows ; i++)
 			    {
 				/* Fcol [Wm [i]] += S [i] ; */
@@ -733,7 +733,7 @@ void UMF_assemble_fixq
 			Col_degree [col] -= nrowsleft ;
 #endif
 			Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 			for (i = 0 ; i < nrowsleft ; i++)
 			{
 			    /* Fcol [Wm [i]] += S [Woo [i]] ; */
@@ -758,7 +758,7 @@ void UMF_assemble_fixq
 			    Col_degree [col] -= nrowsleft ;
 #endif
 			    Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 			    for (i = 0 ; i < nrowsleft ; i++)
 			    {
 				/* Fcol [Wm [i]] += S [Woo [i]] ; */
@@ -817,7 +817,7 @@ void UMF_assemble_fixq
 
 			/* compute the compressed column offset vector */
 			/* [ use Wm [0..nrows-1] for offsets */
-#pragma ivdep
+UMFPACK_IVDEP
 			for (i = 0 ; i < nrows ; i++)
 			{
 			    row = Rows [i] ;
@@ -835,7 +835,7 @@ void UMF_assemble_fixq
 				Col_degree [col] -= nrowsleft ;
 #endif
 				Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 				for (i = 0 ; i < nrows ; i++)
 				{
 				    /* Fcol [Wm [i]] += S [i] ; */
@@ -881,7 +881,7 @@ void UMF_assemble_fixq
 				Col_degree [col] -= nrowsleft ;
 #endif
 				Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 				for (i = 0 ; i < nrowsleft ; i++)
 				{
 				    /* Fcol [Wm [i]] += S [Woo [i]] ; */
@@ -965,7 +965,7 @@ void UMF_assemble_fixq
 			    Col_degree [col] -= nrows_to_assemble ;
 #endif
 			    Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 			    for (i = 0 ; i < nrows_to_assemble ; i++)
 			    {
 				/* Fcol [Wm [i]] += S [Woo [i]] ; */
@@ -992,7 +992,7 @@ void UMF_assemble_fixq
 				Col_degree [col] -= nrows_to_assemble ;
 #endif
 				Fcol = Fcblock + Fcpos [col] ;
-#pragma ivdep
+UMFPACK_IVDEP
 				for (i = 0 ; i < nrows_to_assemble ; i++)
 				{
 				    /* Fcol [Wm [i]] += S [Woo [i]] ; */

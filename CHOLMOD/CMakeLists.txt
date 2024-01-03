@@ -351,6 +351,13 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( CHOLMOD
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
+    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
+        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
+        # This can be disabled with -D__NOEXTENSIONS__
+        target_compile_definitions ( CHOLMOD PRIVATE "__NOEXTENSIONS__" )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -384,6 +391,12 @@ if ( BUILD_STATIC_LIBS )
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
 
+    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
+        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
+        # This can be disabled with -D__NOEXTENSIONS__
+        target_compile_definitions ( CHOLMOD_static PRIVATE "__NOEXTENSIONS__" )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -830,7 +843,7 @@ if ( SUITESPARSE_DEMOS OR BUILD_TESTING )
     if ( WIN32 AND BUILD_SHARED_LIBS )
         # Set PATH to pick up the necessary libraries for all tests
 
-        set ( CHOLMOD_CTEST_NAMES 
+        set ( CHOLMOD_CTEST_NAMES
             CHOLMOD_int32_double_bcsstk01 CHOLMOD_int64_double_bcsstk01 CHOLMOD_int32_single_bcsstk01 CHOLMOD_int64_single_bcsstk01
             CHOLMOD_int32_double_lp_afiro CHOLMOD_int64_double_lp_afiro CHOLMOD_int32_single_lp_afiro CHOLMOD_int64_single_lp_afiro
             CHOLMOD_int32_double_can24 CHOLMOD_int64_double_can24 CHOLMOD_int32_single_can24 CHOLMOD_int64_single_can24

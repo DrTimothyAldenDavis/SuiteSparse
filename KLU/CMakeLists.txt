@@ -147,6 +147,13 @@ if ( BUILD_SHARED_LIBS )
     target_include_directories ( KLU 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
+    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
+        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
+        # This can be disabled with -D__NOEXTENSIONS__
+        target_compile_definitions ( KLU PRIVATE "__NOEXTENSIONS__" )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -174,6 +181,13 @@ if ( BUILD_STATIC_LIBS )
     target_include_directories ( KLU_static
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
                   $<INSTALL_INTERFACE:${SUITESPARSE_INCLUDEDIR}> )
+
+    if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+        # Older versions of math.h on the Mac (PowerPC only) define Real and Imag,
+        # which conflicts the internal use of those symbols in KLU and CHOLMOD.
+        # This can be disabled with -D__NOEXTENSIONS__
+        target_compile_definitions ( KLU_static PRIVATE "__NOEXTENSIONS__" )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
