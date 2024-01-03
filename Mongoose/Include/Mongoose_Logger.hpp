@@ -107,78 +107,14 @@ private:
     static float times[6];
 
 public:
-    static inline void tic(TimingType timingType);
-    static inline void toc(TimingType timingType);
-    static inline float getTime(TimingType timingType);
-    static inline int getDebugLevel();
+    static void tic(TimingType timingType);
+    static void toc(TimingType timingType);
+    static float getTime(TimingType timingType);
+    static int getDebugLevel();
     static void setDebugLevel(int debugType);
     static void setTimingFlag(bool tFlag);
     static void printTimingInfo();
 };
-
-/**
- * Start a timer for a given type/part of the code.
- *
- * Given a timingType (MatchingTiming, CoarseningTiming, RefinementTiming,
- * FMTiming, QPTiming, or IOTiming), a clock is started for that computation.
- * The general structure is to call tic(IOTiming) at the beginning of an I/O
- * operation, then call toc(IOTiming) at the end of the I/O operation.
- *
- * Note that problems can occur and timing results may be inaccurate if a tic
- * is followed by another tic (or a toc is followed by another toc).
- *
- * @param timingType The portion of the library being timed (MatchingTiming,
- *   CoarseningTiming, RefinementTiming, FMTiming, QPTiming, or IOTiming).
- */
-inline void Logger::tic(TimingType timingType)
-{
-    if (timingOn)
-    {
-        clocks[timingType] = SUITESPARSE_TIME;
-    }
-}
-
-/**
- * Stop a timer for a given type/part of the code.
- *
- * Given a timingType (MatchingTiming, CoarseningTiming, RefinementTiming,
- * FMTiming, QPTiming, or IOTiming), a clock is stopped for that computation.
- * The general structure is to call tic(IOTiming) at the beginning of an I/O
- * operation, then call toc(IOTiming) at the end of the I/O operation.
- *
- * Note that problems can occur and timing results may be inaccurate if a tic
- * is followed by another tic (or a toc is followed by another toc).
- *
- * @param timingType The portion of the library being timed (MatchingTiming,
- *   CoarseningTiming, RefinementTiming, FMTiming, QPTiming, or IOTiming).
- */
-inline void Logger::toc(TimingType timingType)
-{
-    if (timingOn)
-    {
-        times[timingType]
-            += (float) (SUITESPARSE_TIME - clocks[timingType]) ;
-    }
-}
-
-/**
- * Get the time recorded for a given timing type.
- *
- * Retreive the total clock time for a given timing type (MatchingTiming,
- * CoarseningTiming, RefinementTiming, FMTiming, QPTiming, or IOTiming).
- *
- * @param timingType The portion of the library being timed (MatchingTiming,
- *   CoarseningTiming, RefinementTiming, FMTiming, QPTiming, or IOTiming).
- */
-inline float Logger::getTime(TimingType timingType)
-{
-    return times[timingType];
-}
-
-inline int Logger::getDebugLevel()
-{
-    return debugLevel;
-}
 
 } // end namespace Mongoose
 
