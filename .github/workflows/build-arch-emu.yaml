@@ -75,6 +75,7 @@ jobs:
             gmp-dev
             mpfr-dev
             lapack-dev
+            python3
             valgrind
             util-linux-misc
             autoconf
