@@ -11,6 +11,7 @@
  *
  * @author Aznaveh
  * */
+#include <stdint.h>
 #include <math.h>
 #include <omp.h>
 
@@ -77,7 +78,7 @@ int main(int argc, char **argv)
         cholmod_l_finish(cc);
         return info;
     }
-    printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
+    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
     printf("ParU: Symbolic factorization is done in %lfs!\n", my_time_analyze);
     ParU_C_Numeric *Num;
     printf ("\n--------- ParU_C_Factorize:\n") ;
