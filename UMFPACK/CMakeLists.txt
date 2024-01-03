@@ -255,6 +255,72 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# check compiler features
+#-------------------------------------------------------------------------------
+
+include ( CheckSourceCompiles )
+
+set ( _orig_CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
+if ( CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_FRONTEND_VARIANT STREQUAL "GNU" )
+    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunknown-pragmas" )
+endif ( )
+
+check_source_compiles ( C
+    "int main(void) {
+    #pragma GCC ivdep
+    for (int j = 0; j < 1; j++) { }
+    return 0;
+    }"
+    HAVE_PRAGMA_GCC_IVDEP
+    FAIL_REGEX "[wW]arning" )
+
+if ( HAVE_PRAGMA_GCC_IVDEP )
+    if ( BUILD_SHARED_LIBS )
+        target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
+    endif ( )
+else ( )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma ivdep
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_IVDEP
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_IVDEP )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_IVDEP" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_IVDEP" )
+        endif ( )
+    else ( )
+        check_source_compiles ( C
+            "int main(void) {
+            #pragma loop( ivdep )
+            for (int j = 0; j < 1; j++) { }
+            return 0;
+            }"
+            HAVE_PRAGMA_LOOP_IVDEP
+            FAIL_REGEX "[wW]arning" )
+        if ( HAVE_PRAGMA_LOOP_IVDEP )
+            if ( BUILD_SHARED_LIBS )
+                target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+            endif ( )
+            if ( BUILD_STATIC_LIBS )
+                target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+            endif ( )
+        endif ( )
+    endif ( )
+endif ( )
+
+set ( CMAKE_C_FLAGS ${_orig_CMAKE_C_FLAGS} )
+
+#-------------------------------------------------------------------------------
 # UMFPACK installation location
 #-------------------------------------------------------------------------------
 
