@@ -35,11 +35,11 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( Mongoose_DATE "Dec 30, 2023" )
-set ( Mongoose_NUMERIC_DATE "2023-12-30" )
+set ( Mongoose_DATE "Jan XX, 2024" )    # FIXME for 7.5.0
+set ( Mongoose_NUMERIC_DATE "2024-01-XX" )  # FIXME for 7.5.0
 set ( Mongoose_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( Mongoose_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( Mongoose_VERSION_PATCH 0 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_PATCH 1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building Mongoose version: v"
     ${Mongoose_VERSION_MAJOR}.
@@ -69,10 +69,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 endif ( )
 

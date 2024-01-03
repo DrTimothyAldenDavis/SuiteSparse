@@ -34,7 +34,7 @@
 
 #include "amd.h"
 #if (!defined (AMD_VERSION) || (AMD_VERSION < AMD_VERSION_CODE (3,3)))
-#error "CHOLMOD:Cholesky requires AMD 3.3.0 or later"
+#error "CHOLMOD:Cholesky requires AMD 3.3.1 or later"
 #endif
 
 //------------------------------------------------------------------------------

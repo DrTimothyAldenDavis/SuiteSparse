@@ -2,7 +2,7 @@
 // AMD/Include/amd.h:  approximate minimum degree ordering
 //------------------------------------------------------------------------------
 
-// AMD, Copyright (c) 1996-2023, Timothy A. Davis, Patrick R. Amestoy, and
+// AMD, Copyright (c) 1996-2024, Timothy A. Davis, Patrick R. Amestoy, and
 // Iain S. Duff.  All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -382,17 +382,18 @@ void amd_version (int version [3]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "Dec 30, 2023"
+#define AMD_DATE "Jan XX, 2024"
 #define AMD_MAIN_VERSION   3
 #define AMD_SUB_VERSION    3
-#define AMD_SUBSUB_VERSION 0
+#define AMD_SUBSUB_VERSION 1
 
 #define AMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define AMD_VERSION AMD_VERSION_CODE(AMD_MAIN_VERSION,AMD_SUB_VERSION)
+#define AMD_VERSION AMD_VERSION_CODE(3,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "AMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#define AMD__VERSION SUITESPARSE__VERCODE(3,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "AMD 3.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #endif

@@ -175,7 +175,9 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE m )
     endif ( )

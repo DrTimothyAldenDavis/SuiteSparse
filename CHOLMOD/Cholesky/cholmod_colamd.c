@@ -29,7 +29,7 @@
 
 #include "colamd.h"
 #if (!defined (COLAMD_VERSION) || (COLAMD_VERSION < COLAMD_VERSION_CODE (3,3)))
-#error "CHOLMOD:Cholesky requires COLAMD 3.3.0 or later"
+#error "CHOLMOD:Cholesky requires COLAMD 3.3.1 or later"
 #endif
 
 //------------------------------------------------------------------------------

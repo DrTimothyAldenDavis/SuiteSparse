@@ -25,7 +25,7 @@
 
 #include "ccolamd.h"
 #if (CCOLAMD_VERSION < CCOLAMD_VERSION_CODE (3,3))
-#error "CHOLMOD:Partition requires CCOLAMD 3.3.0 or later"
+#error "CHOLMOD:Partition requires CCOLAMD 3.3.1 or later"
 #endif
 
 //------------------------------------------------------------------------------

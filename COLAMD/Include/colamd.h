@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
-// COLAMD/Source/colamd.h: include file for COLAMD
+// COLAMD/Include/colamd.h: include file for COLAMD
 //------------------------------------------------------------------------------
 
-// COLAMD, Copyright (c) 1998-2023, Timothy A. Davis and Stefan Larimore,
+// COLAMD, Copyright (c) 1998-2024, Timothy A. Davis and Stefan Larimore,
 // All Rights Reserved.
 // SPDX-License-Identifier: BSD-3-clause
 
@@ -65,18 +65,18 @@
  * Versions 2.3 and earlier of COLAMD do not include a #define'd version number.
  */
 
-#define COLAMD_DATE "Dec 30, 2023"
+#define COLAMD_DATE "Jan XX, 2024"
 #define COLAMD_MAIN_VERSION   3
 #define COLAMD_SUB_VERSION    3
-#define COLAMD_SUBSUB_VERSION 0
+#define COLAMD_SUBSUB_VERSION 1
 
 #define COLAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define COLAMD_VERSION \
-        COLAMD_VERSION_CODE(COLAMD_MAIN_VERSION,COLAMD_SUB_VERSION)
+#define COLAMD_VERSION COLAMD_VERSION_CODE(3,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "COLAMD 3.3.0 requires SuiteSparse_config 7.4 or later"
+#define COLAMD__VERSION SUITESPARSE__VERCODE(3,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "COLAMD 3.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 /* ========================================================================== */

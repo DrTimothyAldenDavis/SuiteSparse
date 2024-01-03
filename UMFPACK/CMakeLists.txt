@@ -51,10 +51,10 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.0
+    find_package ( AMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.0 REQUIRED )
+        find_package ( AMD 3.3.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -228,7 +228,9 @@ else ( )
 endif ( )
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( UMFPACK PRIVATE m )
     endif ( )

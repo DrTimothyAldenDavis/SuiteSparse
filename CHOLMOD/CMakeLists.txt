@@ -121,16 +121,16 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.0
+    find_package ( AMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.0 REQUIRED )
+        find_package ( AMD 3.3.1 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.0
+    find_package ( COLAMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.0 REQUIRED )
+        find_package ( COLAMD 3.3.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -234,16 +234,16 @@ endif ( )
 
     if ( CHOLMOD_CAMD AND NOT SUITESPARSE_ROOT_CMAKELISTS )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.3.0
+        find_package ( CAMD 3.3.1
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.3.0 )
+            find_package ( CAMD 3.3.1 )
         endif ( )
 
-        find_package ( CCOLAMD 3.3.0
+        find_package ( CCOLAMD 3.3.1
             PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.3.0 )
+            find_package ( CCOLAMD 3.3.1 )
         endif ( )
 
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
@@ -475,7 +475,9 @@ else ( )
 endif ( )
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE m )
     endif ( )

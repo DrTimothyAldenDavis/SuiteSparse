@@ -2,7 +2,7 @@
 # SuiteSparse/LDL/CMakeLists.txt:  cmake for LDL
 #-------------------------------------------------------------------------------
 
-# LDL, Copyright (c) 2005-2023 by Timothy A. Davis. All Rights Reserved.
+# LDL, Copyright (c) 2005-2024 by Timothy A. Davis. All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
@@ -44,17 +44,17 @@ include ( SuiteSparsePolicy )
 
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
     if ( SUITESPARSE_DEMOS )
-        find_package ( AMD 3.3.0
+        find_package ( AMD 3.3.1
             PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::AMD )
-            find_package ( AMD 3.3.0 REQUIRED )
+            find_package ( AMD 3.3.1 REQUIRED )
         endif ( )
     endif ( )
 endif ( )

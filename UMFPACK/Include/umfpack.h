@@ -80,15 +80,17 @@
 #define UMFPACK_SUBSUB_VERSION 1
 
 #define UMFPACK_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define UMFPACK_VER UMFPACK_VER_CODE(UMFPACK_MAIN_VERSION,UMFPACK_SUB_VERSION)
+#define UMFPACK_VER UMFPACK_VER_CODE(6,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "UMFPACK 6.3.1 requires SuiteSparse_config 7.4.0 or later"
+#define UMFPACK__VERSION SUITESPARSE__VERCODE(6,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "UMFPACK 6.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
-#if AMD_VERSION < SUITESPARSE_VER_CODE(3,3)
-#error "UMFPACK 6.3.1 requires AMD 3.3.0 or later"
+#if !defined (AMD__VERSION) || \
+    (AMD__VERSION < SUITESPARSE__VERCODE(3,3,1))
+#error "UMFPACK 6.3.1 requires AMD 3.1.1 or later"
 #endif
 
 // user code should not directly use GB_STR or GB_XSTR

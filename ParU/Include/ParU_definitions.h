@@ -30,17 +30,20 @@ typedef enum ParU_Ret
 #define PARU_VERSION_MINOR  1
 #define PARU_VERSION_UPDATE 1
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
-#error "ParU 0.1. requires SuiteSparse_config 7.5.0 or later"
+#define PARU__VERSION SUITESPARSE__VERCODE(0,1,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "ParU 0.1.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
-#if UMFPACK_VER < SUITESPARSE_VER_CODE(6,3)
-#error "ParU 0.1. requires UMFPACK 6.3.0 or later"
+#if !defined (UMFPACK__VERSION) || \
+    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,1))
+#error "ParU 0.1.1 requires UMFPACK 6.3.1 or later"
 #endif
 
-#if CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1)
-#error "ParU 0.1. requires CHOLMOD 5.1.0 or later"
+#if !defined (CHOLMOD__VERSION) || \
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,1,1))
+#error "ParU 0.1.1 requires CHOLMOD 5.1.1 or later"
 #endif
 
 //  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h

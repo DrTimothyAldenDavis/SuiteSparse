@@ -39,7 +39,7 @@
 cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
 
 # version of LAGraph
-set ( LAGraph_DATE "Jan XX, 2024" )
+set ( LAGraph_DATE "Jan XX, 2024" )     # FIXME for 7.5.0
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_SUB   1 CACHE STRING "" FORCE )
@@ -75,6 +75,9 @@ configure_file (
     "config/LAGraph.h.in"
     "${PROJECT_SOURCE_DIR}/include/LAGraph.h"
     NEWLINE_STYLE LF )
+
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
 
 #-------------------------------------------------------------------------------
 # code coverage and build type
@@ -358,7 +361,7 @@ install ( FILES
 
 if ( NOT MSVC )
     if ( BUILD_STATIC_LIBS )
-        if ( NOT WIN32 )
+        if ( NOT NO_LIBM )
             list ( APPEND LAGRAPH_STATIC_LIBS "m" )
         endif ( )
     endif ( )

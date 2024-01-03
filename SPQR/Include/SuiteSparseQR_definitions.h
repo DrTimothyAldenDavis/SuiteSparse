@@ -70,15 +70,17 @@
 #define SPQR_SUBSUB_VERSION 1
 
 #define SPQR_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define SPQR_VERSION SPQR_VER_CODE(SPQR_MAIN_VERSION,SPQR_SUB_VERSION)
+#define SPQR_VERSION SPQR_VER_CODE(4,3)
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
+#define SPQR__VERSION SUITESPARSE__VERCODE(4,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
 #error "SPQR 4.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
-#if (CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1))
-#error "SPQR 4.3.1 requires CHOLMOD 5.1.0 or later"
+#if !defined (CHOLMOD__VERSION) || \
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,1,1))
+#error "SPQR 4.3.1 requires CHOLMOD 5.1.1 or later"
 #endif
 
 #endif
