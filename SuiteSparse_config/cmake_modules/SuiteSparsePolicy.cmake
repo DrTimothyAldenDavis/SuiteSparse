@@ -255,13 +255,9 @@ set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 # which conflicts the internal use of those symbols in KLU and CHOLMOD.  This
 # can be disabled with -D__NO_EXTENSTIONS__
 
-if ( APPLE )
-    message ( STATUS "CMAKE_OSX_ARCHITECTURES: ${CMAKE_OSX_ARCHITECTURES}" )
-    message ( STATUS "OSX_ARCHITECTURES: ${OSX_ARCHITECTURES}" )
-    if ( OSX_ARCHITECTURES MATCHES "ppc" )
-        message ( STATUS "Use MacOS workaround for mangled math.h" )
-        add_compile_definitions ( __NO_EXTENSTIONS__ )
-    endif ( )
+if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+    message ( STATUS "MacOS: workaround for mangled math.h" )
+    add_compile_definitions ( __NO_EXTENSTIONS__ )
 endif ( )
 
 #-------------------------------------------------------------------------------
