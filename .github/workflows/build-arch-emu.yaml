@@ -133,6 +133,8 @@ jobs:
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="Generic" \
                   -DGRAPHBLAS_COMPACT=ON \
+                  -DSUITESPARSE_DEMOS=OFF \
+                  -DBUILD_TESTING=OFF \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -148,7 +150,7 @@ jobs:
           for lib in ${CHECK_LIBS}; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
-            make demos
+            make demos CMAKE_OPTIONS="-DSUITESPARSE_DEMOS=ON -DBUILD_TESTING=ON"
             echo "::endgroup::"
           done
 

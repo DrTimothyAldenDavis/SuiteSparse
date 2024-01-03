@@ -144,6 +144,8 @@ jobs:
                 -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                 -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                 -DBLA_VENDOR="OpenBLAS" \
+                -DSUITESPARSE_DEMOS=OFF \
+                -DBUILD_TESTING=OFF \
                 ${{ matrix.cuda-cmake-flags }} \
                 ${{ matrix.link-cmake-flags }} \
                 ..
@@ -157,7 +159,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DSUITESPARSE_DEMOS=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON -DBUILD_TESTING=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build
@@ -431,6 +433,8 @@ jobs:
                 -DSUITESPARSE_USE_FORTRAN=OFF \
                 -DBLA_VENDOR="All" \
                 -DPython_EXECUTABLE="C:/msys64/ucrt64/bin/python.exe" \
+                -DSUITESPARSE_DEMOS=OFF \
+                -DBUILD_TESTING=OFF \
                 ${{ matrix.openmp-cmake-flags }} \
                 ${{ matrix.cuda-cmake-flags }} \
                 "${_extra_config[@]}" \
@@ -445,7 +449,7 @@ jobs:
         run: |
           printf "::group::   \033[0;32m==>\033[0m Configuring for demos\n"
           cd ${GITHUB_WORKSPACE}/build
-          cmake -DSUITESPARSE_DEMOS=ON ..
+          cmake -DSUITESPARSE_DEMOS=ON -DBUILD_TESTING=ON ..
           echo "::endgroup::"
           printf "::group::   \033[0;32m==>\033[0m Building demos\n"
           cd ${GITHUB_WORKSPACE}/build

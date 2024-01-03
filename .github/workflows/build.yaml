@@ -160,6 +160,8 @@ jobs:
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
+                  -DSUITESPARSE_DEMOS=OFF \
+                  -DBUILD_TESTING=OFF \
                   ${{ matrix.cuda-cmake-flags }} \
                   ${{ matrix.openmp-cmake-flags }} \
                   ${{ matrix.link-cmake-flags }} \
@@ -177,7 +179,7 @@ jobs:
           for lib in "${libs[@]}"; do
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
-            make demos
+            make demos CMAKE_OPTIONS="-DSUITESPARSE_DEMOS=ON -DBUILD_TESTING=ON"
             echo "::endgroup::"
           done
 
@@ -389,6 +391,8 @@ jobs:
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
                   -DBLA_VENDOR="OpenBLAS" \
                   -DPython_EXECUTABLE="$(which python)" \
+                  -DSUITESPARSE_DEMOS=OFF \
+                  -DBUILD_TESTING=OFF \
                   ..
             echo "::endgroup::"
             echo "::group::Build $lib"
@@ -408,7 +412,7 @@ jobs:
             printf "::group::   \033[0;32m==>\033[0m Checking library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/${lib}
             PATH="${GITHUB_WORKSPACE}/bin:${PATH}" \
-              make demos
+              make demos CMAKE_OPTIONS="-DSUITESPARSE_DEMOS=ON -DBUILD_TESTING=ON"
             echo "::endgroup::"
           done
 
