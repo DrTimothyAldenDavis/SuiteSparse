@@ -10,11 +10,11 @@
 
 //------------------------------------------------------------------------------
 
+#include "Mongoose.hpp"
 // #include "Mongoose_Internal.hpp"
 // #include "Mongoose_EdgeCut.hpp"
 // #include "Mongoose_IO.hpp"
 #include "Mongoose_Logger.hpp"
-#include "Mongoose.hpp"
 
 #include <fstream>
 

@@ -223,6 +223,8 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( Mongoose_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
+
+    target_compile_definitions ( Mongoose_static PUBLIC MONGOOSE_STATIC )
 endif ( )
 
 if ( BUILD_SHARED_LIBS )
@@ -249,6 +251,8 @@ if ( BUILD_SHARED_LIBS )
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
 
     target_include_directories ( Mongoose PRIVATE . )
+
+    target_compile_definitions ( Mongoose PRIVATE MONGOOSE_BUILDING )
 endif ( )
 
 #-------------------------------------------------------------------------------
