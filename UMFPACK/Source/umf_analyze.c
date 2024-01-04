@@ -577,7 +577,7 @@ UMFPACK_IVDEP
 	k = 0 ;
 	/* Pragma added May 14, 2003.  The Intel compiler icl 6.0 (an old
 	 * version) incorrectly vectorizes this loop. */
-#pragma novector
+UMFPACK_NOVECTOR
 	for (j = 0 ; j < n_col ; j++)
 	{
 	    if (Front_npivcol [j] > 0)
