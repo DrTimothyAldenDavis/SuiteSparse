@@ -38,7 +38,10 @@
 SPEX_MPQ_CLEAR(temp);       \
 
 #include "spex_util_internal.h"
+
+#if defined (__GNUC__)
 #pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 SPEX_info spex_cast_array
 (
