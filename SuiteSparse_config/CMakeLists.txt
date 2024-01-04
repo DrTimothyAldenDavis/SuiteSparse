@@ -53,6 +53,11 @@ else ( )
     set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
 endif ( )
 
+message ( STATUS "C to Fortran calling protocol: ")
+message ( STATUS "    SUITESPARSE_HAS_FORTRAN  : ${SUITESPARSE_HAS_FORTRAN}" )
+message ( STATUS "    FortranCInterface_GLOBAL_MACRO  : ${FortranCInterface_GLOBAL_MACRO}" )
+message ( STATUS "    FortranCInterface_GLOBAL__MACRO : ${FortranCInterface_GLOBAL__MACRO}" )
+
 #-------------------------------------------------------------------------------
 # CUDA warning on Windows with MSVC
 #-------------------------------------------------------------------------------
