@@ -16,7 +16,9 @@
 //------------------------------------------------------------------------------
 
 // ZSTD uses switch statements with no default case.
+#if defined (__GNUC__)
 #pragma GCC diagnostic ignored "-Wswitch-default"
+#endif
 
 // disable ZSTD deprecation warnings and include all ZSTD definitions  
 
