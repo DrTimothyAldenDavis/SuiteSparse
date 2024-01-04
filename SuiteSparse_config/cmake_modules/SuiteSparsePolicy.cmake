@@ -112,6 +112,10 @@ if ( WIN32 )
     add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )
 endif ( )
 
+if ( BLAS_UNDERSCORE )
+    add_compile_definitions ( BLAS_UNDERSCORE )
+endif( BLAS_UNDERSCORE )
+
 enable_language ( C )
 include ( GNUInstallDirs )
 
