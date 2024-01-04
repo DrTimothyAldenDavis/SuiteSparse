@@ -8,7 +8,10 @@
 
 //------------------------------------------------------------------------------
 
+#if defined (__GNUC__)
 #pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 #include "spex_util_internal.h"
 
 

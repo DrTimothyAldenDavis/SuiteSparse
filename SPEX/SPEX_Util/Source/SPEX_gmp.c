@@ -64,8 +64,10 @@
 #include "spex_util_internal.h"
 #include "SPEX_gmp.h"
 
+#if defined (__GNUC__)
 // ignore warnings about unused parameters in this file
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 //------------------------------------------------------------------------------
 // global variables
