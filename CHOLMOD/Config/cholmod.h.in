@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 // CHOLMOD consists of a set of Modules, each with their own Copyright and
 // license: either LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes
-// defintions of the CHOLMOD API for all Modules, and this cholmod.h file
+// definitions of the CHOLMOD API for all Modules, and this cholmod.h file
 // itself is provided to you with a permissive license (Apache-2.0).  You are
 // permitted to provide the hooks for an optional interface to CHOLMOD in a
 // non-GPL/non-LGPL code, without requiring you to agree to the GPL/LGPL
@@ -31,6 +31,12 @@
 // relevant Modules.  The Modules themselves can only be functional if their
 // GPL or LGPL licenses are used, or if you obtain a different license from the
 // respective copyright holders.
+//
+// For the files in CHOLMOD/Include:
+// CHOLMOD/Include/cholmod.h            SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_internal.h   SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_template.h   SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_types.h      SPDX-License-Identifier: Apache-2.0
 //
 // The Modify Module is co-authored by William W. Hager.
 //

@@ -298,10 +298,10 @@ found in the lists below.
 
             CHOLMOD/Include/* files.  Copyright (C) 2005-2023
 
-            Include/cholmod.h               LGPL
-            Include/cholmod_internal.h      LGPL
-            Include/cholmod_template.h      LGPL
-            Include/cholmod_types.h         LGPL
+            CHOLMOD/Include/cholmod.h            SPDX-License-Identifier: Apache-2.0
+            CHOLMOD/Include/cholmod_internal.h   SPDX-License-Identifier: Apache-2.0
+            CHOLMOD/Include/cholmod_template.h   SPDX-License-Identifier: Apache-2.0
+            CHOLMOD/Include/cholmod_types.h      SPDX-License-Identifier: Apache-2.0
 
         --------------------------------------------------------------------------------
         ==> MATLAB/License.txt <==
