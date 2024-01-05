@@ -164,6 +164,8 @@
 
 #if defined (HAVE_PRAGMA_GCC_IVDEP)
 #  define UMFPACK_IVDEP _Pragma("GCC ivdep")
+#elif defined (HAVE_PRAGMA_CLANG_LOOP_VECTORIZE)
+#  define UMFPACK_IVDEP _Pragma("clang loop vectorize(enable)")
 #elif defined (HAVE_PRAGMA_IVDEP)
 #  define UMFPACK_IVDEP _Pragma("ivdep")
 #elif defined (HAVE_PRAGMA_LOOP_IVDEP)
@@ -174,6 +176,8 @@
 
 #if defined (HAVE_PRAGMA_GCC_NOVECTOR)
 #  define UMFPACK_NOVECTOR _Pragma("GCC novector")
+#elif defined (HAVE_PRAGMA_CLANG_LOOP_VECTORIZE)
+#  define UMFPACK_NOVECTOR _Pragma("clang loop vectorize(disable)")
 #elif defined (HAVE_PRAGMA_NOVECTOR)
 #  define UMFPACK_NOVECTOR _Pragma("novector")
 #elif defined (HAVE_PRAGMA_LOOP_NO_VECTOR)
