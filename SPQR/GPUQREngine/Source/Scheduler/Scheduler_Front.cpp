@@ -29,7 +29,12 @@
 //    to not accidentally free a front whose R factor is still in transit.
 //
 // =============================================================================
+
+#include <iostream>
+#include <iomanip>
+
 #include "GPUQREngine_Scheduler.hpp"
+
 // -----------------------------------------------------------------------------
 // Scheduler::activateFront
 // -----------------------------------------------------------------------------
@@ -205,32 +210,37 @@ void Scheduler <Int>::debugDumpFront(Front <Int> *front)
     Int fn = front->fn;
     wsFront->assign(wsFront->cpu(), front->gpuF);
     wsFront->transfer(cudaMemcpyDeviceToHost);
-    printf("--- %g ---\n", (double) (front->fidg));
+    std::cout << "--- " << static_cast<double> (front->fidg) << " ---" << std::endl;
 
 //  for(Int i=0; i<fm; i++)
 //  {
+//      std::cout << std::setw(16) << std::setprecision(8);
 //      for(Int j=0; j<fn; j++)
 //      {
-//          printf("%16.8e ", F[i*fn+j]);
+//          std::cout << F[i*fn+j] << " ";
 //      }
 //      printf("\n");
 //  }
 
     for (int64_t j = 0 ; j < fn ; j++)
     {
-        printf ("   --- column %ld of %ld\n", (int64_t) j, (int64_t) fn) ;
+        std::cout << "   --- column " << std::setw(0) << j << " of " << fn << std::endl;
         for (int64_t i = 0 ; i < fm ; i++)
         {
-            if (i == j) printf ("      [ diag:     ") ;
-            else        printf ("      row %4ld    ", i) ;
-            printf (" %10.4g", F [fn*i+j]) ;
-            if (i == j) printf (" ]\n") ;
-            else        printf ("\n") ;
+            if (i == j)
+                std::cout << "      [ diag:      ";
+            else
+                std::cout << "      row " << std::setw(4) << i << "     ";
+            std::cout << std::setw(10) << std::setprecision(4) << F [fn*i+j];
+            if (i == j)
+                std::cout << " ]" << std::endl;
+            else
+                std::cout << std::endl;
         }
-        printf ("\n") ;
+        std::cout << std::endl;
     }
 
-    printf("----------\n");
+    std::cout << "----------" << std::endl;
     wsFront->assign(wsFront->cpu(), NULL);
     wsFront = Workspace::destroy(wsFront);
 }
