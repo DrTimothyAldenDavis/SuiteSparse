@@ -187,7 +187,9 @@ public:
     );
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_BUCKETLIST)
 extern template class BucketList<int32_t>;
 extern template class BucketList<int64_t>;
+#endif
 
 #endif

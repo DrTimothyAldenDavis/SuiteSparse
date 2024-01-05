@@ -58,15 +58,6 @@ void BucketList<Int>::CreateBundles
     }
 }
 
-template void BucketList<int32_t>::CreateBundles
-(
-    void
-) ;
-template void BucketList<int64_t>::CreateBundles
-(
-    void
-) ;
-
 // SkipBundleCreation determines whether we should skip creating a new
 // bundle for the specified tile in the specified column bucket.
 template <typename Int>
@@ -92,17 +83,6 @@ bool BucketList<Int>::SkipBundleCreation
 
     return false;
 }
-
-template bool BucketList<int32_t>::SkipBundleCreation
-(
-    int32_t tile,           // The tile to consider
-    int32_t colBucket       // The column bucket it sits in
-) ;
-template bool BucketList<int64_t>::SkipBundleCreation
-(
-    int64_t tile,           // The tile to consider
-    int64_t colBucket       // The column bucket it sits in
-) ;
 
 // IsInternal determines whether a tile is completely within the bounds
 // of the front because if it isn't then we will need to use the special
@@ -133,14 +113,3 @@ bool BucketList<Int>::IsInternal
     Int iLast = TILESIZE * (iTile+1) - 1;
     return(iLast < front->fm && jLast < front->fn);
 }
-
-template bool BucketList<int32_t>::IsInternal
-(
-    LLBundle <int32_t>& Bundle,
-    int jLast
-) ;
-template bool BucketList<int64_t>::IsInternal
-(
-    LLBundle <int64_t>& Bundle,
-    int jLast
-) ;

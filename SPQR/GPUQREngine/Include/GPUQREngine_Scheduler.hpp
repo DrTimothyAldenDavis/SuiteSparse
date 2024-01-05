@@ -174,6 +174,9 @@ public:
 #endif
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_SCHEDULER)
 extern template class Scheduler<int32_t>;
 extern template class Scheduler<int64_t>;
+#endif
+
 #endif

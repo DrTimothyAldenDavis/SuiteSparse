@@ -127,6 +127,9 @@ public:
     void gpuPack(TaskDescriptor *cpuTask);
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_LLBUNDLE)
 extern template class LLBundle<int32_t>;
 extern template class LLBundle<int64_t>;
+#endif
+
 #endif
