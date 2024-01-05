@@ -265,6 +265,7 @@ if ( CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_FRONTEND_VARIANT STREQUAL "GN
     set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunknown-pragmas" )
 endif ( )
 
+# check syntax for ivdep pragma
 check_source_compiles ( C
     "int main(void) {
     #pragma GCC ivdep
@@ -313,6 +314,60 @@ else ( )
             endif ( )
             if ( BUILD_STATIC_LIBS )
                 target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+            endif ( )
+        endif ( )
+    endif ( )
+endif ( )
+
+# check syntax for novector pragma
+check_source_compiles ( C
+    "int main(void) {
+    #pragma GCC novector
+    for (int j = 0; j < 1; j++) { }
+    return 0;
+    }"
+    HAVE_PRAGMA_GCC_NOVECTOR
+    FAIL_REGEX "[wW]arning" )
+
+if ( HAVE_PRAGMA_GCC_NOVECTOR )
+    if ( BUILD_SHARED_LIBS )
+        target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+    endif ( )
+else ( )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma novector
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_NOVECTOR
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_NOVECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_NOVECTOR" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_NOVECTOR" )
+        endif ( )
+    else ( )
+        check_source_compiles ( C
+            "int main(void) {
+            #pragma loop( no_vector )
+            for (int j = 0; j < 1; j++) { }
+            return 0;
+            }"
+            HAVE_PRAGMA_LOOP_NO_VECTOR
+            FAIL_REGEX "[wW]arning" )
+        if ( HAVE_PRAGMA_LOOP_NO_VECTOR )
+            if ( BUILD_SHARED_LIBS )
+                target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
+            endif ( )
+            if ( BUILD_STATIC_LIBS )
+                target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
             endif ( )
         endif ( )
     endif ( )

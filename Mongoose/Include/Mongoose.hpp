@@ -29,6 +29,21 @@
 #error "Mongoose 3.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
+#if defined (_MSC_VER) && ! defined (__INTEL_COMPILER)
+    #if defined (MONGOOSE_STATIC)
+        #define MONGOOSE_API
+    #else
+        #if defined (MONGOOSE_BUILDING)
+            #define MONGOOSE_API __declspec ( dllexport )
+        #else
+            #define MONGOOSE_API __declspec ( dllimport )
+        #endif
+    #endif
+#else
+    // for other compilers
+    #define MONGOOSE_API
+#endif
+
 namespace Mongoose
 {
 

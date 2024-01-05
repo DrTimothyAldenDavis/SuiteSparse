@@ -14,8 +14,10 @@
 #ifndef SPEX_UTIL_INTERNAL_H
 #define SPEX_UTIL_INTERNAL_H
 
+#if defined (__GNUC__)
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wunused-value"
+#endif
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
