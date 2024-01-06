@@ -1,4 +1,4 @@
-Jan XX, 2024: version 9.0.1 FIXME for 7.5.0
+Jan XX, 2024: version 9.0.0 FIXME for 7.5.0
 
     * GrB_get/GrB_set: new functions from the v2.1 C API.
     * GrB_Type_new, GrB_UnaryOp_new, GrB_IndexUnaryOp_new: no longer macros,

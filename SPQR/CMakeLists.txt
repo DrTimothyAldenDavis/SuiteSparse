@@ -2,7 +2,7 @@
 # SuiteSparse/SPQR/CMakeLists.txt:  cmake for SuiteSparseQR (aka "SPQR")
 #-------------------------------------------------------------------------------
 
-# SPQR (SuiteSparseQR), Copyright (c) 2008-2023, Timothy A Davis.
+# SPQR (SuiteSparseQR), Copyright (c) 2008-2024, Timothy A Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -13,7 +13,7 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Jan XX, 2023" )    # FIXME for 7.5.0
+set ( SPQR_DATE "Jan XX, 2024" )    # FIXME for 7.5.0
 set ( SPQR_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( SPQR_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( SPQR_VERSION_SUB   1 CACHE STRING "" FORCE )

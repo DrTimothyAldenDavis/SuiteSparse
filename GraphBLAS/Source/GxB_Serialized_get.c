@@ -244,7 +244,7 @@ GrB_Info GxB_Serialized_get_Scalar
 
     if (info == GrB_SUCCESS)
     {
-        switch (field)
+        switch ((int) field)
         {
             case GrB_STORAGE_ORIENTATION_HINT : 
 
@@ -414,7 +414,7 @@ GrB_Info GxB_Serialized_get_INT32
 
     if (info == GrB_SUCCESS)
     {
-        switch (field)
+        switch ((int) field)
         {
             case GrB_STORAGE_ORIENTATION_HINT : 
 

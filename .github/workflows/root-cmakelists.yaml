@@ -273,7 +273,7 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
-    name: msvc (${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA)
+    name: msvc (${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
 
     defaults:
       run:
@@ -287,6 +287,7 @@ jobs:
       matrix:
         openmp: [with, without]
         cuda: [without]
+        link: [both]
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
@@ -295,6 +296,16 @@ jobs:
             cuda-cmake-flags:
               -DSUITESPARSE_USE_CUDA=ON
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+            link: both
+          - openmp: with
+            cuda: with
+            cuda-cmake-flags:
+              -DSUITESPARSE_USE_CUDA=ON
+              -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+            link: static
+            link-cmake-flags:
+              -DBUILD_SHARED_LIBS=OFF
+              -DBUILD_STATIC_LIBS=ON
 
     env:
       CHERE_INVOKING: 1
@@ -390,7 +401,7 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
@@ -400,8 +411,8 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ github.ref }}
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:
+            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
+            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -437,6 +448,7 @@ jobs:
                 -DBUILD_TESTING=OFF \
                 ${{ matrix.openmp-cmake-flags }} \
                 ${{ matrix.cuda-cmake-flags }} \
+                ${{ matrix.link-cmake-flags }} \
                 "${_extra_config[@]}" \
                 ..
 
@@ -495,12 +507,14 @@ jobs:
           cmake --build . --config Release
           echo "::endgroup::"
           printf "::group::\033[0;32m==>\033[0m Executing example\n"
-          printf "\033[1;35m  C binary with shared libraries\033[0m\n"
-          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
-            ./Release/my_demo
-          printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
-          PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
-            ./Release/my_cxx_demo
+          if [ -f ./my_demo -a -f ./my_cxx_demo ]; then
+            printf "\033[1;35m  C binary with shared libraries\033[0m\n"
+            PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+              ./Release/my_demo
+            printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+            PATH="${GITHUB_WORKSPACE}/bin;${GITHUB_WORKSPACE}/dependencies/bin;${PATH}" \
+              ./Release/my_cxx_demo
+          fi
           # We don't build a static version of GraphBLAS in CI.
           # So we need to prepare the environment also for the following tests.
           # Additionally, gmp, mpfr and BLAS are always shared libraries.

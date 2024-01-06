@@ -261,11 +261,15 @@ endif ( )
 include ( CheckSourceCompiles )
 
 set ( _orig_CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
-if ( CMAKE_C_COMPILER_ID STREQUAL "GNU" OR CMAKE_C_FRONTEND_VARIANT STREQUAL "GNU" )
+include ( CheckCCompilerFlag )
+check_c_compiler_flag ( "-Wunknown-pragmas" HAVE_UNKNOWN_PRAGMAS )
+if ( HAVE_UNKNOWN_PRAGMAS )
     set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunknown-pragmas" )
 endif ( )
 
 # check syntax for ivdep pragma
+set ( _pragma_found OFF )
+# GCC compatible
 check_source_compiles ( C
     "int main(void) {
     #pragma GCC ivdep
@@ -282,7 +286,42 @@ if ( HAVE_PRAGMA_GCC_IVDEP )
     if ( BUILD_STATIC_LIBS )
         target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
     endif ( )
-else ( )
+    set ( _pragma_found ON )
+endif ( )
+
+# Clang compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma clang loop vectorize(enable)
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_CLANG_LOOP_VECTORIZE
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_CLANG_LOOP_VECTORIZE )
+        # Clang is very verbose if a hint for vectorization cannot be performed.
+        # Disable the respective warning.
+        check_c_compiler_flag ( "-Wno-pass-failed" HAVE_NO_PASS_FAILED )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
+            if ( HAVE_NO_PASS_FAILED )
+                target_compile_options ( UMFPACK PRIVATE "-Wno-pass-failed" )
+            endif ( )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
+            if ( HAVE_NO_PASS_FAILED )
+                target_compile_options ( UMFPACK_static PRIVATE "-Wno-pass-failed" )
+            endif ( )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# Intel compatible
+if ( NOT _pragma_found )
     check_source_compiles ( C
         "int main(void) {
         #pragma ivdep
@@ -299,44 +338,58 @@ else ( )
         if ( BUILD_STATIC_LIBS )
             target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_IVDEP" )
         endif ( )
-    else ( )
-        check_source_compiles ( C
-            "int main(void) {
-            #pragma loop( ivdep )
-            for (int j = 0; j < 1; j++) { }
-            return 0;
-            }"
-            HAVE_PRAGMA_LOOP_IVDEP
-            FAIL_REGEX "[wW]arning" )
-        if ( HAVE_PRAGMA_LOOP_IVDEP )
-            if ( BUILD_SHARED_LIBS )
-                target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
-            endif ( )
-            if ( BUILD_STATIC_LIBS )
-                target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
-            endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# MSVC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma loop( ivdep )
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_LOOP_IVDEP
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_LOOP_IVDEP )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
         endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+        endif ( )
+        set ( _pragma_found ON )
     endif ( )
 endif ( )
 
 # check syntax for novector pragma
-check_source_compiles ( C
-    "int main(void) {
-    #pragma GCC novector
-    for (int j = 0; j < 1; j++) { }
-    return 0;
-    }"
-    HAVE_PRAGMA_GCC_NOVECTOR
-    FAIL_REGEX "[wW]arning" )
+set ( _pragma_found ${HAVE_PRAGMA_CLANG_LOOP_VECTORIZE} )
+# GCC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma GCC novector
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_GCC_NOVECTOR
+        FAIL_REGEX "[wW]arning" )
 
-if ( HAVE_PRAGMA_GCC_NOVECTOR )
-    if ( BUILD_SHARED_LIBS )
-        target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+    if ( HAVE_PRAGMA_GCC_NOVECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+        endif ( )
+        set ( _pragma_found ON )
     endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
-    endif ( )
-else ( )
+endif ( )
+
+# Intel compatible
+if ( NOT _pragma_found )
     check_source_compiles ( C
         "int main(void) {
         #pragma novector
@@ -353,23 +406,29 @@ else ( )
         if ( BUILD_STATIC_LIBS )
             target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_NOVECTOR" )
         endif ( )
-    else ( )
-        check_source_compiles ( C
-            "int main(void) {
-            #pragma loop( no_vector )
-            for (int j = 0; j < 1; j++) { }
-            return 0;
-            }"
-            HAVE_PRAGMA_LOOP_NO_VECTOR
-            FAIL_REGEX "[wW]arning" )
-        if ( HAVE_PRAGMA_LOOP_NO_VECTOR )
-            if ( BUILD_SHARED_LIBS )
-                target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
-            endif ( )
-            if ( BUILD_STATIC_LIBS )
-                target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
-            endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# MSVC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma loop( no_vector )
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_LOOP_NO_VECTOR
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_LOOP_NO_VECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
         endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
+        endif ( )
+        set ( _pragma_found ON )
     endif ( )
 endif ( )
 
