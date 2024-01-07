@@ -74,6 +74,11 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( ${TEST_STATIC_BIN} PUBLIC ${TEST_IMPORT_TARGET} )
     endif ( )
+    if ( TARGET SuiteSparse::CHOLMOD_static )
+        target_link_libraries ( ${TEST_STATIC_BIN} PUBLIC SuiteSparse::CHOLMOD_static )
+    else ( )
+        target_link_libraries ( ${TEST_STATIC_BIN} PUBLIC SuiteSparse::CHOLMOD )
+    endif ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
