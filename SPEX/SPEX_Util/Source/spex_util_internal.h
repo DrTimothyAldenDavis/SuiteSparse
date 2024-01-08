@@ -15,14 +15,8 @@
 #define SPEX_UTIL_INTERNAL_H
 
 #if defined (__GNUC__)
-    #pragma GCC diagnostic ignored "-Wunused-parameter"
-    #pragma GCC diagnostic ignored "-Wunused-value"
-    #if ( __GNUC__ == 11)
-        // gcc 11 has a bug that triggers a spurious warning in
-        // SPEX_matrix_allocate with -Wstringop-overflow.  see
-        // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101854
-        #pragma GCC diagnostic ignored "-Wstringop-overflow"
-    #endif
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wunused-value"
 #endif
 
 //------------------------------------------------------------------------------
