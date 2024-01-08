@@ -132,6 +132,8 @@ jobs:
                   -DCMAKE_C_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_CXX_COMPILER_LAUNCHER="ccache" \
                   -DCMAKE_Fortran_COMPILER_LAUNCHER="ccache" \
+                  -DBUILD_SHARED_LIBS=ON \
+                  -DBUILD_STATIC_LIBS=OFF \
                   -DBLA_VENDOR="Generic" \
                   -DGRAPHBLAS_COMPACT=ON \
                   -DSUITESPARSE_DEMOS=OFF \
@@ -195,10 +197,6 @@ jobs:
           ./my_demo
           printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
           ./my_cxx_demo
-          printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
-          ./my_demo_static
-          printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
-          ./my_cxx_demo_static
           echo "::endgroup::"
 
       - name: test Config
