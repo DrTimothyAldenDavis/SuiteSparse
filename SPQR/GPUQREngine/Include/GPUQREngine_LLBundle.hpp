@@ -25,6 +25,7 @@
 #define GPUQRENGINE_LLBUNDLE_HPP
 
 #include <cstddef>
+#include <new>
 
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
@@ -78,7 +79,6 @@ public:
 
     TaskType CurrentTask;
 
-    void *operator new(std::size_t, LLBundle <Int>* p){ return p; }
     //------------------------------------------------------------------------------
     //
     // This file contains the constructor and destructor for the LLBundle class.
@@ -127,6 +127,9 @@ public:
     void gpuPack(TaskDescriptor *cpuTask);
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_LLBUNDLE)
 extern template class LLBundle<int32_t>;
 extern template class LLBundle<int64_t>;
+#endif
+
 #endif

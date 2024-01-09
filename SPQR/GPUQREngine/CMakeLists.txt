@@ -66,7 +66,12 @@ configure_file ( "Config/GPUQREngine.hpp.in"
 
 #-------------------------------------------------------------------------------
 
-file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp" "Source/*.cu" "Source/*/*.cpp" )
+file ( GLOB GPUQRENGINE_SOURCES "Source/*.cpp"
+    "Source/*.cu"
+    "Source/BucketList/BucketList.cpp"
+    "Source/LLBundle/LLBundle.cpp"
+    "Source/Scheduler/Scheduler.cpp"
+    "Source/TaskDescriptor/*.cpp" )
 
 set ( GPUQRENGINE_INCLUDES Include Include/Kernel
     Include/Kernel/Apply Include/Kernel/Assemble Include/Kernel/Factorize )

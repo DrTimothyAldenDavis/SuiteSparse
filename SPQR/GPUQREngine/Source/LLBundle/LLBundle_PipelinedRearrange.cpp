@@ -109,12 +109,3 @@ void LLBundle <Int>::PipelinedRearrange
         while (next[Last] != EMPTY) Last = next[Last];
     }
 }
-
-template void LLBundle <int32_t>::PipelinedRearrange
-(
-    void
-) ;
-template void LLBundle <int64_t>::PipelinedRearrange
-(
-    void
-) ;

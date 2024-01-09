@@ -72,13 +72,4 @@ void BucketList<Int>::GrowBundles
         }
     }
 }
-
-template void BucketList<int32_t>::GrowBundles
-(
-    void
-) ;
-template void BucketList<int64_t>::GrowBundles
-(
-    void
-) ;
 #endif

@@ -20,6 +20,7 @@
 #define GPUQRENGINE_SCHEDULER_HPP
 
 #include <cstddef>
+#include <new>
 
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_FrontState.hpp"
@@ -99,7 +100,6 @@ public:
     cudaStream_t memoryStreamD2H;
 
     /* Scheduler.cpp */
-    void *operator new(std::size_t, Scheduler <Int>* p){ return p; }
     Scheduler(Front <Int> *fronts, Int numFronts, size_t gpuMemorySize);
     ~Scheduler();
 
@@ -174,6 +174,9 @@ public:
 #endif
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_SCHEDULER)
 extern template class Scheduler<int32_t>;
 extern template class Scheduler<int64_t>;
+#endif
+
 #endif

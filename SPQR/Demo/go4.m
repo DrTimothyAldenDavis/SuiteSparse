@@ -14,7 +14,7 @@ f = f (i) ;
 nmat = length (f) ;
 
 keep = ones (nmat,1) ;
-kinds = UFkinds ;
+kinds = sskinds ;
 for k = 1:nmat
     id = f (k) ;
     if (~isempty (strfind (kinds {id}, 'subsequent')))

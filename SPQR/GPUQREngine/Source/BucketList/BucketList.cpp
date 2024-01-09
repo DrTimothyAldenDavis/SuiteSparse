@@ -31,6 +31,9 @@
     Bundles = (LLBundle <Int> *) SuiteSparse_free(Bundles); \
     gpuVT = (double **) SuiteSparse_free(gpuVT); \
     wsMongoVT = Workspace::destroy(wsMongoVT);
+
+#define GPUQRENGINE_NO_EXTERN_BUCKETLIST
+
 #include "GPUQREngine_BucketList.hpp"
 template <typename Int>
 BucketList<Int>::BucketList
@@ -103,16 +106,6 @@ BucketList<Int>::BucketList
     }
 }
 
-template BucketList<int32_t>::BucketList
-(
-    Front <int32_t> *F,
-    int32_t minApplyGranularity
-) ;
-template BucketList<int64_t>::BucketList
-(
-    Front <int64_t> *F,
-    int64_t minApplyGranularity
-) ;
 
 template <typename Int>
 BucketList<Int>::~BucketList()
@@ -120,9 +113,6 @@ BucketList<Int>::~BucketList()
     FREE_EVERYTHING_BUCKET ;
 
 }
-
-template BucketList<int32_t>::~BucketList() ;
-template BucketList<int64_t>::~BucketList() ;
 
 
 template <typename Int>
@@ -149,5 +139,17 @@ void BucketList<Int>::Initialize()
     }
 }
 
-template void BucketList<int32_t>::Initialize() ;
-template void BucketList<int64_t>::Initialize() ;
+
+// Instantiate BucketList class template with types int32_t and int64_t
+// for export from library.
+
+#include "BucketList_AdvanceBundles.cpp"
+#include "BucketList_CreateBundles.cpp"
+#include "BucketList_FillWorkQueue.cpp"
+#include "BucketList_GrowBundles.cpp"
+#include "BucketList_Manage.cpp"
+#include "BucketList_PostProcessing.cpp"
+
+template class BucketList<int32_t>;
+template class BucketList<int64_t>;
+
