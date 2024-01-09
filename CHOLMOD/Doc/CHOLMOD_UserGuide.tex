@@ -287,9 +287,16 @@ are:
 \item {\tt SuiteSparse\_config}: a single place where all sparse matrix
     packages authored or co-authored by Davis are configured.
 \item {\tt METIS 5.1.0}: a graph partitioning package by George Karypis,
-    Univ. of Minnesota.  A slightly revised copy appears in
-    {\tt CHOLMOD/SuiteSparse\_metis}.  Not needed if {\tt -DNPARTITION} is
-    used.  See http://www-users.cs.umn.edu/$\sim$karypis/metis.
+    Univ. of Minnesota.  A slightly revised copy appears in {\tt
+    CHOLMOD/SuiteSparse\_metis}, but with a revised namespace so that no METIS
+    functions in CHOLMOD conflict with the unmodified METIS.  SuiteSparse
+    cannot use any other METIS library except for {\tt
+    CHOLMOD/SuiteSparse\_metis}.  There is no conflict with the unmodified
+    METIS, so it can be linked into the user's application alongside {\tt
+    CHOLMOD/SuiteSparse\_metis}.  This folder containing the modified METIS is
+    not needed if {\tt -DNPARTITION} is used.  See
+    http://www-users.cs.umn.edu/$\sim$karypis/metis for the original version of
+    METIS.
 \end{itemize}
 
 Three other packages are required for optimal performance:
@@ -303,7 +310,7 @@ Three other packages are required for optimal performance:
     Not needed if {\tt -DNSUPERNODAL} is used.
     See http://www.netlib.org.
 \item CUDA BLAS:  CHOLMOD can exploit an NVIDIA GPU by using the CUDA BLAS
-    for large supernodes.  This feature is new to CHOLMOD v2.0.0.
+    for large supernodes.
 \end{itemize}
 
 You must first obtain and install LAPACK, and the BLAS.
@@ -2027,10 +2034,6 @@ supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
 this method has not changed, and the \verb'to_xdtype' parameter values of the
 prior versions are upwards compatible with this version of CHOLMOD.
 
-%---------------------------------------
-\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
-%---------------------------------------
-
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: {\tt cholmod\_factor} object}
 \label{cholmod_factor}
@@ -2498,10 +2501,6 @@ supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
 this method has not changed, and the \verb'to_xdtype' parameter values of the
 prior versions are upwards compatible with this version of CHOLMOD.
 
-%---------------------------------------
-\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
-%---------------------------------------
-
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: {\tt cholmod\_triplet} object}
 \label{cholmod_triplet}
@@ -2578,10 +2577,6 @@ matrices had an implied \verb'dtype' of \verb'CHOLMOD_DOUBLE'.  The method now
 supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
 this method has not changed, and the \verb'to_xdtype' parameter values of the
 prior versions are upwards compatible with this version of CHOLMOD.
-
-%---------------------------------------
-\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
-%---------------------------------------
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: memory management}
