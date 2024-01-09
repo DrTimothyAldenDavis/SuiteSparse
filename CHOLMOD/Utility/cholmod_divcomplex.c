@@ -12,7 +12,7 @@
 
 // Compute c = a/b
 
-int cholmod_divcomplex
+int CHOLMOD(divcomplex)
 (
     // input:
     double ar, double ai,       // a (real, imaginary)

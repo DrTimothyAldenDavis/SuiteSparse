@@ -372,8 +372,8 @@ if ( BUILD_STATIC_LIBS )
     endif ( )
 
     if ( CHOLMOD_HAS_CUDA )
-        set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION on )
-        set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE on )
+        set_target_properties ( CHOLMOD_static PROPERTIES CUDA_SEPARABLE_COMPILATION ON )
+        set_target_properties ( CHOLMOD_static PROPERTIES POSITION_INDEPENDENT_CODE ON )
     endif ( )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
@@ -387,6 +387,42 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# object libraries for int64_t API
+#-------------------------------------------------------------------------------
+
+file ( GLOB CHOLMOD_SOURCES_INT64 "Check/cholmod_*.c" "Cholesky/cholmod_*.c"
+    "Utility/cholmod_*.c" "MatrixOps/cholmod_*.c" "Modify/cholmod_*.c"
+    "Partition/cholmod_*.c"  "Supernodal/cholmod_*.c" )
+
+list ( FILTER CHOLMOD_SOURCES_INT64 EXCLUDE REGEX "Utility/cholmod_.*([mc]alloc|[ds]bound).c" )
+list ( FILTER CHOLMOD_SOURCES_INT64 EXCLUDE REGEX "Utility/cholmod_mult_uint64_t.c" )
+list ( FILTER CHOLMOD_SOURCES_INT64 EXCLUDE REGEX "Utility/cholmod_memdebug.c" )
+list ( FILTER CHOLMOD_SOURCES_INT64 EXCLUDE REGEX "Partition/cholmod_metis_wrapper.c" )
+
+if ( BUILD_SHARED_LIBS )
+    add_library ( CHOLMOD_int64 OBJECT ${CHOLMOD_SOURCES_INT64} )
+    set_property ( TARGET CHOLMOD_int64
+        PROPERTY POSITION_INDEPENDENT_CODE ON )
+
+    target_compile_definitions ( CHOLMOD_int64 PRIVATE "CHOLMOD_INT64" )
+    set_target_properties ( CHOLMOD_int64 PROPERTIES
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON )
+
+    target_link_libraries ( CHOLMOD PRIVATE "$<BUILD_INTERFACE:CHOLMOD_int64>" )
+endif ( )
+if ( BUILD_STATIC_LIBS )
+     add_library ( CHOLMOD_int64_static OBJECT ${CHOLMOD_SOURCES_INT64} )
+
+    target_compile_definitions ( CHOLMOD_int64_static PRIVATE "CHOLMOD_INT64" )
+    set_target_properties ( CHOLMOD_int64_static PROPERTIES
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON )
+
+   target_link_libraries ( CHOLMOD_static PRIVATE CHOLMOD_int64_static )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # add the library dependencies
 #-------------------------------------------------------------------------------
 
@@ -395,6 +431,7 @@ if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::SuiteSparseConfig )
     target_include_directories ( CHOLMOD PUBLIC
         "$<TARGET_PROPERTY:SuiteSparse::SuiteSparseConfig,INTERFACE_INCLUDE_DIRECTORIES>" )
+    target_link_libraries ( CHOLMOD_int64 PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::SuiteSparseConfig_static )
@@ -402,11 +439,13 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( CHOLMOD_static PUBLIC SuiteSparse::SuiteSparseConfig )
     endif ( )
+    target_link_libraries ( CHOLMOD_int64_static PRIVATE SuiteSparse::SuiteSparseConfig )
 endif ( )
 
 # AMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::AMD )
+    target_link_libraries ( CHOLMOD_int64 PRIVATE SuiteSparse::AMD )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::AMD_static )
@@ -414,11 +453,13 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::AMD )
     endif ( )
+    target_link_libraries ( CHOLMOD_int64_static PRIVATE SuiteSparse::AMD )
 endif ( )
 
 # COLAMD:
 if ( BUILD_SHARED_LIBS )
     target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::COLAMD )
+    target_link_libraries ( CHOLMOD_int64 PRIVATE SuiteSparse::COLAMD )
 endif ( )
 if ( BUILD_STATIC_LIBS )
     if ( TARGET SuiteSparse::COLAMD_static )
@@ -426,12 +467,14 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::COLAMD )
     endif ( )
+    target_link_libraries ( CHOLMOD_int64_static PRIVATE SuiteSparse::COLAMD )
 endif ( )
 
 # CAMD and CCOLAMD:
 if ( CHOLMOD_CAMD )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::CAMD )
+        target_link_libraries ( CHOLMOD_int64 PRIVATE SuiteSparse::CAMD )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         set ( CHOLMOD_STATIC_MODULES "${CHOLMOD_STATIC_MODULES} CAMD" )
@@ -440,10 +483,12 @@ if ( CHOLMOD_CAMD )
         else ( )
             target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::CAMD )
         endif ( )
-    endif ( )
+        target_link_libraries ( CHOLMOD_int64_static PRIVATE SuiteSparse::CAMD )
+   endif ( )
 
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE SuiteSparse::CCOLAMD )
+        target_link_libraries ( CHOLMOD_int64 PRIVATE SuiteSparse::CCOLAMD )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         set ( CHOLMOD_STATIC_MODULES "${CHOLMOD_STATIC_MODULES} CCOLAMD" )
@@ -452,6 +497,7 @@ if ( CHOLMOD_CAMD )
         else ( )
             target_link_libraries ( CHOLMOD_static PRIVATE SuiteSparse::CCOLAMD )
         endif ( )
+        target_link_libraries ( CHOLMOD_int64_static PRIVATE SuiteSparse::CCOLAMD )
     endif ( )
 endif ( )
 
@@ -462,9 +508,11 @@ if ( CHOLMOD_HAS_OPENMP )
     message ( STATUS "OpenMP C flags:          ${OpenMP_C_FLAGS}" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( CHOLMOD PRIVATE OpenMP::OpenMP_C )
+        target_link_libraries ( CHOLMOD_int64 PRIVATE OpenMP::OpenMP_C )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( CHOLMOD_static PRIVATE OpenMP::OpenMP_C )
+        target_link_libraries ( CHOLMOD_int64_static PRIVATE OpenMP::OpenMP_C )
         list ( APPEND CHOLMOD_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
 else ( )
@@ -595,7 +643,7 @@ if ( BUILD_SHARED_LIBS )
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
 endif ( )
 if ( BUILD_STATIC_LIBS )
-    install ( TARGETS CHOLMOD_static
+    install ( TARGETS CHOLMOD_static CHOLMOD_int64_static
         EXPORT CHOLMODTargets
         ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
         PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )

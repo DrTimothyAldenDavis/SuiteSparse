@@ -10,7 +10,7 @@
 
 #include "cholmod_internal.h"
 
-int cholmod_allocate_work
+int CHOLMOD(allocate_work)
 (
     // input:
     size_t nrow,
@@ -19,7 +19,7 @@ int cholmod_allocate_work
     cholmod_common *Common
 )
 {
-    return (cholmod_alloc_work (nrow, iworksize, xworksize, CHOLMOD_DOUBLE,
+    return (CHOLMOD(alloc_work) (nrow, iworksize, xworksize, CHOLMOD_DOUBLE,
         Common)) ;
 }
 

@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Utility/cholmod_set_empty: set an int32 array to EMPTY
+// CHOLMOD/Utility/t_cholmod_set_empty: set an Int array to EMPTY
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Utility Module. Copyright (C) 2023, Timothy A. Davis, All Rights
@@ -8,6 +8,17 @@
 
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_INT32
-#include "t_cholmod_set_empty.c"
+#include "cholmod_internal.h"
+
+void CHOLMOD(set_empty)
+(
+    Int *S,     // Int array of size n
+    size_t n
+)
+{
+    for (size_t k = 0 ; k < n ; k++)
+    {
+        S [k] = EMPTY ;
+    }
+}
 

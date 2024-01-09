@@ -14,13 +14,13 @@
 #define CHOLMOD_INT32
 #include "cholmod_internal.h"
 
-cholmod_factor *cholmod_allocate_factor         // return the new factor L
+cholmod_factor *CHOLMOD(allocate_factor)         // return the new factor L
 (
     // input:
     size_t n,               // L is factorization of an n-by-n matrix
     cholmod_common *Common
 )
 {
-    return (cholmod_alloc_factor (n, CHOLMOD_DOUBLE, Common)) ;
+    return (CHOLMOD(alloc_factor) (n, CHOLMOD_DOUBLE, Common)) ;
 }
 

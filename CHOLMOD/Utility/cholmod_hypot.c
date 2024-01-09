@@ -10,7 +10,7 @@
 
 #include "cholmod_internal.h"
 
-double cholmod_hypot (double x, double y)
+double CHOLMOD(hypot) (double x, double y)
 {
     return (SuiteSparse_config_hypot (x, y)) ;
 }

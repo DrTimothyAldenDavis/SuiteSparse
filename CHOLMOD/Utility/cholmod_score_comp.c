@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// CHOLMOD/Utility/cholmod_score_comp: for sorting supernodes
+// CHOLMOD/Utility/t_cholmod_score_comp: for sorting supernodes
 //------------------------------------------------------------------------------
 
 // CHOLMOD/Utility Module. Copyright (C) 2023, Timothy A. Davis, All Rights
@@ -8,6 +8,14 @@
 
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_INT32
-#include "t_cholmod_score_comp.c"
+#include "cholmod_internal.h"
+
+int CHOLMOD(score_comp)
+(
+    struct cholmod_descendant_score_t *i,
+    struct cholmod_descendant_score_t *j
+)
+{
+    return ((i->score < j->score) ? 1 : -1) ;
+}
 
