@@ -59,12 +59,3 @@ void LLBundle <Int>::gpuPack
     cpuTask->AuxAddress[0] = VT[0];
     cpuTask->AuxAddress[1] = VT[1];
 }
-
-template void LLBundle <int32_t>::gpuPack
-(
-    TaskDescriptor* cpuTask
-) ;
-template void LLBundle <int64_t>::gpuPack
-(
-    TaskDescriptor* cpuTask
-) ;
