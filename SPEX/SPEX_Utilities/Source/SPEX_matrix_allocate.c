@@ -29,15 +29,6 @@
 
 #include "spex_util_internal.h"
 
-#if defined (__GNUC__)
-    #if ( __GNUC__ == 11)
-        // gcc 11 has a bug that triggers a spurious warning for the call
-        // to SPEX_MPQ_INIT (A->scale), from -Wstringop-overflow.  see
-        // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101854
-        #pragma GCC diagnostic ignored "-Wstringop-overflow"
-    #endif
-#endif
-
 SPEX_info SPEX_matrix_allocate
 (
     SPEX_matrix *A_handle,  // matrix to allocate
