@@ -823,7 +823,7 @@ void klu_version (int version [3]) ;
  *      #endif
  */
 
-#define KLU_DATE "Jan XX, 2024"
+#define KLU_DATE "Jan 10, 2024"
 #define KLU_MAIN_VERSION   2
 #define KLU_SUB_VERSION    3
 #define KLU_SUBSUB_VERSION 1

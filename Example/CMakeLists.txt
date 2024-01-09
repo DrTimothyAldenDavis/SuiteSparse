@@ -53,7 +53,7 @@ message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 #-------------------------------------------------------------------------------
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Jan XX, 2024" )  # FIXME for 7.5.0
+set ( MY_DATE "Jan 10, 2024" )
 set ( MY_VERSION_MAJOR 1 )
 set ( MY_VERSION_MINOR 6 )
 set ( MY_VERSION_PATCH 0 )

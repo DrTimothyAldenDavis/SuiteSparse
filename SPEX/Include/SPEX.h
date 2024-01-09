@@ -259,7 +259,7 @@
 // Version
 //------------------------------------------------------------------------------
 
-#define SPEX_DATE "Jan XX, 2024"
+#define SPEX_DATE "Jan 10, 2024"
 #define SPEX_VERSION "2.3.1"
 #define SPEX_VERSION_MAJOR 2
 #define SPEX_VERSION_MINOR 3

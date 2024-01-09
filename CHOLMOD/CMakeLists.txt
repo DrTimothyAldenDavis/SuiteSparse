@@ -12,7 +12,7 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Jan XX, 2024" ) # FIXME for 7.5.0
+set ( CHOLMOD_DATE "Jan 10, 2024" )
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
 set ( CHOLMOD_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( CHOLMOD_VERSION_SUB   1 CACHE STRING "" FORCE )

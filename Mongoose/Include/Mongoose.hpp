@@ -21,7 +21,7 @@
 #define Mongoose_VERSION_MAJOR 3
 #define Mongoose_VERSION_MINOR 3
 #define Mongoose_VERSION_PATCH 1
-#define Mongoose_DATE "Jan XX, 2024"
+#define Mongoose_DATE "Jan 10, 2024"
 
 #define Mongoose__VERSION SUITESPARSE__VERCODE(3,3,1)
 #if !defined (SUITESPARSE__VERSION) || \
