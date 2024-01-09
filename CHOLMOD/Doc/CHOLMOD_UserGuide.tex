@@ -325,7 +325,7 @@ for the compiler:
 \item {\tt -DNPRINT}:       do not print anything.
 \end{itemize}
 
-These settings are controlled in cmake by the following variables, which 
+These settings are controlled in cmake by the following variables, which
 are all \verb'ON' by default:
 \begin{itemize}
 \item \verb'CHOLMOD_CHECK':      if \verb'OFF': do not use the Check module.
@@ -2016,9 +2016,20 @@ unsymmetric, controlled by the \verb'mode' parameter.
 %---------------------------------------
 
 \input{_sparse_xtype.tex}
-Changes the {\tt xtype} and/or \verb'dtype' of a sparse matrix, to pattern,
-real, complex, or zomplex.  Changing from complex or zomplex to real discards
-the imaginary part.
+Changes the {\tt xtype} and/or \verb'dtype' of a sparse matrix.  The
+\verb'xtype' can be changed to pattern, real, complex, or zomplex.  The
+\verb'dtype' can be changed to single or double.  Changing from complex or
+zomplex to real discards the imaginary part.
+
+The name of this method derives from an earlier version of CHOLMOD where all
+matrices had an implied \verb'dtype' of \verb'CHOLMOD_DOUBLE'.  The method now
+supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
+this method has not changed, and the \verb'to_xdtype' parameter values of the
+prior versions are upwards compatible with this version of CHOLMOD.
+
+%---------------------------------------
+\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
+%---------------------------------------
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: {\tt cholmod\_factor} object}
@@ -2168,10 +2179,11 @@ whose contents are undefined:
 
 Supports all xtypes, except that there is no supernodal zomplex L.
 
-The {\tt to\_xdtype} parameter is used only when converting from symbolic to
+The \verb'to_xtype' parameter is used only when converting from symbolic to
 numeric or numeric to symbolic.  It cannot be used to convert a numeric xtype
-(real, complex, or zomplex) to a different numeric xtype.  For that conversion,
-use {\tt cholmod\_factor\_xtype} instead.
+(real, complex, or zomplex) to a different numeric {\tt xtype}.  It also cannot
+change the \verb'dtype' of a factor (from double to single, for example).
+For those conversions, use \verb'cholmod_factor_xtype' instead.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_pack\_factor}: pack the columns of a factor}
@@ -2228,10 +2240,20 @@ Returns an exact copy of a factor.
 %---------------------------------------
 
 \input{_factor_xtype.tex}
-Changes the {\tt xtype} of a factor, to pattern, real, complex, or zomplex.
-Changing from complex or zomplex to real discards the imaginary part.
-You cannot change a supernodal factor to the zomplex xtype.
- 
+Changes the {\tt xtype} and/or \verb'dtype' of a sparse factorization.  The
+\verb'xtype' can be changed to real, complex, or zomplex (not to pattern).
+The \verb'dtype' can be changed to single or double.  Changing from complex or
+zomplex to real discards the imaginary part.
+A supernodal factor cannot be changed to the zomplex \verb'xtype'.
+A factor cannot be converted to an \verb'xtype' of pattern-only with this method;
+use \verb'cholmod_change_factor' for that operation.
+
+The name of this method derives from an earlier version of CHOLMOD where all
+matrices had an implied \verb'dtype' of \verb'CHOLMOD_DOUBLE'.  The method now
+supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
+this method has not changed, and the \verb'to_xdtype' parameter values of the
+prior versions are upwards compatible with this version of CHOLMOD.
+
 %---------------------------------------
 \subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
 %---------------------------------------
@@ -2464,9 +2486,21 @@ Returns a copy of a dense matrix, placing the result in a preallocated matrix
 %---------------------------------------
 
 \input{_dense_xtype.tex}
-Changes the {\tt xtype} and/or {\tt dtype} of a dense matrix, to real, complex,
-or zomplex.  Changing from complex or zomplex to real discards the imaginary
-part.  A dense matrix cannot be converted to an xtype of pattern-only.
+Changes the {\tt xtype} and/or \verb'dtype' of a dense matrix.
+The \verb'xtype' can change to real, complex, or zomplex (not pattern-only).
+The \verb'dtype' can change to single or double.
+Changing from complex or zomplex to real discards the imaginary part.
+A dense matrix cannot be converted to an \verb'xtype' of pattern-only.
+
+The name of this method derives from an earlier version of CHOLMOD where all
+matrices had an implied \verb'dtype' of \verb'CHOLMOD_DOUBLE'.  The method now
+supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
+this method has not changed, and the \verb'to_xdtype' parameter values of the
+prior versions are upwards compatible with this version of CHOLMOD.
+
+%---------------------------------------
+\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
+%---------------------------------------
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: {\tt cholmod\_triplet} object}
@@ -2534,8 +2568,20 @@ Returns an exact copy of a triplet matrix.
 %---------------------------------------
 
 \input{_triplet_xtype.tex}
-Changes the {\tt xtype} of a dense matrix, to real, complex, or zomplex.
+Changes the {\tt xtype} and/or \verb'dtype' of a triplet matrix.
+The \verb'xtype' can change to pattern, real, complex, or zomplex,
+and the \verb'dtype' can change to single or double.
 Changing from complex or zomplex to real discards the imaginary part.
+
+The name of this method derives from an earlier version of CHOLMOD where all
+matrices had an implied \verb'dtype' of \verb'CHOLMOD_DOUBLE'.  The method now
+supports changes to the \verb'dtype'.  For backward compatilibilty, the name of
+this method has not changed, and the \verb'to_xdtype' parameter values of the
+prior versions are upwards compatible with this version of CHOLMOD.
+
+%---------------------------------------
+\subsection{How many entries are in a CHOLMOD sparse Cholesky factorization?}
+%---------------------------------------
 
 %-------------------------------------------------------------------------------
 \newpage \section{{\tt Utility} Module: memory management}
@@ -3630,7 +3676,7 @@ column of {\tt L} must be equal to the {\tt k}th row and column of the identity
 matrix on input.  Only real matrices are supported (double or single).  The
 dtypes of all matrices must match, except when \verb'L' is symbolic (with an
 xtype of \verb'CHOLMOD_PATTERN').  In this case, \verb'L' is converted to the
-dtype of \verb'R'.  The algorithm is described in \cite{DavisHager05}.  
+dtype of \verb'R'.  The algorithm is described in \cite{DavisHager05}.
 
 %---------------------------------------
 \subsection{{\tt cholmod\_rowadd\_solve}: add row to factor and update a
