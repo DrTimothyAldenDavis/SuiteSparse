@@ -36,7 +36,7 @@
  *	#endif
  */
 
-#define CCOLAMD_DATE "Jan XX, 2024"
+#define CCOLAMD_DATE "Jan 10, 2024"
 #define CCOLAMD_MAIN_VERSION   3
 #define CCOLAMD_SUB_VERSION    3
 #define CCOLAMD_SUBSUB_VERSION 1

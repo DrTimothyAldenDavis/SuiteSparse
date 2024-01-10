@@ -12,7 +12,7 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( BTF_DATE "Jan XX, 2024" )     # FIXME for 7.5.0
+set ( BTF_DATE "Jan 10, 2024" )
 set ( BTF_VERSION_MAJOR 2 CACHE STRING "" FORCE )
 set ( BTF_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( BTF_VERSION_SUB   1 CACHE STRING "" FORCE )

@@ -74,7 +74,7 @@
  * below.
  */
 
-#define UMFPACK_DATE "Jan XX, 2024"
+#define UMFPACK_DATE "Jan 10, 2024"
 #define UMFPACK_MAIN_VERSION   6
 #define UMFPACK_SUB_VERSION    3
 #define UMFPACK_SUBSUB_VERSION 1
