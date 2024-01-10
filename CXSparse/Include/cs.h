@@ -38,7 +38,7 @@
 #define CS_VER 4  /* CXSparse Version */
 #define CS_SUBVER 3
 #define CS_SUBSUB 1
-#define CS_DATE "Jan XX, 2024"        /* CXSparse release date */
+#define CS_DATE "Jan 10, 2024"        /* CXSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2024"
 #define CXSPARSE
 
