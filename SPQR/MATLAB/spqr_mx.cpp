@@ -963,38 +963,38 @@ mxArray *spqr_mx_info       // return a struct with info statistics
         "nnzR_upper_bound",             // 0: nnz(R) bound
         "nnzH_upper_bound",             // 1: nnz(H) bound
         "number_of_frontal_matrices",   // 2: nf
-        "number_of_TBB_tasks",          // 3: ntasks
-        "rank_A_estimate",              // 4: rank
-        "number_of_column_singletons",  // 5: n1cols
-        "number_of_singleton_rows",     // 6: n1rows
-        "ordering",                     // 7: ordering used
-        "memory_usage_in_bytes",        // 8: memory usage
-        "flops_upper_bound",            // 9: upper bound on flop count
+        "rank_A_estimate",              // 3: rank
+        "number_of_column_singletons",  // 4: n1cols
+        "number_of_singleton_rows",     // 5: n1rows
+        "ordering",                     // 6: ordering used
+        "memory_usage_in_bytes",        // 7: memory usage
+        "flops_upper_bound",            // 8: upper bound on flop count
                                         //    (excluding backsolve)
-        "tol",                          // 10: column norm tolerance used
-        "number_of_TBB_threads",        // 11: # threads used
-        "norm_E_fro",                   // 12: norm of dropped diag of R
-
-        // compilation options
-        "spqr_compiled_with_TBB",       // 13: compiled with TBB or not
-        "spqr_compiled_with_METIS",     // 14: compiled with METIS or not
+        "tol",                          // 9: column norm tolerance used
+        "norm_E_fro",                   // 10: norm of dropped diag of R
 
         // only if flops >= 0:
-        "analyze_time",                 // 15: analyze time
-        "factorize_time",               // 16: factorize time (and apply Q')
-        "solve_time",                   // 17: R\C backsolve only
-        "total_time",                   // 18: total x=A\b in seconds
-        "flops"                         // 19: actual flops (incl backsolve)
+        "analyze_time",                 // 11: analyze time
+        "factorize_time",               // 12: factorize time (and apply Q')
+        "solve_time",                   // 13: R\C backsolve only
+        "total_time",                   // 14: total x=A\b in seconds
+        "flops"                         // 15: actual flops (incl backsolve)
     } ;
 
-    ninfo = (flops < 0) ? 15 : 20 ;
+    ninfo = (flops < 0) ? 11 : 16 ;
 
     s = mxCreateStructMatrix (1, 1, ninfo, info_struct) ;
 
-    for (int64_t k = 0 ; k <= 6 ; k++)
+    for (int64_t k = 0 ; k <= 2 ; k++)
     {
         mxSetFieldByNumber (s, 0, k,
             mxCreateDoubleScalar ((double) cc->SPQR_istat [k])) ;
+    }
+
+    for (int64_t k = 3 ; k <= 5 ; k++)
+    {
+        mxSetFieldByNumber (s, 0, k,
+            mxCreateDoubleScalar ((double) cc->SPQR_istat [k+1])) ;
     }
 
     // get the ordering used.  Note that "default", "best", and "cholmod"
@@ -1023,42 +1023,26 @@ mxArray *spqr_mx_info       // return a struct with info statistics
             ord = mxCreateString ("unknown") ;
             break ;
     }
-    mxSetFieldByNumber (s, 0, 7, ord) ;
+    mxSetFieldByNumber (s, 0, 6, ord) ;
 
-    mxSetFieldByNumber (s, 0, 8,
+    mxSetFieldByNumber (s, 0, 7,
         mxCreateDoubleScalar ((double) cc->memory_usage)) ;
-    mxSetFieldByNumber (s, 0, 9,
+    mxSetFieldByNumber (s, 0, 8,
         mxCreateDoubleScalar (cc->SPQR_flopcount_bound)) ;
-    mxSetFieldByNumber (s, 0, 10, mxCreateDoubleScalar (cc->SPQR_tol_used)) ;
+    mxSetFieldByNumber (s, 0, 9, mxCreateDoubleScalar (cc->SPQR_tol_used)) ;
 
-    int nthreads = cc->SPQR_nthreads ;
-    if (nthreads <= 0)
-    {
-        mxSetFieldByNumber (s, 0, 11, mxCreateString ("default"));
-    }
-    else
-    {
-        mxSetFieldByNumber (s, 0, 11, mxCreateDoubleScalar ((double) nthreads));
-    }
-
-    mxSetFieldByNumber (s, 0, 12, mxCreateDoubleScalar (cc->SPQR_norm_E_fro)) ;
-
-    // TBB removed
-    mxSetFieldByNumber (s, 0, 13, mxCreateString ("no")) ;
-
-    // no need to ask if METIS is available
-    mxSetFieldByNumber (s, 0, 14, mxCreateString ("(not determined)")) ;
+    mxSetFieldByNumber (s, 0, 10, mxCreateDoubleScalar (cc->SPQR_norm_E_fro)) ;
 
     if (flops >= 0)
     {
-        mxSetFieldByNumber (s, 0, 15,
+        mxSetFieldByNumber (s, 0, 11,
             mxCreateDoubleScalar (cc->SPQR_analyze_time)) ;
-        mxSetFieldByNumber (s, 0, 16,
+        mxSetFieldByNumber (s, 0, 12,
             mxCreateDoubleScalar (cc->SPQR_factorize_time)) ;
-        mxSetFieldByNumber (s, 0, 17,
+        mxSetFieldByNumber (s, 0, 13,
             mxCreateDoubleScalar (cc->SPQR_solve_time)) ;
-        mxSetFieldByNumber (s, 0, 18, mxCreateDoubleScalar (t)) ;
-        mxSetFieldByNumber (s, 0, 19, mxCreateDoubleScalar (flops)) ;
+        mxSetFieldByNumber (s, 0, 14, mxCreateDoubleScalar (t)) ;
+        mxSetFieldByNumber (s, 0, 15, mxCreateDoubleScalar (flops)) ;
     }
     return (s) ;
 }

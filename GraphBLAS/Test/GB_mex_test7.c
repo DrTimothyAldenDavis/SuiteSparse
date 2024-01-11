@@ -29,6 +29,7 @@ void mexFunction
     GrB_Info info ;
     GrB_Matrix A = NULL, B = NULL, Y_mangled = NULL, Y = NULL, C1 = NULL,
         C2 = NULL ;
+    GrB_Scalar s = NULL ;
 
     //--------------------------------------------------------------------------
     // startup GraphBLAS
@@ -40,6 +41,15 @@ void mexFunction
     //--------------------------------------------------------------------------
     // matrix check
     //--------------------------------------------------------------------------
+
+    OK (GrB_Scalar_new (&s, GrB_INT64)) ;
+    OK (GrB_Scalar_setElement_INT64 (s, 0)) ;
+    OK (GrB_Global_set_Scalar (GrB_GLOBAL, s, GxB_HYPER_HASH)) ;
+    OK (GrB_Scalar_clear (s)) ;
+    OK (GrB_Global_get_Scalar (GrB_GLOBAL, s, GxB_HYPER_HASH)) ;
+    int64_t i = 1 ;
+    OK (GrB_Scalar_extractElement_INT64 (&i, s)) ;
+    CHECK (i == 0) ;
 
     OK (GrB_Matrix_new (&A, GrB_FP64, 100, 100)) ;
     OK (GxB_Matrix_Option_set (A, GxB_SPARSITY_CONTROL, GxB_HYPERSPARSE)) ;
@@ -286,6 +296,13 @@ void mexFunction
     // wrapup
     //--------------------------------------------------------------------------
 
+    OK (GrB_Scalar_setElement_INT64 (s, 1024)) ;
+    OK (GrB_Global_set_Scalar (GrB_GLOBAL, s, GxB_HYPER_HASH)) ;
+    OK (GrB_Scalar_clear (s)) ;
+    OK (GrB_Global_get_Scalar (GrB_GLOBAL, s, GxB_HYPER_HASH)) ;
+    OK (GrB_Scalar_extractElement_INT64 (&i, s)) ;
+    CHECK (i == 1024) ;
+    OK (GrB_Scalar_free (&s)) ;
     GB_mx_put_global (true) ;   
     printf ("\nGB_mex_test7: all tests passed\n\n") ;
 }

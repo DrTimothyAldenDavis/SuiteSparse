@@ -84,6 +84,8 @@ SuiteSparse:GraphBLAS is under the Apache-2.0 license.
 Version 8.0 adds several new features, in particular a JIT for compiling
 kernels at run-time, and a new \verb'GxB_Context' object.
 See Sections~\ref{context} and \ref{jit} for details.
+Version 9.0 adds the \verb'GrB_get' and \verb'GrB_set' methods;
+see Section~\ref{options}.
 
 \end{abstract}
 
@@ -628,7 +630,7 @@ complete list of error codes).  Typecasting can only be done between built-in
 types, and it follows the rules of the ANSI C language (not MATLAB) wherever
 the rules of ANSI C are well-defined.
 
-However, unlike MATLAB, the ANSI C11 language specification states that the
+However, unlike MATLAB, the C11 language specification states that the
 results of typecasting a \verb'float' or \verb'double' to an integer type is
 not always defined.  In SuiteSparse:GraphBLAS, whenever C leaves the result
 undefined the rules used in MATLAB are followed.  In particular \verb'+Inf'
@@ -747,16 +749,14 @@ reduces down the columns, not across the rows.
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Interfaces to MATLAB, Octave, Python, Julia, Java} %%%%%%%%%%%%%%%%%%%%
+\section{Interfaces to MATLAB, Octave, Python, Julia, Go, Java, ...} %%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 The MATLAB/Octave interface to SuiteSparse:GraphBLAS is included with this
 distribution, described in Section~\ref{octave}.
-It is fully polished, and fully tested, but does have
-some limitations that will be addressed in future releases.
-Two Python interfaces are now available, as is a
-Julia interface.  These are not part of the SuiteSparse:GraphBLAS distribution.
-See the links below (see Sections \ref{python} and \ref{julia}).
+Python, Julia, Go, and Java interfaces are available.
+These are not part of the SuiteSparse:GraphBLAS distribution.
+See the links below.
 
 %===============================================================================
 \subsection{MATLAB/Octave Interface}
@@ -843,6 +843,21 @@ a \verb'GrB_Matrix'. This makes Python and Julia the best high-level interfaces
 for SuiteSparse:GraphBLAS.  MATLAB is not as well suited, since it does not
 allow inputs to a function or mexFunction to be modified, so any pending
 work must be finished before a matrix can be used as input.
+
+%===============================================================================
+\subsection{Go Interface}
+%===============================================================================
+\label{go}
+
+Pascal Costanza (Intel) has a Go interface to GraphBLAS and LAGraph:
+\begin{itemize}
+\item forGraphBLASGo: \url{https://github.com/intel/forGraphBLASGo}, which
+is almost a complete wrapper for SuiteSparse:GraphBLAS.
+Documentation is at \url{https://pkg.go.dev/github.com/intel/forGraphBLASGo}.
+\item forLAGraphGo: \url{https://github.com/intel/forLAGraphGo}, which is in
+progress.  Documentation is at
+\url{https://pkg.go.dev/github.com/intel/forLAGraphGo}.
+\end{itemize}
 
 %===============================================================================
 \subsection{Java Interface}
@@ -1170,7 +1185,7 @@ before any user thread may call any \verb'GrB_*' or \verb'GxB_*' function.
 When the user application is finished, exactly one user thread must call
 \verb'GrB_finalize', after which no user thread may call any \verb'GrB_*' or
 \verb'GxB_*' function.
-The mode of a GraphBLAS session can be queried with \verb'GxB_get';
+The mode of a GraphBLAS session can be queried with \verb'GrB_get';
 see Section~\ref{options} for details.
 
 %===============================================================================
@@ -1199,7 +1214,7 @@ compile-time version check with \verb'GRB_VERSION' would be stale.
 \verb'GrB_getVersion' thus provides a run-time access of the version of the C
 API Specification supported by the library.
 
-\newpage
+% \newpage
 %===============================================================================
 \subsection{{\sf GxB\_init:} initialize with alternate malloc} %================
 %===============================================================================
@@ -1212,10 +1227,10 @@ GrB_Info GxB_init           // start up GraphBLAS and also define malloc
 (
     GrB_Mode mode,          // blocking or non-blocking mode
     // pointers to memory management functions.
-    void * (* user_malloc_function  ) (size_t),
-    void * (* user_calloc_function  ) (size_t, size_t),
-    void * (* user_realloc_function ) (void *, size_t),
-    void   (* user_free_function    ) (void *)
+    void * (* user_malloc_func  ) (size_t),
+    void * (* user_calloc_func  ) (size_t, size_t),
+    void * (* user_realloc_func ) (void *, size_t),
+    void   (* user_free_func    ) (void *)
 ) ;
 \end{verbatim}
 }\end{mdframed}
@@ -1228,16 +1243,16 @@ the user application control over this is particularly important when using the
 Sections \ref{serialize_deserialize} and \ref{pack_unpack},
 since they require the user application and
 GraphBLAS to use the same memory manager.
-
-\verb'user_calloc_function' and \verb'user_realloc_function' are optional, and
-may be \verb'NULL'.  If \verb'NULL', then the \verb'user_malloc_function' is
+\verb'user_calloc_func' and \verb'user_realloc_func' are optional, and
+may be \verb'NULL'.  If \verb'NULL', then the \verb'user_malloc_func' is
 relied on instead, for all memory allocations.
-
-These functions can only be set once, when GraphBLAS starts.   Either
+These functions can only be set once, when GraphBLAS starts.
+They can be queried using \verb'GrB_get' (see
+Section~\ref{get_set_global}).
+Either
 \verb'GrB_init' or \verb'GxB_init' must be called before any other GraphBLAS
 operation, but not both.  The functions passed to \verb'GxB_init' must be
 thread-safe.
-
 The following usage is identical to \verb'GrB_init(mode)':
 
     {\footnotesize
@@ -1284,6 +1299,7 @@ Error                         & value & description \\
 \verb'GrB_DIMENSION_MISMATCH'   & -6   & matrix dimensions do not match \\
 \verb'GrB_OUTPUT_NOT_EMPTY'     & -7   & output matrix already has values in it \\
 \verb'GrB_NOT_IMPLEMENTED'      & -8   & not implemented in SS:GrB \\
+\verb'GrB_ALREADY_SET'          & -9   & field already written to \\
 \verb'GrB_PANIC'                & -101 & unrecoverable error \\
 \verb'GrB_OUT_OF_MEMORY'        & -102 & out of memory \\
 \verb'GrB_INSUFFICIENT_SPACE'   & -103 & output array not large enough \\
@@ -1336,10 +1352,7 @@ out-of-memory conditions result in an empty string from \verb'GrB_error'.
 SuiteSparse:GraphBLAS reports many helpful details via \verb'GrB_error'.  For
 example, if a row or column index is out of bounds, the report will state what
 those bounds are.  If a matrix dimension is incorrect, the mismatching
-dimensions will be provided.  \verb'GrB_BinaryOp_new', \verb'GrB_UnaryOp_new',
-and \verb'GrB_IndexUnaryOp_new' record the name the function passed to them, and
-\verb'GrB_Type_new' records the name of its type parameter, and these are
-printed if the user-defined types and operators are used incorrectly.  Refer to
+dimensions will be provided.  Refer to
 the output of the example programs in the \verb'Demo' and \verb'Test' folder,
 which intentionally generate errors to illustrate the use of \verb'GrB_error'.
 
@@ -1386,10 +1399,11 @@ finished, exactly one user thread must call \verb'GrB_finalize'.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \label{objects}
 
-GraphBLAS defines ten different objects to represent matrices, vectors,
+GraphBLAS defines eleven different objects to represent matrices, vectors,
 scalars, data types, operators (binary, unary, and index-unary), monoids,
-semirings, and a {\em descriptor} object used to specify optional parameters
-that modify the behavior of a GraphBLAS operation.
+semirings, a {\em descriptor} object used to specify optional parameters
+that modify the behavior of a GraphBLAS operation, and a {\em context}
+object for controlling computational resources.
 
 The GraphBLAS API makes a distinction between {\em methods} and {\em
 operations}.  A method is a function that works on a GraphBLAS object, creating
@@ -1413,6 +1427,7 @@ with an operator) acts on matrices and/or vectors in a semiring.
 \verb'GrB_Vector'    & a 1D sparse column vector of any type \\
 \verb'GrB_Scalar'    & a scalar of any type \\
 \verb'GrB_Descriptor'& a collection of parameters that modify an operation \\
+\verb'GxB_Context'   & allocating computational resources \\
 \hline
 \end{tabular}
 }
@@ -1467,7 +1482,7 @@ type              &                  &                          & \\
 }
 \vspace{0.2in}
 
-The ANSI C11 definitions of \verb'float complex' and \verb'double complex'
+The C11 definitions of \verb'float complex' and \verb'double complex'
 are not always available.  The \verb'GraphBLAS.h' header defines them as
 \verb'GxB_FC32_t' and \verb'GxB_FC64_t', respectively.
 
@@ -1497,8 +1512,8 @@ GraphBLAS function       & purpose                          & Section \\
 \verb'GxB_Type_new'      & create a user-defined type,
                             with name and definition        & \ref{type_new_named} \\
 \verb'GrB_Type_wait'     & wait for a user-defined type     & \ref{type_wait} \\
-\verb'GxB_Type_size'     & return the size of a type        & \ref{type_size} \\
-\verb'GxB_Type_name'     & return the name of a type        & \ref{type_name} \\
+\verb'GrB_get'           & get properties of a type         & \ref{get_set_type} \\
+\verb'GrB_set'           & set the type name/definitition   & \ref{get_set_type} \\
 \verb'GxB_Type_from_name'& return the type from its name    & \ref{type_from_name} \\
 \verb'GrB_Type_free'     & free a user-defined type         & \ref{type_free} \\
 \hline
@@ -1532,7 +1547,7 @@ The second parameter should be passed as \verb'sizeof(ctype)'.  The only
 requirement on the C type is that \verb'sizeof(ctype)' is valid in C, and
 that the type reside in a contiguous block of memory so that it can be moved
 with \verb'memcpy'.  For example, to create a user-defined type called
-\verb'Complex' for double-precision complex values using the ANSI C11
+\verb'Complex' for double-precision complex values using the C11
 \verb'double complex' type, the following can be used.  A complete example can
 be found in the \verb'usercomplex.c' and \verb'usercomplex.h' files in the
 \verb'Demo' folder.
@@ -1624,6 +1639,19 @@ feature useful for interfaces in languages other than C, which could create
 valid strings for C types but would not have a reliable way to determine the
 size of the type.
 
+The above example is identical to the following usage, except that
+\verb'GrB_Type_new' requires \verb'sizeof_ctype' to be nonzero, and equal
+to the size of the C type.
+
+    {\footnotesize
+    \begin{verbatim}
+    typedef struct { float x [4][4] ; int color ; } myquaternion ;
+    GrB_Type MyQtype ;
+    GxB_Type_new (&MyQtype, sizeof (myquaternion)) ;
+    GrB_set (MyQtype, "myquaternion", GxB_JIT_C_NAME) ;
+    GrB_set (MyQtype, "typedef struct { float x [4][4] ; int color ; } myquaternion ;"
+        GxB_JIT_C_DEFINITION) ; \end{verbatim}}
+
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Type\_wait:} wait for a type}
 %-------------------------------------------------------------------------------
@@ -1644,71 +1672,6 @@ After creating a user-defined type, a GraphBLAS library may choose to exploit
 non-blocking mode to delay its creation.  Currently, SuiteSparse:GraphBLAS
 currently does nothing except to ensure that \verb'type' is valid.
 
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Type\_size:} return the size of a type}
-%-------------------------------------------------------------------------------
-\label{type_size}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Type_size          // determine the size of the type
-(
-    size_t *size,               // the sizeof the type
-    GrB_Type type               // type to determine the sizeof
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-This function acts just like \verb'sizeof(type)' in the C language.  For
-example \verb'GxB_Type_size (&s, GrB_INT32)' sets \verb's' to 4, the same as
-\verb'sizeof(int32_t)'.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Type\_name:} return the name of a type}
-%-------------------------------------------------------------------------------
-\label{type_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Type_name      // return the name of a GraphBLAS type
-(
-    char *type_name,        // name of the type (char array of size at least
-                            // GxB_MAX_NAME_LEN, owned by the user application).
-    const GrB_Type type
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-Returns the name of a type, as a string.  For built-in types, the name is
-the same as the C type.  For example, \verb'GxB_Type_name(type_name,GrB_FP32)'
-returns the name as \verb'"float"'.  The following table lists the
-names of the 13 built-in types.
-
-\vspace{0.2in}
-{\small
-\begin{tabular}{ll}
-\hline
-Type name & GraphBLAS type \\
-\hline
-    \verb'"bool"'           & \verb'GrB_BOOL' \\
-    \verb'"int8_t"'         & \verb'GrB_INT8' \\
-    \verb'"int16_t"'        & \verb'GrB_INT16' \\
-    \verb'"int32_t"'        & \verb'GrB_INT32' \\
-    \verb'"int64_t"'        & \verb'GrB_INT64' \\
-    \verb'"uint8_t"'        & \verb'GrB_UINT8' \\
-    \verb'"uint16_t"'       & \verb'GrB_UINT16' \\
-    \verb'"uint32_t"'       & \verb'GrB_UINT32' \\
-    \verb'"uint64_t"'       & \verb'GrB_UINT64' \\
-    \verb'"float"'          & \verb'GrB_FP32' \\
-    \verb'"double"'         & \verb'GrB_FP64' \\
-    \verb'"float complex"'  & \verb'GxB_FC32' \\
-    \verb'"double complex"' & \verb'GxB_FC64' \\
-\hline
-\end{tabular}}
-
 \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Type\_from\_name:} return the type from its name}
@@ -1726,9 +1689,15 @@ GrB_Info GxB_Type_from_name     // return the built-in GrB_Type from a name
 \end{verbatim}
 }\end{mdframed}
 
-Returns the built-in type from the corresponding name of the type.  For
-example, \verb'GxB_Type_from_name (&type, "bool")' returns \verb'GrB_BOOL'.  If
-the name is from a user-defined type, the \verb'type' is returned as
+Returns the built-in type from the corresponding name of the type.  The following
+examples both return \verb'type' as \verb'GrB_BOOL'.
+
+{\footnotesize
+\begin{verbatim}
+    GxB_Type_from_name (&type, "bool") ;
+    GxB_Type_from_name (&type, "GrB_BOOL") ; }\end{verbatim} }
+
+If the name is from a user-defined type, the \verb'type' is returned as
 \verb'NULL'.  This is not an error condition.  The user application must itself
 do this translation since GraphBLAS does not keep a registry of all
 user-defined types.
@@ -1752,10 +1721,12 @@ example.
 
     // later on, to query the type of A:
     size_t typesize ;
-    GxB_Type_size (&typesize, type) ;       // works for any type
+    GrB_Scalar_new (s, GrB_UINT64) ;
+    GrB_get (type, s, GrB_SIZE) ;
+    GrB_Scalar_extractElement (&typesize, GrB_UINT64) ;
     GrB_Type atype ;
     char atype_name [GxB_MAX_NAME_LEN] ;
-    GxB_Matrix_type_name (atype_name, A) ;
+    GrB_get (A, atype_name, GrB_EL_TYPE_STRING) ;
     GxB_Type_from_name (&atype, atype_name) ;
     if (atype == NULL)
     {
@@ -1765,7 +1736,6 @@ example.
         else { ... this is now an error ... the type of A is unknown.  }
     }\end{verbatim} }
 
-\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Type\_free:} free a user-defined type}
 %-------------------------------------------------------------------------------
@@ -1981,7 +1951,7 @@ not their values.
 User-defined positional operators cannot be defined by \verb'GrB_UnaryOp_new'.
 
 \verb'GxB_FREXPX' and \verb'GxB_FREXPE' return the mantissa and exponent,
-respectively, from the ANSI C11 \verb'frexp' function.  The exponent is
+respectively, from the C11 \verb'frexp' function.  The exponent is
 returned as a floating-point value, not an integer.
 
 The operators \verb'GxB_EXPM1_FC*' and \verb'GxB_LOG1P_FC*' for complex
@@ -2017,8 +1987,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_UnaryOp_new'   & create a user-defined unary operator         & \ref{unaryop_new} \\
 \verb'GxB_UnaryOp_new'   & create a named user-defined unary operator   & \ref{unaryop_new_named} \\
 \verb'GrB_UnaryOp_wait'  & wait for a user-defined unary operator       & \ref{unaryop_wait} \\
-\verb'GxB_UnaryOp_ztype_name' & return the name of the type of the output $z$ for $z=f(x)$   & \ref{unaryop_ztype_name} \\
-\verb'GxB_UnaryOp_xtype_name' & return the name of the type of the input $x$ for $z=f(x)$    & \ref{unaryop_xtype_name} \\
+\verb'GrB_get'           & get properties of an operator    & \ref{get_set_unop} \\
+\verb'GrB_set'           & set the operator name/definition & \ref{get_set_unop} \\
 \verb'GrB_UnaryOp_free'  & free a user-defined unary operator   & \ref{unaryop_free} \\
 \hline
 \end{tabular}
@@ -2114,6 +2084,19 @@ In this case, a JIT kernel is compiled that contains just the user-defined
 function.  If the JIT is disabled and the \verb'function' is \verb'NULL', this
 method returns \verb'GrB_NULL_POINTER'.
 
+The above example is identical to the following usage, except that
+\verb'GrB_UnaryOp_new' requires a non-NULL function pointer.
+
+    {\footnotesize
+    \begin{verbatim}
+    void square (double *z, double *x) { (*z) = (*x) * (*x) ; } ;
+    ...
+    GrB_Type Square ;
+    GrB_UnaryOp_new (&Square, square, GrB_FP64, GrB_FP64) ;
+    GrB_set (Square, "square", GxB_JIT_C_NAME) ;
+    GrB_set (Square, "void square (double *z, double *x) { (*z) = (*x) * (*x) ; } ;",
+        GxB_JIT_C_DEFINITION) ; \end{verbatim}}
+
 % \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_UnaryOp\_wait:} wait for a unary operator}
@@ -2135,45 +2118,6 @@ After creating a user-defined unary operator, a GraphBLAS library may choose to
 exploit non-blocking mode to delay its creation.  Currently,
 SuiteSparse:GraphBLAS currently does nothing except to ensure that the
 \verb'unaryop' is valid.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_UnaryOp\_ztype\_name:} return the name of the type of $z$}
-%-------------------------------------------------------------------------------
-\label{unaryop_ztype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_UnaryOp_ztype_name     // return the type_name of z
-(
-    char *type_name,                // user array of size GxB_MAX_NAME_LEN
-    const GrB_UnaryOp unaryop       // unary operator
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GxB_UnaryOp_ztype_name' returns the name of the \verb'ztype' of the unary
-operator, which is the type of $z$ in the function $z=f(x)$.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_UnaryOp\_xtype\_name:} return the name of the type of $x$}
-%-------------------------------------------------------------------------------
-\label{unaryop_xtype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_UnaryOp_xtype_name     // return the type_name of x
-(
-    char *type_name,                // user array of size GxB_MAX_NAME_LEN
-    const GrB_UnaryOp unaryop       // unary operator
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GxB_UnaryOp_xtype_name' returns the name of the \verb'xtype' of the unary
-operator, which is the type of $x$ in the function $z=f(x)$.
 
 % \newpage
 %-------------------------------------------------------------------------------
@@ -2355,7 +2299,7 @@ GraphBLAS name        & types (domains)            & $z=f(x,y)$      & descripti
 \vspace{0.2in}
 
 The following operators are defined for real floating-point types only (\verb'GrB_FP32' and  \verb'GrB_FP64').
-They are identical to the ANSI C11 functions of the same name.  The last one in the table constructs
+They are identical to the C11 functions of the same name.  The last one in the table constructs
 the corresponding complex type.
 
 \vspace{0.2in}
@@ -2368,10 +2312,10 @@ GraphBLAS name        & types (domains)            & $z=f(x,y)$      & descripti
 \hline
 \verb'GxB_ATAN2_'$F$     & $F \times F \rightarrow F$ & $z = \tan^{-1}(y/x)$ & 4-quadrant arc tangent  \\
 \verb'GxB_HYPOT_'$F$     & $F \times F \rightarrow F$ & $z = \sqrt{x^2+y^2}$ & hypotenuse \\
-\verb'GxB_FMOD_'$F$      & $F \times F \rightarrow F$ &                      & ANSI C11 \verb'fmod' \\
-\verb'GxB_REMAINDER_'$F$ & $F \times F \rightarrow F$ &                      & ANSI C11 \verb'remainder' \\
-\verb'GxB_LDEXP_'$F$     & $F \times F \rightarrow F$ &                      & ANSI C11 \verb'ldexp' \\
-\verb'GxB_COPYSIGN_'$F$  & $F \times F \rightarrow F$ &                      & ANSI C11 \verb'copysign' \\
+\verb'GxB_FMOD_'$F$      & $F \times F \rightarrow F$ &                      & C11 \verb'fmod' \\
+\verb'GxB_REMAINDER_'$F$ & $F \times F \rightarrow F$ &                      & C11 \verb'remainder' \\
+\verb'GxB_LDEXP_'$F$     & $F \times F \rightarrow F$ &                      & C11 \verb'ldexp' \\
+\verb'GxB_COPYSIGN_'$F$  & $F \times F \rightarrow F$ &                      & C11 \verb'copysign' \\
 \hline
 \verb'GxB_CMPLX_'$F$     & $F \times F \rightarrow Z$ & $z = x + y \times i$ & complex from real \& imag \\
 \hline
@@ -2515,9 +2459,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_BinaryOp_new'   & create a user-defined binary operator   & \ref{binaryop_new} \\
 \verb'GxB_BinaryOp_new'   & create a named user-defined binary operator   & \ref{binaryop_new_named} \\
 \verb'GrB_BinaryOp_wait'  & wait for a user-defined binary operator & \ref{binaryop_wait} \\
-\verb'GxB_BinaryOp_ztype_name' & return the type of the output $z$ for $z=f(x,y)$    & \ref{binaryop_ztype_name} \\
-\verb'GxB_BinaryOp_xtype_name' & return the type of the input $x$ for $z=f(x,y)$     & \ref{binaryop_xtype_name} \\
-\verb'GxB_BinaryOp_ytype_name' & return the type of the input $y$ for $z=f(x,y)$     & \ref{binaryop_ytype_name} \\
+\verb'GrB_get'           & get properties of an operator    & \ref{get_set_binop} \\
+\verb'GrB_set'           & set the operator name/definition & \ref{get_set_binop} \\
 \verb'GrB_BinaryOp_free'  & free a user-defined binary operator     & \ref{binaryop_free} \\
 \hline
 \end{tabular}
@@ -2612,6 +2555,20 @@ case, a JIT kernel is compiled that contains just the user-defined function.
 If the JIT is disabled and the \verb'function' is \verb'NULL', this method
 returns \verb'GrB_NULL_POINTER'.
 
+The above example is identical to the following usage, except that
+\verb'GrB_BinaryOp_new' requires a non-NULL function pointer.
+
+{\footnotesize
+\begin{verbatim}
+void absdiff (double *z, double *x, double *y) { (*z) = fabs ((*x) - (*y)) ; } ;
+...
+GrB_Type AbsDiff ;
+GrB_BinaryOp_new (&AbsDiff, absdiff, GrB_FP64, GrB_FP64, GrB_FP64) ;
+GrB_set (AbsDiff, "absdiff", GxB_JIT_C_NAME) ;
+GrB_set (AbsDiff,
+  "void absdiff (double *z, double *x, double *y) { (*z) = fabs ((*x) - (*y)) ; }",
+  GxB_JIT_C_DEFINITION) ;\end{verbatim}}
+
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_BinaryOp\_wait:} wait for a binary operator}
 %-------------------------------------------------------------------------------
@@ -2632,67 +2589,6 @@ After creating a user-defined binary operator, a GraphBLAS library may choose
 to exploit non-blocking mode to delay its creation.  Currently,
 SuiteSparse:GraphBLAS currently does nothing for except to ensure that the
 \verb'binaryop' is valid.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_BinaryOp\_ztype\_name:} return the name of the type of $z$}
-%-------------------------------------------------------------------------------
-\label{binaryop_ztype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_BinaryOp_ztype_name    // return the type_name of z
-(
-    char *type_name,                // user array of size GxB_MAX_NAME_LEN
-    const GrB_BinaryOp binaryop     // binary operator to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_BinaryOp_ztype_name'
-returns name of the \verb'ztype' of the binary operator, which is the
-type of $z$ in the function $z=f(x,y)$.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_BinaryOp\_xtype\_name:} return the name of the type of $x$}
-%-------------------------------------------------------------------------------
-\label{binaryop_xtype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_BinaryOp_xtype_name    // return the type_name of x
-(
-    char *type_name,                // user array of size GxB_MAX_NAME_LEN
-    const GrB_BinaryOp binaryop     // binary operator to query
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GxB_BinaryOp_xtype_name'
-returns name of the \verb'xtype' of the binary operator, which is the
-type of $x$ in the function $z=f(x,y)$.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_BinaryOp\_ytype\_name:} return the name of the type of $y$}
-%-------------------------------------------------------------------------------
-\label{binaryop_ytype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_BinaryOp_ytype_name    // return the type_name of y
-(
-    char *type_name,                // user array of size GxB_MAX_NAME_LEN
-    const GrB_BinaryOp binaryop     // binary operator to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_BinaryOp_ytype_name'
-returns name of the \verb'ytype' of the binary operator, which is the
-type of $y$ in the function $z=f(x,y)$.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_BinaryOp\_free:} free a user-defined binary operator}
@@ -2796,7 +2692,7 @@ void f
     const void *x,      // input value x of type xtype; value of v(i) or A(i,j)
     GrB_Index i,        // row index of A(i,j)
     GrB_Index j,        // column index of A(i,j), or zero for v(i)
-    const void *y       // input scalar y
+    const void *y       // input scalar y of type ytype
 ) ; \end{verbatim}}
 
 The following built-in operators are available.  Operators that do not depend
@@ -2857,9 +2753,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_IndexUnaryOp_new'   & create a user-defined index-unary operator   & \ref{idxunop_new} \\
 \verb'GxB_IndexUnaryOp_new'   & create a named user-defined index-unary operator   & \ref{idxunop_new_named} \\
 \verb'GrB_IndexUnaryOp_wait'  & wait for a user-defined index-unary operator  & \ref{idxunop_wait} \\
-\verb'GrB_IndexUnaryOp_ztype_name' & return the type of the output $z$        & \ref{idxunop_ztype_name} \\
-\verb'GrB_IndexUnaryOp_xtype_name' & return the type of the input $x$         & \ref{idxunop_xtype_name} \\
-\verb'GrB_IndexUnaryOp_ytype_name' & return the type of the scalar $y$        & \ref{idxunop_ytype_name} \\
+\verb'GrB_get'           & get properties of an operator    & \ref{get_set_idxunop} \\
+\verb'GrB_set'           & set the operator name/definition & \ref{get_set_idxunop} \\
 \verb'GrB_IndexUnaryOp_free'  & free a user-defined index-unary operator      & \ref{idxunop_free} \\
 \hline
 \end{tabular}
@@ -2934,12 +2829,66 @@ entire function itself.
 
 The two strings \verb'idxop_name' and \verb'idxop_defn' are optional, but are
 required to enable the JIT compilation of kernels that use this operator.
+The strings can also be set the \verb'GrB_set' after the operator is created
+with \verb'GrB_IndexUnaryOp_new'.  For example:
+
+{\footnotesize
+\begin{verbatim}
+    void banded_idx
+    (
+        bool *z,
+        const int64_t *x,   // unused
+        int64_t i,
+        int64_t j,
+        const int64_t *thunk
+    )
+    {
+        // d = abs (j-i)
+        int64_t d = j-i ;
+        if (d < 0) d = -d ;
+        (*z) = (d <= *thunk) ;
+    }
+
+    #define BANDED_IDX_DEFN                     \
+    "void banded_idx                        \n" \
+    "(                                      \n" \
+    "    bool *z,                           \n" \
+    "    const int64_t *x,   // unused      \n" \
+    "    int64_t i,                         \n" \
+    "    int64_t j,                         \n" \
+    "    const int64_t *thunk               \n" \
+    ")                                      \n" \
+    "{                                      \n" \
+    "    int64_t d = j-i ;                  \n" \
+    "    if (d < 0) d = -d ;                \n" \
+    "    (*z) = (d <= *thunk) ;             \n" \
+    "}"
+
+    GxB_IndexUnaryOp_new (&Banded,
+        (GxB_index_unary_function) banded_idx,
+        GrB_BOOL, GrB_INT64, GrB_INT64,
+        "banded_idx", BANDED_IDX_DEFN)) ;\end{verbatim}}
 
 If JIT compilation is enabled, or if the corresponding JIT kernel has been
 copied into the \verb'PreJIT' folder, the \verb'function' may be \verb'NULL'.
 In this case, a JIT kernel is compiled that contains just the user-defined
 function.  If the JIT is disabled and the \verb'function' is \verb'NULL', this
 method returns \verb'GrB_NULL_POINTER'.
+
+The above example is identical to the following usage
+except that \verb'GrB_IndexUnaryOp_new' requires a non-NULL function pointer.
+The \verb'banded_idx' function is defined the same as above.
+
+{\footnotesize
+\begin{verbatim}
+    void banded_idx ... see above
+    #define BANDED_IDX_DEFN  ... see above
+
+    GrB_IndexUnaryOp_new (&Banded,
+        (GxB_index_unary_function) banded_idx,
+        GrB_BOOL, GrB_INT64, GrB_INT64) ;
+    GrB_set (Banded, "banded_idx", GxB_JIT_C_NAME)) ;
+    GrB_set (Banded, BANDED_IDX_DEFN, GxB_JIT_C_DEFINITION)) ;\end{verbatim}}
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_IndexUnaryOp\_wait:} wait for an index-unary operator}
@@ -2963,66 +2912,6 @@ SuiteSparse:GraphBLAS currently does nothing except to ensure that the
 \verb'op' is valid.
 
 \newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_IndexUnaryOp\_ztype\_name:} return the name of the type of $z$}
-%-------------------------------------------------------------------------------
-\label{idxunop_ztype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_IndexUnaryOp_ztype_name    // return the type_name of x
-(
-    char *type_name,                    // user array of size GxB_MAX_NAME_LEN
-    const GrB_IndexUnaryOp op           // index-unary operator
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GrB_IndexUnaryOp_ztype_name' returns the \verb'ztype' of the index-unary
-operator, which is the type of $z$ in the function $z=f(x,i,j,y)$.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_IndexUnaryOp\_xtype\_name:} return the name of the type of $x$}
-%-------------------------------------------------------------------------------
-\label{idxunop_xtype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_IndexUnaryOp_xtype_name    // return the type_name of x
-(
-    char *type_name,                    // user array of size GxB_MAX_NAME_LEN
-    const GrB_IndexUnaryOp op           // index-unary operator
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GrB_IndexUnaryOp_xtype_name' returns the \verb'xtype' of the index-unary
-operator, which is the type of $x$ in the function $z=f(x,i,j,y)$.
-This input is used for the entry \verb'A(i,j)' of a matrix or \verb'v(i)' of a
-vector.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_IndexUnaryOp\_ytype\_name:} return the name of the type of scalar $y$}
-%-------------------------------------------------------------------------------
-\label{idxunop_ytype_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_IndexUnaryOp_ytype_name    // return the type_name of the scalar y
-(
-    char *type_name,                    // user array of size GxB_MAX_NAME_LEN
-    const GrB_IndexUnaryOp op           // index-unary operator
-) ;
-\end{verbatim}
-}\end{mdframed}
-
-\verb'GrB_IndexUnaryOp_ytype_name' returns the \verb'ytype' of the index-unary
-operator, which is the type of the scalar y in the function $z=f(x,i,j,y)$.
-
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_IndexUnaryOp\_free:} free a user-defined index-unary operator}
 %-------------------------------------------------------------------------------
@@ -3168,9 +3057,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_Monoid_new'       & create a user-defined monoid                  & \ref{monoid_new} \\
 \verb'GrB_Monoid_wait'      & wait for a user-defined monoid                & \ref{monoid_wait} \\
 \verb'GxB_Monoid_terminal_new'  & create a monoid that has a terminal value & \ref{monoid_terminal_new} \\
-\verb'GxB_Monoid_operator'  & return the monoid operator                    & \ref{monoid_operator} \\
-\verb'GxB_Monoid_identity'  & return the monoid identity value              & \ref{monoid_identity} \\
-\verb'GxB_Monoid_terminal'  & return the monoid terminal value (if any)     & \ref{monoid_terminal} \\
+\verb'GrB_get'  & get properties of a monoid       & \ref{get_set_monoid} \\
+\verb'GrB_set'  & set the monoid name              & \ref{get_set_monoid} \\
 \verb'GrB_Monoid_free'      & free a monoid                                 & \ref{monoid_free} \\
 \hline
 \end{tabular}
@@ -3299,77 +3187,6 @@ that computes the same thing as \verb'GrB_MIN_FP32', and then create a monoid
 based on this user-defined operator with a terminal value of zero and an
 identity of \verb'+INFINITY'.
 
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Monoid\_operator:} return the monoid operator}
-%-------------------------------------------------------------------------------
-\label{monoid_operator}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Monoid_operator        // return the monoid operator
-(
-    GrB_BinaryOp *op,               // returns the binary op of the monoid
-    GrB_Monoid monoid               // monoid to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Monoid_operator' returns the binary operator of the monoid.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Monoid\_identity:} return the monoid identity}
-%-------------------------------------------------------------------------------
-\label{monoid_identity}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Monoid_identity        // return the monoid identity
-(
-    void *identity,                 // returns the identity of the monoid
-    GrB_Monoid monoid               // monoid to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Monoid_identity' returns the identity value of the monoid.  The
-\verb'void *' pointer, \verb'identity', must be non-\verb'NULL' and must point
-to a memory space of size at least equal to the size of the type of the
-\verb'monoid'.  The type size can be obtained via \verb'GxB_Monoid_operator' to
-return the monoid additive operator, then \verb'GxB_BinaryOp_ztype' to obtain
-the \verb'ztype', followed by \verb'GxB_Type_size' to get its size.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Monoid\_terminal:} return the monoid terminal value}
-%-------------------------------------------------------------------------------
-\label{monoid_terminal}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Monoid_terminal        // return the monoid terminal
-(
-    bool *has_terminal,             // true if the monoid has a terminal value
-    void *terminal,                 // returns the terminal of the monoid
-    GrB_Monoid monoid               // monoid to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Monoid_terminal' returns the terminal value of the monoid (if any).
-The \verb'void *' pointer, \verb'terminal', must be non-\verb'NULL' and must
-point to a memory space of size at least equal to the size of the type of the
-\verb'monoid'.  The type size can be obtained via \verb'GxB_Monoid_operator' to
-return the monoid additive operator, then \verb'GxB_BinaryOp_ztype' to obtain
-the \verb'ztype', followed by \verb'GxB_Type_size' to get its size.
-
-If the monoid has a terminal value, then \verb'has_terminal' is \verb'true',
-and its value is returned in the \verb'terminal' parameter.  If it has no
-terminal value, then \verb'has_terminal' is \verb'false', and the
-\verb'terminal' parameter is not modified.
-
 % \newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Monoid\_free:} free a monoid}
@@ -3420,8 +3237,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \hline
 \verb'GrB_Semiring_new'       & create a user-defined semiring           & \ref{semiring_new} \\
 \verb'GrB_Semiring_wait'      & wait for a user-defined semiring         & \ref{semiring_wait} \\
-\verb'GxB_Semiring_add'       & return the additive monoid of a semiring & \ref{semiring_add} \\
-\verb'GxB_Semiring_multiply'  & return the binary operator of a semiring & \ref{semiring_multiply} \\
+\verb'GrB_get'  & get properties of a semiring       & \ref{get_set_semiring} \\
+\verb'GrB_set'  & set the semiring name              & \ref{get_set_semiring} \\
 \verb'GrB_Semiring_free'      & free a semiring                          & \ref{semiring_free} \\
 \hline
 \end{tabular}
@@ -3573,44 +3390,6 @@ SuiteSparse:GraphBLAS currently does nothing except to ensure that the
 \verb'semiring' is valid.
 
 %-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Semiring\_add:} return the additive monoid of a semiring}
-%-------------------------------------------------------------------------------
-\label{semiring_add}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Semiring_add           // return the add monoid of a semiring
-(
-    GrB_Monoid *add,                // returns add monoid of the semiring
-    GrB_Semiring semiring           // semiring to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Semiring_add' returns the additive monoid of a semiring.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Semiring\_multiply:} return multiply operator of a semiring}
-%-------------------------------------------------------------------------------
-\label{semiring_multiply}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Semiring_multiply      // return multiply operator of a semiring
-(
-    GrB_BinaryOp *multiply,         // returns multiply operator of the semiring
-    GrB_Semiring semiring           // semiring to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Semiring_multiply' returns the binary multiplicative operator of a
-semiring.
-
-%-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Semiring\_free:} free a semiring}
 %-------------------------------------------------------------------------------
 \label{semiring_free}
@@ -3657,7 +3436,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_Scalar_dup'            & copy a scalar                        & \ref{scalar_dup} \\
 \verb'GrB_Scalar_clear'          & clear a scalar of its entry          & \ref{scalar_clear} \\
 \verb'GrB_Scalar_nvals'          & return number of entries in a scalar & \ref{scalar_nvals}  \\
-\verb'GxB_Scalar_type_name'      & return name of the type of a scalar  & \ref{scalar_type_name} \\
+\verb'GrB_get'  & get properties of a scalar       & \ref{get_set_scalar} \\
+\verb'GrB_set'  & set properties of a scalar       & \ref{get_set_scalar} \\
 \verb'GrB_Scalar_setElement'     & set the single entry of a scalar     & \ref{scalar_setElement} \\
 \verb'GrB_Scalar_extractElement' & get the single entry from a scalar   & \ref{scalar_extractElement} \\
 \verb'GxB_Scalar_memoryUsage'    & memory used by a scalar              & \ref{scalar_memusage} \\
@@ -3754,6 +3534,7 @@ If two different scalars are needed, then this should be used instead:
 Then \verb's' and \verb't' are two different scalars that currently have
 the same value, but they do not depend on each other.  Modifying one has no
 effect on the other.
+The \verb'GrB_NAME' is copied into the new scalar.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Scalar\_clear:} clear a scalar of its entry}
@@ -3797,26 +3578,6 @@ is either 0 or 1.  Roughly analogous to \verb'nvals = nnz(s)' in MATLAB/Octave,
 except that the implicit value in GraphBLAS need not be zero and \verb'nnz'
 (short for ``number of nonzeros'') in MATLAB is better described as ``number of
 entries'' in GraphBLAS.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Scalar\_type\_name:} return name of the type of a scalar}
-%-------------------------------------------------------------------------------
-\label{scalar_type_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Scalar_type_name      // return the name of the type of a scalar
-(
-    char *type_name,        // name of the type (char array of size at least
-                            // GxB_MAX_NAME_LEN, owned by the user application).
-    const GrB_Scalar s      // GrB_Scalar to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Scalar_type_name' returns the name of the type of a scalar.
-Analogous to \verb'type = class (s)' in MATLAB.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Scalar\_setElement:} set the single entry of a scalar}
@@ -3930,7 +3691,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_Vector_clear'          & clear a vector of all entries    & \ref{vector_clear} \\
 \verb'GrB_Vector_size'           & size of a vector                 & \ref{vector_size} \\
 \verb'GrB_Vector_nvals'          & number of entries in a vector    & \ref{vector_nvals} \\
-\verb'GxB_Vector_type_name'      & name of the type of a vector     & \ref{vector_type_name} \\
+\verb'GrB_get'  & get properties of a vector       & \ref{get_set_vector} \\
+\verb'GrB_set'  & set properties of a vector       & \ref{get_set_vector} \\
 \verb'GrB_Vector_build'          & build a vector from tuples       & \ref{vector_build} \\
 \verb'GxB_Vector_build_Scalar'   & build a vector from tuples       & \ref{vector_build_Scalar} \\
 \verb'GrB_Vector_setElement'     & add an entry to a vector         & \ref{vector_setElement} \\
@@ -4069,6 +3831,7 @@ If two different vectors are needed, then this should be used instead:
 Then \verb'w' and \verb'u' are two different vectors that currently have the
 same set of values, but they do not depend on each other.  Modifying one has
 no effect on the other.
+The \verb'GrB_NAME' is copied into the new vector.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Vector\_clear:}         clear a vector of all entries}
@@ -4132,27 +3895,6 @@ GrB_Info GrB_Vector_nvals   // get the number of entries in a vector
 analogous to \verb'nvals = nnz(v)' in MATLAB, except that the implicit value in
 GraphBLAS need not be zero and \verb'nnz' (short for ``number of nonzeros'') in
 MATLAB is better described as ``number of entries'' in GraphBLAS.
-
-% \newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Vector\_type\_name:} return name of the type of a vector}
-%-------------------------------------------------------------------------------
-\label{vector_type_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Vector_type_name      // return the name of the type of a vector
-(
-    char *type_name,        // name of the type (char array of size at least
-                            // GxB_MAX_NAME_LEN, owned by the user application).
-    const GrB_Vector v      // vector to query
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GxB_Vector_type_name' returns the name of the type of a vector.
-Analogous to \verb'type = class (v)' in MATLAB.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -4392,7 +4134,7 @@ to $n-1$, and \verb'len' $=\min(m+k,n)$ if \verb'k' is in the range -1 to
 $-m+1$.  Any existing entries in \verb'v' are discarded.  The type of \verb'v'
 is preserved, so that if the type of \verb'A' and \verb'v' differ, the entries
 are typecasted into the type of \verb'v'.  Any settings made to \verb'v' by
-\verb'GxB_Vector_Option_set' (bitmap switch and sparsity control) are
+\verb'GrB_set' (bitmap switch and sparsity control) are
 unchanged.
 
 \newpage
@@ -4480,7 +4222,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_Matrix_nrows'         & number of rows of a matrix            & \ref{matrix_nrows} \\
 \verb'GrB_Matrix_ncols'         & number of columns of a matrix         & \ref{matrix_ncols} \\
 \verb'GrB_Matrix_nvals'         & number of entries in a matrix         & \ref{matrix_nvals} \\
-\verb'GxB_Matrix_type_name'     & type of a matrix                      & \ref{matrix_type_name} \\
+\verb'GrB_get'  & get properties of a matrix       & \ref{get_set_matrix} \\
+\verb'GrB_set'  & set properties of a matrix       & \ref{get_set_matrix} \\
 \verb'GrB_Matrix_build'         & build a matrix from tuples            & \ref{matrix_build} \\
 \verb'GxB_Matrix_build_Scalar'  & build a matrix from tuples            & \ref{matrix_build_Scalar} \\
 \verb'GrB_Matrix_setElement'    & add an entry to a matrix              & \ref{matrix_setElement} \\
@@ -4581,15 +4324,16 @@ statement \verb'A = sparse (nrows, ncols)', except that GraphBLAS can create
 sparse matrices of any type.
 
 By default, matrices of size \verb'nrows-by-1' are held by column, regardless
-of the global setting controlled by \verb'GxB_set (GxB_FORMAT, ...)', for any
-value of \verb'nrows'.  Matrices of size \verb'1-by-ncols' with \verb'ncols'
-not equal to 1 are held by row, regardless of this global setting.  The global
-setting only affects matrices with both \verb'm > 1' and \verb'n > 1'.  Empty
-matrices (\verb'0-by-0') are also controlled by the global setting.
+of the global setting controlled by \verb'GrB_set (GrB_GLOBAL, ...,' \newline
+\verb'GrB_STORAGE_ORIENTATION_HINT)', for any value of \verb'nrows'.  Matrices
+of size \verb'1-by-ncols' with \verb'ncols' not equal to 1 are held by row,
+regardless of this global setting.  The global setting only affects matrices
+with both \verb'm > 1' and \verb'n > 1'.  Empty matrices (\verb'0-by-0') are
+also controlled by the global setting.
 
 Once a matrix is created, its format (by-row or by-column) can be arbitrarily
-changed with \verb'GxB_set (A, GxB_FORMAT, fmt)' with \verb'fmt' equal to
-\verb'GxB_BY_COL' or \verb'GxB_BY_ROW'.
+changed with \verb'GrB_set (A, fmt, GrB_STORAGE_ORIENTATION_HINT)'
+with \verb'fmt' equal to \verb'GrB_COLMAJOR' or \verb'GrB_ROWMAJOR'.
 
 \begin{alert}
 {\bf SPEC:} \verb'nrows' and/or \verb'ncols' may be zero,
@@ -4663,6 +4407,7 @@ two different matrices are needed, then this should be used instead:
 Then \verb'C' and \verb'A' are two different matrices that currently have the
 same set of values, but they do not depend on each other.  Modifying one has
 no effect on the other.
+The \verb'GrB_NAME' is copied into the new matrix.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_clear:}        clear a matrix of all entries}
@@ -4745,25 +4490,6 @@ GraphBLAS need not be zero and \verb'nnz' (short for ``number of nonzeros'') in
 MATLAB is better described as ``number of entries'' in GraphBLAS.
 
 \newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Matrix\_type\_name:} return name of the type of a matrix}
-%-------------------------------------------------------------------------------
-\label{matrix_type_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Matrix_type_name      // return the name of the type of a matrix
-(
-    char *type_name,        // name of the type (char array of size at least
-                            // GxB_MAX_NAME_LEN, owned by the user application).
-    const GrB_Matrix A      // matrix to query
-) ;
-\end{verbatim} } \end{mdframed}
-
-\verb'GxB_Matrix_type_name' returns the name of the type of a matrix, like
-\verb'type=class(A)' in MATLAB.
-
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_build:} build a matrix from a set of tuples}
 %-------------------------------------------------------------------------------
@@ -4854,7 +4580,7 @@ pure deep copy of a matrix.
 
 The parameter \verb'X' is a pointer to any C equivalent built-in type, or a
 \verb'void *' pointer.  The \verb'GrB_Matrix_build' function uses the
-\verb'_Generic' feature of ANSI C11 to detect the type of pointer passed as the
+\verb'_Generic' feature of C11 to detect the type of pointer passed as the
 parameter \verb'X'.  If \verb'X' is a pointer to a built-in type, then the
 function can do the right typecasting.  If \verb'X' is a \verb'void *' pointer,
 then it can only assume \verb'X' to be a pointer to a user-defined type that is
@@ -4935,7 +4661,7 @@ sometime later.
 
 The scalar \verb'x' is typecasted into the type of \verb'C'.  Any value can be
 passed to this function and its type will be detected, via the \verb'_Generic'
-feature of ANSI C11.  For a user-defined type, \verb'x' is a \verb'void *'
+feature of C11.  For a user-defined type, \verb'x' is a \verb'void *'
 pointer that points to a memory space holding a single entry of this
 user-defined type.  This user-defined type must exactly match the user-defined
 type of \verb'C' since no typecasting is done between user-defined types.
@@ -4971,7 +4697,7 @@ and \verb'GrB_assign' operations can be interleaved with calls to
 do not access the existing entries may also be done without forcing the updates
 to be assembled, namely \verb'GrB_Matrix_clear' (which erases all pending
 updates), \verb'GrB_Matrix_free', \verb'GrB_Matrix_ncols',
-\verb'GrB_Matrix_nrows', \verb'GxB_Matrix_type', and of course
+\verb'GrB_Matrix_nrows', \verb'GrB_get', and of course
 \verb'GrB_Matrix_setElement' itself.  All other methods and operations cause
 the updates to be assembled.  Future versions of SuiteSparse:GraphBLAS may
 extend this list.
@@ -5270,7 +4996,7 @@ given tile column $j$ must have the same number of columns).
 
 The type of \verb'C' is unchanged, and all matrices $A_{i,j}$ are typecasted
 into the type of \verb'C'.  Any settings made to \verb'C' by
-\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
+\verb'GrB_set' (format by row or by column, bitmap switch, hyper
 switch, and sparsity control) are unchanged.
 
 %-------------------------------------------------------------------------------
@@ -5363,7 +5089,7 @@ be square of dimension $n+|k|$ where the vector \verb'v' has length $n$.  Any
 existing entries in \verb'C' are discarded.  The type of \verb'C' is preserved,
 so that if the type of \verb'C' and \verb'v' differ, the entries are typecasted
 into the type of \verb'C'.  Any settings made to \verb'C' by
-\verb'GxB_Matrix_Option_set' (format by row or by column, bitmap switch, hyper
+\verb'GrB_set' (format by row or by column, bitmap switch, hyper
 switch, and sparsity control) are unchanged.
 
 %-------------------------------------------------------------------------------
@@ -5383,6 +5109,7 @@ GrB_Info GxB_Matrix_iso     // return iso status of a matrix
 
 Returns the true if the matrix is iso-valued, false otherwise.
 
+\newpage
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_memoryUsage:} memory used by a matrix}
 %-------------------------------------------------------------------------------
@@ -5440,9 +5167,14 @@ in this case).  The array of bytes can be written to a file, sent to another
 process over an MPI channel, or operated on in any other way that moves the
 bytes around.  The contents of the array cannot be interpreted except by
 deserialization back into a vector or matrix, by the same library (and
-sometimes the same version) that created the blob.  Currently, all versions of
-SuiteSparse:GraphBLAS that implement serialization/deserialization use the same
-format for the blob, so the library versions are compatible with each other.
+sometimes the same version) that created the blob.
+
+All versions of SuiteSparse:GraphBLAS that implement
+serialization/deserialization use essentially the same format for the blob, so
+the library versions are compatible with each other.  Version v9.0.0 adds the
+\verb'GrB_NAME' and \verb'GrB_EL_TYPE_STRING' to the blob in an upward
+compatible manner, so that older versions of SS:GraphBLAS can read the blobs
+created by v9.0.0; they simply ignore those components.
 
 There are two forms of serialization: \verb'GrB*serialize' and
 \verb'GxB*serialize'.  For the \verb'GrB' form, the blob must first be
@@ -5451,7 +5183,7 @@ matrix or vector.
 
 By default, ZSTD (level 1) compression is used for serialization, but other
 options can be selected via the descriptor:
-\verb'GxB_set (desc, GxB_COMPRESSION, method)', where \verb'method' is an
+\verb'GrB_set (desc, method, GxB_COMPRESSION)', where \verb'method' is an
 integer selected from the following options:
 
 \vspace{0.2in}
@@ -5476,14 +5208,14 @@ vector with LZ4HC with level 6, use:
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (desc, GxB_COMPRESSION, GxB_COMPRESSION_LZ4HC + 6) ; \end{verbatim}}
+    GrB_set (desc, GxB_COMPRESSION_LZ4HC + 6, GxB_COMPRESSION) ; \end{verbatim}}
 
 The ZSTD method can be specified as level 1 to 19, with 1 being the default.
 To compress with ZSTD at level 6, use:
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (desc, GxB_COMPRESSION, GxB_COMPRESSION_ZSTD + 6) ; \end{verbatim}}
+    GrB_set (desc, GxB_COMPRESSION_ZSTD + 6, GxB_COMPRESSION) ; \end{verbatim}}
 
 Deserialization of untrusted data is a common security problem; see
 \url{https://cwe.mitre.org/data/definitions/502.html}. The deserialization
@@ -5520,7 +5252,7 @@ GraphBLAS function   & purpose                                      & Section \\
 \verb'GrB_Matrix_deserialize'   & deserialize a matrix             & \ref{matrix_deserialize} \\
 \verb'GxB_Matrix_deserialize'   & deserialize a matrix             & \ref{matrix_deserialize_GxB} \\
 \hline
-\verb'GrB_deserialize_type_name' & return the name of type of the blob & \ref{deserialize_type_name} \\
+\verb'GrB_get' & get blob properties & \ref{get_set_blob} \\
 \hline
 \end{tabular}
 }
@@ -5663,10 +5395,10 @@ Deserializing a vector is identical to deserializing a matrix;
 see Section \ref{matrix_deserialize_GxB} for more information.
 
 The blob is allocated with the \verb'malloc' function passed to
-\verb'GxB_init', or the ANSI C11 \verb'malloc' if \verb'GrB_init' was used
+\verb'GxB_init', or the C11 \verb'malloc' if \verb'GrB_init' was used
 to initialize GraphBLAS.  The blob must be freed by the matching \verb'free'
 method, either the \verb'free' function passed to \verb'GxB_init' or
-the ANSI C11 \verb'free' if \verb'GrB_init' was used.
+the C11 \verb'free' if \verb'GrB_init' was used.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Matrix\_serializeSize:}  return size of serialized matrix}
@@ -5749,10 +5481,10 @@ internally, and fills it with the serialized matrix.  By default, ZSTD (level 1)
 compression is used, but other options can be selected via the descriptor.
 
 The blob is allocated with the \verb'malloc' function passed to
-\verb'GxB_init', or the ANSI C11 \verb'malloc' if \verb'GrB_init' was used
+\verb'GxB_init', or the C11 \verb'malloc' if \verb'GrB_init' was used
 to initialize GraphBLAS.  The blob must be freed by the matching \verb'free'
 method, either the \verb'free' function passed to \verb'GxB_init' or
-the ANSI C11 \verb'free' if \verb'GrB_init' was used.
+the C11 \verb'free' if \verb'GrB_init' was used.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -5782,11 +5514,12 @@ This method creates a matrix \verb'A' by deserializing the contents of the
 blob, constructed by either \verb'GrB_Matrix_serialize' or
 \verb'GxB_Matrix_serialize'.
 
-\begin{alert}
-{\bf SPEC:} The specification requires the \verb'type' to always be non-NULL.
-As an extension, SuiteSparse:GraphBLAS allows \verb'type' to be NULL if
-the blob contains a serialized matrix with a built-in type.
-\end{alert}
+% extended in the v2.1 C API (type may be NULL):
+The \verb'type' may be \verb'NULL' if the blob holds a serialized matrix with a
+built-in type.  In this case, the type is determined automatically.  For
+user-defined types, the \verb'type' must match the type of the matrix in the
+blob.  The \verb'GrB_get' method can be used to query the blob for the name of
+this type.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GxB\_Matrix\_deserialize:}    deserialize a matrix}
@@ -5813,33 +5546,6 @@ GrB_Info GxB_Matrix_deserialize     // deserialize blob into a GrB_Matrix
 } \end{mdframed}
 
 Identical to \verb'GrB_Matrix_deserialize'.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_deserialize\_type\_name:} name of the type of a blob}
-%-------------------------------------------------------------------------------
-\label{deserialize_type_name}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_deserialize_type_name  // return the type name of a blob
-(
-    // output:
-    char *type_name,        // name of the type (char array of size at least
-                            // GxB_MAX_NAME_LEN, owned by the user application).
-    // input, not modified:
-    const void *blob,       // the blob
-    GrB_Index blob_size     // size of the blob
-) ;
-\end{verbatim}
-} \end{mdframed}
-
-\verb'GrB_deserialize_type_name' returns the name of type of the matrix or
-vector serialized into the blob.  This method works for any blob, from
-% \verb'GrB_Vector_serialize',
-\verb'GxB_Vector_serialize',
-\verb'GrB_Matrix_serialize', or \verb'GxB_Matrix_serialize'.
 
 \newpage
 %===============================================================================
@@ -5956,7 +5662,7 @@ to the \verb'GxB' pack methods:
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (desc, GxB_IMPORT, GxB_SECURE_IMPORT) ; \end{verbatim}}
+    GrB_set (desc, GxB_SECURE_IMPORT, GxB_IMPORT) ; \end{verbatim}}
 
 The table below lists the methods presented in this section.
 
@@ -6281,7 +5987,7 @@ GrB_Info GxB_Matrix_pack_CSR      // pack a CSR matrix
 
 \verb'GxB_Matrix_pack_CSR' packs a matrix from 3 user arrays in CSR format.
 In the resulting \verb'GrB_Matrix A', the \verb'CSR' format is a sparse matrix
-with a format (\verb'GxB_FORMAT') of \verb'GxB_BY_ROW'.
+with a format (\verb'GrB_STORAGE_ORIENTATION_HINT') of \verb'GrB_ROWMAJOR'.
 
 The \verb'GrB_Matrix A' must exist on input with the right type and
 dimensions.  No typecasting is done.
@@ -7294,8 +7000,8 @@ controlled by the following enum:
 \begin{verbatim}
 typedef enum
 {
-    GrB_CSR_FORMAT = 0,     // CSR format (equiv to GxB_SPARSE with GxB_BY_ROW)
-    GrB_CSC_FORMAT = 1,     // CSC format (equiv to GxB_SPARSE with GxB_BY_COL)
+    GrB_CSR_FORMAT = 0,     // CSR format (equiv to GxB_SPARSE with GrB_ROWMAJOR)
+    GrB_CSC_FORMAT = 1,     // CSC format (equiv to GxB_SPARSE with GrB_COLMAJOR)
     GrB_COO_FORMAT = 2      // triplet format (like input to GrB*build)
 }
 GrB_Format ; \end{verbatim}}
@@ -7343,7 +7049,7 @@ modified, and are still owned by the user application when the method finishes.
 The matrix can be imported in one of three different formats:
 
 \begin{packed_itemize}
-    \item \verb'GrB_CSR_FORMAT': % CSR format (equiv to GxB_SPARSE with GxB_BY_ROW)
+    \item \verb'GrB_CSR_FORMAT': % CSR format (equiv to GxB_SPARSE with GrB_ROWMAJOR)
         Compressed-row format.  \verb'Ap' is an array of size \verb'nrows+1'.
         The arrays \verb'Ai' and \verb'Ax' are of size \verb'nvals = Ap [nrows]',
         and \verb'Ap[0]' must be zero.
@@ -7352,7 +7058,7 @@ The matrix can be imported in one of three different formats:
         the same locations in \verb'Ax'.
         The column indices need not be in any particular order.
 
-    \item \verb'GrB_CSC_FORMAT': % CSC format (equiv to GxB_SPARSE with GxB_BY_COL)
+    \item \verb'GrB_CSC_FORMAT': % CSC format (equiv to GxB_SPARSE with GrB_COLMAJOR)
         Compressed-column format.  \verb'Ap' is an array of size \verb'ncols+1'.
         The arrays \verb'Ai' and \verb'Ax' are of size \verb'nvals = Ap [ncols]',
         and \verb'Ap[0]' must be zero.
@@ -7369,12 +7075,12 @@ The matrix can be imported in one of three different formats:
         column index \verb'Ap[k]', and value \verb'Ax[k]'.  The tuples can
         appear any order, but no duplicates are permitted.
 
-%   \item \verb'GrB_DENSE_ROW_FORMAT': % FullR format (GxB_FULL with GxB_BY_ROW)
+%   \item \verb'GrB_DENSE_ROW_FORMAT': % FullR format (GxB_FULL with GrB_ROWMAJOR)
 %       Dense matrix format, held by row.  Only the \verb'Ax' array is used, of
 %       size \verb'nrows*ncols'.
 %       It holds the matrix in dense format, in row major order.
 %
-%   \item \verb'GrB_DENSE_COL_FORMAT': % FullC format (GxB_FULL with GxB_BY_ROW)
+%   \item \verb'GrB_DENSE_COL_FORMAT': % FullC format (GxB_FULL with GrB_ROWMAJOR)
 %       Dense matrix format, held by column.  Only the \verb'Ax' array is used, of
 %       size \verb'nrows*ncols'.
 %       It holds the matrix in dense format, in column major order.
@@ -7470,15 +7176,15 @@ matrix.  For SuiteSparse:GraphBLAS, the hint depends on the current
 format of the \verb'GrB_Matrix':
 
 \begin{packed_itemize}
-\item \verb'GxB_SPARSE', \verb'GxB_BY_ROW': export as \verb'GrB_CSR_FORMAT'
-\item \verb'GxB_SPARSE', \verb'GxB_BY_COL': export as \verb'GrB_CSC_FORMAT'
+\item \verb'GxB_SPARSE', \verb'GrB_ROWMAJOR': export as \verb'GrB_CSR_FORMAT'
+\item \verb'GxB_SPARSE', \verb'GrB_COLMAJOR': export as \verb'GrB_CSC_FORMAT'
 \item \verb'GxB_HYPERSPARSE': export as \verb'GrB_COO_FORMAT'
-\item \verb'GxB_BITMAP', \verb'GxB_BY_ROW': export as \verb'GrB_CSR_FORMAT'
-\item \verb'GxB_BITMAP', \verb'GxB_BY_COL': export as \verb'GrB_CSC_FORMAT'
-%\item \verb'GxB_FULL', \verb'GxB_BY_ROW': export as \verb'GrB_DENSE_ROW_FORMAT'
-%\item \verb'GxB_FULL', \verb'GxB_BY_COL': export as \verb'GrB_DENSE_COL_FORMAT'
-\item \verb'GxB_FULL', \verb'GxB_BY_ROW': export as \verb'GrB_CSR_FORMAT'
-\item \verb'GxB_FULL', \verb'GxB_BY_COL': export as \verb'GrB_CSC_FORMAT'
+\item \verb'GxB_BITMAP', \verb'GrB_ROWMAJOR': export as \verb'GrB_CSR_FORMAT'
+\item \verb'GxB_BITMAP', \verb'GrB_COLMAJOR': export as \verb'GrB_CSC_FORMAT'
+%\item \verb'GxB_FULL', \verb'GrB_ROWMAJOR': export as \verb'GrB_DENSE_ROW_FORMAT'
+%\item \verb'GxB_FULL', \verb'GrB_COLMAJOR': export as \verb'GrB_DENSE_COL_FORMAT'
+\item \verb'GxB_FULL', \verb'GrB_ROWMAJOR': export as \verb'GrB_CSR_FORMAT'
+\item \verb'GxB_FULL', \verb'GrB_COLMAJOR': export as \verb'GrB_CSC_FORMAT'
 \end{packed_itemize}
 
 \newpage
@@ -7603,7 +7309,7 @@ GrB_Desc_Field ;
 typedef enum
 {
     // for all GrB_Descriptor fields:
-    GxB_DEFAULT = 0,    // default behavior of the method
+    GrB_DEFAULT = 0,    // default behavior of the method
     // for GrB_OUTP only:
     GrB_REPLACE = 1,    // clear the output before assigning new values to it
     // for GrB_MASK only:
@@ -7708,7 +7414,7 @@ GrB_Desc_Value ;
 
     \begin{itemize}
 
-    \item \verb'GxB_DEFAULT' means that a method is selected automatically.
+    \item \verb'GrB_DEFAULT' means that a method is selected automatically.
 
     \item \verb'GxB_AxB_SAXPY': select any saxpy-based method:
         \verb'GxB_AxB_GUSTAVSON', and/or
@@ -7769,7 +7475,7 @@ GrB_Desc_Value ;
     unjumbled form, or provided as input to a method that requires it to not be
     jumbled, then sorting it during the matrix multiplication is faster.
     By default, these methods leave the result in jumbled form (a {\em lazy
-    sort}), if \verb'GxB_SORT' is set to zero (\verb'GxB_DEFAULT').  A nonzero
+    sort}), if \verb'GxB_SORT' is set to zero (\verb'GrB_DEFAULT').  A nonzero
     value will inform the matrix multiplication to sort its result, instead.
 
 \item \verb'GxB_COMPRESSION' selects the compression method for serialization.
@@ -7784,7 +7490,7 @@ GrB_Desc_Value ;
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (desc, GxB_IMPORT, GxB_SECURE_IMPORT) ; \end{verbatim}}
+    GrB_set (desc, GxB_SECURE_IMPORT, GxB_IMPORT) ; \end{verbatim}}
 
 \end{itemize}
 
@@ -7798,9 +7504,8 @@ GraphBLAS function   & purpose                                      & Section \\
 \hline
 \verb'GrB_Descriptor_new'        & create a descriptor                  & \ref{descriptor_new} \\
 \verb'GrB_Descriptor_wait'       & wait for a descriptor                & \ref{descriptor_wait} \\
-\verb'GrB_Descriptor_set'        & set a parameter in a descriptor      & \ref{descriptor_set} \\
-\verb'GxB_Desc_set'              & set a parameter in a descriptor      & \ref{desc_set}  \\
-\verb'GxB_Desc_get'              & get a parameter from a descriptor    & \ref{desc_get}  \\
+\verb'GrB_get'              & get a parameter from a descriptor    & \ref{get_set_descriptor}  \\
+\verb'GrB_set'              & set a parameter in a descriptor      & \ref{get_set_descriptor}  \\
 \verb'GrB_Descriptor_free'       & free a descriptor                    & \ref{descriptor_free} \\
 \hline
 \end{tabular}
@@ -7846,139 +7551,6 @@ GrB_Info GrB_wait                   // wait for a descriptor
 After creating a user-defined descriptor, a GraphBLAS library may choose to
 exploit non-blocking mode to delay its creation.  Currently,
 SuiteSparse:GraphBLAS does nothing except to ensure that \verb'd' is valid.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GrB\_Descriptor\_set:}  set a parameter in a descriptor}
-%-------------------------------------------------------------------------------
-\label{descriptor_set}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GrB_Descriptor_set     // set a parameter in a descriptor
-(
-    GrB_Descriptor desc,        // descriptor to modify
-    GrB_Desc_Field field,       // parameter to change
-    GrB_Desc_Value val          // value to change it to
-) ;
-\end{verbatim} } \end{mdframed}
-
-\verb'GrB_Descriptor_set' sets a descriptor field (\verb'GrB_OUTP',
-\verb'GrB_MASK', \verb'GrB_INP0', \verb'GrB_INP1', or \verb'GxB_AxB_METHOD') to
-a particular value.
-If an error occurs, \verb'GrB_error(&err,desc)' returns details about the error.
-
-\vspace{0.2in}
-\noindent
-{\footnotesize
-\begin{tabular}{|l|p{2.4in}|p{2.2in}|}
-\hline
-Descriptor & Default   & Non-default \\
-field      & &  \\
-\hline
-
-\verb'GrB_OUTP'
-    & \verb'GxB_DEFAULT':
-    The output matrix is not cleared.  The operation computes
-    ${\bf C \langle M \rangle = C \odot T}$.
-    & \verb'GrB_REPLACE':
-    After computing ${\bf Z=C\odot T}$,
-    the output {\bf C} is cleared of all entries.
-    Then ${\bf C \langle M \rangle = Z}$ is performed. \\
-
-\hline
-
-\verb'GrB_MASK'
-    & \verb'GxB_DEFAULT':
-    The Mask is not complemented.  \verb'Mask(i,j)=1' means the value $C_{ij}$
-    can be modified by the operation, while \verb'Mask(i,j)=0' means the value
-    $C_{ij}$ shall not be modified by the operation.
-    & \verb'GrB_COMP':
-    The Mask is complemented.  \verb'Mask(i,j)=0' means the value $C_{ij}$
-    can be modified by the operation, while \verb'Mask(i,j)=1' means the value
-    $C_{ij}$ shall not be modified by the operation. \\
-    &
-    & \verb'GrB_STRUCTURE':
-    The values of the Mask are ignored.  If \verb'Mask(i,j)' is an entry
-    in the \verb'Mask' matrix, it is treated as if \verb'Mask(i,j)=1'.
-    The two options \verb'GrB_COMP' and \verb'GrB_STRUCTURE' can be
-    combined, with two subsequent calls, or with a single call with the setting
-    \verb'GrB_COMP+GrB_STRUCTURE'.  \\
-
-\hline
-
-\verb'GrB_INP0'
-    & \verb'GxB_DEFAULT':
-    The first input is not transposed prior to using it in the operation.
-    & \verb'GrB_TRAN':
-    The first input is transposed prior to using it in the operation.  Only
-    matrices are transposed, never vectors. \\
-
-\hline
-
-\verb'GrB_INP1'
-    & \verb'GxB_DEFAULT':
-    The second input is not transposed prior to using it in the operation.
-    & \verb'GrB_TRAN':
-    The second input is transposed prior to using it in the operation.  Only
-    matrices are transposed, never vectors. \\
-
-\hline
-
-\verb'GrB_AxB_METHOD'
-    & \verb'GxB_DEFAULT':
-    The method for \verb'C=A*B' is selected automatically.
-    & \verb'GxB_AxB_'{\em method}: The selected method is used to compute
-    \verb'C=A*B'.  \\
-
-\hline
-\end{tabular}
-}
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Desc\_set:}  set a parameter in a descriptor}
-%-------------------------------------------------------------------------------
-\label{desc_set}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Desc_set           // set a parameter in a descriptor
-(
-    GrB_Descriptor desc,        // descriptor to modify
-    GrB_Desc_Field field,       // parameter to change
-    ...                         // value to change it to
-) ;
-\end{verbatim} } \end{mdframed}
-
-\verb'GxB_Desc_set' is like \verb'GrB_Descriptor_set', except that the type of
-the third parameter can vary with the field.   This function can modify all
-descriptor settings, including those that do not have the type
-\verb'GrB_Desc_Value'.  See also \verb'GxB_set' described in
-Section~\ref{options}.  If an error occurs, \verb'GrB_error(&err,desc)' returns
-details about the error.
-
-%-------------------------------------------------------------------------------
-\subsubsection{{\sf GxB\_Desc\_get:}  get a parameter from a descriptor}
-%-------------------------------------------------------------------------------
-\label{desc_get}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Desc_get           // get a parameter from a descriptor
-(
-    GrB_Descriptor desc,        // descriptor to query; NULL means defaults
-    GrB_Desc_Field field,       // parameter to query
-    ...                         // value of the parameter
-) ;
-\end{verbatim} } \end{mdframed}
-
-\verb'GxB_Desc_get' returns the value of a single field in a descriptor.  The
-type of the third parameter is a pointer to a variable type, whose type depends
-on the field.  See also \verb'GxB_get' described in Section~\ref{options}.
 
 %-------------------------------------------------------------------------------
 \subsubsection{{\sf GrB\_Descriptor\_free:} free a descriptor}
@@ -8298,8 +7870,8 @@ The \verb'GxB_Context' object is not needed if the user application is itself
 single threaded, with all parallelism is inside GraphBLAS itself.  The object
 is also not needed if the user application is multi-threaded, but all user
 threads create the same number of threads inside GraphBLAS (say each using a
-single thread).  In that case, \verb'GxB_set(GxB_NTHREADS,1)' can be used (for
-example).
+single thread).  In that case, \verb'GrB_set(GrB_GLOBAL,1,GxB_NTHREADS)'
+can be used (for example).
 
 However, suppose the user application creates 5 threads of its own, on a
 machine with 16 cores, and each thread wants to use a different number of
@@ -8310,40 +7882,22 @@ object becomes essential.
 The default context is \verb'GxB_CONTEXT_WORLD', which is not created by the
 user application but it can be modified.  If a user thread does not create its
 own context, then its computational resources are determine by this
-\verb'GxB_CONTEXT_WORLD' object.  The following \verb'GxB_set/get' methods
-access this global object without naming it directly:
+\verb'GxB_CONTEXT_WORLD' object.  The following \verb'GrB_set/get' methods
+access this global object without naming it directly (where \verb'chunk'
+is a \verb'GrB_Scalar' of type \verb'GrB_FP64' or \verb'GrB_FP32'):
 
     \begin{itemize}
-    \item \verb'GxB_set (GxB_NTHREADS, nthreads)'
-    \item \verb'GxB_get (GxB_NTHREADS, &nthreads)'
-    \item \verb'GxB_set (GxB_CHUNK, chunk)'
-    \item \verb'GxB_get (GxB_CHUNK, &chunk)'
-    \end{itemize}
-
-Those four operations above are identical to the same set/get operations on the
-the world context:
-
-    \begin{itemize}
-    \item \verb'GxB_Context_set (GxB_CONTEXT_WORLD, GxB_NTHREADS, nthreads)'
-    \item \verb'GxB_Context_get (GxB_CONTEXT_WORLD, GxB_NTHREADS, &nthreads)'
-    \item \verb'GxB_Context_set (GxB_CONTEXT_WORLD, GxB_CHUNK, chunk)'
-    \item \verb'GxB_Context_get (GxB_CONTEXT_WORLD, GxB_CHUNK, &chunk)'
-    \end{itemize}
-
-Or, a \verb'NULL' context can be used, which also modifies the world context:
-
-    \begin{itemize}
-    \item \verb'GxB_Context_set (NULL, GxB_NTHREADS, nthreads)'
-    \item \verb'GxB_Context_get (NULL, GxB_NTHREADS, &nthreads)'
-    \item \verb'GxB_Context_set (NULL, GxB_CHUNK, chunk)'
-    \item \verb'GxB_Context_get (NULL, GxB_CHUNK, &chunk)'
+    \item \verb'GrB_set (GrB_GLOBAL, nthreads, GxB_NTHREADS)'
+    \item \verb'GrB_get (GrB_GLOBAL, &nthreads, GxB_NTHREADS)'
+    \item \verb'GrB_set (GrB_GLOBAL, chunk, GxB_CHUNK)'
+    \item \verb'GrB_get (GrB_GLOBAL, chunk, GxB_CHUNK)'
     \end{itemize}
 
 The above methods control the OpenMP threads used by all user threads in the
 user application.  To allow each user thread to control its own OpenMP
 threading, each user thread needs to create its own Context object via
 \verb'GxB_Context_new'.  Next, the user thread must {\em engage} this context
-via \verb'GxB_Context_engate'; all subsequent calls to GraphBLAS from this
+via \verb'GxB_Context_engage'; all subsequent calls to GraphBLAS from this
 particular user thread will then use the number of OpenMP threads dictated by
 this particular context.
 
@@ -8368,7 +7922,7 @@ folder, part of which is listed below.
         // each user thread constructs its own context
         GxB_Context Context = NULL ;
         GxB_Context_new (&Context) ;
-        GxB_Context_set (Context, GxB_NTHREADS, ninner) ;
+        GrB_set (Context, ninner, GxB_NTHREADS) ;
         GxB_Context_engage (Context) ;
 
         // kth user thread builds kth matrix with ninner threads
@@ -8403,8 +7957,8 @@ The next sections describe the methods for a \verb'GxB_Context':
 GraphBLAS function   & purpose                                      & Section \\
 \hline
 \verb'GxB_Context_new'           & create a context                     & \ref{context_new} \\
-\verb'GxB_Context_set'           & set an value in a context            & \ref{context_set} \\
-\verb'GxB_Context_get'           & get an value from a context          & \ref{context_get} \\
+\verb'GrB_get'                   & get a value from a context           & \ref{get_set_context} \\
+\verb'GrB_set'                   & set a value in a context             & \ref{get_set_context} \\
 \verb'GxB_Context_engage'        & engage a context                     & \ref{context_engage} \\
 \verb'GxB_Context_disengage'     & disengage a context                  & \ref{context_disengage} \\
 \verb'GxB_Context_fprint'        & check/print a context                & \ref{context_print} \\
@@ -8429,65 +7983,9 @@ GrB_Info GxB_Context_new        // create a new context
 \end{verbatim} } \end{mdframed}
 
 A new context is created and initialized with the current global settings for
-\verb'GxB_NTHREADS' and \verb'GxB_CHUNK'.  See \verb'GxB_Global_Option_get'.
+\verb'GxB_NTHREADS' and \verb'GxB_CHUNK'.  See \verb'GrB_get'.
 The context object will not have an effect on any calls to GraphBLAS until it
 is {\em engaged} by a user thread.
-
-\newpage
-%-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_Context\_set:}  change a setting in a context}
-%-------------------------------------------------------------------------------
-\label{context_set}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Context_set        // set a parameter in a context
-(
-    GxB_Context Context         // context to modify
-    GxB_Context_Field field,    // field to modify
-    ...
-) ;
-\end{verbatim} } \end{mdframed}
-
-The \verb'GxB_Context_Field' parameter can currently take on one of two
-values, given by the following definition:
-
-{\footnotesize
-\begin{verbatim}
-typedef enum
-{
-    GxB_CONTEXT_NTHREADS = GxB_NTHREADS,     // max number of threads to use.
-                    // If <= 0, then one thread is used.
-    GxB_CONTEXT_CHUNK = GxB_CHUNK,   // chunk size for small problems.
-                    // If < 1, then the default is used.
-}
-GxB_Context_Field ;
-\end{verbatim}
-}
-
-For example, \verb'GxB_set (Context, GxB_NTHREADS, 4)' sets the number of
-threads in the \verb'Context' to 4.
-
-%-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_Context\_get:}  get a setting from a context}
-%-------------------------------------------------------------------------------
-\label{context_get}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_Context_get        // get a parameter in a context
-(
-    GxB_Context Context         // context to query
-    GxB_Context_Field field,    // field to query
-    ...
-) ;
-\end{verbatim} } \end{mdframed}
-
-For example, \verb'GxB_get (Context, GxB_NTHREADS, &nthreads)' returns the
-number of threads set in the \verb'Context', returning the result in the
-\verb'int32_t' scalar, \verb'nthreads'.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -8654,8 +8152,8 @@ When the user application starts, it can modify the location of the cache
 folder after calling \verb'GrB_init'.  It can also modify the C compiler and
 its flags, and can control when and how the JIT is used.
 These changes are
-made via \verb'GxB_Global_Option_set', and can be queried via
-\verb'GxB_Global_Option_get'; refer to Section~\ref{options} for details, and
+made via \verb'GrB_set', and can be queried via
+\verb'GrB_get'; refer to Section~\ref{options} for details, and
 the \verb'GxB_JIT_*' settings:
 
 \vspace{0.15in}
@@ -8690,14 +8188,14 @@ definition of the user-defined type or operator does not exactly match the
 definition when the kernel was compiled, then the compiled kernel is discarded
 and recompiled.  The stale kernel is overwritten with the new one, so there is
 no need to for the user to take any action to delete the stale kernel from the
-cache path.  If the cache path is changed via \verb'GxB_set', compiled kernels
+cache path.  If the cache path is changed via \verb'GrB_set', compiled kernels
 in the old cache folder are not copied over.  New ones are compiled instead.
 
 %----------------------------------------
 \subsubsection{\sf GxB\_JIT\_C\_CONTROL}
 %----------------------------------------
 
-The usage of the CPU JIT can be controlled via \verb'GxB_get/set' using the
+The usage of the CPU JIT can be controlled via \verb'GrB_get/set' using the
 \verb'GxB_JIT_C_CONTROL' setting.  If the JIT is enabled at compile time, the
 initial setting is \verb'GxB_JIT_ON'.  If the JIT is disabled at compile time
 (by setting the cmake variable \verb'GRAPHBLAS_USE_JIT' to \verb'OFF'), the
@@ -8706,10 +8204,10 @@ This setting can be modified; for example to disable the JIT and clear all
 loaded JIT kernels from memory, use:
 
 \begin{verbatim}
-    GxB_set (GxB_JIT_C_CONTROL, GxB_JIT_OFF) ;
+    GrB_set (GrB_GLOBAL, GxB_JIT_OFF, GxB_JIT_C_CONTROL) ;
 \end{verbatim}
 
-The above call to \verb'GxB_set' does not clear any PreJIT kernels, however,
+The above call to \verb'GrB_set' does not clear any PreJIT kernels, however,
 since those are integral components of the single compiled GraphBLAS library
 and cannot be cleared (see Section~\ref{prejit}).  It also does not clear any
 compiled user functions, created by the JIT for \verb'GxB_*Op_new' when the
@@ -8738,7 +8236,7 @@ controlled via the \verb'GxB_JIT_OFF', \verb'GxB_JIT_PAUSE', or
 \verb'GxB_JIT_RUN' settings listed above.  If the application tries to set the
 control to \verb'GxB_JIT_LOAD' or \verb'GxB_JIT_ON', the setting is changed to
 \verb'GxB_JIT_RUN' instead.  This is not an error condition.  The resulting
-setting can be queried via \verb'GxB_get', if desired.
+setting can be queried via \verb'GrB_get', if desired.
 
 The JIT control setting can be also changed by GraphBLAS itself, based on
 following error conditions.  These changes affect all kernels, not just the
@@ -8747,7 +8245,7 @@ will often return still return \verb'GrB_SUCCESS' because it can use its
 generic kernels instead.  It would return \verb'GrB_OUT_OF_MEMORY' for the last
 case below.  The error is also reported if the \verb'GxB_BURBLE' is enabled.
 If the JIT is disabled through any of these errors, it can be detected by
-\verb'GxB_get' to read the \verb'GxB_JIT_C_CONTROL' state.
+\verb'GrB_get' to read the \verb'GxB_JIT_C_CONTROL' state.
 
 \begin{itemize}
 
@@ -8874,21 +8372,11 @@ comment, which may be helpful to select specific kernels to copy into the
 \label{use_cmake}
 
 Two methods are provided for compiling the JIT kernels: cmake, and a direct
-compiler/link command.
-
-On Linux or Mac, or the default is false since a direct compile/link is faster.
-However, it is possible that some compilers are not handled properly with this
-method, so cmake can also be used on those platforms by setting the value of
-\verb'GxB_JIT_USE_CMAKE' to true.
-
-On Windows with MS Visual Studio, only cmake may be used, and this setting is
-ignored (it is always true).  Direct compilation without cmake on Windows with
-MSVC is not yet available.
-
-When using MINGW on Windows the opposite is true: cmake may not be used, and
-this setting ignored (it is always false).  The only option is to use a direct
-compile instead of using cmake.  Using cmake to build kernels when using MINGW
-on Windows is not yet available.
+compiler/link command.  On Windows, only cmake may be used, and this setting
+is ignored (it is always true).  On Linux or Mac, the default is false since
+a direct compile/link is faster.  However, it is possible that some compilers
+are not handled properly with this method, so cmake can also be used on those
+platforms by setting the value of \verb'GxB_JIT_USE_CMAKE' to true.
 
 Normally the same version of cmake should be used to compile both GraphBLAS and
 the JIT kernels.  However, compiling GraphBLAS itself requires cmake v3.16 or
@@ -8923,7 +8411,7 @@ default.
 %-------------------------------------------------------------------------------
 
 The CPU JIT can be disabled at compile time by setting the
-\verb'GRAPHBLAS_USE_NIT' option \verb'OFF' in the cmake build options.  Good
+\verb'GRAPHBLAS_USE_JIT' option \verb'OFF' in the cmake build options.  Good
 performance will be obtained only by using the \verb'FactoryKernels' or the
 \verb'PreJIT' kernels that are compiled into GraphBLAS when it is first
 compiled with \verb'cmake'.  By default, \verb'GRAPHBLAS_USE_JIT' is \verb'ON',
@@ -8934,8 +8422,8 @@ performance in GraphBLAS without compiling the many {\em factory kernels} that
 appear in the \verb'GraphBLAS/Source/FactoryKernels' directory.  If the JIT is
 enabled, GraphBLAS will still be fast, once the JIT kernels are compiled, or by
 using any \verb'PreJIT' kernels.  To compile GraphBLAS without its
-\verb'FactoryKernels', enable the \verb'GRAPHBLAS_COMPACT' option in the cmake
-build options.  By default, \verb'GRAPHBLAS_COMPACT' is off, to enable the
+\verb'FactoryKernels', enable the \verb'COMPACT' option in the cmake build
+options.  By default, \verb'COMPACT' is off, to enable the
 \verb'FactoryKernels'.
 
 When GraphBLAS is compiled with \verb'GRAPHBLAS_USE_JIT' set to \verb'OFF', the
@@ -8958,7 +8446,7 @@ benchmarking, or for a Linux distro or other widely-used distribution, unless
 you are able to run your application in advance and create all the JIT kernels
 you need, and then copy them into \verb'GraphBLAS/PreJIT'.  This would be
 impossible to do for a general-purpose case such as a Linux distro, but
-feasible for a more targetted application such as RedisGraph.
+feasible for a more targetted application such as FalkorDB.
 
 %-------------------------------------------------------------------------------
 \subsection{Adding {\sf PreJIT} kernels to GraphBLAS}
@@ -9093,7 +8581,7 @@ However, when using the \verb'@GrB' MATLAB interface to GraphBLAS on Apple
 Silicon, the MATLAB JIT kernels are compiled as x86 binaries and executed
 inside MATLAB via Rosetta.  The pure C installation may compile native Arm64
 binaries for its JIT kernels.  Do not mix the two.  In this case, set another
-cache path for MATLAB using \verb'GrB.jit' in MATLAB, or using \verb'GxB_set'
+cache path for MATLAB using \verb'GrB.jit' in MATLAB, or using \verb'GrB_set'
 in the C interface for your native Arm64 binaries.
 
 %-------------------------------------------------------------------------------
@@ -9156,1203 +8644,8 @@ affects the case when multiple user threads each call GraphBLAS in parallel
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{SuiteSparse:GraphBLAS Options} %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\input{GrB_get_set.tex}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\label{options}
-
-SuiteSparse:GraphBLAS includes two type-generic methods, \verb'GxB_set' and
-\verb'GxB_get', that set and query various options and parameters settings,
-including a generic way to set values in the \verb'GrB_Descriptor' object.
-Using these methods, the user application can provide hints to
-SuiteSparse:GraphBLAS on how it should store and operate on its matrices.
-These hints have no effect on the results of any GraphBLAS operation (except
-perhaps floating-point roundoff differences), but they can have a great impact
-on the amount of time or memory taken.
-
-\begin{note}
-{\bf NOTE:} In the next release, \verb'GxB_get' and \verb'GxB_set' will be
-replaced by \verb'GrB_*_get' and \verb'GrB_*_set', using the v2.1 C API
-Specification.
-\end{note}
-
-%-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_set}: overview}
-%-------------------------------------------------------------------------------
-
-\begin{itemize}
-
-\item \verb'GxB_set (field, value)' sets global options.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_HYPER_SWITCH'     & \verb'double' & hypersparsity control (0 to 1) \\
-\verb'GxB_BITMAP_SWITCH'    & \verb'double [8]' & bitmap control \\
-\verb'GxB_FORMAT'           & \verb'int'    & \verb'GxB_BY_ROW'
-                                              or \verb'GxB_BY_COL' \\
-\verb'GxB_GLOBAL_NTHREADS'  & \verb'int'    & number of threads to use \\
-\verb'GxB_NTHREADS'         & \verb'int'    & number of threads to use \\
-\verb'GxB_GLOBAL_CHUNK'     & \verb'double' & chunk size \\
-\verb'GxB_CHUNK'            & \verb'double' & chunk size \\
-\verb'GxB_BURBLE'           & \verb'int'    & diagnostic output \\
-\verb'GxB_PRINTF'           & see below     & diagnostic output \\
-\verb'GxB_FLUSH'            & see below     & diagnostic output \\
-\verb'GxB_PRINT_1BASED'     & \verb'int'    & for printing matrices/vectors \\
-\hline
-\verb'GxB_JIT_C_COMPILER_NAME' & \verb'char *' & C compiler for JIT kernels \\
-\verb'GxB_JIT_C_COMPILER_FLAGS'& \verb'char *' & flags for the C compiler \\
-\verb'GxB_JIT_C_LINKER_FLAGS' & \verb'char *' & link flags for the C compiler \\
-\verb'GxB_JIT_C_LIBRARIES'    & \verb'char *' & libraries to link against \\
-\verb'GxB_JIT_C_CMAKE_LIBS'   & \verb'char *' & libraries to link against \\
-\verb'GxB_JIT_C_PREFACE'      & \verb'char *' & C code as preface to JIT kernels \\
-\verb'GxB_JIT_C_CONTROL'      & see Section \ref{jit} & CPU JIT control \\
-\verb'GxB_JIT_USE_CMAKE'      & see Section \ref{jit} & CPU JIT: use cmake \\
-\verb'GxB_JIT_ERROR_LOG'      & \verb'char *' & error log file \\
-\verb'GxB_JIT_CACHE_PATH'     & \verb'char *' & folder with compiled kernels \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_set (GrB_Matrix A, field, value)' provides hints to
-    SuiteSparse: GraphBLAS on how to store a particular matrix.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_HYPER_SWITCH'     & \verb'double' & hypersparsity control (0 to 1) \\
-\verb'GxB_BITMAP_SWITCH'    & \verb'double' & bitmap control (0 to 1) \\
-\verb'GxB_FORMAT'           & \verb'int'    & \verb'GxB_BY_ROW'
-                                              or \verb'GxB_BY_COL' \\
-\verb'GxB_SPARSITY_CONTROL' & \verb'int'    & 0 to 15 \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_set (GrB_Vector v, field, value)' provides hints to
-    SuiteSparse: GraphBLAS on how to store a particular vector.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_BITMAP_SWITCH'    & \verb'double' & bitmap control (0 to 1) \\
-\verb'GxB_SPARSITY_CONTROL' & \verb'int'    & 0 to 15 \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_set (GrB_Descriptor desc, field, value)' sets
-    the value of a field in a \verb'GrB_Descriptor'.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GrB_OUTP'     & \verb'GrB_Desc_Value' & replace option \\
-\verb'GrB_MASK'     & \verb'GrB_Desc_Value' & mask option \\
-\verb'GrB_INP0'     & \verb'GrB_Desc_Value' & transpose input 0 \\
-\verb'GrB_INP1'     & \verb'GrB_Desc_Value' & transpose input 1 \\
-\verb'GxB_AxB_METHOD'           & \verb'int' & method for matrix multiply \\
-\verb'GxB_SORT'                 & \verb'int' & lazy vs aggressive sort \\
-\verb'GxB_COMPRESSION'          & \verb'int' & compression for serialization \\
-\verb'GxB_IMPORT'    & \verb'GrB_Desc_Value' & trust data on import/pack \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_set (GxB_Context desc, field, value)' sets
-    the value of a field in a \verb'GxB_Context'.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_NTHREADS'         & \verb'int'    & number of threads to use \\
-\verb'GxB_CHUNK'            & \verb'double' & chunk size \\
-\hline
-\end{tabular}
-}
-
-\end{itemize}
-
-%-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_get}: overview}
-%-------------------------------------------------------------------------------
-
-\verb'GxB_get' queries a \verb'GrB_Descriptor', a \verb'GrB_Matrix',
-a \verb'GrB_Vector', or the global options.
-
-\begin{itemize}
-
-\item \verb'GxB_get (field, &value)' retrieves the value of a global option.
-NOTE: the \verb'const char *' values returned by \verb'GxB_get' are pointers
-to memory spaces ``owned'' by the GraphBLAS library.  Do not modify them.
-Subsequent calls to GraphBLAS (particularly setting the JIT control strings)
-can change those strings.  The user application must copy those strings into
-its own memory space if the strings are to be kept.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_HYPER_SWITCH'     & \verb'double' & hypersparsity control (0 to 1) \\
-\verb'GxB_BITMAP_SWITCH'    & \verb'double [8]' & bitmap control \\
-\verb'GxB_FORMAT'           & \verb'int'    & \verb'GxB_BY_ROW' or \verb'GxB_BY_COL' \\
-\verb'GxB_GLOBAL_NTHREADS'  & \verb'int'    & number of threads to use \\
-\verb'GxB_NTHREADS'         & \verb'int'    & number of threads to use \\
-\verb'GxB_GLOBAL_CHUNK'     & \verb'double' & chunk size \\
-\verb'GxB_CHUNK'            & \verb'double' & chunk size \\
-\verb'GxB_BURBLE'           & \verb'int'    & diagnostic output \\
-\verb'GxB_PRINTF'           & see below     & diagnostic output \\
-\verb'GxB_FLUSH'            & see below     & diagnostic output \\
-\verb'GxB_PRINT_1BASED'     & \verb'int'    & for printing matrices/vectors \\
-\hline
-\verb'GxB_JIT_C_COMPILER_NAME' & \verb'const char *' & C compiler for JIT kernels \\
-\verb'GxB_JIT_C_COMPILER_FLAGS'& \verb'const char *' & flags for the C compiler \\
-\verb'GxB_JIT_C_LINKER_FLAGS' & \verb'const char *' & link flags for the C compiler \\
-\verb'GxB_JIT_C_LIBRARIES'    & \verb'const char *' & libraries to link against \\
-\verb'GxB_JIT_C_CMAKE_LIBS'   & \verb'const char *' & libraries to link against \\
-\verb'GxB_JIT_C_PREFACE'      & \verb'const char *' & C code as preface to JIT kernels \\
-\verb'GxB_JIT_C_CONTROL'      & see Section \ref{jit} & CPU JIT control \\
-\verb'GxB_JIT_USE_CMAKE'      & see Section \ref{jit} & CPU JIT: use cmake \\
-\verb'GxB_JIT_ERROR_LOG'      & \verb'const char *' & error log file \\
-\verb'GxB_JIT_CACHE_PATH'     & \verb'const char *' & folder with compiled kernels \\
-\hline
-\verb'GxB_MODE'                 & \verb'int'    & blocking/non-blocking \\
-\verb'GxB_LIBRARY_NAME'         & \verb'const char *' & name of library \\
-\verb'GxB_LIBRARY_VERSION'      & \verb'int [3]' & library version \\
-\verb'GxB_LIBRARY_DATE'         & \verb'const char *' & release date \\
-\verb'GxB_LIBRARY_ABOUT'        & \verb'const char *' & about the library \\
-\verb'GxB_LIBRARY_LICENSE'      & \verb'const char *' & license \\
-\verb'GxB_LIBRARY_COMPILE_DATE' & \verb'const char *' & date of compilation \\
-\verb'GxB_LIBRARY_COMPILE_TIME' & \verb'const char *' & time of compilation \\
-\verb'GxB_LIBRARY_OPENMP'       & \verb'bool'   & true if compiled with OpenMP\\
-\verb'GxB_LIBRARY_URL'          & \verb'const char *' & url of library \\
-\verb'GxB_API_VERSION'          & \verb'int [3]' & C API version \\
-\verb'GxB_API_DATE'             & \verb'const char *' & C API date \\
-\verb'GxB_API_ABOUT'            & \verb'const char *' & about the C API \\
-\verb'GxB_API_URL'              & \verb'const char *' & \verb'http://graphblas.org' \\
-\verb'GxB_COMPILER_NAME'        & \verb'const char *' & C compiler name \\
-\verb'GxB_COMPILER_VERSION'     & \verb'int [3]' & C compiler version \\
-\hline
-\end{tabular}
-}
-
-\newpage
-\item \verb'GxB_get (GrB_Matrix A, field, &value)' retrieves the current
-    value of an option from a particular matrix \verb'A'.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_HYPER_SWITCH'     & \verb'double' & hypersparsity control (0 to 1) \\
-\verb'GxB_BITMAP_SWITCH'    & \verb'double' & bitmap control (0 to 1) \\
-\verb'GxB_FORMAT'           & \verb'int'    & \verb'GxB_BY_ROW'
-                                              or \verb'GxB_BY_COL' \\
-\verb'GxB_SPARSITY_CONTROL' & \verb'int'    & 0 to 15 \\
-\verb'GxB_SPARSITY_STATUS'  & \verb'int'    & 1, 2, 4, or 8 \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_get (GrB_Vector A, field, &value)' retrieves the current
-    value of an option from a particular vector \verb'v'.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_BITMAP_SWITCH'    & \verb'double' & bitmap control (0 to 1) \\
-\verb'GxB_FORMAT'           & \verb'int'    & \verb'GxB_BY_ROW'
-                                              or \verb'GxB_BY_COL' \\
-\verb'GxB_SPARSITY_CONTROL' & \verb'int'    & 0 to 15 \\
-\verb'GxB_SPARSITY_STATUS'  & \verb'int'    & 1, 2, 4, or 8 \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_get (GrB_Descriptor desc, field, &value)' retrieves the value
-    of a field in a descriptor.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GrB_OUTP'     & \verb'GrB_Desc_Value' & replace option \\
-\verb'GrB_MASK'     & \verb'GrB_Desc_Value' & mask option \\
-\verb'GrB_INP0'     & \verb'GrB_Desc_Value' & transpose input 0 \\
-\verb'GrB_INP1'     & \verb'GrB_Desc_Value' & transpose input 1 \\
-\verb'GxB_AxB_METHOD'           & \verb'int' & method for matrix multiply \\
-\verb'GxB_SORT'                 & \verb'int' & lazy vs aggressive sort \\
-\verb'GxB_COMPRESSION'          & \verb'int' & compression for serialization \\
-\verb'GxB_IMPORT'    & \verb'GrB_Desc_Value' & trust data on import/pack \\
-\hline
-\end{tabular}
-}
-
-\item \verb'GxB_get (GxB_Context desc, field, value)' retrieves
-    the value of a field in a \verb'GxB_Context'.
-
-{\footnotesize
-\begin{tabular}{lll}
-field                       & value         & description \\
-\hline
-\verb'GxB_NTHREADS'         & \verb'int'    & number of threads to use \\
-\verb'GxB_CHUNK'            & \verb'double' & chunk size \\
-\hline
-\end{tabular}
-}
-
-\end{itemize}
-
-%-------------------------------------------------------------------------------
-\newpage
-\subsection{OpenMP parallelism}
-%-------------------------------------------------------------------------------
-\label{omp_parallelism}
-
-SuiteSparse:GraphBLAS is a parallel library, based on OpenMP.  By
-default, all GraphBLAS operations will use up to the maximum number of threads
-specified by the \verb'omp_get_max_threads' OpenMP function.  For small
-problems, GraphBLAS may choose to use fewer threads, using two parameters: the
-maximum number of threads to use (which may differ from the
-\verb'omp_get_max_threads' value), and a parameter called the \verb'chunk'.
-Suppose \verb'work' is a measure of the work an operation needs to perform (say
-the number of entries in the two input matrices for \verb'GrB_eWiseAdd').  No
-more than \verb'floor(work/chunk)' threads will be used (or one thread if the
-ratio is less than 1).
-
-\verb'GxB_NTHREADS' controls how many threads a method uses.
-    By default (if set to zero, or \verb'GxB_DEFAULT'), all available threads
-    are used.  The maximum available threads is controlled by the global
-    setting, which is \verb'omp_get_max_threads ( )' by default.  If set to
-    some positive integer \verb'nthreads' less than this maximum, at most
-    \verb'nthreads' threads will be used.
-
-\verb'GxB_CHUNK' is a \verb'double' value that controls how many threads
-    a method uses for small problems.
-The default \verb'chunk' value is 65,536, but this may change in future
-versions, or it may be modified when GraphBLAS is installed on a particular
-machine.
-
-Both parameters can be set in two ways:
-
-\begin{itemize}
-
-\item Globally:  If the following methods are used, then all subsequent
-GraphBLAS operations will use these settings.  Note the typecast,
-\verb'(double)' \verb'chunk'.  This is necessary if a literal constant such as
-\verb'20000' is passed as this argument.  The type of the constant must be
-\verb'double'.
-
-    {\footnotesize
-    \begin{verbatim}
-    int nthreads_max = 40 ;
-    GxB_set (GxB_NTHREADS, nthreads_max) ;
-    GxB_set (GxB_CHUNK, (double) 20000) ; \end{verbatim} }
-
-\item Context: this object can be used to choose a different number of
-threads used in calls to GraphBLAS from different user threads, exploiting
-nested parallelism.  Refer to Section~\ref{context}.  If a thread has engaged a
-context object, it ignores the global settings for \verb'GxB_NTHREADS' and
-\verb'GxB_CHUNK', and uses the settings in its own context instead.
-
-\end{itemize}
-
-The smaller of \verb'nthreads_max' and \verb'floor(work/chunk)' is used for any
-given GraphBLAS operation, except that a single thread is used if this value is
-zero or less.
-
-If either parameter is set to \verb'GxB_DEFAULT', then default values are used.
-The default for \verb'nthreads_max' is the return value from
-\verb'omp_get_max_threads', and the default chunk size is currently 65,536.
-
-If a descriptor value for either parameter is left at its default, or set to
-\verb'GxB_DEFAULT', then the global setting is used.  This global setting may
-have been modified from its default, and this modified value will be used.
-
-For example, suppose \verb'omp_get_max_threads' reports 8 threads.  If \newline
-\verb'GxB_set (GxB_NTHREADS, 4)' is used, then the global setting is four
-threads, not eight.
-
-GraphBLAS may be compiled without OpenMP, by setting \verb'-DNOPENMP=1'.
-The library will be thread-safe, with one exception.  \verb'GrB_wait' is
-intended to provide thread-safety by flushing the cache of one user thread
-so the object can be safely read by another thread.  This is accomplished
-with \verb'pragma omp flush', but if OpenMP is not available, this does
-nothing.  If OpenMP is not available or \verb'-DNOPENMP=1' is used, then
-user applications need to ensure their own thread safety when one user thread
-computes a result that is then read by another thread.
-
-You can query GraphBLAS at run-time to ask if it was compiled with OpenMP:
-
-\begin{verbatim}
-    bool have_openmp ;
-    GxB_get (GxB_LIBRARY_OPENMP, &have_openmp) ;
-    if (!have_openmp) printf ("GraphBLAS not compiled with OpenMP\n") :
-\end{verbatim}
-
-Compiling GraphBLAS without OpenMP is not recommended for installation in a
-package manager (Linux, conda-forge, spack, brew, vcpkg, etc).
-
-%-------------------------------------------------------------------------------
-\subsection{Storing a matrix by row or by column}
-%-------------------------------------------------------------------------------
-
-The GraphBLAS \verb'GrB_Matrix' is entirely opaque to the user application, and
-the GraphBLAS API does not specify how the matrix should be stored.  However,
-choices made in how the matrix is represented in a particular implementation,
-such as SuiteSparse:GraphBLAS, can have a large impact on performance.
-
-Many graph algorithms are just as fast in any format, but some algorithms are
-much faster in one format or the other.  For example, suppose the user
-application stores a directed graph as a matrix \verb'A', with the edge $(i,j)$
-represented as the value \verb'A(i,j)', and the application makes many accesses
-to the $i$th row of the matrix, with \verb'GrB_Col_extract'
-\verb'(w,...,A,GrB_ALL,...,i,desc)' with the transposed descriptor
-(\verb'GrB_INP0' set to \verb'GrB_TRAN').  If the matrix is stored by column
-this can be extremely slow, just like the expression \verb'w=A(i,:)' in MATLAB,
-where \verb'i' is a scalar.  Since this is a typical use-case in graph
-algorithms, the default format in SuiteSparse:GraphBLAS is to store its
-matrices by row, in Compressed Sparse Row format (CSR).
-
-MATLAB stores its sparse matrices by column, in ``non-hypersparse'' format, in
-what is called the Compressed Sparse Column format, or CSC for short.  An
-\verb'm'-by-\verb'n' matrix in MATLAB is represented as a set of \verb'n'
-column vectors, each with a sorted list of row indices and values of the
-nonzero entries in that column.  As a result, \verb'w=A(:,j)' is very fast in
-MATLAB, since the result is already held in the data structure a single list,
-the $j$th column vector.  However, \verb'w=A(i,:)' is very slow in MATLAB,
-since every column in the matrix has to be searched to see if it contains row
-\verb'i'.  In MATLAB, if many such accesses are made, it is much better to
-transpose the matrix (say \verb"AT=A'") and then use \verb"w=AT(:,i)" instead.
-This can have a dramatic impact on the performance of MATLAB.
-
-Likewise, if \verb'u' is a very sparse column vector and \verb'A' is stored by
-column, then \verb"w=u'*A" (via \verb'GrB_vxm') is slower than \verb'w=A*u'
-(via \verb'GrB_mxv').  The opposite is true if the matrix is stored by row.
-
-SuiteSparse:GraphBLAS stores its matrices by row, by default (with one
-exception described below).  However, it can also be instructed to store any
-selected matrices, or all matrices, by column instead (just like MATLAB), so
-that \verb'w=A(:,j)' (via \verb'GrB_Col_extract') is very fast.  The change in
-data format has no effect on the result, just the time and memory usage.  To
-use a column-oriented format by default, the following can be done in a user
-application that tends to access its matrices by column.
-
-    {\footnotesize
-    \begin{verbatim}
-    GrB_init (...) ;
-    // just after GrB_init: do the following:
-    #ifdef GxB_SUITESPARSE_GRAPHBLAS
-    GxB_set (GxB_FORMAT, GxB_BY_COL) ;
-    #endif \end{verbatim} }
-
-If this is done, and no other \verb'GxB_set' calls are made with
-\verb'GxB_FORMAT', all matrices will be stored by column.
-The default format is \verb'GxB_BY_ROW'.
-
-All vectors (\verb'GrB_Vector') are held by column, and this cannot be changed.
-
-By default, matrices of size \verb'm-by-1' are held by column, regardless of
-the global setting described above.  Matrices of size \verb'1-by-n' with
-\verb'n' not equal to 1 are held by row, regardless of the global setting.
-The global setting only affects matrices with both \verb'm > 1' and \verb'n > 1'.
-Empty matrices (\verb'0-by-0') are also controlled by the global setting.
-
-After creating a matrix with \verb'GrB_Matrix_new (&A, ...)',
-its format can be changed arbitrarily with \verb'GxB_set (A, GxB_FORMAT, ...)'.
-So even an \verb'm-by-1' matrix can then be changed to be held by row, for
-example.  Likewise, once a \verb'1-by-n' matrix is created, it can be converted
-to column-oriented format.
-
-%-------------------------------------------------------------------------------
-\subsection{Hypersparse matrices}
-\label{hypersparse}
-%-------------------------------------------------------------------------------
-
-MATLAB can store an \verb'm'-by-\verb'n' matrix with a very large value of
-\verb'm', since a CSC data structure takes $O(n+|{\bf A}|)$ memory, independent
-of \verb'm', where $|{\bf A}|$ is the number of nonzeros in the matrix.  It
-cannot store a matrix with a huge \verb'n', and this structure is also
-inefficient when $|{\bf A}|$ is much smaller than \verb'n'.  In contrast,
-SuiteSparse:GraphBLAS can store its matrices in {\em hypersparse} format,
-taking only $O(|{\bf A}|)$ memory, independent of how it is stored (by row or
-by column) and independent of both \verb'm' and \verb'n'
-\cite{BulucGilbert08,BulucGilbert12}.
-
-In both the CSR and CSC formats, the matrix is held as a set of sparse vectors.
-In non-hypersparse format, the set of sparse vectors is itself dense; all
-vectors are present, even if they are empty.  For example, an
-\verb'm'-by-\verb'n' matrix in non-hypersparse CSC format contains \verb'n'
-sparse vectors.  Each column vector takes at least one integer to represent,
-even for a column with no entries.  This allows for quick lookup for a
-particular vector, but the memory required is $O(n+|{\bf A}|)$.  With a
-hypersparse CSC format, the set of vectors itself is sparse, and columns with
-no entries take no memory at all.  The drawback of the hypersparse format is
-that finding an arbitrary column vector \verb'j', such as for the computation
-\verb'C=A(:,j)', takes $O(\log k)$ time if there $k \le n$ vectors in the data
-structure.  One advantage of the hypersparse structure is the memory required
-for an \verb'm'-by-\verb'n' hypersparse CSC matrix is only $O(|{\bf A}|)$,
-independent of \verb'm' and \verb'n'.  Algorithms that must visit all non-empty
-columns of a matrix are much faster when working with hypersparse matrices,
-since empty columns can be skipped.
-
-The \verb'hyper_switch' parameter controls the hypersparsity of the internal
-data structure for a matrix.  The parameter is typically in the range 0 to 1.
-The default is \verb'hyper_switch' = \verb'GxB_HYPER_DEFAULT', which is an
-\verb'extern' \verb'const' \verb'double' value, currently set to 0.0625, or
-1/16.  This default ratio may change in the future.
-
-The \verb'hyper_switch' determines how the matrix is converted between the
-hypersparse and non-hypersparse formats.  Let $n$ be the number of columns of a
-CSC matrix, or the number of rows of a CSR matrix.  The matrix can have at most
-$n$ non-empty vectors.
-
-Let $k$ be the actual number of non-empty vectors.  That is, for the CSC
-format, $k \le n$ is the number of columns that have at least one entry.  Let
-$h$ be the value of \verb'hyper_switch'.
-
-If a matrix is currently hypersparse, it can be converted to non-hypersparse if
-the either condition $n \le 1$ or $k > 2nh$ holds, or both.  Otherwise, it
-stays hypersparse.  Note that if $n \le 1$ the matrix is always stored as
-non-hypersparse.
-
-If currently non-hypersparse, it can be converted to hypersparse if
-both conditions $n > 1$ and $k \le nh$ hold.  Otherwise, it stays
-non-hypersparse.  Note that if $n \le 1$ the matrix always remains
-non-hypersparse.
-
-The default value of \verb'hyper_switch' is assigned at startup by
-\verb'GrB_init', and can then be modified globally with \verb'GxB_set'.  All
-new matrices are created with the same \verb'hyper_switch', determined by the
-global value.  Once a particular matrix \verb'A' has been constructed, its
-hypersparsity ratio can be modified from the default with:
-
-    {\footnotesize
-    \begin{verbatim}
-    double hyper_switch = 0.2 ;
-    GxB_set (A, GxB_HYPER_SWITCH, hyper_switch) ; \end{verbatim}}
-
-To force a matrix to always be non-hypersparse, use \verb'hyper_switch' equal to
-\verb'GxB_NEVER_HYPER'.  To force a matrix to always stay hypersparse, set
-\verb'hyper_switch' to \verb'GxB_ALWAYS_HYPER'.
-
-A \verb'GrB_Matrix' can thus be held in one of four formats: any combination of
-hyper/non-hyper and CSR/CSC.  All \verb'GrB_Vector' objects are always stored
-in non-hypersparse CSC format.
-
-A new matrix created via \verb'GrB_Matrix_new' starts with $k=0$ and is created
-in hypersparse form by default unless $n \le 1$ or if $h<0$, where $h$ is the
-global \verb'hyper_switch' value.  The matrix is created in either
-\verb'GxB_BY_ROW' or \verb'GxB_BY_COL' format, as determined by the last call
-to \verb'GxB_set(GxB_FORMAT,...)' or \verb'GrB_init'.
-
-A new matrix \verb'C' created via \verb'GrB_dup (&C,A)' inherits the CSR/CSC
-format, hypersparsity format, and \verb'hyper_switch' from \verb'A'.
-
-%-------------------------------------------------------------------------------
-\subsection{Bitmap matrices}
-\label{bitmap_switch}
-%-------------------------------------------------------------------------------
-
-By default, SuiteSparse:GraphBLAS switches between all four formats
-(hypersparse, sparse, bitmap, and full) automatically.  Let $d = |{\bf A}|/mn$
-for an $m$-by-$n$ matrix $\bf A$ with $|{\bf A}|$ entries.  If the matrix is
-currently in sparse or hypersparse format, and is modified so that $d$ exceeds
-a given threshold, it is converted into bitmap format.  The default threshold
-is controlled by the \verb'GxB_BITMAP_SWITCH' setting, which can be set
-globally, or for a particular matrix or vector.
-
-The default value of the switch to bitmap format depends on $\min(m,n)$, for a
-matrix of size $m$-by-$n$.  For the global setting, the bitmap switch is a
-\verb'double' array of size \verb'GxB_NBITMAP_SWITCH'.  The defaults are given
-below:
-
-\vspace{0.2in}
-{\small
-\begin{tabular}{lll}
-parameter & default & matrix sizes \\
-\hline
-\verb'bitmap_switch [0]' & 0.04 & $\min(m,n) = 1$ (and all vectors) \\
-\verb'bitmap_switch [1]' & 0.05 & $\min(m,n) = 2$ \\
-\verb'bitmap_switch [2]' & 0.06 & $\min(m,n) = 3$ to 4 \\
-\verb'bitmap_switch [3]' & 0.08 & $\min(m,n) = 5$ to 8 \\
-\verb'bitmap_switch [4]' & 0.10 & $\min(m,n) = 9$ to 16\\
-\verb'bitmap_switch [5]' & 0.20 & $\min(m,n) = 17$ to 32\\
-\verb'bitmap_switch [6]' & 0.30 & $\min(m,n) = 33$ to 64 \\
-\verb'bitmap_switch [7]' & 0.40 & $\min(m,n) > 64$ \\
-\end{tabular}
-}
-\vspace{0.2in}
-
-That is, by default a \verb'GrB_Vector' is held in bitmap format if its density
-exceeds 4\%.  To change the global settings, do the following:
-
-{\footnotesize
-\begin{verbatim}
-    double bswitch [GxB_NBITMAP_SWITCH] = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 } ;
-    GxB_set (GxB_BITMAP_SWITCH, bswitch) ;
-\end{verbatim}
-}
-
-If the matrix is currently in bitmap format, it is converted to full if all
-entries are present, or to sparse/hypersparse if $d$ drops below $b/2$, if its
-bitmap switch is $b$.  A matrix or vector with $d$ between $b/2$ and $b$
-remains in its current format.
-
-%-------------------------------------------------------------------------------
-\subsection{Parameter types}
-%-------------------------------------------------------------------------------
-The \verb'GxB_Option_Field' enumerated type gives the type of the \verb'field'
-parameter for the second argument of \verb'GxB_set' and \verb'GxB_get',
-for setting global options or matrix options.
-
-NOTE: The enum values have changed with v8.0.0, to be compatible with the
-future updates from the v2.1 C API specification.
-
-{\footnotesize
-\begin{verbatim}
-\end{verbatim} }
-
-The \verb'GxB_FORMAT' field can be by row or by column, set to a value
-with the type \verb'GxB_Format_Value':
-
-{\footnotesize
-\begin{verbatim}
-typedef enum
-{
-    GxB_BY_ROW = 0,     // CSR: compressed sparse row format
-    GxB_BY_COL = 1      // CSC: compressed sparse column format
-}
-GxB_Format_Value ;
-\end{verbatim} }
-
-The default format is given by the predefined value \verb'GxB_FORMAT_DEFAULT',
-which is equal to \verb'GxB_BY_ROW'.
-The default hypersparsity
-ratio is 0.0625 (1/16), but this value may change in the future.
-
-Setting the \verb'GxB_HYPER_SWITCH' field to \verb'GxB_ALWAYS_HYPER' ensures a matrix
-always stays hypersparse.  If set to \verb'GxB_NEVER_HYPER', it always stays
-non-hypersparse.  At startup, \verb'GrB_init' defines the following initial
-settings:
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (GxB_HYPER_SWITCH, GxB_HYPER_DEFAULT) ;
-    GxB_set (GxB_FORMAT, GxB_BY_ROW) ;
-\end{verbatim} }
-
-That is, by default, all new matrices are held by row in CSR format (except
-for \verb'n-by-1' matrices; see \verb'GrB_Matrix_new').
-If a matrix has fewer than $n/16$
-columns, it can be converted to hypersparse format.  If it has more than $n/8$
-columns, it can be converted to non-hypersparse format.  These options can be
-changed for all future matrices with \verb'GxB_set'.  For example, to change
-all future matrices to be in non-hypersparse CSC when created, use:
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
-    GxB_set (GxB_FORMAT, GxB_BY_COL) ;
-\end{verbatim} }
-
-Then if a particular matrix needs a different format, then (as an example):
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (A, GxB_HYPER_SWITCH, 0.1) ;
-    GxB_set (A, GxB_FORMAT, GxB_BY_ROW) ;
-\end{verbatim} }
-
-This changes the matrix \verb'A' so that it is stored by row, and it is
-converted from non-hypersparse to hypersparse format if it has fewer than 10\%
-non-empty columns.  If it is hypersparse, it is a candidate for conversion to
-non-hypersparse if has 20\% or more non-empty columns.  If it has between 10\%
-and 20\% non-empty columns, it remains in its current format.
-MATLAB only supports a non-hypersparse CSC format.  The format in
-SuiteSparse:GraphBLAS that is equivalent to the MATLAB format is:
-
-{\footnotesize
-\begin{verbatim}
-    GrB_init (...) ;
-    GxB_set (GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
-    GxB_set (GxB_FORMAT, GxB_BY_COL) ;
-    // no subsequent use of GxB_HYPER_SWITCH or GxB_FORMAT
-\end{verbatim} }
-
-The \verb'GxB_HYPER_SWITCH' and \verb'GxB_FORMAT' options should be considered as
-suggestions from the user application as to how SuiteSparse:GraphBLAS can
-obtain the best performance for a particular application.
-SuiteSparse:GraphBLAS is free to ignore any of these suggestions, both now and
-in the future, and the available options and formats may be augmented in the
-future.  Any prior options no longer needed in future versions of
-SuiteSparse:GraphBLAS will be silently ignored, so the use these options is
-safe for future updates.
-
-The sparsity status of a matrix can be queried with the following, which
-returns a value of \verb'GxB_HYPERSPARSE' \verb'GxB_SPARSE' \verb'GxB_BITMAP'
-or \verb'GxB_FULL'.
-
-{\footnotesize
-\begin{verbatim}
-    int sparsity ;
-    GxB_get (A, GxB_SPARSITY_STATUS, &sparsity) ; \end{verbatim}}
-
-The sparsity format of a matrix can be controlled with \verb'GxB_set', which
-can be any mix (a sum or bitwise or) of \verb'GxB_HYPERSPARSE'
-\verb'GxB_SPARSE' \verb'GxB_BITMAP', and \verb'GxB_FULL'.  By default, a matrix
-or vector can be held in any format, with the default setting
-\verb'GxB_AUTO_SPARSITY', which is equal to \verb'GxB_HYPERSPARSE' +
-\verb'GxB_SPARSE' + \verb'GxB_BITMAP' + \verb'GxB_FULL'.  To enable a matrix to
-take on just \verb'GxB_SPARSE' or \verb'GxB_FULL' formats, but not
-\verb'GxB_HYPERSPARSE' or \verb'GxB_BITMAP', for example, use the following:
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (A, GxB_SPARSITY_CONTROL, GxB_SPARSE + GxB_FULL) ; \end{verbatim}}
-
-In this case, SuiteSparse:GraphBLAS will hold the matrix in sparse format
-(\verb'CSC' or \verb'CSC', depending on its \verb'GxB_FORMAT'), unless all
-entries are present, in which case it will be converted to full format.
-
-Only the least 4 bits of the sparsity control are considered, so the
-formats can be bitwise negated.  For example, to allow for any format
-except full:
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (A, GxB_SPARSITY_CONTROL, ~GxB_FULL) ; \end{verbatim}}
-
-%-------------------------------------------------------------------------------
-\subsection{{\sf GxB\_BURBLE}, {\sf GxB\_PRINTF}, {\sf GxB\_FLUSH}: diagnostics}
-%-------------------------------------------------------------------------------
-
-\verb'GxB_set (GxB_BURBLE, ...)' controls the burble setting.  It can also be
-controlled via \verb'GrB.burble(b)' in the MATLAB/Octave interface.
-
-{\footnotesize
-\begin{verbatim}
-     GxB_set (GxB_BURBLE, true) ;   // enable burble
-     GxB_set (GxB_BURBLE, false) ;  // disable burble \end{verbatim}}
-
-If enabled, SuiteSparse:GraphBLAS reports which internal kernels it uses, and
-how much time is spent.  If you see the word \verb'generic', it means that
-SuiteSparse:GraphBLAS was unable to use its JIT kernels, or its faster kernels
-in \verb'Source/FactoryKernels', but used a generic kernel that relies on
-function pointers.  This is done for user-defined types and operators, and when
-typecasting is performed, and it is typically slower than the JIT kernels
-or kernels in \verb'Source/FactoryKernels'.
-
-If you see a lot of \verb'wait' statements, it may mean that a lot of time is
-spent finishing a matrix or vector.  This may be the result of an inefficient
-use of the \verb'setElement' and \verb'assign' methods.  If this occurs you
-might try changing the sparsity format of a vector or matrix to
-\verb'GxB_BITMAP', assuming there's enough space for it.
-
-\verb'GxB_set (GxB_PRINTF, printf)' allows the user application to change the
-function used to print diagnostic output.  This also controls the output of the
-\verb'GxB_*print' functions.  By default this parameter is \verb'NULL', in
-which case the ANSI C11 \verb'printf' function is used.  The parameter is a
-function pointer with the same signature as the ANSI C11 \verb'printf'
-function.  The MATLAB/Octave interface to GraphBLAS sets it to \verb'mexPrintf'
-so that GraphBLAS can print to the MATLAB/Octave Command Window.
-
-After each call to the \verb'printf' function, an optional
-\verb'flush' function is called, which is \verb'NULL' by default.  If
-\verb'NULL', the function is not used.  This can be changed with
-\verb'GxB_set (GxB_FLUSH, flush)'.  The \verb'flush' function takes no
-arguments, and returns an \verb'int' which is 0 if successful, or any nonzero
-value on failure (the same output as the ANSI C11 \verb'fflush' function,
-except that \verb'flush' has no inputs).
-
-%-------------------------------------------------------------------------------
-\subsection{Other global options}
-%-------------------------------------------------------------------------------
-
-\verb'GxB_MODE' can only be
-queried by \verb'GxB_get'; it cannot be modified by \verb'GxB_set'.  The mode
-is the value passed to \verb'GrB_init' (blocking or non-blocking).
-
-All threads in the same user application share the same global options,
-including hypersparsity, bitmap options, and CSR/CSC format determined by
-\verb'GxB_set', and the blocking mode determined by \verb'GrB_init'.
-Specific format and hypersparsity parameters of each matrix are specific to
-that matrix and can be independently changed.
-
-The \verb'GxB_LIBRARY_*' options can be used with \verb'GxB_get' to query the
-current implementation.  For all of these, \verb'GxB_get' returns a string
-(\verb'char *'), except for \verb'GxB_LIBRARY_VERSION', which takes as input an
-\verb'int' array of size three.  The \verb'GxB_API_*' options can be used with
-\verb'GxB_get' to query the current GraphBLAS C API Specification.  For all of
-these, \verb'GxB_get' returns a string (\verb'char *'), except for
-\verb'GxB_API_VERSION', which takes as input an \verb'int' array of size three.
-
-%===============================================================================
-\subsection{{\sf GxB\_Global\_Option\_set:} set a global option}
-%===============================================================================
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_set                    // set a global default option
-(
-    const GxB_Option_Field field,   // option to change
-    ...                             // value to change it to
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage of \verb'GxB_set' sets the value of a global option.
-The \verb'field' parameter can be
-\verb'GxB_HYPER_SWITCH',
-\verb'GxB_BITMAP_SWITCH',
-\verb'GxB_FORMAT',
-\verb'GxB_NTHREADS',
-\verb'GxB_CHUNK',
-\verb'GxB_BURBLE',
-\verb'GxB_PRINTF',
-\verb'GxB_FLUSH',
-\verb'GxB_PRINT_1BASED', \newline
-\verb'GxB_JIT_C_COMPILER_NAME',
-\verb'GxB_JIT_C_COMPILER_FLAGS',
-\verb'GxB_JIT_C_LINKER_FLAGS',
-\verb'GxB_JIT_C_LIBRRIES',
-\verb'GxB_JIT_C_PREFACE',
-\verb'GxB_JIT_C_CONTROL',
-\verb'GxB_JIT_USE_CMAKE',
-\verb'GxB_JIT_ERROR_LOG', or
-\verb'GxB_JIT_CACHE_PATH'.
-
-For example, the following usage sets the global hypersparsity ratio to 0.2,
-the format of future matrices to \verb'GxB_BY_COL', the maximum number
-of threads to 4, the chunk size to 10000, and enables the burble.
-No existing matrices are changed.
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (GxB_HYPER_SWITCH, 0.2) ;
-    GxB_set (GxB_FORMAT, GxB_BY_COL) ;
-    GxB_set (GxB_NTHREADS, 4) ;
-    GxB_set (GxB_CHUNK, (double) 10000) ;
-    GxB_set (GxB_BURBLE, true) ;
-    GxB_set (GxB_PRINTF, mexPrintf) ;
-\end{verbatim} }
-
-\newpage
-%===============================================================================
-\subsection{{\sf GxB\_Matrix\_Option\_set:} set a matrix option}
-%===============================================================================
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_set                    // set an option in a matrix
-(
-    GrB_Matrix A,                   // matrix to modify
-    const GxB_Option_Field field,   // option to change
-    ...                             // value to change it to
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage of \verb'GxB_set' sets the value of a matrix option, for a
-particular matrix.
-The \verb'field' parameter can be
-\verb'GxB_HYPER_SWITCH',
-\verb'GxB_BITMAP_SWITCH',
-\verb'GxB_SPARSITY_CONTROL', or
-\verb'GxB_FORMAT'.
-This example usage sets the hypersparsity ratio to 0.2, and the
-format of \verb'GxB_BY_COL', for a particular matrix \verb'A', and sets the
-sparsity control to \verb'GxB_SPARSE+GxB_FULL' (allowing the matrix to be held
-in CSC or FullC formats, but not BitmapC or HyperCSC):
-
-{\footnotesize
-\begin{verbatim}
-    GxB_set (A, GxB_HYPER_SWITCH, 0.2) ;
-    GxB_set (A, GxB_FORMAT, GxB_BY_COL) ;
-    GxB_set (A, GxB_SPARSITY_CONTROL, GxB_SPARSE + GxB_FULL) ;
-\end{verbatim} }
-
-SuiteSparse:GraphBLAS currently applies these changes immediately, but since
-they are simply hints, future versions of SuiteSparse:GraphBLAS may delay the
-change in format if it can obtain better performance.  If the setting is just
-\verb'GxB_FULL' and some entries are missing, then the matrix is held in bitmap
-format.  For best performance, the matrix option should be set as soon as it is
-created with \verb'GrB_Matrix_new', so the internal transformation takes less
-time.  If an error occurs, \verb'GrB_error(&err,A)' returns details about the
-error.
-
-%===============================================================================
-\subsection{{\sf GxB\_Desc\_set:} set a {\sf GrB\_Descriptor} value}
-%===============================================================================
-\label{gxbset}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_set                // set a parameter in a descriptor
-(
-    GrB_Descriptor desc,        // descriptor to modify
-    const GrB_Desc_Field field, // parameter to change
-    ...                         // value to change it to
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage is similar to \verb'GrB_Descriptor_set', just with a name that is
-consistent with the other usages of this generic function.  Unlike
-\verb'GrB_Descriptor_set', the \verb'field' may also be
-\verb'GxB_SORT', \verb'GxB_COMPRESSION', or
-\verb'GxB_IMPORT'.  Refer to Sections~\ref{descriptor_set}~and~\ref{desc_set}
-for details.  If an error occurs, \verb'GrB_error(&err,desc)' returns details
-about the error.
-
-\newpage
-%===============================================================================
-\subsection{{\sf GxB\_Global\_Option\_get:} retrieve a global option}
-%===============================================================================
-\label{gxbget}
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_get                    // gets the current global default option
-(
-    const GxB_Option_Field field,   // option to query
-    ...                             // return value of the global option
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage of \verb'GxB_get' retrieves the value of a global option.  The
-\verb'field' parameter can be one of the following:
-
-\vspace{0.2in}
-{\footnotesize
-\begin{tabular}{ll}
-        \hline
-        \verb'GxB_HYPER_SWITCH'         & sparse/hyper setting \\
-        \verb'GxB_BITMAP_SWITCH'        & bitmap/sparse setting \\
-        \verb'GxB_FORMAT'               & by row/col setting \\
-        \verb'GxB_MODE'                 & blocking / non-blocking \\
-        \verb'GxB_NTHREADS'             & default number of threads \\
-        \verb'GxB_CHUNK'                & default chunk size \\
-        \verb'GxB_BURBLE'       & burble setting \\
-        \verb'GxB_PRINTF'       & printf function \\
-        \verb'GxB_FLUSH'        & flush function \\
-        \verb'GxB_PRINT_1BASED' & for printing matrices/vectors \\
-        \hline
-        \verb'GxB_JIT_C_COMPILER_NAME'  & C compiler for JIT kernels \\
-        \verb'GxB_JIT_C_COMPILER_FLAGS' & flags for the C compiler \\
-        \verb'GxB_JIT_C_LINKER_FLAGS'   & link flags for the C compiler \\
-        \verb'GxB_JIT_C_LIBRARIES'      & libraries to link against \\
-        \verb'GxB_JIT_C_CMAKE_LIBS'     & libraries to link against \\
-        \verb'GxB_JIT_C_PREFACE'        & preface for JIT kernels \\
-        \verb'GxB_JIT_C_CONTROL'        & CPU JIT control \\
-        \verb'GxB_JIT_USE_CMAKE'        & CPU JIT: use cmake or not \\ 
-        \verb'GxB_JIT_ERROR_LOG'        & error log file \\
-        \verb'GxB_JIT_CACHE_PATH'       & folder with compiled kernels \\
-        \hline
-        \verb'GxB_LIBRARY_NAME'         & the string
-                                        \verb'"SuiteSparse:GraphBLAS"' \\
-        \verb'GxB_LIBRARY_VERSION'      & \verb'int' array of size 3 \\
-        \verb'GxB_LIBRARY_DATE'         & date of release \\
-        \verb'GxB_LIBRARY_ABOUT'        & author, copyright \\
-        \verb'GxB_LIBRARY_LICENSE'      & license for the library \\
-        \verb'GxB_LIBRARY_COMPILE_DATE' & date of compilation \\
-        \verb'GxB_LIBRARY_COMPILE_TIME' & time of compilation \\
-        \verb'GxB_LIBRARY_OPENMP'       & library compiled with OpenMP\\
-        \verb'GxB_LIBRARY_URL'          & URL of the library \\
-        \hline
-        \verb'GxB_API_VERSION'  & GraphBLAS C API Specification Version \\
-        \verb'GxB_API_DATE'     & date of the C API Spec.  \\
-        \verb'GxB_API_ABOUT'    & about of the C API Spec. \\
-        \verb'GxB_API_URL'      & URL of the specification \\
-        \hline
-\end{tabular}
-}
-\vspace{0.2in}
-
-{\bf NOTE:} The strings returned by \verb'GxB_get' are \verb'const char *'.
-They are ``owned'' by the GraphBLAS library itself, not by the user
-application.  They cannot be freed or modified in any way.  A subsequent call
-to \verb'GxB_set' can free them and reallocate them, so they are only valid
-until that point.  If you want to keep a string returned by \verb'GxB_get',
-make a copy immediately after calling \verb'GxB_get', into a character array
-owned by the user application.  The \verb'GxB_JIT_*' strings are the only ones
-this affects.
-
-Below is an example:
-
-{\footnotesize
-\begin{verbatim}
-    double h ;
-    GxB_get (GxB_HYPER_SWITCH, &h) ;
-    printf ("hyper_switch = %g for all new matrices\n", h) ;
-
-    double b [GxB_BITMAP_SWITCH] ;
-    GxB_get (GxB_BITMAP_SWITCH, b) ;
-    for (int k = 0 ; k < GxB_NBITMAP_SWITCH ; k++)
-    {
-        printf ("bitmap_switch [%d] = %g ", k, b [k]) ;
-        if (k == 0)
-        {
-            printf ("for vectors and matrices with 1 row or column\n") ;
-        }
-        else if (k == GxB_NBITMAP_SWITCH - 1)
-        {
-            printf ("for matrices with min dimension > %d\n", 1 << (k-1)) ;
-        }
-        else
-        {
-            printf ("for matrices with min dimension %d to %d\n",
-                (1 << (k-1)) + 1, 1 << k) ;
-        }
-    }
-
-    GxB_Format_Value s ;
-    GxB_get (GxB_FORMAT, &s) ;
-    if (s == GxB_BY_COL) printf ("all new matrices are stored by column\n") ;
-    else printf ("all new matrices are stored by row\n") ;
-
-    GrB_mode mode ;
-    GxB_get (GxB_MODE, &mode) ;
-    if (mode == GrB_BLOCKING) printf ("GrB_init(GrB_BLOCKING) was called.\n") ;
-    else printf ("GrB_init(GrB_NONBLOCKING) was called.\n") ;
-
-    int nthreads_max ;
-    GxB_get (GxB_NTHREADS, &nthreads_max) ;
-    printf ("max # of threads to use: %d\n", nthreads_max) ;
-
-    double chunk ;
-    GxB_get (GxB_CHUNK, &chunk) ;
-    printf ("chunk size: %g\n", chunk) ;
-
-    char *name ;
-    int ver [3] ;
-    GxB_get (GxB_LIBRARY_NAME, &name) ;
-    GxB_get (GxB_LIBRARY_VERSION, ver) ;
-    printf ("Library %s, version %d.%d.%d\n", name, ver [0], ver [1], ver [2]) ; \end{verbatim} }
-
-%===============================================================================
-\subsection{{\sf GxB\_Matrix\_Option\_get:} retrieve a matrix option}
-%===============================================================================
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_get                    // gets the current option of a matrix
-(
-    GrB_Matrix A,                   // matrix to query
-    GxB_Option_Field field,         // option to query
-    ...                             // return value of the matrix option
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage of \verb'GxB_get' retrieves the value of a matrix option.  The
-\verb'field' parameter can be
-\verb'GxB_HYPER_SWITCH',
-\verb'GxB_BITMAP_SWITCH',
-\verb'GxB_SPARSITY_CONTROL',
-\verb'GxB_SPARSITY_STATUS',
-or
-\verb'GxB_FORMAT'.
-For example:
-
-\vspace{-0.1in}
-{\footnotesize
-\begin{verbatim}
-    double h, b  ;
-    int sparsity, scontrol ;
-    GxB_get (A, GxB_SPARSITY_STATUS, &sparsity) ;
-    GxB_get (A, GxB_HYPER_SWITCH, &h) ;
-    printf ("matrix A has hyper_switch = %g\n", h) ;
-    GxB_get (A, GxB_BITMAP_SWITCH, &b) ;
-    printf ("matrix A has bitmap_switch = %g\n", b) ;
-    switch (sparsity)
-    {
-        case GxB_HYPERSPARSE: printf ("matrix A is hypersparse\n") ; break ;
-        case GxB_SPARSE:      printf ("matrix A is sparse\n"     ) ; break ;
-        case GxB_BITMAP:      printf ("matrix A is bitmap\n"     ) ; break ;
-        case GxB_FULL:        printf ("matrix A is full\n"       ) ; break ;
-    }
-    GxB_Format_Value s ;
-    GxB_get (A, GxB_FORMAT, &s) ;
-    printf ("matrix A is stored by %s\n", (s == GxB_BY_COL) ? "col" : "row") ;
-    GxB_get (A, GxB_SPARSITY_CONTROL, &scontrol) ;
-    if (scontrol & GxB_HYPERSPARSE) printf ("A may become hypersparse\n") ;
-    if (scontrol & GxB_SPARSE     ) printf ("A may become sparse\n") ;
-    if (scontrol & GxB_BITMAP     ) printf ("A may become bitmap\n") ;
-    if (scontrol & GxB_FULL       ) printf ("A may become full\n") ; \end{verbatim} }
-
-%===============================================================================
-\subsection{{\sf GxB\_Desc\_get:} retrieve a {\sf GrB\_Descriptor} value}
-%===============================================================================
-
-\begin{mdframed}[userdefinedwidth=6in]
-{\footnotesize
-\begin{verbatim}
-GrB_Info GxB_get                // get a parameter from a descriptor
-(
-    GrB_Descriptor desc,        // descriptor to query; NULL means defaults
-    GrB_Desc_Field field,       // parameter to query
-    ...                         // value of the parameter
-) ;
-\end{verbatim} } \end{mdframed}
-
-This usage is the same as \verb'GxB_Desc_get'.  The \verb'field' parameter can
-be \verb'GrB_OUTP', \verb'GrB_MASK', \verb'GrB_INP0', \verb'GrB_INP1',
-\verb'GxB_AxB_METHOD',
-\verb'GxB_SORT',
-\verb'GxB_COMPRESSION', or
-\verb'GxB_IMPORT'.
-Refer to Section~\ref{desc_get} for details.
-
-%===============================================================================
-\subsection{Summary of usage of {\sf GxB\_set} and {\sf GxB\_get}}
-%===============================================================================
-
-The different usages of \verb'GxB_set' and \verb'GxB_get' are summarized below.
-
-\noindent
-To set/get the global options:
-
-    {\footnotesize
-    \begin{verbatim}
-    GxB_set (GxB_HYPER_SWITCH, double h) ;
-    GxB_set (GxB_HYPER_SWITCH, GxB_ALWAYS_HYPER) ;
-    GxB_set (GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
-    GxB_get (GxB_HYPER_SWITCH, double *h) ;
-    double b [GxB_NBITMAP_SWITCH] ;
-    GxB_set (GxB_BITMAP_SWITCH, b) ;
-    GxB_set (GxB_BITMAP_SWITCH, NULL) ;     // set defaults
-    GxB_get (GxB_BITMAP_SWITCH, b) ;
-    GxB_set (GxB_FORMAT, GxB_BY_ROW) ;
-    GxB_set (GxB_FORMAT, GxB_BY_COL) ;
-    GxB_get (GxB_FORMAT, GxB_Format_Value *s) ;
-    GxB_set (GxB_NTHREADS, int nthreads_max) ;
-    GxB_get (GxB_NTHREADS, int *nthreads_max) ;
-    GxB_set (GxB_CHUNK, double chunk) ;
-    GxB_get (GxB_CHUNK, double *chunk) ;
-    GxB_set (GxB_BURBLE, bool burble) ;
-    GxB_get (GxB_BURBLE, bool *burble) ;
-    GxB_set (GxB_PRINTF, void *printf_function) ;
-    GxB_get (GxB_PRINTF, void **printf_function) ;
-    GxB_set (GxB_FLUSH, void *flush_function) ;
-    GxB_get (GxB_FLUSH, void **flush_function) ;
-    GxB_set (GxB_PRINT_1BASED, bool onebased) ;
-    GxB_get (GxB_PRINT_1BASED, bool *onebased) ;
-
-    GxB_set (GxB_JIT_C_COMPILER_NAME, char *compiler) ;
-    GxB_get (GxB_JIT_C_COMPILER_NAME, char **compiler) ;
-    GxB_set (GxB_JIT_C_COMPILER_FLAGS, char *flags) ;
-    GxB_get (GxB_JIT_C_COMPILER_FLAGS, char **flags) ;
-    GxB_set (GxB_JIT_C_LINKER_FLAGS, char *flags) ;
-    GxB_get (GxB_JIT_C_LINKER_FLAGS, char **flags) ;
-    GxB_set (GxB_JIT_C_LIBRARIES, char *libraries) ;
-    GxB_get (GxB_JIT_C_LIBRARIES, char **libraries) ;
-    GxB_set (GxB_JIT_C_CMAKE_LIBS, char *libraries) ;
-    GxB_get (GxB_JIT_C_CMAKE_LIBS, char **libraries) ;
-    GxB_set (GxB_JIT_C_PREFACE, char *preface) ;
-    GxB_get (GxB_JIT_C_PREFACE, char **preface) ;
-    GxB_set (GxB_JIT_ERROR_LOG, char *error_log) ;
-    GxB_get (GxB_JIT_ERROR_LOG, char **error_log) ;
-    GxB_set (GxB_JIT_CACHE_PATH, char *cache) ;
-    GxB_get (GxB_JIT_CACHE_PATH, char **cache) ;
-    GxB_set (GxB_JIT_USE_CMAKE, int use_cmake) ;
-    GxB_get (GxB_JIT_USE_CMAKE, int *use_cmake) ;
-    GxB_set (GxB_JIT_C_CONTROL, int control) ;
-    GxB_get (GxB_JIT_C_CONTROL, int *control) ;
-    \end{verbatim} }
-
-\noindent
-To get global options that can be queried but not modified:
-
-    {\footnotesize
-    \begin{verbatim}
-    GxB_get (GxB_MODE,                 GrB_Mode *mode) ;
-    GxB_get (GxB_LIBRARY_NAME,         char **) ;
-    GxB_get (GxB_LIBRARY_VERSION,      int *) ;
-    GxB_get (GxB_LIBRARY_DATE,         char **) ;
-    GxB_get (GxB_LIBRARY_ABOUT,        char **) ;
-    GxB_get (GxB_LIBRARY_LICENSE,      char **) ;
-    GxB_get (GxB_LIBRARY_COMPILE_DATE, char **) ;
-    GxB_get (GxB_LIBRARY_COMPILE_TIME, char **) ;
-    GxB_get (GxB_LIBRARY_OPENMP,       bool *) ;
-    GxB_get (GxB_LIBRARY_URL,          char **) ;
-    GxB_get (GxB_API_VERSION,          int *) ;
-    GxB_get (GxB_API_DATE,             char **) ;
-    GxB_get (GxB_API_ABOUT,            char **) ;
-    GxB_get (GxB_API_URL,              char **) ; \end{verbatim} }
-
-\noindent
-To set/get a matrix option or status
-
-    {\footnotesize
-    \begin{verbatim}
-    GxB_set (GrB_Matrix A, GxB_HYPER_SWITCH, double h) ;
-    GxB_set (GrB_Matrix A, GxB_HYPER_SWITCH, GxB_ALWAYS_HYPER) ;
-    GxB_set (GrB_Matrix A, GxB_HYPER_SWITCH, GxB_NEVER_HYPER) ;
-    GxB_get (GrB_Matrix A, GxB_HYPER_SWITCH, double *h) ;
-    GxB_set (GrB_Matrix A, GxB_BITMAP_SWITCH, double b) ;
-    GxB_get (GrB_Matrix A, GxB_BITMAP_SWITCH, double *b) ;
-    GxB_set (GrB_Matrix A, GxB_FORMAT, GxB_BY_ROW) ;
-    GxB_set (GrB_Matrix A, GxB_FORMAT, GxB_BY_COL) ;
-    GxB_get (GrB_Matrix A, GxB_FORMAT, GxB_Format_Value *s) ;
-    GxB_set (GrB_Matrix A, GxB_SPARSITY_CONTROL, GxB_AUTO_SPARSITY) ;
-    GxB_set (GrB_Matrix A, GxB_SPARSITY_CONTROL, scontrol) ;
-    GxB_get (GrB_Matrix A, GxB_SPARSITY_CONTROL, int *scontrol) ;
-    GxB_get (GrB_Matrix A, GxB_SPARSITY_STATUS, int *sparsity) ; \end{verbatim} }
-
-\noindent
-To set/get a vector option or status:
-
-    {\footnotesize
-    \begin{verbatim}
-    GxB_set (GrB_Vector v, GxB_BITMAP_SWITCH, double b) ;
-    GxB_get (GrB_Vector v, GxB_BITMAP_SWITCH, double *b) ;
-    GxB_set (GrB_Vector v, GxB_FORMAT, GxB_BY_ROW) ;
-    GxB_set (GrB_Vector v, GxB_FORMAT, GxB_BY_COL) ;
-    GxB_get (GrB_Vector v, GxB_FORMAT, GxB_Format_Value *s) ;
-    GxB_set (GrB_Vector v, GxB_SPARSITY_CONTROL, GxB_AUTO_SPARSITY) ;
-    GxB_set (GrB_Vector v, GxB_SPARSITY_CONTROL, scontrol) ;
-    GxB_get (GrB_Vector v, GxB_SPARSITY_CONTROL, int *scontrol) ;
-    GxB_get (GrB_Vector v, GxB_SPARSITY_STATUS, int *sparsity) ; \end{verbatim} }
-
-\noindent
-To set/get a descriptor field:
-
-    {\footnotesize
-    \begin{verbatim}
-    GxB_set (GrB_Descriptor d, GrB_OUTP, GxB_DEFAULT) ;
-    GxB_set (GrB_Descriptor d, GrB_OUTP, GrB_REPLACE) ;
-    GxB_get (GrB_Descriptor d, GrB_OUTP, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GrB_MASK, GxB_DEFAULT) ;
-    GxB_set (GrB_Descriptor d, GrB_MASK, GrB_COMP) ;
-    GxB_set (GrB_Descriptor d, GrB_MASK, GrB_STRUCTURE) ;
-    GxB_set (GrB_Descriptor d, GrB_MASK, GrB_COMP+GrB_STRUCTURE) ;
-    GxB_get (GrB_Descriptor d, GrB_MASK, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GrB_INP0, GxB_DEFAULT) ;
-    GxB_set (GrB_Descriptor d, GrB_INP0, GrB_TRAN) ;
-    GxB_get (GrB_Descriptor d, GrB_INP0, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GrB_INP1, GxB_DEFAULT) ;
-    GxB_set (GrB_Descriptor d, GrB_INP1, GrB_TRAN) ;
-    GxB_get (GrB_Descriptor d, GrB_INP1, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_DEFAULT) ;
-    GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_GUSTAVSON) ;
-    GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_HASH) ;
-    GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_SAXPY) ;
-    GxB_set (GrB_Descriptor d, GxB_AxB_METHOD, GxB_AxB_DOT) ;
-    GxB_get (GrB_Descriptor d, GrB_AxB_METHOD, GrB_Desc_Value *v) ;
-    GxB_set (GrB_Descriptor d, GxB_SORT, sort) ;
-    GxB_get (GrB_Descriptor d, GxB_SORT, int *sort) ;
-    GxB_set (GrB_Descriptor d, GxB_COMPRESSION, GxB_FAST_IMPORT) ;
-    GxB_set (GrB_Descriptor d, GxB_COMPRESSION, GxB_SECURE_IMPORT) ;
-    GxB_get (GrB_Descriptor d, GxB_COMPRESSION, GrB_Desc_Value *method) ;
-    GxB_set (GrB_Descriptor d, GxB_IMPORT, int method) ;
-    GxB_get (GrB_Descriptor d, GxB_IMPORT, int *method) ; \end{verbatim} }
 
 \newpage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -10708,7 +9001,7 @@ written back into \verb'C' via the \verb'accum' and \verb'Mask', ${\bf C
 function \verb'GB_spec_accum_mask.m', discussed in Section~\ref{accummask}.
 
 \paragraph{\bf Performance considerations:}
-Suppose all matrices are in \verb'GxB_BY_COL' format, and \verb'B' is extremely
+Suppose all matrices are in \verb'GrB_COLMAJOR' format, and \verb'B' is extremely
 sparse but \verb'A' is not as sparse.  Then computing \verb'C=A*B' is very
 fast, and much faster than when \verb'A' is extremely sparse.  For example, if
 \verb'A' is square and \verb'B' is a column vector that is all nonzero except
@@ -10768,11 +9061,11 @@ in Section~\ref{accummask}, except that all the
 terms are column vectors instead of matrices.
 
 \paragraph{\bf Performance considerations:} % u'=u'*A
-If the \verb'GxB_FORMAT' of \verb'A' is \verb'GxB_BY_ROW', and the default
+If the \verb'GrB_STORAGE_ORIENTATION_HINT' of \verb'A' is \verb'GrB_ROWMAJOR', and the default
 descriptor is used (\verb'A' is not transposed), then \verb'GrB_vxm' is faster
 than than \verb'GrB_mxv' with its default descriptor, when the vector \verb'u'
 is very sparse.
-However, if the \verb'GxB_FORMAT' of \verb'A' is \verb'GxB_BY_COL', then
+However, if the \verb'GrB_STORAGE_ORIENTATION_HINT' of \verb'A' is \verb'GrB_COLMAJOR', then
 \verb'GrB_mxv' with its default descriptor is faster than \verb'GrB_vxm' with
 its default descriptor, when the vector \verb'u' is very sparse.
 Using the non-default \verb'GrB_TRAN' descriptor for \verb'A' makes the
@@ -10821,11 +9114,11 @@ of matrices.
 \paragraph{\bf Performance considerations:} % u=A*u
 Refer to the discussion of \verb'GrB_vxm'.  In SuiteSparse:GraphBLAS,
 \verb'GrB_mxv' is very efficient when \verb'u' is sparse or dense, when the
-default descriptor is used, and when the matrix is \verb'GxB_BY_COL'.  When
+default descriptor is used, and when the matrix is \verb'GrB_COLMAJOR'.  When
 \verb'u' is very sparse and \verb'GrB_INP0' is set to its non-default
 \verb'GrB_TRAN', then this method is not efficient if the matrix is in
-\verb'GxB_BY_COL' format.  If an application needs to perform \verb"A'*u"
-repeatedly where \verb'u' is very sparse, then use the \verb'GxB_BY_ROW' format
+\verb'GrB_COLMAJOR' format.  If an application needs to perform \verb"A'*u"
+repeatedly where \verb'u' is very sparse, then use the \verb'GrB_ROWMAJOR' format
 for \verb'A' instead.
 
 \newpage
@@ -11354,9 +9647,9 @@ T}$, as described in Section~\ref{accummask}.
 
 \paragraph{\bf Performance considerations:} % C=A(I,J)
 If \verb'A' is not transposed via input descriptor: if \verb'|I|' is small,
-then it is fastest if \verb'A' is \verb'GxB_BY_ROW'; if
+then it is fastest if \verb'A' is \verb'GrB_ROWMAJOR'; if
 \verb'|J|' is small, then it is fastest if \verb'A' is
-\verb'GxB_BY_COL'.  The opposite is true if \verb'A' is transposed.
+\verb'GrB_COLMAJOR'.  The opposite is true if \verb'A' is transposed.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -11396,7 +9689,7 @@ all the terms are column vectors instead of matrices.
 
 \paragraph{\bf Performance considerations:} % w = A(I,j)
 If \verb'A' is not transposed: it is fastest if the format of \verb'A' is
-\verb'GxB_BY_COL'.  The opposite is true if \verb'A' is transposed.
+\verb'GrB_COLMAJOR'.  The opposite is true if \verb'A' is transposed.
 
 \newpage
 %===============================================================================
@@ -11564,8 +9857,8 @@ described for matrix extraction:
 
 \paragraph{\bf Performance considerations:} % C(I,J) = A
 If \verb'A' is not transposed: if \verb'|I|' is small, then it is fastest if
-the format of \verb'C' is \verb'GxB_BY_ROW'; if \verb'|J|' is small, then it is
-fastest if the format of \verb'C' is \verb'GxB_BY_COL'.  The opposite is true
+the format of \verb'C' is \verb'GrB_ROWMAJOR'; if \verb'|J|' is small, then it is
+fastest if the format of \verb'C' is \verb'GrB_COLMAJOR'.  The opposite is true
 if \verb'A' is transposed.
 
 \newpage
@@ -11601,9 +9894,9 @@ further details.
 
 \paragraph{\bf Performance considerations:} % C(I,j) = u
 \verb'GxB_Col_subassign' is much faster than \verb'GxB_Row_subassign' if the
-format of \verb'C' is \verb'GxB_BY_COL'.  \verb'GxB_Row_subassign' is much
+format of \verb'C' is \verb'GrB_COLMAJOR'.  \verb'GxB_Row_subassign' is much
 faster than \verb'GxB_Col_subassign' if the format of \verb'C' is
-\verb'GxB_BY_ROW'.
+\verb'GrB_ROWMAJOR'.
 
 % \newpage
 %-------------------------------------------------------------------------------
@@ -11638,9 +9931,9 @@ further details.
 
 \paragraph{\bf Performance considerations:} % C(i,J) = u'
 \verb'GxB_Col_subassign' is much faster than \verb'GxB_Row_subassign' if the
-format of \verb'C' is \verb'GxB_BY_COL'.  \verb'GxB_Row_subassign' is much
+format of \verb'C' is \verb'GrB_COLMAJOR'.  \verb'GxB_Row_subassign' is much
 faster than \verb'GxB_Col_subassign' if the format of \verb'C' is
-\verb'GxB_BY_ROW'.
+\verb'GrB_ROWMAJOR'.
 
 % \newpage
 %-------------------------------------------------------------------------------
@@ -11708,7 +10001,7 @@ entries that are already present in \verb'C'.
 The \verb'<type> x' notation is otherwise the same as
 \verb'GrB_Matrix_setElement' (see Section~\ref{matrix_setElement}).  Any value
 can be passed to this function and its type will be detected, via the
-\verb'_Generic' feature of ANSI C11.  For a user-defined type, \verb'x' is a
+\verb'_Generic' feature of C11.  For a user-defined type, \verb'x' is a
 \verb'void *' pointer that points to a memory space holding a single entry of a
 scalar that has exactly the same user-defined type as the matrix \verb'C'.
 This user-defined type must exactly match the user-defined type of \verb'C'
@@ -11724,8 +10017,8 @@ present.
 
 \paragraph{\bf Performance considerations:} % C(I,J) = scalar
 If \verb'A' is not transposed: if \verb'|I|' is small, then it is fastest if
-the format of \verb'C' is \verb'GxB_BY_ROW'; if \verb'|J|' is small, then it is
-fastest if the format of \verb'C' is \verb'GxB_BY_COL'.  The opposite is true
+the format of \verb'C' is \verb'GrB_ROWMAJOR'; if \verb'|J|' is small, then it is
+fastest if the format of \verb'C' is \verb'GrB_COLMAJOR'.  The opposite is true
 if \verb'A' is transposed.
 
 \newpage
@@ -11833,8 +10126,8 @@ delete entries outside the ${\bf C(I,J)}$ submatrix.
 
 \paragraph{\bf Performance considerations:} % C(I,J) = A
 If \verb'A' is not transposed: if \verb'|I|' is small, then it is fastest if
-the format of \verb'C' is \verb'GxB_BY_ROW'; if \verb'|J|' is small, then it is
-fastest if the format of \verb'C' is \verb'GxB_BY_COL'.  The opposite is true
+the format of \verb'C' is \verb'GrB_ROWMAJOR'; if \verb'|J|' is small, then it is
+fastest if the format of \verb'C' is \verb'GrB_COLMAJOR'.  The opposite is true
 if \verb'A' is transposed.
 
 \newpage
@@ -11872,8 +10165,8 @@ not transposed.  Refer to \verb'GrB_Matrix_assign' for further details.
 
 \paragraph{\bf Performance considerations:} % C(I,j) = u
 \verb'GrB_Col_assign' is much faster than \verb'GrB_Row_assign' if the format
-of \verb'C' is \verb'GxB_BY_COL'.  \verb'GrB_Row_assign' is much faster than
-\verb'GrB_Col_assign' if the format of \verb'C' is \verb'GxB_BY_ROW'.
+of \verb'C' is \verb'GrB_COLMAJOR'.  \verb'GrB_Row_assign' is much faster than
+\verb'GrB_Col_assign' if the format of \verb'C' is \verb'GrB_ROWMAJOR'.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -11910,8 +10203,8 @@ not transposed.  Refer to \verb'GrB_Matrix_assign' for further details.
 
 \paragraph{\bf Performance considerations:} % C(i,J) = u'
 \verb'GrB_Col_assign' is much faster than \verb'GrB_Row_assign' if the format
-of \verb'C' is \verb'GxB_BY_COL'.  \verb'GrB_Row_assign' is much faster than
-\verb'GrB_Col_assign' if the format of \verb'C' is \verb'GxB_BY_ROW'.
+of \verb'C' is \verb'GrB_COLMAJOR'.  \verb'GrB_Row_assign' is much faster than
+\verb'GrB_Col_assign' if the format of \verb'C' is \verb'GrB_ROWMAJOR'.
 
 \newpage
 %-------------------------------------------------------------------------------
@@ -11986,7 +10279,7 @@ entries that are already present in \verb'C'.
 The \verb'<type> x' notation is otherwise the same as
 \verb'GrB_Matrix_setElement' (see Section~\ref{matrix_setElement}).  Any value
 can be passed to this function and its type will be detected, via the
-\verb'_Generic' feature of ANSI C11.  For a user-defined type, \verb'x' is a
+\verb'_Generic' feature of C11.  For a user-defined type, \verb'x' is a
 \verb'void *' pointer that points to a memory space holding a single entry of a
 scalar that has exactly the same user-defined type as the matrix \verb'C'.
 This user-defined type must exactly match the user-defined type of \verb'C'
@@ -12007,8 +10300,8 @@ Section~\ref{duplicates} for more details.
 
 \paragraph{\bf Performance considerations:} % C(I,J) = scalar
 If \verb'A' is not transposed: if \verb'|I|' is small, then it is fastest if
-the format of \verb'C' is \verb'GxB_BY_ROW'; if \verb'|J|' is small, then it is
-fastest if the format of \verb'C' is \verb'GxB_BY_COL'.  The opposite is true
+the format of \verb'C' is \verb'GrB_ROWMAJOR'; if \verb'|J|' is small, then it is
+fastest if the format of \verb'C' is \verb'GrB_COLMAJOR'.  The opposite is true
 if \verb'A' is transposed.
 
 \newpage
@@ -12078,7 +10371,7 @@ and suppose \verb'y' is a vector of length 2 with the values \verb'[5 7]'.
 {\small
 \begin{verbatim}
     #include "GraphBLAS.h"
-    #undef I    /* complex.h #define's I, used below as an array */
+    #undef I    /* complex.h #define's I, but I is used an array below */
     #include <stdio.h>
     int main (void)
     {
@@ -12499,7 +10792,7 @@ Consider a sequence of $t$ submatrix assignments \verb'C(I,J)=C(I,J)+A' to an
 $n$-by-$n$ matrix \verb'C' where each submatrix \verb'A' has size $a$-by-$a$
 with $s$ entries, and where \verb'C' starts with $c$ entries.
 Assume the matrices are all stored in non-hypersparse form, by row
-(\verb'GxB_BY_ROW').
+(\verb'GrB_ROWMAJOR').
 
 If blocking mode is enabled, or if the sequence requires the matrix to be
 completed after each assignment, each of the $t$ assignments takes $O(a + s
@@ -13274,7 +11567,7 @@ the semiring is used.
 The ten different objects handled by SuiteSparse:GraphBLAS are all opaque,
 although nearly all of their contents can be extracted via methods such as
 \verb'GrB_Matrix_extractTuples', \verb'GrB_Matrix_extractElement',
-\verb'GxB_Matrix_type', and so on.  The GraphBLAS C API has no mechanism for
+\verb'GrB_get', and so on.  The GraphBLAS C API has no mechanism for
 printing all the contents of GraphBLAS objects, but this is helpful for
 debugging.  Ten type-specific methods and two type-generic methods are
 provided:
@@ -13286,7 +11579,7 @@ provided:
 \verb'GxB_Type_fprint'         & print and check a \verb'GrB_Type' \\
 \verb'GxB_UnaryOp_fprint'      & print and check a \verb'GrB_UnaryOp' \\
 \verb'GxB_BinaryOp_fprint'     & print and check a \verb'GrB_BinaryOp' \\
-\verb'GxB_IndexUnaryOP_fprint' & print and check a \verb'GrB_IndexUnaryOp' \\
+\verb'GxB_IndexUnaryOp_fprint' & print and check a \verb'GrB_IndexUnaryOp' \\
 \verb'GxB_Monoid_fprint'       & print and check a \verb'GrB_Monoid' \\
 \verb'GxB_Semiring_fprint'     & print and check a \verb'GrB_Semiring' \\
 \verb'GxB_Descriptor_fprint'   & print and check a \verb'GrB_Descriptor' \\
@@ -13372,7 +11665,7 @@ vector, use \verb'GrB_*_extractTuples' or the import/export methods instead.
 GraphBLAS matrices and vectors are zero-based, where indices of an $n$-by-$n$
 matrix are in the range 0 to $n-1$.  However, MATLAB, Octave, and Julia prefer
 to print their matrices and vectors as one-based.  To enable 1-based printing,
-use \verb'GxB_set (GxB_PRINT_1BASED, true)'.  Printing is done as zero-based by
+use \verb'GrB_set (GrB_GLOBAL, true, GxB_PRINT_1BASED)'.  Printing is done as zero-based by
 default.
 
 \newpage
@@ -13711,16 +12004,16 @@ for four different access patterns:
         the entries of a matrix using a row iterator requires an outer loop
         (for the rows) and an inner loop (for the entries in each row).
         A matrix can be accessed via a row iterator only if its format
-        (determined by \verb'GxB_get (A, GxB_FORMAT, &fmt)') is by-row
-        (that is, \verb'GxB_BY_ROW').
+        (determined by \verb'GrB_get (A, &fmt,' \verb'GrB_STORAGE_ORIENTATION_HINT)') is by-row
+        (that is, \verb'GrB_ROWMAJOR').
         See Section~\ref{options}.
     \item {\em column iterator}:  iterates across the columns of a matrix, and
         then within each column to access the entries in a given column.
         Accessing all the entries of a matrix using a column iterator requires
         an outer loop (for the columns) and an inner loop (for the entries in
         each column).  A matrix can be accessed via a column iterator only if
-        its format (determined by \verb'GxB_get (A, GxB_FORMAT, &fmt)') is
-        by-column (that is, \verb'GxB_BY_COL').
+        its format (determined by \verb'GrB_get (A, &fmt, GrB_STORAGE_ORIENTATION_HINT)') is
+        by-column (that is, \verb'GrB_COLMAJOR').
         See Section~\ref{options}.
     \item {\em entry iterator}:  iterates across the entries of a matrix.
         Accessing all the entries of a matrix using an entry iterator requires
@@ -14944,7 +13237,7 @@ avoid them (or at least know when you've encountered them).
 \subsection{The burble is your friend}
 %-------------------------------------------------------------------------------
 
-Turn on the burble with \verb'GxB_set (GxB_BURBLE, true)'.  You will get a
+Turn on the burble with \verb'GrB_set (GrB_GLOBAL, true, GxB_BURBLE)'.  You will get a
 single line of output from each (significant) call to GraphBLAS.
 The burble output can help you detect when you are likely using sub-optimal
 methods, as described in the next sections.
@@ -14986,12 +13279,12 @@ for your matrices and vectors, selecting between sparse, hypersparse, bitmap,
 and full formats.  By default, all 4 formats can be used.  A matrix typically
 starts out hypersparse when it is created by \verb'GrB_Matrix_new', and then
 changes during its lifetime, possibly taking on all four different formats
-at different times.  This can be modified via \verb'GxB_set'.  For example,
+at different times.  This can be modified via \verb'GrB_set'.  For example,
 this line of code:
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (A, GxB_SPARSITY_CONTROL, GxB_SPARSE + GxB_BITMAP) ; \end{verbatim}}
+    GrB_set (A, GxB_SPARSE + GxB_BITMAP, GxB_SPARSITY_CONTROL) ; \end{verbatim}}
 
 \noindent
 tells SuiteSparse that the matrix \verb'A' can be held in either sparse or
@@ -15002,7 +13295,7 @@ format can be requested:
 
     {\footnotesize
     \begin{verbatim}
-    GxB_set (A, GxB_SPARSITY_CONTROL, GxB_SPARSE) ; \end{verbatim}}
+    GrB_set (A, GxB_SPARSE, GxB_SPARSITY_CONTROL) ; \end{verbatim}}
 
 This ensures that SuiteSparse will primarily use the sparse format.  This is
 still just a hint, however.  The data structure is opaque and SuiteSparse is
@@ -15048,7 +13341,7 @@ are not kept, but are discarded when the method returns to the user
 application.  If you see the term \verb'transpose' in the burble output, and if
 you need to perform this computation many times, try constructing your own
 explicit transpose, say \verb"AT=A'", via \verb'GrB_transpose', or create a
-copy of \verb'A' but held in another orientation via \verb'GxB_set'.  For
+copy of \verb'A' but held in another orientation via \verb'GrB_set'.  For
 example, assuming the default matrix format is by-row, and that \verb'A' is
 \verb'm'-by-\verb'n' of type \verb'GrB_FP32':
 
@@ -15061,7 +13354,7 @@ example, assuming the default matrix format is by-row, and that \verb'A' is
     // method 2: A2 = A but held by column instead of by row
     // note: doing the set before the assign is faster than the reverse
     GrB_Matrix_new (A2, GrB_FP32, m, n) ;
-    GxB_set (A2, GxB_FORMAT, GxB_BY_COL) ;
+    GrB_set (A2, GrB_COLMAJOR, GrB_STORAGE_ORIENTATION_HINT) ;
     GrB_assign (A2, NULL, NULL, A, GrB_ALL, m, GrB_ALL, n, NULL) ; \end{verbatim}}
 
 Internally, the data structure for \verb'AT' and \verb'A2' are nearly identical
@@ -15097,7 +13390,7 @@ Betweeness-Centrality methods of LAGraph.  Here is the BFS kernel:
     {\footnotesize
     \begin{verbatim}
     int sparsity = do_push ? GxB_SPARSE : GxB_BITMAP ;
-    GxB_set (q, GxB_SPARSITY_CONTROL, sparsity) ;
+    GrB_set (q, sparsity, GxB_SPARSITY_CONTROL) ;
     if (do_push)
     {
         // q'{!pi} = q'*A
@@ -15109,7 +13402,7 @@ Betweeness-Centrality methods of LAGraph.  Here is the BFS kernel:
         GrB_mxv (q, pi, NULL, semiring, AT, q, GrB_DESC_RSC) ;
     }\end{verbatim}}
 
-The call to \verb'GxB_set' is optional, since SuiteSparse will likely already
+The call to \verb'GrB_set' is optional, since SuiteSparse will likely already
 determine that a bitmap format will work best when the frontier \verb'q' has
 many entries, which is also when the pull step is fastest.  The push step
 relies on a sparse vector times sparse matrix method originally due to
@@ -15551,7 +13844,7 @@ by 2):
     {\footnotesize
     \begin{verbatim}
     GrB_Descriptor_new (&dt2) ;
-    GrB_Descriptor_set (dt2, GrB_INP1, GrB_TRAN) ;
+    GrB_set (dt2, GrB_TRAN, GrB_INP1) ;
     GrB_Matrix_new (&A, GrB_FP64, n, n) ;
     GrB_eWiseAdd (A, NULL, NULL, GrB_PLUS_FP64, C, C, dt2) ;    // A=C+C'
     GrB_free (&C) ;
@@ -15601,7 +13894,7 @@ are fairly straightforward, computing \verb"A=[0 C ; C' 0]".
     {\footnotesize
     \begin{verbatim}
     GrB_Descriptor_new (&dt1) ;
-    GrB_Descriptor_set (dt1, GrB_INP0, GrB_TRAN) ;
+    GrB_set (dt1, GrB_TRAN, GrB_INP0) ;
     GrB_Matrix_new (&A, GrB_FP64, n, n) ;
     // A (nrows:n-1, 0:nrows-1) = C'
     GrB_assign (A, NULL, NULL, C, J, ncols, I, nrows, dt1) ;
@@ -15667,7 +13960,7 @@ Prior to v3.3, GraphBLAS did not have a native complex type.  It now appears as
 the \verb'GxB_FC64' predefined type, but a complex type can also easily added
 as a user-defined type.  The \verb'Complex_init' function in the
 \verb'usercomplex.c' file in the \verb'Demo' folder creates the \verb'Complex'
-type based on the ANSI C11 \verb'double complex' type.
+type based on the C11 \verb'double complex' type.
 It creates a full suite of operators that correspond to every
 built-in GraphBLAS operator, both binary and unary.  In addition, it
 creates the operators listed in the following table, where $D$ is
@@ -15746,7 +14039,7 @@ if GraphBLAS is compiled without OpenMP.
 \subsection{On Linux and Mac}
 %----------------------------------------
 
-GraphBLAS makes extensive use of features in the ANSI C11 standard, and thus a
+GraphBLAS makes extensive use of features in the C11 standard, and thus a
 C compiler supporting this version of the C standard is required to use
 all features of GraphBLAS.
 
@@ -15816,7 +14109,7 @@ After compiling the library, you can compile the demos with
 GraphBLAS folder.
 
 If \verb'cmake' or \verb'make' fail, it might be that your default compiler
-does not support ANSI C11.  Try another compiler.  For example, try one of
+does not support C11.  Try another compiler.  For example, try one of
 these options.  Go into the \verb'build' directory and type one of these:
 
     {\small
@@ -15998,7 +14291,7 @@ Linux.
 %----------------------------------------
 
 SuiteSparse:GraphBLAS is now ported to Microsoft Visual Studio.  However, that
-compiler is not ANSI C11 compliant. As a result, GraphBLAS on Windows will have
+compiler is not C11 compliant. As a result, GraphBLAS on Windows will have
 a few minor limitations.
 
 \begin{itemize}
@@ -16341,7 +14634,7 @@ the example below, to set the compiler flags you need.
     # check which compiler is being used.  If you need to make
     # compiler-specific modifications, here is the place to do it.
     if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
-        # cmake 2.8 workaround: gcc needs to be told to do ANSI C11.
+        # cmake 2.8 workaround: gcc needs to be told to do C11.
         # cmake 3.0 doesn't have this problem.
         set ( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -std=c11 -lm " )
         ...
@@ -16475,16 +14768,37 @@ GraphBLAS folder.
 
 \begin{itemize}
 
+\item Version 9.0.0, Jan 10, 2024
+
+    \begin{itemize}
+    \item \verb'GrB_get/GrB_set': new functions from the v2.1 C API.
+    \item \verb'GrB_Type_new', \verb'GrB_UnaryOp_new',
+        \verb'GrB_IndexUnaryOp_new': no longer macros, since \verb'GrB_set' can
+        be used to set the names of the operators.  These methods no longer
+        extract the name, so the default name is now the empty string.  This is
+        because \verb'GrB_get/set' can only set these names once.  This is a
+        non-compatible change of behavior for these 3 methods, so
+        SuiteSparse:GraphBLAS must become v9.0.0.
+    \item historical methods:  many methods are replaced by \verb'GrB_get' and
+        \verb'GrB_set'.  They remain in SuiteSparse:GraphBLAS but have been
+        declared historical.  Terse prototypes exist in GraphBLAS.h, and any
+        discussion is removed from the User Guide:  \verb'GxB_get',
+        \verb'GxB_set', and the methods they call, and many more.  Use
+        \verb'GrB_get/set' in place those methods, and for:
+        \verb'GxB_*type_name', \verb'GxB_*type', \verb'GxB_Monoid_operator',
+        \verb'GxB_Monoid_identity', \verb'GxB_Monoid_terminal',
+        \verb'GxB_Semiring_add', \verb'GxB_Semiring_multiply'.  Use \newline
+        \verb'GrB_STORAGE_ORIENTATION_HINT' in place of \verb'GxB_FORMAT'.
+    \item \verb'hyper_hash': constructed only if the number of non-empty
+        vectors in a hypersparse matrix is large ($> 1024$, by default).
+    \item minor updates to build system: \verb'*.pc' files for \verb'pkgconfig'
+    \end{itemize}
+
 \item Dec 30, 2023: version 8.3.1
 
     \begin{itemize}
     \item remove \verb'#undef I' from \verb'GraphBLAS.h', so as not to conflict
         with the definition of \verb'I' from \verb'complex.h'.
-    \end{itemize}
-
-\item Dec 30, 2023: version 8.3.0
-
-    \begin{itemize}
     \item major change to build system: by Markus M\"{u}tzel
     \end{itemize}
 
@@ -16499,7 +14813,7 @@ GraphBLAS folder.
     \item cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
     \end{itemize}
 
-\item Version 8.2.0, Sept 5, 2023
+\item Version 8.2.0, Sept 8, 2023
 
     \begin{itemize}
     \item cmake updates: \verb'SuiteSparse::' namespace by Markus M\"{u}tzel.
@@ -16611,7 +14925,7 @@ GraphBLAS folder.
 
     \begin{itemize}
     \item add non-\verb'va_arg' methods: \verb'va_arg'-based \verb'GxB_get/set'
-        methods are ANSI C11 but cause issues for cffi in Python.  As a
+        methods are C11 but cause issues for cffi in Python.  As a
         temporary workaround, new methods have been added that do not use
         \verb'va_arg'.  The existing \verb'GxB_get/set' methods are not
         changed.  The new methods are not in the user guide, since all of the
@@ -17202,7 +15516,7 @@ GraphBLAS folder.
     are not available.  Use the equivalent non-polymorphic functions instead,
     when compiling GraphBLAS with MS Visual Studio.  In addition,
     variable-length arrays are not supported, so user-defined types are limited
-    to 128 bytes in size.  These changes have no effect if you have an ANSI C11
+    to 128 bytes in size.  These changes have no effect if you have an C11
     compliant compiler.
 
     \verb'@GrB' interface modified:  \verb'GrB.init' is now required.

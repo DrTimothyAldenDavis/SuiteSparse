@@ -17,12 +17,6 @@ include_directories ( utility )
 
 file ( GLOB LAGRAPH_LIB_SOURCES "utility/*.c" "algorithm/*.c" )
 
-if ( WIN32 )
-    set ( M_LIB "" )
-else ( )
-    set ( M_LIB "m" )
-endif ( )
-
 #-------------------------------------------------------------------------------
 # dynamic lagraph library properties
 #-------------------------------------------------------------------------------
@@ -42,7 +36,10 @@ if ( BUILD_SHARED_LIBS )
         set_target_properties ( LAGraph PROPERTIES EXPORT_NO_SYSTEM ON )
     endif ( )
 
-    target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS ${M_LIB} )
+    target_link_libraries ( LAGraph PRIVATE GraphBLAS::GraphBLAS )
+    if ( NOT NO_LIBM )
+        target_link_libraries ( LAGraph PRIVATE "m" )
+    endif ( )
 
     target_include_directories ( LAGraph PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -80,7 +77,9 @@ if ( BUILD_STATIC_LIBS )
     else ( )
         target_link_libraries ( LAGraph_static PUBLIC GraphBLAS::GraphBLAS )
     endif ( )
-    target_link_libraries ( LAGraph_static PUBLIC ${M_LIB} )
+    if ( NOT NO_LIBM )
+        target_link_libraries ( LAGraph_static PUBLIC "m" )
+    endif ( )
 
     target_include_directories ( LAGraph_static PUBLIC
         $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>

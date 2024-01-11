@@ -2,7 +2,7 @@
 // CXSparse/Include/cs.h: include file for CXSparse
 //------------------------------------------------------------------------------
 
-// CXSparse, Copyright (c) 2006-2023, Timothy A. Davis, All Rights Reserved
+// CXSparse, Copyright (c) 2006-2024, Timothy A. Davis, All Rights Reserved
 // SPDX-License-Identifier: LGPL-2.1+
 
 //------------------------------------------------------------------------------
@@ -37,16 +37,17 @@
 
 #define CS_VER 4  /* CXSparse Version */
 #define CS_SUBVER 3
-#define CS_SUBSUB 0
-#define CS_DATE "Dec 30, 2023"        /* CXSparse release date */
-#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
+#define CS_SUBSUB 1
+#define CS_DATE "Jan 10, 2024"        /* CXSparse release date */
+#define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2024"
 #define CXSPARSE
 
 #include "SuiteSparse_config.h"
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "CXSparse 4.3.0 requires SuiteSparse_config 7.4 or later"
+#define CXSPARSE__VERSION SUITESPARSE__VERCODE(4,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "CXSparse 4.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #define cs_long_t       int64_t

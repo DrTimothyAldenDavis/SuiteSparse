@@ -140,7 +140,7 @@
 
 #if GB_COMPILER_MSC
 
-    // MS Visual Studio is not ANSI C11 compliant, and uses __pragma:
+    // MS Visual Studio is not C11 compliant, and uses __pragma:
     #define GB_PRAGMA(x) __pragma (x)
     // no #pragma omp simd is available in MS Visual Studio
     #define GB_PRAGMA_SIMD
@@ -148,7 +148,7 @@
 
 #else
 
-    // ANSI C11 compilers use _Pragma:
+    // C11 compilers use _Pragma:
     #define GB_PRAGMA(x) _Pragma (#x)
     // create two kinds of SIMD pragmas:
     // GB_PRAGMA_SIMD becomes "#pragma omp simd"

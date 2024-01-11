@@ -248,6 +248,19 @@ message ( STATUS "Build type:       ${CMAKE_BUILD_TYPE} ")
 set ( CMAKE_INCLUDE_CURRENT_DIR ON )
 
 #-------------------------------------------------------------------------------
+# Workaround for math.h on old macOS
+#-------------------------------------------------------------------------------
+
+if ( APPLE AND CMAKE_SYSTEM_VERSION VERSION_LESS 11 )
+    # Older versions of math.h on the Mac define Real and Imag, which
+    # conflict with the internal use of those symbols in CHOLMOD, KLU, SPQR,
+    # UMFPACK, and ParU.
+    # This can be disabled with -D__NOEXTENSIONS__
+    message ( STATUS "MacOS: disable extensions in math.h" )
+    add_compile_definitions ( "__NOEXTENSIONS__" )
+endif ( )
+
+#-------------------------------------------------------------------------------
 # check if Fortran is available and enabled
 #-------------------------------------------------------------------------------
 

@@ -14,8 +14,8 @@
 // shallow.  This function is not user-callable.  The new type of C (ctype)
 // must be compatible with A->type.
 
-// C->hyper_switch, C->bitmap_switch, C->sparsity_control, and C->static_header
-// are not modified by the transplant.
+// C->hyper_switch, C->bitmap_switch, C->sparsity_control, C->static_header,
+// C->user_name, and C->user_name_size are not modified by the transplant.
 
 #define GB_FREE_ALL                 \
 {                                   \

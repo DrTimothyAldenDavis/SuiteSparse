@@ -12,6 +12,10 @@
 
     int64_t magic ;         // for detecting uninitialized objects
     size_t header_size ;    // size of the malloc'd block for this struct, or 0
+    // ---------------------//
+    char *user_name ;       // user name for GrB_get/GrB_set
+    size_t user_name_size ; // allocated size of user_name for GrB_get/GrB_set
+    // ---------------------//
 
     GrB_Type ztype ;        // type of z
     GrB_Type xtype ;        // type of x
@@ -23,8 +27,8 @@
     GxB_index_unary_function idxunop_function ;
     GxB_binary_function      binop_function ;
 
-    char name [GxB_MAX_NAME_LEN] ;      // name of the operator
-    int32_t name_len ;      // length of user-defined name; 0 for builtin
+    char name [GxB_MAX_NAME_LEN] ;      // JIT C name of the operator
+    int32_t name_len ;      // length of JIT C name; 0 for builtin
     GB_Opcode opcode ;      // operator opcode
     char *defn ;            // function definition
     size_t defn_size ;      // allocated size of the definition

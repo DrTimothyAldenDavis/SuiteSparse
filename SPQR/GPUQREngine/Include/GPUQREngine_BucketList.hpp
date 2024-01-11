@@ -21,6 +21,7 @@
 #define GPUQRENGINE_BUCKETLIST_HPP
 
 #include <cstddef>
+#include <new>
 
 #include "GPUQREngine_Common.hpp"
 #include "GPUQREngine_TaskDescriptor.hpp"
@@ -74,10 +75,6 @@ public:
     int VThead;              // Index of the first available entry in VTlist
 
     // Constructors
-    void *operator new(std::size_t, BucketList <Int>* p)
-    {
-        return p;
-    }
     BucketList(Front <Int> *f, Int minApplyGranularity);
     ~BucketList();
 
@@ -190,7 +187,9 @@ public:
     );
 };
 
+#if ! defined (GPUQRENGINE_NO_EXTERN_BUCKETLIST)
 extern template class BucketList<int32_t>;
 extern template class BucketList<int64_t>;
+#endif
 
 #endif

@@ -2,7 +2,7 @@
 # SuiteSparse/LDL/CMakeLists.txt:  cmake for LDL
 #-------------------------------------------------------------------------------
 
-# LDL, Copyright (c) 2005-2023 by Timothy A. Davis. All Rights Reserved.
+# LDL, Copyright (c) 2005-2024 by Timothy A. Davis. All Rights Reserved.
 # SPDX-License-Identifier: LGPL-2.1+
 
 #-------------------------------------------------------------------------------
@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( LDL_DATE "Dec 30, 2023" )
+set ( LDL_DATE "Jan 10, 2024" )
 set ( LDL_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( LDL_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( LDL_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( LDL_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building LDL version: v"
     ${LDL_VERSION_MAJOR}.
@@ -44,17 +44,17 @@ include ( SuiteSparsePolicy )
 
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
     if ( SUITESPARSE_DEMOS )
-        find_package ( AMD 3.3.0
+        find_package ( AMD 3.3.1
             PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::AMD )
-            find_package ( AMD 3.3.0 REQUIRED )
+            find_package ( AMD 3.3.1 REQUIRED )
         endif ( )
     endif ( )
 endif ( )

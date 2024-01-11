@@ -100,6 +100,8 @@ GrB_Info GB_Monoid_new          // create a monoid
     GrB_Monoid mon = *monoid ;
     mon->magic = GB_MAGIC ;
     mon->header_size = header_size ;
+    mon->user_name = NULL ;                 // user_name for GrB_get/GrB_set
+    mon->user_name_size = 0 ;
     mon->op = op ;
     size_t zsize = op->ztype->size ;
     mon->identity = NULL ;                  // defined below (if present)

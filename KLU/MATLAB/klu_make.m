@@ -31,6 +31,11 @@ if (~verLessThan ('matlab', '8.3.0'))
     d = ['-silent ' d] ;
 end
 
+if (ispc)
+    % MSVC does not define ssize_t
+    d = [d ' -DNO_SSIZE_T'] ;
+end
+
 fprintf ('Compiling KLU ') ;
 kk = 0 ; 
 

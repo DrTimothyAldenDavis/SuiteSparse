@@ -2,7 +2,7 @@
 # SuiteSparse/CAMD/CMakeLists.txt:  cmake for CAMD
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 2007-2023, Timothy A. Davis.  All Rights Reserved.
+# Copyright (c) 2007-2024, Timothy A. Davis.  All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CAMD_DATE "Dec 30, 2023" )
+set ( CAMD_DATE "Jan 10, 2024" )
 set ( CAMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( CAMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( CAMD_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( CAMD_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,10 +43,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 endif ( )
 

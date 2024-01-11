@@ -69,7 +69,7 @@ if ( NOT SUITESPARSE_USE_OPENMP )
     set ( GRAPHBLAS_USE_OPENMP "OFF" CACHE STRING "" FORCE )
 endif ( )
 if ( GRAPHBLAS_USE_OPENMP )
-    find_package ( OpenMP )
+    find_package ( OpenMP COMPONENTS C )
 else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )

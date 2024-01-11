@@ -489,7 +489,7 @@ if (jit_enabled)
     OK (GxB_Context_engage (context1)) ;
     expected = GrB_INVALID_VALUE ;
     ERR (GxB_Context_disengage (context2)) ;
-    OK (GxB_Context_set (context1, GxB_CHUNK, -1)) ;
+    OK (GxB_Context_set (context1, GxB_CHUNK, (double) -1)) ;
     double chunk = 0 ;
     OK (GxB_Context_get (context1, GxB_CHUNK, &chunk)) ;
     CHECK (chunk == GB_CHUNK_DEFAULT) ;

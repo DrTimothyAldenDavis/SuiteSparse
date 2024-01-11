@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( UMFPACK_DATE "Dec 30, 2023" )
+set ( UMFPACK_DATE "Jan 10, 2024" )
 set ( UMFPACK_VERSION_MAJOR 6 CACHE STRING "" FORCE )
 set ( UMFPACK_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( UMFPACK_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( UMFPACK_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building UMFPACK version: v"
     ${UMFPACK_VERSION_MAJOR}.
@@ -45,16 +45,16 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.0
+    find_package ( AMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.0 REQUIRED )
+        find_package ( AMD 3.3.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -73,10 +73,10 @@ if ( SUITESPARSE_ROOT_CMAKELISTS )
 else ( )
     if ( UMFPACK_USE_CHOLMOD )
         # look for CHOLMOD (optional fill-reducing orderings)
-        find_package ( CHOLMOD 5.1.0
+        find_package ( CHOLMOD 5.1.1
             PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CHOLMOD )
-            find_package ( CHOLMOD 5.1.0 )
+            find_package ( CHOLMOD 5.1.1 )
         endif ( )
         if ( NOT CHOLMOD_FOUND )
             # CHOLMOD not found so disable it
@@ -228,7 +228,9 @@ else ( )
 endif ( )
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( UMFPACK PRIVATE m )
     endif ( )
@@ -251,6 +253,186 @@ if ( BUILD_STATIC_LIBS )
     target_link_libraries ( UMFPACK_static PUBLIC ${BLAS_LIBRARIES} )
     target_include_directories ( UMFPACK_static PRIVATE ${BLAS_INCLUDE_DIRS} )
 endif ( )
+
+#-------------------------------------------------------------------------------
+# check compiler features
+#-------------------------------------------------------------------------------
+
+include ( CheckSourceCompiles )
+
+set ( _orig_CMAKE_C_FLAGS ${CMAKE_C_FLAGS} )
+include ( CheckCCompilerFlag )
+check_c_compiler_flag ( "-Wunknown-pragmas" HAVE_UNKNOWN_PRAGMAS )
+if ( HAVE_UNKNOWN_PRAGMAS )
+    set ( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wunknown-pragmas" )
+endif ( )
+
+# check syntax for ivdep pragma
+set ( _pragma_found OFF )
+# GCC compatible
+check_source_compiles ( C
+    "int main(void) {
+    #pragma GCC ivdep
+    for (int j = 0; j < 1; j++) { }
+    return 0;
+    }"
+    HAVE_PRAGMA_GCC_IVDEP
+    FAIL_REGEX "[wW]arning" )
+
+if ( HAVE_PRAGMA_GCC_IVDEP )
+    if ( BUILD_SHARED_LIBS )
+        target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_IVDEP" )
+    endif ( )
+    set ( _pragma_found ON )
+endif ( )
+
+# Clang compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma clang loop vectorize(enable)
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_CLANG_LOOP_VECTORIZE
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_CLANG_LOOP_VECTORIZE )
+        # Clang is very verbose if a hint for vectorization cannot be performed.
+        # Disable the respective warning.
+        check_c_compiler_flag ( "-Wno-pass-failed" HAVE_NO_PASS_FAILED )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
+            if ( HAVE_NO_PASS_FAILED )
+                target_compile_options ( UMFPACK PRIVATE "-Wno-pass-failed" )
+            endif ( )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_CLANG_LOOP_VECTORIZE" )
+            if ( HAVE_NO_PASS_FAILED )
+                target_compile_options ( UMFPACK_static PRIVATE "-Wno-pass-failed" )
+            endif ( )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# Intel compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma ivdep
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_IVDEP
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_IVDEP )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_IVDEP" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_IVDEP" )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# MSVC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma loop( ivdep )
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_LOOP_IVDEP
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_LOOP_IVDEP )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_IVDEP" )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# check syntax for novector pragma
+set ( _pragma_found ${HAVE_PRAGMA_CLANG_LOOP_VECTORIZE} )
+# GCC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma GCC novector
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_GCC_NOVECTOR
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_GCC_NOVECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_GCC_NOVECTOR" )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# Intel compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma novector
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_NOVECTOR
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_NOVECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_NOVECTOR" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_NOVECTOR" )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+# MSVC compatible
+if ( NOT _pragma_found )
+    check_source_compiles ( C
+        "int main(void) {
+        #pragma loop( no_vector )
+        for (int j = 0; j < 1; j++) { }
+        return 0;
+        }"
+        HAVE_PRAGMA_LOOP_NO_VECTOR
+        FAIL_REGEX "[wW]arning" )
+
+    if ( HAVE_PRAGMA_LOOP_NO_VECTOR )
+        if ( BUILD_SHARED_LIBS )
+            target_compile_definitions ( UMFPACK PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_compile_definitions ( UMFPACK_static PRIVATE "HAVE_PRAGMA_LOOP_NO_VECTOR" )
+        endif ( )
+        set ( _pragma_found ON )
+    endif ( )
+endif ( )
+
+set ( CMAKE_C_FLAGS ${_orig_CMAKE_C_FLAGS} )
 
 #-------------------------------------------------------------------------------
 # UMFPACK installation location

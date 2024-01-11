@@ -99,12 +99,4 @@ void Scheduler <Int>::render
 
     fclose(output);
 }
-template void Scheduler <int32_t>::render
-(
-    void
-) ;
-template void Scheduler <int64_t>::render
-(
-    void
-) ;
 #endif

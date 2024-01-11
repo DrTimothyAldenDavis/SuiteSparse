@@ -45,6 +45,10 @@ GrB_Matrix GB_hyper_shallow         // return C
     C->static_header = C_static_header  ;
     C->header_size = C_header_size ;
 
+    // remove the user_name
+    C->user_name = NULL ;
+    C->user_name_size = 0 ;
+
     // remove the hyperlist and the hyper_hash
     C->h = NULL ;
     C->h_shallow = false ;

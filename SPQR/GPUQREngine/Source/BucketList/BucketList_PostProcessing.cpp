@@ -46,12 +46,3 @@ void BucketList<Int>::PostProcess
         }
     }
 }
-
-template void BucketList<int32_t>::PostProcess
-(
-    void
-) ;
-template void BucketList<int64_t>::PostProcess
-(
-    void
-) ;

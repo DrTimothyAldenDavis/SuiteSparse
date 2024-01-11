@@ -1,0 +1,42 @@
+FUTURE plans For 9.0.1: and beyond:
+
+GraphBLAS:
+
+    don't just check 1st line of GraphBLAS.h when deciding to unpack
+    the src in user cache folder. Use a crc test.
+
+CUDA:
+
+    finding src
+    kernel source location, and name
+
+Future features:
+
+    pack/unpack COO
+    kernel fusion
+    CUDA kernels
+    fine-grain parallelism for dot-product based mxm, mxv, vxm,
+        then add GxB_vxvt (outer product) and GxB_vtxv (inner product)
+        (or call them GxB_outerProduct and GxB_innerProduct?)
+
+    aggregators
+    index binary ops
+    GrB_extract with GrB_Vectors instead of (GrB_Index *) arrays for I and J
+
+    iso: set a flag with GrB_get/set to disable iso.  useful if the matrix is
+    about to become non-iso anyway. Pagerank does:
+
+        r = teleport (becomes iso)
+        r += A*x     (becomes non-iso)
+
+    apply: C = f(A), A dense, no mask or accum, C already dense: do in place
+
+    JIT: allow a flag to be set in a type or operator to selectively control
+        the JIT
+
+    JIT: requires GxB_BinaryOp_new to give the string that defines the op.
+    Allow use of
+        GrB_BinaryOp_new (...)
+        GrB_set (op, GxB_DEFN, "string"
+    also for all ops
+

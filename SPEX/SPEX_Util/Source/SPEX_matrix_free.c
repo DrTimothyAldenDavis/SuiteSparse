@@ -9,7 +9,10 @@
 //------------------------------------------------------------------------------
 
 // Free a SPEX_matrix.  Any shallow component is not freed.
+#if defined (__GNUC__)
 #pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+
 #include "spex_util_internal.h"
 
 SPEX_info SPEX_matrix_free

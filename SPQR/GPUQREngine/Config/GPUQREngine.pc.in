@@ -7,11 +7,10 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 includedir=@includedir@
 
-# FIXME: Which flags do we need to statically link CUDA
-
 Name: GPUQREngine
 URL: https://github.com/DrTimothyAldenDavis/SuiteSparse
 Description: GPU-accelerated QR factorization engine supporting SuiteSparseQR in SuiteSparse
 Version: @SPQR_VERSION_MAJOR@.@SPQR_VERSION_MINOR@.@SPQR_VERSION_SUB@
-Libs: -L${libdir} -lgpuqrengine@CMAKE_RELEASE_POSTFIX@
+Libs: -L${libdir} -l@SUITESPARSE_LIB_BASE_NAME@
+Libs.private: @GPUQRENGINE_STATIC_LIBS@
 Cflags: -I${includedir}

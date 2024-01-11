@@ -35,8 +35,5 @@
 #define GB_ANY_PENDING_WORK(A) \
     (GB_PENDING (A) || GB_ZOMBIES (A) || GB_JUMBLED (A))
 
-// true if a matrix is hypersparse but has no A->Y component
-#define GB_NEED_HYPER_HASH(A) (GB_IS_HYPERSPARSE (A) && (((A)->Y) == NULL))
-
 #endif
 

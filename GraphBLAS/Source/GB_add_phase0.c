@@ -278,15 +278,15 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
             GB_OK (GB_hyper_hash_build (A, Werk)) ;
             GB_OK (GB_hyper_hash_build (B, Werk)) ;
 
-            const int64_t *restrict A_Yp = (A_is_hyper) ? A->Y->p : NULL ;
-            const int64_t *restrict A_Yi = (A_is_hyper) ? A->Y->i : NULL ;
-            const int64_t *restrict A_Yx = (A_is_hyper) ? A->Y->x : NULL ;
-            const int64_t A_hash_bits = (A_is_hyper) ? (A->Y->vdim - 1) : 0 ;
+            const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+            const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+            const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+            const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
 
-            const int64_t *restrict B_Yp = (B_is_hyper) ? B->Y->p : NULL ;
-            const int64_t *restrict B_Yi = (B_is_hyper) ? B->Y->i : NULL ;
-            const int64_t *restrict B_Yx = (B_is_hyper) ? B->Y->x : NULL ;
-            const int64_t B_hash_bits = (B_is_hyper) ? (B->Y->vdim - 1) : 0 ;
+            const int64_t *restrict B_Yp = (B->Y == NULL) ? NULL : B->Y->p ;
+            const int64_t *restrict B_Yi = (B->Y == NULL) ? NULL : B->Y->i ;
+            const int64_t *restrict B_Yx = (B->Y == NULL) ? NULL : B->Y->x ;
+            const int64_t B_hash_bits = (B->Y == NULL) ? 0 : (B->Y->vdim - 1) ;
 
             int64_t k ;
             #pragma omp parallel for num_threads(nthreads) schedule(static)
@@ -297,16 +297,16 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
                 { 
                     // C_to_A [k] = kA if Ah [kA] == j and A(:,j) is non-empty
                     int64_t pA, pA_end ;
-                    int64_t kA = GB_hyper_hash_lookup (Ap, A_Yp, A_Yi, A_Yx,
-                        A_hash_bits, j, &pA, &pA_end) ;
+                    int64_t kA = GB_hyper_hash_lookup (Ah, Anvec, Ap, A_Yp,
+                        A_Yi, A_Yx, A_hash_bits, j, &pA, &pA_end) ;
                     C_to_A [k] = (pA < pA_end) ? kA : -1 ;
                 }
                 if (B_is_hyper)
                 { 
                     // C_to_B [k] = kB if Bh [kB] == j and B(:,j) is non-empty
                     int64_t pB, pB_end ;
-                    int64_t kB = GB_hyper_hash_lookup (Bp, B_Yp, B_Yi, B_Yx,
-                        B_hash_bits, j, &pB, &pB_end) ;
+                    int64_t kB = GB_hyper_hash_lookup (Bh, Bnvec, Bp, B_Yp,
+                        B_Yi, B_Yx, B_hash_bits, j, &pB, &pB_end) ;
                     C_to_B [k] = (pB < pB_end) ? kB : -1 ;
                 }
             }
@@ -676,10 +676,10 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
             // create the M->Y hyper_hash
             GB_OK (GB_hyper_hash_build (M, Werk)) ;
 
-            const int64_t *restrict M_Yp = M->Y->p ;
-            const int64_t *restrict M_Yi = M->Y->i ;
-            const int64_t *restrict M_Yx = M->Y->x ;
-            const int64_t M_hash_bits = M->Y->vdim - 1 ;
+            const int64_t *restrict M_Yp = (M->Y == NULL) ? NULL : M->Y->p ;
+            const int64_t *restrict M_Yi = (M->Y == NULL) ? NULL : M->Y->p ;
+            const int64_t *restrict M_Yx = (M->Y == NULL) ? NULL : M->Y->p ;
+            const int64_t M_hash_bits = (M->Y == NULL) ? 0 : (M->Y->vdim - 1) ;
 
             int64_t k ;
             #pragma omp parallel for num_threads(nthreads) schedule(static)
@@ -688,8 +688,8 @@ GrB_Info GB_add_phase0          // find vectors in C for C=A+B or C<M>=A+B
                 int64_t j = Ch [k] ;
                 // C_to_M [k] = kM if Mh [kM] == j and M(:,j) is non-empty
                 int64_t pM, pM_end ;
-                int64_t kM = GB_hyper_hash_lookup (Mp, M_Yp, M_Yi, M_Yx,
-                    M_hash_bits, j, &pM, &pM_end) ;
+                int64_t kM = GB_hyper_hash_lookup (Mh, Mnvec, Mp, M_Yp, M_Yi,
+                    M_Yx, M_hash_bits, j, &pM, &pM_end) ;
                 C_to_M [k] = (pM < pM_end) ? kM : -1 ;
             }
         }

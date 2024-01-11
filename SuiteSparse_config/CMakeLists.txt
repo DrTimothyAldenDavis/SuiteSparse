@@ -15,9 +15,9 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Dec 30, 2023" )
+set ( SUITESPARSE_DATE "Jan 10, 2024" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
-set ( SUITESPARSE_VERSION_MINOR 4 )
+set ( SUITESPARSE_VERSION_MINOR 5 )
 set ( SUITESPARSE_VERSION_SUB   0 )
 set ( SUITESPARSE_CONFIG_VERSION_MAJOR ${SUITESPARSE_VERSION_MAJOR} CACHE STRING "" FORCE )
 set ( SUITESPARSE_CONFIG_VERSION_MINOR ${SUITESPARSE_VERSION_MINOR} CACHE STRING "" FORCE )
@@ -53,6 +53,11 @@ else ( )
     set ( FortranCInterface_GLOBAL__MACRO ${SUITESPARSE_C_TO_FORTRAN} )
 endif ( )
 
+message ( STATUS "C to Fortran calling protocol: ")
+message ( STATUS "    SUITESPARSE_HAS_FORTRAN  : ${SUITESPARSE_HAS_FORTRAN}" )
+message ( STATUS "    FortranCInterface_GLOBAL_MACRO  : ${FortranCInterface_GLOBAL_MACRO}" )
+message ( STATUS "    FortranCInterface_GLOBAL__MACRO : ${FortranCInterface_GLOBAL__MACRO}" )
+
 #-------------------------------------------------------------------------------
 # CUDA warning on Windows with MSVC
 #-------------------------------------------------------------------------------
@@ -70,7 +75,11 @@ if ( NOT SUITESPARSE_USE_OPENMP )
     set ( SUITESPARSE_CONFIG_USE_OPENMP "OFF" CACHE STRING "" FORCE )
 endif ( )
 if ( SUITESPARSE_CONFIG_USE_OPENMP OR SUITESPARSE_USE_OPENMP )
-    find_package ( OpenMP GLOBAL )
+    if ( CMAKE_VERSION VERSION_LESS 3.24 )
+        find_package ( OpenMP COMPONENTS C )
+    else ( )
+        find_package ( OpenMP COMPONENTS C GLOBAL )
+    endif ( )
 else ( )
     # OpenMP has been disabled
     set ( OpenMP_C_FOUND OFF )
@@ -171,12 +180,15 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SuiteSparseConfig PRIVATE m )
     endif ( )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SuiteSparseConfig_static PUBLIC m )
+        list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS "m" )
     endif ( )
 endif ( )
 
@@ -194,6 +206,7 @@ if ( SUITESPARSE_CONFIG_USE_OPENMP )
         target_link_libraries ( SuiteSparseConfig_static PRIVATE OpenMP::OpenMP_C )
         target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
+        list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
     endif ( )
 endif ( )
 
@@ -263,6 +276,33 @@ install ( FILES
 #-------------------------------------------------------------------------------
 
 if ( NOT MSVC )
+    # This might be something like:
+    #   /usr/lib/libgomp.so;/usr/lib/libpthread.a;m
+    # convert to -l flags for pkg-config, i.e.: "-lgomp -lpthread -lm"
+    set ( SUITESPARSE_CONFIG_STATIC_LIBS_LIST ${SUITESPARSE_CONFIG_STATIC_LIBS} )
+    set ( SUITESPARSE_CONFIG_STATIC_LIBS "" )
+    foreach ( _lib ${SUITESPARSE_CONFIG_STATIC_LIBS_LIST} )
+        string ( FIND ${_lib} "." _pos REVERSE )
+        if ( ${_pos} EQUAL "-1" )
+            set ( SUITESPARSE_CONFIG_STATIC_LIBS "${SUITESPARSE_CONFIG_STATIC_LIBS} -l${_lib}" )
+            continue ()
+        endif ( )
+        set ( _kinds "SHARED" "STATIC" )
+        if ( WIN32 )
+            list ( PREPEND _kinds "IMPORT" )
+        endif ( )
+        foreach ( _kind IN LISTS _kinds )
+            set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+            if ( ${_lib} MATCHES ${_regex} )
+                string ( REGEX REPLACE ${_regex} "\\2" _libname ${_lib} )
+                if ( NOT "${_libname}" STREQUAL "" )
+                    set ( SUITESPARSE_CONFIG_STATIC_LIBS "${SUITESPARSE_CONFIG_STATIC_LIBS} -l${_libname}" )
+                    break ()
+                endif ( )
+            endif ( )
+        endforeach ( )
+    endforeach ( )
+
     set ( prefix "${CMAKE_INSTALL_PREFIX}" )
     set ( exec_prefix "\${prefix}" )
     cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )

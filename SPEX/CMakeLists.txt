@@ -2,9 +2,9 @@
 # SuiteSparse/SPEX/CMakeLists.txt:  cmake for SPEX
 #-------------------------------------------------------------------------------
 
-# Copyright (c) 1996-2023, Timothy A. Davis, Patrick Amestoy, Iain Duff.
-# All Rights Reserved.
-# SPDX-License-Identifier: BSD-3-clause
+# SPEX_Left_LU: (c) 2019-2024, Chris Lourenco (US Naval Academy), Jinhao Chen,
+# Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
+# SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 #-------------------------------------------------------------------------------
 # get the version
@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "Dec 30, 2023" )
+set ( SPEX_DATE "Jan 10, 2024" )
 set ( SPEX_VERSION_MAJOR 2 CACHE STRING "" FORCE )
 set ( SPEX_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -45,22 +45,22 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.0
+    find_package ( AMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.0 REQUIRED )
+        find_package ( AMD 3.3.1 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.0
+    find_package ( COLAMD 3.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.0 REQUIRED )
+        find_package ( COLAMD 3.3.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -205,7 +205,9 @@ if ( BUILD_STATIC_LIBS )
 endif ( )
 
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPEX PRIVATE m )
     endif ( )

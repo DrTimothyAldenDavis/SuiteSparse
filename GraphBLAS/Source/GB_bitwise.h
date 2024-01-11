@@ -364,7 +364,7 @@ inline uint8_t GB_bitshift_uint8 (uint8_t x, int8_t k)
     }
     else if (k >= 8 || k <= -8)
     {
-        // ANSI C11 states that the result of x << k is undefined if k is
+        // C11 states that the result of x << k is undefined if k is
         // negative or if k is greater than the # of bits in x.  Here, the
         // result is defined to be zero (the same as if shifting left
         // or right by 8).
@@ -372,13 +372,13 @@ inline uint8_t GB_bitshift_uint8 (uint8_t x, int8_t k)
     }
     else if (k > 0)
     {
-        // left shift x by k bits.  z is defined by ANSI C11 as
+        // left shift x by k bits.  z is defined by C11 as
         // (x * (2^k)) mod (uintmax + 1).
         return (x << k) ;
     }
     else
     {
-        // right shift x by k bits.  z is defined by ANSI C11 as the
+        // right shift x by k bits.  z is defined by C11 as the
         // integral part of the quotient of x / (2^k).
         return (x >> (-k)) ;
     }
@@ -541,13 +541,13 @@ inline int8_t GB_bitshift_int8 (int8_t x, int8_t k)
     }
     else if (k >= 8)
     {
-        // ANSI C11 states that z = x << k is undefined if k is greater
+        // C11 states that z = x << k is undefined if k is greater
         // than the # of bits in x.  Here, the result is defined to be zero.
         return (0) ;
     }
     else if (k <= -8)
     {
-        // ANSI C11 states that z = x >> (-k) is undefined if (-k) is
+        // C11 states that z = x >> (-k) is undefined if (-k) is
         // greater than the # of bits in x.  Here, the result is defined to
         // be the sign of x (z = 0 if x >= 0 and z = -1 if x is negative).
         return ((x >= 0) ? 0 : -1) ;
@@ -555,7 +555,7 @@ inline int8_t GB_bitshift_int8 (int8_t x, int8_t k)
     else if (k > 0)
     {
         // left shift x by k bits (where k is in range 1 to #bits - 1).
-        // ANSI C11 states that z is defined only if x is non-negative and
+        // C11 states that z is defined only if x is non-negative and
         // x * (2^k) is representable.  This computation assumes x and z
         // are represented in 2's complement.  The result depends on the
         // underlying machine architecture and the compiler.
@@ -567,13 +567,13 @@ inline int8_t GB_bitshift_int8 (int8_t x, int8_t k)
         // right shift x by k bits (where k is in range 1 to 8)
         if (x >= 0)
         {
-            // ANSI C11 defines z as the integral part of the quotient
+            // C11 defines z as the integral part of the quotient
             // of x / (2^k).
             return (x >> k) ;
         }
         else
         {
-            // ANSI C11 states that the result is implementation-defined if
+            // C11 states that the result is implementation-defined if
             // x is negative.  This computation assumes x and z are in 2's
             // complement, so 1-bits are shifted in on the left, and thus
             // the sign bit is always preserved.  The result depends on the

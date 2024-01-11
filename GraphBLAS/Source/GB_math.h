@@ -296,6 +296,9 @@ inline uint64_t GB_idiv_uint64 (uint64_t x, uint64_t y)
 
 // Three cases below are from ACM Algo 116, R. L. Smith, 1962.
 
+#if !defined ( GBCUDA_CPLUSPLUS )
+// TODO: does not yet work in CUDA
+
 inline GxB_FC64_t GB_FC64_div (GxB_FC64_t x, GxB_FC64_t y)
 {
     double xr = GB_creal (x) ;
@@ -398,6 +401,8 @@ inline GxB_FC32_t GB_FC32_div (GxB_FC32_t x, GxB_FC32_t y)
 "    return (GJ_CMPLX32 ((float) GB_creal(zz), (float) GB_cimag(zz))) ; \n" \
 "}"
 
+#endif
+
 //------------------------------------------------------------------------------
 // z = x^y: wrappers for pow, powf, cpow, and cpowf
 //------------------------------------------------------------------------------
@@ -478,6 +483,9 @@ inline double GB_pow (double x, double y)
 "    // otherwise, z = pow (x,y)                                     \n" \
 "    return (pow (x, y)) ;                                           \n" \
 "}"
+
+#if !defined ( GBCUDA_CPLUSPLUS )
+// TODO: does not yet work in CUDA
 
 inline GxB_FC32_t GB_FC32_pow (GxB_FC32_t x, GxB_FC32_t y)
 {
@@ -600,6 +608,7 @@ inline GxB_FC64_t GB_FC64_pow (GxB_FC64_t x, GxB_FC64_t y)
 "    }                                                               \n" \
 "    return (GB_cpow (x, y)) ;                                       \n" \
 "}"
+#endif
 
 inline int8_t GB_pow_int8 (int8_t x, int8_t y)
 {
@@ -783,6 +792,9 @@ inline double GB_signum (double x)
 "    return ((double) ((x < 0) ? (-1) : ((x > 0) ? 1 : 0))) ;       \n" \
 "}"
 
+#if !defined ( GBCUDA_CPLUSPLUS )
+// TODO: does not yet work in CUDA
+
 inline GxB_FC32_t GB_csignumf (GxB_FC32_t x)
 {
     if (GB_crealf (x) == 0 && GB_cimagf (x) == 0)
@@ -829,9 +841,9 @@ inline GxB_FC64_t GB_csignum (GxB_FC64_t x)
 // complex functions
 //------------------------------------------------------------------------------
 
-// The ANSI C11 math.h header defines the ceil, floor, round, trunc,
+// The C11 math.h header defines the ceil, floor, round, trunc,
 // exp2, expm1, log10, log1pm, or log2 functions for float and double,
-// but the corresponding functions do not appear in the ANSI C11 complex.h.
+// but the corresponding functions do not appear in the C11 complex.h.
 // These functions are used instead, for float complex and double complex.
 
 //------------------------------------------------------------------------------
@@ -1243,6 +1255,8 @@ inline bool GB_cisfinite (GxB_FC64_t x)
 "{                                                                  \n" \
 "    return (isfinite (GB_creal (x)) && isfinite (GB_cimag (x))) ;  \n" \
 "}"
+
+#endif
 
 #endif
 

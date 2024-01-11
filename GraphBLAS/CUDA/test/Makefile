@@ -1,5 +1,5 @@
 #-------------------------------------------------------------------------------
-# GraphBLAS/CUDA/Makefile
+# GraphBLAS/CUDA/test/Makefile
 #-------------------------------------------------------------------------------
 
 # cuda 10.1+ is assumed
@@ -77,12 +77,13 @@ TEMPLATE_DIR ?= ../templates
 
 LIB += -ldl -L$(CUDA_LIB_DIR) -L$(CUDA_LIB_DIR)/stubs -lcuda -lcudadevrt -lcudart -lnvrtc
 
+# FIXME: file names in HEADERS are old
 HEADERS = jitify.hpp dataFactory.hpp jitFactory.hpp jitTestFactory.hpp semiringFactory.hpp \
           ../type_name.hpp 
 
 TEMPLATES :=  $(wildcard $(TEMPLATE_DIR)/*.cu)
 
-CU_OBJS := ../GB_jit_cache.o ../GB_jit_launcher.o 
+CU_OBJS := ../GB_cuda_jitify_cache.o ../GB_cuda_jitify_launcher.o 
 
 CFILES := $(wildcard ../*.c)  
 

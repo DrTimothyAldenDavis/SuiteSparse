@@ -9,10 +9,11 @@
 
 // The GrB_Matrix and GrB_Vector objects are different names for the same
 // content.  A GrB_Vector is held as an m-by-1 non-hypersparse CSC matrix.
-// This file is #include'd in GB_opaque.h to define the GB_Matrix_opaque and
-// GB_Vector_opaque structs.  It would be cleaner to define just one opaque
-// struct, and then GrB_Matrix and GrB_Vector would be typedef'd as pointers to
-// the same struct, but then the compiler gets confused with Generic(x).
+// This file is #include'd in GB_opaque.h to define the GB_Matrix_opaque,
+// GB_Vector_opaque, and GB_Scalar_opaque structs.  It would be cleaner to
+// define just one opaque struct, and then GrB_Matrix, GrB_Vector, GrB_Scalar
+// would be typedef'd as pointers to the same struct, but then the compiler
+// gets confused with _Generic(x).
 
 // For a GrB_Vector object, as an m-by-1 non-hypersparse CSC matrix:
 //      bool is_csc ;           // always true
@@ -27,13 +28,18 @@
 // basic information: magic, error logger, and type
 //------------------------------------------------------------------------------
 
-// The first four items exactly match the first four items in the
-// GrB_Descriptor struct.
+// The first four items exactly match the first four items of nearly all
+// GraphBLAS objects.   The first 6 match the GrB_Descriptor struct.
 
 int64_t magic ;         // for detecting uninitialized objects
 size_t header_size ;    // size of the malloc'd block for this struct, or 0
+// ---------------------//
+char *user_name ;       // user name for GrB_get/GrB_set
+size_t user_name_size ; // allocated size of user_name for GrB_get/GrB_set
+// ---------------------//
 char *logger ;          // error logger string
 size_t logger_size ;    // size of the malloc'd block for logger, or 0
+// ---------------------//
 
 // The remaining items are specific the GrB_Matrix, GrB_Vector and GrB_Scalar
 // structs, and do not appear in the GrB_Descriptor struct:

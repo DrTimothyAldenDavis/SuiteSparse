@@ -3,8 +3,8 @@ SPDX-License-Identifier: Apache-2.0
 
 GraphBLAS/Tcov: statement coverage tests
 
-Requirements:  the mex command must use a C compiler supporting ANSI C11.
-Microft Visual Studio does not support ANSI C11 so this test is not available
+Requirements:  the mex command must use a C compiler supporting C11.
+Microft Visual Studio does not support C11 so this test is not available
 on Windows unless you use another compiler.
 
 Since nearly all GraphBLAS tests are in *.m files, I have taken the unusual

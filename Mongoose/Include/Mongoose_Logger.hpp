@@ -32,6 +32,8 @@
 #error "Mongoose requires SuiteSparse_config 7.4.0 or later"
 #endif
 
+#include "Mongoose_Internal.hpp"
+
 // Default Logging Levels
 #ifndef LOG_ERROR
 #define LOG_ERROR 1
@@ -101,10 +103,10 @@ typedef enum TimingType
 class Logger
 {
 private:
-    static int debugLevel;
-    static bool timingOn;
-    static double clocks[6];
-    static float times[6];
+    MONGOOSE_API static int debugLevel;
+    MONGOOSE_API static bool timingOn;
+    MONGOOSE_API static double clocks[6];
+    MONGOOSE_API static float times[6];
 
 public:
     static inline void tic(TimingType timingType);

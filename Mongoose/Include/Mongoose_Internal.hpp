@@ -36,14 +36,33 @@
 #error "Mongoose requires SuiteSparse_config 7.4.0 or later"
 #endif
 
+#ifndef MAX_INT
+#define MAX_INT INT64_MAX
+#endif
+
+#ifndef MONGOOSE_HPP
+// avoid collision with symbols that are declared in Mongoose.hpp
+
+#if defined (_MSC_VER) && ! defined (__INTEL_COMPILER)
+    #if defined (MONGOOSE_STATIC)
+        #define MONGOOSE_API
+    #else
+        #if defined (MONGOOSE_BUILDING)
+            #define MONGOOSE_API __declspec ( dllexport )
+        #else
+            #define MONGOOSE_API __declspec ( dllimport )
+        #endif
+    #endif
+#else
+    // for other compilers
+    #define MONGOOSE_API
+#endif
+
 namespace Mongoose
 {
 
 /* Type definitions */
 typedef int64_t Int;
-#ifndef MAX_INT
-#define MAX_INT INT64_MAX
-#endif
 
 /* Enumerations */
 enum MatchingStrategy
@@ -70,5 +89,6 @@ enum MatchType
 };
 
 } // end namespace Mongoose
+#endif
 
 #endif

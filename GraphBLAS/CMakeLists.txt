@@ -105,7 +105,11 @@ if ( NOT SUITESPARSE_USE_OPENMP )
     set ( GRAPHBLAS_USE_OPENMP "OFF" CACHE STRING "" FORCE )
 endif ( )
 if ( GRAPHBLAS_USE_OPENMP )
-    find_package ( OpenMP GLOBAL )
+    if ( CMAKE_VERSION VERSION_LESS 3.24 )
+        find_package ( OpenMP COMPONENTS C )
+    else ( )
+        find_package ( OpenMP COMPONENTS C GLOBAL )
+    endif ( )
 else ( )
     # OpenMP has been disabled.
     set ( OpenMP_C_FOUND OFF )
@@ -363,11 +367,11 @@ endif ( )
 # cpu_features settings
 #-------------------------------------------------------------------------------
 
+include ( CheckSymbolExists )
 if ( NOT GBNCPUFEAT )
     if ( UNIX )
         # look for requirements for cpu_features/src/hwcaps.c
         include ( CheckIncludeFile )
-        include ( CheckSymbolExists )
         check_include_file ( dlfcn.h HAVE_DLFCN_H )
         if ( HAVE_DLFCN_H )
             message ( STATUS "cpu_feautures has dlfcn.h" )
@@ -400,7 +404,8 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 # libm:
-if ( NOT WIN32 )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     set ( GB_M "m" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( GraphBLAS PRIVATE m )
@@ -461,9 +466,9 @@ if ( GRAPHBLAS_HAS_OPENMP )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
 else ( )
-    message  ( WARNING
+    message ( WARNING
     "WARNING:  OpenMP was not found (or was disabled with "
-    "GRAPHBLAS_USE_OPENMP).  See the GrapBLAS user guide on the consequences "
+    "GRAPHBLAS_USE_OPENMP).  See the GraphBLAS user guide on the consequences "
     "of compiling GraphBLAS without OpenMP. GraphBLAS will work but may not be "
     "thread-safe, since it relies on '#pragma omp flush' to ensure the work "
     "performed by one user thread is available to another, in GrB_wait.  If "
@@ -476,7 +481,7 @@ else ( )
     include ( SuiteSparse__thread )
     if ( NOT HAVE_KEYWORD__DECLSPEC_THREAD AND NOT HAVE_KEYWORD__THREAD
         AND NOT HAVE_KEYWORD__THREAD_LOCAL )
-        message  ( WARNING
+        message ( WARNING
         "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )

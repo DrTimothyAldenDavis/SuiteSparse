@@ -1,8 +1,11 @@
 //------------------------------------------------------------------------------
-// GB_cuda_mxm_dot3_factory
+// GraphBLAS/CUDA/GB_cuda_mxm_dot3_jitFactory.hpp
 //------------------------------------------------------------------------------
 
 // SPDX-License-Identifier: Apache-2.0
+
+//------------------------------------------------------------------------------
+
 /*
  * Copyright (c) 2017-2019, NVIDIA CORPORATION. All rights reserved.
  *
@@ -31,21 +34,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-//------------------------------------------------------------------------------
-
 #ifndef GB_MXM_DOT3_JITFACTORY_H
 #define GB_MXM_DOT3_JITFACTORY_H
 
 #pragma once
 
 /**
- * This file is responsible for picking all the parameters and what kernel variaiton we will use for a given instance
+ * This file is responsible for picking all the parameters and what kernel
+ * variaiton we will use for a given instance
  * - data types
  * - semiring types
  * - binary ops
  * - monoids
  *
- * Kernel factory says "Here's the actual instance I want you to build with the given parameters"
+ * Kernel factory says "Here's the actual instance I want you to build with the
+ * given parameters"
  */
 
 
@@ -69,7 +72,7 @@ class dense_phase1launchFactory
 {
   // FIXME: this is the full name.  Why?  See below for partial name.
   // Need to be consistent in naming schemes.
-  std::string kernel_name = "GB_jit_AxB_dot3_dense_phase1";
+  std::string kernel_name = "GB_cuda_jit_AxB_dot3_dense_phase1";
 
   GB_cuda_mxm_factory &mxm_factory_;
 
@@ -114,21 +117,21 @@ public:
 
     std::stringstream string_to_be_jitted ;
 
-    // FIXME: why does "templates/" appear here but not elsewhere?
     string_to_be_jitted << kernel_name << std::endl <<
     R"(#include "GB_cuda_kernel.h")" << std::endl <<
-    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mxm_factory_.filename << R"(")" << std::endl <<
-    R"(#include "templates/)" << kernel_name << R"(.cuh")" << std::endl;
+    R"(#include ")" << mxm_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << kernel_name << R"(.cuh")" << std::endl;
 
     bool result = false;
 
     dim3 grid(get_number_of_blocks(M));
     dim3 block(get_threads_per_block());
 
+    std::cout << "HERE I AM 7" << std::endl ;
     jit::launcher( kernel_name + "_" + sr_code_str + ".jtfy",
                    string_to_be_jitted.str(),
                    header_names,
-                   GB_jit_cuda_compiler_flags,
+                   GB_cuda_jit_compiler_flags ( ),
                    file_callback /* FIXME: make NULL */)
                  .set_kernel_inst(  kernel_name, template_types)
                  .configure(grid, block, SMEM, stream)
@@ -151,7 +154,7 @@ public:
 template<int threads_per_block=32, int chunk_size = 128>
 class phase1launchFactory 
 {
-  std::string kernel_name = "GB_jit_AxB_dot3_phase1";
+  std::string kernel_name = "GB_cuda_jit_AxB_dot3_phase1";
 
   GB_cuda_mxm_factory &mxm_factory_;
 
@@ -197,25 +200,39 @@ public:
 
     std::stringstream string_to_be_jitted ;
 
-    // FIXME: why does "templates/" appear here but not elsewhere?
     string_to_be_jitted << kernel_name << std::endl <<
     R"(#include "GB_cuda_kernel.h")" << std::endl <<
-    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mxm_factory_.filename << R"(")" << std::endl <<
-    R"(#include "templates/)" << kernel_name << R"(.cuh")" << std::endl;
+    R"(#include ")" << mxm_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << kernel_name << R"(.cuh")" << std::endl;
+
+    std::cout << "header names:" << std::endl ;
+//  std::cout << header_names << std::endl ;
+    for (std::string s : header_names)
+    {
+        std::cout << "     " << s << std::endl ;
+    }
+//  std::cout << "string_to_be_jitted :" << std::endl ;
+//  std::cout << string_to_be_jitted << std::endl ;
+    std::cout << "GB_cuda_jit_compiler_flags ( ):" << std::endl ;
+    for (std::string s : GB_cuda_jit_compiler_flags ( ))
+    {
+        std::cout << "     " << s << std::endl ;
+    }
+    std::cout << "kernel_name + sr_code_str .jtfy:" << std::endl ;
+    std::cout << kernel_name + "_" + sr_code_str + ".jtfy" << std::endl ;
+    std::cout << "jit::get_user_home_cache_dir ( ):" << std::endl ;
+    std::cout << jit::get_user_home_cache_dir ( ) << std::endl ;
 
     bool result = false;
-    
- // std::cout<< "GB_jit_cuda_compiler_flags ";
- // for ( std::string s : GB_jit_cuda_compiler_flags)
- //     std::cout<< s<< std::endl; 
 
     dim3 grid(get_number_of_blocks(M));
     dim3 block(get_threads_per_block());
 
+    std::cout << "HERE I AM 1" << std::endl ;
     jit::launcher( kernel_name + "_" + sr_code_str + ".jtfy",
                    string_to_be_jitted.str(),
                    header_names,
-                   GB_jit_cuda_compiler_flags,
+                   GB_cuda_jit_compiler_flags ( ),
                    file_callback)
                  .set_kernel_inst(  kernel_name, template_types)
                  .configure(grid, block, SMEM, stream)
@@ -235,7 +252,7 @@ template<int threads_per_block = 32, int chunk_size = 128>
 class phase2launchFactory
 {
 
-  std::string base_name = "GB_jit";
+  std::string base_name = "GB_cuda_jit";
   // FIXME: this is the partial name.  Why?  See above.
   std::string kernel_name = "AxB_phase2";
 
@@ -274,10 +291,11 @@ public:
         R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
       const int64_t mnz = GB_nnz (M) ;
+    std::cout << "HERE I AM 2" << std::endl ;
       jit::launcher( hashable_name,
                      string_to_be_jitted.str(),
                      header_names,
-                     GB_jit_cuda_compiler_flags,
+                     GB_cuda_jit_compiler_flags ( ),
                      file_callback)
                    .set_kernel_inst( kernel_name, {})
                    .configure(grid, block, SMEM, stream)
@@ -299,7 +317,7 @@ template< int threads_per_block = 32, int chunk_size = 128>
 class phase2endlaunchFactory
 {
 
-  std::string base_name = "GB_jit";
+  std::string base_name = "GB_cuda_jit";
   std::string kernel_name = "AxB_phase2end";
 
 public:
@@ -332,10 +350,11 @@ public:
       string_to_be_jitted << hashable_name << std::endl <<
         R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
+    std::cout << "HERE I AM 3" << std::endl ;
       jit::launcher( hashable_name,
                      string_to_be_jitted.str(),
                      header_names,
-                     GB_jit_cuda_compiler_flags,
+                     GB_cuda_jit_compiler_flags ( ),
                      file_callback)
                    .set_kernel_inst(  kernel_name , {})
                    .configure(grid, block, SMEM, stream)
@@ -355,7 +374,7 @@ public:
 
 class mxm_dense_launchFactory
 {
-  std::string base_name = "GB_jit";
+  std::string base_name = "GB_cuda_jit";
   std::string kernel_name = "AxB_dot3_phase3_dndn";
 
   GB_cuda_mxm_factory &mxm_factory_;
@@ -409,17 +428,18 @@ public:
 
     string_to_be_jitted << hashable_name << std::endl <<
     R"(#include "GB_cuda_kernel.h")" << std::endl <<
-    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mxm_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << mxm_factory_.filename << R"(")" << std::endl <<
     R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
     dim3 grid(gridsz);
     dim3 block(blocksz);
 
     GBURBLE ("(GPU dot3 mxm dense launch nblocks,blocksize= %d,%d )\n", gridsz,blocksz) ;
+    std::cout << "HERE I AM 4" << std::endl ;
     jit::launcher( hashable_name + "_" + sr_code,
                    string_to_be_jitted.str(),
                    header_names,
-                   GB_jit_cuda_compiler_flags,
+                   GB_cuda_jit_compiler_flags ( ),
                    file_callback)
                .set_kernel_inst(final_kernel_name_ss.str(), template_types )
                                // { C->type->name,
@@ -466,7 +486,7 @@ private:
 
 class mxm_sparse_dense_launchFactory
 {
-  std::string base_name = "GB_jit";
+  std::string base_name = "GB_cuda_jit";
   std::string kernel_name = "AxB_dot3";
 
   GB_cuda_mxm_factory &mxm_factory_;
@@ -520,17 +540,18 @@ public:
 
     string_to_be_jitted << hashable_name << std::endl <<
     R"(#include "GB_cuda_kernel.h")" << std::endl <<
-    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mxm_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << mxm_factory_.filename << R"(")" << std::endl <<
     R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
     dim3 grid(gridsz);
     dim3 block(blocksz);
 
     GBURBLE ("(GPU dot3 mxm sparse_dense launch nblocks,blocksize= %d,%d )\n", gridsz,blocksz) ;
+    std::cout << "HERE I AM 5" << std::endl ;
     jit::launcher( hashable_name + "_" + sr_code,
                    string_to_be_jitted.str(),
                    header_names,
-                   GB_jit_cuda_compiler_flags,
+                   GB_cuda_jit_compiler_flags ( ),
                    file_callback)
                .set_kernel_inst(final_kernel_name_ss.str(), template_types )
                                // { C->type->name,
@@ -577,7 +598,7 @@ private:
 
 class phase3launchFactory
 {
-  std::string base_name = "GB_jit";
+  std::string base_name = "GB_cuda_jit";
   std::string kernel_name = "AxB_dot3";
 
   GB_cuda_mxm_factory &mxm_factory_;
@@ -638,7 +659,7 @@ public:
     // FIXME: why is "hashable_name" used sometimes, and sometimes "kernel_name"?
     string_to_be_jitted << hashable_name << std::endl <<
     R"(#include "GB_cuda_kernel.h")" << std::endl <<
-    R"(#include ")" << jit::get_user_home_cache_dir() << "/" << mxm_factory_.filename << R"(")" << std::endl <<
+    R"(#include ")" << mxm_factory_.filename << R"(")" << std::endl <<
     R"(#include ")" << hashable_name << R"(.cuh")" << std::endl;
 
     dim3 grid(gridsz);
@@ -646,10 +667,11 @@ public:
 
     GBURBLE ("(GPU phase3 launch %s st,end=%ld,%ld nblocks,blocksize= %d,%d )\n", this->Opname.c_str(),
               start,end,gridsz,blocksz) ;
+    std::cout << "HERE I AM 6" << std::endl ;
     jit::launcher( hashable_name + "_" + sr_code,
                    string_to_be_jitted.str(),
                    header_names,
-                   GB_jit_cuda_compiler_flags,
+                   GB_cuda_jit_compiler_flags ( ),
                    file_callback)
                .set_kernel_inst(final_kernel_name_ss.str(), template_types )
                                // { C->type->name,

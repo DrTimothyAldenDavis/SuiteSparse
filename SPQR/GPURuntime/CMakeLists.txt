@@ -23,7 +23,7 @@ message ( STATUS "Building SPQR/GPURUNTIME version: v"
 
 project ( suitesparse_gpuruntime 
     VERSION "${SPQR_VERSION_MAJOR}.${SPQR_VERSION_MINOR}.${SPQR_VERSION_SUB}"
-    LANGUAGES C CXX CUDA )
+    LANGUAGES CXX )
 
 #-------------------------------------------------------------------------------
 # SuiteSparse policies
@@ -117,9 +117,17 @@ if ( BUILD_STATIC_LIBS )
         POSITION_INDEPENDENT_CODE ON
         CUDA_SEPARABLE_COMPILATION ON
         CUDA_RUNTIME_LIBRARY Static )
-    target_link_libraries ( GPURuntime_static PRIVATE
-        CUDA::nvrtc CUDA::cudart_static CUDA::cublas )
+    target_link_libraries ( GPURuntime_static PRIVATE CUDA::nvrtc CUDA::cudart_static )
     target_compile_definitions ( GPURuntime_static PRIVATE "SPQR_HAS_CUDA" )
+    # FIXME: Ok to hardcode CUDA library names like this?
+    set ( GPURUNTIME_STATIC_LIBS "-L${CUDAToolkit_LIBRARY_DIR} -lcuda -lcudart_static" )
+    if ( TARGET CUDA::cublas_static )
+        target_link_libraries ( GPURuntime_static PRIVATE CUDA::cublas_static )
+        set ( GPURUNTIME_STATIC_LIBS "${GPURUNTIME_STATIC_LIBS} -lcublas_static -lcublasLt_static -lculibos" )
+    else ( )
+        target_link_libraries ( GPURuntime_static PRIVATE CUDA::cublas )
+        set ( GPURUNTIME_STATIC_LIBS "${GPURUNTIME_STATIC_LIBS} -lcublas" )
+    endif ( )
 
     target_include_directories ( GPURuntime_static 
         INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/Include>
@@ -190,10 +198,19 @@ if ( NOT MSVC )
     else ( )
         set ( includedir "\${prefix}/${SUITESPARSE_INCLUDEDIR}")
     endif ( )
+    if ( BUILD_SHARED_LIBS )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPURuntime> )
+    else ( )
+        set ( SUITESPARSE_LIB_BASE_NAME $<TARGET_FILE_BASE_NAME:GPURuntime_static> )
+    endif ( )
     configure_file (
         Config/SuiteSparse_GPURuntime.pc.in
-        SuiteSparse_GPURuntime.pc
+        SuiteSparse_GPURuntime.pc.out
         @ONLY
+        NEWLINE_STYLE LF )
+    file ( GENERATE
+        OUTPUT SuiteSparse_GPURuntime.pc
+        INPUT ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc.out
         NEWLINE_STYLE LF )
     install ( FILES
         ${CMAKE_CURRENT_BINARY_DIR}/SuiteSparse_GPURuntime.pc

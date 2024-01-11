@@ -41,7 +41,7 @@ set ( _dependencies_found ON )
 
 # Look for OpenMP
 if ( @SUITESPARSE_HAS_OPENMP@ AND NOT OpenMP_C_FOUND )
-    find_dependency ( OpenMP )
+    find_dependency ( OpenMP COMPONENTS C )
     if ( NOT OpenMP_C_FOUND )
         set ( _dependencies_found OFF )
     endif ( )
@@ -53,6 +53,7 @@ if ( NOT _dependencies_found )
 endif ( )
 
 
+# Import target
 include ( ${CMAKE_CURRENT_LIST_DIR}/SuiteSparse_configTargets.cmake )
 
 if ( @SUITESPARSE_HAS_OPENMP@ )
@@ -79,6 +80,7 @@ if ( @SUITESPARSE_HAS_OPENMP@ )
         endif ( )
     endif ( )
 endif ( )
+
 
 # The following is only for backward compatibility with FindSuiteSparse_config.
 

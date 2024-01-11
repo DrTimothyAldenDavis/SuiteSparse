@@ -11,7 +11,10 @@
  *
  * @author Aznaveh
  * */
-#include <math.h>
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <cmath>
 #include <omp.h>
 
 #include "ParU.hpp"
@@ -32,19 +35,19 @@ int main(int argc, char **argv)
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     if (A == NULL)
     {
-        printf("ParU: input matrix is invalid\n");
+        std::cout << "ParU: input matrix is invalid" << std::endl;
         exit(1);
     }
 
     if (mtype != CHOLMOD_SPARSE)
     {
-        printf("ParU: input matrix must be sparse\n");
+        std::cout << "ParU: input matrix must be sparse" << std::endl;
         exit(1);
     }
 
     if (A->xtype != CHOLMOD_REAL)
     {
-        printf("ParU: input matrix must be real\n");
+        std::cout << "ParU: input matrix must be real" << std::endl;
         exit(1);
     }
 
@@ -52,9 +55,9 @@ int main(int argc, char **argv)
     int ver[3];
     char date[128];
     ParU_Version(ver, date);
-    printf("================= ParU %d.%d.%d ==================================",
-           ver[0], ver[1], ver[2]);
-    printf(" %s\n", date);
+    std::cout << "================= ParU "
+        << ver[0] << "." << ver[1] << "."  << ver[2]
+        << " ================================== " << date << std::endl;
 
     double my_start_time = omp_get_wtime();
 
@@ -67,7 +70,7 @@ int main(int argc, char **argv)
     // Control.umfpack_default_singleton = 0;
     // Control.paru_max_threads = 6;
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
-    printf ("\n--------- ParU_Analyze:\n") ;
+    std::cout << "\n--------- ParU_Analyze:\n";
     info = ParU_Analyze(A, &Sym, &Control);
     double my_time_analyze = omp_get_wtime() - my_start_time;
     if (info != PARU_SUCCESS)
@@ -76,20 +79,26 @@ int main(int argc, char **argv)
         cholmod_l_finish(cc);
         return info;
     }
-    printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
-    printf("ParU: Symbolic factorization is done in %lfs!\n", my_time_analyze);
+    std::cout << "In: " << Sym->m << "x" << Sym->n
+        << " nnz = " << Sym->anz << std::endl;
+    std::cout << std::scientific << std::setprecision(1)
+        << "ParU: Symbolic factorization is done in " << my_time_analyze << "s!\n";
     ParU_Numeric *Num;
-    printf ("\n--------- ParU_Factorize:\n") ;
+    std::cout << "\n--------- ParU_Factorize:" << std::endl;
     double my_start_time_fac = omp_get_wtime();
     info = ParU_Factorize(A, Sym, &Num, &Control);
     double my_time_fac = omp_get_wtime() - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
-        printf("ParU: factorization was NOT successfull in %lf seconds!",
-               my_time_fac);
-        if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
-        if (info == PARU_INVALID) printf("\nInvalid!\n");
-        if (info == PARU_SINGULAR) printf("\nSingular!\n");
+        std::cout << std::scientific << std::setprecision(1)
+            << "ParU: factorization was NOT successful in " << my_time_fac
+            << " seconds!\n";
+        if (info == PARU_OUT_OF_MEMORY)
+            std::cout << "Out of memory\n";
+        if (info == PARU_INVALID)
+            std::cout << "Invalid!\n";
+        if (info == PARU_SINGULAR)
+            std::cout << "Singular!\n";
         cholmod_l_free_sparse(&A, cc);
         cholmod_l_finish(cc);
         ParU_Freesym(&Sym, &Control);
@@ -97,8 +106,9 @@ int main(int argc, char **argv)
     }
     else
     {
-        printf("ParU: factorization was successfull in %lf seconds.\n",
-               my_time_fac);
+        std::cout << std::scientific << std::setprecision(1)
+            << "ParU: factorization was successful in " << my_time_fac
+            << " seconds.\n";
     }
 
     //~~~~~~~~~~~~~~~~~~~Test the results ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -110,12 +120,12 @@ int main(int argc, char **argv)
         double *b = (double *)malloc(m * sizeof(double));
         double *xx = (double *)malloc(m * sizeof(double));
         for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-        printf ("\n--------- ParU_Solve:\n") ;
+        std::cout << "\n--------- ParU_Solve:\n";
         double my_solve_time_start = omp_get_wtime();
         info = ParU_Solve(Sym, Num, b, xx, &Control);
         if (info != PARU_SUCCESS)
         {
-            printf("ParU: Solve has a problem.\n");
+            std::cout << "ParU: Solve has a problem.\n";
             free(b);
             free(xx);
             cholmod_l_free_sparse(&A, cc);
@@ -125,22 +135,24 @@ int main(int argc, char **argv)
         }
         my_solve_time = omp_get_wtime() - my_solve_time_start;
         my_time = omp_get_wtime() - my_start_time;
-        printf("Solve time is %lf seconds.\n", my_solve_time);
+        std::cout << std::defaultfloat << std::setprecision(1)
+            << "Solve time is " << my_solve_time << " seconds.\n";
 
         // printing out x
     #if 0
-        printf("x = [");
-        for (int64_t i = 0; i < m; ++i) 
-            printf (" %.2lf, ", xx[i]);
-        printf("]\n");
+        std::cout << "x = [";
+        std::cout << std::defaultfloat  << std::setprecision(22);
+        for (int64_t i = 0; i < m; ++i)
+            std::cout << " " << xx[i] << "', ";
+        std::cout << "]\n";
     #endif
 
         double resid, anorm, xnorm;
-        printf ("\n--------- ParU_Residual:\n") ;
+        std::cout << "\n--------- ParU_Residual:\n";
         info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
         if (info != PARU_SUCCESS)
         {
-            printf("ParU: Residual has a problem.\n");
+            std::cout << "ParU: Residual has a problem.\n";
             free(b);
             free(xx);
             cholmod_l_free_sparse(&A, cc);
@@ -150,8 +162,10 @@ int main(int argc, char **argv)
         }
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
 
-        printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e "
-            " and rcond is %.2e.\n", rresid, anorm, xnorm, Num->rcond);
+        std::cout << std::scientific << std::setprecision(2)
+            << "Relative residual is |" << rresid << "|, anorm is " << anorm
+            << ", xnorm is " << xnorm << " and rcond is " << Num->rcond << "."
+            << std::endl;
 
         free(b);
         free(xx);
@@ -162,11 +176,11 @@ int main(int argc, char **argv)
             for (int64_t j = 0; j < nrhs; ++j)
                 B[j * m + i] = (double)(i + j + 1);
 
-        printf ("\n--------- ParU_Solve:\n") ;
+        std::cout << "\n--------- ParU_Solve:\n";
         info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
         if (info != PARU_SUCCESS)
         {
-            printf("ParU: mRhs Solve has a problem.\n");
+            std::cout << "ParU: mRhs Solve has a problem.\n";
             free(B);
             free(X);
             cholmod_l_free_sparse(&A, cc);
@@ -174,11 +188,11 @@ int main(int argc, char **argv)
             ParU_Freesym(&Sym, &Control);
             return info;
         }
-        printf ("\n--------- ParU_Residual:\n") ;
+        std::cout << "\n--------- ParU_Residual:\n";
         info = ParU_Residual(A, X, B, m, nrhs, resid, anorm, xnorm, &Control);
         if (info != PARU_SUCCESS)
         {
-            printf("ParU: mRhs Residual has a problem.\n");
+            std::cout << "ParU: mRhs Residual has a problem.\n";
             free(B);
             free(X);
             cholmod_l_free_sparse(&A, cc);
@@ -188,8 +202,9 @@ int main(int argc, char **argv)
         }
         rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
 
-        printf("Multiple right hand side: relative residual is |%.2e|.\n",
-                rresid);
+        std::cout << std::scientific << std::setprecision(2)
+            << "Multiple right hand side: relative residual is |"
+            << rresid << "|." << std::endl;
 
         free(B);
         free(X);
@@ -234,7 +249,7 @@ int main(int argc, char **argv)
     {
         umfpack_dl_report_info(umf_Control, Info);
         umfpack_dl_report_status(umf_Control, status);
-        printf("umfpack_dl_symbolic failed\n");
+        std::cout << "umfpack_dl_symbolic failed\n";
         exit(0);
     }
     double umf_symbolic = omp_get_wtime() - umf_start_time;
@@ -248,7 +263,7 @@ int main(int argc, char **argv)
     {
         umfpack_dl_report_info(umf_Control, Info);
         umfpack_dl_report_status(umf_Control, status);
-        printf("umfpack_dl_numeric failed\n");
+        std::cout << "umfpack_dl_numeric failed\n";
     }
 
     double umf_time_fac = omp_get_wtime() - umf_fac_start;
@@ -266,9 +281,10 @@ int main(int argc, char **argv)
     info = ParU_Residual(A, x, b, m, umf_resid, umf_anorm, umf_xnorm, &Control);
     double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 ) 
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));
-    printf( "UMFPACK relative residual is |%.2e|, anorm is %.2e, "
-            " xnorm is %.2e and rcond is %.2e.\n",
-        umf_rresid, umf_anorm, umf_xnorm, Num->rcond);
+    std::cout << std::scientific << std::setprecision(2)
+        << "UMFPACK relative residual is |" << umf_rresid << "|, anorm is "
+        << umf_anorm << ", xnorm is " << umf_xnorm << " and rcond is "
+        << Num->rcond << "." << std::endl;
 
     free(x);
     free(b);
@@ -286,15 +302,17 @@ int main(int argc, char **argv)
         res_file = fopen(res_name, "a");
         if (res_file == NULL)
         {
-            printf("Par: error in making %s to write the results!\n", res_name);
+            std::cout << "Par: error in making " << res_name << " to write the results!\n";
         }
-        fprintf(res_file, "%ld %ld %lf %lf %lf %lf %lf %lf %lf %lf\n", Sym->m,
-                Sym->anz, my_time_analyze, my_time_fac, my_solve_time, my_time,
+        fprintf(res_file, "%" PRId64" %" PRId64 " %lf %lf %lf %lf %lf %lf %lf %lf\n",
+                Sym->m, Sym->anz, my_time_analyze, my_time_fac, my_solve_time, my_time,
                 umf_symbolic, umf_time_fac, umf_solve_time, umf_time);
         fclose(res_file);
     }
-    printf("my_time = %lf umf_time=%lf umf_solv_t = %lf ratio = %lf\n", my_time,
-           umf_time, umf_solve_time, my_time / umf_time);
+    std::cout << std::scientific << std::setprecision(1)
+        << "my_time = " << my_time << " umf_time = " << umf_time
+        << " umf_solv_t = " << umf_solve_time << " ratio = "
+        << my_time / umf_time << std::endl;
 #endif  // writing to a file
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -500,7 +500,7 @@ int CHOLMOD(gpu_allocate) ( cholmod_common *Common )
         return 0;
     }
 
-    CHOLMOD(gpu_deallocate);
+    CHOLMOD(gpu_deallocate) (Common);
 
     /* allocated corresponding pinned host memory */
     requestedHostMemory = requestedDeviceMemory*CHOLMOD_HOST_SUPERNODE_BUFFERS/

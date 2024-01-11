@@ -68,17 +68,10 @@
     const bool A_ok_for_binary_search = 
         ((A_is_sparse || A_is_hyper) && !A_jumbled) ;
 
-    const int64_t *restrict A_Yp = NULL ;
-    const int64_t *restrict A_Yi = NULL ;
-    const int64_t *restrict A_Yx = NULL ;
-    int64_t A_hash_bits = 0 ;
-    if (A_is_hyper)
-    {
-        A_Yp = A->Y->p ;
-        A_Yi = A->Y->i ;
-        A_Yx = A->Y->x ;
-        A_hash_bits = A->Y->vdim - 1 ;
-    }
+    const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+    const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+    const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+    const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
 
     #if ( !GB_NO_MASK )
     const int64_t *restrict Mp = M->p ;
@@ -98,18 +91,10 @@
     int64_t mnvec = M->nvec ;
     int64_t mvlen = M->vlen ;
     // get the M hyper_hash
-    const int64_t *restrict M_Yp = NULL ;
-    const int64_t *restrict M_Yi = NULL ;
-    const int64_t *restrict M_Yx = NULL ;
-    int64_t M_hash_bits = 0 ;
-    if (M_is_hyper)
-    { 
-        // mask is present, and hypersparse
-        M_Yp = M->Y->p ;
-        M_Yi = M->Y->i ;
-        M_Yx = M->Y->x ;
-        M_hash_bits = M->Y->vdim - 1 ;
-    }
+    const int64_t *restrict M_Yp = (M->Y == NULL) ? NULL : M->Y->p ;
+    const int64_t *restrict M_Yi = (M->Y == NULL) ? NULL : M->Y->i ;
+    const int64_t *restrict M_Yx = (M->Y == NULL) ? NULL : M->Y->x ;
+    const int64_t M_hash_bits = (M->Y == NULL) ? 0 : (M->Y->vdim - 1) ;
     #endif
 
     #if !GB_A_IS_PATTERN

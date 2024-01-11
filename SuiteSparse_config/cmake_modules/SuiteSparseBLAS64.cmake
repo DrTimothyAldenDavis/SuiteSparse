@@ -37,7 +37,7 @@ set ( SuiteSparse_BLAS_integer "int64_t" )
 # https://github.com/spack/spack/blob/develop/var/spack/repos/builtin/packages/suite-sparse/package.py
 
 if ( DEFINED BLAS64_SUFFIX )
-    # append BLAS64_SUFFIX to each BLAS and LAPACK name
+    # append BLAS64_SUFFIX to each BLAS and LAPACK function name
     string ( FIND ${BLAS64_SUFFIX} "_" HAS_UNDERSCORE )
     message ( STATUS "BLAS64_suffix: ${BLAS64_SUFFIX}" )
     if ( HAS_UNDERSCORE EQUAL -1 )

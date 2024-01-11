@@ -23,7 +23,7 @@
 //------------------------------------------------------------------------------
 // CHOLMOD consists of a set of Modules, each with their own Copyright and
 // license: either LGPL-2.1+ or GPL-2.0+.  This cholmod.h file includes
-// defintions of the CHOLMOD API for all Modules, and this cholmod.h file
+// definitions of the CHOLMOD API for all Modules, and this cholmod.h file
 // itself is provided to you with a permissive license (Apache-2.0).  You are
 // permitted to provide the hooks for an optional interface to CHOLMOD in a
 // non-GPL/non-LGPL code, without requiring you to agree to the GPL/LGPL
@@ -31,6 +31,12 @@
 // relevant Modules.  The Modules themselves can only be functional if their
 // GPL or LGPL licenses are used, or if you obtain a different license from the
 // respective copyright holders.
+//
+// For the files in CHOLMOD/Include:
+// CHOLMOD/Include/cholmod.h            SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_internal.h   SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_template.h   SPDX-License-Identifier: Apache-2.0
+// CHOLMOD/Include/cholmod_types.h      SPDX-License-Identifier: Apache-2.0
 //
 // The Modify Module is co-authored by William W. Hager.
 //
@@ -240,14 +246,13 @@
 // version control
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_DATE "Dec 30, 2023"
+#define CHOLMOD_DATE "Jan 10, 2024"
 #define CHOLMOD_MAIN_VERSION   5
 #define CHOLMOD_SUB_VERSION    1
-#define CHOLMOD_SUBSUB_VERSION 0
+#define CHOLMOD_SUBSUB_VERSION 1
 
 #define CHOLMOD_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define CHOLMOD_VERSION \
-    CHOLMOD_VER_CODE(CHOLMOD_MAIN_VERSION,CHOLMOD_SUB_VERSION)
+#define CHOLMOD_VERSION CHOLMOD_VER_CODE(5,1)
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
 #ifdef __cplusplus
@@ -302,9 +307,10 @@ int cholmod_l_version (int version [3]) ;
 
 #include "SuiteSparse_config.h"
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "CHOLMOD 5.1.0 requires SuiteSparse_config 7.4 or later"
+#define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,1,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "CHOLMOD 5.1.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 //------------------------------------------------------------------------------
@@ -690,8 +696,8 @@ typedef struct cholmod_common_struct
     size_t iworksize ;  // size of Iwork, in Ints (int32 or int64).
                         // This is at most 6*nrow + ncol.
     size_t xworkbytes ; // size of Xwork, in bytes.
-        // NOTE: in CHOLMOD v4 and earlier, xworkwise was in terms
-        // of # of doubles, not # of bytes.
+        // NOTE: in CHOLMOD v4 and earlier, this variable was called xworksize,
+        // and was in terms of # of doubles, not # of bytes.
 
     void *Flag ;    // size nrow.  If this is "cleared" then
         // Flag [i] < mark for all i = 0:nrow-1.  Flag is kept cleared between

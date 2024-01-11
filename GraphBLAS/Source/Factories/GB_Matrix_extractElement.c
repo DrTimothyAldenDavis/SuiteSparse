@@ -103,27 +103,20 @@ GrB_Info GB_EXTRACT_ELEMENT     // extract a single entry, x = A(row,col)
             // A is hypersparse: look for j in hyperlist A->h [0 ... A->nvec-1]
             //------------------------------------------------------------------
 
-            int64_t k ;
-            if (A->Y == NULL)
-            { 
-                // A is hypersparse but does not yet have a hyper_hash
-                k = 0 ;
-                found = GB_lookup (true, Ah, Ap, A->vlen, &k,
-                    A->nvec-1, j, &pA_start, &pA_end) ;
-            }
-            else
-            { 
-                // A is hypersparse, with a hyper_hash that is already built
-                k = GB_hyper_hash_lookup (Ap, A->Y->p, A->Y->i, A->Y->x,
-                    A->Y->vdim-1, j, &pA_start, &pA_end) ;
-                found = (k >= 0) ;
-            }
+            const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+            const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+            const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+            const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
+            int64_t k = GB_hyper_hash_lookup (Ah, A->nvec, Ap, A_Yp, A_Yi, A_Yx,
+                A_hash_bits, j, &pA_start, &pA_end) ;
+            found = (k >= 0) ;
             if (!found)
             { 
                 // vector j is empty
                 return (GrB_NO_VALUE) ;
             }
             ASSERT (j == Ah [k]) ;
+
         }
         else
         { 

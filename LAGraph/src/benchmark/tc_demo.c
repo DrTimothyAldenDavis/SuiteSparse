@@ -149,7 +149,7 @@ int main (int argc, char **argv)
     // warmup for more accurate timing, and also print # of triangles
     double ttot = LAGraph_WallClockTime ( ) ;
     printf ("\nwarmup method: ") ;
-    int presort = LAGr_TriangleCount_AutoSort ; // = 0 (auto selection)
+    LAGr_TriangleCount_Presort presort = LAGr_TriangleCount_AutoSort ;
     print_method (stdout, 6, presort) ;
 
     // warmup method:

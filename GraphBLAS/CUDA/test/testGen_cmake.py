@@ -1,4 +1,11 @@
+#-------------------------------------------------------------------------------
+# GraphBLAS/CUDA/test/testGen_cmake.py
+#-------------------------------------------------------------------------------
+
 # SPDX-License-Identifier: Apache-2.0
+
+#-------------------------------------------------------------------------------
+
 # Generate test instances from a large tensor product set of options
 
 GB_TYPE_PREFIX = "GrB"

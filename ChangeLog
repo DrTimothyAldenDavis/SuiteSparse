@@ -1,3 +1,38 @@
+Jan 10, 2024: version 7.5.0
+
+    * Suitesparse_config: 7.5.0, to reflect the addition of GraphBLAS 9.0.0.
+        Minor updates to build system, including bug fixes when specifying a
+        specific BLAS/LAPACK library, and configuration of *.pc files.
+    * GraphBLAS 9.0.0: supporting the v2.1 C API;
+        see https://github.com/GraphBLAS/graphblas-api-c
+    * Example 1.6.0: using GraphBLAS 9.0.0 and SuiteSparse_config 7.5.0,
+        remove explicit dependencies on OpenMP, libm, GMP, and MPFR.
+        Add programs to test the *Config.cmake of each package.
+    * All other packages (except CSparse): minor updates to build system
+        and MATLAB interfaces
+
+    * Package versions in this release:
+        SuiteSparse_config 7.5.0
+        AMD 3.3.1
+        BTF 2.3.1
+        CAMD 3.3.1
+        CCOLAMD 3.3.1
+        CHOLMOD 5.1.1
+        COLAMD 3.3.1
+        CSparse 4.3.0 (unchanged from SuiteSparse 7.4.0)
+        CXSparse 4.3.1
+        Example 1.6.0
+        GraphBLAS 9.0.0
+        KLU 2.3.1
+        LDL 3.3.1
+        LAGraph 1.1.1
+        SuiteSparse_Mongoose 3.3.1
+        ParU 0.1.1
+        RBio 4.3.1
+        SPEX 2.3.1
+        SPQR 4.3.1
+        UMFPACK 6.3.1
+
 Dec 30, 2023: version 7.4.0
 
     * major change to build system: by Markus Mützel.  Includes a

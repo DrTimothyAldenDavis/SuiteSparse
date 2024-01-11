@@ -10,6 +10,7 @@
  * @brief   a simple test to show how to use ParU with C interface
  * @author Aznaveh
  * */
+#include <stdint.h>
 #include <math.h>
 
 #include "ParU_C.h"
@@ -31,20 +32,20 @@ int main(int argc, char **argv)
     ParU_C_Init_Control(&Control);
     ParU_Ret info;
     info = ParU_C_Analyze(A, &Sym, &Control);
-    printf("Input matrix is %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
+    printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
     ParU_C_Numeric *Num;
     info = ParU_C_Factorize(A, Sym, &Num, &Control);
 
     if (info != PARU_SUCCESS)
     {
-        printf("ParU: factorization was NOT successfull.");
+        printf("ParU: factorization was NOT successful.");
         if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
         if (info == PARU_INVALID) printf("\nInvalid!\n");
         if (info == PARU_SINGULAR) printf("\nSingular!\n");
     }
     else
     {
-        printf("ParU: factorization was successfull.\n");
+        printf("ParU: factorization was successful.\n");
     }
 
     //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

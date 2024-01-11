@@ -34,6 +34,8 @@ GrB_Info GxB_Context_free           // free a Context
         if (Context != NULL)
         {
             size_t header_size = Context->header_size ;
+            // free the Context user_name
+            GB_FREE (&(Context->user_name), Context->user_name_size) ;
             if (header_size > 0)
             { 
                 Context->magic = GB_FREED ;  // to help detect dangling pointers

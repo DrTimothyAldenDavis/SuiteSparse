@@ -21,37 +21,29 @@ end
 
 details = 0 ;       % 1 if details of each command are to be printed
 
-v = version ;
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-    mac = ismac ;
-catch
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-    mac = 0 ;
-end
-
  % -R2018a: interleaved complex is required
 flags = '-O -R2018a -silent ' ;
 
+if (ispc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
+end
+
 include = '-I. -I.. -I../../AMD/Include -I../../COLAMD/Include -I../../CCOLAMD/Include -I../../CAMD/Include -I../Include -I../../SuiteSparse_config' ;
 
-if (~pc)
+if (~ispc)
     % Linux/Unix require these flags for large file support
     include = [include ' -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE'] ;
 end
 
  % Determine if METIS is available
-have_metis = exist ('../SuiteSparse_metis', 'dir') ;
-
-if (have_metis)
-    fprintf ('Compiling CHOLMOD with METIS for MATLAB Version %s\n', v) ;
+if (exist ('../SuiteSparse_metis', 'dir'))
+    fprintf ('Compiling CHOLMOD with METIS for MATLAB Version %s\n', version) ;
     include = [include ' -I../SuiteSparse_metis/include'] ;
     include = [include ' -I../SuiteSparse_metis/GKlib'] ;
     include = [include ' -I../SuiteSparse_metis/libmetis'] ;
 else
-    fprintf ('Compiling CHOLMOD without METIS for MATLAB Version %s\n', v) ;
+    fprintf ('Compiling CHOLMOD without METIS for MATLAB Version %s\n', version) ;
     include = ['-DNPARTITION ' include] ;
 end
 
@@ -59,10 +51,7 @@ end
  % BLAS option
  %---------------------------------------------------------------------------
 
- % This is exceedingly ugly.  The MATLAB mex command needs to be told where to
- % find the LAPACK and BLAS libraries, which is a real portability nightmare.
-
-if (pc)
+if (ispc)
     % BLAS/LAPACK functions have no underscore on Windows
     flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
     if (verLessThan ('matlab', '9.5'))
@@ -79,7 +68,7 @@ end
  % using the 64-bit BLAS
 flags = [flags ' -DBLAS64'] ;
 
-if (~(pc || mac))
+if (~(ispc || ismac))
     % for POSIX timing routine
     lapack = [lapack ' -lrt'] ;
 end
@@ -247,7 +236,7 @@ cholmod_mex_src = { ...
     'mwrite', ...
     'lxbpattern', 'lsubsolve' } ;   % <=== these 2 are just for testing
 
-if (pc)
+if (ispc)
     obj_extension = '.obj' ;
 else
     obj_extension = '.o' ;

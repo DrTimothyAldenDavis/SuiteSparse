@@ -17,8 +17,8 @@
 // These parameters define the content of values that can be
 // used as inputs to GxB_*Option_set.
 
-// The default format is by row (CSR).
 #define GB_HYPER_SWITCH_DEFAULT (0.0625)
+#define GB_HYPER_HASH_DEFAULT (1024)
 
 // by default, give each thread at least 64K units of work to do
 #define GB_CHUNK_DEFAULT (64*1024)

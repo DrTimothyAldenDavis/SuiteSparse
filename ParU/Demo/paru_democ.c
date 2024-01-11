@@ -11,6 +11,7 @@
  *
  * @author Aznaveh
  * */
+#include <stdint.h>
 #include <math.h>
 #include <omp.h>
 
@@ -77,7 +78,7 @@ int main(int argc, char **argv)
         cholmod_l_finish(cc);
         return info;
     }
-    printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
+    printf("In: %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
     printf("ParU: Symbolic factorization is done in %lfs!\n", my_time_analyze);
     ParU_C_Numeric *Num;
     printf ("\n--------- ParU_C_Factorize:\n") ;
@@ -86,7 +87,7 @@ int main(int argc, char **argv)
     double my_time_fac = omp_get_wtime() - my_start_time_fac;
     if (info != PARU_SUCCESS)
     {
-        printf("ParU: factorization was NOT successfull in %lf seconds!",
+        printf("ParU: factorization was NOT successful in %lf seconds!",
                my_time_fac);
         if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
         if (info == PARU_INVALID) printf("\nInvalid!\n");
@@ -98,7 +99,7 @@ int main(int argc, char **argv)
     }
     else
     {
-        printf("ParU: factorization was successfull in %lf seconds.\n",
+        printf("ParU: factorization was successful in %lf seconds.\n",
                my_time_fac);
     }
 

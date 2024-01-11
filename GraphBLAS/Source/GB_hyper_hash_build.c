@@ -35,9 +35,11 @@ GrB_Info GB_hyper_hash_build    // construct A->Y if not already constructed
     // check inputs
     //--------------------------------------------------------------------------
 
-    if (A == NULL || !GB_NEED_HYPER_HASH (A))
+    if (!GB_hyper_hash_need (A))
     { 
-        // quick return: A is NULL, not hypersparse, or A->Y already computed
+        // quick return: A is NULL, not hypersparse, A->Y already computed,
+        // or A does not have enough non-empty vectors to warrant the creation
+        // of the A->Y hyper_hash
         return (GrB_SUCCESS) ;
     }
 

@@ -38,6 +38,7 @@ typedef struct
     float bitmap_switch [GxB_NBITMAP_SWITCH] ; // default bitmap_switch
     float hyper_switch ;        // default hyper_switch for new matrices
     bool is_csc ;               // default CSR/CSC format for new matrices
+    int64_t hyper_hash ;        // controls when A->Y hyper_hash is created
 
     //--------------------------------------------------------------------------
     // abort function: only used for debugging
@@ -50,7 +51,7 @@ typedef struct
     //--------------------------------------------------------------------------
 
     // All threads must use the same malloc/realloc/free functions.
-    // They default to the ANSI C11 functions, but can be defined by GxB_init.
+    // They default to the C11 functions, but can be defined by GxB_init.
 
     void * (* malloc_function  ) (size_t)         ;     // required
     void * (* calloc_function  ) (size_t, size_t) ;     // may be NULL
@@ -175,10 +176,12 @@ static GB_Global_struct GB_Global =
 
     .is_csc = false,    // default is GxB_BY_ROW
 
+    .hyper_hash = GB_HYPER_HASH_DEFAULT,
+
     // abort function for debugging only
     .abort_function   = abort,
 
-    // malloc/realloc/free functions: default to ANSI C11 functions
+    // malloc/realloc/free functions: default to C11 functions
     .malloc_function  = malloc,
     .realloc_function = realloc,
     .free_function    = free,
@@ -340,6 +343,20 @@ void GB_Global_hyper_switch_set (float hyper_switch)
 float GB_Global_hyper_switch_get (void)
 { 
     return (GB_Global.hyper_switch) ;
+}
+
+//------------------------------------------------------------------------------
+// hyper_hash
+//------------------------------------------------------------------------------
+
+void GB_Global_hyper_hash_set (int64_t hyper_hash)
+{ 
+    GB_Global.hyper_hash = hyper_hash ;
+}
+
+int64_t GB_Global_hyper_hash_get (void)
+{ 
+    return (GB_Global.hyper_hash) ;
 }
 
 //------------------------------------------------------------------------------

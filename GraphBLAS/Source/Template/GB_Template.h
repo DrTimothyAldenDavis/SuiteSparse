@@ -33,7 +33,7 @@
 
 // Intentionally shadow the built-in "restrict" keyword.  See GraphBLAS.h for
 // the definition of GB_restrict.  It becomes empty for C++, and "__restrict"
-// for MS Visual Studio.  Otherwise, GB_restrict is just "restrict" on ANSI C11
+// for MS Visual Studio.  Otherwise, GB_restrict is just "restrict" on C11
 // compliant compilers.  I prefer to use the "restrict" keyword to make the
 // code readable.  This #define is a patch for compilers that don't support it:
 

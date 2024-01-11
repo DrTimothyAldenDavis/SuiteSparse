@@ -16,8 +16,10 @@
 
 #include "demos.h"
 
+#if defined (__GNUC__)
 // ignore warnings about unused parameters in this file
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 //------------------------------------------------------------------------------
 // SPEX_print_options

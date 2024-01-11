@@ -64,8 +64,10 @@
 #include "spex_util_internal.h"
 #include "SPEX_gmp.h"
 
+#if defined (__GNUC__)
 // ignore warnings about unused parameters in this file
 #pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
 //------------------------------------------------------------------------------
 // global variables
@@ -79,9 +81,9 @@ void **spex_gmp_list = NULL ;   // list of malloc'd objects
 int64_t spex_gmp_ntrials = -1 ; // number of malloc's allowed (for
                                 // testing only): -1 means unlimited.
 
-mpz_t  *spex_gmpz_archive  = NULL ;    // current mpz object
-mpq_t  *spex_gmpq_archive  = NULL ;    // current mpq object
-mpfr_t *spex_gmpfr_archive = NULL ;    // current mpfr object
+mpz_ptr  spex_gmpz_archive  = NULL ;    // current mpz object
+mpq_ptr  spex_gmpq_archive  = NULL ;    // current mpq object
+mpfr_ptr spex_gmpfr_archive = NULL ;    // current mpfr object
 
 //------------------------------------------------------------------------------
 // spex_gmp_init: initialize gmp

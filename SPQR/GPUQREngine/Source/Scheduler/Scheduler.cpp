@@ -21,10 +21,12 @@
 // the constructor is responsible for memory management AND initialization.
 // =============================================================================
 
+#define GPUQRENGINE_NO_EXTERN_SCHEDULER
+#include "GPUQREngine_Scheduler.hpp"
+
 // -----------------------------------------------------------------------------
 // Macro destructor
 // -----------------------------------------------------------------------------
-#include "GPUQREngine_Scheduler.hpp"
 #define FREE_EVERYTHING_SCHEDULER \
     afPerm = (Int *) SuiteSparse_free(afPerm); \
     afPinv = (Int *) SuiteSparse_free(afPinv); \
@@ -159,18 +161,6 @@ Scheduler <Int>::Scheduler
     renderCount = 0;
     #endif
 }
-template Scheduler <int32_t>::Scheduler
-(
-    Front <int32_t> *fronts,
-    int32_t numFronts,
-    size_t gpuMemorySize
-) ;
-template Scheduler <int64_t>::Scheduler
-(
-    Front <int64_t> *fronts,
-    int64_t numFronts,
-    size_t gpuMemorySize
-) ;
 
 // -----------------------------------------------------------------------------
 // Scheduler destructor
@@ -180,9 +170,6 @@ Scheduler <Int>::~Scheduler()
 {
     FREE_EVERYTHING_SCHEDULER ;
 }
-template Scheduler <int32_t>::~Scheduler() ;
-template Scheduler <int64_t>::~Scheduler() ;
-
 
 // -----------------------------------------------------------------------------
 // Scheduler::initialize
@@ -274,11 +261,16 @@ bool Scheduler <Int>::initialize
     return cuda_ok;
 }
 
-template bool Scheduler <int32_t>::initialize
-(
-    size_t gpuMemorySize
-) ;
-template bool Scheduler <int64_t>::initialize
-(
-    size_t gpuMemorySize
-) ;
+// Instantiate Scheduler class template with types int32_t and int64_t
+// for export from library.
+
+#include "Scheduler_FillWorkQueue.cpp"
+#include "Scheduler_Front.cpp"
+#include "Scheduler_LaunchKernel.cpp"
+#include "Scheduler_PostProcess.cpp"
+#include "Scheduler_Render.cpp"
+#include "Scheduler_TransferData.cpp"
+
+template class Scheduler<int32_t>;
+template class Scheduler<int64_t>;
+

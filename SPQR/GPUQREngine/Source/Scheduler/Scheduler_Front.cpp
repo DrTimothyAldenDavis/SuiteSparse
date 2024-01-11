@@ -29,7 +29,12 @@
 //    to not accidentally free a front whose R factor is still in transit.
 //
 // =============================================================================
+
+#include <iostream>
+#include <iomanip>
+
 #include "GPUQREngine_Scheduler.hpp"
+
 // -----------------------------------------------------------------------------
 // Scheduler::activateFront
 // -----------------------------------------------------------------------------
@@ -69,14 +74,7 @@ void Scheduler <Int>::activateFront
         }
     }
 }
-template void Scheduler <int32_t>::activateFront
-(
-    int32_t f                                      // The front id to manipulate
-) ;
-template void Scheduler <int64_t>::activateFront
-(
-    int64_t f                                      // The front id to manipulate
-) ;
+
 // -----------------------------------------------------------------------------
 // Scheduler::pullFrontData
 // -----------------------------------------------------------------------------
@@ -131,14 +129,6 @@ bool Scheduler <Int>::pullFrontData
     return (FrontDataPulled[f] = true);
 }
 
-template bool Scheduler <int32_t>::pullFrontData
-(
-    int32_t f                                      // The front id to manipulate
-) ;
-template bool Scheduler <int64_t>::pullFrontData
-(
-    int64_t f                                      // The front id to manipulate
-) ;
 // -----------------------------------------------------------------------------
 // Scheduler::finishFront
 // -----------------------------------------------------------------------------
@@ -179,14 +169,6 @@ bool Scheduler <Int>::finishFront
     /* If we got through this method, we have successfully freed the front. */
     return true;
 }
-template bool Scheduler <int32_t>::finishFront
-(
-    int32_t f                                     // The front id to manipulate
-) ;
-template bool Scheduler <int64_t>::finishFront
-(
-    int64_t f                                     // The front id to manipulate
-) ;
 
 #include "GPUQREngine.hpp"
 // -----------------------------------------------------------------------------
@@ -205,36 +187,39 @@ void Scheduler <Int>::debugDumpFront(Front <Int> *front)
     Int fn = front->fn;
     wsFront->assign(wsFront->cpu(), front->gpuF);
     wsFront->transfer(cudaMemcpyDeviceToHost);
-    printf("--- %g ---\n", (double) (front->fidg));
+    std::cout << "--- " << static_cast<double> (front->fidg) << " ---" << std::endl;
 
 //  for(Int i=0; i<fm; i++)
 //  {
+//      std::cout << std::setw(16) << std::setprecision(8);
 //      for(Int j=0; j<fn; j++)
 //      {
-//          printf("%16.8e ", F[i*fn+j]);
+//          std::cout << F[i*fn+j] << " ";
 //      }
 //      printf("\n");
 //  }
 
     for (int64_t j = 0 ; j < fn ; j++)
     {
-        printf ("   --- column %ld of %ld\n", (int64_t) j, (int64_t) fn) ;
+        std::cout << "   --- column " << std::setw(0) << j << " of " << fn << std::endl;
         for (int64_t i = 0 ; i < fm ; i++)
         {
-            if (i == j) printf ("      [ diag:     ") ;
-            else        printf ("      row %4ld    ", i) ;
-            printf (" %10.4g", F [fn*i+j]) ;
-            if (i == j) printf (" ]\n") ;
-            else        printf ("\n") ;
+            if (i == j)
+                std::cout << "      [ diag:      ";
+            else
+                std::cout << "      row " << std::setw(4) << i << "     ";
+            std::cout << std::setw(10) << std::setprecision(4) << F [fn*i+j];
+            if (i == j)
+                std::cout << " ]" << std::endl;
+            else
+                std::cout << std::endl;
         }
-        printf ("\n") ;
+        std::cout << std::endl;
     }
 
-    printf("----------\n");
+    std::cout << "----------" << std::endl;
     wsFront->assign(wsFront->cpu(), NULL);
     wsFront = Workspace::destroy(wsFront);
 }
-template void Scheduler <int32_t>::debugDumpFront(Front <int32_t> *front) ;
-template void Scheduler <int64_t>::debugDumpFront(Front <int64_t> *front) ;
 
 #endif

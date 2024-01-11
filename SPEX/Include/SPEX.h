@@ -259,15 +259,16 @@
 // Version
 //------------------------------------------------------------------------------
 
-#define SPEX_DATE "Dec 30, 2023"
-#define SPEX_VERSION "2.3.0"
+#define SPEX_DATE "Jan 10, 2024"
+#define SPEX_VERSION "2.3.1"
 #define SPEX_VERSION_MAJOR 2
 #define SPEX_VERSION_MINOR 3
-#define SPEX_VERSION_SUB   0
+#define SPEX_VERSION_SUB   1
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,4))
-#error "SPEX 2.3.0 requires SuiteSparse_config 7.4.0 or later"
+#define SPEX__VERSION SUITESPARSE__VERCODE(2,3,1)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
+#error "SPEX 2.3.1 requires SuiteSparse_config 7.5.0 or later"
 #endif
 
 #if defined ( __cplusplus )

@@ -21,7 +21,7 @@
 
 enum QREngineResultCode
 {
-    QRENGINE_SUCCESS,           // GPU QR was successfull
+    QRENGINE_SUCCESS,           // GPU QR was successful
     QRENGINE_OUTOFMEMORY,       // GPU QR ran out of memory
     QRENGINE_GPUERROR           // failed to communicated with the GPU
 };

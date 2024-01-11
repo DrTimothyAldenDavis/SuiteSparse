@@ -47,7 +47,7 @@ void GB_macrofy_cast_output
 
     if (f == NULL)
     { 
-        // ANSI C11 typecasting
+        // C11 typecasting
         ASSERT (ztype != xtype) ;
         fprintf (fp, "#define %s(%s,%s) %s = (%s) (%s)\n",
             macro_name, zarg, xargs, xexpr, xtype->name, zarg) ;

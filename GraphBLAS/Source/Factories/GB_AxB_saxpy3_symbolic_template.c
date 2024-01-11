@@ -76,10 +76,10 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
     ASSERT (GB_A_IS_FULL   == GB_IS_FULL   (A)) ;
 
     #if GB_A_IS_HYPER
-    const int64_t *restrict A_Yp = A->Y->p ;
-    const int64_t *restrict A_Yi = A->Y->i ;
-    const int64_t *restrict A_Yx = A->Y->x ;
-    int64_t A_hash_bits = A->Y->vdim - 1 ;
+    const int64_t *restrict A_Yp = (A->Y == NULL) ? NULL : A->Y->p ;
+    const int64_t *restrict A_Yi = (A->Y == NULL) ? NULL : A->Y->i ;
+    const int64_t *restrict A_Yx = (A->Y == NULL) ? NULL : A->Y->x ;
+    const int64_t A_hash_bits = (A->Y == NULL) ? 0 : (A->Y->vdim - 1) ;
     #endif
 
     #if ( !GB_NO_MASK )
@@ -95,18 +95,10 @@ void GB_EVAL2 (GB (AxB_saxpy3_sym), GB_MASK_A_B_SUFFIX)
     const bool M_is_bitmap = GB_IS_BITMAP (M) ;
     const bool M_jumbled = GB_JUMBLED (M) ;
     // get the M hyper_hash
-    const int64_t *restrict M_Yp = NULL ;
-    const int64_t *restrict M_Yi = NULL ;
-    const int64_t *restrict M_Yx = NULL ;
-    int64_t M_hash_bits = 0 ;
-    if (M_is_hyper)
-    { 
-        // mask is present, and hypersparse
-        M_Yp = M->Y->p ;
-        M_Yi = M->Y->i ;
-        M_Yx = M->Y->x ;
-        M_hash_bits = M->Y->vdim - 1 ;
-    }
+    const int64_t *restrict M_Yp = (M->Y == NULL) ? NULL : M->Y->p ;
+    const int64_t *restrict M_Yi = (M->Y == NULL) ? NULL : M->Y->i ;
+    const int64_t *restrict M_Yx = (M->Y == NULL) ? NULL : M->Y->x ;
+    const int64_t M_hash_bits = (M->Y == NULL) ? 0 : (M->Y->vdim - 1) ;
     #endif
 
     //==========================================================================

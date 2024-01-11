@@ -4,7 +4,8 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# GraphBLASConfig.cmake, Copyright (c) 2023, Timothy A. Davis.  All Rights Reserved.
+# GraphBLASConfig.cmake, Copyright (c) 2024, Timothy A. Davis.  All Rights
+# Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------
@@ -62,7 +63,7 @@ endif ( )
 
 # Look for OpenMP
 if ( @GRAPHBLAS_HAS_OPENMP@ AND NOT OpenMP_C_FOUND )
-    find_dependency ( OpenMP )
+    find_dependency ( OpenMP COMPONENTS C )
     if ( NOT OpenMP_C_FOUND )
         set ( _dependencies_found OFF )
     endif ( )
@@ -110,6 +111,7 @@ set ( _var_prefix "GRAPHBLAS" )
 if ( NOT @BUILD_SHARED_LIBS@ AND NOT TARGET ${_target_shared} )
     # make sure there is always an import target without suffix )
     add_library ( ${_target_shared} ALIAS ${_target_static} )
+    set ( _shared_is_aliased ON )
 endif ( )
 
 get_target_property ( ${_var_prefix}_INCLUDE_DIR ${_target_shared} INTERFACE_INCLUDE_DIRECTORIES )
@@ -188,3 +190,63 @@ message ( STATUS "GraphBLAS version: ${GRAPHBLAS_VERSION}" )
 message ( STATUS "GraphBLAS include: ${GRAPHBLAS_INCLUDE_DIR}" )
 message ( STATUS "GraphBLAS library: ${GRAPHBLAS_LIBRARY}" )
 message ( STATUS "GraphBLAS static:  ${GRAPHBLAS_STATIC}" )
+
+if ( NOT _shared_is_aliased AND GRAPHBLAS_LIBRARY )
+    # Get library name from filename of library
+    # This might be something like:
+    #   /usr/lib/libgraphblas.so or /usr/lib/libgraphblas.a or graphblas64
+    # convert to library name that can be used with -l flags for pkg-config
+    set ( GRAPHBLAS_LIBRARY_TMP ${GRAPHBLAS_LIBRARY} )
+    string ( FIND ${GRAPHBLAS_LIBRARY} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( _graphblas_library_name ${GRAPHBLAS_LIBRARY} )
+    else ( )
+      set ( _kinds "SHARED" "STATIC" )
+      if ( WIN32 )
+          list ( PREPEND _kinds "IMPORT" )
+      endif ( )
+      foreach ( _kind IN LISTS _kinds )
+          set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+          if ( ${GRAPHBLAS_LIBRARY} MATCHES ${_regex} )
+              string ( REGEX REPLACE ${_regex} "\\2" _libname ${GRAPHBLAS_LIBRARY} )
+              if ( NOT "${_libname}" STREQUAL "" )
+                  set ( _graphblas_library_name ${_libname} )
+                  break ()
+              endif ( )
+          endif ( )
+      endforeach ( )
+    endif ( )
+
+    set_target_properties ( SuiteSparse::GraphBLAS PROPERTIES
+        OUTPUT_NAME ${_graphblas_library_name} )
+endif ( )
+
+if ( GRAPHBLAS_STATIC )
+    # Get library name from filename of library
+    # This might be something like:
+    #   /usr/lib/libgraphblas.so or /usr/lib/libgraphblas.a or graphblas64
+    # convert to library name that can be used with -l flags for pkg-config
+    set ( GRAPHBLAS_LIBRARY_TMP ${GRAPHBLAS_STATIC} )
+    string ( FIND ${GRAPHBLAS_STATIC} "." _pos REVERSE )
+    if ( ${_pos} EQUAL "-1" )
+        set ( _graphblas_library_name ${GRAPHBLAS_STATIC} )
+    else ( )
+      set ( _kinds "SHARED" "STATIC" )
+      if ( WIN32 )
+          list ( PREPEND _kinds "IMPORT" )
+      endif ( )
+      foreach ( _kind IN LISTS _kinds )
+          set ( _regex ".*\\/(lib)?([^\\.]*)(${CMAKE_${_kind}_LIBRARY_SUFFIX})" )
+          if ( ${GRAPHBLAS_STATIC} MATCHES ${_regex} )
+              string ( REGEX REPLACE ${_regex} "\\2" _libname ${GRAPHBLAS_STATIC} )
+              if ( NOT "${_libname}" STREQUAL "" )
+                  set ( _graphblas_library_name ${_libname} )
+                  break ()
+              endif ( )
+          endif ( )
+      endforeach ( )
+    endif ( )
+
+    set_target_properties ( SuiteSparse::GraphBLAS_static PROPERTIES
+        OUTPUT_NAME ${_graphblas_library_name} )
+endif ( )

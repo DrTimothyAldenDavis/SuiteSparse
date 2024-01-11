@@ -10,7 +10,10 @@
  * @brief   a simple test to show how to use ParU in C++
  * @author Aznaveh
  * */
-#include <math.h>
+#include <iostream>
+#include <iomanip>
+#include <ios>
+#include <cmath>
 
 #include "ParU.hpp"
 int main(int argc, char **argv)
@@ -26,24 +29,28 @@ int main(int argc, char **argv)
     // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    printf("================= ParU, a simple demo: ========================\n");
+    std::cout << "================= ParU, a simple demo: ========================\n";
     ParU_Control Control;
     ParU_Ret info;
     info = ParU_Analyze(A, &Sym, &Control);
-    printf("Input matrix is %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
+    std::cout << "Input matrix is " << Sym->m << "x" << Sym->n
+        << " nnz = " << Sym->anz << std::endl;
     ParU_Numeric *Num;
     info = ParU_Factorize(A, Sym, &Num, &Control);
 
     if (info != PARU_SUCCESS)
     {
-        printf("ParU: factorization was NOT successfull.");
-        if (info == PARU_OUT_OF_MEMORY) printf("\nOut of memory\n");
-        if (info == PARU_INVALID) printf("\nInvalid!\n");
-        if (info == PARU_SINGULAR) printf("\nSingular!\n");
+        std::cout << "ParU: factorization was NOT successful.\n";
+        if (info == PARU_OUT_OF_MEMORY)
+            std::cout << "Out of memory\n";
+        if (info == PARU_INVALID)
+            std::cout << "Invalid!\n";
+        if (info == PARU_SINGULAR)
+            std::cout << "Singular!\n";
     }
     else
     {
-        printf("ParU: factorization was successfull.\n");
+        std::cout << "ParU: factorization was successful." << std::endl;
     }
 
     //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,9 +65,10 @@ int main(int argc, char **argv)
         double resid, anorm, xnorm;
         info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
-        printf(
-            "Relative residual is |%.2e| anorm is %.2e, xnorm is %.2e"
-            " and rcond is %.2e.\n", rresid, anorm, xnorm, Num->rcond);
+        std::cout << std::scientific << std::setprecision(2)
+            << "Relative residual is |" << rresid << "| anorm is " << anorm
+            << ", xnorm is " << xnorm << " and rcond is " << Num->rcond << "."
+            << std::endl;
         free(b);
         free(xx);
     }

@@ -61,7 +61,7 @@ uninstall:
 
 # remove all files not in the distribution
 clean:
-	- $(RM) -rf build/* Config/*.tmp
+	- $(RM) -rf build/* Config/*.tmp temp.rb
 
 purge: clean
 

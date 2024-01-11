@@ -11,6 +11,8 @@
 #ifndef SUITESPARSE_GPURUNTIME_WORKSPACE_HPP
 #define SUITESPARSE_GPURUNTIME_WORKSPACE_HPP
 
+#include <new>
+
 #include "SuiteSparseGPU_internal.hpp"
 
 class Workspace
@@ -35,7 +37,6 @@ public:
     void *gpu(void){ return gpuReference; }
 
     // Constructor/Destructor
-    void *operator new(size_t bytes, Workspace* ptr){ return ptr; }
     Workspace(size_t nitems, size_t size_of_item);
     ~Workspace();
 

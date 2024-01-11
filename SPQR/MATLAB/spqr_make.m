@@ -20,45 +20,33 @@ function spqr_make
 % SPQR, Copyright (c) 2008-2022, Timothy A Davis. All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0+
 
+if verLessThan ('matlab', '9.4')
+    error ('MATLAB 9.4 (R2018a) or later is required') ;
+end
+
 details = 0 ;       % 1 if details of each command are to be printed, 0 if not
 
-v = version ;
-fprintf ('Compiling SuiteSparseQR on MATLAB Version %s\n', v);
+% TODO: after removing interleaved complex support, use these flags:
+% flags = '-O -R2018a -silent ' ;
+% instead of these:
+flags = '-O -largeArrayDims -silent ' ;
 
-try
-    % ispc does not appear in MATLAB 5.3
-    pc = ispc ;
-    mac = ismac ;
-catch                                                                       %#ok
-    % if ispc fails, assume we are on a Windows PC if it's not unix
-    pc = ~isunix ;
-    mac = 0 ;
-end
-
-flags = '' ;
-is64 = (~isempty (strfind (computer, '64'))) ;
-if (is64)
-    % 64-bit MATLAB
-    flags = '-largeArrayDims' ;
-else
-    error ('32-bit version no longer supported') ;
-end
-
-% MATLAB 8.3.0 now has a -silent option to keep 'mex' from burbling too much
-if (~verLessThan ('matlab', '8.3.0'))
-    flags = ['-silent ' flags] ;
+if (ispc)
+    % MSVC does not define ssize_t
+    flags = [flags ' -DNO_SSIZE_T'] ;
 end
 
 include = '-DNMATRIXOPS -DNMODIFY -I. -I../../AMD/Include -I../../COLAMD/Include -I../../CHOLMOD/Include -I../Include -I../../SuiteSparse_config' ;
 
-% Determine if METIS is available (not available on Windows)
-metis_path = '../../CHOLMOD/SuiteSparse_metis' ;
-have_metis = exist (metis_path, 'dir') && ~ispc ;
-
-if (have_metis)
-    include = [include ' -I' metis_path '/include'] ;
-    include = [include ' -I' metis_path '/GKlib'] ;
-    include = [include ' -I' metis_path '/libmetis'] ;
+% Determine if METIS is available
+if (exist ('../../CHOLMOD/SuiteSparse_metis', 'dir'))
+    fprintf ('Compiling SPQR with METIS for MATLAB Version %s\n', version) ;
+    include = [include ' -I../../CHOLMOD/SuiteSparse_metis/include'] ;
+    include = [include ' -I../../CHOLMOD/SuiteSparse_metis/GKlib'] ;
+    include = [include ' -I../../CHOLMOD/SuiteSparse_metis/libmetis'] ;
+else
+    fprintf ('Compiling SPQR without METIS for MATLAB Version %s\n', version) ;
+    include = ['-DNPARTITION ' include] ;
 end
 
 include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMOD' ] ;
@@ -67,20 +55,10 @@ include = [include ' -I../../CCOLAMD/Include -I../../CAMD/Include -I../../CHOLMO
 % BLAS option
 %-------------------------------------------------------------------------------
 
-% This is exceedingly ugly.  The MATLAB mex command needs to be told where to
-% find the LAPACK and BLAS libraries, which is a real portability nightmare.
-% The correct option is highly variable and depends on the MATLAB version.
-
-if (pc)
+if (ispc)
     % BLAS/LAPACK functions have no underscore on Windows
     flags = [flags ' -DBLAS_NO_UNDERSCORE'] ;
-    if (verLessThan ('matlab', '6.5'))
-        % MATLAB 6.1 and earlier: use the version supplied in CHOLMOD
-        lib = '../../CHOLMOD/MATLAB/lcc_lib/libmwlapack.lib' ;
-    elseif (verLessThan ('matlab', '7.5'))
-        % use the built-in LAPACK lib (which includes the BLAS)
-        lib = 'libmwlapack.lib' ;
-    elseif (verLessThan ('matlab', '9.5'))
+    if (verLessThan ('matlab', '9.5'))
         lib = 'libmwlapack.lib libmwblas.lib' ;
     else
         lib = '-lmwlapack -lmwblas' ;
@@ -88,35 +66,16 @@ if (pc)
 else
     % BLAS/LAPACK functions have an underscore suffix
     flags = [flags ' -DBLAS_UNDERSCORE'] ;
-    if (verLessThan ('matlab', '7.5'))
-        % MATLAB 7.5 and earlier, use the LAPACK lib (including the BLAS)
-        lib = '-lmwlapack' ;
-    else
-        % MATLAB 7.6 requires the -lmwblas option; earlier versions do not
-        lib = '-lmwlapack -lmwblas' ;
-    end
+    lib = '-lmwlapack -lmwblas' ;
 end
 
-if (~verLessThan ('matlab', '7.8'))
-    % versions 7.8 and later on 64-bit platforms use a 64-bit BLAS
-    fprintf ('with 64-bit BLAS\n') ;
-    flags = [flags ' -DBLAS64'] ;
-end
+flags = [flags ' -DBLAS64'] ;
 
-%-------------------------------------------------------------------------------
-% GPU option
-%-------------------------------------------------------------------------------
-
-% GPU not yet supported for the spqr MATLAB mexFunction
-% flags = [flags ' -DSPQR_HAS_CUDA'] ;
-
-if (~(pc || mac))
+if (~(ispc || ismac))
     % for POSIX timing routine
     lib = [lib ' -lrt'] ;
 end
 
-%-------------------------------------------------------------------------------
-% ready to compile ...
 %-------------------------------------------------------------------------------
 
 config_src = { '../../SuiteSparse_config/SuiteSparse_config' } ;
@@ -435,7 +394,7 @@ spqr_c_mx_src = { '../MATLAB/spqr_mx_error' } ;
 % SuiteSparseQR mexFunctions
 spqr_mex_cpp_src = { 'spqr', 'spqr_qmult', 'spqr_solve', 'spqr_singletons' } ;
 
-if (pc)
+if (ispc)
     obj_extension = '.obj' ;
 else
     obj_extension = '.o' ;

@@ -32,7 +32,7 @@
 
 #define SPEX_GMPZ_WRAPPER_START(x)                                      \
 {                                                                       \
-    spex_gmpz_archive = (mpz_t *) x;                                    \
+    spex_gmpz_archive = x;                                              \
     spex_gmpq_archive = NULL;                                           \
     spex_gmpfr_archive = NULL;                                          \
     SPEX_GMP_WRAPPER_START;                                             \
@@ -41,7 +41,7 @@
 #define SPEX_GMPQ_WRAPPER_START(x)                                      \
 {                                                                       \
     spex_gmpz_archive = NULL;                                           \
-    spex_gmpq_archive =(mpq_t *) x;                                     \
+    spex_gmpq_archive = x;                                              \
     spex_gmpfr_archive = NULL;                                          \
     SPEX_GMP_WRAPPER_START;                                             \
 }
@@ -50,7 +50,7 @@
 {                                                                       \
     spex_gmpz_archive = NULL;                                           \
     spex_gmpq_archive = NULL;                                           \
-    spex_gmpfr_archive = (mpfr_t *) x;                                  \
+    spex_gmpfr_archive = x;                                             \
     SPEX_GMP_WRAPPER_START;                                             \
 }
 
@@ -69,27 +69,27 @@
 {                                                                       \
     if (spex_gmpz_archive != NULL)                                      \
     {                                                                   \
-        if (p == SPEX_MPZ_PTR(*spex_gmpz_archive))                      \
+        if (p == SPEX_MPZ_PTR(spex_gmpz_archive))                       \
         {                                                               \
-            SPEX_MPZ_PTR(*spex_gmpz_archive) = NULL ;                   \
+            SPEX_MPZ_PTR(spex_gmpz_archive) = NULL ;                    \
         }                                                               \
     }                                                                   \
     else if (spex_gmpq_archive != NULL)                                 \
     {                                                                   \
-        if (p == SPEX_MPZ_PTR(SPEX_MPQ_NUM(*spex_gmpq_archive)))        \
+        if (p == SPEX_MPZ_PTR(SPEX_MPQ_NUM(spex_gmpq_archive)))         \
         {                                                               \
-            SPEX_MPZ_PTR(SPEX_MPQ_NUM(*spex_gmpq_archive)) = NULL ;     \
+            SPEX_MPZ_PTR(SPEX_MPQ_NUM(spex_gmpq_archive)) = NULL ;      \
         }                                                               \
-        if (p == SPEX_MPZ_PTR(SPEX_MPQ_DEN(*spex_gmpq_archive)))        \
+        if (p == SPEX_MPZ_PTR(SPEX_MPQ_DEN(spex_gmpq_archive)))         \
         {                                                               \
-            SPEX_MPZ_PTR(SPEX_MPQ_DEN(*spex_gmpq_archive)) = NULL ;     \
+            SPEX_MPZ_PTR(SPEX_MPQ_DEN(spex_gmpq_archive)) = NULL ;      \
         }                                                               \
     }                                                                   \
     else if (spex_gmpfr_archive != NULL)                                \
     {                                                                   \
-        if (p == SPEX_MPFR_REAL_PTR(*spex_gmpfr_archive))               \
+        if (p == SPEX_MPFR_REAL_PTR(spex_gmpfr_archive))                \
         {                                                               \
-            SPEX_MPFR_MANT(*spex_gmpfr_archive) = NULL ;                \
+            SPEX_MPFR_MANT(spex_gmpfr_archive) = NULL ;                 \
         }                                                               \
     }                                                                   \
     SPEX_FREE (p) ;                                                     \

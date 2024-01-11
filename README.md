@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Dec 30, 2023, SuiteSparse VERSION 7.4.0
+Jan 10, 2024, SuiteSparse VERSION 7.5.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -180,7 +180,7 @@ Packages in SuiteSparse, and files in this directory:
 
   CSparse Extended.  Includes support for complex matrices and both int or long
   integers.  Use this instead of CSparse for production use; it creates a
-  libcsparse.so (or *dylib on the Mac) with the same name as CSparse.  It is a
+  libcsparse.so (or dylib on the Mac) with the same name as CSparse.  It is a
   superset of CSparse.  Any code that links against CSparse should also be able
   to link against CXSparse instead.
 
@@ -300,7 +300,7 @@ Packages in SuiteSparse, and files in this directory:
 
   author: Tim Davis (all parts)
 
-  for spqr_rank: author Les Foster and Tim Davis
+  for `spqr_rank`: author Les Foster and Tim Davis
 
   * `Contents.m`
 
@@ -489,7 +489,7 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
 * GraphBLAS takes a long time to compile because it creates many fast
   "FactoryKernels" at compile-time.  If you want to reduce the compile time and
-  library size, enable the GRAPHBLAS_COMPACT mode, but keep the JIT compiler
+  library size, enable the `GRAPHBLAS_COMPACT` mode, but keep the JIT compiler
   enabled.  Then GraphBLAS will compile the kernels it needs at run-time, via
   its JIT compiler.  Performance will be the same as the FactoryKernels once
   the JIT kernels are compiled.  User compiled kernels are placed in
@@ -502,7 +502,7 @@ Thanks for packaging SuiteSparse!  Here are some suggestions:
 
 * CUDA acceleration:  CHOLMOD and SPQR can benefit from their CUDA kernels.  If
   you do not have CUDA or do not want to include it in your distro, this
-  version of SuiteSparse skips the building of the CHOLMOD_CUDA and SPQR_CUDA
+  version of SuiteSparse skips the building of the `CHOLMOD_CUDA` and `SPQR_CUDA`
   libraries, and does not link against the `GPUQREngine` and
   `SuiteSparse_GPURuntime` libraries.
 
@@ -524,7 +524,7 @@ papers in ACM TOMS, for each package.
 * For the MATLAB x=A\b, see below for AMD, COLAMD, CHOLMOD, UMFPACK,
     and SuiteSparseQR (SPQR).
 
-* for GraphBLAS, and `C=A*B` in MATLAB (sparse-times-sparse):
+* for GraphBLAS, and C=AB in MATLAB (sparse-times-sparse):
 
   T. A. Davis. Algorithm 1037: SuiteSparse:GraphBLAS: Parallel Graph Algorithms
   in the Language of Sparse Linear Algebra. ACM Trans. Math.  Softw. 49, 3,
@@ -1183,6 +1183,10 @@ MATLAB/Octave/R/Mathematica interfaces:
   `C=A*B` `x=A\b`, `L=chol(A)`, `[L,U,P,Q]=lu(A)`, `R=qr(A)`, `dmperm(A)`,
   `p=amd(A)`, `p=colamd(A)`, ...
   See also Mathematica, R, and many many more.  The list is too long.
+
+Julia interface:
+
+  https://github.com/JuliaSparse/SparseArrays.jl
 
 python interface to GraphBLAS by Anaconda and NVIDIA:
 

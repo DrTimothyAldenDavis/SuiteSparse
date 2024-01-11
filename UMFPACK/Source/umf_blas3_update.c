@@ -74,7 +74,7 @@ void UMF_blas3_update
 		    Entry *c_ij, *l_is ;
 		    c_ij = & C [j*d] ;
 		    l_is = & L [0] ;
-                    #pragma ivdep
+                    UMFPACK_IVDEP
 		    for (i = 0 ; i < m ; i++)
 		    {
 			/* C [i+j*d]-= L [i] * U [j] */
@@ -109,7 +109,7 @@ void UMF_blas3_update
 			Entry *u_ij, *u_sj ;
 			u_ij = & U [i*dc] ;
 			u_sj = & U [s*dc] ;
-                        #pragma ivdep
+                        UMFPACK_IVDEP
 			for (j = 0 ; j < n ; j++)
 			{
 			    /* U [i*dc+j] -= LU [i+s*nb] * U [s*dc+j] ; */
@@ -142,7 +142,7 @@ void UMF_blas3_update
 			Entry *c_ij, *l_is ;
 			c_ij = & C [j*d] ;
 			l_is = & L [s*d] ;
-                        #pragma ivdep
+                        UMFPACK_IVDEP
 			for (i = 0 ; i < m ; i++)
 			{
 			    /* C [i+j*d]-= L [i+s*d] * U [s*dc+j] */

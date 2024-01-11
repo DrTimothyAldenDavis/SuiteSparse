@@ -2,7 +2,7 @@
 # SuiteSparse/SPQR/CMakeLists.txt:  cmake for SuiteSparseQR (aka "SPQR")
 #-------------------------------------------------------------------------------
 
-# SPQR (SuiteSparseQR), Copyright (c) 2008-2023, Timothy A Davis.
+# SPQR (SuiteSparseQR), Copyright (c) 2008-2024, Timothy A Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0+
 
@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparsePolicy.cmake
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPQR_DATE "Dec 30, 2023" )
+set ( SPQR_DATE "Jan 10, 2024" )
 set ( SPQR_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( SPQR_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( SPQR_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( SPQR_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPQR version: v"
     ${SPQR_VERSION_MAJOR}.
@@ -45,16 +45,16 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.4.0
+    find_package ( SuiteSparse_config 7.5.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.4.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.1.0
+    find_package ( CHOLMOD 5.1.1
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::CHOLMOD )
-        find_package ( CHOLMOD 5.1.0 REQUIRED )
+        find_package ( CHOLMOD 5.1.1 REQUIRED )
     endif ( )
 endif ( )
 
@@ -191,25 +191,17 @@ if ( SPQR_HAS_CUDA )
     if ( BUILD_STATIC_LIBS )
         target_link_libraries ( SPQR_static PRIVATE GPUQREngine_static GPURuntime_static )
         target_compile_definitions ( SPQR_static PUBLIC "SPQR_HAS_CUDA" )
+        set ( SPQR_STATIC_MODULES "${SPQR_STATIC_MODULES} GPUQREngine SuiteSparse_GPURuntime" )
     endif ( )
     add_subdirectory ( SPQRGPU )
 else ( ) 
     set ( SPQR_CFLAGS "" )
 endif ( )
 
-# OpenMP:
-if ( OpenMP_CXX_FOUND )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( SPQR PRIVATE OpenMP::OpenMP_CXX )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( SPQR_static PRIVATE OpenMP::OpenMP_CXX )
-        list ( APPEND SPQR_STATIC_LIBS ${OpenMP_CXX_LIBRARIES} )
-    endif ( )
-endif ( )
-
 # libm:
-if ( NOT WIN32 )
+include ( CheckSymbolExists )
+check_symbol_exists ( fmax "math.h" NO_LIBM )
+if ( NOT NO_LIBM )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( SPQR PRIVATE m )
     endif ( )

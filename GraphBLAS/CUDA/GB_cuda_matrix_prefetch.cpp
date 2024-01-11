@@ -1,10 +1,9 @@
 //------------------------------------------------------------------------------
-// GB_cuda_matrix_prefetch: prefetch a matrix to a GPU or the CPU
+// GraphBLAS/CUDA/GB_cuda_matrix_prefetch: prefetch a matrix to a GPU or the CPU
 //------------------------------------------------------------------------------
 
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2019, All Rights Reserved.
-// http://suitesparse.com   See GraphBLAS/Doc/License.txt for license.
 
 //------------------------------------------------------------------------------
 

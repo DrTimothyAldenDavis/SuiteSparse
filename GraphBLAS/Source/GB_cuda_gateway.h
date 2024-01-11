@@ -14,11 +14,11 @@
 // #include'd in GraphBLAS/CUDA/GB_cuda.h, for use by the CUDA/GB_cuda_*.cu
 // gateway functions.
 
-// If GRAPHBLAS_HAS_CUDA is defined in GraphBLAS/CMakeLists.txt, then GraphBLAS can call
-// the C-callable gateway functions defined in GraphBLAS/CUDA/*.cu source
-// files.  If GRAPHBLAS_HAS_CUDA is not defined, then these functions are not called.  The
-// typedef always appears, since it is part of the GB_Global struct, whether
-// or not CUDA is used.
+// If GRAPHBLAS_HAS_CUDA is defined in GraphBLAS/CMakeLists.txt, then GraphBLAS
+// can call the C-callable gateway functions defined in GraphBLAS/CUDA/*.cu
+// source files.  If GRAPHBLAS_HAS_CUDA is not defined, then these functions
+// are not called.  The typedef always appears, since it is part of the
+// GB_Global struct, whether or not CUDA is used.
 
 #ifndef GB_CUDA_GATEWAY_H
 #define GB_CUDA_GATEWAY_H
@@ -116,13 +116,13 @@ bool GB_cuda_get_device_properties
     GB_cuda_device *prop
 ) ;
 
-bool GB_reduce_to_scalar_cuda_branch    // return true to use the GPU
+bool GB_cuda_reduce_to_scalar_branch    // return true to use the GPU
 (
     const GrB_Monoid monoid,        // monoid to do the reduction
     const GrB_Matrix A              // input matrix
 ) ;
 
-GrB_Info GB_reduce_to_scalar_cuda
+GrB_Info GB_cuda_reduce_to_scalar_jit
 (
     // output:
     GB_void *s,                 // note: statically allocated on CPU stack; if
@@ -139,7 +139,7 @@ bool GB_cuda_type_branch            // return true if the type is OK on GPU
     const GrB_Type type             // type to query
 ) ;
 
-GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
+GrB_Info GB_cuda_AxB_dot3_jit       // C<M> = A'*B using dot product method
 (
     GrB_Matrix C,                   // output matrix, static header
     const GrB_Matrix M,             // mask matrix
@@ -150,7 +150,7 @@ GrB_Info GB_AxB_dot3_cuda           // C<M> = A'*B using dot product method
     const bool flipxy               // if true, do z=fmult(b,a) vs fmult(a,b)
 ) ;
 
-bool GB_AxB_dot3_cuda_branch
+bool GB_cuda_AxB_dot3_branch
 (
     const GrB_Matrix M,             // mask matrix
     const bool Mask_struct,         // if true, use the only structure of M

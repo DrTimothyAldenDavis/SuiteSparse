@@ -67,12 +67,3 @@ void Scheduler <Int>::launchKernel
     /* Clear the number of tasks. */
     numTasks[activeSet] = 0;
 }
-
-template void Scheduler <int32_t>::launchKernel
-(
-    void
-) ;
-template void Scheduler <int64_t>::launchKernel
-(
-    void
-) ;

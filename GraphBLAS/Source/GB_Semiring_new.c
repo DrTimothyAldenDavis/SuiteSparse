@@ -43,6 +43,8 @@ GrB_Info GB_Semiring_new            // create a semiring
 
     // initialize the semiring
     semiring->magic = GB_MAGIC ;
+    semiring->user_name = NULL ;            // user_name for GrB_get/GrB_set
+    semiring->user_name_size = 0 ;
     semiring->add = add ;
     semiring->multiply = multiply ;
     semiring->name = NULL ;
