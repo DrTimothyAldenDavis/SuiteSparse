@@ -43,8 +43,14 @@ if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     set ( GRAPHBLAS_COMPACT on )
 endif ( )
 
+if ( CMAKE_CROSSCOMPILING )
+    set ( GRAPHBLAS_DEFAULT_JIT OFF )
+else ( )
+    set ( GRAPHBLAS_DEFAULT_JIT ON )
+endif ( )
+
 option ( GRAPHBLAS_COMPACT "ON: do not compile FactoryKernels.  OFF (default): compile FactoryKernels" OFF )
-option ( GRAPHBLAS_USE_JIT "ON (default): use the CPU JIT.  OFF: do not use the CPU JIT" ON )
+option ( GRAPHBLAS_USE_JIT "ON (default): use the CPU JIT.  OFF: do not use the CPU JIT" ${GRAPHBLAS_DEFAULT_JIT} )
 
 if ( GRAPHBLAS_USE_JIT )
     message ( STATUS "GraphBLAS CPU JIT: enabled")
