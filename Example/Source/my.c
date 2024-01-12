@@ -46,7 +46,7 @@ void my_version (int version [3], char date [128])
 //------------------------------------------------------------------------------
 
 int my_check_version (const char *package, int major, int minor, int patch,
-    const char *date, int version [3])
+    const char *date, int version [3], long long unsigned int vercode)
 {
     // version and date in package header file:
     printf ("\n------------------------------------------------------------"
@@ -60,9 +60,19 @@ int my_check_version (const char *package, int major, int minor, int patch,
     int ok = (major == version [0]) &&
              (minor == version [1]) &&
              (patch == version [2]) ;
-    if (!ok) printf ("%s: version in header (%d.%d.%d) "
+    if (!ok)
+    {
+        printf ("%s: version in header (%d.%d.%d) "
         "does not match library (%d.%d.%d)\n", package,
         major, minor, patch, version [0], version [1], version [2]) ;
+    }
+    printf ("%s version code: %llu\n", package, vercode) ;
+    ok = ok && (vercode == SUITESPARSE__VERCODE (major, minor, patch)) ;
+    if (!ok)
+    {
+        printf ("%s: version code mismatch: %llu %llu\n", package,
+        vercode, SUITESPARSE__VERCODE (major, minor, patch)) ;
+    }
     return (ok) ;
 }
 
@@ -82,7 +92,9 @@ int my_function (void)      // returns 0 on success, -1 on failure
     char my_date [128] ;
     my_version (version, my_date) ;
     OK (my_check_version ("MY", MY_MAJOR_VERSION, MY_MINOR_VERSION,
-        MY_PATCH_VERSION, MY_DATE, version)) ;
+        MY_PATCH_VERSION, MY_DATE, version,
+        SUITESPARSE__VERCODE (MY_MAJOR_VERSION, MY_MINOR_VERSION,
+        MY_PATCH_VERSION))) ;
     printf ("MY date: %s\n", my_date) ;
     OK (strcmp (my_date, MY_DATE) == 0) ;
 
@@ -93,7 +105,8 @@ int my_function (void)      // returns 0 on success, -1 on failure
     int v = SuiteSparse_version (version) ;
     OK (my_check_version ("SuiteSparse_config",
         SUITESPARSE_MAIN_VERSION, SUITESPARSE_SUB_VERSION,
-        SUITESPARSE_SUBSUB_VERSION, SUITESPARSE_DATE, version)) ;
+        SUITESPARSE_SUBSUB_VERSION, SUITESPARSE_DATE, version,
+        SUITESPARSE__VERSION)) ;
 
     //--------------------------------------------------------------------------
     // CXSparse
@@ -101,7 +114,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
 
     cxsparse_version (version) ;
     OK (my_check_version ("CXSparse", CS_VER, CS_SUBVER, CS_SUBSUB, CS_DATE,
-        version)) ;
+        version, CXSPARSE__VERSION)) ;
 
     cs_dl *A = NULL ;
 
@@ -130,11 +143,14 @@ int my_function (void)      // returns 0 on success, -1 on failure
     amd_version (version) ;
     OK (my_check_version ("AMD",
         AMD_MAIN_VERSION, AMD_SUB_VERSION, AMD_SUBSUB_VERSION, AMD_DATE,
-        version)) ;
+        version, AMD__VERSION)) ;
 
     int64_t P [N] ;
     OK (amd_l_order (n, Ap, Ai, P, NULL, NULL) == AMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    }
 
     //--------------------------------------------------------------------------
     // BTF
@@ -143,7 +159,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     btf_version (version) ;
     OK (my_check_version ("BTF",
         BTF_MAIN_VERSION, BTF_SUB_VERSION, BTF_SUBSUB_VERSION, BTF_DATE,
-        version)) ;
+        version, BTF__VERSION)) ;
 
     double work ;
     int64_t nmatch ;
@@ -151,8 +167,14 @@ int my_function (void)      // returns 0 on success, -1 on failure
     int64_t nblocks = btf_l_order (n, Ap, Ai, -1, &work, P, Q, R, &nmatch,
         Work) ;
     OK (nblocks > 0) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
-    for (int k = 0 ; k < n ; k++) printf ("Q [%d] = %d\n", k, (int) Q [k]) ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    }
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("Q [%d] = %d\n", k, (int) Q [k]) ;
+    }
     printf ("nblocks %d\n", (int) nblocks) ;
 
     //--------------------------------------------------------------------------
@@ -162,12 +184,18 @@ int my_function (void)      // returns 0 on success, -1 on failure
     camd_version (version) ;
     OK (my_check_version ("CAMD",
         CAMD_MAIN_VERSION, CAMD_SUB_VERSION, CAMD_SUBSUB_VERSION, CAMD_DATE,
-        version)) ;
+        version, CAMD__VERSION)) ;
 
     int64_t Cmem [N] ;
-    for (int k = 0 ; k < n ; k++) Cmem [k] = 0 ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        Cmem [k] = 0 ;
+    }
     OK (camd_l_order (n, Ap, Ai, P, NULL, NULL, Cmem) == CAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    }
 
     //--------------------------------------------------------------------------
     // CCOLAMD
@@ -176,14 +204,17 @@ int my_function (void)      // returns 0 on success, -1 on failure
     ccolamd_version (version) ;
     OK (my_check_version ("CCOLAMD",
         CCOLAMD_MAIN_VERSION, CCOLAMD_SUB_VERSION, CCOLAMD_SUBSUB_VERSION,
-        CCOLAMD_DATE, version)) ;
+        CCOLAMD_DATE, version, CCOLAMD__VERSION)) ;
 
     int64_t Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    int64_t *Awork = malloc (Alen * sizeof (int64_t)) ;
+    int64_t *Awork = (int64_t *) malloc (Alen * sizeof (int64_t)) ;
     OK (Awork != NULL) ;
     memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
     OK (ccolamd_l (n, n, Alen, Awork, P, NULL, NULL, Cmem) == CCOLAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    }
     free (Awork) ;
 
     //--------------------------------------------------------------------------
@@ -193,14 +224,17 @@ int my_function (void)      // returns 0 on success, -1 on failure
     colamd_version (version) ;
     OK (my_check_version ("COLAMD",
         COLAMD_MAIN_VERSION, COLAMD_SUB_VERSION, COLAMD_SUBSUB_VERSION,
-        COLAMD_DATE, version)) ;
+        COLAMD_DATE, version, COLAMD__VERSION)) ;
 
     Alen = ccolamd_l_recommended (NNZ, n, n) ;
-    Awork = malloc (Alen * sizeof (int64_t)) ;
+    Awork = (int64_t *) malloc (Alen * sizeof (int64_t)) ;
     OK (Awork != NULL) ;
     memcpy (Awork, Ai, NNZ * sizeof (int64_t)) ;
     OK (colamd_l (n, n, Alen, Awork, P, NULL, NULL) == COLAMD_OK) ;
-    for (int k = 0 ; k < n ; k++) printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    for (int k = 0 ; k < n ; k++)
+    {
+        printf ("P [%d] = %d\n", k, (int) P [k]) ;
+    }
     free (Awork) ;
 
     //--------------------------------------------------------------------------
@@ -210,7 +244,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     v = cholmod_l_version (version) ;
     OK (my_check_version ("CHOLMOD",
         CHOLMOD_MAIN_VERSION, CHOLMOD_SUB_VERSION, CHOLMOD_SUBSUB_VERSION,
-        CHOLMOD_DATE, version)) ;
+        CHOLMOD_DATE, version, CHOLMOD__VERSION)) ;
 
     cholmod_common cc ;
     OK (cholmod_l_start (&cc)) ;
@@ -224,7 +258,8 @@ int my_function (void)      // returns 0 on success, -1 on failure
     OK (GxB_Global_Option_get (GxB_LIBRARY_VERSION, version) == GrB_SUCCESS) ;
     OK (my_check_version ("GraphBLAS",
         GxB_IMPLEMENTATION_MAJOR, GxB_IMPLEMENTATION_MINOR,
-        GxB_IMPLEMENTATION_SUB, GxB_IMPLEMENTATION_DATE, version)) ;
+        GxB_IMPLEMENTATION_SUB, GxB_IMPLEMENTATION_DATE, version,
+        GxB_IMPLEMENTATION)) ;
     OK (GrB_finalize ( ) == GrB_SUCCESS) ;
     #endif
 
@@ -238,7 +273,8 @@ int my_function (void)      // returns 0 on success, -1 on failure
     OK (LAGraph_Version (version, verstring, msg) == GrB_SUCCESS) ;
     OK (my_check_version ("LAGraph",
         LAGRAPH_VERSION_MAJOR, LAGRAPH_VERSION_MINOR, LAGRAPH_VERSION_UPDATE,
-        LAGRAPH_DATE, version)) ;
+        LAGRAPH_DATE, version, SUITESPARSE__VERCODE (LAGRAPH_VERSION_MAJOR,
+        LAGRAPH_VERSION_MINOR, LAGRAPH_VERSION_UPDATE))) ;
     OK (LAGraph_Finalize (msg) == GrB_SUCCESS) ;
     #endif
 
@@ -249,7 +285,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     klu_version (version) ;
     OK (my_check_version ("KLU",
         KLU_MAIN_VERSION, KLU_SUB_VERSION, KLU_SUBSUB_VERSION,
-        KLU_DATE, version)) ;
+        KLU_DATE, version, KLU__VERSION)) ;
 
     double b [N] = {8., 45.} ;
     double xgood [N] = {36.4, -32.7} ;
@@ -283,7 +319,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     ldl_version (version) ;
     OK (my_check_version ("LDL",
         LDL_MAIN_VERSION, LDL_SUB_VERSION, LDL_SUBSUB_VERSION,
-        LDL_DATE, version)) ;
+        LDL_DATE, version, LDL__VERSION)) ;
 
     double x2 [N] ;
     P [0] = 0 ;
@@ -305,7 +341,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     RBio_version (version) ;
     OK (my_check_version ("RBio",
         RBIO_MAIN_VERSION, RBIO_SUB_VERSION, RBIO_SUBSUB_VERSION,
-        RBIO_DATE, version)) ;
+        RBIO_DATE, version, RBIO__VERSION)) ;
 
     char mtype [4], key [8], title [80] ;
     strncpy (key, "simple", 8) ;
@@ -341,7 +377,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     SPEX_version (version) ;
     OK (my_check_version ("SPEX",
         SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
-        version)) ;
+        version, SPEX__VERSION)) ;
     OK (SPEX_finalize ( ) == SPEX_OK) ;
 
     //--------------------------------------------------------------------------
@@ -351,7 +387,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     SuiteSparseQR_C_version (version) ;
     OK (my_check_version ("SuiteSparseQR",
         SPQR_MAIN_VERSION, SPQR_SUB_VERSION, SPQR_SUBSUB_VERSION, SPQR_DATE,
-        version)) ;
+        version, SPQR__VERSION)) ;
 
     cholmod_sparse *A2, A2_struct ;
     cholmod_dense  *B2, B2_struct ;
@@ -398,7 +434,7 @@ int my_function (void)      // returns 0 on success, -1 on failure
     umfpack_version (version) ;
     OK (my_check_version ("UMFPACK",
         UMFPACK_MAIN_VERSION, UMFPACK_SUB_VERSION, UMFPACK_SUBSUB_VERSION,
-        UMFPACK_DATE, version)) ;
+        UMFPACK_DATE, version, UMFPACK__VERSION)) ;
 
     printf ("%s\n", UMFPACK_VERSION) ;
     printf ("%s", UMFPACK_COPYRIGHT) ;
@@ -418,7 +454,10 @@ int my_function (void)      // returns 0 on success, -1 on failure
     umfpack_dl_free_symbolic (&Sym) ;
     result = umfpack_dl_solve (UMFPACK_A, Ap, Ai, Ax, x, b, Num, Control, Info);
     umfpack_dl_free_numeric (&Num) ;
-    for (int i = 0 ; i < n ; i++) printf ("x [%d] = %g\n", i, x [i]) ;
+    for (int i = 0 ; i < n ; i++)
+    {
+        printf ("x [%d] = %g\n", i, x [i]) ;
+    }
     err = 0 ;
     for (int i = 0 ; i < n ; i++)
     {
@@ -428,6 +467,13 @@ int my_function (void)      // returns 0 on success, -1 on failure
     OK (err < 1e-12) ;
     umfpack_dl_report_status (Control, result) ;
     umfpack_dl_report_info (Control, Info) ;
+
+    //--------------------------------------------------------------------------
+    // not used
+    //--------------------------------------------------------------------------
+
+    // printf ("version code: %llu\n", Mongoose__VERSION) ;
+    // printf ("version code: %llu\n", PARU__VERSION) ;
 
     //--------------------------------------------------------------------------
     // free workspace and return result

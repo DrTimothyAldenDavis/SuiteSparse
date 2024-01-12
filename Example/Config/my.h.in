@@ -23,7 +23,7 @@ extern "C" {
 void my_version (int version [3], char date [128]) ;
 int my_function (void) ;
 int my_check_version (const char *package, int major, int minor, int patch,
-    const char *date, int version [3]) ;
+    const char *date, int version [3], long long unsigned int vercode) ;
 
 #ifdef __cplusplus
 }

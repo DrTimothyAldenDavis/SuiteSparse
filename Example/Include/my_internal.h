@@ -14,8 +14,8 @@
 
 // SuiteSparse include files for C/C++:
 #include "SuiteSparse_config.h"
-#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0)
-#error "This library requires SuiteSparse_config 7.5.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,1)
+#error "This library requires SuiteSparse_config 7.5.1 or later"
 #endif
 
 #include "amd.h"
