@@ -432,7 +432,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 // version format x.y.z
 #define SUITESPARSE__VERCODE(main,sub,patch) \
-    (((major)*1000ULL + (minor))*1000ULL + (patch))
+    (((main)*1000ULL + (sub))*1000ULL + (patch))
 #define SUITESPARSE__VERSION SUITESPARSE__VERCODE(@SUITESPARSE_VERSION_MAJOR@,@SUITESPARSE_VERSION_MINOR@,@SUITESPARSE_VERSION_SUB@)
 
 //==============================================================================
