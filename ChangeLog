@@ -3,6 +3,28 @@ Jan 12, 2024: version 7.5.1
     * SuiteSparse_config: bug fix to SUITESPARSE__VERCODE macro.
     * Example 1.6.1: add tests for *__VERSION macros.
 
+    * Package versions in this release:
+        SuiteSparse_config 7.5.1
+        AMD 3.3.1
+        BTF 2.3.1
+        CAMD 3.3.1
+        CCOLAMD 3.3.1
+        CHOLMOD 5.1.1
+        COLAMD 3.3.1
+        CSparse 4.3.0
+        CXSparse 4.3.1
+        Example 1.6.1
+        GraphBLAS 9.0.0
+        KLU 2.3.1
+        LDL 3.3.1
+        LAGraph 1.1.1
+        SuiteSparse_Mongoose 3.3.1
+        ParU 0.1.1
+        RBio 4.3.1
+        SPEX 2.3.1
+        SPQR 4.3.1
+        UMFPACK 6.3.1
+
 Jan 10, 2024: version 7.5.0
 
     * SuiteSparse_config: 7.5.0, to reflect the addition of GraphBLAS 9.0.0.
