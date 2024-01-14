@@ -15,10 +15,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Jan 10, 2024" )
+set ( SUITESPARSE_DATE "Jan 12, 2024" )
 set ( SUITESPARSE_VERSION_MAJOR 7 )
 set ( SUITESPARSE_VERSION_MINOR 5 )
-set ( SUITESPARSE_VERSION_SUB   0 )
+set ( SUITESPARSE_VERSION_SUB   1 )
 set ( SUITESPARSE_CONFIG_VERSION_MAJOR ${SUITESPARSE_VERSION_MAJOR} CACHE STRING "" FORCE )
 set ( SUITESPARSE_CONFIG_VERSION_MINOR ${SUITESPARSE_VERSION_MINOR} CACHE STRING "" FORCE )
 set ( SUITESPARSE_CONFIG_VERSION_PATCH ${SUITESPARSE_VERSION_SUB} CACHE STRING "" FORCE )
@@ -101,6 +101,28 @@ if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_OPENMP AND NOT SUITESPARSE_HAS_O
 endif ( )
 if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_CONFIG_USE_OPENMP AND NOT SUITESPARSE_CONFIG_HAS_OPENMP )
     message ( FATAL_ERROR "OpenMP required for SuiteSparse_config but not found" )
+endif ( )
+
+# check for librt in case of fallback to "clock_gettime"
+include ( CheckSymbolExists )
+check_symbol_exists ( clock_gettime "time.h" NO_RT )
+if ( NO_RT )
+    message ( STATUS "Using clock_gettime without librt" )
+    set ( SUITESPARSE_HAVE_CLOCK_GETTIME ON )
+else ( )
+    # check if we need to link to librt for that function
+    set ( _orig_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} )
+    list ( APPEND CMAKE_REQUIRED_LIBRARIES "rt" )
+    check_symbol_exists ( clock_gettime "time.h" WITH_RT )
+    set ( CMAKE_REQUIRED_LIBRARIES ${_orig_CMAKE_REQUIRED_LIBRARIES} )
+    if ( WITH_RT )
+        message ( STATUS "Using clock_gettime with librt" )
+        set ( SUITESPARSE_HAVE_CLOCK_GETTIME ON )
+    endif ( )
+endif ( )
+
+if ( NOT SUITESPARSE_CONFIG_USE_OPENMP AND NOT SUITESPARSE_HAVE_CLOCK_GETTIME )
+    message ( STATUS "No OpenMP and no clock_gettime available. Timing functions won't work." )
 endif ( )
 
 #-------------------------------------------------------------------------------
@@ -207,6 +229,17 @@ if ( SUITESPARSE_CONFIG_USE_OPENMP )
         target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
         list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
+    endif ( )
+else ( )
+    # librt
+    if ( WITH_RT )
+        if ( BUILD_SHARED_LIBS )
+            target_link_libraries ( SuiteSparseConfig PRIVATE "rt" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_link_libraries ( SuiteSparseConfig_static PRIVATE "rt" )
+            list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS "rt" )
+        endif ( )
     endif ( )
 endif ( )
 
