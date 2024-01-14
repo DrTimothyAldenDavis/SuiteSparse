@@ -1,10 +1,10 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
 -- MY prefix path:    /home/faculty/d/davis/dev2/SuiteSparse/Example/..
--- Building MY library version: v1.6.0 (Jan 10, 2024)
+-- Building MY library version: v1.6.1 (Jan 12, 2024)
 -- Found OpenMP: TRUE (found version "4.5") found components: C 
--- SuiteSparse_config version: 7.5.0
+-- SuiteSparse_config version: 7.5.1
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparseconfig.so.7.5.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparseconfig.so.7.5.1
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparseconfig.a
 -- AMD version: 3.3.1
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
@@ -109,33 +109,36 @@
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/Example/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/Example/build'
 [ 12%] Built target my
-[ 25%] Built target my_static
-[ 37%] Built target my_cxx
-[ 50%] Built target my_cxx_static
+[ 37%] Built target my_cxx_static
+[ 37%] Built target my_static
+[ 50%] Built target my_cxx
 [ 62%] Built target my_demo
-[ 75%] Built target my_demo_static
-[ 87%] Built target my_cxx_demo_static
+[ 75%] Built target my_cxx_demo_static
+[ 87%] Built target my_demo_static
 [100%] Built target my_cxx_demo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/Example/build'
 ( cd build && ./my_demo )
 My demo
-Date from #include 'my.h':  Jan 10, 2024
-Date from compiled library: Jan 10, 2024
-version from #include 'my.h.': 1.6.0
-version from compiled library: 1.6.0
+Date from #include 'my.h':  Jan 12, 2024
+Date from compiled library: Jan 12, 2024
+version from #include 'my.h.': 1.6.1
+version from compiled library: 1.6.1
 
 ------------------------------------------------------------
-MY: v1.6.0 (Jan 10, 2024)
-MY: v1.6.0 (in library)
-MY date: Jan 10, 2024
+MY: v1.6.1 (Jan 12, 2024)
+MY: v1.6.1 (in library)
+MY version code: 1006001
+MY date: Jan 12, 2024
 
 ------------------------------------------------------------
-SuiteSparse_config: v7.5.0 (Jan 10, 2024)
-SuiteSparse_config: v7.5.0 (in library)
+SuiteSparse_config: v7.5.1 (Jan 12, 2024)
+SuiteSparse_config: v7.5.1 (in library)
+SuiteSparse_config version code: 7005001
 
 ------------------------------------------------------------
 CXSparse: v4.3.1 (Jan 10, 2024)
 CXSparse: v4.3.1 (in library)
+CXSparse version code: 4003001
 CXSparse Version 4.3.1, Jan 10, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 2-by-2, nzmax: 4 nnz: 4, 1-norm: 34
     col 0 : locations 0 to 1
@@ -148,12 +151,14 @@ CXSparse Version 4.3.1, Jan 10, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 ------------------------------------------------------------
 AMD: v3.3.1 (Jan 10, 2024)
 AMD: v3.3.1 (in library)
+AMD version code: 3003001
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
 BTF: v2.3.1 (Jan 10, 2024)
 BTF: v2.3.1 (in library)
+BTF version code: 2003001
 P [0] = 0
 P [1] = 1
 Q [0] = 0
@@ -163,36 +168,43 @@ nblocks 1
 ------------------------------------------------------------
 CAMD: v3.3.1 (Jan 10, 2024)
 CAMD: v3.3.1 (in library)
+CAMD version code: 3003001
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
 CCOLAMD: v3.3.1 (Jan 10, 2024)
 CCOLAMD: v3.3.1 (in library)
+CCOLAMD version code: 3003001
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
 COLAMD: v3.3.1 (Jan 10, 2024)
 COLAMD: v3.3.1 (in library)
+COLAMD version code: 3003001
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
 CHOLMOD: v5.1.1 (Jan 10, 2024)
 CHOLMOD: v5.1.1 (in library)
+CHOLMOD version code: 5001001
 
 ------------------------------------------------------------
 GraphBLAS: v9.0.0 (Jan 10, 2024)
 GraphBLAS: v9.0.0 (in library)
+GraphBLAS version code: 9000000
 
 ------------------------------------------------------------
 LAGraph: v1.1.1 (Jan 10, 2024)
 LAGraph: v1.1.1 (in library)
+LAGraph version code: 1001001
 
 ------------------------------------------------------------
 KLU: v2.3.1 (Jan 10, 2024)
 KLU: v2.3.1 (in library)
+KLU version code: 2003001
 x [0] = 36.4
 x [1] = -32.7
 error: 7.10543e-14
@@ -200,6 +212,7 @@ error: 7.10543e-14
 ------------------------------------------------------------
 LDL: v3.3.1 (Jan 10, 2024)
 LDL: v3.3.1 (in library)
+LDL version code: 3003001
 x2 [0] = 36.4
 x2 [1] = -32.7
 error: 0
@@ -207,6 +220,7 @@ error: 0
 ------------------------------------------------------------
 RBio: v4.3.1 (Jan 10, 2024)
 RBio: v4.3.1 (in library)
+RBio version code: 4003001
 njumbled 0, nzeros 0
 result 0
 mtype: iua
@@ -221,10 +235,12 @@ iua                        2             2             4             0
 ------------------------------------------------------------
 SPEX: v2.3.1 (Jan 10, 2024)
 SPEX: v2.3.1 (in library)
+SPEX version code: 2003001
 
 ------------------------------------------------------------
 SuiteSparseQR: v4.3.1 (Jan 10, 2024)
 SuiteSparseQR: v4.3.1 (in library)
+SuiteSparseQR version code: 4003001
 
 CHOLMOD dense:   X from QR:  2-by-1, 
   leading dimension 2, nzmax 2, real, double
@@ -237,6 +253,7 @@ CHOLMOD dense:   X from QR:  2-by-1,
 ------------------------------------------------------------
 UMFPACK: v6.3.1 (Jan 10, 2024)
 UMFPACK: v6.3.1 (in library)
+UMFPACK version code: 6003001
 UMFPACK V6.3.1 (Jan 10, 2024)
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
