@@ -103,6 +103,28 @@ if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_CONFIG_USE_OPENMP AND NOT SUITESPARS
     message ( FATAL_ERROR "OpenMP required for SuiteSparse_config but not found" )
 endif ( )
 
+# check for librt in case of fallback to "clock_gettime"
+include ( CheckSymbolExists )
+check_symbol_exists ( clock_gettime "time.h" NO_RT )
+if ( NO_RT )
+    message ( STATUS "Using clock_gettime without librt" )
+    set ( SUITESPARSE_HAVE_CLOCK_GETTIME ON )
+else ( )
+    # check if we need to link to librt for that function
+    set ( _orig_CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} )
+    list ( APPEND CMAKE_REQUIRED_LIBRARIES "rt" )
+    check_symbol_exists ( clock_gettime "time.h" WITH_RT )
+    set ( CMAKE_REQUIRED_LIBRARIES ${_orig_CMAKE_REQUIRED_LIBRARIES} )
+    if ( WITH_RT )
+        message ( STATUS "Using clock_gettime with librt" )
+        set ( SUITESPARSE_HAVE_CLOCK_GETTIME ON )
+    endif ( )
+endif ( )
+
+if ( NOT SUITESPARSE_CONFIG_USE_OPENMP AND NOT SUITESPARSE_HAVE_CLOCK_GETTIME )
+    message ( STATUS "No OpenMP and no clock_gettime available. Timing functions won't work." )
+endif ( )
+
 #-------------------------------------------------------------------------------
 # find the BLAS
 #-------------------------------------------------------------------------------
@@ -207,6 +229,17 @@ if ( SUITESPARSE_CONFIG_USE_OPENMP )
         target_include_directories ( SuiteSparseConfig_static SYSTEM AFTER INTERFACE
             "$<TARGET_PROPERTY:OpenMP::OpenMP_C,INTERFACE_INCLUDE_DIRECTORIES>" )
         list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS ${OpenMP_C_LIBRARIES} )
+    endif ( )
+else ( )
+    # librt
+    if ( WITH_RT )
+        if ( BUILD_SHARED_LIBS )
+            target_link_libraries ( SuiteSparseConfig PRIVATE "rt" )
+        endif ( )
+        if ( BUILD_STATIC_LIBS )
+            target_link_libraries ( SuiteSparseConfig_static PRIVATE "rt" )
+            list ( APPEND SUITESPARSE_CONFIG_STATIC_LIBS "rt" )
+        endif ( )
     endif ( )
 endif ( )
 

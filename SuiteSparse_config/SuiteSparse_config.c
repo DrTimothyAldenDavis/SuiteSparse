@@ -495,7 +495,7 @@ void *SuiteSparse_free      /* always returns NULL */
         tic [1] = 0 ;
     }
 
-#else 
+#else
 
     /* ---------------------------------------------------------------------- */
     /* POSIX timer */
@@ -616,7 +616,7 @@ double SuiteSparse_hypot (double x, double y)
             r = x / y ;
             s = y * sqrt (1.0 + r*r) ;
         }
-    } 
+    }
     return (s) ;
 }
 
