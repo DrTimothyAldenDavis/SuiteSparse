@@ -554,10 +554,10 @@ if ( CHOLMOD_HAS_CUDA )
         endif ( )
     endif ( )
 
-    set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
+    set ( _orig_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES} )
     list ( APPEND CMAKE_EXTRA_INCLUDE_FILES "stdlib.h" )
     check_type_size ( "__compar_fn_t" COMPAR_FN_T )
-    set ( CMAKE_EXTRA_INCLUDE_FILES old_CMAKE_EXTRA_INCLUDE_FILES )
+    set ( CMAKE_EXTRA_INCLUDE_FILES ${_orig_CMAKE_EXTRA_INCLUDE_FILES} )
 
     if ( NOT HAVE_COMPAR_FN_T )
         if ( BUILD_SHARED_LIBS )
