@@ -420,10 +420,10 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Jan 12, 2024"
+#define SUITESPARSE_DATE "Jan 20, 2024"
 #define SUITESPARSE_MAIN_VERSION    7
 #define SUITESPARSE_SUB_VERSION     5
-#define SUITESPARSE_SUBSUB_VERSION  1
+#define SUITESPARSE_SUBSUB_VERSION  2
 
 // version format x.y
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
@@ -432,7 +432,7 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 // version format x.y.z
 #define SUITESPARSE__VERCODE(main,sub,patch) \
     (((main)*1000ULL + (sub))*1000ULL + (patch))
-#define SUITESPARSE__VERSION SUITESPARSE__VERCODE(7,5,1)
+#define SUITESPARSE__VERSION SUITESPARSE__VERCODE(7,5,2)
 
 //==============================================================================
 // SuiteSparse interface to the BLAS and LAPACK libraries

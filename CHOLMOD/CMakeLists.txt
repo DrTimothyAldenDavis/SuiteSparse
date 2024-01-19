@@ -84,9 +84,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
-if ( NOT SUITESPARSE_USE_OPENMP )
-    set ( CHOLMOD_USE_OPENMP "OFF" CACHE STRING "" FORCE )
-endif ( )
 if ( CHOLMOD_USE_OPENMP )
     if ( CMAKE_VERSION VERSION_LESS 3.24 )
         find_package ( OpenMP COMPONENTS C )
@@ -115,10 +112,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.0
+    find_package ( SuiteSparse_config 7.5.2
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.5.2 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.1

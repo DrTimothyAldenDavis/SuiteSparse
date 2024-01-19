@@ -319,7 +319,7 @@ template <typename Entry, typename Int> void spqr_rsolve
                 {
                     // divide by the "diagonal"
                     // xi = W1 [k] / R [k] ;
-                    xi = spqr_divide (W1 [k], R [k], cc) ;
+                    xi = spqr_divide (W1 [k], R [k]) ;
                     FLOP_COUNT (1) ;
                     X [INDEX(ii,kk,n)] = xi ;
                     if (xi != (Entry) 0)
@@ -374,8 +374,8 @@ template <typename Entry, typename Int> void spqr_rsolve
             Int jnew = R1j [p] ;
             Int jold = Q1fill ? Q1fill [jnew] : jnew ;
             ASSERT (jold >= 0 && jold < n) ;
-            // X [jold] = x / R1x [p] ; using cc->complex_divide
-            X [jold] = spqr_divide (x, R1x [p], cc) ;
+            // X [jold] = x / R1x [p] ;
+            X [jold] = spqr_divide (x, R1x [p]) ;
         }
         B += ldb ;
         X += n ;

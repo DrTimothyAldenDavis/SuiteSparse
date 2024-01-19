@@ -309,8 +309,8 @@ int cholmod_l_version (int version [3]) ;
 
 #define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,1,2)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
-#error "CHOLMOD 5.1.2 requires SuiteSparse_config 7.5.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,2))
+#error "CHOLMOD 5.1.2 requires SuiteSparse_config 7.5.2 or later"
 #endif
 
 //------------------------------------------------------------------------------
