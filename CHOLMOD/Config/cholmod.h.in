@@ -898,7 +898,9 @@ typedef struct cholmod_common_struct
     int nthreads_max ; // max # of OpenMP threads to use in CHOLMOD.
         // Defaults to SUITESPARSE_OPENMP_MAX_THREADS.
 
+    #ifdef BLAS_DUMP
     FILE *blas_dump ;  // only used if CHOLMOD is compiled with -DBLAS_DUMP
+    #endif
 
 } cholmod_common ;
 
