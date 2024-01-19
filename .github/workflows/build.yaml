@@ -79,9 +79,11 @@ jobs:
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             openmp: with
             link: static
+            # "Fake" a cross-compilation to exercise that build system path
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
+              -DCMAKE_SYSTEM_NAME="Linux"
 
     env:
       CC: ${{ matrix.cc }}
