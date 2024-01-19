@@ -36,10 +36,6 @@
 #define PARU_H
 
 // silence these diagnostics:
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wextra-semi-stmt"
-#endif
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-extensions"
@@ -434,9 +430,6 @@ ParU_Ret ParU_Residual(
 ParU_Ret ParU_Freenum(ParU_Numeric **Num_handle, ParU_Control *Control);
 ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control);
 
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
