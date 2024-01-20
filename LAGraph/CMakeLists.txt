@@ -181,7 +181,7 @@ else ( )
     endif ( )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( LAGRAPH_USE_OPENMP AND OpenMP_C_FOUND )
     set ( LAGRAPH_HAS_OPENMP ON )
 else ( )
     set ( LAGRAPH_HAS_OPENMP OFF )

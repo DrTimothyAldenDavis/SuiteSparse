@@ -95,7 +95,7 @@ else ( )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( CHOLMOD_USE_OPENMP AND OpenMP_C_FOUND )
     set ( CHOLMOD_HAS_OPENMP ON )
 else ( )
     set ( CHOLMOD_HAS_OPENMP OFF )
