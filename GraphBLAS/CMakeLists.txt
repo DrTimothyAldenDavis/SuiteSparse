@@ -109,7 +109,7 @@ else ( )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( GRAPHBLAS_USE_OPENMP AND OpenMP_C_FOUND )
     set ( GRAPHBLAS_HAS_OPENMP ON )
 else ( )
     set ( GRAPHBLAS_HAS_OPENMP OFF )
