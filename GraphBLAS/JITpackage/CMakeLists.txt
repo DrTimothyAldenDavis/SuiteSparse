@@ -29,6 +29,11 @@ if ( CMAKE_CROSSCOMPILING )
         CMAKE_ARGS ${GRAPHBLAS_CROSS_TOOLCHAIN_FLAGS_NATIVE}
         INSTALL_COMMAND "" )
 
+    # Overriding this variable seems to be necessary if users set
+    # CMAKE_FIND_ROOT_PATH_MODE_PACKAGE to ONLY.
+    # See: https://github.com/DrTimothyAldenDavis/SuiteSparse/issues/729
+    set( GrBJITPackageGenerator_DIR ${PROJECT_BINARY_DIR}/native )
+
     # The following package won't be found on the first run (before the native
     # grb_jitpackage has been built). But it should be found after the above
     # external project has built it.

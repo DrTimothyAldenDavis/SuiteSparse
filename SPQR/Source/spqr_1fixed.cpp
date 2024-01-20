@@ -115,7 +115,7 @@ template <typename Entry, typename Int> int spqr_1fixed
             // j is a dead column singleton
             Qrows [n1cols++] = EMPTY ;
         }
-        else if (d == 1 && spqr_abs (aij, cc) > tol)
+        else if (d == 1 && spqr_abs (aij) > tol)
         {
             // j is a live column singleton
             Qrows [n1cols++] = row ;

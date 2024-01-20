@@ -1,3 +1,35 @@
+Jan 20, 2024: version 7.6.0
+
+    * CHOLMOD 5.2.0: bug fix (restore ABI compatibility with 5.0.x, i.e., 5.2.0
+        is ABI incompatible to 5.1.x)
+    * SuiteSparse_config 7.6.0: no change except version number
+    * SPQR 4.3.2: remove unused parameters
+    * LAGraph 1.1.2, CSparse 4.3.1, ParU 0.1.2, GraphBLAS 9.0.1:
+        minor updates to build system
+    * Example 1.6.2, UMFPACK 6.3.2, KLU 2.3.2: revise version numbers of
+        dependent packages
+    * Package versions in this release:
+        SuiteSparse_config 7.6.0
+        AMD 3.3.1
+        BTF 2.3.1
+        CAMD 3.3.1
+        CCOLAMD 3.3.1
+        CHOLMOD 5.2.0
+        COLAMD 3.3.1
+        CSparse 4.3.1
+        CXSparse 4.3.1
+        Example 1.6.2
+        GraphBLAS 9.0.1
+        KLU 2.3.2
+        LDL 3.3.1
+        LAGraph 1.1.2
+        SuiteSparse_Mongoose 3.3.1
+        ParU 0.1.2
+        RBio 4.3.1
+        SPEX 2.3.1
+        SPQR 4.3.2
+        UMFPACK 6.3.2
+
 Jan 12, 2024: version 7.5.1
 
     * SuiteSparse_config: bug fix to SUITESPARSE__VERCODE macro.

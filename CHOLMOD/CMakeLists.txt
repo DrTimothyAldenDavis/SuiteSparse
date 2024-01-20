@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Jan 10, 2024" )
+set ( CHOLMOD_DATE "Jan 20, 2024" )
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_MINOR 1 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_SUB   1 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -84,9 +84,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( CHOLMOD_USE_OPENMP "ON: Use OpenMP in CHOLMOD if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
-if ( NOT SUITESPARSE_USE_OPENMP )
-    set ( CHOLMOD_USE_OPENMP "OFF" CACHE STRING "" FORCE )
-endif ( )
 if ( CHOLMOD_USE_OPENMP )
     if ( CMAKE_VERSION VERSION_LESS 3.24 )
         find_package ( OpenMP COMPONENTS C )
@@ -98,7 +95,7 @@ else ( )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( CHOLMOD_USE_OPENMP AND OpenMP_C_FOUND )
     set ( CHOLMOD_HAS_OPENMP ON )
 else ( )
     set ( CHOLMOD_HAS_OPENMP OFF )
@@ -115,10 +112,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.0
+    find_package ( SuiteSparse_config 7.6.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.1
@@ -554,10 +551,10 @@ if ( CHOLMOD_HAS_CUDA )
         endif ( )
     endif ( )
 
-    set ( old_CMAKE_EXTRA_INCLUDE_FILES CMAKE_EXTRA_INCLUDE_FILES )
+    set ( _orig_CMAKE_EXTRA_INCLUDE_FILES ${CMAKE_EXTRA_INCLUDE_FILES} )
     list ( APPEND CMAKE_EXTRA_INCLUDE_FILES "stdlib.h" )
     check_type_size ( "__compar_fn_t" COMPAR_FN_T )
-    set ( CMAKE_EXTRA_INCLUDE_FILES old_CMAKE_EXTRA_INCLUDE_FILES )
+    set ( CMAKE_EXTRA_INCLUDE_FILES ${_orig_CMAKE_EXTRA_INCLUDE_FILES} )
 
     if ( NOT HAVE_COMPAR_FN_T )
         if ( BUILD_SHARED_LIBS )

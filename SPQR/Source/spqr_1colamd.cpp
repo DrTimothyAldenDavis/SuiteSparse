@@ -129,7 +129,7 @@ template <typename Entry, typename Int> int spqr_1colamd  // TRUE if OK, FALSE o
             n1cols++ ;
             Degree [j] = EMPTY ;
         }
-        else if (d == 1 && spqr_abs (Ax [p], cc) > tol)
+        else if (d == 1 && spqr_abs (Ax [p]) > tol)
         {
             // j is a column singleton, live or dead
             PR (("initial live %ld %ld\n", j, Ai [p])) ;
@@ -236,7 +236,7 @@ template <typename Entry, typename Int> int spqr_1colamd  // TRUE if OK, FALSE o
                     for (p2 = Ap [j] ; p2 < Ap [j+1] ; p2++)
                     {
                         i = Ai [p2] ;
-                        if (ATp [i] >= 0 && spqr_abs (Ax [p2], cc) > tol)
+                        if (ATp [i] >= 0 && spqr_abs (Ax [p2]) > tol)
                         {
                             // i might appear in Qrows [k+1:n1cols-1]
                             PR (("newly live %ld\n", j)) ;

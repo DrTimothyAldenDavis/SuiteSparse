@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Jan 12, 2024, SuiteSparse VERSION 7.5.1
+Jan 20, 2024, SuiteSparse VERSION 7.6.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -987,9 +987,9 @@ build type).  The static libraries will not be built (since
 
 * `SUITESPARSE_USE_OPENMP`:
 
-  If `ON`, OpenMP is used if it is available.  Default: `OFF`.
+  If `ON`, OpenMP is used by default if it is available.  Default: `ON`.
 
-  GraphBLAS, LAGraph, and ParU will vastly slower if OpenMP is not used.
+  GraphBLAS, LAGraph, and ParU will be vastly slower if OpenMP is not used.
   CHOLMOD will be somewhat slower without OpenMP (as long as it still has a
   parallel BLAS/LAPACK).  Three packages (UMFPACK, CHOLMOD, and SPQR) rely
   heavily on parallel BLAS/LAPACK libraries and those libraries may use OpenMP

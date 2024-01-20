@@ -309,8 +309,8 @@ int cholmod_l_version (int version [3]) ;
 
 #define CHOLMOD__VERSION SUITESPARSE__VERCODE(@CHOLMOD_VERSION_MAJOR@,@CHOLMOD_VERSION_MINOR@,@CHOLMOD_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
-#error "CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ requires SuiteSparse_config 7.5.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,6,0))
+#error "CHOLMOD @CHOLMOD_VERSION_MAJOR@.@CHOLMOD_VERSION_MINOR@.@CHOLMOD_VERSION_SUB@ requires SuiteSparse_config 7.6.0 or later"
 #endif
 
 //------------------------------------------------------------------------------
@@ -898,7 +898,9 @@ typedef struct cholmod_common_struct
     int nthreads_max ; // max # of OpenMP threads to use in CHOLMOD.
         // Defaults to SUITESPARSE_OPENMP_MAX_THREADS.
 
+    #ifdef BLAS_DUMP
     FILE *blas_dump ;  // only used if CHOLMOD is compiled with -DBLAS_DUMP
+    #endif
 
 } cholmod_common ;
 

@@ -107,6 +107,16 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0" )
     cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 endif ( )
 
+# SuiteSparse packages have many intentional extra semicolons, for code
+# readability (such as "/* do nothing */ ;" in SuiteSparse_config.c).  Disable
+# the clang warning for these statements:
+if ( CMAKE_C_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
+
 if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
     add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )
@@ -120,7 +130,7 @@ set ( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
     ${CMAKE_SOURCE_DIR}/cmake_modules )
 
 # Use OpenMP
-option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP if available.  OFF: Do not use OpenMP" ON )
+option ( SUITESPARSE_USE_OPENMP "ON (default): Use OpenMP in libraries by default if available.  OFF: Do not use OpenMP by default." ON )
 
 # strict usage
 option ( SUITESPARSE_USE_STRICT "ON: treat all _USE__ settings as strict if they are ON. OFF (default): consider *_USE_* as preferences, not strict" OFF )

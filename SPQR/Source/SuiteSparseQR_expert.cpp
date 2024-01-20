@@ -556,7 +556,7 @@ template <typename Entry, typename Int> void spqr_private_rtsolve
         {
             // divide by the diagonal (the singleton entry itself)
             p = R1p [i] ;
-            xi = spqr_divide (X1 [i], spqr_conj (R1x [p]), cc) ;
+            xi = spqr_divide (X1 [i], spqr_conj (R1x [p])) ;
             X1 [i] = xi ;
 
             // solve with the off-diagonal entries
@@ -664,7 +664,7 @@ template <typename Entry, typename Int> void spqr_private_rtsolve
                     {
                         xi -= spqr_conj (R [i]) * X1 [i] ;
                     }
-                    X1 [rm] = spqr_divide (xi, spqr_conj (R [rm]), cc) ;
+                    X1 [rm] = spqr_divide (xi, spqr_conj (R [rm])) ;
                     X1 += m ;
                 }
                 // After rm is incremented, it represents the number of rows
