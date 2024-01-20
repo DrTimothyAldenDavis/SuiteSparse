@@ -107,6 +107,16 @@ if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.18.0" )
     cmake_policy ( SET CMP0104 NEW )    # initialize CUDA architectures
 endif ( )
 
+# SuiteSparse packages have many intentional extra semicolons, for code
+# readability (such as "/* do nothing */ ;" in SuiteSparse_config.c).  Disable
+# the clang warning for these statements:
+if ( CMAKE_C_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
+
 if ( WIN32 )
     set ( CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS true )
     add_compile_definitions ( _CRT_SECURE_NO_WARNINGS )

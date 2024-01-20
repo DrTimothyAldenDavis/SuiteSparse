@@ -97,22 +97,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.2
+    find_package ( SuiteSparse_config 7.6.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.2 REQUIRED )
+        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.1.2
+    find_package ( CHOLMOD 5.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.1.2 REQUIRED )
+        find_package ( CHOLMOD 5.2.0 REQUIRED )
     endif ( )
 
-    find_package ( UMFPACK 6.3.1
+    find_package ( UMFPACK 6.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
     if ( NOT CAMD_FOUND )
-        find_package ( UMFPACK 6.3.1 REQUIRED )
+        find_package ( UMFPACK 6.3.2 REQUIRED )
     endif ( )
 endif ( )
 

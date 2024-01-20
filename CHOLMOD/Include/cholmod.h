@@ -248,11 +248,11 @@
 
 #define CHOLMOD_DATE "Jan 20, 2024"
 #define CHOLMOD_MAIN_VERSION   5
-#define CHOLMOD_SUB_VERSION    1
-#define CHOLMOD_SUBSUB_VERSION 2
+#define CHOLMOD_SUB_VERSION    2
+#define CHOLMOD_SUBSUB_VERSION 0
 
 #define CHOLMOD_VER_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
-#define CHOLMOD_VERSION CHOLMOD_VER_CODE(5,1)
+#define CHOLMOD_VERSION CHOLMOD_VER_CODE(5,2)
 #define CHOLMOD_HAS_VERSION_FUNCTION
 
 #ifdef __cplusplus
@@ -307,10 +307,10 @@ int cholmod_l_version (int version [3]) ;
 
 #include "SuiteSparse_config.h"
 
-#define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,1,2)
+#define CHOLMOD__VERSION SUITESPARSE__VERCODE(5,2,0)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,2))
-#error "CHOLMOD 5.1.2 requires SuiteSparse_config 7.5.2 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,6,0))
+#error "CHOLMOD 5.2.0 requires SuiteSparse_config 7.6.0 or later"
 #endif
 
 //------------------------------------------------------------------------------

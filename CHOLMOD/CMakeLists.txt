@@ -14,8 +14,8 @@ cmake_minimum_required ( VERSION 3.22 )
 
 set ( CHOLMOD_DATE "Jan 20, 2024" )
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_MINOR 1 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_MINOR 2 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -112,10 +112,10 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.2
+    find_package ( SuiteSparse_config 7.6.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.2 REQUIRED )
+        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.1

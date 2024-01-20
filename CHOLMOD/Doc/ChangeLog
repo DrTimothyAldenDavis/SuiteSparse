@@ -1,8 +1,8 @@
-Jan 20, 2024: version 5.1.2
+Jan 20, 2024: version 5.2.0
 
     * bug fix:  CHOLMOD 5.1.0 added a new variable in the CHOLMOD Common
         struct for development only but this change broke ABI compatibility
-        since the SOVERSION was not bumped at the same time.  v5.1.2 reverts
+        since the SOVERSION was not bumped at the same time.  v5.2.0 reverts
         this change so the new variable does not appear in production, thus
         restoring ABI compatibility with v5.0.x.
 

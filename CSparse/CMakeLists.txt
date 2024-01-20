@@ -18,10 +18,10 @@
 # Note that CSparse can use an older cmake version than most of SuiteSparse.
 cmake_minimum_required ( VERSION 3.13 )     # CSparse can be built stand-alone
 
-set ( CSPARSE_DATE "Dec 30, 2023" )
+set ( CSPARSE_DATE "Jan 20, 2024" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( CSPARSE_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( CSPARSE_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
@@ -59,6 +59,13 @@ message ( STATUS "Build type:    " ${CMAKE_BUILD_TYPE} )
 # BUILD_SHARED_LIBS and BUILD_STATIC_LIBS options
 option ( BUILD_SHARED_LIBS "OFF: do not build shared libraries.  ON (default): build shared libraries" ON )
 option ( BUILD_STATIC_LIBS "OFF: do not build static libraries.  ON (default): build static libraries" ON )
+
+if ( CMAKE_C_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
+if ( CMAKE_CXX_COMPILER_ID STREQUAL "Clang" )
+    set ( CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wno-extra-semi-stmt" )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # Configure cs.h with version number

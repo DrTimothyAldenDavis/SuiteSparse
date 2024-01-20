@@ -36,9 +36,6 @@
 #define DLONG
 
 // silence these diagnostics:
-#ifdef __GNUC__
-#pragma GCC diagnostic ignored "-Wextra-semi-stmt"
-#endif
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #endif
