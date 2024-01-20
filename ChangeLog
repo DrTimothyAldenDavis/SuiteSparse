@@ -1,6 +1,6 @@
 Jan 20, 2024: version 7.5.2
 
-    * CHOLMOD 5.1.2: bug fix (restore ABI compatibility with 5.0.x)
+    * CHOLMOD 5.1.2: bug fix (restore ABI compatibility with 5.0.x, i.e., 5.1.2 is ABI incompatible to 5.1.x)
     * GraphBLAS 9.0.1: minor updates to build system
     * SuiteSparse_config 7.5.2: no change except version number
     * SPQR 4.3.2: remove unused parameters
