@@ -85,7 +85,7 @@ endif ( )
 # add OpenMP
 #-------------------------------------------------------------------------------
 
-if ( OpenMP_C_FOUND )
+if ( LAGRAPH_HAS_OPENMP )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( LAGraphX PRIVATE OpenMP::OpenMP_C )
     endif ( )
