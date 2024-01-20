@@ -4,7 +4,7 @@ Jan 20, 2024: version 5.1.2
         struct for development only but this change broke ABI compatibility
         since the SOVERSION was not bumped at the same time.  v5.1.2 reverts
         this change so the new variable does not appear in production, thus
-        preserving ABI compatibility with v5.0.x.
+        restoring ABI compatibility with v5.0.x.
 
 Jan 10, 2024: version 5.1.1
 
