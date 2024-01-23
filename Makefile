@@ -58,7 +58,8 @@ local:
 	( cd CAMD && $(MAKE) local )
 	( cd CCOLAMD && $(MAKE) local )
 	( cd CHOLMOD && $(MAKE) local )
-	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
+	( cd CSparse && $(MAKE) )  
+# CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) local )
 	( cd LDL && $(MAKE) local )
 	( cd KLU && $(MAKE) local )
@@ -81,7 +82,8 @@ global:
 	( cd CAMD && $(MAKE) global )
 	( cd CCOLAMD && $(MAKE) global )
 	( cd CHOLMOD && $(MAKE) global )
-	( cd CSparse && $(MAKE) )  # CSparse is compiled but not installed
+	( cd CSparse && $(MAKE) )  
+# CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) global )
 	( cd LDL && $(MAKE) global )
 	( cd KLU && $(MAKE) global )
@@ -103,7 +105,8 @@ install:
 	( cd CAMD && $(MAKE) install )
 	( cd CCOLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
-	( cd CXSparse && $(MAKE) install ) # CXSparse is installed instead
+	( cd CXSparse && $(MAKE) install ) 
+# CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )
