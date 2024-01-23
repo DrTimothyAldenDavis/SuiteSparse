@@ -48,7 +48,7 @@ global:
 	( cd build && cmake $(CMAKE_OPTIONS) -USUITESPARSE_PKGFILEDIR -DSUITESPARSE_LOCAL_INSTALL=0 .. && cmake --build . --config Release -j${JOBS} )
 
 debug:
-	( cd build ; cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; cmake --build . --config Debug )
+	( cd build && cmake $(CMAKE_OPTIONS) -DCMAKE_BUILD_TYPE=Debug .. ; cmake --build . --config Debug )
 
 all: library
 
@@ -56,14 +56,14 @@ demos: library
 
 # just compile after running cmake; do not run cmake again
 remake:
-	( cd build ; cmake --build . )
+	( cd build && cmake --build . )
 
 # just run cmake to set things up
 setup:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. )
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build ; cmake --install . )
+	( cd build && cmake --install . )
 
 # remove any installed libraries and #include files
 uninstall:
