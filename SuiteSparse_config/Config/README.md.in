@@ -686,9 +686,7 @@ papers in ACM TOMS, for each package.
 About the BLAS and LAPACK libraries
 -----------------------------------------------------------------------------
 
-NOTE: Use of the Intel MKL BLAS is strongly recommended.  In a 2019 test,
-OpenBLAS caused severe performance degradation.  The reason for this is being
-investigated, and this may be resolved in the future.
+NOTE: if you use OpenBLAS, be sure to use version 0.3.27 or later.
 
 To select your BLAS/LAPACK, see the instructions in SuiteSparseBLAS.cmake in
 `SuiteSparse_config/cmake_modules`.  If `SuiteSparse_config` finds a BLAS with
@@ -794,11 +792,7 @@ for example, which changes the compiler to gcc and g++.
 This will work on Linux/Unix and the Mac.  It should automatically detect if
 you have the Intel compilers or not, and whether or not you have CUDA.
 
-NOTE: Use of the Intel MKL BLAS is strongly recommended.  The OpenBLAS can
-(rarely) result in severe performance degradation, in CHOLMOD in particular.
-The reason for this is still under investigation and might already be resolved
-in the current version of OpenBLAS.  See
-`SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake` to select your BLAS.
+See `SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake` to select your BLAS.
 
 You may also need to add SuiteSparse/lib to your path.  If your copy of
 SuiteSparse is in /home/me/SuiteSparse, for example, then add this to your
