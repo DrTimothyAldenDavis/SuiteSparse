@@ -34,8 +34,8 @@
 #endif
 
 #include "ccolamd.h"
-#if !defined (CCOLAMD__VERSION) || CCOLAMD__VERSION < SUITESPARSE__VERCODE(3,3,1)
-#error "This library requires CCOLAMD 3.3.1 or later"
+#if !defined (CCOLAMD__VERSION) || CCOLAMD__VERSION < SUITESPARSE__VERCODE(3,3,2)
+#error "This library requires CCOLAMD 3.3.2 or later"
 #endif
 
 #include "cholmod.h"
@@ -44,8 +44,8 @@
 #endif
 
 #include "colamd.h"
-#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,1)
-#error "This library requires COLAMD 3.3.1 or later"
+#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,2)
+#error "This library requires COLAMD 3.3.2 or later"
 #endif
 
 #include "cs.h"
@@ -103,8 +103,8 @@
     #include "SuiteSparseQR.hpp"
 
     #include "Mongoose.hpp"
-    #if !defined (Mongoose__VERSION) || Mongoose__VERSION < SUITESPARSE__VERCODE(3,3,1)
-    #error "This library requires Mongoose 3.3.1 or later"
+    #if !defined (Mongoose__VERSION) || Mongoose__VERSION < SUITESPARSE__VERCODE(3,3,2)
+    #error "This library requires Mongoose 3.3.2 or later"
     #endif
 
 #endif
