@@ -170,7 +170,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_COLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "colamd" )
-    find_package ( COLAMD 3.3.1 REQUIRED )
+    find_package ( COLAMD 3.3.2 REQUIRED )
 else ( )
     if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
@@ -197,7 +197,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_CCOLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
-    find_package ( CCOLAMD 3.3.1 REQUIRED )
+    find_package ( CCOLAMD 3.3.2 REQUIRED )
 else ( )
     if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # CHOLMOD can optionally use CCOLAMD.

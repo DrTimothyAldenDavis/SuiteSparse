@@ -843,8 +843,8 @@ void klu_version (int version [3]) ;
 #endif
 
 #if !defined (COLAMD__VERSION) || \
-    (COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,1))
-#error "KLU 2.3.2 requires COLAMD 3.3.1 or later"
+    (COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,2))
+#error "KLU 2.3.2 requires COLAMD 3.3.2 or later"
 #endif
 
 #if !defined (BTF__VERSION) || \

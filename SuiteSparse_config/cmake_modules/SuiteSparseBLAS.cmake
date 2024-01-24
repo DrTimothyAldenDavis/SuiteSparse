@@ -50,7 +50,7 @@ endif ( )
 # To request specific BLAS, use either (for example):
 #
 #   CMAKE_OPTIONS="-DBLA_VENDOR=Apple" make
-#   cd build ; cmake -DBLA_VENDOR=Apple .. ; make
+#   cd build && cmake -DBLA_VENDOR=Apple .. ; make
 #
 # Use SUITESPARSE_USE_64BIT_BLAS to select 64-bit or 32-bit BLAS.  If
 # BLA_VENDOR is also defined, this setting is strictly enforced.  If set to

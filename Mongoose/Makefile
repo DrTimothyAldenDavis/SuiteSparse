@@ -47,7 +47,7 @@ global:
 
 # build the Mongoose library (static and dynamic) and run a quick test
 demos: library
-	( cd build ; ./demo )
+	( cd build && ./demo )
 	( cd build && ctest . || ctest . --rerun-failed --output-on-failure )
 
 # the same as "make library"
@@ -60,7 +60,7 @@ install:
 
 # create the Doc/Mongoose_UserGuide.pdf
 docs:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; cmake --build . --target userguide )
+	( cd build && cmake $(CMAKE_OPTIONS) .. ; cmake --build . --target userguide )
 
 # remove any installed libraries and #include files
 uninstall:
@@ -68,7 +68,7 @@ uninstall:
 
 # run the extensive tests
 test:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; ctest . )
+	( cd build && cmake $(CMAKE_OPTIONS) .. ; ctest . )
 
 clean: distclean
 
