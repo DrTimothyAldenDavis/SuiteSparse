@@ -61,10 +61,10 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( COLAMD 3.3.2 REQUIRED )
     endif ( )
 
-    find_package ( BTF 2.3.0
+    find_package ( BTF 2.3.1
         PATHS ${CMAKE_SOURCE_DIR}/../BTF/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::BTF )
-        find_package ( BTF 2.3.0 REQUIRED )
+        find_package ( BTF 2.3.1 REQUIRED )
     endif ( )
 endif ( )
 

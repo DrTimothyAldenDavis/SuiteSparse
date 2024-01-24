@@ -7,8 +7,9 @@ Jan 20, 2024: version 7.6.0
     * SPQR 4.3.2: remove unused parameters
     * LAGraph 1.1.2, CSparse 4.3.1, ParU 0.1.2, GraphBLAS 9.0.1:
         minor updates to build system
-    * Example 1.6.2, UMFPACK 6.3.2, KLU 2.3.2: revise version numbers of
-        dependent packages
+    * Example 1.6.2, UMFPACK 6.3.2, KLU 2.3.2, SuiteSparse_Mongoose 3.3.2,
+        SPEX 2.3.2: revise version numbers of dependent packages
+    * AMD, BTF, CAMD, CXSparse, LDL, RBio: unchanged
     * Package versions in this release:
         SuiteSparse_config 7.6.0
         AMD 3.3.1
@@ -24,10 +25,10 @@ Jan 20, 2024: version 7.6.0
         KLU 2.3.2
         LDL 3.3.1
         LAGraph 1.1.2
-        SuiteSparse_Mongoose 3.3.1
+        SuiteSparse_Mongoose 3.3.2
         ParU 0.1.2
         RBio 4.3.1
-        SPEX 2.3.1
+        SPEX 2.3.2
         SPQR 4.3.2
         UMFPACK 6.3.2
 
