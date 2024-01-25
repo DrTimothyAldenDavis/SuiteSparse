@@ -57,9 +57,6 @@ endif ( )
 
 # in the future, when GraphBLAS can use CUDA in production:
 # option ( GRAPHBLAS_USE_CUDA "ON (default): enable CUDA acceleration for GraphBLAS, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
-# if ( NOT SUITESPARSE_USE_CUDA )
-#     set ( GRAPHBLAS_USE_CUDA "OFF" CACHE STRING "" FORCE )
-# endif ( )
 
 if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
     # FOR NOW: do not compile FactoryKernels when developing the CUDA kernels
@@ -101,9 +98,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( GRAPHBLAS_USE_OPENMP "ON: Use OpenMP in GraphBLAS if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
-if ( NOT SUITESPARSE_USE_OPENMP )
-    set ( GRAPHBLAS_USE_OPENMP "OFF" CACHE STRING "" FORCE )
-endif ( )
 if ( GRAPHBLAS_USE_OPENMP )
     if ( CMAKE_VERSION VERSION_LESS 3.24 )
         find_package ( OpenMP COMPONENTS C )
@@ -115,7 +109,7 @@ else ( )
     set ( OpenMP_C_FOUND OFF )
 endif ( )
 
-if ( OpenMP_C_FOUND )
+if ( GRAPHBLAS_USE_OPENMP AND OpenMP_C_FOUND )
     set ( GRAPHBLAS_HAS_OPENMP ON )
 else ( )
     set ( GRAPHBLAS_HAS_OPENMP OFF )

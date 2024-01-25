@@ -417,7 +417,7 @@ template <typename Entry, typename Int> Int spqr_front
         // check to see if the kth column is OK
         // ---------------------------------------------------------------------
 
-        if (k < ntol && (wk = spqr_abs (F [INDEX (g,k,m)], cc)) <= tol)
+        if (k < ntol && (wk = spqr_abs (F [INDEX (g,k,m)])) <= tol)
         {
 
             // -----------------------------------------------------------------

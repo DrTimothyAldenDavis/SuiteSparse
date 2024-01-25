@@ -85,10 +85,10 @@ remake:
 
 # just run cmake to set things up
 setup:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. )
+	( cd build && cmake $(CMAKE_OPTIONS) .. )
 
 install:
-	( cd build ; cmake --install . )
+	( cd build && cmake --install . )
 
 # remove any installed libraries and #include files
 uninstall:

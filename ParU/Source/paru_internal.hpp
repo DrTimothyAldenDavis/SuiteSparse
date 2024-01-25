@@ -35,6 +35,11 @@
 
 #define DLONG
 
+// silence these diagnostics:
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wc++11-extensions"
+#endif
+
 extern "C"
 {
 #include "umf_internal.h"

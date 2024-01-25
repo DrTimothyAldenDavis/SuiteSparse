@@ -522,7 +522,7 @@ typedef struct	/* NumericType */
 	rsmin,		/* smallest row sum */
 	rsmax,		/* largest row sum  */
 	min_udiag,	/* smallest abs value on diagonal of D */
-	max_udiag,	/* smallest abs value on diagonal of D */
+	max_udiag,	/* maximum abs value on diagonal of D */
 	rcond ;		/* min (D) / max (D) */
 
     Int

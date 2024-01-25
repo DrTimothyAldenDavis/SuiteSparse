@@ -53,6 +53,11 @@
 #define DEBUG_EXPENSIVE
 */
 
+// silence these diagnostics:
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wc++11-extensions"
+#endif
+
 // -----------------------------------------------------------------------------
 // basic macros
 // -----------------------------------------------------------------------------
@@ -1115,12 +1120,12 @@ inline Complex spqr_conj (Complex x)
 // === spqr_abs ================================================================
 // =============================================================================
 
-inline double spqr_abs (double x, cholmod_common *cc)       // cc is unused
+inline double spqr_abs (double x)
 {
     return (fabs (x)) ;
 }
 
-inline double spqr_abs (Complex x, cholmod_common *cc)
+inline double spqr_abs (Complex x)
 {
     return (SuiteSparse_config_hypot (x.real ( ), x.imag ( ))) ;
 }
@@ -1130,12 +1135,12 @@ inline double spqr_abs (Complex x, cholmod_common *cc)
 // === spqr_divide =============================================================
 // =============================================================================
 
-inline double spqr_divide (double a, double b, cholmod_common *cc)  // cc unused
+inline double spqr_divide (double a, double b)
 {
     return (a/b) ;
 }
 
-inline Complex spqr_divide (Complex a, Complex b, cholmod_common *cc)
+inline Complex spqr_divide (Complex a, Complex b)
 {
     double creal, cimag ;
     SuiteSparse_config_divcomplex

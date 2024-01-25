@@ -545,12 +545,12 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 // If the suffix does not contain "_", use (Sun Perf., for example):
 
-//     cd build ; cmake -DBLAS64_SUFFIX="64" ..
+//     cd build && cmake -DBLAS64_SUFFIX="64" ..
 
 // If the suffix contains "_" (OpenBLAS in spack for example), use the
 // following:
 
-//     cd build ; cmake -DBLAS64_SUFFIX="_64" ..
+//     cd build && cmake -DBLAS64_SUFFIX="_64" ..
 
 // This setting could be used by the spack packaging of SuiteSparse when linked
 // with the spack-installed OpenBLAS with 64-bit integers.  See

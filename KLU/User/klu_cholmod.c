@@ -22,8 +22,8 @@
 #include "klu_cholmod.h"
 #include "cholmod.h"
 
-#if (CHOLMOD_VERSION < SUITESPARSE_VER_CODE(5,1))
-#error "KLU:CHOLMOD @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires CHOLMOD 5.1.1 or later"
+#if (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,0))
+#error "KLU:CHOLMOD @KLU_VERSION_MAJOR@.@KLU_VERSION_MINOR@.@KLU_VERSION_SUB@ requires CHOLMOD 5.2.0 or later"
 #endif
 
 #define TRUE 1

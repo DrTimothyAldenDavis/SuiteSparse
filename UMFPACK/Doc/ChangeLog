@@ -1,3 +1,7 @@
+Jan 20, 2024: version 6.3.2
+
+    * revise version numbers for dependencies
+
 Jan 10, 2024: version 6.3.1
 
     * MATLAB interface:  add -DNO_SSIZE_T for Windows

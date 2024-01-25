@@ -1404,7 +1404,7 @@ template <typename Entry, typename Int> double check_qmult
 
                 for (err = 0, k = 0 ; k < xsize ; k++)
                 {
-                    double e1 = spqr_abs (Y [k] - Z [k], cc) ;
+                    double e1 = spqr_abs (Y [k] - Z [k]) ;
                     e1 = CHECK_NAN (e1) ;
                     err = MAX (err, e1) ;
                 }
@@ -1418,7 +1418,7 @@ template <typename Entry, typename Int> double check_qmult
 
                 for (err = 0, k = 0 ; k < xsize ; k++)
                 {
-                    double e1 = spqr_abs (S [k] - Y [k], cc) ;
+                    double e1 = spqr_abs (S [k] - Y [k]) ;
                     e1 = CHECK_NAN (e1) ;
                     err = MAX (err, e1) ;
                 }
@@ -1472,7 +1472,7 @@ template <typename Entry, typename Int> double check_qmult
 
                 for (err = 0, k = 0 ; k < xsize ; k++)
                 {
-                    double e1 = spqr_abs (Y [k] - Z [k], cc) ;
+                    double e1 = spqr_abs (Y [k] - Z [k]) ;
                     e1 = CHECK_NAN (e1) ;
                     err = MAX (err, e1) ;
                 }
@@ -1486,7 +1486,7 @@ template <typename Entry, typename Int> double check_qmult
 
                 for (err = 0, k = 0 ; k < xsize ; k++)
                 {
-                    double e1 = spqr_abs (S [k] - Y [k], cc) ;
+                    double e1 = spqr_abs (S [k] - Y [k]) ;
                     e1 = CHECK_NAN (e1) ;
                     err = MAX (err, e1) ;
                 }

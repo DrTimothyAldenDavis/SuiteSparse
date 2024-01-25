@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Jan 10, 2024" )
+set ( PARU_DATE "Jan 20, 2024" )
 set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 1 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -55,9 +55,6 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 option ( PARU_USE_OPENMP "ON: Use OpenMP in ParU if available.  OFF: Do not use OpenMP.  (Default: SUITESPARSE_USE_OPENMP)" ${SUITESPARSE_USE_OPENMP} )
-if ( NOT SUITESPARSE_USE_OPENMP )
-    set ( PARU_USE_OPENMP "OFF" CACHE STRING "" FORCE )
-endif ( )
 
 if ( PARU_USE_OPENMP )
     # OpenMP 4.5 or later is required
@@ -100,22 +97,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.0
+    find_package ( SuiteSparse_config 7.6.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.1.1
+    find_package ( CHOLMOD 5.2.0
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.1.1 REQUIRED )
+        find_package ( CHOLMOD 5.2.0 REQUIRED )
     endif ( )
 
-    find_package ( UMFPACK 6.3.0
+    find_package ( UMFPACK 6.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
     if ( NOT CAMD_FOUND )
-        find_package ( UMFPACK 6.3.0 REQUIRED )
+        find_package ( UMFPACK 6.3.2 REQUIRED )
     endif ( )
 endif ( )
 

@@ -420,19 +420,19 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 #define SUITESPARSE_HAS_VERSION_FUNCTION
 
-#define SUITESPARSE_DATE "Jan 12, 2024"
+#define SUITESPARSE_DATE "Jan 20, 2024"
 #define SUITESPARSE_MAIN_VERSION    7
-#define SUITESPARSE_SUB_VERSION     5
-#define SUITESPARSE_SUBSUB_VERSION  1
+#define SUITESPARSE_SUB_VERSION     6
+#define SUITESPARSE_SUBSUB_VERSION  0
 
 // version format x.y
 #define SUITESPARSE_VER_CODE(main,sub) ((main) * 1000 + (sub))
-#define SUITESPARSE_VERSION SUITESPARSE_VER_CODE(7, 5)
+#define SUITESPARSE_VERSION SUITESPARSE_VER_CODE(7, 6)
 
 // version format x.y.z
 #define SUITESPARSE__VERCODE(main,sub,patch) \
     (((main)*1000ULL + (sub))*1000ULL + (patch))
-#define SUITESPARSE__VERSION SUITESPARSE__VERCODE(7,5,1)
+#define SUITESPARSE__VERSION SUITESPARSE__VERCODE(7,6,0)
 
 //==============================================================================
 // SuiteSparse interface to the BLAS and LAPACK libraries
@@ -545,12 +545,12 @@ int SuiteSparse_version     // returns SUITESPARSE_VERSION
 
 // If the suffix does not contain "_", use (Sun Perf., for example):
 
-//     cd build ; cmake -DBLAS64_SUFFIX="64" ..
+//     cd build && cmake -DBLAS64_SUFFIX="64" ..
 
 // If the suffix contains "_" (OpenBLAS in spack for example), use the
 // following:
 
-//     cd build ; cmake -DBLAS64_SUFFIX="_64" ..
+//     cd build && cmake -DBLAS64_SUFFIX="_64" ..
 
 // This setting could be used by the spack packaging of SuiteSparse when linked
 // with the spack-installed OpenBLAS with 64-bit integers.  See
