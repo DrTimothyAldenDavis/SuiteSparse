@@ -1,3 +1,32 @@
+Feb XX, 2024: version 7.7.0
+
+    * SPEX 3.1.0: major revision to API, new methods.  Added SPEX_Cholesky,
+        SPEX_Backslash, and python interface.  MATLAB interface revised.
+    * Example 1.7.0: revised for change in SPEX API
+    * SuiteSparse_config: only version number changed to reflect update to
+        SPEX.
+    * Package versions in this release:
+        SuiteSparse_config 7.7.0
+        AMD 3.3.1
+        BTF 2.3.1
+        CAMD 3.3.1
+        CCOLAMD 3.3.2
+        CHOLMOD 5.2.0
+        COLAMD 3.3.2
+        CSparse 4.3.1
+        CXSparse 4.3.1
+        Example 1.7.0
+        GraphBLAS 9.0.1
+        KLU 2.3.2
+        LDL 3.3.1
+        LAGraph 1.1.2
+        SuiteSparse_Mongoose 3.3.2
+        ParU 0.1.2
+        RBio 4.3.1
+        SPEX 3.1.0
+        SPQR 4.3.2
+        UMFPACK 6.3.2
+
 Jan 20, 2024: version 7.6.0
 
     * CHOLMOD 5.2.0: bug fix (restore ABI compatibility with 5.0.x, i.e., 5.2.0

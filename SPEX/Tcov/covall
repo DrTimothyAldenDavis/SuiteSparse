@@ -1,0 +1,6 @@
+#!/bin/bash
+        ./gcovs SPEX_*.c spex_*.c 2>&1 > gcovs.out
+        ./covs > covs.out
+        echo -n "statements not yet tested: "
+        grep "#####" *.*.gcov | wc -l
+        ./cover *.*.gcov > cover.out

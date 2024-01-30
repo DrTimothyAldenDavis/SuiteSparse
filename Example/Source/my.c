@@ -374,7 +374,8 @@ int my_function (void)      // returns 0 on success, -1 on failure
     //--------------------------------------------------------------------------
 
     OK (SPEX_initialize ( ) == SPEX_OK) ;
-    SPEX_version (version) ;
+    char spex_date [128] ;
+    OK (SPEX_version (version, spex_date) == SPEX_OK) ;
     OK (my_check_version ("SPEX",
         SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
         version, SPEX__VERSION)) ;

@@ -2,7 +2,7 @@
 # SuiteSparse/SPEX/CMakeLists.txt:  cmake for SPEX
 #-------------------------------------------------------------------------------
 
-# SPEX_Left_LU: (c) 2019-2024, Chris Lourenco (US Naval Academy), Jinhao Chen,
+# SPEX: (c) 2019-2024, Chris Lourenco (US Naval Academy), Jinhao Chen,
 # Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
@@ -12,10 +12,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( SPEX_DATE "Jan 20, 2024" )
-set ( SPEX_VERSION_MAJOR 2 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( SPEX_VERSION_SUB   2 CACHE STRING "" FORCE )
+set ( SPEX_DATE "Feb XX, 2024" ) # FIXME for 7.7.0
+set ( SPEX_VERSION_MAJOR 3 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_MINOR 1 CACHE STRING "" FORCE )
+set ( SPEX_VERSION_SUB   0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building SPEX version: v"
     ${SPEX_VERSION_MAJOR}.
@@ -45,10 +45,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.6.0
+    find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 
     find_package ( AMD 3.3.1
@@ -82,8 +82,12 @@ configure_file ( "Config/SPEX_version.tex.in"
 # include directories
 #-------------------------------------------------------------------------------
 
-include_directories ( SPEX_Left_LU/Source SPEX_Util/Source Include 
-    SPEX_Left_LU/Demo )
+include_directories ( Include
+    SPEX_Backslash/Source SPEX_Cholesky/Source SPEX_LU/Source
+    SPEX_Utilities/Source
+    ${SUITESPARSE_CONFIG_INCLUDE_DIR}
+    ${GMP_INCLUDE_DIR} ${MPFR_INCLUDE_DIR}
+    ${AMD_INCLUDE_DIR} ${COLAMD_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # dynamic spex library properties
@@ -339,6 +343,36 @@ if ( NOT MSVC )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# python interface
+#-------------------------------------------------------------------------------
+
+file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
+
+add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
+
+set_target_properties ( spexpython PROPERTIES
+    VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
+    C_STANDARD 11
+    C_STANDARD_REQUIRED ON
+    SOVERSION ${SPEX_VERSION_MAJOR}
+    PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h" )
+
+# MPFR:
+target_link_libraries ( spexpython PUBLIC ${MPFR_LIBRARIES} )
+
+# GMP:
+# must occur after MPFR
+target_link_libraries ( spexpython PUBLIC ${GMP_LIBRARIES} )
+
+target_link_libraries ( spexpython PUBLIC SPEX )
+
+install ( TARGETS spexpython
+    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+
+#-------------------------------------------------------------------------------
 # Demo library and programs
 #-------------------------------------------------------------------------------
 
@@ -354,21 +388,38 @@ if ( SUITESPARSE_DEMOS )
     # Demo programs
     #---------------------------------------------------------------------------
 
-    add_executable ( spexlu_demo "SPEX_Left_LU/Demo/spexlu_demo.c"
-                                 "SPEX_Left_LU/Demo/demos.c" )
-    add_executable ( example     "SPEX_Left_LU/Demo/example.c" )
-    add_executable ( example2    "SPEX_Left_LU/Demo/example2.c"
-                                 "SPEX_Left_LU/Demo/demos.c" )
+    include_directories ( Demo )
+    file ( GLOB SPEX_DEMO_SOURCES "Demo/Utilities/*.c" )
+
+    add_executable ( spex_demo_backslash         "Demo/spex_demo_backslash.c"         ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_cholesky_extended "Demo/spex_demo_cholesky_extended.c" ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_cholesky_simple   "Demo/spex_demo_cholesky_simple.c"   ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_lu_doub           "Demo/spex_demo_lu_doub.c"           ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_lu_extended       "Demo/spex_demo_lu_extended.c"       ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_lu_simple1        "Demo/spex_demo_lu_simple1.c"        ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_lu_simple2        "Demo/spex_demo_lu_simple2.c"        ${SPEX_DEMO_SOURCES} )
+    add_executable ( spex_demo_threaded          "Demo/spex_demo_threaded.c"          ${SPEX_DEMO_SOURCES} )
 
     # Libraries required for Demo programs
     if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( spexlu_demo PUBLIC SPEX )
-        target_link_libraries ( example PUBLIC SPEX )
-        target_link_libraries ( example2 PUBLIC SPEX )
+        target_link_libraries ( spex_demo_backslash         PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_cholesky_extended PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_cholesky_simple   PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_lu_doub           PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_lu_extended       PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_lu_simple2        PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+        target_link_libraries ( spex_demo_threaded          PUBLIC SPEX SuiteSparse::SuiteSparseConfig ${MPFR_LIBRARIES} ${GMP_LIBRARIES}  )
+    
     else ( )
-        target_link_libraries ( spexlu_demo PUBLIC SPEX_static )
-        target_link_libraries ( example PUBLIC SPEX_static )
-        target_link_libraries ( example2 PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_backslash         PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_cholesky_extended PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_cholesky_simple   PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_lu_doub           PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_lu_extended       PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_lu_simple1        PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_lu_simple2        PUBLIC SPEX_static )
+        target_link_libraries ( spex_demo_threaded          PUBLIC SPEX_static )
     endif ( )
 
 else ( )
@@ -378,7 +429,69 @@ else ( )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# configure MATLAB and Tcov
+#-------------------------------------------------------------------------------
+
+# get paths to libraries
+get_filename_component ( GMP_PATH ${GMP_LIBRARY} DIRECTORY )
+get_filename_component ( SUITESPARSE_CONFIG_PATH ${SUITESPARSE_CONFIG_LIBRARY} DIRECTORY )
+get_filename_component ( COLAMD_PATH ${COLAMD_LIBRARY} DIRECTORY )
+get_filename_component ( AMD_PATH ${AMD_LIBRARY} DIRECTORY )
+get_filename_component ( MPFR_PATH ${MPFR_LIBRARY} DIRECTORY )
+
+# message ( STATUS "suitesparseconfig path ${SUITESPARSE_CONFIG_PATH}" )
+# message ( STATUS "colamd path ${COLAMD_PATH}" )
+# message ( STATUS "amd path ${AMD_PATH}" )
+# message ( STATUS "gmp path ${GMP_PATH}" )
+# message ( STATUS "mpfr path ${MPFR_PATH}" )
+
+# construct the -I list
+get_target_property ( INCS SPEX INCLUDE_DIRECTORIES )
+list ( TRANSFORM INCS PREPEND " -I" )
+set ( SPEX_INCS "" )
+foreach ( INC ${INCS} )
+#   message ( STATUS "check inc: ${INC}" )
+    if ( NOT ${INC} MATCHES "TARGET_PROPERTY" )
+#       message ( STATUS "add   inc: ${INC}" )
+        string ( APPEND SPEX_INCS " " ${INC} )
+    endif ( )
+endforeach ( )
+# message ( STATUS "Incs: ${SPEX_INCS}" )
+
+# construct the library list for Tcov/Makefile
+set ( SPEX_LIB_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+get_target_property ( LIBS SPEX LINK_LIBRARIES )
+string ( REPLACE "." "\\." LIBSUFFIX ${SPEX_LIB_SUFFIX} )
+set ( SPEX_LIBS "" )
+foreach ( LIB_NAME ${LIBS} )
+#   message ( STATUS "Lib: ${LIB_NAME}" )
+    if ( LIB_NAME MATCHES "::" )
+        # do nothing
+    elseif ( LIB_NAME MATCHES ${LIBSUFFIX} )
+        # message ( STATUS "has suffix" )
+        string ( APPEND SPEX_LIBS " " ${LIB_NAME} )
+    else ( )
+        # message ( STATUS "no suffix" )
+        string ( APPEND SPEX_LIBS " -l" ${LIB_NAME} )
+    endif ( )
+endforeach ( )
+# message ( STATUS "Libs: ${SPEX_LIBS}" )
+
+configure_file (
+        "Config/spex_deps.m.in"
+        "${PROJECT_SOURCE_DIR}/MATLAB/spex_deps.m"
+        @ONLY
+        NEWLINE_STYLE LF )
+
+configure_file (
+        "Config/Tcov_Makefile.in"
+        "${PROJECT_SOURCE_DIR}/Tcov/Makefile"
+        @ONLY
+        NEWLINE_STYLE LF )
+
+#-------------------------------------------------------------------------------
 # report status
 #-------------------------------------------------------------------------------
 
 include ( SuiteSparseReport )
+
