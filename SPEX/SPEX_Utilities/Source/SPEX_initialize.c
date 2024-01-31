@@ -38,10 +38,18 @@ void spex_set_initialized (bool s)
 
 SPEX_info SPEX_initialize ( void )
 {
-    if (spex_initialized( )) return (SPEX_PANIC);
+    if (spex_initialized( ))
+    {
+        printf ("SPEX PANIC: already initialized\n") ;
+        return (SPEX_PANIC);
+    }
 
     // SPEX requires GMP to support bit counts that are 64-bit integers
-    if (sizeof (mp_bitcnt_t) < sizeof (uint64_t)) return (SPEX_PANIC);
+    if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))
+    {
+        printf ("SPEX PANIC: GMP misconfigured\n") ;
+        return (SPEX_PANIC);
+    }
 
     // tell GMP and MPFR which memory allocation functions to use
     mp_set_memory_functions
@@ -53,6 +61,10 @@ SPEX_info SPEX_initialize ( void )
 
     // initialize the SPEX GMP interface for the primary thread
     SPEX_info info = spex_gmp_initialize (1) ;
+    if (info != SPEX_OK)
+    {
+        printf ("SPEX ERROR: GMP not initialized: %d\n", info) ;
+    }
     if (info == SPEX_OK)
     {
         spex_set_initialized (true);
