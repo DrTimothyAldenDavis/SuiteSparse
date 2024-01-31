@@ -346,31 +346,35 @@ endif ( )
 # python interface
 #-------------------------------------------------------------------------------
 
-file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
+if ( BUILD_SHARED_LIBS )
 
-add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
+    file ( GLOB SPEX_PYTHON_SOURCES "Python/SPEXpy/Source/*.c" )
+    add_library ( spexpython SHARED ${SPEX_PYTHON_SOURCES} )
 
-set_target_properties ( spexpython PROPERTIES
-    VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
-    C_STANDARD 11
-    C_STANDARD_REQUIRED ON
-    SOVERSION ${SPEX_VERSION_MAJOR}
-    PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h" )
+    set_target_properties ( spexpython PROPERTIES
+        VERSION ${SPEX_VERSION_MAJOR}.${SPEX_VERSION_MINOR}.${SPEX_VERSION_SUB}
+        C_STANDARD 11
+        C_STANDARD_REQUIRED ON
+        SOVERSION ${SPEX_VERSION_MAJOR}
+        PUBLIC_HEADER "Python/SPEXpy/Source/spex_python_connect.h" )
 
-# MPFR:
-target_link_libraries ( spexpython PUBLIC ${MPFR_LIBRARIES} )
+    # MPFR:
+    target_link_libraries ( spexpython PRIVATE ${MPFR_LIBRARIES} )
 
-# GMP:
-# must occur after MPFR
-target_link_libraries ( spexpython PUBLIC ${GMP_LIBRARIES} )
+    # GMP:
+    # must occur after MPFR
+    target_link_libraries ( spexpython PRIVATE ${GMP_LIBRARIES} )
 
-target_link_libraries ( spexpython PUBLIC SPEX )
+    target_link_libraries ( spexpython PRIVATE SuiteSparse::COLAMD )
+    target_link_libraries ( spexpython PRIVATE SuiteSparse::AMD )
+    target_link_libraries ( spexpython PRIVATE SPEX )
 
-install ( TARGETS spexpython
-    LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
-    ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
-    RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
-    PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+    install ( TARGETS spexpython
+        LIBRARY DESTINATION ${SUITESPARSE_LIBDIR}
+        ARCHIVE DESTINATION ${SUITESPARSE_LIBDIR}
+        RUNTIME DESTINATION ${SUITESPARSE_BINDIR}
+        PUBLIC_HEADER DESTINATION ${SUITESPARSE_INCLUDEDIR} )
+endif ( )
 
 #-------------------------------------------------------------------------------
 # Demo library and programs
