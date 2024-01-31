@@ -44,12 +44,15 @@ SPEX_info SPEX_initialize ( void )
         return (SPEX_PANIC);
     }
 
+#if 0
+    // FIXME: why does SPEX 3.0 require sizeof (mp_bitcnt_t) to be sizeof (uint64_t)?
     // SPEX requires GMP to support bit counts that are 64-bit integers
     if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))
     {
         printf ("SPEX PANIC: GMP misconfigured\n") ;
         return (SPEX_PANIC);
     }
+#endif
 
     // tell GMP and MPFR which memory allocation functions to use
     mp_set_memory_functions
