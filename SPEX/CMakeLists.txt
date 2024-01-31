@@ -432,62 +432,66 @@ endif ( )
 # configure MATLAB and Tcov
 #-------------------------------------------------------------------------------
 
-# get paths to libraries
-get_filename_component ( GMP_PATH ${GMP_LIBRARY} DIRECTORY )
-get_filename_component ( SUITESPARSE_CONFIG_PATH ${SUITESPARSE_CONFIG_LIBRARY} DIRECTORY )
-get_filename_component ( COLAMD_PATH ${COLAMD_LIBRARY} DIRECTORY )
-get_filename_component ( AMD_PATH ${AMD_LIBRARY} DIRECTORY )
-get_filename_component ( MPFR_PATH ${MPFR_LIBRARY} DIRECTORY )
+if ( BUILD_SHARED_LIBS )
 
-# message ( STATUS "suitesparseconfig path ${SUITESPARSE_CONFIG_PATH}" )
-# message ( STATUS "colamd path ${COLAMD_PATH}" )
-# message ( STATUS "amd path ${AMD_PATH}" )
-# message ( STATUS "gmp path ${GMP_PATH}" )
-# message ( STATUS "mpfr path ${MPFR_PATH}" )
+    # get paths to libraries
+    get_filename_component ( GMP_PATH ${GMP_LIBRARY} DIRECTORY )
+    get_filename_component ( SUITESPARSE_CONFIG_PATH ${SUITESPARSE_CONFIG_LIBRARY} DIRECTORY )
+    get_filename_component ( COLAMD_PATH ${COLAMD_LIBRARY} DIRECTORY )
+    get_filename_component ( AMD_PATH ${AMD_LIBRARY} DIRECTORY )
+    get_filename_component ( MPFR_PATH ${MPFR_LIBRARY} DIRECTORY )
 
-# construct the -I list
-get_target_property ( INCS SPEX INCLUDE_DIRECTORIES )
-list ( TRANSFORM INCS PREPEND " -I" )
-set ( SPEX_INCS "" )
-foreach ( INC ${INCS} )
-#   message ( STATUS "check inc: ${INC}" )
-    if ( NOT ${INC} MATCHES "TARGET_PROPERTY" )
-#       message ( STATUS "add   inc: ${INC}" )
-        string ( APPEND SPEX_INCS " " ${INC} )
-    endif ( )
-endforeach ( )
-# message ( STATUS "Incs: ${SPEX_INCS}" )
+    # message ( STATUS "suitesparseconfig path ${SUITESPARSE_CONFIG_PATH}" )
+    # message ( STATUS "colamd path ${COLAMD_PATH}" )
+    # message ( STATUS "amd path ${AMD_PATH}" )
+    # message ( STATUS "gmp path ${GMP_PATH}" )
+    # message ( STATUS "mpfr path ${MPFR_PATH}" )
 
-# construct the library list for Tcov/Makefile
-set ( SPEX_LIB_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}" )
-get_target_property ( LIBS SPEX LINK_LIBRARIES )
-string ( REPLACE "." "\\." LIBSUFFIX ${SPEX_LIB_SUFFIX} )
-set ( SPEX_LIBS "" )
-foreach ( LIB_NAME ${LIBS} )
-#   message ( STATUS "Lib: ${LIB_NAME}" )
-    if ( LIB_NAME MATCHES "::" )
-        # do nothing
-    elseif ( LIB_NAME MATCHES ${LIBSUFFIX} )
-        # message ( STATUS "has suffix" )
-        string ( APPEND SPEX_LIBS " " ${LIB_NAME} )
-    else ( )
-        # message ( STATUS "no suffix" )
-        string ( APPEND SPEX_LIBS " -l" ${LIB_NAME} )
-    endif ( )
-endforeach ( )
-# message ( STATUS "Libs: ${SPEX_LIBS}" )
+    # construct the -I list
+    get_target_property ( INCS SPEX INCLUDE_DIRECTORIES )
+    list ( TRANSFORM INCS PREPEND " -I" )
+    set ( SPEX_INCS "" )
+    foreach ( INC ${INCS} )
+    #   message ( STATUS "check inc: ${INC}" )
+        if ( NOT ${INC} MATCHES "TARGET_PROPERTY" )
+    #       message ( STATUS "add   inc: ${INC}" )
+            string ( APPEND SPEX_INCS " " ${INC} )
+        endif ( )
+    endforeach ( )
+    # message ( STATUS "Incs: ${SPEX_INCS}" )
 
-configure_file (
-        "Config/spex_deps.m.in"
-        "${PROJECT_SOURCE_DIR}/MATLAB/spex_deps.m"
-        @ONLY
-        NEWLINE_STYLE LF )
+    # construct the library list for Tcov/Makefile
+    set ( SPEX_LIB_SUFFIX "${CMAKE_SHARED_LIBRARY_SUFFIX}" )
+    get_target_property ( LIBS SPEX LINK_LIBRARIES )
+    string ( REPLACE "." "\\." LIBSUFFIX ${SPEX_LIB_SUFFIX} )
+    set ( SPEX_LIBS "" )
+    foreach ( LIB_NAME ${LIBS} )
+    #   message ( STATUS "Lib: ${LIB_NAME}" )
+        if ( LIB_NAME MATCHES "::" )
+            # do nothing
+        elseif ( LIB_NAME MATCHES ${LIBSUFFIX} )
+            # message ( STATUS "has suffix" )
+            string ( APPEND SPEX_LIBS " " ${LIB_NAME} )
+        else ( )
+            # message ( STATUS "no suffix" )
+            string ( APPEND SPEX_LIBS " -l" ${LIB_NAME} )
+        endif ( )
+    endforeach ( )
+    # message ( STATUS "Libs: ${SPEX_LIBS}" )
 
-configure_file (
-        "Config/Tcov_Makefile.in"
-        "${PROJECT_SOURCE_DIR}/Tcov/Makefile"
-        @ONLY
-        NEWLINE_STYLE LF )
+    configure_file (
+            "Config/spex_deps.m.in"
+            "${PROJECT_SOURCE_DIR}/MATLAB/spex_deps.m"
+            @ONLY
+            NEWLINE_STYLE LF )
+
+    configure_file (
+            "Config/Tcov_Makefile.in"
+            "${PROJECT_SOURCE_DIR}/Tcov/Makefile"
+            @ONLY
+            NEWLINE_STYLE LF )
+
+endif ( )
 
 #-------------------------------------------------------------------------------
 # report status
