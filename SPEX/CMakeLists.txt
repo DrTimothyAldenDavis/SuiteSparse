@@ -432,7 +432,7 @@ endif ( )
 # configure MATLAB and Tcov
 #-------------------------------------------------------------------------------
 
-if ( BUILD_SHARED_LIBS )
+if ( BUILD_SHARED_LIBS AND NOT SUITESPARSE_ROOT_CMAKELISTS )
 
     # get paths to libraries
     get_filename_component ( GMP_PATH ${GMP_LIBRARY} DIRECTORY )
