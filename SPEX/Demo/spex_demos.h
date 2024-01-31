@@ -11,7 +11,10 @@
 
 
 #include "SPEX.h"
+// FIXME: why include spex_util_internal.h??
 #include "spex_util_internal.h"
+// FIXME: why include spex_gmp.h??  It's not installed.  Do we add it to
+// the installed headers?
 #include "spex_gmp.h"
 
 #define DEMO_OK(method)                         \
