@@ -72,7 +72,7 @@ int main (int argc, char *argv[])
     // is done by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
 
-    SPEX_initialize();
+    DEMO_INIT (ok) ;
 
     //--------------------------------------------------------------------------
     // We first initialize the default parameters. These parameters are modified
@@ -111,7 +111,6 @@ int main (int argc, char *argv[])
     SPEX_matrix A = NULL;
     SPEX_symbolic_analysis S = NULL;
     SPEX_factorization F = NULL;
-    SPEX_info ok ;
 
     // Initialize option, command options for the factorization
     SPEX_options option = NULL;
@@ -145,7 +144,7 @@ int main (int argc, char *argv[])
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
 
     DEMO_OK(spex_demo_tripread(&A, mat_file, SPEX_FP64, option));
@@ -158,7 +157,7 @@ int main (int argc, char *argv[])
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
     DEMO_OK(SPEX_read_dense(&b, rhs_file, option));
     fclose(rhs_file);
@@ -168,7 +167,7 @@ int main (int argc, char *argv[])
     {
         fprintf (stderr, "Error! Size of A and b do not match!\n");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
 #endif
 
@@ -205,7 +204,7 @@ int main (int argc, char *argv[])
         {
             printf("\nSingular");
         }
-        return 0;
+        return (1) ;
     }
 
     double end_factor = SuiteSparse_time ();
@@ -229,6 +228,6 @@ int main (int argc, char *argv[])
 
     FREE_WORKSPACE;
     printf ("\n%s: all tests passed\n\n", __FILE__);
-    return 0;
+    return (0) ;
 }
 

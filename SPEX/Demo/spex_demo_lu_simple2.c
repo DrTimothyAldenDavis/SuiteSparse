@@ -40,7 +40,8 @@ int main (int argc, char **argv)
     // Prior to using SPEX Left LU, its environment must be initialized. This is
     // done by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
-    SPEX_initialize();
+
+    DEMO_INIT (ok) ;
 
     //--------------------------------------------------------------------------
     // Get matrix and right hand side file names
@@ -50,17 +51,16 @@ int main (int argc, char **argv)
     if (argc < 3)
     { 
         perror ("usage: spex_demo_lu_simple2 matfile rhsfile");
-        return 0 ;
+        return (1) ;
     }
 
     mat_name = argv[1];
     rhs_name = argv[2];
 
-
     //--------------------------------------------------------------------------
     // Declare our data structures
     //--------------------------------------------------------------------------
-    SPEX_info ok;
+
     SPEX_matrix A = NULL ;                     // input matrix
     SPEX_matrix b = NULL ;                     // Right hand side vector
     SPEX_matrix x = NULL ;                     // Solution vectors
@@ -79,7 +79,7 @@ int main (int argc, char **argv)
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
     DEMO_OK(spex_demo_tripread(&A, mat_file, SPEX_MPZ, option));
     fclose(mat_file);
@@ -91,7 +91,7 @@ int main (int argc, char **argv)
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
     DEMO_OK(spex_demo_read_dense(&b, rhs_file, option));
     fclose(rhs_file);
@@ -102,7 +102,7 @@ int main (int argc, char **argv)
         printf("%"PRId64" %"PRId64" \n", A->m,b->m);
         fprintf (stderr, "Error! Size of A and b do not match!\n");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
 
     //--------------------------------------------------------------------------
@@ -131,6 +131,6 @@ int main (int argc, char **argv)
     FREE_WORKSPACE;
 
     printf ("\n%s: all tests passed\n\n", __FILE__);
-    return 0;
+    return (0) ;
 }
 

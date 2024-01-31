@@ -29,16 +29,12 @@ SPEX_info spex_demo_check_solution
     const SPEX_options option    // Command options
 )
 {
-    if (!SPEX_initialize ( )) return (SPEX_PANIC);
 
     //--------------------------------------------------------------------------
     // check inputs. Input are also checked by the two callers
     //--------------------------------------------------------------------------
 
     SPEX_info info ;
-    /*SPEX_REQUIRE (A, SPEX_CSC,   SPEX_MPZ);
-    SPEX_REQUIRE (x, SPEX_DENSE, SPEX_MPQ);
-    SPEX_REQUIRE (b, SPEX_DENSE, SPEX_MPZ);*/
 
     //--------------------------------------------------------------------------
     // Declare vars
@@ -53,7 +49,6 @@ SPEX_info spex_demo_check_solution
     SPEX_MPQ_INIT(scale);
     SPEX_CHECK (SPEX_matrix_allocate(&b2, SPEX_DENSE, SPEX_MPQ, b->m, b->n,
         b->nzmax, false, true, option));
-
 
     //--------------------------------------------------------------------------
     // perform SPEX_mpq_addmul in loops to compute b2 = A'*x, where A' is the

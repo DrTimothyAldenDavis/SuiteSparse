@@ -24,11 +24,27 @@
     {                                           \
         spex_demo_determine_error (ok) ;        \
         FREE_WORKSPACE ;                        \
-        return 0 ;                              \
+        return (1) ;                            \
     }                                           \
 }
 
 #define SPEX_MIN(a,b) (((a) < (b)) ? (a) : (b))
+
+#define DEMO_INIT(ok)                                                       \
+    if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))                           \
+    {                                                                       \
+        /* return 0 so the github CI does not fail */                       \
+        printf ("SPEX ERROR: GMP configuration not supported:\n") ;         \
+        printf ("sizeof (mp_bitcnt_t): %d\n", (int) sizeof (mp_bitcnt_t)) ; \
+        printf ("sizeof (uint64_t):    %d\n", (int) sizeof (uint64_t)) ;    \
+        return (0) ;                                                        \
+    }                                                                       \
+    SPEX_info ok = SPEX_initialize ( ) ;                                    \
+    if (ok != SPEX_OK)                                                      \
+    {                                                                       \
+        fprintf (stderr, "SPEX ERROR: failed to initialize\n") ;            \
+        return (1) ;                                                        \
+    }
 
 /* Purpose: This processes the command line for user specified options */
 SPEX_info spex_demo_process_command_line //processes the command line

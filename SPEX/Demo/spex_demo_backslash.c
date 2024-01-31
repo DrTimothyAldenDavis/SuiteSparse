@@ -33,12 +33,13 @@ int main( int argc, char *argv[] )
     // Prior to using SPEX, its environment must be initialized. This is done
     // by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
-    SPEX_initialize();
+
+    DEMO_INIT (ok) ;
 
     //--------------------------------------------------------------------------
     // Declare memory & Process Command Line
     //--------------------------------------------------------------------------
-    int64_t n = 0, ok;
+    int64_t n = 0 ;
 
     SPEX_matrix A = NULL;
     SPEX_matrix b = NULL;
@@ -66,7 +67,7 @@ int main( int argc, char *argv[] )
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
 
     // Note, there are a few matrices in BasisLIB that dont fit in double
@@ -82,7 +83,7 @@ int main( int argc, char *argv[] )
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
-        return 0;
+        return (1) ;
     }
     DEMO_OK(spex_demo_read_dense(&b, rhs_file, option));
     fclose(rhs_file);
@@ -119,5 +120,6 @@ int main( int argc, char *argv[] )
     // Free Memory
     //--------------------------------------------------------------------------
     FREE_WORKSPACE;
+    return (0) ;
 }
 

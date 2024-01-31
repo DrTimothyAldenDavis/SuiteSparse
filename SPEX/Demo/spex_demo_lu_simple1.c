@@ -37,7 +37,7 @@ int main (void)
     // is done by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
 
-    SPEX_info ok = SPEX_initialize();
+    DEMO_INIT (ok) ;
 
     //--------------------------------------------------------------------------
     // Declare and initialize essential variables
@@ -115,6 +115,6 @@ int main (void)
 
     FREE_WORKSPACE;
     printf ("\n%s: all tests passed\n\n", __FILE__);
-    return 0;
+    return (0) ;
 }
 
