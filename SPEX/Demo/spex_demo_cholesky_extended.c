@@ -133,8 +133,8 @@ int main( int argc, char *argv[] )
     double t_factor = (end_factor - start_factor) ;
     double t_solve =  (end_solve - start_solve) ;
 
-    printf("\nNumber of L nonzeros: \t\t\t%ld",
-        (F->L->p[F->L->n]) );
+    printf("\nNumber of L nonzeros: \t\t\t%g",
+        (double) (F->L->p[F->L->n]) );
     printf("\nSymbolic Analysis Check time: \t\t%lf", t_col);
     printf("\nIP Chol Factorization time: \t\t%lf", t_factor);
     printf("\nFB Substitution time: \t\t\t%lf\n\n", t_solve);
