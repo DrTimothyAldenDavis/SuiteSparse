@@ -107,6 +107,10 @@ find_package ( SPEX 3.1.0 REQUIRED )    # requires GMP and MPFR
 find_package ( SPQR 4.3.2 REQUIRED )
 find_package ( UMFPACK 6.3.2 REQUIRED )
 
+# for GMP and MPFR
+find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
+find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
+
 #-------------------------------------------------------------------------------
 # configure files
 #-------------------------------------------------------------------------------
@@ -506,15 +510,12 @@ endif ( )
 # other libraries
 #-------------------------------------------------------------------------------
 
-# The "MY" library does not directly rely on the OpenMP, libm, BLAS, LAPACK,
-# GMP, and MPFR libraries.  However, if you wish to create a library that
-# uses those libraries, uncomment the corresponding section.  For example,
-# when using SPEX, it would be common to also need direct access to GMP and
-# MPFR.  These direct dependencies are left out of the MY CMakeLists.txt, as
-# a test for the other SuiteSparse cmake build system, to ensure that the
-# libraries should be linked via the libraries that depend on them.  For
-# example, linking with SPEX (above) should bring in GMP and MPRF for use in
-# SPEX (but not in MY).
+# The "MY" library does not directly rely on the OpenMP, libm, BLAS, and
+# LAPACK, libraries.  However, if you wish to create a library that uses those
+# libraries, uncomment the corresponding section.  These direct dependencies
+# are left out of the MY CMakeLists.txt, as a test for the other SuiteSparse
+# cmake build system, to ensure that the libraries should be linked via the
+# libraries that depend on them.
 
 if ( 0 )
 
@@ -571,19 +572,9 @@ if ( 0 )
     endif ( )
     include_directories ( ${LAPACK_INCLUDE_DIRS} )
 
-    # gmp:
-    message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
-        target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( my_static PUBLIC ${GMP_STATIC} )
-        target_link_libraries ( my_cxx_static PUBLIC ${GMP_STATIC} )
-    endif ( )
-    include_directories ( ${GMP_INCLUDE_DIR} )
+endif ( )
 
-    # mpfr:
+    # MPFR:
     message ( STATUS "MPFR library:        ${MPFR_LIBRARIES}" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( my PRIVATE ${MPFR_LIBRARIES} )
@@ -595,7 +586,17 @@ if ( 0 )
     endif ( )
     include_directories ( ${MPFR_INCLUDE_DIR} )
 
-endif ( )
+    # GMP (must be linked after MPFR)
+    message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
+        target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_link_libraries ( my_static PUBLIC ${GMP_STATIC} )
+        target_link_libraries ( my_cxx_static PUBLIC ${GMP_STATIC} )
+    endif ( )
+    include_directories ( ${GMP_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # installation location

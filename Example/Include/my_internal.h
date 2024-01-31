@@ -112,6 +112,10 @@
 // OpenMP include file:
 #include <omp.h>
 
+// GMP and MPFR
+#include <gmp.h>
+#include <mpfr.h>
+
 #include "my.h"
 
 #endif

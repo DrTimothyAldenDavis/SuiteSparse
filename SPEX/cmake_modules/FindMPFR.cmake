@@ -27,7 +27,7 @@
 
 if ( DEFINED ENV{CMAKE_PREFIX_PATH} )
     # import CMAKE_PREFIX_PATH, typically created by spack
-    set ( CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
+    list ( APPEND CMAKE_PREFIX_PATH $ENV{CMAKE_PREFIX_PATH} )
 endif ( )
 
 # include files for mpfr
