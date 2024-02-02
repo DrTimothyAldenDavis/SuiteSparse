@@ -157,7 +157,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME umfpack
         PUBLIC_HEADER "Include/umfpack.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( UMFPACK_static PROPERTIES
             OUTPUT_NAME umfpack_static )
     endif ( )

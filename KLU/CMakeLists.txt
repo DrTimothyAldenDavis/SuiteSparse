@@ -162,7 +162,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME klu
         PUBLIC_HEADER "Include/klu.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( KLU_static PROPERTIES
             OUTPUT_NAME klu_static )
     endif ( )
@@ -213,7 +213,7 @@ if ( KLU_HAS_CHOLMOD )
             OUTPUT_NAME klu_cholmod
             PUBLIC_HEADER "User/klu_cholmod.h" )
 
-        if ( MSVC )
+        if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
             set_target_properties ( KLU_CHOLMOD_static PROPERTIES
                 OUTPUT_NAME klu_cholmod_static )
         endif ( )
