@@ -3965,7 +3965,7 @@ GrB_Info GxB_Context_get       (GxB_Context, GxB_Context_Field, ...) ;
     _Generic                                                    \
     (                                                           \
         (arg1),                                                 \
-            int              : GxB_Global_Option_set ,          \
+            default          : GxB_Global_Option_set ,          \
             GxB_Option_Field : GxB_Global_Option_set ,          \
             GrB_Vector       : GxB_Vector_Option_set ,          \
             GrB_Matrix       : GxB_Matrix_Option_set ,          \
@@ -3978,7 +3978,7 @@ GrB_Info GxB_Context_get       (GxB_Context, GxB_Context_Field, ...) ;
     _Generic                                                    \
     (                                                           \
         (arg1),                                                 \
-            int              : GxB_Global_Option_get ,          \
+            default          : GxB_Global_Option_get ,          \
             GxB_Option_Field : GxB_Global_Option_get ,          \
             GrB_Vector       : GxB_Vector_Option_get ,          \
             GrB_Matrix       : GxB_Matrix_Option_get ,          \
