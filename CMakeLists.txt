@@ -111,7 +111,7 @@ include ( SuiteSparsePolicy )
 
 if ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "graphblas" )
-    find_package ( GraphBLAS 9.0.1 REQUIRED )
+    find_package ( GraphBLAS 9.1.0 REQUIRED )
 else ( )
     if ( "lagraph" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # LAGraph requires GraphBLAS.
@@ -124,7 +124,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_BTF )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "btf" )
-    find_package ( BTF 2.3.1 REQUIRED )
+    find_package ( BTF 2.3.2 REQUIRED )
 else ( )
     if ( "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # KLU requires BTF.
@@ -137,7 +137,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_UMFPACK )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "umfpack" )
-    find_package ( UMFPACK 6.3.2 REQUIRED )
+    find_package ( UMFPACK 6.3.3 REQUIRED )
 else ( )
     if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # ParU requires UMFPACK.
@@ -150,7 +150,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_CHOLMOD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "cholmod" )
-    find_package ( CHOLMOD 5.2.0 REQUIRED )
+    find_package ( CHOLMOD 5.2.1 REQUIRED )
 else ( )
     if ( ( KLU_USE_CHOLMOD AND "klu" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             OR ( UMFPACK_USE_CHOLMOD AND "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
@@ -168,7 +168,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_AMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "amd" )
-    find_package ( AMD 3.3.1 REQUIRED )
+    find_package ( AMD 3.3.2 REQUIRED )
 else ( )
     if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "ldl" IN_LIST SUITESPARSE_ENABLE_PROJECTS
@@ -184,7 +184,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_COLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "colamd" )
-    find_package ( COLAMD 3.3.2 REQUIRED )
+    find_package ( COLAMD 3.3.3 REQUIRED )
 else ( )
     if ( "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "spex" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
@@ -198,7 +198,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_CAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "camd" )
-    find_package ( CAMD 3.3.1 REQUIRED )
+    find_package ( CAMD 3.3.2 REQUIRED )
 else ( )
     if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # CHOLMOD can optionally use CAMD.
@@ -211,7 +211,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_CCOLAMD )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "ccolamd" )
-    find_package ( CCOLAMD 3.3.2 REQUIRED )
+    find_package ( CCOLAMD 3.3.3 REQUIRED )
 else ( )
     if ( CHOLMOD_CAMD AND "cholmod" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
         # CHOLMOD can optionally use CCOLAMD.
@@ -224,7 +224,7 @@ endif ( )
 
 if ( SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG )
     list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "suitesparse_config" )
-    find_package ( SuiteSparse_config 7.6.0 REQUIRED )
+    find_package ( SuiteSparse_config 7.7.0 REQUIRED )
 else ( )
     if ( "mongoose" IN_LIST SUITESPARSE_ENABLE_PROJECTS
             OR "amd" IN_LIST SUITESPARSE_ENABLE_PROJECTS
