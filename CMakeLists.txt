@@ -85,6 +85,7 @@ option ( SUITESPARSE_USE_SYSTEM_CAMD "ON: use CAMD libraries installed on the bu
 option ( SUITESPARSE_USE_SYSTEM_CCOLAMD "ON: use CCOLAMD libraries installed on the build system.  OFF (default): Automatically build CCOLAMD as dependency if needed." OFF )
 option ( SUITESPARSE_USE_SYSTEM_GRAPHBLAS "ON: use GraphBLAS libraries installed on the build system.  OFF (default): Automatically build GraphBLAS as dependency if needed." OFF )
 option ( SUITESPARSE_USE_SYSTEM_SUITESPARSE_CONFIG "ON: use SuiteSparse_config libraries installed on the build system.  OFF (default): Automatically build SuiteSparse_config as dependency if needed." OFF )
+option ( SUITESPARSE_USE_SYSTEM_UMFPACK "ON: use UMFPACK libraries installed on the build system.  OFF (default): Automatically build UMFPACK as dependency if needed." OFF )
 
 #-------------------------------------------------------------------------------
 # global variables
@@ -130,6 +131,19 @@ else ( )
         if ( NOT "btf" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
             message ( STATUS "Adding \"btf\" to the list of built targets." )
             list ( APPEND SUITESPARSE_ENABLE_PROJECTS "btf" )
+        endif ( )
+    endif ( )
+endif ( )
+
+if ( SUITESPARSE_USE_SYSTEM_UMFPACK )
+    list ( REMOVE_ITEM SUITESPARSE_ENABLE_PROJECTS "umfpack" )
+    find_package ( UMFPACK 6.3.2 REQUIRED )
+else ( )
+    if ( "paru" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+        # ParU requires UMFPACK.
+        if ( NOT "umfpack" IN_LIST SUITESPARSE_ENABLE_PROJECTS )
+            message ( STATUS "Adding \"umfpack\" to the list of built targets." )
+            list ( APPEND SUITESPARSE_ENABLE_PROJECTS "umfpack" )
         endif ( )
     endif ( )
 endif ( )
