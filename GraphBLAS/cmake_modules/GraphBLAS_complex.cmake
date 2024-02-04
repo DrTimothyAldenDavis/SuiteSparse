@@ -21,9 +21,9 @@ check_source_compiles ( C
     double _Complex z3 = z1 * z2;
     return 0;
     }"
-    GXB_HAVE_COMPLEX_C99 )
+    GxB_HAVE_COMPLEX_C99 )
 
-if ( NOT GXB_HAVE_COMPLEX_C99 )
+if ( NOT GxB_HAVE_COMPLEX_C99 )
     # Check for complex number arithmetic as implemented by MSVC
 
     check_source_compiles ( C
@@ -34,9 +34,9 @@ if ( NOT GXB_HAVE_COMPLEX_C99 )
         _Dcomplex z3 = _Cmulcc(z1, z2);
         return 0;
         }"
-        GXB_HAVE_COMPLEX_MSVC )
+        GxB_HAVE_COMPLEX_MSVC )
 endif ( )
 
-if ( NOT GXB_HAVE_COMPLEX_C99 AND NOT GXB_HAVE_COMPLEX_MSVC )
+if ( NOT GxB_HAVE_COMPLEX_C99 AND NOT GxB_HAVE_COMPLEX_MSVC )
     message ( FATAL_ERROR "Complex floating point numbers are not supported by the used compiler." )
 endif ( )

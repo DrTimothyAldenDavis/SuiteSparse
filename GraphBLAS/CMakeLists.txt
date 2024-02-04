@@ -192,9 +192,6 @@ endif ( )
 configure_file ( "Config/GraphBLAS.h.in"
     "${PROJECT_SOURCE_DIR}/Include/GraphBLAS.h"
     NEWLINE_STYLE LF )
-configure_file ( "Config/GxB_config.h.in"
-    "${PROJECT_SOURCE_DIR}/Source/Shared/GxB_config.h"
-    NEWLINE_STYLE LF )
 
 configure_file ( "Config/GraphBLAS_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/GraphBLAS_version.tex"

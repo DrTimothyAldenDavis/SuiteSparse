@@ -1,4 +1,4 @@
-// SuiteSparse:GraphBLAS 9.0.1
+// SuiteSparse:GraphBLAS 9.1.0
 //------------------------------------------------------------------------------
 // GraphBLAS.h: definitions for the GraphBLAS package
 //------------------------------------------------------------------------------
@@ -140,19 +140,16 @@
 // definitions for complex types
 //------------------------------------------------------------------------------
 
-// This is a copy of GraphBLAS/Source/Shared/GxB_complex.h.  It is included
-// here as a full copy so that the GraphBLAS.h file can be self contained.
-
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
 // Compiler has support for C99 floating point number arithmetic
-#define GXB_HAVE_COMPLEX_C99
+#define GxB_HAVE_COMPLEX_C99
 
 // Compiler has support for MSVC-style complex numbers
-/* #undef GXB_HAVE_COMPLEX_MSVC */
+/* #undef GxB_HAVE_COMPLEX_MSVC */
 
-    #if defined (GXB_HAVE_COMPLEX_MSVC)
+    #if defined (GxB_HAVE_COMPLEX_MSVC)
 
         // Microsoft Windows complex types for C
         #include <complex.h>
@@ -162,7 +159,7 @@
         #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
         #define GB_HAS_CMPLX_MACROS 1
 
-    #elif defined (GXB_HAVE_COMPLEX_C99)
+    #elif defined (GxB_HAVE_COMPLEX_C99)
 
         // C11 complex types
         #include <complex.h>
@@ -237,10 +234,10 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "Jan 20, 2024"
+#define GxB_IMPLEMENTATION_DATE "Feb XX, 2024"
 #define GxB_IMPLEMENTATION_MAJOR 9
-#define GxB_IMPLEMENTATION_MINOR 0
-#define GxB_IMPLEMENTATION_SUB   1
+#define GxB_IMPLEMENTATION_MINOR 1
+#define GxB_IMPLEMENTATION_SUB   0
 #define GxB_SPEC_DATE "Dec 22, 2023"
 #define GxB_SPEC_MAJOR 2
 #define GxB_SPEC_MINOR 1
