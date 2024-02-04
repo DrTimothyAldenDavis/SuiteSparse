@@ -8,6 +8,7 @@ Feb XX, 2024: version 9.1.0
         feature (thus the minor version update to 9.1.0): GxB_HAVE_COMPLEX* to
         GraphBLAS.h to indicate which kind of complex data types are available
         in C11 or MSVC.  Contributed by Markus Mützel.
+    * port to clang-cl: fixing the GxB_get and GxB_set macro
 
 Jan 20, 2024: version 9.0.1
 

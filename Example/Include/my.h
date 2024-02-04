@@ -13,8 +13,8 @@
 // version and date for example user library
 #define MY_DATE "Feb XX, 2024"
 #define MY_MAJOR_VERSION 1
-#define MY_MINOR_VERSION 6
-#define MY_PATCH_VERSION 3
+#define MY_MINOR_VERSION 7
+#define MY_PATCH_VERSION 0
 
 #ifdef __cplusplus
 extern "C" {

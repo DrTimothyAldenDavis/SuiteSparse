@@ -392,18 +392,18 @@ void camd_version (int version [3]) ;
  *      #endif
  */
 
-#define CAMD_DATE "Jan 10, 2024"
+#define CAMD_DATE "Feb XX, 2024"
 #define CAMD_MAIN_VERSION   3
 #define CAMD_SUB_VERSION    3
-#define CAMD_SUBSUB_VERSION 1
+#define CAMD_SUBSUB_VERSION 2
 
 #define CAMD_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define CAMD_VERSION CAMD_VERSION_CODE(3,3)
 
-#define CAMD__VERSION SUITESPARSE__VERCODE(3,3,1)
+#define CAMD__VERSION SUITESPARSE__VERCODE(3,3,2)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
-#error "CAMD 3.3.1 requires SuiteSparse_config 7.5.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
+#error "CAMD 3.3.2 requires SuiteSparse_config 7.7.0 or later"
 #endif
 
 #endif

@@ -178,17 +178,16 @@
 
 #endif
 
-#if !defined (SUITESPARSE_VERSION) || \
-    (SUITESPARSE_VERSION < SUITESPARSE_VER_CODE(7,5))
-#error "SPEX requires SuiteSparse_config 7.5.0 or later"
+#if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
+#error "SPEX requires SuiteSparse_config 7.7.0 or later"
 #endif
 
-#if (AMD_VERSION < SUITESPARSE_VER_CODE(3,3))
-#error "SPEX requires AMD 3.3.1 or later"
+#if !defined (AMD__VERSION) || AMD__VERSION < SUITESPARSE__VERCODE(3,3,2)
+#error "SPEX requires AMD 3.3.2 or later"
 #endif
 
-#if (COLAMD_VERSION < SUITESPARSE_VER_CODE(3,3))
-#error "SPEX requires COLAMD 3.3.1 or later"
+#if !defined (COLAMD__VERSION) || COLAMD__VERSION < SUITESPARSE__VERCODE(3,3,3)
+#error "SPEX requires COLAMD 3.3.3 or later"
 #endif
 
 //------------------------------------------------------------------------------

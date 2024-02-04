@@ -51,16 +51,16 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.1
+    find_package ( AMD 3.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.1 REQUIRED )
+        find_package ( AMD 3.3.3 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.2
+    find_package ( COLAMD 3.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.2 REQUIRED )
+        find_package ( COLAMD 3.3.3 REQUIRED )
     endif ( )
 endif ( )
 

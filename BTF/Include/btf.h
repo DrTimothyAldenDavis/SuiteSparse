@@ -264,18 +264,18 @@ void btf_version (int version [3]) ;
  *      #endif
  */
 
-#define BTF_DATE "Jan 10, 2024"
+#define BTF_DATE "Feb XX, 2024"
 #define BTF_MAIN_VERSION   2
 #define BTF_SUB_VERSION    3
-#define BTF_SUBSUB_VERSION 1
+#define BTF_SUBSUB_VERSION 2
 
 #define BTF_VERSION_CODE(main,sub) SUITESPARSE_VER_CODE(main,sub)
 #define BTF_VERSION BTF_VERSION_CODE(2,3)
 
-#define BTF__VERSION SUITESPARSE__VERCODE(2,3,1)
+#define BTF__VERSION SUITESPARSE__VERCODE(2,3,2)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
-#error "BTF 2.3.1 requires SuiteSparse_config 7.5.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
+#error "BTF 2.3.2 requires SuiteSparse_config 7.7.0 or later"
 #endif
 
 #endif

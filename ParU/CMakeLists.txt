@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Jan 20, 2024" )
+set ( PARU_DATE "Feb XX, 2024" )    # FIXME for 7.7.0
 set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
 set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 2 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 3 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -97,22 +97,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.6.0
+    find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 
-    find_package ( CHOLMOD 5.2.0
+    find_package ( CHOLMOD 5.2.1
         PATHS ${CMAKE_SOURCE_DIR}/../CHOLMOD/build NO_DEFAULT_PATH )
     if ( NOT CHOLMOD_FOUND )
-        find_package ( CHOLMOD 5.2.0 REQUIRED )
+        find_package ( CHOLMOD 5.2.1 REQUIRED )
     endif ( )
 
-    find_package ( UMFPACK 6.3.2
+    find_package ( UMFPACK 6.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../UMFPACK/build NO_DEFAULT_PATH )
     if ( NOT CAMD_FOUND )
-        find_package ( UMFPACK 6.3.2 REQUIRED )
+        find_package ( UMFPACK 6.3.3 REQUIRED )
     endif ( )
 endif ( )
 
