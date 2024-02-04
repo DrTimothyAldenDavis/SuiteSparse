@@ -17,7 +17,9 @@
 #ifndef GXB_COMPLEX_H
 #define GXB_COMPLEX_H
 
-    #if defined (_MSC_VER) && !(defined (__INTEL_COMPILER) || defined(__INTEL_CLANG_COMPILER))
+#include "GxB_config.h"
+
+    #if defined (GXB_HAVE_COMPLEX_MSVC)
 
         // Microsoft Windows complex types for C
         #include <complex.h>
@@ -27,7 +29,7 @@
         #define GxB_CMPLX(r,i)  ( _Cbuild (r,i))
         #define GB_HAS_CMPLX_MACROS 1
 
-    #else
+    #elif defined (GXB_HAVE_COMPLEX_C99)
 
         // C11 complex types
         #include <complex.h>
@@ -46,6 +48,11 @@
             #define GxB_CMPLXF(r,i) \
             ((GxB_FC32_t)((float)(r)) + (GxB_FC32_t)((float)(i) * _Complex_I))
         #endif
+
+    #else
+
+        #error "Unknown or unsupported complex number arithmetic"
+
     #endif
 #endif
 
