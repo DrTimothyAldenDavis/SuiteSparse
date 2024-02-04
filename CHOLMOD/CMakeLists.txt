@@ -363,7 +363,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME cholmod
         PUBLIC_HEADER "Include/cholmod.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( CHOLMOD_static PROPERTIES
             OUTPUT_NAME cholmod_static )
     endif ( )

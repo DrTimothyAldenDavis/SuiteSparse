@@ -154,7 +154,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME my
         SOVERSION ${MY_VERSION_MAJOR} )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( my_static PROPERTIES
             OUTPUT_NAME my_static )
     endif ( )
@@ -189,7 +189,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME my_cxx
         SOVERSION ${MY_VERSION_MAJOR} )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( my_cxx_static PROPERTIES
             OUTPUT_NAME my_cxx_static )
     endif ( )

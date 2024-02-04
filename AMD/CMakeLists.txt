@@ -113,7 +113,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME amd
         PUBLIC_HEADER "Include/amd.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( AMD_static PROPERTIES
             OUTPUT_NAME amd_static )
     endif ( )

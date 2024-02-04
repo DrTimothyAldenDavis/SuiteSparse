@@ -181,7 +181,7 @@ if ( BUILD_STATIC_LIBS )
         PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( ParU_static PROPERTIES
             OUTPUT_NAME ParU_static )
     endif ( )

@@ -129,7 +129,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME spex
         PUBLIC_HEADER "Include/SPEX.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( SPEX_static PROPERTIES
             OUTPUT_NAME spex_static )
     endif ( )

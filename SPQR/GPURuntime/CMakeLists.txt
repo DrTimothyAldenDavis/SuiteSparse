@@ -98,7 +98,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME suitesparse_gpuruntime
         PUBLIC_HEADER "Include/SuiteSparse_GPURuntime.hpp" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( GPURuntime_static PROPERTIES
             OUTPUT_NAME suitesparse_gpuruntime_static )
     endif ( )
