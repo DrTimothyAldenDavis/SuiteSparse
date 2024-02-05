@@ -273,7 +273,7 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
-    name: msvc (${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
+    name: msvc (${{ matrix.cc }} ${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
 
     defaults:
       run:
@@ -288,6 +288,7 @@ jobs:
         openmp: [with, without]
         cuda: [without]
         link: [both]
+        cc: [cl]
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
@@ -297,6 +298,7 @@ jobs:
               -DSUITESPARSE_USE_CUDA=ON
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: both
+            cc: cl
           - openmp: with
             cuda: with
             cuda-cmake-flags:
@@ -306,6 +308,11 @@ jobs:
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
+            cc: cl
+          - openmp: with
+            cuda: without
+            link: both
+            cc: clang-cl
 
     env:
       CHERE_INVOKING: 1
@@ -401,7 +408,7 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
@@ -411,8 +418,8 @@ jobs:
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:
+            ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
+            ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -435,6 +442,8 @@ jobs:
           fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
+                -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+                -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
                 -DCMAKE_BUILD_TYPE="Release" \
                 -DCMAKE_INSTALL_PREFIX=".." \
                 -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
@@ -497,7 +506,9 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
-          cmake \
+          cmake -G"Ninja Multi-Config" \
+            -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
             ${{ matrix.openmp-cmake-flags }} \
@@ -533,7 +544,9 @@ jobs:
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
             cd build
-            cmake \
+            cmake -G"Ninja Multi-Config" \
+              -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+              -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
               ..
             cmake --build . --config Release
