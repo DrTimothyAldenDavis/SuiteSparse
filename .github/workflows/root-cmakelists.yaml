@@ -135,6 +135,22 @@ jobs:
           ccache -s
           echo "/usr/lib/ccache" >> $GITHUB_PATH
 
+      - name: check auto-dependency resolution
+        # no need to check this with all runners. One is enough.
+        if: ${{ matrix.cc == 'gcc' && matrix.cuda == 'without' }}
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/build-dep && cd ${GITHUB_WORKSPACE}/build-dep
+          IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Configuring to build only \033[0;32m${lib}\033[0m\n"
+            cmake --fresh \
+                  -DCMAKE_BUILD_TYPE="Release" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  -DSUITESPARSE_ENABLE_PROJECTS="${lib,,}" \
+                  ..
+            echo "::endgroup::"
+          done
+
       - name: configure
         run: |
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
