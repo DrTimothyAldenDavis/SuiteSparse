@@ -45,7 +45,7 @@ include ( SuiteSparsePolicy )
 # MS Visual Studio does not support the complex type for ANSI C11.
 # FIXME: see GraphBLAS for how to use complex types in MS Visual Studio.
 
-if ( MSVC )
+if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
     option ( CXSPARSE_USE_COMPLEX "ON: complex data type enabled.  OFF (default): complex data type disabled." OFF )
 else ( )
     option ( CXSPARSE_USE_COMPLEX "ON (default): complex data type enabled.  OFF: complex data type disabled." ON )
