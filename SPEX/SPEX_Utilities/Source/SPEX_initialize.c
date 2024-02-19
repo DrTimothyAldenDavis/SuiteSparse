@@ -48,8 +48,8 @@ SPEX_info SPEX_initialize ( void )
     // SPEX requires GMP to support bit counts that are 64-bit integers
     if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))
     {
-//      printf ("SPEX ERROR: GMP configuration not supported\n") ;
-        return (SPEX_PANIC);
+        printf ("SPEX WARNING: GMP configuration not supported\n") ;
+//      return (SPEX_PANIC);
     }
 
     // tell GMP and MPFR which memory allocation functions to use
