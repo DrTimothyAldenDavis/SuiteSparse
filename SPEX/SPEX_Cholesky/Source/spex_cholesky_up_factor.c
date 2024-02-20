@@ -11,26 +11,17 @@
 
 #define SPEX_FREE_WORKSPACE         \
 {                                   \
-    HERE2 ("1") ; \
     SPEX_matrix_free(&x, NULL);     \
-    HERE2 ("2") ; \
     SPEX_FREE(xi);                  \
-    HERE2 ("3") ; \
     SPEX_FREE(h);                   \
-    HERE2 ("4") ; \
     SPEX_FREE(c);                   \
-    HERE2 ("5") ; \
 }
 
 #define SPEX_FREE_ALL               \
 {                                   \
-    HERE2 ("a") ; \
     SPEX_matrix_free(&L, NULL);     \
-    HERE2 ("b") ; \
     SPEX_matrix_free(&rhos, NULL);  \
-    HERE2 ("c") ; \
     SPEX_FREE_WORKSPACE             \
-    HERE2 ("d") ; \
 }
 
 #include "spex_cholesky_internal.h"
@@ -165,8 +156,6 @@ SPEX_info spex_cholesky_up_factor
     // rhos are initialized to the default size (unlike x).
     SPEX_CHECK (SPEX_matrix_allocate(&(rhos), SPEX_DENSE, SPEX_MPZ, n, 1, n,
         false, true, option));
-    printf ("estimate: % " PRId64"\n", estimate) ;
-    fflush (stdout) ;
 
     // initialize the entries of x
     for (i = 0; i < n; i++)
@@ -206,10 +195,8 @@ SPEX_info spex_cholesky_up_factor
     for (k = 0; k < n; k++)
     {
         // LDx = A(:,k)
-HERE
         SPEX_CHECK(spex_cholesky_up_triangular_solve(&top, xi, x, L, A, k,
             S->parent, c, rhos, h));
-HERE
 
         // If x[k] is nonzero choose it as pivot. Otherwise, the matrix is
         // not SPD (indeed, it may even be singular).
@@ -268,6 +255,5 @@ HERE
     (*L_handle) = L;
     (*rhos_handle) = rhos;
     SPEX_FREE_WORKSPACE;
-HERE
     return SPEX_OK;
 }

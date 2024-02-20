@@ -11,9 +11,7 @@
 
 #define SPEX_FREE_ALL                    \
 {                                        \
-    HERE2("A") ; \
     SPEX_factorization_free(&F, option); \
-    HERE2("B") ; \
 }
 
 
@@ -122,10 +120,8 @@ SPEX_info spex_cholesky_factor
         case SPEX_ALGORITHM_DEFAULT:
             // fall through to up-looking Cholesky (the default)
         case SPEX_CHOL_UP:
-HERE
             SPEX_CHECK( spex_cholesky_up_factor(&(F->L), &(F->rhos), S, A,
                 option));
-HERE
             break;
         case SPEX_CHOL_LEFT:
             SPEX_CHECK( spex_cholesky_left_factor(&(F->L), &(F->rhos), S, A,

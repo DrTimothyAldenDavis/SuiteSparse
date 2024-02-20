@@ -54,8 +54,6 @@ SPEX_info SPEX_matrix_free
                     {
                         for (int64_t i = 0; i < A->nzmax; i++)
                         {
-// fprintf (stderr, "i: %" PRId64" of %"PRId64"\n", i, A->nzmax) ;
-// fflush (stderr) ;
                             SPEX_MPZ_CLEAR( A->x.mpz[i]);
                         }
                     }

@@ -1156,11 +1156,7 @@ SPEX_info SPEX_mpz_divexact
     SPEX_GMPZ_WRAPPER_START (x);
     if (mpz_sgn (z) == 0)
     {
-HERE
         SPEX_GMP_WRAPPER_FINISH ;
-HERE
-        fprintf (stderr, "divexact: divide by zero!\n") ;
-        fflush (stderr) ;
         return (SPEX_PANIC);
     }
 

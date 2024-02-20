@@ -48,9 +48,9 @@
 // debugging
 //------------------------------------------------------------------------------
 
-// #undef SPEX_DEBUG
+#undef SPEX_DEBUG
 // uncomment this line to enable debugging
-#define SPEX_DEBUG
+// #define SPEX_DEBUG
 
 #ifdef SPEX_DEBUG
 
@@ -158,12 +158,10 @@
         info = (method);            \
         if (info != SPEX_OK)        \
         {                           \
-            fprintf(stderr, "NOT OK: file %s line %d\n",__FILE__,__LINE__);\
-            fflush (stdout) ; \
-            fflush (stderr) ; \
-            HERE ; \
+            fprintf(stderr, "NOT OK: file %s line %d\n",__FILE__,__LINE__) ; \
+            fflush (stdout) ;       \
+            fflush (stderr) ;       \
             SPEX_FREE_ALL;          \
-            HERE ; \
             return (info);          \
         }                           \
     }
@@ -606,9 +604,9 @@ SPEX_info spex_amd
 // debugging
 //------------------------------------------------------------------------------
 
+#if 0
 #define HERE \
 { \
-    /* printf ("here: %4d %s\n", __LINE__, __FILE__) ; */ \
     fprintf (stderr, "HERE: %4d %s\n", __LINE__, __FILE__) ; \
     fflush (stdout) ; \
     fflush (stderr) ; \
@@ -616,11 +614,11 @@ SPEX_info spex_amd
 
 #define HERE2(s) \
 { \
-    /* printf ("here: %4d %s\n", __LINE__, __FILE__) ; */ \
     fprintf (stderr, "HERE %s: %4d %s\n", s, __LINE__, __FILE__) ; \
     fflush (stdout) ; \
     fflush (stderr) ; \
 }
+#endif
 
 #endif
 

@@ -53,10 +53,8 @@
 // Each iteration of the triangular solve requires that the nonzero pattern
 // is sorted prior to numeric operations. This is the helper function for
 // c's default qsort
-static inline int compare (const void * a, const void * b)
+static inline int compar (const void * a, const void * b)
 {
-//    return ( *(int64_t*)a - *(int64_t*)b );
-
     int64_t x = (* ((int64_t *) a)) ;
     int64_t y = (* ((int64_t *) b)) ;
     return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
@@ -118,47 +116,14 @@ SPEX_info spex_cholesky_up_triangular_solve
 
     ASSERT (top >= 0 && top <= n) ;
 
-// fprintf (stderr, "Hey: top is %" PRId64 " n is %" PRId64 "\n", top, n) ;
-// if (top < 0 || top > n)
-// {
-//     HERE ;
-//     fprintf (stderr, "Hey: top is wierd %" PRId64 " n is %" PRId64 "\n", top, n) ;
-//     abort ( ) ;
-// }
-
-#if 0
-    for (i = top; i < n; i++)
-    {
-        int64_t j = xi [i] ;
-fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
-if (j < 0 || j >= n)
-{
-    HERE ;
-    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
-    abort ( ) ;
-}
-    }
-#endif
-
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
-    qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
-
-HERE ;
+    qsort (&xi[top], n-top, sizeof (int64_t), compar) ;
 
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
     {
         int64_t j = xi [i] ;
         ASSERT (j >= 0 && j <= k) ;
-
-// if (j < 0 || j >= n)
-// {
-//     HERE ;
-//     fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
-//     abort ( ) ;
-// }
-// fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
-
         SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }
 
@@ -184,7 +149,6 @@ HERE ;
             SPEX_MPZ_SET(x->x.mpz[A->i[i]], A->x.mpz[i]);
         }
     }
-HERE
 
     //--------------------------------------------------------------------------
     // Perform the REF Triangular Solve. Note that, unlike the left-looking
@@ -194,41 +158,26 @@ HERE
     //--------------------------------------------------------------------------
     for (p = top; p < n; p++)
     {
-HERE
         // Obtain the index of the current nonzero
         j = xi[p];
-fprintf (stderr, "==== p %" PRId64 " j %" PRId64 "\n", p, j) ;
 
         ASSERT (j >= 0 && j <= k) ;
 
-// if (j < 0 || j >= n)
-// {
-//    HERE ;
-//    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
-//    abort ( ) ;
-// }
-
         SPEX_MPZ_SGN(&sgn, x->x.mpz[j]);
-HERE
         if (sgn == 0) continue;    // If x[j] == 0 no work must be done
-HERE
 
         // Initial history update to finalize x[j] if necessary
         if (h[j] < j-1)
         {
-HERE
             // History update x[j]: x[j] = x[j]*rhos[j-1]/rhos[h[j]]
             // x[j] = x[j]*rhos[j-1]
             SPEX_MPZ_MUL(x->x.mpz[j], x->x.mpz[j],
                 rhos->x.mpz[j-1]);
-HERE
             if (h[j] > -1)
             {
                // x[j] = x[j] / rhos [ h[j] ]
-HERE
                SPEX_MPZ_DIVEXACT(x->x.mpz[j], x->x.mpz[j],
                                             rhos->x.mpz[h[j]]);
-HERE
             }
         }
 
@@ -238,40 +187,30 @@ HERE
         // ----------- Iterate accross nonzeros in Lij ---------------------
         for (m = L->p[j]+1; m < c[j]; m++)
         {
-HERE
             i = L->i[m];            // i value of Lij
             if (i > j && i < k)     // Update all dependent x[i] excluding x[k]
             {
                     /*************** If lij==0 then no update******************/
-HERE
                 SPEX_MPZ_SGN(&sgn, L->x.mpz[m]);
-HERE
                 if (sgn == 0) continue;
-HERE
 
                 //----------------------------------------------------------
                 /************* lij is nonzero, x[i] is zero****************/
                 // x[i] = 0 then only perform IPGE update subtraction/division
                 //----------------------------------------------------------
                 SPEX_MPZ_SGN(&sgn, x->x.mpz[i]);
-HERE
                 if (sgn == 0)
                 {
-HERE
                     // First, get the correct value of x[i] = 0 - lij * x[j]
                     SPEX_MPZ_MUL(x->x.mpz[i], L->x.mpz[m],
                                                  x->x.mpz[j]);
-HERE
                     SPEX_MPZ_NEG(x->x.mpz[i],x->x.mpz[i]);
-HERE
                     // Do a division by the pivot if necessary.
                     if (j >= 1)
                     {
                         // x[i] = x[i] / rho[j-1]
-HERE
                         SPEX_MPZ_DIVEXACT(x->x.mpz[i], x->x.mpz[i],
                                                         rhos->x.mpz[j-1]);
-HERE
                     }
                     // Update the history value of x[i]
                     h[i] = j;
@@ -283,44 +222,35 @@ HERE
                 //----------------------------------------------------------
                 else
                 {
-HERE
                     // There is no previous pivot
                     if (j < 1)
                     {
-HERE
                         // History update x[i] = x[i]*rhos[0]
                         SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                 rhos->x.mpz[0]);
-HERE
                         // x[i] = x[i] - lij x[j]
                         SPEX_MPZ_SUBMUL(x->x.mpz[i], L->x.mpz[m],
                                                     x->x.mpz[j]);
-HERE
                         // Update the history value of x[i]
                         h[i] = j;
                     }
                     // There is a previous pivot
                     else
                     {
-HERE
                         // History update if necessary
                         if (h[i] < j - 1)
                         {
-HERE
                             // x[i] = x[i] * rhos[j-1]
                             SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                      rhos->x.mpz[j-1]);
-HERE
                             // Divide by the history pivot only if the history
                             // pivot is not the rho[-1] (which equals 1) (rho[0]
                             // in the 1-based logic of othe IPGE algorithm)
                             if (h[i] > -1)
                             {
-HERE
                                 // x[i] = x[i] / rho[h[i]]
                                 SPEX_MPZ_DIVEXACT(x->x.mpz[i],
                                             x->x.mpz[i],rhos->x.mpz[h[i]]);
-HERE
                             }
                         }
                         // ---- IPGE Update :
@@ -328,15 +258,12 @@ HERE
                         // x[i] = x[i]*rhos[j]
                         SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                 rhos->x.mpz[j]);
-HERE
                         // x[i] = x[i] - lij*xj
                         SPEX_MPZ_SUBMUL(x->x.mpz[i], L->x.mpz[m],
                                                     x->x.mpz[j]);
-HERE
                         // x[i] = x[i] / rho[j-1]
                         SPEX_MPZ_DIVEXACT(x->x.mpz[i],x->x.mpz[i],
                                                         rhos->x.mpz[j-1]);
-HERE
                         // Entry is up to date;
                         h[i] = j;
                     }
@@ -344,7 +271,6 @@ HERE
             }
         }
 
-HERE
         // ------ History Update x[k] if necessary -----
         if (h[k] < j - 1)
         {
@@ -360,7 +286,6 @@ HERE
                                               rhos->x.mpz[h[k]]);
             }
         }
-HERE
 
         // ---- IPGE Update x[k] = (x[k]*rhos[j] - xj*xj) / rho[j-1] ------
         // x[k] = x[k] * rho[j]
@@ -369,22 +294,15 @@ HERE
         SPEX_MPZ_SUBMUL(x->x.mpz[k], x->x.mpz[j], x->x.mpz[j]);
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
-HERE
         if (j > 0)
         {
             // x[k] = x[k] / rho[j-1]
-HERE
-// THIS FAILS with SPEX_PANIC: rhos[j] is zero,
-// then SPEX segfaults
-fprintf (stderr, "------ exact divide by rhos[j]: j = %" PRId64" of n %" PRId64 "\n", j, n) ;
             SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                             rhos->x.mpz[j-1]);
-HERE
         }
         // Entry is up to date;
         h[k] = j;
     }
-HERE
 
     //----------------------------------------------------------
     // At this point, x[k] has been updated throughout the
@@ -392,26 +310,20 @@ HERE
     // has its correct final value. Thus, a final history
     // update is done to x[k] if necessary
     //----------------------------------------------------------
-HERE
     if (h[k] < k-1)
     {
         // x[k] = x[k] * rhos[k-1]
-HERE
         SPEX_MPZ_MUL(x->x.mpz[k], x->x.mpz[k], rhos->x.mpz[k-1]);
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
         if (h[k] > -1)
         {
-HERE
             // x[k] = x[k] / rhos[h[k]]
             SPEX_MPZ_DIVEXACT(x->x.mpz[k], x->x.mpz[k],
                                            rhos->x.mpz[ h[k]]);
-HERE
         }
     }
     // Output the top of the nonzero pattern
-HERE
     (*top_output) = top;
-HERE
     return SPEX_OK;
 }
