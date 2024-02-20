@@ -95,7 +95,7 @@ HERE
     int64_t j, i, p, m, n = A->n;
     int sgn;
     (*top_output) = n ;
-    top = n ;
+    int64_t top = n ;
 
     ASSERT(n >= 0);
 
