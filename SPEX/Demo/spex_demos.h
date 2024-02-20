@@ -54,10 +54,13 @@
     {                                                                          \
         /* return 0 so the github CI does not fail */                          \
         printf ("SPEX ERROR: GMP configuration not supported:\n") ;            \
-        printf ("   sizeof (mp_bitcnt_t): %d\n", (int) sizeof (mp_bitcnt_t)) ; \
-        printf ("   sizeof (uint64_t):    %d\n", (int) sizeof (uint64_t)) ;    \
         printf ("   sizeof (mp_bitcnt_t) is too small;\n") ;                   \
         printf ("   it must be >= sizeof (uint64_t)\n" ) ;                     \
+    } \
+    { \
+        printf ("   sizeof (mp_bitcnt_t): %d\n", (int) sizeof (mp_bitcnt_t)) ; \
+        printf ("   sizeof (uint64_t):    %d\n", (int) sizeof (uint64_t)) ;    \
+        printf ("   sizeof (void *):      %d\n", (int) sizeof (void *)) ;    \
         /* return (0) ;  */                                                    \
     }                                                                          \
     SPEX_info ok = SPEX_initialize ( ) ;                                       \

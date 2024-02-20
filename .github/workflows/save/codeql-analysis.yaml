@@ -32,7 +32,7 @@ jobs:
 #       group: [other, graph]
         include:
           - group: other
-            build-libs: SuiteSparse_config:AMD:COLAMD:SPEX
+            build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
 #         - group: graph
 #           build-libs: GraphBLAS:LAGraph
 
@@ -126,7 +126,7 @@ jobs:
 #       group: [other, graph]
         include:
           - group: other
-            build-libs: SuiteSparse_config:AMD:COLAMD:SPEX
+            build-libs: SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX
 #         - group: graph
 #           build-libs: GraphBLAS:LAGraph
 

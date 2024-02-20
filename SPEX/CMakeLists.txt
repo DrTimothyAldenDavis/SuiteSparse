@@ -54,7 +54,7 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
     find_package ( AMD 3.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.3 REQUIRED )
+        find_package ( AMD 3.3.2 REQUIRED )
     endif ( )
 
     find_package ( COLAMD 3.3.3
