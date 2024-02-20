@@ -92,8 +92,10 @@ SPEX_info spex_cholesky_up_triangular_solve
     ASSERT(rhos->kind == SPEX_DENSE);
 
 HERE
-    int64_t j, i, p, m, top, n = A->n;
+    int64_t j, i, p, m, n = A->n;
     int sgn;
+    (*top_output) = n ;
+    top = n ;
 
     ASSERT(n >= 0);
 

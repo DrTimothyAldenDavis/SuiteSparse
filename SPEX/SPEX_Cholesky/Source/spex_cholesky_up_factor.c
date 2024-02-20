@@ -11,17 +11,26 @@
 
 #define SPEX_FREE_WORKSPACE         \
 {                                   \
+    HERE ; \
     SPEX_matrix_free(&x, NULL);     \
+    HERE ; \
     SPEX_FREE(xi);                  \
+    HERE ; \
     SPEX_FREE(h);                   \
+    HERE ; \
     SPEX_FREE(c);                   \
+    HERE ; \
 }
 
 #define SPEX_FREE_ALL               \
 {                                   \
+    HERE ; \
     SPEX_matrix_free(&L, NULL);     \
+    HERE ; \
     SPEX_matrix_free(&rhos, NULL);  \
+    HERE ; \
     SPEX_FREE_WORKSPACE             \
+    HERE ; \
 }
 
 #include "spex_cholesky_internal.h"
@@ -94,7 +103,8 @@ HERE
     int64_t *c = NULL;
 
     // Declare variables
-    int64_t n = A->n, top, i, j, jnew, k;
+    int64_t n = A->n, i, j, jnew, k;
+    int64_t top = n ;
     int sgn, prev_sgn;
     size_t size;
 
