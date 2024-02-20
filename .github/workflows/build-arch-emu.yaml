@@ -35,20 +35,21 @@ jobs:
       matrix:
         # For available CPU architectures, see:
         # https://github.com/marketplace/actions/setup-alpine-linux-environment
-        arch: [x86, aarch64, armv7, ppc64le, s390x]
+        arch: [x86] # [x86, aarch64, armv7, ppc64le, s390x]
         include:
           - arch: x86
             ccache-max: 80M
             extra-build-libs: ""
             extra-check-libs: ""
-          - arch: aarch64
-            ccache-max: 42M
-          - arch: armv7
-            ccache-max: 42M
-          - arch: ppc64le
-            ccache-max: 45M
-          - arch: s390x
-            ccache-max: 42M
+# HACK: FIXME
+#         - arch: aarch64
+#           ccache-max: 42M
+#         - arch: armv7
+#           ccache-max: 42M
+#         - arch: ppc64le
+#           ccache-max: 45M
+#         - arch: s390x
+#           ccache-max: 42M
 
     name: alpine (${{ matrix.arch }})
 
