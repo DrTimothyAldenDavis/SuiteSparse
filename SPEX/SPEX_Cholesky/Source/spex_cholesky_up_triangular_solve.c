@@ -96,11 +96,17 @@ SPEX_info spex_cholesky_up_triangular_solve
     ASSERT(rhos->kind == SPEX_DENSE);
 
     int64_t j, i, p, m, n = A->n;
+HERE ;
     int sgn;
     (*top_output) = n ;
     int64_t top = n ;
 
-    ASSERT(n >= 0);
+    ASSERT (n >= 0) ;
+    ASSERT (k >= 0 && k < n) ;
+    ASSERT (parent != NULL) ;
+    ASSERT (c != NULL) ;
+    ASSERT (h != NULL) ;
+    ASSERT (xi != NULL) ;
 
     //--------------------------------------------------------------------------
     // Initialize REF Triangular Solve by getting the nonzero patern of x &&
@@ -111,15 +117,18 @@ SPEX_info spex_cholesky_up_triangular_solve
     // xi[top..n-1]
     SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, parent, c));
 
+fprintf (stderr, "Hey: top is %" PRId64 " n is %" PRId64 "\n", top, n) ;
 if (top < 0 || top > n)
 {
     HERE ;
     fprintf (stderr, "Hey: top is wierd %" PRId64 " n is %" PRId64 "\n", top, n) ;
     abort ( ) ;
 }
+
     for (i = top; i < n; i++)
     {
         int64_t j = xi [i] ;
+fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
 if (j < 0 || j >= n)
 {
     HERE ;
@@ -130,6 +139,8 @@ if (j < 0 || j >= n)
 
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
     qsort(&xi[top], n-top, sizeof(int64_t*), compare);
+
+HERE ;
 
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
@@ -142,6 +153,7 @@ if (j < 0 || j >= n)
     fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
     abort ( ) ;
 }
+fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
 
         SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }
