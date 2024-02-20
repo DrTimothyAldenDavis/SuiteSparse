@@ -1153,9 +1153,7 @@ SPEX_info SPEX_mpz_divexact
     const mpz_t z
 )
 {
-HERE
     SPEX_GMPZ_WRAPPER_START (x);
-HERE
     if (mpz_sgn (z) == 0)
     {
 HERE
@@ -1166,37 +1164,24 @@ HERE
         return (SPEX_PANIC);
     }
 
-HERE
-//  #ifdef SPEX_DEBUG
+#ifdef SPEX_DEBUG
         mpq_t r ;
         mpq_init (r); // r = 0/1
-HERE
         mpz_fdiv_r (SPEX_MPQ_NUM (r), y, z);
-HERE
         if (mpz_sgn (SPEX_MPQ_NUM (r)) != 0)
         {
-HERE
             mpq_set_den (r, z);
-HERE
             mpq_canonicalize (r);
-HERE
             gmp_printf ("not exact division! remainder=%Qd\n", r);
-HERE
             mpq_clear (r);
-HERE
             SPEX_GMP_WRAPPER_FINISH ;
-HERE
             return (SPEX_PANIC);
         }
         mpq_clear (r);
-HERE
-//  #endif
-HERE
+#endif
 
     mpz_divexact (x, y, z);
-HERE
     SPEX_GMP_WRAPPER_FINISH ;
-HERE
     return (SPEX_OK);
 }
 

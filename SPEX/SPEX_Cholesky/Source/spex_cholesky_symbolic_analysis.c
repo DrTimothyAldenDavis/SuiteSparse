@@ -53,7 +53,6 @@ SPEX_info spex_cholesky_symbolic_analysis
 {
 
     SPEX_info info;
-HERE
 
     //--------------------------------------------------------------------------
     // Check inputs
@@ -70,33 +69,25 @@ HERE
     int64_t *c = NULL;
 
     // Obtain elimination tree of A
-HERE
     SPEX_CHECK( spex_cholesky_etree(&S->parent, A) );
 
     // Postorder the elimination tree of A
-HERE
     SPEX_CHECK( spex_cholesky_post(&post, S->parent, n) );
 
     // Get the column counts of A
     SPEX_CHECK( spex_cholesky_counts(&c, A, S->parent, post) );
-HERE
 
     // Set the column pointers of L
     S->cp = (int64_t*) SPEX_malloc( (n+1)*sizeof(int64_t*));
-HERE
     if (S->cp == NULL)
     {
         SPEX_FREE_ALL;
-HERE
         return SPEX_OUT_OF_MEMORY;
     }
-HERE
     SPEX_CHECK( spex_cumsum(S->cp, c, n));
-HERE
 
     // Set the exact number of nonzeros in L
     S->lnz = S->cp[n];
     SPEX_FREE_WORKSPACE;
-HERE
     return SPEX_OK;
 }

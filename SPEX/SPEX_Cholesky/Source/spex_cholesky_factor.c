@@ -71,7 +71,6 @@ SPEX_info spex_cholesky_factor
     // reminder of the appropriate data types
     ASSERT(A->type == SPEX_MPZ);
     ASSERT(A->kind == SPEX_CSC);
-HERE
 
     // Number of nonzeros in A
     int64_t anz;
@@ -79,7 +78,6 @@ HERE
     ASSERT(anz > 0);
 
     (*F_handle) = NULL ;
-HERE
 
     //--------------------------------------------------------------------------
     // Declare and initialize workspace
@@ -90,7 +88,6 @@ HERE
 
     // Allocate memory for the factorization
     F = (SPEX_factorization) SPEX_calloc(1, sizeof(SPEX_factorization_struct));
-HERE
     if (F == NULL) return SPEX_OUT_OF_MEMORY;
 
     // set factorization kind
@@ -99,20 +96,17 @@ HERE
     // Allocate and set scale_for_A
     SPEX_MPQ_INIT(F->scale_for_A);
     SPEX_MPQ_SET(F->scale_for_A, A->scale);
-HERE
 
     // Inverse pivot ordering
     F->Pinv_perm = (int64_t*) SPEX_malloc ( n*sizeof(int64_t) );
     // row/column permutation, to be copied from S->P_perm
     F->P_perm =    (int64_t*) SPEX_malloc ( n*sizeof(int64_t) );
-HERE
     if (!(F->Pinv_perm) || !(F->P_perm))
     {
         // out of memory: free everything and return
         SPEX_FREE_ALL;
         return SPEX_OUT_OF_MEMORY;
     }
-HERE
 
     // Copy row/column permutation from symbolic analysis to factorization
     memcpy(F->P_perm, S->P_perm, n*sizeof(int64_t));
@@ -122,7 +116,6 @@ HERE
     // factorization: up-looking or left-looking
     //--------------------------------------------------------------------------
 
-HERE
     SPEX_factorization_algorithm algo = SPEX_OPTION_ALGORITHM(option);
     switch(algo)
     {
@@ -135,10 +128,8 @@ HERE
 HERE
             break;
         case SPEX_CHOL_LEFT:
-HERE
             SPEX_CHECK( spex_cholesky_left_factor(&(F->L), &(F->rhos), S, A,
                 option) );
-HERE
             break;
         default:
             SPEX_FREE_ALL;
@@ -149,8 +140,6 @@ HERE
     // Set outputs, return ok
     //--------------------------------------------------------------------------
 
-HERE
     (*F_handle) = F ;
-HERE
     return SPEX_OK;
 }
