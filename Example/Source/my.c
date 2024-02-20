@@ -373,25 +373,13 @@ int my_function (void)      // returns 0 on success, -1 on failure
     // SPEX
     //--------------------------------------------------------------------------
 
-    // SPEX 3.0 requires GMP to support bit counts that are 64-bit integers
-    if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))
-    {
-        printf ("\n------------------------------------------------------------\n") ;
-        printf ("SPEX %d.%d.%d (%s) not supported on this platform.\n"
-        "GMP sizeof (mp_bitcnt_t) is %d, which is < sizeof (uint64_t) = %d\n",
+    OK (SPEX_initialize ( ) == SPEX_OK) ;
+    char spex_date [128] ;
+    OK (SPEX_version (version, spex_date) == SPEX_OK) ;
+    OK (my_check_version ("SPEX",
         SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
-        (int) sizeof (mp_bitcnt_t), (int) sizeof (uint64_t)) ;
-    }
-    else
-    {
-        OK (SPEX_initialize ( ) == SPEX_OK) ;
-        char spex_date [128] ;
-        OK (SPEX_version (version, spex_date) == SPEX_OK) ;
-        OK (my_check_version ("SPEX",
-            SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
-            version, SPEX__VERSION)) ;
-        OK (SPEX_finalize ( ) == SPEX_OK) ;
-    }
+        version, SPEX__VERSION)) ;
+    OK (SPEX_finalize ( ) == SPEX_OK) ;
 
     //--------------------------------------------------------------------------
     // SPQR
