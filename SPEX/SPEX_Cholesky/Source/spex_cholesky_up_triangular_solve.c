@@ -55,7 +55,11 @@
 // c's default qsort
 static inline int compare (const void * a, const void * b)
 {
-    return ( *(int64_t*)a - *(int64_t*)b );
+//    return ( *(int64_t*)a - *(int64_t*)b );
+
+    int64_t x = (* ((int64_t *) a)) ;
+    int64_t y = (* ((int64_t *) b)) ;
+    return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
 }
 
 SPEX_info spex_cholesky_up_triangular_solve
@@ -107,13 +111,39 @@ SPEX_info spex_cholesky_up_triangular_solve
     // xi[top..n-1]
     SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, parent, c));
 
+if (top < 0 || top > n)
+{
+    HERE ;
+    fprintf (stderr, "Hey: top is wierd %" PRId64 " n is %" PRId64 "\n", top, n) ;
+    abort ( ) ;
+}
+    for (i = top; i < n; i++)
+    {
+        int64_t j = xi [i] ;
+if (j < 0 || j >= n)
+{
+    HERE ;
+    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
+    abort ( ) ;
+}
+    }
+
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
     qsort(&xi[top], n-top, sizeof(int64_t*), compare);
 
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
     {
-        SPEX_MPZ_SET_UI(x->x.mpz[xi[i]],0);
+        int64_t j = xi [i] ;
+
+if (j < 0 || j >= n)
+{
+    HERE ;
+    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
+    abort ( ) ;
+}
+
+        SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }
 
     // Reset value of x[k]. If the matrix is nonsingular, x[k] will
@@ -149,6 +179,14 @@ SPEX_info spex_cholesky_up_triangular_solve
     {
         // Obtain the index of the current nonzero
         j = xi[p];
+
+if (j < 0 || j >= n)
+{
+    HERE ;
+    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
+    abort ( ) ;
+}
+
         SPEX_MPZ_SGN(&sgn, x->x.mpz[j]);
         if (sgn == 0) continue;    // If x[j] == 0 no work must be done
 
