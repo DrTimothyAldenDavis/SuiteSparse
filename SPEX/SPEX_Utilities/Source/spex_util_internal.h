@@ -604,10 +604,10 @@ SPEX_info spex_amd
 
 #define HERE \
 { \
-    printf ("here: %4d %s\n", __LINE__, __FILE__) ; \
+    /* printf ("here: %4d %s\n", __LINE__, __FILE__) ; */ \
     fprintf (stderr, "HERE: %4d %s\n", __LINE__, __FILE__) ; \
     fflush (stdout) ; \
-    fflush (stderr) ; \
+    /* fflush (stderr) ; */ \
 }
 
 #endif

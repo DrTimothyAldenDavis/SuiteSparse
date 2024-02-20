@@ -91,6 +91,7 @@ SPEX_info spex_cholesky_up_triangular_solve
     ASSERT(rhos->type == SPEX_MPZ);
     ASSERT(rhos->kind == SPEX_DENSE);
 
+HERE
     int64_t j, i, p, m, top, n = A->n;
     int sgn;
 
@@ -104,15 +105,18 @@ SPEX_info spex_cholesky_up_triangular_solve
     // elimination tree of A. The indices of these nonzeros are stored in
     // xi[top..n-1]
     SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, parent, c));
+HERE
 
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
     qsort(&xi[top], n-top, sizeof(int64_t*), compare);
+HERE
 
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
     {
         SPEX_MPZ_SET_UI(x->x.mpz[xi[i]],0);
     }
+HERE
 
     // Reset value of x[k]. If the matrix is nonsingular, x[k] will
     // be a part of the nonzero pattern and reset in the above loop.
@@ -120,12 +124,14 @@ SPEX_info spex_cholesky_up_triangular_solve
     // will be nonzero from a previous iteration. Thus, here we reset
     // x[k] to account for this extremely rare case.
     SPEX_MPZ_SET_UI(x->x.mpz[k],0);
+HERE
 
     // Reset h[i] = -1 for all i in nonzero pattern
     for (i = top; i < n; i++)
     {
         h[xi[i]] = -1;
     }
+HERE
 
     // Set x = A(:,k)
     // Note: The if is needed since the columns of A are allowed to be unsorted.
@@ -136,6 +142,7 @@ SPEX_info spex_cholesky_up_triangular_solve
             SPEX_MPZ_SET(x->x.mpz[A->i[i]], A->x.mpz[i]);
         }
     }
+HERE
 
     //--------------------------------------------------------------------------
     // Perform the REF Triangular Solve. Note that, unlike the left-looking
@@ -145,9 +152,11 @@ SPEX_info spex_cholesky_up_triangular_solve
     //--------------------------------------------------------------------------
     for (p = top; p < n; p++)
     {
+HERE
         // Obtain the index of the current nonzero
         j = xi[p];
         SPEX_MPZ_SGN(&sgn, x->x.mpz[j]);
+HERE
         if (sgn == 0) continue;    // If x[j] == 0 no work must be done
 
         // Initial history update to finalize x[j] if necessary
@@ -155,13 +164,16 @@ SPEX_info spex_cholesky_up_triangular_solve
         {
             // History update x[j]: x[j] = x[j]*rhos[j-1]/rhos[h[j]]
             // x[j] = x[j]*rhos[j-1]
+HERE
             SPEX_MPZ_MUL(x->x.mpz[j], x->x.mpz[j],
                 rhos->x.mpz[j-1]);
+HERE
             if (h[j] > -1)
             {
                // x[j] = x[j] / rhos [ h[j] ]
                SPEX_MPZ_DIVEXACT(x->x.mpz[j], x->x.mpz[j],
                                             rhos->x.mpz[h[j]]);
+HERE
             }
         }
 
@@ -171,30 +183,37 @@ SPEX_info spex_cholesky_up_triangular_solve
         // ----------- Iterate accross nonzeros in Lij ---------------------
         for (m = L->p[j]+1; m < c[j]; m++)
         {
+HERE
             i = L->i[m];            // i value of Lij
             if (i > j && i < k)     // Update all dependent x[i] excluding x[k]
             {
+HERE
                     /*************** If lij==0 then no update******************/
                 SPEX_MPZ_SGN(&sgn, L->x.mpz[m]);
                 if (sgn == 0) continue;
+HERE
 
                 //----------------------------------------------------------
                 /************* lij is nonzero, x[i] is zero****************/
                 // x[i] = 0 then only perform IPGE update subtraction/division
                 //----------------------------------------------------------
                 SPEX_MPZ_SGN(&sgn, x->x.mpz[i]);
+HERE
                 if (sgn == 0)
                 {
                     // First, get the correct value of x[i] = 0 - lij * x[j]
                     SPEX_MPZ_MUL(x->x.mpz[i], L->x.mpz[m],
                                                  x->x.mpz[j]);
+HERE
                     SPEX_MPZ_NEG(x->x.mpz[i],x->x.mpz[i]);
+HERE
                     // Do a division by the pivot if necessary.
                     if (j >= 1)
                     {
                         // x[i] = x[i] / rho[j-1]
                         SPEX_MPZ_DIVEXACT(x->x.mpz[i], x->x.mpz[i],
                                                         rhos->x.mpz[j-1]);
+HERE
                     }
                     // Update the history value of x[i]
                     h[i] = j;
@@ -207,15 +226,18 @@ SPEX_info spex_cholesky_up_triangular_solve
                 //----------------------------------------------------------
                 else
                 {
+HERE
                     // There is no previous pivot
                     if (j < 1)
                     {
                         // History update x[i] = x[i]*rhos[0]
                         SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                 rhos->x.mpz[0]);
+HERE
                         // x[i] = x[i] - lij x[j]
                         SPEX_MPZ_SUBMUL(x->x.mpz[i], L->x.mpz[m],
                                                     x->x.mpz[j]);
+HERE
                         // Update the history value of x[i]
                         h[i] = j;
                     }
@@ -228,6 +250,7 @@ SPEX_info spex_cholesky_up_triangular_solve
                             // x[i] = x[i] * rhos[j-1]
                             SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                      rhos->x.mpz[j-1]);
+HERE
                             // Divide by the history pivot only if the history
                             // pivot is not the rho[-1] (which equals 1) (rho[0]
                             // in the 1-based logic of othe IPGE algorithm)
@@ -236,6 +259,7 @@ SPEX_info spex_cholesky_up_triangular_solve
                                 // x[i] = x[i] / rho[h[i]]
                                 SPEX_MPZ_DIVEXACT(x->x.mpz[i],
                                             x->x.mpz[i],rhos->x.mpz[h[i]]);
+HERE
                             }
                         }
                         // ---- IPGE Update :
@@ -243,12 +267,15 @@ SPEX_info spex_cholesky_up_triangular_solve
                         // x[i] = x[i]*rhos[j]
                         SPEX_MPZ_MUL(x->x.mpz[i],x->x.mpz[i],
                                                 rhos->x.mpz[j]);
+HERE
                         // x[i] = x[i] - lij*xj
                         SPEX_MPZ_SUBMUL(x->x.mpz[i], L->x.mpz[m],
                                                     x->x.mpz[j]);
+HERE
                         // x[i] = x[i] / rho[j-1]
                         SPEX_MPZ_DIVEXACT(x->x.mpz[i],x->x.mpz[i],
                                                         rhos->x.mpz[j-1]);
+HERE
                         // Entry is up to date;
                         h[i] = j;
                     }
@@ -258,8 +285,10 @@ SPEX_info spex_cholesky_up_triangular_solve
         // ------ History Update x[k] if necessary -----
         if (h[k] < j - 1)
         {
+HERE
             // x[k] = x[k] * rho[j-1]
             SPEX_MPZ_MUL(x->x.mpz[k],x->x.mpz[k],rhos->x.mpz[j-1]);
+HERE
             // Divide by the history pivot only if the history pivot is not the
             // rho[-1] (which equals 1) (rho[0] in the 1-based logic of the
             // IPGE algorithm)
@@ -268,19 +297,23 @@ SPEX_info spex_cholesky_up_triangular_solve
                 // x[k] = x[k] / rho[h[k]]
                 SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                               rhos->x.mpz[h[k]]);
+HERE
             }
         }
         // ---- IPGE Update x[k] = (x[k]*rhos[j] - xj*xj) / rho[j-1] ------
         // x[k] = x[k] * rho[j]
         SPEX_MPZ_MUL(x->x.mpz[k],x->x.mpz[k],rhos->x.mpz[j]);
+HERE
         // x[k] = x[k] - xj*xj
         SPEX_MPZ_SUBMUL(x->x.mpz[k], x->x.mpz[j], x->x.mpz[j]);
+HERE
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
         if (j > 0)
             // x[k] = x[k] / rho[j-1]
             SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                             rhos->x.mpz[j-1]);
+HERE
         // Entry is up to date;
         h[k] = j;
     }
@@ -294,6 +327,7 @@ SPEX_info spex_cholesky_up_triangular_solve
     {
         // x[k] = x[k] * rhos[k-1]
         SPEX_MPZ_MUL(x->x.mpz[k], x->x.mpz[k], rhos->x.mpz[k-1]);
+HERE
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
         if (h[k] > -1)
@@ -301,9 +335,11 @@ SPEX_info spex_cholesky_up_triangular_solve
             // x[k] = x[k] / rhos[h[k]]
             SPEX_MPZ_DIVEXACT(x->x.mpz[k], x->x.mpz[k],
                                            rhos->x.mpz[ h[k]]);
+HERE
         }
     }
     // Output the top of the nonzero pattern
     (*top_output) = top;
+HERE
     return SPEX_OK;
 }
