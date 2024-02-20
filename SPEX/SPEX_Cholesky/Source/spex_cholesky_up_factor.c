@@ -11,26 +11,26 @@
 
 #define SPEX_FREE_WORKSPACE         \
 {                                   \
-    HERE ; \
+    HERE2 ("1") ; \
     SPEX_matrix_free(&x, NULL);     \
-    HERE ; \
+    HERE2 ("2") ; \
     SPEX_FREE(xi);                  \
-    HERE ; \
+    HERE2 ("3") ; \
     SPEX_FREE(h);                   \
-    HERE ; \
+    HERE2 ("4") ; \
     SPEX_FREE(c);                   \
-    HERE ; \
+    HERE2 ("5") ; \
 }
 
 #define SPEX_FREE_ALL               \
 {                                   \
-    HERE ; \
+    HERE2 ("a") ; \
     SPEX_matrix_free(&L, NULL);     \
-    HERE ; \
+    HERE2 ("b") ; \
     SPEX_matrix_free(&rhos, NULL);  \
-    HERE ; \
+    HERE2 ("c") ; \
     SPEX_FREE_WORKSPACE             \
-    HERE ; \
+    HERE2 ("d") ; \
 }
 
 #include "spex_cholesky_internal.h"

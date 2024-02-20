@@ -9,11 +9,11 @@
 
 //------------------------------------------------------------------------------
 
-# define SPEX_FREE_ALL                   \
+#define SPEX_FREE_ALL                    \
 {                                        \
-    HERE ; \
+    HERE2("A") ; \
     SPEX_factorization_free(&F, option); \
-    HERE ; \
+    HERE2("B") ; \
 }
 
 
@@ -149,6 +149,7 @@ HERE
     // Set outputs, return ok
     //--------------------------------------------------------------------------
 
+HERE
     (*F_handle) = F ;
 HERE
     return SPEX_OK;
