@@ -136,7 +136,7 @@ SPEX_info spex_left_lu_ref_triangular_solve // sparse REF triangular solve
     }
 
     // Sort xi[top..n-1]
-    qsort(&xi[top], n-top, sizeof(int64_t), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
 
     // Place xi back in original value
     for (j = top; j < n; j++)

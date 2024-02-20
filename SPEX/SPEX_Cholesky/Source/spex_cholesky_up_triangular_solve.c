@@ -138,7 +138,7 @@ if (j < 0 || j >= n)
     }
 
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
-    qsort(&xi[top], n-top, sizeof(int64_t*), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
 
 HERE ;
 

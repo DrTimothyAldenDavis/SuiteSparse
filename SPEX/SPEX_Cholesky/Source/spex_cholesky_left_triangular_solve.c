@@ -222,7 +222,7 @@ SPEX_info spex_cholesky_left_triangular_solve
         }
     }
     // Sort the nonzero pattern xi using quicksort
-    qsort(&xi[top], n-top, sizeof(int64_t), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
 
     // Reset the history vector h
     for (i = top; i < n; i++)

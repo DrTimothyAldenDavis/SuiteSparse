@@ -418,7 +418,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
             }
 
             // sort the (i,j) indices
-            qsort (work, nz, 2 * sizeof (int64_t), compar);
+            qsort (work, nz, 2 * sizeof (int64_t), compar) ;
 
             // check for duplicates
             for (p = 1 ; p < nz ; p++)
