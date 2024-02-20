@@ -87,8 +87,10 @@ HERE
     if (S->cp == NULL)
     {
         SPEX_FREE_ALL;
+HERE
         return SPEX_OUT_OF_MEMORY;
     }
+HERE
     SPEX_CHECK( spex_cumsum(S->cp, c, n));
 HERE
 
