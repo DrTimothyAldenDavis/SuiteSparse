@@ -96,7 +96,6 @@ SPEX_info spex_cholesky_up_triangular_solve
     ASSERT(rhos->kind == SPEX_DENSE);
 
     int64_t j, i, p, m, n = A->n;
-HERE ;
     int sgn;
     (*top_output) = n ;
     int64_t top = n ;
@@ -117,14 +116,17 @@ HERE ;
     // xi[top..n-1]
     SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, parent, c));
 
-fprintf (stderr, "Hey: top is %" PRId64 " n is %" PRId64 "\n", top, n) ;
-if (top < 0 || top > n)
-{
-    HERE ;
-    fprintf (stderr, "Hey: top is wierd %" PRId64 " n is %" PRId64 "\n", top, n) ;
-    abort ( ) ;
-}
+    ASSERT (top >= 0 && top <= n) ;
 
+// fprintf (stderr, "Hey: top is %" PRId64 " n is %" PRId64 "\n", top, n) ;
+// if (top < 0 || top > n)
+// {
+//     HERE ;
+//     fprintf (stderr, "Hey: top is wierd %" PRId64 " n is %" PRId64 "\n", top, n) ;
+//     abort ( ) ;
+// }
+
+#if 0
     for (i = top; i < n; i++)
     {
         int64_t j = xi [i] ;
@@ -136,6 +138,7 @@ if (j < 0 || j >= n)
     abort ( ) ;
 }
     }
+#endif
 
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
     qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
@@ -146,14 +149,15 @@ HERE ;
     for (i = top; i < n; i++)
     {
         int64_t j = xi [i] ;
+        ASSERT (j >= 0 && j <= k) ;
 
-if (j < 0 || j >= n)
-{
-    HERE ;
-    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
-    abort ( ) ;
-}
-fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
+// if (j < 0 || j >= n)
+// {
+//     HERE ;
+//     fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
+//     abort ( ) ;
+// }
+// fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i, j, n) ;
 
         SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }
@@ -180,6 +184,7 @@ fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i,
             SPEX_MPZ_SET(x->x.mpz[A->i[i]], A->x.mpz[i]);
         }
     }
+HERE
 
     //--------------------------------------------------------------------------
     // Perform the REF Triangular Solve. Note that, unlike the left-looking
@@ -189,15 +194,18 @@ fprintf (stderr, "Hey: i %" PRId64 " j is OK %" PRId64 " n is %" PRId64 "\n", i,
     //--------------------------------------------------------------------------
     for (p = top; p < n; p++)
     {
+HERE
         // Obtain the index of the current nonzero
         j = xi[p];
 
-if (j < 0 || j >= n)
-{
-    HERE ;
-    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
-    abort ( ) ;
-}
+        ASSERT (j >= 0 && j <= k) ;
+
+// if (j < 0 || j >= n)
+// {
+//    HERE ;
+//    fprintf (stderr, "Hey: j is wierd %" PRId64 " n is %" PRId64 "\n", j, n) ;
+//    abort ( ) ;
+// }
 
         SPEX_MPZ_SGN(&sgn, x->x.mpz[j]);
         if (sgn == 0) continue;    // If x[j] == 0 no work must be done
@@ -223,6 +231,7 @@ if (j < 0 || j >= n)
         // ----------- Iterate accross nonzeros in Lij ---------------------
         for (m = L->p[j]+1; m < c[j]; m++)
         {
+HERE
             i = L->i[m];            // i value of Lij
             if (i > j && i < k)     // Update all dependent x[i] excluding x[k]
             {
@@ -364,5 +373,6 @@ HERE
     }
     // Output the top of the nonzero pattern
     (*top_output) = top;
+HERE
     return SPEX_OK;
 }
