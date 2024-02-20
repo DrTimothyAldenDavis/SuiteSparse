@@ -277,8 +277,6 @@ HERE
                     h[i] = j;
 
                 }
-HERE
-
                 //----------------------------------------------------------
                 /************ Both lij and x[i] are nonzero****************/
                 // x[i] != 0 --> History & IPGE update on x[i]
