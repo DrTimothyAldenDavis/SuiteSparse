@@ -283,6 +283,9 @@ SPEX_info spex_cholesky_up_triangular_solve
         {
             // x[k] = x[k] / rho[j-1]
 HERE
+// THIS FAILS with SPEX_PANIC: rhos[j] is zero,
+// then SPEX segfaults
+fprintf (stderr, "------ exact divide by rhos[j]: j = %" PRId64" of n %" PRId64 "\n", j, n) ;
             SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                             rhos->x.mpz[j-1]);
 HERE
