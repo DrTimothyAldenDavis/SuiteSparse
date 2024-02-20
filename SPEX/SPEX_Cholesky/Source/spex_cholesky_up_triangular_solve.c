@@ -310,9 +310,13 @@ HERE
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
         if (j > 0)
+        {
             // x[k] = x[k] / rho[j-1]
+HERE
             SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                             rhos->x.mpz[j-1]);
+HERE
+        }
 HERE
         // Entry is up to date;
         h[k] = j;

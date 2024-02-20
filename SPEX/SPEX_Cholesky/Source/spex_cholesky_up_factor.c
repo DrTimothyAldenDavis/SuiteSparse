@@ -164,6 +164,7 @@ HERE
         false, true, option));
 HERE
     printf ("estimate: % " PRId64"\n", estimate) ;
+    fflush (stdout) ;
 
     // initialize the entries of x
     for (i = 0; i < n; i++)
