@@ -48,9 +48,9 @@
 // debugging
 //------------------------------------------------------------------------------
 
-#undef SPEX_DEBUG
+// #undef SPEX_DEBUG
 // uncomment this line to enable debugging
-// #define SPEX_DEBUG
+#define SPEX_DEBUG
 
 #ifdef SPEX_DEBUG
 
@@ -159,6 +159,8 @@
         if (info != SPEX_OK)        \
         {                           \
             printf("file %s line %d\n",__FILE__,__LINE__);\
+            fflush (stdout) ; \
+            fflush (stderr) ; \
             SPEX_FREE_ALL;          \
             return (info);          \
         }                           \

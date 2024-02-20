@@ -1161,6 +1161,8 @@ HERE
 HERE
         SPEX_GMP_WRAPPER_FINISH ;
 HERE
+        fprintf (stderr, "divexact: divide by zero!\n") ;
+        fflush (stderr) ;
         return (SPEX_PANIC);
     }
 
