@@ -47,6 +47,7 @@ SPEX_info SPEX_backslash
     SPEX_options option         // Command options (NULL: means use defaults)
 )
 {
+HERE
 
     SPEX_info info;
     // Check inputs
@@ -79,6 +80,8 @@ SPEX_info SPEX_backslash
         return SPEX_OUT_OF_MEMORY;
     }
 
+HERE
+
     if (option != NULL)
     {
         // IF the options are not NULL, copy the important parts.
@@ -90,6 +93,7 @@ SPEX_info SPEX_backslash
 
     // Declare output
     SPEX_matrix x = NULL;
+HERE
 
     // Attempt a Cholesky factorization of A.
     // If Cholesky is occuring, we update the option
@@ -97,6 +101,7 @@ SPEX_info SPEX_backslash
     backslash_options->order = SPEX_AMD;
     backslash_options->pivot = SPEX_DIAGONAL;
 
+HERE
     // Try SPEX Cholesky. The output for this function
     // is either:
     // SPEX_OK:       Cholesky success, x is the exact solution
@@ -104,6 +109,7 @@ SPEX_info SPEX_backslash
     //                A is not SPD. In this case, we try LU
     // Other error code: Some error. Return the error code and exit
     info = SPEX_cholesky_backslash(&x, type, A, b, backslash_options);
+HERE
     if (info == SPEX_OK)
     {
         // Cholesky was successful. Set x_handle = x
@@ -112,10 +118,12 @@ SPEX_info SPEX_backslash
         // x_handle contains the exact solution of Ax = b and is
         // stored in the user desired type. Now, we exit and return ok
         SPEX_FREE(backslash_options);
+HERE
         return SPEX_OK;
     }
     else if (info == SPEX_NOTSPD)
     {
+HERE
         // Cholesky factorization failed. Must try
         // LU factorization now
 
@@ -129,6 +137,7 @@ SPEX_info SPEX_backslash
         // Other error code: Some error. Return the error
         //                   code and exit
         info = SPEX_lu_backslash(&x, type, A, b, backslash_options);
+HERE
         if (info == SPEX_OK)
         {
             // LU success, set x_handle = x
@@ -137,6 +146,7 @@ SPEX_info SPEX_backslash
             // x_handle contains the exact solution of Ax = b and is
             // stored in the user desired type. Now, we exit and return ok
             SPEX_FREE(backslash_options);
+HERE
             return SPEX_OK;
         }
         else
@@ -146,18 +156,23 @@ SPEX_info SPEX_backslash
             // Note that, because LU failed, x_handle is still
             // NULL so there is no potential for a memory leak here
             SPEX_FREE(backslash_options);
+HERE
             return info;
         }
+HERE
     }
     else
     {
+HERE
         // Cholesky failed, but not due to a SPEX_NOTSPD
         // error code. Most likely invalid input or out of
         // memory condition.
         // Note that since Cholesky failed, x_handle is still NULL
         // so there is no potential for a memory leak here
         SPEX_FREE(backslash_options);
+HERE
         return info;
     }
 
+HERE
 }

@@ -61,6 +61,7 @@ SPEX_info SPEX_cholesky_backslash
     const SPEX_options option   // Command options (Default if NULL)
 )
 {
+HERE
 
     SPEX_info info;
     // SPEX must be initialized
@@ -111,9 +112,11 @@ SPEX_info SPEX_cholesky_backslash
 
     bool is_symmetric ;
     SPEX_CHECK( SPEX_determine_symmetry(&is_symmetric, A, option) );
+HERE
     if (!is_symmetric)
     {
         SPEX_FREE_WORKSPACE ;
+HERE
         return SPEX_NOTSPD ;
     }
 
@@ -122,6 +125,7 @@ SPEX_info SPEX_cholesky_backslash
     //--------------------------------------------------------------------------
 
     SPEX_CHECK( spex_cholesky_preorder(&S, A, option) );
+HERE
 
     //--------------------------------------------------------------------------
     // Permute matrix A, that is apply the row/column ordering from the
@@ -129,12 +133,14 @@ SPEX_info SPEX_cholesky_backslash
     //--------------------------------------------------------------------------
 
     SPEX_CHECK( spex_cholesky_permute_A(&PAP, A, true, S) );
+HERE
 
     //--------------------------------------------------------------------------
     // Symbolic Analysis: compute the elimination tree of PAP
     //--------------------------------------------------------------------------
 
     SPEX_CHECK( spex_cholesky_symbolic_analysis(S, PAP, option) );
+HERE
 
     //--------------------------------------------------------------------------
     // Factorization: Perform the REF Cholesky factorization of PAP.
@@ -143,6 +149,7 @@ SPEX_info SPEX_cholesky_backslash
     //--------------------------------------------------------------------------
 
     SPEX_CHECK( spex_cholesky_factor(&F, S, PAP, option) );
+HERE
 
     //--------------------------------------------------------------------------
     // Solve: Solve Ax = b using the REF Cholesky factorization. That is,
@@ -152,6 +159,7 @@ SPEX_info SPEX_cholesky_backslash
     //--------------------------------------------------------------------------
 
     SPEX_CHECK( SPEX_cholesky_solve(&x, F, b, option) );
+HERE
 
     //--------------------------------------------------------------------------
     // At this point x is stored as mpq_t. If the user desires the output
@@ -170,11 +178,13 @@ SPEX_info SPEX_cholesky_backslash
         (*x_handle) = x2;
         SPEX_matrix_free (&x, NULL);
     }
+HERE
 
     //--------------------------------------------------------------------------
     // Free all workspace and return success
     //--------------------------------------------------------------------------
 
     SPEX_FREE_WORKSPACE;
+HERE
     return SPEX_OK;
 }

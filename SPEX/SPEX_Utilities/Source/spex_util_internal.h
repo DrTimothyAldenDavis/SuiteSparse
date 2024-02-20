@@ -598,5 +598,17 @@ SPEX_info spex_amd
 // To access the (i,j)th entry in a 2D SPEX_matrix, in any type:
 #define SPEX_2D(A,i,j,type) SPEX_1D (A, (i)+(j)*((A)->m), type)
 
+//------------------------------------------------------------------------------
+// debugging
+//------------------------------------------------------------------------------
+
+#define HERE \
+{ \
+    printf ("HERE: %4d %s\n", __LINE__, __FILE__) ; \
+    fprintf (stderr, "HERE: %4d %s\n", __LINE__, __FILE__) ; \
+    fflush (stdout) ; \
+    fflush (stderr) ; \
+}
+
 #endif
 
