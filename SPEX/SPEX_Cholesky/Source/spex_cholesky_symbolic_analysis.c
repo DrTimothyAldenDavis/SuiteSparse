@@ -78,7 +78,7 @@ SPEX_info spex_cholesky_symbolic_analysis
     SPEX_CHECK( spex_cholesky_counts(&c, A, S->parent, post) );
 
     // Set the column pointers of L
-    S->cp = (int64_t*) SPEX_malloc( (n+1)*sizeof(int64_t*));
+    S->cp = (int64_t*) SPEX_malloc( (n+1)*sizeof(int64_t));
     if (S->cp == NULL)
     {
         SPEX_FREE_ALL;
