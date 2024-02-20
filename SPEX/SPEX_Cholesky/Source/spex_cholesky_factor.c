@@ -11,7 +11,9 @@
 
 # define SPEX_FREE_ALL                   \
 {                                        \
+    HERE ; \
     SPEX_factorization_free(&F, option); \
+    HERE ; \
 }
 
 
