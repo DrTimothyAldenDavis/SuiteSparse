@@ -19,7 +19,7 @@ concurrency: ci-macos-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:AMD:COLAMD:SPEX"
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX:GraphBLAS:LAGraph"
 
 jobs:
 
@@ -35,7 +35,7 @@ jobs:
           sysctl machdep
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         # Homebrew's Python conflicts with the Python that comes pre-installed
@@ -61,7 +61,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: /Users/runner/Library/Caches/ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -98,9 +98,19 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: check_Mongoose
+        run: |
+          cd ${GITHUB_WORKSPACE}/Mongoose/build
+          ctest .
+
       - name: check_AMD
         run: |
           cd ${GITHUB_WORKSPACE}/AMD
+          make demos
+
+      - name: check_CAMD
+        run: |
+          cd ${GITHUB_WORKSPACE}/CAMD
           make demos
 
       - name: check_COLAMD
@@ -108,9 +118,71 @@ jobs:
           cd ${GITHUB_WORKSPACE}/COLAMD
           make demos
 
+      - name: check_CCOLAMD
+        run: |
+          cd ${GITHUB_WORKSPACE}/CCOLAMD
+          make demos
+
+      - name: check_CHOLMOD
+        run: |
+          cd ${GITHUB_WORKSPACE}/CHOLMOD
+          make demos
+          cd ${GITHUB_WORKSPACE}/CHOLMOD/build
+          ctest .
+
+      - name: check_CSparse
+        run: |
+          cd ${GITHUB_WORKSPACE}/CSparse
+          make demos
+
+      - name: check_CXSparse
+        run: |
+          cd ${GITHUB_WORKSPACE}/CXSparse
+          make demos
+
+      - name: check_LDL
+        run: |
+          cd ${GITHUB_WORKSPACE}/LDL
+          make demos
+
+      - name: check_KLU
+        run: |
+          cd ${GITHUB_WORKSPACE}/KLU
+          make demos
+
+      - name: check_UMFPACK
+        run: |
+          cd ${GITHUB_WORKSPACE}/UMFPACK
+          make demos
+
+      - name: check_RBio
+        run: |
+          cd ${GITHUB_WORKSPACE}/RBio
+          make demos
+
+      - name: check_SPQR
+        run: |
+          cd ${GITHUB_WORKSPACE}/SPQR
+          make demos
+
       - name: check_SPEX
         run: |
           cd ${GITHUB_WORKSPACE}/SPEX
+          make demos
+
+      - name: check_GraphBLAS
+        run: |
+          cd ${GITHUB_WORKSPACE}/GraphBLAS
+          make demos
+
+      - name: check_LAGraph
+        run: |
+          cd ${GITHUB_WORKSPACE}/LAGraph
+          make demos
+
+      - name: check_ParU
+        run: |
+          cd ${GITHUB_WORKSPACE}/ParU
           make demos
 
       - name: ccache status
@@ -120,7 +192,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /Users/runner/Library/Caches/ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -134,4 +206,26 @@ jobs:
             cmake --install .
             echo "::endgroup::"
           done
+
+      - name: build example
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example/build
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;/usr/local/opt/lapack;/usr/local/opt/openblas;/usr/local/opt/libomp" \
+            ..
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary with shared libraries\033[0m\n"
+          ./my_demo
+          printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+          ./my_cxx_demo
+          printf "\033[1;35m  C binary with statically linked libraries\033[0m\n"
+          ./my_demo_static
+          printf "\033[1;35m  C++ binary with statically linked libraries\033[0m\n"
+          ./my_cxx_demo_static
+          echo "::endgroup::"
 

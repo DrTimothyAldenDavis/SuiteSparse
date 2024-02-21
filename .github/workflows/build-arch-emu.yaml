@@ -11,11 +11,11 @@ concurrency: ci-arch-emu-${{ github.ref }}
 
 env:
   # string with name of libraries to be built
-  BUILD_LIBS: "SuiteSparse_config:AMD:COLAMD:SPEX"
+  BUILD_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
   # string with name of libraries to be checked
-  CHECK_LIBS: "SuiteSparse_config:AMD:COLAMD:SPEX"
+  CHECK_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CSparse:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
   # string with name of libraries that are installed
-  INSTALLED_LIBS: "SuiteSparse_config:AMD:COLAMD:SPEX"
+  INSTALLED_LIBS: "SuiteSparse_config:Mongoose:AMD:BTF:CAMD:CCOLAMD:COLAMD:CHOLMOD:CXSparse:LDL:KLU:UMFPACK:ParU:RBio:SPQR:SPEX"
 
 
 jobs:
@@ -39,8 +39,8 @@ jobs:
         include:
           - arch: x86
             ccache-max: 80M
-            extra-build-libs: ""
-            extra-check-libs: ""
+            extra-build-libs: ":GraphBLAS:LAGraph"
+            extra-check-libs: ":GraphBLAS:LAGraph"
           - arch: aarch64
             ccache-max: 42M
           - arch: armv7
@@ -58,7 +58,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         # shell: bash
 
       - name: install dependencies
@@ -94,7 +94,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           # location of the ccache of the chroot in the root file system
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
@@ -164,7 +164,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -179,6 +179,25 @@ jobs:
             cmake --install .
             echo "::endgroup::"
           done
+
+      - name: build example using CMake
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example/build
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          cmake \
+            -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake" \
+            -DBLA_VENDOR="Generic" \
+            ..
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          cmake --build .
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary with shared libraries\033[0m\n"
+          ./my_demo
+          printf "\033[1;35m  C++ binary with shared libraries\033[0m\n"
+          ./my_cxx_demo
+          echo "::endgroup::"
 
       - name: test Config
         run: |
@@ -195,3 +214,34 @@ jobs:
             echo "::endgroup::"
           done
 
+      - name: build example using autotools
+        run: |
+          cd ${GITHUB_WORKSPACE}/Example
+          printf "::group::\033[0;32m==>\033[0m Configuring example\n"
+          autoreconf -fi
+          mkdir build-autotools
+          cd build-autotools
+          PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \
+            ../configure --enable-shared --disable-static
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Building example\n"
+          make all
+          echo "::endgroup::"
+          printf "::group::\033[0;32m==>\033[0m Executing example\n"
+          printf "\033[1;35m  C binary\033[0m\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_demo
+          printf "\033[1;35m  C++ binary\033[0m\n"
+          LD_LIBRARY_PATH=${GITHUB_WORKSPACE}/lib ./my_cxx_demo
+          echo "::endgroup::"
+          IFS=:
+          INSTALLED_LIBS="${INSTALLED_LIBS}${{ matrix.extra-build-libs }}"
+          for lib in ${INSTALLED_LIBS}; do
+            printf "::group::   \033[0;32m==>\033[0m Building test with library \033[0;32m${lib}\033[0m\n"
+            cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
+            autoreconf -fi
+            mkdir build-autotools && cd build-autotools
+            PKG_CONFIG_PATH=${GITHUB_WORKSPACE}/lib/pkgconfig/ \
+              ../configure --enable-shared --disable-static
+            make all
+            echo "::endgroup::"
+          done
