@@ -124,10 +124,10 @@ if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
         find_package ( AMD 3.3.1 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.1
+    find_package ( COLAMD 3.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.1 REQUIRED )
+        find_package ( COLAMD 3.3.2 REQUIRED )
     endif ( )
 endif ( )
 
@@ -237,10 +237,10 @@ endif ( )
             find_package ( CAMD 3.3.1 )
         endif ( )
 
-        find_package ( CCOLAMD 3.3.1
+        find_package ( CCOLAMD 3.3.2
             PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.3.1 )
+            find_package ( CCOLAMD 3.3.2 )
         endif ( )
 
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )

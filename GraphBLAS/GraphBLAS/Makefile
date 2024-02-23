@@ -44,7 +44,7 @@ remake:
 
 # just run cmake; do not compile
 setup:
-	( cd build ; cmake $(CMAKE_OPTIONS) .. ; )
+	( cd build && cmake $(CMAKE_OPTIONS) .. ; )
 
 # installs GraphBLAS to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
