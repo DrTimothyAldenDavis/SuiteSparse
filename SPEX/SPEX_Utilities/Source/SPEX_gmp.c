@@ -2109,3 +2109,93 @@ SPEX_info SPEX_mpfr_free_cache ( void )
     return (SPEX_OK);
 }
 
+//------------------------------------------------------------------------------
+// SPEX_mpz_set_null
+//------------------------------------------------------------------------------
+
+// Purpose: initialize the contents of an mpz_t value
+
+SPEX_info SPEX_mpz_set_null
+(
+    mpz_t x
+)
+{
+    SPEX_MPZ_SET_NULL (x) ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpq_set_null
+//------------------------------------------------------------------------------
+
+// Purpose: initialize the contents of an mpq_t value
+
+SPEX_info SPEX_mpq_set_null
+(
+    mpq_t x
+)
+{
+    SPEX_MPQ_SET_NULL (x) ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpfr_set_null
+//------------------------------------------------------------------------------
+
+// Purpose: initialize the contents of an mpfr_t value
+
+SPEX_info SPEX_mpfr_set_null
+(
+    mpfr_t x
+)
+{
+    SPEX_MPFR_SET_NULL (x) ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpz_clear
+//------------------------------------------------------------------------------
+
+// Purpose: safely clear an mpz_t value
+
+SPEX_info SPEX_mpz_clear
+(
+    mpz_t x
+)
+{
+    SPEX_MPZ_CLEAR (x) ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpq_clear
+//------------------------------------------------------------------------------
+
+// Purpose: safely clear an mpq_t value
+
+SPEX_info SPEX_mpq_clear
+(
+    mpq_t x
+)
+{
+    SPEX_MPQ_CLEAR (x) ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpfr_clear
+//------------------------------------------------------------------------------
+
+// Purpose: safely clear an mpfr_t value
+
+SPEX_info SPEX_mpfr_clear
+(
+    mpfr_t x
+)
+{
+    SPEX_MPFR_CLEAR (x) ;
+    return (SPEX_OK);
+}
+

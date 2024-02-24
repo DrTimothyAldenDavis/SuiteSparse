@@ -291,6 +291,88 @@
 #define SPEX_OPTION_ALGORITHM(option) \
     SPEX_OPTION (option, algo, SPEX_DEFAULT_ALGORITHM)
 
+//------------------------------------------------------------------------------
+// Field access macros for MPZ/MPQ/MPFR struct
+//------------------------------------------------------------------------------
+
+// Thse macros rely on GMP and MPFR definitions in gmp.h, but which are not
+// necessarily meant to be accessed by the application (SPEX) that is using
+// GMP.  They provide access to the internal structure for the MPZ, MPQ, and
+// MPFR data types.
+
+#define SPEX_MPZ_SIZ(x)   ((x)->_mp_size)
+#define SPEX_MPZ_PTR(x)   ((x)->_mp_d)
+#define SPEX_MPZ_ALLOC(x) ((x)->_mp_alloc)
+#define SPEX_MPQ_NUM(x)   mpq_numref(x)
+#define SPEX_MPQ_DEN(x)   mpq_denref(x)
+#define SPEX_MPFR_MANT(x) ((x)->_mpfr_d)
+#define SPEX_MPFR_EXP(x)  ((x)->_mpfr_exp)
+#define SPEX_MPFR_PREC(x) ((x)->_mpfr_prec)
+#define SPEX_MPFR_SIGN(x) ((x)->_mpfr_sign)
+
+// Invalid exponent value (to track bugs...)
+#define SPEX_MPFR_EXP_INVALID \
+ ((mpfr_exp_t) 1 << (GMP_NUMB_BITS*sizeof(mpfr_exp_t)/sizeof(mp_limb_t)-2))
+
+/* Macros to set the pointer in mpz_t/mpq_t/mpfr_t variable to NULL. It is best
+ * practice to call these macros immediately after mpz_t/mpq_t/mpfr_t variable
+ * is declared, and before the mp*_init function is called. It would help to
+ * prevent error when SPEX_MP*_CLEAR is called before the variable is
+ * successfully initialized.
+ */
+
+#define SPEX_MPZ_SET_NULL(x)                     \
+{                                                \
+    SPEX_MPZ_PTR(x) = NULL;                      \
+    SPEX_MPZ_SIZ(x) = 0;                         \
+    SPEX_MPZ_ALLOC(x) = 0;                       \
+}
+
+#define SPEX_MPQ_SET_NULL(x)                     \
+{                                                \
+    SPEX_MPZ_SET_NULL (SPEX_MPQ_NUM (x)) ;       \
+    SPEX_MPZ_SET_NULL (SPEX_MPQ_DEN (x)) ;       \
+}
+
+#define SPEX_MPFR_SET_NULL(x)                    \
+{                                                \
+    SPEX_MPFR_MANT(x) = NULL;                    \
+    SPEX_MPFR_PREC(x) = 0;                       \
+    SPEX_MPFR_SIGN(x) = 1;                       \
+    SPEX_MPFR_EXP(x) = SPEX_MPFR_EXP_INVALID;    \
+}
+
+/* GMP does not give a mechanism to tell a user when an mpz, mpq, or mpfr
+ * item has been cleared; thus, if mp*_clear is called on an object that
+ * has already been cleared, gmp will crash. It is also not possible to
+ * set a mp*_t = NULL. Thus, this mechanism modifies the internal GMP
+ * size of entries to avoid crashing in the case that a mp*_t is cleared
+ * multiple times.
+ */
+
+#define SPEX_MPZ_CLEAR(x)                        \
+{                                                \
+    if ((x) != NULL && SPEX_MPZ_PTR(x) != NULL)  \
+    {                                            \
+        mpz_clear(x);                            \
+        SPEX_MPZ_SET_NULL(x);                    \
+    }                                            \
+}
+
+#define SPEX_MPQ_CLEAR(x)                        \
+{                                                \
+    SPEX_MPZ_CLEAR(SPEX_MPQ_NUM(x));             \
+    SPEX_MPZ_CLEAR(SPEX_MPQ_DEN(x));             \
+}
+
+#define SPEX_MPFR_CLEAR(x)                       \
+{                                                \
+    if ((x) != NULL && SPEX_MPFR_MANT(x) != NULL)\
+    {                                            \
+        mpfr_clear(x);                           \
+        SPEX_MPFR_SET_NULL(x);                   \
+    }                                            \
+}
 
 
 // ============================================================================

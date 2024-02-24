@@ -12,10 +12,6 @@
 // This example shows how to use SPEX Chol with a given input matrix and a
 // double output. The input is read from a file.
 
-// usage: FIXME
-// spex_demo_cholesky_simple f input > out
-// out is file for output calculated result
-
 #include "spex_demos.h"
 
 #define FREE_WORKSPACE                  \

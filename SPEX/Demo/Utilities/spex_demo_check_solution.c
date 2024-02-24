@@ -9,15 +9,13 @@
 
 //------------------------------------------------------------------------------
 
-// FIXME: need SPEX_MPQ_CLEAR, SPEX_MPQ_SET_NULL, SPEX_2D in SPEX.h
-
 #include "spex_demos.h"
 
 #undef  FREE_WORKSPACE
 #define FREE_WORKSPACE                      \
 {                                           \
-    SPEX_MPQ_CLEAR(temp);                   \
-    SPEX_MPQ_CLEAR(scale);                  \
+    SPEX_mpq_clear (temp) ;                 \
+    SPEX_mpq_clear (scale) ;                \
     SPEX_matrix_free(&b2, NULL);            \
 }
 
@@ -39,13 +37,12 @@ SPEX_info spex_demo_check_solution
     int64_t p, j, i, nz;
     SPEX_matrix b2 = NULL;   // b2 stores the solution of A*x
     int r;
+    SPEX_mpq_set_null (temp) ;
+    SPEX_mpq_set_null (scale) ;
 
     //--------------------------------------------------------------------------
     // initialize
     //--------------------------------------------------------------------------
-
-    SPEX_MPQ_SET_NULL(temp);
-    SPEX_MPQ_SET_NULL(scale);
 
     SPEX_TRY (SPEX_mpq_init(temp));
     SPEX_TRY (SPEX_mpq_init(scale));
