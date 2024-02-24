@@ -151,34 +151,23 @@
 // Local variables (only declared, allocated and freed inside an if, for
 // example) do not go inside the workspace.
 
-#ifdef SPEX_DEBUG
 
-    #define SPEX_CHECK(method)      \
-    {                               \
-        info = (method);            \
-        if (info != SPEX_OK)        \
-        {                           \
-            fprintf(stderr, "NOT OK: file %s line %d\n",__FILE__,__LINE__) ; \
-            fflush (stdout) ;       \
-            fflush (stderr) ;       \
-            SPEX_FREE_ALL;          \
-            return (info);          \
-        }                           \
-    }
+// SPEX_CHECK: similar to SPEX_TRY (which is user-accessible).  The SPEX_CHECK
+// macro is used internally.
 
-#else
+#define SPEX_CHECK(method)      \
+{                               \
+    info = (method);            \
+    if (info != SPEX_OK)        \
+    {                           \
+        SPEX_FREE_ALL;          \
+        return (info);          \
+    }                           \
+}
 
-    #define SPEX_CHECK(method)      \
-    {                               \
-        info = (method);            \
-        if (info != SPEX_OK)        \
-        {                           \
-            SPEX_FREE_ALL;          \
-            return (info);          \
-        }                           \
-    }
-
-#endif
+//------------------------------------------------------------------------------
+// check versions of SuiteSparse packages
+//------------------------------------------------------------------------------
 
 #if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
 #error "SPEX requires SuiteSparse_config 7.7.0 or later"
@@ -214,12 +203,8 @@
 #define SPEX_PR2(...) { if (pr >= 2) SPEX_PRINTF (__VA_ARGS__) }
 #define SPEX_PR3(...) { if (pr >= 3) SPEX_PRINTF (__VA_ARGS__) }
 
-
-
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-//-----------------------------------------------------
-//------------------------------------------------------------------------------
+// Default parameter values
 //------------------------------------------------------------------------------
 
 // Tolerance used in the pivoting schemes. This number can be anything in
@@ -585,26 +570,6 @@ SPEX_info spex_amd
 #define ASSERT_MATRIX(A,required_kind,required_type)    \
     ASSERT_KIND (A,required_kind) ;                     \
     ASSERT_TYPE (A,required_type) ;
-
-//------------------------------------------------------------------------------
-// debugging
-//------------------------------------------------------------------------------
-
-#if 0
-#define HERE \
-{ \
-    fprintf (stderr, "HERE: %4d %s\n", __LINE__, __FILE__) ; \
-    fflush (stdout) ; \
-    fflush (stderr) ; \
-}
-
-#define HERE2(s) \
-{ \
-    fprintf (stderr, "HERE %s: %4d %s\n", s, __LINE__, __FILE__) ; \
-    fflush (stdout) ; \
-    fflush (stderr) ; \
-}
-#endif
 
 #endif
 
