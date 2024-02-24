@@ -1195,6 +1195,10 @@ See scikit-sparse and scikit-umfpack for the Python interface via SciPy:
   https://github.com/scikit-sparse/scikit-sparse
   https://github.com/scikit-umfpack/scikit-umfpack
 
+See math.js by Jos de Jong for a JavaScript port of CSparse:
+
+  https://github.com/josdejong/mathjs
+
 See russell for a Rust interface:
 
   https://github.com/cpmech/russell
