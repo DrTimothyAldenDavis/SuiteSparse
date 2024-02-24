@@ -122,7 +122,7 @@ SPEX_info spex_cholesky_up_triangular_solve
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
     {
-        int64_t j = xi [i] ;
+        j = xi [i] ;
         ASSERT (j >= 0 && j <= k) ;
         SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }

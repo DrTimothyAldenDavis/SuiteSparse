@@ -370,6 +370,9 @@ void *spex_gmp_allocate
 // spex_gmp_safe_free:  free a block of memory and remove it from the archive
 //------------------------------------------------------------------------------
 
+// FIXME: what is this doing?
+#define SPEX_MPFR_REAL_PTR(x) (&((x)->_mpfr_d[-1]))
+
 static inline void spex_gmp_safe_free (void *p)
 {
     if (spex_gmp != NULL)

@@ -1,3 +1,9 @@
 # Ignore these files:
 Makefile
-
+spex*.c
+SPEX*.c
+*.out
+spex_demo_lu_extended
+tcov_for_cholesky
+tcov_for_lu
+tcov_for_lu2

@@ -221,18 +221,18 @@ runtests: runtests4llu runtests4chol
 
 # only run test for SPEX_LU
 runtests4llu: all
-	- ./spex_demo_lu_extended p 2 q 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu1.out
-	- ./spex_demo_lu_extended p 3 q 2 o 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu2.out
-	- ./spex_demo_lu_extended p 4 q 3 o 1 f ../ExampleMats/test.mat.txt ../ExampleMats/test.rhs.txt > lu3.out
-	- ./spex_demo_lu_extended p 5 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu4.out
-	- ./tcov_for_lu > test_for_lu.out
-	- ./tcov_for_lu 0 1 1 > lu5.out
-	- ./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
+	./spex_demo_lu_extended q 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu1.out
+	./spex_demo_lu_extended q 2 o 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu2.out
+	./spex_demo_lu_extended q 3 o 1 f ../ExampleMats/test.mat.txt ../ExampleMats/test.rhs.txt > lu3.out
+	./spex_demo_lu_extended f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu4.out
+	./tcov_for_lu > test_for_lu.out
+	./tcov_for_lu 0 1 1 > lu5.out
+	./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
 
 
 # only run test for SPEX_Cholesky
 runtests4chol: all
-	- ./tcov_for_cholesky ../ExampleMats/mesh1e1.mat.txt ../ExampleMats/mesh1e1.rhs.txt > test_for_cholesky.out
+	./tcov_for_cholesky ../ExampleMats/mesh1e1.mat.txt ../ExampleMats/mesh1e1.rhs.txt > test_for_cholesky.out
 
 #-------------------------------------------------------------------------------
 
