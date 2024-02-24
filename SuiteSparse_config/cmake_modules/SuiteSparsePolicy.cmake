@@ -72,25 +72,6 @@
 #                       for your system.
 #                       Default: ON
 #
-#   SUITESPARSE_BLAS_UNDERSCORE: if ON, the SUITESPARSE_C_TO_FORTRAN setting
-#                       is ignored, and the Fortran compiler is also ignored
-#                       even if available and used.  The C-to-Fortran
-#                       convention "(name,NAME) name##_" is used, which forces
-#                       the appending of an underscore to the names of the
-#                       BLAS/LAPACK functions (dgemm_ for example).
-#                       Default: OFF
-#
-#   SUITESPARSE_BLAS_NO_UNDERSCORE: if ON and SUITESPARSE_BLAS_UNDERSCORE is
-#                       OFF, the SUITESPARSE_C_TO_FORTRAN setting is ignored,
-#                       and the Fortran compiler is also ignored even if
-#                       available and used.  The C-to-Fortran convention
-#                       "(name,NAME) name" is used, which forces NO appending of an
-#                       underscore to the names of the BLAS/LAPACK functions.
-#                       (dgemm for example).  Note that if
-#                       SUITESPARSE_BLAS_UNDERSCORE is set to ON, this setting
-#                       is ignored.
-#                       Default: OFF
-#
 #   SUITESPARSE_PKGFILEDIR: Directory where CMake Config and pkg-config files
 #                       will be installed.  By default, CMake Config files will
 #                       be installed in the subfolder `cmake` of the directory
@@ -316,22 +297,8 @@ if ( SUITESPARSE_USE_STRICT AND SUITESPARSE_USE_FORTRAN AND NOT SUITESPARSE_HAS_
     message ( FATAL_ERROR "Fortran required for SuiteSparse but not found" )
 endif ( )
 
-# C-to-Fortran name mangling
-option ( SUITESPARSE_BLAS_UNDERSCORE "OFF (default): do not force an underscore; ON: ignore Fortran and force calls to BLAS to use a trailing underscore (dgemm_)" OFF )
-option ( SUITESPARSE_BLAS_NO_UNDERSCORE "OFF (default): do not force no-underscore; ON: ignore Fortran and force calls to BLAS to NOT use a trailing underscore (dgemm)" OFF )
-if ( SUITESPARSE_BLAS_UNDERSCORE )
-    # Ignore the Fortran compiler even if used, also ignore the C compiler, and
-    # force an underscore to be appended to all calls to BLAS/LAPACK.
-    # Also force the name to be lowercase (dgemm_ for example).
-    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name##_"
-        CACHE STRING "C to Fortan name mangling" FORCE )
-elseif ( SUITESPARSE_BLAS_NO_UNDERSCORE )
-    # Ignore the Fortran compiler even if used, also ignore the C compiler, and
-    # force NO underscore to be appended to all calls to BLAS/LAPACK.
-    # Also force the name to be lowercase (dgemm for example).
-    set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name"
-        CACHE STRING "C to Fortan name mangling" FORCE )
-elseif ( MSVC )
+# default C-to-Fortran name mangling if Fortran compiler not found
+if ( MSVC )
     # MS Visual Studio Fortran compiler does not mangle the Fortran name
     set ( SUITESPARSE_C_TO_FORTRAN "(name,NAME) name"
         CACHE STRING "C to Fortan name mangling" )
