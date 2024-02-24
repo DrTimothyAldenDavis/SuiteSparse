@@ -9,7 +9,7 @@
 
 //------------------------------------------------------------------------------
 
-# define SPEX_FREE_ALL                   \
+#define SPEX_FREE_ALL                    \
 {                                        \
     SPEX_factorization_free(&F, option); \
 }

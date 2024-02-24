@@ -151,32 +151,23 @@
 // Local variables (only declared, allocated and freed inside an if, for
 // example) do not go inside the workspace.
 
-#ifdef SPEX_DEBUG
 
-    #define SPEX_CHECK(method)      \
-    {                               \
-        info = (method);            \
-        if (info != SPEX_OK)        \
-        {                           \
-            printf("file %s line %d\n",__FILE__,__LINE__);\
-            SPEX_FREE_ALL;          \
-            return (info);          \
-        }                           \
-    }
+// SPEX_CHECK: similar to SPEX_TRY (which is user-accessible).  The SPEX_CHECK
+// macro is used internally.
 
-#else
+#define SPEX_CHECK(method)      \
+{                               \
+    info = (method);            \
+    if (info != SPEX_OK)        \
+    {                           \
+        SPEX_FREE_ALL;          \
+        return (info);          \
+    }                           \
+}
 
-    #define SPEX_CHECK(method)      \
-    {                               \
-        info = (method);            \
-        if (info != SPEX_OK)        \
-        {                           \
-            SPEX_FREE_ALL;          \
-            return (info);          \
-        }                           \
-    }
-
-#endif
+//------------------------------------------------------------------------------
+// check versions of SuiteSparse packages
+//------------------------------------------------------------------------------
 
 #if !defined (SUITESPARSE__VERSION) || SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0)
 #error "SPEX requires SuiteSparse_config 7.7.0 or later"
@@ -212,12 +203,8 @@
 #define SPEX_PR2(...) { if (pr >= 2) SPEX_PRINTF (__VA_ARGS__) }
 #define SPEX_PR3(...) { if (pr >= 3) SPEX_PRINTF (__VA_ARGS__) }
 
-
-
 //------------------------------------------------------------------------------
-//------------------------------------------------------------------------------
-//-----------------------------------------------------
-//------------------------------------------------------------------------------
+// Default parameter values
 //------------------------------------------------------------------------------
 
 // Tolerance used in the pivoting schemes. This number can be anything in
@@ -583,20 +570,6 @@ SPEX_info spex_amd
 #define ASSERT_MATRIX(A,required_kind,required_type)    \
     ASSERT_KIND (A,required_kind) ;                     \
     ASSERT_TYPE (A,required_type) ;
-
-//------------------------------------------------------------------------------
-// SPEX_matrix macros
-//------------------------------------------------------------------------------
-
-// These macros simplify the access to entries in a SPEX_matrix.
-// The type parameter is one of: mpq, mpz, mpfr, int64, or fp64.
-
-// To access the kth entry in a SPEX_matrix using 1D linear addressing,
-// in any matrix kind (CSC, triplet, or dense), in any type:
-#define SPEX_1D(A,k,type) ((A)->x.type [k])
-
-// To access the (i,j)th entry in a 2D SPEX_matrix, in any type:
-#define SPEX_2D(A,i,j,type) SPEX_1D (A, (i)+(j)*((A)->m), type)
 
 #endif
 

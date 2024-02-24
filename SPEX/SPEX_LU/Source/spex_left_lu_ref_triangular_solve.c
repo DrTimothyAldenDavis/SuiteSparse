@@ -74,6 +74,10 @@
 static inline int compare (const void * a, const void * b)
 {
     return ( *(int64_t*)a - *(int64_t*)b );
+
+    int64_t x = (* ((int64_t *) a)) ;
+    int64_t y = (* ((int64_t *) b)) ;
+    return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
 }
 
 SPEX_info spex_left_lu_ref_triangular_solve // sparse REF triangular solve
@@ -132,7 +136,7 @@ SPEX_info spex_left_lu_ref_triangular_solve // sparse REF triangular solve
     }
 
     // Sort xi[top..n-1]
-    qsort(&xi[top], n-top, sizeof(int64_t), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compare) ;
 
     // Place xi back in original value
     for (j = top; j < n; j++)

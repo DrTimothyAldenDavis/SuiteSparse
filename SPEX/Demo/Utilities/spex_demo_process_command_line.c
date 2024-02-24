@@ -2,7 +2,7 @@
 // Demo/spex_process_command_line: processes command line for user specified options
 //------------------------------------------------------------------------------
 
-// SPEX: (c) 2019-2023, Christopher Lourenco, Jinhao Chen,
+// SPEX: (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later

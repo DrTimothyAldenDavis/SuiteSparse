@@ -2,7 +2,7 @@
 // Demo/spex_demo_tripread: reads a matrix stored in triplet format of a given type
 //------------------------------------------------------------------------------
 
-// SPEX: (c) 2019-2023, Christopher Lourenco, Jinhao Chen,
+// SPEX: (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
@@ -27,13 +27,16 @@ SPEX_info spex_demo_tripread
 (
     SPEX_matrix *A_handle,      // Matrix to be populated
     FILE *file,                 // file to read from (must already be open)
-    SPEX_type C_type,          // C->type: mpz_t or double
+    SPEX_type C_type,           // C->type: mpz_t or double
     SPEX_options option
 )
 {
     SPEX_info info ;
-    ASSERT(A_handle!=NULL);
-    ASSERT(file!=NULL);
+
+    if (A_handle == NULL || file == NULL)
+    {
+        return (SPEX_INCORRECT_INPUT) ;
+    }
 
     (*A_handle) = NULL ;
 

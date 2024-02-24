@@ -38,7 +38,6 @@ SPEX_info SPEX_matrix_free
     //--------------------------------------------------------------------------
     // free any non-shallow components
     //--------------------------------------------------------------------------
-
    
         // free the integer pattern
         if (!(A->p_shallow)) SPEX_FREE (A->p);

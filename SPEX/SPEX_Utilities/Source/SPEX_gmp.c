@@ -370,6 +370,9 @@ void *spex_gmp_allocate
 // spex_gmp_safe_free:  free a block of memory and remove it from the archive
 //------------------------------------------------------------------------------
 
+// FIXME: what is this doing?
+#define SPEX_MPFR_REAL_PTR(x) (&((x)->_mpfr_d[-1]))
+
 static inline void spex_gmp_safe_free (void *p)
 {
     if (spex_gmp != NULL)
@@ -1160,7 +1163,7 @@ SPEX_info SPEX_mpz_divexact
         return (SPEX_PANIC);
     }
 
-    #ifdef SPEX_DEBUG
+#ifdef SPEX_DEBUG
         mpq_t r ;
         mpq_init (r); // r = 0/1
         mpz_fdiv_r (SPEX_MPQ_NUM (r), y, z);
@@ -1174,7 +1177,7 @@ SPEX_info SPEX_mpz_divexact
             return (SPEX_PANIC);
         }
         mpq_clear (r);
-    #endif
+#endif
 
     mpz_divexact (x, y, z);
     SPEX_GMP_WRAPPER_FINISH ;

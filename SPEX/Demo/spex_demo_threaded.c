@@ -2,21 +2,30 @@
 // Demo/spex_demo_threaded: example of SPEX_backslash with multiple threads
 //------------------------------------------------------------------------------
 
-// SPEX: (c) 2021-2023, Christopher Lourenco, Jinhao Chen,
+// SPEX: (c) 2021-2024, Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-/* A demo of SPEX_backslash in C: solving the same system with many different
- * user threads, just to test user multithreading.
- */
+// A demo of SPEX_backslash in C: solving the same system with many different
+// user threads, just to test user multithreading.
 
 # include "spex_demos.h"
 
 #define FREE_WORKSPACE                  \
 {                                       \
+    if (mat_file != NULL)               \
+    {                                   \
+        fclose(mat_file);               \
+    }                                   \
+    mat_file = NULL ;                   \
+    if (rhs_file != NULL)               \
+    {                                   \
+        fclose(rhs_file);               \
+    }                                   \
+    rhs_file = NULL ;                   \
     SPEX_matrix_free(&A,NULL);          \
     SPEX_matrix_free(&b,NULL);          \
     SPEX_FREE(option);                  \
@@ -30,30 +39,31 @@
 int main( int argc, char *argv[] )
 {
 
+    int64_t n = 0 ;
+    SPEX_matrix A = NULL;
+    SPEX_matrix b = NULL;
+    SPEX_options option = NULL;
+    FILE *mat_file = NULL ;
+    FILE *rhs_file = NULL;
+    char *mat_name = NULL, *rhs_name = NULL;
+    int64_t rat = 1;
+
     //--------------------------------------------------------------------------
     // Prior to using SPEX, its environment must be initialized. This is done
     // by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
 
-    DEMO_INIT (ok) ;
+    SPEX_TRY (SPEX_initialize ( )) ;
 
     //--------------------------------------------------------------------------
     // Declare memory & Process Command Line
     //--------------------------------------------------------------------------
-    int64_t n = 0 ;
-
-    SPEX_matrix A = NULL;
-    SPEX_matrix b = NULL;
 
     // Set default options
-    SPEX_options option = NULL;
-    DEMO_OK(SPEX_create_default_options(&option));
-
-    char *mat_name = NULL, *rhs_name = NULL;
-    int64_t rat = 1;
+    SPEX_TRY (SPEX_create_default_options(&option));
 
     // Process the command line
-    DEMO_OK(spex_demo_process_command_line(argc, argv, option,
+    SPEX_TRY (spex_demo_process_command_line(argc, argv, option,
         &mat_name, &rhs_name, &rat));
 
     //--------------------------------------------------------------------------
@@ -61,7 +71,7 @@ int main( int argc, char *argv[] )
     //--------------------------------------------------------------------------
 
     // Read in A
-    FILE *mat_file = fopen(mat_name,"r");
+    mat_file = fopen(mat_name,"r");
     if( mat_file == NULL )
     {
         perror("Error while opening the file");
@@ -71,21 +81,24 @@ int main( int argc, char *argv[] )
 
     // Note, there are a few matrices in BasisLIB that dont fit in double
     // Need to use the other tripread for those.
-    DEMO_OK(spex_demo_tripread(&A, mat_file, SPEX_MPZ, option));
+    SPEX_TRY (spex_demo_tripread(&A, mat_file, SPEX_MPZ, option));
     fclose(mat_file);
+    mat_file = NULL ;
+
     n = A->n;
 
     // Read in b. The output of this demo function is b in dense format with
     // mpz_t entries
-    FILE *rhs_file = fopen(rhs_name,"r");
+    rhs_file = fopen(rhs_name,"r");
     if( rhs_file == NULL )
     {
         perror("Error while opening the file");
         FREE_WORKSPACE;
         return (1) ;
     }
-    DEMO_OK(spex_demo_read_dense(&b, rhs_file, option));
+    SPEX_TRY (spex_demo_read_dense(&b, rhs_file, option));
     fclose(rhs_file);
+    rhs_file = NULL ;
 
     //--------------------------------------------------------------------------
     // Solve Ax = b

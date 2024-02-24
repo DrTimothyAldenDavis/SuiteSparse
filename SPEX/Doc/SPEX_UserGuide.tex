@@ -2074,7 +2074,7 @@ If the data for matrices are in file format to be read, refer to
 corresponding to CSC form, sparse triplet form or dense form, allocate a
 shallow \verb|SPEX_matrix| and assign vectors accordingly, then use
 \verb|SPEX_matrix_copy| to get a \verb|SPEX_matrix| in the desired kind and
-type. For more details, refer to \verb|SPEX/SPEX/SPEX_Left_LU/Demo/example.c|. In a case when
+type. For more details, refer to the example programs in \verb|SPEX/SPEX/Demo/*.c|. In a case when
 \verb|A| is available in format other than CSC \verb|mpz|, and/or \verb|b| is
 available in format other than dense \verb|mpz|, the following code snippet
 shows how to get \verb|A| and \verb|b| in a required format.
@@ -2247,6 +2247,8 @@ library.
 The \verb|SPEX/SPEX/SPEX_Left_LU/Demo| folder contains three sample C codes
 which utilize SPEX. These files demonstrate the usage of SPEX as
 follows:
+
+{\bf FIXME: this is out of date}
 
 \begin{itemize}
 \item \verb|example.c|: This example generates a random dense $50 \times 50$

@@ -380,29 +380,13 @@ int my_function (void)      // returns 0 on success, -1 on failure
     // SPEX
     //--------------------------------------------------------------------------
 
-    // SPEX 3.0 requires GMP to support bit counts that are 64-bit integers
-    if (sizeof (mp_bitcnt_t) < sizeof (uint64_t))
-    {
-        std::cout <<
-        "\n------------------------------------------------------------"
-            << std::endl ;
-        std::cout << "SPEX "  << SPEX_VERSION_MAJOR << "." << SPEX_VERSION_MINOR
-            << "." << SPEX_VERSION_SUB << " (" << SPEX_DATE <<
-            ") not supported on this platform." << std::endl ;
-        std::cout << "GMP sizeof (mp_bitcnt_t) is " << sizeof (mp_bitcnt_t)
-            << ", which is < sizeof (uint64_t) = "  << sizeof (uint64_t)
-            << std::endl ;
-    }
-    else
-    {
-        OK (SPEX_initialize ( ) == SPEX_OK) ;
-        char spex_date [128] ;
-        OK (SPEX_version (version, spex_date) == SPEX_OK) ;
-        OK (my_check_version ("SPEX",
-            SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
-            version, SPEX__VERSION)) ;
-        OK (SPEX_finalize ( ) == SPEX_OK) ;
-    }
+    OK (SPEX_initialize ( ) == SPEX_OK) ;
+    char spex_date [128] ;
+    OK (SPEX_version (version, spex_date) == SPEX_OK) ;
+    OK (my_check_version ("SPEX",
+        SPEX_VERSION_MAJOR, SPEX_VERSION_MINOR, SPEX_VERSION_SUB, SPEX_DATE,
+        version, SPEX__VERSION)) ;
+    OK (SPEX_finalize ( ) == SPEX_OK) ;
 
     //--------------------------------------------------------------------------
     // SPQR

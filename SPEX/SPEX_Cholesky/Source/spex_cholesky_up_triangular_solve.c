@@ -53,9 +53,11 @@
 // Each iteration of the triangular solve requires that the nonzero pattern
 // is sorted prior to numeric operations. This is the helper function for
 // c's default qsort
-static inline int compare (const void * a, const void * b)
+static inline int compar (const void * a, const void * b)
 {
-    return ( *(int64_t*)a - *(int64_t*)b );
+    int64_t x = (* ((int64_t *) a)) ;
+    int64_t y = (* ((int64_t *) b)) ;
+    return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
 }
 
 SPEX_info spex_cholesky_up_triangular_solve
@@ -91,10 +93,17 @@ SPEX_info spex_cholesky_up_triangular_solve
     ASSERT(rhos->type == SPEX_MPZ);
     ASSERT(rhos->kind == SPEX_DENSE);
 
-    int64_t j, i, p, m, top, n = A->n;
+    int64_t j, i, p, m, n = A->n;
     int sgn;
+    (*top_output) = n ;
+    int64_t top = n ;
 
-    ASSERT(n >= 0);
+    ASSERT (n >= 0) ;
+    ASSERT (k >= 0 && k < n) ;
+    ASSERT (parent != NULL) ;
+    ASSERT (c != NULL) ;
+    ASSERT (h != NULL) ;
+    ASSERT (xi != NULL) ;
 
     //--------------------------------------------------------------------------
     // Initialize REF Triangular Solve by getting the nonzero patern of x &&
@@ -105,13 +114,17 @@ SPEX_info spex_cholesky_up_triangular_solve
     // xi[top..n-1]
     SPEX_CHECK(spex_cholesky_ereach(&top, xi, A, k, parent, c));
 
+    ASSERT (top >= 0 && top <= n) ;
+
     // Sort the nonzero pattern using quicksort (required by IPGE unlike in GE)
-    qsort(&xi[top], n-top, sizeof(int64_t*), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compar) ;
 
     // Reset x[i] = 0 for all i in nonzero pattern xi [top..n-1]
     for (i = top; i < n; i++)
     {
-        SPEX_MPZ_SET_UI(x->x.mpz[xi[i]],0);
+        j = xi [i] ;
+        ASSERT (j >= 0 && j <= k) ;
+        SPEX_MPZ_SET_UI(x->x.mpz[j],0);
     }
 
     // Reset value of x[k]. If the matrix is nonsingular, x[k] will
@@ -147,6 +160,9 @@ SPEX_info spex_cholesky_up_triangular_solve
     {
         // Obtain the index of the current nonzero
         j = xi[p];
+
+        ASSERT (j >= 0 && j <= k) ;
+
         SPEX_MPZ_SGN(&sgn, x->x.mpz[j]);
         if (sgn == 0) continue;    // If x[j] == 0 no work must be done
 
@@ -200,7 +216,6 @@ SPEX_info spex_cholesky_up_triangular_solve
                     h[i] = j;
 
                 }
-
                 //----------------------------------------------------------
                 /************ Both lij and x[i] are nonzero****************/
                 // x[i] != 0 --> History & IPGE update on x[i]
@@ -255,6 +270,7 @@ SPEX_info spex_cholesky_up_triangular_solve
                 }
             }
         }
+
         // ------ History Update x[k] if necessary -----
         if (h[k] < j - 1)
         {
@@ -270,6 +286,7 @@ SPEX_info spex_cholesky_up_triangular_solve
                                               rhos->x.mpz[h[k]]);
             }
         }
+
         // ---- IPGE Update x[k] = (x[k]*rhos[j] - xj*xj) / rho[j-1] ------
         // x[k] = x[k] * rho[j]
         SPEX_MPZ_MUL(x->x.mpz[k],x->x.mpz[k],rhos->x.mpz[j]);
@@ -278,12 +295,15 @@ SPEX_info spex_cholesky_up_triangular_solve
         // Only divide by previous pivot if the previous pivot is not 1 (which
         // is always the case in the first IPGE iteration)
         if (j > 0)
+        {
             // x[k] = x[k] / rho[j-1]
             SPEX_MPZ_DIVEXACT(x->x.mpz[k],x->x.mpz[k],
                                             rhos->x.mpz[j-1]);
+        }
         // Entry is up to date;
         h[k] = j;
     }
+
     //----------------------------------------------------------
     // At this point, x[k] has been updated throughout the
     // triangular solve. The last step is to make sure x[k]

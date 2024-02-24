@@ -179,5 +179,8 @@ int main (int argc, char *argv [])
     SPEX_lu_analyze( &S, A, option);    
     
     SPEX_FREE_ALL;
-    
+
+    printf ("%s: all tests passed\n\n", __FILE__);
+    fprintf (stderr, "%s: all tests passed\n\n", __FILE__);
+    return (0) ;
 }

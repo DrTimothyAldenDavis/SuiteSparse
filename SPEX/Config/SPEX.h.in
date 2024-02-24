@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 // Unless otherwise noted all functions are authored by:
 //
-//    Christopher Lourenco, Jinhao Chen, 
+//    Christopher Lourenco, Jinhao Chen,
 //    Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis
 //
 
@@ -66,7 +66,7 @@
 //
 //    See license.txt for license info.
 //
-// This software is copyright by Christopher Lourenco, Jinhao Chen, 
+// This software is copyright by Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Erick Moreno-Centeno and Timothy A. Davis.
 // All Rights Reserved.
 //
@@ -178,6 +178,42 @@ SPEX_info SPEX_version
 #if MPFR_VERSION < MPFR_VERSION_NUM(4,0,2)
 #error "MPFR v4.0.2 or later is required."
 #endif
+
+//------------------------------------------------------------------------------
+// SPEX_TRY: try a SPEX method and check for errors
+//------------------------------------------------------------------------------
+
+// In a robust application, the return values from each call to SPEX should be
+// checked, and corrective action should be taken if an error occurs.  The
+// SPEX_TRY macros assist in this effort.
+//
+// SPEX is written in C, and so it cannot rely on the try/catch mechanism of
+// C++.  To accomplish a similar goal, we provide our mechanism.  The SPEX_TRY
+// macro calls a single SPEX method and then takes corrected action based on a
+// user-defined macro SPEX_CATCH.
+
+#define SPEX_TRY(method)            \
+{                                   \
+    SPEX_info info = (method) ;     \
+    if (info != SPEX_OK)            \
+    {                               \
+        SPEX_CATCH (info) ;         \
+    }                               \
+}
+
+// A typical example user application might #define SPEX_CATCH as follows.
+// Suppose the user function needs to free some workspace and return to the
+// caller if an error occurs:
+
+/*
+        #define SPEX_CATCH(info)                                            \
+        {                                                                   \
+            SPEX_matrix_free (&A, NULL) ;                                   \
+            fprintf (stderr, "SPEX failed: info %d, line %d, file %s\n",    \
+                info, __LINE__, __FILE__) ;                                 \
+            return (info) ;                                                 \
+        }                                                                   \
+*/
 
 //------------------------------------------------------------------------------
 // Pivot scheme codes
@@ -352,7 +388,7 @@ SPEX_type ;
 // A->x.  For example, if A->p_shallow is true, then a non-NULL A->p is a
 // pointer to a read-only array, and the A->p array is not freed by
 // SPEX_matrix_free.  If A->p is NULL (for a triplet or dense matrix), then
-// A->p_shallow has no effect.  
+// A->p_shallow has no effect.
 
 typedef struct
 {
@@ -417,6 +453,20 @@ typedef struct
 
 // A SPEX_matrix is a pointer to a SPEX_matrix_struct
 typedef SPEX_matrix_struct *SPEX_matrix ;
+
+//------------------------------------------------------------------------------
+// SPEX_matrix macros
+//------------------------------------------------------------------------------
+
+// These macros simplify the access to entries in a SPEX_matrix.
+// The type parameter is one of: mpq, mpz, mpfr, int64, or fp64.
+
+// To access the kth entry in a SPEX_matrix using 1D linear addressing,
+// in any matrix kind (CSC, triplet, or dense), in any type:
+#define SPEX_1D(A,k,type) ((A)->x.type [k])
+
+// To access the (i,j)th entry in a 2D SPEX_matrix, in any type:
+#define SPEX_2D(A,i,j,type) SPEX_1D (A, (i)+(j)*((A)->m), type)
 
 //------------------------------------------------------------------------------
 // SPEX_matrix_allocate: allocate an m-by-n SPEX_matrix
@@ -500,7 +550,7 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
 // SPEX_matrix_copy: make a copy of a SPEX_matrix, into another kind and type.
 
 // SPEX supports 16 matrix formats:  15 of them are all combinations of
-// (CSC, triplet, dense) x (mpz, mpq, mpfr, int64, double).  
+// (CSC, triplet, dense) x (mpz, mpq, mpfr, int64, double).
 
 SPEX_info SPEX_matrix_copy
 (
@@ -805,8 +855,6 @@ SPEX_info SPEX_determine_symmetry
     const SPEX_options option   // Command options
 ) ;
 
-// ended HERE on Apr 10.
-
 //------------------------------------------------------------------------------
 //---------------------------SPEX GMP/MPFR Functions----------------------------
 //------------------------------------------------------------------------------
@@ -964,6 +1012,90 @@ SPEX_info SPEX_mpfr_free_cache (void) ;
 
 SPEX_info SPEX_mpfr_free_str (char *str) ;
 
+//------------------------------------------------------------------------------
+// Field access macros for MPZ/MPQ/MPFR struct
+//------------------------------------------------------------------------------
+
+// These follow similar definitions in gmp-impl.h and mpfr-impl.h.
+
+#define SPEX_MPZ_SIZ(x)   ((x)->_mp_size)
+#define SPEX_MPZ_PTR(x)   ((x)->_mp_d)
+#define SPEX_MPZ_ALLOC(x) ((x)->_mp_alloc)
+#define SPEX_MPQ_NUM(x)   mpq_numref(x)
+#define SPEX_MPQ_DEN(x)   mpq_denref(x)
+#define SPEX_MPFR_MANT(x) ((x)->_mpfr_d)
+#define SPEX_MPFR_EXP(x)  ((x)->_mpfr_exp)
+#define SPEX_MPFR_PREC(x) ((x)->_mpfr_prec)
+#define SPEX_MPFR_SIGN(x) ((x)->_mpfr_sign)
+
+/* Invalid exponent value (to track bugs...) */
+#define SPEX_MPFR_EXP_INVALID \
+ ((mpfr_exp_t) 1 << (GMP_NUMB_BITS*sizeof(mpfr_exp_t)/sizeof(mp_limb_t)-2))
+
+/* Macros to set the pointer in mpz_t/mpq_t/mpfr_t variable to NULL. It is best
+ * practice to call these macros immediately after mpz_t/mpq_t/mpfr_t variable
+ * is declared, and before the mp*_init function is called. It would help to
+ * prevent error when SPEX_MP*_CLEAR is called before the variable is
+ * successfully initialized.
+ */
+
+#define SPEX_MPZ_SET_NULL(x)                     \
+{                                                \
+    SPEX_MPZ_PTR(x) = NULL;                      \
+    SPEX_MPZ_SIZ(x) = 0;                         \
+    SPEX_MPZ_ALLOC(x) = 0;                       \
+}
+
+#define SPEX_MPQ_SET_NULL(x)                     \
+{                                                \
+    SPEX_MPZ_PTR(SPEX_MPQ_NUM(x)) = NULL;        \
+    SPEX_MPZ_SIZ(SPEX_MPQ_NUM(x)) = 0;           \
+    SPEX_MPZ_ALLOC(SPEX_MPQ_NUM(x)) = 0;         \
+    SPEX_MPZ_PTR(SPEX_MPQ_DEN(x)) = NULL;        \
+    SPEX_MPZ_SIZ(SPEX_MPQ_DEN(x)) = 0;           \
+    SPEX_MPZ_ALLOC(SPEX_MPQ_DEN(x)) = 0;         \
+}
+
+#define SPEX_MPFR_SET_NULL(x)                    \
+{                                                \
+    SPEX_MPFR_MANT(x) = NULL;                    \
+    SPEX_MPFR_PREC(x) = 0;                       \
+    SPEX_MPFR_SIGN(x) = 1;                       \
+    SPEX_MPFR_EXP(x) = SPEX_MPFR_EXP_INVALID;    \
+}
+
+/* GMP does not give a mechanism to tell a user when an mpz, mpq, or mpfr
+ * item has been cleared; thus, if mp*_clear is called on an object that
+ * has already been cleared, gmp will crash. It is also not possible to
+ * set a mp*_t = NULL. Thus, this mechanism modifies the internal GMP
+ * size of entries to avoid crashing in the case that a mp*_t is cleared
+ * multiple times.
+ */
+
+#define SPEX_MPZ_CLEAR(x)                        \
+{                                                \
+    if ((x) != NULL && SPEX_MPZ_PTR(x) != NULL)  \
+    {                                            \
+        mpz_clear(x);                            \
+        SPEX_MPZ_SET_NULL(x);                    \
+    }                                            \
+}
+
+#define SPEX_MPQ_CLEAR(x)                        \
+{                                                \
+    SPEX_MPZ_CLEAR(SPEX_MPQ_NUM(x));             \
+    SPEX_MPZ_CLEAR(SPEX_MPQ_DEN(x));             \
+}
+
+#define SPEX_MPFR_CLEAR(x)                       \
+{                                                \
+    if ((x) != NULL && SPEX_MPFR_MANT(x) != NULL)\
+    {                                            \
+        mpfr_clear(x);                           \
+        SPEX_MPFR_SET_NULL(x);                   \
+    }                                            \
+}
+
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -977,7 +1109,7 @@ SPEX_info SPEX_mpfr_free_str (char *str) ;
 
 //    "Algorithm 1021: SPEX Left LU, Exactly Solving Sparse Linear Systems via
 //    a Sparse Left-looking Integer-preserving LU Factorization",
-//    C. Lourenco, J. Chen, E. Moreno-Centeno, T. Davis, 
+//    C. Lourenco, J. Chen, E. Moreno-Centeno, T. Davis,
 //    ACM Trans. Mathematical Software. pp 1-23, vol 48, no 2, 2022.
 
 //    The theory associated with this software can be found in the paper

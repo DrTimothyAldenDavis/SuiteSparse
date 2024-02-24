@@ -55,9 +55,11 @@
 // Each iteration of the triangular solve requires that the nonzero pattern
 // is sorted prior to numeric operations. This is the helper function for
 // c's default qsort
-static inline int compare (const void * a, const void * b)
+static inline int compar (const void * a, const void * b)
 {
-    return ( *(int64_t*)a - *(int64_t*)b );
+    int64_t x = (* ((int64_t *) a)) ;
+    int64_t y = (* ((int64_t *) b)) ;
+    return (x < y ? -1 : ((x == y) ? 0 : 1)) ;
 }
 
 SPEX_info spex_cholesky_left_triangular_solve
@@ -218,7 +220,7 @@ SPEX_info spex_cholesky_left_triangular_solve
         }
     }
     // Sort the nonzero pattern xi using quicksort
-    qsort(&xi[top], n-top, sizeof(int64_t), compare);
+    qsort (&xi[top], n-top, sizeof (int64_t), compar) ;
 
     // Reset the history vector h
     for (i = top; i < n; i++)

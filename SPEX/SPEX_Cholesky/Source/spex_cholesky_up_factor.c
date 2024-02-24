@@ -92,7 +92,8 @@ SPEX_info spex_cholesky_up_factor
     int64_t *c = NULL;
 
     // Declare variables
-    int64_t n = A->n, top, i, j, jnew, k;
+    int64_t n = A->n, i, j, jnew, k;
+    int64_t top = n ;
     int sgn, prev_sgn;
     size_t size;
 
@@ -181,7 +182,6 @@ SPEX_info spex_cholesky_up_factor
     {
         L->p[k] = c[k] = S->cp[k];
     }
-
 
     //--------------------------------------------------------------------------
     // Perform the up-looking factorization
