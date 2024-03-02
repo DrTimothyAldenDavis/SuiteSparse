@@ -80,7 +80,7 @@ setup:
 
 # build the static library
 static:
-	( cd build && cmake $(CMAKE_OPTIONS) -DNSTATIC=0 .. && cmake --build . --config Release -j$(JOBS) )
+	( cd build && cmake $(CMAKE_OPTIONS) -DBUILD_STATIC_LIBS=ON -DBUILD_SHARED_LIBS=OFF .. && cmake --build . --config Release -j$(JOBS) )
 
 # installs GraphBLAS to the install location defined by cmake, usually
 # /usr/local/lib and /usr/local/include
