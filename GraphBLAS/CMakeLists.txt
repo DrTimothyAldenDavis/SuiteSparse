@@ -459,6 +459,7 @@ if ( GRAPHBLAS_HAS_OPENMP )
         target_link_libraries ( GraphBLAS_static PRIVATE OpenMP::OpenMP_C )
     endif ( )
     message ( STATUS "CMAKE OpenMP C flags:      ${OpenMP_C_FLAGS}" )
+    set ( GB_OPENMP_C_FLAGS "${OpenMP_C_FLAGS}" )
 else ( )
     message ( WARNING
     "WARNING:  OpenMP was not found (or was disabled with "
@@ -479,6 +480,7 @@ else ( )
         "The C compiler does not support thread-local-storage; "
         "GxB_Context_engage will return GrB_NOT_IMPLEMENTED." )
     endif ( )
+    set ( GB_OPENMP_C_FLAGS "" )
 endif ( )
 
 if ( SUITESPARSE_HAS_CUDA AND GRAPHBLAS_USE_CUDA )
