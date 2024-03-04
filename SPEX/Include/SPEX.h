@@ -183,6 +183,8 @@ SPEX_info SPEX_version
 // SPEX_TRY: try a SPEX method and check for errors
 //------------------------------------------------------------------------------
 
+// FIXME: add SPEX_TRY and SPEX_CATCH to user guide
+
 // In a robust application, the return values from each call to SPEX should be
 // checked, and corrective action should be taken if an error occurs.  The
 // SPEX_TRY macros assist in this effort.

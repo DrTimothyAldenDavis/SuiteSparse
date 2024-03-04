@@ -1,0 +1,29 @@
+
+put in OpenMP
+
+test python interface
+
+test MATLAB interface
+
+get 100% test coverage
+
+User Guide
+
+Added: (need in user guide)
+
+    SPEX_TRY
+    SPEX_CATCH
+    SPEX_1D
+    SPEX_2D
+
+    SPEX_mpz_set_null
+    SPEX_mpq_set_null
+    SPEX_mpfr_set_null
+
+    SPEX_mpz_clear
+    SPEX_mpq_clear
+    SPEX_mpfr_clear
+
+check copyright
+
+FIXMEs
