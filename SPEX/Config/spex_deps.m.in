@@ -6,15 +6,15 @@ function [suitesparse_libdir, suitesparse_incdir, gmp_lib, gmp_include, mpfr_lib
 % On Linux you may need to add the following to your shell script (typically
 % .bashrc), start a new shell, and then start MATLAB again.
 %
-% LD_LIBRARY_PATH=$LD_LIBRARY_PATH:@SUITESPARSE_LIBDIR@
+% LD_LIBRARY_PATH=$LD_LIBRARY_PATH:@matlab_libdir@
 
-% SPEX: (c) 2022-2023, Chris Lourenco, Jinhao Chen,
+% SPEX: (c) 2022-2024, Chris Lourenco, Jinhao Chen,
 % Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
-suitesparse_libdir = '@libdir@' ;
-suitesparse_incdir = '@includedir@' ;
+suitesparse_libdir = '@matlab_libdir@' ;
+suitesparse_incdir = '@matlab_includedir@' ;
 gmp_lib = '@GMP_LIBRARY@' ;
 gmp_include = '@GMP_INCLUDE_DIR@' ;
 mpfr_lib = '@MPFR_LIBRARY@' ;

@@ -83,7 +83,7 @@ end
 fprintf ('\nmaxerr: %g\n', maxerr) ;
 
 if (maxerr < 1e-6)
-    fprintf('\nLeft LU installation successful\n')
+    fprintf('\nSPEX LU installation successful\n')
 else
     error ('\nTesting failure!  error too high please reinstall\n')
 end

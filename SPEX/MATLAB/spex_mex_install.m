@@ -1,27 +1,26 @@
 function spex_mex_install(run_demo)
-% spex_mex_INSTALL: install and test the MATLAB interface to SPEX MATLAB functions.
+% spex_mex_install: install and test the MATLAB interface to SPEX MATLAB functions.
 %
 % Usage: spex_mex_install
 %
-% Required Libraries: GMP, MPFR, AMD, COLAMD, SPEX.  If -lamd and -lcolamd are
-% not available, install them with 'make install' first, in the top-level
-% SuiteSparse folder.
+% Required Libraries: GMP, MPFR, AMD, COLAMD, SuiteSparse_config, SPEX.  If
+% -lamd, -lcolamd, and -lsuitesparseconfig are not available, install them with
+% 'make install' first, in the top-level SuiteSparse folder.
 %
 % You may need to add the top-level lib folder (SPEX/lib, or SuiteSparse/lib
 % if SPEX is inside SuiteSparse) to your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH
 % on the Mac).  See instructions in the spex_deps.m file.
 
-% SPEX: (c) 2022, Chris Lourenco, Jinhao Chen,
+% SPEX: (c) 2022-2024, Chris Lourenco, Jinhao Chen,
 % Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
-
 
 if (nargin < 1)
     run_demo = true ;
 end
 
-fprintf ('Compiling the SPEX mexFunctions for use:\n') ;
+fprintf ('Compiling the SPEX for use in MATLAB:\n') ;
 
 % Find all source files and add them to the src string
 src = '';
@@ -63,11 +62,16 @@ for k = 1:m
     src = [src, tmp];
 end
 
-% Compiler flags
-flags = 'CFLAGS=''-std=c99 -fPIC'' LDFLAGS=''-Wl,-rpath=''../../lib''''';
-
 % External libraries: GMP, MPRF, AMD, and COLAMD
 [suitesparse_libdir, suitesparse_incdir, gmp_lib, gmp_include, mpfr_lib, mpfr_include] = spex_deps ;
+
+% Compiler flags
+openmp = '' ;
+if (~ismac && isunix)
+    openmp = ' -fopenmp' ;
+end
+flags = sprintf ('CFLAGS=''-std=c11 -fPIC %s'' LDFLAGS=''-Wl,-rpath=''%s''''', ...
+    openmp, suitesparse_libdir) ;
 
 % libraries:
 if (isempty (suitesparse_libdir))
@@ -105,13 +109,21 @@ m1 = ['mex ', verbose, ' -R2018a ', includes, ' spex_lu_mex_soln.c ' , src, ' ',
 m2 = ['mex ', verbose, ' -R2018a ', includes, ' spex_cholesky_mex_soln.c ' , src, ' ', flags, ' ', libs];
 m3 = ['mex ', verbose, ' -R2018a ', includes, ' spex_backslash_mex_soln.c ' , src, ' ', flags, ' ', libs];
 
+% Now, we evaluate each one
 if (~isempty (verbose))
     fprintf ('%s\n', m1) ;
 end
-
-% Now, we evaluate each one
+fprintf ('Compiling MATLAB interface to SPEX LU:\n') ;
 eval (m1) ;
+if (~isempty (verbose))
+    fprintf ('%s\n', m2) ;
+end
+fprintf ('Compiling MATLAB interface to SPEX Cholesky:\n') ;
 eval (m2) ;
+if (~isempty (verbose))
+    fprintf ('%s\n', m3) ;
+end
+fprintf ('Compiling MATLAB interface to SPEX Backslash:\n') ;
 eval (m3) ;
 
 if (run_demo)

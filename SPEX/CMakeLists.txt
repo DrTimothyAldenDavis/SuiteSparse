@@ -325,6 +325,23 @@ install ( FILES
     DESTINATION ${SUITESPARSE_PKGFILEDIR}/cmake/SPEX )
 
 #-------------------------------------------------------------------------------
+# configure MATLAB
+#-------------------------------------------------------------------------------
+
+cmake_path ( IS_ABSOLUTE SUITESPARSE_LIBDIR SUITESPARSE_LIBDIR_IS_ABSOLUTE )
+if (SUITESPARSE_LIBDIR_IS_ABSOLUTE)
+    set ( matlab_libdir "${SUITESPARSE_LIBDIR}")
+else ( )
+    set ( matlab_libdir "${CMAKE_INSTALL_PREFIX}/${SUITESPARSE_LIBDIR}")
+endif ( )
+cmake_path ( IS_ABSOLUTE SUITESPARSE_INCLUDEDIR SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE )
+if (SUITESPARSE_INCLUDEDIR_IS_ABSOLUTE)
+    set ( matlab_includedir "${SUITESPARSE_INCLUDEDIR}")
+else ( )
+    set ( matlab_includedir "${CMAKE_INSTALL_PREFIX}/${SUITESPARSE_INCLUDEDIR}")
+endif ( )
+
+#-------------------------------------------------------------------------------
 # create pkg-config file
 #-------------------------------------------------------------------------------
 
