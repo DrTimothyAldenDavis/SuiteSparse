@@ -1,8 +1,6 @@
 
 Lorena: test python interface
 
-Tim: test MATLAB interface
-
 Tim: get 100% test coverage
 
 Chris: User Guide
