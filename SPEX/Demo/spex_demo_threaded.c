@@ -53,6 +53,12 @@ int main( int argc, char *argv[] )
     // by calling the SPEX_initialize() function.
     //--------------------------------------------------------------------------
 
+    #ifdef _OPENMP
+    printf ("spex_demo_threaded: with OpenMP\n") ;
+    #else
+    printf ("spex_demo_threaded: without OpenMP\n") ;
+    #endif
+
     SPEX_TRY (SPEX_initialize ( )) ;
 
     //--------------------------------------------------------------------------

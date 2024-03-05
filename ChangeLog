@@ -1,4 +1,4 @@
-Feb XX, 2024: version 7.7.0
+Mar XX, 2024: version 7.7.0
 
     * SPEX 3.1.0: major revision to API, new methods.  Added SPEX_Cholesky,
         SPEX_Backslash, and python interface.  MATLAB interface revised.

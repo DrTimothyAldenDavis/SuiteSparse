@@ -1,6 +1,4 @@
 
-Tim: put in OpenMP
-
 Lorena: test python interface
 
 Tim: test MATLAB interface

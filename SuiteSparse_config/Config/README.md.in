@@ -1023,6 +1023,11 @@ build type).  The static libraries will not be built (since
   If `ON`, OpenMP is used in ParU if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
 
+* `SPEX_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in SPEX if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
+
 * `SUITESPARSE_DEMOS`:
 
   If `ON`, build the demo programs for each package.  Default: `OFF`.
