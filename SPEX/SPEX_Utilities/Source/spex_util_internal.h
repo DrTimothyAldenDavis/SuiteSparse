@@ -374,7 +374,6 @@
     }                                            \
 }
 
-
 // ============================================================================
 //                           Internal Functions
 // ============================================================================
@@ -399,6 +398,18 @@ mpfr_t *spex_create_mpfr_array
 ) ;
 
 //------------------------------------------------------------------------------
+// spex_free_mpfr_array: free a 1D mpfr_t array
+//------------------------------------------------------------------------------
+
+// Purpose: frees the array created by spex_create_mpfr_array.
+
+void spex_free_mpfr_array
+(
+    mpfr_t **x_handle,          // mpfr_t array of size n
+    int64_t n
+) ;
+
+//------------------------------------------------------------------------------
 // spex_create_mpq_array: Creates a 1D array, whose entries are all mpq_t type.
 //------------------------------------------------------------------------------
 
@@ -413,11 +424,16 @@ mpq_t *spex_create_mpq_array
     int64_t n              // size of the array
 ) ;
 
-// Create and initialize a single mpq_t variable
+//------------------------------------------------------------------------------
+// spex_free_mpq_array: delete a 1D mpq_t array
+//------------------------------------------------------------------------------
 
-SPEX_info spex_create_mpq
+// Purpose:  frees the array created by spex_create_mpq_array.
+
+void spex_free_mpq_array
 (
-    mpq_t x                  // mpq_t entry to be initialized
+    mpq_t **x_handle,       // mpq_t array of size n
+    int64_t n
 ) ;
 
 //------------------------------------------------------------------------------
@@ -432,23 +448,24 @@ SPEX_info spex_create_mpq
 
 mpz_t *spex_create_mpz_array
 (
-    int64_t n            // size of the array
+    int64_t n               // size of the array
 ) ;
 
 //------------------------------------------------------------------------------
-// spex_delete_mpz_array: delete a 1D mpz_t array
+// spex_free_mpz_array: delete a 1D mpz_t array
 //------------------------------------------------------------------------------
 
-// Delete a simple 1D array, where A[i] is an entry of type mpz_t.
+// Purpose:  frees the array created by spex_create_mpz_array.
 
-/* Purpose: This function deletes a mpz array of size n
- */
-
-void spex_delete_mpz_array
+void spex_free_mpz_array
 (
-    mpz_t **x,      // mpz array to be deleted
-    int64_t n       // Size of x
+    mpz_t **x_handle,       // mpz_t array of size n
+    int64_t n
 ) ;
+
+//------------------------------------------------------------------------------
+// spex_expand_double_array
+//------------------------------------------------------------------------------
 
 /* Purpose: This function converts a double array of size n to an appropriate
  * mpz array of size n. To do this, the number is multiplied by 10^17 then, the

@@ -2,6 +2,7 @@
 Lorena: test python interface
 
 Tim: get 100% test coverage
+    (only 1 statement left)
 
 Chris: User Guide
 

@@ -35,8 +35,7 @@
 //      y_scale = 1.
 //
 
-#define SPEX_FREE_ALL \
-SPEX_MPQ_CLEAR(temp);       \
+#define SPEX_FREE_ALL SPEX_mpq_clear (temp) ;
 
 #include "spex_util_internal.h"
 #if defined (__GNUC__)
@@ -67,7 +66,7 @@ SPEX_info spex_cast_array
     }
     SPEX_info info ;
     int r;
-    mpq_t temp; SPEX_MPQ_SET_NULL(temp);
+    mpq_t temp; SPEX_mpq_set_null (temp);
 
     mpfr_rnd_t round = SPEX_OPTION_ROUND (option);
 

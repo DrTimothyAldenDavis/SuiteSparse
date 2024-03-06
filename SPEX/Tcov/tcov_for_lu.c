@@ -263,11 +263,6 @@ int main ( int argc, char *argv[])
                     Ab_type, malloc_count);
             }
 
-            /*mpz_t mpz1, mpz2, mpz3;
-            SPEX_MPZ_SET_NULL(mpz1);
-            SPEX_MPZ_SET_NULL(mpz2);
-            SPEX_MPZ_SET_NULL(mpz3);*/
-
             int64_t n=4, numRHS=1, j, nz=11;
 
             //------------------------------------------------------------------

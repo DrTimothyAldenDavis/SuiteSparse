@@ -87,6 +87,9 @@ OBJ_Util = \
     spex_create_mpfr_array.o \
     spex_create_mpq_array.o \
     spex_create_mpz_array.o \
+    spex_free_mpfr_array.o \
+    spex_free_mpq_array.o \
+    spex_free_mpz_array.o \
     spex_cumsum.o \
     spex_expand_double_array.o \
     spex_expand_mpfr_array.o \
@@ -112,8 +115,7 @@ OBJ_Util = \
     SPEX_determine_symmetry.o \
     SPEX_transpose.o \
     spex_amd.o \
-    spex_colamd.o \
-    spex_create_mpq.o
+    spex_colamd.o
 
 $(OBJ_Util): ../Include/SPEX.h ../SPEX_Utilities/Source/spex_util_internal.h
 
@@ -254,6 +256,9 @@ vtests4llu: all
 	$(V) ./spex_demo_lu_extended f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu4.out
 	$(V) ./tcov_for_lu > test_for_lu.out
 	$(V) ./tcov_for_lu 0 1 1 > lu5.out
+	$(V) ./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
+
+vtest2: all
 	$(V) ./tcov_for_lu2 ../ExampleMats/Trefethen_500.mat.txt ../ExampleMats/Trefethen_500.rhs.txt > test_for_lu2.out
 
 # run test for SPEX_Cholesky with valgrind

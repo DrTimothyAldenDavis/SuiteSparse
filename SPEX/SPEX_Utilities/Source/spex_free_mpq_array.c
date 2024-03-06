@@ -1,23 +1,25 @@
 //------------------------------------------------------------------------------
-// SPEX_Utilities/spex_create_mpq_array: create a dense mpq array
+// SPEX_Utilities/spex_free_mpq_array: free an mpq_t array
 //------------------------------------------------------------------------------
 
-// SPEX_Utilities: (c) 2019-2023, Christopher Lourenco, Jinhao Chen,
+// SPEX_Utilities: (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
 // Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 //------------------------------------------------------------------------------
 
-/* Purpose: This function creates an mpq array of size n.
- * This function is used internally for creating SPEX_MPQ matrices
- */
+// Free a spex mpq_t array
+#if defined (__GNUC__)
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 #include "spex_util_internal.h"
 
-mpq_t *spex_create_mpq_array
+void spex_free_mpq_array
 (
-    int64_t n              // size of the array
+    mpq_t **x_handle,       // mpq_t array of size n
+    int64_t n
 )
 {
 
@@ -25,23 +27,24 @@ mpq_t *spex_create_mpq_array
     // check inputs
     //--------------------------------------------------------------------------
 
-    if (n <= 0) {return NULL;}
+    if (x_handle == NULL || (*x_handle) == NULL)
+    {
+        // nothing to free (not an error)
+        return ;
+    }
 
     //--------------------------------------------------------------------------
+    // free the mpq_t array x
+    //--------------------------------------------------------------------------
 
-    // calloc space
-    mpq_t *x = (mpq_t*) SPEX_calloc(n, sizeof(mpq_t));
-    if (!x) {return NULL;}
-    for (int64_t i = 0; i < n; i++)
+    mpq_t *x = (*x_handle) ;
+
+    for (int64_t i = 0 ; i < n ; i++)
     {
-        if (SPEX_mpq_init(x[i]) != SPEX_OK)
-        {
-            // Out of memory
-            SPEX_mpq_set_null (x[i]);
-            spex_free_mpq_array (&x, n) ;
-            return NULL;
-        }
+        SPEX_mpq_clear (x [i]) ;
     }
-    return x;
+
+    SPEX_FREE (x) ;
+    (*x_handle) = NULL ;
 }
 

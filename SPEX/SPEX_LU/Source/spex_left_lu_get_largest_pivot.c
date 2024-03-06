@@ -18,7 +18,7 @@
  */
 
 #define SPEX_FREE_ALL          \
-    SPEX_MPZ_CLEAR(big);
+    SPEX_mpz_clear (big);
 
 #include "spex_lu_internal.h"
 
@@ -51,7 +51,7 @@ SPEX_info spex_left_lu_get_largest_pivot
     int r ;
     (*pivot) = -1 ;
     mpz_t big ;
-    SPEX_MPZ_SET_NULL (big);
+    SPEX_mpz_set_null (big);
     SPEX_MPZ_INIT (big);
 
     //--------------------------------------------------------------------------

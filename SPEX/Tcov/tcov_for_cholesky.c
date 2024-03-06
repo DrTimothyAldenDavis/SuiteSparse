@@ -122,8 +122,8 @@ SPEX_info spex_test_chol_backslash (SPEX_matrix A, SPEX_matrix b,
 #undef  SPEX_FREE_ALL
 #define SPEX_FREE_ALL       \
 {                           \
-    SPEX_MPZ_CLEAR(q1);  \
-    SPEX_MPZ_CLEAR(r1);  \
+    SPEX_mpz_clear (q1);  \
+    SPEX_mpz_clear (r1);  \
 }
 
 SPEX_info spex_test_cdiv_qr (mpz_t n, mpz_t d) ;
@@ -132,8 +132,8 @@ SPEX_info spex_test_cdiv_qr (mpz_t n, mpz_t d)
 {
     //SPEX_info info ;
     mpz_t q1, r1;
-    SPEX_MPZ_SET_NULL(q1);
-    SPEX_MPZ_SET_NULL(r1);
+    SPEX_mpz_set_null (q1);
+    SPEX_mpz_set_null (r1);
     OK2 (SPEX_mpz_init2(q1,1));
     OK2 (SPEX_mpz_init2(r1,1));
 
@@ -319,20 +319,27 @@ int main (int argc, char *argv [])
     //--------------------------------------------------------------------------
     // test spex_expand_mpfr_array
     //--------------------------------------------------------------------------
+
     //create mpfr array where all elements are multiples of 220
     mpfr_rnd_t round = SPEX_OPTION_ROUND (option);
     mpfr_t* x_mpfr = spex_create_mpfr_array (3, option);
     mpz_t* x_mpz = spex_create_mpz_array (3);
     mpq_t x_scale;
-    OK (spex_create_mpq (x_scale));
+    SPEX_MPQ_INIT (x_scale) ;
+
     SPEX_MPQ_SET_UI (x_scale, 1, 10);
     for (int64_t k = 0 ; k < 3 ; k++)
     {
         SPEX_MPFR_SET_SI( x_mpfr[k],(k+2)*220, round);
     }
-    
+
     OK ( spex_expand_mpfr_array (x_mpz, x_mpfr, x_scale, 3, option));
-    
+
+    // free x_mpz, x_mpfr, and x_scale
+    spex_free_mpz_array (&x_mpz, 3) ;
+    spex_free_mpfr_array (&x_mpfr, 3) ;
+    SPEX_mpq_clear (x_scale) ;
+
     //--------------------------------------------------------------------------
     // missing gmp coverage
     //--------------------------------------------------------------------------
@@ -404,18 +411,19 @@ int main (int argc, char *argv [])
     ERR(SPEX_mpz_divexact(gmp_x,gmp_y,gmp_0),SPEX_PANIC);
     
     //Free
-    SPEX_MPZ_CLEAR(gmp_x);
-    SPEX_MPZ_CLEAR(gmp_y);
-    SPEX_MPQ_CLEAR(gmp_a);
-    SPEX_MPQ_CLEAR(gmp_b);
-    SPEX_MPQ_CLEAR(gmp_c);
-    SPEX_MPFR_CLEAR(gmp_e);
-    SPEX_MPFR_CLEAR(gmp_f);
-    SPEX_MPFR_CLEAR(gmp_g);
-    SPEX_MPFR_CLEAR(gmp_h);
-    SPEX_MPZ_CLEAR(gmp_n);
-    SPEX_MPZ_CLEAR(gmp_d);
-    SPEX_MPZ_CLEAR(tmpz);
+    SPEX_mpz_clear (gmp_x);
+    SPEX_mpz_clear (gmp_0);
+    SPEX_mpz_clear (gmp_y);
+    SPEX_mpq_clear (gmp_a);
+    SPEX_mpq_clear (gmp_b);
+    SPEX_mpq_clear (gmp_c);
+    SPEX_mpfr_clear (gmp_e);
+    SPEX_mpfr_clear (gmp_f);
+    SPEX_mpfr_clear (gmp_g);
+    SPEX_mpfr_clear (gmp_h);
+    SPEX_mpz_clear (gmp_n);
+    SPEX_mpz_clear (gmp_d);
+    SPEX_mpz_clear (tmpz);
     
     //--------------------------------------------------------------------------
     // error handling
@@ -556,6 +564,7 @@ int main (int argc, char *argv [])
         SPEX_PANIC);
     spex_set_initialized (true);
     SPEX_FREE_ALL;
+    SPEX_finalize ( ) ;
 
     printf ("%s: all tests passed\n\n", __FILE__);
     fprintf (stderr, "%s: all tests passed\n\n", __FILE__);

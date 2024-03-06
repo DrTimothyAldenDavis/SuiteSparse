@@ -16,7 +16,7 @@
  */
 
 #define SPEX_FREE_ALL           \
-    SPEX_MPZ_CLEAR(small);
+    SPEX_mpz_clear (small);
 
 #include "spex_lu_internal.h"
 
@@ -49,7 +49,7 @@ SPEX_info spex_left_lu_get_smallest_pivot
     (*pivot) = -1;
     j = n;
     flag = top;
-    mpz_t small; SPEX_MPZ_SET_NULL(small);
+    mpz_t small; SPEX_mpz_set_null (small);
     SPEX_MPZ_INIT(small);
 
     //--------------------------------------------------------------------------

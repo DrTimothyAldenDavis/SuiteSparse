@@ -2178,7 +2178,10 @@ SPEX_info SPEX_mpq_clear
     mpq_t x
 )
 {
-    SPEX_MPQ_CLEAR (x) ;
+    if (x != NULL)
+    {
+        SPEX_MPQ_CLEAR (x) ;
+    }
     return (SPEX_OK);
 }
 

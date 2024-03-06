@@ -127,8 +127,7 @@ int main (int argc, char *argv [])
     malloc_count = INT64_MAX ;
 
     OK (SPEX_create_default_options (&option));
-    
-    
+
     //--------------------------------------------------------------------------
     // load the test matrix and create the right-hand-side
     //--------------------------------------------------------------------------
@@ -141,8 +140,7 @@ int main (int argc, char *argv [])
     printf ("\nInput matrix: %ld-by-%ld with %ld entries\n", n, m, anz);
     OK ((n != m) ? SPEX_PANIC : SPEX_OK);
     create_test_rhs (&b, A->n);
-    
-    
+
     //TESTS
     option->pivot = SPEX_TOL_LARGEST;
     option->order = SPEX_AMD ;
@@ -150,14 +148,14 @@ int main (int argc, char *argv [])
     printf ("LU backslash, AMD ordering, no malloc testing:\n");
     OK (spex_test_lu_backslash (A, b, option));
     option->print_level = 0 ;
-    
+
     option->pivot = SPEX_FIRST_NONZERO ;
     option->order = SPEX_COLAMD ;
     option->print_level = 3 ;
     printf ("LU backslash, AMD ordering, no malloc testing:\n");
     OK (spex_test_lu_backslash (A, b, option));
     option->print_level = 0 ;
-    
+
     option->pivot = SPEX_TOL_SMALLEST ;
     option->tol = 0;
     option->order = SPEX_COLAMD ;
@@ -168,17 +166,19 @@ int main (int argc, char *argv [])
 
     OK (SPEX_matrix_free (&A, option));
     OK (SPEX_matrix_free (&b, option));
-    
+
     option->order = SPEX_AMD ;
     read_test_matrix (&A, "../ExampleMats/test1.mat.txt");
     OK (SPEX_lu_analyze( &S, A, option));
     OK (SPEX_symbolic_analysis_free(&S, option));
     OK (SPEX_matrix_free (&A, option));
-    
+
     read_test_matrix (&A, "../ExampleMats/test5.mat.txt");
-    SPEX_lu_analyze( &S, A, option);    
-    
+    SPEX_lu_analyze( &S, A, option);
+
     SPEX_FREE_ALL;
+    OK (SPEX_finalize ( )) ;
+    SPEX_FREE (option) ;
 
     printf ("%s: all tests passed\n\n", __FILE__);
     fprintf (stderr, "%s: all tests passed\n\n", __FILE__);

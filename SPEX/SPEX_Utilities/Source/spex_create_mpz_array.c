@@ -44,17 +44,10 @@ mpz_t *spex_create_mpz_array
             // out of memory.  NOTE: This can be triggered only when using GMP
             // v6.1.2 or earlier versions. For GMP v6.2.0 or later versions,
             // there is no memory allocation, and thus such failure will never
-            // occur.  As a result, this code cannot be untested by the tests
+            // occur.  As a result, this code cannot be tested by the tests
             // in SPEX/Tcov, when using GMP v6.2.0 or later.
-            SPEX_MPZ_SET_NULL(x[i]);
-            for (int64_t j = 0; j < i; j++)
-            {
-                if ( x[j] != NULL)
-                {
-                    SPEX_MPZ_CLEAR( x[j]);
-                }
-            }
-            SPEX_FREE(x);
+            SPEX_mpz_set_null (x[i]);
+            spex_free_mpz_array (&x, n) ;
             return NULL;
         }
         #endif

@@ -16,9 +16,9 @@
  */
 
 #define SPEX_FREE_WORKSPACE         \
-    SPEX_MPZ_CLEAR(gcd);            \
-    SPEX_MPZ_CLEAR(one);            \
-    SPEX_MPQ_CLEAR(temp);           \
+    SPEX_mpz_clear (gcd);           \
+    SPEX_mpz_clear (one);           \
+    SPEX_mpq_clear (temp);          \
     SPEX_matrix_free(&x3, NULL);    \
 
 #define SPEX_FREE_ALL               \
@@ -65,8 +65,8 @@ SPEX_info spex_expand_double_array
     // DOUBLE_MAX. In that case the multiplication could lead to inf.
 
     SPEX_matrix x3 = NULL;
-    mpz_t gcd, one; SPEX_MPZ_SET_NULL(gcd); SPEX_MPZ_SET_NULL(one);
-    mpq_t temp; SPEX_MPQ_SET_NULL(temp);
+    mpz_t gcd, one; SPEX_mpz_set_null (gcd); SPEX_mpz_set_null (one);
+    mpq_t temp; SPEX_mpq_set_null (temp);
 
     mpfr_rnd_t round = SPEX_OPTION_ROUND (option);
 

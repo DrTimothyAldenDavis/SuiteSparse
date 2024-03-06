@@ -24,7 +24,7 @@
 
 #define SPEX_FREE_ALL                       \
 {                                           \
-    SPEX_matrix_free (&A, option);         \
+    SPEX_matrix_free (&A, option);          \
 }
 
 #include "spex_util_internal.h"
@@ -32,7 +32,7 @@
 #if defined (__GNUC__)
     #if ( __GNUC__ == 11)
         // gcc 11 has a bug that triggers a spurious warning for the call
-        // to SPEX_mpq_init (A->scale), from -Wstringop-overflow.  see
+        // to SPEX_MPQ_INIT (A->scale), from -Wstringop-overflow.  see
         // https://gcc.gnu.org/bugzilla/show_bug.cgi?id=101854
         #pragma GCC diagnostic ignored "-Wstringop-overflow"
     #endif
@@ -110,7 +110,7 @@ SPEX_info SPEX_matrix_allocate
     A->x_shallow = false ;
 
     // A->scale = 1
-    SPEX_CHECK (spex_create_mpq (A->scale));
+    SPEX_MPQ_INIT (A->scale) ;
     SPEX_MPQ_SET_UI (A->scale, 1, 1);
 
     //--------------------------------------------------------------------------

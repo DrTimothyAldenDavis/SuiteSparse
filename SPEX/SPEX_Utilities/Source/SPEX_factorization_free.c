@@ -29,7 +29,7 @@ SPEX_info SPEX_factorization_free
 
     if ((F_handle != NULL) && (*F_handle != NULL))
     {
-        SPEX_MPQ_CLEAR((*F_handle)->scale_for_A);
+        SPEX_mpq_clear ((*F_handle)->scale_for_A);
 
         SPEX_matrix_free(&((*F_handle)->L), option);
         SPEX_matrix_free(&((*F_handle)->U), option);

@@ -15,7 +15,7 @@
  */
 
 #define SPEX_FREE_ALL               \
-    SPEX_MPZ_CLEAR(temp);
+    SPEX_mpz_clear (temp);
 
 #include "spex_util_internal.h"
 
@@ -33,7 +33,7 @@ SPEX_info spex_expand_mpq_array
     ASSERT(n >= 0);
     SPEX_info info ;
     mpz_t temp;
-    SPEX_MPZ_SET_NULL(temp);
+    SPEX_mpz_set_null (temp);
     SPEX_MPZ_INIT(temp);
 
     // Find LCM of denominators of x

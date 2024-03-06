@@ -9,10 +9,12 @@
 
 //------------------------------------------------------------------------------
 
-#define SPEX_FREE_ALL    \
-    SPEX_FREE (work);   \
-    SPEX_MPZ_CLEAR(q);   \
-    SPEX_MPZ_CLEAR(r);
+#define SPEX_FREE_ALL       \
+{                           \
+    SPEX_FREE (work);       \
+    SPEX_mpz_clear (q);     \
+    SPEX_mpz_clear (r);     \
+}
 
 #include "spex_util_internal.h"
 
@@ -21,7 +23,7 @@
     lines++ ;                               \
     if (pr == 2 && lines > 30)              \
     {                                       \
-        SPEX_PRINTF ("    ...\n");         \
+        SPEX_PRINTF ("    ...\n");          \
         pr = 1 ;                            \
     }
 
@@ -143,8 +145,8 @@ SPEX_info SPEX_matrix_check     // returns a SPEX status code
     // paranoia:  check prec here: cast to mprf_prec_t, and back, assert
     // equality, if not equal then return SPEX_PANIC
     mpz_t q, r;
-    SPEX_MPZ_SET_NULL(q);
-    SPEX_MPZ_SET_NULL(r);
+    SPEX_mpz_set_null (q);
+    SPEX_mpz_set_null (r);
 
     int64_t lines = 0 ;     // # of lines printed so far
 

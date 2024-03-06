@@ -25,8 +25,8 @@
  */
 
 #define SPEX_FREE_ALL           \
-    SPEX_MPQ_CLEAR (tol);      \
-    SPEX_MPQ_CLEAR (ratio);
+    SPEX_mpq_clear (tol);       \
+    SPEX_mpq_clear (ratio);
 
 #include "spex_lu_internal.h"
 
@@ -67,8 +67,8 @@ SPEX_info spex_left_lu_get_pivot
 
     int sgn, r;
     mpq_t tol, ratio;
-    SPEX_MPQ_SET_NULL(tol);
-    SPEX_MPQ_SET_NULL(ratio);
+    SPEX_mpq_set_null (tol);
+    SPEX_mpq_set_null (ratio);
 
     if (order == SPEX_SMALLEST)
     {
