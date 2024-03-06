@@ -133,9 +133,10 @@ int main( int argc, char *argv[] )
 
     bool test_pass = true ;
 
+    int id ;
     #pragma omp parallel for num_threads(nthreads) schedule(static,1) \
         reduction(&&:test_pass)
-    for (int id = 0 ; id < nthreads ; id++)
+    for (id = 0 ; id < nthreads ; id++)
     {
         SPEX_info info = SPEX_thread_initialize ( ) ;
         if (info != SPEX_OK)
