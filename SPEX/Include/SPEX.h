@@ -183,8 +183,6 @@ SPEX_info SPEX_version
 // SPEX_TRY: try a SPEX method and check for errors
 //------------------------------------------------------------------------------
 
-// FIXME: add SPEX_TRY and SPEX_CATCH to user guide
-
 // In a robust application, the return values from each call to SPEX should be
 // checked, and corrective action should be taken if an error occurs.  The
 // SPEX_TRY macros assist in this effort.
@@ -460,8 +458,6 @@ typedef SPEX_matrix_struct *SPEX_matrix ;
 // SPEX_matrix macros
 //------------------------------------------------------------------------------
 
-// FIXME add SPEX_1D and SPEX_2D macros to the user guide (needed by
-// SPEX demos)
 
 // These macros simplify the access to entries in a SPEX_matrix.
 // The type parameter is one of: mpq, mpz, mpfr, int64, or fp64.
@@ -1017,7 +1013,6 @@ SPEX_info SPEX_mpfr_free_cache (void) ;
 
 SPEX_info SPEX_mpfr_free_str (char *str) ;
 
-// FIXME: add these 6 functions to the user guide:
 SPEX_info SPEX_mpz_set_null (mpz_t x) ;
 SPEX_info SPEX_mpq_set_null (mpq_t x) ;
 SPEX_info SPEX_mpfr_set_null (mpfr_t x) ;
