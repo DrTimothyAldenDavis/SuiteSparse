@@ -458,7 +458,6 @@ typedef SPEX_matrix_struct *SPEX_matrix ;
 // SPEX_matrix macros
 //------------------------------------------------------------------------------
 
-
 // These macros simplify the access to entries in a SPEX_matrix.
 // The type parameter is one of: mpq, mpz, mpfr, int64, or fp64.
 
