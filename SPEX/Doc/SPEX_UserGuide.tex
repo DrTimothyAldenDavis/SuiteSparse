@@ -62,7 +62,7 @@
     \textbf{User Guide for the SPEX Software Package} \\
     \vspace{5mm}
     
-    Version 3.0, July 2023 % VERSION
+    Version 3.1, March, 2024 % VERSION
     \vspace{20mm}
     
     Jinhao Chen, Timothy A. Davis, Christopher Lourenco, Lorena Mejia-Domenzain, Erick Moreno-Centeno \\
@@ -109,7 +109,7 @@ linear algebra routines. It currently consists of the following:
 \begin{itemize} 
     \item GNU GMP \cite{granlund2015gnu} and MPFR \cite{fousse2007mpfr} libraries. Distributed under the LGPL3 and GPL2 and can be acquired and installed from \url{https://gmplib.org/} and \url{http://www.mpfr.org/}, respectively.
 
-    \item CMake, available under a BSD 3-clause license. May be independently obtained at \url{https://cmake.org}.
+    \item CMake \cite{hoffman2003cmake}, available under a BSD 3-clause license. May be independently obtained at \url{https://cmake.org}.
     
     \item AMD \cite{amestoy1996approximate,amestoy2004algorithmamd}, available under a BSD 3-clause license and distributed along with SPEX. May be independently obtained at \url{www.suitesparse.com}
     
@@ -1518,6 +1518,12 @@ function. Each function is declared in \verb|SPEX.h| and defined in
 \verb|mpfr_init2(x, size)|
     & \verb|SPEX_mpfr_init2(x, size)|
     & Initialize x with size bits \\ \hline
+\verb|mpfr_clear(x)|
+    & \verb|SPEX_mpfr_clear(x)|
+    & Safely free \verb|mpfr_t| value \\ \hline 
+\verb|mpfr_set_null(x)| 
+    & \verb|SPEX_mpfr_set_null(x)| 
+    & Initialize the (pointer) contents of a \verb|mpfr_t| value \\ \hline
 \verb|mpfr_set(x, y, rnd)|
     & \verb|SPEX_mpfr_set(x, y, rnd)|
     & $x = y$ \\ \hline
@@ -1579,9 +1585,15 @@ function. Each function is declared in \verb|SPEX.h| and defined in
 \verb|mpz_init2(x, size)|
     & \verb|SPEX_mpz_init2(x, size)|
     & Initialize x to size bits \\ \hline
+\verb|mpz_clear(x)|
+    & \verb|SPEX_mpz_clear(x)|
+    & Safely free \verb|mpz_t| value \\ \hline
 \verb|mpz_set(x, y)|
     & \verb|SPEX_mpz_set(x, y)| 
     & $x = y$ (\verb|mpz_t|) \\ \hline
+\verb|mpz_set_null(x)| 
+    & \verb|SPEX_mpz_set_null(x)| 
+    & Initialize the (pointer) contents of a \verb|mpz_t| value \\ \hline
 \verb|mpz_set_ui(x, y)|
     & \verb|SPEX_mpz_set_ui(x, y)|
     & $x = y$ (\verb|uint64_t|) \\ \hline
@@ -1666,6 +1678,12 @@ function. Each function is declared in \verb|SPEX.h| and defined in
 \verb|mpq_init(x)|
     & \verb|SPEX_mpq_init(x)|
     & Initialize x \\ \hline
+\verb|mpq_set_null(x)| 
+    & \verb|SPEX_mpq_set_null(x)| 
+    & Initialize the (pointer) contents of a \verb|mpq_t| value \\ \hline
+\verb|mpq_clear(x)|
+    & \verb|SPEX_mpq_clear(x)|
+    & Safely free \verb|mpq_t| value \\ \hline
 \verb|mpq_set(x, y)|
     & \verb|SPEX_mpq_set(x, y)|
     & $x = y$ \\ \hline
@@ -1807,6 +1825,67 @@ function can be constructed as follows:
 \end{verbatim}
 } \end{mdframed}
 
+\section{SPEX Helper Macros} \label{ss:SPEX_helper_macros}
+
+In addition to the functionality described in this section; SPEX offers several helper macros to increase ease for the end user application. The first two macros are a simple try/catch mechanism which can be used to wrap functions for error handling. The next two give an easy interface to access entries $(i,j)$ in a matrix.
+
+\subsection{\texttt{SPEX\_TRY} and 
+\texttt{SPEX\_CATCH}}
+
+In a robust application, the return values from SPEX should be checked and properly handled in the case an error occurs. SPEX is written in C and thus it cannot rely on the try/catch mechanism of C++. Thus, \verb|SPEX_TRY| and \verb|SPEX_CHECK| aim to achieve this goal. We provide \verb|SPEX_TRY| and leave \verb|SPEX_CATCH| to the user to define.
+
+\begin{mdframed}[userdefinedwidth=\textwidth]
+{\footnotesize
+\begin{verbatim}
+    #define SPEX_TRY(method)            \
+    {                                   \
+        SPEX_info info = (method) ;     \
+        if (info != SPEX_OK)            \
+        {                               \
+            SPEX_CATCH (info) ;         \
+        }                               \
+    }
+\end{verbatim}
+} \end{mdframed}
+
+An example definition of a \verb|SPEX_CATCH| is below. This example assumes that the user needs to free a matrix and return an error code.
+\begin{mdframed}[userdefinedwidth=\textwidth]
+{\footnotesize
+\begin{verbatim}
+    #define SPEX_CATCH(info)                        \
+    {                                               \
+        SPEX_matrix_free (&A, NULL) ;               \
+        fprintf (stderr, "SPEX failed: info %d,     \
+        line %d, file %s\n",                        \
+        info, __LINE__, __FILE__) ;                 \
+        return (info) ;                             \
+        } 
+\end{verbatim}
+} \end{mdframed}
+
+With this mechanism, the user can safely wrap any SPEX function which returns \verb|SPEX_info| with \verb|SPEX_TRY|. For example, one can wrap.
+
+\subsection{\texttt{SPEX\_1D}: Access matrix entries with 1D linear indexing.}
+
+\begin{mdframed}[userdefinedwidth=\textwidth]
+{\footnotesize
+\begin{verbatim}
+    #define SPEX_1D(A,k,type) ((A)->x.type [k])
+\end{verbatim}
+} \end{mdframed}
+
+This allows the $k$th entry of a matrix stored in any kind (CSC, triplet, dense) of any type (mpq, mpz, int64, double, int) to be returned. For example, to return the $n$th entry of a CSC matrix with \verb|mpz_t| data types, one would use \verb|SPEX_1D(A, n, mpz)|.
+
+\subsection{\texttt{SPEX\_2D}: Access dense matrix with 2D indexing.}
+
+\begin{mdframed}[userdefinedwidth=\textwidth]
+{\footnotesize
+\begin{verbatim}
+    #define SPEX_2D(A,i,j,type) SPEX_1D (A, (i)+(j)*((A)->m), type)
+\end{verbatim}
+} \end{mdframed}
+
+This allows the $(i,j)$ entry of a dense matrix of any type (mpq, mpz, int64, double, int). For example to return the $(m,n)$ entry of a dense matrix with \verb|mpq_t| data types, one would use \verb|SPEX_2D(A, m, n, mpq)|.
 
 %-------------------------------------------------------------------------------
 \chapter{SPEX LU}\vspace{-0.75in} \label{ch:LeftLU}
@@ -2074,7 +2153,7 @@ If the data for matrices are in file format to be read, refer to
 corresponding to CSC form, sparse triplet form or dense form, allocate a
 shallow \verb|SPEX_matrix| and assign vectors accordingly, then use
 \verb|SPEX_matrix_copy| to get a \verb|SPEX_matrix| in the desired kind and
-type. For more details, refer to the example programs in \verb|SPEX/SPEX/Demo/*.c|. In a case when
+type. For more details, refer to \verb|SPEX/SPEX/SPEX_Left_LU/Demo/example.c|. In a case when
 \verb|A| is available in format other than CSC \verb|mpz|, and/or \verb|b| is
 available in format other than dense \verb|mpz|, the following code snippet
 shows how to get \verb|A| and \verb|b| in a required format.
@@ -2247,8 +2326,6 @@ library.
 The \verb|SPEX/SPEX/SPEX_Left_LU/Demo| folder contains three sample C codes
 which utilize SPEX. These files demonstrate the usage of SPEX as
 follows:
-
-{\bf FIXME: description of demos is out of date}
 
 \begin{itemize}
 \item \verb|example.c|: This example generates a random dense $50 \times 50$
