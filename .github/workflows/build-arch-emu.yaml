@@ -58,7 +58,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         # shell: bash
 
       - name: install dependencies
@@ -94,7 +94,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v3
         with:
           # location of the ccache of the chroot in the root file system
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
@@ -164,7 +164,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v3
         with:
           path: /home/runner/rootfs/alpine-latest-${{ matrix.arch }}/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
