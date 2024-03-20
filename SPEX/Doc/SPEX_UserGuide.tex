@@ -1515,9 +1515,12 @@ function. Each function is declared in \verb|SPEX.h| and defined in
 \verb|mpfr_free_str(buff)|
     & \verb|SPEX_mpfr_free_str(buff)|
     & Free string allocated by MPFR \\ \hline
-\verb|mpfr_init2(x, size)|
-    & \verb|SPEX_mpfr_init2(x, size)|
-    & Initialize x with size bits \\ \hline
+\verb|mpfr_init2(x, s)|
+    & \verb|SPEX_mpfr_init2(x, s)|
+    & Initialize x with \verb's' bits \\ \hline
+\verb|mpfr_set_prec(x, s)|
+    & \verb|SPEX_mpfr_set_prec(x, s)|
+    & Set x to contain \verb's' bits \\ \hline
 \verb|mpfr_clear(x)|
     & \verb|SPEX_mpfr_clear(x)|
     & Safely free \verb|mpfr_t| value \\ \hline 

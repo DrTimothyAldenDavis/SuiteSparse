@@ -1,26 +1,4 @@
 
-Lorena: test python interface
-
-Tim: get 100% test coverage
-    (only 1 statement left)
-
-Chris: User Guide
-
-    Added: (need in user guide)
-
-        (DONE) SPEX_TRY
-        (DONE) SPEX_CATCH
-        (DONE) SPEX_1D
-        (DONE) SPEX_2D
-
-        (DONE) SPEX_mpz_set_null
-        (DONE) SPEX_mpq_set_null
-        (DONE) SPEX_mpfr_set_null
-
-        (DONE) SPEX_mpz_clear
-        (DONE) SPEX_mpq_clear
-        (DONE) SPEX_mpfr_clear
-
 Erick: check copyright
 
-All: FIXMEs
+FIXME: date

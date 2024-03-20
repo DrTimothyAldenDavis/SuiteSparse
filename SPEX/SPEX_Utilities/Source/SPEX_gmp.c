@@ -371,6 +371,9 @@ void *spex_gmp_allocate
 // spex_gmp_safe_free:  free a block of memory and remove it from the archive
 //------------------------------------------------------------------------------
 
+// see mpfr-4.2.1/src/mpfr-impl.h, for MPFR_GET_REAL_PTR
+#define SPEX_MPFR_GET_REAL_PTR(x) ((x)->_mpfr_d - 1)
+
 static inline void spex_gmp_safe_free (void *p)
 {
     if (spex_gmp != NULL)
@@ -402,7 +405,7 @@ static inline void spex_gmp_safe_free (void *p)
         }
         if (spex_gmp->mpfr_archive != NULL)
         {
-            if (p == SPEX_MPFR_MANT(spex_gmp->mpfr_archive))
+            if (p == SPEX_MPFR_GET_REAL_PTR(spex_gmp->mpfr_archive))
             {
                 SPEX_MPFR_MANT(spex_gmp->mpfr_archive) = NULL ;
             }
@@ -1784,11 +1787,39 @@ SPEX_info SPEX_mpfr_init2
 )
 {
     // ensure the mpfr number is not too big
-    if (size > MPFR_PREC_MAX/2) return (SPEX_PANIC);
+    if (size > MPFR_PREC_MAX/2)
+    {
+        return (SPEX_PANIC);
+    }
 
     // initialize the mpfr number
     SPEX_GMPFR_WRAPPER_START (x);
     mpfr_init2 (x, (mpfr_prec_t) size);
+    SPEX_GMP_WRAPPER_FINISH ;
+    return (SPEX_OK);
+}
+
+//------------------------------------------------------------------------------
+// SPEX_mpfr_set_prec
+//------------------------------------------------------------------------------
+
+/* Purpose: Set the precision of an mpfr_t number */
+
+SPEX_info SPEX_mpfr_set_prec
+(
+    mpfr_t x,       // Floating point number to revise
+    const uint64_t size    // # of bits in x
+)
+{
+    // ensure the mpfr number is not too big
+    if (size > MPFR_PREC_MAX/2)
+    {
+        return (SPEX_PANIC);
+    }
+
+    // set the precision of the mpfr number
+    SPEX_GMPFR_WRAPPER_START (x);
+    mpfr_set_prec (x, (mpfr_prec_t) size);
     SPEX_GMP_WRAPPER_FINISH ;
     return (SPEX_OK);
 }

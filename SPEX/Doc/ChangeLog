@@ -12,6 +12,7 @@ Feb XX, 2024: version 3.1.0 FIXME: date
         SPEX_mpz_clear
         SPEX_mpq_clear
         SPEX_mpfr_clear
+        SPEX_mpfr_set_proc
 
 Jul 26, 2023: version 3.0.0
 

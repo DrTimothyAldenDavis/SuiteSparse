@@ -66,7 +66,8 @@ CFLAGS = -g -fprofile-arcs -ftest-coverage \
 cov: runtests
 	./covall
 
-all: tcov_for_lu spex_demo_lu_extended tcov_for_cholesky tcov_for_lu2
+all: tcov_for_lu spex_demo_lu_extended tcov_for_cholesky tcov_for_lu2 \
+    tcov_for_other
 
 #-------------------------------------------------------------------------------
 # compile .c file in this folder
@@ -219,6 +220,9 @@ spex_demo_lu_extended: $(OBJ_Util) $(OBJ_LU)  ../Demo/spex_demo_lu_extended.c $(
 tcov_for_cholesky: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) tcov_for_cholesky.c simple_rand.c simple_rand.h $(DEMO_SRC)
 	$(CC) $(LDFLAGS) $(CFLAGS) tcov_for_cholesky.c simple_rand.c $(DEMO_SRC) -o tcov_for_cholesky $(OBJ_Tcov) $(OBJ_Util) $(OBJ_Cholesky) $(LIBS)
 
+tcov_for_other: $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  tcov_for_other.c
+	$(CC) $(LDFLAGS) tcov_for_other.c $(CFLAGS) -o tcov_for_other $(OBJ_Tcov) $(OBJ_Util) $(OBJ_LU)  $(LIBS)
+
 #-------------------------------------------------------------------------------
 
 # run all statement coverage tests
@@ -226,6 +230,7 @@ runtests: runtests4llu runtests4chol
 
 # only run test for SPEX_LU
 runtests4llu: all
+	./tcov_for_other
 	./spex_demo_lu_extended q 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu1.out
 	./spex_demo_lu_extended q 2 o 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu2.out
 	./spex_demo_lu_extended q 3 o 1 f ../ExampleMats/test.mat.txt ../ExampleMats/test.rhs.txt > lu3.out
@@ -250,6 +255,7 @@ vtests: vtests4llu vtests4chol
 
 # run test for SPEX_LU with valgrind
 vtests4llu: all
+	$(V) ./tcov_for_other
 	$(V) ./spex_demo_lu_extended q 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu1.out
 	$(V) ./spex_demo_lu_extended q 2 o 1 f ../ExampleMats/10teams.mat.txt ../ExampleMats/10teams.rhs.txt > lu2.out
 	$(V) ./spex_demo_lu_extended q 3 o 1 f ../ExampleMats/test.mat.txt ../ExampleMats/test.rhs.txt > lu3.out
@@ -270,7 +276,7 @@ vtests4chol: all
 # remove all files not in the original distribution, including symbolic links
 clean:
 	- $(RM) *.o *.bbg *.da *.gcov *.gcda *gcno
-	- $(RM) tcov_for_lu  spex_demo_lu_extended *.out *.a out  tcov_for_lu2
+	- $(RM) tcov_for_lu  spex_demo_lu_extended *.out *.a out tcov_for_lu2 tcov_for_other
 	- $(RM) -r SPEX_*.c spex_*.c *.dSYM
 	- $(RM) -r tcov_for_cholesky 
 

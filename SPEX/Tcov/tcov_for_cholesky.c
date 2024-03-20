@@ -34,8 +34,6 @@
 // BRUTAL: test a method with debug malloc, until it succeeds
 //------------------------------------------------------------------------------
 
-// The method must return a bool (true if successful, false if failure).
-
 #define NTRIAL_MAX 10000
 
 #define BRUTAL(method)                                                      \
@@ -49,7 +47,7 @@
         if (info2 != SPEX_OUT_OF_MEMORY) break ;                            \
     }                                                                       \
     if (info2 != SPEX_OK) TEST_ABORT (info2) ;                              \
-    malloc_count = INT64_MAX ;                                             \
+    malloc_count = INT64_MAX ;                                              \
     printf ("\nBrutal Cholesky trials %ld: tests passed\n", trial);         \
 }
 

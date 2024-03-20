@@ -976,6 +976,8 @@ SPEX_info SPEX_mpq_equal (int *r, const mpq_t x, const mpq_t y) ;
 
 SPEX_info SPEX_mpfr_init2(mpfr_t x, const uint64_t size) ;
 
+SPEX_info SPEX_mpfr_set_prec(mpfr_t x, const uint64_t size) ;
+
 SPEX_info SPEX_mpfr_set (mpfr_t x, const mpfr_t y, const mpfr_rnd_t rnd) ;
 
 SPEX_info SPEX_mpfr_set_d (mpfr_t x, const double y, const mpfr_rnd_t rnd) ;
