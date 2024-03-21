@@ -1,3 +1,33 @@
+Mar XX, 2024: version 7.7.0 FIXME date
+
+    * SPEX 3.1.0: major revision to API, new methods.  Added SPEX_Cholesky,
+        SPEX_Backslash, and python interface.  MATLAB interface revised.
+    * Example 1.7.0: revised for change in SPEX API
+    * GraphBLAS 9.1.0: revised defn of C11 or MSVC complex type, bug fix
+    * CXSparse 4.4.0: revise malloc/calloc/realloc/free wrappers
+    * All others: minor changes to build system
+    * Package versions in this release:
+        SuiteSparse_config 7.7.0
+        AMD 3.3.2
+        BTF 2.3.2
+        CAMD 3.3.2
+        CCOLAMD 3.3.3
+        CHOLMOD 5.2.1
+        COLAMD 3.3.3
+        CSparse 4.3.2
+        CXSparse 4.4.0
+        Example 1.7.0
+        GraphBLAS 9.1.0
+        KLU 2.3.3
+        LDL 3.3.2
+        LAGraph 1.1.3
+        SuiteSparse_Mongoose 3.3.3
+        ParU 0.1.3
+        RBio 4.3.2
+        SPEX 3.1.0
+        SPQR 4.3.3
+        UMFPACK 6.3.3
+
 Mar 2, 2024: version 7.6.1
 
     * GraphBLAS 9.0.3: performance bug fix (JIT kernels were not compiled with

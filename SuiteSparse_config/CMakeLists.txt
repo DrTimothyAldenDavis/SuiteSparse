@@ -15,10 +15,10 @@
 cmake_minimum_required ( VERSION 3.22 )
 
 # version of both SuiteSparse and SuiteSparse_config
-set ( SUITESPARSE_DATE "Mar 2, 2024" )
+set ( SUITESPARSE_DATE "Feb XX, 2024" ) # FIXME for 7.7.0
 set ( SUITESPARSE_VERSION_MAJOR 7 )
-set ( SUITESPARSE_VERSION_MINOR 6 )
-set ( SUITESPARSE_VERSION_SUB   1 )
+set ( SUITESPARSE_VERSION_MINOR 7 )
+set ( SUITESPARSE_VERSION_SUB   0 )
 set ( SUITESPARSE_CONFIG_VERSION_MAJOR ${SUITESPARSE_VERSION_MAJOR} CACHE STRING "" FORCE )
 set ( SUITESPARSE_CONFIG_VERSION_MINOR ${SUITESPARSE_VERSION_MINOR} CACHE STRING "" FORCE )
 set ( SUITESPARSE_CONFIG_VERSION_PATCH ${SUITESPARSE_VERSION_SUB} CACHE STRING "" FORCE )
@@ -174,7 +174,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME suitesparseconfig
         PUBLIC_HEADER "SuiteSparse_config.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( SuiteSparseConfig_static PROPERTIES
             OUTPUT_NAME suitesparseconfig_static )
     endif ( )
