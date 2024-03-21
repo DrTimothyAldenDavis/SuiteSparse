@@ -78,8 +78,8 @@ if ( TARGET grb_jitpackage )
         "../Include/GraphBLAS.h"
         "../Source/Template/*.[ch]"
         "../Source/JitKernels/*.[ch]"
-        "../CUDA/Template/*h"
-        "../CUDA/JitKernels/*h"
+        "../CUDA/Template/*"
+        "../CUDA/JitKernels/*"
         "../Source/Shared/*.h" )
 
     add_custom_command ( OUTPUT ${CMAKE_CURRENT_SOURCE_DIR}/GB_JITpackage.c

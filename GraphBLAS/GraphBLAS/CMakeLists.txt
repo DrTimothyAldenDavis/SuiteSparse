@@ -42,6 +42,7 @@ include ( SuiteSparsePolicy )
 # option ( GRAPHBLAS_USE_CUDA "ON (default): enable CUDA acceleration for GraphBLAS, OFF: do not use CUDA" ${SUITESPARSE_USE_CUDA} )
 
 set ( GRAPHBLAS_HAS_CUDA OFF )
+message ( STATUS "GraphBLAS CUDA JIT: disabled for MATLAB" )
 
 # check for strict usage
 if ( SUITESPARSE_USE_STRICT AND GRAPHBLAS_USE_CUDA AND NOT GRAPHBLAS_HAS_CUDA )

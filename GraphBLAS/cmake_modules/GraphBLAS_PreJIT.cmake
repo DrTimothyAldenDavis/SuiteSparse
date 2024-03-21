@@ -7,7 +7,10 @@
 
 #-------------------------------------------------------------------------------
 
-# create a list of files
+#-------------------------------------------------------------------------------
+# create a list of files of CPU PreJIT kernels
+#-------------------------------------------------------------------------------
+
 file ( GLOB PRE1 "PreJIT/GB_jit_*.c" )
 set ( PREJIT "" )
 set ( PREPRO "" )
@@ -111,4 +114,19 @@ list ( JOIN PREQ ",\n" PREQFUNCS )
 configure_file ( "Config/GB_prejit.c.in"
     "${PROJECT_SOURCE_DIR}/Config/GB_prejit.c"
     NEWLINE_STYLE LF )
+
+#-------------------------------------------------------------------------------
+# create a list of files of CUDA PreJIT kernels
+#-------------------------------------------------------------------------------
+
+# FIXME: add CUDA PreJIT kernels.  For example:
+
+#   ...
+#   elseif ( ${F} MATCHES "^GB_jit__cuda_reduce" )
+#       list ( APPEND PREPRO "JIT_CUDA_RED (" ${F} ")\n" )
+#   endif ( )
+
+# configure_file ( "CUDA/Config/GB_prejit.c.in"
+#     "${PROJECT_SOURCE_DIR}/CUDA/Config/GB_prejit.c"
+#     NEWLINE_STYLE LF )
 

@@ -14768,7 +14768,7 @@ GraphBLAS folder.
 
 \begin{itemize}
 
-\item Feb XX, 2024: version 9.1.0 % FIXME for SuiteSparse 7.7.0
+\item Mar 22, 2024: version 9.1.0
 
     \begin{itemize}
     \item minor updates to build system
@@ -14780,6 +14780,23 @@ GraphBLAS folder.
         \verb'GxB_HAVE_COMPLEX*' to
         GraphBLAS.h to indicate which kind of complex data types are available
         in C11 or MSVC.  Contributed by Markus M\"{u}tzel.
+    \item (53) bug fix: eWiseAdd \verb'C<M>=A+B' when \verb'M', \verb'A',
+        and \verb'B' are all hypersparse; access to \verb'M' was incorrect
+        (also affects \verb'C<M>+=T' for any operation, if \verb'M' and
+        \verb'T' are both hypersparse).
+    \end{itemize}
+
+\item Mar 1, 2024: version 9.0.3
+
+    \begin{itemize}
+    \item (52) performance bug fix: JIT kernels since v8.3.1 were not compiled
+    with OpenMP.
+    \end{itemize}
+
+\item Feb 26, 2024: version 9.0.2
+
+    \begin{itemize}
+    \item GraphBLAS/Makefile \verb"make static" was incorrect.
     \end{itemize}
 
 \item Jan 20, 2024: version 9.0.1

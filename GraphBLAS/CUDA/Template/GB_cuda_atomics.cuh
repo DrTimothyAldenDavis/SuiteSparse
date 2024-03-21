@@ -2,7 +2,13 @@
 // GraphBLAS/CUDA/Template/GB_cuda_atomics.cuh: CUDA atomics for GraphBLAS
 //------------------------------------------------------------------------------
 
-// yet still more stuff here
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
+// This file: Copyright (c) 2024, NVIDIA CORPORATION. All rights reserved.
+// SPDX-License-Identifier: BSD-3-Clause
+
+//------------------------------------------------------------------------------
+
+// Atomic device functions for CUDA JIT kernels.  Not used on the host.
 
 /*
  * Copyright (c) 2023, NVIDIA CORPORATION. All rights reserved.
@@ -31,41 +37,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
- * SPDX-License-Identifier: BSD-3-Clause
  */
 
 //------------------------------------------------------------------------------
 // Specializations for different atomic operations on different types
 //------------------------------------------------------------------------------
 
-// No 1-byte methods are available (bool, uint8_t, int8_t), because CUDA does
-// not support atomicCAS for a single byte.  Instead, to compute a single byte
-// atomically, GraphBLAS must operate on a larger temporary type (typically
-// uint32_t, but it could also use a 16-bit type), and when all results are
-// computed and the kernel launch is done, the final value is copied to the
-// single byte result on the host.
+// No 1- or 2-byte methods are available (bool, uint8_t, int8_t, uint16_t,
+// int16_t), because CUDA does not support atomicCAS for just one or two bytes.
+// Instead, to compute one or two bytes atomically, GraphBLAS must operate on a
+// larger temporary type (typically uint32_t) and when all results are computed
+// and the kernel launch is done, the final value is copied to the one or two
+// bytes result on the host.
 //
 // The GxB_FC64_t type is supported only by GB_cuda_atomic_add.
 //
 // GB_cuda_atomic_write, GB_cuda_atomic_times:
 //
-//      int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t,
+//      int32_t, uint32_t, int64_t, uint64_t,
 //      float, double, and GxB_FC32_t (not GxB_FC64_t).
 //
 // GB_cuda_atomic_min, GB_cuda_atomic_max:
 //
-//      int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t,
+//      int32_t, uint32_t, int64_t, uint64_t,
 //      float, and double (not GxB_FC32_t or GxB_FC64_t).
 //
 // GB_cuda_atomic_add:
 //
-//      int16_t, uint16_t, int32_t, uint32_t, int64_t, uint64_t,
+//      int32_t, uint32_t, int64_t, uint64_t,
 //      float, double, GxB_FC32_t, and GxB_FC64_t.
 // 
 // GB_cuda_atomic_bor, GB_cuda_atomic_band,
 // GB_cuda_atomic_bxor, GB_cuda_atomic_bxnor :
 //
-//      uint16_t, uint32_t, uint64_t
+//      uint32_t, uint64_t
 //
 // GB_cuda_atomic_lock, GB_cuda_atomic_unlock:
 //
@@ -95,48 +100,8 @@ __device__ __inline__ void GB_cuda_unlock (uint32_t *mutex) ;
 // GB_cuda_atomic_write
 //------------------------------------------------------------------------------
 
-// atomic write (16, 32, and 64 bits)
+// atomic write (32 and 64 bits)
 // no atomic write for GxB_FC64_t
-
-template<> __device__ __inline__ void GB_cuda_atomic_write<int16_t>
-(
-    int16_t *ptr,   // target to modify
-    int16_t val     // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = GB_PUN (unsigned short int, val) ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, v) ;
-    }
-    while (assumed != old) ;
-}
-
-template<> __device__ __inline__ void GB_cuda_atomic_write<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, v) ;
-    }
-    while (assumed != old) ;
-}
 
 template<> __device__ __inline__ void GB_cuda_atomic_write<int32_t>
 (
@@ -217,48 +182,7 @@ template<> __device__ __inline__ void GB_cuda_atomic_write<GxB_FC32_t>
 // GB_cuda_atomic_add for built-in types
 //------------------------------------------------------------------------------
 
-// types: int and uint [16,32,64], float, double, GxB_FC32_t, complex double
-
-template<> __device__ __inline__ void GB_cuda_atomic_add<int16_t>
-(
-    int16_t *ptr,   // target to modify
-    int16_t val     // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value:
-        int16_t new_value = GB_PUN (int16_t, assumed) + val ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, GB_PUN (unsigned short int, new_value)) ;
-    }
-    while (assumed != old) ;
-}
-
-template<> __device__ __inline__ void GB_cuda_atomic_add<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, assumed + v) ;
-    }
-    while (assumed != old) ;
-}
+// types: int and uint [32,64], float, double, GxB_FC32_t, complex double
 
 template<> __device__ __inline__ void GB_cuda_atomic_add<int32_t>
 (
@@ -351,49 +275,8 @@ template<> __device__ __inline__ void GB_cuda_atomic_add<GxB_FC64_t>
 // GB_cuda_atomic_times for built-in types
 //------------------------------------------------------------------------------
 
-// types: int and uint [16,32,64], float, double, GxB_FC32_t
+// types: int and uint [32,64], float, double, GxB_FC32_t
 // no GxB_FC64_t.
-
-template<> __device__ __inline__ void GB_cuda_atomic_times<int16_t>
-(
-    int16_t *ptr,   // target to modify
-    int16_t val     // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value:
-        int16_t new_value = GB_PUN (int16_t, assumed) * val ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, GB_PUN (unsigned short int, new_value)) ;
-    }
-    while (assumed != old) ;
-}
-
-template<> __device__ __inline__ void GB_cuda_atomic_times<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, assumed * v) ;
-    }
-    while (assumed != old) ;
-}
 
 template<> __device__ __inline__ void GB_cuda_atomic_times<int32_t>
 (
@@ -546,52 +429,8 @@ template<> __device__ __inline__ void GB_cuda_atomic_times<GxB_FC32_t>
 // GB_cuda_atomic_min
 //------------------------------------------------------------------------------
 
-// types: int and uint [16,32,64], float, and double
+// types: int and uint [32,64], float, and double
 // no complex types
-
-template<> __device__ __inline__ void GB_cuda_atomic_min<int16_t>
-(
-    int16_t *ptr,   // target to modify
-    int16_t val     // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value
-        int16_t assumed_int16 = GB_PUN (int16_t, assumed) ;
-        int16_t new_value = GB_IMIN (assumed_int16, val) ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, GB_PUN (unsigned short int, new_value)) ;
-    }
-    while (assumed != old) ;
-}
-
-template<> __device__ __inline__ void GB_cuda_atomic_min<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value
-        unsigned short int new_value = GB_IMIN (assumed, v) ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, new_value) ;
-    }
-    while (assumed != old) ;
-}
 
 template<> __device__ __inline__ void GB_cuda_atomic_min<int32_t>
 (
@@ -679,52 +518,8 @@ template<> __device__ __inline__ void GB_cuda_atomic_min<double>
 // GB_cuda_atomic_max
 //------------------------------------------------------------------------------
 
-// types: int and uint [16,32,64], float, and double
+// types: int and uint [32,64], float, and double
 // no complex types
-
-template<> __device__ __inline__ void GB_cuda_atomic_max<int16_t>
-(
-    int16_t *ptr,   // target to modify
-    int16_t val     // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value
-        int16_t assumed_int16 = GB_PUN (int16_t, assumed) ;
-        int16_t new_value = GB_IMIN (assumed_int16, val) ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, GB_PUN (unsigned short int, new_value)) ;
-    }
-    while (assumed != old) ;
-}
-
-template<> __device__ __inline__ void GB_cuda_atomic_max<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // compute the new value
-        unsigned short int new_value = GB_IMIN (assumed, v) ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, new_value) ;
-    }
-    while (assumed != old) ;
-}
 
 template<> __device__ __inline__ void GB_cuda_atomic_max<int32_t>
 (
@@ -812,27 +607,7 @@ template<> __device__ __inline__ void GB_cuda_atomic_max<double>
 // GB_cuda_atomic_bor
 //------------------------------------------------------------------------------
 
-// bitwise: on uint [16,32,64]
-
-template<> __device__ __inline__ void GB_cuda_atomic_bor<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, assumed | v) ;
-    }
-    while (assumed != old) ;
-}
+// bitwise: on uint [32,64]
 
 template<> __device__ __inline__ void GB_cuda_atomic_bor<uint32_t>
 (
@@ -858,27 +633,7 @@ template<> __device__ __inline__ void GB_cuda_atomic_bor<uint64_t>
 // GB_cuda_atomic_band
 //------------------------------------------------------------------------------
 
-// bitwise: on uint [16,32,64]
-
-template<> __device__ __inline__ void GB_cuda_atomic_band<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, assumed & v) ;
-    }
-    while (assumed != old) ;
-}
+// bitwise: on uint [32,64]
 
 template<> __device__ __inline__ void GB_cuda_atomic_band<uint32_t>
 (
@@ -904,27 +659,7 @@ template<> __device__ __inline__ void GB_cuda_atomic_band<uint64_t>
 // GB_cuda_atomic_bxor
 //------------------------------------------------------------------------------
 
-// bitwise: on uint [16,32,64]
-
-template<> __device__ __inline__ void GB_cuda_atomic_bxor<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, assumed ^ v) ;
-    }
-    while (assumed != old) ;
-}
+// bitwise: on uint [32,64]
 
 template<> __device__ __inline__ void GB_cuda_atomic_bxor<uint32_t>
 (
@@ -950,27 +685,7 @@ template<> __device__ __inline__ void GB_cuda_atomic_bxor<uint64_t>
 // GB_cuda_atomic_bxnor
 //------------------------------------------------------------------------------
 
-// bitwise: on uint [16,32,64]
-
-template<> __device__ __inline__ void GB_cuda_atomic_bxnor<uint16_t>
-(
-    uint16_t *ptr,  // target to modify
-    uint16_t val    // value to modify the target with
-)
-{
-    unsigned short int *p = (unsigned short int *) ptr ;
-    unsigned short int v = (unsigned short int) val ;
-    unsigned short int assumed ;
-    unsigned short int old = *p ;
-    do
-    {
-        // assume the old value
-        assumed = old ;
-        // modify it atomically:
-        old = atomicCAS (p, assumed, ~(assumed ^ v)) ;
-    }
-    while (assumed != old) ;
-}
+// bitwise: on uint [32,64]
 
 template<> __device__ __inline__ void GB_cuda_atomic_bxnor<uint32_t>
 (

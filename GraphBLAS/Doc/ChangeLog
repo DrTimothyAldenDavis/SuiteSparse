@@ -1,4 +1,4 @@
-Feb XX, 2024: version 9.1.0
+Mar 22, 2024: version 9.1.0
 
     * minor updates to build system
     * C11 complex type detection:  this is now detected and configured by
@@ -9,6 +9,18 @@ Feb XX, 2024: version 9.1.0
         GraphBLAS.h to indicate which kind of complex data types are available
         in C11 or MSVC.  Contributed by Markus Mützel.
     * port to clang-cl: fixing the GxB_get and GxB_set macro
+    * (53) bug fix: eWiseAdd C<M>=A+B when M, A, and B are all hypersparse;
+        access to M was incorrect (also affects C<M>+=T for any operation, if
+        M and T are both hypersparse).
+
+Mar 1, 2024: version 9.0.3
+
+    * (52) performance bug fix: JIT kernels since v8.3.1 were not compiled with
+        OpenMP.
+
+Feb 26, 2024: version 9.0.2
+
+    * (51) bug fix: GraphBLAS/Makefile "make static" was incorrect.
 
 Jan 20, 2024: version 9.0.1
 

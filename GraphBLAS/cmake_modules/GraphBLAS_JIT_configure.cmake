@@ -114,7 +114,7 @@ if ( GRAPHBLAS_USE_JIT OR GRAPHBLAS_USE_CUDA )
     message ( STATUS "------------------------------------------------------------------------" )
     # one or both JITs are enabled; make sure the cache path exists
     message ( STATUS "JIT C compiler: ${GB_C_COMPILER}" )
-    message ( STATUS "JIT C flags:    ${GB_C_FLAGS}" )
+    message ( STATUS "JIT C flags:    ${GB_C_FLAGS} ${GB_OPENMP_C_FLAGS}" )
     message ( STATUS "JIT link flags: ${GB_C_LINK_FLAGS}" )
     message ( STATUS "JIT lib prefix: ${GB_LIB_PREFIX}" )
     message ( STATUS "JIT lib suffix: ${GB_LIB_SUFFIX}" )
@@ -133,6 +133,4 @@ file ( MAKE_DIRECTORY "${GRAPHBLAS_CACHE_PATH}/lib" )
 file ( MAKE_DIRECTORY "${GRAPHBLAS_CACHE_PATH}/tmp" )
 file ( MAKE_DIRECTORY "${GRAPHBLAS_CACHE_PATH}/lock" )
 file ( MAKE_DIRECTORY "${GRAPHBLAS_CACHE_PATH}/c" )
-file ( MAKE_DIRECTORY "${GRAPHBLAS_CACHE_PATH}/cu" )
-
 

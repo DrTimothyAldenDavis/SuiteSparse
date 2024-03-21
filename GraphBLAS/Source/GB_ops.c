@@ -11,6 +11,8 @@
 // operators, index_unary operators, binary operators, monoids, and semirings.
 
 #include "GB.h"
+#include "GB_math.h"
+#include "GB_ops.h"
 
 //------------------------------------------------------------------------------
 // compiler flags
@@ -22,9 +24,7 @@
     #pragma warning (disable: 144 )
 #elif GB_COMPILER_GCC
     // disable gcc warnings
-    #if !defined ( __cplusplus )
     #pragma GCC diagnostic ignored "-Wincompatible-pointer-types"
-    #endif
 #elif GB_COMPILER_MSC
     // disable MS Visual Studio warnings
     GB_PRAGMA (warning (disable : 4146 ))

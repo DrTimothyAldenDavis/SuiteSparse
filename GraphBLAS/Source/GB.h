@@ -19,8 +19,6 @@
 #endif
 #include "GB_static_header.h"
 #include "GB_positional.h"
-#include "GB_casting.h"
-#include "GB_math.h"
 #include "GB_bitwise.h"
 #include "GB_check.h"
 #include "GB_nnz.h"
@@ -53,7 +51,6 @@
 #include "GB_cast.h"
 #include "GB_wait.h"
 #include "GB_convert.h"
-#include "GB_ops.h"
 #include "GB_where.h"
 #include "GB_Context.h"
 #include "GB_cuda_gateway.h"

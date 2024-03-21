@@ -114,7 +114,7 @@ GrB_Info GB_reduce_to_scalar    // z = reduce_to_scalar (A)
         //----------------------------------------------------------------------
 
         GrB_Matrix V = NULL ;
-        info = GB_cuda_reduce_to_scalar_jit (z, &V, monoid, A) ;
+        info = GB_cuda_reduce_to_scalar (z, &V, monoid, A) ;
 
         if (V != NULL)
         {
@@ -137,12 +137,12 @@ GrB_Info GB_reduce_to_scalar    // z = reduce_to_scalar (A)
             }
         }
 
-        // GB_cuda_reduce_to_scalar_jit may refuse to do the reduction and
+        // GB_cuda_reduce_to_scalar may refuse to do the reduction and
         // indicate this by returning GrB_NO_VALUE.  If so, the CPU will do it
         // below.
         if (!(info == GrB_SUCCESS || info == GrB_NO_VALUE))
         {
-            // GB_cuda_reduce_to_scalar_jit has returned an error
+            // GB_cuda_reduce_to_scalar has returned an error
             // (out of memory, or other error)
             return (info) ;
         }

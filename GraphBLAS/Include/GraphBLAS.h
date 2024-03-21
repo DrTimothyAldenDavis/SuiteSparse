@@ -234,7 +234,7 @@
 
 // The version of this implementation, and the GraphBLAS API version:
 #define GxB_IMPLEMENTATION_NAME "SuiteSparse:GraphBLAS"
-#define GxB_IMPLEMENTATION_DATE "Feb XX, 2024"
+#define GxB_IMPLEMENTATION_DATE "Mar 22, 2024"
 #define GxB_IMPLEMENTATION_MAJOR 9
 #define GxB_IMPLEMENTATION_MINOR 1
 #define GxB_IMPLEMENTATION_SUB   0
@@ -279,7 +279,7 @@
 // The 'spec' string describes the GraphBLAS spec:
 #define GxB_SPEC_ABOUT \
 "GraphBLAS C API, by Benjamin Brock, Aydin Buluc, Raye Kimmerer,\n" \
-"Jim Kitchen, Major Kumar, Timothy Mattson, Scott McMillan, Jose' Moreira,\n" \
+"Jim Kitchen, Manoj Kumar, Timothy Mattson, Scott McMillan, Jose' Moreira,\n" \
 "Erik Welch, and Carl Yang.  Based on 'GraphBLAS Mathematics by Jeremy\n" \
 "Kepner.  See also 'Graph Algorithms in the Language of Linear Algebra,'\n" \
 "edited by J. Kepner and J. Gilbert, SIAM, 2011.\n"
@@ -3772,6 +3772,8 @@ typedef enum            // for global options or matrix options
     GxB_JIT_USE_CMAKE = 7032,        // CPU JIT: use cmake or direct compile
     GxB_JIT_ERROR_LOG = 7033,        // CPU JIT: error log file
 
+    GxB_JIT_CUDA_PREFACE = 7100,     // CUDA JIT C++ preface
+
     //------------------------------------------------------------
     // GrB_get for GrB_Matrix:
     //------------------------------------------------------------
@@ -3973,7 +3975,7 @@ GrB_Info GxB_Context_get       (GxB_Context, GxB_Context_Field, ...) ;
     _Generic                                                    \
     (                                                           \
         (arg1),                                                 \
-            default          : GxB_Global_Option_set ,          \
+            default:           GxB_Global_Option_set ,          \
             GxB_Option_Field : GxB_Global_Option_set ,          \
             GrB_Vector       : GxB_Vector_Option_set ,          \
             GrB_Matrix       : GxB_Matrix_Option_set ,          \
@@ -3986,7 +3988,7 @@ GrB_Info GxB_Context_get       (GxB_Context, GxB_Context_Field, ...) ;
     _Generic                                                    \
     (                                                           \
         (arg1),                                                 \
-            default          : GxB_Global_Option_get ,          \
+            default:           GxB_Global_Option_get ,          \
             GxB_Option_Field : GxB_Global_Option_get ,          \
             GrB_Vector       : GxB_Vector_Option_get ,          \
             GrB_Matrix       : GxB_Matrix_Option_get ,          \

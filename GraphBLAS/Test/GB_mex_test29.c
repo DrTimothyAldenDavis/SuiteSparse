@@ -347,6 +347,15 @@ void mexFunction
     OK (GrB_Global_get_String_ (GrB_GLOBAL, defn2, GxB_JIT_C_PREFACE)) ;
     CHECK (MATCH (defn2, defn)) ;
 
+    OK (GrB_Global_get_String_ (GrB_GLOBAL, defn, GxB_JIT_CUDA_PREFACE)) ;
+    printf ("JIT CUDA preface: [%s]\n", defn) ;
+    OK (GrB_Global_set_String_ (GrB_GLOBAL, "// cu", GxB_JIT_CUDA_PREFACE)) ;
+    OK (GrB_Global_get_String_ (GrB_GLOBAL, defn2, GxB_JIT_CUDA_PREFACE)) ;
+    CHECK (MATCH (defn2, "// cu")) ;
+    OK (GrB_Global_set_String_ (GrB_GLOBAL, defn, GxB_JIT_CUDA_PREFACE)) ;
+    OK (GrB_Global_get_String_ (GrB_GLOBAL, defn2, GxB_JIT_CUDA_PREFACE)) ;
+    CHECK (MATCH (defn2, defn)) ;
+
     OK (GrB_Global_get_String_ (GrB_GLOBAL, defn, GxB_JIT_ERROR_LOG)) ;
     printf ("JIT error log: [%s]\n", defn) ;
     OK (GrB_Global_set_String_ (GrB_GLOBAL, "errlog.txt", GxB_JIT_ERROR_LOG)) ;

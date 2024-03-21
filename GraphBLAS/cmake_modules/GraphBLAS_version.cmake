@@ -8,7 +8,7 @@
 #-------------------------------------------------------------------------------
 
 # version of SuiteSparse:GraphBLAS
-set ( GraphBLAS_DATE "Feb XX, 2024" )   # FIXME for SuiteSparse 7.7.0
+set ( GraphBLAS_DATE "Mar 22, 2024" )
 set ( GraphBLAS_VERSION_MAJOR 9 CACHE STRING "" FORCE )
 set ( GraphBLAS_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( GraphBLAS_VERSION_SUB   0 CACHE STRING "" FORCE )
