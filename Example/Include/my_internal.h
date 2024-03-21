@@ -49,8 +49,8 @@
 #endif
 
 #include "cs.h"
-#if !defined (CXSPARSE__VERSION) || CXSPARSE__VERSION < SUITESPARSE__VERCODE(4,3,2)
-#error "This library requires CXSparse 4.3.2 or later"
+#if !defined (CXSPARSE__VERSION) || CXSPARSE__VERSION < SUITESPARSE__VERCODE(4,4,0)
+#error "This library requires CXSparse 4.4.0 or later"
 #endif
 
 #if ! defined (NO_GRAPHBLAS)

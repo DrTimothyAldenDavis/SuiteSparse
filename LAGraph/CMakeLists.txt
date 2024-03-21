@@ -39,7 +39,7 @@
 cmake_minimum_required ( VERSION 3.20 ) # LAGraph can be built stand-alone
 
 # version of LAGraph
-set ( LAGraph_DATE "Feb XX, 2024" )
+set ( LAGraph_DATE "Feb XX, 2024" ) # FIXME date for 7.7.0
 set ( LAGraph_VERSION_MAJOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_MINOR 1 CACHE STRING "" FORCE )
 set ( LAGraph_VERSION_SUB   3 CACHE STRING "" FORCE )
