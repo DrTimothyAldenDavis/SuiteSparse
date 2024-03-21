@@ -2,8 +2,8 @@
 // SPEX/Include/SPEX.h: Include file for SPEX Library
 //------------------------------------------------------------------------------
 
-// SPEX: (c) 2019-2023, Chris Lourenco, Jinhao Chen,
-// Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+// SPEX: (c) 2019-2024, Chris Lourenco, Jinhao Chen,
+// Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
@@ -67,7 +67,7 @@
 //    See license.txt for license info.
 //
 // This software is copyright by Christopher Lourenco, Jinhao Chen,
-// Lorena Mejia Domenzain, Erick Moreno-Centeno and Timothy A. Davis.
+// Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 // All Rights Reserved.
 //
 
@@ -1060,7 +1060,7 @@ SPEX_info SPEX_mpfr_clear (mpfr_t x) ;
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-// Christopher Lourenco, Jinhao Chen, Timothy A. Davis, and Erick Moreno-Centeno
+// Christopher Lourenco, Jinhao Chen, Erick Moreno-Centeno, and Timothy A. Davis
 
 
 //------------------------------------------------------------------------------
@@ -1210,8 +1210,8 @@ SPEX_info SPEX_lu_solve     // solves the linear system LD^(-1)U x = b
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-//    Christopher Lourenco, Jinhao Chen,
-//    Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+//    Christopher Lourenco, Lorena Mejia Domenzain, Jinhao Chen,
+//    Erick Moreno-Centeno, and Timothy A. Davis.
 
 
 //------------------------------------------------------------------------------

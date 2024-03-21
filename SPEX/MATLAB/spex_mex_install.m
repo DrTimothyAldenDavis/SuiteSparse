@@ -11,8 +11,8 @@ function spex_mex_install(run_demo)
 % if SPEX is inside SuiteSparse) to your LD_LIBRARY_PATH (DYLD_LIBRARY_PATH
 % on the Mac).  See instructions in the spex_deps.m file.
 
-% SPEX: (c) 2022-2024, Chris Lourenco, Jinhao Chen,
-% Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+% SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
