@@ -246,7 +246,7 @@
 // version control
 //------------------------------------------------------------------------------
 
-#define CHOLMOD_DATE "Feb XX, 2024"
+#define CHOLMOD_DATE "Mar 22, 2024"
 #define CHOLMOD_MAIN_VERSION   5
 #define CHOLMOD_SUB_VERSION    2
 #define CHOLMOD_SUBSUB_VERSION 1

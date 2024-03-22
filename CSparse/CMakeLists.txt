@@ -18,7 +18,7 @@
 # Note that CSparse can use an older cmake version than most of SuiteSparse.
 cmake_minimum_required ( VERSION 3.13 )     # CSparse can be built stand-alone
 
-set ( CSPARSE_DATE "Feb XX, 2024" ) # FIXME for 7.7.0
+set ( CSPARSE_DATE "Mar 22, 2024" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_MINOR 3 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_SUB   2 CACHE STRING "" FORCE )

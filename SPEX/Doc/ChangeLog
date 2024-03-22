@@ -1,4 +1,4 @@
-Feb XX, 2024: version 3.1.0 FIXME: date
+Mar 22, 2024: version 3.1.0
 
     * major update to build system
     * Added new methods to SPEX.h, available to the end user:

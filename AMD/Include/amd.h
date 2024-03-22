@@ -382,7 +382,7 @@ void amd_version (int version [3]) ;
  * Versions 1.1 and earlier of AMD do not include a #define'd version number.
  */
 
-#define AMD_DATE "Feb XX, 2024"
+#define AMD_DATE "Mar 22, 2024"
 #define AMD_MAIN_VERSION   3
 #define AMD_SUB_VERSION    3
 #define AMD_SUBSUB_VERSION 2

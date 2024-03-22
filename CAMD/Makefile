@@ -54,7 +54,7 @@ all: library
 demos: library
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
 	./build/camd_demo > build/camd_demo.out && ( command -v d2u && d2u ./build/amd_demo.out || true )
-	- diff Demo/camd_demo.out build/camd_demo.camd_demo
+	- diff Demo/camd_demo.out build/camd_demo.out
 	./build/camd_l_demo > build/camd_l_demo.out && ( command -v d2u && d2u ./build/camd_l_demo.out || true )
 	- diff Demo/camd_l_demo.out build/camd_l_demo.out
 	./build/camd_demo2 > build/camd_demo2.out && ( command -v d2u && d2u ./build/camd_demo2.out || true )

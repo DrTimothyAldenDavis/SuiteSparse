@@ -67,7 +67,7 @@
 //    See license.txt for license info.
 //
 // This software is copyright by Christopher Lourenco, Jinhao Chen,
-// Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
+// Lorena Mejia Domenzain, Erick Moreno-Centeno and Timothy A. Davis.
 // All Rights Reserved.
 //
 
@@ -106,7 +106,7 @@
 //------------------------------------------------------------------------------
 
 // Current version of the code
-#define SPEX_DATE "Feb XX, 2024"
+#define SPEX_DATE "Mar 22, 2024"
 #define SPEX_VERSION_STRING "3.1.0"
 #define SPEX_VERSION_MAJOR 3
 #define SPEX_VERSION_MINOR 1
@@ -1210,8 +1210,8 @@ SPEX_info SPEX_lu_solve     // solves the linear system LD^(-1)U x = b
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
 
-//    Christopher Lourenco, Lorena Mejia Domenzain, Jinhao Chen,
-//    Erick Moreno-Centeno, and Timothy A. Davis.
+//    Christopher Lourenco, Jinhao Chen,
+//    Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 
 
 //------------------------------------------------------------------------------

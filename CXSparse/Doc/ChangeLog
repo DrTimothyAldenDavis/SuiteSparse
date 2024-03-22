@@ -1,4 +1,4 @@
-Feb XX, 2024: version 4.4.0
+Mar 22, 2024: version 4.4.0
 
     * minor updates to build system
     * revise malloc/calloc/realloc/free wrappers: now relying on

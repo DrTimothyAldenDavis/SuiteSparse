@@ -15,7 +15,7 @@
 #define CS_VER 4  /* CSparse Version */
 #define CS_SUBVER 3
 #define CS_SUBSUB 2
-#define CS_DATE "Feb XX, 2024"        /* CSparse release date */
+#define CS_DATE "Mar 22, 2024"        /* CSparse release date */
 #define CS_COPYRIGHT "Copyright (c) Timothy A. Davis, 2006-2023"
 
 #ifndef csi

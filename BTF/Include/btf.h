@@ -264,7 +264,7 @@ void btf_version (int version [3]) ;
  *      #endif
  */
 
-#define BTF_DATE "Feb XX, 2024"
+#define BTF_DATE "Mar 22, 2024"
 #define BTF_MAIN_VERSION   2
 #define BTF_SUB_VERSION    3
 #define BTF_SUBSUB_VERSION 2

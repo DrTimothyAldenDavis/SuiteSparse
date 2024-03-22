@@ -25,7 +25,7 @@ typedef enum ParU_Ret
 
 #define PARU_MEM_CHUNK (1024*1024)
 
-#define PARU_DATE "Feb XX, 2024"
+#define PARU_DATE "Mar 22, 2024"
 #define PARU_VERSION_MAJOR  0
 #define PARU_VERSION_MINOR  1
 #define PARU_VERSION_UPDATE 3

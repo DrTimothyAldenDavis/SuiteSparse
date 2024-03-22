@@ -1,4 +1,4 @@
-COLAMD v3.3.1
+COLAMD v3.3.3
 colamd 5-by-4 input matrix:
 Column 0, with 3 entries:
     row 0
@@ -16,7 +16,7 @@ Column 3, with 2 entries:
     row 1
     row 3
 
-colamd version 3.3.1, Jan 10, 2024: OK.  
+colamd version 3.3.3, Mar 22, 2024: OK.  
 colamd: number of dense or empty rows ignored:           0
 colamd: number of dense or empty columns ignored:        0
 colamd: number of garbage collections performed:         0
@@ -39,7 +39,7 @@ Column 3, with 1 entries:
     row 4
 Column 4, with 0 entries:
 
-symamd version 3.3.1, Jan 10, 2024: OK.  
+symamd version 3.3.3, Mar 22, 2024: OK.  
 symamd: number of dense or empty rows ignored:           0
 symamd: number of dense or empty columns ignored:        0
 symamd: number of garbage collections performed:         0
