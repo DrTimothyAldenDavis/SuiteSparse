@@ -364,7 +364,7 @@ jobs:
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: C:/Miniconda/envs/test
           key: ${{ steps.conda-cache.outputs.cache-primary-key }}
