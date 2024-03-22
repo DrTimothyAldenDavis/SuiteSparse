@@ -4,7 +4,7 @@
 
 # The following copyright and license applies to just this file only, not to
 # the library itself:
-# FindGMP.cmake, Copyright (c) 2022-2023, Timothy A. Davis. All Rights Reserved.
+# FindGMP.cmake, Copyright (c) 2022-2024, Timothy A. Davis. All Rights Reserved.
 # SPDX-License-Identifier: BSD-3-clause
 
 #-------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 SPEX Backslash:
 
-Copyright (c) 2021-2023, Christopher Lourenco, Jinhao Chen,
-Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+Copyright (c) 2021-2024, Christopher Lourenco, Jinhao Chen,
+Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 
 Available at:
     https://github.com/clouren/SPEX

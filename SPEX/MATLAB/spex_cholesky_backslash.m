@@ -91,8 +91,8 @@ function x = spex_cholesky_backslash (A,b,option)
 % interfaces of all SPEX packages.  Typing spex_mex_install in this directory
 % should do this correctly.
 
-% SPEX: (c) 2022, Chris Lourenco, Jinhao Chen,
-% Lorena Mejia Domenzain, Timothy A. Davis and Erick Moreno-Centeno.
+% SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 

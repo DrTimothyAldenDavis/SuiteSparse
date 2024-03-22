@@ -5,8 +5,8 @@
 %
 % See also vpa, spex_mex_install, spex_mex_test.
 
-% SPEX: (c) 2022, Chris Lourenco, Jinhao Chen,
-% Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+% SPEX: (c) 2022-2024, Christopher Lourenco, Jinhao Chen,
+% Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 % All Rights Reserved.
 % SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 

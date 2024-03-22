@@ -2,8 +2,8 @@
 # SPEX/Doc/Makefile
 #-------------------------------------------------------------------------------
 
-# SPEX: (c) 2019-2023, Chris Lourenco, Jinhao Chen,
-# Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+# SPEX: (c) 2019-2024, Chris Lourenco, Jinhao Chen,
+# Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 # All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 

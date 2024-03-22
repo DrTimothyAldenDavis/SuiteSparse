@@ -6,8 +6,8 @@ found in the lists below.
 
     SPEX: a SParse EXact Factorization Framework for solving SLEs
 
-    Copyright (c) 2019-2023, Christopher Lourenco, Jinhao Chen,
-    Lorena Mejia Domenzain, Timothy A. Davis, and Erick Moreno-Centeno.
+    Copyright (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
+    Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 
     Available at:
         https://github.com/clouren/SPEX
