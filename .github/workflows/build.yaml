@@ -309,7 +309,7 @@ jobs:
       matrix:
 #       CLANG32 disabled for now:
 #       msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
-        msystem: [MINGW64, MINGW32, CLANG64]
+        msystem: [MINGW64, MINGW32, UCRT64, CLANG64]
         include:
           - msystem: MINGW64
             target-prefix: mingw-w64-x86_64
@@ -317,6 +317,10 @@ jobs:
           - msystem: MINGW32
             target-prefix: mingw-w64-i686
             f77-package: mingw-w64-i686-fc
+          - msystem: UCRT64
+            target-prefix: mingw-w64-ucrt-x86_64
+            # Purposefully don't install a Fortran compiler to test that configuration
+            f77-package: mingw-w64-ucrt-x86_64-cc
           - msystem: CLANG64
             target-prefix: mingw-w64-clang-x86_64
             f77-package: mingw-w64-clang-x86_64-fc
