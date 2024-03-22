@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         run: |
@@ -163,7 +163,7 @@ jobs:
           msystem: MINGW32
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: initialize CodeQL
         # Initialize the CodeQL tools for scanning.
