@@ -1,62 +1,62 @@
 //------------------------------------------------------------------------------
-// GraphBLAS/CUDA/GB_cuda_reduce_to_scalar_jit: reduce on the GPU with semiring 
+// GB_cuda_reduce_to_scalar_jit: reduce a matrix to a scalar, via the CUDA JIT
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// Reduce a matrix A to a scalar s, or to a smaller matrix V if the GPU was
-// only able to do a partial reduction.  This case occurs if the GPU does not
-// cannot do an atomic update for the monoid.  To handle this case, the GPU
-// returns a full GrB_Matrix V, of size gridsize-by-1, with one entry per
-// threadblock.  Then GB_reduce_to_scalar on the CPU sees this V as the result,
-// and calls itself recursively to continue the reduction.
-
-#include "GraphBLAS_cuda.h"
+#include "GB_cuda_reduce.hpp"
 
 extern "C"
 {
-    #include "GB_reduce.h"
+    typedef GB_JIT_CUDA_KERNEL_REDUCE_PROTO ((*GB_jit_dl_function)) ;
 }
 
-#include "GB_cuda.h"
-#include "GB_cuda_jitify_cache.h"
-#include "GB_cuda_common_jitFactory.hpp"
-#include "GB_cuda_reduce_jitFactory.hpp"
-
-GrB_Info GB_cuda_reduce_to_scalar_jit
+GrB_Info GB_cuda_reduce_to_scalar_jit   // z = reduce_to_scalar (A) via CUDA JIT
 (
     // output:
-    GB_void *s,                 // note: statically allocated on CPU stack; if
-                                // the result is in s then V is NULL.
-    GrB_Matrix *V_handle,       // partial result if unable to reduce to scalar;
-                                // NULL if result is in s.
+    GB_void *z,                 // result if has_cheeseburger is true
+    GrB_Matrix V,               // result if has_cheeseburger is false
     // input:
-    const GrB_Monoid monoid,
-    const GrB_Matrix A
+    const GrB_Monoid monoid,    // monoid to do the reduction
+    const GrB_Matrix A,         // matrix to reduce
+    // CUDA stream and launch parameters:
+    cudaStream_t stream,
+    int32_t gridsz,
+    int32_t blocksz
 )
-{
-
-    // FIXME: use the stream pool
-    cudaStream_t stream ;
-    CHECK_CUDA (cudaStreamCreate (&stream)) ;
+{ 
 
     //--------------------------------------------------------------------------
-    // reduce C to a scalar
+    // encodify the problem
     //--------------------------------------------------------------------------
 
-    // FIXME: check error conditions (out of memory, etc)
-    GB_cuda_reduce_factory myreducefactory ;
-    myreducefactory.reduce_factory (monoid, A) ;
+    GB_jit_encoding encoding ;
+    char *suffix ;
+    uint64_t hash = GB_encodify_reduce (&encoding, &suffix,
+        GB_JIT_CUDA_KERNEL_REDUCE, monoid, A) ;
 
-    // FIXME: get GrB_Info result from GB_cuda_reduce
-    GB_cuda_reduce (myreducefactory, A, s, V_handle, monoid, stream) ;
+    // FIXME: could get has_cheesburger here, and allocate zscalar
+    // and V accordingly.
 
-    CHECK_CUDA (cudaStreamSynchronize (stream)) ;
-    CHECK_CUDA (cudaStreamDestroy (stream)) ;
+    //--------------------------------------------------------------------------
+    // get the kernel function pointer, loading or compiling it if needed
+    //--------------------------------------------------------------------------
 
-    return (GrB_SUCCESS) ;
+    void *dl_function ;
+    GrB_Info info = GB_jitifyer_load (&dl_function,
+        GB_jit_reduce_family, "cuda_reduce",
+        hash, &encoding, suffix, NULL, monoid,
+        NULL, A->type, NULL, NULL) ;
+    if (info != GrB_SUCCESS) return (info) ;
+
+    //--------------------------------------------------------------------------
+    // call the jit kernel and return result
+    //--------------------------------------------------------------------------
+
+    GB_jit_dl_function GB_jit_kernel = (GB_jit_dl_function) dl_function ;
+    return (GB_jit_kernel (z, V, A, stream, gridsz, blocksz)) ;
 }
 

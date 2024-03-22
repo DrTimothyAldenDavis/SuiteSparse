@@ -235,6 +235,17 @@ if (jit_enabled)
     OK (GxB_Global_Option_get_CHAR (GxB_JIT_C_PREFACE, &t)) ;
     CHECK (MATCH (t, "// more stuff here")) ;
 
+    OK (GxB_get (GxB_JIT_CUDA_PREFACE, &s)) ;
+    printf ("default CUDA preface [%s]\n", s) ;
+    OK (GxB_set (GxB_JIT_CUDA_PREFACE, "// cuda stuff here")) ;
+    OK (GxB_get (GxB_JIT_CUDA_PREFACE, &s)) ;
+    CHECK (MATCH (s, "// cuda stuff here")) ;
+    OK (GxB_Global_Option_get_CHAR (GxB_JIT_CUDA_PREFACE, &t)) ;
+    CHECK (MATCH (t, "// cuda stuff here")) ;
+    OK (GxB_Global_Option_set_CHAR (GxB_JIT_CUDA_PREFACE,
+        "// more cuda stuff here")) ;
+    OK (GxB_Global_Option_get_CHAR (GxB_JIT_CUDA_PREFACE, &t)) ;
+    CHECK (MATCH (t, "// more cuda stuff here")) ;
 
     OK (GxB_Type_new (&MyType, 0, "mytype", "typedef double mytype ;")) ;
     OK (GxB_Type_size (&mysize, MyType)) ;

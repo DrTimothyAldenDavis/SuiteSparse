@@ -18,10 +18,10 @@
 # Note that CSparse can use an older cmake version than most of SuiteSparse.
 cmake_minimum_required ( VERSION 3.13 )     # CSparse can be built stand-alone
 
-set ( CSPARSE_DATE "Jan 20, 2024" )
+set ( CSPARSE_DATE "Mar 22, 2024" )
 set ( CSPARSE_VERSION_MAJOR 4 CACHE STRING "" FORCE )
 set ( CSPARSE_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( CSPARSE_VERSION_SUB   1 CACHE STRING "" FORCE )
+set ( CSPARSE_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CSparse version: v"
     ${CSPARSE_VERSION_MAJOR}.
@@ -113,7 +113,7 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD_REQUIRED ON
         PUBLIC_HEADER "Include/cs.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( csparse_static PROPERTIES
             OUTPUT_NAME csparse_static )
     endif ( )

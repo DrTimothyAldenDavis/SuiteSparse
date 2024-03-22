@@ -1,0 +1,7 @@
+# Ignore these files:
+*.o
+*.so.*
+*.so
+*.dylib
+*.a
+*.obj

@@ -123,10 +123,18 @@ end
 srcdir = '../../Source/' ;
 hfile = '../../Include/cs.h' ;
 
+% compile SuiteSparse_config.c
+[anysrc timestamp kk] = compile_source ('../../../SuiteSparse_config/', ...
+    'SuiteSparse_config', obj, hfile, force, mexcmd, kk, details) ;
+CS = ['SuiteSparse_config' obj] ;
+if (nargout > 0)
+    objfiles = ['../CSparse/SuiteSparse_config' obj] ;
+end
+
 % compile each CSparse source file
 [anysrc timestamp kk] = compile_source ('', 'cs_mex', obj, hfile, force, ...
     mexcmd, kk, details) ;
-CS = ['cs_mex' obj] ;
+CS = [CS ' cs_mex' obj] ;
 if (nargout > 0)
     objfiles = ['../CSparse/cs_mex' obj] ;
 end

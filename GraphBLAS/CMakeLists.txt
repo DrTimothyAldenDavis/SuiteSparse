@@ -163,6 +163,12 @@ if ( DEFINED GBAVX512F )
 endif ( )
 
 #-------------------------------------------------------------------------------
+# check compiler features
+#-------------------------------------------------------------------------------
+
+include ( GraphBLAS_complex )
+
+#-------------------------------------------------------------------------------
 # determine build type
 #-------------------------------------------------------------------------------
 
@@ -195,11 +201,6 @@ configure_file ( "Config/GraphBLAS_API_version.tex.in"
     NEWLINE_STYLE LF )
 configure_file ( "Config/README.md.in"
     "${PROJECT_SOURCE_DIR}/README.md"
-    NEWLINE_STYLE LF )
-
-# for CUDA
-configure_file ( "CUDA/Config/GB_cuda_common_jitFactory.hpp.in"
-    "${PROJECT_SOURCE_DIR}/CUDA/GB_cuda_common_jitFactory.hpp"
     NEWLINE_STYLE LF )
 
 #-------------------------------------------------------------------------------
@@ -325,7 +326,7 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD_REQUIRED ON
         PUBLIC_HEADER "Include/GraphBLAS.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( GraphBLAS_static PROPERTIES
             OUTPUT_NAME graphblas_static )
     endif ( )

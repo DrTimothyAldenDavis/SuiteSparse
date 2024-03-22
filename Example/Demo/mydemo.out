@@ -1,145 +1,25 @@
-( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- MY prefix path:    /home/faculty/d/davis/dev2/SuiteSparse/Example/..
--- Building MY library version: v1.6.1 (Jan 12, 2024)
--- Found OpenMP: TRUE (found version "4.5") found components: C 
--- SuiteSparse_config version: 7.5.1
--- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparseconfig.so.7.5.1
--- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparseconfig.a
--- AMD version: 3.3.1
--- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libamd.so.3.3.1
--- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libamd.a
--- BTF version: 2.3.1
--- BTF include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- BTF library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libbtf.so.2.3.1
--- BTF static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libbtf.a
--- CAMD version: 3.3.1
--- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libcamd.so.3.3.1
--- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libcamd.a
--- CCOLAMD version: 3.3.1
--- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libccolamd.so.3.3.1
--- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libccolamd.a
--- COLAMD version: 3.3.1
--- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libcolamd.so.3.3.1
--- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libcolamd.a
--- CHOLMOD version: 5.1.1
--- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libcholmod.so.5.1.1
--- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libcholmod.a
--- COLAMD version: 3.3.1
--- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libcolamd.so.3.3.1
--- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libcolamd.a
--- CXSparse version: 4.3.1
--- CXSparse include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- CXSparse library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libcxsparse.so.4.3.1
--- CXSparse static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libcxsparse.a
--- GraphBLAS version: 9.0.0
--- GraphBLAS include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- GraphBLAS library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libgraphblas.so.9.0.0
--- GraphBLAS static:  
--- KLU version: 2.3.1
--- KLU include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- KLU library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libklu.so.2.3.1
--- KLU static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libklu.a
--- KLU_CHOLMOD version: 2.3.1
--- KLU_CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- KLU_CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libklu_cholmod.so.2.3.1
--- KLU_CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libklu_cholmod.a
--- LDL version: 3.3.1
--- LDL include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- LDL library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libldl.so.3.3.1
--- LDL static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libldl.a
--- GraphBLAS version: 9.0.0
--- GraphBLAS include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- GraphBLAS library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libgraphblas.so.9.0.0
--- GraphBLAS static:  
--- LAGraph version: 1.1.1
--- LAGraph include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- LAGraph library: /home/faculty/d/davis/dev2/SuiteSparse/lib/liblagraph.so.1.1.1
--- LAGraph static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/liblagraph.a
--- SuiteSparse_Mongoose version: 3.3.1
--- SuiteSparse_Mongoose include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SuiteSparse_Mongoose library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparse_mongoose.so.3
--- SuiteSparse_Mongoose static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparse_mongoose.a
--- UMFPACK version: 6.3.1
--- UMFPACK include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- UMFPACK library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libumfpack.so.6.3.1
--- UMFPACK static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libumfpack.a
--- Found OpenMP: TRUE (found version "4.5") found components: CXX 
--- ParU version: 0.1.1
--- ParU include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- ParU library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libparu.so.0.1.1
--- ParU static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libparu.a
--- RBio version: 4.3.1
--- RBio include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- RBio library: /home/faculty/d/davis/dev2/SuiteSparse/lib/librbio.so.4.3.1
--- RBio static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/librbio.a
--- SPEX version: 2.3.1
--- SPEX include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SPEX library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libspex.so.2.3.1
--- SPEX static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libspex.a
--- SuiteSparse_GPURuntime version: 4.3.1
--- SuiteSparse_GPURuntime include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SuiteSparse_GPURuntime library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparse_gpuruntime.so.4.3.1
--- SuiteSparse_GPURuntime static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libsuitesparse_gpuruntime.a
--- GPUQREngine version: 4.3.1
--- GPUQREngine include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- GPUQREngine library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libgpuqrengine.so.4.3.1
--- GPUQREngine static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libgpuqrengine.a
--- SPQR version: 4.3.1
--- SPQR include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- SPQR library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libspqr.so.4.3.1
--- SPQR static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libspqr.a
--- UMFPACK version: 6.3.1
--- UMFPACK include: /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- UMFPACK library: /home/faculty/d/davis/dev2/SuiteSparse/lib/libumfpack.so.6.3.1
--- UMFPACK static:  /home/faculty/d/davis/dev2/SuiteSparse/lib/libumfpack.a
--- MY source:         /home/faculty/d/davis/dev2/SuiteSparse/Example
--- MY build:          /home/faculty/d/davis/dev2/SuiteSparse/Example/build
--- MY install prefix: /usr/local
--- MY install rpath:  
--- MY build   rpath:  
--- Configuring done (0.3s)
--- Generating done (0.0s)
--- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/Example/build
-gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/Example/build'
-[ 12%] Built target my
-[ 37%] Built target my_cxx_static
-[ 37%] Built target my_static
-[ 50%] Built target my_cxx
-[ 62%] Built target my_demo
-[ 75%] Built target my_cxx_demo_static
-[ 87%] Built target my_demo_static
-[100%] Built target my_cxx_demo
-gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/Example/build'
-( cd build && ./my_demo )
 My demo
-Date from #include 'my.h':  Jan 12, 2024
-Date from compiled library: Jan 12, 2024
-version from #include 'my.h.': 1.6.1
-version from compiled library: 1.6.1
+Date from #include 'my.h':  Mar 22, 2024
+Date from compiled library: Mar 22, 2024
+version from #include 'my.h.': 1.7.0
+version from compiled library: 1.7.0
 
 ------------------------------------------------------------
-MY: v1.6.1 (Jan 12, 2024)
-MY: v1.6.1 (in library)
-MY version code: 1006001
-MY date: Jan 12, 2024
+MY: v1.7.0 (Mar 22, 2024)
+MY: v1.7.0 (in library)
+MY version code: 1007000
+MY date: Mar 22, 2024
 
 ------------------------------------------------------------
-SuiteSparse_config: v7.5.1 (Jan 12, 2024)
-SuiteSparse_config: v7.5.1 (in library)
-SuiteSparse_config version code: 7005001
+SuiteSparse_config: v7.7.0 (Mar 22, 2024)
+SuiteSparse_config: v7.7.0 (in library)
+SuiteSparse_config version code: 7007000
 
 ------------------------------------------------------------
-CXSparse: v4.3.1 (Jan 10, 2024)
-CXSparse: v4.3.1 (in library)
-CXSparse version code: 4003001
-CXSparse Version 4.3.1, Jan 10, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
+CXSparse: v4.4.0 (Mar 22, 2024)
+CXSparse: v4.4.0 (in library)
+CXSparse version code: 4004000
+CXSparse Version 4.4.0, Mar 22, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
 2-by-2, nzmax: 4 nnz: 4, 1-norm: 34
     col 0 : locations 0 to 1
       0 : 11
@@ -149,16 +29,16 @@ CXSparse Version 4.3.1, Jan 10, 2024.  Copyright (c) Timothy A. Davis, 2006-2024
       1 : 22
 
 ------------------------------------------------------------
-AMD: v3.3.1 (Jan 10, 2024)
-AMD: v3.3.1 (in library)
-AMD version code: 3003001
+AMD: v3.3.2 (Mar 22, 2024)
+AMD: v3.3.2 (in library)
+AMD version code: 3003002
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-BTF: v2.3.1 (Jan 10, 2024)
-BTF: v2.3.1 (in library)
-BTF version code: 2003001
+BTF: v2.3.2 (Mar 22, 2024)
+BTF: v2.3.2 (in library)
+BTF version code: 2003002
 P [0] = 0
 P [1] = 1
 Q [0] = 0
@@ -166,61 +46,61 @@ Q [1] = 1
 nblocks 1
 
 ------------------------------------------------------------
-CAMD: v3.3.1 (Jan 10, 2024)
-CAMD: v3.3.1 (in library)
-CAMD version code: 3003001
+CAMD: v3.3.2 (Mar 22, 2024)
+CAMD: v3.3.2 (in library)
+CAMD version code: 3003002
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-CCOLAMD: v3.3.1 (Jan 10, 2024)
-CCOLAMD: v3.3.1 (in library)
-CCOLAMD version code: 3003001
+CCOLAMD: v3.3.3 (Mar 22, 2024)
+CCOLAMD: v3.3.3 (in library)
+CCOLAMD version code: 3003003
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-COLAMD: v3.3.1 (Jan 10, 2024)
-COLAMD: v3.3.1 (in library)
-COLAMD version code: 3003001
+COLAMD: v3.3.3 (Mar 22, 2024)
+COLAMD: v3.3.3 (in library)
+COLAMD version code: 3003003
 P [0] = 0
 P [1] = 1
 
 ------------------------------------------------------------
-CHOLMOD: v5.1.1 (Jan 10, 2024)
-CHOLMOD: v5.1.1 (in library)
-CHOLMOD version code: 5001001
+CHOLMOD: v5.2.1 (Mar 22, 2024)
+CHOLMOD: v5.2.1 (in library)
+CHOLMOD version code: 5002001
 
 ------------------------------------------------------------
-GraphBLAS: v9.0.0 (Jan 10, 2024)
-GraphBLAS: v9.0.0 (in library)
-GraphBLAS version code: 9000000
+GraphBLAS: v9.1.0 (Mar 22, 2024)
+GraphBLAS: v9.1.0 (in library)
+GraphBLAS version code: 9001000
 
 ------------------------------------------------------------
-LAGraph: v1.1.1 (Jan 10, 2024)
-LAGraph: v1.1.1 (in library)
-LAGraph version code: 1001001
+LAGraph: v1.1.3 (Mar 22, 2024)
+LAGraph: v1.1.3 (in library)
+LAGraph version code: 1001003
 
 ------------------------------------------------------------
-KLU: v2.3.1 (Jan 10, 2024)
-KLU: v2.3.1 (in library)
-KLU version code: 2003001
+KLU: v2.3.3 (Mar 22, 2024)
+KLU: v2.3.3 (in library)
+KLU version code: 2003003
 x [0] = 36.4
 x [1] = -32.7
 error: 7.10543e-14
 
 ------------------------------------------------------------
-LDL: v3.3.1 (Jan 10, 2024)
-LDL: v3.3.1 (in library)
-LDL version code: 3003001
+LDL: v3.3.2 (Mar 22, 2024)
+LDL: v3.3.2 (in library)
+LDL version code: 3003002
 x2 [0] = 36.4
 x2 [1] = -32.7
 error: 0
 
 ------------------------------------------------------------
-RBio: v4.3.1 (Jan 10, 2024)
-RBio: v4.3.1 (in library)
-RBio version code: 4003001
+RBio: v4.3.2 (Mar 22, 2024)
+RBio: v4.3.2 (in library)
+RBio version code: 4003002
 njumbled 0, nzeros 0
 result 0
 mtype: iua
@@ -233,14 +113,14 @@ iua                        2             2             4             0
  11 21 12 22
 
 ------------------------------------------------------------
-SPEX: v2.3.1 (Jan 10, 2024)
-SPEX: v2.3.1 (in library)
-SPEX version code: 2003001
+SPEX: v3.1.0 (Mar 22, 2024)
+SPEX: v3.1.0 (in library)
+SPEX version code: 3001000
 
 ------------------------------------------------------------
-SuiteSparseQR: v4.3.1 (Jan 10, 2024)
-SuiteSparseQR: v4.3.1 (in library)
-SuiteSparseQR version code: 4003001
+SuiteSparseQR: v4.3.3 (Mar 22, 2024)
+SuiteSparseQR: v4.3.3 (in library)
+SuiteSparseQR version code: 4003003
 
 CHOLMOD dense:   X from QR:  2-by-1, 
   leading dimension 2, nzmax 2, real, double
@@ -251,10 +131,10 @@ CHOLMOD dense:   X from QR:  2-by-1,
 
 
 ------------------------------------------------------------
-UMFPACK: v6.3.1 (Jan 10, 2024)
-UMFPACK: v6.3.1 (in library)
-UMFPACK version code: 6003001
-UMFPACK V6.3.1 (Jan 10, 2024)
+UMFPACK: v6.3.3 (Mar 22, 2024)
+UMFPACK: v6.3.3 (in library)
+UMFPACK version code: 6003003
+UMFPACK V6.3.3 (Mar 22, 2024)
 UMFPACK:  Copyright (c) 2005-2024 by Timothy A. Davis.  All Rights Reserved.
 
 UMFPACK License: SPDX-License-Identifier: GPL-2.0+
@@ -275,9 +155,9 @@ UMFPACK License: SPDX-License-Identifier: GPL-2.0+
 
 
 Availability: http://www.suitesparse.com
-UMFPACK V6.3.1 (Jan 10, 2024): OK
+UMFPACK V6.3.3 (Mar 22, 2024): OK
 
-UMFPACK V6.3.1 (Jan 10, 2024), Info:
+UMFPACK V6.3.3 (Mar 22, 2024), Info:
     matrix entry defined as:          double
     Int (generic integer) defined as: int64_t
     BLAS library used: Intel MKL 64lp BLAS (32-bit integers).  size of BLAS integer: 4

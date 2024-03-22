@@ -122,8 +122,8 @@ int64_t ldl_l_valid_matrix ( int64_t n, int64_t Ap [ ], int64_t Ai [ ]) ;
 
 #define LDL__VERSION SUITESPARSE__VERCODE(@LDL_VERSION_MAJOR@,@LDL_VERSION_MINOR@,@LDL_VERSION_SUB@)
 #if !defined (SUITESPARSE__VERSION) || \
-    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,5,0))
-#error "LDL @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@ requires SuiteSparse_config 7.5.0 or later"
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
+#error "LDL @LDL_VERSION_MAJOR@.@LDL_VERSION_MINOR@.@LDL_VERSION_SUB@ requires SuiteSparse_config 7.7.0 or later"
 #endif
 
 #endif

@@ -35,11 +35,11 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( Mongoose_DATE "Jan 20, 2024" )
-set ( Mongoose_NUMERIC_DATE "2024-01-20" )
+set ( Mongoose_DATE "Mar 22, 2024" )
+set ( Mongoose_NUMERIC_DATE "2024-03-22" )
 set ( Mongoose_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( Mongoose_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( Mongoose_VERSION_PATCH 2 CACHE STRING "" FORCE )
+set ( Mongoose_VERSION_PATCH 3 CACHE STRING "" FORCE )
 
 message ( STATUS "Building Mongoose version: v"
     ${Mongoose_VERSION_MAJOR}.
@@ -69,10 +69,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.6.0
+    find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 endif ( )
 
@@ -205,7 +205,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME suitesparse_mongoose
         PUBLIC_HEADER "Include/Mongoose.hpp" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( Mongoose_static PROPERTIES
             OUTPUT_NAME suitesparse_mongoose_static )
     endif ( )

@@ -11,10 +11,10 @@
 
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CAMD_DATE "Jan 10, 2024" )
+set ( CAMD_DATE "Mar 22, 2024" )
 set ( CAMD_VERSION_MAJOR 3 CACHE STRING "" FORCE )
 set ( CAMD_VERSION_MINOR 3 CACHE STRING "" FORCE )
-set ( CAMD_VERSION_SUB   1 CACHE STRING "" FORCE )
+set ( CAMD_VERSION_SUB   2 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CAMD version: v"
     ${CAMD_VERSION_MAJOR}.
@@ -43,10 +43,10 @@ include ( SuiteSparsePolicy )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.5.0
+    find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.5.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 endif ( )
 
@@ -107,7 +107,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME camd
         PUBLIC_HEADER "Include/camd.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( CAMD_static PROPERTIES
             OUTPUT_NAME camd_static )
     endif ( )
