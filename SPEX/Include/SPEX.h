@@ -67,7 +67,7 @@
 //    See license.txt for license info.
 //
 // This software is copyright by Christopher Lourenco, Jinhao Chen,
-// Lorena Mejia Domenzain, Erick Moreno-Centeno and Timothy A. Davis.
+// Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 // All Rights Reserved.
 //
 
