@@ -1,28 +1,36 @@
-Jan 10, 2024: version 2.3.1
+Mar 22, 2024: version 3.1.0
 
-    * minor updates to build system
+    * major update to build system
+    * Added new methods to SPEX.h, available to the end user:
+        SPEX_TRY
+        SPEX_CATCH
+        SPEX_1D
+        SPEX_2D
+        SPEX_mpz_set_null
+        SPEX_mpq_set_null
+        SPEX_mpfr_set_null
+        SPEX_mpz_clear
+        SPEX_mpq_clear
+        SPEX_mpfr_clear
+        SPEX_mpfr_set_proc
 
-Dec 30, 2023: version 2.3.0
+Jul 26, 2023: version 3.0.0
 
-    * major change to build system: by Markus Mützel
-    * SPEX_version: added to return version of SPEX
-
-Sept 18, 2023: version 2.2.1
-
-    * cmake update: add "None" build type, from Antonio Rojas, for Arch Linux
-
-Sept 8, 2023: version 2.2.0
-
-    * cmake updates: SuiteSparse:: namespace by Markus Muetzel
-
-June 16, 2023: version 2.0.4
-
-    * cmake build system updates: update by Markus Muetzel.
-        Includes changes to FindMPFR.cmake and FindGMP.cmake.
-
-Jan 17, 2023: version 2.0.3
-
-    * SuiteSparse_config: now v7.0.0
+    * major change to the API: new SPEX_factorization and SPEX_symbolic_analysis
+        objects.  Uniform analyze/factorize/solve functions for all kinds of 
+        factorizations.
+    * thread-safe: SPEX 2.0 was not thread-safe if the user application called 
+        it in parallel; v3.0 is now thread-safe with SPEX_thread_initialize
+        and SPEX_thread_finalize.
+    * SPEX_Cholesky: robust implementation of sparse REF Cholesky.
+    * SPEX_Backslash: automatically determines (between SPEX LU and SPEX
+        Cholesky) the best exact algorithm to use when solving a SLE.
+    * python interface: SPEX can now be used to solve SLEs in python with only
+        one line. There are separate functions for SPEX LU, SPEX Cholesky and 
+        SPEX Backslash.
+    * MATLAB interface: SPEX can now be used to solve SLEs in MATLAB with only
+        one line. There are separate functions for SPEX LU, SPEX Cholesky and 
+        SPEX Backslash.
 
 Dec 9, 2022: version 2.0.2
 

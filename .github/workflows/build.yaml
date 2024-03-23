@@ -94,7 +94,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         env:
@@ -115,7 +115,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -192,7 +192,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -298,8 +298,18 @@ jobs:
       # Allow other runners in the matrix to continue if some fail
       fail-fast: false
 
+      # CLANG32 is broken, as of Mar 21, 2024.  The stable branch CI also fails
+      # the same way, even though it succeeded on Mar 2, with the same
+      # SuiteSparse 7.6.1 and same workflow file.  Between that time, clang and
+      # openmp were upgraded. clang-openmp went from 17.0.6-1 to 18.1.1-1, and
+      # clang itself went from 17.0.6-7 to 18.1.1-3.  Nothing else changed, so
+      # it must be a problem with the github runner (changed from 2.313.0 to
+      # 2.314.1).  So for now, CLANG32 is excluded from this CI test.
+
       matrix:
-        msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
+#       CLANG32 disabled for now:
+#       msystem: [MINGW64, MINGW32, CLANG64, CLANG32]
+        msystem: [MINGW64, MINGW32, UCRT64, CLANG64]
         include:
           - msystem: MINGW64
             target-prefix: mingw-w64-x86_64
@@ -307,13 +317,18 @@ jobs:
           - msystem: MINGW32
             target-prefix: mingw-w64-i686
             f77-package: mingw-w64-i686-fc
+          - msystem: UCRT64
+            target-prefix: mingw-w64-ucrt-x86_64
+            # Purposefully don't install a Fortran compiler to test that configuration
+            f77-package: mingw-w64-ucrt-x86_64-cc
           - msystem: CLANG64
             target-prefix: mingw-w64-clang-x86_64
             f77-package: mingw-w64-clang-x86_64-fc
-          - msystem: CLANG32
-            target-prefix: mingw-w64-clang-i686
-            # There's no Fortran compiler for this environment.
-            f77-package: mingw-w64-clang-i686-cc
+#           CLANG32 disabled for now:
+#         - msystem: CLANG32
+#           target-prefix: mingw-w64-clang-i686
+#           # There's no Fortran compiler for this environment.
+#           f77-package: mingw-w64-clang-i686-cc
 
     env:
       CHERE_INVOKING: 1
@@ -348,7 +363,7 @@ jobs:
           msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -360,7 +375,7 @@ jobs:
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -425,7 +440,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}

@@ -1,5 +1,5 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- Building RBio version: v4.3.1 (Jan 10, 2024)
+-- Building RBio version: v4.3.2 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/RBio 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -15,9 +15,9 @@
 -- CUDA toolkit inc: /usr/local/cuda/include
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
--- SuiteSparse_config version: 7.5.0
+-- SuiteSparse_config version: 7.7.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.5.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------
@@ -38,7 +38,7 @@
 -- compile definitions:  
 -- CUDA architectures:   52;75;80
 -- ------------------------------------------------------------------------
--- Configuring done (0.7s)
+-- Configuring done (0.6s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/RBio/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
@@ -47,7 +47,7 @@ gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 [100%] Built target RBdemo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 ( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
--- Building RBio version: v4.3.1 (Jan 10, 2024)
+-- Building RBio version: v4.3.2 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/RBio 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/RBio/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -63,9 +63,9 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 -- CUDA toolkit inc: /usr/local/cuda/include
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
--- SuiteSparse_config version: 7.5.0
+-- SuiteSparse_config version: 7.7.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.5.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
 -- Also compiling the demos in RBio/Demo
 -- ------------------------------------------------------------------------
@@ -86,16 +86,16 @@ gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 -- compile definitions:  
 -- CUDA architectures:   52;75;80
 -- ------------------------------------------------------------------------
--- Configuring done (0.7s)
+-- Configuring done (0.6s)
 -- Generating done (0.0s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/RBio/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
-[ 75%] Built target RBio
+[ 37%] Built target RBio
 [ 75%] Built target RBio_static
 [100%] Built target RBdemo
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/RBio/build'
 ./build/RBdemo < ./RBio/private/west0479.rua
-RBio version 4.3.1, date: Jan 10, 2024
+RBio version 4.3.2, date: Mar 22, 2024
 
 ===========================================================
 title: [1U 8 STAGE COLUMN SECTION, ALL SECTIONS RIGOROUS ( CHEM. ENG. )]

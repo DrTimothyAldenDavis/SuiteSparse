@@ -20,6 +20,9 @@ export SUITESPARSE = $(CURDIR)
 
 # Compile the default rules for each package.
 
+# Note that CSparse is compiled but not installed by "make install";
+# CXSparse is installed instead.
+
 # default: "make install" will install all libraries in /usr/local/lib
 # and include files in /usr/local/include.  Not installed in SuiteSparse/lib.
 default: library
@@ -59,7 +62,6 @@ local:
 	( cd CCOLAMD && $(MAKE) local )
 	( cd CHOLMOD && $(MAKE) local )
 	( cd CSparse && $(MAKE) )  
-# CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) local )
 	( cd LDL && $(MAKE) local )
 	( cd KLU && $(MAKE) local )
@@ -83,7 +85,6 @@ global:
 	( cd CCOLAMD && $(MAKE) global )
 	( cd CHOLMOD && $(MAKE) global )
 	( cd CSparse && $(MAKE) )  
-# CSparse is compiled but not installed
 	( cd CXSparse && $(MAKE) global )
 	( cd LDL && $(MAKE) global )
 	( cd KLU && $(MAKE) global )
@@ -106,7 +107,6 @@ install:
 	( cd CCOLAMD && $(MAKE) install )
 	( cd CHOLMOD && $(MAKE) install )
 	( cd CXSparse && $(MAKE) install ) 
-# CXSparse is installed instead
 	( cd LDL && $(MAKE) install )
 	( cd KLU && $(MAKE) install )
 	( cd UMFPACK && $(MAKE) install )

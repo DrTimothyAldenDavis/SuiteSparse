@@ -12,10 +12,10 @@
 # cmake 3.22 is required to find the BLAS/LAPACK
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( CHOLMOD_DATE "Jan 20, 2024" )
+set ( CHOLMOD_DATE "Mar 22, 2024" )
 set ( CHOLMOD_VERSION_MAJOR 5 CACHE STRING "" FORCE )
 set ( CHOLMOD_VERSION_MINOR 2 CACHE STRING "" FORCE )
-set ( CHOLMOD_VERSION_SUB   0 CACHE STRING "" FORCE )
+set ( CHOLMOD_VERSION_SUB   1 CACHE STRING "" FORCE )
 
 message ( STATUS "Building CHOLMOD version: v"
     ${CHOLMOD_VERSION_MAJOR}.
@@ -112,22 +112,22 @@ endif ( )
 #-------------------------------------------------------------------------------
 
 if ( NOT SUITESPARSE_ROOT_CMAKELISTS )
-    find_package ( SuiteSparse_config 7.6.0
+    find_package ( SuiteSparse_config 7.7.0
         PATHS ${CMAKE_SOURCE_DIR}/../SuiteSparse_config/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::SuiteSparseConfig )
-        find_package ( SuiteSparse_config 7.6.0 REQUIRED )
+        find_package ( SuiteSparse_config 7.7.0 REQUIRED )
     endif ( )
 
-    find_package ( AMD 3.3.1
+    find_package ( AMD 3.3.2
         PATHS ${CMAKE_SOURCE_DIR}/../AMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::AMD )
-        find_package ( AMD 3.3.1 REQUIRED )
+        find_package ( AMD 3.3.2 REQUIRED )
     endif ( )
 
-    find_package ( COLAMD 3.3.2
+    find_package ( COLAMD 3.3.3
         PATHS ${CMAKE_SOURCE_DIR}/../COLAMD/build NO_DEFAULT_PATH )
     if ( NOT TARGET SuiteSparse::COLAMD )
-        find_package ( COLAMD 3.3.2 REQUIRED )
+        find_package ( COLAMD 3.3.3 REQUIRED )
     endif ( )
 endif ( )
 
@@ -231,16 +231,16 @@ endif ( )
 
     if ( CHOLMOD_CAMD AND NOT SUITESPARSE_ROOT_CMAKELISTS )
         # find CAMD and CCOLAMD
-        find_package ( CAMD 3.3.1
+        find_package ( CAMD 3.3.2
             PATHS ${CMAKE_SOURCE_DIR}/../CAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CAMD )
-            find_package ( CAMD 3.3.1 )
+            find_package ( CAMD 3.3.2 )
         endif ( )
 
-        find_package ( CCOLAMD 3.3.2
+        find_package ( CCOLAMD 3.3.3
             PATHS ${CMAKE_SOURCE_DIR}/../CCOLAMD/build NO_DEFAULT_PATH )
         if ( NOT TARGET SuiteSparse::CCOLAMD )
-            find_package ( CCOLAMD 3.3.2 )
+            find_package ( CCOLAMD 3.3.3 )
         endif ( )
 
         if ( NOT CAMD_FOUND OR NOT CCOLAMD_FOUND )
@@ -363,7 +363,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME cholmod
         PUBLIC_HEADER "Include/cholmod.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( CHOLMOD_static PROPERTIES
             OUTPUT_NAME cholmod_static )
     endif ( )

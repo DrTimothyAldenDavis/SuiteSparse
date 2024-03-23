@@ -13,6 +13,8 @@
 //  @author Aznaveh
 //
 
+#include <cinttypes>
+
 #define SUITESPARSE_BLAS_DEFINITIONS
 #include "ParU.hpp"
 #include "paru_omp.hpp"

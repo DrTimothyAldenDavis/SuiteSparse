@@ -12,9 +12,13 @@ CUDA:
 
 Future features:
 
+    cumulative sum (or other monoid)
+
     pack/unpack COO
     kernel fusion
     CUDA kernels
+    distributed framework
+
     fine-grain parallelism for dot-product based mxm, mxv, vxm,
         then add GxB_vxvt (outer product) and GxB_vtxv (inner product)
         (or call them GxB_outerProduct and GxB_innerProduct?)
@@ -39,4 +43,22 @@ Future features:
         GrB_BinaryOp_new (...)
         GrB_set (op, GxB_DEFN, "string"
     also for all ops
+
+    candidates for kernel fusion:
+        * triangle counting: mxm then reduce to scalar
+        * lcc: mxm then reduce to vector
+        * FusedMM: see https://arxiv.org/pdf/2011.06391.pdf
+
+    more:
+        * consider algorithms where fusion can occur
+        * performance monitor, or revised burble, to detect generic cases
+        * check if vectorization of GrB_mxm is effective when using clang
+        * see how HNSW vector search could be implemented in GraphBLAS
+
+CUDA JIT:
+
+    https://developer.nvidia.com/blog/cuda-12-0-compiler-support-for-runtime-lto-using-nvjitlink-library/
+        Developer webpage talking about ways to do nvJit with link time
+        optimization using CUDA 12.0  Shows precompiled path and JIT path to
+        generate kernels
 

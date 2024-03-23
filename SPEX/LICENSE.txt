@@ -2,15 +2,14 @@ This file lists all licenses for all packages in SPEX, for your
 convenience.  Each package has its own separate license, which can be
 found in the lists below.
 
-==> SPEX_Left_LU/License/license.txt <==
+==> SPEX/LICENSE <==
 
-    SPEX Left LU: a Sparse Left-looking Integer-Preserving LU Factorization
+    SPEX: a SParse EXact Factorization Framework for solving SLEs
 
-    Copyright (c) 2019-2022, Christopher Lourenco, JinHao Chen, Erick Moreno-
-    Centeno, and Timothy A. Davis.
+    Copyright (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
+    Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
 
     Available at:
-
         https://github.com/clouren/SPEX
         http://suitesparse.com
 
@@ -20,7 +19,7 @@ found in the lists below.
 
     --------------------------------------------------------------------------------
 
-    SPEX Left LU is free software; you can redistribute it and/or modify
+    SPEX is free software; you can redistribute it and/or modify
     it under the terms of either:
 
       * the GNU Lesser General Public License as published by the Free
@@ -35,7 +34,7 @@ found in the lists below.
 
     or both in parallel, as here.
 
-    SPEX Left LU is distributed in the hope that it will be useful, but
+    SPEX is distributed in the hope that it will be useful, but
     WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
     or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
     for more details.
@@ -82,6 +81,7 @@ found in the lists below.
         DAMAGE.
 
 ==> COLAMD/Doc/License.txt <==
+
     COLAMD, Copyright 1998-2016, Timothy A. Davis.  http://www.suitesparse.com
     http://www.suitesparse.com
 

@@ -53,10 +53,10 @@ message ( STATUS "MY prefix path:    ${CMAKE_PREFIX_PATH}" )
 #-------------------------------------------------------------------------------
 
 # cmake inserts the date and version number into Include/my.h:
-set ( MY_DATE "Jan 20, 2024" )
+set ( MY_DATE "Mar 22, 2024" )
 set ( MY_VERSION_MAJOR 1 )
-set ( MY_VERSION_MINOR 6 )
-set ( MY_VERSION_PATCH 2 )
+set ( MY_VERSION_MINOR 7 )
+set ( MY_VERSION_PATCH 0 )
 
 message ( STATUS "Building MY library version: v"
     ${MY_VERSION_MAJOR}.
@@ -87,25 +87,29 @@ project ( my
 #-------------------------------------------------------------------------------
 
 # look for all SuiteSparse packages:
-find_package ( SuiteSparse_config 7.6.0 REQUIRED )
-find_package ( AMD 3.3.1 REQUIRED )
-find_package ( BTF 2.3.1 REQUIRED )
-find_package ( CAMD 3.3.1 REQUIRED )
-find_package ( CCOLAMD 3.3.2 REQUIRED )
-find_package ( CHOLMOD 5.2.0 REQUIRED )
-find_package ( COLAMD 3.3.2 REQUIRED )
-find_package ( CXSparse 4.3.1 REQUIRED )
-find_package ( GraphBLAS 9.0.1 )
-find_package ( KLU 2.3.2 REQUIRED )
-find_package ( KLU_CHOLMOD 2.3.2 REQUIRED )
-find_package ( LDL 3.3.1 REQUIRED )
-find_package ( LAGraph 1.1.2 )
-find_package ( SuiteSparse_Mongoose 3.3.2 REQUIRED )
-find_package ( ParU 0.1.2 REQUIRED )
-find_package ( RBio 4.3.1 REQUIRED )
-find_package ( SPEX 2.3.2 REQUIRED )    # requires GMP and MPFR
-find_package ( SPQR 4.3.2 REQUIRED )
-find_package ( UMFPACK 6.3.2 REQUIRED )
+find_package ( SuiteSparse_config 7.7.0 REQUIRED )
+find_package ( AMD 3.3.2 REQUIRED )
+find_package ( BTF 2.3.2 REQUIRED )
+find_package ( CAMD 3.3.2 REQUIRED )
+find_package ( CCOLAMD 3.3.3 REQUIRED )
+find_package ( CHOLMOD 5.2.1 REQUIRED )
+find_package ( COLAMD 3.3.3 REQUIRED )
+find_package ( CXSparse 4.4.0 REQUIRED )
+find_package ( GraphBLAS 9.1.0 )
+find_package ( KLU 2.3.3 REQUIRED )
+find_package ( KLU_CHOLMOD 2.3.3 REQUIRED )
+find_package ( LDL 3.3.2 REQUIRED )
+find_package ( LAGraph 1.1.3 )
+find_package ( SuiteSparse_Mongoose 3.3.3 REQUIRED )
+find_package ( ParU 0.1.3 REQUIRED )
+find_package ( RBio 4.3.2 REQUIRED )
+find_package ( SPEX 3.1.0 REQUIRED )    # requires GMP and MPFR
+find_package ( SPQR 4.3.3 REQUIRED )
+find_package ( UMFPACK 6.3.3 REQUIRED )
+
+# for GMP and MPFR
+find_package ( MPFR 4.0.2 REQUIRED )    # from SPEX/cmake_modules
+find_package ( GMP 6.1.2 REQUIRED )     # from SPEX/cmake_modules
 
 #-------------------------------------------------------------------------------
 # configure files
@@ -150,7 +154,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME my
         SOVERSION ${MY_VERSION_MAJOR} )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( my_static PROPERTIES
             OUTPUT_NAME my_static )
     endif ( )
@@ -185,7 +189,7 @@ if ( BUILD_STATIC_LIBS )
         OUTPUT_NAME my_cxx
         SOVERSION ${MY_VERSION_MAJOR} )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( my_cxx_static PROPERTIES
             OUTPUT_NAME my_cxx_static )
     endif ( )
@@ -506,15 +510,12 @@ endif ( )
 # other libraries
 #-------------------------------------------------------------------------------
 
-# The "MY" library does not directly rely on the OpenMP, libm, BLAS, LAPACK,
-# GMP, and MPFR libraries.  However, if you wish to create a library that
-# uses those libraries, uncomment the corresponding section.  For example,
-# when using SPEX, it would be common to also need direct access to GMP and
-# MPFR.  These direct dependencies are left out of the MY CMakeLists.txt, as
-# a test for the other SuiteSparse cmake build system, to ensure that the
-# libraries should be linked via the libraries that depend on them.  For
-# example, linking with SPEX (above) should bring in GMP and MPRF for use in
-# SPEX (but not in MY).
+# The "MY" library does not directly rely on the OpenMP, libm, BLAS, and
+# LAPACK, libraries.  However, if you wish to create a library that uses those
+# libraries, uncomment the corresponding section.  These direct dependencies
+# are left out of the MY CMakeLists.txt, as a test for the other SuiteSparse
+# cmake build system, to ensure that the libraries should be linked via the
+# libraries that depend on them.
 
 if ( 0 )
 
@@ -571,19 +572,9 @@ if ( 0 )
     endif ( )
     include_directories ( ${LAPACK_INCLUDE_DIRS} )
 
-    # gmp:
-    message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
-    if ( BUILD_SHARED_LIBS )
-        target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
-        target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
-    endif ( )
-    if ( BUILD_STATIC_LIBS )
-        target_link_libraries ( my_static PUBLIC ${GMP_STATIC} )
-        target_link_libraries ( my_cxx_static PUBLIC ${GMP_STATIC} )
-    endif ( )
-    include_directories ( ${GMP_INCLUDE_DIR} )
+endif ( )
 
-    # mpfr:
+    # MPFR:
     message ( STATUS "MPFR library:        ${MPFR_LIBRARIES}" )
     if ( BUILD_SHARED_LIBS )
         target_link_libraries ( my PRIVATE ${MPFR_LIBRARIES} )
@@ -595,7 +586,17 @@ if ( 0 )
     endif ( )
     include_directories ( ${MPFR_INCLUDE_DIR} )
 
-endif ( )
+    # GMP (must be linked after MPFR)
+    message ( STATUS "GMP library:         ${GMP_LIBRARIES}" )
+    if ( BUILD_SHARED_LIBS )
+        target_link_libraries ( my PRIVATE ${GMP_LIBRARIES} )
+        target_link_libraries ( my_cxx PRIVATE ${GMP_LIBRARIES} )
+    endif ( )
+    if ( BUILD_STATIC_LIBS )
+        target_link_libraries ( my_static PUBLIC ${GMP_STATIC} )
+        target_link_libraries ( my_cxx_static PUBLIC ${GMP_STATIC} )
+    endif ( )
+    include_directories ( ${GMP_INCLUDE_DIR} )
 
 #-------------------------------------------------------------------------------
 # installation location

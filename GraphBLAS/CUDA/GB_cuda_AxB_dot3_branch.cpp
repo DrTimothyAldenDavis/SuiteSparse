@@ -2,20 +2,14 @@
 // GraphBLAS/CUDA/GB_cuda_AxB_dot3_branch: decide to use GPU for dot3
 //------------------------------------------------------------------------------
 
-// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2023, All Rights Reserved.
+// SuiteSparse:GraphBLAS, Timothy A. Davis, (c) 2017-2024, All Rights Reserved.
 // SPDX-License-Identifier: Apache-2.0
 
 //------------------------------------------------------------------------------
 
-// Decide branch direction for GPU use for the dot-product MxM
+// Decide branch direction for GPU use for the dot-product C<M>=A'*B
 
-#include "GraphBLAS_cuda.h"
-
-extern "C" 
-{
-  #include "GB_mxm.h"
-}
-#include "GB_cuda.h"
+#include "GB_cuda.hpp"
 #include <cuda_runtime.h>
 
 bool GB_cuda_AxB_dot3_branch 
@@ -36,8 +30,12 @@ bool GB_cuda_AxB_dot3_branch
         !GB_cuda_type_branch (semiring->multiply->ztype))
     {
         // one or more types are not yet supported on the GPU
-        // FIXME: remove debug output here:
-        std::cout << "Not using cuda path: type size not supported" <<  std::endl;
+        return (false) ;
+    }
+
+    if (A->vlen == 0)
+    {
+        // C has no entries: no need to compute it on the GPU
         return (false) ;
     }
 
@@ -45,9 +43,6 @@ bool GB_cuda_AxB_dot3_branch
     double adeg = ((double) GB_nnz (A)) / ((double) GB_IMAX (1, A->nvec)) ;
     double bdeg = ((double) GB_nnz (B)) / ((double) GB_IMAX (1, B->nvec)) ;
     double work = GB_nnz (M) * GB_IMIN (adeg, bdeg) ;
-
-    // TODO if A or B are not accessed (first, 2nd, or pair ops)
-    // then the type if A can be user-defined here, for CUDA.
 
     int ngpus_to_use = GB_ngpus_to_use (work) ;
     GBURBLE (" work:%g GPUs:%d ", work, ngpus_to_use) ;
@@ -60,9 +55,8 @@ bool GB_cuda_AxB_dot3_branch
     }
     else
     {
-        // FIXME: remove debug output here:
-        std::cout << "Not using cuda path." <<  std::endl;
+//      std::cout << "Not using cuda path for dot3." <<  std::endl;
         return false ;
     }
-
 }
+

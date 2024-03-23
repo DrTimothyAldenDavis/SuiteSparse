@@ -2,7 +2,7 @@
 SuiteSparse:  A Suite of Sparse matrix packages at http://suitesparse.com
 -----------------------------------------------------------------------------
 
-Mar 2, 2024, SuiteSparse VERSION 7.6.1
+Mar 22, 2024, SuiteSparse VERSION 7.7.0
 
 SuiteSparse is a set of sparse-matrix-related packages written or co-authored
 by Tim Davis, available at https://github.com/DrTimothyAldenDavis/SuiteSparse .
@@ -1023,6 +1023,11 @@ build type).  The static libraries will not be built (since
   If `ON`, OpenMP is used in ParU if it is available.
   Default: `SUITESPARSE_USE_OPENMP`.
 
+* `SPEX_USE_OPENMP`:
+
+  If `ON`, OpenMP is used in SPEX if it is available.
+  Default: `SUITESPARSE_USE_OPENMP`.
+
 * `SUITESPARSE_DEMOS`:
 
   If `ON`, build the demo programs for each package.  Default: `OFF`.
@@ -1072,9 +1077,31 @@ build type).  The static libraries will not be built (since
 
   If `ON`, use the Fortran compiler to determine how C calls Fortan, and to
   build several optional Fortran routines. If `OFF`, use
-  `SUITESPARSE_C_TO_FORTRAN` to define how C calls Fortran (see
-  `SuiteSparse_config/cmake_modules/SuiteSparsePolicy.cmake` for details).
+  `SUITESPARSE_C_TO_FORTRAN` to define how C calls Fortran.
   Default: `ON`.
+
+* `SUITESPARSE_C_TO_FORTRAN`
+
+  A string that defines how C calls Fortran (i.e., functions exported by the
+  BLAS library).  This setting is used if no working Fortran compiler could be
+  detected or `SUITESPARSE_USE_FORTRAN` is set to `OFF`.  This string is to be
+  read as the argument list and the body of a preprocessor macro.  The first
+  argument to that macro is any Fortran function name in lowercase letters.
+  The second argument is the same function name in uppercase letters.  The body
+  defines by which function name Fortran functions are called.  This is
+  necessary because Fortran is case-insensitive, and different Fortran
+  compilers use different name mangling conventions.  If a MSVC C/C++ compiler
+  is used, this defaults to `"(name,NAME) name"` (i.e., lower case without
+  trailing underscore).  That is the name mangling convention for the Intel
+  Fortran compiler on Windows.  If any other C/C++ compilers are used, this
+  defaults to `"(name,NAME) name##_"` (i.e., lower case with trailing
+  underscore).  That is the name mangling convention for most of the commonly
+  used Fortran compilers (like `ifx` on platforms other than Windows,
+  `gfortran`, `flang`, ...).  The latter name mangling convention is also used
+  by default by OpenBLAS (independent on the platform or the compiler used to
+  build OpenBLAS).  You might need to configure with
+  `-DSUITESPARSE_C_TO_FORTRAN="(name,NAME) name##_"` if you'd like to build
+  SuiteSparse using a MSVC compiler and link to OpenBLAS.
 
 Additional options are available for specific packages:
 

@@ -80,7 +80,7 @@ jobs:
         run: lscpu
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         env:
@@ -101,7 +101,7 @@ jobs:
 
       - name: restore ccache
         # setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -134,6 +134,22 @@ jobs:
           echo "compression = true" >> ~/.ccache/ccache.conf
           ccache -s
           echo "/usr/lib/ccache" >> $GITHUB_PATH
+
+      - name: check auto-dependency resolution
+        # no need to check this with all runners. One is enough.
+        if: ${{ matrix.cc == 'gcc' && matrix.cuda == 'without' }}
+        run: |
+          mkdir -p ${GITHUB_WORKSPACE}/build-dep && cd ${GITHUB_WORKSPACE}/build-dep
+          IFS=':' read -r -a libs <<< "${INSTALLED_LIBS}"
+          for lib in "${libs[@]}"; do
+            printf "::group::   \033[0;32m==>\033[0m Configuring to build only \033[0;32m${lib}\033[0m\n"
+            cmake --fresh \
+                  -DCMAKE_BUILD_TYPE="Release" \
+                  -DBLA_VENDOR="OpenBLAS" \
+                  -DSUITESPARSE_ENABLE_PROJECTS="${lib,,}" \
+                  ..
+            echo "::endgroup::"
+          done
 
       - name: configure
         run: |
@@ -174,7 +190,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building.
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -273,7 +289,7 @@ jobs:
     # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
     runs-on: windows-latest
 
-    name: msvc (${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
+    name: msvc (${{ matrix.cc }} ${{ matrix.openmp }} OpenMP ${{ matrix.cuda }} CUDA, ${{ matrix.link }})
 
     defaults:
       run:
@@ -288,6 +304,7 @@ jobs:
         openmp: [with, without]
         cuda: [without]
         link: [both]
+        cc: [cl]
         include:
           - openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
@@ -297,6 +314,7 @@ jobs:
               -DSUITESPARSE_USE_CUDA=ON
               -DCMAKE_CUDA_COMPILER_LAUNCHER="ccache"
             link: both
+            cc: cl
           - openmp: with
             cuda: with
             cuda-cmake-flags:
@@ -306,6 +324,11 @@ jobs:
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
+            cc: cl
+          - openmp: with
+            cuda: without
+            link: both
+            cc: clang-cl
 
     env:
       CHERE_INVOKING: 1
@@ -317,15 +340,15 @@ jobs:
           Get-CIMInstance -Class Win32_Processor | Select-Object -Property Name
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - uses: conda-incubator/setup-miniconda@v2
+      - uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
 
       - name: cache conda packages
         id: conda-cache
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: C:/Miniconda/envs/test
           key: conda:msvc
@@ -341,7 +364,7 @@ jobs:
 
       - name: save conda cache
         if: ${{ steps.conda-cache.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: C:/Miniconda/envs/test
           key: ${{ steps.conda-cache.outputs.cache-primary-key }}
@@ -361,7 +384,7 @@ jobs:
 
           msystem: UCRT64
 
-      - uses: Jimver/cuda-toolkit@v0.2.11
+      - uses: Jimver/cuda-toolkit@v0.2.14
         name: install CUDA toolkit
         if: matrix.cuda == 'with'
         id: cuda-toolkit
@@ -401,18 +424,18 @@ jobs:
         shell: msys2 {0}
         run: |
           echo "ccachedir=$(cygpath -m $(${CCACHE} -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "key=ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the GitHub cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
           # Prefer caches from the same branch. Fall back to caches from the dev branch.
           restore-keys: |
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
-            ccache:msvc:root:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:
+            ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:${{ github.ref }}
+            ccache:msvc:root:${{ matrix.cc }}:${{ matrix.openmp }}:${{ matrix.cuda }}:${{ matrix.link }}:
 
       - name: configure ccache
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
@@ -435,6 +458,8 @@ jobs:
           fi
           mkdir -p ${GITHUB_WORKSPACE}/build && cd ${GITHUB_WORKSPACE}/build
           cmake -G"Ninja Multi-Config" \
+                -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+                -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
                 -DCMAKE_BUILD_TYPE="Release" \
                 -DCMAKE_INSTALL_PREFIX=".." \
                 -DCMAKE_PREFIX_PATH="C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
@@ -476,7 +501,7 @@ jobs:
       - name: save ccache
         # Save the cache after we are done (successfully) building
         # This helps to retain the ccache even if the subsequent steps are failing.
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -497,7 +522,9 @@ jobs:
         run: |
           cd ${GITHUB_WORKSPACE}/Example/build
           printf "::group::\033[0;32m==>\033[0m Configuring example\n"
-          cmake \
+          cmake -G"Ninja Multi-Config" \
+            -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+            -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
             -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
             -DBLA_VENDOR="All" \
             ${{ matrix.openmp-cmake-flags }} \
@@ -533,7 +560,9 @@ jobs:
             printf "::group::   \033[0;32m==>\033[0m Building with Config.cmake with library \033[0;32m${lib}\033[0m\n"
             cd ${GITHUB_WORKSPACE}/TestConfig/${lib}
             cd build
-            cmake \
+            cmake -G"Ninja Multi-Config" \
+              -DCMAKE_C_COMPILER=${{ matrix.cc }} \
+              -DCMAKE_CXX_COMPILER=${{ matrix.cc }} \
               -DCMAKE_PREFIX_PATH="${GITHUB_WORKSPACE}/lib/cmake;C:/Miniconda/envs/test/Library;${GITHUB_WORKSPACE}/dependencies" \
               ..
             cmake --build . --config Release

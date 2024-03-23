@@ -1,5 +1,5 @@
 ( cd build && cmake  .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR version: v4.3.3 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -15,36 +15,147 @@
 -- CUDA toolkit inc: /usr/local/cuda/include
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
--- SuiteSparse_config version: 7.5.0
+-- SuiteSparse_config version: 7.7.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.5.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.3.1
+-- AMD version: 3.3.2
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.1
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.2
 -- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.3.1
+-- COLAMD version: 3.3.3
 -- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.1
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.3
 -- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- CAMD version: 3.3.1
+-- CAMD version: 3.3.2
 -- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.1
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.2
 -- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.3.1
+-- CCOLAMD version: 3.3.3
 -- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.1
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.3
 -- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- CHOLMOD version: 5.1.1
+-- CHOLMOD version: 5.2.1
 -- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.1.1
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.2.1
 -- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
 -- Looking for Intel 32-bit BLAS
 -- Found Intel10_64lp 32-bit BLAS
--- Building SPQR/GPURUNTIME version: v4.3.1 (Jan 10, 2024)
--- Building SPQR/GPUQRENGINE version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR/GPURUNTIME version: v4.3.3 (Mar 22, 2024)
+-- Building SPQR/GPUQRENGINE version: v4.3.3 (Mar 22, 2024)
 -- Also compiling the demos in GPUQREngine/Demo
--- Building SPQR_CUDA version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR_CUDA version: v4.3.3 (Mar 22, 2024)
+-- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
+-- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
+-- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install include:  /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
+-- Install bin:      /home/faculty/d/davis/dev2/SuiteSparse/bin
+-- Install pkg-file: /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install rpath:    $ORIGIN;/home/faculty/d/davis/dev2/SuiteSparse/lib;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build   rpath:    /home/faculty/d/davis/dev2/SuiteSparse/lib;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build type:       Release 
+-- Fortran:          /usr/bin/f95
+-- CUDA toolkit :    TRUE
+-- CUDA toolkit ver: 11.7.99
+-- CUDA toolkit inc: /usr/local/cuda/include
+-- CUDA toolkit lib: /usr/local/cuda/lib64
+-- CUDA:             enabled
+-- C++ flags for CUDA:  
+-- LAPACK libraries:    /usr/lib/x86_64-linux-gnu/libmkl_gf_lp64.so;/usr/lib/x86_64-linux-gnu/libmkl_gnu_thread.so;/usr/lib/x86_64-linux-gnu/libmkl_core.so;/usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so;-lpthread;-lm;-ldl;-lpthread;-lm;-ldl 
+-- LAPACK include:       
+-- LAPACK linker flags:  
+-- BLAS libraries:      /usr/lib/x86_64-linux-gnu/libmkl_gf_lp64.so;/usr/lib/x86_64-linux-gnu/libmkl_gnu_thread.so;/usr/lib/x86_64-linux-gnu/libmkl_core.so;/usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so;-lpthread;-lm;-ldl 
+-- BLAS include:         
+-- BLAS linker flags:    
+-- Also compiling the demos in SPQR/Demo
+-- ------------------------------------------------------------------------
+-- SuiteSparse CMAKE report for: SPQR
+-- ------------------------------------------------------------------------
+-- inside common SuiteSparse root:  true
+-- install in SuiteSparse/lib and SuiteSparse/include: 1
+-- build type:           Release
+-- BUILD_SHARED_LIBS:    ON
+-- BUILD_STATIC_LIBS:    ON
+-- C compiler:           /usr/bin/cc 
+-- C flags:              
+-- C++ compiler:         /usr/bin/c++
+-- C++ flags:            
+-- C Flags release:      -O3 -DNDEBUG 
+-- C++ Flags release:    -O3 -DNDEBUG 
+-- Fortran compiler:     /usr/bin/f95 
+-- compile definitions:  BLAS_Intel10_64lp
+-- BLAS integer:         int32_t
+-- CUDA architectures:   52;75;80
+-- ------------------------------------------------------------------------
+-- Configuring done (0.9s)
+-- Generating done (0.1s)
+-- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build
+gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
+[  4%] Built target GPURuntime_static
+[  7%] Built target GPURuntime
+[ 15%] Built target GPUQREngine_static
+[ 23%] Built target GPUQREngine
+[ 25%] Built target gpuqrengine_demo
+[ 55%] Built target SPQR_static
+[ 86%] Built target SPQR
+[ 87%] Built target qrdemoc
+[ 88%] Built target qrsimplec
+[ 90%] Built target qrsimplec_int32
+[ 92%] Built target qrsimple
+[ 93%] Built target qrdemo
+[ 94%] Built target qrdemoc_int32
+[ 96%] Built target qrdemo_int32
+[ 98%] Built target qrdemo_gpu
+[ 99%] Built target qrdemo_gpu3
+[100%] Built target qrdemo_gpu2
+gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
+( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
+-- Building SPQR version: v4.3.3 (Mar 22, 2024)
+-- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
+-- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
+-- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install include:  /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
+-- Install bin:      /home/faculty/d/davis/dev2/SuiteSparse/bin
+-- Install pkg-file: /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Install rpath:    $ORIGIN;/home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build   rpath:    /home/faculty/d/davis/dev2/SuiteSparse/lib
+-- Build type:       Release 
+-- Fortran:          /usr/bin/f95
+-- CUDA toolkit :    TRUE
+-- CUDA toolkit ver: 11.7.99
+-- CUDA toolkit inc: /usr/local/cuda/include
+-- CUDA toolkit lib: /usr/local/cuda/lib64
+-- CUDA:             enabled
+-- SuiteSparse_config version: 7.7.0
+-- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
+-- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
+-- AMD version: 3.3.2
+-- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.2
+-- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
+-- COLAMD version: 3.3.3
+-- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.3
+-- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
+-- CAMD version: 3.3.2
+-- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.2
+-- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
+-- CCOLAMD version: 3.3.3
+-- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.3
+-- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
+-- CHOLMOD version: 5.2.1
+-- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.2.1
+-- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
+-- Looking for Intel 32-bit BLAS
+-- Found Intel10_64lp 32-bit BLAS
+-- Building SPQR/GPURUNTIME version: v4.3.3 (Mar 22, 2024)
+-- Building SPQR/GPUQRENGINE version: v4.3.3 (Mar 22, 2024)
+-- Also compiling the demos in GPUQREngine/Demo
+-- Building SPQR_CUDA version: v4.3.3 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -101,122 +212,11 @@ gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 [ 87%] Built target qrdemoc
 [ 88%] Built target qrsimplec
 [ 89%] Built target qrdemo
-[ 91%] Built target qrdemo_int32
-[ 93%] Built target qrsimple
-[ 95%] Built target qrsimplec_int32
-[ 96%] Built target qrdemoc_int32
-[ 98%] Built target qrdemo_gpu
-[ 99%] Built target qrdemo_gpu2
-[100%] Built target qrdemo_gpu3
-gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
-( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.3.1 (Jan 10, 2024)
--- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
--- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
--- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install include:  /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- Install bin:      /home/faculty/d/davis/dev2/SuiteSparse/bin
--- Install pkg-file: /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install rpath:    $ORIGIN;/home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build   rpath:    /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build type:       Release 
--- Fortran:          /usr/bin/f95
--- CUDA toolkit :    TRUE
--- CUDA toolkit ver: 11.7.99
--- CUDA toolkit inc: /usr/local/cuda/include
--- CUDA toolkit lib: /usr/local/cuda/lib64
--- CUDA:             enabled
--- SuiteSparse_config version: 7.5.0
--- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.5.0
--- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.3.1
--- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.1
--- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.3.1
--- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.1
--- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- CAMD version: 3.3.1
--- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.1
--- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.3.1
--- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.1
--- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- CHOLMOD version: 5.1.1
--- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.1.1
--- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
--- Looking for Intel 32-bit BLAS
--- Found Intel10_64lp 32-bit BLAS
--- Building SPQR/GPURUNTIME version: v4.3.1 (Jan 10, 2024)
--- Building SPQR/GPUQRENGINE version: v4.3.1 (Jan 10, 2024)
--- Also compiling the demos in GPUQREngine/Demo
--- Building SPQR_CUDA version: v4.3.1 (Jan 10, 2024)
--- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
--- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
--- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install include:  /home/faculty/d/davis/dev2/SuiteSparse/include/suitesparse
--- Install bin:      /home/faculty/d/davis/dev2/SuiteSparse/bin
--- Install pkg-file: /home/faculty/d/davis/dev2/SuiteSparse/lib
--- Install rpath:    $ORIGIN;/home/faculty/d/davis/dev2/SuiteSparse/lib;/home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build   rpath:    /home/faculty/d/davis/dev2/SuiteSparse/lib;/home/faculty/d/davis/dev2/SuiteSparse/lib
--- Build type:       Release 
--- Fortran:          /usr/bin/f95
--- CUDA toolkit :    TRUE
--- CUDA toolkit ver: 11.7.99
--- CUDA toolkit inc: /usr/local/cuda/include
--- CUDA toolkit lib: /usr/local/cuda/lib64
--- CUDA:             enabled
--- C++ flags for CUDA:  
--- LAPACK libraries:    /usr/lib/x86_64-linux-gnu/libmkl_gf_lp64.so;/usr/lib/x86_64-linux-gnu/libmkl_gnu_thread.so;/usr/lib/x86_64-linux-gnu/libmkl_core.so;/usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so;-lpthread;-lm;-ldl;-lpthread;-lm;-ldl 
--- LAPACK include:       
--- LAPACK linker flags:  
--- BLAS libraries:      /usr/lib/x86_64-linux-gnu/libmkl_gf_lp64.so;/usr/lib/x86_64-linux-gnu/libmkl_gnu_thread.so;/usr/lib/x86_64-linux-gnu/libmkl_core.so;/usr/lib/gcc/x86_64-linux-gnu/9/libgomp.so;-lpthread;-lm;-ldl 
--- BLAS include:         
--- BLAS linker flags:    
--- Also compiling the demos in SPQR/Demo
--- ------------------------------------------------------------------------
--- SuiteSparse CMAKE report for: SPQR
--- ------------------------------------------------------------------------
--- inside common SuiteSparse root:  true
--- install in SuiteSparse/lib and SuiteSparse/include: 1
--- build type:           Release
--- BUILD_SHARED_LIBS:    ON
--- BUILD_STATIC_LIBS:    ON
--- C compiler:           /usr/bin/cc 
--- C flags:              
--- C++ compiler:         /usr/bin/c++
--- C++ flags:            
--- C Flags release:      -O3 -DNDEBUG 
--- C++ Flags release:    -O3 -DNDEBUG 
--- Fortran compiler:     /usr/bin/f95 
--- compile definitions:  BLAS_Intel10_64lp
--- BLAS integer:         int32_t
--- CUDA architectures:   52;75;80
--- ------------------------------------------------------------------------
--- Configuring done (0.9s)
--- Generating done (0.1s)
--- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build
-gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
-[  3%] Built target GPURuntime
-[  7%] Built target GPURuntime_static
-[ 15%] Built target GPUQREngine
-[ 23%] Built target GPUQREngine_static
-[ 25%] Built target gpuqrengine_demo
-[ 56%] Built target SPQR
-[ 86%] Built target SPQR_static
-[ 87%] Built target qrdemoc_int32
-[ 88%] Built target qrdemoc
-[ 90%] Built target qrsimple
-[ 91%] Built target qrsimplec
+[ 91%] Built target qrsimple
 [ 93%] Built target qrsimplec_int32
-[ 96%] Built target qrdemo_int32
-[ 96%] Built target qrdemo
-[ 98%] Built target qrdemo_gpu
+[ 95%] Built target qrdemo_gpu
+[ 98%] Built target qrdemo_int32
+[ 98%] Built target qrdemoc_int32
 [ 99%] Built target qrdemo_gpu2
 [100%] Built target qrdemo_gpu3
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
@@ -438,7 +438,7 @@ Matrix    841-by-841    nnz:   4089 residual:  1.8e-16 rank:    841
 ./build/qrdemoc < Matrix/lp_e226_transposed.mtx
 Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 ( cd build && cmake  -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j8 )
--- Building SPQR version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR version: v4.3.3 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -454,36 +454,36 @@ Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 -- CUDA toolkit inc: /usr/local/cuda/include
 -- CUDA toolkit lib: /usr/local/cuda/lib64
 -- CUDA:             enabled
--- SuiteSparse_config version: 7.5.0
+-- SuiteSparse_config version: 7.7.0
 -- SuiteSparse_config include: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config
--- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.5.0
+-- SuiteSparse_config library: /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.so.7.7.0
 -- SuiteSparse_config static:  /home/faculty/d/davis/dev2/SuiteSparse/SuiteSparse_config/build/libsuitesparseconfig.a
--- AMD version: 3.3.1
+-- AMD version: 3.3.2
 -- AMD include: /home/faculty/d/davis/dev2/SuiteSparse/AMD/Include
--- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.1
+-- AMD library: /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.so.3.3.2
 -- AMD static:  /home/faculty/d/davis/dev2/SuiteSparse/AMD/build/libamd.a
--- COLAMD version: 3.3.1
+-- COLAMD version: 3.3.3
 -- COLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/Include
--- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.1
+-- COLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.so.3.3.3
 -- COLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/COLAMD/build/libcolamd.a
--- CAMD version: 3.3.1
+-- CAMD version: 3.3.2
 -- CAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/Include
--- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.1
+-- CAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.so.3.3.2
 -- CAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CAMD/build/libcamd.a
--- CCOLAMD version: 3.3.1
+-- CCOLAMD version: 3.3.3
 -- CCOLAMD include: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/Include
--- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.1
+-- CCOLAMD library: /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.so.3.3.3
 -- CCOLAMD static:  /home/faculty/d/davis/dev2/SuiteSparse/CCOLAMD/build/libccolamd.a
--- CHOLMOD version: 5.1.1
+-- CHOLMOD version: 5.2.1
 -- CHOLMOD include: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/Include
--- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.1.1
+-- CHOLMOD library: /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.so.5.2.1
 -- CHOLMOD static:  /home/faculty/d/davis/dev2/SuiteSparse/CHOLMOD/build/libcholmod.a
 -- Looking for Intel 32-bit BLAS
 -- Found Intel10_64lp 32-bit BLAS
--- Building SPQR/GPURUNTIME version: v4.3.1 (Jan 10, 2024)
--- Building SPQR/GPUQRENGINE version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR/GPURUNTIME version: v4.3.3 (Mar 22, 2024)
+-- Building SPQR/GPUQRENGINE version: v4.3.3 (Mar 22, 2024)
 -- Also compiling the demos in GPUQREngine/Demo
--- Building SPQR_CUDA version: v4.3.1 (Jan 10, 2024)
+-- Building SPQR_CUDA version: v4.3.3 (Mar 22, 2024)
 -- Source:           /home/faculty/d/davis/dev2/SuiteSparse/SPQR 
 -- Build:            /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build 
 -- Install lib:      /home/faculty/d/davis/dev2/SuiteSparse/lib
@@ -530,23 +530,23 @@ Matrix    472-by-223    nnz:   2768 residual:  9.2e+00 rank:    223
 -- Generating done (0.1s)
 -- Build files have been written to: /home/faculty/d/davis/dev2/SuiteSparse/SPQR/build
 gmake[1]: Entering directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
-[  3%] Built target GPURuntime
-[  7%] Built target GPURuntime_static
-[ 15%] Built target GPUQREngine
-[ 23%] Built target GPUQREngine_static
+[  4%] Built target GPURuntime_static
+[  7%] Built target GPURuntime
+[ 15%] Built target GPUQREngine_static
+[ 23%] Built target GPUQREngine
 [ 25%] Built target gpuqrengine_demo
-[ 56%] Built target SPQR
-[ 86%] Built target SPQR_static
+[ 55%] Built target SPQR_static
+[ 86%] Built target SPQR
 [ 87%] Built target qrsimplec
 [ 89%] Built target qrsimplec_int32
-[ 90%] Built target qrdemoc_int32
-[ 92%] Built target qrdemo_int32
-[ 94%] Built target qrsimple
-[ 95%] Built target qrdemoc
-[ 96%] Built target qrdemo
-[ 98%] Built target qrdemo_gpu
-[ 99%] Built target qrdemo_gpu3
-[100%] Built target qrdemo_gpu2
+[ 90%] Built target qrdemoc
+[ 91%] Built target qrdemo
+[ 93%] Built target qrsimple
+[ 95%] Built target qrdemo_int32
+[ 97%] Built target qrdemo_gpu
+[ 98%] Built target qrdemoc_int32
+[ 99%] Built target qrdemo_gpu2
+[100%] Built target qrdemo_gpu3
 gmake[1]: Leaving directory '/home/faculty/d/davis/dev2/SuiteSparse/SPQR/build'
 ./build/qrdemo_int32 < Matrix/a00.mtx
 Matrix      0-by-0      nnz:      0

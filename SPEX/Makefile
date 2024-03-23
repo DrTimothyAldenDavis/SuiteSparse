@@ -1,9 +1,10 @@
 #-------------------------------------------------------------------------------
-# SuiteSparse/SPEX/Makefile
+# SuiteSparse/SPEX/Makefile: Makefile for SPEX
 #-------------------------------------------------------------------------------
 
-# SPEX_Left_LU: (c) 2019-2022, Chris Lourenco (US Naval Academy), Jinhao Chen,
-# Erick Moreno-Centeno, Timothy A. Davis, Texas A&M.  All Rights Reserved.
+# SPEX: (c) 2019-2024, Christopher Lourenco, Jinhao Chen,
+# Lorena Mejia Domenzain, Erick Moreno-Centeno, and Timothy A. Davis.
+# All Rights Reserved.
 # SPDX-License-Identifier: GPL-2.0-or-later or LGPL-3.0-or-later
 
 #-------------------------------------------------------------------------------
@@ -51,14 +52,20 @@ debug:
 
 all: library
 
-demos: library
+demos:
 	( cd build && cmake $(CMAKE_OPTIONS) -DSUITESPARSE_DEMOS=1 .. && cmake --build . --config Release -j${JOBS} )
-	( cd SPEX_Left_LU/Demo && ../../build/example  )
-	( cd SPEX_Left_LU/Demo && ../../build/example2 )
-	( cd SPEX_Left_LU/Demo && ../../build/spexlu_demo )
+	./build/spex_demo_lu_simple1
+	./build/spex_demo_lu_simple2          ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
+	./build/spex_demo_lu_extended       f ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
+	./build/spex_demo_lu_doub           f ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
+	./build/spex_demo_backslash         f ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
+	./build/spex_demo_cholesky_simple   f ExampleMats/494_bus.mat.txt   ExampleMats/494_bus.rhs.txt
+	./build/spex_demo_cholesky_extended f ExampleMats/494_bus.mat.txt   ExampleMats/494_bus.rhs.txt
+	./build/spex_demo_threaded          f ExampleMats/10teams.mat.txt   ExampleMats/10teams.rhs.txt
+	./build/spex_demo_backslash         f ExampleMats/Trefethen_500.mat.txt ExampleMats/Trefethen_500.rhs.txt
 
 cov:
-	( cd SPEX_Left_LU/Tcov && $(MAKE) )
+	( cd Tcov && $(MAKE) )
 
 # just compile after running cmake; do not run cmake again
 remake:
@@ -78,7 +85,7 @@ uninstall:
 # remove all files not in the distribution
 clean:
 	- $(RM) -rf build/* Config/*.tmp MATLAB/*.o MATLAB/*.mex*
-	( cd SPEX_Left_LU/Tcov && $(MAKE) clean )
+	( cd Tcov && $(MAKE) clean )
 
 purge: clean
 

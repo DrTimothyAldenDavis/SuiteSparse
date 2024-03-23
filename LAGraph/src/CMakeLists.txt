@@ -63,7 +63,7 @@ if ( BUILD_STATIC_LIBS )
         C_STANDARD 11
         PUBLIC_HEADER "include/LAGraph.h" )
 
-    if ( MSVC )
+    if ( MSVC OR ("${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC") )
         set_target_properties ( LAGraph_static PROPERTIES
             OUTPUT_NAME lagraph_static )
     endif ( )
