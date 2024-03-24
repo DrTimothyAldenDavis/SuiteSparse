@@ -11,7 +11,7 @@ Mar 22, 2024: version 9.1.0
     * port to clang-cl: fixing the GxB_get and GxB_set macro
     * (53) bug fix: eWiseAdd C<M>=A+B when M, A, and B are all hypersparse;
         access to M was incorrect (also affects C<M>+=T for any operation, if
-        M and T are both hypersparse).
+        M and T are both hypersparse).  Caught by Roi Lipman.
 
 Mar 1, 2024: version 9.0.3
 
