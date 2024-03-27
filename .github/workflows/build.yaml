@@ -66,7 +66,7 @@ jobs:
             openmp: without
             openmp-cmake-flags: "-DSUITESPARSE_USE_OPENMP=OFF"
           - compiler: gcc
-            compiler-pkgs: "g++ gcc"
+            compiler-pkgs: "g++ gcc iwyu"
             cc: "gcc"
             cxx: "g++"
             ccache-max: 600M
@@ -80,10 +80,13 @@ jobs:
             openmp: with
             link: static
             # "Fake" a cross-compilation to exercise that build system path
+            # Also build with "include-what-you-use" in this configuration
             link-cmake-flags:
               -DBUILD_SHARED_LIBS=OFF
               -DBUILD_STATIC_LIBS=ON
               -DCMAKE_SYSTEM_NAME="Linux"
+              -DCMAKE_CXX_INCLUDE_WHAT_YOU_USE=include-what-you-use
+              -DCMAKE_C_INCLUDE_WHAT_YOU_USE=include-what-you-use
 
     env:
       CC: ${{ matrix.cc }}
