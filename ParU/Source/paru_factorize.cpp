@@ -344,7 +344,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
 #if ! defined ( PARU_1TASK )
     // The parallel factorization gets stuck intermittently on Windows or Mac
     // with gcc, so always use the sequential factorization in that case.
-    if (task_Q.size() * 2 > Control->paru_max_threads)
+    if (task_Q.size() * 2 > ((long unsigned int) (Control->paru_max_threads)))
     {
         PRLEVEL(1, ("Parallel\n"));
         // checking user input
