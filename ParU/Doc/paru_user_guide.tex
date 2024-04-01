@@ -45,7 +45,7 @@ matrices using OpenMP tasking, a shared-memory programming model for modern
 multicore architectures. The package is written in C++ and real sparse matrices 
 are supported.
 
-ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 All Rights Reserved.
 SPDX-License-Identifier: GNU GPL 3.0
 \end{abstract}
@@ -58,7 +58,9 @@ SPDX-License-Identifier: GNU GPL 3.0
 %-------------------------------------------------------------------------------
 
 The algorithms used in ParU will be discussed in a companion paper,
-?. This document gives detailed information on the installation
+% FIXME
+?.
+This document gives detailed information on the installation
 and use of ParU.
 ParU is a parallel sparse direct solver. This package uses OpenMP
 tasking for parallelism. ParU calls UMFPACK for the symbolic analysis phase,
@@ -74,10 +76,10 @@ important for ParU's performance.
 \subsubsection{Instructions on using METIS}
 %-------------------------------------------------------------------------------
 
-SuiteSparse is now on METIS 5.1.0, distributed along with SuiteSparse itself.
+SuiteSparse uses METIS 5.1.0, distributed along with SuiteSparse itself.
 Its use is optional, however. ParU is using AMD as the default ordering. METIS
 tends to give orderings that are good for parallelism. However, the METIS itself
-can be slow. As a result, the symbolic analysis using METIS can be slow, but
+can be slower than AMD. As a result, the symbolic analysis using METIS can be slow, but
 usually, the factorization is faster. Therefore, depending on your use case,
 either use METIS, or you can compile and run your code without using METIS.
 If you are using METIS on an unsymmetric case, UMFPACK has to form the Matrix
@@ -86,10 +88,10 @@ it. To avoid such conditions, you can use the ordering strategy
 \verb'UMFPACK_ORDERING_METIS_GUARD' that is introduced in UMFPACK version 6.0.
 This ordering strategy use COLAMD instead of METIS in those cases.
 
-Note that METIS is not bug-free; it can occasionally cause segmentation 
-faults, particularly if used when finding basic solutions to underdetermined 
-systems with many more columns than rows. ParU does not solve such 
-systems anyway but you might see some problems with other SuiteSparse packages.
+% Note that METIS is not bug-free; it can occasionally cause segmentation 
+% faults, particularly if used when finding basic solutions to underdetermined 
+% systems with many more columns than rows. ParU does not solve such 
+% systems anyway but you might see some problems with other SuiteSparse packages.
 
 %-------------------------------------------------------------------------------
 \section{Using ParU in C and C++}
@@ -127,7 +129,7 @@ For more options, see the {\tt ParU/README.md} file.
 \subsection{C/C++ Example}
 %-------------------------------------------------------------------------------
 
-The C++ interface is written using only real matrices.  
+The C++ interface is written using only real matrices (double precision).  
 The simplest function computes the MATLAB equivalent of
 \verb'x=A\b' and is almost as simple:
 Below is a simple C++ program that illustrates the use of ParU.  The
@@ -260,6 +262,8 @@ prior routine. You can see the user callable routines in
 \verb'ParU/Include/ParU.h'.
 The following is a list of user-callable C++ functions and what they
 can do:
+
+\verb'FIXME: add prototypes and description of each parameter' % FIXME
 
 \begin{enumerate}
 

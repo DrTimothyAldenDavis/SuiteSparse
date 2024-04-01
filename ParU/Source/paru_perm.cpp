@@ -6,7 +6,7 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GNU GPL 3.0
 
-/*! @brief Computing and saving row permutation. This must be doen after
+/*! @brief Computing and saving row permutation. This must be done after
  * factorization.
  *
  *   I have this transition   A ---> S ---> LU

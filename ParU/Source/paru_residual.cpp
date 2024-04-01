@@ -34,7 +34,6 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
     {
         return PARU_INVALID;
     }
- 
 
 #ifndef NDEBUG
     int64_t PR = 1;
