@@ -8,8 +8,8 @@
 
 /*! @brief 
  * The version number and date can also be obtained via compile-time constants
- * from ParU.hpp.  However, it is possible to compile a user application that
- * #includes one version of ParU.hpp and then links with another version of
+ * from ParU.h.  However, it is possible to compile a user application that
+ * #includes one version of ParU.h and then links with another version of
  * the ParU library later on, so the version number and date may differ from
  * the compile-time constants.
  *

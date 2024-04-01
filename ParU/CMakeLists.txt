@@ -13,10 +13,10 @@
 # cmake 3.22 is required to find the BLAS in SuiteSparse_config
 cmake_minimum_required ( VERSION 3.22 )
 
-set ( PARU_DATE "Mar 22, 2024" )
-set ( PARU_VERSION_MAJOR  0 CACHE STRING "" FORCE )
-set ( PARU_VERSION_MINOR  1 CACHE STRING "" FORCE )
-set ( PARU_VERSION_UPDATE 3 CACHE STRING "" FORCE )
+set ( PARU_DATE "Apr XX, 2024" )    # FIXME: date
+set ( PARU_VERSION_MAJOR  1 CACHE STRING "" FORCE )
+set ( PARU_VERSION_MINOR  0 CACHE STRING "" FORCE )
+set ( PARU_VERSION_UPDATE 0 CACHE STRING "" FORCE )
 
 message ( STATUS "Building PARU version: v"
     ${PARU_VERSION_MAJOR}.
@@ -122,23 +122,14 @@ include ( SuiteSparseBLAS )     # requires cmake 3.22
 # configure files
 #-------------------------------------------------------------------------------
 
-configure_file ( "Config/ParU_definitions.h.in"
-    "${PROJECT_SOURCE_DIR}/Include/ParU_definitions.h"
+configure_file ( "Config/ParU.h.in"
+    "${PROJECT_SOURCE_DIR}/Include/ParU.h"
     NEWLINE_STYLE LF )
 configure_file ( "Config/paru_version.tex.in"
     "${PROJECT_SOURCE_DIR}/Doc/paru_version.tex"
     NEWLINE_STYLE LF )
 
-#-------------------------------------------------------------------------------
-# include directories
-#-------------------------------------------------------------------------------
-
-# FIXME: "paru_internal.hpp" includes "umf_internal.h" which is not installed.
-#        That means the two libraries are interdependent and ParU cannot be
-#        built as a stand-alone project outside a common build tree.
-include_directories ( Source Include
-    ${PROJECT_SOURCE_DIR}/../UMFPACK/Source
-    )
+include_directories ( Source Include )
 
 #-------------------------------------------------------------------------------
 # dynamic paru library properties
@@ -155,7 +146,7 @@ if ( BUILD_SHARED_LIBS )
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
         SOVERSION ${PARU_VERSION_MAJOR}
-        PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
+        PUBLIC_HEADER "Include/ParU.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     if ( ${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.25" )
@@ -178,7 +169,7 @@ if ( BUILD_STATIC_LIBS )
         CXX_STANDARD 11
         CXX_STANDARD_REQUIRED ON
         OUTPUT_NAME paru
-        PUBLIC_HEADER "Include/ParU.hpp;Include/ParU_C.h;Include/ParU_definitions.h"
+        PUBLIC_HEADER "Include/ParU.h"
         WINDOWS_EXPORT_ALL_SYMBOLS ON )
 
     if ( MSVC OR ("${CMAKE_CXX_SIMULATE_ID}" STREQUAL "MSVC") )

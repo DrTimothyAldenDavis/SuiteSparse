@@ -16,12 +16,13 @@
 #include <cinttypes>
 
 #define SUITESPARSE_BLAS_DEFINITIONS
-#include "ParU.hpp"
+#include "ParU.h"
 #include "paru_omp.hpp"
 
 // -----------------------------------------------------------------------------
 // debugging and printing macros
 // -----------------------------------------------------------------------------
+
 // force debugging off
 #ifndef NDEBUG
     #define NDEBUG
@@ -42,11 +43,108 @@
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #endif
 
+//==============================================================================
+// UMFPACK internal definitions
+//==============================================================================
+
+// These definitions are meant only for internal use in UMFPACK and ParU.
+// The two typedefs below must exactly match their definitions in
+// UMFPACK/Source/umf_internal.h.
+
 extern "C"
 {
-#include "umf_internal.h"
-#undef Int
+
+//------------------------------------------------------------------------------
+// Symbolic: symbolic factorization
+//------------------------------------------------------------------------------
+
+// This is is constructed by UMFPACK_symbolic, and is needed by UMFPACK_numeric
+// to factor the matrix.
+
+typedef struct  // SymbolicType
+{
+
+    double
+        num_mem_usage_est,      /* estimated max Numeric->Memory size */
+        num_mem_size_est,       /* estimated final Numeric->Memory size */
+        peak_sym_usage,         /* peak Symbolic and SymbolicWork usage */
+        sym,                    /* symmetry of pattern */
+        dnum_mem_init_usage,    /* min Numeric->Memory for UMF_kernel_init */
+        amd_lunz,               /* nz in LU for AMD, with symmetric pivoting */
+        lunz_bound ;            /* max nx in LU, for arbitrary row pivoting */
+
+    int64_t
+        valid,                  /* set to SYMBOLIC_VALID, for validity check */
+        max_nchains,
+        nchains,
+        *Chain_start,
+        *Chain_maxrows,
+        *Chain_maxcols,
+        maxnrows,               /* largest number of rows in any front */
+        maxncols,               /* largest number of columns in any front */
+        *Front_npivcol,         /* Front_npivcol [j] = size of jth supercolumn*/
+        *Front_1strow,          /* first row in front j */
+        *Front_leftmostdesc,    /* leftmost desc of front j */
+        *Front_parent,          /* super-column elimination tree */
+        *Cperm_init,            /* initial column ordering */
+        *Rperm_init,            /* initial row ordering */
+        *Cdeg, *Rdeg,
+        *Esize,
+        dense_row_threshold,
+        n1,                     /* number of singletons */
+        n1r,                    /* number of row singletons */
+        n1c,                    /* number of column singletons */
+        nempty,                 /* MIN (nempty_row, nempty_col) */
+        *Diagonal_map,          /* initial "diagonal" */
+        esize,                  /* size of Esize array */
+        nfr,
+        n_row, n_col,           /* matrix A is n_row-by-n_col */
+        nz,                     /* nz of original matrix */
+        nb,                     /* block size for BLAS 3 */
+        num_mem_init_usage,     /* min Numeric->Memory for UMF_kernel_init */
+        nempty_row, nempty_col,
+
+        strategy,
+        ordering,
+        fixQ,
+        prefer_diagonal,
+        nzaat,
+        nzdiag,
+        amd_dmax ;
+
+} SymbolicType ;
+
+//------------------------------------------------------------------------------
+// SW Type: used internally in umfpack_qsymbolic
+//------------------------------------------------------------------------------
+
+typedef struct  /* SWType */
+{
+    int64_t
+        *Front_npivcol,     /* size n_col + 1 */
+        *Front_nrows,       /* size n_col */
+        *Front_ncols,       /* size n_col */
+        *Front_parent,      /* size n_col */
+        *Front_cols,        /* size n_col */
+        *InFront,           /* size n_row */
+        *Ci,                /* size Clen */
+        *Cperm1,            /* size n_col */
+        *Rperm1,            /* size n_row */
+        *InvRperm1,         /* size n_row */
+        *Si,                /* size nz */
+        *Sp ;               /* size n_col + 1 */
+    double *Rs ;            /* size n_row */
+
+} SWType ;
+
 }
+
+#undef  TRUE
+#define TRUE (1)
+#undef  FALSE
+#define FALSE (0)
+
+//------------------------------------------------------------------------------
 
 // for printing information uncomment this; to activate assertions uncomment
 // #undef NPR

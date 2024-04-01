@@ -16,7 +16,7 @@
 
 # For backward compatibility the following variables are set:
 
-# PARU_INCLUDE_DIR - where to find ParU.hpp and other headers
+# PARU_INCLUDE_DIR - where to find ParU.h
 # PARU_LIBRARY     - dynamic ParU library
 # PARU_STATIC      - static ParU library
 # PARU_LIBRARIES   - libraries when using ParU

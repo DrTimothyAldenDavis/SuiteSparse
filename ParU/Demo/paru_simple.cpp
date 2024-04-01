@@ -15,7 +15,8 @@
 #include <ios>
 #include <cmath>
 
-#include "ParU.hpp"
+#include "ParU.h"
+
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;

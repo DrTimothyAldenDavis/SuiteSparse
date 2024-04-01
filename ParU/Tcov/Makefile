@@ -38,7 +38,7 @@ all: paru_quicker_test paru_brutal_test paru_ctest
 	
 
 #-------------------------------------------------------------------------------
-INC = ../Include/ParU.hpp 
+INC = ../Include/ParU.h
 
 OBJ = \
         paru_mem.o \

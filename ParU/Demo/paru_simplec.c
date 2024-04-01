@@ -13,7 +13,8 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "ParU_C.h"
+#include "ParU.h"
+
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;

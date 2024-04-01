@@ -138,7 +138,7 @@ Some error testing code is omited to simplify showing how the program works.
 The full program can be found in 
 \verb'ParU/Demo/paru_demo.cpp'
 \begin{minted}{cpp}
-#include "ParU.hpp"
+#include "ParU.h"
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
 A simple demo for the C interface is shown next. You can see the complete demo
 in \verb'ParU/Demo/paru_simple.c'
 \begin{minted}{c}
-#include "ParU_C.h"
+#include "ParU.h"
 int main(int argc, char **argv)
 {
     cholmod_common Common, *cc;
@@ -257,7 +257,7 @@ int main(int argc, char **argv)
 \verb'ParU_Ret' is the output structure of all ParU routines in C and C++.  The 
 user must check the output before continuing and computing further the result of
 prior routine. You can see the user callable routines in 
-\verb'ParU/Include/ParU.hpp'.
+\verb'ParU/Include/ParU.h'.
 The following is a list of user-callable C++ functions and what they
 can do:
 
@@ -303,7 +303,7 @@ can do:
 
 The C interface is quite similar to the C++ interface, and you can see the C user 
 callable routines in 
-\verb'ParU/Include/ParU_C.h'.
+\verb'ParU/Include/ParU.h'.
 The following is a list of user-callable C functions and what they
 can do:
 
@@ -353,24 +353,15 @@ can do:
 %-------------------------------------------------------------------------------
 
 For further details on how to use the C/C++ syntax, please refer to the
-definitions and descriptions in the following files:
-
-\begin{enumerate}
-\item \verb'SuiteSparse/ParU/Include/ParU.hpp' describes each
-C++ function.  Only \verb'double' and square matrices are supported.
-
-
-\item \verb'SuiteSparse/ParU/Include/ParU_C.h' describes
-the C-callable functions.
-
-\end{enumerate}
+definitions and descriptions in the \verb'SuiteSparse/ParU/Include/ParU.h'
+file, which describes each C++ and C function.  Only \verb'double' and square
+matrices are supported.
 
 There are C/C++ options to control ParU, which is an input argument to several 
 routines. When you make C++ \verb'ParU_Control' object, it is initialized with 
 default values. The user can change the values. When using C  
 \verb'ParU_C_Control', you have to fully initialize it or call
 \verb'ParU_C_Init_Control' before using it.
-
 
 Here is the list of control options (both in C and C++):
 

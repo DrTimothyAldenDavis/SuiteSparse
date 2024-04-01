@@ -36,7 +36,7 @@
 #include "paru_cov.hpp"
 extern "C"
 {
-#include "ParU_C.h"
+#include "ParU.h"
 }
 
 int main(int argc, char **argv)

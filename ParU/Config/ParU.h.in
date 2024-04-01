@@ -1,5 +1,5 @@
 // ============================================================================/
-// ======================= ParU.hpp ===========================================/
+// ======================= ParU.h =============================================/
 // ============================================================================/
 
 // ParU, Copyright (c) 2023, Mohsen Aznaveh and Timothy A. Davis,
@@ -8,7 +8,7 @@
 
 //------------------------------------------------------------------------------
 
-// This is the ParU.hpp file. All user callable routines are in this file and
+// This is the ParU.h file. All user callable routines are in this file and
 // all of them start with ParU_*. This file must be included in all user code
 // that use ParU.
 //
@@ -35,17 +35,64 @@
 #ifndef PARU_H
 #define PARU_H
 
+// ============================================================================/
+// include files and ParU version
+// ============================================================================/
+
+#include "SuiteSparse_config.h"
+#include "cholmod.h"
+#include "umfpack.h"
+
+typedef enum ParU_Ret
+{
+    PARU_SUCCESS = 0,
+    PARU_OUT_OF_MEMORY = -1,  
+    PARU_INVALID = -2,
+    PARU_SINGULAR = -3,
+    PARU_TOO_LARGE = -4
+} ParU_Ret;
+
+#define PARU_MEM_CHUNK (1024*1024)
+
+#define PARU_DATE "@PARU_DATE@"
+#define PARU_VERSION_MAJOR  @PARU_VERSION_MAJOR@
+#define PARU_VERSION_MINOR  @PARU_VERSION_MINOR@
+#define PARU_VERSION_UPDATE @PARU_VERSION_UPDATE@
+
+#define PARU__VERSION SUITESPARSE__VERCODE(@PARU_VERSION_MAJOR@,@PARU_VERSION_MINOR@,@PARU_VERSION_UPDATE@)
+#if !defined (SUITESPARSE__VERSION) || \
+    (SUITESPARSE__VERSION < SUITESPARSE__VERCODE(7,7,0))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires SuiteSparse_config 7.7.0 or later"
+#endif
+
+#if !defined (UMFPACK__VERSION) || \
+    (UMFPACK__VERSION < SUITESPARSE__VERCODE(6,3,3))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires UMFPACK 6.3.3 or later"
+#endif
+
+#if !defined (CHOLMOD__VERSION) || \
+    (CHOLMOD__VERSION < SUITESPARSE__VERCODE(5,2,1))
+#error "ParU @PARU_VERSION_MAJOR@.@PARU_VERSION_MINOR@.@PARU_VERSION_UPDATE@ requires CHOLMOD 5.2.1 or later"
+#endif
+
+//  the same values as UMFPACK_STRATEGY defined in UMFPACK/Include/umfpack.h
+#define PARU_STRATEGY_AUTO 0         // decided to use sym. or unsym. strategy
+#define PARU_STRATEGY_UNSYMMETRIC 1  // COLAMD(A), metis, ...
+#define PARU_STRATEGY_SYMMETRIC 3    // prefer diagonal
+
+// =============================================================================
+// ParU C++ definitions ========================================================
+// =============================================================================
+
+#ifdef __cplusplus
+
+// The following definitions are only available from C++:
+
 // silence these diagnostics:
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wc++11-extensions"
 #endif
-
-// ============================================================================/
-// ======================= ParU version =======================================/
-// ============================================================================/
-
-#include "ParU_definitions.h"
 
 // =============================================================================
 // =========================== ParU_Symbolic ===================================
@@ -220,6 +267,7 @@ struct ParU_Symbolic
 // The default value of some control options can be found here. All user
 // callable functions use ParU_Control; some controls are used only in symbolic
 // phase and some controls are only used in numeric phase.
+
 struct ParU_Control
 {
     int64_t mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
@@ -246,6 +294,7 @@ struct ParU_Control
     int32_t paru_max_threads = 0;  //It will be initialized with omp_max_threads
                                  // if the user do not provide a smaller number
 };
+
 // =============================================================================
 // =========================== ParU_Numeric ====================================
 // =============================================================================
@@ -253,6 +302,7 @@ struct ParU_Control
 // a system. The factors are saved as a seried of dense matrices. User can check
 // the ParU_Ret to see if the factorization is successful. sizes of
 // ParU_Numeric is size of S matrix in Symbolic analysis.
+
 struct ParU_Factors
 {               // dense factorized part pointer
     int64_t m, n;   //  mxn dense matrix
@@ -302,6 +352,7 @@ struct ParU_Numeric
     double max_udiag;
     ParU_Ret res;  // returning value of numeric phase
 };
+
 //------------------------------------------------------------------------------
 // ParU_Version:
 //------------------------------------------------------------------------------
@@ -434,4 +485,206 @@ ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control);
 #pragma clang diagnostic pop
 #endif
 
-#endif //PARU_H
+#endif
+
+// =============================================================================
+// ParU C definitions ==========================================================
+// =============================================================================
+
+// The following definitions are available in both C and C++:
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
+
+// =============================================================================
+// ========================= ParU_C_Control ====================================
+// =============================================================================
+
+// Just like ParU_Control in the C++ interface.  The only difference is the
+// initialization which is handled in the C interface, ParU_C_Init_Control.
+
+typedef struct ParU_C_Control_struct
+{
+    int64_t mem_chunk;  // chunk size for memset and memcpy
+
+    // Symbolic controls
+    int64_t umfpack_ordering;
+    int64_t umfpack_strategy;  // symmetric or unsymmetric
+    int64_t umfpack_default_singleton; //filter singletons if true
+
+    int64_t relaxed_amalgamation_threshold;
+    // symbolic analysis tries that each front have more pivot columns
+    // than this threshold
+
+    // Numeric controls
+    int64_t scale;         // if 1 matrix will be scaled using max_row
+    int64_t panel_width;  // width of panel for dense factorizaiton
+    int64_t paru_strategy;  // the same strategy umfpack used
+
+    double piv_toler;     // tolerance for accepting sparse pivots
+    double diag_toler;  // tolerance for accepting symmetric pivots
+    int64_t trivial;  // dgemms with sizes less than trivial doesn't call BLAS
+    int64_t worthwhile_dgemm;  // dgemms bigger than worthwhile are tasked
+    int64_t worthwhile_trsm;  // trsm bigger than worthwhile are tasked
+    int32_t paru_max_threads;    // It will be initialized with omp_max_threads
+    // if the user do not provide a smaller number
+} ParU_C_Control;
+
+// =========================================================================
+// ========================= ParU_C_Symbolic ===============================
+// =========================================================================
+
+// just a carrier for the C++ data structure
+
+typedef struct ParU_C_Symbolic_struct
+{
+    int64_t m, n, anz;
+    int64_t *Qfill ;        // or Q?
+    void *sym_handle;
+} ParU_C_Symbolic;
+
+// =========================================================================
+// ========================= ParU_C_Numeric ================================
+// =========================================================================
+
+// just a carrier for the C++ data structure
+
+typedef struct ParU_C_Numeric_struct
+{
+    double rcond;
+    int64_t *Pfin ;         // or P?
+    double *Rs ;
+    void *num_handle;
+} ParU_C_Numeric;
+
+//------------------------------------------------------------------------------
+// ParU_Version: 
+//------------------------------------------------------------------------------
+
+// return the version
+ParU_Ret ParU_C_Version (int ver [3], char date [128]);
+
+//------------------------------------------------------------------------------
+// ParU_C_Init_Control
+//------------------------------------------------------------------------------
+
+// Initialize C data structure
+
+ParU_Ret ParU_C_Init_Control (ParU_C_Control *Control_C);
+
+//------------------------------------------------------------------------------
+// ParU_C_Analyze: Symbolic analysis is done in this routine. UMFPACK is called
+// here and after that some more speciallized symbolic computation is done for
+// ParU. ParU_Analyze can be called once and can be used for different
+// ParU_Factorize calls. 
+//------------------------------------------------------------------------------
+
+ParU_Ret ParU_C_Analyze(
+        // input:
+        cholmod_sparse *A,  // input matrix to analyze ...
+        // output:
+        ParU_C_Symbolic **Sym_handle,  // output, symbolic analysis
+        // control:
+        ParU_C_Control *Control);
+
+//------------------------------------------------------------------------------
+// ParU_C_Factorize: Numeric factorization is done in this routine. Scaling and
+// making Sx matrix, computing factors and permutations is here.
+// ParU_C_Symbolic structure is computed ParU_Analyze and is an input in this
+// routine.
+//------------------------------------------------------------------------------
+
+ParU_Ret ParU_C_Factorize(
+        // input:
+        cholmod_sparse *A, ParU_C_Symbolic *Sym,
+        // output:
+        ParU_C_Numeric **Num_handle,
+        // control:
+        ParU_C_Control *Control);
+
+//------------------------------------------------------------------------------
+//--------------------- Solve routines -----------------------------------------
+//------------------------------------------------------------------------------
+
+// In all the solve routines Num structure must come with the same Sym struct
+// that comes from ParU_Factorize
+
+//-------- Ax = b (x is overwritten on b)---------------------------------------
+ParU_Ret ParU_C_Solve_Axx(
+    // input:
+    ParU_C_Symbolic *Sym, ParU_C_Numeric *Num,
+    // input/output:
+    double *b,              // vector of size m-by-1
+    // control:
+    ParU_C_Control *Control);
+
+//-------- Ax = b --------------------------------------------------------------
+ParU_Ret ParU_C_Solve_Axb(
+    // input:
+    ParU_C_Symbolic *Sym, ParU_C_Numeric *Num,
+    double *b,              // vector of size m-by-1
+    // output
+    double *x,              // vector of size m-by-1
+    // control:
+    ParU_C_Control *Control);
+
+//-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
+ParU_Ret ParU_C_Solve_AXX(
+    // input
+    ParU_C_Symbolic *Sym, ParU_C_Numeric *Num, int64_t nrhs,
+    // input/output:
+    double *B,  // m(num_rows of A) x nrhs
+    // control:
+    ParU_C_Control *Control);
+
+//-------- AX = B  (multiple rhs)-----------------------------------------------
+ParU_Ret ParU_C_Solve_AXB(
+    // input
+    ParU_C_Symbolic *Sym, ParU_C_Numeric *Num, int64_t nrhs,
+    double *B,  // m(num_rows of A) x nrhs
+    // output:
+    double *X,  // m(num_rows of A) x nrhs
+    // control:
+    ParU_C_Control *Control);
+
+// FIXME: add Lsolve, perms etc
+
+//------------------------------------------------------------------------------
+//-------------- computing residual --------------------------------------------
+//------------------------------------------------------------------------------
+
+// The user provide both x and b
+// resid = norm1(b-A*x) / (norm1(A) * norm1 (x))
+ParU_Ret ParU_C_Residual_bAx(
+    // inputs:
+    cholmod_sparse *A, double *x, double *b, int64_t m,
+    // output:
+    double *resid, double *anorm, double *xnorm,
+    // control:
+    ParU_C_Control *Control);
+
+// resid = norm1(B-A*X) / (norm1(A) * norm1 (X))
+// (multiple rhs)
+ParU_Ret ParU_C_Residual_BAX(
+    // inputs:
+    cholmod_sparse *A, double *X, double *B, int64_t m, int64_t nrhs,
+    // output:
+    double *resid, double *anorm, double *xnorm,
+    // control:
+    ParU_C_Control *Control);
+
+//------------------------------------------------------------------------------
+//------------ Free routines----------------------------------------------------
+//------------------------------------------------------------------------------
+
+ParU_Ret ParU_C_Freenum(ParU_C_Numeric **Num_handle, ParU_C_Control *Control);
+ParU_Ret ParU_C_Freesym(ParU_C_Symbolic **Sym_handle, ParU_C_Control *Control);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

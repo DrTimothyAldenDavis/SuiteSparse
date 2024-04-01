@@ -16,7 +16,7 @@
 extern "C" {
 #include "cholmod_matlab.h"
 }
-#include "ParU.hpp"
+#include "ParU.h"
 
 void mexFunction
 (

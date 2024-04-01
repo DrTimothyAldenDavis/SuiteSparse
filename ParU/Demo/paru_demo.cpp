@@ -17,7 +17,7 @@
 #include <cmath>
 #include <omp.h>
 
-#include "ParU.hpp"
+#include "ParU.h"
 
 int main(int argc, char **argv)
 {

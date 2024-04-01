@@ -40,9 +40,9 @@ folder, then `sudo make install`.
 
 ##  How to use
 
-You should include ParU.hpp in your C++ project. Then for solving Ax=b in which
-A is a sparse matrix in matrix market format with double entries and b is a
-dense vector of double (or a dense matrix B for multiple rhs):
+You should include ParU.h in your C++ or C project. Then for solving Ax=b in
+which A is a sparse matrix in matrix market format with double entries and b is
+a dense vector of double (or a dense matrix B for multiple rhs):
 
      // you can have different Controls for each
      info = ParU_Analyze(A, &Sym, &Control);

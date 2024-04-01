@@ -12,7 +12,7 @@
  *
  *  @author Aznaveh
  */
-#include "ParU_C.h"
+#include "ParU.h"
 
 #include "paru_internal.hpp"
 
