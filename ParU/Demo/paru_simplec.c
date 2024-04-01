@@ -60,7 +60,7 @@ int main(int argc, char **argv)
         info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
         double resid, anorm, xnorm;
         info =
-            ParU_C_Residual_bAx(A, xx, b, m, &resid, &anorm, &xnorm, &Control);
+            ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
         printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e "
             " and rcond is %.2e.\n", rresid, anorm, xnorm, Num->rcond);

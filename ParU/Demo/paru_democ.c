@@ -140,7 +140,7 @@ int main(int argc, char **argv)
         double resid, anorm, xnorm;
         printf ("\n--------- ParU_C_Residual_bAx:\n") ;
         info =
-            ParU_C_Residual_bAx(A, xx, b, m, &resid, &anorm, &xnorm, &Control);
+            ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
         if (info != PARU_SUCCESS)
         {
             printf("ParU: Residual has a problem.\n");
@@ -179,7 +179,7 @@ int main(int argc, char **argv)
             return info;
         }
         printf ("\n--------- ParU_C_Residual_BAX:\n") ;
-        info = ParU_C_Residual_BAX(A, X, B, m, nrhs, &resid, &anorm, &xnorm,
+        info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm,
                                    &Control);
         if (info != PARU_SUCCESS)
         {
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
     double umf_solve_time = omp_get_wtime() - solve_start;
     umf_time = omp_get_wtime() - umf_start_time;
     double umf_resid, umf_anorm, umf_xnorm;
-    info = ParU_C_Residual_bAx(A, x, b, m, &umf_resid, &umf_anorm, &umf_xnorm,
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm,
                                &Control);
     double umf_rresid = (umf_anorm == 0 || umf_xnorm == 0 ) 
         ? 0 : (umf_resid/(umf_anorm*umf_xnorm));

@@ -64,7 +64,7 @@ int main(int argc, char **argv)
         for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
         info = ParU_Solve(Sym, Num, b, xx, &Control);
         double resid, anorm, xnorm;
-        info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
+        info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
         std::cout << std::scientific << std::setprecision(2)
             << "Relative residual is |" << rresid << "| anorm is " << anorm

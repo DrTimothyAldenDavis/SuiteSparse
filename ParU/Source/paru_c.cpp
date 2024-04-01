@@ -236,7 +236,7 @@ ParU_Ret ParU_C_Solve_AXB (
 
 ParU_Ret ParU_C_Residual_bAx (
     // inputs:
-    cholmod_sparse *A, double *x, double *b, int64_t m,
+    cholmod_sparse *A, double *x, double *b,
     // output:
     double *residc, double *anormc, double *xnormc,
     // control:
@@ -246,7 +246,7 @@ ParU_Ret ParU_C_Residual_bAx (
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
     ParU_Ret info;
-    info = ParU_Residual (A, x, b, m, resid, anorm, xnorm, &Control); 
+    info = ParU_Residual (A, x, b, resid, anorm, xnorm, &Control); 
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;
@@ -255,19 +255,21 @@ ParU_Ret ParU_C_Residual_bAx (
 
 
 // resid = norm1(B-A*X) / norm1(A) (multiple rhs)
-ParU_Ret ParU_C_Residual_BAX (
+ParU_Ret ParU_C_Residual_BAX
+(
     // inputs:
-    cholmod_sparse *A, double *X, double *B, int64_t m, int64_t nrhs,
+    cholmod_sparse *A, double *X, double *B, int64_t nrhs,
     // output:
     double *residc, double *anormc, double *xnormc,
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 { 
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
     ParU_Ret info;
-    info = ParU_Residual (A, X, B, m, nrhs, resid, anorm, xnorm, &Control); 
+    info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, &Control); 
     *residc = resid;
     *anormc = anorm;
     *xnormc = xnorm;

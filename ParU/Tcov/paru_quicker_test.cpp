@@ -179,10 +179,10 @@ int main(int argc, char **argv)
     }
 
     info =
-        ParU_Residual(A, xx, NULL, m, resid, anorm, xnorm, &Control);// coverage
+        ParU_Residual(A, xx, NULL, resid, anorm, xnorm, &Control);// coverage
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -233,10 +233,10 @@ int main(int argc, char **argv)
     }
 
     // This one is just for more coverage
-    info = ParU_Residual(A, X, NULL, m, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, X, NULL, nrhs, resid, anorm, xnorm, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Residual(A, X, B, m, nrhs, resid, anorm, xnorm, &Control);
+    info = ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, &Control);
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {

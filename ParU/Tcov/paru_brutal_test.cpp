@@ -136,8 +136,8 @@ int main(int argc, char **argv)
     }
 
     double resid, anorm, xnorm;
-    // info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
-    BRUTAL_ALLOC_TEST(info, ParU_Residual(A, xx, b, m, 
+    // info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
+    BRUTAL_ALLOC_TEST(info, ParU_Residual(A, xx, b,
                 resid, anorm, xnorm, &Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
@@ -192,7 +192,7 @@ int main(int argc, char **argv)
     }
 
     BRUTAL_ALLOC_TEST(
-        info, ParU_Residual(A, X, B, m, nrhs, resid, anorm, xnorm, &Control));
+        info, ParU_Residual(A, X, B, nrhs, resid, anorm, xnorm, &Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {

@@ -130,7 +130,7 @@ int main(int argc, char **argv)
         return (0) ;
     }
 
-    BRUTAL_ALLOC_TEST(info, ParU_C_Residual_bAx(A, xx, b, m, &resid, 
+    BRUTAL_ALLOC_TEST(info, ParU_C_Residual_bAx(A, xx, b, &resid, 
                 &anorm, &xnorm, &Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
@@ -180,7 +180,7 @@ int main(int argc, char **argv)
         return (0) ;
     }
 
-    BRUTAL_ALLOC_TEST (info, ParU_C_Residual_BAX(A, X, B, m, nrhs, &resid,
+    BRUTAL_ALLOC_TEST (info, ParU_C_Residual_BAX(A, X, B, nrhs, &resid,
                 &anorm, &xnorm, &Control));
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
@@ -255,7 +255,7 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (status == UMFPACK_OK, status) ;
 
     double umf_resid, umf_anorm, umf_xnorm;
-    info = ParU_C_Residual_bAx(A, x, b, m, &umf_resid, 
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, 
             &umf_anorm, &umf_xnorm, &Control);
     umf_resid = (umf_anorm == 0 || umf_xnorm == 0 ) ? 0 : 
         (umf_resid/(umf_anorm*umf_xnorm));

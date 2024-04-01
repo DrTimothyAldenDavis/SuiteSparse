@@ -518,7 +518,6 @@ ParU_Ret ParU_Residual
     cholmod_sparse *A,  // an n-by-n sparse matrix
     double *x,          // vector of size n
     double *b,          // vector of size n
-    int64_t m,          // FIXME: remove this, use A->nrow instead
     // output:
     double &resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
     double &anorm,      // 1-norm of A
@@ -535,7 +534,6 @@ ParU_Ret ParU_Residual
     cholmod_sparse *A,  // an n-by-n sparse matrix
     double *X,          // array of size n-by-nrhs
     double *B,          // array of size n-by-nrhs
-    int64_t m,          // FIXME: remove this, use A->nrow instead
     int64_t nrhs,
     // output:
     double &resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
@@ -767,7 +765,6 @@ ParU_Ret ParU_C_Residual_bAx
     cholmod_sparse *A,  // an n-by-n sparse matrix
     double *x,          // vector of size n
     double *b,          // vector of size n
-    int64_t m,          // FIXME: remove this, use A->nrow instead
     // output:
     double *resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
     double *anorm,      // 1-norm of A
@@ -784,7 +781,6 @@ ParU_Ret ParU_C_Residual_BAX
     cholmod_sparse *A,  // an n-by-n sparse matrix
     double *X,          // array of size n-by-nrhs
     double *B,          // array of size n-by-nrhs
-    int64_t m,          // FIXME: remove this, use A->nrow instead
     int64_t nrhs,
     // output:
     double *resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))

@@ -172,7 +172,7 @@ int main(int argc, char **argv)
         info = ParU_Solve(Sym, Num, b, xx, &Control);
         printf("Solve time is %lf seconds.\n", my_solve_time);
         double resid, anorm, xnorm;
-        info = ParU_Residual(A, xx, b, m, resid, anorm, xnorm, &Control);
+        info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
         printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
                 " %.2e.\n", resid, anorm, xnorm, Num->rcond);
         free(b);
@@ -238,7 +238,7 @@ int main(int argc, char **argv)
         for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
         info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
         double resid, anorm, xnorm;
-        info = ParU_C_Residual_bAx(A, xx, b, m, &resid, &anorm, &Control);
+        info = ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &Control);
         printf("Residual is |%.2e|, anorm is %.2e, xnorm is %.2e  and rcond is"
                 " %.2e.\n", resid, anorm, xnorm, Num->rcond);
         free(b);

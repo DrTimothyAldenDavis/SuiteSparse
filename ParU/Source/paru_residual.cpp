@@ -21,7 +21,7 @@
 
 #include "paru_internal.hpp" 
 
-ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
+ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b,
     double &resid, double &anorm, double &xnorm, ParU_Control *Control)
 {
     DEBUGLEVEL(0);
@@ -30,10 +30,7 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
     {
         return PARU_INVALID;
     }
-    if ( (int64_t) A->nrow != m)
-    {
-        return PARU_INVALID;
-    }
+    int64_t m = A->nrow ;
 
 #ifndef NDEBUG
     int64_t PR = 1;
@@ -80,7 +77,7 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b, int64_t m,
  * resid = norm1(b-A*x) / norm1(A)
  *
  * */
-ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B, int64_t m,
+ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B,
     int64_t nrhs,  
    double &resid, double &anorm, double &xnorm, ParU_Control *Control)
 {
@@ -90,11 +87,7 @@ ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B, int64_t m,
     {
         return PARU_INVALID;
     }
-    if ( (int64_t) A->nrow != m)
-    {
-        return PARU_INVALID;
-    }
- 
+    int64_t m = A->nrow ;
 
 #ifndef NDEBUG
     int64_t PR = 1;
