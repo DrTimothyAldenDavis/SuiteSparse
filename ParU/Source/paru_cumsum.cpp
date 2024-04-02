@@ -2,9 +2,9 @@
 //////////////////////////  paru_cumsum ////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*!
  * @brief   Overwrite a vector of length n with its cumulitive sum of length

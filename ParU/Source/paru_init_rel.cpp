@@ -2,9 +2,9 @@
 //////////////////////////  paru_init_rel /////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Initializing element f's  time_stamp
  *          check all f's children and find the maximum time_stamp

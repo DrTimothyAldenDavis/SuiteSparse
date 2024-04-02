@@ -6,8 +6,9 @@ function paru_make
 %
 % You must type the paru_make command while in the ParU/MATLAB directory.
 
-% Copyright FIXME
-% SPDX-License-Identifier: GPL-3.0+
+% ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+% All Rights Reserved.
+% SPDX-License-Identifier: GPL-3.0-or-later
 
 fprintf ('Compiling ParU for MATLAB. You must first compile and install the\n') ;
 fprintf ('ParU dynamic library and add its folder into your LD_LIBRARY_PATH.\n') ;

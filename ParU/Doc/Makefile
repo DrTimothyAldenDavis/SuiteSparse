@@ -1,9 +1,9 @@
 #package minted is need for ParU user guide therfore python3-pygments must 
 #  be installed
 
-# ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
-# SPDX-License-Identifier: GNU GPL 3.0
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 default: paru_user_guide.pdf
 

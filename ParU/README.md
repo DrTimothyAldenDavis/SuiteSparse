@@ -1,17 +1,10 @@
 # SuiteSparse:ParU
 
-ParU, Copyright (c) 2022-2023, Mohsen Aznaveh and Timothy A. Davis,
+ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 All Rights Reserved.
-SPDX-License-Identifier: GNU GPL 3.0
+SPDX-License-Identifier: GPL-3.0-or-later
 
 --------------------------------------------------------------------------------
-
-## NOTE: This is a pre-release of ParU, not yet version 1.0.
-
-There are several FIXME's and TODO's in the code we need to resolv for the
-final version, and the API may change in the final stable v1.0 version.
-
-Stay tuned.
 
 ## Introduction
 
@@ -56,7 +49,7 @@ See Demo for more examples.
 
 --------------------------------------------------------------------------------
 ## License
-Copyright (C) 2022-2023 Mohsen Aznaveh and Timothy A. Davis
+Copyright (C) 2022-2024 Mohsen Aznaveh and Timothy A. Davis
 
 This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software

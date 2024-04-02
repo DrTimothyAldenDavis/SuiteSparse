@@ -2,9 +2,9 @@
 # ParU/Tcov/Makefile
 #===============================================================================
 
-# ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+# ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 # All Rights Reserved.
-# SPDX-License-Identifier: GNU GPL 3.0
+# SPDX-License-Identifier: GPL-3.0-or-later
 
 default: go
 
@@ -34,7 +34,7 @@ C = $(CXX) $(CF) $(I) -Wno-write-strings -std=c++11 \
     -DPARU_COVERAGE -DPARU_ALLOC_TESTING -DBLAS32
 #C2 = $(CC) $(CF) $(I) -Wno-write-strings -std=c11
 
-all: paru_quicker_test paru_brutal_test paru_ctest
+all: paru_quick_test paru_brutal_test paru_c_test
 	
 
 #-------------------------------------------------------------------------------
@@ -95,27 +95,27 @@ VFLAGS = --leak-check=yes  --log-file="valgrindlogfile.log"\
 
 #-------------------------------------------------------------------------------
 paru_brutal_test: paru_brutal_test.cpp $(INC) $(OBJ) 
-	$(C)  paru_brutal_test.cpp -o x_brutal_test $(OBJ) $(LIBS)
+	$(C)  paru_brutal_test.cpp -o paru_brutal_test $(OBJ) $(LIBS)
 
-paru_quicker_test: paru_quicker_test.cpp $(INC) $(OBJ) 
-	$(C)  paru_quicker_test.cpp -o x_quick_test $(OBJ) $(LIBS)
+paru_quick_test: paru_quick_test.cpp $(INC) $(OBJ) 
+	$(C)  paru_quick_test.cpp -o paru_quick_test $(OBJ) $(LIBS)
 
-paru_ctest: paru_ctest.cpp $(INC) $(OBJ) 
-	$(C)  paru_ctest.cpp -o x_paru_c $(OBJ) $(LIBS)
+paru_c_test: paru_c_test.cpp $(INC) $(OBJ) 
+	$(C)  paru_c_test.cpp -o paru_c_test $(OBJ) $(LIBS)
 
 
-go: paru_brutal_test paru_quicker_test paru_ctest
-#	- ./x_brutal_test < ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
+go: paru_brutal_test paru_quick_test paru_c_test
+#	- ./paru_brutal_test < ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
 	- ./trigger.sh
 	- ./cov
 
 vgo: paru_brutal_test
-	- valgrind --leak-check=yes --track-origins=yes -s ./x_brutal_test \
+	- valgrind --leak-check=yes --track-origins=yes -s ./paru_brutal_test \
 		< ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
 	- ./cov
 
 qgo:
-	- ./x_quick_test < ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
+	- ./paru_quick_test < ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
 	- ./cov
 
 #-------------------------------------------------------------------------------
@@ -249,4 +249,5 @@ SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c
 purge: clean
 
 clean: 
-	- $(RM) x_* cov.out parutest_out.txt *.o *.gcno  *.gcov *.gcda gmon.out
+	- $(RM) cov.out parutest_out.txt *.o *.gcno  *.gcov *.gcda gmon.out
+	- $(RM) paru_brutal_test paru_c_test paru_quick_test

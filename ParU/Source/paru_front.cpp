@@ -2,9 +2,9 @@
 /////////////////////////// paru_front  ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Computing factorization of current front and doing the numerical
  * assembly that ancestors will assemble. Degree update will be used in this

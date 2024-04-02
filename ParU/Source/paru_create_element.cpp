@@ -2,9 +2,9 @@
 //////////////////////////  paru_create_element  ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Initializing an empty element
  *    if (Init) use calloc .i.e x = 0

@@ -4,7 +4,7 @@
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*! @brief Computing etree and do the symbolic analysis. In this file I am going
  * to use umfpack symbolic analysis instaed of spqrsym. However, I will keep the

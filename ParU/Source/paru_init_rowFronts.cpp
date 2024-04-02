@@ -2,9 +2,9 @@
 //////////////////////////  paru_init_rowFronts  ///////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 /*!  @brief  Initializing row fronts; fronts will be assembled later.
  *         Initializing Row and column tuple lists:

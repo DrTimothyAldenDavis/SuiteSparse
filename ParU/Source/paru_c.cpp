@@ -4,7 +4,7 @@
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
-// SPDX-License-Identifier: GNU GPL 3.0
+// SPDX-License-Identifier: GPL-3.0-or-later
 
 //
 /*! @brief  This C++ file provides a set of C-callable wrappers so that a C
@@ -404,7 +404,7 @@ ParU_Info ParU_C_Freesym
 }
 
 //------------------------------------------------------------------------------
-// FIXME: add Lsolve, Usolve, Perm, and InvPerm
+// TODO: Lsolve, Usolve, Perm, and InvPerm
 //------------------------------------------------------------------------------
 
 } //extern c
