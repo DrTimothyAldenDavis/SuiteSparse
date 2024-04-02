@@ -469,6 +469,7 @@ ParU_Ret ParU_Lsolve
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     // input/output:
     double *x,              // n-by-1, in column-major storage
+    // control:
     ParU_Control *Control
 ) ;
 
@@ -481,6 +482,7 @@ ParU_Ret ParU_Lsolve
     double *X,              // X is n-by-nrhs, where A is n-by-n
     // input
     int64_t nrhs,
+    // control:
     ParU_Control *Control
 ) ;
 
@@ -491,6 +493,7 @@ ParU_Ret ParU_Usolve
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     // input/output
     double *x,              // n-by-1, in column-major storage
+    // control:
     ParU_Control *Control
 ) ;
 
@@ -503,6 +506,69 @@ ParU_Ret ParU_Usolve
     double *X,              // X is n-by-nrhs, where A is n-by-n
     // input
     int64_t nrhs,
+    // control:
+    ParU_Control *Control
+) ;
+
+//------------------------------------------------------------------------------
+// permutation and inverse permutation, with optional scaling ------------------
+//------------------------------------------------------------------------------
+
+// apply inverse perm x(p) = b, or with scaling: x(p)=b ; x=x./s
+ParU_Ret ParU_InvPerm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control:
+    ParU_Control *Control
+) ;
+
+// apply inverse perm X(p,:) = B or with scaling: X(p,:)=B ; X = X./s
+ParU_Ret ParU_InvPerm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control:
+    ParU_Control *Control
+) ;
+
+// apply perm and scale x = b(P) / s
+ParU_Ret ParU_Perm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control:
+    ParU_Control *Control
+) ;
+
+// apply perm and scale X = B(P,:) / s
+ParU_Ret ParU_Perm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control:
     ParU_Control *Control
 ) ;
 

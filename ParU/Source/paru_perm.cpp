@@ -44,21 +44,41 @@
  * */
 #include "paru_internal.hpp"
 
-///////////////apply inverse perm x(p) = b, or with scaling: x(p)=b ; x=x./s
-int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, double *x, int64_t m)
+
+//------------------------------------------------------------------------------
+// ParU_InvPerm: vector variant
+//------------------------------------------------------------------------------
+
+// apply inverse perm x(p) = b, or with scaling: x(p)=b ; x=x./s
+
+ParU_Ret ParU_InvPerm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control
+    ParU_Control *Control
+)
 {
     DEBUGLEVEL(0);
-    if (!x || !b) return (0);
+    if (!x || !b || !P)
+    {
+        return (PARU_INVALID) ;
+    }
 #ifndef NDEBUG
     PRLEVEL(1, ("%% Inside apply inv permutaion P is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 
     PRLEVEL(1, ("%% before applying inverse permutaion b is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" %.2lf, ", b[k]));
     }
@@ -66,7 +86,7 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, 
 #endif
 
     // x(p) = b ;
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         int64_t j = P[k];  // k-new and j-old; P(new) = old
         x[j] = b[k] ;
@@ -75,7 +95,7 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, 
     if (s != NULL)
     {
         // x = x ./ s
-        for (int64_t j = 0; j < m; j++)
+        for (int64_t j = 0; j < n; j++)
         {
             x[j] /= s [j] ;
         }
@@ -83,24 +103,45 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, 
 
 #ifndef NDEBUG
     PRLEVEL(1, ("%% after applying inverse permutaion x is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" %.8lf, ", x[k]));
     }
     PRLEVEL(1, (" \n"));
 #endif
-    return (1);
+    return (PARU_SUCCESS) ;
 }
 
-///////////////apply inverse perm X(p,:) = B or with scaling: X(p,:)=B ; X = X./s
-int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, double *X, int64_t m, int64_t n)
+//------------------------------------------------------------------------------
+// ParU_InvPerm: matrix variant
+//------------------------------------------------------------------------------
+
+// apply inverse perm X(p,:) = B or with scaling: X(p,:)=B ; X = X./s
+
+ParU_Ret ParU_InvPerm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control
+    ParU_Control *Control
+)
 {
+
     DEBUGLEVEL(0);
-    if (!X || !B) return (0);
+    if (!X || !B || !P)
+    {
+        return (PARU_INVALID) ;
+    }
     PARU_DEFINE_PRLEVEL;
 #ifndef NDEBUG
     PRLEVEL(PR, ("%% mRHS Inside apply inv permutaion P is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(PR, (" " LD ", ", P[k]));
     }
@@ -108,12 +149,12 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, 
 
     PR = 1;
     PRLEVEL(PR, ("%% mRHS before applying inverse permutaion B is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(PR, ("%%"));
-        for (int64_t l = 0; l < n; l++)
+        for (int64_t l = 0; l < ncols; l++)
         {
-            PRLEVEL(PR, (" %.2lf, ", B[l * m + k]));
+            PRLEVEL(PR, (" %.2lf, ", B[l * nrows + k]));
         }
         PRLEVEL(PR, (" \n"));
     }
@@ -125,23 +166,25 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, 
 #endif
 
     // X(p,:) = B
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         int64_t j = P[k];  // k-new and j-old; P(new) = old
-        for (int64_t l = 0; l < n; l++)
+        for (int64_t l = 0; l < ncols; l++)
         {
-            X[l * m + j] = B[l * m + k];  // Pinv(old) = new
+            // X(j,l) = B(k,l)
+            X[l * nrows + j] = B[l * nrows + k];
         }
     }
 
     if (s != NULL)
     {
         // X = X ./ s
-        for (int64_t j = 0; j < m; j++)
+        for (int64_t j = 0; j < nrows; j++)
         {
-            for (int64_t l = 0; l < n; l++)
+            for (int64_t l = 0; l < ncols; l++)
             {
-                X[l * m + j] /= s [j] ;
+                // X(j,l) = X(j,l) / s(j)
+                X[l * nrows + j] /= s [j] ;
             }
         }
     }
@@ -149,41 +192,59 @@ int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, 
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("%% mRHS paru_apply_inv_perm %lf seconds\n", time));
+    PRLEVEL(1, ("%% mRHS ParU_InvPerm %lf seconds\n", time));
 #endif
 #ifndef NDEBUG
     PRLEVEL(1, ("%% mRHS after applying inverse permutaion X is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, ("%%"));
-        for (int64_t l = 0; l < n; l++)
+        for (int64_t l = 0; l < ncols; l++)
         {
-            PRLEVEL(1, (" %.2lf, ", X[l * m + k]));
+            PRLEVEL(1, (" %.2lf, ", X[l * nrows + k]));
         }
         PRLEVEL(1, (" \n"));
     }
     PRLEVEL(1, (" \n"));
 #endif
-    return (1);
+    return (PARU_SUCCESS) ;
 }
 
-///////////////apply perm and scale x = sb(P) //////////////////////////////////
-int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b,
-                          double *x, int64_t m)
+//------------------------------------------------------------------------------
+// ParU_Perm: vector variant
+//------------------------------------------------------------------------------
+
+// apply perm and scale x = b(P) / s
+
+ParU_Ret ParU_Perm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control
+    ParU_Control *Control
+)
 {
     DEBUGLEVEL(0);
-    if (!x || !b) return (0);
+    if (!x || !b || !P)
+    {
+        return (PARU_INVALID) ;
+    }
 
 #ifndef NDEBUG
     PRLEVEL(1, ("%% Inside apply permutaion and scale P is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 
     PRLEVEL(1, ("%% and b is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" %.2lf, ", b[k]));
     }
@@ -191,7 +252,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
 
     PRLEVEL(1, ("%% and s is\n%%"));
 
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" %lf, ", s[k]));
     }
@@ -201,7 +262,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
     if (s == NULL)
     {
         // no scaling
-        for (int64_t k = 0; k < m; k++)
+        for (int64_t k = 0; k < n; k++)
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             #ifndef NDEBUG
@@ -213,7 +274,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
     else
     {
         // with scaling
-        for (int64_t k = 0; k < m; k++)
+        for (int64_t k = 0; k < n; k++)
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
             #ifndef NDEBUG
@@ -226,37 +287,56 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b
 
 #ifndef NDEBUG
     PRLEVEL(1, ("%% after applying permutaion x is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < n; k++)
     {
         PRLEVEL(1, (" %.2lf, ", x[k]));
     }
     PRLEVEL(1, (" \n"));
 #endif
-    return (1);
+    return (PARU_SUCCESS) ;
 }
 
-///////////////apply perm and scale X = sB(P) /////////several mRHS ///////////
-int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *B,
-                          double *X, int64_t m, int64_t n)
-{
-    DEBUGLEVEL(0);
-    if (!X || !B) return (0);
+//------------------------------------------------------------------------------
+// ParU_Perm: matrix variant
+//------------------------------------------------------------------------------
 
+// apply perm and scale X = B(P,:) / s
+
+ParU_Ret ParU_Perm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control
+    ParU_Control *Control
+)
+{
+
+    DEBUGLEVEL(0);
+    if (!X || !B || !P)
+    {
+        return (PARU_INVALID) ;
+    }
 #ifndef NDEBUG
     PRLEVEL(1, ("%% mRHS Inside apply Permutaion and scale P is:\n%%"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, (" " LD ", ", P[k]));
     }
     PRLEVEL(1, (" \n"));
 
     PRLEVEL(1, ("%% and B is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, ("%%"));
-        for (int64_t l = 0; l < n; l++)
+        for (int64_t l = 0; l < ncols; l++)
         {
-            PRLEVEL(1, (" %.2lf, ", B[l * m + k]));
+            PRLEVEL(1, (" %.2lf, ", B[l * nrows + k]));
         }
         PRLEVEL(1, (" \n"));
     }
@@ -264,7 +344,7 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *B
 
     PRLEVEL(1, ("%% and s is\n%%"));
 
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, (" %lf, ", s[k]));
     }
@@ -278,24 +358,26 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *B
     if (s == NULL)
     {
         // no scaling
-        for (int64_t k = 0; k < m; k++)
+        for (int64_t k = 0; k < nrows; k++)
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
-            for (int64_t l = 0; l < n; l++)
+            for (int64_t l = 0; l < ncols; l++)
             {
-                X[l * m + k] = B[l * m + j] ;
+                // X(j,l) = B(k,l)
+                X[l * nrows + k] = B[l * nrows + j] ;
             }
         }
     }
     else
     {
         // with scaling
-        for (int64_t k = 0; k < m; k++)
+        for (int64_t k = 0; k < nrows; k++)
         {
             int64_t j = P[k];  // k-new and j-old; P(new) = old
-            for (int64_t l = 0; l < n; l++)
+            for (int64_t l = 0; l < ncols; l++)
             {
-                X[l * m + k] = B[l * m + j] / s[j];
+                // X(j,l) = B(k,l) / s(j)
+                X[l * nrows + k] = B[l * nrows + j] / s[j];
             }
         }
     }
@@ -303,22 +385,22 @@ int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *B
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("%% mRHS paru_apply_perm_scale %lf seconds\n", time));
+    PRLEVEL(1, ("%% mRHS ParU_Perm %lf seconds\n", time));
 #endif
 
 #ifndef NDEBUG
     PRLEVEL(1, ("\n%% after applying permutaion X is:\n"));
-    for (int64_t k = 0; k < m; k++)
+    for (int64_t k = 0; k < nrows; k++)
     {
         PRLEVEL(1, ("%%"));
-        for (int64_t l = 0; l < n; l++)
+        for (int64_t l = 0; l < ncols; l++)
         {
-            PRLEVEL(1, (" %.2lf, ", X[l * m + k]));
+            PRLEVEL(1, (" %.2lf, ", X[l * nrows + k]));
         }
         PRLEVEL(1, (" \n"));
     }
     PRLEVEL(1, (" \n"));
 #endif
-    return (1);
+    return (PARU_SUCCESS) ;
 }
 

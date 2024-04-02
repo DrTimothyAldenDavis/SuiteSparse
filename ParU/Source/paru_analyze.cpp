@@ -1932,7 +1932,7 @@ ParU_Ret ParU_Analyze(cholmod_sparse *A, ParU_Symbolic **S_handle,
 #ifndef NTIME
     double time = PARU_OPENMP_GET_WTIME;
     time -= start_time;
-    PRLEVEL(1, ("%% mRHS paru_apply_inv_perm %lf seconds\n", time));
+    PRLEVEL(1, ("%% mRHS ParU_Analyze %lf seconds\n", time));
 #endif
     FREE_WORK;
     return PARU_SUCCESS;

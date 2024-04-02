@@ -56,8 +56,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
     }
 
     // t = scaled and permuted version of b
-    // FIXME: make this user-callable
-    paru_apply_perm_scale(Num->Pfin, Num->Rs, b, t, m);
+    ParU_Perm (Num->Pfin, Num->Rs, b, m, t, Control);
 
     ParU_Ret info;
     PRLEVEL(1, ("%% lsolve\n"));
@@ -77,8 +76,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
         return info;
     }
 
-    // FIXME: make this user-callable
-    paru_apply_inv_perm(Sym->Qfill, NULL, t, x, m);  // x(q) = t
+    ParU_InvPerm (Sym->Qfill, NULL, t, m, x, Control);  // x(q) = t
 
     paru_free(m, sizeof(int64_t), t);
 #ifndef NTIME
@@ -139,8 +137,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
     }
 
     // T = permuted and scaled version of B
-    // FIXME: make this user-callable
-    paru_apply_perm_scale(Num->Pfin, Num->Rs, B, T, m, nrhs);
+    ParU_Perm (Num->Pfin, Num->Rs, B, m, nrhs, T, Control);
 
     // T = L\T
     ParU_Ret info;
@@ -163,16 +160,15 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
         return info;
     }
 
-    // FIXME: make this user-callable
-    paru_apply_inv_perm(Sym->Qfill, NULL, T, X, m, nrhs);  // X(q) = T
+    ParU_InvPerm (Sym->Qfill, NULL, T, m, nrhs, X, Control);  // X(q) = T
 
     // to solve A'x=b instead
     // permute t = b (p)
-    // paru_apply_perm_scale(Sym->Qfill, NULL, B, T, m, nrhs);
+    // ParU_Perm (Sym->Qfill, NULL, B, m, nrhs, T, Control);
     // T = U'\T
     // T = L'\T
     // x (q) = t and then x = x/s
-    // paru_apply_inv_perm(Num->Pfin, Num->Rs, T, X, m, nrhs);
+    // ParU_InvPerm (Num->Pfin, Num->Rs, T, m, nrhs, X, Control);
 
     paru_free(m * nrhs, sizeof(int64_t), T);
 

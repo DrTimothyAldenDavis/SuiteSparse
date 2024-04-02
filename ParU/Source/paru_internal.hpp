@@ -554,13 +554,6 @@ int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash,
 
 ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num) ;
 
-// permutation stuff for the solver
-int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *b, double *x, int64_t m) ;
-int64_t paru_apply_inv_perm(const int64_t *P, const double *s, const double *B, double *X, int64_t m, int64_t n) ;
-
-int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b, double *x, int64_t m);
-int64_t paru_apply_perm_scale(const int64_t *P, const double *s, const double *b, double *x, int64_t m, int64_t n);
-
 int64_t paru_gaxpy(cholmod_sparse *A, const double *x, double *y, double alpha);
 double paru_spm_1norm(cholmod_sparse *A);
 double paru_vec_1norm(const double *x, int64_t n);
