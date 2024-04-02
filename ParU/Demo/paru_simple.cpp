@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     std::cout << "================= ParU, a simple demo: ========================\n";
     ParU_Control Control;
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Analyze(A, &Sym, &Control);
     std::cout << "Input matrix is " << Sym->m << "x" << Sym->n
         << " nnz = " << Sym->anz << std::endl;

@@ -157,7 +157,7 @@ int main(int argc, char **argv)
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ParU_Control Control;
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Analyze(A, &Sym, &Control);
     ParU_Numeric *Num;
     info = ParU_Factorize(A, Sym, &Num, &Control);
@@ -211,7 +211,7 @@ int main(int argc, char **argv)
     printf("================= ParU, a simple demo, using C interface : ====\n");
     ParU_C_Control Control;
     ParU_C_Init_Control(&Control);
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_C_Analyze(A, &Sym, &Control);
     printf("Input matrix is %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
     ParU_C_Numeric *Num;
@@ -256,12 +256,11 @@ int main(int argc, char **argv)
 %-------------------------------------------------------------------------------
 \subsection{C/C++ Syntax}
 %-------------------------------------------------------------------------------
-\verb'ParU_Ret' is the output structure of all ParU routines in C and C++.  The 
-user must check the output before continuing and computing further the result of
-prior routine. You can see the user callable routines in 
-\verb'ParU/Include/ParU.h'.
-The following is a list of user-callable C++ functions and what they
-can do:
+\verb'ParU_Info' is the return values of all ParU routines in C and C++.
+The user must check the output before continuing and computing further the
+result of prior routine. You can see the user callable routines in
+\verb'ParU/Include/ParU.h'.  The following is a list of user-callable C++
+functions and what they can do:
 
 \verb'FIXME: add prototypes and description of each parameter' % FIXME
 

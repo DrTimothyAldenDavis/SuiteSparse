@@ -23,7 +23,7 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
 #ifdef PARU_COVERAGE
     L = 32;
 #endif
-#pragma omp atomic read
+    #pragma omp atomic read
     naft = Work->naft;
     const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
@@ -61,14 +61,14 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
         int64_t num_blocks = n / L + 1;
         int64_t len_bloc = n / num_blocks;
         PRLEVEL(1, ("%%  num_blocks = " LD "\n", num_blocks));
-    #pragma omp parallel proc_bind(close)
-    #pragma omp single nowait
+        #pragma omp parallel proc_bind(close)
+        #pragma omp single nowait
         {
             for (int64_t J = 0; J < num_blocks; J++)
             {
                 int64_t n_b = (J + 1) == num_blocks ? (n - J * len_bloc) : len_bloc;
                 PRLEVEL(1, ("%%  n_b= " LD "\n", n_b));
-    #pragma omp task
+                #pragma omp task
                 {
                     int64_t my_blas_ok = TRUE;
                     SUITESPARSE_BLAS_dtrsm("L", "L", "N", "U", m, n_b, &alpha,
@@ -76,7 +76,7 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha, double *
                                            ldb, my_blas_ok);
                     if (!my_blas_ok)
                     {
-    #pragma omp atomic write
+                        #pragma omp atomic write
                         blas_ok = my_blas_ok;
                     }
                 }

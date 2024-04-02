@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     double my_start_time = omp_get_wtime();
 
     ParU_Control Control;
-    ParU_Ret info;
+    ParU_Info info;
 
     Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;

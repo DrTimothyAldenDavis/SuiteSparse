@@ -91,7 +91,7 @@ int main(int argc, char **argv)
     printf("ParU %d.%d.%d", ver[0], ver[1], ver[2]);
     printf(" %s\n", date);
 
-    ParU_Ret info;
+    ParU_Info info;
 
     // info = ParU_Analyze(A, &Sym, &Control);
     BRUTAL_ALLOC_TEST(info, ParU_Analyze(A, &Sym, &Control));

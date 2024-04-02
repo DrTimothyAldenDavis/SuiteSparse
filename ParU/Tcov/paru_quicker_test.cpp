@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     printf(" %s\n", date);
     TEST_ASSERT (date [0] != '\0') ;
 
-    ParU_Ret info;
+    ParU_Info info;
 
     info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
@@ -183,6 +183,7 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
+    printf ("info: %d\n", info) ;
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {

@@ -21,7 +21,7 @@
 // paru_exec_tasks_seq: execute all tasks on a single thread
 //------------------------------------------------------------------------------
 
-ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work,
+ParU_Info paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work,
                              ParU_Numeric *Num)
 {
     DEBUGLEVEL(0);
@@ -34,7 +34,7 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
     if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
     PRLEVEL(1, ("Seq: executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
-    ParU_Ret myInfo;
+    ParU_Info myInfo;
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
@@ -91,7 +91,7 @@ ParU_Ret paru_exec_tasks_seq(int64_t t, int64_t *task_num_child, paru_work *Work
 // paru_exec_tasks: execute all tasks in parallel
 //------------------------------------------------------------------------------
 
-ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task,
+ParU_Info paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task,
                          paru_work *Work, ParU_Numeric *Num)
 {
     ParU_Symbolic *Sym = Work->Sym;
@@ -103,7 +103,7 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
     if (daddy != -1) num_original_children = Sym->task_num_child[daddy];
     PRLEVEL(1, ("executing task " LD " fronts " LD "-" LD " (" LD " children)\n", t,
                 task_map[t] + 1, task_map[t + 1], num_original_children));
-    ParU_Ret myInfo;
+    ParU_Info myInfo;
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
@@ -189,31 +189,33 @@ ParU_Ret paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_task
 // ParU_Factorize: factorize a sparse matrix A
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
-                        ParU_Numeric **Num_handle, ParU_Control *user_Control)
+ParU_Info ParU_Factorize
+(
+    // input:
+    cholmod_sparse *A,  // input matrix to factorize
+    ParU_Symbolic *Sym, // symbolic analsys from ParU_Analyze
+    // output:
+    ParU_Numeric **Num_handle,
+    // control:
+    ParU_Control *user_Control
+)
 {
+    if (!A || !Sym || !Num_handle || !user_Control)
+    {
+        return (PARU_INVALID) ;
+    }
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
     double my_start_time = PARU_OPENMP_GET_WTIME;
 #endif
-    if (A == NULL)
+
+    if (A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
-        PRLEVEL(1, ("ParU: input matrix is invalid\n"));
+        PRLEVEL(1, ("ParU: input matrix must be double real\n"));
         return PARU_INVALID;
     }
 
-    if (A->xtype != CHOLMOD_REAL)
-    {
-        PRLEVEL(1, ("ParU: input matrix must be real\n"));
-        return PARU_INVALID;
-    }
-
-    if (Sym == NULL)
-    {
-        return PARU_INVALID;
-    }
-
-    ParU_Ret info;
+    ParU_Info info;
     // populate my_Control with tested values of Control
     ParU_Control my_Control = *user_Control;
     {
@@ -390,7 +392,7 @@ ParU_Ret ParU_Factorize(cholmod_sparse *A, ParU_Symbolic *Sym,
                     #pragma omp atomic update
                     Work->naft++;
 
-                    ParU_Ret myInfo =
+                    ParU_Info myInfo =
                         paru_exec_tasks(t, task_num_child, chain_task, Work,
                             Num);
                     if (myInfo != PARU_SUCCESS)

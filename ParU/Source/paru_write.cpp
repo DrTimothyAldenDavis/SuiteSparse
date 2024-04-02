@@ -56,7 +56,8 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         fprintf(colfptr, "%%cols\n");
 
         for (int64_t col = 0; col < n; col++)
-        {                                      // for each column of A(:,Qfill)
+        {
+            // for each column of A(:,Qfill)
             int64_t j = Qfill ? Qfill[col] : col;  // col of S is column j of A
             fprintf(colfptr, LD "\n", j);
         }
@@ -111,11 +112,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 
         int64_t ip = 0;  // number of rows seen so far
         for (int64_t k = 0; k < n1; k++)
+        {
             // first singletons
             fprintf(rowfptr, LD "\n", Pinit[k]);
+        }
 
         for (int64_t f = 0; f < nf; f++)
-        {  // rows for each front
+        {
+            // rows for each front
             int64_t col1 = Super[f];
             int64_t col2 = Super[f + 1];
             int64_t fp = col2 - col1;
@@ -135,9 +139,10 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
 
     //-------- computing the direct permutation of S
     for (int64_t k = 0; k < m - n1; k++)
+    {
         // Inv permutation for S Pinv[i] = k;
         newRofS[oldRofS[k]] = k;
-
+    }
     //--------------------
 
     //-------------------- writing row scales to a file
@@ -157,7 +162,9 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             return;
         }
         for (int64_t row = 0; row < m; row++)
+        {
             fprintf(scalefptr, "%.17g\n", Rs[row]);
+        }
         fclose(scalefptr);
     }
     //--------------------
@@ -227,12 +234,14 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         }
 
         for (int64_t j = 0; j < colCount; j++)
+        {
             for (int64_t i = 0; i < fp; i++)
             {
                 {
                     if (uPart[fp * j + i] != 0.0) nnz++;
                 }
             }
+        }
     }
     nnz += Sym->anz - Sym->snz;  // adding singletons
 
@@ -258,6 +267,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         double *pivotalFront = LUs[f].p;
         PRLEVEL(1, ("%% pivotalFront =%p \n", pivotalFront));
         for (int64_t j = col1; j < col2; j++)
+        {
             for (int64_t i = 0; i < rowCount; i++)
             {
                 if (pivotalFront[(j - col1) * rowCount + i] != 0.0)
@@ -265,6 +275,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
                             newRofS[frowList[i]] + n1 + 1, j + n1 + 1,
                             pivotalFront[(j - col1) * rowCount + i]);
             }
+        }
 
 #ifndef NDEBUG  // Printing the pivotal front
         int64_t p = 1;
@@ -273,8 +284,10 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         {
             PRLEVEL(p, (" "));
             for (int64_t c = col1; c < col2; c++)
+            {
                 PRLEVEL(p,
                         (" %.17g ", pivotalFront[(c - col1) * rowCount + r]));
+            }
             PRLEVEL(p, (";\n%% "));
         }
         PRLEVEL(p, (";]\n"));
@@ -283,6 +296,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
         // Printing U part
         double *uPart = Us[f].p;
         for (int64_t j = 0; j < colCount; j++)
+        {
             for (int64_t i = 0; i < fp; i++)
             {
                 if (uPart[fp * j + i] != 0.0)
@@ -290,6 +304,7 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
                             newRofS[frowList[i]] + n1 + 1, fcolList[j] + n1 + 1,
                             uPart[fp * j + i]);
             }
+        }
 #ifndef NDEBUG  // Printing the  U part
         p = 1;
         PRLEVEL(p, ("\n"));
@@ -299,7 +314,9 @@ void paru_write(int scale, char *id, paru_work *Work, ParU_Numeric *Num)
             for (int64_t i = 0; i < fp; i++)
             {
                 for (int64_t j = 0; j < colCount; j++)
+                {
                     PRLEVEL(p, (" %2.5lf\t", uPart[j * fp + i]));
+                }
                 PRLEVEL(p, (";\n  %% "));
             }
 

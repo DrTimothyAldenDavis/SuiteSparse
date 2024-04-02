@@ -26,7 +26,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
     ParU_Control *Control = Num->Control;
     int64_t trivial = Control->trivial;
     int64_t L = Control->worthwhile_dgemm;
-#pragma omp atomic read
+    #pragma omp atomic read
     naft = Work->naft;
     const int32_t max_threads = Control->paru_max_threads;
     if (naft == 1)
@@ -41,10 +41,10 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
     double start_time = PARU_OPENMP_GET_WTIME;
 #endif
     if (M < trivial && N < trivial && K < trivial)
-    // if(0)
     {
         PRLEVEL(1, ("%% SMALL DGEMM (" LD "," LD "," LD ") in " LD "\n", M, N, K, f));
         for (int64_t i = 0; i < M; i++)
+        {
             for (int64_t j = 0; j < N; j++)
             {
                 if (beta == 0) C[i + j * ldc] = 0;
@@ -53,11 +53,11 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
                     C[i + j * ldc] -= A[i + k * lda] * B[k + j * ldb];
                 }
             }
+        }
     }
     else if ((M < L && N < L) || (naft == 1) || (naft >= max_threads))
-    // if small or no other tasks competing or there are lots of other tasks
-    // if(1)
     {
+        // if small or no other tasks competing or there are lots of other tasks
 #ifndef NDEBUG
         if (naft == 1)
         {
@@ -99,8 +99,8 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
 
         PRLEVEL(1, ("%% col-blocks=" LD ",row-blocks=" LD " [" LD "]\n", num_col_blocks,
                     num_row_blocks, num_col_blocks * num_row_blocks));
-    #pragma omp parallel proc_bind(close)
-    #pragma omp single nowait
+        #pragma omp parallel proc_bind(close)
+        #pragma omp single nowait
         {
             for (int64_t I = 0; I < num_row_blocks; I++)
             {
@@ -112,7 +112,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
                         (J + 1) == num_col_blocks ? (N - J * len_col) : len_col;
                     PRLEVEL(1, ("%% I=" LD " J=" LD " m=" LD " n=" LD " in " LD "\n", I, J, m, n,
                                 f));
-    #pragma omp task
+                    #pragma omp task
                     {
                         int64_t my_blas_ok = TRUE;
                         SUITESPARSE_BLAS_dgemm(
@@ -122,7 +122,7 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t M, int64_t N, int64_t K,
                             my_blas_ok);
                         if (!my_blas_ok)
                         {
-    #pragma omp atomic write
+                            #pragma omp atomic write
                             blas_ok = my_blas_ok;
                         }
                     }

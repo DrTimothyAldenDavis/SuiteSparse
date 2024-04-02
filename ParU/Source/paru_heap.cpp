@@ -24,18 +24,20 @@ void paru_check_prior_element(int64_t e, int64_t f, int64_t start_fac,
 
     paru_element *el = elementList[e];
     if (elRow[e] == 0 && el->rValid > start_fac)
-    {  // all the rows are inside he current front; maybe assemble some cols
+    {
+        // all the rows are inside he current front; maybe assemble some cols
         paru_assemble_cols(e, f, colHash, Work, Num);
         return;
     }
 
     if (el->rValid == start_fac || el->cValid == Work->time_stamp[f])
-    {  // all the cols are inside he current front; maybe assemble some rows
+    {
+        // all the cols are inside he current front; maybe assemble some rows
         paru_assemble_rows(e, f, colHash, Work, Num);
     }
 }
 
-ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
+ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
                         std::vector<int64_t> &pivotal_elements, heaps_info &hi,
                         std::vector<int64_t> &colHash, paru_work *Work,
                         ParU_Numeric *Num)
@@ -73,8 +75,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
     PRLEVEL(PR, ("%% the rest size = " LD "\n", size_of_rest));
 
     if (biggest_Child_id != -1)
-    // There are still elements remained in the heaps
     {
+        // There are still elements remaining in the heaps
         // shallow copy of the biggest child
         std::vector<int64_t> *curHeap = heapList[eli] = heapList[biggest_Child_id];
         heapList[biggest_Child_id] = NULL;
@@ -82,7 +84,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
         // O(n) heapify of all children or O(klgn) add to the biggest child
         if (log2(biggest_Child_size) >
             (biggest_Child_size / (size_of_rest + 1)) + 1)
-        {  // klogn
+        {
+            // klogn
             PRLEVEL(PR, ("%% klogn algorhtm\n"));
             for (int64_t i = aChildp[eli]; i <= aChildp[eli + 1] - 1; i++)
             {
@@ -125,7 +128,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
             PRLEVEL(PR, ("%% " LD " pushed ", eli));
         }
         else
-        {  // heapify
+        {
+            // heapify
             PRLEVEL(PR, ("%%heapify with the size " LD "\n", tot_size));
             for (int64_t i = aChildp[eli]; i <= aChildp[eli + 1] - 1; i++)
             {
@@ -168,7 +172,8 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
             curHeap = heapList[eli] = new std::vector<int64_t>;
         }
         catch (std::bad_alloc const &)
-        {  // out of memory
+        {
+            // out of memory
             return PARU_OUT_OF_MEMORY;
         }
         // deep copy
@@ -202,7 +207,7 @@ ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
     return PARU_SUCCESS;
 }
 
-ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elements,
+ParU_Info paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elements,
                                  heaps_info &hi, paru_work *Work,
                                  ParU_Numeric *Num)
 {
@@ -248,7 +253,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
         // O(n) heapify of all children or O(klgn) add to the biggest child
         if (log2(biggest_Child_size) >
             (biggest_Child_size / (size_of_rest + 1)) + 1)
-        {  // klogn
+        {
+            // klogn
             PRLEVEL(PR, ("%% klogn algorhtm\n"));
             for (int64_t i = aChildp[eli]; i <= aChildp[eli + 1] - 1; i++)
             {
@@ -282,7 +288,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
             PRLEVEL(PR, ("%% " LD " pushed ", eli));
         }
         else
-        {  // heapify
+        {
+            // heapify
             PRLEVEL(PR, ("%%heapify with the size " LD "\n", tot_size));
             for (int64_t i = aChildp[eli]; i <= aChildp[eli + 1] - 1; i++)
             {
@@ -322,7 +329,8 @@ ParU_Ret paru_make_heap_empty_el(int64_t f, std::vector<int64_t> &pivotal_elemen
             curHeap = heapList[eli] = new std::vector<int64_t>;
         }
         catch (std::bad_alloc const &)
-        {  // out of memory
+        {
+            // out of memory
             return PARU_OUT_OF_MEMORY;
         }
         // deep copy

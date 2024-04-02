@@ -24,7 +24,7 @@ int64_t paru_nmalloc = 0;
 bool paru_get_malloc_tracking(void)
 {
     bool track;
-#pragma omp critical (paru_malloc_testing)
+    #pragma omp critical (paru_malloc_testing)
     {
         track = paru_malloc_tracking;
     }
@@ -33,7 +33,7 @@ bool paru_get_malloc_tracking(void)
 
 void paru_set_malloc_tracking(bool track)
 {
-#pragma omp critical (paru_malloc_testing)
+    #pragma omp critical (paru_malloc_testing)
     {
         paru_malloc_tracking = track;
     }
@@ -41,7 +41,7 @@ void paru_set_malloc_tracking(bool track)
 
 void paru_set_nmalloc(int64_t nmalloc)
 {
-#pragma omp critical (paru_malloc_testing)
+    #pragma omp critical (paru_malloc_testing)
     {
         paru_nmalloc = nmalloc;
     }
@@ -52,7 +52,7 @@ void paru_set_nmalloc(int64_t nmalloc)
 int64_t paru_decr_nmalloc(void)
 {
     int64_t nmalloc = 0;
-#pragma omp critical (paru_malloc_testing)
+    #pragma omp critical (paru_malloc_testing)
     {
         if (paru_nmalloc > 0)
         {
@@ -67,7 +67,7 @@ int64_t paru_decr_nmalloc(void)
 int64_t paru_get_nmalloc(void)
 {
     int64_t nmalloc = 0;
-#pragma omp critical (paru_malloc_testing)
+    #pragma omp critical (paru_malloc_testing)
     {
         nmalloc = paru_nmalloc;
     }
@@ -214,7 +214,8 @@ void *paru_realloc(
         p = NULL;
     }
     else if (p == NULL)
-    {  // A new alloc
+    {
+        // A new alloc
         p = paru_alloc(nnew, size_Entry);
         *n = (p == NULL) ? 0 : nnew;
     }
@@ -230,7 +231,8 @@ void *paru_realloc(
     }
 
     else
-    {  // The object exists, and is changing to some other nonzero size.
+    {
+        // The object exists, and is changing to some other nonzero size.
         PRLEVEL(1, ("realloc : " LD " to " LD ", " LD "\n", *n, nnew, size_Entry));
         int ok = TRUE;
 
@@ -296,7 +298,8 @@ void paru_free(size_t n, size_t size, void *p)
 //  Global replacement of new and delete
 //
 void *operator new(size_t size)
-{  // no inline, required by [replacement.functions]/3
+{
+    // no inline, required by [replacement.functions]/3
     DEBUGLEVEL(0);
 #ifndef NDEBUG
     static int64_t cpp_count = 0;
@@ -318,14 +321,29 @@ void operator delete(void *ptr) noexcept
     paru_free(0, 0, ptr);
 }
 
-//  freeing symbolic analysis data structure
-ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control)
+//------------------------------------------------------------------------------
+// ParU_Freesym: free the symbolic analysis data structure
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Freesym
+(
+    // input/output:
+    ParU_Symbolic **Sym_handle, // symbolic object to free
+    // control:
+    ParU_Control *Control
+)
 {
-    DEBUGLEVEL(0);
     if (Sym_handle == NULL || *Sym_handle == NULL)
+    {
         // nothing to do
         return PARU_SUCCESS;
+    }
+    if (!Control)
+    {
+        return PARU_INVALID ;
+    }
 
+    DEBUGLEVEL(0);
     ParU_Symbolic *Sym;
     Sym = *Sym_handle;
 
@@ -373,7 +391,8 @@ ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control)
     paru_free(m, sizeof(int64_t), Sym->Pinv);
 
     if (n1 > 0)
-    {  // freeing singletons
+    {
+        // freeing singletons
         int64_t cs1 = Sym->cs1;
         if (cs1 > 0)
         {
@@ -404,7 +423,10 @@ ParU_Ret ParU_Freesym(ParU_Symbolic **Sym_handle, ParU_Control *Control)
     return PARU_SUCCESS;
 }
 
-// free element e from elementList
+//------------------------------------------------------------------------------
+// paru_free_el: free element e from elementList
+//------------------------------------------------------------------------------
+
 void paru_free_el(int64_t e, paru_element **elementList)
 {
     DEBUGLEVEL(0);
@@ -425,7 +447,7 @@ void paru_free_el(int64_t e, paru_element **elementList)
     elementList[e] = NULL;
 }
 
-ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
+ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
 {
     int64_t m = Sym->m - Sym->n1;
     int64_t nf = Sym->nf;
@@ -465,7 +487,8 @@ ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
     if (elementList)
     {
         for (int64_t i = 0; i < m; i++)
-        {                               // freeing all row elements
+        {
+            // freeing all row elements
             int64_t e = Sym->row2atree[i];  // element number in augmented tree
             PRLEVEL(1, ("%% e =" LD "\t", e));
             paru_free_el(e, elementList);
@@ -473,7 +496,8 @@ ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
 
         PRLEVEL(1, ("\n%% freeing CB elements:\n"));
         for (int64_t i = 0; i < nf; i++)
-        {                                 // freeing all other elements
+        {
+            // freeing all other elements
             int64_t e = Sym->super2atree[i];  //element number in augmented tree
             paru_free_el(e, elementList);
         }
@@ -506,15 +530,29 @@ ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work)
     return PARU_SUCCESS;
 }
 
-ParU_Ret ParU_Freenum(ParU_Numeric **Num_handle, ParU_Control *Control)
+//------------------------------------------------------------------------------
+// ParU_Freenum
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Freenum
+(
+    // input/output:
+    ParU_Numeric **Num_handle,  // numeric object to free
+    // control:
+    ParU_Control *Control
+)
 {
-    DEBUGLEVEL(0);
     if (Num_handle == NULL || *Num_handle == NULL)
     {
         // nothing to do
         return PARU_SUCCESS;
     }
+    if (!Control)
+    {
+        return PARU_INVALID ;
+    }
 
+    DEBUGLEVEL(0);
     ParU_Numeric *Num;
     Num = *Num_handle;
 

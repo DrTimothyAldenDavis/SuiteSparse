@@ -13,7 +13,7 @@
 
 #include "paru_internal.hpp"
 
-ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
+ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
                                     std::vector<int64_t> &pivotal_elements,
                                     std::vector<int64_t> &colHash, heaps_info &hi,
                                     paru_work *Work, ParU_Numeric *Num)
@@ -122,7 +122,7 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
     /************ Making the heap from list of the immediate children
      * ******/
     PRLEVEL(1, ("%% Next: work on the heap \n"));
-    ParU_Ret res_make_heap;
+    ParU_Info res_make_heap;
     res_make_heap = paru_make_heap(f, start_fac, pivotal_elements, hi, colHash,
                                    Work, Num);
     if (res_make_heap != PARU_SUCCESS) return res_make_heap;
@@ -159,7 +159,7 @@ ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
 #endif
 
 #ifndef NDEBUG
-    // chekcing the heap
+    // checking the heap
     for (int64_t i = curHeap->size() - 1; i > 0; i--)
     {
         int64_t elid = (*curHeap)[i];

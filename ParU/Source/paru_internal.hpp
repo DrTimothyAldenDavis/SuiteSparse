@@ -262,7 +262,8 @@ struct paru_tuple
 };
 
 struct paru_tupleList
-{                      // List of tuples
+{
+    // List of tuples
     int64_t numTuple,  //  number of Tuples in this element
         len;           //  length of allocated space for current list
     paru_tuple *list;  // list of tuples regarding to this element
@@ -372,13 +373,11 @@ inline int64_t *rowIndex_pointer(paru_element *curEl)
 }
 
 inline int64_t *relColInd(paru_element *curEl)
-//{    return (int64_t*)(curEl+1) + curEl->ncols + curEl->nrows + 1;}
 {
     return (int64_t *)(curEl + 1) + curEl->ncols + curEl->nrows;
 }
 
 inline int64_t *relRowInd(paru_element *curEl)
-//{    return (int64_t*)(curEl+1) + 2*curEl->ncols + curEl->nrows + 2;}
 {
     return (int64_t *)(curEl + 1) + 2 * curEl->ncols + curEl->nrows;
 }
@@ -395,7 +394,8 @@ inline double *numeric_pointer(paru_element *curEl)
 inline int64_t flip(int64_t colInd) { return -colInd - 2; }
 
 inline int64_t lac_el(paru_element **elementList, int64_t eli)
-{  // return least numbered column of the element i (eli)
+{
+    // return least numbered column of the element i (eli)
     if (elementList[eli] == NULL)
         return LONG_MAX;
     else
@@ -466,9 +466,9 @@ void paru_print_paru_tupleList(paru_tupleList *listSet, int64_t index);
 #endif
 
 /* add tuple functions defintions */
-ParU_Ret paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T);
+ParU_Info paru_add_rowTuple(paru_tupleList *RowList, int64_t row, paru_tuple T);
 
-ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
+ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
                                     std::vector<int64_t> &panel_row,
                                     std::set<int64_t> &stl_colSet,
                                     std::vector<int64_t> &pivotal_elements,
@@ -503,12 +503,12 @@ int64_t paru_cumsum(int64_t n, int64_t *X, ParU_Control *Control);
 int64_t paru_bin_srch_col(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
 int64_t paru_bin_srch(int64_t *srt_lst, int64_t l, int64_t r, int64_t num);
 
-ParU_Ret paru_init_rowFronts(paru_work *Work, ParU_Numeric **Num_handle,
+ParU_Info paru_init_rowFronts(paru_work *Work, ParU_Numeric **Num_handle,
                              cholmod_sparse *A, ParU_Symbolic *Sym,
                              ParU_Control *Control);
-ParU_Ret paru_front(int64_t f, paru_work *Work, ParU_Numeric *Num);
+ParU_Info paru_front(int64_t f, paru_work *Work, ParU_Numeric *Num);
 
-ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
+ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
                       std::vector<int64_t> &panel_row, int64_t &zero_piv_rows,
                       int64_t f, heaps_info &hi, paru_work *Work,
                       ParU_Numeric *Num);
@@ -516,7 +516,7 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 int paru_intersection(int64_t e, paru_element **elementList,
                       std::set<int64_t> &stl_colSet);
 
-ParU_Ret paru_prior_assemble(int64_t f, int64_t start_fac,
+ParU_Info paru_prior_assemble(int64_t f, int64_t start_fac,
                              std::vector<int64_t> &pivotal_elements,
                              std::vector<int64_t> &colHash, heaps_info &hi,
                              paru_work *Work, ParU_Numeric *Num);
@@ -537,12 +537,12 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f,
 void paru_full_summed(int64_t e, int64_t f, paru_work *Work, ParU_Numeric *Num);
 
 // heap related
-ParU_Ret paru_make_heap(int64_t f, int64_t start_fac,
+ParU_Info paru_make_heap(int64_t f, int64_t start_fac,
                         std::vector<int64_t> &pivotal_elements, heaps_info &hi,
                         std::vector<int64_t> &colHash, paru_work *Work,
                         ParU_Numeric *Num);
 
-ParU_Ret paru_make_heap_empty_el(int64_t f,
+ParU_Info paru_make_heap_empty_el(int64_t f,
                                  std::vector<int64_t> &pivotal_elements,
                                  heaps_info &hi, paru_work *Work,
                                  ParU_Numeric *Num);
@@ -552,7 +552,7 @@ void paru_insert_hash(int64_t key, int64_t value,
 int64_t paru_find_hash(int64_t key, std::vector<int64_t> &colHash,
                        int64_t *fcolList);
 
-ParU_Ret paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num) ;
+ParU_Info paru_finalize_perm(ParU_Symbolic *Sym, ParU_Numeric *Num) ;
 
 int64_t paru_gaxpy(cholmod_sparse *A, const double *x, double *y, double alpha);
 double paru_spm_1norm(cholmod_sparse *A);
@@ -567,10 +567,10 @@ int64_t paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
 int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
                          double *a, int64_t lda, double *b, int64_t ldb,
                          paru_work *Work, ParU_Numeric *Num);
-ParU_Ret paru_free_work(ParU_Symbolic *Sym, paru_work *Work);
+ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work);
 
 // not user-callable: for testing only
-ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
+ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
                        cholmod_sparse *A, ParU_Symbolic *Sym, ParU_Numeric *Num,
                        ParU_Control *Control);
 #endif

@@ -47,7 +47,9 @@ int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowC
     for (int64_t i = 0; i < fp; i++)
     {
         for (int64_t j = 0; j < colCount; j++)
+        {
             PRLEVEL(p, (" %2.5lf\t", uPart[j * fp + i]));
+        }
         PRLEVEL(p, ("\n"));
     }
 #endif
@@ -60,7 +62,9 @@ int64_t paru_trsm(int64_t f, double *pF, double *uPart, int64_t fp, int64_t rowC
     for (int64_t i = 0; i < fp; i++)
     {
         for (int64_t j = 0; j < colCount; j++)
+        {
             PRLEVEL(p, (" %2.5lf\t", uPart[j * fp + i]));
+        }
         PRLEVEL(p, ("\n"));
     }
 #endif

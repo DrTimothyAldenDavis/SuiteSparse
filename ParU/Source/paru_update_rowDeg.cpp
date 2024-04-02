@@ -133,7 +133,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             ASSERT(el_rowIndex[curRowIndex] == curFsRow);
 
             if (el->rValid != pMark)
-            {  // an element never seen before
+            {
+                // an element never seen before
 
                 PRLEVEL(
                     1, ("%%P: first time seen elRow[" LD "]=" LD " \n", e, elRow[e]));
@@ -151,7 +152,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #endif
             }
             else  // el->rValid == pMark
-            {     // already added to pivotal rows
+            {
+                // already added to pivotal rows
                 if (npMark == pMark + 1) elRow[e]--;
                 PRLEVEL(1, ("%%already seen elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
@@ -203,7 +205,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
     int64_t *snM = Sym->super2atree;
     int64_t eli = snM[f];
     if (colCount == 0)
-    {  // there is no CB, Nothing to be done
+    {
+        // there is no CB, Nothing to be done
         Work->rowMark[eli] += rowCount;
         return;
     }
@@ -280,7 +283,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
         //Found this in coverage test
         //It seems that I keep pivotal_elements really clean before this
         //if (el == NULL)
-        //{  // removing the  element from the list
+        //{
+        //    // removing the  element from the list
         //    PRLEVEL(1, ("%% eli = " LD ", element= " LD "  \n", eli, e));
         //    continue;
         //}
@@ -298,11 +302,13 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
 #endif
         int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
         if (el->cValid < pMark)
-        {  // first time seeing this element in this front
+        {
+            // first time seeing this element in this front
             elCol[e] = el->ncolsleft - intsct;  // initiaze
         }
         else if (el->cValid != npMark)
-        {  // it has been seen
+        {
+            // it has been seen
             elCol[e] -= intsct;
         }
 
@@ -346,8 +352,10 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
      *
      */
 
-    if (npMark == pMark + 1)  // just once for each front
-    {                         // in the first time calling this function
+    if (npMark == pMark + 1)
+    {
+        // just once for each front
+        // in the first time calling this function
         PRLEVEL(1, ("UPDATING elRow\n"));
         for (int64_t k = j2; k < rowCount; k++)
         {
@@ -385,7 +393,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                 listRowTuples[pdst++] = curTpl;  // keeping the tuple
 
                 if (el->rValid == pMark)
-                {  // already a pivot and wont change the row degree
+                {
+                    // already a pivot and wont change the row degree
                     elRow[e]--;
                     PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 }
@@ -398,7 +407,8 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
                                 elRow[e]));
                 }
                 else
-                {  // el->rValid == npMark //it has been seen in this stage
+                {
+                    // el->rValid == npMark //it has been seen in this stage
                     elRow[e]--;
                     PRLEVEL(1, ("%%seen before: elRow[e]=" LD " \n", elRow[e]));
                 }
@@ -486,13 +496,15 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             listRowTuples[pdst++] = curTpl;  // keeping the tuple
 
             if (el->rValid == pMark)
-            {  // already a pivot and wont change the row degree
+            {
+                // already a pivot and wont change the row degree
                 PRLEVEL(1, ("%% Pivotal elRow[" LD "]=" LD " \n", e, elRow[e]));
                 continue;
             }
 
             if (elRow[e] != 0)
-            {                            // use the upperbound
+            {
+                // use the upperbound
                 if (el->cValid < pMark)  // never seen
                     new_row_degree_bound_for_r += el->ncolsleft;
                 else  // tighter upperbound
@@ -501,13 +513,15 @@ void paru_update_rowDeg(int64_t panel_num, int64_t row_end, int64_t f,
             }
 
             if (el->cValid < pMark)
-            {  // first time seeing this element in this front
+            {
+                // first time seeing this element in this front
                 el->cValid = npMark;
                 int64_t intsct = paru_intersection(e, elementList, stl_newColSet);
                 elCol[e] = el->ncolsleft - intsct;  // initiaze
             }
             else if (el->cValid != npMark)
-            {  // it has been seen
+            {
+                // it has been seen
                 el->cValid = npMark;
                 if (elCol[e] != 0)
                 {

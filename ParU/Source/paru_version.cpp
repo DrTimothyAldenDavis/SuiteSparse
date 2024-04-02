@@ -14,12 +14,12 @@
  * the compile-time constants.
  *
  *
- * @return  ParU_Ret
+ * @return  ParU_Info
  *
  *  @author Aznaveh
  */
 #include "paru_internal.hpp"
-ParU_Ret ParU_Version (int ver [3], char date [128])
+ParU_Info ParU_Version (int ver [3], char date [128])
 {
     // get version number and date
     ver[0] = PARU_VERSION_MAJOR ;

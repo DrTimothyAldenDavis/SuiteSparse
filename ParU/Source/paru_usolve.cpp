@@ -39,12 +39,28 @@
 
 #include "paru_internal.hpp"
 
-ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
-    double *x, ParU_Control *Control)
+//------------------------------------------------------------------------------
+// Solve U*x=b where x and b are vectors (no scaling or permutations)
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Usolve
+(
+    // input
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    // input/output
+    double *x,              // n-by-1, in column-major storage;
+                            // holds b on input, solution x on input
+    // control:
+    ParU_Control *Control
+)
 {
+    if (!Sym || !Num || !x || !Control)
+    {
+        return PARU_INVALID ;
+    }
+
     DEBUGLEVEL(0);
-    // check if input is read
-    if (!x) return PARU_INVALID;
     int64_t blas_ok = TRUE;
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
@@ -179,13 +195,28 @@ ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
     return (blas_ok ? PARU_SUCCESS : PARU_TOO_LARGE);
 }
 
-//////////////// ParU_Usolve ///multiple right hand side mRHS///////////////////
-ParU_Ret ParU_Usolve(ParU_Symbolic *Sym, ParU_Numeric *Num,
-    double *X, int64_t nrhs, ParU_Control *Control)
+//------------------------------------------------------------------------------
+// Solve U*X=B where X and B are matrices (no scaling or permutations)
+//------------------------------------------------------------------------------
+
+ParU_Info ParU_Usolve
+(
+    // input
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    int64_t nrhs,           // # of right-hand-sides (# columns of X)
+    // input/output:
+    double *X,              // X is n-by-nrhs, where A is n-by-n;
+                            // holds B on input, solution X on input
+    // control:
+    ParU_Control *Control
+)
 {
+    if (!Sym || !Num || !X || !Control)
+    {
+        return PARU_INVALID ;
+    }
     DEBUGLEVEL(0);
-    // check if input is read
-    if (!X) return PARU_INVALID;
     int64_t blas_ok = TRUE;
     PARU_DEFINE_PRLEVEL;
     int64_t m = Sym->m;

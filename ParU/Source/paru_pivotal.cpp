@@ -17,7 +17,7 @@
  */
 #include "paru_internal.hpp"
 
-ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
+ParU_Info paru_pivotal(std::vector<int64_t> &pivotal_elements,
                       std::vector<int64_t> &panel_row, int64_t &zero_piv_rows, int64_t f,
                       heaps_info &hi, paru_work *Work, ParU_Numeric *Num)
 {
@@ -66,8 +66,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
         if (curHeap == NULL) continue;
 
         while (curHeap->size() > 0)
-        // pop from the heap and put it in pivotal_elements
         {
+            // pop from the heap and put it in pivotal_elements
             int64_t frontEl = curHeap->front();
             int64_t lacFel = lacList[frontEl];
             PRLEVEL(PR, ("%% element = " LD " col1=" LD "", frontEl, col1));
@@ -121,8 +121,9 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 
     #ifndef PARU_COVERAGE  //overflow is very hard to test in coverage 
     if (rowMark < 0)
-    // just look at the children
-    {  // in rare case of overflow
+    {
+        // just look at the children
+        // in rare case of overflow
         int64_t *Sleft = Sym->Sleft;
         // first column of current front until first column of next front
         for (int64_t i = Sleft[col1]; i < Sleft[Super[f + 1]]; i++)
@@ -195,7 +196,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
 #endif
 
             if (isRowInFront[curRow] < rowMark)
-            {  // first time seeing curRow
+            {
+                // first time seeing curRow
                 // int64_t *el_colIndex = colIndex_pointer (curEl);
                 int64_t *el_colIndex = (int64_t *)(el + 1);
 
@@ -245,7 +247,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
                 isRowInFront[curRow] = rowMark + rowCount++;
             }
             else
-            {  // already seen curRow
+            {
+                // already seen curRow
                 PRLEVEL(1, ("%%curRow =" LD " rowCount=" LD "\n", curRow, rowCount));
                 PRLEVEL(1, ("%%before updating rowRelIndex[" LD "] = " LD "\n", rEl,
                             rowRelIndex[rEl]));
@@ -420,7 +423,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     {
         paru_full_summed(e, f, Work, Num);
         if (elementList[e] != NULL)
-        {  // keeping the element
+        {
+            // keeping the element
             pivotal_elements[ii++] = e;
         }
     }
@@ -472,7 +476,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
             }
 #ifndef NDEBUG
             if (el->nzr_pc == 0)
-            {  // all the zero rows fit in the front
+            {
+                // all the zero rows fit in the front
                 PRLEVEL(1, ("%%element " LD " totally fit in current front " LD "\n",
                             e, f));
                 num_children_with0_which_fit++;
@@ -483,7 +488,8 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     }
 
     if (num_children_with0 == num_children_with0_which_fit)
-    {  // all the children fit within current front
+    {
+        // all the children fit within current front
         zero_piv_rows = 0;
     }
 
@@ -503,7 +509,9 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     {
         PRLEVEL(PR, ("%% " LD "\t", frowList[r]));
         for (int64_t c = col1; c < col2; c++)
+        {
             PRLEVEL(PR, (" %2.5lf\t", pivotalFront[(c - col1) * rowCount + r]));
+        }
         PRLEVEL(PR, ("\n"));
     }
     PRLEVEL(PR, (" %% " LD "*" LD "\n", rowCount, fp));
@@ -512,7 +520,9 @@ ParU_Ret paru_pivotal(std::vector<int64_t> &pivotal_elements,
     for (int64_t r = 0; r < rowCount; r++)
     {
         for (int64_t c = col1; c < col2; c++)
+        {
             PRLEVEL(PR, (" %2.5lf\t", pivotalFront[(c - col1) * rowCount + r]));
+        }
         PRLEVEL(PR, ("\n"));
     }
     PRLEVEL(PR, (" ]; %% " LD "*" LD "\n", rowCount, fp));

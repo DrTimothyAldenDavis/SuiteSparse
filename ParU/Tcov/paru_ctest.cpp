@@ -85,7 +85,7 @@ int main(int argc, char **argv)
     ParU_C_Version(ver, date);
 
 
-    ParU_Ret info;
+    ParU_Info info;
 
     Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;

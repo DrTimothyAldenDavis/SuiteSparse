@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     printf("================= ParU, a simple demo, using C interface : ====\n");
     ParU_C_Control Control;
     ParU_C_Init_Control(&Control);
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_C_Analyze(A, &Sym, &Control);
     printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
     ParU_C_Numeric *Num;

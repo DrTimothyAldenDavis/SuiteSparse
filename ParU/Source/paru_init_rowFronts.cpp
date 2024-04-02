@@ -20,7 +20,7 @@
 
 #include "paru_internal.hpp"
 
-ParU_Ret paru_init_rowFronts(paru_work *Work,
+ParU_Info paru_init_rowFronts(paru_work *Work,
                              ParU_Numeric **Num_handle,  // in/out
                                                          // inputs, not modified
                              cholmod_sparse *A,
@@ -54,7 +54,8 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
     ParU_Numeric *Num = NULL;
     Num = static_cast<ParU_Numeric*>(paru_alloc(1, sizeof(ParU_Numeric)));
     if (Num == NULL)
-    {  // out of memory
+    {
+        // out of memory
         PRLEVEL(1, ("ParU: out of memory, Num\n"));
         // Nothing to be freed
         *Num_handle = NULL;
@@ -274,7 +275,8 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
 
     PRLEVEL(PR, ("%% Rs:\n["));
     if (Rs)
-    {  // making sure that every row has at most one element more than zero
+    {
+        // making sure that every row has at most one element more than zero
         for (int64_t k = 0; k < m; k++)
         {
             PRLEVEL(PR, ("%lf ", Rs[k]));
@@ -298,11 +300,13 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
             int64_t srow = newrow - n1;
             int64_t scol = newcol - n1;
             if (srow >= 0 && scol >= 0)
-            {  // it is inside S otherwise it is part of singleton
+            {
+                // it is inside S otherwise it is part of singleton
                 Sx[cSp[srow]++] = (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
             }
             else if (srow < 0 && scol >= 0)
-            {  // inside the U singletons
+            {
+                // inside the U singletons
                 PRLEVEL(PR, ("Usingleton newcol = " LD " newrow=" LD "\n", newcol,
                              newrow));
                 // let the diagonal entries be first
@@ -311,10 +315,12 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
             else
             {
                 if (newrow < cs1)
-                {  // inside U singletons CSR
+                {
+                    // inside U singletons CSR
                     // PRLEVEL(PR, ("Inside U singletons\n"));
                     if (newcol == newrow)
-                    {  // diagonal entry
+                    {
+                        // diagonal entry
                         Sux[Sup[newrow]] =
                             (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
                     }
@@ -325,10 +331,12 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
                     }
                 }
                 else
-                {  // inside L singletons CSC
+                {
+                    // inside L singletons CSC
                     // PRLEVEL(PR, ("Inside L singletons\n"));
                     if (newcol == newrow)
-                    {  // diagonal entry
+                    {
+                        // diagonal entry
                         Slx[Slp[newcol - cs1]] =
                             (Rs == NULL) ? Ax[p] : Ax[p] / Rs[oldrow];
                     }
@@ -418,14 +426,9 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
     // Activating comments after this parts will break the matlab input matrix
     // allocating row tuples, elements and updating column tuples
 
-    ParU_Ret info;
+    ParU_Info info;
     int64_t out_of_memory = 0;
 
-    //XXX weird situation here:
-    //   with omp parallel for I can see correct out_of_memory but not with 
-    //   taskloop; However I don't see any leaks with either
-
-    //pragma omp taskloop grainsize(512)
     #pragma omp parallel for num_threads(Control->paru_max_threads)
     for (int64_t row = 0; row < m; row++)
     {
@@ -438,7 +441,8 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
         paru_element *curEl = elementList[e] =
             paru_create_element(nrows, ncols);
         if (curEl == NULL)
-        {  // out of memory
+        {
+            // out of memory
             PRLEVEL(1, ("ParU: Out of memory: curEl\n"));
             #pragma omp atomic update
             out_of_memory += 1;
@@ -461,7 +465,8 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
                 RowList[row].list = static_cast<paru_tuple*>(paru_alloc(
                     slackRow * nrows, sizeof(paru_tuple)));
                 if (RowList[row].list == NULL)
-                {  // out of memory
+                {
+                    // out of memory
                     PRLEVEL(1, ("ParU: out of memory, RowList[row].list \n"));
                     #pragma omp atomic update
                     out_of_memory += 1;
@@ -500,7 +505,8 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
                 }
             }
             catch (std::bad_alloc const &)
-            {  // out of memory
+            {
+                // out of memory
                 PRLEVEL(1, ("ParU: Out of memory: curHeap\n"));
                 #pragma omp atomic update
                 out_of_memory += 1;
@@ -511,7 +517,9 @@ ParU_Ret paru_init_rowFronts(paru_work *Work,
         info = PARU_OUT_OF_MEMORY;
     }
     else
+    {
         info = PARU_SUCCESS;
+    }
 
     PRLEVEL(1, ("];\n"));
     PRLEVEL(1, ("I = InMatrix(:,1);\n"));

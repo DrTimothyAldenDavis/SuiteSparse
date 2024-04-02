@@ -61,7 +61,7 @@ int main(int argc, char **argv)
 
     ParU_C_Control Control;
     ParU_C_Init_Control(&Control);  // initialize the Control in C
-    ParU_Ret info;
+    ParU_Info info;
 
     Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;

@@ -51,7 +51,7 @@
 
 // apply inverse perm x(p) = b, or with scaling: x(p)=b ; x=x./s
 
-ParU_Ret ParU_InvPerm
+ParU_Info ParU_InvPerm
 (
     // inputs
     const int64_t *P,   // permutation vector of size n
@@ -64,11 +64,11 @@ ParU_Ret ParU_InvPerm
     ParU_Control *Control
 )
 {
-    DEBUGLEVEL(0);
-    if (!x || !b || !P)
+    if (!x || !b || !P || !Control)
     {
         return (PARU_INVALID) ;
     }
+    DEBUGLEVEL(0);
 #ifndef NDEBUG
     PRLEVEL(1, ("%% Inside apply inv permutaion P is:\n%%"));
     for (int64_t k = 0; k < n; k++)
@@ -118,7 +118,7 @@ ParU_Ret ParU_InvPerm
 
 // apply inverse perm X(p,:) = B or with scaling: X(p,:)=B ; X = X./s
 
-ParU_Ret ParU_InvPerm
+ParU_Info ParU_InvPerm
 (
     // inputs
     const int64_t *P,   // permutation vector of size nrows
@@ -132,12 +132,11 @@ ParU_Ret ParU_InvPerm
     ParU_Control *Control
 )
 {
-
-    DEBUGLEVEL(0);
-    if (!X || !B || !P)
+    if (!X || !B || !P || !Control)
     {
         return (PARU_INVALID) ;
     }
+    DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 #ifndef NDEBUG
     PRLEVEL(PR, ("%% mRHS Inside apply inv permutaion P is:\n%%"));
@@ -216,7 +215,7 @@ ParU_Ret ParU_InvPerm
 
 // apply perm and scale x = b(P) / s
 
-ParU_Ret ParU_Perm
+ParU_Info ParU_Perm
 (
     // inputs
     const int64_t *P,   // permutation vector of size n
@@ -229,12 +228,12 @@ ParU_Ret ParU_Perm
     ParU_Control *Control
 )
 {
-    DEBUGLEVEL(0);
-    if (!x || !b || !P)
+    if (!x || !b || !P || !Control)
     {
         return (PARU_INVALID) ;
     }
 
+    DEBUGLEVEL(0);
 #ifndef NDEBUG
     PRLEVEL(1, ("%% Inside apply permutaion and scale P is:\n%%"));
     for (int64_t k = 0; k < n; k++)
@@ -302,7 +301,7 @@ ParU_Ret ParU_Perm
 
 // apply perm and scale X = B(P,:) / s
 
-ParU_Ret ParU_Perm
+ParU_Info ParU_Perm
 (
     // inputs
     const int64_t *P,   // permutation vector of size nrows
@@ -317,11 +316,11 @@ ParU_Ret ParU_Perm
 )
 {
 
-    DEBUGLEVEL(0);
-    if (!X || !B || !P)
+    if (!X || !B || !P || !Control)
     {
         return (PARU_INVALID) ;
     }
+    DEBUGLEVEL(0);
 #ifndef NDEBUG
     PRLEVEL(1, ("%% mRHS Inside apply Permutaion and scale P is:\n%%"));
     for (int64_t k = 0; k < nrows; k++)

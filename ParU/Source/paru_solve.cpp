@@ -19,8 +19,16 @@
 // ParU_Solve: b = A\b
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b,
-                    ParU_Control *Control)
+ParU_Info ParU_Solve
+(
+    // input:
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    // input/output:
+    double *b,              // vector of size n-by-1
+    // control:
+    ParU_Control *Control
+)
 {
     return (ParU_Solve (Sym, Num, b, b, Control)) ;
 }
@@ -29,18 +37,28 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b,
 // ParU_Solve: x = A\b
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
-                    ParU_Control *Control)
+ParU_Info ParU_Solve
+(
+    // input:
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    double *b,              // vector of size n-by-1
+    // output
+    double *x,              // vector of size n-by-1
+    // control:
+    ParU_Control *Control
+)
 {
+
+    if (!Sym || !Num || !b || !x || !Control)
+    {
+        return PARU_INVALID;
+    }
 
     // note that the x and b parameters can be aliased
 
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% inside solve\n"));
-    if (Sym == NULL || Num == NULL)
-    {
-        return PARU_INVALID;
-    }
 
     int64_t m = Sym->m;
     // if (Num->res == PARU_SINGULAR)  //THIS Won't happen because Num is freed
@@ -58,7 +76,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
     // t = scaled and permuted version of b
     ParU_Perm (Num->Pfin, Num->Rs, b, m, t, Control);
 
-    ParU_Ret info;
+    ParU_Info info;
     PRLEVEL(1, ("%% lsolve\n"));
     info = ParU_Lsolve(Sym, Num, t, Control);  // t = L\t
     if (info != PARU_SUCCESS)
@@ -105,8 +123,17 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, double *b, double *x,
 
 #include "paru_internal.hpp"
 
-ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
-    double *B, ParU_Control *Control)
+ParU_Info ParU_Solve
+(
+    // input
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    int64_t nrhs,           // # of right-hand sides
+    // input/output:
+    double *B,              // n-by-nrhs, in column-major storage
+    // control:
+    ParU_Control *Control
+)
 {
     return (ParU_Solve (Sym, Num, nrhs, B, B, Control)) ;
 }
@@ -115,9 +142,25 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
 // ParU_Solve: X = A\B
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
-    double *B, double *X, ParU_Control *Control)
+ParU_Info ParU_Solve
+(
+    // input
+    ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
+    ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
+    int64_t nrhs,           // # of right-hand sides
+    double *B,              // n-by-nrhs, in column-major storage
+    // output:
+    double *X,              // n-by-nrhs, in column-major storage
+    // control:
+    ParU_Control *Control
+)
 {
+
+    if (!Sym || !Num || !B || !X || !Control)
+    {
+        return PARU_INVALID;
+    }
+
     // Note: B and X can be aliased
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% mRHS inside Solve\n"));
@@ -140,9 +183,9 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
     ParU_Perm (Num->Pfin, Num->Rs, B, m, nrhs, T, Control);
 
     // T = L\T
-    ParU_Ret info;
+    ParU_Info info;
     PRLEVEL(1, ("%%mRHS lsolve\n"));
-    info = ParU_Lsolve(Sym, Num, T, nrhs, Control);
+    info = ParU_Lsolve(Sym, Num, nrhs, T, Control);
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS lsolve\n"));
@@ -152,7 +195,7 @@ ParU_Ret ParU_Solve(ParU_Symbolic *Sym, ParU_Numeric *Num, int64_t nrhs,
 
     // T = U\T
     PRLEVEL(1, ("%%mRHS usolve\n"));
-    info = ParU_Usolve(Sym, Num, T, nrhs, Control);
+    info = ParU_Usolve(Sym, Num, nrhs, T, Control);
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS usolve\n"));

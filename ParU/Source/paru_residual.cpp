@@ -21,15 +21,27 @@
 
 #include "paru_internal.hpp" 
 
-ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b,
-    double &resid, double &anorm, double &xnorm, ParU_Control *Control)
+ParU_Info ParU_Residual
+(
+    // inputs:
+    cholmod_sparse *A,  // an n-by-n sparse matrix
+    double *x,          // vector of size n
+    double *b,          // vector of size n
+    // output:
+    double &resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+    double &anorm,      // 1-norm of A
+    double &xnorm,      // 1-norm of x
+    // control:
+    ParU_Control *Control
+)
 {
-    DEBUGLEVEL(0);
-    PRLEVEL(1, ("%% inside residual\n"));
-    if (A == NULL || x == NULL || b == NULL)
+    if (!A || !x || !b || !Control)
     {
         return PARU_INVALID;
     }
+
+    DEBUGLEVEL(0);
+    PRLEVEL(1, ("%% inside residual\n"));
     int64_t m = A->nrow ;
 
 #ifndef NDEBUG
@@ -77,16 +89,27 @@ ParU_Ret ParU_Residual (cholmod_sparse *A, double *x, double *b,
  * resid = norm1(b-A*x) / norm1(A)
  *
  * */
-ParU_Ret ParU_Residual(cholmod_sparse *A, double *X, double *B,
-    int64_t nrhs,  
-   double &resid, double &anorm, double &xnorm, ParU_Control *Control)
+ParU_Info ParU_Residual
+(
+    // inputs:
+    cholmod_sparse *A,  // an n-by-n sparse matrix
+    double *X,          // array of size n-by-nrhs
+    double *B,          // array of size n-by-nrhs
+    int64_t nrhs,
+    // output:
+    double &resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+    double &anorm,      // 1-norm of A
+    double &xnorm,      // 1-norm of X
+    // control:
+    ParU_Control *Control
+)
 {
-    DEBUGLEVEL(0);
-    PRLEVEL(1, ("%% mRHS inside residual\n"));
-    if (A == NULL || X == NULL || B == NULL)
+    if (!A || !X || !B || !Control)
     {
         return PARU_INVALID;
     }
+    DEBUGLEVEL(0);
+    PRLEVEL(1, ("%% mRHS inside residual\n"));
     int64_t m = A->nrow ;
 
 #ifndef NDEBUG

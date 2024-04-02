@@ -2,7 +2,7 @@
 ///////////////////////////////// paru_c.cpp ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-// ParU, Copyright (c) 2022, Mohsen Aznaveh and Timothy A. Davis,
+// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
 // All Rights Reserved.
 // SPDX-License-Identifier: GNU GPL 3.0
 
@@ -24,15 +24,21 @@ extern "C"
 //------------------------------------------------------------------------------
 
 // return the version
-ParU_Ret ParU_C_Version (int ver [3], char date [128])
-    {return ParU_Version (ver ,date);}
+ParU_Info ParU_C_Version (int ver [3], char date [128])
+{
+    return ParU_Version (ver, date) ;
+}
 
 //------------------------------------------------------------------------------
 // ParU_C_Init_Control: initialize C_Control with the default values
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_C_Init_Control (ParU_C_Control *Control_C)
+ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C)
 {
+    if (!Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     Control_C->mem_chunk = PARU_MEM_CHUNK ;  // chunk size for memset and memcpy
 
     Control_C->umfpack_ordering =  UMFPACK_ORDERING_METIS;
@@ -91,14 +97,20 @@ void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C)
 // ParU_C_Factorize calls. 
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_C_Analyze(
-        // input:
-        cholmod_sparse *A,  // input matrix to analyze ...
-        // output:
-        ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
-        // control:
-        ParU_C_Control *Control_C)
+ParU_Info ParU_C_Analyze
+(
+    // input:
+    cholmod_sparse *A,  // input matrix to analyze of size n-by-n
+    // output:
+    ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
+    // control:
+    ParU_C_Control *Control_C
+)
 { 
+    if (!A || !Sym_handle_C || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C =
@@ -108,7 +120,7 @@ ParU_Ret ParU_C_Analyze(
         return PARU_OUT_OF_MEMORY;
     }
     ParU_Symbolic *Sym;
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
         return info; //To avoid playing with wrong ponters
@@ -127,14 +139,21 @@ ParU_Ret ParU_C_Analyze(
 // this routine.
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_C_Factorize (
-        // input:
-        cholmod_sparse *A, ParU_C_Symbolic *Sym_C,
-        // output:
-        ParU_C_Numeric **Num_handle_C,
-        // control:
-    ParU_C_Control *Control_C)
+ParU_Info ParU_C_Factorize
+(
+    // input:
+    cholmod_sparse *A,          // input matrix to factorize of size n-by-n
+    ParU_C_Symbolic *Sym_C,     // symbolic analsys from ParU_Analyze
+    // output:
+    ParU_C_Numeric **Num_handle_C,    // output numerical factorization
+    // control:
+    ParU_C_Control *Control_C
+)
 { 
+    if (!A || !Sym_C || !Num_handle_C || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
@@ -145,7 +164,7 @@ ParU_Ret ParU_C_Factorize (
         return PARU_OUT_OF_MEMORY;
     }
 
-    ParU_Ret info;
+    ParU_Info info;
     ParU_Numeric *Num;
     info = ParU_Factorize(A, Sym, &Num, &Control);
     if (info != PARU_SUCCESS)
@@ -164,14 +183,21 @@ ParU_Ret ParU_C_Factorize (
 // that comes from ParU_Factorize
 
 //-------- Ax = b (x is overwritten on b)---------------------------------------
-ParU_Ret ParU_C_Solve_Axx (
+ParU_Info ParU_C_Solve_Axx
+(
     // input:
-    ParU_C_Symbolic *Sym_C, ParU_C_Numeric *Num_C,
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization form ParU_C_Factorize
     // input/output:
-    double *b,
+    double *b,              // vector of size n-by-1
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 {
+    if (!Sym_C || !Num_C || !b || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
@@ -180,14 +206,22 @@ ParU_Ret ParU_C_Solve_Axx (
 }
 
 //-------- Ax = b --------------------------------------------------------------
-ParU_Ret ParU_C_Solve_Axb (
+ParU_Info ParU_C_Solve_Axb
+(
     // input:
-    ParU_C_Symbolic *Sym_C, ParU_C_Numeric *Num_C, double *b,
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization form ParU_C_Factorize
+    double *b,              // vector of size n-by-1
     // output
-    double *x,
+    double *x,              // vector of size n-by-1
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 { 
+    if (!Sym_C || !Num_C || !b || !x || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
@@ -196,14 +230,22 @@ ParU_Ret ParU_C_Solve_Axb (
 }
 
 //-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
-ParU_Ret ParU_C_Solve_AXX (
+ParU_Info ParU_C_Solve_AXX
+(
     // input
-    ParU_C_Symbolic *Sym_C, ParU_C_Numeric *Num_C, int64_t nrhs,
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization form ParU_C_Factorize
+    int64_t nrhs,
     // input/output:
-    double *B,  // m(num_rows of A) x nrhs
+    double *B,              // array of size n-by-nrhs in column-major storage
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 { 
+    if (!Sym_C || !Num_C || !B || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
@@ -212,14 +254,23 @@ ParU_Ret ParU_C_Solve_AXX (
 }
 
 //-------- AX = B  (multiple rhs)-----------------------------------------------
-ParU_Ret ParU_C_Solve_AXB (
+ParU_Info ParU_C_Solve_AXB
+(
     // input
-    ParU_C_Symbolic *Sym_C, ParU_C_Numeric *Num_C, int64_t nrhs, double *B,
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization form ParU_C_Factorize
+    int64_t nrhs,
+    double *B,              // array of size n-by-nrhs in column-major storage
     // output:
-    double *X,
+    double *X,              // array of size n-by-nrhs in column-major storage
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 { 
+    if (!Sym_C || !Num_C || !B || !X || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     return ParU_Solve (static_cast<ParU_Symbolic*>(Sym_C->sym_handle),
@@ -234,18 +285,29 @@ ParU_Ret ParU_C_Solve_AXB (
 // The user provide both x and b
 // resid = norm1(b-A*x) / norm1(A)
 
-ParU_Ret ParU_C_Residual_bAx (
+ParU_Info ParU_C_Residual_bAx
+(
     // inputs:
-    cholmod_sparse *A, double *x, double *b,
+    cholmod_sparse *A,  // an n-by-n sparse matrix
+    double *x,          // vector of size n
+    double *b,          // vector of size n
     // output:
-    double *residc, double *anormc, double *xnormc,
+    double *residc,     // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+    double *anormc,     // 1-norm of A
+    double *xnormc,     // 1-norm of x
     // control:
-    ParU_C_Control *Control_C)
+    ParU_C_Control *Control_C
+)
 { 
+    if (!A || !x || !b || !residc || !anormc || !xnormc || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
+
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Residual (A, x, b, resid, anorm, xnorm, &Control); 
     *residc = resid;
     *anormc = anorm;
@@ -255,20 +317,29 @@ ParU_Ret ParU_C_Residual_bAx (
 
 
 // resid = norm1(B-A*X) / norm1(A) (multiple rhs)
-ParU_Ret ParU_C_Residual_BAX
+ParU_Info ParU_C_Residual_BAX
 (
     // inputs:
-    cholmod_sparse *A, double *X, double *B, int64_t nrhs,
+    cholmod_sparse *A,  // an n-by-n sparse matrix
+    double *X,          // array of size n-by-nrhs
+    double *B,          // array of size n-by-nrhs
+    int64_t nrhs,
     // output:
-    double *residc, double *anormc, double *xnormc,
+    double *residc,     // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+    double *anormc,     // 1-norm of A
+    double *xnormc,     // 1-norm of X
     // control:
     ParU_C_Control *Control_C
 )
 { 
+    if (!A || !X || !B || !residc || !anormc || !xnormc || !Control_C)
+    {
+        return (PARU_INVALID) ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     double resid, anorm, xnorm;
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Residual (A, X, B, nrhs, resid, anorm, xnorm, &Control); 
     *residc = resid;
     *anormc = anorm;
@@ -280,30 +351,60 @@ ParU_Ret ParU_C_Residual_BAX
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Ret ParU_C_Freenum (
-        ParU_C_Numeric **Num_handle_C, ParU_C_Control *Control_C)
+ParU_Info ParU_C_Freenum
+(
+    ParU_C_Numeric **Num_handle_C,    // numeric object to free
+    // control:
+    ParU_C_Control *Control_C
+)
 { 
+    if (Num_handle_C == NULL || *Num_handle_C == NULL)
+    {
+        // nothing to do
+        return PARU_SUCCESS;
+    }
+    if (!Control_C)
+    {
+        return PARU_INVALID ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Numeric *Num_C = *Num_handle_C;
     ParU_Numeric *Num = static_cast<ParU_Numeric*>(Num_C->num_handle);
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Freenum(&Num, &Control);
     paru_free(1, sizeof(ParU_C_Numeric), *Num_handle_C);
     return info;
 }
  
-ParU_Ret ParU_C_Freesym (
-        ParU_C_Symbolic **Sym_handle_C, ParU_C_Control *Control_C)
+ParU_Info ParU_C_Freesym
+(
+    ParU_C_Symbolic **Sym_handle_C,   // symbolic object to free
+    // control:
+    ParU_C_Control *Control_C
+)
 {
+    if (Sym_handle_C == NULL || *Sym_handle_C == NULL)
+    {
+        // nothing to do
+        return PARU_SUCCESS;
+    }
+    if (!Control_C)
+    {
+        return PARU_INVALID ;
+    }
     ParU_Control Control;
     paru_cp_control (&Control, Control_C);
     ParU_C_Symbolic *Sym_C = *Sym_handle_C;
     ParU_Symbolic *Sym = static_cast<ParU_Symbolic*>(Sym_C->sym_handle);
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Freesym(&Sym, &Control);
     paru_free(1, sizeof(ParU_C_Symbolic), *Sym_handle_C);
     return info;
 }
+
+//------------------------------------------------------------------------------
+// FIXME: add Lsolve, Usolve, Perm, and InvPerm
+//------------------------------------------------------------------------------
 
 } //extern c

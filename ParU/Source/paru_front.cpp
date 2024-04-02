@@ -12,12 +12,12 @@
  *
  *
  * @param  the front that is going to be computed
- * @return  ParU_Ret
+ * @return  ParU_Info
  *
  *  @author Aznaveh
  */
 #include "paru_internal.hpp"
-ParU_Ret paru_front(int64_t f,  // front need to be assembled
+ParU_Info paru_front(int64_t f,  // front need to be assembled
                     paru_work *Work, ParU_Numeric *Num)
 {
     DEBUGLEVEL(-3);
@@ -126,7 +126,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         int64_t zero_piv_rows = 0;  // If there are zero rows is
         // importiant for Exit point
         PRLEVEL(1, ("%% Next: work on pivotal column assembly\n"));
-        ParU_Ret res_pivotal;
+        ParU_Info res_pivotal;
         res_pivotal = paru_pivotal(pivotal_elements, panel_row, zero_piv_rows,
                                    f, hi, Work, Num);
         if (res_pivotal == PARU_OUT_OF_MEMORY)
@@ -187,7 +187,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         int64_t start_fac = Work->time_stamp[f];
         PRLEVEL(1, ("%% start_fac= " LD "\n", start_fac));
 
-        ParU_Ret ffs_blas_ok = paru_factorize_full_summed(
+        ParU_Info ffs_blas_ok = paru_factorize_full_summed(
             f, start_fac, panel_row, stl_colSet, pivotal_elements, Work, Num);
         if (ffs_blas_ok != PARU_SUCCESS) return ffs_blas_ok; //failed blas
         ++Work->time_stamp[f];
@@ -580,7 +580,7 @@ ParU_Ret paru_front(int64_t f,  // front need to be assembled
         /*** 7 * Count number of rows and columsn of prior CBs to asslemble ***/
 
         PRLEVEL(-1, ("\n%%||||  Start Finalize " LD " ||||\n", f));
-        ParU_Ret res_prior;
+        ParU_Info res_prior;
         res_prior = paru_prior_assemble(f, start_fac, pivotal_elements, colHash,
                                         hi, Work, Num);
         if (res_prior != PARU_SUCCESS) return res_prior;

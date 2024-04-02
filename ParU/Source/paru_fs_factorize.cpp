@@ -34,8 +34,10 @@ void paru_swap_rows(double *F, int64_t *frowList, int64_t m, int64_t n, int64_t 
     // pragma omp taskloop num_tasks(max_threads/(naft+1))
 
     for (int64_t j = 0; j < n; j++)
+    {
         // each column
         std::swap(F[j * m + r1], F[j * m + r2]);
+    }
 }
 
 int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t panel_width,
@@ -335,7 +337,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
     return 1;
 }
 
-ParU_Ret paru_factorize_full_summed(int64_t f, int64_t start_fac,
+ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
                                     std::vector<int64_t> &panel_row,
                                     std::set<int64_t> &stl_colSet,
                                     std::vector<int64_t> &pivotal_elements,

@@ -93,7 +93,7 @@ void mexFunction
     //--------------------------------------------------------------------------
 
     ParU_Control Control ;
-    ParU_Ret info ;
+    ParU_Info info ;
     ParU_Symbolic *Sym = NULL ;
     info = ParU_Analyze (A, &Sym, &Control) ;
     ParU_Numeric *Num = NULL ;

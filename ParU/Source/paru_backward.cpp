@@ -19,7 +19,7 @@
 
 #include "paru_internal.hpp"
 
-ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
+ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
                        cholmod_sparse *A, ParU_Symbolic *Sym, ParU_Numeric *Num,
                        ParU_Control *Control)
 {
@@ -54,7 +54,7 @@ ParU_Ret paru_backward(double *x1, double &resid, double &anorm, double &xnorm,
     PRLEVEL(1, (" \n"));
 #endif
 
-    ParU_Ret info;
+    ParU_Info info;
     info = ParU_Solve(Sym, Num, b, Control);
     if (info != PARU_SUCCESS)
     {
