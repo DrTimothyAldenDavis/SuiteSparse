@@ -6,8 +6,8 @@
 // All Rights Reserved.
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-/*! @brief  finding the  columns or rows of prior element and fully or partially
- * assemble it  and eliminate it if needed
+/*! @brief  finding the columns or rows of prior element and fully or partially
+ * assemble it and eliminate it if needed
  *
  *  @author Aznaveh
  */
@@ -562,7 +562,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                             curEl_rowIndex[rowInd]));
                 PRLEVEL(1, ("%% i =" LD " \n", i));
                 PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
-                tempRow.push_back(i);
+                tempRow.push_back(i);   // FIXME: unreachable?
             }
             else
             {
@@ -602,8 +602,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                 PRLEVEL(1, ("%% i =" LD " \n", i));
                 PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
 
-                tempRow.push_back(i);
-                toll++;
+                tempRow.push_back(i);   // FIXME: unreachable?
+                toll++;                 // FIXME: unreachable?
             }
             else
             {
