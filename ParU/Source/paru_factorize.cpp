@@ -110,10 +110,7 @@ ParU_Info paru_exec_tasks(int64_t t, int64_t *task_num_child, int64_t &chain_tas
     for (int64_t f = task_map[t] + 1; f <= task_map[t + 1]; f++)
     {
         myInfo = paru_front(f, Work, Num);
-        if (myInfo != PARU_SUCCESS)
-        {
-            return myInfo;
-        }
+        if (myInfo != PARU_SUCCESS) return myInfo;
     }
     int64_t num_rem_children;
 #ifndef NTIME
@@ -200,7 +197,8 @@ ParU_Info ParU_Factorize
     ParU_Control *user_Control
 )
 {
-    if (!A || !Sym || !Num_handle || !user_Control)
+    if (!A || !Sym || !Num_handle || !user_Control ||
+        A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
     }
@@ -208,12 +206,6 @@ ParU_Info ParU_Factorize
 #ifndef NTIME
     double my_start_time = PARU_OPENMP_GET_WTIME;
 #endif
-
-    if (A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
-    {
-        PRLEVEL(1, ("ParU: input matrix must be double real\n"));
-        return PARU_INVALID;
-    }
 
     ParU_Info info;
     // populate my_Control with tested values of Control

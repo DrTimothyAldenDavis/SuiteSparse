@@ -15,17 +15,19 @@
 
 #include "paru_cov.hpp"
 
-#define TEST_FREE_ALL                       \
-{                                           \
-    ParU_Freenum(&Num, &Control);           \
-    ParU_Freesym(&Sym, &Control);           \
-    cholmod_l_free_sparse(&A, cc);          \
-    cholmod_l_finish(cc);                   \
-    if (B  != NULL) { free(B);  B  = NULL; } \
-    if (X  != NULL) { free(X);  X  = NULL; } \
-    if (b  != NULL) { free(b);  b  = NULL; } \
-    if (x  != NULL) { free(x);  x  = NULL; } \
-    if (xx != NULL) { free(xx); xx = NULL; } \
+#define TEST_FREE_ALL                                   \
+{                                                       \
+    ParU_Freenum(&Num, &Control);                       \
+    ParU_Freesym(&Sym, &Control);                       \
+    cholmod_l_free_sparse(&A, cc);                      \
+    cholmod_l_finish(cc);                               \
+    if (B  != NULL) { free(B);  B  = NULL; }            \
+    if (Perm != NULL) { free(Perm);  Perm = NULL; }     \
+    if (Scale != NULL) { free(Scale);  Scale = NULL; }  \
+    if (X  != NULL) { free(X);  X  = NULL; }            \
+    if (b  != NULL) { free(b);  b  = NULL; }            \
+    if (x  != NULL) { free(x);  x  = NULL; }            \
+    if (xx != NULL) { free(xx); xx = NULL; }            \
 }
 
 int main(int argc, char **argv)
@@ -35,6 +37,9 @@ int main(int argc, char **argv)
     ParU_Symbolic *Sym = NULL;
     ParU_Numeric *Num = NULL ;
     double *b = NULL, *B = NULL, *X = NULL, *xx = NULL, *x = NULL ;
+    int64_t *Perm = NULL ;
+    double *Scale = NULL ;
+    double err = 0 ;
 
     // default log10 of expected residual.  +1 means failure is expected
     double expected_log10_resid = -16 ;
@@ -42,7 +47,7 @@ int main(int argc, char **argv)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }
-    printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
+//  printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -116,6 +121,15 @@ int main(int argc, char **argv)
 
     ParU_Info info;
 
+    info = ParU_Analyze(nullptr, &Sym, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Analyze(A, nullptr, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Analyze(A, &Sym, nullptr);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     info = ParU_Analyze(A, &Sym, &Control);
     if (info != PARU_SUCCESS)
     {
@@ -136,10 +150,16 @@ int main(int argc, char **argv)
 
     // printf("In: %ldx%ld nnz = %ld \n", Sym->m, Sym->n, Sym->anz);
 
-    info = ParU_Factorize(NULL, Sym, &Num, &Control);
+    info = ParU_Factorize(nullptr, Sym, &Num, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Factorize(A, NULL, &Num, &Control);
+    info = ParU_Factorize(A, nullptr, &Num, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Factorize(A, Sym, nullptr, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Factorize(A, Sym, &Num, nullptr);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Factorize(A, Sym, &Num, &Control);
@@ -165,10 +185,95 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
 
-    info = ParU_Solve(Sym, NULL, b, xx, &Control);  // coverage
+    info = ParU_Lsolve(NULL, Num, b, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, NULL, b, &Control);      // coverage
+    info = ParU_Lsolve(Sym, NULL, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Lsolve(Sym, Num, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Lsolve(Sym, Num, b, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(NULL, Num, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, NULL, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, Num, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, Num, b, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (NULL, Num->Rs, b, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, NULL, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, b, m, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, b, m, xx, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (NULL, NULL, b, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, NULL, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, b, m, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, b, m, xx, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    Perm = (int64_t *) malloc (m * sizeof(int64_t)) ;
+    TEST_ASSERT (Perm != NULL) ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        Perm [i] = (i + 2) % m ;
+    }
+    Scale = (double *) malloc (m * sizeof (double)) ;
+    TEST_ASSERT (Scale != NULL) ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        Scale [i] = 2 + i / 100.0 ;
+    }
+
+    info = ParU_InvPerm (Perm, Scale, b, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    err = 0 ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        err = fabs (xx [Perm [i]] * Scale [Perm [i]] - b [i]) ;
+    }
+    TEST_ASSERT (err < 1e-10) ;
+
+    info = ParU_Perm (Perm, NULL, b, m, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    err = 0 ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        err = fabs (xx [i] - b [Perm [i]]) ;
+    }
+    TEST_ASSERT (err < 1e-10) ;
+
+    info = ParU_Solve(NULL, Num, b, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, NULL, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, Num, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, Num, b, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Solve(Sym, Num, b, xx, &Control);
@@ -183,7 +288,6 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Residual(A, xx, b, resid, anorm, xnorm, &Control);
-    printf ("info: %d\n", info) ;
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -199,7 +303,7 @@ int main(int argc, char **argv)
     info = paru_backward(b, resid, anorm, xnorm, NULL, Sym, Num, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    if (b  != NULL) free(b);
+    if (b != NULL) free(b);
     b = NULL ;
     if (xx != NULL) free(xx);
     xx = NULL ;
@@ -220,10 +324,92 @@ int main(int argc, char **argv)
         }
     }
 
-    info = ParU_Solve(Sym, NULL, nrhs, B, X, &Control);  // for coverage
+    info = ParU_Lsolve(NULL, Num, nrhs, X, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Solve(Sym, NULL, nrhs, B, &Control);     // for coverage
+    info = ParU_Lsolve(Sym, NULL, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Lsolve(Sym, Num, nrhs, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Lsolve(Sym, Num, nrhs, X, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(NULL, Num, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, NULL, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, Num, nrhs, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Usolve(Sym, Num, nrhs, X, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+
+    info = ParU_Perm (NULL, Num->Rs, B, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, NULL, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, B, m, nrhs, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Perm (Num->Pfin, Num->Rs, B, m, nrhs, X, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (NULL, NULL, B, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, NULL, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, B, m, nrhs, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Sym->Qfill, NULL, B, m, nrhs, X, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_InvPerm (Perm, Scale, B, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    err = 0 ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        for (int64_t j = 0 ; j < nrhs ; j++)
+        {
+            err = fabs (X [Perm [i] + j*m] * Scale [Perm [i]] - B [i + j*m]) ;
+        }
+    }
+    TEST_ASSERT (err < 1e-10) ;
+
+    info = ParU_Perm (Perm, NULL, B, m, nrhs, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    err = 0 ;
+    for (int64_t i = 0 ; i < m ; i++)
+    {
+        for (int64_t j = 0 ; j < nrhs ; j++)
+        {
+            err = fabs (X [i + j*m] - B [Perm [i] + j*m]) ;
+        }
+    }
+    TEST_ASSERT (err < 1e-10) ;
+
+    info = ParU_Solve(NULL, Num, nrhs, B, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, NULL, nrhs, B, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, Num, nrhs, NULL, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, Num, nrhs, B, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Solve(Sym, Num, nrhs, B, X, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Solve(Sym, Num, nrhs, B, X, &Control);
@@ -247,6 +433,38 @@ int main(int argc, char **argv)
 
     printf("mRhs Residual is |%.2e|\n", resid);
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
+
+    // solve again, overwriting B with solution X
+    info = ParU_Solve(Sym, Num, nrhs, B, &Control);
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+    // compare X and B
+    err = 0 ;
+    for (int64_t i = 0 ; i < m*nrhs ; i++)
+    {
+        err += fabs (B [i] - X [i]) ;
+    }
+    err = err / xnorm ;
+    TEST_ASSERT (err < 1e-10) ;
+
+    info = ParU_Freenum (NULL, &Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_Freenum (&Num, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_Freesym (NULL, &Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_Freesym (&Sym, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    // test paru_bin_src_col
+    int64_t sorted_list [5] = {1, 4, 9, 99} ;
+    int64_t result = paru_bin_srch_col (sorted_list, 0, 4, 100) ;
+    TEST_ASSERT (result == -1) ;
+    sorted_list [1] = flip (4) ;
+    result = paru_bin_srch_col (sorted_list, 0, 4, 4) ;
+    TEST_ASSERT (result == 1) ;
 
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -57,7 +57,7 @@ ParU_Info ParU_Lsolve
 {
     if (!Sym || !Num || !x || !Control)
     {
-        return PARU_INVALID;
+        return (PARU_INVALID) ;
     }
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
@@ -123,7 +123,7 @@ ParU_Info ParU_Lsolve
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
 
     ParU_Factors *LUs = Num->partial_LUs;
@@ -231,7 +231,7 @@ ParU_Info ParU_Lsolve
 {
     if (!Sym || !Num || !X || !Control)
     {
-        return PARU_INVALID;
+        return (PARU_INVALID) ;
     }
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
@@ -318,7 +318,7 @@ ParU_Info ParU_Lsolve
     if (work == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory lsolve\n"));
-        return PARU_OUT_OF_MEMORY;
+        return (PARU_OUT_OF_MEMORY) ;
     }
 
     ParU_Factors *LUs = Num->partial_LUs;

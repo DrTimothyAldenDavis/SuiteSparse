@@ -15,7 +15,7 @@
 {                                   \
     printf ("all tests pass\n") ;   \
     TEST_FREE_ALL                   \
-    return (0) ;                    \
+    return (PARU_SUCCESS) ;         \
 }
 
 #define TEST_ASSERT(ok)                                                     \

@@ -84,10 +84,12 @@ ParU_Info ParU_Analyze
     ParU_Control *user_Control
 )
 {
-    if (!A || !Sym_handle || !user_Control)
+    if (!A || !Sym_handle || !user_Control || A->nrow != A->ncol ||
+        A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
         return (PARU_INVALID) ;
     }
+
     DEBUGLEVEL(0);
     PARU_DEFINE_PRLEVEL;
 #ifndef NTIME
@@ -104,22 +106,6 @@ ParU_Info ParU_Analyze
 
     int64_t m = A->nrow;
     int64_t n = A->ncol;
-    if (m != n)
-    {
-        PRLEVEL(1, ("ParU: Input matrix is not square!\n"));
-        paru_free(1, sizeof(ParU_Symbolic), Sym);
-        *Sym_handle = NULL;
-        return PARU_INVALID;
-    }
-
-    if (A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
-    {
-        PRLEVEL(1, ("ParU: input matrix must be double real\n"));
-        paru_free(1, sizeof(ParU_Symbolic), Sym);
-        *Sym_handle = NULL;
-        return PARU_INVALID;
-    }
-
     int64_t *Ap = static_cast<int64_t*>(A->p);
     int64_t *Ai = static_cast<int64_t*>(A->i);
     double *Ax = static_cast<double*>(A->x);

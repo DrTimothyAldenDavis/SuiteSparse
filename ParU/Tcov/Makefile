@@ -105,8 +105,66 @@ paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 
 
 go: paru_brutal_test paru_quick_test paru_c_test
-#	- ./paru_brutal_test < ../Demo/Matrix/b1_ss.mtx > parutest_out.txt
-	- ./trigger.sh
+	./paru_quick_test < ../Matrix/tumorAntiAngiogenesis_2.mtx
+	./paru_quick_test < ../Matrix/olm500.mtx
+	- ./cov
+	./paru_quick_test < ../Matrix/adder_dcop_05.mtx
+	./paru_quick_test < ../Matrix/bayer10.mtx
+	./paru_quick_test 104 < ../Matrix/rajat01.mtx
+	./paru_quick_test < ../Matrix/rajat19.mtx
+	./paru_brutal_test < ../Matrix/west0497.mtx
+	./paru_quick_test 104 < ../Matrix/gent113.mtx
+	- ./cov
+	./paru_quick_test < ../Matrix/hangGlider_2.mtx
+	./paru_brutal_test 104 < ../Matrix/Tina_AskCal.mtx
+	./paru_brutal_test 104 < ../Matrix/GD98_a.mtx
+	./paru_brutal_test 104 < ../Matrix/a0.mtx
+	./paru_brutal_test 104 < ../Matrix/a1.mtx
+	./paru_brutal_test 104 < ../Matrix/Tina_AskCal_perm.mtx
+	- ./cov
+	./paru_brutal_test 104 < ../Matrix/ash219.mtx
+	./paru_brutal_test 104 < ../Matrix/lp_e226.mtx
+	./paru_brutal_test 104 < ../Matrix/r2.mtx
+	./paru_brutal_test < ../Matrix/LFAT5.mtx
+	./paru_c_test < ../Matrix/west0067.mtx
+	- ./cov
+	./paru_quick_test < ../Matrix/arrow.mtx
+	- ./cov
+	./paru_brutal_test < ../Matrix/a2.mtx
+	./paru_brutal_test < ../Matrix/az88.mtx
+	./paru_quick_test 102 < ../Matrix/young1c.mtx
+	./paru_brutal_test 104 < ../Matrix/s32.mtx
+	./paru_brutal_test 104 < ../Matrix/lp_share1b.mtx
+	- ./cov
+	./paru_brutal_test -14 < ../Matrix/cage3.mtx
+	./paru_brutal_test -15 < ../Matrix/b1_ss.mtx
+	./paru_brutal_test -15 < ../Matrix/lfat5b.mtx
+	./paru_brutal_test 104 < ../Matrix/c32.mtx
+	./paru_brutal_test -15 < ../Matrix/bfwa62.mtx
+	./paru_brutal_test 104 < ../Matrix/Ragusa16.mtx
+	./paru_brutal_test 104 < ../Matrix/lp_e226_transposed.mtx
+	- ./cov
+	./paru_brutal_test 105 < ../Matrix/row0.mtx
+	./paru_brutal_test 104 < ../Matrix/Groebner_id2003_aug.mtx
+	./paru_brutal_test 104 < ../Matrix/c2.mtx
+	./paru_brutal_test 104 < ../Matrix/a4.mtx
+	./paru_brutal_test 104 < ../Matrix/problem.mtx
+	./paru_brutal_test -14 < ../Matrix/permuted_b1_ss.mtx
+	./paru_brutal_test < ../Matrix/pwr01b.mtx
+	- ./cov
+	./paru_brutal_test 104 < ../Matrix/Franz6_id1959_aug.mtx
+	./paru_brutal_test 104 < ../Matrix/Ragusa16_pattern.mtx
+	./paru_brutal_test < ../Matrix/temp.mtx
+	./paru_brutal_test -15 < ../Matrix/cage5.mtx
+	./paru_c_test 104 < ../Matrix/a04.mtx
+	./paru_c_test 104 < ../Matrix/lpi_galenet.mtx
+	./paru_quick_test < ../Matrix/nnc1374.mtx
+	- ./cov
+	./paru_brutal_test < ../Matrix/494_bus.mtx
+	- ./cov
+	./paru_quick_test < ../Matrix/xenon1.mtx
+	- ./cov
+	./paru_quick_test < ../Matrix/c-62.mtx
 	- ./cov
 
 vgo: paru_brutal_test

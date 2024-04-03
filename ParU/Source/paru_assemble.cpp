@@ -54,7 +54,9 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
 
     if (el->cValid != Work->time_stamp[f])
+    {
         paru_update_rel_ind_col(e, f, colHash, Work, Num);
+    }
 
     // int64_t *colRelIndex = relColInd (paru_element *el);
     int64_t *colRelIndex = (int64_t *)(el + 1) + mEl + nEl;
@@ -288,8 +290,10 @@ void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     #pragma omp atomic update
     tot_assem_time += time;
     if (f > Sym->nf - 5)
+    {
         PRLEVEL(-1, ("%% assemble all " LD "\t->" LD "\t took %lf seconds tot=%lf\n",
                      e, eli, time, tot_assem_time));
+    }
 #endif
 }
 
@@ -550,7 +554,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         int64_t rowInd = isRowInFront[i];
         if (rowInd > 0 && rowInd < curEl->nrows)
         {
-            // coompare their global indices
+            // compare their global indices
             if (curEl_rowIndex[rowInd] == el_rowIndex[i])
             {
                 PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
@@ -561,15 +565,19 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                 tempRow.push_back(i);
             }
             else
+            {
                 break;
+            }
         }
         i++;
     }
 
 #ifndef NDEBUG
     if (tempRow.size() > 0)
+    {
         PRLEVEL(PR, ("%% Toll free zone: " LD " rows has been found: \n%%",
                      tempRow.size()));
+    }
 #endif
 
     PRLEVEL(1, ("%% TollED \n"));
@@ -585,7 +593,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
         int64_t rowInd = isRowInFront[i];
         if (rowInd > 0 && rowInd < curEl->nrows)
         {
-            // coompare their global indices
+            // compare their global indices
             if (curEl_rowIndex[rowInd] == el_rowIndex[i])
             {
                 PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
@@ -598,7 +606,9 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                 toll++;
             }
             else
+            {
                 toll--;
+            }
         }
         i++;
     }
@@ -611,23 +621,20 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
         PRLEVEL(PR, ("" LD " ", tempRow[ii]));
     PRLEVEL(PR, ("\n "));
-#endif
-#ifndef NDEBUG
     PR = 1;
-    PRLEVEL(PR, ("%% Before eliminiatine some rows " LD " :\n", eli));
+    PRLEVEL(PR, ("%% Before eliminiating some rows " LD " :\n", eli));
     if (PR <= 0) paru_print_element(eli, Work, Num);
-
     PRLEVEL(PR, ("%% " LD " :\n", e));
     if (PR <= 0) paru_print_element(e, Work, Num);
 #endif
 
-    //This never happpens I found it in test coverage
-    //It is obviouse when I look at the caller
+    // This never happens; I found it in test coverage
+    //It is obvious when I look at the caller
     //if (el->cValid != Work->time_stamp[f])
     //    paru_update_rel_ind_col(e, f, colHash, Work, Num);
     ASSERT(el->cValid == Work->time_stamp[f]);
 
-    int64_t ncolsSeen = nEl;
+    int64_t ncolsSeen = nEl;    // FIXME unreachable here to the end?
 
     for (int64_t j = el->lac; j < nEl; j++)
     {
@@ -737,7 +744,9 @@ void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colH
     int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
 
     if (el->cValid != Work->time_stamp[f])
+    {
         paru_update_rel_ind_col(e, f, colHash, Work, Num);
+    }
 
     // int64_t *colRelIndex = relColInd (paru_element *el);
     int64_t *colRelIndex = (int64_t *)(el + 1) + mEl + nEl;

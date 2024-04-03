@@ -164,10 +164,6 @@ ParU_Info ParU_Solve
     // Note: B and X can be aliased
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% mRHS inside Solve\n"));
-    if (Sym == NULL || Num == NULL)
-    {
-        return PARU_INVALID;
-    }
     int64_t m = Sym->m;
 #ifndef NTIME
     double start_time = PARU_OPENMP_GET_WTIME;

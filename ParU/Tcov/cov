@@ -18,5 +18,7 @@ done
 
 echo -n "statements not tested: "
 grep "\#\#\#\#\#:" paru_*v | grep -v DEAD | wc -l
+echo -n "total statements: "
+cat paru_*v | grep -v "     -: " | wc -l
 
 set status=0

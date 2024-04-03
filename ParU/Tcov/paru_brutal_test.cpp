@@ -46,7 +46,7 @@ int main(int argc, char **argv)
     {
         expected_log10_resid = (double) atoi (argv [1]) ;
     }
-    printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
+//  printf ("expected log10 of resid: %g\n", expected_log10_resid) ;
 
     //~~~~~~~~~Reading the input matrix and test if the format is OK~~~~~~~~~~~~
     // start CHOLMOD
@@ -85,11 +85,11 @@ int main(int argc, char **argv)
     }
 
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    int ver[3];
-    char date[128];
-    ParU_Version(ver, date);
-    printf("ParU %d.%d.%d", ver[0], ver[1], ver[2]);
-    printf(" %s\n", date);
+//  int ver[3];
+//  char date[128];
+//  ParU_Version(ver, date);
+//  printf("ParU %d.%d.%d", ver[0], ver[1], ver[2]);
+//  printf(" %s\n", date);
 
     ParU_Info info;
 

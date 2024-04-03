@@ -62,6 +62,10 @@ int main(int argc, char **argv)
     int mtype;
     cholmod_l_start(cc);
 
+    ParU_Info info;
+    info = ParU_C_Init_Control(NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     ParU_C_Control Control;
     ParU_C_Init_Control(&Control); //initialize the Control in C
 
@@ -84,16 +88,22 @@ int main(int argc, char **argv)
     char date[128];
     ParU_C_Version(ver, date);
 
-
-    ParU_Info info;
-
     Control.umfpack_ordering = UMFPACK_ORDERING_AMD;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_UNSYMMETRIC;
     // Control.umfpack_strategy = UMFPACK_STRATEGY_SYMMETRIC;
     // Control.umfpack_default_singleton = 0;
     // Control.paru_max_threads = 6;
     Control.umfpack_ordering = UMFPACK_ORDERING_METIS_GUARD;
-    //info = ParU_C_Analyze(A, &Sym, &Control);
+
+    info = ParU_C_Analyze(NULL, &Sym, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Analyze(A, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Analyze(A, &Sym, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     BRUTAL_ALLOC_TEST(info, ParU_C_Analyze(A, &Sym, &Control));
     if (info != PARU_SUCCESS)
     {
@@ -101,7 +111,18 @@ int main(int argc, char **argv)
         return (0) ;
     }
 
-    //info = ParU_C_Factorize(A, Sym, &Num, &Control);
+    info = ParU_C_Factorize(NULL, Sym, &Num, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Factorize(A, NULL, &Num, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Factorize(A, Sym, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Factorize(A, Sym, &Num, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     BRUTAL_ALLOC_TEST(info, ParU_C_Factorize(A, Sym, &Num, &Control));
     if (info != PARU_SUCCESS)
     {
@@ -121,7 +142,21 @@ int main(int argc, char **argv)
     TEST_ASSERT (xx != NULL) ;
 
     for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
-    //info = ParU_C_Solve_Axb(Sym, Num, b, xx, &Control);
+
+    info = ParU_C_Solve_Axb(NULL, Num, b, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axb(Sym, NULL, b, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axb(Sym, Num, NULL, xx, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axb(Sym, Num, b, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axb(Sym, Num, b, xx, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axb(Sym, Num, b, xx, &Control));
     if (info != PARU_SUCCESS)
@@ -143,13 +178,24 @@ int main(int argc, char **argv)
             " is %.2e.\n", resid, anorm, xnorm, Num->rcond);
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
 
-   BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axx(Sym, Num, b, &Control));
-   if (info != PARU_SUCCESS)
-   {
-       TEST_ASSERT (expected_log10_resid == 107) ;
-       return (0) ;
-   }
+    info = ParU_C_Solve_Axx(NULL, Num, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
+    info = ParU_C_Solve_Axx(Sym, NULL, b, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axx(Sym, Num, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_Axx(Sym, Num, b, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    BRUTAL_ALLOC_TEST(info, ParU_C_Solve_Axx(Sym, Num, b, &Control));
+    if (info != PARU_SUCCESS)
+    {
+        TEST_ASSERT (expected_log10_resid == 107) ;
+        return (0) ;
+    }
 
     if (b  != NULL) free(b);
     b = NULL ;
@@ -171,7 +217,21 @@ int main(int argc, char **argv)
         }
     }
 
-    //info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, &Control);
+    info = ParU_C_Solve_AXB(NULL, Num, nrhs, B, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXB(Sym, NULL, nrhs, B, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, NULL, X, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXB(Sym, Num, nrhs, B, X, 
                 &Control));
     if (info != PARU_SUCCESS)
@@ -180,8 +240,32 @@ int main(int argc, char **argv)
         return (0) ;
     }
 
+
+    info = ParU_C_Residual_BAX(NULL, X, B, nrhs, &resid, &anorm, &xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, NULL, B, nrhs, &resid, &anorm, &xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, X, NULL, nrhs, &resid, &anorm, &xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, NULL, &anorm, &xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, NULL, &xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_BAX(A, X, B, nrhs, &resid, &anorm, &xnorm, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+
     BRUTAL_ALLOC_TEST (info, ParU_C_Residual_BAX(A, X, B, nrhs, &resid,
                 &anorm, &xnorm, &Control));
+
     resid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
     if (info != PARU_SUCCESS)
     {
@@ -191,6 +275,18 @@ int main(int argc, char **argv)
 
     printf("mRhs Residual is |%.2e|\n", resid);
     TEST_ASSERT (resid == 0 || log10 (resid) <= expected_log10_resid) ;
+
+    info = ParU_C_Solve_AXX(NULL, Num, nrhs, B, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXX(Sym, NULL, nrhs, B, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXX(Sym, Num, nrhs, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Solve_AXX(Sym, Num, nrhs, B, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     BRUTAL_ALLOC_TEST(info, ParU_C_Solve_AXX(Sym, Num, nrhs, B, &Control));
     if (info != PARU_SUCCESS)
@@ -255,8 +351,32 @@ int main(int argc, char **argv)
     TEST_ASSERT_INFO (status == UMFPACK_OK, status) ;
 
     double umf_resid, umf_anorm, umf_xnorm;
+
+
+    info = ParU_C_Residual_bAx(NULL, x, b, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, NULL, b, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, x, NULL, &umf_resid, &umf_anorm, &umf_xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, x, b, NULL, &umf_anorm, &umf_xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, NULL, &umf_xnorm, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, NULL, &Control);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Residual_bAx(A, x, b, &umf_resid, &umf_anorm, &umf_xnorm, NULL);
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
     info = ParU_C_Residual_bAx(A, x, b, &umf_resid, 
             &umf_anorm, &umf_xnorm, &Control);
+
     umf_resid = (umf_anorm == 0 || umf_xnorm == 0 ) ? 0 : 
         (umf_resid/(umf_anorm*umf_xnorm));
     if (info != PARU_SUCCESS)
@@ -268,6 +388,18 @@ int main(int argc, char **argv)
     printf("UMFPACK Residual is |%.2e| and anorm is %.2e and rcond is %.2e.\n",
            umf_resid, umf_anorm, Num->rcond);
     TEST_ASSERT (umf_resid == 0 || log10 (umf_resid) <= expected_log10_resid) ;
+
+    info = ParU_C_Freenum (NULL, &Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_C_Freenum (&Num, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
+
+    info = ParU_C_Freesym (NULL, &Control) ;
+    TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
+
+    info = ParU_C_Freesym (&Sym, NULL) ;
+    TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     TEST_PASSES ;

@@ -35,9 +35,10 @@ ParU_Info ParU_Residual
     ParU_Control *Control
 )
 {
-    if (!A || !x || !b || !Control)
+    if (!A || !x || !b || !Control ||
+        A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
-        return PARU_INVALID;
+        return (PARU_INVALID) ;
     }
 
     DEBUGLEVEL(0);
@@ -104,9 +105,10 @@ ParU_Info ParU_Residual
     ParU_Control *Control
 )
 {
-    if (!A || !X || !B || !Control)
+    if (!A || !X || !B || !Control ||
+        A->xtype != CHOLMOD_REAL || A->dtype != CHOLMOD_DOUBLE)
     {
-        return PARU_INVALID;
+        return (PARU_INVALID) ;
     }
     DEBUGLEVEL(0);
     PRLEVEL(1, ("%% mRHS inside residual\n"));
