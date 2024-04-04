@@ -101,7 +101,7 @@ int main(int argc, char **argv)
             std::cout << "Singular!\n";
         cholmod_l_free_sparse(&A, cc);
         cholmod_l_finish(cc);
-        ParU_Freesym(&Sym, &Control);
+        ParU_FreeSymbolic(&Sym, &Control);
         return info;
     }
     else
@@ -130,7 +130,7 @@ int main(int argc, char **argv)
             free(xx);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_Freesym(&Sym, &Control);
+            ParU_FreeSymbolic(&Sym, &Control);
             return info;
         }
         my_solve_time = omp_get_wtime() - my_solve_time_start;
@@ -157,7 +157,7 @@ int main(int argc, char **argv)
             free(xx);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_Freesym(&Sym, &Control);
+            ParU_FreeSymbolic(&Sym, &Control);
             return info;
         }
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
@@ -185,7 +185,7 @@ int main(int argc, char **argv)
             free(X);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_Freesym(&Sym, &Control);
+            ParU_FreeSymbolic(&Sym, &Control);
             return info;
         }
         std::cout << "\n--------- ParU_Residual:\n";
@@ -197,7 +197,7 @@ int main(int argc, char **argv)
             free(X);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_Freesym(&Sym, &Control);
+            ParU_FreeSymbolic(&Sym, &Control);
             return info;
         }
         rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
@@ -316,8 +316,8 @@ int main(int argc, char **argv)
 #endif  // writing to a file
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_Freenum(&Num, &Control);
-    ParU_Freesym(&Sym, &Control);
+    ParU_FreeNumeric(&Num, &Control);
+    ParU_FreeSymbolic(&Sym, &Control);
 
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);

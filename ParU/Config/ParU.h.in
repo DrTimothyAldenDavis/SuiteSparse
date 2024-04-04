@@ -406,19 +406,20 @@ ParU_Info ParU_Factorize
 // The matrices X and B have size n-by-nrhs, and are held in column-major
 // storage.
 
-//-------- Ax = b (x is overwritten on b)---------------------------------------
+//-------- x = A\x -------------------------------------------------------------
 ParU_Info ParU_Solve
 (
     // input:
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     // input/output:
-    double *b,              // vector of size n-by-1
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
     // control:
     ParU_Control *Control
 ) ;
 
-//-------- Ax = b --------------------------------------------------------------
+//-------- x = A\b -------------------------------------------------------------
 ParU_Info ParU_Solve
 (
     // input:
@@ -431,7 +432,7 @@ ParU_Info ParU_Solve
     ParU_Control *Control
 ) ;
 
-//-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
+//-------- X = A\X -------------------------------------------------------------
 ParU_Info ParU_Solve
 (
     // input
@@ -439,12 +440,13 @@ ParU_Info ParU_Solve
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     int64_t nrhs,           // # of right-hand sides
     // input/output:
-    double *B,              // n-by-nrhs, in column-major storage
+    double *X,              // X is n-by-nrhs, where A is n-by-n;
+                            // holds B on input, solution X on input
     // control:
     ParU_Control *Control
 ) ;
 
-//-------- AX = B  (multiple rhs)-----------------------------------------------
+//-------- X = A\B -------------------------------------------------------------
 ParU_Info ParU_Solve
 (
     // input
@@ -459,7 +461,7 @@ ParU_Info ParU_Solve
 ) ;
 
 // Solve L*x=b where x and b are vectors (no scaling or permutations)
-ParU_Info ParU_Lsolve
+ParU_Info ParU_LSolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -472,7 +474,7 @@ ParU_Info ParU_Lsolve
 ) ;
 
 // Solve L*X=B where X and B are matrices (no scaling or permutations)
-ParU_Info ParU_Lsolve
+ParU_Info ParU_LSolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -486,7 +488,7 @@ ParU_Info ParU_Lsolve
 ) ;
 
 // Solve U*x=b where x and b are vectors (no scaling or permutations)
-ParU_Info ParU_Usolve
+ParU_Info ParU_USolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -499,7 +501,7 @@ ParU_Info ParU_Usolve
 ) ;
 
 // Solve U*X=B where X and B are matrices (no scaling or permutations)
-ParU_Info ParU_Usolve
+ParU_Info ParU_USolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -615,7 +617,7 @@ ParU_Info ParU_Residual
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Freenum
+ParU_Info ParU_FreeNumeric
 (
     // input/output:
     ParU_Numeric **Num_handle,  // numeric object to free
@@ -623,7 +625,7 @@ ParU_Info ParU_Freenum
     ParU_Control *Control
 ) ;
 
-ParU_Info ParU_Freesym
+ParU_Info ParU_FreeSymbolic
 (
     // input/output:
     ParU_Symbolic **Sym_handle, // symbolic object to free
@@ -692,7 +694,7 @@ typedef struct ParU_C_Control_struct
 typedef struct ParU_C_Symbolic_struct
 {
     int64_t m, n, anz;
-    int64_t *Qfill ;        // or Q?
+    int64_t *Qfill ;        // a shallow pointer to the C++ Sym->Qfill
     void *sym_handle;
 } ParU_C_Symbolic;
 
@@ -705,29 +707,26 @@ typedef struct ParU_C_Symbolic_struct
 typedef struct ParU_C_Numeric_struct
 {
     double rcond;
-    int64_t *Pfin ;         // or P?
-    double *Rs ;
+    int64_t *Pfin ;         // a shallow pointer to the C++ Num->Pfin
+    double *Rs ;            // a shallow pointer to the C++ Num->Rs
     void *num_handle;
 } ParU_C_Numeric;
 
 //------------------------------------------------------------------------------
-// ParU_Version: 
+// ParU_Version: return the version and date of ParU
 //------------------------------------------------------------------------------
 
-// return the version
 ParU_Info ParU_C_Version (int ver [3], char date [128]);
 
 //------------------------------------------------------------------------------
-// ParU_C_Init_Control
+// ParU_C_Init_Control: initialize C data structure
 //------------------------------------------------------------------------------
 
-// Initialize C data structure
-
-ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C);
+ParU_Info ParU_C_Init_Control (ParU_C_Control *Control_C) ;
 
 //------------------------------------------------------------------------------
 // ParU_C_Analyze: Symbolic analysis is done in this routine. UMFPACK is called
-// here and after that some more speciallized symbolic computation is done for
+// here and after that some more speciaized symbolic computation is done for
 // ParU. ParU_Analyze can be called once and can be used for different
 // ParU_Factorize calls. 
 //------------------------------------------------------------------------------
@@ -737,9 +736,9 @@ ParU_Info ParU_C_Analyze
     // input:
     cholmod_sparse *A,  // input matrix to analyze of size n-by-n
     // output:
-    ParU_C_Symbolic **Sym_handle,  // output, symbolic analysis
+    ParU_C_Symbolic **Sym_handle_C,  // output, symbolic analysis
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
 //------------------------------------------------------------------------------
@@ -752,12 +751,12 @@ ParU_Info ParU_C_Analyze
 ParU_Info ParU_C_Factorize
 (
     // input:
-    cholmod_sparse *A,      // input matrix to factorize of size n-by-n
-    ParU_C_Symbolic *Sym,   // symbolic analsys from ParU_Analyze
+    cholmod_sparse *A,          // input matrix to factorize of size n-by-n
+    ParU_C_Symbolic *Sym_C,     // symbolic analysis from ParU_Analyze
     // output:
-    ParU_C_Numeric **Num_handle,    // output numerical factorization
+    ParU_C_Numeric **Num_handle_C,    // output numerical factorization
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
 //------------------------------------------------------------------------------
@@ -767,65 +766,180 @@ ParU_Info ParU_C_Factorize
 // In all the solve routines Num structure must come with the same Sym struct
 // that comes from ParU_Factorize
 
-//-------- Ax = b (x is overwritten on b)---------------------------------------
+// x = A\x, where right-hand side is overwritten with the solution x.
 ParU_Info ParU_C_Solve_Axx
 (
     // input:
-    ParU_C_Symbolic *Sym,   // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num,    // numeric factorization form ParU_C_Factorize
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
     // input/output:
-    double *b,              // vector of size n-by-1
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
-//-------- Ax = b --------------------------------------------------------------
+// x = L\x, where right-hand side is overwritten with the solution x.
+ParU_Info ParU_C_Solve_Lxx
+(
+    // input:
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    // input/output:
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// x = U\x, where right-hand side is overwritten with the solution x.
+ParU_Info ParU_C_Solve_Uxx
+(
+    // input:
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    // input/output:
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// x = A\b, for vectors x and b
 ParU_Info ParU_C_Solve_Axb
 (
     // input:
-    ParU_C_Symbolic *Sym,   // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num,    // numeric factorization form ParU_C_Factorize
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
     double *b,              // vector of size n-by-1
     // output
     double *x,              // vector of size n-by-1
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
-//-------- AX = B  (X is overwritten on B, multiple rhs)------------------------
+// X = A\X, where right-hand side is overwritten with the solution X.
 ParU_Info ParU_C_Solve_AXX
 (
     // input
-    ParU_C_Symbolic *Sym,   // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num,    // numeric factorization form ParU_C_Factorize
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     // input/output:
-    double *B,              // array of size n-by-nrhs in column-major storage
+    double *X,              // array of size n-by-nrhs in column-major storage,
+                            // right-hand-side on input, solution on output.
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
-//-------- AX = B  (multiple rhs)-----------------------------------------------
+// X = L\X, where right-hand side is overwritten with the solution X.
+ParU_Info ParU_C_Solve_LXX
+(
+    // input
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    int64_t nrhs,
+    // input/output:
+    double *X,              // array of size n-by-nrhs in column-major storage,
+                            // right-hand-side on input, solution on output.
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// X = U\X, where right-hand side is overwritten with the solution X.
+ParU_Info ParU_C_Solve_UXX
+(
+    // input
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
+    int64_t nrhs,
+    // input/output:
+    double *X,              // array of size n-by-nrhs in column-major storage,
+                            // right-hand-side on input, solution on output.
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// X = A\B, for matrices X and B
 ParU_Info ParU_C_Solve_AXB
 (
     // input
-    ParU_C_Symbolic *Sym,   // symbolic analysis from ParU_C_Analyze
-    ParU_C_Numeric *Num,    // numeric factorization form ParU_C_Factorize
+    ParU_C_Symbolic *Sym_C, // symbolic analysis from ParU_C_Analyze
+    ParU_C_Numeric *Num_C,  // numeric factorization from ParU_C_Factorize
     int64_t nrhs,
     double *B,              // array of size n-by-nrhs in column-major storage
     // output:
     double *X,              // array of size n-by-nrhs in column-major storage
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
-// FIXME: add Lsolve, perms etc
+//------------------------------------------------------------------------------
+// Perm and InvPerm
+//------------------------------------------------------------------------------
+
+// apply permutation to a vector, x=b(p)./s
+ParU_Info ParU_C_Perm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// apply permutation to a matrix, X=B(p,:)./s
+ParU_Info ParU_C_Perm_X
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control:
+    ParU_C_Control *Control_C
+) ;
+
+// apply inverse permutation to a vector, x(p)=b, then scale x=x./s
+ParU_Info ParU_C_InvPerm
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size n
+    const double *s,    // vector of size n (optional)
+    const double *b,    // vector of size n
+    int64_t n,          // length of P, s, B, and X
+    // output
+    double *x,          // vector of size n
+    // control
+    ParU_C_Control *Control_C
+) ;
+
+// apply inverse permutation to a matrix, X(p,:)=b, then scale X=X./s
+ParU_Info ParU_C_InvPerm_X
+(
+    // inputs
+    const int64_t *P,   // permutation vector of size nrows
+    const double *s,    // vector of size nrows (optional)
+    const double *B,    // array of size nrows-by-ncols
+    int64_t nrows,      // # of rows of X and B
+    int64_t ncols,      // # of columns of X and B
+    // output
+    double *X,          // array of size nrows-by-ncols
+    // control
+    ParU_C_Control *Control_C
+) ;
 
 //------------------------------------------------------------------------------
 //-------------- computing residual --------------------------------------------
 //------------------------------------------------------------------------------
 
-// The user provide both x and b
 // resid = norm1(b-A*x) / (norm1(A) * norm1 (x))
 ParU_Info ParU_C_Residual_bAx
 (
@@ -834,15 +948,14 @@ ParU_Info ParU_C_Residual_bAx
     double *x,          // vector of size n
     double *b,          // vector of size n
     // output:
-    double *resid,      // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
-    double *anorm,      // 1-norm of A
-    double *xnorm,      // 1-norm of x
+    double *residc,     // residual: norm1(b-A*x) / (norm1(A) * norm1 (x))
+    double *anormc,     // 1-norm of A
+    double *xnormc,     // 1-norm of x
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
 // resid = norm1(B-A*X) / (norm1(A) * norm1 (X))
-// (multiple rhs)
 ParU_Info ParU_C_Residual_BAX
 (
     // inputs:
@@ -851,29 +964,29 @@ ParU_Info ParU_C_Residual_BAX
     double *B,          // array of size n-by-nrhs
     int64_t nrhs,
     // output:
-    double *resid,      // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
-    double *anorm,      // 1-norm of A
-    double *xnorm,      // 1-norm of X
+    double *residc,     // residual: norm1(B-A*X) / (norm1(A) * norm1 (X))
+    double *anormc,     // 1-norm of A
+    double *xnormc,     // 1-norm of X
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
 //------------------------------------------------------------------------------
 //------------ Free routines----------------------------------------------------
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_C_Freenum
+ParU_Info ParU_C_FreeNumeric
 (
-    ParU_C_Numeric **Num_handle,    // numeric object to free
+    ParU_C_Numeric **Num_handle_C,    // numeric object to free
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
-ParU_Info ParU_C_Freesym
+ParU_Info ParU_C_FreeSymbolic
 (
-    ParU_C_Symbolic **Sym_handle,   // symbolic object to free
+    ParU_C_Symbolic **Sym_handle_C,   // symbolic object to free
     // control:
-    ParU_C_Control *Control
+    ParU_C_Control *Control_C
 ) ;
 
 #ifdef __cplusplus

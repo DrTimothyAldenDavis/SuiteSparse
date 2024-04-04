@@ -69,8 +69,8 @@ int main(int argc, char **argv)
     }
 #endif  // testing the results
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_Freenum(&Num, &Control);
-    ParU_C_Freesym(&Sym, &Control);
+    ParU_C_FreeNumeric(&Num, &Control);
+    ParU_C_FreeSymbolic(&Sym, &Control);
 
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);

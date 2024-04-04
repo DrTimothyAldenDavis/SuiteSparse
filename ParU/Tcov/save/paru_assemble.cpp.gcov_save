@@ -1,0 +1,966 @@
+        -:    0:Source:../Source/paru_assemble.cpp
+        -:    0:Graph:./paru_assemble.gcno
+        -:    0:Data:./paru_assemble.gcda
+        -:    0:Runs:52
+        -:    1:////////////////////////////////////////////////////////////////////////////////
+        -:    2://////////////////////////  paru_assemble //////////////////////////////////////
+        -:    3:////////////////////////////////////////////////////////////////////////////////
+        -:    4:
+        -:    5:// ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
+        -:    6:// All Rights Reserved.
+        -:    7:// SPDX-License-Identifier: GPL-3.0-or-later
+        -:    8:
+        -:    9:/*! @brief  finding the columns or rows of prior element and fully or partially
+        -:   10: * assemble it and eliminate it if needed
+        -:   11: *
+        -:   12: *  @author Aznaveh
+        -:   13: */
+        -:   14:#include "paru_internal.hpp"
+        -:   15:
+     9960:   16:void paru_assemble_all(int64_t e, int64_t f, std::vector<int64_t> &colHash,
+        -:   17:        paru_work *Work, ParU_Numeric *Num)
+        -:   18:{
+        -:   19:    DEBUGLEVEL(0);
+        -:   20:    PARU_DEFINE_PRLEVEL;
+        -:   21:#ifndef NTIME
+        -:   22:    static double tot_assem_time = 0;
+        -:   23:    double start_time = PARU_OPENMP_GET_WTIME;
+        -:   24:#endif
+        -:   25:
+     9960:   26:    ParU_Symbolic *Sym = Work->Sym;
+     9960:   27:    int64_t *snM = Sym->super2atree;
+     9960:   28:    int64_t eli = snM[f];
+        -:   29:    PRLEVEL(PR, ("%% Eliminate all of " LD " in " LD "(f=" LD ") (tid=%d)\n", e, eli, f,
+        -:   30:                 PARU_OPENMP_GET_THREAD_ID));
+        -:   31:
+        -:   32:#ifndef NDEBUG
+        -:   33:    PR = 1;
+        -:   34:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:   35:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:   36:
+        -:   37:    PRLEVEL(PR, ("%% " LD " :\n", eli));
+        -:   38:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:   39:    PR = 1;
+        -:   40:#endif
+        -:   41:
+     9960:   42:    paru_element **elementList = Work->elementList;
+        -:   43:
+     9960:   44:    paru_element *el = elementList[e];
+     9960:   45:    paru_element *curEl = elementList[eli];
+        -:   46:
+     9960:   47:    int64_t nEl = el->ncols;
+     9960:   48:    int64_t mEl = el->nrows;
+        -:   49:
+        -:   50:    // int64_t *el_colIndex = colIndex_pointer (el);
+     9960:   51:    int64_t *el_colIndex = (int64_t *)(el + 1);
+        -:   52:
+        -:   53:    // int64_t *rowRelIndex = relRowInd (el);
+     9960:   54:    int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
+        -:   55:
+     9960:   56:    if (el->cValid != Work->time_stamp[f])
+        -:   57:    {
+       30:   58:        paru_update_rel_ind_col(e, f, colHash, Work, Num);
+        -:   59:    }
+        -:   60:
+        -:   61:    // int64_t *colRelIndex = relColInd (paru_element *el);
+     9960:   62:    int64_t *colRelIndex = (int64_t *)(el + 1) + mEl + nEl;
+        -:   63:
+        -:   64:    // int64_t *el_rowIndex = rowIndex_pointer (el);
+     9960:   65:    int64_t *el_rowIndex = (int64_t *)(el + 1) + nEl;
+        -:   66:
+        -:   67:    // double *el_Num = numeric_pointer (el);
+     9960:   68:    double *el_Num = (double *)((int64_t *)(el + 1) + 2 * nEl + 2 * mEl);
+        -:   69:    // current elemnt numerical pointer
+        -:   70:    // double *el_Num = numeric_pointer (curEl);
+     9960:   71:    double *curEl_Num =
+     9960:   72:        (double *)((int64_t *)(curEl + 1) + 2 * curEl->nrows + 2 * curEl->ncols);
+        -:   73:
+     9960:   74:    int64_t *isRowInFront = Work->rowSize;
+        -:   75:
+        -:   76:#ifndef NDEBUG
+        -:   77:    ParU_Factors *Us = Num->partial_Us;
+        -:   78:    int64_t *fcolList = Num->fcolList[f];
+        -:   79:    int64_t colCount = Us[f].n;
+        -:   80:    ASSERT(el_colIndex[el->lac] <= fcolList[colCount - 1]);
+        -:   81:    ASSERT(el_colIndex[nEl - 1] <= 0 || fcolList[0] <= el_colIndex[nEl - 1]);
+        -:   82:    PRLEVEL(PR, ("%% newColSet.size = " LD "\n", colCount));
+        -:   83:    PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
+        -:   84:#endif
+        -:   85:
+     9960:   86:    if (el->ncolsleft == 1)
+        -:   87:    {
+        -:   88:        PRLEVEL(PR, ("%% 1 col left\n %%"));
+     3156:   89:        double *sC = el_Num + mEl * el->lac;  // source column pointer
+        -:   90:#ifndef NDEBUG
+        -:   91:        int64_t colInd = el_colIndex[el->lac];
+        -:   92:        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+        -:   93:        ASSERT(colInd >= 0);
+        -:   94:#endif
+     3156:   95:        int64_t fcolind = colRelIndex[el->lac];
+     3156:   96:        double *dC = curEl_Num + fcolind * curEl->nrows;
+     3156:   97:        int64_t nrowsSeen = el->nrowsleft;
+    11243:   98:        for (int64_t i = 0; i < mEl; i++)
+        -:   99:        {
+    11243:  100:            int64_t rowInd = el_rowIndex[i];
+        -:  101:            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+    11243:  102:            if (rowInd >= 0)
+        -:  103:            {
+     8899:  104:                int64_t ri = isRowInFront[rowInd];
+        -:  105:                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  106:                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  107:                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+     8899:  108:                dC[ri] += sC[i];
+        -:  109:                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+     8899:  110:                if (--nrowsSeen == 0) break;
+        -:  111:            }
+        -:  112:        }
+        -:  113:    }
+        -:  114:    else
+        -:  115:    {
+        -:  116:        PRLEVEL(PR, ("%% more than 1 col left (" LD "->" LD ")\n %%", e, eli));
+        -:  117:
+        -:  118:        // save the structure of the rows once at first
+        -:  119:        // int64_t tempRow[el->nrowsleft];  // C99
+    13608:  120:        std::vector<int64_t> tempRow(el->nrowsleft);
+     6796:  121:        int64_t ii = 0;
+  3159983:  122:        for (int64_t i = 0; i < mEl; i++)
+        -:  123:        {
+  3159983:  124:            int64_t rowInd = el_rowIndex[i];
+        -:  125:            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+  3159983:  126:            if (rowInd >= 0)
+        -:  127:            {
+  2342145:  128:                tempRow[ii++] = i;
+  2342145:  129:                int64_t ri = isRowInFront[rowInd];
+  2342145:  130:                rowRelIndex[i] = ri;
+  2342145:  131:                if (ii == el->nrowsleft) break;
+        -:  132:            }
+        -:  133:        }
+        -:  134:
+        -:  135:        int64_t naft;  // number of active frontal tasks
+        -:  136:        #pragma omp atomic read
+     6796:  137:        naft = Work->naft;
+     6796:  138:        ParU_Control *Control = Num->Control;
+     6796:  139:        const int32_t max_threads = Control->paru_max_threads;
+        -:  140:
+     6796:  141:        if (el->nrowsleft * el->ncolsleft < 4096 || el->nrowsleft < 1024
+        -:  142:            #ifndef PARU_COVERAGE
+        -:  143:            // In production, do sequential assembly if the number
+        -:  144:            // of active fronts is large.  For test coverage, don't
+        -:  145:            // check this condition, to exercise the parallel assembly.
+        -:  146:            || naft > max_threads / 2
+        -:  147:            #endif
+        -:  148:            )
+        -:  149:        {  // not enoght resources or very small assembly
+        -:  150:            // sequential
+        -:  151:            PRLEVEL(1,
+        -:  152:                    ("Seqntial Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " \n",
+        -:  153:                     naft, el->ncolsleft, el->nrowsleft));
+        -:  154:
+  2577385:  155:            for (int64_t j = el->lac; j < nEl; j++)
+        -:  156:            {
+        -:  157:                PRLEVEL(1, ("%% j =" LD " \n", j));
+  2577385:  158:                double *sC = el_Num + mEl * j;  // source column pointer
+  2577385:  159:                int64_t colInd = el_colIndex[j];
+        -:  160:                PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+ 2577385*:  161:                if (colInd < 0) continue;
+  2577385:  162:                int64_t fcolind = colRelIndex[j];
+        -:  163:
+  2577385:  164:                double *dC = curEl_Num + fcolind * curEl->nrows;
+166401265:  165:                for (int64_t iii = 0; iii < el->nrowsleft; iii++)
+        -:  166:                {
+163823880:  167:                    int64_t i = tempRow[iii];
+163823880:  168:                    int64_t ri = rowRelIndex[i];
+        -:  169:
+        -:  170:                    PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  171:                    PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  172:                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+163823880:  173:                    dC[ri] += sC[i];
+        -:  174:                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  175:                }
+        -:  176:
+  2577385:  177:                if (--el->ncolsleft == 0) break;
+        -:  178:                PRLEVEL(1, ("\n"));
+     6074:  179:            }
+        -:  180:        }
+        -:  181:        else
+        -:  182:        {
+        -:  183:            // enoght threads and big assembly
+        -:  184:            // go parallel
+        -:  185:            PRLEVEL(1, ("Parallel Assembly naft=" LD " colsleft=" LD " rowsleft=" LD " "
+        -:  186:                        "el->lac = " LD " nEl=" LD " rem =" LD " (" LD "->" LD ")\n",
+        -:  187:                        naft, el->ncolsleft, el->nrowsleft, el->lac, nEl,
+        -:  188:                        nEl - el->lac, e, eli));
+        -:  189:
+        -:  190:            // // each column a tsk
+        -:  191:            //#..pragma omp parallel proc_bind(close)
+        -:  192:            // num_threads(max_threads / naft)
+        -:  193:            //#..pragma omp single nowait
+        -:  194:            //#..pragma omp task untied
+        -:  195:            // for (int64_t j = el->lac; j < nEl; j++)
+        -:  196:            //{
+        -:  197:            //    PRLEVEL(1, ("%% j =" LD " \n", j));
+        -:  198:            //    double *sC = el_Num + mEl * j;  // source column pointer
+        -:  199:            //    int64_t colInd = el_colIndex[j];
+        -:  200:            //    PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+        -:  201:            //    if (colInd < 0) continue;
+        -:  202:
+        -:  203:            //    int64_t fcolind = colRelIndex[j];
+        -:  204:
+        -:  205:            //    double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  206:
+        -:  207:            //    #pragma omp task
+        -:  208:            //    for (int64_t iii = 0; iii < el->nrowsleft; iii++)
+        -:  209:            //    {
+        -:  210:            //        int64_t i = tempRow[iii];
+        -:  211:            //        int64_t ri = rowRelIndex[i];
+        -:  212:
+        -:  213:            //        PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  214:            //        PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  215:            //        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+        -:  216:            //        dC[ri] += sC[i];
+        -:  217:            //        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  218:            //    }
+        -:  219:            //    if (--el->ncolsleft == 0) break;
+        -:  220:            //    PRLEVEL(1, ("\n"));
+        -:  221:            //}
+        -:  222:
+        -:  223:            ///////////////////////////////////////////////////////////////////
+        -:  224:            /////////////// making tasks and such /////////////////////////////
+        -:  225:            ///////////////////////////////////////////////////////////////////
+        -:  226:
+      722:  227:            int64_t ntasks = (max_threads - naft + 1) * 2;
+      722:  228:            ntasks = (ntasks <= 0) ? 1 : ntasks;
+      722:  229:            int64_t task_size = (nEl - el->lac) / ntasks;
+        -:  230:            PRLEVEL(1, ("BBB el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
+        -:  231:                        el->lac, nEl, ntasks, task_size));
+      722:  232:            if (task_size == 0 || task_size == 1)
+        -:  233:            {
+        4:  234:                task_size = 1;
+        4:  235:                ntasks = nEl - el->lac;
+        -:  236:            }
+        -:  237:            PRLEVEL(1, ("el->lac=" LD " nEl=" LD " ntasks=" LD " task_size=" LD "\n",
+        -:  238:                        el->lac, nEl, ntasks, task_size));
+      722:  239:            #pragma omp parallel proc_bind(close) num_threads(ntasks)
+        -:  240:            #pragma omp single
+        -:  241:            #pragma omp task
+        -:  242:            for (int64_t t = 0; t < ntasks; t++)
+        -:  243:            {
+        -:  244:                int64_t c1 = el->lac + t * task_size;
+        -:  245:                int64_t c2 = el->lac + (t + 1) * task_size;
+        -:  246:                c2 = t == ntasks - 1 ? nEl : c2;
+        -:  247:                PRLEVEL(1, ("t=" LD " c1=" LD " c2=" LD "\n", t, c1, c2));
+        -:  248:                #pragma omp task mergeable
+        -:  249:                for (int64_t j = c1; j < c2; j++)
+        -:  250:                {
+        -:  251:                    PRLEVEL(1, ("%% j =" LD " t=" LD "\n", j, t));
+        -:  252:                    double *sC = el_Num + mEl * j;  // source column pointer
+        -:  253:                    int64_t colInd = el_colIndex[j];
+        -:  254:                    PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+        -:  255:                    if (colInd < 0) continue;
+        -:  256:                    PRLEVEL(1, ("inside paralle region %d j=" LD " (tid=%d)\n",
+        -:  257:                                PARU_OPENMP_GET_ACTIVE_LEVEL, j,
+        -:  258:                                PARU_OPENMP_GET_THREAD_NUM));
+        -:  259:                    int64_t fcolind = colRelIndex[j];
+        -:  260:
+        -:  261:                    double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  262:
+        -:  263:                    for (int64_t iii = 0; iii < el->nrowsleft; iii++)
+        -:  264:                    {
+        -:  265:                        int64_t i = tempRow[iii];
+        -:  266:                        int64_t ri = rowRelIndex[i];
+        -:  267:
+        -:  268:                        PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  269:                        PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  270:                        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+        -:  271:                        dC[ri] += sC[i];
+        -:  272:                        PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  273:                    }
+        -:  274:                    PRLEVEL(1, ("\n"));
+        -:  275:                }
+        -:  276:            }
+        -:  277:        }
+        -:  278:    }
+     9952:  279:    paru_free_el(e, elementList);
+        -:  280:#ifndef NDEBUG
+        -:  281:    PR = 1;
+        -:  282:    PRLEVEL(PR, ("%% after assembly " LD " :\n", eli));
+        -:  283:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  284:    PR = 1;
+        -:  285:#endif
+        -:  286:
+        -:  287:#ifndef NTIME
+        -:  288:    double time = PARU_OPENMP_GET_WTIME;
+        -:  289:    time -= start_time;
+        -:  290:    #pragma omp atomic update
+        -:  291:    tot_assem_time += time;
+        -:  292:    if (f > Sym->nf - 5)
+        -:  293:    {
+        -:  294:        PRLEVEL(-1, ("%% assemble all " LD "\t->" LD "\t took %lf seconds tot=%lf\n",
+        -:  295:                     e, eli, time, tot_assem_time));
+        -:  296:    }
+        -:  297:#endif
+     9952:  298:}
+        -:  299:
+        -:  300:// try to find columns and assemble them to current front. After the first
+        -:  301:// column that is not in current front it gets a toll for each column doesn't
+        -:  302:// fit
+        -:  303:
+   504435:  304:void paru_assemble_cols(int64_t e, int64_t f, std::vector<int64_t> &colHash,
+        -:  305:        paru_work *Work, ParU_Numeric *Num)
+        -:  306:
+        -:  307:{
+        -:  308:    DEBUGLEVEL(0);
+        -:  309:    PARU_DEFINE_PRLEVEL;
+        -:  310:#ifndef NDEBUG
+        -:  311:    int64_t c = 0;  // number of columns assembled
+        -:  312:#endif
+   504435:  313:    ParU_Symbolic *Sym = Work->Sym;
+   504435:  314:    int64_t *snM = Sym->super2atree;
+   504435:  315:    int64_t eli = snM[f];
+        -:  316:
+        -:  317:    PRLEVEL(PR, ("%% Eliminat some cols of " LD " in " LD "\n", e, eli));
+        -:  318:#ifndef NDEBUG
+        -:  319:    PR = 1;
+        -:  320:
+        -:  321:    PRLEVEL(PR, ("%% " LD " :\n", eli));
+        -:  322:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  323:
+        -:  324:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:  325:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:  326:#endif
+        -:  327:
+   504435:  328:    paru_element **elementList = Work->elementList;
+        -:  329:
+   504435:  330:    paru_element *el = elementList[e];
+   504435:  331:    paru_element *curEl = elementList[eli];
+        -:  332:
+   504435:  333:    int64_t nEl = el->ncols;
+   504435:  334:    int64_t mEl = el->nrows;
+        -:  335:
+        -:  336:    // int64_t *el_colIndex = colIndex_pointer (el);
+   504435:  337:    int64_t *el_colIndex = (int64_t *)(el + 1);
+        -:  338:
+        -:  339:    // int64_t *rowRelIndex = relRowInd (el);
+   504435:  340:    int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
+        -:  341:
+        -:  342:    // int64_t *el_rowIndex = rowIndex_pointer (el);
+   504435:  343:    int64_t *el_rowIndex = (int64_t *)(el + 1) + nEl;
+        -:  344:
+        -:  345:    // double *el_Num = numeric_pointer (el);
+   504435:  346:    double *el_Num = (double *)((int64_t *)(el + 1) + 2 * nEl + 2 * mEl);
+        -:  347:    // current elemnt numerical pointer
+        -:  348:    // double *el_Num = numeric_pointer (curEl);
+   504435:  349:    double *curEl_Num =
+   504435:  350:        (double *)((int64_t *)(curEl + 1) + 2 * curEl->nrows + 2 * curEl->ncols);
+        -:  351:
+   504435:  352:    int64_t *isRowInFront = Work->rowSize;
+        -:  353:
+   504435:  354:    int64_t *fcolList = Num->fcolList[f];
+        -:  355:
+        -:  356:    // int64_t tempRow[el->nrowsleft];  // C99
+  1008870:  357:    std::vector<int64_t> tempRow(el->nrowsleft);
+   503984:  358:    int64_t tempRow_ready = 0;
+   503984:  359:    int64_t toll = 8;  // number of times it continue when do not find anything
+        -:  360:
+        -:  361:    // int64_t naft; //number of active frontal tasks
+        -:  362:    // pragma omp atomic read
+        -:  363:    // naft = Num->naft;
+        -:  364:    // const int32_t max_threads = Num->paru_max_threads;
+        -:  365:    ////int64_t *Depth = Sym->Depth;
+        -:  366:    // pragma omp parallel proc_bind(close) num_threads(max_threads/naft)
+        -:  367:    // if (naft < max_threads/2 &&
+        -:  368:    //        el->nrowsleft*el->ncolsleft < 4096 && el->nrowsleft < 1024 )
+        -:  369:    // pragma omp single nowait
+        -:  370:    // pragma omp task untied
+        -:  371:
+        -:  372:    // TOLL FREE zone
+  3075551:  373:    while (paru_find_hash(el_colIndex[el->lac], colHash, fcolList) != -1)
+        -:  374:    {
+        -:  375:        PRLEVEL(PR, ("%% Toll free\n"));
+  2646942:  376:        if (tempRow_ready == 0)
+        -:  377:        {
+        -:  378:            // save the structure of the rows once at first
+   266651:  379:            int64_t ii = 0;
+  1118202:  380:            for (int64_t i = 0; i < mEl; i++)
+        -:  381:            {
+  1118202:  382:                int64_t rowInd = el_rowIndex[i];
+        -:  383:                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+  1118202:  384:                if (rowInd >= 0)
+        -:  385:                {
+   409342:  386:                    tempRow[ii++] = i;
+   409342:  387:                    int64_t ri = isRowInFront[rowInd];
+   409342:  388:                    rowRelIndex[i] = ri;
+   409342:  389:                    if (ii == el->nrowsleft) break;
+        -:  390:                }
+        -:  391:            }
+   266651:  392:            tempRow_ready = 1;
+        -:  393:        }
+        -:  394:
+  2646942:  395:        int64_t colInd = el_colIndex[el->lac];
+  2646942:  396:        int64_t fcolind = paru_find_hash(colInd, colHash, fcolList);
+        -:  397:
+        -:  398:        PRLEVEL(1, ("%% el->lac =" LD " \n", el->lac));
+  2646942:  399:        double *sC = el_Num + mEl * el->lac;  // source column pointer
+        -:  400:        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+        -:  401:        ASSERT(colInd >= 0);
+        -:  402:
+  2646942:  403:        double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  404:
+        -:  405:        // pragma omp task
+317289471:  406:        for (int64_t ii = 0; ii < el->nrowsleft; ii++)
+        -:  407:        {
+314642529:  408:            int64_t i = tempRow[ii];
+314642529:  409:            int64_t ri = rowRelIndex[i];
+        -:  410:
+        -:  411:            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  412:            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  413:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+314642529:  414:            dC[ri] += sC[i];
+        -:  415:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  416:        }
+        -:  417:#ifndef NDEBUG
+        -:  418:        c++;
+        -:  419:#endif
+  2646942:  420:        el_colIndex[el->lac] = flip(el_colIndex[el->lac]);
+  2646942:  421:        if (--el->ncolsleft == 0) break;
+  2625255:  422:        while (el_colIndex[++el->lac] < 0 && el->lac < el->ncols)
+        -:  423:            ;
+        -:  424:    }
+        -:  425:    // el->lac won't get updated after this
+   503984:  426:    int64_t *lacList = Work->lacList;
+   503984:  427:    lacList[e] = el_colIndex[el->lac];
+        -:  428:
+        -:  429:    // TOLL Zone
+        -:  430:    //**//pragma omp parallel
+        -:  431:    //**//pragma omp single nowait
+        -:  432:    //**//pragma omp taskgroup
+  3156154:  433:    for (int64_t j = el->lac + 1; j < nEl && el->ncolsleft > 0 && toll > 0; j++)
+        -:  434:    {
+        -:  435:        PRLEVEL(1, ("%% Toll zone\n"));
+  2652170:  436:        toll--;
+  2652170:  437:        if (tempRow_ready == 0)
+        -:  438:        {
+        -:  439:            // save the structure of the rows once at first
+   232047:  440:            int64_t ii = 0;
+   245930:  441:            for (int64_t i = 0; i < mEl; i++)
+        -:  442:            {
+   245930:  443:                int64_t rowInd = el_rowIndex[i];
+        -:  444:                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+   245930:  445:                if (rowInd >= 0)
+        -:  446:                {
+   245930:  447:                    tempRow[ii++] = i;
+   245930:  448:                    int64_t ri = isRowInFront[rowInd];
+   245930:  449:                    rowRelIndex[i] = ri;
+   245930:  450:                    if (ii == el->nrowsleft) break;
+        -:  451:                }
+        -:  452:            }
+   232047:  453:            tempRow_ready = 1;
+        -:  454:        }
+        -:  455:
+        -:  456:        PRLEVEL(1, ("%% j =" LD " \n", j));
+  2652170:  457:        double *sC = el_Num + mEl * j;  // source column pointer
+  2652170:  458:        int64_t colInd = el_colIndex[j];
+        -:  459:        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+  2652170:  460:        if (colInd < 0) continue;
+  2501834:  461:        int64_t fcolind = paru_find_hash(colInd, colHash, fcolList);
+  2501834:  462:        if (fcolind == -1) continue;
+  1113185:  463:        toll++;  // if found
+  1113185:  464:        double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  465:
+        -:  466:        //**//pragma omp task priority(Depth[f]) if(el->nrowsleft > 1024)
+  3043967:  467:        for (int64_t ii = 0; ii < el->nrowsleft; ii++)
+        -:  468:        {
+  1930782:  469:            int64_t i = tempRow[ii];
+  1930782:  470:            int64_t ri = rowRelIndex[i];
+        -:  471:
+        -:  472:            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  473:            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  474:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+  1930782:  475:            dC[ri] += sC[i];
+        -:  476:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  477:        }
+        -:  478:#ifndef NDEBUG
+        -:  479:        c++;
+        -:  480:#endif
+  1113185:  481:        el_colIndex[j] = flip(el_colIndex[j]);
+ 1113185*:  482:        if (--el->ncolsleft == 0) break;
+        -:  483:    }
+        -:  484:
+        -:  485:#ifndef NDEBUG
+        -:  486:    PRLEVEL(1, ("%%  " LD " has found and assembled, ncolsleft " LD "\n", c,
+        -:  487:                el->ncolsleft));
+        -:  488:#endif
+        -:  489:
+   503984:  490:    if (el->ncolsleft == 0)
+        -:  491:    {
+    75375:  492:        paru_free_el(e, elementList);
+        -:  493:    }
+   503984:  494:}
+        -:  495:
+       50:  496:void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
+        -:  497:        paru_work *Work, ParU_Numeric *Num)
+        -:  498:
+        -:  499:{
+        -:  500:    DEBUGLEVEL(0);
+        -:  501:    PARU_DEFINE_PRLEVEL;
+        -:  502:
+       50:  503:    ParU_Symbolic *Sym = Work->Sym;
+       50:  504:    int64_t *snM = Sym->super2atree;
+       50:  505:    int64_t eli = snM[f];
+        -:  506:
+        -:  507:    PRLEVEL(PR, ("%% Eliminat some rows of " LD " in " LD "\n", e, eli));
+        -:  508:
+       50:  509:    paru_element **elementList = Work->elementList;
+        -:  510:
+       50:  511:    paru_element *el = elementList[e];
+       50:  512:    paru_element *curEl = elementList[eli];
+        -:  513:
+       50:  514:    int64_t nEl = el->ncols;
+       50:  515:    int64_t mEl = el->nrows;
+        -:  516:
+        -:  517:    // int64_t *el_colIndex = colIndex_pointer (el);
+       50:  518:    int64_t *el_colIndex = (int64_t *)(el + 1);
+        -:  519:
+        -:  520:    // int64_t *rowRelIndex = relRowInd (el);
+       50:  521:    int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
+        -:  522:
+        -:  523:    // int64_t *colRelIndex = relColInd (paru_element *el);
+       50:  524:    int64_t *colRelIndex = (int64_t *)(el + 1) + mEl + nEl;
+        -:  525:
+        -:  526:    // int64_t *el_rowIndex = rowIndex_pointer (el);
+       50:  527:    int64_t *el_rowIndex = (int64_t *)(el + 1) + nEl;
+        -:  528:
+        -:  529:    // int64_t *el_rowIndex = rowIndex_pointer (curEl);
+       50:  530:    int64_t *curEl_rowIndex = (int64_t *)(curEl + 1) + curEl->ncols;
+        -:  531:
+        -:  532:    // double *el_Num = numeric_pointer (el);
+       50:  533:    double *el_Num = (double *)((int64_t *)(el + 1) + 2 * nEl + 2 * mEl);
+        -:  534:    // current elemnt numerical pointer
+        -:  535:    // double *el_Num = numeric_pointer (curEl);
+       50:  536:    double *curEl_Num =
+       50:  537:        (double *)((int64_t *)(curEl + 1) + 2 * curEl->nrows + 2 * curEl->ncols);
+        -:  538:
+       50:  539:    int64_t *isRowInFront = Work->rowSize;
+        -:  540:
+       50:  541:    std::vector<int64_t> tempRow;
+        -:  542:
+        -:  543:    // searching for rows
+       50:  544:    int64_t i = 0;
+       50:  545:    int64_t nrowsSeen = el->nrowsleft;
+        -:  546:    // Toll free zone
+        -:  547:    PRLEVEL(1, ("%% Toll free\n"));
+      133:  548:    while (i < mEl && nrowsSeen > 0)
+        -:  549:    {
+      155:  550:        for (; el_rowIndex[i] < 0; i++)
+        -:  551:            ;
+       96:  552:        nrowsSeen--;
+        -:  553:
+       96:  554:        int64_t rowInd = isRowInFront[i];
+       96:  555:        if (rowInd > 0 && rowInd < curEl->nrows)
+        -:  556:        {
+        -:  557:            // compare their global indices
+       13:  558:            if (curEl_rowIndex[rowInd] == el_rowIndex[i])
+        -:  559:            {
+        -:  560:                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+        -:  561:                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =" LD " \n",
+        -:  562:                            curEl_rowIndex[rowInd]));
+        -:  563:                PRLEVEL(1, ("%% i =" LD " \n", i));
+        -:  564:                PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
+    #####:  565:                tempRow.push_back(i);   // FIXME: unreachable?
+        -:  566:            }
+        -:  567:            else
+        -:  568:            {
+       13:  569:                break;
+        -:  570:            }
+        -:  571:        }
+       83:  572:        i++;
+        -:  573:    }
+        -:  574:
+        -:  575:#ifndef NDEBUG
+        -:  576:    if (tempRow.size() > 0)
+        -:  577:    {
+        -:  578:        PRLEVEL(PR, ("%% Toll free zone: " LD " rows has been found: \n%%",
+        -:  579:                     tempRow.size()));
+        -:  580:    }
+        -:  581:#endif
+        -:  582:
+        -:  583:    PRLEVEL(1, ("%% TollED \n"));
+       50:  584:    int64_t toll = 8;  // number of times it continue when do not find anything
+        -:  585:    // Toll zone
+       57:  586:    while (i < mEl && nrowsSeen > 0 && toll > 0)
+        -:  587:    // while (i < mEl  && nrowsSeen >0 )
+        -:  588:    {
+       7*:  589:        for (; el_rowIndex[i] < 0; i++)
+        -:  590:            ;
+        7:  591:        nrowsSeen--;
+        -:  592:
+        7:  593:        int64_t rowInd = isRowInFront[i];
+        7:  594:        if (rowInd > 0 && rowInd < curEl->nrows)
+        -:  595:        {
+        -:  596:            // compare their global indices
+        5:  597:            if (curEl_rowIndex[rowInd] == el_rowIndex[i])
+        -:  598:            {
+        -:  599:                PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+        -:  600:                PRLEVEL(1, ("%% curEl_rowIndex[rowInd] =" LD " \n",
+        -:  601:                            curEl_rowIndex[rowInd]));
+        -:  602:                PRLEVEL(1, ("%% i =" LD " \n", i));
+        -:  603:                PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
+        -:  604:
+    #####:  605:                tempRow.push_back(i);   // FIXME: unreachable?
+    #####:  606:                toll++;                 // FIXME: unreachable?
+        -:  607:            }
+        -:  608:            else
+        -:  609:            {
+        5:  610:                toll--;
+        -:  611:            }
+        -:  612:        }
+        7:  613:        i++;
+        -:  614:    }
+        -:  615:
+       50:  616:    if (tempRow.empty()) return;
+        -:  617:
+        -:  618:    PRLEVEL(PR,
+        -:  619:            ("%% " LD " rows has been found, toll " LD "\n%%", tempRow.size(), toll));
+        -:  620:#ifndef NDEBUG
+        -:  621:    for (int64_t ii = 0; ii < (int64_t)tempRow.size(); ii++)
+        -:  622:        PRLEVEL(PR, ("" LD " ", tempRow[ii]));
+        -:  623:    PRLEVEL(PR, ("\n "));
+        -:  624:    PR = 1;
+        -:  625:    PRLEVEL(PR, ("%% Before eliminiating some rows " LD " :\n", eli));
+        -:  626:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  627:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:  628:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:  629:#endif
+        -:  630:
+        -:  631:    // This never happens; I found it in test coverage
+        -:  632:    //It is obvious when I look at the caller
+        -:  633:    //if (el->cValid != Work->time_stamp[f])
+        -:  634:    //    paru_update_rel_ind_col(e, f, colHash, Work, Num);
+        -:  635:    ASSERT(el->cValid == Work->time_stamp[f]);
+        -:  636:
+    #####:  637:    int64_t ncolsSeen = nEl;    // FIXME unreachable here to the end?
+        -:  638:
+    #####:  639:    for (int64_t j = el->lac; j < nEl; j++)
+        -:  640:    {
+        -:  641:        PRLEVEL(1, ("%% j =" LD " \n", j));
+    #####:  642:        double *sC = el_Num + mEl * j;  // source column pointer
+    #####:  643:        int64_t colInd = el_colIndex[j];
+        -:  644:        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+    #####:  645:        if (colInd < 0) continue;
+    #####:  646:        ncolsSeen--;
+    #####:  647:        int64_t fcolind = colRelIndex[j];
+        -:  648:
+        -:  649:        PRLEVEL(1, ("%% fcolind=" LD " \n", fcolind));
+    #####:  650:        double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  651:
+    #####:  652:        for (int64_t i1 : tempRow)
+        -:  653:        {
+    #####:  654:            int64_t rowInd = el_rowIndex[i1];
+    #####:  655:            int64_t ri = isRowInFront[rowInd];
+        -:  656:
+        -:  657:            PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  658:            PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  659:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+    #####:  660:            dC[ri] += sC[i1];
+        -:  661:            PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+        -:  662:        }
+        -:  663:
+    #####:  664:        if (ncolsSeen == 0) break;
+        -:  665:        PRLEVEL(1, ("\n"));
+        -:  666:    }
+        -:  667:
+        -:  668:    // invalidating assembled rows
+    #####:  669:    for (int64_t i2 : tempRow)
+        -:  670:    {
+    #####:  671:        el_rowIndex[i2] = -1;
+    #####:  672:        rowRelIndex[i2] = -1;
+        -:  673:    }
+        -:  674:
+    #####:  675:    el->nrowsleft -= tempRow.size();
+    #####:  676:    if (el->nrowsleft == 0)
+        -:  677:    {
+    #####:  678:        paru_free_el(e, elementList);
+        -:  679:    }
+        -:  680:#ifndef NDEBUG
+        -:  681:    PR = 1;
+        -:  682:    PRLEVEL(PR, ("%% After Eliminate some rows " LD " :\n", eli));
+        -:  683:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  684:
+        -:  685:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:  686:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:  687:#endif
+        -:  688:}
+        -:  689:
+     5956:  690:void paru_assemble_el_with0rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
+        -:  691:        paru_work *Work, ParU_Numeric *Num)
+        -:  692:
+        -:  693:{
+        -:  694:    // This element contributes to both pivotal rows and pivotal columns
+        -:  695:    //  However it has zero rows in current pivotal columns therefore
+        -:  696:    //  not all rows are there
+        -:  697:    // it can be eliminated partially
+        -:  698:    //       ________________________________
+        -:  699:    //       |      |                         |
+        -:  700:    //       |      |                         |
+        -:  701:    //       ___xxxxxxxxxxx____________________
+        -:  702:    //       |  xxxxxxxxxxx                   |
+        -:  703:    //       |  oxxo|oxoxox                   | <- assemble these rows
+        -:  704:    //       |  ooxx|oxoxox                   |  and mark them assembled
+        -:  705:    //       |  oooo|oxoxox                   |
+        -:  706:    //       ---------------------------------
+        -:  707:    //          ooooooxxxxx  --> outsidie the front
+        -:  708:    //          ooooooxxxxx
+        -:  709:    //
+        -:  710:    //
+        -:  711:    DEBUGLEVEL(0);
+        -:  712:    PARU_DEFINE_PRLEVEL;
+        -:  713:
+     5956:  714:    ParU_Symbolic *Sym = Work->Sym;
+     5956:  715:    int64_t *snM = Sym->super2atree;
+     5956:  716:    int64_t eli = snM[f];
+        -:  717:    PRLEVEL(PR, ("%% \n+++++++++++++++++++++++++++++++++++++++\n"));
+        -:  718:    PRLEVEL(PR, ("%% Eliminat elment " LD "  with0rows in " LD "\n", e, eli));
+        -:  719:
+        -:  720:#ifndef NDEBUG
+        -:  721:    PR = 1;
+        -:  722:    PRLEVEL(PR, ("%% " LD " :\n", eli));
+        -:  723:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  724:
+        -:  725:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:  726:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:  727:
+        -:  728:#endif
+        -:  729:
+     5956:  730:    paru_element **elementList = Work->elementList;
+        -:  731:
+     5956:  732:    paru_element *el = elementList[e];
+     5956:  733:    paru_element *curEl = elementList[eli];
+        -:  734:
+     5956:  735:    int64_t nEl = el->ncols;
+     5956:  736:    int64_t mEl = el->nrows;
+        -:  737:
+        -:  738:    ASSERT(el->nzr_pc > 0);
+        -:  739:
+        -:  740:    // int64_t *el_colIndex = colIndex_pointer (el);
+     5956:  741:    int64_t *el_colIndex = (int64_t *)(el + 1);
+        -:  742:
+        -:  743:    // int64_t *rowRelIndex = relRowInd (el);
+     5956:  744:    int64_t *rowRelIndex = (int64_t *)(el + 1) + 2 * nEl + mEl;
+        -:  745:
+     5956:  746:    if (el->cValid != Work->time_stamp[f])
+        -:  747:    {
+        1:  748:        paru_update_rel_ind_col(e, f, colHash, Work, Num);
+        -:  749:    }
+        -:  750:
+        -:  751:    // int64_t *colRelIndex = relColInd (paru_element *el);
+     5956:  752:    int64_t *colRelIndex = (int64_t *)(el + 1) + mEl + nEl;
+        -:  753:
+        -:  754:    // int64_t *el_rowIndex = rowIndex_pointer (el);
+     5956:  755:    int64_t *el_rowIndex = (int64_t *)(el + 1) + nEl;
+        -:  756:
+        -:  757:    // double *el_Num = numeric_pointer (el);
+     5956:  758:    double *el_Num = (double *)((int64_t *)(el + 1) + 2 * nEl + 2 * mEl);
+        -:  759:    // current elemnt numerical pointer
+        -:  760:    // double *el_Num = numeric_pointer (curEl);
+     5956:  761:    double *curEl_Num =
+     5956:  762:        (double *)((int64_t *)(curEl + 1) + 2 * curEl->nrows + 2 * curEl->ncols);
+        -:  763:
+     5956:  764:    int64_t *isRowInFront = Work->rowSize;
+        -:  765:
+        -:  766:#ifndef NDEBUG
+        -:  767:    ParU_Factors *Us = Num->partial_Us;
+        -:  768:    int64_t *fcolList = Num->fcolList[f];
+        -:  769:    int64_t colCount = Us[f].n;
+        -:  770:    ASSERT(el_colIndex[el->lac] <= fcolList[colCount - 1]);
+        -:  771:    ASSERT(el_colIndex[nEl - 1] <= 0 || fcolList[0] <= el_colIndex[nEl - 1]);
+        -:  772:    PRLEVEL(PR, ("%% newColSet.size = " LD "\n", colCount));
+        -:  773:    PRLEVEL(PR, ("%% nEl = " LD "\n", nEl));
+        -:  774:#endif
+        -:  775:
+     5956:  776:    if (el->ncolsleft == 1)
+        -:  777:    {
+        -:  778:        PRLEVEL(PR, ("%% 1 col left\n %%"));
+        6:  779:        double *sC = el_Num + mEl * el->lac;  // source column pointer
+        -:  780:#ifndef NDEBUG
+        -:  781:        int64_t colInd = el_colIndex[el->lac];
+        -:  782:        PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+        -:  783:        ASSERT(colInd >= 0);
+        -:  784:#endif
+        6:  785:        int64_t fcolind = colRelIndex[el->lac];
+        6:  786:        double *dC = curEl_Num + fcolind * curEl->nrows;
+        6:  787:        int64_t nrows2bSeen = el->nrowsleft;
+       15:  788:        for (int64_t i = 0; i < mEl; i++)
+        -:  789:        {
+       15:  790:            int64_t rowInd = el_rowIndex[i];
+        -:  791:            PRLEVEL(1, ("%% rowInd =" LD " \n", rowInd));
+       15:  792:            if (rowInd >= 0)
+        -:  793:            {
+        9:  794:                if (rowRelIndex[i] != -1)  // row with at least one nz
+        -:  795:                {
+        3:  796:                    int64_t ri = isRowInFront[rowInd];
+        -:  797:                    PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  798:                    PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  799:                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+        3:  800:                    dC[ri] += sC[i];
+        -:  801:                    PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  802:                }
+        9:  803:                if (--nrows2bSeen == 0) break;
+        -:  804:            }
+        -:  805:        }
+        -:  806:    }
+        -:  807:    else
+        -:  808:    {
+        -:  809:        PRLEVEL(PR, ("%% more than 1 col left\n %%"));
+        -:  810:
+        -:  811:        // save the structure of the rows once at first
+     5950:  812:        int64_t nrows2assembl = el->nrowsleft - el->nzr_pc;
+        -:  813:        // int64_t tempRow[nrows2assembl];  // C99
+    11900:  814:        std::vector<int64_t> tempRow(nrows2assembl);
+     5941:  815:        int64_t ii = 0;
+  2475329:  816:        for (int64_t i = 0; i < mEl; i++)
+        -:  817:        {
+  2475262:  818:            int64_t rowInd = el_rowIndex[i];
+        -:  819:            PRLEVEL(1, ("%% rowInd =" LD " ", rowInd));
+        -:  820:#ifndef NDEBUG
+        -:  821:            if (rowRelIndex[i] == -1) PRLEVEL(1, ("%% row_with0 "));
+        -:  822:#endif
+        -:  823:
+        -:  824:            PRLEVEL(1, ("%% \n"));
+  2475262:  825:            if (rowInd >= 0 && rowRelIndex[i] != -1)
+        -:  826:            {
+  1624852:  827:                tempRow[ii++] = i;
+  1624852:  828:                int64_t ri = isRowInFront[rowInd];
+  1624852:  829:                rowRelIndex[i] = ri;
+  1624852:  830:                if (ii == nrows2assembl) break;
+        -:  831:            }
+        -:  832:        }
+        -:  833:
+        -:  834:#ifndef NDEBUG
+        -:  835:        PR = 1;
+        -:  836:        PRLEVEL(PR, ("%% list of the rows to be assembled:\n%%"));
+        -:  837:        for (int64_t i = 0; i < nrows2assembl; i++)
+        -:  838:            PRLEVEL(PR, ("" LD " ", el_rowIndex[tempRow[i]]));
+        -:  839:        PRLEVEL(PR, ("%% \n"));
+        -:  840:#endif
+     5941:  841:        int64_t ncols2bSeen = el->ncolsleft;
+        -:  842:        // int64_t *Depth = Sym->Depth;
+        -:  843:        //**//pragma omp parallel
+        -:  844:        //**//pragma omp single nowait
+        -:  845:        //**//pragma omp taskgroup
+  5705924:  846:        for (int64_t j = el->lac; j < nEl; j++)
+        -:  847:        {
+        -:  848:            PRLEVEL(1, ("%% j =" LD " \n", j));
+  5705924:  849:            double *sC = el_Num + mEl * j;  // source column pointer
+  5705924:  850:            int64_t colInd = el_colIndex[j];
+        -:  851:            PRLEVEL(1, ("%% colInd =" LD " \n", colInd));
+ 5705924*:  852:            if (colInd < 0) continue;
+  5705924:  853:            int64_t fcolind = colRelIndex[j];
+        -:  854:
+  5705924:  855:            double *dC = curEl_Num + fcolind * curEl->nrows;
+        -:  856:
+        -:  857:            //**//pragma omp task priority(Depth[f]) if(nrows2assembl > 1024)
+8293242705:  858:            for (int64_t iii = 0; iii < nrows2assembl; iii++)
+        -:  859:            {
+8287536781:  860:                int64_t i = tempRow[iii];
+8287536781:  861:                int64_t ri = rowRelIndex[i];
+        -:  862:                ASSERT(rowRelIndex[i] != -1);  // I already picked the rows
+        -:  863:                // that are not in zero pivots
+        -:  864:                PRLEVEL(1, ("%% ri = " LD " \n", ri));
+        -:  865:                PRLEVEL(1, ("%% sC [" LD "] =%2.5lf \n", i, sC[i]));
+        -:  866:                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", ri, dC[ri]));
+8287536781:  867:                dC[ri] += sC[i];
+        -:  868:                PRLEVEL(1, ("%% dC [" LD "] =%2.5lf \n", i, dC[ri]));
+        -:  869:            }
+        -:  870:
+  5705924:  871:            if (--ncols2bSeen == 0) break;
+        -:  872:            PRLEVEL(1, ("\n"));
+        -:  873:        }
+        -:  874:    }
+        -:  875:
+        -:  876:    // Mark rows as assembled and updat lac
+        -:  877:
+     5947:  878:    int64_t nrows2bSeen = el->nrowsleft;
+     5947:  879:    int64_t new_lac = nEl;
+  2512290:  880:    for (int64_t ii = 0; ii < mEl; ii++)
+        -:  881:    {
+  2512290:  882:        int64_t rowInd = el_rowIndex[ii];
+  2512290:  883:        if (rowInd < 0) continue;  // already gone
+        -:  884:
+  2069808:  885:        if (rowRelIndex[ii] == -1)  // row with all zeros in piv
+        -:  886:        {                           // update lac
+        -:  887:            PRLEVEL(1, ("%%Searching for lac in " LD "\n%%", rowInd));
+        -:  888:            PRLEVEL(1, ("%%col=" LD "\n%%", el->lac));
+  2951848:  889:            for (int64_t jj = el->lac; jj < new_lac; jj++)
+        -:  890:            // searching for the first nz
+        -:  891:            {
+ 2516546*:  892:                if (el_colIndex[jj] < 0) continue;
+        -:  893:                // el [rowInd, jj]
+        -:  894:                PRLEVEL(1, ("%% el[" LD "," LD "]=%2.5lf\n%%", rowInd, jj,
+        -:  895:                            el_Num[mEl * jj + ii]));
+  2516546:  896:                if (el_Num[mEl * jj + ii] != 0)
+        -:  897:                {
+     9651:  898:                    new_lac = jj;
+        -:  899:                    PRLEVEL(1, ("%%Found new-lac in " LD "\n%%", jj));
+     9651:  900:                    break;
+        -:  901:                }
+        -:  902:            }
+        -:  903:        }
+        -:  904:        else  // It was assembled here; mark row as assembled
+        -:  905:        {
+  1624855:  906:            el_rowIndex[ii] = -1;
+        -:  907:        }
+  2069808:  908:        if (--nrows2bSeen == 0) break;
+        -:  909:    }
+        -:  910:    // updating lac can have effect on number of columns left
+        -:  911:    // I should update number of columns left too
+        -:  912:
+     5947:  913:    if (new_lac != el->lac)
+        -:  914:    {
+     1832:  915:        int64_t ncolsleft = 0;
+  4120894:  916:        for (int64_t j = new_lac; j < nEl; j++)
+        -:  917:        {
+  4119062:  918:            if (el_colIndex[j] > 0) ncolsleft++;
+        -:  919:        }
+        -:  920:        PRLEVEL(1, ("%%colsleft was " LD " and now is " LD "\n%%", el->ncolsleft,
+        -:  921:                    ncolsleft));
+     1832:  922:        el->ncolsleft = ncolsleft;
+    96772:  923:        for (int64_t j = el->lac; j < new_lac; j++)
+        -:  924:        {
+    94940:  925:            if (el_colIndex[j] >= 0) el_colIndex[j] = flip(el_colIndex[j]);
+        -:  926:        }
+        -:  927:    }
+        -:  928:
+     5947:  929:    el->nrowsleft = el->nzr_pc;
+     5947:  930:    el->lac = new_lac;
+     5947:  931:    int64_t *lacList = Work->lacList;
+     5947:  932:    lacList[e] = el_colIndex[el->lac];
+        -:  933:#ifndef NDEBUG
+        -:  934:    int64_t *Super = Sym->Super;
+        -:  935:    int64_t col1 = Super[f]; /* fornt F has columns col1:col2-1 */
+        -:  936:    int64_t col2 = Super[f + 1];
+        -:  937:    PR = 1;
+        -:  938:    PRLEVEL(PR, ("%% " LD "(" LD ") " LD "-" LD " :\n", f, eli, col1, col2));
+        -:  939:    PRLEVEL(PR, ("%%Finally new-lac is " LD " ", el->lac));
+        -:  940:    PRLEVEL(PR, ("nEl=" LD "\n lacList[" LD "]=" LD " nrowsleft=" LD "\n", nEl, e,
+        -:  941:                 lacList[e], el->nrowsleft));
+        -:  942:
+        -:  943:    PR = 1;
+        -:  944:    if (nEl != new_lac && el_colIndex[new_lac] < col2) PR = -2;
+        -:  945:
+        -:  946:    PRLEVEL(PR, ("%% " LD " :\n", eli));
+        -:  947:    if (PR <= 0) paru_print_element(eli, Work, Num);
+        -:  948:
+        -:  949:    PRLEVEL(PR, ("%% " LD " :\n", e));
+        -:  950:    if (PR <= 0) paru_print_element(e, Work, Num);
+        -:  951:    PR = 1;
+        -:  952:    ASSERT(nEl == new_lac || col2 <= el_colIndex[new_lac]);
+        -:  953:
+        -:  954:#endif
+     5947:  955:    if (new_lac == nEl)
+        -:  956:    {
+        -:  957:#ifndef NDEBUG
+        -:  958:        PRLEVEL(PR, ("%% " LD " is freed inside with0\n", eli));
+        -:  959:#endif
+        5:  960:        paru_free_el(e, elementList);
+        -:  961:    }
+     5947:  962:}

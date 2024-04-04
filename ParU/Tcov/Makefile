@@ -42,16 +42,19 @@ INC = ../Include/ParU.h
 
 OBJ = \
         paru_mem.o \
+        ParU_FreeSymbolic.o \
+        ParU_FreeNumeric.o \
         paru_memset.o \
         paru_memcpy.o \
         paru_heap.o \
         paru_hash.o \
         paru_pivotal.o \
-        paru_analyze.o \
+        ParU_Analyze.o \
 	paru_init_rowFronts.o\
 	paru_tuples.o\
 	paru_front.o\
-	paru_factorize.o\
+	ParU_Factorize.o\
+	paru_exec_tasks.o\
 	paru_fs_factorize.o\
 	paru_create_element.o\
 	paru_assemble_row2U.o\
@@ -65,21 +68,23 @@ OBJ = \
 	paru_bin_search.o\
 	paru_assemble.o\
 	paru_prior_assemble.o \
-	paru_perm.o \
+	ParU_Perm.o \
+	ParU_InvPerm.o \
 	paru_finalize_perm.o \
-	paru_lsolve.o \
-	paru_usolve.o \
-	paru_solve.o \
-	paru_residual.o \
+	ParU_LSolve.o \
+	ParU_USolve.o \
+	ParU_Solve.o \
+	ParU_Residual.o \
 	paru_backward.o \
 	paru_gaxpy.o \
 	paru_norms.o \
-	paru_Diag_update.o \
+	paru_diag_update.o \
 	paru_full_summed.o \
 	paru_tasked_dgemm.o \
 	paru_tasked_trsm.o \
-        paru_c.o \
-	paru_version.o  \
+        ParU_C.o \
+        paru_cp_control.o \
+	ParU_Version.o  \
 	SuiteSparse_config.o 
 
 #	paru_print.o \   # These methods are used only in debug mode
@@ -105,6 +110,8 @@ paru_c_test: paru_c_test.cpp $(INC) $(OBJ)
 
 
 go: paru_brutal_test paru_quick_test paru_c_test
+	./paru_c_test < ../Matrix/west0067.mtx
+	- ./cov
 	./paru_quick_test < ../Matrix/tumorAntiAngiogenesis_2.mtx
 	./paru_quick_test < ../Matrix/olm500.mtx
 	- ./cov
@@ -126,8 +133,6 @@ go: paru_brutal_test paru_quick_test paru_c_test
 	./paru_brutal_test 104 < ../Matrix/lp_e226.mtx
 	./paru_brutal_test 104 < ../Matrix/r2.mtx
 	./paru_brutal_test < ../Matrix/LFAT5.mtx
-	./paru_c_test < ../Matrix/west0067.mtx
-	- ./cov
 	./paru_quick_test < ../Matrix/arrow.mtx
 	- ./cov
 	./paru_brutal_test < ../Matrix/a2.mtx
@@ -180,6 +185,12 @@ qgo:
 paru_mem.o: ../Source/paru_mem.cpp
 	$(C) -c $<
 
+ParU_FreeSymbolic.o: ../Source/ParU_FreeSymbolic.cpp
+	$(C) -c $<
+
+ParU_FreeNumeric.o: ../Source/ParU_FreeNumeric.cpp
+	$(C) -c $<
+
 paru_memset.o: ../Source/paru_memset.cpp
 	$(C) -c $<
 
@@ -195,7 +206,7 @@ paru_hash.o: ../Source/paru_hash.cpp
 paru_pivotal.o: ../Source/paru_pivotal.cpp
 	$(C) -c $<
 
-paru_analyze.o: ../Source/paru_analyze.cpp
+ParU_Analyze.o: ../Source/ParU_Analyze.cpp
 	$(C) -c $<
 
 paru_init_rowFronts.o: ../Source/paru_init_rowFronts.cpp
@@ -207,7 +218,10 @@ paru_tuples.o: ../Source/paru_tuples.cpp
 paru_front.o: ../Source/paru_front.cpp
 	$(C) -c $<
 
-paru_factorize.o: ../Source/paru_factorize.cpp
+ParU_Factorize.o: ../Source/ParU_Factorize.cpp
+	$(C) -c $<
+
+paru_exec_tasks.o: ../Source/paru_exec_tasks.cpp
 	$(C) -c $<
 
 paru_fs_factorize.o: ../Source/paru_fs_factorize.cpp
@@ -255,22 +269,25 @@ paru_prior_assemble.o:  ../Source/paru_prior_assemble.cpp
 paru_assemble.o: ../Source/paru_assemble.cpp
 	$(C) -c $<
 
-paru_perm.o: ../Source/paru_perm.cpp
+ParU_Perm.o: ../Source/ParU_Perm.cpp
+	$(C) -c $<
+
+ParU_InvPerm.o: ../Source/ParU_InvPerm.cpp
 	$(C) -c $<
 
 paru_finalize_perm.o: ../Source/paru_finalize_perm.cpp
 	$(C) -c $<
 
-paru_lsolve.o: ../Source/paru_lsolve.cpp
+ParU_LSolve.o: ../Source/ParU_LSolve.cpp
 	$(C) -c $<
 
-paru_usolve.o: ../Source/paru_usolve.cpp
+ParU_USolve.o: ../Source/ParU_USolve.cpp
 	$(C) -c $<
 
-paru_solve.o: ../Source/paru_solve.cpp
+ParU_Solve.o: ../Source/ParU_Solve.cpp
 	$(C) -c $<
 
-paru_residual.o: ../Source/paru_residual.cpp
+ParU_Residual.o: ../Source/ParU_Residual.cpp
 	$(C) -c $<
 
 paru_backward.o: ../Source/paru_backward.cpp
@@ -282,7 +299,7 @@ paru_gaxpy.o: ../Source/paru_gaxpy.cpp
 paru_norms.o: ../Source/paru_norms.cpp
 	$(C) -c $<
 
-paru_Diag_update.o: ../Source/paru_Diag_update.cpp
+paru_diag_update.o: ../Source/paru_diag_update.cpp
 	$(C) -c $<
 
 paru_full_summed.o: ../Source/paru_full_summed.cpp
@@ -294,10 +311,13 @@ paru_tasked_dgemm.o: ../Source/paru_tasked_dgemm.cpp
 paru_tasked_trsm.o: ../Source/paru_tasked_trsm.cpp
 	$(C) -c $<
 
-paru_c.o: ../Source/paru_c.cpp
+ParU_C.o: ../Source/ParU_C.cpp
 	$(C) -c $<
 
-paru_version.o: ../Source/paru_version.cpp
+paru_cp_control.o: ../Source/paru_cp_control.cpp
+	$(C) -c $<
+
+ParU_Version.o: ../Source/ParU_Version.cpp
 	$(C) -c $<
 
 SuiteSparse_config.o: ../../SuiteSparse_config/SuiteSparse_config.c

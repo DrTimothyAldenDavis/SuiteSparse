@@ -499,7 +499,7 @@ ParU_Info ParU_Analyze
     if (!fmap || !newParent || (!Diag_map != !inv_Diag_map))
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         umfpack_dl_free_symbolic(&Symbolic);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
@@ -645,7 +645,7 @@ ParU_Info ParU_Analyze
     {  // should not happen anyway it is always shrinking
         PRLEVEL(1, ("ParU: out of memory\n"));
         Sym->Parent = NULL;
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
@@ -661,7 +661,7 @@ ParU_Info ParU_Analyze
         if (Super == NULL || Depth == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             umfpack_dl_paru_free_sw(&SW);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
@@ -763,7 +763,7 @@ ParU_Info ParU_Analyze
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
         // newParent = tmp_newParent;
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         umfpack_dl_paru_free_sw(&SW);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
@@ -799,7 +799,7 @@ ParU_Info ParU_Analyze
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
             // paru_free(n, sizeof(int64_t), inv_Diag_map);
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             umfpack_dl_paru_free_sw(&SW);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
@@ -950,7 +950,7 @@ ParU_Info ParU_Analyze
         if (Childp == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
         }
@@ -1004,7 +1004,7 @@ ParU_Info ParU_Analyze
         if (Child == NULL)
         {
             PRLEVEL(1, ("ParU: out of memory\n"));
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
         }
@@ -1015,7 +1015,7 @@ ParU_Info ParU_Analyze
     if (cChildp == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
     }
@@ -1050,7 +1050,7 @@ ParU_Info ParU_Analyze
     if (Sp == NULL || Sleft == NULL || Pinv == NULL)
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
     }
@@ -1118,7 +1118,7 @@ ParU_Info ParU_Analyze
         ((Sup == NULL || cSup == NULL) && cs1 != 0) || Ps == NULL)
     {
         PRLEVEL(1, ("ParU: rs1=" LD " cs1=" LD " memory problem\n", rs1, cs1));
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
     }
@@ -1282,7 +1282,7 @@ ParU_Info ParU_Analyze
             }
         }
 #endif
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
         return PARU_SINGULAR;
     }
@@ -1420,7 +1420,7 @@ ParU_Info ParU_Analyze
     if (Sj == NULL || (cs1 > 0 && Suj == NULL) || (rs1 > 0 && Sli == NULL))
     {
         PRLEVEL(1, ("ParU: out of memory\n"));
-        ParU_Freesym(Sym_handle, Control);
+        ParU_FreeSymbolic(Sym_handle, Control);
         FREE_WORK;
         return PARU_OUT_OF_MEMORY;
     }
@@ -1586,7 +1586,7 @@ ParU_Info ParU_Analyze
             front_flop_bound == NULL || stree_flop_bound == NULL)
         {
             PRLEVEL(1, ("ParU: Out of memory in symbolic phase"));
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
         }
@@ -1750,7 +1750,7 @@ ParU_Info ParU_Analyze
             task_depth == NULL)
         {
             PRLEVEL(1, ("ParU: Out of memory in symbolic phase"));
-            ParU_Freesym(Sym_handle, Control);
+            ParU_FreeSymbolic(Sym_handle, Control);
             FREE_WORK;
             return PARU_OUT_OF_MEMORY;
         }

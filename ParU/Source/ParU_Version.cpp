@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-/////////////////////////// paru_version  //////////////////////////////////////
+/////////////////////////// ParU_Version  //////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -18,7 +18,9 @@
  *
  *  @author Aznaveh
  */
+
 #include "paru_internal.hpp"
+
 ParU_Info ParU_Version (int ver [3], char date [128])
 {
     // get version number and date
@@ -30,5 +32,6 @@ ParU_Info ParU_Version (int ver [3], char date [128])
 
     // make sure the date is null-terminated
     date[127] = '\0' ;
-    return PARU_SUCCESS;
+    return (PARU_SUCCESS) ;
 }
+

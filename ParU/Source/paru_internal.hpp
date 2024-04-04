@@ -474,6 +474,23 @@ ParU_Info paru_factorize_full_summed(int64_t f, int64_t start_fac,
                                     std::vector<int64_t> &pivotal_elements,
                                     paru_work *Work, ParU_Numeric *Num);
 
+ParU_Info paru_exec_tasks
+(
+    int64_t t,
+    int64_t *task_num_child,
+    int64_t &chain_task,
+    paru_work *Work,
+    ParU_Numeric *Num
+) ;
+
+ParU_Info paru_exec_tasks_seq
+(
+    int64_t t,
+    int64_t *task_num_child,
+    paru_work *Work,
+    ParU_Numeric *Num
+) ;
+
 paru_element *paru_create_element(int64_t nrows, int64_t ncols);
 
 void paru_assemble_row_2U(int64_t e, int64_t f, int64_t sR, int64_t dR,
@@ -559,7 +576,7 @@ double paru_spm_1norm(cholmod_sparse *A);
 double paru_vec_1norm(const double *x, int64_t n);
 double paru_matrix_1norm(const double *x, int64_t m, int64_t n);
 
-void paru_Diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work);
+void paru_diag_update(int64_t pivcol, int64_t pivrow, paru_work *Work);
 int64_t paru_tasked_dgemm(int64_t f, int64_t m, int64_t n, int64_t k, double *A,
                           int64_t lda, double *B, int64_t ldb, double beta,
                           double *C, int64_t ldc, paru_work *Work,
@@ -568,6 +585,8 @@ int64_t paru_tasked_trsm(int64_t f, int64_t m, int64_t n, double alpha,
                          double *a, int64_t lda, double *b, int64_t ldb,
                          paru_work *Work, ParU_Numeric *Num);
 ParU_Info paru_free_work(ParU_Symbolic *Sym, paru_work *Work);
+
+void paru_cp_control (ParU_Control *Control, ParU_C_Control *Control_C) ;
 
 // not user-callable: for testing only
 ParU_Info paru_backward(double *x1, double &resid, double &anorm, double &xnorm,

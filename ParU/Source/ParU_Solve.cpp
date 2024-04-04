@@ -16,7 +16,7 @@
 #include "paru_internal.hpp"
 
 //------------------------------------------------------------------------------
-// ParU_Solve: b = A\b
+// ParU_Solve: x = A\x
 //------------------------------------------------------------------------------
 
 ParU_Info ParU_Solve
@@ -25,12 +25,13 @@ ParU_Info ParU_Solve
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     // input/output:
-    double *b,              // vector of size n-by-1
+    double *x,              // vector of size n-by-1; right-hand on input,
+                            // solution on output
     // control:
     ParU_Control *Control
 )
 {
-    return (ParU_Solve (Sym, Num, b, b, Control)) ;
+    return (ParU_Solve (Sym, Num, x, x, Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -78,7 +79,7 @@ ParU_Info ParU_Solve
 
     ParU_Info info;
     PRLEVEL(1, ("%% lsolve\n"));
-    info = ParU_Lsolve(Sym, Num, t, Control);  // t = L\t
+    info = ParU_LSolve(Sym, Num, t, Control);  // t = L\t
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in lsolve\n"));
@@ -86,7 +87,7 @@ ParU_Info ParU_Solve
         return info;
     }
     PRLEVEL(1, ("%% usolve\n"));
-    info = ParU_Usolve(Sym, Num, t, Control);  // t = U\t
+    info = ParU_USolve(Sym, Num, t, Control);  // t = U\t
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in usolve\n"));
@@ -113,10 +114,13 @@ ParU_Info ParU_Solve
     return PARU_SUCCESS;
 }
 
-//////////////////////////  ParU_Solve ////////////// mRHS /////////////////////
+//------------------------------------------------------------------------------
+// ParU_Solve: X = A\X
+//------------------------------------------------------------------------------
+
 /*!  @brief  solve AX = B
  *      get a factorized matrix and several right hand sides
- *      returns X; overwrites it on B
+ *      X holds right-hand-side on input, and the solution on output.
  *
  * @author Aznaveh
  * */
@@ -130,12 +134,13 @@ ParU_Info ParU_Solve
     ParU_Numeric *Num,      // numeric factorization from ParU_Factorize
     int64_t nrhs,           // # of right-hand sides
     // input/output:
-    double *B,              // n-by-nrhs, in column-major storage
+    double *X,              // X is n-by-nrhs, where A is n-by-n;
+                            // holds B on input, solution X on input
     // control:
     ParU_Control *Control
 )
 {
-    return (ParU_Solve (Sym, Num, nrhs, B, B, Control)) ;
+    return (ParU_Solve (Sym, Num, nrhs, X, X, Control)) ;
 }
 
 //------------------------------------------------------------------------------
@@ -181,7 +186,7 @@ ParU_Info ParU_Solve
     // T = L\T
     ParU_Info info;
     PRLEVEL(1, ("%%mRHS lsolve\n"));
-    info = ParU_Lsolve(Sym, Num, nrhs, T, Control);
+    info = ParU_LSolve(Sym, Num, nrhs, T, Control);
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS lsolve\n"));
@@ -191,7 +196,7 @@ ParU_Info ParU_Solve
 
     // T = U\T
     PRLEVEL(1, ("%%mRHS usolve\n"));
-    info = ParU_Usolve(Sym, Num, nrhs, T, Control);
+    info = ParU_USolve(Sym, Num, nrhs, T, Control);
     if (info != PARU_SUCCESS)
     {
         PRLEVEL(1, ("%% Problems in mRHS usolve\n"));

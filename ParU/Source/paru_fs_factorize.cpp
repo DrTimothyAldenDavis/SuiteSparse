@@ -207,7 +207,7 @@ int64_t paru_panel_factorize(int64_t f, int64_t m, int64_t n, const int64_t pane
         {
             int64_t pivcol = col1 + j + n1;      // S col index + n1
             int64_t pivrow = frowList[row_piv];  // S row index
-            paru_Diag_update(pivcol, pivrow, Work);
+            paru_diag_update(pivcol, pivrow, Work);
             PRLEVEL(1, ("%% symmetric matrix but the diag didn't picked for "
                         "row_piv=" LD "\n",
                         row_piv));

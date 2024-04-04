@@ -8,7 +8,7 @@ do
 	gcov -o . $file >& /dev/null
 done
 
-for file in paru_*.?cov
+for file in ?ar?_*.?cov
 do
 	echo $file >> cov.out
 	grep "#####" $file | grep -v "__dev" | grep -v "__major" | \
@@ -17,8 +17,6 @@ do
 done
 
 echo -n "statements not tested: "
-grep "\#\#\#\#\#:" paru_*v | grep -v DEAD | wc -l
-echo -n "total statements: "
-cat paru_*v | grep -v "     -: " | wc -l
+grep "\#\#\#\#\#:" ?ar?_*v | grep -v DEAD | wc -l
 
 set status=0

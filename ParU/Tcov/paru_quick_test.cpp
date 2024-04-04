@@ -17,8 +17,8 @@
 
 #define TEST_FREE_ALL                                   \
 {                                                       \
-    ParU_Freenum(&Num, &Control);                       \
-    ParU_Freesym(&Sym, &Control);                       \
+    ParU_FreeNumeric(&Num, &Control);                   \
+    ParU_FreeSymbolic(&Sym, &Control);                  \
     cholmod_l_free_sparse(&A, cc);                      \
     cholmod_l_finish(cc);                               \
     if (B  != NULL) { free(B);  B  = NULL; }            \
@@ -185,28 +185,28 @@ int main(int argc, char **argv)
 
     for (int64_t i = 0; i < m; ++i) b[i] = i + 1;
 
-    info = ParU_Lsolve(NULL, Num, b, &Control);
+    info = ParU_LSolve(NULL, Num, b, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, NULL, b, &Control);
+    info = ParU_LSolve(Sym, NULL, b, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, Num, NULL, &Control);
+    info = ParU_LSolve(Sym, Num, NULL, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, Num, b, NULL);
+    info = ParU_LSolve(Sym, Num, b, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(NULL, Num, b, &Control);
+    info = ParU_USolve(NULL, Num, b, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, NULL, b, &Control);
+    info = ParU_USolve(Sym, NULL, b, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, Num, NULL, &Control);
+    info = ParU_USolve(Sym, Num, NULL, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, Num, b, NULL);
+    info = ParU_USolve(Sym, Num, b, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     info = ParU_Perm (NULL, Num->Rs, b, m, xx, &Control);
@@ -324,28 +324,28 @@ int main(int argc, char **argv)
         }
     }
 
-    info = ParU_Lsolve(NULL, Num, nrhs, X, &Control);
+    info = ParU_LSolve(NULL, Num, nrhs, X, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, NULL, nrhs, X, &Control);
+    info = ParU_LSolve(Sym, NULL, nrhs, X, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, Num, nrhs, NULL, &Control);
+    info = ParU_LSolve(Sym, Num, nrhs, NULL, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Lsolve(Sym, Num, nrhs, X, NULL);
+    info = ParU_LSolve(Sym, Num, nrhs, X, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(NULL, Num, nrhs, X, &Control);
+    info = ParU_USolve(NULL, Num, nrhs, X, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, NULL, nrhs, X, &Control);
+    info = ParU_USolve(Sym, NULL, nrhs, X, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, Num, nrhs, NULL, &Control);
+    info = ParU_USolve(Sym, Num, nrhs, NULL, &Control);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Usolve(Sym, Num, nrhs, X, NULL);
+    info = ParU_USolve(Sym, Num, nrhs, X, NULL);
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
 
@@ -446,16 +446,16 @@ int main(int argc, char **argv)
     err = err / xnorm ;
     TEST_ASSERT (err < 1e-10) ;
 
-    info = ParU_Freenum (NULL, &Control) ;
+    info = ParU_FreeNumeric (NULL, &Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Freenum (&Num, NULL) ;
+    info = ParU_FreeNumeric (&Num, NULL) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
-    info = ParU_Freesym (NULL, &Control) ;
+    info = ParU_FreeSymbolic (NULL, &Control) ;
     TEST_ASSERT_INFO (info == PARU_SUCCESS, info) ;
 
-    info = ParU_Freesym (&Sym, NULL) ;
+    info = ParU_FreeSymbolic (&Sym, NULL) ;
     TEST_ASSERT_INFO (info == PARU_INVALID, info) ;
 
     // test paru_bin_src_col

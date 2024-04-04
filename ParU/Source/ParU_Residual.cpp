@@ -21,6 +21,10 @@
 
 #include "paru_internal.hpp" 
 
+//------------------------------------------------------------------------------
+// ParU_Residual: compute residual b-A*x for vectors b and x
+//------------------------------------------------------------------------------
+
 ParU_Info ParU_Residual
 (
     // inputs:
@@ -83,13 +87,17 @@ ParU_Info ParU_Residual
     return PARU_SUCCESS;
 }
 
-//////////////////////////  ParU_Residual //////////////mRHS////////////////////
+//------------------------------------------------------------------------------
+// ParU_Residual: compute residual B-A*X for matrices B and X
+//------------------------------------------------------------------------------
+
 /*! @brief  get a factorized matrix A and a  multiple right hand side matrix B
  *
  *          compute ||Ax -B||
  * resid = norm1(b-A*x) / norm1(A)
  *
  * */
+
 ParU_Info ParU_Residual
 (
     // inputs:
@@ -165,3 +173,4 @@ ParU_Info ParU_Residual
     paru_free(m*nrhs, sizeof(double), AX_B);
     return PARU_SUCCESS;
 }
+

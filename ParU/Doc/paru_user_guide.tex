@@ -57,9 +57,8 @@ SPDX-License-Identifier: GPL-3.0-or-later
 \label{intro}
 %-------------------------------------------------------------------------------
 
-The algorithms used in ParU will be discussed in a companion paper,
-% FIXME
-?.
+The algorithms used in ParU will be discussed in a companion paper.
+% FIXME: cite our ACM TOMS submission, and include it the Doc folder
 This document gives detailed information on the installation
 and use of ParU.
 ParU is a parallel sparse direct solver. This package uses OpenMP
@@ -87,11 +86,6 @@ $A^{T}A$. This matrix can be a dense matrix and takes a lot of resources to form
 it. To avoid such conditions, you can use the ordering strategy
 \verb'UMFPACK_ORDERING_METIS_GUARD' that is introduced in UMFPACK version 6.0.
 This ordering strategy use COLAMD instead of METIS in those cases.
-
-% Note that METIS is not bug-free; it can occasionally cause segmentation 
-% faults, particularly if used when finding basic solutions to underdetermined 
-% systems with many more columns than rows. ParU does not solve such 
-% systems anyway but you might see some problems with other SuiteSparse packages.
 
 %-------------------------------------------------------------------------------
 \section{Using ParU in C and C++}
@@ -183,8 +177,8 @@ int main(int argc, char **argv)
     BLAS_set_num_threads(max_threads);
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_Freenum(&Num, &Control);
-    ParU_Freesym(&Sym, &Control);
+    ParU_FreeNumeric(&Num, &Control);
+    ParU_FreeSymbolic(&Sym, &Control);
 
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
@@ -245,8 +239,8 @@ int main(int argc, char **argv)
         free(xx);
     }
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_Freenum(&Num, &Control);
-    ParU_C_Freesym(&Sym, &Control);
+    ParU_C_FreeNumeric(&Num, &Control);
+    ParU_C_FreeSymbolic(&Sym, &Control);
 
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
@@ -288,19 +282,18 @@ functions and what they can do:
         versions that keep a copy of x or overwrite it. Also, it can solve 
         multiple right-hand side problems.
 
-    % FIXME: also for C
-    \item \verb'ParU_Lsolve'
-    \item \verb'ParU_Usolve'
-    \item \verb'ParU_perm' FIXME name
-    \item \verb'ParU_inv_perm' FIXME name
+    \item \verb'ParU_LSolve':       % FIXME
+    \item \verb'ParU_USolve':       % FIXME
+    \item \verb'ParU_Perm':         % FIXME
+    \item \verb'ParU_InvPerm':      % FIXME
 
     \item \verb'ParU_Residual':  
         This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
         $x$ (or $X$ for multiple right handside).
 
-    \item \verb'ParU_Freenum':  frees the numerical part of factorization.
+    \item \verb'ParU_FreeNumeric':  frees the numerical part of factorization.
 
-    \item \verb'ParU_Freesym':  frees the symbolic part of factorization.
+    \item \verb'ParU_FreeSymbolic':  frees the symbolic part of factorization.
 
 \end{enumerate}
 
@@ -335,6 +328,11 @@ can do:
         In all the solve routines Num structure must come with the same 
         Sym struct that comes from \verb'ParU_C_Factorize'. 
 
+    \item \verb'ParU_C_LSolve':       % FIXME
+    \item \verb'ParU_C_USolve':       % FIXME
+    \item \verb'ParU_C_Perm':         % FIXME
+    \item \verb'ParU_C_InvPerm':      % FIXME
+
     \item \verb'ParU_C_Residual_bAx':  
         This function computes $|Ax-b|$ one norm of matrix $A$ and one norm of
         $x$ 
@@ -344,10 +342,10 @@ can do:
         $X$
 
 
-    \item \verb'ParU_C_Freenum':  frees the numerical part of factorization.
+    \item \verb'ParU_C_FreeNumeric':  frees the numerical part of factorization.
 
 
-    \item \verb'ParU_C_Freesym':  frees the symbolic part of factorization.
+    \item \verb'ParU_C_FreeSymbolic':  frees the symbolic part of factorization.
 
 \end{enumerate}
 

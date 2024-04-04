@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// ParU_Lsolve //////////////////////////////////
+///////////////////////////////// ParU_LSolve //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -43,7 +43,7 @@
 // Solve L*x=b where x and b are vectors (no scaling or permutations)
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Lsolve
+ParU_Info ParU_LSolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -216,7 +216,7 @@ ParU_Info ParU_Lsolve
 // Solve L*X=B where X and B are matrices (no scaling or permutations)
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Lsolve
+ParU_Info ParU_LSolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze

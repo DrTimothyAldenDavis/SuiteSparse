@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// ParU_Usolve //////////////////////////////////
+///////////////////////////////// ParU_USolve //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // ParU, Copyright (c) 2022-2024, Mohsen Aznaveh and Timothy A. Davis,
@@ -40,10 +40,10 @@
 #include "paru_internal.hpp"
 
 //------------------------------------------------------------------------------
-// Solve U*x=b where x and b are vectors (no scaling or permutations)
+// ParU_USolve: solve U*x=b for vectors X and B (no scaling or permutations)
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Usolve
+ParU_Info ParU_USolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -120,7 +120,7 @@ ParU_Info ParU_Usolve
             // pragma omp parallel for
             // for (int64_t i = 0; i < fp; i++)
             //{
-            //    PRLEVEL(2, ("%% Usolve: Working on DGEMV\n"));
+            //    PRLEVEL(2, ("%% USolve: Working on DGEMV\n"));
             //    // computing the inner product
             //    double i_prod = 0.0;  // innter product
             //    for (int64_t j = 0; j < colCount; j++)
@@ -136,7 +136,7 @@ ParU_Info ParU_Usolve
         int64_t rowCount = Num->frowCount[f];
 
         double *A1 = LUs[f].p;
-        PRLEVEL(2, ("%% Usolve: Working on DTRSV\n"));
+        PRLEVEL(2, ("%% USolve: Working on DTRSV\n"));
         SUITESPARSE_BLAS_dtrsv("U", "N", "N", fp, A1, rowCount, x + col1 + n1,
                                1, blas_ok);
         PRLEVEL(2, ("%% DTRSV is just finished\n"));
@@ -196,10 +196,10 @@ ParU_Info ParU_Usolve
 }
 
 //------------------------------------------------------------------------------
-// Solve U*X=B where X and B are matrices (no scaling or permutations)
+// ParU_USolve: solve U*X=B for matrices X and B (no scaling or permutations)
 //------------------------------------------------------------------------------
 
-ParU_Info ParU_Usolve
+ParU_Info ParU_USolve
 (
     // input
     ParU_Symbolic *Sym,     // symbolic analysis from ParU_Analyze
@@ -249,7 +249,7 @@ ParU_Info ParU_Usolve
         static_cast<double*>(paru_alloc((Num->max_col_count * nrhs), sizeof(double)));
     if (work == NULL)
     {
-        PRLEVEL(1, ("ParU: out of memory Usolve\n"));
+        PRLEVEL(1, ("ParU: out of memory USolve\n"));
         return PARU_OUT_OF_MEMORY;
     }
 
@@ -315,7 +315,7 @@ ParU_Info ParU_Usolve
 
         int64_t rowCount = Num->frowCount[f];
 
-        PRLEVEL(2, ("%% mRHS Usolve: Working on DTRSM\n"));
+        PRLEVEL(2, ("%% mRHS USolve: Working on DTRSM\n"));
         double *A1 = LUs[f].p;
         double alpha = 1;
         SUITESPARSE_BLAS_dtrsm("L", "U", "N", "N", fp, nrhs, &alpha, A1, rowCount,
@@ -323,7 +323,7 @@ ParU_Info ParU_Usolve
         PRLEVEL(2, ("%% mRHS DTRSM is just finished\n"));
     }
 
-    PRLEVEL(1, ("%% mRHS Usolve working on singletons \n"));
+    PRLEVEL(1, ("%% mRHS USolve working on singletons \n"));
     int64_t cs1 = Sym->cs1;
     if (cs1 > 0)
     {

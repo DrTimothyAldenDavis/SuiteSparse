@@ -94,7 +94,7 @@ int main(int argc, char **argv)
         if (info == PARU_SINGULAR) printf("\nSingular!\n");
         cholmod_l_free_sparse(&A, cc);
         cholmod_l_finish(cc);
-        ParU_C_Freesym(&Sym, &Control);
+        ParU_C_FreeSymbolic(&Sym, &Control);
         return info;
     }
     else
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
             free(xx);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_C_Freesym(&Sym, &Control);
+            ParU_C_FreeSymbolic(&Sym, &Control);
             return info;
         }
         my_solve_time = omp_get_wtime() - my_solve_time_start;
@@ -148,7 +148,7 @@ int main(int argc, char **argv)
             free(xx);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_C_Freesym(&Sym, &Control);
+            ParU_C_FreeSymbolic(&Sym, &Control);
             return info;
         }
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
@@ -175,7 +175,7 @@ int main(int argc, char **argv)
             free(X);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_C_Freesym(&Sym, &Control);
+            ParU_C_FreeSymbolic(&Sym, &Control);
             return info;
         }
         printf ("\n--------- ParU_C_Residual_BAX:\n") ;
@@ -188,7 +188,7 @@ int main(int argc, char **argv)
             free(X);
             cholmod_l_free_sparse(&A, cc);
             cholmod_l_finish(cc);
-            ParU_C_Freesym(&Sym, &Control);
+            ParU_C_FreeSymbolic(&Sym, &Control);
             return info;
         }
 
@@ -305,8 +305,8 @@ int main(int argc, char **argv)
 #endif  // writing to a file
 
     //~~~~~~~~~~~~~~~~~~~Free Everything~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    ParU_C_Freenum(&Num, &Control);
-    ParU_C_Freesym(&Sym, &Control);
+    ParU_C_FreeNumeric(&Num, &Control);
+    ParU_C_FreeSymbolic(&Sym, &Control);
 
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);

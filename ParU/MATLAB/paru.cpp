@@ -100,8 +100,8 @@ void mexFunction
     info = ParU_Factorize (A, Sym, &Num, &Control) ;
     info = ParU_Solve (Sym, Num, nrhs, (double *) B->x,
         (double *) X->x, &Control) ;
-    ParU_Freenum (&Num, &Control) ;
-    ParU_Freesym (&Sym, &Control) ;
+    ParU_FreeNumeric (&Num, &Control) ;
+    ParU_FreeSymbolic (&Sym, &Control) ;
 
     //--------------------------------------------------------------------------
     // return solution to MATLAB

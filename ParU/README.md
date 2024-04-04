@@ -42,8 +42,8 @@ a dense vector of double (or a dense matrix B for multiple rhs):
      // you can have multiple different factorization with a single ParU_Analyze
      info = ParU_Factorize(A, Sym, &Num, &Control);
      info = ParU_Solve(Sym, Num, b, x, &Control);
-     ParU_Freenum(Sym, &Num, &Control);
-     ParU_Freesym(&Sym, &Control);
+     ParU_FreeNumeric(Sym, &Num, &Control);
+     ParU_FreeSymbolic(&Sym, &Control);
 
 See Demo for more examples.
 
