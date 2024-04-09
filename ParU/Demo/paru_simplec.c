@@ -33,7 +33,8 @@ int main(int argc, char **argv)
     ParU_C_Init_Control(&Control);
     ParU_Info info;
     info = ParU_C_Analyze(A, &Sym, &Control);
-    printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n", Sym->m, Sym->n, Sym->anz);
+    printf("Input matrix is %" PRId64 "x%" PRId64 " nnz = %" PRId64 " \n",
+        Sym->m, Sym->n, Sym->anz);
     ParU_C_Numeric *Num;
     info = ParU_C_Factorize(A, Sym, &Num, &Control);
 
@@ -49,8 +50,7 @@ int main(int argc, char **argv)
         printf("ParU: factorization was successful.\n");
     }
 
-    //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#if 1
+    //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     if (info == PARU_SUCCESS)
     {
         int64_t m = Sym->m;
@@ -62,12 +62,13 @@ int main(int argc, char **argv)
         info =
             ParU_C_Residual_bAx(A, xx, b, &resid, &anorm, &xnorm, &Control);
         double rresid = (anorm == 0 || xnorm == 0 ) ? 0 : (resid/(anorm*xnorm));
-        printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e "
-            " and rcond is %.2e.\n", rresid, anorm, xnorm, Num->rcond);
+        printf( "Relative residual is |%.2e|, anorm is %.2e, xnorm is %.2e, "
+            " and rcond is %.2e.\n",
+            rresid, anorm, xnorm, Num->rcond);
         free(b);
         free(xx);
     }
-#endif  // testing the results
+
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ParU_C_FreeNumeric(&Num, &Control);
     ParU_C_FreeSymbolic(&Sym, &Control);

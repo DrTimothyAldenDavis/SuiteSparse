@@ -562,7 +562,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                             curEl_rowIndex[rowInd]));
                 PRLEVEL(1, ("%% i =" LD " \n", i));
                 PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
-                tempRow.push_back(i);   // FIXME: unreachable?
+                tempRow.push_back(i);
             }
             else
             {
@@ -602,8 +602,8 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
                 PRLEVEL(1, ("%% i =" LD " \n", i));
                 PRLEVEL(1, ("%% el_rowIndex[i] =" LD " \n", el_rowIndex[i]));
 
-                tempRow.push_back(i);   // FIXME: unreachable?
-                toll++;                 // FIXME: unreachable?
+                tempRow.push_back(i);
+                toll++;
             }
             else
             {
@@ -634,7 +634,7 @@ void paru_assemble_rows(int64_t e, int64_t f, std::vector<int64_t> &colHash,
     //    paru_update_rel_ind_col(e, f, colHash, Work, Num);
     ASSERT(el->cValid == Work->time_stamp[f]);
 
-    int64_t ncolsSeen = nEl;    // FIXME unreachable here to the end?
+    int64_t ncolsSeen = nEl;
 
     for (int64_t j = el->lac; j < nEl; j++)
     {

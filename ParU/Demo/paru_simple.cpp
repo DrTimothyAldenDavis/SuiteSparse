@@ -27,10 +27,9 @@ int main(int argc, char **argv)
     cc = &Common;
     int mtype;
     cholmod_l_start(cc);
-    // A = mread (stdin) ; read in the sparse matrix A
     A = (cholmod_sparse *)cholmod_l_read_matrix(stdin, 1, &mtype, cc);
     //~~~~~~~~~~~~~~~~~~~Starting computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    std::cout << "================= ParU, a simple demo: ========================\n";
+    std::cout << "================= ParU, a simple demo: ===================\n";
     ParU_Control Control;
     ParU_Info info;
     info = ParU_Analyze(A, &Sym, &Control);
@@ -42,20 +41,16 @@ int main(int argc, char **argv)
     if (info != PARU_SUCCESS)
     {
         std::cout << "ParU: factorization was NOT successful.\n";
-        if (info == PARU_OUT_OF_MEMORY)
-            std::cout << "Out of memory\n";
-        if (info == PARU_INVALID)
-            std::cout << "Invalid!\n";
-        if (info == PARU_SINGULAR)
-            std::cout << "Singular!\n";
+        if (info == PARU_OUT_OF_MEMORY) std::cout << "Out of memory\n";
+        if (info == PARU_INVALID) std::cout << "Invalid!\n";
+        if (info == PARU_SINGULAR) std::cout << "Singular!\n";
     }
     else
     {
         std::cout << "ParU: factorization was successful." << std::endl;
     }
 
-    //~~~~~~~~~~~~~~~~~~~ Computing Ax = b ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-#if 1
+    //~~~~~~~~~~~~~~~~~~~ Computing the residual, norm(b-Ax) ~~~~~~~~~~~~~~~~~~~
     if (info == PARU_SUCCESS)
     {
         int64_t m = Sym->m;
@@ -73,11 +68,10 @@ int main(int argc, char **argv)
         free(b);
         free(xx);
     }
-#endif  // testing the results
+
     //~~~~~~~~~~~~~~~~~~~End computation~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     ParU_FreeNumeric(&Num, &Control);
     ParU_FreeSymbolic(&Sym, &Control);
-
     cholmod_l_free_sparse(&A, cc);
     cholmod_l_finish(cc);
 }
